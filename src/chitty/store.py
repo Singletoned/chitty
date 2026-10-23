@@ -14,6 +14,8 @@ from chitty.config import (
     INITIAL_CONFIG,
     RepoConfig,
     load_repo_config,
+    load_user_contexts,
+    user_contexts_path,
     validate_repo_config,
 )
 from chitty.errors import ChittyError
@@ -130,6 +132,15 @@ class Edit:
         if self.note is not None:
             task = task.with_note(self.note)
         return task
+
+
+@dataclass(frozen=True)
+class Target:
+    """Where `add` writes. A foreign target is a user-level context in another repo."""
+
+    repo: "Repo"
+    context: Context
+    foreign: bool
 
 
 class Repo:
@@ -299,6 +310,29 @@ class Repo:
     def _write(self, path: Path, text: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
+
+
+def resolve_add_target(local: Repo | None, name: str | None) -> Target:
+    """A context in this repo, or (for `add` only) one from the user's contexts.toml."""
+    if name is None:
+        if local is None:
+            raise ChittyError("no chitty.toml here or in any parent (run `chitty init`)")
+        return Target(local, local.default_context, False)
+    user = load_user_contexts().contexts
+    if local is not None and name in local.config.contexts:
+        if name in user:
+            raise ChittyError(
+                f"context {name!r} is defined in both {local.root / CONFIG_NAME} "
+                f"and {user_contexts_path()}; rename one"
+            )
+        return Target(local, local.context(name), False)
+    if name not in user:
+        here = local.root / CONFIG_NAME if local else "this directory (no chitty.toml)"
+        raise ChittyError(f"no context {name!r} in {here} or {user_contexts_path()}")
+    entry = user[name]
+    repo = Repo.open(Path(entry.repo).expanduser().resolve())
+    context = repo.context(entry.context) if entry.context else repo.default_context
+    return Target(repo, context, True)
 
 
 def guide() -> str:

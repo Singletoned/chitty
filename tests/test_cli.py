@@ -239,3 +239,53 @@ class TestMoveArchive(CliTestCase):
         self.assertIn("(archived)", self.run_cli("show", "1").stdout)
         self.run_cli("restore", "1")
         self.assertIn("not archived", self.run_cli("restore", "1", exit_code=1).stderr)
+
+
+class TestUserContexts(CliTestCase):
+    def setUp(self):
+        super().setUp()
+        self.other = self.tmp / "notes"
+        self.other.mkdir()
+        os.chdir(self.other)
+        self.run_cli("init", "--prefix", "NOTE")
+        os.chdir(self.root)
+        self.write_user_contexts(f'[contexts.notes]\nrepo = "{self.other}"\n')
+
+    def write_user_contexts(self, text):
+        path = self.config_home / "chitty" / "contexts.toml"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def test_add_to_user_context(self):
+        data = self.json("add", "Idea", "-d", "x", "-c", "notes")
+        self.assertEqual(data["id"], "NOTE-1")
+        self.assertTrue((self.other / "chitty/tasks/NOTE-1--idea.md").exists())
+        self.assertEqual(self.json("list"), [])
+        self.assertIn(
+            "no task NOTE-9",
+            self.run_cli(
+                "add", "X", "-d", "x", "-c", "notes", "--depends-on", "NOTE-9", exit_code=1
+            ).stderr,
+        )
+        self.assertEqual(
+            self.json("add", "Y", "-d", "x", "-c", "notes", "--depends-on", "1")["depends_on"],
+            ["NOTE-1"],
+        )
+
+    def test_works_outside_any_repo(self):
+        os.chdir(self.tmp)
+        self.assertEqual(self.json("add", "Idea", "-d", "x", "-c", "notes")["id"], "NOTE-1")
+        self.assertIn("chitty init", self.run_cli("add", "Idea", "-d", "x", exit_code=1).stderr)
+
+    def test_only_add_accepts_user_contexts(self):
+        self.assertIn("no context 'notes'", self.run_cli("list", "-c", "notes", exit_code=1).stderr)
+
+    def test_shadowing_is_an_error(self):
+        self.write_user_contexts(f'[contexts.human]\nrepo = "{self.other}"\n')
+        result = self.run_cli("add", "X", "-d", "x", "-c", "human", exit_code=1)
+        self.assertIn("defined in both", result.stderr)
+
+    def test_unknown_names_both_files(self):
+        result = self.run_cli("add", "X", "-d", "x", "-c", "nope", exit_code=1)
+        self.assertIn("chitty.toml", result.stderr)
+        self.assertIn("contexts.toml", result.stderr)

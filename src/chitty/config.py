@@ -79,6 +79,14 @@ class UserContexts(BaseModel):
 
 def find_root(start: Path) -> Path:
     """`CHITTY_ROOT` if set, else the nearest ancestor containing chitty.toml."""
+    root = search_root(start)
+    if root is None:
+        raise ChittyError(f"no {CONFIG_NAME} in {start} or any parent (run `chitty init`)")
+    return root
+
+
+def search_root(start: Path) -> Path | None:
+    """Like find_root, but None when no chitty.toml is found by walking up."""
     override = os.environ.get(ROOT_ENV)
     if override:
         root = Path(override).expanduser().resolve()
@@ -89,7 +97,7 @@ def find_root(start: Path) -> Path:
     for directory in (start, *start.parents):
         if (directory / CONFIG_NAME).is_file():
             return directory
-    raise ChittyError(f"no {CONFIG_NAME} in {start} or any parent (run `chitty init`)")
+    return None
 
 
 def load_repo_config(root: Path) -> RepoConfig:

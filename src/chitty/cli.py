@@ -8,10 +8,19 @@ from typing import Any, TextIO, cast
 import click
 
 from chitty.check import check as check_repo
-from chitty.config import find_root
+from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
-from chitty.store import Change, Edit, Repo, StoredTask, Which, init_repo, matches
+from chitty.store import (
+    Change,
+    Edit,
+    Repo,
+    StoredTask,
+    Which,
+    init_repo,
+    matches,
+    resolve_add_target,
+)
 
 
 class _Group(click.Group):
@@ -100,16 +109,21 @@ def add(
     depends_on: tuple[str, ...],
     as_json: bool,
 ) -> None:
-    """Create a task with status todo."""
-    repo = _repo()
-    target = repo.context(context) if context else repo.default_context
+    """Create a task with status todo.
+
+    -c may also name a context from ~/.config/chitty/contexts.toml: the file
+    is written into that repo's working tree and nothing else happens there.
+    """
+    root = search_root(Path.cwd())
+    target = resolve_add_target(Repo.open(root) if root else None, context)
+    repo = target.repo
     fields = {
         "labels": list(dict.fromkeys(labels)),
         "priority": priority,
         "owner": owner,
         "depends_on": [str(repo.resolve(d)) for d in dict.fromkeys(depends_on)],
     }
-    change = repo.add(target, title, description, criteria, fields, date.today())
+    change = repo.add(target.context, title, description, criteria, fields, date.today())
     _report(change, as_json, "added")
 
 
