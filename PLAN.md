@@ -45,10 +45,10 @@ repo/
   chitty.toml
   chitty/
     tasks/                 default context
-      TASK-1--add-search.md
-      TASK-2--fix-login.md
+      TASK-2--add-search.md
+      TASK-3--fix-login.md
       archive/
-        TASK-0--bootstrap.md
+        TASK-1--bootstrap.md
     human/                 another context
       HUMAN-1--rotate-prod-password.md
 ```
@@ -177,6 +177,12 @@ The round-trip guarantee is tested against, and only claimed for:
 Both are pinned to exact versions. If either is missing, the round-trip
 tests fail loudly; they are never skipped.
 
+"Survives" means the file still parses to the same task. Byte-for-byte
+no-op is only claimed for ordinary content: `mdformat-frontmatter`
+re-serialises YAML as 1.2 and drops the quotes the tool adds for 1.1
+readers (`"no"` becomes `no`), and mdformat renumbers ordered lists in free
+markdown.
+
 ### Writing
 
 Serialisation is a patch over the original text, not parse-then-dump:
@@ -185,6 +191,8 @@ Serialisation is a patch over the original text, not parse-then-dump:
   any indented lines under it). Changed keys have their span replaced, new
   keys are appended in table order, removed keys have their span deleted.
   Every other byte — comments, quoting, blank lines — is left alone.
+  Comment and blank lines belong to the key below them, so replacing a key
+  keeps the comment above it.
 - The body is split the same way, one span per `##` section. Only sections
   the command changed are rewritten; new sections are appended in the
   canonical order above.
@@ -257,7 +265,7 @@ no wizards; every command is fully specifiable by flags.
 
 ```
 chitty init [--prefix TASK]        write chitty.toml, chitty/tasks/, AGENTS.md block
-chitty add TITLE [-c CTX] [-d TEXT] [--ac TEXT]... [-l LABEL]... [-p PRIO]
+chitty add TITLE -d TEXT [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
                  [--owner X] [--depends-on ID]...
 chitty list [-c CTX] [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
                  [--archived | --all]
@@ -280,6 +288,7 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   pull or push, and that repo's `autocommit` setting is ignored. Any
   `--depends-on` is validated against the *target* repo. Post-and-forget.
   On every other command, `-c` must name a context in this repo.
+- `-d` is required on `add`, because Description is required.
 - `ID` arguments accept `TASK-13`, or bare `13` for the default context.
 - `list` shows non-archived tasks by default; `--archived` shows only
   archived; `--all` shows both. Default output is one line per task:
@@ -333,7 +342,8 @@ That is the whole prompt. Statuses are fixed, so the block is always correct.
 - Runtime: `click`, `pydantic`, `pyyaml`. Frontmatter is split on `---` by
   our own code; YAML is loaded with a loader that resolves every scalar as a
   string. Optional extra `mcp`.
-- Dev: `ruff`, `pyright --strict` (with `types-PyYAML`), `unittest` (stdlib;
+- Dev: `ruff`, `pyright` (strict for `src/`, standard for tests; with
+  `types-PyYAML`), `unittest` (stdlib;
   tests write real files in a temp dir and drive the CLI through
   `click.testing.CliRunner`; no filesystem mocking), `prettier` and `mdformat`
   with the plugins above for the round-trip tests.
@@ -354,10 +364,13 @@ src/chitty/
   ids.py         ID and filename parsing, slugs, next number, shorthand
   config.py      RepoConfig, UserContexts — load + validate TOML
   store.py       Context, find/list/read/write/move/archive
-  check.py       cross-file validation: duplicate IDs, dangling depends_on
+  check.py       cross-file validation: parse errors, duplicate IDs,
+                 dangling or self depends_on
+  errors.py      ChittyError, the base of every user-facing error
   git.py         optional autocommit
   cli.py         click commands; thin, calls store/model, prints
   mcp.py         tool definitions wrapping the same functions as cli.py
+                 (mcp ≥ 2: MCPServer, not FastMCP)
   guide.md       the AGENTS.md block, as package data
 ```
 
