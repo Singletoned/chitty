@@ -1,7 +1,7 @@
 .PHONY: install check test format
 
 install: ## install Python and node dev dependencies
-	uv sync
+	uv sync --all-extras
 	npm ci
 
 check: ## lint, type-check and run the tests

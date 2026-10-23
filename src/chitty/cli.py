@@ -338,3 +338,18 @@ def restore(task_id: str, as_json: bool) -> None:
     repo = _repo()
     change = repo.restore(repo.resolve(task_id))
     _report(change, as_json, "restored")
+
+
+@cli.command()
+def mcp() -> None:
+    """Run the stdio MCP server (needs the mcp extra)."""
+    # Imported here because the mcp package is an optional extra.
+    try:
+        from chitty.mcp import run
+    except ModuleNotFoundError as error:
+        if error.name is None or not error.name.startswith("mcp"):
+            raise
+        raise ChittyError(
+            "chitty mcp needs the mcp extra: uv tool install 'chitty[mcp]'"
+        ) from error
+    run()
