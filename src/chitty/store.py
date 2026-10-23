@@ -1,7 +1,7 @@
 """Contexts on disk: find, list, read, write, move, archive."""
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from importlib.resources import files
 from pathlib import Path
@@ -136,11 +136,10 @@ class Edit:
 
 @dataclass(frozen=True)
 class Target:
-    """Where `add` writes. A foreign target is a user-level context in another repo."""
+    """Where `add` writes: this repo, or a user-level context in another repo."""
 
     repo: "Repo"
     context: Context
-    foreign: bool
 
 
 class Repo:
@@ -151,12 +150,6 @@ class Repo:
     @classmethod
     def open(cls, root: Path) -> "Repo":
         return cls(root, load_repo_config(root))
-
-    def commit(self, change: Change, verb: str) -> None:
-        """Commit the change if autocommit is on and anything was written."""
-        if self.config.autocommit and change.paths:
-            title = change.task.task.frontmatter.title
-            git.commit(self.root, change.paths, f"chitty: {verb} {change.task.id} {title}")
 
     # -- contexts --------------------------------------------------------
 
@@ -218,6 +211,8 @@ class Repo:
             self.find(TaskId.parse(reference))
 
     # -- writing ---------------------------------------------------------
+    #
+    # Each public write commits its own paths when autocommit is on.
 
     def add(
         self,
@@ -228,16 +223,33 @@ class Repo:
         fields: Mapping[str, FieldValue],
         today: date,
     ) -> Change:
+        """Create a task. References in depends_on may be shorthand."""
+        fields = dict(fields)
         depends_on = fields.get("depends_on")
         if isinstance(depends_on, list):
-            self.check_dependencies(depends_on)
+            fields["depends_on"] = self._references(depends_on)
+            self.check_dependencies(fields["depends_on"])
         task = new_task(title, today, description, criteria, fields)
         task_id = TaskId(context.prefix, self.next_number(context))
         path = context.directory / ids.filename(task_id, ids.slugify(title))
         self._write(path, task.render())
-        return Change(StoredTask(task_id, context.name, path, False, task), (path,))
+        return self._commit(
+            Change(StoredTask(task_id, context.name, path, False, task), (path,)), "add"
+        )
 
-    def save(self, stored: StoredTask, task: Task) -> Change:
+    def edit(self, task_id: TaskId, edit: Edit) -> Change:
+        """Apply an edit. References in depends_on may be shorthand."""
+        if edit.is_empty():
+            raise ChittyError("nothing to change")
+        stored = self.find(task_id)
+        edit = replace(
+            edit,
+            depends_on=self._references(edit.depends_on),
+            rm_depends_on=self._references(edit.rm_depends_on),
+        )
+        return self._commit(self._save(stored, edit.apply(stored.task)), "edit")
+
+    def _save(self, stored: StoredTask, task: Task) -> Change:
         """Write an edited task; touches nothing if the content is unchanged."""
         if task.frontmatter.depends_on != stored.task.frontmatter.depends_on:
             self.check_dependencies(task.frontmatter.depends_on)
@@ -256,10 +268,10 @@ class Repo:
         return ids.next_number(numbers)
 
     def archive(self, task_id: TaskId) -> Change:
-        return self._set_archived(task_id, True)
+        return self._commit(self._set_archived(task_id, True), "archive")
 
     def restore(self, task_id: TaskId) -> Change:
-        return self._set_archived(task_id, False)
+        return self._commit(self._set_archived(task_id, False), "restore")
 
     def move(self, task_id: TaskId, target: Context) -> Change:
         """Give a task the next ID in another context and rewrite references to it."""
@@ -278,11 +290,20 @@ class Repo:
         for other in self.all_tasks():
             if old in other.task.frontmatter.depends_on:
                 references = _replace(other.task.frontmatter.depends_on, old, new)
-                touched += self.save(other, other.task.with_field("depends_on", references)).paths
+                touched += self._save(other, other.task.with_field("depends_on", references)).paths
         moved = StoredTask(new_id, target.name, new_path, stored.archived, task)
-        return Change(moved, tuple(touched))
+        return self._commit(Change(moved, tuple(touched)), "move")
 
     # -- helpers ---------------------------------------------------------
+
+    def _commit(self, change: Change, verb: str) -> Change:
+        if self.config.autocommit and change.paths:
+            title = change.task.task.frontmatter.title
+            git.commit(self.root, change.paths, f"chitty: {verb} {change.task.id} {title}")
+        return change
+
+    def _references(self, references: Sequence[str]) -> list[str]:
+        return [str(self.resolve(reference)) for reference in dict.fromkeys(references)]
 
     def _set_archived(self, task_id: TaskId, archived: bool) -> Change:
         stored = self.find(task_id)
@@ -323,7 +344,7 @@ def resolve_add_target(local: Repo | None, name: str | None) -> Target:
     if name is None:
         if local is None:
             raise ChittyError("no chitty.toml here or in any parent (run `chitty init`)")
-        return Target(local, local.default_context, False)
+        return Target(local, local.default_context)
     user = load_user_contexts().contexts
     if local is not None and name in local.config.contexts:
         if name in user:
@@ -331,14 +352,16 @@ def resolve_add_target(local: Repo | None, name: str | None) -> Target:
                 f"context {name!r} is defined in both {local.root / CONFIG_NAME} "
                 f"and {user_contexts_path()}; rename one"
             )
-        return Target(local, local.context(name), False)
+        return Target(local, local.context(name))
     if name not in user:
         here = local.root / CONFIG_NAME if local else "this directory (no chitty.toml)"
         raise ChittyError(f"no context {name!r} in {here} or {user_contexts_path()}")
     entry = user[name]
     repo = Repo.open(Path(entry.repo).expanduser().resolve())
+    # Post-and-forget: the other repo's autocommit setting is ignored.
+    repo = Repo(repo.root, repo.config.model_copy(update={"autocommit": False}))
     context = repo.context(entry.context) if entry.context else repo.default_context
-    return Target(repo, context, True)
+    return Target(repo, context)
 
 
 def guide() -> str:

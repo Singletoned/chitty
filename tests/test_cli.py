@@ -272,6 +272,12 @@ class TestUserContexts(CliTestCase):
             ["NOTE-1"],
         )
 
+    def test_other_repos_autocommit_is_ignored(self):
+        config = self.other / "chitty.toml"
+        config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
+        # Not a git repo, so any attempt to commit would fail.
+        self.assertEqual(self.json("add", "Idea", "-d", "x", "-c", "notes")["id"], "NOTE-1")
+
     def test_works_outside_any_repo(self):
         os.chdir(self.tmp)
         self.assertEqual(self.json("add", "Idea", "-d", "x", "-c", "notes")["id"], "NOTE-1")

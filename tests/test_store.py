@@ -2,7 +2,7 @@ from datetime import date
 
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
-from chitty.store import Repo
+from chitty.store import Edit, Repo
 from tests.support import RepoTestCase
 
 TODAY = date(2026, 10, 23)
@@ -57,11 +57,13 @@ class TestStore(StoreTestCase):
     def test_save_skips_unchanged(self):
         stored = self.add("One")
         mtime = stored.path.stat().st_mtime_ns
-        change = self.repo.save(stored, stored.task.with_field("status", "todo"))
+        change = self.repo.edit(stored.id, Edit(status="todo"))
         self.assertEqual(change.paths, ())
         self.assertEqual(stored.path.stat().st_mtime_ns, mtime)
-        change = self.repo.save(stored, stored.task.with_field("status", "doing"))
+        change = self.repo.edit(stored.id, Edit(status="doing"))
         self.assertEqual(change.paths, (stored.path,))
+        with self.assertRaisesRegex(ChittyError, "nothing to change"):
+            self.repo.edit(stored.id, Edit(add_labels=[]))
 
     def test_archive_and_restore(self):
         stored = self.add("One")

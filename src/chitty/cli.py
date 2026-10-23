@@ -117,16 +117,13 @@ def add(
     """
     root = search_root(Path.cwd())
     target = resolve_add_target(Repo.open(root) if root else None, context)
-    repo = target.repo
     fields = {
         "labels": list(dict.fromkeys(labels)),
         "priority": priority,
         "owner": owner,
-        "depends_on": [str(repo.resolve(d)) for d in dict.fromkeys(depends_on)],
+        "depends_on": list(depends_on),
     }
-    change = repo.add(target.context, title, description, criteria, fields, date.today())
-    if not target.foreign:
-        repo.commit(change, "add")
+    change = target.repo.add(target.context, title, description, criteria, fields, date.today())
     _report(change, as_json, "added")
 
 
@@ -250,7 +247,6 @@ def edit(
 ) -> None:
     """Change a task. Criterion numbers refer to the list before this edit."""
     repo = _repo()
-    stored = repo.find(repo.resolve(task_id))
     changes = Edit(
         title=title,
         status=status,
@@ -258,8 +254,8 @@ def edit(
         rm_labels=rm_label,
         priority=priority,
         owner=owner,
-        depends_on=[str(repo.resolve(d)) for d in depends_on],
-        rm_depends_on=[str(repo.resolve(d)) for d in rm_depends_on],
+        depends_on=depends_on,
+        rm_depends_on=rm_depends_on,
         description=_text(description, description_file, "description"),
         add_criteria=ac,
         rm_criteria=rm_ac,
@@ -268,11 +264,7 @@ def edit(
         plan=_text(plan, plan_file, "plan"),
         note=note,
     )
-    if changes.is_empty():
-        raise click.UsageError("nothing to change")
-    change = repo.save(stored, changes.apply(stored.task))
-    repo.commit(change, "edit")
-    _report(change, as_json, "updated")
+    _report(repo.edit(repo.resolve(task_id), changes), as_json, "updated")
 
 
 @cli.command("check")
@@ -322,7 +314,6 @@ def move(task_id: str, context: str, as_json: bool) -> None:
     """
     repo = _repo()
     change = repo.move(repo.resolve(task_id), repo.context(context))
-    repo.commit(change, "move")
     _report(change, as_json, "moved")
     if not as_json:
         for touched in change.paths[2:]:
@@ -336,7 +327,6 @@ def archive(task_id: str, as_json: bool) -> None:
     """Move a task into its context's archive/."""
     repo = _repo()
     change = repo.archive(repo.resolve(task_id))
-    repo.commit(change, "archive")
     _report(change, as_json, "archived")
 
 
@@ -347,5 +337,4 @@ def restore(task_id: str, as_json: bool) -> None:
     """Move an archived task back out of archive/."""
     repo = _repo()
     change = repo.restore(repo.resolve(task_id))
-    repo.commit(change, "restore")
     _report(change, as_json, "restored")
