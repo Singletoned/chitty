@@ -1,0 +1,9 @@
+format = 1
+default_context = "tasks"
+autocommit = false
+
+[contexts.tasks]
+prefix = "TASK"
+
+[contexts.human]
+prefix = "HUMAN"
