@@ -16,6 +16,17 @@ BACKLOG_DIR = "chitty"
 ROOT_ENV = "CHITTY_ROOT"
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 RESERVED_CONTEXT_NAMES = ("archive",)
+INITIAL_CONFIG = """\
+format = 1
+default_context = "tasks"
+autocommit = false
+
+[contexts.tasks]
+prefix = "{prefix}"
+
+[contexts.human]
+prefix = "HUMAN"
+"""
 
 
 class ContextConfig(BaseModel):
@@ -97,9 +108,17 @@ def load_user_contexts() -> UserContexts:
     return _load(path, UserContexts)
 
 
+def validate_repo_config(text: str, source: Path) -> RepoConfig:
+    return _validate(text, source, RepoConfig)
+
+
 def _load[M: BaseModel](path: Path, model: type[M]) -> M:
+    return _validate(path.read_text(), path, model)
+
+
+def _validate[M: BaseModel](text: str, path: Path, model: type[M]) -> M:
     try:
-        data = tomllib.loads(path.read_text())
+        data = tomllib.loads(text)
     except tomllib.TOMLDecodeError as error:
         raise ChittyError(f"{path}: invalid TOML: {error}") from None
     try:

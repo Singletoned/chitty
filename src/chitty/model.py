@@ -9,7 +9,7 @@ that `parse` would reject.
 
 import json
 import re
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import date
 from itertools import combinations
@@ -382,7 +382,7 @@ def new_task(
     created: date,
     description: str,
     criteria: Sequence[str],
-    fields: dict[str, FieldValue],
+    fields: Mapping[str, FieldValue],
 ) -> Task:
     """Build a new task. `fields` holds the optional frontmatter keys."""
     text = f"{DELIMITER}title: x\nstatus: todo\ncreated: {created.isoformat()}\n{DELIMITER}"

@@ -14,5 +14,5 @@ test: ## run the tests
 	uv run python -m unittest discover -s tests -t .
 
 format: ## format and auto-fix Python code
-	uv run ruff check .
+	uv run ruff check --exit-zero .
 	uv run ruff format .

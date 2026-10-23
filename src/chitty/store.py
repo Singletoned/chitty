@@ -1,18 +1,36 @@
 """Contexts on disk: find, list, read, write, move, archive."""
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date
+from importlib.resources import files
 from pathlib import Path
 from typing import Any, Literal
 
 from chitty import ids
-from chitty.config import BACKLOG_DIR, RepoConfig, load_repo_config
+from chitty.config import (
+    BACKLOG_DIR,
+    CONFIG_NAME,
+    INITIAL_CONFIG,
+    RepoConfig,
+    load_repo_config,
+    validate_repo_config,
+)
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
-from chitty.model import FieldValue, Task, TaskError, new_task, parse
+from chitty.model import (
+    DESCRIPTION,
+    PLAN,
+    FieldValue,
+    Task,
+    TaskError,
+    new_task,
+    parse,
+)
 
 ARCHIVE_DIR = "archive"
+AGENTS_FILE = "AGENTS.md"
+GUIDE_HEADING = "## Chitty"
 
 Which = Literal["active", "archived", "all"]
 
@@ -40,12 +58,12 @@ class StoredTask:
     def slug(self) -> str:
         return ids.parse_filename(self.path.name)[1]
 
-    def as_dict(self, root: Path) -> dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "id": str(self.id),
             "context": self.context,
             "archived": self.archived,
-            "path": str(self.path.relative_to(root)),
+            "path": str(self.path),
             **self.task.as_dict(),
         }
 
@@ -56,6 +74,62 @@ class Change:
 
     task: StoredTask
     paths: tuple[Path, ...]
+
+
+@dataclass(frozen=True)
+class Edit:
+    """A set of changes to one task. None and () mean "leave alone"."""
+
+    title: str | None = None
+    status: str | None = None
+    add_labels: Sequence[str] = ()
+    rm_labels: Sequence[str] = ()
+    priority: str | None = None  # "" removes
+    owner: str | None = None  # "" removes
+    depends_on: Sequence[str] = ()
+    rm_depends_on: Sequence[str] = ()
+    description: str | None = None
+    add_criteria: Sequence[str] = ()
+    rm_criteria: Sequence[int] = ()
+    check: Sequence[int] = ()
+    uncheck: Sequence[int] = ()
+    plan: str | None = None  # "" removes
+    note: str | None = None
+
+    def is_empty(self) -> bool:
+        return all(
+            value is None or (not isinstance(value, str) and len(value) == 0)
+            for value in vars(self).values()
+        )
+
+    def apply(self, task: Task) -> Task:
+        fm = task.frontmatter
+        if self.title is not None:
+            task = task.with_field("title", self.title)
+        if self.status is not None:
+            task = task.with_field("status", self.status)
+        if self.add_labels or self.rm_labels:
+            labels = _update_list(fm.labels, self.add_labels, self.rm_labels, "label")
+            task = task.with_field("labels", labels)
+        if self.priority is not None:
+            task = task.with_field("priority", self.priority or None)
+        if self.owner is not None:
+            task = task.with_field("owner", self.owner or None)
+        if self.depends_on or self.rm_depends_on:
+            references = _update_list(
+                fm.depends_on, self.depends_on, self.rm_depends_on, "dependency"
+            )
+            task = task.with_field("depends_on", references)
+        if self.description is not None:
+            task = task.with_section(DESCRIPTION, self.description)
+        task = task.with_criteria(
+            add=self.add_criteria, remove=self.rm_criteria, check=self.check, uncheck=self.uncheck
+        )
+        if self.plan is not None:
+            task = task.with_section(PLAN, self.plan)
+        if self.note is not None:
+            task = task.with_note(self.note)
+        return task
 
 
 class Repo:
@@ -134,7 +208,7 @@ class Repo:
         title: str,
         description: str,
         criteria: Sequence[str],
-        fields: dict[str, FieldValue],
+        fields: Mapping[str, FieldValue],
         today: date,
     ) -> Change:
         depends_on = fields.get("depends_on")
@@ -227,6 +301,52 @@ class Repo:
         path.write_text(text)
 
 
+def guide() -> str:
+    return files("chitty").joinpath("guide.md").read_text()
+
+
+def init_repo(directory: Path, prefix: str) -> list[Path]:
+    """Write chitty.toml and the default context, and add the guide to AGENTS.md."""
+    config_path = directory / CONFIG_NAME
+    if config_path.exists():
+        raise ChittyError(f"{config_path} already exists")
+    text = INITIAL_CONFIG.format(prefix=prefix)
+    config = validate_repo_config(text, config_path)
+    config_path.write_text(text)
+    written = [config_path]
+    (directory / BACKLOG_DIR / config.default_context).mkdir(parents=True, exist_ok=True)
+    agents = directory / AGENTS_FILE
+    existing = agents.read_text() if agents.exists() else ""
+    if GUIDE_HEADING not in existing.splitlines():
+        head = existing.rstrip("\n") + "\n\n" if existing.strip() else ""
+        agents.write_text(head + guide())
+        written.append(agents)
+    return written
+
+
+def matches(
+    stored: StoredTask,
+    statuses: Sequence[str],
+    labels: Sequence[str],
+    owner: str | None,
+    search: str | None,
+) -> bool:
+    """Filter for `list`: any of the statuses, all of the labels."""
+    fm = stored.task.frontmatter
+    if statuses and fm.status not in statuses:
+        return False
+    if not set(labels) <= set(fm.labels):
+        return False
+    if owner is not None and fm.owner != owner:
+        return False
+    if search is None:
+        return True
+    data = stored.task.as_dict()
+    criteria = [c["text"] for c in data["acceptance_criteria"]]
+    texts = [fm.title, data["description"], data["plan"], data["notes"], *criteria]
+    return any(search.casefold() in text.casefold() for text in texts if text)
+
+
 def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
     """Every entry in a context directory, with the reason it is invalid (if it is)."""
     directory = context.archive_directory if archived else context.directory
@@ -250,6 +370,16 @@ def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
             continue
         entries.append((path, None))
     return entries
+
+
+def _update_list(
+    current: list[str], add: Sequence[str], remove: Sequence[str], noun: str
+) -> list[str]:
+    missing = [item for item in remove if item not in current]
+    if missing:
+        raise ChittyError(f"no {noun} {missing[0]!r} to remove")
+    kept = [item for item in current if item not in remove]
+    return kept + [item for item in dict.fromkeys(add) if item not in kept]
 
 
 def _replace(references: list[str], old: str, new: str) -> list[str]:
