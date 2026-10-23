@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chitty"
+version = "0.1.0"
+description = "Markdown-native task tracker for repos worked on by humans and coding agents"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click",
+    "pydantic",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+mcp = ["mcp"]
+
+[project.scripts]
+chitty = "chitty.cli:main"
+
+[dependency-groups]
+dev = [
+    "mdformat==0.7.22",
+    "mdformat-frontmatter==2.0.8",
+    "mdformat-gfm==0.4.1",
+    "pyright",
+    "ruff",
+    "types-PyYAML",
+]
+
+[tool.ruff]
+fix = true
+unsafe-fixes = true
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = ["E", "F", "I"]
+unfixable = ["F841"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.ruff.lint.isort]
+known-first-party = ["chitty"]
+
+[tool.pyright]
+include = ["src", "tests"]
+typeCheckingMode = "strict"

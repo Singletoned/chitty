@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "description": "Pinned formatters for chitty's round-trip tests",
+  "devDependencies": {
+    "prettier": "3.7.4"
+  }
+}
