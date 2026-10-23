@@ -18,6 +18,7 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 
+from chitty.errors import ChittyError
 from chitty.ids import ID_RE
 
 STATUSES = ("todo", "doing", "done")
@@ -63,7 +64,7 @@ YAML_TYPED_RE = re.compile(
 )
 
 
-class TaskError(ValueError):
+class TaskError(ChittyError):
     """A task file, or an edit to one, is invalid."""
 
 

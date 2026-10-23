@@ -1,0 +1,113 @@
+"""Repo `chitty.toml` and user-level `contexts.toml`."""
+
+import os
+import re
+import tomllib
+from pathlib import Path
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, ValidationError, field_validator, model_validator
+
+from chitty.errors import ChittyError
+from chitty.ids import PREFIX_RE
+
+CONFIG_NAME = "chitty.toml"
+BACKLOG_DIR = "chitty"
+ROOT_ENV = "CHITTY_ROOT"
+CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
+RESERVED_CONTEXT_NAMES = ("archive",)
+
+
+class ContextConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+
+    prefix: str
+
+    @field_validator("prefix")
+    @classmethod
+    def _prefix(cls, value: str) -> str:
+        if not PREFIX_RE.fullmatch(value):
+            raise ValueError(f"{value!r} must be upper-case letters only, e.g. TASK")
+        return value
+
+
+class RepoConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+
+    format: Literal[1]
+    default_context: str
+    autocommit: bool
+    contexts: dict[str, ContextConfig]
+
+    @model_validator(mode="after")
+    def _consistent(self) -> "RepoConfig":
+        for name in self.contexts:
+            if not CONTEXT_NAME_RE.fullmatch(name) or name in RESERVED_CONTEXT_NAMES:
+                raise ValueError(f"context name {name!r} is not allowed")
+        if self.default_context not in self.contexts:
+            raise ValueError(f"default_context {self.default_context!r} is not in [contexts]")
+        prefixes = [c.prefix for c in self.contexts.values()]
+        duplicates = sorted({p for p in prefixes if prefixes.count(p) > 1})
+        if duplicates:
+            raise ValueError(f"prefix {duplicates[0]!r} is used by more than one context")
+        return self
+
+
+class UserContext(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+
+    repo: str
+    context: str | None = None
+
+
+class UserContexts(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+
+    contexts: dict[str, UserContext] = {}
+
+
+def find_root(start: Path) -> Path:
+    """`CHITTY_ROOT` if set, else the nearest ancestor containing chitty.toml."""
+    override = os.environ.get(ROOT_ENV)
+    if override:
+        root = Path(override).expanduser().resolve()
+        if not (root / CONFIG_NAME).is_file():
+            raise ChittyError(f"{ROOT_ENV}={override} has no {CONFIG_NAME}")
+        return root
+    start = start.resolve()
+    for directory in (start, *start.parents):
+        if (directory / CONFIG_NAME).is_file():
+            return directory
+    raise ChittyError(f"no {CONFIG_NAME} in {start} or any parent (run `chitty init`)")
+
+
+def load_repo_config(root: Path) -> RepoConfig:
+    return _load(root / CONFIG_NAME, RepoConfig)
+
+
+def user_contexts_path() -> Path:
+    base = os.environ.get("XDG_CONFIG_HOME") or "~/.config"
+    return Path(base).expanduser() / "chitty" / "contexts.toml"
+
+
+def load_user_contexts() -> UserContexts:
+    path = user_contexts_path()
+    if not path.exists():
+        return UserContexts()
+    return _load(path, UserContexts)
+
+
+def _load[M: BaseModel](path: Path, model: type[M]) -> M:
+    try:
+        data = tomllib.loads(path.read_text())
+    except tomllib.TOMLDecodeError as error:
+        raise ChittyError(f"{path}: invalid TOML: {error}") from None
+    try:
+        return model.model_validate(data)
+    except ValidationError as error:
+        reasons = [
+            f"{'.'.join(str(p) for p in e['loc']) or 'config'}: "
+            + str(e["msg"]).removeprefix("Value error, ")
+            for e in error.errors()
+        ]
+        raise ChittyError(f"{path}: {'; '.join(reasons)}") from None

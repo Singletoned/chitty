@@ -4,6 +4,8 @@ import re
 from collections.abc import Iterable
 from dataclasses import dataclass
 
+from chitty.errors import ChittyError
+
 SLUG_MAX_LENGTH = 60
 
 ID_RE = re.compile(r"(?P<prefix>[A-Z]+)-(?P<number>[1-9][0-9]*)")
@@ -14,7 +16,7 @@ FILENAME_SEPARATOR = "--"
 SUFFIX = ".md"
 
 
-class IdError(ValueError):
+class IdError(ChittyError):
     pass
 
 
