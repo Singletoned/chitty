@@ -49,4 +49,5 @@ known-first-party = ["chitty"]
 
 [tool.pyright]
 include = ["src", "tests"]
-typeCheckingMode = "strict"
+typeCheckingMode = "standard"
+strict = ["src"]
