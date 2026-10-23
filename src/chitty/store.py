@@ -7,7 +7,7 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Any, Literal
 
-from chitty import ids
+from chitty import git, ids
 from chitty.config import (
     BACKLOG_DIR,
     CONFIG_NAME,
@@ -151,6 +151,12 @@ class Repo:
     @classmethod
     def open(cls, root: Path) -> "Repo":
         return cls(root, load_repo_config(root))
+
+    def commit(self, change: Change, verb: str) -> None:
+        """Commit the change if autocommit is on and anything was written."""
+        if self.config.autocommit and change.paths:
+            title = change.task.task.frontmatter.title
+            git.commit(self.root, change.paths, f"chitty: {verb} {change.task.id} {title}")
 
     # -- contexts --------------------------------------------------------
 

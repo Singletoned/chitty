@@ -60,6 +60,7 @@ def _print_json(data: Any) -> None:
 
 
 def _report(change: Change, as_json: bool, verb: str) -> None:
+    """Print the result of a write."""
     if as_json:
         _print_json(change.task.as_dict())
     elif change.paths:
@@ -124,6 +125,8 @@ def add(
         "depends_on": [str(repo.resolve(d)) for d in dict.fromkeys(depends_on)],
     }
     change = repo.add(target.context, title, description, criteria, fields, date.today())
+    if not target.foreign:
+        repo.commit(change, "add")
     _report(change, as_json, "added")
 
 
@@ -267,7 +270,9 @@ def edit(
     )
     if changes.is_empty():
         raise click.UsageError("nothing to change")
-    _report(repo.save(stored, changes.apply(stored.task)), as_json, "updated")
+    change = repo.save(stored, changes.apply(stored.task))
+    repo.commit(change, "edit")
+    _report(change, as_json, "updated")
 
 
 @cli.command("check")
@@ -317,6 +322,7 @@ def move(task_id: str, context: str, as_json: bool) -> None:
     """
     repo = _repo()
     change = repo.move(repo.resolve(task_id), repo.context(context))
+    repo.commit(change, "move")
     _report(change, as_json, "moved")
     if not as_json:
         for touched in change.paths[2:]:
@@ -329,7 +335,9 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 def archive(task_id: str, as_json: bool) -> None:
     """Move a task into its context's archive/."""
     repo = _repo()
-    _report(repo.archive(repo.resolve(task_id)), as_json, "archived")
+    change = repo.archive(repo.resolve(task_id))
+    repo.commit(change, "archive")
+    _report(change, as_json, "archived")
 
 
 @cli.command()
@@ -338,4 +346,6 @@ def archive(task_id: str, as_json: bool) -> None:
 def restore(task_id: str, as_json: bool) -> None:
     """Move an archived task back out of archive/."""
     repo = _repo()
-    _report(repo.restore(repo.resolve(task_id)), as_json, "restored")
+    change = repo.restore(repo.resolve(task_id))
+    repo.commit(change, "restore")
+    _report(change, as_json, "restored")
