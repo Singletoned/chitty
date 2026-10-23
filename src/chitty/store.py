@@ -207,24 +207,10 @@ class Repo:
         return Change(moved, (stored.path, new_path))
 
     def _files(self, context: Context, archived: bool) -> list[Path]:
-        directory = context.archive_directory if archived else context.directory
-        if not directory.is_dir():
-            return []
         files: list[Path] = []
-        for path in sorted(directory.iterdir()):
-            if path.is_dir() and not archived and path.name == ARCHIVE_DIR:
-                continue
-            if path.is_dir():
-                raise ChittyError(f"{path}: unexpected directory in a chitty context")
-            try:
-                task_id, _ = ids.parse_filename(path.name)
-            except ids.IdError as error:
-                raise ChittyError(f"{path}: {error}") from None
-            if task_id.prefix != context.prefix:
-                raise ChittyError(
-                    f"{path}: prefix {task_id.prefix!r} does not belong in context "
-                    f"{context.name!r} (prefix {context.prefix!r})"
-                )
+        for path, problem in scan(context, archived):
+            if problem:
+                raise ChittyError(f"{path}: {problem}")
             files.append(path)
         return files
 
@@ -239,6 +225,31 @@ class Repo:
     def _write(self, path: Path, text: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
+
+
+def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
+    """Every entry in a context directory, with the reason it is invalid (if it is)."""
+    directory = context.archive_directory if archived else context.directory
+    if not directory.is_dir():
+        return []
+    entries: list[tuple[Path, str | None]] = []
+    for path in sorted(directory.iterdir()):
+        if path.is_dir():
+            if not archived and path.name == ARCHIVE_DIR:
+                continue
+            entries.append((path, "unexpected directory in a chitty context"))
+            continue
+        try:
+            task_id, _ = ids.parse_filename(path.name)
+        except ids.IdError as error:
+            entries.append((path, str(error)))
+            continue
+        if task_id.prefix != context.prefix:
+            message = f"prefix {task_id.prefix!r} does not belong in context {context.name!r}"
+            entries.append((path, f"{message} (prefix {context.prefix!r})"))
+            continue
+        entries.append((path, None))
+    return entries
 
 
 def _replace(references: list[str], old: str, new: str) -> list[str]:
