@@ -32,6 +32,7 @@ chitty add "Rotate prod password" -c human -d "Needs a person."
 chitty move 1 human               # new ID there; references are rewritten
 chitty archive HUMAN-1
 chitty check                      # validate everything; non-zero on problems
+chitty guide                      # instructions for coding agents
 ```
 
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`

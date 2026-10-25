@@ -17,6 +17,7 @@ from chitty.store import (
     Repo,
     StoredTask,
     Which,
+    guide,
     init_repo,
     matches,
     resolve_add_target,
@@ -38,6 +39,8 @@ def cli() -> None:
 
     Tasks are markdown files under chitty/<context>/. IDs are PREFIX-N
     (e.g. TASK-13); a bare number means the default context.
+
+    Coding agents: run `chitty guide` for how to work with chitty.
     """
 
 
@@ -338,6 +341,12 @@ def restore(task_id: str, as_json: bool) -> None:
     repo = _repo()
     change = repo.restore(repo.resolve(task_id))
     _report(change, as_json, "restored")
+
+
+@cli.command("guide")
+def guide_() -> None:
+    """Print the instructions for coding agents (the AGENTS.md block)."""
+    click.echo(guide(), nl=False)
 
 
 @cli.command()

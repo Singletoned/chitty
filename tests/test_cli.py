@@ -5,6 +5,7 @@ from datetime import date
 from click.testing import CliRunner, Result
 
 from chitty.cli import cli
+from chitty.store import guide
 from tests.support import RepoTestCase
 
 
@@ -295,3 +296,12 @@ class TestUserContexts(CliTestCase):
         result = self.run_cli("add", "X", "-d", "x", "-c", "nope", exit_code=1)
         self.assertIn("chitty.toml", result.stderr)
         self.assertIn("contexts.toml", result.stderr)
+
+
+class TestGuide(CliTestCase):
+    def test_prints_the_agent_guide_outside_any_repo(self):
+        os.chdir(self.tmp)
+        self.assertEqual(self.run_cli("guide").stdout, guide())
+
+    def test_help_points_agents_at_it(self):
+        self.assertIn("chitty guide", self.run_cli("--help").stdout)

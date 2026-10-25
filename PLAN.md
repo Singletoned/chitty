@@ -279,6 +279,7 @@ chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_
 chitty archive ID | chitty restore ID
 chitty check [-c CTX] [PATH]...    validate; non-zero on any error
 chitty path ID                     print the file path (for editors/agents)
+chitty guide                       print the agent instructions (the AGENTS.md block)
 chitty mcp                         stdio MCP server (needs the mcp extra)
 ```
 
@@ -334,6 +335,7 @@ task files. `chitty --help` is the full command reference.
 ```
 
 That is the whole prompt. Statuses are fixed, so the block is always correct.
+`chitty guide` prints the same block, and `chitty --help` points agents at it.
 
 ## Stack
 
