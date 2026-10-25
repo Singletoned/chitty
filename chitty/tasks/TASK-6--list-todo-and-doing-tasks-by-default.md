@@ -3,6 +3,8 @@ title: Make chitty list show active tasks across all contexts
 status: todo
 labels:
   - cli
+depends_on:
+  - TASK-5
 created: 2026-10-25
 ---
 
@@ -15,3 +17,7 @@ Plain `chitty list` should show every todo and doing task in every context, but 
 - [ ] Plain chitty list shows todo and doing tasks from every context
 - [ ] Backlog ideas and done tasks are hidden unless asked for
 - [ ] Filtering by context and status is easy, and documented in --help
+
+## Notes
+
+Blocked pending TASK-5: list cannot reliably hide ideas until their representation and configuration are defined.
