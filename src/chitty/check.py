@@ -48,13 +48,25 @@ def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> lis
             problems += [
                 Problem(p, f"{task_id} is used by more than one file: {others}") for p in task_paths
             ]
+    graph: dict[TaskId, set[TaskId]] = {
+        task_id: set()
+        for task_id, task_paths in by_id.items()
+        if len(task_paths) == 1 and task_paths[0] in tasks
+    }
     for path, task in tasks.items():
         own_id = ids.parse_filename(path.name)[0]
         for reference in task.frontmatter.depends_on:
+            dependency = TaskId.parse(reference)
             if reference == str(own_id):
                 problems.append(Problem(path, "depends_on lists the task itself"))
-            elif TaskId.parse(reference) not in by_id:
+            elif dependency not in by_id:
                 problems.append(Problem(path, f"depends_on {reference}: no such task"))
+            elif own_id in graph and dependency in graph:
+                graph[own_id].add(dependency)
+    for cycle in _cycles(graph):
+        names = ", ".join(str(task_id) for task_id in cycle)
+        for task_id in cycle:
+            problems.append(Problem(by_id[task_id][0], f"depends_on cycle: {names}"))
 
     if paths:
         wanted = {p.resolve() for p in paths}
@@ -65,3 +77,43 @@ def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> lis
         return [p for p in problems if p.path in wanted]
     names = {c.name for c in contexts}
     return [p for p in problems if p.path not in in_context or in_context[p.path].name in names]
+
+
+def _cycles(graph: dict[TaskId, set[TaskId]]) -> list[tuple[TaskId, ...]]:
+    """Return each cyclic strongly connected component, in stable order."""
+    index = 0
+    indices: dict[TaskId, int] = {}
+    lowlinks: dict[TaskId, int] = {}
+    stack: list[TaskId] = []
+    on_stack: set[TaskId] = set()
+    cycles: list[tuple[TaskId, ...]] = []
+
+    def visit(task_id: TaskId) -> None:
+        nonlocal index
+        indices[task_id] = index
+        lowlinks[task_id] = index
+        index += 1
+        stack.append(task_id)
+        on_stack.add(task_id)
+        for dependency in sorted(graph[task_id], key=str):
+            if dependency not in indices:
+                visit(dependency)
+                lowlinks[task_id] = min(lowlinks[task_id], lowlinks[dependency])
+            elif dependency in on_stack:
+                lowlinks[task_id] = min(lowlinks[task_id], indices[dependency])
+        if lowlinks[task_id] != indices[task_id]:
+            return
+        component: list[TaskId] = []
+        while True:
+            dependency = stack.pop()
+            on_stack.remove(dependency)
+            component.append(dependency)
+            if dependency == task_id:
+                break
+        if len(component) > 1:
+            cycles.append(tuple(sorted(component, key=str)))
+
+    for task_id in sorted(graph, key=str):
+        if task_id not in indices:
+            visit(task_id)
+    return sorted(cycles, key=lambda cycle: tuple(map(str, cycle)))

@@ -36,6 +36,21 @@ class TestCheck(StoreTestCase):
         )
         self.assertEqual(self.problems(), [f"{stored.path}: depends_on lists the task itself"])
 
+    def test_reports_each_dependency_cycle_once(self):
+        first = self.add("First")
+        second = self.add("Second")
+        third = self.add("Third")
+        for stored, dependency in ((first, second.id), (second, third.id), (third, first.id)):
+            stored.path.write_text(
+                stored.path.read_text().replace("status", f"depends_on: [{dependency}]\nstatus")
+            )
+
+        problems = self.problems()
+
+        self.assertEqual(len(problems), 3)
+        for stored in (first, second, third):
+            self.assertIn(f"{stored.path}: depends_on cycle: TASK-1, TASK-2, TASK-3", problems)
+
     def test_scoped_to_context_and_paths(self):
         bad_task = self.add("Bad")
         bad_human = self.add("Bad", context=self.human)
