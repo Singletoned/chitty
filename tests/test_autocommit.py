@@ -1,4 +1,6 @@
+import shlex
 import subprocess
+import sys
 
 from tests.test_cli import CliTestCase
 
@@ -54,6 +56,25 @@ class TestAutocommit(CliTestCase):
         self.assertEqual(self.last_commit()[0], "chitty: archive TASK-2 Blocked")
         self.assertIn("A  unrelated.txt", self.git("status", "--porcelain"))
         self.assertEqual(self.git("status", "--porcelain", "chitty"), "")
+
+    def test_autoformat_runs_before_autocommit(self):
+        formatter = self.tmp / "formatter.py"
+        formatter.write_text(
+            "import pathlib, sys\n"
+            "path = pathlib.Path(sys.argv[1])\n"
+            "path.write_text(path.read_text().replace('Describe.', 'Formatted.'))\n"
+        )
+        config = self.root / "chitty.toml"
+        command = f"{shlex.quote(sys.executable)} {shlex.quote(str(formatter))}"
+        config.write_text(
+            config.read_text().replace(
+                "[contexts.tasks]", f'autoformat = "{command}"\n\n[contexts.tasks]'
+            )
+        )
+
+        self.run_cli("add", "Formatted", "-d", "Describe.")
+
+        self.assertIn("Formatted.", self.git("show", "HEAD:chitty/tasks/TASK-1--formatted.md"))
 
     def test_fix_runs_before_autocommit(self):
         self.run_cli("add", "Blocker", "-d", "x")

@@ -7,7 +7,7 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Any, Literal
 
-from chitty import git, ids
+from chitty import formatter, git, ids
 from chitty.config import (
     BACKLOG_DIR,
     CONFIG_NAME,
@@ -306,16 +306,23 @@ class Repo:
     # -- helpers ---------------------------------------------------------
 
     def _commit(self, change: Change, verb: str) -> Change:
-        if self.config.autocommit and change.paths:
+        if not change.paths:
+            return change
+        existing = [path for path in change.paths if path.exists()]
+        if self.config.autoformat or self.config.autocommit:
             # check imports store for scan and domain types, so this intentional
             # local import keeps the dependency one-directional at module load.
             from chitty.check import fix
 
-            existing = [path for path in change.paths if path.exists()]
             _, problems = fix(self, self.contexts(), existing)
             if problems:
                 details = "\n".join(str(problem) for problem in problems)
-                raise ChittyError(f"cannot autocommit with unresolved task problems:\n{details}")
+                raise ChittyError(
+                    f"cannot finalize task write with unresolved problems:\n{details}"
+                )
+        if self.config.autoformat:
+            formatter.run(self.root, self.config.autoformat, existing)
+        if self.config.autocommit:
             title = change.task.task.frontmatter.title
             git.commit(self.root, change.paths, f"chitty: {verb} {change.task.id} {title}")
         return change

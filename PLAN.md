@@ -220,6 +220,7 @@ or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error:
 format = 1
 default_context = "tasks"
 autocommit = false                     # if true, commit each write
+# autoformat = "mdformat"              # command run on every written task file
 
 [contexts.tasks]
 prefix = "TASK"
@@ -229,6 +230,10 @@ prefix = "HUMAN"
 ```
 
 Context directory is `chitty/<name>/`. Not configurable.
+
+When set, `autoformat` is parsed without a shell and run on existing files
+written by each operation. The order is `fix`, `autoformat`, then `autocommit`;
+unresolved fixes prevent the latter two steps.
 
 User-level `~/.config/chitty/contexts.toml` (optional), for adding tasks to
 other repos or to a personal backlog:

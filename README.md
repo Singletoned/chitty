@@ -42,6 +42,9 @@ are the reference. Plain `chitty list` shows non-archived `todo` and `doing`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog
 and done tickets.
 
+Set `autoformat = "mdformat"` in repository config to run a formatter on each
+written task file before any autocommit.
+
 Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). Contexts in other repos (for posting tasks elsewhere) go in
 `~/.config/chitty/contexts.toml`:

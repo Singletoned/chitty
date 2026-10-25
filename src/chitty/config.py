@@ -21,6 +21,7 @@ INITIAL_CONFIG = """\
 format = 1
 default_context = "tasks"
 autocommit = false
+# autoformat = "mdformat"
 
 [contexts.tasks]
 prefix = "{prefix}"
@@ -49,7 +50,15 @@ class RepoConfig(BaseModel):
     format: Literal[1]
     default_context: str
     autocommit: bool
+    autoformat: str | None = None
     contexts: dict[str, ContextConfig]
+
+    @field_validator("autoformat")
+    @classmethod
+    def _autoformat(cls, value: str | None) -> str | None:
+        if value is not None and not value.strip():
+            raise ValueError("must not be empty")
+        return value
 
     @model_validator(mode="after")
     def _consistent(self) -> "RepoConfig":
