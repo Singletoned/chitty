@@ -38,8 +38,9 @@ chitty guide                      # instructions for coding agents
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
 are the reference.
 
-Contexts are configured in `chitty.toml`. Contexts in other repos (for
-posting tasks elsewhere) go in `~/.config/chitty/contexts.toml`:
+Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
+(not both). Contexts in other repos (for posting tasks elsewhere) go in
+`~/.config/chitty/contexts.toml`:
 
 ```toml
 [contexts.notes]

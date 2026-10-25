@@ -12,6 +12,7 @@ from chitty.errors import ChittyError
 from chitty.ids import PREFIX_RE
 
 CONFIG_NAME = "chitty.toml"
+PYPROJECT_NAME = "pyproject.toml"
 BACKLOG_DIR = "chitty"
 ROOT_ENV = "CHITTY_ROOT"
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
@@ -78,30 +79,70 @@ class UserContexts(BaseModel):
 
 
 def find_root(start: Path) -> Path:
-    """`CHITTY_ROOT` if set, else the nearest ancestor containing chitty.toml."""
+    """`CHITTY_ROOT` if set, else the nearest ancestor with Chitty config."""
     root = search_root(start)
     if root is None:
-        raise ChittyError(f"no {CONFIG_NAME} in {start} or any parent (run `chitty init`)")
+        raise ChittyError(
+            f"no {CONFIG_NAME} or [tool.chitty] in {PYPROJECT_NAME} in {start} or any parent "
+            "(run `chitty init`)"
+        )
     return root
 
 
 def search_root(start: Path) -> Path | None:
-    """Like find_root, but None when no chitty.toml is found by walking up."""
+    """Like find_root, but None when no Chitty config is found by walking up."""
     override = os.environ.get(ROOT_ENV)
     if override:
         root = Path(override).expanduser().resolve()
-        if not (root / CONFIG_NAME).is_file():
-            raise ChittyError(f"{ROOT_ENV}={override} has no {CONFIG_NAME}")
+        if _config_source(root) is None:
+            raise ChittyError(f"{ROOT_ENV}={override} has no Chitty configuration")
         return root
     start = start.resolve()
     for directory in (start, *start.parents):
-        if (directory / CONFIG_NAME).is_file():
+        if _config_source(directory) is not None:
             return directory
     return None
 
 
 def load_repo_config(root: Path) -> RepoConfig:
-    return _load(root / CONFIG_NAME, RepoConfig)
+    source = _config_source(root)
+    if source is None:
+        raise ChittyError(f"no Chitty configuration in {root}")
+    if source.name == CONFIG_NAME:
+        return _load(source, RepoConfig)
+    try:
+        data = tomllib.loads(source.read_text())
+    except tomllib.TOMLDecodeError as error:
+        raise ChittyError(f"{source}: invalid TOML: {error}") from None
+    try:
+        chitty = data["tool"]["chitty"]
+    except (KeyError, TypeError):
+        raise ChittyError(f"{source}: [tool.chitty] is required") from None
+    return _validate_data(chitty, source, RepoConfig)
+
+
+def _config_source(root: Path) -> Path | None:
+    config = root / CONFIG_NAME
+    pyproject = root / PYPROJECT_NAME
+    has_config = config.is_file()
+    has_pyproject_config = _has_pyproject_config(pyproject)
+    if has_config and has_pyproject_config:
+        raise ChittyError(f"{root}: both {CONFIG_NAME} and {PYPROJECT_NAME} contain Chitty config")
+    if has_config:
+        return config
+    if has_pyproject_config:
+        return pyproject
+    return None
+
+
+def _has_pyproject_config(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    try:
+        data = tomllib.loads(path.read_text())
+    except tomllib.TOMLDecodeError:
+        return False
+    return isinstance(data.get("tool"), dict) and "chitty" in data["tool"]
 
 
 def user_contexts_path() -> Path:
@@ -129,6 +170,10 @@ def _validate[M: BaseModel](text: str, path: Path, model: type[M]) -> M:
         data = tomllib.loads(text)
     except tomllib.TOMLDecodeError as error:
         raise ChittyError(f"{path}: invalid TOML: {error}") from None
+    return _validate_data(data, path, model)
+
+
+def _validate_data[M: BaseModel](data: object, path: Path, model: type[M]) -> M:
     try:
         return model.model_validate(data)
     except ValidationError as error:

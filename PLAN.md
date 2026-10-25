@@ -62,8 +62,9 @@ time something is added to it. (Git doesn't track empty directories, so a
 freshly cloned repo may have none of them.)
 
 Root discovery (CLI and MCP alike): `CHITTY_ROOT` if set, otherwise walk up
-from the current directory to the first directory containing `chitty.toml`.
-Error if neither finds one.
+from the current directory to the first directory containing `chitty.toml` or a
+`[tool.chitty]` table in `pyproject.toml`. A repo cannot define both sources;
+that ambiguity is an error. Error if neither finds one.
 
 ## IDs
 
@@ -212,7 +213,8 @@ Serialisation is a patch over the original text, not parse-then-dump:
 
 ## Config
 
-`chitty.toml` at repo root (required; `chitty init` writes it):
+Repository config is either `chitty.toml` at repo root (`chitty init` writes it)
+or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error:
 
 ```toml
 format = 1
