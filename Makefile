@@ -1,4 +1,4 @@
-.PHONY: install check test format
+.PHONY: install check test format build
 
 install: ## install Python and node dev dependencies
 	uv sync --all-extras
@@ -16,3 +16,7 @@ test: ## run the tests
 format: ## format and auto-fix Python code
 	uv run ruff check --exit-zero .
 	uv run ruff format .
+
+build: ## build the sdist and wheel into dist/
+	rm -rf dist
+	uv build
