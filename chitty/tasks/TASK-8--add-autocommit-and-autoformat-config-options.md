@@ -14,3 +14,8 @@ autoformat is the command to run on each file chitty writes, e.g. "mdformat". au
 
 - [ ] autoformat config option names the formatter command
 - [ ] When autoformat is set, it runs on every written file before the autocommit, so the commit holds the formatted files
+- [ ] Order on each write: chitty fix (TASK-10), then autoformat, then autocommit
+
+## Notes
+
+If fix finds a problem it cannot fix, nothing is formatted or committed.
