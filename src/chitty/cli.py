@@ -136,8 +136,17 @@ def add(
 
 
 @cli.command("list")
-@context_option
-@click.option("-s", "--status", "statuses", multiple=True, type=click.Choice(STATUSES))
+@click.option(
+    "-c", "--context", "contexts", multiple=True, help="Context name (repeatable; defaults to all)."
+)
+@click.option(
+    "-s",
+    "--status",
+    "statuses",
+    multiple=True,
+    type=click.Choice(STATUSES),
+    help="Status to include (repeatable; defaults to todo and doing).",
+)
 @click.option("-l", "--label", "labels", multiple=True, help="Only tasks with every label.")
 @click.option("--owner")
 @click.option("--search", help="Case-insensitive match on title and body.")
@@ -145,7 +154,7 @@ def add(
 @click.option("--all", "all_", is_flag=True, help="Archived and non-archived tasks.")
 @json_option
 def list_(
-    context: str | None,
+    contexts: tuple[str, ...],
     statuses: tuple[str, ...],
     labels: tuple[str, ...],
     owner: str | None,
@@ -159,8 +168,14 @@ def list_(
         raise click.UsageError("give --archived or --all, not both")
     which: Which = "all" if all_ else "archived" if archived else "active"
     repo = _repo()
-    target = repo.context(context) if context else repo.default_context
-    tasks = [t for t in repo.tasks(target, which) if matches(t, statuses, labels, owner, search)]
+    selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
+    selected_statuses = statuses or ("todo", "doing")
+    tasks = [
+        task
+        for context in selected
+        for task in repo.tasks(context, which)
+        if matches(task, selected_statuses, labels, owner, search)
+    ]
     if as_json:
         _print_json([t.as_dict() for t in tasks])
         return

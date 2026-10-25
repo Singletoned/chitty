@@ -28,6 +28,7 @@ chitty list
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
 chitty edit 1 --note "Safari needs a polyfill."
+chitty add "Refine sync idea" -s backlog  # stores a default refinement note
 chitty add "Rotate prod password" -c human -d "Needs a person."
 chitty move 1 human               # new ID there; references are rewritten
 chitty archive HUMAN-1
@@ -36,7 +37,9 @@ chitty guide                      # instructions for coding agents
 ```
 
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
-are the reference.
+are the reference. Plain `chitty list` shows non-archived `todo` and `doing`
+tasks across every context; repeat `-c` or `-s` to filter, including backlog
+and done tickets.
 
 Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). Contexts in other repos (for posting tasks elsewhere) go in

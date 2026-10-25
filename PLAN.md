@@ -132,7 +132,7 @@ Frontmatter schema (strict: unknown keys are an error):
 | key          | type               | required | notes                                        |
 |--------------|--------------------|----------|----------------------------------------------|
 | `title`      | string             | yes      | non-empty, single line                       |
-| `status`     | `todo\|doing\|done` | yes     | fixed in v1                                  |
+| `status`     | `backlog\|todo\|doing\|done` | yes     | fixed in v1; backlog needs refinement        |
 | `labels`     | list[string]       | no       | absent ≡ `[]`                                |
 | `priority`   | `low\|medium\|high` | no      | absent means unset                           |
 | `owner`      | string             | no       | free text; `human`, a name, an agent         |
@@ -267,9 +267,9 @@ no wizards; every command is fully specifiable by flags.
 
 ```
 chitty init [--prefix TASK]        write chitty.toml, chitty/tasks/, AGENTS.md block
-chitty add TITLE -d TEXT [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
+chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
                  [--owner X] [--depends-on ID]...
-chitty list [-c CTX] [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
+chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
                  [--archived | --all]
 chitty show ID
 chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p PRIO]
@@ -291,10 +291,13 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   pull or push, and that repo's `autocommit` setting is ignored. Any
   `--depends-on` is validated against the *target* repo. Post-and-forget.
   On every other command, `-c` must name a context in this repo.
-- `-d` is required on `add`, because Description is required.
+- `-d` is required on `add` except with `-s backlog`, which writes the default
+  required Description: `This ticket needs refining.`
 - `ID` arguments accept `TASK-13`, or bare `13` for the default context.
-- `list` shows non-archived tasks by default; `--archived` shows only
-  archived; `--all` shows both. Default output is one line per task:
+- `list` shows non-archived `todo` and `doing` tasks from every context by
+  default; repeat `-c` to narrow contexts or `-s` to choose statuses, including
+  `backlog` and `done`. `--archived` shows only archived tasks; `--all` shows
+  both locations. Default output is one line per task:
   `TASK-12  doing   Add search to the task list  [cli,search]`.
 - `move` is within the current repo only. It gives the task the next number
   in the target context and keeps the slug. There is no cross-repo move;

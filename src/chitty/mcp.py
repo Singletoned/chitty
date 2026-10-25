@@ -72,9 +72,13 @@ def add(
     return change.task.as_dict()
 
 
-@_tool("list", "List tasks. `status`: any of; `label`: all of; `search`: title and body.")
+@_tool(
+    "list",
+    "List tasks. `context` and `status` are repeatable; status defaults to todo and doing. "
+    "`label`: all of; `search`: title and body.",
+)
 def list_(
-    context: str | None = None,
+    context: list[str] | None = None,
     status: list[Status] | None = None,
     label: list[str] | None = None,
     owner: str | None = None,
@@ -86,9 +90,10 @@ def list_(
         raise ChittyError("give archived or all, not both")
     which: Which = "all" if all else "archived" if archived else "active"
     repo = _repo()
-    target = repo.context(context) if context else repo.default_context
-    tasks = repo.tasks(target, which)
-    found = [t for t in tasks if matches(t, status or [], label or [], owner, search)]
+    contexts = [repo.context(name) for name in context] if context else repo.contexts()
+    statuses = status or ["todo", "doing"]
+    tasks = [task for selected in contexts for task in repo.tasks(selected, which)]
+    found = [t for t in tasks if matches(t, statuses, label or [], owner, search)]
     return [t.as_dict() for t in found]
 
 

@@ -101,6 +101,22 @@ class TestAddShowList(CliTestCase):
         self.assertIn("no context 'nope'", result.stderr)
         self.run_cli("add", "X", exit_code=2)
 
+    def test_list_defaults_to_active_tasks_in_all_contexts(self):
+        self.run_cli("add", "Backlog", "-s", "backlog")
+        self.run_cli("add", "Done", "-d", "x")
+        self.run_cli("edit", "2", "-s", "done")
+        self.run_cli("add", "Human todo", "-c", "human", "-d", "x")
+        self.run_cli("add", "Human doing", "-c", "human", "-d", "x")
+        self.run_cli("edit", "HUMAN-2", "-s", "doing")
+
+        self.assertEqual([task["id"] for task in self.json("list")], ["HUMAN-1", "HUMAN-2"])
+        self.assertEqual([task["id"] for task in self.json("list", "-s", "backlog")], ["TASK-1"])
+        self.assertEqual([task["id"] for task in self.json("list", "-s", "done")], ["TASK-2"])
+        self.assertEqual(
+            [task["id"] for task in self.json("list", "-c", "human", "-c", "tasks")],
+            ["HUMAN-1", "HUMAN-2"],
+        )
+
     def test_list(self):
         self.run_cli("add", "Add search to the task list", "-d", "x", "-l", "search", "-l", "cli")
         self.run_cli("add", "Fix login", "-d", "Broken on Safari")
