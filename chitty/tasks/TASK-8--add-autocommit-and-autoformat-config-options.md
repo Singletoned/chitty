@@ -1,0 +1,11 @@
+---
+title: Add autocommit and autoformat config options
+status: todo
+labels:
+  - config
+created: 2026-10-25
+---
+
+## Description
+
+autoformat is the command to run on each file chitty writes, e.g. "mdformat". autocommit already exists as a repo-level bool in chitty.toml; check whether it needs more (e.g. user-level config) and whether autoformat runs before the autocommit.
