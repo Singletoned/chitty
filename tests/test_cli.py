@@ -197,6 +197,11 @@ class TestEdit(CliTestCase):
         for gone in ("priority", "owner", "## Plan", "depends_on"):
             self.assertNotIn(gone, text)
 
+    def test_edit_appends_repeated_notes_in_order(self):
+        self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")
+
+        self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
+
     def test_note_appends_a_note(self):
         self.run_cli("note", "1", "Started work.")
 

@@ -98,6 +98,7 @@ class Edit:
     uncheck: Sequence[int] = ()
     plan: str | None = None  # "" removes
     note: str | None = None
+    notes: Sequence[str] = ()
 
     def is_empty(self) -> bool:
         return all(
@@ -132,6 +133,8 @@ class Edit:
             task = task.with_section(PLAN, self.plan)
         if self.note is not None:
             task = task.with_note(self.note)
+        for note in self.notes:
+            task = task.with_note(note)
         return task
 
 
