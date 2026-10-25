@@ -21,3 +21,5 @@ The plan assumes `uv tool install chitty` and `uvx chitty`. Check the name is av
 Licence (MIT), author, keywords and classifiers added to pyproject.toml. uv build verified: the wheel holds only the chitty package and LICENSE. Project URLs wait for a public repo.
 
 Project URLs and .github/workflows/release.yml added; publishing is by trusted publishing on tag push.
+
+HUMAN INPUT NEEDED: publishing requires the repository owner to configure PyPI trusted publishing and create the GitHub pypi environment, then explicitly authorize production GitHub/PyPI access and the main/tag pushes. I have not accessed either production system.
