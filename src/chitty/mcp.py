@@ -11,6 +11,7 @@ from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
 from chitty.check import check as check_repo
+from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
 from chitty.store import Edit, Repo, Which, guide, matches, resolve_add_target
@@ -178,6 +179,21 @@ def check(context: str | None = None, paths: list[str] | None = None) -> list[di
     contexts = [repo.context(context)] if context else repo.contexts()
     problems = check_repo(repo, contexts, [Path(p) for p in paths or []])
     return [{"path": str(p.path), "message": p.message} for p in problems]
+
+
+@_tool("fix", "Repair safe task-file problems; reports unresolved problems.")
+def fix(
+    context: str | None = None, paths: list[str] | None = None
+) -> dict[str, list[dict[str, str]]]:
+    repo = _repo()
+    contexts = [repo.context(context)] if context else repo.contexts()
+    fixed, problems = fix_repo(repo, contexts, [Path(path) for path in paths or []])
+    return {
+        "fixed": [{"path": str(problem.path), "message": problem.message} for problem in fixed],
+        "problems": [
+            {"path": str(problem.path), "message": problem.message} for problem in problems
+        ],
+    }
 
 
 @_tool("path", "The task's file path.")

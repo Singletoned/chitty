@@ -304,6 +304,15 @@ class Repo:
 
     def _commit(self, change: Change, verb: str) -> Change:
         if self.config.autocommit and change.paths:
+            # check imports store for scan and domain types, so this intentional
+            # local import keeps the dependency one-directional at module load.
+            from chitty.check import fix
+
+            existing = [path for path in change.paths if path.exists()]
+            _, problems = fix(self, self.contexts(), existing)
+            if problems:
+                details = "\n".join(str(problem) for problem in problems)
+                raise ChittyError(f"cannot autocommit with unresolved task problems:\n{details}")
             title = change.task.task.frontmatter.title
             git.commit(self.root, change.paths, f"chitty: {verb} {change.task.id} {title}")
         return change

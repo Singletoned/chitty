@@ -9,8 +9,10 @@ class TestTaskId(unittest.TestCase):
         self.assertEqual(task_id, TaskId("TASK", 13))
         self.assertEqual(str(task_id), "TASK-13")
 
-    def test_rejects_padding_zero_and_lowercase(self):
-        for text in ("TASK-013", "TASK-0", "task-1", "TASK1", "TASK-", "-1"):
+    def test_rejects_padding_zero_but_canonicalizes_case(self):
+        self.assertEqual(TaskId.parse("task-1"), TaskId("TASK", 1))
+        self.assertEqual(TaskId.parse("Human-2"), TaskId("HUMAN", 2))
+        for text in ("TASK-013", "TASK-0", "TASK1", "TASK-", "-1"):
             with self.subTest(text=text), self.assertRaises(IdError):
                 TaskId.parse(text)
 

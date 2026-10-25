@@ -1,4 +1,4 @@
-from chitty.check import check
+from chitty.check import check, fix
 from tests.test_store import StoreTestCase
 
 
@@ -6,6 +6,16 @@ class TestCheck(StoreTestCase):
     def problems(self, contexts=None, paths=()):
         contexts = self.repo.contexts() if contexts is None else contexts
         return [str(p) for p in check(self.repo, contexts, list(paths))]
+
+    def test_fix_reports_unresolved_problems_without_writing(self):
+        stored = self.add("Broken")
+        stored.path.write_text("nope\n")
+
+        fixed, problems = fix(self.repo, self.repo.contexts(), [])
+
+        self.assertEqual(fixed, [])
+        self.assertEqual(len(problems), 1)
+        self.assertEqual(stored.path.read_text(), "nope\n")
 
     def test_clean_repo(self):
         self.add("One")
@@ -28,6 +38,23 @@ class TestCheck(StoreTestCase):
         self.assertIn(f"{dependent.path}: depends_on HUMAN-1: no such task", problems)
         self.assertIn("stray.txt: task filename", problems)
         self.assertEqual(len(self.problems()), 5)
+
+    def test_fix_canonicalizes_dependency_ids(self):
+        blocker = self.add("Blocker")
+        dependent = self.add("Dependent")
+        dependent.path.write_text(
+            dependent.path.read_text().replace("status", "depends_on: [task-1]\nstatus")
+        )
+
+        self.assertIn("must be upper-case", "\n".join(self.problems()))
+        fixed, problems = fix(self.repo, self.repo.contexts(), [])
+
+        self.assertEqual(problems, [])
+        self.assertEqual(
+            [problem.message for problem in fixed], ["rewrote depends_on IDs as upper-case"]
+        )
+        self.assertIn("depends_on:\n  - TASK-1", dependent.path.read_text())
+        self.assertEqual(blocker.id.number, 1)
 
     def test_self_dependency(self):
         stored = self.add("One")

@@ -29,6 +29,7 @@ class TestMcp(CliTestCase):
                     "show",
                     "edit",
                     "note",
+                    "fix",
                     "move",
                     "archive",
                     "restore",

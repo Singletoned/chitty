@@ -21,6 +21,29 @@ class Problem:
         return f"{self.path}: {self.message}"
 
 
+def fix(
+    repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]
+) -> tuple[list[Problem], list[Problem]]:
+    """Repair safe problems, then return repairs and remaining problems."""
+    wanted = {path.resolve() for path in paths}
+    fixed: list[Problem] = []
+    for context in contexts:
+        for archived in (False, True):
+            for path, problem in scan(context, archived):
+                if problem or (wanted and path.resolve() not in wanted):
+                    continue
+                try:
+                    task = parse(path.read_text())
+                    canonical = [str(TaskId.parse(item)) for item in task.frontmatter.depends_on]
+                    if canonical == task.frontmatter.depends_on:
+                        continue
+                    path.write_text(task.with_field("depends_on", canonical).render())
+                    fixed.append(Problem(path, "rewrote depends_on IDs as upper-case"))
+                except ChittyError:
+                    continue
+    return fixed, check(repo, contexts, paths)
+
+
 def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> list[Problem]:
     """Problems in the given contexts, or only in the given paths if any are given.
 
@@ -57,7 +80,9 @@ def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> lis
         own_id = ids.parse_filename(path.name)[0]
         for reference in task.frontmatter.depends_on:
             dependency = TaskId.parse(reference)
-            if reference == str(own_id):
+            if reference != str(dependency):
+                problems.append(Problem(path, f"depends_on {reference!r} must be upper-case"))
+            if dependency == own_id:
                 problems.append(Problem(path, "depends_on lists the task itself"))
             elif dependency not in by_id:
                 problems.append(Problem(path, f"depends_on {reference}: no such task"))

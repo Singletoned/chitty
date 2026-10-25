@@ -55,6 +55,16 @@ class TestAutocommit(CliTestCase):
         self.assertIn("A  unrelated.txt", self.git("status", "--porcelain"))
         self.assertEqual(self.git("status", "--porcelain", "chitty"), "")
 
+    def test_fix_runs_before_autocommit(self):
+        self.run_cli("add", "Blocker", "-d", "x")
+        self.run_cli("add", "Dependent", "-d", "x", "--depends-on", "1")
+        path = self.root / "chitty/tasks/TASK-2--dependent.md"
+        path.write_text(path.read_text().replace("TASK-1", "task-1"))
+
+        self.run_cli("note", "2", "Trigger autocommit.")
+
+        self.assertIn("- TASK-1", self.git("show", "HEAD:chitty/tasks/TASK-2--dependent.md"))
+
     def test_failure_is_loud(self):
         self.git("config", "core.hooksPath", str(self.tmp / "hooks"))
         hook = self.tmp / "hooks" / "pre-commit"

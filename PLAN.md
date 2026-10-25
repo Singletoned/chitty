@@ -280,6 +280,7 @@ chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p 
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
 chitty archive ID | chitty restore ID
 chitty check [-c CTX] [PATH]...    validate; non-zero on any error
+chitty fix [-c CTX] [PATH]...      repair safe problems; fail if any remain
 chitty path ID                     print the file path (for editors/agents)
 chitty guide                       print the agent instructions (the AGENTS.md block)
 chitty mcp                         stdio MCP server (needs the mcp extra)
@@ -293,7 +294,11 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   On every other command, `-c` must name a context in this repo.
 - `-d` is required on `add` except with `-s backlog`, which writes the default
   required Description: `This ticket needs refining.`
-- `ID` arguments accept `TASK-13`, or bare `13` for the default context.
+- `ID` arguments accept `TASK-13` in any case, or bare `13` for the default
+  context. IDs are canonicalised to upper-case for output and writes; `check`
+  reports legacy non-upper-case `depends_on` entries and `fix` rewrites them.
+- `check` is read-only. `fix` applies safe repairs, reports each one, and exits
+  non-zero if problems remain. Autocommit runs it on written task files first.
 - `list` shows non-archived `todo` and `doing` tasks from every context by
   default; repeat `-c` to narrow contexts or `-s` to choose statuses, including
   `backlog` and `done`. `--archived` shows only archived tasks; `--all` shows
@@ -306,8 +311,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 ## MCP
 
 `chitty mcp` runs a stdio server. Tools mirror the CLI one-to-one with the
-same names and argument names: `add`, `list`, `show`, `edit`, `move`,
-`archive`, `restore`, `check`, `path`. They return the same JSON
+same names and argument names: `add`, `list`, `show`, `edit`, `note`, `move`,
+`archive`, `restore`, `check`, `fix`, `path`. They return the same JSON
 the CLI prints with `--json`. One resource, `chitty://guide`, returning the
 same text as the AGENTS.md block. Tool descriptions state the rules (one
 task per session, write Plan before coding, tick criteria as you go).

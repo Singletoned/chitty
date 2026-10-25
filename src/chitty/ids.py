@@ -8,7 +8,7 @@ from chitty.errors import ChittyError
 
 SLUG_MAX_LENGTH = 60
 
-ID_RE = re.compile(r"(?P<prefix>[A-Z]+)-(?P<number>[1-9][0-9]*)")
+ID_RE = re.compile(r"(?P<prefix>[A-Z]+)-(?P<number>[1-9][0-9]*)", re.IGNORECASE)
 PREFIX_RE = re.compile(r"[A-Z]+")
 SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 NUMBER_RE = re.compile(r"[1-9][0-9]*")
@@ -33,7 +33,7 @@ class TaskId:
         match = ID_RE.fullmatch(text)
         if match is None:
             raise IdError(f"invalid task ID {text!r}: expected PREFIX-N, e.g. TASK-13")
-        return cls(match["prefix"], int(match["number"]))
+        return cls(match["prefix"].upper(), int(match["number"]))
 
 
 def resolve(text: str, default_prefix: str) -> TaskId:
@@ -61,6 +61,8 @@ def parse_filename(name: str) -> tuple[TaskId, str]:
     stem = name.removesuffix(SUFFIX)
     id_text, _, slug = stem.partition(FILENAME_SEPARATOR)
     task_id = TaskId.parse(id_text)
+    if id_text != str(task_id):
+        raise IdError(f"task filename {name!r} must use an upper-case task ID")
     if FILENAME_SEPARATOR in stem and not SLUG_RE.fullmatch(slug):
         raise IdError(
             f"task filename {name!r} has an invalid slug {slug!r}: "

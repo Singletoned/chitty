@@ -8,6 +8,7 @@ from typing import Any, TextIO, cast
 import click
 
 from chitty.check import check as check_repo
+from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
@@ -320,6 +321,35 @@ def check_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
             click.echo(str(problem))
     if problems:
         raise click.ClickException(f"{len(problems)} problem(s)")
+
+
+@cli.command("fix")
+@context_option
+@click.argument("paths", nargs=-1, type=click.Path(path_type=Path))
+@json_option
+def fix_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
+    """Repair safe task-file problems; exits non-zero for unresolved problems."""
+    repo = _repo()
+    contexts = [repo.context(context)] if context else repo.contexts()
+    fixed, problems = fix_repo(repo, contexts, paths)
+    if as_json:
+        _print_json(
+            {
+                "fixed": [
+                    {"path": str(problem.path), "message": problem.message} for problem in fixed
+                ],
+                "problems": [
+                    {"path": str(problem.path), "message": problem.message} for problem in problems
+                ],
+            }
+        )
+    else:
+        for problem in fixed:
+            click.echo(f"fixed: {problem}")
+        for problem in problems:
+            click.echo(str(problem))
+    if problems:
+        raise click.ClickException(f"{len(problems)} unresolved problem(s)")
 
 
 @cli.command()
