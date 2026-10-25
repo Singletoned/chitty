@@ -73,6 +73,20 @@ class TestParse(unittest.TestCase):
         with self.assertRaisesRegex(TaskError, "status"):
             parse(SAMPLE.replace("status: todo", "status: on"))
 
+    def test_rejects_setext_headings_outside_fences(self):
+        for underline in ("===", "---"):
+            with (
+                self.subTest(underline=underline),
+                self.assertRaisesRegex(TaskError, r"line 17: setext headings are not allowed"),
+            ):
+                parse(SAMPLE.replace("Free markdown.", f"A title\n{underline}"))
+
+    def test_allows_thematic_break_after_blank_line(self):
+        parse(SAMPLE.replace("Free markdown.", "Free markdown.\n\n---"))
+
+    def test_allows_setext_syntax_inside_fences(self):
+        parse(SAMPLE.replace("## not a heading", "A title\n---"))
+
     def test_rejections(self):
         cases = {
             "unknown frontmatter key 'colour'": SAMPLE.replace(

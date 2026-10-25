@@ -42,6 +42,7 @@ SECTION_ORDER = (DESCRIPTION, ACCEPTANCE_CRITERIA, PLAN, NOTES)
 DELIMITER = "---\n"
 KEY_LINE_RE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)[ \t]*:(?:[ \t]|$)")
 HEADING_RE = re.compile(r"( {0,3})(#{1,6})(?:[ \t]+(.*?))?(?:[ \t]+#+)?[ \t]*$")
+SETEXT_UNDERLINE_RE = re.compile(r" {0,3}(?:=+|-+)[ \t]*$")
 FENCE_OPEN_RE = re.compile(r" {0,3}(`{3,}|~{3,})")
 CRITERION_RE = re.compile(r"- \[([ xX])\](?:[ \t]+(.*?))?[ \t]*$")
 LIST_MARKER_RE = re.compile(r"(?:[-*+]|[0-9]+[.)])(?:[ \t]|$)")
@@ -455,17 +456,20 @@ def _split_sections(body: list[str], first_line: int) -> tuple[list[str], list[_
     preamble: list[str] = []
     sections: list[tuple[str, list[str]]] = []
     fence: str | None = None
+    previous_line_is_paragraph = False
     for number, line in enumerate(body, start=first_line):
         target = sections[-1][1] if sections else preamble
         if fence is not None:
             if re.fullmatch(rf" {{0,3}}{fence[0]}{{{len(fence)},}}[ \t]*\n?", line):
                 fence = None
             target.append(line)
+            previous_line_is_paragraph = False
             continue
         opening = FENCE_OPEN_RE.match(line)
         if opening:
             fence = opening[1]
             target.append(line)
+            previous_line_is_paragraph = False
             continue
         heading = HEADING_RE.fullmatch(line.rstrip("\n"))
         if heading:
@@ -484,8 +488,15 @@ def _split_sections(body: list[str], first_line: int) -> tuple[list[str], list[_
                 if any(existing == name for existing, _ in sections):
                     raise TaskError(f"line {number}: duplicate section {name!r}")
                 sections.append((name, [line]))
+                previous_line_is_paragraph = False
                 continue
+            target.append(line)
+            previous_line_is_paragraph = False
+            continue
+        if previous_line_is_paragraph and SETEXT_UNDERLINE_RE.fullmatch(line.rstrip("\n")):
+            raise TaskError(f"line {number}: setext headings are not allowed; use '##' sections")
         target.append(line)
+        previous_line_is_paragraph = bool(line.strip())
     if any(line.strip() for line in preamble):
         raise TaskError("content before the first '##' section is not allowed")
     return preamble, [_Section(name, tuple(lines)) for name, lines in sections]
