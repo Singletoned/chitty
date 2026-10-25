@@ -8,6 +8,19 @@ version = "0.1.0"
 description = "Markdown-native task tracker for repos worked on by humans and coding agents"
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Ed Singleton", email = "ed@singletoned.com" }]
+keywords = ["task-tracker", "markdown", "cli", "mcp", "agents"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Bug Tracking",
+]
 dependencies = [
     "click",
     "pydantic",
