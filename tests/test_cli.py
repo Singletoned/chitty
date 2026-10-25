@@ -173,6 +173,11 @@ class TestEdit(CliTestCase):
         for gone in ("priority", "owner", "## Plan", "depends_on"):
             self.assertNotIn(gone, text)
 
+    def test_note_appends_a_note(self):
+        self.run_cli("note", "1", "Started work.")
+
+        self.assertEqual(self.json("show", "1")["notes"], "Started work.")
+
     def test_unchanged_edit_does_not_write(self):
         before = self.path.read_text()
         self.assertEqual(self.run_cli("edit", "1", "-s", "todo").stdout, "unchanged TASK-1\n")

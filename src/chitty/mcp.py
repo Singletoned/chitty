@@ -141,6 +141,12 @@ def edit(
     return repo.edit(repo.resolve(id), changes).task.as_dict()
 
 
+@_tool("note", "Append text as a paragraph to a task's Notes section.")
+def note(id: str, text: str) -> dict[str, Any]:
+    repo = _repo()
+    return repo.edit(repo.resolve(id), Edit(note=text)).task.as_dict()
+
+
 @_tool("move", "Move a task to another context in this repo; it gets a new ID there.")
 def move(id: str, context: str) -> dict[str, Any]:
     repo = _repo()

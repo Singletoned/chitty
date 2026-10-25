@@ -270,6 +270,16 @@ def edit(
     _report(repo.edit(repo.resolve(task_id), changes), as_json, "updated")
 
 
+@cli.command()
+@click.argument("task_id", metavar="ID")
+@click.argument("text")
+@json_option
+def note(task_id: str, text: str, as_json: bool) -> None:
+    """Append TEXT as a paragraph to a task's Notes section."""
+    repo = _repo()
+    _report(repo.edit(repo.resolve(task_id), Edit(note=text)), as_json, "updated")
+
+
 @cli.command("check")
 @context_option
 @click.argument("paths", nargs=-1, type=click.Path(path_type=Path))

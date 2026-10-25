@@ -22,7 +22,20 @@ class TestMcp(CliTestCase):
         tools = asyncio.run(server.list_tools())
         self.assertEqual(
             sorted(t.name for t in tools),
-            sorted(["add", "list", "show", "edit", "move", "archive", "restore", "check", "path"]),
+            sorted(
+                [
+                    "add",
+                    "list",
+                    "show",
+                    "edit",
+                    "note",
+                    "move",
+                    "archive",
+                    "restore",
+                    "check",
+                    "path",
+                ]
+            ),
         )
 
     def test_same_json_as_cli(self):
@@ -30,6 +43,7 @@ class TestMcp(CliTestCase):
         self.assertEqual(added, self.json("show", "1"))
         call("edit", id="1", status="doing", check=[1], plan="Do it.", note="Started.")
         self.assertEqual(call("show", id="TASK-1"), self.json("show", "1"))
+        self.assertEqual(call("note", id="1", text="Started."), self.json("show", "1"))
         self.assertEqual(call("list", status=["doing"]), self.json("list", "-s", "doing"))
         self.assertEqual(call("path", id="1"), self.json("path", "1"))
         self.assertEqual(call("check"), [])
