@@ -27,6 +27,10 @@ dependencies = [
     "pyyaml",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Singletoned/chitty"
+Issues = "https://github.com/Singletoned/chitty/issues"
+
 [project.optional-dependencies]
 mcp = ["mcp>=2"]
 

@@ -12,6 +12,9 @@ before changing behaviour, and update it when a decision changes.
   missing.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
+- Releases: bump `version` in `pyproject.toml`, commit, then push a tag
+  `v<version>`. `.github/workflows/release.yml` checks, builds and publishes
+  to PyPI by trusted publishing (environment `pypi`).
 
 ## Chitty
 
