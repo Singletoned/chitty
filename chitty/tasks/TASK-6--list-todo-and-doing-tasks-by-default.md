@@ -15,9 +15,11 @@ Plain `chitty list` should show every todo and doing task in every context, but 
 ## Acceptance Criteria
 
 - [ ] Plain chitty list shows todo and doing tasks from every context
-- [ ] Backlog ideas and done tasks are hidden unless asked for
 - [ ] Filtering by context and status is easy, and documented in --help
+- [ ] backlog and done tasks are hidden unless asked for (e.g. -s backlog, -s done)
 
 ## Notes
 
 Blocked pending TASK-5: list cannot reliably hide ideas until their representation and configuration are defined.
+
+Unblocked by the TASK-5 decision: backlog is a status, so list hides it by status, not by context name. Implement after TASK-5.
