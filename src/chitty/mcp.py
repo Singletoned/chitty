@@ -15,7 +15,7 @@ from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
 from chitty.store import Edit, Repo, Which, guide, matches, resolve_add_target
 
-Status = Literal["todo", "doing", "done"]
+Status = Literal["backlog", "todo", "doing", "done"]
 Priority = Literal["low", "medium", "high"]
 
 server = MCPServer(name="chitty", instructions=guide())
@@ -50,8 +50,9 @@ def guide_resource() -> str:
 @_tool("add", "Create a task with status todo. `context` may also name a user-level context.")
 def add(
     title: str,
-    description: str,
+    description: str | None = None,
     context: str | None = None,
+    status: Status = "todo",
     ac: list[str] | None = None,
     label: list[str] | None = None,
     priority: Priority | None = None,
@@ -61,6 +62,7 @@ def add(
     root = search_root(Path.cwd())
     target = resolve_add_target(Repo.open(root) if root else None, context)
     fields = {
+        "status": status,
         "labels": list(dict.fromkeys(label or [])),
         "priority": priority,
         "owner": owner,

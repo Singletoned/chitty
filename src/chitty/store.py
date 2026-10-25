@@ -33,6 +33,7 @@ from chitty.model import (
 ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
 GUIDE_HEADING = "## Chitty"
+BACKLOG_DESCRIPTION = "This ticket needs refining."
 
 Which = Literal["active", "archived", "all"]
 
@@ -218,7 +219,7 @@ class Repo:
         self,
         context: Context,
         title: str,
-        description: str,
+        description: str | None,
         criteria: Sequence[str],
         fields: Mapping[str, FieldValue],
         today: date,
@@ -229,6 +230,11 @@ class Repo:
         if isinstance(depends_on, list):
             fields["depends_on"] = self._references(depends_on)
             self.check_dependencies(fields["depends_on"])
+        status = fields.get("status", "todo")
+        if description is None:
+            if status != "backlog":
+                raise ChittyError("description is required unless status is backlog")
+            description = BACKLOG_DESCRIPTION
         task = new_task(title, today, description, criteria, fields)
         task_id = TaskId(context.prefix, self.next_number(context))
         path = context.directory / ids.filename(task_id, ids.slugify(title))

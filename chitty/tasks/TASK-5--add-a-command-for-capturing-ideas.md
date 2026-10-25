@@ -1,6 +1,6 @@
 ---
 title: Add a backlog status for tickets that need refining
-status: todo
+status: done
 labels:
   - cli
 created: 2026-10-25
@@ -18,6 +18,10 @@ Like a backlog column on a kanban board: tickets that are real work but still ne
 - [ ] The MCP add tool accepts status backlog with the same rules
 - [ ] PLAN.md, README and the agent guide describe backlog
 
+## Plan
+
+Add backlog to the shared status model. Make description optional only for backlog creation, where store-level logic supplies a stable required Description. Expose the status and optional description consistently through CLI and MCP, with regression tests.
+
 ## Notes
 
 Question for the task owner: What makes an idea distinct from an ordinary context/task? The proposed ideas context and optional Description conflict with the strict required Description format and TASK-6 needs a reliable, non-name-based way to hide ideas. No implementation will be chosen until this is decided.
@@ -32,3 +36,7 @@ Questions requiring a product decision:
 Open: should moving out of backlog be refused while the Description is still the default text? Leaning yes, but not decided.
 
 Answers to the questions above: (1) neither a reserved context nor context metadata: backlog is a status, so every context has one. (2) The Description stays required; backlog tickets get a default text saying they need refining. (3) No init change; existing repos get it automatically. (4) Yes: add and edit already have MCP and JSON, so status backlog flows through both.
+
+Implementation answer: the default Description will be “This ticket needs refining.” This preserves the task-file invariant without introducing a special context or changing init.
+
+Verified: backlog is accepted by the model; CLI and MCP add can create a backlog ticket without a supplied description, storing the required default Description. Non-backlog adds still require --description. make check passes.

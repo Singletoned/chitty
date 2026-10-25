@@ -95,7 +95,8 @@ def init(prefix: str) -> None:
 @cli.command()
 @click.argument("title")
 @context_option
-@click.option("-d", "--description", required=True, help="The Description section.")
+@click.option("-d", "--description", help="The Description section (required except for backlog).")
+@click.option("-s", "--status", type=click.Choice(STATUSES), default="todo", show_default=True)
 @click.option("--ac", "criteria", multiple=True, help="Acceptance criterion (repeatable).")
 @click.option("-l", "--label", "labels", multiple=True, help="Label (repeatable).")
 @click.option("-p", "--priority", type=click.Choice(PRIORITIES))
@@ -105,7 +106,8 @@ def init(prefix: str) -> None:
 def add(
     title: str,
     context: str | None,
-    description: str,
+    description: str | None,
+    status: str,
     criteria: tuple[str, ...],
     labels: tuple[str, ...],
     priority: str | None,
@@ -118,9 +120,12 @@ def add(
     -c may also name a context from ~/.config/chitty/contexts.toml: the file
     is written into that repo's working tree and nothing else happens there.
     """
+    if description is None and status != "backlog":
+        raise click.UsageError("--description is required unless --status backlog")
     root = search_root(Path.cwd())
     target = resolve_add_target(Repo.open(root) if root else None, context)
     fields = {
+        "status": status,
         "labels": list(dict.fromkeys(labels)),
         "priority": priority,
         "owner": owner,

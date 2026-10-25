@@ -21,7 +21,7 @@ from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 from chitty.errors import ChittyError
 from chitty.ids import ID_RE
 
-STATUSES = ("todo", "doing", "done")
+STATUSES = ("backlog", "todo", "doing", "done")
 PRIORITIES = ("low", "medium", "high")
 FIELD_ORDER = (
     "title",
@@ -94,7 +94,7 @@ class Frontmatter(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     title: str
-    status: Literal["todo", "doing", "done"]
+    status: Literal["backlog", "todo", "doing", "done"]
     labels: list[str] = []
     priority: Literal["low", "medium", "high"] | None = None
     owner: str | None = None

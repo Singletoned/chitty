@@ -86,6 +86,14 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(data["acceptance_criteria"][1]["index"], 2)
         self.assertEqual(self.run_cli("path", "1").stdout, f"{path}\n")
 
+    def test_add_backlog_uses_a_default_description(self):
+        self.run_cli("add", "Explore sync", "-s", "backlog")
+
+        task = self.json("show", "1")
+        self.assertEqual(task["status"], "backlog")
+        self.assertEqual(task["description"], "This ticket needs refining.")
+        self.run_cli("add", "Needs detail", "-s", "todo", exit_code=2)
+
     def test_add_errors(self):
         result = self.run_cli("add", "X", "-d", "x", "--depends-on", "HUMAN-4", exit_code=1)
         self.assertIn("no task HUMAN-4", result.stderr)

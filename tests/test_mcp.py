@@ -51,6 +51,12 @@ class TestMcp(CliTestCase):
         self.assertTrue(call("archive", id="HUMAN-1")["archived"])
         self.assertFalse(call("restore", id="HUMAN-1")["archived"])
 
+    def test_adds_backlog_without_a_description(self):
+        task = call("add", title="Explore sync", status="backlog")
+
+        self.assertEqual(task["status"], "backlog")
+        self.assertEqual(task["description"], "This ticket needs refining.")
+
     def test_errors_reach_the_client(self):
         with self.assertRaisesRegex(ToolError, "no task TASK-9"):
             call("show", id="9")
