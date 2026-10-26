@@ -11,11 +11,10 @@ small. See `PLAN.md` for the full design.
 
 ## Install
 
-Not yet on PyPI. From a checkout:
-
 ```sh
-uv tool install .                 # CLI
-uv tool install '.[mcp]'          # CLI plus `chitty mcp`
+uv tool install chitty            # CLI
+uv tool install 'chitty[mcp]'     # CLI plus `chitty mcp`
+uvx chitty --help                 # run without installing
 ```
 
 ## Use
