@@ -39,7 +39,8 @@ chitty guide                      # instructions for coding agents
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
 are the reference. Plain `chitty list` shows non-archived `todo` and `doing`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog
-and done tickets.
+and done tickets. `--all` includes every status and archived task. Empty lists
+explain their active filters on stderr while JSON stdout remains `[]`.
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit.

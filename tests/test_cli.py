@@ -131,11 +131,22 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             self.run_cli("list", "--archived").stdout, "TASK-10  todo    Task 10  (archived)\n"
         )
+        self.run_cli("edit", "2", "-s", "done")
         self.assertEqual(len(self.json("list", "--all")), 10)
+        self.assertEqual(
+            [t["id"] for t in self.json("list", "--archived", "-s", "todo")], ["TASK-10"]
+        )
         self.assertEqual([t["id"] for t in self.json("list", "-s", "doing")], ["TASK-1"])
-        self.assertEqual([t["id"] for t in self.json("list", "--search", "SAFARI")], ["TASK-2"])
+        self.assertEqual(
+            [t["id"] for t in self.json("list", "--search", "SAFARI", "-s", "done")], ["TASK-2"]
+        )
         self.assertEqual(
             [t["id"] for t in self.json("list", "-l", "cli", "-l", "search")], ["TASK-1"]
+        )
+        empty = self.run_cli("list", "-c", "human")
+        self.assertEqual(empty.stdout, "")
+        self.assertIn(
+            "no tasks: contexts=human; statuses=todo,doing; archived=active", empty.stderr
         )
         self.assertEqual(self.json("list", "-c", "human"), [])
         self.run_cli("list", "--archived", "--all", exit_code=2)

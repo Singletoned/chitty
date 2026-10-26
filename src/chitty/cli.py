@@ -152,7 +152,7 @@ def add(
 @click.option("--owner")
 @click.option("--search", help="Case-insensitive match on title and body.")
 @click.option("--archived", is_flag=True, help="Only archived tasks.")
-@click.option("--all", "all_", is_flag=True, help="Archived and non-archived tasks.")
+@click.option("--all", "all_", is_flag=True, help="Every status, archived or not.")
 @json_option
 def list_(
     contexts: tuple[str, ...],
@@ -170,13 +170,19 @@ def list_(
     which: Which = "all" if all_ else "archived" if archived else "active"
     repo = _repo()
     selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
-    selected_statuses = statuses or ("todo", "doing")
+    selected_statuses = STATUSES if all_ else statuses or ("todo", "doing")
     tasks = [
         task
         for context in selected
         for task in repo.tasks(context, which)
         if matches(task, selected_statuses, labels, owner, search)
     ]
+    if not tasks:
+        click.echo(
+            f"no tasks: contexts={','.join(context.name for context in selected)}; "
+            f"statuses={','.join(selected_statuses)}; archived={which}",
+            err=True,
+        )
     if as_json:
         _print_json([t.as_dict() for t in tasks])
         return

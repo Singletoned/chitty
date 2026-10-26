@@ -1,6 +1,6 @@
 ---
 title: Make chitty list explain empty results, and --all mean everything
-status: doing
+status: done
 labels:
   - cli
 created: 2026-10-26
@@ -12,11 +12,11 @@ An empty chitty list prints nothing, so no matches looks like a broken command. 
 
 ## Acceptance Criteria
 
-- [ ] When no task matches, list prints one line to stderr naming the filters in force (statuses, contexts, archived or not); stdout and --json output stay empty
-- [ ] --all includes every status and both archived and non-archived tasks
-- [ ] --archived can be combined with -s to filter archived tasks by status
-- [ ] Tests cover the empty-result message and the new --all meaning
-- [ ] PLAN.md, README and list --help describe the new behaviour
+- [x] When no task matches, list prints one line to stderr naming the filters in force (statuses, contexts, archived or not); stdout and --json output stay empty
+- [x] --all includes every status and both archived and non-archived tasks
+- [x] --archived can be combined with -s to filter archived tasks by status
+- [x] Tests cover the empty-result message and the new --all meaning
+- [x] PLAN.md, README and list --help describe the new behaviour
 
 ## Plan
 
@@ -25,3 +25,5 @@ Adjust list selection so --all explicitly selects every status and both location
 ## Notes
 
 Question: Should an empty JSON list emit the diagnostic? Answer: yes, to stderr only; stdout remains exactly [] for machine readers.
+
+Verified: empty lists explain selected contexts, statuses, and archive scope on stderr while JSON stdout stays []; --all selects all statuses in both locations; --archived retains status filtering. make check passes.

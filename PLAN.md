@@ -306,8 +306,10 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   non-zero if problems remain. Autocommit runs it on written task files first.
 - `list` shows non-archived `todo` and `doing` tasks from every context by
   default; repeat `-c` to narrow contexts or `-s` to choose statuses, including
-  `backlog` and `done`. `--archived` shows only archived tasks; `--all` shows
-  both locations. Default output is one line per task:
+  `backlog` and `done`. `--archived` shows only archived tasks (and accepts
+  `-s`); `--all` selects every status in both locations. An empty list reports
+  its active filters on stderr while keeping stdout (including JSON) empty.
+  Default output is one line per task:
   `TASK-12  doing   Add search to the task list  [cli,search]`.
 - `move` is within the current repo only. It gives the task the next number
   in the target context and keeps the slug. There is no cross-repo move;
