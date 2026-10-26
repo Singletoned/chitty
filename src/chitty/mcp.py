@@ -86,6 +86,7 @@ def list_(
     status: list[Status] | None = None,
     label: list[str] | None = None,
     owner: str | None = None,
+    parent: str | None = None,
     search: str | None = None,
     all: bool = False,
 ) -> list[dict[str, Any]]:
@@ -93,7 +94,8 @@ def list_(
     contexts = [repo.context(name) for name in context] if context else repo.contexts()
     statuses = list(STATUSES) if all else status or ["todo", "doing"]
     tasks = [task for selected in contexts for task in repo.tasks(selected, "active")]
-    found = [t for t in tasks if matches(t, statuses, label or [], owner, search)]
+    parent = str(repo.resolve(parent)) if parent else None
+    found = [t for t in tasks if matches(t, statuses, label or [], owner, search, parent)]
     return [t.as_dict() for t in found]
 
 

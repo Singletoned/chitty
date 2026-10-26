@@ -487,6 +487,7 @@ def matches(
     labels: Sequence[str],
     owner: str | None,
     search: str | None,
+    parent: str | None = None,
 ) -> bool:
     """Filter for `list`: any of the statuses, all of the labels."""
     fm = stored.task.frontmatter
@@ -495,6 +496,8 @@ def matches(
     if not set(labels) <= set(fm.labels):
         return False
     if owner is not None and fm.owner != owner:
+        return False
+    if parent is not None and fm.parent != parent:
         return False
     if search is None:
         return True

@@ -184,6 +184,7 @@ def add(
 )
 @click.option("-l", "--label", "labels", multiple=True, help="Only tasks with every label.")
 @click.option("--owner")
+@click.option("--parent", help="Only children of this task ID.")
 @click.option("--search", help="Case-insensitive match on title and body.")
 @click.option("--all", "all_", is_flag=True, help="Every status (never archived tasks).")
 @json_option
@@ -192,6 +193,7 @@ def list_(
     statuses: tuple[str, ...],
     labels: tuple[str, ...],
     owner: str | None,
+    parent: str | None,
     search: str | None,
     all_: bool,
     as_json: bool,
@@ -200,11 +202,12 @@ def list_(
     repo = _repo()
     selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
     selected_statuses = STATUSES if all_ else statuses or ("todo", "doing")
+    parent = str(repo.resolve(parent)) if parent else None
     tasks = [
         task
         for context in selected
         for task in repo.tasks(context, "active")
-        if matches(task, selected_statuses, labels, owner, search)
+        if matches(task, selected_statuses, labels, owner, search, parent)
     ]
     if not tasks:
         click.echo(
@@ -231,10 +234,16 @@ def show(task_id: str, as_json: bool) -> None:
     """Show a task, with acceptance criteria numbered."""
     repo = _repo()
     stored = repo.find(repo.resolve(task_id))
+    children = [
+        task.id for task in repo.all_tasks() if task.task.frontmatter.parent == str(stored.id)
+    ]
     if as_json:
         _print_json(stored.as_dict())
     else:
-        click.echo(_format(stored))
+        output = _format(stored)
+        if children:
+            output += "\nchildren: " + ", ".join(map(str, children))
+        click.echo(output)
 
 
 def _format(stored: StoredTask) -> str:
