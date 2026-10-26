@@ -52,6 +52,16 @@ class TestMcp(CliTestCase):
         self.assertTrue(call("archive", id="HUMAN-1")["archived"])
         self.assertFalse(call("restore", id="HUMAN-1")["archived"])
 
+    def test_archives_every_done_task_without_an_id(self):
+        call("add", title="Done", description="x")
+        call("add", title="Human done", description="x", context="human")
+        call("edit", id="1", status="done")
+        call("edit", id="HUMAN-1", status="done")
+
+        archived = call("archive")
+
+        self.assertEqual([task["id"] for task in archived], ["TASK-1", "HUMAN-1"])
+
     def test_adds_backlog_without_a_description(self):
         task = call("add", title="Explore sync", status="backlog")
 

@@ -283,7 +283,7 @@ chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p 
                  [--ac TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
                  [--plan TEXT | --plan-file F] [--note TEXT]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
-chitty archive ID | chitty restore ID
+chitty archive [ID] | chitty restore ID  omit ID to archive every done task
 chitty check [-c CTX] [PATH]...    validate; non-zero on any error
 chitty fix [-c CTX] [PATH]...      repair safe problems; fail if any remain
 chitty path ID                     print the file path (for editors/agents)
@@ -311,6 +311,9 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   its active filters on stderr while keeping stdout (including JSON) empty.
   Default output is one line per task:
   `TASK-12  doing   Add search to the task list  [cli,search]`.
+- `archive` with no ID moves every non-archived `done` task across contexts in
+  one batch; use it when preparing a merge request. With an ID it archives one
+  task as before.
 - `move` is within the current repo only. It gives the task the next number
   in the target context and keeps the slug. There is no cross-repo move;
   `add -c otherrepo` plus `archive` here is the explicit two-step version.

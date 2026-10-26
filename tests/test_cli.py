@@ -278,6 +278,19 @@ class TestMoveArchive(CliTestCase):
             "already in context", self.run_cli("move", "HUMAN-1", "human", exit_code=1).stderr
         )
 
+    def test_archive_all_done_tasks(self):
+        self.run_cli("add", "Task done", "-d", "x")
+        self.run_cli("add", "Human done", "-c", "human", "-d", "x")
+        self.run_cli("edit", "1", "-s", "done")
+        self.run_cli("edit", "HUMAN-1", "-s", "done")
+
+        result = self.run_cli("archive")
+
+        self.assertEqual(result.stdout.splitlines(), ["archived TASK-1", "archived HUMAN-1"])
+        self.assertEqual([task["id"] for task in self.json("archive")], [])
+        self.assertTrue(self.json("show", "1")["archived"])
+        self.assertTrue(self.json("show", "HUMAN-1")["archived"])
+
     def test_archive_restore(self):
         self.run_cli("add", "One", "-d", "x")
         self.assertTrue(self.json("archive", "1")["archived"])

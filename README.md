@@ -33,6 +33,7 @@ chitty move 1 human               # new ID there; references are rewritten
 chitty archive HUMAN-1
 chitty check                      # validate everything; non-zero on problems
 chitty fix                        # repair safe problems; fail if any remain
+chitty archive                     # archive every completed task before a merge request
 chitty guide                      # instructions for coding agents
 ```
 

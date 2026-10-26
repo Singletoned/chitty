@@ -279,6 +279,19 @@ class Repo:
     def archive(self, task_id: TaskId) -> Change:
         return self._commit(self._set_archived(task_id, True), "archive")
 
+    def archive_done(self) -> tuple[Change, ...]:
+        """Archive every non-archived done task in one finalization."""
+        changes = tuple(
+            self._set_archived(task.id, True)
+            for context in self.contexts()
+            for task in self.tasks(context, "active")
+            if task.task.frontmatter.status == "done"
+        )
+        if changes:
+            paths = tuple(path for change in changes for path in change.paths)
+            self._commit(Change(changes[-1].task, paths), "archive done tasks")
+        return changes
+
     def restore(self, task_id: TaskId) -> Change:
         return self._commit(self._set_archived(task_id, False), "restore")
 

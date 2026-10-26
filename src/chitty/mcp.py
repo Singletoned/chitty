@@ -161,10 +161,12 @@ def move(id: str, context: str) -> dict[str, Any]:
     return repo.move(repo.resolve(id), repo.context(context)).task.as_dict()
 
 
-@_tool("archive", "Move a task into its context's archive/.")
-def archive(id: str) -> dict[str, Any]:
+@_tool("archive", "Archive one task, or every non-archived done task when `id` is omitted.")
+def archive(id: str | None = None) -> dict[str, Any] | list[dict[str, Any]]:
     repo = _repo()
-    return repo.archive(repo.resolve(id)).task.as_dict()
+    if id is not None:
+        return repo.archive(repo.resolve(id)).task.as_dict()
+    return [change.task.as_dict() for change in repo.archive_done()]
 
 
 @_tool("restore", "Move an archived task back out of archive/.")

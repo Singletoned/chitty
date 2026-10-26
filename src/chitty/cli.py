@@ -390,13 +390,22 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID")
+@click.argument("task_id", metavar="ID", required=False)
 @json_option
-def archive(task_id: str, as_json: bool) -> None:
-    """Move a task into its context's archive/."""
+def archive(task_id: str | None, as_json: bool) -> None:
+    """Archive one task, or every done task when ID is omitted."""
     repo = _repo()
-    change = repo.archive(repo.resolve(task_id))
-    _report(change, as_json, "archived")
+    if task_id is not None:
+        _report(repo.archive(repo.resolve(task_id)), as_json, "archived")
+        return
+    changes = repo.archive_done()
+    if as_json:
+        _print_json([change.task.as_dict() for change in changes])
+    elif changes:
+        for change in changes:
+            click.echo(f"archived {change.task.id}")
+    else:
+        click.echo("no done tasks to archive")
 
 
 @cli.command()
