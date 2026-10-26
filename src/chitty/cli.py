@@ -290,6 +290,7 @@ def _format(stored: StoredTask) -> str:
 @click.option("--plan", help="Replace the Plan section; '' removes it.")
 @click.option("--plan-file", type=click.File(), help="Read --plan from a file.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
+@click.option("--summary", help="Replace the Summary section; '' removes it.")
 @json_option
 def edit(
     task_id: str,
@@ -311,6 +312,7 @@ def edit(
     plan: str | None,
     plan_file: TextIO | None,
     notes: tuple[str, ...],
+    summary: str | None,
     as_json: bool,
 ) -> None:
     """Change a task. Criterion numbers refer to the list before this edit."""
@@ -332,6 +334,7 @@ def edit(
         uncheck=uncheck,
         plan=_text(plan, plan_file, "plan"),
         notes=notes,
+        summary=summary,
     )
     _report(repo.edit(repo.resolve(task_id), changes), as_json, "updated")
 

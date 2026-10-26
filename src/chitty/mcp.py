@@ -129,6 +129,7 @@ def edit(
     uncheck: list[int] | None = None,
     plan: str | None = None,
     note: str | None = None,
+    summary: str | None = None,
 ) -> dict[str, Any]:
     repo = _repo()
     changes = Edit(
@@ -148,6 +149,7 @@ def edit(
         uncheck=uncheck or (),
         plan=plan,
         note=note,
+        summary=summary,
     )
     return repo.edit(repo.resolve(id), changes).task.as_dict()
 

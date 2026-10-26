@@ -38,7 +38,8 @@ DESCRIPTION = "Description"
 ACCEPTANCE_CRITERIA = "Acceptance Criteria"
 PLAN = "Plan"
 NOTES = "Notes"
-SECTION_ORDER = (DESCRIPTION, ACCEPTANCE_CRITERIA, PLAN, NOTES)
+SUMMARY = "Summary"
+SECTION_ORDER = (DESCRIPTION, ACCEPTANCE_CRITERIA, PLAN, NOTES, SUMMARY)
 
 DELIMITER = "---\n"
 KEY_LINE_RE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)[ \t]*:(?:[ \t]|$)")
@@ -198,6 +199,7 @@ class Task:
         ]
         data["plan"] = self.section(PLAN)
         data["notes"] = self.section(NOTES)
+        data["summary"] = self.section(SUMMARY)
         return data
 
     # -- editing ---------------------------------------------------------

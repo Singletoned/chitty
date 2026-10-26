@@ -23,6 +23,7 @@ from chitty.ids import TaskId
 from chitty.model import (
     DESCRIPTION,
     PLAN,
+    SUMMARY,
     FieldValue,
     Task,
     TaskError,
@@ -100,6 +101,7 @@ class Edit:
     plan: str | None = None  # "" removes
     note: str | None = None
     notes: Sequence[str] = ()
+    summary: str | None = None  # "" removes
 
     def is_empty(self) -> bool:
         return all(
@@ -138,6 +140,8 @@ class Edit:
             task = task.with_note(self.note)
         for note in self.notes:
             task = task.with_note(note)
+        if self.summary is not None:
+            task = task.with_section(SUMMARY, self.summary)
         return task
 
 

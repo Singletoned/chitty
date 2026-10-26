@@ -43,7 +43,9 @@ tasks across every context; repeat `-c` or `-s` to filter, including backlog
 and done tickets. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains
-`[]`. To inspect or restore an archived task, work with its file directly.
+`[]`. Finished tasks can include a `## Summary` handoff via
+`chitty edit ID --summary TEXT`. To inspect or restore an archived task, work
+with its file directly.
 
 Enable tab completion by adding one of these lines to your shell startup file:
 
