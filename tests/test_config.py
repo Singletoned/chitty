@@ -12,6 +12,7 @@ class TestRepoConfig(RepoTestCase):
         config = load_repo_config(self.root)
         self.assertEqual(config.default_context, "tasks")
         self.assertEqual(config.contexts["human"].prefix, "HUMAN")
+        self.assertEqual(config.archive, "move")
 
     def test_loads_pyproject_tool_table(self):
         (self.root / "chitty.toml").unlink()
@@ -34,6 +35,7 @@ class TestRepoConfig(RepoTestCase):
             "used by more than one": CONFIG.replace('"HUMAN"', '"TASK"'),
             "upper-case": CONFIG.replace('"HUMAN"', '"human"'),
             "autocommit": CONFIG.replace("autocommit = false", 'autocommit = "no"'),
+            "archive": CONFIG.replace("autocommit = false", 'archive = "remove"'),
             "Extra inputs": CONFIG + "colour = 1\n",
             "format": CONFIG.replace("format = 1", "format = 2"),
             "invalid TOML": CONFIG + "[[[",

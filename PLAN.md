@@ -221,6 +221,7 @@ format = 1
 default_context = "tasks"
 autocommit = false                     # if true, commit each write
 # autoformat = "mdformat"              # command run on every written task file
+# archive = "move"                      # or "delete" completed files at merge time
 
 [contexts.tasks]
 prefix = "TASK"
@@ -233,7 +234,11 @@ Context directory is `chitty/<name>/`. Not configurable.
 
 When set, `autoformat` is parsed without a shell and run on existing files
 written by each operation. The order is `fix`, `autoformat`, then `autocommit`;
-unresolved fixes prevent the latter two steps.
+unresolved fixes prevent the latter two steps. `archive = "move"` is the
+standard retention policy. With `archive = "delete"`, archive deletes done
+files and strips exact `depends_on` entries elsewhere; ID allocation reads Git
+deletions (including uncommitted ones), and fails rather than guessing if the
+repository history is shallow or unavailable.
 
 User-level `~/.config/chitty/contexts.toml` (optional), for adding tasks to
 other repos or to a personal backlog:
@@ -313,9 +318,11 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   on stderr while keeping stdout (including JSON) empty.
   Default output is one line per task:
   `TASK-12  doing   Add search to the task list  [cli,search]`.
-- `archive` with no ID moves every non-archived `done` task across contexts in
-  one batch; use it when preparing a merge request. With an ID it archives one
-  task as before.
+- `archive` with no ID processes every non-archived `done` task across contexts
+  in one batch; use it when preparing a merge request. `archive = "move"`
+  moves files into `archive/` (the default); `archive = "delete"` deletes them,
+  removes exact dependencies elsewhere, and retains their numbers from Git
+  history. With an ID it processes one task as before.
 - `move` is within the current repo only. It gives the task the next number
   in the target context and keeps the slug. There is no cross-repo move;
   `add -c otherrepo` plus `archive` here is the explicit two-step version.

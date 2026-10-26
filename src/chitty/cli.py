@@ -419,17 +419,25 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 def archive(task_id: str | None, as_json: bool) -> None:
     """Archive one task, or every done task when ID is omitted."""
     repo = _repo()
+    verb = "deleted" if repo.config.archive == "delete" else "archived"
     if task_id is not None:
-        _report(repo.archive(repo.resolve(task_id)), as_json, "archived")
+        change = repo.archive(repo.resolve(task_id))
+        _report(change, as_json, verb)
+        if not as_json and verb == "deleted":
+            for path in change.paths[:-1]:
+                click.echo(f"removed dependency reference in {path}")
         return
     changes = repo.archive_done()
     if as_json:
         _print_json([change.task.as_dict() for change in changes])
     elif changes:
         for change in changes:
-            click.echo(f"archived {change.task.id}")
+            click.echo(f"{verb} {change.task.id}")
+            if verb == "deleted":
+                for path in change.paths[:-1]:
+                    click.echo(f"removed dependency reference in {path}")
     else:
-        click.echo("no done tasks to archive")
+        click.echo(f"no done tasks to {verb[:-1]}")
 
 
 @cli.command("guide")

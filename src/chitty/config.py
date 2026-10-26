@@ -22,6 +22,7 @@ format = 1
 default_context = "tasks"
 autocommit = false
 # autoformat = "mdformat"
+# archive = "move"  # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
 prefix = "{prefix}"
@@ -51,6 +52,7 @@ class RepoConfig(BaseModel):
     default_context: str
     autocommit: bool
     autoformat: str | None = None
+    archive: Literal["move", "delete"] = "move"
     contexts: dict[str, ContextConfig]
 
     @field_validator("autoformat")

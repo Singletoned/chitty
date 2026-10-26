@@ -33,7 +33,7 @@ chitty move 1 human               # new ID there; references are rewritten
 chitty archive HUMAN-1
 chitty check                      # validate everything; non-zero on problems
 chitty fix                        # repair safe problems; fail if any remain
-chitty archive                     # archive every completed task before a merge request
+chitty archive                     # process every completed task before a merge request
 chitty guide                      # instructions for coding agents
 ```
 
@@ -54,7 +54,10 @@ eval "$(_CHITTY_COMPLETE=zsh_source chitty)"
 ```
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
-written task file before any autocommit.
+written task file before any autocommit. Set `archive = "delete"` to delete
+completed task files at merge-request time instead of moving them to `archive/`;
+it also removes exact `depends_on` entries and requires complete Git history to
+avoid reusing IDs. The default, `archive = "move"`, retains task files.
 
 Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). Contexts in other repos (for posting tasks elsewhere) go in

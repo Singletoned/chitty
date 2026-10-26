@@ -57,6 +57,21 @@ class TestAutocommit(CliTestCase):
         self.assertIn("A  unrelated.txt", self.git("status", "--porcelain"))
         self.assertEqual(self.git("status", "--porcelain", "chitty"), "")
 
+    def test_delete_mode_preserves_ids_from_git_history(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
+        )
+        self.run_cli("add", "First done", "-d", "x")
+        self.run_cli("add", "Second done", "-d", "x")
+        self.run_cli("edit", "1", "-s", "done")
+        self.run_cli("edit", "2", "-s", "done")
+
+        self.run_cli("archive")
+        self.assertEqual(self.run_cli("add", "Third", "-d", "x").stdout.split()[1], "TASK-3")
+        (self.root / "chitty/tasks/TASK-3--third.md").unlink()
+        self.assertEqual(self.run_cli("add", "Fourth", "-d", "x").stdout.split()[1], "TASK-4")
+
     def test_archive_done_tasks_makes_one_commit(self):
         self.run_cli("add", "Task done", "-d", "x")
         self.run_cli("add", "Human done", "-c", "human", "-d", "x")

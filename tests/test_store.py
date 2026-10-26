@@ -33,6 +33,16 @@ class TestStore(StoreTestCase):
         self.assertEqual(second.path.name, "TASK-2.md")
         self.assertEqual([t.id.number for t in self.repo.tasks(self.tasks, "active")], [1, 2])
 
+    def test_delete_mode_requires_git_history_for_new_ids(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
+        )
+        repo = Repo.open(self.root)
+
+        with self.assertRaisesRegex(ChittyError, "git history is unavailable"):
+            repo.add(repo.context("tasks"), "One", "Describe.", [], {}, TODAY)
+
     def test_numbers_count_archived_tasks(self):
         self.add("One")
         self.repo.archive(TaskId("TASK", 1))

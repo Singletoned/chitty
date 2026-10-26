@@ -274,23 +274,59 @@ class Repo:
             for archived in (False, True)
             for p in self._files(context, archived)
         ]
+        if self.config.archive == "delete":
+            numbers += self._deleted_numbers(context)
         return ids.next_number(numbers)
 
     def archive(self, task_id: TaskId) -> Change:
-        return self._commit(self._set_archived(task_id, True), "archive")
+        change = self._archive(task_id)
+        return self._commit(change, "delete" if self.config.archive == "delete" else "archive")
 
     def archive_done(self) -> tuple[Change, ...]:
         """Archive every non-archived done task in one finalization."""
         changes = tuple(
-            self._set_archived(task.id, True)
+            self._archive(task.id)
             for context in self.contexts()
             for task in self.tasks(context, "active")
             if task.task.frontmatter.status == "done"
         )
         if changes:
             paths = tuple(path for change in changes for path in change.paths)
-            self._commit(Change(changes[-1].task, paths), "archive done tasks")
+            verb = "delete" if self.config.archive == "delete" else "archive"
+            self._commit(Change(changes[-1].task, paths), f"{verb} done tasks")
         return changes
+
+    def _archive(self, task_id: TaskId) -> Change:
+        if self.config.archive == "move":
+            return self._set_archived(task_id, True)
+        return self._delete_done(task_id)
+
+    def _deleted_numbers(self, context: Context) -> list[int]:
+        numbers: list[int] = []
+        directory = Path(BACKLOG_DIR) / context.name
+        for path in git.deleted_paths(self.root):
+            try:
+                task_id, _ = ids.parse_filename(path.name)
+            except ids.IdError:
+                continue
+            if task_id.prefix == context.prefix and directory in path.parents:
+                numbers.append(task_id.number)
+        return numbers
+
+    def _delete_done(self, task_id: TaskId) -> Change:
+        stored = self.find(task_id)
+        if stored.task.frontmatter.status != "done":
+            raise ChittyError(f"{task_id} is not done and cannot be deleted")
+        paths: list[Path] = []
+        for other in self.all_tasks():
+            if other.id == task_id or str(task_id) not in other.task.frontmatter.depends_on:
+                continue
+            references = [
+                item for item in other.task.frontmatter.depends_on if item != str(task_id)
+            ]
+            paths += self._save(other, other.task.with_field("depends_on", references)).paths
+        stored.path.unlink()
+        return Change(stored, (*paths, stored.path))
 
     def restore(self, task_id: TaskId) -> Change:
         return self._commit(self._set_archived(task_id, False), "restore")

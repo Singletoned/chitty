@@ -20,6 +20,27 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
     _git(root, "commit", "--quiet", "--only", "-m", message, "--", *included)
 
 
+def deleted_paths(root: Path) -> list[Path]:
+    """Return task paths deleted in reachable history or the worktree.
+
+    Delete-mode ID allocation must not guess from an incomplete history.
+    """
+    try:
+        shallow = _git(root, "rev-parse", "--is-shallow-repository").strip()
+        if shallow != "false":
+            raise ChittyError(f"git history is shallow in {root}; cannot allocate delete-mode IDs")
+        historical = _git(
+            root, "log", "--all", "--no-renames", "--diff-filter=D", "--name-only", "--format="
+        ).splitlines()
+        status = _git(root, "status", "--porcelain", "--no-renames").splitlines()
+    except ChittyError as error:
+        raise ChittyError(
+            f"git history is unavailable for delete-mode ID allocation: {error}"
+        ) from error
+    pending = [line[3:] for line in status if len(line) > 3 and "D" in line[:2]]
+    return [Path(path) for path in [*historical, *pending] if path]
+
+
 def _git(root: Path, *args: str) -> str:
     command = ["git", *args]
     result = subprocess.run(command, check=False, cwd=root, capture_output=True, text=True)

@@ -12,8 +12,8 @@ task files. `chitty --help` is the full command reference.
 - Record anything surprising with `--note`. Set `-s done` when every
   criterion is ticked and the work is verified. Run `chitty fix` to apply
   safe repairs; it fails loudly when a problem remains.
-- Before preparing a merge request, run `chitty archive` with no ID to archive
-  completed tasks in one batch. To restore one, move its file out of `archive/`
-  manually.
+- Before preparing a merge request, run `chitty archive` with no ID to process
+  completed tasks in one batch. The default moves them to `archive/`; with
+  `archive = "delete"`, Git history retains the record instead.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
   Don't do it in this session.
