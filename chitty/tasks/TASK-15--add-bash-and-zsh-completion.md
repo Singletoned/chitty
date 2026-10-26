@@ -1,6 +1,6 @@
 ---
 title: Add bash and zsh completion
-status: todo
+status: done
 labels:
   - cli
 created: 2026-10-26
@@ -12,9 +12,19 @@ Tab-complete commands, options, task IDs and context names in bash and zsh. Clic
 
 ## Acceptance Criteria
 
-- [ ] Commands and options complete in bash and zsh via Click's built-in completion
-- [ ] ID arguments complete to existing task IDs (non-archived first), and -c to configured context names
-- [ ] -s completes to the statuses
-- [ ] Completion outside a chitty repo still completes commands and does not print errors
-- [ ] Tests cover the dynamic completers
-- [ ] README shows the one-line setup for bash and zsh
+- [x] Commands and options complete in bash and zsh via Click's built-in completion
+- [x] ID arguments complete to existing task IDs (non-archived first), and -c to configured context names
+- [x] -s completes to the statuses
+- [x] Completion outside a chitty repo still completes commands and does not print errors
+- [x] Tests cover the dynamic completers
+- [x] README shows the one-line setup for bash and zsh
+
+## Plan
+
+Use Click shell completion without adding a command. Attach dynamic shell_complete callbacks to task-ID and context parameters, keeping failures outside a repository empty and silent; Click provides commands/options/status choices. Add direct callback tests and shell setup documentation.
+
+## Notes
+
+Question: Should archived IDs appear? Answer: yes, after active IDs, so users can restore or inspect them while ordinary active-task work stays first.
+
+Verified: Click generates bash/zsh sources; dynamic completion supplies active IDs before archived IDs and configured contexts, returning silently outside a repository. README and PLAN setup/docs updated; make check passes.

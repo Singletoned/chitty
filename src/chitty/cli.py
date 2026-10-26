@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, TextIO, cast
 
 import click
+from click.shell_completion import CompletionItem
 
 from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
@@ -50,8 +51,39 @@ def main() -> None:
 
 
 json_option = click.option("--json", "as_json", is_flag=True, help="Print JSON.")
+
+
+def _complete_context(
+    _ctx: click.Context | None, _param: click.Parameter | None, incomplete: str
+) -> list[CompletionItem]:
+    try:
+        contexts = _repo().contexts()
+    except ChittyError:
+        return []
+    return [
+        CompletionItem(context.name) for context in contexts if context.name.startswith(incomplete)
+    ]
+
+
+def _complete_task_id(
+    _ctx: click.Context | None, _param: click.Parameter | None, incomplete: str
+) -> list[CompletionItem]:
+    try:
+        tasks = _repo().all_tasks()
+    except ChittyError:
+        return []
+    return [
+        CompletionItem(str(task.id))
+        for task in sorted(tasks, key=lambda task: (task.archived, str(task.id)))
+        if str(task.id).lower().startswith(incomplete.lower())
+    ]
+
+
 context_option = click.option(
-    "-c", "--context", help="Context name (default: default_context from chitty.toml)."
+    "-c",
+    "--context",
+    help="Context name (default: default_context from chitty.toml).",
+    shell_complete=_complete_context,
 )
 
 
@@ -198,7 +230,7 @@ def list_(
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID")
+@click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
 @json_option
 def show(task_id: str, as_json: bool) -> None:
     """Show a task, with acceptance criteria numbered."""
@@ -235,7 +267,7 @@ def _format(stored: StoredTask) -> str:
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID")
+@click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
 @click.option("--title")
 @click.option("-s", "--status", type=click.Choice(STATUSES))
 @click.option("--add-label", multiple=True)
@@ -298,7 +330,7 @@ def edit(
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID")
+@click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
 @click.argument("text")
 @json_option
 def note(task_id: str, text: str, as_json: bool) -> None:
@@ -359,7 +391,7 @@ def fix_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID")
+@click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
 @json_option
 def path(task_id: str, as_json: bool) -> None:
     """Print the task's file path."""
@@ -372,8 +404,8 @@ def path(task_id: str, as_json: bool) -> None:
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID")
-@click.argument("context")
+@click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
+@click.argument("context", shell_complete=_complete_context)
 @json_option
 def move(task_id: str, context: str, as_json: bool) -> None:
     """Move a task to another context in this repo.
@@ -390,7 +422,7 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID", required=False)
+@click.argument("task_id", metavar="ID", required=False, shell_complete=_complete_task_id)
 @json_option
 def archive(task_id: str | None, as_json: bool) -> None:
     """Archive one task, or every done task when ID is omitted."""
@@ -409,7 +441,7 @@ def archive(task_id: str | None, as_json: bool) -> None:
 
 
 @cli.command()
-@click.argument("task_id", metavar="ID")
+@click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
 @json_option
 def restore(task_id: str, as_json: bool) -> None:
     """Move an archived task back out of archive/."""

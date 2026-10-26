@@ -43,6 +43,15 @@ tasks across every context; repeat `-c` or `-s` to filter, including backlog
 and done tickets. `--all` includes every status and archived task. Empty lists
 explain their active filters on stderr while JSON stdout remains `[]`.
 
+Enable tab completion by adding one of these lines to your shell startup file:
+
+```sh
+# bash
+source <(_CHITTY_COMPLETE=bash_source chitty)
+# zsh
+eval "$(_CHITTY_COMPLETE=zsh_source chitty)"
+```
+
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit.
 

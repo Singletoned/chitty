@@ -268,7 +268,9 @@ is an error naming both paths.
 
 All commands take `--json` on reads (and on writes, printing the resulting
 task). Exit non-zero with a message on stderr for every error. No prompts,
-no wizards; every command is fully specifiable by flags.
+no wizards; every command is fully specifiable by flags. Click's standard bash
+and zsh completion exposes commands/options; task ID and context completion is
+repository-aware and silently empty outside a repository.
 
 ```
 chitty init [--prefix TASK]        write chitty.toml, chitty/tasks/, AGENTS.md block

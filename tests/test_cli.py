@@ -4,7 +4,7 @@ from datetime import date
 
 from click.testing import CliRunner, Result
 
-from chitty.cli import cli
+from chitty.cli import _complete_context, _complete_task_id, cli
 from chitty.store import guide
 from tests.support import RepoTestCase
 
@@ -100,6 +100,26 @@ class TestAddShowList(CliTestCase):
         result = self.run_cli("add", "X", "-d", "x", "-c", "nope", exit_code=1)
         self.assertIn("no context 'nope'", result.stderr)
         self.run_cli("add", "X", exit_code=2)
+
+    def test_dynamic_completion_lists_contexts_and_active_ids_first(self):
+        self.run_cli("add", "Task", "-d", "x")
+        self.run_cli("add", "Human", "-c", "human", "-d", "x")
+        self.run_cli("archive", "HUMAN-1")
+
+        self.assertEqual(
+            [item.value for item in _complete_context(None, None, "")], ["tasks", "human"]
+        )
+        self.assertEqual(
+            [item.value for item in _complete_task_id(None, None, "")], ["TASK-1", "HUMAN-1"]
+        )
+
+    def test_dynamic_completion_outside_a_repo_is_silent(self):
+        previous = os.getcwd()
+        os.chdir(self.tmp)
+        self.addCleanup(os.chdir, previous)
+
+        self.assertEqual(_complete_context(None, None, ""), [])
+        self.assertEqual(_complete_task_id(None, None, ""), [])
 
     def test_list_defaults_to_active_tasks_in_all_contexts(self):
         self.run_cli("add", "Backlog", "-s", "backlog")
