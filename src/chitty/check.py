@@ -35,10 +35,16 @@ def fix(
                 try:
                     task = parse(path.read_text())
                     canonical = [str(TaskId.parse(item)) for item in task.frontmatter.depends_on]
-                    if canonical == task.frontmatter.depends_on:
+                    parent = task.frontmatter.parent
+                    canonical_parent = str(TaskId.parse(parent)) if parent else None
+                    had_dependencies = canonical != task.frontmatter.depends_on
+                    if not had_dependencies and canonical_parent == parent:
                         continue
-                    path.write_text(task.with_field("depends_on", canonical).render())
-                    fixed.append(Problem(path, "rewrote depends_on IDs as upper-case"))
+                    task = task.with_field("depends_on", canonical)
+                    task = task.with_field("parent", canonical_parent)
+                    path.write_text(task.render())
+                    field = "depends_on IDs" if had_dependencies else "parent ID"
+                    fixed.append(Problem(path, f"rewrote {field} as upper-case"))
                 except ChittyError:
                     continue
     return fixed, check(repo, contexts, paths)
@@ -88,10 +94,29 @@ def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> lis
                 problems.append(Problem(path, f"depends_on {reference}: no such task"))
             elif own_id in graph and dependency in graph:
                 graph[own_id].add(dependency)
+    parent_graph: dict[TaskId, set[TaskId]] = {task_id: set() for task_id in graph}
+    for path, task in tasks.items():
+        own_id = ids.parse_filename(path.name)[0]
+        reference = task.frontmatter.parent
+        if reference is None:
+            continue
+        parent = TaskId.parse(reference)
+        if reference != str(parent):
+            problems.append(Problem(path, f"parent {reference!r} must be upper-case"))
+        if parent == own_id:
+            problems.append(Problem(path, "parent lists the task itself"))
+        elif parent not in by_id:
+            problems.append(Problem(path, f"parent {reference}: no such task"))
+        elif own_id in parent_graph and parent in parent_graph:
+            parent_graph[own_id].add(parent)
     for cycle in _cycles(graph):
         names = ", ".join(str(task_id) for task_id in cycle)
         for task_id in cycle:
             problems.append(Problem(by_id[task_id][0], f"depends_on cycle: {names}"))
+    for cycle in _cycles(parent_graph):
+        names = ", ".join(str(task_id) for task_id in cycle)
+        for task_id in cycle:
+            problems.append(Problem(by_id[task_id][0], f"parent cycle: {names}"))
 
     if paths:
         wanted = {p.resolve() for p in paths}
