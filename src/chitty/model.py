@@ -30,6 +30,7 @@ FIELD_ORDER = (
     "priority",
     "owner",
     "depends_on",
+    "parent",
     "created",
     "moved_from",
 )
@@ -99,6 +100,7 @@ class Frontmatter(BaseModel):
     priority: Literal["low", "medium", "high"] | None = None
     owner: str | None = None
     depends_on: list[str] = []
+    parent: str | None = None
     created: date
     moved_from: str | None = None
 
@@ -125,7 +127,7 @@ class Frontmatter(BaseModel):
             raise ValueError("contains duplicates")
         return value
 
-    @field_validator("moved_from")
+    @field_validator("parent", "moved_from")
     @classmethod
     def _moved_from(cls, value: str | None) -> str | None:
         return None if value is None else _check_id(value)

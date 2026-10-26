@@ -91,6 +91,7 @@ class Edit:
     owner: str | None = None  # "" removes
     depends_on: Sequence[str] = ()
     rm_depends_on: Sequence[str] = ()
+    parent: str | None = None  # "" removes
     description: str | None = None
     add_criteria: Sequence[str] = ()
     rm_criteria: Sequence[int] = ()
@@ -124,6 +125,8 @@ class Edit:
                 fm.depends_on, self.depends_on, self.rm_depends_on, "dependency"
             )
             task = task.with_field("depends_on", references)
+        if self.parent is not None:
+            task = task.with_field("parent", self.parent or None)
         if self.description is not None:
             task = task.with_section(DESCRIPTION, self.description)
         task = task.with_criteria(
@@ -233,6 +236,10 @@ class Repo:
         if isinstance(depends_on, list):
             fields["depends_on"] = self._references(depends_on)
             self.check_dependencies(fields["depends_on"])
+        parent = fields.get("parent")
+        if isinstance(parent, str):
+            fields["parent"] = str(self.resolve(parent))
+            self.find(TaskId.parse(fields["parent"]))
         status = fields.get("status", "todo")
         if description is None:
             if status != "backlog":
@@ -255,6 +262,7 @@ class Repo:
             edit,
             depends_on=self._references(edit.depends_on),
             rm_depends_on=self._references(edit.rm_depends_on),
+            parent=str(self.resolve(edit.parent)) if edit.parent else edit.parent,
         )
         return self._commit(self._save(stored, edit.apply(stored.task)), "edit")
 
@@ -262,6 +270,8 @@ class Repo:
         """Write an edited task; touches nothing if the content is unchanged."""
         if task.frontmatter.depends_on != stored.task.frontmatter.depends_on:
             self.check_dependencies(task.frontmatter.depends_on)
+        if task.frontmatter.parent and task.frontmatter.parent != stored.task.frontmatter.parent:
+            self.find(TaskId.parse(task.frontmatter.parent))
         updated = StoredTask(stored.id, stored.context, stored.path, stored.archived, task)
         if task.render() == stored.task.render():
             return Change(updated, ())
@@ -319,12 +329,15 @@ class Repo:
             raise ChittyError(f"{task_id} is not done and cannot be deleted")
         paths: list[Path] = []
         for other in self.all_tasks():
-            if other.id == task_id or str(task_id) not in other.task.frontmatter.depends_on:
+            if other.id == task_id:
                 continue
-            references = [
-                item for item in other.task.frontmatter.depends_on if item != str(task_id)
-            ]
-            paths += self._save(other, other.task.with_field("depends_on", references)).paths
+            task = other.task
+            if str(task_id) in task.frontmatter.depends_on:
+                references = [item for item in task.frontmatter.depends_on if item != str(task_id)]
+                task = task.with_field("depends_on", references)
+            if task.frontmatter.parent == str(task_id):
+                task = task.with_field("parent", None)
+            paths += self._save(other, task).paths
         stored.path.unlink()
         return Change(stored, (*paths, stored.path))
 
@@ -342,13 +355,20 @@ class Repo:
         task = stored.task.with_field("moved_from", str(task_id))
         old, new = str(task_id), str(new_id)
         task = task.with_field("depends_on", _replace(task.frontmatter.depends_on, old, new))
+        if task.frontmatter.parent == old:
+            task = task.with_field("parent", new)
         self._write(new_path, task.render())
         stored.path.unlink()
         touched = [stored.path, new_path]
         for other in self.all_tasks():
-            if old in other.task.frontmatter.depends_on:
-                references = _replace(other.task.frontmatter.depends_on, old, new)
-                touched += self._save(other, other.task.with_field("depends_on", references)).paths
+            task = other.task
+            if old in task.frontmatter.depends_on:
+                task = task.with_field(
+                    "depends_on", _replace(task.frontmatter.depends_on, old, new)
+                )
+            if task.frontmatter.parent == old:
+                task = task.with_field("parent", new)
+            touched += self._save(other, task).paths
         moved = StoredTask(new_id, target.name, new_path, stored.archived, task)
         return self._commit(Change(moved, tuple(touched)), "move")
 

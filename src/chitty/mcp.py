@@ -60,6 +60,7 @@ def add(
     priority: Priority | None = None,
     owner: str | None = None,
     depends_on: list[str] | None = None,
+    parent: str | None = None,
 ) -> dict[str, Any]:
     root = search_root(Path.cwd())
     target = resolve_add_target(Repo.open(root) if root else None, context)
@@ -69,6 +70,7 @@ def add(
         "priority": priority,
         "owner": owner,
         "depends_on": depends_on or [],
+        "parent": parent,
     }
     change = target.repo.add(target.context, title, description, ac or [], fields, date.today())
     return change.task.as_dict()
@@ -117,6 +119,7 @@ def edit(
     owner: str | None = None,
     depends_on: list[str] | None = None,
     rm_depends_on: list[str] | None = None,
+    parent: str | None = None,
     description: str | None = None,
     ac: list[str] | None = None,
     rm_ac: list[int] | None = None,
@@ -135,6 +138,7 @@ def edit(
         owner=owner,
         depends_on=depends_on or (),
         rm_depends_on=rm_depends_on or (),
+        parent=parent,
         description=description,
         add_criteria=ac or (),
         rm_criteria=rm_ac or (),

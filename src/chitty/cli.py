@@ -134,6 +134,7 @@ def init(prefix: str) -> None:
 @click.option("-p", "--priority", type=click.Choice(PRIORITIES))
 @click.option("--owner", help="Free text: human, a name, an agent.")
 @click.option("--depends-on", multiple=True, help="Task ID this is blocked on (repeatable).")
+@click.option("--parent", help="Parent task ID in this repository.")
 @json_option
 def add(
     title: str,
@@ -145,6 +146,7 @@ def add(
     priority: str | None,
     owner: str | None,
     depends_on: tuple[str, ...],
+    parent: str | None,
     as_json: bool,
 ) -> None:
     """Create a task with status todo.
@@ -162,6 +164,7 @@ def add(
         "priority": priority,
         "owner": owner,
         "depends_on": list(depends_on),
+        "parent": parent,
     }
     change = target.repo.add(target.context, title, description, criteria, fields, date.today())
     _report(change, as_json, "added")
@@ -268,6 +271,7 @@ def _format(stored: StoredTask) -> str:
 @click.option("--owner", help="'' unsets.")
 @click.option("--depends-on", multiple=True, help="Add a dependency (repeatable).")
 @click.option("--rm-depends-on", multiple=True, help="Remove a dependency (repeatable).")
+@click.option("--parent", help="Parent task ID; '' unsets.")
 @click.option("-d", "--description", help="Replace the Description section.")
 @click.option("--description-file", type=click.File(), help="Read --description from a file.")
 @click.option("--ac", multiple=True, help="Append an acceptance criterion (repeatable).")
@@ -288,6 +292,7 @@ def edit(
     owner: str | None,
     depends_on: tuple[str, ...],
     rm_depends_on: tuple[str, ...],
+    parent: str | None,
     description: str | None,
     description_file: TextIO | None,
     ac: tuple[str, ...],
@@ -310,6 +315,7 @@ def edit(
         owner=owner,
         depends_on=depends_on,
         rm_depends_on=rm_depends_on,
+        parent=parent,
         description=_text(description, description_file, "description"),
         add_criteria=ac,
         rm_criteria=rm_ac,
