@@ -32,7 +32,6 @@ class TestMcp(CliTestCase):
                     "fix",
                     "move",
                     "archive",
-                    "restore",
                     "check",
                     "path",
                 ]
@@ -50,7 +49,6 @@ class TestMcp(CliTestCase):
         self.assertEqual(call("check"), [])
         self.assertEqual(call("move", id="1", context="human")["id"], "HUMAN-1")
         self.assertTrue(call("archive", id="HUMAN-1")["archived"])
-        self.assertFalse(call("restore", id="HUMAN-1")["archived"])
 
     def test_archives_every_done_task_without_an_id(self):
         call("add", title="Done", description="x")

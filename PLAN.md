@@ -277,7 +277,7 @@ chitty init [--prefix TASK]        write chitty.toml, chitty/tasks/, AGENTS.md b
 chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
                  [--owner X] [--depends-on ID]...
 chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
-                 [--archived | --all]
+                 [--all]
 chitty show ID
 chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p PRIO]
                  [--owner X] [--depends-on ID]... [--rm-depends-on ID]...
@@ -285,7 +285,7 @@ chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p 
                  [--ac TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
                  [--plan TEXT | --plan-file F] [--note TEXT]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
-chitty archive [ID] | chitty restore ID  omit ID to archive every done task
+chitty archive [ID]                  omit ID to archive every done task
 chitty check [-c CTX] [PATH]...    validate; non-zero on any error
 chitty fix [-c CTX] [PATH]...      repair safe problems; fail if any remain
 chitty path ID                     print the file path (for editors/agents)
@@ -306,11 +306,11 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   reports legacy non-upper-case `depends_on` entries and `fix` rewrites them.
 - `check` is read-only. `fix` applies safe repairs, reports each one, and exits
   non-zero if problems remain. Autocommit runs it on written task files first.
-- `list` shows non-archived `todo` and `doing` tasks from every context by
-  default; repeat `-c` to narrow contexts or `-s` to choose statuses, including
-  `backlog` and `done`. `--archived` shows only archived tasks (and accepts
-  `-s`); `--all` selects every status in both locations. An empty list reports
-  its active filters on stderr while keeping stdout (including JSON) empty.
+- `list` reads only non-archived tasks: by default it selects `todo` and
+  `doing` tasks from every context; repeat `-c` to narrow contexts or `-s` to
+  choose statuses, including `backlog` and `done`. `--all` selects every status
+  but still excludes archive folders. An empty list reports its active filters
+  on stderr while keeping stdout (including JSON) empty.
   Default output is one line per task:
   `TASK-12  doing   Add search to the task list  [cli,search]`.
 - `archive` with no ID moves every non-archived `done` task across contexts in
@@ -324,7 +324,7 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 
 `chitty mcp` runs a stdio server. Tools mirror the CLI one-to-one with the
 same names and argument names: `add`, `list`, `show`, `edit`, `note`, `move`,
-`archive`, `restore`, `check`, `fix`, `path`. They return the same JSON
+`archive`, `check`, `fix`, `path`. They return the same JSON
 the CLI prints with `--json`. One resource, `chitty://guide`, returning the
 same text as the AGENTS.md block. Tool descriptions state the rules (one
 task per session, write Plan before coding, tick criteria as you go).
@@ -375,7 +375,7 @@ That is the whole prompt. Statuses are fixed, so the block is always correct.
   descriptions): `make check` (ruff + pyright + tests), `make format`.
 - Git via `subprocess.run(..., check=True)`. Only used when `autocommit` is
   on: `git add -- <paths> && git commit --only -m "chitty: <verb> <ID> <title>" -- <paths>`,
-  with all affected paths listed (two for `move`/`archive`/`restore`, more
+  with all affected paths listed (two for `move`/`archive`, more
   when `move` rewrites references), so nothing the user had staged is swept
   in. Failure is a loud error.
 
@@ -412,7 +412,7 @@ src/chitty/
    missing-directory-is-empty.
 3. `check.py`: duplicates and dangling references.
 4. `cli.py`: `init`, `add`, `list`, `show`, `edit`, `check`, `path`.
-5. `move`, `archive`/`restore`, user-level contexts.
+5. `move`, `archive`, user-level contexts.
 6. `autocommit`.
 7. `mcp.py` as the optional extra.
 8. Dogfood: track Chitty's own work in `chitty/` from step 4 onward.

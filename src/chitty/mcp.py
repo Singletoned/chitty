@@ -14,7 +14,8 @@ from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
-from chitty.store import Edit, Repo, Which, guide, matches, resolve_add_target
+from chitty.model import STATUSES
+from chitty.store import Edit, Repo, guide, matches, resolve_add_target
 
 Status = Literal["backlog", "todo", "doing", "done"]
 Priority = Literal["low", "medium", "high"]
@@ -84,16 +85,12 @@ def list_(
     label: list[str] | None = None,
     owner: str | None = None,
     search: str | None = None,
-    archived: bool = False,
     all: bool = False,
 ) -> list[dict[str, Any]]:
-    if archived and all:
-        raise ChittyError("give archived or all, not both")
-    which: Which = "all" if all else "archived" if archived else "active"
     repo = _repo()
     contexts = [repo.context(name) for name in context] if context else repo.contexts()
-    statuses = status or ["todo", "doing"]
-    tasks = [task for selected in contexts for task in repo.tasks(selected, which)]
+    statuses = list(STATUSES) if all else status or ["todo", "doing"]
+    tasks = [task for selected in contexts for task in repo.tasks(selected, "active")]
     found = [t for t in tasks if matches(t, statuses, label or [], owner, search)]
     return [t.as_dict() for t in found]
 
@@ -167,12 +164,6 @@ def archive(id: str | None = None) -> dict[str, Any] | list[dict[str, Any]]:
     if id is not None:
         return repo.archive(repo.resolve(id)).task.as_dict()
     return [change.task.as_dict() for change in repo.archive_done()]
-
-
-@_tool("restore", "Move an archived task back out of archive/.")
-def restore(id: str) -> dict[str, Any]:
-    repo = _repo()
-    return repo.restore(repo.resolve(id)).task.as_dict()
 
 
 @_tool("check", "Validate task files: every context, one `context`, or only `paths`.")

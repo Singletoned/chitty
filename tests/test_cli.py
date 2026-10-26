@@ -148,14 +148,9 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(lines[0], "TASK-1  doing   Add search to the task list  [cli,search]")
         self.assertEqual(lines[1], "TASK-2  todo    Fix login")
         self.assertEqual(len(lines), 9)
-        self.assertEqual(
-            self.run_cli("list", "--archived").stdout, "TASK-10  todo    Task 10  (archived)\n"
-        )
         self.run_cli("edit", "2", "-s", "done")
-        self.assertEqual(len(self.json("list", "--all")), 10)
-        self.assertEqual(
-            [t["id"] for t in self.json("list", "--archived", "-s", "todo")], ["TASK-10"]
-        )
+        self.assertEqual(len(self.json("list", "--all")), 9)
+        self.run_cli("list", "--archived", exit_code=2)
         self.assertEqual([t["id"] for t in self.json("list", "-s", "doing")], ["TASK-1"])
         self.assertEqual(
             [t["id"] for t in self.json("list", "--search", "SAFARI", "-s", "done")], ["TASK-2"]
@@ -165,11 +160,11 @@ class TestAddShowList(CliTestCase):
         )
         empty = self.run_cli("list", "-c", "human")
         self.assertEqual(empty.stdout, "")
-        self.assertIn(
-            "no tasks: contexts=human; statuses=todo,doing; archived=active", empty.stderr
-        )
+        self.assertIn("no tasks: contexts=human; statuses=todo,doing", empty.stderr)
         self.assertEqual(self.json("list", "-c", "human"), [])
-        self.run_cli("list", "--archived", "--all", exit_code=2)
+        help_text = self.run_cli("list", "--help").stdout
+        self.assertNotIn("--archived", help_text)
+        self.assertIn("Every status (never archived tasks).", help_text)
 
 
 class TestEdit(CliTestCase):
@@ -316,8 +311,9 @@ class TestMoveArchive(CliTestCase):
         self.assertTrue(self.json("archive", "1")["archived"])
         self.assertEqual(self.json("show", "1")["archived"], True)
         self.assertIn("(archived)", self.run_cli("show", "1").stdout)
-        self.run_cli("restore", "1")
-        self.assertIn("not archived", self.run_cli("restore", "1", exit_code=1).stderr)
+        self.assertNotIn("restore", self.run_cli("--help").stdout)
+        self.run_cli("add", "Two", "-d", "x")
+        self.assertEqual(self.json("show", "2")["id"], "TASK-2")
 
 
 class TestUserContexts(CliTestCase):

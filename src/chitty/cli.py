@@ -18,7 +18,6 @@ from chitty.store import (
     Edit,
     Repo,
     StoredTask,
-    Which,
     guide,
     init_repo,
     matches,
@@ -183,8 +182,7 @@ def add(
 @click.option("-l", "--label", "labels", multiple=True, help="Only tasks with every label.")
 @click.option("--owner")
 @click.option("--search", help="Case-insensitive match on title and body.")
-@click.option("--archived", is_flag=True, help="Only archived tasks.")
-@click.option("--all", "all_", is_flag=True, help="Every status, archived or not.")
+@click.option("--all", "all_", is_flag=True, help="Every status (never archived tasks).")
 @json_option
 def list_(
     contexts: tuple[str, ...],
@@ -192,27 +190,23 @@ def list_(
     labels: tuple[str, ...],
     owner: str | None,
     search: str | None,
-    archived: bool,
     all_: bool,
     as_json: bool,
 ) -> None:
     """List tasks, one per line."""
-    if archived and all_:
-        raise click.UsageError("give --archived or --all, not both")
-    which: Which = "all" if all_ else "archived" if archived else "active"
     repo = _repo()
     selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
     selected_statuses = STATUSES if all_ else statuses or ("todo", "doing")
     tasks = [
         task
         for context in selected
-        for task in repo.tasks(context, which)
+        for task in repo.tasks(context, "active")
         if matches(task, selected_statuses, labels, owner, search)
     ]
     if not tasks:
         click.echo(
             f"no tasks: contexts={','.join(context.name for context in selected)}; "
-            f"statuses={','.join(selected_statuses)}; archived={which}",
+            f"statuses={','.join(selected_statuses)}",
             err=True,
         )
     if as_json:
@@ -224,8 +218,6 @@ def list_(
         line = f"{stored.id!s:<{width}}  {fm.status:<6}  {fm.title}"
         if fm.labels:
             line += f"  [{','.join(sorted(fm.labels))}]"
-        if stored.archived:
-            line += "  (archived)"
         click.echo(line)
 
 
@@ -438,16 +430,6 @@ def archive(task_id: str | None, as_json: bool) -> None:
             click.echo(f"archived {change.task.id}")
     else:
         click.echo("no done tasks to archive")
-
-
-@cli.command()
-@click.argument("task_id", metavar="ID", shell_complete=_complete_task_id)
-@json_option
-def restore(task_id: str, as_json: bool) -> None:
-    """Move an archived task back out of archive/."""
-    repo = _repo()
-    change = repo.restore(repo.resolve(task_id))
-    _report(change, as_json, "restored")
 
 
 @cli.command("guide")

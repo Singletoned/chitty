@@ -13,6 +13,7 @@ task files. `chitty --help` is the full command reference.
   criterion is ticked and the work is verified. Run `chitty fix` to apply
   safe repairs; it fails loudly when a problem remains.
 - Before preparing a merge request, run `chitty archive` with no ID to archive
-  completed tasks in one batch.
+  completed tasks in one batch. To restore one, move its file out of `archive/`
+  manually.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
   Don't do it in this session.
