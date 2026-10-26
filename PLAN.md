@@ -306,6 +306,9 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   On every other command, `-c` must name a context in this repo.
 - `-d` is required on `add` except with `-s backlog`, which writes the default
   required Description: `This ticket needs refining.`
+- `parent` is an optional full task ID for grouping flat tasks. `add` and
+  `edit` expand shorthand IDs; `list --parent ID` filters direct children and
+  `show` lists them. Parents must exist and cannot form cycles.
 - `ID` arguments accept `TASK-13` in any case, or bare `13` for the default
   context. IDs are canonicalised to upper-case for output and writes; `check`
   reports legacy non-upper-case `depends_on` entries and `fix` rewrites them.

@@ -166,6 +166,16 @@ class TestAddShowList(CliTestCase):
         self.assertNotIn("--archived", help_text)
         self.assertIn("Every status (never archived tasks).", help_text)
 
+    def test_parent_groups_tasks(self):
+        self.run_cli("add", "Parent", "-d", "x")
+        self.run_cli("add", "Child", "-d", "x", "--parent", "1")
+
+        self.assertEqual(self.json("show", "2")["parent"], "TASK-1")
+        self.assertIn("TASK-2", self.run_cli("show", "1").stdout)
+        self.assertEqual(
+            [task["id"] for task in self.json("list", "--parent", "1", "--all")], ["TASK-2"]
+        )
+
 
 class TestEdit(CliTestCase):
     def setUp(self):

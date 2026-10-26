@@ -40,7 +40,8 @@ chitty guide                      # instructions for coding agents
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
 are the reference. Plain `chitty list` shows non-archived `todo` and `doing`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog
-and done tickets. `--all` includes every status but never archive folders.
+and done tickets. Use `--parent TASK-1` to show a parent's direct children.
+`--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains
 `[]`. To inspect or restore an archived task, work with its file directly.
 
