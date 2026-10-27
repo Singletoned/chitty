@@ -1,6 +1,6 @@
 ---
 title: Make chitty init idempotent so it also upgrades repos
-status: todo
+status: doing
 labels:
   - cli,config
 created: 2026-10-27
@@ -18,3 +18,7 @@ chitty init refuses to run where chitty.toml exists. Make it safe to run any num
 - [ ] Reports each change it made
 - [ ] --prefix that disagrees with an existing default context's prefix is an error, not a rewrite
 - [ ] Tests, PLAN.md, README and init --help updated
+
+## Plan
+
+Inspect init and configuration migration requirements, then make init safely add missing Chitty files/guide/config defaults without overwriting existing user configuration, with focused regression tests.

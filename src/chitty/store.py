@@ -468,21 +468,48 @@ def guide() -> str:
     return files("chitty").joinpath("guide.md").read_text()
 
 
-def init_repo(directory: Path, prefix: str) -> list[Path]:
-    """Write chitty.toml and the default context, and add the guide to AGENTS.md."""
+def init_repo(directory: Path, prefix: str | None) -> list[Path]:
+    """Create or non-destructively upgrade the repository's Chitty setup."""
+    from chitty.config import load_repo_config
+
     config_path = directory / CONFIG_NAME
-    if config_path.exists():
-        raise ChittyError(f"{config_path} already exists")
-    text = INITIAL_CONFIG.format(prefix=prefix)
-    config = validate_repo_config(text, config_path)
-    config_path.write_text(text)
-    written = [config_path]
-    (directory / BACKLOG_DIR / config.default_context).mkdir(parents=True, exist_ok=True)
+    pyproject_path = directory / "pyproject.toml"
+    written: list[Path] = []
+    if not config_path.exists() and not pyproject_path.exists():
+        text = INITIAL_CONFIG.format(prefix=prefix or "TASK")
+        config = validate_repo_config(text, config_path)
+        config_path.write_text(text)
+        written.append(config_path)
+    else:
+        config = load_repo_config(directory)
+        default = config.contexts[config.default_context]
+        if prefix is not None and prefix != default.prefix:
+            raise ChittyError(
+                f"--prefix {prefix} disagrees with existing default context prefix {default.prefix}"
+            )
+        source = config_path if config_path.exists() else pyproject_path
+        text = source.read_text()
+        if "archive" not in text:
+            marker = "[contexts." if source == config_path else "[tool.chitty.contexts."
+            position = text.find(marker)
+            text = text[:position] + 'archive = "move"\n\n' + text[position:]
+            source.write_text(text)
+            written.append(source)
+    for name in config.contexts:
+        path = directory / BACKLOG_DIR / name
+        if not path.exists():
+            path.mkdir(parents=True)
+            written.append(path)
     agents = directory / AGENTS_FILE
     existing = agents.read_text() if agents.exists() else ""
-    if GUIDE_HEADING not in existing.splitlines():
-        head = existing.rstrip("\n") + "\n\n" if existing.strip() else ""
-        agents.write_text(head + guide())
+    import re
+
+    pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
+    updated, count = re.subn(pattern, guide().rstrip() + "\n", existing)
+    if not count:
+        updated = (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + guide()
+    if updated != existing:
+        agents.write_text(updated)
         written.append(agents)
     return written
 

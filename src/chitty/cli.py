@@ -119,11 +119,14 @@ def _text(value: str | None, file: TextIO | None, name: str) -> str | None:
 
 
 @cli.command()
-@click.option("--prefix", default="TASK", show_default=True, help="ID prefix for tasks/.")
-def init(prefix: str) -> None:
-    """Write chitty.toml and chitty/tasks/, and add the agent guide to AGENTS.md."""
-    for path in init_repo(Path.cwd(), prefix):
-        click.echo(f"wrote {path}")
+@click.option("--prefix", default=None, help="ID prefix for a new tasks/ context.")
+def init(prefix: str | None) -> None:
+    """Create or upgrade Chitty configuration and agent instructions."""
+    paths = init_repo(Path.cwd(), prefix)
+    if not paths:
+        click.echo("already up to date")
+    for path in paths:
+        click.echo(f"updated {path}")
 
 
 @cli.group("import")
