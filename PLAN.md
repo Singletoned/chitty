@@ -132,7 +132,16 @@ Free markdown, written by the agent before implementing.
 ## Notes
 
 Free markdown. Append-only by convention; not enforced.
+
+## History
+
+- 2026-10-23 → todo
+- 2026-10-28 todo → doing
 ```
+
+`History` is tool-managed, always last, and records task creation plus every
+status or archive-state transition. Its entries are `- YYYY-MM-DD old → new`;
+the initial entry omits `old`. Deleting a task removes its History with it.
 
 Frontmatter schema (strict: unknown keys are an error):
 
@@ -161,7 +170,8 @@ won't be as careful. `created` is a real date and is written unquoted.
 Body rules:
 
 - Sections are `##` headings. Recognised: `Description`, `Acceptance
-  Criteria`, `Plan`, `Notes`. Unrecognised `##` headings, any `#` heading,
+  Criteria`, `Plan`, `Notes`, `Summary`, `History`. `History` is last and
+  contains only tool-written status entries. Unrecognised `##` headings, any `#` heading,
   and non-blank content before the first `##` are errors. Use `###` and below
   inside a section for structure.
 - The parser is fence-aware: `##` inside a fenced code block is not a heading.
@@ -214,6 +224,8 @@ Serialisation is a patch over the original text, not parse-then-dump:
 - `--note TEXT` appends `TEXT` as a new paragraph (preceded by a blank line)
   to `## Notes`, creating the section if absent. No date prefix; include one
   in the text if you want it.
+- Creating a task writes its initial History entry. A changed `--status`,
+  archiving, and restoring append a transition; a no-op status edit does not.
 - All checklist indices in a single `edit` refer to the list as it was
   before the command ran. `show` prints the numbers next to each criterion so
   callers don't count.
@@ -332,7 +344,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   `TASK-12  doing   Add search to the task list  [cli,search]`.
 - `archive` with no ID processes every non-archived `done` task across contexts
   in one batch; use it when preparing a merge request. `archive = "move"`
-  moves files into `archive/` (the default); `archive = "delete"` deletes them,
+  moves files into `archive/` and records `… → archived` in History (the default);
+  `archive = "delete"` deletes them (and therefore their History),
   removes exact dependencies elsewhere, and retains their numbers from Git
   history. With an ID it processes one task as before.
 - `move` is within the current repo only. It gives the task the next number

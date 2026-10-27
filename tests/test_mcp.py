@@ -43,7 +43,8 @@ class TestMcp(CliTestCase):
     def test_same_json_as_cli(self):
         added = call("add", title="Hi", description="x", ac=["One"], label=["cli"])
         self.assertEqual(added, self.json("show", "1"))
-        call("edit", id="1", status="doing", check=[1], plan="Do it.", note="Started.")
+        edited = call("edit", id="1", status="doing", check=[1], plan="Do it.", note="Started.")
+        self.assertTrue(edited["history"].endswith("todo → doing"))
         self.assertEqual(call("show", id="TASK-1"), self.json("show", "1"))
         self.assertEqual(call("note", id="1", text="Started."), self.json("show", "1"))
         self.assertEqual(call("list", status=["doing"]), self.json("list", "-s", "doing"))

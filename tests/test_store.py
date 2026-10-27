@@ -32,6 +32,7 @@ class TestStore(StoreTestCase):
         self.assertEqual(first.path, self.root / "chitty/tasks/TASK-1--add-search.md")
         self.assertEqual(second.path.name, "TASK-2.md")
         self.assertEqual([t.id.number for t in self.repo.tasks(self.tasks, "active")], [1, 2])
+        self.assertEqual(first.task.section("History"), "- 2026-10-23 → todo")
 
     def test_delete_mode_requires_git_history_for_new_ids(self):
         config = self.root / "chitty.toml"
@@ -72,8 +73,22 @@ class TestStore(StoreTestCase):
         self.assertEqual(stored.path.stat().st_mtime_ns, mtime)
         change = self.repo.edit(stored.id, Edit(status="doing"))
         self.assertEqual(change.paths, (stored.path,))
+        self.assertEqual(
+            change.task.task.section("History"),
+            f"- 2026-10-23 → todo\n- {date.today().isoformat()} todo → doing",
+        )
         with self.assertRaisesRegex(ChittyError, "nothing to change"):
             self.repo.edit(stored.id, Edit(add_labels=[]))
+
+    def test_status_change_adds_history_to_an_existing_task(self):
+        stored = self.add("One")
+        stored.path.write_text(stored.task.with_section("History", "").render())
+
+        changed = self.repo.edit(stored.id, Edit(status="doing")).task
+
+        self.assertEqual(
+            changed.task.section("History"), f"- {date.today().isoformat()} todo → doing"
+        )
 
     def test_archive_and_restore(self):
         stored = self.add("One")
@@ -81,9 +96,15 @@ class TestStore(StoreTestCase):
         self.assertEqual(archived.path, self.root / "chitty/tasks/archive/TASK-1--one.md")
         self.assertEqual(self.repo.tasks(self.tasks, "active"), [])
         self.assertEqual(len(self.repo.tasks(self.tasks, "archived")), 1)
+        self.assertEqual(
+            archived.task.section("History"),
+            f"- 2026-10-23 → todo\n- {date.today().isoformat()} todo → archived",
+        )
         with self.assertRaisesRegex(ChittyError, "already archived"):
             self.repo.archive(stored.id)
-        self.assertEqual(self.repo.restore(stored.id).task.path, stored.path)
+        restored = self.repo.restore(stored.id).task
+        self.assertEqual(restored.path, stored.path)
+        self.assertIn("archived → todo", restored.task.section("History") or "")
 
     def test_move_rewrites_references(self):
         self.add("First")

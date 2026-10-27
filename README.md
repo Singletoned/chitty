@@ -49,7 +49,8 @@ and done tickets. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains
 `[]`. `chitty import backlog-md` refuses non-empty contexts, reports lossy
-mappings, and leaves `backlog/` in place. Finished tasks can include a `## Summary` handoff via
+mappings, and leaves `backlog/` in place. Each task has a tool-managed trailing
+`## History` that records its creation and status transitions. Finished tasks can include a `## Summary` handoff via
 `chitty edit ID --summary TEXT`. To inspect or restore an archived task, work
 with its file directly.
 

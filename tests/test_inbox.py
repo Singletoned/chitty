@@ -37,6 +37,7 @@ class TestInbox(RepoTestCase):
         self.assertFalse(path.exists())
         task = repo.find(repo.resolve("TASK-1")).task
         self.assertEqual(task.frontmatter.status, "backlog")
+        self.assertIn("→ backlog", task.section("History") or "")
         self.assertIn("Suggestion origin", task.render())
 
     def test_path_resolves_project_config(self):

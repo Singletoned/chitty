@@ -117,6 +117,8 @@ class TestAddShowList(CliTestCase):
         data = self.json("show", "TASK-1")
         self.assertEqual(data["owner"], "no")
         self.assertEqual(data["acceptance_criteria"][1]["index"], 2)
+        self.assertEqual(data["history"], f"- {date.today().isoformat()} → todo")
+        self.assertIn("## History\n\n", shown)
         self.assertEqual(self.run_cli("path", "1").stdout, f"{path}\n")
 
     def test_add_backlog_uses_a_default_description(self):
@@ -267,6 +269,10 @@ class TestEdit(CliTestCase):
             [(True, "One"), (False, "Three")],
         )
         self.assertEqual((data["plan"], data["notes"]), ("Do it.", "Noted."))
+        self.assertEqual(
+            data["history"],
+            f"- {date.today().isoformat()} → todo\n- {date.today().isoformat()} todo → doing",
+        )
         self.assertTrue(self.path.exists(), "slug is not updated when the title changes")
         self.run_cli(
             "edit", "1", "-p", "", "--owner", "", "--plan", "", "--rm-depends-on", "HUMAN-1"
@@ -329,6 +335,10 @@ class TestCheck(CliTestCase):
         self.assertIn("1 problem(s)", result.stderr)
         result = self.run_cli("check", "--json", str(path), exit_code=1)
         self.assertEqual(json.loads(result.stdout)[0]["path"], str(path))
+        path.write_text(path.read_text().replace("status: unknown", "status: todo"))
+        path.write_text(path.read_text().replace("## History", "## History\n\nnot a history line"))
+        result = self.run_cli("check", exit_code=1)
+        self.assertIn("History' may only contain", result.stdout)
 
 
 class TestMoveArchive(CliTestCase):

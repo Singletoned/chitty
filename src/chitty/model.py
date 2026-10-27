@@ -39,7 +39,8 @@ ACCEPTANCE_CRITERIA = "Acceptance Criteria"
 PLAN = "Plan"
 NOTES = "Notes"
 SUMMARY = "Summary"
-SECTION_ORDER = (DESCRIPTION, ACCEPTANCE_CRITERIA, PLAN, NOTES, SUMMARY)
+HISTORY = "History"
+SECTION_ORDER = (DESCRIPTION, ACCEPTANCE_CRITERIA, PLAN, NOTES, SUMMARY, HISTORY)
 
 DELIMITER = "---\n"
 KEY_LINE_RE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)[ \t]*:(?:[ \t]|$)")
@@ -49,6 +50,10 @@ FENCE_OPEN_RE = re.compile(r" {0,3}(`{3,}|~{3,})")
 CRITERION_RE = re.compile(r"- \[([ xX])\](?:[ \t]+(.*?))?[ \t]*$")
 LIST_MARKER_RE = re.compile(r"(?:[-*+]|[0-9]+[.)])(?:[ \t]|$)")
 DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
+HISTORY_LINE_RE = re.compile(
+    r"- (?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2})(?: (?P<old>[a-z][a-z-]*))? → "
+    r"(?P<new>[a-z][a-z-]*)\n?"
+)
 BRACKET_COLUMN = 3
 
 # Plain scalars that a YAML 1.2 (core schema) or YAML 1.1 reader would type as
@@ -200,6 +205,7 @@ class Task:
         data["plan"] = self.section(PLAN)
         data["notes"] = self.section(NOTES)
         data["summary"] = self.section(SUMMARY)
+        data["history"] = self.section(HISTORY)
         return data
 
     # -- editing ---------------------------------------------------------
@@ -253,6 +259,15 @@ class Task:
         last = max(i for i, line in enumerate(old) if line.strip())
         sections[index] = _Section(NOTES, (*old[: last + 1], "\n", *lines, *old[last + 1 :]))
         return self._rebuild(sections=sections)
+
+    def with_history(self, when: date, old: str | None, new: str) -> "Task":
+        """Append a status transition to the tool-managed History section."""
+        entry = f"- {when.isoformat()}"
+        if old:
+            entry += f" {old}"
+        entry += f" → {new}"
+        history = self.section(HISTORY)
+        return self.with_section(HISTORY, f"{history}\n{entry}" if history else entry)
 
     def with_criteria(
         self,
@@ -374,6 +389,7 @@ def parse(text: str) -> Task:
     frontmatter = _load_frontmatter(fm_lines, fields)
     preamble, sections = _split_sections(lines[close + 1 :], first_line=close + 2)
     criteria = _parse_criteria(sections)
+    _parse_history(sections)
     description = next((s for s in sections if s.name == DESCRIPTION), None)
     if description is None:
         raise TaskError("'## Description' section is required")
@@ -395,7 +411,8 @@ def new_task(
     task = parse(text).with_field("title", title).with_section(DESCRIPTION, description)
     for key, value in fields.items():
         task = task.with_field(key, value)
-    return task.with_criteria(add=criteria, remove=(), check=(), uncheck=())
+    task = task.with_criteria(add=criteria, remove=(), check=(), uncheck=())
+    return task.with_history(created, None, task.frontmatter.status)
 
 
 def _split_fields(fm_lines: list[str]) -> list[_FieldSpan]:
@@ -504,6 +521,27 @@ def _split_sections(body: list[str], first_line: int) -> tuple[list[str], list[_
     if any(line.strip() for line in preamble):
         raise TaskError("content before the first '##' section is not allowed")
     return preamble, [_Section(name, tuple(lines)) for name, lines in sections]
+
+
+def _parse_history(sections: list[_Section]) -> None:
+    section = next((s for s in sections if s.name == HISTORY), None)
+    if section is None:
+        return
+    if sections[-1] != section:
+        raise TaskError(f"'## {HISTORY}' must be the last section")
+    lines = section.lines[1:]
+    if lines[:1] == ("\n",):
+        lines = lines[1:]
+    if not lines:
+        raise TaskError(f"'## {HISTORY}' must contain status changes")
+    for line in lines:
+        match = HISTORY_LINE_RE.fullmatch(line)
+        if match is None:
+            raise TaskError(f"'## {HISTORY}' may only contain '- YYYY-MM-DD old → new' entries")
+        try:
+            date.fromisoformat(match["date"])
+        except ValueError:
+            raise TaskError(f"history date {match['date']!r} is not an ISO 8601 date") from None
 
 
 def _parse_criteria(sections: list[_Section]) -> tuple[Criterion, ...]:

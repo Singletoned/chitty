@@ -65,6 +65,7 @@ class TestParse(unittest.TestCase):
         self.assertIn("## not a heading", task.section("Description") or "")
         self.assertEqual(task.section("Notes"), "First note.")
         self.assertIsNone(task.section("Plan"))
+        self.assertIsNone(task.section("History"))
         self.assertEqual(task.render(), SAMPLE)
 
     def test_scalars_are_strings(self):
@@ -118,6 +119,11 @@ class TestParse(unittest.TestCase):
             "single line": SAMPLE.replace(
                 "title: Add search to the task list", 'title: "two\\nlines"'
             ),
+            "History' must be the last": SAMPLE.replace(
+                "## Notes", "## History\n\n- 2026-10-28 review → doing\n\n## Notes"
+            ),
+            "History' may only contain": SAMPLE + "\n## History\n\n- wrong\n",
+            "history date": SAMPLE + "\n## History\n\n- 2026-02-30 todo → doing\n",
         }
         for reason, text in cases.items():
             with self.subTest(reason=reason), self.assertRaisesRegex(TaskError, reason):
@@ -210,6 +216,11 @@ class TestSectionEdits(unittest.TestCase):
         task = parse(SAMPLE).with_note("Second note.")
         self.assertTrue(task.render().endswith("First note.\n\nSecond note.\n"))
 
+    def test_history_is_appended_after_existing_sections(self):
+        task = parse(SAMPLE).with_history(date(2026, 10, 28), "todo", "doing")
+        self.assertTrue(task.render().endswith("## History\n\n- 2026-10-28 todo → doing\n"))
+        self.assertEqual(task.as_dict()["history"], "- 2026-10-28 todo → doing")
+
 
 class TestCriteriaEdits(unittest.TestCase):
     def edit(self, text, add=(), remove=(), check=(), uncheck=()):
@@ -290,6 +301,10 @@ class TestNewTask(unittest.TestCase):
                 ## Acceptance Criteria
 
                 - [ ] First
+
+                ## History
+
+                - 2026-10-23 → todo
                 """
             ),
         )

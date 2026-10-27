@@ -268,7 +268,10 @@ class Repo:
             rm_depends_on=self._references(edit.rm_depends_on),
             parent=str(self.resolve(edit.parent)) if edit.parent else edit.parent,
         )
-        return self._commit(self._save(stored, edit.apply(stored.task)), "edit")
+        task = edit.apply(stored.task)
+        if edit.status is not None and edit.status != stored.task.frontmatter.status:
+            task = task.with_history(date.today(), stored.task.frontmatter.status, edit.status)
+        return self._commit(self._save(stored, task), "edit")
 
     def _save(self, stored: StoredTask, task: Task) -> Change:
         """Write an edited task; touches nothing if the content is unchanged."""
@@ -342,8 +345,12 @@ class Repo:
             if task.frontmatter.parent == str(task_id):
                 task = task.with_field("parent", None)
             paths += self._save(other, task).paths
+        deleted = replace(
+            stored,
+            task=stored.task.with_history(date.today(), stored.task.frontmatter.status, "deleted"),
+        )
         stored.path.unlink()
-        return Change(stored, (*paths, stored.path))
+        return Change(deleted, (*paths, stored.path))
 
     def restore(self, task_id: TaskId) -> Change:
         return self._commit(self._set_archived(task_id, False), "restore")
@@ -416,8 +423,12 @@ class Repo:
         directory = context.archive_directory if archived else context.directory
         new_path = directory / stored.path.name
         directory.mkdir(parents=True, exist_ok=True)
+        state = "archived" if archived else stored.task.frontmatter.status
+        previous = stored.task.frontmatter.status if archived else "archived"
+        task = stored.task.with_history(date.today(), previous, state)
         stored.path.rename(new_path)
-        moved = StoredTask(stored.id, stored.context, new_path, archived, stored.task)
+        self._write(new_path, task.render())
+        moved = StoredTask(stored.id, stored.context, new_path, archived, task)
         return Change(moved, (stored.path, new_path))
 
     def _files(self, context: Context, archived: bool) -> list[Path]:

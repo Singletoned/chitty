@@ -19,6 +19,7 @@ class TestImportBacklog(unittest.TestCase):
         task = converted.task
         self.assertEqual(converted.old_id, "TASK-7.3")
         self.assertEqual(task.frontmatter.status, "backlog")
+        self.assertEqual(task.section("History"), "- 2026-10-20 → backlog")
         self.assertEqual(task.frontmatter.owner, "ed")
         self.assertEqual(task.frontmatter.depends_on, ["TASK-1"])
         self.assertEqual(
