@@ -380,6 +380,10 @@ class Repo:
 
     # -- helpers ---------------------------------------------------------
 
+    def finalize(self, change: Change, verb: str) -> Change:
+        """Run fix, formatting and at most one autocommit for batched writes."""
+        return self._commit(change, verb)
+
     def _commit(self, change: Change, verb: str) -> Change:
         if not change.paths:
             return change
