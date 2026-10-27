@@ -11,7 +11,7 @@ from typing import Any, cast
 
 import yaml
 
-from chitty.model import DESCRIPTION, NOTES, PLAN, SUMMARY, Task, new_task
+from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
 
 STATUS = {"To Do": "todo", "In Progress": "doing", "Done": "done"}
 SECTIONS = {
@@ -29,6 +29,14 @@ CRITERION = re.compile(r"^- \[([ xX])\] (?:#\d+ )?(.*)$", re.MULTILINE)
 @dataclass(frozen=True)
 class ConvertedTask:
     old_id: str
+    task: Task
+    reports: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class RenumberedTask:
+    old_id: str
+    new_id: str
     task: Task
     reports: tuple[str, ...]
 
@@ -80,6 +88,60 @@ def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
     for note in notes:
         task = task.with_note(note)
     return ConvertedTask(old_id, task, tuple(reports))
+
+
+def renumber(tasks: list[ConvertedTask], prefix: str) -> list[RenumberedTask]:
+    """Give subtasks flat IDs, rewrite known references, and preserve provenance."""
+    numbers = {
+        int(match.group(1)) for item in tasks if (match := re.fullmatch(r"TASK-(\d+)", item.old_id))
+    }
+    next_number = max(numbers, default=0) + 1
+    mapping: dict[str, str] = {}
+    parents: dict[str, str] = {}
+    for item in tasks:
+        match = re.fullmatch(r"TASK-(\d+)(?:\.(\d+))?", item.old_id)
+        if match is None:
+            raise ValueError(f"unsupported Backlog.md ID {item.old_id!r}")
+        number, subtask = match.groups()
+        if subtask is None:
+            mapping[item.old_id] = f"{prefix}-{number}"
+        else:
+            mapping[item.old_id] = f"{prefix}-{next_number}"
+            parents[item.old_id] = f"{prefix}-{number}"
+            next_number += 1
+    return [_renumber(item, mapping, parents) for item in tasks]
+
+
+def _renumber(
+    item: ConvertedTask, mapping: Mapping[str, str], parents: Mapping[str, str]
+) -> RenumberedTask:
+    reports = list(item.reports)
+    task = item.task
+    dependencies = [
+        _rewrite(value, mapping, reports, item.old_id) for value in task.frontmatter.depends_on
+    ]
+    task = task.with_field("depends_on", dependencies)
+    if item.old_id in parents:
+        task = task.with_field("parent", parents[item.old_id])
+    for section in SECTION_ORDER:
+        if section == "Acceptance Criteria":
+            continue
+        content = task.section(section)
+        if content:
+            task = task.with_section(section, _rewrite(content, mapping, reports, item.old_id))
+    task = task.with_note(f"Backlog.md ID: {item.old_id}")
+    return RenumberedTask(item.old_id, mapping[item.old_id], task, tuple(reports))
+
+
+def _rewrite(value: str, mapping: Mapping[str, str], reports: list[str], old_id: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        reference = match.group()
+        if reference not in mapping:
+            reports.append(f"{old_id}: reference to unknown ID {reference}")
+            return reference
+        return mapping[reference]
+
+    return re.sub(r"\bTASK-\d+(?:\.\d+)?\b", replace, value)
 
 
 def _sections(body: str, old_id: str, reports: list[str]) -> dict[str, str]:
