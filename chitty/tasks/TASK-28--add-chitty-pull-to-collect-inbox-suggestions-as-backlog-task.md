@@ -1,6 +1,6 @@
 ---
 title: Add chitty pull to collect inbox suggestions as backlog tasks
-status: todo
+status: doing
 labels:
   - cli
 depends_on:
@@ -23,3 +23,7 @@ chitty pull, run in a repo, turns each waiting suggestion for its project into a
 - [ ] chitty list prints a one-line stderr reminder when suggestions are waiting for this project
 - [ ] MCP pull tool
 - [ ] Tests, PLAN.md, README and the agent guide (pull at the start of a session) updated
+
+## Plan
+
+Implement safe inbox-claim and suggestion parsing, create default-context backlog tasks through Repo, add CLI/MCP commands and waiting reminders, then verify with isolated inbox tests.

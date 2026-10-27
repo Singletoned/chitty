@@ -14,6 +14,7 @@ from chitty.check import fix as fix_repo
 from chitty.config import find_root, registered_projects, search_root
 from chitty.errors import ChittyError
 from chitty.import_backlog import import_directory
+from chitty.inbox import claim
 from chitty.inbox import suggest as send_suggestion
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
 from chitty.store import (
@@ -134,6 +135,31 @@ def init(prefix: str | None) -> None:
         click.echo("already up to date")
     for path in paths:
         click.echo(f"updated {path}")
+
+
+@cli.command()
+def pull() -> None:
+    """Collect waiting machine-inbox suggestions as backlog tasks."""
+    repo = _repo()
+    if not repo.config.project:
+        raise ChittyError("this repository has no project name")
+    items = claim(repo.config.project)
+    if not items:
+        click.echo("no suggestions waiting")
+        return
+    context = repo.default_context
+    for path, item in items:
+        task = repo.add(
+            context,
+            str(item["title"]),
+            str(item["description"]) or None,
+            [],
+            {"status": "backlog"},
+            date.today(),
+        ).task
+        repo.edit(task.id, Edit(note=f"Suggestion origin: {item.get('origin', 'unknown')}"))
+        path.unlink()
+        click.echo(f"pulled {task.id}")
 
 
 @cli.command()
