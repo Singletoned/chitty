@@ -26,7 +26,7 @@ Review failed: writes before the finalization try block are not rolled back if t
 
 ## Summary
 
-Expanded import rollback to cover every destination write and agent-guide migration. Verified with chitty fix and make check.
+Restored the Git index after a failed autocommit, preserving prior staged content while leaving failed new writes unstaged. Added a pre-commit-hook regression test; make check passes.
 
 ## History
 
