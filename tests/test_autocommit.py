@@ -65,6 +65,15 @@ class TestAutocommit(CliTestCase):
         self.assertIn("A  unrelated.txt", self.git("status", "--porcelain"))
         self.assertEqual(self.git("status", "--porcelain", "chitty"), "")
 
+    def test_failed_autocommit_restores_the_index(self):
+        hook = self.root / ".git/hooks/pre-commit"
+        hook.write_text("#!/bin/sh\nexit 1\n")
+        hook.chmod(0o755)
+
+        self.run_cli("add", "Blocked", "-d", "x", exit_code=1)
+
+        self.assertEqual(self.git("status", "--porcelain", "chitty"), "?? chitty/\n")
+
     def test_delete_mode_preserves_ids_from_git_history(self):
         config = self.root / "chitty.toml"
         config.write_text(

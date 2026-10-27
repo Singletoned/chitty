@@ -16,8 +16,15 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
     present = [p for p in relative if (root / p).exists()]
     tracked = set(_git(root, "ls-files", "--", *relative).splitlines())
     included = [p for p in relative if p in present or p in tracked]
+    staged = _git(root, "diff", "--cached", "--binary", "--", *relative)
     _git(root, "add", "--", *present)
-    _git(root, "commit", "--quiet", "--only", "-m", message, "--", *included)
+    try:
+        _git(root, "commit", "--quiet", "--only", "-m", message, "--", *included)
+    except ChittyError:
+        _git(root, "reset", "--", *relative)
+        if staged:
+            _apply_cached(root, staged)
+        raise
 
 
 def deleted_paths(root: Path) -> list[Path]:
@@ -39,6 +46,19 @@ def deleted_paths(root: Path) -> list[Path]:
         ) from error
     pending = [line[3:] for line in status if len(line) > 3 and "D" in line[:2]]
     return [Path(path) for path in [*historical, *pending] if path]
+
+
+def _apply_cached(root: Path, patch: str) -> None:
+    result = subprocess.run(
+        ["git", "apply", "--cached", "--whitespace=nowarn"],
+        check=False,
+        cwd=root,
+        input=patch,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise ChittyError(f"autocommit failed restoring the Git index:\n{result.stderr.strip()}")
 
 
 def _git(root: Path, *args: str) -> str:
