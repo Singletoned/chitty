@@ -1,6 +1,6 @@
 ---
 title: Make backlog imports honor repository write policies
-status: doing
+status: review
 created: 2026-10-27
 ---
 
@@ -26,7 +26,7 @@ Review failed: writes before the finalization try block are not rolled back if t
 
 ## Summary
 
-Added rollback for import finalization failures, recorded archived transitions, and included AGENTS.md migration in the import finalization commit. Verified with make check.
+Expanded import rollback to cover every destination write and agent-guide migration. Verified with chitty fix and make check.
 
 ## History
 
@@ -36,3 +36,4 @@ Added rollback for import finalization failures, recorded archived transitions, 
 - 2026-10-27 review → doing
 - 2026-10-27 doing → review
 - 2026-10-27 review → doing
+- 2026-10-27 doing → review
