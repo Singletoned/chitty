@@ -1,13 +1,12 @@
 ---
 title: Add chitty import backlog-md to convert a Backlog.md backlog
-status: doing
+status: todo
 labels:
   - cli
   - import
 priority: high
 depends_on:
-  - TASK-17
-  - TASK-18
+  - TASK-22
 created: 2026-10-26
 ---
 
@@ -27,21 +26,13 @@ The import refuses to run if the chitty context already has tasks, so it can't m
 
 ## Acceptance Criteria
 
-- [ ] chitty import backlog-md converts every task in backlog/tasks, drafts, completed and archive using the mapping above
-- [ ] Subtasks get flat IDs with parent set, and every reference to an old ID in frontmatter or body is rewritten
-- [ ] Converted files pass chitty check and contain no Backlog.md marker comments
-- [ ] Unknown statuses, demoted headings and non-task files are reported in the command's output
-- [ ] It refuses to run when the target context already has tasks
-- [ ] The AGENTS.md Backlog.md block is replaced with the chitty block
-- [ ] Tested against a copy of circuitry's backlog/ (66 tasks, 25 subtasks, a custom Backburner status) and sump's
-- [ ] README and PLAN.md describe the command; PLAN.md's 'no migrations' scope note is updated
-
-## Plan
-
-Inspect representative Backlog.md task files from circuitry and sump, build a strict parser and dry conversion plan, then add the import command with fixtures covering ID/reference rewrites, sections, archive policy, reporting, and refusal safeguards.
+- [ ] chitty import backlog-md run by hand against local copies of circuitry's backlog/ (66 tasks, 25 subtasks, Backburner status) and sump's produces tasks that pass chitty check, with every report item reviewed
+- [ ] Problems found are fixed in the importer (with a trimmed sample test), not by hand-editing output
 
 ## Notes
 
 This ticket is too large for one independently verifiable change: it combines a legacy Markdown parser, ID/reference migration, atomic repository writer, archive/autocommit integration, AGENTS migration, reporting, docs, and two real-backlog acceptance suites. I recommend splitting it into parser/mapping, importer command+safety, and fixture-based circuitry/sump compatibility tasks before implementation.
 
 Owner directed work to continue on other available tickets while this oversized migration remains pending decomposition approval.
+
+DECIDED with the human (2026-10-27): split into TASK-20 (parse and map one file), TASK-21 (renumber subtasks, rewrite references) and TASK-22 (the command), each with parent TASK-19. No atomic repository writer: convert and validate in memory, then write; the non-empty-context refusal makes git the undo. Real circuitry/sump backlogs are not committed as fixtures; this parent closes once the by-hand run against them passes. The mapping in the Description stays the spec for the children.
