@@ -21,6 +21,7 @@ uvx chitty --help                 # run without installing
 
 ```sh
 chitty init                       # chitty.toml, chitty/tasks/, AGENTS.md block
+chitty import backlog-md          # convert a reviewed legacy backlog/ directory
 chitty add "Add search" -d "Search titles and bodies." \
     --ac "Matches title" --ac "Case-insensitive" -l cli
 chitty list
@@ -43,7 +44,8 @@ tasks across every context; repeat `-c` or `-s` to filter, including backlog
 and done tickets. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains
-`[]`. Finished tasks can include a `## Summary` handoff via
+`[]`. `chitty import backlog-md` refuses non-empty contexts, reports lossy
+mappings, and leaves `backlog/` in place. Finished tasks can include a `## Summary` handoff via
 `chitty edit ID --summary TEXT`. To inspect or restore an archived task, work
 with its file directly.
 

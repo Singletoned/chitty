@@ -1,6 +1,7 @@
 """Command-line interface. Thin: parse flags, call store/model, print."""
 
 import json
+import re
 from datetime import date
 from pathlib import Path
 from typing import Any, TextIO, cast
@@ -145,6 +146,12 @@ def import_backlog_md(context: str | None) -> None:
         source, selected.directory, selected.prefix, repo.config.archive
     ):
         click.echo(report)
+    agents = repo.root / "AGENTS.md"
+    if agents.exists():
+        pattern = r"(?ms)^## Backlog\.md Workflow\n.*?(?=^## |\Z)"
+        updated, count = re.subn(pattern, guide().rstrip() + "\n", agents.read_text())
+        if count:
+            agents.write_text(updated)
 
 
 @cli.command()

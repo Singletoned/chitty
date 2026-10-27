@@ -50,6 +50,27 @@ class TestInit(CliTestCase):
         self.assertFalse((self.tmp / "chitty.toml").exists())
 
 
+class TestImport(CliTestCase):
+    def test_import_backlog_md_converts_tasks_and_replaces_agent_block(self):
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        (legacy / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
+            "## Description\n\nLegacy description.\n"
+        )
+        (self.root / "backlog/docs").mkdir()
+        (self.root / "AGENTS.md").write_text("## Backlog.md Workflow\n\nOld instructions.\n")
+
+        result = self.run_cli("import", "backlog-md")
+
+        self.assertIn("left non-task directory", result.stdout)
+        self.assertEqual(self.json("show", "1")["title"], "Legacy")
+        self.assertIn("## Chitty", (self.root / "AGENTS.md").read_text())
+        self.assertTrue((self.root / "backlog").exists())
+        refusal = self.run_cli("import", "backlog-md", exit_code=1)
+        self.assertIn("already contains tasks", refusal.stderr)
+
+
 class TestAddShowList(CliTestCase):
     def test_add_and_show(self):
         self.run_cli("add", "Rotate password", "-c", "human", "-d", "Prod DB.")

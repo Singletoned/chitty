@@ -27,8 +27,9 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   documentation; the agent instructions are ~20 lines and static.
 - Minimal diffs. The tool never touches a line it didn't change, and never
   writes a file whose content would be unchanged.
-- No migrations in v1. The format is versioned (`format = 1` in config) so
-  one can be written later if ever needed.
+- No Chitty-format migrations in v1. `chitty import backlog-md` is an explicit,
+  one-way converter from a Backlog.md `backlog/` directory; it leaves source
+  files in place for review and deletion by a person.
 
 ## Non-goals
 

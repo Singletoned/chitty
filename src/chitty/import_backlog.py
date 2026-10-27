@@ -154,6 +154,7 @@ def import_directory(source: Path, destination: Path, prefix: str, archive: str)
         ("archive", False, True),
     )
     converted: list[ConvertedTask] = []
+    archived_ids: set[str] = set()
     reports: list[str] = []
     for name, draft, archived in locations:
         directory = source / name
@@ -162,6 +163,8 @@ def import_directory(source: Path, destination: Path, prefix: str, archive: str)
         for path in sorted(directory.glob("*.md")):
             item = convert(path, draft=draft)
             converted.append(item)
+            if archived:
+                archived_ids.add(item.old_id)
             reports.extend(item.reports)
         reports.extend(
             f"left non-task file: {path}"
@@ -171,10 +174,7 @@ def import_directory(source: Path, destination: Path, prefix: str, archive: str)
     numbered = renumber(converted, prefix)
     reports.extend(report for item in numbered for report in item.reports if report not in reports)
     for item in numbered:
-        parsed = re.fullmatch(r"TASK-(\d+)(?:\.\d+)?", item.old_id)
-        archived = (
-            parsed is not None and (source / "completed" / f"task-{item.old_id[5:]}.md").exists()
-        )
+        archived = item.old_id in archived_ids
         target = destination / ("archive" if archived and archive == "move" else "")
         target.mkdir(parents=True, exist_ok=True)
         task_id = ids.TaskId.parse(item.new_id)
