@@ -61,10 +61,14 @@ class TestInit(CliTestCase):
         self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
     def test_init_rejects_clashing_prefix(self):
-        os.chdir(self.tmp)
+        target = self.tmp / "prefix-collision"
+        target.mkdir()
+        os.chdir(target)
+
         result = self.run_cli("init", "--prefix", "HUMAN", exit_code=1)
+
         self.assertIn("used by more than one context", result.stderr)
-        self.assertFalse((self.tmp / "chitty.toml").exists())
+        self.assertFalse((target / "chitty.toml").exists())
 
 
 class TestImport(CliTestCase):
