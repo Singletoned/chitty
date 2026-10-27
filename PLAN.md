@@ -26,7 +26,8 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
 - The tool carries the rules, not a prompt. Validation and `--help` are the
   documentation; the agent instructions are ~20 lines and static.
 - Minimal diffs. The tool never touches a line it didn't change, and never
-  writes a file whose content would be unchanged.
+  writes a file whose content would be unchanged. `init` is idempotent: it
+  adds missing setup only and refreshes the managed agent-guide block.
 - No Chitty-format migrations in v1. `chitty import backlog-md` is an explicit,
   one-way converter from a Backlog.md `backlog/` directory; it leaves source
   files in place for review and deletion by a person.

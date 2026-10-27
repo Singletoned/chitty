@@ -43,6 +43,18 @@ class TestInit(CliTestCase):
         self.assertEqual((target / "AGENTS.md").read_text(), agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
 
+    def test_init_upgrades_pyproject_config_without_rewriting_existing_values(self):
+        (self.root / "chitty.toml").unlink()
+        config = self.root / "pyproject.toml"
+        config.write_text(
+            "[tool.chitty]\nformat = 1\ndefault_context = 'tasks'\nautocommit = false\n\n"
+            "[tool.chitty.contexts.tasks]\nprefix = 'TASK'\n"
+        )
+        self.run_cli("init")
+        self.assertIn('archive = "move"', config.read_text())
+        self.assertTrue((self.root / "chitty/tasks").is_dir())
+        self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
+
     def test_init_rejects_clashing_prefix(self):
         os.chdir(self.tmp)
         result = self.run_cli("init", "--prefix", "HUMAN", exit_code=1)

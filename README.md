@@ -20,7 +20,7 @@ uvx chitty --help                 # run without installing
 ## Use
 
 ```sh
-chitty init                       # chitty.toml, chitty/tasks/, AGENTS.md block
+chitty init                       # create or safely upgrade config, task folders, AGENTS.md
 chitty import backlog-md          # convert a reviewed legacy backlog/ directory
 chitty add "Add search" -d "Search titles and bodies." \
     --ac "Matches title" --ac "Case-insensitive" -l cli
