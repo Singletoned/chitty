@@ -21,15 +21,27 @@ before changing behaviour, and update it when a decision changes.
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
-- Work on one task per session. Start with `chitty show <ID>`.
+- Work on one task per session. Start with `chitty pull`, then `chitty show <ID>`.
+- Backlog tasks need refinement; promote them to `todo` before taking them on.
+- Use a task's optional `parent` field to group flat task IDs under one goal.
 - Before writing code, write your approach with `chitty edit <ID> --plan` and
   set `-s doing`. Wait for approval if the human asked for it.
 - Tick acceptance criteria as you meet them: `chitty edit <ID> --check N`
   (numbers are shown by `chitty show`).
-- Record anything surprising with `--note`. Set `-s done` when every
-  criterion is ticked and the work is verified.
-- When blocked, set `-s blocked --note "reason"`, do not pick the task back
-  up, and move on. If a person must act outside the repo, add a `-c human`
-  ticket and depend on it.
+- Record anything surprising with `--note`. When work is ready, set `-s review`.
+  Never review a ticket you worked on: review promptly, rather than at
+  merge-request time. Pass it with `-s done --note "Reviewed: ..."`; fail it
+  with `-s doing --note "reason"`. Create new tickets for out-of-scope findings.
+- Set `-s done` when every criterion is ticked and the work is verified; write
+  `--summary` with the handoff, verification, and follow-ups. Run `chitty fix`
+  to apply safe repairs; it fails loudly when a problem remains.
+- Before preparing a merge request, run `chitty archive` with no ID to process
+  completed tasks in one batch. The default moves them to `archive/`; with
+  `archive = "delete"`, Git history retains the record instead.
+- When work cannot proceed, set `-s blocked --note "reason"` and move on; do
+  not pick up blocked work. If a person must act outside the repo, add a
+  `-c human` task and depend on it.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
+  Suggest work for another project without touching its checkout using
+  `chitty suggest PROJECT "title" -d "why"`.
   Don't do it in this session.

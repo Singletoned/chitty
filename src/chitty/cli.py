@@ -247,7 +247,7 @@ def add(
     "statuses",
     multiple=True,
     type=click.Choice(STATUSES),
-    help="Status to include (repeatable; defaults to todo and doing).",
+    help="Status to include (repeatable; defaults to todo, doing, blocked, and review).",
 )
 @click.option("-l", "--label", "labels", multiple=True, help="Only tasks with every label.")
 @click.option("--owner")
@@ -268,7 +268,7 @@ def list_(
     """List tasks, one per line."""
     repo = _repo()
     selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
-    selected_statuses = STATUSES if all_ else statuses or ("todo", "doing", "blocked")
+    selected_statuses = STATUSES if all_ else statuses or ("todo", "doing", "blocked", "review")
     parent = str(repo.resolve(parent)) if parent else None
     tasks = [
         task

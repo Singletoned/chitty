@@ -148,7 +148,7 @@ Frontmatter schema (strict: unknown keys are an error):
 | key          | type               | required | notes                                        |
 |--------------|--------------------|----------|----------------------------------------------|
 | `title`      | string             | yes      | non-empty, single line                       |
-| `status`     | `backlog\|todo\|doing\|blocked\|done` | yes     | fixed in v1; backlog needs refinement; blocked needs a reason |
+| `status`     | `backlog\|todo\|doing\|blocked\|review\|done` | yes     | fixed in v1; backlog needs refinement; blocked needs a reason |
 | `labels`     | list[string]       | no       | absent ≡ `[]`                                |
 | `priority`   | `low\|medium\|high` | no      | absent means unset                           |
 | `owner`      | string             | no       | free text; `human`, a name, an agent         |
@@ -239,6 +239,7 @@ or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error:
 format = 1
 default_context = "tasks"
 autocommit = false                     # if true, commit each write
+review = true                          # require review before done
 # autoformat = "mdformat"              # command run on every written task file
 # archive = "move"                      # or "delete" completed files at merge time
 
@@ -249,7 +250,9 @@ prefix = "TASK"
 prefix = "HUMAN"
 ```
 
-Context directory is `chitty/<name>/`. Not configurable.
+Context directory is `chitty/<name>/`. Not configurable. `review` defaults to
+`true`; with it enabled, only `review → done` can complete a task. Set it to
+`false` to make review optional.
 
 When set, `autoformat` is parsed without a shell and run on existing files
 written by each operation. The order is `fix`, `autoformat`, then `autocommit`;
@@ -335,9 +338,9 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   reports legacy non-upper-case `depends_on` entries and `fix` rewrites them.
 - `check` is read-only. `fix` applies safe repairs, reports each one, and exits
   non-zero if problems remain. Autocommit runs it on written task files first.
-- `list` reads only non-archived tasks: by default it selects `todo` and
-  `doing` tasks from every context; repeat `-c` to narrow contexts or `-s` to
-  choose statuses, including `backlog`, `blocked`, and `done`. `--all` selects every status
+- `list` reads only non-archived tasks: by default it selects `todo`, `doing`,
+  `blocked`, and `review` tasks from every context; repeat `-c` to narrow contexts
+  or `-s` to choose statuses, including `backlog` and `done`. `--all` selects every status
   but still excludes archive folders. An empty list reports its active filters
   on stderr while keeping stdout (including JSON) empty.
   Default output is one line per task:
@@ -382,8 +385,11 @@ task files. `chitty --help` is the full command reference.
   set `-s doing`. Wait for approval if the human asked for it.
 - Tick acceptance criteria as you meet them: `chitty edit <ID> --check N`
   (numbers are shown by `chitty show`).
-- Record anything surprising with `--note`. Set `-s done` when every
-  criterion is ticked and the work is verified.
+- Record anything surprising with `--note`. Set `-s review` when work is ready.
+  Never review a ticket you worked on: review promptly, not at merge-request
+  time. Pass with `-s done --note "Reviewed: ..."`; fail with
+  `-s doing --note "reason"`. Create new tickets for out-of-scope findings.
+- Set `-s done` when every criterion is ticked and the work is verified.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
   Don't do it in this session.
 ```

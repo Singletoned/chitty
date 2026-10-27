@@ -56,7 +56,9 @@ class TestMcp(CliTestCase):
     def test_archives_every_done_task_without_an_id(self):
         call("add", title="Done", description="x")
         call("add", title="Human done", description="x", context="human")
+        call("edit", id="1", status="review")
         call("edit", id="1", status="done")
+        call("edit", id="HUMAN-1", status="review")
         call("edit", id="HUMAN-1", status="done")
 
         archived = call("archive")
@@ -64,6 +66,8 @@ class TestMcp(CliTestCase):
         self.assertEqual([task["id"] for task in archived], ["TASK-1", "HUMAN-1"])
 
     def test_adds_backlog_without_a_description(self):
+        with self.assertRaisesRegex(ToolError, "requires -s review first"):
+            call("add", title="Done immediately", description="x", status="done")
         task = call("add", title="Explore sync", status="backlog")
 
         self.assertEqual(task["status"], "backlog")
@@ -74,6 +78,10 @@ class TestMcp(CliTestCase):
             call("show", id="9")
         with self.assertRaisesRegex(ToolError, "nothing to change"):
             call("edit", id="9")
+        call("add", title="Review", description="x")
+        call("edit", id="1", status="review")
+        with self.assertRaisesRegex(ToolError, "review → doing requires --note"):
+            call("edit", id="1", status="doing")
 
     def test_guide_resource(self):
         contents = asyncio.run(server.read_resource("chitty://guide"))

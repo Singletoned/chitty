@@ -19,7 +19,7 @@ from chitty.inbox import suggest as send_suggestion
 from chitty.model import STATUSES
 from chitty.store import Edit, Repo, guide, matches, resolve_add_target
 
-Status = Literal["backlog", "todo", "doing", "blocked", "done"]
+Status = Literal["backlog", "todo", "doing", "blocked", "review", "done"]
 Priority = Literal["low", "medium", "high"]
 
 server = MCPServer(name="chitty", instructions=guide())
@@ -96,8 +96,8 @@ def add(
 
 @_tool(
     "list",
-    "List tasks. `context` and `status` are repeatable; status defaults to todo and doing. "
-    "`label`: all of; `search`: title and body.",
+    "List tasks. `context` and `status` are repeatable; status defaults to "
+    "todo, doing, blocked, and review. `label`: all of; `search`: title and body.",
 )
 def list_(
     context: list[str] | None = None,
@@ -110,7 +110,7 @@ def list_(
 ) -> list[dict[str, Any]]:
     repo = _repo()
     contexts = [repo.context(name) for name in context] if context else repo.contexts()
-    statuses = list(STATUSES) if all else status or ["todo", "doing", "blocked"]
+    statuses = list(STATUSES) if all else status or ["todo", "doing", "blocked", "review"]
     tasks = [task for selected in contexts for task in repo.tasks(selected, "active")]
     parent = str(repo.resolve(parent)) if parent else None
     found = [t for t in tasks if matches(t, statuses, label or [], owner, search, parent)]

@@ -10,10 +10,13 @@ task files. `chitty --help` is the full command reference.
   set `-s doing`. Wait for approval if the human asked for it.
 - Tick acceptance criteria as you meet them: `chitty edit <ID> --check N`
   (numbers are shown by `chitty show`).
-- Record anything surprising with `--note`. Set `-s done` when every
-  criterion is ticked and the work is verified; write `--summary` with the
-  handoff, verification, and follow-ups. Run `chitty fix` to apply
-  safe repairs; it fails loudly when a problem remains.
+- Record anything surprising with `--note`. When work is ready, set `-s review`.
+  Never review a ticket you worked on: review promptly, rather than at
+  merge-request time. Pass it with `-s done --note "Reviewed: ..."`; fail it
+  with `-s doing --note "reason"`. Create new tickets for out-of-scope findings.
+- Set `-s done` when every criterion is ticked and the work is verified; write
+  `--summary` with the handoff, verification, and follow-ups. Run `chitty fix`
+  to apply safe repairs; it fails loudly when a problem remains.
 - Before preparing a merge request, run `chitty archive` with no ID to process
   completed tasks in one batch. The default moves them to `archive/`; with
   `archive = "delete"`, Git history retains the record instead.

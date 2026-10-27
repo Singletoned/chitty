@@ -2,6 +2,10 @@ format = 1
 default_context = "tasks"
 autocommit = false
 
+project = "chitty"
+archive = "move"
+review = true
+
 [contexts.tasks]
 prefix = "TASK"
 

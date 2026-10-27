@@ -32,7 +32,9 @@ class TestInit(CliTestCase):
         (target / "AGENTS.md").write_text("# Agents\n\nBe nice.\n")
         os.chdir(target)
         self.run_cli("init", "--prefix", "CHIT")
-        self.assertIn('prefix = "CHIT"', (target / "chitty.toml").read_text())
+        config = (target / "chitty.toml").read_text()
+        self.assertIn('prefix = "CHIT"', config)
+        self.assertIn("review = true", config)
         self.assertTrue((target / "chitty" / "tasks").is_dir())
         agents = (target / "AGENTS.md").read_text()
         self.assertTrue(agents.startswith("# Agents\n\nBe nice.\n\n## Chitty\n"))
@@ -47,11 +49,14 @@ class TestInit(CliTestCase):
         (self.root / "chitty.toml").unlink()
         config = self.root / "pyproject.toml"
         config.write_text(
-            "[tool.chitty]\nformat = 1\ndefault_context = 'tasks'\nautocommit = false\n\n"
+            "[tool.chitty]\nformat = 1\ndefault_context = 'tasks'\nautocommit = false\n"
+            "# review workflow is mandatory\n\n"
             "[tool.chitty.contexts.tasks]\nprefix = 'TASK'\n"
+            "\n[tool.other]\nreview = false\n"
         )
         self.run_cli("init")
         self.assertIn('archive = "move"', config.read_text())
+        self.assertIn("review = true", config.read_text())
         self.assertTrue((self.root / "chitty/tasks").is_dir())
         self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
@@ -159,6 +164,7 @@ class TestAddShowList(CliTestCase):
     def test_list_defaults_to_active_tasks_in_all_contexts(self):
         self.run_cli("add", "Backlog", "-s", "backlog")
         self.run_cli("add", "Done", "-d", "x")
+        self.run_cli("edit", "2", "-s", "review")
         self.run_cli("edit", "2", "-s", "done")
         self.run_cli("add", "Human todo", "-c", "human", "-d", "x")
         self.run_cli("add", "Human doing", "-c", "human", "-d", "x")
@@ -183,6 +189,7 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(lines[0], "TASK-1  doing   Add search to the task list  [cli,search]")
         self.assertEqual(lines[1], "TASK-2  todo    Fix login")
         self.assertEqual(len(lines), 9)
+        self.run_cli("edit", "2", "-s", "review")
         self.run_cli("edit", "2", "-s", "done")
         self.assertEqual(len(self.json("list", "--all")), 9)
         self.run_cli("list", "--archived", exit_code=2)
@@ -195,11 +202,12 @@ class TestAddShowList(CliTestCase):
         )
         empty = self.run_cli("list", "-c", "human")
         self.assertEqual(empty.stdout, "")
-        self.assertIn("no tasks: contexts=human; statuses=todo,doing", empty.stderr)
+        self.assertIn("no tasks: contexts=human; statuses=todo,doing,blocked,review", empty.stderr)
         self.assertEqual(self.json("list", "-c", "human"), [])
         help_text = self.run_cli("list", "--help").stdout
         self.assertNotIn("--archived", help_text)
         self.assertIn("Every status (never archived tasks).", help_text)
+        self.assertIn("todo, doing, blocked, and review", help_text)
 
     def test_parent_groups_tasks(self):
         self.run_cli("add", "Parent", "-d", "x")
@@ -219,6 +227,33 @@ class TestBlockedStatus(CliTestCase):
         self.assertIn("requires --note", failed.stderr)
         self.run_cli("edit", "1", "-s", "blocked", "--note", "Need a decision.")
         self.assertEqual(self.json("list")[0]["status"], "blocked")
+
+
+class TestReviewStatus(CliTestCase):
+    def test_review_is_listed_and_required_before_done_by_default(self):
+        refused = self.run_cli("add", "Done immediately", "-d", "x", "-s", "done", exit_code=1)
+        self.assertIn("requires -s review first", refused.stderr)
+        self.run_cli("add", "Review me", "-d", "x", "--ac", "Unfinished")
+        refused = self.run_cli("edit", "1", "-s", "done", exit_code=1)
+        self.assertIn("requires -s review first", refused.stderr)
+        self.run_cli("edit", "1", "-s", "review")
+        self.assertEqual([task["id"] for task in self.json("list")], ["TASK-1"])
+        self.assertEqual(self.json("list")[0]["status"], "review")
+        self.assertFalse(self.json("show", "1")["acceptance_criteria"][0]["checked"])
+        refused = self.run_cli("edit", "1", "-s", "doing", exit_code=1)
+        self.assertIn("review → doing requires --note", refused.stderr)
+        self.run_cli("edit", "1", "-s", "doing", "--note", "Review found a problem.")
+        self.run_cli("edit", "1", "-s", "review")
+        self.run_cli("edit", "1", "-s", "done", "--note", "Reviewed: ready.")
+        self.assertEqual(self.json("show", "1")["status"], "done")
+
+    def test_review_can_be_disabled(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", "autocommit = false\nreview = false")
+        )
+        self.run_cli("add", "Done directly", "-d", "x")
+        self.run_cli("edit", "1", "-s", "done")
 
 
 class TestEdit(CliTestCase):
@@ -362,6 +397,7 @@ class TestMoveArchive(CliTestCase):
         config.write_text(
             config.read_text().replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
         )
+        self.run_cli("edit", "1", "-s", "review")
         self.run_cli("edit", "1", "-s", "done")
 
         result = self.run_cli("archive", "1")
@@ -373,7 +409,9 @@ class TestMoveArchive(CliTestCase):
     def test_archive_all_done_tasks(self):
         self.run_cli("add", "Task done", "-d", "x")
         self.run_cli("add", "Human done", "-c", "human", "-d", "x")
+        self.run_cli("edit", "1", "-s", "review")
         self.run_cli("edit", "1", "-s", "done")
+        self.run_cli("edit", "HUMAN-1", "-s", "review")
         self.run_cli("edit", "HUMAN-1", "-s", "done")
 
         result = self.run_cli("archive")

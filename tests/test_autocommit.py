@@ -64,7 +64,9 @@ class TestAutocommit(CliTestCase):
         )
         self.run_cli("add", "First done", "-d", "x")
         self.run_cli("add", "Second done", "-d", "x")
+        self.run_cli("edit", "1", "-s", "review")
         self.run_cli("edit", "1", "-s", "done")
+        self.run_cli("edit", "2", "-s", "review")
         self.run_cli("edit", "2", "-s", "done")
 
         self.run_cli("archive")
@@ -75,7 +77,9 @@ class TestAutocommit(CliTestCase):
     def test_archive_done_tasks_makes_one_commit(self):
         self.run_cli("add", "Task done", "-d", "x")
         self.run_cli("add", "Human done", "-c", "human", "-d", "x")
+        self.run_cli("edit", "1", "-s", "review")
         self.run_cli("edit", "1", "-s", "done")
+        self.run_cli("edit", "HUMAN-1", "-s", "review")
         self.run_cli("edit", "HUMAN-1", "-s", "done")
         commits = int(self.git("rev-list", "--count", "HEAD"))
 

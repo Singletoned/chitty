@@ -1,5 +1,7 @@
 """Contexts on disk: find, list, read, write, move, archive."""
 
+import re
+import tomllib
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import date
@@ -243,6 +245,8 @@ class Repo:
             fields["parent"] = str(self.resolve(parent))
             self.find(TaskId.parse(fields["parent"]))
         status = fields.get("status", "todo")
+        if status == "done" and self.config.review:
+            raise ChittyError("setting status done requires -s review first")
         if description is None:
             if status != "backlog":
                 raise ChittyError("description is required unless status is backlog")
@@ -259,9 +263,19 @@ class Repo:
         """Apply an edit. References in depends_on may be shorthand."""
         if edit.is_empty():
             raise ChittyError("nothing to change")
+        stored = self.find(task_id)
+        previous_status = stored.task.frontmatter.status
         if edit.status == "blocked" and not (edit.note or edit.notes):
             raise ChittyError("setting status blocked requires --note with the reason")
-        stored = self.find(task_id)
+        if (
+            edit.status == "done"
+            and edit.status != previous_status
+            and self.config.review
+            and previous_status != "review"
+        ):
+            raise ChittyError("setting status done requires -s review first")
+        if edit.status == "doing" and previous_status == "review" and not (edit.note or edit.notes):
+            raise ChittyError("moving review → doing requires --note with the reason")
         edit = replace(
             edit,
             depends_on=self._references(edit.depends_on),
@@ -270,7 +284,7 @@ class Repo:
         )
         task = edit.apply(stored.task)
         if edit.status is not None and edit.status != stored.task.frontmatter.status:
-            task = task.with_history(date.today(), stored.task.frontmatter.status, edit.status)
+            task = task.with_history(date.today(), previous_status, edit.status)
         return self._commit(self._save(stored, task), "edit")
 
     def _save(self, stored: StoredTask, task: Task) -> Change:
@@ -491,6 +505,10 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
             additions += f'project = "{directory.name}"\n'
         if "archive" not in text:
             additions += 'archive = "move"\n'
+        data = tomllib.loads(text)
+        settings = data if source == config_path else data["tool"]["chitty"]
+        if "review" not in settings:
+            additions += "review = true\n"
         if additions:
             text = text[:position] + additions + "\n" + text[position:]
             source.write_text(text)
@@ -510,8 +528,6 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
             written.append(inbox)
     agents = directory / AGENTS_FILE
     existing = agents.read_text() if agents.exists() else ""
-    import re
-
     pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
     updated, count = re.subn(pattern, guide().rstrip() + "\n", existing)
     if not count:

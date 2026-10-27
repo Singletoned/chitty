@@ -30,6 +30,8 @@ chitty add "Add search" -d "Search titles and bodies." \
 chitty list
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
+chitty edit 1 -s review
+chitty edit 1 -s done --note "Reviewed: ready to merge."
 chitty edit 1 --note "Safari needs a polyfill."
 chitty edit 1 -s blocked --note "Awaiting a product decision."
 chitty add "Refine sync idea" -s backlog  # stores a default refinement note
@@ -43,9 +45,10 @@ chitty guide                      # instructions for coding agents
 ```
 
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
-are the reference. Plain `chitty list` shows non-archived `todo`, `doing`, and
-`blocked` tasks across every context; repeat `-c` or `-s` to filter, including backlog
-and done tickets. Use `--parent TASK-1` to show a parent's direct children.
+are the reference. Plain `chitty list` shows non-archived `todo`, `doing`,
+`blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter,
+including backlog and done tickets. Review is required before `done` by default;
+set `review = false` in repository configuration to make it optional. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains
 `[]`. `chitty import backlog-md` refuses non-empty contexts, reports lossy
