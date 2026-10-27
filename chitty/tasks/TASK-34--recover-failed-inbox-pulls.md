@@ -1,6 +1,6 @@
 ---
 title: Recover failed inbox pulls
-status: review
+status: doing
 created: 2026-10-27
 ---
 
@@ -18,6 +18,10 @@ Ensure failed suggestion imports remain recoverable and repository configuration
 
 Add failure-safe claimed-suggestion handling: restore configuration with a finally block, return unprocessed claims to the waiting state after an exception, and test parse and add failures without filesystem mocks.
 
+## Notes
+
+Review failed: a claimed suggestion can still be lost if one post-finalization inbox-file deletion succeeds and a later deletion fails.
+
 ## Summary
 
 Restored claimed suggestions on parse and write failures, rolled back tasks created before a note-write failure, and restored repository configuration in finally. Verified with make check.
@@ -27,3 +31,4 @@ Restored claimed suggestions on parse and write failures, rolled back tasks crea
 - 2026-10-27 → todo
 - 2026-10-27 todo → doing
 - 2026-10-27 doing → review
+- 2026-10-27 review → doing
