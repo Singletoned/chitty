@@ -51,7 +51,7 @@ including backlog and done tickets. Review is required before `done` by default;
 set `review = false` in repository configuration to make it optional. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains
-`[]`. `chitty import backlog-md` refuses non-empty contexts, reports lossy
+`[]`. `chitty import backlog-md` refuses non-empty contexts, reports
 mappings, and leaves `backlog/` in place. Each task has a tool-managed trailing
 `## History` that records its creation and status transitions. Finished tasks can include a `## Summary` handoff via
 `chitty edit ID --summary TEXT`. To inspect or restore an archived task, work
@@ -75,13 +75,17 @@ it also removes exact `depends_on` entries and requires complete Git history to
 avoid reusing IDs. The default, `archive = "move"`, retains task files.
 
 Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
-(not both). Contexts in other repos (for posting tasks elsewhere) go in
-`~/.config/chitty/contexts.toml`:
+(not both). To send work to another repository, use `chitty suggest PROJECT`;
+the receiving repository imports it with `chitty pull`.
 
-```toml
-[contexts.notes]
-repo = "~/notes"
-```
+## Migrating from Backlog.md
+
+From a clone of the legacy repository, run `chitty init`, then
+`chitty import backlog-md`. Review its report: unknown statuses become backlog
+notes, unsupported headings are demoted into the description, and non-task
+files or folders are listed rather than imported. Run `chitty check`, review
+and commit the generated tasks, then delete `backlog/` when the migration is
+accepted.
 
 ## Develop
 

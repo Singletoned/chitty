@@ -262,21 +262,9 @@ files and strips exact `depends_on` entries elsewhere; ID allocation reads Git
 deletions (including uncommitted ones), and fails rather than guessing if the
 repository history is shallow or unavailable.
 
-User-level `~/.config/chitty/contexts.toml` (optional), for adding tasks to
-other repos or to a personal backlog:
-
-```toml
-[contexts.hypurrcube]
-repo = "~/src/hypurrcube"        # that repo's chitty.toml applies
-context = "tasks"                # optional; default is that repo's default_context
-
-[contexts.improvements]
-repo = "~/notes/improvements"    # any directory with a chitty.toml
-```
-
-Resolution of a context name: repo `chitty.toml` first, then user file.
-A name present in both is an error (no silent shadowing). A name in neither
-is an error naming both paths.
+Contexts are repository-local. To send a task to another repository, use
+`chitty suggest PROJECT TITLE`; the receiving repository imports its machine-local
+inbox with `chitty pull`. This avoids writing another repository's worktree.
 
 ## Dependencies
 

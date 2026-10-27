@@ -209,8 +209,8 @@ def add(
 ) -> None:
     """Create a task with status todo.
 
-    -c may also name a context from ~/.config/chitty/contexts.toml: the file
-    is written into that repo's working tree and nothing else happens there.
+    -c names a context in this repository. Use `chitty suggest` to send work
+    to another repository.
     """
     if description is None and status != "backlog":
         raise click.UsageError("--description is required unless --status backlog")

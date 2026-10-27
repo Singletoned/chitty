@@ -1,6 +1,6 @@
 ---
 title: Document Backlog.md migration and remove stale contexts.toml references
-status: todo
+status: blocked
 labels:
   - docs
 depends_on:
@@ -15,10 +15,22 @@ TASK-29 removed contexts.toml, but README.md (the Contexts paragraph and its exa
 
 ## Acceptance Criteria
 
-- [ ] No user-facing text describes contexts.toml except the removal warning; PLAN.md's design reflects the inbox
-- [ ] README has a short 'Migrating from Backlog.md' section: chitty init, chitty import backlog-md, review the report, chitty check, commit, then delete backlog/ (and how unknown statuses, demoted headings and non-task folders are reported)
+- [x] No user-facing text describes contexts.toml except the removal warning; PLAN.md's design reflects the inbox
+- [x] README has a short 'Migrating from Backlog.md' section: chitty init, chitty import backlog-md, review the report, chitty check, commit, then delete backlog/ (and how unknown statuses, demoted headings and non-task folders are reported)
 - [ ] The steps in that section are verified by hand on a scratch clone of a real Backlog.md repo
+
+## Plan
+
+Remove stale user-facing contexts.toml guidance while retaining its removal warning. Add the documented Backlog.md migration sequence and verify commands and reporting against a filesystem-backed scratch migration, then run make check.
+
+## Notes
+
+Blocked: no real Backlog.md repository is available under /Users/singletoned/src to perform the required scratch-clone migration. A human needs to provide or identify a real legacy repository clone; then run the documented sequence and record its report.
+
+Waiting for a human-provided real Backlog.md repository clone to complete acceptance criterion 3.
 
 ## History
 
 - 2026-10-27 → todo
+- 2026-10-27 todo → doing
+- 2026-10-27 doing → blocked
