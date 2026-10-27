@@ -22,6 +22,7 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   its machine-local inbox under XDG data storage and refuses a name owned by a
   different repository. `suggest` writes atomic cross-project ideas there;
   `pull` converts waiting suggestions into backlog tasks at session start.
+  User-level contexts are ignored; use `suggest` for cross-project ideas.
 - Plain markdown. Every file must survive a round trip through the supported
   formatters (below) without changing meaning. No HTML comments, no sentinel
   markers, no numbering inside checklist text.

@@ -11,7 +11,7 @@ from click.shell_completion import CompletionItem
 
 from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
-from chitty.config import find_root, registered_projects, search_root
+from chitty.config import find_root, registered_projects, search_root, user_contexts_path
 from chitty.errors import ChittyError
 from chitty.import_backlog import import_directory
 from chitty.inbox import pull as pull_suggestions
@@ -32,6 +32,8 @@ from chitty.store import (
 
 class _Group(click.Group):
     def invoke(self, ctx: click.Context) -> Any:
+        if user_contexts_path().exists():
+            click.echo("warning: contexts.toml is ignored; use chitty suggest", err=True)
         try:
             return super().invoke(ctx)
         except ChittyError as error:

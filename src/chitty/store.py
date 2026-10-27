@@ -14,8 +14,6 @@ from chitty.config import (
     INITIAL_CONFIG,
     RepoConfig,
     load_repo_config,
-    load_user_contexts,
-    user_contexts_path,
     validate_repo_config,
 )
 from chitty.errors import ChittyError
@@ -444,28 +442,10 @@ class Repo:
 
 
 def resolve_add_target(local: Repo | None, name: str | None) -> Target:
-    """A context in this repo, or (for `add` only) one from the user's contexts.toml."""
-    if name is None:
-        if local is None:
-            raise ChittyError("no chitty.toml here or in any parent (run `chitty init`)")
-        return Target(local, local.default_context)
-    user = load_user_contexts().contexts
-    if local is not None and name in local.config.contexts:
-        if name in user:
-            raise ChittyError(
-                f"context {name!r} is defined in both {local.root / CONFIG_NAME} "
-                f"and {user_contexts_path()}; rename one"
-            )
-        return Target(local, local.context(name))
-    if name not in user:
-        here = local.root / CONFIG_NAME if local else "this directory (no chitty.toml)"
-        raise ChittyError(f"no context {name!r} in {here} or {user_contexts_path()}")
-    entry = user[name]
-    repo = Repo.open(Path(entry.repo).expanduser().resolve())
-    # Post-and-forget: the other repo's autocommit setting is ignored.
-    repo = Repo(repo.root, repo.config.model_copy(update={"autocommit": False}))
-    context = repo.context(entry.context) if entry.context else repo.default_context
-    return Target(repo, context)
+    """Resolve an add target only within the current repository."""
+    if local is None:
+        raise ChittyError("no chitty.toml here or in any parent (run `chitty init`)")
+    return Target(local, local.context(name) if name else local.default_context)
 
 
 def guide() -> str:

@@ -67,7 +67,7 @@ def suggest(
     return str(send_suggestion(project, title, description, create, Path.cwd(), task))
 
 
-@_tool("add", "Create a task with status todo. `context` may also name a user-level context.")
+@_tool("add", "Create a task with status todo in this repository.")
 def add(
     title: str,
     description: str | None = None,
