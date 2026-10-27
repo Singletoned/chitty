@@ -33,7 +33,7 @@ class ConvertedTask:
     reports: tuple[str, ...]
 
 
-def convert(path: Path) -> ConvertedTask:
+def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
     """Map one legacy task without allocating an ID or writing a file."""
     text = path.read_text()
     if not text.startswith("---\n"):
@@ -46,7 +46,7 @@ def convert(path: Path) -> ConvertedTask:
     old_id = str(fields["id"])
     status = str(fields.get("status", "Draft"))
     reports: list[str] = []
-    mapped_status = STATUS.get(status, "backlog")
+    mapped_status = "backlog" if draft else STATUS.get(status, "backlog")
     notes: list[str] = []
     if mapped_status == "backlog":
         reports.append(f"{old_id}: unknown status {status!r}")

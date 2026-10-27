@@ -72,3 +72,7 @@ class TestImportBacklog(unittest.TestCase):
             ),
         )
         parse(task.render())
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "draft.md"
+            path.write_text(textwrap.dedent(SAMPLE).replace("status: Backburner", "status: Done"))
+            self.assertEqual(convert(path, draft=True).task.frontmatter.status, "backlog")
