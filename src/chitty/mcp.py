@@ -17,7 +17,7 @@ from chitty.errors import ChittyError
 from chitty.model import STATUSES
 from chitty.store import Edit, Repo, guide, matches, resolve_add_target
 
-Status = Literal["backlog", "todo", "doing", "done"]
+Status = Literal["backlog", "todo", "doing", "blocked", "done"]
 Priority = Literal["low", "medium", "high"]
 
 server = MCPServer(name="chitty", instructions=guide())
@@ -92,7 +92,7 @@ def list_(
 ) -> list[dict[str, Any]]:
     repo = _repo()
     contexts = [repo.context(name) for name in context] if context else repo.contexts()
-    statuses = list(STATUSES) if all else status or ["todo", "doing"]
+    statuses = list(STATUSES) if all else status or ["todo", "doing", "blocked"]
     tasks = [task for selected in contexts for task in repo.tasks(selected, "active")]
     parent = str(repo.resolve(parent)) if parent else None
     found = [t for t in tasks if matches(t, statuses, label or [], owner, search, parent)]

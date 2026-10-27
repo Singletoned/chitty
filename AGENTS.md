@@ -28,5 +28,8 @@ task files. `chitty --help` is the full command reference.
   (numbers are shown by `chitty show`).
 - Record anything surprising with `--note`. Set `-s done` when every
   criterion is ticked and the work is verified.
+- When blocked, set `-s blocked --note "reason"`, do not pick the task back
+  up, and move on. If a person must act outside the repo, add a `-c human`
+  ticket and depend on it.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
   Don't do it in this session.

@@ -198,6 +198,15 @@ class TestAddShowList(CliTestCase):
         )
 
 
+class TestBlockedStatus(CliTestCase):
+    def test_blocked_requires_note_and_is_listed_by_default(self):
+        self.run_cli("add", "Wait", "-d", "x")
+        failed = self.run_cli("edit", "1", "-s", "blocked", exit_code=1)
+        self.assertIn("requires --note", failed.stderr)
+        self.run_cli("edit", "1", "-s", "blocked", "--note", "Need a decision.")
+        self.assertEqual(self.json("list")[0]["status"], "blocked")
+
+
 class TestEdit(CliTestCase):
     def setUp(self):
         super().setUp()
@@ -302,7 +311,7 @@ class TestCheck(CliTestCase):
         self.run_cli("add", "One", "-d", "x")
         self.assertEqual(self.run_cli("check").stdout, "")
         path = self.root / "chitty/tasks/TASK-1--one.md"
-        path.write_text(path.read_text().replace("status: todo", "status: blocked"))
+        path.write_text(path.read_text().replace("status: todo", "status: unknown"))
         result = self.run_cli("check", exit_code=1)
         self.assertIn(f"{path}: status:", result.stdout)
         self.assertIn("1 problem(s)", result.stderr)

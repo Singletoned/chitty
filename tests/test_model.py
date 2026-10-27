@@ -147,7 +147,7 @@ class TestFieldEdits(unittest.TestCase):
 
     def test_invalid_value_is_rejected(self):
         with self.assertRaisesRegex(TaskError, "status"):
-            parse(SAMPLE).with_field("status", "blocked")
+            parse(SAMPLE).with_field("status", "unknown")
 
     def test_quoting(self):
         for value in (

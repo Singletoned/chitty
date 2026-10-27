@@ -1,6 +1,6 @@
 ---
 title: Add a blocked status for tickets that can't be worked on
-status: todo
+status: done
 labels:
   - cli
 created: 2026-10-27
@@ -12,11 +12,19 @@ A blocked ticket is one someone has judged cannot proceed without help: a decisi
 
 ## Acceptance Criteria
 
-- [ ] blocked is a status, ordered between doing and done (backlog → todo → doing → blocked → done) in every context
-- [ ] Setting -s blocked requires a --note in the same command (CLI and MCP); without one it is an error naming the fix
-- [ ] Plain chitty list shows blocked tasks alongside todo and doing; -s blocked filters to them
-- [ ] Unblocking is setting -s todo or -s doing; checklist and Plan are left as they are
-- [ ] blocked is never set automatically from open depends_on
-- [ ] Shell completion includes blocked
-- [ ] Agent guide: when you can't proceed, set -s blocked with the reason and move on; never pick up a blocked ticket; also file a -c human ticket and depends_on it when a person must act outside the repo
-- [ ] Tests, PLAN.md, README and AGENTS.md updated
+- [x] blocked is a status, ordered between doing and done (backlog → todo → doing → blocked → done) in every context
+- [x] Setting -s blocked requires a --note in the same command (CLI and MCP); without one it is an error naming the fix
+- [x] Plain chitty list shows blocked tasks alongside todo and doing; -s blocked filters to them
+- [x] Unblocking is setting -s todo or -s doing; checklist and Plan are left as they are
+- [x] blocked is never set automatically from open depends_on
+- [x] Shell completion includes blocked
+- [x] Agent guide: when you can't proceed, set -s blocked with the reason and move on; never pick up a blocked ticket; also file a -c human ticket and depends_on it when a person must act outside the repo
+- [x] Tests, PLAN.md, README and AGENTS.md updated
+
+## Plan
+
+Add blocked to the shared status model, expose it consistently in CLI/MCP choices and list defaults, then add regression coverage and documentation.
+
+## Notes
+
+Added blocked across model, CLI, MCP, completion and default list filtering; Store enforces a same-command reason note. Added regression coverage and updated PLAN, README, guide and AGENTS. Full make check passes.

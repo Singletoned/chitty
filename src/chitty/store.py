@@ -261,6 +261,8 @@ class Repo:
         """Apply an edit. References in depends_on may be shorthand."""
         if edit.is_empty():
             raise ChittyError("nothing to change")
+        if edit.status == "blocked" and not (edit.note or edit.notes):
+            raise ChittyError("setting status blocked requires --note with the reason")
         stored = self.find(task_id)
         edit = replace(
             edit,

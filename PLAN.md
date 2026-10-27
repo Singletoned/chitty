@@ -133,7 +133,7 @@ Frontmatter schema (strict: unknown keys are an error):
 | key          | type               | required | notes                                        |
 |--------------|--------------------|----------|----------------------------------------------|
 | `title`      | string             | yes      | non-empty, single line                       |
-| `status`     | `backlog\|todo\|doing\|done` | yes     | fixed in v1; backlog needs refinement        |
+| `status`     | `backlog\|todo\|doing\|blocked\|done` | yes     | fixed in v1; backlog needs refinement; blocked needs a reason |
 | `labels`     | list[string]       | no       | absent ≡ `[]`                                |
 | `priority`   | `low\|medium\|high` | no      | absent means unset                           |
 | `owner`      | string             | no       | free text; `human`, a name, an agent         |
@@ -319,7 +319,7 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   non-zero if problems remain. Autocommit runs it on written task files first.
 - `list` reads only non-archived tasks: by default it selects `todo` and
   `doing` tasks from every context; repeat `-c` to narrow contexts or `-s` to
-  choose statuses, including `backlog` and `done`. `--all` selects every status
+  choose statuses, including `backlog`, `blocked`, and `done`. `--all` selects every status
   but still excludes archive folders. An empty list reports its active filters
   on stderr while keeping stdout (including JSON) empty.
   Default output is one line per task:

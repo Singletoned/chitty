@@ -231,7 +231,7 @@ def list_(
     """List tasks, one per line."""
     repo = _repo()
     selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
-    selected_statuses = STATUSES if all_ else statuses or ("todo", "doing")
+    selected_statuses = STATUSES if all_ else statuses or ("todo", "doing", "blocked")
     parent = str(repo.resolve(parent)) if parent else None
     tasks = [
         task
