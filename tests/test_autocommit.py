@@ -100,6 +100,32 @@ class TestAutocommit(CliTestCase):
             "chitty: archive done tasks HUMAN-1 Human done\n\nTask: TASK-1\nTask: HUMAN-1",
         )
 
+    def test_import_runs_autoformat_and_autocommit(self):
+        formatter = self.tmp / "formatter.py"
+        formatter.write_text(
+            "import pathlib, sys\n"
+            "path = pathlib.Path(sys.argv[1])\n"
+            "path.write_text(path.read_text().replace('Legacy description.', 'Formatted.'))\n"
+        )
+        config = self.root / "chitty.toml"
+        command = f"{shlex.quote(sys.executable)} {shlex.quote(str(formatter))}"
+        config.write_text(
+            config.read_text().replace(
+                "[contexts.tasks]", f'autoformat = "{command}"\n\n[contexts.tasks]'
+            )
+        )
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        (legacy / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\n"
+            "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
+        )
+
+        self.run_cli("import", "backlog-md")
+
+        self.assertIn("Formatted.", self.git("show", "HEAD:chitty/tasks/TASK-1--legacy.md"))
+        self.assertEqual(self.last_commit()[0], "chitty: import TASK-1 Legacy")
+
     def test_autoformat_runs_before_autocommit(self):
         formatter = self.tmp / "formatter.py"
         formatter.write_text(

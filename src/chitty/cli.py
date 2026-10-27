@@ -179,9 +179,7 @@ def import_backlog_md(context: str | None) -> None:
     source = repo.root / "backlog"
     if not source.is_dir():
         raise ChittyError(f"{source} does not exist")
-    for report in import_directory(
-        source, selected.directory, selected.prefix, repo.config.archive
-    ):
+    for report in import_directory(source, repo, selected):
         click.echo(report)
     agents = repo.root / "AGENTS.md"
     if agents.exists():

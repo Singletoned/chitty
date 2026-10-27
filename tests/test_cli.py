@@ -72,6 +72,73 @@ class TestInit(CliTestCase):
 
 
 class TestImport(CliTestCase):
+    def test_import_rejects_generated_parent_missing_from_source(self):
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        (legacy / "task-7.1.md").write_text(
+            "---\nid: TASK-7.1\ntitle: Orphan subtask\nstatus: To Do\n"
+            "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
+        )
+
+        with self.assertRaisesRegex(ValueError, "parent TASK-7: no such task"):
+            self.run_cli("import", "backlog-md")
+
+        self.assertEqual(list((self.root / "chitty/tasks").glob("*.md")), [])
+
+    def test_import_archives_completed_tasks_when_archive_policy_is_move(self):
+        legacy = self.root / "backlog/completed"
+        legacy.mkdir(parents=True)
+        (legacy / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Completed\nstatus: Done\n"
+            "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
+        )
+
+        self.run_cli("import", "backlog-md")
+
+        self.assertTrue((self.root / "chitty/tasks/archive/TASK-1--completed.md").exists())
+        self.assertEqual(list((self.root / "chitty/tasks").glob("*.md")), [])
+
+    def test_import_omits_archived_tasks_when_archive_policy_is_delete(self):
+        (self.root / "chitty.toml").write_text(
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
+        )
+        legacy = self.root / "backlog/completed"
+        legacy.mkdir(parents=True)
+        (legacy / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Completed\nstatus: Done\n"
+            "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
+        )
+
+        self.run_cli("import", "backlog-md")
+
+        self.assertEqual(list((self.root / "chitty/tasks").glob("*.md")), [])
+
+    def test_import_strips_references_to_deleted_archived_tasks(self):
+        (self.root / "chitty.toml").write_text(
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
+        )
+        tasks = self.root / "backlog/tasks"
+        tasks.mkdir(parents=True)
+        (tasks / "task-2.md").write_text(
+            "---\nid: TASK-2\ntitle: Dependent\nstatus: To Do\n"
+            "created_date: '2026-10-20'\ndependencies:\n  - TASK-1\n---\n\n"
+            "## Description\n\nLegacy description.\n"
+        )
+        completed = self.root / "backlog/completed"
+        completed.mkdir()
+        (completed / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Completed\nstatus: Done\n"
+            "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
+        )
+
+        self.run_cli("import", "backlog-md")
+
+        self.assertEqual(self.json("show", "2")["depends_on"], [])
+
     def test_import_backlog_md_converts_tasks_and_replaces_agent_block(self):
         legacy = self.root / "backlog/tasks"
         legacy.mkdir(parents=True)

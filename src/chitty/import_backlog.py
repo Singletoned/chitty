@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from pathlib import Path
 from typing import Any, cast
@@ -13,6 +13,7 @@ import yaml
 
 from chitty import ids
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
+from chitty.store import Change, Context, Repo, StoredTask
 
 STATUS = {"To Do": "todo", "In Progress": "doing", "Done": "done"}
 SECTIONS = {
@@ -147,8 +148,9 @@ def _rewrite(value: str, mapping: Mapping[str, str], reports: list[str], old_id:
     return re.sub(r"\bTASK-\d+(?:\.\d+)?\b", replace, value)
 
 
-def import_directory(source: Path, destination: Path, prefix: str, archive: str) -> list[str]:
-    """Convert a legacy backlog after all source files parse successfully."""
+def import_directory(source: Path, repo: Repo, destination: Context) -> list[str]:
+    """Convert a legacy backlog after all source files validate successfully."""
+    prefix = destination.prefix
     locations = (
         ("tasks", False, False),
         ("drafts", True, False),
@@ -178,18 +180,129 @@ def import_directory(source: Path, destination: Path, prefix: str, archive: str)
     unresolved = [report for report in reports if "reference to unknown ID" in report]
     if unresolved:
         raise ValueError("cannot import with unresolved references: " + "; ".join(unresolved))
-    for item in numbered:
+    deleted_ids = {
+        item.new_id
+        for item in numbered
+        if item.old_id in archived_ids and repo.config.archive == "delete"
+    }
+    retained = [
+        item
+        for item in numbered
+        if not (item.old_id in archived_ids and repo.config.archive == "delete")
+    ]
+    retained = [_without_deleted_references(item, deleted_ids) for item in retained]
+    _validate_relationships(retained)
+    stored: list[StoredTask] = []
+    for item in retained:
         archived = item.old_id in archived_ids
-        target = destination / ("archive" if archived and archive == "move" else "")
-        target.mkdir(parents=True, exist_ok=True)
         task_id = ids.TaskId.parse(item.new_id)
-        (target / ids.filename(task_id, ids.slugify(item.task.frontmatter.title))).write_text(
-            item.task.render()
+        directory = destination.archive_directory if archived else destination.directory
+        path = directory / ids.filename(task_id, ids.slugify(item.task.frontmatter.title))
+        directory.mkdir(parents=True, exist_ok=True)
+        path.write_text(item.task.render())
+        stored.append(StoredTask(task_id, destination.name, path, archived, item.task))
+    if stored:
+        repo.finalize(
+            Change(stored[-1], tuple(task.path for task in stored), tuple(stored)), "import"
         )
     for name in ("decisions", "docs", "milestones"):
         if (source / name).exists():
             reports.append(f"left non-task directory: {source / name}")
     return reports
+
+
+def _without_deleted_references(item: RenumberedTask, deleted_ids: set[str]) -> RenumberedTask:
+    """Apply delete-mode relationship semantics to an imported task."""
+    task = item.task
+    dependencies = [
+        reference for reference in task.frontmatter.depends_on if reference not in deleted_ids
+    ]
+    if dependencies != task.frontmatter.depends_on:
+        task = task.with_field("depends_on", dependencies)
+    if task.frontmatter.parent in deleted_ids:
+        task = task.with_field("parent", None)
+    return replace(item, task=task)
+
+
+def _validate_relationships(tasks: list[RenumberedTask]) -> None:
+    """Reject generated dependency and parent relationships before writing files."""
+    by_id: dict[ids.TaskId, list[RenumberedTask]] = {}
+    for item in tasks:
+        by_id.setdefault(ids.TaskId.parse(item.new_id), []).append(item)
+    dependencies: dict[ids.TaskId, set[ids.TaskId]] = {task_id: set() for task_id in by_id}
+    parents: dict[ids.TaskId, set[ids.TaskId]] = {task_id: set() for task_id in by_id}
+    problems = [
+        f"{task_id} is used by more than one imported task"
+        for task_id, items in by_id.items()
+        if len(items) > 1
+    ]
+    for task_id, items in by_id.items():
+        if len(items) > 1:
+            continue
+        item = items[0]
+        for reference in item.task.frontmatter.depends_on:
+            dependency = ids.TaskId.parse(reference)
+            if dependency == task_id:
+                problems.append(f"{task_id}: depends_on lists the task itself")
+            elif dependency not in by_id:
+                problems.append(f"{task_id}: depends_on {reference}: no such task")
+            else:
+                dependencies[task_id].add(dependency)
+        reference = item.task.frontmatter.parent
+        if reference is None:
+            continue
+        parent = ids.TaskId.parse(reference)
+        if parent == task_id:
+            problems.append(f"{task_id}: parent lists the task itself")
+        elif parent not in by_id:
+            problems.append(f"{task_id}: parent {reference}: no such task")
+        else:
+            parents[task_id].add(parent)
+    for field, graph in (("depends_on", dependencies), ("parent", parents)):
+        for cycle in _cycles(graph):
+            problems.append(f"{field} cycle: {', '.join(map(str, cycle))}")
+    if problems:
+        raise ValueError("cannot import invalid task relationships: " + "; ".join(problems))
+
+
+def _cycles(graph: dict[ids.TaskId, set[ids.TaskId]]) -> list[tuple[ids.TaskId, ...]]:
+    """Return each cyclic strongly connected component in stable order."""
+    index = 0
+    indices: dict[ids.TaskId, int] = {}
+    lowlinks: dict[ids.TaskId, int] = {}
+    stack: list[ids.TaskId] = []
+    on_stack: set[ids.TaskId] = set()
+    cycles: list[tuple[ids.TaskId, ...]] = []
+
+    def visit(task_id: ids.TaskId) -> None:
+        nonlocal index
+        indices[task_id] = index
+        lowlinks[task_id] = index
+        index += 1
+        stack.append(task_id)
+        on_stack.add(task_id)
+        for dependency in sorted(graph[task_id], key=str):
+            if dependency not in indices:
+                visit(dependency)
+                lowlinks[task_id] = min(lowlinks[task_id], lowlinks[dependency])
+            elif dependency in on_stack:
+                lowlinks[task_id] = min(lowlinks[task_id], indices[dependency])
+        if lowlinks[task_id] != indices[task_id]:
+            return
+        component: list[ids.TaskId] = []
+        while True:
+            dependency = stack.pop()
+            on_stack.remove(dependency)
+            component.append(dependency)
+            if dependency == task_id:
+                break
+        if len(component) > 1:
+            cycles.append(tuple(sorted(component, key=str)))
+
+    for task_id in sorted(graph, key=str):
+        if task_id not in indices:
+            visit(task_id)
+    return sorted(cycles, key=lambda cycle: tuple(map(str, cycle)))
 
 
 def _sections(body: str, old_id: str, reports: list[str]) -> dict[str, str]:
