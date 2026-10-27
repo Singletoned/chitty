@@ -117,7 +117,7 @@ class TestInbox(RepoTestCase):
 
         def fail_second_cleanup(path, *args, **kwargs):
             nonlocal attempts
-            if path.suffix == ".processing":
+            if path.suffix == ".done":
                 attempts += 1
                 if attempts == 2:
                     raise OSError("cleanup failed")

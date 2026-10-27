@@ -60,6 +60,7 @@ def pull(repo: Repo) -> list[str]:
     project = repo.config.project
     assert project is not None
     register_project(project, repo.root)
+    cleanup_completed(project)
     task_ids: list[str] = []
     changes: list[Change] = []
     created_paths: list[Path] = []
@@ -89,7 +90,8 @@ def pull(repo: Repo) -> list[str]:
             repo.finalize(Change(changes[-1].task, paths, tasks), "pull")
         finalized = True
         for path, _ in claimed:
-            path.unlink()
+            path.replace(path.with_suffix(".done"))
+        cleanup_completed(project)
         return task_ids
     except BaseException:
         if not finalized:
@@ -99,6 +101,12 @@ def pull(repo: Repo) -> list[str]:
         raise
     finally:
         repo.config = configured
+
+
+def cleanup_completed(project: str) -> None:
+    """Remove source suggestions after their imported tasks are finalized."""
+    for path in inbox_path(project).glob("suggestion-*.done"):
+        path.unlink()
 
 
 def waiting(project: str) -> list[Path]:
