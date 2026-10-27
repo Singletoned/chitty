@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import tempfile
+from collections.abc import Iterable
 from datetime import date
 from pathlib import Path
 from typing import Any, cast
@@ -61,27 +62,40 @@ def pull(repo: Repo) -> list[str]:
     register_project(project, repo.root)
     task_ids: list[str] = []
     changes: list[Change] = []
+    created_paths: list[Path] = []
     configured = repo.config
-    repo.config = configured.model_copy(update={"autocommit": False})
-    for path, item in claim(project):
-        task = repo.add(
-            repo.default_context,
-            str(item["title"]),
-            str(item["description"]) or None,
-            [],
-            {"status": "backlog"},
-            date.today(),
-        ).task
-        origin = item.get("origin", "unknown")
-        changes.append(repo.edit(task.id, Edit(note=f"Suggestion origin: {origin}")))
-        path.unlink()
-        task_ids.append(str(task.id))
-    repo.config = configured
-    if changes:
-        paths = tuple(path for change in changes for path in change.paths)
-        tasks = tuple(task for change in changes for task in change.tasks)
-        repo.finalize(Change(changes[-1].task, paths, tasks), "pull")
-    return task_ids
+    claimed: list[tuple[Path, dict[str, object]]] = []
+    try:
+        claimed = claim(project)
+        repo.config = configured.model_copy(update={"autocommit": False})
+        for _, item in claimed:
+            created = repo.add(
+                repo.default_context,
+                str(item["title"]),
+                str(item["description"]) or None,
+                [],
+                {"status": "backlog"},
+                date.today(),
+            )
+            created_paths.extend(created.paths)
+            origin = item.get("origin", "unknown")
+            changes.append(repo.edit(created.task.id, Edit(note=f"Suggestion origin: {origin}")))
+            task_ids.append(str(created.task.id))
+        if changes:
+            paths = tuple(path for change in changes for path in change.paths)
+            tasks = tuple(task for change in changes for task in change.tasks)
+            repo.config = configured
+            repo.finalize(Change(changes[-1].task, paths, tasks), "pull")
+        for path, _ in claimed:
+            path.unlink()
+        return task_ids
+    except Exception:
+        for path in created_paths:
+            path.unlink(missing_ok=True)
+        release(path for path, _ in claimed)
+        raise
+    finally:
+        repo.config = configured
 
 
 def waiting(project: str) -> list[Path]:
@@ -91,20 +105,33 @@ def waiting(project: str) -> list[Path]:
 def claim(project: str) -> list[tuple[Path, dict[str, object]]]:
     """Atomically hide waiting suggestions from other pullers before reading."""
     claimed: list[tuple[Path, dict[str, object]]] = []
-    for path in waiting(project):
-        processing = path.with_suffix(".processing")
-        try:
-            path.replace(processing)
-        except FileNotFoundError:
-            continue
-        _, frontmatter, body = processing.read_text().split("---\n", 2)
-        data = yaml.safe_load(frontmatter)
-        if not isinstance(data, dict):
-            raise ChittyError(f"{processing}: invalid suggestion frontmatter")
-        suggestion = cast(dict[str, object], cast(dict[str, Any], data))
-        suggestion["description"] = body.split("## Description\n\n", 1)[-1].strip()
-        claimed.append((processing, suggestion))
-    return claimed
+    processing_paths: list[Path] = []
+    try:
+        for path in waiting(project):
+            processing = path.with_suffix(".processing")
+            try:
+                path.replace(processing)
+            except FileNotFoundError:
+                continue
+            processing_paths.append(processing)
+            _, frontmatter, body = processing.read_text().split("---\n", 2)
+            data = yaml.safe_load(frontmatter)
+            if not isinstance(data, dict):
+                raise ChittyError(f"{processing}: invalid suggestion frontmatter")
+            suggestion = cast(dict[str, object], cast(dict[str, Any], data))
+            suggestion["description"] = body.split("## Description\n\n", 1)[-1].strip()
+            claimed.append((processing, suggestion))
+        return claimed
+    except Exception:
+        release(processing_paths)
+        raise
+
+
+def release(paths: Iterable[Path]) -> None:
+    """Return unprocessed claims to the waiting inbox after a failed pull."""
+    for path in paths:
+        if path.exists():
+            path.replace(path.with_suffix(".md"))
 
 
 def _origin(cwd: Path) -> str:

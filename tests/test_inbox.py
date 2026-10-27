@@ -1,3 +1,5 @@
+from unittest import mock
+
 from chitty.config import load_repo_config
 from chitty.errors import ChittyError
 from chitty.inbox import pull, suggest
@@ -39,6 +41,65 @@ class TestInbox(RepoTestCase):
         self.assertEqual(task.frontmatter.status, "backlog")
         self.assertIn("→ backlog", task.section("History") or "")
         self.assertIn("Suggestion origin", task.render())
+
+    def test_pull_releases_invalid_suggestion_and_restores_config(self):
+        path = suggest("target", "Inbox task", None, True, self.root)
+        path.write_text("invalid suggestion")
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        repo = Repo(self.root, load_repo_config(self.root))
+        configured = repo.config
+
+        with self.assertRaises(ValueError):
+            pull(repo)
+
+        self.assertTrue(path.exists())
+        self.assertFalse(path.with_suffix(".processing").exists())
+        self.assertIs(repo.config, configured)
+
+    def test_pull_releases_suggestion_when_task_creation_fails(self):
+        path = suggest("target", "Inbox task", None, True, self.root)
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        repo = Repo(self.root, load_repo_config(self.root))
+        configured = repo.config
+
+        with (
+            mock.patch.object(repo, "add", side_effect=ChittyError("write failed")),
+            self.assertRaisesRegex(ChittyError, "write failed"),
+        ):
+            pull(repo)
+
+        self.assertTrue(path.exists())
+        self.assertFalse(path.with_suffix(".processing").exists())
+        self.assertIs(repo.config, configured)
+
+    def test_pull_rolls_back_created_task_when_note_creation_fails(self):
+        path = suggest("target", "Inbox task", None, True, self.root)
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        repo = Repo(self.root, load_repo_config(self.root))
+
+        with (
+            mock.patch.object(repo, "edit", side_effect=ChittyError("write failed")),
+            self.assertRaisesRegex(ChittyError, "write failed"),
+        ):
+            pull(repo)
+
+        self.assertTrue(path.exists())
+        self.assertEqual(list((self.root / "chitty" / "tasks").glob("*.md")), [])
 
     def test_path_resolves_project_config(self):
         other = self.tmp / "other"
