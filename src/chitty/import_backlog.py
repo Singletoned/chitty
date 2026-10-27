@@ -53,6 +53,10 @@ def convert(path: Path) -> ConvertedTask:
         notes.append(f"Backlog.md status: {status}")
     sections = _sections(body, old_id, reports)
     descriptions = sections.pop(DESCRIPTION, "Imported from Backlog.md.")
+    for key, heading in (("references", "References"), ("modified_files", "Modified files")):
+        values = list(fields.get(key) or [])
+        if values:
+            descriptions += f"\n\n### {heading}\n\n" + "\n".join(f"- {value}" for value in values)
     criteria = [text for _, text in CRITERION.findall(body)]
     task = new_task(
         str(fields["title"]),

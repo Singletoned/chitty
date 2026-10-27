@@ -26,3 +26,5 @@ Create a pure importer parser/mapping module from representative committed fixtu
 ## Notes
 
 Implemented an initial pure converter and manually parsed/rendered representative Sump and Circuitry task files. Next: add committed fixtures and unit coverage for mapping edge cases.
+
+Added focused conversion regression coverage for custom status, mapped fields, checked criteria, Summary, demoted headings, report output, and parser round-trip. References/modified_files now become Description lists. Draft-location mapping and committed fixture files remain.
