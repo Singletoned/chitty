@@ -195,39 +195,42 @@ def import_directory(
     retained = [_without_deleted_references(item, deleted_ids) for item in retained]
     _validate_relationships(retained)
     stored: list[StoredTask] = []
-    for item in retained:
-        archived = item.old_id in archived_ids
-        task = item.task
-        if archived:
-            task = task.with_history(date.today(), task.frontmatter.status, "archived")
-        task_id = ids.TaskId.parse(item.new_id)
-        directory = destination.archive_directory if archived else destination.directory
-        path = directory / ids.filename(task_id, ids.slugify(task.frontmatter.title))
-        directory.mkdir(parents=True, exist_ok=True)
-        path.write_text(task.render())
-        stored.append(StoredTask(task_id, destination.name, path, archived, task))
-    agent_path = agents if stored and agents and agents.exists() else None
+    written_paths: list[Path] = []
+    agent_path: Path | None = None
     previous_agents: str | None = None
-    if agent_path:
-        previous_agents = agent_path.read_text()
-        pattern = r"(?ms)^## Backlog\.md Workflow\n.*?(?=^## |\Z)"
-        updated, count = re.subn(pattern, guide().rstrip() + "\n", previous_agents)
-        if count:
-            agent_path.write_text(updated)
-        else:
-            previous_agents = None
-    if stored:
-        paths = [task.path for task in stored]
-        if agent_path and previous_agents is not None:
-            paths.append(agent_path)
-        try:
-            repo.finalize(Change(stored[-1], tuple(paths), tuple(stored)), "import")
-        except Exception:
-            for task in stored:
-                task.path.unlink(missing_ok=True)
+    try:
+        for item in retained:
+            archived = item.old_id in archived_ids
+            task = item.task
+            if archived:
+                task = task.with_history(date.today(), task.frontmatter.status, "archived")
+            task_id = ids.TaskId.parse(item.new_id)
+            directory = destination.archive_directory if archived else destination.directory
+            path = directory / ids.filename(task_id, ids.slugify(task.frontmatter.title))
+            directory.mkdir(parents=True, exist_ok=True)
+            written_paths.append(path)
+            path.write_text(task.render())
+            stored.append(StoredTask(task_id, destination.name, path, archived, task))
+        agent_path = agents if stored and agents and agents.exists() else None
+        if agent_path:
+            previous_agents = agent_path.read_text()
+            pattern = r"(?ms)^## Backlog\.md Workflow\n.*?(?=^## |\Z)"
+            updated, count = re.subn(pattern, guide().rstrip() + "\n", previous_agents)
+            if count:
+                agent_path.write_text(updated)
+            else:
+                previous_agents = None
+        if stored:
+            paths = [*written_paths]
             if agent_path and previous_agents is not None:
-                agent_path.write_text(previous_agents)
-            raise
+                paths.append(agent_path)
+            repo.finalize(Change(stored[-1], tuple(paths), tuple(stored)), "import")
+    except BaseException:
+        for path in written_paths:
+            path.unlink(missing_ok=True)
+        if agent_path and previous_agents is not None:
+            agent_path.write_text(previous_agents)
+        raise
     for name in ("decisions", "docs", "milestones"):
         if (source / name).exists():
             reports.append(f"left non-task directory: {source / name}")
