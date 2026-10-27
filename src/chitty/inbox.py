@@ -12,7 +12,14 @@ from chitty.config import inbox_path, load_repo_config, register_project, regist
 from chitty.errors import ChittyError
 
 
-def suggest(project: str, title: str, description: str | None, create: bool, cwd: Path) -> Path:
+def suggest(
+    project: str,
+    title: str,
+    description: str | None,
+    create: bool,
+    cwd: Path,
+    task: str | None = None,
+) -> Path:
     """Atomically write a suggestion to a registered project's inbox."""
     target = Path(project).expanduser()
     if target.is_dir():
@@ -28,7 +35,9 @@ def suggest(project: str, title: str, description: str | None, create: bool, cwd
         register_project(project, None)
     directory = inbox_path(project)
     origin = _origin(cwd)
-    text = f"---\ntitle: {title}\ncreated: {date.today().isoformat()}\norigin: {origin}\n---\n\n"
+    task_line = f"task: {task}\n" if task else ""
+    text = f"---\ntitle: {title}\ncreated: {date.today().isoformat()}\norigin: {origin}\n"
+    text += task_line + "---\n\n"
     if description:
         text += f"## Description\n\n{description}\n"
     fd, temporary = tempfile.mkstemp(prefix=".suggest-", dir=directory, text=True)

@@ -21,4 +21,6 @@ task files. `chitty --help` is the full command reference.
   not pick up blocked work. If a person must act outside the repo, add a
   `-c human` task and depend on it.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
+  Suggest work for another project without touching its checkout using
+  `chitty suggest PROJECT "title" -d "why"`.
   Don't do it in this session.

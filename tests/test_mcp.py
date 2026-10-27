@@ -25,6 +25,7 @@ class TestMcp(CliTestCase):
             sorted(
                 [
                     "add",
+                    "suggest",
                     "list",
                     "show",
                     "edit",

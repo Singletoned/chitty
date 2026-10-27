@@ -14,6 +14,7 @@ from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
+from chitty.inbox import suggest as send_suggestion
 from chitty.model import STATUSES
 from chitty.store import Edit, Repo, guide, matches, resolve_add_target
 
@@ -47,6 +48,17 @@ def _repo() -> Repo:
 @server.resource("chitty://guide", name="guide", mime_type="text/markdown")
 def guide_resource() -> str:
     return guide()
+
+
+@_tool("suggest", "Send a suggestion to a project's machine-local inbox.")
+def suggest(
+    project: str,
+    title: str,
+    description: str | None = None,
+    task: str | None = None,
+    create: bool = False,
+) -> str:
+    return str(send_suggestion(project, title, description, create, Path.cwd(), task))
 
 
 @_tool("add", "Create a task with status todo. `context` may also name a user-level context.")
