@@ -1,0 +1,46 @@
+"""Machine-local suggestion inboxes."""
+
+from __future__ import annotations
+
+import os
+import tempfile
+from datetime import date
+from pathlib import Path
+from uuid import uuid4
+
+from chitty.config import inbox_path, load_repo_config, register_project, registered_projects
+from chitty.errors import ChittyError
+
+
+def suggest(project: str, title: str, description: str | None, create: bool, cwd: Path) -> Path:
+    """Atomically write a suggestion to a registered project's inbox."""
+    target = Path(project).expanduser()
+    if target.is_dir():
+        config = load_repo_config(target)
+        if not config.project:
+            raise ChittyError(f"{target} has no project name")
+        project = config.project
+        register_project(project, target)
+    elif project not in registered_projects():
+        if not create:
+            known = ", ".join(registered_projects()) or "none"
+            raise ChittyError(f"unknown project {project!r}; known projects: {known}; use --create")
+        register_project(project, None)
+    directory = inbox_path(project)
+    origin = _origin(cwd)
+    text = f"---\ntitle: {title}\ncreated: {date.today().isoformat()}\norigin: {origin}\n---\n\n"
+    if description:
+        text += f"## Description\n\n{description}\n"
+    fd, temporary = tempfile.mkstemp(prefix=".suggest-", dir=directory, text=True)
+    with os.fdopen(fd, "w") as output:
+        output.write(text)
+    path = directory / f"suggestion-{uuid4().hex}.md"
+    Path(temporary).replace(path)
+    return path
+
+
+def _origin(cwd: Path) -> str:
+    try:
+        return str(load_repo_config(cwd).project or cwd)
+    except ChittyError:
+        return str(cwd)

@@ -14,6 +14,7 @@ from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
 from chitty.import_backlog import import_directory
+from chitty.inbox import suggest as send_suggestion
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
 from chitty.store import (
     Change,
@@ -127,6 +128,16 @@ def init(prefix: str | None) -> None:
         click.echo("already up to date")
     for path in paths:
         click.echo(f"updated {path}")
+
+
+@cli.command()
+@click.argument("project")
+@click.argument("title")
+@click.option("-d", "--description")
+@click.option("--create", is_flag=True, help="Create an inbox for a non-Chitty project.")
+def suggest(project: str, title: str, description: str | None, create: bool) -> None:
+    """Send a suggestion to another project's machine-local inbox."""
+    click.echo(send_suggestion(project, title, description, create, Path.cwd()))
 
 
 @cli.group("import")

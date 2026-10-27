@@ -174,18 +174,26 @@ def inbox_path(project: str) -> Path:
     return base / "chitty" / "inbox" / project
 
 
-def register_project(project: str, root: Path) -> Path:
+def registered_projects() -> list[str]:
+    base = inbox_path("_").parent
+    return sorted(path.name for path in base.iterdir() if path.is_dir()) if base.exists() else []
+
+
+def register_project(project: str, root: Path | None) -> Path:
     """Claim a project inbox name, refusing ownership by another repository."""
     directory = inbox_path(project)
     owner = directory / "repo"
-    resolved = str(root.resolve())
+    resolved = str(root.resolve()) if root is not None else ""
     current = owner.read_text().strip() if owner.exists() else ""
     if current not in ("", resolved):
         raise ChittyError(
             f"project {project!r} is registered to {current}; choose explicit project = name"
         )
     directory.mkdir(parents=True, exist_ok=True)
-    owner.write_text(resolved + "\n")
+    if resolved:
+        owner.write_text(resolved + "\n")
+    elif not owner.exists():
+        owner.write_text("")
     return directory
 
 

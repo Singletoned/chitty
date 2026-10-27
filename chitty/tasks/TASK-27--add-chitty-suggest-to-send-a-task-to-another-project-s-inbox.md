@@ -1,6 +1,6 @@
 ---
 title: Add chitty suggest to send a task to another project's inbox
-status: todo
+status: doing
 labels:
   - cli
 depends_on:
@@ -23,3 +23,7 @@ chitty suggest PROJECT TITLE [-d TEXT] writes one suggestion file into PROJECT's
 - [ ] MCP suggest tool with the same rules
 - [ ] Shell completion offers registered names
 - [ ] Tests, PLAN.md, README and the agent guide (when and how to suggest) updated
+
+## Plan
+
+Implement atomic machine-inbox suggestion writing plus registered-name/path resolution, expose CLI and MCP parity, then add isolated-XDG tests and docs.
