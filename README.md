@@ -23,6 +23,7 @@ uvx chitty --help                 # run without installing
 chitty init                       # create/upgrade config and register its machine-local project inbox
 chitty import backlog-md          # convert a reviewed legacy backlog/ directory
 chitty suggest other "Improve docs" -d "Explain setup."  # machine-local inbox
+chitty pull                       # collect this repo's inbox as backlog tasks
 chitty add "Add search" -d "Search titles and bodies." \
     --ac "Matches title" --ac "Case-insensitive" -l cli
 chitty list

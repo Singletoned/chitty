@@ -16,6 +16,7 @@ from chitty.errors import ChittyError
 from chitty.import_backlog import import_directory
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
+from chitty.inbox import waiting
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
 from chitty.store import (
     Change,
@@ -279,6 +280,8 @@ def list_(
             f"statuses={','.join(selected_statuses)}",
             err=True,
         )
+    if repo.config.project and waiting(repo.config.project):
+        click.echo("suggestions waiting: run chitty pull", err=True)
     if as_json:
         _print_json([t.as_dict() for t in tasks])
         return

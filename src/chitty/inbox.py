@@ -67,7 +67,8 @@ def pull(repo: Repo) -> list[str]:
             {"status": "backlog"},
             date.today(),
         ).task
-        repo.edit(task.id, Edit(note=f"Suggestion origin: {item.get('origin', 'unknown')}"))
+        origin = item.get("origin", "unknown")
+        repo.edit(task.id, Edit(note=f"Suggestion origin: {origin}"))
         path.unlink()
         task_ids.append(str(task.id))
     return task_ids
