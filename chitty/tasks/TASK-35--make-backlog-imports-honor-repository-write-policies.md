@@ -1,6 +1,6 @@
 ---
 title: Make backlog imports honor repository write policies
-status: review
+status: doing
 created: 2026-10-27
 ---
 
@@ -22,6 +22,8 @@ Validate every generated task relationship before creating output. Route imports
 
 Review failed: finalization failures leave partial imports, archived imports lack archive history, and the AGENTS.md migration bypasses autocommit.
 
+Review failed: writes before the finalization try block are not rolled back if task or AGENTS.md writes fail.
+
 ## Summary
 
 Added rollback for import finalization failures, recorded archived transitions, and included AGENTS.md migration in the import finalization commit. Verified with make check.
@@ -33,3 +35,4 @@ Added rollback for import finalization failures, recorded archived transitions, 
 - 2026-10-27 doing → review
 - 2026-10-27 review → doing
 - 2026-10-27 doing → review
+- 2026-10-27 review → doing

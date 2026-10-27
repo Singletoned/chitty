@@ -22,14 +22,18 @@ Add failure-safe claimed-suggestion handling: restore configuration with a final
 
 Review failed: a claimed suggestion can still be lost if one post-finalization inbox-file deletion succeeds and a later deletion fails.
 
+Review failed: KeyboardInterrupt and SystemExit bypass claim recovery after suggestions move to processing.
+
 ## Summary
 
-Preserved finalized imported tasks if post-finalization inbox cleanup fails, so successfully removed suggestion files cannot cause task rollback or data loss. Added regression coverage and verified with make check.
+Extended claim recovery to BaseException so interrupts cannot strand claimed suggestions. Verified with make check.
 
 ## History
 
 - 2026-10-27 → todo
 - 2026-10-27 todo → doing
+- 2026-10-27 doing → review
+- 2026-10-27 review → doing
 - 2026-10-27 doing → review
 - 2026-10-27 review → doing
 - 2026-10-27 doing → review

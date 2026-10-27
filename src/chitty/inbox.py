@@ -91,7 +91,7 @@ def pull(repo: Repo) -> list[str]:
         for path, _ in claimed:
             path.unlink()
         return task_ids
-    except Exception:
+    except BaseException:
         if not finalized:
             for path in created_paths:
                 path.unlink(missing_ok=True)
@@ -125,7 +125,7 @@ def claim(project: str) -> list[tuple[Path, dict[str, object]]]:
             suggestion["description"] = body.split("## Description\n\n", 1)[-1].strip()
             claimed.append((processing, suggestion))
         return claimed
-    except Exception:
+    except BaseException:
         release(processing_paths)
         raise
 
