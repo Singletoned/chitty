@@ -32,6 +32,7 @@ class ConvertedTask:
     old_id: str
     task: Task
     reports: tuple[str, ...]
+    dependencies: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -67,6 +68,8 @@ def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
         if values:
             descriptions += f"\n\n### {heading}\n\n" + "\n".join(f"- {value}" for value in values)
     criteria = [text for _, text in CRITERION.findall(body)]
+    raw_dependencies = cast(list[Any], fields.get("dependencies") or [])
+    dependencies = tuple(str(value) for value in raw_dependencies)
     task = new_task(
         str(fields["title"]),
         date.fromisoformat(str(fields["created_date"])[:10]),
@@ -77,7 +80,7 @@ def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
             "labels": list(fields.get("labels") or []),
             "priority": fields.get("priority"),
             "owner": (fields.get("assignee") or [None])[0],
-            "depends_on": list(fields.get("dependencies") or []),
+            "depends_on": [value for value in dependencies if re.fullmatch(r"TASK-\d+", value)],
         },
     )
     checked = [
@@ -88,7 +91,7 @@ def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
         task = task.with_section(name, content)
     for note in notes:
         task = task.with_note(note)
-    return ConvertedTask(old_id, task, tuple(reports))
+    return ConvertedTask(old_id, task, tuple(reports), dependencies)
 
 
 def renumber(tasks: list[ConvertedTask], prefix: str) -> list[RenumberedTask]:
@@ -118,9 +121,8 @@ def _renumber(
 ) -> RenumberedTask:
     reports = list(item.reports)
     task = item.task
-    dependencies = [
-        _rewrite(value, mapping, reports, item.old_id) for value in task.frontmatter.depends_on
-    ]
+    legacy_dependencies = item.dependencies or tuple(task.frontmatter.depends_on)
+    dependencies = [_rewrite(value, mapping, reports, item.old_id) for value in legacy_dependencies]
     task = task.with_field("depends_on", dependencies)
     if item.old_id in parents:
         task = task.with_field("parent", parents[item.old_id])
