@@ -412,10 +412,11 @@ That is the whole prompt. Statuses are fixed, so the block is always correct.
 - `Makefile` following the mate conventions (`.PHONY` targets with `##`
   descriptions): `make check` (ruff + pyright + tests), `make format`.
 - Git via `subprocess.run(..., check=True)`. Only used when `autocommit` is
-  on: `git add -- <paths> && git commit --only -m "chitty: <verb> <ID> <title>" -- <paths>`,
-  with all affected paths listed (two for `move`/`archive`, more
-  when `move` rewrites references), so nothing the user had staged is swept
-  in. Failure is a loud error.
+  on: `git add -- <paths> && git commit --only -m "chitty: <verb> <ID> <title>\n\nTask: <ID>" -- <paths>`,
+  with one `Task: <ID>` trailer for every task the commit writes. All affected
+  paths are listed (two for `move`/`archive`, more when `move` rewrites
+  references), so nothing the user had staged is swept in. Failure is a loud
+  error.
 
 ## Module layout
 

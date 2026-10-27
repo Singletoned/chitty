@@ -79,7 +79,8 @@ def pull(repo: Repo) -> list[str]:
     repo.config = configured
     if changes:
         paths = tuple(path for change in changes for path in change.paths)
-        repo.finalize(Change(changes[-1].task, paths), "pull")
+        tasks = tuple(task for change in changes for task in change.tasks)
+        repo.finalize(Change(changes[-1].task, paths, tasks), "pull")
     return task_ids
 
 

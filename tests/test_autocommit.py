@@ -27,6 +27,9 @@ class TestAutocommit(CliTestCase):
         files = self.git("show", "--no-renames", "--name-status", "--format=", "HEAD").splitlines()
         return subject, files
 
+    def last_message(self) -> str:
+        return self.git("log", "-1", "--format=%B").strip()
+
     def test_each_write_is_one_commit_of_its_own_paths(self):
         (self.root / "unrelated.txt").write_text("staged by the user\n")
         self.git("add", "unrelated.txt")
@@ -35,6 +38,7 @@ class TestAutocommit(CliTestCase):
             self.last_commit(),
             ("chitty: add TASK-1 Blocker", ["A\tchitty/tasks/TASK-1--blocker.md"]),
         )
+        self.assertEqual(self.last_message(), "chitty: add TASK-1 Blocker\n\nTask: TASK-1")
         self.run_cli("add", "Blocked", "-d", "x", "--depends-on", "1")
         self.run_cli("edit", "1", "-s", "doing")
         self.assertEqual(self.last_commit()[0], "chitty: edit TASK-1 Blocker")
@@ -44,6 +48,10 @@ class TestAutocommit(CliTestCase):
         self.run_cli("move", "1", "human")
         subject, files = self.last_commit()
         self.assertEqual(subject, "chitty: move HUMAN-1 Blocker")
+        self.assertEqual(
+            self.last_message(),
+            "chitty: move HUMAN-1 Blocker\n\nTask: HUMAN-1\nTask: TASK-2",
+        )
         self.assertEqual(
             sorted(files),
             [
@@ -87,6 +95,10 @@ class TestAutocommit(CliTestCase):
 
         self.assertEqual(int(self.git("rev-list", "--count", "HEAD")), commits + 1)
         self.assertEqual(len(self.last_commit()[1]), 4)
+        self.assertEqual(
+            self.last_message(),
+            "chitty: archive done tasks HUMAN-1 Human done\n\nTask: TASK-1\nTask: HUMAN-1",
+        )
 
     def test_autoformat_runs_before_autocommit(self):
         formatter = self.tmp / "formatter.py"

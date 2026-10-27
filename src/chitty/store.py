@@ -74,10 +74,11 @@ class StoredTask:
 
 @dataclass(frozen=True)
 class Change:
-    """The result of a write: the task as it now is, and every path touched."""
+    """The result of a write: its representative task, affected tasks, and paths."""
 
     task: StoredTask
     paths: tuple[Path, ...]
+    tasks: tuple[StoredTask, ...]
 
 
 @dataclass(frozen=True)
@@ -255,9 +256,8 @@ class Repo:
         task_id = TaskId(context.prefix, self.next_number(context))
         path = context.directory / ids.filename(task_id, ids.slugify(title))
         self._write(path, task.render())
-        return self._commit(
-            Change(StoredTask(task_id, context.name, path, False, task), (path,)), "add"
-        )
+        stored = StoredTask(task_id, context.name, path, False, task)
+        return self._commit(Change(stored, (path,), (stored,)), "add")
 
     def edit(self, task_id: TaskId, edit: Edit) -> Change:
         """Apply an edit. References in depends_on may be shorthand."""
@@ -295,9 +295,9 @@ class Repo:
             self.find(TaskId.parse(task.frontmatter.parent))
         updated = StoredTask(stored.id, stored.context, stored.path, stored.archived, task)
         if task.render() == stored.task.render():
-            return Change(updated, ())
+            return Change(updated, (), ())
         self._write(stored.path, task.render())
-        return Change(updated, (stored.path,))
+        return Change(updated, (stored.path,), (updated,))
 
     def next_number(self, context: Context) -> int:
         numbers = [
@@ -324,7 +324,8 @@ class Repo:
         if changes:
             paths = tuple(path for change in changes for path in change.paths)
             verb = "delete" if self.config.archive == "delete" else "archive"
-            self._commit(Change(changes[-1].task, paths), f"{verb} done tasks")
+            tasks = _unique_tasks(tuple(task for change in changes for task in change.tasks))
+            self._commit(Change(changes[-1].task, paths, tasks), f"{verb} done tasks")
         return changes
 
     def _archive(self, task_id: TaskId) -> Change:
@@ -349,6 +350,7 @@ class Repo:
         if stored.task.frontmatter.status != "done":
             raise ChittyError(f"{task_id} is not done and cannot be deleted")
         paths: list[Path] = []
+        changes: list[Change] = []
         for other in self.all_tasks():
             if other.id == task_id:
                 continue
@@ -358,13 +360,16 @@ class Repo:
                 task = task.with_field("depends_on", references)
             if task.frontmatter.parent == str(task_id):
                 task = task.with_field("parent", None)
-            paths += self._save(other, task).paths
+            change = self._save(other, task)
+            paths += change.paths
+            changes.append(change)
         deleted = replace(
             stored,
             task=stored.task.with_history(date.today(), stored.task.frontmatter.status, "deleted"),
         )
         stored.path.unlink()
-        return Change(deleted, (*paths, stored.path))
+        tasks = _unique_tasks((deleted, *(task for change in changes for task in change.tasks)))
+        return Change(deleted, (*paths, stored.path), tasks)
 
     def restore(self, task_id: TaskId) -> Change:
         return self._commit(self._set_archived(task_id, False), "restore")
@@ -385,6 +390,7 @@ class Repo:
         self._write(new_path, task.render())
         stored.path.unlink()
         touched = [stored.path, new_path]
+        changes: list[Change] = []
         for other in self.all_tasks():
             task = other.task
             if old in task.frontmatter.depends_on:
@@ -393,9 +399,12 @@ class Repo:
                 )
             if task.frontmatter.parent == old:
                 task = task.with_field("parent", new)
-            touched += self._save(other, task).paths
+            change = self._save(other, task)
+            touched += change.paths
+            changes.append(change)
         moved = StoredTask(new_id, target.name, new_path, stored.archived, task)
-        return self._commit(Change(moved, tuple(touched)), "move")
+        tasks = _unique_tasks((moved, *(task for change in changes for task in change.tasks)))
+        return self._commit(Change(moved, tuple(touched), tasks), "move")
 
     # -- helpers ---------------------------------------------------------
 
@@ -422,7 +431,9 @@ class Repo:
             formatter.run(self.root, self.config.autoformat, existing)
         if self.config.autocommit:
             title = change.task.task.frontmatter.title
-            git.commit(self.root, change.paths, f"chitty: {verb} {change.task.id} {title}")
+            message = f"chitty: {verb} {change.task.id} {title}"
+            trailers = "\n".join(f"Task: {task.id}" for task in change.tasks)
+            git.commit(self.root, change.paths, f"{message}\n\n{trailers}")
         return change
 
     def _references(self, references: Sequence[str]) -> list[str]:
@@ -443,7 +454,7 @@ class Repo:
         stored.path.rename(new_path)
         self._write(new_path, task.render())
         moved = StoredTask(stored.id, stored.context, new_path, archived, task)
-        return Change(moved, (stored.path, new_path))
+        return Change(moved, (stored.path, new_path), (moved,))
 
     def _files(self, context: Context, archived: bool) -> list[Path]:
         files: list[Path] = []
@@ -464,6 +475,17 @@ class Repo:
     def _write(self, path: Path, text: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
+
+
+def _unique_tasks(tasks: Sequence[StoredTask]) -> tuple[StoredTask, ...]:
+    """Keep one trailer per task ID, in the order the tasks were written."""
+    result: list[StoredTask] = []
+    seen: set[str] = set()
+    for task in tasks:
+        if str(task.id) not in seen:
+            seen.add(str(task.id))
+            result.append(task)
+    return tuple(result)
 
 
 def resolve_add_target(local: Repo | None, name: str | None) -> Target:
