@@ -17,6 +17,10 @@ On a clone of sump, chitty init then chitty import backlog-md left AGENTS.md wit
 - [ ] Running import's AGENTS.md step on a file that has no Backlog.md block changes nothing
 - [ ] Regression test using sump's real AGENTS.md shape fails before the fix
 
+## Notes
+
+Also seen on a clone of circuitry: an opening <CRITICAL_INSTRUCTION> tag inside the Backlog.md block is left behind with the START marker (its closing tag is swallowed). Removing START..END inclusive fixes both. Workaround until fixed: delete those leftover lines by hand.
+
 ## History
 
 - 2026-10-27 → todo
