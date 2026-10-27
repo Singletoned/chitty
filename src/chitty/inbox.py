@@ -65,6 +65,7 @@ def pull(repo: Repo) -> list[str]:
     created_paths: list[Path] = []
     configured = repo.config
     claimed: list[tuple[Path, dict[str, object]]] = []
+    finalized = False
     try:
         claimed = claim(project)
         repo.config = configured.model_copy(update={"autocommit": False})
@@ -86,13 +87,15 @@ def pull(repo: Repo) -> list[str]:
             tasks = tuple(task for change in changes for task in change.tasks)
             repo.config = configured
             repo.finalize(Change(changes[-1].task, paths, tasks), "pull")
+        finalized = True
         for path, _ in claimed:
             path.unlink()
         return task_ids
     except Exception:
-        for path in created_paths:
-            path.unlink(missing_ok=True)
-        release(path for path, _ in claimed)
+        if not finalized:
+            for path in created_paths:
+                path.unlink(missing_ok=True)
+            release(path for path, _ in claimed)
         raise
     finally:
         repo.config = configured

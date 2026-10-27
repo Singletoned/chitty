@@ -1,6 +1,6 @@
 ---
 title: Recover failed inbox pulls
-status: doing
+status: review
 created: 2026-10-27
 ---
 
@@ -24,7 +24,7 @@ Review failed: a claimed suggestion can still be lost if one post-finalization i
 
 ## Summary
 
-Restored claimed suggestions on parse and write failures, rolled back tasks created before a note-write failure, and restored repository configuration in finally. Verified with make check.
+Preserved finalized imported tasks if post-finalization inbox cleanup fails, so successfully removed suggestion files cannot cause task rollback or data loss. Added regression coverage and verified with make check.
 
 ## History
 
@@ -32,3 +32,4 @@ Restored claimed suggestions on parse and write failures, rolled back tasks crea
 - 2026-10-27 todo → doing
 - 2026-10-27 doing → review
 - 2026-10-27 review → doing
+- 2026-10-27 doing → review

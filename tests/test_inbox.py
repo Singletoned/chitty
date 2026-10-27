@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest import mock
 
 from chitty.config import load_repo_config
@@ -100,6 +101,35 @@ class TestInbox(RepoTestCase):
 
         self.assertTrue(path.exists())
         self.assertEqual(list((self.root / "chitty" / "tasks").glob("*.md")), [])
+
+    def test_pull_keeps_imported_tasks_when_inbox_cleanup_fails(self):
+        suggest("target", "One", None, True, self.root)
+        suggest("target", "Two", None, True, self.root)
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        repo = Repo(self.root, load_repo_config(self.root))
+        original_unlink = Path.unlink
+        attempts = 0
+
+        def fail_second_cleanup(path, *args, **kwargs):
+            nonlocal attempts
+            if path.suffix == ".processing":
+                attempts += 1
+                if attempts == 2:
+                    raise OSError("cleanup failed")
+            return original_unlink(path, *args, **kwargs)
+
+        with (
+            mock.patch.object(Path, "unlink", fail_second_cleanup),
+            self.assertRaisesRegex(OSError, "cleanup failed"),
+        ):
+            pull(repo)
+
+        self.assertEqual(len(list((self.root / "chitty/tasks").glob("*.md"))), 2)
 
     def test_path_resolves_project_config(self):
         other = self.tmp / "other"
