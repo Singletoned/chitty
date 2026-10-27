@@ -1,6 +1,6 @@
 ---
 title: Make backlog imports honor repository write policies
-status: review
+status: doing
 created: 2026-10-27
 ---
 
@@ -11,12 +11,16 @@ Validate imports before writing and make imported task lifecycle and finalizatio
 ## Acceptance Criteria
 
 - [x] Import validates all generated task relationships before it writes any file.
-- [x] Archived source tasks honor both move and delete archive policies.
-- [x] Imports run the same configured fix, formatting, and commit finalization as other writes.
+- [ ] Archived source tasks honor both move and delete archive policies.
+- [ ] Imports run the same configured fix, formatting, and commit finalization as other writes.
 
 ## Plan
 
-Validate every generated task relationship before creating output. Route imports through repository finalization so formatting, safe repairs, and autocommit apply once. Under delete-mode archive policy, omit historical imported tasks and remove their generated relationships from retained tasks; cover validation, lifecycle, and finalization with filesystem-backed tests.
+Validate every generated task relationship before creating output. Route imports and the agent-guide migration through one repository finalization, rolling back created files and guide changes if finalization fails. Under delete-mode archive policy, omit historical imported tasks and remove their generated relationships from retained tasks; record archive transitions and cover validation, lifecycle, rollback, and finalization with filesystem-backed tests.
+
+## Notes
+
+Review failed: finalization failures leave partial imports, archived imports lack archive history, and the AGENTS.md migration bypasses autocommit.
 
 ## Summary
 
@@ -27,3 +31,4 @@ Validated generated relationships before writes, preserved move-mode archival, o
 - 2026-10-27 → todo
 - 2026-10-27 todo → doing
 - 2026-10-27 doing → review
+- 2026-10-27 review → doing

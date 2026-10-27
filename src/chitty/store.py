@@ -421,7 +421,13 @@ class Repo:
             # local import keeps the dependency one-directional at module load.
             from chitty.check import fix
 
-            _, problems = fix(self, self.contexts(), existing)
+            directories = tuple(context.directory.resolve() for context in self.contexts())
+            task_paths = [
+                path
+                for path in existing
+                if any(path.resolve().is_relative_to(directory) for directory in directories)
+            ]
+            _, problems = fix(self, self.contexts(), task_paths)
             if problems:
                 details = "\n".join(str(problem) for problem in problems)
                 raise ChittyError(

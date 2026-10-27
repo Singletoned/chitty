@@ -13,7 +13,7 @@ import yaml
 
 from chitty import ids
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
-from chitty.store import Change, Context, Repo, StoredTask
+from chitty.store import Change, Context, Repo, StoredTask, guide
 
 STATUS = {"To Do": "todo", "In Progress": "doing", "Done": "done"}
 SECTIONS = {
@@ -148,7 +148,9 @@ def _rewrite(value: str, mapping: Mapping[str, str], reports: list[str], old_id:
     return re.sub(r"\bTASK-\d+(?:\.\d+)?\b", replace, value)
 
 
-def import_directory(source: Path, repo: Repo, destination: Context) -> list[str]:
+def import_directory(
+    source: Path, repo: Repo, destination: Context, agents: Path | None = None
+) -> list[str]:
     """Convert a legacy backlog after all source files validate successfully."""
     prefix = destination.prefix
     locations = (
@@ -195,16 +197,37 @@ def import_directory(source: Path, repo: Repo, destination: Context) -> list[str
     stored: list[StoredTask] = []
     for item in retained:
         archived = item.old_id in archived_ids
+        task = item.task
+        if archived:
+            task = task.with_history(date.today(), task.frontmatter.status, "archived")
         task_id = ids.TaskId.parse(item.new_id)
         directory = destination.archive_directory if archived else destination.directory
-        path = directory / ids.filename(task_id, ids.slugify(item.task.frontmatter.title))
+        path = directory / ids.filename(task_id, ids.slugify(task.frontmatter.title))
         directory.mkdir(parents=True, exist_ok=True)
-        path.write_text(item.task.render())
-        stored.append(StoredTask(task_id, destination.name, path, archived, item.task))
+        path.write_text(task.render())
+        stored.append(StoredTask(task_id, destination.name, path, archived, task))
+    agent_path = agents if stored and agents and agents.exists() else None
+    previous_agents: str | None = None
+    if agent_path:
+        previous_agents = agent_path.read_text()
+        pattern = r"(?ms)^## Backlog\.md Workflow\n.*?(?=^## |\Z)"
+        updated, count = re.subn(pattern, guide().rstrip() + "\n", previous_agents)
+        if count:
+            agent_path.write_text(updated)
+        else:
+            previous_agents = None
     if stored:
-        repo.finalize(
-            Change(stored[-1], tuple(task.path for task in stored), tuple(stored)), "import"
-        )
+        paths = [task.path for task in stored]
+        if agent_path and previous_agents is not None:
+            paths.append(agent_path)
+        try:
+            repo.finalize(Change(stored[-1], tuple(paths), tuple(stored)), "import")
+        except Exception:
+            for task in stored:
+                task.path.unlink(missing_ok=True)
+            if agent_path and previous_agents is not None:
+                agent_path.write_text(previous_agents)
+            raise
     for name in ("decisions", "docs", "milestones"):
         if (source / name).exists():
             reports.append(f"left non-task directory: {source / name}")

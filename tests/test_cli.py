@@ -95,7 +95,9 @@ class TestImport(CliTestCase):
 
         self.run_cli("import", "backlog-md")
 
-        self.assertTrue((self.root / "chitty/tasks/archive/TASK-1--completed.md").exists())
+        archived = self.root / "chitty/tasks/archive/TASK-1--completed.md"
+        self.assertTrue(archived.exists())
+        self.assertIn("done → archived", archived.read_text())
         self.assertEqual(list((self.root / "chitty/tasks").glob("*.md")), [])
 
     def test_import_omits_archived_tasks_when_archive_policy_is_delete(self):

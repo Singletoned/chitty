@@ -120,10 +120,12 @@ class TestAutocommit(CliTestCase):
             "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\n"
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
+        (self.root / "AGENTS.md").write_text("## Backlog.md Workflow\n\nOld instructions.\n")
 
         self.run_cli("import", "backlog-md")
 
         self.assertIn("Formatted.", self.git("show", "HEAD:chitty/tasks/TASK-1--legacy.md"))
+        self.assertIn("## Chitty", self.git("show", "HEAD:AGENTS.md"))
         self.assertEqual(self.last_commit()[0], "chitty: import TASK-1 Legacy")
 
     def test_autoformat_runs_before_autocommit(self):
