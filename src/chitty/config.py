@@ -16,10 +16,12 @@ PYPROJECT_NAME = "pyproject.toml"
 BACKLOG_DIR = "chitty"
 ROOT_ENV = "CHITTY_ROOT"
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
+PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
 INITIAL_CONFIG = """\
 format = 1
 default_context = "tasks"
+project = "{project}"
 autocommit = false
 # autoformat = "mdformat"
 # archive = "move"  # or "delete"; retain completed files or delete them
@@ -50,10 +52,20 @@ class RepoConfig(BaseModel):
 
     format: Literal[1]
     default_context: str
+    project: str | None = None
     autocommit: bool
     autoformat: str | None = None
     archive: Literal["move", "delete"] = "move"
     contexts: dict[str, ContextConfig]
+
+    @field_validator("project")
+    @classmethod
+    def _project(cls, value: str | None) -> str | None:
+        if value is not None and not PROJECT_NAME_RE.fullmatch(value):
+            raise ValueError(
+                "must use lowercase letters, digits, '.', '_' or '-' and start/end alphanumeric"
+            )
+        return value
 
     @field_validator("autoformat")
     @classmethod
@@ -154,6 +166,27 @@ def _has_pyproject_config(path: Path) -> bool:
     except tomllib.TOMLDecodeError:
         return False
     return isinstance(data.get("tool"), dict) and "chitty" in data["tool"]
+
+
+def inbox_path(project: str) -> Path:
+    """Machine-local inbox directory for a registered project."""
+    base = Path(os.environ.get("XDG_DATA_HOME", "~/.local/share")).expanduser()
+    return base / "chitty" / "inbox" / project
+
+
+def register_project(project: str, root: Path) -> Path:
+    """Claim a project inbox name, refusing ownership by another repository."""
+    directory = inbox_path(project)
+    owner = directory / "repo"
+    resolved = str(root.resolve())
+    current = owner.read_text().strip() if owner.exists() else ""
+    if current not in ("", resolved):
+        raise ChittyError(
+            f"project {project!r} is registered to {current}; choose explicit project = name"
+        )
+    directory.mkdir(parents=True, exist_ok=True)
+    owner.write_text(resolved + "\n")
+    return directory
 
 
 def user_contexts_path() -> Path:

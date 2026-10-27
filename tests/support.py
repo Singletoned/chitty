@@ -34,6 +34,7 @@ class RepoTestCase(unittest.TestCase):
         self.config_home = self.tmp / "config"
         environ = {k: v for k, v in os.environ.items() if k != "CHITTY_ROOT"}
         environ["XDG_CONFIG_HOME"] = str(self.config_home)
+        environ["XDG_DATA_HOME"] = str(self.tmp / "data")
         patcher = mock.patch.dict(os.environ, environ, clear=True)
         patcher.start()
         self.addCleanup(patcher.stop)

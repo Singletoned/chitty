@@ -470,13 +470,13 @@ def guide() -> str:
 
 def init_repo(directory: Path, prefix: str | None) -> list[Path]:
     """Create or non-destructively upgrade the repository's Chitty setup."""
-    from chitty.config import load_repo_config
+    from chitty.config import inbox_path, load_repo_config, register_project
 
     config_path = directory / CONFIG_NAME
     pyproject_path = directory / "pyproject.toml"
     written: list[Path] = []
     if not config_path.exists() and not pyproject_path.exists():
-        text = INITIAL_CONFIG.format(prefix=prefix or "TASK")
+        text = INITIAL_CONFIG.format(prefix=prefix or "TASK", project=directory.name)
         config = validate_repo_config(text, config_path)
         config_path.write_text(text)
         written.append(config_path)
@@ -489,17 +489,30 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
             )
         source = config_path if config_path.exists() else pyproject_path
         text = source.read_text()
+        marker = "[contexts." if source == config_path else "[tool.chitty.contexts."
+        position = text.find(marker)
+        additions = ""
+        if "project" not in text:
+            additions += f'project = "{directory.name}"\n'
         if "archive" not in text:
-            marker = "[contexts." if source == config_path else "[tool.chitty.contexts."
-            position = text.find(marker)
-            text = text[:position] + 'archive = "move"\n\n' + text[position:]
+            additions += 'archive = "move"\n'
+        if additions:
+            text = text[:position] + additions + "\n" + text[position:]
             source.write_text(text)
             written.append(source)
+            config = load_repo_config(directory)
     for name in config.contexts:
         path = directory / BACKLOG_DIR / name
         if not path.exists():
             path.mkdir(parents=True)
             written.append(path)
+    if config.project:
+        inbox = inbox_path(config.project)
+        owner = inbox / "repo"
+        changed = not owner.exists() or owner.read_text().strip() != str(directory.resolve())
+        register_project(config.project, directory)
+        if changed:
+            written.append(inbox)
     agents = directory / AGENTS_FILE
     existing = agents.read_text() if agents.exists() else ""
     import re

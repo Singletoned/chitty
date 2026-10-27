@@ -29,6 +29,14 @@ class TestRepoConfig(RepoTestCase):
         with self.assertRaisesRegex(ChittyError, "both chitty.toml and pyproject.toml"):
             load_repo_config(self.root)
 
+    def test_project_name_is_validated(self):
+        text = CONFIG.replace(
+            'default_context = "tasks"', 'default_context = "tasks"\nproject = "Bad Name"'
+        )
+        (self.root / "chitty.toml").write_text(text)
+        with self.assertRaisesRegex(ChittyError, "lowercase"):
+            load_repo_config(self.root)
+
     def test_rejections(self):
         cases = {
             "default_context 'nope'": CONFIG.replace('"tasks"', '"nope"', 1),

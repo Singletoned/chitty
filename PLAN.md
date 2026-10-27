@@ -18,6 +18,9 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   collide. `check` reports it if they do.
 - Simple first. Add complexity when real-world use shows it is needed, not
   before.
+- Each repository has a validated lowercase `project` name. `init` registers
+  its machine-local inbox under XDG data storage and refuses a name owned by a
+  different repository.
 - Plain markdown. Every file must survive a round trip through the supported
   formatters (below) without changing meaning. No HTML comments, no sentinel
   markers, no numbering inside checklist text.
