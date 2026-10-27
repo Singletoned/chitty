@@ -14,6 +14,7 @@ from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
+from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
 from chitty.model import STATUSES
 from chitty.store import Edit, Repo, guide, matches, resolve_add_target
@@ -48,6 +49,11 @@ def _repo() -> Repo:
 @server.resource("chitty://guide", name="guide", mime_type="text/markdown")
 def guide_resource() -> str:
     return guide()
+
+
+@_tool("pull", "Collect this repository's waiting inbox suggestions as backlog tasks.")
+def pull() -> list[str]:
+    return pull_suggestions(_repo())
 
 
 @_tool("suggest", "Send a suggestion to a project's machine-local inbox.")

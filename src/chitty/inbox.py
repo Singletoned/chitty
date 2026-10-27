@@ -13,6 +13,7 @@ import yaml
 
 from chitty.config import inbox_path, load_repo_config, register_project, registered_projects
 from chitty.errors import ChittyError
+from chitty.store import Edit, Repo
 
 
 def suggest(
@@ -49,6 +50,27 @@ def suggest(
     path = directory / f"suggestion-{uuid4().hex}.md"
     Path(temporary).replace(path)
     return path
+
+
+def pull(repo: Repo) -> list[str]:
+    """Turn claimed suggestions into backlog tasks in one repository."""
+    if not repo.config.project:
+        raise ChittyError("this repository has no project name")
+    register_project(repo.config.project, repo.root)
+    task_ids: list[str] = []
+    for path, item in claim(repo.config.project):
+        task = repo.add(
+            repo.default_context,
+            str(item["title"]),
+            str(item["description"]) or None,
+            [],
+            {"status": "backlog"},
+            date.today(),
+        ).task
+        repo.edit(task.id, Edit(note=f"Suggestion origin: {item.get('origin', 'unknown')}"))
+        path.unlink()
+        task_ids.append(str(task.id))
+    return task_ids
 
 
 def waiting(project: str) -> list[Path]:
