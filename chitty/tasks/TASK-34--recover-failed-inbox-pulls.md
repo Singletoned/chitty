@@ -1,6 +1,6 @@
 ---
 title: Recover failed inbox pulls
-status: review
+status: done
 created: 2026-10-27
 ---
 
@@ -24,6 +24,8 @@ Review failed: a claimed suggestion can still be lost if one post-finalization i
 
 Review failed: KeyboardInterrupt and SystemExit bypass claim recovery after suggestions move to processing.
 
+Reviewed: cleanup now stages sources as .done before deletion, so a deletion failure preserves completed imports and is retried on the next pull. make check passes.
+
 ## Summary
 
 Extended claim recovery to BaseException so interrupts cannot strand claimed suggestions. Verified with make check.
@@ -37,3 +39,4 @@ Extended claim recovery to BaseException so interrupts cannot strand claimed sug
 - 2026-10-27 doing → review
 - 2026-10-27 review → doing
 - 2026-10-27 doing → review
+- 2026-10-27 review → done

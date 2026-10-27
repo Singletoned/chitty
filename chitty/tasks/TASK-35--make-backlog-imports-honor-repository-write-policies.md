@@ -1,6 +1,6 @@
 ---
 title: Make backlog imports honor repository write policies
-status: review
+status: done
 created: 2026-10-27
 ---
 
@@ -24,6 +24,8 @@ Review failed: finalization failures leave partial imports, archived imports lac
 
 Review failed: writes before the finalization try block are not rolled back if task or AGENTS.md writes fail.
 
+Reviewed: import validation precedes writes; policy-aware archive/delete behavior and one rollback-aware finalization path are covered. make check passes.
+
 ## Summary
 
 Restored the Git index after a failed autocommit, preserving prior staged content while leaving failed new writes unstaged. Added a pre-commit-hook regression test; make check passes.
@@ -37,3 +39,4 @@ Restored the Git index after a failed autocommit, preserving prior staged conten
 - 2026-10-27 doing → review
 - 2026-10-27 review → doing
 - 2026-10-27 doing → review
+- 2026-10-27 review → done
