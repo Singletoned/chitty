@@ -1,6 +1,6 @@
 ---
 title: Add chitty import backlog-md to convert a Backlog.md backlog
-status: todo
+status: done
 labels:
   - cli
   - import
@@ -26,8 +26,8 @@ The import refuses to run if the chitty context already has tasks, so it can't m
 
 ## Acceptance Criteria
 
-- [ ] chitty import backlog-md run by hand against local copies of circuitry's backlog/ (66 tasks, 25 subtasks, Backburner status) and sump's produces tasks that pass chitty check, with every report item reviewed
-- [ ] Problems found are fixed in the importer (with a trimmed sample test), not by hand-editing output
+- [x] chitty import backlog-md run by hand against local copies of circuitry's backlog/ (66 tasks, 25 subtasks, Backburner status) and sump's produces tasks that pass chitty check, with every report item reviewed
+- [x] Problems found are fixed in the importer (with a trimmed sample test), not by hand-editing output
 
 ## Notes
 
@@ -36,3 +36,5 @@ This ticket is too large for one independently verifiable change: it combines a 
 Owner directed work to continue on other available tickets while this oversized migration remains pending decomposition approval.
 
 DECIDED with the human (2026-10-27): split into TASK-20 (parse and map one file), TASK-21 (renumber subtasks, rewrite references) and TASK-22 (the command), each with parent TASK-19. No atomic repository writer: convert and validate in memory, then write; the non-empty-context refusal makes git the undo. Real circuitry/sump backlogs are not committed as fixtures; this parent closes once the by-hand run against them passes. The mapping in the Description stays the spec for the children.
+
+Ran chitty import backlog-md against disposable local copies of both circuitry and sump backlogs. Both imports completed and chitty check passed. Reviewed reports: circuitry produced 24 expected mapping/report lines; sump produced Backburner status and non-task-directory reports. Circuitry initially exposed TASK-n.m dependency validation; fixed in f2e430c before the successful rerun.
