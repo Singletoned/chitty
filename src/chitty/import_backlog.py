@@ -214,8 +214,15 @@ def import_directory(
         agent_path = agents if stored and agents and agents.exists() else None
         if agent_path:
             previous_agents = agent_path.read_text()
-            pattern = r"(?ms)^## Backlog\.md Workflow\n.*?(?=^## |\Z)"
-            updated, count = re.subn(pattern, guide().rstrip() + "\n", previous_agents)
+            marker_pattern = (
+                r"(?ms)<!-- BACKLOG\.MD GUIDELINES START -->.*?"
+                r"<!-- BACKLOG\.MD GUIDELINES END -->\n?"
+            )
+            updated, count = re.subn(marker_pattern, "", previous_agents)
+            if not count:
+                pattern = r"(?ms)^## Backlog\.md Workflow\n.*?(?=^## |\Z)"
+                replacement = "" if "## Chitty" in previous_agents else guide().rstrip() + "\n"
+                updated, count = re.subn(pattern, replacement, previous_agents)
             if count:
                 agent_path.write_text(updated)
             else:

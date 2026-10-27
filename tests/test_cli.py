@@ -196,6 +196,28 @@ class TestImport(CliTestCase):
 
         self.assertEqual(self.json("show", "2")["depends_on"], [])
 
+    def test_import_removes_a_marker_delimited_backlog_block_after_init(self):
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        (legacy / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
+            "## Description\n\nLegacy description.\n"
+        )
+        agents = self.root / "AGENTS.md"
+        agents.write_text(
+            "# Agents\n\n<!-- BACKLOG.MD GUIDELINES START -->\n<CRITICAL_INSTRUCTION>\n"
+            "## Backlog.md Workflow\n\nOld instructions.\n</CRITICAL_INSTRUCTION>\n"
+            "<!-- BACKLOG.MD GUIDELINES END -->\n"
+        )
+        self.run_cli("init")
+
+        self.run_cli("import", "backlog-md")
+
+        updated = agents.read_text()
+        self.assertNotIn("BACKLOG.MD", updated)
+        self.assertNotIn("Backlog.md Workflow", updated)
+        self.assertEqual(updated.count("## Chitty"), 1)
+
     def test_import_backlog_md_converts_tasks_and_replaces_agent_block(self):
         legacy = self.root / "backlog/tasks"
         legacy.mkdir(parents=True)
