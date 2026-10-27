@@ -1,5 +1,6 @@
 import json
 import os
+import tomllib
 from datetime import date
 
 from click.testing import CliRunner, Result
@@ -45,20 +46,48 @@ class TestInit(CliTestCase):
         self.assertEqual((target / "AGENTS.md").read_text(), agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
 
-    def test_init_upgrades_pyproject_config_without_rewriting_existing_values(self):
+    def test_init_leaves_unrelated_pyproject_untouched(self):
+        target = self.tmp / "python-project"
+        target.mkdir()
+        pyproject = target / "pyproject.toml"
+        original = "[project]\nname = 'other'\n"
+        pyproject.write_text(original)
+        os.chdir(target)
+
+        self.run_cli("init")
+
+        self.assertEqual(pyproject.read_text(), original)
+        self.assertTrue((target / "chitty.toml").exists())
+
+    def test_init_adds_missing_pyproject_settings_from_parsed_config(self):
         (self.root / "chitty.toml").unlink()
         config = self.root / "pyproject.toml"
         config.write_text(
             "[tool.chitty]\nformat = 1\ndefault_context = 'tasks'\nautocommit = false\n"
-            "# review workflow is mandatory\n\n"
-            "[tool.chitty.contexts.tasks]\nprefix = 'TASK'\n"
-            "\n[tool.other]\nreview = false\n"
+            "# archive = 'delete'\n\n[tool.chitty.contexts.tasks]\nprefix = 'TASK'\n"
         )
+
         self.run_cli("init")
-        self.assertIn('archive = "move"', config.read_text())
-        self.assertIn("review = true", config.read_text())
+
+        settings = tomllib.loads(config.read_text())["tool"]["chitty"]
+        self.assertEqual(settings["project"], self.root.name)
+        self.assertEqual(settings["archive"], "move")
+        self.assertTrue(settings["review"])
+
+    def test_init_inserts_pyproject_settings_before_later_tables(self):
+        (self.root / "chitty.toml").unlink()
+        config = self.root / "pyproject.toml"
+        config.write_text(
+            "[tool.chitty]\nformat = 1\ndefault_context = 'tasks'\nautocommit = false\n"
+            "\n[tool.other]\nvalue = true\n\n[tool.chitty.contexts.tasks]\nprefix = 'TASK'\n"
+        )
+
+        self.run_cli("init")
+
+        self.assertEqual(
+            tomllib.loads(config.read_text())["tool"]["chitty"]["project"], self.root.name
+        )
         self.assertTrue((self.root / "chitty/tasks").is_dir())
-        self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
     def test_init_rejects_clashing_prefix(self):
         target = self.tmp / "prefix-collision"

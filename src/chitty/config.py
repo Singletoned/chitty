@@ -25,7 +25,7 @@ project = "{project}"
 autocommit = false
 review = true
 # autoformat = "mdformat"
-# archive = "move"  # or "delete"; retain completed files or delete them
+archive = "move"  # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
 prefix = "{prefix}"

@@ -505,14 +505,44 @@ def guide() -> str:
     return files("chitty").joinpath("guide.md").read_text()
 
 
+def _add_missing_settings(
+    text: str, settings: Mapping[str, object], pyproject: bool, project: str
+) -> str:
+    additions = [
+        value
+        for key, value in (
+            ("project", f'project = "{project}"'),
+            ("archive", 'archive = "move"'),
+            ("review", "review = true"),
+        )
+        if key not in settings
+    ]
+    if not additions:
+        return text
+    if pyproject:
+        match = re.search(r"(?m)^\[tool\.chitty\]\s*$", text)
+        assert match is not None
+        following = re.search(r"(?m)^\[", text[match.end() :])
+        position = match.end() + following.start() if following else len(text)
+    else:
+        following = re.search(r"(?m)^\[", text)
+        position = following.start() if following else len(text)
+    return text[:position] + "\n".join(additions) + "\n\n" + text[position:]
+
+
 def init_repo(directory: Path, prefix: str | None) -> list[Path]:
     """Create or non-destructively upgrade the repository's Chitty setup."""
     from chitty.config import inbox_path, load_repo_config, register_project
 
     config_path = directory / CONFIG_NAME
     pyproject_path = directory / "pyproject.toml"
+    has_pyproject_config = False
+    if not config_path.exists() and pyproject_path.exists():
+        pyproject_data = tomllib.loads(pyproject_path.read_text())
+        tool = pyproject_data.get("tool")
+        has_pyproject_config = isinstance(tool, Mapping) and "chitty" in tool
     written: list[Path] = []
-    if not config_path.exists() and not pyproject_path.exists():
+    if not config_path.exists() and not has_pyproject_config:
         text = INITIAL_CONFIG.format(prefix=prefix or "TASK", project=directory.name)
         config = validate_repo_config(text, config_path)
         config_path.write_text(text)
@@ -526,20 +556,12 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
             )
         source = config_path if config_path.exists() else pyproject_path
         text = source.read_text()
-        marker = "[contexts." if source == config_path else "[tool.chitty.contexts."
-        position = text.find(marker)
-        additions = ""
-        if "project" not in text:
-            additions += f'project = "{directory.name}"\n'
-        if "archive" not in text:
-            additions += 'archive = "move"\n'
         data = tomllib.loads(text)
         settings = data if source == config_path else data["tool"]["chitty"]
-        if "review" not in settings:
-            additions += "review = true\n"
-        if additions:
-            text = text[:position] + additions + "\n" + text[position:]
-            source.write_text(text)
+        updated = _add_missing_settings(text, settings, source == pyproject_path, directory.name)
+        if updated != text:
+            tomllib.loads(updated)
+            source.write_text(updated)
             written.append(source)
             config = load_repo_config(directory)
     for name in config.contexts:
