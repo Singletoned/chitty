@@ -1,6 +1,6 @@
 ---
 title: Add the chitty import backlog-md command
-status: todo
+status: doing
 labels:
   - cli,import
 depends_on:
@@ -22,3 +22,7 @@ The command that reads backlog/ and writes the chitty tasks. Convert and validat
 - [ ] Replaces the Backlog.md guidelines block in AGENTS.md with the chitty block; backlog/ is left for the user to delete
 - [ ] Tests use small committed sample backlogs, not copies of real repos
 - [ ] README and PLAN.md describe the command; PLAN.md's 'no migrations' scope note is updated
+
+## Plan
+
+Add an import backlog-md CLI command around the pure conversion pipeline, reject nonempty contexts, collect/report source files, validate converted output before writing, then cover a small legacy backlog fixture and document it.

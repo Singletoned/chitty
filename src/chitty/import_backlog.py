@@ -11,6 +11,7 @@ from typing import Any, cast
 
 import yaml
 
+from chitty import ids
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
 
 STATUS = {"To Do": "todo", "In Progress": "doing", "Done": "done"}
@@ -142,6 +143,48 @@ def _rewrite(value: str, mapping: Mapping[str, str], reports: list[str], old_id:
         return mapping[reference]
 
     return re.sub(r"\bTASK-\d+(?:\.\d+)?\b", replace, value)
+
+
+def import_directory(source: Path, destination: Path, prefix: str, archive: str) -> list[str]:
+    """Convert a legacy backlog after all source files parse successfully."""
+    locations = (
+        ("tasks", False, False),
+        ("drafts", True, False),
+        ("completed", False, True),
+        ("archive", False, True),
+    )
+    converted: list[ConvertedTask] = []
+    reports: list[str] = []
+    for name, draft, archived in locations:
+        directory = source / name
+        if not directory.exists():
+            continue
+        for path in sorted(directory.glob("*.md")):
+            item = convert(path, draft=draft)
+            converted.append(item)
+            reports.extend(item.reports)
+        reports.extend(
+            f"left non-task file: {path}"
+            for path in sorted(directory.iterdir())
+            if path.suffix != ".md"
+        )
+    numbered = renumber(converted, prefix)
+    reports.extend(report for item in numbered for report in item.reports if report not in reports)
+    for item in numbered:
+        parsed = re.fullmatch(r"TASK-(\d+)(?:\.\d+)?", item.old_id)
+        archived = (
+            parsed is not None and (source / "completed" / f"task-{item.old_id[5:]}.md").exists()
+        )
+        target = destination / ("archive" if archived and archive == "move" else "")
+        target.mkdir(parents=True, exist_ok=True)
+        task_id = ids.TaskId.parse(item.new_id)
+        (target / ids.filename(task_id, ids.slugify(item.task.frontmatter.title))).write_text(
+            item.task.render()
+        )
+    for name in ("decisions", "docs", "milestones"):
+        if (source / name).exists():
+            reports.append(f"left non-task directory: {source / name}")
+    return reports
 
 
 def _sections(body: str, old_id: str, reports: list[str]) -> dict[str, str]:

@@ -12,6 +12,7 @@ from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
+from chitty.import_backlog import import_directory
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
 from chitty.store import (
     Change,
@@ -122,6 +123,28 @@ def init(prefix: str) -> None:
     """Write chitty.toml and chitty/tasks/, and add the agent guide to AGENTS.md."""
     for path in init_repo(Path.cwd(), prefix):
         click.echo(f"wrote {path}")
+
+
+@cli.group("import")
+def import_() -> None:
+    """Import tasks from another tracker."""
+
+
+@import_.command("backlog-md")
+@click.option("--context", default=None, help="Destination context (default: repository default).")
+def import_backlog_md(context: str | None) -> None:
+    """Convert the local backlog/ directory without deleting it."""
+    repo = _repo()
+    selected = repo.context(context or repo.config.default_context)
+    if repo.tasks(selected, "all"):
+        raise ChittyError(f"{selected.name} already contains tasks; refusing to import")
+    source = repo.root / "backlog"
+    if not source.is_dir():
+        raise ChittyError(f"{source} does not exist")
+    for report in import_directory(
+        source, selected.directory, selected.prefix, repo.config.archive
+    ):
+        click.echo(report)
 
 
 @cli.command()
