@@ -6,7 +6,7 @@ from datetime import date
 from click.testing import CliRunner, Result
 
 from chitty.cli import _complete_context, _complete_task_id, cli
-from chitty.store import guide
+from chitty.store import _add_missing_settings, guide
 from tests.support import RepoTestCase
 
 
@@ -88,6 +88,32 @@ class TestInit(CliTestCase):
             tomllib.loads(config.read_text())["tool"]["chitty"]["project"], self.root.name
         )
         self.assertTrue((self.root / "chitty/tasks").is_dir())
+
+    def test_init_derives_a_valid_project_name(self):
+        target = self.tmp / "My Project._"
+        target.mkdir()
+        os.chdir(target)
+
+        self.run_cli("init")
+
+        self.assertEqual(
+            tomllib.loads((target / "chitty.toml").read_text())["project"], "my-project"
+        )
+
+    def test_init_rejects_an_empty_derived_project_name(self):
+        target = self.tmp / "..."
+        target.mkdir()
+        os.chdir(target)
+
+        result = self.run_cli("init", exit_code=1)
+
+        self.assertIn('project = "name"', result.stderr)
+        self.assertFalse((target / "chitty.toml").exists())
+
+    def test_init_escapes_added_project_settings(self):
+        config = _add_missing_settings("", {}, False, 'name"with\\escape')
+
+        self.assertEqual(tomllib.loads(config)["project"], 'name"with\\escape')
 
     def test_init_rejects_clashing_prefix(self):
         target = self.tmp / "prefix-collision"

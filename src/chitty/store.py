@@ -1,5 +1,6 @@
 """Contexts on disk: find, list, read, write, move, archive."""
 
+import json
 import re
 import tomllib
 from collections.abc import Mapping, Sequence
@@ -505,13 +506,23 @@ def guide() -> str:
     return files("chitty").joinpath("guide.md").read_text()
 
 
+def _default_project(directory_name: str) -> str:
+    project = re.sub(r"[^a-z0-9]+", "-", directory_name.lower()).strip("-")
+    if not project:
+        raise ChittyError(
+            'cannot derive a project name; choose a valid directory name or set project = "name" '
+            "in configuration before running init"
+        )
+    return project
+
+
 def _add_missing_settings(
     text: str, settings: Mapping[str, object], pyproject: bool, project: str
 ) -> str:
     additions = [
         value
         for key, value in (
-            ("project", f'project = "{project}"'),
+            ("project", f"project = {json.dumps(project)}"),
             ("archive", 'archive = "move"'),
             ("review", "review = true"),
         )
@@ -543,7 +554,8 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
         has_pyproject_config = isinstance(tool, Mapping) and "chitty" in tool
     written: list[Path] = []
     if not config_path.exists() and not has_pyproject_config:
-        text = INITIAL_CONFIG.format(prefix=prefix or "TASK", project=directory.name)
+        project = _default_project(directory.name)
+        text = INITIAL_CONFIG.format(prefix=prefix or "TASK", project=json.dumps(project))
         config = validate_repo_config(text, config_path)
         config_path.write_text(text)
         written.append(config_path)
@@ -558,7 +570,9 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
         text = source.read_text()
         data = tomllib.loads(text)
         settings = data if source == config_path else data["tool"]["chitty"]
-        updated = _add_missing_settings(text, settings, source == pyproject_path, directory.name)
+        updated = _add_missing_settings(
+            text, settings, source == pyproject_path, _default_project(directory.name)
+        )
         if updated != text:
             tomllib.loads(updated)
             source.write_text(updated)
