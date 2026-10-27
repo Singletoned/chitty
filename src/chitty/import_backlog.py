@@ -173,6 +173,9 @@ def import_directory(source: Path, destination: Path, prefix: str, archive: str)
         )
     numbered = renumber(converted, prefix)
     reports.extend(report for item in numbered for report in item.reports if report not in reports)
+    unresolved = [report for report in reports if "reference to unknown ID" in report]
+    if unresolved:
+        raise ValueError("cannot import with unresolved references: " + "; ".join(unresolved))
     for item in numbered:
         archived = item.old_id in archived_ids
         target = destination / ("archive" if archived and archive == "move" else "")
