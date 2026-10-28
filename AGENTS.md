@@ -15,6 +15,11 @@ before changing behaviour, and update it when a decision changes.
 - Releases: bump `version` in `pyproject.toml`, commit, then push a tag
   `v<version>`. `.github/workflows/release.yml` checks, builds and publishes
   to PyPI by trusted publishing (environment `pypi`).
+- Any change that existing repos only pick up by re-running `chitty init`
+  (the managed guide block, `chitty.toml` template or upgrades, inbox
+  registration) must bump `version` in `pyproject.toml`, at least at patch
+  level, in the same change. The version recorded in `chitty.toml` is how
+  other repos learn that `init` needs re-running (TASK-52).
 
 ## Chitty
 
