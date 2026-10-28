@@ -1,6 +1,6 @@
 ---
 title: Render the configured task prefix in generated agent guidance
-status: review
+status: doing
 created: 2026-10-28
 ---
 
@@ -25,6 +25,8 @@ Suggestion origin: circuitry
 
 Decided with the human: default prefix plus 'use the ticket's own prefix' wording; no per-context listing.
 
+Review failed: only `chitty init` renders the prefix. `guide(prefix: str = "TASK")` has a default, and the other callers rely on it: `chitty guide` (cli.py:553), the MCP server instructions and guide tool (mcp.py:25, mcp.py:51), and the import's guide insertion (import_backlog.py:256) all still print `Task: TASK-N`. Reproduced: `chitty guide` in a repo with prefix CIRCUIT prints TASK-N. Remove the default so every caller must pass the repository's prefix, and add a test for `chitty guide` in a custom-prefix repo. The MCP instructions are built at import time with no repo, so they need the prefix resolved when the server starts.
+
 ## Summary
 
 Rendered the managed guide with the default context prefix while telling agents to use each ticket’s own prefix in mixed contexts. Added custom-prefix and refresh coverage; updated README and PLAN.md. Verified with `make check`.
@@ -35,3 +37,4 @@ Rendered the managed guide with the default context prefix while telling agents 
 - 2026-10-28 backlog → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-28 review → doing

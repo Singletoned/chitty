@@ -1,6 +1,6 @@
 ---
 title: suggest resolves registered project names before local paths
-status: review
+status: doing
 created: 2026-10-28
 ---
 
@@ -25,6 +25,8 @@ Suggestion origin: circuitry
 
 Decided with the human: path-shaped arguments only; no explicit flag.
 
+Review failed: the fix is correct, but the regression test does not catch the bug in isolation. `suggest` resolves `Path(project)` against the process working directory, not the `cwd` argument, and test_inbox never chdirs. The test only failed before the fix because `make check` runs from the chitty repo root, which happens to have a `chitty/` folder. Checked by running the test against the pre-fix inbox.py from a directory without `chitty/`: it passes. Make the test chdir into self.root (which has `chitty/`) and confirm that it fails against the pre-fix code from any working directory.
+
 ## Summary
 
 Registered project names now take precedence over local directories; only path-shaped arguments are resolved as paths. Added collision, bare-name, and explicit-path coverage; documented the rule in CLI help and README. Confirmed the regression failed before the fix and verified with `make check`.
@@ -35,3 +37,4 @@ Registered project names now take precedence over local directories; only path-s
 - 2026-10-28 backlog → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-28 review → doing

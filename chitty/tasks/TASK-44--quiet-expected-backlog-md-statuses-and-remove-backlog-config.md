@@ -1,6 +1,6 @@
 ---
 title: Quiet expected Backlog.md statuses and remove backlog/config.yml on import
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -26,6 +26,8 @@ Suggestion origin: circuitry
 
 Decided with the human: aggregate expected-status reports from config.yml rather than adding a configurable mapping; treat config.yml as consumed by the import.
 
+Reviewed: ran the import on a scratch clone of circuitry at fcca564. It prints one line, `8 tasks: Backburner -> backlog`, instead of 8 warnings, exits 0, git-rms the 66 task files plus `config.yml`, and `backlog/` is gone. Notes keep the Backlog.md status. Minor, not blocking: a draft whose status is declared (e.g. To Do) is counted as "To Do -> backlog", which reads oddly, but drafts are backlog by definition. A malformed `config.yml` raises a bare TypeError with a clear message.
+
 ## Summary
 
 Import now consumes `backlog/config.yml`, aggregates declared custom statuses, preserves their task notes, and applies the existing source-removal policy to the config. Added declared/undeclared conversion and import-removal coverage; updated migration documentation. Verified with `make check`.
@@ -36,3 +38,4 @@ Import now consumes `backlog/config.yml`, aggregates declared custom statuses, p
 - 2026-10-28 backlog → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-28 review → done

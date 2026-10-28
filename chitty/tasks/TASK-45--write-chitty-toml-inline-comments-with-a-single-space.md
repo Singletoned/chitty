@@ -1,6 +1,6 @@
 ---
 title: Write chitty.toml inline comments with a single space
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -25,6 +25,8 @@ Suggestion origin: circuitry
 
 Decided with the human: no Markdown escaping of user text; circuitry should turn autoformat on (suggestion sent).
 
+Reviewed: the template and upgrade path use single-space comments. A freshly initialised `chitty.toml` is unchanged by `taidy format`, verified on a scratch repo. The tests assert the canonical lines and that no double-space comment appears.
+
 ## Summary
 
 Updated generated configuration comments to the canonical single-space form, pointed the autoformat example at `taidy format`, and covered fresh initialization plus upgrade behavior. Verified with `make check`.
@@ -35,3 +37,4 @@ Updated generated configuration comments to the canonical single-space form, poi
 - 2026-10-28 backlog → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-28 review → done
