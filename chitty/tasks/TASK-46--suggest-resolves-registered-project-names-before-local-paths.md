@@ -1,6 +1,6 @@
 ---
 title: suggest resolves registered project names before local paths
-status: todo
+status: review
 created: 2026-10-28
 ---
 
@@ -10,10 +10,14 @@ inbox.suggest checks Path(project).is_dir() before registered names. Every Chitt
 
 ## Acceptance Criteria
 
-- [ ] A registered project name wins even when a same-named directory exists in cwd
-- [ ] The argument is treated as a path only when it contains a '/', is '.', or starts with '~' or '.'
-- [ ] A bare unregistered name that matches a local directory is an unknown project (with --create advice), not a path
-- [ ] A regression test running from inside a Chitty repo fails before the fix and passes after; PLAN.md, README and suggest --help describe the rule
+- [x] A registered project name wins even when a same-named directory exists in cwd
+- [x] The argument is treated as a path only when it contains a '/', is '.', or starts with '~' or '.'
+- [x] A bare unregistered name that matches a local directory is an unknown project (with --create advice), not a path
+- [x] A regression test running from inside a Chitty repo fails before the fix and passes after; PLAN.md, README and suggest --help describe the rule
+
+## Plan
+
+Inspect project target resolution and its inbox tests, add a regression that reproduces a registered name colliding with a local directory, confirm it fails before the implementation change, then make path recognition explicit, update docs and command help, and run the full check suite.
 
 ## Notes
 
@@ -21,7 +25,13 @@ Suggestion origin: circuitry
 
 Decided with the human: path-shaped arguments only; no explicit flag.
 
+## Summary
+
+Registered project names now take precedence over local directories; only path-shaped arguments are resolved as paths. Added collision, bare-name, and explicit-path coverage; documented the rule in CLI help and README. Confirmed the regression failed before the fix and verified with `make check`.
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-10-28 backlog → todo
+- 2026-10-28 todo → doing
+- 2026-10-28 doing → review

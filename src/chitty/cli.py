@@ -158,7 +158,11 @@ def pull() -> None:
 def suggest(
     project: str, title: str, description: str | None, task: str | None, create: bool
 ) -> None:
-    """Send a suggestion to another project's machine-local inbox."""
+    """Send a suggestion to a registered project or an explicit local path.
+
+    PROJECT is a registered name unless it contains `/`, is `.`, or starts with
+    `~` or `.`; paths resolve their Chitty configuration before sending.
+    """
     click.echo(send_suggestion(project, title, description, create, Path.cwd(), task))
 
 

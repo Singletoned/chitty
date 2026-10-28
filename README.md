@@ -79,7 +79,9 @@ avoid reusing IDs. The default, `archive = "move"`, retains task files.
 
 Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). To send work to another repository, use `chitty suggest PROJECT`;
-the receiving repository imports it with `chitty pull`.
+the receiving repository imports it with `chitty pull`. `PROJECT` is a
+registered name unless it contains `/`, is `.`, or starts with `~` or `.`; those
+path-shaped values resolve a local Chitty repository.
 
 ## Migrating from Backlog.md
 

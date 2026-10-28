@@ -26,16 +26,19 @@ def suggest(
     task: str | None = None,
 ) -> Path:
     """Atomically write a suggestion to a registered project's inbox."""
-    target = Path(project).expanduser()
-    if target.is_dir():
+    projects = registered_projects()
+    if project in projects:
+        pass
+    elif _is_project_path(project):
+        target = Path(project).expanduser()
         config = load_repo_config(target)
         if not config.project:
             raise ChittyError(f"{target} has no project name")
         project = config.project
         register_project(project, target)
-    elif project not in registered_projects():
+    else:
         if not create:
-            known = ", ".join(registered_projects()) or "none"
+            known = ", ".join(projects) or "none"
             raise ChittyError(f"unknown project {project!r}; known projects: {known}; use --create")
         register_project(project, None)
     directory = inbox_path(project)
@@ -51,6 +54,10 @@ def suggest(
     path = directory / f"suggestion-{uuid4().hex}.md"
     Path(temporary).replace(path)
     return path
+
+
+def _is_project_path(project: str) -> bool:
+    return "/" in project or project == "." or project.startswith(("~", "."))
 
 
 def pull(repo: Repo) -> list[str]:

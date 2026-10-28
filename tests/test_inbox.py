@@ -1,7 +1,7 @@
 from pathlib import Path
 from unittest import mock
 
-from chitty.config import load_repo_config
+from chitty.config import load_repo_config, register_project
 from chitty.errors import ChittyError
 from chitty.inbox import pull, suggest
 from chitty.store import Repo
@@ -130,6 +130,17 @@ class TestInbox(RepoTestCase):
             pull(repo)
 
         self.assertEqual(len(list((self.root / "chitty/tasks").glob("*.md"))), 2)
+
+    def test_registered_project_wins_over_same_named_local_directory(self):
+        register_project("chitty", self.root)
+
+        path = suggest("chitty", "Improve docs", None, False, self.root)
+
+        self.assertEqual(path.parent, self.tmp / "data" / "chitty" / "inbox" / "chitty")
+
+    def test_bare_unregistered_local_directory_is_an_unknown_project(self):
+        with self.assertRaisesRegex(ChittyError, "unknown project 'chitty'.*use --create"):
+            suggest("chitty", "Improve docs", None, False, self.root)
 
     def test_path_resolves_project_config(self):
         other = self.tmp / "other"
