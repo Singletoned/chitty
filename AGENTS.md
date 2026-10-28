@@ -8,8 +8,9 @@ before changing behaviour, and update it when a decision changes.
 - `make check` (ruff, pyright, unittest) before every commit. `make format`
   to fix formatting.
 - Tests use `unittest` and write real files in temp dirs; no filesystem
-  mocking. The formatter tests fail, never skip, if prettier or mdformat is
-  missing.
+  mocking. Tests that use the inbox must inherit `RepoTestCase`, which assigns
+  a temporary `XDG_DATA_HOME` so they never touch the real inbox. The formatter
+  tests fail, never skip, if prettier or mdformat is missing.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
 - Releases: bump `version` in `pyproject.toml`, commit, then push a tag

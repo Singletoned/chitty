@@ -21,8 +21,7 @@ CONFIG = textwrap.dedent(
 
 
 class RepoTestCase(unittest.TestCase):
-    """Each test gets a fresh repo with chitty.toml in a temp dir, and an empty
-    XDG config dir, so the developer's own ~/.config is never read."""
+    """Each test gets a fresh repo and XDG config/data homes in a temp dir."""
 
     def setUp(self):
         directory = tempfile.TemporaryDirectory()
