@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-from chitty import ids
+from chitty import git, ids
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
 from chitty.model import Task, parse
@@ -34,6 +34,16 @@ def fix(
                     continue
                 try:
                     task = parse(path.read_text())
+                    task_id, _slug = ids.parse_filename(path.name)
+                    target = path.with_name(
+                        ids.filename(task_id, ids.slugify(task.frontmatter.title))
+                    )
+                    if target != path:
+                        if target.exists():
+                            raise ChittyError(f"cannot rename to existing task file {target}")
+                        git.move(repo.root, path, target)
+                        fixed.append(Problem(path, f"renamed to {target.name}"))
+                        path = target
                     canonical = [str(TaskId.parse(item)) for item in task.frontmatter.depends_on]
                     parent = task.frontmatter.parent
                     canonical_parent = str(TaskId.parse(parent)) if parent else None

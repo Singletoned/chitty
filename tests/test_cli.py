@@ -505,7 +505,8 @@ class TestEdit(CliTestCase):
             data["history"],
             f"- {date.today().isoformat()} → todo\n- {date.today().isoformat()} todo → doing",
         )
-        self.assertTrue(self.path.exists(), "slug is not updated when the title changes")
+        self.path = self.root / "chitty/tasks/TASK-1--renamed.md"
+        self.assertTrue(self.path.exists())
         self.run_cli(
             "edit", "1", "-p", "", "--owner", "", "--plan", "", "--rm-depends-on", "HUMAN-1"
         )

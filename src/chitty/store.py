@@ -294,11 +294,20 @@ class Repo:
             self.check_dependencies(task.frontmatter.depends_on)
         if task.frontmatter.parent and task.frontmatter.parent != stored.task.frontmatter.parent:
             self.find(TaskId.parse(task.frontmatter.parent))
-        updated = StoredTask(stored.id, stored.context, stored.path, stored.archived, task)
+        path = stored.path
+        if task.frontmatter.title != stored.task.frontmatter.title:
+            target = path.with_name(ids.filename(stored.id, ids.slugify(task.frontmatter.title)))
+            if target != path:
+                if target.exists():
+                    raise ChittyError(f"cannot rename {path} to {target}: destination exists")
+                git.move(self.root, path, target)
+                path = target
+        updated = StoredTask(stored.id, stored.context, path, stored.archived, task)
         if task.render() == stored.task.render():
             return Change(updated, (), ())
-        self._write(stored.path, task.render())
-        return Change(updated, (stored.path,), (updated,))
+        self._write(path, task.render())
+        paths = (stored.path, path) if path != stored.path else (path,)
+        return Change(updated, paths, (updated,))
 
     def next_number(self, context: Context) -> int:
         numbers = [

@@ -28,6 +28,17 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
         raise
 
 
+def move(root: Path, old: Path, new: Path) -> None:
+    """Rename a tracked path through Git, preserving its staged rename."""
+    relative = str(old.relative_to(root))
+    try:
+        _git(root, "ls-files", "--error-unmatch", "--", relative)
+    except ChittyError:
+        old.rename(new)
+    else:
+        _git(root, "mv", "--", relative, str(new.relative_to(root)))
+
+
 def source_problems(root: Path, paths: Sequence[Path]) -> list[Path]:
     """Return source paths that are untracked or differ from HEAD/index."""
     relative = [str(path.relative_to(root)) for path in paths]
