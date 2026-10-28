@@ -1,6 +1,6 @@
 ---
 title: Replace pull with chitty inbox and inbox --pull
-status: doing
+status: review
 created: 2026-10-28
 ---
 
@@ -10,12 +10,12 @@ pull consumes the inbox, with no way to see what is waiting first. chitty inbox 
 
 ## Acceptance Criteria
 
-- [ ] chitty inbox lists waiting suggestions one per line with origin, date and title, supports --json, and changes nothing; when empty it says so on stderr with empty stdout
-- [ ] When suggestions are waiting, chitty inbox ends with a hint to run chitty inbox --pull
-- [ ] chitty inbox --pull behaves like today's pull
-- [ ] The 'suggestions waiting' hint, the managed guide block, MCP tools (inbox list and pull, in inbox.py), README and PLAN.md all use the new command
-- [ ] pull imports nothing and changes nothing; it exits non-zero with a message telling the user to run chitty inbox --pull and to re-run chitty init to refresh the guide
-- [ ] Tests cover listing, empty inbox, JSON, --pull and that pull leaves the inbox untouched
+- [x] chitty inbox lists waiting suggestions one per line with origin, date and title, supports --json, and changes nothing; when empty it says so on stderr with empty stdout
+- [x] When suggestions are waiting, chitty inbox ends with a hint to run chitty inbox --pull
+- [x] chitty inbox --pull behaves like today's pull
+- [x] The 'suggestions waiting' hint, the managed guide block, MCP tools (inbox list and pull, in inbox.py), README and PLAN.md all use the new command
+- [x] pull imports nothing and changes nothing; it exits non-zero with a message telling the user to run chitty inbox --pull and to re-run chitty init to refresh the guide
+- [x] Tests cover listing, empty inbox, JSON, --pull and that pull leaves the inbox untouched
 
 ## Plan
 
@@ -29,7 +29,12 @@ Changed by the human: pull no longer works as an alias; it only explains what to
 
 Implemented the read-only inbox listing and migration behavior; remaining work is MCP exposure, documentation inventory updates, version refresh, and focused coverage.
 
+## Summary
+
+Replaced importing `pull` with the read-only `inbox` command and explicit `inbox --pull`. Added the shared inbox metadata reader, MCP inbox tool, migration error, hints, managed guide, README and PLAN updates, plus CLI/MCP coverage. Bumped the release version and verified with `make check`.
+
 ## History
 
 - 2026-10-28 → todo
 - 2026-10-28 todo → doing
+- 2026-10-28 doing → review

@@ -131,6 +131,7 @@ def _read_suggestion(path: Path) -> dict[str, object]:
     if not isinstance(data, dict):
         raise ChittyError(f"{path}: invalid suggestion frontmatter")
     suggestion = cast(dict[str, object], cast(dict[str, Any], data))
+    suggestion["created"] = str(suggestion["created"])
     suggestion["description"] = body.split("## Description\n\n", 1)[-1].strip()
     return suggestion
 

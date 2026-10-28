@@ -370,6 +370,32 @@ class TestImport(CliTestCase):
         self.assertIn("already contains tasks", refusal.stderr)
 
 
+class TestInbox(CliTestCase):
+    def test_inbox_lists_and_pulls_suggestions(self):
+        self.run_cli("init")
+        self.run_cli("suggest", self.root.name, "Waiting", "-d", "Inbox description")
+
+        listed = self.run_cli("inbox")
+
+        self.assertIn(f"{self.root.name}  {date.today().isoformat()}  Waiting", listed.stdout)
+        self.assertIn("chitty inbox --pull", listed.stderr)
+        self.assertEqual(self.json("inbox")[0]["title"], "Waiting")
+        self.assertIn("pulled TASK-1", self.run_cli("inbox", "--pull").stdout)
+        empty = self.run_cli("inbox")
+        self.assertEqual(empty.stdout, "")
+        self.assertIn("no suggestions waiting", empty.stderr)
+
+    def test_pull_only_explains_the_migration(self):
+        self.run_cli("init")
+        self.run_cli("suggest", self.root.name, "Waiting", "-d", "Inbox description")
+
+        result = self.run_cli("pull", exit_code=2)
+
+        self.assertIn("chitty inbox --pull", result.stderr)
+        self.assertIn("chitty init", result.stderr)
+        self.assertEqual(self.json("inbox")[0]["title"], "Waiting")
+
+
 class TestAddShowList(CliTestCase):
     def test_add_and_show(self):
         self.run_cli("add", "Rotate password", "-c", "human", "-d", "Prod DB.")

@@ -14,6 +14,7 @@ from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
 from chitty.errors import ChittyError
+from chitty.inbox import list_waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
 from chitty.model import STATUSES
@@ -51,9 +52,13 @@ def guide_resource() -> str:
     return guide()
 
 
-@_tool("pull", "Collect this repository's waiting inbox suggestions as backlog tasks.")
-def pull() -> list[str]:
-    return pull_suggestions(_repo())
+@_tool("inbox", "List waiting suggestions, or import all of them with pull=true.")
+def inbox(pull: bool = False) -> list[dict[str, object]] | list[str]:
+    repo = _repo()
+    if pull:
+        return pull_suggestions(repo)
+    assert repo.config.project is not None
+    return list_waiting(repo.config.project)
 
 
 @_tool("suggest", "Send a suggestion to a project's machine-local inbox.")

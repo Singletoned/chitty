@@ -309,6 +309,7 @@ repository-aware and silently empty outside a repository.
 
 ```
 chitty init                        write chitty.toml, chitty/tasks/, AGENTS.md block
+chitty inbox [--pull]              list waiting suggestions, or import them all
 chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
                  [--owner X] [--depends-on ID]...
 chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
@@ -370,8 +371,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 ## MCP
 
 `chitty mcp` runs a stdio server. Tools mirror the CLI one-to-one with the
-same names and argument names: `add`, `list`, `show`, `edit`, `note`, `move`,
-`archive`, `check`, `fix`, `path`. They return the same JSON
+same names and argument names: `add`, `suggest`, `inbox`, `list`, `show`,
+`edit`, `note`, `move`, `archive`, `check`, `fix`, `path`. They return the same JSON
 the CLI prints with `--json`. One resource, `chitty://guide`, returning the
 same text as the AGENTS.md block. Tool descriptions state the rules (one
 task per session, write Plan before coding, tick criteria as you go).

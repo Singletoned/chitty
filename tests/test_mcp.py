@@ -26,7 +26,7 @@ class TestMcp(CliTestCase):
                 [
                     "add",
                     "suggest",
-                    "pull",
+                    "inbox",
                     "list",
                     "show",
                     "edit",
