@@ -433,7 +433,7 @@ class Repo:
         if self.config.autoformat or self.config.autocommit:
             # check imports store for scan and domain types, so this intentional
             # local import keeps the dependency one-directional at module load.
-            from chitty.check import fix
+            from chitty.check import errors, fix
 
             directories = tuple(context.directory.resolve() for context in self.contexts())
             task_paths = [
@@ -442,8 +442,8 @@ class Repo:
                 if any(path.resolve().is_relative_to(directory) for directory in directories)
             ]
             _, problems = fix(self, self.contexts(), task_paths)
-            if problems:
-                details = "\n".join(str(problem) for problem in problems)
+            if blocking := errors(problems):
+                details = "\n".join(str(problem) for problem in blocking)
                 raise ChittyError(
                     f"cannot finalize task write with unresolved problems:\n{details}"
                 )

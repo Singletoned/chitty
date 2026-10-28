@@ -4,6 +4,9 @@ from collections import defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
+
+from markdown_it import MarkdownIt
 
 from chitty import git, ids
 from chitty.errors import ChittyError
@@ -16,9 +19,49 @@ from chitty.store import Context, Repo, scan
 class Problem:
     path: Path
     message: str
+    severity: Literal["error", "warning"] = "error"
 
     def __str__(self) -> str:
-        return f"{self.path}: {self.message}"
+        prefix = "warning: " if self.severity == "warning" else ""
+        return f"{self.path}: {prefix}{self.message}"
+
+
+MARKDOWN = MarkdownIt("commonmark")
+MARKDOWN_FIELDS = ("Description", "Plan", "Notes", "Summary")
+DELIMITERS = "*_"
+
+
+def errors(problems: Sequence[Problem]) -> list[Problem]:
+    """Return diagnostics that prevent a command from succeeding."""
+    return [problem for problem in problems if problem.severity == "error"]
+
+
+def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
+    """Report literal Markdown delimiters that formatters will escape."""
+    fields = [(name, task.section(name)) for name in MARKDOWN_FIELDS]
+    fields += [
+        (f"Acceptance Criteria #{index}", criterion.text)
+        for index, criterion in enumerate(task.criteria, start=1)
+    ]
+    warnings: list[Problem] = []
+    for field, text in fields:
+        if text is None:
+            continue
+        for token in MARKDOWN.parseInline(text):
+            for child in token.children or []:
+                if child.type != "text":
+                    continue
+                for character in child.content:
+                    if character in DELIMITERS:
+                        warnings.append(
+                            Problem(
+                                path,
+                                f"{field} contains literal {character!r} Markdown delimiter; "
+                                "use backticks for code",
+                                "warning",
+                            )
+                        )
+    return warnings
 
 
 def fix(
@@ -80,6 +123,7 @@ def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> lis
                 try:
                     task = parse(path.read_text())
                     tasks[path] = task
+                    problems += _markdown_warnings(path, task)
                     task_id, _slug = ids.parse_filename(path.name)
                     expected_name = ids.filename(task_id, ids.slugify(task.frontmatter.title))
                     if path.name != expected_name:

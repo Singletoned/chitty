@@ -9,6 +9,7 @@ import click
 from click.shell_completion import CompletionItem
 
 from chitty.check import check as check_repo
+from chitty.check import errors
 from chitty.check import fix as fix_repo
 from chitty.config import (
     CHITTY_VERSION,
@@ -451,12 +452,14 @@ def check_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
     contexts = [repo.context(context)] if context else repo.contexts()
     problems = check_repo(repo, contexts, paths)
     if as_json:
-        _print_json([{"path": str(p.path), "message": p.message} for p in problems])
+        _print_json(
+            [{"path": str(p.path), "message": p.message, "severity": p.severity} for p in problems]
+        )
     else:
         for problem in problems:
             click.echo(str(problem))
-    if problems:
-        raise click.ClickException(f"{len(problems)} problem(s)")
+    if blocking := errors(problems):
+        raise click.ClickException(f"{len(blocking)} problem(s)")
 
 
 @cli.command("fix")
@@ -475,7 +478,12 @@ def fix_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
                     {"path": str(problem.path), "message": problem.message} for problem in fixed
                 ],
                 "problems": [
-                    {"path": str(problem.path), "message": problem.message} for problem in problems
+                    {
+                        "path": str(problem.path),
+                        "message": problem.message,
+                        "severity": problem.severity,
+                    }
+                    for problem in problems
                 ],
             }
         )
@@ -484,8 +492,8 @@ def fix_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
             click.echo(f"fixed: {problem}")
         for problem in problems:
             click.echo(str(problem))
-    if problems:
-        raise click.ClickException(f"{len(problems)} unresolved problem(s)")
+    if blocking := errors(problems):
+        raise click.ClickException(f"{len(blocking)} unresolved problem(s)")
 
 
 @cli.command()

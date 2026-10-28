@@ -658,6 +658,15 @@ class TestCheck(CliTestCase):
         result = self.run_cli("check", exit_code=1)
         self.assertIn("History' may only contain", result.stdout)
 
+    def test_warning_does_not_fail_check(self):
+        self.run_cli("add", "Glob", "-d", "static/photos/*.jpg")
+
+        result = self.run_cli("check")
+
+        self.assertIn("warning:", result.stdout)
+        warning = json.loads(self.run_cli("check", "--json").stdout)[0]
+        self.assertEqual(warning["severity"], "warning")
+
 
 class TestMoveArchive(CliTestCase):
     def test_move(self):

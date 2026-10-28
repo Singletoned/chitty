@@ -344,8 +344,12 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 - `ID` arguments accept `TASK-13` in any case, or bare `13` for the default
   context. IDs are canonicalised to upper-case for output and writes; `check`
   reports legacy non-upper-case `depends_on` entries and `fix` rewrites them.
-- `check` is read-only. `fix` applies safe repairs, reports each one, and exits
-  non-zero if problems remain. Autocommit runs it on written task files first.
+- `check` is read-only and reports errors and warnings. Errors make it exit
+  non-zero; warnings are advisory and do not affect its exit status. `fix`
+  applies safe repairs, reports remaining diagnostics, and exits non-zero only
+  when errors remain. It never rewrites warning-only Markdown; use backticks
+  when literal Markdown delimiters denote code. Autocommit runs it on written
+  task files first and is blocked only by errors.
 - `list` reads only non-archived tasks: by default it selects `todo`, `doing`,
   `blocked`, and `review` tasks from every context; repeat `-c` to narrow contexts
   or `-s` to choose statuses, including `backlog` and `done`. `--all` selects every status
