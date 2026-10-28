@@ -34,8 +34,14 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   writes a file whose content would be unchanged. `init` is idempotent: it
   adds missing setup only and refreshes the managed agent-guide block.
 - No Chitty-format migrations in v1. `chitty import backlog-md` is an explicit,
-  one-way converter from a Backlog.md `backlog/` directory; it leaves source
-  files in place for review and deletion by a person.
+  one-way converter from a Backlog.md `backlog/` directory. Duplicate tickets
+  are worse than deletion, so after a successful import it `git rm`s each
+  converted source file that is tracked and unmodified, in the import's
+  commit; Git history is the safety net. Non-task files stay and are reported,
+  and `backlog/` goes only if it ends up empty. If any converted file is
+  untracked or modified, it fails before writing anything and names
+  `--remove-source` (delete anyway) and `--keep-source` (leave the source).
+  It never prompts, so an agent passes the choice to its human.
 
 ## Non-goals
 
