@@ -88,10 +88,11 @@ that ambiguity is an error. Error if neither finds one.
   context, including archive) + 1`.
 
 Filename: `<ID>--<slug>.md`, or `<ID>.md` when the slug is empty. The slug
-is derived from the title at creation (lowercase, `[a-z0-9-]`, collapsed
-hyphens, max 60 chars; empty if the title has no ASCII alphanumerics) and is
-**not** updated when the title changes — it is there so `ls` is readable,
-nothing more. Slugs never contain `--`, so the ID is everything before the
+is derived from the title (lowercase, `[a-z0-9-]`, collapsed hyphens, max 60
+chars; empty if the title has no ASCII alphanumerics) and follows it:
+`edit --title` renames the file (`git mv` when tracked), and `chitty fix`
+renames files whose slug has gone stale. It is there so `ls` is readable; the
+ID is the identity, so renames never break references. Slugs never contain `--`, so the ID is everything before the
 first `--`. The ID is not repeated in frontmatter.
 
 Collisions: task creation is expected to be centralised, so two branches
