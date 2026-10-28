@@ -87,11 +87,13 @@ path-shaped values resolve a local Chitty repository.
 ## Migrating from Backlog.md
 
 From a clone of the legacy repository, run `chitty init`, then
-`chitty import backlog-md`. Review its report: unknown statuses become backlog
-notes, unsupported headings are demoted into the description, and non-task
-files or folders are listed rather than imported. Run `chitty check`, review
-and commit the generated tasks. Clean converted source files are removed by the
-import; delete any remaining reported non-task files or folders when accepted.
+`chitty import backlog-md`. Review its report: statuses declared in
+`backlog/config.yml` become backlog with one summary per status, unknown statuses
+become backlog notes, unsupported headings are demoted into the description, and
+non-task files or folders are listed rather than imported. Run `chitty check`,
+review and commit the generated tasks. Clean converted source files, including
+`backlog/config.yml`, are removed by the import; delete any remaining reported
+non-task files or folders when accepted.
 
 ## Develop
 

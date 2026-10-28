@@ -36,6 +36,12 @@ class TestImportBacklog(unittest.TestCase):
         )
         parse(task.render())
         with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "declared.md"
+            path.write_text(textwrap.dedent(SAMPLE))
+            declared = convert(path, declared_statuses=frozenset({"Backburner"}))
+            self.assertEqual(declared.reports, ("TASK-7.3: demoted heading 'Unexpected heading'",))
+            self.assertIn("Backlog.md status: Backburner", declared.task.render())
+        with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "draft.md"
             path.write_text(textwrap.dedent(SAMPLE).replace("status: Backburner", "status: Done"))
             self.assertEqual(convert(path, draft=True).task.frontmatter.status, "backlog")

@@ -1,6 +1,6 @@
 ---
 title: Quiet expected Backlog.md statuses and remove backlog/config.yml on import
-status: todo
+status: review
 created: 2026-10-28
 ---
 
@@ -10,11 +10,15 @@ Circuitry's import printed 'unknown status Backburner' for each of 8 tasks, alth
 
 ## Acceptance Criteria
 
-- [ ] Statuses listed in backlog/config.yml 'statuses' map to backlog with one summary line per status (e.g. '8 tasks: Backburner -> backlog'); only statuses missing from that list are reported as unknown
-- [ ] The Backlog.md status is still recorded in each task's Notes
-- [ ] backlog/config.yml is removed under the same rules as converted task files: git rm when tracked and clean; untracked or modified files trigger the --remove-source/--keep-source choice
-- [ ] Other non-task content (docs/, decisions/, etc.) stays and is reported, so backlog/ is removed only when nothing else remains
-- [ ] Tests cover declared and undeclared custom statuses and config.yml removal; PLAN.md and README migration section updated
+- [x] Statuses listed in backlog/config.yml 'statuses' map to backlog with one summary line per status (e.g. '8 tasks: Backburner -> backlog'); only statuses missing from that list are reported as unknown
+- [x] The Backlog.md status is still recorded in each task's Notes
+- [x] backlog/config.yml is removed under the same rules as converted task files: git rm when tracked and clean; untracked or modified files trigger the --remove-source/--keep-source choice
+- [x] Other non-task content (docs/, decisions/, etc.) stays and is reported, so backlog/ is removed only when nothing else remains
+- [x] Tests cover declared and undeclared custom statuses and config.yml removal; PLAN.md and README migration section updated
+
+## Plan
+
+Inspect Backlog.md import status mapping and source-removal handling, extend the import model so declared statuses are aggregated and config.yml is consumed under the same source policy, preserve/report unrelated files, add focused declared/undeclared and config-removal tests, update migration documentation, then run the complete check suite.
 
 ## Notes
 
@@ -22,7 +26,13 @@ Suggestion origin: circuitry
 
 Decided with the human: aggregate expected-status reports from config.yml rather than adding a configurable mapping; treat config.yml as consumed by the import.
 
+## Summary
+
+Import now consumes `backlog/config.yml`, aggregates declared custom statuses, preserves their task notes, and applies the existing source-removal policy to the config. Added declared/undeclared conversion and import-removal coverage; updated migration documentation. Verified with `make check`.
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-10-28 backlog → todo
+- 2026-10-28 todo → doing
+- 2026-10-28 doing → review

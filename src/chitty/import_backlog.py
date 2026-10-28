@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from collections import Counter
 from collections.abc import Mapping
 from dataclasses import dataclass, replace
 from datetime import date
@@ -35,6 +36,7 @@ class ConvertedTask:
     task: Task
     reports: tuple[str, ...]
     dependencies: tuple[str, ...] = ()
+    declared_status: str | None = None
 
 
 @dataclass(frozen=True)
@@ -45,7 +47,9 @@ class RenumberedTask:
     reports: tuple[str, ...]
 
 
-def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
+def convert(
+    path: Path, *, draft: bool = False, declared_statuses: frozenset[str] = frozenset()
+) -> ConvertedTask:
     """Map one legacy task without allocating an ID or writing a file."""
     text = path.read_text()
     if not text.startswith("---\n"):
@@ -60,8 +64,10 @@ def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
     reports: list[str] = []
     mapped_status = "backlog" if draft else STATUS.get(status, "backlog")
     notes: list[str] = []
+    declared_status = status if mapped_status == "backlog" and status in declared_statuses else None
     if mapped_status == "backlog":
-        reports.append(f"{old_id}: unknown status {status!r}")
+        if declared_status is None:
+            reports.append(f"{old_id}: unknown status {status!r}")
         notes.append(f"Backlog.md status: {status}")
     sections = _sections(body, old_id, reports)
     descriptions = sections.pop(DESCRIPTION, "Imported from Backlog.md.")
@@ -93,7 +99,7 @@ def convert(path: Path, *, draft: bool = False) -> ConvertedTask:
         task = task.with_section(name, content)
     for note in notes:
         task = task.with_note(note)
-    return ConvertedTask(old_id, task, tuple(reports), dependencies)
+    return ConvertedTask(old_id, task, tuple(reports), dependencies, declared_status)
 
 
 def renumber(tasks: list[ConvertedTask], prefix: str) -> list[RenumberedTask]:
@@ -167,8 +173,10 @@ def import_directory(
     )
     if remove_source and keep_source:
         raise ChittyError("--remove-source and --keep-source cannot be used together")
+    config_path = source / "config.yml"
+    declared_statuses = _declared_statuses(config_path)
     converted: list[ConvertedTask] = []
-    source_paths: list[Path] = []
+    source_paths: list[Path] = [config_path] if config_path.exists() else []
     archived_ids: set[str] = set()
     reports: list[str] = []
     for name, draft, archived in locations:
@@ -176,7 +184,7 @@ def import_directory(
         if not directory.exists():
             continue
         for path in sorted(directory.glob("*.md")):
-            item = convert(path, draft=draft)
+            item = convert(path, draft=draft, declared_statuses=declared_statuses)
             converted.append(item)
             source_paths.append(path)
             if archived:
@@ -187,6 +195,10 @@ def import_directory(
             for path in sorted(directory.iterdir())
             if path.suffix != ".md"
         )
+    for status, count in sorted(
+        Counter(item.declared_status for item in converted if item.declared_status).items()
+    ):
+        reports.append(f"{count} tasks: {status} -> backlog")
     numbered = renumber(converted, prefix)
     reports.extend(report for item in numbered for report in item.reports if report not in reports)
     unresolved = [report for report in reports if "reference to unknown ID" in report]
@@ -274,6 +286,22 @@ def import_directory(
         if (source / name).exists():
             reports.append(f"left non-task directory: {source / name}")
     return reports
+
+
+def _declared_statuses(path: Path) -> frozenset[str]:
+    if not path.exists():
+        return frozenset()
+    loaded = yaml.safe_load(path.read_text())
+    if not isinstance(loaded, Mapping):
+        raise TypeError(f"{path}: config must be a mapping")
+    config = cast(Mapping[str, object], loaded)
+    raw_statuses = config.get("statuses", [])
+    if not isinstance(raw_statuses, list):
+        raise TypeError(f"{path}: statuses must be a list of strings")
+    statuses = cast(list[object], raw_statuses)
+    if not all(isinstance(status, str) for status in statuses):
+        raise TypeError(f"{path}: statuses must be a list of strings")
+    return frozenset(cast(list[str], statuses))
 
 
 def _without_deleted_references(item: RenumberedTask, deleted_ids: set[str]) -> RenumberedTask:

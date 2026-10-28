@@ -276,6 +276,28 @@ class TestImport(CliTestCase):
         self.assertFalse(source.exists())
         self.assertTrue(note.exists())
 
+    def test_import_removes_config_and_summarizes_declared_statuses(self):
+        legacy = self.root / "backlog"
+        tasks = legacy / "tasks"
+        tasks.mkdir(parents=True)
+        (tasks / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: Backburner\n"
+            "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
+        )
+        config = legacy / "config.yml"
+        config.write_text("statuses:\n  - Backburner\n")
+        docs = legacy / "docs"
+        docs.mkdir()
+
+        result = self.run_cli("import", "backlog-md", "--remove-source")
+
+        self.assertIn("1 tasks: Backburner -> backlog", result.stdout)
+        self.assertNotIn("unknown status", result.stdout)
+        self.assertFalse(config.exists())
+        self.assertTrue(docs.exists())
+        task = self.json("show", "1")
+        self.assertEqual(task["status"], "backlog")
+
     def test_import_rejects_conflicting_source_policies(self):
         legacy = self.root / "backlog/tasks"
         legacy.mkdir(parents=True)
