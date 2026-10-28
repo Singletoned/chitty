@@ -21,7 +21,9 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
 - Each repository has a validated lowercase `project` name. `init` registers
   its machine-local inbox under XDG data storage and refuses a name owned by a
   different repository. `suggest` writes atomic cross-project ideas there;
-  `pull` converts waiting suggestions into backlog tasks at session start.
+  `inbox` lists waiting suggestions without changing anything; `inbox --pull`
+  converts them into backlog tasks at session start (`pull` is a deprecated
+  alias).
   User-level contexts are ignored; use `suggest` for cross-project ideas.
 - Plain markdown. Every file must survive a round trip through the supported
   formatters (below) without changing meaning. No HTML comments, no sentinel
@@ -274,7 +276,7 @@ repository history is shallow or unavailable.
 
 Contexts are repository-local. To send a task to another repository, use
 `chitty suggest PROJECT TITLE`; the receiving repository imports its machine-local
-inbox with `chitty pull`. This avoids writing another repository's worktree.
+inbox with `chitty inbox --pull`. This avoids writing another repository's worktree.
 `PROJECT` is a registered project name, which always wins; it is read as a
 path only when it contains `/`, is `.`, or starts with `~` or `.`, because
 every repository has a `chitty/` folder that a bare name would otherwise hit.
