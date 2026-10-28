@@ -1,6 +1,6 @@
 ---
 title: Write chitty.toml inline comments with a single space
-status: todo
+status: review
 created: 2026-10-28
 ---
 
@@ -10,10 +10,14 @@ init writes 'archive = "move"  # ...' with two spaces before the comment; taidy'
 
 ## Acceptance Criteria
 
-- [ ] INITIAL_CONFIG and init's upgrade path write a single space before inline comments
-- [ ] The commented example reads '# autoformat = "taidy format"  # run on every written task file', written with a single space
-- [ ] A test runs the TOML formatter that taidy uses (or asserts the canonical text) on a freshly initialised chitty.toml and expects no change
-- [ ] PLAN.md's config example matches the template
+- [x] INITIAL_CONFIG and init's upgrade path write a single space before inline comments
+- [x] The commented example reads '# autoformat = "taidy format"  # run on every written task file', written with a single space
+- [x] A test runs the TOML formatter that taidy uses (or asserts the canonical text) on a freshly initialised chitty.toml and expects no change
+- [x] PLAN.md's config example matches the template
+
+## Plan
+
+Inspect configuration template and init upgrade rendering, update both to canonical single-space TOML comments, add a focused initialization/formatting regression test, update PLAN.md, then run make format and make check.
 
 ## Notes
 
@@ -21,7 +25,13 @@ Suggestion origin: circuitry
 
 Decided with the human: no Markdown escaping of user text; circuitry should turn autoformat on (suggestion sent).
 
+## Summary
+
+Updated generated configuration comments to the canonical single-space form, pointed the autoformat example at `taidy format`, and covered fresh initialization plus upgrade behavior. Verified with `make check`.
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-10-28 backlog → todo
+- 2026-10-28 todo → doing
+- 2026-10-28 doing → review

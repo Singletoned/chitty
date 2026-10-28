@@ -24,8 +24,8 @@ default_context = "tasks"
 project = {project}
 autocommit = false
 review = true
-# autoformat = "mdformat"
-archive = "move"  # or "delete"; retain completed files or delete them
+# autoformat = "taidy format" # run on every written task file
+archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
 prefix = "{prefix}"

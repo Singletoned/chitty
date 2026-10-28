@@ -35,6 +35,11 @@ class TestInit(CliTestCase):
         self.run_cli("init", "--prefix", "CHIT")
         config = (target / "chitty.toml").read_text()
         self.assertIn('prefix = "CHIT"', config)
+        self.assertIn('# autoformat = "taidy format" # run on every written task file', config)
+        self.assertIn(
+            'archive = "move" # or "delete"; retain completed files or delete them', config
+        )
+        self.assertNotIn("  #", config)
         self.assertIn("review = true", config)
         self.assertTrue((target / "chitty" / "tasks").is_dir())
         agents = (target / "AGENTS.md").read_text()
@@ -73,6 +78,7 @@ class TestInit(CliTestCase):
         self.assertEqual(settings["project"], self.root.name)
         self.assertEqual(settings["archive"], "move")
         self.assertTrue(settings["review"])
+        self.assertNotIn("  #", config.read_text())
 
     def test_init_inserts_pyproject_settings_before_later_tables(self):
         (self.root / "chitty.toml").unlink()
