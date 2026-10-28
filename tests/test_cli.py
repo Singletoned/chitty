@@ -44,12 +44,31 @@ class TestInit(CliTestCase):
         self.assertTrue((target / "chitty" / "tasks").is_dir())
         agents = (target / "AGENTS.md").read_text()
         self.assertTrue(agents.startswith("# Agents\n\nBe nice.\n\n## Chitty\n"))
+        self.assertIn("Task: CHIT-N", agents)
+        self.assertIn("git log --grep CHIT-N", agents)
+        self.assertIn("Use the ticket's own prefix when contexts differ.", agents)
         result = self.run_cli("init")
         self.assertEqual(result.stdout, "already up to date\n")
         (target / "chitty.toml").unlink()
         self.run_cli("init")
-        self.assertEqual((target / "AGENTS.md").read_text(), agents)
+        refreshed_agents = (target / "AGENTS.md").read_text()
+        self.assertIn("Task: TASK-N", refreshed_agents)
+        self.assertNotIn("Task: CHIT-N", refreshed_agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
+
+    def test_init_refreshes_guide_after_default_prefix_changes(self):
+        target = self.tmp / "fresh"
+        target.mkdir()
+        os.chdir(target)
+        self.run_cli("init", "--prefix", "CHIT")
+        config = target / "chitty.toml"
+        config.write_text(config.read_text().replace('prefix = "CHIT"', 'prefix = "CIRCUIT"'))
+
+        self.run_cli("init")
+
+        agents = (target / "AGENTS.md").read_text()
+        self.assertIn("Task: CIRCUIT-N", agents)
+        self.assertNotIn("Task: CHIT-N", agents)
 
     def test_init_leaves_unrelated_pyproject_untouched(self):
         target = self.tmp / "python-project"

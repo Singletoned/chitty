@@ -514,8 +514,10 @@ def resolve_add_target(local: Repo | None, name: str | None) -> Target:
     return Target(local, local.context(name) if name else local.default_context)
 
 
-def guide() -> str:
-    return files("chitty").joinpath("guide.md").read_text()
+def guide(prefix: str = "TASK") -> str:
+    """Render agent guidance using a repository's default task prefix."""
+    template = files("chitty").joinpath("guide.md").read_text()
+    return template.replace("TASK-N", f"{prefix}-N")
 
 
 def _default_project(directory_name: str) -> str:
@@ -605,9 +607,10 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
     agents = directory / AGENTS_FILE
     existing = agents.read_text() if agents.exists() else ""
     pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
-    updated, count = re.subn(pattern, guide().rstrip() + "\n", existing)
+    rendered_guide = guide(config.contexts[config.default_context].prefix)
+    updated, count = re.subn(pattern, rendered_guide.rstrip() + "\n", existing)
     if not count:
-        updated = (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + guide()
+        updated = (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + rendered_guide
     if updated != existing:
         agents.write_text(updated)
         written.append(agents)

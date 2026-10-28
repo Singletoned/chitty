@@ -391,6 +391,8 @@ task files. `chitty --help` is the full command reference.
   time. Pass with `-s done --note "Reviewed: ..."`; fail with
   `-s doing --note "reason"`. Create new tickets for out-of-scope findings.
 - Set `-s done` when every criterion is ticked and the work is verified.
+- End commits for task work with `Task: TASK-N` lines so `git log --grep TASK-N`
+  finds a ticket's code. Use the ticket's own prefix when contexts differ.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
   Don't do it in this session.
 ```

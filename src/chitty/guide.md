@@ -21,7 +21,8 @@ task files. `chitty --help` is the full command reference.
   completed tasks in one batch. The default moves them to `archive/`; with
   `archive = "delete"`, Git history retains the record instead.
 - End commits for task work with `Task: TASK-N` lines so `git log --grep TASK-N`
-  finds the ticket's code. This is a convention; no hook enforces it.
+  finds the ticket's code. Use the ticket's own prefix when contexts differ.
+  This is a convention; no hook enforces it.
 - When work cannot proceed, set `-s blocked --note "reason"` and move on; do
   not pick up blocked work. If a person must act outside the repo, add a
   `-c human` task and depend on it.
