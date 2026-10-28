@@ -1,6 +1,6 @@
 ---
 title: Warn in chitty check when task text has Markdown characters a formatter will escape
-status: backlog
+status: todo
 created: 2026-10-28
 ---
 
@@ -19,6 +19,9 @@ Bare *, _ and similar characters that render as literal text (e.g. 'static/photo
 
 Raised by the human while refining TASK-47. Needs a decision on adding warning severity to check and the markdown-it-py dependency.
 
+Promoted by the human: add a non-failing warning severity to check and the markdown-it-py dependency.
+
 ## History
 
 - 2026-10-28 → backlog
+- 2026-10-28 backlog → todo

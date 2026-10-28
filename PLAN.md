@@ -22,8 +22,8 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   its machine-local inbox under XDG data storage and refuses a name owned by a
   different repository. `suggest` writes atomic cross-project ideas there;
   `inbox` lists waiting suggestions without changing anything; `inbox --pull`
-  converts them into backlog tasks at session start (`pull` is a deprecated
-  alias).
+  converts them into backlog tasks at session start (`pull` only says to run
+  `inbox --pull`).
   User-level contexts are ignored; use `suggest` for cross-project ideas.
 - Plain markdown. Every file must survive a round trip through the supported
   formatters (below) without changing meaning. No HTML comments, no sentinel
