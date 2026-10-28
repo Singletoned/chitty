@@ -235,6 +235,7 @@ class Repo:
         criteria: Sequence[str],
         fields: Mapping[str, FieldValue],
         today: date,
+        notes: Sequence[str] = (),
     ) -> Change:
         """Create a task. References in depends_on may be shorthand."""
         fields = dict(fields)
@@ -254,6 +255,8 @@ class Repo:
                 raise ChittyError("description is required unless status is backlog")
             description = BACKLOG_DESCRIPTION
         task = new_task(title, today, description, criteria, fields)
+        for note in notes:
+            task = task.with_note(note)
         task_id = TaskId(context.prefix, self.next_number(context))
         path = context.directory / ids.filename(task_id, ids.slugify(title))
         self._write(path, task.render())

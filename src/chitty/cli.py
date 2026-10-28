@@ -197,6 +197,7 @@ def import_backlog_md(context: str | None, remove_source: bool, keep_source: boo
 @click.option("--owner", help="Free text: human, a name, an agent.")
 @click.option("--depends-on", multiple=True, help="Task ID this is blocked on (repeatable).")
 @click.option("--parent", help="Parent task ID in this repository.")
+@click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
 @json_option
 def add(
     title: str,
@@ -209,6 +210,7 @@ def add(
     owner: str | None,
     depends_on: tuple[str, ...],
     parent: str | None,
+    notes: tuple[str, ...],
     as_json: bool,
 ) -> None:
     """Create a task with status todo.
@@ -228,7 +230,9 @@ def add(
         "depends_on": list(depends_on),
         "parent": parent,
     }
-    change = target.repo.add(target.context, title, description, criteria, fields, date.today())
+    change = target.repo.add(
+        target.context, title, description, criteria, fields, date.today(), notes
+    )
     _report(change, as_json, "added")
 
 

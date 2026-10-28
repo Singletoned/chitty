@@ -26,7 +26,8 @@ chitty suggest other "Improve docs" -d "Explain setup."  # machine-local inbox
 chitty pull                       # collect this repo's inbox as backlog tasks
 # `add -c` names only a context in this repository; use `suggest` across projects.
 chitty add "Add search" -d "Search titles and bodies." \
-    --ac "Matches title" --ac "Case-insensitive" -l cli
+    --ac "Matches title" --ac "Case-insensitive" -l cli \
+    --note "Useful context, repeatable."
 chitty list
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
