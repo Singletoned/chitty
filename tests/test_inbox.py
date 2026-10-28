@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from unittest import mock
 
@@ -157,6 +158,9 @@ class TestInbox(RepoTestCase):
         self.assertEqual(len(list((self.root / "chitty/tasks").glob("*.md"))), 2)
 
     def test_registered_project_wins_over_same_named_local_directory(self):
+        previous = Path.cwd()
+        os.chdir(self.root)
+        self.addCleanup(os.chdir, previous)
         register_project("chitty", self.root)
 
         path = suggest("chitty", "Improve docs", None, False, self.root)
