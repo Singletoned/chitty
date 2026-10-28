@@ -20,9 +20,9 @@ from chitty.config import (
 )
 from chitty.errors import ChittyError
 from chitty.import_backlog import import_directory
+from chitty.inbox import list_waiting, waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
-from chitty.inbox import waiting
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
 from chitty.store import (
     Change,
@@ -158,12 +158,36 @@ def init() -> None:
 
 @cli.command()
 def pull() -> None:
-    """Collect waiting machine-inbox suggestions as backlog tasks."""
-    task_ids = pull_suggestions(_repo())
-    if not task_ids:
-        click.echo("no suggestions waiting")
-    for task_id in task_ids:
-        click.echo(f"pulled {task_id}")
+    """Explain the replacement for the former inbox-import command."""
+    raise click.UsageError(
+        "run `chitty inbox --pull`, then re-run `chitty init` to refresh the guide"
+    )
+
+
+@cli.command()
+@click.option("--pull", "import_suggestions", is_flag=True, help="Import all waiting suggestions.")
+@json_option
+def inbox(import_suggestions: bool, as_json: bool) -> None:
+    """List waiting suggestions, or import all of them with --pull."""
+    repo = _repo()
+    if import_suggestions:
+        task_ids = pull_suggestions(repo)
+        if task_ids:
+            for task_id in task_ids:
+                click.echo(f"pulled {task_id}")
+        else:
+            click.echo("no suggestions waiting", err=True)
+        return
+    assert repo.config.project is not None
+    suggestions = list_waiting(repo.config.project)
+    if as_json:
+        _print_json(suggestions)
+    elif suggestions:
+        for suggestion in suggestions:
+            click.echo(f"{suggestion['origin']}  {suggestion['created']}  {suggestion['title']}")
+        click.echo("run `chitty inbox --pull` to import them", err=True)
+    else:
+        click.echo("no suggestions waiting", err=True)
 
 
 @cli.command()
@@ -303,7 +327,7 @@ def list_(
             err=True,
         )
     if repo.config.project and waiting(repo.config.project):
-        click.echo("suggestions waiting: run chitty pull", err=True)
+        click.echo("suggestions waiting: run chitty inbox --pull", err=True)
     if as_json:
         _print_json([t.as_dict() for t in tasks])
         return

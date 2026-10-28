@@ -23,7 +23,8 @@ uvx chitty --help                 # run without installing
 chitty init                       # create/upgrade config and register its machine-local project inbox
 chitty import backlog-md          # convert a reviewed legacy backlog/ directory
 chitty suggest other "Improve docs" -d "Explain setup."  # machine-local inbox
-chitty pull                       # collect this repo's inbox as backlog tasks
+chitty inbox                      # list this repo's waiting inbox suggestions
+chitty inbox --pull               # collect them as backlog tasks
 # `add -c` names only a context in this repository; use `suggest` across projects.
 chitty add "Add search" -d "Search titles and bodies." \
     --ac "Matches title" --ac "Case-insensitive" -l cli \
@@ -80,7 +81,7 @@ avoid reusing IDs. The default, `archive = "move"`, retains task files.
 
 `chitty_version` records the Chitty release that last ran `init`; re-run `chitty init` when Chitty warns that setup is stale. Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). To send work to another repository, use `chitty suggest PROJECT`;
-the receiving repository imports it with `chitty pull`. `PROJECT` is a
+the receiving repository imports it with `chitty inbox --pull`. `PROJECT` is a
 registered name unless it contains `/`, is `.`, or starts with `~` or `.`; those
 path-shaped values resolve a local Chitty repository.
 

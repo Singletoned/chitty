@@ -120,6 +120,21 @@ def waiting(project: str) -> list[Path]:
     return sorted(inbox_path(project).glob("suggestion-*.md"))
 
 
+def list_waiting(project: str) -> list[dict[str, object]]:
+    """Read suggestion metadata without claiming or modifying inbox files."""
+    return [_read_suggestion(path) for path in waiting(project)]
+
+
+def _read_suggestion(path: Path) -> dict[str, object]:
+    _, frontmatter, body = path.read_text().split("---\n", 2)
+    data = yaml.safe_load(frontmatter)
+    if not isinstance(data, dict):
+        raise ChittyError(f"{path}: invalid suggestion frontmatter")
+    suggestion = cast(dict[str, object], cast(dict[str, Any], data))
+    suggestion["description"] = body.split("## Description\n\n", 1)[-1].strip()
+    return suggestion
+
+
 def claim(project: str) -> list[tuple[Path, dict[str, object]]]:
     """Atomically hide waiting suggestions from other pullers before reading."""
     claimed: list[tuple[Path, dict[str, object]]] = []
@@ -132,13 +147,7 @@ def claim(project: str) -> list[tuple[Path, dict[str, object]]]:
             except FileNotFoundError:
                 continue
             processing_paths.append(processing)
-            _, frontmatter, body = processing.read_text().split("---\n", 2)
-            data = yaml.safe_load(frontmatter)
-            if not isinstance(data, dict):
-                raise ChittyError(f"{processing}: invalid suggestion frontmatter")
-            suggestion = cast(dict[str, object], cast(dict[str, Any], data))
-            suggestion["description"] = body.split("## Description\n\n", 1)[-1].strip()
-            claimed.append((processing, suggestion))
+            claimed.append((processing, _read_suggestion(processing)))
         return claimed
     except BaseException:
         release(processing_paths)
