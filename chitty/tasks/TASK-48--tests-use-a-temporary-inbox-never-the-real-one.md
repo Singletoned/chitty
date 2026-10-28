@@ -1,6 +1,6 @@
 ---
 title: Tests use a temporary inbox, never the real one
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -24,6 +24,8 @@ Suggestion origin: circuitry
 
 Needs refinement before implementation: make the required test inbox isolation outcome explicit, then decide whether stale-registration refusal and cleanup behavior belong here or in follow-up tickets. Add verifiable acceptance criteria for the chosen scope.
 
+Reviewed: inspected inbox isolation and real-inbox guard in commit `d3a331e`; `make check` passes.
+
 ## Summary
 
 Documented and retained per-test temporary XDG data homes through `RepoTestCase`, added a real-inbox snapshot guard around suggestion creation, and documented the inheritance requirement in AGENTS.md. Verified with `make check`.
@@ -34,3 +36,4 @@ Documented and retained per-test temporary XDG data homes through `RepoTestCase`
 - 2026-10-28 backlog → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-28 review → done
