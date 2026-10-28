@@ -37,8 +37,11 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   one-way converter from a Backlog.md `backlog/` directory. Duplicate tickets
   are worse than deletion, so after a successful import it `git rm`s each
   converted source file that is tracked and unmodified, in the import's
-  commit; Git history is the safety net. Non-task files stay and are reported,
-  and `backlog/` goes only if it ends up empty. If any converted file is
+  commit; Git history is the safety net. `backlog/config.yml` is consumed by
+  the import and removed under the same rules. Statuses it declares map to
+  `backlog` with one summary line each; only undeclared statuses are reported
+  as unknown. Other non-task files stay and are reported, and `backlog/` goes
+  only if it ends up empty. If any converted file is
   untracked or modified, it fails before writing anything and names
   `--remove-source` (delete anyway) and `--keep-source` (leave the source).
   It never prompts, so an agent passes the choice to its human.
@@ -245,10 +248,10 @@ or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error:
 ```toml
 format = 1
 default_context = "tasks"
-autocommit = false                     # if true, commit each write
-review = true                          # require review before done
-# autoformat = "mdformat"              # command run on every written task file
-# archive = "move"                      # or "delete" completed files at merge time
+autocommit = false # if true, commit each write
+review = true # require review before done
+# autoformat = "taidy format" # run on every written task file
+archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
 prefix = "TASK"
@@ -272,6 +275,9 @@ repository history is shallow or unavailable.
 Contexts are repository-local. To send a task to another repository, use
 `chitty suggest PROJECT TITLE`; the receiving repository imports its machine-local
 inbox with `chitty pull`. This avoids writing another repository's worktree.
+`PROJECT` is a registered project name, which always wins; it is read as a
+path only when it contains `/`, is `.`, or starts with `~` or `.`, because
+every repository has a `chitty/` folder that a bare name would otherwise hit.
 
 ## Dependencies
 
