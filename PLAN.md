@@ -89,6 +89,10 @@ that ambiguity is an error. Error if neither finds one.
 `<PREFIX>-<n>`, e.g. `TASK-13`.
 
 - `PREFIX` is the context's prefix: `[A-Z]+`, unique within a repo.
+  Prefixes name queues (`TASK` for `tasks/`, `HUMAN` for `human/`), not
+  projects or types: a ticket's project is the repo it lives in, and its
+  type (bug, suggestion) can change while its ID must not, so type is a
+  label. New repos always get `TASK`; existing custom prefixes keep working.
 - `n` is a positive integer, unpadded: `max(n over existing files in the
   context, including archive) + 1`.
 
@@ -304,7 +308,7 @@ and zsh completion exposes commands/options; task ID and context completion is
 repository-aware and silently empty outside a repository.
 
 ```
-chitty init [--prefix TASK]        write chitty.toml, chitty/tasks/, AGENTS.md block
+chitty init                        write chitty.toml, chitty/tasks/, AGENTS.md block
 chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
                  [--owner X] [--depends-on ID]...
 chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
@@ -396,8 +400,8 @@ task files. `chitty --help` is the full command reference.
   time. Pass with `-s done --note "Reviewed: ..."`; fail with
   `-s doing --note "reason"`. Create new tickets for out-of-scope findings.
 - Set `-s done` when every criterion is ticked and the work is verified.
-- End commits for task work with `Task: TASK-N` lines so `git log --grep TASK-N`
-  finds a ticket's code. Use the ticket's own prefix when contexts differ.
+- End commits for task work with `Task: <ID>` lines, using the ticket's own ID
+  (e.g. `Task: TASK-12`), so `git log --grep <ID>` finds a ticket's code.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
   Don't do it in this session.
 ```
