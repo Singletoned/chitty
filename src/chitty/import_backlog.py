@@ -11,7 +11,7 @@ from typing import Any, cast
 
 import yaml
 
-from chitty import ids
+from chitty import git, ids
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
 from chitty.store import Change, Context, Repo, StoredTask, guide
 
@@ -149,7 +149,12 @@ def _rewrite(value: str, mapping: Mapping[str, str], reports: list[str], old_id:
 
 
 def import_directory(
-    source: Path, repo: Repo, destination: Context, agents: Path | None = None
+    source: Path,
+    repo: Repo,
+    destination: Context,
+    agents: Path | None = None,
+    remove_source: bool = False,
+    keep_source: bool = False,
 ) -> list[str]:
     """Convert a legacy backlog after all source files validate successfully."""
     prefix = destination.prefix
@@ -159,7 +164,10 @@ def import_directory(
         ("completed", False, True),
         ("archive", False, True),
     )
+    if remove_source and keep_source:
+        raise ValueError("--remove-source and --keep-source cannot be used together")
     converted: list[ConvertedTask] = []
+    source_paths: list[Path] = []
     archived_ids: set[str] = set()
     reports: list[str] = []
     for name, draft, archived in locations:
@@ -169,6 +177,7 @@ def import_directory(
         for path in sorted(directory.glob("*.md")):
             item = convert(path, draft=draft)
             converted.append(item)
+            source_paths.append(path)
             if archived:
                 archived_ids.add(item.old_id)
             reports.extend(item.reports)
@@ -194,6 +203,16 @@ def import_directory(
     ]
     retained = [_without_deleted_references(item, deleted_ids) for item in retained]
     _validate_relationships(retained)
+    problems = git.source_problems(repo.root, source_paths)
+    if problems and not (remove_source or keep_source):
+        names = "\n".join(str(path) for path in problems)
+        raise ValueError(
+            f"imported source files are untracked or dirty:\n{names}\n"
+            "choose --remove-source to delete them anyway or --keep-source to leave all "
+            "source files"
+        )
+    sources_to_remove = [] if keep_source else source_paths
+    removed_sources: dict[Path, tuple[bytes, str]] = {}
     stored: list[StoredTask] = []
     written_paths: list[Path] = []
     agent_path: Path | None = None
@@ -227,17 +246,29 @@ def import_directory(
                 agent_path.write_text(updated)
             else:
                 previous_agents = None
+        if sources_to_remove:
+            removed_sources = git.remove_sources(repo.root, sources_to_remove, remove_source)
         if stored:
-            paths = [*written_paths]
+            paths = [*written_paths, *sources_to_remove]
             if agent_path and previous_agents is not None:
                 paths.append(agent_path)
             repo.finalize(Change(stored[-1], tuple(paths), tuple(stored)), "import")
     except BaseException:
+        if removed_sources:
+            git.restore_sources(repo.root, removed_sources)
         for path in written_paths:
             path.unlink(missing_ok=True)
         if agent_path and previous_agents is not None:
             agent_path.write_text(previous_agents)
         raise
+    for path in sources_to_remove:
+        parent = path.parent
+        while parent != source.parent:
+            try:
+                parent.rmdir()
+            except OSError:
+                break
+            parent = parent.parent
     for name in ("decisions", "docs", "milestones"):
         if (source / name).exists():
             reports.append(f"left non-task directory: {source / name}")

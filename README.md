@@ -52,7 +52,9 @@ set `review = false` in repository configuration to make it optional. Use `--par
 `--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains
 `[]`. `chitty import backlog-md` refuses non-empty contexts, reports
-mappings, and leaves `backlog/` in place. Each task has a tool-managed trailing
+mappings. It removes clean, tracked converted files in its import commit; use
+`--keep-source` to retain all source files or `--remove-source` to force deletion
+of dirty or untracked sources. Each task has a tool-managed trailing
 `## History` that records its creation and status transitions. Finished tasks can include a `## Summary` handoff via
 `chitty edit ID --summary TEXT`. To inspect or restore an archived task, work
 with its file directly.
@@ -84,8 +86,8 @@ From a clone of the legacy repository, run `chitty init`, then
 `chitty import backlog-md`. Review its report: unknown statuses become backlog
 notes, unsupported headings are demoted into the description, and non-task
 files or folders are listed rather than imported. Run `chitty check`, review
-and commit the generated tasks, then delete `backlog/` when the migration is
-accepted.
+and commit the generated tasks. Clean converted source files are removed by the
+import; delete any remaining reported non-task files or folders when accepted.
 
 ## Develop
 

@@ -1,6 +1,8 @@
 ---
 title: Backlog.md import removes imported source files tracked by Git
-status: todo
+status: blocked
+depends_on:
+  - HUMAN-3
 created: 2026-10-28
 ---
 
@@ -18,6 +20,10 @@ After a successful import, the Backlog.md source files that were converted still
 - [ ] A repo that is not a Git repository is treated like untracked files
 - [ ] Tests cover each case against real temp Git repositories; PLAN.md, README migration section and import --help are updated
 
+## Plan
+
+Map import finalization and Git helpers, then add failing real-Git tests for default, explicit source policies, dirty/untracked refusal, non-Git, and failure rollback. Validate source eligibility before any generated writes; pass source deletions through the existing atomic finalization path; update CLI options and migration documentation; run make check and tick each verified criterion.
+
 ## Notes
 
 Suggestion origin: circuitry
@@ -26,7 +32,13 @@ Decided with the human: duplicate tickets are worse than deletion, so removing c
 
 PLAN.md records the decision. README and import --help still describe the current behaviour (source left in place); update them with the implementation so they never describe behaviour that doesn't exist.
 
+Blocked: make check exits 69 because the local Xcode license has not been accepted. A human must run sudo xcodebuild -license and accept it; then rerun make check to verify the in-progress import-source changes.
+
+Waiting on HUMAN-3: accept the local Xcode license.
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-10-28 backlog → todo
+- 2026-10-28 todo → doing
+- 2026-10-28 doing → blocked

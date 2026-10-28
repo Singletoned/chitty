@@ -169,8 +169,10 @@ def import_() -> None:
 
 @import_.command("backlog-md")
 @click.option("--context", default=None, help="Destination context (default: repository default).")
-def import_backlog_md(context: str | None) -> None:
-    """Convert the local backlog/ directory without deleting it."""
+@click.option("--remove-source", is_flag=True, help="Delete dirty or untracked imported files too.")
+@click.option("--keep-source", is_flag=True, help="Leave all imported source files in place.")
+def import_backlog_md(context: str | None, remove_source: bool, keep_source: bool) -> None:
+    """Convert the local backlog/ directory and remove clean tracked sources."""
     repo = _repo()
     selected = repo.context(context or repo.config.default_context)
     if repo.tasks(selected, "all"):
@@ -178,7 +180,9 @@ def import_backlog_md(context: str | None) -> None:
     source = repo.root / "backlog"
     if not source.is_dir():
         raise ChittyError(f"{source} does not exist")
-    for report in import_directory(source, repo, selected, repo.root / "AGENTS.md"):
+    for report in import_directory(
+        source, repo, selected, repo.root / "AGENTS.md", remove_source, keep_source
+    ):
         click.echo(report)
 
 

@@ -15,8 +15,9 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
     relative = [str(path.relative_to(root)) for path in paths]
     present = [p for p in relative if (root / p).exists()]
     tracked = set(_git(root, "ls-files", "--", *relative).splitlines())
-    included = [p for p in relative if p in present or p in tracked]
     staged = _git(root, "diff", "--cached", "--binary", "--", *relative)
+    staged_paths = set(_git(root, "diff", "--cached", "--name-only", "--", *relative).splitlines())
+    included = [p for p in relative if p in present or p in tracked or p in staged_paths]
     _git(root, "add", "--", *present)
     try:
         _git(root, "commit", "--quiet", "--only", "-m", message, "--", *included)
@@ -25,6 +26,59 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
         if staged:
             _apply_cached(root, staged)
         raise
+
+
+def source_problems(root: Path, paths: Sequence[Path]) -> list[Path]:
+    """Return source paths that are untracked or differ from HEAD/index."""
+    relative = [str(path.relative_to(root)) for path in paths]
+    try:
+        tracked = set(_git(root, "ls-files", "--", *relative).splitlines())
+        status = _git(root, "status", "--porcelain", "--no-renames", "--", *relative)
+    except ChittyError:
+        return list(paths)
+    changed = {line[3:] for line in status.splitlines() if len(line) > 3}
+    return [
+        path
+        for path, name in zip(paths, relative, strict=True)
+        if name not in tracked or name in changed
+    ]
+
+
+def remove_sources(root: Path, paths: Sequence[Path], force: bool) -> dict[Path, tuple[bytes, str]]:
+    """Remove sources, retaining enough state to restore them after a failed import."""
+    originals = {path: (path.read_bytes(), "") for path in paths}
+    relative = [str(path.relative_to(root)) for path in paths]
+    try:
+        patches = _git(root, "diff", "--cached", "--binary", "--", *relative)
+        for path in paths:
+            originals[path] = (originals[path][0], patches)
+        arguments = ("rm", "-f", "--", *relative) if force else ("rm", "--", *relative)
+        _git(root, *arguments)
+    except ChittyError:
+        for path in paths:
+            path.unlink(missing_ok=True)
+        if force:
+            for path in originals:
+                path.unlink(missing_ok=True)
+        else:
+            raise
+    return originals
+
+
+def restore_sources(root: Path, originals: dict[Path, tuple[bytes, str]]) -> None:
+    """Restore files and their pre-import index state after a failed import."""
+    paths = list(originals)
+    for path, (content, _) in originals.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+    relative = [str(path.relative_to(root)) for path in paths]
+    try:
+        _git(root, "reset", "--", *relative)
+        patch = next((patch for _, patch in originals.values() if patch), "")
+        if patch:
+            _apply_cached(root, patch)
+    except ChittyError:
+        pass
 
 
 def deleted_paths(root: Path) -> list[Path]:

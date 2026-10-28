@@ -148,7 +148,7 @@ class TestImport(CliTestCase):
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
 
-        self.run_cli("import", "backlog-md")
+        self.run_cli("import", "backlog-md", "--keep-source")
 
         archived = self.root / "chitty/tasks/archive/TASK-1--completed.md"
         self.assertTrue(archived.exists())
@@ -168,7 +168,7 @@ class TestImport(CliTestCase):
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
 
-        self.run_cli("import", "backlog-md")
+        self.run_cli("import", "backlog-md", "--keep-source")
 
         self.assertEqual(list((self.root / "chitty/tasks").glob("*.md")), [])
 
@@ -192,7 +192,7 @@ class TestImport(CliTestCase):
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
 
-        self.run_cli("import", "backlog-md")
+        self.run_cli("import", "backlog-md", "--keep-source")
 
         self.assertEqual(self.json("show", "2")["depends_on"], [])
 
@@ -211,7 +211,7 @@ class TestImport(CliTestCase):
         )
         self.run_cli("init")
 
-        self.run_cli("import", "backlog-md")
+        self.run_cli("import", "backlog-md", "--keep-source")
 
         updated = agents.read_text()
         self.assertNotIn("BACKLOG.MD", updated)
@@ -228,7 +228,7 @@ class TestImport(CliTestCase):
         (self.root / "backlog/docs").mkdir()
         (self.root / "AGENTS.md").write_text("## Backlog.md Workflow\n\nOld instructions.\n")
 
-        result = self.run_cli("import", "backlog-md")
+        result = self.run_cli("import", "backlog-md", "--keep-source")
 
         self.assertIn("left non-task directory", result.stdout)
         self.assertEqual(self.json("show", "1")["title"], "Legacy")
