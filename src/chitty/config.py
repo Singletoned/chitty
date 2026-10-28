@@ -3,6 +3,7 @@
 import os
 import re
 import tomllib
+from importlib.metadata import version
 from pathlib import Path
 from typing import Literal
 
@@ -15,6 +16,7 @@ CONFIG_NAME = "chitty.toml"
 PYPROJECT_NAME = "pyproject.toml"
 BACKLOG_DIR = "chitty"
 ROOT_ENV = "CHITTY_ROOT"
+CHITTY_VERSION = version("chitty")
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
@@ -22,6 +24,7 @@ INITIAL_CONFIG = """\
 format = 1
 default_context = "tasks"
 project = {project}
+chitty_version = "{version}"
 autocommit = false
 review = true
 # autoformat = "taidy format" # run on every written task file
@@ -54,6 +57,7 @@ class RepoConfig(BaseModel):
     format: Literal[1]
     default_context: str
     project: str | None = None
+    chitty_version: str | None = None
     autocommit: bool
     review: bool = True
     autoformat: str | None = None

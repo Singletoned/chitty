@@ -250,6 +250,7 @@ or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error:
 ```toml
 format = 1
 default_context = "tasks"
+chitty_version = "0.1.2" # written by init; warns when setup is stale
 autocommit = false # if true, commit each write
 review = true # require review before done
 # autoformat = "taidy format" # run on every written task file

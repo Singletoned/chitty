@@ -6,6 +6,7 @@ from datetime import date
 from click.testing import CliRunner, Result
 
 from chitty.cli import _complete_context, _complete_task_id, cli
+from chitty.config import CHITTY_VERSION
 from chitty.store import _add_missing_settings, guide
 from tests.support import RepoTestCase
 
@@ -26,6 +27,26 @@ class CliTestCase(RepoTestCase):
         return json.loads(self.run_cli(*args, "--json").stdout)
 
 
+class TestSetupVersion(CliTestCase):
+    def test_warns_for_missing_older_and_newer_setup_versions(self):
+        config = self.root / "chitty.toml"
+        original = config.read_text()
+        cases = (
+            (None, "re-run `chitty init`"),
+            ("0.0.0", "re-run `chitty init`"),
+            ("99.0.0", "upgrade chitty"),
+        )
+        line = f'chitty_version = "{CHITTY_VERSION}"\n'
+        for recorded, warning in cases:
+            with self.subTest(recorded=recorded):
+                replacement = "" if recorded is None else f'chitty_version = "{recorded}"\n'
+                config.write_text(original.replace(line, replacement))
+                result = self.run_cli("list")
+                self.assertIn(warning, result.stderr)
+        config.write_text(original)
+        self.assertNotIn("warning:", self.run_cli("list").stderr)
+
+
 class TestInit(CliTestCase):
     def test_init(self):
         target = self.tmp / "fresh"
@@ -40,6 +61,7 @@ class TestInit(CliTestCase):
             'archive = "move" # or "delete"; retain completed files or delete them', config
         )
         self.assertNotIn("  #", config)
+        self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config)
         self.assertIn("review = true", config)
         self.assertTrue((target / "chitty" / "tasks").is_dir())
         agents = (target / "AGENTS.md").read_text()
@@ -63,13 +85,18 @@ class TestInit(CliTestCase):
         os.chdir(target)
         self.run_cli("init", "--prefix", "CHIT")
         config = target / "chitty.toml"
-        config.write_text(config.read_text().replace('prefix = "CHIT"', 'prefix = "CIRCUIT"'))
+        config.write_text(
+            config.read_text()
+            .replace('prefix = "CHIT"', 'prefix = "CIRCUIT"')
+            .replace(f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "0.0.0"')
+        )
 
         self.run_cli("init")
 
         agents = (target / "AGENTS.md").read_text()
         self.assertIn("Task: CIRCUIT-N", agents)
         self.assertNotIn("Task: CHIT-N", agents)
+        self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config.read_text())
         self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
 
     def test_init_leaves_unrelated_pyproject_untouched(self):

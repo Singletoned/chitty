@@ -13,6 +13,7 @@ from typing import Any, Literal
 from chitty import formatter, git, ids
 from chitty.config import (
     BACKLOG_DIR,
+    CHITTY_VERSION,
     CONFIG_NAME,
     INITIAL_CONFIG,
     RepoConfig,
@@ -537,6 +538,7 @@ def _add_missing_settings(
         value
         for key, value in (
             ("project", f"project = {json.dumps(project)}"),
+            ("chitty_version", f'chitty_version = "{CHITTY_VERSION}"'),
             ("archive", 'archive = "move"'),
             ("review", "review = true"),
         )
@@ -569,7 +571,9 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
     written: list[Path] = []
     if not config_path.exists() and not has_pyproject_config:
         project = _default_project(directory.name)
-        text = INITIAL_CONFIG.format(prefix=prefix or "TASK", project=json.dumps(project))
+        text = INITIAL_CONFIG.format(
+            prefix=prefix or "TASK", project=json.dumps(project), version=CHITTY_VERSION
+        )
         config = validate_repo_config(text, config_path)
         config_path.write_text(text)
         written.append(config_path)
@@ -586,6 +590,11 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
         settings = data if source == config_path else data["tool"]["chitty"]
         updated = _add_missing_settings(
             text, settings, source == pyproject_path, _default_project(directory.name)
+        )
+        updated = re.sub(
+            r'(?m)^(chitty_version\s*=\s*)["\'][^"\']*["\']\s*$',
+            rf'\g<1>"{CHITTY_VERSION}"',
+            updated,
         )
         if updated != text:
             tomllib.loads(updated)

@@ -5,10 +5,13 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from chitty.config import CHITTY_VERSION
+
 CONFIG = textwrap.dedent(
-    """
+    f"""
     format = 1
     default_context = "tasks"
+    chitty_version = "{CHITTY_VERSION}"
     autocommit = false
 
     [contexts.tasks]

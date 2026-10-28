@@ -78,7 +78,7 @@ completed task files at merge-request time instead of moving them to `archive/`;
 it also removes exact `depends_on` entries and requires complete Git history to
 avoid reusing IDs. The default, `archive = "move"`, retains task files.
 
-Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
+`chitty_version` records the Chitty release that last ran `init`; re-run `chitty init` when Chitty warns that setup is stale. Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). To send work to another repository, use `chitty suggest PROJECT`;
 the receiving repository imports it with `chitty pull`. `PROJECT` is a
 registered name unless it contains `/`, is `.`, or starts with `~` or `.`; those

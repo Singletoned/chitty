@@ -10,7 +10,13 @@ from click.shell_completion import CompletionItem
 
 from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
-from chitty.config import find_root, registered_projects, search_root, user_contexts_path
+from chitty.config import (
+    CHITTY_VERSION,
+    find_root,
+    registered_projects,
+    search_root,
+    user_contexts_path,
+)
 from chitty.errors import ChittyError
 from chitty.import_backlog import import_directory
 from chitty.inbox import pull as pull_suggestions
@@ -99,7 +105,18 @@ context_option = click.option(
 
 
 def _repo() -> Repo:
-    return Repo.open(find_root(Path.cwd()))
+    repo = Repo.open(find_root(Path.cwd()))
+    _warn_setup_version(repo.config.chitty_version)
+    return repo
+
+
+def _warn_setup_version(recorded: str | None) -> None:
+    if recorded == CHITTY_VERSION:
+        return
+    if recorded is None or recorded < CHITTY_VERSION:
+        click.echo("warning: re-run `chitty init` to refresh repository setup", err=True)
+    else:
+        click.echo("warning: upgrade chitty to match this repository's setup", err=True)
 
 
 def _print_json(data: Any) -> None:
