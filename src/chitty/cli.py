@@ -146,10 +146,9 @@ def _text(value: str | None, file: TextIO | None, name: str) -> str | None:
 
 
 @cli.command()
-@click.option("--prefix", default=None, help="ID prefix for a new tasks/ context.")
-def init(prefix: str | None) -> None:
+def init() -> None:
     """Create or upgrade Chitty configuration and agent instructions."""
-    paths = init_repo(Path.cwd(), prefix)
+    paths = init_repo(Path.cwd())
     if not paths:
         click.echo("already up to date")
     for path in paths:

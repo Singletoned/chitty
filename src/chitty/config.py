@@ -31,7 +31,7 @@ review = true
 archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
-prefix = "{prefix}"
+prefix = "TASK"
 
 [contexts.human]
 prefix = "HUMAN"

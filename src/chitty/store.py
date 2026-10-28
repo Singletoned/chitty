@@ -556,7 +556,7 @@ def _add_missing_settings(
     return text[:position] + "\n".join(additions) + "\n\n" + text[position:]
 
 
-def init_repo(directory: Path, prefix: str | None) -> list[Path]:
+def init_repo(directory: Path) -> list[Path]:
     """Create or non-destructively upgrade the repository's Chitty setup."""
     from chitty.config import inbox_path, load_repo_config, register_project
 
@@ -570,19 +570,12 @@ def init_repo(directory: Path, prefix: str | None) -> list[Path]:
     written: list[Path] = []
     if not config_path.exists() and not has_pyproject_config:
         project = _default_project(directory.name)
-        text = INITIAL_CONFIG.format(
-            prefix=prefix or "TASK", project=json.dumps(project), version=CHITTY_VERSION
-        )
+        text = INITIAL_CONFIG.format(project=json.dumps(project), version=CHITTY_VERSION)
         config = validate_repo_config(text, config_path)
         config_path.write_text(text)
         written.append(config_path)
     else:
         config = load_repo_config(directory)
-        default = config.contexts[config.default_context]
-        if prefix is not None and prefix != default.prefix:
-            raise ChittyError(
-                f"--prefix {prefix} disagrees with existing default context prefix {default.prefix}"
-            )
         source = config_path if config_path.exists() else pyproject_path
         text = source.read_text()
         data = tomllib.loads(text)

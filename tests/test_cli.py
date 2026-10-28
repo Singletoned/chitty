@@ -53,9 +53,9 @@ class TestInit(CliTestCase):
         target.mkdir()
         (target / "AGENTS.md").write_text("# Agents\n\nBe nice.\n")
         os.chdir(target)
-        self.run_cli("init", "--prefix", "CHIT")
+        self.run_cli("init")
         config = (target / "chitty.toml").read_text()
-        self.assertIn('prefix = "CHIT"', config)
+        self.assertIn('prefix = "TASK"', config)
         self.assertIn('# autoformat = "taidy format" # run on every written task file', config)
         self.assertIn(
             'archive = "move" # or "delete"; retain completed files or delete them', config
@@ -82,11 +82,11 @@ class TestInit(CliTestCase):
         target = self.tmp / "fresh"
         target.mkdir()
         os.chdir(target)
-        self.run_cli("init", "--prefix", "CHIT")
+        self.run_cli("init")
         config = target / "chitty.toml"
         config.write_text(
             config.read_text()
-            .replace('prefix = "CHIT"', 'prefix = "CIRCUIT"')
+            .replace('prefix = "TASK"', 'prefix = "CIRCUIT"')
             .replace(f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "0.0.0"')
         )
 
@@ -169,15 +169,24 @@ class TestInit(CliTestCase):
 
         self.assertEqual(tomllib.loads(config)["project"], 'name"with\\escape')
 
-    def test_init_rejects_clashing_prefix(self):
-        target = self.tmp / "prefix-collision"
-        target.mkdir()
-        os.chdir(target)
+    def test_init_rejects_removed_prefix_option(self):
+        result = self.run_cli("init", "--prefix", "HUMAN", exit_code=2)
 
-        result = self.run_cli("init", "--prefix", "HUMAN", exit_code=1)
+        self.assertIn("No such option '--prefix'", result.stderr)
 
-        self.assertIn("used by more than one context", result.stderr)
-        self.assertFalse((target / "chitty.toml").exists())
+    def test_init_preserves_custom_context_prefixes(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace('prefix = "TASK"', 'prefix = "CIRCUIT"')
+            .replace(f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "0.0.0"')
+        )
+
+        self.run_cli("init")
+
+        self.assertIn('prefix = "CIRCUIT"', config.read_text())
+        self.assertEqual(self.json("add", "Default", "-d", "x")["id"], "CIRCUIT-1")
+        self.assertEqual(self.json("add", "Human", "-c", "human", "-d", "x")["id"], "HUMAN-1")
 
 
 class TestImport(CliTestCase):
