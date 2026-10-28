@@ -1,6 +1,6 @@
 ---
 title: Guide tells agents to put paths, globs and code in backticks
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -25,6 +25,8 @@ Needs refinement before implementation: decide whether this ticket is limited to
 
 Decided with the human: guide line only here; the check warning is TASK-49.
 
+Reviewed: inspected the guide and regression coverage in commit `a0bacf9`; `make check` passes.
+
 ## Summary
 
 Added the agreed backtick guidance to generated agent instructions, covered initial and refreshed guide blocks, and updated the PLAN.md guide excerpt. Verified with `make check`.
@@ -35,3 +37,4 @@ Added the agreed backtick guidance to generated agent instructions, covered init
 - 2026-10-28 backlog → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-28 review → done
