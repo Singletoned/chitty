@@ -1,6 +1,6 @@
 ---
 title: Guide tells agents to put paths, globs and code in backticks
-status: todo
+status: review
 created: 2026-10-28
 ---
 
@@ -10,8 +10,12 @@ An agent wrote the criterion 'static/photos/*.jpg are copied into output/'. The 
 
 ## Acceptance Criteria
 
-- [ ] The guide says: put paths, globs, commands, IDs and code in backticks in titles, descriptions, criteria and notes
-- [ ] init refreshes existing managed blocks with the new line; tests and README/PLAN.md quotes updated
+- [x] The guide says: put paths, globs, commands, IDs and code in backticks in titles, descriptions, criteria and notes
+- [x] init refreshes existing managed blocks with the new line; tests and README/PLAN.md quotes updated
+
+## Plan
+
+Add the agreed backtick guidance to the managed guide, extend init coverage to verify both new and refreshed blocks contain it, update the quoted guide in PLAN.md, then run make format and make check.
 
 ## Notes
 
@@ -21,7 +25,13 @@ Needs refinement before implementation: decide whether this ticket is limited to
 
 Decided with the human: guide line only here; the check warning is TASK-49.
 
+## Summary
+
+Added the agreed backtick guidance to generated agent instructions, covered initial and refreshed guide blocks, and updated the PLAN.md guide excerpt. Verified with `make check`.
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-10-28 backlog → todo
+- 2026-10-28 todo → doing
+- 2026-10-28 doing → review

@@ -3,6 +3,8 @@
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
+- Put paths, globs, commands, IDs and code in backticks in titles, descriptions,
+  criteria and notes.
 - Work on one task per session. Start with `chitty pull`, then `chitty show <ID>`.
 - Backlog tasks need refinement; promote them to `todo` before taking them on.
 - Use a task's optional `parent` field to group flat task IDs under one goal.

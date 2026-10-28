@@ -47,6 +47,7 @@ class TestInit(CliTestCase):
         self.assertIn("Task: CHIT-N", agents)
         self.assertIn("git log --grep CHIT-N", agents)
         self.assertIn("Use the ticket's own prefix when contexts differ.", agents)
+        self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
         result = self.run_cli("init")
         self.assertEqual(result.stdout, "already up to date\n")
         (target / "chitty.toml").unlink()
@@ -69,6 +70,7 @@ class TestInit(CliTestCase):
         agents = (target / "AGENTS.md").read_text()
         self.assertIn("Task: CIRCUIT-N", agents)
         self.assertNotIn("Task: CHIT-N", agents)
+        self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
 
     def test_init_leaves_unrelated_pyproject_untouched(self):
         target = self.tmp / "python-project"
