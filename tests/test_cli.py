@@ -66,17 +66,16 @@ class TestInit(CliTestCase):
         self.assertTrue((target / "chitty" / "tasks").is_dir())
         agents = (target / "AGENTS.md").read_text()
         self.assertTrue(agents.startswith("# Agents\n\nBe nice.\n\n## Chitty\n"))
-        self.assertIn("Task: CHIT-N", agents)
-        self.assertIn("git log --grep CHIT-N", agents)
-        self.assertIn("Use the ticket's own prefix when contexts differ.", agents)
+        self.assertIn("Task: <ID>", agents)
+        self.assertIn("Task: TASK-12", agents)
+        self.assertIn("git log --grep <ID>", agents)
         self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
         result = self.run_cli("init")
         self.assertEqual(result.stdout, "already up to date\n")
         (target / "chitty.toml").unlink()
         self.run_cli("init")
         refreshed_agents = (target / "AGENTS.md").read_text()
-        self.assertIn("Task: TASK-N", refreshed_agents)
-        self.assertNotIn("Task: CHIT-N", refreshed_agents)
+        self.assertEqual(refreshed_agents, agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
 
     def test_init_refreshes_guide_after_default_prefix_changes(self):
@@ -91,11 +90,12 @@ class TestInit(CliTestCase):
             .replace(f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "0.0.0"')
         )
 
+        agents_path = target / "AGENTS.md"
+        agents_path.write_text(guide().replace("Task: <ID>", "Task: CIRCUIT-N"))
         self.run_cli("init")
 
-        agents = (target / "AGENTS.md").read_text()
-        self.assertIn("Task: CIRCUIT-N", agents)
-        self.assertNotIn("Task: CHIT-N", agents)
+        agents = agents_path.read_text()
+        self.assertEqual(agents, guide())
         self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config.read_text())
         self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
 

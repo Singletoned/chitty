@@ -46,9 +46,9 @@ task files. `chitty --help` is the full command reference.
 - Before preparing a merge request, run `chitty archive` with no ID to process
   completed tasks in one batch. The default moves them to `archive/`; with
   `archive = "delete"`, Git history retains the record instead.
-- End commits for task work with `Task: TASK-N` lines so `git log --grep TASK-N`
-  finds the ticket's code. Use the ticket's own prefix when contexts differ.
-  This is a convention; no hook enforces it.
+- End commits for task work with `Task: <ID>` lines using the ticket's own ID
+  (for example, `Task: TASK-12`) so `git log --grep <ID>` finds a ticket's
+  code. This is a convention; no hook enforces it.
 - When work cannot proceed, set `-s blocked --note "reason"` and move on; do
   not pick up blocked work. If a person must act outside the repo, add a
   `-c human` task and depend on it.

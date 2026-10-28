@@ -1,6 +1,6 @@
 ---
 title: Write the commit-trailer guidance without assuming a prefix
-status: todo
+status: review
 created: 2026-10-28
 ---
 
@@ -10,15 +10,15 @@ After chitty init --prefix CIRCUIT, the guide told agents to end commits with 'T
 
 ## Acceptance Criteria
 
-- [ ] The guide says to end commits with 'Task: <ID>' lines using the ticket's own ID, with one concrete example, and that git log --grep <ID> finds them
-- [ ] guide() takes no prefix and does no substitution; the prefix-rendering code from 91816cb is removed
-- [ ] `chitty guide`, MCP instructions, the MCP guide tool, init and import all emit identical guide text
-- [ ] init refreshes existing managed blocks, including ones that were rendered with a custom prefix
-- [ ] Tests cover the generic text and the refresh of a previously rendered block; README and PLAN.md quotes updated
+- [x] The guide says to end commits with 'Task: <ID>' lines using the ticket's own ID, with one concrete example, and that git log --grep <ID> finds them
+- [x] guide() takes no prefix and does no substitution; the prefix-rendering code from 91816cb is removed
+- [x] `chitty guide`, MCP instructions, the MCP guide tool, init and import all emit identical guide text
+- [x] init refreshes existing managed blocks, including ones that were rendered with a custom prefix
+- [x] Tests cover the generic text and the refresh of a previously rendered block; README and PLAN.md quotes updated
 
 ## Plan
 
-Trace guide rendering and init refresh behavior, parameterize the managed guidance with the configured default prefix while retaining a rule for mixed contexts, add custom-prefix and refresh regressions, update quoted documentation, then run formatting and the complete check suite.
+Trace guide generation and its CLI, MCP, init and import callers. Replace prefix-specific rendering with one literal generic guide, add regression tests including replacement of an old custom-prefix managed block, update documentation, then run `make check` and hand off for independent review.
 
 ## Notes
 
@@ -32,7 +32,7 @@ Redesigned with the human after the failed review: prefixes shouldn't name proje
 
 ## Summary
 
-Rendered the managed guide with the default context prefix while telling agents to use each ticket’s own prefix in mixed contexts. Added custom-prefix and refresh coverage; updated README and PLAN.md. Verified with `make check`.
+Made `guide()` literal and prefix-independent, so every CLI, MCP, init and import caller returns the same text. `init` now replaces historical custom-prefix blocks; updated guide documentation, managed `AGENTS.md`, release metadata and tests. Verified with `make check`.
 
 ## History
 
@@ -42,3 +42,5 @@ Rendered the managed guide with the default context prefix while telling agents 
 - 2026-10-28 doing → review
 - 2026-10-28 review → doing
 - 2026-10-28 doing → todo
+- 2026-10-28 todo → doing
+- 2026-10-28 doing → review

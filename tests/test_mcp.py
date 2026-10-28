@@ -86,3 +86,4 @@ class TestMcp(CliTestCase):
     def test_guide_resource(self):
         contents = asyncio.run(server.read_resource("chitty://guide"))
         self.assertEqual([c.content for c in contents], [guide()])  # type: ignore[union-attr]
+        self.assertEqual(server.instructions, guide())
