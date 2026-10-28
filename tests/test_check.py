@@ -35,9 +35,29 @@ class TestCheck(StoreTestCase):
         self.assertIn(f"{broken.path}: file must start", problems)
         self.assertIn(f"{duplicate}: TASK-1 is used by more than one file", problems)
         self.assertIn(f"{good.path}: TASK-1 is used by more than one file", problems)
+        self.assertIn(f"{duplicate}: filename slug is stale; expected TASK-1--good.md", problems)
         self.assertIn(f"{dependent.path}: depends_on HUMAN-1: no such task", problems)
         self.assertIn("stray.txt: task filename", problems)
-        self.assertEqual(len(self.problems()), 5)
+        self.assertEqual(len(self.problems()), 6)
+
+    def test_reports_and_repairs_stale_filename_slug(self):
+        stored = self.add("Correct title")
+        stale_path = stored.path.with_name("TASK-1--stale.md")
+        stored.path.rename(stale_path)
+        expected_path = stale_path.with_name("TASK-1--correct-title.md")
+
+        self.assertEqual(
+            self.problems(),
+            [f"{stale_path}: filename slug is stale; expected {expected_path.name}"],
+        )
+
+        fixed, problems = fix(self.repo, self.repo.contexts(), [])
+
+        self.assertEqual(problems, [])
+        self.assertEqual(
+            [problem.message for problem in fixed], [f"renamed to {expected_path.name}"]
+        )
+        self.assertTrue(expected_path.exists())
 
     def test_fix_canonicalizes_dependency_ids(self):
         blocker = self.add("Blocker")

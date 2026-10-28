@@ -78,7 +78,17 @@ def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> lis
                     continue
                 by_id[ids.parse_filename(path.name)[0]].append(path)
                 try:
-                    tasks[path] = parse(path.read_text())
+                    task = parse(path.read_text())
+                    tasks[path] = task
+                    task_id, _slug = ids.parse_filename(path.name)
+                    expected_name = ids.filename(task_id, ids.slugify(task.frontmatter.title))
+                    if path.name != expected_name:
+                        problems.append(
+                            Problem(
+                                path,
+                                f"filename slug is stale; expected {expected_name}",
+                            )
+                        )
                 except ChittyError as error:
                     problems.append(Problem(path, str(error)))
     for task_id, task_paths in by_id.items():
