@@ -218,6 +218,53 @@ class TestImport(CliTestCase):
         self.assertNotIn("Backlog.md Workflow", updated)
         self.assertEqual(updated.count("## Chitty"), 1)
 
+    def test_import_requires_a_source_policy_for_untracked_files(self):
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        source = legacy / "task-1.md"
+        source.write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
+            "## Description\n\nLegacy description.\n"
+        )
+
+        result = self.run_cli("import", "backlog-md", exit_code=1)
+
+        self.assertIn(str(source), result.stderr)
+        self.assertIn("--remove-source", result.stderr)
+        self.assertIn("--keep-source", result.stderr)
+        self.assertTrue(source.exists())
+        self.assertFalse(list((self.root / "chitty/tasks").glob("*.md")))
+
+    def test_import_remove_source_deletes_untracked_tasks_but_not_other_files(self):
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        source = legacy / "task-1.md"
+        source.write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
+            "## Description\n\nLegacy description.\n"
+        )
+        note = self.root / "backlog/README.md"
+        note.write_text("Keep me.\n")
+
+        self.run_cli("import", "backlog-md", "--remove-source")
+
+        self.assertFalse(source.exists())
+        self.assertTrue(note.exists())
+
+    def test_import_rejects_conflicting_source_policies(self):
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        (legacy / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
+            "## Description\n\nLegacy description.\n"
+        )
+
+        result = self.run_cli(
+            "import", "backlog-md", "--remove-source", "--keep-source", exit_code=1
+        )
+
+        self.assertIn("cannot be used together", result.stderr)
+
     def test_import_backlog_md_converts_tasks_and_replaces_agent_block(self):
         legacy = self.root / "backlog/tasks"
         legacy.mkdir(parents=True)

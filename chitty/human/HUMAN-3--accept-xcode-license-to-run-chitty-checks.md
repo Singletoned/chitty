@@ -1,6 +1,6 @@
 ---
 title: Accept Xcode license to run Chitty checks
-status: todo
+status: done
 created: 2026-10-28
 ---
 
@@ -12,6 +12,16 @@ Run sudo xcodebuild -license in a Terminal and accept the Xcode license. TASK-40
 
 - [ ] make check can start project tooling without Xcode license error
 
+## Notes
+
+Human confirmed the Xcode license was accepted; make check now passes.
+
+## Summary
+
+Xcode license accepted. Verified by a passing make check.
+
 ## History
 
 - 2026-10-28 → todo
+- 2026-10-28 todo → review
+- 2026-10-28 review → done

@@ -12,6 +12,7 @@ from typing import Any, cast
 import yaml
 
 from chitty import git, ids
+from chitty.errors import ChittyError
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
 from chitty.store import Change, Context, Repo, StoredTask, guide
 
@@ -165,7 +166,7 @@ def import_directory(
         ("archive", False, True),
     )
     if remove_source and keep_source:
-        raise ValueError("--remove-source and --keep-source cannot be used together")
+        raise ChittyError("--remove-source and --keep-source cannot be used together")
     converted: list[ConvertedTask] = []
     source_paths: list[Path] = []
     archived_ids: set[str] = set()
@@ -206,7 +207,7 @@ def import_directory(
     problems = git.source_problems(repo.root, source_paths)
     if problems and not (remove_source or keep_source):
         names = "\n".join(str(path) for path in problems)
-        raise ValueError(
+        raise ChittyError(
             f"imported source files are untracked or dirty:\n{names}\n"
             "choose --remove-source to delete them anyway or --keep-source to leave all "
             "source files"

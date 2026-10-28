@@ -1,6 +1,6 @@
 ---
 title: Backlog.md import removes imported source files tracked by Git
-status: blocked
+status: done
 depends_on:
   - HUMAN-3
 created: 2026-10-28
@@ -12,13 +12,13 @@ After a successful import, the Backlog.md source files that were converted still
 
 ## Acceptance Criteria
 
-- [ ] Clean, tracked converted files are removed with git rm and the deletions land in the import's autocommit (only staged when autocommit is off)
-- [ ] Non-task files and anything not converted stay in place and are still reported; backlog/ is removed only if it ends up empty
-- [ ] Untracked or dirty converted files make the import fail before any write, naming each path and both flags
-- [ ] --remove-source deletes untracked or dirty converted files too; --keep-source leaves the source untouched; passing both is an error
-- [ ] A failed import (validation, unresolved references, finalize problems) deletes nothing
-- [ ] A repo that is not a Git repository is treated like untracked files
-- [ ] Tests cover each case against real temp Git repositories; PLAN.md, README migration section and import --help are updated
+- [x] Clean, tracked converted files are removed with git rm and the deletions land in the import's autocommit (only staged when autocommit is off)
+- [x] Non-task files and anything not converted stay in place and are still reported; backlog/ is removed only if it ends up empty
+- [x] Untracked or dirty converted files make the import fail before any write, naming each path and both flags
+- [x] --remove-source deletes untracked or dirty converted files too; --keep-source leaves the source untouched; passing both is an error
+- [x] A failed import (validation, unresolved references, finalize problems) deletes nothing
+- [x] A repo that is not a Git repository is treated like untracked files
+- [x] Tests cover each case against real temp Git repositories; PLAN.md, README migration section and import --help are updated
 
 ## Plan
 
@@ -36,9 +36,20 @@ Blocked: make check exits 69 because the local Xcode license has not been accept
 
 Waiting on HUMAN-3: accept the local Xcode license.
 
+HUMAN-3 completed: make check now passes; resuming implementation verification.
+
+Ready for review: make check passes with 138 tests.
+
+## Summary
+
+Imports now remove clean tracked sources atomically, require explicit policy for dirty or untracked sources, support force/keep flags, and restore sources on failure. Updated migration docs and verified with make check (138 tests).
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-10-28 backlog → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → blocked
+- 2026-10-28 blocked → doing
+- 2026-10-28 doing → review
+- 2026-10-28 review → done
