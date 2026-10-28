@@ -1,6 +1,6 @@
 ---
 title: Record the chitty version in chitty.toml and warn when init needs re-running
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -24,6 +24,8 @@ Inspect package-version loading, repository configuration parsing, command entry
 
 Requested by the human. Possible refinement if the warning is noisy on every release: record a setup revision that only changes when init's output changes, instead of the package version.
 
+Reviewed: inspected setup-version warning implementation in commit `237baaf`; `make check` passes.
+
 ## Summary
 
 Added `chitty_version` setup metadata, automatic upgrade by `init`, and non-failing stale/newer setup warnings. Covered missing, older, equal, newer, and refresh states; updated README and PLAN.md. Verified with `make check`.
@@ -33,3 +35,4 @@ Added `chitty_version` setup metadata, automatic upgrade by `init`, and non-fail
 - 2026-10-28 → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-28 review → done
