@@ -1,6 +1,6 @@
 ---
 title: Write the commit-trailer guidance without assuming a prefix
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -30,6 +30,8 @@ Review failed: only `chitty init` renders the prefix. `guide(prefix: str = "TASK
 
 Redesigned with the human after the failed review: prefixes shouldn't name projects (see TASK-56), so the guide shouldn't depend on them. The custom-prefix rendering is reverted rather than extended.
 
+Reviewed: `guide()` is literal with no prefix parameter; `chitty guide`, MCP instructions and guide tool, `init` and import all call it identically. The `init` refresh test replaces a `CIRCUIT-N` block with `guide()` exactly. README, PLAN.md and `AGENTS.md` use the generic `Task: <ID>` wording. `make check` passes.
+
 ## Summary
 
 Made `guide()` literal and prefix-independent, so every CLI, MCP, init and import caller returns the same text. `init` now replaces historical custom-prefix blocks; updated guide documentation, managed `AGENTS.md`, release metadata and tests. Verified with `make check`.
@@ -44,3 +46,4 @@ Made `guide()` literal and prefix-independent, so every CLI, MCP, init and impor
 - 2026-10-28 doing → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-29 review → done

@@ -1,6 +1,6 @@
 ---
 title: Replace pull with chitty inbox and inbox --pull
-status: review
+status: doing
 created: 2026-10-28
 ---
 
@@ -29,6 +29,8 @@ Changed by the human: pull no longer works as an alias; it only explains what to
 
 Implemented the read-only inbox listing and migration behavior; remaining work is MCP exposure, documentation inventory updates, version refresh, and focused coverage.
 
+Review failed: in a repo with no `project` name, `chitty inbox` and the MCP `inbox` tool hit `assert repo.config.project is not None` and print a bare `AssertionError` traceback, while `inbox --pull` gives "this repository has no project name". Reproduced in a scratch repo. Move the project check into an `inbox.py` function that takes the repo and raises `ChittyError` like `pull` does, so `cli.py` and `mcp.py` stay thin, and add a test. Everything else checks out: listing, hint, JSON, `--pull`, the `pull` migration error, guide, README and PLAN.md. Minor: `inbox --pull --json` silently ignores `--json`.
+
 ## Summary
 
 Replaced importing `pull` with the read-only `inbox` command and explicit `inbox --pull`. Added the shared inbox metadata reader, MCP inbox tool, migration error, hints, managed guide, README and PLAN updates, plus CLI/MCP coverage. Bumped the release version and verified with `make check`.
@@ -38,3 +40,4 @@ Replaced importing `pull` with the read-only `inbox` command and explicit `inbox
 - 2026-10-28 → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-29 review → doing

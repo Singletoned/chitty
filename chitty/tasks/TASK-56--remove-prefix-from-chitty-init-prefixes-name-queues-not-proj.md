@@ -1,6 +1,6 @@
 ---
 title: Remove --prefix from chitty init; prefixes name queues, not projects
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -23,6 +23,8 @@ Remove `--prefix` from the `init` command and its implementation while retaining
 
 Decided with the human. Type-in-ID (bug-01, suggestion-02) was considered and rejected because IDs must be stable; use labels and chitty list filtering instead.
 
+Reviewed: `--prefix` is gone from `init` (Click rejects it), the template hard-codes `TASK`, and the `contexts` config still drives custom prefixes (test covers a `CIRCUIT` default plus `HUMAN`). PLAN.md states the queue rule. No version bump is needed because only new repos see the template change. `make check` passes.
+
 ## Summary
 
 Removed `chitty init --prefix`; new repositories always configure `TASK`. Existing custom default and additional context prefixes remain configuration-driven and are covered by tests. Verified with `make check`.
@@ -32,3 +34,4 @@ Removed `chitty init --prefix`; new repositories always configure `TASK`. Existi
 - 2026-10-28 → todo
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
+- 2026-10-29 review → done
