@@ -57,8 +57,7 @@ def inbox(pull: bool = False) -> list[dict[str, object]] | list[str]:
     repo = _repo()
     if pull:
         return pull_suggestions(repo)
-    assert repo.config.project is not None
-    return list_waiting(repo.config.project)
+    return list_waiting(repo)
 
 
 @_tool("suggest", "Send a suggestion to a project's machine-local inbox.")

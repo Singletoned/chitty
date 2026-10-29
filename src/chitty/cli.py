@@ -178,8 +178,7 @@ def inbox(import_suggestions: bool, as_json: bool) -> None:
         else:
             click.echo("no suggestions waiting", err=True)
         return
-    assert repo.config.project is not None
-    suggestions = list_waiting(repo.config.project)
+    suggestions = list_waiting(repo)
     if as_json:
         _print_json(suggestions)
     elif suggestions:

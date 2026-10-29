@@ -60,12 +60,16 @@ def _is_project_path(project: str) -> bool:
     return "/" in project or project == "." or project.startswith(("~", "."))
 
 
-def pull(repo: Repo) -> list[str]:
-    """Turn claimed suggestions into backlog tasks in one repository."""
+def _project(repo: Repo) -> str:
+    """Return the registered name required for inbox operations."""
     if not repo.config.project:
         raise ChittyError("this repository has no project name")
-    project = repo.config.project
-    assert project is not None
+    return repo.config.project
+
+
+def pull(repo: Repo) -> list[str]:
+    """Turn claimed suggestions into backlog tasks in one repository."""
+    project = _project(repo)
     register_project(project, repo.root)
     cleanup_completed(project)
     task_ids: list[str] = []
@@ -120,9 +124,9 @@ def waiting(project: str) -> list[Path]:
     return sorted(inbox_path(project).glob("suggestion-*.md"))
 
 
-def list_waiting(project: str) -> list[dict[str, object]]:
+def list_waiting(repo: Repo) -> list[dict[str, object]]:
     """Read suggestion metadata without claiming or modifying inbox files."""
-    return [_read_suggestion(path) for path in waiting(project)]
+    return [_read_suggestion(path) for path in waiting(_project(repo))]
 
 
 def _read_suggestion(path: Path) -> dict[str, object]:

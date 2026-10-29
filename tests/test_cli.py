@@ -385,6 +385,15 @@ class TestInbox(CliTestCase):
         self.assertEqual(empty.stdout, "")
         self.assertIn("no suggestions waiting", empty.stderr)
 
+    def test_inbox_without_a_project_name_is_actionable(self):
+        self.run_cli("init")
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace(f'project = "{self.root.name}"\n', ""))
+
+        result = self.run_cli("inbox", exit_code=1)
+
+        self.assertIn("this repository has no project name", result.stderr)
+
     def test_pull_only_explains_the_migration(self):
         self.run_cli("init")
         self.run_cli("suggest", self.root.name, "Waiting", "-d", "Inbox description")

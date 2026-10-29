@@ -40,6 +40,14 @@ class TestMcp(CliTestCase):
             ),
         )
 
+    def test_inbox_without_a_project_name_is_actionable(self):
+        self.run_cli("init")
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace(f'project = "{self.root.name}"\n', ""))
+
+        with self.assertRaisesRegex(ToolError, "this repository has no project name"):
+            call("inbox")
+
     def test_check_and_fix_include_problem_severity(self):
         call("add", title="Warning", description="static/photos/*.jpg")
 
