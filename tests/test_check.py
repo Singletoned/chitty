@@ -59,21 +59,21 @@ class TestCheck(StoreTestCase):
         )
         self.assertTrue(expected_path.exists())
 
-    def test_warns_for_literal_markdown_delimiters(self):
+    def test_warns_only_for_literal_delimiters_formatters_escape(self):
         stored = self.add("Literal delimiters")
         stored.path.write_text(
-            stored.path.read_text().replace("Describe.", "static/photos/*.jpg and snake_case")
+            stored.path.read_text().replace(
+                "Describe.",
+                "static/photos/*.jpg and snake_case and a * b",
+            )
         )
 
         problems = check(self.repo, self.repo.contexts(), [])
 
-        self.assertEqual([problem.severity for problem in problems], ["warning"] * 2)
+        self.assertEqual([problem.severity for problem in problems], ["warning"])
         self.assertEqual(
             [problem.message for problem in problems],
-            [
-                "Description contains literal '*' Markdown delimiter; use backticks for code",
-                "Description contains literal '_' Markdown delimiter; use backticks for code",
-            ],
+            ["Description contains literal '*' Markdown delimiter; use backticks for code"],
         )
 
     def test_does_not_warn_for_markdown_constructs(self):

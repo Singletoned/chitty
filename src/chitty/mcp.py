@@ -205,7 +205,10 @@ def check(context: str | None = None, paths: list[str] | None = None) -> list[di
     repo = _repo()
     contexts = [repo.context(context)] if context else repo.contexts()
     problems = check_repo(repo, contexts, [Path(p) for p in paths or []])
-    return [{"path": str(p.path), "message": p.message} for p in problems]
+    return [
+        {"path": str(problem.path), "message": problem.message, "severity": problem.severity}
+        for problem in problems
+    ]
 
 
 @_tool("fix", "Repair safe task-file problems; reports unresolved problems.")
@@ -218,7 +221,12 @@ def fix(
     return {
         "fixed": [{"path": str(problem.path), "message": problem.message} for problem in fixed],
         "problems": [
-            {"path": str(problem.path), "message": problem.message} for problem in problems
+            {
+                "path": str(problem.path),
+                "message": problem.message,
+                "severity": problem.severity,
+            }
+            for problem in problems
         ],
     }
 

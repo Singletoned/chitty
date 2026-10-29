@@ -40,6 +40,12 @@ class TestMcp(CliTestCase):
             ),
         )
 
+    def test_check_and_fix_include_problem_severity(self):
+        call("add", title="Warning", description="static/photos/*.jpg")
+
+        self.assertEqual(call("check"), self.json("check"))
+        self.assertEqual(call("fix"), self.json("fix"))
+
     def test_same_json_as_cli(self):
         added = call("add", title="Hi", description="x", ac=["One"], label=["cli"])
         self.assertEqual(added, self.json("show", "1"))

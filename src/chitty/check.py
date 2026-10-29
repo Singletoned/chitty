@@ -36,6 +36,15 @@ def errors(problems: Sequence[Problem]) -> list[Problem]:
     return [problem for problem in problems if problem.severity == "error"]
 
 
+def _formatter_escapes(character: str, text: str, index: int) -> bool:
+    """Whether a literal delimiter needs escaping to remain literal Markdown."""
+    before = text[index - 1] if index else ""
+    after = text[index + 1] if index + 1 < len(text) else ""
+    if before.isspace() and after.isspace():
+        return False
+    return not (character == "_" and before.isalnum() and after.isalnum())
+
+
 def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
     """Report literal Markdown delimiters that formatters will escape."""
     fields = [(name, task.section(name)) for name in MARKDOWN_FIELDS]
@@ -47,12 +56,18 @@ def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
     for field, text in fields:
         if text is None:
             continue
+        seen: set[str] = set()
         for token in MARKDOWN.parseInline(text):
             for child in token.children or []:
                 if child.type != "text":
                     continue
-                for character in child.content:
-                    if character in DELIMITERS:
+                for index, character in enumerate(child.content):
+                    if (
+                        character in DELIMITERS
+                        and character not in seen
+                        and _formatter_escapes(character, child.content, index)
+                    ):
+                        seen.add(character)
                         warnings.append(
                             Problem(
                                 path,

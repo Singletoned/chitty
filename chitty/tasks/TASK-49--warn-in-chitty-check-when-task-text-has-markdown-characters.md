@@ -1,6 +1,6 @@
 ---
 title: Warn in chitty check when task text has Markdown characters a formatter will escape
-status: doing
+status: review
 created: 2026-10-28
 ---
 
@@ -29,6 +29,8 @@ Review failed. (1) False positives: the description says to warn for exactly the
 
 Decided with the human: `snake_case` and other words with `_` inside them should not warn. The `snake_case` test should assert no warning.
 
+Addressed review feedback: skip intraword underscores and standalone `*`; collapse warnings per field and delimiter; preserve `severity` in MCP check/fix responses; relax the runtime dependency to `markdown-it-py>=3.0.0`. Added MCP parity coverage and verified with `make check` (153 tests) on 2026-10-29.
+
 ## Summary
 
 Added runtime `markdown-it-py` parsing and advisory warning diagnostics for literal `*` and `_` delimiters. Errors alone now determine `check`, `fix`, and autocommit failure; warnings are printed and included in JSON. Added Markdown and CLI coverage and documented warning severity. Verified with `make check`.
@@ -40,3 +42,4 @@ Added runtime `markdown-it-py` parsing and advisory warning diagnostics for lite
 - 2026-10-28 todo → doing
 - 2026-10-28 doing → review
 - 2026-10-29 review → doing
+- 2026-10-29 doing → review

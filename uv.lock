@@ -151,7 +151,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "click" },
-    { name = "markdown-it-py", specifier = "==3.0.0" },
+    { name = "markdown-it-py", specifier = ">=3.0.0" },
     { name = "mcp", marker = "extra == 'mcp'", specifier = ">=2" },
     { name = "pydantic" },
     { name = "pyyaml" },
