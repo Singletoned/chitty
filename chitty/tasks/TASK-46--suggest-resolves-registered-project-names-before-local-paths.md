@@ -1,6 +1,6 @@
 ---
 title: suggest resolves registered project names before local paths
-status: doing
+status: review
 created: 2026-10-28
 ---
 
@@ -31,6 +31,8 @@ Fixed the review finding: the collision regression now runs from inside the temp
 
 Review failed again: the regression still does not reproduce the bug. `RepoTestCase` creates only `chitty.toml` in `self.root`, with no `chitty/` directory, so after the `chdir` the pre-fix `Path("chitty").is_dir()` is False and the test passes. Verified by running the current tests against `inbox.py` at 1da5b6c^ from an empty directory: all 11 pass. Adding `(self.root / "chitty").mkdir()` before the `chdir` makes it fail before the fix ("no Chitty configuration in chitty") and pass after. `test_bare_unregistered_local_directory_is_an_unknown_project` has the same gap (no same-named directory, no `chdir`), so criterion 3 is not really tested either.
 
+Re-verified the isolated collision regression and full suite with `make check` (152 tests) on 2026-10-29.
+
 ## Summary
 
 Registered project names now take precedence over local directories; only path-shaped arguments are resolved as paths. Added collision, bare-name, and explicit-path coverage; documented the rule in CLI help and README. Confirmed the regression failed before the fix and verified with `make check`.
@@ -44,3 +46,4 @@ Registered project names now take precedence over local directories; only path-s
 - 2026-10-28 review → doing
 - 2026-10-28 doing → review
 - 2026-10-29 review → doing
+- 2026-10-29 doing → review
