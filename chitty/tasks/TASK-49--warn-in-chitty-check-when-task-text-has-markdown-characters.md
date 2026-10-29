@@ -27,6 +27,8 @@ Promoted by the human: add a non-failing warning severity to check and the markd
 
 Review failed. (1) False positives: the description says to warn for exactly the set formatters escape, but every literal `*`/`_` is flagged. Checked mdformat: it escapes `static/photos/*.jpg` but leaves `snake_case`, `depends_on` and `a * b` alone. Prettier also leaves `snake_case` alone. `chitty check` in this repo prints 96 warnings, mostly intraword `_`, and one identical line per character. Narrow the warnings to delimiters a formatter would escape, and collapse repeats to one per field and character. The current test asserts a `snake_case` warning, so it needs a human decision on whether `snake_case` should warn at all. (2) The MCP `check` and `fix` tools in `mcp.py` drop `severity`, so MCP clients cannot tell warnings from errors, and the two front ends diverge. (3) `markdown-it-py==3.0.0` is an exact pin in a library dependency; prefer a lower bound unless there is a reason.
 
+Decided with the human: `snake_case` and other words with `_` inside them should not warn. The `snake_case` test should assert no warning.
+
 ## Summary
 
 Added runtime `markdown-it-py` parsing and advisory warning diagnostics for literal `*` and `_` delimiters. Errors alone now determine `check`, `fix`, and autocommit failure; warnings are printed and included in JSON. Added Markdown and CLI coverage and documented warning severity. Verified with `make check`.
