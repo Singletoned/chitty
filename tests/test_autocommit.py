@@ -130,7 +130,7 @@ class TestAutocommit(CliTestCase):
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
         (self.root / "AGENTS.md").write_text("## Backlog.md Workflow\n\nOld instructions.\n")
-        self.git("add", "backlog", "AGENTS.md")
+        self.git("add", "backlog", "AGENTS.md", "chitty.toml")
         self.git("commit", "--quiet", "-m", "legacy backlog")
 
         self.run_cli("import", "backlog-md")

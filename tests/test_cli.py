@@ -1,7 +1,9 @@
 import json
 import os
+import subprocess
 import tomllib
 from datetime import date
+from pathlib import Path
 
 from click.testing import CliRunner, Result
 
@@ -190,6 +192,23 @@ class TestInit(CliTestCase):
 
 
 class TestImport(CliTestCase):
+    def setUp(self):
+        super().setUp()
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.commit()
+
+    def git(self, *args: str) -> str:
+        result = subprocess.run(
+            ["git", *args], cwd=self.root, capture_output=True, text=True, check=True
+        )
+        return result.stdout
+
+    def commit(self):
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "--allow-empty", "-m", "setup")
+
     def test_import_rejects_generated_parent_missing_from_source(self):
         legacy = self.root / "backlog/tasks"
         legacy.mkdir(parents=True)
@@ -198,6 +217,7 @@ class TestImport(CliTestCase):
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
 
+        self.commit()
         with self.assertRaisesRegex(ValueError, "parent TASK-7: no such task"):
             self.run_cli("import", "backlog-md")
 
@@ -210,6 +230,7 @@ class TestImport(CliTestCase):
             "---\nid: TASK-1\ntitle: Completed\nstatus: Done\n"
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
+        self.commit()
 
         self.run_cli("import", "backlog-md", "--keep-source")
 
@@ -230,6 +251,7 @@ class TestImport(CliTestCase):
             "---\nid: TASK-1\ntitle: Completed\nstatus: Done\n"
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
+        self.commit()
 
         self.run_cli("import", "backlog-md", "--keep-source")
 
@@ -254,6 +276,7 @@ class TestImport(CliTestCase):
             "---\nid: TASK-1\ntitle: Completed\nstatus: Done\n"
             "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
         )
+        self.commit()
 
         self.run_cli("import", "backlog-md", "--keep-source")
 
@@ -273,6 +296,7 @@ class TestImport(CliTestCase):
             "<!-- BACKLOG.MD GUIDELINES END -->\n"
         )
         self.run_cli("init")
+        self.commit()
 
         self.run_cli("import", "backlog-md", "--keep-source")
 
@@ -281,7 +305,7 @@ class TestImport(CliTestCase):
         self.assertNotIn("Backlog.md Workflow", updated)
         self.assertEqual(updated.count("## Chitty"), 1)
 
-    def test_import_requires_a_source_policy_for_untracked_files(self):
+    def write_legacy_task(self) -> Path:
         legacy = self.root / "backlog/tasks"
         legacy.mkdir(parents=True)
         source = legacy / "task-1.md"
@@ -289,27 +313,47 @@ class TestImport(CliTestCase):
             "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
             "## Description\n\nLegacy description.\n"
         )
+        return source
+
+    def test_import_refuses_untracked_files(self):
+        source = self.write_legacy_task()
 
         result = self.run_cli("import", "backlog-md", exit_code=1)
 
-        self.assertIn(str(source), result.stderr)
-        self.assertIn("--remove-source", result.stderr)
-        self.assertIn("--keep-source", result.stderr)
+        self.assertIn("working tree is dirty", result.stderr)
+        self.assertIn("backlog/", result.stderr)
         self.assertTrue(source.exists())
-        self.assertFalse(list((self.root / "chitty/tasks").glob("*.md")))
+        self.assertFalse((self.root / "chitty").exists())
 
-    def test_import_remove_source_deletes_untracked_tasks_but_not_other_files(self):
-        legacy = self.root / "backlog/tasks"
-        legacy.mkdir(parents=True)
-        source = legacy / "task-1.md"
-        source.write_text(
-            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
-            "## Description\n\nLegacy description.\n"
-        )
+    def test_import_refuses_modified_files_outside_the_backlog(self):
+        source = self.write_legacy_task()
+        self.commit()
+        (self.root / "chitty.toml").write_text((self.root / "chitty.toml").read_text() + "\n")
+
+        result = self.run_cli("import", "backlog-md", exit_code=1)
+
+        self.assertIn("working tree is dirty", result.stderr)
+        self.assertIn("chitty.toml", result.stderr)
+        self.assertTrue(source.exists())
+        self.assertFalse((self.root / "chitty").exists())
+
+    def test_import_refuses_outside_a_git_repository(self):
+        self.write_legacy_task()
+        subprocess.run(["rm", "-rf", str(self.root / ".git")], check=True)
+
+        result = self.run_cli("import", "backlog-md", exit_code=1)
+
+        self.assertIn("cannot confirm a clean Git working tree", result.stderr)
+        self.assertIn("not a git repository", result.stderr)
+        self.assertFalse((self.root / "chitty").exists())
+
+    def test_import_removes_tracked_tasks_but_not_other_files(self):
+        source = self.write_legacy_task()
         note = self.root / "backlog/README.md"
         note.write_text("Keep me.\n")
+        self.commit()
 
-        self.run_cli("import", "backlog-md", "--remove-source")
+        self.run_cli("import", "backlog-md")
 
         self.assertFalse(source.exists())
         self.assertTrue(note.exists())
@@ -326,8 +370,9 @@ class TestImport(CliTestCase):
         config.write_text("statuses:\n  - Backburner\n")
         docs = legacy / "docs"
         docs.mkdir()
+        self.commit()
 
-        result = self.run_cli("import", "backlog-md", "--remove-source")
+        result = self.run_cli("import", "backlog-md")
 
         self.assertIn("1 tasks: Backburner -> backlog", result.stdout)
         self.assertNotIn("unknown status", result.stdout)
@@ -335,20 +380,6 @@ class TestImport(CliTestCase):
         self.assertTrue(docs.exists())
         task = self.json("show", "1")
         self.assertEqual(task["status"], "backlog")
-
-    def test_import_rejects_conflicting_source_policies(self):
-        legacy = self.root / "backlog/tasks"
-        legacy.mkdir(parents=True)
-        (legacy / "task-1.md").write_text(
-            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\ncreated_date: '2026-10-20'\n---\n\n"
-            "## Description\n\nLegacy description.\n"
-        )
-
-        result = self.run_cli(
-            "import", "backlog-md", "--remove-source", "--keep-source", exit_code=1
-        )
-
-        self.assertIn("cannot be used together", result.stderr)
 
     def test_import_backlog_md_converts_tasks_and_replaces_agent_block(self):
         legacy = self.root / "backlog/tasks"
@@ -359,6 +390,7 @@ class TestImport(CliTestCase):
         )
         (self.root / "backlog/docs").mkdir()
         (self.root / "AGENTS.md").write_text("## Backlog.md Workflow\n\nOld instructions.\n")
+        self.commit()
 
         result = self.run_cli("import", "backlog-md", "--keep-source")
 

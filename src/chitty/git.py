@@ -39,40 +39,26 @@ def move(root: Path, old: Path, new: Path) -> None:
         _git(root, "mv", "--", relative, str(new.relative_to(root)))
 
 
-def source_problems(root: Path, paths: Sequence[Path]) -> list[Path]:
-    """Return source paths that are untracked or differ from HEAD/index."""
-    relative = [str(path.relative_to(root)) for path in paths]
+def require_clean(root: Path) -> None:
+    """Refuse to continue unless the worktree has no changes or untracked files."""
     try:
-        tracked = set(_git(root, "ls-files", "--", *relative).splitlines())
-        status = _git(root, "status", "--porcelain", "--no-renames", "--", *relative)
-    except ChittyError:
-        return list(paths)
-    changed = {line[3:] for line in status.splitlines() if len(line) > 3}
-    return [
-        path
-        for path, name in zip(paths, relative, strict=True)
-        if name not in tracked or name in changed
-    ]
+        status = _git(root, "status", "--porcelain", "--no-renames")
+    except ChittyError as error:
+        raise ChittyError(f"cannot confirm a clean Git working tree: {error}") from error
+    if status:
+        raise ChittyError(
+            f"working tree is dirty in {root}; commit or stash these first:\n{status.rstrip()}"
+        )
 
 
-def remove_sources(root: Path, paths: Sequence[Path], force: bool) -> dict[Path, tuple[bytes, str]]:
+def remove_sources(root: Path, paths: Sequence[Path]) -> dict[Path, tuple[bytes, str]]:
     """Remove sources, retaining enough state to restore them after a failed import."""
     originals = {path: (path.read_bytes(), "") for path in paths}
     relative = [str(path.relative_to(root)) for path in paths]
-    try:
-        patches = _git(root, "diff", "--cached", "--binary", "--", *relative)
-        for path in paths:
-            originals[path] = (originals[path][0], patches)
-        arguments = ("rm", "-f", "--", *relative) if force else ("rm", "--", *relative)
-        _git(root, *arguments)
-    except ChittyError:
-        for path in paths:
-            path.unlink(missing_ok=True)
-        if force:
-            for path in originals:
-                path.unlink(missing_ok=True)
-        else:
-            raise
+    patches = _git(root, "diff", "--cached", "--binary", "--", *relative)
+    for path in paths:
+        originals[path] = (originals[path][0], patches)
+    _git(root, "rm", "--quiet", "--", *relative)
     return originals
 
 

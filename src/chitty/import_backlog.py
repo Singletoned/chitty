@@ -13,7 +13,6 @@ from typing import Any, cast
 import yaml
 
 from chitty import git, ids
-from chitty.errors import ChittyError
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
 from chitty.store import Change, Context, Repo, StoredTask, guide
 
@@ -160,10 +159,10 @@ def import_directory(
     repo: Repo,
     destination: Context,
     agents: Path | None = None,
-    remove_source: bool = False,
     keep_source: bool = False,
 ) -> list[str]:
     """Convert a legacy backlog after all source files validate successfully."""
+    git.require_clean(repo.root)
     prefix = destination.prefix
     locations = (
         ("tasks", False, False),
@@ -171,8 +170,6 @@ def import_directory(
         ("completed", False, True),
         ("archive", False, True),
     )
-    if remove_source and keep_source:
-        raise ChittyError("--remove-source and --keep-source cannot be used together")
     config_path = source / "config.yml"
     declared_statuses = _declared_statuses(config_path)
     converted: list[ConvertedTask] = []
@@ -216,14 +213,6 @@ def import_directory(
     ]
     retained = [_without_deleted_references(item, deleted_ids) for item in retained]
     _validate_relationships(retained)
-    problems = git.source_problems(repo.root, source_paths)
-    if problems and not (remove_source or keep_source):
-        names = "\n".join(str(path) for path in problems)
-        raise ChittyError(
-            f"imported source files are untracked or dirty:\n{names}\n"
-            "choose --remove-source to delete them anyway or --keep-source to leave all "
-            "source files"
-        )
     sources_to_remove = [] if keep_source else source_paths
     removed_sources: dict[Path, tuple[bytes, str]] = {}
     stored: list[StoredTask] = []
@@ -260,7 +249,7 @@ def import_directory(
             else:
                 previous_agents = None
         if sources_to_remove:
-            removed_sources = git.remove_sources(repo.root, sources_to_remove, remove_source)
+            removed_sources = git.remove_sources(repo.root, sources_to_remove)
         if stored:
             paths = [*written_paths, *sources_to_remove]
             if agent_path and previous_agents is not None:

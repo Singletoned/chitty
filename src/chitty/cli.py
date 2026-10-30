@@ -213,10 +213,13 @@ def import_() -> None:
 
 @import_.command("backlog-md")
 @click.option("--context", default=None, help="Destination context (default: repository default).")
-@click.option("--remove-source", is_flag=True, help="Delete dirty or untracked imported files too.")
 @click.option("--keep-source", is_flag=True, help="Leave all imported source files in place.")
-def import_backlog_md(context: str | None, remove_source: bool, keep_source: bool) -> None:
-    """Convert the local backlog/ directory and remove clean tracked sources."""
+def import_backlog_md(context: str | None, keep_source: bool) -> None:
+    """Convert the local backlog/ directory and remove its imported sources.
+
+    Refuses to run unless the Git working tree is clean, untracked files
+    included, so Git history can restore anything the import removes.
+    """
     repo = _repo()
     selected = repo.context(context or repo.config.default_context)
     if repo.tasks(selected, "all"):
@@ -224,9 +227,7 @@ def import_backlog_md(context: str | None, remove_source: bool, keep_source: boo
     source = repo.root / "backlog"
     if not source.is_dir():
         raise ChittyError(f"{source} does not exist")
-    for report in import_directory(
-        source, repo, selected, repo.root / "AGENTS.md", remove_source, keep_source
-    ):
+    for report in import_directory(source, repo, selected, repo.root / "AGENTS.md", keep_source):
         click.echo(report)
 
 
