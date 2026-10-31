@@ -1,6 +1,6 @@
 ---
 title: Replace pull with chitty inbox and inbox --pull
-status: review
+status: done
 created: 2026-10-28
 ---
 
@@ -33,9 +33,11 @@ Review failed: in a repo with no `project` name, `chitty inbox` and the MCP `inb
 
 Addressed review feedback: inbox listing now resolves its project name through `inbox.py`, so both the CLI and MCP tool raise `ChittyError` with actionable guidance when it is absent. Added CLI and MCP regressions; verified with `make check` (155 tests) on 2026-10-29.
 
+Reviewed: confirmed read-only inbox listing, JSON, empty and waiting hints, import behavior, migration-only `pull`, shared no-project errors for CLI/MCP, and the required guide and documentation updates. Focused CLI/MCP/inbox tests and `make check` pass.
+
 ## Summary
 
-Replaced importing `pull` with the read-only `inbox` command and explicit `inbox --pull`. Added the shared inbox metadata reader, MCP inbox tool, migration error, hints, managed guide, README and PLAN updates, plus CLI/MCP coverage. Bumped the release version and verified with `make check`.
+Reviewed independently: all acceptance criteria verified in code, tests, MCP, guide, README, and PLAN. `make check` passes.
 
 ## History
 
@@ -44,3 +46,4 @@ Replaced importing `pull` with the read-only `inbox` command and explicit `inbox
 - 2026-10-28 doing → review
 - 2026-10-29 review → doing
 - 2026-10-29 doing → review
+- 2026-10-31 review → done
