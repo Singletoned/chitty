@@ -1,6 +1,6 @@
 ---
 title: Refuse `chitty import backlog-md` when the Git working tree is dirty
-status: review
+status: done
 created: 2026-10-30
 ---
 
@@ -23,8 +23,15 @@ Add `git.require_clean(root)` that runs `git status --porcelain` and raises `Chi
 
 Outside a repo the error reads `cannot confirm a clean Git working tree: autocommit failed: ...`; the `autocommit failed` prefix comes from `git._git` and is shared by every Git call.
 
+Reviewed: confirmed `git status --porcelain` runs before all import writes, reports modified and untracked paths, fails outside Git, and `--remove-source` is absent. Verified import help, PLAN and README plus all `TestImport` cases; `make check` passes.
+
+## Summary
+
+Reviewed independently: verified all clean-worktree safeguards, source-removal API change, documentation, and import tests. `make check` passes.
+
 ## History
 
 - 2026-10-30 → todo
 - 2026-10-30 todo → doing
 - 2026-10-30 doing → review
+- 2026-10-31 review → done
