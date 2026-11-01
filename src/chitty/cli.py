@@ -449,7 +449,9 @@ def edit(
         notes=notes,
         summary=summary,
     )
-    _report(repo.edit(repo.resolve(task_id), changes), as_json, "updated")
+    change = repo.edit(repo.resolve(task_id), changes)
+    escalated = status == "doing" and change.task.task.frontmatter.status == "blocked"
+    _report(change, as_json, "escalated to human review" if escalated else "updated")
 
 
 @cli.command()

@@ -260,6 +260,12 @@ class Task:
         sections[index] = _Section(NOTES, (*old[: last + 1], "\n", *lines, *old[last + 1 :]))
         return self._rebuild(sections=sections)
 
+    def transitions(self) -> list[tuple[str | None, str]]:
+        """History entries as (old, new) status pairs, oldest first."""
+        history = self.section(HISTORY) or ""
+        matches = (HISTORY_LINE_RE.fullmatch(line) for line in history.splitlines())
+        return [(match["old"], match["new"]) for match in matches if match]
+
     def with_history(self, when: date, old: str | None, new: str) -> "Task":
         """Append a status transition to the tool-managed History section."""
         entry = f"- {when.isoformat()}"

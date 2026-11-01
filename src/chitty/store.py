@@ -37,6 +37,8 @@ ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
 GUIDE_HEADING = "## Chitty"
 BACKLOG_DESCRIPTION = "This ticket needs refining."
+# Failed reviews (review → doing) before a task is escalated to a human.
+REVIEW_FAILURE_LIMIT = 3
 
 Which = Literal["active", "archived", "all"]
 
@@ -281,6 +283,8 @@ class Repo:
             raise ChittyError("setting status done requires -s review first")
         if edit.status == "doing" and previous_status == "review" and not (edit.note or edit.notes):
             raise ChittyError("moving review → doing requires --note with the reason")
+        if edit.status == "doing" and previous_status == "review":
+            edit = _escalate_repeated_failure(stored.task, edit)
         edit = replace(
             edit,
             depends_on=self._references(edit.depends_on),
@@ -495,6 +499,22 @@ class Repo:
     def _write(self, path: Path, text: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
+
+
+def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:
+    """Turn the limit-th failed review since the last block into a block for a human."""
+    failures = 1
+    for old, new in reversed(task.transitions()):
+        if new == "blocked":
+            break
+        failures += (old, new) == ("review", "doing")
+    if failures < REVIEW_FAILURE_LIMIT:
+        return edit
+    reason = (
+        f"Escalated to human review: failed review {failures} times. "
+        "A human should decide how to proceed, then unblock it."
+    )
+    return replace(edit, status="blocked", owner="human", notes=(*edit.notes, reason))
 
 
 def _unique_tasks(tasks: Sequence[StoredTask]) -> tuple[StoredTask, ...]:

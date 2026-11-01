@@ -271,6 +271,13 @@ Context directory is `chitty/<name>/`. Not configurable. `review` defaults to
 `true`; with it enabled, only `review → done` can complete a task. Set it to
 `false` to make review optional.
 
+Agents reviewing each other's work can fail a task back and forth without
+converging. The third `review → doing` since the task was last `blocked` is
+applied as `review → blocked` with owner `human` and a note giving the count,
+alongside the reviewer's own note. Unblocking starts the count again. The
+limit is `REVIEW_FAILURE_LIMIT` in `store.py`, not configuration, until a
+repository needs a different one.
+
 When set, `autoformat` is parsed without a shell and run on existing files
 written by each operation. The order is `fix`, `autoformat`, then `autocommit`;
 unresolved fixes prevent the latter two steps. `archive = "move"` is the
@@ -404,6 +411,7 @@ task files. `chitty --help` is the full command reference.
   Never review a ticket you worked on: review promptly, not at merge-request
   time. Pass with `-s done --note "Reviewed: ..."`; fail with
   `-s doing --note "reason"`. Create new tickets for out-of-scope findings.
+  The third failed review sets `blocked` and owner `human` instead.
 - Set `-s done` when every criterion is ticked and the work is verified.
 - End commits for task work with `Task: <ID>` lines, using the ticket's own ID
   (e.g. `Task: TASK-12`), so `git log --grep <ID>` finds a ticket's code.

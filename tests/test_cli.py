@@ -596,6 +596,32 @@ class TestReviewStatus(CliTestCase):
         self.run_cli("edit", "1", "-s", "done", "--note", "Reviewed: ready.")
         self.assertEqual(self.json("show", "1")["status"], "done")
 
+    def fail_review(self, reason):
+        self.run_cli("edit", "1", "-s", "review")
+        return self.run_cli("edit", "1", "-s", "doing", "--note", reason)
+
+    def test_third_failed_review_escalates_to_a_human(self):
+        self.run_cli("add", "Bounce", "-d", "x")
+        self.fail_review("First.")
+        self.fail_review("Second.")
+        self.assertEqual(self.json("show", "1")["status"], "doing")
+        escalated = self.fail_review("Third.")
+        self.assertIn("escalated to human review TASK-1", escalated.stdout)
+        task = self.json("show", "1")
+        self.assertEqual((task["status"], task["owner"]), ("blocked", "human"))
+        notes = task["notes"]
+        self.assertIn("Third.", notes)
+        self.assertIn("failed review 3 times", notes)
+        self.assertTrue(task["history"].endswith("review → blocked"))
+
+    def test_escalation_count_restarts_after_a_human_unblocks(self):
+        self.run_cli("add", "Bounce", "-d", "x")
+        for reason in ("First.", "Second.", "Third."):
+            self.fail_review(reason)
+        self.run_cli("edit", "1", "-s", "doing", "--note", "Human: try again.")
+        self.fail_review("Fourth.")
+        self.assertEqual(self.json("show", "1")["status"], "doing")
+
     def test_review_can_be_disabled(self):
         config = self.root / "chitty.toml"
         config.write_text(
