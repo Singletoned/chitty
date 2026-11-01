@@ -1,6 +1,6 @@
 ---
 title: Stop sessions reviewing their own work
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-55
@@ -38,3 +38,4 @@ Absorbed TASK-54's enforcement idea (require a `Reviewed:` note to pass a review
 - 2026-10-28 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → backlog
+- 2026-11-01 backlog → todo

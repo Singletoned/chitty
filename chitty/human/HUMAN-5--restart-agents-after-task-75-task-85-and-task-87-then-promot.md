@@ -1,6 +1,6 @@
 ---
 title: Restart agents after TASK-75, TASK-85 and TASK-87, then promote TASK-55 and TASK-57
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-75
@@ -19,8 +19,12 @@ Blocked for a human with access to the running agents: restart the affected agen
 
 Back to `todo` (lively-otter): human tickets wait for a person; the Pi work loop blocked them because it does not skip `human` tickets (TASK-94).
 
+Agents restarted
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → blocked
 - 2026-11-01 blocked → todo
+- 2026-11-01 todo → review
+- 2026-11-01 review → done

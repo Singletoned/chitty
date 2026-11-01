@@ -1,6 +1,6 @@
 ---
 title: Record the time and actor of every ticket change
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-75
@@ -31,3 +31,4 @@ Held until agents restart with session identity (HUMAN-5).
 - 2026-10-28 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → backlog
+- 2026-11-01 backlog → todo
