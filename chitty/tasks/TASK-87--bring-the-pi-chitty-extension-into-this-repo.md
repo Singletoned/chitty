@@ -1,6 +1,6 @@
 ---
 title: Bring the Pi `/chitty` extension into this repo
-status: blocked
+status: todo
 priority: high
 created: 2026-11-01
 ---
@@ -22,8 +22,11 @@ Split (2026-11-01): switching the extension to `chitty next` is a follow-up tick
 
 Blocked by `TASK-82` review: its stale-install upgrade acceptance criterion relies on the repository upgrade path.
 
+Unblocked (2026-11-01): TASK-82 passed review, so the upgrade path this ticket's stale-install criterion relies on exists.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → blocked
+- 2026-11-01 blocked → todo
