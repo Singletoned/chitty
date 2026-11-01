@@ -28,6 +28,8 @@ Trace repository task discovery, ID allocation, and the Git wrapper. Design a si
 
 Absorbed TASK-59 (claims from `doing/` branches), which is archived. Its open questions are answered here: task state from other branches shows in `list`, `show` and `next`; remote-tracking branches count; reading every branch makes a claim visible without relying on branch names. ID allocation is left to TASK-61 (IDs only on `main`), the earlier design agreed with the human: scanning branches cannot see uncommitted work or unfetched remotes, so it reduces collisions but cannot prevent them.
 
+For whoever resumes this (the claiming agent was stopped before committing code): the Plan predates the removal of the ID-allocation criterion. Skip cross-branch ID allocation; that is TASK-61 (IDs only on `main`).
+
 ## History
 
 - 2026-11-01 → backlog
