@@ -1,6 +1,6 @@
 ---
 title: See tasks on every branch, from Git history
-status: doing
+status: blocked
 priority: high
 parent: TASK-58
 created: 2026-11-01
@@ -17,12 +17,12 @@ A task's current state is its most recent change, not its furthest status: a fai
 ## Acceptance Criteria
 
 - [ ] `chitty list`, `show` and `next` report each task's most recently changed state across local and remote-tracking branches, naming the branch when it is not the current one
-- [ ] Reading every branch stays fast on a repository with many branches (one `git cat-file --batch` process, not one command per file); a test covers a task changed only on another branch
-- [ ] `PLAN.md` records the revised principle and the `autocommit` requirement for worktrees
+- [x] Reading every branch stays fast on a repository with many branches (one `git cat-file --batch` process, not one command per file); a test covers a task changed only on another branch
+- [x] `PLAN.md` records the revised principle and the `autocommit` requirement for worktrees
 
 ## Plan
 
-Trace repository task discovery, ID allocation, and the Git wrapper. Design a single batched Git read over branch refs that overlays committed task versions by the commit that last touched each file, while preserving direct reads from the current worktree. Add isolated repository tests for a task that changes only on another branch and for cross-branch ID allocation; then update `PLAN.md` with the branch-state and worktree-autocommit decisions.
+Trace repository task discovery, `list`/`show`, and Git access; then implement a batched read of committed task files across local and remote-tracking refs that selects each task by its latest file-changing commit, while retaining current-worktree files. Add isolated Git-repository tests for a task changed only on another branch, update `PLAN.md`, run the focused tests and `make check`, and tick each acceptance criterion.
 
 ## Notes
 
@@ -30,8 +30,11 @@ Absorbed TASK-59 (claims from `doing/` branches), which is archived. Its open qu
 
 For whoever resumes this (the claiming agent was stopped before committing code): the Plan predates the removal of the ID-allocation criterion. Skip cross-branch ID allocation; that is TASK-61 (IDs only on `main`).
 
+Implemented and verified cross-branch `list`/`show` reads, batched blob loading, branch attribution, and the revised plan. Acceptance criterion 1 also requires `chitty next`, but that command is TASK-76, which remains backlog and depends on TASK-70, TASK-74 and TASK-75. Resume TASK-84 after TASK-76 is actionable, or split the `next` assertion from this ticket.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → doing
+- 2026-11-01 doing → blocked

@@ -11,10 +11,13 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
 
 - The files are the truth. No database, no index, no cache. A directory scan
   is fast enough for thousands of tasks.
-- One task, one file, one writer at a time. No locking, no cross-branch
-  scanning, no automatic conflict repair. If you want a task from another
-  branch, merge the branch. IDs are sequential; task creation is expected to
-  be centralised (one agent or human), so we assume parallel branches don't
+- One task, one file, one writer at a time. No locking or automatic conflict
+  repair. Task reads use committed state from every local and remote-tracking
+  Git branch, selecting each task's most recently changed version; uncommitted
+  files in the current worktree override that state. Worktrees must therefore
+  use `autocommit = true` (or commit every Chitty write) so other branches can
+  see their task state. IDs are sequential; task creation is expected to be
+  centralised (one agent or human), so we assume parallel branches don't
   collide. `check` reports it if they do.
 - Simple first. Add complexity when real-world use shows it is needed, not
   before.

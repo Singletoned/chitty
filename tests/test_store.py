@@ -1,3 +1,5 @@
+import os
+import subprocess
 from datetime import date
 
 from chitty.errors import ChittyError
@@ -55,6 +57,40 @@ class TestStore(StoreTestCase):
         self.add("Password", context=self.human)
         self.assertEqual(
             self.add("Blocked", depends_on=["HUMAN-1"]).task.frontmatter.depends_on, ["HUMAN-1"]
+        )
+
+    def test_reads_newer_task_state_from_another_branch(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("branch", "-M", "main")
+        stored = self.add("One")
+        self.commit("main task", "2026-10-23T00:00:00+00:00")
+        self.git("checkout", "--quiet", "-b", "other")
+        self.repo.edit(stored.id, Edit(status="doing"))
+        self.commit("claim task", "2026-10-24T00:00:00+00:00")
+        self.git("checkout", "--quiet", "main")
+
+        task = Repo.open(self.root).find(stored.id)
+
+        self.assertEqual(task.task.frontmatter.status, "doing")
+        self.assertEqual(task.branch, "other")
+
+    def git(self, *args: str) -> None:
+        subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
+
+    def commit(self, message: str, timestamp: str) -> None:
+        environment = {
+            **os.environ,
+            "GIT_AUTHOR_DATE": timestamp,
+            "GIT_COMMITTER_DATE": timestamp,
+        }
+        subprocess.run(["git", "add", "--all"], cwd=self.root, check=True, env=environment)
+        subprocess.run(
+            ["git", "commit", "--quiet", "-m", message],
+            cwd=self.root,
+            check=True,
+            env=environment,
         )
 
     def test_find_and_resolve(self):

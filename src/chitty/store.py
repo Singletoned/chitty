@@ -63,6 +63,7 @@ class StoredTask:
     path: Path
     archived: bool
     task: Task
+    branch: str | None = None
 
     @property
     def slug(self) -> str:
@@ -74,6 +75,7 @@ class StoredTask:
             "context": self.context,
             "archived": self.archived,
             "path": str(self.path),
+            **({"branch": self.branch} if self.branch else {}),
             **self.task.as_dict(),
         }
 
@@ -164,6 +166,7 @@ class Repo:
     def __init__(self, root: Path, config: RepoConfig) -> None:
         self.root = root
         self.config = config
+        self._historical_files: list[git.HistoricalFile] | None = None
 
     @classmethod
     def open(cls, root: Path) -> "Repo":
@@ -200,10 +203,48 @@ class Repo:
     def tasks(self, context: Context, which: Which) -> list[StoredTask]:
         found: list[StoredTask] = []
         if which in ("active", "all"):
-            found += [self._load(context, p, False) for p in self._files(context, False)]
+            found += self._tasks_in_location(context, False)
         if which in ("archived", "all"):
-            found += [self._load(context, p, True) for p in self._files(context, True)]
+            found += self._tasks_in_location(context, True)
         return sorted(found, key=lambda t: t.id)
+
+    def _tasks_in_location(self, context: Context, archived: bool) -> list[StoredTask]:
+        local = [self._load(context, path, archived) for path in self._files(context, archived)]
+        directory = context.archive_directory if archived else context.directory
+        relative_directory = directory.relative_to(self.root)
+        historical: dict[TaskId, tuple[StoredTask, int]] = {}
+        for file in self._history():
+            if file.path.parent != relative_directory:
+                continue
+            try:
+                task_id, _ = ids.parse_filename(file.path.name)
+                task = parse(file.content)
+            except (ids.IdError, TaskError) as error:
+                raise ChittyError(f"{file.ref}:{file.path}: {error}") from None
+            if task_id.prefix != context.prefix:
+                continue
+            previous = historical.get(task_id)
+            if previous is None or file.committed_at > previous[1]:
+                historical[task_id] = (
+                    StoredTask(
+                        task_id, context.name, self.root / file.path, archived, task, file.ref
+                    ),
+                    file.committed_at,
+                )
+        tasks = {task_id: stored for task_id, (stored, _) in historical.items()}
+        dirty = git.dirty_paths(self.root, relative_directory)
+        current_branch = git.current_branch(self.root)
+        for stored in local:
+            relative_path = stored.path.relative_to(self.root)
+            previous = tasks.get(stored.id)
+            if relative_path in dirty or previous is None or previous.branch == current_branch:
+                tasks[stored.id] = stored
+        return list(tasks.values())
+
+    def _history(self) -> list[git.HistoricalFile]:
+        if self._historical_files is None:
+            self._historical_files = git.historical_files(self.root, Path(BACKLOG_DIR))
+        return self._historical_files
 
     def all_tasks(self) -> list[StoredTask]:
         return [t for context in self.contexts() for t in self.tasks(context, "all")]
@@ -211,18 +252,17 @@ class Repo:
     def find(self, task_id: TaskId) -> StoredTask:
         context = self.context_of(task_id)
         matches = [
-            (path, archived)
+            task
             for archived in (False, True)
-            for path in self._files(context, archived)
-            if ids.parse_filename(path.name)[0] == task_id
+            for task in self._tasks_in_location(context, archived)
+            if task.id == task_id
         ]
         if not matches:
             raise ChittyError(f"no task {task_id} in {context.directory}")
         if len(matches) > 1:
-            paths = ", ".join(str(p) for p, _ in matches)
+            paths = ", ".join(str(task.path) for task in matches)
             raise ChittyError(f"{task_id} is used by more than one file: {paths}")
-        path, archived = matches[0]
-        return self._load(context, path, archived)
+        return matches[0]
 
     def check_dependencies(self, references: Sequence[str]) -> None:
         for reference in references:

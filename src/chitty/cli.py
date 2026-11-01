@@ -349,6 +349,8 @@ def list_(
         line += f"  {fm.title}"
         if fm.labels:
             line += f"  [{','.join(sorted(fm.labels))}]"
+        if stored.branch:
+            line += f"  ({stored.branch})"
         click.echo(line)
 
 
@@ -381,6 +383,8 @@ def _format(stored: StoredTask) -> str:
         elif value is not None:
             lines.append(f"{key}: {value}")
     lines.append(f"path: {stored.path}")
+    if stored.branch:
+        lines.append(f"branch: {stored.branch}")
     for name in SECTION_ORDER:
         if name == ACCEPTANCE_CRITERIA:
             criteria = stored.task.criteria

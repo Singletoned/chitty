@@ -2,9 +2,20 @@
 
 import subprocess
 from collections.abc import Sequence
+from dataclasses import dataclass
 from pathlib import Path
 
 from chitty.errors import ChittyError
+
+
+@dataclass(frozen=True)
+class HistoricalFile:
+    """A file from the newest committed version visible on a Git ref."""
+
+    path: Path
+    content: str
+    ref: str
+    committed_at: int
 
 
 def commit(root: Path, paths: Sequence[Path], message: str) -> None:
@@ -76,6 +87,156 @@ def restore_sources(root: Path, originals: dict[Path, tuple[bytes, str]]) -> Non
             _apply_cached(root, patch)
     except ChittyError:
         pass
+
+
+def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
+    """Read the latest committed version of every file below ``directory``.
+
+    Refs are enumerated once, tree entries are read once per ref, and every
+    selected blob is fetched through one ``git cat-file --batch`` process.
+    The caller overlays uncommitted worktree files separately.
+    """
+    try:
+        refs = [
+            line.partition("\t")[0]
+            for line in _git(
+                root,
+                "for-each-ref",
+                "--format=%(refname)%09%(symref)",
+                "refs/heads",
+                "refs/remotes",
+            ).splitlines()
+            if not line.partition("\t")[2]
+        ]
+        if not refs:
+            return []
+        changed = _latest_changes(root, refs, directory)
+        blobs = _tree_blobs(root, refs, directory)
+    except ChittyError:
+        return []
+
+    selected = [(path, commit, committed_at) for path, (commit, committed_at) in changed.items()]
+    contents = _read_blobs(root, [(f"{commit}:{path}", path) for path, commit, _ in selected])
+    files: list[HistoricalFile] = []
+    for path, commit, committed_at in selected:
+        result = contents.get((f"{commit}:{path}", path))
+        if result is None:
+            continue
+        blob, content = result
+        candidates = blobs.get(path, ())
+        matching = [ref for ref, object_id in candidates if object_id == blob]
+        if matching:
+            files.append(HistoricalFile(path, content, _display_ref(matching[0]), committed_at))
+    return files
+
+
+def current_branch(root: Path) -> str | None:
+    """Return the checked-out branch, or ``None`` outside Git or when detached."""
+    try:
+        branch = _git(root, "branch", "--show-current").strip()
+    except ChittyError:
+        return None
+    return branch or None
+
+
+def dirty_paths(root: Path, directory: Path) -> set[Path]:
+    """Return changed or untracked paths below ``directory`` in this worktree."""
+    try:
+        lines = _git(
+            root, "status", "--porcelain", "--untracked-files=all", "--", str(directory)
+        ).splitlines()
+    except ChittyError:
+        return set()
+    return {Path(line[3:]) for line in lines if len(line) > 3}
+
+
+def _latest_changes(
+    root: Path, refs: Sequence[str], directory: Path
+) -> dict[Path, tuple[str, int]]:
+    output = _git(
+        root,
+        "log",
+        "--no-renames",
+        "--format=%H%x09%ct",
+        "--name-only",
+        *refs,
+        "--",
+        str(directory),
+    )
+    result: dict[Path, tuple[str, int]] = {}
+    commit = ""
+    timestamp = 0
+    for line in output.splitlines():
+        if "\t" in line:
+            commit, _, value = line.partition("\t")
+            timestamp = int(value)
+        elif line:
+            path = Path(line)
+            previous = result.get(path)
+            if previous is None or timestamp > previous[1]:
+                result[path] = (commit, timestamp)
+    return result
+
+
+def _tree_blobs(
+    root: Path, refs: Sequence[str], directory: Path
+) -> dict[Path, list[tuple[str, str]]]:
+    result: dict[Path, list[tuple[str, str]]] = {}
+    for ref in refs:
+        output = _git(root, "ls-tree", "-r", "--full-tree", ref, "--", str(directory))
+        for line in output.splitlines():
+            metadata, _, filename = line.partition("\t")
+            _, kind, object_id = metadata.split()
+            if kind == "blob":
+                result.setdefault(Path(filename), []).append((ref, object_id))
+    return result
+
+
+def _read_blobs(
+    root: Path, objects: Sequence[tuple[str, Path]]
+) -> dict[tuple[str, Path], tuple[str, str]]:
+    if not objects:
+        return {}
+    process = subprocess.Popen(
+        ["git", "cat-file", "--batch"],
+        cwd=root,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    assert process.stdin is not None
+    assert process.stdout is not None
+    process.stdin.write("".join(f"{object_id}\n" for object_id, _ in objects).encode())
+    process.stdin.close()
+    result: dict[tuple[str, Path], tuple[str, str]] = {}
+    for object_id, path in objects:
+        header = process.stdout.readline().decode().rstrip("\n")
+        parts = header.split()
+        if len(parts) == 2 and parts[1] == "missing":
+            continue
+        if len(parts) != 3:
+            raise ChittyError(f"cannot read Git object {object_id}: {header}")
+        returned, kind, size = parts
+        if kind != "blob":
+            raise ChittyError(f"Git object {object_id} is not a blob")
+        content = process.stdout.read(int(size))
+        process.stdout.read(1)
+        result[(object_id, path)] = (returned, content.decode())
+    stderr = process.stderr.read().decode() if process.stderr is not None else ""
+    returncode = process.wait()
+    process.stdout.close()
+    if process.stderr is not None:
+        process.stderr.close()
+    if returncode != 0:
+        raise ChittyError(f"cannot read historical task files: {stderr.strip()}")
+    return result
+
+
+def _display_ref(ref: str) -> str:
+    for prefix in ("refs/heads/", "refs/remotes/"):
+        if ref.startswith(prefix):
+            return ref.removeprefix(prefix)
+    return ref
 
 
 def deleted_paths(root: Path) -> list[Path]:
