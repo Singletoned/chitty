@@ -1,6 +1,6 @@
 ---
 title: Bring the Pi `/chitty` extension into this repo
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -34,6 +34,8 @@ Review failed: the installer does not support Pi agent directories configured th
 
 Resolved the review finding: `PI_CODING_AGENT_DIR` now selects the Pi agent directory for both settings and extension installation. Added a regression test that failed before the fix. Verified with `uv run python -m unittest tests.test_actor tests.test_pi_extension` and `make check`.
 
+Reviewed: independent fix `f0d98ea` resolves the documented `PI_CODING_AGENT_DIR` override before both settings and extension paths, with regression coverage for installing into a custom agent directory. Verified the focused regression and `make check`.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -44,3 +46,4 @@ Resolved the review finding: `PI_CODING_AGENT_DIR` now selects the Pi agent dire
 - 2026-11-01 doing → review
 - 2026-11-01 review → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
