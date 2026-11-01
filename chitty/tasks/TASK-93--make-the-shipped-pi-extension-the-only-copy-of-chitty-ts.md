@@ -1,6 +1,6 @@
 ---
 title: Make the shipped Pi extension the only copy of `chitty.ts`
-status: review
+status: doing
 priority: high
 created: 2026-11-01
 ---
@@ -30,6 +30,8 @@ Returning to `doing`: the shipped extension changes existing installations throu
 
 Added the required patch version bump for the `chitty init`-installed extension; reran `make format`, `make check`, and `npm test`.
 
+Review failed: the continuation-stop regression test covers only the no-new-assistant-response path. Add tests that exercise stopping after `error` and `aborted` assistant turns, then return the ticket to review.
+
 ## History
 
 - 2026-11-01 → todo
@@ -37,3 +39,4 @@ Added the required patch version bump for the `chitty init`-installed extension;
 - 2026-11-01 doing → review
 - 2026-11-01 review → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → doing
