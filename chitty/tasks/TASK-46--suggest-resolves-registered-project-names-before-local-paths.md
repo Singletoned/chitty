@@ -1,6 +1,6 @@
 ---
 title: suggest resolves registered project names before local paths
-status: review
+status: done
 owner: human
 created: 2026-10-28
 ---
@@ -42,9 +42,11 @@ Human: fix it myself (picked up after escalation). Both collision tests will chd
 
 Fixed the recurring review finding: a shared helper creates `self.root / "chitty"` and `chdir`s into it, used by both the registered-name and bare-unregistered tests. Ran `test_inbox.py` from an empty directory against `inbox.py` at `1da5b6c^`: both fail with `no Chitty configuration in chitty`. With the fix all 11 pass; `make check` passes (158 tests).
 
+Reviewed: confirmed both collision tests now enter a temporary repository containing `chitty/`; each fails independently against the pre-fix implementation and passes with the fix. Verified project-name precedence, path recognition, docs and help. `make check` passes.
+
 ## Summary
 
-Registered project names now take precedence over local directories; only path-shaped arguments are resolved as paths. Added collision, bare-name, and explicit-path coverage; documented the rule in CLI help and README. Confirmed the regression failed before the fix and verified with `make check`.
+Reviewed independently: confirmed the regressions reproduce the original path-resolution bug and all acceptance criteria are met. `make check` passes.
 
 ## History
 
@@ -60,3 +62,4 @@ Registered project names now take precedence over local directories; only path-s
 - 2026-11-01 doing → blocked
 - 2026-11-01 blocked → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
