@@ -1,6 +1,6 @@
 ---
 title: Make the shipped Pi extension the only copy of `chitty.ts`
-status: todo
+status: doing
 priority: high
 created: 2026-11-01
 ---
@@ -16,6 +16,13 @@ created: 2026-11-01
 - [ ] `chitty init` does not silently discard local edits to the installed `chitty.ts`; it fails loudly and says how to proceed
 - [ ] `README.md` says the shipped file is the source of truth and extension edits belong in this repo
 
+## Plan
+
+1. Compare the installed Pi extension at `~/.pi` commit `85bf6c1` with the shipped integration and port the continuation-stop behavior using the public session ID API.
+2. Change installation to reject a locally modified installed extension rather than overwriting it, and add focused tests.
+3. Document the source-of-truth policy, run `make format` and `make check`, then tick the verified criteria.
+
 ## History
 
 - 2026-11-01 → todo
+- 2026-11-01 todo → doing
