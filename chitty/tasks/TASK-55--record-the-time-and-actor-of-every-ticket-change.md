@@ -1,6 +1,6 @@
 ---
 title: Record the time and actor of every ticket change
-status: doing
+status: blocked
 priority: high
 depends_on:
   - TASK-75
@@ -32,6 +32,8 @@ Raised by the human; deferred ('maybe to track who does what, but not yet'). Pai
 
 Held until agents restart with session identity (HUMAN-5).
 
+Needs a human scope decision before implementation. “Every write” spans normal edits, moves, archive/delete cleanup, imports, inbox pulls and `chitty fix`; the ticket must define which are in scope or be split into independently verifiable tickets.
+
 ## History
 
 - 2026-10-28 → backlog
@@ -39,3 +41,4 @@ Held until agents restart with session identity (HUMAN-5).
 - 2026-11-01 todo → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → doing
+- 2026-11-01 doing → blocked
