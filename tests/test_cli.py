@@ -645,6 +645,34 @@ class TestAddShowList(CliTestCase):
             ["HUMAN-1", "HUMAN-2"],
         )
 
+    def test_list_orders_and_displays_priority(self):
+        self.run_cli("add", "Unset", "-d", "x")
+        self.run_cli("add", "Low", "-d", "x", "-p", "low")
+        self.run_cli("add", "High", "-d", "x", "-p", "high")
+        self.run_cli("add", "Medium", "-d", "x", "-p", "medium")
+        self.run_cli("add", "Doing high", "-d", "x", "-p", "high")
+        self.run_cli("edit", "5", "-s", "doing")
+
+        listed = self.run_cli("list")
+
+        self.assertEqual(
+            listed.stdout.splitlines(),
+            [
+                "TASK-3  todo    high    High",
+                "TASK-4  todo    medium  Medium",
+                "TASK-2  todo    low     Low",
+                "TASK-1  todo    -       Unset",
+                "TASK-5  doing   high    Doing high",
+            ],
+        )
+        tasks = self.json("list")
+        self.assertEqual(
+            [task["id"] for task in tasks], ["TASK-3", "TASK-4", "TASK-2", "TASK-1", "TASK-5"]
+        )
+        self.assertEqual(
+            [task["priority"] for task in tasks], ["high", "medium", "low", None, "high"]
+        )
+
     def test_list(self):
         self.run_cli("add", "Add search to the task list", "-d", "x", "-l", "search", "-l", "cli")
         self.run_cli("add", "Fix login", "-d", "Broken on Safari")
@@ -653,8 +681,8 @@ class TestAddShowList(CliTestCase):
         self.run_cli("edit", "1", "-s", "doing")
         self.run_cli("archive", "10")
         lines = self.run_cli("list").stdout.splitlines()
-        self.assertEqual(lines[0], "TASK-1  doing   Add search to the task list  [cli,search]")
-        self.assertEqual(lines[1], "TASK-2  todo    Fix login")
+        self.assertEqual(lines[0], "TASK-2  todo    Fix login")
+        self.assertEqual(lines[1], "TASK-3  todo    Task 3")
         self.assertEqual(len(lines), 9)
         self.run_cli("edit", "2", "-s", "review")
         self.run_cli("edit", "2", "-s", "done")

@@ -40,6 +40,7 @@ GUIDE_HEADING = "## Chitty"
 BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
+PRIORITY_ORDER = {"high": 0, "medium": 1, "low": 2, None: 3}
 
 Which = Literal["active", "archived", "all"]
 
@@ -695,6 +696,19 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
                 _restore_file(path, state)
             raise
     return written
+
+
+def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[StoredTask]:
+    """Order tasks by selected status, then priority, then ID."""
+    status_order = {status: index for index, status in enumerate(statuses)}
+    return sorted(
+        tasks,
+        key=lambda stored: (
+            status_order[stored.task.frontmatter.status],
+            PRIORITY_ORDER[stored.task.frontmatter.priority],
+            str(stored.id),
+        ),
+    )
 
 
 def matches(

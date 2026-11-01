@@ -32,6 +32,7 @@ from chitty.store import (
     guide,
     init_repo,
     matches,
+    ordered,
     resolve_add_target,
 )
 
@@ -326,6 +327,7 @@ def list_(
         for task in repo.tasks(context, "active")
         if matches(task, selected_statuses, labels, owner, search, parent)
     ]
+    tasks = ordered(tasks, selected_statuses)
     if not tasks:
         click.echo(
             f"no tasks: contexts={','.join(context.name for context in selected)}; "
@@ -338,9 +340,13 @@ def list_(
         _print_json([t.as_dict() for t in tasks])
         return
     width = max((len(str(t.id)) for t in tasks), default=0)
+    show_priority = any(t.task.frontmatter.priority is not None for t in tasks)
     for stored in tasks:
         fm = stored.task.frontmatter
-        line = f"{stored.id!s:<{width}}  {fm.status:<6}  {fm.title}"
+        line = f"{stored.id!s:<{width}}  {fm.status:<6}"
+        if show_priority:
+            line += f"  {fm.priority or '-':<6}"
+        line += f"  {fm.title}"
         if fm.labels:
             line += f"  [{','.join(sorted(fm.labels))}]"
         click.echo(line)
