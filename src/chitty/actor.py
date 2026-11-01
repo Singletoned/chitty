@@ -108,8 +108,14 @@ def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path |
         return None
     target = agent / "extensions" / "chitty.ts"
     source = files("chitty.integrations.pi").joinpath("chitty.ts").read_bytes()
-    if target.exists() and target.read_bytes() == source:
-        return None
+    if target.exists():
+        if target.read_bytes() == source:
+            return None
+        raise ChittyError(
+            f"Pi extension at {target} differs from Chitty's shipped extension and may "
+            "contain local edits; review the changes, then replace or remove it before "
+            "running chitty init again"
+        )
     target.parent.mkdir(exist_ok=True)
     target.write_bytes(source)
     return target

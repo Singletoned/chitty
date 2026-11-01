@@ -3,10 +3,11 @@ import unittest
 from pathlib import Path
 
 from chitty.actor import install_pi_extension
+from chitty.errors import ChittyError
 
 
 class TestPiExtension(unittest.TestCase):
-    def test_installs_only_when_pi_exists_and_copy_is_stale(self):
+    def test_installs_only_when_pi_exists_and_extension_is_uninstalled(self):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             environment = {"HOME": str(home)}
@@ -19,8 +20,9 @@ class TestPiExtension(unittest.TestCase):
             self.assertTrue(installed.exists())
             self.assertIsNone(install_pi_extension(environment))
 
-            installed.write_text("stale")
-            self.assertEqual(install_pi_extension(environment), installed)
+            installed.write_text("local edits")
+            with self.assertRaisesRegex(ChittyError, "may contain local edits"):
+                install_pi_extension(environment)
 
     def test_installs_into_configured_pi_agent_directory(self):
         with tempfile.TemporaryDirectory() as temporary:

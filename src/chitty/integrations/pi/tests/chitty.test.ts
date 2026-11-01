@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -8,6 +9,7 @@ import {
   isNoMoreWorkResponse,
   parseMode,
   setPiSessionIdentity,
+  hasNewAssistantResponse,
 } from "../chitty.ts";
 
 const TICKETS = JSON.stringify([
@@ -77,6 +79,18 @@ test("gives review agents only independent review tickets", () => {
   assert.match(prompt, /Reviewed: \.\.\./);
   assert.match(prompt, /-s doing/);
   assert.match(prompt, /NO MORE WORK/);
+});
+
+test("uses Pi's public session ID API", () => {
+  const extension = readFileSync(new URL("../chitty.ts", import.meta.url), "utf8");
+
+  assert.match(extension, /sessionManager\.getSessionId\(\)/);
+  assert.doesNotMatch(extension, /sessionManager\.sessionId/);
+});
+
+test("stops continuation when a triggered turn produces no assistant response", () => {
+  assert.equal(hasNewAssistantResponse(4, 4), false);
+  assert.equal(hasNewAssistantResponse(4, 5), true);
 });
 
 test("stops when the agent says no more work", () => {

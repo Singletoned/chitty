@@ -13,10 +13,17 @@ type ChittyMode = "work" | "review";
 type State = {
   enabled: boolean;
   mode: ChittyMode;
+  continuationAssistantCount?: number;
 };
 
 export default function chitty(pi: ExtensionAPI) {
   let state: State = { enabled: false, mode: "work" };
+
+  function stopContinuation(ctx: ExtensionContext, reason: string): void {
+    state = { ...state, enabled: false, continuationAssistantCount: undefined };
+    persistState(pi, state);
+    ctx.ui.notify(`Chitty continuation stopped: ${reason}.`, "info");
+  }
 
   pi.registerCommand("chitty", {
     description: "Work or review Chitty tickets",
@@ -29,12 +36,27 @@ export default function chitty(pi: ExtensionAPI) {
   });
 
   pi.on("session_start", async (_event, ctx) => {
-    setPiSessionIdentity(ctx.sessionManager.sessionId);
+    setPiSessionIdentity(ctx.sessionManager.getSessionId());
     state = latestState(ctx) ?? { enabled: false, mode: "work" };
   });
 
   pi.on("agent_settled", async (_event, ctx) => {
     if (!state.enabled || !ctx.isIdle()) return;
+
+    const assistantCount = assistantMessageCount(ctx);
+    if (
+      state.continuationAssistantCount !== undefined &&
+      !hasNewAssistantResponse(state.continuationAssistantCount, assistantCount)
+    ) {
+      stopContinuation(ctx, "agent did not produce a response");
+      return;
+    }
+
+    const assistant = latestAssistantMessage(ctx);
+    if (assistant?.stopReason === "error" || assistant?.stopReason === "aborted") {
+      stopContinuation(ctx, `agent response ended with ${assistant.stopReason}`);
+      return;
+    }
 
     if (isNoMoreWorkResponse(latestAssistantText(ctx))) {
       state = { ...state, enabled: false };
@@ -49,6 +71,8 @@ export default function chitty(pi: ExtensionAPI) {
       return;
     }
 
+    state = { ...state, continuationAssistantCount: assistantCount };
+    persistState(pi, state);
     pi.sendMessage(
       {
         customType: CONTINUATION_TYPE,
@@ -143,6 +167,21 @@ function isMode(value: unknown): value is ChittyMode {
 
 export function isNoMoreWorkResponse(text: string): boolean {
   return text.includes("NO MORE WORK");
+}
+
+export function hasNewAssistantResponse(
+  previousAssistantCount: number,
+  currentAssistantCount: number,
+): boolean {
+  return currentAssistantCount > previousAssistantCount;
+}
+
+function assistantMessageCount(ctx: ExtensionContext): number {
+  return ctx.sessionManager
+    .getBranch()
+    .filter(
+      (entry) => entry.type === "message" && entry.message.role === "assistant",
+    ).length;
 }
 
 function latestAssistantText(ctx: ExtensionContext): string {
