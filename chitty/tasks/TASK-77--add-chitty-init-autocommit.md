@@ -1,6 +1,6 @@
 ---
 title: Add `chitty init --autocommit`
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -28,6 +28,8 @@ Review found that a failed setup commit left generated files behind, and that co
 
 Addressed review findings: setup files roll back when the commit fails, and commented `autocommit = false` settings are enabled.
 
+Reviewed: confirmed independent implementation by Ed Singleton in commits 234eae2 and 2c5ab43; inspected the clean-tree guard, path-limited setup commit, idempotence, rollback, tests, and documentation. Verified independently with make check (163 tests).
+
 ## History
 
 - 2026-11-01 → backlog
@@ -36,3 +38,4 @@ Addressed review findings: setup files roll back when the commit fails, and comm
 - 2026-11-01 doing → review
 - 2026-11-01 review → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
