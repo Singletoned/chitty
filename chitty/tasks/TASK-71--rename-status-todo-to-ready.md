@@ -3,6 +3,7 @@ title: Rename status `todo` to `ready`
 status: backlog
 depends_on:
   - TASK-70
+  - TASK-74
 created: 2026-11-01
 ---
 
