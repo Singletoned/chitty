@@ -1,6 +1,7 @@
 ---
 title: Add `chitty init --autocommit`
 status: review
+priority: high
 created: 2026-11-01
 ---
 

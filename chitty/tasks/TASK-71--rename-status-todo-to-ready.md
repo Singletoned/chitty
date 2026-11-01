@@ -4,6 +4,7 @@ status: backlog
 depends_on:
   - TASK-70
   - TASK-74
+  - TASK-82
 created: 2026-11-01
 ---
 

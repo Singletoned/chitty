@@ -1,6 +1,8 @@
 ---
 title: Mark tasks with `depends_on` as queued, and clear finished dependencies automatically
 status: backlog
+depends_on:
+  - TASK-82
 created: 2026-11-01
 ---
 

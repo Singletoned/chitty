@@ -1,6 +1,8 @@
 ---
 title: Replace status `blocked` with a `blocked_by` flag
 status: backlog
+depends_on:
+  - TASK-82
 created: 2026-11-01
 ---
 
