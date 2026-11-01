@@ -1,6 +1,6 @@
 ---
 title: Give Pi agents a Chitty identity on every command path
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -36,9 +36,12 @@ Diagnosed by lively-otter (Claude Code) by reading Pi's installed code, not in a
 
 Implemented extension-owned `CHITTY_PI_SESSION_ID` propagation, actor precedence, obsolete-settings removal, and the startup-server `CHITTY_ACTOR` workaround documentation. Verified with focused identity tests, `chitty init`, `chitty fix`, `chitty check`, `make check`, and `make test`; existing unrelated Markdown-delimiter warnings remain.
 
+Reviewed: Ed Singleton implemented the Pi session identity propagation in 898c665. Independently verified actor precedence and startup-server guidance, targeted Python identity/install tests, Pi extension tests, `chitty check`, and `make check`.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
