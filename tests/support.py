@@ -34,7 +34,17 @@ class RepoTestCase(unittest.TestCase):
         self.root.mkdir()
         (self.root / "chitty.toml").write_text(CONFIG)
         self.config_home = self.tmp / "config"
-        environ = {k: v for k, v in os.environ.items() if k != "CHITTY_ROOT"}
+        excluded = {
+            "CHITTY_ROOT",
+            "CHITTY_ACTOR",
+            "CLAUDE_CODE_SESSION_ID",
+            "PI_CODING_AGENT",
+            "PI_SESSION_ID",
+            "CODEX_THREAD_ID",
+            "CODEX_SESSION_ID",
+        }
+        environ = {k: v for k, v in os.environ.items() if k not in excluded}
+        environ["HOME"] = str(self.tmp / "home")
         environ["XDG_CONFIG_HOME"] = str(self.config_home)
         environ["XDG_DATA_HOME"] = str(self.tmp / "data")
         patcher = mock.patch.dict(os.environ, environ, clear=True)

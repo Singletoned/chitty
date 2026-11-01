@@ -25,7 +25,8 @@ chitty init --autocommit          # enable autocommit and commit the clean setup
 chitty import backlog-md          # convert a reviewed legacy backlog/ directory
 chitty suggest other "Improve docs" -d "Explain setup."  # machine-local inbox
 chitty inbox                      # list this repo's waiting inbox suggestions
-chitty inbox --pull               # collect them as backlog tasks
+chitty inbox --pull               # print your actor name and collect them as backlog tasks
+chitty whoami                     # print your stable actor name
 # `add -c` names only a context in this repository; use `suggest` across projects.
 chitty add "Add search" -d "Search titles and bodies." \
     --ac "Matches title" --ac "Case-insensitive" -l cli \
@@ -72,6 +73,13 @@ source <(_CHITTY_COMPLETE=bash_source chitty)
 # zsh
 eval "$(_CHITTY_COMPLETE=zsh_source chitty)"
 ```
+
+`chitty whoami` derives a stable readable name from `CHITTY_ACTOR` (when set),
+or a coding harness session identity: `CLAUDE_CODE_SESSION_ID`, `PI_SESSION_ID`,
+`CODEX_THREAD_ID`, or `CODEX_SESSION_ID`. `CHITTY_ACTOR` is for people and other
+tools. `chitty init` enables Pi's `exposeSessionEnvironment` setting when Pi is
+installed; restart the agent afterwards. Subagents inherit their parent's
+session environment and therefore deliberately share its actor name.
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit. `chitty init --autocommit` enables

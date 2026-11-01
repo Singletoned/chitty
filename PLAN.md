@@ -329,7 +329,8 @@ repository-aware and silently empty outside a repository.
 
 ```
 chitty init [--autocommit]         write chitty.toml, chitty/tasks/, AGENTS.md block, CLAUDE.md symlink; `--autocommit` requires a clean Git tree
-chitty inbox [--pull]              list waiting suggestions, or import them all
+chitty inbox [--pull]              list waiting suggestions, or print actor then import them all
+chitty whoami                       print the stable actor name for this session
 chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
                  [--owner X] [--depends-on ID]...
 chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
@@ -394,7 +395,7 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 ## MCP
 
 `chitty mcp` runs a stdio server. Tools mirror the CLI one-to-one with the
-same names and argument names: `add`, `suggest`, `inbox`, `list`, `show`,
+same names and argument names: `add`, `suggest`, `inbox`, `whoami`, `list`, `show`,
 `edit`, `note`, `move`, `archive`, `check`, `fix`, `path`. They return the same JSON
 the CLI prints with `--json`. One resource, `chitty://guide`, returning the
 same text as the AGENTS.md block. Tool descriptions state the rules (one
@@ -471,6 +472,7 @@ src/chitty/
   model.py       Task, Frontmatter, Criterion — parse/validate/serialise ONE file
   ids.py         ID and filename parsing, slugs, next number, shorthand
   config.py      RepoConfig, UserContexts — load + validate TOML
+  actor.py       stable actor names from harness session identities
   store.py       Context, find/list/read/write/move/archive
   check.py       cross-file validation: parse errors, duplicate IDs,
                  dangling or self depends_on
@@ -483,7 +485,10 @@ src/chitty/
 ```
 
 `cli.py` and `mcp.py` contain no logic; both call the same functions in
-`store.py`/`model.py` so behaviour cannot diverge.
+`store.py`/`model.py` so behaviour cannot diverge. Actor identity comes from
+`CHITTY_ACTOR` or a supported harness session variable; Pi setup enables
+`exposeSessionEnvironment`, and subagents intentionally inherit the parent's
+session identity.
 
 ## Build order
 

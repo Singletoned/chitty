@@ -10,6 +10,7 @@ from typing import Any, Literal
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
+from chitty.actor import actor
 from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
 from chitty.config import find_root, search_root
@@ -50,6 +51,11 @@ def _repo() -> Repo:
 @server.resource("chitty://guide", name="guide", mime_type="text/markdown")
 def guide_resource() -> str:
     return guide()
+
+
+@_tool("whoami", "Return the stable name Chitty uses for this actor.")
+def whoami() -> str:
+    return actor()
 
 
 @_tool("inbox", "List waiting suggestions, or import all of them with pull=true.")

@@ -1,6 +1,6 @@
 ---
 title: Give each agent session a name it can look up after compaction
-status: todo
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -19,18 +19,18 @@ Chitty derives a readable name (for example `peach-fox`) from a hash of the iden
 
 ## Acceptance Criteria
 
-- [ ] Chitty derives a stable readable name from the harness's session identity with no stored state; the same session gets the same name after compaction
-- [ ] `CHITTY_ACTOR` overrides it for humans and other tools; with no identity, writes that need one fail loudly rather than recording `unknown`
-- [ ] An agent can ask for its name (for example `chitty whoami`), and session-start output (`chitty inbox --pull`) prints it
-- [ ] The MCP server resolves the same name as shell commands in the same session
-- [ ] When Pi is installed, `chitty init` turns on `exposeSessionEnvironment` in Pi's settings (`~/.pi/agent/settings.json`), changing nothing else in the file and reporting the change
-- [ ] When `chitty guide` runs under Pi without the session environment exposed, its output explains to the agent what is missing and how to fix it
-- [ ] It reads the identity each harness provides (Claude Code `CLAUDE_CODE_SESSION_ID`, Pi `PI_SESSION_ID`, and Codex's equivalent or the process-ancestry fallback), with any needed setting, plugin or hook documented in `README.md` and installed or explained by `chitty init`; tests simulate each source
-- [ ] Subagents resolve to their parent's name by design (they inherit the parent's environment and process ancestry)
+- [x] Chitty derives a stable readable name from the harness's session identity with no stored state; the same session gets the same name after compaction
+- [x] `CHITTY_ACTOR` overrides it for humans and other tools; with no identity, writes that need one fail loudly rather than recording `unknown`
+- [x] An agent can ask for its name (for example `chitty whoami`), and session-start output (`chitty inbox --pull`) prints it
+- [x] The MCP server resolves the same name as shell commands in the same session
+- [x] When Pi is installed, `chitty init` turns on `exposeSessionEnvironment` in Pi's settings (`~/.pi/agent/settings.json`), changing nothing else in the file and reporting the change
+- [x] When `chitty guide` runs under Pi without the session environment exposed, its output explains to the agent what is missing and how to fix it
+- [x] It reads the identity each harness provides (Claude Code `CLAUDE_CODE_SESSION_ID`, Pi `PI_SESSION_ID`, and Codex's equivalent or the process-ancestry fallback), with any needed setting, plugin or hook documented in `README.md` and installed or explained by `chitty init`; tests simulate each source
+- [x] Subagents resolve to their parent's name by design (they inherit the parent's environment and process ancestry)
 
 ## Plan
 
-Inspect the current harness identities and existing CLI/MCP setup, implement deterministic actor resolution with `CHITTY_ACTOR` override and `whoami`, wire it into write records and session-start output, then update Pi setup/guide behavior and tests. Verify each supported harness in a real session before completing.
+Inspect existing identity resolution and CLI/MCP wiring; add a shared deterministic actor resolver plus `whoami` and session-start output; configure Pi session-environment exposure during init and guidance diagnostics; document supported harnesses and add focused unit tests. Run targeted tests followed by `make check`, tick verified criteria, and commit.
 
 ## Notes
 
@@ -42,6 +42,8 @@ Blocked on HUMAN-7 for the required Claude Code and Codex real-session access. T
 
 Unblocked with the human (2026-11-01): implement now. Real-session verification in Claude Code, Codex and Pi, including subagents, moved to HUMAN-7, which happens after this lands. An agent running in Pi cannot see Claude Code's session variables, so their absence here is expected, not a blocker.
 
+Implemented shared identity resolution for Claude Code, Pi, and Codex session variables; verified with simulated harness environments and full `make check`.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -49,3 +51,5 @@ Unblocked with the human (2026-11-01): implement now. Real-session verification 
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → blocked
 - 2026-11-01 blocked → todo
+- 2026-11-01 todo → doing
+- 2026-11-01 doing → review

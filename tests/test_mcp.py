@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Any
 
 from mcp.server.mcpserver.exceptions import ToolError
@@ -26,6 +27,7 @@ class TestMcp(CliTestCase):
                 [
                     "add",
                     "suggest",
+                    "whoami",
                     "inbox",
                     "list",
                     "show",
@@ -39,6 +41,10 @@ class TestMcp(CliTestCase):
                 ]
             ),
         )
+
+    def test_whoami_matches_the_cli(self):
+        os.environ["PI_SESSION_ID"] = "session-123"
+        self.assertEqual(call("whoami"), self.run_cli("whoami").stdout.strip())
 
     def test_inbox_without_a_project_name_is_actionable(self):
         self.run_cli("init")

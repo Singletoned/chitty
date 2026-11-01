@@ -8,6 +8,7 @@ from typing import Any, TextIO, cast
 import click
 from click.shell_completion import CompletionItem
 
+from chitty.actor import actor, pi_session_environment_missing
 from chitty.check import check as check_repo
 from chitty.check import errors
 from chitty.check import fix as fix_repo
@@ -178,6 +179,7 @@ def inbox(import_suggestions: bool, as_json: bool) -> None:
     """List waiting suggestions, or import all of them with --pull."""
     repo = _repo()
     if import_suggestions:
+        click.echo(f"actor {actor()}")
         task_ids = pull_suggestions(repo)
         if task_ids:
             for task_id in task_ids:
@@ -600,6 +602,18 @@ def archive(task_id: str | None, as_json: bool) -> None:
 def guide_() -> None:
     """Print the instructions for coding agents (the AGENTS.md block)."""
     click.echo(guide(), nl=False)
+    if pi_session_environment_missing():
+        click.echo(
+            "\nPi is not exposing PI_SESSION_ID. Run `chitty init`, then restart this agent."
+        )
+
+
+@cli.command()
+@json_option
+def whoami(as_json: bool) -> None:
+    """Print the stable name Chitty uses for this actor."""
+    name = actor()
+    _print_json({"actor": name}) if as_json else click.echo(name)
 
 
 @cli.command()

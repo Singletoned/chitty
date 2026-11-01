@@ -555,7 +555,10 @@ class TestInbox(CliTestCase):
         self.assertIn(f"{self.root.name}  {date.today().isoformat()}  Waiting", listed.stdout)
         self.assertIn("chitty inbox --pull", listed.stderr)
         self.assertEqual(self.json("inbox")[0]["title"], "Waiting")
-        self.assertIn("pulled TASK-1", self.run_cli("inbox", "--pull").stdout)
+        os.environ["CHITTY_ACTOR"] = "test-agent"
+        pulled = self.run_cli("inbox", "--pull")
+        self.assertIn("actor test-agent", pulled.stdout)
+        self.assertIn("pulled TASK-1", pulled.stdout)
         empty = self.run_cli("inbox")
         self.assertEqual(empty.stdout, "")
         self.assertIn("no suggestions waiting", empty.stderr)
@@ -1006,6 +1009,30 @@ class TestIgnoredUserContexts(CliTestCase):
         result = self.run_cli("add", "Idea", "-d", "x", "-c", "notes", exit_code=1)
         self.assertIn("contexts.toml is ignored", result.stderr)
         self.assertIn("no context 'notes'", result.stderr)
+
+
+class TestIdentity(CliTestCase):
+    def test_whoami_and_pi_guide_diagnostic(self):
+        os.environ["PI_SESSION_ID"] = "session-123"
+        name = self.run_cli("whoami").stdout.strip()
+        self.assertEqual(self.json("whoami"), {"actor": name})
+        os.environ.pop("PI_SESSION_ID")
+        os.environ["PI_CODING_AGENT"] = "true"
+        self.assertIn("Run `chitty init`, then restart this agent", self.run_cli("guide").stdout)
+
+    def test_init_enables_pi_session_environment_without_reformatting_settings(self):
+        settings = self.tmp / "home" / ".pi" / "agent" / "settings.json"
+        settings.parent.mkdir(parents=True)
+        settings.write_text('{\n    "other": [1, 2],\n    "exposeSessionEnvironment": false\n}\n')
+
+        result = self.run_cli("init")
+
+        self.assertIn(f"updated {settings}", result.stdout)
+        self.assertEqual(
+            settings.read_text(),
+            '{\n    "other": [1, 2],\n    "exposeSessionEnvironment": true\n}\n',
+        )
+        self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
 
 class TestGuide(CliTestCase):
