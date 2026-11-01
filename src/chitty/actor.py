@@ -46,6 +46,8 @@ _ANIMALS = (
     "raven",
     "stoat",
 )
+_PI_EXTENSION_STATE = "chitty-extension.sha256"
+
 _SESSION_IDENTITIES = (
     ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_SESSION_ID"),
     ("CHITTY_PI_SESSION_ID", "PI_SESSION_ID"),
@@ -100,24 +102,59 @@ def remove_pi_session_environment() -> Path | None:
     return path
 
 
-def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path | None:
-    """Install Chitty's Pi extension when a Pi agent directory already exists."""
-    settings = pi_settings_path(environment)
-    agent = settings.parent
+def _pi_extension_files(
+    environment: Mapping[str, str] | None = None,
+) -> tuple[Path, Path, bytes] | None:
+    agent = pi_settings_path(environment).parent
     if not agent.is_dir():
         return None
-    target = agent / "extensions" / "chitty.ts"
     source = files("chitty.integrations.pi").joinpath("chitty.ts").read_bytes()
-    if target.exists():
-        if target.read_bytes() == source:
-            return None
-        raise ChittyError(
-            f"Pi extension at {target} differs from Chitty's shipped extension and may "
-            "contain local edits; review the changes, then replace or remove it before "
-            "running chitty init again"
-        )
+    return agent / "extensions" / "chitty.ts", agent / _PI_EXTENSION_STATE, source
+
+
+def _extension_hash(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
+
+
+def _validate_pi_extension(files: tuple[Path, Path, bytes] | None) -> None:
+    if files is None:
+        return
+    target, state, source = files
+    if not target.exists() or target.read_bytes() == source:
+        return
+    expected_hash = _extension_hash(target.read_bytes())
+    if state.exists() and state.read_text().strip() == expected_hash:
+        return
+    raise ChittyError(
+        f"Pi extension at {target} differs from Chitty's shipped extension and may "
+        "contain local edits; review the changes, then replace or remove it before "
+        "running chitty init again"
+    )
+
+
+def validate_pi_extension(environment: Mapping[str, str] | None = None) -> None:
+    """Raise before setup writes when a Pi extension has local edits."""
+    _validate_pi_extension(_pi_extension_files(environment))
+
+
+def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path | None:
+    """Install or update Chitty's unedited Pi extension."""
+    extension = _pi_extension_files(environment)
+    if extension is None:
+        return None
+    target, state, source = extension
+    _validate_pi_extension(extension)
+    source_hash = _extension_hash(source)
+    if (
+        target.exists()
+        and target.read_bytes() == source
+        and state.exists()
+        and state.read_text().strip() == source_hash
+    ):
+        return None
     target.parent.mkdir(exist_ok=True)
     target.write_bytes(source)
+    state.write_text(source_hash + "\n")
     return target
 
 

@@ -1,6 +1,6 @@
 ---
 title: "`chitty init` updates an unedited Pi extension instead of refusing"
-status: todo
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -11,10 +11,22 @@ TASK-93's guard in `install_pi_extension` refuses whenever the installed `chitty
 
 ## Acceptance Criteria
 
-- [ ] `chitty init` replaces an installed extension that Chitty installed and nobody has changed since (for example, by recording the hash it wrote), with a test
-- [ ] It still fails loudly, naming the file, when the installed extension has local edits
-- [ ] A failing `chitty init` leaves `chitty.toml` and the guide block unchanged: checks run before any write, with a test
+- [x] `chitty init` replaces an installed extension that Chitty installed and nobody has changed since (for example, by recording the hash it wrote), with a test
+- [x] It still fails loudly, naming the file, when the installed extension has local edits
+- [x] A failing `chitty init` leaves `chitty.toml` and the guide block unchanged: checks run before any write, with a test
+
+## Plan
+
+Inspect `init` and Pi extension installation flow; record managed-content state so unmodified extensions can update; validate all preconditions before any setup writes; add regression tests for replacement, local-edit refusal, and atomic failure.
+
+## Notes
+
+Implemented hash-tracked Pi extension updates and preflight validation. Verified with `make check` (182 tests, Ruff, Pyright).
+
+Reverified after the final `chitty init` integration regression test: `make check` passes with 183 tests, Ruff, and Pyright.
 
 ## History
 
 - 2026-11-01 → todo
+- 2026-11-01 todo → doing
+- 2026-11-01 doing → review

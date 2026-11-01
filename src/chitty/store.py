@@ -704,13 +704,14 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     claude = directory / CLAUDE_FILE
     if claude.exists() and not claude.is_symlink():
         raise ChittyError(f"{claude} exists and must be replaced with a symlink to {AGENTS_FILE}")
-    from chitty.actor import install_pi_extension
+    from chitty.actor import install_pi_extension, validate_pi_extension
     from chitty.config import inbox_path, load_repo_config, register_project
 
     config_path = directory / CONFIG_NAME
     pyproject_path = directory / "pyproject.toml"
     agents = directory / AGENTS_FILE
     gitignore = directory / ".gitignore"
+    validate_pi_extension()
     originals = {
         path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
     }

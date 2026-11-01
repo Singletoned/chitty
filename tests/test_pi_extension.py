@@ -1,3 +1,4 @@
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -18,11 +19,29 @@ class TestPiExtension(unittest.TestCase):
             installed = install_pi_extension(environment)
             assert installed is not None
             self.assertTrue(installed.exists())
+            self.assertTrue((agent / "chitty-extension.sha256").exists())
             self.assertIsNone(install_pi_extension(environment))
 
             installed.write_text("local edits")
             with self.assertRaisesRegex(ChittyError, "may contain local edits"):
                 install_pi_extension(environment)
+
+    def test_replaces_an_unedited_extension_from_a_previous_installation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            agent = Path(temporary) / "agent"
+            extensions = agent / "extensions"
+            extensions.mkdir(parents=True)
+            installed = extensions / "chitty.ts"
+            previous_source = b"previous Chitty extension"
+            installed.write_bytes(previous_source)
+            (agent / "chitty-extension.sha256").write_text(
+                hashlib.sha256(previous_source).hexdigest() + "\n"
+            )
+
+            updated = install_pi_extension({"PI_CODING_AGENT_DIR": str(agent)})
+
+            self.assertEqual(updated, installed)
+            self.assertNotEqual(installed.read_bytes(), previous_source)
 
     def test_installs_into_configured_pi_agent_directory(self):
         with tempfile.TemporaryDirectory() as temporary:
