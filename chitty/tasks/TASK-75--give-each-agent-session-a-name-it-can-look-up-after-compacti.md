@@ -1,6 +1,6 @@
 ---
 title: Give each agent session a name it can look up after compaction
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -44,6 +44,8 @@ Unblocked with the human (2026-11-01): implement now. Real-session verification 
 
 Implemented shared identity resolution for Claude Code, Pi, and Codex session variables; verified with simulated harness environments and full `make check`.
 
+Reviewed: independent implementation in efce9d2; verified all acceptance criteria against the code and tests, and ran make check successfully.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -53,3 +55,4 @@ Implemented shared identity resolution for Claude Code, Pi, and Codex session va
 - 2026-11-01 blocked → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
