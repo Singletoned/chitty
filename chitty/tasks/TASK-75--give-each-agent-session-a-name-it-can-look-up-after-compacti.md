@@ -1,7 +1,9 @@
 ---
 title: Give each agent session a name it can look up after compaction
-status: todo
+status: blocked
 priority: high
+depends_on:
+  - HUMAN-7
 created: 2026-11-01
 ---
 
@@ -28,13 +30,21 @@ Chitty derives a readable name (for example `peach-fox`) from a hash of the iden
 - [ ] When Pi is installed, `chitty init` turns on `exposeSessionEnvironment` in Pi's settings (`~/.pi/agent/settings.json`), changing nothing else in the file and reporting the change
 - [ ] When `chitty guide` runs under Pi without the session environment exposed, its output explains to the agent what is missing and how to fix it
 
+## Plan
+
+Inspect the current harness identities and existing CLI/MCP setup, implement deterministic actor resolution with `CHITTY_ACTOR` override and `whoami`, wire it into write records and session-start output, then update Pi setup/guide behavior and tests. Verify each supported harness in a real session before completing.
+
 ## Notes
 
 Decided with the human (2026-11-01): `init` sets Pi's `exposeSessionEnvironment` itself when Pi is installed. On this machine Pi's settings live at `~/.pi/agent/settings.json` and the setting is currently absent.
 
 Do this last in its batch: once it lands, Pi agents started before `exposeSessionEnvironment` was set cannot write until restarted (HUMAN-5).
 
+Blocked on HUMAN-7 for the required Claude Code and Codex real-session access. The current environment exposes neither harness session identity, and Pi session environment exposure is disabled. Do not claim the cross-harness acceptance criteria without those verifications.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-01 todo → doing
+- 2026-11-01 doing → blocked
