@@ -20,6 +20,12 @@ Pull order follows Kanban, from the right: finish before starting. Reviews the c
 - [ ] Pull order: reviews the caller did not work on, then the caller's `doing` work, then `todo` by priority; `backlog`, queued, blocked and other actors' `doing` tasks are excluded
 - [ ] `--json` and an MCP tool return the same answer through shared store code
 - [ ] The managed guide tells agents to start with `chitty next` instead of choosing from `chitty list`; `version` is bumped
+- [ ] Options narrow the answer by role, for example `--review` (only reviews the caller can do) and `--work` (only implementation: own `doing`, then `todo`)
+- [ ] Label filters (for example `--label code-review` or `--label easy`) narrow the answer, so a reviewer or a cheaper model gets only suitable work
+
+## Notes
+
+With the human: callers may have one role (for example only a reviewer), and model level matters (`hard`/`easy` labels). Option names are provisional.
 
 ## History
 

@@ -24,6 +24,12 @@ Chitty derives a readable name (for example `peach-fox`) from a hash of the iden
 - [ ] An agent can ask for its name (for example `chitty whoami`), and session-start output (`chitty inbox --pull`) prints it
 - [ ] The MCP server resolves the same name as shell commands in the same session
 - [ ] A subagent resolves to its parent's name (verified in Claude Code)
+- [ ] When Pi is installed, `chitty init` turns on `exposeSessionEnvironment` in Pi's settings (`~/.pi/agent/settings.json`), changing nothing else in the file and reporting the change
+- [ ] When `chitty guide` runs under Pi without the session environment exposed, its output explains to the agent what is missing and how to fix it
+
+## Notes
+
+Decided with the human (2026-11-01): `init` sets Pi's `exposeSessionEnvironment` itself when Pi is installed. On this machine Pi's settings live at `~/.pi/agent/settings.json` and the setting is currently absent.
 
 ## History
 
