@@ -22,6 +22,7 @@ Pull order follows Kanban, from the right: finish before starting. Reviews the c
 - [ ] The managed guide tells agents to start with `chitty next` instead of choosing from `chitty list`; `version` is bumped
 - [ ] Options narrow the answer by role, for example `--review` (only reviews the caller can do) and `--work` (only implementation: own `doing`, then `todo`)
 - [ ] Label filters (for example `--label code-review` or `--label easy`) narrow the answer, so a reviewer or a cheaper model gets only suitable work
+- [ ] `chitty next` uses task state from every branch (TASK-84), so work claimed or progressed on another branch is not offered again
 
 ## Notes
 

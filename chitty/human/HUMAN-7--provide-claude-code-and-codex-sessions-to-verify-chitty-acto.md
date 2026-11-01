@@ -2,12 +2,14 @@
 title: Provide Claude Code and Codex sessions to verify Chitty actor identity
 status: todo
 priority: high
+depends_on:
+  - TASK-75
 created: 2026-11-01
 ---
 
 ## Description
 
-TASK-75 requires real-session verification in Claude Code, Codex and Pi. This environment exposes neither `CLAUDE_CODE_SESSION_ID` nor `PI_SESSION_ID`, and Pi session environment exposure is currently disabled. Start or provide evidence from Claude Code and Codex sessions after the actor implementation is available, including parent/subagent behavior.
+Once TASK-75 lands, verify Chitty's session names in real sessions: run `chitty whoami` in Claude Code, Codex and Pi (after `chitty init` has set Pi's `exposeSessionEnvironment` and Pi has been restarted). Check that the name survives a compaction and that a subagent gets its parent's name. Record the results on TASK-75, and open a ticket for any harness that fails.
 
 ## History
 

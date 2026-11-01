@@ -1,9 +1,7 @@
 ---
 title: Release with a single `mate release`
-status: blocked
+status: todo
 priority: high
-depends_on:
-  - HUMAN-6
 created: 2026-11-01
 ---
 
@@ -14,9 +12,9 @@ Releasing means bumping `pyproject.toml` by hand in the right change, committing
 ## Acceptance Criteria
 
 - [ ] `mate release` refuses unless on `main`, with a clean tree, up to date with `origin/main`, and `make check` passing
-- [ ] It picks minor or patch relative to the last `v*` tag by comparing `init` output from the last release and from this checkout; `mate release minor` or `mate release patch` overrides
 - [ ] It bumps `pyproject.toml` and `uv.lock`, refreshes this repo's `chitty.toml` with `chitty init`, commits `Release vX.Y.Z`, tags `vX.Y.Z`, and pushes `main` and the tag so `release.yml` publishes
 - [ ] `AGENTS.md` (project section) and `README.md` describe releasing with `mate release` and drop the per-change version-bump rule; `mate --list` shows the target
+- [ ] It picks minor or patch relative to the last `v*` tag by comparing `init` output from the last release and from this checkout, ignoring the `chitty_version` line; `mate release minor` or `mate release patch` overrides
 
 ## Plan
 
@@ -26,9 +24,12 @@ Add a tested release script invoked by a documented `mate release` Make target. 
 
 Blocked pending HUMAN-6: the specified `init` comparison always changes `chitty_version`, so it cannot distinguish patch from minor. Implementation would encode an unintended always-minor policy.
 
+Unblocked: HUMAN-6 decided that the comparison ignores `chitty_version` (criterion rewritten, now number 4).
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → blocked
+- 2026-11-01 blocked → todo

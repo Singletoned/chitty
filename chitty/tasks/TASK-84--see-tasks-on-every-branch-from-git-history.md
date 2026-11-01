@@ -1,6 +1,6 @@
 ---
 title: See tasks on every branch, from Git history
-status: blocked
+status: doing
 priority: high
 parent: TASK-58
 created: 2026-11-01
@@ -16,9 +16,9 @@ A task's current state is its most recent change, not its furthest status: a fai
 
 ## Acceptance Criteria
 
-- [ ] `chitty list`, `show` and `next` report each task's most recently changed state across local and remote-tracking branches, naming the branch when it is not the current one
 - [x] Reading every branch stays fast on a repository with many branches (one `git cat-file --batch` process, not one command per file); a test covers a task changed only on another branch
 - [x] `PLAN.md` records the revised principle and the `autocommit` requirement for worktrees
+- [ ] `chitty list` and `show` report each task's most recently changed state across local and remote-tracking branches, naming the branch when it is not the current one
 
 ## Plan
 
@@ -32,9 +32,12 @@ For whoever resumes this (the claiming agent was stopped before committing code)
 
 Implemented and verified cross-branch `list`/`show` reads, batched blob loading, branch attribution, and the revised plan. Acceptance criterion 1 also requires `chitty next`, but that command is TASK-76, which remains backlog and depends on TASK-70, TASK-74 and TASK-75. Resume TASK-84 after TASK-76 is actionable, or split the `next` assertion from this ticket.
 
+Unblocked (2026-11-01): the `chitty next` part of the old criterion 1 moved to TASK-76. The rewritten criterion (now 3) covers `list` and `show` only, which the earlier note says are implemented; verify, tick it, and set `review`.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → blocked
+- 2026-11-01 blocked → doing
