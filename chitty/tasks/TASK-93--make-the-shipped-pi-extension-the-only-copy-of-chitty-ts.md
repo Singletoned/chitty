@@ -1,6 +1,6 @@
 ---
 title: Make the shipped Pi extension the only copy of `chitty.ts`
-status: doing
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -32,6 +32,8 @@ Added the required patch version bump for the `chitty init`-installed extension;
 
 Review failed: the continuation-stop regression test covers only the no-new-assistant-response path. Add tests that exercise stopping after `error` and `aborted` assistant turns, then return the ticket to review.
 
+Added regression coverage for `error` and `aborted` assistant stop reasons. The new test failed before the predicate was extracted and passes after it; verification: `make format`, `make check`, and `npm test`.
+
 ## History
 
 - 2026-11-01 → todo
@@ -40,3 +42,4 @@ Review failed: the continuation-stop regression test covers only the no-new-assi
 - 2026-11-01 review → doing
 - 2026-11-01 doing → review
 - 2026-11-01 review → doing
+- 2026-11-01 doing → review
