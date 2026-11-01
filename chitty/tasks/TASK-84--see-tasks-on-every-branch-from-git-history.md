@@ -1,6 +1,6 @@
 ---
 title: See tasks on every branch, from Git history
-status: doing
+status: review
 priority: high
 parent: TASK-58
 created: 2026-11-01
@@ -18,7 +18,7 @@ A task's current state is its most recent change, not its furthest status: a fai
 
 - [x] Reading every branch stays fast on a repository with many branches (one `git cat-file --batch` process, not one command per file); a test covers a task changed only on another branch
 - [x] `PLAN.md` records the revised principle and the `autocommit` requirement for worktrees
-- [ ] `chitty list` and `show` report each task's most recently changed state across local and remote-tracking branches, naming the branch when it is not the current one
+- [x] `chitty list` and `show` report each task's most recently changed state across local and remote-tracking branches, naming the branch when it is not the current one
 
 ## Plan
 
@@ -34,6 +34,8 @@ Implemented and verified cross-branch `list`/`show` reads, batched blob loading,
 
 Unblocked (2026-11-01): the `chitty next` part of the old criterion 1 moved to TASK-76. The rewritten criterion (now 3) covers `list` and `show` only, which the earlier note says are implemented; verify, tick it, and set `review`.
 
+Verified the cross-branch implementation: `tests/test_store.py` covers state selected from a newer `other` branch; `list` formats the branch and `show` reports `branch:`. Verified the full suite with `make check`.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -41,3 +43,4 @@ Unblocked (2026-11-01): the `chitty next` part of the old criterion 1 moved to T
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → blocked
 - 2026-11-01 blocked → doing
+- 2026-11-01 doing → review
