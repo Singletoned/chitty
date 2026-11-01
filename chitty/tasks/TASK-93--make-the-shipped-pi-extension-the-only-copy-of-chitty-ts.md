@@ -18,9 +18,9 @@ created: 2026-11-01
 
 ## Plan
 
-1. Compare the installed Pi extension at `~/.pi` commit `85bf6c1` with the shipped integration and port the continuation-stop behavior using the public session ID API.
-2. Change installation to reject a locally modified installed extension rather than overwriting it, and add focused tests.
-3. Document the source-of-truth policy, run `make format` and `make check`, then tick the verified criteria.
+1. Extract the stop-reason predicate from the Pi event handler so it can be exercised without a full `ExtensionContext`.
+2. Add regression tests for `error` and `aborted` assistant stop reasons alongside the existing no-response test.
+3. Run the focused test first against the unfixed predicate, then run `make format`, `make check`, and `npm test` before returning the ticket to review.
 
 ## Notes
 
