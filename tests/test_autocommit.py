@@ -2,6 +2,7 @@ import shlex
 import subprocess
 import sys
 
+from chitty.config import CHITTY_VERSION
 from tests.test_cli import CliTestCase
 
 
@@ -29,6 +30,18 @@ class TestAutocommit(CliTestCase):
 
     def last_message(self) -> str:
         return self.git("log", "-1", "--format=%B").strip()
+
+    def test_stale_setup_is_upgraded_in_a_separate_commit_before_a_write(self):
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace(CHITTY_VERSION, "0.0.0"))
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "stale setup")
+
+        self.run_cli("add", "First", "-d", "x")
+
+        subjects = self.git("log", "-2", "--format=%s").splitlines()
+        self.assertEqual(subjects, ["chitty: add TASK-1 First", "chitty: upgrade repository setup"])
+        self.assertIn(CHITTY_VERSION, config.read_text())
 
     def test_each_write_is_one_commit_of_its_own_paths(self):
         (self.root / "unrelated.txt").write_text("staged by the user\n")

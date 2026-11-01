@@ -50,6 +50,31 @@ class TestSetupVersion(CliTestCase):
 
 
 class TestInit(CliTestCase):
+    def test_stale_setup_allows_reads_but_blocks_writes_without_autocommit(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "0.0.0"'
+            )
+        )
+
+        self.run_cli("list")
+        result = self.run_cli("add", "Blocked", "-d", "x", exit_code=1)
+
+        self.assertIn("run `chitty init`", result.stderr)
+
+    def test_newer_setup_blocks_writes(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "99.0.0"'
+            )
+        )
+
+        result = self.run_cli("add", "Blocked", "-d", "x", exit_code=1)
+
+        self.assertIn("needs Chitty 99.0.0 or later", result.stderr)
+
     def test_init(self):
         target = self.tmp / "fresh"
         target.mkdir()

@@ -272,6 +272,20 @@ class Repo:
     #
     # Each public write commits its own paths when autocommit is on.
 
+    def _prepare_write(self) -> None:
+        recorded = self.config.chitty_version
+        if recorded is not None and _version_key(recorded) > _version_key(CHITTY_VERSION):
+            raise ChittyError(f"repository needs Chitty {recorded} or later")
+        if recorded == CHITTY_VERSION:
+            return
+        if not self.config.autocommit:
+            raise ChittyError("repository setup is stale; run `chitty init` before writing")
+        paths = init_repo(self.root, False)
+        files = [path for path in paths if path.is_file() and path.is_relative_to(self.root)]
+        if files:
+            git.commit(self.root, files, "chitty: upgrade repository setup")
+        self.config = load_repo_config(self.root)
+
     def add(
         self,
         context: Context,
@@ -283,6 +297,7 @@ class Repo:
         notes: Sequence[str] = (),
     ) -> Change:
         """Create a task. References in depends_on may be shorthand."""
+        self._prepare_write()
         fields = dict(fields)
         depends_on = fields.get("depends_on")
         if isinstance(depends_on, list):
@@ -310,6 +325,7 @@ class Repo:
 
     def edit(self, task_id: TaskId, edit: Edit) -> Change:
         """Apply an edit. References in depends_on may be shorthand."""
+        self._prepare_write()
         if edit.is_empty():
             raise ChittyError("nothing to change")
         stored = self.find(task_id)
@@ -370,11 +386,13 @@ class Repo:
         return ids.next_number(numbers)
 
     def archive(self, task_id: TaskId) -> Change:
+        self._prepare_write()
         change = self._archive(task_id)
         return self._commit(change, "delete" if self.config.archive == "delete" else "archive")
 
     def archive_done(self) -> tuple[Change, ...]:
         """Archive every non-archived done task in one finalization."""
+        self._prepare_write()
         changes = tuple(
             self._archive(task.id)
             for context in self.contexts()
@@ -432,10 +450,12 @@ class Repo:
         return Change(deleted, (*paths, stored.path), tasks)
 
     def restore(self, task_id: TaskId) -> Change:
+        self._prepare_write()
         return self._commit(self._set_archived(task_id, False), "restore")
 
     def move(self, task_id: TaskId, target: Context) -> Change:
         """Give a task the next ID in another context and rewrite references to it."""
+        self._prepare_write()
         stored = self.find(task_id)
         if target.name == stored.context:
             raise ChittyError(f"{task_id} is already in context {target.name!r}")
@@ -557,6 +577,13 @@ def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:
         "A human should decide how to proceed, then unblock it."
     )
     return replace(edit, status="blocked", owner="human", notes=(*edit.notes, reason))
+
+
+def _version_key(value: str) -> tuple[int, ...]:
+    try:
+        return tuple(int(part) for part in value.split("."))
+    except ValueError as error:
+        raise ChittyError(f"invalid Chitty version {value!r}") from error
 
 
 def _unique_tasks(tasks: Sequence[StoredTask]) -> tuple[StoredTask, ...]:

@@ -43,7 +43,12 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
 - Minimal diffs. The tool never touches a line it didn't change, and never
   writes a file whose content would be unchanged. `init` is idempotent: it
   adds missing setup only and refreshes the managed agent-guide block.
-- No Chitty-format migrations in v1. `chitty import backlog-md` is an explicit,
+- `chitty init` is the idempotent setup and format-migration path. Reads work
+  with an older setup; writes require it to be current. With `autocommit =
+  true`, Chitty upgrades and commits setup separately before the requested
+  write; otherwise it fails loudly and tells the caller to run `chitty init`.
+  A Chitty version older than the recorded setup refuses writes clearly.
+  `chitty import backlog-md` is an explicit,
   one-way converter from a Backlog.md `backlog/` directory. Git history is the
   safety net, so it refuses to run, before writing anything, unless the Git
   working tree is clean, untracked files included; that also keeps its
