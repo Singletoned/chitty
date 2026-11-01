@@ -14,17 +14,19 @@ Out of scope: parents. `parent` is grouping only; a parent that should wait on i
 
 ## Acceptance Criteria
 
-- [ ] `waiting` is a status (order: `backlog`, `todo`, `waiting`, `doing`, `blocked`, `review`, `done`) and plain `chitty list` shows it
 - [ ] A write that leaves a `todo` or `doing` task with an open dependency (`add` or `edit` with `depends_on`) sets it to `waiting`; `backlog`, `blocked` and `review` tasks are left alone
 - [ ] When a task becomes `done`, is archived, or is deleted by `archive = "delete"`, each `waiting` task with no open dependency left returns to its status before `waiting` (from History), gets a note naming the finished task, and the CLI prints its ID
 - [ ] `-s waiting` without an open dependency fails, and `-s todo` or `-s doing` with one fails, naming the open dependencies
 - [ ] `chitty check` warns about a `waiting` task with no open dependency, a `todo` or `doing` task with one, and a `blocked` task with an open dependency (probably should be `waiting`); `chitty fix` repairs the first two, never `blocked`
 - [ ] MCP accepts and reports `waiting` through the shared store code
 - [ ] `PLAN.md` (status table no longer 'fixed in v1'), `README.md` and the managed guide (do not pick up `waiting` work; use `depends_on` rather than `blocked` for waits on other tickets) are updated; `version` is bumped, since older Chitty rejects the new status
+- [ ] `waiting` is a status and plain `chitty list` shows it. Status order is the direction of travel: `backlog`, `waiting`, `todo`, `blocked`, `doing`, `review`, `done`; work is pulled from the right
 
 ## Notes
 
 Suggestion origin: circuitry
+
+Decided with the human: `STATUSES` order is the direction tickets move in, and agents pick the rightmost workable ticket (finish before starting). `blocked` and `waiting` sit where the human placed them; History records where a task really was. A later rename of `todo` to `ready` is likely but not part of this ticket.
 
 ## History
 
