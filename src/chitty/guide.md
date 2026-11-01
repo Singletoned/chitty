@@ -15,7 +15,9 @@ task files. `chitty --help` is the full command reference.
 - Record anything surprising with `--note`. When work is ready, set `-s review`.
   Never review a ticket you worked on: review promptly, rather than at
   merge-request time. Pass it with `-s done --note "Reviewed: ..."`; fail it
-  with `-s doing --note "reason"`. Create new tickets for out-of-scope findings.
+  with `-s doing --note "reason"`. If the work is on a branch, the reviewer who
+  passes it merges it into `main` and removes the branch and its worktree.
+  Create new tickets for out-of-scope findings.
   The third failed review sets `blocked` and owner `human` instead; leave it
   for a person to unblock.
 - Set `-s done` when every criterion is ticked and the work is verified; write
