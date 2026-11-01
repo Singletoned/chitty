@@ -148,10 +148,27 @@ class TestInit(CliTestCase):
         self.assertEqual(config.read_text(), original)
         self.assertFalse((self.root / "AGENTS.md").exists())
 
+    def test_init_autocommit_enables_a_commented_setting(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", "autocommit = false # off")
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "initial")
+
+        self.run_cli("init", "--autocommit")
+
+        self.assertIn("autocommit = true # off", config.read_text())
+
     def test_init_autocommit_failure_is_loud(self):
         self.git("init", "--quiet")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
+        config = self.root / "chitty.toml"
+        original = config.read_text()
         self.git("add", "chitty.toml")
         self.git("commit", "--quiet", "-m", "initial")
         hook = self.root / ".git/hooks/pre-commit"
@@ -162,6 +179,9 @@ class TestInit(CliTestCase):
 
         self.assertIn("autocommit failed", result.stderr)
         self.assertIn("nope", result.stderr)
+        self.assertEqual(config.read_text(), original)
+        self.assertFalse((self.root / "AGENTS.md").exists())
+        self.assertFalse((self.root / "CLAUDE.md").exists())
 
     def git(self, *args: str) -> str:
         return subprocess.run(

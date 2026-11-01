@@ -23,9 +23,15 @@ Add an explicit `--autocommit` option to `init`. Refuse it on a dirty Git workin
 
 Implemented with a clean-tree precondition agreed during this session. Verified with `make check`, `chitty fix`, and `chitty init --help`.
 
+Review found that a failed setup commit left generated files behind, and that commented `autocommit = false` lines were not enabled. Fixing both before re-review.
+
+Addressed review findings: setup files roll back when the commit fails, and commented `autocommit = false` settings are enabled.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → doing
+- 2026-11-01 doing → review
+- 2026-11-01 review → doing
 - 2026-11-01 doing → review

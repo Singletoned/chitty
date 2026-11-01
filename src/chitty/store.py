@@ -579,18 +579,37 @@ def _add_missing_settings(
 
 def _set_autocommit(text: str, pyproject: bool) -> str:
     """Enable autocommit without changing unrelated TOML tables."""
+    pattern = r"(?m)^(autocommit\s*=\s*)false(?=\s*(?:#.*)?$)"
     if not pyproject:
-        return re.sub(r"(?m)^(autocommit\s*=\s*)false\s*$", r"\g<1>true", text)
+        return re.sub(pattern, r"\g<1>true", text)
     match = re.search(r"(?m)^\[tool\.chitty\]\s*$", text)
     assert match is not None
     following = re.search(r"(?m)^\[", text[match.end() :])
     end = match.end() + following.start() if following else len(text)
     section = text[match.end() : end]
-    return (
-        text[: match.end()]
-        + re.sub(r"(?m)^(autocommit\s*=\s*)false\s*$", r"\g<1>true", section)
-        + text[end:]
-    )
+    return text[: match.end()] + re.sub(pattern, r"\g<1>true", section) + text[end:]
+
+
+def _file_state(path: Path) -> tuple[str, bytes | Path] | None:
+    if path.is_symlink():
+        return "symlink", path.readlink()
+    if path.exists():
+        return "file", path.read_bytes()
+    return None
+
+
+def _restore_file(path: Path, state: tuple[str, bytes | Path] | None) -> None:
+    if path.exists() or path.is_symlink():
+        path.unlink()
+    if state is None:
+        return
+    kind, content = state
+    if kind == "symlink":
+        assert isinstance(content, Path)
+        path.symlink_to(content)
+    else:
+        assert isinstance(content, bytes)
+        path.write_bytes(content)
 
 
 def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
@@ -604,6 +623,8 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
 
     config_path = directory / CONFIG_NAME
     pyproject_path = directory / "pyproject.toml"
+    agents = directory / AGENTS_FILE
+    originals = {path: _file_state(path) for path in (config_path, pyproject_path, agents, claude)}
     has_pyproject_config = False
     if not config_path.exists() and pyproject_path.exists():
         pyproject_data = tomllib.loads(pyproject_path.read_text())
@@ -651,7 +672,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         register_project(config.project, directory)
         if changed:
             written.append(inbox)
-    agents = directory / AGENTS_FILE
     existing = agents.read_text() if agents.exists() else ""
     pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
     rendered_guide = guide()
@@ -668,7 +688,12 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         written.append(claude)
     committed = [path for path in written if path.is_relative_to(directory) and not path.is_dir()]
     if enable_autocommit and committed:
-        git.commit(directory, committed, "chitty: initialize and enable autocommit")
+        try:
+            git.commit(directory, committed, "chitty: initialize and enable autocommit")
+        except ChittyError:
+            for path, state in originals.items():
+                _restore_file(path, state)
+            raise
     return written
 
 
