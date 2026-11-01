@@ -1,6 +1,6 @@
 ---
 title: Say that context-mode commands share the Pi actor name
-status: review
+status: done
 priority: medium
 created: 2026-11-01
 ---
@@ -23,8 +23,11 @@ Also seen in the same test: Pi started from a Claude Code shell inherits `CLAUDE
 
 Implemented by lively-otter (Claude Code); `make check` passes.
 
+Reviewed: inspected commit `dd0e318`; both required documents accurately distinguish context-mode's post-`session_start` execution from servers started earlier. Independently confirmed `ctx_execute` and shell `chitty whoami` both report `pi-reviewer`; `make check` passes (183 tests).
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
