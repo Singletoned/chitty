@@ -1,6 +1,6 @@
 ---
 title: See tasks on every branch, from Git history
-status: todo
+status: doing
 priority: high
 created: 2026-11-01
 ---
@@ -20,7 +20,12 @@ A task's current state is its most recent change, not its furthest status: a fai
 - [ ] Reading every branch stays fast on a repository with many branches (one `git cat-file --batch` process, not one command per file); a test covers a task changed only on another branch
 - [ ] `PLAN.md` records the revised principle and the `autocommit` requirement for worktrees
 
+## Plan
+
+Trace repository task discovery, ID allocation, and the Git wrapper. Design a single batched Git read over branch refs that overlays committed task versions by the commit that last touched each file, while preserving direct reads from the current worktree. Add isolated repository tests for a task that changes only on another branch and for cross-branch ID allocation; then update `PLAN.md` with the branch-state and worktree-autocommit decisions.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-01 todo → doing
