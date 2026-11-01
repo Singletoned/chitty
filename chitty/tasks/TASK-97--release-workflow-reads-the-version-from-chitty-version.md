@@ -1,6 +1,6 @@
 ---
 title: Release workflow reads the version from `chitty.__version__`
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -21,8 +21,11 @@ Move the check after `make install` and read `chitty.__version__` with `uv run`;
 
 Implemented by lively-otter (Claude Code). Ran the new check locally with `GITHUB_REF_NAME=v0.1.13` (passes) and `v0.1.12` (fails); parsed the YAML to confirm the folded command. Not yet run in Actions: `v0.1.13` already points at a commit without this fix, so the next release needs a new version.
 
+Reviewed: inspected commit `01e53f7`; the workflow now imports `chitty.__version__` after dependency installation. Parsed the workflow YAML, verified matching and mismatching tag checks locally, and ran `make check` (183 tests passed).
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
