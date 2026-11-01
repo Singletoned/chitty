@@ -1,6 +1,6 @@
 ---
 title: See tasks on every branch, from Git history
-status: review
+status: done
 priority: high
 parent: TASK-58
 created: 2026-11-01
@@ -36,6 +36,8 @@ Unblocked (2026-11-01): the `chitty next` part of the old criterion 1 moved to T
 
 Verified the cross-branch implementation: `tests/test_store.py` covers state selected from a newer `other` branch; `list` formats the branch and `show` reports `branch:`. Verified the full suite with `make check`.
 
+Reviewed: independent implementation in `863447a` scans local and remote-tracking refs, selects the newest committed task state, loads blobs through one `git cat-file --batch` process, reports non-current branches, and documents the worktree autocommit requirement. Verified focused cross-branch tests and `make check`.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -44,3 +46,4 @@ Verified the cross-branch implementation: `tests/test_store.py` covers state sel
 - 2026-11-01 doing → blocked
 - 2026-11-01 blocked → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
