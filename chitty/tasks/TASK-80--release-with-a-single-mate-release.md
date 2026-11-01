@@ -1,6 +1,6 @@
 ---
 title: Release with a single `mate release`
-status: backlog
+status: todo
 priority: high
 created: 2026-11-01
 ---
@@ -19,3 +19,4 @@ Releasing means bumping `pyproject.toml` by hand in the right change, committing
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo

@@ -1,8 +1,7 @@
 ---
 title: Bring the Pi `/chitty` extension into this repo
-status: backlog
-depends_on:
-  - TASK-76
+status: todo
+priority: high
 created: 2026-11-01
 ---
 
@@ -13,10 +12,15 @@ The Pi extension that drives `/chitty work` and `/chitty review` loops lives in 
 ## Acceptance Criteria
 
 - [ ] The extension and its tests live in this repo and run in `make check`
-- [ ] `chitty init` installs or updates it when Pi is installed, and reports what it changed
-- [ ] It selects work through `chitty next` rather than parsing `chitty list` and status names itself
 - [ ] `README.md` documents it
+- [ ] `chitty init` installs the extension when Pi is installed, and replaces the installed copy only when it differs from the one shipped with Chitty, reporting what it changed; an unchanged install writes nothing
+- [ ] The installed copy stays correct across Chitty upgrades: a stale install is updated by the upgrade path (TASK-82)
+
+## Notes
+
+Split (2026-11-01): switching the extension to `chitty next` is a follow-up ticket, so this move does not wait for TASK-76. The current copy in `~/.pi` is under that directory's own Git history; the first install replaces it.
 
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo

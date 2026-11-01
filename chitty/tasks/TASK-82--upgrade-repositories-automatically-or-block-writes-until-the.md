@@ -1,6 +1,6 @@
 ---
 title: Upgrade repositories automatically, or block writes until they are upgraded
-status: backlog
+status: todo
 priority: high
 created: 2026-11-01
 ---
@@ -20,3 +20,4 @@ Format and setup changes are applied by two commands, `init` (guide, config) and
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo

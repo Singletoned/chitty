@@ -1,6 +1,7 @@
 ---
 title: Record the time and actor of every ticket change
-status: backlog
+status: todo
+priority: high
 depends_on:
   - TASK-75
 created: 2026-10-28
@@ -25,3 +26,4 @@ Raised by the human; deferred ('maybe to track who does what, but not yet'). Pai
 ## History
 
 - 2026-10-28 → backlog
+- 2026-11-01 backlog → todo

@@ -1,6 +1,6 @@
 ---
 title: Read Chitty's version from the code, not package metadata
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-80
@@ -14,3 +14,4 @@ created: 2026-11-01
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo

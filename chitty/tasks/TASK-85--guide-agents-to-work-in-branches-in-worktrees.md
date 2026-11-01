@@ -1,6 +1,7 @@
 ---
 title: Guide agents to work in branches in `.worktrees/`
-status: backlog
+status: todo
+priority: high
 depends_on:
   - TASK-84
 created: 2026-11-01
@@ -23,3 +24,4 @@ Merge policy decided (2026-11-01): the reviewer who passes branch work merges it
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo

@@ -1,6 +1,7 @@
 ---
 title: Give each agent session a name it can look up after compaction
-status: backlog
+status: todo
+priority: high
 created: 2026-11-01
 ---
 
@@ -34,3 +35,4 @@ Decided with the human (2026-11-01): `init` sets Pi's `exposeSessionEnvironment`
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo

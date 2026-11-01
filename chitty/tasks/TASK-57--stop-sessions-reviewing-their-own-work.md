@@ -1,6 +1,7 @@
 ---
 title: Stop sessions reviewing their own work
-status: backlog
+status: todo
+priority: high
 depends_on:
   - TASK-55
 created: 2026-10-28
@@ -30,3 +31,4 @@ Split per the earlier refinement note: session identity is TASK-75, recording ac
 ## History
 
 - 2026-10-28 → backlog
+- 2026-11-01 backlog → todo

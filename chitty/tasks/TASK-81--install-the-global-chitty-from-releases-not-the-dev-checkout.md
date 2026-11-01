@@ -1,6 +1,6 @@
 ---
 title: Install the global `chitty` from releases, not the dev checkout
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-80
@@ -14,3 +14,4 @@ Both `chitty` commands on this machine are editable installs of this checkout (`
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo

@@ -1,6 +1,7 @@
 ---
 title: See tasks on every branch, from Git history
-status: backlog
+status: todo
+priority: high
 created: 2026-11-01
 ---
 
@@ -22,3 +23,4 @@ A task's current state is its most recent change, not its furthest status: a fai
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-01 backlog → todo
