@@ -1,6 +1,6 @@
 ---
 title: suggest resolves registered project names before local paths
-status: blocked
+status: doing
 owner: human
 created: 2026-10-28
 ---
@@ -38,6 +38,8 @@ Review failed: `test_registered_project_wins_over_same_named_local_directory` ch
 
 Escalated to human review: failed review 3 times (applied by hand when TASK-64 added the rule). A human should decide how to proceed, then unblock it.
 
+Human: fix it myself (picked up after escalation). Both collision tests will chdir into a directory that really contains `chitty/`.
+
 ## Summary
 
 Registered project names now take precedence over local directories; only path-shaped arguments are resolved as paths. Added collision, bare-name, and explicit-path coverage; documented the rule in CLI help and README. Confirmed the regression failed before the fix and verified with `make check`.
@@ -54,3 +56,4 @@ Registered project names now take precedence over local directories; only path-s
 - 2026-10-29 doing → review
 - 2026-10-31 review → doing
 - 2026-11-01 doing → blocked
+- 2026-11-01 blocked → doing
