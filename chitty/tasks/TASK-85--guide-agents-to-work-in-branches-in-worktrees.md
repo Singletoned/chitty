@@ -1,6 +1,6 @@
 ---
 title: Guide agents to work in branches in `.worktrees/`
-status: blocked
+status: todo
 priority: high
 depends_on:
   - TASK-84
@@ -24,8 +24,11 @@ Merge policy decided (2026-11-01): the reviewer who passes branch work merges it
 
 Blocked by `TASK-84`: cross-branch state visibility must be completed before the guide can require worktrees and autocommit.
 
+Unblocked (2026-11-01): TASK-84 passed review, so other branches' task state is visible.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → blocked
+- 2026-11-01 blocked → todo
