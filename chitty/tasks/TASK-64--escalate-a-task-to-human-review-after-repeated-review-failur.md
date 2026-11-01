@@ -1,6 +1,6 @@
 ---
 title: Escalate a task to human review after repeated review failures
-status: review
+status: done
 created: 2026-11-01
 ---
 
@@ -23,8 +23,15 @@ In `Repo.edit`, count `review → doing` History entries after the last `→ blo
 
 MCP gets the escalation through the shared `Repo.edit`; only the CLI path has a test. Re-ran `chitty init` here, which refreshed `AGENTS.md` and `chitty_version`.
 
+Reviewed: confirmed the shared store escalation on the third failed review preserves the reviewer note, adds escalation context, sets `blocked` and owner `human`, and resets after unblocking. CLI reports escalation and MCP returns the shared edit result. Verified CLI/MCP tests, guide, README, PLAN, and version `0.1.5`; `make check` passes.
+
+## Summary
+
+Reviewed independently: verified all escalation behavior, documentation, guide-version bump, and focused tests. `make check` passes.
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
