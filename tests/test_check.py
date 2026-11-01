@@ -1,4 +1,7 @@
 from chitty.check import check, fix
+from chitty.config import CHITTY_VERSION
+from chitty.errors import ChittyError
+from chitty.store import Repo
 from tests.test_store import StoreTestCase
 
 
@@ -39,6 +42,19 @@ class TestCheck(StoreTestCase):
         self.assertIn(f"{dependent.path}: depends_on HUMAN-1: no such task", problems)
         self.assertIn("stray.txt: task filename", problems)
         self.assertEqual(len(self.problems()), 6)
+
+    def test_fix_refuses_stale_setup_before_repairing(self):
+        stored = self.add("Correct title")
+        stale_path = stored.path.with_name("TASK-1--stale.md")
+        stored.path.rename(stale_path)
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace(CHITTY_VERSION, "0.0.0"))
+        stale_repo = Repo.open(self.root)
+
+        with self.assertRaisesRegex(ChittyError, "run `chitty init`"):
+            fix(stale_repo, stale_repo.contexts(), [])
+
+        self.assertTrue(stale_path.exists())
 
     def test_reports_and_repairs_stale_filename_slug(self):
         stored = self.add("Correct title")

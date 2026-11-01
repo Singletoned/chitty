@@ -1,6 +1,6 @@
 ---
 title: Upgrade repositories automatically, or block writes until they are upgraded
-status: doing
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -19,11 +19,15 @@ Format and setup changes are applied by two commands, `init` (guide, config) and
 
 ## Plan
 
-Trace setup-version warnings and every write path. Make `init` the idempotent setup and migration entry point, gate writes on stale/newer versions according to autocommit, and ensure automatic upgrade is a separate commit before the requested write. Add regression tests for stale reads, blocked non-autocommit writes, automatic upgrade commits, and newer-version errors; then update `PLAN.md` and documentation and run `make check`.
+Trace every mutation entry point missed by the stale-setup gate, especially `fix`, import, and formatter finalization. Route them through the same autocommit/non-autocommit upgrade policy, add regression tests for each path, run `make check`, and return the ticket to review.
 
 ## Notes
 
 Review failed: stale repositories still allow `chitty fix` to modify task files. Reproduced with `chitty_version = "0.0.0"`: `chitty fix` repaired a stale filename and exited 0. Gate `fix` and every other write path, including `import backlog-md` and `Repo.finalize`, through the stale-setup policy, with regression tests.
+
+Resuming after review failure: I will gate `fix`, import, and `Repo.finalize` under the stale-setup policy with regression coverage.
+
+Addressed review failure by applying the shared stale-setup guard to `fix`, import, and batched finalization. Added a regression test proving stale non-autocommit `fix` cannot rename task files. Verified with focused tests and `make check`.
 
 ## Summary
 
@@ -36,3 +40,4 @@ Implemented stale-setup write gating. Non-autocommit repositories now require `c
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
 - 2026-11-01 review → doing
+- 2026-11-01 doing → review

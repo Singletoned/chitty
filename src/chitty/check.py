@@ -83,6 +83,7 @@ def fix(
     repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]
 ) -> tuple[list[Problem], list[Problem]]:
     """Repair safe problems, then return repairs and remaining problems."""
+    repo.prepare_write()
     wanted = {path.resolve() for path in paths}
     fixed: list[Problem] = []
     for context in contexts:

@@ -273,6 +273,10 @@ class Repo:
     #
     # Each public write commits its own paths when autocommit is on.
 
+    def prepare_write(self) -> None:
+        """Enforce the repository setup policy before any mutation."""
+        self._prepare_write()
+
     def _prepare_write(self) -> None:
         recorded = self.config.chitty_version
         if recorded is not None and _version_key(recorded) > _version_key(CHITTY_VERSION):
@@ -491,6 +495,7 @@ class Repo:
 
     def finalize(self, change: Change, verb: str) -> Change:
         """Run fix, formatting and at most one autocommit for batched writes."""
+        self._prepare_write()
         return self._commit(change, verb)
 
     def _commit(self, change: Change, verb: str) -> Change:

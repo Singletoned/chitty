@@ -162,6 +162,7 @@ def import_directory(
     keep_source: bool = False,
 ) -> list[str]:
     """Convert a legacy backlog after all source files validate successfully."""
+    repo.prepare_write()
     git.require_clean(repo.root)
     prefix = destination.prefix
     locations = (
