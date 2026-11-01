@@ -2,6 +2,8 @@
 title: Release with a single `mate release`
 status: blocked
 priority: high
+depends_on:
+  - TASK-83
 created: 2026-11-01
 ---
 
