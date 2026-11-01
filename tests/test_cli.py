@@ -80,6 +80,104 @@ class TestInit(CliTestCase):
         self.assertEqual(refreshed_agents, agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
 
+    def test_init_autocommit_commits_only_setup_files_and_is_idempotent(self):
+        target = self.tmp / "autocommit"
+        target.mkdir()
+        os.chdir(target)
+        subprocess.run(["git", "init", "--quiet"], cwd=target, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=target, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=target, check=True)
+        self.run_cli("init", "--autocommit")
+
+        config = tomllib.loads((target / "chitty.toml").read_text())
+        self.assertTrue(config["autocommit"])
+        committed = subprocess.run(
+            ["git", "show", "--name-only", "--format=", "HEAD"],
+            cwd=target,
+            capture_output=True,
+            check=True,
+            text=True,
+        ).stdout.splitlines()
+        self.assertEqual(committed, ["AGENTS.md", "CLAUDE.md", "chitty.toml"])
+        self.assertEqual(
+            subprocess.run(
+                ["git", "log", "-1", "--format=%B"],
+                cwd=target,
+                capture_output=True,
+                check=True,
+                text=True,
+            ).stdout.strip(),
+            "chitty: initialize and enable autocommit",
+        )
+        self.assertTrue((target / "CLAUDE.md").is_symlink())
+        self.assertEqual((target / "CLAUDE.md").readlink(), Path("AGENTS.md"))
+        self.assertEqual(self.git_status(target), "")
+
+        commits = subprocess.run(
+            ["git", "rev-list", "--count", "HEAD"],
+            cwd=target,
+            capture_output=True,
+            check=True,
+            text=True,
+        ).stdout
+        self.assertEqual(self.run_cli("init", "--autocommit").stdout, "already up to date\n")
+        self.assertEqual(
+            subprocess.run(
+                ["git", "rev-list", "--count", "HEAD"],
+                cwd=target,
+                capture_output=True,
+                check=True,
+                text=True,
+            ).stdout,
+            commits,
+        )
+
+    def test_init_autocommit_refuses_a_dirty_working_tree(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "initial")
+        config = self.root / "chitty.toml"
+        original = config.read_text() + "# user change\n"
+        config.write_text(original)
+
+        result = self.run_cli("init", "--autocommit", exit_code=1)
+
+        self.assertIn("working tree is dirty", result.stderr)
+        self.assertEqual(config.read_text(), original)
+        self.assertFalse((self.root / "AGENTS.md").exists())
+
+    def test_init_autocommit_failure_is_loud(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "initial")
+        hook = self.root / ".git/hooks/pre-commit"
+        hook.write_text("#!/bin/sh\necho nope >&2\nexit 1\n")
+        hook.chmod(0o755)
+
+        result = self.run_cli("init", "--autocommit", exit_code=1)
+
+        self.assertIn("autocommit failed", result.stderr)
+        self.assertIn("nope", result.stderr)
+
+    def git(self, *args: str) -> str:
+        return subprocess.run(
+            ["git", *args], cwd=self.root, capture_output=True, check=True, text=True
+        ).stdout
+
+    @staticmethod
+    def git_status(directory: Path) -> str:
+        return subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=directory,
+            capture_output=True,
+            check=True,
+            text=True,
+        ).stdout
+
     def test_init_refreshes_guide_after_default_prefix_changes(self):
         target = self.tmp / "fresh"
         target.mkdir()

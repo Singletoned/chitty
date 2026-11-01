@@ -147,9 +147,15 @@ def _text(value: str | None, file: TextIO | None, name: str) -> str | None:
 
 
 @cli.command()
-def init() -> None:
+@click.option(
+    "--autocommit",
+    "enable_autocommit",
+    is_flag=True,
+    help="Enable autocommit and commit this clean setup change.",
+)
+def init(enable_autocommit: bool) -> None:
     """Create or upgrade Chitty configuration and agent instructions."""
-    paths = init_repo(Path.cwd())
+    paths = init_repo(Path.cwd(), enable_autocommit)
     if not paths:
         click.echo("already up to date")
     for path in paths:

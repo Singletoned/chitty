@@ -260,7 +260,7 @@ or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error:
 format = 1
 default_context = "tasks"
 chitty_version = "0.1.2" # written by init; warns when setup is stale
-autocommit = false # if true, commit each write
+autocommit = false # if true, commit each write; `chitty init --autocommit` enables it and commits setup
 review = true # require review before done
 # autoformat = "taidy format" # run on every written task file
 archive = "move" # or "delete"; retain completed files or delete them
@@ -320,7 +320,7 @@ and zsh completion exposes commands/options; task ID and context completion is
 repository-aware and silently empty outside a repository.
 
 ```
-chitty init                        write chitty.toml, chitty/tasks/, AGENTS.md block
+chitty init [--autocommit]         write chitty.toml, chitty/tasks/, AGENTS.md block, CLAUDE.md symlink; `--autocommit` requires a clean Git tree
 chitty inbox [--pull]              list waiting suggestions, or import them all
 chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
                  [--owner X] [--depends-on ID]...
@@ -441,8 +441,10 @@ That is the whole prompt. Statuses are fixed, so the block is always correct.
   with the plugins above for the round-trip tests.
 - `Makefile` following the mate conventions (`.PHONY` targets with `##`
   descriptions): `make check` (ruff + pyright + tests), `make format`.
-- Git via `subprocess.run(..., check=True)`. Only used when `autocommit` is
-  on: `git add -- <paths> && git commit --only -m "chitty: <verb> <ID> <title>\n\nTask: <ID>" -- <paths>`,
+- Git via `subprocess.run(..., check=True)`. `chitty init --autocommit` first
+  requires a clean tree, enables `autocommit`, then commits only setup files it
+  changed with `chitty: initialize and enable autocommit`. For task writes when
+  `autocommit` is on: `git add -- <paths> && git commit --only -m "chitty: <verb> <ID> <title>\n\nTask: <ID>" -- <paths>`,
   with one `Task: <ID>` trailer for every task the commit writes. All affected
   paths are listed (two for `move`/`archive`, more when `move` rewrites
   references), so nothing the user had staged is swept in. Failure is a loud

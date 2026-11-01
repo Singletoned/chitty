@@ -35,6 +35,7 @@ from chitty.model import (
 
 ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
+CLAUDE_FILE = "CLAUDE.md"
 GUIDE_HEADING = "## Chitty"
 BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
@@ -576,8 +577,29 @@ def _add_missing_settings(
     return text[:position] + "\n".join(additions) + "\n\n" + text[position:]
 
 
-def init_repo(directory: Path) -> list[Path]:
+def _set_autocommit(text: str, pyproject: bool) -> str:
+    """Enable autocommit without changing unrelated TOML tables."""
+    if not pyproject:
+        return re.sub(r"(?m)^(autocommit\s*=\s*)false\s*$", r"\g<1>true", text)
+    match = re.search(r"(?m)^\[tool\.chitty\]\s*$", text)
+    assert match is not None
+    following = re.search(r"(?m)^\[", text[match.end() :])
+    end = match.end() + following.start() if following else len(text)
+    section = text[match.end() : end]
+    return (
+        text[: match.end()]
+        + re.sub(r"(?m)^(autocommit\s*=\s*)false\s*$", r"\g<1>true", section)
+        + text[end:]
+    )
+
+
+def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     """Create or non-destructively upgrade the repository's Chitty setup."""
+    if enable_autocommit:
+        git.require_clean(directory)
+    claude = directory / CLAUDE_FILE
+    if claude.exists() and not claude.is_symlink():
+        raise ChittyError(f"{claude} exists and must be replaced with a symlink to {AGENTS_FILE}")
     from chitty.config import inbox_path, load_repo_config, register_project
 
     config_path = directory / CONFIG_NAME
@@ -591,6 +613,8 @@ def init_repo(directory: Path) -> list[Path]:
     if not config_path.exists() and not has_pyproject_config:
         project = _default_project(directory.name)
         text = INITIAL_CONFIG.format(project=json.dumps(project), version=CHITTY_VERSION)
+        if enable_autocommit:
+            text = _set_autocommit(text, False)
         config = validate_repo_config(text, config_path)
         config_path.write_text(text)
         written.append(config_path)
@@ -608,6 +632,8 @@ def init_repo(directory: Path) -> list[Path]:
             rf'\g<1>"{CHITTY_VERSION}"',
             updated,
         )
+        if enable_autocommit:
+            updated = _set_autocommit(updated, source == pyproject_path)
         if updated != text:
             tomllib.loads(updated)
             source.write_text(updated)
@@ -635,6 +661,14 @@ def init_repo(directory: Path) -> list[Path]:
     if updated != existing:
         agents.write_text(updated)
         written.append(agents)
+    if claude.is_symlink() and claude.readlink() != Path(AGENTS_FILE):
+        claude.unlink()
+    if not claude.exists():
+        claude.symlink_to(AGENTS_FILE)
+        written.append(claude)
+    committed = [path for path in written if path.is_relative_to(directory) and not path.is_dir()]
+    if enable_autocommit and committed:
+        git.commit(directory, committed, "chitty: initialize and enable autocommit")
     return written
 
 

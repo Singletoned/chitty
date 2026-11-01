@@ -21,6 +21,7 @@ uvx chitty --help                 # run without installing
 
 ```sh
 chitty init                       # create/upgrade config and register its machine-local project inbox
+chitty init --autocommit          # enable autocommit and commit the clean setup change
 chitty import backlog-md          # convert a reviewed legacy backlog/ directory
 chitty suggest other "Improve docs" -d "Explain setup."  # machine-local inbox
 chitty inbox                      # list this repo's waiting inbox suggestions
@@ -73,7 +74,10 @@ eval "$(_CHITTY_COMPLETE=zsh_source chitty)"
 ```
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
-written task file before any autocommit. Commits for task work should end with
+written task file before any autocommit. `chitty init --autocommit` enables
+`autocommit = true` and commits only the repository setup files it changed
+(`chitty.toml` or `pyproject.toml`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
+dirty Git working tree. Commits for task work should end with
 `Task: <ID>` lines using the ticket's own ID (for example, `Task: TASK-12`) so
 `git log --grep <ID>` finds a ticket's code. This is a convention, not an
 enforced check. Set `archive = "delete"` to delete
