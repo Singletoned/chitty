@@ -30,6 +30,11 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   markers, no numbering inside checklist text.
 - Loud errors. Malformed files are rejected with a path and a reason, never
   silently repaired. `chitty check` is the compile step.
+- Chitty does the bookkeeping. Anything the tool can work out or keep
+  consistent itself (status that follows from other fields, references to
+  finished tasks, dates, who did what) it does automatically, rather than
+  asking agents to remember. Agent instructions are for judgement, not
+  upkeep.
 - The tool carries the rules, not a prompt. Validation and `--help` are the
   documentation; the agent instructions are ~20 lines and static.
 - Minimal diffs. The tool never touches a line it didn't change, and never
