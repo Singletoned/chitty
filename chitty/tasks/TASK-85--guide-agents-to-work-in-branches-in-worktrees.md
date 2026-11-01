@@ -1,6 +1,6 @@
 ---
 title: Guide agents to work in branches in `.worktrees/`
-status: todo
+status: blocked
 priority: high
 depends_on:
   - TASK-84
@@ -22,7 +22,10 @@ Agents working directly on `main` collide with each other and with the human. Th
 
 Merge policy decided (2026-11-01): the reviewer who passes branch work merges it into `main`; already in the guide via TASK-86.
 
+Blocked by `TASK-84`: cross-branch state visibility must be completed before the guide can require worktrees and autocommit.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-01 todo → blocked

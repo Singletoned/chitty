@@ -1,6 +1,6 @@
 ---
 title: Bring the Pi `/chitty` extension into this repo
-status: todo
+status: blocked
 priority: high
 created: 2026-11-01
 ---
@@ -20,7 +20,10 @@ The Pi extension that drives `/chitty work` and `/chitty review` loops lives in 
 
 Split (2026-11-01): switching the extension to `chitty next` is a follow-up ticket, so this move does not wait for TASK-76. The current copy in `~/.pi` is under that directory's own Git history; the first install replaces it.
 
+Blocked by `TASK-82` review: its stale-install upgrade acceptance criterion relies on the repository upgrade path.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-01 todo → blocked
