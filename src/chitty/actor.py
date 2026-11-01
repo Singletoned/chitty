@@ -5,6 +5,7 @@ import json
 import os
 import re
 from collections.abc import Mapping
+from importlib.resources import files
 from pathlib import Path
 from typing import cast
 
@@ -100,6 +101,21 @@ def enable_pi_session_environment() -> Path | None:
         updated = f'{content}{separator}\n  "exposeSessionEnvironment": true\n}}{closing.group(1)}'
     path.write_text(updated)
     return path
+
+
+def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path | None:
+    """Install Chitty's Pi extension when a Pi agent directory already exists."""
+    settings = pi_settings_path(environment)
+    agent = settings.parent
+    if not agent.is_dir():
+        return None
+    target = agent / "extensions" / "chitty.ts"
+    source = files("chitty.integrations.pi").joinpath("chitty.ts").read_bytes()
+    if target.exists() and target.read_bytes() == source:
+        return None
+    target.parent.mkdir(exist_ok=True)
+    target.write_bytes(source)
+    return target
 
 
 def pi_session_environment_missing(environment: Mapping[str, str] | None = None) -> bool:

@@ -12,6 +12,7 @@ check: ## lint, type-check and run the tests
 
 test: ## run the tests
 	uv run python -m unittest discover -s tests -t .
+	npm test
 
 format: ## format and auto-fix Python code
 	uv run ruff check --exit-zero .

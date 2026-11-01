@@ -1,6 +1,9 @@
 {
   "private": true,
   "description": "Pinned formatters for chitty's round-trip tests",
+  "scripts": {
+    "test": "node --experimental-strip-types --test src/chitty/integrations/pi/tests/chitty.test.ts"
+  },
   "devDependencies": {
     "prettier": "3.7.4"
   }

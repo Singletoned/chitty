@@ -1,0 +1,83 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import {
+  chittyPrompt,
+  continuationPrompt,
+  hasActionableTickets,
+  isNoMoreWorkResponse,
+  parseMode,
+} from "../chitty.ts";
+
+const TICKETS = JSON.stringify([
+  { id: "TASK-1", status: "todo" },
+  { id: "TASK-2", status: "doing" },
+  { id: "TASK-3", status: "review" },
+  { id: "TASK-4", status: "blocked" },
+]);
+
+test("selects tickets only from the active mode", () => {
+  assert.equal(hasActionableTickets(TICKETS, "work"), true);
+  assert.equal(hasActionableTickets(TICKETS, "review"), true);
+  assert.equal(
+    hasActionableTickets(JSON.stringify([{ status: "review" }]), "work"),
+    false,
+  );
+  assert.equal(
+    hasActionableTickets(JSON.stringify([{ status: "todo" }]), "review"),
+    false,
+  );
+});
+
+test("rejects invalid Chitty ticket-list output", () => {
+  assert.throws(() => hasActionableTickets("not JSON", "work"), /invalid JSON/);
+  assert.throws(() => hasActionableTickets("{}", "work"), /ticket list/);
+});
+
+test("uses work mode by default and accepts review mode", () => {
+  assert.equal(parseMode(""), "work");
+  assert.equal(parseMode("work"), "work");
+  assert.equal(parseMode("review"), "review");
+  assert.throws(() => parseMode("anything"), /Usage/);
+});
+
+test("gives work agents only implementation tickets", () => {
+  const prompt = chittyPrompt("work");
+
+  assert.match(prompt, /`todo` or `doing`/);
+  assert.match(prompt, /do not review tickets/);
+  assert.match(prompt, /inspect several upcoming actionable tickets/);
+  assert.match(prompt, /highest-priority tickets/);
+  assert.match(prompt, /ready for review/);
+  assert.match(prompt, /completely different agent/);
+  assert.match(prompt, /never a subagent of the implementation agent/);
+  assert.match(prompt, /mark the ticket blocked/);
+  assert.match(prompt, /NO MORE WORK/);
+  assert.doesNotMatch(prompt, /chitty pull/);
+});
+
+test("gives review agents only independent review tickets", () => {
+  const prompt = chittyPrompt("review");
+
+  assert.match(prompt, /status is `review`/);
+  assert.match(prompt, /highest-priority tickets first/);
+  assert.match(prompt, /Never review work you have done/);
+  assert.match(prompt, /Reviewed: \.\.\./);
+  assert.match(prompt, /-s doing/);
+  assert.match(prompt, /NO MORE WORK/);
+});
+
+test("stops when the agent says no more work", () => {
+  assert.equal(isNoMoreWorkResponse("NO MORE WORK"), true);
+  assert.equal(isNoMoreWorkResponse("Completed everything.\nNO MORE WORK"), true);
+  assert.equal(isNoMoreWorkResponse("No more work"), false);
+});
+
+test("continues each mode with its appropriate workflow", () => {
+  assert.match(continuationPrompt("work"), /move that ticket to blocked/);
+
+  const review = continuationPrompt("review");
+  assert.match(review, /Never review work you have done/);
+  assert.match(review, /move it to doing/);
+  assert.match(review, /"NO MORE WORK"/);
+});

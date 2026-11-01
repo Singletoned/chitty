@@ -120,3 +120,7 @@ make install    # uv sync --all-extras; npm ci (pinned prettier)
 make check      # ruff, pyright, unittest
 make format
 ```
+
+## Pi extension
+
+`chitty init` installs the shipped Pi `/chitty` workflow extension into an existing `~/.pi/agent/extensions/` directory. It updates the copy only when it differs; restart or reload Pi after an update.

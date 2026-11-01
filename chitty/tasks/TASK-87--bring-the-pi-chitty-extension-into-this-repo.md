@@ -1,6 +1,6 @@
 ---
 title: Bring the Pi `/chitty` extension into this repo
-status: todo
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -11,10 +11,14 @@ The Pi extension that drives `/chitty work` and `/chitty review` loops lives in 
 
 ## Acceptance Criteria
 
-- [ ] The extension and its tests live in this repo and run in `make check`
-- [ ] `README.md` documents it
-- [ ] `chitty init` installs the extension when Pi is installed, and replaces the installed copy only when it differs from the one shipped with Chitty, reporting what it changed; an unchanged install writes nothing
-- [ ] The installed copy stays correct across Chitty upgrades: a stale install is updated by the upgrade path (TASK-82)
+- [x] The extension and its tests live in this repo and run in `make check`
+- [x] `README.md` documents it
+- [x] `chitty init` installs the extension when Pi is installed, and replaces the installed copy only when it differs from the one shipped with Chitty, reporting what it changed; an unchanged install writes nothing
+- [x] The installed copy stays correct across Chitty upgrades: a stale install is updated by the upgrade path (TASK-82)
+
+## Plan
+
+Move the shipped Pi extension and its tests into a versioned integration directory; add a testable, idempotent `init` installer that updates only differing copies; update documentation and cover fresh, unchanged, and stale upgrade installs. Run the extension tests and `make check`, then request independent review.
 
 ## Notes
 
@@ -24,9 +28,13 @@ Blocked by `TASK-82` review: its stale-install upgrade acceptance criterion reli
 
 Unblocked (2026-11-01): TASK-82 passed review, so the upgrade path this ticket's stale-install criterion relies on exists.
 
+Moved the Pi extension and node tests into `src/chitty/integrations/pi`; `init` now idempotently installs or refreshes it in an existing Pi agent directory. Verified Python tests, formatter/lint/type checks, and `npm test`.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → blocked
 - 2026-11-01 blocked → todo
+- 2026-11-01 todo → doing
+- 2026-11-01 doing → review

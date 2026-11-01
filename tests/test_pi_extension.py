@@ -1,0 +1,23 @@
+import tempfile
+import unittest
+from pathlib import Path
+
+from chitty.actor import install_pi_extension
+
+
+class TestPiExtension(unittest.TestCase):
+    def test_installs_only_when_pi_exists_and_copy_is_stale(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            environment = {"HOME": str(home)}
+            self.assertIsNone(install_pi_extension(environment))
+
+            agent = home / ".pi" / "agent"
+            agent.mkdir(parents=True)
+            installed = install_pi_extension(environment)
+            assert installed is not None
+            self.assertTrue(installed.exists())
+            self.assertIsNone(install_pi_extension(environment))
+
+            installed.write_text("stale")
+            self.assertEqual(install_pi_extension(environment), installed)

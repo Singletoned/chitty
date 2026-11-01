@@ -693,6 +693,7 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     claude = directory / CLAUDE_FILE
     if claude.exists() and not claude.is_symlink():
         raise ChittyError(f"{claude} exists and must be replaced with a symlink to {AGENTS_FILE}")
+    from chitty.actor import install_pi_extension
     from chitty.config import inbox_path, load_repo_config, register_project
 
     config_path = directory / CONFIG_NAME
@@ -746,6 +747,12 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         register_project(config.project, directory)
         if changed:
             written.append(inbox)
+    pi_settings = enable_pi_session_environment()
+    if pi_settings is not None:
+        written.append(pi_settings)
+    pi_extension = install_pi_extension()
+    if pi_extension is not None:
+        written.append(pi_extension)
     existing = agents.read_text() if agents.exists() else ""
     pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
     rendered_guide = guide()
