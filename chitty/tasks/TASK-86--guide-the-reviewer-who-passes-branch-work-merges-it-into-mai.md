@@ -1,6 +1,6 @@
 ---
 title: "Guide: the reviewer who passes branch work merges it into `main`"
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -18,8 +18,13 @@ Decided with the human (2026-11-01): for now, the reviewer who passes a ticket m
 
 Add one sentence to the review bullet in `src/chitty/guide.md` and `PLAN.md`'s guide copy, bump the patch version (current per-change rule until TASK-80 lands), run `chitty init`, `make check`.
 
+## Notes
+
+Reviewed: acceptance criteria verified. The managed and PLAN guides match; version and refreshed config are 0.1.7. Clean-worktree verification passed: make check (163 tests) and chitty init was idempotent.
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
