@@ -32,6 +32,8 @@ Chitty derives a readable name (for example `peach-fox`) from a hash of the iden
 
 Decided with the human (2026-11-01): `init` sets Pi's `exposeSessionEnvironment` itself when Pi is installed. On this machine Pi's settings live at `~/.pi/agent/settings.json` and the setting is currently absent.
 
+Do this last in its batch: once it lands, Pi agents started before `exposeSessionEnvironment` was set cannot write until restarted (HUMAN-5).
+
 ## History
 
 - 2026-11-01 → backlog

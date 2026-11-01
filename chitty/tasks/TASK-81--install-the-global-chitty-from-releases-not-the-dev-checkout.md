@@ -4,6 +4,7 @@ status: todo
 priority: high
 depends_on:
   - TASK-80
+  - HUMAN-4
 created: 2026-11-01
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Stop sessions reviewing their own work
-status: todo
+status: backlog
 priority: high
 depends_on:
   - TASK-55
@@ -28,7 +28,10 @@ Needs refinement before promotion: determine whether Claude Code child sessions 
 
 Split per the earlier refinement note: session identity is TASK-75, recording actors is TASK-55, and this ticket is only enforcement. The commit-trailer idea (`Session: <name>`) is dropped for now, since History will carry the actor.
 
+Held until agents restart with session identity (HUMAN-5, via TASK-55).
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-01 todo → backlog

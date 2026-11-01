@@ -1,9 +1,10 @@
 ---
 title: Record the time and actor of every ticket change
-status: todo
+status: backlog
 priority: high
 depends_on:
   - TASK-75
+  - HUMAN-5
 created: 2026-10-28
 ---
 
@@ -23,7 +24,10 @@ Record a UTC timestamp to the second and the actor name (TASK-75) on every write
 
 Raised by the human; deferred ('maybe to track who does what, but not yet'). Pairs with the self-review ticket.
 
+Held until agents restart with session identity (HUMAN-5).
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-01 todo → backlog
