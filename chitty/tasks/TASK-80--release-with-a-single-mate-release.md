@@ -1,6 +1,6 @@
 ---
 title: Release with a single `mate release`
-status: todo
+status: blocked
 priority: high
 created: 2026-11-01
 ---
@@ -18,13 +18,15 @@ Releasing means bumping `pyproject.toml` by hand in the right change, committing
 
 ## Plan
 
-Add a tested release script invoked by a documented `mate release` Make target. It will validate the branch, clean/up-to-date state and checks; compare isolated `init` output from the latest tag with this checkout to choose the release level unless overridden; then update the version and lockfile, refresh setup, commit, tag, and push. Update the release documentation and remove the per-change version-bump rule, then run focused tests and `make check`.
+Inspect the existing Makefile, release workflow, tags, and setup output. Add a guarded `mate release` target that determines the required version bump from setup changes, updates generated files, verifies checks, commits, tags, and pushes. Add hermetic tests for bump selection and guards; update release documentation; run `make check` and target tests before requesting review.
 
 ## Notes
 
 Blocked pending HUMAN-6: the specified `init` comparison always changes `chitty_version`, so it cannot distinguish patch from minor. Implementation would encode an unintended always-minor policy.
 
 Unblocked: HUMAN-6 decided that the comparison ignores `chitty_version` (criterion rewritten, now number 4).
+
+Blocked on TASK-83: `chitty init` reads the installed package metadata version, so release automation cannot reliably refresh `chitty.toml` to its newly selected source version. Resolve TASK-83 first; then implement and verify the release command against the corrected version source.
 
 ## History
 
@@ -33,3 +35,5 @@ Unblocked: HUMAN-6 decided that the comparison ignores `chitty_version` (criteri
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → blocked
 - 2026-11-01 blocked → todo
+- 2026-11-01 todo → doing
+- 2026-11-01 doing → blocked
