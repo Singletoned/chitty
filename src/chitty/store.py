@@ -699,14 +699,13 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
 
 
 def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[StoredTask]:
-    """Order tasks by selected status, then priority, then ID."""
+    """Order tasks by selected status and priority, preserving source order for ties."""
     status_order = {status: index for index, status in enumerate(statuses)}
     return sorted(
         tasks,
         key=lambda stored: (
             status_order[stored.task.frontmatter.status],
             PRIORITY_ORDER[stored.task.frontmatter.priority],
-            str(stored.id),
         ),
     )
 

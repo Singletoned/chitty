@@ -673,6 +673,17 @@ class TestAddShowList(CliTestCase):
             [task["priority"] for task in tasks], ["high", "medium", "low", None, "high"]
         )
 
+    def test_list_preserves_context_and_numeric_order_for_priority_ties(self):
+        for number in range(1, 11):
+            self.run_cli("add", f"Task {number}", "-d", "x")
+        self.run_cli("add", "Human task", "-c", "human", "-d", "x")
+
+        expected = [*(f"TASK-{number}" for number in range(1, 11)), "HUMAN-1"]
+        self.assertEqual(
+            [line.split()[0] for line in self.run_cli("list").stdout.splitlines()], expected
+        )
+        self.assertEqual([task["id"] for task in self.json("list")], expected)
+
     def test_list(self):
         self.run_cli("add", "Add search to the task list", "-d", "x", "-l", "search", "-l", "cli")
         self.run_cli("add", "Fix login", "-d", "Broken on Safari")
