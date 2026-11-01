@@ -1,9 +1,7 @@
 ---
 title: Read Chitty's version from the code, not package metadata
-status: blocked
+status: todo
 priority: high
-depends_on:
-  - TASK-80
 created: 2026-11-01
 ---
 
@@ -15,8 +13,11 @@ created: 2026-11-01
 
 Blocked by `TASK-80`: release tooling must define the single source of truth it updates before version loading can change.
 
+Unblocked (2026-11-01): TASK-80 is deferred, so this ticket chooses the single version source itself (for example `__version__` in `src/chitty/__init__.py`, read by the build), and the manual release process bumps it. Update the release steps in `AGENTS.md` to name that file.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → blocked
+- 2026-11-01 blocked → todo

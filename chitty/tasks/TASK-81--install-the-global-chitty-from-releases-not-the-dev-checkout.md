@@ -3,7 +3,6 @@ title: Install the global `chitty` from releases, not the dev checkout
 status: blocked
 priority: high
 depends_on:
-  - TASK-80
   - HUMAN-4
 created: 2026-11-01
 ---
@@ -15,6 +14,8 @@ Both `chitty` commands on this machine are editable installs of this checkout (`
 ## Notes
 
 Blocked by `TASK-80` and `HUMAN-4`: a release must exist before replacing the global editable installation.
+
+No longer waits on TASK-80 (deferred): it needs only a published release (HUMAN-4).
 
 ## History
 

@@ -1,9 +1,7 @@
 ---
 title: Release with a single `mate release`
-status: blocked
-priority: high
-depends_on:
-  - TASK-83
+status: backlog
+priority: low
 created: 2026-11-01
 ---
 
@@ -30,6 +28,8 @@ Unblocked: HUMAN-6 decided that the comparison ignores `chitty_version` (criteri
 
 Blocked on TASK-83: `chitty init` reads the installed package metadata version, so release automation cannot reliably refresh `chitty.toml` to its newly selected source version. Resolve TASK-83 first; then implement and verify the release command against the corrected version source.
 
+Deferred by the human (2026-11-01): not urgent; a multi-step manual release is fine for now. Dependency on TASK-83 removed to break the cycle; revisit once TASK-83 has fixed where the version lives.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -39,3 +39,4 @@ Blocked on TASK-83: `chitty init` reads the installed package metadata version, 
 - 2026-11-01 blocked → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → blocked
+- 2026-11-01 blocked → backlog
