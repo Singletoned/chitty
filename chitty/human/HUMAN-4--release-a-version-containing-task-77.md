@@ -1,6 +1,6 @@
 ---
 title: Release a version containing TASK-77
-status: blocked
+status: todo
 priority: high
 created: 2026-11-01
 ---
@@ -13,7 +13,10 @@ Releasing pushes `main` and a tag and publishes to PyPI, so a person runs it. TA
 
 Blocked for a release maintainer: bump the package version, push `main`, and push the release tag so GitHub Actions can publish to PyPI. This agent cannot perform the required release and publishing actions.
 
+Back to `todo` (lively-otter): human tickets wait for a person; the Pi work loop blocked them because it does not skip `human` tickets (TASK-94).
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → blocked
+- 2026-11-01 blocked → todo

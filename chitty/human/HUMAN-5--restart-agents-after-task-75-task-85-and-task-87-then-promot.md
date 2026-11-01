@@ -1,6 +1,6 @@
 ---
 title: Restart agents after TASK-75, TASK-85 and TASK-87, then promote TASK-55 and TASK-57
-status: blocked
+status: todo
 priority: high
 depends_on:
   - TASK-75
@@ -17,7 +17,10 @@ Pi loads its extensions and settings at startup, and agents read the guide when 
 
 Blocked for a human with access to the running agents: restart the affected agent sessions, then verify the updated Chitty setup and promote `TASK-55` and `TASK-57` as described. This agent cannot restart other harness sessions.
 
+Back to `todo` (lively-otter): human tickets wait for a person; the Pi work loop blocked them because it does not skip `human` tickets (TASK-94).
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → blocked
+- 2026-11-01 blocked → todo
