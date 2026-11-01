@@ -105,6 +105,18 @@ class TestInit(CliTestCase):
         self.assertEqual(refreshed_agents, agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
 
+    def test_init_adds_worktrees_to_gitignore(self):
+        target = self.tmp / "worktrees"
+        target.mkdir()
+        (target / ".gitignore").write_text(".env\n")
+        os.chdir(target)
+
+        self.run_cli("init")
+
+        self.assertEqual((target / ".gitignore").read_text(), ".env\n.worktrees/\n")
+        self.run_cli("init")
+        self.assertEqual((target / ".gitignore").read_text(), ".env\n.worktrees/\n")
+
     def test_init_autocommit_commits_only_setup_files_and_is_idempotent(self):
         target = self.tmp / "autocommit"
         target.mkdir()
@@ -123,7 +135,7 @@ class TestInit(CliTestCase):
             check=True,
             text=True,
         ).stdout.splitlines()
-        self.assertEqual(committed, ["AGENTS.md", "CLAUDE.md", "chitty.toml"])
+        self.assertEqual(committed, [".gitignore", "AGENTS.md", "CLAUDE.md", "chitty.toml"])
         self.assertEqual(
             subprocess.run(
                 ["git", "log", "-1", "--format=%B"],

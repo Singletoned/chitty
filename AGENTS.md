@@ -32,6 +32,9 @@ task files. `chitty --help` is the full command reference.
 - Work on one task per session. Start with `chitty inbox --pull`, then `chitty show <ID>`.
 - Backlog tasks need refinement; promote them to `todo` before taking them on.
 - Use a task's optional `parent` field to group flat task IDs under one goal.
+- Unless your own instructions say otherwise, work in a branch in a worktree at
+  `.worktrees/` in the repository root. In a worktree, use `autocommit = true`
+  or commit after every Chitty write, so other branches can see task state.
 - Before writing code, write your approach with `chitty edit <ID> --plan` and
   set `-s doing`. Wait for approval if the human asked for it.
 - Tick acceptance criteria as you meet them: `chitty edit <ID> --check N`

@@ -664,6 +664,17 @@ def _set_autocommit(text: str, pyproject: bool) -> str:
     return text[: match.end()] + re.sub(pattern, r"\g<1>true", section) + text[end:]
 
 
+def _add_worktrees_to_gitignore(path: Path) -> bool:
+    """Add the default agent worktree directory to Git's ignored paths."""
+    text = path.read_text() if path.exists() else ""
+    if ".worktrees/" in text.splitlines():
+        return False
+    path.write_text(
+        f"{text if not text or text.endswith(chr(10)) else text + chr(10)}.worktrees/\n"
+    )
+    return True
+
+
 def _file_state(path: Path) -> tuple[str, bytes | Path] | None:
     if path.is_symlink():
         return "symlink", path.readlink()
@@ -699,7 +710,10 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     config_path = directory / CONFIG_NAME
     pyproject_path = directory / "pyproject.toml"
     agents = directory / AGENTS_FILE
-    originals = {path: _file_state(path) for path in (config_path, pyproject_path, agents, claude)}
+    gitignore = directory / ".gitignore"
+    originals = {
+        path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
+    }
     has_pyproject_config = False
     if not config_path.exists() and pyproject_path.exists():
         pyproject_data = tomllib.loads(pyproject_path.read_text())
@@ -747,6 +761,8 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         register_project(config.project, directory)
         if changed:
             written.append(inbox)
+    if _add_worktrees_to_gitignore(gitignore):
+        written.append(gitignore)
     pi_settings = enable_pi_session_environment()
     if pi_settings is not None:
         written.append(pi_settings)
