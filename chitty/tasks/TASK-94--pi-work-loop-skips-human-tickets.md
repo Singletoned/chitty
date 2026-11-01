@@ -1,6 +1,6 @@
 ---
 title: Pi work loop skips `human` tickets
-status: todo
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -11,10 +11,20 @@ The `/chitty work` loop treats `human` tickets as its own: `isActionableTicket` 
 
 ## Acceptance Criteria
 
-- [ ] `hasActionableTickets` in work mode ignores tickets whose `context` is `human`, with a test
-- [ ] The work prompt tells agents not to select or change `human` tickets
-- [ ] The managed guide block says agents leave `human` tickets for people and never block them, with a version bump
+- [x] `hasActionableTickets` in work mode ignores tickets whose `context` is `human`, with a test
+- [x] The work prompt tells agents not to select or change `human` tickets
+- [x] The managed guide block says agents leave `human` tickets for people and never block them, with a version bump
+
+## Plan
+
+Filter `context == "human"` out of work-mode actionability in the Pi extension and say so in the work prompt; add one guide sentence; bump the patch version; Node tests first.
+
+## Notes
+
+Implemented by lively-otter (Claude Code). Regression test `leaves human tickets for people` failed before the fix; `node --test src/chitty/integrations/pi/tests/chitty.test.ts` and `make check` pass. `chitty init` could not install the new extension or refresh `AGENTS.md` because of the TASK-95 guard; the reviewer should re-run `chitty init` once that is resolved.
 
 ## History
 
 - 2026-11-01 → todo
+- 2026-11-01 todo → doing
+- 2026-11-01 doing → review

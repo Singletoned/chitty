@@ -34,7 +34,8 @@ task files. `chitty --help` is the full command reference.
   code. This is a convention; no hook enforces it.
 - When work cannot proceed, set `-s blocked --note "reason"` and move on; do
   not pick up blocked work. If a person must act outside the repo, add a
-  `-c human` task and depend on it.
+  `-c human` task and depend on it. Leave `human` tasks in `todo` for people;
+  never pick them up or block them.
 - Found unrelated work? `chitty add` it (`-c human` if it needs a person).
   Suggest work for another project without touching its checkout using
   `chitty suggest PROJECT "title" -d "why"`.

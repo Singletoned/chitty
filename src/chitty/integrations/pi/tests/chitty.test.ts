@@ -44,6 +44,17 @@ test("selects tickets only from the active mode", () => {
   );
 });
 
+test("leaves human tickets for people", () => {
+  assert.equal(
+    hasActionableTickets(
+      JSON.stringify([{ status: "todo", context: "human" }]),
+      "work",
+    ),
+    false,
+  );
+  assert.match(chittyPrompt("work"), /`human` tickets/);
+});
+
 test("rejects invalid Chitty ticket-list output", () => {
   assert.throws(() => hasActionableTickets("not JSON", "work"), /invalid JSON/);
   assert.throws(() => hasActionableTickets("{}", "work"), /ticket list/);

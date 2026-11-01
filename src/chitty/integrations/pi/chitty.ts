@@ -134,7 +134,8 @@ export function hasActionableTickets(
 
 function isActionableTicket(ticket: unknown, mode: ChittyMode): boolean {
   if (typeof ticket !== "object" || ticket === null) return false;
-  const status = (ticket as { status?: unknown }).status;
+  const { status, context } = ticket as { status?: unknown; context?: unknown };
+  if (context === "human") return false;
   return mode === "work"
     ? status === "todo" || status === "doing"
     : status === "review";
@@ -236,6 +237,7 @@ export function chittyPrompt(mode: ChittyMode): string {
     mode === "work"
       ? [
           "Only select tickets whose status is `todo` or `doing`; do not review tickets in this mode.",
+          "Leave `human` tickets for people: never select, block or otherwise change them.",
           "Use `chitty list` and inspect several upcoming actionable tickets with `chitty show <ID>`; prioritize the highest-priority tickets, while considering dependencies and value.",
           "Follow the repository's Chitty guidance: record a plan, mark the ticket doing, work only that ticket, and verify it. Check satisfied acceptance criteria, then mark it done with a summary or ready for review when the repository workflow requires review. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
           "When blocked by an issue or question, add a clear Chitty note explaining the problem, who can resolve it, and what is needed; then mark the ticket blocked. Create a human ticket and dependency when an external human action is required.",
