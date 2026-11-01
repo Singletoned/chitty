@@ -17,6 +17,10 @@ TASK-79 was implemented and then passed by the same Pi session, using a read-onl
 - [ ] The Pi extension's work-mode prompt says to self-check with a subagent if useful, then set `review` and never `done`
 - [ ] `version` is bumped for the guide change
 
+## Notes
+
+Absorbed TASK-54's guide half: make 'never review a ticket you worked on' prominent, say that review needs a session that did not write the code, and that an agent that finishes work stops at `review`. Evidence from TASK-54: TASK-39 to TASK-42 went from review to done with only the author's notes.
+
 ## History
 
 - 2026-11-01 → backlog

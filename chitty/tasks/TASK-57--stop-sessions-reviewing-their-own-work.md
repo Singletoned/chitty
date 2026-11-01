@@ -19,6 +19,7 @@ Origin (circuitry): one session implemented `CIRCUIT-67`..`72`, then wrote "Revi
 - [ ] `chitty show` tells the caller when they worked on the task
 - [ ] Overriding needs an explicit flag, never a default, and the override is recorded in History
 - [ ] Subagents count as their parent
+- [ ] `review → done` requires a note starting `Reviewed:`, so skipping review is never silent
 
 ## Notes
 
@@ -29,6 +30,8 @@ Needs refinement before promotion: determine whether Claude Code child sessions 
 Split per the earlier refinement note: session identity is TASK-75, recording actors is TASK-55, and this ticket is only enforcement. The commit-trailer idea (`Session: <name>`) is dropped for now, since History will carry the actor.
 
 Held until agents restart with session identity (HUMAN-5, via TASK-55).
+
+Absorbed TASK-54's enforcement idea (require a `Reviewed:` note to pass a review); its guide-wording half is in TASK-91. TASK-54 is archived.
 
 ## History
 

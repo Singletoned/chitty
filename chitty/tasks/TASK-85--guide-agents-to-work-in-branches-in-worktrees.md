@@ -4,6 +4,7 @@ status: todo
 priority: high
 depends_on:
   - TASK-84
+parent: TASK-58
 created: 2026-11-01
 ---
 

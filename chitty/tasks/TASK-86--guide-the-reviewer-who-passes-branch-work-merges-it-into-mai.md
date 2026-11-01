@@ -2,6 +2,7 @@
 title: "Guide: the reviewer who passes branch work merges it into `main`"
 status: done
 priority: high
+parent: TASK-58
 created: 2026-11-01
 ---
 

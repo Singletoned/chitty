@@ -2,6 +2,7 @@
 title: See tasks on every branch, from Git history
 status: doing
 priority: high
+parent: TASK-58
 created: 2026-11-01
 ---
 
@@ -16,13 +17,16 @@ A task's current state is its most recent change, not its furthest status: a fai
 ## Acceptance Criteria
 
 - [ ] `chitty list`, `show` and `next` report each task's most recently changed state across local and remote-tracking branches, naming the branch when it is not the current one
-- [ ] `chitty add` never allocates an ID that exists on any local or remote-tracking branch
 - [ ] Reading every branch stays fast on a repository with many branches (one `git cat-file --batch` process, not one command per file); a test covers a task changed only on another branch
 - [ ] `PLAN.md` records the revised principle and the `autocommit` requirement for worktrees
 
 ## Plan
 
 Trace repository task discovery, ID allocation, and the Git wrapper. Design a single batched Git read over branch refs that overlays committed task versions by the commit that last touched each file, while preserving direct reads from the current worktree. Add isolated repository tests for a task that changes only on another branch and for cross-branch ID allocation; then update `PLAN.md` with the branch-state and worktree-autocommit decisions.
+
+## Notes
+
+Absorbed TASK-59 (claims from `doing/` branches), which is archived. Its open questions are answered here: task state from other branches shows in `list`, `show` and `next`; remote-tracking branches count; reading every branch makes a claim visible without relying on branch names. ID allocation is left to TASK-61 (IDs only on `main`), the earlier design agreed with the human: scanning branches cannot see uncommitted work or unfetched remotes, so it reduces collisions but cannot prevent them.
 
 ## History
 

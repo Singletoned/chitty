@@ -14,6 +14,9 @@ Agents mark their own tickets done from review, here and in other repos. No tick
 
 Raised by the human after reviews of TASK-43 to 46 caught two defects the authors had passed. Deferred: 'probably need some advice against this, but not yet'. Related: tracking who does what.
 
+Superseded: enforcement (require a `Reviewed:` note) moved to TASK-57, guide wording to TASK-91. Archived without implementation.
+
 ## History
 
 - 2026-10-28 → backlog
+- 2026-11-01 backlog → archived
