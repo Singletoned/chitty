@@ -1,6 +1,6 @@
 ---
 title: Upgrade repositories automatically, or block writes until they are upgraded
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -29,6 +29,8 @@ Resuming after review failure: I will gate `fix`, import, and `Repo.finalize` un
 
 Addressed review failure by applying the shared stale-setup guard to `fix`, import, and batched finalization. Added a regression test proving stale non-autocommit `fix` cannot rename task files. Verified with focused tests and `make check`.
 
+Reviewed: independent follow-up in e19a27a gates `fix`, import, and batched finalization through the setup policy. Reproduced stale non-autocommit `chitty fix`: it now exits non-zero, leaves the file unchanged, and requires `chitty init`.
+
 ## Summary
 
 Implemented stale-setup write gating. Non-autocommit repositories now require `chitty init`; autocommit repositories upgrade setup in a separate commit before the requested write; newer setup versions fail clearly. Updated `PLAN.md` and `README.md`; added regression coverage. Verification: `make check` (168 tests passed).
@@ -41,3 +43,4 @@ Implemented stale-setup write gating. Non-autocommit repositories now require `c
 - 2026-11-01 doing → review
 - 2026-11-01 review → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
