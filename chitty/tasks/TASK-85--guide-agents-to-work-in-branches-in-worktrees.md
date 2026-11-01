@@ -1,6 +1,6 @@
 ---
 title: Guide agents to work in branches in `.worktrees/`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-84
@@ -32,6 +32,8 @@ Unblocked (2026-11-01): TASK-84 passed review, so other branches' task state is 
 
 Implemented managed-guide worktree and task-state visibility rules, `.gitignore` setup, and regression coverage. Verified with `chitty fix`, `chitty check`, and `make check`; existing unrelated Markdown-delimiter warnings remain.
 
+Reviewed: Ed Singleton implemented the managed guide and init setup in 0e29596. Independently verified the focused init regression, `chitty check`, and `make check`.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -40,3 +42,4 @@ Implemented managed-guide worktree and task-state visibility rules, `.gitignore`
 - 2026-11-01 blocked → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
