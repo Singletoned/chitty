@@ -14,7 +14,11 @@ Agents working directly on `main` collide with each other and with the human. Th
 
 - [ ] The managed guide gives the worktree rule and the `.worktrees/` default, deferring to the agent's own instructions
 - [ ] `chitty init` adds `.worktrees/` to `.gitignore` when missing
-- [ ] The guide says who merges finished work back and when
+- [ ] The guide requires `autocommit = true` (or committing after every Chitty write) when working in a worktree, so other branches can see task state (TASK-84)
+
+## Notes
+
+Merge policy decided (2026-11-01): the reviewer who passes branch work merges it into `main`; already in the guide via TASK-86.
 
 ## History
 
