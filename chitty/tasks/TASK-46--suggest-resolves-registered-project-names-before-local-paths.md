@@ -1,6 +1,7 @@
 ---
 title: suggest resolves registered project names before local paths
-status: doing
+status: blocked
+owner: human
 created: 2026-10-28
 ---
 
@@ -35,6 +36,8 @@ Re-verified the isolated collision regression and full suite with `make check` (
 
 Review failed: `test_registered_project_wins_over_same_named_local_directory` changes into the temporary repo but never creates its same-named `chitty/` directory. `RepoTestCase` creates only `chitty.toml`, so the pre-fix `Path("chitty").is_dir()` branch is false and the test passes without the fix. Create `(self.root / "chitty").mkdir()` before the `chdir`; likewise make the bare-unregistered case run with a matching local directory. Demonstrate the corrected regression fails against the pre-fix implementation, then rerun `make check`.
 
+Escalated to human review: failed review 3 times (applied by hand when TASK-64 added the rule). A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Registered project names now take precedence over local directories; only path-shaped arguments are resolved as paths. Added collision, bare-name, and explicit-path coverage; documented the rule in CLI help and README. Confirmed the regression failed before the fix and verified with `make check`.
@@ -50,3 +53,4 @@ Registered project names now take precedence over local directories; only path-s
 - 2026-10-29 review → doing
 - 2026-10-29 doing → review
 - 2026-10-31 review → doing
+- 2026-11-01 doing → blocked
