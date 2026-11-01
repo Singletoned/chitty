@@ -73,8 +73,11 @@ def _readable_name(source: str, identity: str) -> str:
 
 
 def pi_settings_path(environment: Mapping[str, str] | None = None) -> Path:
-    """Return Pi's settings location, respecting HOME for isolated environments."""
+    """Return Pi's settings location, respecting its configured agent directory."""
     env = os.environ if environment is None else environment
+    agent = env.get("PI_CODING_AGENT_DIR")
+    if agent:
+        return Path(agent) / "settings.json"
     return Path(env.get("HOME", str(Path.home()))) / ".pi" / "agent" / "settings.json"
 
 

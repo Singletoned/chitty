@@ -21,3 +21,14 @@ class TestPiExtension(unittest.TestCase):
 
             installed.write_text("stale")
             self.assertEqual(install_pi_extension(environment), installed)
+
+    def test_installs_into_configured_pi_agent_directory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            agent = Path(temporary) / "custom-agent"
+            agent.mkdir()
+
+            installed = install_pi_extension({"PI_CODING_AGENT_DIR": str(agent), "HOME": temporary})
+
+            self.assertEqual(installed, agent / "extensions" / "chitty.ts")
+            assert installed is not None
+            self.assertTrue(installed.exists())

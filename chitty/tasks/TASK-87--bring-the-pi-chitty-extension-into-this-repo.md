@@ -18,7 +18,7 @@ The Pi extension that drives `/chitty work` and `/chitty review` loops lives in 
 
 ## Plan
 
-Move the shipped Pi extension and its tests into a versioned integration directory; add a testable, idempotent `init` installer that updates only differing copies; update documentation and cover fresh, unchanged, and stale upgrade installs. Run the extension tests and `make check`, then request independent review.
+Resolve Pi agent directories through `PI_CODING_AGENT_DIR` before deriving `settings.json`, preserving the documented `HOME/.pi/agent` fallback. Add isolated regression coverage for extension installation to a custom agent directory; first confirm it fails under the existing implementation, then implement the path resolution and run focused tests plus `make check`.
 
 ## Notes
 
