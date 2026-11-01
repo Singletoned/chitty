@@ -1,6 +1,6 @@
 ---
 title: "Guide: the reviewer who passes branch work merges it into `main`"
-status: doing
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -11,8 +11,8 @@ Decided with the human (2026-11-01): for now, the reviewer who passes a ticket m
 
 ## Acceptance Criteria
 
-- [ ] The managed guide says the reviewer who passes branch work merges it into `main` and removes the branch and its worktree
-- [ ] `PLAN.md`'s copy of the guide matches; `version` is bumped and `chitty init` refreshed here
+- [x] The managed guide says the reviewer who passes branch work merges it into `main` and removes the branch and its worktree
+- [x] `PLAN.md`'s copy of the guide matches; `version` is bumped and `chitty init` refreshed here
 
 ## Plan
 
@@ -22,3 +22,4 @@ Add one sentence to the review bullet in `src/chitty/guide.md` and `PLAN.md`'s g
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → doing
+- 2026-11-01 doing → review
