@@ -3,12 +3,12 @@
 import os
 import re
 import tomllib
-from importlib.metadata import version
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator, model_validator
 
+from chitty import __version__
 from chitty.errors import ChittyError
 from chitty.ids import PREFIX_RE
 
@@ -16,7 +16,7 @@ CONFIG_NAME = "chitty.toml"
 PYPROJECT_NAME = "pyproject.toml"
 BACKLOG_DIR = "chitty"
 ROOT_ENV = "CHITTY_ROOT"
-CHITTY_VERSION = version("chitty")
+CHITTY_VERSION = __version__
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)

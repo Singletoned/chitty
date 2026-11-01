@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "chitty"
-version = "0.1.8"
+dynamic = ["version"]
 description = "Markdown-native task tracker for repos worked on by humans and coding agents"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -27,6 +27,9 @@ dependencies = [
     "pydantic",
     "pyyaml",
 ]
+
+[tool.hatch.version]
+path = "src/chitty/__init__.py"
 
 [project.urls]
 Homepage = "https://github.com/Singletoned/chitty"
