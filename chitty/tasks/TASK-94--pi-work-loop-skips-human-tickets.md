@@ -1,6 +1,6 @@
 ---
 title: Pi work loop skips `human` tickets
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -23,8 +23,11 @@ Filter `context == "human"` out of work-mode actionability in the Pi extension a
 
 Implemented by lively-otter (Claude Code). Regression test `leaves human tickets for people` failed before the fix; `node --test src/chitty/integrations/pi/tests/chitty.test.ts` and `make check` pass. `chitty init` could not install the new extension or refresh `AGENTS.md` because of the TASK-95 guard; the reviewer should re-run `chitty init` once that is resolved.
 
+Reviewed: verified the human-context filter, work prompt and managed guide wording; Pi extension tests (12) and make check (183 tests) pass.
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done

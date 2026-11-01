@@ -1,6 +1,6 @@
 ---
 title: "`chitty init` updates an unedited Pi extension instead of refusing"
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -25,8 +25,11 @@ Implemented hash-tracked Pi extension updates and preflight validation. Verified
 
 Reverified after the final `chitty init` integration regression test: `make check` passes with 183 tests, Ruff, and Pyright.
 
+Reviewed: verified hash-tracked extension upgrades and preflight validation before setup writes; focused actor/CLI tests (70) and make check (183 tests) pass.
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
