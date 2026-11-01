@@ -6,6 +6,7 @@ import {
   chittyPrompt,
   continuationPrompt,
   hasActionableTickets,
+  isFailedAssistantResponse,
   isNoMoreWorkResponse,
   parseMode,
   setPiSessionIdentity,
@@ -91,6 +92,13 @@ test("uses Pi's public session ID API", () => {
 test("stops continuation when a triggered turn produces no assistant response", () => {
   assert.equal(hasNewAssistantResponse(4, 4), false);
   assert.equal(hasNewAssistantResponse(4, 5), true);
+});
+
+test("stops continuation after failed assistant turns", () => {
+  assert.equal(isFailedAssistantResponse("error"), true);
+  assert.equal(isFailedAssistantResponse("aborted"), true);
+  assert.equal(isFailedAssistantResponse("end_turn"), false);
+  assert.equal(isFailedAssistantResponse(undefined), false);
 });
 
 test("stops when the agent says no more work", () => {

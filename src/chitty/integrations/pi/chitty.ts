@@ -53,7 +53,7 @@ export default function chitty(pi: ExtensionAPI) {
     }
 
     const assistant = latestAssistantMessage(ctx);
-    if (assistant?.stopReason === "error" || assistant?.stopReason === "aborted") {
+    if (isFailedAssistantResponse(assistant?.stopReason)) {
       stopContinuation(ctx, `agent response ended with ${assistant.stopReason}`);
       return;
     }
@@ -174,6 +174,12 @@ export function hasNewAssistantResponse(
   currentAssistantCount: number,
 ): boolean {
   return currentAssistantCount > previousAssistantCount;
+}
+
+export function isFailedAssistantResponse(
+  stopReason: AssistantMessage["stopReason"] | undefined,
+): boolean {
+  return stopReason === "error" || stopReason === "aborted";
 }
 
 function assistantMessageCount(ctx: ExtensionContext): number {
