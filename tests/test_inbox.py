@@ -157,10 +157,15 @@ class TestInbox(RepoTestCase):
 
         self.assertEqual(len(list((self.root / "chitty/tasks").glob("*.md"))), 2)
 
-    def test_registered_project_wins_over_same_named_local_directory(self):
+    def enter_directory_containing_chitty(self):
+        """Work from a directory with a `chitty/` folder, as every Chitty repo has."""
+        (self.root / "chitty").mkdir()
         previous = Path.cwd()
         os.chdir(self.root)
         self.addCleanup(os.chdir, previous)
+
+    def test_registered_project_wins_over_same_named_local_directory(self):
+        self.enter_directory_containing_chitty()
         register_project("chitty", self.root)
 
         path = suggest("chitty", "Improve docs", None, False, self.root)
@@ -168,6 +173,7 @@ class TestInbox(RepoTestCase):
         self.assertEqual(path.parent, self.tmp / "data" / "chitty" / "inbox" / "chitty")
 
     def test_bare_unregistered_local_directory_is_an_unknown_project(self):
+        self.enter_directory_containing_chitty()
         with self.assertRaisesRegex(ChittyError, "unknown project 'chitty'.*use --create"):
             suggest("chitty", "Improve docs", None, False, self.root)
 
