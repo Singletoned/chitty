@@ -1,6 +1,6 @@
 ---
 title: Show priority in `chitty list` and order by it
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -23,6 +23,10 @@ Review failed (independent review by a separate session; the earlier pass was a 
 
 Fixed the review finding: equal-priority items now retain the repository traversal order instead of sorting IDs lexically. Added and first ran the regression test under the unfixed ordering; it failed with `HUMAN-1` and `TASK-10` misplaced. Verified with the focused test, `make format`, and `make check`.
 
+Reviewed: verified  fixes the reported stable-order defect without changing status or priority ordering; regression covers text and JSON across contexts and two-digit IDs. make check passed (164 tests).
+
+Correction: Reviewed commit `1d9b120`; it fixes the stable-order defect without changing status or priority ordering.
+
 ## Summary
 
 Preserves context traversal and numeric ID order for equal list status/priority ties. Verified with `make check`.
@@ -36,3 +40,4 @@ Preserves context traversal and numeric ID order for equal list status/priority 
 - 2026-11-01 review → done
 - 2026-11-01 done → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
