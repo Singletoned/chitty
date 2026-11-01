@@ -1,6 +1,6 @@
 ---
 title: Read Chitty's version from the code, not package metadata
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -21,6 +21,8 @@ Unblocked (2026-11-01): TASK-80 is deferred, so this ticket chooses the single v
 
 Moved the canonical version to `src/chitty/__init__.py`; Hatchling builds and runtime configuration now read it directly. Verified focused regression, `make check`, and `make build`.
 
+Reviewed: independent implementation in 49eb608 makes `src/chitty/__init__.py` the runtime and Hatch build version source. Verified `make check`, `make build`, and matching runtime/wheel metadata version `0.1.8`.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -29,3 +31,4 @@ Moved the canonical version to `src/chitty/__init__.py`; Hatchling builds and ru
 - 2026-11-01 blocked → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
