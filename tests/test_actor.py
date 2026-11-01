@@ -29,9 +29,11 @@ class TestActor(unittest.TestCase):
                 self.assertEqual(first, self.resolve({variable: "session-123"}))
                 self.assertRegex(first, r"^[a-z]+-[a-z]+$")
 
-    def test_subagents_inherit_the_parent_identity(self):
+    def test_chitty_pi_session_identity_takes_precedence_over_child_session(self):
         parent = self.resolve({"PI_SESSION_ID": "parent-session"})
-        child = self.resolve({"PI_SESSION_ID": "parent-session", "PI_SUBAGENT": "child"})
+        child = self.resolve(
+            {"CHITTY_PI_SESSION_ID": "parent-session", "PI_SESSION_ID": "child-session"}
+        )
         self.assertEqual(child, parent)
 
     def test_missing_identity_fails_loudly(self):

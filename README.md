@@ -77,14 +77,16 @@ eval "$(_CHITTY_COMPLETE=zsh_source chitty)"
 `chitty whoami` derives a stable readable name from `CHITTY_ACTOR` (when set),
 or a coding harness session identity: `CLAUDE_CODE_SESSION_ID`, `PI_SESSION_ID`,
 `CODEX_THREAD_ID`, or `CODEX_SESSION_ID`. `CHITTY_ACTOR` is for people and other
-tools. `chitty init` enables Pi's `exposeSessionEnvironment` setting when Pi is
-installed; restart the agent afterwards. Subagents inherit their parent's
-session environment and therefore deliberately share its actor name.
+tools. Chitty's Pi extension records Pi's session ID in `CHITTY_PI_SESSION_ID`
+at session start, so shell commands, `pi.exec`, and subagents share the parent
+actor name. Reload or restart Pi after `chitty init` installs or updates the
+extension. Servers started before the extension cannot receive that variable;
+start Pi with `CHITTY_ACTOR=<name>` when they need the same identity.
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit. `chitty init --autocommit` enables
 `autocommit = true` and commits only the repository setup files it changed
-(`chitty.toml` or `pyproject.toml`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
+(`chitty.toml` or `pyproject.toml`, `.gitignore`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
 dirty Git working tree. Commits for task work should end with
 `Task: <ID>` lines using the ticket's own ID (for example, `Task: TASK-12`) so
 `git log --grep <ID>` finds a ticket's code. This is a convention, not an

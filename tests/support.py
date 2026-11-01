@@ -39,6 +39,7 @@ class RepoTestCase(unittest.TestCase):
             "CHITTY_ACTOR",
             "CLAUDE_CODE_SESSION_ID",
             "PI_CODING_AGENT",
+            "CHITTY_PI_SESSION_ID",
             "PI_SESSION_ID",
             "CODEX_THREAD_ID",
             "CODEX_SESSION_ID",

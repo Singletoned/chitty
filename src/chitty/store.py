@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from chitty import formatter, git, ids
-from chitty.actor import enable_pi_session_environment
+from chitty.actor import remove_pi_session_environment
 from chitty.config import (
     BACKLOG_DIR,
     CHITTY_VERSION,
@@ -763,7 +763,7 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
             written.append(inbox)
     if _add_worktrees_to_gitignore(gitignore):
         written.append(gitignore)
-    pi_settings = enable_pi_session_environment()
+    pi_settings = remove_pi_session_environment()
     if pi_settings is not None:
         written.append(pi_settings)
     pi_extension = install_pi_extension()
@@ -791,8 +791,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
             for path, state in originals.items():
                 _restore_file(path, state)
             raise
-    if pi_settings := enable_pi_session_environment():
-        written.append(pi_settings)
     return written
 
 

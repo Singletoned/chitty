@@ -486,9 +486,11 @@ src/chitty/
 
 `cli.py` and `mcp.py` contain no logic; both call the same functions in
 `store.py`/`model.py` so behaviour cannot diverge. Actor identity comes from
-`CHITTY_ACTOR` or a supported harness session variable; Pi setup enables
-`exposeSessionEnvironment`, and subagents intentionally inherit the parent's
-session identity.
+`CHITTY_ACTOR` or a supported harness session variable. Chitty's Pi extension
+copies the session ID into `CHITTY_PI_SESSION_ID` at session start, which takes
+precedence over Pi's shell-only variable so descendants retain their parent's
+identity. Servers started before the extension need the `CHITTY_ACTOR`
+workaround.
 
 ## Build order
 

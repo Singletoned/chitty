@@ -604,7 +604,9 @@ def guide_() -> None:
     click.echo(guide(), nl=False)
     if pi_session_environment_missing():
         click.echo(
-            "\nPi is not exposing PI_SESSION_ID. Run `chitty init`, then restart this agent."
+            "\nPi needs Chitty's extension to set its session identity. Reload the extension or "
+            "set `CHITTY_ACTOR` when starting Pi; servers started before the extension use "
+            "that workaround."
         )
 
 

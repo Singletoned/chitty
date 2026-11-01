@@ -1030,9 +1030,9 @@ class TestIdentity(CliTestCase):
         self.assertEqual(self.json("whoami"), {"actor": name})
         os.environ.pop("PI_SESSION_ID")
         os.environ["PI_CODING_AGENT"] = "true"
-        self.assertIn("Run `chitty init`, then restart this agent", self.run_cli("guide").stdout)
+        self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
 
-    def test_init_enables_pi_session_environment_without_reformatting_settings(self):
+    def test_init_removes_ineffective_pi_session_environment_setting(self):
         settings = self.tmp / "home" / ".pi" / "agent" / "settings.json"
         settings.parent.mkdir(parents=True)
         settings.write_text('{\n    "other": [1, 2],\n    "exposeSessionEnvironment": false\n}\n')
@@ -1040,10 +1040,7 @@ class TestIdentity(CliTestCase):
         result = self.run_cli("init")
 
         self.assertIn(f"updated {settings}", result.stdout)
-        self.assertEqual(
-            settings.read_text(),
-            '{\n    "other": [1, 2],\n    "exposeSessionEnvironment": true\n}\n',
-        )
+        self.assertEqual(settings.read_text(), '{\n    "other": [1, 2]\n}\n')
         self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
 

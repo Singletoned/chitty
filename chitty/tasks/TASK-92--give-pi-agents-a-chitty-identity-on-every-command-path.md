@@ -1,6 +1,6 @@
 ---
 title: Give Pi agents a Chitty identity on every command path
-status: todo
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -19,10 +19,14 @@ Proposed fix: Chitty's Pi extension (TASK-87) sets an identity variable in the P
 
 ## Acceptance Criteria
 
-- [ ] In a Pi session with Chitty's extension, Chitty resolves the same name from the bash tool, from `pi.exec`, and from a subagent; tests cover the extension setting the variable and Chitty preferring it
-- [ ] `chitty init` no longer writes `exposeSessionEnvironment` to Pi's settings and removes the key it added earlier; `chitty guide`'s Pi message describes the real requirement
-- [ ] Commands launched by servers started before `session_start` (such as context-mode) are covered too, or the limitation is documented with the `CHITTY_ACTOR` workaround
-- [ ] `README.md` and `PLAN.md` describe how Pi identity works
+- [x] In a Pi session with Chitty's extension, Chitty resolves the same name from the bash tool, from `pi.exec`, and from a subagent; tests cover the extension setting the variable and Chitty preferring it
+- [x] `chitty init` no longer writes `exposeSessionEnvironment` to Pi's settings and removes the key it added earlier; `chitty guide`'s Pi message describes the real requirement
+- [x] Commands launched by servers started before `session_start` (such as context-mode) are covered too, or the limitation is documented with the `CHITTY_ACTOR` workaround
+- [x] `README.md` and `PLAN.md` describe how Pi identity works
+
+## Plan
+
+Replace the ineffective Pi settings mutation with extension-owned identity propagation. Inspect the actor resolver, shipped extension, guide, README, PLAN, and existing tests; add regression tests that fail under the current behavior, then implement the smallest shared identity mechanism and document the startup-server limitation or workaround. Verify focused tests and `make check`, tick criteria, and submit for independent review.
 
 ## Notes
 
@@ -30,7 +34,11 @@ Suggestion origin: chitty
 
 Diagnosed by lively-otter (Claude Code) by reading Pi's installed code, not in a live Pi session; confirm which command path the failing agent used.
 
+Implemented extension-owned `CHITTY_PI_SESSION_ID` propagation, actor precedence, obsolete-settings removal, and the startup-server `CHITTY_ACTOR` workaround documentation. Verified with focused identity tests, `chitty init`, `chitty fix`, `chitty check`, `make check`, and `make test`; existing unrelated Markdown-delimiter warnings remain.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-01 todo → doing
+- 2026-11-01 doing → review

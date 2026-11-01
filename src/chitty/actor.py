@@ -7,7 +7,6 @@ import re
 from collections.abc import Mapping
 from importlib.resources import files
 from pathlib import Path
-from typing import cast
 
 from chitty.errors import ChittyError
 
@@ -47,11 +46,12 @@ _ANIMALS = (
     "raven",
     "stoat",
 )
-_SESSION_VARIABLES = (
-    "CLAUDE_CODE_SESSION_ID",
-    "PI_SESSION_ID",
-    "CODEX_THREAD_ID",
-    "CODEX_SESSION_ID",
+_SESSION_IDENTITIES = (
+    ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_SESSION_ID"),
+    ("CHITTY_PI_SESSION_ID", "PI_SESSION_ID"),
+    ("PI_SESSION_ID", "PI_SESSION_ID"),
+    ("CODEX_THREAD_ID", "CODEX_THREAD_ID"),
+    ("CODEX_SESSION_ID", "CODEX_SESSION_ID"),
 )
 
 
@@ -60,10 +60,10 @@ def actor(environment: Mapping[str, str] | None = None) -> str:
     env = os.environ if environment is None else environment
     if override := env.get("CHITTY_ACTOR", "").strip():
         return override
-    for variable in _SESSION_VARIABLES:
+    for variable, source in _SESSION_IDENTITIES:
         if identity := env.get(variable, "").strip():
-            return _readable_name(variable, identity)
-    names = ", ".join(_SESSION_VARIABLES)
+            return _readable_name(source, identity)
+    names = ", ".join(variable for variable, _ in _SESSION_IDENTITIES)
     raise ChittyError(f"cannot determine actor; set CHITTY_ACTOR or provide one of {names}")
 
 
@@ -81,8 +81,8 @@ def pi_settings_path(environment: Mapping[str, str] | None = None) -> Path:
     return Path(env.get("HOME", str(Path.home()))) / ".pi" / "agent" / "settings.json"
 
 
-def enable_pi_session_environment() -> Path | None:
-    """Enable Pi's session environment, preserving every unrelated settings byte."""
+def remove_pi_session_environment() -> Path | None:
+    """Remove Chitty's obsolete Pi setting without changing other settings."""
     path = pi_settings_path()
     if not path.exists():
         return None
@@ -90,18 +90,12 @@ def enable_pi_session_environment() -> Path | None:
     parsed = json.loads(text)
     if not isinstance(parsed, dict):
         raise ChittyError(f"Pi settings at {path} must be a JSON object")
-    settings = cast(dict[str, object], parsed)
-    if settings.get("exposeSessionEnvironment") is True:
+    if "exposeSessionEnvironment" not in parsed:
         return None
-    key = r'("exposeSessionEnvironment"\s*:\s*)(true|false|null|"[^"]*"|\d+)'
-    if re.search(key, text):
-        updated = re.sub(key, r"\g<1>true", text, count=1)
-    else:
-        closing = re.search(r"(?s)\}(\s*)\Z", text)
-        assert closing is not None
-        content = text[: closing.start()].rstrip()
-        separator = "," if settings else ""
-        updated = f'{content}{separator}\n  "exposeSessionEnvironment": true\n}}{closing.group(1)}'
+    pattern = r'(?m)(?:,\n|\n)[ \t]*"exposeSessionEnvironment"\s*:\s*(?:true|false)(?=\n[ \t]*\})'
+    updated, count = re.subn(pattern, "", text, count=1)
+    if count != 1:
+        raise ChittyError(f"cannot safely remove obsolete Pi setting from {path}")
     path.write_text(updated)
     return path
 
@@ -124,4 +118,4 @@ def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path |
 def pi_session_environment_missing(environment: Mapping[str, str] | None = None) -> bool:
     """Whether a Pi agent lacks the identity its shell session should expose."""
     env = os.environ if environment is None else environment
-    return env.get("PI_CODING_AGENT") == "true" and not env.get("PI_SESSION_ID")
+    return env.get("PI_CODING_AGENT") == "true" and not env.get("CHITTY_PI_SESSION_ID")

@@ -7,6 +7,7 @@ import {
   hasActionableTickets,
   isNoMoreWorkResponse,
   parseMode,
+  setPiSessionIdentity,
 } from "../chitty.ts";
 
 const TICKETS = JSON.stringify([
@@ -15,6 +16,17 @@ const TICKETS = JSON.stringify([
   { id: "TASK-3", status: "review" },
   { id: "TASK-4", status: "blocked" },
 ]);
+
+test("sets the Pi session identity for child processes", () => {
+  const previous = process.env.CHITTY_PI_SESSION_ID;
+  try {
+    setPiSessionIdentity("parent-session");
+    assert.equal(process.env.CHITTY_PI_SESSION_ID, "parent-session");
+  } finally {
+    if (previous === undefined) delete process.env.CHITTY_PI_SESSION_ID;
+    else process.env.CHITTY_PI_SESSION_ID = previous;
+  }
+});
 
 test("selects tickets only from the active mode", () => {
   assert.equal(hasActionableTickets(TICKETS, "work"), true);

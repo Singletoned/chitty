@@ -6,6 +6,7 @@ import type { AssistantMessage } from "@earendil-works/pi-ai";
 
 const STATE_TYPE = "chitty-state";
 const CONTINUATION_TYPE = "chitty-continuation";
+const PI_SESSION_ID_VARIABLE = "CHITTY_PI_SESSION_ID";
 
 type ChittyMode = "work" | "review";
 
@@ -28,6 +29,7 @@ export default function chitty(pi: ExtensionAPI) {
   });
 
   pi.on("session_start", async (_event, ctx) => {
+    setPiSessionIdentity(ctx.sessionManager.sessionId);
     state = latestState(ctx) ?? { enabled: false, mode: "work" };
   });
 
@@ -56,6 +58,10 @@ export default function chitty(pi: ExtensionAPI) {
       { triggerTurn: true },
     );
   });
+}
+
+export function setPiSessionIdentity(sessionId: string): void {
+  process.env[PI_SESSION_ID_VARIABLE] = sessionId;
 }
 
 export function parseMode(args: string): ChittyMode {
