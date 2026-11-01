@@ -1,6 +1,6 @@
 ---
 title: Make the shipped Pi extension the only copy of `chitty.ts`
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -34,6 +34,8 @@ Review failed: the continuation-stop regression test covers only the no-new-assi
 
 Added regression coverage for `error` and `aborted` assistant stop reasons. The new test failed before the predicate was extracted and passes after it; verification: `make format`, `make check`, and `npm test`.
 
+Reviewed: Ed Singleton added regression coverage for `error` and `aborted` assistant stop reasons in 6edb04d. Independently verified the focused extension and install tests, `npm test`, `chitty check`, and `make check`.
+
 ## History
 
 - 2026-11-01 → todo
@@ -43,3 +45,4 @@ Added regression coverage for `error` and `aborted` assistant stop reasons. The 
 - 2026-11-01 doing → review
 - 2026-11-01 review → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
