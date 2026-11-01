@@ -33,12 +33,14 @@ jobs:
       - name: Install Python
         run: uv python install 3.12
 
-      - name: Verify tag matches package version
-        shell: bash
-        run: test "v$(uv version --short)" = "${GITHUB_REF_NAME}"
-
       - name: Install dependencies
         run: make install
+
+      - name: Verify tag matches package version
+        shell: bash
+        run: >-
+          test "v$(uv run python -c 'import chitty; print(chitty.__version__)')"
+          = "${GITHUB_REF_NAME}"
 
       - name: Check project
         run: make check
