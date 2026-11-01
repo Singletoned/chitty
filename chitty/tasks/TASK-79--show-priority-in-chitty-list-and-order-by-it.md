@@ -1,6 +1,6 @@
 ---
 title: Show priority in `chitty list` and order by it
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -17,9 +17,16 @@ Trace list and next selection through the shared store layer. Add one priority o
 
 Implemented shared selected-status and priority ordering for `list`; JSON already carried the model priority field and now follows that order. Verified with `make check` and `chitty fix`.
 
+Reviewed: independent review of `28e7e25` found no findings.
+
+## Summary
+
+Added conditional priority display and shared priority ordering to `chitty list` text and JSON output. Verified with `make check` and `chitty fix`; review found no issues.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
+- 2026-11-01 review → done
