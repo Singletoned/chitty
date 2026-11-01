@@ -80,8 +80,10 @@ or a coding harness session identity: `CLAUDE_CODE_SESSION_ID`, `PI_SESSION_ID`,
 tools. Chitty's Pi extension records Pi's session ID in `CHITTY_PI_SESSION_ID`
 at session start, so shell commands, `pi.exec`, and subagents share the parent
 actor name. Reload or restart Pi after `chitty init` installs or updates the
-extension. Servers started before the extension cannot receive that variable;
-start Pi with `CHITTY_ACTOR=<name>` when they need the same identity.
+extension. context-mode starts its server at the first agent turn, after the
+variable is set, so its `ctx_execute` commands share the name too. A server
+started before `session_start` cannot receive it; start Pi with
+`CHITTY_ACTOR=<name>` if one needs the same identity.
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit. `chitty init --autocommit` enables

@@ -489,8 +489,9 @@ src/chitty/
 `CHITTY_ACTOR` or a supported harness session variable. Chitty's Pi extension
 copies the session ID into `CHITTY_PI_SESSION_ID` at session start, which takes
 precedence over Pi's shell-only variable so descendants retain their parent's
-identity. Servers started before the extension need the `CHITTY_ACTOR`
-workaround.
+identity. context-mode's server starts at `before_agent_start`, after that,
+so its commands inherit the variable. Only a server started before
+`session_start` needs the `CHITTY_ACTOR` workaround.
 
 ## Build order
 
