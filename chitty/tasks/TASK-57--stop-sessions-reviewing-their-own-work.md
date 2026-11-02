@@ -1,6 +1,6 @@
 ---
 title: Stop sessions reviewing their own work
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-55
@@ -43,6 +43,8 @@ Blocked pending independent review and completion of `TASK-55`, which supplies t
 
 Choice: History records only plan and criterion-tick events needed to establish reviewer involvement; `TASK-99` will extend actor-attributed events to all deliberate non-status edits. This keeps the enforcement scope small and is cheap to broaden.
 
+Reviewed: verified independent-review enforcement, explicit override history, reviewer-note gating, caller visibility, and Pi parent identity; targeted tests pass.
+
 ## Summary
 
 Implemented independent review enforcement, explicit recorded overrides, reviewer-note validation, current-actor worked-on output, and inherited Pi parent identity for subagents. Verified with `make check`, Pi extension tests, and `chitty fix` (existing repository warnings only).
@@ -58,3 +60,5 @@ Implemented independent review enforcement, explicit recorded overrides, reviewe
 - 2026-11-02T09:39:51Z amber-stoat todo → doing
 - 2026-11-02T09:44:46Z amber-stoat doing → review
 - 2026-11-02T09:44:46Z amber-stoat: ticked acceptance criteria
+- 2026-11-02T11:21:23Z jolly-falcon: changed notes
+- 2026-11-02T11:21:23Z jolly-falcon review → done
