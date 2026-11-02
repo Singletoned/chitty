@@ -1,6 +1,6 @@
 ---
 title: Let a context turn off review, and turn it off for `human`
-status: doing
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -17,9 +17,9 @@ created: 2026-11-01
 
 ## Plan
 
-1. Extend context configuration to accept an optional `review` override and resolve it over the repository default.
-2. Update initialization and upgrade output so the `human` context explicitly disables review, and bump the version because existing repositories must re-run `init`.
-3. Add focused configuration and initialization tests, update `PLAN.md` and `README.md`, then run `make check`.
+1. Compare the rejected implementation in `67eb452` with the current configuration and initialization paths, then restore only the per-context review behavior required by this ticket.
+2. Restore focused tests for both override directions and the existing-repository `human` upgrade path; update generated configuration and documentation.
+3. Run formatting and `make check`, inspect the diff, tick the criteria, and prepare the ticket for independent review.
 
 ## Notes
 
@@ -27,9 +27,9 @@ Review failed: the current tree has removed the per-context `review` field, reso
 
 ## Summary
 
-Implemented context-level `review` overrides and disabled review in the generated `human` context. Bumped the setup version to `0.1.14`; `chitty init` upgrades existing `human` contexts that lack an explicit setting.
+Restored per-context `review` overrides and generated `human.review = false`; `chitty init` now upgrades existing human contexts without changing explicit values. Bumped the managed-setup version to `0.1.15`.
 
-Verified with `make check` (187 tests). Full `chitty check` passed with only pre-existing Markdown warnings in archived tickets.
+Verification: restored regression tests failed before the implementation; `make format` and `make check` pass afterward.
 
 ## History
 
@@ -37,3 +37,4 @@ Verified with `make check` (187 tests). Full `chitty check` passed with only pre
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → review
 - 2026-11-02 review → doing
+- 2026-11-02 doing → review
