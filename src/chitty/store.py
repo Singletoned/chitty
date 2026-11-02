@@ -26,6 +26,7 @@ from chitty.ids import TaskId
 from chitty.model import (
     DESCRIPTION,
     HISTORY,
+    HISTORY_ACTION_SEPARATOR,
     PLAN,
     SUMMARY,
     FieldValue,
@@ -381,15 +382,14 @@ class Repo:
             parent=str(self.resolve(edit.parent)) if edit.parent else edit.parent,
         )
         task = edit.apply(stored.task)
-        actions = _history_actions(edit)
+        # An edit that changes nothing writes nothing, so it records no History either.
+        action = _history_action(edit) if task.render() != stored.task.render() else None
         actor_name = None
-        if edit.status is not None and edit.status != stored.task.frontmatter.status or actions:
+        if edit.status is not None and edit.status != stored.task.frontmatter.status or action:
             actor_name = actor()
             now = datetime.now(UTC)
-            for action in actions:
+            if action:
                 task = task.with_history_event(now, actor_name, action)
-            if edit.override_review_independence:
-                task = task.with_history_event(now, actor_name, "overrode review independence")
             if edit.status is not None and edit.status != stored.task.frontmatter.status:
                 task = task.with_history(now, actor_name, previous_status, edit.status)
         return self._commit(replace(self._save(stored, task), actor=actor_name), "edit")
@@ -481,15 +481,9 @@ class Repo:
             change = self._save(other, task)
             paths += change.paths
             changes.append(change)
-        deleted = replace(
-            stored,
-            task=stored.task.with_legacy_history(
-                date.today(), stored.task.frontmatter.status, "deleted"
-            ),
-        )
         stored.path.unlink()
-        tasks = _unique_tasks((deleted, *(task for change in changes for task in change.tasks)))
-        return Change(deleted, (*paths, stored.path), tasks)
+        tasks = _unique_tasks((stored, *(task for change in changes for task in change.tasks)))
+        return Change(stored, (*paths, stored.path), tasks)
 
     def restore(self, task_id: TaskId) -> Change:
         self._prepare_write()
@@ -911,8 +905,8 @@ def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
     return entries
 
 
-def _history_actions(edit: Edit) -> tuple[str, ...]:
-    """Describe deliberate non-status edits for actor-attributed History."""
+def _history_action(edit: Edit) -> str | None:
+    """Describe an edit's deliberate non-status changes as one History event."""
     actions: list[str] = []
     changes: list[str] = []
     if edit.title is not None:
@@ -941,7 +935,9 @@ def _history_actions(edit: Edit) -> tuple[str, ...]:
         actions.append("wrote the plan")
     if edit.check:
         actions.append("ticked acceptance criteria")
-    return tuple(actions)
+    if edit.override_review_independence:
+        actions.append("overrode review independence")
+    return HISTORY_ACTION_SEPARATOR.join(actions) or None
 
 
 def _update_list(

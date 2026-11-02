@@ -72,7 +72,9 @@ class TestInbox(RepoTestCase):
         self.assertFalse(path.exists())
         task = repo.find(repo.resolve("TASK-1")).task
         self.assertEqual(task.frontmatter.status, "backlog")
-        self.assertIn("→ backlog", task.section("History") or "")
+        self.assertRegex(
+            task.section("History") or "", r"^- [0-9-]{10}T[0-9:]{8}Z test-agent → backlog\n"
+        )
         self.assertIn("Suggestion origin", task.render())
 
     def test_pull_releases_invalid_suggestion_and_restores_config(self):

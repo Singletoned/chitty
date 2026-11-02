@@ -121,6 +121,7 @@ class TestCheck(StoreTestCase):
         )
 
         self.assertIn("must be upper-case", "\n".join(self.problems()))
+        history_before_fix = self.repo.find(dependent.id).task.section("History")
         fixed, problems = fix(self.repo, self.repo.contexts(), [])
 
         self.assertEqual(problems, [])
@@ -128,6 +129,7 @@ class TestCheck(StoreTestCase):
             [problem.message for problem in fixed], ["rewrote depends_on IDs as upper-case"]
         )
         self.assertIn("depends_on:\n  - TASK-1", dependent.path.read_text())
+        self.assertEqual(self.repo.find(dependent.id).task.section("History"), history_before_fix)
         self.assertEqual(blocker.id.number, 1)
 
     def test_self_dependency(self):
