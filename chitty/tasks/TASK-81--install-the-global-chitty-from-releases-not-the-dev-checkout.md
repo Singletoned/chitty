@@ -1,6 +1,6 @@
 ---
 title: Install the global `chitty` from releases, not the dev checkout
-status: blocked
+status: todo
 priority: high
 depends_on:
   - HUMAN-4
@@ -17,8 +17,11 @@ Blocked by `TASK-80` and `HUMAN-4`: a release must exist before replacing the gl
 
 No longer waits on TASK-80 (deferred): it needs only a published release (HUMAN-4).
 
+`HUMAN-4` is done: 0.1.15 is on PyPI (release run `41422338867`).
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → blocked
+- 2026-11-02T10:55:02Z lively-otter blocked → todo
