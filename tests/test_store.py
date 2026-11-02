@@ -13,6 +13,7 @@ TODAY = date(2026, 10, 23)
 class StoreTestCase(RepoTestCase):
     def setUp(self):
         super().setUp()
+        os.environ["CHITTY_ACTOR"] = "test-agent"
         self.repo = Repo.open(self.root)
         self.tasks = self.repo.context("tasks")
         self.human = self.repo.context("human")
@@ -109,9 +110,10 @@ class TestStore(StoreTestCase):
         self.assertEqual(stored.path.stat().st_mtime_ns, mtime)
         change = self.repo.edit(stored.id, Edit(status="doing"))
         self.assertEqual(change.paths, (stored.path,))
-        self.assertEqual(
-            change.task.task.section("History"),
-            f"- 2026-10-23 → todo\n- {date.today().isoformat()} todo → doing",
+        timestamp = rf"{date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z"
+        self.assertRegex(
+            change.task.task.section("History") or "",
+            rf"^- 2026-10-23 → todo\n- {timestamp} test-agent todo → doing$",
         )
         with self.assertRaisesRegex(ChittyError, "nothing to change"):
             self.repo.edit(stored.id, Edit(add_labels=[]))
@@ -122,8 +124,9 @@ class TestStore(StoreTestCase):
 
         changed = self.repo.edit(stored.id, Edit(status="doing")).task
 
-        self.assertEqual(
-            changed.task.section("History"), f"- {date.today().isoformat()} todo → doing"
+        self.assertRegex(
+            changed.task.section("History") or "",
+            rf"^- {date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z test-agent todo → doing$",
         )
 
     def test_archive_and_restore(self):
@@ -132,9 +135,10 @@ class TestStore(StoreTestCase):
         self.assertEqual(archived.path, self.root / "chitty/tasks/archive/TASK-1--one.md")
         self.assertEqual(self.repo.tasks(self.tasks, "active"), [])
         self.assertEqual(len(self.repo.tasks(self.tasks, "archived")), 1)
-        self.assertEqual(
-            archived.task.section("History"),
-            f"- 2026-10-23 → todo\n- {date.today().isoformat()} todo → archived",
+        timestamp = rf"{date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z"
+        self.assertRegex(
+            archived.task.section("History") or "",
+            rf"^- 2026-10-23 → todo\n- {timestamp} test-agent todo → archived$",
         )
         with self.assertRaisesRegex(ChittyError, "already archived"):
             self.repo.archive(stored.id)

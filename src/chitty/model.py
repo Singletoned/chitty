@@ -11,7 +11,7 @@ import json
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
-from datetime import date
+from datetime import UTC, date, datetime
 from itertools import combinations
 from typing import Any, Literal
 
@@ -51,8 +51,9 @@ CRITERION_RE = re.compile(r"- \[([ xX])\](?:[ \t]+(.*?))?[ \t]*$")
 LIST_MARKER_RE = re.compile(r"(?:[-*+]|[0-9]+[.)])(?:[ \t]|$)")
 DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
 HISTORY_LINE_RE = re.compile(
-    r"- (?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2})(?: (?P<old>[a-z][a-z-]*))? → "
-    r"(?P<new>[a-z][a-z-]*)\n?"
+    r"- (?:(?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2})|"
+    r"(?P<timestamp>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z) "
+    r"(?P<actor>.+?))(?: (?P<old>[a-z][a-z-]*))? → (?P<new>[a-z][a-z-]*)\n?"
 )
 BRACKET_COLUMN = 3
 
@@ -266,9 +267,16 @@ class Task:
         matches = (HISTORY_LINE_RE.fullmatch(line) for line in history.splitlines())
         return [(match["old"], match["new"]) for match in matches if match]
 
-    def with_history(self, when: date, old: str | None, new: str) -> "Task":
-        """Append a status transition to the tool-managed History section."""
-        entry = f"- {when.isoformat()}"
+    def with_history(self, when: datetime, actor: str, old: str | None, new: str) -> "Task":
+        """Append an actor-attributed UTC status transition to History."""
+        timestamp = when.astimezone(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+        return self._append_history(f"- {timestamp} {actor}", old, new)
+
+    def with_legacy_history(self, when: date, old: str | None, new: str) -> "Task":
+        """Append a date-only History entry retained for creation and imports."""
+        return self._append_history(f"- {when.isoformat()}", old, new)
+
+    def _append_history(self, entry: str, old: str | None, new: str) -> "Task":
         if old:
             entry += f" {old}"
         entry += f" → {new}"
@@ -418,7 +426,7 @@ def new_task(
     for key, value in fields.items():
         task = task.with_field(key, value)
     task = task.with_criteria(add=criteria, remove=(), check=(), uncheck=())
-    return task.with_history(created, None, task.frontmatter.status)
+    return task.with_legacy_history(created, None, task.frontmatter.status)
 
 
 def _split_fields(fm_lines: list[str]) -> list[_FieldSpan]:
@@ -545,9 +553,13 @@ def _parse_history(sections: list[_Section]) -> None:
         if match is None:
             raise TaskError(f"'## {HISTORY}' may only contain '- YYYY-MM-DD old → new' entries")
         try:
-            date.fromisoformat(match["date"])
+            if timestamp := match["timestamp"]:
+                datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+            else:
+                date.fromisoformat(match["date"])
         except ValueError:
-            raise TaskError(f"history date {match['date']!r} is not an ISO 8601 date") from None
+            value = match["timestamp"] or match["date"]
+            raise TaskError(f"history date {value!r} is not an ISO 8601 date") from None
 
 
 def _parse_criteria(sections: list[_Section]) -> tuple[Criterion, ...]:

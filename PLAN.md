@@ -165,12 +165,15 @@ Free markdown. Append-only by convention; not enforced.
 ## History
 
 - 2026-10-23 → todo
-- 2026-10-28 todo → doing
+- 2026-10-28T14:03:05Z lively-otter todo → doing
 ```
 
 `History` is tool-managed, always last, and records task creation plus every
-status or archive-state transition. Its entries are `- YYYY-MM-DD old → new`;
-the initial entry omits `old`. Deleting a task removes its History with it.
+status or archive-state transition. The initial entry is the legacy
+`- YYYY-MM-DD → new` form. Later status, archive, and restore transitions use
+`- YYYY-MM-DDTHH:MM:SSZ actor old → new`, with a UTC timestamp and the writing
+actor. Existing date-only entries remain valid. Deleting a task removes its
+History with it.
 
 Frontmatter schema (strict: unknown keys are an error):
 

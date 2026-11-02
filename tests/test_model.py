@@ -1,6 +1,6 @@
 import textwrap
 import unittest
-from datetime import date
+from datetime import UTC, date, datetime
 
 from chitty.model import TaskError, new_task, parse, render_scalar
 
@@ -217,9 +217,21 @@ class TestSectionEdits(unittest.TestCase):
         self.assertTrue(task.render().endswith("First note.\n\nSecond note.\n"))
 
     def test_history_is_appended_after_existing_sections(self):
-        task = parse(SAMPLE).with_history(date(2026, 10, 28), "todo", "doing")
-        self.assertTrue(task.render().endswith("## History\n\n- 2026-10-28 todo → doing\n"))
-        self.assertEqual(task.as_dict()["history"], "- 2026-10-28 todo → doing")
+        when = datetime(2026, 10, 28, 14, 3, 5, tzinfo=UTC)
+        task = parse(SAMPLE).with_history(when, "test-agent", "todo", "doing")
+        expected = "- 2026-10-28T14:03:05Z test-agent todo → doing"
+        self.assertTrue(task.render().endswith(f"## History\n\n{expected}\n"))
+        self.assertEqual(task.as_dict()["history"], expected)
+
+    def test_history_accepts_legacy_and_actor_attributed_entries(self):
+        task = parse(
+            SAMPLE
+            + "\n## History\n\n"
+            + "- 2026-10-23 → todo\n"
+            + "- 2026-10-28T14:03:05Z test-agent todo → doing\n"
+        )
+
+        self.assertEqual(task.transitions(), [(None, "todo"), ("todo", "doing")])
 
 
 class TestCriteriaEdits(unittest.TestCase):

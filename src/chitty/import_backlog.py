@@ -225,7 +225,7 @@ def import_directory(
             archived = item.old_id in archived_ids
             task = item.task
             if archived:
-                task = task.with_history(date.today(), task.frontmatter.status, "archived")
+                task = task.with_legacy_history(date.today(), task.frontmatter.status, "archived")
             task_id = ids.TaskId.parse(item.new_id)
             directory = destination.archive_directory if archived else destination.directory
             path = directory / ids.filename(task_id, ids.slugify(task.frontmatter.title))

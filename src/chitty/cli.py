@@ -131,7 +131,8 @@ def _report(change: Change, as_json: bool, verb: str) -> None:
     if as_json:
         _print_json(change.task.as_dict())
     elif change.paths:
-        click.echo(f"{verb} {change.task.id} {change.task.path}")
+        actor_name = f" actor {change.actor}" if change.actor else ""
+        click.echo(f"{verb} {change.task.id} {change.task.path}{actor_name}")
     else:
         click.echo(f"unchanged {change.task.id}")
 
@@ -590,7 +591,8 @@ def archive(task_id: str | None, as_json: bool) -> None:
         _print_json([change.task.as_dict() for change in changes])
     elif changes:
         for change in changes:
-            click.echo(f"{verb} {change.task.id}")
+            actor_name = f" actor {change.actor}" if change.actor else ""
+            click.echo(f"{verb} {change.task.id}{actor_name}")
             if verb == "deleted":
                 for path in change.paths[:-1]:
                     click.echo(f"removed dependency reference in {path}")

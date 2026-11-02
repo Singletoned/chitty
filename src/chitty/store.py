@@ -5,13 +5,13 @@ import re
 import tomllib
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
-from datetime import date
+from datetime import UTC, date, datetime
 from importlib.resources import files
 from pathlib import Path
 from typing import Any, Literal
 
 from chitty import formatter, git, ids
-from chitty.actor import remove_pi_session_environment
+from chitty.actor import actor, remove_pi_session_environment
 from chitty.config import (
     BACKLOG_DIR,
     CHITTY_VERSION,
@@ -88,6 +88,7 @@ class Change:
     task: StoredTask
     paths: tuple[Path, ...]
     tasks: tuple[StoredTask, ...]
+    actor: str | None = None
 
 
 @dataclass(frozen=True)
@@ -360,9 +361,11 @@ class Repo:
             parent=str(self.resolve(edit.parent)) if edit.parent else edit.parent,
         )
         task = edit.apply(stored.task)
+        actor_name = None
         if edit.status is not None and edit.status != stored.task.frontmatter.status:
-            task = task.with_history(date.today(), previous_status, edit.status)
-        return self._commit(self._save(stored, task), "edit")
+            actor_name = actor()
+            task = task.with_history(datetime.now(UTC), actor_name, previous_status, edit.status)
+        return self._commit(replace(self._save(stored, task), actor=actor_name), "edit")
 
     def _save(self, stored: StoredTask, task: Task) -> Change:
         """Write an edited task; touches nothing if the content is unchanged."""
@@ -453,7 +456,9 @@ class Repo:
             changes.append(change)
         deleted = replace(
             stored,
-            task=stored.task.with_history(date.today(), stored.task.frontmatter.status, "deleted"),
+            task=stored.task.with_legacy_history(
+                date.today(), stored.task.frontmatter.status, "deleted"
+            ),
         )
         stored.path.unlink()
         tasks = _unique_tasks((deleted, *(task for change in changes for task in change.tasks)))
@@ -547,11 +552,12 @@ class Repo:
         directory.mkdir(parents=True, exist_ok=True)
         state = "archived" if archived else stored.task.frontmatter.status
         previous = stored.task.frontmatter.status if archived else "archived"
-        task = stored.task.with_history(date.today(), previous, state)
+        actor_name = actor()
+        task = stored.task.with_history(datetime.now(UTC), actor_name, previous, state)
         stored.path.rename(new_path)
         self._write(new_path, task.render())
         moved = StoredTask(stored.id, stored.context, new_path, archived, task)
-        return Change(moved, (stored.path, new_path), (moved,))
+        return Change(moved, (stored.path, new_path), (moved,), actor_name)
 
     def _files(self, context: Context, archived: bool) -> list[Path]:
         files: list[Path] = []

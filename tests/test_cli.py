@@ -17,6 +17,7 @@ from tests.support import RepoTestCase
 class CliTestCase(RepoTestCase):
     def setUp(self):
         super().setUp()
+        os.environ["CHITTY_ACTOR"] = "test-agent"
         previous = os.getcwd()
         os.chdir(self.root)
         self.addCleanup(os.chdir, previous)
@@ -909,7 +910,7 @@ class TestEdit(CliTestCase):
         self.path = self.root / "chitty/tasks/TASK-1--task.md"
 
     def test_edit_everything(self):
-        self.run_cli(
+        result = self.run_cli(
             "edit",
             "1",
             "--title",
@@ -949,10 +950,12 @@ class TestEdit(CliTestCase):
             [(True, "One"), (False, "Three")],
         )
         self.assertEqual((data["plan"], data["notes"]), ("Do it.", "Noted."))
-        self.assertEqual(
+        timestamp = rf"{date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z"
+        self.assertRegex(
             data["history"],
-            f"- {date.today().isoformat()} → todo\n- {date.today().isoformat()} todo → doing",
+            rf"^- {date.today().isoformat()} → todo\n- {timestamp} test-agent todo → doing$",
         )
+        self.assertIn("actor test-agent", result.stdout)
         self.path = self.root / "chitty/tasks/TASK-1--renamed.md"
         self.assertTrue(self.path.exists())
         self.run_cli(
@@ -1071,7 +1074,10 @@ class TestMoveArchive(CliTestCase):
 
         result = self.run_cli("archive")
 
-        self.assertEqual(result.stdout.splitlines(), ["archived TASK-1", "archived HUMAN-1"])
+        self.assertEqual(
+            result.stdout.splitlines(),
+            ["archived TASK-1 actor test-agent", "archived HUMAN-1 actor test-agent"],
+        )
         self.assertEqual([task["id"] for task in self.json("archive")], [])
         self.assertTrue(self.json("show", "1")["archived"])
         self.assertTrue(self.json("show", "HUMAN-1")["archived"])
