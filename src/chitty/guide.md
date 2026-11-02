@@ -32,6 +32,11 @@ task files. `chitty --help` is the full command reference.
 - End commits for task work with `Task: <ID>` lines using the ticket's own ID
   (for example, `Task: TASK-12`) so `git log --grep <ID>` finds a ticket's
   code. This is a convention; no hook enforces it.
+- When a question has a sensible default that is cheap to change later, choose
+  it and carry on instead of blocking. Record the choice and why with `--note`
+  for the reviewer, and comment the code where the default applies, saying how
+  and why it was chosen. Block only when the choice is costly to reverse or
+  needs a person.
 - When work cannot proceed, set `-s blocked --note "reason"` and move on; do
   not pick up blocked work. If a person must act outside the repo, add a
   `-c human` task and depend on it. Leave `human` tasks in `todo` for people;

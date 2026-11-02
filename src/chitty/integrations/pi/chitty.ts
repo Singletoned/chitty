@@ -214,6 +214,9 @@ function latestAssistantMessage(
   return undefined;
 }
 
+const DEFAULT_INSTRUCTION =
+  "When a question has a sensible default that is cheap to change later, choose it and carry on instead of blocking: record the choice and why in a Chitty note for the reviewer, and comment the code where the default applies, saying how and why it was chosen. Block only when the choice is costly to reverse or needs a person.";
+
 export function continuationPrompt(mode: ChittyMode): string {
   if (mode === "review") {
     return [
@@ -227,6 +230,7 @@ export function continuationPrompt(mode: ChittyMode): string {
   return [
     "There is still actionable Chitty work.",
     "If you are in the middle of a ticket, carry on with it until it is done.",
+    DEFAULT_INSTRUCTION,
     "If you need feedback or have questions, add them to the ticket, move that ticket to blocked, and pick up another ticket.",
     'If there is no more work to be done, reply "NO MORE WORK".',
   ].join("\n");
@@ -240,6 +244,7 @@ export function chittyPrompt(mode: ChittyMode): string {
           "Leave `human` tickets for people: never select, block or otherwise change them.",
           "Use `chitty list` and inspect several upcoming actionable tickets with `chitty show <ID>`; prioritize the highest-priority tickets, while considering dependencies and value.",
           "Follow the repository's Chitty guidance: record a plan, mark the ticket doing, work only that ticket, and verify it. Check satisfied acceptance criteria, then mark it done with a summary or ready for review when the repository workflow requires review. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
+          DEFAULT_INSTRUCTION,
           "When blocked by an issue or question, add a clear Chitty note explaining the problem, who can resolve it, and what is needed; then mark the ticket blocked. Create a human ticket and dependency when an external human action is required.",
           "For non-actionable backlog tickets, add a note explaining what is needed and leave them backlog.",
           "Keep working sequentially until no tickets remain that you can act on. Then report completed tickets and waiting tickets, including the reason each is waiting, followed by `NO MORE WORK`.",

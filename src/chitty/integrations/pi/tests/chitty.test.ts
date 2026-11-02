@@ -55,6 +55,13 @@ test("leaves human tickets for people", () => {
   assert.match(chittyPrompt("work"), /`human` tickets/);
 });
 
+test("chooses cheap defaults instead of blocking", () => {
+  for (const prompt of [chittyPrompt("work"), continuationPrompt("work")]) {
+    assert.match(prompt, /sensible default/);
+    assert.match(prompt, /comment the code/);
+  }
+});
+
 test("rejects invalid Chitty ticket-list output", () => {
   assert.throws(() => hasActionableTickets("not JSON", "work"), /invalid JSON/);
   assert.throws(() => hasActionableTickets("{}", "work"), /ticket list/);
