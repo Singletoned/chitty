@@ -1,6 +1,6 @@
 ---
 title: Tell agents to choose cheap defaults instead of blocking
-status: review
+status: done
 priority: high
 created: 2026-11-02
 ---
@@ -23,8 +23,11 @@ An agent blocked `TASK-55` and filed `HUMAN-8` for a scope question with an obvi
 
 Version bumped to 0.1.14, so HUMAN-4 can release 0.1.14 without another bump. Running Pi loops need a restart to load the new prompt.
 
+Reviewed: verified the refreshed managed guide and repository `AGENTS.md`, both Pi work prompts, the `0.1.14` version bump, and the Node regression test. `npm test`, `make check`, and `chitty check` pass (the latter reports only existing archived-ticket warnings).
+
 ## History
 
 - 2026-11-02 → todo
 - 2026-11-02 todo → doing
 - 2026-11-02 doing → review
+- 2026-11-02 review → done
