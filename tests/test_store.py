@@ -141,7 +141,8 @@ class TestStore(StoreTestCase):
             ),
         ).task
         self.assertIn(
-            "test-agent: overrode review independence", completed.task.section("History") or ""
+            "test-agent: changed notes; overrode review independence\n",
+            completed.task.section("History") or "",
         )
 
     def test_combined_edit_history_still_marks_review_involvement(self):

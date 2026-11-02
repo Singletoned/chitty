@@ -390,8 +390,6 @@ class Repo:
             now = datetime.now(UTC)
             if action:
                 task = task.with_history_event(now, actor_name, action)
-            if edit.override_review_independence:
-                task = task.with_history_event(now, actor_name, "overrode review independence")
             if edit.status is not None and edit.status != stored.task.frontmatter.status:
                 task = task.with_history(now, actor_name, previous_status, edit.status)
         return self._commit(replace(self._save(stored, task), actor=actor_name), "edit")
@@ -483,15 +481,9 @@ class Repo:
             change = self._save(other, task)
             paths += change.paths
             changes.append(change)
-        deleted = replace(
-            stored,
-            task=stored.task.with_legacy_history(
-                date.today(), stored.task.frontmatter.status, "deleted"
-            ),
-        )
         stored.path.unlink()
-        tasks = _unique_tasks((deleted, *(task for change in changes for task in change.tasks)))
-        return Change(deleted, (*paths, stored.path), tasks)
+        tasks = _unique_tasks((stored, *(task for change in changes for task in change.tasks)))
+        return Change(stored, (*paths, stored.path), tasks)
 
     def restore(self, task_id: TaskId) -> Change:
         self._prepare_write()
@@ -943,6 +935,8 @@ def _history_action(edit: Edit) -> str | None:
         actions.append("wrote the plan")
     if edit.check:
         actions.append("ticked acceptance criteria")
+    if edit.override_review_independence:
+        actions.append("overrode review independence")
     return HISTORY_ACTION_SEPARATOR.join(actions) or None
 
 

@@ -1146,6 +1146,26 @@ class TestMoveArchive(CliTestCase):
         self.assertEqual(dependent["depends_on"], [])
         self.assertEqual(dependent["history"], dependent_history)
 
+    def test_delete_mode_appends_no_history_to_the_deleted_task(self):
+        self.run_cli("add", "Done", "-d", "x")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
+        )
+        self.run_cli("edit", "1", "-s", "review")
+        self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
+        history = self.json("show", "1")["history"]
+
+        self.assertEqual(self.json("archive", "1")["history"], history)
+
     def test_archive_all_done_tasks(self):
         self.run_cli("add", "Task done", "-d", "x")
         self.run_cli("add", "Human done", "-c", "human", "-d", "x")
