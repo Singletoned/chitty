@@ -1,6 +1,6 @@
 ---
 title: Release a version containing TASK-77
-status: todo
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -20,3 +20,4 @@ Back to `todo` (lively-otter): human tickets wait for a person; the Pi work loop
 - 2026-11-01 → todo
 - 2026-11-01 todo → blocked
 - 2026-11-01 blocked → todo
+- 2026-11-02T09:31:58Z human todo → done
