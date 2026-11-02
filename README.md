@@ -19,7 +19,9 @@ uvx chitty --help                 # run without installing
 
 Install the released package globally; do not make a global editable install
 from a development checkout. To develop Chitty itself, use `make install` in
-its clone, which keeps that editable environment local to the repository.
+its clone. Each checkout, including a Git worktree, keeps its disposable
+virtual environment in `.venv`; run `make install` after creating a worktree
+before using its development commands.
 
 ## Use
 
