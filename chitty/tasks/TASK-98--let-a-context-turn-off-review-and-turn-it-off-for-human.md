@@ -1,6 +1,6 @@
 ---
 title: Let a context turn off review, and turn it off for `human`
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -25,6 +25,8 @@ created: 2026-11-01
 
 Review failed: the current tree has removed the per-context `review` field, resolution logic, generated `human` override, upgrade path, regression tests, and PLAN/README documentation from commit `67eb452`. Restore the implementation and tests for both override directions, then verify `chitty init` upgrades an existing `human` context.
 
+Reviewed: independent implementation committed by Ed Singleton verified. Confirmed per-context override resolution in both directions, generated and upgraded human review override, managed-setup version bump, and PLAN.md/README.md documentation. make check passes (188 tests, ruff, pyright).
+
 ## Summary
 
 Restored per-context `review` overrides and generated `human.review = false`; `chitty init` now upgrades existing human contexts without changing explicit values. Bumped the managed-setup version to `0.1.15`.
@@ -38,3 +40,4 @@ Verification: restored regression tests failed before the implementation; `make 
 - 2026-11-01 doing → review
 - 2026-11-02 review → doing
 - 2026-11-02 doing → review
+- 2026-11-02T09:18:34Z pi-reviewer review → done
