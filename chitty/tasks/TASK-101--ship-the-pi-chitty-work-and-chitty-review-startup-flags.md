@@ -11,9 +11,9 @@ The human added `--chitty-review` and `--chitty-work` startup flags to the insta
 
 ## Acceptance Criteria
 
-- [ ] The shipped extension registers `--chitty-work` and `--chitty-review`, matching the installed behaviour; Node tests cover the flag parsing
-- [ ] `__version__` is bumped, and `chitty init` succeeds against the edited install (record its hash or match it exactly)
-- [ ] `README.md` documents the flags
+- [x] The shipped extension registers `--chitty-work` and `--chitty-review`, matching the installed behaviour; Node tests cover the flag parsing
+- [x] `__version__` is bumped, and `chitty init` succeeds against the edited install (record its hash or match it exactly)
+- [x] `README.md` documents the flags
 
 ## Plan
 
@@ -28,3 +28,4 @@ Choice: when both startup flags are supplied, `--chitty-review` wins. Review mod
 - 2026-11-02 → todo
 - 2026-11-02T11:01:33Z frosty-falcon todo → doing
 - 2026-11-02T11:01:33Z frosty-falcon: wrote the plan
+- 2026-11-02T11:02:12Z frosty-falcon: ticked acceptance criteria
