@@ -1,8 +1,7 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: blocked
+status: review
 priority: medium
-owner: human
 depends_on:
   - TASK-55
 created: 2026-11-02
@@ -45,16 +44,18 @@ Review failed: acceptance criterion 2 remains unmet. `Repo._delete_done` still c
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Unblocked on the human's behalf (they asked lively-otter to fix it and return it to review). Fixed the third review's finding: `Repo._delete_done` no longer appends `done → deleted` to the deleted task; `test_delete_mode_appends_no_history_to_the_deleted_task` failed first, now passes. Also folded `overrode review independence` into the edit's single History event, since it was a second line from one `edit` (criterion 1).
+
 ## Summary
 
 Work is on branch `task-99-history-tests` (worktree `.worktrees/task-99-history-tests`), merged with current `main`. Part of the code (`0cc9e93`) is already on `main`.
 
-- Criterion 1: one `edit` now appends a single event, with parts joined by `; ` (e.g. `changed notes; wrote the plan; ticked acceptance criteria`). `Task.review_work` splits it, so review independence still works. An `edit` that changes nothing writes no file and no History.
-- Criterion 2: `tests/test_store.py` (move rewrite), `tests/test_check.py` (`fix`) and `tests/test_cli.py` (delete-mode archive) assert the dependent's History is unchanged.
-- Criterion 3: `PLAN.md` History section rewritten to list each recorded write and the exclusions; the `edit` bullet matches.
-- Criterion 4: `add` and inbox pull write `actor → status` first (`suggest` only writes the inbox file; pull creates the ticket). Import keeps the source entry and appends `actor: imported task`. New tests: `test_import_keeps_source_creation_and_records_the_importing_actor`, tightened inbox pull assertion.
+- Criterion 1: one `edit` appends a single event, parts joined by `; ` (e.g. `changed notes; wrote the plan; ticked acceptance criteria`, or `changed notes; overrode review independence`). `Task.review_work` splits it. An `edit` that changes nothing writes no file and no History.
+- Criterion 2: dependents' History is unchanged by move rewrites (`tests/test_store.py`), `fix` (`tests/test_check.py`) and delete-mode archive (`tests/test_cli.py`); the deleted task itself gains no entry (`test_delete_mode_appends_no_history_to_the_deleted_task`).
+- Criterion 3: `PLAN.md` History section lists each recorded write and the exclusions.
+- Criterion 4: `add` and inbox pull write `actor → status` first; import keeps the source entry and appends `actor: imported task` (tests in `tests/test_cli.py` `TestImport` and `tests/test_inbox.py`).
 
-Verified in the worktree `.venv`: `make check` (195 tests) and `npm test` (14) pass. The passing reviewer merges the branch and removes the worktree.
+Verified in the worktree `.venv`: `make check` (196 tests) and `npm test` (14) pass. The passing reviewer merges the branch and removes the worktree.
 
 ## History
 
@@ -83,3 +84,5 @@ Verified in the worktree `.venv`: `make check` (195 tests) and `npm test` (14) p
 - 2026-11-02T13:03:01Z lively-otter doing → review
 - 2026-11-02T13:08:25Z amber-lynx: changed owner, notes
 - 2026-11-02T13:08:25Z amber-lynx review → blocked
+- 2026-11-02T13:39:05Z lively-otter: changed owner, notes, summary
+- 2026-11-02T13:39:05Z lively-otter blocked → review
