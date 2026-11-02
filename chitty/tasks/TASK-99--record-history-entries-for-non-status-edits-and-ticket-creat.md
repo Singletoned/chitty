@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: todo
+status: blocked
 priority: medium
 depends_on:
   - TASK-55
@@ -18,6 +18,11 @@ Second half of the `HUMAN-8` scope decision. Once `TASK-55` gives History entrie
 - [ ] Reference rewrites, `chitty fix` repairs and `delete` append no History entries; tests prove it
 - [ ] `PLAN.md` documents which writes record History
 
+## Notes
+
+Blocked pending independent review and completion of `TASK-55`, which supplies the History format this follow-on ticket extends.
+
 ## History
 
 - 2026-11-02 → todo
+- 2026-11-02T08:52:55Z pi-worker todo → blocked

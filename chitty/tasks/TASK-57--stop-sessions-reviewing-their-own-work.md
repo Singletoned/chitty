@@ -1,6 +1,6 @@
 ---
 title: Stop sessions reviewing their own work
-status: todo
+status: blocked
 priority: high
 depends_on:
   - TASK-55
@@ -33,9 +33,12 @@ Held until agents restart with session identity (HUMAN-5, via TASK-55).
 
 Absorbed TASK-54's enforcement idea (require a `Reviewed:` note to pass a review); its guide-wording half is in TASK-91. TASK-54 is archived.
 
+Blocked pending independent review and completion of `TASK-55`, which supplies the actor-attributed History entries required for enforcement.
+
 ## History
 
 - 2026-10-28 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → backlog
 - 2026-11-01 backlog → todo
+- 2026-11-02T08:52:55Z pi-worker todo → blocked
