@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-55
@@ -34,6 +34,8 @@ Needs a product decision on the import History compatibility policy described ab
 
 Import decision by the human, 2026-11-02: keep the original creation entry and append a separate actor-attributed import entry. Where the original entry needs an actor and none is known, use an artificial actor such as `import` or `unknown`.
 
+Review failed: acceptance criterion 2 requires tests proving that reference rewrites, chitty fix repairs, and delete append no History entries. The changed suite has no History assertions for these three paths; add focused regression tests for each, then rerun make check.
+
 ## Summary
 
 Added actor-attributed UTC creation transitions and concise History events for deliberate non-status edits, retaining the specific plan and criterion events used for review independence. Inbox pulls inherit creation attribution; legacy imports preserve their original creation entry and append an importing-actor event. Reference rewrites, `fix`, and delete paths remain history-free. Updated `PLAN.md` and focused CLI, store, inbox, MCP, and import coverage. Verified with `make check` and `chitty fix` (existing repository warnings only).
@@ -52,3 +54,5 @@ Added actor-attributed UTC creation transitions and concise History events for d
 - 2026-11-02T11:08:14Z frosty-falcon: changed summary
 - 2026-11-02T11:08:14Z frosty-falcon: ticked acceptance criteria
 - 2026-11-02T11:08:14Z frosty-falcon doing → review
+- 2026-11-02T11:23:06Z jolly-falcon: changed notes
+- 2026-11-02T11:23:06Z jolly-falcon review → doing
