@@ -1,6 +1,6 @@
 ---
 title: Give each worktree its own ephemeral venv
-status: doing
+status: review
 priority: high
 created: 2026-11-02
 ---
@@ -13,16 +13,23 @@ The human: venvs are always ephemeral, so each worker creates its own venv in it
 
 ## Acceptance Criteria
 
-- [ ] `make install` and `make check` in a worktree use a venv inside that worktree, never the shared `~/.envs/chitty`
-- [ ] Removing a worktree leaves the main checkout's `chitty` and `make check` working; verified by creating, installing in, and removing a worktree
-- [ ] The worker instructions (Pi prompt or guide) and `README.md` say how a worktree gets its venv
+- [x] `make install` and `make check` in a worktree use a venv inside that worktree, never the shared `~/.envs/chitty`
+- [x] Removing a worktree leaves the main checkout's `chitty` and `make check` working; verified by creating, installing in, and removing a worktree
+- [x] The worker instructions (Pi prompt or guide) and `README.md` say how a worktree gets its venv
 
 ## Plan
 
 Make each Make target explicitly use a worktree-local `.venv`, overriding inherited direnv variables. Document the resulting worktree setup in the README and Pi worker prompt, then verify install and check in a disposable worktree and confirm the main checkout remains usable after removal.
+
+## Summary
+
+Make targets now override inherited direnv variables with each checkout’s local `.venv`; README and the shipped guide explain setup. Verified `make install` and `make check` in a disposable worktree used its local `.venv`, then removed it and confirmed the main checkout’s `chitty` and `make check` still work.
 
 ## History
 
 - 2026-11-02T11:21:00Z lively-otter → todo
 - 2026-11-02T11:26:18Z jolly-falcon: wrote the plan
 - 2026-11-02T11:26:18Z jolly-falcon todo → doing
+- 2026-11-02T11:32:04Z jolly-falcon: changed summary
+- 2026-11-02T11:32:04Z jolly-falcon: ticked acceptance criteria
+- 2026-11-02T11:32:04Z jolly-falcon doing → review
