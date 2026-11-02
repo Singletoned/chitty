@@ -21,6 +21,10 @@ The human: venvs are always ephemeral, so each worker creates its own venv in it
 
 Make each Make target explicitly use a worktree-local `.venv`, overriding inherited direnv variables. Document the resulting worktree setup in the README and Pi worker prompt, then verify install and check in a disposable worktree and confirm the main checkout remains usable after removal.
 
+## Notes
+
+Follow-up: `chitty init` must run after this branch is merged to refresh the current checkout’s managed guide and record version `0.1.17`; it correctly refuses in this worktree because the `chitty` project registration belongs to the main checkout.
+
 ## Summary
 
 Make targets now override inherited direnv variables with each checkout’s local `.venv`; README and the shipped guide explain setup. Verified `make install` and `make check` in a disposable worktree used its local `.venv`, then removed it and confirmed the main checkout’s `chitty` and `make check` still work.
@@ -33,3 +37,4 @@ Make targets now override inherited direnv variables with each checkout’s loca
 - 2026-11-02T11:32:04Z jolly-falcon: changed summary
 - 2026-11-02T11:32:04Z jolly-falcon: ticked acceptance criteria
 - 2026-11-02T11:32:04Z jolly-falcon doing → review
+- 2026-11-02T11:36:51Z jolly-falcon: changed notes
