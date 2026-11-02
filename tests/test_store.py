@@ -187,6 +187,7 @@ class TestStore(StoreTestCase):
         self.add("Second")
         blocker = self.add("Needs a person")
         dependent = self.add("Blocked", depends_on=[str(blocker.id)])
+        dependent_history = dependent.task.section("History")
         self.add("Human thing", context=self.human)
         change = self.repo.move(blocker.id, self.human)
         moved = change.task
@@ -196,6 +197,7 @@ class TestStore(StoreTestCase):
         self.assertFalse(blocker.path.exists())
         rewritten = self.repo.find(dependent.id)
         self.assertEqual(rewritten.task.frontmatter.depends_on, ["HUMAN-2"])
+        self.assertEqual(rewritten.task.section("History"), dependent_history)
         self.assertEqual(set(change.paths), {blocker.path, moved.path, dependent.path})
 
     def test_unexpected_files_are_errors(self):

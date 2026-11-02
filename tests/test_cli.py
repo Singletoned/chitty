@@ -1108,6 +1108,7 @@ class TestMoveArchive(CliTestCase):
     def test_delete_mode_removes_dependency_references(self):
         self.run_cli("add", "Done", "-d", "x")
         self.run_cli("add", "Dependent", "-d", "x", "--depends-on", "1")
+        dependent_history = self.json("show", "2")["history"]
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text().replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
@@ -1127,7 +1128,9 @@ class TestMoveArchive(CliTestCase):
 
         self.assertIn("deleted TASK-1", result.stdout)
         self.assertIn("removed dependency reference", result.stdout)
-        self.assertEqual(self.json("show", "2")["depends_on"], [])
+        dependent = self.json("show", "2")
+        self.assertEqual(dependent["depends_on"], [])
+        self.assertEqual(dependent["history"], dependent_history)
 
     def test_archive_all_done_tasks(self):
         self.run_cli("add", "Task done", "-d", "x")
