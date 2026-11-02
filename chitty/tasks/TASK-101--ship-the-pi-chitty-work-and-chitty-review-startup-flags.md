@@ -1,6 +1,6 @@
 ---
 title: Ship the Pi `--chitty-work` and `--chitty-review` startup flags
-status: todo
+status: doing
 priority: high
 created: 2026-11-02
 ---
@@ -15,6 +15,12 @@ The human added `--chitty-review` and `--chitty-work` startup flags to the insta
 - [ ] `__version__` is bumped, and `chitty init` succeeds against the edited install (record its hash or match it exactly)
 - [ ] `README.md` documents the flags
 
+## Plan
+
+Compare the installed Pi extension with the shipped source and port the shared startup-mode helper plus both flags exactly. Add focused Node tests for flag parsing, bump the package version because `init` must propagate the change, document the flags in `README.md`, and verify `chitty init` accepts the installed extension before running `make check` and `chitty fix`.
+
 ## History
 
 - 2026-11-02 → todo
+- 2026-11-02T11:01:33Z frosty-falcon todo → doing
+- 2026-11-02T11:01:33Z frosty-falcon: wrote the plan
