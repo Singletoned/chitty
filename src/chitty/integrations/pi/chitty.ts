@@ -19,25 +19,45 @@ type State = {
 export default function chitty(pi: ExtensionAPI) {
   let state: State = { enabled: false, mode: "work" };
 
+  function start(mode: ChittyMode): void {
+    state = { enabled: true, mode };
+    persistState(pi, state);
+    pi.sendUserMessage(chittyPrompt(mode));
+  }
+
   function stopContinuation(ctx: ExtensionContext, reason: string): void {
     state = { ...state, enabled: false, continuationAssistantCount: undefined };
     persistState(pi, state);
     ctx.ui.notify(`Chitty continuation stopped: ${reason}.`, "info");
   }
 
+  pi.registerFlag("chitty-review", {
+    description: "Start directly in Chitty review mode",
+    type: "boolean",
+    default: false,
+  });
+  pi.registerFlag("chitty-work", {
+    description: "Start directly in Chitty work mode",
+    type: "boolean",
+    default: false,
+  });
+
   pi.registerCommand("chitty", {
     description: "Work or review Chitty tickets",
     handler: async (args) => {
-      const mode = parseMode(args);
-      state = { enabled: true, mode };
-      persistState(pi, state);
-      pi.sendUserMessage(chittyPrompt(mode));
+      start(parseMode(args));
     },
   });
 
   pi.on("session_start", async (_event, ctx) => {
     setPiSessionIdentity(ctx.sessionManager.getSessionId());
     state = latestState(ctx) ?? { enabled: false, mode: "work" };
+    // Review wins if both flags are supplied, avoiding accidental work-mode review.
+    if (isChittyReviewFlagEnabled(pi.getFlag("chitty-review"))) {
+      start("review");
+    } else if (isChittyWorkFlagEnabled(pi.getFlag("chitty-work"))) {
+      start("work");
+    }
   });
 
   pi.on("agent_settled", async (_event, ctx) => {
@@ -53,7 +73,7 @@ export default function chitty(pi: ExtensionAPI) {
     }
 
     const assistant = latestAssistantMessage(ctx);
-    if (isFailedAssistantResponse(assistant?.stopReason)) {
+    if (assistant && isFailedAssistantResponse(assistant.stopReason)) {
       stopContinuation(ctx, `agent response ended with ${assistant.stopReason}`);
       return;
     }
@@ -89,6 +109,14 @@ export function setPiSessionIdentity(sessionId: string): void {
   if (!process.env[PI_SESSION_ID_VARIABLE]) {
     process.env[PI_SESSION_ID_VARIABLE] = sessionId;
   }
+}
+
+export function isChittyReviewFlagEnabled(value: unknown): boolean {
+  return value === true;
+}
+
+export function isChittyWorkFlagEnabled(value: unknown): boolean {
+  return value === true;
 }
 
 export function parseMode(args: string): ChittyMode {

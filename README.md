@@ -131,4 +131,4 @@ make format
 
 ## Pi extension
 
-`chitty init` installs the shipped Pi `/chitty` workflow extension into an existing `~/.pi/agent/extensions/` directory. `src/chitty/integrations/pi/chitty.ts` is the source of truth: make extension edits in this repository, not in the installed copy. If the installed file differs, `chitty init` fails rather than overwriting possible local work; review it, then replace or remove it before retrying. Restart or reload Pi after installation.
+`chitty init` installs the shipped Pi `/chitty` workflow extension into an existing `~/.pi/agent/extensions/` directory. Start Pi with `--chitty-work` to begin the work workflow or `--chitty-review` to begin the review workflow; if both are supplied, review mode wins. `src/chitty/integrations/pi/chitty.ts` is the source of truth: make extension edits in this repository, not in the installed copy. If the installed file differs, `chitty init` fails rather than overwriting possible local work; review it, then replace or remove it before retrying. Restart or reload Pi after installation.

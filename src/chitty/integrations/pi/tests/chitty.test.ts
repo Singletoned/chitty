@@ -6,6 +6,8 @@ import {
   chittyPrompt,
   continuationPrompt,
   hasActionableTickets,
+  isChittyReviewFlagEnabled,
+  isChittyWorkFlagEnabled,
   isFailedAssistantResponse,
   isNoMoreWorkResponse,
   parseMode,
@@ -68,6 +70,18 @@ test("chooses cheap defaults instead of blocking", () => {
 test("rejects invalid Chitty ticket-list output", () => {
   assert.throws(() => hasActionableTickets("not JSON", "work"), /invalid JSON/);
   assert.throws(() => hasActionableTickets("{}", "work"), /ticket list/);
+});
+
+test("parses only explicit Chitty startup flags", () => {
+  for (const isEnabled of [
+    isChittyReviewFlagEnabled,
+    isChittyWorkFlagEnabled,
+  ]) {
+    assert.equal(isEnabled(true), true);
+    assert.equal(isEnabled(false), false);
+    assert.equal(isEnabled("true"), false);
+    assert.equal(isEnabled(undefined), false);
+  }
 });
 
 test("uses work mode by default and accepts review mode", () => {
