@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-55
@@ -13,9 +13,9 @@ Second half of the `HUMAN-8` scope decision. Once `TASK-55` gives History entrie
 
 ## Acceptance Criteria
 
-- [ ] Every `edit` that changes anything other than status appends one History entry naming what changed
+- [x] Every `edit` that changes anything other than status appends one History entry naming what changed
 - [x] Reference rewrites, `chitty fix` repairs and `delete` append no History entries; tests prove it
-- [ ] `PLAN.md` documents which writes record History
+- [x] `PLAN.md` documents which writes record History
 - [x] Creating a ticket by `add`, `suggest` or inbox pull records the creating actor in its first History entry; an import keeps the source's creation entry and appends an entry naming the importing actor and time
 
 ## Plan
@@ -42,7 +42,14 @@ Unticked criteria 1 and 3: one `edit` wrote up to three History lines (`changed 
 
 ## Summary
 
-Added focused regression assertions that dependency rewrites during move, chitty fix repairs, and delete-mode archiving leave the dependent task History unchanged. Verified the targeted tests, make check, and npm test in a worktree-local `.venv`.
+Work is on branch `task-99-history-tests` (worktree `.worktrees/task-99-history-tests`), merged with current `main`. Part of the code (`0cc9e93`) is already on `main`.
+
+- Criterion 1: one `edit` now appends a single event, with parts joined by `; ` (e.g. `changed notes; wrote the plan; ticked acceptance criteria`). `Task.review_work` splits it, so review independence still works. An `edit` that changes nothing writes no file and no History.
+- Criterion 2: `tests/test_store.py` (move rewrite), `tests/test_check.py` (`fix`) and `tests/test_cli.py` (delete-mode archive) assert the dependent's History is unchanged.
+- Criterion 3: `PLAN.md` History section rewritten to list each recorded write and the exclusions; the `edit` bullet matches.
+- Criterion 4: `add` and inbox pull write `actor → status` first (`suggest` only writes the inbox file; pull creates the ticket). Import keeps the source entry and appends `actor: imported task`. New tests: `test_import_keeps_source_creation_and_records_the_importing_actor`, tightened inbox pull assertion.
+
+Verified in the worktree `.venv`: `make check` (195 tests) and `npm test` (14) pass. The passing reviewer merges the branch and removes the worktree.
 
 ## History
 
@@ -66,3 +73,6 @@ Added focused regression assertions that dependency rewrites during move, chitty
 - 2026-11-02T11:45:52Z kind-otter review → doing
 - 2026-11-02T12:58:37Z lively-otter: changed acceptance criteria, notes
 - 2026-11-02T12:58:37Z lively-otter: wrote the plan
+- 2026-11-02T13:03:01Z lively-otter: changed summary
+- 2026-11-02T13:03:01Z lively-otter: ticked acceptance criteria
+- 2026-11-02T13:03:01Z lively-otter doing → review
