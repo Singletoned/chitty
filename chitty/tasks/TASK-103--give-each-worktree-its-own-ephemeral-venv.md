@@ -25,7 +25,7 @@ Make each Make target explicitly use a worktree-local `.venv`, overriding inheri
 
 Follow-up: `chitty init` must run after this branch is merged to refresh the current checkout’s managed guide and record version `0.1.17`; it correctly refuses in this worktree because the `chitty` project registration belongs to the main checkout.
 
-Reviewed: independently verified inherited virtual-environment variables are overridden by the worktree-local .venv; make check passed in a disposable worktree and again in main after its removal; README and managed guide document setup.
+Reviewed: independently verified inherited virtual-environment variables are overridden by the worktree-local `.venv`; `make check` passed in a disposable worktree and again in main after its removal; README and managed guide document setup.
 
 ## Summary
 
