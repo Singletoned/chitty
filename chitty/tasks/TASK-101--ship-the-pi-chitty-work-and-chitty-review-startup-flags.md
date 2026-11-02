@@ -1,6 +1,6 @@
 ---
 title: Ship the Pi `--chitty-work` and `--chitty-review` startup flags
-status: doing
+status: review
 priority: high
 created: 2026-11-02
 ---
@@ -23,9 +23,14 @@ Compare the installed Pi extension with the shipped source and port the shared s
 
 Choice: when both startup flags are supplied, `--chitty-review` wins. Review mode is safer than accidentally selecting implementation work, and the precedence is cheap to change; it is documented beside the conditional and in `README.md`.
 
+## Summary
+
+Ported the shared startup helper and `--chitty-work`/`--chitty-review` flags from the installed Pi extension, with review-mode precedence when both flags are supplied. Added explicit flag-value tests, bumped the package to `0.1.16`, and documented the flags. Reinstalled the matching extension with `chitty init` and verified it matches the shipped file. Ran `npm test`, `make check`, and `chitty fix` (existing repository warnings only).
+
 ## History
 
 - 2026-11-02 → todo
 - 2026-11-02T11:01:33Z frosty-falcon todo → doing
 - 2026-11-02T11:01:33Z frosty-falcon: wrote the plan
 - 2026-11-02T11:02:12Z frosty-falcon: ticked acceptance criteria
+- 2026-11-02T11:03:04Z frosty-falcon doing → review
