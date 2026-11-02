@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-55
@@ -20,7 +20,7 @@ Second half of the `HUMAN-8` scope decision. Once `TASK-55` gives History entrie
 
 ## Plan
 
-Inspect the existing History event and creation/import paths, then add concise actor-attributed entries for each deliberate `edit` and task creation while retaining no-history repair, rewrite, and delete paths. Cover the behavior with focused tests, update `PLAN.md`, run `make check` and `chitty fix`, tick each criterion, and submit for independent review.
+Finish the branch: (1) merge each `edit`'s non-status changes into one History entry, with actions joined by `; `, and have `review_work` split them; (2) skip History when an `edit` changes nothing, so a no-op edit still writes no file; (3) rewrite the `PLAN.md` History section so it matches the behaviour; (4) regression tests first, then `make check` and `npm test` in the worktree `.venv`.
 
 ## Notes
 
@@ -38,9 +38,18 @@ Review failed: acceptance criterion 2 requires tests proving that reference rewr
 
 Review failed: criterion 3 is unmet. PLAN.md still says History records only creation plus status/archive transitions; it does not document deliberate non-status edits, add/suggest/inbox/import creation, or the reference-rewrite, fix, and delete exclusions. Update the specification and rerun make check.
 
+Unticked criteria 1 and 3: one `edit` wrote up to three History lines (`changed …`, `wrote the plan`, `ticked acceptance criteria`), and `PLAN.md` lines 171-176 still described only creation and status History. Picked up by lively-otter on `task-99-history-tests`.
+
 ## Summary
 
-Added focused regression assertions that dependency rewrites during move, chitty fix repairs, and delete-mode archiving leave the dependent task History unchanged. Verified the targeted tests, make check, and npm test in a worktree-local `.venv`.
+Work is on branch `task-99-history-tests` (worktree `.worktrees/task-99-history-tests`), merged with current `main`. Part of the code (`0cc9e93`) is already on `main`.
+
+- Criterion 1: one `edit` now appends a single event, with parts joined by `; ` (e.g. `changed notes; wrote the plan; ticked acceptance criteria`). `Task.review_work` splits it, so review independence still works. An `edit` that changes nothing writes no file and no History.
+- Criterion 2: `tests/test_store.py` (move rewrite), `tests/test_check.py` (`fix`) and `tests/test_cli.py` (delete-mode archive) assert the dependent's History is unchanged.
+- Criterion 3: `PLAN.md` History section rewritten to list each recorded write and the exclusions; the `edit` bullet matches.
+- Criterion 4: `add` and inbox pull write `actor → status` first (`suggest` only writes the inbox file; pull creates the ticket). Import keeps the source entry and appends `actor: imported task`. New tests: `test_import_keeps_source_creation_and_records_the_importing_actor`, tightened inbox pull assertion.
+
+Verified in the worktree `.venv`: `make check` (195 tests) and `npm test` (14) pass. The passing reviewer merges the branch and removes the worktree.
 
 ## History
 
@@ -62,3 +71,8 @@ Added focused regression assertions that dependency rewrites during move, chitty
 - 2026-11-02T11:36:13Z jolly-falcon doing → review
 - 2026-11-02T11:45:52Z kind-otter: changed notes
 - 2026-11-02T11:45:52Z kind-otter review → doing
+- 2026-11-02T12:58:37Z lively-otter: changed acceptance criteria, notes
+- 2026-11-02T12:58:37Z lively-otter: wrote the plan
+- 2026-11-02T13:03:01Z lively-otter: changed summary
+- 2026-11-02T13:03:01Z lively-otter: ticked acceptance criteria
+- 2026-11-02T13:03:01Z lively-otter doing → review
