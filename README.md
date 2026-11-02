@@ -17,6 +17,10 @@ uv tool install 'chitty[mcp]'     # CLI plus `chitty mcp`
 uvx chitty --help                 # run without installing
 ```
 
+Install the released package globally; do not make a global editable install
+from a development checkout. To develop Chitty itself, use `make install` in
+its clone, which keeps that editable environment local to the repository.
+
 ## Use
 
 ```sh
