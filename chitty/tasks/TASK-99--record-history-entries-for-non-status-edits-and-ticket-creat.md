@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-55
@@ -38,7 +38,7 @@ Review failed: acceptance criterion 2 requires tests proving that reference rewr
 
 ## Summary
 
-Added actor-attributed UTC creation transitions and concise History events for deliberate non-status edits, retaining the specific plan and criterion events used for review independence. Inbox pulls inherit creation attribution; legacy imports preserve their original creation entry and append an importing-actor event. Reference rewrites, `fix`, and delete paths remain history-free. Updated `PLAN.md` and focused CLI, store, inbox, MCP, and import coverage. Verified with `make check` and `chitty fix` (existing repository warnings only).
+Added focused regression assertions that dependency rewrites during move, chitty fix repairs, and delete-mode archiving leave the dependent task History unchanged. Verified the targeted tests, make check, and npm test in a worktree-local `.venv`.
 
 ## History
 
@@ -56,3 +56,5 @@ Added actor-attributed UTC creation transitions and concise History events for d
 - 2026-11-02T11:08:14Z frosty-falcon doing → review
 - 2026-11-02T11:23:06Z jolly-falcon: changed notes
 - 2026-11-02T11:23:06Z jolly-falcon review → doing
+- 2026-11-02T11:36:13Z jolly-falcon: changed summary
+- 2026-11-02T11:36:13Z jolly-falcon doing → review
