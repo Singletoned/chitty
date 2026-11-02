@@ -426,6 +426,22 @@ class TestImport(CliTestCase):
 
         self.assertEqual(list((self.root / "chitty/tasks").glob("*.md")), [])
 
+    def test_import_keeps_source_creation_and_records_the_importing_actor(self):
+        legacy = self.root / "backlog/tasks"
+        legacy.mkdir(parents=True)
+        (legacy / "task-1.md").write_text(
+            "---\nid: TASK-1\ntitle: Legacy\nstatus: To Do\n"
+            "created_date: '2026-10-20'\n---\n\n## Description\n\nLegacy description.\n"
+        )
+        self.commit()
+
+        self.run_cli("import", "backlog-md", "--keep-source")
+
+        self.assertRegex(
+            self.json("show", "1")["history"],
+            r"^- 2026-10-20 → todo\n- [0-9-]{10}T[0-9:]{8}Z test-agent: imported task$",
+        )
+
     def test_import_archives_completed_tasks_when_archive_policy_is_move(self):
         legacy = self.root / "backlog/completed"
         legacy.mkdir(parents=True)
@@ -1006,9 +1022,7 @@ class TestEdit(CliTestCase):
             data["history"],
             rf"^- {timestamp} test-agent → todo"
             rf"\n- {timestamp} test-agent: changed title, labels, priority, owner, dependencies, "
-            rf"description, acceptance criteria, notes"
-            rf"\n- {timestamp} test-agent: wrote the plan"
-            rf"\n- {timestamp} test-agent: ticked acceptance criteria"
+            rf"description, acceptance criteria, notes; wrote the plan; ticked acceptance criteria"
             rf"\n- {timestamp} test-agent todo → doing$",
         )
         self.assertIn("actor test-agent", result.stdout)

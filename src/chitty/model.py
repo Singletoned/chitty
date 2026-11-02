@@ -40,6 +40,8 @@ PLAN = "Plan"
 NOTES = "Notes"
 SUMMARY = "Summary"
 HISTORY = "History"
+# Joins the parts of one edit's History event, e.g. "changed notes; wrote the plan".
+HISTORY_ACTION_SEPARATOR = "; "
 SECTION_ORDER = (DESCRIPTION, ACCEPTANCE_CRITERIA, PLAN, NOTES, SUMMARY, HISTORY)
 
 DELIMITER = "---\n"
@@ -290,12 +292,12 @@ class Task:
             if transition := HISTORY_LINE_RE.fullmatch(line):
                 if transition["actor"] == actor and transition["new"] == "review":
                     work.append("moved the task to review")
-            elif (
-                (event := HISTORY_EVENT_RE.fullmatch(line))
-                and event["actor"] == actor
-                and event["action"] in {"wrote the plan", "ticked acceptance criteria"}
-            ):
-                work.append(event["action"])
+            elif (event := HISTORY_EVENT_RE.fullmatch(line)) and event["actor"] == actor:
+                work += [
+                    action
+                    for action in event["action"].split(HISTORY_ACTION_SEPARATOR)
+                    if action in {"wrote the plan", "ticked acceptance criteria"}
+                ]
         return work
 
     def with_legacy_history(self, when: date, old: str | None, new: str) -> "Task":

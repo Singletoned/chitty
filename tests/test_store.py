@@ -144,6 +144,29 @@ class TestStore(StoreTestCase):
             "test-agent: overrode review independence", completed.task.section("History") or ""
         )
 
+    def test_combined_edit_history_still_marks_review_involvement(self):
+        stored = self.add("One")
+        self.repo.edit(stored.id, Edit(add_criteria=["Works"]))
+        self.repo.edit(stored.id, Edit(plan="Implement it.", check=[1], note="Done."))
+        os.environ["CHITTY_ACTOR"] = "worker"
+        self.repo.edit(stored.id, Edit(status="review"))
+        os.environ["CHITTY_ACTOR"] = "test-agent"
+
+        with self.assertRaisesRegex(
+            ChittyError,
+            "test-agent cannot review this task: wrote the plan, ticked acceptance criteria$",
+        ):
+            self.repo.edit(stored.id, Edit(status="done", note="Reviewed: looks good"))
+
+    def test_edit_that_changes_nothing_records_no_history(self):
+        stored = self.add("One", priority="high")
+        before = stored.path.read_text()
+
+        change = self.repo.edit(stored.id, Edit(priority="high"))
+
+        self.assertEqual(change.paths, ())
+        self.assertEqual(stored.path.read_text(), before)
+
     def test_review_completion_requires_a_review_note(self):
         stored = self.add("One")
         self.repo.edit(stored.id, Edit(status="review"))

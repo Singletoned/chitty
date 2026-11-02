@@ -168,12 +168,25 @@ Free markdown. Append-only by convention; not enforced.
 - 2026-10-28T14:03:05Z lively-otter todo → doing
 ```
 
-`History` is tool-managed, always last, and records task creation plus every
-status or archive-state transition. The initial entry is the legacy
-`- YYYY-MM-DD → new` form. Later status, archive, and restore transitions use
-`- YYYY-MM-DDTHH:MM:SSZ actor old → new`, with a UTC timestamp and the writing
-actor. Existing date-only entries remain valid. Deleting a task removes its
-History with it.
+`History` is tool-managed, always last, and records every deliberate change:
+
+- Creation by `add`, `suggest` or inbox pull writes
+  `- YYYY-MM-DDTHH:MM:SSZ actor → status`, with a UTC timestamp and the
+  creating actor.
+- An import keeps the source's creation entry, which may be the legacy
+  date-only `- YYYY-MM-DD → status` form, and appends
+  `- YYYY-MM-DDTHH:MM:SSZ actor: imported task`.
+- A status change, archive or restore appends
+  `- YYYY-MM-DDTHH:MM:SSZ actor old → new`.
+- An `edit` that changes anything other than status appends one event,
+  `- YYYY-MM-DDTHH:MM:SSZ actor: action; action`, naming what changed, for
+  example `changed priority, notes; wrote the plan; ticked acceptance
+  criteria`. Review independence reads `wrote the plan` and `ticked acceptance
+  criteria` from these events. An `edit` that changes nothing writes nothing.
+
+Not recorded: rewriting references in other tasks after a move, rename or
+delete, `chitty fix` repairs, and `delete`, which removes the task and its
+History. Existing date-only entries remain valid.
 
 Frontmatter schema (strict: unknown keys are an error):
 
@@ -258,8 +271,8 @@ Serialisation is a patch over the original text, not parse-then-dump:
   in the text if you want it.
 - Creating a task writes an actor-attributed UTC initial History transition.
   A changed `--status`, archiving, and restoring append a transition; a no-op
-  status edit does not. Every deliberate non-status `edit` appends concise
-  actor-attributed events naming changed fields, notes, plans, or criteria.
+  status edit does not. Every other `edit` that changes the task appends one
+  actor-attributed event naming the changed fields, notes, plan or criteria.
   Imports retain their source creation entry and append an import event; safe
   `fix` repairs, `delete`, and reference rewrites in other tasks append none.
 - All checklist indices in a single `edit` refer to the list as it was
