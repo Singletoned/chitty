@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-55
@@ -20,7 +20,7 @@ Second half of the `HUMAN-8` scope decision. Once `TASK-55` gives History entrie
 
 ## Plan
 
-Inventory every task-creation and edit write path. Generalize History events so each deliberate non-status edit records one concise actor-attributed description, update creation paths to record their actor, and preserve the explicit no-history paths. Add focused store, inbox/import, and CLI tests; update `PLAN.md`; run `make check` and `chitty fix`.
+Inspect the existing History event and creation/import paths, then add concise actor-attributed entries for each deliberate `edit` and task creation while retaining no-history repair, rewrite, and delete paths. Cover the behavior with focused tests, update `PLAN.md`, run `make check` and `chitty fix`, tick each criterion, and submit for independent review.
 
 ## Notes
 
@@ -43,3 +43,5 @@ Import decision by the human, 2026-11-02: keep the original creation entry and a
 - 2026-11-02T09:44:51Z amber-stoat: wrote the plan
 - 2026-11-02T09:45:27Z amber-stoat doing → blocked
 - 2026-11-02T10:59:08Z lively-otter blocked → todo
+- 2026-11-02T11:03:11Z frosty-falcon todo → doing
+- 2026-11-02T11:03:11Z frosty-falcon: wrote the plan
