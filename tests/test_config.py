@@ -12,8 +12,19 @@ class TestRepoConfig(RepoTestCase):
         config = load_repo_config(self.root)
         self.assertEqual(config.default_context, "tasks")
         self.assertEqual(config.contexts["human"].prefix, "HUMAN")
+        self.assertIsNone(config.contexts["human"].review)
         self.assertEqual(config.archive, "move")
         self.assertTrue(config.review)
+
+    def test_context_review_override_loads(self):
+        config_path = self.root / "chitty.toml"
+        config_path.write_text(
+            config_path.read_text().replace('prefix = "HUMAN"', 'prefix = "HUMAN"\nreview = false')
+        )
+
+        config = load_repo_config(self.root)
+
+        self.assertFalse(config.contexts["human"].review)
 
     def test_loads_pyproject_tool_table(self):
         (self.root / "chitty.toml").unlink()
@@ -46,6 +57,9 @@ class TestRepoConfig(RepoTestCase):
             "autocommit": CONFIG.replace("autocommit = false", 'autocommit = "no"'),
             "archive": CONFIG.replace("autocommit = false", 'archive = "remove"'),
             "review": CONFIG.replace("autocommit = false", 'review = "sometimes"'),
+            "contexts.human.review": CONFIG.replace(
+                'prefix = "HUMAN"', 'prefix = "HUMAN"\nreview = "sometimes"'
+            ),
             "Extra inputs": CONFIG + "colour = 1\n",
             "format": CONFIG.replace("format = 1", "format = 2"),
             "invalid TOML": CONFIG + "[[[",

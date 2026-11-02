@@ -51,9 +51,9 @@ chitty guide                      # instructions for coding agents
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
 are the reference. Plain `chitty list` shows non-archived `todo`, `doing`,
 `blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter,
-including backlog and done tickets. Review is required before `done` by default;
-set `review = false` in repository configuration to make it optional. The
-third failed review (`review → doing`) since a task was last blocked sets it
+including backlog and done tickets. Review is required before `done` by default.
+A context can set `review = false` to override that setting; generated `human`
+contexts do this so people can close their own tasks directly. The third failed review (`review → doing`) since a task was last blocked sets it
 `blocked` with owner `human` instead, so agents stop bouncing it. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 Empty lists explain their active filters on stderr while JSON stdout remains

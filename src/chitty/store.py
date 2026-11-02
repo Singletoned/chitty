@@ -189,6 +189,11 @@ class Repo:
     def default_context(self) -> Context:
         return self.context(self.config.default_context)
 
+    def review_required(self, context: Context) -> bool:
+        """Whether tasks in a context must pass through review before completion."""
+        override = self.config.contexts[context.name].review
+        return self.config.review if override is None else override
+
     def context_of(self, task_id: TaskId) -> Context:
         for context in self.contexts():
             if context.prefix == task_id.prefix:
@@ -313,7 +318,7 @@ class Repo:
             fields["parent"] = str(self.resolve(parent))
             self.find(TaskId.parse(fields["parent"]))
         status = fields.get("status", "todo")
-        if status == "done" and self.config.review:
+        if status == "done" and self.review_required(context):
             raise ChittyError("setting status done requires -s review first")
         if description is None:
             if status != "backlog":
@@ -340,7 +345,7 @@ class Repo:
         if (
             edit.status == "done"
             and edit.status != previous_status
-            and self.config.review
+            and self.review_required(self.context(stored.context))
             and previous_status != "review"
         ):
             raise ChittyError("setting status done requires -s review first")
@@ -651,6 +656,20 @@ def _add_missing_settings(
     return text[:position] + "\n".join(additions) + "\n\n" + text[position:]
 
 
+def _add_missing_human_review(text: str, config: RepoConfig, pyproject: bool) -> str:
+    """Set the generated human context's review policy without changing explicit settings."""
+    human = config.contexts.get("human")
+    if human is None or human.review is not None:
+        return text
+    header = r"\[tool\.chitty\.contexts\.human\]" if pyproject else r"\[contexts\.human\]"
+    match = re.search(rf"(?m)^{header}\s*$", text)
+    if match is None:
+        return text
+    following = re.search(r"(?m)^\[", text[match.end() :])
+    position = match.end() + following.start() if following else len(text)
+    return text[:position] + "\nreview = false\n" + text[position:]
+
+
 def _set_autocommit(text: str, pyproject: bool) -> str:
     """Enable autocommit without changing unrelated TOML tables."""
     pattern = r"(?m)^(autocommit\s*=\s*)false(?=\s*(?:#.*)?$)"
@@ -738,6 +757,7 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         updated = _add_missing_settings(
             text, settings, source == pyproject_path, _default_project(directory.name)
         )
+        updated = _add_missing_human_review(updated, config, source == pyproject_path)
         updated = re.sub(
             r'(?m)^(chitty_version\s*=\s*)["\'][^"\']*["\']\s*$',
             rf'\g<1>"{CHITTY_VERSION}"',

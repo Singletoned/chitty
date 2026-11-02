@@ -278,11 +278,14 @@ prefix = "TASK"
 
 [contexts.human]
 prefix = "HUMAN"
+review = false # overrides the repository default
 ```
 
 Context directory is `chitty/<name>/`. Not configurable. `review` defaults to
-`true`; with it enabled, only `review → done` can complete a task. Set it to
-`false` to make review optional.
+`true`; with it enabled, only `review → done` can complete a task. A context
+can set `review` to override the repository default; an absent context setting
+inherits it. New `human` contexts disable review so people can close their own
+tasks directly.
 
 Agents reviewing each other's work can fail a task back and forth without
 converging. The third `review → doing` since the task was last `blocked` is

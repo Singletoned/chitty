@@ -91,6 +91,7 @@ class TestInit(CliTestCase):
         self.assertNotIn("  #", config)
         self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config)
         self.assertIn("review = true", config)
+        self.assertIn('[contexts.human]\nprefix = "HUMAN"\nreview = false', config)
         self.assertTrue((target / "chitty" / "tasks").is_dir())
         agents = (target / "AGENTS.md").read_text()
         self.assertTrue(agents.startswith("# Agents\n\nBe nice.\n\n## Chitty\n"))
@@ -105,6 +106,15 @@ class TestInit(CliTestCase):
         refreshed_agents = (target / "AGENTS.md").read_text()
         self.assertEqual(refreshed_agents, agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
+
+    def test_init_adds_missing_human_review_setting(self):
+        config = self.root / "chitty.toml"
+
+        self.run_cli("init")
+
+        settings = tomllib.loads(config.read_text())
+        self.assertFalse(settings["contexts"]["human"]["review"])
+        self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
     def test_init_replaces_a_tracked_pi_extension(self):
         agent = self.tmp / "pi-agent"
@@ -863,6 +873,32 @@ class TestReviewStatus(CliTestCase):
         )
         self.run_cli("add", "Done directly", "-d", "x")
         self.run_cli("edit", "1", "-s", "done")
+
+    def test_context_review_override_can_disable_the_repository_default(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace('prefix = "HUMAN"', 'prefix = "HUMAN"\nreview = false')
+        )
+
+        self.run_cli("add", "Human done directly", "-c", "human", "-d", "x", "-s", "done")
+        refused = self.run_cli("add", "Task needs review", "-d", "x", "-s", "done", exit_code=1)
+
+        self.assertIn("requires -s review first", refused.stderr)
+
+    def test_context_review_override_can_require_review(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace("autocommit = false", "autocommit = false\nreview = false")
+            .replace('prefix = "HUMAN"', 'prefix = "HUMAN"\nreview = true')
+        )
+
+        self.run_cli("add", "Task done directly", "-d", "x", "-s", "done")
+        refused = self.run_cli(
+            "add", "Human needs review", "-c", "human", "-d", "x", "-s", "done", exit_code=1
+        )
+
+        self.assertIn("requires -s review first", refused.stderr)
 
 
 class TestEdit(CliTestCase):
