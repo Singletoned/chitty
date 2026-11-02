@@ -1,6 +1,6 @@
 ---
 title: Provide Claude Code and Codex sessions to verify Chitty actor identity
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-75
@@ -17,8 +17,15 @@ Blocked for a human who can open Claude Code and Codex sessions: run the require
 
 Back to `todo` (lively-otter): human tickets wait for a person; the Pi work loop blocked them because it does not skip `human` tickets (TASK-94).
 
+Checked by the human, 2026-11-02: `chitty whoami` gave a working actor name in all three agents (Claude Code, Codex and Pi).
+
+## Summary
+
+Actor identity verified by the human in Claude Code, Codex and Pi.
+
 ## History
 
 - 2026-11-01 → todo
 - 2026-11-01 todo → blocked
 - 2026-11-01 blocked → todo
+- 2026-11-02T09:34:50Z lively-otter todo → done

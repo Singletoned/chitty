@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: blocked
+status: todo
 priority: medium
 depends_on:
   - TASK-55
@@ -22,7 +22,10 @@ Second half of the `HUMAN-8` scope decision. Once `TASK-55` gives History entrie
 
 Blocked pending independent review and completion of `TASK-55`, which supplies the History format this follow-on ticket extends.
 
+`TASK-55` is done; unblocked.
+
 ## History
 
 - 2026-11-02 → todo
 - 2026-11-02T08:52:55Z pi-worker todo → blocked
+- 2026-11-02T09:34:51Z lively-otter blocked → todo
