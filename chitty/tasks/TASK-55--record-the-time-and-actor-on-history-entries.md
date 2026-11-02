@@ -1,6 +1,6 @@
 ---
 title: Record the time and actor on History entries
-status: todo
+status: review
 priority: high
 depends_on:
   - TASK-75
@@ -17,9 +17,15 @@ Scope per `HUMAN-8`: this ticket adds a UTC timestamp to the second and the acto
 
 ## Acceptance Criteria
 
-- [ ] Status changes and `archive` write History entries with a UTC timestamp to the second and the actor name
-- [ ] Existing date-only History entries still parse; `PLAN.md` documents the new entry format
-- [ ] Each write's CLI output names the actor
+- [x] Status changes and `archive` write History entries with a UTC timestamp to the second and the actor name
+- [x] Existing date-only History entries still parse; `PLAN.md` documents the new entry format
+- [x] Each write's CLI output names the actor
+
+## Plan
+
+1. Locate all existing History serialization, parsing, status-transition, and archive writes, then define a single actor-and-UTC formatting path that preserves date-only parsing.
+2. Add actor-aware History entries and CLI output for status changes and archive only, with focused regression tests and `PLAN.md` documentation.
+3. Run the relevant tests, `make format`, and `make check`; inspect the diff, tick satisfied criteria, and prepare the ticket for independent review.
 
 ## Notes
 
@@ -33,6 +39,12 @@ Created HUMAN-8 to record the required scope decision.
 
 Narrowed and split per `HUMAN-8`; the earlier plan covered the whole scope and was removed.
 
+## Summary
+
+Added UTC-second, actor-attributed History entries for status changes and move-mode archive or restore, while retaining parsing and generation of date-only creation/import entries. CLI status and archive output now names the actor.
+
+Verification: new History regression tests failed before the implementation; `make format` and `make check` pass afterward.
+
 ## History
 
 - 2026-10-28 → backlog
@@ -42,3 +54,5 @@ Narrowed and split per `HUMAN-8`; the earlier plan covered the whole scope and w
 - 2026-11-01 todo → doing
 - 2026-11-01 doing → blocked
 - 2026-11-02 blocked → todo
+- 2026-11-02 todo → doing
+- 2026-11-02T08:52:36Z pi-worker doing → review
