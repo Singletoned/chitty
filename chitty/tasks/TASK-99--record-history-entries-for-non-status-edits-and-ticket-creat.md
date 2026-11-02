@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: blocked
+status: todo
 priority: medium
 depends_on:
   - TASK-55
@@ -14,9 +14,9 @@ Second half of the `HUMAN-8` scope decision. Once `TASK-55` gives History entrie
 ## Acceptance Criteria
 
 - [ ] Every `edit` that changes anything other than status appends one History entry naming what changed
-- [ ] Creating a ticket by `add`, `suggest`, inbox pull or import records the creating actor in its first History entry
 - [ ] Reference rewrites, `chitty fix` repairs and `delete` append no History entries; tests prove it
 - [ ] `PLAN.md` documents which writes record History
+- [ ] Creating a ticket by `add`, `suggest` or inbox pull records the creating actor in its first History entry; an import keeps the source's creation entry and appends an entry naming the importing actor and time
 
 ## Plan
 
@@ -32,6 +32,8 @@ Blocked: imports preserve the legacy source-created date in their initial Histor
 
 Needs a product decision on the import History compatibility policy described above; no safe default preserves both requirements.
 
+Import decision by the human, 2026-11-02: keep the original creation entry and append a separate actor-attributed import entry. Where the original entry needs an actor and none is known, use an artificial actor such as `import` or `unknown`.
+
 ## History
 
 - 2026-11-02 → todo
@@ -40,3 +42,4 @@ Needs a product decision on the import History compatibility policy described ab
 - 2026-11-02T09:44:51Z amber-stoat todo → doing
 - 2026-11-02T09:44:51Z amber-stoat: wrote the plan
 - 2026-11-02T09:45:27Z amber-stoat doing → blocked
+- 2026-11-02T10:59:08Z lively-otter blocked → todo
