@@ -1,6 +1,6 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-55
@@ -36,6 +36,8 @@ Import decision by the human, 2026-11-02: keep the original creation entry and a
 
 Review failed: acceptance criterion 2 requires tests proving that reference rewrites, chitty fix repairs, and delete append no History entries. The changed suite has no History assertions for these three paths; add focused regression tests for each, then rerun make check.
 
+Review failed: criterion 3 is unmet. PLAN.md still says History records only creation plus status/archive transitions; it does not document deliberate non-status edits, add/suggest/inbox/import creation, or the reference-rewrite, fix, and delete exclusions. Update the specification and rerun make check.
+
 ## Summary
 
 Added focused regression assertions that dependency rewrites during move, chitty fix repairs, and delete-mode archiving leave the dependent task History unchanged. Verified the targeted tests, make check, and npm test in a worktree-local `.venv`.
@@ -58,3 +60,5 @@ Added focused regression assertions that dependency rewrites during move, chitty
 - 2026-11-02T11:23:06Z jolly-falcon review → doing
 - 2026-11-02T11:36:13Z jolly-falcon: changed summary
 - 2026-11-02T11:36:13Z jolly-falcon doing → review
+- 2026-11-02T11:45:52Z kind-otter: changed notes
+- 2026-11-02T11:45:52Z kind-otter review → doing

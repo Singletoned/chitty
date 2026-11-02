@@ -1,5 +1,11 @@
 .PHONY: install check test format build
 
+# Keep every checkout self-contained: direnv may export a shared environment,
+# but `make` always creates and uses this worktree's disposable `.venv`.
+export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
+export VIRTUAL_ENV := $(UV_PROJECT_ENVIRONMENT)
+export PATH := $(VIRTUAL_ENV)/bin:$(PATH)
+
 install: ## install Python and node dev dependencies
 	uv sync --all-extras
 	npm ci
