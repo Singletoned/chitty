@@ -36,9 +36,11 @@ Import decision by the human, 2026-11-02: keep the original creation entry and a
 
 Review failed: acceptance criterion 2 requires tests proving that reference rewrites, chitty fix repairs, and delete append no History entries. The changed suite has no History assertions for these three paths; add focused regression tests for each, then rerun make check.
 
+Review failed: criterion 3 is unmet. PLAN.md still says History records only creation plus status/archive transitions; it does not document deliberate non-status edits, add/suggest/inbox/import creation, or the reference-rewrite, fix, and delete exclusions. Update the specification and rerun make check.
+
 ## Summary
 
-Added actor-attributed UTC creation transitions and concise History events for deliberate non-status edits, retaining the specific plan and criterion events used for review independence. Inbox pulls inherit creation attribution; legacy imports preserve their original creation entry and append an importing-actor event. Reference rewrites, `fix`, and delete paths remain history-free. Updated `PLAN.md` and focused CLI, store, inbox, MCP, and import coverage. Verified with `make check` and `chitty fix` (existing repository warnings only).
+Added focused regression assertions that dependency rewrites during move, chitty fix repairs, and delete-mode archiving leave the dependent task History unchanged. Verified the targeted tests, make check, and npm test in a worktree-local `.venv`.
 
 ## History
 
@@ -56,3 +58,7 @@ Added actor-attributed UTC creation transitions and concise History events for d
 - 2026-11-02T11:08:14Z frosty-falcon doing → review
 - 2026-11-02T11:23:06Z jolly-falcon: changed notes
 - 2026-11-02T11:23:06Z jolly-falcon review → doing
+- 2026-11-02T11:36:13Z jolly-falcon: changed summary
+- 2026-11-02T11:36:13Z jolly-falcon doing → review
+- 2026-11-02T11:45:52Z kind-otter: changed notes
+- 2026-11-02T11:45:52Z kind-otter review → doing
