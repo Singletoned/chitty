@@ -1,6 +1,6 @@
 ---
 title: Give each worktree its own ephemeral venv
-status: todo
+status: doing
 priority: high
 created: 2026-11-02
 ---
@@ -17,6 +17,12 @@ The human: venvs are always ephemeral, so each worker creates its own venv in it
 - [ ] Removing a worktree leaves the main checkout's `chitty` and `make check` working; verified by creating, installing in, and removing a worktree
 - [ ] The worker instructions (Pi prompt or guide) and `README.md` say how a worktree gets its venv
 
+## Plan
+
+Make each Make target explicitly use a worktree-local `.venv`, overriding inherited direnv variables. Document the resulting worktree setup in the README and Pi worker prompt, then verify install and check in a disposable worktree and confirm the main checkout remains usable after removal.
+
 ## History
 
 - 2026-11-02T11:21:00Z lively-otter → todo
+- 2026-11-02T11:26:18Z jolly-falcon: wrote the plan
+- 2026-11-02T11:26:18Z jolly-falcon todo → doing
