@@ -19,6 +19,10 @@ The human added `--chitty-review` and `--chitty-work` startup flags to the insta
 
 Compare the installed Pi extension with the shipped source and port the shared startup-mode helper plus both flags exactly. Add focused Node tests for flag parsing, bump the package version because `init` must propagate the change, document the flags in `README.md`, and verify `chitty init` accepts the installed extension before running `make check` and `chitty fix`.
 
+## Notes
+
+Choice: when both startup flags are supplied, `--chitty-review` wins. Review mode is safer than accidentally selecting implementation work, and the precedence is cheap to change; it is documented beside the conditional and in `README.md`.
+
 ## History
 
 - 2026-11-02 → todo
