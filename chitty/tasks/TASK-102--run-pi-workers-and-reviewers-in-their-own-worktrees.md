@@ -2,6 +2,8 @@
 title: Run Pi workers and reviewers in their own worktrees
 status: todo
 priority: high
+depends_on:
+  - TASK-103
 created: 2026-11-02
 ---
 
@@ -18,6 +20,11 @@ Work mode: claim a ticket, create (or reuse, for a ticket already `doing`) a bra
 - [ ] A worker's claim (`doing`) is committed on its branch before implementation starts, so a second worker does not pick the same ticket; a test or documented check shows it
 - [ ] Node tests cover the prompt wording; `src/chitty/guide.md` matches it and `__version__` is bumped
 
+## Notes
+
+Depends on `TASK-103`: workers in worktrees break the shared venv until each worktree has its own.
+
 ## History
 
 - 2026-11-02T11:21:00Z lively-otter → todo
+- 2026-11-02T11:21:06Z lively-otter: changed dependencies, notes
