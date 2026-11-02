@@ -13,14 +13,14 @@ Second half of the `HUMAN-8` scope decision. Once `TASK-55` gives History entrie
 
 ## Acceptance Criteria
 
-- [x] Every `edit` that changes anything other than status appends one History entry naming what changed
+- [ ] Every `edit` that changes anything other than status appends one History entry naming what changed
 - [x] Reference rewrites, `chitty fix` repairs and `delete` append no History entries; tests prove it
-- [x] `PLAN.md` documents which writes record History
+- [ ] `PLAN.md` documents which writes record History
 - [x] Creating a ticket by `add`, `suggest` or inbox pull records the creating actor in its first History entry; an import keeps the source's creation entry and appends an entry naming the importing actor and time
 
 ## Plan
 
-Inspect the existing History event and creation/import paths, then add concise actor-attributed entries for each deliberate `edit` and task creation while retaining no-history repair, rewrite, and delete paths. Cover the behavior with focused tests, update `PLAN.md`, run `make check` and `chitty fix`, tick each criterion, and submit for independent review.
+Finish the branch: (1) merge each `edit`'s non-status changes into one History entry, with actions joined by `; `, and have `review_work` split them; (2) skip History when an `edit` changes nothing, so a no-op edit still writes no file; (3) rewrite the `PLAN.md` History section so it matches the behaviour; (4) regression tests first, then `make check` and `npm test` in the worktree `.venv`.
 
 ## Notes
 
@@ -37,6 +37,8 @@ Import decision by the human, 2026-11-02: keep the original creation entry and a
 Review failed: acceptance criterion 2 requires tests proving that reference rewrites, chitty fix repairs, and delete append no History entries. The changed suite has no History assertions for these three paths; add focused regression tests for each, then rerun make check.
 
 Review failed: criterion 3 is unmet. PLAN.md still says History records only creation plus status/archive transitions; it does not document deliberate non-status edits, add/suggest/inbox/import creation, or the reference-rewrite, fix, and delete exclusions. Update the specification and rerun make check.
+
+Unticked criteria 1 and 3: one `edit` wrote up to three History lines (`changed …`, `wrote the plan`, `ticked acceptance criteria`), and `PLAN.md` lines 171-176 still described only creation and status History. Picked up by lively-otter on `task-99-history-tests`.
 
 ## Summary
 
@@ -62,3 +64,5 @@ Added focused regression assertions that dependency rewrites during move, chitty
 - 2026-11-02T11:36:13Z jolly-falcon doing → review
 - 2026-11-02T11:45:52Z kind-otter: changed notes
 - 2026-11-02T11:45:52Z kind-otter review → doing
+- 2026-11-02T12:58:37Z lively-otter: changed acceptance criteria, notes
+- 2026-11-02T12:58:37Z lively-otter: wrote the plan
