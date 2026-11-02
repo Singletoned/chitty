@@ -1,6 +1,6 @@
 ---
 title: Stop sessions reviewing their own work
-status: todo
+status: review
 priority: high
 depends_on:
   - TASK-55
@@ -15,11 +15,15 @@ Origin (circuitry): one session implemented `CIRCUIT-67`..`72`, then wrote "Revi
 
 ## Acceptance Criteria
 
-- [ ] An actor who wrote the plan, ticked criteria, or moved the task to `review` cannot pass it (`-s done`) or fail it (`-s doing`); the error names the actor and what they did
-- [ ] `chitty show` tells the caller when they worked on the task
-- [ ] Overriding needs an explicit flag, never a default, and the override is recorded in History
-- [ ] Subagents count as their parent
-- [ ] `review → done` requires a note starting `Reviewed:`, so skipping review is never silent
+- [x] An actor who wrote the plan, ticked criteria, or moved the task to `review` cannot pass it (`-s done`) or fail it (`-s doing`); the error names the actor and what they did
+- [x] `chitty show` tells the caller when they worked on the task
+- [x] Overriding needs an explicit flag, never a default, and the override is recorded in History
+- [x] Subagents count as their parent
+- [x] `review → done` requires a note starting `Reviewed:`, so skipping review is never silent
+
+## Plan
+
+Inspect the actor-attributed History support from TASK-55 and the status-transition paths. Add review-independence validation, explicit override recording, reviewer-note validation, and worked-on visibility in `show`; cover each rule with focused tests. Run the targeted tests and `make check`, then complete the ticket.
 
 ## Notes
 
@@ -37,6 +41,12 @@ Blocked pending independent review and completion of `TASK-55`, which supplies t
 
 `TASK-55` is done; unblocked.
 
+Choice: History records only plan and criterion-tick events needed to establish reviewer involvement; `TASK-99` will extend actor-attributed events to all deliberate non-status edits. This keeps the enforcement scope small and is cheap to broaden.
+
+## Summary
+
+Implemented independent review enforcement, explicit recorded overrides, reviewer-note validation, current-actor worked-on output, and inherited Pi parent identity for subagents. Verified with `make check`, Pi extension tests, and `chitty fix` (existing repository warnings only).
+
 ## History
 
 - 2026-10-28 → backlog
@@ -45,3 +55,6 @@ Blocked pending independent review and completion of `TASK-55`, which supplies t
 - 2026-11-01 backlog → todo
 - 2026-11-02T08:52:55Z pi-worker todo → blocked
 - 2026-11-02T09:34:51Z lively-otter blocked → todo
+- 2026-11-02T09:39:51Z amber-stoat todo → doing
+- 2026-11-02T09:44:46Z amber-stoat doing → review
+- 2026-11-02T09:44:46Z amber-stoat: ticked acceptance criteria

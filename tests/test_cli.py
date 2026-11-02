@@ -720,7 +720,15 @@ class TestAddShowList(CliTestCase):
         self.run_cli("add", "Backlog", "-s", "backlog")
         self.run_cli("add", "Done", "-d", "x")
         self.run_cli("edit", "2", "-s", "review")
-        self.run_cli("edit", "2", "-s", "done")
+        self.run_cli(
+            "edit",
+            "2",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
         self.run_cli("add", "Human todo", "-c", "human", "-d", "x")
         self.run_cli("add", "Human doing", "-c", "human", "-d", "x")
         self.run_cli("edit", "HUMAN-2", "-s", "doing")
@@ -784,7 +792,15 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(lines[1], "TASK-3  todo    Task 3")
         self.assertEqual(len(lines), 9)
         self.run_cli("edit", "2", "-s", "review")
-        self.run_cli("edit", "2", "-s", "done")
+        self.run_cli(
+            "edit",
+            "2",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
         self.assertEqual(len(self.json("list", "--all")), 9)
         self.run_cli("list", "--archived", exit_code=2)
         self.assertEqual([t["id"] for t in self.json("list", "-s", "doing")], ["TASK-1"])
@@ -834,16 +850,22 @@ class TestReviewStatus(CliTestCase):
         self.assertEqual([task["id"] for task in self.json("list")], ["TASK-1"])
         self.assertEqual(self.json("list")[0]["status"], "review")
         self.assertFalse(self.json("show", "1")["acceptance_criteria"][0]["checked"])
+        os.environ["CHITTY_ACTOR"] = "reviewer"
         refused = self.run_cli("edit", "1", "-s", "doing", exit_code=1)
         self.assertIn("review → doing requires --note", refused.stderr)
         self.run_cli("edit", "1", "-s", "doing", "--note", "Review found a problem.")
+        os.environ["CHITTY_ACTOR"] = "test-agent"
         self.run_cli("edit", "1", "-s", "review")
+        os.environ["CHITTY_ACTOR"] = "reviewer"
         self.run_cli("edit", "1", "-s", "done", "--note", "Reviewed: ready.")
         self.assertEqual(self.json("show", "1")["status"], "done")
 
     def fail_review(self, reason):
         self.run_cli("edit", "1", "-s", "review")
-        return self.run_cli("edit", "1", "-s", "doing", "--note", reason)
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        result = self.run_cli("edit", "1", "-s", "doing", "--note", reason)
+        os.environ["CHITTY_ACTOR"] = "test-agent"
+        return result
 
     def test_third_failed_review_escalates_to_a_human(self):
         self.run_cli("add", "Bounce", "-d", "x")
@@ -866,6 +888,32 @@ class TestReviewStatus(CliTestCase):
         self.run_cli("edit", "1", "-s", "doing", "--note", "Human: try again.")
         self.fail_review("Fourth.")
         self.assertEqual(self.json("show", "1")["status"], "doing")
+
+    def test_self_review_requires_an_explicit_override_flag(self):
+        self.run_cli("add", "Review me", "-d", "x")
+        self.run_cli("edit", "1", "-s", "review")
+
+        refused = self.run_cli("edit", "1", "-s", "done", "--note", "Reviewed: ready.", exit_code=1)
+
+        self.assertIn("test-agent cannot review this task", refused.stderr)
+        self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: emergency approval.",
+            "--override-review-independence",
+        )
+        self.assertIn("overrode review independence", self.json("show", "1")["history"])
+
+    def test_show_reports_the_callers_review_work(self):
+        self.run_cli("add", "Review me", "-d", "x")
+        self.run_cli("edit", "1", "--plan", "Implement it.")
+
+        shown = self.run_cli("show", "1").stdout
+
+        self.assertIn("worked on: wrote the plan", shown)
 
     def test_review_can_be_disabled(self):
         config = self.root / "chitty.toml"
@@ -953,7 +1001,9 @@ class TestEdit(CliTestCase):
         timestamp = rf"{date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z"
         self.assertRegex(
             data["history"],
-            rf"^- {date.today().isoformat()} → todo\n- {timestamp} test-agent todo → doing$",
+            rf"^- {date.today().isoformat()} → todo\n- {timestamp} test-agent todo → doing"
+            rf"\n- {timestamp} test-agent: wrote the plan"
+            rf"\n- {timestamp} test-agent: ticked acceptance criteria$",
         )
         self.assertIn("actor test-agent", result.stdout)
         self.path = self.root / "chitty/tasks/TASK-1--renamed.md"
@@ -1056,7 +1106,15 @@ class TestMoveArchive(CliTestCase):
             config.read_text().replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
         )
         self.run_cli("edit", "1", "-s", "review")
-        self.run_cli("edit", "1", "-s", "done")
+        self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
 
         result = self.run_cli("archive", "1")
 
@@ -1068,9 +1126,25 @@ class TestMoveArchive(CliTestCase):
         self.run_cli("add", "Task done", "-d", "x")
         self.run_cli("add", "Human done", "-c", "human", "-d", "x")
         self.run_cli("edit", "1", "-s", "review")
-        self.run_cli("edit", "1", "-s", "done")
+        self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
         self.run_cli("edit", "HUMAN-1", "-s", "review")
-        self.run_cli("edit", "HUMAN-1", "-s", "done")
+        self.run_cli(
+            "edit",
+            "HUMAN-1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
 
         result = self.run_cli("archive")
 

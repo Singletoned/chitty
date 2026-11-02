@@ -161,6 +161,7 @@ def edit(
     plan: str | None = None,
     note: str | None = None,
     summary: str | None = None,
+    override_review_independence: bool = False,
 ) -> dict[str, Any]:
     repo = _repo()
     changes = Edit(
@@ -181,6 +182,7 @@ def edit(
         plan=plan,
         note=note,
         summary=summary,
+        override_review_independence=override_review_independence,
     )
     return repo.edit(repo.resolve(id), changes).task.as_dict()
 

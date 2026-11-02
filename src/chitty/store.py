@@ -113,10 +113,11 @@ class Edit:
     note: str | None = None
     notes: Sequence[str] = ()
     summary: str | None = None  # "" removes
+    override_review_independence: bool = False
 
     def is_empty(self) -> bool:
-        return all(
-            value is None or (not isinstance(value, str) and len(value) == 0)
+        return not any(
+            value is not None and (isinstance(value, str) or bool(value))
             for value in vars(self).values()
         )
 
@@ -350,8 +351,22 @@ class Repo:
             and previous_status != "review"
         ):
             raise ChittyError("setting status done requires -s review first")
+        is_review_transition = previous_status == "review" and edit.status in {"doing", "done"}
         if edit.status == "doing" and previous_status == "review" and not (edit.note or edit.notes):
             raise ChittyError("moving review → doing requires --note with the reason")
+        if (
+            edit.status == "done"
+            and previous_status == "review"
+            and not any(note.startswith("Reviewed:") for note in (edit.note, *edit.notes) if note)
+        ):
+            raise ChittyError("moving review → done requires --note starting 'Reviewed:'")
+        if edit.override_review_independence and not is_review_transition:
+            raise ChittyError("--override-review-independence only applies to review transitions")
+        if is_review_transition:
+            reviewer = actor()
+            work = stored.task.review_work(reviewer)
+            if work and not edit.override_review_independence:
+                raise ChittyError(f"{reviewer} cannot review this task: {', '.join(work)}")
         if edit.status == "doing" and previous_status == "review":
             edit = _escalate_repeated_failure(stored.task, edit)
         edit = replace(
@@ -361,10 +376,17 @@ class Repo:
             parent=str(self.resolve(edit.parent)) if edit.parent else edit.parent,
         )
         task = edit.apply(stored.task)
+        actions = _review_work_actions(edit)
         actor_name = None
-        if edit.status is not None and edit.status != stored.task.frontmatter.status:
+        if edit.status is not None and edit.status != stored.task.frontmatter.status or actions:
             actor_name = actor()
-            task = task.with_history(datetime.now(UTC), actor_name, previous_status, edit.status)
+            now = datetime.now(UTC)
+            if edit.status is not None and edit.status != stored.task.frontmatter.status:
+                task = task.with_history(now, actor_name, previous_status, edit.status)
+            for action in actions:
+                task = task.with_history_event(now, actor_name, action)
+            if edit.override_review_independence:
+                task = task.with_history_event(now, actor_name, "overrode review independence")
         return self._commit(replace(self._save(stored, task), actor=actor_name), "edit")
 
     def _save(self, stored: StoredTask, task: Task) -> Change:
@@ -882,6 +904,18 @@ def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
             continue
         entries.append((path, None))
     return entries
+
+
+def _review_work_actions(edit: Edit) -> tuple[str, ...]:
+    """Return the few non-status edits that establish review involvement."""
+    # Record plans and ticks now because they make a reviewer non-independent;
+    # TASK-99 will extend History to every deliberate non-status edit.
+    actions: list[str] = []
+    if edit.plan is not None:
+        actions.append("wrote the plan")
+    if edit.check:
+        actions.append("ticked acceptance criteria")
+    return tuple(actions)
 
 
 def _update_list(

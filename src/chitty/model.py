@@ -55,6 +55,10 @@ HISTORY_LINE_RE = re.compile(
     r"(?P<timestamp>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z) "
     r"(?P<actor>.+?))(?: (?P<old>[a-z][a-z-]*))? → (?P<new>[a-z][a-z-]*)\n?"
 )
+HISTORY_EVENT_RE = re.compile(
+    r"- (?P<timestamp>[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z) "
+    r"(?P<actor>.+?): (?P<action>.+)\n?"
+)
 BRACKET_COLUMN = 3
 
 # Plain scalars that a YAML 1.2 (core schema) or YAML 1.1 reader would type as
@@ -271,6 +275,28 @@ class Task:
         """Append an actor-attributed UTC status transition to History."""
         timestamp = when.astimezone(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
         return self._append_history(f"- {timestamp} {actor}", old, new)
+
+    def with_history_event(self, when: datetime, actor: str, action: str) -> "Task":
+        """Append an actor-attributed non-status History event."""
+        timestamp = when.astimezone(UTC).replace(microsecond=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+        history = self.section(HISTORY)
+        entry = f"- {timestamp} {actor}: {action}"
+        return self.with_section(HISTORY, f"{history}\n{entry}" if history else entry)
+
+    def review_work(self, actor: str) -> list[str]:
+        """Return review-relevant work previously recorded for an actor."""
+        work: list[str] = []
+        for line in (self.section(HISTORY) or "").splitlines():
+            if transition := HISTORY_LINE_RE.fullmatch(line):
+                if transition["actor"] == actor and transition["new"] == "review":
+                    work.append("moved the task to review")
+            elif (
+                (event := HISTORY_EVENT_RE.fullmatch(line))
+                and event["actor"] == actor
+                and event["action"] in {"wrote the plan", "ticked acceptance criteria"}
+            ):
+                work.append(event["action"])
+        return work
 
     def with_legacy_history(self, when: date, old: str | None, new: str) -> "Task":
         """Append a date-only History entry retained for creation and imports."""
@@ -549,9 +575,9 @@ def _parse_history(sections: list[_Section]) -> None:
     if not lines:
         raise TaskError(f"'## {HISTORY}' must contain status changes")
     for line in lines:
-        match = HISTORY_LINE_RE.fullmatch(line)
+        match = HISTORY_LINE_RE.fullmatch(line) or HISTORY_EVENT_RE.fullmatch(line)
         if match is None:
-            raise TaskError(f"'## {HISTORY}' may only contain '- YYYY-MM-DD old → new' entries")
+            raise TaskError(f"'## {HISTORY}' may only contain timestamped status or event entries")
         try:
             if timestamp := match["timestamp"]:
                 datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")

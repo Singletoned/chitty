@@ -85,7 +85,10 @@ export default function chitty(pi: ExtensionAPI) {
 }
 
 export function setPiSessionIdentity(sessionId: string): void {
-  process.env[PI_SESSION_ID_VARIABLE] = sessionId;
+  // A subagent inherits its parent's identity, so it cannot review parent work.
+  if (!process.env[PI_SESSION_ID_VARIABLE]) {
+    process.env[PI_SESSION_ID_VARIABLE] = sessionId;
+  }
 }
 
 export function parseMode(args: string): ChittyMode {

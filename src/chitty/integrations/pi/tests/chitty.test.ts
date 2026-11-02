@@ -23,7 +23,10 @@ const TICKETS = JSON.stringify([
 test("sets the Pi session identity for child processes", () => {
   const previous = process.env.CHITTY_PI_SESSION_ID;
   try {
+    delete process.env.CHITTY_PI_SESSION_ID;
     setPiSessionIdentity("parent-session");
+    assert.equal(process.env.CHITTY_PI_SESSION_ID, "parent-session");
+    setPiSessionIdentity("child-session");
     assert.equal(process.env.CHITTY_PI_SESSION_ID, "parent-session");
   } finally {
     if (previous === undefined) delete process.env.CHITTY_PI_SESSION_ID;

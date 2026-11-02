@@ -118,6 +118,39 @@ class TestStore(StoreTestCase):
         with self.assertRaisesRegex(ChittyError, "nothing to change"):
             self.repo.edit(stored.id, Edit(add_labels=[]))
 
+    def test_review_must_be_independent_and_can_be_explicitly_overridden(self):
+        stored = self.add("One")
+        self.repo.edit(stored.id, Edit(plan="Implement it."))
+        self.repo.edit(stored.id, Edit(status="review"))
+
+        with self.assertRaisesRegex(
+            ChittyError,
+            "test-agent cannot review this task: wrote the plan, moved the task to review",
+        ):
+            self.repo.edit(stored.id, Edit(status="done", note="Reviewed: looks good"))
+
+        completed = self.repo.edit(
+            stored.id,
+            Edit(
+                status="done",
+                note="Reviewed: emergency approval",
+                override_review_independence=True,
+            ),
+        ).task
+        self.assertIn(
+            "test-agent: overrode review independence", completed.task.section("History") or ""
+        )
+
+    def test_review_completion_requires_a_review_note(self):
+        stored = self.add("One")
+        self.repo.edit(stored.id, Edit(status="review"))
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+
+        with self.assertRaisesRegex(ChittyError, "requires --note starting 'Reviewed:'"):
+            self.repo.edit(stored.id, Edit(status="done"))
+
+        self.repo.edit(stored.id, Edit(status="done", note="Reviewed: looks good"))
+
     def test_status_change_adds_history_to_an_existing_task(self):
         stored = self.add("One")
         stored.path.write_text(stored.task.with_section("History", "").render())

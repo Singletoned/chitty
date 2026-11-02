@@ -64,7 +64,8 @@ class TestMcp(CliTestCase):
         added = call("add", title="Hi", description="x", ac=["One"], label=["cli"])
         self.assertEqual(added, self.json("show", "1"))
         edited = call("edit", id="1", status="doing", check=[1], plan="Do it.", note="Started.")
-        self.assertTrue(edited["history"].endswith("todo → doing"))
+        self.assertIn("todo → doing", edited["history"])
+        self.assertTrue(edited["history"].endswith("ticked acceptance criteria"))
         self.assertEqual(call("show", id="TASK-1"), self.json("show", "1"))
         self.assertEqual(call("note", id="1", text="Started."), self.json("show", "1"))
         self.assertEqual(call("list", status=["doing"]), self.json("list", "-s", "doing"))
@@ -77,9 +78,12 @@ class TestMcp(CliTestCase):
         call("add", title="Done", description="x")
         call("add", title="Human done", description="x", context="human")
         call("edit", id="1", status="review")
-        call("edit", id="1", status="done")
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        call("edit", id="1", status="done", note="Reviewed: ready.")
+        os.environ["CHITTY_ACTOR"] = "test-agent"
         call("edit", id="HUMAN-1", status="review")
-        call("edit", id="HUMAN-1", status="done")
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        call("edit", id="HUMAN-1", status="done", note="Reviewed: ready.")
 
         archived = call("archive")
 

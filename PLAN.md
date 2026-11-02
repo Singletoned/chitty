@@ -258,6 +258,9 @@ Serialisation is a patch over the original text, not parse-then-dump:
   in the text if you want it.
 - Creating a task writes its initial History entry. A changed `--status`,
   archiving, and restoring append a transition; a no-op status edit does not.
+  Replacing a Plan, ticking criteria, and overriding review independence append
+  actor-attributed events because they establish review involvement; other
+  non-status edits do not yet record History.
 - All checklist indices in a single `edit` refer to the list as it was
   before the command ran. `show` prints the numbers next to each criterion so
   callers don't count.

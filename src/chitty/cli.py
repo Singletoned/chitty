@@ -367,10 +367,16 @@ def show(task_id: str, as_json: bool) -> None:
     children = [
         task.id for task in repo.all_tasks() if task.task.frontmatter.parent == str(stored.id)
     ]
+    try:
+        worked_on = stored.task.review_work(actor())
+    except ChittyError:
+        worked_on = []
     if as_json:
         _print_json(stored.as_dict())
     else:
         output = _format(stored)
+        if worked_on:
+            output += "\nworked on: " + ", ".join(worked_on)
         if children:
             output += "\nchildren: " + ", ".join(map(str, children))
         click.echo(output)
@@ -423,6 +429,11 @@ def _format(stored: StoredTask) -> str:
 @click.option("--plan-file", type=click.File(), help="Read --plan from a file.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
 @click.option("--summary", help="Replace the Summary section; '' removes it.")
+@click.option(
+    "--override-review-independence",
+    is_flag=True,
+    help="Allow an actor who worked on a task to review it; records the override in History.",
+)
 @json_option
 def edit(
     task_id: str,
@@ -445,6 +456,7 @@ def edit(
     plan_file: TextIO | None,
     notes: tuple[str, ...],
     summary: str | None,
+    override_review_independence: bool,
     as_json: bool,
 ) -> None:
     """Change a task. Criterion numbers refer to the list before this edit."""
@@ -467,6 +479,7 @@ def edit(
         plan=_text(plan, plan_file, "plan"),
         notes=notes,
         summary=summary,
+        override_review_independence=override_review_independence,
     )
     change = repo.edit(repo.resolve(task_id), changes)
     escalated = status == "doing" and change.task.task.frontmatter.status == "blocked"
