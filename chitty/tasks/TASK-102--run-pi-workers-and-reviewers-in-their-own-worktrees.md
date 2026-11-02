@@ -24,7 +24,13 @@ Work mode: claim a ticket, create (or reuse, for a ticket already `doing`) a bra
 
 Depends on `TASK-103`: workers in worktrees break the shared venv until each worktree has its own.
 
+Found while finishing `TASK-99` on a branch: `-s review` set in the worktree is invisible to reviewers, because `chitty list` in `main` reads `main`'s ticket files. I copied the ticket file to `main` by hand (`99b1fcd`). The design must say how ticket state reaches `main`, e.g. Chitty writes ticket edits to the main checkout while code stays on the branch.
+
+Correction to my previous note: reads already merge ticket state from every local and remote branch (`863447a`, `PLAN.md` Principles), so worktree status changes are visible from `main` once committed; the copy in `99b1fcd` was unnecessary. The real gap: a reviewer editing from `main` writes the branch's ticket version into `main`, so ticket files diverge and conflict on merge (as `TASK-99`'s did). The reviewer's pass-and-merge step should handle that, e.g. by merging before the final ticket edit.
+
 ## History
 
 - 2026-11-02T11:21:00Z lively-otter → todo
 - 2026-11-02T11:21:06Z lively-otter: changed dependencies, notes
+- 2026-11-02T13:03:36Z lively-otter: changed notes
+- 2026-11-02T13:30:16Z lively-otter: changed notes

@@ -1,7 +1,8 @@
 ---
 title: Record History entries for non-status edits and ticket creation
-status: review
+status: blocked
 priority: medium
+owner: human
 depends_on:
   - TASK-55
 created: 2026-11-02
@@ -40,6 +41,10 @@ Review failed: criterion 3 is unmet. PLAN.md still says History records only cre
 
 Unticked criteria 1 and 3: one `edit` wrote up to three History lines (`changed …`, `wrote the plan`, `ticked acceptance criteria`), and `PLAN.md` lines 171-176 still described only creation and status History. Picked up by lively-otter on `task-99-history-tests`.
 
+Review failed: acceptance criterion 2 remains unmet. `Repo._delete_done` still calls `with_legacy_history(..., "deleted")` on the deleted task, so the returned deletion Change appends a History event even though the file is then removed. The new delete-mode test only proves a dependent task History is unchanged; it does not cover the deleted task. Remove that append and add a focused regression test for the deletion result, then rerun `make check` and `npm test`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Work is on branch `task-99-history-tests` (worktree `.worktrees/task-99-history-tests`), merged with current `main`. Part of the code (`0cc9e93`) is already on `main`.
@@ -76,3 +81,5 @@ Verified in the worktree `.venv`: `make check` (195 tests) and `npm test` (14) p
 - 2026-11-02T13:03:01Z lively-otter: changed summary
 - 2026-11-02T13:03:01Z lively-otter: ticked acceptance criteria
 - 2026-11-02T13:03:01Z lively-otter doing → review
+- 2026-11-02T13:08:25Z amber-lynx: changed owner, notes
+- 2026-11-02T13:08:25Z amber-lynx review → blocked
