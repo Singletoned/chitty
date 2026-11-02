@@ -1,6 +1,6 @@
 format = 1
 default_context = "tasks"
-autocommit = false
+autocommit = true
 
 project = "chitty"
 archive = "move"
