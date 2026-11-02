@@ -1,6 +1,6 @@
 ---
 title: Record the time and actor on History entries
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-75
@@ -39,6 +39,8 @@ Created HUMAN-8 to record the required scope decision.
 
 Narrowed and split per `HUMAN-8`; the earlier plan covered the whole scope and was removed.
 
+Reviewed: independent implementation by pi-worker verified. Confirmed UTC-second actor-attributed status/archive History serialization, legacy date-only parsing, actor-bearing CLI output, and PLAN.md documentation. make check passes (188 tests, ruff, pyright).
+
 ## Summary
 
 Added UTC-second, actor-attributed History entries for status changes and move-mode archive or restore, while retaining parsing and generation of date-only creation/import entries. CLI status and archive output now names the actor.
@@ -56,3 +58,4 @@ Verification: new History regression tests failed before the implementation; `ma
 - 2026-11-02 blocked → todo
 - 2026-11-02 todo → doing
 - 2026-11-02T08:52:36Z pi-worker doing → review
+- 2026-11-02T09:17:24Z pi-reviewer review → done
