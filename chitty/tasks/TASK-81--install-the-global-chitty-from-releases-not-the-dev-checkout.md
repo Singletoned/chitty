@@ -1,6 +1,6 @@
 ---
 title: Install the global `chitty` from releases, not the dev checkout
-status: review
+status: done
 priority: high
 depends_on:
   - HUMAN-4
@@ -23,6 +23,8 @@ No longer waits on TASK-80 (deferred): it needs only a published release (HUMAN-
 
 `HUMAN-4` is done: 0.1.15 is on PyPI (release run `41422338867`).
 
+Reviewed: confirmed the README guidance and that the  tool is  with isolated site-packages; the repository environment remains editable and local.
+
 ## Summary
 
 Reinstalled the global `uv` tool from PyPI as `chitty[mcp]==0.1.15`; it now imports from the tool environment rather than this checkout. Documented the released global-install versus repository-local development setup in `README.md`. Verified the global CLI version and MCP entry point, then ran `make check` and `chitty fix`.
@@ -36,3 +38,5 @@ Reinstalled the global `uv` tool from PyPI as `chitty[mcp]==0.1.15`; it now impo
 - 2026-11-02T11:00:02Z frosty-falcon todo → doing
 - 2026-11-02T11:00:02Z frosty-falcon: wrote the plan
 - 2026-11-02T11:01:17Z frosty-falcon doing → review
+- 2026-11-02T11:21:55Z jolly-falcon: changed notes
+- 2026-11-02T11:21:55Z jolly-falcon review → done
