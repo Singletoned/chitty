@@ -677,7 +677,10 @@ class TestAddShowList(CliTestCase):
         data = self.json("show", "TASK-1")
         self.assertEqual(data["owner"], "no")
         self.assertEqual(data["acceptance_criteria"][1]["index"], 2)
-        self.assertEqual(data["history"], f"- {date.today().isoformat()} → todo")
+        self.assertRegex(
+            data["history"],
+            rf"^- {date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z test-agent → todo$",
+        )
         self.assertIn("## History\n\n", shown)
         self.assertEqual(self.run_cli("path", "1").stdout, f"{path}\n")
 
@@ -1001,9 +1004,12 @@ class TestEdit(CliTestCase):
         timestamp = rf"{date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z"
         self.assertRegex(
             data["history"],
-            rf"^- {date.today().isoformat()} → todo\n- {timestamp} test-agent todo → doing"
+            rf"^- {timestamp} test-agent → todo"
+            rf"\n- {timestamp} test-agent: changed title, labels, priority, owner, dependencies, "
+            rf"description, acceptance criteria, notes"
             rf"\n- {timestamp} test-agent: wrote the plan"
-            rf"\n- {timestamp} test-agent: ticked acceptance criteria$",
+            rf"\n- {timestamp} test-agent: ticked acceptance criteria"
+            rf"\n- {timestamp} test-agent todo → doing$",
         )
         self.assertIn("actor test-agent", result.stdout)
         self.path = self.root / "chitty/tasks/TASK-1--renamed.md"
@@ -1012,8 +1018,9 @@ class TestEdit(CliTestCase):
             "edit", "1", "-p", "", "--owner", "", "--plan", "", "--rm-depends-on", "HUMAN-1"
         )
         text = self.path.read_text()
+        frontmatter_and_body, _ = text.split("## History", maxsplit=1)
         for gone in ("priority", "owner", "## Plan", "depends_on"):
-            self.assertNotIn(gone, text)
+            self.assertNotIn(gone, frontmatter_and_body)
 
     def test_edit_appends_repeated_notes_in_order(self):
         self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")

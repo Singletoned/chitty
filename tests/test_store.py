@@ -35,7 +35,10 @@ class TestStore(StoreTestCase):
         self.assertEqual(first.path, self.root / "chitty/tasks/TASK-1--add-search.md")
         self.assertEqual(second.path.name, "TASK-2.md")
         self.assertEqual([t.id.number for t in self.repo.tasks(self.tasks, "active")], [1, 2])
-        self.assertEqual(first.task.section("History"), "- 2026-10-23 → todo")
+        self.assertRegex(
+            first.task.section("History") or "",
+            r"^- \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z test-agent → todo$",
+        )
 
     def test_delete_mode_requires_git_history_for_new_ids(self):
         config = self.root / "chitty.toml"
@@ -113,7 +116,7 @@ class TestStore(StoreTestCase):
         timestamp = rf"{date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z"
         self.assertRegex(
             change.task.task.section("History") or "",
-            rf"^- 2026-10-23 → todo\n- {timestamp} test-agent todo → doing$",
+            rf"^- {timestamp} test-agent → todo\n- {timestamp} test-agent todo → doing$",
         )
         with self.assertRaisesRegex(ChittyError, "nothing to change"):
             self.repo.edit(stored.id, Edit(add_labels=[]))
@@ -171,7 +174,7 @@ class TestStore(StoreTestCase):
         timestamp = rf"{date.today().isoformat()}T\d{{2}}:\d{{2}}:\d{{2}}Z"
         self.assertRegex(
             archived.task.section("History") or "",
-            rf"^- 2026-10-23 → todo\n- {timestamp} test-agent todo → archived$",
+            rf"^- {timestamp} test-agent → todo\n- {timestamp} test-agent todo → archived$",
         )
         with self.assertRaisesRegex(ChittyError, "already archived"):
             self.repo.archive(stored.id)

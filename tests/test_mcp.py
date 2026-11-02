@@ -65,7 +65,7 @@ class TestMcp(CliTestCase):
         self.assertEqual(added, self.json("show", "1"))
         edited = call("edit", id="1", status="doing", check=[1], plan="Do it.", note="Started.")
         self.assertIn("todo → doing", edited["history"])
-        self.assertTrue(edited["history"].endswith("ticked acceptance criteria"))
+        self.assertIn("ticked acceptance criteria", edited["history"])
         self.assertEqual(call("show", id="TASK-1"), self.json("show", "1"))
         self.assertEqual(call("note", id="1", text="Started."), self.json("show", "1"))
         self.assertEqual(call("list", status=["doing"]), self.json("list", "-s", "doing"))

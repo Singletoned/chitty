@@ -256,11 +256,12 @@ Serialisation is a patch over the original text, not parse-then-dump:
 - `--note TEXT` appends `TEXT` as a new paragraph (preceded by a blank line)
   to `## Notes`, creating the section if absent. No date prefix; include one
   in the text if you want it.
-- Creating a task writes its initial History entry. A changed `--status`,
-  archiving, and restoring append a transition; a no-op status edit does not.
-  Replacing a Plan, ticking criteria, and overriding review independence append
-  actor-attributed events because they establish review involvement; other
-  non-status edits do not yet record History.
+- Creating a task writes an actor-attributed UTC initial History transition.
+  A changed `--status`, archiving, and restoring append a transition; a no-op
+  status edit does not. Every deliberate non-status `edit` appends concise
+  actor-attributed events naming changed fields, notes, plans, or criteria.
+  Imports retain their source creation entry and append an import event; safe
+  `fix` repairs, `delete`, and reference rewrites in other tasks append none.
 - All checklist indices in a single `edit` refer to the list as it was
   before the command ran. `show` prints the numbers next to each criterion so
   callers don't count.

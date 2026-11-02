@@ -10,6 +10,12 @@ from tests.support import RepoTestCase
 
 
 class TestInbox(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        self._actor = mock.patch.dict(os.environ, {"CHITTY_ACTOR": "test-agent"})
+        self._actor.start()
+        self.addCleanup(self._actor.stop)
+
     def test_suggestions_never_change_the_real_inbox(self):
         real_inbox = Path.home() / ".local/share/chitty/inbox"
         before = (

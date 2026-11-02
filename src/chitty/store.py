@@ -25,6 +25,7 @@ from chitty.errors import ChittyError
 from chitty.ids import TaskId
 from chitty.model import (
     DESCRIPTION,
+    HISTORY,
     PLAN,
     SUMMARY,
     FieldValue,
@@ -327,6 +328,10 @@ class Repo:
                 raise ChittyError("description is required unless status is backlog")
             description = BACKLOG_DESCRIPTION
         task = new_task(title, today, description, criteria, fields)
+        actor_name = actor()
+        task = task.with_section(HISTORY, "").with_history(
+            datetime.now(UTC), actor_name, None, task.frontmatter.status
+        )
         for note in notes:
             task = task.with_note(note)
         task_id = TaskId(context.prefix, self.next_number(context))
@@ -376,17 +381,17 @@ class Repo:
             parent=str(self.resolve(edit.parent)) if edit.parent else edit.parent,
         )
         task = edit.apply(stored.task)
-        actions = _review_work_actions(edit)
+        actions = _history_actions(edit)
         actor_name = None
         if edit.status is not None and edit.status != stored.task.frontmatter.status or actions:
             actor_name = actor()
             now = datetime.now(UTC)
-            if edit.status is not None and edit.status != stored.task.frontmatter.status:
-                task = task.with_history(now, actor_name, previous_status, edit.status)
             for action in actions:
                 task = task.with_history_event(now, actor_name, action)
             if edit.override_review_independence:
                 task = task.with_history_event(now, actor_name, "overrode review independence")
+            if edit.status is not None and edit.status != stored.task.frontmatter.status:
+                task = task.with_history(now, actor_name, previous_status, edit.status)
         return self._commit(replace(self._save(stored, task), actor=actor_name), "edit")
 
     def _save(self, stored: StoredTask, task: Task) -> Change:
@@ -906,11 +911,32 @@ def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
     return entries
 
 
-def _review_work_actions(edit: Edit) -> tuple[str, ...]:
-    """Return the few non-status edits that establish review involvement."""
-    # Record plans and ticks now because they make a reviewer non-independent;
-    # TASK-99 will extend History to every deliberate non-status edit.
+def _history_actions(edit: Edit) -> tuple[str, ...]:
+    """Describe deliberate non-status edits for actor-attributed History."""
     actions: list[str] = []
+    changes: list[str] = []
+    if edit.title is not None:
+        changes.append("title")
+    if edit.add_labels or edit.rm_labels:
+        changes.append("labels")
+    if edit.priority is not None:
+        changes.append("priority")
+    if edit.owner is not None:
+        changes.append("owner")
+    if edit.depends_on or edit.rm_depends_on:
+        changes.append("dependencies")
+    if edit.parent is not None:
+        changes.append("parent")
+    if edit.description is not None:
+        changes.append("description")
+    if edit.add_criteria or edit.rm_criteria or edit.uncheck:
+        changes.append("acceptance criteria")
+    if edit.note is not None or edit.notes:
+        changes.append("notes")
+    if edit.summary is not None:
+        changes.append("summary")
+    if changes:
+        actions.append(f"changed {', '.join(changes)}")
     if edit.plan is not None:
         actions.append("wrote the plan")
     if edit.check:

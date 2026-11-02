@@ -6,13 +6,14 @@ import re
 from collections import Counter
 from collections.abc import Mapping
 from dataclasses import dataclass, replace
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, cast
 
 import yaml
 
 from chitty import git, ids
+from chitty.actor import actor
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
 from chitty.store import Change, Context, Repo, StoredTask, guide
 
@@ -223,7 +224,7 @@ def import_directory(
     try:
         for item in retained:
             archived = item.old_id in archived_ids
-            task = item.task
+            task = item.task.with_history_event(datetime.now(UTC), actor(), "imported task")
             if archived:
                 task = task.with_legacy_history(date.today(), task.frontmatter.status, "archived")
             task_id = ids.TaskId.parse(item.new_id)
