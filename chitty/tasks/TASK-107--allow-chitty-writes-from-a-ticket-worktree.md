@@ -1,6 +1,6 @@
 ---
 title: Allow Chitty writes from a ticket worktree
-status: review
+status: done
 priority: high
 created: 2026-11-03
 ---
@@ -28,6 +28,8 @@ Suggestion origin: chitty
 
 Narrowed on 2026-11-03: a plain `chitty edit` works from a worktree. `register_project` only runs from `init_repo` and `inbox.pull`, so what fails is `chitty init` (reproduced in the `task-105` worktree), `chitty inbox --pull`, which the guide says to run first, and writes when setup is stale. A version bump therefore breaks writes in worktrees that have not yet got the bump. Prerequisite for the `TASK-109` pilot.
 
+Reviewed: real-worktree registration preserves the primary owner and rejects unrelated repositories; all three criteria independently verified with the focused worktree test, `make check`, `chitty check`, and `chitty fix` (only existing task-file warnings).
+
 ## Summary
 
 Implemented shared-Git-common-directory recognition for registered worktrees while retaining unrelated-repository rejection.
@@ -44,3 +46,5 @@ Verification: focused worktree test and `make check` (197 tests).
 - 2026-11-03T10:42:41Z ivory-quail todo → doing
 - 2026-11-03T10:45:30Z ivory-quail: changed summary; ticked acceptance criteria
 - 2026-11-03T10:45:30Z ivory-quail doing → review
+- 2026-11-03T11:14:37Z amber-panda: changed notes
+- 2026-11-03T11:14:37Z amber-panda review → done
