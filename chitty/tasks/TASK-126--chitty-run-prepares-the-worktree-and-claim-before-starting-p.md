@@ -12,19 +12,43 @@ created: 2026-11-03
 
 Make `chitty run` do the mechanical setup before starting Pi, so the agent starts in the right place with nothing to get wrong. These steps are currently prompt instructions, and they have failed: the `TASK-107` worker committed its claim on `main`, then ran `git reset --hard` in the main checkout (`TASK-121`). A script does them more reliably and for no tokens, and the prompts get shorter.
 
-Before starting Pi, for the ticket `chitty next` chose:
+This supersedes two parts of `TASK-124`: Pi's working directory becomes the worktree, not the repository root, so rewrite that test; and `chitty run -- --model sonnet` replaces the advice to call `pi` directly.
 
-1. Run the equivalent of `chitty inbox --pull` from the main checkout, if the repository has a `project`.
-2. Find the ticket's worktree. If the ticket already has a branch, use its worktree, adding one at `.worktrees/<branch>` if none exists. If it has no branch, create branch `<id in lower case>` (for example `task-124`) from `main`, at `.worktrees/<branch>`. In mode `review`, a ticket with no branch is a loud error, as there is nothing to review.
-3. Run the new `setup` command from `chitty.toml` in the worktree, every time, because dependencies may have changed since the last session. It is parsed without a shell, like `autoformat`. If it is unset, or fails, stop with a loud error and do not start Pi. It has no default, since a wrong guess would look like a working environment. Set `setup = "make install"` in this repository.
-4. In mode `work`, if the ticket is `todo`, set it to `doing` in the worktree, so the claim is committed on the branch.
-5. Start `pi --chitty-<mode> <ID>` with the worktree as its working directory, passing through any arguments given after `--`, as in `chitty run -- --model sonnet`. Pilot tickets need this to choose a model while keeping the automation; it replaces the `TASK-124` advice to call `pi` directly.
+### Before anything changes
 
-Actor: the claim and the Pi session must be one actor, different from every other run. Generate an ID for each `chitty run` and set `CHITTY_PI_SESSION_ID`, which the extension already leaves alone if set and subagents inherit. The claim then records the same actor as the session's work.
+`chitty run` works the same from the main checkout or any worktree: find the main checkout with `git rev-parse --git-common-dir` and read config from there, so old branches with no `setup` key still work. Exit non-zero with a message, changing nothing, if:
 
-The extension then stops telling agents to do any of this. `pi --chitty-work` and `pi --chitty-review` refuse to start, with a message pointing at `chitty run`, unless the working directory is a linked Git worktree. That also guards the main checkout for Pi (`TASK-121`).
+- `autocommit` is off, because a claim and status changes must be committed to be visible.
+- `pi` is not on `PATH`, so a missing `pi` cannot leave a claimed ticket.
+- `setup` is unset. It has no default, since a wrong guess would look like a working environment. `chitty init` adds a commented example; set `setup = "make install"` in this repository.
+- The main checkout has no branch `main`.
 
-Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harnesses; `src/chitty/guide.md`, which still describes the manual steps for other agents.
+### Then, in order
+
+1. Run the equivalent of `chitty inbox --pull` from the main checkout, if the repository has a `project`. A failure stops the run. This only adds `backlog` tickets, so it cannot change the selection.
+2. Select the ticket. If its file has uncommitted changes in the main checkout, stop with a loud error, as a new branch would not contain them.
+3. Find the worktree by branch name, `<id in lower case>` (for example `task-124`). Do not use `StoredTask.branch`: it reports `main` when run from a worktree, and can be a remote ref.
+    - Branch exists and has a linked worktree: use it, wherever it is, per `git worktree list`.
+    - Branch exists with no worktree: add one at `.worktrees/<branch>` in the main checkout.
+    - Branch does not exist: in mode `work`, create it from local `main` at `.worktrees/<branch>`. In mode `review`, this is a loud error, as there is nothing to review.
+    - Branch checked out in the main checkout: loud error, and never switch the main checkout.
+    - Anything else Git refuses, such as a stale directory, is a loud error with Git's message.
+4. Run `setup` in the worktree, every time, because dependencies may have changed since the last session. It is parsed without a shell, like `autoformat`, with output inherited and stdin closed. A failure stops the run, leaving the worktree in place and the ticket unclaimed. The next run reuses the worktree and runs `setup` again.
+5. In mode `work`, if the ticket is `todo`, set it to `doing` in the worktree through `Repo.edit`, so the claim is committed on the branch.
+6. Read the ticket's status. This is the `TASK-124` baseline for "did the status change", so a claim alone never counts as progress and a dead session stops a loop on its first run. The accepted extra session in `TASK-124`'s notes no longer applies.
+7. Start `pi --chitty-<mode> <ID>` with the worktree as its working directory, passing through any arguments given after `--`.
+
+Ctrl-C during `inbox --pull` or `setup` exits 130 with one line and no traceback.
+
+### Actor
+
+The claim and the Pi session must be one actor, different from every other run. Generate a UUID for each `chitty run`, and set `CHITTY_PI_SESSION_ID` to it in `chitty run`'s own environment, overwriting any inherited value, before the claim. The extension leaves it alone and subagents inherit it. Also remove `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` from the environment for the run, as `actor()` checks them first and they would make runs share an actor.
+
+### Extension
+
+The extension stops telling agents to do any of this. `--chitty-work`, `--chitty-review` and `/chitty` all refuse to start, with a message pointing at `chitty run`, unless the working directory is a linked Git worktree (`git rev-parse --git-dir` differs from `--git-common-dir`). That also guards the main checkout for Pi (`TASK-121`).
+
+Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harnesses; `src/chitty/guide.md`, which still describes the manual steps for other agents; a second `chitty run` on the same ticket while one is running.
 
 ## Acceptance Criteria
 
@@ -33,10 +57,20 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [ ] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [ ] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
-- [ ] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree with no trust prompt or other interruption, and the result is recorded in a note
 - [ ] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
+- [ ] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
+- [ ] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), a branch checked out in the main checkout, and uncommitted changes to the ticket in the main checkout
+- [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
+- [ ] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
+- [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
+- [ ] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-03. Biggest finds: `StoredTask.branch` reports `main` from a worktree, so step 2 as written would have tried to add a `main` worktree (branch lookup is now by name); and a claim counted as progress, which would have defeated the loop stopping on dead sessions (the baseline is now taken after the claim). Also adopted: preflight checks, config read from the main checkout, actor variables cleared, and the guard on `/chitty` too. The "no trust prompt" criterion is now an observation, as Chitty may not control it.
 
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
 - 2026-11-03T16:30:15Z lively-panda: changed acceptance criteria
+- 2026-11-03T16:48:59Z lively-panda: changed description, acceptance criteria, notes
