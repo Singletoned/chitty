@@ -30,6 +30,8 @@ Rebased onto current `main`, resolved the shared prompt and guide changes by ret
 
 Review failed (work): criterion 4 is unmet. `src/chitty/guide.md` changes but `__version__` does not: `git diff main...task-104` does not touch `src/chitty/__init__.py`, and both sides are at `0.1.18`, which `TASK-102` already took. The original commit `31d8e31` had a bump that the rebase appears to have dropped. Repositories on `0.1.18` would never learn to re-run `chitty init`. Bump to `0.1.19`, update `chitty.toml` by re-running `chitty init` if needed, run `make check` and `npm test`, then re-tick criterion 4. Criteria 1 to 3 are met: the wording is in `chittyPrompt`, `continuationPrompt` and `guide.md`, and `npm test` passes (14 tests).
 
+Correction to the failure note above: do not run `chitty init` in this worktree, because it fails until `TASK-107` is fixed. Only bump `__version__` to `0.1.19`.
+
 ## History
 
 - 2026-11-02T13:03:21Z lively-otter → todo
@@ -43,3 +45,4 @@ Review failed (work): criterion 4 is unmet. `src/chitty/guide.md` changes but `_
 - 2026-11-03T09:42:14Z mellow-marten doing → review
 - 2026-11-03T10:39:51Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T10:39:51Z lively-panda review → doing
+- 2026-11-03T10:40:57Z lively-panda: changed notes
