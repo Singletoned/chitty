@@ -1,6 +1,6 @@
 ---
 title: Stop `uv run` in a worktree repointing the shared `~/.envs/chitty` install
-status: doing
+status: review
 priority: high
 created: 2026-11-03
 ---
@@ -45,3 +45,4 @@ Global `chitty` is now an editable install of the main checkout; each checkout u
 - 2026-11-03T11:40:49Z eager-raven: changed notes, summary
 - 2026-11-03T12:15:00Z ivory-koala: changed acceptance criteria, notes
 - 2026-11-03T12:15:00Z ivory-koala review → doing
+- 2026-11-03T12:22:38Z human doing → review
