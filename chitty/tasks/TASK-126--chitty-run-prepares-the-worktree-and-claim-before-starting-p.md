@@ -67,6 +67,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [ ] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
+- [ ] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 
 ## Plan
 
@@ -97,6 +98,8 @@ Verified criterion 7 with `TestNext.test_run_refuses_preflight_without_mutating`
 
 Verified criterion 3 with `TestNext.test_run_refuses_preflight_without_mutating`, `TestNext.test_run_setup_failure_does_not_start_pi_or_claim_ticket`, and `make check`: missing setup and a failing parsed setup both fail without starting Pi; failed setup leaves the new worktree unclaimed.
 
+Findings from a real run on 2026-11-03. The refusal raised a stack trace and left Pi open, so a criterion is added. The session ended at the continuation cap despite progress: see the new cap ticket. Running worktree code wrote the unfinished extension to `~/.pi/agent/extensions`, repaired with `chitty init` on `main`; do not run `chitty init` from this worktree again until the install ticket lands. This branch sets `chitty_version = "0.1.22"` and `setup`, which the global `chitty` cannot read, so use `.venv/bin/chitty` in this worktree, including for review.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -115,3 +118,4 @@ Verified criterion 3 with `TestNext.test_run_refuses_preflight_without_mutating`
 - 2026-11-03T20:26:09Z eager-lynx: changed notes; ticked acceptance criteria
 - 2026-11-03T20:28:00Z eager-lynx: changed notes; ticked acceptance criteria
 - 2026-11-03T20:29:37Z eager-lynx: changed notes; ticked acceptance criteria
+- 2026-11-03T20:41:14Z lively-panda: changed acceptance criteria, notes
