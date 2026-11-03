@@ -25,6 +25,8 @@ from chitty.inbox import list_waiting, waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
+from chitty.run import RunInterrupted
+from chitty.run import run as run_next
 from chitty.store import (
     Change,
     Edit,
@@ -33,6 +35,7 @@ from chitty.store import (
     guide,
     init_repo,
     matches,
+    next_action,
     ordered,
     resolve_add_target,
 )
@@ -355,6 +358,28 @@ def list_(
         if stored.branch:
             line += f"  ({stored.branch})"
         click.echo(line)
+
+
+@cli.command("next")
+@json_option
+def next_(as_json: bool) -> None:
+    """Print the next ticket to work or review."""
+    action = next_action(_repo())
+    if as_json:
+        _print_json(action.as_dict())
+    else:
+        click.echo(f"{action.mode} {action.id}")
+
+
+@cli.command("run")
+def run() -> None:
+    """Run Pi on the next ticket; non-zero stops an unattended shell loop."""
+    try:
+        result = run_next(_repo())
+    except RunInterrupted:
+        click.echo("interrupted while Pi was running", err=True)
+        raise click.exceptions.Exit(130) from None
+    click.echo(f"{result.action.id}: {result.old_status} → {result.new_status}")
 
 
 @cli.command()

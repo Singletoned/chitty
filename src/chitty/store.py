@@ -94,6 +94,17 @@ class Change:
 
 
 @dataclass(frozen=True)
+class NextAction:
+    """The next ticket and whether it needs work or an independent review."""
+
+    mode: Literal["work", "review"]
+    id: TaskId
+
+    def as_dict(self) -> dict[str, str]:
+        return {"mode": self.mode, "id": str(self.id)}
+
+
+@dataclass(frozen=True)
 class Edit:
     """A set of changes to one task. None and () mean "leave alone"."""
 
@@ -852,6 +863,47 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
             PRIORITY_ORDER[stored.task.frontmatter.priority],
         ),
     )
+
+
+def next_action(repo: Repo) -> NextAction:
+    """Select the one ticket to review or work next across every context."""
+    status_order = {"review": 0, "doing": 1, "todo": 2}
+    candidates: list[StoredTask] = []
+    for stored in repo.all_tasks():
+        frontmatter = stored.task.frontmatter
+        if (
+            stored.archived
+            or stored.context == "human"
+            or frontmatter.owner == "human"
+            or frontmatter.status not in status_order
+        ):
+            continue
+        dependencies: list[StoredTask] = []
+        for reference in frontmatter.depends_on:
+            try:
+                dependencies.append(repo.find(TaskId.parse(reference)))
+            except ChittyError as error:
+                raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
+        if frontmatter.status == "todo" and any(
+            not dependency.archived and dependency.task.frontmatter.status != "done"
+            for dependency in dependencies
+        ):
+            continue
+        candidates.append(stored)
+    if not candidates:
+        raise ChittyError("no next ticket")
+    selected = min(
+        candidates,
+        key=lambda stored: (
+            status_order[stored.task.frontmatter.status],
+            PRIORITY_ORDER[stored.task.frontmatter.priority],
+            stored.id,
+        ),
+    )
+    mode: Literal["work", "review"] = (
+        "review" if selected.task.frontmatter.status == "review" else "work"
+    )
+    return NextAction(mode, selected.id)
 
 
 def matches(

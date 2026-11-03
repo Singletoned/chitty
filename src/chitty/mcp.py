@@ -19,7 +19,7 @@ from chitty.inbox import list_waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
 from chitty.model import STATUSES
-from chitty.store import Edit, Repo, guide, matches, resolve_add_target
+from chitty.store import Edit, Repo, guide, matches, next_action, resolve_add_target
 
 Status = Literal["backlog", "todo", "doing", "blocked", "review", "done"]
 Priority = Literal["low", "medium", "high"]
@@ -128,6 +128,11 @@ def list_(
     parent = str(repo.resolve(parent)) if parent else None
     found = [t for t in tasks if matches(t, statuses, label or [], owner, search, parent)]
     return [t.as_dict() for t in found]
+
+
+@_tool("next", "Return the next ticket to work or review.")
+def next_() -> dict[str, str]:
+    return next_action(_repo()).as_dict()
 
 
 @_tool("show", "Show a task. Work on one task per session: start here.")

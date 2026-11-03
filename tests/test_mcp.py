@@ -30,6 +30,7 @@ class TestMcp(CliTestCase):
                     "whoami",
                     "inbox",
                     "list",
+                    "next",
                     "show",
                     "edit",
                     "note",
