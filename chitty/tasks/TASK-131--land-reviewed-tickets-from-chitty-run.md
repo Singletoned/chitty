@@ -23,7 +23,7 @@ After a session that moves its ticket to `done`, and also at the start of every 
 3. Run `git merge --ff-only <branch>` in the main checkout. Never resolve anything there. `TASK-134` then refreshes setup at the start of the next run.
 4. Remove the worktree with `git worktree remove` and the branch with `git branch -d`, never forced. A failure exits non-zero, and a later run repeats this step, because every step above is a no-op once done.
 
-A successful landing at the start of a run carries on to selection as normal. A failure stops the run before selection. This exit overrides the `TASK-124` rule that a changed status exits 0, so update its tests where needed.
+A successful landing at the start of a run ends that run, printing what landed and exiting 0: the running process still holds the old code, so the next agent must start from a new `chitty run`, which refreshes setup first. A failure also stops the run, exiting non-zero. This exit overrides the `TASK-124` rule that a changed status exits 0, so update its tests where needed.
 
 ### Prompts and docs
 
@@ -40,12 +40,16 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 - [ ] A Node test shows the review prompt no longer mentions merging or removing
 - [ ] Tests show that after landing the ticket on `main` is `done`, and that uncommitted files in the worktree refuse landing with nothing changed
 - [ ] `PLAN.md`, `README.md` and `src/chitty/guide.md` describe landing; `__version__` is bumped above `main`'s
+- [ ] A test shows a landing at the start of a run exits 0 without starting `pi`, and the next run selects a ticket
 
 ## Notes
 
 The `chitty init` step and its criterion moved to `TASK-134`, at the start of every run, as suggested by the human.
 
+From the `TASK-134` cold read: carrying on to selection after landing would have started the next agent on old code, so a landing now ends the run.
+
 ## History
 
 - 2026-11-03T20:46:17Z lively-panda → todo
 - 2026-11-03T21:21:53Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T21:24:18Z lively-panda: changed description, acceptance criteria, notes
