@@ -2,6 +2,7 @@
 
 import os
 import re
+import subprocess
 import tomllib
 from pathlib import Path
 from typing import Literal
@@ -193,16 +194,43 @@ def register_project(project: str, root: Path | None) -> Path:
     owner = directory / "repo"
     resolved = str(root.resolve()) if root is not None else ""
     current = owner.read_text().strip() if owner.exists() else ""
-    if current not in ("", resolved):
+    if current and current != resolved and not _same_git_repository(Path(current), root):
         raise ChittyError(
             f"project {project!r} is registered to {current}; choose explicit project = name"
         )
     directory.mkdir(parents=True, exist_ok=True)
-    if resolved:
+    if resolved and not current:
         owner.write_text(resolved + "\n")
     elif not owner.exists():
         owner.write_text("")
     return directory
+
+
+def _same_git_repository(owner: Path, root: Path | None) -> bool:
+    """Whether two checkouts share Git's common directory.
+
+    Keep the first registered checkout as the inbox owner: worktrees are the
+    same repository, but recording their transient path would break that link.
+    """
+    if root is None:
+        return False
+    owner_git_dir = _git_common_dir(owner)
+    root_git_dir = _git_common_dir(root)
+    return owner_git_dir is not None and owner_git_dir == root_git_dir
+
+
+def _git_common_dir(root: Path) -> Path | None:
+    result = subprocess.run(
+        ["git", "rev-parse", "--git-common-dir"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode:
+        return None
+    common_dir = Path(result.stdout.strip())
+    return (root / common_dir).resolve() if not common_dir.is_absolute() else common_dir.resolve()
 
 
 def user_contexts_path() -> Path:
