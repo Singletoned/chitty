@@ -505,7 +505,8 @@ another can check the result without talking to the first:
 - Decisions are made: no "use your judgement".
 - It points at relevant files and patterns instead of pasting them.
 - It lists every path or caller the behaviour must hold on.
-- The diff should be reviewable, roughly a few hundred lines at most.
+- The diff should be reviewable, roughly a few hundred lines at most, and the
+  ticket about five criteria. More is a prompt to split it, not to carry on.
 
 Cold read: a throwaway session reads only the ticket and says what done means
 and which files it would touch. A mismatch with the author's intent means the
