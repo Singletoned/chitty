@@ -135,11 +135,12 @@ test("rejects an unknown ticket flag before starting an agent turn", async () =>
     const sentMessages: string[] = [];
     const pi = {
       appendEntry: () => {},
-      exec: async () => ({
-        code: 1,
-        stdout: "",
-        stderr: "ticket not found",
-      }),
+      exec: async (command: string, args: string[]) => {
+        if (command === "git") {
+          return { code: 0, stdout: args[1] === "--git-dir" ? ".git/worktrees/t\n" : ".git\n", stderr: "" };
+        }
+        return { code: 1, stdout: "", stderr: "ticket not found" };
+      },
       getFlag: (name: string) => (name === flag ? "TASK-999" : undefined),
       on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
         if (event === "session_start") sessionStart = handler;
@@ -183,11 +184,12 @@ test("shuts down without starting when a flagged ticket has left its stage", asy
     let shutdowns = 0;
     const pi = {
       appendEntry: () => {},
-      exec: async () => ({
-        code: 0,
-        stdout: JSON.stringify({ status }),
-        stderr: "",
-      }),
+      exec: async (command: string, args: string[]) => {
+        if (command === "git") {
+          return { code: 0, stdout: args[1] === "--git-dir" ? ".git/worktrees/t\n" : ".git\n", stderr: "" };
+        }
+        return { code: 0, stdout: JSON.stringify({ status }), stderr: "" };
+      },
       getFlag: (name: string) => (name === flag ? "TASK-12" : undefined),
       on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
         if (event === "session_start") sessionStart = handler;
@@ -440,11 +442,11 @@ test("tells work agents to carry on to the next criterion", () => {
 test("gives work agents the ticket implementation workflow", () => {
   const prompt = chittyPrompt("work", "TASK-12");
 
-  assert.match(prompt, /Create a branch and worktree/);
-  assert.match(prompt, /Never implement in the main checkout/);
-  assert.match(prompt, /Commit the `doing` claim/);
-  assert.match(prompt, /Tick a criterion only after verifying it/);
-  assert.match(prompt, /Re-check every criterion before setting `review`/);
+  assert.doesNotMatch(prompt, /Create a branch and worktree/);
+  assert.doesNotMatch(prompt, /setup command/);
+  assert.doesNotMatch(prompt, /doing` claim/);
+  assert.match(prompt, /verify each criterion before ticking it/);
+  assert.match(prompt, /re-check every criterion before setting `review`/);
   assert.match(prompt, /mark the ticket blocked/);
 });
 

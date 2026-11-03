@@ -57,6 +57,7 @@ export default function chitty(pi: ExtensionAPI) {
     ticketId: string,
     ctx: ExtensionContext,
   ): Promise<void> {
+    await requireLinkedWorktree(pi, ctx);
     const ticket = await ticketSnapshot(pi, ctx, ticketId);
     state = {
       enabled: true,
@@ -320,6 +321,24 @@ export function isFailedAssistantResponse(
   return stopReason === "error";
 }
 
+async function requireLinkedWorktree(
+  pi: ExtensionAPI,
+  ctx: ExtensionContext,
+): Promise<void> {
+  const [gitDir, commonDir] = await Promise.all(
+    ["--git-dir", "--git-common-dir"].map((argument) =>
+      pi.exec("git", ["rev-parse", argument], { cwd: ctx.cwd, signal: ctx.signal }),
+    ),
+  );
+  if (
+    gitDir.code !== 0 ||
+    commonDir.code !== 0 ||
+    gitDir.stdout.trim() === commonDir.stdout.trim()
+  ) {
+    throw new Error("Start Chitty with `chitty run`; it prepares a linked ticket worktree.");
+  }
+}
+
 async function ticketSnapshot(
   pi: ExtensionAPI,
   ctx: ExtensionContext,
@@ -424,8 +443,7 @@ export function chittyPrompt(mode: ChittyMode, ticketId: string): string {
   const modeInstructions =
     mode === "work"
       ? [
-          "Create a branch and worktree under `.worktrees/` from `main`. Never implement in the main checkout. Commit the `doing` claim on its branch before implementation starts.",
-          "Follow the repository's Chitty guidance: record a plan, mark the ticket doing, and verify it. Tick a criterion only after verifying it. Re-check every criterion before setting `review`. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
+          "Follow the repository's Chitty guidance: verify each criterion before ticking it, and re-check every criterion before setting `review`. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
           DEFAULT_INSTRUCTION,
           "When blocked by an issue or question, add a clear Chitty note explaining the problem, who can resolve it, and what is needed; then mark the ticket blocked.",
         ]

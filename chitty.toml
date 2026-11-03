@@ -1,6 +1,7 @@
 format = 1
 default_context = "tasks"
 autocommit = true
+setup = "make install"
 
 project = "chitty"
 archive = "move"

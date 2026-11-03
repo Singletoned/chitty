@@ -78,10 +78,12 @@ contexts do this so people can close their own tasks directly. The third failed 
 `--all` includes every status but never archive folders.
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,
 then uses priority and task ID across all non-human contexts. Its `--json`
-output is `{"mode": "work"|"review", "id": "TASK-N"}`. `chitty run` invokes
-Pi for that action and succeeds only when Pi commits a status change, so
-`while chitty run; do :; done` stops when no action remains or a session makes
-no progress. Empty lists explain their active filters on stderr while JSON stdout remains
+output is `{"mode": "work"|"review", "id": "TASK-N"}`. `chitty run` requires
+`autocommit = true` and `setup` (for example, `setup = "make install"`): it
+creates or reuses the ticket worktree, runs setup there, claims a `todo` ticket,
+and invokes Pi from that worktree. Pass Pi options with `chitty run -- --model
+MODEL`. It succeeds only when Pi commits a status change, so `while chitty run;
+do :; done` stops when no action remains or a session makes no progress. Empty lists explain their active filters on stderr while JSON stdout remains
 `[]`. `chitty import backlog-md` refuses non-empty contexts, reports
 mappings. It refuses to run unless the Git working tree is clean, untracked
 files included, and removes the converted files in its import commit; use
@@ -111,7 +113,8 @@ started before `session_start` cannot receive it; start Pi with
 `CHITTY_ACTOR=<name>` if one needs the same identity.
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
-written task file before any autocommit. `chitty init --autocommit` enables
+written task file before any autocommit. Set `setup` to the command that prepares
+each ticket worktree before Pi starts; it is parsed without a shell. `chitty init --autocommit` enables
 `autocommit = true` and commits only the repository setup files it changed
 (`chitty.toml` or `pyproject.toml`, `.gitignore`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
 dirty Git working tree. Commits for task work should end with

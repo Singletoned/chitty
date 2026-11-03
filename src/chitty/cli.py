@@ -372,11 +372,12 @@ def next_(as_json: bool) -> None:
         click.echo(f"{action.mode} {action.id}")
 
 
-@cli.command("run")
-def run() -> None:
-    """Run Pi on the next ticket; non-zero stops an unattended shell loop."""
+@cli.command("run", context_settings={"ignore_unknown_options": True, "allow_extra_args": True})
+@click.pass_context
+def run(ctx: click.Context) -> None:
+    """Prepare the next ticket's worktree, then run Pi in it."""
     try:
-        result = run_next(_repo(warn_setup_version=False))
+        result = run_next(_repo(warn_setup_version=False), tuple(ctx.args))
     except RunInterrupted:
         click.echo("interrupted while Pi was running", err=True)
         raise click.exceptions.Exit(130) from None

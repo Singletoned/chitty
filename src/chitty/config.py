@@ -29,6 +29,7 @@ chitty_version = "{version}"
 autocommit = false
 review = true
 # autoformat = "taidy format" # run on every written task file
+# setup = "make install" # run in every ticket worktree before Pi starts
 archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
@@ -64,6 +65,7 @@ class RepoConfig(BaseModel):
     autocommit: bool
     review: bool = True
     autoformat: str | None = None
+    setup: str | None = None
     archive: Literal["move", "delete"] = "move"
     contexts: dict[str, ContextConfig]
 
@@ -79,6 +81,13 @@ class RepoConfig(BaseModel):
     @field_validator("autoformat")
     @classmethod
     def _autoformat(cls, value: str | None) -> str | None:
+        if value is not None and not value.strip():
+            raise ValueError("must not be empty")
+        return value
+
+    @field_validator("setup")
+    @classmethod
+    def _setup(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():
             raise ValueError("must not be empty")
         return value

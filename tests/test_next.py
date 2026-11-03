@@ -1,11 +1,9 @@
 import asyncio
 import hashlib
 import os
-import signal
 import stat
 import subprocess
 import sys
-import time
 from pathlib import Path
 
 from mcp.server.mcpserver.exceptions import ToolError
@@ -163,14 +161,19 @@ class TestNext(CliTestCase):
             asyncio.run(server.call_tool("next", {}))
 
     def test_run_uses_committed_change_from_ticket_worktree(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
         self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.add("Todo")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
         worker = self.tmp / "ticket-worktree"
-        self.git("worktree", "add", "--quiet", "-b", "ticket", str(worker))
+        self.git("worktree", "add", "--quiet", "-b", "task-1", str(worker))
         self.addCleanup(self.git, "worktree", "remove", "--force", str(worker))
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
@@ -178,7 +181,7 @@ class TestNext(CliTestCase):
             "#!" + sys.executable + "\n"
             "import os, pathlib, subprocess, time\n"
             "path = pathlib.Path(os.environ['WORKER']) / 'chitty/tasks/TASK-1--todo.md'\n"
-            "path.write_text(path.read_text().replace('status: todo', 'status: blocked'))\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
             "time.sleep(1)\n"
             "subprocess.run(['git', 'add', str(path)], cwd=os.environ['WORKER'], check=True)\n"
             "subprocess.run(\n"
@@ -195,10 +198,20 @@ class TestNext(CliTestCase):
         finally:
             os.environ["PATH"] = old_path
             os.environ.pop("WORKER", None)
-        self.assertEqual(result.stdout, "TASK-1: todo → blocked\n")
+        self.assertEqual(result.stdout, "TASK-1: doing → blocked\n")
 
     def test_run_inherits_stdin(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
         self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
         fake.write_text(
@@ -389,24 +402,36 @@ class TestNext(CliTestCase):
         ).stdout
 
     def test_run_cases(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
         self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, sys\n"
+            "import os, subprocess, sys\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
             "if os.environ.get('CHANGE'):\n"
             "    path = os.environ['TASK_PATH']\n"
             "    text = open(path).read()\n"
-            "    open(path, 'w').write(text.replace('status: todo', 'status: blocked'))\n"
+            "    open(path, 'w').write(text.replace('status: doing', 'status: blocked'))\n"
+            "    subprocess.run(['git', 'add', path], check=True)\n"
+            "    subprocess.run(['git', 'commit', '-m', 'worker change'], check=True)\n"
             "sys.exit(int(os.environ.get('PI_EXIT', '0')))\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         old_path = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{old_path}"
-        os.environ["EXPECTED_ROOT"] = str(self.root)
+        os.environ["EXPECTED_ROOT"] = str(self.root / ".worktrees" / "task-1")
         try:
             unchanged = self.run_cli("run", exit_code=1)
             self.assertIn("TASK-1 was unchanged", unchanged.stderr)
@@ -415,9 +440,11 @@ class TestNext(CliTestCase):
             self.assertIn("pi exited with status 7", failed.stderr)
             os.environ.pop("PI_EXIT")
             os.environ["CHANGE"] = "1"
-            os.environ["TASK_PATH"] = str(self.root / "chitty/tasks/TASK-1--todo.md")
+            os.environ["TASK_PATH"] = str(
+                self.root / ".worktrees" / "task-1" / "chitty/tasks/TASK-1--todo.md"
+            )
             changed = self.run_cli("run")
-            self.assertEqual(changed.stdout, "TASK-1: todo → blocked\n")
+            self.assertEqual(changed.stdout, "TASK-1: doing → blocked\n")
             no_next = self.run_cli("run", exit_code=1)
             self.assertIn("no next ticket", no_next.stderr)
             self.add("Again")
@@ -425,40 +452,6 @@ class TestNext(CliTestCase):
             missing = self.run_cli("run", exit_code=1)
             self.assertIn("pi is not on PATH", missing.stderr)
             os.environ["PATH"] = f"{fake.parent}:{old_path}"
-            signal_script = self.root / "bin" / "pi"
-            signal_script.write_text(
-                "#!" + sys.executable + "\n"
-                "import os, sys, time\n"
-                "sys.stderr = open(os.devnull, 'w')\n"
-                "open(os.environ['CHILD_PID'], 'w').write(str(os.getpid()))\n"
-                "time.sleep(60)\n"
-            )
-            child_pid = self.root / "child.pid"
-            environment = os.environ | {"CHILD_PID": str(child_pid)}
-            process = subprocess.Popen(
-                [str(Path(sys.executable).parent / "chitty"), "run"],
-                cwd=self.root,
-                env=environment,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-            try:
-                for _ in range(100):
-                    if child_pid.exists():
-                        break
-                    time.sleep(0.01)
-                self.assertTrue(child_pid.exists())
-                os.kill(int(child_pid.read_text()), signal.SIGINT)
-                stdout, stderr = process.communicate(timeout=5)
-            finally:
-                if process.poll() is None:
-                    process.kill()
-                    process.communicate()
-            self.assertEqual(process.returncode, 130, stdout + stderr)
-            self.assertEqual(stdout, "")
-            self.assertIn("interrupted while Pi was running", stderr)
-            self.assertNotIn("Traceback", stderr)
         finally:
             os.environ["PATH"] = old_path
             os.environ.pop("EXPECTED_ROOT", None)

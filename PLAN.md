@@ -608,11 +608,14 @@ an unmet dependency is excluded, while `doing` and `review` work remains
 visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value.
 
-`chitty run` launches `pi --chitty-<mode> ID` from the repository root with
-inherited standard streams. It reopens the repository after Pi exits and
-succeeds only if the task's committed status changed. This makes
-`while chitty run; do :; done` a safe unattended loop. Interrupting Pi exits
-130 without a traceback.
+`chitty run` requires `autocommit = true` and a configured `setup` command. It
+finds the main checkout even when invoked from another worktree, pulls its
+inbox when configured, creates or reuses the selected ticket's worktree, runs
+parsed setup there, and claims a `todo` work ticket on that branch before
+launching `pi --chitty-<mode> ID`. Arguments after `--` pass through to Pi. It
+reopens the ticket worktree after Pi exits and succeeds only if the task's
+committed status changed. This makes `while chitty run; do :; done` a safe
+unattended loop. Interrupting setup or Pi exits 130 without a traceback.
 
 ## Module layout
 

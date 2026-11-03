@@ -724,8 +724,9 @@ def _add_missing_settings(
             ("chitty_version", f'chitty_version = "{CHITTY_VERSION}"'),
             ("archive", 'archive = "move"'),
             ("review", "review = true"),
+            ("setup", '# setup = "make install" # run before Pi starts in a ticket worktree'),
         )
-        if key not in settings
+        if key not in settings and not (key == "setup" and "setup =" in text)
     ]
     if not additions:
         return text
