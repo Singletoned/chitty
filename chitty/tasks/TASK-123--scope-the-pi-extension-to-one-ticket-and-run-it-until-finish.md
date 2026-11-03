@@ -1,6 +1,6 @@
 ---
 title: Scope the Pi extension to one ticket and run it until finished
-status: todo
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -33,6 +33,12 @@ Out of scope: choosing a ticket, looping, model selection per stage, creating wo
 - [ ] Run by hand against a scratch ticket: `pi --chitty-work <ID>` continues past a turn that leaves the ticket in `doing`, and exits once it reaches `review`. Record the result in a note
 - [ ] `README.md` describes the new usage, and `__version__` is bumped so `chitty init` installs the extension
 
+## Plan
+
+Inspect the current Pi extension and its Node tests, then add focused parser, prompt, and settlement tests before implementing the one-ticket continuation loop. Update the extension, documentation, and version; verify the requested scratch-ticket flow and `make check` before handing the ticket to review.
+
 ## History
 
 - 2026-11-03T12:40:38Z lively-panda → todo
+- 2026-11-03T13:28:06Z kind-badger: wrote the plan
+- 2026-11-03T13:28:06Z kind-badger todo → doing
