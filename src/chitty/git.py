@@ -134,6 +134,29 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     return files
 
 
+def is_linked_worktree(directory: Path) -> bool:
+    """Whether ``directory`` is in a linked worktree rather than its main checkout.
+
+    Non-Git directories, including machines without Git, are deliberately not
+    linked worktrees so `init` retains its existing extension-install behaviour.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--git-dir", "--git-common-dir"],
+            check=False,
+            cwd=directory,
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError:
+        return False
+    paths = result.stdout.splitlines()
+    if result.returncode != 0 or len(paths) != 2:
+        return False
+    git_directory, common_directory = paths
+    return (directory / git_directory).resolve() != (directory / common_directory).resolve()
+
+
 def current_branch(root: Path) -> str | None:
     """Return the checked-out branch, or ``None`` outside Git or when detached."""
     try:

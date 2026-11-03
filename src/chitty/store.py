@@ -2,6 +2,7 @@
 
 import json
 import re
+import sys
 import tomllib
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
@@ -788,7 +789,11 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     pyproject_path = directory / "pyproject.toml"
     agents = directory / AGENTS_FILE
     gitignore = directory / ".gitignore"
-    validate_pi_extension()
+    linked_worktree = git.is_linked_worktree(directory)
+    if not linked_worktree:
+        validate_pi_extension()
+    else:
+        print("skipping machine-wide Pi setup from linked Git worktree", file=sys.stderr)
     originals = {
         path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
     }
@@ -842,12 +847,13 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
             written.append(inbox)
     if _add_worktrees_to_gitignore(gitignore):
         written.append(gitignore)
-    pi_settings = remove_pi_session_environment()
-    if pi_settings is not None:
-        written.append(pi_settings)
-    pi_extension = install_pi_extension()
-    if pi_extension is not None:
-        written.append(pi_extension)
+    if not linked_worktree:
+        pi_settings = remove_pi_session_environment()
+        if pi_settings is not None:
+            written.append(pi_settings)
+        pi_extension = install_pi_extension()
+        if pi_extension is not None:
+            written.append(pi_extension)
     existing = agents.read_text() if agents.exists() else ""
     pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
     rendered_guide = guide()
