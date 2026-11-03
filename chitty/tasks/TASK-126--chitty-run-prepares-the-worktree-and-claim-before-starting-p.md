@@ -1,9 +1,10 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: blocked
+status: todo
 priority: high
 depends_on:
   - TASK-124
+  - TASK-128
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -71,6 +72,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-03. Biggest finds: `StoredTask.bra
 
 Blocked: current cross-branch write protection refuses both the required `--plan` and `todo` to `doing` claim from the new `task-126` worktree because this ticket’s newest committed copy is on `main`. Completing the requested pre-implementation branch claim requires a bootstrap route that writes the claim on its new branch (the behavior this ticket is intended to add), or human authorization to make the ticket-state write on `main`. A human must choose one of those options; no implementation has started.
 
+Unblocked by the author, 2026-11-03: the block was a bug in the `TASK-105` guard, not a decision for the human, and is now `TASK-128`, on which this depends. The worker was right to stop. Its worktree and branch had no commits and were removed. When this is picked up, branch from `main` after `TASK-128` lands.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -78,3 +81,5 @@ Blocked: current cross-branch write protection refuses both the required `--plan
 - 2026-11-03T16:48:59Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T19:22:46Z nimble-crane: changed notes
 - 2026-11-03T19:22:46Z nimble-crane todo → blocked
+- 2026-11-03T19:25:32Z lively-panda: changed dependencies, notes
+- 2026-11-03T19:25:32Z lively-panda blocked → todo
