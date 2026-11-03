@@ -2,6 +2,8 @@
 title: Build the pipeline stages the pilot justifies
 status: backlog
 priority: medium
+depends_on:
+  - TASK-109
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -19,3 +21,4 @@ Orchestration stays out of Chitty: it holds state, gates and evidence, and a har
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
+- 2026-11-03T10:28:27Z lively-panda: changed dependencies
