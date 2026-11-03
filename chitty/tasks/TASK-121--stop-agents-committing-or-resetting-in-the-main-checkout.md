@@ -19,8 +19,11 @@ The global `chitty` runs whatever the main checkout contains. On 2026-11-03 the 
 
 `TASK-126` covers Pi: `chitty run` makes the claim, and the extension refuses to start outside a linked worktree. What remains is other agents and manual sessions. Re-scope once that lands.
 
+Cold-read this after `TASK-126` lands and it has been re-scoped, because its text will change.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
 - 2026-11-03T16:30:16Z lively-panda: changed notes
 - 2026-11-03T16:31:24Z lively-panda: changed dependencies
+- 2026-11-03T18:18:20Z lively-panda: changed notes
