@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket writes when the latest version is on another branch
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-107
@@ -41,6 +41,12 @@ Verified all criteria with `make check`: CLI coverage exercises worktree, no-wor
 
 Ready for independent review. Re-checked all five criteria after `chitty fix`; `make check` passes.
 
+Reviewed: independently verified all five criteria, including cross-branch CLI and MCP coverage; [36mmake check[0m and [36mchitty check[0m pass.
+
+## Summary
+
+Implemented a shared store write guard that refuses cross-branch ticket writes with actionable worktree or checkout guidance.\n\nVerification: independently ran [36mmake check[0m (212 tests), [36mchitty check[0m and [36mchitty fix[0m; only pre-existing Markdown-delimiter warnings remain.
+
 ## History
 
 - 2026-11-02T13:39:15Z lively-otter → todo
@@ -56,3 +62,5 @@ Ready for independent review. Re-checked all five criteria after `chitty fix`; `
 - 2026-11-03T17:47:32Z opal-marten: changed notes; ticked acceptance criteria
 - 2026-11-03T17:49:06Z opal-marten: changed notes
 - 2026-11-03T17:49:06Z opal-marten doing → review
+- 2026-11-03T18:12:06Z honest-falcon: changed notes, summary
+- 2026-11-03T18:12:06Z honest-falcon review → done
