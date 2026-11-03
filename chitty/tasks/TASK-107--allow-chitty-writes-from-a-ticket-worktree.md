@@ -1,6 +1,6 @@
 ---
 title: Allow Chitty writes from a ticket worktree
-status: doing
+status: review
 priority: high
 created: 2026-11-03
 ---
@@ -11,9 +11,9 @@ A worktree with the same `project` configuration cannot run `chitty edit`: `regi
 
 ## Acceptance Criteria
 
-- [ ] In a Git worktree of the registered repository, `chitty init`, `chitty inbox --pull` and a write that triggers a setup upgrade all succeed, and the registered path stays the main checkout
-- [ ] An unrelated repository using the same `project` name is still refused
-- [ ] Tests create a real `git worktree` and cover both cases
+- [x] In a Git worktree of the registered repository, `chitty init`, `chitty inbox --pull` and a write that triggers a setup upgrade all succeed, and the registered path stays the main checkout
+- [x] An unrelated repository using the same `project` name is still refused
+- [x] Tests create a real `git worktree` and cover both cases
 
 ## Plan
 
@@ -28,6 +28,12 @@ Suggestion origin: chitty
 
 Narrowed on 2026-11-03: a plain `chitty edit` works from a worktree. `register_project` only runs from `init_repo` and `inbox.pull`, so what fails is `chitty init` (reproduced in the `task-105` worktree), `chitty inbox --pull`, which the guide says to run first, and writes when setup is stale. A version bump therefore breaks writes in worktrees that have not yet got the bump. Prerequisite for the `TASK-109` pilot.
 
+## Summary
+
+Implemented shared-Git-common-directory recognition for registered worktrees while retaining unrelated-repository rejection.
+
+Verification: focused worktree test and `make check` (197 tests).
+
 ## History
 
 - 2026-11-03T09:38:44Z mellow-marten → backlog
@@ -36,3 +42,5 @@ Narrowed on 2026-11-03: a plain `chitty edit` works from a worktree. `register_p
 - 2026-11-03T10:41:00Z lively-panda backlog → todo
 - 2026-11-03T10:42:41Z ivory-quail: wrote the plan
 - 2026-11-03T10:42:41Z ivory-quail todo → doing
+- 2026-11-03T10:45:30Z ivory-quail: changed summary; ticked acceptance criteria
+- 2026-11-03T10:45:30Z ivory-quail doing → review
