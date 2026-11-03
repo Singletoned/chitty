@@ -456,6 +456,42 @@ class TestNext(CliTestCase):
                 )
                 config.write_text(original)
 
+    def test_run_setup_failure_does_not_start_pi_or_claim_ticket(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "false"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure setup")
+        marker = self.root / "started"
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!"
+            + sys.executable
+            + "\nfrom pathlib import Path\nPath('started').write_text('yes')\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
+        self.assertIn("setup exited with status 1", result.stderr)
+        self.assertFalse(marker.exists())
+        worktree = self.root / ".worktrees" / "task-1"
+        self.assertTrue(worktree.is_dir())
+        self.assertEqual(
+            Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
+            "todo",
+        )
+
     def test_run_cases(self):
         config = self.root / "chitty.toml"
         config.write_text(
