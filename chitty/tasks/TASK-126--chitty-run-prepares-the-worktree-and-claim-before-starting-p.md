@@ -55,7 +55,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 - [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [ ] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
-- [ ] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
+- [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
@@ -95,6 +95,8 @@ Verified criterion 6 with `tests.test_cli.TestInit` and `make check`: new templa
 
 Verified criterion 7 with `TestNext.test_run_refuses_preflight_without_mutating` and `make check`: disabled autocommit, unset setup, missing Pi and a non-main checkout all fail before a worktree or claim is created.
 
+Verified criterion 3 with `TestNext.test_run_refuses_preflight_without_mutating`, `TestNext.test_run_setup_failure_does_not_start_pi_or_claim_ticket`, and `make check`: missing setup and a failing parsed setup both fail without starting Pi; failed setup leaves the new worktree unclaimed.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -112,3 +114,4 @@ Verified criterion 7 with `TestNext.test_run_refuses_preflight_without_mutating`
 - 2026-11-03T20:24:44Z eager-lynx: changed notes; ticked acceptance criteria
 - 2026-11-03T20:26:09Z eager-lynx: changed notes; ticked acceptance criteria
 - 2026-11-03T20:28:00Z eager-lynx: changed notes; ticked acceptance criteria
+- 2026-11-03T20:29:37Z eager-lynx: changed notes; ticked acceptance criteria
