@@ -67,8 +67,8 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [ ] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
-- [ ] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
-- [ ] A Node test shows the worktree check refusing in a subdirectory of the main checkout
+- [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
+- [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
 
 ## Plan
 
@@ -105,6 +105,8 @@ From the `TASK-129` cold read: `requireLinkedWorktree` must compare `--git-dir` 
 
 Cold read outcomes: Fix the interrupt path: convert interrupts during inbox pull and setup to the existing exit-130 flow, with a phase-accurate one-line message; add coverage even though the criterion omitted it. Fix the outside-worktree startup path and replace the mocked helper-only evidence with an end-to-end Node test for one-line exit, no stack trace and no remaining session; criterion 15 requires it. Fix every listed missing worktree, setup ordering/repetition, actor and main-config state with the corresponding unchecked black-box criteria. Add the old-worktree-config regression because config-from-main is an explicit promise. Strengthen the prompt test to reject the concepts rather than just three phrases. Retain and test remote-only branch handling because the description specifies it. Concurrency remains intentionally out of scope. Parsed setup commands intentionally use `shlex.split`, so shell syntax is unsupported; document this in the user-facing config contract. Chosen default: interrupt errors identify the interrupted phase, because it is cheap to revise and avoids the current false claim that Pi ran.
 
+Verified criteria 15 and 16 with `npm test -- --test src/chitty/integrations/pi/tests/chitty.test.ts` and `make check`: extension startup outside a linked worktree now emits one notification, sends no user turn, and shuts down; the Node test exercises a main-checkout subdirectory.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -126,3 +128,4 @@ Cold read outcomes: Fix the interrupt path: convert interrupts during inbox pull
 - 2026-11-03T20:41:14Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T20:44:59Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T20:47:08Z ivory-panda: changed notes
+- 2026-11-03T20:52:50Z ivory-panda: changed notes; ticked acceptance criteria
