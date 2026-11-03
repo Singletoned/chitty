@@ -27,7 +27,7 @@ Out of scope: choosing a ticket, looping, model selection per stage, creating wo
 
 ## Acceptance Criteria
 
-- [ ] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
+- [x] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
 - [x] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
 - [x] A review prompt and a work prompt name the ticket and contain no instruction to select another ticket, with Node tests asserting it
 - [x] Run by hand against a scratch ticket: `pi --chitty-work <ID>` continues past a turn that leaves the ticket in `doing`, and exits once it reaches `review`. Record the result in a note
@@ -57,3 +57,4 @@ Scoped Pi work and review runs to one ticket, added continuation-state tests, do
 - 2026-11-03T14:01:49Z kind-badger doing → review
 - 2026-11-03T14:27:01Z lively-lynx: changed acceptance criteria, notes
 - 2026-11-03T14:27:01Z lively-lynx review → doing
+- 2026-11-03T15:35:39Z jolly-badger: ticked acceptance criteria
