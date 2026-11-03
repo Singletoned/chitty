@@ -9,6 +9,7 @@ depends_on:
   - TASK-126
   - TASK-120
   - TASK-127
+  - TASK-131
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -44,6 +45,8 @@ Model and cost per session now come from the `TASK-127` log, so the summary for 
 
 Rebase rewrites commits, so a tests-commit hash stops being on the branch after `chitty run` rebases. The old object stays available for `git diff`, so the check in step 4 still works, unless `main` changed the same test files.
 
+Also needs `TASK-131`, split from `TASK-120`.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -53,3 +56,4 @@ Rebase rewrites commits, so a tests-commit hash stops being on the branch after 
 - 2026-11-03T16:30:18Z lively-panda: changed dependencies
 - 2026-11-03T16:46:07Z lively-panda: changed dependencies, notes
 - 2026-11-03T17:26:54Z lively-panda: changed notes
+- 2026-11-03T20:46:23Z lively-panda: changed dependencies, notes
