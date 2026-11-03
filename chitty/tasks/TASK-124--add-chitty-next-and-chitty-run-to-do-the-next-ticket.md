@@ -1,6 +1,6 @@
 ---
 title: Add `chitty next` and `chitty run` to do the next ticket
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-123
@@ -91,6 +91,8 @@ uv run python -m unittest discover -s tests -t .
 
 Correction: verified reviewer fixes with `make check`: archived dependencies count as met; full priority order and `TASK-9` before `TASK-12` are covered; a test sends SIGINT to the Pi child and confirms exit 130 without a traceback. Re-checked all nine criteria.
 
+Ready for independent review: all nine criteria are checked; `make check` passed with 207 tests.
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
@@ -107,3 +109,5 @@ Correction: verified reviewer fixes with `make check`: archived dependencies cou
 - 2026-11-03T17:08:32Z mellow-raven review → doing
 - 2026-11-03T17:19:43Z frosty-marten: changed notes; ticked acceptance criteria
 - 2026-11-03T17:19:51Z frosty-marten: changed notes
+- 2026-11-03T17:19:58Z frosty-marten: changed notes
+- 2026-11-03T17:19:58Z frosty-marten doing → review
