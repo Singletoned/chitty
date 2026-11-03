@@ -4,7 +4,7 @@ status: blocked
 priority: high
 depends_on:
   - TASK-102
-  - HUMAN-1
+  - HUMAN-9
 created: 2026-11-02
 ---
 
@@ -27,6 +27,8 @@ Trace how Chitty chooses each task version and performs writes, then route write
 
 Blocked pending `HUMAN-1`: the cross-branch write mechanism needs a costly-to-reverse decision on transactional guarantees and whether to split the Git-plumbing work. I traced the current `Repo.edit`/`_save`/`_commit` path and confirmed it writes directly in the caller checkout; a temporary-index implementation must define atomic updates and recovery before coding.
 
+Correction: the required decision is tracked by `HUMAN-9`.
+
 ## History
 
 - 2026-11-02T13:39:15Z lively-otter → todo
@@ -34,3 +36,4 @@ Blocked pending `HUMAN-1`: the cross-branch write mechanism needs a costly-to-re
 - 2026-11-03T09:42:27Z mellow-marten todo → doing
 - 2026-11-03T09:45:07Z mellow-marten: changed dependencies, notes
 - 2026-11-03T09:45:07Z mellow-marten doing → blocked
+- 2026-11-03T09:45:15Z mellow-marten: changed dependencies, notes
