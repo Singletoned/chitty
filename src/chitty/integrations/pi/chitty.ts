@@ -36,9 +36,16 @@ export default function chitty(pi: ExtensionAPI) {
     ticketId: string,
     ctx: ExtensionContext,
   ): Promise<void> {
-    await ticketStatus(pi, ctx, ticketId);
+    const status = await ticketStatus(pi, ctx, ticketId);
     state = { enabled: true, mode, ticketId, continuationCount: 0 };
     persistState(pi, state);
+
+    const decision = settlementDecision(mode, status, 0);
+    if (decision.action !== "continue") {
+      stopContinuation(ctx, decision.reason, true);
+      return;
+    }
+
     pi.sendUserMessage(chittyPrompt(mode, ticketId));
   }
 

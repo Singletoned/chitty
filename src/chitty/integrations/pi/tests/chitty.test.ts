@@ -94,6 +94,57 @@ test("rejects an unknown ticket flag before starting an agent turn", async () =>
   }
 });
 
+test("shuts down without starting when a flagged ticket has left its stage", async () => {
+  for (const [flag, status] of [
+    ["chitty-work", "review"],
+    ["chitty-review", "doing"],
+  ]) {
+    let sessionStart:
+      | ((event: unknown, ctx: unknown) => Promise<void> | void)
+      | undefined;
+    const sentMessages: string[] = [];
+    const notifications: string[] = [];
+    let shutdowns = 0;
+    const pi = {
+      appendEntry: () => {},
+      exec: async () => ({
+        code: 0,
+        stdout: JSON.stringify({ status }),
+        stderr: "",
+      }),
+      getFlag: (name: string) => (name === flag ? "TASK-12" : undefined),
+      on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
+        if (event === "session_start") sessionStart = handler;
+        return () => {};
+      },
+      registerCommand: () => {},
+      registerFlag: () => {},
+      sendMessage: () => {},
+      sendUserMessage: (message: string) => sentMessages.push(message),
+    };
+    chitty(pi as Parameters<typeof chitty>[0]);
+
+    assert.ok(sessionStart);
+    await sessionStart(
+      {},
+      {
+        cwd: process.cwd(),
+        sessionManager: {
+          getBranch: () => [],
+          getSessionId: () => "test-session",
+        },
+        shutdown: () => shutdowns++,
+        ui: { notify: (message: string) => notifications.push(message) },
+      },
+    );
+    assert.deepEqual(sentMessages, []);
+    assert.deepEqual(notifications, [
+      `Chitty continuation stopped: ticket left ${flag === "chitty-work" ? "work" : "review"} with status ${status}.`,
+    ]);
+    assert.equal(shutdowns, 1);
+  }
+});
+
 test("settles work after its ticket leaves todo or doing", () => {
   for (const status of ["review", "blocked", "done"]) {
     assert.deepEqual(settlementDecision("work", status, 0), {
