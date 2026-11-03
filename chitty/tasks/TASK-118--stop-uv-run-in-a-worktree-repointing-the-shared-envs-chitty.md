@@ -31,6 +31,8 @@ Review failed: (2) `uv` worktree isolation is not implemented in the branch: `.e
 
 Reviewed: Forced by human
 
+Landed by the author of `TASK-120` on 2026-11-03, at the human's request: the branch was rebased onto `main`, `make check` passed, and it fast-forwarded with no conflicts. The docs were checked against this machine: the uv receipt is editable from the main checkout with the `mcp` extra. Landed now so the first run after `TASK-120` would not land it unexpectedly.
+
 ## Summary
 
 Global `chitty` is now an editable install of the main checkout; each checkout uses its own `.venv` through `make` and `uv run`, and `.envrc` sets no environment variables or `PATH`. `README.md` and `PLAN.md` record this and reverse `TASK-81`. `~/.envs/chitty` is gone. Verification: `make check` (197 tests) plus the checks in Notes. Follow-ups: `TASK-119` to `TASK-122` and the `prj` suggestion.
@@ -50,3 +52,4 @@ Global `chitty` is now an editable install of the main checkout; each checkout u
 - 2026-11-03T12:22:38Z human doing → review
 - 2026-11-03T12:24:57Z terrifying-bob: changed notes
 - 2026-11-03T12:24:57Z terrifying-bob review → done
+- 2026-11-03T20:18:09Z lively-panda: changed notes
