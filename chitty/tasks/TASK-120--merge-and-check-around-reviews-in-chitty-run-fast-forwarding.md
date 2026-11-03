@@ -63,8 +63,11 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 Cold read by a fresh Sonnet subagent, 2026-11-03. The biggest find: autocommitted ticket commits move `main` often, so `--ff-only` alone would refuse most landings; it now merges and rechecks. Also adopted: untracked files allowed in the main checkout (the old rule would have refused every merge here because of `chats/`), the main checkout must be on `main`, pending tickets found by branch name, `setup` after the merge, and `make check` running Node tests. Authors choice for the reviewer: a clean re-merge lands without another review.
 
+As in `TASK-126`, read `check` from the main checkout config, so older branches have it.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
 - 2026-11-03T16:30:15Z lively-panda: changed title, dependencies, description, acceptance criteria
 - 2026-11-03T16:48:16Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T16:49:00Z lively-panda: changed notes
