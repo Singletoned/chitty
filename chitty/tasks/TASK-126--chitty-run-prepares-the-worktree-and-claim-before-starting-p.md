@@ -62,7 +62,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [ ] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), a branch checked out in the main checkout, and uncommitted changes to the ticket in the main checkout
 - [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
-- [ ] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
+- [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
@@ -111,6 +111,8 @@ Verified criterion 14 with `TestInit.test_init_adds_missing_human_review_setting
 
 Verified criterion 2 with `TestNext.test_run_cases`: initial claim leaves `main` at its original `HEAD`; repeated runs retain exactly one claim commit on `task-1`; and the ticket remains `doing` until Pi changes it.
 
+Verified criterion 10 with `TestNext.test_run_cases`: a fake Pi that changes nothing causes non-zero `TASK-1 was unchanged`; the ticket remains `doing`, and the next invocation reuses its worktree.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -135,3 +137,4 @@ Verified criterion 2 with `TestNext.test_run_cases`: initial claim leaves `main`
 - 2026-11-03T20:52:50Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:53:08Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:54:21Z ivory-panda: changed notes; ticked acceptance criteria
+- 2026-11-03T20:54:28Z ivory-panda: changed notes; ticked acceptance criteria
