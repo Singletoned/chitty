@@ -47,6 +47,8 @@ Verified unknown --chitty-work and --chitty-review IDs fail during session start
 
 Review failed: starting  for a ticket already outside / (or  for one outside ) still sends an agent turn.  reads and discards the status before , so it cannot immediately notify and shut down as required once the named ticket has left its stage. Handle inactive status at startup and add a regression test that verifies no agent turn starts.
 
+Review clarification: the preceding note lost its code spans because the review command shell expanded backticks. Starting `pi --chitty-work` for a ticket already outside `todo`/`doing` (or `pi --chitty-review` for one outside `review`) still sends an agent turn. `start()` reads and discards the status before `sendUserMessage()`, so it cannot immediately notify and shut down once the named ticket has left its stage. Handle inactive status at startup and add a regression test that verifies no agent turn starts.
+
 ## Summary
 
 Scoped Pi work and review runs to one ticket, added continuation-state tests, documented the ID-based commands, and bumped to `0.1.20`. Verified with `npm test`, `make check`, and a scratch Pi run that continued from `doing` then shut down after `review`.
@@ -66,3 +68,4 @@ Scoped Pi work and review runs to one ticket, added continuation-state tests, do
 - 2026-11-03T15:35:52Z jolly-badger doing → review
 - 2026-11-03T15:47:15Z lively-koala: changed acceptance criteria, notes
 - 2026-11-03T15:47:15Z lively-koala review → doing
+- 2026-11-03T15:47:27Z lively-koala: changed notes
