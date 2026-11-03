@@ -34,7 +34,14 @@ Out of scope: label filters and role options from `TASK-76`, per-stage models, a
 - [ ] Tests run `chitty run` with a fake `pi` on `PATH`, covering each exit-code case: status changed, unchanged, `pi` failing, `pi` missing, and no next ticket
 - [ ] `chitty next --json` and the MCP tool return the same answer
 - [ ] `PLAN.md`, `README.md` and the `chitty --help` output describe both commands and the shell loop; `__version__` is bumped if `src/chitty/guide.md` changes
+- [ ] Tests use a fake `pi` that commits the status change on a ticket branch in a worktree, as a real worker does, and `chitty run` run from the main checkout still reports the change and exits 0
+- [ ] Ctrl-C during `pi` exits `chitty run` non-zero without a traceback, so it stops a shell loop; a test sends SIGINT to the child and checks this
+
+## Notes
+
+Criteria added after `TASK-123` failed review twice on behaviour its criteria left out. Starting states covered by existing text: a ticket that makes no progress exits non-zero. A `todo → doing` session that then runs out of credits counts as a change, so a loop spends one further session before stopping, which is accepted.
 
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
+- 2026-11-03T16:08:31Z lively-panda: changed acceptance criteria, notes
