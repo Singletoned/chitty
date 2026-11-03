@@ -1,6 +1,6 @@
 ---
 title: Run Pi workers and reviewers in their own worktrees
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-103
@@ -34,6 +34,8 @@ Correction to my previous note: reads already merge ticket state from every loca
 
 Verified `npm test`, `make check`, `chitty check`, and `chitty fix`; the latter retains only pre-existing Markdown-delimiter warnings in older task files. The committed `doing` claim is `1c99a13`, before implementation commit `HEAD~1`.
 
+Reviewed: independent review verified all four criteria; inspected the branch diff and claim-before-implementation history; npm test, make check, and chitty check pass.
+
 ## History
 
 - 2026-11-02T11:21:00Z lively-otter → todo
@@ -44,3 +46,5 @@ Verified `npm test`, `make check`, `chitty check`, and `chitty fix`; the latter 
 - 2026-11-03T07:25:54Z mellow-marten todo → doing
 - 2026-11-03T07:27:52Z mellow-marten: changed notes; ticked acceptance criteria
 - 2026-11-03T07:27:52Z mellow-marten doing → review
+- 2026-11-03T09:20:36Z opal-marten: changed notes
+- 2026-11-03T09:20:36Z opal-marten review → done
