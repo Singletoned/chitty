@@ -1,6 +1,6 @@
 ---
 title: Do not install the Pi extension from a linked worktree
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -42,6 +42,8 @@ Default recorded for review: non-Git directories and systems without `git` remai
 
 Verified all criteria with `make check`: the real-worktree test first failed on the missing skip message, then now confirms skipped validation, settings cleanup, extension installation, and stale autocommit setup upgrades; the subdirectory and outside-Git test confirms installation remains enabled. `PLAN.md` records the rule and `__version__` is `0.1.22` because `init` now emits linked-worktree setup output.
 
+Ready for independent review. Re-checked every acceptance criterion after the final code commit with `make check`; the working tree is clean and `git diff --check main...HEAD` passes.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
@@ -50,3 +52,5 @@ Verified all criteria with `make check`: the real-worktree test first failed on 
 - 2026-11-03T21:04:30Z kind-marten: changed notes; wrote the plan
 - 2026-11-03T21:04:30Z kind-marten todo → doing
 - 2026-11-03T21:10:29Z kind-marten: changed notes; ticked acceptance criteria
+- 2026-11-03T21:11:59Z kind-marten: changed notes
+- 2026-11-03T21:11:59Z kind-marten doing → review
