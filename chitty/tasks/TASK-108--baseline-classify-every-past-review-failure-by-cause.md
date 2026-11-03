@@ -12,6 +12,14 @@ Hand-run the first retro, so the spec-first pilot has something to be compared w
 
 Read-only over tickets and Git, apart from this ticket and any tickets it proposes. Do not change rules or prompts here: proposals go to the human.
 
+## Acceptance Criteria
+
+- [ ] Every failed review in History is listed with its ticket and one cause from `PLAN.md`, or `unknown` with the reason; the count reconciles with History
+- [ ] Each failure records whether it cited a stated criterion or a case the ticket left out
+- [ ] Reports first-pass yield, retries per ticket and failures by cause, and states what it could not measure, including post-`done` escapes
+- [ ] Proposes at most three changes to standing rules, each naming the failure class it should reduce, for the human to accept or reject
+
 ## History
 
 - 2026-11-03T10:27:46Z lively-panda → backlog
+- 2026-11-03T10:28:25Z lively-panda: changed acceptance criteria
