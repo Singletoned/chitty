@@ -1,6 +1,6 @@
 ---
 title: Write ticket edits to the branch holding the ticket's latest version
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-102
@@ -18,6 +18,12 @@ Reads already take each ticket's newest committed version from any branch, but `
 - [ ] A ticket whose latest version is on a remote-tracking branch only is refused with a clear error, not silently forked
 - [ ] Tests cover both the worktree and no-checkout paths and the remote-only refusal; `PLAN.md` documents the rule
 
+## Plan
+
+Trace how Chitty chooses each task version and performs writes, then route writes for a task whose latest version is on another local branch to that branch without changing the caller checkout. Add regression tests for checked-out worktree, no-checkout, and remote-only paths; document the rule in `PLAN.md`, run the full checks, and return the ticket for independent review.
+
 ## History
 
 - 2026-11-02T13:39:15Z lively-otter → todo
+- 2026-11-03T09:42:27Z mellow-marten: wrote the plan
+- 2026-11-03T09:42:27Z mellow-marten todo → doing
