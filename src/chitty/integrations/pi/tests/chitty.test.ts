@@ -95,6 +95,11 @@ test("gives work agents only implementation tickets", () => {
   const prompt = chittyPrompt("work");
 
   assert.match(prompt, /`todo` or `doing`/);
+  assert.match(prompt, /Create a branch and worktree/);
+  assert.match(prompt, /Never implement in the main checkout/);
+  assert.match(prompt, /resume its existing worktree/);
+  assert.match(prompt, /Commit the `doing` claim/);
+  assert.match(prompt, /before implementation/);
   assert.match(prompt, /do not review tickets/);
   assert.match(prompt, /inspect several upcoming actionable tickets/);
   assert.match(prompt, /highest-priority tickets/);
@@ -112,6 +117,9 @@ test("gives review agents only independent review tickets", () => {
   assert.match(prompt, /status is `review`/);
   assert.match(prompt, /highest-priority tickets first/);
   assert.match(prompt, /Never review work you have done/);
+  assert.match(prompt, /ticket's branch worktree/);
+  assert.match(prompt, /merge its branch into `main`/);
+  assert.match(prompt, /remove its branch and worktree/);
   assert.match(prompt, /Reviewed: \.\.\./);
   assert.match(prompt, /-s doing/);
   assert.match(prompt, /NO MORE WORK/);

@@ -8,21 +8,23 @@ task files. `chitty --help` is the full command reference.
 - Work on one task per session. Start with `chitty inbox --pull`, then `chitty show <ID>`.
 - Backlog tasks need refinement; promote them to `todo` before taking them on.
 - Use a task's optional `parent` field to group flat task IDs under one goal.
-- Unless your own instructions say otherwise, work in a branch in a worktree at
-  `.worktrees/` in the repository root. Run the repository's setup command in
-  a new worktree before coding so it creates that worktree's environment. Use
-  `autocommit = true` or commit after every Chitty write, so other branches can
-  see task state.
+- Unless your own instructions say otherwise, create a branch and worktree at
+  `.worktrees/` in the repository root from `main` for each new ticket; never
+  implement in the main checkout. Resume the existing worktree for a `doing`
+  ticket. Run the repository's setup command in a new worktree before coding so
+  it creates that worktree's environment. Commit the `doing` claim on its
+  branch before implementation starts, and use `autocommit = true` or commit
+  after every Chitty write so other branches can see task state.
 - Before writing code, write your approach with `chitty edit <ID> --plan` and
   set `-s doing`. Wait for approval if the human asked for it.
 - Tick acceptance criteria as you meet them: `chitty edit <ID> --check N`
   (numbers are shown by `chitty show`).
 - Record anything surprising with `--note`. When work is ready, set `-s review`.
-  Never review a ticket you worked on: review promptly, rather than at
-  merge-request time. Pass it with `-s done --note "Reviewed: ..."`; fail it
-  with `-s doing --note "reason"`. If the work is on a branch, the reviewer who
-  passes it merges it into `main` and removes the branch and its worktree.
-  Create new tickets for out-of-scope findings.
+  Never review a ticket you worked on: review promptly in the ticket's branch
+  worktree, rather than at merge-request time. Pass it with
+  `-s done --note "Reviewed: ..."`; fail it with `-s doing --note "reason"`.
+  On a pass, merge the branch into `main`, then remove the branch and its
+  worktree. Create new tickets for out-of-scope findings.
   The third failed review sets `blocked` and owner `human` instead; leave it
   for a person to unblock.
 - Set `-s done` when every criterion is ticked and the work is verified; write
