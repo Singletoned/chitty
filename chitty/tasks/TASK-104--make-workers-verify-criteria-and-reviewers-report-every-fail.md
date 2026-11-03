@@ -1,6 +1,6 @@
 ---
 title: Make workers verify criteria and reviewers report every failure at once
-status: doing
+status: review
 priority: high
 created: 2026-11-02
 ---
@@ -14,7 +14,7 @@ created: 2026-11-02
 - [x] The Pi work prompt (`chittyPrompt` and `continuationPrompt` in `src/chitty/integrations/pi/chitty.ts`) says to tick a criterion only after verifying it, and to re-check every criterion before setting `review`
 - [x] The Pi review prompt says to check every criterion, list every failure in one note, and `--uncheck` each failed criterion
 - [x] `src/chitty/guide.md` says the same, so non-Pi agents follow it
-- [ ] Node tests cover the new prompt text, and `__version__` is bumped
+- [x] Node tests cover the new prompt text, and `__version__` is bumped
 
 ## Plan
 
@@ -32,6 +32,12 @@ Review failed (work): criterion 4 is unmet. `src/chitty/guide.md` changes but `_
 
 Correction to the failure note above: do not run `chitty init` in this worktree, because it fails until `TASK-107` is fixed. Only bump `__version__` to `0.1.19`.
 
+## Summary
+
+Updated the Pi and general agent guidance to require verification before ticking criteria and complete review failure reporting, then restored the required setup-version bump.
+
+Verification: `npm test` (14 tests) and `make check` (196 Python tests).
+
 ## History
 
 - 2026-11-02T13:03:21Z lively-otter → todo
@@ -46,3 +52,5 @@ Correction to the failure note above: do not run `chitty init` in this worktree,
 - 2026-11-03T10:39:51Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T10:39:51Z lively-panda review → doing
 - 2026-11-03T10:40:57Z lively-panda: changed notes
+- 2026-11-03T10:46:54Z ivory-quail: changed summary; ticked acceptance criteria
+- 2026-11-03T10:46:54Z ivory-quail doing → review
