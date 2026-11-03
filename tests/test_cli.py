@@ -88,6 +88,9 @@ class TestInit(CliTestCase):
         self.assertIn('prefix = "TASK"', config)
         self.assertIn('# autoformat = "taidy format" # run on every written task file', config)
         self.assertIn(
+            '# setup = "make install" # run in every ticket worktree before Pi starts', config
+        )
+        self.assertIn(
             'archive = "move" # or "delete"; retain completed files or delete them', config
         )
         self.assertNotIn("  #", config)
@@ -116,6 +119,8 @@ class TestInit(CliTestCase):
 
         settings = tomllib.loads(config.read_text())
         self.assertFalse(settings["contexts"]["human"]["review"])
+        self.assertIn('# setup = "make install"', config.read_text())
+        self.assertIsNone(settings.get("setup"))
         self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
     def test_init_replaces_a_tracked_pi_extension(self):
