@@ -1,6 +1,6 @@
 ---
 title: Do not install the Pi extension from a linked worktree
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -25,14 +25,25 @@ Out of scope: code from a branch deliberately run against the main checkout, bec
 - [ ] Tests show `chitty init` installing from a subdirectory of the main checkout and outside Git, and a skip in a worktree printing a message on stderr while leaving `settings.json` unchanged
 - [ ] A test with `autocommit = true` and a stale `chitty_version` shows a write from a worktree upgrading setup without installing the extension
 
+## Plan
+
+1. Add black-box regression coverage for `chitty init` and setup upgrades in a real linked worktree, first confirming the regression fails.
+2. Add Git worktree detection that resolves Git directory paths and treats non-Git directories or unavailable Git as eligible for installation.
+3. Gate the machine-wide Pi extension operations in linked worktrees, with a stderr explanation, while retaining ordinary setup writes.
+4. Update the design rule and version only when generated setup changes, then format, run checks, and verify every criterion.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-03, with `TASK-130`. Fixed: the subdirectory comparison bug, which it reproduced in a scratch repository; failure handling outside Git; skipping the two other machine-wide steps; reporting the skip; and the rollout and version bump. Test hints: `tests/support.py` points `HOME` at a directory that does not exist, so create `PI_CODING_AGENT_DIR`; `test_cli.py:158-190` shows a real worktree. Rejected: its finding that `TASK-126`'s claim would leak worktree code. The source is the running code's package data, and `chitty run` runs the global `main` code, so a claim installs `main`'s extension. Branch code running as `.venv/bin/chitty` is the leak. A main checkout on another branch still installing, because the rule is about checkouts. Submodules, because their two directories match. `TASK-129` is ordered first after `TASK-126` by adding it as a dependency to the others.
 
 Landing moved from `TASK-120` to `TASK-131`, so read references to that step accordingly.
 
+Default recorded for review: non-Git directories and systems without `git` remain eligible to install the extension. This preserves existing `chitty init` behaviour outside Git and is specified in the ticket; the implementation will document the default at the detection boundary.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
 - 2026-11-03T20:44:52Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T20:46:22Z lively-panda: changed notes
+- 2026-11-03T21:04:30Z kind-marten: changed notes; wrote the plan
+- 2026-11-03T21:04:30Z kind-marten todo → doing
