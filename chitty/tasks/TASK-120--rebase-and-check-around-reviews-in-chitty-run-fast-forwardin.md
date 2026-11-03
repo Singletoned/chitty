@@ -4,6 +4,7 @@ status: todo
 priority: high
 depends_on:
   - TASK-126
+  - TASK-129
 created: 2026-11-03
 ---
 
@@ -35,7 +36,7 @@ After a session that moves its ticket to `done`, and also at the start of every 
 
 1. Refuse, with a message and a non-zero exit, if the main checkout is not on branch `main` or is not clean, using the existing `git.require_clean`, which includes untracked files. Ignored files are allowed. Also refuse if the ticket's worktree has uncommitted changes, including untracked files; otherwise they would only surface when removal fails, after landing. If the branch has no worktree, add one as in `TASK-126`.
 2. If `main` is not an ancestor of the branch, rebase the branch onto `main` in its worktree, then run `setup` and `check`. Ticket commits land on `main` often, so this will be common. A clean rebase with a passing `check` lands without another review. On a conflict or failed check, abort any rebase, leave everything in place, and exit non-zero naming the problem, for the human to resolve in the worktree.
-3. Run `git merge --ff-only <branch>` in the main checkout. Never resolve anything there.
+3. Run `git merge --ff-only <branch>` in the main checkout. Never resolve anything there. Then run `chitty init` there as a new process, because the running process still holds the old code. That is how a bumped version and a new Pi extension reach this machine, since `TASK-129` stops worktrees installing them.
 4. Remove the worktree with `git worktree remove` and the branch with `git branch -d`, never forced. A failure exits non-zero, and a later run repeats this step, because every step above is a no-op once done.
 
 A successful landing at the start of a run carries on to selection as normal. A failure stops the run before selection. This exit overrides the `TASK-124` rule that a changed status exits 0, so update its tests where needed.
@@ -60,6 +61,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 - [ ] `PLAN.md`, `README.md`, `src/chitty/guide.md` and the `chitty.toml` template are updated; `chitty init` handles existing repositories; `__version__` is bumped
 - [ ] Tests show that after landing the ticket on `main` is `done`, and that uncommitted files in the worktree refuse landing with nothing changed
 - [ ] This repository sets `check = "make check"`, and a test shows `chitty init` adds `check` to an existing repository only as a commented example
+- [ ] A test shows that landing a version bump upgrades setup in the main checkout and installs the extension into a temporary `PI_CODING_AGENT_DIR`
 
 ## Notes
 
@@ -71,6 +73,8 @@ Changed with the human after the cold read: rebase replaces merging `main` into 
 
 Every finding from the cold read now has an outcome. Fixed in the ticket on the second pass: uncommitted worktree files at landing, which I had missed and which would have failed only after landing; a branch with no worktree; `check` unset failing in every mode, not at the first review; `done` reaching `main`; this repository's `check`; and the `init` migration. Rejected: a `check` timeout, because a hang is visible and none has happened. The order of the printed change line, because nothing depends on it. A conflict in the ticket file after an aborted rebase, because `TASK-105` refuses `main` edits while a ticket is on a branch. A registered worktree whose directory has gone, because Git fails loudly. An abandoned branch named `task-N` stopping runs, because that is loud and needs a person. Overlap with `TASK-126` in `guide.md`, because `TASK-126` leaves it alone. Open for the human: `task-118` is a `done` ticket with an unlanded branch, so the first run after this lands would rebase and land it.
 
+Added after the `TASK-129` cold read: without this step, nothing would install a new extension after landing.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -79,3 +83,4 @@ Every finding from the cold read now has an outcome. Fixed in the ticket on the 
 - 2026-11-03T16:49:00Z lively-panda: changed notes
 - 2026-11-03T17:26:53Z lively-panda: changed title, description, acceptance criteria, notes
 - 2026-11-03T20:00:16Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T20:44:55Z lively-panda: changed dependencies, description, acceptance criteria, notes
