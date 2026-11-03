@@ -5,6 +5,7 @@ priority: high
 depends_on:
   - TASK-108
   - TASK-107
+  - TASK-124
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -39,3 +40,4 @@ Decided with the human (2026-11-03): one ticket in work at a time. The human's a
 - 2026-11-03T10:27:47Z lively-panda → backlog
 - 2026-11-03T10:28:26Z lively-panda: changed dependencies, acceptance criteria
 - 2026-11-03T10:41:01Z lively-panda: changed dependencies, description
+- 2026-11-03T12:40:41Z lively-panda: changed dependencies
