@@ -1,8 +1,11 @@
 import asyncio
 import os
 import stat
+import subprocess
 import sys
+from pathlib import Path
 
+from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
 
 from chitty.mcp import server
@@ -70,6 +73,35 @@ class TestNext(CliTestCase):
         self.add("Alpha", context="alpha")
         self.assertEqual(str(next_action(Repo.open(self.root)).id), "ALPHA-1")
 
+    def test_selection_excludes_each_ineligible_ticket(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("[contexts.tasks]", "review = false\n\n[contexts.tasks]")
+        )
+        cases = (
+            ("backlog", {"status": "backlog"}),
+            ("blocked", {"status": "blocked"}),
+            ("done", {"status": "done"}),
+            ("human context", {"context": "human"}),
+            ("human owner", {"owner": "human"}),
+        )
+        for title, fields in cases:
+            with self.subTest(title):
+                fallback = self.add("Fallback")
+                self.add(title, **fields)
+                self.assertEqual(str(next_action(Repo.open(self.root)).id), fallback)
+                for path in (self.root / "chitty").glob("*/*.md"):
+                    path.unlink()
+        dependency = self.add("Unfinished", status="blocked")
+        fallback = self.add("Fallback")
+        self.add("Waiting", depends_on=[dependency])
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), fallback)
+        for path in (self.root / "chitty/tasks").glob("*.md"):
+            path.unlink()
+        completed = self.add("Complete", status="done")
+        ready = self.add("Ready", depends_on=[completed])
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
+
     def test_dependencies_human_and_ids(self):
         config = self.root / "chitty.toml"
         config.write_text(
@@ -95,16 +127,84 @@ class TestNext(CliTestCase):
         self.assertEqual(content.get("result", content), cli)
 
     def test_next_output_and_empty_queue(self):
+        for number in range(1, 12):
+            self.add(f"Blocked {number}", status="blocked")
         self.add("Todo")
-        self.assertEqual(self.run_cli("next").stdout, "work TASK-1\n")
+        self.assertEqual(self.run_cli("next").stdout, "work TASK-12\n")
         self.assertEqual(
-            self.run_cli("next", "--json").stdout, '{\n  "mode": "work",\n  "id": "TASK-1"\n}\n'
+            self.run_cli("next", "--json").stdout, '{\n  "mode": "work",\n  "id": "TASK-12"\n}\n'
         )
         for path in (self.root / "chitty/tasks").glob("*.md"):
             path.unlink()
         result = self.run_cli("next", exit_code=1)
         self.assertEqual(result.stdout, "")
         self.assertIn("no next ticket", result.stderr)
+        with self.assertRaisesRegex(ToolError, "no next ticket"):
+            asyncio.run(server.call_tool("next", {}))
+
+    def test_run_uses_committed_change_from_ticket_worktree(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        worker = self.tmp / "ticket-worktree"
+        self.git("worktree", "add", "--quiet", "-b", "ticket", str(worker))
+        self.addCleanup(self.git, "worktree", "remove", "--force", str(worker))
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib, subprocess, time\n"
+            "path = pathlib.Path(os.environ['WORKER']) / 'chitty/tasks/TASK-1--todo.md'\n"
+            "path.write_text(path.read_text().replace('status: todo', 'status: blocked'))\n"
+            "time.sleep(1)\n"
+            "subprocess.run(['git', 'add', str(path)], cwd=os.environ['WORKER'], check=True)\n"
+            "subprocess.run(\n"
+            "    ['git', 'commit', '-m', 'worker change'],\n"
+            "    cwd=os.environ['WORKER'], check=True,\n"
+            ")\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        os.environ["WORKER"] = str(worker)
+        try:
+            result = self.run_cli("run")
+        finally:
+            os.environ["PATH"] = old_path
+            os.environ.pop("WORKER", None)
+        self.assertEqual(result.stdout, "TASK-1: todo → blocked\n")
+
+    def test_run_inherits_stdin(self):
+        self.add("Todo")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import sys\n"
+            "assert sys.stdin.read() == 'inherited input\\n'\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        command = [str(Path(sys.executable).parent / "chitty"), "run"]
+        environment = os.environ | {"PATH": f"{fake.parent}:{os.environ.get('PATH', '')}"}
+        result = subprocess.run(
+            command,
+            cwd=self.root,
+            env=environment,
+            input="inherited input\n",
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("TASK-1 was unchanged", result.stderr)
+
+    def git(self, *args: str) -> str:
+        return subprocess.run(
+            ["git", *args], cwd=self.root, capture_output=True, text=True, check=True
+        ).stdout
 
     def test_run_cases(self):
         self.add("Todo")
