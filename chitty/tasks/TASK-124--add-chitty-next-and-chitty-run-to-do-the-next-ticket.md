@@ -45,12 +45,12 @@ Out of scope: label filters and role options from `TASK-76`, per-stage models, a
 ## Acceptance Criteria
 
 - [ ] Table-driven tests over a real temp repo cover selection order and every exclusion, including a met and an unmet dependency, and `HUMAN` tickets
-- [ ] Tests run `chitty run` with a fake `pi` on `PATH`, covering each exit-code case: status changed, unchanged, `pi` failing, `pi` missing, and no next ticket
-- [ ] `chitty next --json` and the MCP tool return the same answer
-- [ ] `PLAN.md`, `README.md` and the `chitty --help` output describe both commands and the shell loop; `__version__` is bumped if `src/chitty/guide.md` changes
+- [x] Tests run `chitty run` with a fake `pi` on `PATH`, covering each exit-code case: status changed, unchanged, `pi` failing, `pi` missing, and no next ticket
+- [x] `chitty next --json` and the MCP tool return the same answer
+- [x] `PLAN.md`, `README.md` and the `chitty --help` output describe both commands and the shell loop; `__version__` is bumped if `src/chitty/guide.md` changes
 - [ ] Tests use a fake `pi` that commits the status change on a ticket branch in a worktree, as a real worker does, and `chitty run` run from the main checkout still reports the change and exits 0
-- [ ] Ctrl-C during `pi` exits `chitty run` non-zero without a traceback, so it stops a shell loop; a test sends SIGINT to the child and checks this
-- [ ] Selection tests also cover a `doing` ticket with an unmet dependency (selected), a dangling `depends_on` entry (error), a tie across two contexts, and `TASK-9` ordering before `TASK-12`
+- [x] Ctrl-C during `pi` exits `chitty run` non-zero without a traceback, so it stops a shell loop; a test sends SIGINT to the child and checks this
+- [x] Selection tests also cover a `doing` ticket with an unmet dependency (selected), a dangling `depends_on` entry (error), a tie across two contexts, and `TASK-9` ordering before `TASK-12`
 - [ ] CLI tests pin `next` output: `work TASK-12`, the `--json` form, and for no ticket an empty stdout, a stderr message and a non-zero exit; the MCP tool reports the same error
 - [ ] Fake-`pi` tests pin `run`: the printed change line, a status change to `blocked` exiting 0, a working directory of the repository root, and a child that reads inherited stdin
 
@@ -71,6 +71,8 @@ Implementation choice: return a small action value with `mode` and canonical `Ta
 
 Implementation choice: return a small action value with `mode` and canonical `TaskId` from shared selection. This keeps CLI, MCP, and runner output consistent while remaining cheap to extend if later commands need more metadata.
 
+Verified with `make check`: runner exit cases, CLI/MCP JSON parity, docs and help, Ctrl-C handling, and selection ordering/dependency edge cases pass. Remaining criteria need the committed-worktree integration scenario and tighter output assertions before review.
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
@@ -79,3 +81,4 @@ Implementation choice: return a small action value with `mode` and canonical `Ta
 - 2026-11-03T16:45:51Z honest-heron: changed notes; wrote the plan
 - 2026-11-03T16:45:51Z honest-heron todo → doing
 - 2026-11-03T16:46:18Z honest-heron: changed notes; wrote the plan
+- 2026-11-03T16:57:36Z honest-heron: changed notes; ticked acceptance criteria
