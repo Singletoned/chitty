@@ -8,6 +8,7 @@ depends_on:
   - TASK-124
   - TASK-126
   - TASK-120
+  - TASK-127
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -37,6 +38,10 @@ Decided with the human (2026-11-03): one ticket in work at a time. The human's a
 - [ ] The report compares results with the `TASK-108` baseline, and gives a keep, change or drop decision for every stage, agreed with the human
 - [ ] A retro is run on the pilot, including a check of what each spec test would have caught
 
+## Notes
+
+Model and cost per session now come from the `TASK-127` log, so the summary for each pilot ticket need only record the rest.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -44,3 +49,4 @@ Decided with the human (2026-11-03): one ticket in work at a time. The human's a
 - 2026-11-03T10:41:01Z lively-panda: changed dependencies, description
 - 2026-11-03T12:40:41Z lively-panda: changed dependencies
 - 2026-11-03T16:30:18Z lively-panda: changed dependencies
+- 2026-11-03T16:46:07Z lively-panda: changed dependencies, notes
