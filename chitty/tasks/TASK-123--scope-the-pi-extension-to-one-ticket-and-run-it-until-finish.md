@@ -1,6 +1,6 @@
 ---
 title: Scope the Pi extension to one ticket and run it until finished
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -41,9 +41,15 @@ Inspect the current Pi extension and its Node tests, then add focused parser, pr
 
 Manual verification: in scratch repository `/tmp/chitty-task-123-TLk9qR`, launched `pi --no-extensions --extension /Users/singletoned/src/singletoned/chitty/.worktrees/task-123/src/chitty/integrations/pi/chitty.ts --chitty-work TASK-1`. The first turn committed `TASK-1` as `doing`; the extension sent its continuation; the next turn moved it to `review`; Pi notified `ticket left work with status review` and shut down with exit `0`.
 
+## Summary
+
+Scoped Pi work and review runs to one ticket, added continuation-state tests, documented the ID-based commands, and bumped to `0.1.20`. Verified with `npm test`, `make check`, and a scratch Pi run that continued from `doing` then shut down after `review`.
+
 ## History
 
 - 2026-11-03T12:40:38Z lively-panda → todo
 - 2026-11-03T13:28:06Z kind-badger: wrote the plan
 - 2026-11-03T13:28:06Z kind-badger todo → doing
 - 2026-11-03T14:00:10Z kind-badger: changed notes; ticked acceptance criteria
+- 2026-11-03T14:01:49Z kind-badger: changed summary
+- 2026-11-03T14:01:49Z kind-badger doing → review
