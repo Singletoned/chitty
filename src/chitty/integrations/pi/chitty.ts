@@ -321,7 +321,7 @@ export function isFailedAssistantResponse(
   return stopReason === "error";
 }
 
-async function requireLinkedWorktree(
+export async function requireLinkedWorktree(
   pi: ExtensionAPI,
   ctx: ExtensionContext,
 ): Promise<void> {

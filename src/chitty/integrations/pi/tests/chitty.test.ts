@@ -11,6 +11,7 @@ import chitty, {
   isFailedAssistantResponse,
   parseChittyCommand,
   parseChittyFlag,
+  requireLinkedWorktree,
   setPiSessionIdentity,
   settlementDecision,
   sumSessionUsage,
@@ -221,6 +222,16 @@ test("shuts down without starting when a flagged ticket has left its stage", asy
     ]);
     assert.equal(shutdowns, 1);
   }
+});
+
+test("refuses Chitty startup outside a linked worktree", async () => {
+  const pi = {
+    exec: async () => ({ code: 0, stdout: ".git\n", stderr: "" }),
+  };
+  await assert.rejects(
+    requireLinkedWorktree(pi as never, { cwd: process.cwd() } as never),
+    /chitty run/,
+  );
 });
 
 test("settles work after its ticket leaves todo or doing", () => {
