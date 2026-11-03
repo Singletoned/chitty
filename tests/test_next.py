@@ -537,6 +537,7 @@ class TestNext(CliTestCase):
         config.write_text(
             config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
         )
+        self.run_cli("init")
         self.git("init", "--quiet")
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
@@ -562,6 +563,7 @@ class TestNext(CliTestCase):
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         old_path = os.environ.get("PATH", "")
+        main_status = self.git("status", "--porcelain")
         os.environ["PATH"] = f"{fake.parent}:{old_path}"
         os.environ["EXPECTED_ROOT"] = str(self.root / ".worktrees" / "task-1")
         try:
@@ -578,6 +580,7 @@ class TestNext(CliTestCase):
                 "doing",
             )
             self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
+            self.assertEqual(self.git("status", "--porcelain"), main_status)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
