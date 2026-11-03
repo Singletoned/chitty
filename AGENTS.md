@@ -41,16 +41,18 @@ task files. `chitty --help` is the full command reference.
   after every Chitty write so other branches can see task state.
 - Before writing code, write your approach with `chitty edit <ID> --plan` and
   set `-s doing`. Wait for approval if the human asked for it.
-- Tick acceptance criteria as you meet them: `chitty edit <ID> --check N`
-  (numbers are shown by `chitty show`).
+- Tick a criterion only after verifying it: `chitty edit <ID> --check N`
+  (numbers are shown by `chitty show`). Re-check every criterion before setting
+  `-s review`.
 - Record anything surprising with `--note`. When work is ready, set `-s review`.
   Never review a ticket you worked on: review promptly in the ticket's branch
-  worktree, rather than at merge-request time. Pass it with
+  worktree, rather than at merge-request time. Review every criterion; list
+  every failure in one note and `--uncheck` each failed criterion. Pass it with
   `-s done --note "Reviewed: ..."`; fail it with `-s doing --note "reason"`.
   On a pass, merge the branch into `main`, then remove the branch and its
-  worktree. Create new tickets for out-of-scope findings.
-  The third failed review sets `blocked` and owner `human` instead; leave it
-  for a person to unblock.
+  worktree. Create new tickets for out-of-scope findings. The third failed
+  review sets `blocked` and owner `human` instead; leave it for a person to
+  unblock.
 - Set `-s done` when every criterion is ticked and the work is verified; write
   `--summary` with the handoff, verification, and follow-ups. Run `chitty fix`
   to apply safe repairs; it fails loudly when a problem remains.
