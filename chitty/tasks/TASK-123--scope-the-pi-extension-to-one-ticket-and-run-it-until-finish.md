@@ -1,6 +1,6 @@
 ---
 title: Scope the Pi extension to one ticket and run it until finished
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -28,7 +28,7 @@ Out of scope: choosing a ticket, looping, model selection per stage, creating wo
 ## Acceptance Criteria
 
 - [x] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
-- [ ] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
+- [x] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
 - [x] A review prompt and a work prompt name the ticket and contain no instruction to select another ticket, with Node tests asserting it
 - [x] Run by hand against a scratch ticket: `pi --chitty-work <ID>` continues past a turn that leaves the ticket in `doing`, and exits once it reaches `review`. Record the result in a note
 - [x] `README.md` describes the new usage, and `__version__` is bumped so `chitty init` installs the extension
@@ -49,9 +49,11 @@ Review failed: starting  for a ticket already outside / (or  for one outside ) s
 
 Review clarification: the preceding note lost its code spans because the review command shell expanded backticks. Starting `pi --chitty-work` for a ticket already outside `todo`/`doing` (or `pi --chitty-review` for one outside `review`) still sends an agent turn. `start()` reads and discards the status before `sendUserMessage()`, so it cannot immediately notify and shut down once the named ticket has left its stage. Handle inactive status at startup and add a regression test that verifies no agent turn starts.
 
+Regression test first failed against the prior startup path because it sent an agent prompt for a ticket already outside its stage. Startup now applies the same settlement decision before sending a prompt; both modes notify and shut down without starting an agent turn. Verified with `npm test` and `make check`.
+
 ## Summary
 
-Scoped Pi work and review runs to one ticket, added continuation-state tests, documented the ID-based commands, and bumped to `0.1.20`. Verified with `npm test`, `make check`, and a scratch Pi run that continued from `doing` then shut down after `review`.
+Startup now exits before starting an agent turn when a `--chitty-work` or `--chitty-review` ticket has already left its stage. Added a regression test for both modes. Verification: `npm test`; `make check`.
 
 ## History
 
@@ -69,3 +71,5 @@ Scoped Pi work and review runs to one ticket, added continuation-state tests, do
 - 2026-11-03T15:47:15Z lively-koala: changed acceptance criteria, notes
 - 2026-11-03T15:47:15Z lively-koala review → doing
 - 2026-11-03T15:47:27Z lively-koala: changed notes
+- 2026-11-03T15:55:55Z mellow-quail: changed notes, summary; ticked acceptance criteria
+- 2026-11-03T15:55:55Z mellow-quail doing → review
