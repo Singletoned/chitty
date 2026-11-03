@@ -122,6 +122,8 @@ Retro: this worker blocked on a contradiction it could see had one safe answer, 
 
 Correction to the note above: this cannot list `TASK-129` and `TASK-130` in `depends_on`, because those tickets do not exist on this branch until it is rebased. So it stays `blocked` instead, because otherwise `chitty next` would pick it first. Unblock with `-s todo` once both have landed. Nothing else in that note changes.
 
+After rebasing: `TASK-134` adds `Repo.refresh_setup()` to `run` on `main`. Keep it, called on `main_repo` right after `_preflight`, so a run from any worktree refreshes the main checkout.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -154,3 +156,4 @@ Correction to the note above: this cannot list `TASK-129` and `TASK-130` in `dep
 - 2026-11-03T21:00:44Z lively-panda blocked → todo
 - 2026-11-03T21:01:31Z lively-panda: changed dependencies, notes
 - 2026-11-03T21:01:31Z lively-panda todo → blocked
+- 2026-11-03T21:21:54Z lively-panda: changed notes
