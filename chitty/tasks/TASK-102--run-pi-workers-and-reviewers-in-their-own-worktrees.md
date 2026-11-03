@@ -1,6 +1,6 @@
 ---
 title: Run Pi workers and reviewers in their own worktrees
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-103
@@ -20,6 +20,10 @@ Work mode: claim a ticket, create (or reuse, for a ticket already `doing`) a bra
 - [ ] A worker's claim (`doing`) is committed on its branch before implementation starts, so a second worker does not pick the same ticket; a test or documented check shows it
 - [ ] Node tests cover the prompt wording; `src/chitty/guide.md` matches it and `__version__` is bumped
 
+## Plan
+
+Add explicit worker and reviewer worktree workflows to the Pi extension prompts and shipped guide. Cover the required wording with Node tests, verify a claim is committed before implementation, bump the package version because `chitty init` distributes the guide, then run the full checks.
+
 ## Notes
 
 Depends on `TASK-103`: workers in worktrees break the shared venv until each worktree has its own.
@@ -34,3 +38,5 @@ Correction to my previous note: reads already merge ticket state from every loca
 - 2026-11-02T11:21:06Z lively-otter: changed dependencies, notes
 - 2026-11-02T13:03:36Z lively-otter: changed notes
 - 2026-11-02T13:30:16Z lively-otter: changed notes
+- 2026-11-03T07:25:54Z mellow-marten: wrote the plan
+- 2026-11-03T07:25:54Z mellow-marten todo → doing
