@@ -4,6 +4,7 @@ status: todo
 priority: high
 depends_on:
   - TASK-126
+  - TASK-129
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -62,9 +63,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-03. Biggest finds: writing the lin
 
 Every finding from the cold read now has an outcome. Fixed in the ticket on the second pass: the `actor` value, what counts as invalid, and two more known limits. Checked: `getEntries` is on `ReadonlySessionManager`. Rejected: specifying how to append, because `chitty run` is the only writer. Specifying `writeFileSync`, because the source shows shutdown handlers are awaited, so either works. A test that agents cannot see the log, because its location outside the repository does that. RPC and JSON modes, because `chitty run` does not use them by default. Creating the directory, which is ordinary work. A `.worktrees/` check for the clean-status test, because `init` adds the ignore rule. Version bump order, because the rule in `AGENTS.md` already covers it.
 
+Depends on `TASK-129` so a worktree cannot install this extension change early.
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
 - 2026-11-03T16:49:00Z lively-panda: changed notes
 - 2026-11-03T18:19:35Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T20:00:17Z lively-panda: changed description, notes
+- 2026-11-03T20:44:56Z lively-panda: changed dependencies, notes
