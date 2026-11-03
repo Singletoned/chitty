@@ -1,6 +1,6 @@
 ---
 title: Allow writes from a checkout that already holds the latest ticket version
-status: review
+status: done
 labels:
   - bug
   - escape
@@ -32,6 +32,12 @@ Bootstrap: the claim came after the fix, because the global `chitty` refuses it 
 
 Retro: this bug shipped in `TASK-105`, which passed first time with no cold read. Its criterion 3 said writes work when the checkout holds the latest version, but the only test had a commit on the branch, so a new worktree was never tried. The `TASK-126` cold read also saw `branch: main` from a worktree; the author changed `TASK-126` to work around it without asking whether it was a bug. A first-review pass is not evidence the ticket is right, which is what the escape loop is for: treat this as the first `escape` from `TASK-105`.
 
+Reviewed: all three criteria passed; independently confirmed both regressions fail against the reverted selection and pass with the fix.
+
+## Summary
+
+Handoff: `historical_files` now attributes a shared latest blob to the current branch. Verification: `make check` (214 tests) and `npm test` (15 tests) passed; both new regressions failed with the pre-fix selection. Follow-ups: none.
+
 ## History
 
 - 2026-11-03T19:25:31Z lively-panda → todo
@@ -40,3 +46,5 @@ Retro: this bug shipped in `TASK-105`, which passed first time with no cold read
 - 2026-11-03T19:28:15Z lively-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T19:28:15Z lively-panda doing → review
 - 2026-11-03T19:28:15Z lively-panda: changed labels, notes
+- 2026-11-03T19:51:11Z daring-gecko: changed notes, summary
+- 2026-11-03T19:51:11Z daring-gecko review → done
