@@ -56,6 +56,10 @@ uv run python -m unittest discover -s tests -t .
 
 Correction: Reviewed: all five acceptance criteria independently passed; `make check` passed (215 tests), and `git diff --check main...HEAD` passed.
 
+## Summary
+
+Implemented linked-worktree detection and skips machine-wide Pi setup there. Review passed: `make check` (215 tests) and `git diff --check main...HEAD`.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
@@ -69,3 +73,4 @@ Correction: Reviewed: all five acceptance criteria independently passed; `make c
 - 2026-11-03T21:18:50Z daring-gecko: changed notes
 - 2026-11-03T21:18:50Z daring-gecko review → done
 - 2026-11-03T21:19:04Z daring-gecko: changed notes
+- 2026-11-03T21:19:09Z daring-gecko: changed summary
