@@ -17,11 +17,11 @@ Out of scope: bulk writes (`archive` with no ID, `fix`), and any automatic routi
 
 ## Acceptance Criteria
 
-- [ ] `edit`, `note`, `move` and `archive <ID>` refuse a ticket whose latest committed version is on another local branch: nothing is written, and the error names the branch and its worktree, or how to check it out if it has none
-- [ ] A ticket whose latest version is only on a remote-tracking branch is refused the same way
-- [ ] Writes still work when the current checkout holds the latest version, including in the branch's own worktree
-- [ ] CLI tests cover the worktree, no-worktree, remote-only and same-branch cases, and an MCP test shows the same error
-- [ ] `PLAN.md` and `src/chitty/guide.md` state the rule, and `__version__` is bumped
+- [x] `edit`, `note`, `move` and `archive <ID>` refuse a ticket whose latest committed version is on another local branch: nothing is written, and the error names the branch and its worktree, or how to check it out if it has none
+- [x] A ticket whose latest version is only on a remote-tracking branch is refused the same way
+- [x] Writes still work when the current checkout holds the latest version, including in the branch's own worktree
+- [x] CLI tests cover the worktree, no-worktree, remote-only and same-branch cases, and an MCP test shows the same error
+- [x] `PLAN.md` and `src/chitty/guide.md` state the rule, and `__version__` is bumped
 
 ## Plan
 
@@ -37,6 +37,8 @@ Rewritten after `HUMAN-9`. The old plan and criteria for no-checkout writes are 
 
 Implementation choice: use the existing cross-branch version lookup at the shared store write boundary, rather than front-end-specific checks, so CLI and MCP stay consistent. This is easy to revise and directly follows the ticket decision not to route writes.
 
+Verified all criteria with `make check`: CLI coverage exercises worktree, no-worktree, remote-only and same-branch writes; MCP has the same refusal test; documentation and version are updated.
+
 ## History
 
 - 2026-11-02T13:39:15Z lively-otter → todo
@@ -49,3 +51,4 @@ Implementation choice: use the existing cross-branch version lookup at the share
 - 2026-11-03T10:40:59Z lively-panda blocked → todo
 - 2026-11-03T17:39:53Z opal-marten: changed notes; wrote the plan
 - 2026-11-03T17:39:53Z opal-marten todo → doing
+- 2026-11-03T17:47:32Z opal-marten: changed notes; ticked acceptance criteria
