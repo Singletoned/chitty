@@ -25,9 +25,11 @@ Decision (human, 2026-11-03): remove the shared environment rather than guard ag
 
 Verified: `uv run --project <worktree>` with the variables unset used that worktree `.venv` and left the main `.venv` unchanged; `make install` and `make check` in this worktree left `~/.envs/chitty` and the main `.venv` on the main checkout; `~/.local/bin/chitty` reports 0.1.19, runs from the main checkout `src`, and listed tasks here and in `circuitry`. `.envrc` is untracked, so the reviewer can only check it on this machine. Not verified through direnv, because the edited `.envrc` needs `direnv allow` from the human. Left for the human: delete `~/.envs/chitty` once running `pi` sessions have restarted. The `prj` fix was sent as a suggestion. Follow-ups: `TASK-119`, `TASK-120`, `TASK-121`, `TASK-122`.
 
+Correction to the previous note: `~/.envs/chitty` no longer exists, so the claim that it stayed on the main checkout is wrong and nothing is left to delete. It was removed outside this session (`~/.envs` last changed at 11:30). The main `.venv` staying on the main checkout was verified.
+
 ## Summary
 
-Global `chitty` is now an editable install of the main checkout; each checkout uses its own `.venv` through `make` and `uv run`, and `.envrc` sets no environment variables or `PATH`. `README.md` and `PLAN.md` record this and reverse `TASK-81`. Verification: `make check` (197 tests) plus the checks in Notes. Follow-ups: `TASK-119` to `TASK-122`, the `prj` suggestion, and deleting `~/.envs/chitty`.
+Global `chitty` is now an editable install of the main checkout; each checkout uses its own `.venv` through `make` and `uv run`, and `.envrc` sets no environment variables or `PATH`. `README.md` and `PLAN.md` record this and reverse `TASK-81`. `~/.envs/chitty` is gone. Verification: `make check` (197 tests) plus the checks in Notes. Follow-ups: `TASK-119` to `TASK-122` and the `prj` suggestion.
 
 ## History
 
@@ -38,3 +40,4 @@ Global `chitty` is now an editable install of the main checkout; each checkout u
 - 2026-11-03T11:40:32Z eager-raven: changed acceptance criteria
 - 2026-11-03T11:40:33Z eager-raven: changed notes, summary; ticked acceptance criteria
 - 2026-11-03T11:40:33Z eager-raven doing → review
+- 2026-11-03T11:40:49Z eager-raven: changed notes, summary
