@@ -1,6 +1,6 @@
 ---
 title: Scope the Pi extension to one ticket and run it until finished
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -43,6 +43,8 @@ Manual verification: in scratch repository `/tmp/chitty-task-123-TLk9qR`, launch
 
 Review failed: an unknown `--chitty-work` or `--chitty-review` ID starts an agent turn before `ticketStatus()` runs at `agent_settled`; only after that turn does `chitty show <ID> --json` fail. Validate the named ticket before `start()` sends its prompt, and add a regression test proving an unknown ID is rejected without starting an agent turn.
 
+Verified unknown --chitty-work and --chitty-review IDs fail during session startup before any agent turn; regression test added. Ran npm test and make check.
+
 ## Summary
 
 Scoped Pi work and review runs to one ticket, added continuation-state tests, documented the ID-based commands, and bumped to `0.1.20`. Verified with `npm test`, `make check`, and a scratch Pi run that continued from `doing` then shut down after `review`.
@@ -58,3 +60,5 @@ Scoped Pi work and review runs to one ticket, added continuation-state tests, do
 - 2026-11-03T14:27:01Z lively-lynx: changed acceptance criteria, notes
 - 2026-11-03T14:27:01Z lively-lynx review → doing
 - 2026-11-03T15:35:39Z jolly-badger: ticked acceptance criteria
+- 2026-11-03T15:35:52Z jolly-badger: changed notes
+- 2026-11-03T15:35:52Z jolly-badger doing → review
