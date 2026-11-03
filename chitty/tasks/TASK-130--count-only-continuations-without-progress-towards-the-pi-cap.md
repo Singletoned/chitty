@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without progress towards the Pi cap
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -32,6 +32,10 @@ Out of scope: changing `chitty run`, and splitting large tickets.
 - [ ] Node tests cover the baseline taken at start, a resumed session keeping its count, the notification naming the count, both modes using the rule, and a failing `chitty show` notifying and shutting down
 - [ ] `__version__` is bumped above `main`'s
 
+## Plan
+
+1. Read the JSON ticket state at start and after each settled turn, storing its compact hash with the consecutive no-progress count. 2. Make the decision function advance or reset that count and return an actionable reason, including the count at the cap. 3. Shut down cleanly with a notification when reading the ticket fails. 4. Add focused Node tests for change detection, persistence, modes, prompt, failure, and the version bump; run the required checks.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-03, with `TASK-129`. Fixed: criterion 3 wrongly said the bump makes `chitty init` install the extension, when `init` always checks the file itself; the baseline; persisted state; review mode; `show` failing; and the rollout and bump. It also confirmed `show --json` is stable at rest. Rejected: a tick then untick never reaching the cap, and notes counting as progress, because both are visible in the ticket and the usage log, and this guards against a stuck agent, not a hostile one. Testing that real `show` output changes on each edit, because every changing write appends to History by design. `show` reading a newer copy from another branch, because the guard from `TASK-105` stops a worker's ticket being edited elsewhere. How to pass the values to the decision function, which is the worker's choice.
@@ -40,9 +44,15 @@ Landing moved from `TASK-120` to `TASK-131`, so read references to that step acc
 
 Order changed with the human, 2026-11-03: this now lands before `TASK-126`, which waits for it, because `TASK-126` could otherwise hit the cap again. Ignore the line about rebasing on `TASK-126`; that ticket rebases on this one instead.
 
+Implementation choice: use a deterministic hash of the complete `chitty show ID --json` output as the progress baseline. This directly matches the specified comparison while keeping session entries small; changing hash algorithm later is cheap because only within-session equality matters. The implementation will document this default beside the state field.
+
+Cold-read delegation was attempted before implementation, but the available `explorer` subagent could not start because its configured Anthropic credential is absent, then remained locked as processing. I will cover the same scope with focused code and test inspection; a separate agent will perform the required final review.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
 - 2026-11-03T20:44:53Z lively-panda: changed dependencies, description, acceptance criteria, notes
 - 2026-11-03T20:46:22Z lively-panda: changed notes
 - 2026-11-03T21:00:46Z lively-panda: changed dependencies, notes
+- 2026-11-03T21:20:49Z kind-marten: changed notes; wrote the plan
+- 2026-11-03T21:20:49Z kind-marten todo → doing
