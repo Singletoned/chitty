@@ -64,7 +64,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [ ] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
-- [ ] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
+- [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [ ] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 
@@ -85,6 +85,8 @@ Unblocked by the author, 2026-11-03: the block was a bug in the `TASK-105` guard
 
 Every finding from the cold read now has an outcome. Fixed in the ticket on the second pass: the main checkout must be on `main` (I had let a wrong branch through), a test that it is left untouched (the old criterion only checked commits), resuming with uncommitted files, this repository's `setup`, the `init` migration, and the `README.md` advice. The `StoredTask.branch` wording is corrected now `TASK-128` has landed. Rejected: a test that prompts get shorter, because the goal is removing the steps, which is tested. Worktree `.gitignore` handling, because `_add_worktrees_to_gitignore` in `init` already does it. An extra setup-upgrade commit on a stale branch, because it is existing behaviour, an identical `chitty.toml` change rebases cleanly, and a different one fails loudly. A conflict with `TASK-124` criterion 5, because `run` re-reads through a new `Repo`. Two concurrent runs, because a single worker is the stated assumption. `formatter.run` not being reusable, because a worker sees that on reading it. `setup` breaking existing repositories, because only `chitty run` needs it and it fails with a clear message.
 
+Manual scratch-repository check: `chitty run` created `.worktrees/task-1`, claimed on branch `task-1`, and started the fake Pi there; it reported `TASK-1: doing → blocked`. Pi did not interrupt with any prompt.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -97,3 +99,4 @@ Every finding from the cold read now has an outcome. Fixed in the ticket on the 
 - 2026-11-03T20:00:15Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T20:14:32Z eager-lynx: wrote the plan
 - 2026-11-03T20:14:32Z eager-lynx todo → doing
+- 2026-11-03T20:21:42Z eager-lynx: changed notes; ticked acceptance criteria
