@@ -2,6 +2,8 @@
 title: Replay past spec-first tickets to evaluate prompts and models
 status: backlog
 priority: low
+depends_on:
+  - TASK-109
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -13,3 +15,4 @@ Small projects never produce enough tickets to measure whether a prompt or model
 ## History
 
 - 2026-11-03T10:27:50Z lively-panda → backlog
+- 2026-11-03T10:28:29Z lively-panda: changed dependencies
