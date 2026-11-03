@@ -1,6 +1,6 @@
 ---
 title: Scope the Pi extension to one ticket and run it until finished
-status: review
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -27,7 +27,7 @@ Out of scope: choosing a ticket, looping, model selection per stage, creating wo
 
 ## Acceptance Criteria
 
-- [x] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
+- [ ] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
 - [x] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
 - [x] A review prompt and a work prompt name the ticket and contain no instruction to select another ticket, with Node tests asserting it
 - [x] Run by hand against a scratch ticket: `pi --chitty-work <ID>` continues past a turn that leaves the ticket in `doing`, and exits once it reaches `review`. Record the result in a note
@@ -41,6 +41,8 @@ Inspect the current Pi extension and its Node tests, then add focused parser, pr
 
 Manual verification: in scratch repository `/tmp/chitty-task-123-TLk9qR`, launched `pi --no-extensions --extension /Users/singletoned/src/singletoned/chitty/.worktrees/task-123/src/chitty/integrations/pi/chitty.ts --chitty-work TASK-1`. The first turn committed `TASK-1` as `doing`; the extension sent its continuation; the next turn moved it to `review`; Pi notified `ticket left work with status review` and shut down with exit `0`.
 
+Review failed: an unknown `--chitty-work` or `--chitty-review` ID starts an agent turn before `ticketStatus()` runs at `agent_settled`; only after that turn does `chitty show <ID> --json` fail. Validate the named ticket before `start()` sends its prompt, and add a regression test proving an unknown ID is rejected without starting an agent turn.
+
 ## Summary
 
 Scoped Pi work and review runs to one ticket, added continuation-state tests, documented the ID-based commands, and bumped to `0.1.20`. Verified with `npm test`, `make check`, and a scratch Pi run that continued from `doing` then shut down after `review`.
@@ -53,3 +55,5 @@ Scoped Pi work and review runs to one ticket, added continuation-state tests, do
 - 2026-11-03T14:00:10Z kind-badger: changed notes; ticked acceptance criteria
 - 2026-11-03T14:01:49Z kind-badger: changed summary
 - 2026-11-03T14:01:49Z kind-badger doing → review
+- 2026-11-03T14:27:01Z lively-lynx: changed acceptance criteria, notes
+- 2026-11-03T14:27:01Z lively-lynx review → doing
