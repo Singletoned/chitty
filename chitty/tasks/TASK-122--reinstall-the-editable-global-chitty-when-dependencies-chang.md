@@ -33,9 +33,12 @@ Decided with the human, 2026-11-03: set `after_land` in this repository, but nev
 
 Every finding from the cold read now has an outcome. Fixed on the second pass: I had made `ORIG_HEAD` decide when to reinstall, but `chitty run` retries after a failure, when the fast-forward is a no-op and `ORIG_HEAD` cannot be relied on, so a failed reinstall might never be repeated. A stamp file also catches up after a hand merge. Also verified: the receipt is editable with the `mcp` extra at `~/.local/share/uv/tools/chitty`, and `README.md` still disagrees because the `TASK-118` documentation commit never landed. Rejected: excluding the `dev` group, because an extra reinstall is harmless. A Git hook, because it is not shared by clones. Other machines and non-editable installs, because `after_land` is only set here. Running sessions, because reinstalls are rare. Overlap between `TASK-119` to `TASK-122`, because they touch different things.
 
+Run `after_land` before the `chitty init` step added to `TASK-120`: a new dependency must be installed before the new code can run.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
 - 2026-11-03T18:19:34Z lively-panda: changed dependencies, description, acceptance criteria, notes
 - 2026-11-03T19:23:01Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T20:00:18Z lively-panda: changed description, notes
+- 2026-11-03T20:44:56Z lively-panda: changed notes
