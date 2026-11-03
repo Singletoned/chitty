@@ -38,6 +38,11 @@ Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnes
 - [ ] Run by hand in a scratch repository: a real Pi session produces a line whose cost is close to the sum in its session file, recorded in a note
 - [ ] `PLAN.md` and `README.md` describe the log and say its costs are list prices; `__version__` is bumped so `chitty init` installs the extension
 
+## Notes
+
+As in `TASK-126`, the logged status before is the one read after the claim, immediately before starting Pi.
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
+- 2026-11-03T16:49:00Z lively-panda: changed notes
