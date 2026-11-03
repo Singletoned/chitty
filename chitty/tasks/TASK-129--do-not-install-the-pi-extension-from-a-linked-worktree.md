@@ -19,11 +19,11 @@ Out of scope: code from a branch deliberately run against the main checkout, bec
 
 ## Acceptance Criteria
 
-- [ ] A test with a real `git worktree` and a temporary `PI_CODING_AGENT_DIR` runs `chitty init` in the worktree and shows the installed extension unchanged, and it fails before the fix
-- [ ] A test shows `chitty init` in the main checkout still installs and updates the extension
-- [ ] `PLAN.md` states the rule, and `__version__` is bumped only if setup output changes
-- [ ] Tests show `chitty init` installing from a subdirectory of the main checkout and outside Git, and a skip in a worktree printing a message on stderr while leaving `settings.json` unchanged
-- [ ] A test with `autocommit = true` and a stale `chitty_version` shows a write from a worktree upgrading setup without installing the extension
+- [x] A test with a real `git worktree` and a temporary `PI_CODING_AGENT_DIR` runs `chitty init` in the worktree and shows the installed extension unchanged, and it fails before the fix
+- [x] A test shows `chitty init` in the main checkout still installs and updates the extension
+- [x] `PLAN.md` states the rule, and `__version__` is bumped only if setup output changes
+- [x] Tests show `chitty init` installing from a subdirectory of the main checkout and outside Git, and a skip in a worktree printing a message on stderr while leaving `settings.json` unchanged
+- [x] A test with `autocommit = true` and a stale `chitty_version` shows a write from a worktree upgrading setup without installing the extension
 
 ## Plan
 
@@ -40,6 +40,8 @@ Landing moved from `TASK-120` to `TASK-131`, so read references to that step acc
 
 Default recorded for review: non-Git directories and systems without `git` remain eligible to install the extension. This preserves existing `chitty init` behaviour outside Git and is specified in the ticket; the implementation will document the default at the detection boundary.
 
+Verified all criteria with `make check`: the real-worktree test first failed on the missing skip message, then now confirms skipped validation, settings cleanup, extension installation, and stale autocommit setup upgrades; the subdirectory and outside-Git test confirms installation remains enabled. `PLAN.md` records the rule and `__version__` is `0.1.22` because `init` now emits linked-worktree setup output.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
@@ -47,3 +49,4 @@ Default recorded for review: non-Git directories and systems without `git` remai
 - 2026-11-03T20:46:22Z lively-panda: changed notes
 - 2026-11-03T21:04:30Z kind-marten: changed notes; wrote the plan
 - 2026-11-03T21:04:30Z kind-marten todo → doing
+- 2026-11-03T21:10:29Z kind-marten: changed notes; ticked acceptance criteria
