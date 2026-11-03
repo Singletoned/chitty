@@ -22,14 +22,14 @@ This supersedes two parts of `TASK-124`: Pi's working directory becomes the work
 - `autocommit` is off, because a claim and status changes must be committed to be visible.
 - `pi` is not on `PATH`, so a missing `pi` cannot leave a claimed ticket.
 - `setup` is unset. It has no default, since a wrong guess would look like a working environment. `chitty init` adds a commented example; set `setup = "make install"` in this repository.
-- The main checkout has no branch `main`.
+- The main checkout is not on branch `main`. `inbox --pull` commits there and `TASK-120` lands there, so both must be on the right branch.
 
 ### Then, in order
 
 1. Run the equivalent of `chitty inbox --pull` from the main checkout, if the repository has a `project`. A failure stops the run. This only adds `backlog` tickets, so it cannot change the selection.
 2. Select the ticket. If its file has uncommitted changes in the main checkout, stop with a loud error, as a new branch would not contain them.
-3. Find the worktree by branch name, `<id in lower case>` (for example `task-124`). Do not use `StoredTask.branch`: it reports `main` when run from a worktree, and can be a remote ref.
-    - Branch exists and has a linked worktree: use it, wherever it is, per `git worktree list`.
+3. Find the worktree by branch name, `<id in lower case>` (for example `task-124`). Do not use `StoredTask.branch`: it can name another branch holding the same version, or a remote ref. A branch that exists only on a remote is not considered; the `TASK-105` guard then refuses the claim loudly.
+    - Branch exists and has a linked worktree: use it, wherever it is, per `git worktree list`. Uncommitted files there are left alone: a `doing` ticket is resuming, and `TASK-120` deals with them before a review.
     - Branch exists with no worktree: add one at `.worktrees/<branch>` in the main checkout.
     - Branch does not exist: in mode `work`, create it from local `main` at `.worktrees/<branch>`. In mode `review`, this is a loud error, as there is nothing to review.
     - Branch checked out in the main checkout: loud error, and never switch the main checkout.
@@ -65,6 +65,8 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [ ] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
 - [ ] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
+- [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
+- [ ] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 
 ## Notes
 
@@ -73,6 +75,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-03. Biggest finds: `StoredTask.bra
 Blocked: current cross-branch write protection refuses both the required `--plan` and `todo` to `doing` claim from the new `task-126` worktree because this ticket’s newest committed copy is on `main`. Completing the requested pre-implementation branch claim requires a bootstrap route that writes the claim on its new branch (the behavior this ticket is intended to add), or human authorization to make the ticket-state write on `main`. A human must choose one of those options; no implementation has started.
 
 Unblocked by the author, 2026-11-03: the block was a bug in the `TASK-105` guard, not a decision for the human, and is now `TASK-128`, on which this depends. The worker was right to stop. Its worktree and branch had no commits and were removed. When this is picked up, branch from `main` after `TASK-128` lands.
+
+Every finding from the cold read now has an outcome. Fixed in the ticket on the second pass: the main checkout must be on `main` (I had let a wrong branch through), a test that it is left untouched (the old criterion only checked commits), resuming with uncommitted files, this repository's `setup`, the `init` migration, and the `README.md` advice. The `StoredTask.branch` wording is corrected now `TASK-128` has landed. Rejected: a test that prompts get shorter, because the goal is removing the steps, which is tested. Worktree `.gitignore` handling, because `_add_worktrees_to_gitignore` in `init` already does it. An extra setup-upgrade commit on a stale branch, because it is existing behaviour, an identical `chitty.toml` change rebases cleanly, and a different one fails loudly. A conflict with `TASK-124` criterion 5, because `run` re-reads through a new `Repo`. Two concurrent runs, because a single worker is the stated assumption. `formatter.run` not being reusable, because a worker sees that on reading it. `setup` breaking existing repositories, because only `chitty run` needs it and it fails with a clear message.
 
 ## History
 
@@ -83,3 +87,4 @@ Unblocked by the author, 2026-11-03: the block was a bug in the `TASK-105` guard
 - 2026-11-03T19:22:46Z nimble-crane todo → blocked
 - 2026-11-03T19:25:32Z lively-panda: changed dependencies, notes
 - 2026-11-03T19:25:32Z lively-panda blocked → todo
+- 2026-11-03T20:00:15Z lively-panda: changed description, acceptance criteria, notes
