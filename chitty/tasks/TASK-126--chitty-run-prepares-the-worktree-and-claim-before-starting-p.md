@@ -87,6 +87,8 @@ Every finding from the cold read now has an outcome. Fixed in the ticket on the 
 
 Manual scratch-repository check: `chitty run` created `.worktrees/task-1`, claimed on branch `task-1`, and started the fake Pi there; it reported `TASK-1: doing → blocked`. Pi did not interrupt with any prompt.
 
+The globally installed `chitty` was still pre-TASK-126 and rejected `setup`; verification and ticket writes used this worktree’s `.venv/bin/chitty`.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -100,3 +102,4 @@ Manual scratch-repository check: `chitty run` created `.worktrees/task-1`, claim
 - 2026-11-03T20:14:32Z eager-lynx: wrote the plan
 - 2026-11-03T20:14:32Z eager-lynx todo → doing
 - 2026-11-03T20:21:42Z eager-lynx: changed notes; ticked acceptance criteria
+- 2026-11-03T20:23:00Z eager-lynx: changed notes
