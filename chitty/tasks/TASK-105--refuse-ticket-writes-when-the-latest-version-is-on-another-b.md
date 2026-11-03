@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket writes when the latest version is on another branch
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-107
@@ -39,6 +39,8 @@ Implementation choice: use the existing cross-branch version lookup at the share
 
 Verified all criteria with `make check`: CLI coverage exercises worktree, no-worktree, remote-only and same-branch writes; MCP has the same refusal test; documentation and version are updated.
 
+Ready for independent review. Re-checked all five criteria after `chitty fix`; `make check` passes.
+
 ## History
 
 - 2026-11-02T13:39:15Z lively-otter → todo
@@ -52,3 +54,5 @@ Verified all criteria with `make check`: CLI coverage exercises worktree, no-wor
 - 2026-11-03T17:39:53Z opal-marten: changed notes; wrote the plan
 - 2026-11-03T17:39:53Z opal-marten todo → doing
 - 2026-11-03T17:47:32Z opal-marten: changed notes; ticked acceptance criteria
+- 2026-11-03T17:49:06Z opal-marten: changed notes
+- 2026-11-03T17:49:06Z opal-marten doing → review
