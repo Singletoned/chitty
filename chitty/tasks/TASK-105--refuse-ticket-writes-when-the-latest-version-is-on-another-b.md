@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket writes when the latest version is on another branch
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-107
@@ -25,7 +25,7 @@ Out of scope: bulk writes (`archive` with no ID, `fix`), and any automatic routi
 
 ## Plan
 
-Add one check in the shared store write path, using the existing cross-branch version lookup, so the CLI and MCP cannot diverge. Write the tests first.
+Write regression tests for CLI and MCP cross-branch refusal cases. Add the shared `Repo` write guard using cross-branch version lookup and actionable worktree/checkout guidance. Update the user-facing rule and version, then run the full check suite and verify each criterion.
 
 ## Notes
 
@@ -34,6 +34,8 @@ Blocked pending `HUMAN-1`: the cross-branch write mechanism needs a costly-to-re
 Correction: the required decision is tracked by `HUMAN-9`.
 
 Rewritten after `HUMAN-9`. The old plan and criteria for no-checkout writes are replaced; the earlier blocked notes are history.
+
+Implementation choice: use the existing cross-branch version lookup at the shared store write boundary, rather than front-end-specific checks, so CLI and MCP stay consistent. This is easy to revise and directly follows the ticket decision not to route writes.
 
 ## History
 
@@ -45,3 +47,5 @@ Rewritten after `HUMAN-9`. The old plan and criteria for no-checkout writes are 
 - 2026-11-03T09:45:15Z mellow-marten: changed dependencies, notes
 - 2026-11-03T10:40:59Z lively-panda: changed title, dependencies, description, acceptance criteria, notes; wrote the plan
 - 2026-11-03T10:40:59Z lively-panda blocked → todo
+- 2026-11-03T17:39:53Z opal-marten: changed notes; wrote the plan
+- 2026-11-03T17:39:53Z opal-marten todo → doing
