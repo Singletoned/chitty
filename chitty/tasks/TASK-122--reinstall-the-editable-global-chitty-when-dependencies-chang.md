@@ -3,6 +3,7 @@ title: Reinstall the editable global `chitty` when dependencies change
 status: todo
 depends_on:
   - TASK-120
+  - TASK-131
 created: 2026-11-03
 ---
 
@@ -35,6 +36,8 @@ Every finding from the cold read now has an outcome. Fixed on the second pass: I
 
 Run `after_land` before the `chitty init` step added to `TASK-120`: a new dependency must be installed before the new code can run.
 
+Landing moved from `TASK-120` to `TASK-131`, so read references to that step accordingly.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -42,3 +45,4 @@ Run `after_land` before the `chitty init` step added to `TASK-120`: a new depend
 - 2026-11-03T19:23:01Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T20:00:18Z lively-panda: changed description, notes
 - 2026-11-03T20:44:56Z lively-panda: changed notes
+- 2026-11-03T20:46:21Z lively-panda: changed dependencies, notes
