@@ -1,5 +1,6 @@
 import asyncio
 import os
+import subprocess
 from typing import Any
 
 from mcp.server.mcpserver.exceptions import ToolError
@@ -107,6 +108,44 @@ class TestMcp(CliTestCase):
         call("edit", id="1", status="review")
         with self.assertRaisesRegex(ToolError, "review → doing requires --note"):
             call("edit", id="1", status="doing")
+
+    def test_cross_branch_write_error_matches_the_cli(self):
+        def git(*args: str) -> None:
+            subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
+
+        commit_seconds = 0
+
+        def commit(message: str) -> None:
+            nonlocal commit_seconds
+            commit_seconds += 1
+            environment = {
+                **os.environ,
+                "GIT_AUTHOR_DATE": f"2026-10-23T00:00:{commit_seconds:02}+00:00",
+                "GIT_COMMITTER_DATE": f"2026-10-23T00:00:{commit_seconds:02}+00:00",
+            }
+            git("add", "--all")
+            subprocess.run(
+                ["git", "commit", "--quiet", "-m", message],
+                cwd=self.root,
+                check=True,
+                capture_output=True,
+                env=environment,
+            )
+
+        git("init", "--quiet")
+        git("config", "user.email", "test@example.com")
+        git("config", "user.name", "Test")
+        git("branch", "-M", "main")
+        call("add", title="Task", description="x")
+        commit("main task")
+        git("checkout", "--quiet", "-b", "worker")
+        path = self.root / "chitty/tasks/TASK-1--task.md"
+        path.write_text(path.read_text().replace("status: todo", "status: doing"))
+        commit("claim task")
+        git("checkout", "--quiet", "main")
+
+        with self.assertRaisesRegex(ToolError, "worker"):
+            call("note", id="1", text="Blocked.")
 
     def test_guide_resource(self):
         contents = asyncio.run(server.read_resource("chitty://guide"))

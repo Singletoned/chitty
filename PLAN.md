@@ -14,9 +14,11 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
 - One task, one file, one writer at a time. No locking or automatic conflict
   repair. Task reads use committed state from every local and remote-tracking
   Git branch, selecting each task's most recently changed version; uncommitted
-  files in the current worktree override that state. Worktrees must therefore
-  use `autocommit = true` (or commit every Chitty write) so other branches can
-  see their task state. IDs are sequential; task creation is expected to be
+  files in the current worktree override that state. A write refuses when the
+  latest committed version is on another branch, directing the caller to its
+  worktree or checkout; it never routes writes across branches. Worktrees must
+  therefore use `autocommit = true` (or commit every Chitty write) so other
+  branches can see their task state. IDs are sequential; task creation is expected to be
   centralised (one agent or human), so we assume parallel branches don't
   collide. `check` reports it if they do.
 - Simple first. Add complexity when real-world use shows it is needed, not

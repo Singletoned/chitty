@@ -139,6 +139,30 @@ def current_branch(root: Path) -> str | None:
     return branch or None
 
 
+def worktree_for_branch(root: Path, branch: str) -> Path | None:
+    """Return the worktree that has a local branch checked out, if any."""
+    try:
+        lines = _git(root, "worktree", "list", "--porcelain").splitlines()
+    except ChittyError:
+        return None
+    worktree: Path | None = None
+    for line in lines:
+        if line.startswith("worktree "):
+            worktree = Path(line.removeprefix("worktree "))
+        elif line == f"branch refs/heads/{branch}":
+            return worktree
+    return None
+
+
+def has_local_branch(root: Path, branch: str) -> bool:
+    """Report whether ``branch`` names a local branch."""
+    try:
+        branches = _git(root, "for-each-ref", "--format=%(refname:short)", "refs/heads")
+    except ChittyError:
+        return False
+    return branch in branches.splitlines()
+
+
 def dirty_paths(root: Path, directory: Path) -> set[Path]:
     """Return changed or untracked paths below ``directory`` in this worktree."""
     try:

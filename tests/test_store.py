@@ -71,7 +71,7 @@ class TestStore(StoreTestCase):
         stored = self.add("One")
         self.commit("main task", "2026-10-23T00:00:00+00:00")
         self.git("checkout", "--quiet", "-b", "other")
-        self.repo.edit(stored.id, Edit(status="doing"))
+        stored.path.write_text(stored.path.read_text().replace("status: todo", "status: doing"))
         self.commit("claim task", "2026-10-24T00:00:00+00:00")
         self.git("checkout", "--quiet", "main")
 

@@ -14,7 +14,9 @@ task files. `chitty --help` is the full command reference.
   ticket. Run the repository's setup command in a new worktree before coding so
   it creates that worktree's environment. Commit the `doing` claim on its
   branch before implementation starts, and use `autocommit = true` or commit
-  after every Chitty write so other branches can see task state.
+  after every Chitty write so other branches can see task state. Run ticket
+  writes from the branch holding its latest committed version; Chitty refuses
+  to route a write across branches and tells you where to run it.
 - Before writing code, write your approach with `chitty edit <ID> --plan` and
   set `-s doing`. Wait for approval if the human asked for it.
 - Tick a criterion only after verifying it: `chitty edit <ID> --check N`

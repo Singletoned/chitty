@@ -1121,6 +1121,102 @@ class TestEdit(CliTestCase):
                 self.assertIn(message, result.stderr)
 
 
+class TestCrossBranchWrites(CliTestCase):
+    def setUp(self):
+        super().setUp()
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("branch", "-M", "main")
+        self.commit_seconds = 0
+        self.run_cli("add", "Task", "-d", "Describe.")
+        self.commit("main task")
+        self.path = self.root / "chitty/tasks/TASK-1--task.md"
+
+    def git(self, *args: str, cwd: Path | None = None) -> None:
+        subprocess.run(["git", *args], cwd=cwd or self.root, check=True, capture_output=True)
+
+    def commit(self, message: str, cwd: Path | None = None) -> None:
+        self.commit_seconds += 1
+        environment = {
+            **os.environ,
+            "GIT_AUTHOR_DATE": f"2026-10-23T00:00:{self.commit_seconds:02}+00:00",
+            "GIT_COMMITTER_DATE": f"2026-10-23T00:00:{self.commit_seconds:02}+00:00",
+        }
+        self.git("add", "--all", cwd=cwd)
+        subprocess.run(
+            ["git", "commit", "--quiet", "-m", message],
+            cwd=cwd or self.root,
+            check=True,
+            capture_output=True,
+            env=environment,
+        )
+
+    def claim_on_worker(self, worktree: Path | None = None) -> None:
+        root = worktree or self.root
+        path = root / "chitty/tasks/TASK-1--task.md"
+        path.write_text(path.read_text().replace("status: todo", "status: doing"))
+        self.commit("claim task", cwd=worktree)
+
+    def test_refuses_all_single_ticket_writes_from_another_worktree(self):
+        worktree = self.tmp / "worker"
+        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+        self.claim_on_worker(worktree)
+        before = self.path.read_text()
+
+        for args in (
+            ("edit", "1", "--note", "Blocked."),
+            ("note", "1", "Blocked."),
+            ("move", "1", "human"),
+            ("archive", "1"),
+        ):
+            with self.subTest(args=args):
+                result = self.run_cli(*args, exit_code=1)
+                self.assertIn("worker", result.stderr)
+                self.assertIn(str(worktree), result.stderr)
+                self.assertEqual(self.path.read_text(), before)
+                self.git("reset", "--hard", "HEAD")
+                self.git("clean", "-fd")
+
+    def test_refuses_a_branch_without_a_worktree(self):
+        self.git("checkout", "--quiet", "-b", "worker")
+        self.claim_on_worker()
+        self.git("checkout", "--quiet", "main")
+
+        result = self.run_cli("note", "1", "Blocked.", exit_code=1)
+
+        self.assertIn("worker", result.stderr)
+        self.assertIn("git switch worker", result.stderr)
+
+    def test_refuses_a_remote_tracking_branch(self):
+        remote = self.tmp / "remote.git"
+        self.git("init", "--bare", "--quiet", str(remote))
+        self.git("remote", "add", "origin", str(remote))
+        self.git("checkout", "--quiet", "-b", "worker")
+        self.claim_on_worker()
+        self.git("push", "--quiet", "origin", "worker")
+        self.git("checkout", "--quiet", "main")
+        self.git("branch", "-D", "worker")
+
+        result = self.run_cli("note", "1", "Blocked.", exit_code=1)
+
+        self.assertIn("origin/worker", result.stderr)
+        self.assertIn("git switch --track origin/worker", result.stderr)
+
+    def test_allows_writes_in_the_branch_with_the_latest_version(self):
+        worktree = self.tmp / "worker"
+        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+        self.claim_on_worker(worktree)
+        previous = Path.cwd()
+        os.chdir(worktree)
+        try:
+            self.run_cli("note", "1", "Continued work.")
+        finally:
+            os.chdir(previous)
+
+
 class TestCheck(CliTestCase):
     def test_check(self):
         self.run_cli("add", "One", "-d", "x")

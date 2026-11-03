@@ -407,6 +407,8 @@ class Repo:
 
     def _save(self, stored: StoredTask, task: Task) -> Change:
         """Write an edited task; touches nothing if the content is unchanged."""
+        # Guard every shared-store write so CLI and MCP cannot fork a task differently.
+        self._require_current_version(stored)
         if task.frontmatter.depends_on != stored.task.frontmatter.depends_on:
             self.check_dependencies(task.frontmatter.depends_on)
         if task.frontmatter.parent and task.frontmatter.parent != stored.task.frontmatter.parent:
@@ -476,6 +478,7 @@ class Repo:
 
     def _delete_done(self, task_id: TaskId) -> Change:
         stored = self.find(task_id)
+        self._require_current_version(stored)
         if stored.task.frontmatter.status != "done":
             raise ChittyError(f"{task_id} is not done and cannot be deleted")
         paths: list[Path] = []
@@ -504,6 +507,7 @@ class Repo:
         """Give a task the next ID in another context and rewrite references to it."""
         self._prepare_write()
         stored = self.find(task_id)
+        self._require_current_version(stored)
         if target.name == stored.context:
             raise ChittyError(f"{task_id} is already in context {target.name!r}")
         new_id = TaskId(target.prefix, self.next_number(target))
@@ -575,6 +579,7 @@ class Repo:
 
     def _set_archived(self, task_id: TaskId, archived: bool) -> Change:
         stored = self.find(task_id)
+        self._require_current_version(stored)
         if stored.archived == archived:
             state = "archived" if archived else "not archived"
             raise ChittyError(f"{task_id} is already {state}")
@@ -590,6 +595,21 @@ class Repo:
         self._write(new_path, task.render())
         moved = StoredTask(stored.id, stored.context, new_path, archived, task)
         return Change(moved, (stored.path, new_path), (moved,), actor_name)
+
+    def _require_current_version(self, stored: StoredTask) -> None:
+        branch = stored.branch
+        if branch is None or branch == git.current_branch(self.root):
+            return
+        worktree = git.worktree_for_branch(self.root, branch)
+        if worktree is not None:
+            instruction = f"run Chitty in worktree {worktree}"
+        elif git.has_local_branch(self.root, branch):
+            instruction = f"run `git switch {branch}` first"
+        else:
+            instruction = f"run `git switch --track {branch}` first"
+        raise ChittyError(
+            f"{stored.id}'s latest committed version is on branch {branch}; {instruction}"
+        )
 
     def _files(self, context: Context, archived: bool) -> list[Path]:
         files: list[Path] = []
