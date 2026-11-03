@@ -2,6 +2,8 @@
 title: Report failure causes and escaped defects from task files
 status: backlog
 priority: medium
+depends_on:
+  - TASK-109
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -15,3 +17,4 @@ No new store: the data comes from task files, and `archive = "delete"` repositor
 ## History
 
 - 2026-11-03T10:27:48Z lively-panda → backlog
+- 2026-11-03T10:28:28Z lively-panda: changed dependencies
