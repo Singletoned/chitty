@@ -11,17 +11,25 @@ created: 2026-11-03
 
 `init_repo` in `src/chitty/store.py` calls `install_pi_extension`, which copies the running code's `src/chitty/integrations/pi/chitty.ts` to `~/.pi/agent/extensions/chitty.ts`. When code on a ticket branch runs `chitty init`, or a write that triggers the setup upgrade, unfinished extension code becomes active for every Pi session on the machine. On 2026-11-03 at 20:21 the `TASK-126` worker did this. The next `chitty run`, still on `main` code, started Pi in the main checkout, and the leaked extension refused to start.
 
-Only install from a main checkout, not a linked Git worktree (`git rev-parse --git-dir` differs from `--git-common-dir`). `chitty init` run outside a Git repository still installs, as now. Report when installation is skipped, so it is not a surprise. Immediate repair was to run `chitty init` from the main checkout.
+Only install from a main checkout, not a linked Git worktree. Add `git.is_linked_worktree(directory)`, comparing `git rev-parse --git-dir` with `--git-common-dir` as resolved paths: a plain string comparison wrongly says "linked" in a subdirectory of the main checkout, where they are `/abs/.git` and `../.git`. It returns false outside Git or if `git` is missing, so `chitty init` there still installs, as now; it needs its own `subprocess` call, because `git._git` raises. In a linked worktree, also skip `validate_pi_extension` and `remove_pi_session_environment`: both concern the same machine-wide Pi setup. Report a skip on stderr from `init_repo`, so both `chitty init` and the upgrade on write show it; otherwise `init` just says it is up to date. Immediate repair was to run `chitty init` from the main checkout.
 
-Out of scope: other setup writes from a worktree, such as `chitty.toml`, which belong to the branch.
+Rollout: the extension then only reaches `~/.pi` when `chitty init` runs in the main checkout. `TASK-120` automates that; until then, run it by hand after landing. If `main` already has this version when the ticket is ready for review, bump again: identical bumps merge silently, and repositories would then never learn about the later change.
+
+Out of scope: code from a branch deliberately run against the main checkout, because the rule looks at the directory being set up and this was not the incident; other setup writes from a worktree, such as `chitty.toml`, which belong to the branch.
 
 ## Acceptance Criteria
 
 - [ ] A test with a real `git worktree` and a temporary `PI_CODING_AGENT_DIR` runs `chitty init` in the worktree and shows the installed extension unchanged, and it fails before the fix
 - [ ] A test shows `chitty init` in the main checkout still installs and updates the extension
-- [ ] A test shows a write that triggers the setup upgrade from a worktree does not install it
 - [ ] `PLAN.md` states the rule, and `__version__` is bumped only if setup output changes
+- [ ] Tests show `chitty init` installing from a subdirectory of the main checkout and outside Git, and a skip in a worktree printing a message on stderr while leaving `settings.json` unchanged
+- [ ] A test with `autocommit = true` and a stale `chitty_version` shows a write from a worktree upgrading setup without installing the extension
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-03, with `TASK-130`. Fixed: the subdirectory comparison bug, which it reproduced in a scratch repository; failure handling outside Git; skipping the two other machine-wide steps; reporting the skip; and the rollout and version bump. Test hints: `tests/support.py` points `HOME` at a directory that does not exist, so create `PI_CODING_AGENT_DIR`; `test_cli.py:158-190` shows a real worktree. Rejected: its finding that `TASK-126`'s claim would leak worktree code. The source is the running code's package data, and `chitty run` runs the global `main` code, so a claim installs `main`'s extension. Branch code running as `.venv/bin/chitty` is the leak. A main checkout on another branch still installing, because the rule is about checkouts. Submodules, because their two directories match. `TASK-129` is ordered first after `TASK-126` by adding it as a dependency to the others.
 
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
+- 2026-11-03T20:44:52Z lively-panda: changed description, acceptance criteria, notes
