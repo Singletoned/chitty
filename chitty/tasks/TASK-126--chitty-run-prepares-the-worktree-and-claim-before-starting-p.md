@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: todo
+status: blocked
 priority: high
 depends_on:
   - TASK-124
@@ -69,8 +69,12 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 Cold read by a fresh Sonnet subagent, 2026-11-03. Biggest finds: `StoredTask.branch` reports `main` from a worktree, so step 2 as written would have tried to add a `main` worktree (branch lookup is now by name); and a claim counted as progress, which would have defeated the loop stopping on dead sessions (the baseline is now taken after the claim). Also adopted: preflight checks, config read from the main checkout, actor variables cleared, and the guard on `/chitty` too. The "no trust prompt" criterion is now an observation, as Chitty may not control it.
 
+Blocked: current cross-branch write protection refuses both the required `--plan` and `todo` to `doing` claim from the new `task-126` worktree because this ticket’s newest committed copy is on `main`. Completing the requested pre-implementation branch claim requires a bootstrap route that writes the claim on its new branch (the behavior this ticket is intended to add), or human authorization to make the ticket-state write on `main`. A human must choose one of those options; no implementation has started.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
 - 2026-11-03T16:30:15Z lively-panda: changed acceptance criteria
 - 2026-11-03T16:48:59Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T19:22:46Z nimble-crane: changed notes
+- 2026-11-03T19:22:46Z nimble-crane todo → blocked
