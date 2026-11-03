@@ -66,7 +66,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
-- [ ] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
+- [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 - [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
 
@@ -107,6 +107,8 @@ Cold read outcomes: Fix the interrupt path: convert interrupts during inbox pull
 
 Verified criteria 15 and 16 with `npm test -- --test src/chitty/integrations/pi/tests/chitty.test.ts` and `make check`: extension startup outside a linked worktree now emits one notification, sends no user turn, and shuts down; the Node test exercises a main-checkout subdirectory.
 
+Verified criterion 14 with `TestInit.test_init_adds_missing_human_review_setting`, `chitty.toml`, and `README.md`: this repository configures `setup = "make install"`; initialization preserves a commented setup example for existing repositories; README directs workers to `chitty run`.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -129,3 +131,4 @@ Verified criteria 15 and 16 with `npm test -- --test src/chitty/integrations/pi/
 - 2026-11-03T20:44:59Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T20:47:08Z ivory-panda: changed notes
 - 2026-11-03T20:52:50Z ivory-panda: changed notes; ticked acceptance criteria
+- 2026-11-03T20:53:08Z ivory-panda: changed notes; ticked acceptance criteria
