@@ -65,7 +65,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
-- [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
+- [x] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 - [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
@@ -113,6 +113,8 @@ Verified criterion 2 with `TestNext.test_run_cases`: initial claim leaves `main`
 
 Verified criterion 10 with `TestNext.test_run_cases`: a fake Pi that changes nothing causes non-zero `TASK-1 was unchanged`; the ticket remains `doing`, and the next invocation reuses its worktree.
 
+Verified criterion 13 with `TestNext.test_run_cases` and `TestNext.test_run_refuses_preflight_without_mutating`: a run preserves the main checkout `HEAD`, branch and porcelain status; non-main main checkouts refuse before mutation.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -138,3 +140,4 @@ Verified criterion 10 with `TestNext.test_run_cases`: a fake Pi that changes not
 - 2026-11-03T20:53:08Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:54:21Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:54:28Z ivory-panda: changed notes; ticked acceptance criteria
+- 2026-11-03T20:55:29Z ivory-panda: changed notes; ticked acceptance criteria
