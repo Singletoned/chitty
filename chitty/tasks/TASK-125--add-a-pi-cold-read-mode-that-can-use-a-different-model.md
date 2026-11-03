@@ -22,9 +22,12 @@ Decided with the human, 2026-11-03: cold reads are now the default for every tic
 
 Decided with the human, 2026-11-03, replacing the earlier note about automating this: cold reads stay an informal part of planning sessions, as a subagent, with no tooling or enforcement. This ticket is only for if they need to become their own stage, such as `design-review`. `chitty run` will not gate on them.
 
+Idea from the human, 2026-11-03: if cold reads are automated, one coordinating session could run them across a batch, handle their outcomes and raise questions to the human. Suggested shape: a fresh session per batch or parent ticket with its memory in files, not a long-lived one, and its choices shown at `review-ticket`. Try it by hand first: give a fresh session a planned batch and see whether it finds the cross-ticket problems this planning session found, such as `TASK-122` relying on `ORIG_HEAD` despite the `TASK-120` retry, and the unlanded `task-118` branch.
+
 ## History
 
 - 2026-11-03T16:14:34Z lively-panda → backlog
 - 2026-11-03T16:16:15Z lively-panda: changed notes
 - 2026-11-03T18:18:19Z lively-panda: changed priority, notes
 - 2026-11-03T19:23:02Z lively-panda: changed priority, notes
+- 2026-11-03T20:18:27Z lively-panda: changed notes
