@@ -58,7 +58,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [ ] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
-- [ ] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
+- [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [ ] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [ ] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), a branch checked out in the main checkout, and uncommitted changes to the ticket in the main checkout
 - [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
@@ -91,6 +91,8 @@ The globally installed `chitty` was still pre-TASK-126 and rejected `setup`; ver
 
 Verified criterion 5 with `npm test -- --test src/chitty/integrations/pi/tests/chitty.test.ts`: work prompts omit worktree, setup and claim instructions; the extension rejects a main-checkout Git directory with a `chitty run` message.
 
+Verified criterion 6 with `tests.test_cli.TestInit` and `make check`: new templates and existing-repository upgrades keep `setup` as a commented example; project config sets `setup = "make install"`; version, README and PLAN were updated.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -106,3 +108,4 @@ Verified criterion 5 with `npm test -- --test src/chitty/integrations/pi/tests/c
 - 2026-11-03T20:21:42Z eager-lynx: changed notes; ticked acceptance criteria
 - 2026-11-03T20:23:00Z eager-lynx: changed notes
 - 2026-11-03T20:24:44Z eager-lynx: changed notes; ticked acceptance criteria
+- 2026-11-03T20:26:09Z eager-lynx: changed notes; ticked acceptance criteria
