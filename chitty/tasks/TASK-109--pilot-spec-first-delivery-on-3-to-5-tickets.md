@@ -4,6 +4,7 @@ status: backlog
 priority: high
 depends_on:
   - TASK-108
+  - TASK-107
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -11,6 +12,8 @@ created: 2026-11-03
 ## Description
 
 Try the pipeline in `PLAN.md` ("Pipeline and feedback") by hand, on existing statuses, with no pipeline code, and use the result to decide which stages are worth building.
+
+`TASK-107` must be done first, and `TASK-105` should be: Chitty runs from the ticket's worktree during the pilot, because running it from `main` forks a ticket that is on a branch.
 
 Each pilot ticket gets the label `spec-first`, and a different session for every stage. Mapping onto today's statuses:
 
@@ -20,7 +23,7 @@ Each pilot ticket gets the label `spec-first`, and a different session for every
 4. **Work** (`todo` → `doing`): at most one ticket in `doing`, merged before the next starts. Before setting `review`, `git diff --exit-code <tests-commit> HEAD -- <test paths>` must pass and the tests must be green.
 5. **Review-work** (`review`): a failure uses `Review failed (<cause>): ...`, its finding becomes a new criterion, and the next attempt is a fresh session. Stop for the human after the second failure on a ticket, ahead of the code's limit of three.
 
-Sequence: start with `TASK-107` or another ticket that fixes worktree writes, because a test writer cannot run `chitty edit` in a worktree until it is fixed (until then run Chitty from the main checkout). Use good models throughout on the first two tickets and label them `example`. Then use a cheap model for tests and work on the rest, to see what breaks. Other candidates: `TASK-63`, `TASK-67`, `TASK-73`, `TASK-50`.
+Sequence: use good models throughout on the first two tickets and label them `example`. Then use a cheap model for tests and work on the rest, to see what breaks. Candidates: `TASK-63`, `TASK-67`, `TASK-73`, `TASK-50`.
 
 Decided with the human (2026-11-03): one ticket in work at a time. The human's available time is the limiting factor, so the pilot runs at the pace of review-ticket, with no deadline.
 
@@ -35,3 +38,4 @@ Decided with the human (2026-11-03): one ticket in work at a time. The human's a
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
 - 2026-11-03T10:28:26Z lively-panda: changed dependencies, acceptance criteria
+- 2026-11-03T10:41:01Z lively-panda: changed dependencies, description
