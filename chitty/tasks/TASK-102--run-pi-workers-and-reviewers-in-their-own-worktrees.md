@@ -1,6 +1,6 @@
 ---
 title: Run Pi workers and reviewers in their own worktrees
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-103
@@ -15,10 +15,14 @@ Work mode: claim a ticket, create (or reuse, for a ticket already `doing`) a bra
 
 ## Acceptance Criteria
 
-- [ ] The Pi work prompt tells workers to do each ticket in a branch and worktree under `.worktrees/`, never in the main checkout, and to resume an existing worktree for a `doing` ticket
-- [ ] The Pi review prompt tells reviewers to review in the ticket's worktree, merge into `main` on a pass, then remove the branch and worktree
-- [ ] A worker's claim (`doing`) is committed on its branch before implementation starts, so a second worker does not pick the same ticket; a test or documented check shows it
-- [ ] Node tests cover the prompt wording; `src/chitty/guide.md` matches it and `__version__` is bumped
+- [x] The Pi work prompt tells workers to do each ticket in a branch and worktree under `.worktrees/`, never in the main checkout, and to resume an existing worktree for a `doing` ticket
+- [x] The Pi review prompt tells reviewers to review in the ticket's worktree, merge into `main` on a pass, then remove the branch and worktree
+- [x] A worker's claim (`doing`) is committed on its branch before implementation starts, so a second worker does not pick the same ticket; a test or documented check shows it
+- [x] Node tests cover the prompt wording; `src/chitty/guide.md` matches it and `__version__` is bumped
+
+## Plan
+
+Add explicit worker and reviewer worktree workflows to the Pi extension prompts and shipped guide. Cover the required wording with Node tests, verify a claim is committed before implementation, bump the package version because `chitty init` distributes the guide, then run the full checks.
 
 ## Notes
 
@@ -28,9 +32,19 @@ Found while finishing `TASK-99` on a branch: `-s review` set in the worktree is 
 
 Correction to my previous note: reads already merge ticket state from every local and remote branch (`863447a`, `PLAN.md` Principles), so worktree status changes are visible from `main` once committed; the copy in `99b1fcd` was unnecessary. The real gap: a reviewer editing from `main` writes the branch's ticket version into `main`, so ticket files diverge and conflict on merge (as `TASK-99`'s did). The reviewer's pass-and-merge step should handle that, e.g. by merging before the final ticket edit.
 
+Verified `npm test`, `make check`, `chitty check`, and `chitty fix`; the latter retains only pre-existing Markdown-delimiter warnings in older task files. The committed `doing` claim is `1c99a13`, before implementation commit `HEAD~1`.
+
+Reviewed: independent review verified all four criteria; inspected the branch diff and claim-before-implementation history; npm test, make check, and chitty check pass.
+
 ## History
 
 - 2026-11-02T11:21:00Z lively-otter → todo
 - 2026-11-02T11:21:06Z lively-otter: changed dependencies, notes
 - 2026-11-02T13:03:36Z lively-otter: changed notes
 - 2026-11-02T13:30:16Z lively-otter: changed notes
+- 2026-11-03T07:25:54Z mellow-marten: wrote the plan
+- 2026-11-03T07:25:54Z mellow-marten todo → doing
+- 2026-11-03T07:27:52Z mellow-marten: changed notes; ticked acceptance criteria
+- 2026-11-03T07:27:52Z mellow-marten doing → review
+- 2026-11-03T09:20:36Z opal-marten: changed notes
+- 2026-11-03T09:20:36Z opal-marten review → done
