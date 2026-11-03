@@ -23,12 +23,16 @@ Out of scope: detecting a broken install at startup, because the failure is an i
 - [ ] Tests with a fake `pi` show `after_land` running in the main checkout after a landing, not running when unset, parsed without a shell, and a failure exiting non-zero with the ticket still landed
 - [ ] Run by hand: `make refresh-global` makes no change when dependency files are unchanged. With a new dependency on a scratch branch landed, the receipt still shows editable from the main checkout with the `mcp` extra, and `chitty` works from another repository. Record this in a note
 - [ ] `PLAN.md`, `README.md` and the `chitty.toml` template describe `after_land`; `__version__` is bumped
+- [ ] A test shows `chitty init` does not set `after_land` in a new or existing repository; the `chitty.toml` template shows it only as a commented example; only this repository sets `after_land = "make refresh-global"`
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-03. It found this ticket left its central decision open, had no testable criterion, pointed at no code, and contradicted `README.md`. Rewritten on top of `TASK-120`, since there was no merge code to hook into. The author chose `after_land` and the Makefile check, cheap to change.
 
+Decided with the human, 2026-11-03: set `after_land` in this repository, but never make it a default on new installs, so other people are unaffected.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
 - 2026-11-03T18:19:34Z lively-panda: changed dependencies, description, acceptance criteria, notes
+- 2026-11-03T19:23:01Z lively-panda: changed acceptance criteria, notes
