@@ -9,6 +9,12 @@ created: 2026-11-03
 
 On 2026-11-03 `chitty` in the main checkout failed with `ModuleNotFoundError: No module named 'chitty'` because the editable install in `~/.envs/chitty` pointed at the removed `.worktrees/task-107/src`. `TASK-103` made `make` targets use a worktree-local `.venv`, but `.envrc` still exports `UV_PROJECT_ENVIRONMENT=~/.envs/chitty` to every worktree, so any `uv` command outside `make` re-syncs the shared environment. The TASK-107 worker ran `uv run --project ../task-107 chitty edit ...` at 10:46:53, the only such command found in that window (the entry script mtime was 10:43, not fully explained). Also, `make install` in main now targets `.venv`, so nothing keeps `~/.envs/chitty`, the `chitty` first on `PATH`, up to date. Likely fix: stop exporting the shared environment, so that PATH and `uv` use each checkout's `.venv`.
 
+## Acceptance Criteria
+
+- [ ] `README.md` and `PLAN.md` describe the editable global `chitty` and per-checkout `.venv` files
+- [ ] `uv` commands in a worktree no longer repoint another environment
+- [ ] The global `chitty` runs the main checkout in this and other repositories
+
 ## Plan
 
 Reverse `TASK-81`: document that this machine's global `chitty` is an editable install of the main checkout and why, in `README.md` and `PLAN.md`. Record the local `.envrc` change and the suggestion sent to `prj`. Deleting `~/.envs/chitty` is left for the human once running sessions have restarted.
@@ -23,3 +29,4 @@ Decision (human, 2026-11-03): remove the shared environment rather than guard ag
 - 2026-11-03T11:28:11Z eager-raven: changed notes
 - 2026-11-03T11:39:05Z eager-raven: wrote the plan
 - 2026-11-03T11:39:05Z eager-raven todo → doing
+- 2026-11-03T11:40:32Z eager-raven: changed acceptance criteria
