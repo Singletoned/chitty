@@ -28,6 +28,9 @@ Pull order follows Kanban, from the right: finish before starting. Reviews the c
 
 With the human: callers may have one role (for example only a reviewer), and model level matters (`hard`/`easy` labels). Option names are provisional.
 
+Narrow version split out as `TASK-124` for the pilot. Role options, label filters and caller-aware selection wait for `TASK-110`.
+
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-03T12:40:39Z lively-panda: changed notes
