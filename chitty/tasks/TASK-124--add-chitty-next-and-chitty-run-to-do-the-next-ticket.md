@@ -89,6 +89,8 @@ uv run python -m unittest discover -s tests -t .
 [ticket 1ac4e97] worker change
  1 file changed, 1 insertion(+), 1 deletion(-): archived dependencies count as met; full priority order and  before  are covered; a test sends SIGINT to the Pi child and confirms exit 130 without a traceback. Re-checked all nine criteria.
 
+Correction: verified reviewer fixes with `make check`: archived dependencies count as met; full priority order and `TASK-9` before `TASK-12` are covered; a test sends SIGINT to the Pi child and confirms exit 130 without a traceback. Re-checked all nine criteria.
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
@@ -104,3 +106,4 @@ uv run python -m unittest discover -s tests -t .
 - 2026-11-03T17:08:32Z mellow-raven: changed acceptance criteria, notes
 - 2026-11-03T17:08:32Z mellow-raven review → doing
 - 2026-11-03T17:19:43Z frosty-marten: changed notes; ticked acceptance criteria
+- 2026-11-03T17:19:51Z frosty-marten: changed notes
