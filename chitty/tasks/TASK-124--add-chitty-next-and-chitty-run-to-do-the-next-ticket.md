@@ -1,6 +1,6 @@
 ---
 title: Add `chitty next` and `chitty run` to do the next ticket
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-123
@@ -75,6 +75,8 @@ Verified with `make check`: runner exit cases, CLI/MCP JSON parity, docs and hel
 
 Verified the remaining criteria with `make check`: table-driven exclusions and dependency cases, a real Git worktree committing a status change, exact CLI/MCP no-work output, and inherited stdin/cwd/change output for fake `pi`.
 
+All nine acceptance criteria re-checked after `make check` passed. Ready for an independent reviewer.
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
@@ -85,3 +87,5 @@ Verified the remaining criteria with `make check`: table-driven exclusions and d
 - 2026-11-03T16:46:18Z honest-heron: changed notes; wrote the plan
 - 2026-11-03T16:57:36Z honest-heron: changed notes; ticked acceptance criteria
 - 2026-11-03T17:01:02Z honest-heron: changed notes; ticked acceptance criteria
+- 2026-11-03T17:01:10Z honest-heron: changed notes
+- 2026-11-03T17:01:10Z honest-heron doing → review
