@@ -32,6 +32,8 @@ Review failed (work): criterion 4 is unmet. `src/chitty/guide.md` changes but `_
 
 Correction to the failure note above: do not run `chitty init` in this worktree, because it fails until `TASK-107` is fixed. Only bump `__version__` to `0.1.19`.
 
+The branch runtime is intentionally still at `0.1.18`, so its stale-setup write path cannot register this worktree before `TASK-107` merges. Used the verified `TASK-107` worktree CLI solely to record this ticket state; it writes the current worktree and does not alter implementation files.
+
 ## Summary
 
 Updated the Pi and general agent guidance to require verification before ticking criteria and complete review failure reporting, then restored the required setup-version bump.
@@ -54,3 +56,4 @@ Verification: `npm test` (14 tests) and `make check` (196 Python tests).
 - 2026-11-03T10:40:57Z lively-panda: changed notes
 - 2026-11-03T10:46:54Z ivory-quail: changed summary; ticked acceptance criteria
 - 2026-11-03T10:46:54Z ivory-quail doing → review
+- 2026-11-03T10:46:59Z ivory-quail: changed notes
