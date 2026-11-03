@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: doing
+status: blocked
 priority: high
 depends_on:
   - TASK-124
@@ -115,6 +115,8 @@ Verified criterion 10 with `TestNext.test_run_cases`: a fake Pi that changes not
 
 Verified criterion 13 with `TestNext.test_run_cases` and `TestNext.test_run_refuses_preflight_without_mutating`: a run preserves the main checkout `HEAD`, branch and porcelain status; non-main main checkouts refuse before mutation.
 
+Blocked: criterion 8 requires a black-box test where the ticket branch is checked out in the main checkout. This is unreachable under the same ticket contract: preflight rejects unless that checkout is on `main`, while a selected ticket branch is always `<ticket ID>.lower()` (for example `task-1`) and therefore cannot be `main`. A human must decide whether to remove that unreachable subcase, relax the main-branch preflight, or permit a private-helper test. The remaining unchecked criteria can continue once this specification conflict is resolved.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -141,3 +143,5 @@ Verified criterion 13 with `TestNext.test_run_cases` and `TestNext.test_run_refu
 - 2026-11-03T20:54:21Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:54:28Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:55:29Z ivory-panda: changed notes; ticked acceptance criteria
+- 2026-11-03T20:55:49Z ivory-panda: changed notes
+- 2026-11-03T20:55:49Z ivory-panda doing → blocked
