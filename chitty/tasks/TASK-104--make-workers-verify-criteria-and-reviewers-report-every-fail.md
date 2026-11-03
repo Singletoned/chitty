@@ -1,6 +1,6 @@
 ---
 title: Make workers verify criteria and reviewers report every failure at once
-status: review
+status: done
 priority: high
 created: 2026-11-02
 ---
@@ -34,6 +34,8 @@ Correction to the failure note above: do not run `chitty init` in this worktree,
 
 The branch runtime is intentionally still at `0.1.18`, so its stale-setup write path cannot register this worktree before `TASK-107` merges. Used the verified `TASK-107` worktree CLI solely to record this ticket state; it writes the current worktree and does not alter implementation files.
 
+Reviewed: all four criteria verified independently; `npm test`, `make check`, `chitty check`, and `chitty fix` passed (only existing task-file warnings).
+
 ## Summary
 
 Updated the Pi and general agent guidance to require verification before ticking criteria and complete review failure reporting, then restored the required setup-version bump.
@@ -57,3 +59,5 @@ Verification: `npm test` (14 tests) and `make check` (196 Python tests).
 - 2026-11-03T10:46:54Z ivory-quail: changed summary; ticked acceptance criteria
 - 2026-11-03T10:46:54Z ivory-quail doing → review
 - 2026-11-03T10:46:59Z ivory-quail: changed notes
+- 2026-11-03T11:12:32Z amber-panda: changed notes
+- 2026-11-03T11:12:32Z amber-panda review → done
