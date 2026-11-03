@@ -5,7 +5,6 @@ labels:
   - bug
 priority: high
 depends_on:
-  - TASK-126
   - TASK-129
 created: 2026-11-03
 ---
@@ -39,8 +38,11 @@ Cold read by a fresh Sonnet subagent, 2026-11-03, with `TASK-129`. Fixed: criter
 
 Landing moved from `TASK-120` to `TASK-131`, so read references to that step accordingly.
 
+Order changed with the human, 2026-11-03: this now lands before `TASK-126`, which waits for it, because `TASK-126` could otherwise hit the cap again. Ignore the line about rebasing on `TASK-126`; that ticket rebases on this one instead.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
 - 2026-11-03T20:44:53Z lively-panda: changed dependencies, description, acceptance criteria, notes
 - 2026-11-03T20:46:22Z lively-panda: changed notes
+- 2026-11-03T21:00:46Z lively-panda: changed dependencies, notes
