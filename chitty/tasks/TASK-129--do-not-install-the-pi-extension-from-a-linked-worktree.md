@@ -29,7 +29,10 @@ Out of scope: code from a branch deliberately run against the main checkout, bec
 
 Cold read by a fresh Sonnet subagent, 2026-11-03, with `TASK-130`. Fixed: the subdirectory comparison bug, which it reproduced in a scratch repository; failure handling outside Git; skipping the two other machine-wide steps; reporting the skip; and the rollout and version bump. Test hints: `tests/support.py` points `HOME` at a directory that does not exist, so create `PI_CODING_AGENT_DIR`; `test_cli.py:158-190` shows a real worktree. Rejected: its finding that `TASK-126`'s claim would leak worktree code. The source is the running code's package data, and `chitty run` runs the global `main` code, so a claim installs `main`'s extension. Branch code running as `.venv/bin/chitty` is the leak. A main checkout on another branch still installing, because the rule is about checkouts. Submodules, because their two directories match. `TASK-129` is ordered first after `TASK-126` by adding it as a dependency to the others.
 
+Landing moved from `TASK-120` to `TASK-131`, so read references to that step accordingly.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
 - 2026-11-03T20:44:52Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T20:46:22Z lively-panda: changed notes
