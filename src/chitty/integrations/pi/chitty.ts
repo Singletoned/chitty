@@ -7,96 +7,113 @@ import type { AssistantMessage } from "@earendil-works/pi-ai";
 const STATE_TYPE = "chitty-state";
 const CONTINUATION_TYPE = "chitty-continuation";
 const PI_SESSION_ID_VARIABLE = "CHITTY_PI_SESSION_ID";
+export const MAX_CONTINUATIONS = 5;
 
 type ChittyMode = "work" | "review";
 
 type State = {
   enabled: boolean;
   mode: ChittyMode;
-  continuationAssistantCount?: number;
+  ticketId?: string;
+  continuationCount?: number;
 };
+
+type ChittyCommand = {
+  mode: ChittyMode;
+  ticketId: string;
+};
+
+type SettlementDecision =
+  | { action: "continue" }
+  | { action: "shutdown"; reason: string }
+  | { action: "stop"; reason: string };
 
 export default function chitty(pi: ExtensionAPI) {
   let state: State = { enabled: false, mode: "work" };
 
-  function start(mode: ChittyMode): void {
-    state = { enabled: true, mode };
+  function start(mode: ChittyMode, ticketId: string): void {
+    state = { enabled: true, mode, ticketId, continuationCount: 0 };
     persistState(pi, state);
-    pi.sendUserMessage(chittyPrompt(mode));
+    pi.sendUserMessage(chittyPrompt(mode, ticketId));
   }
 
-  function stopContinuation(ctx: ExtensionContext, reason: string): void {
-    state = { ...state, enabled: false, continuationAssistantCount: undefined };
+  function stopContinuation(
+    ctx: ExtensionContext,
+    reason: string,
+    shutdown: boolean,
+  ): void {
+    state = { ...state, enabled: false, continuationCount: undefined };
     persistState(pi, state);
     ctx.ui.notify(`Chitty continuation stopped: ${reason}.`, "info");
+    if (shutdown) ctx.shutdown();
   }
 
   pi.registerFlag("chitty-review", {
-    description: "Start directly in Chitty review mode",
-    type: "boolean",
-    default: false,
+    description: "Review one Chitty ticket until it leaves review",
+    type: "string",
   });
   pi.registerFlag("chitty-work", {
-    description: "Start directly in Chitty work mode",
-    type: "boolean",
-    default: false,
+    description: "Work one Chitty ticket until it leaves work",
+    type: "string",
   });
 
   pi.registerCommand("chitty", {
-    description: "Work or review Chitty tickets",
-    handler: async (args) => {
-      start(parseMode(args));
+    description: "Work or review one Chitty ticket",
+    handler: (args) => {
+      const { mode, ticketId } = parseChittyCommand(args);
+      start(mode, ticketId);
     },
   });
 
   pi.on("session_start", async (_event, ctx) => {
     setPiSessionIdentity(ctx.sessionManager.getSessionId());
     state = latestState(ctx) ?? { enabled: false, mode: "work" };
-    // Review wins if both flags are supplied, avoiding accidental work-mode review.
-    if (isChittyReviewFlagEnabled(pi.getFlag("chitty-review"))) {
-      start("review");
-    } else if (isChittyWorkFlagEnabled(pi.getFlag("chitty-work"))) {
-      start("work");
+
+    const reviewTicket = parseChittyFlag(
+      pi.getFlag("chitty-review"),
+      "--chitty-review",
+    );
+    const workTicket = parseChittyFlag(pi.getFlag("chitty-work"), "--chitty-work");
+    if (reviewTicket !== undefined && workTicket !== undefined) {
+      throw new Error("Use only one of --chitty-work and --chitty-review.");
     }
+    if (reviewTicket !== undefined) start("review", reviewTicket);
+    if (workTicket !== undefined) start("work", workTicket);
   });
 
-  pi.on("agent_settled", async (_event, ctx) => {
-    if (!state.enabled || !ctx.isIdle()) return;
+  pi.on("agent_settled", async (event, ctx) => {
+    if (!state.enabled || !ctx.isIdle() || state.ticketId === undefined) return;
 
-    const assistantCount = assistantMessageCount(ctx);
-    if (
-      state.continuationAssistantCount !== undefined &&
-      !hasNewAssistantResponse(state.continuationAssistantCount, assistantCount)
-    ) {
-      stopContinuation(ctx, "agent did not produce a response");
+    if (event.aborted) {
+      stopContinuation(ctx, "human aborted the run", false);
       return;
     }
 
-    const assistant = latestAssistantMessage(ctx);
-    if (assistant && isFailedAssistantResponse(assistant.stopReason)) {
-      stopContinuation(ctx, `agent response ended with ${assistant.stopReason}`);
+    const status = await ticketStatus(pi, ctx, state.ticketId);
+    const decision = settlementDecision(
+      state.mode,
+      status,
+      state.continuationCount ?? 0,
+      latestAssistantMessage(ctx)?.stopReason,
+    );
+    if (decision.action !== "continue") {
+      stopContinuation(
+        ctx,
+        decision.reason,
+        decision.action === "shutdown",
+      );
       return;
     }
 
-    if (isNoMoreWorkResponse(latestAssistantText(ctx))) {
-      state = { ...state, enabled: false };
-      persistState(pi, state);
-      return;
-    }
-
-    const workRemains = await hasActionableWork(pi, ctx, state.mode);
-    if (!workRemains) {
-      state = { ...state, enabled: false };
-      persistState(pi, state);
-      return;
-    }
-
-    state = { ...state, continuationAssistantCount: assistantCount };
+    state = {
+      ...state,
+      continuationCount: (state.continuationCount ?? 0) + 1,
+    };
     persistState(pi, state);
     pi.sendMessage(
       {
         customType: CONTINUATION_TYPE,
-        content: continuationPrompt(state.mode),
+        content: continuationPrompt(state.mode, state.ticketId),
         display: true,
       },
       { triggerTurn: true },
@@ -111,62 +128,88 @@ export function setPiSessionIdentity(sessionId: string): void {
   }
 }
 
-export function isChittyReviewFlagEnabled(value: unknown): boolean {
-  return value === true;
+export function parseChittyCommand(args: string): ChittyCommand {
+  const parts = args.trim().split(/\s+/);
+  if (parts.length !== 2 || !isMode(parts[0])) {
+    throw new Error("Usage: /chitty work|review ID");
+  }
+  return { mode: parts[0], ticketId: parts[1] };
 }
 
-export function isChittyWorkFlagEnabled(value: unknown): boolean {
-  return value === true;
+export function parseChittyFlag(
+  value: unknown,
+  flag: string,
+): string | undefined {
+  if (value === undefined) return undefined;
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(`${flag} requires a ticket ID.`);
+  }
+  return value.trim();
 }
 
-export function parseMode(args: string): ChittyMode {
-  const mode = args.trim();
-  if (mode === "" || mode === "work") return "work";
-  if (mode === "review") return "review";
-  throw new Error("Usage: /chitty [work|review]");
+export function settlementDecision(
+  mode: ChittyMode,
+  status: string,
+  continuationCount: number,
+  stopReason?: AssistantMessage["stopReason"],
+  aborted = false,
+): SettlementDecision {
+  if (aborted) return { action: "stop", reason: "human aborted the run" };
+  if (isFailedAssistantResponse(stopReason)) {
+    return { action: "shutdown", reason: `agent response ended with ${stopReason}` };
+  }
+  if (!isActiveStatus(mode, status)) {
+    return {
+      action: "shutdown",
+      reason: `ticket left ${mode} with status ${status}`,
+    };
+  }
+  if (continuationCount >= MAX_CONTINUATIONS) {
+    return { action: "shutdown", reason: "reached continuation limit" };
+  }
+  return { action: "continue" };
 }
 
-async function hasActionableWork(
+export function isFailedAssistantResponse(
+  stopReason: AssistantMessage["stopReason"] | undefined,
+): boolean {
+  return stopReason === "error";
+}
+
+async function ticketStatus(
   pi: ExtensionAPI,
   ctx: ExtensionContext,
-  mode: ChittyMode,
-): Promise<boolean> {
-  const result = await pi.exec("chitty", ["list", "--json"], {
+  ticketId: string,
+): Promise<string> {
+  const result = await pi.exec("chitty", ["show", ticketId, "--json"], {
     cwd: ctx.cwd,
     signal: ctx.signal,
   });
   if (result.code !== 0) {
     throw new Error(
-      `chitty list --json failed (exit ${result.code}): ${result.stderr || result.stdout}`,
+      `chitty show ${ticketId} --json failed (exit ${result.code}): ${result.stderr || result.stdout}`,
     );
   }
-  return hasActionableTickets(result.stdout, mode);
-}
 
-export function hasActionableTickets(
-  stdout: string,
-  mode: ChittyMode,
-): boolean {
-  let tickets: unknown;
+  let ticket: unknown;
   try {
-    tickets = JSON.parse(stdout);
+    ticket = JSON.parse(result.stdout);
   } catch (error) {
     throw new Error(
-      `chitty list --json returned invalid JSON: ${error instanceof Error ? error.message : String(error)}`,
+      `chitty show ${ticketId} --json returned invalid JSON: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
-
-  if (!Array.isArray(tickets)) {
-    throw new Error("chitty list --json returned a value other than a ticket list.");
+  if (
+    typeof ticket !== "object" ||
+    ticket === null ||
+    typeof (ticket as { status?: unknown }).status !== "string"
+  ) {
+    throw new Error(`chitty show ${ticketId} --json returned a ticket without a status.`);
   }
-
-  return tickets.some((ticket) => isActionableTicket(ticket, mode));
+  return (ticket as { status: string }).status;
 }
 
-function isActionableTicket(ticket: unknown, mode: ChittyMode): boolean {
-  if (typeof ticket !== "object" || ticket === null) return false;
-  const { status, context } = ticket as { status?: unknown; context?: unknown };
-  if (context === "human") return false;
+function isActiveStatus(mode: ChittyMode, status: string): boolean {
   return mode === "work"
     ? status === "todo" || status === "doing"
     : status === "review";
@@ -186,7 +229,9 @@ function latestState(ctx: ExtensionContext): State | undefined {
     typeof entry?.data !== "object" ||
     entry.data === null ||
     typeof (entry.data as Partial<State>).enabled !== "boolean" ||
-    !isMode((entry.data as Partial<State>).mode)
+    !isMode((entry.data as Partial<State>).mode) ||
+    (entry.data as Partial<State>).ticketId !== undefined &&
+      typeof (entry.data as Partial<State>).ticketId !== "string"
   ) {
     return undefined;
   }
@@ -195,41 +240,6 @@ function latestState(ctx: ExtensionContext): State | undefined {
 
 function isMode(value: unknown): value is ChittyMode {
   return value === "work" || value === "review";
-}
-
-export function isNoMoreWorkResponse(text: string): boolean {
-  return text.includes("NO MORE WORK");
-}
-
-export function hasNewAssistantResponse(
-  previousAssistantCount: number,
-  currentAssistantCount: number,
-): boolean {
-  return currentAssistantCount > previousAssistantCount;
-}
-
-export function isFailedAssistantResponse(
-  stopReason: AssistantMessage["stopReason"] | undefined,
-): boolean {
-  return stopReason === "error" || stopReason === "aborted";
-}
-
-function assistantMessageCount(ctx: ExtensionContext): number {
-  return ctx.sessionManager
-    .getBranch()
-    .filter(
-      (entry) => entry.type === "message" && entry.message.role === "assistant",
-    ).length;
-}
-
-function latestAssistantText(ctx: ExtensionContext): string {
-  const message = latestAssistantMessage(ctx);
-  if (!message) return "";
-
-  return message.content
-    .filter((content) => content.type === "text")
-    .map((content) => content.text)
-    .join("\n");
 }
 
 function latestAssistantMessage(
@@ -248,49 +258,32 @@ function latestAssistantMessage(
 const DEFAULT_INSTRUCTION =
   "When a question has a sensible default that is cheap to change later, choose it and carry on instead of blocking: record the choice and why in a Chitty note for the reviewer, and comment the code where the default applies, saying how and why it was chosen. Block only when the choice is costly to reverse or needs a person.";
 
-export function continuationPrompt(mode: ChittyMode): string {
-  if (mode === "review") {
-    return [
-      "There are still tickets awaiting review.",
-      "Continue reviewing independent work until the ticket passes or fails.",
-      "Never review work you have done. Review in the ticket's branch worktree. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. If the work passes, merge its branch into `main`, then remove its branch and worktree. If it fails, move it to doing with a note explaining what must change, then pick up another review ticket.",
-      'If there is no more review work to be done, reply "NO MORE WORK".',
-    ].join("\n");
-  }
-
+export function continuationPrompt(mode: ChittyMode, ticketId: string): string {
   return [
-    "There is still actionable Chitty work.",
-    "If you are in the middle of a ticket, carry on with it in its worktree until it is done.",
-    "Create a branch and worktree under `.worktrees/` from `main` for a new ticket; resume its existing worktree for a `doing` ticket. Never implement in the main checkout. Commit the `doing` claim on its branch before implementation starts.",
-    "Tick a criterion only after verifying it. Re-check every criterion before setting `review`.",
-    DEFAULT_INSTRUCTION,
-    "If you need feedback or have questions, add them to the ticket, move that ticket to blocked, and pick up another ticket.",
-    'If there is no more work to be done, reply "NO MORE WORK".',
+    `Continue working only on Chitty ticket ${ticketId}.`,
+    mode === "work"
+      ? "Tick a criterion only after verifying it. Re-check every criterion before setting `review`."
+      : "Never review work you have done. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion.",
+    "If you need a person to answer a question, record it in a Chitty note and set the ticket to `blocked`; do not end the turn.",
   ].join("\n");
 }
 
-export function chittyPrompt(mode: ChittyMode): string {
+export function chittyPrompt(mode: ChittyMode, ticketId: string): string {
   const modeInstructions =
     mode === "work"
       ? [
-          "Only select tickets whose status is `todo` or `doing`; do not review tickets in this mode.",
-          "Leave `human` tickets for people: never select, block or otherwise change them.",
-          "Use `chitty list` and inspect several upcoming actionable tickets with `chitty show <ID>`; prioritize the highest-priority tickets, while considering dependencies and value.",
-          "Create a branch and worktree under `.worktrees/` from `main` for a new ticket; resume its existing worktree for a `doing` ticket. Never implement in the main checkout. Commit the `doing` claim on its branch before implementation starts. Follow the repository's Chitty guidance: record a plan, mark the ticket doing, work only that ticket, and verify it. Tick a criterion only after verifying it. Re-check every criterion before setting `review`. Check satisfied acceptance criteria, then mark it done with a summary or ready for review when the repository workflow requires review. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
+          "Create a branch and worktree under `.worktrees/` from `main`. Never implement in the main checkout. Commit the `doing` claim on its branch before implementation starts.",
+          "Follow the repository's Chitty guidance: record a plan, mark the ticket doing, and verify it. Tick a criterion only after verifying it. Re-check every criterion before setting `review`. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
           DEFAULT_INSTRUCTION,
-          "When blocked by an issue or question, add a clear Chitty note explaining the problem, who can resolve it, and what is needed; then mark the ticket blocked. Create a human ticket and dependency when an external human action is required.",
-          "For non-actionable backlog tickets, add a note explaining what is needed and leave them backlog.",
-          "Keep working sequentially until no tickets remain that you can act on. Then report completed tickets and waiting tickets, including the reason each is waiting, followed by `NO MORE WORK`.",
+          "When blocked by an issue or question, add a clear Chitty note explaining the problem, who can resolve it, and what is needed; then mark the ticket blocked.",
         ]
       : [
-          "Only select tickets whose status is `review`; do not implement tickets in this mode. Review the highest-priority tickets first.",
-          "Never review work you have done. Review only independent work, and skip a ticket when you cannot establish that another agent or person implemented it.",
-          "Review in the ticket's branch worktree. Inspect the ticket, its acceptance criteria, changes, and verification independently. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. On a pass, merge its branch into `main`, then remove its branch and worktree. Pass it with `chitty edit <ID> -s done --note \"Reviewed: ...\"`; fail it with `chitty edit <ID> -s doing --note \"...\"` explaining what must change.",
-          "Keep reviewing sequentially until no independent review tickets remain. Then report passed, failed, and waiting tickets, followed by `NO MORE WORK`.",
+          "Never review work you have done. Review in the ticket's branch worktree. Inspect the ticket, its acceptance criteria, changes, and verification independently.",
+          "Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. On a pass, merge its branch into `main`, then remove its branch and worktree. Pass it with `chitty edit <ID> -s done --note \"Reviewed: ...\"`; fail it with `chitty edit <ID> -s doing --note \"...\"` explaining what must change.",
         ];
 
   return [
-    "Work through the Chitty tickets in this repository, one at a time.",
+    `Work only on Chitty ticket ${ticketId}.`,
     ...modeInstructions,
     "When you write a literal single `*` in Markdown, escape it or enclose the pattern in backticks, for example `files/*.jpg`.",
     "When you notice a concrete improvement in this project or another tool, submit it with `chitty suggest` rather than doing unrelated work.",

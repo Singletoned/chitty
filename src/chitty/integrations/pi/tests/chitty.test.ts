@@ -5,22 +5,12 @@ import test from "node:test";
 import {
   chittyPrompt,
   continuationPrompt,
-  hasActionableTickets,
-  isChittyReviewFlagEnabled,
-  isChittyWorkFlagEnabled,
   isFailedAssistantResponse,
-  isNoMoreWorkResponse,
-  parseMode,
+  parseChittyCommand,
+  parseChittyFlag,
   setPiSessionIdentity,
-  hasNewAssistantResponse,
+  settlementDecision,
 } from "../chitty.ts";
-
-const TICKETS = JSON.stringify([
-  { id: "TASK-1", status: "todo" },
-  { id: "TASK-2", status: "doing" },
-  { id: "TASK-3", status: "review" },
-  { id: "TASK-4", status: "blocked" },
-]);
 
 test("sets the Pi session identity for child processes", () => {
   const previous = process.env.CHITTY_PI_SESSION_ID;
@@ -36,98 +26,113 @@ test("sets the Pi session identity for child processes", () => {
   }
 });
 
-test("selects tickets only from the active mode", () => {
-  assert.equal(hasActionableTickets(TICKETS, "work"), true);
-  assert.equal(hasActionableTickets(TICKETS, "review"), true);
-  assert.equal(
-    hasActionableTickets(JSON.stringify([{ status: "review" }]), "work"),
-    false,
-  );
-  assert.equal(
-    hasActionableTickets(JSON.stringify([{ status: "todo" }]), "review"),
-    false,
-  );
+test("parses a mode and ticket ID from /chitty", () => {
+  assert.deepEqual(parseChittyCommand("work TASK-12"), {
+    mode: "work",
+    ticketId: "TASK-12",
+  });
+  assert.deepEqual(parseChittyCommand(" review 12 "), {
+    mode: "review",
+    ticketId: "12",
+  });
 });
 
-test("leaves human tickets for people", () => {
-  assert.equal(
-    hasActionableTickets(
-      JSON.stringify([{ status: "todo", context: "human" }]),
-      "work",
-    ),
-    false,
-  );
-  assert.match(chittyPrompt("work"), /`human` tickets/);
+test("rejects /chitty without an ID or with an unknown mode", () => {
+  assert.throws(() => parseChittyCommand(""), /Usage/);
+  assert.throws(() => parseChittyCommand("work"), /Usage/);
+  assert.throws(() => parseChittyCommand("unknown TASK-12"), /Usage/);
+  assert.throws(() => parseChittyCommand("work TASK-12 extra"), /Usage/);
 });
 
-test("chooses cheap defaults instead of blocking", () => {
-  for (const prompt of [chittyPrompt("work"), continuationPrompt("work")]) {
-    assert.match(prompt, /sensible default/);
-    assert.match(prompt, /comment the code/);
+test("parses Chitty ticket flags and rejects missing IDs", () => {
+  assert.equal(parseChittyFlag(undefined, "--chitty-work"), undefined);
+  assert.equal(parseChittyFlag("TASK-12", "--chitty-work"), "TASK-12");
+  assert.throws(() => parseChittyFlag("", "--chitty-work"), /requires a ticket ID/);
+  assert.throws(() => parseChittyFlag(true, "--chitty-work"), /requires a ticket ID/);
+});
+
+test("settles work after its ticket leaves todo or doing", () => {
+  for (const status of ["review", "blocked", "done"]) {
+    assert.deepEqual(settlementDecision("work", status, 0), {
+      action: "shutdown",
+      reason: `ticket left work with status ${status}`,
+    });
+  }
+  assert.deepEqual(settlementDecision("work", "doing", 0), {
+    action: "continue",
+  });
+});
+
+test("settles review after its ticket leaves review", () => {
+  for (const status of ["doing", "blocked", "done"]) {
+    assert.deepEqual(settlementDecision("review", status, 0), {
+      action: "shutdown",
+      reason: `ticket left review with status ${status}`,
+    });
+  }
+  assert.deepEqual(settlementDecision("review", "review", 0), {
+    action: "continue",
+  });
+});
+
+test("does not continue past the cap or an assistant error", () => {
+  assert.deepEqual(settlementDecision("work", "doing", 5), {
+    action: "shutdown",
+    reason: "reached continuation limit",
+  });
+  assert.deepEqual(settlementDecision("review", "review", 0, "error"), {
+    action: "shutdown",
+    reason: "agent response ended with error",
+  });
+});
+
+test("leaves Pi open when a human aborts", () => {
+  assert.deepEqual(settlementDecision("work", "doing", 0, undefined, true), {
+    action: "stop",
+    reason: "human aborted the run",
+  });
+});
+
+test("recognizes only assistant errors as terminal", () => {
+  assert.equal(isFailedAssistantResponse("error"), true);
+  assert.equal(isFailedAssistantResponse("aborted"), false);
+  assert.equal(isFailedAssistantResponse("end_turn"), false);
+  assert.equal(isFailedAssistantResponse(undefined), false);
+});
+
+test("work and review prompts name one ticket without choosing another", () => {
+  const ticketId = "TASK-12";
+  for (const mode of ["work", "review"] as const) {
+    for (const prompt of [
+      chittyPrompt(mode, ticketId),
+      continuationPrompt(mode, ticketId),
+    ]) {
+      assert.match(prompt, /TASK-12/);
+      assert.doesNotMatch(prompt, /another ticket/i);
+      assert.doesNotMatch(prompt, /NO MORE WORK/);
+    }
   }
 });
 
-test("rejects invalid Chitty ticket-list output", () => {
-  assert.throws(() => hasActionableTickets("not JSON", "work"), /invalid JSON/);
-  assert.throws(() => hasActionableTickets("{}", "work"), /ticket list/);
-});
+test("gives work agents the ticket implementation workflow", () => {
+  const prompt = chittyPrompt("work", "TASK-12");
 
-test("parses only explicit Chitty startup flags", () => {
-  for (const isEnabled of [
-    isChittyReviewFlagEnabled,
-    isChittyWorkFlagEnabled,
-  ]) {
-    assert.equal(isEnabled(true), true);
-    assert.equal(isEnabled(false), false);
-    assert.equal(isEnabled("true"), false);
-    assert.equal(isEnabled(undefined), false);
-  }
-});
-
-test("uses work mode by default and accepts review mode", () => {
-  assert.equal(parseMode(""), "work");
-  assert.equal(parseMode("work"), "work");
-  assert.equal(parseMode("review"), "review");
-  assert.throws(() => parseMode("anything"), /Usage/);
-});
-
-test("gives work agents only implementation tickets", () => {
-  const prompt = chittyPrompt("work");
-
-  assert.match(prompt, /`todo` or `doing`/);
   assert.match(prompt, /Create a branch and worktree/);
   assert.match(prompt, /Never implement in the main checkout/);
-  assert.match(prompt, /resume its existing worktree/);
   assert.match(prompt, /Commit the `doing` claim/);
-  assert.match(prompt, /before implementation/);
-  assert.match(prompt, /do not review tickets/);
-  assert.match(prompt, /inspect several upcoming actionable tickets/);
-  assert.match(prompt, /highest-priority tickets/);
-  assert.match(prompt, /ready for review/);
   assert.match(prompt, /Tick a criterion only after verifying it/);
   assert.match(prompt, /Re-check every criterion before setting `review`/);
-  assert.match(prompt, /completely different agent/);
-  assert.match(prompt, /never a subagent of the implementation agent/);
   assert.match(prompt, /mark the ticket blocked/);
-  assert.match(prompt, /NO MORE WORK/);
-  assert.doesNotMatch(prompt, /chitty pull/);
 });
 
-test("gives review agents only independent review tickets", () => {
-  const prompt = chittyPrompt("review");
+test("gives review agents the ticket review workflow", () => {
+  const prompt = chittyPrompt("review", "TASK-12");
 
-  assert.match(prompt, /status is `review`/);
-  assert.match(prompt, /highest-priority tickets first/);
   assert.match(prompt, /Never review work you have done/);
   assert.match(prompt, /ticket's branch worktree/);
   assert.match(prompt, /merge its branch into `main`/);
-  assert.match(prompt, /remove its branch and worktree/);
-  assert.match(prompt, /Reviewed: \.\.\./);
-  assert.match(prompt, /-s doing/);
   assert.match(prompt, /Check every criterion/);
-  assert.match(prompt, /list every failure in one note/);
   assert.match(prompt, /`--uncheck` each failed criterion/);
-  assert.match(prompt, /NO MORE WORK/);
 });
 
 test("uses Pi's public session ID API", () => {
@@ -135,37 +140,4 @@ test("uses Pi's public session ID API", () => {
 
   assert.match(extension, /sessionManager\.getSessionId\(\)/);
   assert.doesNotMatch(extension, /sessionManager\.sessionId/);
-});
-
-test("stops continuation when a triggered turn produces no assistant response", () => {
-  assert.equal(hasNewAssistantResponse(4, 4), false);
-  assert.equal(hasNewAssistantResponse(4, 5), true);
-});
-
-test("stops continuation after failed assistant turns", () => {
-  assert.equal(isFailedAssistantResponse("error"), true);
-  assert.equal(isFailedAssistantResponse("aborted"), true);
-  assert.equal(isFailedAssistantResponse("end_turn"), false);
-  assert.equal(isFailedAssistantResponse(undefined), false);
-});
-
-test("stops when the agent says no more work", () => {
-  assert.equal(isNoMoreWorkResponse("NO MORE WORK"), true);
-  assert.equal(isNoMoreWorkResponse("Completed everything.\nNO MORE WORK"), true);
-  assert.equal(isNoMoreWorkResponse("No more work"), false);
-});
-
-test("continues each mode with its appropriate workflow", () => {
-  const work = continuationPrompt("work");
-  assert.match(work, /move that ticket to blocked/);
-  assert.match(work, /Tick a criterion only after verifying it/);
-  assert.match(work, /Re-check every criterion before setting `review`/);
-
-  const review = continuationPrompt("review");
-  assert.match(review, /Never review work you have done/);
-  assert.match(review, /Check every criterion/);
-  assert.match(review, /list every failure in one note/);
-  assert.match(review, /`--uncheck` each failed criterion/);
-  assert.match(review, /move it to doing/);
-  assert.match(review, /"NO MORE WORK"/);
 });
