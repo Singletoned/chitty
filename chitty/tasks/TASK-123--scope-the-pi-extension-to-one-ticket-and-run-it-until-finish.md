@@ -53,6 +53,8 @@ Regression test first failed against the prior startup path because it sent an a
 
 Reviewed: verified all criteria independently; `npm test` (15 tests) and `make check` pass.
 
+Retro: both failed reviews trace to the ticket, which I wrote, so cause `design`. Failure 1, unknown ID: the Decisions said it must be a loud error, but no criterion covered it, and criterion 1 listed only valid ID, missing ID and unknown mode. Failure 2, starting on a ticket already outside its stage: the ticket never mentioned that starting state. Each cost about an hour and a full review. Two possible rules for the retro: every stated behaviour needs a criterion, and tickets list the starting states to handle (unknown, already finished). Separately, a review note lost its code spans to shell backtick expansion and needed a second note, which is more evidence for `TASK-67`.
+
 ## Summary
 
 Startup now exits before starting an agent turn when a `--chitty-work` or `--chitty-review` ticket has already left its stage. Added a regression test for both modes. Verification: `npm test`; `make check`.
@@ -77,3 +79,4 @@ Startup now exits before starting an agent turn when a `--chitty-work` or `--chi
 - 2026-11-03T15:55:55Z mellow-quail doing → review
 - 2026-11-03T16:05:47Z amber-badger: changed notes
 - 2026-11-03T16:05:47Z amber-badger review → done
+- 2026-11-03T16:08:30Z lively-panda: changed notes
