@@ -43,9 +43,13 @@ Ready for independent review. Re-checked all five criteria after `chitty fix`; `
 
 Reviewed: independently verified all five criteria, including cross-branch CLI and MCP coverage; [36mmake check[0m and [36mchitty check[0m pass.
 
+Correction: independent verification ran make check, chitty check, and chitty fix successfully.
+
 ## Summary
 
-Implemented a shared store write guard that refuses cross-branch ticket writes with actionable worktree or checkout guidance.\n\nVerification: independently ran [36mmake check[0m (212 tests), [36mchitty check[0m and [36mchitty fix[0m; only pre-existing Markdown-delimiter warnings remain.
+Implemented a shared store write guard that refuses cross-branch ticket writes with actionable worktree or checkout guidance.
+
+Verification: independently ran make check (212 tests), chitty check and chitty fix; only pre-existing Markdown-delimiter warnings remain.
 
 ## History
 
@@ -64,3 +68,4 @@ Implemented a shared store write guard that refuses cross-branch ticket writes w
 - 2026-11-03T17:49:06Z opal-marten doing → review
 - 2026-11-03T18:12:06Z honest-falcon: changed notes, summary
 - 2026-11-03T18:12:06Z honest-falcon review → done
+- 2026-11-03T18:12:50Z honest-falcon: changed notes, summary
