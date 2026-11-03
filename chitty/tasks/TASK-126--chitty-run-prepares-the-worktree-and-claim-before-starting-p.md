@@ -32,7 +32,6 @@ This supersedes two parts of `TASK-124`: Pi's working directory becomes the work
     - Branch exists and has a linked worktree: use it, wherever it is, per `git worktree list`. Uncommitted files there are left alone: a `doing` ticket is resuming, and `TASK-120` deals with them before a review.
     - Branch exists with no worktree: add one at `.worktrees/<branch>` in the main checkout.
     - Branch does not exist: in mode `work`, create it from local `main` at `.worktrees/<branch>`. In mode `review`, this is a loud error, as there is nothing to review.
-    - Branch checked out in the main checkout: loud error, and never switch the main checkout.
     - Anything else Git refuses, such as a stale directory, is a loud error with Git's message.
 4. Run `setup` in the worktree, every time, because dependencies may have changed since the last session. It is parsed without a shell, like `autoformat`, with output inherited and stdin closed. A failure stops the run, leaving the worktree in place and the ticket unclaimed. The next run reuses the worktree and runs `setup` again.
 5. In mode `work`, if the ticket is `todo`, set it to `doing` in the worktree through `Repo.edit`, so the claim is committed on the branch.
@@ -60,7 +59,6 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
-- [ ] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), a branch checked out in the main checkout, and uncommitted changes to the ticket in the main checkout
 - [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
@@ -69,6 +67,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 - [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
+- [ ] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
 
 ## Plan
 
@@ -117,6 +116,12 @@ Verified criterion 13 with `TestNext.test_run_cases` and `TestNext.test_run_refu
 
 Blocked: criterion 8 requires a black-box test where the ticket branch is checked out in the main checkout. This is unreachable under the same ticket contract: preflight rejects unless that checkout is on `main`, while a selected ticket branch is always `<ticket ID>.lower()` (for example `task-1`) and therefore cannot be `main`. A human must decide whether to remove that unreachable subcase, relax the main-branch preflight, or permit a private-helper test. The remaining unchecked criteria can continue once this specification conflict is resolved.
 
+Decided by the author with the human, 2026-11-03. The block was my contradiction: I added the preflight requiring the main checkout on `main` after writing the case of a ticket branch checked out there, so that case cannot happen. Remove the subcase, and the now unreachable check in `_worktree`. Criterion 8 moved to the end as criterion 16, so earlier notes citing 9 to 16 are one too high. Next: this ticket is frozen. New findings go on new tickets, not here. It now waits for `TASK-129`, which stops the install leak, and `TASK-130`, because five open criteria could hit the cap again. When resumed, first rebase onto `main`, resolving `chitty.ts`, and bump `__version__` above `main`. Do not use `chitty init` from this worktree until `TASK-129` is in the branch.
+
+Retro: this worker blocked on a contradiction it could see had one safe answer, since the unreachable case could simply be dropped with a note. The guide says to choose cheap defaults and carry on, but a spec conflict looks like a reason to stop, and stopping cost a round. It also followed from criteria that list test cases: each addition made the spec harder to keep consistent. For the retro: should criteria state behaviour and leave the case list to the tests?
+
+Correction to the note above: this cannot list `TASK-129` and `TASK-130` in `depends_on`, because those tickets do not exist on this branch until it is rebased. So it stays `blocked` instead, because otherwise `chitty next` would pick it first. Unblock with `-s todo` once both have landed. Nothing else in that note changes.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -145,3 +150,7 @@ Blocked: criterion 8 requires a black-box test where the ticket branch is checke
 - 2026-11-03T20:55:29Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:55:49Z ivory-panda: changed notes
 - 2026-11-03T20:55:49Z ivory-panda doing → blocked
+- 2026-11-03T21:00:44Z lively-panda: changed dependencies, description, acceptance criteria, notes
+- 2026-11-03T21:00:44Z lively-panda blocked → todo
+- 2026-11-03T21:01:31Z lively-panda: changed dependencies, notes
+- 2026-11-03T21:01:31Z lively-panda todo → blocked
