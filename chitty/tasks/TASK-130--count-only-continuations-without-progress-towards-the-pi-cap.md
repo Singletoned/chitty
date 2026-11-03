@@ -37,7 +37,10 @@ Out of scope: changing `chitty run`, and splitting large tickets.
 
 Cold read by a fresh Sonnet subagent, 2026-11-03, with `TASK-129`. Fixed: criterion 3 wrongly said the bump makes `chitty init` install the extension, when `init` always checks the file itself; the baseline; persisted state; review mode; `show` failing; and the rollout and bump. It also confirmed `show --json` is stable at rest. Rejected: a tick then untick never reaching the cap, and notes counting as progress, because both are visible in the ticket and the usage log, and this guards against a stuck agent, not a hostile one. Testing that real `show` output changes on each edit, because every changing write appends to History by design. `show` reading a newer copy from another branch, because the guard from `TASK-105` stops a worker's ticket being edited elsewhere. How to pass the values to the decision function, which is the worker's choice.
 
+Landing moved from `TASK-120` to `TASK-131`, so read references to that step accordingly.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
 - 2026-11-03T20:44:53Z lively-panda: changed dependencies, description, acceptance criteria, notes
+- 2026-11-03T20:46:22Z lively-panda: changed notes
