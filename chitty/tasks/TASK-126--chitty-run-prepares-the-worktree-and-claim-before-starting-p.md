@@ -54,7 +54,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 ## Acceptance Criteria
 
 - [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
-- [ ] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
+- [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
@@ -109,6 +109,8 @@ Verified criteria 15 and 16 with `npm test -- --test src/chitty/integrations/pi/
 
 Verified criterion 14 with `TestInit.test_init_adds_missing_human_review_setting`, `chitty.toml`, and `README.md`: this repository configures `setup = "make install"`; initialization preserves a commented setup example for existing repositories; README directs workers to `chitty run`.
 
+Verified criterion 2 with `TestNext.test_run_cases`: initial claim leaves `main` at its original `HEAD`; repeated runs retain exactly one claim commit on `task-1`; and the ticket remains `doing` until Pi changes it.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -132,3 +134,4 @@ Verified criterion 14 with `TestInit.test_init_adds_missing_human_review_setting
 - 2026-11-03T20:47:08Z ivory-panda: changed notes
 - 2026-11-03T20:52:50Z ivory-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T20:53:08Z ivory-panda: changed notes; ticked acceptance criteria
+- 2026-11-03T20:54:21Z ivory-panda: changed notes; ticked acceptance criteria
