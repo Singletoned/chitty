@@ -1,6 +1,6 @@
 ---
 title: Add `chitty next` and `chitty run` to do the next ticket
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-123
@@ -54,14 +54,25 @@ Out of scope: label filters and role options from `TASK-76`, per-stage models, a
 - [ ] CLI tests pin `next` output: `work TASK-12`, the `--json` form, and for no ticket an empty stdout, a stderr message and a non-zero exit; the MCP tool reports the same error
 - [ ] Fake-`pi` tests pin `run`: the printed change line, a status change to `blocked` exiting 0, a working directory of the repository root, and a child that reads inherited stdin
 
+## Plan
+
+1. Map the existing CLI, MCP, repository ordering, and test helpers.
+2. Add focused failing tests for selection, CLI/MCP parity, and subprocess execution semantics.
+3. Implement shared next-action selection in `store.py`, thin CLI/MCP adapters, and `run.py`.
+4. Document the commands, format, run the full checks, and verify every acceptance criterion.
+
 ## Notes
 
 Criteria added after `TASK-123` failed review twice on behaviour its criteria left out. Starting states covered by existing text: a ticket that makes no progress exits non-zero. A `todo → doing` session that then runs out of credits counts as a change, so a loop spends one further session before stopping, which is accepted.
 
 Cold read by a fresh Sonnet subagent, 2026-11-03. Adopted into the description: dependency rule limited to `todo`, a dangling dependency as an error, the definition of the human context, all contexts with `TaskId` tie-break, a fresh `Repo` after `pi` exits (the old one caches history), the repository root as working directory, Ctrl-C behaviour, the unchanged message for uncommitted worktree changes, and a new `src/chitty/run.py`. Three criteria added. Rejected as already fine or too rare: duplicate IDs and deleted tickets, which fail loudly already, and `review` tickets in a context with `review = false`. This corrects the earlier note, which overstated what the ticket covered.
 
+Implementation choice: return a small action value with `mode` and canonical `TaskId` from shared selection. This keeps CLI, MCP, and runner output consistent while remaining cheap to extend if later commands need more metadata.
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
 - 2026-11-03T16:08:31Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T16:16:15Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T16:45:51Z honest-heron: changed notes; wrote the plan
+- 2026-11-03T16:45:51Z honest-heron todo → doing
