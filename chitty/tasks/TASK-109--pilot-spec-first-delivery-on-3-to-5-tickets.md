@@ -42,6 +42,8 @@ Decided with the human (2026-11-03): one ticket in work at a time. The human's a
 
 Model and cost per session now come from the `TASK-127` log, so the summary for each pilot ticket need only record the rest.
 
+Rebase rewrites commits, so a tests-commit hash stops being on the branch after `chitty run` rebases. The old object stays available for `git diff`, so the check in step 4 still works, unless `main` changed the same test files.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -50,3 +52,4 @@ Model and cost per session now come from the `TASK-127` log, so the summary for 
 - 2026-11-03T12:40:41Z lively-panda: changed dependencies
 - 2026-11-03T16:30:18Z lively-panda: changed dependencies
 - 2026-11-03T16:46:07Z lively-panda: changed dependencies, notes
+- 2026-11-03T17:26:54Z lively-panda: changed notes
