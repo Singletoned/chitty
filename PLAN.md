@@ -48,7 +48,10 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
 - Minimal diffs. The tool never touches a line it didn't change, and never
   writes a file whose content would be unchanged. `init` is idempotent: it
   adds missing setup only and refreshes the managed agent-guide block.
-- `chitty init` is the idempotent setup and format-migration path. Reads work
+- `chitty init` is the idempotent setup and format-migration path. It installs
+  the machine-wide Pi extension only from a main Git checkout; linked worktrees
+  skip all machine-wide Pi setup. Non-Git directories remain eligible to install
+  it. Reads work
   with an older setup; writes require it to be current. With `autocommit =
   true`, Chitty upgrades and commits setup separately before the requested
   write; otherwise it fails loudly and tells the caller to run `chitty init`.
