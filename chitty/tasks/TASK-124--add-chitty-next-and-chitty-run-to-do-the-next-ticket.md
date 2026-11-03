@@ -95,6 +95,8 @@ Ready for independent review: all nine criteria are checked; `make check` passed
 
 Reviewed: all nine criteria pass independently. Inspected selection and runner behavior, CLI/MCP parity, documentation and help; make check passes (207 tests).
 
+Retro: the single failed review cited stated requirements, in one note, so cause `work`: archived dependencies treated as unmet, a Ctrl-C test that signalled the parent instead of the child, and a numeric test that skipped `TASK-9` before `TASK-12`. None was a gap in the ticket, unlike both `TASK-123` failures, which is one data point for the cold read. Two of the three were tests weaker than the criterion they claimed, which spec-first tests aim to prevent. The cold read had flagged that archived was not named in a criterion and the author did not add it; that was the first failure. A worker note was again mangled by shell backticks (`TASK-67`).
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
@@ -115,3 +117,4 @@ Reviewed: all nine criteria pass independently. Inspected selection and runner b
 - 2026-11-03T17:19:58Z frosty-marten doing → review
 - 2026-11-03T17:23:27Z brisk-quail: changed notes
 - 2026-11-03T17:23:27Z brisk-quail review → done
+- 2026-11-03T17:26:54Z lively-panda: changed notes
