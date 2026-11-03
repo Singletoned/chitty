@@ -4,6 +4,7 @@ status: todo
 priority: high
 depends_on:
   - TASK-129
+  - TASK-134
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -21,6 +22,11 @@ Out of scope: anything in `chitty run`, and the log itself.
 - [ ] Node tests show the extension summing every field by provider and model, tolerating a message with no usage, counting abandoned branches, keeping another session ID in the file, replacing its own on a second shutdown, and writing nothing when `CHITTY_USAGE_FILE` is unset
 - [ ] `__version__` is bumped above `main`'s
 
+## Notes
+
+Waits for `TASK-134`, so this extension change reaches the machine by itself.
+
 ## History
 
 - 2026-11-03T20:46:19Z lively-panda → todo
+- 2026-11-03T21:21:53Z lively-panda: changed dependencies, notes
