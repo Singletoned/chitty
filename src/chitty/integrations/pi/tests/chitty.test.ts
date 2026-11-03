@@ -104,6 +104,8 @@ test("gives work agents only implementation tickets", () => {
   assert.match(prompt, /inspect several upcoming actionable tickets/);
   assert.match(prompt, /highest-priority tickets/);
   assert.match(prompt, /ready for review/);
+  assert.match(prompt, /Tick a criterion only after verifying it/);
+  assert.match(prompt, /Re-check every criterion before setting `review`/);
   assert.match(prompt, /completely different agent/);
   assert.match(prompt, /never a subagent of the implementation agent/);
   assert.match(prompt, /mark the ticket blocked/);
@@ -122,6 +124,9 @@ test("gives review agents only independent review tickets", () => {
   assert.match(prompt, /remove its branch and worktree/);
   assert.match(prompt, /Reviewed: \.\.\./);
   assert.match(prompt, /-s doing/);
+  assert.match(prompt, /Check every criterion/);
+  assert.match(prompt, /list every failure in one note/);
+  assert.match(prompt, /`--uncheck` each failed criterion/);
   assert.match(prompt, /NO MORE WORK/);
 });
 
@@ -151,10 +156,16 @@ test("stops when the agent says no more work", () => {
 });
 
 test("continues each mode with its appropriate workflow", () => {
-  assert.match(continuationPrompt("work"), /move that ticket to blocked/);
+  const work = continuationPrompt("work");
+  assert.match(work, /move that ticket to blocked/);
+  assert.match(work, /Tick a criterion only after verifying it/);
+  assert.match(work, /Re-check every criterion before setting `review`/);
 
   const review = continuationPrompt("review");
   assert.match(review, /Never review work you have done/);
+  assert.match(review, /Check every criterion/);
+  assert.match(review, /list every failure in one note/);
+  assert.match(review, /`--uncheck` each failed criterion/);
   assert.match(review, /move it to doing/);
   assert.match(review, /"NO MORE WORK"/);
 });

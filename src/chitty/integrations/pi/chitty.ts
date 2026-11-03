@@ -253,7 +253,7 @@ export function continuationPrompt(mode: ChittyMode): string {
     return [
       "There are still tickets awaiting review.",
       "Continue reviewing independent work until the ticket passes or fails.",
-      "Never review work you have done. Review in the ticket's branch worktree. If the work passes, merge its branch into `main`, then remove its branch and worktree. If it fails, move it to doing with a note explaining what must change, then pick up another review ticket.",
+      "Never review work you have done. Review in the ticket's branch worktree. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. If the work passes, merge its branch into `main`, then remove its branch and worktree. If it fails, move it to doing with a note explaining what must change, then pick up another review ticket.",
       'If there is no more review work to be done, reply "NO MORE WORK".',
     ].join("\n");
   }
@@ -262,6 +262,7 @@ export function continuationPrompt(mode: ChittyMode): string {
     "There is still actionable Chitty work.",
     "If you are in the middle of a ticket, carry on with it in its worktree until it is done.",
     "Create a branch and worktree under `.worktrees/` from `main` for a new ticket; resume its existing worktree for a `doing` ticket. Never implement in the main checkout. Commit the `doing` claim on its branch before implementation starts.",
+    "Tick a criterion only after verifying it. Re-check every criterion before setting `review`.",
     DEFAULT_INSTRUCTION,
     "If you need feedback or have questions, add them to the ticket, move that ticket to blocked, and pick up another ticket.",
     'If there is no more work to be done, reply "NO MORE WORK".',
@@ -275,7 +276,7 @@ export function chittyPrompt(mode: ChittyMode): string {
           "Only select tickets whose status is `todo` or `doing`; do not review tickets in this mode.",
           "Leave `human` tickets for people: never select, block or otherwise change them.",
           "Use `chitty list` and inspect several upcoming actionable tickets with `chitty show <ID>`; prioritize the highest-priority tickets, while considering dependencies and value.",
-          "Create a branch and worktree under `.worktrees/` from `main` for a new ticket; resume its existing worktree for a `doing` ticket. Never implement in the main checkout. Commit the `doing` claim on its branch before implementation starts. Follow the repository's Chitty guidance: record a plan, mark the ticket doing, work only that ticket, and verify it. Check satisfied acceptance criteria, then mark it done with a summary or ready for review when the repository workflow requires review. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
+          "Create a branch and worktree under `.worktrees/` from `main` for a new ticket; resume its existing worktree for a `doing` ticket. Never implement in the main checkout. Commit the `doing` claim on its branch before implementation starts. Follow the repository's Chitty guidance: record a plan, mark the ticket doing, work only that ticket, and verify it. Tick a criterion only after verifying it. Re-check every criterion before setting `review`. Check satisfied acceptance criteria, then mark it done with a summary or ready for review when the repository workflow requires review. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
           DEFAULT_INSTRUCTION,
           "When blocked by an issue or question, add a clear Chitty note explaining the problem, who can resolve it, and what is needed; then mark the ticket blocked. Create a human ticket and dependency when an external human action is required.",
           "For non-actionable backlog tickets, add a note explaining what is needed and leave them backlog.",
@@ -284,7 +285,7 @@ export function chittyPrompt(mode: ChittyMode): string {
       : [
           "Only select tickets whose status is `review`; do not implement tickets in this mode. Review the highest-priority tickets first.",
           "Never review work you have done. Review only independent work, and skip a ticket when you cannot establish that another agent or person implemented it.",
-          "Review in the ticket's branch worktree. Inspect the ticket, its acceptance criteria, changes, and verification independently. On a pass, merge its branch into `main`, then remove its branch and worktree. Pass it with `chitty edit <ID> -s done --note \"Reviewed: ...\"`; fail it with `chitty edit <ID> -s doing --note \"...\"` explaining what must change.",
+          "Review in the ticket's branch worktree. Inspect the ticket, its acceptance criteria, changes, and verification independently. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. On a pass, merge its branch into `main`, then remove its branch and worktree. Pass it with `chitty edit <ID> -s done --note \"Reviewed: ...\"`; fail it with `chitty edit <ID> -s doing --note \"...\"` explaining what must change.",
           "Keep reviewing sequentially until no independent review tickets remain. Then report passed, failed, and waiting tickets, followed by `NO MORE WORK`.",
         ];
 
