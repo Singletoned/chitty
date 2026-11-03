@@ -1,6 +1,6 @@
 ---
 title: Do not install the Pi extension from a linked worktree
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -44,6 +44,16 @@ Verified all criteria with `make check`: the real-worktree test first failed on 
 
 Ready for independent review. Re-checked every acceptance criterion after the final code commit with `make check`; the working tree is clean and `git diff --check main...HEAD` passes.
 
+Reviewed: all five acceptance criteria independently passed; uv run ruff format --check .
+183 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run python -m unittest discover -s tests -t .
+[ticket 09920ba] worker change
+ 1 file changed, 1 insertion(+), 1 deletion(-) passed (215 tests), and  passed.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
@@ -54,3 +64,5 @@ Ready for independent review. Re-checked every acceptance criterion after the fi
 - 2026-11-03T21:10:29Z kind-marten: changed notes; ticked acceptance criteria
 - 2026-11-03T21:11:59Z kind-marten: changed notes
 - 2026-11-03T21:11:59Z kind-marten doing → review
+- 2026-11-03T21:18:50Z daring-gecko: changed notes
+- 2026-11-03T21:18:50Z daring-gecko review → done
