@@ -12,19 +12,33 @@ created: 2026-11-03
 
 One command to do the right next thing: review whatever needs reviewing, otherwise work the highest-priority ticket. Run it repeatedly to check things between tickets, or in a shell loop to go unattended.
 
-`chitty next` prints the next action, for example `work TASK-12` (`--json` gives `{"mode", "id"}`), and exits non-zero with a message if there is none. Selection lives in `src/chitty/store.py` beside `ordered`:
+### `chitty next`
+
+Prints the next action, for example `work TASK-12`. `--json` gives `{"mode", "id"}`. With nothing to do it prints nothing on stdout, gives a message on stderr, and exits non-zero. Selection lives in `src/chitty/store.py` beside `ordered` and raises `ChittyError` when there is nothing, so the MCP tool reports the same error.
 
 1. Consider `review` tickets, then `doing`, then `todo`. `review` gives mode `review`; the others give `work`. Status wins over priority, because the human asked for reviews first and one ticket in work at a time means finishing `doing` first.
-2. Within a status, take `high`, `medium`, `low`, then unset, then the lowest ticket number.
-3. Exclude `backlog`, `blocked` and `done`; tickets in the `human` context or with owner `human`; and tickets with any `depends_on` entry not yet `done`. A done or archived dependency counts as met: `TASK-105` still lists the finished `TASK-107`.
+2. Within a status, take `high`, `medium`, `low`, then unset, then `TaskId` order (prefix, then number as an integer), across all contexts.
+3. Always exclude `backlog`, `blocked` and `done`; tickets in the context named `human`; and tickets whose `owner` is exactly `human`.
+4. Exclude `todo` tickets with a `depends_on` entry not yet `done`. A done or archived dependency counts as met: `TASK-105` still lists the finished `TASK-107`. The rule does not apply to `review` or `doing`, because work already started must not silently vanish from the queue if a dependency is added later.
+5. A `depends_on` entry that names no ticket is a `ChittyError` naming both tickets, because `chitty check` already treats it as an error.
 
-`chitty run` calls that selection, runs `pi --chitty-<mode> <ID>` as a child process attached to the terminal, then reads the ticket again and prints the change, for example `TASK-12: todo → review`. Exit codes: 0 if the ticket's status changed; non-zero with a message if there is no next ticket, if `pi` is not installed or exits non-zero, or if the status did not change. A session that made no progress, such as one out of credits, therefore stops a loop instead of repeating. Pi's exit code alone cannot show this, because interactive shutdown always exits 0.
+### `chitty run`
+
+Put the process handling in a new module, `src/chitty/run.py`, so `cli.py` stays thin.
+
+1. Call the selection, then run `pi --chitty-<mode> <ID>` as a child process with the repository root as its working directory, and stdin, stdout and stderr inherited, not captured.
+2. After `pi` exits, open a new `Repo` to read the ticket: the existing instance caches branch history. Print the change, for example `TASK-12: todo → review`.
+3. Exit 0 if the ticket's status changed, to any status: a ticket that becomes `blocked` has made progress and the next run moves on.
+4. Exit non-zero with a message on stderr if there is no next ticket, `pi` is not on `PATH`, `pi` exits non-zero, or the status did not change. A session that made no progress, such as one out of credits, therefore stops a loop instead of repeating. Pi's exit code alone cannot show this, because interactive shutdown always exits 0. The unchanged message says that only committed changes are visible, because a worktree in a repository without `autocommit` looks unchanged.
+5. On Ctrl-C, wait for `pi`, skip the comparison, and exit 130 with a one-line message and no traceback.
 
 So `while chitty run; do :; done` is the loop, and needs no flag or code. `README.md` documents it.
 
-Defaults chosen, cheap to change: Pi exits when a ticket finishes rather than staying open, because a loop needs it and the terminal keeps the transcript. The command is named `run` and only knows `pi`; `TASK-89` can extend it. Model choice is left to Pi's settings; for a specific model, run `chitty next` and call `pi` directly.
+### Defaults chosen, cheap to change
 
-Keep `cli.py` thin. `next` also needs an MCP tool, since it is a read, but `run` does not, since it launches a harness.
+Pi exits when a ticket finishes rather than staying open, because a loop needs it and the terminal keeps the transcript. The command is named `run` and only knows `pi`; `TASK-89` can extend it. Model choice is left to Pi's settings; for a specific model, run `chitty next` and call `pi` directly. Agents do not need these commands, so `src/chitty/guide.md` does not change and no version bump is required.
+
+`next` gets an MCP tool, since it is a read. `run` does not, since it launches a harness.
 
 Out of scope: label filters and role options from `TASK-76`, per-stage models, and detecting a `doing` ticket held by another live session.
 
@@ -36,12 +50,18 @@ Out of scope: label filters and role options from `TASK-76`, per-stage models, a
 - [ ] `PLAN.md`, `README.md` and the `chitty --help` output describe both commands and the shell loop; `__version__` is bumped if `src/chitty/guide.md` changes
 - [ ] Tests use a fake `pi` that commits the status change on a ticket branch in a worktree, as a real worker does, and `chitty run` run from the main checkout still reports the change and exits 0
 - [ ] Ctrl-C during `pi` exits `chitty run` non-zero without a traceback, so it stops a shell loop; a test sends SIGINT to the child and checks this
+- [ ] Selection tests also cover a `doing` ticket with an unmet dependency (selected), a dangling `depends_on` entry (error), a tie across two contexts, and `TASK-9` ordering before `TASK-12`
+- [ ] CLI tests pin `next` output: `work TASK-12`, the `--json` form, and for no ticket an empty stdout, a stderr message and a non-zero exit; the MCP tool reports the same error
+- [ ] Fake-`pi` tests pin `run`: the printed change line, a status change to `blocked` exiting 0, a working directory of the repository root, and a child that reads inherited stdin
 
 ## Notes
 
 Criteria added after `TASK-123` failed review twice on behaviour its criteria left out. Starting states covered by existing text: a ticket that makes no progress exits non-zero. A `todo → doing` session that then runs out of credits counts as a change, so a loop spends one further session before stopping, which is accepted.
 
+Cold read by a fresh Sonnet subagent, 2026-11-03. Adopted into the description: dependency rule limited to `todo`, a dangling dependency as an error, the definition of the human context, all contexts with `TaskId` tie-break, a fresh `Repo` after `pi` exits (the old one caches history), the repository root as working directory, Ctrl-C behaviour, the unchanged message for uncommitted worktree changes, and a new `src/chitty/run.py`. Three criteria added. Rejected as already fine or too rare: duplicate IDs and deleted tickets, which fail loudly already, and `review` tickets in a context with `review = false`. This corrects the earlier note, which overstated what the ticket covered.
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
 - 2026-11-03T16:08:31Z lively-panda: changed acceptance criteria, notes
+- 2026-11-03T16:16:15Z lively-panda: changed description, acceptance criteria, notes
