@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import {
+import chitty, {
   chittyPrompt,
   continuationPrompt,
   isFailedAssistantResponse,
@@ -49,6 +49,49 @@ test("parses Chitty ticket flags and rejects missing IDs", () => {
   assert.equal(parseChittyFlag("TASK-12", "--chitty-work"), "TASK-12");
   assert.throws(() => parseChittyFlag("", "--chitty-work"), /requires a ticket ID/);
   assert.throws(() => parseChittyFlag(true, "--chitty-work"), /requires a ticket ID/);
+});
+
+test("rejects an unknown ticket flag before starting an agent turn", async () => {
+  for (const flag of ["chitty-work", "chitty-review"]) {
+    let sessionStart:
+      | ((event: unknown, ctx: unknown) => Promise<void> | void)
+      | undefined;
+    const sentMessages: string[] = [];
+    const pi = {
+      appendEntry: () => {},
+      exec: async () => ({
+        code: 1,
+        stdout: "",
+        stderr: "ticket not found",
+      }),
+      getFlag: (name: string) => (name === flag ? "TASK-999" : undefined),
+      on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
+        if (event === "session_start") sessionStart = handler;
+        return () => {};
+      },
+      registerCommand: () => {},
+      registerFlag: () => {},
+      sendMessage: () => {},
+      sendUserMessage: (message: string) => sentMessages.push(message),
+    };
+    chitty(pi as Parameters<typeof chitty>[0]);
+
+    assert.ok(sessionStart);
+    await assert.rejects(
+      sessionStart(
+        {},
+        {
+          cwd: process.cwd(),
+          sessionManager: {
+            getBranch: () => [],
+            getSessionId: () => "test-session",
+          },
+        },
+      ),
+      /chitty show TASK-999 --json failed/,
+    );
+    assert.deepEqual(sentMessages, []);
+  }
 });
 
 test("settles work after its ticket leaves todo or doing", () => {

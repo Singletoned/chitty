@@ -31,7 +31,12 @@ type SettlementDecision =
 export default function chitty(pi: ExtensionAPI) {
   let state: State = { enabled: false, mode: "work" };
 
-  function start(mode: ChittyMode, ticketId: string): void {
+  async function start(
+    mode: ChittyMode,
+    ticketId: string,
+    ctx: ExtensionContext,
+  ): Promise<void> {
+    await ticketStatus(pi, ctx, ticketId);
     state = { enabled: true, mode, ticketId, continuationCount: 0 };
     persistState(pi, state);
     pi.sendUserMessage(chittyPrompt(mode, ticketId));
@@ -59,9 +64,9 @@ export default function chitty(pi: ExtensionAPI) {
 
   pi.registerCommand("chitty", {
     description: "Work or review one Chitty ticket",
-    handler: (args) => {
+    handler: async (args, ctx) => {
       const { mode, ticketId } = parseChittyCommand(args);
-      start(mode, ticketId);
+      await start(mode, ticketId, ctx);
     },
   });
 
@@ -77,8 +82,8 @@ export default function chitty(pi: ExtensionAPI) {
     if (reviewTicket !== undefined && workTicket !== undefined) {
       throw new Error("Use only one of --chitty-work and --chitty-review.");
     }
-    if (reviewTicket !== undefined) start("review", reviewTicket);
-    if (workTicket !== undefined) start("work", workTicket);
+    if (reviewTicket !== undefined) await start("review", reviewTicket, ctx);
+    if (workTicket !== undefined) await start("work", workTicket, ctx);
   });
 
   pi.on("agent_settled", async (event, ctx) => {
