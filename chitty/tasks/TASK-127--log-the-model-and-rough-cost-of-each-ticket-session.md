@@ -5,6 +5,7 @@ priority: high
 depends_on:
   - TASK-126
   - TASK-129
+  - TASK-132
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -53,7 +54,6 @@ Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnes
 - [ ] `PLAN.md` and `README.md` describe the log and say its costs are list prices; `__version__` is bumped so `chitty init` installs the extension
 - [ ] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
 - [ ] Tests show a line is still written, with `models` null and a warning on stderr, for a missing and an invalid usage file, and with `status_after` correct for a `pi` that exits non-zero, a Ctrl-C and an unchanged status, each keeping its exit code
-- [ ] Node tests show the extension summing every field by provider and model, tolerating a message with no usage, counting abandoned branches, keeping another session ID in the file, replacing its own on a second shutdown, and writing nothing when `CHITTY_USAGE_FILE` is unset
 
 ## Notes
 
@@ -65,6 +65,8 @@ Every finding from the cold read now has an outcome. Fixed in the ticket on the 
 
 Depends on `TASK-129` so a worktree cannot install this extension change early.
 
+Split on 2026-11-03: the extension half is now `TASK-132`. This ticket keeps the design, the `chitty run` side and the check against a real session.
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
@@ -72,3 +74,4 @@ Depends on `TASK-129` so a worktree cannot install this extension change early.
 - 2026-11-03T18:19:35Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T20:00:17Z lively-panda: changed description, notes
 - 2026-11-03T20:44:56Z lively-panda: changed dependencies, notes
+- 2026-11-03T20:46:20Z lively-panda: changed dependencies, acceptance criteria, notes
