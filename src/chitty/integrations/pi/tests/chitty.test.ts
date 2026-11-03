@@ -134,6 +134,8 @@ test("rejects an unknown ticket flag before starting an agent turn", async () =>
       | ((event: unknown, ctx: unknown) => Promise<void> | void)
       | undefined;
     const sentMessages: string[] = [];
+    const notifications: string[] = [];
+    let shutdowns = 0;
     const pi = {
       appendEntry: () => {},
       exec: async (command: string, args: string[]) => {
@@ -155,20 +157,21 @@ test("rejects an unknown ticket flag before starting an agent turn", async () =>
     chitty(pi as Parameters<typeof chitty>[0]);
 
     assert.ok(sessionStart);
-    await assert.rejects(
-      sessionStart(
-        {},
-        {
-          cwd: process.cwd(),
-          sessionManager: {
-            getBranch: () => [],
-            getSessionId: () => "test-session",
-          },
+    await sessionStart(
+      {},
+      {
+        cwd: process.cwd(),
+        sessionManager: {
+          getBranch: () => [],
+          getSessionId: () => "test-session",
         },
-      ),
-      /chitty show TASK-999 --json failed/,
+        shutdown: () => shutdowns++,
+        ui: { notify: (message: string) => notifications.push(message) },
+      },
     );
     assert.deepEqual(sentMessages, []);
+    assert.match(notifications[0], /chitty show TASK-999 --json failed/);
+    assert.equal(shutdowns, 1);
   }
 });
 
@@ -232,6 +235,45 @@ test("refuses Chitty startup outside a linked worktree", async () => {
     requireLinkedWorktree(pi as never, { cwd: process.cwd() } as never),
     /chitty run/,
   );
+});
+
+test("exits cleanly when Chitty starts outside a linked worktree", async () => {
+  let sessionStart:
+    | ((event: unknown, ctx: unknown) => Promise<void> | void)
+    | undefined;
+  const notifications: string[] = [];
+  let shutdowns = 0;
+  const sentMessages: string[] = [];
+  const pi = {
+    appendEntry: () => {},
+    exec: async () => ({ code: 0, stdout: ".git\n", stderr: "" }),
+    getFlag: (name: string) => (name === "chitty-work" ? "TASK-12" : undefined),
+    on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
+      if (event === "session_start") sessionStart = handler;
+      return () => {};
+    },
+    registerCommand: () => {},
+    registerFlag: () => {},
+    sendMessage: () => {},
+    sendUserMessage: (message: string) => sentMessages.push(message),
+  };
+  chitty(pi as Parameters<typeof chitty>[0]);
+
+  assert.ok(sessionStart);
+  await sessionStart(
+    {},
+    {
+      cwd: `${process.cwd()}/subdirectory`,
+      sessionManager: { getBranch: () => [], getSessionId: () => "test-session" },
+      shutdown: () => shutdowns++,
+      ui: { notify: (message: string) => notifications.push(message) },
+    },
+  );
+  assert.deepEqual(sentMessages, []);
+  assert.deepEqual(notifications, [
+    "Start Chitty with `chitty run`; it prepares a linked ticket worktree.",
+  ]);
+  assert.equal(shutdowns, 1);
 });
 
 test("settles work after its ticket leaves todo or doing", () => {
@@ -453,9 +495,7 @@ test("tells work agents to carry on to the next criterion", () => {
 test("gives work agents the ticket implementation workflow", () => {
   const prompt = chittyPrompt("work", "TASK-12");
 
-  assert.doesNotMatch(prompt, /Create a branch and worktree/);
-  assert.doesNotMatch(prompt, /setup command/);
-  assert.doesNotMatch(prompt, /doing` claim/);
+  assert.doesNotMatch(prompt, /\b(?:worktree|setup|claim)\b/i);
   assert.match(prompt, /verify each criterion before ticking it/);
   assert.match(prompt, /re-check every criterion before setting `review`/);
   assert.match(prompt, /mark the ticket blocked/);

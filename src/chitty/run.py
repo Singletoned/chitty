@@ -16,7 +16,10 @@ from chitty.store import Edit, NextAction, Repo, next_action
 
 
 class RunInterrupted(Exception):
-    """The user interrupted Pi; the command must stop a shell loop."""
+    """The user interrupted a `chitty run` phase; the command must stop a shell loop."""
+
+    def __init__(self, phase: str) -> None:
+        self.phase = phase
 
 
 @dataclass(frozen=True)
@@ -33,7 +36,10 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
     main_repo.refresh_setup()
     _preflight(main_repo)
     if main_repo.config.project:
-        pull_suggestions(main_repo)
+        try:
+            pull_suggestions(main_repo)
+        except KeyboardInterrupt:
+            raise RunInterrupted("inbox pull") from None
 
     action = next_action(main_repo)
     stored = main_repo.find(action.id)
@@ -59,9 +65,9 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
             check=False,
         )
     except KeyboardInterrupt:
-        raise RunInterrupted from None
+        raise RunInterrupted("Pi") from None
     if completed.returncode == -signal.SIGINT:
-        raise RunInterrupted
+        raise RunInterrupted("Pi")
     if completed.returncode:
         raise ChittyError(f"pi exited with status {completed.returncode}")
     # Pi commonly commits from this worktree. Reopen so history is re-read.
@@ -124,7 +130,7 @@ def _setup(command: str, worktree: Path) -> None:
     except FileNotFoundError:
         raise ChittyError(f"setup command not found: {command}") from None
     except KeyboardInterrupt:
-        raise RunInterrupted from None
+        raise RunInterrupted("setup") from None
     if completed.returncode:
         raise ChittyError(f"setup exited with status {completed.returncode}")
 

@@ -378,8 +378,8 @@ def run(ctx: click.Context) -> None:
     """Prepare the next ticket's worktree, then run Pi in it."""
     try:
         result = run_next(_repo(warn_setup_version=False), tuple(ctx.args))
-    except RunInterrupted:
-        click.echo("interrupted while Pi was running", err=True)
+    except RunInterrupted as interrupted:
+        click.echo(f"interrupted during {interrupted.phase}", err=True)
         raise click.exceptions.Exit(130) from None
     click.echo(f"{result.action.id}: {result.old_status} → {result.new_status}")
 

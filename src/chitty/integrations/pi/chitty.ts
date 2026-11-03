@@ -77,6 +77,21 @@ export default function chitty(pi: ExtensionAPI) {
     pi.sendUserMessage(chittyPrompt(mode, ticketId));
   }
 
+  async function startSafely(
+    mode: ChittyMode,
+    ticketId: string,
+    ctx: ExtensionContext,
+  ): Promise<void> {
+    try {
+      await start(mode, ticketId, ctx);
+    } catch (error) {
+      // Startup cannot recover outside Chitty's ticket worktree; shut down cleanly.
+      const message = error instanceof Error ? error.message : String(error);
+      ctx.ui.notify(message, "error");
+      ctx.shutdown();
+    }
+  }
+
   function stopContinuation(
     ctx: ExtensionContext,
     reason: string,
@@ -101,7 +116,7 @@ export default function chitty(pi: ExtensionAPI) {
     description: "Work or review one Chitty ticket",
     handler: async (args, ctx) => {
       const { mode, ticketId } = parseChittyCommand(args);
-      await start(mode, ticketId, ctx);
+      await startSafely(mode, ticketId, ctx);
     },
   });
 
@@ -117,8 +132,8 @@ export default function chitty(pi: ExtensionAPI) {
     if (reviewTicket !== undefined && workTicket !== undefined) {
       throw new Error("Use only one of --chitty-work and --chitty-review.");
     }
-    if (reviewTicket !== undefined) await start("review", reviewTicket, ctx);
-    if (workTicket !== undefined) await start("work", workTicket, ctx);
+    if (reviewTicket !== undefined) await startSafely("review", reviewTicket, ctx);
+    if (workTicket !== undefined) await startSafely("work", workTicket, ctx);
   });
 
   pi.on("session_shutdown", (_event, ctx) => {
