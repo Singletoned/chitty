@@ -2,6 +2,8 @@
 title: Stop agents committing or resetting in the main checkout
 status: todo
 priority: high
+depends_on:
+  - TASK-126
 created: 2026-11-03
 ---
 
@@ -21,3 +23,4 @@ The global `chitty` runs whatever the main checkout contains. On 2026-11-03 the 
 
 - 2026-11-03T11:39:03Z eager-raven → todo
 - 2026-11-03T16:30:16Z lively-panda: changed notes
+- 2026-11-03T16:31:24Z lively-panda: changed dependencies
