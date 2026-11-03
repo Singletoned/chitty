@@ -14,6 +14,11 @@ The pilot's cold read currently runs as a subagent of the session that wrote the
 
 Suggested by the human, 2026-11-03. Decide after the pilot, from how often subagent cold reads found real gaps and whether the choice of model made a difference. A cold read that shares no conversation context does not need a separate process for independence, since it reviews nothing, so a mode is only worth it if it is cheaper or simpler to run.
 
+## Notes
+
+First data point, `TASK-124`: a Sonnet subagent cold read found 9 changes worth adopting and 3 missing criteria, after the author had re-read the ticket and added 2 criteria. The worth of those changes is untested until the ticket is worked and reviewed.
+
 ## History
 
 - 2026-11-03T16:14:34Z lively-panda → backlog
+- 2026-11-03T16:16:15Z lively-panda: changed notes
