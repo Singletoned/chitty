@@ -1,6 +1,6 @@
 ---
 title: Allow writes from a checkout that already holds the latest ticket version
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -21,6 +21,12 @@ Bootstrap: the global `chitty` runs `main`, so until this lands it refuses these
 - [ ] A test shows a write succeeding from `main` when a branch sorting before `main` holds the same version, and it fails before the fix
 - [ ] The existing refusal tests still pass, including a ticket newer on another branch
 
+## Plan
+
+Prefer the current branch in `historical_files` when it is one of the refs holding the latest version. Regression tests written first and confirmed failing.
+
 ## History
 
 - 2026-11-03T19:25:31Z lively-panda → todo
+- 2026-11-03T19:28:14Z lively-panda: wrote the plan
+- 2026-11-03T19:28:14Z lively-panda todo → doing
