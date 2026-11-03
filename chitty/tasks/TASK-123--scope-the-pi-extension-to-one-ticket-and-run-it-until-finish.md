@@ -27,18 +27,23 @@ Out of scope: choosing a ticket, looping, model selection per stage, creating wo
 
 ## Acceptance Criteria
 
-- [ ] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
-- [ ] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
-- [ ] A review prompt and a work prompt name the ticket and contain no instruction to select another ticket, with Node tests asserting it
-- [ ] Run by hand against a scratch ticket: `pi --chitty-work <ID>` continues past a turn that leaves the ticket in `doing`, and exits once it reaches `review`. Record the result in a note
-- [ ] `README.md` describes the new usage, and `__version__` is bumped so `chitty init` installs the extension
+- [x] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
+- [x] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
+- [x] A review prompt and a work prompt name the ticket and contain no instruction to select another ticket, with Node tests asserting it
+- [x] Run by hand against a scratch ticket: `pi --chitty-work <ID>` continues past a turn that leaves the ticket in `doing`, and exits once it reaches `review`. Record the result in a note
+- [x] `README.md` describes the new usage, and `__version__` is bumped so `chitty init` installs the extension
 
 ## Plan
 
 Inspect the current Pi extension and its Node tests, then add focused parser, prompt, and settlement tests before implementing the one-ticket continuation loop. Update the extension, documentation, and version; verify the requested scratch-ticket flow and `make check` before handing the ticket to review.
+
+## Notes
+
+Manual verification: in scratch repository `/tmp/chitty-task-123-TLk9qR`, launched `pi --no-extensions --extension /Users/singletoned/src/singletoned/chitty/.worktrees/task-123/src/chitty/integrations/pi/chitty.ts --chitty-work TASK-1`. The first turn committed `TASK-1` as `doing`; the extension sent its continuation; the next turn moved it to `review`; Pi notified `ticket left work with status review` and shut down with exit `0`.
 
 ## History
 
 - 2026-11-03T12:40:38Z lively-panda → todo
 - 2026-11-03T13:28:06Z kind-badger: wrote the plan
 - 2026-11-03T13:28:06Z kind-badger todo → doing
+- 2026-11-03T14:00:10Z kind-badger: changed notes; ticked acceptance criteria
