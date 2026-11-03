@@ -1,6 +1,6 @@
 ---
 title: Allow writes from a checkout that already holds the latest ticket version
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -17,16 +17,22 @@ Bootstrap: the global `chitty` runs `main`, so until this lands it refuses these
 
 ## Acceptance Criteria
 
-- [ ] A test shows a write succeeding from a new worktree with no commits of its own, and it fails before the fix
-- [ ] A test shows a write succeeding from `main` when a branch sorting before `main` holds the same version, and it fails before the fix
-- [ ] The existing refusal tests still pass, including a ticket newer on another branch
+- [x] A test shows a write succeeding from a new worktree with no commits of its own, and it fails before the fix
+- [x] A test shows a write succeeding from `main` when a branch sorting before `main` holds the same version, and it fails before the fix
+- [x] The existing refusal tests still pass, including a ticket newer on another branch
 
 ## Plan
 
 Prefer the current branch in `historical_files` when it is one of the refs holding the latest version. Regression tests written first and confirmed failing.
+
+## Notes
+
+Bootstrap: the claim came after the fix, because the global `chitty` refuses it until this lands, so this used the worktree `.venv/bin/chitty`. Both new tests failed before the fix with the reported refusal, naming `main` and `aaa`. Verified with `make check` and `npm test`. No cold read: small, with the cause already traced. The reviewer should also use `.venv/bin/chitty` here, or the global one if the ticket on this branch is newest, which it now is.
 
 ## History
 
 - 2026-11-03T19:25:31Z lively-panda → todo
 - 2026-11-03T19:28:14Z lively-panda: wrote the plan
 - 2026-11-03T19:28:14Z lively-panda todo → doing
+- 2026-11-03T19:28:15Z lively-panda: changed notes; ticked acceptance criteria
+- 2026-11-03T19:28:15Z lively-panda doing → review
