@@ -517,7 +517,9 @@ class TestNext(CliTestCase):
             os.environ["PATH"] = previous
         self.assertIn("TASK-1 was unchanged", unchanged.stderr)
         worktree = self.root / ".worktrees" / "task-1"
-        self.assertEqual(self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1")
+        self.assertEqual(
+            self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1"
+        )
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
             "doing",
@@ -542,6 +544,7 @@ class TestNext(CliTestCase):
         self.add("Todo")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
+        main_head = self.git("rev-parse", "main").strip()
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
         fake.write_text(
@@ -565,16 +568,21 @@ class TestNext(CliTestCase):
             unchanged = self.run_cli("run", exit_code=1)
             self.assertIn("TASK-1 was unchanged", unchanged.stderr)
             worktree = self.root / ".worktrees" / "task-1"
-            self.assertEqual(self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1")
+            self.assertEqual(
+                self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1"
+            )
             self.assertEqual(
                 Repo.open(worktree)
                 .find(Repo.open(worktree).resolve("TASK-1"))
                 .task.frontmatter.status,
                 "doing",
             )
+            self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
+            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
             self.assertIn("pi exited with status 7", failed.stderr)
+            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ.pop("PI_EXIT")
             os.environ["CHANGE"] = "1"
             os.environ["TASK_PATH"] = str(
