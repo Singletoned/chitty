@@ -1,6 +1,6 @@
 ---
 title: Make workers verify criteria and reviewers report every failure at once
-status: doing
+status: review
 priority: high
 created: 2026-11-02
 ---
@@ -26,6 +26,8 @@ Verified with `npm test`, `make check`, `chitty check`, and `chitty fix`; the la
 
 Review failed: branch-local checks pass, but it cannot merge after TASK-102. Rebase onto current `main` and resolve the content conflicts in `src/chitty/guide.md` and `src/chitty/integrations/pi/chitty.ts`, retaining both tickets’ workflows and tests; rerun the full checks before returning to review. The branch worktree also cannot run `chitty edit` because its project registration belongs to the main checkout; a follow-up was suggested as `suggestion-7d8a71b264364f0888a24e965d8d8834`.
 
+Rebased onto current `main`, resolved the shared prompt and guide changes by retaining both the worktree and criterion-verification workflows, and reran `npm test`, `make check`, `chitty check`, and `chitty fix`. The latter retains only pre-existing Markdown-delimiter warnings in older task files.
+
 ## History
 
 - 2026-11-02T13:03:21Z lively-otter → todo
@@ -35,3 +37,5 @@ Review failed: branch-local checks pass, but it cannot merge after TASK-102. Reb
 - 2026-11-03T07:25:31Z mellow-marten doing → review
 - 2026-11-03T09:22:25Z opal-marten: changed notes
 - 2026-11-03T09:22:25Z opal-marten review → doing
+- 2026-11-03T09:42:14Z mellow-marten: changed notes
+- 2026-11-03T09:42:14Z mellow-marten doing → review
