@@ -16,6 +16,11 @@ Once the extension lives here (TASK-87) and `chitty next` exists (TASK-76), the 
 - [ ] The extension's loop asks `chitty next` whether work remains and contains no status names
 - [ ] Its tests cover both modes against a real repository
 
+## Notes
+
+Superseded for the pilot by `TASK-123`, which removes queue selection from the extension. Close this if `TASK-110` needs nothing more.
+
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-03T12:40:40Z lively-panda: changed notes
