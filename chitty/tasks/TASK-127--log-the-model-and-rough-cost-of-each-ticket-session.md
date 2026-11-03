@@ -22,7 +22,7 @@ One line per `chitty run` that reaches starting Pi, as one JSON object:
 
 `{"ticket", "mode", "actor", "started" (UTC ISO 8601 ending `Z`, like History), "seconds", "status_before", "status_after", "models"}`
 
-`models` is a list with one `{"provider", "model", "input", "output", "cacheRead", "cacheWrite", "cost"}` per provider and model, summed across the session and any subagent sessions. An empty list means Pi made no billed calls. `null` means unknown. `status_before` is the one `TASK-126` reads after the claim. `status_after` is `null` if the ticket cannot be read.
+`models` is a list with one `{"provider", "model", "input", "output", "cacheRead", "cacheWrite", "cost"}` per provider and model, summed across the session and any subagent sessions. An empty list means Pi made no billed calls. `null` means unknown. `actor` is the name from `actor()`, matching History, not the raw UUID. `status_before` is the one `TASK-126` reads after the claim. `status_after` is `null` if the ticket cannot be read.
 
 **Every path logs.** A session that cost money must not vanish, and dead and unchanged sessions are the expensive ones. Write the line in a `finally`, covering a non-zero `pi` exit, Ctrl-C, and the unchanged-status error. A failure to write the log warns on stderr and does not change the exit code.
 
@@ -32,7 +32,7 @@ Pi records `provider`, `model` and `usage` on assistant messages, though `usage`
 
 1. `chitty run` sets `CHITTY_USAGE_FILE` to a path in a temporary directory before starting Pi, and removes the directory afterwards.
 2. On `session_shutdown`, if that variable is set, the extension sums all assistant messages in the session file by provider and model, using `ctx.sessionManager.getEntries()` so abandoned branches still count. It treats missing usage as zero. It reads the file if present, replaces its own session ID's entry in `{"sessions": {"<session id>": [<model entries>]}}`, and writes it back atomically with a rename. The handler catches its own errors and reports them with `ctx.ui.notify`.
-3. After Pi exits, `chitty run` adds the sessions together for `models`. If the file is missing or invalid, it writes `models` null and warns on stderr.
+3. After Pi exits, `chitty run` adds the sessions together for `models`. If the file is missing or invalid (not JSON, not the shape above, or an entry missing a field), it writes `models` null and warns on stderr.
 
 Keying by session ID is deliberate. `session_shutdown` also fires on `/new`, `/fork` and reload, so one run can see it several times, and reload must not double count. Pi subagents inherit `CHITTY_USAGE_FILE`, so their cost is included under their own ID, which is right for cost per ticket.
 
@@ -40,7 +40,7 @@ Keying by session ID is deliberate. `session_shutdown` also fires on `/new`, `/f
 
 Use Pi's `usage.cost.total`. These are list prices from Pi's model data, not what a subscription actually charges, so they compare models and sessions but are not a bill. Keep token counts too, in case a price is missing or zero. Do not add `reasoning` tokens: they are already part of `output`.
 
-Known limits, accepted for now: Pi sessions without `chitty run`, cold reads from Claude Code, and any compaction call Pi does not record as an assistant message are not counted. A crash, or `kill -INT` with no TTY, gives `models` null, because `session_shutdown` does not fire.
+Known limits, accepted for now: Pi sessions without `chitty run`, cold reads from Claude Code, and any compaction call Pi does not record as an assistant message are not counted. A crash, or `kill -INT` with no TTY, gives `models` null, because `session_shutdown` does not fire. Two sessions writing at once can lose an entry, which the rename does not prevent, and a subagent without this extension is not counted.
 
 Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnesses.
 
@@ -60,8 +60,11 @@ As in `TASK-126`, the logged status before is the one read after the claim, imme
 
 Cold read by a fresh Sonnet subagent, 2026-11-03. Biggest finds: writing the line after the status check would have skipped the dead sessions the log most needs; `session_shutdown` fires several times in one run, which would have lost or double counted cost; subagents inherit the variable and would have overwritten the file. It confirmed from Pi source that `session_shutdown` does fire and can finish a write on `ctx.shutdown()`, double Ctrl-C and SIGTERM. Note that double Ctrl-C in the TUI exits 0 and reports as unchanged, not `RunInterrupted`. Author choices: keying by session ID and including subagent cost.
 
+Every finding from the cold read now has an outcome. Fixed in the ticket on the second pass: the `actor` value, what counts as invalid, and two more known limits. Checked: `getEntries` is on `ReadonlySessionManager`. Rejected: specifying how to append, because `chitty run` is the only writer. Specifying `writeFileSync`, because the source shows shutdown handlers are awaited, so either works. A test that agents cannot see the log, because its location outside the repository does that. RPC and JSON modes, because `chitty run` does not use them by default. Creating the directory, which is ordinary work. A `.worktrees/` check for the clean-status test, because `init` adds the ignore rule. Version bump order, because the rule in `AGENTS.md` already covers it.
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
 - 2026-11-03T16:49:00Z lively-panda: changed notes
 - 2026-11-03T18:19:35Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T20:00:17Z lively-panda: changed description, notes
