@@ -63,6 +63,13 @@ class TestNext(CliTestCase):
         self.assertEqual(str(next_action(Repo.open(self.root)).id), "TASK-14")
         self.assertEqual(doing, "TASK-14")
 
+    def test_tie_breaks_across_contexts_by_task_id(self):
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text() + '\n[contexts.alpha]\nprefix = "ALPHA"\n')
+        self.add("Task")
+        self.add("Alpha", context="alpha")
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), "ALPHA-1")
+
     def test_dependencies_human_and_ids(self):
         config = self.root / "chitty.toml"
         config.write_text(
@@ -108,6 +115,9 @@ class TestNext(CliTestCase):
             "import os, sys\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
+            "if os.environ.get('INTERRUPT'):\n"
+            "    import signal\n"
+            "    os.kill(os.getppid(), signal.SIGINT)\n"
             "if os.environ.get('CHANGE'):\n"
             "    path = os.environ['TASK_PATH']\n"
             "    text = open(path).read()\n"
@@ -129,9 +139,20 @@ class TestNext(CliTestCase):
             os.environ["TASK_PATH"] = str(self.root / "chitty/tasks/TASK-1--todo.md")
             changed = self.run_cli("run")
             self.assertEqual(changed.stdout, "TASK-1: todo → blocked\n")
+            no_next = self.run_cli("run", exit_code=1)
+            self.assertIn("no next ticket", no_next.stderr)
+            self.add("Again")
+            os.environ["PATH"] = "/usr/bin:/bin"
+            missing = self.run_cli("run", exit_code=1)
+            self.assertIn("pi is not on PATH", missing.stderr)
+            os.environ["PATH"] = f"{fake.parent}:{old_path}"
+            os.environ["INTERRUPT"] = "1"
+            interrupted = self.run_cli("run", exit_code=130)
+            self.assertIn("interrupted while Pi was running", interrupted.stderr)
         finally:
             os.environ["PATH"] = old_path
             os.environ.pop("EXPECTED_ROOT", None)
             os.environ.pop("PI_EXIT", None)
             os.environ.pop("CHANGE", None)
             os.environ.pop("TASK_PATH", None)
+            os.environ.pop("INTERRUPT", None)
