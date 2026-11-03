@@ -14,7 +14,12 @@ Retros need the causes and escapes described in `PLAN.md` without an agent re-re
 
 No new store: the data comes from task files, and `archive = "delete"` repositories need a stated answer, since deleting removes History.
 
+## Notes
+
+The report should also read the `TASK-127` log, for cost per accepted ticket including retries.
+
 ## History
 
 - 2026-11-03T10:27:48Z lively-panda → backlog
 - 2026-11-03T10:28:28Z lively-panda: changed dependencies
+- 2026-11-03T16:46:08Z lively-panda: changed notes
