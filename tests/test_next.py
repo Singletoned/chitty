@@ -492,6 +492,44 @@ class TestNext(CliTestCase):
             "todo",
         )
 
+    def test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.git("branch", "task-1")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text("#!" + sys.executable + "\n")
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            unchanged = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
+        self.assertIn("TASK-1 was unchanged", unchanged.stderr)
+        worktree = self.root / ".worktrees" / "task-1"
+        self.assertEqual(self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1")
+        self.assertEqual(
+            Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
+            "doing",
+        )
+
+        self.git("worktree", "remove", "--force", str(worktree))
+        self.git("branch", "-D", "task-1")
+        self.run_cli("edit", "TASK-1", "--status", "review")
+        result = self.run_cli("run", exit_code=1)
+        self.assertIn("review ticket TASK-1 has no branch task-1", result.stderr)
+        self.assertFalse(worktree.exists())
+
     def test_run_cases(self):
         config = self.root / "chitty.toml"
         config.write_text(
@@ -526,6 +564,14 @@ class TestNext(CliTestCase):
         try:
             unchanged = self.run_cli("run", exit_code=1)
             self.assertIn("TASK-1 was unchanged", unchanged.stderr)
+            worktree = self.root / ".worktrees" / "task-1"
+            self.assertEqual(self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1")
+            self.assertEqual(
+                Repo.open(worktree)
+                .find(Repo.open(worktree).resolve("TASK-1"))
+                .task.frontmatter.status,
+                "doing",
+            )
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
             self.assertIn("pi exited with status 7", failed.stderr)
