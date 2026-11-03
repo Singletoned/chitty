@@ -1,6 +1,6 @@
 ---
 title: Scope the Pi extension to one ticket and run it until finished
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -51,6 +51,8 @@ Review clarification: the preceding note lost its code spans because the review 
 
 Regression test first failed against the prior startup path because it sent an agent prompt for a ticket already outside its stage. Startup now applies the same settlement decision before sending a prompt; both modes notify and shut down without starting an agent turn. Verified with `npm test` and `make check`.
 
+Reviewed: verified all criteria independently; `npm test` (15 tests) and `make check` pass.
+
 ## Summary
 
 Startup now exits before starting an agent turn when a `--chitty-work` or `--chitty-review` ticket has already left its stage. Added a regression test for both modes. Verification: `npm test`; `make check`.
@@ -73,3 +75,5 @@ Startup now exits before starting an agent turn when a `--chitty-work` or `--chi
 - 2026-11-03T15:47:27Z lively-koala: changed notes
 - 2026-11-03T15:55:55Z mellow-quail: changed notes, summary; ticked acceptance criteria
 - 2026-11-03T15:55:55Z mellow-quail doing → review
+- 2026-11-03T16:05:47Z amber-badger: changed notes
+- 2026-11-03T16:05:47Z amber-badger review → done
