@@ -103,6 +103,8 @@ Findings from a real run on 2026-11-03. The refusal raised a stack trace and lef
 
 From the `TASK-129` cold read: `requireLinkedWorktree` must compare `--git-dir` and `--git-common-dir` as resolved paths, not strings. As strings they differ in a subdirectory of the main checkout, so Pi started there would pass the guard. Add a Node test.
 
+Cold read outcomes: Fix the interrupt path: convert interrupts during inbox pull and setup to the existing exit-130 flow, with a phase-accurate one-line message; add coverage even though the criterion omitted it. Fix the outside-worktree startup path and replace the mocked helper-only evidence with an end-to-end Node test for one-line exit, no stack trace and no remaining session; criterion 15 requires it. Fix every listed missing worktree, setup ordering/repetition, actor and main-config state with the corresponding unchecked black-box criteria. Add the old-worktree-config regression because config-from-main is an explicit promise. Strengthen the prompt test to reject the concepts rather than just three phrases. Retain and test remote-only branch handling because the description specifies it. Concurrency remains intentionally out of scope. Parsed setup commands intentionally use `shlex.split`, so shell syntax is unsupported; document this in the user-facing config contract. Chosen default: interrupt errors identify the interrupted phase, because it is cheap to revise and avoids the current false claim that Pi ran.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -123,3 +125,4 @@ From the `TASK-129` cold read: `requireLinkedWorktree` must compare `--git-dir` 
 - 2026-11-03T20:29:37Z eager-lynx: changed notes; ticked acceptance criteria
 - 2026-11-03T20:41:14Z lively-panda: changed acceptance criteria, notes
 - 2026-11-03T20:44:59Z lively-panda: changed acceptance criteria, notes
+- 2026-11-03T20:47:08Z ivory-panda: changed notes
