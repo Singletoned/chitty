@@ -1,6 +1,6 @@
 ---
 title: Scope the Pi extension to one ticket and run it until finished
-status: review
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -28,7 +28,7 @@ Out of scope: choosing a ticket, looping, model selection per stage, creating wo
 ## Acceptance Criteria
 
 - [x] Node tests cover flag and `/chitty` parsing: valid ID, missing ID, and unknown mode
-- [x] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
+- [ ] Node tests cover the decision after settling, for each mode: finished, unfinished, cap reached, `error`, and aborted
 - [x] A review prompt and a work prompt name the ticket and contain no instruction to select another ticket, with Node tests asserting it
 - [x] Run by hand against a scratch ticket: `pi --chitty-work <ID>` continues past a turn that leaves the ticket in `doing`, and exits once it reaches `review`. Record the result in a note
 - [x] `README.md` describes the new usage, and `__version__` is bumped so `chitty init` installs the extension
@@ -44,6 +44,8 @@ Manual verification: in scratch repository `/tmp/chitty-task-123-TLk9qR`, launch
 Review failed: an unknown `--chitty-work` or `--chitty-review` ID starts an agent turn before `ticketStatus()` runs at `agent_settled`; only after that turn does `chitty show <ID> --json` fail. Validate the named ticket before `start()` sends its prompt, and add a regression test proving an unknown ID is rejected without starting an agent turn.
 
 Verified unknown --chitty-work and --chitty-review IDs fail during session startup before any agent turn; regression test added. Ran npm test and make check.
+
+Review failed: starting  for a ticket already outside / (or  for one outside ) still sends an agent turn.  reads and discards the status before , so it cannot immediately notify and shut down as required once the named ticket has left its stage. Handle inactive status at startup and add a regression test that verifies no agent turn starts.
 
 ## Summary
 
@@ -62,3 +64,5 @@ Scoped Pi work and review runs to one ticket, added continuation-state tests, do
 - 2026-11-03T15:35:39Z jolly-badger: ticked acceptance criteria
 - 2026-11-03T15:35:52Z jolly-badger: changed notes
 - 2026-11-03T15:35:52Z jolly-badger doing → review
+- 2026-11-03T15:47:15Z lively-koala: changed acceptance criteria, notes
+- 2026-11-03T15:47:15Z lively-koala review → doing
