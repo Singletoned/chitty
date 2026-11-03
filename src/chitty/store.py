@@ -885,7 +885,8 @@ def next_action(repo: Repo) -> NextAction:
             except ChittyError as error:
                 raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
         if frontmatter.status == "todo" and any(
-            dependency.task.frontmatter.status != "done" for dependency in dependencies
+            not dependency.archived and dependency.task.frontmatter.status != "done"
+            for dependency in dependencies
         ):
             continue
         candidates.append(stored)

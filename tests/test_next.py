@@ -1,8 +1,10 @@
 import asyncio
 import os
+import signal
 import stat
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from mcp.server.mcpserver.exceptions import ToolError
@@ -46,6 +48,11 @@ class TestNext(CliTestCase):
                 (("Low", {"priority": "low"}), ("High", {"priority": "high"})),
                 ("work", "TASK-2"),
             ),
+            (
+                "medium priority before unset",
+                (("Unset", {}), ("Medium", {"priority": "medium"})),
+                ("work", "TASK-2"),
+            ),
         )
         for name, tasks, expected in cases:
             with self.subTest(name):
@@ -58,11 +65,11 @@ class TestNext(CliTestCase):
 
     def test_numeric_id_ordering_and_unmet_doing_dependency(self):
         for number in range(1, 13):
-            self.add(f"Task {number}")
+            self.add(f"Task {number}", status="blocked" if number < 9 else "todo")
         first = next_action(Repo.open(self.root))
-        self.assertEqual(str(first.id), "TASK-1")
-        self.add("Dependency")
-        doing = self.add("Started", status="doing", depends_on=["TASK-13"])
+        self.assertEqual(str(first.id), "TASK-9")
+        dependency = self.add("Dependency")
+        doing = self.add("Started", status="doing", depends_on=[dependency])
         self.assertEqual(str(next_action(Repo.open(self.root)).id), "TASK-14")
         self.assertEqual(doing, "TASK-14")
 
@@ -100,6 +107,12 @@ class TestNext(CliTestCase):
             path.unlink()
         completed = self.add("Complete", status="done")
         ready = self.add("Ready", depends_on=[completed])
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
+        for path in (self.root / "chitty/tasks").glob("*.md"):
+            path.unlink()
+        archived = self.add("Archived dependency")
+        Repo.open(self.root).archive(Repo.open(self.root).resolve(archived))
+        ready = self.add("Ready after archive", depends_on=[archived])
         self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
 
     def test_dependencies_human_and_ids(self):
@@ -215,9 +228,6 @@ class TestNext(CliTestCase):
             "import os, sys\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
-            "if os.environ.get('INTERRUPT'):\n"
-            "    import signal\n"
-            "    os.kill(os.getppid(), signal.SIGINT)\n"
             "if os.environ.get('CHANGE'):\n"
             "    path = os.environ['TASK_PATH']\n"
             "    text = open(path).read()\n"
@@ -246,13 +256,43 @@ class TestNext(CliTestCase):
             missing = self.run_cli("run", exit_code=1)
             self.assertIn("pi is not on PATH", missing.stderr)
             os.environ["PATH"] = f"{fake.parent}:{old_path}"
-            os.environ["INTERRUPT"] = "1"
-            interrupted = self.run_cli("run", exit_code=130)
-            self.assertIn("interrupted while Pi was running", interrupted.stderr)
+            signal_script = self.root / "bin" / "pi"
+            signal_script.write_text(
+                "#!" + sys.executable + "\n"
+                "import os, sys, time\n"
+                "sys.stderr = open(os.devnull, 'w')\n"
+                "open(os.environ['CHILD_PID'], 'w').write(str(os.getpid()))\n"
+                "time.sleep(60)\n"
+            )
+            child_pid = self.root / "child.pid"
+            environment = os.environ | {"CHILD_PID": str(child_pid)}
+            process = subprocess.Popen(
+                [str(Path(sys.executable).parent / "chitty"), "run"],
+                cwd=self.root,
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            try:
+                for _ in range(100):
+                    if child_pid.exists():
+                        break
+                    time.sleep(0.01)
+                self.assertTrue(child_pid.exists())
+                os.kill(int(child_pid.read_text()), signal.SIGINT)
+                stdout, stderr = process.communicate(timeout=5)
+            finally:
+                if process.poll() is None:
+                    process.kill()
+                    process.communicate()
+            self.assertEqual(process.returncode, 130, stdout + stderr)
+            self.assertEqual(stdout, "")
+            self.assertIn("interrupted while Pi was running", stderr)
+            self.assertNotIn("Traceback", stderr)
         finally:
             os.environ["PATH"] = old_path
             os.environ.pop("EXPECTED_ROOT", None)
             os.environ.pop("PI_EXIT", None)
             os.environ.pop("CHANGE", None)
             os.environ.pop("TASK_PATH", None)
-            os.environ.pop("INTERRUPT", None)

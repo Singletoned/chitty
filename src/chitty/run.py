@@ -1,5 +1,6 @@
 """Run Pi on Chitty's next action."""
 
+import signal
 import subprocess
 from dataclasses import dataclass
 
@@ -30,6 +31,8 @@ def run(repo: Repo) -> RunResult:
         raise ChittyError("pi is not on PATH") from None
     except KeyboardInterrupt:
         raise RunInterrupted from None
+    if completed.returncode == -signal.SIGINT:
+        raise RunInterrupted
     if completed.returncode:
         raise ChittyError(f"pi exited with status {completed.returncode}")
     # Pi commonly commits from a ticket worktree. Reopen so Repo's history cache sees it.
