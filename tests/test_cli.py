@@ -9,7 +9,8 @@ from pathlib import Path
 from click.testing import CliRunner, Result
 
 from chitty.cli import _complete_context, _complete_task_id, cli
-from chitty.config import CHITTY_VERSION
+from chitty.config import CHITTY_VERSION, register_project
+from chitty.errors import ChittyError
 from chitty.store import _add_missing_settings, guide
 from tests.support import RepoTestCase
 
@@ -152,6 +153,47 @@ class TestInit(CliTestCase):
         self.assertIn(str(extension), result.stderr)
         self.assertEqual(config.read_text(), original_config)
         self.assertEqual(agents.read_text(), original_agents)
+
+    def test_worktree_keeps_the_main_checkout_registered(self):
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.run_cli("init")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        worktree = self.tmp / "worktree"
+        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        self.addCleanup(
+            subprocess.run,
+            ["git", "worktree", "remove", "--force", str(worktree)],
+            cwd=self.root,
+            check=True,
+        )
+
+        previous = Path.cwd()
+        os.chdir(worktree)
+        try:
+            self.run_cli("init")
+            self.run_cli("inbox", "--pull")
+            worktree_config = worktree / "chitty.toml"
+            worktree_config.write_text(worktree_config.read_text().replace(CHITTY_VERSION, "0.0.0"))
+            subprocess.run(["git", "add", "chitty.toml"], cwd=worktree, check=True)
+            subprocess.run(
+                ["git", "commit", "--quiet", "-m", "stale setup"], cwd=worktree, check=True
+            )
+            self.run_cli("add", "From worktree", "-d", "x")
+        finally:
+            os.chdir(previous)
+
+        owner = self.tmp / "data" / "chitty" / "inbox" / self.root.name / "repo"
+        self.assertEqual(owner.read_text().strip(), str(self.root))
+        unrelated = self.tmp / "unrelated"
+        unrelated.mkdir()
+        subprocess.run(["git", "init", "--quiet"], cwd=unrelated, check=True)
+        with self.assertRaisesRegex(ChittyError, "is registered to"):
+            register_project(self.root.name, unrelated)
 
     def test_init_adds_worktrees_to_gitignore(self):
         target = self.tmp / "worktrees"
