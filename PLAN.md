@@ -509,7 +509,10 @@ another can check the result without talking to the first:
 
 Cold read: a throwaway session reads only the ticket and says what done means
 and which files it would touch. A mismatch with the author's intent means the
-ticket is fixed before any tests are written.
+ticket is fixed before any tests are written. Decided with the human
+(2026-11-03): this is the default for every ticket for now, ahead of the pilot,
+because it cost about two minutes each and found real gaps on every ticket
+tried. `AGENTS.md` has the procedure.
 
 Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
 private helpers or mocks of our own code. Use a round-trip property for any

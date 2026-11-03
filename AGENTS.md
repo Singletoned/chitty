@@ -13,6 +13,13 @@ before changing behaviour, and update it when a decision changes.
   tests fail, never skip, if prettier or mdformat is missing.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
+- Cold-read every ticket before it reaches `todo`, or before work starts if it
+  is already there: a fresh session or subagent that did not write the ticket,
+  on a cheaper model, reads only the ticket and the code it points at, and
+  reports what done means, the files it would change, decisions left open,
+  stated behaviour no criterion verifies, unhandled starting states, and claims
+  that are wrong. The author fixes the ticket and records in a note what was
+  adopted or rejected. See `PLAN.md`, "Pipeline and feedback".
 - Releases: bump `__version__` in `src/chitty/__init__.py`, commit, then push a
   tag `v<version>`. `.github/workflows/release.yml` checks, builds and publishes
   to PyPI by trusted publishing (environment `pypi`).
