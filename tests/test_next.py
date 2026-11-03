@@ -401,6 +401,61 @@ class TestNext(CliTestCase):
             ["git", *args], cwd=self.root, capture_output=True, text=True, check=True
         ).stdout
 
+    def test_run_refuses_preflight_without_mutating(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        cases = (
+            (
+                "autocommit",
+                lambda text: text.replace("autocommit = true", "autocommit = false"),
+                None,
+            ),
+            ("setup", lambda text: text.replace('setup = "true"\n', ""), None),
+            ("pi", lambda text: text, "/usr/bin:/bin"),
+            ("branch", lambda text: text, None),
+        )
+        original = config.read_text()
+        for name, change, path in cases:
+            with self.subTest(name):
+                config.write_text(change(original))
+                if name == "branch":
+                    self.git("branch", "-M", "wrong")
+                previous = os.environ.get("PATH")
+                if path is not None:
+                    os.environ["PATH"] = path
+                try:
+                    result = self.run_cli("run", exit_code=1)
+                finally:
+                    if path is not None:
+                        if previous is None:
+                            os.environ.pop("PATH")
+                        else:
+                            os.environ["PATH"] = previous
+                    if name == "branch":
+                        self.git("branch", "-M", "main")
+                expected = {
+                    "autocommit": "requires autocommit",
+                    "setup": "requires setup",
+                    "pi": "pi is not on PATH",
+                    "branch": "must be on branch main",
+                }[name]
+                self.assertIn(expected, result.stderr)
+                self.assertFalse((self.root / ".worktrees").exists())
+                self.assertEqual(
+                    Repo.open(self.root)
+                    .find(Repo.open(self.root).resolve("TASK-1"))
+                    .task.frontmatter.status,
+                    "todo",
+                )
+                config.write_text(original)
+
     def test_run_cases(self):
         config = self.root / "chitty.toml"
         config.write_text(
