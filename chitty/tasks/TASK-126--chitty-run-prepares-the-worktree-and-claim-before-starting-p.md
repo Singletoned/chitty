@@ -26,6 +26,17 @@ The extension then stops telling agents to do any of this. `pi --chitty-work` an
 
 Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harnesses; `src/chitty/guide.md`, which still describes the manual steps for other agents.
 
+## Acceptance Criteria
+
+- [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
+- [ ] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
+- [ ] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
+- [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
+- [ ] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
+- [ ] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree with no trust prompt or other interruption, and the result is recorded in a note
+- [ ] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
+- 2026-11-03T16:30:15Z lively-panda: changed acceptance criteria
