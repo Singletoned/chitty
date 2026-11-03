@@ -552,6 +552,12 @@ including retries, not per run.
 
 - Python ≥ 3.12, packaged with `uv`; installed as `uv tool install chitty`,
   tried with `uvx chitty`.
+- On a machine developing Chitty, the global `chitty` is an editable install of
+  the main checkout (reverses `TASK-81`, see `TASK-118`). Work happens in
+  worktrees, so `main` should always be safe, and if it is not that needs fixing
+  anyway. It also means a version bump on `main` needs no release before `chitty`
+  can write to this repository. There is no shared virtual environment: each
+  checkout has its own `.venv`, used through `make` and `uv run`.
 - Runtime: `click`, `pydantic`, `pyyaml`. Frontmatter is split on `---` by
   our own code; YAML is loaded with a loader that resolves every scalar as a
   string. Optional extra `mcp`.

@@ -17,11 +17,23 @@ uv tool install 'chitty[mcp]'     # CLI plus `chitty mcp`
 uvx chitty --help                 # run without installing
 ```
 
-Install the released package globally; do not make a global editable install
-from a development checkout. To develop Chitty itself, use `make install` in
-its clone. Each checkout, including a Git worktree, keeps its disposable
-virtual environment in `.venv`; run `make install` after creating a worktree
-before using its development commands.
+To develop Chitty itself, use `make install` in its clone. Each checkout,
+including a Git worktree, keeps its disposable virtual environment in `.venv`;
+run `make install` after creating a worktree before using its development
+commands. Use `uv run chitty` to run a worktree's own code. Do not export
+`VIRTUAL_ENV` or `UV_PROJECT_ENVIRONMENT` from `.envrc`: direnv passes them down
+to worktrees, where `uv` would repoint a shared install at the worktree.
+
+On a machine used to develop Chitty, install the global `chitty` as an editable
+install of the main checkout, which only receives reviewed merges:
+
+```sh
+uv tool install --force --editable '/path/to/chitty[mcp]'
+```
+
+Every repository on that machine then runs `main`, so a broken `main` breaks them
+all. Editable installs do not pick up new dependencies: re-run the command after
+a merge that changes them.
 
 ## Use
 
