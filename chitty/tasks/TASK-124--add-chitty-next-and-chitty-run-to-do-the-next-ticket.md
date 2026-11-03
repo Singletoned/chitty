@@ -44,13 +44,13 @@ Out of scope: label filters and role options from `TASK-76`, per-stage models, a
 
 ## Acceptance Criteria
 
-- [ ] Table-driven tests over a real temp repo cover selection order and every exclusion, including a met and an unmet dependency, and `HUMAN` tickets
+- [x] Table-driven tests over a real temp repo cover selection order and every exclusion, including a met and an unmet dependency, and `HUMAN` tickets
 - [x] Tests run `chitty run` with a fake `pi` on `PATH`, covering each exit-code case: status changed, unchanged, `pi` failing, `pi` missing, and no next ticket
 - [x] `chitty next --json` and the MCP tool return the same answer
 - [x] `PLAN.md`, `README.md` and the `chitty --help` output describe both commands and the shell loop; `__version__` is bumped if `src/chitty/guide.md` changes
 - [x] Tests use a fake `pi` that commits the status change on a ticket branch in a worktree, as a real worker does, and `chitty run` run from the main checkout still reports the change and exits 0
-- [ ] Ctrl-C during `pi` exits `chitty run` non-zero without a traceback, so it stops a shell loop; a test sends SIGINT to the child and checks this
-- [ ] Selection tests also cover a `doing` ticket with an unmet dependency (selected), a dangling `depends_on` entry (error), a tie across two contexts, and `TASK-9` ordering before `TASK-12`
+- [x] Ctrl-C during `pi` exits `chitty run` non-zero without a traceback, so it stops a shell loop; a test sends SIGINT to the child and checks this
+- [x] Selection tests also cover a `doing` ticket with an unmet dependency (selected), a dangling `depends_on` entry (error), a tie across two contexts, and `TASK-9` ordering before `TASK-12`
 - [x] CLI tests pin `next` output: `work TASK-12`, the `--json` form, and for no ticket an empty stdout, a stderr message and a non-zero exit; the MCP tool reports the same error
 - [x] Fake-`pi` tests pin `run`: the printed change line, a status change to `blocked` exiting 0, a working directory of the repository root, and a child that reads inherited stdin
 
@@ -79,6 +79,16 @@ All nine acceptance criteria re-checked after `make check` passed. Ready for an 
 
 Review failed: (1) `next_action` treats an archived dependency as unmet because it checks only `status == "done"`; the requirement says archived dependencies count as met. Reproduced: archive a `todo` dependency, add a dependent `todo`, then `chitty next` exits 1 with `no next ticket`. Add coverage for archived dependencies and the full medium/unset priority order. (6) the Ctrl-C test has fake `pi` signal its parent with `os.kill(os.getppid(), SIGINT)`; it does not send SIGINT to the child as required, so it does not verify the specified child-interrupt scenario. (7) the numeric test selects `TASK-1` from `TASK-1` through `TASK-12`; it does not cover the required `TASK-9` before `TASK-12` comparison. Fix these and re-check the criteria.
 
+Verified reviewer fixes with uv run ruff format --check .
+176 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run python -m unittest discover -s tests -t .
+[ticket 1ac4e97] worker change
+ 1 file changed, 1 insertion(+), 1 deletion(-): archived dependencies count as met; full priority order and  before  are covered; a test sends SIGINT to the Pi child and confirms exit 130 without a traceback. Re-checked all nine criteria.
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
@@ -93,3 +103,4 @@ Review failed: (1) `next_action` treats an archived dependency as unmet because 
 - 2026-11-03T17:01:10Z honest-heron doing → review
 - 2026-11-03T17:08:32Z mellow-raven: changed acceptance criteria, notes
 - 2026-11-03T17:08:32Z mellow-raven review → doing
+- 2026-11-03T17:19:43Z frosty-marten: changed notes; ticked acceptance criteria
