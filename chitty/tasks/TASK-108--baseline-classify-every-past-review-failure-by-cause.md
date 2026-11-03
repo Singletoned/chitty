@@ -19,7 +19,12 @@ Read-only over tickets and Git, apart from this ticket and any tickets it propos
 - [ ] Reports first-pass yield, retries per ticket and failures by cause, and states what it could not measure, including post-`done` escapes
 - [ ] Proposes at most three changes to standing rules, each naming the failure class it should reduce, for the human to accept or reject
 
+## Notes
+
+Candidate proposal for the retro: a scripted check that fails when `src/chitty/guide.md` changes without a `__version__` bump. `TASK-104` lost its bump in a rebase with its criterion still ticked, and a reviewer had to spot it.
+
 ## History
 
 - 2026-11-03T10:27:46Z lively-panda → backlog
 - 2026-11-03T10:28:25Z lively-panda: changed acceptance criteria
+- 2026-11-03T10:41:02Z lively-panda: changed notes
