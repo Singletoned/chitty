@@ -1,6 +1,6 @@
 ---
 title: Allow Chitty writes from a ticket worktree
-status: todo
+status: doing
 priority: high
 created: 2026-11-03
 ---
@@ -15,6 +15,13 @@ A worktree with the same `project` configuration cannot run `chitty edit`: `regi
 - [ ] An unrelated repository using the same `project` name is still refused
 - [ ] Tests create a real `git worktree` and cover both cases
 
+## Plan
+
+1. Reproduce registration from an actual Git worktree and locate the ownership check.
+2. Teach project registration to recognise sibling worktrees by their shared Git common directory while retaining unrelated-path rejection.
+3. Add real-worktree tests for successful setup and upgrade writes plus collision refusal.
+4. Run the focused tests and `make check`, then tick criteria and record the handoff.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -27,3 +34,5 @@ Narrowed on 2026-11-03: a plain `chitty edit` works from a worktree. `register_p
 - 2026-11-03T09:38:45Z mellow-marten: changed notes
 - 2026-11-03T10:41:00Z lively-panda: changed priority, acceptance criteria, notes
 - 2026-11-03T10:41:00Z lively-panda backlog → todo
+- 2026-11-03T10:42:41Z ivory-quail: wrote the plan
+- 2026-11-03T10:42:41Z ivory-quail todo → doing
