@@ -18,7 +18,12 @@ Tickets to absorb, reshape or drop at that point: `TASK-65` (escalate after two 
 
 Orchestration stays out of Chitty: it holds state, gates and evidence, and a harness runs the agents.
 
+## Notes
+
+Revises the line above that orchestration stays out of Chitty. Decided with the human, 2026-11-03: automate as much as possible. Deterministic workflow steps belong in `chitty run`; the boundary is that Chitty never calls a model.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
 - 2026-11-03T10:28:27Z lively-panda: changed dependencies
+- 2026-11-03T16:30:17Z lively-panda: changed notes
