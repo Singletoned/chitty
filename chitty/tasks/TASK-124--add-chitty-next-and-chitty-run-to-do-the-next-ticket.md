@@ -1,6 +1,6 @@
 ---
 title: Add `chitty next` and `chitty run` to do the next ticket
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-123
@@ -93,6 +93,8 @@ Correction: verified reviewer fixes with `make check`: archived dependencies cou
 
 Ready for independent review: all nine criteria are checked; `make check` passed with 207 tests.
 
+Reviewed: all nine criteria pass independently. Inspected selection and runner behavior, CLI/MCP parity, documentation and help; make check passes (207 tests).
+
 ## History
 
 - 2026-11-03T12:40:39Z lively-panda → todo
@@ -111,3 +113,5 @@ Ready for independent review: all nine criteria are checked; `make check` passed
 - 2026-11-03T17:19:51Z frosty-marten: changed notes
 - 2026-11-03T17:19:58Z frosty-marten: changed notes
 - 2026-11-03T17:19:58Z frosty-marten doing → review
+- 2026-11-03T17:23:27Z brisk-quail: changed notes
+- 2026-11-03T17:23:27Z brisk-quail review → done
