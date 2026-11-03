@@ -566,6 +566,21 @@ including retries, not per run.
   references), so nothing the user had staged is swept in. Failure is a loud
   error.
 
+## Next action and runner
+
+`chitty next` selects one active task across every context: `review` before
+`doing` before `todo`, then high/medium/low/unset priority and `TaskId`.
+Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
+an unmet dependency is excluded, while `doing` and `review` work remains
+visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
+`next` tool return the same `{mode, id}` value.
+
+`chitty run` launches `pi --chitty-<mode> ID` from the repository root with
+inherited standard streams. It reopens the repository after Pi exits and
+succeeds only if the task's committed status changed. This makes
+`while chitty run; do :; done` a safe unattended loop. Interrupting Pi exits
+130 without a traceback.
+
 ## Module layout
 
 ```
@@ -580,6 +595,7 @@ src/chitty/
                  dangling or self depends_on
   errors.py      ChittyError, the base of every user-facing error
   git.py         optional autocommit
+  run.py         Pi subprocess runner for `chitty run`
   cli.py         click commands; thin, calls store/model, prints
   mcp.py         tool definitions wrapping the same functions as cli.py
                  (mcp ≥ 2: MCPServer, not FastMCP)
