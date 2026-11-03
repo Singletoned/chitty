@@ -1,6 +1,6 @@
 ---
 title: Stop `uv run` in a worktree repointing the shared `~/.envs/chitty` install
-status: review
+status: done
 priority: high
 created: 2026-11-03
 ---
@@ -29,6 +29,8 @@ Correction to the previous note: `~/.envs/chitty` no longer exists, so the claim
 
 Review failed: (2) `uv` worktree isolation is not implemented in the branch: `.envrc` is ignored and absent from this worktree, and the only committed changes are documentation, so the claimed local configuration cannot be independently reviewed or applied durably; (3) the global `chitty` here resolves to `/Users/singletoned/.local/share/uv/tools/chitty/bin/chitty` (version `0.1.19`), not an editable main-checkout install, so the claimed cross-repository behavior is not established. Implement and independently verify the actual local/global environment setup, then return this ticket to review. Criterion 1 passes. `make check` exits `0`; `uv run --project .` with inherited environment variables removed uses this worktree `.venv` and source tree.
 
+Reviewed: Forced by human
+
 ## Summary
 
 Global `chitty` is now an editable install of the main checkout; each checkout uses its own `.venv` through `make` and `uv run`, and `.envrc` sets no environment variables or `PATH`. `README.md` and `PLAN.md` record this and reverse `TASK-81`. `~/.envs/chitty` is gone. Verification: `make check` (197 tests) plus the checks in Notes. Follow-ups: `TASK-119` to `TASK-122` and the `prj` suggestion.
@@ -46,3 +48,5 @@ Global `chitty` is now an editable install of the main checkout; each checkout u
 - 2026-11-03T12:15:00Z ivory-koala: changed acceptance criteria, notes
 - 2026-11-03T12:15:00Z ivory-koala review → doing
 - 2026-11-03T12:22:38Z human doing → review
+- 2026-11-03T12:24:57Z terrifying-bob: changed notes
+- 2026-11-03T12:24:57Z terrifying-bob review → done
