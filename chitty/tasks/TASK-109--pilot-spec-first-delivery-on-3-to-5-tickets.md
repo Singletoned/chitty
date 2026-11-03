@@ -2,6 +2,8 @@
 title: Pilot spec-first delivery on 3 to 5 tickets
 status: backlog
 priority: high
+depends_on:
+  - TASK-108
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -22,6 +24,14 @@ Sequence: start with `TASK-107` or another ticket that fixes worktree writes, be
 
 Decided with the human (2026-11-03): one ticket in work at a time. The human's available time is the limiting factor, so the pilot runs at the pace of review-ticket, with no deadline.
 
+## Acceptance Criteria
+
+- [ ] At least 3 tickets complete the full sequence, with at least one using a cheap model for tests and work
+- [ ] Each pilot ticket records in `--summary` the model per stage, review rounds and failure causes, cold-read mismatches, predicted versus changed files, and approximate human time
+- [ ] The report compares results with the `TASK-108` baseline, and gives a keep, change or drop decision for every stage, agreed with the human
+- [ ] A retro is run on the pilot, including a check of what each spec test would have caught
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
+- 2026-11-03T10:28:26Z lively-panda: changed dependencies, acceptance criteria
