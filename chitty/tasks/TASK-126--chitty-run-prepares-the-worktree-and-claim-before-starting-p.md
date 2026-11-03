@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-124
@@ -68,6 +68,13 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [ ] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [ ] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 
+## Plan
+
+1. Add black-box CLI tests using real Git repositories and a fake `pi` to define every preflight, worktree, setup, claim, actor and progress path.
+2. Move run orchestration into `run.py`: resolve the main checkout, validate preconditions before mutation, pull the inbox, select and prepare the ticket worktree, run parsed setup, claim `todo`, then launch Pi from that worktree.
+3. Extend config/init, Pi extension startup guards, documentation and release metadata for the required setup contract.
+4. Run targeted tests, then `make check`; exercise `chitty run` manually in a scratch repository; tick criteria only from that evidence.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-03. Biggest finds: `StoredTask.branch` reports `main` from a worktree, so step 2 as written would have tried to add a `main` worktree (branch lookup is now by name); and a claim counted as progress, which would have defeated the loop stopping on dead sessions (the baseline is now taken after the claim). Also adopted: preflight checks, config read from the main checkout, actor variables cleared, and the guard on `/chitty` too. The "no trust prompt" criterion is now an observation, as Chitty may not control it.
@@ -88,3 +95,5 @@ Every finding from the cold read now has an outcome. Fixed in the ticket on the 
 - 2026-11-03T19:25:32Z lively-panda: changed dependencies, notes
 - 2026-11-03T19:25:32Z lively-panda blocked → todo
 - 2026-11-03T20:00:15Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-03T20:14:32Z eager-lynx: wrote the plan
+- 2026-11-03T20:14:32Z eager-lynx todo → doing
