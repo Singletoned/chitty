@@ -17,7 +17,10 @@ before changing behaviour, and update it when a decision changes.
   fresh subagent on a cheaper model reads only the ticket and the code it points
   at, and reports what done means, the files it would change, decisions left
   open, stated behaviour no criterion verifies, unhandled starting states, and
-  claims that are wrong. Fix the ticket and note what was adopted or rejected.
+  claims that are wrong. Every finding needs an outcome in a ticket note: fixed
+  in the ticket, or rejected with a specific reason. Silence is not an outcome.
+  If a finding shows the code behaving oddly, ask whether it is a bug before
+  writing the ticket around it.
 - Releases: bump `__version__` in `src/chitty/__init__.py`, commit, then push a
   tag `v<version>`. `.github/workflows/release.yml` checks, builds and publishes
   to PyPI by trusted publishing (environment `pypi`).
