@@ -43,7 +43,10 @@ Starting frequencies, expected to change: a retro every 10 `done` tickets and an
 
 Left `chats/` uncommitted, on the assumption the transcripts are private: the points that matter are summarised here and in `PLAN.md`. Cheap to change.
 
+Retro: `make check` before every commit is only a prompt rule, and I broke it by accident. On 2026-11-03 I chained `make check` and `git commit` without `&&`, so `PLAN.md` was committed while the check was failing, because this checkout had no dev dependencies installed. It cost one extra diagnosis round and nothing broke, as the change was docs only. Nothing mechanical would have stopped it had the change been code.
+
 ## History
 
 - 2026-11-02T17:11:36Z lively-otter → backlog
 - 2026-11-03T10:28:24Z lively-panda: changed title, description, acceptance criteria, notes
+- 2026-11-03T12:39:05Z lively-panda: changed notes
