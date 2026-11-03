@@ -464,6 +464,82 @@ task files. `chitty --help` is the full command reference.
 That is the whole prompt. Statuses are fixed, so the block is always correct.
 `chitty guide` prints the same block, and `chitty --help` points agents at it.
 
+## Pipeline and feedback
+
+Direction, not current behaviour: TASK-109 pilots this by hand, and TASK-110
+builds only what the pilot justifies. Until then the statuses above stand.
+
+```
+backlog → design → tests → review-ticket → work → review-work → done
+```
+
+| stage           | who                 | leaves when                                                      |
+|-----------------|---------------------|------------------------------------------------------------------|
+| `design`        | human, strong model | the ticket meets the ready definition and passes a cold read     |
+| `tests`         | fresh session       | spec tests are committed and fail for the expected reason        |
+| `review-ticket` | human, for now      | the ticket is small and clear, and the tests match it            |
+| `work`          | fresh session       | spec tests pass and are unchanged, and `make check` passes       |
+| `review-work`   | fresh session       | the diff meets the ticket, judged without the worker's reasoning |
+
+Each stage has a different session, and nobody reviews a stage they did. At
+most one ticket is in `work` at a time, merged before the next starts. A
+failed review restarts in a fresh session with the finding added as a
+criterion. The second failure stops for the human: by then the ticket is the
+likely problem. Work and review-work block for a human if the design or tests
+are wrong, and never edit the spec tests.
+
+Scripted gates come first because they cost no tokens and cannot be talked
+round. They never relax, since trust does not build up in agents: only the
+human's sampling rate moves, and only on measured escapes.
+
+Ready definition. A fresh agent can do the ticket and know when to stop, and
+another can check the result without talking to the first:
+
+- Criteria are executable: a test or command defines done.
+- Scope is stated so a reviewer can reject on it, with an out-of-scope list.
+- Decisions are made: no "use your judgement".
+- It points at relevant files and patterns instead of pasting them.
+- It lists every path or caller the behaviour must hold on.
+- The diff should be reviewable, roughly a few hundred lines at most.
+
+Cold read: a throwaway session reads only the ticket and says what done means
+and which files it would touch. A mismatch with the author's intent means the
+ticket is fixed before any tests are written.
+
+Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
+private helpers or mocks of our own code. Use a round-trip property for any
+parser or serialiser, and a table row for any state transition. They are
+written from the ticket, before and without sight of the implementation.
+
+### Feedback loops
+
+Agents do not learn from correction, so a lesson counts only once it changes
+something read or run later. In order of preference, that is a mechanical
+check, then a template, then a prompt rule. Prompt rules have a fixed budget:
+adding one means removing one.
+
+| loop         | sensor                                                  | changes                       |
+|--------------|---------------------------------------------------------|-------------------------------|
+| ticket       | cold-read mismatch; predicted versus changed files      | the ticket, before work       |
+| failure      | each failure's cause, and whether it cited a criterion  | standing rules, or the ticket |
+| escape       | later bugs linked to their source; sampled audits       | gates and sampling rate       |
+| test strength | occasional mutation runs                               | survivors become tickets      |
+| replay       | past work stages rerun against their spec tests         | prompt and model choices      |
+
+A failure's cause is the earliest stage that should have caught it: `design`,
+`tests`, `work`, `integration` (branch, merge, environment) or `review` (the
+reviewer was wrong). Record it as `Review failed (<cause>): ...`. A later bug
+gets the label `escape` and a note naming its source ticket.
+
+A retro is a ticket, opened after every 10 `done` tickets. It proposes a few
+changes, each naming the failure class it should reduce, and the human accepts
+or rejects them. An audit samples 1 in 5 `done` tickets. Both frequencies are
+starting points, limited by the human's time.
+
+Agents never see these metrics. First-pass yield also rises if reviewers go
+soft, so it is only read alongside escapes. Judge cost per accepted ticket,
+including retries, not per run.
+
 ## Stack
 
 - Python ≥ 3.12, packaged with `uv`; installed as `uv tool install chitty`,
