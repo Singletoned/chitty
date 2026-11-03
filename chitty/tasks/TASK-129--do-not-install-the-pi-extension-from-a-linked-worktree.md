@@ -54,6 +54,8 @@ uv run python -m unittest discover -s tests -t .
 [ticket 09920ba] worker change
  1 file changed, 1 insertion(+), 1 deletion(-) passed (215 tests), and  passed.
 
+Correction: Reviewed: all five acceptance criteria independently passed; `make check` passed (215 tests), and `git diff --check main...HEAD` passed.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
@@ -66,3 +68,4 @@ uv run python -m unittest discover -s tests -t .
 - 2026-11-03T21:11:59Z kind-marten doing → review
 - 2026-11-03T21:18:50Z daring-gecko: changed notes
 - 2026-11-03T21:18:50Z daring-gecko review → done
+- 2026-11-03T21:19:04Z daring-gecko: changed notes
