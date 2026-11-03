@@ -3,6 +3,7 @@ title: Allow writes from a checkout that already holds the latest ticket version
 status: review
 labels:
   - bug
+  - escape
 priority: high
 created: 2026-11-03
 ---
@@ -29,6 +30,8 @@ Prefer the current branch in `historical_files` when it is one of the refs holdi
 
 Bootstrap: the claim came after the fix, because the global `chitty` refuses it until this lands, so this used the worktree `.venv/bin/chitty`. Both new tests failed before the fix with the reported refusal, naming `main` and `aaa`. Verified with `make check` and `npm test`. No cold read: small, with the cause already traced. The reviewer should also use `.venv/bin/chitty` here, or the global one if the ticket on this branch is newest, which it now is.
 
+Retro: this bug shipped in `TASK-105`, which passed first time with no cold read. Its criterion 3 said writes work when the checkout holds the latest version, but the only test had a commit on the branch, so a new worktree was never tried. The `TASK-126` cold read also saw `branch: main` from a worktree; the author changed `TASK-126` to work around it without asking whether it was a bug. A first-review pass is not evidence the ticket is right, which is what the escape loop is for: treat this as the first `escape` from `TASK-105`.
+
 ## History
 
 - 2026-11-03T19:25:31Z lively-panda → todo
@@ -36,3 +39,4 @@ Bootstrap: the claim came after the fix, because the global `chitty` refuses it 
 - 2026-11-03T19:28:14Z lively-panda todo → doing
 - 2026-11-03T19:28:15Z lively-panda: changed notes; ticked acceptance criteria
 - 2026-11-03T19:28:15Z lively-panda doing → review
+- 2026-11-03T19:28:15Z lively-panda: changed labels, notes
