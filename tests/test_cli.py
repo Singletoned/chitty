@@ -1216,6 +1216,28 @@ class TestCrossBranchWrites(CliTestCase):
         finally:
             os.chdir(previous)
 
+    def test_allows_writes_from_a_new_worktree_with_no_commits_of_its_own(self):
+        worktree = self.tmp / "worker"
+        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+        previous = Path.cwd()
+        os.chdir(worktree)
+        try:
+            self.run_cli("edit", "1", "-s", "doing")
+        finally:
+            os.chdir(previous)
+
+        worktree_task = worktree / "chitty/tasks/TASK-1--task.md"
+        self.assertIn("status: doing", worktree_task.read_text())
+        self.assertIn("status: todo", self.path.read_text())
+
+    def test_allows_writes_when_an_earlier_sorting_branch_holds_the_same_version(self):
+        self.git("branch", "aaa")
+
+        self.run_cli("note", "1", "Still on main.")
+
+        self.assertIn("Still on main.", self.path.read_text())
+
 
 class TestCheck(CliTestCase):
     def test_check(self):

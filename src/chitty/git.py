@@ -117,6 +117,7 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
 
     selected = [(path, commit, committed_at) for path, (commit, committed_at) in changed.items()]
     contents = _read_blobs(root, [(f"{commit}:{path}", path) for path, commit, _ in selected])
+    current = f"refs/heads/{current_branch(root)}"
     files: list[HistoricalFile] = []
     for path, commit, committed_at in selected:
         result = contents.get((f"{commit}:{path}", path))
@@ -126,7 +127,10 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
         candidates = blobs.get(path, ())
         matching = [ref for ref, object_id in candidates if object_id == blob]
         if matching:
-            files.append(HistoricalFile(path, content, _display_ref(matching[0]), committed_at))
+            # Several refs can hold the latest version; the current branch must
+            # win so a checkout that already has it is not told to go elsewhere.
+            ref = current if current in matching else matching[0]
+            files.append(HistoricalFile(path, content, _display_ref(ref), committed_at))
     return files
 
 
