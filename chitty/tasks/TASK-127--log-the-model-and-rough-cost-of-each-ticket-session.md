@@ -6,6 +6,8 @@ depends_on:
   - TASK-126
   - TASK-129
   - TASK-132
+  - TASK-147
+  - TASK-153
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -68,6 +70,8 @@ Split on 2026-11-03: the extension half is now `TASK-132`. This ticket keeps the
 
 Split on 2026-11-04 at the human's direction, from six criteria, into this ticket, `TASK-148` and `TASK-149`. Dropped the version bump: this changes nothing `chitty init` installs, because the extension half landed in `TASK-132`.
 
+Depends on `TASK-147` and `TASK-153` only to order them first: all are high priority and ties go by ID, but those two bugs affect every session and every passed review.
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
@@ -77,3 +81,4 @@ Split on 2026-11-04 at the human's direction, from six criteria, into this ticke
 - 2026-11-03T20:44:56Z lively-panda: changed dependencies, notes
 - 2026-11-03T20:46:20Z lively-panda: changed dependencies, acceptance criteria, notes
 - 2026-11-04T15:11:32Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T15:12:22Z mellow-newt: changed dependencies, notes
