@@ -1,6 +1,6 @@
 ---
 title: Alert when a newer Chitty is out
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-80
@@ -48,3 +48,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming
 - 2026-11-04T19:32:38Z mellow-newt → backlog
 - 2026-11-04T19:36:37Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T19:37:59Z mellow-newt: changed description, notes
+- 2026-11-04T19:38:00Z mellow-newt backlog → todo
