@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: backlog
+status: todo
 priority: medium
 depends_on:
   - TASK-166
@@ -31,3 +31,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my quoted phrase is not
 
 - 2026-11-04T20:47:41Z mellow-newt → backlog
 - 2026-11-04T20:48:51Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T20:48:52Z mellow-newt backlog → todo
