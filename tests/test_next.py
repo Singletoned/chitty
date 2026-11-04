@@ -658,6 +658,7 @@ class TestNext(CliTestCase):
             "import os, pathlib, subprocess, sys\n"
             "root = pathlib.Path(os.getcwd())\n"
             "(root / 'pi-arguments').write_text(repr(sys.argv[1:]))\n"
+            "(root / 'pi-session-id').write_text(os.environ['CHITTY_PI_SESSION_ID'])\n"
             "chitty = str(pathlib.Path(sys.executable).with_name('chitty'))\n"
             "subprocess.run([chitty, 'edit', sys.argv[2], '--status', 'blocked', "
             "'--note', 'fake Pi write'], check=True)\n"
@@ -692,7 +693,7 @@ class TestNext(CliTestCase):
             }
             self.assertEqual(len(actors), 1)
             self.assertNotIn("fixed-actor", actors)
-            first_actor = actors.pop()
+            first_session_id = (worktree / "pi-session-id").read_text()
 
             os.environ["CHITTY_ACTOR"] = "test-agent"
             self.add("Second")
@@ -707,7 +708,9 @@ class TestNext(CliTestCase):
             )
             assert second_history is not None
             second_actor = second_history.splitlines()[-1].split()[2]
-            self.assertNotEqual(first_actor, second_actor)
+            self.assertNotIn("fixed-actor", {second_actor})
+            second_session_id = (second / "pi-session-id").read_text()
+            self.assertNotEqual(first_session_id, second_session_id)
         finally:
             for name, value in previous.items():
                 if value is None:
