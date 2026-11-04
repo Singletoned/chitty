@@ -1,7 +1,7 @@
 ---
 title: Have agents get their prompt from `chitty guide`
 status: todo
-priority: medium
+priority: high
 depends_on:
   - TASK-141
   - TASK-136
@@ -31,7 +31,10 @@ Out of scope: continuing a stopped agent or any other per-agent integration, whi
 
 Same cold read. Fixed: `{prompt}` calling `guide()` in-process, and an older `chitty` failing, which I ran rather than assumed, as I did `chitty guide` in a worktree. Rejected: a NUL or an over-long prompt, because the text comes from short files we ship. Criterion 4 being a manual check, because no fake can show a real agent receiving the prompt. Colliding version bumps with `TASK-143`, because "above `main`'s" is judged when each is ready for review, and they are ordered by dependency.
 
+Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
+
 ## History
 
 - 2026-11-04T11:56:19Z lively-panda → todo
 - 2026-11-04T12:00:38Z lively-panda: changed description, notes
+- 2026-11-04T15:38:31Z mellow-newt: changed priority, notes
