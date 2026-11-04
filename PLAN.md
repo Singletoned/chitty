@@ -516,9 +516,20 @@ another can check the result without talking to the first:
 Cold read: a throwaway session reads only the ticket and says what done means
 and which files it would touch. A mismatch with the author's intent means the
 ticket is fixed before any tests are written. Decided with the human
-(2026-11-03): for now this is an informal part of planning sessions, done as a
-subagent (`AGENTS.md` has the procedure), with no tooling or enforcement. It
-becomes its own stage, such as `design-review`, only if it proves to need one.
+(2026-11-03): for now this is an informal part of planning sessions, with no
+tooling or enforcement. It becomes its own stage, such as `design-review`, only
+if it proves to need one. Workers and reviewers do not do it (2026-11-04: a
+worker read the procedure in `AGENTS.md` as its own step), so the procedure
+lives here:
+
+A fresh subagent on a cheaper model reads only the ticket and the code it points
+at, and reports what done means, the files it would change, decisions left open,
+stated behaviour no criterion verifies, unhandled starting states, and claims
+that are wrong. Every finding needs an outcome in a ticket note: fixed in the
+ticket, or rejected with a specific reason. Silence is not an outcome. If a
+finding shows the code behaving oddly, ask whether it is a bug before writing
+the ticket around it. If fixes take a ticket past about five criteria, split it
+instead of adding more.
 
 Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
 private helpers or mocks of our own code. Use a round-trip property for any

@@ -13,15 +13,8 @@ before changing behaviour, and update it when a decision changes.
   tests fail, never skip, if prettier or mdformat is missing.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
-- When planning tickets with the human, cold-read them before work starts: a
-  fresh subagent on a cheaper model reads only the ticket and the code it points
-  at, and reports what done means, the files it would change, decisions left
-  open, stated behaviour no criterion verifies, unhandled starting states, and
-  claims that are wrong. Every finding needs an outcome in a ticket note: fixed
-  in the ticket, or rejected with a specific reason. Silence is not an outcome.
-  If a finding shows the code behaving oddly, ask whether it is a bug before
-  writing the ticket around it. If fixes take a ticket past about five
-  criteria, split it instead of adding more.
+- Writing tickets with the human? Cold-read them, as `PLAN.md` describes. If you
+  were given a ticket to work on or review, skip this: it is not your step.
 - Releases: bump `__version__` in `src/chitty/__init__.py`, commit, then push a
   tag `v<version>`. `.github/workflows/release.yml` checks, builds and publishes
   to PyPI by trusted publishing (environment `pypi`).
