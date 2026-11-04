@@ -6,7 +6,7 @@ project = "chitty"
 archive = "move"
 review = true
 
-chitty_version = "0.1.22"
+chitty_version = "0.1.23"
 [contexts.tasks]
 prefix = "TASK"
 
