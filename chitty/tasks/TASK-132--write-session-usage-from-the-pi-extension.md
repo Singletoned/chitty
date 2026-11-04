@@ -19,8 +19,8 @@ Out of scope: anything in `chitty run`, and the log itself.
 
 ## Acceptance Criteria
 
-- [ ] Node tests show the extension summing every field by provider and model, tolerating a message with no usage, counting abandoned branches, keeping another session ID in the file, replacing its own on a second shutdown, and writing nothing when `CHITTY_USAGE_FILE` is unset
-- [ ] `__version__` is bumped above `main`'s
+- [x] Node tests show the extension summing every field by provider and model, tolerating a message with no usage, counting abandoned branches, keeping another session ID in the file, replacing its own on a second shutdown, and writing nothing when `CHITTY_USAGE_FILE` is unset
+- [x] `__version__` is bumped above `main`'s
 
 ## Plan
 
@@ -36,6 +36,8 @@ Cold-read attempt: the required fresh `explorer` subagent was unavailable twice 
 
 Cold-read outcome: no code findings recorded because the required fresh `explorer` subagent remained unavailable after three attempts, each returning `Agent is already processing`. This is a harness availability failure, not a code decision; a separate reviewer must perform the independent review.
 
+Verified before ticking: npm test passed all 22 Node tests, including aggregation, missing usage, abandoned-branch entries via getEntries(), retention of another session, replacement on second shutdown, and no write with CHITTY_USAGE_FILE unset. make check also passed; the version is 0.1.24, above main version 0.1.23.
+
 ## History
 
 - 2026-11-03T20:46:19Z lively-panda → todo
@@ -43,3 +45,4 @@ Cold-read outcome: no code findings recorded because the required fresh `explore
 - 2026-11-04T09:12:08Z jolly-crane: changed notes; wrote the plan
 - 2026-11-04T09:12:08Z jolly-crane todo → doing
 - 2026-11-04T09:16:23Z jolly-crane: changed notes
+- 2026-11-04T09:21:42Z jolly-crane: changed notes; ticked acceptance criteria
