@@ -49,6 +49,8 @@ Retro: `AGENTS.md` reaches every worker, so planning instructions there leak. A 
 
 Retro: `TASK-126` failed two reviews on 2026-11-04 with the reviewers finding real faults each time, not disagreeing. Causes worth counting: `make check` did not run `npm test`, so a failing Node test reached review (fixed in `make check`); the ticket has 16 criteria and a diff of about 770 lines, far past the ready definition; and the worker repeated the raw `git-dir` comparison that the `TASK-129` cold read had already found, because nothing connected the two. Also, the second failure note did not use the `Review failed (<cause>):` form, so a count by cause would miss it: the guide does not ask for that form yet.
 
+Retro: a `TASK-126` worker put `make check` in backticks inside a double-quoted `--note`. The shell ran it and pasted the output into the ticket, dropping words. The guide asks for backticks in notes, so this will recur: shell-safe note input is worth considering, such as `--note-file` or telling agents to single-quote.
+
 ## History
 
 - 2026-11-02T17:11:36Z lively-otter → backlog
@@ -56,3 +58,4 @@ Retro: `TASK-126` failed two reviews on 2026-11-04 with the reviewers finding re
 - 2026-11-03T12:39:05Z lively-panda: changed notes
 - 2026-11-04T09:15:49Z lively-panda: changed notes
 - 2026-11-04T11:57:56Z lively-panda: changed notes
+- 2026-11-04T12:40:38Z lively-panda: changed notes
