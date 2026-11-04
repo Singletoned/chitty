@@ -47,6 +47,8 @@ Changed 2026-11-04: Pi stays the default and `claude` is the fallback, by the hu
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the trial uses `--agent` but did not depend on `TASK-156`, and a criterion still named `agent_command`.
 
+Data for the trial, from a human-run analysis of real sessions, 2026-11-04. Commands agents ran: Chitty, all subcommands; Git reads: `status` 879, `diff` 467, `log` 322, `show` 115, `branch` 45, `merge-base` 23, `rev-parse` 18; Git writes: `commit` 256, `add` 252, `worktree` 107, `merge` 15, `rebase` 10, `reset` 8, `restore` 5; project: `make check` 322, `uv run python` 238, `make format` 164, `python` 90, `npm test` 58, `uv run ruff` 28, `make install` 26, `uv run pyright` 9; search and text: `rg` 344, `head` 129, `grep` 112, `find` 68, and `sort`, `tail`, `sed`, `nl`, `awk`, `cat`, `ls`, `wc`; occasional: `mktemp` 17, `xargs` 9, `mkdir`, `cp`, `tee`, `ps`, `rm`, `env`, `node`. If an allow-list is ever wanted, this is its starting point. The project group runs arbitrary code, so a list would still prevent accidents rather than contain an agent.
+
 ## History
 
 - 2026-11-04T15:38:29Z mellow-newt → backlog
@@ -58,3 +60,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the trial uses `--agent
 - 2026-11-04T17:58:14Z mellow-newt todo → backlog
 - 2026-11-04T18:01:15Z mellow-newt: changed dependencies, acceptance criteria, notes
 - 2026-11-04T18:01:16Z mellow-newt backlog → todo
+- 2026-11-04T20:15:23Z mellow-newt: changed notes
