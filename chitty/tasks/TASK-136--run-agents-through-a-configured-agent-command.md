@@ -1,6 +1,6 @@
 ---
 title: Run agents through a configured `agent_command`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-126
@@ -66,6 +66,8 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 
 Verification: a temporary Git repository ran real `chitty run` work and review sessions with this repository’s configured command; both replied `agent started`, and the ticket worktree contained `AGENTS.md` with the Chitty guide. A real Pi invocation with the two configured extensions successfully called `ctx_stats` and reported `ctx_stats available; subagent unavailable.` Neither session emitted `Observational memory`. A missing `-e /definitely-not-present/chitty.ts` printed `Failed to load extension ... Extension path does not exist` but exited `0` under `--help`; `chitty run` reports a non-zero agent exit status normally. `make check` passed after the implementation.
 
+Re-checked all five criteria against the focused tests, real configured-agent work/review sessions, documentation/configuration changes, version bump, and final `make check`; ready for independent review.
+
 ## History
 
 - 2026-11-04T09:25:40Z lively-panda → todo
@@ -82,3 +84,5 @@ Verification: a temporary Git repository ran real `chitty run` work and review s
 - 2026-11-04T16:08:32Z tidy-marten: wrote the plan
 - 2026-11-04T16:24:52Z tidy-marten: changed notes
 - 2026-11-04T16:24:53Z tidy-marten: ticked acceptance criteria
+- 2026-11-04T16:27:29Z tidy-marten: changed notes
+- 2026-11-04T16:27:29Z tidy-marten doing → review
