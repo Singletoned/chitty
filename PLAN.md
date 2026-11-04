@@ -531,7 +531,9 @@ that are wrong. Every finding needs an outcome in a ticket note: fixed in the
 ticket, or rejected with a specific reason. Silence is not an outcome. If a
 finding shows the code behaving oddly, ask whether it is a bug before writing
 the ticket around it. If fixes take a ticket past about five criteria, split it
-instead of adding more.
+instead of adding more. Do this even for a ticket that looks too small to need
+it: it is cheap, and a small `TASK-139` still had a wrong criterion and missed
+the tests that had to change.
 
 Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
 private helpers or mocks of our own code. Use a round-trip property for any
