@@ -201,6 +201,15 @@ class TestNext(CliTestCase):
             os.environ["PATH"] = old_path
             os.environ.pop("WORKER", None)
         self.assertEqual(result.stdout, "TASK-1: doing → blocked\n")
+        self.assertEqual(self.git("-C", str(worker), "branch", "--show-current").strip(), "task-1")
+        self.assertIn(
+            "status: todo",
+            (self.root / "chitty/tasks/TASK-1--todo.md").read_text(),
+        )
+        self.assertIn(
+            "chitty: edit TASK-1",
+            self.git("log", "--format=%s", "main..task-1"),
+        )
 
     def test_run_inherits_stdin(self):
         config = self.root / "chitty.toml"
@@ -746,22 +755,35 @@ class TestNext(CliTestCase):
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         self.assertIsNone(Repo.open(self.root).config.project)
         try:
+            config.write_text('project = "demo"\n' + config.read_text())
+            self.git("add", "chitty.toml")
+            self.git("commit", "--quiet", "-m", "configure project")
+            worktree = self.root / ".worktrees" / "task-1"
+
+            def pull_before_selection(repo: Repo) -> list[str]:
+                # Inbox pull must finish before selecting or claiming the ticket.
+                self.assertEqual(repo.find(repo.resolve("TASK-1")).task.frontmatter.status, "todo")
+                self.assertFalse(worktree.exists())
+                self.assertEqual(self.git("branch", "--list", "task-1"), "")
+                return []
+
+            with patch("chitty.run.pull_suggestions", side_effect=pull_before_selection) as pull:
+                self.run_cli("run", exit_code=1)
+                pull.assert_called_once()
+
+            config.write_text(
+                "\n".join(
+                    line
+                    for line in config.read_text().splitlines()
+                    if not line.startswith("project =")
+                )
+                + "\n"
+            )
+            self.git("add", "chitty.toml")
+            self.git("commit", "--quiet", "-m", "remove project")
             with patch("chitty.run.pull_suggestions") as pull:
                 self.run_cli("run", exit_code=1)
                 pull.assert_not_called()
-                config.write_text(
-                    'project = "demo"\n'
-                    + "\n".join(
-                        line
-                        for line in config.read_text().splitlines()
-                        if not line.startswith("project =")
-                    )
-                    + "\n"
-                )
-                self.git("add", "chitty.toml")
-                self.git("commit", "--quiet", "-m", "configure project")
-                self.run_cli("run", exit_code=1)
-                pull.assert_called_once()
         finally:
             os.environ["PATH"] = previous
 
