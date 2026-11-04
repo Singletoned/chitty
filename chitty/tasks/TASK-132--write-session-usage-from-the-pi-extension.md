@@ -38,6 +38,8 @@ Cold-read outcome: no code findings recorded because the required fresh `explore
 
 Verified before ticking: npm test passed all 22 Node tests, including aggregation, missing usage, abandoned-branch entries via getEntries(), retention of another session, replacement on second shutdown, and no write with CHITTY_USAGE_FILE unset. make check also passed; the version is 0.1.24, above main version 0.1.23.
 
+Per human direction, skip the cold read: it belongs to planning rather than workers and has been removed from the worker instructions on main. Do not retry it.
+
 ## History
 
 - 2026-11-03T20:46:19Z lively-panda → todo
@@ -46,3 +48,4 @@ Verified before ticking: npm test passed all 22 Node tests, including aggregatio
 - 2026-11-04T09:12:08Z jolly-crane todo → doing
 - 2026-11-04T09:16:23Z jolly-crane: changed notes
 - 2026-11-04T09:21:42Z jolly-crane: changed notes; ticked acceptance criteria
+- 2026-11-04T09:22:35Z jolly-crane: changed notes
