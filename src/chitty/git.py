@@ -134,6 +134,21 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     return files
 
 
+def is_repository(directory: Path) -> bool:
+    """Whether ``directory`` is inside a Git worktree."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--is-inside-work-tree"],
+            check=False,
+            cwd=directory,
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError:
+        return False
+    return result.returncode == 0 and result.stdout.strip() == "true"
+
+
 def is_linked_worktree(directory: Path) -> bool:
     """Whether ``directory`` is in a linked worktree rather than its main checkout.
 

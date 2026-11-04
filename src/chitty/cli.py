@@ -110,9 +110,10 @@ context_option = click.option(
 )
 
 
-def _repo() -> Repo:
+def _repo(*, warn_setup_version: bool = True) -> Repo:
     repo = Repo.open(find_root(Path.cwd()))
-    _warn_setup_version(repo.config.chitty_version)
+    if warn_setup_version:
+        _warn_setup_version(repo.config.chitty_version)
     return repo
 
 
@@ -375,7 +376,7 @@ def next_(as_json: bool) -> None:
 def run() -> None:
     """Run Pi on the next ticket; non-zero stops an unattended shell loop."""
     try:
-        result = run_next(_repo())
+        result = run_next(_repo(warn_setup_version=False))
     except RunInterrupted:
         click.echo("interrupted while Pi was running", err=True)
         raise click.exceptions.Exit(130) from None

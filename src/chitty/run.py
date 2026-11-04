@@ -21,6 +21,7 @@ class RunResult:
 
 def run(repo: Repo) -> RunResult:
     """Run Pi with inherited streams and report its committed status change."""
+    repo.refresh_setup()
     action = next_action(repo)
     old_status = repo.find(action.id).task.frontmatter.status
     try:

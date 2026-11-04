@@ -1,6 +1,6 @@
 ---
 title: Refresh repository setup at the start of `chitty run`
-status: todo
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -32,18 +32,35 @@ Out of scope: running init from `chitty next` or any other command.
 
 ## Acceptance Criteria
 
-- [ ] A test with a temporary `PI_CODING_AGENT_DIR` and an up-to-date `chitty_version` shows a differing installed extension replaced before `pi` starts
-- [ ] A test shows a failing refresh, such as a recorded version newer than the code or a locally edited extension, exits non-zero without starting `pi`
-- [ ] `PLAN.md` and `README.md` say `chitty run` refreshes setup
-- [ ] A test runs `chitty run` with a fake `pi` in a repository with a stale `chitty_version`: before `pi` starts, the fake `pi` sees the current version, one `chitty: upgrade repository setup` commit holds only setup files, the changed paths are on stderr, and no warning to re-run `chitty init` appears
-- [ ] Tests show that when nothing is out of date, and when run from a linked worktree, a run makes no commit and prints nothing about setup
-- [ ] A test shows uncommitted changes to `AGENTS.md` make the run exit non-zero without starting `pi`, leaving those changes in place and uncommitted
+- [x] A test with a temporary `PI_CODING_AGENT_DIR` and an up-to-date `chitty_version` shows a differing installed extension replaced before `pi` starts
+- [x] A test shows a failing refresh, such as a recorded version newer than the code or a locally edited extension, exits non-zero without starting `pi`
+- [x] `PLAN.md` and `README.md` say `chitty run` refreshes setup
+- [x] A test runs `chitty run` with a fake `pi` in a repository with a stale `chitty_version`: before `pi` starts, the fake `pi` sees the current version, one `chitty: upgrade repository setup` commit holds only setup files, the changed paths are on stderr, and no warning to re-run `chitty init` appears
+- [x] Tests show that when nothing is out of date, and when run from a linked worktree, a run makes no commit and prints nothing about setup
+- [x] A test shows uncommitted changes to `AGENTS.md` make the run exit non-zero without starting `pi`, leaving those changes in place and uncommitted
+
+## Plan
+
+1. Add focused CLI integration tests covering refresh-before-`pi`, failures, no-op/worktree, and protected uncommitted setup edits. 2. Implement `Repo.refresh_setup()` using existing setup/version/Git helpers, then invoke it before ticket selection. 3. Document the behavior in `PLAN.md` and `README.md`; run checks and verify every criterion.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-03, with an outcome for every finding. Fixed: user edits being swept into the upgrade commit; a linked worktree committing the upgrade to a ticket branch, and printing on every run; the contradiction between `call it first`, `after its preflight` and the `autocommit` sentence; the misleading warning; how this differs from `_prepare_write`; test hints; and stated output now covered by criteria. Fixed in `TASK-131`: landing in the same process would have started the next agent on old code. Rejected: testing the config reload directly, because the fake `pi` seeing the current version covers it. A concurrent `chitty run`, because a single worker is the stated assumption and `index.lock` fails loudly. The installed extension changing while Pi runs, because Pi loads it at startup, though I have not verified that. No rollback on partial failure, because the error is loud and the next run refuses the dirty files. `_default_project` failing in an oddly named directory, because that is rare and loud. A version bump, because `init` output does not change.
 
+Verified with `make check`: 219 tests, Ruff formatting/lint, and Pyright pass. Focused `chitty run` tests cover extension replacement, stale/newer setup, protected edits, setup commit/output, and linked-worktree/no-op behavior.
+
+All six criteria were re-checked against the passing `make check` run before review. Ready for an independent reviewer; the implementation agent did not perform the review.
+
+Reviewed: independently checked all six criteria; focused run-refresh coverage and full make check pass (219 tests, Ruff, Pyright).
+
 ## History
 
 - 2026-11-03T21:21:52Z lively-panda → todo
 - 2026-11-03T21:24:17Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-04T08:35:23Z mellow-lynx: wrote the plan
+- 2026-11-04T08:35:23Z mellow-lynx todo → doing
+- 2026-11-04T08:51:57Z mellow-lynx: changed notes; ticked acceptance criteria
+- 2026-11-04T08:52:11Z mellow-lynx: changed notes
+- 2026-11-04T08:52:11Z mellow-lynx doing → review
+- 2026-11-04T09:06:55Z eager-lynx: changed notes
+- 2026-11-04T09:06:55Z eager-lynx review → done
