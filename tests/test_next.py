@@ -265,6 +265,45 @@ class TestNext(CliTestCase):
         changed = self.git("show", "--format=", "--name-only", "HEAD").splitlines()
         self.assertTrue(set(changed) <= {"chitty.toml", "AGENTS.md", ".gitignore", "CLAUDE.md"})
 
+    def test_run_replaces_an_outdated_extension_before_starting_pi(self):
+        self.add("Todo")
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.run_cli("init")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "base")
+        agent = self.tmp / "pi-agent"
+        extension = agent / "extensions" / "chitty.ts"
+        extension.parent.mkdir(parents=True)
+        extension.write_text("old extension")
+        (agent / "chitty-extension.sha256").write_text(
+            hashlib.sha256(b"old extension").hexdigest() + "\n"
+        )
+        seen = self.tmp / "seen-extension"
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib\n"
+            "agent = pathlib.Path(os.environ['PI_CODING_AGENT_DIR'])\n"
+            "pathlib.Path(os.environ['SEEN']).write_bytes(\n"
+            "    (agent / 'extensions/chitty.ts').read_bytes()\n)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ.update(
+            PATH=f"{fake.parent}:{old_path}", PI_CODING_AGENT_DIR=str(agent), SEEN=str(seen)
+        )
+        try:
+            self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = old_path
+            os.environ.pop("PI_CODING_AGENT_DIR", None)
+            os.environ.pop("SEEN", None)
+
+        self.assertNotEqual(seen.read_bytes(), b"old extension")
+
     def test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty(self):
         self.add("Todo")
         self.git("init", "--quiet")
