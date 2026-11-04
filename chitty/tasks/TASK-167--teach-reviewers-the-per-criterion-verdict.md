@@ -12,13 +12,22 @@ created: 2026-11-04
 
 ## Description
 
-`TASK-166` makes a review verdict need one line per criterion. Reviewers should know that before being refused. In `src/chitty/roles/review.md` and the review part of `src/chitty/guide.md`, replace "list every failure in one note" with the form `<number>: pass - <evidence>` or `<number>: fail - <reason>`, where evidence is the command or test that shows it, and say that a test criterion passes only with evidence that the test fails without the change. `TASK-142` removes the prompt from `src/chitty/integrations/pi/chitty.ts`, and `TASK-151` changes these same lines, so this follows both. The `TASK-109` pilot may later replace the test evidence.
+`TASK-166` makes a review verdict need one line per criterion. Reviewers should know that before being refused. `TASK-142` removes the prompt from `src/chitty/integrations/pi/chitty.ts`, and `TASK-151` changes these same lines, so this follows both.
+
+In `src/chitty/guide.md`, replace "list every failure in one note". In `src/chitty/roles/review.md`, extend the instruction to write one note in the form `Review failed (<cause>): ...`. Both then say: one note, whether it passes or fails, holds a line for every criterion, `<number>: pass - <evidence>` or `<number>: fail - <reason>`, where evidence is the command or test that shows it, below its `Reviewed:` or `Review failed (<cause>):` first line. A test criterion passes only with evidence that the test fails without the change. The `TASK-109` pilot may later replace that test evidence.
+
+In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s description of review gains a sentence on the form.
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide review` containing the form, and `README.md` and `src/chitty/guide.md` show it
+- [ ] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
 - [ ] `__version__` is bumped above `main`'s
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my quoted phrase is not in `src/chitty/roles/review.md`, how the lines fit with the failure note's form, and what `README.md` and `PLAN.md` gain.
 
 ## History
 
 - 2026-11-04T20:47:41Z mellow-newt → backlog
+- 2026-11-04T20:48:51Z mellow-newt: changed description, acceptance criteria, notes
