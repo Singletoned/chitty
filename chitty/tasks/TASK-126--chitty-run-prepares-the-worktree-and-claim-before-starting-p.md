@@ -1,7 +1,8 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: review
+status: blocked
 priority: high
+owner: human
 depends_on:
   - TASK-124
   - TASK-128
@@ -57,7 +58,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
-- [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
+- [ ] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [x] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
@@ -171,6 +172,10 @@ Review failed: criterion 5 is not met. `src/chitty/__init__.py` remains `0.1.24`
 
 Verified criterion 5: release metadata now sets `__version__ = "0.1.25"`, above `main`'s `0.1.24`; existing setup documentation and migration coverage remain in place. Passed 'uv run python -m unittest tests.test_version' and 'make check' (ruff, pyright, 227 Python tests, 25 Node tests).
 
+Review failed (work): criterion 6 fails for a relative PATH entry. `run.py` checks `shutil.which("pi")` from the caller directory but launches Pi from the ticket worktree. With `PATH=bin:/usr/bin:/bin`, a fake `bin/pi` in the main checkout passes preflight, then launch raises `FileNotFoundError` after the worktree and committed `doing` claim are created. Resolve Pi to an executable path before changing directories (or perform the lookup using the worktree), retain a loud Chitty error, and add a black-box regression proving no branch, worktree, or claim is created when launch cannot resolve Pi.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Handoff: bumped `__version__` from `0.1.24` to `0.1.25`, above `main`, so the setup-template and existing-repository initialization changes in this ticket have a release version. Verification: `uv run python -m unittest tests.test_version` and `make check` passed (ruff, pyright, 227 Python tests, 25 Node tests). Review focus: confirm the release bump and the complete `chitty run` orchestration diff against `main`.
@@ -248,3 +253,5 @@ Handoff: bumped `__version__` from `0.1.24` to `0.1.25`, above `main`, so the se
 - 2026-11-04T14:16:38Z ivory-falcon: changed notes; ticked acceptance criteria
 - 2026-11-04T14:18:54Z ivory-falcon: changed summary
 - 2026-11-04T14:18:54Z ivory-falcon doing → review
+- 2026-11-04T14:29:34Z proud-koala: changed owner, acceptance criteria, notes
+- 2026-11-04T14:29:34Z proud-koala review → blocked
