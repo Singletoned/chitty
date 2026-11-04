@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-124
@@ -52,11 +52,11 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 ## Acceptance Criteria
 
-- [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
+- [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
-- [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
+- [ ] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
@@ -66,7 +66,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
-- [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
+- [ ] A Node test shows the worktree check refusing in a subdirectory of the main checkout
 - [x] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
 
 ## Plan
@@ -134,6 +134,8 @@ Review failed (tests): criterion 1 lacks fake-Pi working-directory assertions fo
 
 Verified the remaining criteria with `make check` (227 tests): fake Pi proves working directories for newly-created, existing-branch, and linked worktrees; inbox pulling is skipped without a pre-existing project and happens with one; setup repeats and receives shell metacharacters as literal arguments. A hand run in a temporary real Git repository created `.worktrees/task-1`, claimed on `task-1`, and started real Pi. Pi returned without an interrupting prompt; it made no status change, so `chitty run` correctly exited non-zero.
 
+Independent review failed. 1. Criterion 1: the already-linked-worktree test does not assert the fake Pi working directory; it writes through WORKER, so it passes even if Pi starts elsewhere. 2. Criterion 5: npm test exits 1. The baseline/resumed-session Node test now reaches the linked-worktree guard with a main-checkout fixture and lacks ctx.shutdown, producing ctx.shutdown is not a function. 3. Criterion 15: requireLinkedWorktree compares raw git-dir and git-common-dir strings. In a main-checkout subdirectory Git returns an absolute git-dir and a relative common-dir, so they differ and Pi is incorrectly allowed to start. Its purported subdirectory test mocks identical .git output instead of exercising these real spellings. Fix the comparison by resolving both paths relative to ctx.cwd and make the test use the actual subdirectory behavior.
+
 ## Summary
 
 Implementation complete. Verification: `make check` passed (227 tests); `chitty check` and `chitty fix` passed. Manual real-Pi scratch run created the ticket worktree and branch claim without an interrupting prompt. Independent review required.
@@ -183,3 +185,5 @@ Implementation complete. Verification: `make check` passed (227 tests); `chitty 
 - 2026-11-04T11:25:52Z mellow-marten: changed notes; ticked acceptance criteria
 - 2026-11-04T11:26:00Z mellow-marten: changed summary
 - 2026-11-04T11:26:00Z mellow-marten doing → review
+- 2026-11-04T11:32:26Z daring-panda: changed acceptance criteria, notes
+- 2026-11-04T11:32:26Z daring-panda review → doing
