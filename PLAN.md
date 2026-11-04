@@ -537,7 +537,10 @@ finding shows the code behaving oddly, ask whether it is a bug before writing
 the ticket around it. If fixes take a ticket past about five criteria, split it
 instead of adding more. Do this even for a ticket that looks too small to need
 it: it is cheap, and a small `TASK-139` still had a wrong criterion and missed
-the tests that had to change.
+the tests that had to change. Keep a new ticket in `backlog` until its findings
+have outcomes, and only then move it to `todo`, because `chitty run` picks up
+anything in `todo`: `TASK-147` was claimed with a wrong fix while its cold read
+was still running.
 
 Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
 private helpers or mocks of our own code. Use a round-trip property for any
