@@ -14,8 +14,8 @@ The field stays optional and `chitty list` still shows `-`: only the ordering ch
 
 ## Acceptance Criteria
 
-- [ ] Any statement of priority ordering in `README.md` and `PLAN.md` matches
-- [ ] Tests show `chitty next` choosing an unprioritised ticket ahead of a low one and by ID against a medium one, and `chitty list`, in text and `--json`, ranking it level with medium and still showing `-`; the existing tests asserting the old order, in `tests/test_next.py` and `tests/test_cli.py`, are updated
+- [x] Any statement of priority ordering in `README.md` and `PLAN.md` matches
+- [x] Tests show `chitty next` choosing an unprioritised ticket ahead of a low one and by ID against a medium one, and `chitty list`, in text and `--json`, ranking it level with medium and still showing `-`; the existing tests asserting the old order, in `tests/test_next.py` and `tests/test_cli.py`, are updated
 
 ## Plan
 
@@ -37,3 +37,4 @@ Claim continued on branch `task-139`; the initial `chitty inbox --pull` refreshe
 - 2026-11-04T12:29:12Z honest-falcon: wrote the plan
 - 2026-11-04T12:29:12Z honest-falcon todo → doing
 - 2026-11-04T12:30:05Z honest-falcon: changed notes
+- 2026-11-04T12:33:21Z honest-falcon: ticked acceptance criteria
