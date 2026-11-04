@@ -125,6 +125,9 @@ export default function chitty(pi: ExtensionAPI) {
     setPiSessionIdentity(ctx.sessionManager.getSessionId());
     state = latestState(ctx) ?? { enabled: false, mode: "work" };
 
+    // Child agents run without a UI and can inherit these flags from their parent.
+    if (!ctx.hasUI) return;
+
     const reviewTicket = parseChittyFlag(
       pi.getFlag("chitty-review"),
       "--chitty-review",
