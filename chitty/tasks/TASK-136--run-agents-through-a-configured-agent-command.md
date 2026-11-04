@@ -64,6 +64,8 @@ From the last `TASK-126` review: with a relative `PATH` entry, the preflight fin
 
 Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
 
+Verification: a temporary Git repository ran real `chitty run` work and review sessions with this repository’s configured command; both replied `agent started`, and the ticket worktree contained `AGENTS.md` with the Chitty guide. A real Pi invocation with the two configured extensions successfully called `ctx_stats` and reported `ctx_stats available; subagent unavailable.` Neither session emitted `Observational memory`. A missing `-e /definitely-not-present/chitty.ts` printed `Failed to load extension ... Extension path does not exist` but exited `0` under `--help`; `chitty run` reports a non-zero agent exit status normally. `make check` passed after the implementation.
+
 ## History
 
 - 2026-11-04T09:25:40Z lively-panda → todo
@@ -78,3 +80,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
 - 2026-11-04T16:06:15Z tidy-marten todo → doing
 - 2026-11-04T16:08:32Z tidy-marten: wrote the plan
+- 2026-11-04T16:24:52Z tidy-marten: changed notes
