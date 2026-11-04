@@ -1,6 +1,6 @@
 ---
 title: "`chitty --version` reports stale package metadata instead of the running code"
-status: todo
+status: doing
 created: 2026-11-03
 ---
 
@@ -11,6 +11,10 @@ created: 2026-11-03
 ## Acceptance Criteria
 
 - [ ] With `importlib.metadata.version` patched to return `0.0.0`, `chitty --version` prints exactly `chitty, version <CHITTY_VERSION>`; run before the fix, that test fails
+
+## Plan
+
+1. Inspect the CLI version decorator and existing version tests. 2. Add a regression test that patches package metadata and first confirm it fails. 3. Pass the code-defined version to Click, then run the focused test and `make check`.
 
 ## Notes
 
@@ -23,3 +27,5 @@ Second pass over the cold read: nothing further to change. Keeping click's outpu
 - 2026-11-03T11:27:23Z eager-raven → todo
 - 2026-11-03T18:19:33Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T20:00:19Z lively-panda: changed notes
+- 2026-11-04T14:32:39Z open-quail: wrote the plan
+- 2026-11-04T14:32:39Z open-quail todo → doing
