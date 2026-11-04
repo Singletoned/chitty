@@ -1,7 +1,7 @@
 ---
 title: Stop agents reading the whole of `PLAN.md`
 status: backlog
-priority: medium
+priority: high
 parent: TASK-106
 created: 2026-11-04
 ---
@@ -14,6 +14,11 @@ From `docs/pi-token-usage.md`, recommendation 6. `PLAN.md` is the most expensive
 
 - [ ] `AGENTS.md` says to read only the relevant section of `PLAN.md`, and says how to find it
 
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-04. No faults. Raised to high, because the doc says to do this and `TASK-171` first. `AGENTS.md` line 16 and `README.md` line 10 mention `PLAN.md` without telling agents to read it, so they stay.
+
 ## History
 
 - 2026-11-04T21:41:07Z mellow-newt → backlog
+- 2026-11-04T21:44:25Z mellow-newt: changed priority, description, notes
