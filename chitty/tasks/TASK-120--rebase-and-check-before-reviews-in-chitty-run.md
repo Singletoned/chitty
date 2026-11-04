@@ -1,7 +1,7 @@
 ---
 title: Rebase and check before reviews in `chitty run`
 status: todo
-priority: high
+priority: medium
 depends_on:
   - TASK-126
   - TASK-129
@@ -65,3 +65,4 @@ Split on 2026-11-03 at the human's prompting, because 13 criteria was too large:
 - 2026-11-03T20:00:16Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T20:44:55Z lively-panda: changed dependencies, description, acceptance criteria, notes
 - 2026-11-03T20:46:17Z lively-panda: changed title, description, acceptance criteria, notes
+- 2026-11-04T09:45:40Z lively-panda: changed priority
