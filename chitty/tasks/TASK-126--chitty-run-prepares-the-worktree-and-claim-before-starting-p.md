@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-124
@@ -130,6 +130,10 @@ Resumed the existing clean `task-126` worktree and rebased it onto current `main
 
 Verified the remaining run matrix with `tests.test_next`: fake Pi working directories and branch claims, forwarded arguments, fresh actors despite inherited actor/session variables, setup before claim and review preservation, run from another worktree, newest ticket copy on `main`, and a dirty main ticket. `make check` passed: ruff, pyright, and 226 unit tests.
 
+## Summary
+
+Handoff: `chitty run` worktree orchestration and its regression coverage are complete. Verification: `make check` passed (ruff, pyright, 226 unit tests); focused `tests.test_next` run coverage passed; `chitty check` and `chitty fix` completed with only pre-existing warnings in unrelated archived task text. Follow-up: independent review required.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -168,3 +172,5 @@ Verified the remaining run matrix with `tests.test_next`: fake Pi working direct
 - 2026-11-04T09:59:15Z daring-falcon: changed notes; wrote the plan
 - 2026-11-04T09:59:15Z daring-falcon todo → doing
 - 2026-11-04T10:12:22Z daring-falcon: changed notes; ticked acceptance criteria
+- 2026-11-04T10:12:36Z daring-falcon: changed summary
+- 2026-11-04T10:12:36Z daring-falcon doing → review
