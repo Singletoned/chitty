@@ -11,6 +11,7 @@ depends_on:
   - TASK-127
   - TASK-131
   - TASK-136
+  - TASK-143
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -50,6 +51,8 @@ Also needs `TASK-131`, split from `TASK-120`.
 
 Also needs `TASK-136`, so the pilot's costs are measured without extensions a worker does not need.
 
+Also needs `TASK-143`, and through it `TASK-141` and `TASK-142`, by the human's decision on 2026-11-04: the pilot should measure workers with the instructions they will keep.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -61,3 +64,4 @@ Also needs `TASK-136`, so the pilot's costs are measured without extensions a wo
 - 2026-11-03T17:26:54Z lively-panda: changed notes
 - 2026-11-03T20:46:23Z lively-panda: changed dependencies, notes
 - 2026-11-04T09:25:41Z lively-panda: changed dependencies, notes
+- 2026-11-04T11:56:21Z lively-panda: changed dependencies, notes
