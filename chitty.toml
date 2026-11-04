@@ -6,7 +6,9 @@ project = "chitty"
 archive = "move"
 review = true
 
-chitty_version = "0.1.24"
+chitty_version = "0.1.25"
+# setup = "make install" # run before Pi starts in a ticket worktree
+
 [contexts.tasks]
 prefix = "TASK"
 
