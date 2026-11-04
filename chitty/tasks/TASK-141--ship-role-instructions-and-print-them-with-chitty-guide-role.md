@@ -1,6 +1,6 @@
 ---
 title: Ship role instructions and print them with `chitty guide <role>`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-126
@@ -51,6 +51,8 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 
 Verified `uv build`: the wheel lists `chitty/roles/work.md`, `review.md`, and `plan.md`. Guide-rule accounting: task/tool use, one-ticket start, planning, criteria, notes/summary/fix, commit trailers, defaults, blocking, `human`, and unrelated findings are in `work.md`; review independence, criterion review, failure handling, merge, and unrelated findings are in `review.md`; formatting task text, ready tickets, backlog/promotion/parent, cold reads, and archive are in `plan.md`. The removed worktree, setup, and manual claim steps were intentionally dropped because `chitty run` now performs them.
 
+Re-checked every criterion after commit: documentation, CLI role coverage and Pi diagnostic exclusion, wheel contents, role lengths and guide-rule accounting. `make check` passes.
+
 ## History
 
 - 2026-11-04T11:56:18Z lively-panda → todo
@@ -61,3 +63,5 @@ Verified `uv build`: the wheel lists `chitty/roles/work.md`, `review.md`, and `p
 - 2026-11-04T17:49:49Z sunny-raven: wrote the plan
 - 2026-11-04T17:57:08Z sunny-raven: changed notes
 - 2026-11-04T17:57:13Z sunny-raven: ticked acceptance criteria
+- 2026-11-04T18:01:50Z sunny-raven: changed notes
+- 2026-11-04T18:01:50Z sunny-raven doing → review
