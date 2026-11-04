@@ -17,7 +17,7 @@ Add `src/chitty/roles/work.md`, `review.md` and `plan.md`, as package data like 
 Every rule in `guide.md` needs a home, or a reason recorded in a note for dropping it. Several are in no prompt today, so would be easy to lose:
 
 - `work`: planning and claiming as they remain, ticking criteria, notes, `--summary`, `chitty fix`, `Task: <ID>` commit lines, cheap defaults, and blocked and `human` handling.
-- `review`: never reviewing your own work, every criterion, one failure note in the `Review failed (<cause>): ...` form from `PLAN.md` with its causes, and `--uncheck`. The guide does not ask for that form yet, and a `TASK-126` review missed it.
+- `review`: never reviewing your own work, every criterion, one failure note in the `Review failed (<cause>): ...` form from `PLAN.md` with its causes, and `--uncheck`. The guide does not ask for that form yet, and a `TASK-126` review missed it. Fail only for an unmet criterion or a demonstrated defect, such as a throwaway failing test, and file a ticket for anything else. A reviewer who finds a ticket too large should say so in the note and suggest how to split it. Both decided by the human on 2026-11-04.
 - `plan`: writing tickets, the cold read, promoting `backlog` tickets, `parent`, and `chitty archive`.
 - `work` and `review` both: `chitty suggest` and `chitty add` for unrelated findings. `plan.md` takes the cold-read procedure from `PLAN.md`, which then points to it, and covers writing tickets: the ready definition and about five criteria.
 
@@ -41,7 +41,10 @@ Out of scope: `chitty.ts`, the `AGENTS.md` block, the `chitty://guide` MCP resou
 
 Cold read by a fresh Sonnet subagent with `TASK-142` and `TASK-143`, 2026-11-04. Fixed: rules that fit no role, now each assigned; the Pi session paragraph polluting a prompt, which I reproduced with `PI_CODING_AGENT=true`; "short" not being checkable, now about 30 lines; and the `Review failed (<cause>)` form, added by me from the `TASK-126` retro note. A wheel-building test became a recorded check: hatchling ships the whole package, as it does `guide.md`, so a test would add a slow build to guard little. Rejected: looking up the ID, because `chitty show` fails loudly straight after. Depending only partly on `TASK-126`, because the role files must describe what `chitty run` leaves to the agent.
 
+Added on 2026-11-04 after `TASK-126` failed six reviews: when a reviewer may fail a ticket, and suggesting a split.
+
 ## History
 
 - 2026-11-04T11:56:18Z lively-panda → todo
 - 2026-11-04T12:00:37Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-04T14:36:50Z mellow-newt: changed description, notes
