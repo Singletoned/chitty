@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-124
@@ -177,6 +177,8 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Picked up on 2026-11-04 at the human's direction, as the deciding reviewer, after 6 failed reviews. The last failure is real but narrow: with a relative `PATH` entry, the preflight and the launch run in different directories, so `pi` is found by one and not the other, and a traceback follows after the claim. A missing `pi`, which is what criterion 6 asks about, is covered and refused. `TASK-136` replaces this lookup, so the fix goes there. No code changed in this pickup.
 
+Reviewed: human-directed final review. Criteria hold; relative PATH case moved to TASK-136.
+
 ## Summary
 
 Handoff: bumped `__version__` from `0.1.24` to `0.1.25`, above `main`, so the setup-template and existing-repository initialization changes in this ticket have a release version. Verification: `uv run python -m unittest tests.test_version` and `make check` passed (ruff, pyright, 227 Python tests, 25 Node tests). Review focus: confirm the release bump and the complete `chitty run` orchestration diff against `main`.
@@ -258,3 +260,5 @@ Handoff: bumped `__version__` from `0.1.24` to `0.1.25`, above `main`, so the se
 - 2026-11-04T14:29:34Z proud-koala review → blocked
 - 2026-11-04T14:35:58Z mellow-newt: changed owner, notes; ticked acceptance criteria
 - 2026-11-04T14:35:58Z mellow-newt blocked → review
+- 2026-11-04T15:01:42Z human: changed notes; overrode review independence
+- 2026-11-04T15:01:42Z human review → done
