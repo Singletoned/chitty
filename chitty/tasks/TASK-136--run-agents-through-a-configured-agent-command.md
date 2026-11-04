@@ -1,6 +1,6 @@
 ---
 title: Run agents through a configured `agent_command`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-126
@@ -68,6 +68,8 @@ Verification: a temporary Git repository ran real `chitty run` work and review s
 
 Re-checked all five criteria against the focused tests, real configured-agent work/review sessions, documentation/configuration changes, version bump, and final `make check`; ready for independent review.
 
+Reviewed: independently checked all five criteria: configured-command parsing, validation and launch behavior; distinct fake-agent work/review coverage; documented real-session evidence; init/template/docs/version changes. Ran make check (ruff, pyright, 228 Python tests, 27 Node tests).
+
 ## History
 
 - 2026-11-04T09:25:40Z lively-panda → todo
@@ -86,3 +88,5 @@ Re-checked all five criteria against the focused tests, real configured-agent wo
 - 2026-11-04T16:24:53Z tidy-marten: ticked acceptance criteria
 - 2026-11-04T16:27:29Z tidy-marten: changed notes
 - 2026-11-04T16:27:29Z tidy-marten doing → review
+- 2026-11-04T17:20:28Z open-crane: changed notes
+- 2026-11-04T17:20:28Z open-crane review → done
