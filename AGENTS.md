@@ -15,9 +15,9 @@ before changing behaviour, and update it when a decision changes.
   `model.py` so the two front ends cannot diverge.
 - Writing tickets with the human? Cold-read them, as `PLAN.md` describes. If you
   were given a ticket to work on or review, skip this: it is not your step.
-- Releases: bump `__version__` in `src/chitty/__init__.py`, commit, then push a
-  tag `v<version>`. `.github/workflows/release.yml` checks, builds and publishes
-  to PyPI by trusted publishing (environment `pypi`).
+- Releases: `make release` tags the version in `src/chitty/__init__.py` and pushes
+  it. `.github/workflows/release.yml` checks, builds and publishes to PyPI by
+  trusted publishing (environment `pypi`).
 - Any change that existing repos only pick up by re-running `chitty init`
   (the managed guide block, `chitty.toml` template or upgrades, inbox
   registration) must bump `__version__` in `src/chitty/__init__.py`, at least at patch
