@@ -164,6 +164,8 @@ Review failed: criterion 1 does not assert that the claim for the already-linked
 
 Review failed (complete): criterion 1 does not assert that the claim for the already-linked worktree case is committed on branch `task-1`; `tests/test_next.py::test_run_uses_committed_change_from_ticket_worktree` checks Pi’s working directory but not the claim branch. Criterion 7’s inbox test only mocks `pull_suggestions` and checks called/not-called; it does not prove that inbox pull occurs before ticket selection or claim. Criterion 9 generates new session IDs but does not assert the actors from the two invocations differ; moreover `actor._readable_name()` maps every identity into a finite adjective-animal set, so different session IDs can record the same actor. Add deterministic focused black-box assertions and preserve unique recorded actor identities, then rerun `make check`.
 
+Chosen coverage default: assert inbox-pull preclaim state in its patched callback, because selection is read-only and this directly proves pull completes before worktree creation or a claim.
+
 ## Summary
 
 Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and directly asserts the two IDs differ, avoiding false failures from readable actor-name collisions. Verified: make check (ruff, pyright, 227 Python tests, 25 Node tests); chitty check and chitty fix pass with only pre-existing unrelated task warnings. Review focus: test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation.
@@ -232,3 +234,4 @@ Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and d
 - 2026-11-04T13:21:30Z eager-lynx: ticked acceptance criteria
 - 2026-11-04T13:21:30Z eager-lynx: ticked acceptance criteria
 - 2026-11-04T13:21:31Z eager-lynx: ticked acceptance criteria
+- 2026-11-04T13:21:32Z eager-lynx: changed notes
