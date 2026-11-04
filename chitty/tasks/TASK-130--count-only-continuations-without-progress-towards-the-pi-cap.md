@@ -27,10 +27,10 @@ Out of scope: changing `chitty run`, and splitting large tickets.
 
 ## Acceptance Criteria
 
-- [ ] Node tests of the decision function show the count resetting when ticket output changes, shutdown after 5 turns in a row without change, and a long run with progress never reaching the cap
-- [ ] A Node test shows the work continuation prompt tells the agent to carry on to the next criterion
-- [ ] Node tests cover the baseline taken at start, a resumed session keeping its count, the notification naming the count, both modes using the rule, and a failing `chitty show` notifying and shutting down
-- [ ] `__version__` is bumped above `main`'s
+- [x] Node tests of the decision function show the count resetting when ticket output changes, shutdown after 5 turns in a row without change, and a long run with progress never reaching the cap
+- [x] A Node test shows the work continuation prompt tells the agent to carry on to the next criterion
+- [x] Node tests cover the baseline taken at start, a resumed session keeping its count, the notification naming the count, both modes using the rule, and a failing `chitty show` notifying and shutting down
+- [x] `__version__` is bumped above `main`'s
 
 ## Plan
 
@@ -48,6 +48,8 @@ Implementation choice: use a deterministic hash of the complete `chitty show ID 
 
 Cold-read delegation was attempted before implementation, but the available `explorer` subagent could not start because its configured Anthropic credential is absent, then remained locked as processing. I will cover the same scope with focused code and test inspection; a separate agent will perform the required final review.
 
+Verified all criteria: `npm test` passed all 20 Pi integration tests (including progression, cap, baseline/resume, both modes, prompt, and failed-show shutdown); `make check` passed ruff, pyright, and 215 Python tests; `__version__` is `0.1.23`, above `main` at `0.1.22`.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
@@ -56,3 +58,4 @@ Cold-read delegation was attempted before implementation, but the available `exp
 - 2026-11-03T21:00:46Z lively-panda: changed dependencies, notes
 - 2026-11-03T21:20:49Z kind-marten: changed notes; wrote the plan
 - 2026-11-03T21:20:49Z kind-marten todo → doing
+- 2026-11-04T08:18:27Z kind-marten: changed notes; ticked acceptance criteria
