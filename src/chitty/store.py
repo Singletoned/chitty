@@ -44,7 +44,7 @@ GUIDE_HEADING = "## Chitty"
 BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
-PRIORITY_ORDER = {"high": 0, "medium": 1, "low": 2, None: 3}
+PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 
 Which = Literal["active", "archived", "all"]
 
