@@ -102,6 +102,8 @@ Proposals for the human to accept or reject; none are applied, and no tickets ar
 
 Reviewed: independently recounted 34 `review → doing` or `review → blocked` History lines on 18 tickets, matching the report, with `TASK-79`'s `done → doing` making 35 on 19. Re-added causes, kinds, cited types, the same-session count and the per-ticket spread from the table, and all match, as do yield and retries. Spot-checked `TASK-46`, `TASK-87` and `TASK-118` against their own notes, and they match. Classifications are judgement and were sampled, not all re-derived. The correlations and costs were not recomputed. One correction: the `TASK-126` #3 row repeats 1 in 289, a figure copied from that ticket; there were 256 names at the time. Proposal 3 needs comparing with the human's later instruction that a reviewer may fail for a demonstrated defect.
 
+Human's decision, 2026-11-04: proposals 1 and 2 accepted, each with its own ticket. Proposal 3 rejected for now, because all 6 failures it would change were real defects, and there is no escape data to judge shipping them. The human added that their remarks are suggestions unless they say otherwise, so my review note's reference to an "instruction" overstates it.
+
 ## Summary
 
 Baseline: 35 failed reviews on 19 of 70 reviewed tickets, 72.9% first-pass yield. 30 of 35 found a real defect or a missing stated deliverable, and 2 were a stricter reading. Three proposals await the human; none are applied. Post-`done` escapes could not be measured.
@@ -121,3 +123,4 @@ Baseline: 35 failed reviews on 19 of 70 reviewed tickets, 72.9% first-pass yield
 - 2026-11-04T20:10:39Z quick-toad doing → review
 - 2026-11-04T20:33:44Z mellow-newt: changed notes, summary
 - 2026-11-04T20:33:44Z mellow-newt review → done
+- 2026-11-04T20:45:27Z mellow-newt: changed notes
