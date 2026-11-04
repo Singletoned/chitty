@@ -15,6 +15,7 @@ check: ## lint, type-check and run the tests
 	uv run ruff check --no-fix .
 	uv run pyright
 	uv run python -m unittest discover -s tests -t .
+	npm test
 
 test: ## run the tests
 	uv run python -m unittest discover -s tests -t .

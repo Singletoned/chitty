@@ -5,8 +5,8 @@ before changing behaviour, and update it when a decision changes.
 
 - `make install` once (Python deps including the `mcp` extra, and the pinned
   prettier used by the round-trip tests).
-- `make check` (ruff, pyright, unittest) before every commit. `make format`
-  to fix formatting.
+- `make check` (ruff, pyright, unittest, Node tests) before every commit. `make
+  format` to fix formatting.
 - Tests use `unittest` and write real files in temp dirs; no filesystem
   mocking. Tests that use the inbox must inherit `RepoTestCase`, which assigns
   a temporary `XDG_DATA_HOME` so they never touch the real inbox. The formatter
