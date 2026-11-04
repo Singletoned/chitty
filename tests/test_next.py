@@ -5,6 +5,7 @@ import stat
 import subprocess
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
@@ -527,14 +528,24 @@ class TestNext(CliTestCase):
         self.git("branch", "task-1")
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
-        fake.write_text("#!" + sys.executable + "\n")
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os\n"
+            "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
+        )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = os.environ.get("PATH", "")
+        previous_root = os.environ.get("EXPECTED_ROOT")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
+        os.environ["EXPECTED_ROOT"] = str(self.root / ".worktrees" / "task-1")
         try:
             unchanged = self.run_cli("run", exit_code=1)
         finally:
             os.environ["PATH"] = previous
+            if previous_root is None:
+                os.environ.pop("EXPECTED_ROOT", None)
+            else:
+                os.environ["EXPECTED_ROOT"] = previous_root
         self.assertIn("TASK-1 was unchanged", unchanged.stderr)
         worktree = self.root / ".worktrees" / "task-1"
         self.assertEqual(
@@ -703,19 +714,70 @@ class TestNext(CliTestCase):
                 else:
                     os.environ[name] = value
 
+    def test_run_pulls_inbox_only_for_a_project(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace('project = "chitty"\n', "")
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        config.write_text(
+            "\n".join(
+                line for line in config.read_text().splitlines() if not line.startswith("project =")
+            )
+            + "\n"
+        )
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text("#!" + sys.executable + "\n")
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        self.assertIsNone(Repo.open(self.root).config.project)
+        try:
+            with patch("chitty.run.pull_suggestions") as pull:
+                self.run_cli("run", exit_code=1)
+                pull.assert_not_called()
+                config.write_text(
+                    'project = "demo"\n'
+                    + "\n".join(
+                        line
+                        for line in config.read_text().splitlines()
+                        if not line.startswith("project =")
+                    )
+                    + "\n"
+                )
+                self.git("add", "chitty.toml")
+                self.git("commit", "--quiet", "-m", "configure project")
+                self.run_cli("run", exit_code=1)
+                pull.assert_called_once()
+        finally:
+            os.environ["PATH"] = previous
+
     def test_run_runs_setup_before_claim_and_leaves_review_unchanged(self):
         setup = self.root / "setup.py"
         setup.write_text(
             "from pathlib import Path\n"
+            "import sys\n"
+            "assert sys.argv[1:] == ['&&', 'touch', 'interpreted']\n"
             "ticket = Path('chitty/tasks/TASK-1--todo.md')\n"
             "if 'status: todo' in ticket.read_text():\n"
             "    assert ticket.read_text().count('status: todo') == 1\n"
-            "Path('setup-ran').write_text('yes')\n"
+            "count = int(Path('setup-ran').read_text()) if Path('setup-ran').exists() else 0\n"
+            "Path('setup-ran').write_text(str(count + 1))\n"
         )
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text().replace(
-                "autocommit = false", f'autocommit = true\nsetup = "{sys.executable} {setup}"'
+                "autocommit = false",
+                f'autocommit = true\nsetup = "{sys.executable} {setup} && touch interpreted"',
             )
         )
         self.git("init", "--quiet")
@@ -730,22 +792,33 @@ class TestNext(CliTestCase):
         fake.write_text(
             "#!" + sys.executable + "\n"
             "from pathlib import Path\n"
-            "import sys\n"
-            "assert Path('setup-ran').read_text() == 'yes'\n"
+            "import os, sys\n"
+            "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
+            "assert Path('setup-ran').read_text() in {'1', '2', '3'}\n"
             "if sys.argv[1] == '--chitty-work':\n"
             "    assert 'status: doing' in Path('chitty/tasks/TASK-1--todo.md').read_text()\n"
             "Path('pi-ran').write_text('yes')\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = os.environ.get("PATH", "")
+        previous_root = os.environ.get("EXPECTED_ROOT")
+        worktree = self.root / ".worktrees" / "task-1"
         os.environ["PATH"] = f"{fake.parent}:{previous}"
+        os.environ["EXPECTED_ROOT"] = str(worktree)
         try:
             result = self.run_cli("run", exit_code=1)
+            repeated = self.run_cli("run", exit_code=1)
         finally:
             os.environ["PATH"] = previous
+            if previous_root is None:
+                os.environ.pop("EXPECTED_ROOT", None)
+            else:
+                os.environ["EXPECTED_ROOT"] = previous_root
         self.assertIn("TASK-1 was unchanged", result.stderr)
-        worktree = self.root / ".worktrees" / "task-1"
+        self.assertIn("TASK-1 was unchanged", repeated.stderr)
         self.assertTrue((worktree / "pi-ran").exists())
+        self.assertEqual((worktree / "setup-ran").read_text(), "2")
+        self.assertFalse((worktree / "interpreted").exists())
 
         self.git("worktree", "remove", "--force", str(worktree))
         self.git("branch", "-D", "task-1")
@@ -754,10 +827,12 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "review ticket")
         self.git("worktree", "add", "--quiet", "-b", "task-1", str(worktree))
         os.environ["PATH"] = f"{fake.parent}:{previous}"
+        os.environ["EXPECTED_ROOT"] = str(worktree)
         try:
             review = self.run_cli("run", exit_code=1)
         finally:
             os.environ["PATH"] = previous
+            os.environ.pop("EXPECTED_ROOT", None)
         self.assertIn("TASK-1 was unchanged", review.stderr)
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,

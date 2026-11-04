@@ -34,8 +34,10 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
     main_root = _main_checkout(repo.root)
     main_repo = Repo.open(main_root)
     _preflight(main_repo)
+    # Refresh may add a project to legacy setup; only an explicit project opts into inbox pulls.
+    project = main_repo.config.project
     main_repo.refresh_setup()
-    if main_repo.config.project:
+    if project:
         try:
             pull_suggestions(main_repo)
         except KeyboardInterrupt:
