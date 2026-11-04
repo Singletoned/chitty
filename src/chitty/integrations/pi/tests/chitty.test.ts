@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -154,6 +155,7 @@ test("settles work after its ticket leaves todo or doing", () => {
   }
   assert.deepEqual(settlementDecision("work", "doing", 0), {
     action: "continue",
+    continuationCount: 1,
   });
 });
 
@@ -166,25 +168,173 @@ test("settles review after its ticket leaves review", () => {
   }
   assert.deepEqual(settlementDecision("review", "review", 0), {
     action: "continue",
+    continuationCount: 1,
   });
 });
 
-test("does not continue past the cap or an assistant error", () => {
-  assert.deepEqual(settlementDecision("work", "doing", 5), {
-    action: "shutdown",
-    reason: "reached continuation limit",
+test("counts only consecutive continuations without ticket progress", () => {
+  assert.deepEqual(settlementDecision("work", "doing", 0, false), {
+    action: "continue",
+    continuationCount: 1,
   });
-  assert.deepEqual(settlementDecision("review", "review", 0, "error"), {
+  assert.deepEqual(settlementDecision("work", "doing", 4, false), {
+    action: "shutdown",
+    continuationCount: 5,
+    reason: "reached continuation limit after 5 consecutive turns without progress",
+  });
+  assert.deepEqual(settlementDecision("work", "doing", 4, true), {
+    action: "continue",
+    continuationCount: 0,
+  });
+
+  let continuationCount = 0;
+  for (let turn = 0; turn < 20; turn += 1) {
+    const decision = settlementDecision("work", "doing", continuationCount, true);
+    assert.equal(decision.action, "continue");
+    assert.equal(decision.continuationCount, 0);
+    continuationCount = decision.continuationCount;
+  }
+});
+
+test("applies the no-progress cap in review mode too", () => {
+  assert.deepEqual(settlementDecision("review", "review", 4, false), {
+    action: "shutdown",
+    continuationCount: 5,
+    reason: "reached continuation limit after 5 consecutive turns without progress",
+  });
+});
+
+test("does not continue after an assistant error", () => {
+  assert.deepEqual(settlementDecision("review", "review", 0, false, "error"), {
     action: "shutdown",
     reason: "agent response ended with error",
   });
 });
 
 test("leaves Pi open when a human aborts", () => {
-  assert.deepEqual(settlementDecision("work", "doing", 0, undefined, true), {
+  assert.deepEqual(settlementDecision("work", "doing", 0, false, undefined, true), {
     action: "stop",
     reason: "human aborted the run",
   });
+});
+
+test("takes a baseline at start and restores progress state for a resumed session", async () => {
+  let command:
+    | ((args: string, ctx: unknown) => Promise<void> | void)
+    | undefined;
+  let settled: ((event: { aborted?: boolean }, ctx: unknown) => Promise<void> | void) | undefined;
+  let sessionStart:
+    | ((event: unknown, ctx: unknown) => Promise<void> | void)
+    | undefined;
+  const entries: unknown[] = [];
+  const output = JSON.stringify({ status: "doing", history: ["baseline"] });
+  const pi = {
+    appendEntry: (_type: string, state: unknown) => entries.push(state),
+    exec: async () => ({ code: 0, stdout: output, stderr: "" }),
+    getFlag: () => undefined,
+    on: (event: string, handler: (event: never, ctx: never) => Promise<void> | void) => {
+      if (event === "session_start") sessionStart = handler;
+      if (event === "agent_settled") settled = handler;
+      return () => {};
+    },
+    registerCommand: (_name: string, definition: { handler: typeof command }) => {
+      command = definition.handler;
+    },
+    registerFlag: () => {},
+    sendMessage: () => {},
+    sendUserMessage: () => {},
+  };
+  chitty(pi as Parameters<typeof chitty>[0]);
+  const ctx = {
+    cwd: process.cwd(),
+    isIdle: () => true,
+    sessionManager: { getBranch: () => [], getSessionId: () => "test-session" },
+    ui: { notify: () => {} },
+  };
+
+  assert.ok(command);
+  await command("work TASK-12", ctx);
+  assert.deepEqual(entries[0], {
+    enabled: true,
+    mode: "work",
+    ticketId: "TASK-12",
+    continuationCount: 0,
+    ticketHash: createHash("sha256").update(output).digest("hex"),
+  });
+
+  const resumedEntries: unknown[] = [];
+  const resumedOutput = JSON.stringify({ status: "review", history: ["unchanged"] });
+  const resumedState = {
+    enabled: true,
+    mode: "review",
+    ticketId: "TASK-12",
+    continuationCount: 3,
+    ticketHash: createHash("sha256").update(resumedOutput).digest("hex"),
+  };
+  const resumedPi = {
+    ...pi,
+    appendEntry: (_type: string, state: unknown) => resumedEntries.push(state),
+    exec: async () => ({ code: 0, stdout: resumedOutput, stderr: "" }),
+  };
+  chitty(resumedPi as Parameters<typeof chitty>[0]);
+  const resumedCtx = {
+    ...ctx,
+    sessionManager: {
+      getBranch: () => [{ type: "custom", customType: "chitty-state", data: resumedState }],
+      getSessionId: () => "test-session",
+    },
+  };
+  assert.ok(sessionStart);
+  await sessionStart({}, resumedCtx);
+  assert.ok(settled);
+  await settled({}, resumedCtx);
+  assert.deepEqual(resumedEntries, [{ ...resumedState, continuationCount: 4 }]);
+});
+
+test("notifies and shuts down when reading a settled ticket fails", async () => {
+  let settled: ((event: { aborted?: boolean }, ctx: unknown) => Promise<void> | void) | undefined;
+  let sessionStart:
+    | ((event: unknown, ctx: unknown) => Promise<void> | void)
+    | undefined;
+  const notifications: string[] = [];
+  let shutdowns = 0;
+  const pi = {
+    appendEntry: () => {},
+    exec: async () => ({ code: 1, stdout: "", stderr: "ticket not found" }),
+    getFlag: () => undefined,
+    on: (event: string, handler: (event: never, ctx: never) => Promise<void> | void) => {
+      if (event === "session_start") sessionStart = handler;
+      if (event === "agent_settled") settled = handler;
+      return () => {};
+    },
+    registerCommand: () => {},
+    registerFlag: () => {},
+    sendMessage: () => {},
+    sendUserMessage: () => {},
+  };
+  chitty(pi as Parameters<typeof chitty>[0]);
+  const ctx = {
+    cwd: process.cwd(),
+    isIdle: () => true,
+    sessionManager: {
+      getBranch: () => [{
+        type: "custom",
+        customType: "chitty-state",
+        data: { enabled: true, mode: "work", ticketId: "TASK-12", continuationCount: 2, ticketHash: "old" },
+      }],
+      getSessionId: () => "test-session",
+    },
+    shutdown: () => shutdowns++,
+    ui: { notify: (message: string) => notifications.push(message) },
+  };
+  assert.ok(sessionStart);
+  await sessionStart({}, ctx);
+  assert.ok(settled);
+  await settled({}, ctx);
+  assert.equal(shutdowns, 1);
+  assert.deepEqual(notifications, [
+    "Chitty continuation stopped: chitty show TASK-12 --json failed (exit 1): ticket not found.",
+  ]);
 });
 
 test("recognizes only assistant errors as terminal", () => {
@@ -206,6 +356,10 @@ test("work and review prompts name one ticket without choosing another", () => {
       assert.doesNotMatch(prompt, /NO MORE WORK/);
     }
   }
+});
+
+test("tells work agents to carry on to the next criterion", () => {
+  assert.match(continuationPrompt("work", "TASK-12"), /next criterion without stopping to report/);
 });
 
 test("gives work agents the ticket implementation workflow", () => {

@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import type {
   ExtensionAPI,
   ExtensionContext,
@@ -16,6 +18,12 @@ type State = {
   mode: ChittyMode;
   ticketId?: string;
   continuationCount?: number;
+  ticketHash?: string;
+};
+
+type TicketSnapshot = {
+  status: string;
+  hash: string;
 };
 
 type ChittyCommand = {
@@ -24,8 +32,8 @@ type ChittyCommand = {
 };
 
 type SettlementDecision =
-  | { action: "continue" }
-  | { action: "shutdown"; reason: string }
+  | { action: "continue"; continuationCount: number }
+  | { action: "shutdown"; reason: string; continuationCount?: number }
   | { action: "stop"; reason: string };
 
 export default function chitty(pi: ExtensionAPI) {
@@ -36,11 +44,17 @@ export default function chitty(pi: ExtensionAPI) {
     ticketId: string,
     ctx: ExtensionContext,
   ): Promise<void> {
-    const status = await ticketStatus(pi, ctx, ticketId);
-    state = { enabled: true, mode, ticketId, continuationCount: 0 };
+    const ticket = await ticketSnapshot(pi, ctx, ticketId);
+    state = {
+      enabled: true,
+      mode,
+      ticketId,
+      continuationCount: 0,
+      ticketHash: ticket.hash,
+    };
     persistState(pi, state);
 
-    const decision = settlementDecision(mode, status, 0);
+    const decision = settlementDecision(mode, ticket.status, 0, true);
     if (decision.action !== "continue") {
       stopContinuation(ctx, decision.reason, true);
       return;
@@ -54,7 +68,7 @@ export default function chitty(pi: ExtensionAPI) {
     reason: string,
     shutdown: boolean,
   ): void {
-    state = { ...state, enabled: false, continuationCount: undefined };
+    state = { ...state, enabled: false };
     persistState(pi, state);
     ctx.ui.notify(`Chitty continuation stopped: ${reason}.`, "info");
     if (shutdown) ctx.shutdown();
@@ -101,26 +115,35 @@ export default function chitty(pi: ExtensionAPI) {
       return;
     }
 
-    const status = await ticketStatus(pi, ctx, state.ticketId);
-    const decision = settlementDecision(
-      state.mode,
-      status,
-      state.continuationCount ?? 0,
-      latestAssistantMessage(ctx)?.stopReason,
-    );
-    if (decision.action !== "continue") {
+    let ticket: TicketSnapshot;
+    try {
+      ticket = await ticketSnapshot(pi, ctx, state.ticketId);
+    } catch (error) {
       stopContinuation(
         ctx,
-        decision.reason,
-        decision.action === "shutdown",
+        error instanceof Error ? error.message : String(error),
+        true,
       );
       return;
     }
 
+    const decision = settlementDecision(
+      state.mode,
+      ticket.status,
+      state.continuationCount ?? 0,
+      ticket.hash !== state.ticketHash,
+      latestAssistantMessage(ctx)?.stopReason,
+    );
     state = {
       ...state,
-      continuationCount: (state.continuationCount ?? 0) + 1,
+      continuationCount: decision.continuationCount ?? state.continuationCount,
+      ticketHash: ticket.hash,
     };
+    if (decision.action !== "continue") {
+      stopContinuation(ctx, decision.reason, decision.action === "shutdown");
+      return;
+    }
+
     persistState(pi, state);
     pi.sendMessage(
       {
@@ -163,6 +186,7 @@ export function settlementDecision(
   mode: ChittyMode,
   status: string,
   continuationCount: number,
+  ticketChanged = false,
   stopReason?: AssistantMessage["stopReason"],
   aborted = false,
 ): SettlementDecision {
@@ -176,10 +200,17 @@ export function settlementDecision(
       reason: `ticket left ${mode} with status ${status}`,
     };
   }
-  if (continuationCount >= MAX_CONTINUATIONS) {
-    return { action: "shutdown", reason: "reached continuation limit" };
+  // A full JSON-output hash makes progress ticket-visible while keeping state small.
+  // SHA-256 is a cheap, deterministic default because only equality within a session matters.
+  const nextContinuationCount = ticketChanged ? 0 : continuationCount + 1;
+  if (nextContinuationCount >= MAX_CONTINUATIONS) {
+    return {
+      action: "shutdown",
+      continuationCount: nextContinuationCount,
+      reason: `reached continuation limit after ${nextContinuationCount} consecutive turns without progress`,
+    };
   }
-  return { action: "continue" };
+  return { action: "continue", continuationCount: nextContinuationCount };
 }
 
 export function isFailedAssistantResponse(
@@ -188,11 +219,11 @@ export function isFailedAssistantResponse(
   return stopReason === "error";
 }
 
-async function ticketStatus(
+async function ticketSnapshot(
   pi: ExtensionAPI,
   ctx: ExtensionContext,
   ticketId: string,
-): Promise<string> {
+): Promise<TicketSnapshot> {
   const result = await pi.exec("chitty", ["show", ticketId, "--json"], {
     cwd: ctx.cwd,
     signal: ctx.signal,
@@ -218,7 +249,10 @@ async function ticketStatus(
   ) {
     throw new Error(`chitty show ${ticketId} --json returned a ticket without a status.`);
   }
-  return (ticket as { status: string }).status;
+  return {
+    status: (ticket as { status: string }).status,
+    hash: createHash("sha256").update(result.stdout).digest("hex"),
+  };
 }
 
 function isActiveStatus(mode: ChittyMode, status: string): boolean {
@@ -243,7 +277,12 @@ function latestState(ctx: ExtensionContext): State | undefined {
     typeof (entry.data as Partial<State>).enabled !== "boolean" ||
     !isMode((entry.data as Partial<State>).mode) ||
     (entry.data as Partial<State>).ticketId !== undefined &&
-      typeof (entry.data as Partial<State>).ticketId !== "string"
+      typeof (entry.data as Partial<State>).ticketId !== "string" ||
+    (entry.data as Partial<State>).continuationCount !== undefined &&
+      (!Number.isInteger((entry.data as Partial<State>).continuationCount) ||
+        (entry.data as Partial<State>).continuationCount! < 0) ||
+    (entry.data as Partial<State>).ticketHash !== undefined &&
+      typeof (entry.data as Partial<State>).ticketHash !== "string"
   ) {
     return undefined;
   }
@@ -274,7 +313,7 @@ export function continuationPrompt(mode: ChittyMode, ticketId: string): string {
   return [
     `Continue working only on Chitty ticket ${ticketId}.`,
     mode === "work"
-      ? "Tick a criterion only after verifying it. Re-check every criterion before setting `review`."
+      ? "Tick a criterion only after verifying it. Carry on to the next criterion without stopping to report, and re-check every criterion before setting `review`."
       : "Never review work you have done. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion.",
     "If you need a person to answer a question, record it in a Chitty note and set the ticket to `blocked`; do not end the turn.",
   ].join("\n");
