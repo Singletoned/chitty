@@ -20,10 +20,12 @@ For any other install, when `pending-release` exists:
 
 1. If the running version has reached it, delete the file and stop.
 2. If its second line is `out`, print the alert and stop, with no request.
-3. If the file's modification time is under `UPGRADE_RETRY_SECONDS` old, a module constant of 60, stop. Otherwise touch it and ask `PYPI_URL`, a module constant of `https://pypi.org/pypi/chitty/json`, for `info.version`, using `urllib` with a 2-second timeout. Without this limit, a failed publish or no network would add up to 2 seconds to every command.
-4. If that version has reached the pending one, add the `out` line and print the alert.
+3. If the file's modification time is under `UPGRADE_RETRY_SECONDS` old, a module constant of 60, stop. Otherwise touch it first, so a slow failure still counts, and ask `PYPI_URL`, a module constant of `https://pypi.org/pypi/chitty/json`, for `info.version`, using `urllib` with a 2-second timeout. Without this limit, a failed publish or no network would add up to 2 seconds to every command.
+4. If that version has reached the pending one, rewrite the file as that version, then a line `out`, and print the alert. A later release may have overtaken a failed one, and the alert must name a version that exists.
 
-The alert goes to stderr: `chitty <version> is out: run uv tool upgrade chitty`. Nothing goes to stdout. Compare with `_version_key`, wherever it then lives.
+The alert goes to stderr: `chitty <version> is out: run uv tool upgrade chitty`. Nothing goes to stdout. The running version is `chitty.__version__`. Compare with `_version_key`, wherever it then lives. A file whose first line is not a valid version is deleted, so it cannot silently stop every later alert. Share a small helper with `inbox_path` for the data directory.
+
+A failed publish leaves the file in place, costing at most one request a minute with no alert, until the next `make release` overwrites it. That is accepted.
 
 A failed request or an unreadable file must not affect the command: it stays silent, because this is advice around someone else's work, and comment that where it is caught.
 
@@ -39,7 +41,10 @@ Out of scope: upgrading automatically, and any setting to turn this off.
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `main()` needs a `finally`, because Click always raises `SystemExit`; completion; where `out` is recorded; and a limit on requests, since an offline machine would otherwise wait on every command. Dropped my editable rule: `uv tool list` reports 0.1.19 for today's editable global, so it could have alerted forever, and it needed `uv` on every command. An editable install now does nothing, so a person working only in this repository sees no alert. Moved the invocation count to `TASK-161`. Rejected: pre-release and yanked versions, which `info.version` already handles; an empty `XDG_DATA_HOME`, which `inbox_path` has too; a non-editable install from a local path, which is rare and harmless.
 
+Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming a version that does not exist after a failed release; a malformed file silently ending all alerts; touching before the request; and which running version. Accepted and now stated: a failed publish polls once a minute until the next release. Rejected: criteria for each of these, which the tests cover as behaviour under criterion 2's failure cases, and a split, because it is one concern.
+
 ## History
 
 - 2026-11-04T19:32:38Z mellow-newt → backlog
 - 2026-11-04T19:36:37Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T19:37:59Z mellow-newt: changed description, notes
