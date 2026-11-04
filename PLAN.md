@@ -42,7 +42,9 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   upkeep. This covers workflow steps too: whatever a script can do reliably
   (creating branches and worktrees, setup, claiming, merging) `chitty run`
   does, and the agent is told only about what is left. Chitty never calls a
-  model: models sit only in the worker and reviewer seats.
+  model: models sit only in the worker and reviewer seats. Which agent sits
+  there is configuration, not design: Pi is today's choice, and token
+  efficiency may change it, so agent-specific code stays in integrations.
 - The tool carries the rules, not a prompt. Validation and `--help` are the
   documentation; the agent instructions are ~20 lines and static.
 - Minimal diffs. The tool never touches a line it didn't change, and never
