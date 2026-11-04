@@ -1,6 +1,6 @@
 ---
 title: Treat a ticket with no priority as medium when ordering
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -32,6 +32,8 @@ Claim continued on branch `task-139`; the initial `chitty inbox --pull` refreshe
 
 Ready for an independent review by an agent other than the implementation agent. Verified both criteria with focused regression tests and `make check`; `chitty check` passes.
 
+Reviewed: Both acceptance criteria pass independently. Verified documentation, ordering behavior, focused regressions, make check, and chitty check.
+
 ## History
 
 - 2026-11-04T10:09:07Z lively-panda → todo
@@ -42,3 +44,5 @@ Ready for an independent review by an agent other than the implementation agent.
 - 2026-11-04T12:33:21Z honest-falcon: ticked acceptance criteria
 - 2026-11-04T12:34:55Z honest-falcon: changed notes
 - 2026-11-04T12:34:55Z honest-falcon doing → review
+- 2026-11-04T12:45:00Z honest-ibis: changed notes
+- 2026-11-04T12:45:00Z honest-ibis review → done
