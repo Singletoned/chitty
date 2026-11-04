@@ -3,7 +3,7 @@ title: Compare versions numerically in the stale setup warning
 status: todo
 labels:
   - bug
-priority: low
+priority: medium
 created: 2026-11-03
 ---
 
@@ -23,6 +23,8 @@ Moved back to `backlog` on 2026-11-04, under the new rule that a ticket stays th
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the function's name; which helper to use; a bad version turning a warning into a crash on every read; and the newer direction, which has the same bug. Rejected: patching `CHITTY_VERSION` in tests, because recorded values can show both directions against the real one. Moved to `todo` now the findings have outcomes.
 
+Reported again on 2026-11-04 by a session in another repository: a file recording `0.1.4` read as newer than `0.1.25`, so it told the person to upgrade Chitty rather than run `chitty init`, and misled the session. Raised to medium.
+
 ## History
 
 - 2026-11-03T21:24:19Z lively-panda → todo
@@ -31,3 +33,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the function's name; wh
 - 2026-11-04T15:31:49Z mellow-newt: changed description, notes
 - 2026-11-04T15:31:49Z mellow-newt backlog → todo
 - 2026-11-04T15:31:56Z mellow-newt: changed acceptance criteria
+- 2026-11-04T21:00:15Z mellow-newt: changed priority, notes
