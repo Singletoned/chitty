@@ -1,6 +1,6 @@
 ---
 title: Refresh repository setup at the start of `chitty run`
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -51,6 +51,8 @@ Verified with `make check`: 219 tests, Ruff formatting/lint, and Pyright pass. F
 
 All six criteria were re-checked against the passing `make check` run before review. Ready for an independent reviewer; the implementation agent did not perform the review.
 
+Reviewed: independently checked all six criteria; focused run-refresh coverage and full make check pass (219 tests, Ruff, Pyright).
+
 ## History
 
 - 2026-11-03T21:21:52Z lively-panda → todo
@@ -60,3 +62,5 @@ All six criteria were re-checked against the passing `make check` run before rev
 - 2026-11-04T08:51:57Z mellow-lynx: changed notes; ticked acceptance criteria
 - 2026-11-04T08:52:11Z mellow-lynx: changed notes
 - 2026-11-04T08:52:11Z mellow-lynx doing → review
+- 2026-11-04T09:06:55Z eager-lynx: changed notes
+- 2026-11-04T09:06:55Z eager-lynx review → done
