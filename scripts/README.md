@@ -11,6 +11,7 @@ python3 scripts/pi_tokens.py ~/.pi/agent/sessions/*chitty*
 - `pi_coldstart.py`: first-call size and cost before the first edit.
 - `pi_usage.py`: tools and skills used, and which files are carried longest.
 - `pi_commands.py`: every command agents ran, split out of compound shell.
+- `pi_reads.py`: how much of each file is read, and whether reads seemed to matter.
 - `pi_check.py`: causes of large uncached inputs, and tool argument sizes.
 - `pi_capture_prompt.py OUT_DIR [pi options...]`: capture the real system prompt
   and tool definitions against a local stub, without contacting a provider.
