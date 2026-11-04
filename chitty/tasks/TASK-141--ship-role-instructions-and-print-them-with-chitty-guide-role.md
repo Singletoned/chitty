@@ -1,6 +1,6 @@
 ---
 title: Ship role instructions and print them with `chitty guide <role>`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-126
@@ -53,6 +53,8 @@ Verified `uv build`: the wheel lists `chitty/roles/work.md`, `review.md`, and `p
 
 Re-checked every criterion after commit: documentation, CLI role coverage and Pi diagnostic exclusion, wheel contents, role lengths and guide-rule accounting. `make check` passes.
 
+Reviewed: all four criteria pass. Independently inspected the role guides, CLI/store changes, documentation, tests, and package contents; verified `uv build` wheel roles, `make check`, focused `TestGuide`, `npm test`, and `git diff --check`.
+
 ## History
 
 - 2026-11-04T11:56:18Z lively-panda → todo
@@ -65,3 +67,5 @@ Re-checked every criterion after commit: documentation, CLI role coverage and Pi
 - 2026-11-04T17:57:13Z sunny-raven: ticked acceptance criteria
 - 2026-11-04T18:01:50Z sunny-raven: changed notes
 - 2026-11-04T18:01:50Z sunny-raven doing → review
+- 2026-11-04T19:21:26Z witty-badger: changed notes
+- 2026-11-04T19:21:26Z witty-badger review → done
