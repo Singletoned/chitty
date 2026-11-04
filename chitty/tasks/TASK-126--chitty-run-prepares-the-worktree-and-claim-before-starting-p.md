@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-124
@@ -173,7 +173,7 @@ Verified criterion 5: release metadata now sets `__version__ = "0.1.25"`, above 
 
 ## Summary
 
-Handoff: strengthened black-box `chitty run` coverage for an already-linked worktree claim and inbox-pull ordering. Verification: `make check` passed (ruff, pyright, 227 Python tests, 25 Node tests). Review focus: `tests/test_next.py` assertions that the claim commit is on `task-1` and that a configured inbox pull occurs before ticket worktree or claim creation.
+Handoff: bumped `__version__` from `0.1.24` to `0.1.25`, above `main`, so the setup-template and existing-repository initialization changes in this ticket have a release version. Verification: `uv run python -m unittest tests.test_version` and `make check` passed (ruff, pyright, 227 Python tests, 25 Node tests). Review focus: confirm the release bump and the complete `chitty run` orchestration diff against `main`.
 
 ## History
 
@@ -246,3 +246,5 @@ Handoff: strengthened black-box `chitty run` coverage for an already-linked work
 - 2026-11-04T13:31:08Z proud-jaguar review → doing
 - 2026-11-04T14:13:46Z ivory-falcon: wrote the plan
 - 2026-11-04T14:16:38Z ivory-falcon: changed notes; ticked acceptance criteria
+- 2026-11-04T14:18:54Z ivory-falcon: changed summary
+- 2026-11-04T14:18:54Z ivory-falcon doing → review
