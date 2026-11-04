@@ -15,6 +15,7 @@ depends_on:
   - TASK-149
   - TASK-152
   - TASK-147
+  - TASK-153
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -58,6 +59,8 @@ Also needs `TASK-143`, and through it `TASK-141` and `TASK-142`, by the human's 
 
 Also needs `TASK-149` and `TASK-152`, the last parts of the split `TASK-127` and `TASK-131`, and `TASK-147`.
 
+Also needs `TASK-153`: without it, every passed review stops an unattended loop.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -71,3 +74,4 @@ Also needs `TASK-149` and `TASK-152`, the last parts of the split `TASK-127` and
 - 2026-11-04T09:25:41Z lively-panda: changed dependencies, notes
 - 2026-11-04T11:56:21Z lively-panda: changed dependencies, notes
 - 2026-11-04T15:11:38Z mellow-newt: changed dependencies, notes
+- 2026-11-04T15:12:08Z mellow-newt: changed dependencies, notes
