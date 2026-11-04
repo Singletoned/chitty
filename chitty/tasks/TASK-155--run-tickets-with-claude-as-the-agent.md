@@ -6,6 +6,7 @@ owner: human
 depends_on:
   - TASK-142
   - TASK-154
+  - TASK-156
 parent: TASK-106
 created: 2026-11-04
 ---
@@ -31,8 +32,8 @@ Out of scope: writing `CHITTY_USAGE_FILE` from `claude`, which has its own ticke
 
 ## Acceptance Criteria
 
-- [ ] `README.md` shows the `agent_command` for `claude`, including the permission mode and why
 - [ ] `chitty run` works a real ticket and then reviews that work with `claude` on Sonnet, and a note records the commands, the outcome, each check the description lists, and anything fixed
+- [ ] `README.md` shows the `claude` entry for `[agent_commands]`, including the permission flag and why
 
 ## Notes
 
@@ -44,6 +45,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the checks were not in 
 
 Changed 2026-11-04: Pi stays the default and `claude` is the fallback, by the human's decision, so the trial uses `--agent` from a new ticket and commits nothing that changes the default. Back in `backlog` until the changed ticket has been cold-read.
 
+Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the trial uses `--agent` but did not depend on `TASK-156`, and a criterion still named `agent_command`.
+
 ## History
 
 - 2026-11-04T15:38:29Z mellow-newt → backlog
@@ -53,3 +56,4 @@ Changed 2026-11-04: Pi stays the default and `claude` is the fallback, by the hu
 - 2026-11-04T17:34:54Z mellow-newt backlog → todo
 - 2026-11-04T17:58:14Z mellow-newt: changed description, notes
 - 2026-11-04T17:58:14Z mellow-newt todo → backlog
+- 2026-11-04T18:01:15Z mellow-newt: changed dependencies, acceptance criteria, notes
