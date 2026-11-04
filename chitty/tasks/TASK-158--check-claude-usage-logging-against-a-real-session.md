@@ -1,6 +1,6 @@
 ---
 title: Check `claude` usage logging against a real session
-status: backlog
+status: todo
 priority: medium
 owner: human
 depends_on:
@@ -27,3 +27,4 @@ Cold read with `TASK-157`, 2026-11-04. Fixed: per-model comparison, subagent tra
 
 - 2026-11-04T18:01:19Z mellow-newt → backlog
 - 2026-11-04T18:03:11Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T18:03:11Z mellow-newt backlog → todo
