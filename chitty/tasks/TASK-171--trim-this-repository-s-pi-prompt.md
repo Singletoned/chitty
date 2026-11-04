@@ -14,7 +14,7 @@ This is configuration, with no change to Chitty's code. Add these to `agent_comm
 
 `--no-skills --skill ~/.pi/agent/skills/python-dev --exclude-tools ctx_fetch_and_index,ctx_index,ctx_purge,ctx_upgrade,ctx_insight,ctx_stats,ctx_doctor`
 
-The other tools in the doc's list came from extensions that no longer load. Do not remove a tool sessions used more than rarely. `TASK-171`'s trial of `context-mode` as a whole is separate.
+The other tools in the doc's list came from extensions that no longer load. Do not remove a tool sessions used more than rarely. `TASK-176`'s trial of `context-mode` as a whole is separate.
 
 ## Acceptance Criteria
 
@@ -23,3 +23,4 @@ The other tools in the doc's list came from extensions that no longer load. Do n
 ## History
 
 - 2026-11-04T21:41:06Z mellow-newt → backlog
+- 2026-11-04T21:41:36Z mellow-newt: changed description
