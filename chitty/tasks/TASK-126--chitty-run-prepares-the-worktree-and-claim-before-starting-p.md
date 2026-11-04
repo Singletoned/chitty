@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-124
@@ -71,10 +71,10 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 ## Plan
 
-1. Add black-box CLI tests using real Git repositories and a fake `pi` to define every preflight, worktree, setup, claim, actor and progress path.
-2. Move run orchestration into `run.py`: resolve the main checkout, validate preconditions before mutation, pull the inbox, select and prepare the ticket worktree, run parsed setup, claim `todo`, then launch Pi from that worktree.
-3. Extend config/init, Pi extension startup guards, documentation and release metadata for the required setup contract.
-4. Run targeted tests, then `make check`; exercise `chitty run` manually in a scratch repository; tick criteria only from that evidence.
+1. Complete black-box CLI coverage with real Git repositories and a fake `pi` for worktree selection, setup ordering, forwarded arguments, actor isolation, and branch-local claims.
+2. Keep orchestration in `run.py`: validate before mutation, prepare or reuse the task worktree, run parsed setup, claim `todo`, then launch Pi in the worktree.
+3. Preserve the setup contract across config, init, the Pi extension, documentation, and release metadata.
+4. Verify every criterion with focused tests, a scratch repository run, then `make check` before review.
 
 ## Notes
 
@@ -126,6 +126,8 @@ After rebasing: `TASK-134` adds `Repo.refresh_setup()` to `run` on `main`. Keep 
 
 Unblocked 2026-11-04 by the human: `TASK-130` and `TASK-134` have landed. Before continuing, rebase on `main` and bump `__version__` above `main`s. Keep `refresh_setup` straight after `_preflight`, on `main_repo`, and remove the unreachable check in `_worktree`. Keep using `.venv/bin/chitty` here: the global `chitty` refuses this worktree, because `main` does not yet accept the `setup` key in `chitty.toml`.
 
+Resumed the existing clean `task-126` worktree and rebased it onto current `main` rather than discarding its recognized TASK-126 commits. This preserves prior task work while making the branch start from current `main`; the choice is cheap to revisit because the rebase is local until merge.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -161,3 +163,5 @@ Unblocked 2026-11-04 by the human: `TASK-130` and `TASK-134` have landed. Before
 - 2026-11-03T21:21:54Z lively-panda: changed notes
 - 2026-11-04T09:46:21Z lively-panda: changed notes
 - 2026-11-04T09:46:21Z lively-panda blocked → todo
+- 2026-11-04T09:59:15Z daring-falcon: changed notes; wrote the plan
+- 2026-11-04T09:59:15Z daring-falcon todo → doing
