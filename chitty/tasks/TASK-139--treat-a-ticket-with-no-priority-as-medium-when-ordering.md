@@ -14,9 +14,14 @@ The field stays optional and `chitty list` still shows `-`: only the ordering ch
 
 ## Acceptance Criteria
 
-- [ ] Tests show `chitty next` choosing an unprioritised ticket ahead of a low one, and by ID against a medium one, and `chitty list` ordering them the same way
 - [ ] Any statement of priority ordering in `README.md` and `PLAN.md` matches
+- [ ] Tests show `chitty next` choosing an unprioritised ticket ahead of a low one and by ID against a medium one, and `chitty list`, in text and `--json`, ranking it level with medium and still showing `-`; the existing tests asserting the old order, in `tests/test_next.py` and `tests/test_cli.py`, are updated
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-04, requested by the human after I skipped it. Confirmed: `ordered` and `next_action` are the only users of `PRIORITY_ORDER`, and the code change is one line. Fixed: existing tests assert the old order and must change, which the ticket omitted; `--json` and the `-` display now have a criterion; and the criterion said `chitty list` orders ties "the same way" as `chitty next`, which is wrong: `next` breaks ties by ID, while `list` keeps source order. Rejected: changing that difference, because it is existing behaviour unrelated to this ticket. The MCP `list` not sorting by priority, for the same reason. A shared constant in place of the dict, because a one-line change does not need it. `PLAN.md` lines 397-398 and 602 are the statements to update; `README.md` line 80 needs no change.
 
 ## History
 
 - 2026-11-04T10:09:07Z lively-panda → todo
+- 2026-11-04T11:58:06Z lively-panda: changed acceptance criteria, notes
