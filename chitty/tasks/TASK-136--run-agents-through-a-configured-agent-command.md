@@ -1,7 +1,7 @@
 ---
 title: Run agents through a configured `agent_command`
 status: todo
-priority: medium
+priority: high
 depends_on:
   - TASK-126
 parent: TASK-106
@@ -58,6 +58,8 @@ Watch for `TASK-137`: adding `agent_command` to this repository's `chitty.toml` 
 
 From the last `TASK-126` review: with a relative `PATH` entry, the preflight finds the agent from the main checkout but the launch runs in the worktree, so it fails with a traceback after the claim. Keep a loud `ChittyError` for `FileNotFoundError` at launch, which that branch removed, and resolve the first word to an absolute path in the preflight, so both use the same executable.
 
+Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
+
 ## History
 
 - 2026-11-04T09:25:40Z lively-panda → todo
@@ -69,3 +71,4 @@ From the last `TASK-126` review: with a relative `PATH` entry, the preflight fin
 - 2026-11-04T09:45:42Z lively-panda: changed priority
 - 2026-11-04T09:46:24Z lively-panda: changed notes
 - 2026-11-04T14:36:51Z mellow-newt: changed notes
+- 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
