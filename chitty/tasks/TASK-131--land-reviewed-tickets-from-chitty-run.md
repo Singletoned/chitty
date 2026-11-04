@@ -15,24 +15,22 @@ This follows `TASK-120` and `TASK-150`, which rebase and check before a review. 
 
 ### Landing a `done` ticket
 
-After a session that moves its ticket to `done`. `TASK-151` adds the refusals for checkouts that are not clean, and `TASK-152` adds landing at the start of a run:
+After a session that moves its ticket to `done`, in work or review mode. `TASK-152` adds landing at the start of a run, so until then a landing that fails needs a person, and its message says so:
 
-1. If `main` is not an ancestor of the branch, rebase the branch onto `main` in its worktree, then run `setup` and `check`. Ticket commits land on `main` often, so this will be common. A clean rebase with a passing `check` lands without another review. On a conflict or failed check, abort any rebase, leave everything in place, and exit non-zero naming the problem, for the human to resolve in the worktree.
-2. Run `git merge --ff-only <branch>` in the main checkout. Never resolve anything there. `TASK-134` then refreshes setup at the start of the next run.
-3. Remove the worktree with `git worktree remove` and the branch with `git branch -d`, never forced. A failure exits non-zero.
+1. Refuse, with a message and a non-zero exit, changing nothing, if the main checkout is not on branch `main` or is not clean, using the existing `git.require_clean`, which includes untracked files. Ignored files are allowed. Also refuse if the ticket's worktree has uncommitted changes, including untracked files; otherwise they would only surface when removal fails, after landing.
+2. If `main` is not an ancestor of the branch, rebase the branch onto `main` in its worktree, then run `setup` and `check`. Ticket commits land on `main` often, so this will be common. A clean rebase with a passing `check` lands without another review. On a conflict or failed check, abort any rebase, leave everything in place, and exit non-zero naming the problem, for the human to resolve in the worktree.
+3. Run `git merge --ff-only <branch>` in the main checkout. Never resolve anything there. `TASK-134` then refreshes setup at the start of the next run.
+4. Remove the worktree with `git worktree remove` and the branch with `git branch -d`, never forced. A failure exits non-zero.
 
-### Prompts and docs
-
-The Pi review prompt stops telling the reviewer to merge or remove anything. `src/chitty/guide.md` tells agents without `chitty run` to rebase the branch onto `main` in the worktree first, then only fast-forward `main`.
+`TASK-151` then stops reviewers merging. Until it lands, a reviewer may already have merged, so landing does nothing for a ticket whose branch is gone, as `TASK-153` allows.
 
 Out of scope: pushing, repositories whose main branch is not `main`, the spec-test gates for the pilot's tests stage, and non-Pi harnesses.
 
 ## Acceptance Criteria
 
-- [ ] Tests cover landing when `main` has moved: a clean rebase with a passing `check` lands, while a conflict or failing `check` leaves everything in place and exits non-zero, and a later run lands it once resolved
-- [ ] A Node test shows the review prompt no longer mentions merging or removing
-- [ ] `PLAN.md`, `README.md` and `src/chitty/guide.md` describe landing; `__version__` is bumped above `main`'s
 - [ ] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
+- [ ] Tests show a moved `main` handled by a clean rebase and passing `check` landing without another review, and a conflict or failing `check` leaving everything in place and exiting non-zero
+- [ ] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
 ## Notes
 
@@ -42,6 +40,8 @@ From the `TASK-134` cold read: carrying on to selection after landing would have
 
 Split on 2026-11-04 at the human's direction, from eight criteria: refusals are now `TASK-151` and landing at the start of a run is `TASK-152`.
 
+Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: landing before its refusals was unsafe, since a long session can leave the main checkout on another branch, and untracked worktree files would fail removal after the merge. The refusals are back here, and prompts and documentation moved to `TASK-151`. A criterion promised "a later run lands it", which only `TASK-152` does, so it went. Rejected: a criterion for "never forced", which a reviewer reads in one line.
+
 ## History
 
 - 2026-11-03T20:46:17Z lively-panda → todo
@@ -49,3 +49,4 @@ Split on 2026-11-04 at the human's direction, from eight criteria: refusals are 
 - 2026-11-03T21:24:18Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T09:45:41Z lively-panda: changed priority
 - 2026-11-04T15:11:37Z mellow-newt: changed dependencies, description, acceptance criteria, notes
+- 2026-11-04T15:17:38Z mellow-newt: changed description, acceptance criteria, notes
