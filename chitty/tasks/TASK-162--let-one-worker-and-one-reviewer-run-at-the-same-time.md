@@ -1,6 +1,6 @@
 ---
 title: Let one worker and one reviewer run at the same time
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-163
@@ -40,3 +40,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the error text, 
 - 2026-11-04T20:15:22Z mellow-newt → backlog
 - 2026-11-04T20:20:09Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T20:22:55Z mellow-newt: changed description, notes
+- 2026-11-04T20:22:56Z mellow-newt backlog → todo
