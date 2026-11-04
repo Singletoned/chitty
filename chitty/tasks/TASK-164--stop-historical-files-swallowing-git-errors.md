@@ -1,6 +1,6 @@
 ---
 title: Stop `historical_files` swallowing Git errors
-status: backlog
+status: todo
 labels:
   - bug
 priority: high
@@ -26,3 +26,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It found what the catch
 
 - 2026-11-04T20:20:07Z mellow-newt → backlog
 - 2026-11-04T20:22:53Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T20:22:54Z mellow-newt backlog → todo
