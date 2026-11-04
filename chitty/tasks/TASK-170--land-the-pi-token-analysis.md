@@ -1,6 +1,6 @@
 ---
 title: Land the Pi token analysis
-status: backlog
+status: todo
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -22,3 +22,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: how to take the commits
 
 - 2026-11-04T21:41:05Z mellow-newt → backlog
 - 2026-11-04T21:44:19Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T21:44:20Z mellow-newt backlog → todo
