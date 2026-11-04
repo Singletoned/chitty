@@ -1,9 +1,10 @@
 ---
 title: Stop different sessions sharing an actor name
-status: todo
+status: backlog
 labels:
   - bug
 priority: low
+owner: human
 parent: TASK-106
 created: 2026-11-04
 ---
@@ -25,7 +26,11 @@ Out of scope: a registry of names in use, and changing `CHITTY_ACTOR`, which a p
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my numbers, which were wrong: 16 of each, confirmed by importing the module, so 256 names and 65,536 after the change; which digest byte to use; and the existing test asserting the old shape. Confirmed: no parsing depends on the name's shape. Confirmed too: a session running across the change stops matching its old name, so it would not be refused as reviewing its own work; rejected as a problem, because it lasts for one session at one moment, and a new session is started per ticket. Rejected: a test for reading old-form lines, because `review_work` compares strings and old lines are untouched. A test for `CHITTY_ACTOR`, which the override test covers and this does not change. How the test finds two colliding IDs, which is the worker's choice.
 
+Parked on 2026-11-04: the human added names, so there are now 25 of each and 625 in all, and will consider other ways of doing this, such as separate names for workers and reviewers. The numbers in the description predate that.
+
 ## History
 
 - 2026-11-04T12:40:34Z lively-panda → todo
 - 2026-11-04T12:41:27Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-04T14:36:52Z mellow-newt: changed priority, owner, notes
+- 2026-11-04T14:36:52Z mellow-newt todo → backlog
