@@ -21,6 +21,11 @@ Proposed, to refine before promoting:
 
 Open: what happens to the `chitty://guide` MCP resource; whether a role file can be overridden per repository, which should wait for a need; and whether this should come before the pilot, since it changes what the pilot measures. Likely too large for one ticket: the role files and `chitty guide` first, then the extension and `{prompt}`, then shrinking the block.
 
+## Notes
+
+Split on 2026-11-04 with the human's agreement, into `TASK-141`, `TASK-142` and `TASK-143`, all to land before the pilot. This ticket stays as the design record and needs no work of its own. Decided: the `chitty://guide` resource keeps returning the block, and per-repository overrides wait for a need.
+
 ## History
 
 - 2026-11-04T10:09:08Z lively-panda → backlog
+- 2026-11-04T11:56:20Z lively-panda: changed notes
