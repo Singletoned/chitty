@@ -60,7 +60,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
-- [x] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
+- [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [x] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
@@ -162,6 +162,8 @@ Verified criterion 16: the fake Pi records CHITTY_PI_SESSION_ID for each invocat
 
 Review failed: criterion 1 does not assert that the claim for the already-linked worktree case is committed on branch `task-1`; `tests/test_next.py::test_run_uses_committed_change_from_ticket_worktree` checks Pi’s working directory but not the claim branch. Criterion 7’s inbox test only mocks `pull_suggestions` and checks called/not-called; it does not prove that inbox pull occurs before ticket selection or claim. Add focused black-box assertions, then rerun `make check`.
 
+Review failed (complete): criterion 1 does not assert that the claim for the already-linked worktree case is committed on branch `task-1`; `tests/test_next.py::test_run_uses_committed_change_from_ticket_worktree` checks Pi’s working directory but not the claim branch. Criterion 7’s inbox test only mocks `pull_suggestions` and checks called/not-called; it does not prove that inbox pull occurs before ticket selection or claim. Criterion 9 generates new session IDs but does not assert the actors from the two invocations differ; moreover `actor._readable_name()` maps every identity into a finite adjective-animal set, so different session IDs can record the same actor. Add deterministic focused black-box assertions and preserve unique recorded actor identities, then rerun `make check`.
+
 ## Summary
 
 Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and directly asserts the two IDs differ, avoiding false failures from readable actor-name collisions. Verified: make check (ruff, pyright, 227 Python tests, 25 Node tests); chitty check and chitty fix pass with only pre-existing unrelated task warnings. Review focus: test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation.
@@ -226,3 +228,4 @@ Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and d
 - 2026-11-04T13:03:22Z golden-marten doing → review
 - 2026-11-04T13:12:55Z opal-otter: changed acceptance criteria, notes
 - 2026-11-04T13:12:55Z opal-otter review → doing
+- 2026-11-04T13:13:33Z opal-otter: changed acceptance criteria, notes
