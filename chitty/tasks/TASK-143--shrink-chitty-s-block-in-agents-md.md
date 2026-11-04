@@ -12,19 +12,24 @@ created: 2026-11-04
 
 Third of three parts of `TASK-140`. `AGENTS.md` belongs to the repository, so reduce Chitty's block there to what every session needs, now that each role has its own instructions.
 
-Rewrite `src/chitty/guide.md` to about ten lines: tasks live in `chitty/`; use the CLI or MCP and do not hand-edit task files; backticks for paths and code; `chitty --help` for commands; and which `chitty guide <role>` to run, for a person who starts an agent by hand. Anything else moves to a role file if it is not already there, so no rule is lost: check each current line and record in a note where it went or why it was dropped.
+Rewrite `src/chitty/guide.md` to about ten lines: tasks live in `chitty/`; use the CLI or MCP and do not hand-edit task files; backticks for paths and code; `chitty --help` for commands; and which `chitty guide <role>` to run, for a person who starts an agent by hand. `TASK-141` has already given every other rule a home and accounted for them in a note: check that against the final text.
 
-`chitty init` already replaces the block, so existing repositories pick this up through the version bump. Run it here so this repository's `AGENTS.md` matches. In this repository's own section, replace the cold-read pointer with `chitty guide plan`, and drop anything the block no longer needs.
+`chitty init` already replaces the block, so existing repositories pick this up through the version bump. Fix two faults in that replacement at `init_repo` in `src/chitty/store.py`, which shrinking would expose: it consumes the blank line before a following `## ` heading, so a repository's next section loses its spacing; and `re.subn` treats the guide as a template, so pass a function, in case a backslash ever appears. `guide.md` must contain exactly one `## ` line, because the pattern ends the block at the next one, and a second would leave the old tail behind. The block still runs to the next `## ` heading or the end of the file, so unheaded text a person adds after it is replaced, as it is today. Run it here so this repository's `AGENTS.md` matches. In this repository's own section, replace the cold-read pointer with `chitty guide plan`, and drop anything the block no longer needs.
 
 Out of scope: the rest of a repository's `AGENTS.md`, which Chitty does not own.
 
 ## Acceptance Criteria
 
-- [ ] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, with a ticket note accounting for each line removed
-- [ ] A test shows `chitty init` replacing an old block in an existing repository, leaving the rest of its `AGENTS.md` unchanged
 - [ ] This repository's `AGENTS.md` matches and its cold-read line names `chitty guide plan`, and `__version__` is bumped above `main`'s
 - [ ] `README.md` and `PLAN.md` describe where instructions live
+- [ ] `src/chitty/guide.md` is about ten lines, has one `## ` line and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
+- [ ] Tests show `chitty init` replacing an old block in an existing repository, with a following section keeping its blank line and heading, and text before the block unchanged
+
+## Notes
+
+Same cold read. Fixed: the blank line consumed before a following section, which would have failed the old criterion 2, confirmed by reading the code at `init_repo`; `re.subn` treating the guide as a template; and exactly one `## ` line. Rule accounting moved to `TASK-141`, which writes the role files. Rejected: an end marker for the block, because it adds format for every repository to protect text after the block that nobody has reported. Raised with the human as a question, since that text is replaced today.
 
 ## History
 
 - 2026-11-04T11:56:20Z lively-panda → todo
+- 2026-11-04T12:00:40Z lively-panda: changed description, acceptance criteria, notes
