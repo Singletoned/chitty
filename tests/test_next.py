@@ -236,7 +236,12 @@ class TestNext(CliTestCase):
 
     def test_run_refreshes_setup_before_starting_pi(self):
         self.add("Todo")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
         self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.git("add", "--all")
@@ -285,7 +290,12 @@ class TestNext(CliTestCase):
 
     def test_run_replaces_an_outdated_extension_before_starting_pi(self):
         self.add("Todo")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
         self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.run_cli("init")
@@ -324,7 +334,12 @@ class TestNext(CliTestCase):
 
     def test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty(self):
         self.add("Todo")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
         self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.run_cli("init")
@@ -365,7 +380,12 @@ class TestNext(CliTestCase):
 
     def test_run_refresh_is_silent_when_current_or_in_a_worktree(self):
         self.add("Todo")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
         self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.run_cli("init")

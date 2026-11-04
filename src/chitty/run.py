@@ -33,8 +33,8 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
     main_root = _main_checkout(repo.root)
     main_repo = Repo.open(main_root)
-    main_repo.refresh_setup()
     _preflight(main_repo)
+    main_repo.refresh_setup()
     if main_repo.config.project:
         try:
             pull_suggestions(main_repo)
