@@ -38,6 +38,8 @@ Run `after_land` before the `chitty init` step added to `TASK-120`: a new depend
 
 Landing moved from `TASK-120` to `TASK-131`, so read references to that step accordingly.
 
+Archived 2026-11-04 unbuilt: the human decided the global `chitty` comes from PyPI (`TASK-160`), so there will be no editable global to reinstall.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -46,3 +48,4 @@ Landing moved from `TASK-120` to `TASK-131`, so read references to that step acc
 - 2026-11-03T20:00:18Z lively-panda: changed description, notes
 - 2026-11-03T20:44:56Z lively-panda: changed notes
 - 2026-11-03T20:46:21Z lively-panda: changed dependencies, notes
+- 2026-11-04T19:36:58Z mellow-newt: changed notes
