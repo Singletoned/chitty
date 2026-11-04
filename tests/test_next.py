@@ -181,6 +181,7 @@ class TestNext(CliTestCase):
         fake.write_text(
             "#!" + sys.executable + "\n"
             "import os, pathlib, subprocess, time\n"
+            "assert pathlib.Path.cwd() == pathlib.Path(os.environ['WORKER'])\n"
             "path = pathlib.Path(os.environ['WORKER']) / 'chitty/tasks/TASK-1--todo.md'\n"
             "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
             "time.sleep(1)\n"

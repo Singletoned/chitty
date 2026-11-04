@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { readFileSync, renameSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 import type {
   ExtensionAPI,
@@ -348,7 +349,8 @@ export async function requireLinkedWorktree(
   if (
     gitDir.code !== 0 ||
     commonDir.code !== 0 ||
-    gitDir.stdout.trim() === commonDir.stdout.trim()
+    resolve(ctx.cwd, gitDir.stdout.trim()) ===
+      resolve(ctx.cwd, commonDir.stdout.trim())
   ) {
     throw new Error("Start Chitty with `chitty run`; it prepares a linked ticket worktree.");
   }

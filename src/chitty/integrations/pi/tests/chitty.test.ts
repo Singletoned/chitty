@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -237,6 +238,31 @@ test("refuses Chitty startup outside a linked worktree", async () => {
   );
 });
 
+test("refuses Chitty startup in a main-checkout subdirectory", async () => {
+  const directory = mkdtempSync(join(tmpdir(), "chitty-main-"));
+  // Git reports physical paths, so use one here to isolate its relative-path behavior.
+  const physicalDirectory = realpathSync(directory);
+  const subdirectory = join(physicalDirectory, "subdirectory");
+  mkdirSync(subdirectory);
+  execFileSync("git", ["init", "--quiet"], { cwd: physicalDirectory });
+  const pi = {
+    exec: async (command: string, args: string[], options: { cwd: string }) => ({
+      code: 0,
+      stdout: execFileSync(command, args, { cwd: options.cwd, encoding: "utf8" }),
+      stderr: "",
+    }),
+  };
+
+  try {
+    await assert.rejects(
+      requireLinkedWorktree(pi as never, { cwd: subdirectory } as never),
+      /chitty run/,
+    );
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("exits cleanly when Chitty starts outside a linked worktree", async () => {
   let sessionStart:
     | ((event: unknown, ctx: unknown) => Promise<void> | void)
@@ -360,7 +386,16 @@ test("takes a baseline at start and restores progress state for a resumed sessio
   const output = JSON.stringify({ status: "doing", history: ["baseline"] });
   const pi = {
     appendEntry: (_type: string, state: unknown) => entries.push(state),
-    exec: async () => ({ code: 0, stdout: output, stderr: "" }),
+    exec: async (command: string, args: string[]) => {
+      if (command === "git") {
+        return {
+          code: 0,
+          stdout: args[1] === "--git-dir" ? ".git/worktrees/task-12\n" : ".git\n",
+          stderr: "",
+        };
+      }
+      return { code: 0, stdout: output, stderr: "" };
+    },
     getFlag: () => undefined,
     on: (event: string, handler: (event: never, ctx: never) => Promise<void> | void) => {
       if (event === "session_start") sessionStart = handler;
@@ -404,7 +439,16 @@ test("takes a baseline at start and restores progress state for a resumed sessio
   const resumedPi = {
     ...pi,
     appendEntry: (_type: string, state: unknown) => resumedEntries.push(state),
-    exec: async () => ({ code: 0, stdout: resumedOutput, stderr: "" }),
+    exec: async (command: string, args: string[]) => {
+      if (command === "git") {
+        return {
+          code: 0,
+          stdout: args[1] === "--git-dir" ? ".git/worktrees/task-12\n" : ".git\n",
+          stderr: "",
+        };
+      }
+      return { code: 0, stdout: resumedOutput, stderr: "" };
+    },
   };
   chitty(resumedPi as Parameters<typeof chitty>[0]);
   const resumedCtx = {
