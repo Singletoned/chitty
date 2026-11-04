@@ -1,6 +1,6 @@
 ---
 title: "Baseline: classify every past review failure by cause"
-status: todo
+status: doing
 priority: high
 owner: human
 parent: TASK-106
@@ -24,6 +24,10 @@ Recount rather than trusting the figures above, which were rough and are now out
 - [ ] Reports first-pass yield, retries per ticket and failures by cause, and states what it could not measure, including post-`done` escapes
 - [ ] Proposes at most three changes to standing rules, each naming the failure class it should reduce, for the human to accept or reject
 
+## Plan
+
+Extract every transition and note from `## History` and Git, classify each failure against `PLAN.md`, compute yield, size correlation and Pi cost per phase, then write the report and proposals to the notes. Scripts stay in the session scratchpad.
+
 ## Notes
 
 Candidate proposal for the retro: a scripted check that fails when `src/chitty/guide.md` changes without a `__version__` bump. `TASK-104` lost its bump in a rebase with its criterion still ticked, and a reviewer had to spot it.
@@ -41,3 +45,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: which history to count,
 - 2026-11-04T19:32:41Z mellow-newt: changed owner, description
 - 2026-11-04T19:36:35Z mellow-newt: changed description, notes
 - 2026-11-04T19:36:36Z mellow-newt backlog → todo
+- 2026-11-04T20:10:26Z quick-toad: wrote the plan
+- 2026-11-04T20:10:26Z quick-toad todo → doing
