@@ -22,13 +22,13 @@ The pilot has to answer whether cheap models save money per accepted ticket, inc
 
 One machine-local file per project, `$XDG_DATA_HOME/chitty/usage/<project>.jsonl`, defaulting like `inbox_path` in `src/chitty/config.py`. It is not in the repository, so appending cannot dirty the main checkout or conflict across branches, which `TASK-120` depends on. The trade-off is one history per machine, which suits a single developer.
 
-`chitty run` in a repository with no `project` is a loud error in the `TASK-126` preflight, before anything changes. Remove the "skip the inbox pull with no `project`" branch and its test, which this makes unreachable, and give the run tests' repository a `project`.
+The log's file name comes from the `project` after `refresh_setup`, which adds one to a repository without it. Leave the inbox pull in `run` as it is: only a `project` present before the refresh opts into pulling. If there is still no `project` after the refresh, fail loudly before the claim.
 
 One line per `chitty run` that reaches starting Pi, as one JSON object:
 
 `{"ticket", "mode", "actor", "started" (UTC ISO 8601 ending `Z`, like History), "seconds", "status_before", "status_after", "models"}`
 
-`models` is a list with one `{"provider", "model", "input", "output", "cacheRead", "cacheWrite", "cost"}` per provider and model, summed across the session and any subagent sessions. An empty list means Pi made no billed calls. `null` means unknown. `actor` is the name from `actor()`, matching History, not the raw UUID. `status_before` is the one `TASK-126` reads after the claim. `status_after` is `null` if the ticket cannot be read.
+`models` is a list with one `{"provider", "model", "input", "output", "cacheRead", "cacheWrite", "cost"}` per provider and model, summed across the session and any subagent sessions. An empty list means Pi made no billed calls. `null` means unknown. `actor` is the name from `actor()`, matching History, not the raw UUID. `status_before` is the one `TASK-126` reads after the claim. A missing usage file gives `models` null; `TASK-148` adds the warning and the other failures.
 
 `TASK-148` makes every path log.
 
@@ -52,9 +52,9 @@ Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnes
 
 ## Acceptance Criteria
 
-- [ ] A test covers a repository with no `project`: `chitty run` exits non-zero before starting `pi`
 - [ ] The log is written under a temporary `XDG_DATA_HOME` in tests, and a test shows `git status` in the repository stays clean after a run
 - [ ] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
+- [ ] A test shows a repository starting with no `project` logging under the one the refresh gives it
 
 ## Notes
 
@@ -72,6 +72,8 @@ Split on 2026-11-04 at the human's direction, from six criteria, into this ticke
 
 Depends on `TASK-147` and `TASK-153` only to order them first: all are high priority and ties go by ID, but those two bugs affect every session and every passed review.
 
+Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a preflight check for `project` would have refused legacy repositories that `refresh_setup` repairs a moment later, so the name is read after it, and the inbox behaviour stays. A missing usage file on a normal exit is now defined. Rejected: a criterion per log field, because criterion 3 already says every field, and the new rule is to state behaviour rather than list cases.
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
@@ -82,3 +84,4 @@ Depends on `TASK-147` and `TASK-153` only to order them first: all are high prio
 - 2026-11-03T20:46:20Z lively-panda: changed dependencies, acceptance criteria, notes
 - 2026-11-04T15:11:32Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T15:12:22Z mellow-newt: changed dependencies, notes
+- 2026-11-04T15:17:31Z mellow-newt: changed description, acceptance criteria, notes
