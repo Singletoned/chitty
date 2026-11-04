@@ -1,7 +1,7 @@
 ---
 title: Run agents through a configured `agent_command`
 status: todo
-priority: high
+priority: medium
 depends_on:
   - TASK-126
 parent: TASK-106
@@ -62,3 +62,4 @@ Cold read of the rewrite by a fresh Sonnet subagent, 2026-11-04. Fixed: `str.rep
 - 2026-11-04T09:31:38Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T09:38:00Z lively-panda: changed title, description, acceptance criteria, notes
 - 2026-11-04T09:40:59Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-04T09:45:42Z lively-panda: changed priority
