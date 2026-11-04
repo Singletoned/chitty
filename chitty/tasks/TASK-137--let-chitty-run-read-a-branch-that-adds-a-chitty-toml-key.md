@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` read a branch that adds a `chitty.toml` key
-status: backlog
+status: todo
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -42,3 +42,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: where `_version_key` go
 - 2026-11-04T17:03:09Z mellow-newt: changed notes
 - 2026-11-04T17:32:41Z mellow-newt: changed priority, description, acceptance criteria, notes
 - 2026-11-04T17:34:51Z mellow-newt: changed title, description, acceptance criteria, notes
+- 2026-11-04T17:34:51Z mellow-newt backlog → todo
