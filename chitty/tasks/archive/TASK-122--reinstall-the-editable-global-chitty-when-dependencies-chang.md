@@ -49,3 +49,4 @@ Archived 2026-11-04 unbuilt: the human decided the global `chitty` comes from Py
 - 2026-11-03T20:44:56Z lively-panda: changed notes
 - 2026-11-03T20:46:21Z lively-panda: changed dependencies, notes
 - 2026-11-04T19:36:58Z mellow-newt: changed notes
+- 2026-11-04T19:36:59Z mellow-newt todo → archived
