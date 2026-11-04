@@ -21,7 +21,10 @@ Pi has a `/chitty work` and `/chitty review` loop (TASK-87). Claude Code should 
 
 Before this can make another agent work, two things must leave Pi: the worker and reviewer prompts, which only `src/chitty/integrations/pi/chitty.ts` holds, and `CHITTY_PI_SESSION_ID`, which `chitty run` sets on the `task-126` branch. `TASK-136` makes the command configurable and leaves these two.
 
+`TASK-155` tries `claude -p` through `agent_command` first, which may make this loop unnecessary.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-04T09:39:37Z lively-panda: changed notes
+- 2026-11-04T15:38:32Z mellow-newt: changed notes
