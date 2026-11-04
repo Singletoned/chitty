@@ -49,6 +49,8 @@ Added on 2026-11-04 after `TASK-126` failed six reviews: when a reviewer may fai
 
 Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
 
+Verified `uv build`: the wheel lists `chitty/roles/work.md`, `review.md`, and `plan.md`. Guide-rule accounting: task/tool use, one-ticket start, planning, criteria, notes/summary/fix, commit trailers, defaults, blocking, `human`, and unrelated findings are in `work.md`; review independence, criterion review, failure handling, merge, and unrelated findings are in `review.md`; formatting task text, ready tickets, backlog/promotion/parent, cold reads, and archive are in `plan.md`. The removed worktree, setup, and manual claim steps were intentionally dropped because `chitty run` now performs them.
+
 ## History
 
 - 2026-11-04T11:56:18Z lively-panda → todo
@@ -57,3 +59,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
 - 2026-11-04T17:22:46Z intrepid-otter todo → doing
 - 2026-11-04T17:49:49Z sunny-raven: wrote the plan
+- 2026-11-04T17:57:08Z sunny-raven: changed notes
