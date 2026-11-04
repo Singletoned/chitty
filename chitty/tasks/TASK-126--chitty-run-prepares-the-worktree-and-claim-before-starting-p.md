@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-124
@@ -52,13 +52,13 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 ## Acceptance Criteria
 
-- [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
+- [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
-- [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
+- [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [x] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
@@ -160,6 +160,8 @@ Unblocked 2026-11-04 by the human after the third failed review. That review was
 
 Verified criterion 16: the fake Pi records CHITTY_PI_SESSION_ID for each invocation and directly compares the two values. Passed `uv run python -m unittest discover -s tests -t .`, `uv run ruff format --check .`, `uv run ruff check --no-fix .`, `uv run pyright`, and `npm test -- --test src/chitty/integrations/pi/tests/chitty.test.ts`.
 
+Review failed: criterion 1 does not assert that the claim for the already-linked worktree case is committed on branch `task-1`; `tests/test_next.py::test_run_uses_committed_change_from_ticket_worktree` checks Pi’s working directory but not the claim branch. Criterion 7’s inbox test only mocks `pull_suggestions` and checks called/not-called; it does not prove that inbox pull occurs before ticket selection or claim. Add focused black-box assertions, then rerun `make check`.
+
 ## Summary
 
 Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and directly asserts the two IDs differ, avoiding false failures from readable actor-name collisions. Verified: make check (ruff, pyright, 227 Python tests, 25 Node tests); chitty check and chitty fix pass with only pre-existing unrelated task warnings. Review focus: test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation.
@@ -222,3 +224,5 @@ Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and d
 - 2026-11-04T13:01:13Z golden-marten: changed notes; ticked acceptance criteria
 - 2026-11-04T13:03:22Z golden-marten: changed summary
 - 2026-11-04T13:03:22Z golden-marten doing → review
+- 2026-11-04T13:12:55Z opal-otter: changed acceptance criteria, notes
+- 2026-11-04T13:12:55Z opal-otter review → doing
