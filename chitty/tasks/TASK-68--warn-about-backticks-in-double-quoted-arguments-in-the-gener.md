@@ -1,6 +1,7 @@
 ---
 title: Warn about backticks in double-quoted arguments in the generated guidance
 status: backlog
+priority: medium
 created: 2026-11-01
 ---
 
@@ -18,6 +19,9 @@ The generated AGENTS.md guidance tells agents to put commands, IDs and code in b
 
 Suggestion origin: circuitry
 
+Seen again in `docs/pi-token-usage.md` on `pi-token-analysis`, 2026-11-04: about 16 `bash` calls show `command not found` for words such as `chitty_version`, `Repo.finalize` and `todo`, so ticket notes have probably lost text. A worker's note also ran `make check` this way during `TASK-126`. The guidance now also lives in `src/chitty/roles/`, so add the line wherever the backtick instruction is. `TASK-67`'s `--note-file` is not built, so say single quotes only.
+
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-04T21:41:12Z mellow-newt: changed priority, notes
