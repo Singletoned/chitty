@@ -303,6 +303,8 @@ chitty_version = "0.1.2" # written by init; warns when setup is stale
 autocommit = false # if true, commit each write; `chitty init --autocommit` enables it and commits setup
 review = true # require review before done
 # autoformat = "taidy format" # run on every written task file
+# setup = "make install" # run in every ticket worktree before the agent starts
+# agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
 archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
@@ -615,14 +617,16 @@ an unmet dependency is excluded, while `doing` and `review` work remains
 visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value.
 
-`chitty run` requires `autocommit = true` and a configured `setup` command. It
-finds the main checkout even when invoked from another worktree, pulls its
-inbox when configured, creates or reuses the selected ticket's worktree, runs
-parsed setup there, and claims a `todo` work ticket on that branch before
-launching `pi --chitty-<mode> ID`. Arguments after `--` pass through to Pi. It
-reopens the ticket worktree after Pi exits and succeeds only if the task's
-committed status changed. This makes `while chitty run; do :; done` a safe
-unattended loop. Interrupting setup or Pi exits 130 without a traceback.
+`chitty run` requires `autocommit = true`, a configured `setup` command, and
+an `agent_command`. It finds the main checkout even when invoked from another
+worktree, pulls its inbox when configured, creates or reuses the selected
+ticket's worktree, runs parsed setup there, and claims a `todo` work ticket on
+that branch before launching the parsed agent command. The command must include
+`{mode}` and `{id}`; Chitty replaces them after splitting, and arguments after
+`--` pass through to the agent. It reopens the ticket worktree after the agent
+exits and succeeds only if the task's committed status changed. This makes
+`while chitty run; do :; done` a safe unattended loop. Interrupting setup or
+the agent exits 130 without a traceback.
 
 ## Module layout
 

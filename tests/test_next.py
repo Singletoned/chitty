@@ -449,13 +449,41 @@ class TestNext(CliTestCase):
                 None,
             ),
             ("setup", lambda text: text.replace('setup = "true"\n', ""), None),
-            ("pi", lambda text: text, "/usr/bin:/bin"),
+            (
+                "unset",
+                lambda text: text.replace('agent_command = "pi --chitty-{mode} {id}"\n', ""),
+                None,
+            ),
+            (
+                "blank",
+                lambda text: text.replace(
+                    'agent_command = "pi --chitty-{mode} {id}"', 'agent_command = " "'
+                ),
+                None,
+            ),
+            (
+                "quotes",
+                lambda text: text.replace(
+                    'agent_command = "pi --chitty-{mode} {id}"',
+                    'agent_command = "pi \' --chitty-{mode} {id}"',
+                ),
+                None,
+            ),
+            ("mode", lambda text: text.replace("{mode}", "work"), None),
+            ("id", lambda text: text.replace("{id}", "TASK-1"), None),
+            ("relative", lambda text: text.replace("pi --chitty", "bin/pi --chitty"), None),
+            ("missing", lambda text: text.replace("pi --chitty", "missing-agent --chitty"), None),
             ("branch", lambda text: text, None),
         )
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
         original = config.read_text()
         for name, change, path in cases:
             with self.subTest(name):
                 config.write_text(change(original))
+                if name != "branch":
+                    self.git("add", "chitty.toml")
+                    self.git("commit", "--quiet", "-m", f"invalid {name} agent command")
                 if name == "branch":
                     self.git("branch", "-M", "wrong")
                 previous = os.environ.get("PATH")
@@ -474,7 +502,13 @@ class TestNext(CliTestCase):
                 expected = {
                     "autocommit": "requires autocommit",
                     "setup": "requires setup",
-                    "pi": "pi is not on PATH",
+                    "unset": "agent_command",
+                    "blank": "agent_command",
+                    "quotes": "agent_command",
+                    "mode": "agent_command",
+                    "id": "agent_command",
+                    "relative": "agent_command",
+                    "missing": "agent_command",
                     "branch": "must be on branch main",
                 }[name]
                 self.assertIn(expected, result.stderr)
@@ -625,7 +659,7 @@ class TestNext(CliTestCase):
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
-            self.assertIn("pi exited with status 7", failed.stderr)
+            self.assertIn("agent exited with status 7", failed.stderr)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ.pop("PI_EXIT")
             os.environ["CHANGE"] = "1"
@@ -639,7 +673,7 @@ class TestNext(CliTestCase):
             self.add("Again")
             os.environ["PATH"] = "/usr/bin:/bin"
             missing = self.run_cli("run", exit_code=1)
-            self.assertIn("pi is not on PATH", missing.stderr)
+            self.assertIn("agent_command executable is not on PATH", missing.stderr)
             os.environ["PATH"] = f"{fake.parent}:{old_path}"
         finally:
             os.environ["PATH"] = old_path
@@ -801,9 +835,14 @@ class TestNext(CliTestCase):
         )
         config = self.root / "chitty.toml"
         config.write_text(
-            config.read_text().replace(
+            config.read_text()
+            .replace(
                 "autocommit = false",
                 f'autocommit = true\nsetup = "{sys.executable} {setup} && touch interpreted"',
+            )
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "~/bin/fake-agent --chitty-{mode} {id}"',
             )
         )
         self.git("init", "--quiet")
@@ -813,12 +852,13 @@ class TestNext(CliTestCase):
         self.add("Todo")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
-        fake = self.root / "bin" / "pi"
-        fake.parent.mkdir()
+        fake = self.tmp / "home" / "bin" / "fake-agent"
+        fake.parent.mkdir(parents=True)
         fake.write_text(
             "#!" + sys.executable + "\n"
             "from pathlib import Path\n"
             "import os, sys\n"
+            "Path('agent-arguments').write_text(repr(sys.argv[1:]))\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert Path('setup-ran').read_text() in {'1', '2', '3'}\n"
             "if sys.argv[1] == '--chitty-work':\n"
@@ -843,14 +883,13 @@ class TestNext(CliTestCase):
         self.assertIn("TASK-1 was unchanged", result.stderr)
         self.assertIn("TASK-1 was unchanged", repeated.stderr)
         self.assertTrue((worktree / "pi-ran").exists())
+        self.assertEqual((worktree / "agent-arguments").read_text(), "['--chitty-work', 'TASK-1']")
         self.assertEqual((worktree / "setup-ran").read_text(), "2")
         self.assertFalse((worktree / "interpreted").exists())
 
         self.git("worktree", "remove", "--force", str(worktree))
         self.git("branch", "-D", "task-1")
         self.run_cli("edit", "TASK-1", "--status", "review")
-        self.git("add", "--all")
-        self.git("commit", "--quiet", "-m", "review ticket")
         self.git("worktree", "add", "--quiet", "-b", "task-1", str(worktree))
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         os.environ["EXPECTED_ROOT"] = str(worktree)
@@ -860,6 +899,9 @@ class TestNext(CliTestCase):
             os.environ["PATH"] = previous
             os.environ.pop("EXPECTED_ROOT", None)
         self.assertIn("TASK-1 was unchanged", review.stderr)
+        self.assertEqual(
+            (worktree / "agent-arguments").read_text(), "['--chitty-review', 'TASK-1']"
+        )
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
             "review",

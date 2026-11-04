@@ -724,9 +724,19 @@ def _add_missing_settings(
             ("chitty_version", f'chitty_version = "{CHITTY_VERSION}"'),
             ("archive", 'archive = "move"'),
             ("review", "review = true"),
-            ("setup", '# setup = "make install" # run before Pi starts in a ticket worktree'),
+            (
+                "setup",
+                '# setup = "make install" # run before the agent starts in a ticket worktree',
+            ),
+            (
+                "agent_command",
+                (
+                    '# agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
+                    '--chitty-{mode} {id}"'
+                ),
+            ),
         )
-        if key not in settings and not (key == "setup" and "setup =" in text)
+        if key not in settings and not (key in {"setup", "agent_command"} and f"{key} =" in text)
     ]
     if not additions:
         return text

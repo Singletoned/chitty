@@ -1,4 +1,4 @@
-"""Prepare a Chitty ticket worktree and run Pi in it."""
+"""Prepare a Chitty ticket worktree and run its configured agent."""
 
 import os
 import shlex
@@ -44,6 +44,7 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
             raise RunInterrupted("inbox pull") from None
 
     action = next_action(main_repo)
+    agent_command = _agent_command(main_repo, action)
     stored = main_repo.find(action.id)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
@@ -61,17 +62,15 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
         work_repo.edit(action.id, Edit(status="doing"))
     old_status = work_repo.find(action.id).task.frontmatter.status
     try:
-        completed = subprocess.run(
-            ["pi", f"--chitty-{action.mode}", str(action.id), *arguments],
-            cwd=worktree,
-            check=False,
-        )
+        completed = subprocess.run([*agent_command, *arguments], cwd=worktree, check=False)
+    except FileNotFoundError:
+        raise ChittyError(f"agent command not found: {agent_command[0]}") from None
     except KeyboardInterrupt:
-        raise RunInterrupted("Pi") from None
+        raise RunInterrupted("agent") from None
     if completed.returncode == -signal.SIGINT:
-        raise RunInterrupted("Pi")
+        raise RunInterrupted("agent")
     if completed.returncode:
-        raise ChittyError(f"pi exited with status {completed.returncode}")
+        raise ChittyError(f"agent exited with status {completed.returncode}")
     # Pi commonly commits from this worktree. Reopen so history is re-read.
     new_status = Repo.open(worktree).find(action.id).task.frontmatter.status
     if new_status == old_status:
@@ -101,10 +100,42 @@ def _preflight(repo: Repo) -> None:
         raise ChittyError("`chitty run` requires autocommit = true")
     if repo.config.setup is None:
         raise ChittyError("`chitty run` requires setup to be configured")
-    if shutil.which("pi") is None:
-        raise ChittyError("pi is not on PATH")
     if git.current_branch(repo.root) != "main":
         raise ChittyError("the main checkout must be on branch main")
+
+
+def _agent_command(repo: Repo, action: NextAction) -> tuple[str, ...]:
+    """Parse and validate the configured command after setup refreshes it."""
+    command = repo.config.agent_command
+    example = (
+        'agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
+        '--chitty-{mode} {id}"'
+    )
+    if command is None or not command.strip():
+        raise ChittyError(f"`chitty run` requires agent_command; for example: {example}")
+    try:
+        words = shlex.split(command)
+    except ValueError as error:
+        raise ChittyError(f"invalid agent_command: {error}") from None
+    if "{mode}" not in command or "{id}" not in command:
+        raise ChittyError("agent_command must contain both {mode} and {id}")
+    rendered = tuple(
+        os.path.expanduser(word).replace("{mode}", action.mode).replace("{id}", str(action.id))
+        for word in words
+    )
+    first = rendered[0]
+    if "/" in first and not Path(first).is_absolute():
+        raise ChittyError(
+            "agent_command must use an absolute path when its first word contains '/'"
+        )
+    executable = shutil.which(first)
+    if executable is None:
+        raise ChittyError(f"agent_command executable is not on PATH: {first}")
+    # Resolve now: a relative PATH entry can point elsewhere after changing to the worktree.
+    resolved = Path(executable)
+    if not resolved.is_absolute():
+        resolved = repo.root / resolved
+    return (str(resolved.resolve()), *rendered[1:])
 
 
 def _worktree(main_root: Path, action: NextAction) -> Path:

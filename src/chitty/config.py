@@ -29,7 +29,8 @@ chitty_version = "{version}"
 autocommit = false
 review = true
 # autoformat = "taidy format" # run on every written task file
-# setup = "make install" # run in every ticket worktree before Pi starts
+# setup = "make install" # run in every ticket worktree before the agent starts
+# agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{{mode}} {{id}}"
 archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
@@ -66,6 +67,7 @@ class RepoConfig(BaseModel):
     review: bool = True
     autoformat: str | None = None
     setup: str | None = None
+    agent_command: str | None = None
     archive: Literal["move", "delete"] = "move"
     contexts: dict[str, ContextConfig]
 

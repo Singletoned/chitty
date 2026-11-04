@@ -15,6 +15,7 @@ class TestRepoConfig(RepoTestCase):
         self.assertIsNone(config.contexts["human"].review)
         self.assertEqual(config.archive, "move")
         self.assertTrue(config.review)
+        self.assertEqual(config.agent_command, "pi --chitty-{mode} {id}")
 
     def test_context_review_override_loads(self):
         config_path = self.root / "chitty.toml"
@@ -34,6 +35,7 @@ class TestRepoConfig(RepoTestCase):
 
         self.assertEqual(config.default_context, "tasks")
         self.assertEqual(config.contexts["human"].prefix, "HUMAN")
+        self.assertEqual(config.agent_command, "pi --chitty-{mode} {id}")
 
     def test_rejects_both_config_sources(self):
         (self.root / "pyproject.toml").write_text(f"[tool.chitty]\n{PYPROJECT_CONFIG}")
