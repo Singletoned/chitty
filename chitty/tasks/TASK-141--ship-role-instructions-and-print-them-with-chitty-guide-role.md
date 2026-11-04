@@ -1,6 +1,6 @@
 ---
 title: Ship role instructions and print them with `chitty guide <role>`
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-126
@@ -32,10 +32,14 @@ Out of scope: `chitty.ts`, the `AGENTS.md` block, the `chitty://guide` MCP resou
 
 ## Acceptance Criteria
 
-- [ ] `README.md` and `PLAN.md` describe the roles
-- [ ] CLI tests show `chitty guide` unchanged, each role printing, `<role> <ID>` naming the ticket first, an unknown role and `plan <ID>` failing with a message, and role output omitting the Pi session paragraph with `PI_CODING_AGENT=true` set
-- [ ] A note records `uv build` and a listing showing the three role files in the wheel
-- [ ] Each role file is about 30 lines at most and holds only its role's rules, `plan.md` holds the cold-read procedure with `PLAN.md` pointing to it, and a note accounts for every `guide.md` rule
+- [x] `README.md` and `PLAN.md` describe the roles
+- [x] CLI tests show `chitty guide` unchanged, each role printing, `<role> <ID>` naming the ticket first, an unknown role and `plan <ID>` failing with a message, and role output omitting the Pi session paragraph with `PI_CODING_AGENT=true` set
+- [x] A note records `uv build` and a listing showing the three role files in the wheel
+- [x] Each role file is about 30 lines at most and holds only its role's rules, `plan.md` holds the cold-read procedure with `PLAN.md` pointing to it, and a note accounts for every `guide.md` rule
+
+## Plan
+
+Add packaged role instruction files from the current guide and Pi prompts, then extend the store guide reader and thin CLI arguments. Cover the role output and errors with CLI tests, document roles and cold-read ownership, build the wheel, and verify the complete check suite.
 
 ## Notes
 
@@ -45,9 +49,23 @@ Added on 2026-11-04 after `TASK-126` failed six reviews: when a reviewer may fai
 
 Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
 
+Verified `uv build`: the wheel lists `chitty/roles/work.md`, `review.md`, and `plan.md`. Guide-rule accounting: task/tool use, one-ticket start, planning, criteria, notes/summary/fix, commit trailers, defaults, blocking, `human`, and unrelated findings are in `work.md`; review independence, criterion review, failure handling, merge, and unrelated findings are in `review.md`; formatting task text, ready tickets, backlog/promotion/parent, cold reads, and archive are in `plan.md`. The removed worktree, setup, and manual claim steps were intentionally dropped because `chitty run` now performs them.
+
+Re-checked every criterion after commit: documentation, CLI role coverage and Pi diagnostic exclusion, wheel contents, role lengths and guide-rule accounting. `make check` passes.
+
+Reviewed: all four criteria pass. Independently inspected the role guides, CLI/store changes, documentation, tests, and package contents; verified `uv build` wheel roles, `make check`, focused `TestGuide`, `npm test`, and `git diff --check`.
+
 ## History
 
 - 2026-11-04T11:56:18Z lively-panda → todo
 - 2026-11-04T12:00:37Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T14:36:50Z mellow-newt: changed description, notes
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
+- 2026-11-04T17:22:46Z intrepid-otter todo → doing
+- 2026-11-04T17:49:49Z sunny-raven: wrote the plan
+- 2026-11-04T17:57:08Z sunny-raven: changed notes
+- 2026-11-04T17:57:13Z sunny-raven: ticked acceptance criteria
+- 2026-11-04T18:01:50Z sunny-raven: changed notes
+- 2026-11-04T18:01:50Z sunny-raven doing → review
+- 2026-11-04T19:21:26Z witty-badger: changed notes
+- 2026-11-04T19:21:26Z witty-badger review → done

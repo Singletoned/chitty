@@ -527,19 +527,11 @@ ticket is fixed before any tests are written. Decided with the human
 (2026-11-03): for now this is an informal part of planning sessions, with no
 tooling or enforcement. It becomes its own stage, such as `design-review`, only
 if it proves to need one. Workers and reviewers do not do it (2026-11-04: a
-worker read the procedure in `AGENTS.md` as its own step), so the procedure
-lives here:
+worker read the procedure in `AGENTS.md` as its own step), so the procedure is
+printed for planners:
 
-A fresh subagent on a cheaper model reads only the ticket and the code it points
-at, and reports what done means, the files it would change, decisions left open,
-stated behaviour no criterion verifies, unhandled starting states, and claims
-that are wrong. Every finding needs an outcome in a ticket note: fixed in the
-ticket, or rejected with a specific reason. Silence is not an outcome. If a
-finding shows the code behaving oddly, ask whether it is a bug before writing
-the ticket around it. If fixes take a ticket past about five criteria, split it
-instead of adding more. Do this even for a ticket that looks too small to need
-it: it is cheap, and a small `TASK-139` still had a wrong criterion and missed
-the tests that had to change. Keep a new ticket in `backlog` until its findings
+The complete procedure lives in the planning role instructions printed by
+`chitty guide plan`. Keep a new ticket in `backlog` until its cold read findings
 have outcomes, and only then move it to `todo`, because `chitty run` picks up
 anything in `todo`: `TASK-147` was claimed with a wrong fix while its cold read
 was still running.
@@ -647,6 +639,7 @@ src/chitty/
   mcp.py         tool definitions wrapping the same functions as cli.py
                  (mcp ≥ 2: MCPServer, not FastMCP)
   guide.md       the AGENTS.md block, as package data
+  roles/         work, review, and planning instructions, as package data
 ```
 
 `cli.py` and `mcp.py` contain no logic; both call the same functions in

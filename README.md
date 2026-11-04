@@ -65,11 +65,17 @@ chitty archive HUMAN-1
 chitty check                      # validate everything; non-zero on problems
 chitty fix                        # repair safe problems; fail if any remain
 chitty archive                     # process every completed task before a merge request
-chitty guide                      # instructions for coding agents
+chitty guide                      # managed `AGENTS.md` instructions for coding agents
+chitty guide work TASK-12         # instructions for one implementation ticket
+chitty guide review TASK-12       # instructions for one review ticket
+chitty guide plan                 # instructions for writing and refining tickets
 ```
 
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
-are the reference. Plain `chitty list` shows non-archived `todo`, `doing`,
+are the reference. `chitty guide` prints the managed `AGENTS.md` block;
+`chitty guide work`, `review`, and `plan` print the focused instructions for
+that role. Work and review take an optional ticket ID; planning does not.
+Plain `chitty list` shows non-archived `todo`, `doing`,
 `blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter,
 including backlog and done tickets. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`

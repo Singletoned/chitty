@@ -1463,5 +1463,30 @@ class TestGuide(CliTestCase):
         os.chdir(self.tmp)
         self.assertEqual(self.run_cli("guide").stdout, guide())
 
+    def test_prints_role_guides_without_a_repository(self):
+        os.chdir(self.tmp)
+        for role in ("work", "review", "plan"):
+            with self.subTest(role=role):
+                self.assertEqual(self.run_cli("guide", role).stdout, guide(role))
+        for role in ("work", "review"):
+            with self.subTest(role=role, ticket=True):
+                self.assertEqual(
+                    self.run_cli("guide", role, "TASK-42").stdout,
+                    f"Work only on Chitty ticket TASK-42.\n\n{guide(role)}",
+                )
+
+    def test_rejects_unknown_roles_and_ticket_planning(self):
+        unknown = self.run_cli("guide", "writer", exit_code=1)
+        self.assertIn("unknown role 'writer'; choose from work, review, plan", unknown.stderr)
+        plan_ticket = self.run_cli("guide", "plan", "TASK-42", exit_code=1)
+        self.assertIn("does not take a ticket ID", plan_ticket.stderr)
+
+    def test_role_guides_omit_the_pi_session_diagnostic(self):
+        os.environ["PI_CODING_AGENT"] = "true"
+        self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
+        for role in ("work", "review", "plan"):
+            with self.subTest(role=role):
+                self.assertNotIn("set `CHITTY_ACTOR`", self.run_cli("guide", role).stdout)
+
     def test_help_points_agents_at_it(self):
         self.assertIn("chitty guide", self.run_cli("--help").stdout)
