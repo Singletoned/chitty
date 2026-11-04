@@ -1,6 +1,6 @@
 ---
 title: "`chitty --version` reports stale package metadata instead of the running code"
-status: doing
+status: review
 created: 2026-11-03
 ---
 
@@ -24,6 +24,8 @@ Second pass over the cold read: nothing further to change. Keeping click's outpu
 
 Verified criterion 1: the new regression test failed before the fix with patched metadata reporting `cli, version 0.0.0`; it now passes as `chitty, version 0.1.24`. `make check` passes (220 tests).
 
+Re-checked every criterion immediately before review: `uv run python -m unittest tests.test_version` passed (2 tests) and `make check` passed (220 Python tests plus Ruff, pyright, and Node tests). Ready for independent review.
+
 ## History
 
 - 2026-11-03T11:27:23Z eager-raven → todo
@@ -32,3 +34,5 @@ Verified criterion 1: the new regression test failed before the fix with patched
 - 2026-11-04T14:32:39Z open-quail: wrote the plan
 - 2026-11-04T14:32:39Z open-quail todo → doing
 - 2026-11-04T14:37:08Z open-quail: changed notes; ticked acceptance criteria
+- 2026-11-04T14:38:51Z open-quail: changed notes
+- 2026-11-04T14:38:51Z open-quail doing → review
