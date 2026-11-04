@@ -1,6 +1,6 @@
 ---
 title: Write session usage from the Pi extension
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-129
@@ -42,6 +42,8 @@ Per human direction, skip the cold read: it belongs to planning rather than work
 
 Re-checked every criterion before review: npm test passed all 22 Node tests and make check passed. Independent review is now required.
 
+Reviewed: criterion 1 verified by independent inspection and passing Node tests: aggregates every usage field by provider/model, retains no-usage assistant messages, uses all session entries, atomically preserves other sessions and replaces this session, and skips an unset file. Criterion 2 verified: 0.1.24 is above main 0.1.23. Verification: npm test; make check (219 Python tests, Ruff, Pyright).
+
 ## History
 
 - 2026-11-03T20:46:19Z lively-panda → todo
@@ -53,3 +55,5 @@ Re-checked every criterion before review: npm test passed all 22 Node tests and 
 - 2026-11-04T09:22:35Z jolly-crane: changed notes
 - 2026-11-04T09:23:51Z jolly-crane: changed notes
 - 2026-11-04T09:23:51Z jolly-crane doing → review
+- 2026-11-04T09:29:41Z lively-stoat: changed notes
+- 2026-11-04T09:29:41Z lively-stoat review → done
