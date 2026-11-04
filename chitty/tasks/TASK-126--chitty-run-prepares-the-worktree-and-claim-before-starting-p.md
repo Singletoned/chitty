@@ -67,7 +67,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 - [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
 - [x] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
-- [ ] Tests show arguments after `--` reach `pi`, that the claim and a write from the fake `pi` record one actor, and that two runs are given different `CHITTY_PI_SESSION_ID` values, compared directly so that two session IDs sharing a readable name cannot fail the test
+- [x] Tests show arguments after `--` reach `pi`, that the claim and a write from the fake `pi` record one actor, and that two runs are given different `CHITTY_PI_SESSION_ID` values, compared directly so that two session IDs sharing a readable name cannot fail the test
 
 ## Plan
 
@@ -158,6 +158,8 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Unblocked 2026-11-04 by the human after the third failed review. That review was right, but the fault is older than this ticket: `actor()` reduces every session ID to one of a small set of readable names, so moved to its own ticket on `main`. Criterion 4 now asks for what this ticket does, a different session ID for each run. The only work left: change the two-run test near `assertNotEqual(first_actor, second_actor)` to compare the session IDs, because comparing names fails by chance about 1 time in 289. Tick the criterion, run `make check` and `npm test`, and set `-s review`. Do not change `actor.py`. Put commands in single quotes in `--note`: backticks in double quotes ran `make check` and pasted its output into an earlier note.
 
+Verified criterion 16: the fake Pi records CHITTY_PI_SESSION_ID for each invocation and directly compares the two values. Passed `uv run python -m unittest discover -s tests -t .`, `uv run ruff format --check .`, `uv run ruff check --no-fix .`, `uv run pyright`, and `npm test -- --test src/chitty/integrations/pi/tests/chitty.test.ts`.
+
 ## Summary
 
 Independent review handoff: fixed the three latest review findings in commit `23e2050`: the fake Pi asserts its working directory for an already-linked worktree; the linked-worktree guard compares Git paths resolved from `ctx.cwd`; and Node coverage runs real Git in a main-checkout subdirectory. Verification: `make check` passes (ruff, pyright, 227 Python tests, and 25 Node tests); `chitty check` and `chitty fix` pass with only pre-existing warnings in unrelated task files. Regression proof: the new Node test failed before the path-resolution fix and passes after it.
@@ -217,3 +219,4 @@ Independent review handoff: fixed the three latest review findings in commit `23
 - 2026-11-04T12:20:56Z golden-gecko review → blocked
 - 2026-11-04T12:40:33Z lively-panda: changed owner, acceptance criteria, notes
 - 2026-11-04T12:40:33Z lively-panda blocked → doing
+- 2026-11-04T13:01:13Z golden-marten: changed notes; ticked acceptance criteria
