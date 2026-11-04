@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without progress towards the Pi cap
-status: todo
+status: done
 labels:
   - bug
 priority: high
@@ -27,10 +27,14 @@ Out of scope: changing `chitty run`, and splitting large tickets.
 
 ## Acceptance Criteria
 
-- [ ] Node tests of the decision function show the count resetting when ticket output changes, shutdown after 5 turns in a row without change, and a long run with progress never reaching the cap
-- [ ] A Node test shows the work continuation prompt tells the agent to carry on to the next criterion
-- [ ] Node tests cover the baseline taken at start, a resumed session keeping its count, the notification naming the count, both modes using the rule, and a failing `chitty show` notifying and shutting down
-- [ ] `__version__` is bumped above `main`'s
+- [x] Node tests of the decision function show the count resetting when ticket output changes, shutdown after 5 turns in a row without change, and a long run with progress never reaching the cap
+- [x] A Node test shows the work continuation prompt tells the agent to carry on to the next criterion
+- [x] Node tests cover the baseline taken at start, a resumed session keeping its count, the notification naming the count, both modes using the rule, and a failing `chitty show` notifying and shutting down
+- [x] `__version__` is bumped above `main`'s
+
+## Plan
+
+1. Read the JSON ticket state at start and after each settled turn, storing its compact hash with the consecutive no-progress count. 2. Make the decision function advance or reset that count and return an actionable reason, including the count at the cap. 3. Shut down cleanly with a notification when reading the ticket fails. 4. Add focused Node tests for change detection, persistence, modes, prompt, failure, and the version bump; run the required checks.
 
 ## Notes
 
@@ -40,9 +44,23 @@ Landing moved from `TASK-120` to `TASK-131`, so read references to that step acc
 
 Order changed with the human, 2026-11-03: this now lands before `TASK-126`, which waits for it, because `TASK-126` could otherwise hit the cap again. Ignore the line about rebasing on `TASK-126`; that ticket rebases on this one instead.
 
+Implementation choice: use a deterministic hash of the complete `chitty show ID --json` output as the progress baseline. This directly matches the specified comparison while keeping session entries small; changing hash algorithm later is cheap because only within-session equality matters. The implementation will document this default beside the state field.
+
+Cold-read delegation was attempted before implementation, but the available `explorer` subagent could not start because its configured Anthropic credential is absent, then remained locked as processing. I will cover the same scope with focused code and test inspection; a separate agent will perform the required final review.
+
+Verified all criteria: `npm test` passed all 20 Pi integration tests (including progression, cap, baseline/resume, both modes, prompt, and failed-show shutdown); `make check` passed ruff, pyright, and 215 Python tests; `__version__` is `0.1.23`, above `main` at `0.1.22`.
+
+Reviewed: all four criteria verified independently; npm test (20 pass) and make check pass.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
 - 2026-11-03T20:44:53Z lively-panda: changed dependencies, description, acceptance criteria, notes
 - 2026-11-03T20:46:22Z lively-panda: changed notes
 - 2026-11-03T21:00:46Z lively-panda: changed dependencies, notes
+- 2026-11-03T21:20:49Z kind-marten: changed notes; wrote the plan
+- 2026-11-03T21:20:49Z kind-marten todo → doing
+- 2026-11-04T08:18:27Z kind-marten: changed notes; ticked acceptance criteria
+- 2026-11-04T08:18:38Z kind-marten doing → review
+- 2026-11-04T08:22:34Z amber-heron: changed notes
+- 2026-11-04T08:22:34Z amber-heron review → done
