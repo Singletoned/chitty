@@ -19,10 +19,10 @@ Pi stays this repository's default: the human decided on 2026-11-04 that it is t
 
 ```toml
 [agent_commands]
-claude = "claude -p {prompt} --model sonnet --dangerously-skip-permissions --disallowedTools 'Bash(git push *)'"
+claude = "claude -p {prompt} --model sonnet --permission-mode dontAsk --allowedTools 'Read Edit Write Bash(chitty *) Bash(git *) Bash(make *) Bash(uv run *) Bash(python *) Bash(npm test*) Bash(rg *) Bash(head *) Bash(grep *) Bash(find *) Bash(sort *) Bash(tail *) Bash(sed *) Bash(nl *) Bash(awk *) Bash(cat *) Bash(ls *) Bash(wc *)' --disallowedTools 'Bash(git push *)'"
 ```
 
-Use `-p`: an interactive session stays open after the agent finishes, and `chitty run` waits for it to exit. `sonnet` is the CLI's alias, so it follows the current Sonnet. `{prompt}` comes first because `--disallowedTools` takes several values and would otherwise swallow it. A `-p` session cannot ask a person. The human decided on 2026-11-04 to be permissive: an agent with write access and `Bash(make *)` can already do anything, so an allow-list would give no real containment, and a container is the answer if that is ever needed. `git push` stays denied as a guard against accidents, not a boundary, because pushing needs a person's request; the trial checks that the denial still applies alongside `--dangerously-skip-permissions`, and drops it if not, recording that. Never test this against a real remote, because if the denial fails, the push happens: use a temporary repository whose `origin` is a local bare repository. This repository also starts the agent through `env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync`, as its current `agent_command` does, so `chitty` is the branch's own; the trial uses that prefix, and `README.md` shows the command without it.
+Use `-p`: an interactive session stays open after the agent finishes, and `chitty run` waits for it to exit. `sonnet` is the CLI's alias, so it follows the current Sonnet. `{prompt}` comes first because `--allowedTools` takes several values and would otherwise swallow it. A `-p` session cannot ask a person. The human decided on 2026-11-04 that the list comes from the commands agents really ran, in the note below: all of Chitty and Git, the project commands, and search and text tools. The occasional group, such as `rm`, `cp` and `mkdir`, is left out, and agents should adapt. `dontAsk` denies anything else, and a denial should appear in the session rather than stall it. `git push` is denied because pushing needs a person's request. The trial records every denial and what it cost, changes the list where a denial was wrong, and confirms bare commands such as `ls` and pipelines match these patterns. This repository also starts the agent through `env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync`, as its current `agent_command` does, so `chitty` is the branch's own; the trial uses that prefix, and `README.md` shows the command without it.
 
 `claude` reads `CLAUDE.md`, a symlink to `AGENTS.md`, so it gets the repository's instructions. Unlike Pi, nothing continues a stopped session: if it stops without changing the ticket, `chitty run` exits non-zero, and running it again resumes in a fresh session. See how often this happens before building anything, so `TASK-89`'s loop may not be needed. `requireLinkedWorktree` is only in the Pi extension, so it does not apply here, but `chitty run` has already chosen the worktree.
 
@@ -33,7 +33,7 @@ Out of scope: writing `CHITTY_USAGE_FILE` from `claude`, which has its own ticke
 ## Acceptance Criteria
 
 - [ ] `chitty run` works a real ticket and then reviews that work with `claude` on Sonnet, and a note records the commands, the outcome, each check the description lists, and anything fixed
-- [ ] `README.md` shows the `claude` entry for `[agent_commands]`, including the permission flag and why
+- [ ] `README.md` shows the `claude` entry for `[agent_commands]`, including the allow-list and why
 
 ## Notes
 
@@ -49,6 +49,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the trial uses `--agent
 
 Data for the trial, from a human-run analysis of real sessions, 2026-11-04. Commands agents ran: Chitty, all subcommands; Git reads: `status` 879, `diff` 467, `log` 322, `show` 115, `branch` 45, `merge-base` 23, `rev-parse` 18; Git writes: `commit` 256, `add` 252, `worktree` 107, `merge` 15, `rebase` 10, `reset` 8, `restore` 5; project: `make check` 322, `uv run python` 238, `make format` 164, `python` 90, `npm test` 58, `uv run ruff` 28, `make install` 26, `uv run pyright` 9; search and text: `rg` 344, `head` 129, `grep` 112, `find` 68, and `sort`, `tail`, `sed`, `nl`, `awk`, `cat`, `ls`, `wc`; occasional: `mktemp` 17, `xargs` 9, `mkdir`, `cp`, `tee`, `ps`, `rm`, `env`, `node`. If an allow-list is ever wanted, this is its starting point. The project group runs arbitrary code, so a list would still prevent accidents rather than contain an agent.
 
+Changed 2026-11-04: this replaces the permissive decision above, at the human's direction, using the command table. The `git push` check against a bare repository stays.
+
 ## History
 
 - 2026-11-04T15:38:29Z mellow-newt → backlog
@@ -61,3 +63,4 @@ Data for the trial, from a human-run analysis of real sessions, 2026-11-04. Comm
 - 2026-11-04T18:01:15Z mellow-newt: changed dependencies, acceptance criteria, notes
 - 2026-11-04T18:01:16Z mellow-newt backlog → todo
 - 2026-11-04T20:15:23Z mellow-newt: changed notes
+- 2026-11-04T20:32:40Z mellow-newt: changed description, acceptance criteria, notes
