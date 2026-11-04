@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-124
@@ -136,7 +136,7 @@ Verified the remaining criteria with `make check` (227 tests): fake Pi proves wo
 
 ## Summary
 
-Handoff: `chitty run` worktree orchestration and its regression coverage are complete. Verification: `make check` passed (ruff, pyright, 226 unit tests); focused `tests.test_next` run coverage passed; `chitty check` and `chitty fix` completed with only pre-existing warnings in unrelated archived task text. Follow-up: independent review required.
+Implementation complete. Verification: `make check` passed (227 tests); `chitty check` and `chitty fix` passed. Manual real-Pi scratch run created the ticket worktree and branch claim without an interrupting prompt. Independent review required.
 
 ## History
 
@@ -181,3 +181,5 @@ Handoff: `chitty run` worktree orchestration and its regression coverage are com
 - 2026-11-04T10:39:57Z ivory-stoat: changed acceptance criteria, notes
 - 2026-11-04T10:39:57Z ivory-stoat review → doing
 - 2026-11-04T11:25:52Z mellow-marten: changed notes; ticked acceptance criteria
+- 2026-11-04T11:26:00Z mellow-marten: changed summary
+- 2026-11-04T11:26:00Z mellow-marten doing → review
