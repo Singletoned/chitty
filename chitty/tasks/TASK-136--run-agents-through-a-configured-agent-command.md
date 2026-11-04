@@ -36,11 +36,11 @@ Out of scope: `chitty init` installing the Pi extension, which stays and does no
 
 ## Acceptance Criteria
 
-- [ ] A test with a fake agent that records its arguments and directory shows work and review sessions started in the ticket's worktree with `{mode}` and `{id}` replaced, a leading `~` expanded, and arguments given to `chitty run` after them
-- [ ] No test or code path in `src/chitty/run.py` assumes the agent is `pi`, shown by the tests above using an agent with a different name
-- [ ] Real `chitty run` work and review sessions are checked to have `ctx_` tools, no `subagent` tool and no `Observational memory` output, with `AGENTS.md` still loaded, and the result, including what a missing `-e` path does, is recorded in a ticket note
-- [ ] Tests show `agent_command` unset, blank, with unbalanced quotes, missing `{mode}` or `{id}`, with a relative first word, and with a first word not on `PATH` each failing with a message naming the setting, with no claim and no worktree created
-- [ ] `README.md` and `PLAN.md` describe `agent_command`, this repository sets it as above, the `chitty.toml` template has a commented example, a test shows `chitty init` adding it to an existing repository only as a comment, and `__version__` is bumped above `main`'s
+- [x] A test with a fake agent that records its arguments and directory shows work and review sessions started in the ticket's worktree with `{mode}` and `{id}` replaced, a leading `~` expanded, and arguments given to `chitty run` after them
+- [x] No test or code path in `src/chitty/run.py` assumes the agent is `pi`, shown by the tests above using an agent with a different name
+- [x] Real `chitty run` work and review sessions are checked to have `ctx_` tools, no `subagent` tool and no `Observational memory` output, with `AGENTS.md` still loaded, and the result, including what a missing `-e` path does, is recorded in a ticket note
+- [x] Tests show `agent_command` unset, blank, with unbalanced quotes, missing `{mode}` or `{id}`, with a relative first word, and with a first word not on `PATH` each failing with a message naming the setting, with no claim and no worktree created
+- [x] `README.md` and `PLAN.md` describe `agent_command`, this repository sets it as above, the `chitty.toml` template has a commented example, a test shows `chitty init` adding it to an existing repository only as a comment, and `__version__` is bumped above `main`'s
 
 ## Plan
 
@@ -81,3 +81,4 @@ Verification: a temporary Git repository ran real `chitty run` work and review s
 - 2026-11-04T16:06:15Z tidy-marten todo → doing
 - 2026-11-04T16:08:32Z tidy-marten: wrote the plan
 - 2026-11-04T16:24:52Z tidy-marten: changed notes
+- 2026-11-04T16:24:53Z tidy-marten: ticked acceptance criteria
