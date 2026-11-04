@@ -23,7 +23,12 @@ Out of scope: changing `pi-subagent`, and whether workers should use subagents a
 - [ ] A Node test shows both flags ignored with `hasUI` false, with no prompt sent, and still starting the ticket with `hasUI` true
 - [ ] `__version__` is bumped above `main`'s
 
+## Plan
+
+1. Inspect the Pi extension session-start handler and its Node test harness.\n2. Add regression coverage for inherited worker and reviewer flags in UI and non-UI contexts.\n3. Gate automatic ticket start on `ctx.hasUI`, leaving the interactive `/chitty` command path unchanged.\n4. Bump the package version, run focused Node tests and `make check`, then verify the criteria before review.
+
 ## History
 
 - 2026-11-04T15:11:29Z mellow-newt → todo
 - 2026-11-04T15:15:10Z nimble-eel todo → doing
+- 2026-11-04T15:15:47Z nimble-eel: wrote the plan
