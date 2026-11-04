@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-124
@@ -168,7 +168,7 @@ Chosen coverage default: assert inbox-pull preclaim state in its patched callbac
 
 ## Summary
 
-Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and directly asserts the two IDs differ, avoiding false failures from readable actor-name collisions. Verified: make check (ruff, pyright, 227 Python tests, 25 Node tests); chitty check and chitty fix pass with only pre-existing unrelated task warnings. Review focus: test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation.
+Handoff: strengthened black-box `chitty run` coverage for an already-linked worktree claim and inbox-pull ordering. Verification: `make check` passed (ruff, pyright, 227 Python tests, 25 Node tests). Review focus: `tests/test_next.py` assertions that the claim commit is on `task-1` and that a configured inbox pull occurs before ticket worktree or claim creation.
 
 ## History
 
@@ -235,3 +235,5 @@ Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and d
 - 2026-11-04T13:21:30Z eager-lynx: ticked acceptance criteria
 - 2026-11-04T13:21:31Z eager-lynx: ticked acceptance criteria
 - 2026-11-04T13:21:32Z eager-lynx: changed notes
+- 2026-11-04T13:23:54Z eager-lynx: changed summary
+- 2026-11-04T13:23:54Z eager-lynx doing → review
