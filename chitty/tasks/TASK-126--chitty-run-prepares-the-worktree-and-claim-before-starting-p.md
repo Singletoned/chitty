@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: blocked
+status: todo
 priority: high
 depends_on:
   - TASK-124
@@ -124,6 +124,8 @@ Correction to the note above: this cannot list `TASK-129` and `TASK-130` in `dep
 
 After rebasing: `TASK-134` adds `Repo.refresh_setup()` to `run` on `main`. Keep it, called on `main_repo` right after `_preflight`, so a run from any worktree refreshes the main checkout.
 
+Unblocked 2026-11-04 by the human: `TASK-130` and `TASK-134` have landed. Before continuing, rebase on `main` and bump `__version__` above `main`s. Keep `refresh_setup` straight after `_preflight`, on `main_repo`, and remove the unreachable check in `_worktree`. Keep using `.venv/bin/chitty` here: the global `chitty` refuses this worktree, because `main` does not yet accept the `setup` key in `chitty.toml`.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -157,3 +159,5 @@ After rebasing: `TASK-134` adds `Repo.refresh_setup()` to `run` on `main`. Keep 
 - 2026-11-03T21:01:31Z lively-panda: changed dependencies, notes
 - 2026-11-03T21:01:31Z lively-panda todo → blocked
 - 2026-11-03T21:21:54Z lively-panda: changed notes
+- 2026-11-04T09:46:21Z lively-panda: changed notes
+- 2026-11-04T09:46:21Z lively-panda blocked → todo
