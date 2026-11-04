@@ -31,7 +31,10 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the inbox pull still runs, and the ID resolves after it; bare numbers; the archived check being explicit; how the rules are shared; and `doing` tickets with unfinished dependencies being allowed, now tested. It ran click with these settings and confirmed `--ticket` works before or after forwarded arguments, and `--ticket=ID` too. Rejected: a `doing` ticket with no branch, because `_worktree` creates one, as for any selected ticket. A `doing` worktree held by another live session, because a single worker is the stated assumption and nothing checks liveness today; a person choosing a ticket is responsible for that. `--tick 7` being forwarded rather than matched, and `--ticket` after `--` reaching the agent, because both are what forwarding means. A missing option value, because click reports it. A test that `TASK-120` and `TASK-131` leave other tickets alone, because neither has landed; the description tells whichever lands second. The function name and refusal wording, which are the worker's choice.
 
+Landing at the start of a run is now `TASK-152`, so that is the ticket that must only touch the chosen one.
+
 ## History
 
 - 2026-11-04T09:46:25Z lively-panda → todo
 - 2026-11-04T09:47:28Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-04T15:11:40Z mellow-newt: changed notes
