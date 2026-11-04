@@ -1,6 +1,6 @@
 ---
 title: Trim this repository's Pi prompt
-status: backlog
+status: todo
 priority: high
 owner: human
 parent: TASK-106
@@ -30,3 +30,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. A worker could not do the real
 - 2026-11-04T21:41:06Z mellow-newt → backlog
 - 2026-11-04T21:41:36Z mellow-newt: changed description
 - 2026-11-04T21:44:22Z mellow-newt: changed priority, owner, description, acceptance criteria, notes
+- 2026-11-04T21:44:23Z mellow-newt backlog → todo
