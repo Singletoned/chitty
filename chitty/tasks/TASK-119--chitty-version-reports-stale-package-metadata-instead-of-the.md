@@ -10,7 +10,7 @@ created: 2026-11-03
 
 ## Acceptance Criteria
 
-- [ ] With `importlib.metadata.version` patched to return `0.0.0`, `chitty --version` prints exactly `chitty, version <CHITTY_VERSION>`; run before the fix, that test fails
+- [x] With `importlib.metadata.version` patched to return `0.0.0`, `chitty --version` prints exactly `chitty, version <CHITTY_VERSION>`; run before the fix, that test fails
 
 ## Plan
 
@@ -22,6 +22,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-03: corrected a stale line number 
 
 Second pass over the cold read: nothing further to change. Keeping click's output format and using `tests/test_version.py` are already in the description, and the only other findings were the stale numbers and missing criterion already fixed.
 
+Verified criterion 1: the new regression test failed before the fix with patched metadata reporting `cli, version 0.0.0`; it now passes as `chitty, version 0.1.24`. `make check` passes (220 tests).
+
 ## History
 
 - 2026-11-03T11:27:23Z eager-raven → todo
@@ -29,3 +31,4 @@ Second pass over the cold read: nothing further to change. Keeping click's outpu
 - 2026-11-03T20:00:19Z lively-panda: changed notes
 - 2026-11-04T14:32:39Z open-quail: wrote the plan
 - 2026-11-04T14:32:39Z open-quail todo → doing
+- 2026-11-04T14:37:08Z open-quail: changed notes; ticked acceptance criteria
