@@ -75,6 +75,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 2. Keep orchestration in `run.py`: validate before mutation, prepare or reuse the task worktree, run parsed setup, claim `todo`, then launch Pi in the worktree.
 3. Preserve the setup contract across config, init, the Pi extension, documentation, and release metadata.
 4. Verify every criterion with focused tests, a scratch repository run, then `make check` before review.
+5. Bump `__version__` above `main`, verify the release metadata change, and have an independent agent review the complete branch.
 
 ## Notes
 
@@ -241,3 +242,4 @@ Handoff: strengthened black-box `chitty run` coverage for an already-linked work
 - 2026-11-04T13:23:54Z eager-lynx doing → review
 - 2026-11-04T13:31:08Z proud-jaguar: changed acceptance criteria, notes
 - 2026-11-04T13:31:08Z proud-jaguar review → doing
+- 2026-11-04T14:13:46Z ivory-falcon: wrote the plan
