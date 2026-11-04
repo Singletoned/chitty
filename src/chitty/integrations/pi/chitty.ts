@@ -125,19 +125,19 @@ export default function chitty(pi: ExtensionAPI) {
     setPiSessionIdentity(ctx.sessionManager.getSessionId());
     state = latestState(ctx) ?? { enabled: false, mode: "work" };
 
-    // Child agents run without a UI and can inherit these flags from their parent.
-    if (!ctx.hasUI) return;
-
-    const reviewTicket = parseChittyFlag(
-      pi.getFlag("chitty-review"),
-      "--chitty-review",
-    );
-    const workTicket = parseChittyFlag(pi.getFlag("chitty-work"), "--chitty-work");
-    if (reviewTicket !== undefined && workTicket !== undefined) {
-      throw new Error("Use only one of --chitty-work and --chitty-review.");
+    // RPC child agents can inherit these flags; only the interactive parent starts a ticket.
+    if (ctx.mode === "tui") {
+      const reviewTicket = parseChittyFlag(
+        pi.getFlag("chitty-review"),
+        "--chitty-review",
+      );
+      const workTicket = parseChittyFlag(pi.getFlag("chitty-work"), "--chitty-work");
+      if (reviewTicket !== undefined && workTicket !== undefined) {
+        throw new Error("Use only one of --chitty-work and --chitty-review.");
+      }
+      if (reviewTicket !== undefined) await startSafely("review", reviewTicket, ctx);
+      if (workTicket !== undefined) await startSafely("work", workTicket, ctx);
     }
-    if (reviewTicket !== undefined) await startSafely("review", reviewTicket, ctx);
-    if (workTicket !== undefined) await startSafely("work", workTicket, ctx);
   });
 
   pi.on("session_shutdown", (_event, ctx) => {
