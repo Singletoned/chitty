@@ -16,7 +16,7 @@ Use an option rather than a positional argument. `chitty run` forwards unknown a
 
 Add a function beside `next_action` in `src/chitty/store.py` that returns a `NextAction` for a given ticket, factoring the per-ticket check out of the loop in `next_action` rather than copying it, so a bad `depends_on` reference raises the same error; `run` and `cli.py` stay thin. It refuses, with a message saying why, and before any claim or worktree: an unknown or archived ticket, checked explicitly because `repo.find` returns archived tickets; a status other than `review`, `doing` or `todo`; a `human` ticket or owner; and a `todo` ticket whose dependencies are not `done`. As in `next_action`, `doing` and `review` tickets are not held back by dependencies. Choosing a ticket overrides priority and order only: the rules exist because the work would fail or belongs to someone else. To override one, change the ticket first.
 
-Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-120` and `TASK-131` act on pending tickets at the start of a run, so a run with `--ticket` must only touch that ticket; they should keep to this if they land later, and this ticket should if they land first.
+Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-152` lands pending tickets at the start of a run; a run with `--ticket` skips that, because it must only touch that ticket.
 
 Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above.
 
@@ -33,8 +33,11 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the inbox pull still ru
 
 Landing at the start of a run is now `TASK-152`, so that is the ticket that must only touch the chosen one.
 
+Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: this named the wrong tickets after the split.
+
 ## History
 
 - 2026-11-04T09:46:25Z lively-panda → todo
 - 2026-11-04T09:47:28Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T15:11:40Z mellow-newt: changed notes
+- 2026-11-04T15:17:42Z mellow-newt: changed description, notes
