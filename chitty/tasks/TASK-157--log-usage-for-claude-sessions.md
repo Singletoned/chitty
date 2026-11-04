@@ -1,6 +1,6 @@
 ---
 title: Log usage for `claude` sessions
-status: backlog
+status: todo
 priority: medium
 depends_on:
   - TASK-148
@@ -48,3 +48,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It confirmed that the `
 - 2026-11-04T17:58:12Z mellow-newt → backlog
 - 2026-11-04T18:01:17Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T18:03:07Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T18:03:08Z mellow-newt backlog → todo
