@@ -12,7 +12,7 @@ created: 2026-11-04
 
 In `load_repo_config`, for both `chitty.toml` and `[tool.chitty]`, when the file's `chitty_version` is newer than the running code, remove top-level keys not in `RepoConfig.model_fields` before validating, and warn on stderr naming them and saying to upgrade Chitty. `Repo.open` loads the file several times in a run, so warn once per process for a given file. Otherwise keep refusing, so a typo still fails loudly, and every other validation error still refuses, including unknown keys in `[contexts.*]`, which no ticket has needed. A branch adding a key is expected to bump the version; one that does not gets today's loud refusal.
 
-Move `_version_key` from `src/chitty/store.py` to `src/chitty/config.py`, because `store` imports `config`, and compare with it. A malformed version keeps its existing error. Also use it in `_warn_setup_version` in `src/chitty/cli.py`, which compares versions as strings, so `0.1.100` sorts below `0.1.27`.
+Move `_version_key` from `src/chitty/store.py` to `src/chitty/config.py`, because `store` imports `config`, and compare with it. A malformed version keeps its existing error. `TASK-135` uses it for the version warning in `src/chitty/cli.py`.
 
 `chitty init` must not lose the new key's protection: `init_repo` rewrites `chitty_version` to the running version, so older code would now downgrade a newer file. Have it refuse a newer file with the same message as `_check_setup_version`.
 
@@ -26,7 +26,7 @@ Out of scope: `chitty run` checking which `chitty` an agent will find, and upgra
 
 - [ ] Tests show an unknown top-level key in either config file loading with one stderr warning naming it when `chitty_version` is newer than the code, leaving `chitty show --json` output valid, and refusing when the version is equal, older or absent, or the key is in `[contexts.*]`
 - [ ] A test shows `chitty run` reviewing a ticket whose branch adds a key and bumps the version, and reporting the status change
-- [ ] Tests show `chitty init` refusing a newer file, leaving it unchanged, and `0.1.100` compared as newer than `0.1.27` by the version warning
+- [ ] Tests show `chitty init` refusing a newer file and leaving it unchanged
 
 ## Notes
 
@@ -36,6 +36,8 @@ Rewritten 2026-11-04: the human chose this fix. My earlier note was incomplete: 
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: where `_version_key` goes, given the import direction; both config sources; dropping keys before validating, because catching the error and retrying could also drop keys in `[contexts.*]`; repeated warnings; stderr and valid JSON; and a title that promised more than this delivers. Found while checking the report, not by it: `init_repo` rewrites `chitty_version`, so ignoring the key would let older code downgrade a newer file, and `_warn_setup_version` compares strings. Rejected: work mode's claim being refused, because a fresh branch cannot be newer than `main`'s code; `inbox.py` callers, which gain a harmless warning on another project's newer file; enforcing the version bump, because a missing one refuses loudly; a version bump here, because nothing changes for `chitty init` to deliver except a refusal, and existing repositories need no refresh.
 
+Removed the version warning, which duplicated `TASK-135`, as I found when another session reported the bug on 2026-11-04.
+
 ## History
 
 - 2026-11-04T09:46:24Z lively-panda → backlog
@@ -43,3 +45,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: where `_version_key` go
 - 2026-11-04T17:32:41Z mellow-newt: changed priority, description, acceptance criteria, notes
 - 2026-11-04T17:34:51Z mellow-newt: changed title, description, acceptance criteria, notes
 - 2026-11-04T17:34:51Z mellow-newt backlog → todo
+- 2026-11-04T21:00:14Z mellow-newt: changed description, acceptance criteria, notes
