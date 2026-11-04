@@ -52,7 +52,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 ## Acceptance Criteria
 
-- [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
+- [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
@@ -136,6 +136,20 @@ Verified the remaining criteria with `make check` (227 tests): fake Pi proves wo
 
 Independent review failed. 1. Criterion 1: the already-linked-worktree test does not assert the fake Pi working directory; it writes through WORKER, so it passes even if Pi starts elsewhere. 2. Criterion 5: npm test exits 1. The baseline/resumed-session Node test now reaches the linked-worktree guard with a main-checkout fixture and lacks ctx.shutdown, producing ctx.shutdown is not a function. 3. Criterion 15: requireLinkedWorktree compares raw git-dir and git-common-dir strings. In a main-checkout subdirectory Git returns an absolute git-dir and a relative common-dir, so they differ and Pi is incorrectly allowed to start. Its purported subdirectory test mocks identical .git output instead of exercising these real spellings. Fix the comparison by resolving both paths relative to ctx.cwd and make the test use the actual subdirectory behavior.
 
+Addressed independent-review findings: fake Pi now asserts its existing linked-worktree working directory;  compares Git paths resolved against ; and its Node test creates a real main-checkout subdirectory. The real test uses Git's physical path because Git emits physical paths there, isolating the intended absolute-versus-relative comparison. Verified with uv run ruff format --check .
+188 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run python -m unittest discover -s tests -t .
+[task-1 91e871a] worker change
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/.ctx-mode-LOEPu1/tmpz9gs6r0y/repo/.worktrees/task-1/chitty/tasks/TASK-1--first.md actor frosty-dolphin
+updated TASK-2 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/.ctx-mode-LOEPu1/tmpz9gs6r0y/repo/.worktrees/task-2/chitty/tasks/TASK-2--second.md actor kind-raven
+[task-1 469ff6b] worker change
+ 1 file changed, 1 insertion(+), 1 deletion(-) (ruff, pyright, 227 Python tests, and 25 Node tests).
+
 ## Summary
 
 Implementation complete. Verification: `make check` passed (227 tests); `chitty check` and `chitty fix` passed. Manual real-Pi scratch run created the ticket worktree and branch claim without an interrupting prompt. Independent review required.
@@ -187,3 +201,4 @@ Implementation complete. Verification: `make check` passed (227 tests); `chitty 
 - 2026-11-04T11:26:00Z mellow-marten doing → review
 - 2026-11-04T11:32:26Z daring-panda: changed acceptance criteria, notes
 - 2026-11-04T11:32:26Z daring-panda review → doing
+- 2026-11-04T12:12:31Z daring-gecko: changed notes; ticked acceptance criteria
