@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without progress towards the Pi cap
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -50,6 +50,8 @@ Cold-read delegation was attempted before implementation, but the available `exp
 
 Verified all criteria: `npm test` passed all 20 Pi integration tests (including progression, cap, baseline/resume, both modes, prompt, and failed-show shutdown); `make check` passed ruff, pyright, and 215 Python tests; `__version__` is `0.1.23`, above `main` at `0.1.22`.
 
+Reviewed: all four criteria verified independently; npm test (20 pass) and make check pass.
+
 ## History
 
 - 2026-11-03T20:41:13Z lively-panda → todo
@@ -60,3 +62,5 @@ Verified all criteria: `npm test` passed all 20 Pi integration tests (including 
 - 2026-11-03T21:20:49Z kind-marten todo → doing
 - 2026-11-04T08:18:27Z kind-marten: changed notes; ticked acceptance criteria
 - 2026-11-04T08:18:38Z kind-marten doing → review
+- 2026-11-04T08:22:34Z amber-heron: changed notes
+- 2026-11-04T08:22:34Z amber-heron review → done
