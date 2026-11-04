@@ -1,7 +1,7 @@
 ---
 title: Stop agents committing or resetting in the main checkout
 status: todo
-priority: high
+priority: medium
 depends_on:
   - TASK-126
   - TASK-129
@@ -31,3 +31,4 @@ Depends on `TASK-129` so that lands first after `TASK-126`.
 - 2026-11-03T16:31:24Z lively-panda: changed dependencies
 - 2026-11-03T18:18:20Z lively-panda: changed notes
 - 2026-11-03T20:44:57Z lively-panda: changed dependencies, notes
+- 2026-11-04T09:45:41Z lively-panda: changed priority
