@@ -10,6 +10,7 @@ depends_on:
   - TASK-120
   - TASK-127
   - TASK-131
+  - TASK-136
 parent: TASK-106
 created: 2026-11-03
 ---
@@ -47,6 +48,8 @@ Rebase rewrites commits, so a tests-commit hash stops being on the branch after 
 
 Also needs `TASK-131`, split from `TASK-120`.
 
+Also needs `TASK-136`, so the pilot's costs are measured without extensions a worker does not need.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -57,3 +60,4 @@ Also needs `TASK-131`, split from `TASK-120`.
 - 2026-11-03T16:46:07Z lively-panda: changed dependencies, notes
 - 2026-11-03T17:26:54Z lively-panda: changed notes
 - 2026-11-03T20:46:23Z lively-panda: changed dependencies, notes
+- 2026-11-04T09:25:41Z lively-panda: changed dependencies, notes
