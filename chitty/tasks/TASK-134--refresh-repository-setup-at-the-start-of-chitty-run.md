@@ -1,6 +1,6 @@
 ---
 title: Refresh repository setup at the start of `chitty run`
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-03
@@ -49,6 +49,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-03, with an outcome for every find
 
 Verified with `make check`: 219 tests, Ruff formatting/lint, and Pyright pass. Focused `chitty run` tests cover extension replacement, stale/newer setup, protected edits, setup commit/output, and linked-worktree/no-op behavior.
 
+All six criteria were re-checked against the passing `make check` run before review. Ready for an independent reviewer; the implementation agent did not perform the review.
+
 ## History
 
 - 2026-11-03T21:21:52Z lively-panda → todo
@@ -56,3 +58,5 @@ Verified with `make check`: 219 tests, Ruff formatting/lint, and Pyright pass. F
 - 2026-11-04T08:35:23Z mellow-lynx: wrote the plan
 - 2026-11-04T08:35:23Z mellow-lynx todo → doing
 - 2026-11-04T08:51:57Z mellow-lynx: changed notes; ticked acceptance criteria
+- 2026-11-04T08:52:11Z mellow-lynx: changed notes
+- 2026-11-04T08:52:11Z mellow-lynx doing → review
