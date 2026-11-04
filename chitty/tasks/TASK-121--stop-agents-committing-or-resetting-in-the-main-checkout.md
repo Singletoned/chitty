@@ -1,6 +1,6 @@
 ---
 title: Stop agents committing or resetting in the main checkout
-status: todo
+status: backlog
 priority: medium
 depends_on:
   - TASK-126
@@ -24,6 +24,8 @@ Cold-read this after `TASK-126` lands and it has been re-scoped, because its tex
 
 Depends on `TASK-129` so that lands first after `TASK-126`.
 
+Moved back to `backlog` on 2026-11-04, under the new rule that a ticket stays there until its cold read has outcomes. A cold read is running.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -32,3 +34,5 @@ Depends on `TASK-129` so that lands first after `TASK-126`.
 - 2026-11-03T18:18:20Z lively-panda: changed notes
 - 2026-11-03T20:44:57Z lively-panda: changed dependencies, notes
 - 2026-11-04T09:45:41Z lively-panda: changed priority
+- 2026-11-04T15:30:42Z mellow-newt: changed notes
+- 2026-11-04T15:30:42Z mellow-newt todo → backlog
