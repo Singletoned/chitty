@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
 import chitty, {
@@ -11,7 +13,80 @@ import chitty, {
   parseChittyFlag,
   setPiSessionIdentity,
   settlementDecision,
+  sumSessionUsage,
 } from "../chitty.ts";
+
+function assistantEntry(
+  provider: string,
+  model: string,
+  usage?: { input: number; output: number; cacheRead: number; cacheWrite: number; cost: { total: number } },
+) {
+  return { type: "message", message: { role: "assistant", provider, model, usage } };
+}
+
+const usageEntries = [
+  assistantEntry("anthropic", "claude", { input: 2, output: 3, cacheRead: 5, cacheWrite: 7, cost: { total: 0.11 } }),
+  assistantEntry("anthropic", "claude", { input: 11, output: 13, cacheRead: 17, cacheWrite: 19, cost: { total: 0.23 } }),
+  assistantEntry("openai", "gpt", { input: 23, output: 29, cacheRead: 31, cacheWrite: 37, cost: { total: 0.41 } }),
+  assistantEntry("anthropic", "failed"),
+];
+
+const expectedUsage = [
+  { provider: "anthropic", model: "claude", input: 13, output: 16, cacheRead: 22, cacheWrite: 26, cost: 0.34 },
+  { provider: "openai", model: "gpt", input: 23, output: 29, cacheRead: 31, cacheWrite: 37, cost: 0.41 },
+  { provider: "anthropic", model: "failed", input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 },
+];
+
+test("sums assistant usage by provider and model", () => {
+  assert.deepEqual(sumSessionUsage([...usageEntries, { type: "message", message: { role: "user" } }]), expectedUsage);
+});
+
+test("writes and replaces session usage at shutdown", async () => {
+  const directory = mkdtempSync(join(tmpdir(), "chitty-usage-"));
+  const usageFile = join(directory, "usage.json");
+  const previous = process.env.CHITTY_USAGE_FILE;
+  let shutdown: ((event: unknown, ctx: unknown) => Promise<void> | void) | undefined;
+  const notifications: string[] = [];
+  const pi = {
+    appendEntry: () => {}, getFlag: () => undefined,
+    on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
+      if (event === "session_shutdown") shutdown = handler;
+      return () => {};
+    },
+    registerCommand: () => {}, registerFlag: () => {}, sendMessage: () => {}, sendUserMessage: () => {},
+  };
+  const ctx = {
+    sessionManager: { getBranch: () => [], getEntries: () => usageEntries, getSessionId: () => "this-session" },
+    ui: { notify: (message: string) => notifications.push(message) },
+  };
+
+  try {
+    process.env.CHITTY_USAGE_FILE = usageFile;
+    writeFileSync(usageFile, JSON.stringify({ sessions: { "other-session": [{ provider: "other", model: "kept", input: 1, output: 2, cacheRead: 3, cacheWrite: 4, cost: 0.5 }] } }));
+    chitty(pi as Parameters<typeof chitty>[0]);
+    assert.ok(shutdown);
+    await shutdown({}, ctx);
+    assert.deepEqual(JSON.parse(readFileSync(usageFile, "utf8")), {
+      sessions: {
+        "other-session": [{ provider: "other", model: "kept", input: 1, output: 2, cacheRead: 3, cacheWrite: 4, cost: 0.5 }],
+        "this-session": expectedUsage,
+      },
+    });
+    await shutdown({}, ctx);
+    assert.equal(JSON.parse(readFileSync(usageFile, "utf8")).sessions["this-session"].length, expectedUsage.length);
+    assert.deepEqual(notifications, []);
+
+    const beforeUnset = readFileSync(usageFile, "utf8");
+    delete process.env.CHITTY_USAGE_FILE;
+    await shutdown({}, ctx);
+    assert.equal(readFileSync(usageFile, "utf8"), beforeUnset);
+    assert.equal(existsSync(join(directory, "unset.json")), false);
+  } finally {
+    if (previous === undefined) delete process.env.CHITTY_USAGE_FILE;
+    else process.env.CHITTY_USAGE_FILE = previous;
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
 
 test("sets the Pi session identity for child processes", () => {
   const previous = process.env.CHITTY_PI_SESSION_ID;

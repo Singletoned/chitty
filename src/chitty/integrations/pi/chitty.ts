@@ -1,4 +1,5 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
+import { readFileSync, renameSync, writeFileSync } from "node:fs";
 
 import type {
   ExtensionAPI,
@@ -35,6 +36,18 @@ type SettlementDecision =
   | { action: "continue"; continuationCount: number }
   | { action: "shutdown"; reason: string; continuationCount?: number }
   | { action: "stop"; reason: string };
+
+type UsageEntry = {
+  provider: string;
+  model: string;
+  input: number;
+  output: number;
+  cacheRead: number;
+  cacheWrite: number;
+  cost: number;
+};
+
+type UsageFile = { sessions: Record<string, UsageEntry[]> };
 
 export default function chitty(pi: ExtensionAPI) {
   let state: State = { enabled: false, mode: "work" };
@@ -107,6 +120,24 @@ export default function chitty(pi: ExtensionAPI) {
     if (workTicket !== undefined) await start("work", workTicket, ctx);
   });
 
+  pi.on("session_shutdown", (_event, ctx) => {
+    const usageFile = process.env.CHITTY_USAGE_FILE;
+    if (usageFile === undefined) return;
+
+    try {
+      writeSessionUsage(
+        usageFile,
+        ctx.sessionManager.getSessionId(),
+        sumSessionUsage(ctx.sessionManager.getEntries()),
+      );
+    } catch (error) {
+      ctx.ui.notify(
+        `Chitty failed to write session usage: ${error instanceof Error ? error.message : String(error)}`,
+        "error",
+      );
+    }
+  });
+
   pi.on("agent_settled", async (event, ctx) => {
     if (!state.enabled || !ctx.isIdle() || state.ticketId === undefined) return;
 
@@ -154,6 +185,76 @@ export default function chitty(pi: ExtensionAPI) {
       { triggerTurn: true },
     );
   });
+}
+
+export function sumSessionUsage(
+  entries: Iterable<{ type: string; message?: unknown }>,
+): UsageEntry[] {
+  const usageByModel = new Map<string, UsageEntry>();
+  for (const entry of entries) {
+    if (entry.type !== "message" || !isAssistantMessage(entry.message)) continue;
+
+    const key = `${entry.message.provider}\u0000${entry.message.model}`;
+    const usage = entry.message.usage;
+    const total = usageByModel.get(key) ?? {
+      provider: entry.message.provider,
+      model: entry.message.model,
+      input: 0,
+      output: 0,
+      cacheRead: 0,
+      cacheWrite: 0,
+      cost: 0,
+    };
+    total.input += usage?.input ?? 0;
+    total.output += usage?.output ?? 0;
+    total.cacheRead += usage?.cacheRead ?? 0;
+    total.cacheWrite += usage?.cacheWrite ?? 0;
+    total.cost += usage?.cost.total ?? 0;
+    usageByModel.set(key, total);
+  }
+  return [...usageByModel.values()];
+}
+
+function isAssistantMessage(value: unknown): value is {
+  role: "assistant";
+  provider: string;
+  model: string;
+  usage?: {
+    input: number;
+    output: number;
+    cacheRead: number;
+    cacheWrite: number;
+    cost: { total: number };
+  };
+} {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as { role?: unknown }).role === "assistant" &&
+    typeof (value as { provider?: unknown }).provider === "string" &&
+    typeof (value as { model?: unknown }).model === "string"
+  );
+}
+
+function writeSessionUsage(
+  usageFile: string,
+  sessionId: string,
+  usage: UsageEntry[],
+): void {
+  let existing: UsageFile = { sessions: {} };
+  try {
+    existing = JSON.parse(readFileSync(usageFile, "utf8")) as UsageFile;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+  }
+  if (typeof existing !== "object" || existing === null || typeof existing.sessions !== "object" || existing.sessions === null) {
+    throw new Error("usage file does not contain sessions.");
+  }
+
+  existing.sessions[sessionId] = usage;
+  const temporaryFile = `${usageFile}.${randomUUID()}.tmp`;
+  writeFileSync(temporaryFile, JSON.stringify(existing));
+  renameSync(temporaryFile, usageFile);
 }
 
 export function setPiSessionIdentity(sessionId: string): void {
