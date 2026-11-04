@@ -45,6 +45,7 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
+ROLE_NAMES = ("work", "review", "plan")
 
 Which = Literal["active", "archived", "all"]
 
@@ -699,9 +700,17 @@ def resolve_add_target(local: Repo | None, name: str | None) -> Target:
     return Target(local, local.context(name) if name else local.default_context)
 
 
-def guide() -> str:
-    """Return the prefix-independent agent guidance."""
-    return files("chitty").joinpath("guide.md").read_text()
+def guide(role: str | None = None, ticket_id: str | None = None) -> str:
+    """Return prefix-independent general or role-specific agent guidance."""
+    if role is None:
+        return files("chitty").joinpath("guide.md").read_text()
+    if role not in ROLE_NAMES:
+        raise ChittyError(f"unknown role {role!r}; choose from {', '.join(ROLE_NAMES)}")
+    if ticket_id is not None and role == "plan":
+        raise ChittyError("the plan role does not take a ticket ID")
+
+    text = files("chitty").joinpath("roles", f"{role}.md").read_text()
+    return f"Work only on Chitty ticket {ticket_id}.\n\n{text}" if ticket_id is not None else text
 
 
 def _default_project(directory_name: str) -> str:
