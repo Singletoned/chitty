@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-124
@@ -56,7 +56,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
-- [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
+- [ ] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
@@ -166,6 +166,8 @@ Review failed (complete): criterion 1 does not assert that the claim for the alr
 
 Chosen coverage default: assert inbox-pull preclaim state in its patched callback, because selection is read-only and this directly proves pull completes before worktree creation or a claim.
 
+Review failed: criterion 5 is not met. `src/chitty/__init__.py` remains `0.1.24`, identical to `main`, and no `main..task-126` commit changes it. This change alters the `chitty.toml` template and existing-repository `init` behavior, so it must bump `__version__` above `main` in this branch. Then rerun `make check`.
+
 ## Summary
 
 Handoff: strengthened black-box `chitty run` coverage for an already-linked worktree claim and inbox-pull ordering. Verification: `make check` passed (ruff, pyright, 227 Python tests, 25 Node tests). Review focus: `tests/test_next.py` assertions that the claim commit is on `task-1` and that a configured inbox pull occurs before ticket worktree or claim creation.
@@ -237,3 +239,5 @@ Handoff: strengthened black-box `chitty run` coverage for an already-linked work
 - 2026-11-04T13:21:32Z eager-lynx: changed notes
 - 2026-11-04T13:23:54Z eager-lynx: changed summary
 - 2026-11-04T13:23:54Z eager-lynx doing → review
+- 2026-11-04T13:31:08Z proud-jaguar: changed acceptance criteria, notes
+- 2026-11-04T13:31:08Z proud-jaguar review → doing
