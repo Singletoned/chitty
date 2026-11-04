@@ -52,22 +52,22 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 ## Acceptance Criteria
 
-- [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
+- [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
-- [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
+- [x] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
-- [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
+- [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
-- [ ] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
+- [x] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
 - [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [x] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 - [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
-- [ ] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
+- [x] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
 
 ## Plan
 
@@ -128,6 +128,8 @@ Unblocked 2026-11-04 by the human: `TASK-130` and `TASK-134` have landed. Before
 
 Resumed the existing clean `task-126` worktree and rebased it onto current `main` rather than discarding its recognized TASK-126 commits. This preserves prior task work while making the branch start from current `main`; the choice is cheap to revisit because the rebase is local until merge.
 
+Verified the remaining run matrix with `tests.test_next`: fake Pi working directories and branch claims, forwarded arguments, fresh actors despite inherited actor/session variables, setup before claim and review preservation, run from another worktree, newest ticket copy on `main`, and a dirty main ticket. `make check` passed: ruff, pyright, and 226 unit tests.
+
 ## History
 
 - 2026-11-03T16:30:14Z lively-panda → todo
@@ -165,3 +167,4 @@ Resumed the existing clean `task-126` worktree and rebased it onto current `main
 - 2026-11-04T09:46:21Z lively-panda blocked → todo
 - 2026-11-04T09:59:15Z daring-falcon: changed notes; wrote the plan
 - 2026-11-04T09:59:15Z daring-falcon todo → doing
+- 2026-11-04T10:12:22Z daring-falcon: changed notes; ticked acceptance criteria
