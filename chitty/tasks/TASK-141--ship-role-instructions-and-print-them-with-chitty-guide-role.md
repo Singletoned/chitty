@@ -32,10 +32,10 @@ Out of scope: `chitty.ts`, the `AGENTS.md` block, the `chitty://guide` MCP resou
 
 ## Acceptance Criteria
 
-- [ ] `README.md` and `PLAN.md` describe the roles
-- [ ] CLI tests show `chitty guide` unchanged, each role printing, `<role> <ID>` naming the ticket first, an unknown role and `plan <ID>` failing with a message, and role output omitting the Pi session paragraph with `PI_CODING_AGENT=true` set
-- [ ] A note records `uv build` and a listing showing the three role files in the wheel
-- [ ] Each role file is about 30 lines at most and holds only its role's rules, `plan.md` holds the cold-read procedure with `PLAN.md` pointing to it, and a note accounts for every `guide.md` rule
+- [x] `README.md` and `PLAN.md` describe the roles
+- [x] CLI tests show `chitty guide` unchanged, each role printing, `<role> <ID>` naming the ticket first, an unknown role and `plan <ID>` failing with a message, and role output omitting the Pi session paragraph with `PI_CODING_AGENT=true` set
+- [x] A note records `uv build` and a listing showing the three role files in the wheel
+- [x] Each role file is about 30 lines at most and holds only its role's rules, `plan.md` holds the cold-read procedure with `PLAN.md` pointing to it, and a note accounts for every `guide.md` rule
 
 ## Plan
 
@@ -60,3 +60,4 @@ Verified `uv build`: the wheel lists `chitty/roles/work.md`, `review.md`, and `p
 - 2026-11-04T17:22:46Z intrepid-otter todo → doing
 - 2026-11-04T17:49:49Z sunny-raven: wrote the plan
 - 2026-11-04T17:57:08Z sunny-raven: changed notes
+- 2026-11-04T17:57:13Z sunny-raven: ticked acceptance criteria
