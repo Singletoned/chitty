@@ -2,12 +2,13 @@ format = 1
 default_context = "tasks"
 autocommit = true
 setup = "make install"
+agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts -e ~/.pi/agent/npm/node_modules/context-mode/build/adapters/pi/extension.js --chitty-{mode} {id}"
 
 project = "chitty"
 archive = "move"
 review = true
 
-chitty_version = "0.1.26"
+chitty_version = "0.1.27"
 [contexts.tasks]
 prefix = "TASK"
 

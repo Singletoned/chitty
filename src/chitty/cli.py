@@ -375,7 +375,7 @@ def next_(as_json: bool) -> None:
 @cli.command("run", context_settings={"ignore_unknown_options": True, "allow_extra_args": True})
 @click.pass_context
 def run(ctx: click.Context) -> None:
-    """Prepare the next ticket's worktree, then run Pi in it."""
+    """Prepare the next ticket's worktree, then run its configured agent."""
     try:
         result = run_next(_repo(warn_setup_version=False), tuple(ctx.args))
     except RunInterrupted as interrupted:

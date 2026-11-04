@@ -88,8 +88,10 @@ class TestInit(CliTestCase):
         self.assertIn('prefix = "TASK"', config)
         self.assertIn('# autoformat = "taidy format" # run on every written task file', config)
         self.assertIn(
-            '# setup = "make install" # run in every ticket worktree before Pi starts', config
+            '# setup = "make install" # run in every ticket worktree before the agent starts',
+            config,
         )
+        self.assertIn('# agent_command = "pi --no-extensions', config)
         self.assertIn(
             'archive = "move" # or "delete"; retain completed files or delete them', config
         )
@@ -114,13 +116,17 @@ class TestInit(CliTestCase):
 
     def test_init_adds_missing_human_review_setting(self):
         config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace('agent_command = "pi --chitty-{mode} {id}"\n', "")
+        )
 
         self.run_cli("init")
-
         settings = tomllib.loads(config.read_text())
         self.assertFalse(settings["contexts"]["human"]["review"])
         self.assertIn('# setup = "make install"', config.read_text())
+        self.assertIn('# agent_command = "pi --no-extensions', config.read_text())
         self.assertIsNone(settings.get("setup"))
+        self.assertIsNone(settings.get("agent_command"))
         self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
     def test_init_replaces_a_tracked_pi_extension(self):

@@ -51,7 +51,7 @@ chitty add "Add search" -d "Search titles and bodies." \
     --note "Useful context, repeatable."
 chitty list
 chitty next                       # print the next `work ID` or `review ID` action
-while chitty run; do :; done      # ask Pi to complete actions until no progress
+while chitty run; do :; done      # ask the configured agent to complete actions until no progress
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
 chitty edit 1 -s review
@@ -79,11 +79,14 @@ contexts do this so people can close their own tasks directly. The third failed 
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,
 then uses priority and task ID across all non-human contexts. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `chitty run` requires
-`autocommit = true` and `setup` (for example, `setup = "make install"`): it
-creates or reuses the ticket worktree, runs setup there, claims a `todo` ticket,
-and invokes Pi from that worktree. Pass Pi options with `chitty run -- --model
-MODEL`. It succeeds only when Pi commits a status change, so `while chitty run;
-do :; done` stops when no action remains or a session makes no progress. Empty lists explain their active filters on stderr while JSON stdout remains
+`autocommit = true`, `setup` (for example, `setup = "make install"`), and an
+`agent_command`. The command is parsed without a shell; it must include `{mode}`
+and `{id}`, which Chitty replaces after splitting it. `chitty run` creates or
+reuses the ticket worktree, runs setup there, claims a `todo` ticket, and invokes
+the configured agent from that worktree. Pass agent options with `chitty run --
+--model MODEL`. It succeeds only when the agent commits a status change, so
+`while chitty run; do :; done` stops when no action remains or a session makes
+no progress. Empty lists explain their active filters on stderr while JSON stdout remains
 `[]`. `chitty import backlog-md` refuses non-empty contexts, reports
 mappings. It refuses to run unless the Git working tree is clean, untracked
 files included, and removes the converted files in its import commit; use
@@ -114,7 +117,11 @@ started before `session_start` cannot receive it; start Pi with
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit. Set `setup` to the command that prepares
-each ticket worktree before Pi starts; it is parsed without a shell. `chitty init --autocommit` enables
+each ticket worktree before the agent starts; it is parsed without a shell. Set
+`agent_command` to the agent invocation, for example
+`"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
+Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
+and the selected ticket ID. `chitty init --autocommit` enables
 `autocommit = true` and commits only the repository setup files it changed
 (`chitty.toml` or `pyproject.toml`, `.gitignore`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
 dirty Git working tree. Commits for task work should end with
@@ -128,7 +135,7 @@ avoid reusing IDs. The default, `archive = "move"`, retains task files.
 `chitty_version` records the Chitty release that last ran `init`. Reads work with
 stale setup, but writes without `autocommit` require `chitty init` first;
 with `autocommit = true`, Chitty commits the setup upgrade separately before
-writing. `chitty run` also refreshes setup before starting Pi: in a main Git
+writing. `chitty run` also refreshes setup before starting the agent: in a main Git
 checkout it commits changed setup files separately, but linked worktrees leave
 setup alone. Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). To send work to another repository, use `chitty suggest PROJECT`;
@@ -157,4 +164,4 @@ make format
 
 ## Pi extension
 
-`chitty init` installs the shipped Pi `/chitty` workflow extension into an existing `~/.pi/agent/extensions/` directory. Start work or review with `chitty run`; pass Pi options after `--`, for example `chitty run -- --model MODEL`. Each invocation works only on the selected ticket, continuing until it leaves `todo`/`doing` in work mode or `review` in review mode. `src/chitty/integrations/pi/chitty.ts` is the source of truth: make extension edits in this repository, not in the installed copy. If the installed file differs, `chitty init` fails rather than overwriting possible local work; review it, then replace or remove it before retrying. Restart or reload Pi after installation.
+`chitty init` installs the shipped Pi `/chitty` workflow extension into an existing `~/.pi/agent/extensions/` directory. Configure Pi with `agent_command` to start work or review with `chitty run`; pass agent options after `--`, for example `chitty run -- --model MODEL`. Each invocation works only on the selected ticket, continuing until it leaves `todo`/`doing` in work mode or `review` in review mode. `src/chitty/integrations/pi/chitty.ts` is the source of truth: make extension edits in this repository, not in the installed copy. If the installed file differs, `chitty init` fails rather than overwriting possible local work; review it, then replace or remove it before retrying. Restart or reload Pi after installation.

@@ -1,6 +1,6 @@
 ---
 title: Run agents through a configured `agent_command`
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-126
@@ -36,11 +36,15 @@ Out of scope: `chitty init` installing the Pi extension, which stays and does no
 
 ## Acceptance Criteria
 
-- [ ] A test with a fake agent that records its arguments and directory shows work and review sessions started in the ticket's worktree with `{mode}` and `{id}` replaced, a leading `~` expanded, and arguments given to `chitty run` after them
-- [ ] No test or code path in `src/chitty/run.py` assumes the agent is `pi`, shown by the tests above using an agent with a different name
-- [ ] Real `chitty run` work and review sessions are checked to have `ctx_` tools, no `subagent` tool and no `Observational memory` output, with `AGENTS.md` still loaded, and the result, including what a missing `-e` path does, is recorded in a ticket note
-- [ ] Tests show `agent_command` unset, blank, with unbalanced quotes, missing `{mode}` or `{id}`, with a relative first word, and with a first word not on `PATH` each failing with a message naming the setting, with no claim and no worktree created
-- [ ] `README.md` and `PLAN.md` describe `agent_command`, this repository sets it as above, the `chitty.toml` template has a commented example, a test shows `chitty init` adding it to an existing repository only as a comment, and `__version__` is bumped above `main`'s
+- [x] A test with a fake agent that records its arguments and directory shows work and review sessions started in the ticket's worktree with `{mode}` and `{id}` replaced, a leading `~` expanded, and arguments given to `chitty run` after them
+- [x] No test or code path in `src/chitty/run.py` assumes the agent is `pi`, shown by the tests above using an agent with a different name
+- [x] Real `chitty run` work and review sessions are checked to have `ctx_` tools, no `subagent` tool and no `Observational memory` output, with `AGENTS.md` still loaded, and the result, including what a missing `-e` path does, is recorded in a ticket note
+- [x] Tests show `agent_command` unset, blank, with unbalanced quotes, missing `{mode}` or `{id}`, with a relative first word, and with a first word not on `PATH` each failing with a message naming the setting, with no claim and no worktree created
+- [x] `README.md` and `PLAN.md` describe `agent_command`, this repository sets it as above, the `chitty.toml` template has a commented example, a test shows `chitty init` adding it to an existing repository only as a comment, and `__version__` is bumped above `main`'s
+
+## Plan
+
+Add an optional `agent_command` config field and validate/expand it only in `chitty run` after setup refresh. Replace the hard-coded Pi launch with the parsed command, preserving argument forwarding and loud failures. Extend run/config/init tests, update templates and documentation, configure this repository, bump the version, then run focused tests and `make check` before verifying each criterion.
 
 ## Notes
 
@@ -60,6 +64,12 @@ From the last `TASK-126` review: with a relative `PATH` entry, the preflight fin
 
 Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
 
+Verification: a temporary Git repository ran real `chitty run` work and review sessions with this repository’s configured command; both replied `agent started`, and the ticket worktree contained `AGENTS.md` with the Chitty guide. A real Pi invocation with the two configured extensions successfully called `ctx_stats` and reported `ctx_stats available; subagent unavailable.` Neither session emitted `Observational memory`. A missing `-e /definitely-not-present/chitty.ts` printed `Failed to load extension ... Extension path does not exist` but exited `0` under `--help`; `chitty run` reports a non-zero agent exit status normally. `make check` passed after the implementation.
+
+Re-checked all five criteria against the focused tests, real configured-agent work/review sessions, documentation/configuration changes, version bump, and final `make check`; ready for independent review.
+
+Reviewed: independently checked all five criteria: configured-command parsing, validation and launch behavior; distinct fake-agent work/review coverage; documented real-session evidence; init/template/docs/version changes. Ran make check (ruff, pyright, 228 Python tests, 27 Node tests).
+
 ## History
 
 - 2026-11-04T09:25:40Z lively-panda → todo
@@ -72,3 +82,11 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T09:46:24Z lively-panda: changed notes
 - 2026-11-04T14:36:51Z mellow-newt: changed notes
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
+- 2026-11-04T16:06:15Z tidy-marten todo → doing
+- 2026-11-04T16:08:32Z tidy-marten: wrote the plan
+- 2026-11-04T16:24:52Z tidy-marten: changed notes
+- 2026-11-04T16:24:53Z tidy-marten: ticked acceptance criteria
+- 2026-11-04T16:27:29Z tidy-marten: changed notes
+- 2026-11-04T16:27:29Z tidy-marten doing → review
+- 2026-11-04T17:20:28Z open-crane: changed notes
+- 2026-11-04T17:20:28Z open-crane review → done

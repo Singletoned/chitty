@@ -13,6 +13,7 @@ CONFIG = textwrap.dedent(
     default_context = "tasks"
     chitty_version = "{CHITTY_VERSION}"
     autocommit = false
+    agent_command = "pi --chitty-{{mode}} {{id}}"
 
     [contexts.tasks]
     prefix = "TASK"
