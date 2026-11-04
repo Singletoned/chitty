@@ -15,7 +15,7 @@ Use `_version_key` from `src/chitty/store.py`, renaming it without the underscor
 
 ## Acceptance Criteria
 
-- [ ] A test shows the warning appears for a recorded `0.1.9` when the code is `0.1.22`, and fails before the fix
+- [ ] Tests, failing before the fix, show a numerically older recorded version asking to re-run `chitty init`, a numerically newer one asking to upgrade `chitty`, and an unreadable one warning without stopping a read
 
 ## Notes
 
@@ -30,3 +30,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the function's name; wh
 - 2026-11-04T15:30:43Z mellow-newt todo → backlog
 - 2026-11-04T15:31:49Z mellow-newt: changed description, notes
 - 2026-11-04T15:31:49Z mellow-newt backlog → todo
+- 2026-11-04T15:31:56Z mellow-newt: changed acceptance criteria
