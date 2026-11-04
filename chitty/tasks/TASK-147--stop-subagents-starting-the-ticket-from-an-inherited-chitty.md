@@ -21,7 +21,7 @@ Out of scope: changing `pi-subagent`, and whether workers should use subagents a
 ## Acceptance Criteria
 
 - [x] `__version__` is bumped above `main`'s
-- [ ] A Node test shows both flags sending no prompt in `rpc` mode, with the session identity still set, and starting the ticket in `tui` mode
+- [x] A Node test shows both flags sending no prompt in `rpc` mode, with the session identity still set, and starting the ticket in `tui` mode
 
 ## Plan
 
@@ -39,3 +39,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my fix wou
 - 2026-11-04T15:17:28Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T15:20:37Z nimble-eel: ticked acceptance criteria
 - 2026-11-04T15:20:55Z nimble-eel: changed acceptance criteria; wrote the plan
+- 2026-11-04T15:30:39Z nimble-eel: ticked acceptance criteria
