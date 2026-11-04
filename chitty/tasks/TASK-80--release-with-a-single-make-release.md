@@ -1,6 +1,6 @@
 ---
 title: Release with a single `make release`
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -34,6 +34,8 @@ Replaces the earlier scheme, including `HUMAN-6`'s comparison of `init` output, 
 
 Built in the planning session as a comparison with the pipeline: 10 lines of `Makefile`, in commit `b5a1835`. Trial script against a local bare `origin`: off `main`, a dirty tree and behind `origin` each exited non-zero with a message and pushed nothing; the good path ran `make check`, pushed `main` and `v0.1.27` to the bare repository, and wrote `0.1.27` to `pending-release` under a temporary `XDG_DATA_HOME`; a repeat failed on the existing tag. The real remote and the real data directory were not touched. `mate --list` shows the target. Not tried: the real workflow, which runs on the first real release. Reviewer: do not run `make release` here, because it pushes to the real `origin`.
 
+Reviewed: independently trialled `make release` against a local bare `origin`; verified all refusal paths, atomic branch/tag push, `pending-release`, and duplicate-tag failure. `make check`, `chitty check`, `chitty fix`, and `mate --list` pass.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -50,3 +52,5 @@ Built in the planning session as a comparison with the pipeline: 10 lines of `Ma
 - 2026-11-04T19:32:35Z mellow-newt todo → doing
 - 2026-11-04T19:32:36Z mellow-newt: changed notes; ticked acceptance criteria
 - 2026-11-04T19:32:37Z mellow-newt doing → review
+- 2026-11-04T21:58:22Z lively-vole: changed notes; ticked acceptance criteria
+- 2026-11-04T21:58:22Z lively-vole review → done
