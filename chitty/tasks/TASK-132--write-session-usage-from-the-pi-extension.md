@@ -1,6 +1,6 @@
 ---
 title: Write session usage from the Pi extension
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-129
@@ -22,11 +22,21 @@ Out of scope: anything in `chitty run`, and the log itself.
 - [ ] Node tests show the extension summing every field by provider and model, tolerating a message with no usage, counting abandoned branches, keeping another session ID in the file, replacing its own on a second shutdown, and writing nothing when `CHITTY_USAGE_FILE` is unset
 - [ ] `__version__` is bumped above `main`'s
 
+## Plan
+
+1. Add focused Node coverage for shutdown usage aggregation and persistence states from the ticket.
+2. Export a pure aggregator and add the shutdown handler that conditionally reads, replaces this session entry, and atomically rewrites the JSON file.
+3. Bump the package version, run the Node tests and `make check`, then tick criteria only after their stated verification.
+
 ## Notes
 
 Waits for `TASK-134`, so this extension change reaches the machine by itself.
+
+Cold-read attempt: the required fresh `explorer` subagent was unavailable twice (it reported already processing). I will retry before review and record every finding or explicitly record that none were found. No implementation has started.
 
 ## History
 
 - 2026-11-03T20:46:19Z lively-panda → todo
 - 2026-11-03T21:21:53Z lively-panda: changed dependencies, notes
+- 2026-11-04T09:12:08Z jolly-crane: changed notes; wrote the plan
+- 2026-11-04T09:12:08Z jolly-crane todo → doing
