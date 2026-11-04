@@ -1,6 +1,6 @@
 ---
 title: Run tickets with `claude` as the agent
-status: backlog
+status: todo
 priority: high
 owner: human
 depends_on:
@@ -57,3 +57,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the trial uses `--agent
 - 2026-11-04T17:58:14Z mellow-newt: changed description, notes
 - 2026-11-04T17:58:14Z mellow-newt todo → backlog
 - 2026-11-04T18:01:15Z mellow-newt: changed dependencies, acceptance criteria, notes
+- 2026-11-04T18:01:16Z mellow-newt backlog → todo
