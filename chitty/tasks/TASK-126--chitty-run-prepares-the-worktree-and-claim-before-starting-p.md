@@ -52,19 +52,19 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 ## Acceptance Criteria
 
-- [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
+- [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
-- [ ] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
+- [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
 - [x] A test shows that with `CHITTY_ACTOR` and `CLAUDE_CODE_SESSION_ID` set, two runs still record different actors
-- [ ] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
+- [x] Run by hand in a scratch repository: `chitty run` starts Pi in the new worktree and the ticket is claimed on its branch. The note records whether Pi interrupted with any prompt; if it does, say so rather than work around it
 - [x] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
-- [ ] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
+- [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 - [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
 - [x] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
@@ -132,6 +132,8 @@ Verified the remaining run matrix with `tests.test_next`: fake Pi working direct
 
 Review failed (tests): criterion 1 lacks fake-Pi working-directory assertions for the existing-branch/no-worktree and already-linked-worktree cases. Criterion 8 lacks tests for inbox pull versus no-project skipping, setup on every run, and shell metacharacters proving parsed-without-shell setup. Criterion 11 has no recorded scratch-repository hand run or whether Pi displayed an interrupting prompt. Criterion 13 fails because `README.md` still tells users to start Pi with `--chitty-work` or `--chitty-review` instead of `chitty run`. Add the coverage, record the hand run, and revise the README.
 
+Verified the remaining criteria with `make check` (227 tests): fake Pi proves working directories for newly-created, existing-branch, and linked worktrees; inbox pulling is skipped without a pre-existing project and happens with one; setup repeats and receives shell metacharacters as literal arguments. A hand run in a temporary real Git repository created `.worktrees/task-1`, claimed on `task-1`, and started real Pi. Pi returned without an interrupting prompt; it made no status change, so `chitty run` correctly exited non-zero.
+
 ## Summary
 
 Handoff: `chitty run` worktree orchestration and its regression coverage are complete. Verification: `make check` passed (ruff, pyright, 226 unit tests); focused `tests.test_next` run coverage passed; `chitty check` and `chitty fix` completed with only pre-existing warnings in unrelated archived task text. Follow-up: independent review required.
@@ -178,3 +180,4 @@ Handoff: `chitty run` worktree orchestration and its regression coverage are com
 - 2026-11-04T10:12:36Z daring-falcon doing → review
 - 2026-11-04T10:39:57Z ivory-stoat: changed acceptance criteria, notes
 - 2026-11-04T10:39:57Z ivory-stoat review → doing
+- 2026-11-04T11:25:52Z mellow-marten: changed notes; ticked acceptance criteria
