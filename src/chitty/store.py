@@ -299,9 +299,8 @@ class Repo:
         self._prepare_write()
 
     def _prepare_write(self) -> None:
+        self._check_setup_version()
         recorded = self.config.chitty_version
-        if recorded is not None and _version_key(recorded) > _version_key(CHITTY_VERSION):
-            raise ChittyError(f"repository needs Chitty {recorded} or later")
         if recorded == CHITTY_VERSION:
             return
         if not self.config.autocommit:
@@ -311,6 +310,32 @@ class Repo:
         if files:
             git.commit(self.root, files, "chitty: upgrade repository setup")
         self.config = load_repo_config(self.root)
+
+    def refresh_setup(self) -> None:
+        """Refresh setup before running Pi, without changing ticket branches."""
+        # `run` may be invoked from a ticket worktree; setup belongs on main.
+        if git.is_linked_worktree(self.root):
+            return
+        self._check_setup_version()
+        protected = (CONFIG_NAME, "pyproject.toml", AGENTS_FILE, ".gitignore")
+        dirty = [name for name in protected if git.dirty_paths(self.root, Path(name))]
+        if dirty:
+            raise ChittyError(
+                "repository setup files have uncommitted changes; commit or stash these first: "
+                + ", ".join(dirty)
+            )
+        paths = init_repo(self.root, False)
+        for path in paths:
+            print(path, file=sys.stderr)
+        files = [path for path in paths if path.is_file() and path.is_relative_to(self.root)]
+        if files and git.is_repository(self.root):
+            git.commit(self.root, files, "chitty: upgrade repository setup")
+        self.config = load_repo_config(self.root)
+
+    def _check_setup_version(self) -> None:
+        recorded = self.config.chitty_version
+        if recorded is not None and _version_key(recorded) > _version_key(CHITTY_VERSION):
+            raise ChittyError(f"repository needs Chitty {recorded} or later")
 
     def add(
         self,

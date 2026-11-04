@@ -125,7 +125,9 @@ avoid reusing IDs. The default, `archive = "move"`, retains task files.
 `chitty_version` records the Chitty release that last ran `init`. Reads work with
 stale setup, but writes without `autocommit` require `chitty init` first;
 with `autocommit = true`, Chitty commits the setup upgrade separately before
-writing. Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
+writing. `chitty run` also refreshes setup before starting Pi: in a main Git
+checkout it commits changed setup files separately, but linked worktrees leave
+setup alone. Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). To send work to another repository, use `chitty suggest PROJECT`;
 the receiving repository imports it with `chitty inbox --pull`. `PROJECT` is a
 registered name unless it contains `/`, is `.`, or starts with `~` or `.`; those

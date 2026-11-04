@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import os
 import signal
 import stat
@@ -10,6 +11,7 @@ from pathlib import Path
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
 
+from chitty.config import CHITTY_VERSION
 from chitty.mcp import server
 from chitty.store import Repo, next_action
 from tests.test_cli import CliTestCase
@@ -213,6 +215,129 @@ class TestNext(CliTestCase):
         )
         self.assertEqual(result.returncode, 1)
         self.assertIn("TASK-1 was unchanged", result.stderr)
+
+    def test_run_refreshes_setup_before_starting_pi(self):
+        self.add("Todo")
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "base")
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace(CHITTY_VERSION, "0.0.0"))
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "stale setup")
+        agent = self.tmp / "pi-agent"
+        extension = agent / "extensions" / "chitty.ts"
+        extension.parent.mkdir(parents=True)
+        extension.write_text("old extension")
+        (agent / "chitty-extension.sha256").write_text(
+            hashlib.sha256(b"old extension").hexdigest() + "\n"
+        )
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        seen = self.tmp / "seen-version"
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib, tomllib\n"
+            "config = tomllib.loads(pathlib.Path('chitty.toml').read_text())\n"
+            "pathlib.Path(os.environ['SEEN']).write_text(config['chitty_version'])\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ.update(
+            PATH=f"{fake.parent}:{old_path}", PI_CODING_AGENT_DIR=str(agent), SEEN=str(seen)
+        )
+        try:
+            result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = old_path
+            os.environ.pop("PI_CODING_AGENT_DIR", None)
+            os.environ.pop("SEEN", None)
+
+        self.assertEqual(seen.read_text(), CHITTY_VERSION)
+        self.assertNotEqual(extension.read_text(), "old extension")
+        self.assertIn(str(config), result.stderr)
+        self.assertNotIn("re-run `chitty init`", result.stderr)
+        self.assertEqual(
+            self.git("log", "-1", "--format=%s").strip(), "chitty: upgrade repository setup"
+        )
+        changed = self.git("show", "--format=", "--name-only", "HEAD").splitlines()
+        self.assertTrue(set(changed) <= {"chitty.toml", "AGENTS.md", ".gitignore", "CLAUDE.md"})
+
+    def test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty(self):
+        self.add("Todo")
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.run_cli("init")
+        (self.root / "AGENTS.md").write_text("# Agents\n")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "base")
+        marker = self.tmp / "pi-started"
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib\npathlib.Path(os.environ['MARKER']).touch()\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ.update(PATH=f"{fake.parent}:{old_path}", MARKER=str(marker))
+        try:
+            config = self.root / "chitty.toml"
+            config.write_text(config.read_text().replace(CHITTY_VERSION, "99.0.0"))
+            self.git("add", "chitty.toml")
+            self.git("commit", "--quiet", "-m", "newer setup")
+            newer = self.run_cli("run", exit_code=1)
+            self.assertIn("needs Chitty 99.0.0 or later", newer.stderr)
+            self.assertFalse(marker.exists())
+            config.write_text(config.read_text().replace("99.0.0", CHITTY_VERSION))
+            self.git("add", "chitty.toml")
+            self.git("commit", "--quiet", "-m", "current setup")
+            agents = self.root / "AGENTS.md"
+            agents.write_text(agents.read_text() + "local edit\n")
+            dirty = self.run_cli("run", exit_code=1)
+            self.assertIn("AGENTS.md", dirty.stderr)
+            self.assertFalse(marker.exists())
+            self.assertIn("local edit", agents.read_text())
+            self.assertIn(" M AGENTS.md", self.git("status", "--short"))
+        finally:
+            os.environ["PATH"] = old_path
+            os.environ.pop("MARKER", None)
+
+    def test_run_refresh_is_silent_when_current_or_in_a_worktree(self):
+        self.add("Todo")
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.run_cli("init")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "base")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text("#!" + sys.executable + "\n")
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        try:
+            before = self.git("rev-parse", "HEAD")
+            current = self.run_cli("run", exit_code=1)
+            self.assertEqual(self.git("rev-parse", "HEAD"), before)
+            self.assertNotIn("setup", current.stderr)
+            worktree = self.tmp / "worktree"
+            self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+            self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+            previous = Path.cwd()
+            os.chdir(worktree)
+            try:
+                linked = self.run_cli("run", exit_code=1)
+            finally:
+                os.chdir(previous)
+            self.assertEqual(self.git("rev-parse", "HEAD"), before)
+            self.assertNotIn("setup", linked.stderr)
+        finally:
+            os.environ["PATH"] = old_path
 
     def git(self, *args: str) -> str:
         return subprocess.run(
