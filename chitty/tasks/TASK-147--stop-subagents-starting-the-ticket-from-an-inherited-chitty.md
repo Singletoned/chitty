@@ -1,6 +1,6 @@
 ---
 title: Stop subagents starting the ticket from an inherited Chitty flag
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -26,3 +26,4 @@ Out of scope: changing `pi-subagent`, and whether workers should use subagents a
 ## History
 
 - 2026-11-04T15:11:29Z mellow-newt → todo
+- 2026-11-04T15:15:10Z nimble-eel todo → doing
