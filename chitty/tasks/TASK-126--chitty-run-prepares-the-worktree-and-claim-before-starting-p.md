@@ -1,8 +1,7 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: blocked
+status: doing
 priority: high
-owner: human
 depends_on:
   - TASK-124
   - TASK-128
@@ -56,7 +55,6 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
-- [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
@@ -69,6 +67,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
 - [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
 - [x] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
+- [ ] Tests show arguments after `--` reach `pi`, that the claim and a write from the fake `pi` record one actor, and that two runs are given different `CHITTY_PI_SESSION_ID` values, compared directly so that two session IDs sharing a readable name cannot fail the test
 
 ## Plan
 
@@ -157,6 +156,8 @@ Review failed: Criterion 4 is not satisfied. `run` assigns UUID session identiti
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Unblocked 2026-11-04 by the human after the third failed review. That review was right, but the fault is older than this ticket: `actor()` reduces every session ID to one of a small set of readable names, so moved to its own ticket on `main`. Criterion 4 now asks for what this ticket does, a different session ID for each run. The only work left: change the two-run test near `assertNotEqual(first_actor, second_actor)` to compare the session IDs, because comparing names fails by chance about 1 time in 289. Tick the criterion, run `make check` and `npm test`, and set `-s review`. Do not change `actor.py`. Put commands in single quotes in `--note`: backticks in double quotes ran `make check` and pasted its output into an earlier note.
+
 ## Summary
 
 Independent review handoff: fixed the three latest review findings in commit `23e2050`: the fake Pi asserts its working directory for an already-linked worktree; the linked-worktree guard compares Git paths resolved from `ctx.cwd`; and Node coverage runs real Git in a main-checkout subdirectory. Verification: `make check` passes (ruff, pyright, 227 Python tests, and 25 Node tests); `chitty check` and `chitty fix` pass with only pre-existing warnings in unrelated task files. Regression proof: the new Node test failed before the path-resolution fix and passes after it.
@@ -214,3 +215,5 @@ Independent review handoff: fixed the three latest review findings in commit `23
 - 2026-11-04T12:13:36Z daring-gecko doing → review
 - 2026-11-04T12:20:56Z golden-gecko: changed owner, acceptance criteria, notes
 - 2026-11-04T12:20:56Z golden-gecko review → blocked
+- 2026-11-04T12:40:33Z lively-panda: changed owner, acceptance criteria, notes
+- 2026-11-04T12:40:33Z lively-panda blocked → doing
