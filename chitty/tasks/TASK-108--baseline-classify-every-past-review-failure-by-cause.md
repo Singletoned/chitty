@@ -1,6 +1,6 @@
 ---
 title: "Baseline: classify every past review failure by cause"
-status: review
+status: done
 priority: high
 owner: human
 parent: TASK-106
@@ -100,6 +100,12 @@ Proposals for the human to accept or reject; none are applied, and no tickets ar
 
 3. Fail a review only on a stated criterion, a stated part of the description, or a regression. A case the ticket left out becomes a new ticket, as `TASK-126` #6 did by hand. Failure class: left-out cases, `design` (`TASK-35` #2, `TASK-43`, `TASK-51`, `TASK-87`, `TASK-123` #2, `TASK-126` #6). The cost is real: all 6 were real defects, and they would ship and be fixed later rather than before merge. Yield would rise for that reason alone, so judge this one on escapes, and only with the `TASK-111` report in place. This is the proposal I am least sure of.
 
+Reviewed: independently recounted 34 `review → doing` or `review → blocked` History lines on 18 tickets, matching the report, with `TASK-79`'s `done → doing` making 35 on 19. Re-added causes, kinds, cited types, the same-session count and the per-ticket spread from the table, and all match, as do yield and retries. Spot-checked `TASK-46`, `TASK-87` and `TASK-118` against their own notes, and they match. Classifications are judgement and were sampled, not all re-derived. The correlations and costs were not recomputed. One correction: the `TASK-126` #3 row repeats 1 in 289, a figure copied from that ticket; there were 256 names at the time. Proposal 3 needs comparing with the human's later instruction that a reviewer may fail for a demonstrated defect.
+
+## Summary
+
+Baseline: 35 failed reviews on 19 of 70 reviewed tickets, 72.9% first-pass yield. 30 of 35 found a real defect or a missing stated deliverable, and 2 were a stricter reading. Three proposals await the human; none are applied. Post-`done` escapes could not be measured.
+
 ## History
 
 - 2026-11-03T10:27:46Z lively-panda → backlog
@@ -113,3 +119,5 @@ Proposals for the human to accept or reject; none are applied, and no tickets ar
 - 2026-11-04T20:10:26Z quick-toad todo → doing
 - 2026-11-04T20:10:39Z quick-toad: changed notes; ticked acceptance criteria
 - 2026-11-04T20:10:39Z quick-toad doing → review
+- 2026-11-04T20:33:44Z mellow-newt: changed notes, summary
+- 2026-11-04T20:33:44Z mellow-newt review → done
