@@ -1,6 +1,6 @@
 ---
 title: Test whether `context-mode` pays for itself
-status: backlog
+status: todo
 priority: low
 owner: human
 depends_on:
@@ -26,3 +26,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: how to run without it.
 
 - 2026-11-04T21:41:11Z mellow-newt → backlog
 - 2026-11-04T21:44:36Z mellow-newt: changed dependencies, description, notes
+- 2026-11-04T21:44:38Z mellow-newt backlog → todo
