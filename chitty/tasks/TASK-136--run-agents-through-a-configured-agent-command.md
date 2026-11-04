@@ -42,6 +42,10 @@ Out of scope: `chitty init` installing the Pi extension, which stays and does no
 - [ ] Tests show `agent_command` unset, blank, with unbalanced quotes, missing `{mode}` or `{id}`, with a relative first word, and with a first word not on `PATH` each failing with a message naming the setting, with no claim and no worktree created
 - [ ] `README.md` and `PLAN.md` describe `agent_command`, this repository sets it as above, the `chitty.toml` template has a commented example, a test shows `chitty init` adding it to an existing repository only as a comment, and `__version__` is bumped above `main`'s
 
+## Plan
+
+Add an optional `agent_command` config field and validate/expand it only in `chitty run` after setup refresh. Replace the hard-coded Pi launch with the parsed command, preserving argument forwarding and loud failures. Extend run/config/init tests, update templates and documentation, configure this repository, bump the version, then run focused tests and `make check` before verifying each criterion.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the helper the ticket named was private and returned more than a path, so a small public one is specified, with an absolute path. Ticket cannot start before `TASK-126`, now stated. `PI_CODING_AGENT_DIR` pointing at a missing directory, now covered by the message. Criterion 5 now covers both modes and context files and skills, and a ticket note is where the result goes. The fake `pi` must record its arguments, because the ones in `tests/test_next.py` ignore them. Found while checking its report, not by it: the ticket put the missing-file check in `_preflight`, which runs before `refresh_setup`, so it would have refused what the refresh was about to repair; the check now follows the refresh, with a test. Verified by running real `pi --help`: a forwarded `-e` after `--chitty-work` is loaded under `--no-extensions`. Rejected: its finding that `task-126` drops `refresh_setup`, because that branch predates `TASK-134` and its worker is already told to keep the call when rebasing. Checking the file's content, because `refresh_setup` already runs `init_repo`, which refuses a locally edited copy loudly. A criterion for dropping `packages` from `settings.json`, because criterion 5 sees it directly. A criterion for built-in compaction, because a short session may never compact and it is Pi's own behaviour; if it proves wrong, the usage log will show it. `HOME` unset and a symlinked agent directory, because the existing `pi_settings_path` decides both, and Pi fails loudly on a bad path. Review-mode tests needing a ticket in review, which is ordinary test setup. `README.md` lines 107-109 stay true for hand-started `pi`, so criterion 4 means making clear they do not apply to `chitty run`, not deleting them.
@@ -73,3 +77,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T14:36:51Z mellow-newt: changed notes
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
 - 2026-11-04T16:06:15Z tidy-marten todo → doing
+- 2026-11-04T16:08:32Z tidy-marten: wrote the plan
