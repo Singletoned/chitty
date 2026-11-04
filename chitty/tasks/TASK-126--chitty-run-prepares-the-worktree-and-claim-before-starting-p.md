@@ -56,7 +56,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
-- [ ] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
+- [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
@@ -66,7 +66,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] A test shows `chitty run` leaves the main checkout's `HEAD`, branch and `git status` unchanged apart from any inbox commit, and refuses when it is on another branch
 - [x] This repository sets `setup = "make install"`, a test shows `chitty init` adds `setup` to an existing repository only as a commented example, and `README.md` no longer advises calling `pi` directly
 - [x] Outside a linked worktree, Pi shows a one-line message and exits, with no stack trace and no session left open; a Node test covers this
-- [ ] A Node test shows the worktree check refusing in a subdirectory of the main checkout
+- [x] A Node test shows the worktree check refusing in a subdirectory of the main checkout
 - [x] Tests cover running from inside another worktree, a ticket whose newest copy is on `main` (it must not try to add a `main` worktree), and uncommitted changes to the ticket in the main checkout
 
 ## Plan
@@ -150,6 +150,8 @@ updated TASK-2 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/.ctx-mod
 [task-1 469ff6b] worker change
  1 file changed, 1 insertion(+), 1 deletion(-) (ruff, pyright, 227 Python tests, and 25 Node tests).
 
+Re-verified criteria 5 and 15 after the repair: `npm test -- --test src/chitty/integrations/pi/tests/chitty.test.ts` passes all 25 tests. This includes the prompt assertions and the real Git main-checkout-subdirectory refusal. Criterion 16 was already checked; the prior `--check 16` was harmless.
+
 ## Summary
 
 Implementation complete. Verification: `make check` passed (227 tests); `chitty check` and `chitty fix` passed. Manual real-Pi scratch run created the ticket worktree and branch claim without an interrupting prompt. Independent review required.
@@ -202,3 +204,4 @@ Implementation complete. Verification: `make check` passed (227 tests); `chitty 
 - 2026-11-04T11:32:26Z daring-panda: changed acceptance criteria, notes
 - 2026-11-04T11:32:26Z daring-panda review → doing
 - 2026-11-04T12:12:31Z daring-gecko: changed notes; ticked acceptance criteria
+- 2026-11-04T12:12:59Z daring-gecko: changed notes; ticked acceptance criteria
