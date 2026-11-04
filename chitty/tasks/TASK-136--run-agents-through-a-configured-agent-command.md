@@ -1,6 +1,6 @@
 ---
 title: Run agents through a configured `agent_command`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-126
@@ -72,3 +72,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T09:46:24Z lively-panda: changed notes
 - 2026-11-04T14:36:51Z mellow-newt: changed notes
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
+- 2026-11-04T16:06:15Z tidy-marten todo → doing
