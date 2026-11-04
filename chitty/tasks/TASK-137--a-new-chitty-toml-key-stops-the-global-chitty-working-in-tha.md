@@ -12,6 +12,11 @@ Found 2026-11-04 unblocking `TASK-126`: its branch adds `setup` to `chitty.toml`
 
 Options to weigh: land the schema change on `main` first; warn about unknown keys, and refuse only when `chitty_version` says the file is from a newer version than the code; or have `chitty run` put the worktree's `.venv/bin` first on `PATH`.
 
+## Notes
+
+Hit again 2026-11-04 on `TASK-136`: `chitty run` picked `review TASK-136`, ran `setup` in the worktree, then failed at `Repo.open(worktree)` with `agent_command: Extra inputs are not permitted`, before any claim or session. The worktree's own `.venv/bin/chitty run` cannot get round it, because `run` reads `agent_command` from the main checkout, which does not have it until the branch lands. Preferred option: warn about an unknown key when the file's `chitty_version` is newer than the running code, and keep refusing otherwise, so a typo still fails loudly. A branch adding a key already has to bump the version. `TASK-150` adds `check`, so it will hit this next.
+
 ## History
 
 - 2026-11-04T09:46:24Z lively-panda → backlog
+- 2026-11-04T17:03:09Z mellow-newt: changed notes
