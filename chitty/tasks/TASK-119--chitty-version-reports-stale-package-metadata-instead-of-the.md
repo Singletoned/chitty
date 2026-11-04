@@ -1,6 +1,6 @@
 ---
 title: "`chitty --version` reports stale package metadata instead of the running code"
-status: review
+status: done
 created: 2026-11-03
 ---
 
@@ -26,6 +26,8 @@ Verified criterion 1: the new regression test failed before the fix with patched
 
 Re-checked every criterion immediately before review: `uv run python -m unittest tests.test_version` passed (2 tests) and `make check` passed (220 Python tests plus Ruff, pyright, and Node tests). Ready for independent review.
 
+Reviewed: criterion 1 passed independently: patched `importlib.metadata.version` returned `0.0.0` while `chitty --version` printed exactly `chitty, version 0.1.24`; `tests.test_version` and `make check` passed after a fresh `make install`.
+
 ## History
 
 - 2026-11-03T11:27:23Z eager-raven → todo
@@ -36,3 +38,5 @@ Re-checked every criterion immediately before review: `uv run python -m unittest
 - 2026-11-04T14:37:08Z open-quail: changed notes; ticked acceptance criteria
 - 2026-11-04T14:38:51Z open-quail: changed notes
 - 2026-11-04T14:38:51Z open-quail doing → review
+- 2026-11-04T15:09:22Z jolly-puffin: changed notes
+- 2026-11-04T15:09:22Z jolly-puffin review → done
