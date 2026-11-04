@@ -18,12 +18,12 @@ Decided with the human, 2026-11-03: rebase at the start of review. Main changing
 
 ### Before starting a review session
 
-In this order, in the ticket's worktree. `TASK-150` then adds a `check` command after these steps:
+Only when the mode is `review`, in this order, in the ticket's worktree, after the run's actor is set, because the status moves use it. `setup` moves to after the rebase in this mode. `TASK-150` then adds a `check` command after these steps:
 
 1. If the worktree has uncommitted changes, including untracked files, move the ticket to `doing` with `Review failed (work): ...` listing them. A rebase left unfinished by a crash is a loud error for the human, with no status change.
 2. Rebase the branch onto `main`. On a conflict, run `git rebase --abort` and move the ticket to `doing` with `Review failed (integration): ...` naming the conflicting files. The worker resolves it in a fresh session.
 3. Run `setup` from `TASK-126`, after the rebase because it can change dependencies.
-4. After either failure, do not start the agent. No review is spent on work that cannot pass, and `chitty run` exits 0 because the status changed.
+4. After either failure, do not start the agent. No review is spent on work that cannot pass, and `chitty run` exits 0 because the status changed, printing the status change as it does after a session.
 
 The reviewer therefore sees exactly what will land. Ctrl-C during the rebase aborts any rebase and exits 130.
 
@@ -54,6 +54,8 @@ Split on 2026-11-03 at the human's prompting, because 13 criteria was too large:
 
 Split on 2026-11-04 at the human's direction, from six criteria: `check` is now `TASK-150`. `make check` already runs the Node tests.
 
+Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: review mode only, since a resumed worker with uncommitted files is normal; where this runs relative to the actor and `setup`; and what is printed when no session starts.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -66,3 +68,4 @@ Split on 2026-11-04 at the human's direction, from six criteria: `check` is now 
 - 2026-11-03T20:46:17Z lively-panda: changed title, description, acceptance criteria, notes
 - 2026-11-04T09:45:40Z lively-panda: changed priority
 - 2026-11-04T15:11:34Z mellow-newt: changed title, description, acceptance criteria, notes
+- 2026-11-04T15:17:35Z mellow-newt: changed description, notes
