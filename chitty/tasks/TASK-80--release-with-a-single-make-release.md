@@ -1,6 +1,6 @@
 ---
 title: Release with a single `make release`
-status: todo
+status: doing
 priority: high
 created: 2026-11-01
 ---
@@ -18,7 +18,7 @@ Rewritten 2026-11-04 at the human's prompting: this waited since 2026-11-01 whil
 
 ## Plan
 
-Inspect the existing Makefile, release workflow, tags, and setup output. Add a guarded `mate release` target that determines the required version bump from setup changes, updates generated files, verifies checks, commits, tags, and pushes. Add hermetic tests for bump selection and guards; update release documentation; run `make check` and target tests before requesting review.
+Add a `release` target that tags the existing version, and try it against a local bare `origin`.
 
 ## Notes
 
@@ -44,3 +44,5 @@ Replaces the earlier scheme, including `HUMAN-6`'s comparison of `init` output, 
 - 2026-11-01 blocked → backlog
 - 2026-11-04T19:22:14Z mellow-newt: changed title, priority, description, acceptance criteria, notes
 - 2026-11-04T19:22:14Z mellow-newt backlog → todo
+- 2026-11-04T19:32:35Z mellow-newt: wrote the plan
+- 2026-11-04T19:32:35Z mellow-newt todo → doing
