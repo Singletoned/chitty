@@ -1,6 +1,6 @@
 ---
 title: "Baseline: classify every past review failure by cause"
-status: backlog
+status: todo
 priority: high
 owner: human
 parent: TASK-106
@@ -40,3 +40,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: which history to count,
 - 2026-11-03T20:44:58Z lively-panda: changed notes
 - 2026-11-04T19:32:41Z mellow-newt: changed owner, description
 - 2026-11-04T19:36:35Z mellow-newt: changed description, notes
+- 2026-11-04T19:36:36Z mellow-newt backlog → todo
