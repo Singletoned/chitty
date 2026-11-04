@@ -862,18 +862,18 @@ class TestAddShowList(CliTestCase):
             listed.stdout.splitlines(),
             [
                 "TASK-3  todo    high    High",
+                "TASK-1  todo    -       Unset",
                 "TASK-4  todo    medium  Medium",
                 "TASK-2  todo    low     Low",
-                "TASK-1  todo    -       Unset",
                 "TASK-5  doing   high    Doing high",
             ],
         )
         tasks = self.json("list")
         self.assertEqual(
-            [task["id"] for task in tasks], ["TASK-3", "TASK-4", "TASK-2", "TASK-1", "TASK-5"]
+            [task["id"] for task in tasks], ["TASK-3", "TASK-1", "TASK-4", "TASK-2", "TASK-5"]
         )
         self.assertEqual(
-            [task["priority"] for task in tasks], ["high", "medium", "low", None, "high"]
+            [task["priority"] for task in tasks], ["high", None, "medium", "low", "high"]
         )
 
     def test_list_preserves_context_and_numeric_order_for_priority_ties(self):

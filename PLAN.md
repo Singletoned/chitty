@@ -394,8 +394,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 - `-d` is required on `add` except with `-s backlog`, which writes the default
   required Description: `This ticket needs refining.`
 - `list` includes a priority column only when a listed task has a priority.
-  It orders the selected statuses first, then `high`, `medium`, `low`, and
-  unset priority within each status; `--json` uses the same order.
+  It orders the selected statuses first, then `high`, `medium` (including
+  unset priority), and `low` within each status; `--json` uses the same order.
 - `Summary` is an optional final handoff section after Notes; set it with
   `edit --summary` when completing work.
 - `parent` is an optional full task ID for grouping flat tasks. `add` and
@@ -601,7 +601,8 @@ including retries, not per run.
 ## Next action and runner
 
 `chitty next` selects one active task across every context: `review` before
-`doing` before `todo`, then high/medium/low/unset priority and `TaskId`.
+`doing` before `todo`, then high/medium (including unset)/low priority and
+`TaskId`.
 Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
 an unmet dependency is excluded, while `doing` and `review` work remains
 visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
