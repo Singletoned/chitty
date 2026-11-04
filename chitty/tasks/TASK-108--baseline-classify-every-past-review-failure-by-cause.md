@@ -15,6 +15,8 @@ Read-only over tickets and Git, apart from this ticket and any tickets it propos
 
 This is for the planning session, not a worker: it needs judgement about why reviews failed, and it proposes rules for the human. Owner `human` is how `chitty next` and `chitty run` skip it.
 
+Recount rather than trusting the figures above, which were rough and are now out of date: a raw count on 2026-11-04 found `review → doing` 36 times across 21 task files. Count failures from each task's `## History`, including archived tickets, and use notes for the reason. Several failure notes do not say `Review failed`. Include failures up to the day this runs, and say the date. Map the first pass's categories to `PLAN.md`'s causes: criterion 2 is what splits a missed case between `design` and `work`. First-pass yield is reviewed tickets that passed their first review, divided by all reviewed tickets. The report goes in this ticket's notes, and the two candidate proposals below count towards the three.
+
 ## Acceptance Criteria
 
 - [ ] Every failed review in History is listed with its ticket and one cause from `PLAN.md`, or `unknown` with the reason; the count reconciles with History
@@ -28,6 +30,8 @@ Candidate proposal for the retro: a scripted check that fails when `src/chitty/g
 
 Second candidate for the retro: a scripted check that `__version__` is above `main`'s when the guide or extension changes. Two tickets bumping to the same version merge silently, and repositories then never learn about the later change.
 
+Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: which history to count, stale figures, the mapping to causes, a formula for yield, and where the report goes.
+
 ## History
 
 - 2026-11-03T10:27:46Z lively-panda → backlog
@@ -35,3 +39,4 @@ Second candidate for the retro: a scripted check that `__version__` is above `ma
 - 2026-11-03T10:41:02Z lively-panda: changed notes
 - 2026-11-03T20:44:58Z lively-panda: changed notes
 - 2026-11-04T19:32:41Z mellow-newt: changed owner, description
+- 2026-11-04T19:36:35Z mellow-newt: changed description, notes
