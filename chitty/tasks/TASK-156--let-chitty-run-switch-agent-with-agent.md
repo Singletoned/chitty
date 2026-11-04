@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` switch agent with `--agent`
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-137
@@ -40,3 +40,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: "before anything change
 
 - 2026-11-04T17:58:11Z mellow-newt → backlog
 - 2026-11-04T18:01:13Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-04T18:01:13Z mellow-newt backlog → todo
