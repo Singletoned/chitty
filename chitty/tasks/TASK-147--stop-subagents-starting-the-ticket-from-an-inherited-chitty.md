@@ -21,11 +21,11 @@ Out of scope: changing `pi-subagent`, and whether workers should use subagents a
 ## Acceptance Criteria
 
 - [x] `__version__` is bumped above `main`'s
-- [x] A Node test shows both flags sending no prompt in `rpc` mode, with the session identity still set, and starting the ticket in `tui` mode
+- [ ] A Node test shows both flags sending no prompt in `rpc` mode, with the session identity still set, and starting the ticket in `tui` mode
 
 ## Plan
 
-1. Inspect the Pi extension session-start handler and its Node test harness.\n2. Add regression coverage for inherited worker and reviewer flags in UI and non-UI contexts.\n3. Gate automatic ticket start on `ctx.hasUI`, leaving the interactive `/chitty` command path unchanged.\n4. Bump the package version, run focused Node tests and `make check`, then verify the criteria before review.
+1. Update the session-start guard to allow flag-driven starts only in `tui` mode, retaining identity and state setup for all modes.\n2. Test both inherited flags in `rpc` and `tui` modes, verifying no `rpc` prompt and that session identity is still established.\n3. Bump the version, run the focused Node tests and `make check`, then re-verify every criterion before review.
 
 ## Notes
 
@@ -38,3 +38,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my fix wou
 - 2026-11-04T15:15:47Z nimble-eel: wrote the plan
 - 2026-11-04T15:17:28Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T15:20:37Z nimble-eel: ticked acceptance criteria
+- 2026-11-04T15:20:55Z nimble-eel: changed acceptance criteria; wrote the plan
