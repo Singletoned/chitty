@@ -47,9 +47,12 @@ Retro: `make check` before every commit is only a prompt rule, and I broke it by
 
 Retro: `AGENTS.md` reaches every worker, so planning instructions there leak. A `TASK-132` worker tried a cold read twice, recorded it as required, and promised to retry before review. Moved the procedure to `PLAN.md` on 2026-11-04. Question for the retro: what else in `AGENTS.md` is for one seat only? Also unexplained: its `explorer` subagent failed both times with `Agent is already processing. Specify streamingBehavior`.
 
+Retro: `TASK-126` failed two reviews on 2026-11-04 with the reviewers finding real faults each time, not disagreeing. Causes worth counting: `make check` did not run `npm test`, so a failing Node test reached review (fixed in `make check`); the ticket has 16 criteria and a diff of about 770 lines, far past the ready definition; and the worker repeated the raw `git-dir` comparison that the `TASK-129` cold read had already found, because nothing connected the two. Also, the second failure note did not use the `Review failed (<cause>):` form, so a count by cause would miss it: the guide does not ask for that form yet.
+
 ## History
 
 - 2026-11-02T17:11:36Z lively-otter → backlog
 - 2026-11-03T10:28:24Z lively-panda: changed title, description, acceptance criteria, notes
 - 2026-11-03T12:39:05Z lively-panda: changed notes
 - 2026-11-04T09:15:49Z lively-panda: changed notes
+- 2026-11-04T11:57:56Z lively-panda: changed notes
