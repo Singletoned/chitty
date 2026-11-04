@@ -1,6 +1,6 @@
 ---
 title: Stop subagents starting the ticket from an inherited Chitty flag
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -33,6 +33,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my fix wou
 
 Ready for independent review. Verified: `make check` (ruff, pyright, Python unittest, and 27 Node tests); `rpc` and `tui` coverage covers both inherited flags and identity setup.
 
+Reviewed: both flags are ignored in RPC mode while identity setup remains active and tickets start in TUI mode; version is 0.1.26 above main 0.1.25. `npm test`, `make check`, and `chitty check` passed.
+
 ## History
 
 - 2026-11-04T15:11:29Z mellow-newt → todo
@@ -44,3 +46,5 @@ Ready for independent review. Verified: `make check` (ruff, pyright, Python unit
 - 2026-11-04T15:30:39Z nimble-eel: ticked acceptance criteria
 - 2026-11-04T15:35:10Z nimble-eel: changed notes
 - 2026-11-04T15:35:10Z nimble-eel doing → review
+- 2026-11-04T15:39:03Z witty-adder: changed notes
+- 2026-11-04T15:39:03Z witty-adder review → done
