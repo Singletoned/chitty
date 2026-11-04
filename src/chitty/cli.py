@@ -52,7 +52,7 @@ class _Group(click.Group):
 
 
 @click.group(cls=_Group)
-@click.version_option(package_name="chitty")
+@click.version_option(version=CHITTY_VERSION, prog_name="chitty")
 def cli() -> None:
     """Markdown-native task tracker for humans and coding agents.
 
