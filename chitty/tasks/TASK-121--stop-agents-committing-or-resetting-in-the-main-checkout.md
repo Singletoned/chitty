@@ -26,6 +26,8 @@ Depends on `TASK-129` so that lands first after `TASK-126`.
 
 Moved back to `backlog` on 2026-11-04, under the new rule that a ticket stays there until its cold read has outcomes. A cold read is running.
 
+Cold read by a fresh Sonnet subagent, 2026-11-04. Mostly obsolete, so left in `backlog`. `TASK-126` makes the claim in the worktree, refuses to run off `main`, and the Pi extension refuses to start outside a linked worktree, so claiming on `main` is closed for `chitty run`. It has not been re-scoped, as its note asked, and it names no mechanism. What remains is agents and people started by hand or on other harnesses, which belongs with `TASK-89` and `TASK-90` if it proves to happen. Left for the human to close or keep.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -36,3 +38,4 @@ Moved back to `backlog` on 2026-11-04, under the new rule that a ticket stays th
 - 2026-11-04T09:45:41Z lively-panda: changed priority
 - 2026-11-04T15:30:42Z mellow-newt: changed notes
 - 2026-11-04T15:30:42Z mellow-newt todo → backlog
+- 2026-11-04T15:31:50Z mellow-newt: changed notes
