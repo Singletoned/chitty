@@ -37,6 +37,10 @@ Out of scope: `chitty.ts`, the `AGENTS.md` block, the `chitty://guide` MCP resou
 - [ ] A note records `uv build` and a listing showing the three role files in the wheel
 - [ ] Each role file is about 30 lines at most and holds only its role's rules, `plan.md` holds the cold-read procedure with `PLAN.md` pointing to it, and a note accounts for every `guide.md` rule
 
+## Plan
+
+Add packaged role instruction files from the current guide and Pi prompts, then extend the store guide reader and thin CLI arguments. Cover the role output and errors with CLI tests, document roles and cold-read ownership, build the wheel, and verify the complete check suite.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent with `TASK-142` and `TASK-143`, 2026-11-04. Fixed: rules that fit no role, now each assigned; the Pi session paragraph polluting a prompt, which I reproduced with `PI_CODING_AGENT=true`; "short" not being checkable, now about 30 lines; and the `Review failed (<cause>)` form, added by me from the `TASK-126` retro note. A wheel-building test became a recorded check: hatchling ships the whole package, as it does `guide.md`, so a test would add a slow build to guard little. Rejected: looking up the ID, because `chitty show` fails loudly straight after. Depending only partly on `TASK-126`, because the role files must describe what `chitty run` leaves to the agent.
@@ -52,3 +56,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T14:36:50Z mellow-newt: changed description, notes
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
 - 2026-11-04T17:22:46Z intrepid-otter todo → doing
+- 2026-11-04T17:49:49Z sunny-raven: wrote the plan
