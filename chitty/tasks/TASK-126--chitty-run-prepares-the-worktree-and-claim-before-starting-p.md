@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-124
@@ -154,7 +154,7 @@ Re-verified criteria 5 and 15 after the repair: `npm test -- --test src/chitty/i
 
 ## Summary
 
-Implementation complete. Verification: `make check` passed (227 tests); `chitty check` and `chitty fix` passed. Manual real-Pi scratch run created the ticket worktree and branch claim without an interrupting prompt. Independent review required.
+Independent review handoff: fixed the three latest review findings in commit `23e2050`: the fake Pi asserts its working directory for an already-linked worktree; the linked-worktree guard compares Git paths resolved from `ctx.cwd`; and Node coverage runs real Git in a main-checkout subdirectory. Verification: `make check` passes (ruff, pyright, 227 Python tests, and 25 Node tests); `chitty check` and `chitty fix` pass with only pre-existing warnings in unrelated task files. Regression proof: the new Node test failed before the path-resolution fix and passes after it.
 
 ## History
 
@@ -205,3 +205,5 @@ Implementation complete. Verification: `make check` passed (227 tests); `chitty 
 - 2026-11-04T11:32:26Z daring-panda review → doing
 - 2026-11-04T12:12:31Z daring-gecko: changed notes; ticked acceptance criteria
 - 2026-11-04T12:12:59Z daring-gecko: changed notes; ticked acceptance criteria
+- 2026-11-04T12:13:36Z daring-gecko: changed summary
+- 2026-11-04T12:13:36Z daring-gecko doing → review
