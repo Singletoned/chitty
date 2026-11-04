@@ -1,6 +1,6 @@
 ---
 title: Trial cheaper models for tickets
-status: backlog
+status: todo
 priority: high
 owner: human
 depends_on:
@@ -28,3 +28,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `--model` would have ap
 
 - 2026-11-04T21:41:10Z mellow-newt → backlog
 - 2026-11-04T21:44:33Z mellow-newt: changed dependencies, description, notes
+- 2026-11-04T21:44:35Z mellow-newt backlog → todo
