@@ -1,6 +1,6 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-124
@@ -162,7 +162,7 @@ Verified criterion 16: the fake Pi records CHITTY_PI_SESSION_ID for each invocat
 
 ## Summary
 
-Independent review handoff: fixed the three latest review findings in commit `23e2050`: the fake Pi asserts its working directory for an already-linked worktree; the linked-worktree guard compares Git paths resolved from `ctx.cwd`; and Node coverage runs real Git in a main-checkout subdirectory. Verification: `make check` passes (ruff, pyright, 227 Python tests, and 25 Node tests); `chitty check` and `chitty fix` pass with only pre-existing warnings in unrelated task files. Regression proof: the new Node test failed before the path-resolution fix and passes after it.
+Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and directly asserts the two IDs differ, avoiding false failures from readable actor-name collisions. Verified: make check (ruff, pyright, 227 Python tests, 25 Node tests); chitty check and chitty fix pass with only pre-existing unrelated task warnings. Review focus: test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation.
 
 ## History
 
@@ -220,3 +220,5 @@ Independent review handoff: fixed the three latest review findings in commit `23
 - 2026-11-04T12:40:33Z lively-panda: changed owner, acceptance criteria, notes
 - 2026-11-04T12:40:33Z lively-panda blocked → doing
 - 2026-11-04T13:01:13Z golden-marten: changed notes; ticked acceptance criteria
+- 2026-11-04T13:03:22Z golden-marten: changed summary
+- 2026-11-04T13:03:22Z golden-marten doing → review
