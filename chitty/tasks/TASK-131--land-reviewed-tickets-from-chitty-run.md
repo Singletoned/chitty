@@ -1,7 +1,7 @@
 ---
 title: Land reviewed tickets from `chitty run`
 status: todo
-priority: high
+priority: medium
 depends_on:
   - TASK-120
 parent: TASK-106
@@ -53,3 +53,4 @@ From the `TASK-134` cold read: carrying on to selection after landing would have
 - 2026-11-03T20:46:17Z lively-panda → todo
 - 2026-11-03T21:21:53Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-03T21:24:18Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-04T09:45:41Z lively-panda: changed priority
