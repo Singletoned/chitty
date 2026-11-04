@@ -1,6 +1,6 @@
 ---
 title: Write session usage from the Pi extension
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-129
@@ -40,6 +40,8 @@ Verified before ticking: npm test passed all 22 Node tests, including aggregatio
 
 Per human direction, skip the cold read: it belongs to planning rather than workers and has been removed from the worker instructions on main. Do not retry it.
 
+Re-checked every criterion before review: npm test passed all 22 Node tests and make check passed. Independent review is now required.
+
 ## History
 
 - 2026-11-03T20:46:19Z lively-panda → todo
@@ -49,3 +51,5 @@ Per human direction, skip the cold read: it belongs to planning rather than work
 - 2026-11-04T09:16:23Z jolly-crane: changed notes
 - 2026-11-04T09:21:42Z jolly-crane: changed notes; ticked acceptance criteria
 - 2026-11-04T09:22:35Z jolly-crane: changed notes
+- 2026-11-04T09:23:51Z jolly-crane: changed notes
+- 2026-11-04T09:23:51Z jolly-crane doing → review
