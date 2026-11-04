@@ -45,8 +45,11 @@ Left `chats/` uncommitted, on the assumption the transcripts are private: the po
 
 Retro: `make check` before every commit is only a prompt rule, and I broke it by accident. On 2026-11-03 I chained `make check` and `git commit` without `&&`, so `PLAN.md` was committed while the check was failing, because this checkout had no dev dependencies installed. It cost one extra diagnosis round and nothing broke, as the change was docs only. Nothing mechanical would have stopped it had the change been code.
 
+Retro: `AGENTS.md` reaches every worker, so planning instructions there leak. A `TASK-132` worker tried a cold read twice, recorded it as required, and promised to retry before review. Moved the procedure to `PLAN.md` on 2026-11-04. Question for the retro: what else in `AGENTS.md` is for one seat only? Also unexplained: its `explorer` subagent failed both times with `Agent is already processing. Specify streamingBehavior`.
+
 ## History
 
 - 2026-11-02T17:11:36Z lively-otter → backlog
 - 2026-11-03T10:28:24Z lively-panda: changed title, description, acceptance criteria, notes
 - 2026-11-03T12:39:05Z lively-panda: changed notes
+- 2026-11-04T09:15:49Z lively-panda: changed notes
