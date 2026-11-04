@@ -512,8 +512,12 @@ another can check the result without talking to the first:
 - Decisions are made: no "use your judgement".
 - It points at relevant files and patterns instead of pasting them.
 - It lists every path or caller the behaviour must hold on.
-- The diff should be reviewable, roughly a few hundred lines at most, and the
-  ticket about five criteria. More is a prompt to split it, not to carry on.
+- It does one thing. Aim for one to three criteria and a diff of a hundred or
+  two lines. Five criteria or a few hundred lines is the limit, and reaching it
+  is a prompt to split, not to carry on. `TASK-126`, at 16 criteria and about
+  1,000 lines, failed six reviews.
+- Criteria state behaviour and leave lists of cases to the tests, because a
+  listed case can always be read more strictly.
 
 Cold read: a throwaway session reads only the ticket and says what done means
 and which files it would touch. A mismatch with the author's intent means the
