@@ -54,6 +54,8 @@ Rewritten 2026-11-04 at the human's direction: Chitty must not be tied to Pi, an
 
 Cold read of the rewrite by a fresh Sonnet subagent, 2026-11-04. Fixed: `str.replace` after the split; validation in the preflight, not `config.py`; `~` expanded only at the start of a word; no `--`; unbalanced quotes; a blank value; a relative first word, because `shutil.which` and the agent would resolve it from different directories (a repository script can use an absolute path or `PATH`, and this is cheap to loosen); and "as `setup` does", which was wrong, since `setup`'s error shows no example. Also added a test for the `chitty init` comment and the documentation locations. I changed "neither placeholder" to requiring both myself, because a command without `{mode}` cannot tell work from review. Rejected: its finding that this repository has no `setup` on `task-126`, which is wrong: `git show task-126:chitty.toml` has `setup = "make install"`. Landing breaking repositories with no setting, because that is what having no default means, and it fails loudly with an example. New tests for inherited streams, exit status and interrupts, because the existing run tests cover them and only need the setting. `{id}` or `{mode}` in the first word, because the `PATH` check catches it. `~user`, because `expanduser` handles it. `[tool.chitty]` in `pyproject.toml`, because the setting is read through the same config. Stale `refresh_setup` notes, because the rewrite's note says earlier details no longer apply, and the worker keeps that call by `TASK-126`'s instructions. The version number, because "above `main`'s" already covers it. Still five criteria.
 
+Watch for `TASK-137`: adding `agent_command` to this repository's `chitty.toml` on the branch stops the global `chitty` working in its worktree.
+
 ## History
 
 - 2026-11-04T09:25:40Z lively-panda → todo
@@ -63,3 +65,4 @@ Cold read of the rewrite by a fresh Sonnet subagent, 2026-11-04. Fixed: `str.rep
 - 2026-11-04T09:38:00Z lively-panda: changed title, description, acceptance criteria, notes
 - 2026-11-04T09:40:59Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T09:45:42Z lively-panda: changed priority
+- 2026-11-04T09:46:24Z lively-panda: changed notes
