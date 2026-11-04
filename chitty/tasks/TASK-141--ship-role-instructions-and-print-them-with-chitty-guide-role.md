@@ -1,6 +1,6 @@
 ---
 title: Ship role instructions and print them with `chitty guide <role>`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-126
@@ -51,3 +51,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T12:00:37Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T14:36:50Z mellow-newt: changed description, notes
 - 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
+- 2026-11-04T17:22:46Z intrepid-otter todo → doing
