@@ -1,6 +1,6 @@
 ---
 title: Stop subagents starting the ticket from an inherited Chitty flag
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -31,6 +31,8 @@ Out of scope: changing `pi-subagent`, and whether workers should use subagents a
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my fix would have done nothing, because the child runs in `--mode rpc`, not the `--mode json` I assumed; the runner source confirms it, and `hasUI` is true there. Also the guard's placement and the existing tests.
 
+Ready for independent review. Verified: `make check` (ruff, pyright, Python unittest, and 27 Node tests); `rpc` and `tui` coverage covers both inherited flags and identity setup.
+
 ## History
 
 - 2026-11-04T15:11:29Z mellow-newt → todo
@@ -40,3 +42,5 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my fix wou
 - 2026-11-04T15:20:37Z nimble-eel: ticked acceptance criteria
 - 2026-11-04T15:20:55Z nimble-eel: changed acceptance criteria; wrote the plan
 - 2026-11-04T15:30:39Z nimble-eel: ticked acceptance criteria
+- 2026-11-04T15:35:10Z nimble-eel: changed notes
+- 2026-11-04T15:35:10Z nimble-eel doing → review
