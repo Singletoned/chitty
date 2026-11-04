@@ -1,6 +1,6 @@
 ---
 title: Run tickets with `claude` as the agent
-status: backlog
+status: todo
 priority: high
 owner: human
 depends_on:
@@ -45,3 +45,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the checks were not in 
 - 2026-11-04T15:40:08Z mellow-newt: changed description, notes
 - 2026-11-04T17:32:42Z mellow-newt: changed description, notes
 - 2026-11-04T17:34:53Z mellow-newt: changed owner, description, acceptance criteria, notes
+- 2026-11-04T17:34:54Z mellow-newt backlog → todo
