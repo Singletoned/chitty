@@ -56,6 +56,8 @@ Cold read of the rewrite by a fresh Sonnet subagent, 2026-11-04. Fixed: `str.rep
 
 Watch for `TASK-137`: adding `agent_command` to this repository's `chitty.toml` on the branch stops the global `chitty` working in its worktree.
 
+From the last `TASK-126` review: with a relative `PATH` entry, the preflight finds the agent from the main checkout but the launch runs in the worktree, so it fails with a traceback after the claim. Keep a loud `ChittyError` for `FileNotFoundError` at launch, which that branch removed, and resolve the first word to an absolute path in the preflight, so both use the same executable.
+
 ## History
 
 - 2026-11-04T09:25:40Z lively-panda → todo
@@ -66,3 +68,4 @@ Watch for `TASK-137`: adding `agent_command` to this repository's `chitty.toml` 
 - 2026-11-04T09:40:59Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T09:45:42Z lively-panda: changed priority
 - 2026-11-04T09:46:24Z lively-panda: changed notes
+- 2026-11-04T14:36:51Z mellow-newt: changed notes
