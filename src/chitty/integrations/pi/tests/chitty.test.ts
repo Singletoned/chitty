@@ -162,6 +162,8 @@ test("rejects an unknown ticket flag before starting an agent turn", async () =>
       {},
       {
         cwd: process.cwd(),
+        hasUI: true,
+        mode: "tui",
         sessionManager: {
           getBranch: () => [],
           getSessionId: () => "test-session",
@@ -173,6 +175,136 @@ test("rejects an unknown ticket flag before starting an agent turn", async () =>
     assert.deepEqual(sentMessages, []);
     assert.match(notifications[0], /chitty show TASK-999 --json failed/);
     assert.equal(shutdowns, 1);
+  }
+});
+
+test("starts flagged tickets with a UI in TUI mode", async () => {
+  for (const [flag, mode, status] of [
+    ["chitty-work", "work", "doing"],
+    ["chitty-review", "review", "review"],
+  ] as const) {
+    for (const hasUI of [true]) {
+      let sessionStart:
+        | ((event: unknown, ctx: unknown) => Promise<void> | void)
+        | undefined;
+      const sentMessages: string[] = [];
+      const pi = {
+        appendEntry: () => {},
+        exec: async (command: string, args: string[]) => {
+          if (command === "git") {
+            return {
+              code: 0,
+              stdout: args[1] === "--git-dir" ? ".git/worktrees/t\\n" : ".git\\n",
+              stderr: "",
+            };
+          }
+          return { code: 0, stdout: JSON.stringify({ status }), stderr: "" };
+        },
+        getFlag: (name: string) => (name === flag ? "TASK-12" : undefined),
+        on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
+          if (event === "session_start") sessionStart = handler;
+          return () => {};
+        },
+        registerCommand: () => {},
+        registerFlag: () => {},
+        sendMessage: () => {},
+        sendUserMessage: (message: string) => sentMessages.push(message),
+      };
+      chitty(pi as Parameters<typeof chitty>[0]);
+
+      assert.ok(sessionStart);
+      await sessionStart(
+        {},
+        {
+          cwd: process.cwd(),
+          hasUI,
+          mode: "tui",
+          sessionManager: {
+            getBranch: () => [],
+            getSessionId: () => "test-session",
+          },
+          shutdown: () => {},
+          ui: { notify: () => {} },
+        },
+      );
+      assert.equal(sentMessages.length, hasUI ? 1 : 0, `${flag} with hasUI=${hasUI}`);
+      if (hasUI) {
+        assert.match(sentMessages[0], /Work only on Chitty ticket TASK-12/);
+        assert.match(
+          sentMessages[0],
+          mode === "work" ? /verify each criterion/ : /Never review work you have done/,
+        );
+      }
+    }
+  }
+});
+
+test("starts flagged tickets only in TUI mode", async () => {
+  const previousSessionId = process.env.CHITTY_PI_SESSION_ID;
+  try {
+    for (const [flag, ticketMode, status] of [
+      ["chitty-work", "work", "doing"],
+      ["chitty-review", "review", "review"],
+    ] as const) {
+      for (const mode of ["rpc", "tui"] as const) {
+        delete process.env.CHITTY_PI_SESSION_ID;
+        let sessionStart:
+          | ((event: unknown, ctx: unknown) => Promise<void> | void)
+          | undefined;
+        const sentMessages: string[] = [];
+        const pi = {
+          appendEntry: () => {},
+          exec: async (command: string, args: string[]) => {
+            if (command === "git") {
+              return {
+                code: 0,
+                stdout: args[1] === "--git-dir" ? ".git/worktrees/t\\n" : ".git\\n",
+                stderr: "",
+              };
+            }
+            return { code: 0, stdout: JSON.stringify({ status }), stderr: "" };
+          },
+          getFlag: (name: string) => (name === flag ? "TASK-12" : undefined),
+          on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
+            if (event === "session_start") sessionStart = handler;
+            return () => {};
+          },
+          registerCommand: () => {},
+          registerFlag: () => {},
+          sendMessage: () => {},
+          sendUserMessage: (message: string) => sentMessages.push(message),
+        };
+        chitty(pi as Parameters<typeof chitty>[0]);
+
+        assert.ok(sessionStart);
+        await sessionStart(
+          {},
+          {
+            cwd: process.cwd(),
+            hasUI: true,
+            mode,
+            sessionManager: {
+              getBranch: () => [],
+              getSessionId: () => `${flag}-${mode}`,
+            },
+            shutdown: () => {},
+            ui: { notify: () => {} },
+          },
+        );
+        assert.equal(process.env.CHITTY_PI_SESSION_ID, `${flag}-${mode}`);
+        assert.equal(sentMessages.length, mode === "tui" ? 1 : 0, `${flag} in ${mode}`);
+        if (mode === "tui") {
+          assert.match(sentMessages[0], /Work only on Chitty ticket TASK-12/);
+          assert.match(
+            sentMessages[0],
+            ticketMode === "work" ? /verify each criterion/ : /Never review work you have done/,
+          );
+        }
+      }
+    }
+  } finally {
+    if (previousSessionId === undefined) delete process.env.CHITTY_PI_SESSION_ID;
+    else process.env.CHITTY_PI_SESSION_ID = previousSessionId;
   }
 });
 
@@ -212,6 +344,8 @@ test("shuts down without starting when a flagged ticket has left its stage", asy
       {},
       {
         cwd: process.cwd(),
+        hasUI: true,
+        mode: "tui",
         sessionManager: {
           getBranch: () => [],
           getSessionId: () => "test-session",
@@ -290,6 +424,8 @@ test("exits cleanly when Chitty starts outside a linked worktree", async () => {
     {},
     {
       cwd: `${process.cwd()}/subdirectory`,
+      hasUI: true,
+      mode: "tui",
       sessionManager: { getBranch: () => [], getSessionId: () => "test-session" },
       shutdown: () => shutdowns++,
       ui: { notify: (message: string) => notifications.push(message) },
