@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without progress towards the Pi cap
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -59,3 +59,4 @@ Verified all criteria: `npm test` passed all 20 Pi integration tests (including 
 - 2026-11-03T21:20:49Z kind-marten: changed notes; wrote the plan
 - 2026-11-03T21:20:49Z kind-marten todo → doing
 - 2026-11-04T08:18:27Z kind-marten: changed notes; ticked acceptance criteria
+- 2026-11-04T08:18:38Z kind-marten doing → review
