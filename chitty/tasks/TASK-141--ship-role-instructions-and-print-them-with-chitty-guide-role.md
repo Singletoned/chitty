@@ -1,7 +1,7 @@
 ---
 title: Ship role instructions and print them with `chitty guide <role>`
 status: todo
-priority: medium
+priority: high
 depends_on:
   - TASK-126
 parent: TASK-140
@@ -43,8 +43,11 @@ Cold read by a fresh Sonnet subagent with `TASK-142` and `TASK-143`, 2026-11-04.
 
 Added on 2026-11-04 after `TASK-126` failed six reviews: when a reviewer may fail a ticket, and suggesting a split.
 
+Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
+
 ## History
 
 - 2026-11-04T11:56:18Z lively-panda → todo
 - 2026-11-04T12:00:37Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T14:36:50Z mellow-newt: changed description, notes
+- 2026-11-04T15:38:30Z mellow-newt: changed priority, notes
