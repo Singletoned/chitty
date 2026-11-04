@@ -56,7 +56,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
-- [ ] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
+- [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
 - [x] Tests show the order: `inbox --pull` happens and is skipped with no `project`; `setup` runs in the worktree on every run, before the claim, parsed without a shell; a failed `setup` leaves the ticket unclaimed; `review` mode changes no status
 - [x] A test shows a fake `pi` that does nothing on a `todo` ticket makes `chitty run` exit non-zero, with the ticket left in `doing`, and that the next run resumes it
@@ -169,6 +169,8 @@ Chosen coverage default: assert inbox-pull preclaim state in its patched callbac
 
 Review failed: criterion 5 is not met. `src/chitty/__init__.py` remains `0.1.24`, identical to `main`, and no `main..task-126` commit changes it. This change alters the `chitty.toml` template and existing-repository `init` behavior, so it must bump `__version__` above `main` in this branch. Then rerun `make check`.
 
+Verified criterion 5: release metadata now sets `__version__ = "0.1.25"`, above `main`'s `0.1.24`; existing setup documentation and migration coverage remain in place. Passed 'uv run python -m unittest tests.test_version' and 'make check' (ruff, pyright, 227 Python tests, 25 Node tests).
+
 ## Summary
 
 Handoff: strengthened black-box `chitty run` coverage for an already-linked worktree claim and inbox-pull ordering. Verification: `make check` passed (ruff, pyright, 227 Python tests, 25 Node tests). Review focus: `tests/test_next.py` assertions that the claim commit is on `task-1` and that a configured inbox pull occurs before ticket worktree or claim creation.
@@ -243,3 +245,4 @@ Handoff: strengthened black-box `chitty run` coverage for an already-linked work
 - 2026-11-04T13:31:08Z proud-jaguar: changed acceptance criteria, notes
 - 2026-11-04T13:31:08Z proud-jaguar review → doing
 - 2026-11-04T14:13:46Z ivory-falcon: wrote the plan
+- 2026-11-04T14:16:38Z ivory-falcon: changed notes; ticked acceptance criteria
