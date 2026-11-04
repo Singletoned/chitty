@@ -52,7 +52,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 
 ## Acceptance Criteria
 
-- [ ] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
+- [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
@@ -229,3 +229,4 @@ Implementation complete. The fake Pi records each run CHITTY_PI_SESSION_ID and d
 - 2026-11-04T13:12:55Z opal-otter: changed acceptance criteria, notes
 - 2026-11-04T13:12:55Z opal-otter review → doing
 - 2026-11-04T13:13:33Z opal-otter: changed acceptance criteria, notes
+- 2026-11-04T13:21:30Z eager-lynx: ticked acceptance criteria
