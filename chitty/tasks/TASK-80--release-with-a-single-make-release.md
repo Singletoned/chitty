@@ -1,6 +1,6 @@
 ---
 title: Release with a single `make release`
-status: doing
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -49,3 +49,4 @@ Built in the planning session as a comparison with the pipeline: 10 lines of `Ma
 - 2026-11-04T19:32:35Z mellow-newt: wrote the plan
 - 2026-11-04T19:32:35Z mellow-newt todo → doing
 - 2026-11-04T19:32:36Z mellow-newt: changed notes; ticked acceptance criteria
+- 2026-11-04T19:32:37Z mellow-newt doing → review
