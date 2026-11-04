@@ -1,6 +1,6 @@
 ---
 title: Treat a ticket with no priority as medium when ordering
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -30,6 +30,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04, requested by the human after I
 
 Claim continued on branch `task-139`; the initial `chitty inbox --pull` refreshed task state on `main` after this worktree was created, so the branch was rebased before this recorded claim commit.
 
+Ready for an independent review by an agent other than the implementation agent. Verified both criteria with focused regression tests and `make check`; `chitty check` passes.
+
 ## History
 
 - 2026-11-04T10:09:07Z lively-panda → todo
@@ -38,3 +40,5 @@ Claim continued on branch `task-139`; the initial `chitty inbox --pull` refreshe
 - 2026-11-04T12:29:12Z honest-falcon todo → doing
 - 2026-11-04T12:30:05Z honest-falcon: changed notes
 - 2026-11-04T12:33:21Z honest-falcon: ticked acceptance criteria
+- 2026-11-04T12:34:55Z honest-falcon: changed notes
+- 2026-11-04T12:34:55Z honest-falcon doing → review
