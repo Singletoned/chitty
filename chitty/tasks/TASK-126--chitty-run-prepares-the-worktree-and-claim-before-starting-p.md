@@ -1,7 +1,8 @@
 ---
 title: "`chitty run` prepares the worktree and claim before starting Pi"
-status: review
+status: blocked
 priority: high
+owner: human
 depends_on:
   - TASK-124
   - TASK-128
@@ -55,7 +56,7 @@ Out of scope: merging, gates and removing worktrees (`TASK-120`); non-Pi harness
 - [x] Tests with a fake `pi` and a real Git repository cover a `todo` ticket with no branch, a ticket with a branch and no worktree, a ticket with a worktree, and `review` with no branch: each checks the working directory `pi` receives and the branch holding the claim
 - [x] Tests show the main checkout has no new commits on its branch from the claim, that a second `chitty run` reuses the worktree, and that a `doing` ticket is not claimed again
 - [x] Tests cover `setup` unset and `setup` failing: each exits non-zero with a message and does not start `pi`
-- [x] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
+- [ ] Tests show arguments after `--` reach `pi`, and that the claim and a write from the fake `pi` record one actor, different from the actor of a second run
 - [x] Node tests show the prompts no longer mention creating worktrees, setup or claiming, and that startup refuses outside a linked worktree
 - [x] `PLAN.md`, `README.md` and the `chitty.toml` template document `setup`; `chitty init` handles existing repositories; `__version__` is bumped
 - [x] Tests cover the preflight refusals: `autocommit` off, `pi` missing and the main checkout without `main`, each leaving no worktree, branch or claim
@@ -152,6 +153,10 @@ updated TASK-2 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/.ctx-mod
 
 Re-verified criteria 5 and 15 after the repair: `npm test -- --test src/chitty/integrations/pi/tests/chitty.test.ts` passes all 25 tests. This includes the prompt assertions and the real Git main-checkout-subdirectory refusal. Criterion 16 was already checked; the prior `--check 16` was harmless.
 
+Review failed: Criterion 4 is not satisfied. `run` assigns UUID session identities, but `actor()` reduces each to one of 289 adjective-animal names, so distinct runs can record the same actor. For example, `forced-1` and `forced-10` both resolve to `eager-jaguar`. The two-run test uses random UUIDs and does not force a collision, so it can pass while violating the required actor isolation. Preserve a unique actor value for each run and add deterministic collision coverage.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Independent review handoff: fixed the three latest review findings in commit `23e2050`: the fake Pi asserts its working directory for an already-linked worktree; the linked-worktree guard compares Git paths resolved from `ctx.cwd`; and Node coverage runs real Git in a main-checkout subdirectory. Verification: `make check` passes (ruff, pyright, 227 Python tests, and 25 Node tests); `chitty check` and `chitty fix` pass with only pre-existing warnings in unrelated task files. Regression proof: the new Node test failed before the path-resolution fix and passes after it.
@@ -207,3 +212,5 @@ Independent review handoff: fixed the three latest review findings in commit `23
 - 2026-11-04T12:12:59Z daring-gecko: changed notes; ticked acceptance criteria
 - 2026-11-04T12:13:36Z daring-gecko: changed summary
 - 2026-11-04T12:13:36Z daring-gecko doing → review
+- 2026-11-04T12:20:56Z golden-gecko: changed owner, acceptance criteria, notes
+- 2026-11-04T12:20:56Z golden-gecko review → blocked
