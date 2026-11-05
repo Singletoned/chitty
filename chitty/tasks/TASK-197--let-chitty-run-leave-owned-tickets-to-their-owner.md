@@ -25,7 +25,7 @@ Out of scope: choosing a model from the owner, which remains a forwarded argumen
 
 - [x] `PLAN.md` and `README.md` describe the rules
 - [x] Tests show `--owner opus` on `chitty next` and `chitty run` selecting only that owner's tickets, whichever side of the forwarded arguments it comes, `--owner` after `--` being forwarded, and `--owner human`, `--owner ""` and `--ticket` with `--owner` each refused by `chitty run` with nothing committed
-- [ ] Tests with tickets owned by `opus` show plain `chitty next`, and a real `chitty run` with a fake agent, skipping them at `todo` and `doing`, which fail without the change, selecting one at `review`, still selecting tickets with no owner, and still skipping `human` at every status
+- [x] Tests with tickets owned by `opus` show plain `chitty next`, and a real `chitty run` with a fake agent, skipping them at `todo` and `doing`, which fail without the change, selecting one at `review`, still selecting tickets with no owner, and still skipping `human` at every status
 - [ ] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, which already passes and guards against a regression, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
 
 ## Plan
@@ -56,3 +56,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T21:19:01Z able-yellowhammer: wrote the plan
 - 2026-11-05T21:34:15Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T21:34:16Z able-yellowhammer: ticked acceptance criteria
+- 2026-11-05T21:34:17Z able-yellowhammer: ticked acceptance criteria
