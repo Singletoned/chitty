@@ -45,6 +45,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: "before anything change
 
 Changed 2026-11-04: the human chose an allow-list built from the command table on `TASK-155`, in place of `--dangerously-skip-permissions`.
 
+## Summary
+
+Implemented per-run agent selection with [agent_commands] configuration and `chitty run --agent NAME`. Validation occurs after setup/inbox refresh and before worktree creation or claim; default `agent_command` remains unchanged. Updated init migration, repository config, README, PLAN, version, and fake-agent regression tests.
+
+Verified: `make check` (ruff, pyright, 249 unittest tests, Node tests); `chitty fix` completed with existing archived-task Markdown warnings only. Commit `8413686` includes `Task: TASK-156`.
+
 ## History
 
 - 2026-11-04T17:58:11Z mellow-newt → backlog
@@ -58,3 +64,4 @@ Changed 2026-11-04: the human chose an allow-list built from the command table o
 - 2026-11-05T17:12:59Z open-eel: ticked acceptance criteria
 - 2026-11-05T17:13:00Z open-eel: ticked acceptance criteria
 - 2026-11-05T17:13:01Z open-eel: ticked acceptance criteria
+- 2026-11-05T17:13:02Z open-eel: changed summary
