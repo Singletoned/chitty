@@ -1,6 +1,6 @@
 ---
 title: Count other branches' tickets when allocating an ID
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -31,6 +31,8 @@ Suggestion origin: echonomicon
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. It reproduced the bug in a scratch repository: with tickets 2 and 3 only on another branch, `chitty add` on `main` gave `TASK-2`, so the criterion cannot pass with nothing built. Fixed: `PLAN.md` contradicting this; filtering `_history`; and not parsing contents, because `_tasks_in_location` raises on a bad file on any branch. Rejected: staleness, because the CLI and MCP open a new `Repo` per call, and renamed files, which only over-count.
 
+Reviewed: independently inspected the implementation, regression test, and PLAN.md; targeted branch-only active/archive allocation test passes, and make check passed ruff, pyright, and 269 unittest tests. Both acceptance criteria are met.
+
 ## Summary
 
 Implemented branch-aware ID allocation in Repo.next_number by scanning committed filenames from local and remote-tracking history across active and archive directories, while ignoring malformed filenames and file contents. Added a regression test covering active and archived tickets committed on a branch whose worktree is removed, and updated PLAN.md with visibility and collision rules. Verified with targeted regression, make check (ruff, pyright, 269 unittest tests passed); npm test emitted 26 dots but did not finish within the command timeout.
@@ -49,3 +51,5 @@ Implemented branch-aware ID allocation in Repo.next_number by scanning committed
 - 2026-11-05T20:56:26Z lively-vole: ticked acceptance criteria
 - 2026-11-05T20:56:36Z lively-vole: changed summary
 - 2026-11-05T20:56:36Z lively-vole doing → review
+- 2026-11-05T20:59:43Z daring-heron: changed notes
+- 2026-11-05T20:59:43Z daring-heron review → done
