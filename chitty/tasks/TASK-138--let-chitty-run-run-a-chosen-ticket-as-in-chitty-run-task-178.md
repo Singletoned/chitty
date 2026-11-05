@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` run a chosen ticket, as in `chitty run TASK-178`
-status: todo
+status: backlog
 priority: high
 depends_on:
   - TASK-126
@@ -39,6 +39,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: this named
 
 Changed 2026-11-05 at the human's request: they asked for `chitty run TASK-178`, not `--ticket`, with it in the help text, and it is now high priority. The earlier objection to a positional argument still holds for a declared one, so this reads only a first word shaped like an ID. Earlier notes describe `--ticket`.
 
+Held in `backlog` while the rewrite is cold-read.
+
 ## History
 
 - 2026-11-04T09:46:25Z lively-panda → todo
@@ -48,3 +50,5 @@ Changed 2026-11-05 at the human's request: they asked for `chitty run TASK-178`,
 - 2026-11-05T10:07:30Z mellow-newt: changed description
 - 2026-11-05T10:07:31Z mellow-newt: changed title, priority, acceptance criteria
 - 2026-11-05T10:07:32Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T10:07:45Z mellow-newt: changed notes
+- 2026-11-05T10:07:45Z mellow-newt todo → backlog
