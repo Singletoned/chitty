@@ -21,6 +21,12 @@ Out of scope: a timeout for `check` in `chitty run`, and changing what `chitty r
 - [ ] `make check` is shown timing out with stdin held open before the fix and passing that way after it, with the command recorded in a note
 - [ ] `test_run_inherits_stdin` still passes unchanged, so `chitty run` still gives the agent its stdin
 
+## Plan
+
+1. Inspect `tests/test_next.py` and the existing stdin-inheritance test.
+2. Reproduce the held-open-stdin `make check` timeout, then patch only `test_run_cases` to redirect descriptor 0 to `/dev/null` with cleanup restoration.
+3. Run focused tests and the full `make check`, including the held-open-stdin verification and unchanged inheritance test; record verification and set the ticket ready for review.
+
 ## Notes
 
 Same cold read as `TASK-144`. Fixed: the exact test and fix; a reproducible way to hold stdin open, showing the failure first; and the second criterion, which was already true and could not have failed, is now stated as a guard. Removed: looking for how a fake `pi` was orphaned for 19 hours. The interrupt test's fake sleeps for at most 60 seconds, so that test cannot explain it, and it is a separate oddity not needing a ticket yet. Rejected: stdin at a terminal, because pointing the descriptor at `/dev/null` covers it.
@@ -30,3 +36,4 @@ Same cold read as `TASK-144`. Fixed: the exact test and fix; a reproducible way 
 - 2026-11-04T12:32:20Z lively-panda → todo
 - 2026-11-04T12:34:35Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-05T22:04:14Z rosy-adder todo → doing
+- 2026-11-05T22:04:29Z rosy-adder: wrote the plan
