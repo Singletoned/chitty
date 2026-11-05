@@ -17,9 +17,17 @@ Directly after the `Backlog tasks need refinement` bullet in `guide.md`, add: "-
 - [ ] A test in `TestGuide` in `tests/test_cli.py` shows `guide()` containing `chitty guide plan`
 - [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `chitty guide plan`
 
+## Plan
+
+1. Update `src/chitty/guide.md` with the `chitty guide plan` pointer immediately after the backlog-refinement bullet.
+2. Add a `TestGuide` regression test asserting `guide()` includes the pointer.
+3. Bump `src/chitty/__init__.py`, run `uv run chitty init` to refresh the managed `AGENTS.md` block and `chitty.toml`, then run the required checks.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: a global `chitty init` in a worktree writes the wrong checkout's guide here. Also, comparing with `chitty guide` gives a false mismatch inside Pi, which adds an actor paragraph, and passed before any work, so the criterion now names the new text.
+
+Implementation will use the repository-local `uv run chitty init` as requested so generated files come from this checkout.
 
 ## History
 
@@ -28,3 +36,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: a global `chit
 - 2026-11-05T14:23:15Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:23:16Z mellow-newt backlog → todo
 - 2026-11-05T21:10:23Z quick-toad todo → doing
+- 2026-11-05T21:10:44Z quick-toad: changed notes; wrote the plan
