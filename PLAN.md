@@ -58,8 +58,10 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   true`, Chitty upgrades and commits setup separately before the requested
   write; otherwise it fails loudly and tells the caller to run `chitty init`.
   `chitty run` refreshes setup before selecting a ticket, committing setup-only
-  changes in a main checkout and doing nothing in a linked worktree. A Chitty
-  version older than the recorded setup refuses writes clearly.
+  changes in a main checkout and doing nothing in a linked worktree. From a
+  linked worktree, it refuses to run when the main checkout's setup is older or
+  unrecorded; run it from the main checkout instead. A Chitty version older than
+  the recorded setup refuses writes clearly.
   `chitty import backlog-md` is an explicit,
   one-way converter from a Backlog.md `backlog/` directory. Git history is the
   safety net, so it refuses to run, before writing anything, unless the Git

@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` from a ticket worktree changing `main`'s setup
-status: doing
+status: done
 priority: high
 created: 2026-11-05
 ---
@@ -17,12 +17,22 @@ Out of scope: stopping a worker starting a nested `chitty run` at all, and runni
 
 ## Acceptance Criteria
 
-- [ ] A test running `chitty run` from a linked worktree, with `main`'s `chitty.toml` recording an older version such as `0.0.1`, shows it failing with a message containing both versions and `from the main checkout`, `main`'s `HEAD` and `chitty.toml` unchanged, and the fake agent not started
-- [ ] `README.md`'s setup paragraph and the `PLAN.md` passage on `chitty run` setup, which both say linked worktrees leave setup alone, say that `chitty run` from a linked worktree refuses in this case
+- [x] A test running `chitty run` from a linked worktree, with `main`'s `chitty.toml` recording an older version such as `0.0.1`, shows it failing with a message containing both versions and `from the main checkout`, `main`'s `HEAD` and `chitty.toml` unchanged, and the fake agent not started
+- [x] `README.md`'s setup paragraph and the `PLAN.md` passage on `chitty run` setup, which both say linked worktrees leave setup alone, say that `chitty run` from a linked worktree refuses in this case
+
+## Plan
+
+Add a linked-worktree guard in run.py immediately after opening the main repository, comparing setup versions with _version_key and rejecting only missing/older main setup before preflight. Add focused integration coverage for the older-version refusal and verify no agent start or main checkout changes. Update the README and PLAN setup descriptions, then run the targeted tests and full make check.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a test recording a newer version would have passed with nothing built, because `check_setup_version` already refuses that, so the criterion now says older; where the check goes; a missing version; a newer version keeping its existing error; saying that refusing after a global upgrade is deliberate; and naming the docs, which are already misleading because the refresh runs on `main_repo`.
+
+Reviewed: acceptance criteria pass; focused regression and make check pass (242 unittest tests plus Node tests).
+
+## Summary
+
+Implemented a preflight guard that rejects `chitty run` from linked worktrees when main setup is older or unrecorded, without refreshing or mutating main. Added regression coverage proving the error includes both versions, main HEAD/config remain unchanged, and the fake agent is not started. Updated README.md and PLAN.md. Verified with the focused regression test and `make check` (ruff, pyright, 242 unittest tests, and Node tests).
 
 ## History
 
@@ -31,3 +41,9 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a test recording a newe
 - 2026-11-05T09:39:57Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T09:39:58Z mellow-newt backlog → todo
 - 2026-11-05T10:03:55Z human todo → doing
+- 2026-11-05T10:28:28Z honest-crane: wrote the plan
+- 2026-11-05T10:36:23Z honest-crane: ticked acceptance criteria
+- 2026-11-05T10:36:37Z honest-crane: changed summary
+- 2026-11-05T10:36:37Z honest-crane doing → review
+- 2026-11-05T10:41:43Z brisk-wren: changed notes
+- 2026-11-05T10:41:43Z brisk-wren review → done

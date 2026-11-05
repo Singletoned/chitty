@@ -194,6 +194,11 @@ def _version_key(value: str) -> tuple[int, ...]:
         raise ChittyError(f"invalid Chitty version {value!r}") from error
 
 
+def version_key(value: str) -> tuple[int, ...]:
+    """Return the numeric components used to compare Chitty versions."""
+    return _version_key(value)
+
+
 def check_setup_version(config: RepoConfig) -> None:
     recorded = config.chitty_version
     if recorded is not None and _version_key(recorded) > _version_key(CHITTY_VERSION):
