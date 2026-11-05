@@ -18,7 +18,7 @@ In `src/chitty/roles/plan.md`, replace the first sentence of the bullet starting
 
 Add a new bullet after the whole of that bullet, so that its text on recording outcomes stays with it:
 
-"Start an implementing read with `git worktree add --detach .worktrees/read-<ID>` and the repository's setup command, not on a branch, because Chitty reads tickets from every branch. Run the reader with `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` unset, or a shared install ends up pointing at a worktree about to be deleted. The reader runs no Chitty writes and leaves `chitty/` unchanged. It commits its own work, keeps it with `git update-ref refs/cold-read/<ID>/<n> HEAD`, where `<n>` is the next number free for that ticket, starting at 1, then runs `git worktree remove --force .worktrees/read-<ID>`. `git for-each-ref refs/cold-read` lists kept reads."
+"Start an implementing read with `git worktree add --detach .worktrees/read-<ID>` and the repository's setup command, not on a branch, because Chitty reads tickets from every branch. Run the reader with `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` unset, or a shared install ends up pointing at a worktree about to be deleted. The reader runs no Chitty writes and leaves `chitty/` unchanged. It commits its own work and, from inside the worktree, keeps it with `git update-ref refs/cold-read/<ID>/<n> HEAD`, where `<n>` is the next number free for that ticket, starting at 1, then runs `git worktree remove --force .worktrees/read-<ID>`. `git for-each-ref refs/cold-read` lists kept reads."
 
 Replace the "Cold read:" paragraph's description in `PLAN.md` so it agrees, recording the decision and date and why a ref rather than a branch. This file ships to every repository, so do not name `make` or a particular model. `src/chitty/roles/plan.md` does not reach `AGENTS.md`, so no `chitty init` or version bump is needed. `TASK-188` adds bullets to the same file and sets a limit of about 35 lines: that limit may grow to about 45 for this, and whichever lands second merges the wording.
 
@@ -43,6 +43,8 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 
 Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-194/3`: nothing serious. The test failed on all seven phrases without the change and passed with it, and `make check` exited 0. Rejected: testing `PLAN.md` and the removal of the old sentence, because the wording is given whole and a reviewer can compare it; a ticket that changes only Markdown and adds a test, which has something to run, so it is implemented; naming `uv` tools in a shared file, because the two variable names are what prevents the fault and do nothing elsewhere; a command wrapped inside backticks, which a worker can avoid when wrapping; and how to find `<n>`, because the same bullet gives `git for-each-ref refs/cold-read`.
 
+Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref ... HEAD` from the main checkout and first kept `main`'s commit instead of its own. It noticed and corrected this. One clause; the criteria's phrases still match, so no further read.
+
 ## History
 
 - 2026-11-05T17:52:45Z mellow-newt → backlog
@@ -58,3 +60,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T18:19:22Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:31:22Z mellow-newt: changed notes
 - 2026-11-05T18:31:23Z mellow-newt backlog → todo
+- 2026-11-05T18:39:16Z mellow-newt: changed description, notes
