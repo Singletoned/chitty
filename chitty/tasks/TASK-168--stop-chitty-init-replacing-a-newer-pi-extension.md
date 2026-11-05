@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty init` replacing a newer Pi extension
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -33,9 +33,11 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the state file's format
 
 Verified both acceptance criteria after implementation. `make check` passed; the first 120-second run timed out during the full suite, and the subsequent 300-second run completed successfully.
 
+Reviewed: independently inspected the implementation and all acceptance criteria; make check passed (268 Python tests and Node tests), and the diff is clean. Newer extensions are preserved with a stderr recovery warning, setup continues, and versioned/hash-only state handling is covered.
+
 ## Summary
 
-Implemented versioned Pi extension state with the hash on line one and Chitty version on line two. Locally edited extensions remain refused; older Chitty warns and leaves newer extensions untouched while init continues, while equal/newer running versions replace and record the version. Verification: `make check` passed (268 Python tests and Node tests); focused Pi/init tests passed. Follow-up: none.
+Reviewed and passed. Independently inspected the implementation and acceptance criteria; make check passed (268 Python tests and Node tests).
 
 ## History
 
@@ -47,3 +49,5 @@ Implemented versioned Pi extension state with the hash on line one and Chitty ve
 - 2026-11-05T20:32:12Z kind-adder: changed summary; ticked acceptance criteria
 - 2026-11-05T20:32:13Z kind-adder: changed notes
 - 2026-11-05T20:32:13Z kind-adder doing → review
+- 2026-11-05T20:35:58Z intrepid-eel: changed notes, summary
+- 2026-11-05T20:35:58Z intrepid-eel review → done
