@@ -1,7 +1,8 @@
 ---
 title: Have agents get their prompt from `chitty guide`
-status: doing
+status: blocked
 priority: high
+owner: human
 depends_on:
   - TASK-141
   - TASK-136
@@ -39,6 +40,8 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 
 Real check: ran `chitty run` against the committed implementation. The configured Pi work session started and exited with `TASK-142 was unchanged; only committed changes are visible to chitty run`; no status change was made, so the session did not provide observable evidence of the role instructions beyond the passing fake-agent and extension tests.
 
+Human verification needed for criterion 4: the real `chitty run` invocation launched the configured Pi session but returned unchanged without exposing the initial prompt, so I cannot verify that the visible session began with role instructions. Please run it interactively and confirm the first prompt, then move the ticket to doing and tick criterion 4.
+
 ## History
 
 - 2026-11-04T11:56:19Z lively-panda → todo
@@ -48,3 +51,5 @@ Real check: ran `chitty run` against the committed implementation. The configure
 - 2026-11-05T09:09:26Z upbeat-quail: wrote the plan
 - 2026-11-05T09:16:59Z upbeat-quail: changed notes
 - 2026-11-05T09:17:00Z upbeat-quail: ticked acceptance criteria
+- 2026-11-05T09:17:17Z upbeat-quail: changed owner, notes
+- 2026-11-05T09:17:17Z upbeat-quail doing → blocked
