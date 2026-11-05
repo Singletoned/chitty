@@ -26,7 +26,7 @@ Not in scope: two workers or two reviewers, because the claim is not atomic; and
 
 ## Acceptance Criteria
 
-- [ ] `README.md` and `PLAN.md` describe running one of each, including what a collision looks like, and the inbox test no longer reads other sessions' suggestions
+- [x] `README.md` and `PLAN.md` describe running one of each, including what a collision looks like, and the inbox test no longer reads other sessions' suggestions
 - [ ] A test using real `chitty run` subprocesses overlaps a work session and a review session on different tickets, and both report the right status with different actors in the tickets' history
 
 ## Plan
@@ -56,3 +56,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: w
 - 2026-11-05T14:23:12Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T19:34:22Z nimble-vole todo → doing
 - 2026-11-05T19:34:34Z nimble-vole: wrote the plan
+- 2026-11-05T20:16:31Z nimble-vole: ticked acceptance criteria
