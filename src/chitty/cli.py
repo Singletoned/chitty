@@ -38,6 +38,7 @@ from chitty.store import (
     matches,
     next_action,
     ordered,
+    renumbered_dict,
     resolve_add_target,
 )
 from chitty.upgrade import check_for_upgrade
@@ -640,6 +641,26 @@ def move(task_id: str, context: str, as_json: bool) -> None:
     if not as_json:
         for touched in change.paths[2:]:
             click.echo(f"rewrote reference in {touched}")
+
+
+@cli.command()
+@click.argument("path", type=click.Path(path_type=Path))
+@json_option
+def renumber(path: Path, as_json: bool) -> None:
+    """Give one of several files sharing an ID the next number in its context.
+
+    PATH is the task file to change. It keeps its slug and records moved_from.
+    References are not rewritten, because a reference to a shared ID cannot say
+    which file it meant: each ticket naming the old ID is listed to check.
+    """
+    change, references = _repo().renumber(path)
+    if as_json:
+        _print_json(renumbered_dict(change, references))
+        return
+    _report(change, as_json, "renumbered")
+    old = change.task.task.frontmatter.moved_from
+    for reference in references:
+        click.echo(f"check reference to {old} in {reference.id} {reference.path}")
 
 
 @cli.command()

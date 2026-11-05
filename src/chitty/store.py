@@ -549,15 +549,14 @@ class Repo:
             raise ChittyError(f"{task_id} is already in context {target.name!r}")
         new_id = TaskId(target.prefix, self.next_number(target))
         directory = target.archive_directory if stored.archived else target.directory
-        new_path = directory / ids.filename(new_id, stored.slug)
-        task = stored.task.with_field("moved_from", str(task_id))
         old, new = str(task_id), str(new_id)
-        task = task.with_field("depends_on", _replace(task.frontmatter.depends_on, old, new))
-        if task.frontmatter.parent == old:
-            task = task.with_field("parent", new)
-        self._write(new_path, task.render())
-        stored.path.unlink()
-        touched = [stored.path, new_path]
+        moved_task = stored.task.with_field(
+            "depends_on", _replace(stored.task.frontmatter.depends_on, old, new)
+        )
+        if moved_task.frontmatter.parent == old:
+            moved_task = moved_task.with_field("parent", new)
+        moved = self._relocate(stored, new_id, target, directory, moved_task)
+        touched = [stored.path, moved.path]
         changes: list[Change] = []
         for other in self.all_tasks():
             task = other.task
@@ -570,9 +569,68 @@ class Repo:
             change = self._save(other, task)
             touched += change.paths
             changes.append(change)
-        moved = StoredTask(new_id, target.name, new_path, stored.archived, task)
         tasks = _unique_tasks((moved, *(task for change in changes for task in change.tasks)))
         return self._commit(Change(moved, tuple(touched), tasks), "move")
+
+    def renumber(self, path: Path) -> tuple[Change, tuple[StoredTask, ...]]:
+        """Give one of several files sharing an ID the next number in its context.
+
+        The file is found through `scan`, because `find` and `all_tasks` collapse
+        files sharing an ID into one. References are not rewritten: a reference
+        to a shared ID cannot say which file it meant, so the tickets naming the
+        old ID are returned for a person to check.
+        """
+        context, archived, found = self._locate_task_file(path.resolve())
+        directory = context.archive_directory if archived else context.directory
+        stored = self._load(context, found, archived)
+        task_id = stored.id
+        others = [
+            other
+            for other_archived in (False, True)
+            for other in self._files(context, other_archived)
+            if other != found and ids.parse_filename(other.name)[0] == task_id
+        ]
+        if not others:
+            raise ChittyError(
+                f"{task_id} is used by no other file; use `chitty move` to give it a new ID"
+            )
+        # Refuse before preparing the write, so a refused renumber changes nothing.
+        self._prepare_write()
+        new_id = TaskId(context.prefix, self.next_number(context))
+        renumbered = self._relocate(stored, new_id, context, directory, stored.task)
+        change = self._commit(
+            Change(renumbered, (stored.path, renumbered.path), (renumbered,)), "renumber"
+        )
+        old = str(task_id)
+        references = tuple(
+            other
+            for other in self.all_tasks()
+            if other.id != new_id
+            and (old in other.task.frontmatter.depends_on or other.task.frontmatter.parent == old)
+        )
+        return change, references
+
+    def _locate_task_file(self, path: Path) -> tuple[Context, bool, Path]:
+        """The context, archive flag and scanned path of a task file, without collapsing IDs."""
+        for context in self.contexts():
+            for archived in (False, True):
+                for candidate, problem in scan(context, archived):
+                    if candidate.resolve() != path:
+                        continue
+                    if problem:
+                        raise ChittyError(f"{path}: {problem}")
+                    return context, archived, candidate
+        raise ChittyError(f"{path} is not a task file in a context of this repository")
+
+    def _relocate(
+        self, stored: StoredTask, new_id: TaskId, context: Context, directory: Path, task: Task
+    ) -> StoredTask:
+        """Write a task under a new ID, recording its old one, and remove the old file."""
+        new_path = directory / ids.filename(new_id, stored.slug)
+        task = task.with_field("moved_from", str(stored.id))
+        self._write(new_path, task.render())
+        stored.path.unlink()
+        return StoredTask(new_id, context.name, new_path, stored.archived, task)
 
     # -- helpers ---------------------------------------------------------
 
@@ -683,6 +741,14 @@ def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:
         "A human should decide how to proceed, then unblock it."
     )
     return replace(edit, status="blocked", owner="human", notes=(*edit.notes, reason))
+
+
+def renumbered_dict(change: Change, references: Sequence[StoredTask]) -> dict[str, Any]:
+    """The JSON both front ends return for `renumber`."""
+    return {
+        "task": change.task.as_dict(),
+        "references": [{"id": str(task.id), "path": str(task.path)} for task in references],
+    }
 
 
 def _unique_tasks(tasks: Sequence[StoredTask]) -> tuple[StoredTask, ...]:

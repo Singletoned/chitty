@@ -19,7 +19,15 @@ from chitty.inbox import list_waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
 from chitty.model import STATUSES
-from chitty.store import Edit, Repo, guide, matches, next_action, resolve_add_target
+from chitty.store import (
+    Edit,
+    Repo,
+    guide,
+    matches,
+    next_action,
+    renumbered_dict,
+    resolve_add_target,
+)
 
 Status = Literal["backlog", "todo", "doing", "blocked", "review", "done"]
 Priority = Literal["low", "medium", "high"]
@@ -202,6 +210,15 @@ def note(id: str, text: str) -> dict[str, Any]:
 def move(id: str, context: str) -> dict[str, Any]:
     repo = _repo()
     return repo.move(repo.resolve(id), repo.context(context)).task.as_dict()
+
+
+@_tool(
+    "renumber",
+    "Give one of several task files sharing an ID the next number; lists tickets to check.",
+)
+def renumber(path: str) -> dict[str, Any]:
+    change, references = _repo().renumber(Path(path))
+    return renumbered_dict(change, references)
 
 
 @_tool("archive", "Archive one task, or every non-archived done task when `id` is omitted.")
