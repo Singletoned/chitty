@@ -45,6 +45,13 @@ Out of scope: CRLF, because `read_text` and `write_text` already normalise a who
 - [ ] Tests show a marked block replaced with text before and after it unchanged, including unheaded text after it and a guide containing a backslash, a second `chitty init` changing nothing, and `prettier` leaving the result unchanged
 - [ ] Tests show a begin with no end, an end with no begin, reversed markers and two pairs each failing `chitty init` with a message naming `AGENTS.md`, with the file unchanged, and a stale repository in that state warning on a write, with the write succeeding and the version not advanced
 
+## Plan
+
+1. Inspect init_repo, _prepare_write, import_backlog, existing tests, README.md, and versioning.
+2. Implement strict marker parsing, migration, distinct error handling, and stale-upgrade warning behavior without changing guide output.
+3. Add focused unittest coverage for creation, migration, replacement/idempotence, malformed markers, and stale writes; update README.md and PLAN.md and bump version.
+4. Run focused tests, then make format and make check; inspect the final diff and commit with Task: TASK-144.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent with `TASK-145`, 2026-11-04. Fixed: a damaged marker stopping every write through `_prepare_write`, the most serious finding; the repair path, including an older `chitty init` causing the damage; and "byte for byte", which overstated it because `read_text` normalises line endings. Found by testing its question: `prettier` and `mdformat` both changed my marker layout, so the block now has blank lines they leave alone. Rejected: a guard in old code, which cannot be added to versions already out there. A `## Chitty` line in a code fence triggering migration, and a hand-edited `## chitty` heading getting a second block, because both are rare, visible in Git and already happen today. `AGENTS.md` being a symlink, because `write_text` follows it. A regular-file `CLAUDE.md`, which already fails earlier in `init_repo`. An explicit test for an absent `AGENTS.md`, which criterion 2 already covers.
@@ -54,3 +61,4 @@ Cold read by a fresh Sonnet subagent with `TASK-145`, 2026-11-04. Fixed: a damag
 - 2026-11-04T12:31:58Z lively-panda → todo
 - 2026-11-04T12:34:33Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-05T21:47:42Z intrepid-eel todo → doing
+- 2026-11-05T21:47:58Z intrepid-eel: wrote the plan
