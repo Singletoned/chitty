@@ -24,7 +24,6 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 
 - [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
 - [ ] `README.md` and `PLAN.md` describe the option, and a test shows `chitty run --help` listing `--ticket` and its description saying it runs the next ticket or the named one
-- [ ] A test with a fake agent shows `--ticket` running a lower-priority `todo` ticket in work mode ahead of what `chitty next` selects, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
 - [ ] A test shows other arguments still reaching the agent with `--ticket` before or after them, a bare number resolving, and `chitty run` without the option behaving as before
 
 ## Notes
@@ -72,3 +71,4 @@ Held in `backlog` for a cold read of the restored `--ticket` design.
 - 2026-11-05T10:27:41Z mellow-newt: changed notes
 - 2026-11-05T10:27:41Z mellow-newt todo → backlog
 - 2026-11-05T10:28:41Z mellow-newt: changed description
+- 2026-11-05T10:28:42Z mellow-newt: changed acceptance criteria
