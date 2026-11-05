@@ -1,6 +1,6 @@
 ---
 title: Stop `make check` hanging when stdin stays open
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -47,3 +47,4 @@ Implemented the test-only stdin isolation in `tests/test_next.py`: `test_run_cas
 - 2026-11-05T22:09:40Z rosy-adder: ticked acceptance criteria
 - 2026-11-05T22:09:41Z rosy-adder: ticked acceptance criteria
 - 2026-11-05T22:09:48Z rosy-adder: changed summary
+- 2026-11-05T22:09:59Z rosy-adder doing → review
