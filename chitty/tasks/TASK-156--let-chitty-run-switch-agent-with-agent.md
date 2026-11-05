@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` switch agent with `--agent`
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-137
@@ -28,15 +28,30 @@ Out of scope: switching automatically when tokens run out.
 
 ## Acceptance Criteria
 
-- [ ] Tests show an unknown name failing with the available names, and an invalid entry failing like `agent_command`, with no claim and no worktree
-- [ ] `README.md` and `PLAN.md` describe the table, this repository sets the `claude` entry, and `__version__` is bumped above `main`'s
-- [ ] Tests with fake agents show `--agent` starting that command for one run, with other arguments forwarded and the option not, and the default used without it
+- [x] Tests show an unknown name failing with the available names, and an invalid entry failing like `agent_command`, with no claim and no worktree
+- [x] `README.md` and `PLAN.md` describe the table, this repository sets the `claude` entry, and `__version__` is bumped above `main`'s
+- [x] Tests with fake agents show `--agent` starting that command for one run, with other arguments forwarded and the option not, and the default used without it
+
+## Plan
+
+1. Extend configuration parsing and init templates with an optional [agent_commands] table, preserving agent_command as the default.
+2. Add run --agent as a Click-only option and select/validate the chosen command after setup refresh and inbox pull, before claiming; preserve forwarding of all other arguments.
+3. Add focused fake-agent tests for selection, forwarding, defaults, and validation/no side effects; update README.md, PLAN.md, repository config, and version.
+4. Run the regression test first where practical, then make format/check, tick verified criteria, run chitty fix, record summary, and set review.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: "before anything changes", which is false because validation follows the pull and refresh, so it now says where; `--agent` with `agent_command` unset; no table; messages naming the entry; and where the table goes in the file. Rejected: depending on `TASK-138`, because one ticket is in work at a time and the second rebases; an `agent` field in the usage log, because `models` already shows provider and model, and can be added if the comparison needs it; validating names, because any TOML key works and an unknown one fails.
 
 Changed 2026-11-04: the human chose an allow-list built from the command table on `TASK-155`, in place of `--dangerously-skip-permissions`.
+
+Reviewed: inspected the implementation, configuration/init migration, documentation, and regression tests. Acceptance criteria verified; make check and npm test pass (249 Python tests, Node tests). chitty fix completed with existing archived-task Markdown warnings only.
+
+## Summary
+
+Implemented per-run agent selection with [agent_commands] configuration and `chitty run --agent NAME`. Validation occurs after setup/inbox refresh and before worktree creation or claim; default `agent_command` remains unchanged. Updated init migration, repository config, README, PLAN, version, and fake-agent regression tests.
+
+Verified: `make check` (ruff, pyright, 249 unittest tests, Node tests); `chitty fix` completed with existing archived-task Markdown warnings only. Commit `8413686` includes `Task: TASK-156`.
 
 ## History
 
@@ -46,3 +61,12 @@ Changed 2026-11-04: the human chose an allow-list built from the command table o
 - 2026-11-04T20:32:38Z mellow-newt: changed description, notes
 - 2026-11-05T10:07:34Z mellow-newt: changed description
 - 2026-11-05T10:23:45Z mellow-newt: changed description
+- 2026-11-05T17:00:07Z open-eel todo → doing
+- 2026-11-05T17:00:24Z open-eel: wrote the plan
+- 2026-11-05T17:12:59Z open-eel: ticked acceptance criteria
+- 2026-11-05T17:13:00Z open-eel: ticked acceptance criteria
+- 2026-11-05T17:13:01Z open-eel: ticked acceptance criteria
+- 2026-11-05T17:13:02Z open-eel: changed summary
+- 2026-11-05T17:13:07Z open-eel doing → review
+- 2026-11-05T18:19:34Z tidy-jay: changed notes
+- 2026-11-05T18:19:34Z tidy-jay review → done

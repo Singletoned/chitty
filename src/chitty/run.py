@@ -37,7 +37,12 @@ class RunResult:
     new_status: str
 
 
-def run(repo: Repo, ticket: str | None, arguments: tuple[str, ...] = ()) -> RunResult:
+def run(
+    repo: Repo,
+    ticket: str | None,
+    arguments: tuple[str, ...] = (),
+    agent: str | None = None,
+) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
     main_root = _main_checkout(repo.root)
     main_repo = Repo.open(main_root)
@@ -60,7 +65,7 @@ def run(repo: Repo, ticket: str | None, arguments: tuple[str, ...] = ()) -> RunR
         if ticket is not None
         else next_action(main_repo)
     )
-    agent_command = _agent_command(main_repo, action)
+    agent_command = _agent_command(main_repo, action, agent)
     stored = main_repo.find(action.id)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
@@ -267,21 +272,32 @@ def _preflight(repo: Repo) -> None:
         raise ChittyError("the main checkout must be on branch main")
 
 
-def _agent_command(repo: Repo, action: NextAction) -> tuple[str, ...]:
-    """Parse and validate the configured command after setup refreshes it."""
-    command = repo.config.agent_command
+def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> tuple[str, ...]:
+    """Parse and validate the selected command after setup refreshes it."""
+    if agent is None:
+        setting = "agent_command"
+        command = repo.config.agent_command
+    else:
+        available = sorted(repo.config.agent_commands)
+        if agent not in repo.config.agent_commands:
+            names = ", ".join(available) if available else "none"
+            raise ChittyError(f"unknown agent {agent!r}; available names: {names}")
+        setting = f"agent_commands.{agent}"
+        command = repo.config.agent_commands[agent]
     example = (
         'agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
         '--chitty-{mode} {id}"'
     )
     if command is None or not command.strip():
-        raise ChittyError(f"`chitty run` requires agent_command; for example: {example}")
+        if setting == "agent_command":
+            raise ChittyError(f"`chitty run` requires agent_command; for example: {example}")
+        raise ChittyError(f"`chitty run` requires {setting}")
     try:
         words = shlex.split(command)
     except ValueError as error:
-        raise ChittyError(f"invalid agent_command: {error}") from None
+        raise ChittyError(f"invalid {setting}: {error}") from None
     if ("{mode}" not in command or "{id}" not in command) and "{prompt}" not in command:
-        raise ChittyError("agent_command must contain both {mode} and {id}, or {prompt}")
+        raise ChittyError(f"{setting} must contain both {{mode}} and {{id}}, or {{prompt}}")
     prompt = guide(action.mode, str(action.id)) if "{prompt}" in command else ""
     rendered = tuple(
         os.path.expanduser(word)
@@ -292,12 +308,10 @@ def _agent_command(repo: Repo, action: NextAction) -> tuple[str, ...]:
     )
     first = rendered[0]
     if "/" in first and not Path(first).is_absolute():
-        raise ChittyError(
-            "agent_command must use an absolute path when its first word contains '/'"
-        )
+        raise ChittyError(f"{setting} must use an absolute path when its first word contains '/'")
     executable = shutil.which(first)
     if executable is None:
-        raise ChittyError(f"agent_command executable is not on PATH: {first}")
+        raise ChittyError(f"{setting} executable is not on PATH: {first}")
     # Resolve now: a relative PATH entry can point elsewhere after changing to the worktree.
     resolved = Path(executable)
     if not resolved.is_absolute():

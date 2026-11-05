@@ -42,6 +42,8 @@ prefix = "TASK"
 [contexts.human]
 prefix = "HUMAN"
 review = false
+
+[agent_commands]
 """
 
 
@@ -71,6 +73,7 @@ class RepoConfig(BaseModel):
     autoformat: str | None = None
     setup: str | None = None
     agent_command: str | None = None
+    agent_commands: dict[str, str] = {}
     archive: Literal["move", "delete"] = "move"
     contexts: dict[str, ContextConfig]
 
