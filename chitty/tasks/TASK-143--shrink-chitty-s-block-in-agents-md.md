@@ -13,7 +13,7 @@ created: 2026-11-04
 
 Third of three parts of `TASK-140`. `AGENTS.md` belongs to the repository, so reduce Chitty's block there to what every session needs, now that each role has its own instructions.
 
-Rewrite `src/chitty/guide.md` to about ten lines: tasks live in `chitty/`; use the CLI or MCP and do not hand-edit task files; backticks for paths and code; `chitty --help` for commands; and which `chitty guide <role>` to run, for a person who starts an agent by hand. `TASK-141` has already given every other rule a home and accounted for them in a note: check that against the final text.
+Rewrite `src/chitty/guide.md` to about ten lines: tasks live in `chitty/`; use the CLI or MCP and do not hand-edit task files; backticks for paths and code; `chitty --help` for commands; and which `chitty guide <role>` to run, for a person who starts an agent by hand, keeping the pointer to `chitty guide plan` from `TASK-187`. `TASK-141` has already given every other rule a home and accounted for them in a note: check that against the final text.
 
 `chitty init` already replaces the block, so existing repositories pick this up through the version bump. `TASK-144` makes that replacement exact. Run it here so this repository's `AGENTS.md` matches. In this repository's own section, replace the cold-read pointer with `chitty guide plan`, and drop anything the block no longer needs.
 
@@ -37,3 +37,4 @@ Changed 2026-11-04: the human decided the block should have strict markers, in `
 - 2026-11-04T11:56:20Z lively-panda → todo
 - 2026-11-04T12:00:40Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T12:32:19Z lively-panda: changed dependencies, description, acceptance criteria, notes
+- 2026-11-05T14:23:17Z mellow-newt: changed description
