@@ -881,6 +881,7 @@ class TestNext(CliTestCase):
             "    import pathlib\n"
             "    pathlib.Path(os.environ['CHITTY_USAGE_FILE']).write_text('not json')\n"
             "if os.environ.get('PI_SIGNAL'):\n"
+            "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
             "    os.kill(os.getpid(), signal.SIGINT)\n"
             "sys.exit(int(os.environ.get('PI_EXIT', '0')))\n"
         )
