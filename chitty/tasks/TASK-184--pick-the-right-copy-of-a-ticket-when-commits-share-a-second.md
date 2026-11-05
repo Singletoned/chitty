@@ -1,6 +1,6 @@
 ---
 title: Pick the right copy of a ticket when commits share a second
-status: todo
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -24,9 +24,13 @@ Out of scope: two unrelated branches changing one ticket in the same second, whe
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the serious one, that the criterion could pass with nothing built, because a child normally already comes first and a branch sorting before `main` would never lose, so it now names `main` and `task-1`; I ran this rather than assuming it. Also fixed: the stated cause, leaving `store.py` alone, and the cost. Filed separately: a conflict-resolved merge possibly dropping a ticket. No version bump: confirmed.
 
+Moved to `doing` by the planning session so it runs next: the release is waiting on it.
+
 ## History
 
 - 2026-11-05T12:04:19Z mellow-newt → backlog
 - 2026-11-05T12:06:13Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T12:06:14Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T12:06:15Z mellow-newt backlog → todo
+- 2026-11-05T12:06:31Z mellow-newt: changed notes
+- 2026-11-05T12:06:31Z mellow-newt todo → doing
