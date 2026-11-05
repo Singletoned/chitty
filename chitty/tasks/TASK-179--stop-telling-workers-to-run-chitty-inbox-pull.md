@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -28,3 +28,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md
 - 2026-11-05T09:40:00Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T09:40:01Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T09:40:02Z mellow-newt backlog → todo
+- 2026-11-05T23:20:21Z open-dormouse todo → doing
