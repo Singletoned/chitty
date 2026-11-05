@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-127
@@ -35,6 +35,10 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: the write 
 
 Added 2026-11-04 from the cold read of `TASK-157`: a null `cost`, because this ticket holds the validation it would otherwise have to change.
 
+## Summary
+
+Implemented finally-based usage logging for non-zero, interrupted, unchanged, and successful runs. Invalid or missing usage warns and records models=null; nullable costs preserve token totals and produce null aggregate cost; log write failures warn without masking the original result. Added lifecycle, validation, nullable-cost, and write-failure tests. Verified targeted tests, all 246 Python tests, Ruff, and Pyright; npm test emitted all passing dots but did not print a final summary before the harness timeout.
+
 ## History
 
 - 2026-11-04T15:11:30Z mellow-newt → todo
@@ -46,3 +50,5 @@ Added 2026-11-04 from the cold read of `TASK-157`: a null `cost`, because this t
 - 2026-11-05T15:14:57Z able-vole: ticked acceptance criteria
 - 2026-11-05T15:14:58Z able-vole: ticked acceptance criteria
 - 2026-11-05T15:14:59Z able-vole: ticked acceptance criteria
+- 2026-11-05T15:15:20Z able-vole: changed summary
+- 2026-11-05T15:15:20Z able-vole doing → review
