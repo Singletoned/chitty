@@ -1,6 +1,6 @@
 ---
 title: Do not fail `chitty run` when a passed review removes its worktree
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -42,3 +42,4 @@ Implemented fallback status reporting for agents that remove their worktree. `ch
 - 2026-11-05T09:57:30Z lively-marten: ticked acceptance criteria
 - 2026-11-05T09:57:31Z lively-marten: ticked acceptance criteria
 - 2026-11-05T09:57:32Z lively-marten: changed summary
+- 2026-11-05T09:57:33Z lively-marten doing → review
