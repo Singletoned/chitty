@@ -2,7 +2,6 @@
 title: Log usage for failed and interrupted runs
 status: blocked
 priority: high
-owner: human
 depends_on:
   - TASK-127
 parent: TASK-106
@@ -22,7 +21,7 @@ Out of scope: anything in the Pi extension, and any report.
 ## Acceptance Criteria
 
 - [x] Tests show a line still written, with `models` null and a warning on stderr, for a missing and an invalid usage file
-- [ ] Tests show `status_after` correct and the exit code kept for an agent that exits non-zero, a Ctrl-C and an unchanged status
+- [x] Tests show `status_after` correct and the exit code kept for an agent that exits non-zero, a Ctrl-C and an unchanged status
 - [x] A test shows a failure writing the log warning on stderr and keeping the exit code
 - [x] A test shows a `cost` of null accepted without a warning, summing to a null `cost` with the tokens still added
 
@@ -74,3 +73,4 @@ Implemented a single usage-reading finally path so failed, interrupted, and unch
 - 2026-11-05T16:35:33Z eager-eel doing → review
 - 2026-11-05T16:40:42Z brisk-eel: changed owner, acceptance criteria, notes
 - 2026-11-05T16:40:42Z brisk-eel review → blocked
+- 2026-11-05T17:04:59Z mellow-newt: changed owner; ticked acceptance criteria
