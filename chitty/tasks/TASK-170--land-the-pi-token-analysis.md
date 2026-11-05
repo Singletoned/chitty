@@ -12,7 +12,7 @@ The `pi-token-analysis` branch holds `docs/pi-token-usage.md`, which these ticke
 
 ## Acceptance Criteria
 
-- [ ] `main` has `docs/pi-token-usage.md`, with a line at its top naming these tickets, and `scripts/`, and `make check` passes
+- [x] `main` has `docs/pi-token-usage.md`, with a line at its top naming these tickets, and `scripts/`, and `make check` passes
 
 ## Plan
 
@@ -29,3 +29,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: how to take the commits
 - 2026-11-04T21:44:20Z mellow-newt backlog → todo
 - 2026-11-05T23:00:15Z jolly-eel todo → doing
 - 2026-11-05T23:00:27Z jolly-eel: wrote the plan
+- 2026-11-05T23:09:23Z jolly-eel: ticked acceptance criteria
