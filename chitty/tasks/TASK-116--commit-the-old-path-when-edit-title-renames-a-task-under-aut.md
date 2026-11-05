@@ -1,6 +1,6 @@
 ---
 title: Commit the old path when `edit --title` renames a task under autocommit
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -26,3 +26,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Added the root cause, and a ch
 - 2026-11-03T10:28:43Z lively-panda → backlog
 - 2026-11-04T19:36:33Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T19:36:34Z mellow-newt backlog → todo
+- 2026-11-05T07:42:14Z jolly-crane todo → doing
