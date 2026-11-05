@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` read a branch that adds a `chitty.toml` key
-status: todo
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -46,3 +46,4 @@ Removed the version warning, which duplicated `TASK-135`, as I found when anothe
 - 2026-11-04T17:34:51Z mellow-newt: changed title, description, acceptance criteria, notes
 - 2026-11-04T17:34:51Z mellow-newt backlog → todo
 - 2026-11-04T21:00:14Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-05T08:18:01Z lively-puffin todo → doing
