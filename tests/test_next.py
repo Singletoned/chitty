@@ -1111,6 +1111,51 @@ class TestNext(CliTestCase):
             "review",
         )
 
+    def test_run_from_linked_worktree_refuses_older_main_setup(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        worktree = self.tmp / "worker"
+        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+        config.write_text(config.read_text().replace(CHITTY_VERSION, "0.0.1"))
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "older setup")
+        before = self.git("rev-parse", "HEAD")
+        main_config = config.read_text()
+        marker = self.tmp / "agent-started"
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "from pathlib import Path\n"
+            "Path(" + repr(str(marker)) + ").touch()\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous_path}"
+        previous_cwd = os.getcwd()
+        os.chdir(worktree)
+        try:
+            result = self.run_cli("run", exit_code=1)
+        finally:
+            os.chdir(previous_cwd)
+            os.environ["PATH"] = previous_path
+        self.assertIn(CHITTY_VERSION, result.stderr)
+        self.assertIn("0.0.1", result.stderr)
+        self.assertIn("from the main checkout", result.stderr)
+        self.assertEqual(self.git("rev-parse", "HEAD"), before)
+        self.assertEqual(config.read_text(), main_config)
+        self.assertFalse(marker.exists())
+
     def test_run_from_another_worktree_uses_the_branch_not_main(self):
         config = self.root / "chitty.toml"
         config.write_text(

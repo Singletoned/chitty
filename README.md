@@ -146,8 +146,10 @@ avoid reusing IDs. The default, `archive = "move"`, retains task files.
 stale setup, but writes without `autocommit` require `chitty init` first;
 with `autocommit = true`, Chitty commits the setup upgrade separately before
 writing. `chitty run` also refreshes setup before starting the agent: in a main Git
-checkout it commits changed setup files separately, but linked worktrees leave
-setup alone. Contexts are configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
+checkout it commits changed setup files separately. From a linked worktree it
+leaves setup alone, but refuses to run when the main checkout's setup is older
+or unrecorded; run `chitty run` from the main checkout instead. Contexts are
+configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
 (not both). To send work to another repository, use `chitty suggest PROJECT`;
 the receiving repository imports it with `chitty inbox --pull`. `PROJECT` is a
 registered name unless it contains `/`, is `.`, or starts with `~` or `.`; those

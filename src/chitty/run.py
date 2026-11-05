@@ -10,6 +10,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from chitty import git
+from chitty.config import CHITTY_VERSION, version_key
 from chitty.errors import ChittyError
 from chitty.inbox import pull as pull_suggestions
 from chitty.store import Edit, NextAction, Repo, guide, next_action
@@ -33,6 +34,7 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
     main_root = _main_checkout(repo.root)
     main_repo = Repo.open(main_root)
+    _refuse_stale_linked_worktree(repo, main_repo)
     _preflight(main_repo)
     # Refresh may add a project to legacy setup; only an explicit project opts into inbox pulls.
     project = main_repo.config.project
@@ -108,6 +110,19 @@ def _main_checkout(root: Path) -> Path:
         if _git_path(worktree, "--git-dir") == common_dir:
             return worktree.resolve()
     raise ChittyError(f"cannot find the main checkout for {root}")
+
+
+def _refuse_stale_linked_worktree(repo: Repo, main_repo: Repo) -> None:
+    if not git.is_linked_worktree(repo.root):
+        return
+    recorded = main_repo.config.chitty_version
+    if recorded is not None and version_key(recorded) >= version_key(CHITTY_VERSION):
+        return
+    recorded_name = recorded if recorded is not None else "unrecorded"
+    raise ChittyError(
+        f"linked worktree uses Chitty {CHITTY_VERSION}, but the main checkout setup "
+        f"records {recorded_name}; run `chitty run` from the main checkout"
+    )
 
 
 def _preflight(repo: Repo) -> None:
