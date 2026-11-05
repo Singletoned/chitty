@@ -41,7 +41,7 @@ Review failed (tests): acceptance criterion 1 is not met. The run path never cal
 
 ## Summary
 
-Added integration coverage for non-zero agent exits, Ctrl-C, unchanged status, and usage-log write failures. The tests assert recorded status_after values and preserve exit codes 1/130. Fixed the Pyright narrowing for nullable usage models. Verified targeted tests, make check (Ruff, Pyright, 249 unittest tests), and npm test; no follow-ups.
+Implemented a single usage-reading finally path so failed, interrupted, and unchanged runs record status_after and preserve original exit errors. Added integration coverage for missing and invalid usage warnings. Verified targeted run tests, all 249 unittest tests, Ruff, Pyright, and npm test via make check.
 
 ## History
 
@@ -65,3 +65,4 @@ Added integration coverage for non-zero agent exits, Ctrl-C, unchanged status, a
 - 2026-11-05T16:26:03Z rosy-eel: changed acceptance criteria, notes
 - 2026-11-05T16:26:03Z rosy-eel review → doing
 - 2026-11-05T16:35:24Z eager-eel: ticked acceptance criteria
+- 2026-11-05T16:35:25Z eager-eel: changed summary
