@@ -1,8 +1,7 @@
 ---
 title: Add `chitty renumber` to repair tickets sharing an ID
-status: doing
+status: review
 priority: high
-owner: human
 depends_on:
   - TASK-177
 parent: TASK-106
@@ -37,6 +36,16 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: my premise was
 
 Owner set to human only so chitty run leaves this ticket to this session; cleared when it goes to review.
 
+Found while sharing the helper: `Repo.move` reused the name `task` in its loop over `all_tasks()`, so it returned, and with `autocommit` titled its commit with, the last ticket scanned rather than the moved one. `chitty move HUMAN-1 tasks --json` reported `Zzz other`. Fixed through `_relocate`, with a regression test in `tests/test_renumber.py` seen failing first.
+
+Choices: `renumber` validates before `_prepare_write`, so a refusal changes nothing; the JSON (CLI and MCP alike) is `{task, references: [{id, path}]}`, because the references are the point; `PLAN.md`'s MCP list also gains `next`, which was missing. Checked in a real Git repository with `autocommit`: one commit, recorded as a rename, clean tree.
+
+## Summary
+
+Added `chitty renumber PATH` and the MCP `renumber` tool over `Repo.renumber` in `store.py`. It locates the file through `scan`, refuses a non-task path or a unique ID, gives it the next number in its context with `moved_from` (archived files stay archived), commits like `move`, and lists tickets whose `depends_on` or `parent` name the old ID without rewriting them. `move` now shares `_relocate`, which fixes it reporting the wrong ticket. Documented in `README.md` and `PLAN.md`.
+
+Verified: `tests/test_renumber.py` (seen failing first) and the MCP parity test; `make check` passes (276 tests plus Node); a manual autocommit run in a scratch repo. Follow-up: running it on `echonomicon`'s duplicates is for that repository's session.
+
 ## History
 
 - 2026-11-05T14:43:40Z mellow-newt → backlog
@@ -48,3 +57,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-05T21:20:52Z youthful-toad: wrote the plan
 - 2026-11-05T21:20:52Z youthful-toad todo → doing
 - 2026-11-05T21:27:20Z youthful-toad: ticked acceptance criteria
+- 2026-11-05T21:27:21Z youthful-toad: changed owner, notes, summary
+- 2026-11-05T21:27:21Z youthful-toad doing → review
