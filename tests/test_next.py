@@ -973,6 +973,42 @@ class TestNext(CliTestCase):
         self.assertEqual(records[0]["status_after"], "blocked")
         self.assertEqual(self.git("status", "--porcelain"), "")
 
+    def test_run_logs_under_project_added_by_setup_refresh(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("First")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import pathlib, subprocess\n"
+            "root = pathlib.Path.cwd()\n"
+            "ticket = next((root / 'chitty/tasks').glob('*.md'))\n"
+            "ticket.write_text(ticket.read_text().replace('status: doing', 'status: blocked'))\n"
+            "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            self.assertIsNone(Repo.open(self.root).config.project)
+            self.assertEqual(self.run_cli("run").stdout, "TASK-1: doing → blocked\n")
+        finally:
+            os.environ["PATH"] = previous
+
+        self.assertEqual(Repo.open(self.root).config.project, "repo")
+        log = self.tmp / "data" / "chitty" / "usage" / "repo.jsonl"
+        self.assertEqual(len(log.read_text().splitlines()), 1)
+
     def test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation(self):
         config = self.root / "chitty.toml"
         config.write_text(
