@@ -28,6 +28,12 @@ Out of scope: `chitty run` checking which `chitty` an agent will find, and upgra
 - [ ] A test shows `chitty run` reviewing a ticket whose branch adds a key and bumps the version, and reporting the status change
 - [ ] Tests show `chitty init` refusing a newer file and leaving it unchanged
 
+## Plan
+
+1. Move version parsing into config and make config loading tolerate only unknown top-level keys in newer-version files, warning once per file.
+2. Refuse chitty init when the existing config is newer than this code, before rewriting it.
+3. Add focused config, CLI/run, and init regression tests, then run the full check suite.
+
 ## Notes
 
 Hit again 2026-11-04 on `TASK-136`: `chitty run` picked `review TASK-136`, ran `setup` in the worktree, then failed at `Repo.open(worktree)` with `agent_command: Extra inputs are not permitted`, before any claim or session. The worktree's own `.venv/bin/chitty run` cannot get round it, because `run` reads `agent_command` from the main checkout, which does not have it until the branch lands. Preferred option: warn about an unknown key when the file's `chitty_version` is newer than the running code, and keep refusing otherwise, so a typo still fails loudly. A branch adding a key already has to bump the version. `TASK-150` adds `check`, so it will hit this next.
@@ -47,3 +53,4 @@ Removed the version warning, which duplicated `TASK-135`, as I found when anothe
 - 2026-11-04T17:34:51Z mellow-newt backlog → todo
 - 2026-11-04T21:00:14Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-05T08:18:01Z lively-puffin todo → doing
+- 2026-11-05T08:26:03Z daring-wren: wrote the plan
