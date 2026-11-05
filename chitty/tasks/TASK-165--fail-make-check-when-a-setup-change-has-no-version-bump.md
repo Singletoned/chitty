@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` when a setup change has no version bump
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -32,6 +32,10 @@ Implement a standard-library/Git-only version-bump guard script and invoke it fr
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the release workflow was false as written, because its checkout has no `main`; so a missing `main` passes with a notice. Comparing with `main`'s tip alone would blame a branch for files it never touched, so what changed comes from the merge-base and the version from the tip. Also the script's location, the template's extraction and `roles/`, which exists now. No `__version__` bump is needed: the script reaches no other repository.
 
+## Summary
+
+Implemented `scripts/check_version_bump.py` and added it to `make check`. The guard uses Git merge-base for changed setup files, compares the working-tree version to `main` tip, handles `main`/missing-main cases, and extracts only `INITIAL_CONFIG`. Added real temporary-Git tests for watched files, numeric versions, unrelated config changes, branch ancestry, and shallow tag clones. Verified with `make install`, focused tests, `chitty fix`, and `make check` (284 Python tests and Node tests pass). Follow-up: none.
+
 ## History
 
 - 2026-11-04T20:45:25Z mellow-newt → backlog
@@ -42,3 +46,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the 
 - 2026-11-05T22:50:48Z jolly-kestrel: ticked acceptance criteria
 - 2026-11-05T22:50:49Z jolly-kestrel: ticked acceptance criteria
 - 2026-11-05T22:50:50Z jolly-kestrel: ticked acceptance criteria
+- 2026-11-05T22:50:55Z jolly-kestrel: changed summary
+- 2026-11-05T22:50:55Z jolly-kestrel doing → review
