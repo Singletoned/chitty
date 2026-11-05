@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-127
@@ -66,3 +66,4 @@ Implemented a single usage-reading finally path so failed, interrupted, and unch
 - 2026-11-05T16:26:03Z rosy-eel review → doing
 - 2026-11-05T16:35:24Z eager-eel: ticked acceptance criteria
 - 2026-11-05T16:35:25Z eager-eel: changed summary
+- 2026-11-05T16:35:33Z eager-eel doing → review
