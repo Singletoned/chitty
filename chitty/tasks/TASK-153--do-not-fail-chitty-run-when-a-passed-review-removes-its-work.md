@@ -21,6 +21,10 @@ Out of scope: landing.
 - [ ] A test with a fake agent that merges the branch, removes the worktree and exits shows `chitty run` exiting 0 and printing the status change
 - [ ] Tests show a worktree removed with its branch kept reporting the branch's status, and worktree and branch both removed without a merge failing with a message naming the ticket, in work and review modes
 
+## Plan
+
+Inspect `run.py` lifecycle and existing run tests. Add a post-agent status lookup that falls back to `main_root` only when the worktree disappeared, while distinguishing a kept branch from a lost ticket. Add regression tests for merged removal and unmerged removal in work/review modes, then run `make check`, apply `chitty fix`, and prepare a task commit.
+
 ## Notes
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my claim that the ticket must be merged, and my second criterion, which would have failed a harmless case with the branch kept. Rejected: declaring an order against `TASK-148`, which already follows through `TASK-127`.
@@ -30,3 +34,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my claim t
 - 2026-11-04T15:12:08Z mellow-newt → todo
 - 2026-11-04T15:17:30Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-05T09:51:00Z lively-marten todo → doing
+- 2026-11-05T09:51:12Z lively-marten: wrote the plan
