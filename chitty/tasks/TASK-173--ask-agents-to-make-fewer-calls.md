@@ -25,6 +25,10 @@ Out of scope: having `chitty` do more of the Git steps, which needs its own desi
 
 - [ ] A test shows `chitty guide work` and `chitty guide review` containing `repeated --check`, `in one call`, `joined with` and `autocommit = true`, and `__version__` is bumped above `main`'s
 
+## Plan
+
+Update the shipped work and review role guidance with the four batching/autocommit recommendations, add or extend a guide-output regression test, bump __version__, run the full check suite, and record verified criteria.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: this conflicted with "tick only after verifying", so it now says to verify first; `make format` does not exist in every repository; and the test now names what it checks. `TASK-174`'s successor or the planning session re-runs the scripts afterwards. Repeated `--check` was tried on `TASK-80`, and it works.
@@ -36,3 +40,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: this conflicted with "t
 - 2026-11-04T21:44:28Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:44:29Z mellow-newt backlog → todo
 - 2026-11-05T23:09:47Z lively-newt todo → doing
+- 2026-11-05T23:10:00Z lively-newt: wrote the plan
