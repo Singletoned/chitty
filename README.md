@@ -84,7 +84,13 @@ contexts do this so people can close their own tasks directly. The third failed 
 `--all` includes every status but never archive folders.
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,
 then uses priority and task ID across all non-human contexts. Its `--json`
-output is `{"mode": "work"|"review", "id": "TASK-N"}`. `chitty run` requires
+output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses
+only among `review` tickets and `--mode work` only among `doing` and `todo`, in
+the same order; with nothing to choose it fails with `no next ticket for --mode
+review` (or `work`). `chitty run --mode MODE` does the same, so
+`chitty run --mode review -- --model MODEL` gives reviews their own model. Run
+the two modes one after the other, not at the same time, until `TASK-162`
+lands. `--mode` cannot be combined with `--ticket`. `chitty run` requires
 `autocommit = true`, `setup` (for example, `setup = "make install"`), and an
 `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
 The command is parsed without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.

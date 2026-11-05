@@ -613,11 +613,20 @@ including retries, not per run.
 Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
 an unmet dependency is excluded, while `doing` and `review` work remains
 visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
-`next` tool return the same `{mode, id}` value.
+`next` tool return the same `{mode, id}` value. `--mode review` limits the
+choice to `review` tasks and `--mode work` to `doing` and `todo`, in the same
+order, filtering before dependencies are checked so a bad reference on a task
+in the other mode does not stop this one. With nothing left it fails with `no
+next ticket for --mode MODE`, so an idle reviewer is distinguishable from a
+broken one. The MCP tool keeps the default. Until `TASK-162` lands, run the two
+modes one after the other, never at the same time.
 
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
 Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket.
+`chitty run --mode MODE` selects as `chitty next --mode MODE` does, and is
+refused with `--ticket` before anything else runs, because the ticket already
+decides its mode.
 The command may include `{prompt}` as a single argument;
 Chitty fills it with the role-specific `chitty guide <mode> <ID>` output after
 splitting the command. It finds the main checkout even when invoked from another

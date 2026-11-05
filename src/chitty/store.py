@@ -978,8 +978,8 @@ def _ticket_action(repo: Repo, stored: StoredTask, *, refuse: bool) -> NextActio
         if refuse:
             raise ChittyError(f"cannot run {stored.id}: it has unfinished dependencies")
         return None
-    mode: Literal["work", "review"] = "review" if frontmatter.status == "review" else "work"
-    return NextAction(mode, stored.id)
+    action_mode: Literal["work", "review"] = "review" if frontmatter.status == "review" else "work"
+    return NextAction(action_mode, stored.id)
 
 
 def _dependency_is_done(repo: Repo, dependency_id: TaskId, dependency: StoredTask | None) -> bool:
@@ -1025,16 +1025,25 @@ def ticket_action(repo: Repo, task_id: TaskId) -> NextAction:
     return action
 
 
-def next_action(repo: Repo) -> NextAction:
-    """Select the one ticket to review or work next across every context."""
+MODE_STATUSES: dict[str, tuple[str, ...]] = {"work": ("doing", "todo"), "review": ("review",)}
+
+
+def next_action(repo: Repo, *, mode: Literal["work", "review"] | None = None) -> NextAction:
+    """Select the one ticket to review or work next across every context.
+
+    A `mode` limits the choice to that mode's statuses. It filters before
+    `_ticket_action` checks dependencies, so a bad reference on a ticket in the
+    other mode does not stop this one.
+    """
     status_order = {"review": 0, "doing": 1, "todo": 2}
     candidates = [
         (stored, action)
         for stored in repo.all_tasks()
+        if mode is None or stored.task.frontmatter.status in MODE_STATUSES[mode]
         if (action := _ticket_action(repo, stored, refuse=False)) is not None
     ]
     if not candidates:
-        raise ChittyError("no next ticket")
+        raise ChittyError("no next ticket" if mode is None else f"no next ticket for --mode {mode}")
     return min(
         candidates,
         key=lambda pair: (

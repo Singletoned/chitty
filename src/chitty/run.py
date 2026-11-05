@@ -12,7 +12,7 @@ import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Literal, cast
 from uuid import uuid4
 
 from chitty import git
@@ -42,8 +42,12 @@ def run(
     ticket: str | None,
     arguments: tuple[str, ...] = (),
     agent: str | None = None,
+    mode: Literal["work", "review"] | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
+    if mode is not None and ticket is not None:
+        # A named ticket already decides its mode, so a mode could only disagree.
+        raise ChittyError("--mode cannot be used with --ticket")
     main_root = _main_checkout(repo.root)
     main_repo = Repo.open(main_root)
     _refuse_stale_linked_worktree(repo, main_repo)
@@ -63,7 +67,7 @@ def run(
     action = (
         ticket_action(main_repo, main_repo.resolve(ticket))
         if ticket is not None
-        else next_action(main_repo)
+        else next_action(main_repo, mode=mode)
     )
     agent_command = _agent_command(main_repo, action, agent)
     stored = main_repo.find(action.id)

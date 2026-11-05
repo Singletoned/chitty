@@ -279,6 +279,95 @@ class TestNext(CliTestCase):
         with self.assertRaisesRegex(ToolError, "no next ticket"):
             asyncio.run(server.call_tool("next", {}))
 
+    def test_next_mode_selects_only_its_own_tickets(self):
+        self.add("Todo")
+        review = self.add("Review", status="review")
+        doing = self.add("Doing", status="doing")
+        self.assertEqual(self.run_cli("next").stdout, f"review {review}\n")
+        self.assertEqual(self.run_cli("next", "--mode", "review").stdout, f"review {review}\n")
+        self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {doing}\n")
+        self.assertEqual(self.json("next", "--mode", "work"), {"mode": "work", "id": doing})
+        self.assertIn("'work'", self.run_cli("next", "--mode", "other", exit_code=2).stderr)
+
+        # A bad reference on a ticket in the other mode does not stop this mode.
+        path = next((self.root / "chitty/tasks").glob(f"{review}--*.md"))
+        path.write_text(
+            path.read_text().replace(
+                "status: review\n", "status: review\ndepends_on:\n  - TASK-99\n"
+            )
+        )
+        self.assertIn("TASK-99", self.run_cli("next", exit_code=1).stderr)
+        self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {doing}\n")
+        path.unlink()
+
+        result = self.run_cli("next", "--mode", "review", exit_code=1)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("no next ticket for --mode review", result.stderr)
+
+    def test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"', 'agent_command = "fake {mode} {id}"'
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        todo = self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "fake"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess, sys\n"
+            "from pathlib import Path\n"
+            "Path('invocation').write_text(' '.join(sys.argv[1:]))\n"
+            "path = next(Path('chitty/tasks').glob(sys.argv[2] + '--*.md'))\n"
+            "text = path.read_text()\n"
+            "for status in ('doing', 'review'):\n"
+            "    text = text.replace(f'status: {status}\\n', 'status: blocked\\n')\n"
+            "path.write_text(text)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-am', 'agent'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        try:
+            idle = self.run_cli("run", "--mode", "review", exit_code=1)
+            self.assertIn("no next ticket for --mode review", idle.stderr)
+
+            review = self.add("Review", status="review")
+            self.git("add", "--all")
+            self.git("commit", "--quiet", "-m", "review")
+            self.git("branch", review.lower())
+            worked = self.run_cli("run", "--mode", "work", "--", "--forwarded")
+            self.assertEqual(worked.stdout, f"{todo}: doing → blocked\n")
+            invocation = (self.root / f".worktrees/{todo.lower()}/invocation").read_text()
+            self.assertEqual(invocation, f"work {todo} --forwarded")
+
+            self.add("Another todo")  # `autocommit` commits it on `main`.
+            reviewed = self.run_cli("run", "--mode", "review", "--", "--forwarded")
+            self.assertEqual(reviewed.stdout, f"{review}: review → blocked\n")
+            invocation = (self.root / f".worktrees/{review.lower()}/invocation").read_text()
+            self.assertEqual(invocation, f"review {review} --forwarded")
+
+            idle = self.run_cli("run", "--mode", "review", exit_code=1)
+            self.assertIn("no next ticket for --mode review", idle.stderr)
+        finally:
+            os.environ["PATH"] = old_path
+
+    def test_run_refuses_mode_with_ticket_before_anything_else(self):
+        # Outside Git, so any later step would fail with a different error.
+        self.add("Todo")
+        result = self.run_cli("run", "--mode", "work", "--ticket", "1", exit_code=1)
+        self.assertIn("--mode cannot be used with --ticket", result.stderr)
+        self.assertEqual(list(self.root.glob(".worktrees")), [])
+
     def test_run_uses_committed_change_from_ticket_worktree(self):
         config = self.root / "chitty.toml"
         config.write_text(
