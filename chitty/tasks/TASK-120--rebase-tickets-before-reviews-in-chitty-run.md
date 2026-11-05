@@ -2,6 +2,7 @@
 title: Rebase tickets before reviews in `chitty run`
 status: todo
 priority: medium
+owner: human
 depends_on:
   - TASK-126
   - TASK-129
@@ -56,6 +57,8 @@ Split on 2026-11-04 at the human's direction, from six criteria: `check` is now 
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: review mode only, since a resumed worker with uncommitted files is normal; where this runs relative to the actor and `setup`; and what is printed when no session starts.
 
+Owner set to human only so chitty run leaves this ticket to this session; cleared when it goes to review.
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -69,3 +72,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: review mod
 - 2026-11-04T09:45:40Z lively-panda: changed priority
 - 2026-11-04T15:11:34Z mellow-newt: changed title, description, acceptance criteria, notes
 - 2026-11-04T15:17:35Z mellow-newt: changed description, notes
+- 2026-11-05T21:14:09Z youthful-toad: changed owner, notes
