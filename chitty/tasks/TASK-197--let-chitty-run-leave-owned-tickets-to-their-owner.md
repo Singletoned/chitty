@@ -24,8 +24,15 @@ Out of scope: choosing a model from the owner, which remains a forwarded argumen
 
 - [ ] Tests with tickets owned by `opus` show plain `chitty next` and `chitty run` skipping them at `todo` and `doing`, selecting one at `review`, and still skipping `human` at every status, and fail without the change
 - [ ] `PLAN.md` and `README.md` describe the rules
+- [ ] Tests show `--owner opus` on `chitty next` and `chitty run` selecting only that owner's tickets, whichever side of the forwarded arguments it comes, and `--owner human`, `--owner ""` and `--ticket` with `--owner` each refused
+- [ ] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
+
+## Notes
+
+Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-197/1`. The code took about 7 minutes, the tests failed without the fix and passed with it, and `make check` exited 0. Fixed: `--owner` with `--ticket` and an empty owner were unhandled; other repositories may have other owners through `import_backlog.py`, so my claim that nothing changes was too broad; the reservation ending at `review` is now stated as deliberate; the MCP tool is decided rather than conditional; and the `--ticket` clause now needs its own test, which the reader itself left out. It confirmed `next_action` has only three callers. Rejected: clearing the owner at `review`, which is out of scope. Another read follows, since this came back with changes.
 
 ## History
 
 - 2026-11-05T18:20:01Z mellow-newt → backlog
 - 2026-11-05T18:28:36Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T18:28:37Z mellow-newt: changed acceptance criteria, notes
