@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: backlog
+status: todo
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -60,3 +60,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T18:31:04Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:31:05Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:35:43Z mellow-newt: changed description, notes
+- 2026-11-05T18:35:43Z mellow-newt backlog → todo
