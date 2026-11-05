@@ -1,6 +1,6 @@
 ---
 title: Add `--mode` to `chitty next` and `chitty run`
-status: backlog
+status: todo
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -27,3 +27,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. No serious faults: it ran clic
 
 - 2026-11-05T14:13:49Z mellow-newt → backlog
 - 2026-11-05T14:23:08Z mellow-newt: changed description, notes
+- 2026-11-05T14:23:09Z mellow-newt backlog → todo
