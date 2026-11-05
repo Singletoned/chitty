@@ -16,7 +16,7 @@ Let the error surface, so the command fails loudly and a person reruns it. The c
 
 ## Acceptance Criteria
 
-- [ ] A test deleting a branch after refs are listed gets a `ChittyError`, and a test shows a directory that is not a Git repository still returning no history
+- [x] A test deleting a branch after refs are listed gets a `ChittyError`, and a test shows a directory that is not a Git repository still returning no history
 
 ## Plan
 
@@ -33,3 +33,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It found what the catch
 - 2026-11-04T20:22:54Z mellow-newt backlog → todo
 - 2026-11-05T19:18:49Z brisk-newt todo → doing
 - 2026-11-05T19:18:59Z brisk-newt: wrote the plan
+- 2026-11-05T19:27:58Z brisk-newt: ticked acceptance criteria
