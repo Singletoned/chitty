@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-127
@@ -20,7 +20,7 @@ Out of scope: anything in the Pi extension, and any report.
 
 ## Acceptance Criteria
 
-- [x] Tests show a line still written, with `models` null and a warning on stderr, for a missing and an invalid usage file
+- [ ] Tests show a line still written, with `models` null and a warning on stderr, for a missing and an invalid usage file
 - [x] Tests show `status_after` correct and the exit code kept for an agent that exits non-zero, a Ctrl-C and an unchanged status
 - [x] A test shows a failure writing the log warning on stderr and keeping the exit code
 - [x] A test shows a `cost` of null accepted without a warning, summing to a null `cost` with the tokens still added
@@ -36,6 +36,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: the write 
 Added 2026-11-04 from the cold read of `TASK-157`: a null `cost`, because this ticket holds the validation it would otherwise have to change.
 
 Review failed (tests): acceptance criterion 2 is not met because the added tests do not exercise Ctrl-C or verify its recorded status/exit result; criterion 3 is not met because the write-failure test calls _record_usage directly and never demonstrates a failed run retaining its exit code. make check also fails Pyright at tests/test_next.py:1065 because models may be None. Add integration coverage for interruption and injected log-write failure, then fix the type error.
+
+Review failed (tests): acceptance criterion 1 is not met. The run path never calls _read_usage when the agent exits non-zero or is interrupted, so missing or invalid usage files produce no warning in those failed runs; the added test only calls _read_usage directly and does not verify a usage-log line. Read usage in the finally path (or otherwise ensure every run warns for missing/invalid usage) and add integration coverage for the recorded line and stderr warning.
 
 ## Summary
 
@@ -60,3 +62,5 @@ Added integration coverage for non-zero agent exits, Ctrl-C, unchanged status, a
 - 2026-11-05T16:20:03Z witty-adder: ticked acceptance criteria
 - 2026-11-05T16:20:13Z witty-adder: changed summary
 - 2026-11-05T16:20:14Z witty-adder doing → review
+- 2026-11-05T16:26:03Z rosy-eel: changed acceptance criteria, notes
+- 2026-11-05T16:26:03Z rosy-eel review → doing
