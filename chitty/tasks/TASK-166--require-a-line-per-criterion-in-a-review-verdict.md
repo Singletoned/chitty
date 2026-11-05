@@ -21,6 +21,10 @@ Existing tests that move a ticket with criteria out of `review` will need verdic
 - [ ] Tests through the CLI and MCP show a verdict refused for a missing line, a wrong word, a duplicate, an out-of-range number, `done` with a `fail` and `doing` with no `fail`, each changing nothing, and a complete verdict accepted for `done` and `doing`
 - [ ] Tests show a third failure with a valid verdict still escalating to `blocked`, the override still needing the form, and a ticket with no criteria unaffected
 
+## Plan
+
+Add shared review-verdict validation in store.py immediately after the existing Reviewed: check. Split note and notes into lines, require exactly one lowercase pass/fail verdict for every stored criterion, reject malformed/missing/duplicate/out-of-range verdicts without mutation, and enforce status-specific pass/fail rules. Add CLI and MCP regression coverage including escalation, override, and no-criteria cases; update existing review-transition fixtures as needed.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Too big as written, so the instructions moved to their own ticket. Fixed: the exact form, duplicates and out-of-range numbers, several notes, the `Reviewed:` prefix, escalation, and the override, which I decided should still need the form, because it answers who reviews, not what the verdict says.
@@ -34,3 +38,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: splitting notes 
 - 2026-11-04T20:48:49Z mellow-newt: changed description, notes
 - 2026-11-04T20:48:50Z mellow-newt backlog → todo
 - 2026-11-05T22:51:12Z daring-eel todo → doing
+- 2026-11-05T22:51:31Z daring-eel: wrote the plan
