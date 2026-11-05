@@ -1,6 +1,6 @@
 ---
 title: Have cold reads implement tickets in a detached worktree
-status: todo
+status: backlog
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -49,3 +49,4 @@ Found after the read, 2026-11-05, and serious: the three trial reads broke the g
 - 2026-11-05T17:59:27Z mellow-newt backlog → todo
 - 2026-11-05T18:06:36Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:08:05Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T18:13:36Z mellow-newt todo → backlog
