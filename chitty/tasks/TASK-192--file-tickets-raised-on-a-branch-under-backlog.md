@@ -17,8 +17,14 @@ In `src/chitty/roles/work.md`, `review.md` and `src/chitty/guide.md`, say that u
 ## Acceptance Criteria
 
 - [ ] A test shows `chitty guide work` and `chitty guide review` saying this, `__version__` is bumped above `main`'s, and `PLAN.md` records the decision
+- [ ] A test with `git init`, a committed configuration containing `backlog`, and `git worktree add`, run from inside the worktree, shows plain `chitty add T` with no description, through both the CLI and MCP, creating a `BACKLOG-` ticket, `-c human` numbering normally, and inbox pull still numbering normally
+
+## Notes
+
+Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: the tests' temporary repositories are not Git repositories, so `is_linked_worktree` is false there and the criterion could not be met without saying how to set one up; and no description being needed. It confirmed the check is true for a `chitty run` worktree.
 
 ## History
 
 - 2026-11-05T14:47:52Z mellow-newt → backlog
 - 2026-11-05T14:50:44Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T14:50:45Z mellow-newt: changed acceptance criteria, notes
