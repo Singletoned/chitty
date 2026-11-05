@@ -1504,6 +1504,9 @@ class TestIdentity(CliTestCase):
 
 
 class TestGuide(CliTestCase):
+    def test_guide_points_agents_at_ticket_planning_instructions(self):
+        self.assertIn("chitty guide plan", guide())
+
     def test_prints_the_agent_guide_outside_any_repo(self):
         os.chdir(self.tmp)
         self.assertEqual(self.run_cli("guide").stdout, guide())
