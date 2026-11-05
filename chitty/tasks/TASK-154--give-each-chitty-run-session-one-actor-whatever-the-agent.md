@@ -18,7 +18,7 @@ Out of scope: `TASK-146`'s question of how names are made, and anything specific
 
 ## Acceptance Criteria
 
-- [ ] A test with a fake agent that sets its own `CLAUDE_CODE_SESSION_ID` shows the claim and a write from that agent recording one actor
+- [x] A test with a fake agent that sets its own `CLAUDE_CODE_SESSION_ID` shows the claim and a write from that agent recording one actor
 - [ ] A test with fixed UUIDs shows two runs giving their agents different `CHITTY_ACTOR` values, and neither setting `CHITTY_PI_SESSION_ID`
 
 ## Plan
@@ -39,3 +39,4 @@ Cold read by a fresh Sonnet subagent with `TASK-155`, 2026-11-04. Fixed: the hel
 - 2026-11-04T15:40:06Z mellow-newt backlog → todo
 - 2026-11-05T16:43:54Z plucky-newt todo → doing
 - 2026-11-05T16:44:08Z plucky-newt: wrote the plan
+- 2026-11-05T16:50:49Z plucky-newt: ticked acceptance criteria
