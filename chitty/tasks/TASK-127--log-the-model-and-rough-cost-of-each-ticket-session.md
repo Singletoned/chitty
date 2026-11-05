@@ -56,6 +56,10 @@ Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnes
 - [ ] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
 - [ ] A test shows a repository starting with no `project` logging under the one the refresh gives it
 
+## Plan
+
+Inspect the existing run command, setup refresh, and tests; implement temporary usage-file wiring and post-Pi aggregation without changing the extension; add real-file unittest coverage for complete records, multiple sessions/models, append behavior, clean repository status, and refreshed project names; run format/check and update the ticket only after verification.
+
 ## Notes
 
 As in `TASK-126`, the logged status before is the one read after the claim, immediately before starting Pi.
@@ -86,3 +90,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a prefligh
 - 2026-11-04T15:12:22Z mellow-newt: changed dependencies, notes
 - 2026-11-04T15:17:31Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-05T10:42:07Z able-yellowhammer todo → doing
+- 2026-11-05T10:42:20Z able-yellowhammer: wrote the plan
