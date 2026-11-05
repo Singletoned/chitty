@@ -1,16 +1,22 @@
 """Prepare a Chitty ticket worktree and run its configured agent."""
 
+import json
 import os
 import shlex
 import shutil
 import signal
 import subprocess
+import tempfile
+import time
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 from uuid import uuid4
 
 from chitty import git
-from chitty.config import CHITTY_VERSION, version_key
+from chitty.actor import actor
+from chitty.config import CHITTY_VERSION, usage_path, version_key
 from chitty.errors import ChittyError
 from chitty.inbox import pull as pull_suggestions
 from chitty.store import Edit, NextAction, Repo, guide, next_action
@@ -37,9 +43,12 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
     _refuse_stale_linked_worktree(repo, main_repo)
     _preflight(main_repo)
     # Refresh may add a project to legacy setup; only an explicit project opts into inbox pulls.
-    project = main_repo.config.project
+    project_before_refresh = main_repo.config.project
     main_repo.refresh_setup()
-    if project:
+    project = main_repo.config.project
+    if project is None:
+        raise ChittyError("`chitty run` requires a project name after setup refresh")
+    if project_before_refresh:
         try:
             pull_suggestions(main_repo)
         except KeyboardInterrupt:
@@ -63,23 +72,83 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
         work_repo.edit(action.id, Edit(status="doing"))
     old_status = work_repo.find(action.id).task.frontmatter.status
-    try:
-        completed = subprocess.run([*agent_command, *arguments], cwd=worktree, check=False)
-    except FileNotFoundError:
-        raise ChittyError(f"agent command not found: {agent_command[0]}") from None
-    except KeyboardInterrupt:
-        raise RunInterrupted("agent") from None
-    if completed.returncode == -signal.SIGINT:
-        raise RunInterrupted("agent")
-    if completed.returncode:
-        raise ChittyError(f"agent exited with status {completed.returncode}")
+    started = datetime.now(UTC)
+    elapsed_start = time.monotonic()
+    with tempfile.TemporaryDirectory(prefix="chitty-usage-") as temporary:
+        usage_file = Path(temporary) / "session.json"
+        previous_usage_file = os.environ.get("CHITTY_USAGE_FILE")
+        os.environ["CHITTY_USAGE_FILE"] = str(usage_file)
+        try:
+            try:
+                completed = subprocess.run([*agent_command, *arguments], cwd=worktree, check=False)
+            except FileNotFoundError:
+                raise ChittyError(f"agent command not found: {agent_command[0]}") from None
+            except KeyboardInterrupt:
+                raise RunInterrupted("agent") from None
+        finally:
+            if previous_usage_file is None:
+                os.environ.pop("CHITTY_USAGE_FILE", None)
+            else:
+                os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
+        if completed.returncode == -signal.SIGINT:
+            raise RunInterrupted("agent")
+        if completed.returncode:
+            raise ChittyError(f"agent exited with status {completed.returncode}")
+        models = _read_usage(usage_file)
+
     # Pi commonly commits from this worktree. Reopen so history is re-read.
     new_status = _status_after_agent(main_root, worktree, action)
     if new_status == old_status:
         raise ChittyError(
             f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
         )
+    _append_usage(
+        project,
+        {
+            "ticket": str(action.id),
+            "mode": action.mode,
+            "actor": actor(),
+            "started": started.isoformat().replace("+00:00", "Z"),
+            "seconds": round(time.monotonic() - elapsed_start, 3),
+            "status_before": old_status,
+            "status_after": new_status,
+            "models": models,
+        },
+    )
     return RunResult(action, old_status, new_status)
+
+
+def _read_usage(path: Path) -> list[dict[str, Any]] | None:
+    if not path.exists():
+        return None
+    data = json.loads(path.read_text())
+    sessions = data["sessions"]
+    totals: dict[tuple[str, str], dict[str, Any]] = {}
+    for entries in sessions.values():
+        for entry in entries:
+            key = (entry["provider"], entry["model"])
+            total = totals.setdefault(
+                key,
+                {
+                    "provider": entry["provider"],
+                    "model": entry["model"],
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "cost": 0,
+                },
+            )
+            for field in ("input", "output", "cacheRead", "cacheWrite", "cost"):
+                total[field] += entry[field]
+    return list(totals.values())
+
+
+def _append_usage(project: str, record: dict[str, Any]) -> None:
+    path = usage_path(project)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a") as stream:
+        stream.write(json.dumps(record, separators=(",", ":")) + "\n")
 
 
 def _status_after_agent(main_root: Path, worktree: Path, action: NextAction) -> str:

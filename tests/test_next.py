@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import json
 import os
 import stat
 import subprocess
@@ -881,6 +882,96 @@ class TestNext(CliTestCase):
             os.environ.pop("PI_EXIT", None)
             os.environ.pop("CHANGE", None)
             os.environ.pop("TASK_PATH", None)
+
+    def test_run_records_usage_outside_repository_and_appends_runs(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("First")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import json, os, pathlib, subprocess\n"
+            "root = pathlib.Path.cwd()\n"
+            "ticket = next((root / 'chitty/tasks').glob('*.md'))\n"
+            "ticket.write_text(ticket.read_text().replace('status: doing', 'status: blocked'))\n"
+            "sessions = {\n"
+            "  'first-session': [\n"
+            "    {'provider': 'p', 'model': 'a', 'input': 1, 'output': 2,\n"
+            "     'cacheRead': 3, 'cacheWrite': 4, 'cost': 0.5},\n"
+            "    {'provider': 'p', 'model': 'a', 'input': 5, 'output': 6,\n"
+            "     'cacheRead': 7, 'cacheWrite': 8, 'cost': 1.5}],\n"
+            "  'second-session': [{'provider': 'p', 'model': 'b',\n"
+            "    'input': 9, 'output': 10, 'cacheRead': 11,\n"
+            "    'cacheWrite': 12, 'cost': 2.5}]\n"
+            "}\n"
+            "path = pathlib.Path(os.environ['CHITTY_USAGE_FILE'])\n"
+            "path.write_text(json.dumps({'sessions': sessions}))\n"
+            "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        try:
+            self.assertEqual(self.run_cli("run").stdout, "TASK-1: doing → blocked\n")
+            self.add("Second")
+            self.git("add", "--all")
+            self.git("commit", "--quiet", "-m", "second ticket")
+            self.assertEqual(self.run_cli("run").stdout, "TASK-2: doing → blocked\n")
+        finally:
+            os.environ["PATH"] = old_path
+
+        log = self.tmp / "data" / "chitty" / "usage" / "repo.jsonl"
+        records = [json.loads(line) for line in log.read_text().splitlines()]
+        self.assertEqual(len(records), 2)
+        self.assertEqual(
+            set(records[0]),
+            {
+                "ticket",
+                "mode",
+                "actor",
+                "started",
+                "seconds",
+                "status_before",
+                "status_after",
+                "models",
+            },
+        )
+        self.assertEqual(
+            records[0]["models"],
+            [
+                {
+                    "provider": "p",
+                    "model": "a",
+                    "input": 6,
+                    "output": 8,
+                    "cacheRead": 10,
+                    "cacheWrite": 12,
+                    "cost": 2.0,
+                },
+                {
+                    "provider": "p",
+                    "model": "b",
+                    "input": 9,
+                    "output": 10,
+                    "cacheRead": 11,
+                    "cacheWrite": 12,
+                    "cost": 2.5,
+                },
+            ],
+        )
+        self.assertEqual(records[0]["status_before"], "doing")
+        self.assertEqual(records[0]["status_after"], "blocked")
+        self.assertEqual(self.git("status", "--porcelain"), "")
 
     def test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation(self):
         config = self.root / "chitty.toml"

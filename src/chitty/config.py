@@ -235,6 +235,12 @@ def inbox_path(project: str) -> Path:
     return base / "chitty" / "inbox" / project
 
 
+def usage_path(project: str) -> Path:
+    """Machine-local usage history file for a registered project name."""
+    base = Path(os.environ.get("XDG_DATA_HOME", "~/.local/share")).expanduser()
+    return base / "chitty" / "usage" / f"{project}.jsonl"
+
+
 def registered_projects() -> list[str]:
     base = inbox_path("_").parent
     return sorted(path.name for path in base.iterdir() if path.is_dir()) if base.exists() else []
