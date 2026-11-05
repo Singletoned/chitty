@@ -1,6 +1,6 @@
 ---
 title: Do not fail `chitty run` when a passed review removes its worktree
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -33,6 +33,8 @@ Review failed (tests): acceptance criterion 2 is not fully demonstrated: the add
 
 Added regression coverage for worktree removal with the branch retained in both work and review modes; the test fails against the pre-fallback implementation and passes with it.
 
+Reviewed: inspected the implementation and all acceptance tests; targeted tests passed, make check passed (241 Python tests and Node tests), and chitty fix completed with existing warnings only.
+
 ## Summary
 
 Added branch-retained worktree-removal regressions for work and review modes. Existing fallback handles merged removal and loudly rejects lost tickets. Verified the new regression fails against the pre-fallback implementation, passes with the fix, and make check passes (241 Python tests and Node tests).
@@ -52,3 +54,5 @@ Added branch-retained worktree-removal regressions for work and review modes. Ex
 - 2026-11-05T10:06:51Z calm-quail: changed notes; ticked acceptance criteria
 - 2026-11-05T10:06:55Z calm-quail: changed summary
 - 2026-11-05T10:07:09Z calm-quail doing → review
+- 2026-11-05T10:12:32Z brisk-ibis: changed notes
+- 2026-11-05T10:12:32Z brisk-ibis review → done
