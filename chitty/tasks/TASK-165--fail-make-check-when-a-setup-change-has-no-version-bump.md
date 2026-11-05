@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` when a setup change has no version bump
-status: todo
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -33,3 +33,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the 
 - 2026-11-04T20:45:25Z mellow-newt → backlog
 - 2026-11-04T20:47:38Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:47:39Z mellow-newt backlog → todo
+- 2026-11-05T22:22:37Z jolly-kestrel todo → doing
