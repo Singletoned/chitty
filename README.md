@@ -61,6 +61,7 @@ chitty edit 1 -s blocked --note "Awaiting a product decision."
 chitty add "Refine sync idea" -s backlog  # stores a default refinement note
 chitty add "Rotate prod password" -c human -d "Needs a person."
 chitty move 1 human               # new ID there; references are rewritten
+chitty renumber chitty/tasks/TASK-24--old-title.md  # one of two files sharing an ID
 chitty archive HUMAN-1
 chitty check                      # validate everything; non-zero on problems
 chitty fix                        # repair safe problems; fail if any remain
@@ -82,6 +83,12 @@ A context can set `review = false` to override that setting; generated `human`
 contexts do this so people can close their own tasks directly. The third failed review (`review → doing`) since a task was last blocked sets it
 `blocked` with owner `human` instead, so agents stop bouncing it. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
+When a merge leaves two files sharing an ID, which `chitty check` reports,
+`chitty renumber PATH` gives that one file the next number in its context,
+keeping its slug and recording `moved_from`. It refuses a file whose ID is
+unique (use `chitty move`). It does not rewrite references, because a
+`depends_on` or `parent` naming the shared ID cannot say which file it meant;
+it lists each ticket naming the old ID for you to check.
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,
 then uses priority and task ID across all non-human contexts. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses

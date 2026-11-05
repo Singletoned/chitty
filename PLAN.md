@@ -389,6 +389,7 @@ chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p 
                  [--ac TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
                  [--plan TEXT | --plan-file F] [--note TEXT]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
+chitty renumber PATH               one of several files sharing an ID gets the next number
 chitty archive [ID]                  omit ID to archive every done task
 chitty check [-c CTX] [PATH]...    validate; non-zero on any error
 chitty fix [-c CTX] [PATH]...      repair safe problems; fail if any remain
@@ -403,6 +404,16 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   pull or push, and that repo's `autocommit` setting is ignored. Any
   `--depends-on` is validated against the *target* repo. Post-and-forget.
   On every other command, `-c` must name a context in this repo.
+- `renumber` repairs two files sharing an ID, as a merge of two branches that
+  each added a ticket can leave. Such files collapse into one ticket for `show`,
+  `edit` and `list`, so it takes the path of the file to change, found through
+  `scan`, and refuses a path that is not a task file in a context, or whose ID
+  no other file uses (`move` covers ordinary moves). The file keeps its slug,
+  gets the next number in its context and records `moved_from`. References are
+  never rewritten, because a `depends_on` or `parent` naming a shared ID cannot
+  say which file it meant, and `check` cannot catch a wrong one since the old ID
+  still resolves; instead it lists every ticket naming the old ID for a person
+  to check.
 - `-d` is required on `add` except with `-s backlog`, which writes the default
   required Description: `This ticket needs refining.`
 - `list` includes a priority column only when a listed task has a priority.
@@ -443,7 +454,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 
 `chitty mcp` runs a stdio server. Tools mirror the CLI one-to-one with the
 same names and argument names: `add`, `suggest`, `inbox`, `whoami`, `list`, `show`,
-`edit`, `note`, `move`, `archive`, `check`, `fix`, `path`. They return the same JSON
+`edit`, `note`, `move`, `renumber`, `archive`, `check`, `fix`, `path`, and the
+read-only `next`. They return the same JSON
 the CLI prints with `--json`. One resource, `chitty://guide`, returning the
 same text as the AGENTS.md block. Tool descriptions state the rules (one
 task per session, write Plan before coding, tick criteria as you go).

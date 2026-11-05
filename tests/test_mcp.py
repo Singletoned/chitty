@@ -37,6 +37,7 @@ class TestMcp(CliTestCase):
                     "note",
                     "fix",
                     "move",
+                    "renumber",
                     "archive",
                     "check",
                     "path",
