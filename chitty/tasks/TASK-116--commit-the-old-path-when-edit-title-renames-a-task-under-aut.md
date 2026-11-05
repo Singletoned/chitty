@@ -15,7 +15,7 @@ Root cause, reproduced in a scratch repository: `git mv` has already removed the
 
 ## Acceptance Criteria
 
-- [ ] A test renames a task under autocommit and shows `git status --porcelain` empty and the commit removing the old path, with an unrelated staged file left out of the commit
+- [x] A test renames a task under autocommit and shows `git status --porcelain` empty and the commit removing the old path, with an unrelated staged file left out of the commit
 
 ## Plan
 
@@ -27,6 +27,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Added the root cause, and a ch
 
 Implementation choice: use Git `--no-renames` when deriving staged paths. This is a narrowly scoped, cheap-to-reverse fix that makes a staged rename expose both its old deletion and new addition; the code comment will explain this.
 
+Verified criterion 1: the new regression test failed before the fix because `HEAD` omitted the old-path deletion, passed after it, and `make check` passed (232 Python tests and 27 Node tests).
+
 ## History
 
 - 2026-11-03T10:28:43Z lively-panda → backlog
@@ -34,3 +36,4 @@ Implementation choice: use Git `--no-renames` when deriving staged paths. This i
 - 2026-11-04T19:36:34Z mellow-newt backlog → todo
 - 2026-11-05T07:42:14Z jolly-crane todo → doing
 - 2026-11-05T07:45:07Z jolly-crane: changed notes; wrote the plan
+- 2026-11-05T07:47:49Z jolly-crane: changed notes; ticked acceptance criteria
