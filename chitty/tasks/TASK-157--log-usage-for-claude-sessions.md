@@ -37,6 +37,10 @@ Known limits, accepted as they are for Pi: a killed `claude` runs no hook, so `m
 - [ ] A test feeds the hook a sample transcript with a repeated message ID and a subagent, and shows the file it writes, keyed by session and summed by model with the tokens mapped and `cost` null
 - [ ] Tests show the hook exiting 0 with a message on stderr for a missing or malformed transcript, an invalid usage file and stdin with no `session_id`, doing nothing with `CHITTY_USAGE_FILE` unset, and keeping another session's entry
 
+## Plan
+
+Add a thin hidden CLI hook that reads Claude's stdin JSON, aggregates deduplicated assistant usage across the main and subagent transcripts by model, and atomically replaces this session's entry in CHITTY_USAGE_FILE. Keep failures non-fatal with stderr diagnostics. Add focused real-filesystem unittest coverage for aggregation, malformed inputs, invalid existing files, unset configuration, and preserving other sessions; run format and full checks.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. It read real transcripts. Fixed: one API message spans several lines, so summing lines would overcount about 2.5 times; subagent transcripts' location; the field mapping; and null cost, including in `run.py`. I chose a hidden command, because the hook needs a stable way to run from any repository; the alternatives are a machine path in `chitty.toml`, or `python -m`, which the global tool's interpreter would not serve. The real-session criterion moved to `TASK-158`, because a worker cannot start `claude`. Rejected: filtering on the hook's `reason`, because keying by session ID makes a repeat harmless.
@@ -50,3 +54,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It confirmed that the `
 - 2026-11-04T18:03:07Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T18:03:08Z mellow-newt backlog → todo
 - 2026-11-05T22:10:19Z intrepid-kestrel todo → doing
+- 2026-11-05T22:10:38Z intrepid-kestrel: wrote the plan
