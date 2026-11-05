@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` read a branch that adds a `chitty.toml` key
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -57,3 +57,4 @@ Removed the version warning, which duplicated `TASK-135`, as I found when anothe
 - 2026-11-05T08:33:58Z daring-wren: ticked acceptance criteria
 - 2026-11-05T08:33:59Z daring-wren: ticked acceptance criteria
 - 2026-11-05T08:34:00Z daring-wren: ticked acceptance criteria
+- 2026-11-05T08:34:05Z daring-wren doing → review
