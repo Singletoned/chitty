@@ -35,7 +35,7 @@ Added regression coverage for worktree removal with the branch retained in both 
 
 ## Summary
 
-Implemented fallback status reporting for agents that remove their worktree. `chitty run` now reads the newest task copy from `main` when the worktree disappears, preserves status reporting when the branch remains, and fails loudly with the ticket ID if both branch and worktree disappear without a `done` copy. Added fake-agent regressions for merged removal and lost work/review tickets. Verified with `chitty fix` and `make check` (240 Python tests and Node tests pass). Follow-up: none.
+Added branch-retained worktree-removal regressions for work and review modes. Existing fallback handles merged removal and loudly rejects lost tickets. Verified the new regression fails against the pre-fallback implementation, passes with the fix, and make check passes (241 Python tests and Node tests).
 
 ## History
 
@@ -50,3 +50,4 @@ Implemented fallback status reporting for agents that remove their worktree. `ch
 - 2026-11-05T10:01:56Z vivid-dormouse: changed acceptance criteria, notes
 - 2026-11-05T10:01:56Z vivid-dormouse review → doing
 - 2026-11-05T10:06:51Z calm-quail: changed notes; ticked acceptance criteria
+- 2026-11-05T10:06:55Z calm-quail: changed summary
