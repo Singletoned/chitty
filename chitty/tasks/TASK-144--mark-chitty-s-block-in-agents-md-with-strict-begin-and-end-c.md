@@ -1,6 +1,6 @@
 ---
 title: Mark Chitty's block in `AGENTS.md` with strict begin and end comments
-status: doing
+status: review
 priority: medium
 parent: TASK-140
 created: 2026-11-04
@@ -72,3 +72,4 @@ Implemented strict managed-guide markers for `AGENTS.md`. `init_repo` now valida
 - 2026-11-05T22:03:49Z intrepid-eel: ticked acceptance criteria
 - 2026-11-05T22:03:50Z intrepid-eel: ticked acceptance criteria
 - 2026-11-05T22:03:51Z intrepid-eel: changed summary
+- 2026-11-05T22:03:58Z intrepid-eel doing → review
