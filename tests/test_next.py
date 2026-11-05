@@ -1,10 +1,12 @@
 import asyncio
 import hashlib
+import io
 import json
 import os
 import stat
 import subprocess
 import sys
+from contextlib import redirect_stderr
 from pathlib import Path
 from unittest.mock import patch
 from uuid import UUID
@@ -15,6 +17,7 @@ from mcp_types import CallToolResult
 from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
 from chitty.mcp import server
+from chitty.run import _read_usage, _record_usage
 from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
 
@@ -865,7 +868,7 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, subprocess, sys\n"
+            "import os, signal, subprocess, sys\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
             "if os.environ.get('CHANGE'):\n"
@@ -874,6 +877,11 @@ class TestNext(CliTestCase):
             "    open(path, 'w').write(text.replace('status: doing', 'status: blocked'))\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
             "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
+            "if os.environ.get('USAGE_MODE') == 'invalid':\n"
+            "    import pathlib\n"
+            "    pathlib.Path(os.environ['CHITTY_USAGE_FILE']).write_text('not json')\n"
+            "if os.environ.get('PI_SIGNAL'):\n"
+            "    os.kill(os.getpid(), signal.SIGINT)\n"
             "sys.exit(int(os.environ.get('PI_EXIT', '0')))\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
@@ -900,14 +908,31 @@ class TestNext(CliTestCase):
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
             self.assertIn("agent exited with status 7", failed.stderr)
+            self.assertIn("warning: cannot read usage file", failed.stderr)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+            os.environ["USAGE_MODE"] = "invalid"
+            invalid = self.run_cli("run", exit_code=1)
+            self.assertIn("agent exited with status 7", invalid.stderr)
+            self.assertIn("warning: cannot read usage file", invalid.stderr)
+            os.environ.pop("USAGE_MODE")
             os.environ.pop("PI_EXIT")
+            os.environ["PI_SIGNAL"] = "1"
+            interrupted = self.run_cli("run", exit_code=130)
+            self.assertIn("interrupted during agent", interrupted.stderr)
+            os.environ.pop("PI_SIGNAL")
             os.environ["CHANGE"] = "1"
             os.environ["TASK_PATH"] = str(
                 self.root / ".worktrees" / "task-1" / "chitty/tasks/TASK-1--todo.md"
             )
             changed = self.run_cli("run")
             self.assertEqual(changed.stdout, "TASK-1: doing → blocked\n")
+            log = self.tmp / "data" / "chitty" / "usage" / "repo.jsonl"
+            records = [json.loads(line) for line in log.read_text().splitlines()]
+            self.assertEqual(
+                [record["status_after"] for record in records],
+                ["doing", "doing", "doing", "doing", "blocked"],
+            )
+            self.assertTrue(all(record["models"] is None for record in records))
             no_next = self.run_cli("run", exit_code=1)
             self.assertIn("no next ticket", no_next.stderr)
             self.add("Again")
@@ -921,6 +946,7 @@ class TestNext(CliTestCase):
             os.environ.pop("PI_EXIT", None)
             os.environ.pop("CHANGE", None)
             os.environ.pop("TASK_PATH", None)
+            os.environ.pop("USAGE_MODE", None)
 
     def test_run_records_usage_outside_repository_and_appends_runs(self):
         config = self.root / "chitty.toml"
@@ -1011,6 +1037,103 @@ class TestNext(CliTestCase):
         self.assertEqual(records[0]["status_before"], "doing")
         self.assertEqual(records[0]["status_after"], "blocked")
         self.assertEqual(self.git("status", "--porcelain"), "")
+
+    def test_usage_log_write_failure_warns_without_raising(self):
+        stderr = io.StringIO()
+        with (
+            patch("chitty.run._append_usage", side_effect=OSError("disk full")),
+            redirect_stderr(stderr),
+        ):
+            _record_usage("repo", {})
+        self.assertIn("warning: cannot write usage log: disk full", stderr.getvalue())
+
+    def test_run_write_failure_warns_and_keeps_agent_exit_code(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Failure")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text("#!" + sys.executable + "\nimport sys\nsys.exit(7)\n")
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        stderr = io.StringIO()
+        try:
+            with (
+                patch("chitty.run._append_usage", side_effect=OSError("disk full")),
+                redirect_stderr(stderr),
+            ):
+                result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
+        self.assertIn("agent exited with status 7", result.stderr)
+        self.assertIn("warning: cannot write usage log: disk full", result.stderr)
+
+    def test_usage_validation_warns_and_accepts_null_cost(self):
+        usage = self.tmp / "usage.json"
+        usage.write_text(
+            json.dumps(
+                {
+                    "sessions": {
+                        "session": [
+                            {
+                                "provider": "p",
+                                "model": "m",
+                                "input": 1,
+                                "output": 2,
+                                "cacheRead": 3,
+                                "cacheWrite": 4,
+                                "cost": None,
+                            },
+                            {
+                                "provider": "p",
+                                "model": "m",
+                                "input": 5,
+                                "output": 6,
+                                "cacheRead": 7,
+                                "cacheWrite": 8,
+                                "cost": 1,
+                            },
+                        ]
+                    }
+                }
+            )
+        )
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            models = _read_usage(usage)
+        assert models is not None
+        self.assertEqual(models[0]["cost"], None)
+        self.assertEqual(stderr.getvalue(), "")
+        self.assertEqual(
+            models,
+            [
+                {
+                    "provider": "p",
+                    "model": "m",
+                    "input": 6,
+                    "output": 8,
+                    "cacheRead": 10,
+                    "cacheWrite": 12,
+                    "cost": None,
+                }
+            ],
+        )
+        invalid = self.tmp / "invalid.json"
+        invalid.write_text("not json")
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            self.assertIsNone(_read_usage(invalid))
+            self.assertIsNone(_read_usage(self.tmp / "missing.json"))
+        self.assertIn("warning:", stderr.getvalue())
 
     def test_run_logs_under_project_added_by_setup_refresh(self):
         config = self.root / "chitty.toml"

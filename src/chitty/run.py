@@ -6,12 +6,13 @@ import shlex
 import shutil
 import signal
 import subprocess
+import sys
 import tempfile
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from uuid import uuid4
 
 from chitty import git
@@ -78,74 +79,133 @@ def run(repo: Repo, ticket: str | None, arguments: tuple[str, ...] = ()) -> RunR
     old_status = work_repo.find(action.id).task.frontmatter.status
     started = datetime.now(UTC)
     elapsed_start = time.monotonic()
-    with tempfile.TemporaryDirectory(prefix="chitty-usage-") as temporary:
-        usage_file = Path(temporary) / "session.json"
-        previous_usage_file = os.environ.get("CHITTY_USAGE_FILE")
-        os.environ["CHITTY_USAGE_FILE"] = str(usage_file)
-        try:
+    new_status: str | None = None
+    models: list[dict[str, Any]] | None = None
+    usage_file: Path | None = None
+    usage_read = False
+    try:
+        with tempfile.TemporaryDirectory(prefix="chitty-usage-") as temporary:
+            usage_file = Path(temporary) / "session.json"
+            previous_usage_file = os.environ.get("CHITTY_USAGE_FILE")
+            os.environ["CHITTY_USAGE_FILE"] = str(usage_file)
             try:
-                completed = subprocess.run([*agent_command, *arguments], cwd=worktree, check=False)
-            except FileNotFoundError:
-                raise ChittyError(f"agent command not found: {agent_command[0]}") from None
-            except KeyboardInterrupt:
-                raise RunInterrupted("agent") from None
-        finally:
-            if previous_usage_file is None:
-                os.environ.pop("CHITTY_USAGE_FILE", None)
-            else:
-                os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
-        if completed.returncode == -signal.SIGINT:
-            raise RunInterrupted("agent")
-        if completed.returncode:
-            raise ChittyError(f"agent exited with status {completed.returncode}")
-        models = _read_usage(usage_file)
+                try:
+                    completed = subprocess.run(
+                        [*agent_command, *arguments], cwd=worktree, check=False
+                    )
+                except FileNotFoundError:
+                    raise ChittyError(f"agent command not found: {agent_command[0]}") from None
+                except KeyboardInterrupt:
+                    raise RunInterrupted("agent") from None
+                finally:
+                    if previous_usage_file is None:
+                        os.environ.pop("CHITTY_USAGE_FILE", None)
+                    else:
+                        os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
+                if completed.returncode == -signal.SIGINT:
+                    raise RunInterrupted("agent")
+                if completed.returncode:
+                    raise ChittyError(f"agent exited with status {completed.returncode}")
+                models = _read_usage(usage_file)
+                usage_read = True
 
-    # Pi commonly commits from this worktree. Reopen so history is re-read.
-    new_status = _status_after_agent(main_root, worktree, action)
-    if new_status == old_status:
-        raise ChittyError(
-            f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
+                # Pi commonly commits from this worktree. Reopen so history is re-read.
+                new_status = _status_after_agent(main_root, worktree, action)
+                if new_status == old_status:
+                    raise ChittyError(
+                        f"{action.id} was unchanged; only committed changes are visible "
+                        "to `chitty run`"
+                    )
+            finally:
+                if not usage_read:
+                    models = _read_usage(usage_file)
+                    usage_read = True
+    finally:
+        if new_status is None:
+            try:
+                new_status = _status_after_agent(main_root, worktree, action)
+            except Exception:  # noqa: BLE001 - logging must not mask the agent error
+                new_status = None
+        _record_usage(
+            project,
+            {
+                "ticket": str(action.id),
+                "mode": action.mode,
+                "actor": actor(),
+                "started": started.isoformat().replace("+00:00", "Z"),
+                "seconds": round(time.monotonic() - elapsed_start, 3),
+                "status_before": old_status,
+                "status_after": new_status,
+                "models": models,
+            },
         )
-    _append_usage(
-        project,
-        {
-            "ticket": str(action.id),
-            "mode": action.mode,
-            "actor": actor(),
-            "started": started.isoformat().replace("+00:00", "Z"),
-            "seconds": round(time.monotonic() - elapsed_start, 3),
-            "status_before": old_status,
-            "status_after": new_status,
-            "models": models,
-        },
-    )
+    assert new_status is not None
     return RunResult(action, old_status, new_status)
 
 
 def _read_usage(path: Path) -> list[dict[str, Any]] | None:
-    if not path.exists():
+    try:
+        if not path.exists():
+            raise ValueError("file is missing")
+        data = json.loads(path.read_text())
+        if not isinstance(data, dict):
+            raise TypeError("expected a JSON object with a `sessions` object")
+        data_dict = cast(dict[str, object], data)
+        if not isinstance(data_dict.get("sessions"), dict):
+            raise TypeError("expected a JSON object with a `sessions` object")
+        sessions = cast(dict[str, object], data_dict["sessions"])
+        totals: dict[tuple[str, str], dict[str, Any]] = {}
+        for entries in sessions.values():
+            if not isinstance(entries, list):
+                raise TypeError("each session must contain a list of entries")
+            for raw_entry in cast(list[object], entries):
+                if not isinstance(raw_entry, dict):
+                    raise TypeError("each usage entry must be an object")
+                entry = cast(dict[str, Any], raw_entry)
+                fields = ("provider", "model", "input", "output", "cacheRead", "cacheWrite", "cost")
+                if any(field not in entry for field in fields):
+                    raise ValueError("usage entry is missing a field")
+                if not isinstance(entry["provider"], str) or not isinstance(entry["model"], str):
+                    raise TypeError("provider and model must be strings")
+                if any(
+                    not isinstance(entry[field], (int, float)) or isinstance(entry[field], bool)
+                    for field in fields[2:-1]
+                ):
+                    raise ValueError("token counts must be numbers")
+                if entry["cost"] is not None and (
+                    not isinstance(entry["cost"], (int, float)) or isinstance(entry["cost"], bool)
+                ):
+                    raise ValueError("cost must be a number or null")
+                key = (entry["provider"], entry["model"])
+                total = totals.setdefault(
+                    key,
+                    {
+                        "provider": entry["provider"],
+                        "model": entry["model"],
+                        "input": 0,
+                        "output": 0,
+                        "cacheRead": 0,
+                        "cacheWrite": 0,
+                        "cost": 0,
+                    },
+                )
+                for field in fields[2:-1]:
+                    total[field] += entry[field]
+                if total["cost"] is None or entry["cost"] is None:
+                    total["cost"] = None
+                else:
+                    total["cost"] += entry["cost"]
+        return list(totals.values())
+    except Exception as error:  # noqa: BLE001 - invalid usage must not abort the run
+        print(f"warning: cannot read usage file {path}: {error}", file=sys.stderr)
         return None
-    data = json.loads(path.read_text())
-    sessions = data["sessions"]
-    totals: dict[tuple[str, str], dict[str, Any]] = {}
-    for entries in sessions.values():
-        for entry in entries:
-            key = (entry["provider"], entry["model"])
-            total = totals.setdefault(
-                key,
-                {
-                    "provider": entry["provider"],
-                    "model": entry["model"],
-                    "input": 0,
-                    "output": 0,
-                    "cacheRead": 0,
-                    "cacheWrite": 0,
-                    "cost": 0,
-                },
-            )
-            for field in ("input", "output", "cacheRead", "cacheWrite", "cost"):
-                total[field] += entry[field]
-    return list(totals.values())
+
+
+def _record_usage(project: str, record: dict[str, Any]) -> None:
+    try:
+        _append_usage(project, record)
+    except Exception as error:  # noqa: BLE001 - logging must not change the exit code
+        print(f"warning: cannot write usage log: {error}", file=sys.stderr)
 
 
 def _append_usage(project: str, record: dict[str, Any]) -> None:
