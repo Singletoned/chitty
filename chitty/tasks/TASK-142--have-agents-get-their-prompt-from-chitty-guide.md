@@ -1,6 +1,6 @@
 ---
 title: Have agents get their prompt from `chitty guide`
-status: blocked
+status: doing
 priority: high
 owner: human
 depends_on:
@@ -42,6 +42,8 @@ Real check: ran `chitty run` against the committed implementation. The configure
 
 Human verification needed for criterion 4: the real `chitty run` invocation launched the configured Pi session but returned unchanged without exposing the initial prompt, so I cannot verify that the visible session began with role instructions. Please run it interactively and confirm the first prompt, then move the ticket to doing and tick criterion 4.
 
+Moved to `doing` by the planning session for the human to check criterion 4 in a real Pi session.
+
 ## History
 
 - 2026-11-04T11:56:19Z lively-panda → todo
@@ -53,3 +55,5 @@ Human verification needed for criterion 4: the real `chitty run` invocation laun
 - 2026-11-05T09:17:00Z upbeat-quail: ticked acceptance criteria
 - 2026-11-05T09:17:17Z upbeat-quail: changed owner, notes
 - 2026-11-05T09:17:17Z upbeat-quail doing → blocked
+- 2026-11-05T09:32:19Z mellow-newt: changed notes
+- 2026-11-05T09:32:19Z mellow-newt blocked → doing
