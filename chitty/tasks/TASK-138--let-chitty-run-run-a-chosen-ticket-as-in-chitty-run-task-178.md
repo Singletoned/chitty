@@ -25,8 +25,9 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 ## Acceptance Criteria
 
 - [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
-- [ ] `README.md` and `PLAN.md` describe the option
 - [ ] A test with a fake agent shows `--ticket` running a lower-priority `todo` ticket in work mode ahead of what `chitty next` selects, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
+- [ ] `README.md` and `PLAN.md` describe it, and a test shows `chitty run --help` showing `[ID]` and saying what it does
+- [ ] A test shows other arguments still reaching the agent after the ID, `chitty run -e ./search.ts` forwarding both words, an ID not given first being forwarded, and `chitty run` with no ID behaving as before
 
 ## Notes
 
@@ -36,6 +37,8 @@ Landing at the start of a run is now `TASK-152`, so that is the ticket that must
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: this named the wrong tickets after the split.
 
+Changed 2026-11-05 at the human's request: they asked for `chitty run TASK-178`, not `--ticket`, with it in the help text, and it is now high priority. The earlier objection to a positional argument still holds for a declared one, so this reads only a first word shaped like an ID. Earlier notes describe `--ticket`.
+
 ## History
 
 - 2026-11-04T09:46:25Z lively-panda → todo
@@ -44,3 +47,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: this named
 - 2026-11-04T15:17:42Z mellow-newt: changed description, notes
 - 2026-11-05T10:07:30Z mellow-newt: changed description
 - 2026-11-05T10:07:31Z mellow-newt: changed title, priority, acceptance criteria
+- 2026-11-05T10:07:32Z mellow-newt: changed acceptance criteria, notes
