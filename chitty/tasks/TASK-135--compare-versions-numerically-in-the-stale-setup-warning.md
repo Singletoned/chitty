@@ -17,6 +17,13 @@ Use `_version_key` from `src/chitty/store.py`, renaming it without the underscor
 
 - [ ] Tests, failing before the fix, show a numerically older recorded version asking to re-run `chitty init`, a numerically newer one asking to upgrade `chitty`, and an unreadable one warning without stopping a read
 
+## Plan
+
+1. Inspect the stale setup warning and existing version helper/tests.
+2. Rename the shared numeric version helper in store.py and use it from cli.py, converting malformed recorded versions into a warning while preserving reads.
+3. Add regression tests for numerically older, newer, and unreadable recorded versions; run the focused tests and full make check.
+4. Record verification, check the criterion, and move the ticket to review.
+
 ## Notes
 
 Moved back to `backlog` on 2026-11-04, under the new rule that a ticket stays there until its cold read has outcomes. A cold read is running.
@@ -35,3 +42,4 @@ Reported again on 2026-11-04 by a session in another repository: a file recordin
 - 2026-11-04T15:31:56Z mellow-newt: changed acceptance criteria
 - 2026-11-04T21:00:15Z mellow-newt: changed priority, notes
 - 2026-11-05T21:34:39Z sunny-jay todo → doing
+- 2026-11-05T21:34:55Z sunny-jay: wrote the plan
