@@ -1,6 +1,6 @@
 ---
 title: Commit the old path when `edit --title` renames a task under autocommit
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -31,6 +31,8 @@ Verified criterion 1: the new regression test failed before the fix because `HEA
 
 Ready for independent review. Re-checked criterion 1 with `uv run python -m unittest tests.test_autocommit.TestAutocommit.test_renaming_a_task_commits_both_paths_without_unrelated_staged_files`; it passed. Full `make check` passed before the final criterion-record update.
 
+Reviewed: criterion 1 passed. Independently ran the focused regression test and make check; the commit removes the old task path while preserving an unrelated staged file.
+
 ## History
 
 - 2026-11-03T10:28:43Z lively-panda → backlog
@@ -41,3 +43,5 @@ Ready for independent review. Re-checked criterion 1 with `uv run python -m unit
 - 2026-11-05T07:47:49Z jolly-crane: changed notes; ticked acceptance criteria
 - 2026-11-05T07:48:06Z jolly-crane: changed notes
 - 2026-11-05T07:48:06Z jolly-crane doing → review
+- 2026-11-05T07:51:31Z honest-puffin: changed notes
+- 2026-11-05T07:51:31Z honest-puffin review → done
