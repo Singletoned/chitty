@@ -20,8 +20,8 @@ Use `_version_key` from `src/chitty/config.py`; `TASK-137` moves it there, and i
 
 ## Acceptance Criteria
 
-- [ ] A locally edited extension is still refused, shown by the existing test passing, and `__version__` is bumped above `main`'s
-- [ ] Tests show an older Chitty leaving a newer extension in place, warning with both versions and finishing the rest of `init`; a newer or equal Chitty updating and recording its version; and a hash-only state file being replaced
+- [x] A locally edited extension is still refused, shown by the existing test passing, and `__version__` is bumped above `main`'s
+- [x] Tests show an older Chitty leaving a newer extension in place, warning with both versions and finishing the rest of `init`; a newer or equal Chitty updating and recording its version; and a hash-only state file being replaced
 
 ## Plan
 
@@ -31,6 +31,10 @@ Add version metadata to the Pi extension state file and compare it before replac
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the state file's format, where `_version_key` lives given the import direction, the check's order after validation, unreadable versions, what the warning says, and a loose claim about worktrees. Accepted and stated: a warning on every run from an old copy, and a branch's `.venv` holding its extension.
 
+## Summary
+
+Implemented versioned Pi extension state with the hash on line one and Chitty version on line two. Locally edited extensions remain refused; older Chitty warns and leaves newer extensions untouched while init continues, while equal/newer running versions replace and record the version. Verification: `make check` passed (268 Python tests and Node tests); focused Pi/init tests passed. Follow-up: none.
+
 ## History
 
 - 2026-11-04T21:00:16Z mellow-newt → backlog
@@ -38,3 +42,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the state file's format
 - 2026-11-04T21:01:55Z mellow-newt backlog → todo
 - 2026-11-05T20:24:26Z kind-adder todo → doing
 - 2026-11-05T20:24:43Z kind-adder: wrote the plan
+- 2026-11-05T20:32:12Z kind-adder: changed summary; ticked acceptance criteria
