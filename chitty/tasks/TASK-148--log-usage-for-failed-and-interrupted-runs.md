@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-127
@@ -59,3 +59,4 @@ Added integration coverage for non-zero agent exits, Ctrl-C, unchanged status, a
 - 2026-11-05T16:19:53Z witty-adder: ticked acceptance criteria
 - 2026-11-05T16:20:03Z witty-adder: ticked acceptance criteria
 - 2026-11-05T16:20:13Z witty-adder: changed summary
+- 2026-11-05T16:20:14Z witty-adder doing → review
