@@ -20,7 +20,7 @@ from chitty.config import (
     search_root,
     user_contexts_path,
 )
-from chitty.errors import ChittyError
+from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, NoNextTicket
 from chitty.import_backlog import import_directory
 from chitty.inbox import list_waiting, waiting
 from chitty.inbox import pull as pull_suggestions
@@ -43,12 +43,20 @@ from chitty.store import (
 from chitty.upgrade import check_for_upgrade
 
 
+class _NoNextTicketException(click.ClickException):
+    """Print the usual `Error:` line, but exit with the idle-queue status."""
+
+    exit_code = NO_NEXT_TICKET_EXIT
+
+
 class _Group(click.Group):
     def invoke(self, ctx: click.Context) -> Any:
         if user_contexts_path().exists():
             click.echo("warning: contexts.toml is ignored; use chitty suggest", err=True)
         try:
             return super().invoke(ctx)
+        except NoNextTicket as error:
+            raise _NoNextTicketException(str(error)) from error
         except ChittyError as error:
             raise click.ClickException(str(error)) from error
 

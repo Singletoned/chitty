@@ -1,8 +1,7 @@
 ---
 title: Exit 3 when `chitty next` or `chitty run` has no ticket
-status: todo
+status: review
 priority: high
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -19,15 +18,34 @@ Out of scope: a `chitty run` that waits for tickets itself, and any other exit c
 
 ## Acceptance Criteria
 
-- [ ] `README.md` and `PLAN.md` document exit 3 and the idle loop
-- [ ] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
+- [x] `README.md` and `PLAN.md` document exit 3 and the idle loop
+- [x] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
+
+## Plan
+
+1. Change the existing empty-queue tests in `tests/test_next.py` to expect exit 3 and no stdout, add `--json` and an agent exiting 3 (expects 1); see them fail.
+2. Add `NoNextTicket` and `NO_NEXT_TICKET_EXIT` to `errors.py`, raise it in `next_action`, map it in `_Group.invoke`.
+3. Document exit 3 and the idle loop in `README.md` and `PLAN.md`.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 3 is unused and that every `except ChittyError` still catches a subclass. Fixed: how to exit 3 when `ClickException` hard-codes 1, where the constant lives, `--json` output, that a dependency-blocked queue counts as idle, that `run`'s preflight, setup refresh and inbox pull happen on every idle pass, editing the existing tests in place, an agent exiting 3 in the criterion, and the version bump (not needed). Rejected: a criterion for the MCP `ToolError`, which an existing test in `tests/test_next.py` already covers.
+
+`PLAN.md` still said to run the two modes one after the other, though `TASK-162` is `done` and its criterion asked to replace that sentence; this change removes it, since it rewrote the same paragraph. `ClickException.exit_code` is a class variable to Pyright, so exit 3 comes from a small subclass, `_NoNextTicketException`, in `cli.py`. Checked with the real binary in a scratch repo: `chitty next --mode review` printed the error and exited 3.
+
+## Summary
+
+`next_action` raises `NoNextTicket` (a `ChittyError`) on an idle queue; `_Group.invoke` maps it to exit `NO_NEXT_TICKET_EXIT` (3), keeping the `Error:` line on stderr and nothing on stdout. Other failures, including an agent exiting 3, still exit 1; MCP is unchanged. `README.md` and `PLAN.md` document exit 3 and the loop `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`, and `PLAN.md` loses its stale one-after-the-other advice.
+
+Verified: the five empty-queue assertions in `tests/test_next.py` changed to 3 (seen failing first), plus `--json` and an agent exiting 3; `make check` passes (269 tests plus Node). Follow-up: none.
 
 ## History
 
 - 2026-11-05T21:13:41Z youthful-toad → backlog
 - 2026-11-05T21:14:52Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-05T21:14:53Z youthful-toad backlog → todo
+- 2026-11-05T21:15:01Z youthful-toad: wrote the plan
+- 2026-11-05T21:15:01Z youthful-toad todo → doing
+- 2026-11-05T21:20:22Z youthful-toad: ticked acceptance criteria
+- 2026-11-05T21:20:23Z youthful-toad: changed owner, notes, summary
+- 2026-11-05T21:20:23Z youthful-toad doing → review

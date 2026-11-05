@@ -23,7 +23,7 @@ from chitty.config import (
     load_repo_config,
     validate_repo_config,
 )
-from chitty.errors import ChittyError
+from chitty.errors import ChittyError, NoNextTicket
 from chitty.ids import TaskId
 from chitty.model import (
     DESCRIPTION,
@@ -1054,7 +1054,9 @@ def next_action(repo: Repo, *, mode: Literal["work", "review"] | None = None) ->
         if (action := _ticket_action(repo, stored, refuse=False)) is not None
     ]
     if not candidates:
-        raise ChittyError("no next ticket" if mode is None else f"no next ticket for --mode {mode}")
+        raise NoNextTicket(
+            "no next ticket" if mode is None else f"no next ticket for --mode {mode}"
+        )
     return min(
         candidates,
         key=lambda pair: (
