@@ -1,6 +1,6 @@
 ---
 title: Compare versions numerically in the stale setup warning
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -51,3 +51,4 @@ Verification: focused setup-version regression test and `make check` passed (269
 - 2026-11-05T21:34:55Z sunny-jay: wrote the plan
 - 2026-11-05T21:41:06Z sunny-jay: ticked acceptance criteria
 - 2026-11-05T21:41:07Z sunny-jay: changed summary
+- 2026-11-05T21:41:08Z sunny-jay doing → review
