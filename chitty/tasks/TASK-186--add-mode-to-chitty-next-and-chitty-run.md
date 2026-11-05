@@ -17,8 +17,8 @@ Not in scope: `--mode` alongside `--ticket` from `TASK-138`, which is refused by
 
 ## Acceptance Criteria
 
-- [ ] Tests show `--mode review` and `--mode work` each selecting only their own tickets, in both `chitty next` and `chitty run`, with no `--mode` unchanged, and a message naming the mode when nothing matches
-- [ ] `README.md` and `PLAN.md` describe the option, and say to run the modes one after the other until `TASK-162` lands
+- [x] Tests show `--mode review` and `--mode work` each selecting only their own tickets, in both `chitty next` and `chitty run`, with no `--mode` unchanged, and a message naming the mode when nothing matches
+- [x] `README.md` and `PLAN.md` describe the option, and say to run the modes one after the other until `TASK-162` lands
 
 ## Plan
 
@@ -41,3 +41,4 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-05T19:11:25Z youthful-toad: changed owner, notes
 - 2026-11-05T19:11:42Z youthful-toad: wrote the plan
 - 2026-11-05T19:11:42Z youthful-toad todo → doing
+- 2026-11-05T19:27:45Z youthful-toad: ticked acceptance criteria
