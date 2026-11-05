@@ -1,6 +1,6 @@
 ---
 title: Log the model and rough cost of each ticket session
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-126
@@ -99,3 +99,4 @@ Implemented machine-local per-session usage logging in chitty run: Pi receives a
 - 2026-11-05T11:05:01Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T11:05:02Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T11:07:12Z able-yellowhammer: changed summary
+- 2026-11-05T11:07:13Z able-yellowhammer doing → review
