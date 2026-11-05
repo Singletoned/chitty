@@ -120,8 +120,11 @@ that ambiguity is an error. Error if neither finds one.
   projects or types: a ticket's project is the repo it lives in, and its
   type (bug, suggestion) can change while its ID must not, so type is a
   label. New repos always get `TASK`; existing custom prefixes keep working.
-- `n` is a positive integer, unpadded: `max(n over existing files in the
-  context, including archive) + 1`.
+- `n` is a positive integer, unpadded: one above the highest number in
+  committed ticket files on all local and remote-tracking branches, in the
+  context's active or archive directory, plus uncommitted files in this
+  checkout. Uncommitted tickets in other worktrees and unpushed work on other
+  machines are not visible.
 
 Filename: `<ID>--<slug>.md`, or `<ID>.md` when the slug is empty. The slug
 is derived from the title (lowercase, `[a-z0-9-]`, collapsed hyphens, max 60
@@ -131,12 +134,13 @@ renames files whose slug has gone stale. It is there so `ls` is readable; the
 ID is the identity, so renames never break references. Slugs never contain `--`, so the ID is everything before the
 first `--`. The ID is not repeated in frontmatter.
 
-Collisions: task creation is expected to be centralised, so two branches
-creating the same ID is assumed not to happen in practice. If it does,
-`chitty check` reports the files involved; the human renames one and fixes
-references by hand. No tooling beyond that until real use shows it's
-needed. Likewise, moving the highest-numbered task out of a context lets
-its number be reused; accepted.
+Collisions: allocation counts committed ticket files on all local and
+remote-tracking branches, in active and archive directories, so branches get
+separate IDs. It does not see uncommitted tickets in other worktrees or
+unpushed work on other machines; those can still collide. If a collision does
+occur, `chitty check` reports the files involved; the human renames one and
+fixes references by hand. Likewise, moving the highest-numbered task out of a
+context lets its number be reused; accepted.
 
 Referencing: commands accept `TASK-13`, or bare `13` for the default
 context. Stored references (`depends_on`, `moved_from`) are always the full

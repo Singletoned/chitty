@@ -55,6 +55,30 @@ class TestStore(StoreTestCase):
         self.repo.archive(TaskId("TASK", 1))
         self.assertEqual(self.add("Two").id.number, 2)
 
+    def test_numbers_count_committed_tasks_on_another_branch(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("branch", "-M", "main")
+        self.commit("initial setup", "2026-10-23T00:00:00+00:00")
+
+        worktree = self.tmp / "other-branch"
+        self.git("worktree", "add", "--quiet", "-b", "other", str(worktree))
+        self.addCleanup(self.remove_worktree, worktree)
+        branch_repo = Repo.open(worktree)
+        branch_tasks = branch_repo.context("tasks")
+        branch_repo.add(branch_tasks, "Archived branch task", "Describe.", [], {}, TODAY)
+        branch_repo.archive(TaskId("TASK", 1))
+        branch_repo.add(branch_tasks, "Active branch task", "Describe.", [], {}, TODAY)
+        self.commit("branch tasks", "2026-10-23T00:00:01+00:00", cwd=worktree)
+        self.git("worktree", "remove", "--force", str(worktree))
+
+        main_repo = Repo.open(self.root)
+        task = main_repo.add(
+            main_repo.context("tasks"), "Main branch task", "Describe.", [], {}, TODAY
+        ).task
+        self.assertEqual(task.id.number, 3)
+
     def test_add_checks_dependencies(self):
         with self.assertRaisesRegex(ChittyError, "no task HUMAN-1"):
             self.add("Blocked", depends_on=["HUMAN-1"])
@@ -88,6 +112,10 @@ class TestStore(StoreTestCase):
 
     def git(self, *args: str) -> None:
         subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
+
+    def remove_worktree(self, path):
+        if path.exists():
+            self.git("worktree", "remove", "--force", str(path))
 
     def commit(self, message: str, timestamp: str, cwd=None) -> None:
         cwd = cwd or self.root
