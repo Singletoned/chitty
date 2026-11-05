@@ -1,6 +1,6 @@
 ---
 title: Commit the old path when `edit --title` renames a task under autocommit
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -29,6 +29,8 @@ Implementation choice: use Git `--no-renames` when deriving staged paths. This i
 
 Verified criterion 1: the new regression test failed before the fix because `HEAD` omitted the old-path deletion, passed after it, and `make check` passed (232 Python tests and 27 Node tests).
 
+Ready for independent review. Re-checked criterion 1 with `uv run python -m unittest tests.test_autocommit.TestAutocommit.test_renaming_a_task_commits_both_paths_without_unrelated_staged_files`; it passed. Full `make check` passed before the final criterion-record update.
+
 ## History
 
 - 2026-11-03T10:28:43Z lively-panda → backlog
@@ -37,3 +39,5 @@ Verified criterion 1: the new regression test failed before the fix because `HEA
 - 2026-11-05T07:42:14Z jolly-crane todo → doing
 - 2026-11-05T07:45:07Z jolly-crane: changed notes; wrote the plan
 - 2026-11-05T07:47:49Z jolly-crane: changed notes; ticked acceptance criteria
+- 2026-11-05T07:48:06Z jolly-crane: changed notes
+- 2026-11-05T07:48:06Z jolly-crane doing → review
