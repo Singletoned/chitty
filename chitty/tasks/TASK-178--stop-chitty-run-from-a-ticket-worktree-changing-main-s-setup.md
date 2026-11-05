@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` from a ticket worktree changing `main`'s setup
-status: backlog
+status: todo
 priority: high
 created: 2026-11-05
 ---
@@ -29,3 +29,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a test recording a newe
 - 2026-11-05T09:37:43Z mellow-newt → backlog
 - 2026-11-05T09:39:56Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T09:39:57Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T09:39:58Z mellow-newt backlog → todo
