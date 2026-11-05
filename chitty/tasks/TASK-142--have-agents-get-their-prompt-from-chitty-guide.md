@@ -1,6 +1,6 @@
 ---
 title: Have agents get their prompt from `chitty guide`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-141
@@ -38,3 +38,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T11:56:19Z lively-panda → todo
 - 2026-11-04T12:00:38Z lively-panda: changed description, notes
 - 2026-11-04T15:38:31Z mellow-newt: changed priority, notes
+- 2026-11-05T09:08:52Z upbeat-quail todo → doing
