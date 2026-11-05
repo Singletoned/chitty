@@ -1,7 +1,7 @@
 ---
-title: Let `chitty run` run a chosen ticket with `--ticket`
+title: Let `chitty run` run a chosen ticket, as in `chitty run TASK-178`
 status: todo
-priority: medium
+priority: high
 depends_on:
   - TASK-126
 parent: TASK-106
@@ -27,7 +27,6 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 - [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
 - [ ] `README.md` and `PLAN.md` describe the option
 - [ ] A test with a fake agent shows `--ticket` running a lower-priority `todo` ticket in work mode ahead of what `chitty next` selects, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
-- [ ] A test shows other arguments still reaching the agent with `--ticket` before or after them, a bare number resolving, and `chitty run` without the option behaving as before
 
 ## Notes
 
@@ -44,3 +43,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: this named
 - 2026-11-04T15:11:40Z mellow-newt: changed notes
 - 2026-11-04T15:17:42Z mellow-newt: changed description, notes
 - 2026-11-05T10:07:30Z mellow-newt: changed description
+- 2026-11-05T10:07:31Z mellow-newt: changed title, priority, acceptance criteria
