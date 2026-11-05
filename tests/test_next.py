@@ -12,7 +12,7 @@ from mcp_types import CallToolResult
 
 from chitty.config import CHITTY_VERSION
 from chitty.mcp import server
-from chitty.store import Repo, next_action
+from chitty.store import Repo, guide, next_action
 from tests.test_cli import CliTestCase
 
 
@@ -889,7 +889,7 @@ class TestNext(CliTestCase):
             )
             .replace(
                 'agent_command = "pi --chitty-{mode} {id}"',
-                'agent_command = "~/bin/fake-agent --chitty-{mode} {id}"',
+                'agent_command = "~/bin/fake-agent \\"{prompt}\\""',
             )
         )
         self.git("init", "--quiet")
@@ -905,11 +905,13 @@ class TestNext(CliTestCase):
             "#!" + sys.executable + "\n"
             "from pathlib import Path\n"
             "import os, sys\n"
-            "Path('agent-arguments').write_text(repr(sys.argv[1:]))\n"
+            "status = Path('chitty/tasks/TASK-1--todo.md').read_text()\n"
+            "name = 'work' if 'status: doing' in status else 'review'\n"
+            "Path('agent-arguments-' + name).write_text(repr(sys.argv[1:]))\n"
+            "assert len(sys.argv[1:]) == 1\n"
+            "assert '\\n' in sys.argv[1]\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert Path('setup-ran').read_text() in {'1', '2', '3'}\n"
-            "if sys.argv[1] == '--chitty-work':\n"
-            "    assert 'status: doing' in Path('chitty/tasks/TASK-1--todo.md').read_text()\n"
             "Path('pi-ran').write_text('yes')\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
@@ -930,7 +932,9 @@ class TestNext(CliTestCase):
         self.assertIn("TASK-1 was unchanged", result.stderr)
         self.assertIn("TASK-1 was unchanged", repeated.stderr)
         self.assertTrue((worktree / "pi-ran").exists())
-        self.assertEqual((worktree / "agent-arguments").read_text(), "['--chitty-work', 'TASK-1']")
+        self.assertEqual(
+            (worktree / "agent-arguments-work").read_text(), repr([guide("work", "TASK-1")])
+        )
         self.assertEqual((worktree / "setup-ran").read_text(), "2")
         self.assertFalse((worktree / "interpreted").exists())
 
@@ -946,9 +950,9 @@ class TestNext(CliTestCase):
             os.environ["PATH"] = previous
             os.environ.pop("EXPECTED_ROOT", None)
         self.assertIn("TASK-1 was unchanged", review.stderr)
-        self.assertEqual(
-            (worktree / "agent-arguments").read_text(), "['--chitty-review', 'TASK-1']"
-        )
+        review_prompt = (worktree / "agent-arguments-review").read_text()
+        self.assertEqual(review_prompt, repr([guide("review", "TASK-1")]))
+        self.assertIn('"', review_prompt)
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
             "review",

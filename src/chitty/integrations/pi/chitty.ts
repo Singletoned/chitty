@@ -60,6 +60,7 @@ export default function chitty(pi: ExtensionAPI) {
   ): Promise<void> {
     await requireLinkedWorktree(pi, ctx);
     const ticket = await ticketSnapshot(pi, ctx, ticketId);
+    const prompt = await ticketGuide(pi, ctx, mode, ticketId);
     state = {
       enabled: true,
       mode,
@@ -75,7 +76,7 @@ export default function chitty(pi: ExtensionAPI) {
       return;
     }
 
-    pi.sendUserMessage(chittyPrompt(mode, ticketId));
+    pi.sendUserMessage(prompt);
   }
 
   async function startSafely(
@@ -359,6 +360,27 @@ export async function requireLinkedWorktree(
   }
 }
 
+async function ticketGuide(
+  pi: ExtensionAPI,
+  ctx: ExtensionContext,
+  mode: ChittyMode,
+  ticketId: string,
+): Promise<string> {
+  const result = await pi.exec("chitty", ["guide", mode, ticketId], {
+    cwd: ctx.cwd,
+    signal: ctx.signal,
+  });
+  if (result.code !== 0) {
+    throw new Error(
+      `chitty guide ${mode} ${ticketId} failed (exit ${result.code}): ${result.stderr || result.stdout}`,
+    );
+  }
+  if (!result.stdout.trim()) {
+    throw new Error(`chitty guide ${mode} ${ticketId} returned no instructions.`);
+  }
+  return result.stdout;
+}
+
 async function ticketSnapshot(
   pi: ExtensionAPI,
   ctx: ExtensionContext,
@@ -446,9 +468,6 @@ function latestAssistantMessage(
   return undefined;
 }
 
-const DEFAULT_INSTRUCTION =
-  "When a question has a sensible default that is cheap to change later, choose it and carry on instead of blocking: record the choice and why in a Chitty note for the reviewer, and comment the code where the default applies, saying how and why it was chosen. Block only when the choice is costly to reverse or needs a person.";
-
 export function continuationPrompt(mode: ChittyMode, ticketId: string): string {
   return [
     `Continue working only on Chitty ticket ${ticketId}.`,
@@ -456,26 +475,5 @@ export function continuationPrompt(mode: ChittyMode, ticketId: string): string {
       ? "Tick a criterion only after verifying it. Carry on to the next criterion without stopping to report, and re-check every criterion before setting `review`."
       : "Never review work you have done. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion.",
     "If you need a person to answer a question, record it in a Chitty note and set the ticket to `blocked`; do not end the turn.",
-  ].join("\n");
-}
-
-export function chittyPrompt(mode: ChittyMode, ticketId: string): string {
-  const modeInstructions =
-    mode === "work"
-      ? [
-          "Follow the repository's Chitty guidance: verify each criterion before ticking it, and re-check every criterion before setting `review`. Reviews must be done by a completely different agent, never a subagent of the implementation agent.",
-          DEFAULT_INSTRUCTION,
-          "When blocked by an issue or question, add a clear Chitty note explaining the problem, who can resolve it, and what is needed; then mark the ticket blocked.",
-        ]
-      : [
-          "Never review work you have done. Review in the ticket's branch worktree. Inspect the ticket, its acceptance criteria, changes, and verification independently.",
-          "Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. On a pass, merge its branch into `main`, then remove its branch and worktree. Pass it with `chitty edit <ID> -s done --note \"Reviewed: ...\"`; fail it with `chitty edit <ID> -s doing --note \"...\"` explaining what must change.",
-        ];
-
-  return [
-    `Work only on Chitty ticket ${ticketId}.`,
-    ...modeInstructions,
-    "When you write a literal single `*` in Markdown, escape it or enclose the pattern in backticks, for example `files/*.jpg`.",
-    "When you notice a concrete improvement in this project or another tool, submit it with `chitty suggest` rather than doing unrelated work.",
   ].join("\n");
 }

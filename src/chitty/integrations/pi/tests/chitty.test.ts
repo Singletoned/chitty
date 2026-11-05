@@ -7,7 +7,6 @@ import { join } from "node:path";
 import test from "node:test";
 
 import chitty, {
-  chittyPrompt,
   continuationPrompt,
   isFailedAssistantResponse,
   parseChittyCommand,
@@ -198,7 +197,7 @@ test("starts flagged tickets with a UI in TUI mode", async () => {
               stderr: "",
             };
           }
-          return { code: 0, stdout: JSON.stringify({ status }), stderr: "" };
+          return { code: 0, stdout: args[0] === "guide" ? `guide for ${args[1]}\n` : JSON.stringify({ status }), stderr: "" };
         },
         getFlag: (name: string) => (name === flag ? "TASK-12" : undefined),
         on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
@@ -229,13 +228,52 @@ test("starts flagged tickets with a UI in TUI mode", async () => {
       );
       assert.equal(sentMessages.length, hasUI ? 1 : 0, `${flag} with hasUI=${hasUI}`);
       if (hasUI) {
-        assert.match(sentMessages[0], /Work only on Chitty ticket TASK-12/);
-        assert.match(
-          sentMessages[0],
-          mode === "work" ? /verify each criterion/ : /Never review work you have done/,
-        );
+        assert.equal(sentMessages[0], `guide for ${mode}\n`);
       }
     }
+  }
+});
+
+test("notifies and shuts down when guide fails or is empty", async () => {
+  for (const guideResult of [
+    { code: 1, stdout: "", stderr: "guide unavailable" },
+    { code: 0, stdout: "   ", stderr: "" },
+  ]) {
+    let commandHandler:
+      | ((args: string, ctx: unknown) => Promise<void> | void)
+      | undefined;
+    const notifications: string[] = [];
+    let shutdowns = 0;
+    const pi = {
+      appendEntry: () => {},
+      exec: async (command: string, args: string[]) => {
+        if (command === "git") {
+          return { code: 0, stdout: args[1] === "--git-dir" ? ".git/worktrees/t\\n" : ".git\\n", stderr: "" };
+        }
+        if (args[0] === "show") {
+          return { code: 0, stdout: JSON.stringify({ status: "doing" }), stderr: "" };
+        }
+        return guideResult;
+      },
+      getFlag: () => undefined,
+      on: () => () => {},
+      registerCommand: (_name: string, command: { handler: typeof commandHandler }) => {
+        commandHandler = command.handler;
+      },
+      registerFlag: () => {},
+      sendMessage: () => {},
+      sendUserMessage: () => {},
+    };
+    chitty(pi as Parameters<typeof chitty>[0]);
+    assert.ok(commandHandler);
+    await commandHandler("work TASK-12", {
+      cwd: process.cwd(),
+      sessionManager: { getBranch: () => [], getSessionId: () => "test-session" },
+      shutdown: () => shutdowns++,
+      ui: { notify: (message: string) => notifications.push(message) },
+    });
+    assert.equal(shutdowns, 1);
+    assert.match(notifications[0], /chitty guide work TASK-12/);
   }
 });
 
@@ -262,7 +300,7 @@ test("starts flagged tickets only in TUI mode", async () => {
                 stderr: "",
               };
             }
-            return { code: 0, stdout: JSON.stringify({ status }), stderr: "" };
+            return { code: 0, stdout: args[0] === "guide" ? `guide for ${args[1]}\n` : JSON.stringify({ status }), stderr: "" };
           },
           getFlag: (name: string) => (name === flag ? "TASK-12" : undefined),
           on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
@@ -294,11 +332,7 @@ test("starts flagged tickets only in TUI mode", async () => {
         assert.equal(process.env.CHITTY_PI_SESSION_ID, `${flag}-${mode}`);
         assert.equal(sentMessages.length, mode === "tui" ? 1 : 0, `${flag} in ${mode}`);
         if (mode === "tui") {
-          assert.match(sentMessages[0], /Work only on Chitty ticket TASK-12/);
-          assert.match(
-            sentMessages[0],
-            ticketMode === "work" ? /verify each criterion/ : /Never review work you have done/,
-          );
+          assert.equal(sentMessages[0], `guide for ${ticketMode}\n`);
         }
       }
     }
@@ -325,7 +359,7 @@ test("shuts down without starting when a flagged ticket has left its stage", asy
         if (command === "git") {
           return { code: 0, stdout: args[1] === "--git-dir" ? ".git/worktrees/t\n" : ".git\n", stderr: "" };
         }
-        return { code: 0, stdout: JSON.stringify({ status }), stderr: "" };
+        return { code: 0, stdout: args[0] === "guide" ? `guide for ${args[1]}\n` : JSON.stringify({ status }), stderr: "" };
       },
       getFlag: (name: string) => (name === flag ? "TASK-12" : undefined),
       on: (event: string, handler: (event: unknown, ctx: unknown) => Promise<void> | void) => {
@@ -654,41 +688,16 @@ test("recognizes only assistant errors as terminal", () => {
   assert.equal(isFailedAssistantResponse(undefined), false);
 });
 
-test("work and review prompts name one ticket without choosing another", () => {
-  const ticketId = "TASK-12";
+test("continuation prompts name one ticket", () => {
   for (const mode of ["work", "review"] as const) {
-    for (const prompt of [
-      chittyPrompt(mode, ticketId),
-      continuationPrompt(mode, ticketId),
-    ]) {
-      assert.match(prompt, /TASK-12/);
-      assert.doesNotMatch(prompt, /another ticket/i);
-      assert.doesNotMatch(prompt, /NO MORE WORK/);
-    }
+    const prompt = continuationPrompt(mode, "TASK-12");
+    assert.match(prompt, /TASK-12/);
+    assert.doesNotMatch(prompt, /another ticket|NO MORE WORK/i);
   }
 });
 
 test("tells work agents to carry on to the next criterion", () => {
   assert.match(continuationPrompt("work", "TASK-12"), /next criterion without stopping to report/);
-});
-
-test("gives work agents the ticket implementation workflow", () => {
-  const prompt = chittyPrompt("work", "TASK-12");
-
-  assert.doesNotMatch(prompt, /\b(?:worktree|setup|claim)\b/i);
-  assert.match(prompt, /verify each criterion before ticking it/);
-  assert.match(prompt, /re-check every criterion before setting `review`/);
-  assert.match(prompt, /mark the ticket blocked/);
-});
-
-test("gives review agents the ticket review workflow", () => {
-  const prompt = chittyPrompt("review", "TASK-12");
-
-  assert.match(prompt, /Never review work you have done/);
-  assert.match(prompt, /ticket's branch worktree/);
-  assert.match(prompt, /merge its branch into `main`/);
-  assert.match(prompt, /Check every criterion/);
-  assert.match(prompt, /`--uncheck` each failed criterion/);
 });
 
 test("uses Pi's public session ID API", () => {
