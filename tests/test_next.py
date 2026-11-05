@@ -187,7 +187,7 @@ class TestNext(CliTestCase):
             "time.sleep(1)\n"
             "subprocess.run(['git', 'add', str(path)], cwd=os.environ['WORKER'], check=True)\n"
             "subprocess.run(\n"
-            "    ['git', 'commit', '-m', 'worker change'],\n"
+            "    ['git', 'commit', '--quiet', '-m', 'worker change'],\n"
             "    cwd=os.environ['WORKER'], check=True,\n"
             ")\n"
         )
@@ -642,7 +642,7 @@ class TestNext(CliTestCase):
             "text = open(path).read().replace('status: review', 'status: done')\n"
             "open(path, 'w').write(text)\n"
             "subprocess.run(['git', 'add', path], check=True)\n"
-            "subprocess.run(['git', 'commit', '-m', 'finish review'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'finish review'], check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = os.environ.get("PATH", "")
@@ -680,7 +680,7 @@ class TestNext(CliTestCase):
             "    text = open(path).read()\n"
             "    open(path, 'w').write(text.replace('status: doing', 'status: blocked'))\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
-            "    subprocess.run(['git', 'commit', '-m', 'worker change'], check=True)\n"
+            "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
             "sys.exit(int(os.environ.get('PI_EXIT', '0')))\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
@@ -751,7 +751,7 @@ class TestNext(CliTestCase):
             "(root / 'pi-session-id').write_text(os.environ['CHITTY_PI_SESSION_ID'])\n"
             "chitty = str(pathlib.Path(sys.executable).with_name('chitty'))\n"
             "subprocess.run([chitty, 'edit', sys.argv[2], '--status', 'blocked', "
-            "'--note', 'fake Pi write'], check=True)\n"
+            "'--note', 'fake Pi write'], check=True, stdout=subprocess.DEVNULL)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = {
@@ -981,7 +981,7 @@ class TestNext(CliTestCase):
             "text = open(path).read().replace('status: doing', 'status: blocked')\n"
             "open(path, 'w').write(text)\n"
             "subprocess.run(['git', 'add', path], check=True)\n"
-            "subprocess.run(['git', 'commit', '-m', 'worker change'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous_path = os.environ.get("PATH", "")
