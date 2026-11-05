@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` read a branch that adds a `chitty.toml` key
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -44,6 +44,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: where `_version_key` go
 
 Removed the version warning, which duplicated `TASK-135`, as I found when another session reported the bug on 2026-11-04.
 
+Reviewed: independently verified all three criteria. Config tests cover newer/equal/older/absent versions, top-level versus context keys, one stderr warning, and valid JSON; run regression passes; init refusal preserves the file. Verification: make check passed (ruff, pyright, 238 unittest tests, 27 Node tests).
+
 ## History
 
 - 2026-11-04T09:46:24Z lively-panda → backlog
@@ -58,3 +60,5 @@ Removed the version warning, which duplicated `TASK-135`, as I found when anothe
 - 2026-11-05T08:33:59Z daring-wren: ticked acceptance criteria
 - 2026-11-05T08:34:00Z daring-wren: ticked acceptance criteria
 - 2026-11-05T08:34:05Z daring-wren doing → review
+- 2026-11-05T08:39:12Z witty-crane: changed notes
+- 2026-11-05T08:39:12Z witty-crane review → done
