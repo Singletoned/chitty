@@ -22,10 +22,10 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 
 ## Acceptance Criteria
 
-- [ ] A test shows other arguments still reaching the agent with `--ticket` before or after them, a bare number resolving, and `chitty run` without the option behaving as before
-- [ ] One test per refusal shows it failing with a message saying why, with no claim and no worktree created: an unknown ticket, an archived one, a `blocked` one, a `human` ticket, a `human` owner, and a `todo` ticket with unfinished dependencies
-- [ ] `README.md` and `PLAN.md` each show `chitty run --ticket ID`, and a test shows `chitty run --help` containing `--ticket` and `or the one named by --ticket`
-- [ ] A test with a fake agent, with `chitty next` selecting a different ticket each time, shows `--ticket` running a lower-priority `todo` ticket in work mode, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
+- [x] A test shows other arguments still reaching the agent with `--ticket` before or after them, a bare number resolving, and `chitty run` without the option behaving as before
+- [x] One test per refusal shows it failing with a message saying why, with no claim and no worktree created: an unknown ticket, an archived one, a `blocked` one, a `human` ticket, a `human` owner, and a `todo` ticket with unfinished dependencies
+- [x] `README.md` and `PLAN.md` each show `chitty run --ticket ID`, and a test shows `chitty run --help` containing `--ticket` and `or the one named by --ticket`
+- [x] A test with a fake agent, with `chitty next` selecting a different ticket each time, shows `--ticket` running a lower-priority `todo` ticket in work mode, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
 
 ## Plan
 
@@ -50,6 +50,12 @@ Back to `--ticket` on 2026-11-05: the human prefers it, and `chitty run TASK-178
 Held in `backlog` for a cold read of the restored `--ticket` design.
 
 Cold read of the restored `--ticket` design by a fresh Sonnet subagent, 2026-11-05, at the human's request. No serious faults: it ran click and confirmed `--ticket` before or after forwarded arguments, and `--ticket=ID`. Fixed: where the new function is called, and tightened three criteria that weak work could have passed. For the worker: ignore the two 2026-11-05 notes above about `chitty run TASK-178`, `ID_RE` and `gpt-4`, which describe an abandoned design.
+
+The Python suite passes. `npm test` was attempted twice and remained running after partial output; no Node failures were reported before timeout.
+
+## Summary
+
+Implemented `chitty run --ticket ID` with post-pull ID resolution, shared ticket validation, explicit work/review mode selection, and preserved agent argument forwarding. Updated CLI help, README, and PLAN; added selection/refusal/help tests. Verified with `make format`, Ruff, Pyright, 246 unittest tests, `chitty fix`, and `git diff --check`. Node tests were attempted via `npm test` but did not finish in the available timeout after partial dot output.
 
 ## History
 
@@ -86,3 +92,4 @@ Cold read of the restored `--ticket` design by a fresh Sonnet subagent, 2026-11-
 - 2026-11-05T14:13:54Z mellow-newt: changed description
 - 2026-11-05T14:27:01Z sunny-zander todo → doing
 - 2026-11-05T14:27:14Z sunny-zander: wrote the plan
+- 2026-11-05T14:37:15Z sunny-zander: changed notes, summary; ticked acceptance criteria
