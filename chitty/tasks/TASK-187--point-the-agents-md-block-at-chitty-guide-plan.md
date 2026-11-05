@@ -1,6 +1,6 @@
 ---
 title: Point the `AGENTS.md` block at `chitty guide plan`
-status: todo
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -14,12 +14,28 @@ Directly after the `Backlog tasks need refinement` bullet in `guide.md`, add: "-
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py` shows `guide()` containing `chitty guide plan`
-- [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `chitty guide plan`
+- [x] A test in `TestGuide` in `tests/test_cli.py` shows `guide()` containing `chitty guide plan`
+- [x] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `chitty guide plan`
+
+## Plan
+
+1. Update `src/chitty/guide.md` with the `chitty guide plan` pointer immediately after the backlog-refinement bullet.
+2. Add a `TestGuide` regression test asserting `guide()` includes the pointer.
+3. Bump `src/chitty/__init__.py`, run `uv run chitty init` to refresh the managed `AGENTS.md` block and `chitty.toml`, then run the required checks.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: a global `chitty init` in a worktree writes the wrong checkout's guide here. Also, comparing with `chitty guide` gives a false mismatch inside Pi, which adds an actor paragraph, and passed before any work, so the criterion now names the new text.
+
+Implementation will use the repository-local `uv run chitty init` as requested so generated files come from this checkout.
+
+Verified: the new TestGuide regression passes; `AGENTS.md` and `src/chitty/guide.md` contain the pointer; version is 0.1.32 versus main 0.1.31; `make check` passes.
+
+Reviewed: both acceptance criteria pass. The source and regenerated managed guide contain the exact chitty guide plan pointer, version 0.1.32 is above main's 0.1.31, the TestGuide regression is present, and make check plus npm test pass.
+
+## Summary
+
+Implemented and committed in `8430ca2`. Added the `chitty guide plan` pointer to the source guide and regenerated the managed `AGENTS.md`/`chitty.toml` setup at version `0.1.32`; added regression coverage in `TestGuide` and updated the version-sensitive extension test. Verification: `make check` passes (ruff, pyright, 270 unittest tests, and Node tests). No follow-ups.
 
 ## History
 
@@ -27,3 +43,10 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: a global `chit
 - 2026-11-05T14:23:14Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:15Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:23:16Z mellow-newt backlog → todo
+- 2026-11-05T21:10:23Z quick-toad todo → doing
+- 2026-11-05T21:10:44Z quick-toad: changed notes; wrote the plan
+- 2026-11-05T21:18:20Z quick-toad: changed notes; ticked acceptance criteria
+- 2026-11-05T21:18:29Z quick-toad: changed summary
+- 2026-11-05T21:18:29Z quick-toad doing → review
+- 2026-11-05T22:12:39Z lively-newt: changed notes
+- 2026-11-05T22:12:39Z lively-newt review → done

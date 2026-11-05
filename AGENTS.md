@@ -34,6 +34,7 @@ task files. `chitty --help` is the full command reference.
   criteria and notes.
 - Work on one task per session. Start with `chitty inbox --pull`, then `chitty show <ID>`.
 - Backlog tasks need refinement; promote them to `todo` before taking them on.
+- Writing or refining tickets? Run `chitty guide plan` first: it says how to write them and cold-read them.
 - Use a task's optional `parent` field to group flat task IDs under one goal.
 - Unless your own instructions say otherwise, create a branch and worktree at
   `.worktrees/` in the repository root from `main` for each new ticket; never
