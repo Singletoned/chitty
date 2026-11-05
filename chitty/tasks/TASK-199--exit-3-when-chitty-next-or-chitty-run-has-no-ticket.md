@@ -1,6 +1,6 @@
 ---
 title: Exit 3 when `chitty next` or `chitty run` has no ticket
-status: backlog
+status: todo
 priority: high
 owner: human
 parent: TASK-106
@@ -30,3 +30,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 
 
 - 2026-11-05T21:13:41Z youthful-toad → backlog
 - 2026-11-05T21:14:52Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-05T21:14:53Z youthful-toad backlog → todo
