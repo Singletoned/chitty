@@ -12,7 +12,17 @@ created: 2026-11-05
 
 Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and to `src/chitty/guide.md`, because all of those agents write ticket text. `plan.md` and `guide.md` already have a bullet about backticks, so extend that; `work.md` and `review.md` get a new one. After editing, run `chitty init` and commit `AGENTS.md` and `chitty.toml`, because `guide.md` reaches `AGENTS.md`'s managed block only that way. `TASK-173` and `TASK-179` edit the same files, so touch only this bullet.
 
+## Acceptance Criteria
+
+- [ ] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
+- [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block equals `chitty guide`
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the ticket said `TASK-142` was still to delete `chittyPrompt`, but it merged while this was being read; refreshing `AGENTS.md`; and a garbled criterion. Left out: the old prompt's "never a subagent of the implementation agent", which is also gone, because the human asked only for the `*` line. `review.md` still says never to review work you did.
+
 ## History
 
 - 2026-11-05T09:51:14Z mellow-newt → backlog
 - 2026-11-05T09:53:14Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T09:53:15Z mellow-newt: changed acceptance criteria, notes
