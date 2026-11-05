@@ -32,6 +32,13 @@ Out of scope: switching automatically when tokens run out.
 - [ ] `README.md` and `PLAN.md` describe the table, this repository sets the `claude` entry, and `__version__` is bumped above `main`'s
 - [ ] Tests with fake agents show `--agent` starting that command for one run, with other arguments forwarded and the option not, and the default used without it
 
+## Plan
+
+1. Extend configuration parsing and init templates with an optional [agent_commands] table, preserving agent_command as the default.
+2. Add run --agent as a Click-only option and select/validate the chosen command after setup refresh and inbox pull, before claiming; preserve forwarding of all other arguments.
+3. Add focused fake-agent tests for selection, forwarding, defaults, and validation/no side effects; update README.md, PLAN.md, repository config, and version.
+4. Run the regression test first where practical, then make format/check, tick verified criteria, run chitty fix, record summary, and set review.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: "before anything changes", which is false because validation follows the pull and refresh, so it now says where; `--agent` with `agent_command` unset; no table; messages naming the entry; and where the table goes in the file. Rejected: depending on `TASK-138`, because one ticket is in work at a time and the second rebases; an `agent` field in the usage log, because `models` already shows provider and model, and can be added if the comparison needs it; validating names, because any TOML key works and an unknown one fails.
@@ -47,3 +54,4 @@ Changed 2026-11-04: the human chose an allow-list built from the command table o
 - 2026-11-05T10:07:34Z mellow-newt: changed description
 - 2026-11-05T10:23:45Z mellow-newt: changed description
 - 2026-11-05T17:00:07Z open-eel todo → doing
+- 2026-11-05T17:00:24Z open-eel: wrote the plan
