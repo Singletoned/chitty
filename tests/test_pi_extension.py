@@ -1,8 +1,12 @@
+import contextlib
 import hashlib
+import io
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
+from chitty import __version__
 from chitty.actor import install_pi_extension
 from chitty.errors import ChittyError
 
@@ -35,13 +39,54 @@ class TestPiExtension(unittest.TestCase):
             previous_source = b"previous Chitty extension"
             installed.write_bytes(previous_source)
             (agent / "chitty-extension.sha256").write_text(
-                hashlib.sha256(previous_source).hexdigest() + "\n"
+                hashlib.sha256(previous_source).hexdigest() + f"\n{__version__}\n"
             )
 
             updated = install_pi_extension({"PI_CODING_AGENT_DIR": str(agent)})
 
             self.assertEqual(updated, installed)
             self.assertNotEqual(installed.read_bytes(), previous_source)
+            self.assertEqual(
+                (agent / "chitty-extension.sha256").read_text().splitlines()[1], __version__
+            )
+
+    def test_leaves_a_newer_extension_in_place_and_warns(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            agent = Path(temporary) / "agent"
+            extensions = agent / "extensions"
+            extensions.mkdir(parents=True)
+            installed = extensions / "chitty.ts"
+            newer_source = b"newer Chitty extension"
+            installed.write_bytes(newer_source)
+            state = agent / "chitty-extension.sha256"
+            state.write_text(hashlib.sha256(newer_source).hexdigest() + "\n0.1.32\n")
+            output = io.StringIO()
+            with (
+                mock.patch("chitty.actor.__version__", "0.1.31"),
+                contextlib.redirect_stderr(output),
+            ):
+                self.assertIsNone(install_pi_extension({"PI_CODING_AGENT_DIR": str(agent)}))
+
+            self.assertEqual(installed.read_bytes(), newer_source)
+            self.assertIn("0.1.31", output.getvalue())
+            self.assertIn("0.1.32", output.getvalue())
+            self.assertIn("upgrade Chitty", output.getvalue())
+            self.assertIn("delete", output.getvalue())
+
+    def test_hash_only_state_is_replaced_with_versioned_state(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            agent = Path(temporary) / "agent"
+            extensions = agent / "extensions"
+            extensions.mkdir(parents=True)
+            installed = extensions / "chitty.ts"
+            previous_source = b"previous Chitty extension"
+            installed.write_bytes(previous_source)
+            state = agent / "chitty-extension.sha256"
+            state.write_text(hashlib.sha256(previous_source).hexdigest() + "\n")
+
+            install_pi_extension({"PI_CODING_AGENT_DIR": str(agent)})
+
+            self.assertEqual(state.read_text().splitlines()[1], "0.1.31")
 
     def test_installs_into_configured_pi_agent_directory(self):
         with tempfile.TemporaryDirectory() as temporary:

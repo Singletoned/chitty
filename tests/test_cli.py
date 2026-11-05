@@ -171,6 +171,24 @@ class TestInit(CliTestCase):
 
         self.assertNotEqual(extension.read_bytes(), previous_source)
 
+    def test_init_keeps_a_newer_pi_extension_and_finishes_setup(self):
+        agent = self.tmp / "pi-agent"
+        agent.mkdir()
+        os.environ["PI_CODING_AGENT_DIR"] = str(agent)
+        self.run_cli("init")
+        extension = agent / "extensions" / "chitty.ts"
+        original = extension.read_bytes()
+        (agent / "chitty-extension.sha256").write_text(
+            hashlib.sha256(original).hexdigest() + "\n99.0.0\n"
+        )
+
+        result = self.run_cli("init")
+
+        self.assertIn(CHITTY_VERSION, result.stderr)
+        self.assertIn("99.0.0", result.stderr)
+        self.assertEqual(extension.read_bytes(), original)
+        self.assertTrue((self.root / "AGENTS.md").exists())
+
     def test_init_failure_leaves_setup_files_unchanged(self):
         config = self.root / "chitty.toml"
         original_config = config.read_text().replace(
