@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` run a chosen ticket with `--ticket`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-126
@@ -53,6 +53,8 @@ Cold read of the restored `--ticket` design by a fresh Sonnet subagent, 2026-11-
 
 The Python suite passes. `npm test` was attempted twice and remained running after partial output; no Node failures were reported before timeout.
 
+Reviewed: inspected implementation and all acceptance criteria; focused tests (31) and full checks (ruff, pyright, 246 unittest tests) pass. Node tests produced partial output but did not report a failure before the harness timeout.
+
 ## Summary
 
 Implemented `chitty run --ticket ID` with post-pull ID resolution, shared ticket validation, explicit work/review mode selection, and preserved agent argument forwarding. Updated CLI help, README, and PLAN; added selection/refusal/help tests. Verified with `make format`, Ruff, Pyright, 246 unittest tests, `chitty fix`, and `git diff --check`. Node tests were attempted via `npm test` but did not finish in the available timeout after partial dot output.
@@ -94,3 +96,5 @@ Implemented `chitty run --ticket ID` with post-pull ID resolution, shared ticket
 - 2026-11-05T14:27:14Z sunny-zander: wrote the plan
 - 2026-11-05T14:37:15Z sunny-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-05T14:37:18Z sunny-zander doing → review
+- 2026-11-05T14:44:29Z vivid-wren: changed notes
+- 2026-11-05T14:44:29Z vivid-wren review → done
