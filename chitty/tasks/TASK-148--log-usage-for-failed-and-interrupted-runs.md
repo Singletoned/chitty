@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-127
@@ -43,6 +43,8 @@ Review failed (work): run() asserts new_status is not None after the logging fin
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Reviewed: passed by the planning session, at the explicit request of the human, who asked it to review and close this ticket. The override is needed because this session ticked criterion 2 and moved the ticket to `review` to record that decision; it wrote none of the code. Criteria: 1 and 2, the extended run test in `tests/test_next.py` covers a missing and an invalid usage file, a non-zero exit, a Ctrl-C and an unchanged status, each with its exit code and `status_after`. 3, `test_run_write_failure_warns_and_keeps_agent_exit_code`. 4, `test_usage_validation_warns_and_accepts_null_cost`. The third failed review was wrong: `assert new_status is not None` runs only when no exception is propagating, so it cannot mask an error. A throwaway test confirmed it: a clean agent and an agent exiting 7, each with `_status_after_agent` raising, kept their own error and logged `status_after` null, and a `KeyboardInterrupt` in `run` exited 130 and logged `doing`. `make check` passed on the merge in `main`. Not tested on the branch, and in no criterion: `status_after` null, and Ctrl-C reaching Chitty itself.
+
 ## Summary
 
 Implemented a single usage-reading finally path so failed, interrupted, and unchanged runs record status_after and preserve original exit errors. Added integration coverage for missing and invalid usage warnings. Verified targeted run tests, all 249 unittest tests, Ruff, Pyright, and npm test via make check.
@@ -75,3 +77,5 @@ Implemented a single usage-reading finally path so failed, interrupted, and unch
 - 2026-11-05T16:40:42Z brisk-eel review → blocked
 - 2026-11-05T17:04:59Z mellow-newt: changed owner; ticked acceptance criteria
 - 2026-11-05T17:05:12Z mellow-newt blocked → review
+- 2026-11-05T17:52:39Z mellow-newt: changed notes; overrode review independence
+- 2026-11-05T17:52:39Z mellow-newt review → done
