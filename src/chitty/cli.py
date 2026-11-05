@@ -374,11 +374,12 @@ def next_(as_json: bool) -> None:
 
 @cli.command("run", context_settings={"ignore_unknown_options": True, "allow_extra_args": True})
 @click.option("--ticket", metavar="ID", help="Run the next ticket, or the one named by --ticket.")
+@click.option("--agent", metavar="NAME", help="Use the named command from [agent_commands].")
 @click.pass_context
-def run(ctx: click.Context, ticket: str | None) -> None:
+def run(ctx: click.Context, ticket: str | None, agent: str | None) -> None:
     """Run the next ticket, or the one named by --ticket; other arguments go to the agent."""
     try:
-        result = run_next(_repo(warn_setup_version=False), ticket, tuple(ctx.args))
+        result = run_next(_repo(warn_setup_version=False), ticket, tuple(ctx.args), agent=agent)
     except RunInterrupted as interrupted:
         click.echo(f"interrupted during {interrupted.phase}", err=True)
         raise click.exceptions.Exit(130) from None

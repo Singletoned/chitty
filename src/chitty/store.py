@@ -752,6 +752,15 @@ def _add_missing_settings(
     return text[:position] + "\n".join(additions) + "\n\n" + text[position:]
 
 
+def _add_missing_agent_commands_table(
+    text: str, settings: Mapping[str, object], pyproject: bool
+) -> str:
+    if "agent_commands" in settings:
+        return text
+    prefix = "tool.chitty." if pyproject else ""
+    return text.rstrip() + f"\n\n[{prefix}agent_commands]\n"
+
+
 def _add_missing_human_review(text: str, config: RepoConfig, pyproject: bool) -> str:
     """Set the generated human context's review policy without changing explicit settings."""
     human = config.contexts.get("human")
@@ -858,6 +867,7 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         updated = _add_missing_settings(
             text, settings, source == pyproject_path, _default_project(directory.name)
         )
+        updated = _add_missing_agent_commands_table(updated, settings, source == pyproject_path)
         updated = _add_missing_human_review(updated, config, source == pyproject_path)
         updated = re.sub(
             r'(?m)^(chitty_version\s*=\s*)["\'][^"\']*["\']\s*$',

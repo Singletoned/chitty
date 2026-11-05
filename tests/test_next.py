@@ -847,6 +847,96 @@ class TestNext(CliTestCase):
 
         self.assertEqual(result.stdout, "TASK-1: review → done\n")
 
+    def test_run_agent_rejects_unknown_and_invalid_without_claiming(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "pi --chitty-{mode} {id}"\n\n[agent_commands]\nclaude = "pi"',
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+
+        unknown = self.run_cli("run", "--agent", "missing", exit_code=1)
+        self.assertIn("available names: claude", unknown.stderr)
+        self.assertFalse((self.root / ".worktrees").exists())
+        self.assertEqual(
+            Repo.open(self.root)
+            .find(Repo.open(self.root).resolve("TASK-1"))
+            .task.frontmatter.status,
+            "todo",
+        )
+
+        invalid = self.run_cli("run", "--agent", "claude", exit_code=1)
+        self.assertIn("agent_commands.claude", invalid.stderr)
+        self.assertFalse((self.root / ".worktrees").exists())
+        self.assertEqual(
+            Repo.open(self.root)
+            .find(Repo.open(self.root).resolve("TASK-1"))
+            .task.frontmatter.status,
+            "todo",
+        )
+
+    def test_run_agent_selects_command_and_forwards_arguments(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "fake-agent default {mode} {id}"\n\n'
+                '[agent_commands]\nchosen = "fake-agent chosen {mode} {id}"',
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("First")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "fake-agent"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess, sys\n"
+            "from pathlib import Path\n"
+            "Path('invocation').write_text(' '.join(sys.argv[1:]))\n"
+            "path = next(Path('chitty/tasks').glob('*.md'))\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        try:
+            self.run_cli("run", "--agent", "chosen", "--", "--forwarded", "value")
+        finally:
+            os.environ["PATH"] = old_path
+        invocation = (self.root / ".worktrees/task-1/invocation").read_text()
+        self.assertIn("chosen work TASK-1 --forwarded value", invocation)
+        self.assertNotIn("--agent", invocation)
+
+        self.add("Second")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "second")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        try:
+            self.run_cli("run")
+        finally:
+            os.environ["PATH"] = old_path
+        default_invocation = (self.root / ".worktrees/task-2/invocation").read_text()
+        self.assertIn("default work TASK-2", default_invocation)
+
     def test_run_cases(self):
         config = self.root / "chitty.toml"
         config.write_text(

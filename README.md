@@ -86,8 +86,9 @@ contexts do this so people can close their own tasks directly. The third failed 
 then uses priority and task ID across all non-human contexts. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `chitty run` requires
 `autocommit = true`, `setup` (for example, `setup = "make install"`), and an
-`agent_command`. The command is parsed without a shell; it must include `{mode}`
-and `{id}`, or `{prompt}`. Chitty replaces placeholders after splitting it;
+`agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
+The command is parsed without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.
+Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
 `chitty run` creates or reuses the ticket worktree, runs setup there, claims a
 `todo` ticket, and invokes
@@ -127,9 +128,11 @@ started before `session_start` cannot receive it; start Pi with
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit. Set `setup` to the command that prepares
 each ticket worktree before the agent starts; it is parsed without a shell. Set
-`agent_command` to the agent invocation, for example
+`agent_command` to the default agent invocation, for example
 `"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
-Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
+Additional commands go in `[agent_commands]`; `chitty run --agent NAME` uses one
+for that run only. An unknown name lists available entries, and the selected
+entry is validated like `agent_command`. Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
 and the selected ticket ID. `{prompt}` can replace both placeholders when the
 agent accepts Chitty's role instructions as one argument. `chitty init --autocommit`
 enables
