@@ -34,7 +34,7 @@ Out of scope: upgrading automatically, and any setting to turn this off.
 ## Acceptance Criteria
 
 - [x] Tests against a local HTTP server, with `PYPI_URL` and the running version patched and calling `main()`, show no alert before the version is out, then one on stderr with exit code and stdout unchanged, no further request, and the file removed once the running version reaches it
-- [ ] Tests show a failed request and an unreadable file changing nothing, no second request within `UPGRADE_RETRY_SECONDS`, the alert after a failing command, and an editable install doing nothing
+- [x] Tests show a failed request and an unreadable file changing nothing, no second request within `UPGRADE_RETRY_SECONDS`, the alert after a failing command, and an editable install doing nothing
 - [ ] `README.md` describes the alert
 
 ## Plan
@@ -56,3 +56,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming
 - 2026-11-05T18:33:22Z tidy-stoat todo → doing
 - 2026-11-05T18:33:35Z tidy-stoat: wrote the plan
 - 2026-11-05T18:42:47Z tidy-stoat: ticked acceptance criteria
+- 2026-11-05T18:42:48Z tidy-stoat: ticked acceptance criteria
