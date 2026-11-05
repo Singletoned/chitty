@@ -1,6 +1,6 @@
 ---
 title: Treat a dependency as done only once it has reached `main`
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -36,6 +36,8 @@ Third cold read by a fresh Sonnet subagent, 2026-11-04, of the redesign. The rul
 
 Re-checked both acceptance criteria after `make check`; ready for independent review.
 
+Reviewed: acceptance criteria pass. Verified local-main gating for unmerged and archived dependencies, merge/deletion/title rename cases, no-main fallback and human context; targeted tests and make check pass.
+
 ## Summary
 
 Implemented local-main dependency gating in `git.py` and `store.py`. Dependencies now wait when completion exists only on an unmerged branch, and pass when `main` contains done or archived files, including renamed tickets and human-context dependencies. No-main and non-Git behavior remains unchanged.
@@ -55,3 +57,5 @@ Verified with targeted regression tests, `make check` (259 Python tests plus Nod
 - 2026-11-05T19:03:04Z honest-vole: changed summary
 - 2026-11-05T19:03:19Z honest-vole: changed notes
 - 2026-11-05T19:03:19Z honest-vole doing → review
+- 2026-11-05T19:09:52Z intrepid-heron: changed notes
+- 2026-11-05T19:09:52Z intrepid-heron review → done
