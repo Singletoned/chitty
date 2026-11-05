@@ -1,6 +1,6 @@
 ---
 title: Stop `historical_files` swallowing Git errors
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -26,6 +26,8 @@ Inspect historical_files and existing Git tests, add regression coverage for a b
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. It found what the catch protects, so the ticket now says what to do rather than asking the worker to investigate.
 
+Reviewed: historical_files now explicitly returns no history outside Git and surfaces Git errors after ref enumeration; regression tests cover branch deletion and non-repository directories. Focused tests and make check pass.
+
 ## Summary
 
 Removed the broad ChittyError fallback from historical_files while preserving an explicit non-repository return. Added regression tests for a branch deleted after refs are listed and for non-Git directories. Verified with focused tests and make check (ruff, pyright, 261 unittest tests, and Node tests).
@@ -40,3 +42,5 @@ Removed the broad ChittyError fallback from historical_files while preserving an
 - 2026-11-05T19:27:58Z brisk-newt: ticked acceptance criteria
 - 2026-11-05T19:27:58Z brisk-newt: changed summary
 - 2026-11-05T19:27:59Z brisk-newt doing → review
+- 2026-11-05T19:33:57Z nimble-vole: changed notes
+- 2026-11-05T19:33:57Z nimble-vole review → done
