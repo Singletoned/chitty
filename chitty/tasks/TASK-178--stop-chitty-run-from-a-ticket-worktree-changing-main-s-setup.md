@@ -17,8 +17,8 @@ Out of scope: stopping a worker starting a nested `chitty run` at all, and runni
 
 ## Acceptance Criteria
 
-- [ ] A test running `chitty run` from a linked worktree, with `main`'s `chitty.toml` recording an older version such as `0.0.1`, shows it failing with a message containing both versions and `from the main checkout`, `main`'s `HEAD` and `chitty.toml` unchanged, and the fake agent not started
-- [ ] `README.md`'s setup paragraph and the `PLAN.md` passage on `chitty run` setup, which both say linked worktrees leave setup alone, say that `chitty run` from a linked worktree refuses in this case
+- [x] A test running `chitty run` from a linked worktree, with `main`'s `chitty.toml` recording an older version such as `0.0.1`, shows it failing with a message containing both versions and `from the main checkout`, `main`'s `HEAD` and `chitty.toml` unchanged, and the fake agent not started
+- [x] `README.md`'s setup paragraph and the `PLAN.md` passage on `chitty run` setup, which both say linked worktrees leave setup alone, say that `chitty run` from a linked worktree refuses in this case
 
 ## Plan
 
@@ -36,3 +36,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a test recording a newe
 - 2026-11-05T09:39:58Z mellow-newt backlog → todo
 - 2026-11-05T10:03:55Z human todo → doing
 - 2026-11-05T10:28:28Z honest-crane: wrote the plan
+- 2026-11-05T10:36:23Z honest-crane: ticked acceptance criteria
