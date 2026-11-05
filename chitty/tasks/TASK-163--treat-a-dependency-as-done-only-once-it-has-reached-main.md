@@ -1,6 +1,6 @@
 ---
 title: Treat a dependency as done only once it has reached `main`
-status: todo
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -33,3 +33,4 @@ Third cold read by a fresh Sonnet subagent, 2026-11-04, of the redesign. The rul
 - 2026-11-04T20:22:51Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:24:24Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:24:25Z mellow-newt backlog → todo
+- 2026-11-05T18:46:52Z honest-vole todo → doing
