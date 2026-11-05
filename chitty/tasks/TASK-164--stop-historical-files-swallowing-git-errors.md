@@ -18,6 +18,10 @@ Let the error surface, so the command fails loudly and a person reruns it. The c
 
 - [ ] A test deleting a branch after refs are listed gets a `ChittyError`, and a test shows a directory that is not a Git repository still returning no history
 
+## Plan
+
+Inspect historical_files and existing Git tests, add regression coverage for a branch disappearing after refs are listed and preserve the non-repository fallback, remove the broad ChittyError catch, then run the focused tests and full make check.
+
 ## Notes
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. It found what the catch protects, so the ticket now says what to do rather than asking the worker to investigate.
@@ -28,3 +32,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It found what the catch
 - 2026-11-04T20:22:53Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:22:54Z mellow-newt backlog → todo
 - 2026-11-05T19:18:49Z brisk-newt todo → doing
+- 2026-11-05T19:18:59Z brisk-newt: wrote the plan
