@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -46,3 +46,4 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-05T23:09:47Z lively-newt todo → doing
 - 2026-11-05T23:10:00Z lively-newt: wrote the plan
 - 2026-11-05T23:19:56Z lively-newt: changed summary; ticked acceptance criteria
+- 2026-11-05T23:20:09Z lively-newt doing → review
