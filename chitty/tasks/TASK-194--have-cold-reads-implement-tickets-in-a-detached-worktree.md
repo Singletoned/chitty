@@ -1,6 +1,6 @@
 ---
 title: Have cold reads implement tickets in a detached worktree
-status: backlog
+status: todo
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -44,3 +44,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first using th
 - 2026-11-05T17:53:53Z mellow-newt: changed title, priority, parent, description, acceptance criteria, notes
 - 2026-11-05T17:59:25Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T17:59:26Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T17:59:27Z mellow-newt backlog → todo
