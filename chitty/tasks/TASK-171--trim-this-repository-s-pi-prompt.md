@@ -25,9 +25,12 @@ The other tools in the doc's list came from extensions that no longer load. Six 
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. A worker could not do the real-session check, so this moved to the planning session and the human. It confirmed the doc's other tools come from extensions that no longer load, and that nothing relies on a skill.
 
+context-mode is now off: on 2026-11-05 its package was replaced and `build/adapters/pi/extension.js` no longer exists, so `chitty run` failed at startup. The human chose to disable it, so `agent_command` drops its `-e` and `--exclude-tools`. The before and after comparison now also includes removing context-mode.
+
 ## History
 
 - 2026-11-04T21:41:06Z mellow-newt → backlog
 - 2026-11-04T21:41:36Z mellow-newt: changed description
 - 2026-11-04T21:44:22Z mellow-newt: changed priority, owner, description, acceptance criteria, notes
 - 2026-11-04T21:44:23Z mellow-newt backlog → todo
+- 2026-11-05T08:22:57Z mellow-newt: changed notes
