@@ -1,7 +1,8 @@
 # Agents
 
-Chitty is a markdown-native task tracker. `PLAN.md` is the design; read it
-before changing behaviour, and update it when a decision changes.
+Chitty is a markdown-native task tracker. `PLAN.md` is the design; before
+changing behaviour, find the relevant section with `grep -n '^## ' PLAN.md` and
+read only that section. Update it when a decision changes.
 
 - `make install` once (Python deps including the `mcp` extra, and the pinned
   prettier used by the round-trip tests).
