@@ -10,12 +10,11 @@ created: 2026-11-05
 
 `chittyPrompt` in `src/chitty/integrations/pi/chitty.ts`, which `TASK-142` deleted in commit `2fc5a23`, told agents: "When you write a literal single `*` in Markdown, escape it or enclose the pattern in backticks, for example `files/*.jpg`." Agents now get their prompt from `chitty guide <mode> <ID>`, and that line is in no file under `src/chitty/roles/` nor in `src/chitty/guide.md`, so it has been lost.
 
-Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and to `src/chitty/guide.md`, because all of those agents write ticket text. `plan.md` and `guide.md` already have a bullet about backticks, so extend that; `work.md` and `review.md` get a new one. After editing, run `chitty init` and commit `AGENTS.md` and `chitty.toml`, because `guide.md` reaches `AGENTS.md`'s managed block only that way. `TASK-173` and `TASK-179` edit the same files, so touch only this bullet.
+Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and to `src/chitty/guide.md`, because all of those agents write ticket text. `plan.md` and `guide.md` already have a bullet about backticks, so extend that; `work.md` and `review.md` get a new one. After bumping `__version__`, run `uv run chitty init` and commit `AGENTS.md` and `chitty.toml`, because a global `chitty` may be another checkout's code, because `guide.md` reaches `AGENTS.md`'s managed block only that way. `TASK-173` and `TASK-179` edit the same files, so touch only this bullet.
 
 ## Acceptance Criteria
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
-- [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block equals `chitty guide`
 
 ## Notes
 
@@ -27,3 +26,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the ticket said `TASK-1
 - 2026-11-05T09:53:14Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T09:53:15Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T09:53:16Z mellow-newt backlog → todo
+- 2026-11-05T14:23:24Z mellow-newt: changed description, acceptance criteria
