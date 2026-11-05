@@ -19,7 +19,7 @@ Out of scope: a timeout for `check` in `chitty run`, and changing what `chitty r
 ## Acceptance Criteria
 
 - [x] `make check` is shown timing out with stdin held open before the fix and passing that way after it, with the command recorded in a note
-- [ ] `test_run_inherits_stdin` still passes unchanged, so `chitty run` still gives the agent its stdin
+- [x] `test_run_inherits_stdin` still passes unchanged, so `chitty run` still gives the agent its stdin
 
 ## Plan
 
@@ -41,3 +41,4 @@ Reproduced before the fix with: python - <<'PY' ... os.pipe(); subprocess.Popen(
 - 2026-11-05T22:04:29Z rosy-adder: wrote the plan
 - 2026-11-05T22:09:39Z rosy-adder: changed notes
 - 2026-11-05T22:09:40Z rosy-adder: ticked acceptance criteria
+- 2026-11-05T22:09:41Z rosy-adder: ticked acceptance criteria
