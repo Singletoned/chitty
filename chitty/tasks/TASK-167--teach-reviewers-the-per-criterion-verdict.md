@@ -27,8 +27,11 @@ In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s desc
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my quoted phrase is not in `src/chitty/roles/review.md`, how the lines fit with the failure note's form, and what `README.md` and `PLAN.md` gain.
 
+Added 2026-11-05 from the cold read of `TASK-193`, which edits the same failure-note bullet in `src/chitty/roles/review.md`: keep its rule that a claim about what code does is run first and the note gives what was run and what it printed. Whichever lands second merges the wording.
+
 ## History
 
 - 2026-11-04T20:47:41Z mellow-newt → backlog
 - 2026-11-04T20:48:51Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:48:52Z mellow-newt backlog → todo
+- 2026-11-05T17:10:25Z mellow-newt: changed notes
