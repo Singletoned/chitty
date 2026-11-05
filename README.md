@@ -86,8 +86,9 @@ contexts do this so people can close their own tasks directly. The third failed 
 then uses priority and task ID across all non-human contexts. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses
 only among `review` tickets and `--mode work` only among `doing` and `todo`, in
-the same order; with nothing to choose it fails with `no next ticket for --mode
-review` (or `work`). `chitty run --mode MODE` does the same, so
+the same order. With nothing to choose, `chitty next` and `chitty run` print
+`no next ticket` (with the mode, if given) and exit 3, which no other failure
+uses. `chitty run --mode MODE` does the same, so
 `chitty run --mode review -- --model MODEL` gives reviews their own model. One
 worker and one reviewer may run at the same time; use `--mode work` and
 `--mode review` so they select disjoint tickets. Both sessions update the main
@@ -105,7 +106,10 @@ the configured agent from that worktree. Choose a ticket with `chitty run
 --ticket ID`; pass agent options with `chitty run -- --model MODEL`. It
 succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
-no progress. Each run appends one JSON line to the machine-local
+no progress. To keep a loop waiting for work, treat exit 3 as success:
+`while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`. Each pass
+still checks configuration, refreshes setup and pulls the inbox before
+selecting, so a broken configuration exits 1 and stops the loop. Each run appends one JSON line to the machine-local
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data
 directory when `XDG_DATA_HOME` is unset), including the ticket, actor, timing,
 statuses, and aggregate Pi token and cost totals by model. These costs are

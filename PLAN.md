@@ -623,10 +623,11 @@ visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value. `--mode review` limits the
 choice to `review` tasks and `--mode work` to `doing` and `todo`, in the same
 order, filtering before dependencies are checked so a bad reference on a task
-in the other mode does not stop this one. With nothing left it fails with `no
-next ticket for --mode MODE`, so an idle reviewer is distinguishable from a
-broken one. The MCP tool keeps the default. Until `TASK-162` lands, run the two
-modes one after the other, never at the same time.
+in the other mode does not stop this one. With nothing left it prints `no next
+ticket` (or `no next ticket for --mode MODE`) to stderr and exits 3, a status of
+its own, so an idle reviewer is distinguishable from a broken one, which exits
+1. An idle queue includes one where every `todo` task waits on a dependency.
+`chitty run` exits 3 in the same case. The MCP tool keeps the default.
 
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
@@ -644,8 +645,13 @@ that branch before launching the parsed agent command. The command must include
 splitting, and arguments after
 `--` pass through to the agent. It reopens the ticket worktree after the agent
 exits and succeeds only if the task's committed status changed. This makes
-`while chitty run; do :; done` a safe unattended loop. Interrupting setup or
-the agent exits 130 without a traceback.
+`while chitty run; do :; done` a safe unattended loop that stops when the queue
+is empty. To wait out an idle queue instead, treat exit 3 as success:
+`while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done` runs until
+something fails. `chitty run` checks its configuration, refreshes setup and
+pulls the inbox before selecting, so each idle pass does those, and a broken
+configuration exits 1, not 3. An agent's or setup's own exit status always
+surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
 
 Each run appends one JSON line to the machine-local usage log at
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory

@@ -273,7 +273,10 @@ class TestNext(CliTestCase):
         )
         for path in (self.root / "chitty/tasks").glob("*.md"):
             path.unlink()
-        result = self.run_cli("next", exit_code=1)
+        result = self.run_cli("next", exit_code=3)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("no next ticket", result.stderr)
+        result = self.run_cli("next", "--json", exit_code=3)
         self.assertEqual(result.stdout, "")
         self.assertIn("no next ticket", result.stderr)
         with self.assertRaisesRegex(ToolError, "no next ticket"):
@@ -300,7 +303,7 @@ class TestNext(CliTestCase):
         self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {doing}\n")
         path.unlink()
 
-        result = self.run_cli("next", "--mode", "review", exit_code=1)
+        result = self.run_cli("next", "--mode", "review", exit_code=3)
         self.assertEqual(result.stdout, "")
         self.assertIn("no next ticket for --mode review", result.stderr)
 
@@ -338,7 +341,8 @@ class TestNext(CliTestCase):
         old_path = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{old_path}"
         try:
-            idle = self.run_cli("run", "--mode", "review", exit_code=1)
+            idle = self.run_cli("run", "--mode", "review", exit_code=3)
+            self.assertEqual(idle.stdout, "")
             self.assertIn("no next ticket for --mode review", idle.stderr)
 
             review = self.add("Review", status="review")
@@ -356,7 +360,8 @@ class TestNext(CliTestCase):
             invocation = (self.root / f".worktrees/{review.lower()}/invocation").read_text()
             self.assertEqual(invocation, f"review {review} --forwarded")
 
-            idle = self.run_cli("run", "--mode", "review", exit_code=1)
+            idle = self.run_cli("run", "--mode", "review", exit_code=3)
+            self.assertEqual(idle.stdout, "")
             self.assertIn("no next ticket for --mode review", idle.stderr)
         finally:
             os.environ["PATH"] = old_path
@@ -1252,6 +1257,9 @@ class TestNext(CliTestCase):
             self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
             self.assertEqual(self.git("status", "--porcelain"), main_status)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+            os.environ["PI_EXIT"] = "3"
+            failed = self.run_cli("run", exit_code=1)
+            self.assertIn("agent exited with status 3", failed.stderr)
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
             self.assertIn("agent exited with status 7", failed.stderr)
@@ -1277,10 +1285,11 @@ class TestNext(CliTestCase):
             records = [json.loads(line) for line in log.read_text().splitlines()]
             self.assertEqual(
                 [record["status_after"] for record in records],
-                ["doing", "doing", "doing", "doing", "blocked"],
+                ["doing", "doing", "doing", "doing", "doing", "blocked"],
             )
             self.assertTrue(all(record["models"] is None for record in records))
-            no_next = self.run_cli("run", exit_code=1)
+            no_next = self.run_cli("run", exit_code=3)
+            self.assertEqual(no_next.stdout, "")
             self.assertIn("no next ticket", no_next.stderr)
             self.add("Again")
             os.environ["PATH"] = "/usr/bin:/bin"
