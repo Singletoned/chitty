@@ -1,6 +1,6 @@
 ---
 title: Let one worker and one reviewer run at the same time
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-163
@@ -50,3 +50,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: w
 - 2026-11-05T14:13:50Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-05T14:23:11Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:12Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T19:34:22Z nimble-vole todo → doing
