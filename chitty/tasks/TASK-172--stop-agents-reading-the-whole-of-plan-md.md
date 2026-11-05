@@ -1,6 +1,6 @@
 ---
 title: Stop agents reading the whole of `PLAN.md`
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -22,6 +22,10 @@ Update the repository's AGENTS.md instruction to direct agents to locate the rel
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. No faults. Raised to high, because the doc says to do this and `TASK-171` first. `AGENTS.md` line 16 and `README.md` line 10 mention `PLAN.md` without telling agents to read it, so they stay.
 
+## Summary
+
+Updated AGENTS.md to locate PLAN.md headings with grep and read only the relevant section. Verified criterion 1, ran chitty fix, make check, and npm test; all checks passed.
+
 ## History
 
 - 2026-11-04T21:41:07Z mellow-newt → backlog
@@ -30,3 +34,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. No faults. Raised to high, bec
 - 2026-11-05T20:36:25Z calm-otter todo → doing
 - 2026-11-05T20:36:37Z calm-otter: wrote the plan
 - 2026-11-05T20:41:52Z calm-otter: ticked acceptance criteria
+- 2026-11-05T20:42:04Z calm-otter: changed summary
+- 2026-11-05T20:42:04Z calm-otter doing → review
