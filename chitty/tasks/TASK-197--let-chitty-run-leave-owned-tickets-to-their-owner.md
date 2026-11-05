@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` leave owned tickets to their owner
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -40,6 +40,8 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 
 Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-197/3`: nothing serious. 11 of its 12 new tests failed without the change for the right reasons and all passed with it, and `make check` exited 0. Fixed, as clarifications so no further read: unowned tickets must still be selected, which a change skipping all work would otherwise pass; who picks up a ticket returned after a failed review; and that the `--ticket` test already passes. Rejected: refusing `--ticket` with a `human` ticket before preflight, which is today's behaviour and outside this ticket; and owned tickets' dependencies not being checked by a plain run, which skips them anyway and still checks them under `--owner`.
 
+Verified owner filtering and refusal behavior with targeted tests and full Python suite. npm test remains unresolved: it emits 26 dots and does not exit.
+
 ## Summary
 
 Implemented owner-aware next/run selection, CLI and MCP owner filters, early refusal validation, and documentation. Added owner selection/refusal regressions. Verification: ruff format/check, pyright, and 271 unittest tests pass; npm test was attempted but hangs after its dot output in this environment. Follow-up: investigate the existing Node test hang separately.
@@ -63,3 +65,5 @@ Implemented owner-aware next/run selection, CLI and MCP owner filters, early ref
 - 2026-11-05T21:34:17Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T21:34:18Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T21:34:19Z able-yellowhammer: changed summary
+- 2026-11-05T21:34:20Z able-yellowhammer: changed notes
+- 2026-11-05T21:34:20Z able-yellowhammer doing → review
