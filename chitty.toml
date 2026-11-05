@@ -11,13 +11,17 @@ project = "chitty"
 archive = "move"
 review = true
 
-chitty_version = "0.1.31"
+chitty_version = "0.1.33"
 [contexts.tasks]
 prefix = "TASK"
 
 [contexts.human]
 prefix = "HUMAN"
 review = false
+
+[contexts.backlog]
+prefix = "BACKLOG"
+random_ids = true
 
 [agent_commands]
 claude = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync claude -p {prompt} --model sonnet --permission-mode dontAsk --allowedTools 'Read Edit Write Bash(chitty *) Bash(git *) Bash(make *) Bash(uv run *) Bash(python *) Bash(npm test*) Bash(rg *) Bash(head *) Bash(grep *) Bash(find *) Bash(sort *) Bash(tail *) Bash(sed *) Bash(nl *) Bash(awk *) Bash(cat *) Bash(ls *) Bash(wc *)' --disallowedTools 'Bash(git push *)'"
