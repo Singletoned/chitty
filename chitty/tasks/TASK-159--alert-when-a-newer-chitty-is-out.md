@@ -47,6 +47,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `main()` needs a `final
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming a version that does not exist after a failed release; a malformed file silently ending all alerts; touching before the request; and which running version. Accepted and now stated: a failed publish polls once a minute until the next release. Rejected: criteria for each of these, which the tests cover as behaviour under criterion 2's failure cases, and a split, because it is one concern.
 
+## Summary
+
+Implemented release upgrade alerts in src/chitty/upgrade.py and wired them through cli.main()'s finally, including editable-install and completion skips, retry throttling, safe failure handling, and pending-release lifecycle. Reused chitty_data_path with inbox_path and documented the stderr alert in README.md.
+
+Verification: targeted upgrade tests pass; ruff format/check and pyright pass; the full unittest suite passed (255 tests) during make check, but the Node test command emitted 26 dots and did not terminate within the command timeout. Follow-up: investigate the existing Node test shutdown hang before relying on make check as a complete green run.
+
 ## History
 
 - 2026-11-04T19:32:38Z mellow-newt → backlog
@@ -58,3 +64,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming
 - 2026-11-05T18:42:47Z tidy-stoat: ticked acceptance criteria
 - 2026-11-05T18:42:48Z tidy-stoat: ticked acceptance criteria
 - 2026-11-05T18:42:49Z tidy-stoat: ticked acceptance criteria
+- 2026-11-05T18:42:50Z tidy-stoat: changed summary
