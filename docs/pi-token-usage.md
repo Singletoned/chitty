@@ -1,5 +1,7 @@
 # Reducing Pi token costs on Chitty
 
+Tickets: `TASK-170`–`TASK-176`.
+
 Analysis from 2026-11-04, covering 95 Chitty sessions from 2026-10-25 to
 2026-11-04: 4,077 model calls and $71.68, all on `gpt-5.6-terra`. The analysis
 used no AI. To reproduce it, see [`scripts/README.md`](../scripts/README.md).
