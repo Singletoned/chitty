@@ -1,6 +1,6 @@
 ---
 title: Do not fail `chitty run` when a passed review removes its worktree
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -51,3 +51,4 @@ Added branch-retained worktree-removal regressions for work and review modes. Ex
 - 2026-11-05T10:01:56Z vivid-dormouse review → doing
 - 2026-11-05T10:06:51Z calm-quail: changed notes; ticked acceptance criteria
 - 2026-11-05T10:06:55Z calm-quail: changed summary
+- 2026-11-05T10:07:09Z calm-quail doing → review
