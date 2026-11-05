@@ -96,9 +96,13 @@ the configured agent from that worktree. Choose a ticket with `chitty run
 --ticket ID`; pass agent options with `chitty run -- --model MODEL`. It
 succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
-no progress. Empty lists explain their active filters on stderr while JSON stdout remains
-`[]`. `chitty import backlog-md` refuses non-empty contexts, reports
-mappings. It refuses to run unless the Git working tree is clean, untracked
+no progress. Each run appends one JSON line to the machine-local
+`$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data
+directory when `XDG_DATA_HOME` is unset), including the ticket, actor, timing,
+statuses, and aggregate Pi token and cost totals by model. These costs are
+provider list prices, not negotiated rates or an invoice. Empty lists explain
+their active filters on stderr while JSON stdout remains `[]`.
+`chitty import backlog-md` refuses non-empty contexts, reports mappings. It refuses to run unless the Git working tree is clean, untracked
 files included, and removes the converted files in its import commit; use
 `--keep-source` to retain them. Each task has a tool-managed trailing
 `## History` that records its creation and status transitions. Finished tasks can include a `## Summary` handoff via
