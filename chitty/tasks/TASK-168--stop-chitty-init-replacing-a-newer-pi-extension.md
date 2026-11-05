@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty init` replacing a newer Pi extension
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -31,6 +31,8 @@ Add version metadata to the Pi extension state file and compare it before replac
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the state file's format, where `_version_key` lives given the import direction, the check's order after validation, unreadable versions, what the warning says, and a loose claim about worktrees. Accepted and stated: a warning on every run from an old copy, and a branch's `.venv` holding its extension.
 
+Verified both acceptance criteria after implementation. `make check` passed; the first 120-second run timed out during the full suite, and the subsequent 300-second run completed successfully.
+
 ## Summary
 
 Implemented versioned Pi extension state with the hash on line one and Chitty version on line two. Locally edited extensions remain refused; older Chitty warns and leaves newer extensions untouched while init continues, while equal/newer running versions replace and record the version. Verification: `make check` passed (268 Python tests and Node tests); focused Pi/init tests passed. Follow-up: none.
@@ -43,3 +45,5 @@ Implemented versioned Pi extension state with the hash on line one and Chitty ve
 - 2026-11-05T20:24:26Z kind-adder todo → doing
 - 2026-11-05T20:24:43Z kind-adder: wrote the plan
 - 2026-11-05T20:32:12Z kind-adder: changed summary; ticked acceptance criteria
+- 2026-11-05T20:32:13Z kind-adder: changed notes
+- 2026-11-05T20:32:13Z kind-adder doing → review
