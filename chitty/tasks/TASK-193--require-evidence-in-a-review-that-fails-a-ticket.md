@@ -31,6 +31,7 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 ## Acceptance Criteria
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
+- [ ] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, and not matching `\bmake\b`
 
 ## Notes
 
@@ -50,3 +51,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first read of 
 - 2026-11-05T18:19:18Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:19:19Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:19:59Z mellow-newt: changed acceptance criteria
+- 2026-11-05T18:20:00Z mellow-newt: changed acceptance criteria
