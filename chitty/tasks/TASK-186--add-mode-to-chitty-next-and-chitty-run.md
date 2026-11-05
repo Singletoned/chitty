@@ -2,6 +2,7 @@
 title: Add `--mode` to `chitty next` and `chitty run`
 status: todo
 priority: high
+owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -23,8 +24,11 @@ Not in scope: `--mode` alongside `--ticket` from `TASK-138`, which is refused by
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. No serious faults: it ran click and confirmed `--mode` before or after forwarded arguments, `--mode=review`, and rejection of other values. Fixed: how the option reaches `next_action` and `run`, and the clashing local. Rejected: abbreviations such as `--mo review` being forwarded, which is what forwarding means.
 
+Owner set to human only so chitty run leaves this ticket to this session; cleared when done.
+
 ## History
 
 - 2026-11-05T14:13:49Z mellow-newt → backlog
 - 2026-11-05T14:23:08Z mellow-newt: changed description, notes
 - 2026-11-05T14:23:09Z mellow-newt backlog → todo
+- 2026-11-05T19:11:25Z youthful-toad: changed owner, notes
