@@ -2,7 +2,6 @@
 title: Have agents get their prompt from `chitty guide`
 status: doing
 priority: high
-owner: human
 depends_on:
   - TASK-141
   - TASK-136
@@ -25,7 +24,7 @@ Out of scope: continuing a stopped agent or any other per-agent integration, whi
 - [x] Node tests show the extension sending the output of `chitty guide <mode> <ID>`, and notifying and shutting down when that command fails or prints nothing
 - [x] `chittyPrompt` and its strings are gone from `src/chitty/integrations/pi/chitty.ts`
 - [x] A test with a fake agent shows `{prompt}` arriving as one argument, containing quotes and newlines unchanged, in work and review modes, and a command with `{prompt}` but neither `{mode}` nor `{id}` accepted
-- [ ] A real `chitty run` work session is checked to start with the role's instructions, and the result is recorded in a ticket note
+- [x] A real `chitty run` work session is checked to start with the role's instructions, and the result is recorded in a ticket note
 - [x] `README.md` and `PLAN.md` describe `{prompt}`, and `__version__` is bumped above `main`'s
 
 ## Plan
@@ -44,6 +43,8 @@ Human verification needed for criterion 4: the real `chitty run` invocation laun
 
 Moved to `doing` by the planning session for the human to check criterion 4 in a real Pi session.
 
+Criterion 4 checked by the human on 2026-11-05: a real Pi session started from this branch's extension with `--chitty-work TASK-142` began with the role's instructions and looked right. The agent had started before it could be stopped and ran `chitty inbox --pull`, which found nothing. That instruction is now a separate ticket. The worker's own `chitty run` for this criterion recorded 0.1.28 on `main`, since reverted, also a separate ticket.
+
 ## History
 
 - 2026-11-04T11:56:19Z lively-panda → todo
@@ -57,3 +58,4 @@ Moved to `doing` by the planning session for the human to check criterion 4 in a
 - 2026-11-05T09:17:17Z upbeat-quail doing → blocked
 - 2026-11-05T09:32:19Z mellow-newt: changed notes
 - 2026-11-05T09:32:19Z mellow-newt blocked → doing
+- 2026-11-05T09:37:42Z mellow-newt: changed owner, notes; ticked acceptance criteria
