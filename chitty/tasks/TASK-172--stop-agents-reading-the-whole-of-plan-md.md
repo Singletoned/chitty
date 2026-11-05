@@ -1,6 +1,6 @@
 ---
 title: Stop agents reading the whole of `PLAN.md`
-status: todo
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -23,3 +23,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. No faults. Raised to high, bec
 - 2026-11-04T21:41:07Z mellow-newt → backlog
 - 2026-11-04T21:44:25Z mellow-newt: changed priority, description, notes
 - 2026-11-04T21:44:26Z mellow-newt backlog → todo
+- 2026-11-05T20:36:25Z calm-otter todo → doing
