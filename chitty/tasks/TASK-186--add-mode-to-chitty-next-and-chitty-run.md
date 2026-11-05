@@ -1,8 +1,7 @@
 ---
 title: Add `--mode` to `chitty next` and `chitty run`
-status: review
+status: done
 priority: high
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -35,6 +34,8 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 
 The `mode` local the description mentions was in `_ticket_action`, not `next_action` (it moved when `TASK-138` added `ticket_action`); renamed it to `action_mode` there. `--mode` with `--ticket` is refused as the first step of `run` in `run.py`, so it fails even outside Git.
 
+Reviewed: both criteria verified; tests in tests/test_next.py cover next/run --mode, no-mode unchanged, error naming mode, not forwarded, refused with --ticket; README/PLAN updated; make check passes.
+
 ## Summary
 
 Added `--mode work|review` to `chitty next` and `chitty run` (a shared `click.Choice` option in `cli.py`). `next_action` takes keyword-only `mode` and filters by status before `_ticket_action` checks dependencies; the empty error is `no next ticket for --mode MODE`. `run` takes `mode`, refuses it with `ticket` before anything else, and `--mode` is no longer forwarded to the agent. MCP keeps the default. `README.md` and `PLAN.md` describe it and say to run the modes one after the other until `TASK-162`.
@@ -52,3 +53,5 @@ Verified: three new tests in `tests/test_next.py` (seen failing first), and `mak
 - 2026-11-05T19:27:45Z youthful-toad: ticked acceptance criteria
 - 2026-11-05T19:27:46Z youthful-toad: changed notes, summary
 - 2026-11-05T19:27:46Z youthful-toad doing → review
+- 2026-11-05T19:31:21Z youthful-toad: changed owner, notes; overrode review independence
+- 2026-11-05T19:31:21Z youthful-toad review → done
