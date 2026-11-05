@@ -20,6 +20,13 @@ Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-
 
 Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above. `--mode` from `TASK-162` with `--ticket` is refused by whichever of the two lands second.
 
+## Acceptance Criteria
+
+- [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
+- [ ] `README.md` and `PLAN.md` describe the option, and a test shows `chitty run --help` listing `--ticket` and its description saying it runs the next ticket or the named one
+- [ ] A test with a fake agent shows `--ticket` running a lower-priority `todo` ticket in work mode ahead of what `chitty next` selects, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
+- [ ] A test shows other arguments still reaching the agent with `--ticket` before or after them, a bare number resolving, and `chitty run` without the option behaving as before
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the inbox pull still runs, and the ID resolves after it; bare numbers; the archived check being explicit; how the rules are shared; and `doing` tickets with unfinished dependencies being allowed, now tested. It ran click with these settings and confirmed `--ticket` works before or after forwarded arguments, and `--ticket=ID` too. Rejected: a `doing` ticket with no branch, because `_worktree` creates one, as for any selected ticket. A `doing` worktree held by another live session, because a single worker is the stated assumption and nothing checks liveness today; a person choosing a ticket is responsible for that. `--tick 7` being forwarded rather than matched, and `--ticket` after `--` reaching the agent, because both are what forwarding means. A missing option value, because click reports it. A test that `TASK-120` and `TASK-131` leave other tickets alone, because neither has landed; the description tells whichever lands second. The function name and refusal wording, which are the worker's choice.
@@ -33,6 +40,8 @@ Changed 2026-11-05 at the human's request: they asked for `chitty run TASK-178`,
 Held in `backlog` while the rewrite is cold-read.
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still saying `--ticket`, which I knew about; how the ID reaches `run()`, so it is not forwarded too; loose help wording; and `gpt-4` matching `ID_RE`. The report accepted refusing that as an unknown ticket, but I required a known prefix instead, so model names are forwarded. Not split: four criteria.
+
+Back to `--ticket` on 2026-11-05: the human prefers it, and `chitty run TASK-178` was the planning session's suggestion, not theirs. The note before this and the positional design are superseded. Kept from that rewrite: the help text the human asked for, how the ID reaches `run()`, the `--mode` refusal, and high priority. The earlier cold read of `--ticket` still applies; nothing else changed.
 
 ## History
 
@@ -56,3 +65,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still sayin
 - 2026-11-05T10:23:40Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:23:41Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:23:42Z mellow-newt: changed acceptance criteria
+- 2026-11-05T10:23:43Z mellow-newt: changed acceptance criteria, notes
