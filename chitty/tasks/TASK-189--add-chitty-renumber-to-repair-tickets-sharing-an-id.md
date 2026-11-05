@@ -1,6 +1,6 @@
 ---
 title: Add `chitty renumber` to repair tickets sharing an ID
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-177
@@ -40,6 +40,8 @@ Found while sharing the helper: `Repo.move` reused the name `task` in its loop o
 
 Choices: `renumber` validates before `_prepare_write`, so a refusal changes nothing; the JSON (CLI and MCP alike) is `{task, references: [{id, path}]}`, because the references are the point; `PLAN.md`'s MCP list also gains `next`, which was missing. Checked in a real Git repository with `autocommit`: one commit, recorded as a rename, clean tree.
 
+Reviewed: all acceptance criteria verified independently; targeted tests and make check pass (276 Python tests and Node tests).
+
 ## Summary
 
 Added `chitty renumber PATH` and the MCP `renumber` tool over `Repo.renumber` in `store.py`. It locates the file through `scan`, refuses a non-task path or a unique ID, gives it the next number in its context with `moved_from` (archived files stay archived), commits like `move`, and lists tickets whose `depends_on` or `parent` name the old ID without rewriting them. `move` now shares `_relocate`, which fixes it reporting the wrong ticket. Documented in `README.md` and `PLAN.md`.
@@ -59,3 +61,5 @@ Verified: `tests/test_renumber.py` (seen failing first) and the MCP parity test;
 - 2026-11-05T21:27:20Z youthful-toad: ticked acceptance criteria
 - 2026-11-05T21:27:21Z youthful-toad: changed owner, notes, summary
 - 2026-11-05T21:27:21Z youthful-toad doing → review
+- 2026-11-05T22:20:46Z witty-lapwing: changed notes
+- 2026-11-05T22:20:46Z witty-lapwing review → done
