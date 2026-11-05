@@ -1,6 +1,6 @@
 ---
 title: Count other branches' tickets when allocating an ID
-status: todo
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -35,3 +35,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. It reproduced the bug in a scr
 - 2026-11-05T14:46:34Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:46:35Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:46:36Z mellow-newt backlog → todo
+- 2026-11-05T20:48:07Z lively-vole todo → doing
