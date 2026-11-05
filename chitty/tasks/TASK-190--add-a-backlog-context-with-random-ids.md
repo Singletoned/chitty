@@ -42,6 +42,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: which numb
 
 Owner set to human only so chitty run leaves this ticket to this session; cleared when it goes to review.
 
+Version is `0.1.33`, not `0.1.32`: branch `task-187`, which `chitty run` is working, already bumps to `0.1.32`, and two branches on one version merge silently. `tests/test_pi_extension.py` hard-coded the current version in one assertion and failed on any bump; it now uses `__version__`. Noticed, not changed: `_add_missing_human_review` inserts `review = false` after extra blank lines.
+
 ## History
 
 - 2026-11-05T14:43:41Z mellow-newt → backlog
@@ -56,3 +58,4 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-05T21:14:08Z youthful-toad: changed owner, notes
 - 2026-11-05T21:28:41Z youthful-toad: wrote the plan
 - 2026-11-05T21:28:41Z youthful-toad todo → doing
+- 2026-11-05T21:37:26Z youthful-toad: changed notes
