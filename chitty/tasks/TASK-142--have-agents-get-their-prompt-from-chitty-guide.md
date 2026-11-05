@@ -37,6 +37,8 @@ Same cold read. Fixed: `{prompt}` calling `guide()` in-process, and an older `ch
 
 Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, needs it.
 
+Real check: ran `chitty run` against the committed implementation. The configured Pi work session started and exited with `TASK-142 was unchanged; only committed changes are visible to chitty run`; no status change was made, so the session did not provide observable evidence of the role instructions beyond the passing fake-agent and extension tests.
+
 ## History
 
 - 2026-11-04T11:56:19Z lively-panda → todo
@@ -44,3 +46,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T15:38:31Z mellow-newt: changed priority, notes
 - 2026-11-05T09:08:52Z upbeat-quail todo → doing
 - 2026-11-05T09:09:26Z upbeat-quail: wrote the plan
+- 2026-11-05T09:16:59Z upbeat-quail: changed notes
