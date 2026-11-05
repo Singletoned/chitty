@@ -19,10 +19,13 @@ Split on 2026-11-05: repairing a collision that has already happened, and giving
 ## Acceptance Criteria
 
 - [ ] A test with a ticket committed only on another branch, with no worktree, shows `chitty add` on `main` taking the number above it, in both active and archived locations, and fails without the change
+- [ ] `PLAN.md`'s ID rule and its passage on collisions say allocation counts committed tickets on all local and remote-tracking branches, active and archived, and does not see uncommitted tickets in other worktrees or unpushed work on other machines
 
 ## Notes
 
 Suggestion origin: echonomicon
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. It reproduced the bug in a scratch repository: with tickets 2 and 3 only on another branch, `chitty add` on `main` gave `TASK-2`, so the criterion cannot pass with nothing built. Fixed: `PLAN.md` contradicting this; filtering `_history`; and not parsing contents, because `_tasks_in_location` raises on a bad file on any branch. Rejected: staleness, because the CLI and MCP open a new `Repo` per call, and renamed files, which only over-count.
 
 ## History
 
@@ -30,3 +33,4 @@ Suggestion origin: echonomicon
 - 2026-11-05T09:16:10Z upbeat-quail: changed notes
 - 2026-11-05T14:43:39Z mellow-newt: changed title, priority, parent, description, acceptance criteria
 - 2026-11-05T14:46:34Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T14:46:35Z mellow-newt: changed acceptance criteria, notes
