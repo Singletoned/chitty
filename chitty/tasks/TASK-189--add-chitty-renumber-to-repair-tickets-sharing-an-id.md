@@ -2,6 +2,7 @@
 title: Add `chitty renumber` to repair tickets sharing an ID
 status: todo
 priority: high
+owner: human
 depends_on:
   - TASK-177
 parent: TASK-106
@@ -28,6 +29,8 @@ It must not rewrite references in other tickets, because a `depends_on` or `pare
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: my premise was wrong. It reproduced a merge leaving two files with one ID: they collapse into one ticket in `show`, `edit` and `list`, so the command must find files through `scan`, and `move` cannot be reused directly. Also fixed: depending on `TASK-177`, since a number chosen from this checkout alone could recreate the collision; MCP having no `--help`; and archived and relative paths.
 
+Owner set to human only so chitty run leaves this ticket to this session; cleared when it goes to review.
+
 ## History
 
 - 2026-11-05T14:43:40Z mellow-newt → backlog
@@ -35,3 +38,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: my premise was
 - 2026-11-05T14:46:39Z mellow-newt: changed acceptance criteria
 - 2026-11-05T14:46:40Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:46:41Z mellow-newt backlog → todo
+- 2026-11-05T21:14:08Z youthful-toad: changed owner, notes
