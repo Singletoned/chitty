@@ -14,7 +14,7 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
+- [x] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
 - [x] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `literal single`
 
 ## Plan
@@ -44,3 +44,4 @@ Restored the literal single-asterisk Markdown instruction in the global guide an
 - 2026-11-05T23:40:00Z kind-jay: ticked acceptance criteria
 - 2026-11-05T23:40:28Z kind-jay: changed summary
 - 2026-11-05T23:40:28Z kind-jay doing → review
+- 2026-11-05T23:40:36Z kind-jay: ticked acceptance criteria
