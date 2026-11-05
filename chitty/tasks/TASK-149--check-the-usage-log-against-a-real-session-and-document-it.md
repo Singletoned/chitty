@@ -1,6 +1,6 @@
 ---
 title: Check the usage log against a real session and document it
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-148
@@ -32,6 +32,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a threshol
 
 Real Pi session verification (scratch repo `task149-scratch`, 2026-11-05): usage log line: `{"ticket":"TASK-1","mode":"work","actor":"brisk-zander","started":"2026-11-05T18:21:49.031890Z","seconds":33.828,"status_before":"doing","status_after":"review","models":[{"provider":"openai-codex","model":"gpt-5.6-luna","input":7645,"output":917,"cacheRead":32000,"cacheWrite":0,"cost":0.0032694}]}`. The corresponding session file `/Users/singletoned/.pi/agent/sessions/--private-tmp-chitty-task149-97lVKp-.worktrees-task-1--/2026-11-05T18-21-49-151Z_01a1acf2-16df-70f9-ad3a-cbdb55f9e135.jsonl` sums to `input=7645`, `output=917`, `cacheRead=32000`, `cacheWrite=0`, `cost=0.0032694`; difference is 0% (well below 5%), so no calls are missing. Costs are provider list prices.
 
+Reviewed: independently verified the documented real-session usage line against the referenced session JSONL (input=7645, output=917, cacheRead=32000, cacheWrite=0, cost=0.0032694; exact match, 0% difference). PLAN.md and README.md describe the machine-local log and identify costs as provider list prices. chitty fix, make check, and npm test passed; existing unrelated delimiter warnings remain.
+
 ## Summary
 
 Documented the machine-local Pi usage JSONL log and list-price semantics in `PLAN.md` and `README.md`. Verified a real scratch-repository Pi session: the usage-log model totals exactly matched the session JSONL totals (`input=7645`, `output=917`, `cacheRead=32000`, `cacheWrite=0`, `cost=0.0032694`; 0% difference). `chitty fix` passed and `make check` passed (252 Python tests and Node tests). Existing unrelated Markdown delimiter warnings remain in other task files.
@@ -46,3 +48,5 @@ Documented the machine-local Pi usage JSONL log and list-price semantics in `PLA
 - 2026-11-05T18:27:35Z friendly-eel: ticked acceptance criteria
 - 2026-11-05T18:27:43Z friendly-eel: changed summary
 - 2026-11-05T18:27:43Z friendly-eel doing → review
+- 2026-11-05T18:32:59Z honest-urchin: changed notes
+- 2026-11-05T18:32:59Z honest-urchin review → done
