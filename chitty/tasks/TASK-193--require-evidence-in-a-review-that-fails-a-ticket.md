@@ -31,7 +31,6 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 ## Acceptance Criteria
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py` shows `guide("review")` containing `must be run` and `Reasoning alone demonstrates nothing`, and fails against the current `review.md`
-- [ ] The same test shows `guide("review")` containing `what was run and what it printed`, `names what is missing` and `what stopped you`, and `make` not named in those bullets
 
 ## Notes
 
@@ -45,3 +44,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: one criterion 
 - 2026-11-05T17:10:24Z mellow-newt backlog → todo
 - 2026-11-05T18:13:35Z mellow-newt todo → backlog
 - 2026-11-05T18:19:16Z mellow-newt: changed description
+- 2026-11-05T18:19:17Z mellow-newt: changed acceptance criteria
