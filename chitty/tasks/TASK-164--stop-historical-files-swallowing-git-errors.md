@@ -26,6 +26,10 @@ Inspect historical_files and existing Git tests, add regression coverage for a b
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. It found what the catch protects, so the ticket now says what to do rather than asking the worker to investigate.
 
+## Summary
+
+Removed the broad ChittyError fallback from historical_files while preserving an explicit non-repository return. Added regression tests for a branch deleted after refs are listed and for non-Git directories. Verified with focused tests and make check (ruff, pyright, 261 unittest tests, and Node tests).
+
 ## History
 
 - 2026-11-04T20:20:07Z mellow-newt → backlog
@@ -34,3 +38,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It found what the catch
 - 2026-11-05T19:18:49Z brisk-newt todo → doing
 - 2026-11-05T19:18:59Z brisk-newt: wrote the plan
 - 2026-11-05T19:27:58Z brisk-newt: ticked acceptance criteria
+- 2026-11-05T19:27:58Z brisk-newt: changed summary
