@@ -1,6 +1,6 @@
 ---
 title: Require a line per criterion in a review verdict
-status: todo
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -33,3 +33,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: splitting notes 
 - 2026-11-04T20:47:40Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:48:49Z mellow-newt: changed description, notes
 - 2026-11-04T20:48:50Z mellow-newt backlog → todo
+- 2026-11-05T22:51:12Z daring-eel todo → doing
