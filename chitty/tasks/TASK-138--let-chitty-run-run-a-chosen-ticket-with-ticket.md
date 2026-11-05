@@ -23,6 +23,9 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 ## Acceptance Criteria
 
 - [ ] A test shows other arguments still reaching the agent with `--ticket` before or after them, a bare number resolving, and `chitty run` without the option behaving as before
+- [ ] One test per refusal shows it failing with a message saying why, with no claim and no worktree created: an unknown ticket, an archived one, a `blocked` one, a `human` ticket, a `human` owner, and a `todo` ticket with unfinished dependencies
+- [ ] `README.md` and `PLAN.md` each show `chitty run --ticket ID`, and a test shows `chitty run --help` containing `--ticket` and `or the one named by --ticket`
+- [ ] A test with a fake agent, with `chitty next` selecting a different ticket each time, shows `--ticket` running a lower-priority `todo` ticket in work mode, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
 
 ## Notes
 
@@ -41,6 +44,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still sayin
 Back to `--ticket` on 2026-11-05: the human prefers it, and `chitty run TASK-178` was the planning session's suggestion, not theirs. The note before this and the positional design are superseded. Kept from that rewrite: the help text the human asked for, how the ID reaches `run()`, the `--mode` refusal, and high priority. The earlier cold read of `--ticket` still applies; nothing else changed.
 
 Held in `backlog` for a cold read of the restored `--ticket` design.
+
+Cold read of the restored `--ticket` design by a fresh Sonnet subagent, 2026-11-05, at the human's request. No serious faults: it ran click and confirmed `--ticket` before or after forwarded arguments, and `--ticket=ID`. Fixed: where the new function is called, and tightened three criteria that weak work could have passed. For the worker: ignore the two 2026-11-05 notes above about `chitty run TASK-178`, `ID_RE` and `gpt-4`, which describe an abandoned design.
 
 ## History
 
@@ -72,3 +77,4 @@ Held in `backlog` for a cold read of the restored `--ticket` design.
 - 2026-11-05T10:28:42Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:28:43Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:28:44Z mellow-newt: changed acceptance criteria
+- 2026-11-05T10:28:45Z mellow-newt: changed acceptance criteria, notes
