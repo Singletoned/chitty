@@ -20,7 +20,7 @@ Out of scope: anything in the Pi extension, and any report.
 
 ## Acceptance Criteria
 
-- [ ] Tests show a line still written, with `models` null and a warning on stderr, for a missing and an invalid usage file
+- [x] Tests show a line still written, with `models` null and a warning on stderr, for a missing and an invalid usage file
 - [ ] Tests show `status_after` correct and the exit code kept for an agent that exits non-zero, a Ctrl-C and an unchanged status
 - [ ] A test shows a failure writing the log warning on stderr and keeping the exit code
 - [ ] A test shows a `cost` of null accepted without a warning, summing to a null `cost` with the tokens still added
@@ -42,3 +42,4 @@ Added 2026-11-04 from the cold read of `TASK-157`: a null `cost`, because this t
 - 2026-11-04T18:03:09Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-05T14:45:29Z able-vole todo → doing
 - 2026-11-05T14:45:50Z able-vole: wrote the plan
+- 2026-11-05T15:14:56Z able-vole: ticked acceptance criteria
