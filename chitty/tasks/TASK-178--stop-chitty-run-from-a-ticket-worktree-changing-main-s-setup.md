@@ -17,9 +17,15 @@ Out of scope: stopping a worker starting a nested `chitty run` at all, and runni
 
 ## Acceptance Criteria
 
-- [ ] A test running `chitty run` from a linked worktree, with `main` recording a different version, shows it failing with that message, `main`'s `HEAD` and `chitty.toml` unchanged, and the fake agent not started
+- [ ] A test running `chitty run` from a linked worktree, with `main`'s `chitty.toml` recording an older version such as `0.0.1`, shows it failing with a message containing both versions and `from the main checkout`, `main`'s `HEAD` and `chitty.toml` unchanged, and the fake agent not started
+- [ ] `README.md`'s setup paragraph and the `PLAN.md` passage on `chitty run` setup, which both say linked worktrees leave setup alone, say that `chitty run` from a linked worktree refuses in this case
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a test recording a newer version would have passed with nothing built, because `check_setup_version` already refuses that, so the criterion now says older; where the check goes; a missing version; a newer version keeping its existing error; saying that refusing after a global upgrade is deliberate; and naming the docs, which are already misleading because the refresh runs on `main_repo`.
 
 ## History
 
 - 2026-11-05T09:37:43Z mellow-newt → backlog
 - 2026-11-05T09:39:56Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T09:39:57Z mellow-newt: changed acceptance criteria, notes
