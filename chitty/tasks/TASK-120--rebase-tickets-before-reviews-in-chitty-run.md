@@ -34,10 +34,10 @@ Out of scope: `check`, landing, pushing, repositories whose main branch is not `
 
 ## Acceptance Criteria
 
-- [ ] Tests with a real Git repository show the agent receiving a tree rebased on `main`, with `setup` run after the rebase
-- [ ] Tests show a rebase conflict and uncommitted files each not starting the agent and moving the ticket to `doing`, with no rebase left in progress, and a conflict note naming the files
-- [ ] A test shows automatic and reviewer failures counting together towards the limit, ending `blocked` with owner `human`
-- [ ] `PLAN.md` and `README.md` describe the rebase
+- [x] Tests with a real Git repository show the agent receiving a tree rebased on `main`, with `setup` run after the rebase
+- [x] Tests show a rebase conflict and uncommitted files each not starting the agent and moving the ticket to `doing`, with no rebase left in progress, and a conflict note naming the files
+- [x] A test shows automatic and reviewer failures counting together towards the limit, ending `blocked` with owner `human`
+- [x] `PLAN.md` and `README.md` describe the rebase
 
 ## Plan
 
@@ -82,3 +82,4 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-05T21:14:09Z youthful-toad: changed owner, notes
 - 2026-11-05T21:38:50Z youthful-toad: wrote the plan
 - 2026-11-05T21:38:50Z youthful-toad todo → doing
+- 2026-11-05T21:55:18Z youthful-toad: ticked acceptance criteria
