@@ -1,6 +1,6 @@
 ---
 title: Give each `chitty run` session one actor, whatever the agent
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -32,6 +32,10 @@ Out of scope: `TASK-146`'s question of how names are made, and anything specific
 
 Cold read by a fresh Sonnet subagent with `TASK-155`, 2026-11-04. Fixed: the helper and its source; the existing test that breaks; a test that would have failed by chance; and the dependency on `TASK-136`, which was not needed, so this can go first. Rejected: the `chitty guide` hint appearing in a run-started Pi, because the extension still sets `CHITTY_PI_SESSION_ID` at session start. A subagent sharing its parent's actor, which is the existing design. Name collisions, which are `TASK-146`; a collision gives a loud refusal with an override. Moved to `todo` now the findings have outcomes.
 
+## Summary
+
+Implemented the run-scoped actor identity. `chitty run` now derives `CHITTY_ACTOR` from a fresh UUID with the `CHITTY_RUN` source and no longer sets `CHITTY_PI_SESSION_ID`; the actor remains consistent through Claude Code child writes. Updated tests cover Claude-owned session IDs and deterministic distinct UUIDs. Verified focused tests and `make check` (247 Python tests and Node tests passed). `chitty fix` completed with existing markdown delimiter warnings only.
+
 ## History
 
 - 2026-11-04T15:38:27Z mellow-newt → backlog
@@ -41,3 +45,5 @@ Cold read by a fresh Sonnet subagent with `TASK-155`, 2026-11-04. Fixed: the hel
 - 2026-11-05T16:44:08Z plucky-newt: wrote the plan
 - 2026-11-05T16:50:49Z plucky-newt: ticked acceptance criteria
 - 2026-11-05T16:50:51Z plucky-newt: ticked acceptance criteria
+- 2026-11-05T16:50:59Z plucky-newt: changed summary
+- 2026-11-05T16:50:59Z plucky-newt doing → review
