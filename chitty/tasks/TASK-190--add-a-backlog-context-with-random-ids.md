@@ -25,9 +25,9 @@ Out of scope: when a ticket uses this context, which is the next two parts; IDs 
 - [ ] A test with a linked worktree shows plain `chitty add` creating a `BACKLOG-<8 digits>` ticket in `backlog`, whatever `-s` says, and `-c human` still numbering normally, and fails on a repeated random number by retrying
 - [ ] A test shows `edit -s todo` refused on such a ticket, and `chitty move <ID> tasks` on `main` giving it the next `TASK-` number, keeping `backlog`, with references rewritten
 - [ ] A test shows `chitty init` adding the context to an existing repository, `chitty check` passing with these tickets present, and `chitty next` never selecting one
-- [ ] `chitty guide work` and `chitty guide review` say this, `PLAN.md` records the decision, and `__version__` is bumped above `main`'s
 
 ## History
 
 - 2026-11-05T14:43:41Z mellow-newt → backlog
 - 2026-11-05T14:47:45Z mellow-newt: changed title, dependencies, description
+- 2026-11-05T14:47:46Z mellow-newt: changed acceptance criteria
