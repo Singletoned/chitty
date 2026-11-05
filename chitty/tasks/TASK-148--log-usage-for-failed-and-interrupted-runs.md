@@ -39,7 +39,7 @@ Review failed (tests): acceptance criterion 2 is not met because the added tests
 
 ## Summary
 
-Implemented finally-based usage logging for non-zero, interrupted, unchanged, and successful runs. Invalid or missing usage warns and records models=null; nullable costs preserve token totals and produce null aggregate cost; log write failures warn without masking the original result. Added lifecycle, validation, nullable-cost, and write-failure tests. Verified targeted tests, all 246 Python tests, Ruff, and Pyright; npm test emitted all passing dots but did not print a final summary before the harness timeout.
+Added integration coverage for non-zero agent exits, Ctrl-C, unchanged status, and usage-log write failures. The tests assert recorded status_after values and preserve exit codes 1/130. Fixed the Pyright narrowing for nullable usage models. Verified targeted tests, make check (Ruff, Pyright, 249 unittest tests), and npm test; no follow-ups.
 
 ## History
 
@@ -58,3 +58,4 @@ Implemented finally-based usage logging for non-zero, interrupted, unchanged, an
 - 2026-11-05T15:20:46Z eager-adder review → doing
 - 2026-11-05T16:19:53Z witty-adder: ticked acceptance criteria
 - 2026-11-05T16:20:03Z witty-adder: ticked acceptance criteria
+- 2026-11-05T16:20:13Z witty-adder: changed summary
