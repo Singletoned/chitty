@@ -607,6 +607,53 @@ class TestNext(CliTestCase):
         self.assertIn("review ticket TASK-1 has no branch task-1", result.stderr)
         self.assertFalse(worktree.exists())
 
+    def test_run_reviews_branch_with_newer_config_key(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Review me")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.run_cli("edit", "TASK-1", "--status", "review")
+        self.git("branch", "task-1")
+        branch_worktree = self.root / ".worktrees" / "prepare-task-1"
+        self.git("worktree", "add", "--quiet", str(branch_worktree), "task-1")
+        branch_config = branch_worktree / "chitty.toml"
+        branch_config.write_text(
+            branch_config.read_text().replace(
+                f'chitty_version = "{CHITTY_VERSION}"',
+                'chitty_version = "99.0.0"\nnew_setting = "supported later"',
+            )
+        )
+        self.git("-C", str(branch_worktree), "add", "chitty.toml")
+        self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "new config")
+        self.git("worktree", "remove", "--force", str(branch_worktree))
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess\n"
+            "path = 'chitty/tasks/TASK-1--review-me.md'\n"
+            "text = open(path).read().replace('status: review', 'status: done')\n"
+            "open(path, 'w').write(text)\n"
+            "subprocess.run(['git', 'add', path], check=True)\n"
+            "subprocess.run(['git', 'commit', '-m', 'finish review'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            result = self.run_cli("run")
+        finally:
+            os.environ["PATH"] = previous
+
+        self.assertEqual(result.stdout, "TASK-1: review → done\n")
+
     def test_run_cases(self):
         config = self.root / "chitty.toml"
         config.write_text(

@@ -66,6 +66,33 @@ class TestInit(CliTestCase):
 
         self.assertIn("run `chitty init`", result.stderr)
 
+    def test_newer_unknown_config_key_keeps_json_reads_valid(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                f'chitty_version = "{CHITTY_VERSION}"',
+                'chitty_version = "99.0.0"\nnew_setting = "supported later"',
+            )
+        )
+
+        result = self.run_cli("list", "--json")
+
+        self.assertEqual(json.loads(result.stdout), [])
+        self.assertIn("new_setting", result.stderr)
+
+    def test_init_refuses_newer_config_without_changing_it(self):
+        config = self.root / "chitty.toml"
+        original = config.read_text().replace(
+            f'chitty_version = "{CHITTY_VERSION}"',
+            'chitty_version = "99.0.0"\nnew_setting = "supported later"',
+        )
+        config.write_text(original)
+
+        result = self.run_cli("init", exit_code=1)
+
+        self.assertIn("needs Chitty 99.0.0 or later", result.stderr)
+        self.assertEqual(config.read_text(), original)
+
     def test_newer_setup_blocks_writes(self):
         config = self.root / "chitty.toml"
         config.write_text(

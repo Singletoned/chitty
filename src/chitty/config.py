@@ -3,9 +3,11 @@
 import os
 import re
 import subprocess
+import sys
 import tomllib
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Literal
+from typing import Literal, cast
 
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator, model_validator
 
@@ -21,6 +23,7 @@ CHITTY_VERSION = __version__
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
+_WARNED_UNKNOWN_KEYS: set[Path] = set()
 INITIAL_CONFIG = """\
 format = 1
 default_context = "tasks"
@@ -151,17 +154,50 @@ def load_repo_config(root: Path) -> RepoConfig:
     source = _config_source(root)
     if source is None:
         raise ChittyError(f"no Chitty configuration in {root}")
-    if source.name == CONFIG_NAME:
-        return _load(source, RepoConfig)
     try:
         data = tomllib.loads(source.read_text())
     except tomllib.TOMLDecodeError as error:
         raise ChittyError(f"{source}: invalid TOML: {error}") from None
+    if source.name != CONFIG_NAME:
+        try:
+            data = data["tool"]["chitty"]
+        except (KeyError, TypeError):
+            raise ChittyError(f"{source}: [tool.chitty] is required") from None
+    data = _allow_newer_top_level_keys(data, source)
+    return _validate_data(data, source, RepoConfig)
+
+
+def _allow_newer_top_level_keys(data: object, source: Path) -> object:
+    if not isinstance(data, Mapping):
+        return data
+    settings = cast(Mapping[str, object], data)
+    recorded = settings.get("chitty_version")
+    if not isinstance(recorded, str) or _version_key(recorded) <= _version_key(CHITTY_VERSION):
+        return settings
+    unknown = sorted(set(settings) - RepoConfig.model_fields.keys())
+    if not unknown:
+        return settings
+    if source not in _WARNED_UNKNOWN_KEYS:
+        names = ", ".join(unknown)
+        print(
+            f"{source}: ignoring unknown configuration key(s) {names}; upgrade Chitty to use them",
+            file=sys.stderr,
+        )
+        _WARNED_UNKNOWN_KEYS.add(source)
+    return {key: value for key, value in settings.items() if key not in unknown}
+
+
+def _version_key(value: str) -> tuple[int, ...]:
     try:
-        chitty = data["tool"]["chitty"]
-    except (KeyError, TypeError):
-        raise ChittyError(f"{source}: [tool.chitty] is required") from None
-    return _validate_data(chitty, source, RepoConfig)
+        return tuple(int(part) for part in value.split("."))
+    except ValueError as error:
+        raise ChittyError(f"invalid Chitty version {value!r}") from error
+
+
+def check_setup_version(config: RepoConfig) -> None:
+    recorded = config.chitty_version
+    if recorded is not None and _version_key(recorded) > _version_key(CHITTY_VERSION):
+        raise ChittyError(f"repository needs Chitty {recorded} or later")
 
 
 def _config_source(root: Path) -> Path | None:
