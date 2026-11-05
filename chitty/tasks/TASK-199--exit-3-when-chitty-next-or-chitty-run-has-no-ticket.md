@@ -1,6 +1,6 @@
 ---
 title: Exit 3 when `chitty next` or `chitty run` has no ticket
-status: todo
+status: doing
 priority: high
 owner: human
 parent: TASK-106
@@ -22,6 +22,12 @@ Out of scope: a `chitty run` that waits for tickets itself, and any other exit c
 - [ ] `README.md` and `PLAN.md` document exit 3 and the idle loop
 - [ ] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
 
+## Plan
+
+1. Change the existing empty-queue tests in `tests/test_next.py` to expect exit 3 and no stdout, add `--json` and an agent exiting 3 (expects 1); see them fail.
+2. Add `NoNextTicket` and `NO_NEXT_TICKET_EXIT` to `errors.py`, raise it in `next_action`, map it in `_Group.invoke`.
+3. Document exit 3 and the idle loop in `README.md` and `PLAN.md`.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 3 is unused and that every `except ChittyError` still catches a subclass. Fixed: how to exit 3 when `ClickException` hard-codes 1, where the constant lives, `--json` output, that a dependency-blocked queue counts as idle, that `run`'s preflight, setup refresh and inbox pull happen on every idle pass, editing the existing tests in place, an agent exiting 3 in the criterion, and the version bump (not needed). Rejected: a criterion for the MCP `ToolError`, which an existing test in `tests/test_next.py` already covers.
@@ -31,3 +37,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 
 - 2026-11-05T21:13:41Z youthful-toad → backlog
 - 2026-11-05T21:14:52Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-05T21:14:53Z youthful-toad backlog → todo
+- 2026-11-05T21:15:01Z youthful-toad: wrote the plan
+- 2026-11-05T21:15:01Z youthful-toad todo → doing
