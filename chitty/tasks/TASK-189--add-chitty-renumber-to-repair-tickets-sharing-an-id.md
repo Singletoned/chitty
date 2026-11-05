@@ -21,9 +21,9 @@ It must not rewrite references in other tickets, because a `depends_on` or `pare
 
 ## Acceptance Criteria
 
-- [ ] A test with two files sharing `TASK-24` shows `chitty renumber <path>` moving only that file to the next number, recording `moved_from`, `chitty check` then passing, and tickets naming `TASK-24` listed and unchanged
-- [ ] Tests show it refusing a path outside a context and a ticket whose ID is unique, with no file changed, and accepting an archived path and a path relative to the working directory
-- [ ] `README.md` and `PLAN.md` describe it, `chitty renumber --help` works, and `renumber` is in the MCP tool list with a description, including the parity test in `tests/test_mcp.py` and the list in `PLAN.md`
+- [x] A test with two files sharing `TASK-24` shows `chitty renumber <path>` moving only that file to the next number, recording `moved_from`, `chitty check` then passing, and tickets naming `TASK-24` listed and unchanged
+- [x] Tests show it refusing a path outside a context and a ticket whose ID is unique, with no file changed, and accepting an archived path and a path relative to the working directory
+- [x] `README.md` and `PLAN.md` describe it, `chitty renumber --help` works, and `renumber` is in the MCP tool list with a description, including the parity test in `tests/test_mcp.py` and the list in `PLAN.md`
 
 ## Plan
 
@@ -47,3 +47,4 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-05T21:14:08Z youthful-toad: changed owner, notes
 - 2026-11-05T21:20:52Z youthful-toad: wrote the plan
 - 2026-11-05T21:20:52Z youthful-toad todo → doing
+- 2026-11-05T21:27:20Z youthful-toad: ticked acceptance criteria
