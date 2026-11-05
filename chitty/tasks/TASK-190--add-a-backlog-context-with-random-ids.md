@@ -20,10 +20,6 @@ The name collides with nothing: `chitty/backlog/` is a new directory, and the st
 
 Out of scope: when a ticket uses this context, which is the next two parts; IDs made of words, as in `BACKLOG-ember-dolphin-1`, because `TaskId.number` is an integer used throughout; and any change to `TASK-` numbering.
 
-## Acceptance Criteria
-
-- [ ] A test with a linked worktree shows plain `chitty add` creating a `BACKLOG-<8 digits>` ticket in `backlog`, whatever `-s` says, and `-c human` still numbering normally, and fails on a repeated random number by retrying
-
 ## History
 
 - 2026-11-05T14:43:41Z mellow-newt → backlog
@@ -31,3 +27,4 @@ Out of scope: when a ticket uses this context, which is the next two parts; IDs 
 - 2026-11-05T14:47:46Z mellow-newt: changed acceptance criteria
 - 2026-11-05T14:47:47Z mellow-newt: changed acceptance criteria
 - 2026-11-05T14:47:48Z mellow-newt: changed acceptance criteria
+- 2026-11-05T14:47:49Z mellow-newt: changed acceptance criteria
