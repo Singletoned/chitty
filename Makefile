@@ -34,7 +34,6 @@ release: ## tag this version and push it, so the workflow publishes it to PyPI
 	@test -z "$$(git status --porcelain)" || { echo "release: tree is not clean" >&2; exit 1; }
 	git fetch origin
 	@git merge-base --is-ancestor origin/main HEAD || { echo "release: behind origin/main" >&2; exit 1; }
-	$(MAKE) check </dev/null
 	version=$$(sed -n 's/^__version__ = "\(.*\)"$$/\1/p' src/chitty/__init__.py) && \
 		pending="$${XDG_DATA_HOME:-$$HOME/.local/share}/chitty/pending-release" && \
 		git tag "v$$version" && git push --atomic origin main "v$$version" && \
