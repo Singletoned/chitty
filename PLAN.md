@@ -613,7 +613,8 @@ visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value.
 
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
-an `agent_command`. The command may include `{prompt}` as a single argument;
+an `agent_command`. Use `chitty run --ticket ID` to choose a ticket instead of
+using the next selected ticket. The command may include `{prompt}` as a single argument;
 Chitty fills it with the role-specific `chitty guide <mode> <ID>` output after
 splitting the command. It finds the main checkout even when invoked from another
 worktree, pulls its inbox when configured, creates or reuses the selected

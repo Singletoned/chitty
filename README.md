@@ -91,8 +91,9 @@ and `{id}`, or `{prompt}`. Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
 `chitty run` creates or reuses the ticket worktree, runs setup there, claims a
 `todo` ticket, and invokes
-the configured agent from that worktree. Pass agent options with `chitty run --
---model MODEL`. It succeeds only when the agent commits a status change, so
+the configured agent from that worktree. Choose a ticket with `chitty run
+--ticket ID`; pass agent options with `chitty run -- --model MODEL`. It
+succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
 no progress. Empty lists explain their active filters on stderr while JSON stdout remains
 `[]`. `chitty import backlog-md` refuses non-empty contexts, reports

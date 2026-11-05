@@ -929,45 +929,72 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
     )
 
 
+def _ticket_action(repo: Repo, stored: StoredTask, *, refuse: bool) -> NextAction | None:
+    """Validate a ticket for running, or return None when selecting the next ticket."""
+    frontmatter = stored.task.frontmatter
+    status_order = {"review": 0, "doing": 1, "todo": 2}
+    if stored.archived:
+        if refuse:
+            raise ChittyError(f"cannot run archived ticket {stored.id}")
+        return None
+    if frontmatter.status not in status_order:
+        if refuse:
+            raise ChittyError(f"cannot run {stored.id}: status is {frontmatter.status}")
+        return None
+    if stored.context == "human":
+        if refuse:
+            raise ChittyError(f"cannot run human ticket {stored.id}")
+        return None
+    if frontmatter.owner == "human":
+        if refuse:
+            raise ChittyError(f"cannot run {stored.id}: owner is human")
+        return None
+    dependencies: list[StoredTask] = []
+    for reference in frontmatter.depends_on:
+        try:
+            dependencies.append(repo.find(TaskId.parse(reference)))
+        except ChittyError as error:
+            raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
+    if frontmatter.status == "todo" and any(
+        not dependency.archived and dependency.task.frontmatter.status != "done"
+        for dependency in dependencies
+    ):
+        if refuse:
+            raise ChittyError(f"cannot run {stored.id}: it has unfinished dependencies")
+        return None
+    mode: Literal["work", "review"] = "review" if frontmatter.status == "review" else "work"
+    return NextAction(mode, stored.id)
+
+
+def ticket_action(repo: Repo, task_id: TaskId) -> NextAction:
+    """Return the work or review action for an explicitly chosen ticket."""
+    try:
+        stored = repo.find(task_id)
+    except ChittyError:
+        raise ChittyError(f"cannot run {task_id}: unknown ticket") from None
+    action = _ticket_action(repo, stored, refuse=True)
+    assert action is not None
+    return action
+
+
 def next_action(repo: Repo) -> NextAction:
     """Select the one ticket to review or work next across every context."""
     status_order = {"review": 0, "doing": 1, "todo": 2}
-    candidates: list[StoredTask] = []
-    for stored in repo.all_tasks():
-        frontmatter = stored.task.frontmatter
-        if (
-            stored.archived
-            or stored.context == "human"
-            or frontmatter.owner == "human"
-            or frontmatter.status not in status_order
-        ):
-            continue
-        dependencies: list[StoredTask] = []
-        for reference in frontmatter.depends_on:
-            try:
-                dependencies.append(repo.find(TaskId.parse(reference)))
-            except ChittyError as error:
-                raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
-        if frontmatter.status == "todo" and any(
-            not dependency.archived and dependency.task.frontmatter.status != "done"
-            for dependency in dependencies
-        ):
-            continue
-        candidates.append(stored)
+    candidates = [
+        (stored, action)
+        for stored in repo.all_tasks()
+        if (action := _ticket_action(repo, stored, refuse=False)) is not None
+    ]
     if not candidates:
         raise ChittyError("no next ticket")
-    selected = min(
+    return min(
         candidates,
-        key=lambda stored: (
-            status_order[stored.task.frontmatter.status],
-            PRIORITY_ORDER[stored.task.frontmatter.priority],
-            stored.id,
+        key=lambda pair: (
+            status_order[pair[0].task.frontmatter.status],
+            PRIORITY_ORDER[pair[0].task.frontmatter.priority],
+            pair[0].id,
         ),
-    )
-    mode: Literal["work", "review"] = (
-        "review" if selected.task.frontmatter.status == "review" else "work"
-    )
-    return NextAction(mode, selected.id)
+    )[1]
 
 
 def matches(
