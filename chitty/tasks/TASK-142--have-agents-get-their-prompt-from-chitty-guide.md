@@ -1,6 +1,6 @@
 ---
 title: Have agents get their prompt from `chitty guide`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-141
@@ -59,3 +59,4 @@ Criterion 4 checked by the human on 2026-11-05: a real Pi session started from t
 - 2026-11-05T09:32:19Z mellow-newt: changed notes
 - 2026-11-05T09:32:19Z mellow-newt blocked → doing
 - 2026-11-05T09:37:42Z mellow-newt: changed owner, notes; ticked acceptance criteria
+- 2026-11-05T09:37:43Z mellow-newt doing → review
