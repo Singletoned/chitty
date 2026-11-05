@@ -1,6 +1,6 @@
 ---
 title: Rebase tickets before reviews in `chitty run`
-status: todo
+status: doing
 priority: medium
 owner: human
 depends_on:
@@ -39,6 +39,13 @@ Out of scope: `check`, landing, pushing, repositories whose main branch is not `
 - [ ] A test shows automatic and reviewer failures counting together towards the limit, ending `blocked` with owner `human`
 - [ ] `PLAN.md` and `README.md` describe the rebase
 
+## Plan
+
+1. Tests first (`tests/test_review_rebase.py`, real Git, fake setup and agent): a review run whose agent and setup both see the branch rebased on a moved `main`; a conflict and uncommitted files each moving the ticket to `doing` without starting the agent, leaving no rebase in progress, the conflict note naming files; an unfinished rebase failing loudly with no status change; two reviewer failures plus a conflict ending `blocked` with owner `human`; Ctrl-C during the rebase aborting it and exiting 130.
+2. `git.py`: `rebase_in_progress`, `uncommitted_paths`, `rebase` (aborting and returning conflicting files) and `abort_rebase`.
+3. `run.py`: in review mode, after the actor is set, refuse an unfinished rebase, fail on uncommitted files, rebase onto `main`, then run `setup`; failures go through `Repo.edit` so escalation counts them, and return the status change without starting the agent. Work mode keeps `setup` before the claim.
+4. `PLAN.md` and `README.md`.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-03. The biggest find: autocommitted ticket commits move `main` often, so `--ff-only` alone would refuse most landings; it now merges and rechecks. Also adopted: untracked files allowed in the main checkout (the old rule would have refused every merge here because of `chats/`), the main checkout must be on `main`, pending tickets found by branch name, `setup` after the merge, and `make check` running Node tests. Authors choice for the reviewer: a clean re-merge lands without another review.
@@ -73,3 +80,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-04T15:11:34Z mellow-newt: changed title, description, acceptance criteria, notes
 - 2026-11-04T15:17:35Z mellow-newt: changed description, notes
 - 2026-11-05T21:14:09Z youthful-toad: changed owner, notes
+- 2026-11-05T21:38:50Z youthful-toad: wrote the plan
+- 2026-11-05T21:38:50Z youthful-toad todo → doing
