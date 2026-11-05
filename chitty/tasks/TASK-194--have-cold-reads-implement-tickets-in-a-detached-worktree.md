@@ -16,9 +16,9 @@ In `src/chitty/roles/plan.md`, replace the first sentence of the bullet starting
 
 "Cold-read every ticket, even a small one. If it changes code, a fresh agent on a cheap model, close to the one that will do the work, implements it from the ticket alone in a throwaway worktree, and runs its tests with and without the fix. If there is nothing to run, a stronger model reads the ticket and referenced code instead. Either way, the reader reports done meaning, likely files, open decisions, unverified behaviour, unhandled states, and wrong claims."
 
-Add a bullet straight after it:
+Add a new bullet after the whole of that bullet, so that its text on recording outcomes stays with it:
 
-"Start an implementing read with `git worktree add --detach .worktrees/read-<ID>` and the repository's setup command, not on a branch, because Chitty reads tickets from every branch. Run the reader with `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` unset, or a shared install ends up pointing at a worktree about to be deleted. The reader runs no Chitty writes and commits nothing under `chitty/`. It commits its work, keeps it with `git update-ref refs/cold-read/<ID>/<n> HEAD`, where `<n>` is the next number free for that ticket, starting at 1, then runs `git worktree remove --force .worktrees/read-<ID>`. `git for-each-ref refs/cold-read` lists kept reads."
+"Start an implementing read with `git worktree add --detach .worktrees/read-<ID>` and the repository's setup command, not on a branch, because Chitty reads tickets from every branch. Run the reader with `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` unset, or a shared install ends up pointing at a worktree about to be deleted. The reader runs no Chitty writes and leaves `chitty/` unchanged. It commits its own work, keeps it with `git update-ref refs/cold-read/<ID>/<n> HEAD`, where `<n>` is the next number free for that ticket, starting at 1, then runs `git worktree remove --force .worktrees/read-<ID>`. `git for-each-ref refs/cold-read` lists kept reads."
 
 Replace the "Cold read:" paragraph's description in `PLAN.md` so it agrees, recording the decision and date and why a ref rather than a branch. This file ships to every repository, so do not name `make` or a particular model. `src/chitty/roles/plan.md` does not reach `AGENTS.md`, so no `chitty init` or version bump is needed. `TASK-188` adds bullets to the same file and sets a limit of about 35 lines: that limit may grow to about 45 for this, and whichever lands second merges the wording.
 
@@ -26,7 +26,6 @@ Out of scope: tooling that runs reads, which `TASK-125` holds, and deleting old 
 
 ## Acceptance Criteria
 
-- [ ] `PLAN.md`'s cold read paragraph describes implementing reads, reasoning reads, and why the work is kept under a ref
 - [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `implements it from the ticket alone`, `with and without the fix`, `Either way, the reader reports done meaning`, `git worktree add --detach`, `UV_PROJECT_ENVIRONMENT`, `git update-ref refs/cold-read/<ID>/<n> HEAD` and `git worktree remove --force`, and fails against the current `plan.md`
 
 ## Notes
@@ -50,3 +49,4 @@ Found after the read, 2026-11-05, and serious: the three trial reads broke the g
 - 2026-11-05T18:06:36Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:08:05Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:13:36Z mellow-newt todo → backlog
+- 2026-11-05T18:19:21Z mellow-newt: changed description, acceptance criteria
