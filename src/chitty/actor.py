@@ -4,10 +4,13 @@ import hashlib
 import json
 import os
 import re
+import sys
 from collections.abc import Mapping
 from importlib.resources import files
 from pathlib import Path
 
+from chitty import __version__
+from chitty.config import _version_key  # pyright: ignore[reportPrivateUsage]
 from chitty.errors import ChittyError
 
 _ADJECTIVES = (
@@ -66,6 +69,7 @@ _ANIMALS = (
 )
 
 _PI_EXTENSION_STATE = "chitty-extension.sha256"
+_PI_EXTENSION_STATE_LINES = 2
 
 _SESSION_IDENTITIES = (
     ("CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_SESSION_ID"),
@@ -147,7 +151,7 @@ def _validate_pi_extension(files: tuple[Path, Path, bytes] | None) -> None:
     if not target.exists() or target.read_bytes() == source:
         return
     expected_hash = _extension_hash(target.read_bytes())
-    if state.exists() and state.read_text().strip() == expected_hash:
+    if state.exists() and state.read_text().splitlines()[:1] == [expected_hash]:
         return
     raise ChittyError(
         f"Pi extension at {target} differs from Chitty's shipped extension and may "
@@ -161,6 +165,18 @@ def validate_pi_extension(environment: Mapping[str, str] | None = None) -> None:
     _validate_pi_extension(_pi_extension_files(environment))
 
 
+def _installed_extension_version(state: Path) -> str | None:
+    """Return the recorded version, treating old state formats as older."""
+    try:
+        lines = state.read_text().splitlines()
+        version = lines[1] if len(lines) >= _PI_EXTENSION_STATE_LINES else None
+        if version is not None:
+            _version_key(version)
+        return version
+    except (ChittyError, OSError, UnicodeError):
+        return None
+
+
 def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path | None:
     """Install or update Chitty's unedited Pi extension."""
     extension = _pi_extension_files(environment)
@@ -168,17 +184,27 @@ def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path |
         return None
     target, state, source = extension
     _validate_pi_extension(extension)
+    installed_version = _installed_extension_version(state) if target.exists() else None
+    if installed_version is not None and _version_key(installed_version) > _version_key(
+        __version__
+    ):
+        print(
+            f"Chitty {__version__} is older than the installed Pi extension from Chitty "
+            f"{installed_version}; upgrade Chitty, or delete {target} and {state} together",
+            file=sys.stderr,
+        )
+        return None
     source_hash = _extension_hash(source)
     if (
         target.exists()
         and target.read_bytes() == source
         and state.exists()
-        and state.read_text().strip() == source_hash
+        and state.read_text().strip() == f"{source_hash}\n{__version__}"
     ):
         return None
     target.parent.mkdir(exist_ok=True)
     target.write_bytes(source)
-    state.write_text(source_hash + "\n")
+    state.write_text(f"{source_hash}\n{__version__}\n")
     return target
 
 
