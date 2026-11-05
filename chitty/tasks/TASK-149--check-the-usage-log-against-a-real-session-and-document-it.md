@@ -30,9 +30,12 @@ Out of scope: any report, which is `TASK-111`.
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a threshold. Rejected: naming which extension copy loads, because `chitty run` refreshes the installed one first.
 
+Real Pi session verification (scratch repo `task149-scratch`, 2026-11-05): usage log line: `{"ticket":"TASK-1","mode":"work","actor":"brisk-zander","started":"2026-11-05T18:21:49.031890Z","seconds":33.828,"status_before":"doing","status_after":"review","models":[{"provider":"openai-codex","model":"gpt-5.6-luna","input":7645,"output":917,"cacheRead":32000,"cacheWrite":0,"cost":0.0032694}]}`. The corresponding session file `/Users/singletoned/.pi/agent/sessions/--private-tmp-chitty-task149-97lVKp-.worktrees-task-1--/2026-11-05T18-21-49-151Z_01a1acf2-16df-70f9-ad3a-cbdb55f9e135.jsonl` sums to `input=7645`, `output=917`, `cacheRead=32000`, `cacheWrite=0`, `cost=0.0032694`; difference is 0% (well below 5%), so no calls are missing. Costs are provider list prices.
+
 ## History
 
 - 2026-11-04T15:11:31Z mellow-newt → todo
 - 2026-11-04T15:17:34Z mellow-newt: changed description, notes
 - 2026-11-05T18:20:16Z friendly-eel todo → doing
 - 2026-11-05T18:20:28Z friendly-eel: wrote the plan
+- 2026-11-05T18:23:22Z friendly-eel: changed notes
