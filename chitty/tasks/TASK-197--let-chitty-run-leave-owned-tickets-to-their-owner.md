@@ -12,7 +12,7 @@ The human wants to reserve tickets for a stronger model by setting an owner, suc
 
 Add a keyword-only `owner: str | None = None` to `next_action` in `src/chitty/store.py`, and an `--owner` option to `chitty next` and `chitty run`, and an `owner` parameter to the `next` tool in `src/chitty/mcp.py`, which is the equivalent of `chitty next`. `run` in `src/chitty/run.py` passes it through. The rules are:
 
-- With no `--owner`, a `todo` or `doing` ticket with any owner is skipped, and a `review` ticket is still selected unless its owner is `human`. This is deliberate: an owner reserves the work and not its review, so a plain `chitty run` reviews it with the default agent. The owner stays set, so a failed review returns the ticket to `doing` for its owner, and the third failed review still sets owner `human`.
+- With no `--owner`, a `todo` or `doing` ticket with any owner is skipped, a ticket with no owner is selected as before, and a `review` ticket is still selected unless its owner is `human`. This is deliberate: an owner reserves the work and not its review, so a plain `chitty run` reviews it with the default agent. The owner stays set, so a failed review returns the ticket to `doing`, where only `chitty run --owner <name>` picks it up again, and the third failed review still sets owner `human`.
 - With `--owner opus`, only tickets owned by `opus` are candidates, at any of those statuses, with the same order and the same dependency rules. `--owner human` is refused with a `ChittyError`, because agents do not take `human` tickets, and so is an empty `--owner ""`, which could only ever find nothing.
 - `chitty run --ticket <ID>` still runs a ticket with any owner other than `human`, and still refuses `human`. Giving both `--ticket` and `--owner` is refused with a `ChittyError`, because they choose a ticket in two different ways.
 - `run` makes all three refusals first, before `_preflight`, `refresh_setup` or `pull_suggestions`, which can commit and change the inbox. `next_action` also refuses `human` and an empty owner, for `chitty next` and MCP.
@@ -25,7 +25,6 @@ Out of scope: choosing a model from the owner, which remains a forwarded argumen
 
 - [ ] `PLAN.md` and `README.md` describe the rules
 - [ ] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
-- [ ] Tests with tickets owned by `opus` show plain `chitty next`, and a real `chitty run` with a fake agent, skipping them at `todo` and `doing`, which fail without the change, and selecting one at `review`, and still skipping `human` at every status
 - [ ] Tests show `--owner opus` on `chitty next` and `chitty run` selecting only that owner's tickets, whichever side of the forwarded arguments it comes, `--owner` after `--` being forwarded, and `--owner human`, `--owner ""` and `--ticket` with `--owner` each refused by `chitty run` with nothing committed
 
 ## Notes
@@ -42,3 +41,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-05T18:39:10Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:39:12Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:39:13Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T18:48:15Z mellow-newt: changed description, acceptance criteria
