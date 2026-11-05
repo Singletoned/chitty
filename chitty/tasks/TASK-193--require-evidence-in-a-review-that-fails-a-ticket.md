@@ -10,10 +10,15 @@ created: 2026-11-05
 
 `src/chitty/roles/review.md` already says to fail only for "an unmet criterion or a demonstrated defect, such as a throwaway failing test". On `TASK-148` on 2026-11-05 the third review still failed the ticket on reasoning alone, claiming that an `assert` after a `finally` would hide the original error. It could not, because the `assert` is not reached while an exception propagates, and one throwaway test showed this. "Such as" reads as an example, and nothing asks the reviewer to show the evidence.
 
-Change two bullets in `src/chitty/roles/review.md`, and no others, because other tickets edit this file. Use this wording, adjusting only line wrapping:
+Replace two whole bullets in `src/chitty/roles/review.md`, and no others, because other tickets edit this file. Use this wording, adjusting only line wrapping.
 
-- In the bullet starting "Fail only": "A claim about what code does when it runs must be run first, using an existing test, the project's check command or a throwaway test. Reasoning alone demonstrates nothing: if you cannot demonstrate it, file a ticket instead of failing." Keep its existing last sentence about filing tickets for other findings, merged so it is not said twice.
-- In the bullet on the failure note: "The note gives what was run and what it printed. When there is nothing to run, because nothing exercises a criterion, a file is missing or the ticket itself is wrong, it names what is missing. When the environment stopped you running it, it says what stopped you, with the cause `integration`."
+Replace the bullet starting "Fail only" with:
+
+"Fail only for an unmet criterion or a demonstrated defect. A claim about what code does when it runs must be run first, using an existing test, the project's check command or a throwaway test. Reasoning alone demonstrates nothing: if you can run the code but cannot show the defect, file a ticket instead of failing. File a ticket for other findings too."
+
+Replace the bullet starting "On failure" with:
+
+"On failure, write one note in the form `Review failed (<cause>): ...`, where the cause is `design`, `tests`, `work`, `integration`, or `review`; explain what must change and `--uncheck` every failed criterion. Set `-s doing`. The note gives what was run and what it printed. When there is nothing to run, because nothing exercises a criterion, a file is missing or the ticket itself is wrong, it says what is missing or wrong. When the environment stopped you running the code, it says what stopped you, with the cause `integration`."
 
 This file ships to every repository, so do not name `make`.
 
@@ -39,3 +44,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: one criterion 
 - 2026-11-05T17:10:23Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T17:10:24Z mellow-newt backlog → todo
 - 2026-11-05T18:13:35Z mellow-newt todo → backlog
+- 2026-11-05T18:19:16Z mellow-newt: changed description
