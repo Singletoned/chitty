@@ -19,7 +19,7 @@ Each comes from 2026-11-05: `TASK-178` and `TASK-184` had criteria that could pa
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py` shows `guide("plan")` containing `nothing built`, `must not start one`, `rather than assume` and `just before promoting`
+- [x] A test in `TestGuide` in `tests/test_cli.py` shows `guide("plan")` containing `nothing built`, `must not start one`, `rather than assume` and `just before promoting`
 
 ## Plan
 
@@ -37,3 +37,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets wor
 - 2026-11-05T14:23:21Z mellow-newt backlog → todo
 - 2026-11-05T23:40:54Z vivid-wren todo → doing
 - 2026-11-05T23:41:08Z vivid-wren: wrote the plan
+- 2026-11-05T23:47:17Z vivid-wren: ticked acceptance criteria
