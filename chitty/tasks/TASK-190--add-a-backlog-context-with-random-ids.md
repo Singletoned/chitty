@@ -1,6 +1,6 @@
 ---
 title: Add a `BACKLOG` context with random IDs
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-177
@@ -42,3 +42,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: which numb
 - 2026-11-05T14:47:49Z mellow-newt: changed acceptance criteria
 - 2026-11-05T14:47:50Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:50:37Z mellow-newt: changed description, notes
+- 2026-11-05T14:50:38Z mellow-newt backlog → todo
