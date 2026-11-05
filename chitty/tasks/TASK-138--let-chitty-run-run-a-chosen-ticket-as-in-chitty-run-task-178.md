@@ -12,7 +12,9 @@ created: 2026-11-04
 
 `chitty run` always takes what `chitty next` selects, so a person cannot choose. Add `chitty run <ID>`, as in `chitty run TASK-178`, which runs that ticket instead of the selected one, in the mode its status implies: `review` means review, and `doing` or `todo` means work. Everything else about the run is unchanged, including the inbox pull, worktree preparation and forwarding other arguments to the agent. Resolve the ID after the pull, on `main_repo`, with `Repo.resolve`, so a pulled ticket can be chosen.
 
-`chitty run` forwards unknown arguments to the agent, so do not declare a `click.argument`: it would take the first forwarded word, as in `chitty run -e ./search.ts`. Instead, in `run` in `src/chitty/cli.py`, treat `ctx.args[0]` as the ticket when it fully matches `ID_RE` from `src/chitty/ids.py`, and forward the rest. A bare number is not treated as an ID, because it could be an argument for the agent. Click removes `--`, so `chitty run -- TASK-178` also names the ticket, which is accepted. An ID anywhere but first is forwarded.
+`chitty run` forwards unknown arguments to the agent, so do not declare a `click.argument`: it would take the first forwarded word, as in `chitty run -e ./search.ts`. Instead, in `run` in `src/chitty/cli.py`, treat `ctx.args[0]`, which click has already stripped of declared options, as the ticket when it fully matches `ID_RE` from `src/chitty/ids.py` and its prefix is one of this repository's context prefixes, and forward the rest. `ID_RE` ignores case, so `task-178` names `TASK-178`, and alone it would also match `gpt-4`, which is why the prefix must be known. A bare number is not treated as an ID, because it could be an argument for the agent, even though `Repo.resolve` accepts one.
+
+Give `run()` in `src/chitty/run.py` a parameter `ticket: str | None`, without a default, and have `cli.py` pass the ID there and only the remaining words as `arguments`, so the ID does not also reach the agent. `run` calls the new function instead of `next_action` when `ticket` is set. Click removes `--`, so `chitty run -- TASK-178` also names the ticket, which is accepted. An ID anywhere but first is forwarded.
 
 Add it to the help text, which click cannot do by itself without a declared argument: set `options_metavar="[ID] [OPTIONS]"` on the command, and have the docstring say that it runs the next ticket, or the named one, and that other arguments go to the agent.
 
@@ -20,14 +22,13 @@ Add a function beside `next_action` in `src/chitty/store.py` that returns a `Nex
 
 Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-152` lands pending tickets at the start of a run; a run naming a ticket skips that, because it must only touch that ticket.
 
-Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above.
+Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above. `--mode` from `TASK-162` with an ID is refused by whichever of the two lands second.
 
 ## Acceptance Criteria
 
 - [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
 - [ ] A test with a fake agent shows `--ticket` running a lower-priority `todo` ticket in work mode ahead of what `chitty next` selects, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
 - [ ] `README.md` and `PLAN.md` describe it, and a test shows `chitty run --help` showing `[ID]` and saying what it does
-- [ ] A test shows other arguments still reaching the agent after the ID, `chitty run -e ./search.ts` forwarding both words, an ID not given first being forwarded, and `chitty run` with no ID behaving as before
 
 ## Notes
 
@@ -52,3 +53,4 @@ Held in `backlog` while the rewrite is cold-read.
 - 2026-11-05T10:07:32Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T10:07:45Z mellow-newt: changed notes
 - 2026-11-05T10:07:45Z mellow-newt todo → backlog
+- 2026-11-05T10:08:34Z mellow-newt: changed description, acceptance criteria
