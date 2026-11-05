@@ -1,6 +1,6 @@
 ---
 title: Check the usage log against a real session and document it
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-148
@@ -27,3 +27,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a threshol
 
 - 2026-11-04T15:11:31Z mellow-newt → todo
 - 2026-11-04T15:17:34Z mellow-newt: changed description, notes
+- 2026-11-05T18:20:16Z friendly-eel todo → doing
