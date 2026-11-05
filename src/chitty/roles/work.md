@@ -5,6 +5,8 @@ task files. `chitty --help` is the full command reference.
 
 On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, or run `chitty init`.
 
+- When you write a literal single `*` in Markdown, escape it or enclose the
+  pattern in backticks, for example `files/*.jpg`.
 - Work on one ticket per session. Start with `chitty inbox --pull`, then
   `chitty show <ID>`.
 - Before writing code, write your approach with `chitty edit <ID> --plan`.
