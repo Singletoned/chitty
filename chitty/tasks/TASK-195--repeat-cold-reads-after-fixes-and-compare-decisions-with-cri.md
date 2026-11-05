@@ -28,6 +28,8 @@ Those bullets ship to every repository, so do not name `make`. `src/chitty/roles
 
 Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-195/1`. Fixed: a test on exact phrases broke on line wrapping in my own wording, as on `TASK-194` and `TASK-196`; and where the bullets go. Rejected: depending on `TASK-188`, which neither needs the other, and a merge handles the order; overlap with `TASK-196`, since this tells planners what to write and that tells workers what to do; and checking position in the test, which the reviewer can read.
 
+Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-195/2`: nothing serious. The test failed on all three phrases without the change and passed with it, and `make check` passed. Rejected: naming a position in the current `plan.md`, because this depends on `TASK-194`, whose bullets will be there when this starts; and checking position in the test, as before.
+
 ## History
 
 - 2026-11-05T17:53:54Z mellow-newt → backlog
@@ -35,3 +37,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold
 - 2026-11-05T18:03:38Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:03:38Z mellow-newt backlog → todo
 - 2026-11-05T18:13:36Z mellow-newt todo → backlog
+- 2026-11-05T18:18:04Z mellow-newt: changed notes
