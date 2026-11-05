@@ -21,9 +21,9 @@ It must not rewrite references in other tickets, because a `depends_on` or `pare
 ## Acceptance Criteria
 
 - [ ] A test with two files sharing `TASK-24` shows `chitty renumber <path>` moving only that file to the next number, recording `moved_from`, `chitty check` then passing, and tickets naming `TASK-24` listed and unchanged
-- [ ] Tests show it refusing a path outside a context and a ticket whose ID is unique, with no file changed
 
 ## History
 
 - 2026-11-05T14:43:40Z mellow-newt → backlog
 - 2026-11-05T14:46:38Z mellow-newt: changed dependencies, description, acceptance criteria
+- 2026-11-05T14:46:39Z mellow-newt: changed acceptance criteria
