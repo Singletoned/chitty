@@ -23,9 +23,9 @@ Out of scope: when a ticket uses this context, which is the next two parts; IDs 
 
 ## Acceptance Criteria
 
-- [ ] A test with `_random_number` patched shows `chitty add -c backlog` creating `BACKLOG-<number>`, retrying when the number is already used, including on another branch, and raising when none is free
-- [ ] Tests show `chitty init` adding the context to an existing `chitty.toml` and `pyproject.toml`, leaving a repository alone when it already has one, and `chitty check` passing with these tickets present
-- [ ] `__version__` is bumped above `main`'s, and `README.md` and `PLAN.md` describe the setting
+- [x] A test with `_random_number` patched shows `chitty add -c backlog` creating `BACKLOG-<number>`, retrying when the number is already used, including on another branch, and raising when none is free
+- [x] Tests show `chitty init` adding the context to an existing `chitty.toml` and `pyproject.toml`, leaving a repository alone when it already has one, and `chitty check` passing with these tickets present
+- [x] `__version__` is bumped above `main`'s, and `README.md` and `PLAN.md` describe the setting
 
 ## Plan
 
@@ -59,3 +59,4 @@ Version is `0.1.33`, not `0.1.32`: branch `task-187`, which `chitty run` is work
 - 2026-11-05T21:28:41Z youthful-toad: wrote the plan
 - 2026-11-05T21:28:41Z youthful-toad todo → doing
 - 2026-11-05T21:37:26Z youthful-toad: changed notes
+- 2026-11-05T21:37:48Z youthful-toad: ticked acceptance criteria
