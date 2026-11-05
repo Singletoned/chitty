@@ -1,6 +1,6 @@
 ---
 title: Point the `AGENTS.md` block at `chitty guide plan`
-status: backlog
+status: todo
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -26,3 +26,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: a global `chit
 - 2026-11-05T14:13:55Z mellow-newt → backlog
 - 2026-11-05T14:23:14Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:15Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T14:23:16Z mellow-newt backlog → todo
