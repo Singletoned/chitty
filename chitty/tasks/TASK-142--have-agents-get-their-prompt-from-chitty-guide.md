@@ -1,6 +1,6 @@
 ---
 title: Have agents get their prompt from `chitty guide`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-141
@@ -45,6 +45,8 @@ Moved to `doing` by the planning session for the human to check criterion 4 in a
 
 Criterion 4 checked by the human on 2026-11-05: a real Pi session started from this branch's extension with `--chitty-work TASK-142` began with the role's instructions and looked right. The agent had started before it could be stopped and ran `chitty inbox --pull`, which found nothing. That instruction is now a separate ticket. The worker's own `chitty run` for this criterion recorded 0.1.28 on `main`, since reverted, also a separate ticket.
 
+Reviewed: all five criteria pass. make check passes (ruff, pyright, 238 unittest tests, and 26 Node tests); diff is clean. Verified guide prompt retrieval and failure shutdown paths, removal of chittyPrompt, one-argument prompt handling in work/review tests, documentation, and version 0.1.28 above main's 0.1.27. Criterion 4 is supported by the recorded human real-session verification in the ticket note.
+
 ## History
 
 - 2026-11-04T11:56:19Z lively-panda → todo
@@ -60,3 +62,5 @@ Criterion 4 checked by the human on 2026-11-05: a real Pi session started from t
 - 2026-11-05T09:32:19Z mellow-newt blocked → doing
 - 2026-11-05T09:37:42Z mellow-newt: changed owner, notes; ticked acceptance criteria
 - 2026-11-05T09:37:43Z mellow-newt doing → review
+- 2026-11-05T09:44:38Z jolly-newt: changed notes
+- 2026-11-05T09:44:38Z jolly-newt review → done
