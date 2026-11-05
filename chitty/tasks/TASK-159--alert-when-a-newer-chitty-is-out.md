@@ -1,6 +1,6 @@
 ---
 title: Alert when a newer Chitty is out
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-80
@@ -47,6 +47,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `main()` needs a `final
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming a version that does not exist after a failed release; a malformed file silently ending all alerts; touching before the request; and which running version. Accepted and now stated: a failed publish polls once a minute until the next release. Rejected: criteria for each of these, which the tests cover as behaviour under criterion 2's failure cases, and a split, because it is one concern.
 
+Reviewed: all three criteria pass. Inspected the upgrade lifecycle, CLI finally wiring, editable/completion skips, retry handling, README, and tests. Targeted upgrade tests, ruff, pyright, and chitty check pass; full make check reaches the Python suite but npm test does not terminate.
+
 ## Summary
 
 Implemented release upgrade alerts in src/chitty/upgrade.py and wired them through cli.main()'s finally, including editable-install and completion skips, retry throttling, safe failure handling, and pending-release lifecycle. Reused chitty_data_path with inbox_path and documented the stderr alert in README.md.
@@ -67,3 +69,5 @@ Verification: all 255 unittest tests passed during make check; targeted upgrade 
 - 2026-11-05T18:42:50Z tidy-stoat: changed summary
 - 2026-11-05T18:43:02Z tidy-stoat: changed summary
 - 2026-11-05T18:43:02Z tidy-stoat doing → review
+- 2026-11-05T18:46:23Z witty-yellowhammer: changed notes
+- 2026-11-05T18:46:23Z witty-yellowhammer review → done
