@@ -20,7 +20,16 @@ Add these bullets to `src/chitty/roles/plan.md`, straight after the bullets on c
 
 Those bullets ship to every repository, so do not name `make`. `src/chitty/roles/plan.md` does not reach `AGENTS.md`, so no `chitty init` or version bump is needed. Whichever of this and `TASK-188` lands second merges the wording.
 
+## Acceptance Criteria
+
+- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `until a read finds none`, `what criteria name` and `must fail without the fix`, and fails against the current `plan.md`
+
+## Notes
+
+Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-195/1`. Fixed: a test on exact phrases broke on line wrapping in my own wording, as on `TASK-194` and `TASK-196`; and where the bullets go. Rejected: depending on `TASK-188`, which neither needs the other, and a merge handles the order; overlap with `TASK-196`, since this tells planners what to write and that tells workers what to do; and checking position in the test, which the reviewer can read.
+
 ## History
 
 - 2026-11-05T17:53:54Z mellow-newt → backlog
 - 2026-11-05T18:03:37Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T18:03:38Z mellow-newt: changed acceptance criteria, notes
