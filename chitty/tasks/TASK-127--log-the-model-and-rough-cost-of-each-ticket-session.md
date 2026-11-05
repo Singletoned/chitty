@@ -1,6 +1,6 @@
 ---
 title: Log the model and rough cost of each ticket session
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-126
@@ -85,3 +85,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a prefligh
 - 2026-11-04T15:11:32Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T15:12:22Z mellow-newt: changed dependencies, notes
 - 2026-11-04T15:17:31Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-05T10:42:07Z able-yellowhammer todo → doing
