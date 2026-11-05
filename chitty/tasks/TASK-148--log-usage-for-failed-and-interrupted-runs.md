@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-127
@@ -21,8 +21,8 @@ Out of scope: anything in the Pi extension, and any report.
 ## Acceptance Criteria
 
 - [x] Tests show a line still written, with `models` null and a warning on stderr, for a missing and an invalid usage file
-- [x] Tests show `status_after` correct and the exit code kept for an agent that exits non-zero, a Ctrl-C and an unchanged status
-- [x] A test shows a failure writing the log warning on stderr and keeping the exit code
+- [ ] Tests show `status_after` correct and the exit code kept for an agent that exits non-zero, a Ctrl-C and an unchanged status
+- [ ] A test shows a failure writing the log warning on stderr and keeping the exit code
 - [x] A test shows a `cost` of null accepted without a warning, summing to a null `cost` with the tokens still added
 
 ## Plan
@@ -34,6 +34,8 @@ Refactor run lifecycle so usage is read and appended from one finally path after
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: the write failure now has a criterion and a stated way not to mask an error. Rejected: separate criteria for each invalid shape, `seconds`, and a removed worktree, which state cases, not behaviour.
 
 Added 2026-11-04 from the cold read of `TASK-157`: a null `cost`, because this ticket holds the validation it would otherwise have to change.
+
+Review failed (tests): acceptance criterion 2 is not met because the added tests do not exercise Ctrl-C or verify its recorded status/exit result; criterion 3 is not met because the write-failure test calls _record_usage directly and never demonstrates a failed run retaining its exit code. make check also fails Pyright at tests/test_next.py:1065 because models may be None. Add integration coverage for interruption and injected log-write failure, then fix the type error.
 
 ## Summary
 
@@ -52,3 +54,5 @@ Implemented finally-based usage logging for non-zero, interrupted, unchanged, an
 - 2026-11-05T15:14:59Z able-vole: ticked acceptance criteria
 - 2026-11-05T15:15:20Z able-vole: changed summary
 - 2026-11-05T15:15:20Z able-vole doing → review
+- 2026-11-05T15:20:46Z eager-adder: changed acceptance criteria, notes
+- 2026-11-05T15:20:46Z eager-adder review → doing
