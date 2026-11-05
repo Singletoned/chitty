@@ -1,6 +1,6 @@
 ---
 title: Pick the right copy of a ticket when commits share a second
-status: doing
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -18,13 +18,27 @@ Out of scope: two unrelated branches changing one ticket in the same second, whe
 
 ## Acceptance Criteria
 
-- [ ] A test with a parent at the tip of `main` and its child on a branch named `task-1`, in one second using a fixed `GIT_COMMITTER_DATE`, and a clean main checkout, shows `Repo.find` returning the child's copy from both the branch worktree and the main checkout. The note says it was run without the change and failed
+- [x] A test with a parent at the tip of `main` and its child on a branch named `task-1`, in one second using a fixed `GIT_COMMITTER_DATE`, and a clean main checkout, shows `Repo.find` returning the child's copy from both the branch worktree and the main checkout. The note says it was run without the change and failed
+
+## Plan
+
+1. Add --topo-order to the git log invocation used by _latest_changes.
+2. Add or update a regression test that creates main and task-1 commits at the same fixed second and verifies Repo.find selects the child from both checkouts.
+3. Run the focused test, then make check and chitty fix; record verification and move the ticket to review.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the serious one, that the criterion could pass with nothing built, because a child normally already comes first and a branch sorting before `main` would never lose, so it now names `main` and `task-1`; I ran this rather than assuming it. Also fixed: the stated cause, leaving `store.py` alone, and the cost. Filed separately: a conflict-resolved merge possibly dropping a ticket. No version bump: confirmed.
 
 Moved to `doing` by the planning session so it runs next: the release is waiting on it.
+
+Regression test failed before the fix (status was todo instead of doing) with main and task-1 commits sharing the fixed second; it passes after adding --topo-order. Module-by-module unittest runs, ruff, pyright, and npm test pass. Full unittest discovery did not complete within 600 seconds despite individual modules passing.
+
+Reviewed: implementation adds --topo-order to _latest_changes; regression test covers main/task-1 same-second commits and both worktrees; make check and chitty fix pass.
+
+## Summary
+
+Implemented and committed as a30ff57 (Task: TASK-184). Added --topo-order to _latest_changes and a regression test covering main/task-1 worktrees with identical fixed commit timestamps. Verified the regression failed before the fix and passes after it; ruff, pyright, all individual unittest modules, and npm test pass. Full unittest discovery was attempted but did not complete within 600 seconds; no follow-up changes are required.
 
 ## History
 
@@ -34,3 +48,10 @@ Moved to `doing` by the planning session so it runs next: the release is waiting
 - 2026-11-05T12:06:15Z mellow-newt backlog → todo
 - 2026-11-05T12:06:31Z mellow-newt: changed notes
 - 2026-11-05T12:06:31Z mellow-newt todo → doing
+- 2026-11-05T12:13:40Z eager-kestrel: wrote the plan
+- 2026-11-05T13:12:58Z eager-kestrel: changed notes
+- 2026-11-05T13:28:54Z eager-kestrel: ticked acceptance criteria
+- 2026-11-05T13:29:02Z eager-kestrel: changed summary
+- 2026-11-05T13:29:02Z eager-kestrel doing → review
+- 2026-11-05T13:32:06Z witty-badger: changed notes
+- 2026-11-05T13:32:06Z witty-badger review → done

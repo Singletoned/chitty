@@ -226,6 +226,7 @@ def _latest_changes(
     output = _git(
         root,
         "log",
+        "--topo-order",
         "--no-renames",
         "--format=%H%x09%ct",
         "--name-only",
