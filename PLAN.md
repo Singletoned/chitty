@@ -631,6 +631,16 @@ exits and succeeds only if the task's committed status changed. This makes
 `while chitty run; do :; done` a safe unattended loop. Interrupting setup or
 the agent exits 130 without a traceback.
 
+Each run appends one JSON line to the machine-local usage log at
+`$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory
+when `XDG_DATA_HOME` is unset). The line records the ticket, mode, actor,
+start time, elapsed seconds, statuses, and the Pi session's aggregate token and
+cost totals by provider and model. The cost values are provider list prices,
+not an invoice or a negotiated rate. A real scratch-repository Pi session was
+checked against its session JSONL: the log and session file both reported
+`input=7645`, `output=917`, `cacheRead=32000`, `cacheWrite=0`, and
+`cost=0.0032694` (0% difference).
+
 ## Module layout
 
 ```
