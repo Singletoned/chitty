@@ -20,7 +20,7 @@ Failure names the changed files and both versions.
 
 ## Acceptance Criteria
 
-- [ ] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
+- [x] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
 - [ ] Tests show a branch behind `main` that changed nothing passing, running on `main` passing, and a `--depth 1` clone at a tag with no `main` passing with a notice
 - [ ] `make check` runs it
 
@@ -39,3 +39,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the 
 - 2026-11-04T20:47:39Z mellow-newt backlog → todo
 - 2026-11-05T22:22:37Z jolly-kestrel todo → doing
 - 2026-11-05T22:22:58Z jolly-kestrel: wrote the plan
+- 2026-11-05T22:50:48Z jolly-kestrel: ticked acceptance criteria
