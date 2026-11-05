@@ -25,7 +25,6 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 - [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
 - [ ] A test with a fake agent shows `chitty run <ID>` running a lower-priority `todo` ticket in work mode ahead of what `chitty next` selects, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
 - [ ] `README.md` and `PLAN.md` describe it, and a test shows the `chitty run --help` usage line containing `[ID]` and its description saying it runs the next ticket or the named one
-- [ ] A test shows other arguments reaching the agent after the ID but not the ID itself, `chitty run gpt-4` and `chitty run -e ./search.ts` forwarding every word, an ID not given first being forwarded, and `chitty run` with no ID behaving as before
 
 ## Notes
 
@@ -59,3 +58,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still sayin
 - 2026-11-05T10:08:38Z mellow-newt backlog → todo
 - 2026-11-05T10:23:38Z mellow-newt: changed title, description
 - 2026-11-05T10:23:38Z mellow-newt todo → backlog
+- 2026-11-05T10:23:39Z mellow-newt: changed acceptance criteria
