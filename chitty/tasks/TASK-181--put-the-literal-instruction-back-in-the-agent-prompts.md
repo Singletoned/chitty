@@ -17,6 +17,10 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 - [ ] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
 - [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `literal single`
 
+## Plan
+
+Add the literal single-asterisk Markdown instruction to the existing backtick guidance in plan and guide, and add it as a focused bullet in work and review. Add a TestGuide regression covering guide() and guide(role) for all three roles, bump the package version, regenerate managed init files, run the required checks, and commit with Task: TASK-181.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the ticket said `TASK-142` was still to delete `chittyPrompt`, but it merged while this was being read; refreshing `AGENTS.md`; and a garbled criterion. Left out: the old prompt's "never a subagent of the implementation agent", which is also gone, because the human asked only for the `*` line. `review.md` still says never to review work you did.
@@ -32,3 +36,4 @@ Same fault as the cold read of `TASK-187` found, 2026-11-05: `chitty init` needs
 - 2026-11-05T14:23:24Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:25Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T23:30:15Z kind-jay todo → doing
+- 2026-11-05T23:30:30Z kind-jay: wrote the plan
