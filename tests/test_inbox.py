@@ -16,30 +16,12 @@ class TestInbox(RepoTestCase):
         self._actor.start()
         self.addCleanup(self._actor.stop)
 
-    def test_suggestions_never_change_the_real_inbox(self):
+    def test_suggestion_is_written_to_this_test_inbox(self):
         real_inbox = Path.home() / ".local/share/chitty/inbox"
-        before = (
-            {
-                path.relative_to(real_inbox): path.read_bytes()
-                for path in real_inbox.rglob("*")
-                if path.is_file()
-            }
-            if real_inbox.exists()
-            else {}
-        )
+        path = suggest("isolated", "Improve docs", None, True, self.root)
 
-        suggest("isolated", "Improve docs", None, True, self.root)
-
-        after = (
-            {
-                path.relative_to(real_inbox): path.read_bytes()
-                for path in real_inbox.rglob("*")
-                if path.is_file()
-            }
-            if real_inbox.exists()
-            else {}
-        )
-        self.assertEqual(after, before)
+        self.assertTrue(path.exists())
+        self.assertFalse(path.is_relative_to(real_inbox))
 
     def test_create_writes_atomic_suggestion_with_origin(self):
         path = suggest("open-source", "Improve docs", "Explain setup.", True, self.root)

@@ -88,9 +88,12 @@ output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses
 only among `review` tickets and `--mode work` only among `doing` and `todo`, in
 the same order; with nothing to choose it fails with `no next ticket for --mode
 review` (or `work`). `chitty run --mode MODE` does the same, so
-`chitty run --mode review -- --model MODEL` gives reviews their own model. Run
-the two modes one after the other, not at the same time, until `TASK-162`
-lands. `--mode` cannot be combined with `--ticket`. `chitty run` requires
+`chitty run --mode review -- --model MODEL` gives reviews their own model. One
+worker and one reviewer may run at the same time; use `--mode work` and
+`--mode review` so they select disjoint tickets. Both sessions update the main
+checkout during setup, inbox pulls, and review merges, so a Git lock or dirty
+file collision fails loudly; rerun the affected session. `--mode` cannot be
+combined with `--ticket`. `chitty run` requires
 `autocommit = true`, `setup` (for example, `setup = "make install"`), and an
 `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
 The command is parsed without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.

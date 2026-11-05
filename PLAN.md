@@ -501,8 +501,11 @@ backlog → design → tests → review-ticket → work → review-work → done
 | `work`          | fresh session       | spec tests pass and are unchanged, and `make check` passes       |
 | `review-work`   | fresh session       | the diff meets the ticket, judged without the worker's reasoning |
 
-Each stage has a different session, and nobody reviews a stage they did. At
-most one ticket is in `work` at a time, merged before the next starts. A
+Each stage has a different session, and nobody reviews a stage they did. One
+worker and one reviewer may run at the same time, selecting disjoint tickets
+with `chitty run --mode work` and `chitty run --mode review`. Both sessions
+write the main checkout during setup, inbox pulls, and review merges; a Git
+lock or dirty-file collision fails loudly, so rerun the affected session. A
 failed review restarts in a fresh session with the finding added as a
 criterion. The second failure stops for the human: by then the ticket is the
 likely problem. Work and review-work block for a human if the design or tests

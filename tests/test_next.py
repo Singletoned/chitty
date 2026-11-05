@@ -361,6 +361,94 @@ class TestNext(CliTestCase):
         finally:
             os.environ["PATH"] = old_path
 
+    def test_run_overlaps_one_worker_and_one_reviewer(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "fake-agent {mode} {id}"',
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        worker_id = self.add("Work")
+        reviewer_id = self.add("Review", status="review")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.git("branch", reviewer_id.lower())
+
+        fake = self.root / "bin" / "fake-agent"
+        fake.parent.mkdir()
+        chitty = str(Path(sys.executable).parent / "chitty")
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib, subprocess, sys\n"
+            "root = pathlib.Path.cwd()\n"
+            "mode, ticket = sys.argv[1:3]\n"
+            f"chitty = {chitty!r}\n"
+            "if mode == 'work':\n"
+            "    subprocess.run([chitty, 'run', '--mode', 'review'], check=True,\n"
+            "                    stdout=subprocess.DEVNULL)\n"
+            "    command = [chitty, 'edit', ticket, '--status', 'blocked',\n"
+            "               '--note', 'worker finished']\n"
+            "else:\n"
+            "    command = [chitty, 'edit', ticket, '--status', 'done',\n"
+            "               '--note', 'Reviewed: overlap test']\n"
+            "subprocess.run(command, check=True, stdout=subprocess.DEVNULL)\n"
+            "if mode == 'review':\n"
+            "    main = pathlib.Path(os.environ['MAIN'])\n"
+            "    branch = ticket.lower()\n"
+            "    subprocess.run(['git', '-C', str(main), 'merge', '--quiet', branch], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        self.addCleanup(
+            self.git,
+            "worktree",
+            "remove",
+            "--force",
+            str(self.root / ".worktrees" / worker_id.lower()),
+        )
+        self.addCleanup(
+            self.git,
+            "worktree",
+            "remove",
+            "--force",
+            str(self.root / ".worktrees" / reviewer_id.lower()),
+        )
+        previous_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous_path}"
+        os.environ["MAIN"] = str(self.root)
+        try:
+            result = self.run_cli("run", "--mode", "work")
+        finally:
+            os.environ["PATH"] = previous_path
+            os.environ.pop("MAIN", None)
+
+        self.assertEqual(result.stdout, f"{worker_id}: doing → blocked\n")
+        worker = self.root / ".worktrees" / worker_id.lower()
+        self.assertTrue(worker.exists())
+        worker_task = Repo.open(worker).find(Repo.open(worker).resolve(worker_id)).task
+        review_task = Repo.open(self.root).find(Repo.open(self.root).resolve(reviewer_id)).task
+        self.assertEqual(worker_task.frontmatter.status, "blocked")
+        self.assertEqual(review_task.frontmatter.status, "done")
+        worker_history = worker_task.section("History") or ""
+        review_history = review_task.section("History") or ""
+        worker_actors = {
+            line.split()[2]
+            for line in worker_history.splitlines()
+            if "todo → doing" in line or "doing → blocked" in line
+        }
+        review_actors = {
+            line.split()[2] for line in review_history.splitlines() if "review → done" in line
+        }
+        self.assertEqual(len(worker_actors), 1)
+        self.assertEqual(len(review_actors), 1)
+        self.assertNotEqual(worker_actors, review_actors)
+
     def test_run_refuses_mode_with_ticket_before_anything_else(self):
         # Outside Git, so any later step would fail with a different error.
         self.add("Todo")
