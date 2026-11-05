@@ -20,7 +20,7 @@ Add a table of other commands beside `agent_command`, which stays the default:
 claude = "claude -p {prompt} --model sonnet --permission-mode dontAsk --allowedTools 'Read Edit Write Bash(chitty *) Bash(git *) Bash(make *) Bash(uv run *) Bash(python *) Bash(npm test*) Bash(rg *) Bash(head *) Bash(grep *) Bash(find *) Bash(sort *) Bash(tail *) Bash(sed *) Bash(nl *) Bash(awk *) Bash(cat *) Bash(ls *) Bash(wc *)' --disallowedTools 'Bash(git push *)'"
 ```
 
-`chitty run --agent claude` uses that entry for this run only. Declare it as a Click option on `run`, so it is not forwarded to the agent while other arguments still are; `TASK-138` adds `--ticket` the same way, and whichever lands second rebases. Check it where `agent_command` is checked today, in `_agent_command`, after the inbox pull and setup refresh and before the claim. The chosen command gets the same validation at that point, with messages naming the setting, such as `agent_commands.claude`. A name not in the table, or any name when there is no table, is an error listing the names there. With `--agent`, `agent_command` may be unset, because only the chosen command is needed.
+`chitty run --agent claude` uses that entry for this run only. Declare it as a Click option on `run`, so it is not forwarded to the agent while other arguments still are; `TASK-138` also reads the command's arguments, and whichever lands second rebases. Check it where `agent_command` is checked today, in `_agent_command`, after the inbox pull and setup refresh and before the claim. The chosen command gets the same validation at that point, with messages naming the setting, such as `agent_commands.claude`. A name not in the table, or any name when there is no table, is an error listing the names there. With `--agent`, `agent_command` may be unset, because only the chosen command is needed.
 
 `[agent_commands]` must follow every top-level key in `chitty.toml`, because a table takes the keys after it. This repository sets the entry above, with the same `env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync` prefix as its `agent_command`.
 
@@ -44,3 +44,4 @@ Changed 2026-11-04: the human chose an allow-list built from the command table o
 - 2026-11-04T18:01:13Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T18:01:13Z mellow-newt backlog → todo
 - 2026-11-04T20:32:38Z mellow-newt: changed description, notes
+- 2026-11-05T10:07:34Z mellow-newt: changed description
