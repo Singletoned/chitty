@@ -47,11 +47,16 @@ def run(
     arguments: tuple[str, ...] = (),
     agent: str | None = None,
     mode: Literal["work", "review"] | None = None,
+    owner: str | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
     if mode is not None and ticket is not None:
         # A named ticket already decides its mode, so a mode could only disagree.
         raise ChittyError("--mode cannot be used with --ticket")
+    if ticket is not None and owner is not None:
+        raise ChittyError("--owner cannot be used with --ticket")
+    if owner in ("", "human"):
+        raise ChittyError("--owner must name an agent, not human or empty")
     main_root = _main_checkout(repo.root)
     main_repo = Repo.open(main_root)
     _refuse_stale_linked_worktree(repo, main_repo)
@@ -69,12 +74,16 @@ def run(
             raise RunInterrupted("inbox pull") from None
 
     with ExitStack() as held:
-        action = _lock_ticket(held, main_repo, ticket, mode)
+        action = _lock_ticket(held, main_repo, ticket, mode, owner)
         return _run_ticket(main_repo, project, action, arguments, agent)
 
 
 def _lock_ticket(
-    held: ExitStack, main_repo: Repo, ticket: str | None, mode: Literal["work", "review"] | None
+    held: ExitStack,
+    main_repo: Repo,
+    ticket: str | None,
+    mode: Literal["work", "review"] | None,
+    owner: str | None,
 ) -> NextAction:
     """Choose the ticket and take its run lock, which `held` releases."""
     if ticket is not None:
@@ -82,14 +91,14 @@ def _lock_ticket(
         held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
         return action
     for _ in range(RUN_LOCK_ATTEMPTS - 1):
-        action = next_action(main_repo, mode=mode)
+        action = next_action(main_repo, mode=mode, owner=owner)
         try:
             held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
         except locks.TicketLocked:
             # Another run locked it after `next_action` looked; it skips it now.
             continue
         return action
-    action = next_action(main_repo, mode=mode)
+    action = next_action(main_repo, mode=mode, owner=owner)
     held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
     return action
 

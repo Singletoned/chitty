@@ -1110,7 +1110,13 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
     )
 
 
-def _ticket_action(repo: Repo, stored: StoredTask, *, refuse: bool) -> NextAction | None:
+def _ticket_action(
+    repo: Repo,
+    stored: StoredTask,
+    *,
+    refuse: bool,
+    owner: str | None = None,
+) -> NextAction | None:
     """Validate a ticket for running, or return None when selecting the next ticket."""
     frontmatter = stored.task.frontmatter
     status_order = {"review": 0, "doing": 1, "todo": 2}
@@ -1129,6 +1135,11 @@ def _ticket_action(repo: Repo, stored: StoredTask, *, refuse: bool) -> NextActio
     if frontmatter.owner == "human":
         if refuse:
             raise ChittyError(f"cannot run {stored.id}: owner is human")
+        return None
+    if owner is None:
+        if frontmatter.status != "review" and frontmatter.owner is not None:
+            return None
+    elif frontmatter.owner != owner:
         return None
     dependencies: list[tuple[TaskId, StoredTask | None]] = []
     for reference in frontmatter.depends_on:
@@ -1199,7 +1210,12 @@ def ticket_action(repo: Repo, task_id: TaskId) -> NextAction:
 MODE_STATUSES: dict[str, tuple[str, ...]] = {"work": ("doing", "todo"), "review": ("review",)}
 
 
-def next_action(repo: Repo, *, mode: Literal["work", "review"] | None = None) -> NextAction:
+def next_action(
+    repo: Repo,
+    *,
+    mode: Literal["work", "review"] | None = None,
+    owner: str | None = None,
+) -> NextAction:
     """Select the one ticket to review or work next across every context.
 
     A `mode` limits the choice to that mode's statuses. It filters before
@@ -1207,6 +1223,8 @@ def next_action(repo: Repo, *, mode: Literal["work", "review"] | None = None) ->
     other mode does not stop this one. A ticket another `chitty run` holds the
     run lock for is skipped.
     """
+    if owner in ("", "human"):
+        raise ChittyError("--owner must name an agent, not human or empty")
     status_order = {"review": 0, "doing": 1, "todo": 2}
     locked = locks.locked_ids(repo.root)
     candidates = [
@@ -1214,7 +1232,7 @@ def next_action(repo: Repo, *, mode: Literal["work", "review"] | None = None) ->
         for stored in repo.all_tasks()
         if mode is None or stored.task.frontmatter.status in MODE_STATUSES[mode]
         if str(stored.id) not in locked
-        if (action := _ticket_action(repo, stored, refuse=False)) is not None
+        if (action := _ticket_action(repo, stored, refuse=False, owner=owner)) is not None
     ]
     if not candidates:
         raise NoNextTicket(

@@ -94,7 +94,10 @@ unique (use `chitty move`). It does not rewrite references, because a
 `depends_on` or `parent` naming the shared ID cannot say which file it meant;
 it lists each ticket naming the old ID for you to check.
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,
-then uses priority and task ID across all non-human contexts. Its `--json`
+then uses priority and task ID across all non-human contexts. Plain selection
+skips owned `doing` and `todo` tickets but still selects owned `review` tickets;
+use `--owner NAME` to select only that owner's tickets in any active status.
+`human` and empty owner filters are refused. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses
 only among `review` tickets and `--mode work` only among `doing` and `todo`, in
 the same order. With nothing to choose, `chitty next` and `chitty run` print
@@ -122,7 +125,9 @@ land; uncommitted files in the worktree or a rebase conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed
 (integration)` note, without starting a session, and count towards the
 failed-review limit. Choose a ticket with `chitty run
---ticket ID`; pass agent options with `chitty run -- --model MODEL`. It
+--ticket ID`; pass agent options with `chitty run -- --model MODEL`. Use
+`chitty run --owner NAME` to select that owner's tickets; it cannot be combined
+with `--ticket`. It
 succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
 no progress. To keep a loop waiting for work, treat exit 3 as success:

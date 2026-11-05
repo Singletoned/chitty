@@ -226,6 +226,12 @@ Frontmatter schema (strict: unknown keys are an error):
 | `created`    | date               | yes      | ISO 8601 date, set once                      |
 | `moved_from` | ID                 | no       | set by `move`; the ID in the source context  |
 
+An owner reserves work tickets for that agent. Plain `chitty next` and
+`chitty run` select unowned `todo`/`doing` tickets, but still select owned
+`review` tickets unless the owner is `human`; `--owner NAME` selects only that
+agent's tickets in any active status. Empty and `human` owner filters are
+refused. Explicit `chitty run --ticket ID` ignores non-human ownership.
+
 There is no `updated` field. Git records when a file changed; the field would
 add a line to every diff and conflict on every merge.
 
@@ -668,7 +674,7 @@ its own, so an idle reviewer is distinguishable from a broken one, which exits
 
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
-Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket.
+Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips owned `todo` and `doing` tickets, while still selecting owned `review` tickets; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.
 `chitty run --mode MODE` selects as `chitty next --mode MODE` does, and is
 refused with `--ticket` before anything else runs, because the ticket already
 decides its mode.

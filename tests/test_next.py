@@ -308,6 +308,37 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "")
         self.assertEqual(result.stderr, "no next ticket for --mode review\n")
 
+    def test_owner_filter_reserves_work_but_not_review(self):
+        unowned = self.add("Unowned")
+        opus_todo = self.add("Opus todo", owner="opus")
+        opus_review = self.add("Opus review", status="review", owner="opus")
+        self.assertEqual(self.run_cli("next").stdout, f"review {opus_review}\n")
+        self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {unowned}\n")
+        self.assertEqual(self.run_cli("next", "--owner", "opus").stdout, f"review {opus_review}\n")
+        self.assertEqual(
+            self.run_cli("next", "--owner", "opus", "--mode", "work").stdout,
+            f"work {opus_todo}\n",
+        )
+        result = asyncio.run(server.call_tool("next", {"owner": "opus"}))
+        assert isinstance(result, CallToolResult)
+        self.assertEqual(
+            result.structured_content.get("result", result.structured_content),
+            {
+                "mode": "review",
+                "id": opus_review,
+            },
+        )
+
+    def test_run_owner_refusals_happen_before_preflight(self):
+        for args, message in (
+            (("--owner", "human"), "human or empty"),
+            (("--owner", ""), "human or empty"),
+            (("--ticket", "1", "--owner", "opus"), "--ticket"),
+        ):
+            with self.subTest(args=args):
+                result = self.run_cli("run", *args, exit_code=1)
+                self.assertIn(message, result.stderr)
+
     def test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded(self):
         config = self.root / "chitty.toml"
         config.write_text(
