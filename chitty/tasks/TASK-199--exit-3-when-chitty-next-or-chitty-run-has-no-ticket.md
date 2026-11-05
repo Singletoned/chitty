@@ -9,19 +9,24 @@ created: 2026-11-05
 
 ## Description
 
-The human asked on 2026-11-05 for a reviewer or worker loop to wait out an idle queue without treating it as a failure, after `TASK-186` added `--mode`. Today `next_action` in `src/chitty/store.py` raises a plain `ChittyError` when nothing matches, which `_Group.invoke` in `src/chitty/cli.py` turns into exit 1, the same status as a broken setup or an agent that made no progress. The human chose a distinct exit code over exiting 0, because `while chitty run; do :; done` must still stop.
+The human asked on 2026-11-05 for a reviewer or worker loop to wait out an idle queue without treating it as a failure, after `TASK-186` added `--mode`. Today `next_action` in `src/chitty/store.py` raises a plain `ChittyError` when nothing matches, which `_Group.invoke` in `src/chitty/cli.py` turns into a `click.ClickException` and exit 1, the same status as a broken setup or an agent that made no progress. The human chose a distinct exit code over exiting 0, because `while chitty run; do :; done` must still stop.
 
-Add `NoNextTicket(ChittyError)` to `src/chitty/errors.py`, raise it from `next_action` with the existing messages (`no next ticket`, `no next ticket for --mode MODE`), and have `_Group.invoke` exit 3 for it, still printing the message to stderr. 3 is free: Click uses 1 and 2, `run` uses 130 for an interrupt, and an agent's own exit status always surfaces as 1 through `ChittyError`. Put the number in a module-level constant. Both `chitty next` and `chitty run` get it, with or without `--mode`. `chitty run --ticket` never raises it, because `ticket_action` refuses with its own errors. The MCP `next` tool still raises a `ToolError` with the same text.
+Add `NoNextTicket(ChittyError)` and a module-level `NO_NEXT_TICKET_EXIT = 3` to `src/chitty/errors.py`, and raise it from `next_action` with the existing messages (`no next ticket`, `no next ticket for --mode MODE`). `ClickException` always exits 1, so in `_Group.invoke` raise a `ClickException` whose `exit_code` is `NO_NEXT_TICKET_EXIT` for it, keeping the usual `Error: ` line on stderr and nothing on stdout, including with `--json`. An idle queue includes one where every `todo` ticket waits on a dependency. 3 is free: Click uses 1 and 2, `run` uses 130 for an interrupt, and an agent's or setup's own exit status always surfaces as 1 through `ChittyError`, so an agent exiting 3 still makes `chitty run` exit 1. Both `chitty next` and `chitty run` get it, with or without `--mode`. A bad reference still exits 1. `chitty run --ticket` never raises it, because `ticket_action` refuses with its own errors. The MCP `next` tool still raises a `ToolError` with the same text. Change the existing tests that expect exit 1 for an empty queue in place.
 
-Document the code and an idle loop in `README.md` and `PLAN.md`: `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done` runs until something fails, while `while chitty run; do :; done` still stops when the queue is empty.
+Document the code and an idle loop in `README.md` and `PLAN.md`: `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done` runs until something fails, while `while chitty run; do :; done` still stops when the queue is empty. Say that `chitty run` checks its configuration, refreshes setup and pulls the inbox before selecting, so each idle pass does those and a broken configuration exits 1, not 3.
 
-Out of scope: a `chitty run` that waits for tickets itself, and any other exit code.
+Out of scope: a `chitty run` that waits for tickets itself, and any other exit code. No version bump: nothing here reaches repositories through `chitty init`.
 
 ## Acceptance Criteria
 
-- [ ] Tests show `chitty next` and `chitty run`, with and without `--mode`, exiting 3 with the existing message when nothing matches, and a failing agent still exiting 1
 - [ ] `README.md` and `PLAN.md` document exit 3 and the idle loop
+- [ ] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 3 is unused and that every `except ChittyError` still catches a subclass. Fixed: how to exit 3 when `ClickException` hard-codes 1, where the constant lives, `--json` output, that a dependency-blocked queue counts as idle, that `run`'s preflight, setup refresh and inbox pull happen on every idle pass, editing the existing tests in place, an agent exiting 3 in the criterion, and the version bump (not needed). Rejected: a criterion for the MCP `ToolError`, which an existing test in `tests/test_next.py` already covers.
 
 ## History
 
 - 2026-11-05T21:13:41Z youthful-toad → backlog
+- 2026-11-05T21:14:52Z youthful-toad: changed description, acceptance criteria, notes
