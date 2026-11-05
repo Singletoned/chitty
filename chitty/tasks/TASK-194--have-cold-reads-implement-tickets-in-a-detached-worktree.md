@@ -27,6 +27,7 @@ Out of scope: tooling that runs reads, which `TASK-125` holds, and deleting old 
 ## Acceptance Criteria
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `implements it from the ticket alone`, `with and without the fix`, `Either way, the reader reports done meaning`, `git worktree add --detach`, `UV_PROJECT_ENVIRONMENT`, `git update-ref refs/cold-read/<ID>/<n> HEAD` and `git worktree remove --force`, and fails against the current `plan.md`
+- [ ] `PLAN.md`'s cold read paragraph describes implementing reads and reasoning reads, gives the decision's date, and says why the work is kept under a ref
 
 ## Notes
 
@@ -37,6 +38,8 @@ Refitted on 2026-11-05 with the human. The suggestion's other two parts, repeati
 Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first using this method, kept at `refs/cold-read/TASK-194/1`. All commands in the method worked as written: the detached worktree, setup, `make check`, `update-ref`, `for-each-ref`, and the commit on no branch. Fixed: replacing the first sentence would have lost the list inside it; a test on exact phrases broke on line wrapping in my own wording; how `<n>` is chosen; where the bullet goes; and the criterion now covers the keeping and removal steps. Rejected: testing `PLAN.md`'s paragraph, which is prose for the reviewer to read; an 82-column line, since the limit applies to commands shown to people; and telling readers to use `uv run chitty`, because only this repository has a global `chitty` older than its checkout, and `plan.md` ships to all. Not repeated: nothing found was a fault of the design, and `TASK-195` is not yet decided.
 
 Found after the read, 2026-11-05, and serious: the three trial reads broke the global `chitty`. They inherited `UV_PROJECT_ENVIRONMENT=~/.envs/chitty` from the planning session, and a bare `uv run` in a worktree repointed that editable install there; `make` is safe because the `Makefile` sets both variables. Removing the worktree then left `ModuleNotFoundError: No module named 'chitty'`. `uv sync --all-extras` in the main checkout restored it. The method now unsets them.
+
+Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-194/2`. Fixed: where the new bullet goes, since "straight after it" could split the bullet; "commits nothing under `chitty/`" beside "commits its work"; and the `PLAN.md` criterion now requires the date and the reason. Rejected: checking the order of the commands in the test, because the wording is given whole. It found no contradiction between description and criteria. Another read follows, since these came back with changes.
 
 ## History
 
@@ -50,3 +53,4 @@ Found after the read, 2026-11-05, and serious: the three trial reads broke the g
 - 2026-11-05T18:08:05Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:13:36Z mellow-newt todo → backlog
 - 2026-11-05T18:19:21Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T18:19:22Z mellow-newt: changed acceptance criteria, notes
