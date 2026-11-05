@@ -53,7 +53,7 @@ Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnes
 ## Acceptance Criteria
 
 - [x] The log is written under a temporary `XDG_DATA_HOME` in tests, and a test shows `git status` in the repository stays clean after a run
-- [ ] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
+- [x] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
 - [ ] A test shows a repository starting with no `project` logging under the one the refresh gives it
 
 ## Plan
@@ -92,3 +92,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a prefligh
 - 2026-11-05T10:42:07Z able-yellowhammer todo → doing
 - 2026-11-05T10:42:20Z able-yellowhammer: wrote the plan
 - 2026-11-05T11:05:00Z able-yellowhammer: ticked acceptance criteria
+- 2026-11-05T11:05:01Z able-yellowhammer: ticked acceptance criteria
