@@ -1,6 +1,6 @@
 ---
 title: Compare versions numerically in the stale setup warning
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -34,3 +34,4 @@ Reported again on 2026-11-04 by a session in another repository: a file recordin
 - 2026-11-04T15:31:49Z mellow-newt backlog → todo
 - 2026-11-04T15:31:56Z mellow-newt: changed acceptance criteria
 - 2026-11-04T21:00:15Z mellow-newt: changed priority, notes
+- 2026-11-05T21:34:39Z sunny-jay todo → doing
