@@ -26,6 +26,10 @@ Update the two managed worker-instruction source files only: remove the initial 
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md`, the wrapped line, and who loses the pull, since `chitty list`'s hint covers them. Dependency on `TASK-142` kept, though soft: it is in review, and it bumps the same version. Rejected: mentioning that the pull is skipped on the first run after a project is added, which this change does not affect.
 
+## Summary
+
+Removed the redundant `chitty inbox --pull` step from both worker guide sources while preserving `ticket`/`task` wording. Regenerated `AGENTS.md` with `uv run chitty init` and bumped `__version__`/`chitty.toml` to `0.1.33`. Added guide regression coverage and made the extension-version test follow the package version. Verified guide output, inbox pull behavior, `chitty fix`, full unittest suite (278 tests), Ruff, Pyright, and Node tests.
+
 ## History
 
 - 2026-11-05T09:37:44Z mellow-newt → backlog
@@ -36,3 +40,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md
 - 2026-11-05T23:20:36Z open-dormouse: wrote the plan
 - 2026-11-05T23:29:50Z open-dormouse: ticked acceptance criteria
 - 2026-11-05T23:29:51Z open-dormouse: ticked acceptance criteria
+- 2026-11-05T23:29:52Z open-dormouse: changed summary
