@@ -26,7 +26,7 @@ Out of scope: `chitty run` checking which `chitty` an agent will find, and upgra
 
 - [x] Tests show an unknown top-level key in either config file loading with one stderr warning naming it when `chitty_version` is newer than the code, leaving `chitty show --json` output valid, and refusing when the version is equal, older or absent, or the key is in `[contexts.*]`
 - [x] A test shows `chitty run` reviewing a ticket whose branch adds a key and bumps the version, and reporting the status change
-- [ ] Tests show `chitty init` refusing a newer file and leaving it unchanged
+- [x] Tests show `chitty init` refusing a newer file and leaving it unchanged
 
 ## Plan
 
@@ -56,3 +56,4 @@ Removed the version warning, which duplicated `TASK-135`, as I found when anothe
 - 2026-11-05T08:26:03Z daring-wren: wrote the plan
 - 2026-11-05T08:33:58Z daring-wren: ticked acceptance criteria
 - 2026-11-05T08:33:59Z daring-wren: ticked acceptance criteria
+- 2026-11-05T08:34:00Z daring-wren: ticked acceptance criteria
