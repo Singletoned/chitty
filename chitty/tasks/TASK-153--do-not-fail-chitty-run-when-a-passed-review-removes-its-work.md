@@ -18,7 +18,7 @@ Out of scope: landing.
 
 ## Acceptance Criteria
 
-- [ ] A test with a fake agent that merges the branch, removes the worktree and exits shows `chitty run` exiting 0 and printing the status change
+- [x] A test with a fake agent that merges the branch, removes the worktree and exits shows `chitty run` exiting 0 and printing the status change
 - [ ] Tests show a worktree removed with its branch kept reporting the branch's status, and worktree and branch both removed without a merge failing with a message naming the ticket, in work and review modes
 
 ## Plan
@@ -35,3 +35,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my claim t
 - 2026-11-04T15:17:30Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-05T09:51:00Z lively-marten todo → doing
 - 2026-11-05T09:51:12Z lively-marten: wrote the plan
+- 2026-11-05T09:57:30Z lively-marten: ticked acceptance criteria
