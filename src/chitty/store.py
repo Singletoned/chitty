@@ -959,21 +959,59 @@ def _ticket_action(repo: Repo, stored: StoredTask, *, refuse: bool) -> NextActio
         if refuse:
             raise ChittyError(f"cannot run {stored.id}: owner is human")
         return None
-    dependencies: list[StoredTask] = []
+    dependencies: list[tuple[TaskId, StoredTask | None]] = []
     for reference in frontmatter.depends_on:
+        dependency_id = TaskId.parse(reference)
         try:
-            dependencies.append(repo.find(TaskId.parse(reference)))
+            dependency = repo.find(dependency_id)
         except ChittyError as error:
-            raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
+            if git.main_files(repo.root, ()) is None or "used by more than one file" not in str(
+                error
+            ):
+                raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
+            dependency = None
+        dependencies.append((dependency_id, dependency))
     if frontmatter.status == "todo" and any(
-        not dependency.archived and dependency.task.frontmatter.status != "done"
-        for dependency in dependencies
+        not _dependency_is_done(repo, dependency_id, dependency)
+        for dependency_id, dependency in dependencies
     ):
         if refuse:
             raise ChittyError(f"cannot run {stored.id}: it has unfinished dependencies")
         return None
     mode: Literal["work", "review"] = "review" if frontmatter.status == "review" else "work"
     return NextAction(mode, stored.id)
+
+
+def _dependency_is_done(repo: Repo, dependency_id: TaskId, dependency: StoredTask | None) -> bool:
+    """Whether a dependency is complete on the ref used to create worktrees."""
+    context = repo.context_of(dependency_id)
+    main_files = git.main_files(
+        repo.root,
+        (
+            context.directory.relative_to(repo.root),
+            context.archive_directory.relative_to(repo.root),
+        ),
+    )
+    if main_files is None:
+        assert dependency is not None
+        return dependency.archived or dependency.task.frontmatter.status == "done"
+
+    matches: list[tuple[bool, Path, Task]] = []
+    for path, content in main_files:
+        try:
+            task_id, _ = ids.parse_filename(path.name)
+            task = parse(content)
+        except (ids.IdError, TaskError) as error:
+            raise ChittyError(f"refs/heads/main:{path}: {error}") from None
+        if task_id == dependency_id:
+            matches.append((path.parent.name == ARCHIVE_DIR, path, task))
+    if not matches:
+        return False
+    if len(matches) > 1:
+        paths = ", ".join(str(path) for _, path, _ in matches)
+        raise ChittyError(f"{dependency_id} is used by more than one file: {paths}")
+    archived, _, task = matches[0]
+    return archived or task.frontmatter.status == "done"
 
 
 def ticket_action(repo: Repo, task_id: TaskId) -> NextAction:

@@ -1,6 +1,6 @@
 ---
 title: Treat a dependency as done only once it has reached `main`
-status: todo
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -18,8 +18,15 @@ Merging before committing `done` was considered and rejected: a failed review mu
 
 ## Acceptance Criteria
 
-- [ ] Tests show a dependent `todo` ticket skipped while its dependency is `done` or archived only on an unmerged branch, and selected once `main` says so, including after the branch is deleted and after a title change
-- [ ] Tests show a repository with no `main` branch keeping today's behaviour, and a dependency in the `human` context working
+- [x] Tests show a dependent `todo` ticket skipped while its dependency is `done` or archived only on an unmerged branch, and selected once `main` says so, including after the branch is deleted and after a title change
+- [x] Tests show a repository with no `main` branch keeping today's behaviour, and a dependency in the `human` context working
+
+## Plan
+
+1. Inspect dependency readiness, Git helpers, model/store behavior, and existing tests.
+2. Add a Git helper that reads the dependency file from local main, handling missing main/outside Git with today's fallback and surfacing malformed/duplicate records.
+3. Gate next_action dependency readiness through that helper while preserving non-Git behavior and human-context support.
+4. Add regression tests for unmerged/merged/deleted/title-renamed/archive/no-main cases, run formatting and make check, then record verified criteria and handoff.
 
 ## Notes
 
@@ -27,9 +34,28 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Replaced my rule: the n
 
 Third cold read by a fresh Sonnet subagent, 2026-11-04, of the redesign. The rule held for every case. Fixed: how to find the file, and an archive on an unmerged branch, which would have let through the bug this ticket fixes, so it now counts only on `main`; this replaces the earlier note's acceptance. Rejected: its query about `TASK-131`'s order, because `done` before merge is what reviewers do today.
 
+Re-checked both acceptance criteria after `make check`; ready for independent review.
+
+Reviewed: acceptance criteria pass. Verified local-main gating for unmerged and archived dependencies, merge/deletion/title rename cases, no-main fallback and human context; targeted tests and make check pass.
+
+## Summary
+
+Implemented local-main dependency gating in `git.py` and `store.py`. Dependencies now wait when completion exists only on an unmerged branch, and pass when `main` contains done or archived files, including renamed tickets and human-context dependencies. No-main and non-Git behavior remains unchanged.
+
+Verified with targeted regression tests, `make check` (259 Python tests plus Node tests), and `chitty fix` (warnings only in pre-existing task files). Follow-up: none.
+
 ## History
 
 - 2026-11-04T20:20:06Z mellow-newt → backlog
 - 2026-11-04T20:22:51Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:24:24Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:24:25Z mellow-newt backlog → todo
+- 2026-11-05T18:46:52Z honest-vole todo → doing
+- 2026-11-05T18:47:04Z honest-vole: wrote the plan
+- 2026-11-05T19:03:03Z honest-vole: ticked acceptance criteria
+- 2026-11-05T19:03:03Z honest-vole: ticked acceptance criteria
+- 2026-11-05T19:03:04Z honest-vole: changed summary
+- 2026-11-05T19:03:19Z honest-vole: changed notes
+- 2026-11-05T19:03:19Z honest-vole doing → review
+- 2026-11-05T19:09:52Z intrepid-heron: changed notes
+- 2026-11-05T19:09:52Z intrepid-heron review → done

@@ -127,6 +127,85 @@ class TestNext(CliTestCase):
         ready = self.add("Ready after archive", depends_on=[archived])
         self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
 
+    def test_todo_dependency_must_be_done_on_main(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", "autocommit = false\nreview = false")
+        )
+        dependency = self.add("Dependency")
+        waiting = self.add("Waiting", depends_on=[dependency])
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "test")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.git("branch", "worker")
+        self.git("checkout", "--quiet", "worker")
+        self.run_cli("edit", dependency, "-s", "done")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "finish dependency")
+        self.git("checkout", "--quiet", "main")
+
+        with self.assertRaisesRegex(ChittyError, "no next ticket"):
+            next_action(Repo.open(self.root))
+
+        self.git("merge", "--quiet", "worker")
+        self.git("branch", "-D", "worker")
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
+
+        self.git("checkout", "--quiet", "-b", "rename")
+        self.run_cli("edit", dependency, "--title", "Renamed dependency")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "rename dependency")
+        self.git("checkout", "--quiet", "main")
+        self.git("merge", "--quiet", "rename")
+        self.git("branch", "-D", "rename")
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
+
+    def test_unmerged_archive_does_not_complete_dependency(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", "autocommit = false\nreview = false")
+        )
+        dependency = self.add("Dependency", status="blocked")
+        waiting = self.add("Waiting", depends_on=[dependency])
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "test")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.git("branch", "worker")
+        self.git("checkout", "--quiet", "worker")
+        self.run_cli("edit", dependency, "-s", "done")
+        self.run_cli("archive", dependency)
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "archive dependency")
+        self.git("checkout", "--quiet", "main")
+        with self.assertRaisesRegex(ChittyError, "no next ticket"):
+            next_action(Repo.open(self.root))
+        self.git("merge", "--quiet", "worker")
+        self.git("branch", "-D", "worker")
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
+
+    def test_no_main_keeps_dependency_behavior_and_human_context_works(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", "autocommit = false\nreview = false")
+        )
+        dependency = self.add("Dependency", status="done")
+        waiting = self.add("Waiting", depends_on=[dependency])
+        human_dependency = self.add("Human dependency", context="human", status="done")
+        human_waiting = self.add("Human waiting", depends_on=[human_dependency])
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "test")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
+        self.assertNotEqual(waiting, human_waiting)
+
     def test_dependencies_human_and_ids(self):
         config = self.root / "chitty.toml"
         config.write_text(
