@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` switch agent with `--agent`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-137
@@ -65,3 +65,4 @@ Verified: `make check` (ruff, pyright, 249 unittest tests, Node tests); `chitty 
 - 2026-11-05T17:13:00Z open-eel: ticked acceptance criteria
 - 2026-11-05T17:13:01Z open-eel: ticked acceptance criteria
 - 2026-11-05T17:13:02Z open-eel: changed summary
+- 2026-11-05T17:13:07Z open-eel doing → review
