@@ -25,6 +25,8 @@ read only that section. Update it when a decision changes.
   level, in the same change. The version recorded in `chitty.toml` is how
   other repos learn that `init` needs re-running (TASK-52).
 
+<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->
+
 ## Chitty
 
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
@@ -81,3 +83,6 @@ task files. `chitty --help` is the full command reference.
   Suggest work for another project without touching its checkout using
   `chitty suggest PROJECT "title" -d "why"`.
   Don't do it in this session.
+
+
+<!-- chitty:end -->
