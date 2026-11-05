@@ -1,6 +1,6 @@
 ---
 title: Log the model and rough cost of each ticket session
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-126
@@ -80,6 +80,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a prefligh
 
 Review failed (tests): Acceptance criterion 3 is not met. The submitted tests exercise a repository with an existing project name and only verify the no-project case stops before Pi; none demonstrates a successful run logging under the project name added by refresh_setup. Add a real-file test that starts without project, lets refresh_setup derive it, runs fake Pi to a status change, and asserts the usage file uses that refreshed name.
 
+Reviewed: inspected the implementation and acceptance tests; targeted usage tests and full unittest suite (244 tests) pass, with make check's formatter, ruff, and pyright checks passing. The log is machine-local, aggregates sessions/models, appends records, and handles refreshed project names.
+
 ## Summary
 
 Added a real-file regression test proving a repository without a project is refreshed to the derived name and its successful run appends usage under that name. Verified the targeted test, chitty fix, and make check (244 Python tests plus Node tests).
@@ -107,3 +109,5 @@ Added a real-file regression test proving a repository without a project is refr
 - 2026-11-05T12:07:34Z jolly-newt: ticked acceptance criteria
 - 2026-11-05T12:07:35Z jolly-newt: changed summary
 - 2026-11-05T12:07:36Z jolly-newt doing → review
+- 2026-11-05T12:12:53Z kind-otter: changed notes
+- 2026-11-05T12:12:53Z kind-otter review → done
