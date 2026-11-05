@@ -1,6 +1,6 @@
 ---
 title: Do not fail `chitty run` when a passed review removes its worktree
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -29,3 +29,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my claim t
 
 - 2026-11-04T15:12:08Z mellow-newt → todo
 - 2026-11-04T15:17:30Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-05T09:51:00Z lively-marten todo → doing
