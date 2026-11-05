@@ -29,6 +29,8 @@ Update src/chitty/roles/plan.md with the four requested cold-read lessons immedi
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets work, the line count, and overlap with the existing bullet. Removed the version bump, because `plan.md` does not reach `AGENTS.md`, which also avoids a conflict. It checked the facts cited about the other tickets against their notes.
 
+Focused TestGuide regression test passes. make check passed Ruff, Pyright, and all 277 Python tests; its npm test phase printed the Node test dots but did not terminate within the command timeout, so Node completion remains unverified.
+
 ## History
 
 - 2026-11-05T14:13:56Z mellow-newt → backlog
@@ -38,3 +40,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets wor
 - 2026-11-05T23:40:54Z vivid-wren todo → doing
 - 2026-11-05T23:41:08Z vivid-wren: wrote the plan
 - 2026-11-05T23:47:17Z vivid-wren: ticked acceptance criteria
+- 2026-11-05T23:52:11Z vivid-wren: changed notes
