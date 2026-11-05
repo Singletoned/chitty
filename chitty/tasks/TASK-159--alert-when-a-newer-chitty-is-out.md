@@ -37,6 +37,10 @@ Out of scope: upgrading automatically, and any setting to turn this off.
 - [ ] Tests show a failed request and an unreadable file changing nothing, no second request within `UPGRADE_RETRY_SECONDS`, the alert after a failing command, and an editable install doing nothing
 - [ ] `README.md` describes the alert
 
+## Plan
+
+Implement the release-alert lifecycle in a new src/chitty/upgrade.py, reusing the inbox data-directory helper and version comparison. Wire it through cli.main()'s finally while skipping shell completion, and preserve command exit behavior. Add focused unittest coverage with a local HTTP server, patched version/URL and metadata for editable installs, then document the alert in README.md. Run make check and update the ticket summary/checks only after verification.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `main()` needs a `finally`, because Click always raises `SystemExit`; completion; where `out` is recorded; and a limit on requests, since an offline machine would otherwise wait on every command. Dropped my editable rule: `uv tool list` reports 0.1.19 for today's editable global, so it could have alerted forever, and it needed `uv` on every command. An editable install now does nothing, so a person working only in this repository sees no alert. Moved the invocation count to `TASK-161`. Rejected: pre-release and yanked versions, which `info.version` already handles; an empty `XDG_DATA_HOME`, which `inbox_path` has too; a non-editable install from a local path, which is rare and harmless.
@@ -50,3 +54,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming
 - 2026-11-04T19:37:59Z mellow-newt: changed description, notes
 - 2026-11-04T19:38:00Z mellow-newt backlog → todo
 - 2026-11-05T18:33:22Z tidy-stoat todo → doing
+- 2026-11-05T18:33:35Z tidy-stoat: wrote the plan
