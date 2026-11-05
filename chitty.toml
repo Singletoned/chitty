@@ -5,7 +5,7 @@ setup = "make install"
 # Run the agent with this worktree's `.venv` first on `PATH`, so a bare `chitty`
 # is the branch's code, not whichever global install comes first. The `env -u`
 # stops an exported `UV_PROJECT_ENVIRONMENT` sending `uv run` to the shared one.
-agent_command = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts -e ~/.pi/agent/npm/node_modules/context-mode/build/adapters/pi/extension.js --no-skills --skill ~/.pi/agent/skills/python-dev --exclude-tools ctx_fetch_and_index,ctx_index,ctx_purge,ctx_upgrade,ctx_insight,ctx_stats,ctx_doctor --chitty-{mode} {id}"
+agent_command = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --no-skills --skill ~/.pi/agent/skills/python-dev --chitty-{mode} {id}"
 
 project = "chitty"
 archive = "move"
