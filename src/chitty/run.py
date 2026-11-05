@@ -19,7 +19,7 @@ from chitty.actor import actor
 from chitty.config import CHITTY_VERSION, usage_path, version_key
 from chitty.errors import ChittyError
 from chitty.inbox import pull as pull_suggestions
-from chitty.store import Edit, NextAction, Repo, guide, next_action
+from chitty.store import Edit, NextAction, Repo, guide, next_action, ticket_action
 
 
 class RunInterrupted(Exception):
@@ -36,7 +36,7 @@ class RunResult:
     new_status: str
 
 
-def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
+def run(repo: Repo, ticket: str | None, arguments: tuple[str, ...] = ()) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
     main_root = _main_checkout(repo.root)
     main_repo = Repo.open(main_root)
@@ -54,7 +54,11 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
         except KeyboardInterrupt:
             raise RunInterrupted("inbox pull") from None
 
-    action = next_action(main_repo)
+    action = (
+        ticket_action(main_repo, main_repo.resolve(ticket))
+        if ticket is not None
+        else next_action(main_repo)
+    )
     agent_command = _agent_command(main_repo, action)
     stored = main_repo.find(action.id)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):

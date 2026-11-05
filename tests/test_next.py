@@ -12,8 +12,9 @@ from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
 
 from chitty.config import CHITTY_VERSION
+from chitty.errors import ChittyError
 from chitty.mcp import server
-from chitty.store import Repo, guide, next_action
+from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
 
 
@@ -145,6 +146,39 @@ class TestNext(CliTestCase):
         content = result.structured_content
         assert content is not None
         self.assertEqual(content.get("result", content), cli)
+
+    def test_explicit_ticket_action_validates_status_and_dependencies(self):
+        cases = (
+            ("blocked", {"status": "blocked"}, "status is blocked"),
+            ("human owner", {"owner": "human"}, "owner is human"),
+        )
+        for title, fields, message in cases:
+            with self.subTest(title):
+                task_id = self.add(title, **fields)
+                with self.assertRaisesRegex(ChittyError, message):
+                    ticket_action(Repo.open(self.root), Repo.open(self.root).resolve(task_id))
+                path = self.root / "chitty/tasks" / f"{task_id}--{title.lower().replace(' ', '-')}"
+                path = path.with_suffix(".md")
+                path.unlink()
+        human_ticket = self.add("Human ticket", context="human")
+        with self.assertRaisesRegex(ChittyError, "human ticket"):
+            ticket_action(Repo.open(self.root), Repo.open(self.root).resolve(human_ticket))
+        dependency = self.add("Unfinished", status="blocked")
+        waiting = self.add("Waiting", depends_on=[dependency])
+        with self.assertRaisesRegex(ChittyError, "unfinished dependencies"):
+            ticket_action(Repo.open(self.root), Repo.open(self.root).resolve(waiting))
+        repo = Repo.open(self.root)
+        archived = self.add("Archived")
+        repo.archive(repo.resolve(archived))
+        with self.assertRaisesRegex(ChittyError, "archived"):
+            ticket_action(repo, repo.resolve(archived))
+        with self.assertRaisesRegex(ChittyError, "unknown ticket"):
+            ticket_action(repo, repo.resolve("99"))
+
+    def test_run_help_describes_explicit_ticket(self):
+        result = self.run_cli("run", "--help")
+        self.assertIn("--ticket ID", result.stdout)
+        self.assertIn("or the one named by --ticket", result.stdout)
 
     def test_next_output_and_empty_queue(self):
         for number in range(1, 12):
