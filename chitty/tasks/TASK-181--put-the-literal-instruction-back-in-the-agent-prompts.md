@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: backlog
+status: todo
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -26,3 +26,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the ticket said `TASK-1
 - 2026-11-05T09:51:14Z mellow-newt → backlog
 - 2026-11-05T09:53:14Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T09:53:15Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T09:53:16Z mellow-newt backlog → todo
