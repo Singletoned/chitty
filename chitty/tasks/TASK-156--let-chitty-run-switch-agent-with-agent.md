@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` switch agent with `--agent`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-137
@@ -46,3 +46,4 @@ Changed 2026-11-04: the human chose an allow-list built from the command table o
 - 2026-11-04T20:32:38Z mellow-newt: changed description, notes
 - 2026-11-05T10:07:34Z mellow-newt: changed description
 - 2026-11-05T10:23:45Z mellow-newt: changed description
+- 2026-11-05T17:00:07Z open-eel todo → doing
