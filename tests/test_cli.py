@@ -1774,6 +1774,14 @@ class TestGuide(CliTestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, work_guide)
 
+    def test_role_guides_recommend_batching_agent_calls(self):
+        required_phrases = ("repeated --check", "in one call", "joined with", "autocommit = true")
+        for role in ("work", "review"):
+            with self.subTest(role=role):
+                output = self.run_cli("guide", role).stdout
+                for phrase in required_phrases:
+                    self.assertIn(phrase, output)
+
     def test_guide_points_agents_at_ticket_planning_instructions(self):
         planning_guide = guide("plan")
         self.assertIn("nothing built", planning_guide)

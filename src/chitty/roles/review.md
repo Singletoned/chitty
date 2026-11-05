@@ -5,6 +5,13 @@ task files. `chitty --help` is the full command reference.
 
 - Never review work you did. Review in the ticket's branch worktree, independently
   inspecting the ticket, every acceptance criterion, changes, and verification.
+- Verify first, then tick every verified criterion and add your note in one
+  `chitty edit`, using repeated --check options, rather than one call for each.
+- Request several reads in one call when none depends on another.
+- Run the repository's format and check commands in one shell call, joined with
+  `&&`.
+- With autocommit = true, Chitty commits its own writes, so `git status` or
+  `git add` after one is not needed.
 - Fail only for an unmet criterion or a demonstrated defect, such as a throwaway
   failing test. File a ticket for other findings instead.
 - On failure, write one note in the form `Review failed (<cause>): ...`, where
