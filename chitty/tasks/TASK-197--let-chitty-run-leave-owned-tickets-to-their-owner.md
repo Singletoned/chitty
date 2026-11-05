@@ -40,6 +40,10 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 
 Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-197/3`: nothing serious. 11 of its 12 new tests failed without the change for the right reasons and all passed with it, and `make check` exited 0. Fixed, as clarifications so no further read: unowned tickets must still be selected, which a change skipping all work would otherwise pass; who picks up a ticket returned after a failed review; and that the `--ticket` test already passes. Rejected: refusing `--ticket` with a `human` ticket before preflight, which is today's behaviour and outside this ticket; and owned tickets' dependencies not being checked by a plain run, which skips them anyway and still checks them under `--owner`.
 
+## Summary
+
+Implemented owner-aware next/run selection, CLI and MCP owner filters, early refusal validation, and documentation. Added owner selection/refusal regressions. Verification: ruff format/check, pyright, and 271 unittest tests pass; npm test was attempted but hangs after its dot output in this environment. Follow-up: investigate the existing Node test hang separately.
+
 ## History
 
 - 2026-11-05T18:20:01Z mellow-newt → backlog
@@ -58,3 +62,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T21:34:16Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T21:34:17Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T21:34:18Z able-yellowhammer: ticked acceptance criteria
+- 2026-11-05T21:34:19Z able-yellowhammer: changed summary
