@@ -28,10 +28,6 @@ This file ships to every repository, so do not name `make`.
 
 Out of scope: having Chitty enforce the format of a failure note, and which model reviews.
 
-## Acceptance Criteria
-
-- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
-
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: one criterion could pass on words already in the file, so it is now two naming exact phrases. Also fixed: failures with nothing to run, such as a missing file, a wrong ticket or a broken environment, which the rule would have forbidden; a reviewer unable to demonstrate a claim files a ticket; not naming `make`, since the file ships to every repository; the wording is given outright for a cheap worker; and `guide.md` left alone is stated. It confirmed no `chitty init` or version bump is needed. Rejected: folding this into `TASK-167`, which waits on `TASK-166` and `TASK-151`, because this is cheap to have now, so `TASK-167` is told to keep the rule instead.
@@ -52,3 +48,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first read of 
 - 2026-11-05T18:19:59Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:20:00Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:31:03Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T18:31:04Z mellow-newt: changed acceptance criteria
