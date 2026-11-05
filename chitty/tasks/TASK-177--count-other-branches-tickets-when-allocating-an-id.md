@@ -21,6 +21,10 @@ Split on 2026-11-05: repairing a collision that has already happened, and giving
 - [ ] A test with a ticket committed only on another branch, with no worktree, shows `chitty add` on `main` taking the number above it, in both active and archived locations, and fails without the change
 - [ ] `PLAN.md`'s ID rule and its passage on collisions say allocation counts committed tickets on all local and remote-tracking branches, active and archived, and does not see uncommitted tickets in other worktrees or unpushed work on other machines
 
+## Plan
+
+Inspect Repo.next_number and history helpers, add a filename-only scan of committed active and archive task paths from _history, and cover active/archive branch-only allocation with regression tests. Update PLAN.md ID and collision rules to document branch visibility limits. Run the full check suite, then record verified criteria and handoff.
+
 ## Notes
 
 Suggestion origin: echonomicon
@@ -36,3 +40,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. It reproduced the bug in a scr
 - 2026-11-05T14:46:35Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:46:36Z mellow-newt backlog → todo
 - 2026-11-05T20:48:07Z lively-vole todo → doing
+- 2026-11-05T20:48:20Z lively-vole: wrote the plan
