@@ -16,8 +16,14 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 ## Acceptance Criteria
 
 - [ ] `chitty guide work` and `chitty guide` no longer contain `inbox --pull`, shown by a test, and `chitty inbox --pull` itself still works
+- [ ] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md`, the wrapped line, and who loses the pull, since `chitty list`'s hint covers them. Dependency on `TASK-142` kept, though soft: it is in review, and it bumps the same version. Rejected: mentioning that the pull is skipped on the first run after a project is added, which this change does not affect.
 
 ## History
 
 - 2026-11-05T09:37:44Z mellow-newt → backlog
 - 2026-11-05T09:40:00Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T09:40:01Z mellow-newt: changed acceptance criteria, notes
