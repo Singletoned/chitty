@@ -14,6 +14,10 @@ The `pi-token-analysis` branch holds `docs/pi-token-usage.md`, which these ticke
 
 - [ ] `main` has `docs/pi-token-usage.md`, with a line at its top naming these tickets, and `scripts/`, and `make check` passes
 
+## Plan
+
+Cherry-pick the five commits from the existing pi-token-analysis worktree onto this branch, preserving its new documentation and scripts. Add the requested ticket line at the top of docs/pi-token-usage.md, run the repository checks, then record verification and move the ticket to review.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: how to take the commits, given the worktree, and a criterion that only this machine could show.
@@ -24,3 +28,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: how to take the commits
 - 2026-11-04T21:44:19Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:44:20Z mellow-newt backlog → todo
 - 2026-11-05T23:00:15Z jolly-eel todo → doing
+- 2026-11-05T23:00:27Z jolly-eel: wrote the plan
