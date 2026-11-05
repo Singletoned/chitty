@@ -1,8 +1,7 @@
 ---
 title: Add a `BACKLOG` context with random IDs
-status: doing
+status: review
 priority: high
-owner: human
 depends_on:
   - TASK-177
 parent: TASK-106
@@ -44,6 +43,14 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 
 Version is `0.1.33`, not `0.1.32`: branch `task-187`, which `chitty run` is working, already bumps to `0.1.32`, and two branches on one version merge silently. `tests/test_pi_extension.py` hard-coded the current version in one assertion and failed on any bump; it now uses `__version__`. Noticed, not changed: `_add_missing_human_review` inserts `review = false` after extra blank lines.
 
+Checked the accepted incompatibility: Chitty `0.1.31` refuses the upgraded `chitty.toml` with `contexts.backlog.random_ids: Extra inputs are not permitted`. Here the global `chitty` is an editable install of the main checkout, so it gets the new code when this merges; other repositories meet it only after running a newer `chitty init`.
+
+## Summary
+
+Added `random_ids` to `ContextConfig`. In such a context `next_number` draws from `_random_number()` (`secrets.randbelow`, 10000000 to 99999999), retrying up to `RANDOM_ID_ATTEMPTS` against the numbers it already collects, including other branches' via `_history()`, then raising. `INITIAL_CONFIG` gains `[contexts.backlog]` (prefix `BACKLOG`), and `_add_missing_backlog_context` adds it on `chitty init` after the last context table in `chitty.toml` or `pyproject.toml`, skipping existing `backlog`/`BACKLOG`, header-less contexts and anything `RepoConfig` rejects. `__version__` is `0.1.33`; this repository's `chitty.toml` was upgraded by `_prepare_write` and committed. `README.md` and `PLAN.md` describe it.
+
+Verified: `tests/test_backlog_context.py` (seen failing first) and `make check` (277 tests plus Node). Follow-ups: `TASK-191` and `TASK-192`.
+
 ## History
 
 - 2026-11-05T14:43:41Z mellow-newt → backlog
@@ -60,3 +67,5 @@ Version is `0.1.33`, not `0.1.32`: branch `task-187`, which `chitty run` is work
 - 2026-11-05T21:28:41Z youthful-toad todo → doing
 - 2026-11-05T21:37:26Z youthful-toad: changed notes
 - 2026-11-05T21:37:48Z youthful-toad: ticked acceptance criteria
+- 2026-11-05T21:37:49Z youthful-toad: changed owner, notes, summary
+- 2026-11-05T21:37:49Z youthful-toad doing → review
