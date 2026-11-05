@@ -18,6 +18,10 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 - [ ] `chitty guide work` and `chitty guide` no longer contain `inbox --pull`, shown by a test, and `chitty inbox --pull` itself still works
 - [ ] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
 
+## Plan
+
+Update the two managed worker-instruction source files only: remove the initial `chitty inbox --pull` wording while preserving each file’s existing `ticket`/`task` terminology and joining the wrapped `work.md` line. Bump the package patch version because `chitty init` output changes. Add or update focused tests proving both guides omit the pull instruction and that the inbox command remains functional, then run init and the required checks.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md`, the wrapped line, and who loses the pull, since `chitty list`'s hint covers them. Dependency on `TASK-142` kept, though soft: it is in review, and it bumps the same version. Rejected: mentioning that the pull is skipped on the first run after a project is added, which this change does not affect.
@@ -29,3 +33,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md
 - 2026-11-05T09:40:01Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T09:40:02Z mellow-newt backlog → todo
 - 2026-11-05T23:20:21Z open-dormouse todo → doing
+- 2026-11-05T23:20:36Z open-dormouse: wrote the plan
