@@ -1,6 +1,6 @@
 ---
 title: Add this week's lessons to `chitty guide plan`
-status: backlog
+status: todo
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -30,3 +30,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets wor
 - 2026-11-05T14:13:56Z mellow-newt → backlog
 - 2026-11-05T14:23:19Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:20Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T14:23:21Z mellow-newt backlog → todo
