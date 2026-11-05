@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-127
@@ -36,3 +36,4 @@ Added 2026-11-04 from the cold read of `TASK-157`: a null `cost`, because this t
 - 2026-11-04T15:11:30Z mellow-newt → todo
 - 2026-11-04T15:17:32Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T18:03:09Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-05T14:45:29Z able-vole todo → doing
