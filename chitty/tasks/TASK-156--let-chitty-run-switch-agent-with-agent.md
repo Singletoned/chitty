@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` switch agent with `--agent`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-137
@@ -45,6 +45,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: "before anything change
 
 Changed 2026-11-04: the human chose an allow-list built from the command table on `TASK-155`, in place of `--dangerously-skip-permissions`.
 
+Reviewed: inspected the implementation, configuration/init migration, documentation, and regression tests. Acceptance criteria verified; make check and npm test pass (249 Python tests, Node tests). chitty fix completed with existing archived-task Markdown warnings only.
+
 ## Summary
 
 Implemented per-run agent selection with [agent_commands] configuration and `chitty run --agent NAME`. Validation occurs after setup/inbox refresh and before worktree creation or claim; default `agent_command` remains unchanged. Updated init migration, repository config, README, PLAN, version, and fake-agent regression tests.
@@ -66,3 +68,5 @@ Verified: `make check` (ruff, pyright, 249 unittest tests, Node tests); `chitty 
 - 2026-11-05T17:13:01Z open-eel: ticked acceptance criteria
 - 2026-11-05T17:13:02Z open-eel: changed summary
 - 2026-11-05T17:13:07Z open-eel doing → review
+- 2026-11-05T18:19:34Z tidy-jay: changed notes
+- 2026-11-05T18:19:34Z tidy-jay review → done
