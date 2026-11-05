@@ -27,7 +27,11 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
     present = [p for p in relative if (root / p).exists()]
     tracked = set(_git(root, "ls-files", "--", *relative).splitlines())
     staged = _git(root, "diff", "--cached", "--binary", "--", *relative)
-    staged_paths = set(_git(root, "diff", "--cached", "--name-only", "--", *relative).splitlines())
+    # A path-limited commit needs both sides of a staged rename. Disable rename
+    # detection so Git reports its deletion and addition separately.
+    staged_paths = set(
+        _git(root, "diff", "--cached", "--no-renames", "--name-only", "--", *relative).splitlines()
+    )
     included = [p for p in relative if p in present or p in tracked or p in staged_paths]
     _git(root, "add", "--", *present)
     try:

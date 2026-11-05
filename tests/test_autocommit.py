@@ -78,6 +78,26 @@ class TestAutocommit(CliTestCase):
         self.assertIn("A  unrelated.txt", self.git("status", "--porcelain"))
         self.assertEqual(self.git("status", "--porcelain", "chitty"), "")
 
+    def test_renaming_a_task_commits_both_paths_without_unrelated_staged_files(self):
+        self.run_cli("add", "Original", "-d", "x")
+        (self.root / "unrelated.txt").write_text("staged by the user\n")
+        self.git("add", "unrelated.txt")
+
+        self.run_cli("edit", "1", "--title", "Renamed")
+
+        self.assertEqual(
+            self.last_commit(),
+            (
+                "chitty: edit TASK-1 Renamed",
+                [
+                    "D\tchitty/tasks/TASK-1--original.md",
+                    "A\tchitty/tasks/TASK-1--renamed.md",
+                ],
+            ),
+        )
+        self.assertEqual(self.git("status", "--porcelain", "chitty"), "")
+        self.assertEqual(self.git("status", "--porcelain"), "A  unrelated.txt\n")
+
     def test_failed_autocommit_restores_the_index(self):
         hook = self.root / ".git/hooks/pre-commit"
         hook.write_text("#!/bin/sh\nexit 1\n")
