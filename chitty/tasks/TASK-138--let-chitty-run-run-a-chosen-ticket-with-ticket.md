@@ -20,10 +20,6 @@ Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-
 
 Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above. `--mode` from `TASK-162` with `--ticket` is refused by whichever of the two lands second.
 
-## Acceptance Criteria
-
-- [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
-
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the inbox pull still runs, and the ID resolves after it; bare numbers; the archived check being explicit; how the rules are shared; and `doing` tickets with unfinished dependencies being allowed, now tested. It ran click with these settings and confirmed `--ticket` works before or after forwarded arguments, and `--ticket=ID` too. Rejected: a `doing` ticket with no branch, because `_worktree` creates one, as for any selected ticket. A `doing` worktree held by another live session, because a single worker is the stated assumption and nothing checks liveness today; a person choosing a ticket is responsible for that. `--tick 7` being forwarded rather than matched, and `--ticket` after `--` reaching the agent, because both are what forwarding means. A missing option value, because click reports it. A test that `TASK-120` and `TASK-131` leave other tickets alone, because neither has landed; the description tells whichever lands second. The function name and refusal wording, which are the worker's choice.
@@ -59,3 +55,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still sayin
 - 2026-11-05T10:23:39Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:23:40Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:23:41Z mellow-newt: changed acceptance criteria
+- 2026-11-05T10:23:42Z mellow-newt: changed acceptance criteria
