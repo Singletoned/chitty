@@ -39,7 +39,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 
 - Put paths, globs, commands, IDs and code in backticks in titles, descriptions,
   criteria and notes.
-- Work on one task per session. Start with `chitty inbox --pull`, then `chitty show <ID>`.
+- Work on one task per session. Start with `chitty show <ID>`.
 - Backlog tasks need refinement; promote them to `todo` before taking them on.
 - Writing or refining tickets? Run `chitty guide plan` first: it says how to write them and cold-read them.
 - Use a task's optional `parent` field to group flat task IDs under one goal.
