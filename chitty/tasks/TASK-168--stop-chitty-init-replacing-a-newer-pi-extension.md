@@ -23,6 +23,10 @@ Use `_version_key` from `src/chitty/config.py`; `TASK-137` moves it there, and i
 - [ ] A locally edited extension is still refused, shown by the existing test passing, and `__version__` is bumped above `main`'s
 - [ ] Tests show an older Chitty leaving a newer extension in place, warning with both versions and finishing the rest of `init`; a newer or equal Chitty updating and recording its version; and a hash-only state file being replaced
 
+## Plan
+
+Add version metadata to the Pi extension state file and compare it before replacing an otherwise validated extension. Reuse config.version_key, treating missing or malformed state versions as old, and warn to stderr while allowing init to continue when the installed version is newer. Extend actor tests with temporary Pi directories covering newer, equal/newer replacement, and hash-only state behavior; bump the package version and run the full check suite.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the state file's format, where `_version_key` lives given the import direction, the check's order after validation, unreadable versions, what the warning says, and a loose claim about worktrees. Accepted and stated: a warning on every run from an old copy, and a branch's `.venv` holding its extension.
@@ -33,3 +37,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the state file's format
 - 2026-11-04T21:01:54Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:01:55Z mellow-newt backlog → todo
 - 2026-11-05T20:24:26Z kind-adder todo → doing
+- 2026-11-05T20:24:43Z kind-adder: wrote the plan
