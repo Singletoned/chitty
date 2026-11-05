@@ -131,24 +131,23 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     selected blob is fetched through one ``git cat-file --batch`` process.
     The caller overlays uncommitted worktree files separately.
     """
-    try:
-        refs = [
-            line.partition("\t")[0]
-            for line in _git(
-                root,
-                "for-each-ref",
-                "--format=%(refname)%09%(symref)",
-                "refs/heads",
-                "refs/remotes",
-            ).splitlines()
-            if not line.partition("\t")[2]
-        ]
-        if not refs:
-            return []
-        changed = _latest_changes(root, refs, directory)
-        blobs = _tree_blobs(root, refs, directory)
-    except ChittyError:
+    if not is_repository(root):
         return []
+    refs = [
+        line.partition("\t")[0]
+        for line in _git(
+            root,
+            "for-each-ref",
+            "--format=%(refname)%09%(symref)",
+            "refs/heads",
+            "refs/remotes",
+        ).splitlines()
+        if not line.partition("\t")[2]
+    ]
+    if not refs:
+        return []
+    changed = _latest_changes(root, refs, directory)
+    blobs = _tree_blobs(root, refs, directory)
 
     selected = [(path, commit, committed_at) for path, (commit, committed_at) in changed.items()]
     contents = _read_blobs(root, [(f"{commit}:{path}", path) for path, commit, _ in selected])
