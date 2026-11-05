@@ -19,8 +19,8 @@ Out of scope: a `chitty run` that waits for tickets itself, and any other exit c
 
 ## Acceptance Criteria
 
-- [ ] `README.md` and `PLAN.md` document exit 3 and the idle loop
-- [ ] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
+- [x] `README.md` and `PLAN.md` document exit 3 and the idle loop
+- [x] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
 
 ## Plan
 
@@ -39,3 +39,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 
 - 2026-11-05T21:14:53Z youthful-toad backlog → todo
 - 2026-11-05T21:15:01Z youthful-toad: wrote the plan
 - 2026-11-05T21:15:01Z youthful-toad todo → doing
+- 2026-11-05T21:20:22Z youthful-toad: ticked acceptance criteria
