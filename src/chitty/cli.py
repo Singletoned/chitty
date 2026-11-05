@@ -1,6 +1,7 @@
 """Command-line interface. Thin: parse flags, call store/model, print."""
 
 import json
+import os
 from datetime import date
 from pathlib import Path
 from typing import Any, TextIO, cast
@@ -39,6 +40,7 @@ from chitty.store import (
     ordered,
     resolve_add_target,
 )
+from chitty.upgrade import check_for_upgrade
 
 
 class _Group(click.Group):
@@ -64,7 +66,11 @@ def cli() -> None:
 
 
 def main() -> None:
-    cli()
+    try:
+        cli()
+    finally:
+        if "_CHITTY_COMPLETE" not in os.environ:
+            check_for_upgrade()
 
 
 json_option = click.option("--json", "as_json", is_flag=True, help="Print JSON.")

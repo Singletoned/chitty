@@ -232,10 +232,15 @@ def _has_pyproject_config(path: Path) -> bool:
     return isinstance(data.get("tool"), dict) and "chitty" in data["tool"]
 
 
+def chitty_data_path() -> Path:
+    """Machine-local directory for Chitty data."""
+    base = Path(os.environ.get("XDG_DATA_HOME", "~/.local/share")).expanduser()
+    return base / "chitty"
+
+
 def inbox_path(project: str) -> Path:
     """Machine-local inbox directory for a registered project."""
-    base = Path(os.environ.get("XDG_DATA_HOME", "~/.local/share")).expanduser()
-    return base / "chitty" / "inbox" / project
+    return chitty_data_path() / "inbox" / project
 
 
 def usage_path(project: str) -> Path:

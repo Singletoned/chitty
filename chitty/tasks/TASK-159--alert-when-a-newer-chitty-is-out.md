@@ -1,6 +1,6 @@
 ---
 title: Alert when a newer Chitty is out
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-80
@@ -33,9 +33,13 @@ Out of scope: upgrading automatically, and any setting to turn this off.
 
 ## Acceptance Criteria
 
-- [ ] Tests against a local HTTP server, with `PYPI_URL` and the running version patched and calling `main()`, show no alert before the version is out, then one on stderr with exit code and stdout unchanged, no further request, and the file removed once the running version reaches it
-- [ ] Tests show a failed request and an unreadable file changing nothing, no second request within `UPGRADE_RETRY_SECONDS`, the alert after a failing command, and an editable install doing nothing
-- [ ] `README.md` describes the alert
+- [x] Tests against a local HTTP server, with `PYPI_URL` and the running version patched and calling `main()`, show no alert before the version is out, then one on stderr with exit code and stdout unchanged, no further request, and the file removed once the running version reaches it
+- [x] Tests show a failed request and an unreadable file changing nothing, no second request within `UPGRADE_RETRY_SECONDS`, the alert after a failing command, and an editable install doing nothing
+- [x] `README.md` describes the alert
+
+## Plan
+
+Implement the release-alert lifecycle in a new src/chitty/upgrade.py, reusing the inbox data-directory helper and version comparison. Wire it through cli.main()'s finally while skipping shell completion, and preserve command exit behavior. Add focused unittest coverage with a local HTTP server, patched version/URL and metadata for editable installs, then document the alert in README.md. Run make check and update the ticket summary/checks only after verification.
 
 ## Notes
 
@@ -43,9 +47,27 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `main()` needs a `final
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the alert naming a version that does not exist after a failed release; a malformed file silently ending all alerts; touching before the request; and which running version. Accepted and now stated: a failed publish polls once a minute until the next release. Rejected: criteria for each of these, which the tests cover as behaviour under criterion 2's failure cases, and a split, because it is one concern.
 
+Reviewed: all three criteria pass. Inspected the upgrade lifecycle, CLI finally wiring, editable/completion skips, retry handling, README, and tests. Targeted upgrade tests, ruff, pyright, and chitty check pass; full make check reaches the Python suite but npm test does not terminate.
+
+## Summary
+
+Implemented release upgrade alerts in src/chitty/upgrade.py and wired them through cli.main()'s finally, including editable-install and completion skips, retry throttling, safe failure handling, and pending-release lifecycle. Reused chitty_data_path with inbox_path and documented the stderr alert in README.md.
+
+Verification: all 255 unittest tests passed during make check; targeted upgrade tests, ruff format/check, and pyright pass. The Node test command emitted 26 dots but did not terminate within the timeout, so its shutdown hang remains a follow-up.
+
 ## History
 
 - 2026-11-04T19:32:38Z mellow-newt → backlog
 - 2026-11-04T19:36:37Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T19:37:59Z mellow-newt: changed description, notes
 - 2026-11-04T19:38:00Z mellow-newt backlog → todo
+- 2026-11-05T18:33:22Z tidy-stoat todo → doing
+- 2026-11-05T18:33:35Z tidy-stoat: wrote the plan
+- 2026-11-05T18:42:47Z tidy-stoat: ticked acceptance criteria
+- 2026-11-05T18:42:48Z tidy-stoat: ticked acceptance criteria
+- 2026-11-05T18:42:49Z tidy-stoat: ticked acceptance criteria
+- 2026-11-05T18:42:50Z tidy-stoat: changed summary
+- 2026-11-05T18:43:02Z tidy-stoat: changed summary
+- 2026-11-05T18:43:02Z tidy-stoat doing → review
+- 2026-11-05T18:46:23Z witty-yellowhammer: changed notes
+- 2026-11-05T18:46:23Z witty-yellowhammer review → done

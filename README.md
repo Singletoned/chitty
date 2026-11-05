@@ -150,8 +150,11 @@ completed task files at merge-request time instead of moving them to `archive/`;
 it also removes exact `depends_on` entries and requires complete Git history to
 avoid reusing IDs. The default, `archive = "move"`, retains task files.
 
-`chitty_version` records the Chitty release that last ran `init`. Reads work with
-stale setup, but writes without `autocommit` require `chitty init` first;
+`chitty_version` records the Chitty release that last ran `init`. When a newer
+release is available, Chitty prints `chitty <version> is out: run uv tool
+upgrade chitty` to stderr. The check is skipped for editable installs and
+completion requests. Reads work with stale setup, but writes without
+`autocommit` require `chitty init` first;
 with `autocommit = true`, Chitty commits the setup upgrade separately before
 writing. `chitty run` also refreshes setup before starting the agent: in a main Git
 checkout it commits changed setup files separately. From a linked worktree it
