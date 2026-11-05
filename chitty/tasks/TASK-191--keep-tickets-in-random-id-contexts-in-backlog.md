@@ -17,8 +17,14 @@ Second of three parts, after `TASK-190`. A ticket in a context with `random_ids`
 ## Acceptance Criteria
 
 - [ ] Tests show `add` with `-s todo` creating a `backlog` ticket with no description needed, `edit -s todo` refused with that message, and `chitty move TASK-5 backlog` setting `backlog`
+- [ ] A test in a Git repository, with the ticket committed on `main`, shows `chitty move <ID> tasks` giving the next `TASK-` number, keeping `backlog`, and rewriting references in other tickets, and the returned change showing the moved ticket's own title
+
+## Notes
+
+Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Serious, both fixed: the description check runs before the context is known; and `Repo.move` reassigns `task` in a loop, an existing bug that would have lost the status and reports another ticket's content. Also fixed: recording History, the order in `Repo.add`, and the test needing a Git repository.
 
 ## History
 
 - 2026-11-05T14:47:51Z mellow-newt → backlog
 - 2026-11-05T14:50:40Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T14:50:41Z mellow-newt: changed acceptance criteria, notes
