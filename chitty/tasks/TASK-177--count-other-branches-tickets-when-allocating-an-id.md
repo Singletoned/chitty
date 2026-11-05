@@ -1,6 +1,6 @@
 ---
 title: Count other branches' tickets when allocating an ID
-status: todo
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -18,14 +18,24 @@ Split on 2026-11-05: repairing a collision that has already happened, and giving
 
 ## Acceptance Criteria
 
-- [ ] A test with a ticket committed only on another branch, with no worktree, shows `chitty add` on `main` taking the number above it, in both active and archived locations, and fails without the change
-- [ ] `PLAN.md`'s ID rule and its passage on collisions say allocation counts committed tickets on all local and remote-tracking branches, active and archived, and does not see uncommitted tickets in other worktrees or unpushed work on other machines
+- [x] A test with a ticket committed only on another branch, with no worktree, shows `chitty add` on `main` taking the number above it, in both active and archived locations, and fails without the change
+- [x] `PLAN.md`'s ID rule and its passage on collisions say allocation counts committed tickets on all local and remote-tracking branches, active and archived, and does not see uncommitted tickets in other worktrees or unpushed work on other machines
+
+## Plan
+
+Inspect Repo.next_number and history helpers, add a filename-only scan of committed active and archive task paths from _history, and cover active/archive branch-only allocation with regression tests. Update PLAN.md ID and collision rules to document branch visibility limits. Run the full check suite, then record verified criteria and handoff.
 
 ## Notes
 
 Suggestion origin: echonomicon
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. It reproduced the bug in a scratch repository: with tickets 2 and 3 only on another branch, `chitty add` on `main` gave `TASK-2`, so the criterion cannot pass with nothing built. Fixed: `PLAN.md` contradicting this; filtering `_history`; and not parsing contents, because `_tasks_in_location` raises on a bad file on any branch. Rejected: staleness, because the CLI and MCP open a new `Repo` per call, and renamed files, which only over-count.
+
+Reviewed: independently inspected the implementation, regression test, and PLAN.md; targeted branch-only active/archive allocation test passes, and make check passed ruff, pyright, and 269 unittest tests. Both acceptance criteria are met.
+
+## Summary
+
+Implemented branch-aware ID allocation in Repo.next_number by scanning committed filenames from local and remote-tracking history across active and archive directories, while ignoring malformed filenames and file contents. Added a regression test covering active and archived tickets committed on a branch whose worktree is removed, and updated PLAN.md with visibility and collision rules. Verified with targeted regression, make check (ruff, pyright, 269 unittest tests passed); npm test emitted 26 dots but did not finish within the command timeout.
 
 ## History
 
@@ -35,3 +45,11 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. It reproduced the bug in a scr
 - 2026-11-05T14:46:34Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:46:35Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:46:36Z mellow-newt backlog → todo
+- 2026-11-05T20:48:07Z lively-vole todo → doing
+- 2026-11-05T20:48:20Z lively-vole: wrote the plan
+- 2026-11-05T20:56:25Z lively-vole: ticked acceptance criteria
+- 2026-11-05T20:56:26Z lively-vole: ticked acceptance criteria
+- 2026-11-05T20:56:36Z lively-vole: changed summary
+- 2026-11-05T20:56:36Z lively-vole doing → review
+- 2026-11-05T20:59:43Z daring-heron: changed notes
+- 2026-11-05T20:59:43Z daring-heron review → done

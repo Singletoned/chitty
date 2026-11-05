@@ -460,6 +460,17 @@ class Repo:
             for archived in (False, True)
             for p in self._files(context, archived)
         ]
+        active_directory = context.directory.relative_to(self.root)
+        archive_directory = context.archive_directory.relative_to(self.root)
+        for file in self._history():
+            if file.path.parent not in (active_directory, archive_directory):
+                continue
+            try:
+                task_id, _ = ids.parse_filename(file.path.name)
+            except ids.IdError:
+                continue
+            if task_id.prefix == context.prefix:
+                numbers.append(task_id.number)
         if self.config.archive == "delete":
             numbers += self._deleted_numbers(context)
         return ids.next_number(numbers)
