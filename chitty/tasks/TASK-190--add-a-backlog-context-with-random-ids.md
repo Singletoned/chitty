@@ -1,6 +1,6 @@
 ---
 title: Add a `BACKLOG` context with random IDs
-status: todo
+status: doing
 priority: high
 owner: human
 depends_on:
@@ -27,6 +27,13 @@ Out of scope: when a ticket uses this context, which is the next two parts; IDs 
 - [ ] Tests show `chitty init` adding the context to an existing `chitty.toml` and `pyproject.toml`, leaving a repository alone when it already has one, and `chitty check` passing with these tickets present
 - [ ] `__version__` is bumped above `main`'s, and `README.md` and `PLAN.md` describe the setting
 
+## Plan
+
+1. Tests first (`tests/test_backlog_context.py`): `_random_number` patched for `chitty add -c backlog`, a retry past a used number, one used only on another branch, and none free; `chitty init` adding the table to `chitty.toml` and `pyproject.toml` (after the last contexts table, before a later table), leaving a repository alone with a `backlog` context, a `BACKLOG` prefix or dotted keys; `chitty check` passing with such tickets.
+2. `random_ids: bool = False` on `ContextConfig`; `next_number` draws from `_random_number()` (`secrets.randbelow`, 10000000 to 99999999) against the same numbers it collects today, with a bounded retry constant.
+3. `_add_missing_backlog_context` in `store.py` called from `init_repo`, validated with `RepoConfig` and skipped if rejected; `backlog` in `INITIAL_CONFIG`.
+4. Bump `__version__`, let the next Chitty write on the branch upgrade this repository's `chitty.toml` and commit it; `README.md` and `PLAN.md`.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. It was too big, so split in three, and this is the first. Fixed here: how a table gets added to existing files, a leading zero, and how to test retrying. The tickets following this hold the status rules and the default.
@@ -47,3 +54,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-05T14:50:37Z mellow-newt: changed description, notes
 - 2026-11-05T14:50:38Z mellow-newt backlog → todo
 - 2026-11-05T21:14:08Z youthful-toad: changed owner, notes
+- 2026-11-05T21:28:41Z youthful-toad: wrote the plan
+- 2026-11-05T21:28:41Z youthful-toad todo → doing
