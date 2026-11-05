@@ -82,7 +82,7 @@ Review failed (tests): Acceptance criterion 3 is not met. The submitted tests ex
 
 ## Summary
 
-Implemented machine-local per-session usage logging in chitty run: Pi receives a temporary usage file, model/session usage is aggregated, and complete JSONL records append under XDG data without dirtying repositories. Legacy repositories refresh their derived project name before logging while inbox pull remains opt-in based on the pre-refresh project. Verified with the new fake-Pi append/aggregation/clean-status test and make check (243 Python tests plus Node tests).
+Added a real-file regression test proving a repository without a project is refreshed to the derived name and its successful run appends usage under that name. Verified the targeted test, chitty fix, and make check (244 Python tests plus Node tests).
 
 ## History
 
@@ -105,3 +105,4 @@ Implemented machine-local per-session usage logging in chitty run: Pi receives a
 - 2026-11-05T11:10:26Z brisk-raven: changed acceptance criteria, notes
 - 2026-11-05T11:10:26Z brisk-raven review → doing
 - 2026-11-05T12:07:34Z jolly-newt: ticked acceptance criteria
+- 2026-11-05T12:07:35Z jolly-newt: changed summary
