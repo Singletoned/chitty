@@ -1,6 +1,6 @@
 ---
 title: Add `--mode` to `chitty next` and `chitty run`
-status: todo
+status: doing
 priority: high
 owner: human
 parent: TASK-106
@@ -20,6 +20,13 @@ Not in scope: `--mode` alongside `--ticket` from `TASK-138`, which is refused by
 - [ ] Tests show `--mode review` and `--mode work` each selecting only their own tickets, in both `chitty next` and `chitty run`, with no `--mode` unchanged, and a message naming the mode when nothing matches
 - [ ] `README.md` and `PLAN.md` describe the option, and say to run the modes one after the other until `TASK-162` lands
 
+## Plan
+
+1. Add keyword-only `mode` to `next_action`, filtering candidates by status before `_ticket_action` (so dependency checks only run on the selected mode); name the mode in the empty error.
+2. Add `mode` to `run` in `run.py`, refusing `mode` with `ticket` as its first step (TASK-138 has landed), and pass it to `next_action`.
+3. Add `--mode` as a `click.Choice` to `chitty next` and `chitty run`.
+4. Tests first for each, seen failing; then `README.md` and `PLAN.md`.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. No serious faults: it ran click and confirmed `--mode` before or after forwarded arguments, `--mode=review`, and rejection of other values. Fixed: how the option reaches `next_action` and `run`, and the clashing local. Rejected: abbreviations such as `--mo review` being forwarded, which is what forwarding means.
@@ -32,3 +39,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-05T14:23:08Z mellow-newt: changed description, notes
 - 2026-11-05T14:23:09Z mellow-newt backlog → todo
 - 2026-11-05T19:11:25Z youthful-toad: changed owner, notes
+- 2026-11-05T19:11:42Z youthful-toad: wrote the plan
+- 2026-11-05T19:11:42Z youthful-toad todo → doing
