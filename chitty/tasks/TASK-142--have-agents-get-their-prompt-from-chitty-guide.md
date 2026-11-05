@@ -21,11 +21,11 @@ Out of scope: continuing a stopped agent or any other per-agent integration, whi
 
 ## Acceptance Criteria
 
-- [ ] Node tests show the extension sending the output of `chitty guide <mode> <ID>`, and notifying and shutting down when that command fails or prints nothing
-- [ ] `chittyPrompt` and its strings are gone from `src/chitty/integrations/pi/chitty.ts`
-- [ ] A test with a fake agent shows `{prompt}` arriving as one argument, containing quotes and newlines unchanged, in work and review modes, and a command with `{prompt}` but neither `{mode}` nor `{id}` accepted
+- [x] Node tests show the extension sending the output of `chitty guide <mode> <ID>`, and notifying and shutting down when that command fails or prints nothing
+- [x] `chittyPrompt` and its strings are gone from `src/chitty/integrations/pi/chitty.ts`
+- [x] A test with a fake agent shows `{prompt}` arriving as one argument, containing quotes and newlines unchanged, in work and review modes, and a command with `{prompt}` but neither `{mode}` nor `{id}` accepted
 - [ ] A real `chitty run` work session is checked to start with the role's instructions, and the result is recorded in a ticket note
-- [ ] `README.md` and `PLAN.md` describe `{prompt}`, and `__version__` is bumped above `main`'s
+- [x] `README.md` and `PLAN.md` describe `{prompt}`, and `__version__` is bumped above `main`'s
 
 ## Plan
 
@@ -47,3 +47,4 @@ Real check: ran `chitty run` against the committed implementation. The configure
 - 2026-11-05T09:08:52Z upbeat-quail todo → doing
 - 2026-11-05T09:09:26Z upbeat-quail: wrote the plan
 - 2026-11-05T09:16:59Z upbeat-quail: changed notes
+- 2026-11-05T09:17:00Z upbeat-quail: ticked acceptance criteria
