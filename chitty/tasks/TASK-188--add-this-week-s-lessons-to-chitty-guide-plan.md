@@ -17,7 +17,16 @@ created: 2026-11-05
 
 Each comes from 2026-11-05: `TASK-178` and `TASK-184` had criteria that could pass with nothing built, `TASK-142`'s real-session criterion led a worker to change `main`'s setup, and `TASK-181` described work as still to come that merged during its read. `TASK-181` also edits `plan.md`, on another bullet.
 
+## Acceptance Criteria
+
+- [ ] A test in `TestGuide` in `tests/test_cli.py` shows `guide("plan")` containing `nothing built`, `must not start one`, `rather than assume` and `just before promoting`
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets work, the line count, and overlap with the existing bullet. Removed the version bump, because `plan.md` does not reach `AGENTS.md`, which also avoids a conflict. It checked the facts cited about the other tickets against their notes.
+
 ## History
 
 - 2026-11-05T14:13:56Z mellow-newt → backlog
 - 2026-11-05T14:23:19Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T14:23:20Z mellow-newt: changed acceptance criteria, notes
