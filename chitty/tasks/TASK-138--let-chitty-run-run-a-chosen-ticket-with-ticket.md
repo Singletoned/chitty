@@ -1,6 +1,6 @@
 ---
-title: Let `chitty run` run a chosen ticket, as in `chitty run TASK-178`
-status: todo
+title: Let `chitty run` run a chosen ticket with `--ticket`
+status: backlog
 priority: high
 depends_on:
   - TASK-126
@@ -10,19 +10,15 @@ created: 2026-11-04
 
 ## Description
 
-`chitty run` always takes what `chitty next` selects, so a person cannot choose. Add `chitty run <ID>`, as in `chitty run TASK-178`, which runs that ticket instead of the selected one, in the mode its status implies: `review` means review, and `doing` or `todo` means work. Everything else about the run is unchanged, including the inbox pull, worktree preparation and forwarding other arguments to the agent. Resolve the ID after the pull, on `main_repo`, with `Repo.resolve`, so a pulled ticket can be chosen.
+`chitty run` always takes what `chitty next` selects, so a person cannot choose. Add `chitty run --ticket <ID>`, which runs that ticket instead of the selected one, in the mode its status implies: `review` means review, and `doing` or `todo` means work. Everything else about the run is unchanged, including the inbox pull, worktree preparation and forwarding other arguments to the agent. Resolve the ID after the pull, on `main_repo`, with `Repo.resolve`, so `13` and `TASK-13` both work and a pulled ticket can be chosen.
 
-`chitty run` forwards unknown arguments to the agent, so do not declare a `click.argument`: it would take the first forwarded word, as in `chitty run -e ./search.ts`. Instead, in `run` in `src/chitty/cli.py`, treat `ctx.args[0]`, which click has already stripped of declared options, as the ticket when it fully matches `ID_RE` from `src/chitty/ids.py` and its prefix is one of this repository's context prefixes, and forward the rest. `ID_RE` ignores case, so `task-178` names `TASK-178`, and alone it would also match `gpt-4`, which is why the prefix must be known. A bare number is not treated as an ID, because it could be an argument for the agent, even though `Repo.resolve` accepts one.
-
-Give `run()` in `src/chitty/run.py` a parameter `ticket: str | None`, without a default, and have `cli.py` pass the ID there and only the remaining words as `arguments`, so the ID does not also reach the agent. `run` calls the new function instead of `next_action` when `ticket` is set. Click removes `--`, so `chitty run -- TASK-178` also names the ticket, which is accepted. An ID anywhere but first is forwarded.
-
-Add it to the help text, which click cannot do by itself without a declared argument: set `options_metavar="[ID] [OPTIONS]"` on the command, and have the docstring say that it runs the next ticket, or the named one, and that other arguments go to the agent.
+Declare it with `click.option("--ticket", metavar="ID", help=...)`, so it appears in the help text, and have the command's docstring say that it runs the next ticket, or the one named by `--ticket`, and that other arguments go to the agent. Give `run()` in `src/chitty/run.py` a parameter `ticket: str | None`, without a default; `run` calls the new function instead of `next_action` when it is set. Use an option rather than a positional argument. `chitty run` forwards unknown arguments to the agent, so a positional would be confused with those, as in `chitty run -e ./search.ts`.
 
 Add a function beside `next_action` in `src/chitty/store.py` that returns a `NextAction` for a given ticket, factoring the per-ticket check out of the loop in `next_action` rather than copying it, so a bad `depends_on` reference raises the same error; `run` and `cli.py` stay thin. It refuses, with a message saying why, and before any claim or worktree: an unknown or archived ticket, checked explicitly because `repo.find` returns archived tickets; a status other than `review`, `doing` or `todo`; a `human` ticket or owner; and a `todo` ticket whose dependencies are not `done`. As in `next_action`, `doing` and `review` tickets are not held back by dependencies. Choosing a ticket overrides priority and order only: the rules exist because the work would fail or belongs to someone else. To override one, change the ticket first.
 
-Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-152` lands pending tickets at the start of a run; a run naming a ticket skips that, because it must only touch that ticket.
+Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-152` lands pending tickets at the start of a run; a run with `--ticket` skips that, because it must only touch that ticket.
 
-Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above. `--mode` from `TASK-162` with an ID is refused by whichever of the two lands second.
+Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above. `--mode` from `TASK-162` with `--ticket` is refused by whichever of the two lands second.
 
 ## Acceptance Criteria
 
@@ -61,3 +57,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still sayin
 - 2026-11-05T10:08:36Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:08:37Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T10:08:38Z mellow-newt backlog → todo
+- 2026-11-05T10:23:38Z mellow-newt: changed title, description
+- 2026-11-05T10:23:38Z mellow-newt todo → backlog
