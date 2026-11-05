@@ -270,9 +270,9 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, pathlib, subprocess\n"
+            "import os, pathlib, subprocess, sys\n"
             "worker = pathlib.Path.cwd()\n"
-            "path = next((worker / 'chitty/tasks').glob('TASK-*.md'))\n"
+            "path = next((worker / 'chitty/tasks').glob(sys.argv[2] + '--*.md'))\n"
             "status = os.environ['TARGET_STATUS']\n"
             "text = path.read_text().replace('status: doing', f'status: {status}')\n"
             "text = text.replace('status: review', f'status: {status}')\n"
@@ -756,7 +756,11 @@ class TestNext(CliTestCase):
         self.git("worktree", "remove", "--force", str(worktree))
         self.git("branch", "-D", "task-1")
         self.run_cli("edit", "TASK-1", "--status", "review")
-        result = self.run_cli("run", exit_code=1)
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
         self.assertIn("review ticket TASK-1 has no branch task-1", result.stderr)
         self.assertFalse(worktree.exists())
 
