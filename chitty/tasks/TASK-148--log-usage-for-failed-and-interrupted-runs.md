@@ -22,7 +22,7 @@ Out of scope: anything in the Pi extension, and any report.
 
 - [x] Tests show a line still written, with `models` null and a warning on stderr, for a missing and an invalid usage file
 - [ ] Tests show `status_after` correct and the exit code kept for an agent that exits non-zero, a Ctrl-C and an unchanged status
-- [ ] A test shows a failure writing the log warning on stderr and keeping the exit code
+- [x] A test shows a failure writing the log warning on stderr and keeping the exit code
 - [x] A test shows a `cost` of null accepted without a warning, summing to a null `cost` with the tokens still added
 
 ## Plan
@@ -56,3 +56,4 @@ Implemented finally-based usage logging for non-zero, interrupted, unchanged, an
 - 2026-11-05T15:15:20Z able-vole doing → review
 - 2026-11-05T15:20:46Z eager-adder: changed acceptance criteria, notes
 - 2026-11-05T15:20:46Z eager-adder review → doing
+- 2026-11-05T16:19:53Z witty-adder: ticked acceptance criteria
