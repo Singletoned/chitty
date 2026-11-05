@@ -19,6 +19,7 @@ from chitty.config import (
     CONFIG_NAME,
     INITIAL_CONFIG,
     RepoConfig,
+    check_setup_version,
     load_repo_config,
     validate_repo_config,
 )
@@ -334,9 +335,7 @@ class Repo:
         self.config = load_repo_config(self.root)
 
     def _check_setup_version(self) -> None:
-        recorded = self.config.chitty_version
-        if recorded is not None and _version_key(recorded) > _version_key(CHITTY_VERSION):
-            raise ChittyError(f"repository needs Chitty {recorded} or later")
+        check_setup_version(self.config)
 
     def add(
         self,
@@ -675,13 +674,6 @@ def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:
     return replace(edit, status="blocked", owner="human", notes=(*edit.notes, reason))
 
 
-def _version_key(value: str) -> tuple[int, ...]:
-    try:
-        return tuple(int(part) for part in value.split("."))
-    except ValueError as error:
-        raise ChittyError(f"invalid Chitty version {value!r}") from error
-
-
 def _unique_tasks(tasks: Sequence[StoredTask]) -> tuple[StoredTask, ...]:
     """Keep one trailer per task ID, in the order the tasks were written."""
     result: list[StoredTask] = []
@@ -858,6 +850,7 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         written.append(config_path)
     else:
         config = load_repo_config(directory)
+        check_setup_version(config)
         source = config_path if config_path.exists() else pyproject_path
         text = source.read_text()
         data = tomllib.loads(text)

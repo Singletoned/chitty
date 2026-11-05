@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` read a branch that adds a `chitty.toml` key
-status: todo
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -24,9 +24,15 @@ Out of scope: `chitty run` checking which `chitty` an agent will find, and upgra
 
 ## Acceptance Criteria
 
-- [ ] Tests show an unknown top-level key in either config file loading with one stderr warning naming it when `chitty_version` is newer than the code, leaving `chitty show --json` output valid, and refusing when the version is equal, older or absent, or the key is in `[contexts.*]`
-- [ ] A test shows `chitty run` reviewing a ticket whose branch adds a key and bumps the version, and reporting the status change
-- [ ] Tests show `chitty init` refusing a newer file and leaving it unchanged
+- [x] Tests show an unknown top-level key in either config file loading with one stderr warning naming it when `chitty_version` is newer than the code, leaving `chitty show --json` output valid, and refusing when the version is equal, older or absent, or the key is in `[contexts.*]`
+- [x] A test shows `chitty run` reviewing a ticket whose branch adds a key and bumps the version, and reporting the status change
+- [x] Tests show `chitty init` refusing a newer file and leaving it unchanged
+
+## Plan
+
+1. Move version parsing into config and make config loading tolerate only unknown top-level keys in newer-version files, warning once per file.
+2. Refuse chitty init when the existing config is newer than this code, before rewriting it.
+3. Add focused config, CLI/run, and init regression tests, then run the full check suite.
 
 ## Notes
 
@@ -38,6 +44,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: where `_version_key` go
 
 Removed the version warning, which duplicated `TASK-135`, as I found when another session reported the bug on 2026-11-04.
 
+Reviewed: independently verified all three criteria. Config tests cover newer/equal/older/absent versions, top-level versus context keys, one stderr warning, and valid JSON; run regression passes; init refusal preserves the file. Verification: make check passed (ruff, pyright, 238 unittest tests, 27 Node tests).
+
 ## History
 
 - 2026-11-04T09:46:24Z lively-panda → backlog
@@ -46,3 +54,11 @@ Removed the version warning, which duplicated `TASK-135`, as I found when anothe
 - 2026-11-04T17:34:51Z mellow-newt: changed title, description, acceptance criteria, notes
 - 2026-11-04T17:34:51Z mellow-newt backlog → todo
 - 2026-11-04T21:00:14Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-05T08:18:01Z lively-puffin todo → doing
+- 2026-11-05T08:26:03Z daring-wren: wrote the plan
+- 2026-11-05T08:33:58Z daring-wren: ticked acceptance criteria
+- 2026-11-05T08:33:59Z daring-wren: ticked acceptance criteria
+- 2026-11-05T08:34:00Z daring-wren: ticked acceptance criteria
+- 2026-11-05T08:34:05Z daring-wren doing → review
+- 2026-11-05T08:39:12Z witty-crane: changed notes
+- 2026-11-05T08:39:12Z witty-crane review → done
