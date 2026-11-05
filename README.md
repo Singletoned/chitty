@@ -73,7 +73,9 @@ chitty guide plan                 # instructions for writing and refining ticket
 ```
 
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
-are the reference. `chitty guide` prints the managed `AGENTS.md` block;
+are the reference. `chitty guide` prints the managed `AGENTS.md` block; `chitty init` wraps that
+block in strict `chitty:begin` and `chitty:end` markers so only Chitty's text is
+replaced. Existing unmarked blocks are migrated on the next init.
 `chitty guide work`, `review`, and `plan` print the focused instructions for
 that role. Work and review take an optional ticket ID; planning does not.
 Plain `chitty list` shows non-archived `todo`, `doing`,
