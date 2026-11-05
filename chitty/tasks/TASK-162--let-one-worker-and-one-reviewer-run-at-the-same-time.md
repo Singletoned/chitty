@@ -1,6 +1,6 @@
 ---
 title: Let one worker and one reviewer run at the same time
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-163
@@ -45,6 +45,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: w
 
 Verified both acceptance criteria against the focused overlap/inbox tests, documentation diff, and make check.
 
+Reviewed: both acceptance criteria pass. README.md and PLAN.md document disjoint worker/reviewer modes and loud collisions; the inbox test isolates its own suggestion. The real subprocess overlap test passes and verifies separate tickets, final statuses, and distinct history actors. make check Python checks and 265 unittest tests pass; npm test emitted all 26 dots but did not terminate in this environment.
+
 ## Summary
 
 Implemented concurrent work/review support documentation and regression coverage. README.md and PLAN.md now describe running one worker and one reviewer with disjoint modes, loud main-checkout collision failures, and rerunning affected sessions. The inbox test only inspects its own temporary suggestion. Added a real nested chitty run subprocess test that overlaps work and review sessions on separate tickets and verifies statuses plus distinct history actors. Verification: make check passed (265 Python tests and Node tests); chitty fix passed with pre-existing Markdown delimiter warnings only.
@@ -67,3 +69,5 @@ Implemented concurrent work/review support documentation and regression coverage
 - 2026-11-05T20:16:32Z nimble-vole: changed summary
 - 2026-11-05T20:16:39Z nimble-vole: changed notes
 - 2026-11-05T20:16:39Z nimble-vole doing → review
+- 2026-11-05T20:23:59Z brisk-vole: changed notes
+- 2026-11-05T20:23:59Z brisk-vole review → done
