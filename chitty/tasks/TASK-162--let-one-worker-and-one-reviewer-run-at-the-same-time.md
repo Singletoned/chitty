@@ -27,6 +27,7 @@ Not in scope: two workers or two reviewers, because the claim is not atomic; and
 ## Acceptance Criteria
 
 - [ ] `README.md` and `PLAN.md` describe running one of each, including what a collision looks like, and the inbox test no longer reads other sessions' suggestions
+- [ ] A test using real `chitty run` subprocesses overlaps a work session and a review session on different tickets, and both report the right status with different actors in the tickets' history
 
 ## Notes
 
@@ -35,6 +36,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. It tested the claim that only 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the error text, filtering before dependency checks, and how the overlap test is set up. Rejected: its suggestion to split, because the nested test needs no handshake or timeout, so it stays small; and `--mode` in MCP, which nothing needs yet. `--ticket` refusal stays with whichever of this and `TASK-138` lands second.
 
 Split on 2026-11-05: selection with `--mode` moved to `TASK-186`, so a person can use it before the concurrency work. This ticket keeps the overlap test, the inbox test and the documentation.
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: without `--mode work` the outer run would take the review ticket first; removing the interim advice; and where the actors are read.
 
 ## History
 
@@ -46,3 +49,4 @@ Split on 2026-11-05: selection with `--mode` moved to `TASK-186`, so a person ca
 - 2026-11-05T10:23:49Z mellow-newt: changed description
 - 2026-11-05T14:13:50Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-05T14:23:11Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T14:23:12Z mellow-newt: changed acceptance criteria, notes
