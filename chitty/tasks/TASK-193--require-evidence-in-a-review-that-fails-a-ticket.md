@@ -14,11 +14,11 @@ Replace two whole bullets in `src/chitty/roles/review.md`, and no others, becaus
 
 Replace the bullet starting "Fail only" with:
 
-"Fail only for an unmet criterion or a demonstrated defect. A claim about what code does when it runs must be run first, using an existing test, the project's check command or a throwaway test. Reasoning alone demonstrates nothing: if you can run the code but cannot show the defect, file a ticket instead of failing. File a ticket for other findings too."
+"Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet if nothing exercises it, if a file it needs is missing, or if the environment stopped you verifying it. A ticket that is itself wrong also fails. A claim about what code does when it runs must be run first, using an existing test, the project's check command or a throwaway test. Reasoning alone demonstrates nothing: if you can run the code but cannot show the defect, file a ticket instead of failing. File a ticket for other findings too."
 
 Replace the bullet starting "On failure" with:
 
-"On failure, write one note in the form `Review failed (<cause>): ...`, where the cause is `design`, `tests`, `work`, `integration`, or `review`; explain what must change and `--uncheck` every failed criterion. Set `-s doing`. The note gives what was run and what it printed. When there is nothing to run, because nothing exercises a criterion, a file is missing or the ticket itself is wrong, it says what is missing or wrong. When the environment stopped you running the code, it says what stopped you, with the cause `integration`."
+"On failure, write one note in the form `Review failed (<cause>): ...`, where the cause is the earliest stage that should have caught it: `design`, `tests`, `work`, `integration` (branch, merge, environment), or `review`. Explain what must change and `--uncheck` every failed criterion. Set `-s doing`. If you ran code, the note gives what was run and what it printed. If there was nothing to run, it says what is missing or wrong. If the environment stopped you running the code, it says what stopped you, with the cause `integration`."
 
 This file ships to every repository, so do not name `make`.
 
@@ -31,7 +31,6 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 ## Acceptance Criteria
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
-- [ ] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, and not matching `\bmake\b`
 
 ## Notes
 
@@ -52,3 +51,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first read of 
 - 2026-11-05T18:19:19Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:19:59Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:20:00Z mellow-newt: changed acceptance criteria
+- 2026-11-05T18:31:03Z mellow-newt: changed description, acceptance criteria
