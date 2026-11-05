@@ -1,6 +1,6 @@
 ---
 title: Pick the right copy of a ticket when commits share a second
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -34,6 +34,8 @@ Moved to `doing` by the planning session so it runs next: the release is waiting
 
 Regression test failed before the fix (status was todo instead of doing) with main and task-1 commits sharing the fixed second; it passes after adding --topo-order. Module-by-module unittest runs, ruff, pyright, and npm test pass. Full unittest discovery did not complete within 600 seconds despite individual modules passing.
 
+Reviewed: implementation adds --topo-order to _latest_changes; regression test covers main/task-1 same-second commits and both worktrees; make check and chitty fix pass.
+
 ## Summary
 
 Implemented and committed as a30ff57 (Task: TASK-184). Added --topo-order to _latest_changes and a regression test covering main/task-1 worktrees with identical fixed commit timestamps. Verified the regression failed before the fix and passes after it; ruff, pyright, all individual unittest modules, and npm test pass. Full unittest discovery was attempted but did not complete within 600 seconds; no follow-up changes are required.
@@ -51,3 +53,5 @@ Implemented and committed as a30ff57 (Task: TASK-184). Added --topo-order to _la
 - 2026-11-05T13:28:54Z eager-kestrel: ticked acceptance criteria
 - 2026-11-05T13:29:02Z eager-kestrel: changed summary
 - 2026-11-05T13:29:02Z eager-kestrel doing → review
+- 2026-11-05T13:32:06Z witty-badger: changed notes
+- 2026-11-05T13:32:06Z witty-badger review → done
