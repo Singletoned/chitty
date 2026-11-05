@@ -31,9 +31,12 @@ Out of scope: a timeout for `check` in `chitty run`, and changing what `chitty r
 
 Same cold read as `TASK-144`. Fixed: the exact test and fix; a reproducible way to hold stdin open, showing the failure first; and the second criterion, which was already true and could not have failed, is now stated as a guard. Removed: looking for how a fake `pi` was orphaned for 19 hours. The interrupt test's fake sleeps for at most 60 seconds, so that test cannot explain it, and it is a separate oddity not needing a ticket yet. Rejected: stdin at a terminal, because pointing the descriptor at `/dev/null` covers it.
 
+Reproduced before the fix with: python - <<'PY' ... os.pipe(); subprocess.Popen(["make", "check"], stdin=read_fd, start_new_session=True); communicate(timeout=10) ... PY. With the write end held open, it timed out after 10s after reaching the unittest suite. After redirecting descriptor 0 to /dev/null in `test_run_cases`, the same held-open stdin harness completed `make check` in 207.2s with status 0. Focused `test_run_cases` and `test_run_inherits_stdin` also passed.
+
 ## History
 
 - 2026-11-04T12:32:20Z lively-panda → todo
 - 2026-11-04T12:34:35Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-05T22:04:14Z rosy-adder todo → doing
 - 2026-11-05T22:04:29Z rosy-adder: wrote the plan
+- 2026-11-05T22:09:39Z rosy-adder: changed notes
