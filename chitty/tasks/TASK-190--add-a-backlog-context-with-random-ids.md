@@ -20,6 +20,16 @@ The name collides with nothing: `chitty/backlog/` is a new directory, and the st
 
 Out of scope: when a ticket uses this context, which is the next two parts; IDs made of words, as in `BACKLOG-ember-dolphin-1`, because `TaskId.number` is an integer used throughout; and any change to `TASK-` numbering.
 
+## Acceptance Criteria
+
+- [ ] A test with `_random_number` patched shows `chitty add -c backlog` creating `BACKLOG-<number>`, retrying when the number is already used, including on another branch, and raising when none is free
+- [ ] Tests show `chitty init` adding the context to an existing `chitty.toml` and `pyproject.toml`, leaving a repository alone when it already has one, and `chitty check` passing with these tickets present
+- [ ] `__version__` is bumped above `main`'s, and `README.md` and `PLAN.md` describe the setting
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. It was too big, so split in three, and this is the first. Fixed here: how a table gets added to existing files, a leading zero, and how to test retrying. The tickets following this hold the status rules and the default.
+
 ## History
 
 - 2026-11-05T14:43:41Z mellow-newt → backlog
@@ -28,3 +38,4 @@ Out of scope: when a ticket uses this context, which is the next two parts; IDs 
 - 2026-11-05T14:47:47Z mellow-newt: changed acceptance criteria
 - 2026-11-05T14:47:48Z mellow-newt: changed acceptance criteria
 - 2026-11-05T14:47:49Z mellow-newt: changed acceptance criteria
+- 2026-11-05T14:47:50Z mellow-newt: changed acceptance criteria, notes
