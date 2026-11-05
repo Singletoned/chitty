@@ -18,7 +18,7 @@ Existing tests that move a ticket with criteria out of `review` will need verdic
 
 ## Acceptance Criteria
 
-- [ ] Tests through the CLI and MCP show a verdict refused for a missing line, a wrong word, a duplicate, an out-of-range number, `done` with a `fail` and `doing` with no `fail`, each changing nothing, and a complete verdict accepted for `done` and `doing`
+- [x] Tests through the CLI and MCP show a verdict refused for a missing line, a wrong word, a duplicate, an out-of-range number, `done` with a `fail` and `doing` with no `fail`, each changing nothing, and a complete verdict accepted for `done` and `doing`
 - [ ] Tests show a third failure with a valid verdict still escalating to `blocked`, the override still needing the form, and a ticket with no criteria unaffected
 
 ## Plan
@@ -39,3 +39,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: splitting notes 
 - 2026-11-04T20:48:50Z mellow-newt backlog → todo
 - 2026-11-05T22:51:12Z daring-eel todo → doing
 - 2026-11-05T22:51:31Z daring-eel: wrote the plan
+- 2026-11-05T22:59:54Z daring-eel: ticked acceptance criteria
