@@ -1,6 +1,6 @@
 ---
 title: Give each `chitty run` session one actor, whatever the agent
-status: todo
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-04
@@ -30,3 +30,4 @@ Cold read by a fresh Sonnet subagent with `TASK-155`, 2026-11-04. Fixed: the hel
 - 2026-11-04T15:38:27Z mellow-newt → backlog
 - 2026-11-04T15:40:06Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T15:40:06Z mellow-newt backlog → todo
+- 2026-11-05T16:43:54Z plucky-newt todo → doing
