@@ -1,6 +1,6 @@
 ---
 title: Mark Chitty's block in `AGENTS.md` with strict begin and end comments
-status: todo
+status: doing
 priority: medium
 parent: TASK-140
 created: 2026-11-04
@@ -53,3 +53,4 @@ Cold read by a fresh Sonnet subagent with `TASK-145`, 2026-11-04. Fixed: a damag
 
 - 2026-11-04T12:31:58Z lively-panda → todo
 - 2026-11-04T12:34:33Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-05T21:47:42Z intrepid-eel todo → doing
