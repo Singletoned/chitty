@@ -1,6 +1,6 @@
 ---
 title: Log usage for failed and interrupted runs
-status: blocked
+status: review
 priority: high
 depends_on:
   - TASK-127
@@ -74,3 +74,4 @@ Implemented a single usage-reading finally path so failed, interrupted, and unch
 - 2026-11-05T16:40:42Z brisk-eel: changed owner, acceptance criteria, notes
 - 2026-11-05T16:40:42Z brisk-eel review → blocked
 - 2026-11-05T17:04:59Z mellow-newt: changed owner; ticked acceptance criteria
+- 2026-11-05T17:05:12Z mellow-newt blocked → review
