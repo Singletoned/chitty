@@ -25,10 +25,14 @@ Out of scope: choosing a model from the owner, which remains a forwarded argumen
 
 - [ ] `PLAN.md` and `README.md` describe the rules
 - [ ] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
+- [ ] Tests with tickets owned by `opus` show plain `chitty next`, and a real `chitty run` with a fake agent, skipping them at `todo` and `doing`, which fail without the change, and selecting one at `review`, and still skipping `human` at every status
+- [ ] Tests show `--owner opus` on `chitty next` and `chitty run` selecting only that owner's tickets, whichever side of the forwarded arguments it comes, `--owner` after `--` being forwarded, and `--owner human`, `--owner ""` and `--ticket` with `--owner` each refused by `chitty run` with nothing committed
 
 ## Notes
 
 Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-197/1`. The code took about 7 minutes, the tests failed without the fix and passed with it, and `make check` exited 0. Fixed: `--owner` with `--ticket` and an empty owner were unhandled; other repositories may have other owners through `import_backlog.py`, so my claim that nothing changes was too broad; the reservation ending at `review` is now stated as deliberate; the MCP tool is decided rather than conditional; and the `--ticket` clause now needs its own test, which the reader itself left out. It confirmed `next_action` has only three callers. Rejected: clearing the owner at `review`, which is out of scope. Another read follows, since this came back with changes.
+
+Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-197/2`. Serious, fixed: `--owner human` was refused only after `refresh_setup` and the inbox pull could change things, so all refusals now come first. Also fixed: a failed review was unhandled, and it now returns to the owner, so "the reservation ends at `review`" became "reserves the work and not its review"; `README.md` was claimed to say something it does not yet; a test through real `chitty run` is required, since `next_action` alone misses option handling; which cases must fail first; and `--owner` after `--`. Rejected: removing the default on `owner`, because `next_action` has callers that want none, and `None` means no filter rather than hiding a mistake. A third read follows.
 
 ## History
 
@@ -37,3 +41,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold
 - 2026-11-05T18:28:37Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:39:10Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:39:12Z mellow-newt: changed acceptance criteria
+- 2026-11-05T18:39:13Z mellow-newt: changed acceptance criteria, notes
