@@ -1,10 +1,12 @@
 import asyncio
 import hashlib
+import io
 import json
 import os
 import stat
 import subprocess
 import sys
+from contextlib import redirect_stderr
 from pathlib import Path
 from unittest.mock import patch
 
@@ -14,6 +16,7 @@ from mcp_types import CallToolResult
 from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
 from chitty.mcp import server
+from chitty.run import _read_usage, _record_usage
 from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
 
@@ -907,6 +910,12 @@ class TestNext(CliTestCase):
             )
             changed = self.run_cli("run")
             self.assertEqual(changed.stdout, "TASK-1: doing → blocked\n")
+            log = self.tmp / "data" / "chitty" / "usage" / "repo.jsonl"
+            records = [json.loads(line) for line in log.read_text().splitlines()]
+            self.assertEqual(
+                [record["status_after"] for record in records], ["doing", "doing", "blocked"]
+            )
+            self.assertTrue(all(record["models"] is None for record in records))
             no_next = self.run_cli("run", exit_code=1)
             self.assertIn("no next ticket", no_next.stderr)
             self.add("Again")
@@ -1010,6 +1019,72 @@ class TestNext(CliTestCase):
         self.assertEqual(records[0]["status_before"], "doing")
         self.assertEqual(records[0]["status_after"], "blocked")
         self.assertEqual(self.git("status", "--porcelain"), "")
+
+    def test_usage_log_write_failure_warns_without_raising(self):
+        stderr = io.StringIO()
+        with (
+            patch("chitty.run._append_usage", side_effect=OSError("disk full")),
+            redirect_stderr(stderr),
+        ):
+            _record_usage("repo", {})
+        self.assertIn("warning: cannot write usage log: disk full", stderr.getvalue())
+
+    def test_usage_validation_warns_and_accepts_null_cost(self):
+        usage = self.tmp / "usage.json"
+        usage.write_text(
+            json.dumps(
+                {
+                    "sessions": {
+                        "session": [
+                            {
+                                "provider": "p",
+                                "model": "m",
+                                "input": 1,
+                                "output": 2,
+                                "cacheRead": 3,
+                                "cacheWrite": 4,
+                                "cost": None,
+                            },
+                            {
+                                "provider": "p",
+                                "model": "m",
+                                "input": 5,
+                                "output": 6,
+                                "cacheRead": 7,
+                                "cacheWrite": 8,
+                                "cost": 1,
+                            },
+                        ]
+                    }
+                }
+            )
+        )
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            models = _read_usage(usage)
+        self.assertEqual(models[0]["cost"], None)
+        self.assertEqual(stderr.getvalue(), "")
+        self.assertEqual(
+            models,
+            [
+                {
+                    "provider": "p",
+                    "model": "m",
+                    "input": 6,
+                    "output": 8,
+                    "cacheRead": 10,
+                    "cacheWrite": 12,
+                    "cost": None,
+                }
+            ],
+        )
+        invalid = self.tmp / "invalid.json"
+        invalid.write_text("not json")
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            self.assertIsNone(_read_usage(invalid))
+            self.assertIsNone(_read_usage(self.tmp / "missing.json"))
+        self.assertIn("warning:", stderr.getvalue())
 
     def test_run_logs_under_project_added_by_setup_refresh(self):
         config = self.root / "chitty.toml"
