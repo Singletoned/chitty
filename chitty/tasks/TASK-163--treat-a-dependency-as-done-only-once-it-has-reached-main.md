@@ -21,6 +21,13 @@ Merging before committing `done` was considered and rejected: a failed review mu
 - [ ] Tests show a dependent `todo` ticket skipped while its dependency is `done` or archived only on an unmerged branch, and selected once `main` says so, including after the branch is deleted and after a title change
 - [ ] Tests show a repository with no `main` branch keeping today's behaviour, and a dependency in the `human` context working
 
+## Plan
+
+1. Inspect dependency readiness, Git helpers, model/store behavior, and existing tests.
+2. Add a Git helper that reads the dependency file from local main, handling missing main/outside Git with today's fallback and surfacing malformed/duplicate records.
+3. Gate next_action dependency readiness through that helper while preserving non-Git behavior and human-context support.
+4. Add regression tests for unmerged/merged/deleted/title-renamed/archive/no-main cases, run formatting and make check, then record verified criteria and handoff.
+
 ## Notes
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Replaced my rule: the newest copy's ref cannot answer this, for the reasons now in the description, so it asks `main`. No existing tests should break, because dependency tests run outside Git. Accepted: an archived dependency passes wherever it was archived.
@@ -34,3 +41,4 @@ Third cold read by a fresh Sonnet subagent, 2026-11-04, of the redesign. The rul
 - 2026-11-04T20:24:24Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:24:25Z mellow-newt backlog → todo
 - 2026-11-05T18:46:52Z honest-vole todo → doing
+- 2026-11-05T18:47:04Z honest-vole: wrote the plan
