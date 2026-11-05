@@ -15,8 +15,14 @@ Directly after the `Backlog tasks need refinement` bullet in `guide.md`, add: "-
 ## Acceptance Criteria
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py` shows `guide()` containing `chitty guide plan`
+- [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `chitty guide plan`
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: a global `chitty init` in a worktree writes the wrong checkout's guide here. Also, comparing with `chitty guide` gives a false mismatch inside Pi, which adds an actor paragraph, and passed before any work, so the criterion now names the new text.
 
 ## History
 
 - 2026-11-05T14:13:55Z mellow-newt → backlog
 - 2026-11-05T14:23:14Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T14:23:15Z mellow-newt: changed acceptance criteria, notes
