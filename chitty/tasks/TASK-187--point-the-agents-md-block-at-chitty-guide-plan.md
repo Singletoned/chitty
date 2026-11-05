@@ -1,6 +1,6 @@
 ---
 title: Point the `AGENTS.md` block at `chitty guide plan`
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -31,6 +31,8 @@ Implementation will use the repository-local `uv run chitty init` as requested s
 
 Verified: the new TestGuide regression passes; `AGENTS.md` and `src/chitty/guide.md` contain the pointer; version is 0.1.32 versus main 0.1.31; `make check` passes.
 
+Reviewed: both acceptance criteria pass. The source and regenerated managed guide contain the exact chitty guide plan pointer, version 0.1.32 is above main's 0.1.31, the TestGuide regression is present, and make check plus npm test pass.
+
 ## Summary
 
 Implemented and committed in `8430ca2`. Added the `chitty guide plan` pointer to the source guide and regenerated the managed `AGENTS.md`/`chitty.toml` setup at version `0.1.32`; added regression coverage in `TestGuide` and updated the version-sensitive extension test. Verification: `make check` passes (ruff, pyright, 270 unittest tests, and Node tests). No follow-ups.
@@ -46,3 +48,5 @@ Implemented and committed in `8430ca2`. Added the `chitty guide plan` pointer to
 - 2026-11-05T21:18:20Z quick-toad: changed notes; ticked acceptance criteria
 - 2026-11-05T21:18:29Z quick-toad: changed summary
 - 2026-11-05T21:18:29Z quick-toad doing → review
+- 2026-11-05T22:12:39Z lively-newt: changed notes
+- 2026-11-05T22:12:39Z lively-newt review → done
