@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -41,3 +41,4 @@ Removed the redundant `chitty inbox --pull` step from both worker guide sources 
 - 2026-11-05T23:29:50Z open-dormouse: ticked acceptance criteria
 - 2026-11-05T23:29:51Z open-dormouse: ticked acceptance criteria
 - 2026-11-05T23:29:52Z open-dormouse: changed summary
+- 2026-11-05T23:30:02Z open-dormouse doing → review
