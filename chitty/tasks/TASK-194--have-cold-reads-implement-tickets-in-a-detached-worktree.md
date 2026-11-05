@@ -41,6 +41,8 @@ Found after the read, 2026-11-05, and serious: the three trial reads broke the g
 
 Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-194/2`. Fixed: where the new bullet goes, since "straight after it" could split the bullet; "commits nothing under `chitty/`" beside "commits its work"; and the `PLAN.md` criterion now requires the date and the reason. Rejected: checking the order of the commands in the test, because the wording is given whole. It found no contradiction between description and criteria. Another read follows, since these came back with changes.
 
+Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-194/3`: nothing serious. The test failed on all seven phrases without the change and passed with it, and `make check` exited 0. Rejected: testing `PLAN.md` and the removal of the old sentence, because the wording is given whole and a reviewer can compare it; a ticket that changes only Markdown and adds a test, which has something to run, so it is implemented; naming `uv` tools in a shared file, because the two variable names are what prevents the fault and do nothing elsewhere; a command wrapped inside backticks, which a worker can avoid when wrapping; and how to find `<n>`, because the same bullet gives `git for-each-ref refs/cold-read`.
+
 ## History
 
 - 2026-11-05T17:52:45Z mellow-newt → backlog
@@ -54,3 +56,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-05T18:13:36Z mellow-newt todo → backlog
 - 2026-11-05T18:19:21Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:19:22Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T18:31:22Z mellow-newt: changed notes
