@@ -1,6 +1,6 @@
 ---
 title: Stop `make check` hanging when stdin stays open
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -29,3 +29,4 @@ Same cold read as `TASK-144`. Fixed: the exact test and fix; a reproducible way 
 
 - 2026-11-04T12:32:20Z lively-panda → todo
 - 2026-11-04T12:34:35Z lively-panda: changed description, acceptance criteria, notes
+- 2026-11-05T22:04:14Z rosy-adder todo → doing
