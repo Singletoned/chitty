@@ -18,7 +18,7 @@ Add a function beside `next_action` in `src/chitty/store.py` that returns a `Nex
 
 Depends on `TASK-126`, which changes the command and `src/chitty/run.py`. `TASK-152` lands pending tickets at the start of a run; a run with `--ticket` skips that, because it must only touch that ticket.
 
-Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above. `--mode` from `TASK-162` with `--ticket` is refused by whichever of the two lands second.
+Out of scope: an option on `chitty next`, running several tickets, and overriding the refusals above. `--mode` from `TASK-186` with `--ticket` is refused by whichever of the two lands second.
 
 ## Acceptance Criteria
 
@@ -79,3 +79,4 @@ Cold read of the restored `--ticket` design by a fresh Sonnet subagent, 2026-11-
 - 2026-11-05T10:28:44Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:28:45Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T10:28:46Z mellow-newt backlog → todo
+- 2026-11-05T14:13:54Z mellow-newt: changed description
