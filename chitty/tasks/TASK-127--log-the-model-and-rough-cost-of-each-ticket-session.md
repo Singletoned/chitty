@@ -78,6 +78,10 @@ Depends on `TASK-147` and `TASK-153` only to order them first: all are high prio
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a preflight check for `project` would have refused legacy repositories that `refresh_setup` repairs a moment later, so the name is read after it, and the inbox behaviour stays. A missing usage file on a normal exit is now defined. Rejected: a criterion per log field, because criterion 3 already says every field, and the new rule is to state behaviour rather than list cases.
 
+## Summary
+
+Implemented machine-local per-session usage logging in chitty run: Pi receives a temporary usage file, model/session usage is aggregated, and complete JSONL records append under XDG data without dirtying repositories. Legacy repositories refresh their derived project name before logging while inbox pull remains opt-in based on the pre-refresh project. Verified with the new fake-Pi append/aggregation/clean-status test and make check (243 Python tests plus Node tests).
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
@@ -94,3 +98,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a prefligh
 - 2026-11-05T11:05:00Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T11:05:01Z able-yellowhammer: ticked acceptance criteria
 - 2026-11-05T11:05:02Z able-yellowhammer: ticked acceptance criteria
+- 2026-11-05T11:07:12Z able-yellowhammer: changed summary
