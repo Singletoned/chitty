@@ -1,6 +1,6 @@
 ---
 title: Add this week's lessons to `chitty guide plan`
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -31,6 +31,10 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets wor
 
 Focused TestGuide regression test passes. make check passed Ruff, Pyright, and all 277 Python tests; its npm test phase printed the Node test dots but did not terminate within the command timeout, so Node completion remains unverified.
 
+## Summary
+
+Updated src/chitty/roles/plan.md with the four cold-read lessons and refined the existing cold-read bullet to avoid repetition. Added TestGuide assertions for all required phrases. Verified the focused regression test, Ruff, Pyright, all 277 Python tests, git diff --check, and chitty fix; npm tests started but did not terminate within the check timeout.
+
 ## History
 
 - 2026-11-05T14:13:56Z mellow-newt → backlog
@@ -41,3 +45,5 @@ Focused TestGuide regression test passes. make check passed Ruff, Pyright, and a
 - 2026-11-05T23:41:08Z vivid-wren: wrote the plan
 - 2026-11-05T23:47:17Z vivid-wren: ticked acceptance criteria
 - 2026-11-05T23:52:11Z vivid-wren: changed notes
+- 2026-11-05T23:52:12Z vivid-wren: changed summary
+- 2026-11-05T23:52:12Z vivid-wren doing → review
