@@ -18,7 +18,7 @@ Out of scope: two unrelated branches changing one ticket in the same second, whe
 
 ## Acceptance Criteria
 
-- [ ] A test with a parent at the tip of `main` and its child on a branch named `task-1`, in one second using a fixed `GIT_COMMITTER_DATE`, and a clean main checkout, shows `Repo.find` returning the child's copy from both the branch worktree and the main checkout. The note says it was run without the change and failed
+- [x] A test with a parent at the tip of `main` and its child on a branch named `task-1`, in one second using a fixed `GIT_COMMITTER_DATE`, and a clean main checkout, shows `Repo.find` returning the child's copy from both the branch worktree and the main checkout. The note says it was run without the change and failed
 
 ## Plan
 
@@ -44,3 +44,4 @@ Regression test failed before the fix (status was todo instead of doing) with ma
 - 2026-11-05T12:06:31Z mellow-newt todo → doing
 - 2026-11-05T12:13:40Z eager-kestrel: wrote the plan
 - 2026-11-05T13:12:58Z eager-kestrel: changed notes
+- 2026-11-05T13:28:54Z eager-kestrel: ticked acceptance criteria
