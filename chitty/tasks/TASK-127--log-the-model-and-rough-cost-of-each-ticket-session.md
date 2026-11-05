@@ -1,6 +1,6 @@
 ---
 title: Log the model and rough cost of each ticket session
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-126
@@ -52,9 +52,13 @@ Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnes
 
 ## Acceptance Criteria
 
-- [ ] The log is written under a temporary `XDG_DATA_HOME` in tests, and a test shows `git status` in the repository stays clean after a run
-- [ ] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
-- [ ] A test shows a repository starting with no `project` logging under the one the refresh gives it
+- [x] The log is written under a temporary `XDG_DATA_HOME` in tests, and a test shows `git status` in the repository stays clean after a run
+- [x] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
+- [x] A test shows a repository starting with no `project` logging under the one the refresh gives it
+
+## Plan
+
+Inspect the existing run command, setup refresh, and tests; implement temporary usage-file wiring and post-Pi aggregation without changing the extension; add real-file unittest coverage for complete records, multiple sessions/models, append behavior, clean repository status, and refreshed project names; run format/check and update the ticket only after verification.
 
 ## Notes
 
@@ -74,6 +78,14 @@ Depends on `TASK-147` and `TASK-153` only to order them first: all are high prio
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a preflight check for `project` would have refused legacy repositories that `refresh_setup` repairs a moment later, so the name is read after it, and the inbox behaviour stays. A missing usage file on a normal exit is now defined. Rejected: a criterion per log field, because criterion 3 already says every field, and the new rule is to state behaviour rather than list cases.
 
+Review failed (tests): Acceptance criterion 3 is not met. The submitted tests exercise a repository with an existing project name and only verify the no-project case stops before Pi; none demonstrates a successful run logging under the project name added by refresh_setup. Add a real-file test that starts without project, lets refresh_setup derive it, runs fake Pi to a status change, and asserts the usage file uses that refreshed name.
+
+Reviewed: inspected the implementation and acceptance tests; targeted usage tests and full unittest suite (244 tests) pass, with make check's formatter, ruff, and pyright checks passing. The log is machine-local, aggregates sessions/models, appends records, and handles refreshed project names.
+
+## Summary
+
+Added a real-file regression test proving a repository without a project is refreshed to the derived name and its successful run appends usage under that name. Verified the targeted test, chitty fix, and make check (244 Python tests plus Node tests).
+
 ## History
 
 - 2026-11-03T16:46:06Z lively-panda → todo
@@ -85,3 +97,17 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: a prefligh
 - 2026-11-04T15:11:32Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T15:12:22Z mellow-newt: changed dependencies, notes
 - 2026-11-04T15:17:31Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-05T10:42:07Z able-yellowhammer todo → doing
+- 2026-11-05T10:42:20Z able-yellowhammer: wrote the plan
+- 2026-11-05T11:05:00Z able-yellowhammer: ticked acceptance criteria
+- 2026-11-05T11:05:01Z able-yellowhammer: ticked acceptance criteria
+- 2026-11-05T11:05:02Z able-yellowhammer: ticked acceptance criteria
+- 2026-11-05T11:07:12Z able-yellowhammer: changed summary
+- 2026-11-05T11:07:13Z able-yellowhammer doing → review
+- 2026-11-05T11:10:26Z brisk-raven: changed acceptance criteria, notes
+- 2026-11-05T11:10:26Z brisk-raven review → doing
+- 2026-11-05T12:07:34Z jolly-newt: ticked acceptance criteria
+- 2026-11-05T12:07:35Z jolly-newt: changed summary
+- 2026-11-05T12:07:36Z jolly-newt doing → review
+- 2026-11-05T12:12:53Z kind-otter: changed notes
+- 2026-11-05T12:12:53Z kind-otter review → done
