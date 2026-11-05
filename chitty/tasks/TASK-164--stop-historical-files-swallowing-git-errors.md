@@ -1,6 +1,6 @@
 ---
 title: Stop `historical_files` swallowing Git errors
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -39,3 +39,4 @@ Removed the broad ChittyError fallback from historical_files while preserving an
 - 2026-11-05T19:18:59Z brisk-newt: wrote the plan
 - 2026-11-05T19:27:58Z brisk-newt: ticked acceptance criteria
 - 2026-11-05T19:27:58Z brisk-newt: changed summary
+- 2026-11-05T19:27:59Z brisk-newt doing → review
