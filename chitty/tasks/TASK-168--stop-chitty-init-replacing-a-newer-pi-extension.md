@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty init` replacing a newer Pi extension
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -32,3 +32,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the state file's format
 - 2026-11-04T21:00:16Z mellow-newt → backlog
 - 2026-11-04T21:01:54Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:01:55Z mellow-newt backlog → todo
+- 2026-11-05T20:24:26Z kind-adder todo → doing
