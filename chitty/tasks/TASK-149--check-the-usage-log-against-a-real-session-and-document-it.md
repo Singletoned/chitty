@@ -16,8 +16,8 @@ Out of scope: any report, which is `TASK-111`.
 
 ## Acceptance Criteria
 
-- [ ] A note records a real session's log line and session-file sum, and explains any difference
-- [ ] `PLAN.md` and `README.md` describe the log and say its costs are list prices
+- [x] A note records a real session's log line and session-file sum, and explains any difference
+- [x] `PLAN.md` and `README.md` describe the log and say its costs are list prices
 
 ## Plan
 
@@ -39,3 +39,4 @@ Real Pi session verification (scratch repo `task149-scratch`, 2026-11-05): usage
 - 2026-11-05T18:20:16Z friendly-eel todo → doing
 - 2026-11-05T18:20:28Z friendly-eel: wrote the plan
 - 2026-11-05T18:23:22Z friendly-eel: changed notes
+- 2026-11-05T18:27:35Z friendly-eel: ticked acceptance criteria
