@@ -28,11 +28,18 @@ This file ships to every repository, so do not name `make`.
 
 Out of scope: having Chitty enforce the format of a failure note, and which model reviews.
 
+## Acceptance Criteria
+
+- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
+- [ ] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, no longer containing `such as a throwaway failing test`, and not matching `\bmake\b`
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: one criterion could pass on words already in the file, so it is now two naming exact phrases. Also fixed: failures with nothing to run, such as a missing file, a wrong ticket or a broken environment, which the rule would have forbidden; a reviewer unable to demonstrate a claim files a ticket; not naming `make`, since the file ships to every repository; the wording is given outright for a cheap worker; and `guide.md` left alone is stated. It confirmed no `chitty init` or version bump is needed. Rejected: folding this into `TASK-167`, which waits on `TASK-166` and `TASK-151`, because this is cheap to have now, so `TASK-167` is told to keep the rule instead.
 
 Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first read of this kind here, kept at `refs/cold-read/TASK-193/1`. Serious, fixed: the wording I gave could be read as dropping the note's required form, its causes and `--uncheck`, so both bullets are now given whole; and "file a ticket" contradicted failing on a broken environment or a missing file, so it now applies only when the code runs and the defect cannot be shown. Also fixed: tests collapse whitespace; ticket advice is no longer said twice; and the `make` check covers the whole file, which has no other use of it. Rejected: testing more than phrases, because the bullets are given word for word and the reviewer can compare them. Another read follows.
+
+Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-193/2`. Serious, fixed: my rewrite still contradicted itself, because "fail only" excluded the cases the failure note then asked for, namely a criterion nothing exercises, a missing file, a wrong ticket and a broken environment, so the first bullet now names them. Also fixed: "what was run" now applies only when code ran; the causes had no meaning in this file, so it now uses `PLAN.md`'s definition; and the test checks the old wording is gone. A third read follows.
 
 ## History
 
@@ -49,3 +56,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first read of 
 - 2026-11-05T18:20:00Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:31:03Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:31:04Z mellow-newt: changed acceptance criteria
+- 2026-11-05T18:31:05Z mellow-newt: changed acceptance criteria, notes
