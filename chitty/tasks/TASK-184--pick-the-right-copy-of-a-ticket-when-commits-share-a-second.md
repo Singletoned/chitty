@@ -1,6 +1,6 @@
 ---
 title: Pick the right copy of a ticket when commits share a second
-status: backlog
+status: todo
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -29,3 +29,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the serious one, that t
 - 2026-11-05T12:04:19Z mellow-newt → backlog
 - 2026-11-05T12:06:13Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T12:06:14Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T12:06:15Z mellow-newt backlog → todo
