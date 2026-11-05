@@ -24,6 +24,10 @@ Failure names the changed files and both versions.
 - [ ] Tests show a branch behind `main` that changed nothing passing, running on `main` passing, and a `--depth 1` clone at a tag with no `main` passing with a notice
 - [ ] `make check` runs it
 
+## Plan
+
+Implement a standard-library/Git-only version-bump guard script and invoke it from `make check`. Add temporary real-Git-repository tests covering watched-file changes, version comparisons, unrelated config changes, branch/main edge cases, and missing-main tags. Run the focused tests, then `make check` and tick only verified criteria.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the release workflow was false as written, because its checkout has no `main`; so a missing `main` passes with a notice. Comparing with `main`'s tip alone would blame a branch for files it never touched, so what changed comes from the merge-base and the version from the tip. Also the script's location, the template's extraction and `roles/`, which exists now. No `__version__` bump is needed: the script reaches no other repository.
@@ -34,3 +38,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the 
 - 2026-11-04T20:47:38Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:47:39Z mellow-newt backlog → todo
 - 2026-11-05T22:22:37Z jolly-kestrel todo → doing
+- 2026-11-05T22:22:58Z jolly-kestrel: wrote the plan
