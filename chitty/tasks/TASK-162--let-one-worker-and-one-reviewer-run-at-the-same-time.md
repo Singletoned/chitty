@@ -16,17 +16,16 @@ The human asked for this on 2026-11-04: running one worker and one reviewer toge
 
 `TASK-186` adds `--mode work` and `--mode review`. The sets do not overlap at the moment of selecting, so one run of each cannot start on the same ticket. A ticket that fails review moves to `doing` and may be taken by the worker while the reviewer's session is ending, sharing its worktree briefly, which is accepted.
 
-The test for overlapping sessions runs real `chitty run` subprocesses, because `run` changes `os.environ` and the tests change directory. To avoid timeouts, the fake work agent starts the `--mode review` run itself and waits for it to finish, so the two are guaranteed to overlap. It finds `chitty` as `Path(sys.executable).parent / "chitty"`, as existing tests do. Before starting, commit the review ticket on its branch, and use `setup = "true"` with a current `chitty_version`, so neither run writes to the main checkout. Configure an `agent_command` containing `{mode}`, so the fake knows which it is.
+The test for overlapping sessions runs real `chitty run` subprocesses, because `run` changes `os.environ` and the tests change directory. To avoid timeouts, the outer run is `chitty run --mode work`, and its fake agent starts the `--mode review` run itself and waits for it to finish, so the two are guaranteed to overlap. It finds `chitty` as `Path(sys.executable).parent / "chitty"`, as existing tests do. Before starting, commit the review ticket on its branch, and use `setup = "true"` with a current `chitty_version`, so neither run writes to the main checkout. Configure an `agent_command` containing `{mode}`, so the fake knows which it is.
 
 `test_suggestions_never_change_the_real_inbox` in `tests/test_inbox.py` compares the whole real inbox before and after, so another session's `chitty suggest` would wrongly fail a review. Have it look only for the suggestion it created.
 
-What else the two runs share, for the documentation to state: both write to the main checkout, through setup refresh, inbox pull and the reviewer's merge, and a collision fails loudly on Git's lock or a dirty file, so rerun it. Two branches bumping to the same `__version__` merge without a conflict, so one change may not get its own version; this is accepted, and `TASK-108` holds a candidate check. `PLAN.md`'s "at most one ticket is in `work` at a time, merged before the next starts" must change to say one worker and one reviewer.
+What else the two runs share, for the documentation to state: both write to the main checkout, through setup refresh, inbox pull and the reviewer's merge, and a collision fails loudly on Git's lock or a dirty file, so rerun it. Two branches bumping to the same `__version__` merge without a conflict, so one change may not get its own version; this is accepted, and `TASK-108` holds a candidate check. Replace the sentence `TASK-186` added to `README.md` and `PLAN.md`, saying to run the modes one after the other. `PLAN.md`'s "at most one ticket is in `work` at a time, merged before the next starts" must change to say one worker and one reviewer.
 
 Not in scope: two workers or two reviewers, because the claim is not atomic; and a loop that waits for tickets.
 
 ## Acceptance Criteria
 
-- [ ] A test using real `chitty run` subprocesses overlaps a work session and a review session on different tickets, and both report the right status with different actors
 - [ ] `README.md` and `PLAN.md` describe running one of each, including what a collision looks like, and the inbox test no longer reads other sessions' suggestions
 
 ## Notes
@@ -46,3 +45,4 @@ Split on 2026-11-05: selection with `--mode` moved to `TASK-186`, so a person ca
 - 2026-11-05T10:07:37Z mellow-newt: changed description
 - 2026-11-05T10:23:49Z mellow-newt: changed description
 - 2026-11-05T14:13:50Z mellow-newt: changed dependencies, description, acceptance criteria, notes
+- 2026-11-05T14:23:11Z mellow-newt: changed description, acceptance criteria
