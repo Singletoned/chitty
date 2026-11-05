@@ -1,6 +1,6 @@
 ---
 title: Add `chitty renumber` to repair tickets sharing an ID
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-177
@@ -34,3 +34,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: my premise was
 - 2026-11-05T14:46:38Z mellow-newt: changed dependencies, description, acceptance criteria
 - 2026-11-05T14:46:39Z mellow-newt: changed acceptance criteria
 - 2026-11-05T14:46:40Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T14:46:41Z mellow-newt backlog → todo
