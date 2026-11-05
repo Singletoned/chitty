@@ -18,7 +18,7 @@ Merging before committing `done` was considered and rejected: a failed review mu
 
 ## Acceptance Criteria
 
-- [ ] Tests show a dependent `todo` ticket skipped while its dependency is `done` or archived only on an unmerged branch, and selected once `main` says so, including after the branch is deleted and after a title change
+- [x] Tests show a dependent `todo` ticket skipped while its dependency is `done` or archived only on an unmerged branch, and selected once `main` says so, including after the branch is deleted and after a title change
 - [ ] Tests show a repository with no `main` branch keeping today's behaviour, and a dependency in the `human` context working
 
 ## Plan
@@ -42,3 +42,4 @@ Third cold read by a fresh Sonnet subagent, 2026-11-04, of the redesign. The rul
 - 2026-11-04T20:24:25Z mellow-newt backlog → todo
 - 2026-11-05T18:46:52Z honest-vole todo → doing
 - 2026-11-05T18:47:04Z honest-vole: wrote the plan
+- 2026-11-05T19:03:03Z honest-vole: ticked acceptance criteria
