@@ -12,7 +12,7 @@ From `docs/pi-token-usage.md`, recommendation 6. `PLAN.md` is the most expensive
 
 ## Acceptance Criteria
 
-- [ ] `AGENTS.md` says to read only the relevant section of `PLAN.md`, and says how to find it
+- [x] `AGENTS.md` says to read only the relevant section of `PLAN.md`, and says how to find it
 
 ## Plan
 
@@ -29,3 +29,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. No faults. Raised to high, bec
 - 2026-11-04T21:44:26Z mellow-newt backlog → todo
 - 2026-11-05T20:36:25Z calm-otter todo → doing
 - 2026-11-05T20:36:37Z calm-otter: wrote the plan
+- 2026-11-05T20:41:52Z calm-otter: ticked acceptance criteria
