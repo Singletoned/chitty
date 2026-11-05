@@ -16,7 +16,16 @@ Add `--topo-order` to the `git log` call in `_latest_changes`, so a child always
 
 Out of scope: two unrelated branches changing one ticket in the same second, where neither copy is an ancestor and the choice stays arbitrary. No version bump is needed for this ticket: it changes nothing `chitty init` delivers.
 
+## Acceptance Criteria
+
+- [ ] A test with a parent at the tip of `main` and its child on a branch named `task-1`, in one second using a fixed `GIT_COMMITTER_DATE`, and a clean main checkout, shows `Repo.find` returning the child's copy from both the branch worktree and the main checkout. The note says it was run without the change and failed
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the serious one, that the criterion could pass with nothing built, because a child normally already comes first and a branch sorting before `main` would never lose, so it now names `main` and `task-1`; I ran this rather than assuming it. Also fixed: the stated cause, leaving `store.py` alone, and the cost. Filed separately: a conflict-resolved merge possibly dropping a ticket. No version bump: confirmed.
+
 ## History
 
 - 2026-11-05T12:04:19Z mellow-newt → backlog
 - 2026-11-05T12:06:13Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T12:06:14Z mellow-newt: changed acceptance criteria, notes
