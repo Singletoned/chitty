@@ -12,7 +12,7 @@ from uuid import uuid4
 from chitty import git
 from chitty.errors import ChittyError
 from chitty.inbox import pull as pull_suggestions
-from chitty.store import Edit, NextAction, Repo, next_action
+from chitty.store import Edit, NextAction, Repo, guide, next_action
 
 
 class RunInterrupted(Exception):
@@ -117,10 +117,14 @@ def _agent_command(repo: Repo, action: NextAction) -> tuple[str, ...]:
         words = shlex.split(command)
     except ValueError as error:
         raise ChittyError(f"invalid agent_command: {error}") from None
-    if "{mode}" not in command or "{id}" not in command:
-        raise ChittyError("agent_command must contain both {mode} and {id}")
+    if ("{mode}" not in command or "{id}" not in command) and "{prompt}" not in command:
+        raise ChittyError("agent_command must contain both {mode} and {id}, or {prompt}")
+    prompt = guide(action.mode, str(action.id)) if "{prompt}" in command else ""
     rendered = tuple(
-        os.path.expanduser(word).replace("{mode}", action.mode).replace("{id}", str(action.id))
+        os.path.expanduser(word)
+        .replace("{mode}", action.mode)
+        .replace("{id}", str(action.id))
+        .replace("{prompt}", prompt)
         for word in words
     )
     first = rendered[0]

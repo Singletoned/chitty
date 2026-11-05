@@ -87,8 +87,10 @@ then uses priority and task ID across all non-human contexts. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `chitty run` requires
 `autocommit = true`, `setup` (for example, `setup = "make install"`), and an
 `agent_command`. The command is parsed without a shell; it must include `{mode}`
-and `{id}`, which Chitty replaces after splitting it. `chitty run` creates or
-reuses the ticket worktree, runs setup there, claims a `todo` ticket, and invokes
+and `{id}`, or `{prompt}`. Chitty replaces placeholders after splitting it;
+`{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
+`chitty run` creates or reuses the ticket worktree, runs setup there, claims a
+`todo` ticket, and invokes
 the configured agent from that worktree. Pass agent options with `chitty run --
 --model MODEL`. It succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
@@ -127,7 +129,9 @@ each ticket worktree before the agent starts; it is parsed without a shell. Set
 `agent_command` to the agent invocation, for example
 `"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
 Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
-and the selected ticket ID. `chitty init --autocommit` enables
+and the selected ticket ID. `{prompt}` can replace both placeholders when the
+agent accepts Chitty's role instructions as one argument. `chitty init --autocommit`
+enables
 `autocommit = true` and commits only the repository setup files it changed
 (`chitty.toml` or `pyproject.toml`, `.gitignore`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
 dirty Git working tree. Commits for task work should end with
