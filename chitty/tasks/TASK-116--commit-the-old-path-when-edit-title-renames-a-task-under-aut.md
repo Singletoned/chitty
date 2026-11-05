@@ -17,9 +17,15 @@ Root cause, reproduced in a scratch repository: `git mv` has already removed the
 
 - [ ] A test renames a task under autocommit and shows `git status --porcelain` empty and the commit removing the old path, with an unrelated staged file left out of the commit
 
+## Plan
+
+Add a regression test in `tests/test_autocommit.py` that enables autocommit, stages an unrelated file, renames a task through `edit --title`, then verifies the old path is deleted by `HEAD`, the task paths are clean, and the unrelated staged file remains uncommitted. Run it first to reproduce the failure. Update `git.commit` to inspect staged paths with rename detection disabled, so both sides of a staged rename are included in the path-limited commit. Run the focused test and `make check`.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Added the root cause, and a check that the fix does not sweep in other staged files. Rejected: the other batch writes and the failure path, which go through the same line.
+
+Implementation choice: use Git `--no-renames` when deriving staged paths. This is a narrowly scoped, cheap-to-reverse fix that makes a staged rename expose both its old deletion and new addition; the code comment will explain this.
 
 ## History
 
@@ -27,3 +33,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Added the root cause, and a ch
 - 2026-11-04T19:36:33Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T19:36:34Z mellow-newt backlog → todo
 - 2026-11-05T07:42:14Z jolly-crane todo → doing
+- 2026-11-05T07:45:07Z jolly-crane: changed notes; wrote the plan
