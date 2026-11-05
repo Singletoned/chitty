@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` run a chosen ticket with `--ticket`
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-126
@@ -78,3 +78,4 @@ Cold read of the restored `--ticket` design by a fresh Sonnet subagent, 2026-11-
 - 2026-11-05T10:28:43Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:28:44Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:28:45Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T10:28:46Z mellow-newt backlog → todo
