@@ -30,7 +30,7 @@ Out of scope: switching automatically when tokens run out.
 
 - [x] Tests show an unknown name failing with the available names, and an invalid entry failing like `agent_command`, with no claim and no worktree
 - [x] `README.md` and `PLAN.md` describe the table, this repository sets the `claude` entry, and `__version__` is bumped above `main`'s
-- [ ] Tests with fake agents show `--agent` starting that command for one run, with other arguments forwarded and the option not, and the default used without it
+- [x] Tests with fake agents show `--agent` starting that command for one run, with other arguments forwarded and the option not, and the default used without it
 
 ## Plan
 
@@ -57,3 +57,4 @@ Changed 2026-11-04: the human chose an allow-list built from the command table o
 - 2026-11-05T17:00:24Z open-eel: wrote the plan
 - 2026-11-05T17:12:59Z open-eel: ticked acceptance criteria
 - 2026-11-05T17:13:00Z open-eel: ticked acceptance criteria
+- 2026-11-05T17:13:01Z open-eel: ticked acceptance criteria
