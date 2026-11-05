@@ -21,7 +21,7 @@ The test for overlapping sessions runs real `chitty run` subprocesses, because `
 
 What else the two runs share, for the documentation to state: both write to the main checkout, through setup refresh, inbox pull and the reviewer's merge, and a collision fails loudly on Git's lock or a dirty file, so rerun it. Two branches bumping to the same `__version__` merge without a conflict, so one change may not get its own version; this is accepted, and `TASK-108` holds a candidate check. `PLAN.md`'s "at most one ticket is in `work` at a time, merged before the next starts" must change to say one worker and one reviewer.
 
-Not in scope: two workers or two reviewers, because the claim is not atomic; a loop that waits for tickets; and `--mode` alongside a named ticket from `TASK-138`, which should be refused if both have landed.
+Not in scope: two workers or two reviewers, because the claim is not atomic; a loop that waits for tickets; and `--mode` alongside `--ticket` from `TASK-138`, which should be refused if both have landed.
 
 ## Acceptance Criteria
 
@@ -42,3 +42,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the error text, 
 - 2026-11-04T20:22:55Z mellow-newt: changed description, notes
 - 2026-11-04T20:22:56Z mellow-newt backlog → todo
 - 2026-11-05T10:07:37Z mellow-newt: changed description
+- 2026-11-05T10:23:49Z mellow-newt: changed description
