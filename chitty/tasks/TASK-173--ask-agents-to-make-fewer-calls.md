@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -35,3 +35,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: this conflicted with "t
 - 2026-11-04T21:41:38Z mellow-newt: changed description
 - 2026-11-04T21:44:28Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:44:29Z mellow-newt backlog → todo
+- 2026-11-05T23:09:47Z lively-newt todo → doing
