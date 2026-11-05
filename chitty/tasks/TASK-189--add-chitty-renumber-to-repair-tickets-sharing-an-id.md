@@ -21,9 +21,16 @@ It must not rewrite references in other tickets, because a `depends_on` or `pare
 ## Acceptance Criteria
 
 - [ ] A test with two files sharing `TASK-24` shows `chitty renumber <path>` moving only that file to the next number, recording `moved_from`, `chitty check` then passing, and tickets naming `TASK-24` listed and unchanged
+- [ ] Tests show it refusing a path outside a context and a ticket whose ID is unique, with no file changed, and accepting an archived path and a path relative to the working directory
+- [ ] `README.md` and `PLAN.md` describe it, `chitty renumber --help` works, and `renumber` is in the MCP tool list with a description, including the parity test in `tests/test_mcp.py` and the list in `PLAN.md`
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: my premise was wrong. It reproduced a merge leaving two files with one ID: they collapse into one ticket in `show`, `edit` and `list`, so the command must find files through `scan`, and `move` cannot be reused directly. Also fixed: depending on `TASK-177`, since a number chosen from this checkout alone could recreate the collision; MCP having no `--help`; and archived and relative paths.
 
 ## History
 
 - 2026-11-05T14:43:40Z mellow-newt → backlog
 - 2026-11-05T14:46:38Z mellow-newt: changed dependencies, description, acceptance criteria
 - 2026-11-05T14:46:39Z mellow-newt: changed acceptance criteria
+- 2026-11-05T14:46:40Z mellow-newt: changed acceptance criteria, notes
