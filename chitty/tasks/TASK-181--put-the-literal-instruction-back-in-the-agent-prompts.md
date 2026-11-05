@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: todo
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -31,3 +31,4 @@ Same fault as the cold read of `TASK-187` found, 2026-11-05: `chitty init` needs
 - 2026-11-05T09:53:16Z mellow-newt backlog → todo
 - 2026-11-05T14:23:24Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:25Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T23:30:15Z kind-jay todo → doing
