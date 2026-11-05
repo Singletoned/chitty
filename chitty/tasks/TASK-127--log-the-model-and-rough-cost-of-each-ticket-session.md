@@ -54,7 +54,7 @@ Out of scope: any report (`TASK-111` reads this log), budgets, and non-Pi harnes
 
 - [x] The log is written under a temporary `XDG_DATA_HOME` in tests, and a test shows `git status` in the repository stays clean after a run
 - [x] Tests with a fake `pi` that writes the usage file show one complete line with every field, two models summed across two session IDs, and a second run appending rather than overwriting
-- [ ] A test shows a repository starting with no `project` logging under the one the refresh gives it
+- [x] A test shows a repository starting with no `project` logging under the one the refresh gives it
 
 ## Plan
 
@@ -104,3 +104,4 @@ Implemented machine-local per-session usage logging in chitty run: Pi receives a
 - 2026-11-05T11:07:13Z able-yellowhammer doing → review
 - 2026-11-05T11:10:26Z brisk-raven: changed acceptance criteria, notes
 - 2026-11-05T11:10:26Z brisk-raven review → doing
+- 2026-11-05T12:07:34Z jolly-newt: ticked acceptance criteria
