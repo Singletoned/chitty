@@ -27,6 +27,9 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 ## Acceptance Criteria
 
 - [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
+- [ ] A test with a fake agent shows `chitty run <ID>` running a lower-priority `todo` ticket in work mode ahead of what `chitty next` selects, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
+- [ ] `README.md` and `PLAN.md` describe it, and a test shows the `chitty run --help` usage line containing `[ID]` and its description saying it runs the next ticket or the named one
+- [ ] A test shows other arguments reaching the agent after the ID but not the ID itself, `chitty run gpt-4` and `chitty run -e ./search.ts` forwarding every word, an ID not given first being forwarded, and `chitty run` with no ID behaving as before
 
 ## Notes
 
@@ -39,6 +42,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: this named
 Changed 2026-11-05 at the human's request: they asked for `chitty run TASK-178`, not `--ticket`, with it in the help text, and it is now high priority. The earlier objection to a positional argument still holds for a declared one, so this reads only a first word shaped like an ID. Earlier notes describe `--ticket`.
 
 Held in `backlog` while the rewrite is cold-read.
+
+Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still saying `--ticket`, which I knew about; how the ID reaches `run()`, so it is not forwarded too; loose help wording; and `gpt-4` matching `ID_RE`. The report accepted refusing that as an unknown ticket, but I required a known prefix instead, so model names are forwarded. Not split: four criteria.
 
 ## History
 
@@ -54,3 +59,4 @@ Held in `backlog` while the rewrite is cold-read.
 - 2026-11-05T10:08:34Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T10:08:35Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:08:36Z mellow-newt: changed acceptance criteria
+- 2026-11-05T10:08:37Z mellow-newt: changed acceptance criteria, notes
