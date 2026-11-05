@@ -15,7 +15,7 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 ## Acceptance Criteria
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
-- [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `literal single`
+- [x] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `literal single`
 
 ## Plan
 
@@ -37,3 +37,4 @@ Same fault as the cold read of `TASK-187` found, 2026-11-05: `chitty init` needs
 - 2026-11-05T14:23:25Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T23:30:15Z kind-jay todo → doing
 - 2026-11-05T23:30:30Z kind-jay: wrote the plan
+- 2026-11-05T23:40:00Z kind-jay: ticked acceptance criteria
