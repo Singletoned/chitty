@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: backlog
+status: todo
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -37,3 +37,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: one criterion 
 - 2026-11-05T17:09:01Z mellow-newt → backlog
 - 2026-11-05T17:10:22Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T17:10:23Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T17:10:24Z mellow-newt backlog → todo
