@@ -72,12 +72,27 @@ def run(repo: Repo, arguments: tuple[str, ...] = ()) -> RunResult:
     if completed.returncode:
         raise ChittyError(f"agent exited with status {completed.returncode}")
     # Pi commonly commits from this worktree. Reopen so history is re-read.
-    new_status = Repo.open(worktree).find(action.id).task.frontmatter.status
+    new_status = _status_after_agent(main_root, worktree, action)
     if new_status == old_status:
         raise ChittyError(
             f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
         )
     return RunResult(action, old_status, new_status)
+
+
+def _status_after_agent(main_root: Path, worktree: Path, action: NextAction) -> str:
+    if worktree.exists():
+        return Repo.open(worktree).find(action.id).task.frontmatter.status
+
+    # A passed review may merge and remove its worktree before `run` reports the result.
+    main_repo = Repo.open(main_root)
+    new_status = main_repo.find(action.id).task.frontmatter.status
+    branch = str(action.id).lower()
+    if git.has_local_branch(main_root, branch):
+        return new_status
+    if new_status != "done":
+        raise ChittyError(f"{action.id} was lost after its worktree and branch were removed")
+    return new_status
 
 
 def _main_checkout(root: Path) -> Path:

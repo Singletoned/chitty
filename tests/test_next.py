@@ -211,6 +211,102 @@ class TestNext(CliTestCase):
             self.git("log", "--format=%s", "main..task-1"),
         )
 
+    def test_run_reports_success_when_agent_merges_and_removes_worktree(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        worker = self.root / ".worktrees" / "task-1"
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib, subprocess\n"
+            "worker = pathlib.Path.cwd()\n"
+            "path = worker / 'chitty/tasks/TASK-1--todo.md'\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: done'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'finish'], check=True)\n"
+            "main = pathlib.Path(os.environ['MAIN'])\n"
+            "subprocess.run(['git', '-C', str(main), 'merge', '--quiet', 'task-1'], check=True)\n"
+            "subprocess.run([\n"
+            "    'git', '-C', str(main), 'worktree', 'remove', '--force', str(worker)\n"
+            "], check=True)\n"
+            "subprocess.run(['git', '-C', str(main), 'branch', '-D', 'task-1'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        os.environ["MAIN"] = str(self.root)
+        try:
+            result = self.run_cli("run")
+        finally:
+            os.environ["PATH"] = previous
+            os.environ.pop("MAIN", None)
+        self.assertEqual(result.stdout, "TASK-1: doing → done\n")
+        self.assertFalse(worker.exists())
+        self.assertEqual(self.git("branch", "--list", "task-1"), "")
+
+    def test_run_rejects_lost_ticket_when_worktree_and_branch_are_removed(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Work")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib, subprocess\n"
+            "main = pathlib.Path(os.environ['MAIN'])\n"
+            "worker = pathlib.Path.cwd()\n"
+            "branch = subprocess.check_output(\n"
+            "    ['git', 'branch', '--show-current'], text=True\n"
+            ").strip()\n"
+            "subprocess.run([\n"
+            "    'git', '-C', str(main), 'worktree', 'remove', '--force', str(worker)\n"
+            "], check=True)\n"
+            "subprocess.run(['git', '-C', str(main), 'branch', '-D', branch], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        os.environ["MAIN"] = str(self.root)
+        try:
+            result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
+            os.environ.pop("MAIN", None)
+        self.assertIn("TASK-1", result.stderr)
+        self.assertIn("worktree and branch were removed", result.stderr)
+
+        self.add("Review", status="review")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "review")
+        self.git("branch", "task-2")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        os.environ["MAIN"] = str(self.root)
+        try:
+            result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
+            os.environ.pop("MAIN", None)
+        self.assertIn("TASK-2", result.stderr)
+        self.assertIn("worktree and branch were removed", result.stderr)
+
     def test_run_inherits_stdin(self):
         config = self.root / "chitty.toml"
         config.write_text(
