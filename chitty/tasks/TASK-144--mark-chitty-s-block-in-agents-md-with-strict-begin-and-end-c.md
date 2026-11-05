@@ -43,7 +43,7 @@ Out of scope: CRLF, because `read_text` and `write_text` already normalise a who
 - [x] Tests show an old block migrated to markers with a following section keeping its heading and blank line, and a message on stderr
 - [x] `README.md` and `PLAN.md` describe the markers, and `__version__` is bumped above `main`'s
 - [x] Tests show a marked block replaced with text before and after it unchanged, including unheaded text after it and a guide containing a backslash, a second `chitty init` changing nothing, and `prettier` leaving the result unchanged
-- [ ] Tests show a begin with no end, an end with no begin, reversed markers and two pairs each failing `chitty init` with a message naming `AGENTS.md`, with the file unchanged, and a stale repository in that state warning on a write, with the write succeeding and the version not advanced
+- [x] Tests show a begin with no end, an end with no begin, reversed markers and two pairs each failing `chitty init` with a message naming `AGENTS.md`, with the file unchanged, and a stale repository in that state warning on a write, with the write succeeding and the version not advanced
 
 ## Plan
 
@@ -66,3 +66,4 @@ Cold read by a fresh Sonnet subagent with `TASK-145`, 2026-11-04. Fixed: a damag
 - 2026-11-05T22:03:47Z intrepid-eel: ticked acceptance criteria
 - 2026-11-05T22:03:48Z intrepid-eel: ticked acceptance criteria
 - 2026-11-05T22:03:49Z intrepid-eel: ticked acceptance criteria
+- 2026-11-05T22:03:50Z intrepid-eel: ticked acceptance criteria
