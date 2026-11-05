@@ -27,6 +27,7 @@ Out of scope: tooling that runs reads, which `TASK-125` holds, and deleting old 
 ## Acceptance Criteria
 
 - [ ] `PLAN.md`'s cold read paragraph describes implementing reads, reasoning reads, and why the work is kept under a ref
+- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `implements it from the ticket alone`, `with and without the fix`, `Either way, the reader reports done meaning`, `git worktree add --detach`, `git update-ref refs/cold-read/<ID>/<n> HEAD` and `git worktree remove --force`, and fails against the current `plan.md`
 
 ## Notes
 
@@ -34,9 +35,12 @@ Suggestion origin: echonomicon
 
 Refitted on 2026-11-05 with the human. The suggestion's other two parts, repeating reads and comparing decisions with criteria, are now a separate ticket. Its use of `git clone` is replaced by a detached worktree, which also has a real `.git`, so the `git archive` false failure it warned of does not apply.
 
+Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first using this method, kept at `refs/cold-read/TASK-194/1`. All commands in the method worked as written: the detached worktree, setup, `make check`, `update-ref`, `for-each-ref`, and the commit on no branch. Fixed: replacing the first sentence would have lost the list inside it; a test on exact phrases broke on line wrapping in my own wording; how `<n>` is chosen; where the bullet goes; and the criterion now covers the keeping and removal steps. Rejected: testing `PLAN.md`'s paragraph, which is prose for the reviewer to read; an 82-column line, since the limit applies to commands shown to people; and telling readers to use `uv run chitty`, because only this repository has a global `chitty` older than its checkout, and `plan.md` ships to all. Not repeated: nothing found was a fault of the design, and `TASK-195` is not yet decided.
+
 ## History
 
 - 2026-11-05T17:52:45Z mellow-newt → backlog
 - 2026-11-05T17:52:46Z mellow-newt: changed notes
 - 2026-11-05T17:53:53Z mellow-newt: changed title, priority, parent, description, acceptance criteria, notes
 - 2026-11-05T17:59:25Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T17:59:26Z mellow-newt: changed acceptance criteria, notes
