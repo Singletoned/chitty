@@ -14,7 +14,7 @@ Replace two whole bullets in `src/chitty/roles/review.md`, and no others, becaus
 
 Replace the bullet starting "Fail only" with:
 
-"Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet if nothing exercises it, if a file it needs is missing, or if the environment stopped you verifying it. A ticket that is itself wrong also fails. A claim about what code does when it runs must be run first, using an existing test, the project's check command or a throwaway test. Reasoning alone demonstrates nothing: if you can run the code but cannot show the defect, file a ticket instead of failing. File a ticket for other findings too."
+"Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet if nothing exercises it, if a file it needs is missing, or if the environment stopped you verifying it. A ticket that is itself wrong also fails, with the cause `design`. A claim about what code does when it runs must be run first, using an existing test, the project's check command or a throwaway test. Reasoning alone demonstrates nothing: if you can run the code but cannot show the defect, file a ticket instead of failing. File a ticket for other findings too."
 
 Replace the bullet starting "On failure" with:
 
@@ -41,6 +41,8 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first read of 
 
 Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-193/2`. Serious, fixed: my rewrite still contradicted itself, because "fail only" excluded the cases the failure note then asked for, namely a criterion nothing exercises, a missing file, a wrong ticket and a broken environment, so the first bullet now names them. Also fixed: "what was run" now applies only when code ran; the causes had no meaning in this file, so it now uses `PLAN.md`'s definition; and the test checks the old wording is gone. A third read follows.
 
+Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-193/3`: nothing serious. The test failed on all ten checks without the change and passed with it, and `make check` exited 0. Fixed: a wrong ticket now names its cause, one clause that the criteria's phrases still match, so no further read. Rejected: defining every cause in the file, because "earliest stage" with the list is enough and the file should stay short; a defect outside the criteria, which the bullet already allows to fail when demonstrated; an unmet criterion against an unshown defect, since the first is about a criterion and the second about a claim; and `src/chitty/guide.md` staying as it is, which is deliberate and does not contradict this.
+
 ## History
 
 - 2026-11-05T17:09:01Z mellow-newt → backlog
@@ -57,3 +59,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-05T18:31:03Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:31:04Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:31:05Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T18:35:43Z mellow-newt: changed description, notes
