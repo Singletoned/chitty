@@ -24,7 +24,6 @@ Out of scope: choosing a model from the owner, which remains a forwarded argumen
 ## Acceptance Criteria
 
 - [ ] `PLAN.md` and `README.md` describe the rules
-- [ ] Tests show `--owner opus` on `chitty next` and `chitty run` selecting only that owner's tickets, whichever side of the forwarded arguments it comes, and `--owner human`, `--owner ""` and `--ticket` with `--owner` each refused
 - [ ] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
 
 ## Notes
@@ -37,3 +36,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold
 - 2026-11-05T18:28:36Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:28:37Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:39:10Z mellow-newt: changed description, acceptance criteria
+- 2026-11-05T18:39:12Z mellow-newt: changed acceptance criteria
