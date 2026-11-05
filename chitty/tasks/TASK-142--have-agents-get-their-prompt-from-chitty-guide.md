@@ -27,6 +27,10 @@ Out of scope: continuing a stopped agent or any other per-agent integration, whi
 - [ ] A real `chitty run` work session is checked to start with the role's instructions, and the result is recorded in a ticket note
 - [ ] `README.md` and `PLAN.md` describe `{prompt}`, and `__version__` is bumped above `main`'s
 
+## Plan
+
+Implement prompt retrieval in both agent front ends. The Pi extension will run `chitty guide <mode> <ID>` during startup, send its stdout unchanged, and use the existing startup failure shutdown path for command errors or empty output. The runner will render an optional `{prompt}` placeholder after `shlex.split`, using the in-process `store.guide` function for the selected role and ticket; validation will continue to require `{mode}` and `{id}` unless the command includes the prompt placeholder as specified. Update focused Node/Python tests, README/PLAN documentation, and bump the package patch version. Verify with targeted tests, the full `make check`, and a real `chitty run` work invocation if the local agent setup permits it.
+
 ## Notes
 
 Same cold read. Fixed: `{prompt}` calling `guide()` in-process, and an older `chitty` failing, which I ran rather than assumed, as I did `chitty guide` in a worktree. Rejected: a NUL or an over-long prompt, because the text comes from short files we ship. Criterion 4 being a manual check, because no fake can show a real agent receiving the prompt. Colliding version bumps with `TASK-143`, because "above `main`'s" is judged when each is ready for review, and they are ordered by dependency.
@@ -39,3 +43,4 @@ Raised to high on 2026-11-04: `TASK-155`, which the human made high priority, ne
 - 2026-11-04T12:00:38Z lively-panda: changed description, notes
 - 2026-11-04T15:38:31Z mellow-newt: changed priority, notes
 - 2026-11-05T09:08:52Z upbeat-quail todo → doing
+- 2026-11-05T09:09:26Z upbeat-quail: wrote the plan
