@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` from a ticket worktree changing `main`'s setup
-status: review
+status: done
 priority: high
 created: 2026-11-05
 ---
@@ -28,6 +28,8 @@ Add a linked-worktree guard in run.py immediately after opening the main reposit
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a test recording a newer version would have passed with nothing built, because `check_setup_version` already refuses that, so the criterion now says older; where the check goes; a missing version; a newer version keeping its existing error; saying that refusing after a global upgrade is deliberate; and naming the docs, which are already misleading because the refresh runs on `main_repo`.
 
+Reviewed: acceptance criteria pass; focused regression and make check pass (242 unittest tests plus Node tests).
+
 ## Summary
 
 Implemented a preflight guard that rejects `chitty run` from linked worktrees when main setup is older or unrecorded, without refreshing or mutating main. Added regression coverage proving the error includes both versions, main HEAD/config remain unchanged, and the fake agent is not started. Updated README.md and PLAN.md. Verified with the focused regression test and `make check` (ruff, pyright, 242 unittest tests, and Node tests).
@@ -43,3 +45,5 @@ Implemented a preflight guard that rejects `chitty run` from linked worktrees wh
 - 2026-11-05T10:36:23Z honest-crane: ticked acceptance criteria
 - 2026-11-05T10:36:37Z honest-crane: changed summary
 - 2026-11-05T10:36:37Z honest-crane doing → review
+- 2026-11-05T10:41:43Z brisk-wren: changed notes
+- 2026-11-05T10:41:43Z brisk-wren review → done
