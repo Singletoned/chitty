@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` run a chosen ticket with `--ticket`
-status: todo
+status: backlog
 priority: high
 depends_on:
   - TASK-126
@@ -43,6 +43,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: a criterion still sayin
 
 Back to `--ticket` on 2026-11-05: the human prefers it, and `chitty run TASK-178` was the planning session's suggestion, not theirs. The note before this and the positional design are superseded. Kept from that rewrite: the help text the human asked for, how the ID reaches `run()`, the `--mode` refusal, and high priority. The earlier cold read of `--ticket` still applies; nothing else changed.
 
+Held in `backlog` for a cold read of the restored `--ticket` design.
+
 ## History
 
 - 2026-11-04T09:46:25Z lively-panda → todo
@@ -67,3 +69,5 @@ Back to `--ticket` on 2026-11-05: the human prefers it, and `chitty run TASK-178
 - 2026-11-05T10:23:42Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:23:43Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T10:23:44Z mellow-newt backlog → todo
+- 2026-11-05T10:27:41Z mellow-newt: changed notes
+- 2026-11-05T10:27:41Z mellow-newt todo → backlog
