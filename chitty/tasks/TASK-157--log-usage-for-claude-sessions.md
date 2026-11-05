@@ -1,6 +1,6 @@
 ---
 title: Log usage for `claude` sessions
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-148
@@ -34,8 +34,8 @@ Known limits, accepted as they are for Pi: a killed `claude` runs no hook, so `m
 
 ## Acceptance Criteria
 
-- [ ] A test feeds the hook a sample transcript with a repeated message ID and a subagent, and shows the file it writes, keyed by session and summed by model with the tokens mapped and `cost` null
-- [ ] Tests show the hook exiting 0 with a message on stderr for a missing or malformed transcript, an invalid usage file and stdin with no `session_id`, doing nothing with `CHITTY_USAGE_FILE` unset, and keeping another session's entry
+- [x] A test feeds the hook a sample transcript with a repeated message ID and a subagent, and shows the file it writes, keyed by session and summed by model with the tokens mapped and `cost` null
+- [x] Tests show the hook exiting 0 with a message on stderr for a missing or malformed transcript, an invalid usage file and stdin with no `session_id`, doing nothing with `CHITTY_USAGE_FILE` unset, and keeping another session's entry
 
 ## Plan
 
@@ -47,6 +47,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. It read real transcripts. Fixe
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. It confirmed that the `--settings` JSON survives TOML and `shlex.split` when written as a basic string with `\"` inside shell single quotes. Fixed by making this smaller: reading a null cost moved to `TASK-148`, whose code it changes, and connecting the command and documentation moved to `TASK-158`, which also removes a contradiction between the two. Also fixed: the literal settings JSON, not opening a repository, deduplicating across files, zero for missing tokens, invalid usage file, stdin missing `session_id`, and test fixtures. Rejected: a test that the command is hidden, which a reviewer sees in one line; hiding from completion, which `hidden=True` decides; and atomic rename as a test, because `TASK-127` already requires it.
 
+Implemented and verified with focused Claude hook tests and full Python checks. npm test starts but hangs after printing six dots in this environment, so its completion could not be verified.
+
+## Summary
+
+Implemented hidden chitty claude-usage-hook and src/chitty/integrations/claude/usage.py. It aggregates deduplicated assistant message usage across the main and subagent transcripts, maps Anthropic token fields, writes null costs atomically while preserving other sessions, and reports all hook errors on stderr without failing. Added real-filesystem unittest coverage for successful aggregation, malformed/missing inputs, invalid usage files, unset configuration, and preservation. Verified focused tests, make check Python stages, and chitty fix; Node npm test starts but hangs after six dots in this environment.
+
 ## History
 
 - 2026-11-04T17:58:12Z mellow-newt → backlog
@@ -55,3 +61,5 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It confirmed that the `
 - 2026-11-04T18:03:08Z mellow-newt backlog → todo
 - 2026-11-05T22:10:19Z intrepid-kestrel todo → doing
 - 2026-11-05T22:10:38Z intrepid-kestrel: wrote the plan
+- 2026-11-05T22:22:19Z intrepid-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-05T22:22:19Z intrepid-kestrel doing → review
