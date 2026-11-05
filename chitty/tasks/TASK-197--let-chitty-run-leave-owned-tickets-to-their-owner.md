@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` leave owned tickets to their owner
-status: backlog
+status: todo
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -47,3 +47,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T18:48:15Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:48:17Z mellow-newt: changed acceptance criteria
 - 2026-11-05T18:48:18Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T18:48:19Z mellow-newt backlog → todo
