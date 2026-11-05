@@ -15,7 +15,7 @@ Use `_version_key` from `src/chitty/store.py`, renaming it without the underscor
 
 ## Acceptance Criteria
 
-- [ ] Tests, failing before the fix, show a numerically older recorded version asking to re-run `chitty init`, a numerically newer one asking to upgrade `chitty`, and an unreadable one warning without stopping a read
+- [x] Tests, failing before the fix, show a numerically older recorded version asking to re-run `chitty init`, a numerically newer one asking to upgrade `chitty`, and an unreadable one warning without stopping a read
 
 ## Plan
 
@@ -43,3 +43,4 @@ Reported again on 2026-11-04 by a session in another repository: a file recordin
 - 2026-11-04T21:00:15Z mellow-newt: changed priority, notes
 - 2026-11-05T21:34:39Z sunny-jay todo → doing
 - 2026-11-05T21:34:55Z sunny-jay: wrote the plan
+- 2026-11-05T21:41:06Z sunny-jay: ticked acceptance criteria
