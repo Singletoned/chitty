@@ -16,7 +16,7 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 ## Acceptance Criteria
 
 - [x] `chitty guide work` and `chitty guide` no longer contain `inbox --pull`, shown by a test, and `chitty inbox --pull` itself still works
-- [ ] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
+- [x] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
 
 ## Plan
 
@@ -35,3 +35,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md
 - 2026-11-05T23:20:21Z open-dormouse todo → doing
 - 2026-11-05T23:20:36Z open-dormouse: wrote the plan
 - 2026-11-05T23:29:50Z open-dormouse: ticked acceptance criteria
+- 2026-11-05T23:29:51Z open-dormouse: ticked acceptance criteria
