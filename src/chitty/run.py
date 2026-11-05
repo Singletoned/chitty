@@ -15,7 +15,7 @@ from typing import Any
 from uuid import uuid4
 
 from chitty import git
-from chitty.actor import actor
+from chitty.actor import actor, run_actor
 from chitty.config import CHITTY_VERSION, usage_path, version_key
 from chitty.errors import ChittyError
 from chitty.inbox import pull as pull_suggestions
@@ -69,9 +69,9 @@ def run(repo: Repo, ticket: str | None, arguments: tuple[str, ...] = ()) -> RunR
     _setup(setup, worktree)
 
     # Each invocation owns a fresh actor identity, including its initial claim.
+    # A run owns one identity across its claim, agent, and any child process.
     os.environ.pop("CHITTY_ACTOR", None)
-    os.environ.pop("CLAUDE_CODE_SESSION_ID", None)
-    os.environ["CHITTY_PI_SESSION_ID"] = str(uuid4())
+    os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
     work_repo = Repo.open(worktree)
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
         work_repo.edit(action.id, Edit(status="doing"))

@@ -12,6 +12,15 @@ class TestActor(unittest.TestCase):
         with mock.patch.dict(os.environ, environment, clear=True):
             return actor()
 
+    def test_run_actor_uses_run_source(self):
+        from chitty.actor import run_actor
+
+        self.assertEqual(run_actor("run-session"), run_actor("run-session"))
+        self.assertRegex(run_actor("run-session"), r"^[a-z]+-[a-z]+$")
+        self.assertNotEqual(
+            run_actor("run-session"), self.resolve({"PI_SESSION_ID": "run-session"})
+        )
+
     def test_override_takes_precedence(self):
         self.assertEqual(
             self.resolve({"CHITTY_ACTOR": "Ada", "PI_SESSION_ID": "pi-session"}), "Ada"
