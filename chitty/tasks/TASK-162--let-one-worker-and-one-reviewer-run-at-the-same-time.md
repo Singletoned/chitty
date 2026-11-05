@@ -43,6 +43,10 @@ Split on 2026-11-05: selection with `--mode` moved to `TASK-186`, so a person ca
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: without `--mode work` the outer run would take the review ticket first; removing the interim advice; and where the actors are read.
 
+## Summary
+
+Implemented concurrent work/review support documentation and regression coverage. README.md and PLAN.md now describe running one worker and one reviewer with disjoint modes, loud main-checkout collision failures, and rerunning affected sessions. The inbox test only inspects its own temporary suggestion. Added a real nested chitty run subprocess test that overlaps work and review sessions on separate tickets and verifies statuses plus distinct history actors. Verification: make check passed (265 Python tests and Node tests); chitty fix passed with pre-existing Markdown delimiter warnings only.
+
 ## History
 
 - 2026-11-04T20:15:22Z mellow-newt → backlog
@@ -58,3 +62,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: w
 - 2026-11-05T19:34:34Z nimble-vole: wrote the plan
 - 2026-11-05T20:16:31Z nimble-vole: ticked acceptance criteria
 - 2026-11-05T20:16:32Z nimble-vole: ticked acceptance criteria
+- 2026-11-05T20:16:32Z nimble-vole: changed summary
