@@ -76,6 +76,11 @@ _SESSION_IDENTITIES = (
 )
 
 
+def run_actor(identity: str) -> str:
+    """Return the readable actor name for a `chitty run` session."""
+    return _readable_name("CHITTY_RUN", identity)
+
+
 def actor(environment: Mapping[str, str] | None = None) -> str:
     """Return the explicit or harness-derived name for this actor."""
     env = os.environ if environment is None else environment

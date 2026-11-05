@@ -7,6 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 from unittest.mock import patch
+from uuid import UUID
 
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
@@ -1066,10 +1067,12 @@ class TestNext(CliTestCase):
             "import os, pathlib, subprocess, sys\n"
             "root = pathlib.Path(os.getcwd())\n"
             "(root / 'pi-arguments').write_text(repr(sys.argv[1:]))\n"
-            "(root / 'pi-session-id').write_text(os.environ['CHITTY_PI_SESSION_ID'])\n"
+            "(root / 'run-actor').write_text(os.environ['CHITTY_ACTOR'])\n"
+            "(root / 'pi-session-id').write_text(os.environ.get('CHITTY_PI_SESSION_ID', ''))\n"
+            "os.environ['CLAUDE_CODE_SESSION_ID'] = 'agent-session'\n"
             "chitty = str(pathlib.Path(sys.executable).with_name('chitty'))\n"
             "subprocess.run([chitty, 'edit', sys.argv[2], '--status', 'blocked', "
-            "'--note', 'fake Pi write'], check=True, stdout=subprocess.DEVNULL)\n"
+            "'--note', 'fake agent write'], check=True, stdout=subprocess.DEVNULL)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = {
@@ -1080,45 +1083,58 @@ class TestNext(CliTestCase):
         os.environ["CHITTY_ACTOR"] = "fixed-actor"
         os.environ["CLAUDE_CODE_SESSION_ID"] = "fixed-session"
         try:
-            self.assertEqual(
-                self.run_cli("run", "--", "--from-test").stdout, "TASK-1: doing → blocked\n"
-            )
-            worktree = self.root / ".worktrees" / "task-1"
-            self.assertEqual(
-                (worktree / "pi-arguments").read_text(),
-                "['--chitty-work', 'TASK-1', '--from-test']",
-            )
-            history = (
-                Repo.open(worktree)
-                .find(Repo.open(worktree).resolve("TASK-1"))
-                .task.section("History")
-            )
-            assert history is not None
-            actors = {
-                line.split()[2]
-                for line in history.splitlines()
-                if "todo → doing" in line or "doing → blocked" in line
-            }
-            self.assertEqual(len(actors), 1)
-            self.assertNotIn("fixed-actor", actors)
-            first_session_id = (worktree / "pi-session-id").read_text()
+            with patch(
+                "chitty.run.uuid4",
+                side_effect=[
+                    UUID("00000000-0000-0000-0000-000000000001"),
+                    UUID("00000000-0000-0000-0000-000000000002"),
+                ],
+            ):
+                self.assertEqual(
+                    self.run_cli("run", "--", "--from-test").stdout,
+                    "TASK-1: doing → blocked\n",
+                )
+                worktree = self.root / ".worktrees" / "task-1"
+                self.assertEqual(
+                    (worktree / "pi-arguments").read_text(),
+                    "['--chitty-work', 'TASK-1', '--from-test']",
+                )
+                history = (
+                    Repo.open(worktree)
+                    .find(Repo.open(worktree).resolve("TASK-1"))
+                    .task.section("History")
+                )
+                assert history is not None
+                actors = {
+                    line.split()[2]
+                    for line in history.splitlines()
+                    if "todo → doing" in line or "doing → blocked" in line
+                }
+                self.assertEqual(len(actors), 1)
+                first_actor = (worktree / "run-actor").read_text()
+                self.assertEqual(first_actor, next(iter(actors)))
+                self.assertEqual((worktree / "pi-session-id").read_text(), "")
 
-            os.environ["CHITTY_ACTOR"] = "test-agent"
-            self.add("Second")
-            self.git("add", "--all")
-            self.git("commit", "--quiet", "-m", "add second ticket")
-            os.environ["CHITTY_ACTOR"] = "fixed-actor"
-            os.environ["CLAUDE_CODE_SESSION_ID"] = "fixed-session"
-            self.assertEqual(self.run_cli("run").stdout, "TASK-2: doing → blocked\n")
-            second = self.root / ".worktrees" / "task-2"
-            second_history = (
-                Repo.open(second).find(Repo.open(second).resolve("TASK-2")).task.section("History")
-            )
-            assert second_history is not None
-            second_actor = second_history.splitlines()[-1].split()[2]
-            self.assertNotIn("fixed-actor", {second_actor})
-            second_session_id = (second / "pi-session-id").read_text()
-            self.assertNotEqual(first_session_id, second_session_id)
+                os.environ["CHITTY_ACTOR"] = "test-agent"
+                self.add("Second")
+                self.git("add", "--all")
+                self.git("commit", "--quiet", "-m", "add second ticket")
+                os.environ["CHITTY_ACTOR"] = "fixed-actor"
+                os.environ["CLAUDE_CODE_SESSION_ID"] = "fixed-session"
+                self.assertEqual(self.run_cli("run").stdout, "TASK-2: doing → blocked\n")
+                second = self.root / ".worktrees" / "task-2"
+                second_history = (
+                    Repo.open(second)
+                    .find(Repo.open(second).resolve("TASK-2"))
+                    .task.section("History")
+                )
+                assert second_history is not None
+                second_actor = second_history.splitlines()[-1].split()[2]
+                second_run_actor = (second / "run-actor").read_text()
+                self.assertEqual(second_actor, second_run_actor)
+                self.assertNotEqual(first_actor, second_run_actor)
+                self.assertNotIn("fixed-actor", {second_actor})
+                self.assertEqual((second / "pi-session-id").read_text(), "")
         finally:
             for name, value in previous.items():
                 if value is None:
