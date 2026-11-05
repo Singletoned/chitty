@@ -28,6 +28,8 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold
 
 Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-196/2`. Fixed: serious, a wrong ticket that was cheap to fix was caught between "set `-s blocked`" and the existing "Block only for a costly reversal or a person decision", so the bullet now calls it a person's decision; "change the test" could have meant weakening it; and `Luna` meant nothing in this repository. Rejected: checking the bullet's position in the test, which the reviewer can read. A third read follows, since a serious finding was fixed.
 
+Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-196/3`: nothing serious. The test failed on all five phrases without the change and passed with it, and `make check` exited 0. Rejected: the `TASK-137` attribution to a cheap model, which the planning session saw directly though the tickets do not say it; a test made to fail for an unrelated reason, and pasted phrases, which are for the reviewer; a regression test that cannot be run, which the existing bullet on being blocked covers; and overlap with "Block only for a costly reversal or a person decision", since the new bullet names this as a person's decision.
+
 ## History
 
 - 2026-11-05T17:53:54Z mellow-newt → backlog
@@ -37,3 +39,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-05T18:13:37Z mellow-newt todo → backlog
 - 2026-11-05T18:18:34Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T18:18:35Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T18:22:07Z mellow-newt: changed notes
