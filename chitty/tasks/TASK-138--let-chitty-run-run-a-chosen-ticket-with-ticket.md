@@ -27,6 +27,10 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 - [ ] `README.md` and `PLAN.md` each show `chitty run --ticket ID`, and a test shows `chitty run --help` containing `--ticket` and `or the one named by --ticket`
 - [ ] A test with a fake agent, with `chitty next` selecting a different ticket each time, shows `--ticket` running a lower-priority `todo` ticket in work mode, a `review` ticket in review mode, and a `doing` ticket with unfinished dependencies in work mode
 
+## Plan
+
+Implement shared ticket selection validation in store.py and wire an optional --ticket through cli.py/run.py. Add focused CLI/store tests covering resolution, forwarding, run modes, refusals, and docs/help; then run the required checks and update the ticket criteria only after verification.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the inbox pull still runs, and the ID resolves after it; bare numbers; the archived check being explicit; how the rules are shared; and `doing` tickets with unfinished dependencies being allowed, now tested. It ran click with these settings and confirmed `--ticket` works before or after forwarded arguments, and `--ticket=ID` too. Rejected: a `doing` ticket with no branch, because `_worktree` creates one, as for any selected ticket. A `doing` worktree held by another live session, because a single worker is the stated assumption and nothing checks liveness today; a person choosing a ticket is responsible for that. `--tick 7` being forwarded rather than matched, and `--ticket` after `--` reaching the agent, because both are what forwarding means. A missing option value, because click reports it. A test that `TASK-120` and `TASK-131` leave other tickets alone, because neither has landed; the description tells whichever lands second. The function name and refusal wording, which are the worker's choice.
@@ -81,3 +85,4 @@ Cold read of the restored `--ticket` design by a fresh Sonnet subagent, 2026-11-
 - 2026-11-05T10:28:46Z mellow-newt backlog → todo
 - 2026-11-05T14:13:54Z mellow-newt: changed description
 - 2026-11-05T14:27:01Z sunny-zander todo → doing
+- 2026-11-05T14:27:14Z sunny-zander: wrote the plan
