@@ -29,6 +29,10 @@ Not in scope: two workers or two reviewers, because the claim is not atomic; and
 - [ ] `README.md` and `PLAN.md` describe running one of each, including what a collision looks like, and the inbox test no longer reads other sessions' suggestions
 - [ ] A test using real `chitty run` subprocesses overlaps a work session and a review session on different tickets, and both report the right status with different actors in the tickets' history
 
+## Plan
+
+Inspect the existing run, inbox, and documentation tests. Add a real subprocess overlap test covering one work and one review session on separate tickets, update the inbox suggestion test to isolate its own suggestion, and document safe parallel usage plus loud collision behavior in README.md and PLAN.md. Run focused tests, then make format/check, verify criteria, run chitty fix, record summary, and set the ticket to review.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. It tested the claim that only selection stands in the way, and found that claim wrong. Moved to their own tickets: a dependency counted as done before it reaches `main`, and `historical_files` hiding Git errors, both silent. Fixed here: the inbox test, which could wrongly fail a review; an overlap test with no timeouts; the error text; and the contradiction in `PLAN.md`. Accepted and to be documented: loud collisions in the main checkout, and two branches sharing a version. Rejected: a stale index after a failed rollback, which is speculative; `~/.pi` extension rewrites, which happen only on a version change at start; concurrent `CHITTY_USAGE_FILE` writes, because `TASK-127` gives each run its own file; and a separate ticket for the overlap test, which the simpler design no longer needs.
@@ -51,3 +55,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: w
 - 2026-11-05T14:23:11Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:12Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T19:34:22Z nimble-vole todo → doing
+- 2026-11-05T19:34:34Z nimble-vole: wrote the plan
