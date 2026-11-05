@@ -32,6 +32,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the serious one, that t
 
 Moved to `doing` by the planning session so it runs next: the release is waiting on it.
 
+Regression test failed before the fix (status was todo instead of doing) with main and task-1 commits sharing the fixed second; it passes after adding --topo-order. Module-by-module unittest runs, ruff, pyright, and npm test pass. Full unittest discovery did not complete within 600 seconds despite individual modules passing.
+
 ## History
 
 - 2026-11-05T12:04:19Z mellow-newt → backlog
@@ -41,3 +43,4 @@ Moved to `doing` by the planning session so it runs next: the release is waiting
 - 2026-11-05T12:06:31Z mellow-newt: changed notes
 - 2026-11-05T12:06:31Z mellow-newt todo → doing
 - 2026-11-05T12:13:40Z eager-kestrel: wrote the plan
+- 2026-11-05T13:12:58Z eager-kestrel: changed notes
