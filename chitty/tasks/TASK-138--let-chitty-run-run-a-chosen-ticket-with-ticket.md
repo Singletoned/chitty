@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` run a chosen ticket with `--ticket`
-status: backlog
+status: todo
 priority: high
 depends_on:
   - TASK-126
@@ -66,3 +66,4 @@ Back to `--ticket` on 2026-11-05: the human prefers it, and `chitty run TASK-178
 - 2026-11-05T10:23:41Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:23:42Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:23:43Z mellow-newt: changed acceptance criteria, notes
+- 2026-11-05T10:23:44Z mellow-newt backlog → todo
