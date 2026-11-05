@@ -32,6 +32,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the function's name; wh
 
 Reported again on 2026-11-04 by a session in another repository: a file recording `0.1.4` read as newer than `0.1.25`, so it told the person to upgrade Chitty rather than run `chitty init`, and misled the session. Raised to medium.
 
+## Summary
+
+Implemented numeric setup-version comparison in `src/chitty/cli.py`, reusing the shared `version_key` helper. Malformed recorded versions now emit a warning and reads continue; config loading no longer rejects them before the warning.
+
+Verification: focused setup-version regression test and `make check` passed (269 Python tests and Node tests). Commit `d456459`.
+
 ## History
 
 - 2026-11-03T21:24:19Z lively-panda → todo
@@ -44,3 +50,4 @@ Reported again on 2026-11-04 by a session in another repository: a file recordin
 - 2026-11-05T21:34:39Z sunny-jay todo → doing
 - 2026-11-05T21:34:55Z sunny-jay: wrote the plan
 - 2026-11-05T21:41:06Z sunny-jay: ticked acceptance criteria
+- 2026-11-05T21:41:07Z sunny-jay: changed summary
