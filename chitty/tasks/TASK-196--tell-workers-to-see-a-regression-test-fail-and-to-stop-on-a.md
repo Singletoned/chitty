@@ -1,6 +1,6 @@
 ---
 title: Tell workers to see a regression test fail, and to stop on a wrong ticket
-status: todo
+status: backlog
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -32,3 +32,4 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold
 - 2026-11-05T17:59:51Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T17:59:52Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T17:59:52Z mellow-newt backlog → todo
+- 2026-11-05T18:13:37Z mellow-newt todo → backlog
