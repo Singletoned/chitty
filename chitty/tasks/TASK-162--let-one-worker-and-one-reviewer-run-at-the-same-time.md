@@ -1,6 +1,6 @@
 ---
 title: Let one worker and one reviewer run at the same time
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-163
@@ -43,6 +43,8 @@ Split on 2026-11-05: selection with `--mode` moved to `TASK-186`, so a person ca
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Read after the split. Fixed: without `--mode work` the outer run would take the review ticket first; removing the interim advice; and where the actors are read.
 
+Verified both acceptance criteria against the focused overlap/inbox tests, documentation diff, and make check.
+
 ## Summary
 
 Implemented concurrent work/review support documentation and regression coverage. README.md and PLAN.md now describe running one worker and one reviewer with disjoint modes, loud main-checkout collision failures, and rerunning affected sessions. The inbox test only inspects its own temporary suggestion. Added a real nested chitty run subprocess test that overlaps work and review sessions on separate tickets and verifies statuses plus distinct history actors. Verification: make check passed (265 Python tests and Node tests); chitty fix passed with pre-existing Markdown delimiter warnings only.
@@ -63,3 +65,5 @@ Implemented concurrent work/review support documentation and regression coverage
 - 2026-11-05T20:16:31Z nimble-vole: ticked acceptance criteria
 - 2026-11-05T20:16:32Z nimble-vole: ticked acceptance criteria
 - 2026-11-05T20:16:32Z nimble-vole: changed summary
+- 2026-11-05T20:16:39Z nimble-vole: changed notes
+- 2026-11-05T20:16:39Z nimble-vole doing → review
