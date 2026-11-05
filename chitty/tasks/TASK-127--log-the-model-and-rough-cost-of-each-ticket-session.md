@@ -1,6 +1,6 @@
 ---
 title: Log the model and rough cost of each ticket session
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-126
@@ -106,3 +106,4 @@ Added a real-file regression test proving a repository without a project is refr
 - 2026-11-05T11:10:26Z brisk-raven review → doing
 - 2026-11-05T12:07:34Z jolly-newt: ticked acceptance criteria
 - 2026-11-05T12:07:35Z jolly-newt: changed summary
+- 2026-11-05T12:07:36Z jolly-newt doing → review
