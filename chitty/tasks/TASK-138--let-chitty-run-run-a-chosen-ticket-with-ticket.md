@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` run a chosen ticket with `--ticket`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-126
@@ -93,3 +93,4 @@ Implemented `chitty run --ticket ID` with post-pull ID resolution, shared ticket
 - 2026-11-05T14:27:01Z sunny-zander todo → doing
 - 2026-11-05T14:27:14Z sunny-zander: wrote the plan
 - 2026-11-05T14:37:15Z sunny-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-05T14:37:18Z sunny-zander doing → review
