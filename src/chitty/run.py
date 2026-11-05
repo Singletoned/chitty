@@ -81,6 +81,8 @@ def run(repo: Repo, ticket: str | None, arguments: tuple[str, ...] = ()) -> RunR
     elapsed_start = time.monotonic()
     new_status: str | None = None
     models: list[dict[str, Any]] | None = None
+    usage_file: Path | None = None
+    usage_read = False
     try:
         with tempfile.TemporaryDirectory(prefix="chitty-usage-") as temporary:
             usage_file = Path(temporary) / "session.json"
@@ -95,23 +97,29 @@ def run(repo: Repo, ticket: str | None, arguments: tuple[str, ...] = ()) -> RunR
                     raise ChittyError(f"agent command not found: {agent_command[0]}") from None
                 except KeyboardInterrupt:
                     raise RunInterrupted("agent") from None
-            finally:
-                if previous_usage_file is None:
-                    os.environ.pop("CHITTY_USAGE_FILE", None)
-                else:
-                    os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
-            if completed.returncode == -signal.SIGINT:
-                raise RunInterrupted("agent")
-            if completed.returncode:
-                raise ChittyError(f"agent exited with status {completed.returncode}")
-            models = _read_usage(usage_file)
+                finally:
+                    if previous_usage_file is None:
+                        os.environ.pop("CHITTY_USAGE_FILE", None)
+                    else:
+                        os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
+                if completed.returncode == -signal.SIGINT:
+                    raise RunInterrupted("agent")
+                if completed.returncode:
+                    raise ChittyError(f"agent exited with status {completed.returncode}")
+                models = _read_usage(usage_file)
+                usage_read = True
 
-            # Pi commonly commits from this worktree. Reopen so history is re-read.
-            new_status = _status_after_agent(main_root, worktree, action)
-            if new_status == old_status:
-                raise ChittyError(
-                    f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
-                )
+                # Pi commonly commits from this worktree. Reopen so history is re-read.
+                new_status = _status_after_agent(main_root, worktree, action)
+                if new_status == old_status:
+                    raise ChittyError(
+                        f"{action.id} was unchanged; only committed changes are visible "
+                        "to `chitty run`"
+                    )
+            finally:
+                if not usage_read:
+                    models = _read_usage(usage_file)
+                    usage_read = True
     finally:
         if new_status is None:
             try:

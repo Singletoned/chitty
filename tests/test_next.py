@@ -876,6 +876,9 @@ class TestNext(CliTestCase):
             "    open(path, 'w').write(text.replace('status: doing', 'status: blocked'))\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
             "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
+            "if os.environ.get('USAGE_MODE') == 'invalid':\n"
+            "    import pathlib\n"
+            "    pathlib.Path(os.environ['CHITTY_USAGE_FILE']).write_text('not json')\n"
             "if os.environ.get('PI_SIGNAL'):\n"
             "    os.kill(os.getpid(), signal.SIGINT)\n"
             "sys.exit(int(os.environ.get('PI_EXIT', '0')))\n"
@@ -904,7 +907,13 @@ class TestNext(CliTestCase):
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
             self.assertIn("agent exited with status 7", failed.stderr)
+            self.assertIn("warning: cannot read usage file", failed.stderr)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+            os.environ["USAGE_MODE"] = "invalid"
+            invalid = self.run_cli("run", exit_code=1)
+            self.assertIn("agent exited with status 7", invalid.stderr)
+            self.assertIn("warning: cannot read usage file", invalid.stderr)
+            os.environ.pop("USAGE_MODE")
             os.environ.pop("PI_EXIT")
             os.environ["PI_SIGNAL"] = "1"
             interrupted = self.run_cli("run", exit_code=130)
@@ -920,7 +929,7 @@ class TestNext(CliTestCase):
             records = [json.loads(line) for line in log.read_text().splitlines()]
             self.assertEqual(
                 [record["status_after"] for record in records],
-                ["doing", "doing", "doing", "blocked"],
+                ["doing", "doing", "doing", "doing", "blocked"],
             )
             self.assertTrue(all(record["models"] is None for record in records))
             no_next = self.run_cli("run", exit_code=1)
@@ -936,6 +945,7 @@ class TestNext(CliTestCase):
             os.environ.pop("PI_EXIT", None)
             os.environ.pop("CHANGE", None)
             os.environ.pop("TASK_PATH", None)
+            os.environ.pop("USAGE_MODE", None)
 
     def test_run_records_usage_outside_repository_and_appends_runs(self):
         config = self.root / "chitty.toml"
