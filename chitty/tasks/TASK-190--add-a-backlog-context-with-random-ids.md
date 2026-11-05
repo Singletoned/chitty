@@ -2,6 +2,7 @@
 title: Add a `BACKLOG` context with random IDs
 status: todo
 priority: high
+owner: human
 depends_on:
   - TASK-177
 parent: TASK-106
@@ -32,6 +33,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. It was too big, so split in th
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: which numbers the retry checks, how the table is inserted, and where tests configure it. Rejected: leaving this repository's `chitty.toml` to `TASK-192`, because `_prepare_write` upgrades it at the next write after the bump.
 
+Owner set to human only so chitty run leaves this ticket to this session; cleared when it goes to review.
+
 ## History
 
 - 2026-11-05T14:43:41Z mellow-newt → backlog
@@ -43,3 +46,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: which numb
 - 2026-11-05T14:47:50Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:50:37Z mellow-newt: changed description, notes
 - 2026-11-05T14:50:38Z mellow-newt backlog → todo
+- 2026-11-05T21:14:08Z youthful-toad: changed owner, notes
