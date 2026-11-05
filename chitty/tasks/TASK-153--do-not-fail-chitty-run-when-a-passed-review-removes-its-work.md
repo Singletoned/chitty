@@ -29,6 +29,10 @@ Inspect `run.py` lifecycle and existing run tests. Add a post-agent status looku
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my claim that the ticket must be merged, and my second criterion, which would have failed a harmless case with the branch kept. Rejected: declaring an order against `TASK-148`, which already follows through `TASK-127`.
 
+## Summary
+
+Implemented fallback status reporting for agents that remove their worktree. `chitty run` now reads the newest task copy from `main` when the worktree disappears, preserves status reporting when the branch remains, and fails loudly with the ticket ID if both branch and worktree disappear without a `done` copy. Added fake-agent regressions for merged removal and lost work/review tickets. Verified with `chitty fix` and `make check` (240 Python tests and Node tests pass). Follow-up: none.
+
 ## History
 
 - 2026-11-04T15:12:08Z mellow-newt → todo
@@ -37,3 +41,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my claim t
 - 2026-11-05T09:51:12Z lively-marten: wrote the plan
 - 2026-11-05T09:57:30Z lively-marten: ticked acceptance criteria
 - 2026-11-05T09:57:31Z lively-marten: ticked acceptance criteria
+- 2026-11-05T09:57:32Z lively-marten: changed summary
