@@ -867,7 +867,7 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, subprocess, sys\n"
+            "import os, signal, subprocess, sys\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
             "if os.environ.get('CHANGE'):\n"
@@ -876,6 +876,8 @@ class TestNext(CliTestCase):
             "    open(path, 'w').write(text.replace('status: doing', 'status: blocked'))\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
             "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
+            "if os.environ.get('PI_SIGNAL'):\n"
+            "    os.kill(os.getpid(), signal.SIGINT)\n"
             "sys.exit(int(os.environ.get('PI_EXIT', '0')))\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
@@ -904,6 +906,10 @@ class TestNext(CliTestCase):
             self.assertIn("agent exited with status 7", failed.stderr)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ.pop("PI_EXIT")
+            os.environ["PI_SIGNAL"] = "1"
+            interrupted = self.run_cli("run", exit_code=130)
+            self.assertIn("interrupted during agent", interrupted.stderr)
+            os.environ.pop("PI_SIGNAL")
             os.environ["CHANGE"] = "1"
             os.environ["TASK_PATH"] = str(
                 self.root / ".worktrees" / "task-1" / "chitty/tasks/TASK-1--todo.md"
@@ -913,7 +919,8 @@ class TestNext(CliTestCase):
             log = self.tmp / "data" / "chitty" / "usage" / "repo.jsonl"
             records = [json.loads(line) for line in log.read_text().splitlines()]
             self.assertEqual(
-                [record["status_after"] for record in records], ["doing", "doing", "blocked"]
+                [record["status_after"] for record in records],
+                ["doing", "doing", "doing", "blocked"],
             )
             self.assertTrue(all(record["models"] is None for record in records))
             no_next = self.run_cli("run", exit_code=1)
@@ -1029,6 +1036,36 @@ class TestNext(CliTestCase):
             _record_usage("repo", {})
         self.assertIn("warning: cannot write usage log: disk full", stderr.getvalue())
 
+    def test_run_write_failure_warns_and_keeps_agent_exit_code(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Failure")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text("#!" + sys.executable + "\nimport sys\nsys.exit(7)\n")
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        stderr = io.StringIO()
+        try:
+            with (
+                patch("chitty.run._append_usage", side_effect=OSError("disk full")),
+                redirect_stderr(stderr),
+            ):
+                result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
+        self.assertIn("agent exited with status 7", result.stderr)
+        self.assertIn("warning: cannot write usage log: disk full", result.stderr)
+
     def test_usage_validation_warns_and_accepts_null_cost(self):
         usage = self.tmp / "usage.json"
         usage.write_text(
@@ -1062,6 +1099,7 @@ class TestNext(CliTestCase):
         stderr = io.StringIO()
         with redirect_stderr(stderr):
             models = _read_usage(usage)
+        assert models is not None
         self.assertEqual(models[0]["cost"], None)
         self.assertEqual(stderr.getvalue(), "")
         self.assertEqual(
