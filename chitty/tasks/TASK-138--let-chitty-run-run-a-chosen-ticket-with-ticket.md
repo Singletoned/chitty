@@ -22,7 +22,6 @@ Out of scope: an option on `chitty next`, running several tickets, and overridin
 
 ## Acceptance Criteria
 
-- [ ] Tests show each refused case failing with a message saying why, with no claim and no worktree created
 - [ ] A test shows other arguments still reaching the agent with `--ticket` before or after them, a bare number resolving, and `chitty run` without the option behaving as before
 
 ## Notes
@@ -72,3 +71,4 @@ Held in `backlog` for a cold read of the restored `--ticket` design.
 - 2026-11-05T10:28:41Z mellow-newt: changed description
 - 2026-11-05T10:28:42Z mellow-newt: changed acceptance criteria
 - 2026-11-05T10:28:43Z mellow-newt: changed acceptance criteria
+- 2026-11-05T10:28:44Z mellow-newt: changed acceptance criteria
