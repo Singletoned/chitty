@@ -647,7 +647,30 @@ exits and succeeds only if the task's committed status changed. This makes
 `while chitty run; do :; done` a safe unattended loop. Interrupting setup or
 the agent exits 130 without a traceback.
 
-Each run appends one JSON line to the machine-local usage log at
+Before a review (decided with the human, 2026-11-03), after the run's actor is
+set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly
+what would land, keeping `main` linear:
+
+1. A rebase left unfinished, for example by a crash, is a loud error for the
+   human, with no status change.
+2. Uncommitted changes, including untracked but not ignored files, move the
+   ticket to `doing` with `Review failed (work): ...` listing them.
+3. It rebases the branch onto the local `main`. On a conflict it runs
+   `git rebase --abort` and moves the ticket to `doing` with `Review failed
+   (integration): ...` naming the conflicting files, for the worker to resolve
+   in a fresh session.
+4. Only then does `setup` run, because the rebase can change dependencies. In
+   work mode `setup` still runs before the claim.
+
+After either failure no agent starts, no usage line is written, and `chitty
+run` exits 0 because the status changed, printing the change. The moves go
+through `Repo.edit` under the run's own actor, which never worked on the
+ticket, so they count with reviewers' failures towards `REVIEW_FAILURE_LIMIT`.
+Interrupting the rebase aborts it and exits 130. A clean rebase is not
+repeated or re-reviewed if `main` moves during the review; landing is
+`TASK-131`.
+
+Each agent session appends one JSON line to the machine-local usage log at
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory
 when `XDG_DATA_HOME` is unset). The line records the ticket, mode, actor,
 start time, elapsed seconds, statuses, and the Pi session's aggregate token and

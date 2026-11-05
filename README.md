@@ -101,11 +101,16 @@ Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
 `chitty run` creates or reuses the ticket worktree, runs setup there, claims a
 `todo` ticket, and invokes
-the configured agent from that worktree. Choose a ticket with `chitty run
+the configured agent from that worktree. Before a review it first rebases the
+branch onto `main`, then runs setup, so the reviewer sees exactly what would
+land; uncommitted files in the worktree or a rebase conflict instead move the
+ticket back to `doing` with a `Review failed (work)` or `Review failed
+(integration)` note, without starting a session, and count towards the
+failed-review limit. Choose a ticket with `chitty run
 --ticket ID`; pass agent options with `chitty run -- --model MODEL`. It
 succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
-no progress. Each run appends one JSON line to the machine-local
+no progress. Each agent session appends one JSON line to the machine-local
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data
 directory when `XDG_DATA_HOME` is unset), including the ticket, actor, timing,
 statuses, and aggregate Pi token and cost totals by model. These costs are

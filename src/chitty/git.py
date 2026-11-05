@@ -381,3 +381,40 @@ def _git(root: Path, *args: str) -> str:
         shown = " ".join(command)
         raise ChittyError(f"autocommit failed: `{shown}` in {root}:\n{result.stderr.strip()}")
     return result.stdout
+
+
+def rebase_in_progress(root: Path) -> bool:
+    """Whether this worktree has a rebase stopped part-way."""
+    return any(
+        (root / _git(root, "rev-parse", "--git-path", name).strip()).exists()
+        for name in ("rebase-merge", "rebase-apply")
+    )
+
+
+def uncommitted_paths(root: Path) -> list[str]:
+    """Changed, staged or untracked (but not ignored) paths in this worktree."""
+    lines = _git(root, "status", "--porcelain", "--untracked-files=all", "--no-renames")
+    return sorted(line[3:] for line in lines.splitlines() if len(line) > 3)
+
+
+def rebase(root: Path, onto: str) -> list[str]:
+    """Rebase this worktree's branch onto `onto`, aborting on a conflict.
+
+    Returns the conflicting paths, or an empty list when the rebase succeeded.
+    """
+    completed = subprocess.run(
+        ["git", "rebase", onto], cwd=root, capture_output=True, text=True, check=False
+    )
+    if completed.returncode == 0:
+        return []
+    if not rebase_in_progress(root):
+        raise ChittyError(f"`git rebase {onto}` failed in {root}:\n{completed.stderr.strip()}")
+    conflicts = _git(root, "diff", "--name-only", "--diff-filter=U").split()
+    abort_rebase(root)
+    if not conflicts:
+        raise ChittyError(f"`git rebase {onto}` stopped in {root}:\n{completed.stderr.strip()}")
+    return conflicts
+
+
+def abort_rebase(root: Path) -> None:
+    _git(root, "rebase", "--abort")

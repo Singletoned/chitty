@@ -76,13 +76,21 @@ def run(
     worktree = _worktree(main_root, action)
     setup = main_repo.config.setup
     assert setup is not None  # `_preflight` rejects an unset setup command.
-    _setup(setup, worktree)
+    if action.mode == "work":
+        _setup(setup, worktree)
 
     # Each invocation owns a fresh actor identity, including its initial claim.
     # A run owns one identity across its claim, agent, and any child process.
     os.environ.pop("CHITTY_ACTOR", None)
     os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
     work_repo = Repo.open(worktree)
+    if action.mode == "review":
+        # The run's own actor never worked on the ticket, so it may fail it.
+        failed = _prepare_review(work_repo, worktree, action)
+        if failed is not None:
+            return failed
+        # After the rebase, because the rebase can change dependencies.
+        _setup(setup, worktree)
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
         work_repo.edit(action.id, Edit(status="doing"))
     old_status = work_repo.find(action.id).task.frontmatter.status
@@ -323,14 +331,60 @@ def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> 
     return (str(resolved.resolve()), *rendered[1:])
 
 
+def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunResult | None:
+    """Rebase a review ticket onto `main`, or fail it back to its worker.
+
+    The reviewer then sees exactly what would land. Returns the status change
+    when the ticket fails here, so no review session is spent on it.
+    """
+    if uncommitted := git.uncommitted_paths(worktree):
+        listed = ", ".join(f"`{path}`" for path in uncommitted)
+        return _fail_review(
+            work_repo,
+            action,
+            f"Review failed (work): the worktree has uncommitted changes: {listed}.",
+        )
+    try:
+        conflicts = git.rebase(worktree, "main")
+    except KeyboardInterrupt:
+        if git.rebase_in_progress(worktree):
+            git.abort_rebase(worktree)
+        raise RunInterrupted("rebase") from None
+    if conflicts:
+        listed = ", ".join(f"`{path}`" for path in conflicts)
+        return _fail_review(
+            work_repo,
+            action,
+            f"Review failed (integration): rebasing onto `main` conflicts in {listed}.",
+        )
+    return None
+
+
+def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:
+    """Move a review ticket to `doing` through `Repo.edit`, so escalation counts it."""
+    change = work_repo.edit(action.id, Edit(status="doing", note=note))
+    return RunResult(action, "review", change.task.task.frontmatter.status)
+
+
 def _worktree(main_root: Path, action: NextAction) -> Path:
     branch = str(action.id).lower()
+    destination = main_root / ".worktrees" / branch
+    # A rebase stopped part-way detaches HEAD, so Git no longer lists the
+    # worktree under its branch. It needs a person, not a second worktree.
+    # Its own `.git` file, so a stray directory never reads the main checkout's state.
+    if (destination / ".git").exists() and git.rebase_in_progress(destination):
+        raise ChittyError(
+            f"{destination} has an unfinished rebase; finish it or run `git rebase --abort` there"
+        )
     existing = git.worktree_for_branch(main_root, branch)
     if existing is not None:
         if existing.resolve() == main_root.resolve():
             raise ChittyError(f"branch {branch} is checked out in the main checkout")
+        if git.rebase_in_progress(existing):
+            raise ChittyError(
+                f"{existing} has an unfinished rebase; finish it or run `git rebase --abort` there"
+            )
         return existing.resolve()
-    destination = main_root / ".worktrees" / branch
     if git.has_local_branch(main_root, branch):
         _git(main_root, "worktree", "add", str(destination), branch)
     elif action.mode == "review":
