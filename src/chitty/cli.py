@@ -4,7 +4,7 @@ import json
 import os
 from datetime import date
 from pathlib import Path
-from typing import Any, TextIO, cast
+from typing import Any, Literal, TextIO, cast
 
 import click
 from click.shell_completion import CompletionItem
@@ -74,6 +74,11 @@ def main() -> None:
 
 
 json_option = click.option("--json", "as_json", is_flag=True, help="Print JSON.")
+mode_option = click.option(
+    "--mode",
+    type=click.Choice(["work", "review"]),
+    help="Choose only tickets to work (doing, todo) or only tickets to review.",
+)
 
 
 def _complete_context(
@@ -368,10 +373,11 @@ def list_(
 
 
 @cli.command("next")
+@mode_option
 @json_option
-def next_(as_json: bool) -> None:
+def next_(mode: Literal["work", "review"] | None, as_json: bool) -> None:
     """Print the next ticket to work or review."""
-    action = next_action(_repo())
+    action = next_action(_repo(), mode=mode)
     if as_json:
         _print_json(action.as_dict())
     else:
@@ -381,11 +387,19 @@ def next_(as_json: bool) -> None:
 @cli.command("run", context_settings={"ignore_unknown_options": True, "allow_extra_args": True})
 @click.option("--ticket", metavar="ID", help="Run the next ticket, or the one named by --ticket.")
 @click.option("--agent", metavar="NAME", help="Use the named command from [agent_commands].")
+@mode_option
 @click.pass_context
-def run(ctx: click.Context, ticket: str | None, agent: str | None) -> None:
+def run(
+    ctx: click.Context,
+    ticket: str | None,
+    agent: str | None,
+    mode: Literal["work", "review"] | None,
+) -> None:
     """Run the next ticket, or the one named by --ticket; other arguments go to the agent."""
     try:
-        result = run_next(_repo(warn_setup_version=False), ticket, tuple(ctx.args), agent=agent)
+        result = run_next(
+            _repo(warn_setup_version=False), ticket, tuple(ctx.args), agent=agent, mode=mode
+        )
     except RunInterrupted as interrupted:
         click.echo(f"interrupted during {interrupted.phase}", err=True)
         raise click.exceptions.Exit(130) from None
