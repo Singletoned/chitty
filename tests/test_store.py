@@ -165,13 +165,16 @@ class TestStore(StoreTestCase):
             ChittyError,
             "test-agent cannot review this task: wrote the plan, moved the task to review",
         ):
-            self.repo.edit(stored.id, Edit(status="done", note="Reviewed: looks good"))
+            self.repo.edit(
+                stored.id,
+                Edit(status="done", note="Reviewed: looks good\n1: pass - looks good"),
+            )
 
         completed = self.repo.edit(
             stored.id,
             Edit(
                 status="done",
-                note="Reviewed: emergency approval",
+                note="Reviewed: emergency approval\n1: pass - looks good",
                 override_review_independence=True,
             ),
         ).task
@@ -192,7 +195,10 @@ class TestStore(StoreTestCase):
             ChittyError,
             "test-agent cannot review this task: wrote the plan, ticked acceptance criteria$",
         ):
-            self.repo.edit(stored.id, Edit(status="done", note="Reviewed: looks good"))
+            self.repo.edit(
+                stored.id,
+                Edit(status="done", note="Reviewed: looks good\n1: pass - looks good"),
+            )
 
     def test_edit_that_changes_nothing_records_no_history(self):
         stored = self.add("One", priority="high")
@@ -211,7 +217,10 @@ class TestStore(StoreTestCase):
         with self.assertRaisesRegex(ChittyError, "requires --note starting 'Reviewed:'"):
             self.repo.edit(stored.id, Edit(status="done"))
 
-        self.repo.edit(stored.id, Edit(status="done", note="Reviewed: looks good"))
+        self.repo.edit(
+            stored.id,
+            Edit(status="done", note="Reviewed: looks good\n1: pass - looks good"),
+        )
 
     def test_status_change_adds_history_to_an_existing_task(self):
         stored = self.add("One")

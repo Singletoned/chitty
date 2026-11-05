@@ -100,6 +100,17 @@ class TestMcp(CliTestCase):
         self.assertEqual(task["status"], "backlog")
         self.assertEqual(task["description"], "This ticket needs refining.")
 
+    def test_review_verdict_is_required_and_complete(self):
+        call("add", title="Review", description="x", ac=["One"])
+        call("edit", id="1", status="review")
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        before = call("show", id="1")
+        with self.assertRaisesRegex(ToolError, "missing 1"):
+            call("edit", id="1", status="done", note="Reviewed: ready.")
+        self.assertEqual(call("show", id="1"), before)
+        completed = call("edit", id="1", status="done", note="Reviewed: ready.\n1: pass - complete")
+        self.assertEqual(completed["status"], "done")
+
     def test_errors_reach_the_client(self):
         with self.assertRaisesRegex(ToolError, "no task TASK-9"):
             call("show", id="9")
