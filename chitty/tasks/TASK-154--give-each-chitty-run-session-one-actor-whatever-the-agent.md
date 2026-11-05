@@ -21,6 +21,13 @@ Out of scope: `TASK-146`'s question of how names are made, and anything specific
 - [ ] A test with a fake agent that sets its own `CLAUDE_CODE_SESSION_ID` shows the claim and a write from that agent recording one actor
 - [ ] A test with fixed UUIDs shows two runs giving their agents different `CHITTY_ACTOR` values, and neither setting `CHITTY_PI_SESSION_ID`
 
+## Plan
+
+1. Inspect actor/run implementations and existing run tests.
+2. Add a public run-actor naming helper and have run set only CHITTY_ACTOR.
+3. Add/update deterministic tests covering Claude session identity and two fixed UUID runs.
+4. Run focused tests, then make check and verify all criteria before review.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent with `TASK-155`, 2026-11-04. Fixed: the helper and its source; the existing test that breaks; a test that would have failed by chance; and the dependency on `TASK-136`, which was not needed, so this can go first. Rejected: the `chitty guide` hint appearing in a run-started Pi, because the extension still sets `CHITTY_PI_SESSION_ID` at session start. A subagent sharing its parent's actor, which is the existing design. Name collisions, which are `TASK-146`; a collision gives a loud refusal with an override. Moved to `todo` now the findings have outcomes.
@@ -31,3 +38,4 @@ Cold read by a fresh Sonnet subagent with `TASK-155`, 2026-11-04. Fixed: the hel
 - 2026-11-04T15:40:06Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T15:40:06Z mellow-newt backlog → todo
 - 2026-11-05T16:43:54Z plucky-newt todo → doing
+- 2026-11-05T16:44:08Z plucky-newt: wrote the plan
