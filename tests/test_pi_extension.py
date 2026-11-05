@@ -86,7 +86,7 @@ class TestPiExtension(unittest.TestCase):
 
             install_pi_extension({"PI_CODING_AGENT_DIR": str(agent)})
 
-            self.assertEqual(state.read_text().splitlines()[1], "0.1.31")
+            self.assertEqual(state.read_text().splitlines()[1], __version__)
 
     def test_installs_into_configured_pi_agent_directory(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -43,6 +43,10 @@ prefix = "TASK"
 prefix = "HUMAN"
 review = false
 
+[contexts.backlog]
+prefix = "BACKLOG"
+random_ids = true
+
 [agent_commands]
 """
 
@@ -52,6 +56,9 @@ class ContextConfig(BaseModel):
 
     prefix: str
     review: bool | None = None
+    # Number new tickets randomly instead of sequentially, so tickets raised on
+    # different branches cannot collide: only `main` hands out sequential IDs.
+    random_ids: bool = False
 
     @field_validator("prefix")
     @classmethod

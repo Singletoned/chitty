@@ -79,7 +79,11 @@ Plain `chitty list` shows non-archived `todo`, `doing`,
 `blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter,
 including backlog and done tickets. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`
-contexts do this so people can close their own tasks directly. The third failed review (`review → doing`) since a task was last blocked sets it
+contexts do this so people can close their own tasks directly. A context with
+`random_ids = true` numbers new tickets at random from 10000000 to 99999999
+instead of sequentially, so tickets raised on different branches do not
+collide; `chitty init` adds such a `backlog` context (prefix `BACKLOG`) to new
+and existing repositories, unless one or a `BACKLOG` prefix already exists. The third failed review (`review → doing`) since a task was last blocked sets it
 `blocked` with owner `human` instead, so agents stop bouncing it. Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,

@@ -2,6 +2,7 @@
 
 import json
 import re
+import secrets
 import sys
 import tomllib
 from collections.abc import Mapping, Sequence
@@ -10,6 +11,8 @@ from datetime import UTC, date, datetime
 from importlib.resources import files
 from pathlib import Path
 from typing import Any, Literal
+
+from pydantic import ValidationError
 
 from chitty import formatter, git, ids
 from chitty.actor import actor, remove_pi_session_environment
@@ -47,6 +50,11 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 ROLE_NAMES = ("work", "review", "plan")
+# Random IDs have eight digits with no leading zero, which `ID_RE` requires.
+RANDOM_ID_MIN = 10_000_000
+RANDOM_ID_MAX = 99_999_999
+# Collisions are vanishingly rare, so many failed draws mean something is wrong.
+RANDOM_ID_ATTEMPTS = 100
 
 Which = Literal["active", "archived", "all"]
 
@@ -473,6 +481,15 @@ class Repo:
                 numbers.append(task_id.number)
         if self.config.archive == "delete":
             numbers += self._deleted_numbers(context)
+        if self.config.contexts[context.name].random_ids:
+            used = set(numbers)
+            for _ in range(RANDOM_ID_ATTEMPTS):
+                if (number := _random_number()) not in used:
+                    return number
+            raise ChittyError(
+                f"no unused random number in context {context.name!r} "
+                f"after {RANDOM_ID_ATTEMPTS} attempts"
+            )
         return ids.next_number(numbers)
 
     def archive(self, task_id: TaskId) -> Change:
@@ -772,6 +789,37 @@ def _add_missing_agent_commands_table(
     return text.rstrip() + f"\n\n[{prefix}agent_commands]\n"
 
 
+def _random_number() -> int:
+    """A random ticket number for a `random_ids` context; tests patch it."""
+    return RANDOM_ID_MIN + secrets.randbelow(RANDOM_ID_MAX - RANDOM_ID_MIN + 1)
+
+
+def _add_missing_backlog_context(text: str, config: RepoConfig, pyproject: bool) -> str:
+    """Add the generated `backlog` context after the last context table."""
+    if "backlog" in config.contexts or any(
+        context.prefix == "BACKLOG" for context in config.contexts.values()
+    ):
+        return text
+    prefix = "tool.chitty." if pyproject else ""
+    headers = list(re.finditer(rf"(?m)^\[{re.escape(prefix)}contexts\.[^\]]+\]\s*$", text))
+    if not headers:
+        # Contexts written as dotted keys or inline tables have no header to follow.
+        return text
+    last = headers[-1]
+    following = re.search(r"(?m)^\[", text[last.end() :])
+    position = last.end() + following.start() if following else len(text)
+    table = f'[{prefix}contexts.backlog]\nprefix = "BACKLOG"\nrandom_ids = true\n'
+    rest = text[position:]
+    updated = text[:position].rstrip("\n") + "\n\n" + table + ("\n" + rest if rest else "")
+    data = tomllib.loads(updated)
+    settings = data["tool"]["chitty"] if pyproject else data
+    try:
+        RepoConfig.model_validate(settings)
+    except ValidationError:
+        return text
+    return updated
+
+
 def _add_missing_human_review(text: str, config: RepoConfig, pyproject: bool) -> str:
     """Set the generated human context's review policy without changing explicit settings."""
     human = config.contexts.get("human")
@@ -880,6 +928,7 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         )
         updated = _add_missing_agent_commands_table(updated, settings, source == pyproject_path)
         updated = _add_missing_human_review(updated, config, source == pyproject_path)
+        updated = _add_missing_backlog_context(updated, config, source == pyproject_path)
         updated = re.sub(
             r'(?m)^(chitty_version\s*=\s*)["\'][^"\']*["\']\s*$',
             rf'\g<1>"{CHITTY_VERSION}"',
