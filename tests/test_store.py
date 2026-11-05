@@ -63,36 +63,43 @@ class TestStore(StoreTestCase):
             self.add("Blocked", depends_on=["HUMAN-1"]).task.frontmatter.depends_on, ["HUMAN-1"]
         )
 
-    def test_reads_newer_task_state_from_another_branch(self):
+    def test_reads_newer_task_state_from_another_branch_at_the_same_second(self):
         self.git("init", "--quiet")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.git("branch", "-M", "main")
         stored = self.add("One")
-        self.commit("main task", "2026-10-23T00:00:00+00:00")
-        self.git("checkout", "--quiet", "-b", "other")
-        stored.path.write_text(stored.path.read_text().replace("status: todo", "status: doing"))
-        self.commit("claim task", "2026-10-24T00:00:00+00:00")
-        self.git("checkout", "--quiet", "main")
+        timestamp = "2026-10-23T00:00:00+00:00"
+        self.commit("main task", timestamp)
+        worktree = self.tmp / "task-1"
+        self.git("worktree", "add", "--quiet", "-b", "task-1", str(worktree))
+        self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
+        path = worktree / stored.path.relative_to(self.root)
+        path.write_text(path.read_text().replace("status: todo", "status: doing"))
+        self.commit("claim task", timestamp, cwd=worktree)
 
         task = Repo.open(self.root).find(stored.id)
-
         self.assertEqual(task.task.frontmatter.status, "doing")
-        self.assertEqual(task.branch, "other")
+        self.assertEqual(task.branch, "task-1")
+
+        task = Repo.open(worktree).find(stored.id)
+        self.assertEqual(task.task.frontmatter.status, "doing")
+        self.assertEqual(task.path, path)
 
     def git(self, *args: str) -> None:
         subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
 
-    def commit(self, message: str, timestamp: str) -> None:
+    def commit(self, message: str, timestamp: str, cwd=None) -> None:
+        cwd = cwd or self.root
         environment = {
             **os.environ,
             "GIT_AUTHOR_DATE": timestamp,
             "GIT_COMMITTER_DATE": timestamp,
         }
-        subprocess.run(["git", "add", "--all"], cwd=self.root, check=True, env=environment)
+        subprocess.run(["git", "add", "--all"], cwd=cwd, check=True, env=environment)
         subprocess.run(
             ["git", "commit", "--quiet", "-m", message],
-            cwd=self.root,
+            cwd=cwd,
             check=True,
             env=environment,
         )
