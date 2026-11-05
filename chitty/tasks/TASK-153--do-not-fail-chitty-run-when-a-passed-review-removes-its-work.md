@@ -19,7 +19,7 @@ Out of scope: landing.
 ## Acceptance Criteria
 
 - [x] A test with a fake agent that merges the branch, removes the worktree and exits shows `chitty run` exiting 0 and printing the status change
-- [ ] Tests show a worktree removed with its branch kept reporting the branch's status, and worktree and branch both removed without a merge failing with a message naming the ticket, in work and review modes
+- [x] Tests show a worktree removed with its branch kept reporting the branch's status, and worktree and branch both removed without a merge failing with a message naming the ticket, in work and review modes
 
 ## Plan
 
@@ -30,6 +30,8 @@ Inspect `run.py` lifecycle and existing run tests. Add a post-agent status looku
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: my claim that the ticket must be merged, and my second criterion, which would have failed a harmless case with the branch kept. Rejected: declaring an order against `TASK-148`, which already follows through `TASK-127`.
 
 Review failed (tests): acceptance criterion 2 is not fully demonstrated: the added tests cover merged removal and unmerged removal in work and review modes, but no test covers a removed worktree with its branch kept reporting the branch status. Add that regression test and re-run verification.
+
+Added regression coverage for worktree removal with the branch retained in both work and review modes; the test fails against the pre-fallback implementation and passes with it.
 
 ## Summary
 
@@ -47,3 +49,4 @@ Implemented fallback status reporting for agents that remove their worktree. `ch
 - 2026-11-05T09:57:33Z lively-marten doing → review
 - 2026-11-05T10:01:56Z vivid-dormouse: changed acceptance criteria, notes
 - 2026-11-05T10:01:56Z vivid-dormouse review → doing
+- 2026-11-05T10:06:51Z calm-quail: changed notes; ticked acceptance criteria
