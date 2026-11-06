@@ -1,6 +1,6 @@
 ---
 title: Ignore recorded conflict resolutions when `chitty run` rebases a review
-status: backlog
+status: todo
 labels:
   - bug
 priority: high
@@ -21,6 +21,12 @@ Tests must not depend on the developer's Git config. Set `rerere.enabled` and `r
 - [ ] A test in `tests/test_review_rebase.py` with `rerere.enabled` and `rerere.autoupdate` set and a recorded resolution for the conflict shows `chitty run --mode review` moving the ticket to `doing` with `Review failed (integration)` naming the file, the rebase aborted and the agent not started; it fails before the fix
 - [ ] `PLAN.md` says the review rebase ignores recorded resolutions
 
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-06. It reproduced the stop in a scratch repository and confirmed `-c rerere.enabled=false` leaves the path unmerged. Fixed nothing in the text; adopted its test recipe (record the resolution by resolving the same conflict once, then reset the branch) and the `PLAN.md` place (step 3 of the review preparation). Rejected: isolating global Git config in the test, because the repository's own settings are enough.
+
 ## History
 
 - 2026-11-06T09:49:33Z youthful-toad → backlog
+- 2026-11-06T09:50:30Z youthful-toad: changed notes
+- 2026-11-06T09:50:30Z youthful-toad backlog → todo
