@@ -1,6 +1,6 @@
 ---
 title: Require a line per criterion in a review verdict
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -31,6 +31,10 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Too big as written, so the ins
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: splitting notes into lines, which count of criteria, and where the check goes. Rejected: fixing the message's wording, which a test need only match on the numbers.
 
+Reviewed: criteria and implementation independently; make check passed (306 unittest tests and Node tests).
+1: pass - CLI and MCP coverage verifies refusal, no mutation, and complete done/doing verdicts.
+2: pass - escalation, override, and no-criteria behavior are covered and verified.
+
 ## Summary
 
 Implemented shared review-verdict validation in store.py. CLI and MCP tests cover malformed, missing, duplicate, out-of-range, status-specific, complete, override, escalation, and no-criteria cases. make check passes: ruff, pyright, 280 unittest tests, and Node tests. Commit 595b53d (Task: TASK-166).
@@ -47,3 +51,5 @@ Implemented shared review-verdict validation in store.py. CLI and MCP tests cove
 - 2026-11-05T22:59:55Z daring-eel: ticked acceptance criteria
 - 2026-11-05T23:00:01Z daring-eel: changed summary
 - 2026-11-05T23:00:01Z daring-eel doing → review
+- 2026-11-06T11:15:54Z able-zander: changed notes
+- 2026-11-06T11:15:54Z able-zander review → done
