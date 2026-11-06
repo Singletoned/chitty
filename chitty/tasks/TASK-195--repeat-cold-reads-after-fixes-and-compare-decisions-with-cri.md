@@ -1,6 +1,6 @@
 ---
 title: Repeat cold reads after fixes, and compare decisions with criteria
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-194
@@ -22,7 +22,7 @@ Those bullets ship to every repository, so do not name `make`. `src/chitty/roles
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `until a read finds none`, `what criteria name` and `must fail without the fix`, and fails against the current `plan.md`
+- [x] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `until a read finds none`, `what criteria name` and `must fail without the fix`, and fails against the current `plan.md`
 
 ## Plan
 
@@ -35,6 +35,12 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold
 Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-195/2`: nothing serious. The test failed on all three phrases without the change and passed with it, and `make check` passed. Rejected: naming a position in the current `plan.md`, because this depends on `TASK-194`, whose bullets will be there when this starts; and checking position in the test, as before.
 
 The ticket says no version bump is needed, but `make check` enforces a bump for every `src/chitty/roles` change via `check_version_bump.py`; bumped `__version__` to `0.1.39` so the required check passes.
+
+Verified the new regression test failed before the guide bullets were added (all three phrases missing), then passed after the fix. `make format && make check` passed.
+
+## Summary
+
+Implemented the two planning-role bullets and a whitespace-normalized `TestGuide` regression test covering all required phrases. Bumped `__version__` to `0.1.39` because `make check` requires version bumps for `src/chitty/roles` changes. Focused regression test failed before the guide fix and passed after it; `make format && make check` passes. No follow-ups.
 
 ## History
 
@@ -49,3 +55,5 @@ The ticket says no version bump is needed, but `make check` enforces a bump for 
 - 2026-11-06T20:23:56Z rosy-heron: wrote the plan
 - 2026-11-06T20:24:06Z rosy-heron: wrote the plan
 - 2026-11-06T20:25:14Z rosy-heron: changed notes
+- 2026-11-06T20:26:57Z rosy-heron: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:26:57Z rosy-heron doing → review
