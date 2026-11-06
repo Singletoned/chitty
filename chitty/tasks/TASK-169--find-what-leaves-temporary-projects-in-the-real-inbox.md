@@ -18,6 +18,13 @@ The cold read found most of the cause from each directory's `repo` owner file: `
 
 - [ ] A note records the before and after listing of the real inbox around a full test run, and what caused each directory
 
+## Plan
+
+1. Record the real inbox listing before a full test run.
+2. Run the repository's complete check suite and record the after listing.
+3. Inspect test setup and any changed files to identify whether the suite caused entries; fix a test only if the run demonstrates a regression.
+4. Record the evidence and causes in the ticket note, run chitty fix, and summarize the verified result.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. It found the likely cause, and the check now names how to show it.
@@ -28,3 +35,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. It found the likely cause, and
 - 2026-11-04T21:01:56Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:01:57Z mellow-newt backlog → todo
 - 2026-11-06T00:28:18Z youthful-crane todo → doing
+- 2026-11-06T00:28:30Z youthful-crane: wrote the plan
