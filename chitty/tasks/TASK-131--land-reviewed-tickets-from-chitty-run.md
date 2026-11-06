@@ -44,6 +44,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: landing be
 
 Landing must also refuse a branch that changes the Chitty config compared with `main` (`TASK-212`). Repeat that check after the landing rebase.
 
+The human decided on 2026-11-06 to prefer merging the main branch into a ticket branch over rebasing (`TASK-223`). Landing should merge `main` into the branch, run `check`, then fast-forward the main branch.
+
 ## History
 
 - 2026-11-03T20:46:17Z lively-panda → todo
@@ -54,3 +56,4 @@ Landing must also refuse a branch that changes the Chitty config compared with `
 - 2026-11-04T15:17:38Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-06T16:24:14Z youthful-toad: changed priority
 - 2026-11-06T16:44:07Z youthful-toad: changed notes
+- 2026-11-06T21:49:20Z youthful-toad: changed notes
