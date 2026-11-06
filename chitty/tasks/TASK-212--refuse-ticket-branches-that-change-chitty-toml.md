@@ -18,13 +18,17 @@ Only `chitty init` in the main checkout may change a repository's Chitty config.
    - `test_run_reviews_branch_with_newer_config_key` in `tests/test_next.py` expects a branch that changes `chitty.toml` to pass review. Delete it: under this rule, that branch fails.
 3. **Guides.** `src/chitty/guide.md` and `src/chitty/roles/work.md` say never to edit `chitty.toml` or run `chitty init` on a ticket branch. Use the phrase "On a ticket branch, never edit `chitty.toml` or run `chitty init`", so a test can check for it. That changes the managed block, so bump `__version__` one patch above `main`'s current version (`scripts/check_version_bump.py` checks it). The main checkout's setup refresh regenerates this repository's `AGENTS.md` after landing.
 
-Out of scope: `AGENTS.md`'s managed block, which a branch changing the guide text legitimately regenerates in this repository.
+4. **`AGENTS.md`'s managed block** gets the same rule (the human's decision, 2026-11-06). Only `chitty init` on the main checkout writes it. In the same `_prepare_review` check, fail the ticket if the branch changes the managed block of `AGENTS.md` compared with `main`, with `Review failed (work): the branch changes Chitty's managed block in `AGENTS.md`; only `chitty init` on the main checkout may change it. Restore that block from `main`.``
+   - The block is the text from the `GUIDE_BEGIN` line to the `GUIDE_END` line in `src/chitty/store.py`. A file without markers uses the legacy `## Chitty` section, as `_managed_agents` finds it. Factor that lookup out of `_managed_agents`, so both use one function.
+   - Edits to the rest of `AGENTS.md` are allowed.
+   - In this repository, a branch that changes `src/chitty/guide.md` leaves `AGENTS.md` alone; the main checkout's setup refresh regenerates it after landing.
 
 ## Acceptance Criteria
 
 - [ ] A test runs `chitty run --mode review` on a branch that changes `chitty.toml` and asserts the ticket moves to `doing` with that note and no agent runs. Another, with the config in `[tool.chitty]`, shows that a change elsewhere in `pyproject.toml` passes and a change to `[tool.chitty]` fails.
 - [ ] `chitty init` run in a linked worktree exits non-zero naming the main checkout, and leaves `chitty.toml` and `AGENTS.md` unchanged.
 - [ ] `chitty guide work` and the `AGENTS.md` block that `chitty init` writes both say not to edit `chitty.toml` or run `chitty init` on a ticket branch, and `__version__` is bumped.
+- [ ] A test shows a branch that changes text inside `AGENTS.md`'s managed block failing review with that note, and one that changes only text outside the block passing.
 
 ## Notes
 
@@ -49,6 +53,8 @@ Cold read 1 of the rescoped ticket (Sonnet, `refs/cold-read/TASK-212/1`; the tes
 - The `TASK-131` check: follow-up, already noted there.
 The reader's ref predates these fixes (fixed note text, kept the dead code), so check it against the ticket rather than copying it.
 
+Extended on 2026-11-06. The human agreed that branches must not regenerate `AGENTS.md`'s managed block either, so the check now covers it (item 4 and criterion 4). The cold-read ref predates this. Also: `task-144` changed the block's markers on its branch, so if it's still open when this lands, its review will fail until the block is restored.
+
 ## History
 
 - 2026-11-06T16:15:42Z youthful-toad → backlog
@@ -58,3 +64,4 @@ The reader's ref predates these fixes (fixed note text, kept the dead code), so 
 - 2026-11-06T16:44:06Z youthful-toad todo → backlog
 - 2026-11-06T17:09:40Z youthful-toad: changed description, notes
 - 2026-11-06T17:09:40Z youthful-toad backlog → todo
+- 2026-11-06T17:48:05Z youthful-toad: changed description, acceptance criteria, notes
