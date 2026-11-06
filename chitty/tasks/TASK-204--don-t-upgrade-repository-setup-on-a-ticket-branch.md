@@ -39,8 +39,11 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-204/1`; both tests failed before and p
 - A non-Git directory is untested: rejected, `is_linked_worktree` is false there and the existing main-checkout path applies.
 - The `refresh_setup` path is untested: rejected, it's out of scope and unchanged.
 
+Second case, on `task-144` (fixed by hand): `main`'s `chitty` upgraded the branch's setup (`4d3e1bb`), and because it didn't know the branch's new `<!-- chitty:end -->` marker, it dropped it from `AGENTS.md`. So the bug corrupts newer branch files as well as writing config older branch code can't read.
+
 ## History
 
 - 2026-11-06T11:30:46Z youthful-toad → backlog
 - 2026-11-06T11:41:32Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T11:41:32Z youthful-toad backlog → todo
+- 2026-11-06T12:54:24Z youthful-toad: changed notes
