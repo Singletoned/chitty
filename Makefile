@@ -11,6 +11,7 @@ install: ## install Python and node dev dependencies
 	npm ci
 
 check: ## lint, type-check and run the tests
+	! git grep -nE '^(<<<<<<< |>>>>>>> |=======$$)'
 	uv run python scripts/check_version_bump.py
 	uv run ruff format --check .
 	uv run ruff check --no-fix .
