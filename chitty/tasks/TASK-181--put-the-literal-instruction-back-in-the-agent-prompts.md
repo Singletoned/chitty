@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: review
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -51,6 +51,16 @@ Unblocked by a human-run session. All three failed reviews were rebase conflicts
 - `__version__` is `0.1.41`.
 `make check` passes (360 tests). Several open tickets also use `0.1.41`, so whichever lands second will need its version bumped again.
 
+Review failed (work): check exited with status 2:
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.41), but working tree has 0.1.41:
+  src/chitty/guide.md
+  src/chitty/roles/plan.md
+  src/chitty/roles/review.md
+  src/chitty/roles/work.md
+make: *** [check] Error 1
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -87,3 +97,5 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-06T18:35:31Z honest-marten review → blocked
 - 2026-11-06T21:41:00Z youthful-toad: changed owner, notes
 - 2026-11-06T21:41:00Z youthful-toad blocked → review
+- 2026-11-06T21:49:23Z honest-ibis: changed notes
+- 2026-11-06T21:49:23Z honest-ibis review → doing
