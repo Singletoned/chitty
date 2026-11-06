@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: blocked
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -24,7 +24,6 @@ Out of scope: a timeout, and landing.
 
 - [x] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
 - [x] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
-- [ ] This repository sets `check`, `PLAN.md`, `README.md` and the template describe it, and `__version__` is bumped above `main`'s
 
 ## Plan
 
@@ -52,6 +51,8 @@ Review failed (integration): the repository's root chitty.toml does not set chec
 
 Cannot complete acceptance criterion 3 on this ticket branch: TASK-212 explicitly forbids changing chitty.toml here. A human must set check = "make check" in the main checkout after this branch lands. Implementation is complete; make format && make check passes (336 Python tests plus Node tests).
 
+Unblocked by a human-run session. Criterion 3 (`check = "make check"` in this repository's `chitty.toml`) was removed, because `TASK-212` forbids ticket branches from changing `chitty.toml`. The human-run session sets it on `main` after this lands. Criteria 1 and 2 were verified by the worker; review them.
+
 ## Summary
 
 Implemented and verified `check` preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
@@ -77,3 +78,5 @@ Implemented and verified `check` preflight support. Checks now run after setup a
 - 2026-11-06T19:47:57Z tidy-badger review → doing
 - 2026-11-06T19:58:38Z lively-otter: changed notes
 - 2026-11-06T19:58:38Z lively-otter doing → blocked
+- 2026-11-06T21:33:39Z youthful-toad: changed owner, acceptance criteria, notes
+- 2026-11-06T21:33:39Z youthful-toad blocked → review
