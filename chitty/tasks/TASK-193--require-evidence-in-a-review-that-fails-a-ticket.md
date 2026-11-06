@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: review
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -49,6 +49,8 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 
 Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
 
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests), and npm test; chitty fix completed with pre-existing task-format warnings only.
@@ -81,3 +83,5 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-06T14:43:33Z lively-quail review → doing
 - 2026-11-06T16:32:01Z youthful-vole: changed summary
 - 2026-11-06T16:32:10Z youthful-vole doing → review
+- 2026-11-06T16:56:05Z jolly-gannet: changed notes
+- 2026-11-06T16:56:05Z jolly-gannet review → doing
