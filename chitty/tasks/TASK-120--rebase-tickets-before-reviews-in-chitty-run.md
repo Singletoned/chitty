@@ -1,6 +1,6 @@
 ---
 title: Rebase tickets before reviews in `chitty run`
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-126
@@ -67,6 +67,8 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 
 Surprise: a rebase stopped part-way detaches `HEAD`, so `git worktree list` no longer ties the worktree to its branch and `_worktree` tried to add a second one, failing with Git's `already exists`. The unfinished-rebase refusal therefore lives in `_worktree`, checking `.worktrees/<id>` by its own `.git` file. Choices: a run that fails a review before any session writes no usage line, so `README.md` and `PLAN.md` now say each agent session, not each run, is logged; the failure moves read the resulting status from `Repo.edit`, so the third prints `review → blocked`. Checked that this repository's real worktrees after `make install` count as clean, so reviews here are not failed as `work` by `.venv` or `node_modules`.
 
+Reviewed: real-Git rebase/setup, conflict and uncommitted-work failures, escalation, interrupt handling, and documentation all pass; targeted tests and make check verified.
+
 ## Summary
 
 In review mode `chitty run` now prepares the worktree after setting its actor: `_worktree` refuses an unfinished rebase; `_prepare_review` fails the ticket to `doing` with `Review failed (work)` for uncommitted files or `Review failed (integration)` naming conflicts (after `git rebase --abort`), without starting the agent and exiting 0 with the status change; otherwise it rebases onto `main` and only then runs `setup`. Moves go through `Repo.edit`, so they count towards the limit. Ctrl-C during the rebase aborts it and exits 130. Helpers are in `git.py`; documented in `README.md` and `PLAN.md`.
@@ -92,3 +94,5 @@ Verified: `tests/test_review_rebase.py` (six tests, seen failing first) and `mak
 - 2026-11-05T21:55:18Z youthful-toad: ticked acceptance criteria
 - 2026-11-05T21:55:19Z youthful-toad: changed owner, notes, summary
 - 2026-11-05T21:55:19Z youthful-toad doing → review
+- 2026-11-06T09:15:54Z quick-marten: changed notes
+- 2026-11-06T09:15:54Z quick-marten review → done
