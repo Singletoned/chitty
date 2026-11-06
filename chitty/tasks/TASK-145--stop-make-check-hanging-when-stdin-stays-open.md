@@ -1,6 +1,6 @@
 ---
 title: Stop `make check` hanging when stdin stays open
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -33,6 +33,8 @@ Same cold read as `TASK-144`. Fixed: the exact test and fix; a reproducible way 
 
 Reproduced before the fix with: python - <<'PY' ... os.pipe(); subprocess.Popen(["make", "check"], stdin=read_fd, start_new_session=True); communicate(timeout=10) ... PY. With the write end held open, it timed out after 10s after reaching the unittest suite. After redirecting descriptor 0 to /dev/null in `test_run_cases`, the same held-open stdin harness completed `make check` in 207.2s with status 0. Focused `test_run_cases` and `test_run_inherits_stdin` also passed.
 
+Reviewed: inspected the focused descriptor-0 cleanup and unchanged stdin-inheritance test; focused tests passed; held-open stdin make check completed successfully in 260.1s with 293 Python tests and Node tests; working tree clean.
+
 ## Summary
 
 Implemented the test-only stdin isolation in `tests/test_next.py`: `test_run_cases` now redirects descriptor 0 to `/dev/null` and restores it via cleanup, while `chitty run` remains unchanged. Verified the pre-fix held-open stdin reproduction timed out after 10s; focused `test_run_cases` and `test_run_inherits_stdin` passed; held-open stdin `make check` passed in 207.2s; full `make check` passed (269 Python tests and Node tests). No follow-ups.
@@ -48,3 +50,5 @@ Implemented the test-only stdin isolation in `tests/test_next.py`: `test_run_cas
 - 2026-11-05T22:09:41Z rosy-adder: ticked acceptance criteria
 - 2026-11-05T22:09:48Z rosy-adder: changed summary
 - 2026-11-05T22:09:59Z rosy-adder doing → review
+- 2026-11-06T10:12:11Z open-marten: changed notes
+- 2026-11-06T10:12:11Z open-marten review → done
