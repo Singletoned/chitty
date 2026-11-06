@@ -1,8 +1,7 @@
 ---
 title: Stop concurrent `chitty run` sessions taking the same ticket
-status: doing
+status: review
 priority: high
-owner: human
 parent: TASK-106
 created: 2026-11-06
 ---
@@ -27,9 +26,9 @@ Out of scope: collisions in the main checkout itself, which `README.md` already 
 
 ## Acceptance Criteria
 
-- [ ] Tests show two `chitty run --mode review` processes started together, with two review tickets and fake agents that wait, each reviewing a different ticket, and a third exiting 3
-- [ ] `README.md` and `PLAN.md` say any number of workers and reviewers may run at once and describe the lock
-- [ ] Tests show a lock held by another process making `chitty next` skip that ticket and `--ticket` refuse it with its PID, and the lock free again after a run that succeeds, fails and is interrupted
+- [x] Tests show two `chitty run --mode review` processes started together, with two review tickets and fake agents that wait, each reviewing a different ticket, and a third exiting 3
+- [x] `README.md` and `PLAN.md` say any number of workers and reviewers may run at once and describe the lock
+- [x] Tests show a lock held by another process making `chitty next` skip that ticket and `--ticket` refuse it with its PID, and the lock free again after a run that succeeds, fails and is interrupted
 
 ## Plan
 
@@ -44,6 +43,14 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the PID-file design rac
 
 Owner set to human only so chitty run leaves this ticket to this session; cleared when done.
 
+`next_action` uses `locks.locked_ids(root)`, one `git rev-parse` per call, rather than `is_locked` per ticket as the description says, which would run Git once per candidate; `is_locked` remains and uses it. Renamed `config._git_common_dir` to `git_common_dir` so `locks.py` can import it.
+
+## Summary
+
+New `src/chitty/locks.py`: `run_lock(root, id)` takes an exclusive non-blocking `flock` on `<git common dir>/chitty/run/<ID>.lock` and writes the PID for messages, raising `TicketLocked`; `locked_ids`/`is_locked` probe with a fresh descriptor. `next_action` skips locked tickets. `run` now chooses and locks in `_lock_ticket` (retrying up to `RUN_LOCK_ATTEMPTS`; `--ticket` refuses a locked one) inside an `ExitStack`, and the rest moved unchanged to `_run_ticket`, so the lock covers the dirty-path check, worktree, rebase, setup, claim and agent. `README.md` and `PLAN.md` now allow any number of workers and reviewers.
+
+Verified: `tests/test_run_lock.py` (three of four failed before wiring the lock in; the kernel-release test needs only `locks.py`): a SIGKILLed holder frees the lock, `chitty next` skips a locked ticket and exits 3 when all are, `--ticket` names the PID, the lock is held during the agent and free after success, failure and interrupt, and two real `chitty run --mode review` processes with waiting agents review different tickets while a third exits 3. `make check` passes (295 tests plus Node). Follow-up: `TASK-72` could show locked tickets in `chitty list`.
+
 ## History
 
 - 2026-11-06T09:26:15Z youthful-toad → backlog
@@ -52,3 +59,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-06T10:00:40Z youthful-toad: changed owner, notes
 - 2026-11-06T10:00:44Z youthful-toad: wrote the plan
 - 2026-11-06T10:00:44Z youthful-toad todo → doing
+- 2026-11-06T10:09:19Z youthful-toad: changed owner, notes, summary; ticked acceptance criteria
+- 2026-11-06T10:09:19Z youthful-toad doing → review
