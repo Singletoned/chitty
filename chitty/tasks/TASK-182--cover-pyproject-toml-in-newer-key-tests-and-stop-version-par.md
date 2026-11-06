@@ -21,6 +21,10 @@ Out of scope: supporting pre-release versions properly, including running an `rc
 - [ ] A test shows an unknown top-level key in `[tool.chitty]` loading with one stderr warning when `chitty_version` is newer, and refusing when it is equal
 - [ ] A test shows `load_repo_config` loading a file that records `0.2.0rc1` and has no unknown keys, failing before the change, and still raising `invalid Chitty version` when that file has an unknown key
 
+## Plan
+
+Add regression coverage in tests/test_config.py for newer unknown top-level keys in both chitty.toml and pyproject.toml, asserting one warning and equal-version rejection. Add version-read coverage for 0.2.0rc1 with and without unknown keys. Move version parsing in _allow_newer_top_level_keys after unknown-key detection so known-only reads do not parse the recorded version; preserve rejection for unknown keys with malformed versions. Run focused tests and make check.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: labelled the `pyproject.toml` test as a regression test, since nothing needs building for it; dropped the claim about running an `rc` build, which this does not fix; and said what happens to a malformed version. Not split: it is small, with two criteria.
@@ -32,3 +36,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: labelled the `pyproject
 - 2026-11-05T09:53:18Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T09:53:19Z mellow-newt backlog → todo
 - 2026-11-06T00:32:41Z vivid-badger todo → doing
+- 2026-11-06T00:33:03Z vivid-badger: wrote the plan
