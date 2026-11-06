@@ -1,6 +1,6 @@
 ---
 title: Find what leaves temporary projects in the real inbox
-status: todo
+status: doing
 labels:
   - bug
 priority: low
@@ -27,3 +27,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. It found the likely cause, and
 - 2026-11-04T21:00:17Z mellow-newt → backlog
 - 2026-11-04T21:01:56Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:01:57Z mellow-newt backlog → todo
+- 2026-11-06T00:28:18Z youthful-crane todo → doing
