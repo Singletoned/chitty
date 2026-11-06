@@ -1282,8 +1282,8 @@ def _ticket_action(
             try:
                 dependency = repo.find(dependency_id)
             except ChittyError as error:
-                if git.main_files(repo.root, ()) is None or "used by more than one file" not in str(
-                    error
+                if git.main_files(repo.root, _main_branch(repo), ()) is None or (
+                    "used by more than one file" not in str(error)
                 ):
                     raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
                 dependency = None
@@ -1297,11 +1297,20 @@ def _ticket_action(
     return NextAction(action_mode, stored.id)
 
 
+def _main_branch(repo: Repo) -> str:
+    """Read the integration branch from the primary checkout's config."""
+    if git.is_linked_worktree(repo.root):
+        return load_repo_config(git.main_checkout(repo.root)).main_branch
+    return repo.config.main_branch
+
+
 def _dependency_is_done(repo: Repo, dependency_id: TaskId, dependency: StoredTask | None) -> bool:
     """Whether a dependency is complete on the ref used to create worktrees."""
     context = repo.context_of(dependency_id)
+    main_branch = _main_branch(repo)
     main_files = git.main_files(
         repo.root,
+        main_branch,
         (
             context.directory.relative_to(repo.root),
             context.archive_directory.relative_to(repo.root),
@@ -1317,7 +1326,7 @@ def _dependency_is_done(repo: Repo, dependency_id: TaskId, dependency: StoredTas
             task_id, _ = ids.parse_filename(path.name)
             task = parse(content)
         except (ids.IdError, TaskError) as error:
-            raise ChittyError(f"refs/heads/main:{path}: {error}") from None
+            raise ChittyError(f"refs/heads/{main_branch}:{path}: {error}") from None
         if task_id == dependency_id:
             matches.append((path.parent.name == ARCHIVE_DIR, path, task))
     if not matches:

@@ -93,19 +93,23 @@ def restore_sources(root: Path, originals: dict[Path, tuple[bytes, str]]) -> Non
         pass
 
 
-def main_files(root: Path, directories: Sequence[Path]) -> list[tuple[Path, str]] | None:
-    """Read files below ``directories`` from the local ``main`` branch.
+def main_files(
+    root: Path, branch: str, directories: Sequence[Path]
+) -> list[tuple[Path, str]] | None:
+    """Read files below ``directories`` from the local integration branch.
 
-    ``None`` means that the repository is outside Git or has no local ``main``
-    branch, allowing callers to retain their non-Git behavior.
+    ``None`` means that the repository is outside Git or has no local branch,
+    allowing callers to retain their non-Git behavior.
     """
-    if not is_repository(root) or not has_local_branch(root, "main"):
+    if not is_repository(root) or not has_local_branch(root, branch):
         return None
     entries: list[tuple[Path, str]] = []
     objects: list[tuple[str, Path]] = []
     seen: set[Path] = set()
     for directory in directories:
-        output = _git(root, "ls-tree", "-r", "--full-tree", "refs/heads/main", "--", str(directory))
+        output = _git(
+            root, "ls-tree", "-r", "--full-tree", f"refs/heads/{branch}", "--", str(directory)
+        )
         for line in output.splitlines():
             metadata, _, filename = line.partition("\t")
             parts = metadata.split()
@@ -115,7 +119,7 @@ def main_files(root: Path, directories: Sequence[Path]) -> list[tuple[Path, str]
             if path in seen:
                 continue
             seen.add(path)
-            objects.append((f"refs/heads/main:{path}", path))
+            objects.append((f"refs/heads/{branch}:{path}", path))
     contents = _read_blobs(root, objects)
     for object_id, path in objects:
         result = contents.get((object_id, path))

@@ -135,7 +135,7 @@ def _run_ticket(
     stored = main_repo.find(action.id)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
-    worktree = _worktree(main_root, action)
+    worktree = _worktree(main_root, action, main_repo.config.main_branch)
     setup = main_repo.config.setup
     assert setup is not None  # `_preflight` rejects an unset setup command.
     if action.mode == "work":
@@ -146,7 +146,7 @@ def _run_ticket(
         # review preflight has confirmed that the branch still has one.
         work_repo = Repo(worktree, main_repo.config)
         # The run's own actor never worked on the ticket, so it may fail it.
-        failed = _prepare_review(work_repo, worktree, action)
+        failed = _prepare_review(work_repo, worktree, action, main_repo.config.main_branch)
         if failed is not None:
             return failed
         work_repo = Repo.open(worktree)
@@ -350,8 +350,8 @@ def _preflight(repo: Repo) -> None:
             "a new ticket worktree's environment before the agent starts, for example "
             'setup = "make install"'
         )
-    if git.current_branch(repo.root) != "main":
-        raise ChittyError("the main checkout must be on branch main")
+    if git.current_branch(repo.root) != repo.config.main_branch:
+        raise ChittyError(f"the main checkout must be on branch {repo.config.main_branch}")
 
 
 def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> tuple[str, ...]:
@@ -401,8 +401,10 @@ def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> 
     return (str(resolved.resolve()), *rendered[1:])
 
 
-def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunResult | None:
-    """Rebase a review ticket onto `main`, or fail it back to its worker.
+def _prepare_review(
+    work_repo: Repo, worktree: Path, action: NextAction, main_branch: str
+) -> RunResult | None:
+    """Rebase a review ticket onto the integration branch, or fail it back to its worker.
 
     The reviewer then sees exactly what would land. Returns the status change
     when the ticket fails here, so no review session is spent on it.
@@ -415,7 +417,7 @@ def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunR
             f"Review failed (work): the worktree has uncommitted changes: {listed}.",
         )
     try:
-        conflicts = git.rebase(worktree, "main")
+        conflicts = git.rebase(worktree, main_branch)
     except KeyboardInterrupt:
         if git.rebase_in_progress(worktree):
             git.abort_rebase(worktree)
@@ -425,16 +427,16 @@ def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunR
         return _fail_review(
             work_repo,
             action,
-            f"Review failed (integration): rebasing onto `main` conflicts in {listed}.",
+            f"Review failed (integration): rebasing onto `{main_branch}` conflicts in {listed}.",
         )
-    if changed := _changed_config(worktree):
+    if changed := _changed_config(worktree, main_branch):
         return _fail_review(
             work_repo,
             action,
             "Review failed (work): the branch changes "
             f"`{changed}`; only `chitty init` on the main checkout may change it.",
         )
-    if _changed_agents_block(worktree):
+    if _changed_agents_block(worktree, main_branch):
         return _fail_review(
             work_repo,
             action,
@@ -444,11 +446,13 @@ def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunR
     return None
 
 
-def _changed_agents_block(worktree: Path) -> bool:
+def _changed_agents_block(worktree: Path, main_branch: str | None = None) -> bool:
     """Return whether the branch changes or damages the managed guide block."""
+    if main_branch is None:
+        main_branch = Repo.open(git.main_checkout(worktree)).config.main_branch
     agents = worktree / AGENTS_FILE
     branch_text = agents.read_text() if agents.exists() else None
-    main_text = git.file_at(worktree, "main", AGENTS_FILE)
+    main_text = git.file_at(worktree, main_branch, AGENTS_FILE)
     if (branch_text is None) != (main_text is None):
         return True
     try:
@@ -462,46 +466,46 @@ def _changed_agents_block(worktree: Path) -> bool:
     return branch_block != main_block
 
 
-def _changed_config(worktree: Path) -> str | None:
+def _changed_config(worktree: Path, main_branch: str) -> str | None:
     """Return the Chitty config path when the rebased branch changed it."""
     source = config_source(worktree)
     if source is None:
         # A deleted config has no current source to compare, but its path is
         # still present in main and must be reported as a branch change.
-        return _main_config_path(worktree)
+        return _main_config_path(worktree, main_branch)
     relative = source.relative_to(worktree)
     if source.name == CONFIG_NAME:
         result = subprocess.run(
-            ["git", "diff", "--quiet", "main...HEAD", "--", str(relative)],
+            ["git", "diff", "--quiet", f"{main_branch}...HEAD", "--", str(relative)],
             cwd=worktree,
             check=False,
         )
         if result.returncode == 1:
             return str(relative)
         if result.returncode:
-            raise ChittyError(f"cannot compare {relative} with `main`")
+            raise ChittyError(f"cannot compare {relative} with `{main_branch}`")
         return None
 
     current = tomllib.loads(source.read_text()).get("tool", {}).get("chitty")
     try:
-        main_text = _git(worktree, "show", f"main:{relative}")
+        main_text = _git(worktree, "show", f"{main_branch}:{relative}")
     except ChittyError:
         return str(relative)
     main = tomllib.loads(main_text).get("tool", {}).get("chitty")
     return str(relative) if current != main else None
 
 
-def _main_config_path(worktree: Path) -> str | None:
-    """Return the Chitty config path recorded in the rebased `main` tree."""
+def _main_config_path(worktree: Path, main_branch: str) -> str | None:
+    """Return the Chitty config path recorded in the integration tree."""
     try:
-        _git(worktree, "show", f"main:{CONFIG_NAME}")
+        _git(worktree, "show", f"{main_branch}:{CONFIG_NAME}")
     except ChittyError:
         pass
     else:
         return CONFIG_NAME
 
     try:
-        text = _git(worktree, "show", f"main:{PYPROJECT_NAME}")
+        text = _git(worktree, "show", f"{main_branch}:{PYPROJECT_NAME}")
         data = tomllib.loads(text)
     except (ChittyError, tomllib.TOMLDecodeError):
         return None
@@ -525,7 +529,7 @@ def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:
     return RunResult(action, "review", change.task.task.frontmatter.status)
 
 
-def _worktree(main_root: Path, action: NextAction) -> Path:
+def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
     branch = str(action.id).lower()
     destination = main_root / ".worktrees" / branch
     # A rebase stopped part-way detaches HEAD, so Git no longer lists the
@@ -549,7 +553,7 @@ def _worktree(main_root: Path, action: NextAction) -> Path:
     elif action.mode == "review":
         raise ChittyError(f"review ticket {action.id} has no branch {branch}")
     else:
-        _git(main_root, "worktree", "add", "-b", branch, str(destination), "main")
+        _git(main_root, "worktree", "add", "-b", branch, str(destination), main_branch)
     return destination
 
 
