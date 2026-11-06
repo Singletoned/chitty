@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `chitty.toml`
-status: todo
+status: doing
 priority: high
 created: 2026-11-06
 ---
@@ -69,3 +69,4 @@ Also, the earlier note saying no open branch is affected is wrong: `task-179` an
 - 2026-11-06T17:48:05Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:48:19Z youthful-toad: changed notes
 - 2026-11-06T18:13:05Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-06T18:51:35Z lively-kestrel todo → doing
