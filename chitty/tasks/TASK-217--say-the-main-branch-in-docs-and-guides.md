@@ -1,6 +1,6 @@
 ---
 title: Say "the main branch" in docs and guides
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-216
@@ -44,6 +44,10 @@ Cold read 1 (Opus, read-only; docs only, so nothing to run). Outcomes:
 
 Verified the grep leaves only README.md line 34 and PLAN.md lines 660-661 (the repository-development references), and PLAN.md documents optional main_branch with default main. make install && make format && make check passed: 359 Python tests and Node tests passed.
 
+Reviewed: independently inspected the complete diff and verification.
+1: pass - Required grep leaves only README.md:34 and PLAN.md:660-661; Config documents optional main_branch with default main.
+2: pass - __version__ is 0.1.40 and make format && make check passed (359 Python tests and Node tests).
+
 ## Summary
 
 Updated guide, review role, README, and PLAN wording to say the main branch; documented optional main_branch configuration; bumped __version__ to 0.1.40. Verification: required grep, git diff --check, and make install && make format && make check all passed. No follow-ups.
@@ -60,3 +64,5 @@ Updated guide, review role, README, and PLAN wording to say the main branch; doc
 - 2026-11-06T21:25:59Z kind-gannet: wrote the plan
 - 2026-11-06T21:28:31Z kind-gannet: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T21:28:31Z kind-gannet doing → review
+- 2026-11-06T21:30:55Z golden-urchin: changed notes; ticked acceptance criteria
+- 2026-11-06T21:30:55Z golden-urchin review → done
