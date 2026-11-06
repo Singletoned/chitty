@@ -187,7 +187,7 @@ def is_linked_worktree(directory: Path) -> bool:
     """Whether ``directory`` is in a linked worktree rather than its main checkout.
 
     Non-Git directories, including machines without Git, are deliberately not
-    linked worktrees so `init` retains its existing extension-install behaviour.
+    linked worktrees.
     """
     try:
         result = subprocess.run(
@@ -204,6 +204,21 @@ def is_linked_worktree(directory: Path) -> bool:
         return False
     git_directory, common_directory = paths
     return (directory / git_directory).resolve() != (directory / common_directory).resolve()
+
+
+def main_checkout(root: Path) -> Path:
+    """Find the primary checkout by comparing each worktree's Git directory."""
+    common_dir = _git_path(root, "--git-common-dir")
+    output = _git(root, "worktree", "list", "--porcelain")
+    worktrees = [
+        Path(line.removeprefix("worktree "))
+        for line in output.splitlines()
+        if line.startswith("worktree ")
+    ]
+    for worktree in worktrees:
+        if _git_path(worktree, "--git-dir") == common_dir:
+            return worktree.resolve()
+    raise ChittyError(f"cannot find the main checkout for {root}")
 
 
 def current_branch(root: Path) -> str | None:
@@ -372,6 +387,12 @@ def _apply_cached(root: Path, patch: str) -> None:
     )
     if result.returncode != 0:
         raise ChittyError(f"autocommit failed restoring the Git index:\n{result.stderr.strip()}")
+
+
+def _git_path(root: Path, argument: str) -> Path:
+    value = _git(root, "rev-parse", argument).strip()
+    path = Path(value)
+    return (root / path).resolve() if not path.is_absolute() else path.resolve()
 
 
 def _git(root: Path, *args: str) -> str:

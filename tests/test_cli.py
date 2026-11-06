@@ -10,8 +10,7 @@ from unittest.mock import patch
 from click.testing import CliRunner, Result
 
 from chitty.cli import _complete_context, _complete_task_id, cli
-from chitty.config import CHITTY_VERSION, register_project
-from chitty.errors import ChittyError
+from chitty.config import CHITTY_VERSION
 from chitty.store import _add_missing_settings, guide
 from tests.support import RepoTestCase
 
@@ -303,7 +302,7 @@ class TestInit(CliTestCase):
         self.assertEqual(config.read_text(), original_config)
         self.assertEqual(agents.read_text(), original_agents)
 
-    def test_worktree_keeps_the_main_checkout_registered(self):
+    def test_init_refuses_a_linked_worktree_without_changes(self):
         config = self.root / "chitty.toml"
         config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
         self.git("init", "--quiet")
@@ -320,49 +319,21 @@ class TestInit(CliTestCase):
             cwd=self.root,
             check=True,
         )
-        agent = self.tmp / "pi-agent"
-        extension = agent / "extensions" / "chitty.ts"
-        extension.parent.mkdir(parents=True)
-        previous_extension = b"previous Chitty extension"
-        extension.write_bytes(previous_extension)
-        (agent / "chitty-extension.sha256").write_text(
-            hashlib.sha256(previous_extension).hexdigest() + "\n"
-        )
-        settings = agent / "settings.json"
-        previous_settings = '{\n  "exposeSessionEnvironment": true\n}\n'
-        settings.write_text(previous_settings)
-        os.environ["PI_CODING_AGENT_DIR"] = str(agent)
+        config = worktree / "chitty.toml"
+        agents = worktree / "AGENTS.md"
+        original_config = config.read_bytes()
+        original_agents = agents.read_bytes()
 
         previous = Path.cwd()
         os.chdir(worktree)
         try:
-            result = self.run_cli("init")
-            self.assertIn("skipping machine-wide Pi setup", result.stderr)
-            self.assertEqual(extension.read_bytes(), previous_extension)
-            self.assertEqual(settings.read_text(), previous_settings)
-            self.run_cli("inbox", "--pull")
-            worktree_config = worktree / "chitty.toml"
-            worktree_config.write_text(worktree_config.read_text().replace(CHITTY_VERSION, "0.0.0"))
-            subprocess.run(["git", "add", "chitty.toml"], cwd=worktree, check=True)
-            subprocess.run(
-                ["git", "commit", "--quiet", "-m", "stale setup"], cwd=worktree, check=True
-            )
-            self.run_cli("add", "From worktree", "-d", "x")
-            self.assertEqual(extension.read_bytes(), previous_extension)
-            self.assertEqual(settings.read_text(), previous_settings)
+            result = self.run_cli("init", exit_code=1)
         finally:
             os.chdir(previous)
 
-        self.run_cli("init")
-        self.assertNotEqual(extension.read_bytes(), previous_extension)
-        self.assertNotEqual(settings.read_text(), previous_settings)
-        owner = self.tmp / "data" / "chitty" / "inbox" / self.root.name / "repo"
-        self.assertEqual(owner.read_text().strip(), str(self.root))
-        unrelated = self.tmp / "unrelated"
-        unrelated.mkdir()
-        subprocess.run(["git", "init", "--quiet"], cwd=unrelated, check=True)
-        with self.assertRaisesRegex(ChittyError, "is registered to"):
-            register_project(self.root.name, unrelated)
+        self.assertIn(str(self.root), result.stderr)
+        self.assertEqual(config.read_bytes(), original_config)
+        self.assertEqual(agents.read_bytes(), original_agents)
 
     def test_init_installs_pi_extension_from_subdirectory_and_outside_git(self):
         self.git("init", "--quiet")
