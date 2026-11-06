@@ -24,6 +24,31 @@ Those bullets ship to every repository, so do not name `make`. `src/chitty/roles
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `until a read finds none`, `what criteria name` and `must fail without the fix`, and fails against the current `plan.md`
 
+## Plan
+
+Add a  regression test that normalizes whitespace in  and asserts the three required phrases. Add the two prescribed bullets to  immediately after the existing cold-read bullets, changing only line wrapping. Run the focused test before and after the guide change, then uv run ruff check --exit-zero .
+All checks passed!
+uv run ruff format .
+296 files left unchanged
+uv run python scripts/check_version_bump.py
+uv run ruff format --check .
+296 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Deleted branch task-1 (was da4e9b6).
+Deleted branch task-1 (was 26be8b0).
+Deleted branch task-2 (was 63151e7).
+npm test
+
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+.......
+
 ## Notes
 
 Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-195/1`. Fixed: a test on exact phrases broke on line wrapping in my own wording, as on `TASK-194` and `TASK-196`; and where the bullets go. Rejected: depending on `TASK-188`, which neither needs the other, and a merge handles the order; overlap with `TASK-196`, since this tells planners what to write and that tells workers what to do; and checking position in the test, which the reviewer can read.
@@ -40,3 +65,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-05T18:18:04Z mellow-newt: changed notes
 - 2026-11-05T18:18:05Z mellow-newt backlog → todo
 - 2026-11-06T20:22:49Z rosy-heron todo → doing
+- 2026-11-06T20:23:56Z rosy-heron: wrote the plan
