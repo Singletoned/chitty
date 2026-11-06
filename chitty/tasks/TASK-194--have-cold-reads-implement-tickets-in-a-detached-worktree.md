@@ -1,6 +1,6 @@
 ---
 title: Have cold reads implement tickets in a detached worktree
-status: todo
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -61,3 +61,4 @@ Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref .
 - 2026-11-05T18:31:22Z mellow-newt: changed notes
 - 2026-11-05T18:31:23Z mellow-newt backlog → todo
 - 2026-11-05T18:39:16Z mellow-newt: changed description, notes
+- 2026-11-06T00:07:11Z plucky-badger todo → doing
