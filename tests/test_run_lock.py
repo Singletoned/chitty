@@ -171,7 +171,9 @@ class TestRunLock(RunLockTestCase):
 
     def test_a_run_holds_the_lock_and_frees_it_however_it_ends(self):
         succeeded = self.add("Succeeds")
-        self.assertEqual(self.run_cli("run").stdout, f"{succeeded}: doing → review\n")
+        self.assertEqual(
+            self.run_cli("run").stdout.splitlines()[-1], f"{succeeded}: doing → review"
+        )
         self.assertEqual((self.logs / f"{succeeded}.locked").read_text(), "True")
         self.assertFalse(is_locked(self.root, succeeded))
 
@@ -212,6 +214,6 @@ class TestRunLock(RunLockTestCase):
         for reviewer, (_, stderr) in zip(reviewers, outputs, strict=True):
             self.assertEqual(reviewer.returncode, 0, stderr)
         self.assertEqual(
-            sorted(stdout for stdout, _ in outputs),
+            sorted(stdout.splitlines()[-1] + "\n" for stdout, _ in outputs),
             sorted(f"{ticket}: review → done\n" for ticket in tickets),
         )

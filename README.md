@@ -123,9 +123,10 @@ with the holder's process ID. Locks are machine-local. The sessions all update
 main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
 combined with `--ticket`. `chitty run` requires
-`autocommit = true`, `setup` (for example, `setup = "make install"`), and an
-`agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
-The command is parsed without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.
+`autocommit = true`, `setup` (for example, `setup = "make install"`), `check`
+(for example, `check = "make check"`), and an `agent_command`, unless `--agent
+NAME` selects an entry from `[agent_commands]`. Both commands are parsed
+without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.
 Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
 `chitty run` creates or reuses the ticket worktree, runs setup there, claims a
@@ -134,7 +135,7 @@ the configured agent from that worktree. The agent uses the `chitty`
 executable installed beside the runner's Python interpreter, rather than a
 branch-local `chitty`; `pi` and `claude` still come from the global `PATH`.
 This behavior is implemented without changing `chitty.toml` on the branch.
-Before a review it first rebases the branch onto the main branch, then runs setup, so the
+Before a review it first rebases the branch onto the main branch, then runs setup and check, so the
 reviewer sees exactly what would land; uncommitted files in the worktree or a
 rebase conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed

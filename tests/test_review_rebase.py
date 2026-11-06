@@ -165,7 +165,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout, "TASK-1: review → done\n")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → done")
         self.assertEqual((self.logs / "setup").read_text(), "rebased")
         self.assertEqual((self.logs / "agent").read_text(), "rebased")
         self.assertEqual((self.logs / "main.txt").read_text(), "from main\n")
@@ -179,7 +179,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertFalse((self.logs / "agent").exists())
         self.assertFalse((self.logs / "setup").exists())
         self.assert_no_rebase_in_progress()
@@ -213,7 +213,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertFalse((self.logs / "agent").exists())
         self.assert_no_rebase_in_progress()
         self.assertEqual(self.git("status", "--porcelain", cwd=self.worktree), "")
@@ -229,7 +229,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertFalse((self.logs / "agent").exists())
         notes = self.ticket().section("Notes") or ""
         self.assertIn("Review failed (work):", notes)
@@ -243,7 +243,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertIn("Review failed (integration):", self.ticket().section("Notes") or "")
 
     def test_uncommitted_files_fail_a_ticket_with_criteria_without_verdict_lines(self):
@@ -254,7 +254,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertIn("Review failed (work):", self.ticket().section("Notes") or "")
 
     def test_a_manual_review_failure_still_requires_verdict_lines(self):
