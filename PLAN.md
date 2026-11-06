@@ -546,14 +546,15 @@ another can check the result without talking to the first:
 - Criteria state behaviour and leave lists of cases to the tests, because a
   listed case can always be read more strictly.
 
-Cold read: a throwaway session reads only the ticket and says what done means
-and which files it would touch. A mismatch with the author's intent means the
-ticket is fixed before any tests are written. Decided with the human
-(2026-11-03): for now this is an informal part of planning sessions, with no
-tooling or enforcement. It becomes its own stage, such as `design-review`, only
-if it proves to need one. Workers and reviewers do not do it (2026-11-04: a
-worker read the procedure in `AGENTS.md` as its own step), so the procedure is
-printed for planners:
+Cold read: an implementing read has a fresh, cheap-model agent implement a code-
+changing ticket in a detached worktree and run its tests with and without the
+fix; when there is nothing to run, a stronger model reads the ticket and
+referenced code instead. Decided with the human (2026-11-05): use a detached
+worktree and keep the implementing commit under `refs/cold-read/<ID>/<n>`, not a
+branch, because Chitty searches branches for ticket copies and history should
+be retained after the worktree is removed. Workers and reviewers do not do it
+(2026-11-04: a worker read the procedure in `AGENTS.md` as its own step), so the
+procedure is printed for planners:
 
 The complete procedure lives in the planning role instructions printed by
 `chitty guide plan`. Keep a new ticket in `backlog` until its cold read findings

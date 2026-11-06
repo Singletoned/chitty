@@ -1504,6 +1504,20 @@ class TestIdentity(CliTestCase):
 
 
 class TestGuide(CliTestCase):
+    def test_plan_guide_describes_implementing_cold_reads(self):
+        planning_guide = " ".join(guide("plan").split())
+        for phrase in (
+            "implements it from the ticket alone",
+            "with and without the fix",
+            "Either way, the reader reports done meaning",
+            "git worktree add --detach",
+            "UV_PROJECT_ENVIRONMENT",
+            "git update-ref refs/cold-read/<ID>/<n> HEAD",
+            "git worktree remove --force",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, planning_guide)
+
     def test_guide_points_agents_at_ticket_planning_instructions(self):
         self.assertIn("chitty guide plan", guide())
 
