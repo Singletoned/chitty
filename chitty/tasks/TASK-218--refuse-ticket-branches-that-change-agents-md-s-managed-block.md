@@ -54,6 +54,8 @@ Verified with make check: 340 Python tests and Node tests pass. /Users/singleton
 /Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-49--warn-in-chitty-check-when-task-text-has-markdown-characters.md: warning: Description contains literal '*' Markdown delimiter; use backticks for code
 /Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-56--remove-prefix-from-chitty-init-prefixes-name-queues-not-proj.md: warning: Acceptance Criteria #2 contains literal '*' Markdown delimiter; use backticks for code completed with pre-existing Markdown delimiter warnings in unrelated tickets.
 
+Verification note: make check passed; the fix command reported only pre-existing Markdown delimiter warnings in unrelated tickets.
+
 ## Summary
 
 Implemented managed-block protection for review rebases. Added `git.file_at`, public `managed_block` lookup for marked and legacy guides, exact review failure handling for block changes or damage, and regression/unit tests. Verified with `make check` (ruff, pyright, 340 Python tests, Node tests). No follow-ups.
@@ -66,3 +68,4 @@ Implemented managed-block protection for review rebases. Added `git.file_at`, pu
 - 2026-11-06T20:04:20Z eager-crane: wrote the plan
 - 2026-11-06T20:12:21Z eager-crane: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:12:21Z eager-crane doing → review
+- 2026-11-06T20:12:37Z eager-crane: changed notes
