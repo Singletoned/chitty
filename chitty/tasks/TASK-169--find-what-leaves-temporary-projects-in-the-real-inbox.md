@@ -16,7 +16,7 @@ The cold read found most of the cause from each directory's `repo` owner file: `
 
 ## Acceptance Criteria
 
-- [ ] A note records the before and after listing of the real inbox around a full test run, and what caused each directory
+- [x] A note records the before and after listing of the real inbox around a full test run, and what caused each directory
 
 ## Plan
 
@@ -41,3 +41,4 @@ Cause review from each repo owner file: chitty, chladnify, circuitry, echonomico
 - 2026-11-06T00:28:18Z youthful-crane todo → doing
 - 2026-11-06T00:28:30Z youthful-crane: wrote the plan
 - 2026-11-06T00:32:15Z youthful-crane: changed notes
+- 2026-11-06T00:32:21Z youthful-crane: ticked acceptance criteria
