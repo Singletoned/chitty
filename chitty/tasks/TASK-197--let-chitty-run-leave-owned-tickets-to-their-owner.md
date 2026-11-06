@@ -26,7 +26,7 @@ Out of scope: choosing a model from the owner, which remains a forwarded argumen
 - [x] `PLAN.md` and `README.md` describe the rules
 - [x] Tests show `--owner opus` on `chitty next` and `chitty run` selecting only that owner's tickets, whichever side of the forwarded arguments it comes, `--owner` after `--` being forwarded, and `--owner human`, `--owner ""` and `--ticket` with `--owner` each refused by `chitty run` with nothing committed
 - [x] Tests with tickets owned by `opus` show plain `chitty next`, and a real `chitty run` with a fake agent, skipping them at `todo` and `doing`, which fail without the change, selecting one at `review`, still selecting tickets with no owner, and still skipping `human` at every status
-- [ ] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, which already passes and guards against a regression, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
+- [x] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, which already passes and guards against a regression, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
 
 ## Plan
 
@@ -71,3 +71,4 @@ Implemented owner-aware next/run selection, CLI and MCP owner filters, early ref
 - 2026-11-05T21:34:20Z able-yellowhammer doing → review
 - 2026-11-06T09:02:19Z daring-ibis: changed acceptance criteria, notes
 - 2026-11-06T09:02:19Z daring-ibis review → doing
+- 2026-11-06T10:08:26Z upbeat-urchin: ticked acceptance criteria
