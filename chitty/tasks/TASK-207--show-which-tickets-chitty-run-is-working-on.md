@@ -1,6 +1,6 @@
 ---
 title: Show which tickets `chitty run` is working on
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-72
@@ -30,9 +30,9 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- [ ] `chitty show ID` on a ticket whose run lock is held prints `running: <mode> by <actor>, process <pid>, since <HH:MM>`, and `show --json` and the MCP `show` tool give the record in `running`; with no lock held there is no line and `running` is `null`. Tests hold the lock through `locks.run_lock`, and one writes a bare PID to show the older-format fallback.
-- [ ] `chitty list` ends a held ticket's row with `▶ running` (through `skip_reason`), and `README.md` and `PLAN.md` describe the record, the `show` line and the marker.
-- [ ] A test runs `chitty run` with a fake agent that runs `chitty show --json` in a child process (`python -c "from chitty.cli import cli; cli()"`) and saves the output while it runs. The saved `running` record's `actor` equals the agent's `CHITTY_ACTOR`, and its `mode` matches the run.
+- [x] `chitty show ID` on a ticket whose run lock is held prints `running: <mode> by <actor>, process <pid>, since <HH:MM>`, and `show --json` and the MCP `show` tool give the record in `running`; with no lock held there is no line and `running` is `null`. Tests hold the lock through `locks.run_lock`, and one writes a bare PID to show the older-format fallback.
+- [x] `chitty list` ends a held ticket's row with `▶ running` (through `skip_reason`), and `README.md` and `PLAN.md` describe the record, the `show` line and the marker.
+- [x] A test runs `chitty run` with a fake agent that runs `chitty show --json` in a child process (`python -c "from chitty.cli import cli; cli()"`) and saves the output while it runs. The saved `running` record's `actor` equals the agent's `CHITTY_ACTOR`, and its `mode` matches the run.
 
 ## Plan
 
@@ -56,6 +56,12 @@ Depends on `TASK-210`, which moves the run's actor assignment to the start of `r
 
 No longer depends on `TASK-210`, which now removes the inbox pull from `chitty run` instead of moving the actor assignment. This ticket moves the assignment itself, to the start of `run`.
 
+Verified lock records, legacy PID fallback, show/MCP running data, list marker, and child-process actor/mode visibility. Targeted tests and full make check pass; chitty fix reports only pre-existing task Markdown warnings.
+
+## Summary
+
+Implemented JSON run-lock records with actor, mode, PID, and UTC start time; added holder parsing and show/list/MCP reporting; moved actor assignment before lock acquisition; updated docs and regression tests. Verified with targeted lock/MCP/renumber/CLI tests, the child-agent capture test, and full make check (345 Python tests plus Node tests). Follow-up: none.
+
 ## History
 
 - 2026-11-06T12:45:12Z youthful-toad → backlog
@@ -65,3 +71,5 @@ No longer depends on `TASK-210`, which now removes the inbox pull from `chitty r
 - 2026-11-06T13:45:26Z youthful-toad: changed dependencies, description, notes
 - 2026-11-06T20:31:25Z plucky-vole todo → doing
 - 2026-11-06T20:31:53Z plucky-vole: wrote the plan
+- 2026-11-06T20:41:03Z plucky-vole: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:41:03Z plucky-vole doing → review
