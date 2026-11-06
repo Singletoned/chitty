@@ -26,7 +26,7 @@ Out of scope: tooling that runs reads, which `TASK-125` holds, and deleting old 
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `implements it from the ticket alone`, `with and without the fix`, `Either way, the reader reports done meaning`, `git worktree add --detach`, `UV_PROJECT_ENVIRONMENT`, `git update-ref refs/cold-read/<ID>/<n> HEAD` and `git worktree remove --force`, and fails against the current `plan.md`
+- [x] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `implements it from the ticket alone`, `with and without the fix`, `Either way, the reader reports done meaning`, `git worktree add --detach`, `UV_PROJECT_ENVIRONMENT`, `git update-ref refs/cold-read/<ID>/<n> HEAD` and `git worktree remove --force`, and fails against the current `plan.md`
 - [ ] `PLAN.md`'s cold read paragraph describes implementing reads and reasoning reads, gives the decision's date, and says why the work is kept under a ref
 
 ## Plan
@@ -67,3 +67,4 @@ Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref .
 - 2026-11-05T18:39:16Z mellow-newt: changed description, notes
 - 2026-11-06T00:07:11Z plucky-badger todo → doing
 - 2026-11-06T00:07:27Z plucky-badger: wrote the plan
+- 2026-11-06T00:13:37Z plucky-badger: ticked acceptance criteria
