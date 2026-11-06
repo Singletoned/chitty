@@ -26,6 +26,10 @@ The reason must come from the same code as `next_action`, so the two cannot disa
 - [ ] Tests show each status's glyph in `chitty list` with the columns aligned, and `--json` and the MCP `list` tool unchanged apart from `skipped`
 - [ ] Tests show a `todo` ticket waiting on an unfinished dependency, one owned by `human` and one with a broken dependency marked with their reasons, a `todo` ticket with a finished dependency and a `doing` ticket with an unfinished one unmarked, and every unmarked `todo`, `doing` or `review` ticket being one `chitty next` can select
 
+## Plan
+
+Inspect existing list/next/store/MCP behavior and tests, add a shared skip_reason plus status glyph rendering and JSON skipped fields, update documentation, then run the focused regression tests and full make check.
+
 ## Notes
 
 With the human: the queued emoji must read as blocked by another ticket, not just waiting. Candidates: 🔒 for queued (it unlocks by itself when the task in front finishes) and ⛔ for `blocked_by` (needs someone to act).
@@ -39,3 +43,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the shape of the refact
 - 2026-11-06T09:29:01Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T09:31:13Z youthful-toad backlog → todo
 - 2026-11-06T16:33:27Z calm-ibis todo → doing
+- 2026-11-06T16:33:39Z calm-ibis: wrote the plan
