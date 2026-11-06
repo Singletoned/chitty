@@ -1,6 +1,6 @@
 ---
 title: Say "the main branch" in docs and guides
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-216
@@ -46,3 +46,4 @@ Cold read 1 (Opus, read-only; docs only, so nothing to run). Outcomes:
 - 2026-11-06T16:49:20Z youthful-toad: changed description
 - 2026-11-06T17:01:21Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:01:21Z youthful-toad backlog → todo
+- 2026-11-06T21:25:37Z kind-gannet todo → doing
