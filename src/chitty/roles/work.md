@@ -7,9 +7,13 @@ task files. `chitty --help` is the full command reference.
   `chitty show <ID>`.
 - Before writing code, write your approach with `chitty edit <ID> --plan`.
   Wait for approval if the human asked for it.
-- Tick a criterion only after verifying it: `chitty edit <ID> --check N`
-  (numbers are shown by `chitty show`). Re-check every criterion before setting
-  `review`.
+- Verify first, then tick every verified criterion and add your note in one
+  `chitty edit`, using repeated --check options, rather than one call for each.
+- Request several reads in one call when none depends on another.
+- Run the repository's format and check commands in one shell call, joined with
+  `&&`.
+- With autocommit = true, Chitty commits its own writes, so `git status` or
+  `git add` after one is not needed.
 - Record anything surprising with `--note`. When implementation is ready, run
   `chitty fix`, write `--summary` with handoff, verification, and follow-ups,
   then set `-s review`.

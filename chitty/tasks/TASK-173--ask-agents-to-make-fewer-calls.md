@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: todo
+status: done
 priority: medium
 depends_on:
   - TASK-142
@@ -23,11 +23,40 @@ Out of scope: having `chitty` do more of the Git steps, which needs its own desi
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide work` and `chitty guide review` containing `repeated --check`, `in one call`, `joined with` and `autocommit = true`, and `__version__` is bumped above `main`'s
+- [x] A test shows `chitty guide work` and `chitty guide review` containing `repeated --check`, `in one call`, `joined with` and `autocommit = true`, and `__version__` is bumped above `main`'s
+
+## Plan
+
+Update the shipped work and review role guidance with the four batching/autocommit recommendations, add or extend a guide-output regression test, bump __version__, run the full check suite, and record verified criteria.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: this conflicted with "tick only after verifying", so it now says to verify first; `make format` does not exist in every repository; and the test now names what it checks. `TASK-174`'s successor or the planning session re-runs the scripts afterwards. Repeated `--check` was tried on `TASK-80`, and it works.
+
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
+Verified the guide-output regression test for both roles and confirmed version 0.1.35 is above main's 0.1.34. Full make format && make check passes (278 Python tests and Node tests).
+
+Owner set to `human` so the review loop skips this until `TASK-212` lands: the branch records `0.1.35` and `main`'s `0.1.34` `chitty` refuses to write here. Clear the owner then.
+
+Owner cleared: the branch now has `main`'s `chitty.toml` again, so `main`'s `chitty` can write here.
+
+Review failed (integration): rebasing onto `main` conflicts in `chitty.toml`.
+
+Rebased onto `main` by a human-run session. My earlier "restore `main`'s `chitty.toml`" commit brought in `random_ids`, which this branch's older code couldn't read, so the agent's `chitty show` failed. Resolved:
+- `chitty.toml` matches `main`'s again.
+- `__version__` is `0.1.36`, one above `main`'s.
+- `tests/test_cli.py` keeps both sets of guide tests.
+`make check` passes (330 tests). The earlier `Review failed (integration)` conflicts in `tests/test_cli.py` and `chitty.toml` are resolved by this rebase. Re-check the criteria and move the ticket to review.
+
+Verified both guide outputs contain `repeated --check`, `in one call`, `joined with`, and `autocommit = true`; version 0.1.36 is above main version 0.1.35. `make format && make check` passes (330 Python tests and Node tests). `chitty fix` completed with existing Markdown delimiter warnings in unrelated task files.
+
+Reviewed: both role guides directly contain the four required batching/autocommit phrases; the regression test passes; branch version 0.1.36 exceeds main's 0.1.35; git diff --check is clean. make format && make check reached the full Python suite but timed out in this environment after 300 seconds, while all preceding checks and the targeted regression test passed.
+1: pass - guide output, regression coverage, and version bump verified.
+
+## Summary
+
+Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.36. Verified direct guide output and version comparison; full make format && make check passes (330 Python tests and Node tests). Follow-up remains to rerun TASK-170 measurement scripts.
 
 ## History
 
@@ -35,3 +64,20 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: this conflicted with "t
 - 2026-11-04T21:41:38Z mellow-newt: changed description
 - 2026-11-04T21:44:28Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T21:44:29Z mellow-newt backlog → todo
+- 2026-11-05T23:09:47Z lively-newt todo → doing
+- 2026-11-05T23:10:00Z lively-newt: wrote the plan
+- 2026-11-05T23:19:56Z lively-newt: changed summary; ticked acceptance criteria
+- 2026-11-05T23:20:09Z lively-newt doing → review
+- 2026-11-06T14:39:20Z friendly-heron: changed notes
+- 2026-11-06T14:39:20Z friendly-heron review → doing
+- 2026-11-06T15:58:09Z lively-falcon: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T15:58:09Z lively-falcon doing → review
+- 2026-11-06T16:25:03Z youthful-toad: changed owner, notes
+- 2026-11-06T16:43:38Z youthful-toad: changed owner, notes
+- 2026-11-06T16:47:49Z quick-puffin: changed notes
+- 2026-11-06T16:47:49Z quick-puffin review → doing
+- 2026-11-06T18:02:13Z youthful-toad: changed notes
+- 2026-11-06T18:12:36Z honest-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T18:12:36Z honest-urchin doing → review
+- 2026-11-06T18:33:09Z sunny-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-06T18:33:09Z sunny-dormouse review → done
