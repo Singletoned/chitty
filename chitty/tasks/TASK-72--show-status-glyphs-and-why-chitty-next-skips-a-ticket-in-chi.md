@@ -1,6 +1,6 @@
 ---
 title: Show status glyphs, and why `chitty next` skips a ticket, in `chitty list`
-status: review
+status: done
 priority: high
 created: 2026-11-01
 ---
@@ -43,6 +43,11 @@ Review failed (work): skip_reason does not report non-human owners. A todo or do
 
 Regression test for non-human owners failed before the fix: list omitted 👤 agent. skip_reason now reports non-human owners for todo/doing, while --owner selection still preserves dependency checks. Focused test passes; make check Python suite passes (332 tests), Node tests emit 26 dots but do not exit before timeout.
 
+Reviewed: all acceptance criteria pass; focused CLI/MCP regressions and full Python checks pass. npm test prints 26 passing tests but does not exit, an existing verification issue unrelated to this ticket.
+1: pass - documentation describes the glyphs and reasons
+2: pass - status glyph and skipped-field coverage is present
+3: pass - list skip reasons agree with next selection, including non-human owners
+
 ## Summary
 
 Added non-human owner skip reasons for todo/doing tickets and preserved dependency checks for --owner selection. Added regression coverage proving list shows 👤 agent and chitty next selects only the unowned ticket. Verification: focused regression passed; make check passed Ruff, Pyright, and 332 Python tests; Node tests printed 26 passing dots but did not exit before the command timeout. chitty fix reports only pre-existing Markdown warnings.
@@ -63,3 +68,5 @@ Added non-human owner skip reasons for todo/doing tickets and preserved dependen
 - 2026-11-06T18:00:59Z kind-badger: ticked acceptance criteria
 - 2026-11-06T18:01:13Z kind-badger: changed summary
 - 2026-11-06T18:01:14Z kind-badger doing → review
+- 2026-11-06T18:22:33Z zesty-newt: changed notes
+- 2026-11-06T18:22:33Z zesty-newt review → done
