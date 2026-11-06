@@ -125,7 +125,6 @@ failed-review limit. Choose a ticket with `chitty run
 --ticket ID`; pass agent options with `chitty run -- --model MODEL`. It
 succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
-<<<<<<< HEAD
 no progress. To keep a loop waiting for work, treat exit 3 as success:
 `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`. Each pass
 still checks configuration, refreshes setup and pulls the inbox before
