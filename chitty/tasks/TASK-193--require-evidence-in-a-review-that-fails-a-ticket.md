@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: review
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -62,6 +62,13 @@ Unblocked by a human-run session. All three failed reviews were rebase conflicts
 - `__version__` is `0.1.41`.
 `make check` passes (360 tests). Several open tickets also use `0.1.41`, so whichever lands second will need its version bumped again.
 
+Review failed (work): check exited with status 2:
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.41), but working tree has 0.1.41:
+  src/chitty/roles/review.md
+make: *** [check] Error 1
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -102,3 +109,5 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-06T18:37:36Z brisk-quail review → blocked
 - 2026-11-06T21:41:01Z youthful-toad: changed owner, notes
 - 2026-11-06T21:41:01Z youthful-toad blocked → review
+- 2026-11-06T21:55:13Z kind-raven: changed notes
+- 2026-11-06T21:55:13Z kind-raven review → doing
