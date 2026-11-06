@@ -1,6 +1,6 @@
 ---
 title: Warn about unknown configuration keys instead of refusing them
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-182
@@ -33,6 +33,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: one line per file listi
 
 Regression test failed before the sanitizer with Extra inputs for unknown context keys. Verified the focused configuration and init tests, ruff, pyright, and the full Python test suite through the existing run-worktree test hang; make check and npm test timed out in that pre-existing hang after their completed checks.
 
+Reviewed: implementation, tests, and documentation independently; focused configuration and init tests pass (28 tests), format, ruff, and pyright pass. make check reached the Python suite, which timed out in the existing run-worktree cleanup hang after completed checks.
+
+1: pass - configuration warnings and filtering verified
+2: pass - PLAN.md and README.md updated
+3: pass - agent commands, malformed contexts, and init preservation verified
+
 ## Summary
 
 Implemented recursive unknown-key filtering for repository configuration. Unknown top-level and context keys now warn once per source path with dotted paths and are removed before strict validation; dynamic agent command names and malformed contexts retain validation. Added coverage for both config sources, all version states, init preservation, and docs. Focused tests, ruff, and pyright pass; full check is blocked by an existing test-suite hang in run-worktree cleanup.
@@ -46,3 +52,5 @@ Implemented recursive unknown-key filtering for repository configuration. Unknow
 - 2026-11-06T18:48:51Z nimble-eel: wrote the plan
 - 2026-11-06T19:17:27Z nimble-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T19:17:27Z nimble-eel doing → review
+- 2026-11-06T19:21:22Z honest-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-06T19:21:22Z honest-lapwing review → done
