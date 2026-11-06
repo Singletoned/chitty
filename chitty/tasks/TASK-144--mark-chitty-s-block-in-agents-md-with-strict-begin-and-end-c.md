@@ -67,7 +67,7 @@ Rebased onto `main` by a human-run session to unstick the branch. `main`'s `chit
 
 ## Summary
 
-Implemented strict managed-guide markers for `AGENTS.md`. `init_repo` now validates whole-line markers, migrates legacy blocks with preserved separators, replaces only marked content via slicing, and raises a distinct error for malformed markers. Stale autocommit writes warn and proceed without advancing setup. Updated docs/version and added CLI regression coverage. Verified with `make check` (273 Python tests and Node tests pass). Follow-up: a human must repair any real repository with malformed marker lines.
+Implemented strict AGENTS.md markers, legacy migration, exact marked-block replacement, malformed-marker errors, and stale-write warning behavior. Updated README.md, PLAN.md, and bumped __version__. Re-verified all five criteria; focused init tests pass (29 tests), full Python suite passes (310 tests), ruff and pyright pass. Follow-up: any repository with malformed markers requires manual marker removal.
 
 ## History
 
@@ -85,3 +85,4 @@ Implemented strict managed-guide markers for `AGENTS.md`. `init_repo` now valida
 - 2026-11-06T10:05:49Z upbeat-otter: changed notes
 - 2026-11-06T10:05:49Z upbeat-otter review → doing
 - 2026-11-06T12:53:55Z youthful-toad: changed notes
+- 2026-11-06T14:47:05Z daring-eel: changed summary
