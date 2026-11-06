@@ -20,7 +20,7 @@ Failure names the changed files and both versions.
 
 ## Acceptance Criteria
 
-- [ ] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
+- [x] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
 - [x] Tests show a branch behind `main` that changed nothing passing, running on `main` passing, and a `--depth 1` clone at a tag with no `main` passing with a notice
 - [x] `make check` runs it
 
@@ -68,3 +68,4 @@ Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fi
 - 2026-11-06T15:15:03Z mellow-adder: changed acceptance criteria, notes
 - 2026-11-06T15:15:03Z mellow-adder review → doing
 - 2026-11-06T15:28:06Z youthful-vole: changed notes
+- 2026-11-06T15:28:07Z youthful-vole: ticked acceptance criteria
