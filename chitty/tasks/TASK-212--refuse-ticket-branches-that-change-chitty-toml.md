@@ -55,6 +55,8 @@ The reader's ref predates these fixes (fixed note text, kept the dead code), so 
 
 Extended on 2026-11-06. The human agreed that branches must not regenerate `AGENTS.md`'s managed block either, so the check now covers it (item 4 and criterion 4). The cold-read ref predates this. Also: `task-144` changed the block's markers on its branch, so if it's still open when this lands, its review will fail until the block is restored.
 
+Correction to the previous note: `TASK-144` has already landed, so no open branch is affected.
+
 ## History
 
 - 2026-11-06T16:15:42Z youthful-toad → backlog
@@ -65,3 +67,4 @@ Extended on 2026-11-06. The human agreed that branches must not regenerate `AGEN
 - 2026-11-06T17:09:40Z youthful-toad: changed description, notes
 - 2026-11-06T17:09:40Z youthful-toad backlog → todo
 - 2026-11-06T17:48:05Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-06T17:48:19Z youthful-toad: changed notes
