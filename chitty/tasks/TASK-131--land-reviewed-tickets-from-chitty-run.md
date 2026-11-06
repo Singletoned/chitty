@@ -42,6 +42,8 @@ Split on 2026-11-04 at the human's direction, from eight criteria: refusals are 
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: landing before its refusals was unsafe, since a long session can leave the main checkout on another branch, and untracked worktree files would fail removal after the merge. The refusals are back here, and prompts and documentation moved to `TASK-151`. A criterion promised "a later run lands it", which only `TASK-152` does, so it went. Rejected: a criterion for "never forced", which a reviewer reads in one line.
 
+Landing must also refuse a branch that changes the Chitty config compared with `main` (`TASK-212`). Repeat that check after the landing rebase.
+
 ## History
 
 - 2026-11-03T20:46:17Z lively-panda → todo
@@ -51,3 +53,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: landing be
 - 2026-11-04T15:11:37Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T15:17:38Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-06T16:24:14Z youthful-toad: changed priority
+- 2026-11-06T16:44:07Z youthful-toad: changed notes
