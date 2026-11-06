@@ -2,6 +2,7 @@
 title: Let `chitty run` fail a review before it starts, despite verdict lines
 status: todo
 priority: high
+owner: human
 created: 2026-11-06
 ---
 
@@ -31,8 +32,11 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-206/1`; the two run tests failed befor
 - No version bump: confirmed, and the ticket now says so.
 - `make format` before `make check`: rejected, `AGENTS.md` already says it.
 
+Reserved for a human-run session so the loops leave it alone.
+
 ## History
 
 - 2026-11-06T12:03:13Z youthful-toad → backlog
 - 2026-11-06T12:11:11Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T12:11:11Z youthful-toad backlog → todo
+- 2026-11-06T12:20:03Z youthful-toad: changed owner, notes
