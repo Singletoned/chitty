@@ -329,6 +329,7 @@ review = true # require review before done
 # autoformat = "taidy format" # run on every written task file
 # main_branch = "master"
 # setup = "make install" # run in every ticket worktree before the agent starts
+# check = "make check" # validate the ticket worktree before the agent starts
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
 # `{prompt}` may be used as one argument containing `chitty guide` output.
 archive = "move" # or "delete"; retain completed files or delete them
@@ -744,8 +745,11 @@ what would land, keeping the main branch linear:
    (integration): ...` naming the conflicting files, for the worker to resolve
    in a fresh session. The rebase runs with `rerere.enabled=false`, so a
    resolution Git recorded for another branch is never replayed unchecked.
-4. Only then does `setup` run, because the rebase can change dependencies. In
-   work mode `setup` still runs before the claim.
+4. Only then does `setup` run, because the rebase can change dependencies.
+5. `check` runs in the ticket worktree after setup, with combined output
+   captured. A failure moves the ticket to `doing` with the last 20 output lines
+   in a `Review failed (work)` note and starts no agent. In work mode setup and
+   check still run before the agent claim.
 
 After either failure no agent starts, no usage line is written, and `chitty
 run` exits 0 because the status changed, printing the change. The moves go

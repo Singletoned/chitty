@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-120
@@ -22,9 +22,13 @@ Out of scope: a timeout, and landing.
 
 ## Acceptance Criteria
 
-- [ ] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
-- [ ] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
-- [ ] This repository sets `check`, `PLAN.md`, `README.md` and the template describe it, and `__version__` is bumped above `main`'s
+- [x] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
+- [x] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
+- [x] `PLAN.md`, `README.md` and the `chitty.toml` template describe `check`, and `__version__` is bumped above `main`'s.
+
+## Plan
+
+Inspect the runner, config, init templates, docs, and existing tests; add strict check configuration and preflight execution after rebase/setup, covering output and status handling; update repository docs/version and verify with focused tests plus make check.
 
 ## Notes
 
@@ -32,9 +36,68 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: how output
 
 Under `TASK-212`, a branch may not change `chitty.toml`. Setting `check = "make check"` in this repository is done on the main checkout by a human-run session after this lands, not on the branch.
 
+The check progress line is written to stderr so existing status output remains machine-friendly; check output itself is captured and included only on failure. Repository chitty.toml was intentionally not changed because TASK-212 notes require that main-checkout setting to land in a human session.
+
+Review failed (integration): rebasing onto `main` conflicts in `src/chitty/__init__.py`.
+
+Resolved the review rebase conflict in src/chitty/__init__.py by retaining 0.1.37, which remains above main's 0.1.36.
+
+Review failed (integration): the repository's root chitty.toml does not set check = "make check"; neither this branch nor main contains that setting, so acceptance criterion 3 is unmet. make format && make check passed (336 tests plus Node tests).
+
+1: pass - Regression tests cover failing and passing check behavior.
+
+2: pass - Tests cover shell-free quoting, unset preflight configuration, and commented init output.
+
+3: fail - The repository configuration does not set check = "make check".
+
+Cannot complete acceptance criterion 3 on this ticket branch: TASK-212 explicitly forbids changing chitty.toml here. A human must set check = "make check" in the main checkout after this branch lands. Implementation is complete; make format && make check passes (336 Python tests plus Node tests).
+
+Unblocked by a human-run session. Criterion 3 (`check = "make check"` in this repository's `chitty.toml`) was removed, because `TASK-212` forbids ticket branches from changing `chitty.toml`. The human-run session sets it on `main` after this lands. Criteria 1 and 2 were verified by the worker; review them.
+
+Correction to the previous note: only the "this repository sets `check`" part of criterion 3 was dropped. Its docs, template and version part is back as criterion 3 for the reviewer. The branch changes `PLAN.md`, `README.md` and the template, and bumps `__version__` to `0.1.37`; `main` may have moved past that, which the reviewer's rebase will show.
+
+Rebased onto `main` (`0.1.40`) by the human-run session, so the review's own rebase won't conflict. Resolved:
+- `__version__` is `0.1.41`.
+- `check` runs before the claim, which now uses `claim_edit()`.
+- The `_preflight` `check` error follows `TASK-208`'s style.
+- README says "runs setup and check".
+- A duplicate `_git_path` was dropped.
+`make check` passes (360 tests). After landing, `chitty run` fails preflight until `check = "make check"` is set in the main checkout's `chitty.toml`. The human-run session must do that straight after the merge.
+
+Reviewed: implementation independently inspected; check is required in preflight, runs after setup/rebase with shell-free parsing, combined captured output, last 20 lines on failure, and no agent start. Init template/docs/version are updated. make format && make check passes (360 Python tests and Node tests).
+
+1: pass - Regression tests cover failing and passing check behavior.
+2: pass - Tests cover shell-free quoting, unset preflight configuration, and commented init output.
+3: pass - PLAN.md, README.md, the init template, and __version__ are updated; branch version 0.1.41 is above main 0.1.40.
+
+## Summary
+
+Implemented and verified `check` preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
+
 ## History
 
 - 2026-11-04T15:11:33Z mellow-newt → todo
 - 2026-11-04T15:17:36Z mellow-newt: changed description, notes
 - 2026-11-06T16:24:13Z youthful-toad: changed priority
 - 2026-11-06T16:44:17Z youthful-toad: changed notes
+- 2026-11-06T18:30:21Z witty-gannet todo → doing
+- 2026-11-06T18:30:36Z witty-gannet: wrote the plan
+- 2026-11-06T18:50:06Z witty-gannet: changed notes
+- 2026-11-06T18:50:07Z witty-gannet: ticked acceptance criteria
+- 2026-11-06T18:50:08Z witty-gannet: changed summary
+- 2026-11-06T18:50:08Z witty-gannet doing → review
+- 2026-11-06T19:01:25Z brisk-lapwing: changed notes
+- 2026-11-06T19:01:25Z brisk-lapwing review → doing
+- 2026-11-06T19:41:35Z able-yellowhammer: changed notes, summary
+- 2026-11-06T19:41:35Z able-yellowhammer doing → review
+- 2026-11-06T19:41:47Z able-yellowhammer: changed summary
+- 2026-11-06T19:47:57Z tidy-badger: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-06T19:47:57Z tidy-badger review → doing
+- 2026-11-06T19:58:38Z lively-otter: changed notes
+- 2026-11-06T19:58:38Z lively-otter doing → blocked
+- 2026-11-06T21:33:39Z youthful-toad: changed owner, acceptance criteria, notes
+- 2026-11-06T21:33:39Z youthful-toad blocked → review
+- 2026-11-06T21:33:51Z youthful-toad: changed acceptance criteria, notes
+- 2026-11-06T21:35:52Z youthful-toad: changed notes
+- 2026-11-06T21:46:50Z able-quail: changed notes; ticked acceptance criteria
+- 2026-11-06T21:46:50Z able-quail review → done

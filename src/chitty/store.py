@@ -917,6 +917,10 @@ def _add_missing_settings(
                 '# setup = "make install" # run before the agent starts in a ticket worktree',
             ),
             (
+                "check",
+                '# check = "make check" # validate the ticket worktree before the agent starts',
+            ),
+            (
                 "agent_command",
                 (
                     '# agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
@@ -924,7 +928,8 @@ def _add_missing_settings(
                 ),
             ),
         )
-        if key not in settings and not (key in {"setup", "agent_command"} and f"{key} =" in text)
+        if key not in settings
+        and not (key in {"setup", "check", "agent_command"} and f"{key} =" in text)
     ]
     if not additions:
         return text

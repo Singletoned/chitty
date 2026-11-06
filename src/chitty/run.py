@@ -137,7 +137,9 @@ def _run_ticket(
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
     setup = main_repo.config.setup
+    check = main_repo.config.check
     assert setup is not None  # `_preflight` rejects an unset setup command.
+    assert check is not None  # `_preflight` rejects an unset check command.
     if action.mode == "work":
         _setup(setup, worktree)
 
@@ -154,6 +156,8 @@ def _run_ticket(
         _setup(setup, worktree)
     else:
         work_repo = Repo.open(worktree)
+    if failed := _run_check(work_repo, worktree, action, check):
+        return failed
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
         work_repo.edit(action.id, claim_edit())
     old_status = work_repo.find(action.id).task.frontmatter.status
@@ -349,6 +353,11 @@ def _preflight(repo: Repo) -> None:
             f"`chitty run` requires `setup` in {config_file}: the command that installs "
             "a new ticket worktree's environment before the agent starts, for example "
             'setup = "make install"'
+        )
+    if repo.config.check is None:
+        raise ChittyError(
+            f"`chitty run` requires `check` in {config_file}: the command that validates "
+            'a ticket worktree before the agent starts, for example check = "make check"'
         )
     if git.current_branch(repo.root) != repo.config.main_branch:
         raise ChittyError(f"the main checkout must be on branch {repo.config.main_branch}")
@@ -568,6 +577,46 @@ def _setup(command: str, worktree: Path) -> None:
         raise RunInterrupted("setup") from None
     if completed.returncode:
         raise ChittyError(f"setup exited with status {completed.returncode}")
+
+
+def _run_check(
+    work_repo: Repo, worktree: Path, action: NextAction, command: str
+) -> RunResult | None:
+    """Validate the prepared worktree before spending an agent or review session."""
+    print(f"Running check in {worktree}...", file=sys.stderr)
+    try:
+        completed = subprocess.run(
+            shlex.split(command),
+            cwd=worktree,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        output = f"check command not found: {command}"
+        return _fail_check(work_repo, action, output)
+    except KeyboardInterrupt:
+        raise RunInterrupted("check") from None
+    if completed.returncode == 0:
+        return None
+    lines = completed.stdout.splitlines()[-20:]
+    output = "\n".join(lines) or "(no output)"
+    return _fail_check(
+        work_repo,
+        action,
+        f"check exited with status {completed.returncode}:\n{output}",
+    )
+
+
+def _fail_check(work_repo: Repo, action: NextAction, detail: str) -> RunResult:
+    old_status = work_repo.find(action.id).task.frontmatter.status
+    change = work_repo.edit(
+        action.id,
+        Edit(status="doing", note=f"Review failed (work): {detail}", skip_verdicts=True),
+    )
+    return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
 def _git(root: Path, *arguments: str) -> str:

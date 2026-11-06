@@ -154,6 +154,10 @@ class TestInit(CliTestCase):
             '# setup = "make install" # run in every ticket worktree before the agent starts',
             config,
         )
+        self.assertIn(
+            '# check = "make check" # validate the ticket worktree before the agent starts',
+            config,
+        )
         self.assertIn('# agent_command = "pi --no-extensions', config)
         self.assertIn(
             'archive = "move" # or "delete"; retain completed files or delete them', config
@@ -272,13 +276,16 @@ class TestInit(CliTestCase):
     def test_init_adds_missing_human_review_setting(self):
         config = self.root / "chitty.toml"
         config.write_text(
-            config.read_text().replace('agent_command = "pi --chitty-{mode} {id}"\n', "")
+            config.read_text()
+            .replace('check = "true"\n', "")
+            .replace('agent_command = "pi --chitty-{mode} {id}"\n', "")
         )
 
         self.run_cli("init")
         settings = tomllib.loads(config.read_text())
         self.assertFalse(settings["contexts"]["human"]["review"])
         self.assertIn('# setup = "make install"', config.read_text())
+        self.assertIn('# check = "make check"', config.read_text())
         self.assertIn('# agent_command = "pi --no-extensions', config.read_text())
         self.assertIsNone(settings.get("setup"))
         self.assertIsNone(settings.get("agent_command"))

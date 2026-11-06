@@ -33,6 +33,7 @@ autocommit = false
 review = true
 # autoformat = "taidy format" # run on every written task file
 # setup = "make install" # run in every ticket worktree before the agent starts
+# check = "make check" # validate the ticket worktree before the agent starts
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{{mode}} {{id}}"
 archive = "move" # or "delete"; retain completed files or delete them
 
@@ -80,6 +81,7 @@ class RepoConfig(BaseModel):
     review: bool = True
     autoformat: str | None = None
     setup: str | None = None
+    check: str | None = None
     agent_command: str | None = None
     agent_commands: dict[str, str] = {}
     archive: Literal["move", "delete"] = "move"
@@ -101,9 +103,9 @@ class RepoConfig(BaseModel):
             raise ValueError("must not be empty")
         return value
 
-    @field_validator("setup")
+    @field_validator("setup", "check")
     @classmethod
-    def _setup(cls, value: str | None) -> str | None:
+    def _command(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():
             raise ValueError("must not be empty")
         return value
