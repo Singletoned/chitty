@@ -87,7 +87,9 @@ class TestRenumber(CliTestCase):
         assert isinstance(result, CallToolResult)
         content = result.structured_content
         assert content is not None
-        self.assertEqual(content["task"], self.json("show", "25"))
+        shown = self.json("show", "25")
+        shown.pop("running")
+        self.assertEqual(content["task"], shown)
         self.assertEqual(
             [reference["id"] for reference in content["references"]], ["TASK-3", "TASK-4"]
         )

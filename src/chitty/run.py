@@ -73,6 +73,10 @@ def run(
         raise ChittyError("--owner cannot be used with --ticket")
     if owner in ("", "human"):
         raise ChittyError("--owner must name an agent, not human or empty")
+    # Set the run identity before selecting or locking a ticket so the lock
+    # record describes the session even when setup or preparation fails.
+    os.environ.pop("CHITTY_ACTOR", None)
+    os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
     main_root = git.main_checkout(repo.root)
     main_repo = Repo.open(main_root)
     _refuse_stale_linked_worktree(repo, main_repo)
@@ -97,18 +101,24 @@ def _lock_ticket(
     """Choose the ticket and take its run lock, which `held` releases."""
     if ticket is not None:
         action = ticket_action(main_repo, main_repo.resolve(ticket))
-        held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
+        held.enter_context(
+            locks.run_lock(main_repo.root, str(action.id), actor=actor(), mode=action.mode)
+        )
         return action
     for _ in range(RUN_LOCK_ATTEMPTS - 1):
         action = next_action(main_repo, mode=mode, owner=owner)
         try:
-            held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
+            held.enter_context(
+                locks.run_lock(main_repo.root, str(action.id), actor=actor(), mode=action.mode)
+            )
         except locks.TicketLocked:
             # Another run locked it after `next_action` looked; it skips it now.
             continue
         return action
     action = next_action(main_repo, mode=mode, owner=owner)
-    held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
+    held.enter_context(
+        locks.run_lock(main_repo.root, str(action.id), actor=actor(), mode=action.mode)
+    )
     return action
 
 
@@ -131,10 +141,6 @@ def _run_ticket(
     if action.mode == "work":
         _setup(setup, worktree)
 
-    # Each invocation owns a fresh actor identity, including its initial claim.
-    # A run owns one identity across its claim, agent, and any child process.
-    os.environ.pop("CHITTY_ACTOR", None)
-    os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
     if action.mode == "review":
         # The config may be deleted on a branch, so use main's config until the
         # review preflight has confirmed that the branch still has one.

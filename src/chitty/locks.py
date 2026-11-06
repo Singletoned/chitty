@@ -7,10 +7,13 @@ is never stale. Locks are machine-local: Chitty runs on one machine today.
 """
 
 import fcntl
+import json
 import os
 from collections.abc import Generator
 from contextlib import contextmanager
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any, Literal, cast
 
 from chitty.config import git_common_dir
 from chitty.errors import ChittyError
@@ -28,7 +31,13 @@ def _directory(root: Path) -> Path | None:
 
 
 @contextmanager
-def run_lock(root: Path, task_id: str) -> Generator[None]:
+def run_lock(
+    root: Path,
+    task_id: str,
+    *,
+    actor: str,
+    mode: Literal["work", "review"],
+) -> Generator[None]:
     """Hold `task_id`'s run lock for the block, or raise `TicketLocked`."""
     directory = _directory(root)
     if directory is None:
@@ -41,11 +50,22 @@ def run_lock(root: Path, task_id: str) -> Generator[None]:
         try:
             fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
-            holder = path.read_text().strip() or "unknown"
-            raise TicketLocked(f"{task_id} is being run by process {holder}") from None
-        # The PID is only for messages; the lock is the `flock` itself.
+            content = path.read_text().strip() or "unknown"
+            try:
+                parsed: object = json.loads(content)
+                record = cast(dict[str, Any], parsed) if isinstance(parsed, dict) else None
+                process = record.get("pid", content) if record is not None else content
+            except json.JSONDecodeError:
+                process = content
+            raise TicketLocked(f"{task_id} is being run by process {process}") from None
+        record = {
+            "pid": os.getpid(),
+            "actor": actor,
+            "mode": mode,
+            "started": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        }
         os.ftruncate(descriptor, 0)
-        os.write(descriptor, f"{os.getpid()}\n".encode())
+        os.write(descriptor, (json.dumps(record) + "\n").encode())
         yield
     finally:
         os.close(descriptor)
@@ -65,6 +85,28 @@ def locked_ids(root: Path) -> set[str]:
 
 def is_locked(root: Path, task_id: str) -> bool:
     return task_id in locked_ids(root)
+
+
+def holder(root: Path, task_id: str) -> dict[str, Any] | None:
+    """Return the held lock record, including for a lock held by this process."""
+    if not is_locked(root, task_id):
+        return None
+    directory = _directory(root)
+    assert directory is not None
+    path = directory / f"{task_id}{LOCK_SUFFIX}"
+    try:
+        content = path.read_text().strip()
+    except FileNotFoundError:
+        return None
+    if not content:
+        return {"pid": "unknown"}
+    try:
+        parsed: object = json.loads(content)
+    except json.JSONDecodeError:
+        return {"pid": content}
+    if isinstance(parsed, dict):
+        return cast(dict[str, Any], parsed)
+    return {"pid": content}
 
 
 def _held(path: Path) -> bool:

@@ -1,3 +1,4 @@
+import json
 import os
 import signal
 import stat
@@ -16,12 +17,22 @@ POLL_SECONDS = 0.05
 # Records whether its ticket is locked, optionally waits for `go`, then moves
 # the ticket on and commits, or exits 1 if `fail` exists.
 AGENT = """\
+import os
 import subprocess, sys, time
 from pathlib import Path
 from chitty.locks import is_locked
 mode, ticket, logs = sys.argv[1], sys.argv[2], Path(sys.argv[3])
 (logs / f"{ticket}.locked").write_text(str(is_locked(Path.cwd(), ticket)))
 (logs / f"{ticket}.started").touch()
+if (logs / "capture").exists():
+    result = subprocess.run(
+        [sys.executable, "-c", "from chitty.cli import cli; cli()", "show", ticket, "--json"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    (logs / f"{ticket}.running.json").write_text(result.stdout)
+    (logs / f"{ticket}.actor").write_text(os.environ["CHITTY_ACTOR"])
 if (logs / "wait").exists():
     deadline = time.monotonic() + 60
     while not (logs / "go").exists():
@@ -40,7 +51,7 @@ HOLDER = """\
 import sys
 from pathlib import Path
 from chitty.locks import run_lock
-with run_lock(Path(sys.argv[1]), sys.argv[2]):
+with run_lock(Path(sys.argv[1]), sys.argv[2], actor="holder", mode="work"):
     print("held", flush=True)
     sys.stdin.read()
 """
@@ -118,19 +129,45 @@ class TestRunLock(RunLockTestCase):
 
         self.assertFalse(is_locked(self.root, "TASK-1"))
 
+    def test_show_and_list_report_the_lock_record(self):
+        ticket = self.add("Visible")
+
+        with run_lock(self.root, ticket, actor="alice", mode="review"):
+            record = self.json("show", ticket)["running"]
+            self.assertEqual(record["actor"], "alice")
+            self.assertEqual(record["mode"], "review")
+            self.assertEqual(record["pid"], os.getpid())
+            self.assertIn("running: review by alice, process", self.run_cli("show", ticket).stdout)
+            self.assertIn("▶ running", self.run_cli("list").stdout)
+
+            lock_path = next((self.root / ".git/chitty/run").glob(f"{ticket}.lock"))
+            lock_path.write_text("12345\n")
+            self.assertEqual(self.json("show", ticket)["running"], {"pid": "12345"})
+            self.assertIn("running: process 12345", self.run_cli("show", ticket).stdout)
+
     def test_next_skips_a_locked_ticket_and_run_ticket_refuses_it(self):
         first = self.add("First")
         second = self.add("Second")
 
-        with run_lock(self.root, first):
+        with run_lock(self.root, first, actor="test", mode="work"):
             self.assertEqual(self.run_cli("next").stdout, f"work {second}\n")
             refused = self.run_cli("run", "--ticket", first, exit_code=1)
             self.assertIn(f"{first} is being run by process {os.getpid()}", refused.stderr)
-            with run_lock(self.root, second):
+            with run_lock(self.root, second, actor="test", mode="work"):
                 self.run_cli("next", exit_code=3)
 
         self.assertEqual(self.run_cli("next").stdout, f"work {first}\n")
         self.assertFalse((self.logs / f"{first}.started").exists())
+
+    def test_agent_can_read_its_running_record(self):
+        ticket = self.add("Captured")
+        (self.logs / "capture").touch()
+
+        self.run_cli("run", "--ticket", ticket)
+
+        record = json.loads((self.logs / f"{ticket}.running.json").read_text())["running"]
+        self.assertEqual(record["actor"], (self.logs / f"{ticket}.actor").read_text())
+        self.assertEqual(record["mode"], "work")
 
     def test_a_run_holds_the_lock_and_frees_it_however_it_ends(self):
         succeeded = self.add("Succeeds")

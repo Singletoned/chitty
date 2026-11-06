@@ -3,13 +3,14 @@
 import json
 import os
 import sys
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Literal, TextIO, cast
 
 import click
 from click.shell_completion import CompletionItem
 
+from chitty import locks
 from chitty.actor import actor, pi_session_environment_missing
 from chitty.check import check as check_repo
 from chitty.check import errors
@@ -464,15 +465,29 @@ def show(task_id: str, as_json: bool) -> None:
         worked_on = stored.task.review_work(actor())
     except ChittyError:
         worked_on = []
+    running = locks.holder(repo.root, str(stored.id))
     if as_json:
-        _print_json(stored.as_dict())
+        _print_json({**stored.as_dict(), "running": running})
     else:
         output = _format(stored)
         if worked_on:
             output += "\nworked on: " + ", ".join(worked_on)
         if children:
             output += "\nchildren: " + ", ".join(map(str, children))
+        if running is not None:
+            output += "\nrunning: " + _running_line(running)
         click.echo(output)
+
+
+def _running_line(record: dict[str, Any]) -> str:
+    pid = record.get("pid", "unknown")
+    if "actor" not in record:
+        return f"process {pid}"
+    started = datetime.fromisoformat(str(record["started"]))
+    local_time = started.astimezone().strftime("%H:%M")
+    return (
+        f"{record.get('mode', 'unknown')} by {record['actor']}, process {pid}, since {local_time}"
+    )
 
 
 def _format(stored: StoredTask) -> str:

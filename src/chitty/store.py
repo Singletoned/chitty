@@ -1204,6 +1204,8 @@ def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str 
     frontmatter = stored.task.frontmatter
     if stored.archived or frontmatter.status not in {"review", "doing", "todo"}:
         return None
+    if locks.is_locked(repo.root, str(stored.id)):
+        return "▶ running"
     if stored.context == "human" or frontmatter.owner == "human":
         return "👤 human"
     if include_owner and frontmatter.owner is not None:

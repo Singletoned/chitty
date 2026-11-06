@@ -10,6 +10,7 @@ from typing import Any, Literal
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
+from chitty import locks
 from chitty.actor import actor
 from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
@@ -147,7 +148,8 @@ def next_(owner: str | None = None) -> dict[str, str]:
 @_tool("show", "Show a task. Work on one task per session: start here.")
 def show(id: str) -> dict[str, Any]:
     repo = _repo()
-    return repo.find(repo.resolve(id)).as_dict()
+    stored = repo.find(repo.resolve(id))
+    return {**stored.as_dict(), "running": locks.holder(repo.root, str(stored.id))}
 
 
 @_tool(

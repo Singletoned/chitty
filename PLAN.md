@@ -697,6 +697,11 @@ its own, so an idle reviewer is distinguishable from a broken one, which exits
 
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
+While a run holds its exclusive lock, the lock file contains JSON recording its
+PID, actor, `work` or `review` mode, and UTC start time. `chitty show` displays
+this as `running: <mode> by <actor>, process <pid>, since <HH:MM>` in local time;
+`chitty list` marks the row `▶ running`, while `chitty next` continues to skip
+held tickets.
 Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips every owned ticket; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.
 `chitty run --mode MODE` selects as `chitty next --mode MODE` does, and is
 refused with `--ticket` before anything else runs, because the ticket already
