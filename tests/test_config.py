@@ -54,21 +54,66 @@ class TestRepoConfig(RepoTestCase):
             load_repo_config(self.root)
 
     def test_newer_config_ignores_unknown_top_level_keys_once(self):
+        for config_name, config_text in (
+            ("chitty.toml", CONFIG),
+            ("pyproject.toml", f"[tool.chitty]\n{PYPROJECT_CONFIG}"),
+        ):
+            with self.subTest(config_name=config_name):
+                (self.root / "chitty.toml").unlink(missing_ok=True)
+                config_path = self.root / config_name
+                config_path.write_text(
+                    config_text.replace(
+                        f'chitty_version = "{CHITTY_VERSION}"',
+                        'chitty_version = "99.0.0"\nnew_setting = "supported later"',
+                    )
+                )
+                stderr = io.StringIO()
+                with contextlib.redirect_stderr(stderr):
+                    config = load_repo_config(self.root)
+                    load_repo_config(self.root)
+
+                self.assertEqual(config.default_context, "tasks")
+                self.assertIn("new_setting", stderr.getvalue())
+                self.assertEqual(stderr.getvalue().count("new_setting"), 1)
+
+    def test_equal_version_refuses_unknown_top_level_keys(self):
+        for config_name, config_text in (
+            ("chitty.toml", CONFIG),
+            ("pyproject.toml", f"[tool.chitty]\n{PYPROJECT_CONFIG}"),
+        ):
+            with self.subTest(config_name=config_name):
+                (self.root / "chitty.toml").unlink(missing_ok=True)
+                config_path = self.root / config_name
+                config_path.write_text(
+                    config_text.replace(
+                        f'chitty_version = "{CHITTY_VERSION}"',
+                        f'chitty_version = "{CHITTY_VERSION}"\nnew_setting = 1',
+                    )
+                )
+                with self.assertRaisesRegex(ChittyError, "Extra inputs"):
+                    load_repo_config(self.root)
+
+    def test_prerelease_version_loads_without_unknown_top_level_keys(self):
         config_path = self.root / "chitty.toml"
         config_path.write_text(
             config_path.read_text().replace(
                 f'chitty_version = "{CHITTY_VERSION}"',
-                'chitty_version = "99.0.0"\nnew_setting = "supported later"',
+                'chitty_version = "0.2.0rc1"',
             )
         )
-        stderr = io.StringIO()
-        with contextlib.redirect_stderr(stderr):
-            config = load_repo_config(self.root)
-            load_repo_config(self.root)
+
+        config = load_repo_config(self.root)
 
         self.assertEqual(config.default_context, "tasks")
-        self.assertIn("new_setting", stderr.getvalue())
-        self.assertEqual(stderr.getvalue().count("new_setting"), 1)
+
+        config_path.write_text(
+            config_path.read_text().replace(
+                'chitty_version = "0.2.0rc1"',
+                'chitty_version = "0.2.0rc1"\nnew_setting = 1',
+            )
+        )
+        with self.assertRaisesRegex(ChittyError, "invalid Chitty version"):
+            load_repo_config(self.root)
 
     def test_unknown_top_level_keys_refuse_without_a_newer_version(self):
         original = (self.root / "chitty.toml").read_text()
