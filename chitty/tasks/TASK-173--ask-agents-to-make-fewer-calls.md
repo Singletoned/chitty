@@ -43,6 +43,12 @@ Owner cleared: the branch now has `main`'s `chitty.toml` again, so `main`'s `chi
 
 Review failed (integration): rebasing onto `main` conflicts in `chitty.toml`.
 
+Rebased onto `main` by a human-run session. My earlier "restore `main`'s `chitty.toml`" commit brought in `random_ids`, which this branch's older code couldn't read, so the agent's `chitty show` failed. Resolved:
+- `chitty.toml` matches `main`'s again.
+- `__version__` is `0.1.36`, one above `main`'s.
+- `tests/test_cli.py` keeps both sets of guide tests.
+`make check` passes (330 tests). The earlier `Review failed (integration)` conflicts in `tests/test_cli.py` and `chitty.toml` are resolved by this rebase. Re-check the criteria and move the ticket to review.
+
 ## Summary
 
 Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.35. Verified with full make format && make check; follow-up remains to rerun TASK-170 measurement scripts.
@@ -65,3 +71,4 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-06T16:43:38Z youthful-toad: changed owner, notes
 - 2026-11-06T16:47:49Z quick-puffin: changed notes
 - 2026-11-06T16:47:49Z quick-puffin review → doing
+- 2026-11-06T18:02:13Z youthful-toad: changed notes
