@@ -1,7 +1,7 @@
 ---
 title: Stop reviewers landing tickets, and document landing
 status: todo
-priority: medium
+priority: high
 depends_on:
   - TASK-131
 parent: TASK-106
@@ -29,3 +29,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Repurposed: its r
 
 - 2026-11-04T15:11:35Z mellow-newt → todo
 - 2026-11-04T15:17:39Z mellow-newt: changed title, description, acceptance criteria, notes
+- 2026-11-06T16:24:15Z youthful-toad: changed priority
