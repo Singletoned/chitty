@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` when a setup change has no version bump
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -57,3 +57,4 @@ Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fi
 - 2026-11-06T14:56:57Z daring-adder: changed notes
 - 2026-11-06T14:57:05Z daring-adder: ticked acceptance criteria
 - 2026-11-06T15:04:23Z daring-adder: changed summary
+- 2026-11-06T15:04:24Z daring-adder doing → review
