@@ -24,6 +24,7 @@ Out of scope: a timeout, and landing.
 
 - [x] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
 - [x] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
+- [ ] `PLAN.md`, `README.md` and the `chitty.toml` template describe `check`, and `__version__` is bumped above `main`'s.
 
 ## Plan
 
@@ -53,6 +54,8 @@ Cannot complete acceptance criterion 3 on this ticket branch: TASK-212 explicitl
 
 Unblocked by a human-run session. Criterion 3 (`check = "make check"` in this repository's `chitty.toml`) was removed, because `TASK-212` forbids ticket branches from changing `chitty.toml`. The human-run session sets it on `main` after this lands. Criteria 1 and 2 were verified by the worker; review them.
 
+Correction to the previous note: only the "this repository sets `check`" part of criterion 3 was dropped. Its docs, template and version part is back as criterion 3 for the reviewer. The branch changes `PLAN.md`, `README.md` and the template, and bumps `__version__` to `0.1.37`; `main` may have moved past that, which the reviewer's rebase will show.
+
 ## Summary
 
 Implemented and verified `check` preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
@@ -80,3 +83,4 @@ Implemented and verified `check` preflight support. Checks now run after setup a
 - 2026-11-06T19:58:38Z lively-otter doing → blocked
 - 2026-11-06T21:33:39Z youthful-toad: changed owner, acceptance criteria, notes
 - 2026-11-06T21:33:39Z youthful-toad blocked → review
+- 2026-11-06T21:33:51Z youthful-toad: changed acceptance criteria, notes
