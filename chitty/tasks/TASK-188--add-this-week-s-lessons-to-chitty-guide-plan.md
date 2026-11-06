@@ -37,7 +37,7 @@ Rebased onto main after TASK-194 changed plan.md; the newer version-bump check w
 
 ## Summary
 
-Updated src/chitty/roles/plan.md with the four cold-read lessons and refined the existing cold-read bullet to avoid repetition. Added TestGuide assertions for all required phrases. Verified the focused regression test, Ruff, Pyright, all 277 Python tests, git diff --check, and chitty fix; npm tests started but did not terminate within the check timeout.
+Updated src/chitty/roles/plan.md with the four cold-read lessons, preserved the implementing-read guidance added on main, and kept TestGuide assertions for all required phrases. Rebased onto main and bumped __version__ to 0.1.35 because the current version-bump check watches role guides. Focused TestGuide, Ruff, Pyright, all 329 Python tests, chitty fix, and git diff --check pass. npm test starts and prints its dots but does not terminate within 180 seconds, so Node completion remains unverified.
 
 ## History
 
@@ -54,3 +54,4 @@ Updated src/chitty/roles/plan.md with the four cold-read lessons and refined the
 - 2026-11-06T14:42:30Z friendly-dormouse: changed notes
 - 2026-11-06T14:42:30Z friendly-dormouse review → doing
 - 2026-11-06T16:18:48Z mellow-dormouse: changed notes
+- 2026-11-06T16:24:02Z mellow-dormouse: changed summary
