@@ -26,6 +26,10 @@ Out of scope: the rest of a repository's `AGENTS.md`, which Chitty does not own.
 - [ ] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
 - [ ] A test shows `chitty init` replacing the old long block in an existing repository with the new one
 
+## Plan
+
+Update the managed guide template and this repository's instructions to the concise role-oriented block, preserving the strict-marker format. Bump the package patch version, add or adjust the init regression coverage for replacing legacy blocks, update README/PLAN instruction pointers, then run formatting and the full check suite.
+
 ## Notes
 
 Same cold read. Fixed: the blank line consumed before a following section, which would have failed the old criterion 2, confirmed by reading the code at `init_repo`; `re.subn` treating the guide as a template; and exactly one `## ` line. Rule accounting moved to `TASK-141`, which writes the role files. Rejected: an end marker for the block, because it adds format for every repository to protect text after the block that nobody has reported. Raised with the human as a question, since that text is replaced today.
@@ -39,3 +43,4 @@ Changed 2026-11-04: the human decided the block should have strict markers, in `
 - 2026-11-04T12:32:19Z lively-panda: changed dependencies, description, acceptance criteria, notes
 - 2026-11-05T14:23:17Z mellow-newt: changed description
 - 2026-11-06T20:15:30Z open-urchin todo → doing
+- 2026-11-06T20:15:48Z open-urchin: wrote the plan
