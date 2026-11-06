@@ -24,6 +24,10 @@ Add a persistent command counter in upgrade.py for non-editable installs: saniti
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: order against `TASK-159`, a corrupt count file, the directory, and what counts.
 
+## Summary
+
+Implemented the non-editable-install PyPI interval check. Commands without pending-release persist a sanitized counter under XDG data, the 100th resets before querying PyPI, and newer releases create pending-release with an immediate alert; failures remain silent and editable installs are excluded. Added regression tests for interval behavior, alerts, failed requests, and editable installs. Verified targeted upgrade tests, full unittest suite (279 tests), Ruff, and Pyright; npm test emitted all test dots but did not print its normal summary before the runner returned.
+
 ## History
 
 - 2026-11-04T19:36:38Z mellow-newt → backlog
@@ -32,3 +36,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: order against `T
 - 2026-11-06T00:20:39Z jolly-ibis todo → doing
 - 2026-11-06T00:20:58Z jolly-ibis: wrote the plan
 - 2026-11-06T00:27:54Z jolly-ibis: ticked acceptance criteria
+- 2026-11-06T00:28:01Z jolly-ibis: changed summary
