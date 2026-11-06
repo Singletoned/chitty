@@ -1,6 +1,6 @@
 ---
 title: Leave every owned ticket out of a plain `chitty run`
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -41,9 +41,13 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-222/1`; the new tests failed before an
 
 Verified the updated regression test failed before the _skip_reason fix, then passed after it. Plain next and MCP owner filtering preserve --owner review selection; list now reports 👤 agent for owned todo, doing, and review tickets. make format && make check passed (342 Python tests and Node tests). chitty fix completed with existing Markdown delimiter warnings.
 
+Reviewed: implementation, documentation, tests, and verification passed.
+1: pass - Plain next, MCP next, list, and owner-filter behavior verified; shared run selection uses the same corrected path.
+2: pass - README and PLAN describe unowned plain selection; make format && make check passed.
+
 ## Summary
 
-Removed the review early return from _skip_reason so plain selection skips all owned active tickets while preserving human ownership, --owner selection, and explicit ticket behavior. Updated README.md and PLAN.md and expanded next/list regression coverage. Verification: targeted tests passed; make format && make check passed. No follow-ups.
+Reviewed and passed. Implementation, documentation, tests, and verification are complete.
 
 ## History
 
@@ -54,3 +58,5 @@ Removed the review early return from _skip_reason so plain selection skips all o
 - 2026-11-06T20:14:23Z brisk-puffin: wrote the plan
 - 2026-11-06T20:16:45Z brisk-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:16:45Z brisk-puffin doing → review
+- 2026-11-06T20:21:52Z calm-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:21:52Z calm-eel review → done
