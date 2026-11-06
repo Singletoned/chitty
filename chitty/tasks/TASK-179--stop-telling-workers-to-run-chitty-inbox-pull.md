@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -26,6 +26,8 @@ Update the two managed worker-instruction source files only: remove the initial 
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how to check `AGENTS.md`, the wrapped line, and who loses the pull, since `chitty list`'s hint covers them. Dependency on `TASK-142` kept, though soft: it is in review, and it bumps the same version. Rejected: mentioning that the pull is skipped on the first run after a project is added, which this change does not affect.
 
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
 ## Summary
 
 Removed the redundant `chitty inbox --pull` step from both worker guide sources while preserving `ticket`/`task` wording. Regenerated `AGENTS.md` with `uv run chitty init` and bumped `__version__`/`chitty.toml` to `0.1.33`. Added guide regression coverage and made the extension-version test follow the package version. Verified guide output, inbox pull behavior, `chitty fix`, full unittest suite (278 tests), Ruff, Pyright, and Node tests.
@@ -42,3 +44,5 @@ Removed the redundant `chitty inbox --pull` step from both worker guide sources 
 - 2026-11-05T23:29:51Z open-dormouse: ticked acceptance criteria
 - 2026-11-05T23:29:52Z open-dormouse: changed summary
 - 2026-11-05T23:30:02Z open-dormouse doing → review
+- 2026-11-06T14:40:24Z jolly-kestrel: changed notes
+- 2026-11-06T14:40:24Z jolly-kestrel review → doing
