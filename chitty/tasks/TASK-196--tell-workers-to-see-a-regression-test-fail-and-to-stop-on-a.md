@@ -20,7 +20,7 @@ Out of scope: having Chitty check that a test failed.
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("work")` first so that line wrapping cannot break it, shows it containing `see it fail without the fix`, `change the test until it fails without the fix`, `do not work around it`, `a person's decision` and `An unclear detail with a cheap default is not this`, and fails against the current `work.md`
+- [x] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("work")` first so that line wrapping cannot break it, shows it containing `see it fail without the fix`, `change the test until it fails without the fix`, `do not work around it`, `a person's decision` and `An unclear detail with a cheap default is not this`, and fails against the current `work.md`
 
 ## Plan
 
@@ -47,3 +47,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T18:22:08Z mellow-newt backlog → todo
 - 2026-11-06T00:14:05Z witty-kestrel todo → doing
 - 2026-11-06T00:14:20Z witty-kestrel: wrote the plan
+- 2026-11-06T00:20:13Z witty-kestrel: ticked acceptance criteria
