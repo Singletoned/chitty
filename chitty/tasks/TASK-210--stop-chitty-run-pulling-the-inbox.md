@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` pulling the inbox
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -46,6 +46,10 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-210/1`; the test failed first and pass
 
 Reserved for a Sonnet subagent of a human-run session; the loops leave it alone.
 
+Reviewed: rebased on main cleanly; make check passes.
+1: pass - no pull_suggestions in run.py; new test fails against main's run.py (pending suggestion consumed) and passes with the change
+2: pass - read every inbox match in README.md and PLAN.md; none say run touches the inbox, and the run-related sentences were reworded; make check OK
+
 ## Summary
 
 Removed pull_suggestions, RunInterrupted inbox handling and project_before_refresh from run; replaced the test with one that a pending inbox suggestion survives a run and creates no ticket (failed before, passes after); README and PLAN no longer say run touches the inbox. make check passes.
@@ -63,3 +67,5 @@ Removed pull_suggestions, RunInterrupted inbox handling and project_before_refre
 - 2026-11-06T14:14:02Z youthful-toad: ticked acceptance criteria
 - 2026-11-06T14:14:03Z youthful-toad: changed owner, summary
 - 2026-11-06T14:14:03Z youthful-toad doing → review
+- 2026-11-06T14:31:44Z youthful-toad: changed notes; overrode review independence
+- 2026-11-06T14:31:44Z youthful-toad review → done
