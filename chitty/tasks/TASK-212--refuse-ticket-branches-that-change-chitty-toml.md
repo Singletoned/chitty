@@ -24,6 +24,10 @@ No `__version__` bump: nothing `chitty init` writes changes.
 
 - [ ] A test runs `chitty run --mode review` on a branch that changes `chitty.toml` and asserts the ticket moves to `doing` with that note and no agent runs. Another, with the config in `[tool.chitty]`, shows that a change elsewhere in `pyproject.toml` passes and a change to `[tool.chitty]` fails.
 
+## Plan
+
+Add a review preflight check after a clean rebase that compares the branch's Chitty configuration with main, using a parsed [tool.chitty] table for pyproject.toml and a file diff for chitty.toml. Fail through the existing review path with the specified note and add regression coverage for both config sources, including a pyproject-only unrelated change passing. Remove the obsolete newer-config-key expectation. Run the targeted tests and make check.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-212/1`; the test failed before and passed after; `make check` OK, 330 tests). Outcomes:
@@ -70,3 +74,4 @@ Also, the earlier note saying no open branch is affected is wrong: `task-179` an
 - 2026-11-06T17:48:19Z youthful-toad: changed notes
 - 2026-11-06T18:13:05Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T18:51:35Z lively-kestrel todo → doing
+- 2026-11-06T18:51:57Z lively-kestrel: wrote the plan
