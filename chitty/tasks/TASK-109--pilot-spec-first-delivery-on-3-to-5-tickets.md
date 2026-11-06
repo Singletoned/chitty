@@ -9,11 +9,8 @@ depends_on:
   - TASK-126
   - TASK-120
   - TASK-127
-  - TASK-131
   - TASK-136
-  - TASK-143
   - TASK-149
-  - TASK-152
   - TASK-147
   - TASK-153
 parent: TASK-106
@@ -61,6 +58,8 @@ Also needs `TASK-149` and `TASK-152`, the last parts of the split `TASK-127` and
 
 Also needs `TASK-153`: without it, every passed review stops an unattended loop.
 
+Dependencies trimmed on 2026-11-06 at the human's request: the pilot runs by hand, so it doesn't need landing automation (`TASK-131`, `TASK-152`) or the smaller guide block (`TASK-143`). Every other dependency is done. Another candidate: `TASK-221` (pure edit validation with property tests), which suits spec-first well.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -75,3 +74,4 @@ Also needs `TASK-153`: without it, every passed review stops an unattended loop.
 - 2026-11-04T11:56:21Z lively-panda: changed dependencies, notes
 - 2026-11-04T15:11:38Z mellow-newt: changed dependencies, notes
 - 2026-11-04T15:12:08Z mellow-newt: changed dependencies, notes
+- 2026-11-06T19:18:24Z youthful-toad: changed dependencies, notes
