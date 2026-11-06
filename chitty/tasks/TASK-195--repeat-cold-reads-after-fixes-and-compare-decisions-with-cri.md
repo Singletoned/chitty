@@ -1,6 +1,6 @@
 ---
 title: Repeat cold reads after fixes, and compare decisions with criteria
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-194
@@ -38,6 +38,9 @@ The ticket says no version bump is needed, but `make check` enforces a bump for 
 
 Verified the new regression test failed before the guide bullets were added (all three phrases missing), then passed after the fix. `make format && make check` passed.
 
+Reviewed: verified the prescribed planning bullets and whitespace-normalized TestGuide regression test; the baseline main guide lacks all three required phrases, and make format && make check passes.
+1: pass - implementation and verification satisfy the criterion.
+
 ## Summary
 
 Implemented the two planning-role bullets and a whitespace-normalized `TestGuide` regression test covering all required phrases. Bumped `__version__` to `0.1.39` because `make check` requires version bumps for `src/chitty/roles` changes. Focused regression test failed before the guide fix and passed after it; `make format && make check` passes. No follow-ups.
@@ -57,3 +60,5 @@ Implemented the two planning-role bullets and a whitespace-normalized `TestGuide
 - 2026-11-06T20:25:14Z rosy-heron: changed notes
 - 2026-11-06T20:26:57Z rosy-heron: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:26:57Z rosy-heron doing → review
+- 2026-11-06T20:29:48Z upbeat-raven: changed notes; ticked acceptance criteria
+- 2026-11-06T20:29:48Z upbeat-raven review → done
