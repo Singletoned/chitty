@@ -314,10 +314,11 @@ def add(
     -c names a context in this repository. Use `chitty suggest` to send work
     to another repository.
     """
-    if description is None and status != "backlog":
-        raise click.UsageError("--description is required unless --status backlog")
     root = search_root(Path.cwd())
     target = resolve_add_target(Repo.open(root) if root else None, context)
+    random_ids = target.repo.config.contexts[target.context.name].random_ids
+    if description is None and status != "backlog" and not random_ids:
+        raise click.UsageError("--description is required unless --status backlog")
     fields = {
         "status": status,
         "labels": list(dict.fromkeys(labels)),
