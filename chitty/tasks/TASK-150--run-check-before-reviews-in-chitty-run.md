@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -40,9 +40,11 @@ The check progress line is written to stderr so existing status output remains m
 
 Review failed (integration): rebasing onto `main` conflicts in `src/chitty/__init__.py`.
 
+Resolved the review rebase conflict in src/chitty/__init__.py by retaining 0.1.37, which remains above main's 0.1.36.
+
 ## Summary
 
-Implemented strict check configuration and preflight execution in chitty run. Checks run parsed without a shell after setup in the ticket worktree, capture combined output, fail reviews through Repo.edit with the last 20 lines, and honor interrupts. Added config/init template support, docs, version bump, and updated run tests. Verified with make check (ruff, pyright, 332 unittest tests, and Node tests).
+Implemented and verified  preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
 
 ## History
 
@@ -58,3 +60,5 @@ Implemented strict check configuration and preflight execution in chitty run. Ch
 - 2026-11-06T18:50:08Z witty-gannet doing → review
 - 2026-11-06T19:01:25Z brisk-lapwing: changed notes
 - 2026-11-06T19:01:25Z brisk-lapwing review → doing
+- 2026-11-06T19:41:35Z able-yellowhammer: changed notes, summary
+- 2026-11-06T19:41:35Z able-yellowhammer doing → review
