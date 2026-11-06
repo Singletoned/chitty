@@ -125,6 +125,13 @@ that ambiguity is an error. Error if neither finds one.
   context's active or archive directory, plus uncommitted files in this
   checkout. Uncommitted tickets in other worktrees and unpushed work on other
   machines are not visible.
+- A context with `random_ids = true` instead draws `n` at random from
+  10000000 to 99999999, such as `BACKLOG-48213907`, retrying (a bounded number
+  of times, then failing) when a number in that same visible set is taken.
+  Random IDs let tickets raised on any branch avoid colliding, so only `main`
+  hands out sequential numbers (decided 2026-11-05). The generated `backlog`
+  context (`chitty/backlog/`, prefix `BACKLOG`) uses it; it is unrelated to the
+  `backlog` status.
 
 Filename: `<ID>--<slug>.md`, or `<ID>.md` when the slug is empty. The slug
 is derived from the title (lowercase, `[a-z0-9-]`, collapsed hyphens, max 60
@@ -321,6 +328,10 @@ prefix = "TASK"
 prefix = "HUMAN"
 review = false # overrides the repository default
 
+[contexts.backlog]
+prefix = "BACKLOG"
+random_ids = true # random eight-digit numbers instead of sequential ones
+
 [agent_commands]
 # Other parsed agent commands, selected for one run with `chitty run --agent NAME`.
 ```
@@ -330,6 +341,13 @@ Context directory is `chitty/<name>/`. Not configurable. `review` defaults to
 can set `review` to override the repository default; an absent context setting
 inherits it. New `human` contexts disable review so people can close their own
 tasks directly.
+
+`chitty init` adds the `backlog` context to an existing repository, as a
+table after the last `[contexts.*]` (or `[tool.chitty.contexts.*]`) table. It
+leaves the file alone when a `backlog` context or a `BACKLOG` prefix already
+exists, when contexts have no table header to follow (dotted keys or inline
+tables), or when the result would not validate. An older Chitty refuses a
+context with `random_ids`; `chitty_version` already says it needs upgrading.
 
 Agents reviewing each other's work can fail a task back and forth without
 converging. The third `review → doing` since the task was last `blocked` is
