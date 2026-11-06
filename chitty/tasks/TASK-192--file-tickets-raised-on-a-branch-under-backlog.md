@@ -1,6 +1,6 @@
 ---
 title: File tickets raised on a branch under `BACKLOG`
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-191
@@ -32,6 +32,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: the tests'
 
 Regression coverage initially failed without the fix: plain CLI add in a linked worktree required --description; after the fix, CLI, MCP, guide, and inbox tests pass. chitty fix reported only pre-existing ticket Markdown warnings.
 
+Review failed (work): the branch changes `chitty.toml`; only `chitty init` on the main checkout may change it.
+
 ## Summary
 
 Implemented linked-worktree target resolution in resolve_add_target: plain adds use configured backlog, explicit contexts win, and inbox pulls remain on default_context. Updated guides, PLAN.md, generated AGENTS.md/chitty.toml, and bumped __version__ to 0.1.37. Added CLI/MCP/worktree, guide, inbox, and autocommit regression tests. Verified with make check (339 Python tests and Node tests pass). Commit: 8e05e17.
@@ -46,3 +48,5 @@ Implemented linked-worktree target resolution in resolve_add_target: plain adds 
 - 2026-11-06T19:32:17Z golden-lapwing: wrote the plan
 - 2026-11-06T19:59:09Z golden-lapwing: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T19:59:09Z golden-lapwing doing → review
+- 2026-11-06T19:59:51Z golden-quail: changed notes
+- 2026-11-06T19:59:51Z golden-quail review → doing
