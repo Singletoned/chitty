@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-120
@@ -24,7 +24,7 @@ Out of scope: a timeout, and landing.
 
 - [x] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
 - [x] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
-- [ ] `PLAN.md`, `README.md` and the `chitty.toml` template describe `check`, and `__version__` is bumped above `main`'s.
+- [x] `PLAN.md`, `README.md` and the `chitty.toml` template describe `check`, and `__version__` is bumped above `main`'s.
 
 ## Plan
 
@@ -64,6 +64,12 @@ Rebased onto `main` (`0.1.40`) by the human-run session, so the review's own reb
 - A duplicate `_git_path` was dropped.
 `make check` passes (360 tests). After landing, `chitty run` fails preflight until `check = "make check"` is set in the main checkout's `chitty.toml`. The human-run session must do that straight after the merge.
 
+Reviewed: implementation independently inspected; check is required in preflight, runs after setup/rebase with shell-free parsing, combined captured output, last 20 lines on failure, and no agent start. Init template/docs/version are updated. make format && make check passes (360 Python tests and Node tests).
+
+1: pass - Regression tests cover failing and passing check behavior.
+2: pass - Tests cover shell-free quoting, unset preflight configuration, and commented init output.
+3: pass - PLAN.md, README.md, the init template, and __version__ are updated; branch version 0.1.41 is above main 0.1.40.
+
 ## Summary
 
 Implemented and verified `check` preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
@@ -93,3 +99,5 @@ Implemented and verified `check` preflight support. Checks now run after setup a
 - 2026-11-06T21:33:39Z youthful-toad blocked → review
 - 2026-11-06T21:33:51Z youthful-toad: changed acceptance criteria, notes
 - 2026-11-06T21:35:52Z youthful-toad: changed notes
+- 2026-11-06T21:46:50Z able-quail: changed notes; ticked acceptance criteria
+- 2026-11-06T21:46:50Z able-quail review → done
