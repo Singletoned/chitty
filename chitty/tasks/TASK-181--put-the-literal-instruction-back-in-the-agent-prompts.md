@@ -31,6 +31,13 @@ Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.p
 
 Review failed (integration): rebasing onto `main` conflicts in `chitty.toml`, `src/chitty/__init__.py`, `tests/test_cli.py`, `tests/test_pi_extension.py`.
 
+Rebased onto `main` by a human-run session. My earlier "restore `main`'s `chitty.toml`" commit brought in `random_ids`, which this branch's older code couldn't read. Resolved:
+- `chitty.toml` matches `main`'s.
+- `__version__` is `0.1.36`, which `TASK-173` also takes, so whichever lands second bumps again.
+- `tests/test_cli.py` keeps both sets of guide tests.
+- `tests/test_pi_extension.py` compares against `__version__`.
+`make check` passes (330 tests). Re-check the criteria.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in the global guide and work, review, and plan role prompts; added TestGuide coverage; bumped Chitty to 0.1.33 and regenerated AGENTS.md/chitty.toml. Verified with make check: ruff, pyright, 278 unittest cases, and Node tests pass.
@@ -59,3 +66,4 @@ Restored the literal single-asterisk Markdown instruction in the global guide an
 - 2026-11-06T16:15:52Z mellow-toad doing → review
 - 2026-11-06T16:39:56Z sunny-eel: changed notes
 - 2026-11-06T16:39:56Z sunny-eel review → doing
+- 2026-11-06T18:08:19Z youthful-toad: changed notes
