@@ -22,6 +22,12 @@ Out of scope: using the setting (`TASK-216`), docs (`TASK-217`), and remotes or 
 - [ ] Tests show a config without `main_branch` loading as `main`, and one with `main_branch = "master"` loading as `master`, from both `chitty.toml` and `[tool.chitty]`.
 - [ ] Tests show `chitty init` writing `main_branch = "master"` in a new repository on `master`, and writing no `main_branch` on `main`, outside Git, or when upgrading an existing config.
 
+## Plan
+
+1. Inspect config parsing, git.current_branch, init templates, and existing tests.
+2. Add optional RepoConfig.main_branch with a main default and add focused config/init tests, first confirming the new regression test fails before the implementation.
+3. Run formatting and the full check suite, then verify both acceptance criteria and prepare the ticket for review.
+
 ## Notes
 
 Cold read 1 (Sonnet, of the original whole-feature ticket; `make check` OK across about 15 files). Outcomes:
@@ -56,3 +62,4 @@ The ref includes a version bump, so a worker should drop that hunk.
 - 2026-11-06T16:59:24Z youthful-toad: changed description, notes
 - 2026-11-06T16:59:24Z youthful-toad backlog → todo
 - 2026-11-06T20:42:03Z lively-yellowhammer todo → doing
+- 2026-11-06T20:43:21Z vivid-urchin: wrote the plan
