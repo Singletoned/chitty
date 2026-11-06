@@ -2,6 +2,7 @@
 title: Don't upgrade repository setup on a ticket branch
 status: todo
 priority: high
+owner: human
 created: 2026-11-06
 ---
 
@@ -41,9 +42,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-204/1`; both tests failed before and p
 
 Second case, on `task-144` (fixed by hand): `main`'s `chitty` upgraded the branch's setup (`4d3e1bb`), and because it didn't know the branch's new `<!-- chitty:end -->` marker, it dropped it from `AGENTS.md`. So the bug corrupts newer branch files as well as writing config older branch code can't read.
 
+Reserved for a human-run session so the loops leave it alone.
+
 ## History
 
 - 2026-11-06T11:30:46Z youthful-toad → backlog
 - 2026-11-06T11:41:32Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T11:41:32Z youthful-toad backlog → todo
 - 2026-11-06T12:54:24Z youthful-toad: changed notes
+- 2026-11-06T13:38:00Z youthful-toad: changed owner, notes
