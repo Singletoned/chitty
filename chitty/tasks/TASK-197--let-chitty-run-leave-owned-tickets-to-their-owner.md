@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` leave owned tickets to their owner
-status: review
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -44,6 +44,8 @@ Verified owner filtering and refusal behavior with targeted tests and full Pytho
 
 Review failed (work): `chitty run --ticket` does not run an owned work ticket. `ticket_action()` calls `_ticket_action()` with the new plain-selection semantics, which returns `None` for an owned `todo`/`doing` ticket; the subsequent assertion raises instead of selecting it. Reproduce with an `opus`-owned `todo` ticket: `ticket_action(repo, repo.resolve("TASK-1"))` raises `AssertionError`. Preserve explicit-ticket behavior for every non-human owner, add the required regression test, and set the ticket back to doing.
 
+Review failed (integration): rebasing onto `main` conflicts in `README.md`.
+
 ## Summary
 
 Fixed explicit-ticket owner handling: chitty run --ticket now runs tickets owned by agents while still refusing human-owned tickets. Added a real fake-agent regression test and verified the MCP next owner parameter coverage. Verification: targeted owner/run tests pass; make check passed Ruff, Pyright, and 272 unittest tests, but npm test remains hanging after 26 dot output in this environment.
@@ -74,3 +76,5 @@ Fixed explicit-ticket owner handling: chitty run --ticket now runs tickets owned
 - 2026-11-06T10:08:26Z upbeat-urchin: ticked acceptance criteria
 - 2026-11-06T10:08:34Z upbeat-urchin: changed summary
 - 2026-11-06T10:08:34Z upbeat-urchin doing → review
+- 2026-11-06T10:13:32Z kind-lapwing: changed notes
+- 2026-11-06T10:13:32Z kind-lapwing review → doing
