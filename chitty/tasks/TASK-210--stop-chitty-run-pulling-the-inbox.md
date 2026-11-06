@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` pulling the inbox
-status: todo
+status: doing
 priority: high
 owner: human
 created: 2026-11-06
@@ -31,6 +31,10 @@ Out of scope: `TASK-179`, which stops the guides telling workers to pull the inb
 - [ ] `grep -n 'pull_suggestions' src/chitty/run.py` finds nothing, and a test shows that `chitty run` with a fake agent leaves a pending inbox suggestion unpulled and creates no ticket from it.
 - [ ] No sentence in `README.md` or `PLAN.md` says `chitty run` touches the inbox (check with `grep -n -i inbox README.md PLAN.md` and read each match in context), and `make check` passes.
 
+## Plan
+
+Remove pull_suggestions/inbox handling and project_before_refresh from run; replace the test with one asserting a pending suggestion is untouched; update README and PLAN text.
+
 ## Notes
 
 Rescoped on 2026-11-06. The human said "`chitty run` shouldn't touch the inbox", so this ticket now removes the pull instead of moving the actor assignment earlier.
@@ -50,3 +54,5 @@ Reserved for a Sonnet subagent of a human-run session; the loops leave it alone.
 - 2026-11-06T13:51:14Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T13:51:14Z youthful-toad backlog → todo
 - 2026-11-06T13:58:32Z youthful-toad: changed owner, notes
+- 2026-11-06T13:58:42Z youthful-toad: wrote the plan
+- 2026-11-06T13:58:42Z youthful-toad todo → doing
