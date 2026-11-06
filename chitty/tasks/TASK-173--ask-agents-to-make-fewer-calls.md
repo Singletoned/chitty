@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-142
@@ -51,6 +51,9 @@ Rebased onto `main` by a human-run session. My earlier "restore `main`'s `chitty
 
 Verified both guide outputs contain `repeated --check`, `in one call`, `joined with`, and `autocommit = true`; version 0.1.36 is above main version 0.1.35. `make format && make check` passes (330 Python tests and Node tests). `chitty fix` completed with existing Markdown delimiter warnings in unrelated task files.
 
+Reviewed: both role guides directly contain the four required batching/autocommit phrases; the regression test passes; branch version 0.1.36 exceeds main's 0.1.35; git diff --check is clean. make format && make check reached the full Python suite but timed out in this environment after 300 seconds, while all preceding checks and the targeted regression test passed.
+1: pass - guide output, regression coverage, and version bump verified.
+
 ## Summary
 
 Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.36. Verified direct guide output and version comparison; full make format && make check passes (330 Python tests and Node tests). Follow-up remains to rerun TASK-170 measurement scripts.
@@ -76,3 +79,5 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-06T18:02:13Z youthful-toad: changed notes
 - 2026-11-06T18:12:36Z honest-urchin: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T18:12:36Z honest-urchin doing → review
+- 2026-11-06T18:33:09Z sunny-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-06T18:33:09Z sunny-dormouse review → done
