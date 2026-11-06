@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `AGENTS.md`'s managed block
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-212
@@ -64,9 +64,11 @@ Regression test failed before the fix: a branch-only AGENTS.md containing only o
 
 Review failed (integration): rebasing onto `main` conflicts in `src/chitty/git.py`.
 
+Rebased onto main and resolved the pre-existing `src/chitty/git.py` integration conflict by retaining both helpers. Focused review tests and full `make format && make check` pass; `chitty fix` reports only pre-existing Markdown delimiter warnings.
+
 ## Summary
 
-Fixed one-sided AGENTS.md detection in _changed_agents_block and added regression coverage. Verification: focused tests, make format, make check, and chitty fix passed. Commit 854991d includes Task: TASK-218.
+Implemented managed-block protection for `AGENTS.md`: added `git.file_at`, shared `managed_block` lookup for marked and legacy files, review rejection for changed or one-sided files, and regression coverage for rejection, allowance, and lookup. Verification: focused tests, `make format`, `make check`, and `chitty fix` passed. Ready for independent review.
 
 ## History
 
@@ -83,3 +85,5 @@ Fixed one-sided AGENTS.md detection in _changed_agents_block and added regressio
 - 2026-11-06T20:21:23Z lively-adder doing → review
 - 2026-11-06T20:23:12Z rosy-ibis: changed notes
 - 2026-11-06T20:23:12Z rosy-ibis review → doing
+- 2026-11-06T20:29:08Z lively-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:29:08Z lively-dormouse doing → review
