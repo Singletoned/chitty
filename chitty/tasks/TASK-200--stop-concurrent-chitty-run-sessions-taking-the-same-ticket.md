@@ -1,6 +1,6 @@
 ---
 title: Stop concurrent `chitty run` sessions taking the same ticket
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-06
@@ -45,6 +45,8 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 
 `next_action` uses `locks.locked_ids(root)`, one `git rev-parse` per call, rather than `is_locked` per ticket as the description says, which would run Git once per candidate; `is_locked` remains and uses it. Renamed `config._git_common_dir` to `git_common_dir` so `locks.py` can import it.
 
+Reviewed: independently inspected the lock implementation, runner/store integration, documentation, and tests. All three acceptance criteria are met. make check passes: 300 Python tests and Node tests.
+
 ## Summary
 
 New `src/chitty/locks.py`: `run_lock(root, id)` takes an exclusive non-blocking `flock` on `<git common dir>/chitty/run/<ID>.lock` and writes the PID for messages, raising `TicketLocked`; `locked_ids`/`is_locked` probe with a fresh descriptor. `next_action` skips locked tickets. `run` now chooses and locks in `_lock_ticket` (retrying up to `RUN_LOCK_ATTEMPTS`; `--ticket` refuses a locked one) inside an `ExitStack`, and the rest moved unchanged to `_run_ticket`, so the lock covers the dirty-path check, worktree, rebase, setup, claim and agent. `README.md` and `PLAN.md` now allow any number of workers and reviewers.
@@ -61,3 +63,5 @@ Verified: `tests/test_run_lock.py` (three of four failed before wiring the lock 
 - 2026-11-06T10:00:44Z youthful-toad todo → doing
 - 2026-11-06T10:09:19Z youthful-toad: changed owner, notes, summary; ticked acceptance criteria
 - 2026-11-06T10:09:19Z youthful-toad doing → review
+- 2026-11-06T10:47:18Z upbeat-crane: changed notes
+- 2026-11-06T10:47:18Z upbeat-crane review → done
