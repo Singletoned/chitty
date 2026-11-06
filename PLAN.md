@@ -694,7 +694,8 @@ what would land, keeping `main` linear:
 3. It rebases the branch onto the local `main`. On a conflict it runs
    `git rebase --abort` and moves the ticket to `doing` with `Review failed
    (integration): ...` naming the conflicting files, for the worker to resolve
-   in a fresh session.
+   in a fresh session. The rebase runs with `rerere.enabled=false`, so a
+   resolution Git recorded for another branch is never replayed unchecked.
 4. Only then does `setup` run, because the rebase can change dependencies. In
    work mode `setup` still runs before the claim.
 

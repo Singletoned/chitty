@@ -402,8 +402,16 @@ def rebase(root: Path, onto: str) -> list[str]:
 
     Returns the conflicting paths, or an empty list when the rebase succeeded.
     """
+    # rerere would replay a resolution recorded for some other branch, which
+    # nobody has checked for this one, and with `rerere.autoupdate` it leaves
+    # the rebase stopped with no unmerged path. A conflict goes back to the
+    # worker instead.
     completed = subprocess.run(
-        ["git", "rebase", onto], cwd=root, capture_output=True, text=True, check=False
+        ["git", "-c", "rerere.enabled=false", "rebase", onto],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
     )
     if completed.returncode == 0:
         return []
