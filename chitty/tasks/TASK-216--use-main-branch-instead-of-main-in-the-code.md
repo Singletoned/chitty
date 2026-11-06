@@ -1,6 +1,6 @@
 ---
 title: Use `main_branch` instead of `main` in the code
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-214
@@ -67,6 +67,11 @@ npm test
 
 Corrected verification note: grep for literal main refs leaves only the documented TASK-214 lines; make format and make check pass with 359 Python tests and the Node tests.
 
+Reviewed: implementation inspected independently; make format && make check passed (359 Python tests and Node tests).
+
+1: pass - configured main branch is used throughout run and dependency handling
+2: pass - linked worktrees use the main checkout configuration
+
 ## Summary
 
 Implemented TASK-216: main-file dependency checks and all runner integration-branch operations use the main checkout setting; linked worktrees load that setting from the primary checkout. Verification: make format and make check pass. Follow-up: none.
@@ -82,3 +87,5 @@ Implemented TASK-216: main-file dependency checks and all runner integration-bra
 - 2026-11-06T21:21:41Z intrepid-otter: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T21:21:41Z intrepid-otter doing → review
 - 2026-11-06T21:22:08Z intrepid-otter: changed notes, summary
+- 2026-11-06T21:24:59Z lively-raven: changed notes; ticked acceptance criteria
+- 2026-11-06T21:24:59Z lively-raven review → done
