@@ -9,3 +9,7 @@ NO_NEXT_TICKET_EXIT = 3
 
 class NoNextTicket(ChittyError):
     """Nothing is left to select: an idle queue, not a failure."""
+
+
+class ManagedGuideError(ChittyError):
+    """`AGENTS.md` has damaged Chitty management markers."""

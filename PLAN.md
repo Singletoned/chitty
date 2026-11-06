@@ -495,7 +495,19 @@ exits with an error saying so.
 ## Agent instructions
 
 `chitty init` appends this block to `AGENTS.md` (creating it if absent),
-idempotently, keyed on the `## Chitty` heading:
+idempotently, using strict markers around the managed text:
+
+```markdown
+<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->
+
+...
+
+<!-- chitty:end -->
+```
+
+It replaces only the text between the marker lines. An old unmarked block is
+migrated once; malformed or ambiguous markers fail loudly so a person can
+remove them:
 
 ```markdown
 ## Chitty
@@ -525,7 +537,7 @@ task files. `chitty --help` is the full command reference.
 ```
 
 That is the whole prompt. Statuses are fixed, so the block is always correct.
-`chitty guide` prints the same block, and `chitty --help` points agents at it.
+`chitty guide` prints the same unmarked block, and `chitty --help` points agents at it.
 
 ## Pipeline and feedback
 

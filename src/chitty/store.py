@@ -26,7 +26,7 @@ from chitty.config import (
     load_repo_config,
     validate_repo_config,
 )
-from chitty.errors import ChittyError, NoNextTicket
+from chitty.errors import ChittyError, ManagedGuideError, NoNextTicket
 from chitty.ids import TaskId
 from chitty.model import (
     DESCRIPTION,
@@ -45,6 +45,8 @@ ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
 CLAUDE_FILE = "CLAUDE.md"
 GUIDE_HEADING = "## Chitty"
+GUIDE_BEGIN = "<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->"
+GUIDE_END = "<!-- chitty:end -->"
 BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
@@ -323,7 +325,15 @@ class Repo:
             return
         if not self.config.autocommit:
             raise ChittyError("repository setup is stale; run `chitty init` before writing")
-        paths = init_repo(self.root, False)
+        try:
+            paths = init_repo(self.root, False)
+        except ManagedGuideError as error:
+            print(
+                f"warning: {error}; skipping repository setup upgrade until the marker lines "
+                "are repaired",
+                file=sys.stderr,
+            )
+            return
         files = [path for path in paths if path.is_file() and path.is_relative_to(self.root)]
         if files:
             git.commit(self.root, files, "chitty: upgrade repository setup")
@@ -999,6 +1009,41 @@ def _restore_file(path: Path, state: tuple[str, bytes | Path] | None) -> None:
         path.write_bytes(content)
 
 
+def _managed_agents(existing: str, agents: Path) -> str:
+    """Return `AGENTS.md` with the exact managed guide block installed."""
+    lines = existing.splitlines(keepends=True)
+    offsets: list[tuple[int, int, str]] = []
+    offset = 0
+    for line in lines:
+        offsets.append((offset, offset + len(line), line.rstrip("\n")))
+        offset += len(line)
+    markers = [
+        (index, start, end, value)
+        for index, (start, end, value) in enumerate(offsets)
+        if value in (GUIDE_BEGIN, GUIDE_END)
+    ]
+    rendered = f"{GUIDE_BEGIN}\n\n{guide().rstrip('\\n')}\n\n{GUIDE_END}\n"
+    if markers:
+        begins = [item for item in markers if item[3] == GUIDE_BEGIN]
+        ends = [item for item in markers if item[3] == GUIDE_END]
+        if len(begins) != 1 or len(ends) != 1 or begins[0][0] >= ends[0][0]:
+            raise ManagedGuideError(
+                f"{agents} has invalid Chitty guide markers; remove the marker lines so the "
+                "next `chitty init` can migrate the block"
+            )
+        return existing[: begins[0][1]] + rendered + existing[ends[0][2] :]
+
+    pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
+    match = re.search(pattern, existing)
+    if match:
+        # The legacy match includes the separator before a following heading.
+        suffix = existing[match.end() :]
+        separator = "\n" if suffix.startswith("## ") else ""
+        print(f"migrated Chitty guide markers in {agents}", file=sys.stderr)
+        return existing[: match.start()] + rendered + separator + suffix
+    return (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + rendered
+
+
 def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     """Create or non-destructively upgrade the repository's Chitty setup."""
     if enable_autocommit:
@@ -1013,6 +1058,8 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     pyproject_path = directory / "pyproject.toml"
     agents = directory / AGENTS_FILE
     gitignore = directory / ".gitignore"
+    existing_agents = agents.read_text() if agents.exists() else ""
+    updated_agents = _managed_agents(existing_agents, agents)
     linked_worktree = git.is_linked_worktree(directory)
     if not linked_worktree:
         validate_pi_extension()
@@ -1081,14 +1128,8 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         pi_extension = install_pi_extension()
         if pi_extension is not None:
             written.append(pi_extension)
-    existing = agents.read_text() if agents.exists() else ""
-    pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
-    rendered_guide = guide()
-    updated, count = re.subn(pattern, rendered_guide.rstrip() + "\n", existing)
-    if not count:
-        updated = (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + rendered_guide
-    if updated != existing:
-        agents.write_text(updated)
+    if updated_agents != existing_agents:
+        agents.write_text(updated_agents)
         written.append(agents)
     if claude.is_symlink() and claude.readlink() != Path(AGENTS_FILE):
         claude.unlink()

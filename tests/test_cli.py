@@ -5,6 +5,7 @@ import subprocess
 import tomllib
 from datetime import date
 from pathlib import Path
+from unittest.mock import patch
 
 from click.testing import CliRunner, Result
 
@@ -129,7 +130,12 @@ class TestInit(CliTestCase):
         self.assertIn('[contexts.human]\nprefix = "HUMAN"\nreview = false', config)
         self.assertTrue((target / "chitty" / "tasks").is_dir())
         agents = (target / "AGENTS.md").read_text()
-        self.assertTrue(agents.startswith("# Agents\n\nBe nice.\n\n## Chitty\n"))
+        self.assertTrue(
+            agents.startswith(
+                "# Agents\n\nBe nice.\n\n<!-- chitty:begin - managed by `chitty init`; "
+                "edits here are replaced -->\n\n## Chitty\n"
+            )
+        )
         self.assertIn("Task: <ID>", agents)
         self.assertIn("Task: TASK-12", agents)
         self.assertIn("git log --grep <ID>", agents)
@@ -141,6 +147,92 @@ class TestInit(CliTestCase):
         refreshed_agents = (target / "AGENTS.md").read_text()
         self.assertEqual(refreshed_agents, agents)
         self.assertEqual(self.json("add", "First", "-d", "x")["id"], "TASK-1")
+
+    def test_init_marks_and_migrates_the_managed_guide(self):
+        agents = self.root / "AGENTS.md"
+        self.run_cli("init")
+        marked = agents.read_text()
+        self.assertIn(
+            "<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->\n\n",
+            marked,
+        )
+        self.assertIn("\n\n<!-- chitty:end -->\n", marked)
+        self.assertNotIn("chitty:begin", guide())
+
+        old = "# Before\n\n" + guide() + "\n## After\n\nKeep this.\n"
+        agents.write_text(old)
+        result = self.run_cli("init")
+        migrated = agents.read_text()
+        self.assertIn("migrated Chitty guide markers", result.stderr)
+        self.assertIn("\n<!-- chitty:end -->\n\n## After\n", migrated)
+        self.assertIn("Keep this.\n", migrated)
+
+    def test_init_replaces_only_a_marked_guide(self):
+        agents = self.root / "AGENTS.md"
+        self.run_cli("init")
+        original = agents.read_text()
+        agents.write_text("Before\n\n" + original + "\nAfter\n\nUnheaded text\n")
+        marked_guide = guide().rstrip("\n") + "\n\nA backslash: \\ path"
+        with patch("chitty.store.guide", return_value=marked_guide):
+            self.run_cli("init")
+            updated = agents.read_text()
+            self.assertTrue(updated.startswith("Before\n\n"))
+            self.assertTrue(updated.endswith("After\n\nUnheaded text\n"))
+            self.assertEqual(updated.count("chitty:begin"), 1)
+            self.assertEqual(updated.count("chitty:end"), 1)
+            self.assertIn("A backslash: \\ path", updated)
+            self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
+            self.assertEqual(agents.read_text(), updated)
+
+        prettier = Path(__file__).resolve().parent.parent / "node_modules" / ".bin" / "prettier"
+        if not prettier.exists():
+            raise AssertionError(f"{prettier} is missing: run `make install`")
+        subprocess.run(
+            [str(prettier), "--no-config", "--write", str(agents)],
+            check=True,
+            capture_output=True,
+        )
+        self.assertEqual(agents.read_text(), updated)
+
+    def test_init_rejects_damaged_guide_markers(self):
+        agents = self.root / "AGENTS.md"
+        for content in (
+            "<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->\n",
+            "<!-- chitty:end -->\n",
+            (
+                "<!-- chitty:end -->\n"
+                "<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->\n"
+            ),
+            (
+                "<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->\n"
+                "<!-- chitty:end -->\n"
+                "<!-- chitty:begin - managed by `chitty init`; edits here are replaced -->\n"
+                "<!-- chitty:end -->\n"
+            ),
+        ):
+            agents.write_text(content)
+            result = self.run_cli("init", exit_code=1)
+            self.assertIn("AGENTS.md", result.stderr)
+            self.assertEqual(agents.read_text(), content)
+
+    def test_stale_writes_warn_and_skip_damaged_guide_upgrade(self):
+        agents = self.root / "AGENTS.md"
+        agents.write_text("<!-- chitty:end -->\n")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "0.0.0"')
+            .replace("autocommit = false", "autocommit = true")
+        )
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        result = self.run_cli("add", "Allowed", "-d", "x")
+        self.assertIn("skipping repository setup upgrade", result.stderr)
+        self.assertIn(
+            "Allowed", (self.root / "chitty" / "tasks" / "TASK-1--allowed.md").read_text()
+        )
+        self.assertIn('chitty_version = "0.0.0"', config.read_text())
 
     def test_init_adds_missing_human_review_setting(self):
         config = self.root / "chitty.toml"
@@ -444,7 +536,9 @@ class TestInit(CliTestCase):
         self.run_cli("init")
 
         agents = agents_path.read_text()
-        self.assertEqual(agents, guide())
+        self.assertTrue(agents.startswith("<!-- chitty:begin"))
+        self.assertTrue(agents.endswith("<!-- chitty:end -->\n"))
+        self.assertIn("Task: <ID>", agents)
         self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config.read_text())
         self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
 
