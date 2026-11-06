@@ -1,6 +1,6 @@
 ---
 title: Mark Chitty's block in `AGENTS.md` with strict begin and end comments
-status: doing
+status: review
 priority: medium
 parent: TASK-140
 created: 2026-11-04
@@ -103,3 +103,4 @@ Added focused coverage for marked-block replacement with a backslash, exact seco
 - 2026-11-06T15:01:19Z youthful-adder review → doing
 - 2026-11-06T15:20:50Z vivid-kestrel: ticked acceptance criteria
 - 2026-11-06T15:20:51Z vivid-kestrel: changed summary
+- 2026-11-06T15:20:52Z vivid-kestrel doing → review
