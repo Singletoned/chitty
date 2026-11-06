@@ -1,6 +1,6 @@
 ---
 title: Cover `pyproject.toml` in newer-key tests, and stop version parsing failing reads
-status: doing
+status: review
 priority: low
 parent: TASK-106
 created: 2026-11-05
@@ -18,8 +18,8 @@ Out of scope: supporting pre-release versions properly, including running an `rc
 
 ## Acceptance Criteria
 
-- [ ] A test shows an unknown top-level key in `[tool.chitty]` loading with one stderr warning when `chitty_version` is newer, and refusing when it is equal
-- [ ] A test shows `load_repo_config` loading a file that records `0.2.0rc1` and has no unknown keys, failing before the change, and still raising `invalid Chitty version` when that file has an unknown key
+- [x] A test shows an unknown top-level key in `[tool.chitty]` loading with one stderr warning when `chitty_version` is newer, and refusing when it is equal
+- [x] A test shows `load_repo_config` loading a file that records `0.2.0rc1` and has no unknown keys, failing before the change, and still raising `invalid Chitty version` when that file has an unknown key
 
 ## Plan
 
@@ -29,6 +29,10 @@ Add regression coverage in tests/test_config.py for newer unknown top-level keys
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: labelled the `pyproject.toml` test as a regression test, since nothing needs building for it; dropped the claim about running an `rc` build, which this does not fix; and said what happens to a malformed version. Not split: it is small, with two criteria.
 
+## Summary
+
+Implemented coverage for newer unknown keys in chitty.toml and pyproject.toml, including warning-once and equal-version rejection. Moved version comparison after unknown-key detection so prerelease versions load without unknown keys while malformed versions with unknown keys still fail. Verified the regression test failed before the fix and passed after it; make check passed with 279 Python and 26 Node tests.
+
 ## History
 
 - 2026-11-05T09:51:15Z mellow-newt → backlog
@@ -37,3 +41,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: labelled the `pyproject
 - 2026-11-05T09:53:19Z mellow-newt backlog → todo
 - 2026-11-06T00:32:41Z vivid-badger todo → doing
 - 2026-11-06T00:33:03Z vivid-badger: wrote the plan
+- 2026-11-06T00:40:07Z vivid-badger: changed summary; ticked acceptance criteria
+- 2026-11-06T00:40:07Z vivid-badger doing → review
