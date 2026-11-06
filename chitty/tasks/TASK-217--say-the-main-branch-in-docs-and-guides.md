@@ -9,7 +9,7 @@ created: 2026-11-06
 
 ## Description
 
-After `TASK-215`, the integration branch is `main_branch` in `chitty.toml`. Wherever the guides and docs mean the integration branch, change "`main`" to "the main branch (`main_branch` in `chitty.toml`)", or plain "the main branch" once it has been introduced. Leave text that means the primary checkout ("main checkout") alone.
+After `TASK-216`, the integration branch is `main_branch` in `chitty.toml`. Wherever the guides and docs mean the integration branch, change "`main`" to "the main branch (`main_branch` in `chitty.toml`)", or plain "the main branch" once it has been introduced. Leave text that means the primary checkout ("main checkout") alone.
 
 - `src/chitty/guide.md` and `src/chitty/roles/*.md`. These are the managed block, so bump `__version__` at patch level.
 - `README.md`, around lines 34 and 125, and wherever else `grep -n '`main`' README.md` matches.
@@ -26,3 +26,4 @@ Don't run `chitty init` on the branch (`TASK-212`).
 
 - 2026-11-06T16:48:08Z youthful-toad → backlog
 - 2026-11-06T16:48:23Z youthful-toad: changed dependencies
+- 2026-11-06T16:48:41Z youthful-toad: changed description
