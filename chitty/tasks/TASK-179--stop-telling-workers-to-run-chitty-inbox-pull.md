@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -16,7 +16,7 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 ## Acceptance Criteria
 
 - [x] `chitty guide work` and `chitty guide` no longer contain `inbox --pull`, shown by a test, and `chitty inbox --pull` itself still works
-- [x] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
+- [ ] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
 
 ## Plan
 
@@ -33,6 +33,9 @@ Rebased onto main after the prior integration review failure; resolved the guide
 Owner set to `human` so the review loop skips this until `TASK-212` lands: the branch records `0.1.35` and `main`'s `0.1.34` `chitty` refuses to write here. Clear the owner then.
 
 Owner cleared: the branch now has `main`'s `chitty.toml` again, so `main`'s `chitty` can write here.
+
+1: pass - Guide output omits inbox --pull and chitty inbox --pull still works.
+2: fail - __version__ is 0.1.35 on this branch and on main, so the required version bump above main is unmet; make check fails its version-bump check. Bump the package version above current main and rerun the checks.
 
 ## Summary
 
@@ -56,3 +59,5 @@ Removed the redundant inbox pull from both worker guide sources, preserved ticke
 - 2026-11-06T16:07:57Z jolly-stoat doing → review
 - 2026-11-06T16:25:04Z youthful-toad: changed owner, notes
 - 2026-11-06T16:43:39Z youthful-toad: changed owner, notes
+- 2026-11-06T16:54:52Z honest-gannet: changed acceptance criteria, notes
+- 2026-11-06T16:54:52Z honest-gannet review → doing
