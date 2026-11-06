@@ -103,7 +103,7 @@ then uses priority and task ID across all non-human contexts. Plain selection
 skips every owned ticket; `chitty list` uses the same skip rules and reports
 ownership, human context, unmet `todo` dependencies, and broken dependency
 references. `doing` and `review` tickets ignore dependencies; dependency
-completion is judged from `main`. Use `--owner NAME` to select only that
+completion is judged from the main branch. Use `--owner NAME` to select only that
 owner's tickets in any active status.
 `human` and empty owner filters are refused. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses
@@ -134,7 +134,7 @@ the configured agent from that worktree. The agent uses the `chitty`
 executable installed beside the runner's Python interpreter, rather than a
 branch-local `chitty`; `pi` and `claude` still come from the global `PATH`.
 This behavior is implemented without changing `chitty.toml` on the branch.
-Before a review it first rebases the branch onto `main`, then runs setup, so the
+Before a review it first rebases the branch onto the main branch, then runs setup, so the
 reviewer sees exactly what would land; uncommitted files in the worktree or a
 rebase conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed

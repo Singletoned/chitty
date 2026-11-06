@@ -20,7 +20,7 @@ task files. `chitty --help` is the full command reference.
 - If the ticket is too large, say so in the failure note and suggest how to
   split it. Do not edit spec tests.
 - On a pass, set `-s done --note "Reviewed: ..."`; then merge its branch into
-  `main` and remove its branch and worktree. The third failed review blocks the
+  the main branch and remove its branch and worktree. The third failed review blocks the
   ticket for `human`; leave it there for a person to unblock.
 - Found unrelated work on this ticket's branch? Use plain `chitty add`, which
   files it as `BACKLOG` for the planning session. A person planning should do

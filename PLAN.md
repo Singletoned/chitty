@@ -59,7 +59,7 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   write; otherwise it fails loudly and tells the caller to run `chitty init`.
   Upgrades happen only in the main checkout: a write in a linked worktree
   skips the upgrade and the stale-setup error (still refusing a setup newer
-  than Chitty), and the branch picks up the new setup when rebased onto `main`.
+  than Chitty), and the branch picks up the new setup when rebased onto the main branch.
   `chitty run` refreshes setup before selecting a ticket, committing setup-only
   changes in a main checkout and doing nothing in a linked worktree. From a
   linked worktree, it refuses to run when the main checkout's setup is older or
@@ -131,7 +131,7 @@ that ambiguity is an error. Error if neither finds one.
 - A context with `random_ids = true` instead draws `n` at random from
   10000000 to 99999999, such as `BACKLOG-48213907`, retrying (a bounded number
   of times, then failing) when a number in that same visible set is taken.
-  Random IDs let tickets raised on any branch avoid colliding, so only `main`
+  Random IDs let tickets raised on any branch avoid colliding, so only the main branch
   hands out sequential numbers (decided 2026-11-05). The generated `backlog`
   context (`chitty/backlog/`, prefix `BACKLOG`) uses it; it is unrelated to the
   `backlog` status. Plain `chitty add` in a linked worktree targets this context
@@ -327,6 +327,7 @@ chitty_version = "0.1.2" # written by init; warns when setup is stale
 autocommit = false # if true, commit each write; `chitty init --autocommit` enables it and commits setup
 review = true # require review before done
 # autoformat = "taidy format" # run on every written task file
+# main_branch = "master"
 # setup = "make install" # run in every ticket worktree before the agent starts
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
 # `{prompt}` may be used as one argument containing `chitty guide` output.
@@ -346,6 +347,9 @@ random_ids = true # random eight-digit numbers instead of sequential ones
 [agent_commands]
 # Other parsed agent commands, selected for one run with `chitty run --agent NAME`.
 ```
+
+`main_branch` is optional, defaults to main, and `chitty init` writes it only
+for a new repository whose current branch is not main.
 
 Context directory is `chitty/<name>/`. Not configurable. `review` defaults to
 `true`; with it enabled, only `review → done` can complete a task. A context
@@ -532,7 +536,7 @@ task files. `chitty --help` is the full command reference.
   Never review a ticket you worked on: review promptly, not at merge-request
   time. Pass with `-s done --note "Reviewed: ..."`; fail with
   `-s doing --note "reason"`. If the work is on a branch, the reviewer who
-  passes it merges it into `main` and removes the branch and its worktree.
+  passes it merges it into the main branch and removes the branch and its worktree.
   Create new tickets for out-of-scope findings.
   The third failed review sets `blocked` and owner `human` instead.
 - Set `-s done` when every criterion is ticked and the work is verified.
@@ -729,13 +733,13 @@ surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
 
 Before a review (decided with the human, 2026-11-03), after the run's actor is
 set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly
-what would land, keeping `main` linear:
+what would land, keeping the main branch linear:
 
 1. A rebase left unfinished, for example by a crash, is a loud error for the
    human, with no status change.
 2. Uncommitted changes, including untracked but not ignored files, move the
    ticket to `doing` with `Review failed (work): ...` listing them.
-3. It rebases the branch onto the local `main`. On a conflict it runs
+3. It rebases the branch onto the local main branch. On a conflict it runs
    `git rebase --abort` and moves the ticket to `doing` with `Review failed
    (integration): ...` naming the conflicting files, for the worker to resolve
    in a fresh session. The rebase runs with `rerere.enabled=false`, so a
@@ -748,7 +752,7 @@ run` exits 0 because the status changed, printing the change. The moves go
 through `Repo.edit` under the run's own actor, which never worked on the
 ticket, so they count with reviewers' failures towards `REVIEW_FAILURE_LIMIT`.
 Interrupting the rebase aborts it and exits 130. A clean rebase is not
-repeated or re-reviewed if `main` moves during the review; landing is
+repeated or re-reviewed if the main branch moves during the review; landing is
 `TASK-131`.
 
 Each agent session appends one JSON line to the machine-local usage log at
