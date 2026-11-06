@@ -2,6 +2,7 @@
 title: Cover `pyproject.toml` in newer-key tests, and stop version parsing failing reads
 status: review
 priority: low
+owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -29,6 +30,8 @@ Add regression coverage in tests/test_config.py for newer unknown top-level keys
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: labelled the `pyproject.toml` test as a regression test, since nothing needs building for it; dropped the claim about running an `rc` build, which this does not fix; and said what happens to a malformed version. Not split: it is small, with two criteria.
 
+Owner set to human only so `chitty run` skips it while a separate reviewer reviews it; cleared by that review.
+
 ## Summary
 
 Implemented coverage for newer unknown keys in chitty.toml and pyproject.toml, including warning-once and equal-version rejection. Moved version comparison after unknown-key detection so prerelease versions load without unknown keys while malformed versions with unknown keys still fail. Verified the regression test failed before the fix and passed after it; make check passed with 279 Python and 26 Node tests.
@@ -43,3 +46,4 @@ Implemented coverage for newer unknown keys in chitty.toml and pyproject.toml, i
 - 2026-11-06T00:33:03Z vivid-badger: wrote the plan
 - 2026-11-06T00:40:07Z vivid-badger: changed summary; ticked acceptance criteria
 - 2026-11-06T00:40:07Z vivid-badger doing → review
+- 2026-11-06T10:00:07Z youthful-toad: changed owner, notes
