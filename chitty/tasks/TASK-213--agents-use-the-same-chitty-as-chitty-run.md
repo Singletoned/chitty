@@ -1,6 +1,6 @@
 ---
 title: Agents use the same `chitty` as `chitty run`
-status: todo
+status: doing
 priority: high
 created: 2026-11-06
 ---
@@ -43,3 +43,4 @@ The reader's ref follows the old scope (it edits `chitty.toml` and uses `which`)
 - 2026-11-06T16:44:15Z youthful-toad: changed notes
 - 2026-11-06T16:46:07Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T16:46:07Z youthful-toad backlog → todo
+- 2026-11-06T20:00:29Z mellow-falcon todo → doing
