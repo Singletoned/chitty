@@ -5,6 +5,7 @@ import subprocess
 import tomllib
 from datetime import date
 from pathlib import Path
+from unittest.mock import patch
 
 from click.testing import CliRunner, Result
 
@@ -170,13 +171,28 @@ class TestInit(CliTestCase):
         agents = self.root / "AGENTS.md"
         self.run_cli("init")
         original = agents.read_text()
-        agents.write_text("Before\n\n" + original + "After\nUnheaded text\n")
-        self.run_cli("init")
-        updated = agents.read_text()
-        self.assertTrue(updated.startswith("Before\n\n"))
-        self.assertTrue(updated.endswith("After\nUnheaded text\n"))
-        self.assertEqual(updated.count("chitty:begin"), 1)
-        self.assertEqual(updated.count("chitty:end"), 1)
+        agents.write_text("Before\n\n" + original + "\nAfter\n\nUnheaded text\n")
+        marked_guide = guide().rstrip("\n") + "\n\nA backslash: \\ path"
+        with patch("chitty.store.guide", return_value=marked_guide):
+            self.run_cli("init")
+            updated = agents.read_text()
+            self.assertTrue(updated.startswith("Before\n\n"))
+            self.assertTrue(updated.endswith("After\n\nUnheaded text\n"))
+            self.assertEqual(updated.count("chitty:begin"), 1)
+            self.assertEqual(updated.count("chitty:end"), 1)
+            self.assertIn("A backslash: \\ path", updated)
+            self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
+            self.assertEqual(agents.read_text(), updated)
+
+        prettier = Path(__file__).resolve().parent.parent / "node_modules" / ".bin" / "prettier"
+        if not prettier.exists():
+            raise AssertionError(f"{prettier} is missing: run `make install`")
+        subprocess.run(
+            [str(prettier), "--no-config", "--write", str(agents)],
+            check=True,
+            capture_output=True,
+        )
+        self.assertEqual(agents.read_text(), updated)
 
     def test_init_rejects_damaged_guide_markers(self):
         agents = self.root / "AGENTS.md"
