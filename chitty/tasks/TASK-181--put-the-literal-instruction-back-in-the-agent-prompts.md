@@ -1,7 +1,8 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: review
+status: blocked
 priority: medium
+owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -40,6 +41,10 @@ Rebased onto `main` by a human-run session. My earlier "restore `main`'s `chitty
 
 This branch edits Chitty's managed block in `AGENTS.md`. Under `TASK-218`, branches may not: restore the block from `main` (`git checkout main -- AGENTS.md` if the rest of the file is unchanged) and change only `src/chitty/guide.md` or `src/chitty/roles/`. The main checkout regenerates `AGENTS.md` after landing.
 
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -72,3 +77,5 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-06T18:13:33Z youthful-toad: changed notes
 - 2026-11-06T18:19:46Z intrepid-gannet: changed summary
 - 2026-11-06T18:19:46Z intrepid-gannet doing → review
+- 2026-11-06T18:35:31Z honest-marten: changed owner, notes
+- 2026-11-06T18:35:31Z honest-marten review → blocked
