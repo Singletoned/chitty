@@ -150,18 +150,18 @@ def search_root(start: Path) -> Path | None:
     override = os.environ.get(ROOT_ENV)
     if override:
         root = Path(override).expanduser().resolve()
-        if _config_source(root) is None:
+        if config_source(root) is None:
             raise ChittyError(f"{ROOT_ENV}={override} has no Chitty configuration")
         return root
     start = start.resolve()
     for directory in (start, *start.parents):
-        if _config_source(directory) is not None:
+        if config_source(directory) is not None:
             return directory
     return None
 
 
 def load_repo_config(root: Path) -> RepoConfig:
-    source = _config_source(root)
+    source = config_source(root)
     if source is None:
         raise ChittyError(f"no Chitty configuration in {root}")
     try:
@@ -230,10 +230,6 @@ def check_setup_version(config: RepoConfig) -> None:
 
 def config_source(root: Path) -> Path | None:
     """Return the repository file containing Chitty configuration."""
-    return _config_source(root)
-
-
-def _config_source(root: Path) -> Path | None:
     config = root / CONFIG_NAME
     pyproject = root / PYPROJECT_NAME
     has_config = config.is_file()

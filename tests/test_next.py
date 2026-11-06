@@ -1097,8 +1097,15 @@ class TestNext(CliTestCase):
                     if name == "branch":
                         self.git("branch", "-M", "main")
                 expected = {
-                    "autocommit": "requires autocommit",
-                    "setup": "requires setup",
+                    "autocommit": (
+                        "`chitty run` requires `autocommit = true` in chitty.toml, "
+                        "so ticket changes reach every branch; `chitty init --autocommit` sets it"
+                    ),
+                    "setup": (
+                        "`chitty run` requires `setup` in chitty.toml: the command that installs "
+                        "a new ticket worktree's environment before the agent starts, for example "
+                        'setup = "make install"'
+                    ),
                     "unset": "agent_command",
                     "blank": "agent_command",
                     "quotes": "agent_command",
@@ -1117,6 +1124,36 @@ class TestNext(CliTestCase):
                     "todo",
                 )
                 config.write_text(original)
+
+    def test_run_preflight_message_names_pyproject_config(self):
+        config = self.root / "chitty.toml"
+        pyproject = self.root / "pyproject.toml"
+        config_text = config.read_text().replace(
+            "autocommit = false", 'autocommit = true\nsetup = "true"'
+        )
+        config.unlink()
+        pyproject.write_text(
+            "[tool.chitty]\n" + config_text.replace("[contexts.", "[tool.chitty.contexts.")
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        pyproject.write_text(pyproject.read_text().replace('setup = "true"\n', ""))
+        self.git("add", "pyproject.toml")
+        self.git("commit", "--quiet", "-m", "remove setup")
+
+        result = self.run_cli("run", exit_code=1)
+
+        self.assertIn(
+            "`chitty run` requires `setup` in pyproject.toml: the command that installs "
+            "a new ticket worktree's environment before the agent starts, for example "
+            'setup = "make install"',
+            result.stderr,
+        )
 
     def test_run_setup_failure_does_not_start_pi_or_claim_ticket(self):
         config = self.root / "chitty.toml"

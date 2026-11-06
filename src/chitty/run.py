@@ -336,10 +336,20 @@ def _refuse_stale_linked_worktree(repo: Repo, main_repo: Repo) -> None:
 
 
 def _preflight(repo: Repo) -> None:
+    source = config_source(repo.root)
+    assert source is not None  # `Repo.open` rejects repositories without config.
+    config_file = source.relative_to(repo.root)
     if not repo.config.autocommit:
-        raise ChittyError("`chitty run` requires autocommit = true")
+        raise ChittyError(
+            f"`chitty run` requires `autocommit = true` in {config_file}, "
+            "so ticket changes reach every branch; `chitty init --autocommit` sets it"
+        )
     if repo.config.setup is None:
-        raise ChittyError("`chitty run` requires setup to be configured")
+        raise ChittyError(
+            f"`chitty run` requires `setup` in {config_file}: the command that installs "
+            "a new ticket worktree's environment before the agent starts, for example "
+            'setup = "make install"'
+        )
     if git.current_branch(repo.root) != "main":
         raise ChittyError("the main checkout must be on branch main")
 
