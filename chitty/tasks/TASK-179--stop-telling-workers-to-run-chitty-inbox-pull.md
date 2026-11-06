@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -70,3 +70,4 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-06T18:28:21Z mellow-urchin: ticked acceptance criteria
 - 2026-11-06T18:28:35Z mellow-urchin: changed notes
 - 2026-11-06T18:28:36Z mellow-urchin: changed summary
+- 2026-11-06T18:28:37Z mellow-urchin doing → review
