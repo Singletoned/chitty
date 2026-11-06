@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -25,7 +25,7 @@ Out of scope: the rest of a repository's `AGENTS.md`, which Chitty does not own.
 
 - [x] `README.md` and `PLAN.md` describe where instructions live
 - [x] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
-- [x] A test shows `chitty init` replacing the old long block in an existing repository with the new one
+- [ ] A test shows `chitty init` replacing the old long block in an existing repository with the new one
 - [x] This repository's `AGENTS.md` managed block is identical to `main`'s, the cold-read line outside it names `chitty guide plan`, and `__version__` is one patch above `main`'s.
 
 ## Plan
@@ -52,6 +52,13 @@ Unblocked and redefined by a human-run session. The branch's `AGENTS.md` block c
 
 Rebased onto current main. Main advanced to 0.1.41 during the session, so __version__ is 0.1.42. Updated review-rebase regression setup to mutate the current concise managed-block text; the old test replacement was a stale assumption.
 
+Review failed (tests): the migration regression test replaces a short hand-written block, not the old long managed guide from before TASK-143, so it does not demonstrate that chitty init replaces the legacy long block. Freeze the legacy guide text (or an equivalent full fixture) in the test and assert the concise block is installed while surrounding content remains.
+
+1: pass - README.md and PLAN.md describe the role-guide location.
+2: pass - The concise guide names all three role guides and TASK-141 accounts for removed rules.
+3: fail - The test does not use the old long managed block.
+4: pass - AGENTS.md matches main, the plan guide pointer is present, and version 0.1.42 is one patch above main 0.1.41.
+
 ## Summary
 
 Handoff: src/chitty/guide.md is the concise role-pointer guide; AGENTS.md's managed block remains identical to main; README.md and PLAN.md document the role-guide split; init and review regression coverage is current; __version__ is 0.1.42. Verification: make format && make check passed (360 Python tests and Node tests), plus managed-block and 11-line guide invariants. Follow-ups: none.
@@ -76,3 +83,5 @@ Handoff: src/chitty/guide.md is the concise role-pointer guide; AGENTS.md's mana
 - 2026-11-06T21:44:29Z brisk-quail: wrote the plan
 - 2026-11-06T21:49:39Z brisk-quail: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T21:49:39Z brisk-quail doing → review
+- 2026-11-06T21:53:39Z able-raven: changed acceptance criteria, notes
+- 2026-11-06T21:53:39Z able-raven review → doing
