@@ -376,6 +376,8 @@ class Repo:
         """Create a task. References in depends_on may be shorthand."""
         self._prepare_write()
         fields = dict(fields)
+        if self.config.contexts[context.name].random_ids:
+            fields["status"] = "backlog"
         depends_on = fields.get("depends_on")
         if isinstance(depends_on, list):
             fields["depends_on"] = self._references(depends_on)
@@ -411,6 +413,15 @@ class Repo:
             raise ChittyError("nothing to change")
         stored = self.find(task_id)
         previous_status = stored.task.frontmatter.status
+        if (
+            edit.status is not None
+            and edit.status != "backlog"
+            and self.config.contexts[stored.context].random_ids
+        ):
+            raise ChittyError(
+                f"{task_id} is in a random-ID context; "
+                f"run `chitty move {task_id} tasks` to promote it"
+            )
         if edit.status == "blocked" and not (edit.note or edit.notes):
             raise ChittyError("setting status blocked requires --note with the reason")
         if (
@@ -592,6 +603,14 @@ class Repo:
         )
         if moved_task.frontmatter.parent == old:
             moved_task = moved_task.with_field("parent", new)
+        if (
+            self.config.contexts[target.name].random_ids
+            and moved_task.frontmatter.status != "backlog"
+        ):
+            moved_task = moved_task.with_history(
+                datetime.now(UTC), actor(), moved_task.frontmatter.status, "backlog"
+            )
+            moved_task = moved_task.with_field("status", "backlog")
         moved = self._relocate(stored, new_id, target, directory, moved_task)
         touched = [stored.path, moved.path]
         changes: list[Change] = []
