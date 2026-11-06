@@ -77,7 +77,9 @@ are the reference. `chitty guide` prints the managed `AGENTS.md` block; `chitty 
 block in strict `chitty:begin` and `chitty:end` markers so only Chitty's text is
 replaced. Existing unmarked blocks are migrated on the next init.
 `chitty guide work`, `review`, and `plan` print the focused instructions for
-that role. Work and review take an optional ticket ID; planning does not.
+that role from the packaged role files. The short block in `AGENTS.md` points
+agents started by hand to the matching role guide. Work and review take an
+optional ticket ID; planning does not.
 Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row prefixes the status with a fixed glyph: `💤 backlog`,
