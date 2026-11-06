@@ -1,6 +1,6 @@
 ---
 title: Exit 3 when `chitty next` or `chitty run` has no ticket
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -37,9 +37,11 @@ Review failed (tests): the changed empty-queue assertions expect stderr without 
 
 Changed after the early merge, at the human's report that `Error: no next ticket for --mode work` reads as a failure: the idle message is now a plain stderr line, still exit 3. Not yet on `main`; the reviewer's merge brings it.
 
+Reviewed: independently inspected implementation, documentation, tests, and agent exit-3 behavior. python -m unittest tests.test_next passed all 43 tests; acceptance criteria are met.
+
 ## Summary
 
-Implemented exit 3 for idle `chitty next` and `chitty run` selections, including `--json` and mode-specific queues. Idle messages are plain stderr with no stdout; real failures, including agents exiting 3, remain exit 1. MCP behavior is unchanged. Updated `README.md`, `PLAN.md`, and regression coverage. Verified with `make check` (ruff, pyright, 269 unittest cases, and Node tests) plus `chitty fix` (warnings only for pre-existing task prose). Follow-up: none.
+Reviewed and passed. Exit 3 behavior, mode and JSON coverage, idle dependency semantics, real failure handling, and documentation verified. python -m unittest tests.test_next passed.
 
 ## History
 
@@ -57,3 +59,5 @@ Implemented exit 3 for idle `chitty next` and `chitty run` selections, including
 - 2026-11-06T10:16:05Z jolly-raven: ticked acceptance criteria
 - 2026-11-06T10:16:14Z jolly-raven: changed summary
 - 2026-11-06T10:16:16Z jolly-raven doing → review
+- 2026-11-06T10:54:27Z jolly-badger: changed notes, summary
+- 2026-11-06T10:54:27Z jolly-badger review → done
