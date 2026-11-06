@@ -1,7 +1,8 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: review
+status: blocked
 priority: medium
+owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -51,6 +52,10 @@ Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.p
 
 Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
 
+Review failed (integration): rebasing onto `main` conflicts in `src/chitty/roles/review.md`, `tests/test_cli.py`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -87,3 +92,5 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-06T16:56:05Z jolly-gannet review → doing
 - 2026-11-06T18:36:27Z vivid-dormouse: changed summary
 - 2026-11-06T18:36:27Z vivid-dormouse doing → review
+- 2026-11-06T18:37:36Z brisk-quail: changed owner, notes
+- 2026-11-06T18:37:36Z brisk-quail review → blocked
