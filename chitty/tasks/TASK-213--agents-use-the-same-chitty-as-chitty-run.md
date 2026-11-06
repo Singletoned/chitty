@@ -21,6 +21,11 @@ Out of scope: running the agent in a container.
 - [ ] A test runs `chitty run` with a fake agent placed in the worktree's `.venv/bin` alongside a fake `chitty` there. The agent records which `chitty` its `PATH` resolves to, and the test asserts it is the runner's, not the worktree's. It fails before the fix.
 - [ ] `chitty.toml` has no `uv run` in `agent_command` or `[agent_commands]`, and `README.md` and `PLAN.md` say the agent uses the runner's `chitty`.
 
+## Notes
+
+Under `TASK-212`, a branch may not change `chitty.toml`. The `agent_command` and `[agent_commands]` edit in item 2 must be done on the main checkout by a human-run session after this lands, not on the branch. Settle this with the cold-read findings.
+
 ## History
 
 - 2026-11-06T16:24:16Z youthful-toad → backlog
+- 2026-11-06T16:44:15Z youthful-toad: changed notes
