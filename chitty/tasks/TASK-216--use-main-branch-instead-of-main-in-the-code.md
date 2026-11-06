@@ -65,31 +65,11 @@ npm test
 ....................
 ...... passes: 359 Python tests and Node tests.
 
+Corrected verification note: grep for literal main refs leaves only the documented TASK-214 lines; make format and make check pass with 359 Python tests and the Node tests.
+
 ## Summary
 
-Implemented TASK-216: main-file dependency checks and all runner integration-branch operations now use the main checkout's ; linked worktrees load that setting from the primary checkout. Verification: uv run ruff check --exit-zero .
-All checks passed!
-uv run ruff format .
-297 files left unchanged
-! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
-uv run python scripts/check_version_bump.py
-uv run ruff format --check .
-297 files already formatted
-uv run ruff check --no-fix .
-All checks passed!
-uv run pyright
-0 errors, 0 warnings, 0 informations
-uv run unittest-parallel -s tests -t . --level test
-Deleted branch task-1 (was 9452a9b).
-Deleted branch task-1 (was 60685cd).
-Deleted branch task-2 (was 355f8bb).
-npm test
-
-> test
-> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
-
-....................
-...... passes. Follow-up: none.
+Implemented TASK-216: main-file dependency checks and all runner integration-branch operations use the main checkout setting; linked worktrees load that setting from the primary checkout. Verification: make format and make check pass. Follow-up: none.
 
 ## History
 
@@ -101,3 +81,4 @@ npm test
 - 2026-11-06T21:14:09Z intrepid-otter: wrote the plan
 - 2026-11-06T21:21:41Z intrepid-otter: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T21:21:41Z intrepid-otter doing → review
+- 2026-11-06T21:22:08Z intrepid-otter: changed notes, summary
