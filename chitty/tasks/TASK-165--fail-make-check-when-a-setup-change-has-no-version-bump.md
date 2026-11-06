@@ -38,7 +38,7 @@ Review regression reproduced before fix: changing only whitespace around the INI
 
 ## Summary
 
-Implemented `scripts/check_version_bump.py` and added it to `make check`. The guard uses Git merge-base for changed setup files, compares the working-tree version to `main` tip, handles `main`/missing-main cases, and extracts only `INITIAL_CONFIG`. Added real temporary-Git tests for watched files, numeric versions, unrelated config changes, branch ancestry, and shallow tag clones. Verified with `make install`, focused tests, `chitty fix`, and `make check` (284 Python tests and Node tests pass). Follow-up: none.
+Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fixed INITIAL_CONFIG extraction to compare only string contents, so assignment whitespace is unrelated; added a regression test and verified it failed before the fix. Verified the focused suite (8 tests), `make check` (311 Python tests, lint, type-check), and `npm test`; `chitty fix` passed. Commit: b181ee0 (Task: TASK-165). Follow-up: none.
 
 ## History
 
@@ -56,3 +56,4 @@ Implemented `scripts/check_version_bump.py` and added it to `make check`. The gu
 - 2026-11-06T11:07:40Z eager-crane review → doing
 - 2026-11-06T14:56:57Z daring-adder: changed notes
 - 2026-11-06T14:57:05Z daring-adder: ticked acceptance criteria
+- 2026-11-06T15:04:23Z daring-adder: changed summary
