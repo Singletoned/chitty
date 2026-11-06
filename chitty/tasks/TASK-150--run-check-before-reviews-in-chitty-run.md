@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-120
@@ -38,3 +38,4 @@ Under `TASK-212`, a branch may not change `chitty.toml`. Setting `check = "make 
 - 2026-11-04T15:17:36Z mellow-newt: changed description, notes
 - 2026-11-06T16:24:13Z youthful-toad: changed priority
 - 2026-11-06T16:44:17Z youthful-toad: changed notes
+- 2026-11-06T18:30:21Z witty-gannet todo → doing
