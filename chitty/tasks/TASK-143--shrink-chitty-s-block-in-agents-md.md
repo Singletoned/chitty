@@ -30,7 +30,7 @@ Out of scope: the rest of a repository's `AGENTS.md`, which Chitty does not own.
 
 ## Plan
 
-Update the managed guide template and this repository's instructions to the concise role-oriented block, preserving the strict-marker format. Bump the package patch version, add or adjust the init regression coverage for replacing legacy blocks, update README/PLAN instruction pointers, then run formatting and the full check suite.
+Rebase onto main, retain main's managed AGENTS.md block unchanged, and rewrite src/chitty/guide.md from main's current concise role-pointer text. Bump only src/chitty/__init__.py to one patch above main, then run the focused guide/init tests and make format && make check. Verify the guide, version, and managed-block invariants before updating the ticket and handing off for review.
 
 ## Notes
 
@@ -71,3 +71,4 @@ Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, 
 - 2026-11-06T20:30:01Z rosy-kestrel doing → blocked
 - 2026-11-06T21:36:38Z youthful-toad: changed owner, description, acceptance criteria, notes
 - 2026-11-06T21:36:38Z youthful-toad blocked → doing
+- 2026-11-06T21:44:29Z brisk-quail: wrote the plan
