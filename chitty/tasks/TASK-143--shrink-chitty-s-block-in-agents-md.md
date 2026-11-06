@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -24,9 +24,9 @@ Out of scope: the rest of a repository's `AGENTS.md`, which Chitty does not own.
 ## Acceptance Criteria
 
 - [x] `README.md` and `PLAN.md` describe where instructions live
-- [ ] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
+- [x] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
 - [x] A test shows `chitty init` replacing the old long block in an existing repository with the new one
-- [ ] This repository's `AGENTS.md` managed block is identical to `main`'s, the cold-read line outside it names `chitty guide plan`, and `__version__` is one patch above `main`'s.
+- [x] This repository's `AGENTS.md` managed block is identical to `main`'s, the cold-read line outside it names `chitty guide plan`, and `__version__` is one patch above `main`'s.
 
 ## Plan
 
@@ -50,9 +50,11 @@ Blocked by newer main policy: TASK-218 now requires ticket branches to leave the
 
 Unblocked and redefined by a human-run session. The branch's `AGENTS.md` block change and `chitty init` run are now forbidden (`TASK-218`, `TASK-219`), so the old criterion 1 was replaced: keep `main`'s block, and `main` regenerates it after landing. Criterion 3 is unchecked because the guide must be rewritten against `main`'s newer text. Next steps: rebase onto `main`; resolve `src/chitty/guide.md` by shortening `main`'s version; restore `AGENTS.md`'s block from `main`; bump `__version__`; run `make check`.
 
+Rebased onto current main. Main advanced to 0.1.41 during the session, so __version__ is 0.1.42. Updated review-rebase regression setup to mutate the current concise managed-block text; the old test replacement was a stale assumption.
+
 ## Summary
 
-Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, README.md, and PLAN.md document the role-guide split; init regression coverage verifies replacing a legacy block; version bumped to 0.1.39. Verification: focused init/guide tests, make format, make check, chitty fix, and chitty check (warnings only for pre-existing ticket Markdown).
+Handoff: src/chitty/guide.md is the concise role-pointer guide; AGENTS.md's managed block remains identical to main; README.md and PLAN.md document the role-guide split; init and review regression coverage is current; __version__ is 0.1.42. Verification: make format && make check passed (360 Python tests and Node tests), plus managed-block and 11-line guide invariants. Follow-ups: none.
 
 ## History
 
@@ -72,3 +74,5 @@ Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, 
 - 2026-11-06T21:36:38Z youthful-toad: changed owner, description, acceptance criteria, notes
 - 2026-11-06T21:36:38Z youthful-toad blocked → doing
 - 2026-11-06T21:44:29Z brisk-quail: wrote the plan
+- 2026-11-06T21:49:39Z brisk-quail: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T21:49:39Z brisk-quail doing → review
