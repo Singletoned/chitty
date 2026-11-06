@@ -1,8 +1,7 @@
 ---
 title: Let `chitty run` fail a review before it starts, despite verdict lines
-status: doing
+status: review
 priority: high
-owner: human
 created: 2026-11-06
 ---
 
@@ -18,8 +17,8 @@ Out of scope: the Pi extension's `spawn chitty ENOENT` after a reviewer removes 
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/` runs `chitty run --mode review` on a ticket with one criterion whose branch conflicts with `main`. It asserts that the ticket moves to `doing` with the `Review failed (integration)` note, and that the run exits 0. It fails before the fix with `review verdict lines must match`.
-- [ ] The same holds for the uncommitted-changes case (`Review failed (work)`). A new test asserts that a manual `chitty edit ID -s doing --note ...` on a review ticket with a criterion and no verdict lines still fails with `review verdict lines must match`.
+- [x] A test in `tests/` runs `chitty run --mode review` on a ticket with one criterion whose branch conflicts with `main`. It asserts that the ticket moves to `doing` with the `Review failed (integration)` note, and that the run exits 0. It fails before the fix with `review verdict lines must match`.
+- [x] The same holds for the uncommitted-changes case (`Review failed (work)`). A new test asserts that a manual `chitty edit ID -s doing --note ...` on a review ticket with a criterion and no verdict lines still fails with `review verdict lines must match`.
 
 ## Plan
 
@@ -38,6 +37,10 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-206/1`; the two run tests failed befor
 
 Reserved for a human-run session so the loops leave it alone.
 
+## Summary
+
+Added an internal `skip_verdicts` field to `Edit`. `_fail_review` in `src/chitty/run.py` sets it, so a review that `chitty run` fails before it starts (dirty worktree, or a conflicting rebase) no longer needs per-criterion verdict lines. Manual review transitions still do. Verification: the two new run tests in `tests/test_review_rebase.py` failed before the fix (exit 1, `missing 1`) and pass after; the manual-edit guard test passes; `make check` OK (309 tests). Built from cold read `refs/cold-read/TASK-206/1`. Follow-up: once this lands, the review loop will fail `TASK-173` back to `doing` for its conflict instead of stopping.
+
 ## History
 
 - 2026-11-06T12:03:13Z youthful-toad → backlog
@@ -46,3 +49,5 @@ Reserved for a human-run session so the loops leave it alone.
 - 2026-11-06T12:20:03Z youthful-toad: changed owner, notes
 - 2026-11-06T12:20:06Z youthful-toad: wrote the plan
 - 2026-11-06T12:20:06Z youthful-toad todo → doing
+- 2026-11-06T12:25:22Z youthful-toad: changed owner, summary; ticked acceptance criteria
+- 2026-11-06T12:25:22Z youthful-toad doing → review
