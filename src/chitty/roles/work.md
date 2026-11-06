@@ -3,6 +3,8 @@
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
+On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, or run `chitty init`.
+
 - Work on one ticket per session. Start with `chitty inbox --pull`, then
   `chitty show <ID>`.
 - Before writing code, write your approach with `chitty edit <ID> --plan`.

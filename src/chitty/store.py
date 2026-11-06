@@ -1070,6 +1070,12 @@ def _managed_agents(existing: str, agents: Path) -> str:
 
 def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     """Create or non-destructively upgrade the repository's Chitty setup."""
+    if git.is_linked_worktree(directory):
+        main = git.main_checkout(directory)
+        raise ChittyError(
+            f"`chitty init` cannot run in linked worktree {directory}; "
+            f"run it from the main checkout {main}"
+        )
     if enable_autocommit:
         git.require_clean(directory)
     claude = directory / CLAUDE_FILE
@@ -1084,11 +1090,7 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     gitignore = directory / ".gitignore"
     existing_agents = agents.read_text() if agents.exists() else ""
     updated_agents = _managed_agents(existing_agents, agents)
-    linked_worktree = git.is_linked_worktree(directory)
-    if not linked_worktree:
-        validate_pi_extension()
-    else:
-        print("skipping machine-wide Pi setup from linked Git worktree", file=sys.stderr)
+    validate_pi_extension()
     originals = {
         path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
     }
@@ -1145,13 +1147,12 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
             written.append(inbox)
     if _add_worktrees_to_gitignore(gitignore):
         written.append(gitignore)
-    if not linked_worktree:
-        pi_settings = remove_pi_session_environment()
-        if pi_settings is not None:
-            written.append(pi_settings)
-        pi_extension = install_pi_extension()
-        if pi_extension is not None:
-            written.append(pi_extension)
+    pi_settings = remove_pi_session_environment()
+    if pi_settings is not None:
+        written.append(pi_settings)
+    pi_extension = install_pi_extension()
+    if pi_extension is not None:
+        written.append(pi_extension)
     if updated_agents != existing_agents:
         agents.write_text(updated_agents)
         written.append(agents)

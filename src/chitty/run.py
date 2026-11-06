@@ -64,7 +64,7 @@ def run(
         raise ChittyError("--owner cannot be used with --ticket")
     if owner in ("", "human"):
         raise ChittyError("--owner must name an agent, not human or empty")
-    main_root = _main_checkout(repo.root)
+    main_root = git.main_checkout(repo.root)
     main_repo = Repo.open(main_root)
     _refuse_stale_linked_worktree(repo, main_repo)
     _preflight(main_repo)
@@ -307,21 +307,6 @@ def _status_after_agent(main_root: Path, worktree: Path, action: NextAction) -> 
     return new_status
 
 
-def _main_checkout(root: Path) -> Path:
-    """Find the primary checkout by comparing each worktree's Git directory."""
-    common_dir = _git_path(root, "--git-common-dir")
-    output = _git(root, "worktree", "list", "--porcelain")
-    worktrees = [
-        Path(line.removeprefix("worktree "))
-        for line in output.splitlines()
-        if line.startswith("worktree ")
-    ]
-    for worktree in worktrees:
-        if _git_path(worktree, "--git-dir") == common_dir:
-            return worktree.resolve()
-    raise ChittyError(f"cannot find the main checkout for {root}")
-
-
 def _refuse_stale_linked_worktree(repo: Repo, main_repo: Repo) -> None:
     if not git.is_linked_worktree(repo.root):
         return
@@ -519,12 +504,6 @@ def _setup(command: str, worktree: Path) -> None:
         raise RunInterrupted("setup") from None
     if completed.returncode:
         raise ChittyError(f"setup exited with status {completed.returncode}")
-
-
-def _git_path(root: Path, argument: str) -> Path:
-    value = _git(root, "rev-parse", argument).strip()
-    path = Path(value)
-    return (root / path).resolve() if not path.is_absolute() else path.resolve()
 
 
 def _git(root: Path, *arguments: str) -> str:
