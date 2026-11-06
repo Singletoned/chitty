@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `AGENTS.md`'s managed block
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-212
@@ -25,7 +25,7 @@ Out of scope: `CLAUDE.md`, which is a symlink here.
 
 ## Acceptance Criteria
 
-- [x] Tests show a branch that edits inside the managed block failing review with that note and no agent run, and a branch that edits only outside it passing.
+- [ ] Tests show a branch that edits inside the managed block failing review with that note and no agent run, and a branch that edits only outside it passing.
 - [x] A unit test of `managed_block` covers marked and legacy files, and `_managed_agents` uses it with its behaviour unchanged (existing `init` tests pass).
 
 ## Plan
@@ -56,6 +56,10 @@ Verified with make check: 340 Python tests and Node tests pass. /Users/singleton
 
 Verification note: make check passed; the fix command reported only pre-existing Markdown delimiter warnings in unrelated tickets.
 
+Review failed (work): _changed_agents_block treats an AGENTS.md file present only on the branch as unchanged when main has no AGENTS.md (or no managed block). A branch containing only outside text returns False, violating the required one-sided-file edge case. Compare file presence/block presence separately and add regression coverage; restore criterion 1 after verification.
+1: fail - one-sided AGENTS.md presence is not detected
+2: pass - managed_block and _managed_agents coverage is present
+
 ## Summary
 
 Implemented managed-block protection for review rebases. Added `git.file_at`, public `managed_block` lookup for marked and legacy guides, exact review failure handling for block changes or damage, and regression/unit tests. Verified with `make check` (ruff, pyright, 340 Python tests, Node tests). No follow-ups.
@@ -69,3 +73,5 @@ Implemented managed-block protection for review rebases. Added `git.file_at`, pu
 - 2026-11-06T20:12:21Z eager-crane: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:12:21Z eager-crane doing → review
 - 2026-11-06T20:12:37Z eager-crane: changed notes
+- 2026-11-06T20:15:23Z nimble-otter: changed acceptance criteria, notes
+- 2026-11-06T20:15:23Z nimble-otter review → doing
