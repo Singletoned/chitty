@@ -433,6 +433,8 @@ def _changed_agents_block(worktree: Path) -> bool:
     agents = worktree / AGENTS_FILE
     branch_text = agents.read_text() if agents.exists() else None
     main_text = git.file_at(worktree, "main", AGENTS_FILE)
+    if (branch_text is None) != (main_text is None):
+        return True
     try:
         branch_block = managed_block(branch_text) if branch_text is not None else None
     except ManagedGuideError:

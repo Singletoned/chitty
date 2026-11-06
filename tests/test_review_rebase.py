@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from unittest import mock
 
+from chitty.run import _changed_agents_block
 from chitty.store import Repo
 from tests.test_cli import CliTestCase
 
@@ -109,6 +110,17 @@ class ReviewRebaseTestCase(CliTestCase):
 
 
 class TestReviewRebase(ReviewRebaseTestCase):
+    def test_agents_file_present_only_on_branch_is_detected(self):
+        self.branch_for_review()
+        self.git("switch", "--quiet", "main")
+        (self.root / "AGENTS.md").unlink()
+        self.git("add", "-u", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "remove agents guide")
+        self.git("switch", "--quiet", "task-1")
+        (self.root / "AGENTS.md").write_text("branch-only instructions\n")
+
+        self.assertTrue(_changed_agents_block(self.root))
+
     def test_managed_block_change_fails_without_starting_review(self):
         self.branch_for_review()
         self.git("switch", "--quiet", "task-1")
