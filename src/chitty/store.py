@@ -1161,11 +1161,19 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
 
 def skip_reason(repo: Repo, stored: StoredTask) -> str | None:
     """Return the reason `next` would skip a ticket, or None when selectable."""
+    return _skip_reason(repo, stored, include_owner=True)
+
+
+def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str | None:
     frontmatter = stored.task.frontmatter
     if stored.archived or frontmatter.status not in {"review", "doing", "todo"}:
         return None
     if stored.context == "human" or frontmatter.owner == "human":
         return "👤 human"
+    if frontmatter.status == "review":
+        return None
+    if include_owner and frontmatter.owner is not None:
+        return f"👤 {frontmatter.owner}"
     if frontmatter.status != "todo":
         return None
 
@@ -1211,12 +1219,9 @@ def _ticket_action(
             raise ChittyError(f"cannot run {stored.id}: owner is human")
         return None
     if not refuse:
-        if skip_reason(repo, stored) is not None:
+        if _skip_reason(repo, stored, include_owner=owner is None) is not None:
             return None
-        if owner is None:
-            if frontmatter.status != "review" and frontmatter.owner is not None:
-                return None
-        elif frontmatter.owner != owner:
+        if owner is not None and frontmatter.owner != owner:
             return None
     else:
         dependencies: list[tuple[TaskId, StoredTask | None]] = []

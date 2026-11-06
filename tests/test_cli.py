@@ -1104,6 +1104,17 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(self.json("list", "--all")[1]["skipped"], "🔒 waits on TASK-1")
         self.assertIsNone(self.json("list", "--all")[4]["skipped"])
 
+    def test_list_marks_nonhuman_owned_work_as_skipped(self):
+        self.run_cli("add", "Agent todo", "-d", "x", "--owner", "agent")
+        self.run_cli("add", "Agent doing", "-d", "x", "--owner", "agent")
+        self.run_cli("edit", "2", "-s", "doing")
+        self.run_cli("add", "Ready", "-d", "x")
+
+        lines = self.run_cli("list").stdout.splitlines()
+        self.assertEqual(sum("👤 agent" in line for line in lines), 2)
+        self.assertEqual(sum("👤" in line for line in lines), 2)
+        self.assertEqual(self.run_cli("next").stdout, "work TASK-3\n")
+
     def test_list_preserves_context_and_numeric_order_for_priority_ties(self):
         for number in range(1, 11):
             self.run_cli("add", f"Task {number}", "-d", "x")
