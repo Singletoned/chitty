@@ -308,6 +308,79 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "")
         self.assertEqual(result.stderr, "no next ticket for --mode review\n")
 
+    def test_owner_filter_reserves_work_but_not_review(self):
+        unowned = self.add("Unowned")
+        opus_todo = self.add("Opus todo", owner="opus")
+        opus_review = self.add("Opus review", status="review", owner="opus")
+        self.assertEqual(self.run_cli("next").stdout, f"review {opus_review}\n")
+        self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {unowned}\n")
+        self.assertEqual(self.run_cli("next", "--owner", "opus").stdout, f"review {opus_review}\n")
+        self.assertEqual(
+            self.run_cli("next", "--owner", "opus", "--mode", "work").stdout,
+            f"work {opus_todo}\n",
+        )
+        result = asyncio.run(server.call_tool("next", {"owner": "opus"}))
+        assert isinstance(result, CallToolResult)
+        self.assertEqual(
+            result.structured_content.get("result", result.structured_content),
+            {
+                "mode": "review",
+                "id": opus_review,
+            },
+        )
+
+    def test_run_owner_refusals_happen_before_preflight(self):
+        for args, message in (
+            (("--owner", "human"), "human or empty"),
+            (("--owner", ""), "human or empty"),
+            (("--ticket", "1", "--owner", "opus"), "--ticket"),
+        ):
+            with self.subTest(args=args):
+                result = self.run_cli("run", *args, exit_code=1)
+                self.assertIn(message, result.stderr)
+
+    def test_run_explicit_ticket_accepts_agent_owner_but_not_human(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "fake {mode} {id}"',
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        opus = self.add("Opus work", owner="opus")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+
+        fake = self.root / "bin" / "fake"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess, sys\n"
+            "from pathlib import Path\n"
+            "path = next(Path('chitty/tasks').glob(sys.argv[2] + '--*.md'))\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        try:
+            result = self.run_cli("run", "--ticket", opus)
+        finally:
+            os.environ["PATH"] = old_path
+        self.assertEqual(result.stdout, f"{opus}: doing → blocked\n")
+
+        human = self.add("Human work", owner="human")
+        result = self.run_cli("run", "--ticket", human, exit_code=1)
+        self.assertIn("owner is human", result.stderr)
+
     def test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded(self):
         config = self.root / "chitty.toml"
         config.write_text(

@@ -391,11 +391,12 @@ def list_(
 
 
 @cli.command("next")
+@click.option("--owner", help="Choose tickets owned by this agent.")
 @mode_option
 @json_option
-def next_(mode: Literal["work", "review"] | None, as_json: bool) -> None:
+def next_(mode: Literal["work", "review"] | None, as_json: bool, owner: str | None) -> None:
     """Print the next ticket to work or review."""
-    action = next_action(_repo(), mode=mode)
+    action = next_action(_repo(), mode=mode, owner=owner)
     if as_json:
         _print_json(action.as_dict())
     else:
@@ -410,19 +411,26 @@ def claude_usage_hook() -> None:
 
 @cli.command("run", context_settings={"ignore_unknown_options": True, "allow_extra_args": True})
 @click.option("--ticket", metavar="ID", help="Run the next ticket, or the one named by --ticket.")
+@click.option("--owner", help="Choose tickets owned by this agent.")
 @click.option("--agent", metavar="NAME", help="Use the named command from [agent_commands].")
 @mode_option
 @click.pass_context
 def run(
     ctx: click.Context,
     ticket: str | None,
+    owner: str | None,
     agent: str | None,
     mode: Literal["work", "review"] | None,
 ) -> None:
     """Run the next ticket, or the one named by --ticket; other arguments go to the agent."""
     try:
         result = run_next(
-            _repo(warn_setup_version=False), ticket, tuple(ctx.args), agent=agent, mode=mode
+            _repo(warn_setup_version=False),
+            ticket,
+            tuple(ctx.args),
+            agent=agent,
+            mode=mode,
+            owner=owner,
         )
     except RunInterrupted as interrupted:
         click.echo(f"interrupted during {interrupted.phase}", err=True)

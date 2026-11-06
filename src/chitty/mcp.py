@@ -139,8 +139,8 @@ def list_(
 
 
 @_tool("next", "Return the next ticket to work or review.")
-def next_() -> dict[str, str]:
-    return next_action(_repo()).as_dict()
+def next_(owner: str | None = None) -> dict[str, str]:
+    return next_action(_repo(), owner=owner).as_dict()
 
 
 @_tool("show", "Show a task. Work on one task per session: start here.")
