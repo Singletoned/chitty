@@ -1,7 +1,8 @@
 ---
 title: Run the unit tests in parallel
-status: backlog
+status: todo
 priority: high
+owner: human
 created: 2026-11-06
 ---
 
@@ -18,6 +19,12 @@ Out of scope: making individual tests faster, and the `test_next` restructuring 
 - [ ] `make check` runs the unit tests through `unittest-parallel`, all tests pass, and its unit-test step takes well under half its old time on this machine. Record both timings in the ticket's summary.
 - [ ] A deliberately failing test (added temporarily, then removed) makes `make check` exit non-zero and print the failure. `mate --list` still describes `check` and `test`.
 
+## Notes
+
+Reserved for a human-run session. The cold read was stopped before it reported, because the human asked for this to be implemented directly.
+
 ## History
 
 - 2026-11-06T19:18:23Z youthful-toad → backlog
+- 2026-11-06T19:24:10Z youthful-toad: changed owner, notes
+- 2026-11-06T19:24:10Z youthful-toad backlog → todo
