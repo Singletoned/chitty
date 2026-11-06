@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -49,9 +49,11 @@ Rebased onto `main` by a human-run session. My earlier "restore `main`'s `chitty
 - `tests/test_cli.py` keeps both sets of guide tests.
 `make check` passes (330 tests). The earlier `Review failed (integration)` conflicts in `tests/test_cli.py` and `chitty.toml` are resolved by this rebase. Re-check the criteria and move the ticket to review.
 
+Verified both guide outputs contain `repeated --check`, `in one call`, `joined with`, and `autocommit = true`; version 0.1.36 is above main version 0.1.35. `make format && make check` passes (330 Python tests and Node tests). `chitty fix` completed with existing Markdown delimiter warnings in unrelated task files.
+
 ## Summary
 
-Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.35. Verified with full make format && make check; follow-up remains to rerun TASK-170 measurement scripts.
+Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.36. Verified direct guide output and version comparison; full make format && make check passes (330 Python tests and Node tests). Follow-up remains to rerun TASK-170 measurement scripts.
 
 ## History
 
@@ -72,3 +74,5 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-06T16:47:49Z quick-puffin: changed notes
 - 2026-11-06T16:47:49Z quick-puffin review → doing
 - 2026-11-06T18:02:13Z youthful-toad: changed notes
+- 2026-11-06T18:12:36Z honest-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T18:12:36Z honest-urchin doing → review
