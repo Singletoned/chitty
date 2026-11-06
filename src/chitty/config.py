@@ -173,28 +173,41 @@ def load_repo_config(root: Path) -> RepoConfig:
             data = data["tool"]["chitty"]
         except (KeyError, TypeError):
             raise ChittyError(f"{source}: [tool.chitty] is required") from None
-    data = _allow_newer_top_level_keys(data, source)
+    data = _remove_unknown_configuration_keys(data, source)
     return _validate_data(data, source, RepoConfig)
 
 
-def _allow_newer_top_level_keys(data: object, source: Path) -> object:
+def _remove_unknown_configuration_keys(data: object, source: Path) -> object:
     if not isinstance(data, Mapping):
         return data
     settings = cast(Mapping[str, object], data)
-    unknown = sorted(set(settings) - RepoConfig.model_fields.keys())
-    if not unknown:
-        return settings
-    recorded = settings.get("chitty_version")
-    if not isinstance(recorded, str) or _version_key(recorded) <= _version_key(CHITTY_VERSION):
-        return settings
-    if source not in _WARNED_UNKNOWN_KEYS:
-        names = ", ".join(unknown)
+    top_level_unknown = sorted(set(settings) - RepoConfig.model_fields.keys())
+    cleaned = {key: value for key, value in settings.items() if key not in top_level_unknown}
+    context_unknown: list[str] = []
+    contexts = settings.get("contexts")
+    if isinstance(contexts, Mapping):
+        context_tables = cast(Mapping[str, object], contexts)
+        cleaned_contexts: dict[str, object] = dict(context_tables)
+        for context_name, context_value in context_tables.items():
+            if not isinstance(context_value, Mapping):
+                continue
+            context = cast(Mapping[str, object], context_value)
+            unknown = sorted(set(context) - ContextConfig.model_fields.keys())
+            if unknown:
+                context_unknown.extend(f"contexts.{context_name}.{key}" for key in unknown)
+                cleaned_contexts[context_name] = {
+                    key: value for key, value in context.items() if key not in unknown
+                }
+        cleaned["contexts"] = cleaned_contexts
+    names = [*top_level_unknown, *sorted(context_unknown)]
+    if names and source not in _WARNED_UNKNOWN_KEYS:
         print(
-            f"{source}: ignoring unknown configuration key(s) {names}; upgrade Chitty to use them",
+            f"{source}: ignoring unknown configuration key(s) {', '.join(names)}; "
+            "check the spelling or upgrade Chitty",
             file=sys.stderr,
         )
         _WARNED_UNKNOWN_KEYS.add(source)
-    return {key: value for key, value in settings.items() if key not in unknown}
+    return cleaned
 
 
 def _version_key(value: str) -> tuple[int, ...]:

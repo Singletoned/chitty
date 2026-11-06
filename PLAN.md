@@ -316,7 +316,8 @@ Serialisation is a patch over the original text, not parse-then-dump:
 ## Config
 
 Repository config is either `chitty.toml` at repo root (`chitty init` writes it)
-or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error:
+or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error. Unknown
+configuration keys are ignored with a warning.
 
 ```toml
 format = 1

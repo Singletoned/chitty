@@ -2,6 +2,7 @@ import contextlib
 import io
 import os
 
+from chitty import config as config_module
 from chitty.config import CHITTY_VERSION, find_root, load_repo_config, load_user_contexts
 from chitty.errors import ChittyError
 from tests.support import CONFIG, RepoTestCase
@@ -53,97 +54,48 @@ class TestRepoConfig(RepoTestCase):
         with self.assertRaisesRegex(ChittyError, "lowercase"):
             load_repo_config(self.root)
 
-    def test_newer_config_ignores_unknown_top_level_keys_once(self):
+    def test_unknown_keys_warn_and_load_from_both_sources(self):
         for config_name, config_text in (
             ("chitty.toml", CONFIG),
             ("pyproject.toml", f"[tool.chitty]\n{PYPROJECT_CONFIG}"),
         ):
-            with self.subTest(config_name=config_name):
-                (self.root / "chitty.toml").unlink(missing_ok=True)
-                config_path = self.root / config_name
-                config_path.write_text(
-                    config_text.replace(
+            for version in ("99.0.0", CHITTY_VERSION, "0.0.0", None):
+                with self.subTest(config_name=config_name, version=version):
+                    config_module._WARNED_UNKNOWN_KEYS.clear()
+                    (self.root / "chitty.toml").unlink(missing_ok=True)
+                    config_path = self.root / config_name
+                    text = config_text.replace(
                         f'chitty_version = "{CHITTY_VERSION}"',
-                        'chitty_version = "99.0.0"\nnew_setting = "supported later"',
+                        (f'chitty_version = "{version}"\n' if version else "") + 'colour = "blue"',
                     )
-                )
-                stderr = io.StringIO()
-                with contextlib.redirect_stderr(stderr):
-                    config = load_repo_config(self.root)
-                    load_repo_config(self.root)
+                    text = text.replace('prefix = "TASK"', 'prefix = "TASK"\ncolour = true')
+                    config_path.write_text(text)
+                    stderr = io.StringIO()
+                    with contextlib.redirect_stderr(stderr):
+                        config = load_repo_config(self.root)
+                        load_repo_config(self.root)
 
-                self.assertEqual(config.default_context, "tasks")
-                self.assertIn("new_setting", stderr.getvalue())
-                self.assertEqual(stderr.getvalue().count("new_setting"), 1)
-
-    def test_equal_version_refuses_unknown_top_level_keys(self):
-        for config_name, config_text in (
-            ("chitty.toml", CONFIG),
-            ("pyproject.toml", f"[tool.chitty]\n{PYPROJECT_CONFIG}"),
-        ):
-            with self.subTest(config_name=config_name):
-                (self.root / "chitty.toml").unlink(missing_ok=True)
-                config_path = self.root / config_name
-                config_path.write_text(
-                    config_text.replace(
-                        f'chitty_version = "{CHITTY_VERSION}"',
-                        f'chitty_version = "{CHITTY_VERSION}"\nnew_setting = 1',
+                    self.assertEqual(config.default_context, "tasks")
+                    self.assertEqual(
+                        stderr.getvalue(),
+                        f"{config_path}: ignoring unknown configuration key(s) "
+                        "colour, contexts.tasks.colour; check the spelling or upgrade Chitty\n",
                     )
-                )
-                with self.assertRaisesRegex(ChittyError, "Extra inputs"):
-                    load_repo_config(self.root)
 
-    def test_prerelease_version_loads_without_unknown_top_level_keys(self):
+    def test_agent_command_names_are_not_unknown(self):
         config_path = self.root / "chitty.toml"
-        config_path.write_text(
-            config_path.read_text().replace(
-                f'chitty_version = "{CHITTY_VERSION}"',
-                'chitty_version = "0.2.0rc1"',
-            )
-        )
+        config_path.write_text(config_path.read_text() + '\n[agent_commands]\ncolour = "x"\n')
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            config = load_repo_config(self.root)
+        self.assertEqual(config.agent_commands, {"colour": "x"})
+        self.assertEqual(stderr.getvalue(), "")
 
-        config = load_repo_config(self.root)
-
-        self.assertEqual(config.default_context, "tasks")
-
-        config_path.write_text(
-            config_path.read_text().replace(
-                'chitty_version = "0.2.0rc1"',
-                'chitty_version = "0.2.0rc1"\nnew_setting = 1',
-            )
-        )
-        with self.assertRaisesRegex(ChittyError, "invalid Chitty version"):
-            load_repo_config(self.root)
-
-    def test_unknown_top_level_keys_refuse_without_a_newer_version(self):
-        original = (self.root / "chitty.toml").read_text()
-        cases = {
-            "equal": original + "new_setting = 1\n",
-            "older": original.replace(
-                f'chitty_version = "{CHITTY_VERSION}"',
-                'chitty_version = "0.0.0"',
-            )
-            + "new_setting = 1\n",
-            "absent": original.replace(f'chitty_version = "{CHITTY_VERSION}"\n', "")
-            + "new_setting = 1\n",
-        }
-        for version, text in cases.items():
-            with self.subTest(version=version):
-                (self.root / "chitty.toml").write_text(text)
-                with self.assertRaisesRegex(ChittyError, "Extra inputs"):
-                    load_repo_config(self.root)
-
-    def test_unknown_context_keys_still_refuse_in_newer_config(self):
+    def test_non_table_contexts_is_still_rejected(self):
         config_path = self.root / "chitty.toml"
-        config_path.write_text(
-            config_path.read_text()
-            .replace(
-                f'chitty_version = "{CHITTY_VERSION}"',
-                'chitty_version = "99.0.0"',
-            )
-            .replace('prefix = "TASK"', 'prefix = "TASK"\nnew_setting = 1')
-        )
-        with self.assertRaisesRegex(ChittyError, "Extra inputs"):
+        text = config_path.read_text().split("[contexts.tasks]")[0]
+        config_path.write_text(text + 'contexts = "not a table"\n')
+        with self.assertRaisesRegex(ChittyError, "contexts"):
             load_repo_config(self.root)
 
     def test_rejections(self):
@@ -157,7 +109,6 @@ class TestRepoConfig(RepoTestCase):
             "contexts.human.review": CONFIG.replace(
                 'prefix = "HUMAN"', 'prefix = "HUMAN"\nreview = "sometimes"'
             ),
-            "Extra inputs": CONFIG + "colour = 1\n",
             "format": CONFIG.replace("format = 1", "format = 2"),
             "invalid TOML": CONFIG + "[[[",
             "not allowed": CONFIG.replace("contexts.human", "contexts.archive"),
