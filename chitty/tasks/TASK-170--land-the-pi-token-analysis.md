@@ -1,6 +1,6 @@
 ---
 title: Land the Pi token analysis
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -22,6 +22,10 @@ Cherry-pick the five commits from the existing pi-token-analysis worktree onto t
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: how to take the commits, given the worktree, and a criterion that only this machine could show.
 
+1: pass - docs/pi-token-usage.md names TASK-170–TASK-176, scripts/ is present, and make check passed.
+
+Reviewed: criterion verified independently; the source pi-token-analysis worktree is unchanged.
+
 ## Summary
 
 Cherry-picked the five commits from the untouched `pi-token-analysis` worktree, added the top-of-document `TASK-170`–`TASK-176` reference line, and left the source branch/worktree unchanged. Verified with `make check` (ruff, pyright, 277 Python tests, and npm tests; exit 0). `chitty fix` completed with pre-existing Markdown delimiter warnings.
@@ -36,3 +40,5 @@ Cherry-picked the five commits from the untouched `pi-token-analysis` worktree, 
 - 2026-11-05T23:09:23Z jolly-eel: ticked acceptance criteria
 - 2026-11-05T23:09:31Z jolly-eel: changed summary
 - 2026-11-05T23:09:31Z jolly-eel doing → review
+- 2026-11-06T11:24:09Z kind-quail: changed notes
+- 2026-11-06T11:24:09Z kind-quail review → done
