@@ -132,6 +132,15 @@ class TestInit(CliTestCase):
                     self.run_cli("init")
                 self.assertNotIn("main_branch", (target / "chitty.toml").read_text())
 
+    def test_init_does_not_write_main_branch_outside_git(self):
+        target = self.tmp / "outside-git"
+        target.mkdir()
+        os.chdir(target)
+
+        self.run_cli("init")
+
+        self.assertNotIn("main_branch", (target / "chitty.toml").read_text())
+
     def test_init(self):
         target = self.tmp / "fresh"
         target.mkdir()
