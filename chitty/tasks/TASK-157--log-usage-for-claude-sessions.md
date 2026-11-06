@@ -1,6 +1,6 @@
 ---
 title: Log usage for `claude` sessions
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-148
@@ -49,6 +49,8 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. It confirmed that the `
 
 Implemented and verified with focused Claude hook tests and full Python checks. npm test starts but hangs after printing six dots in this environment, so its completion could not be verified.
 
+Reviewed: both acceptance criteria verified; focused Claude hook tests, hidden non-repository CLI invocation, chitty check/fix, ruff and pyright pass. Full make check reached the Python suite but timed out in the existing Node test stage.
+
 ## Summary
 
 Implemented hidden chitty claude-usage-hook and src/chitty/integrations/claude/usage.py. It aggregates deduplicated assistant message usage across the main and subagent transcripts, maps Anthropic token fields, writes null costs atomically while preserving other sessions, and reports all hook errors on stderr without failing. Added real-filesystem unittest coverage for successful aggregation, malformed/missing inputs, invalid usage files, unset configuration, and preservation. Verified focused tests, make check Python stages, and chitty fix; Node npm test starts but hangs after six dots in this environment.
@@ -63,3 +65,5 @@ Implemented hidden chitty claude-usage-hook and src/chitty/integrations/claude/u
 - 2026-11-05T22:10:38Z intrepid-kestrel: wrote the plan
 - 2026-11-05T22:22:19Z intrepid-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-05T22:22:19Z intrepid-kestrel doing → review
+- 2026-11-06T10:59:22Z rosy-otter: changed notes
+- 2026-11-06T10:59:22Z rosy-otter review → done
