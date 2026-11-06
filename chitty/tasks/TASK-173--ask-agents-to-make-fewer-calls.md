@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -33,6 +33,8 @@ Update the shipped work and review role guidance with the four batching/autocomm
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: this conflicted with "tick only after verifying", so it now says to verify first; `make format` does not exist in every repository; and the test now names what it checks. `TASK-174`'s successor or the planning session re-runs the scripts afterwards. Repeated `--check` was tried on `TASK-80`, and it works.
 
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
 ## Summary
 
 Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.33. Verified with the targeted guide test and full make check (278 Python tests and Node tests pass). make install completed successfully. Follow-up: re-run the TASK-170 measurement scripts as planned.
@@ -47,3 +49,5 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-05T23:10:00Z lively-newt: wrote the plan
 - 2026-11-05T23:19:56Z lively-newt: changed summary; ticked acceptance criteria
 - 2026-11-05T23:20:09Z lively-newt doing → review
+- 2026-11-06T14:39:20Z friendly-heron: changed notes
+- 2026-11-06T14:39:20Z friendly-heron review → doing
