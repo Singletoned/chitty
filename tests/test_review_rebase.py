@@ -140,6 +140,38 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.assertIn("Review failed (integration):", notes)
         self.assertIn("`shared.txt`", notes)
 
+    def test_a_recorded_resolution_is_not_replayed_into_the_review(self):
+        # With `rerere.autoupdate`, Git stages a replayed resolution, leaving no
+        # unmerged path, yet the rebase still stops.
+        self.git("config", "rerere.enabled", "true")
+        self.git("config", "rerere.autoupdate", "true")
+        self.branch_for_review(shared="from the branch\n")
+        self.move_main(shared="from main\n")
+        branch_head = self.git("rev-parse", "task-1").strip()
+        self.git("switch", "--quiet", "task-1")
+        subprocess.run(["git", "rebase", "main"], cwd=self.root, capture_output=True, check=False)
+        (self.root / "shared.txt").write_text("resolved\n")
+        self.git("add", "shared.txt")
+        subprocess.run(
+            ["git", "rebase", "--continue"],
+            cwd=self.root,
+            capture_output=True,
+            check=True,
+            env={**os.environ, "GIT_EDITOR": "true"},
+        )
+        self.git("reset", "--quiet", "--hard", branch_head)
+        self.git("switch", "--quiet", "main")
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertFalse((self.logs / "agent").exists())
+        self.assert_no_rebase_in_progress()
+        self.assertEqual(self.git("status", "--porcelain", cwd=self.worktree), "")
+        notes = self.ticket().section("Notes") or ""
+        self.assertIn("Review failed (integration):", notes)
+        self.assertIn("`shared.txt`", notes)
+
     def test_uncommitted_files_move_the_ticket_to_doing_without_starting_the_agent(self):
         self.branch_for_review()
         self.git("worktree", "add", "--quiet", str(self.worktree), "task-1")
