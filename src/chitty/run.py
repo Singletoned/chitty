@@ -619,12 +619,6 @@ def _fail_check(work_repo: Repo, action: NextAction, detail: str) -> RunResult:
     return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
-def _git_path(root: Path, argument: str) -> Path:
-    value = _git(root, "rev-parse", argument).strip()
-    path = Path(value)
-    return (root / path).resolve() if not path.is_absolute() else path.resolve()
-
-
 def _git(root: Path, *arguments: str) -> str:
     completed = subprocess.run(
         ["git", *arguments], cwd=root, capture_output=True, text=True, check=False
