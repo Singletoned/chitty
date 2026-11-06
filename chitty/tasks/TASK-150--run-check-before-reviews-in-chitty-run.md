@@ -56,6 +56,14 @@ Unblocked by a human-run session. Criterion 3 (`check = "make check"` in this re
 
 Correction to the previous note: only the "this repository sets `check`" part of criterion 3 was dropped. Its docs, template and version part is back as criterion 3 for the reviewer. The branch changes `PLAN.md`, `README.md` and the template, and bumps `__version__` to `0.1.37`; `main` may have moved past that, which the reviewer's rebase will show.
 
+Rebased onto `main` (`0.1.40`) by the human-run session, so the review's own rebase won't conflict. Resolved:
+- `__version__` is `0.1.41`.
+- `check` runs before the claim, which now uses `claim_edit()`.
+- The `_preflight` `check` error follows `TASK-208`'s style.
+- README says "runs setup and check".
+- A duplicate `_git_path` was dropped.
+`make check` passes (360 tests). After landing, `chitty run` fails preflight until `check = "make check"` is set in the main checkout's `chitty.toml`. The human-run session must do that straight after the merge.
+
 ## Summary
 
 Implemented and verified `check` preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
@@ -84,3 +92,4 @@ Implemented and verified `check` preflight support. Checks now run after setup a
 - 2026-11-06T21:33:39Z youthful-toad: changed owner, acceptance criteria, notes
 - 2026-11-06T21:33:39Z youthful-toad blocked → review
 - 2026-11-06T21:33:51Z youthful-toad: changed acceptance criteria, notes
+- 2026-11-06T21:35:52Z youthful-toad: changed notes
