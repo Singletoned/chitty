@@ -44,7 +44,7 @@ updated /Users/singletoned/.local/share/chitty/inbox/chitty regenerated the mana
 
 ## Summary
 
-Removed the redundant inbox pull from both worker guide sources, preserved ticket/task wording, regenerated AGENTS.md, and bumped package/setup versions to 0.1.35 after rebasing onto main. Added guide regression coverage. Verified guide output, chitty inbox --pull, uv run chitty init, chitty fix, Ruff, Pyright, 330 unittest tests, and Node tests.
+Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
 
 ## History
 
@@ -69,3 +69,4 @@ Removed the redundant inbox pull from both worker guide sources, preserved ticke
 - 2026-11-06T18:13:32Z youthful-toad: changed notes
 - 2026-11-06T18:28:21Z mellow-urchin: ticked acceptance criteria
 - 2026-11-06T18:28:35Z mellow-urchin: changed notes
+- 2026-11-06T18:28:36Z mellow-urchin: changed summary
