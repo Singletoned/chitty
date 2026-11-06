@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `chitty.toml`
-status: doing
+status: review
 priority: high
 created: 2026-11-06
 ---
@@ -22,7 +22,7 @@ No `__version__` bump: nothing `chitty init` writes changes.
 
 ## Acceptance Criteria
 
-- [ ] A test runs `chitty run --mode review` on a branch that changes `chitty.toml` and asserts the ticket moves to `doing` with that note and no agent runs. Another, with the config in `[tool.chitty]`, shows that a change elsewhere in `pyproject.toml` passes and a change to `[tool.chitty]` fails.
+- [x] A test runs `chitty run --mode review` on a branch that changes `chitty.toml` and asserts the ticket moves to `doing` with that note and no agent runs. Another, with the config in `[tool.chitty]`, shows that a change elsewhere in `pyproject.toml` passes and a change to `[tool.chitty]` fails.
 
 ## Plan
 
@@ -66,9 +66,11 @@ Implemented review-time config protection for `chitty.toml` and parsed `[tool.ch
 1: fail - config deletion is not detected
 Review failed (work): deleting the config file is not detected. `_changed_config` returns `None` when the rebased branch has no config source, even though `main` has `chitty.toml`; a demonstrated branch deletion therefore passes the preflight. Compare config presence on both sides and reject a file present on only one side before retrying review.
 
+Verified the deletion regression first failed before the fix, then passed after it. Targeted config-review tests and full `make check` pass (337 Python tests plus Node tests).
+
 ## Summary
 
-Handoff: review preflight now rejects branch changes to the Chitty config after a clean rebase, with exact work-failure notes and no agent launch. Added regression coverage for both config sources, including unrelated pyproject changes. Verification: targeted tests passed; `make check` passed. Follow-up: none.
+Handoff: review preflight now also rejects branches that delete the repository’s Chitty config, including when the worktree cannot load its config; it reports the exact work-failure note without launching the agent. Added regression coverage. Verification: targeted tests and `make check` pass. Follow-ups: none.
 
 ## History
 
@@ -88,3 +90,5 @@ Handoff: review preflight now rejects branch changes to the Chitty config after 
 - 2026-11-06T19:29:45Z lively-kestrel doing → review
 - 2026-11-06T19:40:46Z vivid-gannet: changed acceptance criteria, notes
 - 2026-11-06T19:40:46Z vivid-gannet review → doing
+- 2026-11-06T19:54:55Z rosy-quail: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T19:54:55Z rosy-quail doing → review
