@@ -1,6 +1,6 @@
 ---
 title: Add a `main_branch` setting
-status: todo
+status: done
 priority: medium
 created: 2026-11-06
 ---
@@ -19,8 +19,14 @@ Out of scope: using the setting (`TASK-216`), docs (`TASK-217`), and remotes or 
 
 ## Acceptance Criteria
 
-- [ ] Tests show a config without `main_branch` loading as `main`, and one with `main_branch = "master"` loading as `master`, from both `chitty.toml` and `[tool.chitty]`.
-- [ ] Tests show `chitty init` writing `main_branch = "master"` in a new repository on `master`, and writing no `main_branch` on `main`, outside Git, or when upgrading an existing config.
+- [x] Tests show a config without `main_branch` loading as `main`, and one with `main_branch = "master"` loading as `master`, from both `chitty.toml` and `[tool.chitty]`.
+- [x] Tests show `chitty init` writing `main_branch = "master"` in a new repository on `master`, and writing no `main_branch` on `main`, outside Git, or when upgrading an existing config.
+
+## Plan
+
+1. Inspect config parsing, git.current_branch, init templates, and existing tests.
+2. Add optional RepoConfig.main_branch with a main default and add focused config/init tests, first confirming the new regression test fails before the implementation.
+3. Run formatting and the full check suite, then verify both acceptance criteria and prepare the ticket for review.
 
 ## Notes
 
@@ -46,6 +52,23 @@ Cold read 2 (Sonnet, `refs/cold-read/TASK-214/1`; the `master` tests failed befo
 - The detached-`HEAD` and outside-Git tests pass both before and after: accepted, because they test that nothing is written.
 The ref includes a version bump, so a worker should drop that hunk.
 
+Regression tests failed before implementation: RepoConfig had no main_branch and init omitted the master setting. After implementation, config loading and init coverage pass for chitty.toml, [tool.chitty], main, detached/outside Git, and existing-config upgrades. chitty fix emitted pre-existing Markdown delimiter warnings for unrelated tickets but made no changes.
+
+1: pass - Config defaults and loads main_branch from both config sources.
+2: fail - The test mocks current_branch=None instead of running init outside Git.
+
+Review failed (tests): criterion 2 is not fully demonstrated. Add a real non-Git init case and verify it writes no main_branch, then rerun the checks.
+
+Added a real non-Git chitty init regression test; it runs in a temporary directory with no Git repository and verifies the generated config omits main_branch. The targeted test and full checks pass. chitty fix still reports only pre-existing Markdown delimiter warnings in unrelated tickets.
+
+Reviewed: inspected config parsing, init branch handling, and focused tests; make format && make check passes (359 Python tests and Node tests).
+1: pass - Config defaults and loads main_branch from both chitty.toml and [tool.chitty].
+2: pass - New init writes master, while main, detached, outside-Git, and existing-config cases omit it.
+
+## Summary
+
+Added and verified a real non-Git init regression test. make format && make check passes: 355 Python tests and Node tests. Implementation and config/init coverage are complete; commit 48b1c81 adds the review-requested test. No follow-ups.
+
 ## History
 
 - 2026-11-06T16:24:17Z youthful-toad → backlog
@@ -55,3 +78,13 @@ The ref includes a version bump, so a worker should drop that hunk.
 - 2026-11-06T16:49:06Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T16:59:24Z youthful-toad: changed description, notes
 - 2026-11-06T16:59:24Z youthful-toad backlog → todo
+- 2026-11-06T20:42:03Z lively-yellowhammer todo → doing
+- 2026-11-06T20:43:21Z vivid-urchin: wrote the plan
+- 2026-11-06T20:47:26Z vivid-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:47:26Z vivid-urchin doing → review
+- 2026-11-06T20:50:47Z lively-zander: changed acceptance criteria, notes
+- 2026-11-06T20:50:47Z lively-zander review → doing
+- 2026-11-06T21:06:16Z open-stoat: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T21:06:16Z open-stoat doing → review
+- 2026-11-06T21:13:29Z calm-zander: changed notes; ticked acceptance criteria
+- 2026-11-06T21:13:29Z calm-zander review → done

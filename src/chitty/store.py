@@ -1120,6 +1120,16 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     if not config_path.exists() and not has_pyproject_config:
         project = _default_project(directory.name)
         text = INITIAL_CONFIG.format(project=json.dumps(project), version=CHITTY_VERSION)
+        branch = git.current_branch(directory)
+        if branch is not None and branch != "main":
+            # New repositories preserve a non-main integration branch; existing
+            # configs are upgrades and deliberately remain unchanged.
+            project_line = f"project = {json.dumps(project)}\n"
+            text = text.replace(
+                project_line,
+                f"{project_line}main_branch = {json.dumps(branch)}\n",
+                1,
+            )
         if enable_autocommit:
             text = _set_autocommit(text, False)
         config = validate_repo_config(text, config_path)
