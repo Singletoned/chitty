@@ -35,6 +35,7 @@ class UpgradeTest(unittest.TestCase):
         self.data = tempfile.TemporaryDirectory()
         self.addCleanup(self.data.cleanup)
         self.pending = Path(self.data.name) / "chitty" / "pending-release"
+        self.count = self.pending.parent / "upgrade-count"
         self.pending.parent.mkdir(parents=True)
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), _PyPIHandler)
         self.thread = threading.Thread(target=self.server.serve_forever)
@@ -106,11 +107,31 @@ class UpgradeTest(unittest.TestCase):
         self.assertTrue(self.pending.exists())
         self.assertEqual(_PyPIHandler.requests, 0)
 
+    def test_checks_pypi_on_100th_command(self):
+        for _ in range(99):
+            upgrade.check_for_upgrade()
+        self.assertEqual(_PyPIHandler.requests, 0)
+        self.assertEqual(self.count.read_text(), "99")
+
+        upgrade.check_for_upgrade()
+
+        self.assertEqual(_PyPIHandler.requests, 1)
+        self.assertEqual(self.count.read_text(), "0")
+        self.assertEqual(self.pending.read_text(), "0.1.31\nout\n")
+
+    def test_failed_pypi_check_leaves_reset_count(self):
+        self.count.write_text("99")
+        with mock.patch.object(upgrade.urllib.request, "urlopen", side_effect=OSError):
+            upgrade.check_for_upgrade()
+        self.assertEqual(self.count.read_text(), "0")
+        self.assertFalse(self.pending.exists())
+
     def test_editable_install_is_silent(self):
         self.pending.write_text("0.1.31\n")
         with mock.patch.object(upgrade, "_is_editable_install", return_value=True):
             upgrade.check_for_upgrade()
         self.assertTrue(self.pending.exists())
+        self.assertFalse(self.count.exists())
 
 
 if __name__ == "__main__":
