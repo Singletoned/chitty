@@ -1,6 +1,6 @@
 ---
 title: Use `main_branch` instead of `main` in the code
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-214
@@ -22,8 +22,8 @@ Out of scope: docs and guides (`TASK-217`), and the `Makefile` `release` target,
 
 ## Acceptance Criteria
 
-- [ ] Tests in a repository with `main_branch = "master"` show `chitty run` creating the worktree from `master`, rebasing a review onto `master` (its conflict note names `master`), `chitty next` judging a dependency done on `master`, and `_preflight` requiring the main checkout to be on `master`.
-- [ ] A ticket worktree whose own config lacks `main_branch` is still reviewed, and `chitty next` run inside it is still judged, using the main checkout's setting. `grep -n '"main"\|heads/main' src/chitty/*.py` matches only the `main_branch` default in `config.py` and `chitty init`'s `!= "main"` check from `TASK-214`.
+- [x] Tests in a repository with `main_branch = "master"` show `chitty run` creating the worktree from `master`, rebasing a review onto `master` (its conflict note names `master`), `chitty next` judging a dependency done on `master`, and `_preflight` requiring the main checkout to be on `master`.
+- [x] A ticket worktree whose own config lacks `main_branch` is still reviewed, and `chitty next` run inside it is still judged, using the main checkout's setting. `grep -n '"main"\|heads/main' src/chitty/*.py` matches only the `main_branch` default in `config.py` and `chitty init`'s `!= "main"` check from `TASK-214`.
 
 ## Plan
 
@@ -40,6 +40,57 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-216/1`, built on `TASK-214`'s read; th
 - The `REPORT` fixture's hard-coded `main`: noted.
 - Size: confirmed right.
 
+Verified configured branch handling with src/chitty/config.py:77:    main_branch: str = "main"
+src/chitty/store.py:1124:        if branch is not None and branch != "main": (only the documented TASK-214 lines remain). uv run ruff check --exit-zero .
+All checks passed!
+uv run ruff format .
+297 files left unchanged
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+uv run ruff format --check .
+297 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Deleted branch task-1 (was 3b616fe).
+Deleted branch task-1 (was 2402c6a).
+Deleted branch task-2 (was db17283).
+npm test
+
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+...... passes: 359 Python tests and Node tests.
+
+## Summary
+
+Implemented TASK-216: main-file dependency checks and all runner integration-branch operations now use the main checkout's ; linked worktrees load that setting from the primary checkout. Verification: uv run ruff check --exit-zero .
+All checks passed!
+uv run ruff format .
+297 files left unchanged
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+uv run ruff format --check .
+297 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Deleted branch task-1 (was 9452a9b).
+Deleted branch task-1 (was 60685cd).
+Deleted branch task-2 (was 355f8bb).
+npm test
+
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+...... passes. Follow-up: none.
+
 ## History
 
 - 2026-11-06T16:48:06Z youthful-toad → backlog
@@ -48,3 +99,5 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-216/1`, built on `TASK-214`'s read; th
 - 2026-11-06T17:09:58Z youthful-toad backlog → todo
 - 2026-11-06T21:13:50Z intrepid-otter todo → doing
 - 2026-11-06T21:14:09Z intrepid-otter: wrote the plan
+- 2026-11-06T21:21:41Z intrepid-otter: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T21:21:41Z intrepid-otter doing → review
