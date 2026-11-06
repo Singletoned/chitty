@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -53,6 +53,14 @@ Unblocked by a human-run session. All three failed reviews were rebase conflicts
 - `__version__` is `0.1.41`.
 `make check` passes (360 tests). Several open tickets also use `0.1.41`, so whichever lands second will need its version bumped again.
 
+Review failed (work): check exited with status 2:
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.41), but working tree has 0.1.41:
+  src/chitty/guide.md
+  src/chitty/roles/work.md
+make: *** [check] Error 1
+
 ## Summary
 
 Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
@@ -86,3 +94,5 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-06T18:34:28Z upbeat-newt review → blocked
 - 2026-11-06T21:40:59Z youthful-toad: changed owner, notes
 - 2026-11-06T21:40:59Z youthful-toad blocked → review
+- 2026-11-06T21:48:16Z brisk-newt: changed notes
+- 2026-11-06T21:48:16Z brisk-newt review → doing
