@@ -1011,11 +1011,11 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             listed.stdout.splitlines(),
             [
-                "TASK-3  todo    high    High",
-                "TASK-1  todo    -       Unset",
-                "TASK-4  todo    medium  Medium",
-                "TASK-2  todo    low     Low",
-                "TASK-5  doing   high    Doing high",
+                "TASK-3  📋 todo     high    High",
+                "TASK-1  📋 todo     -       Unset",
+                "TASK-4  📋 todo     medium  Medium",
+                "TASK-2  📋 todo     low     Low",
+                "TASK-5  🔨 doing    high    Doing high",
             ],
         )
         tasks = self.json("list")
@@ -1025,6 +1025,84 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             [task["priority"] for task in tasks], ["high", None, "medium", "low", "high"]
         )
+
+    def test_list_shows_every_status_glyph(self):
+        self.run_cli("add", "Backlog", "-s", "backlog")
+        self.run_cli("add", "Todo", "-d", "x")
+        self.run_cli("add", "Doing", "-d", "x", "-s", "doing")
+        self.run_cli("add", "Blocked", "-d", "x", "-s", "blocked", "--note", "reason")
+        self.run_cli("add", "Review", "-d", "x", "-s", "review")
+        self.run_cli(
+            "add",
+            "Done",
+            "-d",
+            "x",
+            "-s",
+            "review",
+        )
+        self.run_cli(
+            "edit",
+            "6",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
+
+        listed = self.run_cli("list", "--all").stdout
+        for glyph, status in (
+            ("💤", "backlog"),
+            ("📋", "todo"),
+            ("🔨", "doing"),
+            ("⛔", "blocked"),
+            ("👀", "review"),
+            ("✅", "done"),
+        ):
+            self.assertIn(f"{glyph} {status}", listed)
+
+    def test_list_shows_status_glyphs_and_skip_reasons(self):
+        self.run_cli("add", "Backlog", "-s", "backlog")
+        self.run_cli("add", "Done", "-d", "x")
+        self.run_cli("edit", "2", "-s", "review")
+        self.run_cli(
+            "edit",
+            "2",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.",
+            "--override-review-independence",
+        )
+        self.run_cli("add", "Waiting", "-d", "x", "--depends-on", "1")
+        self.run_cli("add", "Broken", "-d", "x")
+        broken_path = self.root / "chitty/tasks/TASK-4--broken.md"
+        broken_path.write_text(
+            broken_path.read_text().replace("created:", "depends_on:\n  - TASK-99\ncreated:")
+        )
+        self.run_cli("add", "Human", "-d", "x", "--owner", "human")
+        self.run_cli("add", "Doing", "-d", "x")
+        doing_path = self.root / "chitty/tasks/TASK-6--doing.md"
+        doing_path.write_text(
+            doing_path.read_text().replace("created:", "depends_on:\n  - TASK-99\ncreated:")
+        )
+        self.run_cli("edit", "6", "-s", "doing")
+        self.run_cli("add", "Review", "-d", "x")
+        review_path = self.root / "chitty/tasks/TASK-7--review.md"
+        review_path.write_text(
+            review_path.read_text().replace("created:", "depends_on:\n  - TASK-99\ncreated:")
+        )
+        self.run_cli("edit", "7", "-s", "review")
+
+        lines = self.run_cli("list", "--all").stdout.splitlines()
+        self.assertEqual(lines[0].split()[1:3], ["💤", "backlog"])
+        self.assertIn("🔒 waits on TASK-1", lines[1])
+        self.assertIn("⚠️ TASK-4 depends on TASK-99", lines[2])
+        self.assertIn("👤 human", lines[3])
+        self.assertNotIn("🔒", lines[4])
+        self.assertNotIn("🔒", lines[5])
+        self.assertEqual(self.json("list", "--all")[1]["skipped"], "🔒 waits on TASK-1")
+        self.assertIsNone(self.json("list", "--all")[4]["skipped"])
 
     def test_list_preserves_context_and_numeric_order_for_priority_ties(self):
         for number in range(1, 11):
@@ -1045,8 +1123,8 @@ class TestAddShowList(CliTestCase):
         self.run_cli("edit", "1", "-s", "doing")
         self.run_cli("archive", "10")
         lines = self.run_cli("list").stdout.splitlines()
-        self.assertEqual(lines[0], "TASK-2  todo    Fix login")
-        self.assertEqual(lines[1], "TASK-3  todo    Task 3")
+        self.assertEqual(lines[0], "TASK-2  📋 todo     Fix login")
+        self.assertEqual(lines[1], "TASK-3  📋 todo     Task 3")
         self.assertEqual(len(lines), 9)
         self.run_cli("edit", "2", "-s", "review")
         self.run_cli(

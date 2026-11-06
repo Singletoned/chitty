@@ -27,6 +27,7 @@ from chitty.store import (
     next_action,
     renumbered_dict,
     resolve_add_target,
+    skip_reason,
 )
 
 Status = Literal["backlog", "todo", "doing", "blocked", "review", "done"]
@@ -135,7 +136,7 @@ def list_(
     tasks = [task for selected in contexts for task in repo.tasks(selected, "active")]
     parent = str(repo.resolve(parent)) if parent else None
     found = [t for t in tasks if matches(t, statuses, label or [], owner, search, parent)]
-    return [t.as_dict() for t in found]
+    return [{**task.as_dict(), "skipped": skip_reason(repo, task)} for task in found]
 
 
 @_tool("next", "Return the next ticket to work or review.")

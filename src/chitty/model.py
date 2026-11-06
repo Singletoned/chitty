@@ -22,6 +22,14 @@ from chitty.errors import ChittyError
 from chitty.ids import ID_RE
 
 STATUSES = ("backlog", "todo", "doing", "blocked", "review", "done")
+STATUS_GLYPHS = {
+    "backlog": "💤",
+    "todo": "📋",
+    "doing": "🔨",
+    "blocked": "⛔",
+    "review": "👀",
+    "done": "✅",
+}
 PRIORITIES = ("low", "medium", "high")
 FIELD_ORDER = (
     "title",

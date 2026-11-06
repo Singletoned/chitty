@@ -213,14 +213,13 @@ class TestNext(CliTestCase):
             config.read_text().replace("[contexts.tasks]", "review = false\n\n[contexts.tasks]")
         )
         completed = self.add("Complete", status="done")
-        self.add("Ready", depends_on=[completed])
+        ready = self.add("Ready", depends_on=[completed])
         dangling = self.add("Blocked")
         path = self.root / "chitty/tasks" / f"{dangling}--blocked.md"
         path.write_text(path.read_text().replace("created:", "depends_on:\n  - TASK-99\ncreated:"))
         self.add("Human context", context="human")
         self.add("Human owner", owner="human")
-        with self.assertRaisesRegex(Exception, "TASK-99"):
-            next_action(Repo.open(self.root))
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
 
     def test_cli_and_mcp_return_the_same_action(self):
         self.add("Todo")
@@ -301,7 +300,7 @@ class TestNext(CliTestCase):
                 "status: review\n", "status: review\ndepends_on:\n  - TASK-99\n"
             )
         )
-        self.assertIn("TASK-99", self.run_cli("next", exit_code=1).stderr)
+        self.assertEqual(self.run_cli("next").stdout, f"review {review}\n")
         self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {doing}\n")
         path.unlink()
 

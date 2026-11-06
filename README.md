@@ -78,9 +78,12 @@ block in strict `chitty:begin` and `chitty:end` markers so only Chitty's text is
 replaced. Existing unmarked blocks are migrated on the next init.
 `chitty guide work`, `review`, and `plan` print the focused instructions for
 that role. Work and review take an optional ticket ID; planning does not.
-Plain `chitty list` shows non-archived `todo`, `doing`,
-`blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter,
-including backlog and done tickets. Review is required before `done` by default.
+Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
+tasks across every context; repeat `-c` or `-s` to filter, including backlog and
+done tickets. Each row prefixes the status with a fixed glyph: `💤 backlog`,
+`📋 todo`, `🔨 doing`, `⛔ blocked`, `👀 review`, or `✅ done`. Rows skipped by
+`chitty next` explain why at the end: `👤 human`, `🔒 waits on ID[, ID...]`, or
+`⚠️ <message>` for a broken dependency. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`
 contexts do this so people can close their own tasks directly. A context with
 `random_ids = true` numbers new tickets at random from 10000000 to 99999999
@@ -98,6 +101,9 @@ it lists each ticket naming the old ID for you to check.
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,
 then uses priority and task ID across all non-human contexts. Plain selection
 skips owned `doing` and `todo` tickets but still selects owned `review` tickets;
+`chitty list` uses the same skip rules and reports human ownership/context,
+unmet `todo` dependencies, and broken dependency references. `doing` and `review`
+tickets ignore dependencies; dependency completion is judged from `main`.
 use `--owner NAME` to select only that owner's tickets in any active status.
 `human` and empty owner filters are refused. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses

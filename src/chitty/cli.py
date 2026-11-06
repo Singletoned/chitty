@@ -28,7 +28,14 @@ from chitty.inbox import list_waiting, waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
 from chitty.integrations.claude.usage import run_hook
-from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
+from chitty.model import (
+    ACCEPTANCE_CRITERIA,
+    FIELD_ORDER,
+    PRIORITIES,
+    SECTION_ORDER,
+    STATUS_GLYPHS,
+    STATUSES,
+)
 from chitty.run import RunInterrupted
 from chitty.run import run as run_next
 from chitty.store import (
@@ -43,6 +50,7 @@ from chitty.store import (
     ordered,
     renumbered_dict,
     resolve_add_target,
+    skip_reason,
 )
 from chitty.upgrade import check_for_upgrade
 
@@ -373,13 +381,13 @@ def list_(
     if repo.config.project and waiting(repo.config.project):
         click.echo("suggestions waiting: run chitty inbox --pull", err=True)
     if as_json:
-        _print_json([t.as_dict() for t in tasks])
+        _print_json([{**task.as_dict(), "skipped": skip_reason(repo, task)} for task in tasks])
         return
     width = max((len(str(t.id)) for t in tasks), default=0)
     show_priority = any(t.task.frontmatter.priority is not None for t in tasks)
     for stored in tasks:
         fm = stored.task.frontmatter
-        line = f"{stored.id!s:<{width}}  {fm.status:<6}"
+        line = f"{stored.id!s:<{width}}  {STATUS_GLYPHS[fm.status]} {fm.status:<7}"
         if show_priority:
             line += f"  {fm.priority or '-':<6}"
         line += f"  {fm.title}"
@@ -387,6 +395,9 @@ def list_(
             line += f"  [{','.join(sorted(fm.labels))}]"
         if stored.branch:
             line += f"  ({stored.branch})"
+        reason = skip_reason(repo, stored)
+        if reason:
+            line += f"  {reason}"
         click.echo(line)
 
 

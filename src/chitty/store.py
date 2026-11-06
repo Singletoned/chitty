@@ -1159,6 +1159,31 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
     )
 
 
+def skip_reason(repo: Repo, stored: StoredTask) -> str | None:
+    """Return the reason `next` would skip a ticket, or None when selectable."""
+    frontmatter = stored.task.frontmatter
+    if stored.archived or frontmatter.status not in {"review", "doing", "todo"}:
+        return None
+    if stored.context == "human" or frontmatter.owner == "human":
+        return "👤 human"
+    if frontmatter.status != "todo":
+        return None
+
+    unfinished: list[str] = []
+    for reference in frontmatter.depends_on:
+        dependency_id = TaskId.parse(reference)
+        try:
+            dependency = repo.find(dependency_id)
+            complete = _dependency_is_done(repo, dependency_id, dependency)
+        except ChittyError as error:
+            return f"⚠️ {stored.id} depends on {reference}: {error}"
+        if not complete:
+            unfinished.append(str(dependency_id))
+    if unfinished:
+        return f"🔒 waits on {', '.join(unfinished)}"
+    return None
+
+
 def _ticket_action(
     repo: Repo,
     stored: StoredTask,
@@ -1186,30 +1211,31 @@ def _ticket_action(
             raise ChittyError(f"cannot run {stored.id}: owner is human")
         return None
     if not refuse:
+        if skip_reason(repo, stored) is not None:
+            return None
         if owner is None:
             if frontmatter.status != "review" and frontmatter.owner is not None:
                 return None
         elif frontmatter.owner != owner:
             return None
-    dependencies: list[tuple[TaskId, StoredTask | None]] = []
-    for reference in frontmatter.depends_on:
-        dependency_id = TaskId.parse(reference)
-        try:
-            dependency = repo.find(dependency_id)
-        except ChittyError as error:
-            if git.main_files(repo.root, ()) is None or "used by more than one file" not in str(
-                error
-            ):
-                raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
-            dependency = None
-        dependencies.append((dependency_id, dependency))
-    if frontmatter.status == "todo" and any(
-        not _dependency_is_done(repo, dependency_id, dependency)
-        for dependency_id, dependency in dependencies
-    ):
-        if refuse:
+    else:
+        dependencies: list[tuple[TaskId, StoredTask | None]] = []
+        for reference in frontmatter.depends_on:
+            dependency_id = TaskId.parse(reference)
+            try:
+                dependency = repo.find(dependency_id)
+            except ChittyError as error:
+                if git.main_files(repo.root, ()) is None or "used by more than one file" not in str(
+                    error
+                ):
+                    raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
+                dependency = None
+            dependencies.append((dependency_id, dependency))
+        if frontmatter.status == "todo" and any(
+            not _dependency_is_done(repo, dependency_id, dependency)
+            for dependency_id, dependency in dependencies
+        ):
             raise ChittyError(f"cannot run {stored.id}: it has unfinished dependencies")
-        return None
     action_mode: Literal["work", "review"] = "review" if frontmatter.status == "review" else "work"
     return NextAction(action_mode, stored.id)
 

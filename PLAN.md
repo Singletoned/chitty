@@ -446,6 +446,10 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 - `list` includes a priority column only when a listed task has a priority.
   It orders the selected statuses first, then `high`, `medium` (including
   unset priority), and `low` within each status; `--json` uses the same order.
+  Human-readable rows prefix statuses with fixed glyphs: `💤 backlog`, `📋 todo`,
+  `🔨 doing`, `⛔ blocked`, `👀 review`, and `✅ done`. Rows skipped by `next`
+  end with `👤 human`, `🔒 waits on ID[, ID...]`, or `⚠️ <message>` for a broken
+  dependency. JSON keeps status words and adds `skipped`.
 - `Summary` is an optional final handoff section after Notes; set it with
   `edit --summary` when completing work.
 - `parent` is an optional full task ID for grouping flat tasks. `add` and
@@ -677,7 +681,9 @@ including retries, not per run.
 `TaskId`.
 Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
 an unmet dependency is excluded, while `doing` and `review` work remains
-visible. It prints `work ID` or `review ID`; `--json` and the read-only MCP
+visible. `list` reports these exclusions with `👤 human`, `🔒 waits on ID[, ID...]`,
+or `⚠️ <message>` for a broken dependency; `doing` and `review` ignore
+dependencies. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value. `--mode review` limits the
 choice to `review` tasks and `--mode work` to `doing` and `todo`, in the same
 order, filtering before dependencies are checked so a bad reference on a task
