@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -38,3 +38,4 @@ Changed 2026-11-04: the human decided the block should have strict markers, in `
 - 2026-11-04T12:00:40Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T12:32:19Z lively-panda: changed dependencies, description, acceptance criteria, notes
 - 2026-11-05T14:23:17Z mellow-newt: changed description
+- 2026-11-06T20:15:30Z open-urchin todo → doing
