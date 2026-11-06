@@ -38,8 +38,9 @@ class TestSetupVersion(CliTestCase):
         original = config.read_text()
         cases = (
             (None, "re-run `chitty init`"),
-            ("0.0.0", "re-run `chitty init`"),
-            ("99.0.0", "upgrade chitty"),
+            ("0.1.9", "re-run `chitty init`"),
+            ("0.1.100", "upgrade chitty"),
+            ("1.0rc1", "recorded version cannot be read"),
         )
         line = f'chitty_version = "{CHITTY_VERSION}"\n'
         for recorded, warning in cases:

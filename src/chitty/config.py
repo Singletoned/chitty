@@ -182,7 +182,14 @@ def _allow_newer_top_level_keys(data: object, source: Path) -> object:
         return data
     settings = cast(Mapping[str, object], data)
     recorded = settings.get("chitty_version")
-    if not isinstance(recorded, str) or _version_key(recorded) <= _version_key(CHITTY_VERSION):
+    if not isinstance(recorded, str):
+        return settings
+    try:
+        is_newer = _version_key(recorded) > _version_key(CHITTY_VERSION)
+    except ChittyError:
+        # Let the CLI warn about malformed versions without blocking reads.
+        return settings
+    if not is_newer:
         return settings
     unknown = sorted(set(settings) - RepoConfig.model_fields.keys())
     if not unknown:

@@ -19,6 +19,7 @@ from chitty.config import (
     registered_projects,
     search_root,
     user_contexts_path,
+    version_key,
 )
 from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, NoNextTicket
 from chitty.import_backlog import import_directory
@@ -135,9 +136,18 @@ def _repo(*, warn_setup_version: bool = True) -> Repo:
 
 
 def _warn_setup_version(recorded: str | None) -> None:
-    if recorded == CHITTY_VERSION:
+    if recorded is None:
+        click.echo("warning: re-run `chitty init` to refresh repository setup", err=True)
         return
-    if recorded is None or recorded < CHITTY_VERSION:
+    try:
+        recorded_key = version_key(recorded)
+        current_key = version_key(CHITTY_VERSION)
+    except ChittyError:
+        click.echo("warning: recorded version cannot be read; run `chitty init`", err=True)
+        return
+    if recorded_key == current_key:
+        return
+    if recorded_key < current_key:
         click.echo("warning: re-run `chitty init` to refresh repository setup", err=True)
     else:
         click.echo("warning: upgrade chitty to match this repository's setup", err=True)
