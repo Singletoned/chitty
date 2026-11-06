@@ -1,10 +1,9 @@
 ---
 title: Ignore recorded conflict resolutions when `chitty run` rebases a review
-status: doing
+status: review
 labels:
   - bug
 priority: high
-owner: human
 parent: TASK-106
 created: 2026-11-06
 ---
@@ -19,8 +18,8 @@ Tests must not depend on the developer's Git config. Set `rerere.enabled` and `r
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_review_rebase.py` with `rerere.enabled` and `rerere.autoupdate` set and a recorded resolution for the conflict shows `chitty run --mode review` moving the ticket to `doing` with `Review failed (integration)` naming the file, the rebase aborted and the agent not started; it fails before the fix
-- [ ] `PLAN.md` says the review rebase ignores recorded resolutions
+- [x] A test in `tests/test_review_rebase.py` with `rerere.enabled` and `rerere.autoupdate` set and a recorded resolution for the conflict shows `chitty run --mode review` moving the ticket to `doing` with `Review failed (integration)` naming the file, the rebase aborted and the agent not started; it fails before the fix
+- [x] `PLAN.md` says the review rebase ignores recorded resolutions
 
 ## Plan
 
@@ -32,6 +31,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. It reproduced the stop in a sc
 
 Owner set to human only so chitty run leaves this ticket to this session; cleared when done.
 
+## Summary
+
+`git.rebase` now runs `git -c rerere.enabled=false rebase`, with a comment saying why, so a recorded resolution is never replayed into a review and a conflict goes back to the worker as `Review failed (integration)`. `PLAN.md` says so in step 3 of the review preparation.
+
+Verified: `test_a_recorded_resolution_is_not_replayed_into_the_review` sets `rerere.enabled` and `rerere.autoupdate` in the test repository, records a resolution by resolving the conflict once, and failed before the fix with Git's `Staged 'shared.txt' using previous resolution.`; `make check` passes (292 tests plus Node). Until this merges, the human's review loop can export `GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=rerere.enabled GIT_CONFIG_VALUE_0=false`.
+
 ## History
 
 - 2026-11-06T09:49:33Z youthful-toad → backlog
@@ -40,3 +45,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-06T09:50:31Z youthful-toad: changed owner, notes
 - 2026-11-06T09:50:34Z youthful-toad: wrote the plan
 - 2026-11-06T09:50:34Z youthful-toad todo → doing
+- 2026-11-06T09:55:10Z youthful-toad: changed owner, summary; ticked acceptance criteria
+- 2026-11-06T09:55:10Z youthful-toad doing → review
