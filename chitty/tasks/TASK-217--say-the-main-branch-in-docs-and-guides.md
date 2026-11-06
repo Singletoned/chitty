@@ -1,6 +1,6 @@
 ---
 title: Say "the main branch" in docs and guides
-status: backlog
+status: todo
 priority: medium
 depends_on:
   - TASK-216
@@ -9,18 +9,34 @@ created: 2026-11-06
 
 ## Description
 
-After `TASK-216`, the integration branch is `main_branch` in `chitty.toml`. Wherever the guides and docs mean the integration branch, change "`main`" to "the main branch (`main_branch` in `chitty.toml`)", or plain "the main branch" once it has been introduced. Leave text that means the primary checkout ("main checkout") alone.
+After `TASK-216`, the integration branch is the optional `main_branch` setting (default `main`, `TASK-214`). Wherever the guides and docs mean the integration branch, say "the main branch" instead of "`main`". Leave text about the primary checkout ("main checkout") alone; it is never backticked.
 
-- `src/chitty/guide.md` and `src/chitty/roles/*.md`. These are the managed block, so bump `__version__` at patch level.
-- `README.md`, around lines 34 and 125, and wherever else `grep -n '`main`' README.md` matches.
-- `PLAN.md`, around lines 62, 134, 529, 650, 651, 716, 722 and 735, and the config section, which should document the optional `main_branch` setting (default `main`).
+- `src/chitty/guide.md` lines 13 and 31, and `src/chitty/roles/review.md` line 16. Use plain "the main branch". Don't add "(`main_branch` in `chitty.toml`)": the block is copied into every repository's `AGENTS.md`, `TASK-143` is shrinking it, and some repositories configure Chitty in `pyproject.toml` instead. `TASK-151` also rewrites the merge sentences at guide line 31 and review line 16; whichever ticket lands second adapts to the other.
+- `README.md` line 125, and `PLAN.md` lines 62, 134, 529, 716, 722 and 735.
+- Leave `README.md` line 34 and `PLAN.md` lines 650–651. They describe developing Chitty itself, whose branch is `main`.
+- `PLAN.md`'s `## Config` section: add a commented `# main_branch = "master"` line to its TOML block, and a sentence saying the setting is optional, defaults to `main`, and that `chitty init` writes it only for a new repository on another branch.
 
-Don't run `chitty init` on the branch (`TASK-212`).
+Bump `__version__` at patch level. `scripts/check_version_bump.py` requires a bump for any change to `src/chitty/guide.md` or `src/chitty/roles/`. Don't run `chitty init` on the branch (`TASK-212`). This repository's own `AGENTS.md` keeps "`main`" until the main checkout's upgrade regenerates it after landing; reviewers should expect that.
+
+Out of scope: `scripts/check_version_bump.py`'s own hard-coded `main`, which only runs in this repository.
 
 ## Acceptance Criteria
 
-- [ ] `grep -n '`main`' src/chitty/guide.md src/chitty/roles/*.md README.md PLAN.md` matches only text that means the primary checkout or quotes a command, and `PLAN.md`'s config section documents `main_branch`.
+- [ ] Run ``grep -n '`main`' src/chitty/guide.md src/chitty/roles/*.md README.md PLAN.md``: it matches only `README.md` line 34 and `PLAN.md` lines 650–651. `PLAN.md`'s `## Config` section documents `main_branch` as optional with default `main`.
 - [ ] `__version__` is bumped and `make check` passes.
+
+## Notes
+
+Cold read 1 (Opus, read-only; docs only, so nothing to run). Outcomes:
+- The criterion couldn't pass, because documenting the default would itself match: fixed, the default is written as code and the allowed matches are listed.
+- The broken code span around the grep: fixed, it uses double backticks.
+- Version-bump reasoning: fixed, the bump is required by `check_version_bump.py`; only `guide.md` is the managed block.
+- `(`main_branch` in `chitty.toml`)` in the managed guide: rejected, plain "the main branch", because of `TASK-143` and `pyproject` configs.
+- `README:34` and `PLAN:650–651`: decided, leave them, because they're about this repository.
+- Overlap with `TASK-151`'s merge sentences: noted.
+- This repository's stale `AGENTS.md`: noted for reviewers.
+- `check_version_bump.py` hard-codes `main`: rejected as out of scope, because it only runs here.
+- "from the main branch … never implement in the main checkout" reads confusingly: accepted as accurate.
 
 ## History
 
@@ -28,3 +44,5 @@ Don't run `chitty init` on the branch (`TASK-212`).
 - 2026-11-06T16:48:23Z youthful-toad: changed dependencies
 - 2026-11-06T16:48:41Z youthful-toad: changed description
 - 2026-11-06T16:49:20Z youthful-toad: changed description
+- 2026-11-06T17:01:21Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-06T17:01:21Z youthful-toad backlog → todo
