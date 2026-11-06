@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` on committed conflict markers
-status: doing
+status: review
 priority: medium
 created: 2026-11-06
 ---
@@ -20,8 +20,8 @@ Out of scope: checking for markers in Chitty itself (`chitty check`).
 
 ## Acceptance Criteria
 
-- [ ] `make check` fails and prints the file and line when a tracked file contains a conflict marker line, and passes on `main` today.
-- [ ] `mate --list` still lists `check` with its `##` description.
+- [x] `make check` fails and prints the file and line when a tracked file contains a conflict marker line, and passes on `main` today.
+- [x] `mate --list` still lists `check` with its `##` description.
 
 ## Plan
 
@@ -36,6 +36,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-205/1`; failed with a marker and passe
 - Legitimate matches on `main`: none, so the exclusion clause was removed.
 - Bare failure output (no explanatory message): accepted, `file:line` is enough.
 
+Verified the regression before the fix: a tracked conflict-marker line made the old make check pass. After adding the first recipe line, the same marker failed fast with README.md:243:<<<<<<< HEAD; removing it let make check pass. make format, make check, and mate --list all pass.
+
+## Summary
+
+Added the conflict-marker guard as the first check recipe in Makefile. Verified failure output with a temporary tracked marker, then verified clean make format && make check and mate --list. No follow-ups.
+
 ## History
 
 - 2026-11-06T11:51:16Z youthful-toad → backlog
@@ -43,3 +49,5 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-205/1`; failed with a marker and passe
 - 2026-11-06T11:56:21Z youthful-toad backlog → todo
 - 2026-11-06T20:30:27Z rosy-eel todo → doing
 - 2026-11-06T20:30:38Z rosy-eel: wrote the plan
+- 2026-11-06T20:35:37Z rosy-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:35:37Z rosy-eel doing → review
