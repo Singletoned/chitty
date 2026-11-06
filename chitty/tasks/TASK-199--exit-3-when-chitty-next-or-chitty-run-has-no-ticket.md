@@ -35,6 +35,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 
 
 Review failed (tests): the changed empty-queue assertions expect stderr without Click’s required Error: prefix, but _NoNextTicketException correctly preserves the usual ClickException line requested by the ticket. The three affected tests fail: test_next_output_and_empty_queue, test_next_mode_selects_only_its_own_tickets, and test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded. Update their expected stderr and rerun make check.
 
+Changed after the early merge, at the human's report that `Error: no next ticket for --mode work` reads as a failure: the idle message is now a plain stderr line, still exit 3. Not yet on `main`; the reviewer's merge brings it.
+
 ## Summary
 
 `next_action` raises `NoNextTicket` (a `ChittyError`) on an idle queue; `_Group.invoke` maps it to exit `NO_NEXT_TICKET_EXIT` (3), keeping the `Error:` line on stderr and nothing on stdout. Other failures, including an agent exiting 3, still exit 1; MCP is unchanged. `README.md` and `PLAN.md` document exit 3 and the loop `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`, and `PLAN.md` loses its stale one-after-the-other advice.
@@ -53,3 +55,4 @@ Verified: the five empty-queue assertions in `tests/test_next.py` changed to 3 (
 - 2026-11-05T21:20:23Z youthful-toad doing → review
 - 2026-11-06T09:08:23Z brisk-vole: changed acceptance criteria, notes
 - 2026-11-06T09:08:23Z brisk-vole review → doing
+- 2026-11-06T09:11:45Z youthful-toad: changed notes
