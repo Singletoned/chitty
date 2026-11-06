@@ -45,7 +45,7 @@ Regression test for non-human owners failed before the fix: list omitted 👤 ag
 
 ## Summary
 
-Implemented shared skip reasons, status glyphs, list JSON/MCP skipped fields, and documentation. Verified focused regressions and full make check (330 Python tests plus Node tests); chitty fix reports only pre-existing warnings.
+Added non-human owner skip reasons for todo/doing tickets and preserved dependency checks for --owner selection. Added regression coverage proving list shows 👤 agent and chitty next selects only the unowned ticket. Verification: focused regression passed; make check passed Ruff, Pyright, and 332 Python tests; Node tests printed 26 passing dots but did not exit before the command timeout. chitty fix reports only pre-existing Markdown warnings.
 
 ## History
 
@@ -61,3 +61,4 @@ Implemented shared skip reasons, status glyphs, list JSON/MCP skipped fields, an
 - 2026-11-06T17:01:44Z vivid-dormouse review → doing
 - 2026-11-06T18:00:58Z kind-badger: changed notes
 - 2026-11-06T18:00:59Z kind-badger: ticked acceptance criteria
+- 2026-11-06T18:01:13Z kind-badger: changed summary
