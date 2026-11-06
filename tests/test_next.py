@@ -1046,6 +1046,7 @@ class TestNext(CliTestCase):
                 None,
             ),
             ("setup", lambda text: text.replace('setup = "true"\n', ""), None),
+            ("check", lambda text: text.replace('check = "true"\n', ""), None),
             (
                 "unset",
                 lambda text: text.replace('agent_command = "pi --chitty-{mode} {id}"\n', ""),
@@ -1106,6 +1107,7 @@ class TestNext(CliTestCase):
                         "a new ticket worktree's environment before the agent starts, for example "
                         'setup = "make install"'
                     ),
+                    "check": "requires `check` in chitty.toml",
                     "unset": "agent_command",
                     "blank": "agent_command",
                     "quotes": "agent_command",
@@ -1190,6 +1192,46 @@ class TestNext(CliTestCase):
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
             "todo",
         )
+
+    def test_run_check_failure_records_output_and_does_not_claim_or_start_agent(self):
+        config = self.root / "chitty.toml"
+        checker = self.root / "check.py"
+        checker.write_text(
+            "from pathlib import Path\n"
+            "import sys\n"
+            "ticket = next(Path('chitty/tasks').glob('*.md'))\n"
+            "Path('check-args').write_text(repr(sys.argv[1:]) + '\\n' + ticket.read_text())\n"
+            "for number in range(1, 26): print(f'check line {number}')\n"
+            "raise SystemExit(1)\n"
+        )
+        config.write_text(
+            config.read_text()
+            .replace('check = "true"', f"check = \"{sys.executable} {checker} 'quoted argument'\"")
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+
+        result = self.run_cli("run")
+
+        self.assertEqual(result.stdout, "TASK-1: todo → doing\n")
+        checked = (self.root / ".worktrees/task-1/check-args").read_text()
+        self.assertIn("['quoted argument']", checked)
+        self.assertIn("status: todo", checked)
+        self.assertNotIn("check line 1", result.stderr)
+        self.assertIn("Running check", result.stderr)
+        self.assertFalse((self.root / ".worktrees/task-1/started").exists())
+        repo = Repo.open(self.root)
+        notes = repo.find(repo.resolve("TASK-1")).task.section("Notes") or ""
+        self.assertIn("Review failed (work): check exited with status 1:", notes)
+        self.assertNotIn("\ncheck line 1\n", f"\n{notes}\n")
+        self.assertIn("check line 6", notes)
+        self.assertIn("check line 25", notes)
 
     def test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review(self):
         config = self.root / "chitty.toml"

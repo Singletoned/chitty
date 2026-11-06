@@ -156,10 +156,10 @@ def _run_ticket(
         _setup(setup, worktree)
     else:
         work_repo = Repo.open(worktree)
-    if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
-        work_repo.edit(action.id, claim_edit())
     if failed := _run_check(work_repo, worktree, action, check):
         return failed
+    if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
+        work_repo.edit(action.id, claim_edit())
     old_status = work_repo.find(action.id).task.frontmatter.status
     started = datetime.now(UTC)
     elapsed_start = time.monotonic()
