@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `AGENTS.md`'s managed block
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-212
@@ -62,6 +62,8 @@ Review failed (work): _changed_agents_block treats an AGENTS.md file present onl
 
 Regression test failed before the fix: a branch-only AGENTS.md containing only outside text was incorrectly treated as unchanged. The comparison now checks file presence before managed-block content. Focused review tests and full make check pass; chitty fix reported only pre-existing Markdown delimiter warnings in unrelated task files.
 
+Review failed (integration): rebasing onto `main` conflicts in `src/chitty/git.py`.
+
 ## Summary
 
 Fixed one-sided AGENTS.md detection in _changed_agents_block and added regression coverage. Verification: focused tests, make format, make check, and chitty fix passed. Commit 854991d includes Task: TASK-218.
@@ -79,3 +81,5 @@ Fixed one-sided AGENTS.md detection in _changed_agents_block and added regressio
 - 2026-11-06T20:15:23Z nimble-otter review → doing
 - 2026-11-06T20:21:23Z lively-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:21:23Z lively-adder doing → review
+- 2026-11-06T20:23:12Z rosy-ibis: changed notes
+- 2026-11-06T20:23:12Z rosy-ibis review → doing
