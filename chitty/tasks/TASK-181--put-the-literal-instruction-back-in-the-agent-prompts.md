@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -31,7 +31,7 @@ Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.p
 
 ## Summary
 
-Restored the literal single-asterisk Markdown instruction in the global guide and work, review, and plan role prompts; added TestGuide coverage; bumped Chitty to 0.1.33 and regenerated AGENTS.md/chitty.toml with uv run chitty init. Verified with make check (ruff, pyright, 278 unittest cases, and Node tests).
+Restored the literal single-asterisk Markdown instruction in the global guide and work, review, and plan role prompts; added TestGuide coverage; bumped Chitty to 0.1.33 and regenerated AGENTS.md/chitty.toml. Verified with make check: ruff, pyright, 278 unittest cases, and Node tests pass.
 
 ## History
 
@@ -53,3 +53,5 @@ Restored the literal single-asterisk Markdown instruction in the global guide an
 - 2026-11-06T16:15:41Z mellow-toad: ticked acceptance criteria
 - 2026-11-06T16:15:42Z mellow-toad: changed acceptance criteria
 - 2026-11-06T16:15:43Z mellow-toad: ticked acceptance criteria
+- 2026-11-06T16:15:52Z mellow-toad: changed summary
+- 2026-11-06T16:15:52Z mellow-toad doing → review
