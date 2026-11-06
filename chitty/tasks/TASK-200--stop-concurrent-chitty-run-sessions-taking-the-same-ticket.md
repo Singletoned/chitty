@@ -2,6 +2,7 @@
 title: Stop concurrent `chitty run` sessions taking the same ticket
 status: todo
 priority: high
+owner: human
 parent: TASK-106
 created: 2026-11-06
 ---
@@ -34,8 +35,11 @@ Out of scope: collisions in the main checkout itself, which `README.md` already 
 
 Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the PID-file design raced on stale takeover, on an empty file before the PID is written, and on PID reuse, so it now uses `fcntl.flock`, which the kernel releases on exit; named the module, the API, what `next_action` calls, the retry bound, the lock directory's creation, that the lock covers the dirty-path check and early returns, the test approach, and no version bump. The size concern is answered by the simpler lock; three criteria.
 
+Owner set to human only so chitty run leaves this ticket to this session; cleared when done.
+
 ## History
 
 - 2026-11-06T09:26:15Z youthful-toad → backlog
 - 2026-11-06T09:28:32Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T09:31:14Z youthful-toad backlog → todo
+- 2026-11-06T10:00:40Z youthful-toad: changed owner, notes
