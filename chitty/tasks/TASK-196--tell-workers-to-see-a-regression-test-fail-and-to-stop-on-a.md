@@ -1,6 +1,6 @@
 ---
 title: Tell workers to see a regression test fail, and to stop on a wrong ticket
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -53,3 +53,4 @@ Added the regression-test failure and wrong-ticket blocking guidance before the 
 - 2026-11-06T00:14:20Z witty-kestrel: wrote the plan
 - 2026-11-06T00:20:13Z witty-kestrel: ticked acceptance criteria
 - 2026-11-06T00:20:22Z witty-kestrel: changed summary
+- 2026-11-06T00:20:23Z witty-kestrel doing → review
