@@ -15,7 +15,7 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 ## Acceptance Criteria
 
 - [x] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
-- [x] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `literal single`
+- [ ] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `literal single`
 
 ## Plan
 
@@ -51,3 +51,4 @@ Restored the literal single-asterisk Markdown instruction in the global guide an
 - 2026-11-06T14:41:27Z able-yellowhammer review → doing
 - 2026-11-06T16:15:40Z mellow-toad: changed acceptance criteria
 - 2026-11-06T16:15:41Z mellow-toad: ticked acceptance criteria
+- 2026-11-06T16:15:42Z mellow-toad: changed acceptance criteria
