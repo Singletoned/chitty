@@ -42,7 +42,7 @@ Out of scope: CRLF, because `read_text` and `write_text` already normalise a who
 - [x] Tests show a new `AGENTS.md`, and one with content but no block, getting the block with both markers, and `chitty guide` printing no markers
 - [x] Tests show an old block migrated to markers with a following section keeping its heading and blank line, and a message on stderr
 - [x] `README.md` and `PLAN.md` describe the markers, and `__version__` is bumped above `main`'s
-- [ ] Tests show a marked block replaced with text before and after it unchanged, including unheaded text after it and a guide containing a backslash, a second `chitty init` changing nothing, and `prettier` leaving the result unchanged
+- [x] Tests show a marked block replaced with text before and after it unchanged, including unheaded text after it and a guide containing a backslash, a second `chitty init` changing nothing, and `prettier` leaving the result unchanged
 - [x] Tests show a begin with no end, an end with no begin, reversed markers and two pairs each failing `chitty init` with a message naming `AGENTS.md`, with the file unchanged, and a stale repository in that state warning on a write, with the write succeeding and the version not advanced
 
 ## Plan
@@ -96,3 +96,4 @@ Implemented strict AGENTS.md markers, legacy migration, exact marked-block repla
 - 2026-11-06T14:47:06Z daring-eel doing → review
 - 2026-11-06T15:01:19Z youthful-adder: changed acceptance criteria, notes
 - 2026-11-06T15:01:19Z youthful-adder review → doing
+- 2026-11-06T15:20:50Z vivid-kestrel: ticked acceptance criteria
