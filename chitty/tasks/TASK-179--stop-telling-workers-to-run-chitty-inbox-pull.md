@@ -2,7 +2,6 @@
 title: Stop telling workers to run `chitty inbox --pull`
 status: review
 priority: medium
-owner: human
 depends_on:
   - TASK-142
 created: 2026-11-05
@@ -33,6 +32,8 @@ Rebased onto main after the prior integration review failure; resolved the guide
 
 Owner set to `human` so the review loop skips this until `TASK-212` lands: the branch records `0.1.35` and `main`'s `0.1.34` `chitty` refuses to write here. Clear the owner then.
 
+Owner cleared: the branch now has `main`'s `chitty.toml` again, so `main`'s `chitty` can write here.
+
 ## Summary
 
 Removed the redundant inbox pull from both worker guide sources, preserved ticket/task wording, regenerated AGENTS.md, and bumped package/setup versions to 0.1.35 after rebasing onto main. Added guide regression coverage. Verified guide output, chitty inbox --pull, uv run chitty init, chitty fix, Ruff, Pyright, 330 unittest tests, and Node tests.
@@ -54,3 +55,4 @@ Removed the redundant inbox pull from both worker guide sources, preserved ticke
 - 2026-11-06T16:07:57Z jolly-stoat: changed notes, summary
 - 2026-11-06T16:07:57Z jolly-stoat doing → review
 - 2026-11-06T16:25:04Z youthful-toad: changed owner, notes
+- 2026-11-06T16:43:39Z youthful-toad: changed owner, notes
