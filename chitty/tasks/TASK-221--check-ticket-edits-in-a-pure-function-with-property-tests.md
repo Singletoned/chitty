@@ -1,6 +1,6 @@
 ---
 title: Check ticket edits in a pure function, with property tests
-status: doing
+status: review
 labels:
   - spec-first
 priority: medium
@@ -34,9 +34,9 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- [ ] `check_edit` exists, does no I/O (a test calls it with no repository and no `CHITTY_ACTOR`), `Repo.edit` uses it, and all existing tests pass unchanged.
-- [ ] The new tests add less than 5 seconds to `make check`.
-- [ ] `tests/test_check_edit.py` has Hypothesis properties for the three rules above, built through `claim_edit` and `fail_review_edit`, which `run.py` uses. Removing `skip_verdicts=True` from `fail_review_edit` makes the first property fail with a shrunk counterexample, recorded in the summary.
+- [x] `check_edit` exists, does no I/O (a test calls it with no repository and no `CHITTY_ACTOR`), `Repo.edit` uses it, and all existing tests pass unchanged.
+- [x] The new tests add less than 5 seconds to `make check`.
+- [x] `tests/test_check_edit.py` has Hypothesis properties for the three rules above, built through `claim_edit` and `fail_review_edit`, which `run.py` uses. Removing `skip_verdicts=True` from `fail_review_edit` makes the first property fail with a shrunk counterexample, recorded in the summary.
 
 ## Plan
 
@@ -54,6 +54,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-221/1`; the reintroduced `TASK-206` bu
 - Zero-criteria tickets accept any verdict text on `review → done`: noted as a possible follow-up, not filed, because with no criteria there's nothing to judge.
 - Size: confirmed right for a pilot.
 
+Implemented and verified. Pure check_edit has no I/O and preserves config-dependent checks in Repo.edit. Extracted claim_edit and fail_review_edit; the property suite uses both. make check passed (353 Python tests and Node tests); Hypothesis properties took 0.27s in isolation. Verified the regression guard: without skip_verdicts, the shrunk one-criterion review case fails on missing verdict 1.
+
+## Summary
+
+Implemented pure edit validation in src/chitty/store.py, with run.py helpers claim_edit and fail_review_edit and Hypothesis coverage in tests/test_check_edit.py. Added Hypothesis to dev dependencies and uv.lock. Handoff: review the focused extraction and property generators. Verification: make check passed; explicit no-skip regression produced the expected missing-verdict error.
+
 ## History
 
 - 2026-11-06T19:18:51Z youthful-toad → backlog
@@ -61,3 +67,5 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-221/1`; the reintroduced `TASK-206` bu
 - 2026-11-06T19:28:21Z youthful-toad backlog → todo
 - 2026-11-06T20:44:37Z youthful-heron todo → doing
 - 2026-11-06T20:44:56Z youthful-heron: wrote the plan
+- 2026-11-06T20:49:37Z youthful-heron: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:49:37Z youthful-heron doing → review
