@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -42,6 +42,8 @@ updated /Users/singletoned/src/singletoned/chitty/.worktrees/task-143/AGENTS.md,
 
 Correction: the prior note and summary lost literal backtick quoting because the shell expanded backticks; the implementation and verification claims remain unchanged.
 
+Review failed (integration): rebasing onto `main` conflicts in `AGENTS.md`, `src/chitty/__init__.py`, `src/chitty/guide.md`.
+
 ## Summary
 
 Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, README.md, and PLAN.md document the role-guide split; init regression coverage verifies replacing a legacy block; version bumped to 0.1.39. Verification: focused init/guide tests, make format, make check, chitty fix, and chitty check (warnings only for pre-existing ticket Markdown).
@@ -57,3 +59,5 @@ Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, 
 - 2026-11-06T20:22:51Z open-urchin: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:22:51Z open-urchin doing → review
 - 2026-11-06T20:23:03Z open-urchin: changed notes, summary
+- 2026-11-06T20:24:15Z sunny-crane: changed notes
+- 2026-11-06T20:24:15Z sunny-crane review → doing
