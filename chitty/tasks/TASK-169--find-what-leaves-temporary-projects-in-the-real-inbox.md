@@ -29,6 +29,10 @@ The cold read found most of the cause from each directory's `repo` owner file: `
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. It found the likely cause, and the check now names how to show it.
 
+Full-suite inbox comparison (2026-11-06): before and after make check were identical. Both contained: chitty, chitty-run-txsmwm, chitty-task-123-tlk9qr, chladnify, circuitry, context-mode, echonomicon, prj, repo, spend-model, t45, taidy, task149-scratch, tmp-1soka7lhma, tmp-mehm3w3igo, tmp-mn1utr3ave, tmp-xv9qiiwofj, tmp-yhztcyxx4f, and tmpoc0f637i. make check passed: Ruff, Pyright, 277 Python unittest tests, and Node tests. RepoTestCase sets an isolated temporary XDG_DATA_HOME, so the suite did not write the real inbox; no test fix was needed.
+
+Cause review from each repo owner file: chitty, chladnify, circuitry, echonomicon, spend-model, and taidy are real registered projects. chitty-run-txsmwm, chitty-task-123-tlk9qr, t45, task149-scratch, and all six tmp-* / tmpoc0f637i entries point into /tmp or temporary scratch paths, identifying hand trials of chitty init. repo points to a temporary ctx-mode scratch repo and is also a hand trial. prj has an empty owner file, so it was registered without a checkout path; its origin cannot be established from inbox data. context-mode has an empty-owner repo file plus suggestions, so it is a real registered project whose owner path was not recorded. The temporary entries listed for human removal are: chitty-run-txsmwm, chitty-task-123-tlk9qr, prj, repo, t45, task149-scratch, tmp-1soka7lhma, tmp-mehm3w3igo, tmp-mn1utr3ave, tmp-xv9qiiwofj, tmp-yhztcyxx4f, and tmpoc0f637i.
+
 ## History
 
 - 2026-11-04T21:00:17Z mellow-newt → backlog
@@ -36,3 +40,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. It found the likely cause, and
 - 2026-11-04T21:01:57Z mellow-newt backlog → todo
 - 2026-11-06T00:28:18Z youthful-crane todo → doing
 - 2026-11-06T00:28:30Z youthful-crane: wrote the plan
+- 2026-11-06T00:32:15Z youthful-crane: changed notes
