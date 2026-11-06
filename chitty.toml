@@ -2,6 +2,7 @@ format = 1
 default_context = "tasks"
 autocommit = true
 setup = "make install"
+check = "make check"
 # Run the agent with this worktree's `.venv` first on `PATH`, so a bare `chitty`
 # is the branch's code, not whichever global install comes first. The `env -u`
 # stops an exported `UV_PROJECT_ENVIRONMENT` sending `uv run` to the shared one.
