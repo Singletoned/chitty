@@ -58,6 +58,13 @@ Cold read by a fresh Sonnet subagent with `TASK-145`, 2026-11-04. Fixed: a damag
 
 Review failed (integration): rebasing onto `main` conflicts in `chitty.toml`.
 
+Rebased onto `main` by a human-run session to unstick the branch. `main`'s `chitty` had upgraded this branch's `chitty.toml` to config this branch's code couldn't read (`TASK-204`). Conflicts resolved:
+- `chitty.toml` keeps `main`'s `chitty_version = "0.1.33"`.
+- `__version__` is now `0.1.34`, one patch above `main`, because this branch changes the managed block. If `TASK-203` (also `0.1.34`) lands first, bump again.
+- `src/chitty/errors.py` and `store.py` keep both `NoNextTicket` and `ManagedGuideError`.
+- `tests/test_pi_extension.py` compares against `__version__` rather than a literal.
+`make check` passes (310 tests). The next Chitty write here will record `0.1.34` in `chitty.toml`; after that, `main`'s `chitty` (`0.1.33`) refuses writes in this worktree until it lands. Re-check each criterion against the rebased code.
+
 ## Summary
 
 Implemented strict managed-guide markers for `AGENTS.md`. `init_repo` now validates whole-line markers, migrates legacy blocks with preserved separators, replaces only marked content via slicing, and raises a distinct error for malformed markers. Stale autocommit writes warn and proceed without advancing setup. Updated docs/version and added CLI regression coverage. Verified with `make check` (273 Python tests and Node tests pass). Follow-up: a human must repair any real repository with malformed marker lines.
@@ -77,3 +84,4 @@ Implemented strict managed-guide markers for `AGENTS.md`. `init_repo` now valida
 - 2026-11-05T22:03:58Z intrepid-eel doing → review
 - 2026-11-06T10:05:49Z upbeat-otter: changed notes
 - 2026-11-06T10:05:49Z upbeat-otter review → doing
+- 2026-11-06T12:53:55Z youthful-toad: changed notes
