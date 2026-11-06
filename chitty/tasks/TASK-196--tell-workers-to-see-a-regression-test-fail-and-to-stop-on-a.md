@@ -34,6 +34,10 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 
 Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-196/3`: nothing serious. The test failed on all five phrases without the change and passed with it, and `make check` exited 0. Rejected: the `TASK-137` attribution to a cheap model, which the planning session saw directly though the tickets do not say it; a test made to fail for an unrelated reason, and pasted phrases, which are for the reviewer; a regression test that cannot be run, which the existing bullet on being blocked covers; and overlap with "Block only for a costly reversal or a person decision", since the new bullet names this as a person's decision.
 
+## Summary
+
+Added the regression-test failure and wrong-ticket blocking guidance before the cheap-defaults bullet, plus a whitespace-collapsed TestGuide regression test covering all required phrases. Verified the new test failed before the guide change, then passed after it; TestGuide and make check passed (including 278 Python tests and Node tests). chitty fix completed with only pre-existing Markdown delimiter warnings in other tickets.
+
 ## History
 
 - 2026-11-05T17:53:54Z mellow-newt → backlog
@@ -48,3 +52,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-06T00:14:05Z witty-kestrel todo → doing
 - 2026-11-06T00:14:20Z witty-kestrel: wrote the plan
 - 2026-11-06T00:20:13Z witty-kestrel: ticked acceptance criteria
+- 2026-11-06T00:20:22Z witty-kestrel: changed summary
