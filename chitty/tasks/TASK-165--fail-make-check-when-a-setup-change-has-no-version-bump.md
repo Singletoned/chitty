@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` when a setup change has no version bump
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -45,7 +45,7 @@ Regression reproduced before fix: an untracked file under src/chitty/roles/ was 
 
 ## Summary
 
-Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fixed INITIAL_CONFIG extraction to compare only string contents, so assignment whitespace is unrelated; added a regression test and verified it failed before the fix. Verified the focused suite (8 tests), `make check` (311 Python tests, lint, type-check), and `npm test`; `chitty fix` passed. Commit: b181ee0 (Task: TASK-165). Follow-up: none.
+Added untracked-file detection for watched setup paths using Git standard-library-compatible CLI, with a regression test for new role files. Verified the regression failed before the fix, focused version-bump tests (9), make check (325 Python tests plus npm tests), and chitty fix. Follow-up: none.
 
 ## History
 
@@ -69,3 +69,5 @@ Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fi
 - 2026-11-06T15:15:03Z mellow-adder review → doing
 - 2026-11-06T15:28:06Z youthful-vole: changed notes
 - 2026-11-06T15:28:07Z youthful-vole: ticked acceptance criteria
+- 2026-11-06T15:35:03Z youthful-vole: changed summary
+- 2026-11-06T15:35:03Z youthful-vole doing → review
