@@ -51,6 +51,15 @@ def initial_config(text: str | None, source: str) -> str:
 def changed_files(base: str) -> list[str]:
     output = git("diff", "--name-only", base, "--", *WATCHED_FILES, "src/chitty/roles")
     changed = set(output.splitlines())
+    untracked = git(
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "--",
+        *WATCHED_FILES,
+        "src/chitty/roles",
+    )
+    changed.update(untracked.splitlines())
     current_config = current_file(CONFIG_FILE)
     base_config = git("show", f"{base}:{CONFIG_FILE}")
     if current_config is None or initial_config(current_config, "working tree") != initial_config(

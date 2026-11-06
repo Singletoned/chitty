@@ -94,6 +94,13 @@ class VersionBumpTest(unittest.TestCase):
         result = self.run_check()
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_untracked_watched_file_requires_higher_version(self):
+        self.start_branch()
+        self.write("src/chitty/roles/new-role.md", "new role\n")
+        result = self.run_check()
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("src/chitty/roles/new-role.md", result.stderr)
+
     def test_initial_config_assignment_format_change_passes(self):
         self.start_branch()
         self.write("src/chitty/config.py", 'INITIAL_CONFIG    = """initial"""\n')
