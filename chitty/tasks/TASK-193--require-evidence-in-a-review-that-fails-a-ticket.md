@@ -33,6 +33,10 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 - [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
 - [ ] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, no longer containing `such as a throwaway failing test`, and not matching `\bmake\b`
 
+## Plan
+
+Update the review role's two specified bullets exactly as ticketed, add the TestGuide regression assertions with collapsed whitespace, run the focused test and full make check, then apply chitty fix and record verification.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Serious, fixed: one criterion could pass on words already in the file, so it is now two naming exact phrases. Also fixed: failures with nothing to run, such as a missing file, a wrong ticket or a broken environment, which the rule would have forbidden; a reviewer unable to demonstrate a claim files a ticket; not naming `make`, since the file ships to every repository; the wording is given outright for a cheap worker; and `guide.md` left alone is stated. It confirmed no `chitty init` or version bump is needed. Rejected: folding this into `TASK-167`, which waits on `TASK-166` and `TASK-151`, because this is cheap to have now, so `TASK-167` is told to keep the rule instead.
@@ -62,3 +66,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T18:35:43Z mellow-newt: changed description, notes
 - 2026-11-05T18:35:43Z mellow-newt backlog → todo
 - 2026-11-05T23:52:34Z youthful-adder todo → doing
+- 2026-11-06T00:00:20Z youthful-adder: wrote the plan
