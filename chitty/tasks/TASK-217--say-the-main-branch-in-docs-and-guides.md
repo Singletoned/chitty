@@ -1,6 +1,6 @@
 ---
 title: Say "the main branch" in docs and guides
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-216
@@ -22,8 +22,8 @@ Out of scope: `scripts/check_version_bump.py`'s own hard-coded `main`, which onl
 
 ## Acceptance Criteria
 
-- [ ] Run ``grep -n '`main`' src/chitty/guide.md src/chitty/roles/*.md README.md PLAN.md``: it matches only `README.md` line 34 and `PLAN.md` lines 650–651. `PLAN.md`'s `## Config` section documents `main_branch` as optional with default `main`.
-- [ ] `__version__` is bumped and `make check` passes.
+- [x] Run ``grep -n '`main`' src/chitty/guide.md src/chitty/roles/*.md README.md PLAN.md``: it matches only `README.md` line 34 and `PLAN.md` lines 650–651. `PLAN.md`'s `## Config` section documents `main_branch` as optional with default `main`.
+- [x] `__version__` is bumped and `make check` passes.
 
 ## Plan
 
@@ -42,6 +42,12 @@ Cold read 1 (Opus, read-only; docs only, so nothing to run). Outcomes:
 - `check_version_bump.py` hard-codes `main`: rejected as out of scope, because it only runs here.
 - "from the main branch … never implement in the main checkout" reads confusingly: accepted as accurate.
 
+Verified the grep leaves only README.md line 34 and PLAN.md lines 660-661 (the repository-development references), and PLAN.md documents optional main_branch with default main. make install && make format && make check passed: 359 Python tests and Node tests passed.
+
+## Summary
+
+Updated guide, review role, README, and PLAN wording to say the main branch; documented optional main_branch configuration; bumped __version__ to 0.1.40. Verification: required grep, git diff --check, and make install && make format && make check all passed. No follow-ups.
+
 ## History
 
 - 2026-11-06T16:48:08Z youthful-toad → backlog
@@ -52,3 +58,5 @@ Cold read 1 (Opus, read-only; docs only, so nothing to run). Outcomes:
 - 2026-11-06T17:01:21Z youthful-toad backlog → todo
 - 2026-11-06T21:25:37Z kind-gannet todo → doing
 - 2026-11-06T21:25:59Z kind-gannet: wrote the plan
+- 2026-11-06T21:28:31Z kind-gannet: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T21:28:31Z kind-gannet doing → review
