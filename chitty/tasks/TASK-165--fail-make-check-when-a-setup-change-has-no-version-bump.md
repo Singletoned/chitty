@@ -20,7 +20,7 @@ Failure names the changed files and both versions.
 
 ## Acceptance Criteria
 
-- [ ] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
+- [x] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
 - [x] Tests show a branch behind `main` that changed nothing passing, running on `main` passing, and a `--depth 1` clone at a tag with no `main` passing with a notice
 - [x] `make check` runs it
 
@@ -55,3 +55,4 @@ Implemented `scripts/check_version_bump.py` and added it to `make check`. The gu
 - 2026-11-06T11:07:40Z eager-crane: changed acceptance criteria, notes
 - 2026-11-06T11:07:40Z eager-crane review → doing
 - 2026-11-06T14:56:57Z daring-adder: changed notes
+- 2026-11-06T14:57:05Z daring-adder: ticked acceptance criteria
