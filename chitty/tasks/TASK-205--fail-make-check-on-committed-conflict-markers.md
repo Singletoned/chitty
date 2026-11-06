@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` on committed conflict markers
-status: review
+status: done
 priority: medium
 created: 2026-11-06
 ---
@@ -38,6 +38,10 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-205/1`; failed with a marker and passe
 
 Verified the regression before the fix: a tracked conflict-marker line made the old make check pass. After adding the first recipe line, the same marker failed fast with README.md:243:<<<<<<< HEAD; removing it let make check pass. make format, make check, and mate --list all pass.
 
+Reviewed: independently verified the implementation and both acceptance criteria; make format && make check passed, mate --list lists check with its description, and a temporary tracked README.md marker made make check fail with README.md:243 output. Working tree is clean.
+1: pass - temporary tracked README.md marker made make check fail and print README.md:243; clean make check passed
+2: pass - mate --list lists check with its ## description
+
 ## Summary
 
 Added the conflict-marker guard as the first check recipe in Makefile. Verified failure output with a temporary tracked marker, then verified clean make format && make check and mate --list. No follow-ups.
@@ -51,3 +55,5 @@ Added the conflict-marker guard as the first check recipe in Makefile. Verified 
 - 2026-11-06T20:30:38Z rosy-eel: wrote the plan
 - 2026-11-06T20:35:37Z rosy-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:35:37Z rosy-eel doing → review
+- 2026-11-06T20:38:20Z jolly-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-06T20:38:20Z jolly-lapwing review → done
