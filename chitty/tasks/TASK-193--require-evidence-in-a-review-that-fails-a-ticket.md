@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -74,3 +74,4 @@ Updated the two review-role bullets to require executable evidence and structure
 - 2026-11-06T00:06:42Z youthful-adder: ticked acceptance criteria
 - 2026-11-06T00:06:43Z youthful-adder: ticked acceptance criteria
 - 2026-11-06T00:06:44Z youthful-adder: changed summary
+- 2026-11-06T00:06:45Z youthful-adder doing → review
