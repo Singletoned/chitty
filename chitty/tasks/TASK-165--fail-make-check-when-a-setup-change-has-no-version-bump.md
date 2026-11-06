@@ -41,6 +41,8 @@ Review failed (work): an untracked file added under a watched path is not detect
 2: pass - independently verified
 3: pass - independently verified
 
+Regression reproduced before fix: an untracked file under src/chitty/roles/ was ignored by git diff and the new test failed. Including untracked watched paths with git ls-files fixes it; focused tests and make check pass.
+
 ## Summary
 
 Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fixed INITIAL_CONFIG extraction to compare only string contents, so assignment whitespace is unrelated; added a regression test and verified it failed before the fix. Verified the focused suite (8 tests), `make check` (311 Python tests, lint, type-check), and `npm test`; `chitty fix` passed. Commit: b181ee0 (Task: TASK-165). Follow-up: none.
@@ -65,3 +67,4 @@ Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fi
 - 2026-11-06T15:04:24Z daring-adder doing → review
 - 2026-11-06T15:15:03Z mellow-adder: changed acceptance criteria, notes
 - 2026-11-06T15:15:03Z mellow-adder review → doing
+- 2026-11-06T15:28:06Z youthful-vole: changed notes
