@@ -1,6 +1,6 @@
 ---
 title: Check PyPI every 100 `chitty` commands
-status: review
+status: done
 priority: low
 depends_on:
   - TASK-159
@@ -24,6 +24,10 @@ Add a persistent command counter in upgrade.py for non-editable installs: saniti
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: order against `TASK-159`, a corrupt count file, the directory, and what counts.
 
+1: pass - The interval check, reset-on-failure, alert, and editable-install behavior are implemented and verified by tests.
+
+Reviewed: independently inspected the implementation, tests, and diff; targeted upgrade tests passed, make check passed (316 unittest tests and npm test), and the acceptance criterion is met.
+
 ## Summary
 
 Implemented the non-editable-install PyPI interval check. Commands without pending-release persist a sanitized counter under XDG data, the 100th resets before querying PyPI, and newer releases create pending-release with an immediate alert; failures remain silent and editable installs are excluded. Added regression tests for interval behavior, alerts, failed requests, and editable installs. Verified targeted upgrade tests, full unittest suite (279 tests), Ruff, and Pyright; npm test emitted all test dots but did not print its normal summary before the runner returned.
@@ -38,3 +42,5 @@ Implemented the non-editable-install PyPI interval check. Commands without pendi
 - 2026-11-06T00:27:54Z jolly-ibis: ticked acceptance criteria
 - 2026-11-06T00:28:01Z jolly-ibis: changed summary
 - 2026-11-06T00:28:02Z jolly-ibis doing → review
+- 2026-11-06T14:52:07Z nimble-crane: changed notes
+- 2026-11-06T14:52:07Z nimble-crane review → done
