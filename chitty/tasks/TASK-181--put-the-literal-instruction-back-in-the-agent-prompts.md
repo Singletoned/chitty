@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: review
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -27,6 +27,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: the ticket said `TASK-1
 
 Same fault as the cold read of `TASK-187` found, 2026-11-05: `chitty init` needs `uv run` in a worktree, and comparing with `chitty guide` misleads inside Pi.
 
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`, `tests/test_pi_extension.py`.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in the global guide and work, review, and plan role prompts; added TestGuide coverage; bumped Chitty to 0.1.33 and regenerated AGENTS.md/chitty.toml with uv run chitty init. Verified with make check (ruff, pyright, 278 unittest cases, and Node tests).
@@ -45,3 +47,5 @@ Restored the literal single-asterisk Markdown instruction in the global guide an
 - 2026-11-05T23:40:28Z kind-jay: changed summary
 - 2026-11-05T23:40:28Z kind-jay doing → review
 - 2026-11-05T23:40:36Z kind-jay: ticked acceptance criteria
+- 2026-11-06T14:41:27Z able-yellowhammer: changed notes
+- 2026-11-06T14:41:27Z able-yellowhammer review → doing
