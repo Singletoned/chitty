@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: doing
+status: blocked
 priority: high
 depends_on:
   - TASK-120
@@ -50,6 +50,8 @@ Review failed (integration): the repository's root chitty.toml does not set chec
 
 3: fail - The repository configuration does not set check = "make check".
 
+Cannot complete acceptance criterion 3 on this ticket branch: TASK-212 explicitly forbids changing chitty.toml here. A human must set check = "make check" in the main checkout after this branch lands. Implementation is complete; make format && make check passes (336 Python tests plus Node tests).
+
 ## Summary
 
 Implemented and verified `check` preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
@@ -73,3 +75,5 @@ Implemented and verified `check` preflight support. Checks now run after setup a
 - 2026-11-06T19:41:47Z able-yellowhammer: changed summary
 - 2026-11-06T19:47:57Z tidy-badger: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-06T19:47:57Z tidy-badger review → doing
+- 2026-11-06T19:58:38Z lively-otter: changed notes
+- 2026-11-06T19:58:38Z lively-otter doing → blocked
