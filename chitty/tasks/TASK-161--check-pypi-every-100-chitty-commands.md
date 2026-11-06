@@ -1,6 +1,6 @@
 ---
 title: Check PyPI every 100 `chitty` commands
-status: todo
+status: doing
 priority: low
 depends_on:
   - TASK-159
@@ -25,3 +25,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: order against `T
 - 2026-11-04T19:36:38Z mellow-newt → backlog
 - 2026-11-04T19:38:01Z mellow-newt: changed description, notes
 - 2026-11-04T19:38:02Z mellow-newt backlog → todo
+- 2026-11-06T00:20:39Z jolly-ibis todo → doing
