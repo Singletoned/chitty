@@ -1,6 +1,6 @@
 ---
 title: File tickets raised on a branch under `BACKLOG`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-191
@@ -34,9 +34,11 @@ Regression coverage initially failed without the fix: plain CLI add in a linked 
 
 Review failed (work): the branch changes `chitty.toml`; only `chitty init` on the main checkout may change it.
 
+Review follow-up: restored chitty.toml to the main-branch version; the ticket branch retains only the source version bump, while generated config upgrades remain a main-checkout operation. make format and make check pass (341 Python tests and Node tests). chitty fix was run and reported the known unresolved repository setup warning.
+
 ## Summary
 
-Implemented linked-worktree target resolution in resolve_add_target: plain adds use configured backlog, explicit contexts win, and inbox pulls remain on default_context. Updated guides, PLAN.md, generated AGENTS.md/chitty.toml, and bumped __version__ to 0.1.37. Added CLI/MCP/worktree, guide, inbox, and autocommit regression tests. Verified with make check (339 Python tests and Node tests pass). Commit: 8e05e17.
+Implemented linked-worktree add routing in resolve_add_target, preserving explicit contexts, missing-backlog fallback, and inbox sequential numbering. Added real Git worktree coverage for CLI/MCP, guide coverage, inbox regression coverage, and updated the planning/guidance text. Source version is 0.1.37; chitty.toml remains at the main-branch version per review guidance. Verified with make format and make check (341 Python tests, pyright, ruff, and Node tests). Follow-up: generated config upgrades belong on the main checkout.
 
 ## History
 
@@ -50,3 +52,5 @@ Implemented linked-worktree target resolution in resolve_add_target: plain adds 
 - 2026-11-06T19:59:09Z golden-lapwing doing → review
 - 2026-11-06T19:59:51Z golden-quail: changed notes
 - 2026-11-06T19:59:51Z golden-quail review → doing
+- 2026-11-06T20:02:15Z quick-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:02:15Z quick-raven doing → review
