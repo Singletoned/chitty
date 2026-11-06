@@ -1,6 +1,6 @@
 ---
 title: Don't upgrade repository setup on a ticket branch
-status: todo
+status: doing
 priority: high
 owner: human
 created: 2026-11-06
@@ -30,6 +30,10 @@ Out of scope:
 - [ ] With `autocommit = false` in that linked worktree, the same write succeeds instead of raising `repository setup is stale`.
 - [ ] Existing upgrade tests in the main checkout still pass, `test_worktree_keeps_the_main_checkout_registered` no longer expects the machine-wide skip message, and the `chitty init` bullet in `PLAN.md` says upgrades happen only in the main checkout.
 
+## Plan
+
+In `Repo._prepare_write`, after `_check_setup_version()`, return early when `git.is_linked_worktree(self.root)`, so a ticket branch is never upgraded and never gets the stale-setup error. Tests in `tests/test_autocommit.py`: a linked worktree with an older recorded version takes a write without changing `chitty.toml` or `AGENTS.md` and without an upgrade commit, with `autocommit` both on and off. Drop the skip-message assertion from `test_worktree_keeps_the_main_checkout_registered`. Extend the `chitty init` bullet in `PLAN.md`.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-204/1`; both tests failed before and passed after; `make check` OK, 308 tests). Outcomes:
@@ -51,3 +55,5 @@ Reserved for a human-run session so the loops leave it alone.
 - 2026-11-06T11:41:32Z youthful-toad backlog → todo
 - 2026-11-06T12:54:24Z youthful-toad: changed notes
 - 2026-11-06T13:38:00Z youthful-toad: changed owner, notes
+- 2026-11-06T13:38:03Z youthful-toad: wrote the plan
+- 2026-11-06T13:38:03Z youthful-toad todo → doing
