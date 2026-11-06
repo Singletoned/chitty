@@ -1,6 +1,6 @@
 ---
 title: Add a `main_branch` setting
-status: backlog
+status: todo
 priority: medium
 created: 2026-11-06
 ---
@@ -11,9 +11,9 @@ Chitty assumes the integration branch is called `main`. This ticket adds the set
 
 Add an optional `main_branch` to `RepoConfig` in `src/chitty/config.py`, for both `chitty.toml` and `[tool.chitty]`, defaulting to `"main"`. Settings are never required (the human's decision, 2026-11-06): a missing key means today's behaviour, so existing configs load unchanged and need no upgrade.
 
-For a new repository, `chitty init` writes `main_branch` only when the current branch is something other than `main`, for example `master`. On `main`, a detached `HEAD` or outside Git, it writes nothing. Upgrades of existing configs never add it.
+For a new repository, `chitty init` writes `main_branch` only when the current branch is something other than `main`, for example `master`. Get the branch from the existing `git.current_branch`, which returns `None` outside Git or on a detached `HEAD`. Insert the line after formatting `INITIAL_CONFIG`, quoted with `json.dumps`, rather than adding a placeholder that would leave a blank line. A `[tool.chitty]` config that already exists is an upgrade, so it gets no key. On `main`, a detached `HEAD` or outside Git, it writes nothing. Upgrades of existing configs never add it.
 
-This changes what `chitty init` writes, so bump `__version__` at patch level. Don't edit this repository's `chitty.toml` on the branch.
+No `__version__` bump: no existing repository gains anything by re-running `init`, and `scripts/check_version_bump.py` only requires one when `INITIAL_CONFIG` changes. Don't edit this repository's `chitty.toml` on the branch.
 
 Out of scope: using the setting (`TASK-216`), docs (`TASK-217`), and remotes or `origin/HEAD`.
 
@@ -37,6 +37,15 @@ Split note correction: the code ticket is `TASK-216` and the docs ticket `TASK-2
 
 Rescoped on 2026-11-06. The human said "The easy solution is don't have required settings", so `main_branch` is optional with default `main`. The migration rule and the missing-key error are gone. The second cold read was stopped before it reported.
 
+Cold read 2 (Sonnet, `refs/cold-read/TASK-214/1`; the `master` tests failed before and passed after; `make check` OK). Outcomes:
+- The version bump would make every repository warn for no benefit: fixed, no bump.
+- How `init` knows the branch: fixed, the ticket points to `git.current_branch`.
+- An optional line in `INITIAL_CONFIG`: fixed, insert after formatting.
+- An existing `[tool.chitty]` is treated as an upgrade: stated.
+- The reader added a non-empty validator: accepted.
+- The detached-`HEAD` and outside-Git tests pass both before and after: accepted, because they test that nothing is written.
+The ref includes a version bump, so a worker should drop that hunk.
+
 ## History
 
 - 2026-11-06T16:24:17Z youthful-toad → backlog
@@ -44,3 +53,5 @@ Rescoped on 2026-11-06. The human said "The easy solution is don't have required
 - 2026-11-06T16:48:37Z youthful-toad: changed description
 - 2026-11-06T16:48:42Z youthful-toad: changed notes
 - 2026-11-06T16:49:06Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-06T16:59:24Z youthful-toad: changed description, notes
+- 2026-11-06T16:59:24Z youthful-toad backlog → todo
