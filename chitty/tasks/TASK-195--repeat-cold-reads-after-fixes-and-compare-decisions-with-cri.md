@@ -34,6 +34,8 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold
 
 Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-195/2`: nothing serious. The test failed on all three phrases without the change and passed with it, and `make check` passed. Rejected: naming a position in the current `plan.md`, because this depends on `TASK-194`, whose bullets will be there when this starts; and checking position in the test, as before.
 
+The ticket says no version bump is needed, but `make check` enforces a bump for every `src/chitty/roles` change via `check_version_bump.py`; bumped `__version__` to `0.1.39` so the required check passes.
+
 ## History
 
 - 2026-11-05T17:53:54Z mellow-newt → backlog
@@ -46,3 +48,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-06T20:22:49Z rosy-heron todo → doing
 - 2026-11-06T20:23:56Z rosy-heron: wrote the plan
 - 2026-11-06T20:24:06Z rosy-heron: wrote the plan
+- 2026-11-06T20:25:14Z rosy-heron: changed notes
