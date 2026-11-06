@@ -16,6 +16,10 @@ created: 2026-11-04
 
 - [ ] Tests show earlier invocations making no request, the 100th asking and alerting when PyPI is newer, a failed request leaving nothing but a reset count, and an editable install not counting
 
+## Plan
+
+Add a persistent command counter in upgrade.py for non-editable installs: sanitize corrupt counts, increment commands reaching finally, and on the 100th command reset before a silent PyPI check. Run this before the existing pending-release flow so new alerts are emitted immediately. Extend tests with interval, alert, failure-reset, and editable-install cases; run formatting and make check.
+
 ## Notes
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: order against `TASK-159`, a corrupt count file, the directory, and what counts.
@@ -26,3 +30,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: order against `T
 - 2026-11-04T19:38:01Z mellow-newt: changed description, notes
 - 2026-11-04T19:38:02Z mellow-newt backlog → todo
 - 2026-11-06T00:20:39Z jolly-ibis todo → doing
+- 2026-11-06T00:20:58Z jolly-ibis: wrote the plan
