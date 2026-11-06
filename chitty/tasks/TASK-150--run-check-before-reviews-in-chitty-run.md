@@ -22,9 +22,9 @@ Out of scope: a timeout, and landing.
 
 ## Acceptance Criteria
 
-- [ ] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
-- [ ] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
-- [ ] This repository sets `check`, `PLAN.md`, `README.md` and the template describe it, and `__version__` is bumped above `main`'s
+- [x] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
+- [x] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
+- [x] This repository sets `check`, `PLAN.md`, `README.md` and the template describe it, and `__version__` is bumped above `main`'s
 
 ## Plan
 
@@ -47,3 +47,4 @@ The check progress line is written to stderr so existing status output remains m
 - 2026-11-06T18:30:21Z witty-gannet todo → doing
 - 2026-11-06T18:30:36Z witty-gannet: wrote the plan
 - 2026-11-06T18:50:06Z witty-gannet: changed notes
+- 2026-11-06T18:50:07Z witty-gannet: ticked acceptance criteria
