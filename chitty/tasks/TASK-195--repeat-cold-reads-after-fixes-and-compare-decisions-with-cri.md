@@ -1,6 +1,6 @@
 ---
 title: Repeat cold reads after fixes, and compare decisions with criteria
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-194
@@ -39,3 +39,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-05T18:13:36Z mellow-newt todo → backlog
 - 2026-11-05T18:18:04Z mellow-newt: changed notes
 - 2026-11-05T18:18:05Z mellow-newt backlog → todo
+- 2026-11-06T20:22:49Z rosy-heron todo → doing
