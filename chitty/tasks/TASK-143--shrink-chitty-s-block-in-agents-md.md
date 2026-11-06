@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-142
@@ -61,6 +61,16 @@ Review failed (tests): the migration regression test replaces a short hand-writt
 
 Replaced the short hand-written migration fixture with the exact 59-line legacy managed guide from before the shrink, while retaining surrounding-content assertions. Focused migration test and `make format && make check` pass; `chitty fix` reports only pre-existing ticket Markdown warnings.
 
+1: pass - README.md and PLAN.md describe the role-guide location.
+
+2: pass - The concise guide is 11 lines, names all three role guides, and TASK-141 accounts for removed rules.
+
+3: pass - The migration test freezes the exact 59-line legacy managed guide and verifies concise replacement with surrounding content preserved.
+
+4: pass - AGENTS.md matches main, the plan guide pointer is present, and version 0.1.42 is one patch above main 0.1.41.
+
+Reviewed: `make format && make check` passed (360 Python tests and Node tests); focused migration and guide tests passed; tree is clean.
+
 ## Summary
 
 Handoff: the migration regression now freezes the exact legacy managed guide and verifies `chitty init` installs the concise marked block without removing surrounding content. Verification: focused migration test passed; `make format && make check` passed (360 Python tests and Node tests); `chitty fix` completed with only pre-existing Markdown warnings. Follow-ups: none.
@@ -89,3 +99,5 @@ Handoff: the migration regression now freezes the exact legacy managed guide and
 - 2026-11-06T21:53:39Z able-raven review → doing
 - 2026-11-06T21:59:11Z brisk-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T21:59:11Z brisk-kestrel doing → review
+- 2026-11-06T22:01:59Z witty-heron: changed notes; ticked acceptance criteria
+- 2026-11-06T22:01:59Z witty-heron review → done
