@@ -1,8 +1,7 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: blocked
+status: review
 priority: medium
-owner: human
 depends_on:
   - TASK-142
 created: 2026-11-05
@@ -47,6 +46,13 @@ Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.p
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Unblocked by a human-run session. All three failed reviews were rebase conflicts with `main`, mostly on `tests/test_cli.py`'s guide tests and `__version__`, not problems with the work. Rebased onto `main` (`0.1.40`):
+- Both sides of each conflicting guide test are kept.
+- The new `main` guide text sits alongside this ticket's change; the role files keep `TASK-219`'s sentence.
+- `chitty.toml` and `AGENTS.md` match `main` (`TASK-212`, `TASK-218`).
+- `__version__` is `0.1.41`.
+`make check` passes (360 tests). Several open tickets also use `0.1.41`, so whichever lands second will need its version bumped again.
+
 ## Summary
 
 Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
@@ -78,3 +84,5 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-06T18:28:37Z mellow-urchin doing → review
 - 2026-11-06T18:34:28Z upbeat-newt: changed owner, notes
 - 2026-11-06T18:34:28Z upbeat-newt review → blocked
+- 2026-11-06T21:40:59Z youthful-toad: changed owner, notes
+- 2026-11-06T21:40:59Z youthful-toad blocked → review
