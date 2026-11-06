@@ -39,9 +39,7 @@ Changed after the early merge, at the human's report that `Error: no next ticket
 
 ## Summary
 
-`next_action` raises `NoNextTicket` (a `ChittyError`) on an idle queue; `_Group.invoke` maps it to exit `NO_NEXT_TICKET_EXIT` (3), keeping the `Error:` line on stderr and nothing on stdout. Other failures, including an agent exiting 3, still exit 1; MCP is unchanged. `README.md` and `PLAN.md` document exit 3 and the loop `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`, and `PLAN.md` loses its stale one-after-the-other advice.
-
-Verified: the five empty-queue assertions in `tests/test_next.py` changed to 3 (seen failing first), plus `--json` and an agent exiting 3; `make check` passes (269 tests plus Node). Follow-up: none.
+Implemented exit 3 for idle `chitty next` and `chitty run` selections, including `--json` and mode-specific queues. Idle messages are plain stderr with no stdout; real failures, including agents exiting 3, remain exit 1. MCP behavior is unchanged. Updated `README.md`, `PLAN.md`, and regression coverage. Verified with `make check` (ruff, pyright, 269 unittest cases, and Node tests) plus `chitty fix` (warnings only for pre-existing task prose). Follow-up: none.
 
 ## History
 
@@ -57,3 +55,4 @@ Verified: the five empty-queue assertions in `tests/test_next.py` changed to 3 (
 - 2026-11-06T09:08:23Z brisk-vole review → doing
 - 2026-11-06T09:11:45Z youthful-toad: changed notes
 - 2026-11-06T10:16:05Z jolly-raven: ticked acceptance criteria
+- 2026-11-06T10:16:14Z jolly-raven: changed summary
