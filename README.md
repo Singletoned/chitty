@@ -207,7 +207,8 @@ checkout it commits changed setup files separately. From a linked worktree it
 leaves setup alone, but refuses to run when the main checkout's setup is older
 or unrecorded; run `chitty run` from the main checkout instead. Contexts are
 configured in `chitty.toml` or `[tool.chitty]` in `pyproject.toml`
-(not both). To send work to another repository, use `chitty suggest PROJECT`;
+(not both). Unknown configuration keys are ignored with a warning. To send work
+to another repository, use `chitty suggest PROJECT`;
 the receiving repository imports it with `chitty inbox --pull`. `PROJECT` is a
 registered name unless it contains `/`, is `.`, or starts with `~` or `.`; those
 path-shaped values resolve a local Chitty repository.

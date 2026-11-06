@@ -98,6 +98,16 @@ class TestRandomIds(CliTestCase):
 
 
 class TestInitAddsBacklogContext(CliTestCase):
+    def test_keeps_unknown_configuration_keys(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("agent_command =", "colour = true\nagent_command =")
+        )
+
+        self.run_cli("init")
+
+        self.assertIn("colour = true", config.read_text())
+
     def test_adds_the_table_after_the_last_context(self):
         config = self.root / "chitty.toml"
         config.write_text(config.read_text() + '\n[agent_commands]\nother = "x {mode} {id}"\n')
