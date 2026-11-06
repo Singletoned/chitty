@@ -1,6 +1,6 @@
 ---
 title: Use `main_branch` instead of `main` in the code
-status: todo
+status: done
 priority: medium
 depends_on:
   - TASK-214
@@ -22,8 +22,12 @@ Out of scope: docs and guides (`TASK-217`), and the `Makefile` `release` target,
 
 ## Acceptance Criteria
 
-- [ ] Tests in a repository with `main_branch = "master"` show `chitty run` creating the worktree from `master`, rebasing a review onto `master` (its conflict note names `master`), `chitty next` judging a dependency done on `master`, and `_preflight` requiring the main checkout to be on `master`.
-- [ ] A ticket worktree whose own config lacks `main_branch` is still reviewed, and `chitty next` run inside it is still judged, using the main checkout's setting. `grep -n '"main"\|heads/main' src/chitty/*.py` matches only the `main_branch` default in `config.py` and `chitty init`'s `!= "main"` check from `TASK-214`.
+- [x] Tests in a repository with `main_branch = "master"` show `chitty run` creating the worktree from `master`, rebasing a review onto `master` (its conflict note names `master`), `chitty next` judging a dependency done on `master`, and `_preflight` requiring the main checkout to be on `master`.
+- [x] A ticket worktree whose own config lacks `main_branch` is still reviewed, and `chitty next` run inside it is still judged, using the main checkout's setting. `grep -n '"main"\|heads/main' src/chitty/*.py` matches only the `main_branch` default in `config.py` and `chitty init`'s `!= "main"` check from `TASK-214`.
+
+## Plan
+
+Move main-checkout discovery into git.py, add store._main_branch that reads the main checkout config for linked worktrees, thread the configured branch through dependency and runner operations, and add/update tests covering master plus missing worktree config. Run the regression test unfixed first, then format and make check.
 
 ## Notes
 
@@ -36,9 +40,52 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-216/1`, built on `TASK-214`'s read; th
 - The `REPORT` fixture's hard-coded `main`: noted.
 - Size: confirmed right.
 
+Verified configured branch handling with src/chitty/config.py:77:    main_branch: str = "main"
+src/chitty/store.py:1124:        if branch is not None and branch != "main": (only the documented TASK-214 lines remain). uv run ruff check --exit-zero .
+All checks passed!
+uv run ruff format .
+297 files left unchanged
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+uv run ruff format --check .
+297 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Deleted branch task-1 (was 3b616fe).
+Deleted branch task-1 (was 2402c6a).
+Deleted branch task-2 (was db17283).
+npm test
+
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+...... passes: 359 Python tests and Node tests.
+
+Corrected verification note: grep for literal main refs leaves only the documented TASK-214 lines; make format and make check pass with 359 Python tests and the Node tests.
+
+Reviewed: implementation inspected independently; make format && make check passed (359 Python tests and Node tests).
+
+1: pass - configured main branch is used throughout run and dependency handling
+2: pass - linked worktrees use the main checkout configuration
+
+## Summary
+
+Implemented TASK-216: main-file dependency checks and all runner integration-branch operations use the main checkout setting; linked worktrees load that setting from the primary checkout. Verification: make format and make check pass. Follow-up: none.
+
 ## History
 
 - 2026-11-06T16:48:06Z youthful-toad → backlog
 - 2026-11-06T16:48:39Z youthful-toad: changed description
 - 2026-11-06T17:09:58Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:09:58Z youthful-toad backlog → todo
+- 2026-11-06T21:13:50Z intrepid-otter todo → doing
+- 2026-11-06T21:14:09Z intrepid-otter: wrote the plan
+- 2026-11-06T21:21:41Z intrepid-otter: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T21:21:41Z intrepid-otter doing → review
+- 2026-11-06T21:22:08Z intrepid-otter: changed notes, summary
+- 2026-11-06T21:24:59Z lively-raven: changed notes; ticked acceptance criteria
+- 2026-11-06T21:24:59Z lively-raven review → done
