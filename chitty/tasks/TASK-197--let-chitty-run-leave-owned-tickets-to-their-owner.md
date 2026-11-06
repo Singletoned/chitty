@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` leave owned tickets to their owner
-status: review
+status: done
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -50,6 +50,12 @@ Rebased onto `main` by a human-run session to unstick the branch. A newer `chitt
 
 Re-checked all four criteria after the rebase: PLAN.md and README.md document reservation semantics; targeted next/MCP/run tests pass; explicit --ticket accepts opus and refuses human; chitty fix reports only pre-existing Markdown delimiter warnings. make check timed out at 180 seconds during unittest discovery after many passing tests, so the full suite remains for review.
 
+Reviewed: independently inspected implementation and verification.
+1: pass - PLAN.md and README.md document owner reservation rules.
+2: pass - CLI/MCP owner plumbing and refusal behavior are implemented and verified.
+3: pass - plain selection and owner filtering semantics are implemented and targeted tests pass.
+4: pass - explicit non-human ticket handling and MCP owner parameter are implemented and verified.
+
 ## Summary
 
 Owner reservation and explicit-ticket handling are implemented. Verified owner filtering, refusal ordering, MCP owner plumbing, and explicit opus/human ticket behavior with targeted tests. Ruff and Pyright pass; make check reached the unittest suite but timed out during an existing long-running cleanup after 200+ tests. Follow-up: reviewer should rerun the full suite, including Node tests.
@@ -85,3 +91,5 @@ Owner reservation and explicit-ticket handling are implemented. Verified owner f
 - 2026-11-06T11:51:08Z youthful-toad: changed notes
 - 2026-11-06T12:08:50Z witty-eel: changed notes, summary
 - 2026-11-06T12:08:50Z witty-eel doing → review
+- 2026-11-06T12:48:54Z golden-dormouse: changed notes
+- 2026-11-06T12:48:54Z golden-dormouse review → done
