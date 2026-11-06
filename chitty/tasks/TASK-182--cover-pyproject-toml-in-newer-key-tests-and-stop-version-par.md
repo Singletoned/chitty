@@ -1,8 +1,7 @@
 ---
 title: Cover `pyproject.toml` in newer-key tests, and stop version parsing failing reads
-status: review
+status: done
 priority: low
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -32,6 +31,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: labelled the `pyproject
 
 Owner set to human only so `chitty run` skips it while a separate reviewer reviews it; cleared by that review.
 
+Reviewed: 1) tests parametrised over chitty.toml and pyproject.toml: newer version warns once, equal version raises Extra inputs. 2) config.py moves _version_key after the unknown-key check; test loads 0.2.0rc1 without unknown keys and still raises invalid Chitty version with one. make check passed.
+
 ## Summary
 
 Implemented coverage for newer unknown keys in chitty.toml and pyproject.toml, including warning-once and equal-version rejection. Moved version comparison after unknown-key detection so prerelease versions load without unknown keys while malformed versions with unknown keys still fail. Verified the regression test failed before the fix and passed after it; make check passed with 279 Python and 26 Node tests.
@@ -47,3 +48,5 @@ Implemented coverage for newer unknown keys in chitty.toml and pyproject.toml, i
 - 2026-11-06T00:40:07Z vivid-badger: changed summary; ticked acceptance criteria
 - 2026-11-06T00:40:07Z vivid-badger doing → review
 - 2026-11-06T10:00:07Z youthful-toad: changed owner, notes
+- 2026-11-06T10:05:00Z youthful-toad: changed owner, notes
+- 2026-11-06T10:05:00Z youthful-toad review → done
