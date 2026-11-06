@@ -41,8 +41,7 @@ task files. `chitty --help` is the full command reference.
 On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, or run `chitty init`.
 
 - Put paths, globs, commands, IDs and code in backticks in titles, descriptions,
-  criteria and notes. When you write a literal single `*` in Markdown, escape it
-  or enclose the pattern in backticks, for example `files/*.jpg`.
+  criteria and notes.
 - Work on one task per session. Start with `chitty inbox --pull`, then `chitty show <ID>`.
 - Backlog tasks need refinement; promote them to `todo` before taking them on.
 - Writing or refining tickets? Run `chitty guide plan` first: it says how to write them and cold-read them.
