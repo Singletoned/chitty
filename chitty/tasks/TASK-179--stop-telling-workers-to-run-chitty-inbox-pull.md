@@ -1,7 +1,8 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: review
+status: blocked
 priority: medium
+owner: human
 depends_on:
   - TASK-142
 created: 2026-11-05
@@ -42,6 +43,10 @@ This branch edits Chitty's managed block in `AGENTS.md`. Under `TASK-218`, branc
 Bumped __version__ to 0.1.36 because main was already 0.1.35. updated /Users/singletoned/src/singletoned/chitty/.worktrees/task-179/chitty.toml
 updated /Users/singletoned/.local/share/chitty/inbox/chitty regenerated the managed guide and updated chitty.toml locally; chitty.toml was restored per repository guidance that ticket branches only bump __version__. Full unittest suite passed (330 tests); npm test emitted 26 passing dots but did not exit within 300 seconds.
 
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
@@ -71,3 +76,5 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-06T18:28:35Z mellow-urchin: changed notes
 - 2026-11-06T18:28:36Z mellow-urchin: changed summary
 - 2026-11-06T18:28:37Z mellow-urchin doing → review
+- 2026-11-06T18:34:28Z upbeat-newt: changed owner, notes
+- 2026-11-06T18:34:28Z upbeat-newt review → blocked
