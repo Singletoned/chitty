@@ -1,6 +1,6 @@
 ---
 title: Ignore recorded conflict resolutions when `chitty run` rebases a review
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -22,6 +22,10 @@ Tests must not depend on the developer's Git config. Set `rerere.enabled` and `r
 - [ ] A test in `tests/test_review_rebase.py` with `rerere.enabled` and `rerere.autoupdate` set and a recorded resolution for the conflict shows `chitty run --mode review` moving the ticket to `doing` with `Review failed (integration)` naming the file, the rebase aborted and the agent not started; it fails before the fix
 - [ ] `PLAN.md` says the review rebase ignores recorded resolutions
 
+## Plan
+
+Test first in `tests/test_review_rebase.py`: set `rerere.enabled`/`rerere.autoupdate` in the test repo, record a resolution by resolving the same conflict once and resetting the branch, then expect `Review failed (integration)`. Then run the rebase with `-c rerere.enabled=false` in `git.rebase`, comment why, and add the sentence to step 3 of the review preparation in `PLAN.md`.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-06. It reproduced the stop in a scratch repository and confirmed `-c rerere.enabled=false` leaves the path unmerged. Fixed nothing in the text; adopted its test recipe (record the resolution by resolving the same conflict once, then reset the branch) and the `PLAN.md` place (step 3 of the review preparation). Rejected: isolating global Git config in the test, because the repository's own settings are enough.
@@ -34,3 +38,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-06T09:50:30Z youthful-toad: changed notes
 - 2026-11-06T09:50:30Z youthful-toad backlog → todo
 - 2026-11-06T09:50:31Z youthful-toad: changed owner, notes
+- 2026-11-06T09:50:34Z youthful-toad: wrote the plan
+- 2026-11-06T09:50:34Z youthful-toad todo → doing
