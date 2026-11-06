@@ -1,6 +1,6 @@
 ---
 title: Leave every owned ticket out of a plain `chitty run`
-status: todo
+status: doing
 priority: high
 created: 2026-11-06
 ---
@@ -40,3 +40,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-222/1`; the new tests failed before an
 - 2026-11-06T19:52:07Z youthful-toad → backlog
 - 2026-11-06T20:01:58Z youthful-toad: changed description, notes
 - 2026-11-06T20:01:58Z youthful-toad backlog → todo
+- 2026-11-06T20:14:07Z brisk-puffin todo → doing
