@@ -1,6 +1,6 @@
 ---
 title: Use `main_branch` instead of `main` in the code
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-214
@@ -42,3 +42,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-216/1`, built on `TASK-214`'s read; th
 - 2026-11-06T16:48:39Z youthful-toad: changed description
 - 2026-11-06T17:09:58Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:09:58Z youthful-toad backlog → todo
+- 2026-11-06T21:13:50Z intrepid-otter todo → doing
