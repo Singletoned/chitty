@@ -1,6 +1,6 @@
 ---
 title: Show status glyphs, and why `chitty next` skips a ticket, in `chitty list`
-status: doing
+status: review
 priority: high
 created: 2026-11-01
 ---
@@ -62,3 +62,4 @@ Added non-human owner skip reasons for todo/doing tickets and preserved dependen
 - 2026-11-06T18:00:58Z kind-badger: changed notes
 - 2026-11-06T18:00:59Z kind-badger: ticked acceptance criteria
 - 2026-11-06T18:01:13Z kind-badger: changed summary
+- 2026-11-06T18:01:14Z kind-badger doing → review
