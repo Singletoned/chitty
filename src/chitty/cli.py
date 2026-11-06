@@ -43,12 +43,6 @@ from chitty.store import (
 from chitty.upgrade import check_for_upgrade
 
 
-class _NoNextTicketException(click.ClickException):
-    """Print the usual `Error:` line, but exit with the idle-queue status."""
-
-    exit_code = NO_NEXT_TICKET_EXIT
-
-
 class _Group(click.Group):
     def invoke(self, ctx: click.Context) -> Any:
         if user_contexts_path().exists():
@@ -56,7 +50,10 @@ class _Group(click.Group):
         try:
             return super().invoke(ctx)
         except NoNextTicket as error:
-            raise _NoNextTicketException(str(error)) from error
+            # An idle queue is a normal outcome for a loop, not a failure, so
+            # it gets a plain line on stderr rather than click's `Error:`.
+            click.echo(str(error), err=True)
+            ctx.exit(NO_NEXT_TICKET_EXIT)
         except ChittyError as error:
             raise click.ClickException(str(error)) from error
 
