@@ -339,6 +339,48 @@ class TestNext(CliTestCase):
                 result = self.run_cli("run", *args, exit_code=1)
                 self.assertIn(message, result.stderr)
 
+    def test_run_explicit_ticket_accepts_agent_owner_but_not_human(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "fake {mode} {id}"',
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        opus = self.add("Opus work", owner="opus")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+
+        fake = self.root / "bin" / "fake"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess, sys\n"
+            "from pathlib import Path\n"
+            "path = next(Path('chitty/tasks').glob(sys.argv[2] + '--*.md'))\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        old_path = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{old_path}"
+        try:
+            result = self.run_cli("run", "--ticket", opus)
+        finally:
+            os.environ["PATH"] = old_path
+        self.assertEqual(result.stdout, f"{opus}: doing → blocked\n")
+
+        human = self.add("Human work", owner="human")
+        result = self.run_cli("run", "--ticket", human, exit_code=1)
+        self.assertIn("owner is human", result.stderr)
+
     def test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded(self):
         config = self.root / "chitty.toml"
         config.write_text(

@@ -1136,11 +1136,12 @@ def _ticket_action(
         if refuse:
             raise ChittyError(f"cannot run {stored.id}: owner is human")
         return None
-    if owner is None:
-        if frontmatter.status != "review" and frontmatter.owner is not None:
+    if not refuse:
+        if owner is None:
+            if frontmatter.status != "review" and frontmatter.owner is not None:
+                return None
+        elif frontmatter.owner != owner:
             return None
-    elif frontmatter.owner != owner:
-        return None
     dependencies: list[tuple[TaskId, StoredTask | None]] = []
     for reference in frontmatter.depends_on:
         dependency_id = TaskId.parse(reference)
