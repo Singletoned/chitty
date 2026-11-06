@@ -1734,6 +1734,16 @@ class TestGuide(CliTestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning_guide)
 
+    def test_plan_guide_requires_repeat_reads_and_decision_tests(self):
+        planning_guide = " ".join(guide("plan").split())
+        for phrase in (
+            "until a read finds none",
+            "what criteria name",
+            "must fail without the fix",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, planning_guide)
+
     def test_work_guide_requires_regression_test_failure_and_wrong_ticket_stop(self):
         work_guide = " ".join(guide("work").split())
         for phrase in (

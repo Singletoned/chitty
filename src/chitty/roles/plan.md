@@ -20,6 +20,11 @@ task files. `chitty --help` is the full command reference.
   claims. Record every finding's outcome in a ticket note: fix it or reject it
   with a specific reason. Ask whether odd existing behaviour is a bug before
   writing around it. Split rather than exceed about five criteria.
+- Repeat the cold read after fixing a serious finding, until a read finds none:
+  fixes are a source of new faults.
+- Compare each decision in the description with the criteria, because workers
+  test what criteria name. Say which test must fail without the fix, because a
+  nearby test may already pass.
 - Start an implementing read with `git worktree add --detach .worktrees/read-<ID>`
   and the repository's setup command, not on a branch, because Chitty reads
   tickets from every branch. Run the reader with `VIRTUAL_ENV` and
