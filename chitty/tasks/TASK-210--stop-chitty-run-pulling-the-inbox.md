@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` pulling the inbox
-status: backlog
+status: todo
 priority: high
 created: 2026-11-06
 ---
@@ -16,25 +16,33 @@ Remove from `run`:
 - the `RunInterrupted("inbox pull")` handling;
 - `project_before_refresh`, which exists only to decide whether to pull, and its comment. Keep the check that `project` is set after `refresh_setup` if anything else uses `project` (the usage log does).
 
-Replace `test_run_pulls_inbox_only_for_a_project` in `tests/test_next.py` with a test that a pending suggestion in the (temporary) inbox is still there after a run, and that the run created no ticket from it.
+Replace `test_run_pulls_inbox_only_for_a_project` in `tests/test_next.py` with a test (whose config sets `project` in the top-level block, because the default test config has none) that a pending suggestion in the (temporary) inbox is still there after a run, and that the run created no ticket from it.
 
 Update every description of `chitty run` pulling the inbox:
 - `README.md`: lines about "inbox pulls" (around 112) and "pulls the inbox before selecting" (around 135);
 - `PLAN.md`: around lines 553, 684 and 695.
-Check with `grep -n 'inbox pull\|pulls the inbox\|pulls its inbox' README.md PLAN.md`.
+Some of these sentences wrap across lines, so read each one; don't rely on a grep. `PLAN.md` line 198 ("Creation by `add`, `suggest` or inbox pull writes") is about `chitty inbox --pull`; leave it.
 
 Out of scope: `TASK-179`, which stops the guides telling workers to pull the inbox. `TASK-209`: reviewer actor names.
 
 ## Acceptance Criteria
 
 - [ ] `grep -n 'pull_suggestions' src/chitty/run.py` finds nothing, and a test shows that `chitty run` with a fake agent leaves a pending inbox suggestion unpulled and creates no ticket from it.
-- [ ] `grep -n 'inbox pull\|pulls the inbox\|pulls its inbox' README.md PLAN.md` finds no description of `chitty run` touching the inbox, and `make check` passes.
+- [ ] No sentence in `README.md` or `PLAN.md` says `chitty run` touches the inbox (check with `grep -n -i inbox README.md PLAN.md` and read each match in context), and `make check` passes.
 
 ## Notes
 
 Rescoped on 2026-11-06. The human said "`chitty run` shouldn't touch the inbox", so this ticket now removes the pull instead of moving the actor assignment earlier.
 
+Cold read 1 (Sonnet, `refs/cold-read/TASK-210/1`; the test failed first and passed after; `make check` OK). Outcomes:
+- The criterion-2 grep missed a wrapped line and matched the unrelated `PLAN.md:198`: fixed, the check now reads every `inbox` match, and line 198 is named as out of scope.
+- The default test config has no `project`: fixed, the ticket says to set it in the top-level block.
+- `project` is still needed for the usage log: confirmed, the check stays.
+- No other tests or guide text rely on `run` pulling: confirmed, so no version bump.
+
 ## History
 
 - 2026-11-06T13:44:09Z youthful-toad → backlog
 - 2026-11-06T13:45:24Z youthful-toad: changed title, description, acceptance criteria, notes
+- 2026-11-06T13:51:14Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-06T13:51:14Z youthful-toad backlog → todo
