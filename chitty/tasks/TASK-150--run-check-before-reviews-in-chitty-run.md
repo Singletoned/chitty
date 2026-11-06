@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-120
@@ -24,7 +24,7 @@ Out of scope: a timeout, and landing.
 
 - [x] Tests show a failing `check` not starting the agent and moving the ticket to `doing` with the last 20 lines, and a passing one starting it
 - [x] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
-- [x] This repository sets `check`, `PLAN.md`, `README.md` and the template describe it, and `__version__` is bumped above `main`'s
+- [ ] This repository sets `check`, `PLAN.md`, `README.md` and the template describe it, and `__version__` is bumped above `main`'s
 
 ## Plan
 
@@ -41,6 +41,14 @@ The check progress line is written to stderr so existing status output remains m
 Review failed (integration): rebasing onto `main` conflicts in `src/chitty/__init__.py`.
 
 Resolved the review rebase conflict in src/chitty/__init__.py by retaining 0.1.37, which remains above main's 0.1.36.
+
+Review failed (integration): the repository's root chitty.toml does not set check = "make check"; neither this branch nor main contains that setting, so acceptance criterion 3 is unmet. make format && make check passed (336 tests plus Node tests).
+
+1: pass - Regression tests cover failing and passing check behavior.
+
+2: pass - Tests cover shell-free quoting, unset preflight configuration, and commented init output.
+
+3: fail - The repository configuration does not set check = "make check".
 
 ## Summary
 
@@ -63,3 +71,5 @@ Implemented and verified `check` preflight support. Checks now run after setup a
 - 2026-11-06T19:41:35Z able-yellowhammer: changed notes, summary
 - 2026-11-06T19:41:35Z able-yellowhammer doing → review
 - 2026-11-06T19:41:47Z able-yellowhammer: changed summary
+- 2026-11-06T19:47:57Z tidy-badger: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-06T19:47:57Z tidy-badger review → doing
