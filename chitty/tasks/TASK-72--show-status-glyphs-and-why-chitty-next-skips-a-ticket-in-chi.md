@@ -24,7 +24,7 @@ The reason must come from the same code as `next_action`, so the two cannot disa
 
 - [x] `README.md` and `PLAN.md` describe the glyphs and the reasons
 - [x] Tests show each status's glyph in `chitty list` with the columns aligned, and `--json` and the MCP `list` tool unchanged apart from `skipped`
-- [ ] Tests show a `todo` ticket waiting on an unfinished dependency, one owned by `human` and one with a broken dependency marked with their reasons, a `todo` ticket with a finished dependency and a `doing` ticket with an unfinished one unmarked, and every unmarked `todo`, `doing` or `review` ticket being one `chitty next` can select
+- [x] Tests show a `todo` ticket waiting on an unfinished dependency, one owned by `human` and one with a broken dependency marked with their reasons, a `todo` ticket with a finished dependency and a `doing` ticket with an unfinished one unmarked, and every unmarked `todo`, `doing` or `review` ticket being one `chitty next` can select
 
 ## Plan
 
@@ -60,3 +60,4 @@ Implemented shared skip reasons, status glyphs, list JSON/MCP skipped fields, an
 - 2026-11-06T17:01:44Z vivid-dormouse: changed acceptance criteria, notes
 - 2026-11-06T17:01:44Z vivid-dormouse review → doing
 - 2026-11-06T18:00:58Z kind-badger: changed notes
+- 2026-11-06T18:00:59Z kind-badger: ticked acceptance criteria
