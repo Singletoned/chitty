@@ -1,6 +1,6 @@
 ---
 title: Agents use the same `chitty` as `chitty run`
-status: doing
+status: review
 priority: high
 created: 2026-11-06
 ---
@@ -20,8 +20,8 @@ Out of scope: running the agent in a container.
 
 ## Acceptance Criteria
 
-- [ ] A test runs `chitty run` with a fake agent and a different fake `chitty` placed first on `PATH`, standing in for a branch's. The agent records which `chitty` its `PATH` resolves to, and its `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT`. The test asserts it resolves to `Path(sys.executable).parent / "chitty"`, that both variables are unset even when the runner had them, and that `CHITTY_USAGE_FILE` is still passed. It fails before the fix.
-- [ ] `README.md` and `PLAN.md` say the agent uses the runner's `chitty`, `chitty.toml` is unchanged on the branch, and `make check` passes.
+- [x] A test runs `chitty run` with a fake agent and a different fake `chitty` placed first on `PATH`, standing in for a branch's. The agent records which `chitty` its `PATH` resolves to, and its `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT`. The test asserts it resolves to `Path(sys.executable).parent / "chitty"`, that both variables are unset even when the runner had them, and that `CHITTY_USAGE_FILE` is still passed. It fails before the fix.
+- [x] `README.md` and `PLAN.md` say the agent uses the runner's `chitty`, `chitty.toml` is unchanged on the branch, and `make check` passes.
 
 ## Plan
 
@@ -43,6 +43,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-213/1`; the test failed before and pas
 - No version bump: confirmed.
 The reader's ref follows the old scope (it edits `chitty.toml` and uses `which`), so it was deleted.
 
+Verified regression test fails before the fix (fake branch chitty resolved first and leaked virtual-environment variables), passes after the fix. make format && make check passes; chitty.toml is unchanged. Follow-up: a human-run session on main must remove the env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync wrappers from agent_command and [agent_commands].claude.
+
+## Summary
+
+Implemented runner-owned Chitty resolution and explicit agent environment propagation in src/chitty/run.py. Added regression coverage for PATH precedence, stripped VIRTUAL_ENV/UV_PROJECT_ENVIRONMENT, and CHITTY_USAGE_FILE propagation; updated README.md and PLAN.md. Verified with make format && make check (338 Python tests and Node tests). Follow-up: update chitty.toml on main in a human-run session after this lands, as required by TASK-212.
+
 ## History
 
 - 2026-11-06T16:24:16Z youthful-toad → backlog
@@ -51,3 +57,5 @@ The reader's ref follows the old scope (it edits `chitty.toml` and uses `which`)
 - 2026-11-06T16:46:07Z youthful-toad backlog → todo
 - 2026-11-06T20:00:29Z mellow-falcon todo → doing
 - 2026-11-06T20:00:50Z mellow-falcon: wrote the plan
+- 2026-11-06T20:06:23Z mellow-falcon: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:06:23Z mellow-falcon doing → review
