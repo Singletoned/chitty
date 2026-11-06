@@ -1,6 +1,6 @@
 ---
 title: Exit 3 when `chitty next` or `chitty run` has no ticket
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -56,3 +56,4 @@ Implemented exit 3 for idle `chitty next` and `chitty run` selections, including
 - 2026-11-06T09:11:45Z youthful-toad: changed notes
 - 2026-11-06T10:16:05Z jolly-raven: ticked acceptance criteria
 - 2026-11-06T10:16:14Z jolly-raven: changed summary
+- 2026-11-06T10:16:16Z jolly-raven doing → review
