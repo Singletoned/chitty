@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` leave owned tickets to their owner
-status: doing
+status: review
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -46,7 +46,7 @@ Review failed (work): `chitty run --ticket` does not run an owned work ticket. `
 
 ## Summary
 
-Implemented owner-aware next/run selection, CLI and MCP owner filters, early refusal validation, and documentation. Added owner selection/refusal regressions. Verification: ruff format/check, pyright, and 271 unittest tests pass; npm test was attempted but hangs after its dot output in this environment. Follow-up: investigate the existing Node test hang separately.
+Fixed explicit-ticket owner handling: chitty run --ticket now runs tickets owned by agents while still refusing human-owned tickets. Added a real fake-agent regression test and verified the MCP next owner parameter coverage. Verification: targeted owner/run tests pass; make check passed Ruff, Pyright, and 272 unittest tests, but npm test remains hanging after 26 dot output in this environment.
 
 ## History
 
@@ -72,3 +72,5 @@ Implemented owner-aware next/run selection, CLI and MCP owner filters, early ref
 - 2026-11-06T09:02:19Z daring-ibis: changed acceptance criteria, notes
 - 2026-11-06T09:02:19Z daring-ibis review → doing
 - 2026-11-06T10:08:26Z upbeat-urchin: ticked acceptance criteria
+- 2026-11-06T10:08:34Z upbeat-urchin: changed summary
+- 2026-11-06T10:08:34Z upbeat-urchin doing → review
