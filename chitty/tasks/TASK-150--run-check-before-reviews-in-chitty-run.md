@@ -30,8 +30,11 @@ Out of scope: a timeout, and landing.
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: how output is captured, and the effect on existing tests.
 
+Under `TASK-212`, a branch may not change `chitty.toml`. Setting `check = "make check"` in this repository is done on the main checkout by a human-run session after this lands, not on the branch.
+
 ## History
 
 - 2026-11-04T15:11:33Z mellow-newt → todo
 - 2026-11-04T15:17:36Z mellow-newt: changed description, notes
 - 2026-11-06T16:24:13Z youthful-toad: changed priority
+- 2026-11-06T16:44:17Z youthful-toad: changed notes
