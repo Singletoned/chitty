@@ -127,9 +127,13 @@ Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
 `chitty run` creates or reuses the ticket worktree, runs setup there, claims a
 `todo` ticket, and invokes
-the configured agent from that worktree. Before a review it first rebases the
-branch onto `main`, then runs setup, so the reviewer sees exactly what would
-land; uncommitted files in the worktree or a rebase conflict instead move the
+the configured agent from that worktree. The agent uses the `chitty`
+executable installed beside the runner's Python interpreter, rather than a
+branch-local `chitty`; `pi` and `claude` still come from the global `PATH`.
+This behavior is implemented without changing `chitty.toml` on the branch.
+Before a review it first rebases the branch onto `main`, then runs setup, so the
+reviewer sees exactly what would land; uncommitted files in the worktree or a
+rebase conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed
 (integration)` note, without starting a session, and count towards the
 failed-review limit. Choose a ticket with `chitty run

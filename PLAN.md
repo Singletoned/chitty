@@ -707,7 +707,10 @@ Chitty fills it with the role-specific `chitty guide <mode> <ID>` output after
 splitting the command. It finds the main checkout even when invoked from another
 worktree, creates or reuses the selected
 ticket's worktree, runs parsed setup there, and claims a `todo` work ticket on
-that branch before launching the parsed agent command. The command must include
+that branch before launching the parsed agent command. The agent uses the
+`chitty` executable installed beside the runner's Python interpreter, rather
+than a branch-local `chitty`; `pi` and `claude` come from the global `PATH`.
+This does not change `chitty.toml` on the branch. The command must include
 `{mode}` and `{id}`, unless it includes `{prompt}`; Chitty replaces them after
 splitting, and arguments after
 `--` pass through to the agent. It reopens the ticket worktree after the agent

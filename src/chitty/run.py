@@ -154,9 +154,21 @@ def _run_ticket(
             previous_usage_file = os.environ.get("CHITTY_USAGE_FILE")
             os.environ["CHITTY_USAGE_FILE"] = str(usage_file)
             try:
+                runner_chitty = Path(sys.executable).parent / "chitty"
+                if not runner_chitty.is_file():
+                    raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
+                agent_environment = os.environ.copy()
+                agent_environment["PATH"] = os.pathsep.join(
+                    (str(runner_chitty.parent), agent_environment.get("PATH", ""))
+                )
+                agent_environment.pop("VIRTUAL_ENV", None)
+                agent_environment.pop("UV_PROJECT_ENVIRONMENT", None)
                 try:
                     completed = subprocess.run(
-                        [*agent_command, *arguments], cwd=worktree, check=False
+                        [*agent_command, *arguments],
+                        cwd=worktree,
+                        env=agent_environment,
+                        check=False,
                     )
                 except FileNotFoundError:
                     raise ChittyError(f"agent command not found: {agent_command[0]}") from None
