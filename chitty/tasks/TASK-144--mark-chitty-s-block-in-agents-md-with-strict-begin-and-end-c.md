@@ -1,6 +1,6 @@
 ---
 title: Mark Chitty's block in `AGENTS.md` with strict begin and end comments
-status: review
+status: doing
 priority: medium
 parent: TASK-140
 created: 2026-11-04
@@ -42,7 +42,7 @@ Out of scope: CRLF, because `read_text` and `write_text` already normalise a who
 - [x] Tests show a new `AGENTS.md`, and one with content but no block, getting the block with both markers, and `chitty guide` printing no markers
 - [x] Tests show an old block migrated to markers with a following section keeping its heading and blank line, and a message on stderr
 - [x] `README.md` and `PLAN.md` describe the markers, and `__version__` is bumped above `main`'s
-- [x] Tests show a marked block replaced with text before and after it unchanged, including unheaded text after it and a guide containing a backslash, a second `chitty init` changing nothing, and `prettier` leaving the result unchanged
+- [ ] Tests show a marked block replaced with text before and after it unchanged, including unheaded text after it and a guide containing a backslash, a second `chitty init` changing nothing, and `prettier` leaving the result unchanged
 - [x] Tests show a begin with no end, an end with no begin, reversed markers and two pairs each failing `chitty init` with a message naming `AGENTS.md`, with the file unchanged, and a stale repository in that state warning on a write, with the write succeeding and the version not advanced
 
 ## Plan
@@ -64,6 +64,13 @@ Rebased onto `main` by a human-run session to unstick the branch. `main`'s `chit
 - `src/chitty/errors.py` and `store.py` keep both `NoNextTicket` and `ManagedGuideError`.
 - `tests/test_pi_extension.py` compares against `__version__` rather than a literal.
 `make check` passes (310 tests). The next Chitty write here will record `0.1.34` in `chitty.toml`; after that, `main`'s `chitty` (`0.1.33`) refuses writes in this worktree until it lands. Re-check each criterion against the rebased code.
+
+Review failed (tests): acceptance criterion 4 is not demonstrated by the submitted tests. There is no test that puts a backslash in the guide, asserts a second `chitty init` is byte-for-byte/idempotent, or runs `prettier` against the resulting `AGENTS.md`; the existing formatter tests cover rendered task files only. Add focused coverage for all three cases, then re-verify the criterion.
+1: pass - marker creation and guide output are covered.
+2: pass - legacy migration and stderr reporting are covered.
+3: pass - documentation updates and version bump are present.
+4: fail - backslash, exact second-init idempotence, and prettier-on-AGENTS coverage are absent.
+5: pass - malformed marker and stale-write cases are covered.
 
 ## Summary
 
@@ -87,3 +94,5 @@ Implemented strict AGENTS.md markers, legacy migration, exact marked-block repla
 - 2026-11-06T12:53:55Z youthful-toad: changed notes
 - 2026-11-06T14:47:05Z daring-eel: changed summary
 - 2026-11-06T14:47:06Z daring-eel doing → review
+- 2026-11-06T15:01:19Z youthful-adder: changed acceptance criteria, notes
+- 2026-11-06T15:01:19Z youthful-adder review → doing
