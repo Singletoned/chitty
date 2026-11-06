@@ -28,8 +28,13 @@ Out of scope: `CLAUDE.md`, which is a symlink here.
 - [ ] Tests show a branch that edits inside the managed block failing review with that note and no agent run, and a branch that edits only outside it passing.
 - [ ] A unit test of `managed_block` covers marked and legacy files, and `_managed_agents` uses it with its behaviour unchanged (existing `init` tests pass).
 
+## Plan
+
+Add git.file_at to read a committed path at a ref, and factor store.managed_block so marked and legacy AGENTS.md content is normalized through one public lookup. Extend review preparation to compare the branch and main managed blocks after rebase, failing with the exact ticket note before setup or agent execution when they differ. Add unit coverage for marked/legacy lookup and review coverage for inside-block rejection and outside-block allowance, using the real guide text in fixtures. Run the focused tests, then make format and check.
+
 ## History
 
 - 2026-11-06T18:13:06Z youthful-toad → backlog
 - 2026-11-06T18:13:30Z youthful-toad backlog → todo
 - 2026-11-06T20:03:40Z eager-crane todo → doing
+- 2026-11-06T20:04:20Z eager-crane: wrote the plan
