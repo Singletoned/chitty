@@ -36,8 +36,11 @@ Cold read 1 (Sonnet, of the original whole-feature ticket; `make check` OK acros
 - `_main_checkout` duplication: `TASK-215` reuses the existing one.
 The ref `refs/cold-read/TASK-214/1` followed the old design and was deleted.
 
+Split note correction: the code ticket is `TASK-216` and the docs ticket `TASK-217`; `TASK-215` is unrelated.
+
 ## History
 
 - 2026-11-06T16:24:17Z youthful-toad → backlog
 - 2026-11-06T16:48:05Z youthful-toad: changed title, description, acceptance criteria, notes
 - 2026-11-06T16:48:37Z youthful-toad: changed description
+- 2026-11-06T16:48:42Z youthful-toad: changed notes
