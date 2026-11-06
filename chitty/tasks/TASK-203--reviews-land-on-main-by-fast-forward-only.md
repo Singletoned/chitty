@@ -1,6 +1,6 @@
 ---
 title: Reviews land on `main` by fast-forward only
-status: todo
+status: backlog
 priority: high
 created: 2026-11-06
 ---
@@ -48,9 +48,13 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-203/1`; test failed before and passed 
 - "See `AGENTS.md`": rejected, `CLAUDE.md` is a symlink to `AGENTS.md`, so it's the same file. The ticket now says so.
 - `make check` takes about 4 minutes under load: noted for the worker, no change.
 
+Superseded on 2026-11-06. The human decided reviewers don't merge: they record a verdict, and the outer process lands the work. `TASK-131` has `chitty run` land by rebase, check and `git merge --ff-only`, and `TASK-151` stops reviewers merging. This ticket's guide change, telling reviewers to merge by fast-forward, would contradict them. Kept in backlog only until the human decides whether to delete it.
+
 ## History
 
 - 2026-11-06T11:27:28Z youthful-toad → backlog
 - 2026-11-06T11:33:45Z youthful-toad: changed description, notes
 - 2026-11-06T11:33:57Z youthful-toad: changed acceptance criteria
 - 2026-11-06T11:33:57Z youthful-toad backlog → todo
+- 2026-11-06T16:24:12Z youthful-toad: changed notes
+- 2026-11-06T16:24:12Z youthful-toad todo → backlog
