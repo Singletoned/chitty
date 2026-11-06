@@ -1519,6 +1519,18 @@ class TestGuide(CliTestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning_guide)
 
+    def test_work_guide_requires_regression_test_failure_and_wrong_ticket_stop(self):
+        work_guide = " ".join(guide("work").split())
+        for phrase in (
+            "see it fail without the fix",
+            "change the test until it fails without the fix",
+            "do not work around it",
+            "a person's decision",
+            "An unclear detail with a cheap default is not this",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, work_guide)
+
     def test_guide_points_agents_at_ticket_planning_instructions(self):
         self.assertIn("chitty guide plan", guide())
 
