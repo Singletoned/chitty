@@ -4,6 +4,7 @@ status: todo
 priority: medium
 depends_on:
   - TASK-72
+  - TASK-210
 created: 2026-11-06
 ---
 
@@ -12,7 +13,7 @@ created: 2026-11-06
 Nothing tells a person which tickets a `chitty run` is working on right now, or who is working on them. Each run holds an exclusive `flock` on `<git common dir>/chitty/run/<ID>.lock` (`src/chitty/locks.py`, `TASK-200`), but that file holds only the process ID. Reading it means a script.
 
 1. **Lock record.** `run_lock(root, task_id, *, actor, mode)` has required keyword arguments, so update its existing callers, including the tests and their `HOLDER` script. It writes one JSON object instead of the bare PID: `{"pid": ..., "actor": ..., "mode": "work"|"review", "started": "<ISO 8601 UTC>"}`.
-   - `actor` is the run's `CHITTY_ACTOR`. Today `run` in `src/chitty/run.py` assigns it in `_run_ticket`, after `_lock_ticket`. Move that assignment to directly before `with ExitStack()`, after the inbox pull and `refresh_setup`.
+   - `actor` is the run's `CHITTY_ACTOR`. `TASK-210` assigns it at the start of `run`, so it is set before `_lock_ticket`.
    - `mode` is `action.mode`, which `_lock_ticket` passes when it takes the lock, after choosing the ticket.
    - Add `locks.holder(root, task_id) -> dict | None`, which returns the record while the lock is held and `None` otherwise. A plain read works even while this process holds the lock, because `flock` is advisory.
    - Content that isn't valid JSON (a lock from an older Chitty) gives `{"pid": <the text>}`. Empty content, a brief window between `ftruncate` and `write`, gives `{"pid": "unknown"}`.
@@ -48,8 +49,11 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-207/1`; implemented items 1 and 2; tes
 - How the fake agent reads `show`: fixed, in a child process.
 - Leftover `CHITTY_ACTOR` after `TicketLocked` or `NoNextTicket`: rejected, each run sets its own.
 
+Depends on `TASK-210`, which moves the run's actor assignment to the start of `run`. That replaces this ticket's own instruction to move it after the inbox pull, which would have kept the `cannot determine actor` bug.
+
 ## History
 
 - 2026-11-06T12:45:12Z youthful-toad → backlog
 - 2026-11-06T13:05:30Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T13:05:30Z youthful-toad backlog → todo
+- 2026-11-06T13:44:20Z youthful-toad: changed dependencies, description, notes
