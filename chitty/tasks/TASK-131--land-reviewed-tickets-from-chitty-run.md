@@ -1,7 +1,7 @@
 ---
 title: Land reviewed tickets from `chitty run`
 status: todo
-priority: medium
+priority: high
 depends_on:
   - TASK-120
   - TASK-150
@@ -50,3 +50,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: landing be
 - 2026-11-04T09:45:41Z lively-panda: changed priority
 - 2026-11-04T15:11:37Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T15:17:38Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-06T16:24:14Z youthful-toad: changed priority
