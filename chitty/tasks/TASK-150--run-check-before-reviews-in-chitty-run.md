@@ -1,6 +1,6 @@
 ---
 title: Run `check` before reviews in `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -38,6 +38,10 @@ Under `TASK-212`, a branch may not change `chitty.toml`. Setting `check = "make 
 
 The check progress line is written to stderr so existing status output remains machine-friendly; check output itself is captured and included only on failure. Repository chitty.toml was intentionally not changed because TASK-212 notes require that main-checkout setting to land in a human session.
 
+## Summary
+
+Implemented strict check configuration and preflight execution in chitty run. Checks run parsed without a shell after setup in the ticket worktree, capture combined output, fail reviews through Repo.edit with the last 20 lines, and honor interrupts. Added config/init template support, docs, version bump, and updated run tests. Verified with make check (ruff, pyright, 332 unittest tests, and Node tests).
+
 ## History
 
 - 2026-11-04T15:11:33Z mellow-newt → todo
@@ -48,3 +52,5 @@ The check progress line is written to stderr so existing status output remains m
 - 2026-11-06T18:30:36Z witty-gannet: wrote the plan
 - 2026-11-06T18:50:06Z witty-gannet: changed notes
 - 2026-11-06T18:50:07Z witty-gannet: ticked acceptance criteria
+- 2026-11-06T18:50:08Z witty-gannet: changed summary
+- 2026-11-06T18:50:08Z witty-gannet doing → review
