@@ -19,7 +19,7 @@ Out of scope: a `chitty run` that waits for tickets itself, and any other exit c
 ## Acceptance Criteria
 
 - [x] `README.md` and `PLAN.md` document exit 3 and the idle loop
-- [ ] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
+- [x] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
 
 ## Plan
 
@@ -56,3 +56,4 @@ Verified: the five empty-queue assertions in `tests/test_next.py` changed to 3 (
 - 2026-11-06T09:08:23Z brisk-vole: changed acceptance criteria, notes
 - 2026-11-06T09:08:23Z brisk-vole review → doing
 - 2026-11-06T09:11:45Z youthful-toad: changed notes
+- 2026-11-06T10:16:05Z jolly-raven: ticked acceptance criteria
