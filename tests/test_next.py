@@ -1170,7 +1170,7 @@ class TestNext(CliTestCase):
         previous = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
-            result = self.run_cli("run")
+            result = self.run_cli("run", "--mode", "review")
         finally:
             os.environ["PATH"] = previous
 
