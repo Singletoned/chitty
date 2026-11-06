@@ -20,6 +20,10 @@ Ticket branches must never change `chitty.toml` or `AGENTS.md`'s managed block; 
 - [ ] `chitty init` run in a linked worktree exits non-zero, naming the main checkout, and leaves `chitty.toml` and `AGENTS.md` unchanged.
 - [ ] `chitty guide work` and the `AGENTS.md` block that `chitty init` writes in a temporary repository both contain that sentence, and `__version__` is bumped.
 
+## Plan
+
+Move main-checkout detection into src/chitty/git.py and make init reject linked worktrees before any writes, including the main checkout path in the error. Remove the obsolete linked-worktree Pi setup branch and update the CLI regression test. Add the required sentence to both guide sources, bump __version__, then run the focused tests and full make format/check.
+
 ## Notes
 
 Split from `TASK-212` on 2026-11-06. Items 2 and 3 of its first cold read (`refs/cold-read/TASK-212/1`) implement most of this; that read predates the managed-block sentence.
@@ -29,3 +33,4 @@ Split from `TASK-212` on 2026-11-06. Items 2 and 3 of its first cold read (`refs
 - 2026-11-06T18:13:15Z youthful-toad → backlog
 - 2026-11-06T18:13:31Z youthful-toad backlog → todo
 - 2026-11-06T20:07:51Z honest-falcon todo → doing
+- 2026-11-06T20:08:16Z honest-falcon: wrote the plan
