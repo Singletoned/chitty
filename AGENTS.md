@@ -44,7 +44,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - Writing or refining tickets? Run `chitty guide plan` first: it says how to write them and cold-read them.
 - Use a task's optional `parent` field to group flat task IDs under one goal.
 - Unless your own instructions say otherwise, create a branch and worktree at
-  `.worktrees/` in the repository root from `main` for each new ticket; never
+  `.worktrees/` in the repository root from the main branch for each new ticket; never
   implement in the main checkout. Resume the existing worktree for a `doing`
   ticket. Run the repository's setup command in a new worktree before coding so
   it creates that worktree's environment. Commit the `doing` claim on its
@@ -62,7 +62,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
   worktree, rather than at merge-request time. Review every criterion; list
   every failure in one note and `--uncheck` each failed criterion. Pass it with
   `-s done --note "Reviewed: ..."`; fail it with `-s doing --note "reason"`.
-  On a pass, merge the branch into `main`, then remove the branch and its
+  On a pass, merge the branch into the main branch, then remove the branch and its
   worktree. Create new tickets for out-of-scope findings. The third failed
   review sets `blocked` and owner `human` instead; leave it for a person to
   unblock.
