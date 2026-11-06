@@ -109,7 +109,7 @@ holds a lock on its ticket until it exits, an exclusive `flock` on
 `.git/chitty/run/<ID>.lock` that the kernel releases however the run ends, so
 `chitty next` and other runs skip that ticket and `--ticket` refuses it with
 the holder's process ID. Locks are machine-local. The sessions all update the
-main checkout during setup, inbox pulls, and review merges, so a Git lock or
+main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
 combined with `--ticket`. `chitty run` requires
 `autocommit = true`, `setup` (for example, `setup = "make install"`), and an
@@ -132,7 +132,7 @@ succeeds only when the agent commits a status change, so
 `while chitty run; do :; done` stops when no action remains or a session makes
 no progress. To keep a loop waiting for work, treat exit 3 as success:
 `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`. Each pass
-still checks configuration, refreshes setup and pulls the inbox before
+still checks configuration, refreshes setup before
 selecting, so a broken configuration exits 1 and stops the loop. Each agent
 session appends one JSON line to the machine-local
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data

@@ -553,7 +553,7 @@ process exits, so no lock goes stale. `next_action` skips locked tickets, a run
 that loses the race chooses again, and `--ticket` refuses a locked ticket. A
 committed claim was rejected because a killed run would leave it for a person
 to clear; locks are machine-local because Chitty runs on one machine. The
-sessions write the main checkout during setup, inbox pulls, and review merges; a Git
+sessions write the main checkout during setup and review merges; a Git
 lock or dirty-file collision fails loudly, so rerun the affected session. A
 failed review restarts in a fresh session with the finding added as a
 criterion. The second failure stops for the human: by then the ticket is the
@@ -684,7 +684,7 @@ decides its mode.
 The command may include `{prompt}` as a single argument;
 Chitty fills it with the role-specific `chitty guide <mode> <ID>` output after
 splitting the command. It finds the main checkout even when invoked from another
-worktree, pulls its inbox when configured, creates or reuses the selected
+worktree, creates or reuses the selected
 ticket's worktree, runs parsed setup there, and claims a `todo` work ticket on
 that branch before launching the parsed agent command. The command must include
 `{mode}` and `{id}`, unless it includes `{prompt}`; Chitty replaces them after
@@ -694,8 +694,8 @@ exits and succeeds only if the task's committed status changed. This makes
 `while chitty run; do :; done` a safe unattended loop that stops when the queue
 is empty. To wait out an idle queue instead, treat exit 3 as success:
 `while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done` runs until
-something fails. `chitty run` checks its configuration, refreshes setup and
-pulls the inbox before selecting, so each idle pass does those, and a broken
+something fails. `chitty run` checks its configuration, refreshes setup
+before selecting, so each idle pass does that, and a broken
 configuration exits 1, not 3. An agent's or setup's own exit status always
 surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
 

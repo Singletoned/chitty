@@ -16,6 +16,7 @@ from mcp_types import CallToolResult
 
 from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
+from chitty.inbox import suggest
 from chitty.mcp import server
 from chitty.run import _read_usage, _record_usage
 from chitty.store import Repo, guide, next_action, ticket_action
@@ -1704,65 +1705,34 @@ class TestNext(CliTestCase):
                 else:
                     os.environ[name] = value
 
-    def test_run_pulls_inbox_only_for_a_project(self):
+    def test_run_leaves_pending_inbox_suggestions_unpulled(self):
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text()
             .replace('project = "chitty"\n', "")
-            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+            .replace("autocommit = false", 'autocommit = true\nproject = "demo"\nsetup = "true"')
         )
         self.git("init", "--quiet")
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
-        config.write_text(
-            "\n".join(
-                line for line in config.read_text().splitlines() if not line.startswith("project =")
-            )
-            + "\n"
-        )
         self.add("Todo")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
+        pending = suggest("demo", "Pending suggestion", None, True, self.root)
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
         fake.write_text("#!" + sys.executable + "\n")
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
-        self.assertIsNone(Repo.open(self.root).config.project)
         try:
-            config.write_text('project = "demo"\n' + config.read_text())
-            self.git("add", "chitty.toml")
-            self.git("commit", "--quiet", "-m", "configure project")
-            worktree = self.root / ".worktrees" / "task-1"
-
-            def pull_before_selection(repo: Repo) -> list[str]:
-                # Inbox pull must finish before selecting or claiming the ticket.
-                self.assertEqual(repo.find(repo.resolve("TASK-1")).task.frontmatter.status, "todo")
-                self.assertFalse(worktree.exists())
-                self.assertEqual(self.git("branch", "--list", "task-1"), "")
-                return []
-
-            with patch("chitty.run.pull_suggestions", side_effect=pull_before_selection) as pull:
-                self.run_cli("run", exit_code=1)
-                pull.assert_called_once()
-
-            config.write_text(
-                "\n".join(
-                    line
-                    for line in config.read_text().splitlines()
-                    if not line.startswith("project =")
-                )
-                + "\n"
-            )
-            self.git("add", "chitty.toml")
-            self.git("commit", "--quiet", "-m", "remove project")
-            with patch("chitty.run.pull_suggestions") as pull:
-                self.run_cli("run", exit_code=1)
-                pull.assert_not_called()
+            self.run_cli("run", exit_code=1)
         finally:
             os.environ["PATH"] = previous
+        self.assertTrue(pending.exists())
+        titles = [item.task.frontmatter.title for item in Repo.open(self.root).all_tasks()]
+        self.assertEqual(titles, ["Todo"])
 
     def test_run_runs_setup_before_claim_and_leaves_review_unchanged(self):
         setup = self.root / "setup.py"

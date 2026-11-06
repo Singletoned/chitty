@@ -20,7 +20,6 @@ from chitty import git, locks
 from chitty.actor import actor, run_actor
 from chitty.config import CHITTY_VERSION, usage_path, version_key
 from chitty.errors import ChittyError
-from chitty.inbox import pull as pull_suggestions
 from chitty.store import Edit, NextAction, Repo, guide, next_action, ticket_action
 
 # Each lost race removes a candidate, so a few attempts are plenty.
@@ -61,17 +60,10 @@ def run(
     main_repo = Repo.open(main_root)
     _refuse_stale_linked_worktree(repo, main_repo)
     _preflight(main_repo)
-    # Refresh may add a project to legacy setup; only an explicit project opts into inbox pulls.
-    project_before_refresh = main_repo.config.project
     main_repo.refresh_setup()
     project = main_repo.config.project
     if project is None:
         raise ChittyError("`chitty run` requires a project name after setup refresh")
-    if project_before_refresh:
-        try:
-            pull_suggestions(main_repo)
-        except KeyboardInterrupt:
-            raise RunInterrupted("inbox pull") from None
 
     with ExitStack() as held:
         action = _lock_ticket(held, main_repo, ticket, mode, owner)
