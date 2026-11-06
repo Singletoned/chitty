@@ -22,6 +22,10 @@ Out of scope: having Chitty check that a test failed.
 
 - [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("work")` first so that line wrapping cannot break it, shows it containing `see it fail without the fix`, `change the test until it fails without the fix`, `do not work around it`, `a person's decision` and `An unclear detail with a cheap default is not this`, and fails against the current `work.md`
 
+## Plan
+
+Add the requested regression-test and wrong-ticket guidance bullet to src/chitty/roles/work.md immediately before the cheap-defaults bullet. Extend TestGuide in tests/test_cli.py to collapse guide whitespace and assert the required phrases. Run the test against the current guide first to confirm failure, then implement, run focused tests and make check, tick the criterion, run chitty fix, summarize, and set review.
+
 ## Notes
 
 Implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-196/1`. Fixed: a test on exact phrases broke on line wrapping in my own wording; "change it" did not say what to change; when to run the test, and what happens on a ticket with no regression test; and the `TASK-137` claim, which that ticket's own text cannot confirm, now points at `TASK-182`. Checked: `TASK-173` and `TASK-179` do name `work.md`. Rejected: requiring a position or a bullet in the test, because the description says where it goes and the reviewer can read it.
@@ -42,3 +46,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T18:22:07Z mellow-newt: changed notes
 - 2026-11-05T18:22:08Z mellow-newt backlog → todo
 - 2026-11-06T00:14:05Z witty-kestrel todo → doing
+- 2026-11-06T00:14:20Z witty-kestrel: wrote the plan
