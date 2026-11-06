@@ -49,6 +49,7 @@ dev = [
     "pyright",
     "ruff",
     "types-PyYAML",
+    "unittest-parallel==1.8.6",
 ]
 
 [tool.ruff]

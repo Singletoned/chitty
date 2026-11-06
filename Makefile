@@ -15,11 +15,11 @@ check: ## lint, type-check and run the tests
 	uv run ruff format --check .
 	uv run ruff check --no-fix .
 	uv run pyright
-	uv run python -m unittest discover -s tests -t .
+	uv run unittest-parallel -s tests -t . --level test
 	npm test
 
 test: ## run the tests
-	uv run python -m unittest discover -s tests -t .
+	uv run unittest-parallel -s tests -t . --level test
 	npm test
 
 format: ## format and auto-fix Python code
