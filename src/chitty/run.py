@@ -22,6 +22,7 @@ from chitty.actor import actor, run_actor
 from chitty.config import (
     CHITTY_VERSION,
     CONFIG_NAME,
+    PYPROJECT_NAME,
     config_source,
     usage_path,
     version_key,
@@ -125,14 +126,19 @@ def _run_ticket(
     # A run owns one identity across its claim, agent, and any child process.
     os.environ.pop("CHITTY_ACTOR", None)
     os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
-    work_repo = Repo.open(worktree)
     if action.mode == "review":
+        # The config may be deleted on a branch, so use main's config until the
+        # review preflight has confirmed that the branch still has one.
+        work_repo = Repo(worktree, main_repo.config)
         # The run's own actor never worked on the ticket, so it may fail it.
         failed = _prepare_review(work_repo, worktree, action)
         if failed is not None:
             return failed
+        work_repo = Repo.open(worktree)
         # After the rebase, because the rebase can change dependencies.
         _setup(setup, worktree)
+    else:
+        work_repo = Repo.open(worktree)
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
         work_repo.edit(action.id, Edit(status="doing"))
     old_status = work_repo.find(action.id).task.frontmatter.status
@@ -413,7 +419,9 @@ def _changed_config(worktree: Path) -> str | None:
     """Return the Chitty config path when the rebased branch changed it."""
     source = config_source(worktree)
     if source is None:
-        return None
+        # A deleted config has no current source to compare, but its path is
+        # still present in main and must be reported as a branch change.
+        return _main_config_path(worktree)
     relative = source.relative_to(worktree)
     if source.name == CONFIG_NAME:
         result = subprocess.run(
@@ -434,6 +442,24 @@ def _changed_config(worktree: Path) -> str | None:
         return str(relative)
     main = tomllib.loads(main_text).get("tool", {}).get("chitty")
     return str(relative) if current != main else None
+
+
+def _main_config_path(worktree: Path) -> str | None:
+    """Return the Chitty config path recorded in the rebased `main` tree."""
+    try:
+        _git(worktree, "show", f"main:{CONFIG_NAME}")
+    except ChittyError:
+        pass
+    else:
+        return CONFIG_NAME
+
+    try:
+        text = _git(worktree, "show", f"main:{PYPROJECT_NAME}")
+        data = tomllib.loads(text)
+    except (ChittyError, tomllib.TOMLDecodeError):
+        return None
+    tool = data.get("tool")
+    return PYPROJECT_NAME if isinstance(tool, dict) and "chitty" in tool else None
 
 
 def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:

@@ -1186,6 +1186,50 @@ class TestNext(CliTestCase):
         )
         self.assertFalse(marker.exists())
 
+    def test_run_reviews_branch_with_deleted_config(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.run_cli("init")
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Review me")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.run_cli("edit", "TASK-1", "--status", "review")
+        self.git("branch", "task-1")
+        branch_worktree = self.root / ".worktrees" / "prepare-task-1"
+        self.git("worktree", "add", "--quiet", str(branch_worktree), "task-1")
+        (branch_worktree / "chitty.toml").unlink()
+        self.git("-C", str(branch_worktree), "add", "--all")
+        self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "delete config")
+        self.git("worktree", "remove", "--force", str(branch_worktree))
+        marker = self.root / "started"
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\nfrom pathlib import Path\nPath('started').touch()\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            result = self.run_cli("run", "--mode", "review")
+        finally:
+            os.environ["PATH"] = previous
+
+        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        task = Repo.open(self.root).find(Repo.open(self.root).resolve("TASK-1")).task
+        self.assertEqual(
+            task.section("Notes"),
+            "Review failed (work): the branch changes `chitty.toml`; "
+            "only `chitty init` on the main checkout may change it.",
+        )
+        self.assertFalse(marker.exists())
+
     def test_run_review_compares_only_tool_chitty_in_pyproject(self):
         config = self.root / "chitty.toml"
         pyproject = self.root / "pyproject.toml"
