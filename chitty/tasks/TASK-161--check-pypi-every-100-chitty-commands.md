@@ -1,6 +1,6 @@
 ---
 title: Check PyPI every 100 `chitty` commands
-status: doing
+status: review
 priority: low
 depends_on:
   - TASK-159
@@ -37,3 +37,4 @@ Implemented the non-editable-install PyPI interval check. Commands without pendi
 - 2026-11-06T00:20:58Z jolly-ibis: wrote the plan
 - 2026-11-06T00:27:54Z jolly-ibis: ticked acceptance criteria
 - 2026-11-06T00:28:01Z jolly-ibis: changed summary
+- 2026-11-06T00:28:02Z jolly-ibis doing → review
