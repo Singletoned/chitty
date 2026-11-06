@@ -4,7 +4,7 @@ from datetime import date
 
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
-from chitty.store import Edit, Repo
+from chitty.store import GUIDE_BEGIN, GUIDE_END, Edit, Repo, managed_block
 from tests.support import RepoTestCase
 
 TODAY = date(2026, 10, 23)
@@ -24,6 +24,13 @@ class StoreTestCase(RepoTestCase):
 
 
 class TestStore(StoreTestCase):
+    def test_managed_block_reads_marked_and_legacy_files(self):
+        marked = f"Before\n{GUIDE_BEGIN}\ncontent\n{GUIDE_END}\nAfter\n"
+        self.assertEqual(managed_block(marked), f"{GUIDE_BEGIN}\ncontent\n{GUIDE_END}\n")
+        legacy = "Before\n## Chitty\nlegacy\n## Other\nAfter\n"
+        self.assertEqual(managed_block(legacy), "## Chitty\nlegacy\n")
+        self.assertIsNone(managed_block("Before\n## Other\n"))
+
     def test_missing_directory_is_empty(self):
         self.assertEqual(self.repo.tasks(self.human, "all"), [])
         self.assertFalse(self.human.directory.exists())

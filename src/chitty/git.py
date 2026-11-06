@@ -395,6 +395,22 @@ def _git_path(root: Path, argument: str) -> Path:
     return (root / path).resolve() if not path.is_absolute() else path.resolve()
 
 
+def file_at(root: Path, ref: str, path: Path | str) -> str | None:
+    """Read a file at a Git ref, returning ``None`` when it is absent."""
+    relative = str(path)
+    _git(root, "rev-parse", "--verify", ref)
+    exists = subprocess.run(
+        ["git", "cat-file", "-e", f"{ref}:{relative}"],
+        check=False,
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if exists.returncode:
+        return None
+    return _git(root, "show", f"{ref}:{relative}")
+
+
 def _git(root: Path, *args: str) -> str:
     command = ["git", *args]
     result = subprocess.run(command, check=False, cwd=root, capture_output=True, text=True)

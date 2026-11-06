@@ -109,6 +109,43 @@ class ReviewRebaseTestCase(CliTestCase):
 
 
 class TestReviewRebase(ReviewRebaseTestCase):
+    def test_managed_block_change_fails_without_starting_review(self):
+        self.branch_for_review()
+        self.git("switch", "--quiet", "task-1")
+        agents = self.root / "AGENTS.md"
+        agents.write_text(
+            agents.read_text().replace("Tasks live in `chitty/`.", "Tasks live elsewhere.")
+        )
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "change managed guide")
+        self.git("switch", "--quiet", "main")
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertFalse((self.logs / "agent").exists())
+        self.assertFalse((self.logs / "setup").exists())
+        self.assertIn(
+            "Review failed (work): the branch changes Chitty's managed block in AGENTS.md; "
+            "only chitty init on the main checkout may change it. Restore that block from main.",
+            self.ticket().section("Notes") or "",
+        )
+
+    def test_change_outside_managed_block_passes_review(self):
+        self.branch_for_review()
+        self.git("switch", "--quiet", "task-1")
+        agents = self.root / "AGENTS.md"
+        agents.write_text("Heading outside the guide.\n\n" + agents.read_text())
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "change outside managed guide")
+        self.git("switch", "--quiet", "main")
+        self.move_main()
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout, "TASK-1: review → done\n")
+        self.assertTrue((self.logs / "agent").exists())
+
     def test_agent_and_setup_see_the_branch_rebased_on_main(self):
         self.branch_for_review()
         self.move_main()

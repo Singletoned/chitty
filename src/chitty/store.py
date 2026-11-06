@@ -1033,8 +1033,8 @@ def _restore_file(path: Path, state: tuple[str, bytes | Path] | None) -> None:
         path.write_bytes(content)
 
 
-def _managed_agents(existing: str, agents: Path) -> str:
-    """Return `AGENTS.md` with the exact managed guide block installed."""
+def managed_block(existing: str) -> str | None:
+    """Return the managed guide block, including its delimiters."""
     lines = existing.splitlines(keepends=True)
     offsets: list[tuple[int, int, str]] = []
     offset = 0
@@ -1046,25 +1046,36 @@ def _managed_agents(existing: str, agents: Path) -> str:
         for index, (start, end, value) in enumerate(offsets)
         if value in (GUIDE_BEGIN, GUIDE_END)
     ]
-    rendered = f"{GUIDE_BEGIN}\n\n{guide().rstrip('\\n')}\n\n{GUIDE_END}\n"
     if markers:
         begins = [item for item in markers if item[3] == GUIDE_BEGIN]
         ends = [item for item in markers if item[3] == GUIDE_END]
         if len(begins) != 1 or len(ends) != 1 or begins[0][0] >= ends[0][0]:
-            raise ManagedGuideError(
-                f"{agents} has invalid Chitty guide markers; remove the marker lines so the "
-                "next `chitty init` can migrate the block"
-            )
-        return existing[: begins[0][1]] + rendered + existing[ends[0][2] :]
+            raise ManagedGuideError("invalid Chitty guide markers")
+        return existing[begins[0][1] : ends[0][2]]
 
-    pattern = r"(?ms)^## Chitty\n.*?(?=^## |\Z)"
-    match = re.search(pattern, existing)
-    if match:
+    match = re.search(r"(?ms)^## Chitty\n.*?(?=^## |\Z)", existing)
+    return match.group() if match else None
+
+
+def _managed_agents(existing: str, agents: Path) -> str:
+    """Return `AGENTS.md` with the exact managed guide block installed."""
+    rendered = f"{GUIDE_BEGIN}\n\n{guide().rstrip('\n')}\n\n{GUIDE_END}\n"
+    try:
+        block = managed_block(existing)
+    except ManagedGuideError:
+        raise ManagedGuideError(
+            f"{agents} has invalid Chitty guide markers; remove the marker lines so the "
+            "next `chitty init` can migrate the block"
+        ) from None
+    if block is not None:
+        start = existing.index(block)
+        if block.startswith(GUIDE_BEGIN):
+            return existing[:start] + rendered + existing[start + len(block) :]
         # The legacy match includes the separator before a following heading.
-        suffix = existing[match.end() :]
+        suffix = existing[start + len(block) :]
         separator = "\n" if suffix.startswith("## ") else ""
         print(f"migrated Chitty guide markers in {agents}", file=sys.stderr)
-        return existing[: match.start()] + rendered + separator + suffix
+        return existing[:start] + rendered + separator + suffix
     return (existing.rstrip("\n") + "\n\n" if existing.strip() else "") + rendered
 
 

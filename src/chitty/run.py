@@ -27,8 +27,17 @@ from chitty.config import (
     usage_path,
     version_key,
 )
-from chitty.errors import ChittyError
-from chitty.store import Edit, NextAction, Repo, guide, next_action, ticket_action
+from chitty.errors import ChittyError, ManagedGuideError
+from chitty.store import (
+    AGENTS_FILE,
+    Edit,
+    NextAction,
+    Repo,
+    guide,
+    managed_block,
+    next_action,
+    ticket_action,
+)
 
 # Each lost race removes a candidate, so a few attempts are plenty.
 RUN_LOCK_ATTEMPTS = 10
@@ -409,7 +418,30 @@ def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunR
             "Review failed (work): the branch changes "
             f"`{changed}`; only `chitty init` on the main checkout may change it.",
         )
+    if _changed_agents_block(worktree):
+        return _fail_review(
+            work_repo,
+            action,
+            "Review failed (work): the branch changes Chitty's managed block in AGENTS.md; "
+            "only chitty init on the main checkout may change it. Restore that block from main.",
+        )
     return None
+
+
+def _changed_agents_block(worktree: Path) -> bool:
+    """Return whether the branch changes or damages the managed guide block."""
+    agents = worktree / AGENTS_FILE
+    branch_text = agents.read_text() if agents.exists() else None
+    main_text = git.file_at(worktree, "main", AGENTS_FILE)
+    try:
+        branch_block = managed_block(branch_text) if branch_text is not None else None
+    except ManagedGuideError:
+        return True
+    try:
+        main_block = managed_block(main_text) if main_text is not None else None
+    except ManagedGuideError:
+        main_block = None
+    return branch_block != main_block
 
 
 def _changed_config(worktree: Path) -> str | None:
