@@ -1,6 +1,6 @@
 ---
 title: Check ticket edits in a pure function, with property tests
-status: review
+status: done
 labels:
   - spec-first
 priority: medium
@@ -56,6 +56,11 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-221/1`; the reintroduced `TASK-206` bu
 
 Implemented and verified. Pure check_edit has no I/O and preserves config-dependent checks in Repo.edit. Extracted claim_edit and fail_review_edit; the property suite uses both. make check passed (353 Python tests and Node tests); Hypothesis properties took 0.27s in isolation. Verified the regression guard: without skip_verdicts, the shrunk one-criterion review case fails on missing verdict 1.
 
+Reviewed: inspected the extraction and property tests; make format && make check passed (354 Python tests and Node tests), focused properties ran in 0.30s, and the missing-verdict regression was reproduced.
+1: pass - check_edit is pure and existing tests pass
+2: pass - property tests add well under 5 seconds
+3: pass - required Hypothesis properties use run.py helpers
+
 ## Summary
 
 Implemented pure edit validation in src/chitty/store.py, with run.py helpers claim_edit and fail_review_edit and Hypothesis coverage in tests/test_check_edit.py. Added Hypothesis to dev dependencies and uv.lock. Handoff: review the focused extraction and property generators. Verification: make check passed; explicit no-skip regression produced the expected missing-verdict error.
@@ -69,3 +74,5 @@ Implemented pure edit validation in src/chitty/store.py, with run.py helpers cla
 - 2026-11-06T20:44:56Z youthful-heron: wrote the plan
 - 2026-11-06T20:49:37Z youthful-heron: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:49:37Z youthful-heron doing → review
+- 2026-11-06T21:06:32Z jolly-puffin: changed notes; ticked acceptance criteria
+- 2026-11-06T21:06:32Z jolly-puffin review → done
