@@ -1,8 +1,7 @@
 ---
 title: Rebase tickets before reviews in `chitty run`
-status: todo
+status: done
 priority: medium
-owner: human
 depends_on:
   - TASK-126
   - TASK-129
@@ -34,10 +33,17 @@ Out of scope: `check`, landing, pushing, repositories whose main branch is not `
 
 ## Acceptance Criteria
 
-- [ ] Tests with a real Git repository show the agent receiving a tree rebased on `main`, with `setup` run after the rebase
-- [ ] Tests show a rebase conflict and uncommitted files each not starting the agent and moving the ticket to `doing`, with no rebase left in progress, and a conflict note naming the files
-- [ ] A test shows automatic and reviewer failures counting together towards the limit, ending `blocked` with owner `human`
-- [ ] `PLAN.md` and `README.md` describe the rebase
+- [x] Tests with a real Git repository show the agent receiving a tree rebased on `main`, with `setup` run after the rebase
+- [x] Tests show a rebase conflict and uncommitted files each not starting the agent and moving the ticket to `doing`, with no rebase left in progress, and a conflict note naming the files
+- [x] A test shows automatic and reviewer failures counting together towards the limit, ending `blocked` with owner `human`
+- [x] `PLAN.md` and `README.md` describe the rebase
+
+## Plan
+
+1. Tests first (`tests/test_review_rebase.py`, real Git, fake setup and agent): a review run whose agent and setup both see the branch rebased on a moved `main`; a conflict and uncommitted files each moving the ticket to `doing` without starting the agent, leaving no rebase in progress, the conflict note naming files; an unfinished rebase failing loudly with no status change; two reviewer failures plus a conflict ending `blocked` with owner `human`; Ctrl-C during the rebase aborting it and exiting 130.
+2. `git.py`: `rebase_in_progress`, `uncommitted_paths`, `rebase` (aborting and returning conflicting files) and `abort_rebase`.
+3. `run.py`: in review mode, after the actor is set, refuse an unfinished rebase, fail on uncommitted files, rebase onto `main`, then run `setup`; failures go through `Repo.edit` so escalation counts them, and return the status change without starting the agent. Work mode keeps `setup` before the claim.
+4. `PLAN.md` and `README.md`.
 
 ## Notes
 
@@ -59,6 +65,16 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: review mod
 
 Owner set to human only so chitty run leaves this ticket to this session; cleared when it goes to review.
 
+Surprise: a rebase stopped part-way detaches `HEAD`, so `git worktree list` no longer ties the worktree to its branch and `_worktree` tried to add a second one, failing with Git's `already exists`. The unfinished-rebase refusal therefore lives in `_worktree`, checking `.worktrees/<id>` by its own `.git` file. Choices: a run that fails a review before any session writes no usage line, so `README.md` and `PLAN.md` now say each agent session, not each run, is logged; the failure moves read the resulting status from `Repo.edit`, so the third prints `review → blocked`. Checked that this repository's real worktrees after `make install` count as clean, so reviews here are not failed as `work` by `.venv` or `node_modules`.
+
+Reviewed: real-Git rebase/setup, conflict and uncommitted-work failures, escalation, interrupt handling, and documentation all pass; targeted tests and make check verified.
+
+## Summary
+
+In review mode `chitty run` now prepares the worktree after setting its actor: `_worktree` refuses an unfinished rebase; `_prepare_review` fails the ticket to `doing` with `Review failed (work)` for uncommitted files or `Review failed (integration)` naming conflicts (after `git rebase --abort`), without starting the agent and exiting 0 with the status change; otherwise it rebases onto `main` and only then runs `setup`. Moves go through `Repo.edit`, so they count towards the limit. Ctrl-C during the rebase aborts it and exits 130. Helpers are in `git.py`; documented in `README.md` and `PLAN.md`.
+
+Verified: `tests/test_review_rebase.py` (six tests, seen failing first) and `make check` (275 tests plus Node). Follow-ups: `TASK-150` (check before review) and `TASK-131` (landing).
+
 ## History
 
 - 2026-11-03T11:39:03Z eager-raven → todo
@@ -73,3 +89,10 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-04T15:11:34Z mellow-newt: changed title, description, acceptance criteria, notes
 - 2026-11-04T15:17:35Z mellow-newt: changed description, notes
 - 2026-11-05T21:14:09Z youthful-toad: changed owner, notes
+- 2026-11-05T21:38:50Z youthful-toad: wrote the plan
+- 2026-11-05T21:38:50Z youthful-toad todo → doing
+- 2026-11-05T21:55:18Z youthful-toad: ticked acceptance criteria
+- 2026-11-05T21:55:19Z youthful-toad: changed owner, notes, summary
+- 2026-11-05T21:55:19Z youthful-toad doing → review
+- 2026-11-06T09:15:54Z quick-marten: changed notes
+- 2026-11-06T09:15:54Z quick-marten review → done
