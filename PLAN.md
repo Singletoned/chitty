@@ -134,7 +134,9 @@ that ambiguity is an error. Error if neither finds one.
   Random IDs let tickets raised on any branch avoid colliding, so only `main`
   hands out sequential numbers (decided 2026-11-05). The generated `backlog`
   context (`chitty/backlog/`, prefix `BACKLOG`) uses it; it is unrelated to the
-  `backlog` status.
+  `backlog` status. Plain `chitty add` in a linked worktree targets this context
+  so unrelated branch discoveries are filed for planning; explicit contexts
+  still win, and inbox pulls use the default context.
 
 Filename: `<ID>--<slug>.md`, or `<ID>.md` when the slug is empty. The slug
 is derived from the title (lowercase, `[a-z0-9-]`, collapsed hyphens, max 60

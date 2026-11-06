@@ -865,7 +865,12 @@ def resolve_add_target(local: Repo | None, name: str | None) -> Target:
     """Resolve an add target only within the current repository."""
     if local is None:
         raise ChittyError("no chitty.toml here or in any parent (run `chitty init`)")
-    return Target(local, local.context(name) if name else local.default_context)
+    if name:
+        return Target(local, local.context(name))
+    # Branch worktrees file discoveries as backlog; main keeps sequential IDs.
+    if git.is_linked_worktree(local.root) and "backlog" in local.config.contexts:
+        return Target(local, local.context("backlog"))
+    return Target(local, local.default_context)
 
 
 def guide(role: str | None = None, ticket_id: str | None = None) -> str:

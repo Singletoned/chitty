@@ -82,10 +82,11 @@ task files. `chitty --help` is the full command reference.
   not pick up blocked work. If a person must act outside the repo, add a
   `-c human` task and depend on it. Leave `human` tasks in `todo` for people;
   never pick them up or block them.
-- Found unrelated work? `chitty add` it (`-c human` if it needs a person).
+- Found unrelated work on a ticket's branch? Use plain `chitty add`, which files
+  it as `BACKLOG` for the planning session. A person planning should do this from
+  the main checkout to get normal numbers. Use `-c human` if a person must act.
   Suggest work for another project without touching its checkout using
-  `chitty suggest PROJECT "title" -d "why"`.
-  Don't do it in this session.
+  `chitty suggest PROJECT "title" -d "why"`. Don't do it in this session.
 
 
 <!-- chitty:end -->

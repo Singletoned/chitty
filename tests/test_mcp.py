@@ -2,6 +2,7 @@ import asyncio
 import os
 import subprocess
 from typing import Any
+from unittest import mock
 
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
@@ -20,6 +21,36 @@ def call(name: str, **arguments: Any) -> Any:
 
 
 class TestMcp(CliTestCase):
+    def test_plain_add_in_a_linked_worktree_uses_backlog(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text() + '\n[contexts.backlog]\nprefix = "BACKLOG"\nrandom_ids = true\n'
+        )
+        git = ["git", "-C", str(self.root)]
+        for command in (
+            ["init", "--quiet", "-b", "main"],
+            ["config", "user.email", "test@example.com"],
+            ["config", "user.name", "Test"],
+            ["add", "--all"],
+            ["commit", "--quiet", "-m", "setup"],
+        ):
+            subprocess.run([*git, *command], check=True)
+        worktree = self.tmp / "worktree"
+        subprocess.run(
+            [*git, "worktree", "add", "--quiet", "-b", "worker", str(worktree)], check=True
+        )
+        self.addCleanup(
+            subprocess.run,
+            [*git, "worktree", "remove", "--force", str(worktree)],
+            check=True,
+        )
+        os.chdir(worktree)
+
+        with mock.patch("chitty.store._random_number", return_value=48213907):
+            task = call("add", title="Idea")
+
+        self.assertEqual(task["id"], "BACKLOG-48213907")
+
     def test_tools_mirror_the_cli(self):
         tools = asyncio.run(server.list_tools())
         self.assertEqual(

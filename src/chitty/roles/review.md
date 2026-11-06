@@ -22,5 +22,8 @@ task files. `chitty --help` is the full command reference.
 - On a pass, set `-s done --note "Reviewed: ..."`; then merge its branch into
   `main` and remove its branch and worktree. The third failed review blocks the
   ticket for `human`; leave it there for a person to unblock.
-- Found unrelated work? Use `chitty add` (`-c human` if a person must act), or
-  `chitty suggest PROJECT` for another project. Do not do it in this session.
+- Found unrelated work on this ticket's branch? Use plain `chitty add`, which
+  files it as `BACKLOG` for the planning session. A person planning should do
+  this from the main checkout to get normal numbers. Use `-c human` if a person
+  must act, or `chitty suggest PROJECT` for another project. Do not do it in
+  this session.

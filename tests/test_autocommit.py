@@ -76,7 +76,7 @@ class TestAutocommit(CliTestCase):
             ["git", "log", "--format=%s"], cwd=worktree, capture_output=True, text=True, check=True
         ).stdout
         self.assertNotIn("chitty: upgrade repository setup", log)
-        self.assertIn("chitty: add TASK-1 First", log)
+        self.assertIn("chitty: add BACKLOG-", log)
 
     def test_linked_worktree_write_with_stale_setup_succeeds_without_autocommit(self):
         worktree = self.stale_linked_worktree()
@@ -85,7 +85,7 @@ class TestAutocommit(CliTestCase):
 
         self.run_cli("add", "First", "-d", "x")
 
-        self.assertTrue(list((worktree / "chitty" / "tasks").glob("TASK-1--*.md")))
+        self.assertTrue(list((worktree / "chitty" / "backlog").glob("BACKLOG-*--first.md")))
 
     def test_each_write_is_one_commit_of_its_own_paths(self):
         (self.root / "unrelated.txt").write_text("staged by the user\n")

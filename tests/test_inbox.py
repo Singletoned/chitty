@@ -38,6 +38,18 @@ class TestInbox(RepoTestCase):
         with self.assertRaisesRegex(ChittyError, "known projects: known; use --create"):
             suggest("unknown", "Two", None, False, self.root)
 
+    def test_pull_keeps_sequential_default_context_with_backlog_configured(self):
+        path = suggest("target", "Inbox task", None, True, self.root)
+        config = (self.root / "chitty.toml").read_text().replace(
+            'default_context = "tasks"', 'default_context = "tasks"\nproject = "target"'
+        ) + '\n[contexts.backlog]\nprefix = "BACKLOG"\nrandom_ids = true\n'
+        (self.root / "chitty.toml").write_text(config)
+
+        repo = Repo(self.root, load_repo_config(self.root))
+        self.assertEqual(pull(repo), ["TASK-1"])
+        self.assertFalse(path.exists())
+        self.assertTrue((self.root / "chitty/tasks/TASK-1--inbox-task.md").exists())
+
     def test_pull_creates_backlog_task_and_removes_suggestion(self):
         path = suggest("target", "Inbox task", None, True, self.root)
         config = (

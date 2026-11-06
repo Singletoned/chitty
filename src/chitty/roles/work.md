@@ -33,5 +33,8 @@ task files. `chitty --help` is the full command reference.
 - When blocked, note the problem, who can resolve it, and what is needed; then
   set `-s blocked`. Do not work blocked tickets. Leave `human` tickets in
   `todo`; never pick them up or block them.
-- Found unrelated work? Use `chitty add` (`-c human` if a person must act), or
-  `chitty suggest PROJECT` for another project. Do not do it in this session.
+- Found unrelated work on this ticket's branch? Use plain `chitty add`, which
+  files it as `BACKLOG` for the planning session. A person planning should do
+  this from the main checkout to get normal numbers. Use `-c human` if a person
+  must act, or `chitty suggest PROJECT` for another project. Do not do it in
+  this session.
