@@ -1,6 +1,6 @@
 ---
 title: Stop concurrent `chitty run` sessions taking the same ticket
-status: backlog
+status: todo
 priority: high
 parent: TASK-106
 created: 2026-11-06
@@ -38,3 +38,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the PID-file design rac
 
 - 2026-11-06T09:26:15Z youthful-toad → backlog
 - 2026-11-06T09:28:32Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-06T09:31:14Z youthful-toad backlog → todo
