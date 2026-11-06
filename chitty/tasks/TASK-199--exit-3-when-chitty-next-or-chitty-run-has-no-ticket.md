@@ -1,6 +1,6 @@
 ---
 title: Exit 3 when `chitty next` or `chitty run` has no ticket
-status: review
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -19,7 +19,7 @@ Out of scope: a `chitty run` that waits for tickets itself, and any other exit c
 ## Acceptance Criteria
 
 - [x] `README.md` and `PLAN.md` document exit 3 and the idle loop
-- [x] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
+- [ ] Tests show `chitty next` (also with `--json`) and `chitty run`, with and without `--mode`, exiting 3 with the existing message and no stdout when nothing matches, and an agent exiting 3 still making `chitty run` exit 1
 
 ## Plan
 
@@ -32,6 +32,8 @@ Out of scope: a `chitty run` that waits for tickets itself, and any other exit c
 Cold read by a fresh Sonnet subagent, 2026-11-05. No wrong claims; it confirmed 3 is unused and that every `except ChittyError` still catches a subclass. Fixed: how to exit 3 when `ClickException` hard-codes 1, where the constant lives, `--json` output, that a dependency-blocked queue counts as idle, that `run`'s preflight, setup refresh and inbox pull happen on every idle pass, editing the existing tests in place, an agent exiting 3 in the criterion, and the version bump (not needed). Rejected: a criterion for the MCP `ToolError`, which an existing test in `tests/test_next.py` already covers.
 
 `PLAN.md` still said to run the two modes one after the other, though `TASK-162` is `done` and its criterion asked to replace that sentence; this change removes it, since it rewrote the same paragraph. `ClickException.exit_code` is a class variable to Pyright, so exit 3 comes from a small subclass, `_NoNextTicketException`, in `cli.py`. Checked with the real binary in a scratch repo: `chitty next --mode review` printed the error and exited 3.
+
+Review failed (tests): the changed empty-queue assertions expect stderr without Click’s required Error: prefix, but _NoNextTicketException correctly preserves the usual ClickException line requested by the ticket. The three affected tests fail: test_next_output_and_empty_queue, test_next_mode_selects_only_its_own_tickets, and test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded. Update their expected stderr and rerun make check.
 
 ## Summary
 
@@ -49,3 +51,5 @@ Verified: the five empty-queue assertions in `tests/test_next.py` changed to 3 (
 - 2026-11-05T21:20:22Z youthful-toad: ticked acceptance criteria
 - 2026-11-05T21:20:23Z youthful-toad: changed owner, notes, summary
 - 2026-11-05T21:20:23Z youthful-toad doing → review
+- 2026-11-06T09:08:23Z brisk-vole: changed acceptance criteria, notes
+- 2026-11-06T09:08:23Z brisk-vole review → doing
