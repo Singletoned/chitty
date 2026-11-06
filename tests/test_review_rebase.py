@@ -187,6 +187,44 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.assertIn("`stray.txt`", notes)
         self.assertIn("`work.txt`", notes)
 
+    def test_conflict_fails_a_ticket_with_criteria_without_verdict_lines(self):
+        self.run_cli("edit", "1", "--ac", "It works")
+        self.branch_for_review(shared="from the branch\n")
+        self.move_main(shared="from main\n")
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertIn("Review failed (integration):", self.ticket().section("Notes") or "")
+
+    def test_uncommitted_files_fail_a_ticket_with_criteria_without_verdict_lines(self):
+        self.run_cli("edit", "1", "--ac", "It works")
+        self.branch_for_review()
+        self.git("worktree", "add", "--quiet", str(self.worktree), "task-1")
+        (self.worktree / "stray.txt").write_text("untracked\n")
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout, "TASK-1: review → doing\n")
+        self.assertIn("Review failed (work):", self.ticket().section("Notes") or "")
+
+    def test_a_manual_review_failure_still_requires_verdict_lines(self):
+        self.run_cli("edit", "1", "--ac", "It works")
+        self.branch_for_review()
+
+        result = self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "doing",
+            "--note",
+            "nope",
+            "--override-review-independence",
+            exit_code=1,
+        )
+
+        self.assertIn("review verdict lines must match", result.stderr)
+
     def test_an_unfinished_rebase_fails_loudly_without_a_status_change(self):
         self.branch_for_review(shared="from the branch\n")
         self.move_main(shared="from main\n")

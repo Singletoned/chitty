@@ -405,7 +405,7 @@ def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunR
 
 def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:
     """Move a review ticket to `doing` through `Repo.edit`, so escalation counts it."""
-    change = work_repo.edit(action.id, Edit(status="doing", note=note))
+    change = work_repo.edit(action.id, Edit(status="doing", note=note, skip_verdicts=True))
     return RunResult(action, "review", change.task.task.frontmatter.status)
 
 

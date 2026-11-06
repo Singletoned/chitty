@@ -138,6 +138,9 @@ class Edit:
     notes: Sequence[str] = ()
     summary: str | None = None  # "" removes
     override_review_independence: bool = False
+    # Internal, not exposed in the CLI or MCP: `chitty run` fails a review
+    # before any criterion is reviewed, so there is nothing to give a verdict on.
+    skip_verdicts: bool = False
 
     def is_empty(self) -> bool:
         return not any(
@@ -416,7 +419,7 @@ class Repo:
             and not any(note.startswith("Reviewed:") for note in (edit.note, *edit.notes) if note)
         ):
             raise ChittyError("moving review → done requires --note starting 'Reviewed:'")
-        if is_review_transition:
+        if is_review_transition and not edit.skip_verdicts:
             _validate_review_verdict(stored.task, edit)
         if edit.override_review_independence and not is_review_transition:
             raise ChittyError("--override-review-independence only applies to review transitions")
