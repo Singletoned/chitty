@@ -1,6 +1,6 @@
 ---
 title: Have cold reads implement tickets in a detached worktree
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -49,6 +49,10 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 
 Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref ... HEAD` from the main checkout and first kept `main`'s commit instead of its own. It noticed and corrected this. One clause; the criteria's phrases still match, so no further read.
 
+## Summary
+
+Implemented the detached-worktree cold-read procedure in `src/chitty/roles/plan.md`, including environment isolation, named refs, and cleanup. Updated `PLAN.md` with the 2026-11-05 decision and rationale, and added the whitespace-collapsing `TestGuide` regression test. Verification: focused test passed; `make check` passed (278 Python tests and Node tests); `chitty fix` passed with unrelated existing Markdown warnings. Commit: `0775831`.
+
 ## History
 
 - 2026-11-05T17:52:45Z mellow-newt → backlog
@@ -69,3 +73,5 @@ Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref .
 - 2026-11-06T00:07:27Z plucky-badger: wrote the plan
 - 2026-11-06T00:13:37Z plucky-badger: ticked acceptance criteria
 - 2026-11-06T00:13:39Z plucky-badger: ticked acceptance criteria
+- 2026-11-06T00:13:50Z plucky-badger: changed summary
+- 2026-11-06T00:13:50Z plucky-badger doing → review
