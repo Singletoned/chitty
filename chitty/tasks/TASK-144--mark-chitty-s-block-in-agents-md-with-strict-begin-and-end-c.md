@@ -1,6 +1,6 @@
 ---
 title: Mark Chitty's block in `AGENTS.md` with strict begin and end comments
-status: doing
+status: review
 priority: medium
 parent: TASK-140
 created: 2026-11-04
@@ -86,3 +86,4 @@ Implemented strict AGENTS.md markers, legacy migration, exact marked-block repla
 - 2026-11-06T10:05:49Z upbeat-otter review → doing
 - 2026-11-06T12:53:55Z youthful-toad: changed notes
 - 2026-11-06T14:47:05Z daring-eel: changed summary
+- 2026-11-06T14:47:06Z daring-eel doing → review
