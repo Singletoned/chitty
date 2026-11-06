@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `chitty.toml`
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -68,6 +68,9 @@ Review failed (work): deleting the config file is not detected. `_changed_config
 
 Verified the deletion regression first failed before the fix, then passed after it. Targeted config-review tests and full `make check` pass (337 Python tests plus Node tests).
 
+Reviewed: config-change and config-deletion review preflight tests pass; pyproject unrelated changes pass while [tool.chitty] changes fail; make format and make check pass (337 Python tests plus Node tests).
+1: pass - verified review refusal, pyproject comparison, deletion handling, and full checks.
+
 ## Summary
 
 Handoff: review preflight now also rejects branches that delete the repository’s Chitty config, including when the worktree cannot load its config; it reports the exact work-failure note without launching the agent. Added regression coverage. Verification: targeted tests and `make check` pass. Follow-ups: none.
@@ -92,3 +95,5 @@ Handoff: review preflight now also rejects branches that delete the repository�
 - 2026-11-06T19:40:46Z vivid-gannet review → doing
 - 2026-11-06T19:54:55Z rosy-quail: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T19:54:55Z rosy-quail doing → review
+- 2026-11-06T19:58:27Z kind-badger: changed notes; ticked acceptance criteria
+- 2026-11-06T19:58:27Z kind-badger review → done
