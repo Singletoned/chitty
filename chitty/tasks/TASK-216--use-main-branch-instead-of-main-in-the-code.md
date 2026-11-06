@@ -16,7 +16,7 @@ created: 2026-11-06
 
 Always read the setting from the main checkout's config (`main_repo`, found by the existing `_main_checkout` in `src/chitty/run.py`), never from a ticket worktree's. Older ticket branches may lack the key, and the main checkout's config is the one that counts. `_main_checkout` and `_refuse_stale_linked_worktree` mean the primary checkout, not the branch, so leave their names alone.
 
-Out of scope: docs and guides (`TASK-216`).
+Out of scope: docs and guides (`TASK-217`).
 
 ## Acceptance Criteria
 
@@ -26,3 +26,4 @@ Out of scope: docs and guides (`TASK-216`).
 ## History
 
 - 2026-11-06T16:48:06Z youthful-toad → backlog
+- 2026-11-06T16:48:39Z youthful-toad: changed description
