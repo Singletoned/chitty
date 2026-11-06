@@ -19,6 +19,13 @@ In `src/chitty/roles/work.md`, `review.md` and `src/chitty/guide.md`, say that u
 - [ ] A test shows `chitty guide work` and `chitty guide review` saying this, `__version__` is bumped above `main`'s, and `PLAN.md` records the decision
 - [ ] A test with `git init`, a committed configuration containing `backlog`, and `git worktree add`, run from inside the worktree, shows plain `chitty add T` with no description, through both the CLI and MCP, creating a `BACKLOG-` ticket, `-c human` numbering normally, and inbox pull still numbering normally
 
+## Plan
+
+1. Update `resolve_add_target` to select the configured `backlog` context for plain adds from linked worktrees, while preserving explicit contexts, missing-backlog fallback, and normal inbox behavior.
+2. Add regression coverage using real Git repositories/worktrees for CLI and MCP, including explicit `human` and inbox numbering.
+3. Update the narrowly scoped work/review/general guide bullets and the relevant `PLAN.md` decision, bump `__version__`, run `chitty init`, and commit generated guide/config changes.
+4. Run formatting and the complete `make check`, then record verification.
+
 ## Notes
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: the tests' temporary repositories are not Git repositories, so `is_linked_worktree` is false there and the criterion could not be met without saying how to set one up; and no description being needed. It confirmed the check is true for a `chitty run` worktree.
@@ -30,3 +37,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: the tests'
 - 2026-11-05T14:50:45Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:50:47Z mellow-newt backlog → todo
 - 2026-11-06T19:31:50Z golden-lapwing todo → doing
+- 2026-11-06T19:32:17Z golden-lapwing: wrote the plan
