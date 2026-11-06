@@ -12,6 +12,9 @@ read only that section. Update it when a decision changes.
   mocking. Tests that use the inbox must inherit `RepoTestCase`, which assigns
   a temporary `XDG_DATA_HOME` so they never touch the real inbox. The formatter
   tests fail, never skip, if prettier or mdformat is missing.
+- Put a ticket's new guide tests in their own file, `tests/test_guide_<topic>.py`,
+  not at the end of `TestGuide` in `tests/test_cli.py`, where every guide
+  ticket's tests collide.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
 - Writing tickets with the human? Cold-read them, as `PLAN.md` describes. If you
