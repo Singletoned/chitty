@@ -1,8 +1,7 @@
 ---
 title: Stop `chitty run` pulling the inbox
-status: doing
+status: review
 priority: high
-owner: human
 created: 2026-11-06
 ---
 
@@ -47,6 +46,10 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-210/1`; the test failed first and pass
 
 Reserved for a Sonnet subagent of a human-run session; the loops leave it alone.
 
+## Summary
+
+Removed pull_suggestions, RunInterrupted inbox handling and project_before_refresh from run; replaced the test with one that a pending inbox suggestion survives a run and creates no ticket (failed before, passes after); README and PLAN no longer say run touches the inbox. make check passes.
+
 ## History
 
 - 2026-11-06T13:44:09Z youthful-toad → backlog
@@ -58,3 +61,5 @@ Reserved for a Sonnet subagent of a human-run session; the loops leave it alone.
 - 2026-11-06T13:58:42Z youthful-toad todo → doing
 - 2026-11-06T14:14:01Z youthful-toad: ticked acceptance criteria
 - 2026-11-06T14:14:02Z youthful-toad: ticked acceptance criteria
+- 2026-11-06T14:14:03Z youthful-toad: changed owner, summary
+- 2026-11-06T14:14:03Z youthful-toad doing → review
