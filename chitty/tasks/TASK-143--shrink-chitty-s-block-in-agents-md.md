@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: blocked
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -15,16 +15,18 @@ Third of three parts of `TASK-140`. `AGENTS.md` belongs to the repository, so re
 
 Rewrite `src/chitty/guide.md` to about ten lines: tasks live in `chitty/`; use the CLI or MCP and do not hand-edit task files; backticks for paths and code; `chitty --help` for commands; and which `chitty guide <role>` to run, for a person who starts an agent by hand, keeping the pointer to `chitty guide plan` from `TASK-187`. `TASK-141` has already given every other rule a home and accounted for them in a note: check that against the final text.
 
-`chitty init` already replaces the block, so existing repositories pick this up through the version bump. `TASK-144` makes that replacement exact. Run it here so this repository's `AGENTS.md` matches. In this repository's own section, replace the cold-read pointer with `chitty guide plan`, and drop anything the block no longer needs.
+`chitty init` already replaces the block, so existing repositories pick this up through the version bump. Under `TASK-218` and `TASK-219`, a ticket branch must not change the managed block in `AGENTS.md` or run `chitty init`: leave the block exactly as on `main`, and the main checkout regenerates it after landing. Outside the block, in this repository's own section, replace the cold-read pointer with `chitty guide plan`, and drop anything the block no longer needs.
+
+`main`'s `src/chitty/guide.md` has changed since this branch started (`TASK-217`, `TASK-219`). Rebase onto `main` and rewrite the short guide against `main`'s current text. Keep the sentence "On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, or run `chitty init`.", which a test checks for. Bump `__version__` one patch above `main`'s.
 
 Out of scope: the rest of a repository's `AGENTS.md`, which Chitty does not own.
 
 ## Acceptance Criteria
 
-- [x] This repository's `AGENTS.md` matches and its cold-read line names `chitty guide plan`, and `__version__` is bumped above `main`'s
 - [x] `README.md` and `PLAN.md` describe where instructions live
-- [x] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
+- [ ] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
 - [x] A test shows `chitty init` replacing the old long block in an existing repository with the new one
+- [ ] This repository's `AGENTS.md` managed block is identical to `main`'s, the cold-read line outside it names `chitty guide plan`, and `__version__` is one patch above `main`'s.
 
 ## Plan
 
@@ -46,6 +48,8 @@ Review failed (integration): rebasing onto `main` conflicts in `AGENTS.md`, `src
 
 Blocked by newer main policy: TASK-218 now requires ticket branches to leave the managed `AGENTS.md` block unchanged, while this ticket requires changing that block and running `chitty init` here. Rebasing onto `main` therefore conflicts in `AGENTS.md`, `src/chitty/guide.md`, and `src/chitty/__init__.py`, and preserving TASK-143 would undo the human decision in TASK-218. Human resolution needed: supersede TASK-218 policy for this migration, or close/redefine TASK-143 against the main-only init workflow. Verification also exposed that `make check` rejects the branch version as not above current main.
 
+Unblocked and redefined by a human-run session. The branch's `AGENTS.md` block change and `chitty init` run are now forbidden (`TASK-218`, `TASK-219`), so the old criterion 1 was replaced: keep `main`'s block, and `main` regenerates it after landing. Criterion 3 is unchecked because the guide must be rewritten against `main`'s newer text. Next steps: rebase onto `main`; resolve `src/chitty/guide.md` by shortening `main`'s version; restore `AGENTS.md`'s block from `main`; bump `__version__`; run `make check`.
+
 ## Summary
 
 Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, README.md, and PLAN.md document the role-guide split; init regression coverage verifies replacing a legacy block; version bumped to 0.1.39. Verification: focused init/guide tests, make format, make check, chitty fix, and chitty check (warnings only for pre-existing ticket Markdown).
@@ -65,3 +69,5 @@ Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, 
 - 2026-11-06T20:24:15Z sunny-crane review → doing
 - 2026-11-06T20:30:01Z rosy-kestrel: changed notes
 - 2026-11-06T20:30:01Z rosy-kestrel doing → blocked
+- 2026-11-06T21:36:38Z youthful-toad: changed owner, description, acceptance criteria, notes
+- 2026-11-06T21:36:38Z youthful-toad blocked → doing
