@@ -24,9 +24,9 @@ read only that section. Update it when a decision changes.
   registration) must bump `__version__` in `src/chitty/__init__.py`, at least at patch
   level, in the same change. The version recorded in `chitty.toml` is how
   other repos learn that `init` needs re-running (TASK-52). Bump only
-  `__version__`: never edit `chitty.toml` or run `chitty init` on a ticket
-  branch. The main checkout's `chitty` upgrades `chitty.toml` after the work
-  lands (TASK-212).
+  `__version__`: never edit `chitty.toml` or the managed block below, or run
+  `chitty init`, on a ticket branch. The main checkout's `chitty` upgrades
+  both after the work lands (TASK-212).
 
 <!-- chitty:begin - managed by `chitty init`; edits here are replaced -->
 
