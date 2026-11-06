@@ -1,6 +1,6 @@
 ---
 title: Show status glyphs, and why `chitty next` skips a ticket, in `chitty list`
-status: todo
+status: doing
 priority: high
 created: 2026-11-01
 ---
@@ -38,3 +38,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the shape of the refact
 - 2026-11-06T09:26:17Z youthful-toad: changed title, priority, dependencies, description, acceptance criteria
 - 2026-11-06T09:29:01Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T09:31:13Z youthful-toad backlog → todo
+- 2026-11-06T16:33:27Z calm-ibis todo → doing
