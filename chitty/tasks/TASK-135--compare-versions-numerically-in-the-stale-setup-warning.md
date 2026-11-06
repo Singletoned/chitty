@@ -1,6 +1,6 @@
 ---
 title: Compare versions numerically in the stale setup warning
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -32,6 +32,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the function's name; wh
 
 Reported again on 2026-11-04 by a session in another repository: a file recording `0.1.4` read as newer than `0.1.25`, so it told the person to upgrade Chitty rather than run `chitty init`, and misled the session. Raised to medium.
 
+Reviewed: criterion 1 passes. Numeric older (0.1.9) and newer (0.1.100) versions produce the correct warnings; malformed 1.0rc1 warns while chitty list succeeds. Focused test and full make check pass (291 Python tests and Node tests).
+
 ## Summary
 
 Implemented numeric setup-version comparison in `src/chitty/cli.py`, reusing the shared `version_key` helper. Malformed recorded versions now emit a warning and reads continue; config loading no longer rejects them before the warning.
@@ -52,3 +54,5 @@ Verification: focused setup-version regression test and `make check` passed (269
 - 2026-11-05T21:41:06Z sunny-jay: ticked acceptance criteria
 - 2026-11-05T21:41:07Z sunny-jay: changed summary
 - 2026-11-05T21:41:08Z sunny-jay doing → review
+- 2026-11-06T09:24:21Z kind-heron: changed notes
+- 2026-11-06T09:24:21Z kind-heron review → done
