@@ -41,6 +41,8 @@ Review failed (work): skip_reason does not report non-human owners. A todo or do
 2: pass - status glyph and skipped-field coverage is present
 3: fail - non-human owned tickets are unmarked even though chitty next skips them
 
+Regression test for non-human owners failed before the fix: list omitted 👤 agent. skip_reason now reports non-human owners for todo/doing, while --owner selection still preserves dependency checks. Focused test passes; make check Python suite passes (332 tests), Node tests emit 26 dots but do not exit before timeout.
+
 ## Summary
 
 Implemented shared skip reasons, status glyphs, list JSON/MCP skipped fields, and documentation. Verified focused regressions and full make check (330 Python tests plus Node tests); chitty fix reports only pre-existing warnings.
@@ -57,3 +59,4 @@ Implemented shared skip reasons, status glyphs, list JSON/MCP skipped fields, an
 - 2026-11-06T16:52:58Z calm-ibis doing → review
 - 2026-11-06T17:01:44Z vivid-dormouse: changed acceptance criteria, notes
 - 2026-11-06T17:01:44Z vivid-dormouse review → doing
+- 2026-11-06T18:00:58Z kind-badger: changed notes
