@@ -1,6 +1,6 @@
 ---
 title: Find what leaves temporary projects in the real inbox
-status: doing
+status: review
 labels:
   - bug
 priority: low
@@ -47,3 +47,4 @@ Verified handoff: the real inbox listing was unchanged by a complete make check 
 - 2026-11-06T00:32:15Z youthful-crane: changed notes
 - 2026-11-06T00:32:21Z youthful-crane: ticked acceptance criteria
 - 2026-11-06T00:32:22Z youthful-crane: changed summary
+- 2026-11-06T00:32:24Z youthful-crane doing → review
