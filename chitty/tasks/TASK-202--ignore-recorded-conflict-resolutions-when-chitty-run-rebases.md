@@ -4,6 +4,7 @@ status: todo
 labels:
   - bug
 priority: high
+owner: human
 parent: TASK-106
 created: 2026-11-06
 ---
@@ -25,8 +26,11 @@ Tests must not depend on the developer's Git config. Set `rerere.enabled` and `r
 
 Cold read by a fresh Sonnet subagent, 2026-11-06. It reproduced the stop in a scratch repository and confirmed `-c rerere.enabled=false` leaves the path unmerged. Fixed nothing in the text; adopted its test recipe (record the resolution by resolving the same conflict once, then reset the branch) and the `PLAN.md` place (step 3 of the review preparation). Rejected: isolating global Git config in the test, because the repository's own settings are enough.
 
+Owner set to human only so chitty run leaves this ticket to this session; cleared when done.
+
 ## History
 
 - 2026-11-06T09:49:33Z youthful-toad → backlog
 - 2026-11-06T09:50:30Z youthful-toad: changed notes
 - 2026-11-06T09:50:30Z youthful-toad backlog → todo
+- 2026-11-06T09:50:31Z youthful-toad: changed owner, notes
