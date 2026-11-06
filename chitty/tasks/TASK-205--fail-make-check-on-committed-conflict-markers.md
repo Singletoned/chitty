@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` on committed conflict markers
-status: todo
+status: doing
 priority: medium
 created: 2026-11-06
 ---
@@ -37,3 +37,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-205/1`; failed with a marker and passe
 - 2026-11-06T11:51:16Z youthful-toad → backlog
 - 2026-11-06T11:56:21Z youthful-toad: changed description, notes
 - 2026-11-06T11:56:21Z youthful-toad backlog → todo
+- 2026-11-06T20:30:27Z rosy-eel todo → doing
