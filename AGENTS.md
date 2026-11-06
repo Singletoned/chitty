@@ -90,5 +90,4 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
   Suggest work for another project without touching its checkout using
   `chitty suggest PROJECT "title" -d "why"`. Don't do it in this session.
 
-
 <!-- chitty:end -->
