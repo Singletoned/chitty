@@ -8,22 +8,33 @@ created: 2026-11-06
 
 ## Description
 
-The human wants several `chitty run --mode review` loops, and in time several workers, running at once in this repository. Today two loops started together choose the same ticket: `next_action` in `src/chitty/store.py` picks the first eligible ticket, and nothing marks it as taken until the agent commits a status change, which for a review is at the very end. `README.md` currently allows only one worker and one reviewer.
+The human wants several `chitty run --mode review` loops, and in time several workers, running at once in this repository. Today two loops started together choose the same ticket: `next_action` in `src/chitty/store.py` picks the first eligible ticket, and nothing marks it as taken until the agent commits a status change, which for a review is at the very end. `README.md` and `PLAN.md` currently allow only one worker and one reviewer.
 
-Add a per-ticket run lock, held by `chitty run` from just after it chooses a ticket until it returns. The lock is a file at `<git common dir>/chitty/run/<ID>.lock` of the main checkout (`git rev-parse --git-common-dir`), so every worktree of the clone sees the same locks and nothing is committed. Create it with `os.open(..., O_CREAT | O_EXCL | O_WRONLY)` and write the holder's PID. Remove it in a `finally` in `run` in `src/chitty/run.py`, including on `RunInterrupted` and any other exception. A lock whose PID is not running (`os.kill(pid, 0)` raises `ProcessLookupError`) is stale: whoever finds it deletes it and carries on. A committed note or field was considered and rejected: a killed run would leave it behind for a person to clear, and every claim and release would be a commit on a branch other sessions read.
+Add a per-ticket run lock in a new module `src/chitty/locks.py`, held by `chitty run` from just after it chooses a ticket until `run` returns. The lock is an exclusive, non-blocking `fcntl.flock` (`LOCK_EX | LOCK_NB`) on the file `<git common dir>/chitty/run/<ID>.lock` of the clone (use the existing `_git_common_dir` in `src/chitty/config.py`; create the directory with `parents=True, exist_ok=True`), so every worktree sees the same locks and nothing is committed. The kernel releases a `flock` when its process exits, however it exits, so there is no stale lock to detect or take over, and the file itself is left in place and never deleted. After locking, the holder truncates the file and writes its PID, which is only for messages.
 
-The decision: a lock is machine-local, because Chitty runs on one machine today (the human, 2026-11-06). Locks on other machines are out of scope.
+Decisions, so the worker need not make them:
+- A committed note or field was rejected: a killed run would leave it for a person to clear, and every claim would be a commit. PID files were rejected after a cold read: taking over a stale one races, and PIDs are reused.
+- Locks are machine-local, because Chitty runs on one machine today (the human, 2026-11-06). Other machines are out of scope.
+- `locks.py` provides a context manager `run_lock(root, task_id)`, raising `TicketLocked` (a `ChittyError`) if the lock is held, and `is_locked(root, task_id) -> bool`, which tries the same `flock` on a fresh file descriptor and releases it at once, and returns `False` when the file does not exist. A fresh descriptor conflicts even with a lock held by the same process, which the retry below relies on.
+- `next_action` calls `is_locked(repo.root, stored.id)` and skips a locked ticket in both modes and with no `--mode`, so `chitty next` and the MCP `next` tool agree with `chitty run`. `ticket_action` (the `--ticket` path) does not skip it; `run` refuses it instead.
+- `run` in `src/chitty/run.py` enters `run_lock` immediately after choosing the ticket, before the dirty-path check, `_worktree`, `_prepare_review`, setup and the `todo` claim, and everything after it runs inside the `with`, so every exit releases it. Extract this into a helper: `run` is already over 100 lines. If `run_lock` raises `TicketLocked` for a ticket `next_action` chose, another run took it between the check and the lock: ask `next_action` again, up to a module-level `RUN_LOCK_ATTEMPTS = 10`, then raise the last `TicketLocked`. When nothing unlocked remains `next_action` raises `NoNextTicket` as today, so an idle loop still exits 3. `chitty run --ticket ID` on a locked ticket raises `TicketLocked` naming the PID from the file.
+- No version bump: this changes no guide, `chitty.toml` template or inbox registration.
 
-`next_action` skips a ticket with a live lock, in both modes and with no `--mode`, so `chitty next` agrees with `chitty run`. `run` takes the lock after `next_action` returns, and if another process created it first (`FileExistsError`) it asks `next_action` again, which now skips that ticket; a bounded number of attempts is enough, because each lost race removes a candidate. When nothing unlocked remains it raises `NoNextTicket` as today, so an idle loop still exits 3. `chitty run --ticket ID` refuses a ticket with a live lock with a `ChittyError` naming the PID. Take the lock before `_worktree`, `_prepare_review` and setup, and before claiming a `todo` ticket, so two runs never touch one worktree.
+Tests can hold a lock from the test process with `run_lock`, and run two real `chitty run` processes with fake agents on `PATH`, as `tests/test_next.py` does, where each agent waits for a file the test creates, so both sessions overlap. Run every test with stdin closed.
 
-Out of scope: collisions in the main checkout itself, which `README.md` already says fail loudly (Git locks during setup, inbox pulls and review merges), and showing locks in `chitty list`, which `TASK-72` can add.
+Out of scope: collisions in the main checkout itself, which `README.md` already says fail loudly (Git locks during setup, inbox pulls and review merges), and showing locks in `chitty list`, which `TASK-72` can add later.
 
 ## Acceptance Criteria
 
 - [ ] Tests show two `chitty run --mode review` processes started together, with two review tickets and fake agents that wait, each reviewing a different ticket, and a third exiting 3
-- [ ] Tests show a stale lock (a PID that is not running) being taken over, `chitty next` skipping a live lock, `--ticket` refusing one, and the lock removed after a run that succeeds, fails and is interrupted
 - [ ] `README.md` and `PLAN.md` say any number of workers and reviewers may run at once and describe the lock
+- [ ] Tests show a lock held by another process making `chitty next` skip that ticket and `--ticket` refuse it with its PID, and the lock free again after a run that succeeds, fails and is interrupted
+
+## Notes
+
+Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the PID-file design raced on stale takeover, on an empty file before the PID is written, and on PID reuse, so it now uses `fcntl.flock`, which the kernel releases on exit; named the module, the API, what `next_action` calls, the retry bound, the lock directory's creation, that the lock covers the dirty-path check and early returns, the test approach, and no version bump. The size concern is answered by the simpler lock; three criteria.
 
 ## History
 
 - 2026-11-06T09:26:15Z youthful-toad → backlog
+- 2026-11-06T09:28:32Z youthful-toad: changed description, acceptance criteria, notes
