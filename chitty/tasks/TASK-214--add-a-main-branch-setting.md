@@ -1,6 +1,6 @@
 ---
 title: Add a `main_branch` setting
-status: todo
+status: doing
 priority: medium
 created: 2026-11-06
 ---
@@ -55,3 +55,4 @@ The ref includes a version bump, so a worker should drop that hunk.
 - 2026-11-06T16:49:06Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T16:59:24Z youthful-toad: changed description, notes
 - 2026-11-06T16:59:24Z youthful-toad backlog → todo
+- 2026-11-06T20:42:03Z lively-yellowhammer todo → doing
