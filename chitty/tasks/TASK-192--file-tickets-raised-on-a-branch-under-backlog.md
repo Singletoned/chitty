@@ -1,6 +1,6 @@
 ---
 title: File tickets raised on a branch under `BACKLOG`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-191
@@ -16,8 +16,8 @@ In `src/chitty/roles/work.md`, `review.md` and `src/chitty/guide.md`, say that u
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide work` and `chitty guide review` saying this, `__version__` is bumped above `main`'s, and `PLAN.md` records the decision
-- [ ] A test with `git init`, a committed configuration containing `backlog`, and `git worktree add`, run from inside the worktree, shows plain `chitty add T` with no description, through both the CLI and MCP, creating a `BACKLOG-` ticket, `-c human` numbering normally, and inbox pull still numbering normally
+- [x] A test shows `chitty guide work` and `chitty guide review` saying this, `__version__` is bumped above `main`'s, and `PLAN.md` records the decision
+- [x] A test with `git init`, a committed configuration containing `backlog`, and `git worktree add`, run from inside the worktree, shows plain `chitty add T` with no description, through both the CLI and MCP, creating a `BACKLOG-` ticket, `-c human` numbering normally, and inbox pull still numbering normally
 
 ## Plan
 
@@ -30,6 +30,12 @@ In `src/chitty/roles/work.md`, `review.md` and `src/chitty/guide.md`, say that u
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: the tests' temporary repositories are not Git repositories, so `is_linked_worktree` is false there and the criterion could not be met without saying how to set one up; and no description being needed. It confirmed the check is true for a `chitty run` worktree.
 
+Regression coverage initially failed without the fix: plain CLI add in a linked worktree required --description; after the fix, CLI, MCP, guide, and inbox tests pass. chitty fix reported only pre-existing ticket Markdown warnings.
+
+## Summary
+
+Implemented linked-worktree target resolution in resolve_add_target: plain adds use configured backlog, explicit contexts win, and inbox pulls remain on default_context. Updated guides, PLAN.md, generated AGENTS.md/chitty.toml, and bumped __version__ to 0.1.37. Added CLI/MCP/worktree, guide, inbox, and autocommit regression tests. Verified with make check (339 Python tests and Node tests pass). Commit: 8e05e17.
+
 ## History
 
 - 2026-11-05T14:47:52Z mellow-newt → backlog
@@ -38,3 +44,5 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: the tests'
 - 2026-11-05T14:50:47Z mellow-newt backlog → todo
 - 2026-11-06T19:31:50Z golden-lapwing todo → doing
 - 2026-11-06T19:32:17Z golden-lapwing: wrote the plan
+- 2026-11-06T19:59:09Z golden-lapwing: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T19:59:09Z golden-lapwing doing → review
