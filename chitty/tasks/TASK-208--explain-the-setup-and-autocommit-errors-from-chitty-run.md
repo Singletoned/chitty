@@ -1,6 +1,6 @@
 ---
 title: Explain the `setup` and `autocommit` errors from `chitty run`
-status: todo
+status: doing
 priority: medium
 created: 2026-11-06
 ---
@@ -36,3 +36,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-208/1`; 3 tests failed before and pass
 - 2026-11-06T13:37:47Z youthful-toad → backlog
 - 2026-11-06T13:46:44Z youthful-toad: changed description, notes
 - 2026-11-06T13:46:44Z youthful-toad backlog → todo
+- 2026-11-06T20:36:53Z sunny-kestrel todo → doing
