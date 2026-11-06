@@ -26,6 +26,10 @@ Out of scope: a timeout, and landing.
 - [ ] Tests show a quoted argument parsed without a shell, an unset `check` failing before anything changes, and `chitty init` adding it only as a comment
 - [ ] This repository sets `check`, `PLAN.md`, `README.md` and the template describe it, and `__version__` is bumped above `main`'s
 
+## Plan
+
+Inspect the runner, config, init templates, docs, and existing tests; add strict check configuration and preflight execution after rebase/setup, covering output and status handling; update repository docs/version and verify with focused tests plus make check.
+
 ## Notes
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: how output is captured, and the effect on existing tests.
@@ -39,3 +43,4 @@ Under `TASK-212`, a branch may not change `chitty.toml`. Setting `check = "make 
 - 2026-11-06T16:24:13Z youthful-toad: changed priority
 - 2026-11-06T16:44:17Z youthful-toad: changed notes
 - 2026-11-06T18:30:21Z witty-gannet todo → doing
+- 2026-11-06T18:30:36Z witty-gannet: wrote the plan
