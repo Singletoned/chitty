@@ -38,6 +38,10 @@ Out of scope:
 - [ ] The new tests add less than 5 seconds to `make check`.
 - [ ] `tests/test_check_edit.py` has Hypothesis properties for the three rules above, built through `claim_edit` and `fail_review_edit`, which `run.py` uses. Removing `skip_verdicts=True` from `fail_review_edit` makes the first property fail with a shrunk counterexample, recorded in the summary.
 
+## Plan
+
+Extract pure check_edit validation from Repo.edit, add run.py claim/fail helpers, and cover the specified edit rules with fast Hypothesis properties. Keep config-dependent checks in Repo.edit, run regression tests before and after the fix, then format and run make check.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-221/1`; the reintroduced `TASK-206` bug was caught, and the shrunk counterexample was a `review` task with one unticked criterion and empty history; the six properties take about 0.9 s). Outcomes:
@@ -56,3 +60,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-221/1`; the reintroduced `TASK-206` bu
 - 2026-11-06T19:28:21Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T19:28:21Z youthful-toad backlog → todo
 - 2026-11-06T20:44:37Z youthful-heron todo → doing
+- 2026-11-06T20:44:56Z youthful-heron: wrote the plan
