@@ -155,7 +155,7 @@ def _run_ticket(
     else:
         work_repo = Repo.open(worktree)
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
-        work_repo.edit(action.id, Edit(status="doing"))
+        work_repo.edit(action.id, claim_edit())
     old_status = work_repo.find(action.id).task.frontmatter.status
     started = datetime.now(UTC)
     elapsed_start = time.monotonic()
@@ -509,9 +509,19 @@ def _main_config_path(worktree: Path) -> str | None:
     return PYPROJECT_NAME if isinstance(tool, dict) and "chitty" in tool else None
 
 
+def claim_edit() -> Edit:
+    """Return the fixed edit used to claim a todo ticket."""
+    return Edit(status="doing")
+
+
+def fail_review_edit(note: str) -> Edit:
+    """Return the fixed edit used when a review cannot proceed."""
+    return Edit(status="doing", note=note, skip_verdicts=True)
+
+
 def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:
     """Move a review ticket to `doing` through `Repo.edit`, so escalation counts it."""
-    change = work_repo.edit(action.id, Edit(status="doing", note=note, skip_verdicts=True))
+    change = work_repo.edit(action.id, fail_review_edit(note))
     return RunResult(action, "review", change.task.task.frontmatter.status)
 
 

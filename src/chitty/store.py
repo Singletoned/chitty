@@ -422,8 +422,6 @@ class Repo:
                 f"{task_id} is in a random-ID context; "
                 f"run `chitty move {task_id} tasks` to promote it"
             )
-        if edit.status == "blocked" and not (edit.note or edit.notes):
-            raise ChittyError("setting status blocked requires --note with the reason")
         if (
             edit.status == "done"
             and edit.status != previous_status
@@ -431,26 +429,7 @@ class Repo:
             and previous_status != "review"
         ):
             raise ChittyError("setting status done requires -s review first")
-        is_review_transition = previous_status == "review" and edit.status in {"doing", "done"}
-        if edit.status == "doing" and previous_status == "review" and not (edit.note or edit.notes):
-            raise ChittyError("moving review → doing requires --note with the reason")
-        if (
-            edit.status == "done"
-            and previous_status == "review"
-            and not any(note.startswith("Reviewed:") for note in (edit.note, *edit.notes) if note)
-        ):
-            raise ChittyError("moving review → done requires --note starting 'Reviewed:'")
-        if is_review_transition and not edit.skip_verdicts:
-            _validate_review_verdict(stored.task, edit)
-        if edit.override_review_independence and not is_review_transition:
-            raise ChittyError("--override-review-independence only applies to review transitions")
-        if is_review_transition:
-            reviewer = actor()
-            work = stored.task.review_work(reviewer)
-            if work and not edit.override_review_independence:
-                raise ChittyError(f"{reviewer} cannot review this task: {', '.join(work)}")
-        if edit.status == "doing" and previous_status == "review":
-            edit = _escalate_repeated_failure(stored.task, edit)
+        edit = check_edit(stored.task, edit, actor())
         edit = replace(
             edit,
             depends_on=self._references(edit.depends_on),
@@ -784,6 +763,33 @@ class Repo:
 
 
 VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
+
+
+def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
+    """Validate an edit that depends only on the current task and its actor."""
+    previous_status = task.frontmatter.status
+    if edit.status == "blocked" and not (edit.note or edit.notes):
+        raise ChittyError("setting status blocked requires --note with the reason")
+    is_review_transition = previous_status == "review" and edit.status in {"doing", "done"}
+    if edit.status == "doing" and is_review_transition and not (edit.note or edit.notes):
+        raise ChittyError("moving review → doing requires --note with the reason")
+    if (
+        edit.status == "done"
+        and previous_status == "review"
+        and not any(note.startswith("Reviewed:") for note in (edit.note, *edit.notes) if note)
+    ):
+        raise ChittyError("moving review → done requires --note starting 'Reviewed:'")
+    if is_review_transition and not edit.skip_verdicts:
+        _validate_review_verdict(task, edit)
+    if edit.override_review_independence and not is_review_transition:
+        raise ChittyError("--override-review-independence only applies to review transitions")
+    if is_review_transition:
+        work = task.review_work(reviewer)
+        if work and not edit.override_review_independence:
+            raise ChittyError(f"{reviewer} cannot review this task: {', '.join(work)}")
+    if edit.status == "doing" and is_review_transition:
+        return _escalate_repeated_failure(task, edit)
+    return edit
 
 
 def _validate_review_verdict(task: Task, edit: Edit) -> None:
