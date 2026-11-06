@@ -14,7 +14,7 @@ created: 2026-11-04
 
 ## Acceptance Criteria
 
-- [ ] Tests show earlier invocations making no request, the 100th asking and alerting when PyPI is newer, a failed request leaving nothing but a reset count, and an editable install not counting
+- [x] Tests show earlier invocations making no request, the 100th asking and alerting when PyPI is newer, a failed request leaving nothing but a reset count, and an editable install not counting
 
 ## Plan
 
@@ -31,3 +31,4 @@ Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: order against `T
 - 2026-11-04T19:38:02Z mellow-newt backlog → todo
 - 2026-11-06T00:20:39Z jolly-ibis todo → doing
 - 2026-11-06T00:20:58Z jolly-ibis: wrote the plan
+- 2026-11-06T00:27:54Z jolly-ibis: ticked acceptance criteria
