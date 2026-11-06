@@ -1,6 +1,6 @@
 ---
 title: Add a `main_branch` setting
-status: doing
+status: review
 priority: medium
 created: 2026-11-06
 ---
@@ -20,7 +20,7 @@ Out of scope: using the setting (`TASK-216`), docs (`TASK-217`), and remotes or 
 ## Acceptance Criteria
 
 - [x] Tests show a config without `main_branch` loading as `main`, and one with `main_branch = "master"` loading as `master`, from both `chitty.toml` and `[tool.chitty]`.
-- [ ] Tests show `chitty init` writing `main_branch = "master"` in a new repository on `master`, and writing no `main_branch` on `main`, outside Git, or when upgrading an existing config.
+- [x] Tests show `chitty init` writing `main_branch = "master"` in a new repository on `master`, and writing no `main_branch` on `main`, outside Git, or when upgrading an existing config.
 
 ## Plan
 
@@ -59,9 +59,11 @@ Regression tests failed before implementation: RepoConfig had no main_branch and
 
 Review failed (tests): criterion 2 is not fully demonstrated. Add a real non-Git init case and verify it writes no main_branch, then rerun the checks.
 
+Added a real non-Git chitty init regression test; it runs in a temporary directory with no Git repository and verifies the generated config omits main_branch. The targeted test and full checks pass. chitty fix still reports only pre-existing Markdown delimiter warnings in unrelated tickets.
+
 ## Summary
 
-Implemented optional RepoConfig.main_branch with a default of "main". New init configs record a non-main current branch using JSON quoting; main, detached/outside-Git, and existing configs remain unchanged. Added config and init regression coverage. Verified with make format && make check (351 Python tests and Node tests pass). Commit: 211c171.
+Added and verified a real non-Git init regression test. make format && make check passes: 355 Python tests and Node tests. Implementation and config/init coverage are complete; commit 48b1c81 adds the review-requested test. No follow-ups.
 
 ## History
 
@@ -78,3 +80,5 @@ Implemented optional RepoConfig.main_branch with a default of "main". New init c
 - 2026-11-06T20:47:26Z vivid-urchin doing → review
 - 2026-11-06T20:50:47Z lively-zander: changed acceptance criteria, notes
 - 2026-11-06T20:50:47Z lively-zander review → doing
+- 2026-11-06T21:06:16Z open-stoat: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T21:06:16Z open-stoat doing → review
