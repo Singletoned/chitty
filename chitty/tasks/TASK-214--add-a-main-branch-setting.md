@@ -7,7 +7,7 @@ created: 2026-11-06
 
 ## Description
 
-Chitty assumes the integration branch is called `main`. This ticket adds the setting; `TASK-215` uses it in the code, and `TASK-216` in the docs and guides.
+Chitty assumes the integration branch is called `main`. This ticket adds the setting; `TASK-216` uses it in the code, and `TASK-217` in the docs and guides.
 
 Add `main_branch` to `RepoConfig` in `src/chitty/config.py`, for both `chitty.toml` and `[tool.chitty]`.
 
@@ -18,7 +18,7 @@ Add `main_branch` to `RepoConfig` in `src/chitty/config.py`, for both `chitty.to
 
 This changes what `chitty init` writes, so bump `__version__` at patch level. Don't edit this repository's `chitty.toml` on the branch: the main checkout's upgrade adds the key after the work lands.
 
-Out of scope: using the setting (`TASK-215`), docs (`TASK-216`), and remotes or `origin/HEAD`.
+Out of scope: using the setting (`TASK-216`), docs (`TASK-217`), and remotes or `origin/HEAD`.
 
 ## Acceptance Criteria
 
@@ -40,3 +40,4 @@ The ref `refs/cold-read/TASK-214/1` followed the old design and was deleted.
 
 - 2026-11-06T16:24:17Z youthful-toad → backlog
 - 2026-11-06T16:48:05Z youthful-toad: changed title, description, acceptance criteria, notes
+- 2026-11-06T16:48:37Z youthful-toad: changed description
