@@ -2,6 +2,7 @@
 
 import json
 import os
+import sys
 from datetime import date
 from pathlib import Path
 from typing import Any, Literal, TextIO, cast
@@ -26,6 +27,7 @@ from chitty.import_backlog import import_directory
 from chitty.inbox import list_waiting, waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
+from chitty.integrations.claude.usage import run_hook
 from chitty.model import ACCEPTANCE_CRITERIA, FIELD_ORDER, PRIORITIES, SECTION_ORDER, STATUSES
 from chitty.run import RunInterrupted
 from chitty.run import run as run_next
@@ -398,6 +400,12 @@ def next_(mode: Literal["work", "review"] | None, as_json: bool) -> None:
         _print_json(action.as_dict())
     else:
         click.echo(f"{action.mode} {action.id}")
+
+
+@cli.command("claude-usage-hook", hidden=True)
+def claude_usage_hook() -> None:
+    """Record usage from a Claude Code SessionEnd hook."""
+    run_hook(cast(TextIO, sys.stdin))
 
 
 @cli.command("run", context_settings={"ignore_unknown_options": True, "allow_extra_args": True})
