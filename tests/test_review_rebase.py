@@ -126,7 +126,10 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.git("switch", "--quiet", "task-1")
         agents = self.root / "AGENTS.md"
         agents.write_text(
-            agents.read_text().replace("Tasks live in `chitty/`.", "Tasks live elsewhere.")
+            agents.read_text().replace(
+                "Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit",
+                "Tasks live elsewhere; use the `chitty` CLI or MCP, and do not hand-edit",
+            )
         )
         self.git("add", "AGENTS.md")
         self.git("commit", "--quiet", "-m", "change managed guide")
