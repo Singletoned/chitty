@@ -25,6 +25,10 @@ Out of scope: `scripts/check_version_bump.py`'s own hard-coded `main`, which onl
 - [ ] Run ``grep -n '`main`' src/chitty/guide.md src/chitty/roles/*.md README.md PLAN.md``: it matches only `README.md` line 34 and `PLAN.md` lines 650–651. `PLAN.md`'s `## Config` section documents `main_branch` as optional with default `main`.
 - [ ] `__version__` is bumped and `make check` passes.
 
+## Plan
+
+Update the specified guide, role, README, and PLAN references to say "the main branch" while preserving the two repository-development references. Document the optional main_branch setting in PLAN.md, bump the package patch version, then run the required grep and make check.
+
 ## Notes
 
 Cold read 1 (Opus, read-only; docs only, so nothing to run). Outcomes:
@@ -47,3 +51,4 @@ Cold read 1 (Opus, read-only; docs only, so nothing to run). Outcomes:
 - 2026-11-06T17:01:21Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:01:21Z youthful-toad backlog → todo
 - 2026-11-06T21:25:37Z kind-gannet todo → doing
+- 2026-11-06T21:25:59Z kind-gannet: wrote the plan
