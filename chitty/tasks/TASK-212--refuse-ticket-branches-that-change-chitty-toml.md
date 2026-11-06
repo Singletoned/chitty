@@ -7,28 +7,22 @@ created: 2026-11-06
 
 ## Description
 
-Only `chitty init` in the main checkout may change a repository's Chitty config. In other repositories it is vital that ticket branches never do. On 2026-11-06, `task-173`, `task-179` and `task-181` each changed `chitty_version` in `chitty.toml`, through `chitty init` or an automatic setup upgrade run on the branch. `main`'s `chitty` then refused to write to the newer ones (`repository needs Chitty 0.1.35 or later`), and the review loop stopped. `TASK-204` already stops automatic upgrades in linked worktrees. Make the rule a hard check:
+Only `chitty init` in the main checkout may change a repository's Chitty config. In other repositories it is vital that ticket branches never do. On 2026-11-06, `task-173`, `task-179` and `task-181` each changed `chitty_version` in `chitty.toml`, through `chitty init` or an automatic setup upgrade run on the branch. `main`'s `chitty` then refused to write to the newer ones (`repository needs Chitty 0.1.35 or later`), and the review loop stopped. `TASK-204` already stops automatic upgrades in linked worktrees. This ticket is the check before review. `TASK-218` adds the same check for `AGENTS.md`'s managed block, and `TASK-219` covers `chitty init` and the guides.
 
-1. **Before review.** In `_prepare_review` in `src/chitty/run.py`, after the rebase onto `main`, fail the ticket if the branch changes the Chitty config compared with `main`. Use the existing `_fail_review`, with `Review failed (work): the branch changes `<file>`; only `chitty init` on the main checkout may change it. Restore it with `git checkout main -- <file>`.`, where `<file>` is `chitty.toml` or `pyproject.toml`, whichever holds the config
+**Before review.** In `_prepare_review` in `src/chitty/run.py`, after the rebase onto `main`, fail the ticket if the branch changes the Chitty config compared with `main`. Use the existing `_fail_review`, with `Review failed (work): the branch changes `<file>`; only `chitty init` on the main checkout may change it. Restore it with `git checkout main -- <file>`.`, where `<file>` is `chitty.toml` or `pyproject.toml`, whichever holds the config
    - Use `git diff --quiet main...HEAD -- chitty.toml`.
    - When the config is in `pyproject.toml` (`config_source` in `src/chitty/config.py`), compare the parsed `[tool.chitty]` table on both sides instead, because a branch may legitimately change other parts of `pyproject.toml`.
    - `TASK-131` must repeat this check when it lands a ticket.
-2. **`chitty init` in a linked worktree** (`git.is_linked_worktree`) refuses, with an error naming the main checkout's path. It changes nothing. Move `_main_checkout` from `src/chitty/run.py` to `git.main_checkout` so `store.py` can use it. Remove the now-dead "skipping machine-wide Pi setup" linked-worktree branch in `store.py`.
-   - `test_worktree_keeps_the_main_checkout_registered` in `tests/test_cli.py` runs `init` in a linked worktree. Change it to expect the refusal.
-   - `test_run_reviews_branch_with_newer_config_key` in `tests/test_next.py` expects a branch that changes `chitty.toml` to pass review. Delete it: under this rule, that branch fails.
-3. **Guides.** `src/chitty/guide.md` and `src/chitty/roles/work.md` say never to edit `chitty.toml` or run `chitty init` on a ticket branch. Use the phrase "On a ticket branch, never edit `chitty.toml` or run `chitty init`", so a test can check for it. That changes the managed block, so bump `__version__` one patch above `main`'s current version (`scripts/check_version_bump.py` checks it). The main checkout's setup refresh regenerates this repository's `AGENTS.md` after landing.
+- `test_run_reviews_branch_with_newer_config_key` in `tests/test_next.py` expects a branch that changes `chitty.toml` to pass review. Delete it: under this rule, that branch fails.
+- The check sees only branches that rebase cleanly. A branch whose rebase conflicts in the config already fails as `integration`.
+- A config file present on only one side counts as a change.
+- `chitty run` refreshes the main checkout's setup before the rebase, so a test fixture must use the config `chitty init` would write, or the rebase conflicts for the wrong reason. Assert the exact `Review failed (work)` note, not only the `doing` status.
 
-4. **`AGENTS.md`'s managed block** gets the same rule (the human's decision, 2026-11-06). Only `chitty init` on the main checkout writes it. In the same `_prepare_review` check, fail the ticket if the branch changes the managed block of `AGENTS.md` compared with `main`, with `Review failed (work): the branch changes Chitty's managed block in `AGENTS.md`; only `chitty init` on the main checkout may change it. Restore that block from `main`.``
-   - The block is the text from the `GUIDE_BEGIN` line to the `GUIDE_END` line in `src/chitty/store.py`. A file without markers uses the legacy `## Chitty` section, as `_managed_agents` finds it. Factor that lookup out of `_managed_agents`, so both use one function.
-   - Edits to the rest of `AGENTS.md` are allowed.
-   - In this repository, a branch that changes `src/chitty/guide.md` leaves `AGENTS.md` alone; the main checkout's setup refresh regenerates it after landing.
+No `__version__` bump: nothing `chitty init` writes changes.
 
 ## Acceptance Criteria
 
 - [ ] A test runs `chitty run --mode review` on a branch that changes `chitty.toml` and asserts the ticket moves to `doing` with that note and no agent runs. Another, with the config in `[tool.chitty]`, shows that a change elsewhere in `pyproject.toml` passes and a change to `[tool.chitty]` fails.
-- [ ] `chitty init` run in a linked worktree exits non-zero naming the main checkout, and leaves `chitty.toml` and `AGENTS.md` unchanged.
-- [ ] `chitty guide work` and the `AGENTS.md` block that `chitty init` writes both say not to edit `chitty.toml` or run `chitty init` on a ticket branch, and `__version__` is bumped.
-- [ ] A test shows a branch that changes text inside `AGENTS.md`'s managed block failing review with that note, and one that changes only text outside the block passing.
 
 ## Notes
 
@@ -57,6 +51,12 @@ Extended on 2026-11-06. The human agreed that branches must not regenerate `AGEN
 
 Correction to the previous note: `TASK-144` has already landed, so no open branch is affected.
 
+Split on 2026-11-06 after the item-4 cold read (Sonnet, `refs/cold-read/TASK-212/2`, `make check` OK) found it too big. This ticket keeps item 1; the managed block is `TASK-218`; `init` and the guides are `TASK-219`. Read outcomes that apply here:
+- The test-fixture trap: fixed, the ticket now says to use the config `init` writes and to assert the exact note.
+- Rebase conflicts in the config: stated, they fail as `integration` first.
+- A file on only one side: decided, it counts as a change.
+Also, the earlier note saying no open branch is affected is wrong: `task-179` and `task-181` change `AGENTS.md`'s block, which `TASK-218` will catch.
+
 ## History
 
 - 2026-11-06T16:15:42Z youthful-toad → backlog
@@ -68,3 +68,4 @@ Correction to the previous note: `TASK-144` has already landed, so no open branc
 - 2026-11-06T17:09:40Z youthful-toad backlog → todo
 - 2026-11-06T17:48:05Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:48:19Z youthful-toad: changed notes
+- 2026-11-06T18:13:05Z youthful-toad: changed description, acceptance criteria, notes
