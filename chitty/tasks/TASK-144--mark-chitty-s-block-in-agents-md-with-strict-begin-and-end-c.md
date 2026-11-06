@@ -1,6 +1,6 @@
 ---
 title: Mark Chitty's block in `AGENTS.md` with strict begin and end comments
-status: review
+status: doing
 priority: medium
 parent: TASK-140
 created: 2026-11-04
@@ -56,6 +56,8 @@ Out of scope: CRLF, because `read_text` and `write_text` already normalise a who
 
 Cold read by a fresh Sonnet subagent with `TASK-145`, 2026-11-04. Fixed: a damaged marker stopping every write through `_prepare_write`, the most serious finding; the repair path, including an older `chitty init` causing the damage; and "byte for byte", which overstated it because `read_text` normalises line endings. Found by testing its question: `prettier` and `mdformat` both changed my marker layout, so the block now has blank lines they leave alone. Rejected: a guard in old code, which cannot be added to versions already out there. A `## Chitty` line in a code fence triggering migration, and a hand-edited `## chitty` heading getting a second block, because both are rare, visible in Git and already happen today. `AGENTS.md` being a symlink, because `write_text` follows it. A regular-file `CLAUDE.md`, which already fails earlier in `init_repo`. An explicit test for an absent `AGENTS.md`, which criterion 2 already covers.
 
+Review failed (integration): rebasing onto `main` conflicts in `chitty.toml`.
+
 ## Summary
 
 Implemented strict managed-guide markers for `AGENTS.md`. `init_repo` now validates whole-line markers, migrates legacy blocks with preserved separators, replaces only marked content via slicing, and raises a distinct error for malformed markers. Stale autocommit writes warn and proceed without advancing setup. Updated docs/version and added CLI regression coverage. Verified with `make check` (273 Python tests and Node tests pass). Follow-up: a human must repair any real repository with malformed marker lines.
@@ -73,3 +75,5 @@ Implemented strict managed-guide markers for `AGENTS.md`. `init_repo` now valida
 - 2026-11-05T22:03:50Z intrepid-eel: ticked acceptance criteria
 - 2026-11-05T22:03:51Z intrepid-eel: changed summary
 - 2026-11-05T22:03:58Z intrepid-eel doing → review
+- 2026-11-06T10:05:49Z upbeat-otter: changed notes
+- 2026-11-06T10:05:49Z upbeat-otter review → doing
