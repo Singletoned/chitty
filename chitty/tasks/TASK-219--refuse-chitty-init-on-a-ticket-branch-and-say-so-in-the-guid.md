@@ -1,6 +1,6 @@
 ---
 title: Refuse `chitty init` on a ticket branch, and say so in the guides
-status: todo
+status: doing
 priority: high
 created: 2026-11-06
 ---
@@ -28,3 +28,4 @@ Split from `TASK-212` on 2026-11-06. Items 2 and 3 of its first cold read (`refs
 
 - 2026-11-06T18:13:15Z youthful-toad → backlog
 - 2026-11-06T18:13:31Z youthful-toad backlog → todo
+- 2026-11-06T20:07:51Z honest-falcon todo → doing
