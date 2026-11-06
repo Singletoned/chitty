@@ -273,12 +273,13 @@ class TestNext(CliTestCase):
         )
         for path in (self.root / "chitty/tasks").glob("*.md"):
             path.unlink()
+        # An idle queue is not an error, so it gets no `Error:` prefix.
         result = self.run_cli("next", exit_code=3)
         self.assertEqual(result.stdout, "")
-        self.assertIn("no next ticket", result.stderr)
+        self.assertEqual(result.stderr, "no next ticket\n")
         result = self.run_cli("next", "--json", exit_code=3)
         self.assertEqual(result.stdout, "")
-        self.assertIn("no next ticket", result.stderr)
+        self.assertEqual(result.stderr, "no next ticket\n")
         with self.assertRaisesRegex(ToolError, "no next ticket"):
             asyncio.run(server.call_tool("next", {}))
 
@@ -305,7 +306,7 @@ class TestNext(CliTestCase):
 
         result = self.run_cli("next", "--mode", "review", exit_code=3)
         self.assertEqual(result.stdout, "")
-        self.assertIn("no next ticket for --mode review", result.stderr)
+        self.assertEqual(result.stderr, "no next ticket for --mode review\n")
 
     def test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded(self):
         config = self.root / "chitty.toml"
@@ -343,7 +344,7 @@ class TestNext(CliTestCase):
         try:
             idle = self.run_cli("run", "--mode", "review", exit_code=3)
             self.assertEqual(idle.stdout, "")
-            self.assertIn("no next ticket for --mode review", idle.stderr)
+            self.assertEqual(idle.stderr.splitlines()[-1], "no next ticket for --mode review")
 
             review = self.add("Review", status="review")
             self.git("add", "--all")
@@ -362,7 +363,7 @@ class TestNext(CliTestCase):
 
             idle = self.run_cli("run", "--mode", "review", exit_code=3)
             self.assertEqual(idle.stdout, "")
-            self.assertIn("no next ticket for --mode review", idle.stderr)
+            self.assertEqual(idle.stderr.splitlines()[-1], "no next ticket for --mode review")
         finally:
             os.environ["PATH"] = old_path
 
@@ -1290,7 +1291,7 @@ class TestNext(CliTestCase):
             self.assertTrue(all(record["models"] is None for record in records))
             no_next = self.run_cli("run", exit_code=3)
             self.assertEqual(no_next.stdout, "")
-            self.assertIn("no next ticket", no_next.stderr)
+            self.assertEqual(no_next.stderr, "no next ticket\n")
             self.add("Again")
             os.environ["PATH"] = "/usr/bin:/bin"
             missing = self.run_cli("run", exit_code=1)
