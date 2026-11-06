@@ -1,8 +1,7 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: blocked
+status: review
 priority: medium
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -56,6 +55,13 @@ Review failed (integration): rebasing onto `main` conflicts in `src/chitty/roles
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Unblocked by a human-run session. All three failed reviews were rebase conflicts with `main`, mostly on `tests/test_cli.py`'s guide tests and `__version__`, not problems with the work. Rebased onto `main` (`0.1.40`):
+- Both sides of each conflicting guide test are kept.
+- The new `main` guide text sits alongside this ticket's change; the role files keep `TASK-219`'s sentence.
+- `chitty.toml` and `AGENTS.md` match `main` (`TASK-212`, `TASK-218`).
+- `__version__` is `0.1.41`.
+`make check` passes (360 tests). Several open tickets also use `0.1.41`, so whichever lands second will need its version bumped again.
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -94,3 +100,5 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-06T18:36:27Z vivid-dormouse doing → review
 - 2026-11-06T18:37:36Z brisk-quail: changed owner, notes
 - 2026-11-06T18:37:36Z brisk-quail review → blocked
+- 2026-11-06T21:41:01Z youthful-toad: changed owner, notes
+- 2026-11-06T21:41:01Z youthful-toad blocked → review
