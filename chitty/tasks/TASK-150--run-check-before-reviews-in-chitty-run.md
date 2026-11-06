@@ -1,7 +1,7 @@
 ---
 title: Run `check` before reviews in `chitty run`
 status: todo
-priority: medium
+priority: high
 depends_on:
   - TASK-120
 parent: TASK-106
@@ -34,3 +34,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: how output
 
 - 2026-11-04T15:11:33Z mellow-newt → todo
 - 2026-11-04T15:17:36Z mellow-newt: changed description, notes
+- 2026-11-06T16:24:13Z youthful-toad: changed priority
