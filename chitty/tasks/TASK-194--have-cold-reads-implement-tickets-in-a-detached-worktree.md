@@ -1,8 +1,7 @@
 ---
 title: Have cold reads implement tickets in a detached worktree
-status: review
+status: done
 priority: medium
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -52,6 +51,8 @@ Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref .
 
 Owner set to human only so `chitty run` skips it while a separate reviewer reviews it; cleared by that review.
 
+Reviewed: criterion 1 met: TestGuide test collapses whitespace, checks all seven phrases; plan.md text matches the ticket wording; make check passes. Criterion 2 met: PLAN.md Cold read paragraph describes implementing and reasoning reads, dated 2026-11-05, and says why a ref not a branch.
+
 ## Summary
 
 Implemented the detached-worktree cold-read procedure in `src/chitty/roles/plan.md`, including environment isolation, named refs, and cleanup. Updated `PLAN.md` with the 2026-11-05 decision and rationale, and added the whitespace-collapsing `TestGuide` regression test. Verification: focused test passed; `make check` passed (278 Python tests and Node tests); `chitty fix` passed with unrelated existing Markdown warnings. Commit: `0775831`.
@@ -79,3 +80,5 @@ Implemented the detached-worktree cold-read procedure in `src/chitty/roles/plan.
 - 2026-11-06T00:13:50Z plucky-badger: changed summary
 - 2026-11-06T00:13:50Z plucky-badger doing → review
 - 2026-11-06T10:00:08Z youthful-toad: changed owner, notes
+- 2026-11-06T10:05:12Z youthful-toad: changed owner, notes
+- 2026-11-06T10:05:12Z youthful-toad review → done
