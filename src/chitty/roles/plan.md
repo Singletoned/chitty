@@ -15,10 +15,11 @@ task files. `chitty --help` is the full command reference.
   a cheap model, close to the one that will do the work, implements it from the
   ticket alone in a throwaway worktree, and runs its tests with and without the
   fix. If there is nothing to run, a stronger model reads the ticket and
-  referenced code instead. Either way, the reader reports its findings. Record
-  every finding's outcome in a ticket note: fix it or reject it with a specific
-  reason. Ask whether odd existing behaviour is a bug before writing around
-  it. Split rather than exceed about five criteria.
+  referenced code instead. Either way, the reader reports done meaning, likely
+  files, open decisions, unverified behaviour, unhandled states, and wrong
+  claims. Record every finding's outcome in a ticket note: fix it or reject it
+  with a specific reason. Ask whether odd existing behaviour is a bug before
+  writing around it. Split rather than exceed about five criteria.
 - Start an implementing read with `git worktree add --detach .worktrees/read-<ID>`
   and the repository's setup command, not on a branch, because Chitty reads
   tickets from every branch. Run the reader with `VIRTUAL_ENV` and
