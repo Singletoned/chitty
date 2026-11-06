@@ -59,7 +59,7 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   write; otherwise it fails loudly and tells the caller to run `chitty init`.
   Upgrades happen only in the main checkout: a write in a linked worktree
   skips the upgrade and the stale-setup error (still refusing a setup newer
-  than Chitty), and the branch picks up the new setup when rebased onto the main branch.
+  than Chitty), and the branch picks up the new setup when rebased onto `main`.
   `chitty run` refreshes setup before selecting a ticket, committing setup-only
   changes in a main checkout and doing nothing in a linked worktree. From a
   linked worktree, it refuses to run when the main checkout's setup is older or
@@ -131,7 +131,7 @@ that ambiguity is an error. Error if neither finds one.
 - A context with `random_ids = true` instead draws `n` at random from
   10000000 to 99999999, such as `BACKLOG-48213907`, retrying (a bounded number
   of times, then failing) when a number in that same visible set is taken.
-  Random IDs let tickets raised on any branch avoid colliding, so only the main branch
+  Random IDs let tickets raised on any branch avoid colliding, so only `main`
   hands out sequential numbers (decided 2026-11-05). The generated `backlog`
   context (`chitty/backlog/`, prefix `BACKLOG`) uses it; it is unrelated to the
   `backlog` status. Plain `chitty add` in a linked worktree targets this context
@@ -232,7 +232,8 @@ Frontmatter schema (strict: unknown keys are an error):
 | `moved_from` | ID                 | no       | set by `move`; the ID in the source context  |
 
 An owner reserves work tickets for that agent. Plain `chitty next` and
-`chitty run` select only unowned tickets; `--owner NAME` selects only that
+`chitty run` select unowned `todo`/`doing` tickets, but still select owned
+`review` tickets unless the owner is `human`; `--owner NAME` selects only that
 agent's tickets in any active status. Empty and `human` owner filters are
 refused. Explicit `chitty run --ticket ID` ignores non-human ownership.
 
@@ -327,7 +328,6 @@ chitty_version = "0.1.2" # written by init; warns when setup is stale
 autocommit = false # if true, commit each write; `chitty init --autocommit` enables it and commits setup
 review = true # require review before done
 # autoformat = "taidy format" # run on every written task file
-# main_branch = "master"
 # setup = "make install" # run in every ticket worktree before the agent starts
 # check = "make check" # validate the ticket worktree before the agent starts
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
@@ -348,9 +348,6 @@ random_ids = true # random eight-digit numbers instead of sequential ones
 [agent_commands]
 # Other parsed agent commands, selected for one run with `chitty run --agent NAME`.
 ```
-
-`main_branch` is optional, defaults to main, and `chitty init` writes it only
-for a new repository whose current branch is not main.
 
 Context directory is `chitty/<name>/`. Not configurable. `review` defaults to
 `true`; with it enabled, only `review → done` can complete a task. A context
@@ -505,7 +502,7 @@ exits with an error saying so.
 
 ## Agent instructions
 
-`chitty init` appends this block to `AGENTS.md` (creating it if absent),
+`chitty init` appends this short block to `AGENTS.md` (creating it if absent),
 idempotently, using strict markers around the managed text:
 
 ```markdown
@@ -523,32 +520,20 @@ remove them:
 ```markdown
 ## Chitty
 
-Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
-task files. `chitty --help` is the full command reference.
+Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit task files.
+Put paths, commands, IDs, and code in backticks.
+Run `chitty --help` for the command reference.
 
-- Put paths, globs, commands, IDs and code in backticks in titles, descriptions,
-  criteria and notes.
-- Work on one task per session. Start with `chitty show <ID>`.
-- Before writing code, write your approach with `chitty edit <ID> --plan` and
-  set `-s doing`. Wait for approval if the human asked for it.
-- Tick acceptance criteria as you meet them: `chitty edit <ID> --check N`
-  (numbers are shown by `chitty show`).
-- Record anything surprising with `--note`. Set `-s review` when work is ready.
-  Never review a ticket you worked on: review promptly, not at merge-request
-  time. Pass with `-s done --note "Reviewed: ..."`; fail with
-  `-s doing --note "reason"`. If the work is on a branch, the reviewer who
-  passes it merges it into the main branch and removes the branch and its worktree.
-  Create new tickets for out-of-scope findings.
-  The third failed review sets `blocked` and owner `human` instead.
-- Set `-s done` when every criterion is ticked and the work is verified.
-- End commits for task work with `Task: <ID>` lines, using the ticket's own ID
-  (e.g. `Task: TASK-12`), so `git log --grep <ID>` finds a ticket's code.
-- Found unrelated work? `chitty add` it (`-c human` if it needs a person).
-  Don't do it in this session.
+When starting an agent by hand, run the matching focused guide:
+- `chitty guide work` for implementation.
+- `chitty guide review` for review.
+- `chitty guide plan` for writing or refining tickets.
 ```
 
-That is the whole prompt. Statuses are fixed, so the block is always correct.
-`chitty guide` prints the same unmarked block, and `chitty --help` points agents at it.
+That is the whole pointer prompt. The complete work, review, and planning rules
+live in the packaged role files printed by `chitty guide <role>`. Statuses are
+fixed, so the block is always correct. `chitty guide` prints the same unmarked
+block, and `chitty --help` points agents at it.
 
 ## Pipeline and feedback
 
@@ -702,12 +687,7 @@ its own, so an idle reviewer is distinguishable from a broken one, which exits
 
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
-While a run holds its exclusive lock, the lock file contains JSON recording its
-PID, actor, `work` or `review` mode, and UTC start time. `chitty show` displays
-this as `running: <mode> by <actor>, process <pid>, since <HH:MM>` in local time;
-`chitty list` marks the row `▶ running`, while `chitty next` continues to skip
-held tickets.
-Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips every owned ticket; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.
+Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips owned `todo` and `doing` tickets, while still selecting owned `review` tickets; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.
 `chitty run --mode MODE` selects as `chitty next --mode MODE` does, and is
 refused with `--ticket` before anything else runs, because the ticket already
 decides its mode.
@@ -734,13 +714,13 @@ surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
 
 Before a review (decided with the human, 2026-11-03), after the run's actor is
 set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly
-what would land, keeping the main branch linear:
+what would land, keeping `main` linear:
 
 1. A rebase left unfinished, for example by a crash, is a loud error for the
    human, with no status change.
 2. Uncommitted changes, including untracked but not ignored files, move the
    ticket to `doing` with `Review failed (work): ...` listing them.
-3. It rebases the branch onto the local main branch. On a conflict it runs
+3. It rebases the branch onto the local `main`. On a conflict it runs
    `git rebase --abort` and moves the ticket to `doing` with `Review failed
    (integration): ...` naming the conflicting files, for the worker to resolve
    in a fresh session. The rebase runs with `rerere.enabled=false`, so a
@@ -756,7 +736,7 @@ run` exits 0 because the status changed, printing the change. The moves go
 through `Repo.edit` under the run's own actor, which never worked on the
 ticket, so they count with reviewers' failures towards `REVIEW_FAILURE_LIMIT`.
 Interrupting the rebase aborts it and exits 130. A clean rebase is not
-repeated or re-reviewed if the main branch moves during the review; landing is
+repeated or re-reviewed if `main` moves during the review; landing is
 `TASK-131`.
 
 Each agent session appends one JSON line to the machine-local usage log at

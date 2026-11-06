@@ -175,10 +175,10 @@ class TestInit(CliTestCase):
                 "edits here are replaced -->\n\n## Chitty\n"
             )
         )
-        self.assertIn("Task: <ID>", agents)
-        self.assertIn("Task: TASK-12", agents)
-        self.assertIn("git log --grep <ID>", agents)
-        self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
+        self.assertIn("chitty guide work", agents)
+        self.assertIn("chitty guide review", agents)
+        self.assertIn("chitty guide plan", agents)
+        self.assertIn("Run `chitty --help` for the command reference.", agents)
         result = self.run_cli("init")
         self.assertEqual(result.stdout, "already up to date\n")
         (target / "chitty.toml").unlink()
@@ -198,7 +198,12 @@ class TestInit(CliTestCase):
         self.assertIn("\n\n<!-- chitty:end -->\n", marked)
         self.assertNotIn("chitty:begin", guide())
 
-        old = "# Before\n\n" + guide() + "\n## After\n\nKeep this.\n"
+        old = (
+            "# Before\n\n## Chitty\n\nTasks live in `chitty/`. Use the `chitty` CLI; "
+            "do not hand-edit task files.\n\n"
+            "- Work on one task per session.\n- Run `chitty --help`.\n"
+            "\n## After\n\nKeep this.\n"
+        )
         agents.write_text(old)
         result = self.run_cli("init")
         migrated = agents.read_text()
@@ -211,7 +216,7 @@ class TestInit(CliTestCase):
         self.run_cli("init")
         original = agents.read_text()
         agents.write_text("Before\n\n" + original + "\nAfter\n\nUnheaded text\n")
-        marked_guide = guide().rstrip("\n") + "\n\nA backslash: \\ path"
+        marked_guide = "A backslash: \\ path\n\n" + guide().rstrip("\n")
         with patch("chitty.store.guide", return_value=marked_guide):
             self.run_cli("init")
             updated = agents.read_text()
@@ -552,9 +557,9 @@ class TestInit(CliTestCase):
         agents = agents_path.read_text()
         self.assertTrue(agents.startswith("<!-- chitty:begin"))
         self.assertTrue(agents.endswith("<!-- chitty:end -->\n"))
-        self.assertIn("Task: <ID>", agents)
+        self.assertIn("chitty guide work", agents)
         self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config.read_text())
-        self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
+        self.assertIn("Put paths, commands, IDs, and code in backticks", agents)
 
     def test_init_leaves_unrelated_pyproject_untouched(self):
         target = self.tmp / "python-project"
