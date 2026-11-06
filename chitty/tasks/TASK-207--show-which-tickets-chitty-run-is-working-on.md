@@ -1,6 +1,6 @@
 ---
 title: Show which tickets `chitty run` is working on
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-72
@@ -58,6 +58,11 @@ No longer depends on `TASK-210`, which now removes the inbox pull from `chitty r
 
 Verified lock records, legacy PID fallback, show/MCP running data, list marker, and child-process actor/mode visibility. Targeted tests and full make check pass; chitty fix reports only pre-existing task Markdown warnings.
 
+Reviewed: all three acceptance criteria verified; make format and make check pass (349 Python tests and Node tests); no defects found.
+1: pass - show, JSON, MCP, and legacy lock reporting verified.
+2: pass - list marker and README/PLAN documentation verified.
+3: pass - child-process run captured actor and mode.
+
 ## Summary
 
 Implemented JSON run-lock records with actor, mode, PID, and UTC start time; added holder parsing and show/list/MCP reporting; moved actor assignment before lock acquisition; updated docs and regression tests. Verified with targeted lock/MCP/renumber/CLI tests, the child-agent capture test, and full make check (345 Python tests plus Node tests). Follow-up: none.
@@ -73,3 +78,5 @@ Implemented JSON run-lock records with actor, mode, PID, and UTC start time; add
 - 2026-11-06T20:31:53Z plucky-vole: wrote the plan
 - 2026-11-06T20:41:03Z plucky-vole: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:41:03Z plucky-vole doing → review
+- 2026-11-06T20:44:04Z daring-puffin: changed notes; ticked acceptance criteria
+- 2026-11-06T20:44:04Z daring-puffin review → done
