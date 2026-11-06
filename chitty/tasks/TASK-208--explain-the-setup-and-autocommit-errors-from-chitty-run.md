@@ -1,6 +1,6 @@
 ---
 title: Explain the `setup` and `autocommit` errors from `chitty run`
-status: review
+status: done
 priority: medium
 created: 2026-11-06
 ---
@@ -37,6 +37,9 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-208/1`; 3 tests failed before and pass
 
 Regression test failed before the fix: updated chitty.toml assertions reported the old autocommit and setup messages. After the fix, targeted tests passed, and the pyproject.toml [tool.chitty] test asserted the repository-relative filename. make format and make check passed (348 Python tests and Node tests).
 
+Reviewed:
+1: pass - setup and autocommit messages use repository-relative chitty.toml or pyproject.toml paths, with full test coverage. make format && make check passed (350 Python tests and Node tests); targeted preflight tests passed.
+
 ## Summary
 
 Implemented actionable `chitty run` setup and autocommit errors with repository-relative chitty.toml or pyproject.toml paths. Renamed the internal config source helper to config_source, added full chitty.toml and pyproject.toml assertions, and verified with targeted tests plus make check.
@@ -50,3 +53,5 @@ Implemented actionable `chitty run` setup and autocommit errors with repository-
 - 2026-11-06T20:37:10Z sunny-kestrel: wrote the plan
 - 2026-11-06T20:43:13Z sunny-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:43:13Z sunny-kestrel doing → review
+- 2026-11-06T20:47:56Z youthful-vole: changed notes; ticked acceptance criteria
+- 2026-11-06T20:47:56Z youthful-vole review → done
