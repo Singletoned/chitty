@@ -1,6 +1,6 @@
 ---
 title: Leave every owned ticket out of a plain `chitty run`
-status: backlog
+status: todo
 priority: high
 created: 2026-11-06
 ---
@@ -13,8 +13,10 @@ Today, `_skip_reason` in `src/chitty/store.py` returns early for `review` ticket
 
 Update:
 - the paragraph in `README.md` around lines 101–108 about owned tickets, whose sentences are also out of order today;
-- the `owner` text in `PLAN.md`'s frontmatter section and "Next action and runner";
-- any test that expects an owned `review` ticket to be selected, which is `TASK-197`'s old rule.
+- `PLAN.md`: the `owner` text under the frontmatter table (around lines 232–236) and in "Next action and runner" (around line 699);
+- `test_owner_filter_reserves_work_but_not_review` in `tests/test_next.py`, which expects an owned `review` ticket to be selected (`TASK-197`'s old rule).
+
+The code change is removing the `review` early return in `_skip_reason`. `_ticket_action`, `chitty list` and MCP `list` already go through it. The third-failure escalation sets `blocked`, which `_skip_reason` doesn't consider, so it is unaffected. No `__version__` bump.
 
 Out of scope: who sets or clears owners.
 
@@ -23,6 +25,18 @@ Out of scope: who sets or clears owners.
 - [ ] Tests show plain `chitty next`, `chitty run` and the MCP `next` tool skipping an owned `review` ticket as well as owned `todo` and `doing` ones, `chitty list` showing `👤 <owner>` for each, and `--owner NAME` selecting that owner's `review` ticket.
 - [ ] `README.md` and `PLAN.md` say a plain run picks up only unowned tickets, and `make check` passes.
 
+## Notes
+
+Cold read 1 (Sonnet, `refs/cold-read/TASK-222/1`; the new tests failed before and passed after; `make check` OK; the whole code change was one early return). Outcomes:
+- The test to replace wasn't named: fixed, it's named.
+- `PLAN.md` locations were vague: fixed, with approximate line numbers.
+- Version bump: fixed, the ticket says none.
+- Escalation to `human` is unaffected, because it sets `blocked`: confirmed.
+- No guide or Pi extension text mentions owned reviews: confirmed.
+- `chitty run` stderr carries other output: the reader matched its end; accepted.
+
 ## History
 
 - 2026-11-06T19:52:07Z youthful-toad → backlog
+- 2026-11-06T20:01:58Z youthful-toad: changed description, notes
+- 2026-11-06T20:01:58Z youthful-toad backlog → todo
