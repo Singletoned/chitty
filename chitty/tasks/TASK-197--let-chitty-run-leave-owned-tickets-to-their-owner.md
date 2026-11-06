@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run` leave owned tickets to their owner
-status: review
+status: doing
 priority: high
 parent: TASK-106
 created: 2026-11-05
@@ -26,7 +26,7 @@ Out of scope: choosing a model from the owner, which remains a forwarded argumen
 - [x] `PLAN.md` and `README.md` describe the rules
 - [x] Tests show `--owner opus` on `chitty next` and `chitty run` selecting only that owner's tickets, whichever side of the forwarded arguments it comes, `--owner` after `--` being forwarded, and `--owner human`, `--owner ""` and `--ticket` with `--owner` each refused by `chitty run` with nothing committed
 - [x] Tests with tickets owned by `opus` show plain `chitty next`, and a real `chitty run` with a fake agent, skipping them at `todo` and `doing`, which fail without the change, selecting one at `review`, still selecting tickets with no owner, and still skipping `human` at every status
-- [x] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, which already passes and guards against a regression, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
+- [ ] A new test shows `chitty run --ticket` running an `opus` ticket and refusing a `human` one, which already passes and guards against a regression, and a test shows the `next` tool in `src/chitty/mcp.py` taking `owner`
 
 ## Plan
 
@@ -41,6 +41,8 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-197/3`: nothing serious. 11 of its 12 new tests failed without the change for the right reasons and all passed with it, and `make check` exited 0. Fixed, as clarifications so no further read: unowned tickets must still be selected, which a change skipping all work would otherwise pass; who picks up a ticket returned after a failed review; and that the `--ticket` test already passes. Rejected: refusing `--ticket` with a `human` ticket before preflight, which is today's behaviour and outside this ticket; and owned tickets' dependencies not being checked by a plain run, which skips them anyway and still checks them under `--owner`.
 
 Verified owner filtering and refusal behavior with targeted tests and full Python suite. npm test remains unresolved: it emits 26 dots and does not exit.
+
+Review failed (work): `chitty run --ticket` does not run an owned work ticket. `ticket_action()` calls `_ticket_action()` with the new plain-selection semantics, which returns `None` for an owned `todo`/`doing` ticket; the subsequent assertion raises instead of selecting it. Reproduce with an `opus`-owned `todo` ticket: `ticket_action(repo, repo.resolve("TASK-1"))` raises `AssertionError`. Preserve explicit-ticket behavior for every non-human owner, add the required regression test, and set the ticket back to doing.
 
 ## Summary
 
@@ -67,3 +69,5 @@ Implemented owner-aware next/run selection, CLI and MCP owner filters, early ref
 - 2026-11-05T21:34:19Z able-yellowhammer: changed summary
 - 2026-11-05T21:34:20Z able-yellowhammer: changed notes
 - 2026-11-05T21:34:20Z able-yellowhammer doing → review
+- 2026-11-06T09:02:19Z daring-ibis: changed acceptance criteria, notes
+- 2026-11-06T09:02:19Z daring-ibis review → doing
