@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `chitty.toml`
-status: backlog
+status: todo
 priority: high
 created: 2026-11-06
 ---
@@ -9,12 +9,14 @@ created: 2026-11-06
 
 Only `chitty init` in the main checkout may change a repository's Chitty config. In other repositories it is vital that ticket branches never do. On 2026-11-06, `task-173`, `task-179` and `task-181` each changed `chitty_version` in `chitty.toml`, through `chitty init` or an automatic setup upgrade run on the branch. `main`'s `chitty` then refused to write to the newer ones (`repository needs Chitty 0.1.35 or later`), and the review loop stopped. `TASK-204` already stops automatic upgrades in linked worktrees. Make the rule a hard check:
 
-1. **Before review.** In `_prepare_review` in `src/chitty/run.py`, after the rebase onto `main`, fail the ticket if the branch changes the Chitty config compared with `main`. Use the existing `_fail_review`, with `Review failed (work): the branch changes `chitty.toml`; only `chitty init` on the main checkout may change it. Restore it with `git checkout main -- chitty.toml`.`
+1. **Before review.** In `_prepare_review` in `src/chitty/run.py`, after the rebase onto `main`, fail the ticket if the branch changes the Chitty config compared with `main`. Use the existing `_fail_review`, with `Review failed (work): the branch changes `<file>`; only `chitty init` on the main checkout may change it. Restore it with `git checkout main -- <file>`.`, where `<file>` is `chitty.toml` or `pyproject.toml`, whichever holds the config
    - Use `git diff --quiet main...HEAD -- chitty.toml`.
    - When the config is in `pyproject.toml` (`config_source` in `src/chitty/config.py`), compare the parsed `[tool.chitty]` table on both sides instead, because a branch may legitimately change other parts of `pyproject.toml`.
    - `TASK-131` must repeat this check when it lands a ticket.
-2. **`chitty init` in a linked worktree** (`git.is_linked_worktree`) refuses, with an error naming the main checkout's path. It changes nothing.
-3. **Guides.** `src/chitty/guide.md` and `src/chitty/roles/work.md` say never to edit `chitty.toml` or run `chitty init` on a ticket branch. That changes the managed block, so bump `__version__` at patch level.
+2. **`chitty init` in a linked worktree** (`git.is_linked_worktree`) refuses, with an error naming the main checkout's path. It changes nothing. Move `_main_checkout` from `src/chitty/run.py` to `git.main_checkout` so `store.py` can use it. Remove the now-dead "skipping machine-wide Pi setup" linked-worktree branch in `store.py`.
+   - `test_worktree_keeps_the_main_checkout_registered` in `tests/test_cli.py` runs `init` in a linked worktree. Change it to expect the refusal.
+   - `test_run_reviews_branch_with_newer_config_key` in `tests/test_next.py` expects a branch that changes `chitty.toml` to pass review. Delete it: under this rule, that branch fails.
+3. **Guides.** `src/chitty/guide.md` and `src/chitty/roles/work.md` say never to edit `chitty.toml` or run `chitty init` on a ticket branch. Use the phrase "On a ticket branch, never edit `chitty.toml` or run `chitty init`", so a test can check for it. That changes the managed block, so bump `__version__` one patch above `main`'s current version (`scripts/check_version_bump.py` checks it). The main checkout's setup refresh regenerates this repository's `AGENTS.md` after landing.
 
 Out of scope: `AGENTS.md`'s managed block, which a branch changing the guide text legitimately regenerates in this repository.
 
@@ -35,6 +37,18 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-212/1`; the test failed before and pas
 
 Rescoped on 2026-11-06. The human said branches must never update `chitty.toml` (only `chitty init` may) and asked for a hard check before merging. The old scope, letting `main`'s `chitty` write on a branch recording a newer version, isn't needed once branches can't change the version. The three affected branches were restored to `main`'s `chitty.toml` by hand, and the stale cold-read ref `refs/cold-read/TASK-212/1` was deleted.
 
+Cold read 1 of the rescoped ticket (Sonnet, `refs/cold-read/TASK-212/1`; the tests failed before and passed after; `make check` OK). Outcomes:
+- Two existing tests contradict the rule: fixed, the ticket names them. One changes to expect the refusal; the other is deleted, by decision.
+- Version number: fixed, one patch above `main`'s at the time.
+- Criterion 3 had no defined phrase: fixed, the ticket gives one.
+- The note always said `chitty.toml`: fixed, it names whichever file holds the config.
+- Dead Pi-setup branch: fixed, remove it.
+- `_main_checkout` moves to `git.py`: accepted.
+- `main...HEAD` after the rebase: confirmed correct, including when `main` itself changed the config.
+- `AGENTS.md` stays stale until the main checkout refreshes it: stated.
+- The `TASK-131` check: follow-up, already noted there.
+The reader's ref predates these fixes (fixed note text, kept the dead code), so check it against the ticket rather than copying it.
+
 ## History
 
 - 2026-11-06T16:15:42Z youthful-toad → backlog
@@ -42,3 +56,5 @@ Rescoped on 2026-11-06. The human said branches must never update `chitty.toml` 
 - 2026-11-06T16:22:42Z youthful-toad backlog → todo
 - 2026-11-06T16:44:06Z youthful-toad: changed title, description, acceptance criteria, notes
 - 2026-11-06T16:44:06Z youthful-toad todo → backlog
+- 2026-11-06T17:09:40Z youthful-toad: changed description, notes
+- 2026-11-06T17:09:40Z youthful-toad backlog → todo
