@@ -2,6 +2,7 @@
 title: Stop `chitty run` pulling the inbox
 status: todo
 priority: high
+owner: human
 created: 2026-11-06
 ---
 
@@ -40,9 +41,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-210/1`; the test failed first and pass
 - `project` is still needed for the usage log: confirmed, the check stays.
 - No other tests or guide text rely on `run` pulling: confirmed, so no version bump.
 
+Reserved for a Sonnet subagent of a human-run session; the loops leave it alone.
+
 ## History
 
 - 2026-11-06T13:44:09Z youthful-toad → backlog
 - 2026-11-06T13:45:24Z youthful-toad: changed title, description, acceptance criteria, notes
 - 2026-11-06T13:51:14Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T13:51:14Z youthful-toad backlog → todo
+- 2026-11-06T13:58:32Z youthful-toad: changed owner, notes
