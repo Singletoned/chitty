@@ -1,6 +1,6 @@
 ---
 title: Leave every owned ticket out of a plain `chitty run`
-status: doing
+status: review
 priority: high
 created: 2026-11-06
 ---
@@ -22,8 +22,8 @@ Out of scope: who sets or clears owners.
 
 ## Acceptance Criteria
 
-- [ ] Tests show plain `chitty next`, `chitty run` and the MCP `next` tool skipping an owned `review` ticket as well as owned `todo` and `doing` ones, `chitty list` showing `👤 <owner>` for each, and `--owner NAME` selecting that owner's `review` ticket.
-- [ ] `README.md` and `PLAN.md` say a plain run picks up only unowned tickets, and `make check` passes.
+- [x] Tests show plain `chitty next`, `chitty run` and the MCP `next` tool skipping an owned `review` ticket as well as owned `todo` and `doing` ones, `chitty list` showing `👤 <owner>` for each, and `--owner NAME` selecting that owner's `review` ticket.
+- [x] `README.md` and `PLAN.md` say a plain run picks up only unowned tickets, and `make check` passes.
 
 ## Plan
 
@@ -39,6 +39,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-222/1`; the new tests failed before an
 - No guide or Pi extension text mentions owned reviews: confirmed.
 - `chitty run` stderr carries other output: the reader matched its end; accepted.
 
+Verified the updated regression test failed before the _skip_reason fix, then passed after it. Plain next and MCP owner filtering preserve --owner review selection; list now reports 👤 agent for owned todo, doing, and review tickets. make format && make check passed (342 Python tests and Node tests). chitty fix completed with existing Markdown delimiter warnings.
+
+## Summary
+
+Removed the review early return from _skip_reason so plain selection skips all owned active tickets while preserving human ownership, --owner selection, and explicit ticket behavior. Updated README.md and PLAN.md and expanded next/list regression coverage. Verification: targeted tests passed; make format && make check passed. No follow-ups.
+
 ## History
 
 - 2026-11-06T19:52:07Z youthful-toad → backlog
@@ -46,3 +52,5 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-222/1`; the new tests failed before an
 - 2026-11-06T20:01:58Z youthful-toad backlog → todo
 - 2026-11-06T20:14:07Z brisk-puffin todo → doing
 - 2026-11-06T20:14:23Z brisk-puffin: wrote the plan
+- 2026-11-06T20:16:45Z brisk-puffin: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:16:45Z brisk-puffin doing → review
