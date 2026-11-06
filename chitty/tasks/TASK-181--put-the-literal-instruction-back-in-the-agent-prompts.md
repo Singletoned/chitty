@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -42,7 +42,7 @@ This branch edits Chitty's managed block in `AGENTS.md`. Under `TASK-218`, branc
 
 ## Summary
 
-Restored the literal single-asterisk Markdown instruction in the global guide and work, review, and plan role prompts; added TestGuide coverage; bumped Chitty to 0.1.33 and regenerated AGENTS.md/chitty.toml. Verified with make check: ruff, pyright, 278 unittest cases, and Node tests pass.
+Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
 
 ## History
 
@@ -70,3 +70,5 @@ Restored the literal single-asterisk Markdown instruction in the global guide an
 - 2026-11-06T16:39:56Z sunny-eel review → doing
 - 2026-11-06T18:08:19Z youthful-toad: changed notes
 - 2026-11-06T18:13:33Z youthful-toad: changed notes
+- 2026-11-06T18:19:46Z intrepid-gannet: changed summary
+- 2026-11-06T18:19:46Z intrepid-gannet doing → review
