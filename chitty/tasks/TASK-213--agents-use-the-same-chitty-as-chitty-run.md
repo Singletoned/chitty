@@ -1,6 +1,6 @@
 ---
 title: Agents use the same `chitty` as `chitty run`
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -45,6 +45,10 @@ The reader's ref follows the old scope (it edits `chitty.toml` and uses `which`)
 
 Verified regression test fails before the fix (fake branch chitty resolved first and leaked virtual-environment variables), passes after the fix. make format && make check passes; chitty.toml is unchanged. Follow-up: a human-run session on main must remove the env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync wrappers from agent_command and [agent_commands].claude.
 
+Reviewed: independently inspected run.py, regression coverage, README.md, PLAN.md, and unchanged chitty.toml. The targeted regression test passed, and make format && make check passed (342 Python tests and Node tests).
+1: pass - Runner executable and explicit agent environment regression test passed.
+2: pass - README.md and PLAN.md document the behavior; chitty.toml is unchanged; make format && make check passed.
+
 ## Summary
 
 Implemented runner-owned Chitty resolution and explicit agent environment propagation in src/chitty/run.py. Added regression coverage for PATH precedence, stripped VIRTUAL_ENV/UV_PROJECT_ENVIRONMENT, and CHITTY_USAGE_FILE propagation; updated README.md and PLAN.md. Verified with make format && make check (338 Python tests and Node tests). Follow-up: update chitty.toml on main in a human-run session after this lands, as required by TASK-212.
@@ -59,3 +63,5 @@ Implemented runner-owned Chitty resolution and explicit agent environment propag
 - 2026-11-06T20:00:50Z mellow-falcon: wrote the plan
 - 2026-11-06T20:06:23Z mellow-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:06:23Z mellow-falcon doing → review
+- 2026-11-06T20:09:05Z open-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-06T20:09:05Z open-dormouse review → done
