@@ -1,6 +1,6 @@
 ---
 title: Mark Chitty's block in `AGENTS.md` with strict begin and end comments
-status: review
+status: done
 priority: medium
 parent: TASK-140
 created: 2026-11-04
@@ -72,6 +72,14 @@ Review failed (tests): acceptance criterion 4 is not demonstrated by the submitt
 4: fail - backslash, exact second-init idempotence, and prettier-on-AGENTS coverage are absent.
 5: pass - malformed marker and stale-write cases are covered.
 
+1: pass - marker creation and unmarked guide output are covered and pass.
+2: pass - legacy migration preserves following content and reports on stderr.
+3: pass - README.md, PLAN.md, and version bump are present.
+4: pass - backslash replacement, second-init idempotence, and prettier stability are covered and pass.
+5: pass - malformed markers fail without changing AGENTS.md, and stale writes warn and proceed.
+
+Reviewed: implementation and diff inspected; focused init/import tests, ruff, and pyright pass.
+
 ## Summary
 
 Added focused coverage for marked-block replacement with a backslash, exact second-init idempotence, preserved surrounding unheaded text, and prettier no-op behavior. Verification: focused TestInit and all 96 CLI tests pass; ruff format/check and pyright pass; full Python suite (320 tests) passes.
@@ -104,3 +112,5 @@ Added focused coverage for marked-block replacement with a backslash, exact seco
 - 2026-11-06T15:20:50Z vivid-kestrel: ticked acceptance criteria
 - 2026-11-06T15:20:51Z vivid-kestrel: changed summary
 - 2026-11-06T15:20:52Z vivid-kestrel doing → review
+- 2026-11-06T15:44:31Z vivid-eel: changed notes
+- 2026-11-06T15:44:31Z vivid-eel review → done
