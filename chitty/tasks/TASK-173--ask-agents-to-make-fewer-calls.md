@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -35,9 +35,11 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: this conflicted with "t
 
 Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
 
+Verified the guide-output regression test for both roles and confirmed version 0.1.35 is above main's 0.1.34. Full make format && make check passes (278 Python tests and Node tests).
+
 ## Summary
 
-Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.33. Verified with the targeted guide test and full make check (278 Python tests and Node tests pass). make install completed successfully. Follow-up: re-run the TASK-170 measurement scripts as planned.
+Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.35. Verified with full make format && make check; follow-up remains to rerun TASK-170 measurement scripts.
 
 ## History
 
@@ -51,3 +53,5 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-05T23:20:09Z lively-newt doing → review
 - 2026-11-06T14:39:20Z friendly-heron: changed notes
 - 2026-11-06T14:39:20Z friendly-heron review → doing
+- 2026-11-06T15:58:09Z lively-falcon: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T15:58:09Z lively-falcon doing → review
