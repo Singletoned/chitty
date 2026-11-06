@@ -1,6 +1,6 @@
 ---
 title: Explain the `setup` and `autocommit` errors from `chitty run`
-status: doing
+status: review
 priority: medium
 created: 2026-11-06
 ---
@@ -20,7 +20,7 @@ Update the expected strings in the `_preflight` table test in `tests/test_next.p
 
 ## Acceptance Criteria
 
-- [ ] Tests assert both full messages, with `chitty.toml` as the file. One more test asserts `pyproject.toml` when the config is in `[tool.chitty]`.
+- [x] Tests assert both full messages, with `chitty.toml` as the file. One more test asserts `pyproject.toml` when the config is in `[tool.chitty]`.
 
 ## Plan
 
@@ -35,6 +35,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-208/1`; 3 tests failed before and pass
 - `chitty init --autocommit` needs a clean tree: rejected, its own error says so when it applies.
 - "Reach every branch": accepted as written. Autocommit is what lets other branches see ticket state.
 
+Regression test failed before the fix: updated chitty.toml assertions reported the old autocommit and setup messages. After the fix, targeted tests passed, and the pyproject.toml [tool.chitty] test asserted the repository-relative filename. make format and make check passed (348 Python tests and Node tests).
+
+## Summary
+
+Implemented actionable `chitty run` setup and autocommit errors with repository-relative chitty.toml or pyproject.toml paths. Renamed the internal config source helper to config_source, added full chitty.toml and pyproject.toml assertions, and verified with targeted tests plus make check.
+
 ## History
 
 - 2026-11-06T13:37:47Z youthful-toad → backlog
@@ -42,3 +48,5 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-208/1`; 3 tests failed before and pass
 - 2026-11-06T13:46:44Z youthful-toad backlog → todo
 - 2026-11-06T20:36:53Z sunny-kestrel todo → doing
 - 2026-11-06T20:37:10Z sunny-kestrel: wrote the plan
+- 2026-11-06T20:43:13Z sunny-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:43:13Z sunny-kestrel doing → review
