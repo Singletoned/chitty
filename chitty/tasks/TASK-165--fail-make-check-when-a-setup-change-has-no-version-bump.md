@@ -34,6 +34,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the 
 
 Review failed (work): changing only the whitespace in the INITIAL_CONFIG assignment is an unrelated config.py change, but the guard compares the regex match including `INITIAL_CONFIG =` rather than only the string contents. A temporary Git repository with `INITIAL_CONFIG    = """initial"""` returns failure and demands a version bump; extract and compare the string text so formatting outside the string passes.
 
+Review regression reproduced before fix: changing only whitespace around the INITIAL_CONFIG assignment was incorrectly treated as a setup change. The guard now compares only the string text, and the regression test passes.
+
 ## Summary
 
 Implemented `scripts/check_version_bump.py` and added it to `make check`. The guard uses Git merge-base for changed setup files, compares the working-tree version to `main` tip, handles `main`/missing-main cases, and extracts only `INITIAL_CONFIG`. Added real temporary-Git tests for watched files, numeric versions, unrelated config changes, branch ancestry, and shallow tag clones. Verified with `make install`, focused tests, `chitty fix`, and `make check` (284 Python tests and Node tests pass). Follow-up: none.
@@ -52,3 +54,4 @@ Implemented `scripts/check_version_bump.py` and added it to `make check`. The gu
 - 2026-11-05T22:50:55Z jolly-kestrel doing → review
 - 2026-11-06T11:07:40Z eager-crane: changed acceptance criteria, notes
 - 2026-11-06T11:07:40Z eager-crane review → doing
+- 2026-11-06T14:56:57Z daring-adder: changed notes
