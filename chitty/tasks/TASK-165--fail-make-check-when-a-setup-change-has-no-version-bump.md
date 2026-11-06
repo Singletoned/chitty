@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` when a setup change has no version bump
-status: review
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -20,7 +20,7 @@ Failure names the changed files and both versions.
 
 ## Acceptance Criteria
 
-- [x] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
+- [ ] Tests in temporary Git repositories show each watched change failing without a higher version and passing with one, the same version as `main`'s tip failing, `0.1.10` counting as above `0.1.9`, and an unrelated `config.py` change passing
 - [x] Tests show a branch behind `main` that changed nothing passing, running on `main` passing, and a `--depth 1` clone at a tag with no `main` passing with a notice
 - [x] `make check` runs it
 
@@ -35,6 +35,11 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my criterion about the 
 Review failed (work): changing only the whitespace in the INITIAL_CONFIG assignment is an unrelated config.py change, but the guard compares the regex match including `INITIAL_CONFIG =` rather than only the string contents. A temporary Git repository with `INITIAL_CONFIG    = """initial"""` returns failure and demands a version bump; extract and compare the string text so formatting outside the string passes.
 
 Review regression reproduced before fix: changing only whitespace around the INITIAL_CONFIG assignment was incorrectly treated as a setup change. The guard now compares only the string text, and the regression test passes.
+
+Review failed (work): an untracked file added under a watched path is not detected because changed_files uses git diff --name-only, which excludes untracked files. Adding src/chitty/roles/new-review-role.md on a branch returns success despite the criterion that a file added under roles counts as changed. Include untracked watched paths (or otherwise compare the complete working tree) and add a regression test.
+1: fail - untracked watched files are missed
+2: pass - independently verified
+3: pass - independently verified
 
 ## Summary
 
@@ -58,3 +63,5 @@ Implemented the Git/stdlib version-bump guard and wired it into `make check`. Fi
 - 2026-11-06T14:57:05Z daring-adder: ticked acceptance criteria
 - 2026-11-06T15:04:23Z daring-adder: changed summary
 - 2026-11-06T15:04:24Z daring-adder doing → review
+- 2026-11-06T15:15:03Z mellow-adder: changed acceptance criteria, notes
+- 2026-11-06T15:15:03Z mellow-adder review → doing
