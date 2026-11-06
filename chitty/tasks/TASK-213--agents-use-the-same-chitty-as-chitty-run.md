@@ -23,6 +23,12 @@ Out of scope: running the agent in a container.
 - [ ] A test runs `chitty run` with a fake agent and a different fake `chitty` placed first on `PATH`, standing in for a branch's. The agent records which `chitty` its `PATH` resolves to, and its `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT`. The test asserts it resolves to `Path(sys.executable).parent / "chitty"`, that both variables are unset even when the runner had them, and that `CHITTY_USAGE_FILE` is still passed. It fails before the fix.
 - [ ] `README.md` and `PLAN.md` say the agent uses the runner's `chitty`, `chitty.toml` is unchanged on the branch, and `make check` passes.
 
+## Plan
+
+1. Inspect run.py and existing runner tests, then add a regression test that places a fake branch chitty first on PATH and verifies the runner executable, stripped environment variables, and usage file propagation.
+2. Update run.py to resolve the chitty executable beside sys.executable and pass a freshly copied environment with that directory first on PATH and virtual-environment variables removed.
+3. Update the runner documentation in README.md and PLAN.md without touching chitty.toml, run format/check, and commit the implementation with Task: TASK-213.
+
 ## Notes
 
 Under `TASK-212`, a branch may not change `chitty.toml`. The `agent_command` and `[agent_commands]` edit in item 2 must be done on the main checkout by a human-run session after this lands, not on the branch. Settle this with the cold-read findings.
@@ -44,3 +50,4 @@ The reader's ref follows the old scope (it edits `chitty.toml` and uses `which`)
 - 2026-11-06T16:46:07Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T16:46:07Z youthful-toad backlog → todo
 - 2026-11-06T20:00:29Z mellow-falcon todo → doing
+- 2026-11-06T20:00:50Z mellow-falcon: wrote the plan
