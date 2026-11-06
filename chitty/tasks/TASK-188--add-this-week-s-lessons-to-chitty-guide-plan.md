@@ -33,6 +33,8 @@ Focused TestGuide regression test passes. make check passed Ruff, Pyright, and a
 
 Review failed (integration): rebasing onto `main` conflicts in `src/chitty/roles/plan.md`.
 
+Rebased onto main after TASK-194 changed plan.md; the newer version-bump check watches src/chitty/roles, so bumped __version__ to 0.1.35 despite the earlier note.
+
 ## Summary
 
 Updated src/chitty/roles/plan.md with the four cold-read lessons and refined the existing cold-read bullet to avoid repetition. Added TestGuide assertions for all required phrases. Verified the focused regression test, Ruff, Pyright, all 277 Python tests, git diff --check, and chitty fix; npm tests started but did not terminate within the check timeout.
@@ -51,3 +53,4 @@ Updated src/chitty/roles/plan.md with the four cold-read lessons and refined the
 - 2026-11-05T23:52:12Z vivid-wren doing → review
 - 2026-11-06T14:42:30Z friendly-dormouse: changed notes
 - 2026-11-06T14:42:30Z friendly-dormouse review → doing
+- 2026-11-06T16:18:48Z mellow-dormouse: changed notes
