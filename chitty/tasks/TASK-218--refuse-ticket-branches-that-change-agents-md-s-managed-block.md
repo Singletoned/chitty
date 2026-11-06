@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `AGENTS.md`'s managed block
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-212
@@ -32,3 +32,4 @@ Out of scope: `CLAUDE.md`, which is a symlink here.
 
 - 2026-11-06T18:13:06Z youthful-toad → backlog
 - 2026-11-06T18:13:30Z youthful-toad backlog → todo
+- 2026-11-06T20:03:40Z eager-crane todo → doing
