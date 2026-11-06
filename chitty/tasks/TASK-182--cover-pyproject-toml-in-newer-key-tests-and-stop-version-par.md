@@ -1,6 +1,6 @@
 ---
 title: Cover `pyproject.toml` in newer-key tests, and stop version parsing failing reads
-status: todo
+status: doing
 priority: low
 parent: TASK-106
 created: 2026-11-05
@@ -31,3 +31,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: labelled the `pyproject
 - 2026-11-05T09:53:17Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T09:53:18Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T09:53:19Z mellow-newt backlog → todo
+- 2026-11-06T00:32:41Z vivid-badger todo → doing
