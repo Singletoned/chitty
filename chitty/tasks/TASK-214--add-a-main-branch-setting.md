@@ -1,6 +1,6 @@
 ---
 title: Add a `main_branch` setting
-status: review
+status: done
 priority: medium
 created: 2026-11-06
 ---
@@ -61,6 +61,10 @@ Review failed (tests): criterion 2 is not fully demonstrated. Add a real non-Git
 
 Added a real non-Git chitty init regression test; it runs in a temporary directory with no Git repository and verifies the generated config omits main_branch. The targeted test and full checks pass. chitty fix still reports only pre-existing Markdown delimiter warnings in unrelated tickets.
 
+Reviewed: inspected config parsing, init branch handling, and focused tests; make format && make check passes (359 Python tests and Node tests).
+1: pass - Config defaults and loads main_branch from both chitty.toml and [tool.chitty].
+2: pass - New init writes master, while main, detached, outside-Git, and existing-config cases omit it.
+
 ## Summary
 
 Added and verified a real non-Git init regression test. make format && make check passes: 355 Python tests and Node tests. Implementation and config/init coverage are complete; commit 48b1c81 adds the review-requested test. No follow-ups.
@@ -82,3 +86,5 @@ Added and verified a real non-Git init regression test. make format && make chec
 - 2026-11-06T20:50:47Z lively-zander review → doing
 - 2026-11-06T21:06:16Z open-stoat: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T21:06:16Z open-stoat doing → review
+- 2026-11-06T21:13:29Z calm-zander: changed notes; ticked acceptance criteria
+- 2026-11-06T21:13:29Z calm-zander review → done
