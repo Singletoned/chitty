@@ -1,6 +1,6 @@
 ---
 title: Bump the version at release, not on ticket branches
-status: backlog
+status: todo
 priority: high
 created: 2026-11-06
 ---
@@ -18,6 +18,12 @@ Every ticket that changes the guides or setup bumps `__version__` on its branch,
    - prints the labelled tickets to stderr, as a start for release notes.
    The `release` target keeps its existing guards (on `main`, clean tree, not behind `origin/main`). It then writes the new version into `src/chitty/__init__.py`, commits `Release <version>`, tags and pushes as today. With no tag yet, the script fails, naming the problem.
 
+Decisions:
+- Read labels with Chitty's own parser (`chitty.model.parse`), so a malformed ticket fails the release loudly.
+- Count from the highest `v*` tag by version, not the most recent tag.
+- Labels on tickets deleted since the tag are lost. That's accepted, because this repository archives by moving (`archive = "move"`); say so in a comment.
+- If the push fails, `make release` prints how to undo the local `Release` commit and tag (`git tag -d v<version> && git reset --hard HEAD~1`).
+
 Out of scope: major versions, changelogs, and Chitty's own `chitty.toml` (the main checkout's setup refresh updates `chitty_version` after release).
 
 ## Acceptance Criteria
@@ -25,7 +31,19 @@ Out of scope: major versions, changelogs, and Chitty's own `chitty.toml` (the ma
 - [ ] `make check` no longer runs the version-bump check (the script and its test are gone), `mate --list` still describes `release`, and `AGENTS.md` says branches don't bump `__version__` and explains `needs-minor`.
 - [ ] Tests of `scripts/release_version.py` in a temporary repository show: a patch bump with no labelled ticket since the last tag; a minor bump when an archived or active ticket changed since the tag has `needs-minor`; a ticket labelled only before the tag being ignored; counting from `__version__` when it is ahead of the tag; and a missing tag failing with a clear error.
 
+## Notes
+
+Cold read 1 (Sonnet, `refs/cold-read/TASK-224/1`; 8 tests failed first and then passed; `make check` OK; the release recipe itself was never run, by instruction). Outcomes:
+- How labels are read: decided, Chitty's parser.
+- Labels on tickets deleted since the tag are lost: accepted for this repository, with a comment.
+- A failed push leaves a local commit and tag: fixed, `make release` prints the undo.
+- Highest tag rather than latest: decided.
+- `release.yml` still checks the tag against `__version__`: confirmed, because the bump is committed before tagging.
+- `PLAN.md`'s "Stack" note about bumps on `main`: still accurate, unchanged.
+
 ## History
 
 - 2026-11-06T22:01:24Z youthful-toad → backlog
 - 2026-11-06T22:01:44Z youthful-toad: changed description, acceptance criteria
+- 2026-11-06T22:04:43Z youthful-toad: changed description, notes
+- 2026-11-06T22:04:43Z youthful-toad backlog → todo
