@@ -1,6 +1,6 @@
 ---
 title: Show which tickets `chitty run` is working on
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-72
@@ -59,3 +59,4 @@ No longer depends on `TASK-210`, which now removes the inbox pull from `chitty r
 - 2026-11-06T13:05:30Z youthful-toad backlog → todo
 - 2026-11-06T13:44:20Z youthful-toad: changed dependencies, description, notes
 - 2026-11-06T13:45:26Z youthful-toad: changed dependencies, description, notes
+- 2026-11-06T20:31:25Z plucky-vole todo → doing
