@@ -100,11 +100,14 @@ only among `review` tickets and `--mode work` only among `doing` and `todo`, in
 the same order. With nothing to choose, `chitty next` and `chitty run` print
 `no next ticket` (with the mode, if given) and exit 3, which no other failure
 uses. `chitty run --mode MODE` does the same, so
-`chitty run --mode review -- --model MODEL` gives reviews their own model. One
-worker and one reviewer may run at the same time; use `--mode work` and
-`--mode review` so they select disjoint tickets. Both sessions update the main
-checkout during setup, inbox pulls, and review merges, so a Git lock or dirty
-file collision fails loudly; rerun the affected session. `--mode` cannot be
+`chitty run --mode review -- --model MODEL` gives reviews their own model. Any
+number of workers and reviewers may run at the same time. Each `chitty run`
+holds a lock on its ticket until it exits, an exclusive `flock` on
+`.git/chitty/run/<ID>.lock` that the kernel releases however the run ends, so
+`chitty next` and other runs skip that ticket and `--ticket` refuses it with
+the holder's process ID. Locks are machine-local. The sessions all update the
+main checkout during setup, inbox pulls, and review merges, so a Git lock or
+dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
 combined with `--ticket`. `chitty run` requires
 `autocommit = true`, `setup` (for example, `setup = "make install"`), and an
 `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.

@@ -287,12 +287,12 @@ def _same_git_repository(owner: Path, root: Path | None) -> bool:
     """
     if root is None:
         return False
-    owner_git_dir = _git_common_dir(owner)
-    root_git_dir = _git_common_dir(root)
+    owner_git_dir = git_common_dir(owner)
+    root_git_dir = git_common_dir(root)
     return owner_git_dir is not None and owner_git_dir == root_git_dir
 
 
-def _git_common_dir(root: Path) -> Path | None:
+def git_common_dir(root: Path) -> Path | None:
     result = subprocess.run(
         ["git", "rev-parse", "--git-common-dir"],
         cwd=root,

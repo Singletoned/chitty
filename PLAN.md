@@ -535,10 +535,16 @@ backlog → design → tests → review-ticket → work → review-work → done
 | `work`          | fresh session       | spec tests pass and are unchanged, and `make check` passes       |
 | `review-work`   | fresh session       | the diff meets the ticket, judged without the worker's reasoning |
 
-Each stage has a different session, and nobody reviews a stage they did. One
-worker and one reviewer may run at the same time, selecting disjoint tickets
-with `chitty run --mode work` and `chitty run --mode review`. Both sessions
-write the main checkout during setup, inbox pulls, and review merges; a Git
+Each stage has a different session, and nobody reviews a stage they did. Any
+number of workers and reviewers may run at the same time. `chitty run` takes
+a per-ticket lock right after choosing its ticket and holds it until it
+returns: an exclusive, non-blocking `flock` on `<git common dir>/chitty/run/<ID>.lock`,
+shared by every worktree and never committed. The kernel releases it when the
+process exits, so no lock goes stale. `next_action` skips locked tickets, a run
+that loses the race chooses again, and `--ticket` refuses a locked ticket. A
+committed claim was rejected because a killed run would leave it for a person
+to clear; locks are machine-local because Chitty runs on one machine. The
+sessions write the main checkout during setup, inbox pulls, and review merges; a Git
 lock or dirty-file collision fails loudly, so rerun the affected session. A
 failed review restarts in a fresh session with the finding added as a
 criterion. The second failure stops for the human: by then the ticket is the

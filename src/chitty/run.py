@@ -9,18 +9,22 @@ import subprocess
 import sys
 import tempfile
 import time
+from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal, cast
 from uuid import uuid4
 
-from chitty import git
+from chitty import git, locks
 from chitty.actor import actor, run_actor
 from chitty.config import CHITTY_VERSION, usage_path, version_key
 from chitty.errors import ChittyError
 from chitty.inbox import pull as pull_suggestions
 from chitty.store import Edit, NextAction, Repo, guide, next_action, ticket_action
+
+# Each lost race removes a candidate, so a few attempts are plenty.
+RUN_LOCK_ATTEMPTS = 10
 
 
 class RunInterrupted(Exception):
@@ -64,11 +68,41 @@ def run(
         except KeyboardInterrupt:
             raise RunInterrupted("inbox pull") from None
 
-    action = (
-        ticket_action(main_repo, main_repo.resolve(ticket))
-        if ticket is not None
-        else next_action(main_repo, mode=mode)
-    )
+    with ExitStack() as held:
+        action = _lock_ticket(held, main_repo, ticket, mode)
+        return _run_ticket(main_repo, project, action, arguments, agent)
+
+
+def _lock_ticket(
+    held: ExitStack, main_repo: Repo, ticket: str | None, mode: Literal["work", "review"] | None
+) -> NextAction:
+    """Choose the ticket and take its run lock, which `held` releases."""
+    if ticket is not None:
+        action = ticket_action(main_repo, main_repo.resolve(ticket))
+        held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
+        return action
+    for _ in range(RUN_LOCK_ATTEMPTS - 1):
+        action = next_action(main_repo, mode=mode)
+        try:
+            held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
+        except locks.TicketLocked:
+            # Another run locked it after `next_action` looked; it skips it now.
+            continue
+        return action
+    action = next_action(main_repo, mode=mode)
+    held.enter_context(locks.run_lock(main_repo.root, str(action.id)))
+    return action
+
+
+def _run_ticket(
+    main_repo: Repo,
+    project: str,
+    action: NextAction,
+    arguments: tuple[str, ...],
+    agent: str | None,
+) -> RunResult:
+    """Prepare the locked ticket's worktree and run its agent."""
+    main_root = main_repo.root
     agent_command = _agent_command(main_repo, action, agent)
     stored = main_repo.find(action.id)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):

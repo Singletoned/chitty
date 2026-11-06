@@ -14,7 +14,7 @@ from typing import Any, Literal
 
 from pydantic import ValidationError
 
-from chitty import formatter, git, ids
+from chitty import formatter, git, ids, locks
 from chitty.actor import actor, remove_pi_session_environment
 from chitty.config import (
     BACKLOG_DIR,
@@ -1159,13 +1159,16 @@ def next_action(repo: Repo, *, mode: Literal["work", "review"] | None = None) ->
 
     A `mode` limits the choice to that mode's statuses. It filters before
     `_ticket_action` checks dependencies, so a bad reference on a ticket in the
-    other mode does not stop this one.
+    other mode does not stop this one. A ticket another `chitty run` holds the
+    run lock for is skipped.
     """
     status_order = {"review": 0, "doing": 1, "todo": 2}
+    locked = locks.locked_ids(repo.root)
     candidates = [
         (stored, action)
         for stored in repo.all_tasks()
         if mode is None or stored.task.frontmatter.status in MODE_STATUSES[mode]
+        if str(stored.id) not in locked
         if (action := _ticket_action(repo, stored, refuse=False)) is not None
     ]
     if not candidates:
