@@ -74,7 +74,12 @@ Review failed (tests): acceptance criterion 4 is not demonstrated by the submitt
 
 ## Summary
 
-Implemented strict AGENTS.md markers, legacy migration, exact marked-block replacement, malformed-marker errors, and stale-write warning behavior. Updated README.md, PLAN.md, and bumped __version__. Re-verified all five criteria; focused init tests pass (29 tests), full Python suite passes (310 tests), ruff and pyright pass. Follow-up: any repository with malformed markers requires manual marker removal.
+Added focused coverage for marked-block replacement with a backslash, exact second-init idempotence, preserved surrounding unheaded text, and prettier no-op behavior. Verification: focused TestInit and all 96 CLI tests pass; ruff format/check and pyright pass; full Python suite (320 tests) passes.
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+...... starts but does not exit within the timeout after its dots. No follow-ups.
 
 ## History
 
@@ -97,3 +102,4 @@ Implemented strict AGENTS.md markers, legacy migration, exact marked-block repla
 - 2026-11-06T15:01:19Z youthful-adder: changed acceptance criteria, notes
 - 2026-11-06T15:01:19Z youthful-adder review → doing
 - 2026-11-06T15:20:50Z vivid-kestrel: ticked acceptance criteria
+- 2026-11-06T15:20:51Z vivid-kestrel: changed summary
