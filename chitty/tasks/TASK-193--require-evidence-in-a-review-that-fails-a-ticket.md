@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -80,3 +80,4 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-06T14:43:33Z lively-quail: changed notes
 - 2026-11-06T14:43:33Z lively-quail review → doing
 - 2026-11-06T16:32:01Z youthful-vole: changed summary
+- 2026-11-06T16:32:10Z youthful-vole doing → review
