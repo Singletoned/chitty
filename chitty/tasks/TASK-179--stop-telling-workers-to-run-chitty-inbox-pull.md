@@ -16,7 +16,7 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 ## Acceptance Criteria
 
 - [x] `chitty guide work` and `chitty guide` no longer contain `inbox --pull`, shown by a test, and `chitty inbox --pull` itself still works
-- [ ] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
+- [x] `AGENTS.md` no longer contains `inbox --pull`, after running `uv run chitty init` from the worktree, and `__version__` is bumped above `main`'s at the time of review
 
 ## Plan
 
@@ -64,3 +64,4 @@ Removed the redundant inbox pull from both worker guide sources, preserved ticke
 - 2026-11-06T16:54:52Z honest-gannet: changed acceptance criteria, notes
 - 2026-11-06T16:54:52Z honest-gannet review → doing
 - 2026-11-06T18:13:32Z youthful-toad: changed notes
+- 2026-11-06T18:28:21Z mellow-urchin: ticked acceptance criteria
