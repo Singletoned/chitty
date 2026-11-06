@@ -47,6 +47,10 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 
 Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-193/3`: nothing serious. The test failed on all ten checks without the change and passed with it, and `make check` exited 0. Fixed: a wrong ticket now names its cause, one clause that the criteria's phrases still match, so no further read. Rejected: defining every cause in the file, because "earliest stage" with the list is enough and the file should stay short; a defect outside the criteria, which the bullet already allows to fail when demonstrated; an unmet criterion against an unshown defect, since the first is about a criterion and the second about a claim; and `src/chitty/guide.md` staying as it is, which is deliberate and does not contradict this.
 
+## Summary
+
+Updated the two review-role bullets to require executable evidence and structured failure notes, and added TestGuide regression assertions for the new wording and prohibited make reference. Verified the regression test and full make check (ruff, pyright, 278 unittest tests, and Node tests); chitty fix completed with existing task-format warnings only.
+
 ## History
 
 - 2026-11-05T17:09:01Z mellow-newt → backlog
@@ -69,3 +73,4 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-06T00:00:20Z youthful-adder: wrote the plan
 - 2026-11-06T00:06:42Z youthful-adder: ticked acceptance criteria
 - 2026-11-06T00:06:43Z youthful-adder: ticked acceptance criteria
+- 2026-11-06T00:06:44Z youthful-adder: changed summary
