@@ -1079,12 +1079,13 @@ class TestAddShowList(CliTestCase):
         self.run_cli("add", "Agent todo", "-d", "x", "--owner", "agent")
         self.run_cli("add", "Agent doing", "-d", "x", "--owner", "agent")
         self.run_cli("edit", "2", "-s", "doing")
+        self.run_cli("add", "Agent review", "-d", "x", "-s", "review", "--owner", "agent")
         self.run_cli("add", "Ready", "-d", "x")
 
         lines = self.run_cli("list").stdout.splitlines()
-        self.assertEqual(sum("👤 agent" in line for line in lines), 2)
-        self.assertEqual(sum("👤" in line for line in lines), 2)
-        self.assertEqual(self.run_cli("next").stdout, "work TASK-3\n")
+        self.assertEqual(sum("👤 agent" in line for line in lines), 3)
+        self.assertEqual(sum("👤" in line for line in lines), 3)
+        self.assertEqual(self.run_cli("next").stdout, "work TASK-4\n")
 
     def test_list_preserves_context_and_numeric_order_for_priority_ties(self):
         for number in range(1, 11):

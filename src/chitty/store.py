@@ -1195,8 +1195,6 @@ def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str 
         return None
     if stored.context == "human" or frontmatter.owner == "human":
         return "👤 human"
-    if frontmatter.status == "review":
-        return None
     if include_owner and frontmatter.owner is not None:
         return f"👤 {frontmatter.owner}"
     if frontmatter.status != "todo":

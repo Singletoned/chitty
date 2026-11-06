@@ -308,11 +308,11 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "")
         self.assertEqual(result.stderr, "no next ticket for --mode review\n")
 
-    def test_owner_filter_reserves_work_but_not_review(self):
+    def test_owner_filter_reserves_work_and_review(self):
         unowned = self.add("Unowned")
         opus_todo = self.add("Opus todo", owner="opus")
         opus_review = self.add("Opus review", status="review", owner="opus")
-        self.assertEqual(self.run_cli("next").stdout, f"review {opus_review}\n")
+        self.assertEqual(self.run_cli("next").stdout, f"work {unowned}\n")
         self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {unowned}\n")
         self.assertEqual(self.run_cli("next", "--owner", "opus").stdout, f"review {opus_review}\n")
         self.assertEqual(

@@ -100,11 +100,11 @@ unique (use `chitty move`). It does not rewrite references, because a
 it lists each ticket naming the old ID for you to check.
 `chitty next` chooses a `review` ticket before a `doing` or `todo` ticket,
 then uses priority and task ID across all non-human contexts. Plain selection
-skips owned `doing` and `todo` tickets but still selects owned `review` tickets;
-`chitty list` uses the same skip rules and reports human ownership/context,
-unmet `todo` dependencies, and broken dependency references. `doing` and `review`
-tickets ignore dependencies; dependency completion is judged from `main`.
-use `--owner NAME` to select only that owner's tickets in any active status.
+skips every owned ticket; `chitty list` uses the same skip rules and reports
+ownership, human context, unmet `todo` dependencies, and broken dependency
+references. `doing` and `review` tickets ignore dependencies; dependency
+completion is judged from `main`. Use `--owner NAME` to select only that
+owner's tickets in any active status.
 `human` and empty owner filters are refused. Its `--json`
 output is `{"mode": "work"|"review", "id": "TASK-N"}`. `--mode review` chooses
 only among `review` tickets and `--mode work` only among `doing` and `todo`, in
