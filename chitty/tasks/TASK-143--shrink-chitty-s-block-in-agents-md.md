@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: doing
+status: blocked
 priority: medium
 depends_on:
   - TASK-142
@@ -44,6 +44,8 @@ Correction: the prior note and summary lost literal backtick quoting because the
 
 Review failed (integration): rebasing onto `main` conflicts in `AGENTS.md`, `src/chitty/__init__.py`, `src/chitty/guide.md`.
 
+Blocked by newer main policy: TASK-218 now requires ticket branches to leave the managed `AGENTS.md` block unchanged, while this ticket requires changing that block and running `chitty init` here. Rebasing onto `main` therefore conflicts in `AGENTS.md`, `src/chitty/guide.md`, and `src/chitty/__init__.py`, and preserving TASK-143 would undo the human decision in TASK-218. Human resolution needed: supersede TASK-218 policy for this migration, or close/redefine TASK-143 against the main-only init workflow. Verification also exposed that `make check` rejects the branch version as not above current main.
+
 ## Summary
 
 Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, README.md, and PLAN.md document the role-guide split; init regression coverage verifies replacing a legacy block; version bumped to 0.1.39. Verification: focused init/guide tests, make format, make check, chitty fix, and chitty check (warnings only for pre-existing ticket Markdown).
@@ -61,3 +63,5 @@ Handoff: src/chitty/guide.md now contains the concise pointer block; AGENTS.md, 
 - 2026-11-06T20:23:03Z open-urchin: changed notes, summary
 - 2026-11-06T20:24:15Z sunny-crane: changed notes
 - 2026-11-06T20:24:15Z sunny-crane review → doing
+- 2026-11-06T20:30:01Z rosy-kestrel: changed notes
+- 2026-11-06T20:30:01Z rosy-kestrel doing → blocked
