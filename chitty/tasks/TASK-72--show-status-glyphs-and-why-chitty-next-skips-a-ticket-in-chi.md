@@ -1,6 +1,6 @@
 ---
 title: Show status glyphs, and why `chitty next` skips a ticket, in `chitty list`
-status: review
+status: doing
 priority: high
 created: 2026-11-01
 ---
@@ -24,7 +24,7 @@ The reason must come from the same code as `next_action`, so the two cannot disa
 
 - [x] `README.md` and `PLAN.md` describe the glyphs and the reasons
 - [x] Tests show each status's glyph in `chitty list` with the columns aligned, and `--json` and the MCP `list` tool unchanged apart from `skipped`
-- [x] Tests show a `todo` ticket waiting on an unfinished dependency, one owned by `human` and one with a broken dependency marked with their reasons, a `todo` ticket with a finished dependency and a `doing` ticket with an unfinished one unmarked, and every unmarked `todo`, `doing` or `review` ticket being one `chitty next` can select
+- [ ] Tests show a `todo` ticket waiting on an unfinished dependency, one owned by `human` and one with a broken dependency marked with their reasons, a `todo` ticket with a finished dependency and a `doing` ticket with an unfinished one unmarked, and every unmarked `todo`, `doing` or `review` ticket being one `chitty next` can select
 
 ## Plan
 
@@ -35,6 +35,11 @@ Inspect existing list/next/store/MCP behavior and tests, add a shared skip_reaso
 With the human: the queued emoji must read as blocked by another ticket, not just waiting. Candidates: 🔒 for queued (it unlocks by itself when the task in front finishes) and ⛔ for `blocked_by` (needs someone to act).
 
 Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the shape of the refactor (`skip_reason` plus unchanged `ticket_action` errors), that dependency reasons use `_dependency_is_done` on `main`, alignment by fixed two-column glyphs and a seven-character status, where the reason goes, no reason for `backlog`/`blocked`/`done`, the first reason winning, `skipped` only in the two list outputs, the `human` context, broken dependencies shown not raised, 🔒 only on `todo` because `doing` and `review` ignore dependencies, and which doc sections change. Rejected: none.
+
+Review failed (work): skip_reason does not report non-human owners. A todo or doing ticket owned by another agent is unmarked by chitty list, but _ticket_action skips it when chitty next runs without --owner, so criterion 3 is unmet. Return the owner reason (for example, 👤 agent) from the shared skip logic and add regression coverage.
+1: pass - documentation describes the glyphs and reasons
+2: pass - status glyph and skipped-field coverage is present
+3: fail - non-human owned tickets are unmarked even though chitty next skips them
 
 ## Summary
 
@@ -50,3 +55,5 @@ Implemented shared skip reasons, status glyphs, list JSON/MCP skipped fields, an
 - 2026-11-06T16:33:39Z calm-ibis: wrote the plan
 - 2026-11-06T16:52:58Z calm-ibis: changed summary; ticked acceptance criteria
 - 2026-11-06T16:52:58Z calm-ibis doing → review
+- 2026-11-06T17:01:44Z vivid-dormouse: changed acceptance criteria, notes
+- 2026-11-06T17:01:44Z vivid-dormouse review → doing
