@@ -1,6 +1,6 @@
 ---
 title: Don't upgrade repository setup on a ticket branch
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -47,6 +47,11 @@ Second case, on `task-144` (fixed by hand): `main`'s `chitty` upgraded the branc
 
 Reserved for a human-run session so the loops leave it alone.
 
+Reviewed: rebased cleanly onto main; make check passes. Both new tests fail on main's store.py (stale setup error / upgrade) and pass with the fix.
+1: pass - test_linked_worktree_write_does_not_upgrade_setup checks chitty.toml and AGENTS.md unchanged and no upgrade commit; fails without the fix.
+2: pass - the autocommit=false test succeeds with the fix, raises 'repository setup is stale' without it.
+3: pass - upgrade tests in main checkout pass in make check; the skip-message assertion is removed from test_worktree_keeps_the_main_checkout_registered; PLAN.md init bullet says upgrades happen only in the main checkout.
+
 ## Summary
 
 `Repo._prepare_write` returns early in a linked worktree after `_check_setup_version()`. A ticket branch is never upgraded and never gets the stale-setup error, but a recorded version newer than the running Chitty still fails. Tests in `tests/test_autocommit.py` cover autocommit on and off and failed before the fix. `test_worktree_keeps_the_main_checkout_registered` no longer expects the machine-wide skip message. The `chitty init` bullet in `PLAN.md` now says upgrades happen only in the main checkout. `make check` OK (311 tests). Built from cold read `refs/cold-read/TASK-204/1`, taking only this ticket's hunks, because `main` had moved.
@@ -62,3 +67,5 @@ Reserved for a human-run session so the loops leave it alone.
 - 2026-11-06T13:38:03Z youthful-toad todo → doing
 - 2026-11-06T13:43:25Z youthful-toad: changed owner, summary; ticked acceptance criteria
 - 2026-11-06T13:43:25Z youthful-toad doing → review
+- 2026-11-06T14:05:17Z youthful-toad: changed notes; overrode review independence
+- 2026-11-06T14:05:17Z youthful-toad review → done
