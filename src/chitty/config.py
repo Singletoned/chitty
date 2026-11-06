@@ -228,6 +228,11 @@ def check_setup_version(config: RepoConfig) -> None:
         raise ChittyError(f"repository needs Chitty {recorded} or later")
 
 
+def config_source(root: Path) -> Path | None:
+    """Return the repository file containing Chitty configuration."""
+    return _config_source(root)
+
+
 def _config_source(root: Path) -> Path | None:
     config = root / CONFIG_NAME
     pyproject = root / PYPROJECT_NAME

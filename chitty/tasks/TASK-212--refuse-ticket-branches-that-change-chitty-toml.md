@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `chitty.toml`
-status: todo
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -22,7 +22,11 @@ No `__version__` bump: nothing `chitty init` writes changes.
 
 ## Acceptance Criteria
 
-- [ ] A test runs `chitty run --mode review` on a branch that changes `chitty.toml` and asserts the ticket moves to `doing` with that note and no agent runs. Another, with the config in `[tool.chitty]`, shows that a change elsewhere in `pyproject.toml` passes and a change to `[tool.chitty]` fails.
+- [x] A test runs `chitty run --mode review` on a branch that changes `chitty.toml` and asserts the ticket moves to `doing` with that note and no agent runs. Another, with the config in `[tool.chitty]`, shows that a change elsewhere in `pyproject.toml` passes and a change to `[tool.chitty]` fails.
+
+## Plan
+
+Add a review preflight check after a clean rebase that compares the branch's Chitty configuration with main, using a parsed [tool.chitty] table for pyproject.toml and a file diff for chitty.toml. Fail through the existing review path with the specified note and add regression coverage for both config sources, including a pyproject-only unrelated change passing. Remove the obsolete newer-config-key expectation. Run the targeted tests and make check.
 
 ## Notes
 
@@ -57,6 +61,20 @@ Split on 2026-11-06 after the item-4 cold read (Sonnet, `refs/cold-read/TASK-212
 - A file on only one side: decided, it counts as a change.
 Also, the earlier note saying no open branch is affected is wrong: `task-179` and `task-181` change `AGENTS.md`'s block, which `TASK-218` will catch.
 
+Implemented review-time config protection for `chitty.toml` and parsed `[tool.chitty]` in `pyproject.toml`; unrelated pyproject changes pass, config changes fail before agent launch. `make check` passed: 334 Python tests and Node tests.
+
+1: fail - config deletion is not detected
+Review failed (work): deleting the config file is not detected. `_changed_config` returns `None` when the rebased branch has no config source, even though `main` has `chitty.toml`; a demonstrated branch deletion therefore passes the preflight. Compare config presence on both sides and reject a file present on only one side before retrying review.
+
+Verified the deletion regression first failed before the fix, then passed after it. Targeted config-review tests and full `make check` pass (337 Python tests plus Node tests).
+
+Reviewed: config-change and config-deletion review preflight tests pass; pyproject unrelated changes pass while [tool.chitty] changes fail; make format and make check pass (337 Python tests plus Node tests).
+1: pass - verified review refusal, pyproject comparison, deletion handling, and full checks.
+
+## Summary
+
+Handoff: review preflight now also rejects branches that delete the repository’s Chitty config, including when the worktree cannot load its config; it reports the exact work-failure note without launching the agent. Added regression coverage. Verification: targeted tests and `make check` pass. Follow-ups: none.
+
 ## History
 
 - 2026-11-06T16:15:42Z youthful-toad → backlog
@@ -69,3 +87,13 @@ Also, the earlier note saying no open branch is affected is wrong: `task-179` an
 - 2026-11-06T17:48:05Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:48:19Z youthful-toad: changed notes
 - 2026-11-06T18:13:05Z youthful-toad: changed description, acceptance criteria, notes
+- 2026-11-06T18:51:35Z lively-kestrel todo → doing
+- 2026-11-06T18:51:57Z lively-kestrel: wrote the plan
+- 2026-11-06T19:29:45Z lively-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T19:29:45Z lively-kestrel doing → review
+- 2026-11-06T19:40:46Z vivid-gannet: changed acceptance criteria, notes
+- 2026-11-06T19:40:46Z vivid-gannet review → doing
+- 2026-11-06T19:54:55Z rosy-quail: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T19:54:55Z rosy-quail doing → review
+- 2026-11-06T19:58:27Z kind-badger: changed notes; ticked acceptance criteria
+- 2026-11-06T19:58:27Z kind-badger review → done
