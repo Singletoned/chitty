@@ -30,6 +30,16 @@ task files. `chitty --help` is the full command reference.
   next number free for that ticket, starting at 1, then runs `git worktree
   remove --force .worktrees/read-<ID>`. `git for-each-ref refs/cold-read` lists
   kept reads.
+- Ask of each criterion: could it pass with nothing built? If so, name the case
+  that fails today, and have the worker record that the test failed first.
+- A worker cannot verify a criterion needing a real `chitty run` or agent
+  session, and must not start one. Give that check to a person: a separate
+  `-c human` ticket that depends on this one.
+- Give the cold reader the ticket ID, the code most at risk and what you doubt.
+  Ask it to try behaviour where it can rather than assume, and to report each
+  finding with file, line, why it matters and the exact wording to change.
+- Re-check claims about other tickets just before promoting, because they can
+  land during the read.
 - Do not cold-read a ticket you were given to work on or review; it is not your
   planning step.
 - Before preparing a merge request, run `chitty archive` with no ID to process

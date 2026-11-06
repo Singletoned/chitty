@@ -1686,7 +1686,11 @@ class TestGuide(CliTestCase):
                 self.assertIn(phrase, work_guide)
 
     def test_guide_points_agents_at_ticket_planning_instructions(self):
-        self.assertIn("chitty guide plan", guide())
+        planning_guide = guide("plan")
+        self.assertIn("nothing built", planning_guide)
+        self.assertIn("must not start one", planning_guide)
+        self.assertIn("rather than assume", planning_guide)
+        self.assertIn("just before promoting", planning_guide)
 
     def test_prints_the_agent_guide_outside_any_repo(self):
         os.chdir(self.tmp)

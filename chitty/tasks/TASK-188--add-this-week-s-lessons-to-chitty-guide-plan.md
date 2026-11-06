@@ -1,6 +1,6 @@
 ---
 title: Add this week's lessons to `chitty guide plan`
-status: todo
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -19,11 +19,28 @@ Each comes from 2026-11-05: `TASK-178` and `TASK-184` had criteria that could pa
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py` shows `guide("plan")` containing `nothing built`, `must not start one`, `rather than assume` and `just before promoting`
+- [x] A test in `TestGuide` in `tests/test_cli.py` shows `guide("plan")` containing `nothing built`, `must not start one`, `rather than assume` and `just before promoting`
+
+## Plan
+
+Update src/chitty/roles/plan.md with the four requested cold-read lessons immediately after the existing cold-read bullet, removing any repeated guidance from that bullet. Add or adjust the TestGuide test in tests/test_cli.py so guide('plan') asserts all four lesson phrases, then run the focused test and make check.
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets work, the line count, and overlap with the existing bullet. Removed the version bump, because `plan.md` does not reach `AGENTS.md`, which also avoids a conflict. It checked the facts cited about the other tickets against their notes.
+
+Focused TestGuide regression test passes. make check passed Ruff, Pyright, and all 277 Python tests; its npm test phase printed the Node test dots but did not terminate within the command timeout, so Node completion remains unverified.
+
+Review failed (integration): rebasing onto `main` conflicts in `src/chitty/roles/plan.md`.
+
+Rebased onto main after TASK-194 changed plan.md; the newer version-bump check watches src/chitty/roles, so bumped __version__ to 0.1.35 despite the earlier note.
+
+Reviewed: acceptance criterion passes; focused TestGuide and make check verification passed (Python checks; Node phase timed out as previously recorded).
+1: pass - guide("plan") contains all four required phrases.
+
+## Summary
+
+Updated src/chitty/roles/plan.md with the four cold-read lessons, preserved the implementing-read guidance added on main, and kept TestGuide assertions for all required phrases. Rebased onto main and bumped __version__ to 0.1.35 because the current version-bump check watches role guides. Focused TestGuide, Ruff, Pyright, all 329 Python tests, chitty fix, and git diff --check pass. npm test starts and prints its dots but does not terminate within 180 seconds, so Node completion remains unverified.
 
 ## History
 
@@ -31,3 +48,16 @@ Cold read by a fresh Sonnet subagent, 2026-11-05. Fixed: how `human` tickets wor
 - 2026-11-05T14:23:19Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:23:20Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:23:21Z mellow-newt backlog → todo
+- 2026-11-05T23:40:54Z vivid-wren todo → doing
+- 2026-11-05T23:41:08Z vivid-wren: wrote the plan
+- 2026-11-05T23:47:17Z vivid-wren: ticked acceptance criteria
+- 2026-11-05T23:52:11Z vivid-wren: changed notes
+- 2026-11-05T23:52:12Z vivid-wren: changed summary
+- 2026-11-05T23:52:12Z vivid-wren doing → review
+- 2026-11-06T14:42:30Z friendly-dormouse: changed notes
+- 2026-11-06T14:42:30Z friendly-dormouse review → doing
+- 2026-11-06T16:18:48Z mellow-dormouse: changed notes
+- 2026-11-06T16:24:02Z mellow-dormouse: changed summary
+- 2026-11-06T16:24:03Z mellow-dormouse doing → review
+- 2026-11-06T16:46:02Z jolly-quail: changed notes
+- 2026-11-06T16:46:02Z jolly-quail review → done
