@@ -1,6 +1,6 @@
 ---
 title: File tickets raised on a branch under `BACKLOG`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-191
@@ -29,3 +29,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Fixed: the tests'
 - 2026-11-05T14:50:44Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:50:45Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:50:47Z mellow-newt backlog → todo
+- 2026-11-06T19:31:50Z golden-lapwing todo → doing
