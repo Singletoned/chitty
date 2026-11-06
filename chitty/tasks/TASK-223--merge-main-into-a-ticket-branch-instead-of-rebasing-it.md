@@ -1,6 +1,6 @@
 ---
 title: Merge `main` into a ticket branch instead of rebasing it
-status: backlog
+status: todo
 priority: high
 created: 2026-11-06
 ---
@@ -23,9 +23,21 @@ Out of scope: guide text telling agents to rebase, which `TASK-151` rewrites.
 
 ## Acceptance Criteria
 
-- [ ] Tests show a review of a branch behind the main branch merging it in, with the reviewer seeing both changes and `git log` showing a merge commit; a conflicting branch failing as `integration` with the merge aborted and the worktree clean; and a recorded rerere resolution not being replayed.
 - [ ] No code path in `src/chitty/run.py` rebases, an unfinished merge in a ticket worktree is refused like an unfinished rebase, `README.md` and `PLAN.md` say "merge", and `make check` passes.
+- [ ] Tests show a review of a branch behind the main branch merging it in, so the reviewer sees both changes (a branch with no commits of its own may fast-forward instead); a conflicting branch failing as `integration` with the merge aborted and the worktree clean; a recorded rerere resolution not being replayed; and Ctrl-C during the merge aborting it.
+
+## Notes
+
+Cold read 1 (Sonnet, `refs/cold-read/TASK-223/1`; tests failed before and passed after; `make check` OK, 362 tests). Outcomes:
+- The config and `AGENTS.md` checks after a merge: confirmed correct, because `main...HEAD` equals `main..HEAD` once `main` is merged in.
+- An unfinished merge in a ticket worktree made the review's autocommit fail with `cannot do a partial commit during a merge`: covered by the refusal in criterion 2.
+- No merge commit when the branch has no commits of its own: accepted, criterion 1 reworded.
+- Ctrl-C during the merge: added to criterion 1, with the message "interrupted during merge".
+- Renaming `tests/test_review_rebase.py` to `tests/test_review_merge.py`: accepted.
+- The `TASK-131` note: already added.
 
 ## History
 
 - 2026-11-06T21:49:17Z youthful-toad → backlog
+- 2026-11-06T21:58:26Z youthful-toad: changed acceptance criteria, notes
+- 2026-11-06T21:58:26Z youthful-toad backlog → todo
