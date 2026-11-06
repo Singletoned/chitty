@@ -25,6 +25,10 @@ Out of scope: docs and guides (`TASK-217`), and the `Makefile` `release` target,
 - [ ] Tests in a repository with `main_branch = "master"` show `chitty run` creating the worktree from `master`, rebasing a review onto `master` (its conflict note names `master`), `chitty next` judging a dependency done on `master`, and `_preflight` requiring the main checkout to be on `master`.
 - [ ] A ticket worktree whose own config lacks `main_branch` is still reviewed, and `chitty next` run inside it is still judged, using the main checkout's setting. `grep -n '"main"\|heads/main' src/chitty/*.py` matches only the `main_branch` default in `config.py` and `chitty init`'s `!= "main"` check from `TASK-214`.
 
+## Plan
+
+Move main-checkout discovery into git.py, add store._main_branch that reads the main checkout config for linked worktrees, thread the configured branch through dependency and runner operations, and add/update tests covering master plus missing worktree config. Run the regression test unfixed first, then format and make check.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-216/1`, built on `TASK-214`'s read; the `master` tests failed before and passed after; `make check` OK). Outcomes:
@@ -43,3 +47,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-216/1`, built on `TASK-214`'s read; th
 - 2026-11-06T17:09:58Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T17:09:58Z youthful-toad backlog → todo
 - 2026-11-06T21:13:50Z intrepid-otter todo → doing
+- 2026-11-06T21:14:09Z intrepid-otter: wrote the plan
