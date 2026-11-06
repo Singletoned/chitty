@@ -1,6 +1,6 @@
 ---
 title: Warn about unknown configuration keys instead of refusing them
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-182
@@ -32,3 +32,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: one line per file listi
 - 2026-11-06T09:26:16Z youthful-toad → backlog
 - 2026-11-06T09:31:12Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T09:31:15Z youthful-toad backlog → todo
+- 2026-11-06T18:48:40Z nimble-eel todo → doing
