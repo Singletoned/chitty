@@ -8,7 +8,9 @@ from pathlib import Path
 MAIN_REF = "refs/heads/main"
 VERSION_FILE = "src/chitty/__init__.py"
 CONFIG_FILE = "src/chitty/config.py"
-INITIAL_CONFIG_RE = re.compile(r"(?ms)^INITIAL_CONFIG\s*=\s*(?P<quote>'''|\"\"\")(.*?)(?P=quote)")
+INITIAL_CONFIG_RE = re.compile(
+    r"(?ms)^INITIAL_CONFIG\s*=\s*(?P<quote>'''|\"\"\")(?P<text>.*?)(?P=quote)"
+)
 VERSION_RE = re.compile(r"^__version__\s*=\s*[\"\']([^\"\']+)[\"\']\s*$", re.MULTILINE)
 WATCHED_FILES = (
     "src/chitty/guide.md",
@@ -43,7 +45,7 @@ def initial_config(text: str | None, source: str) -> str:
     match = INITIAL_CONFIG_RE.search(text)
     if match is None:
         raise ValueError(f"could not find INITIAL_CONFIG in {source}")
-    return match.group(0)
+    return match.group("text")
 
 
 def changed_files(base: str) -> list[str]:

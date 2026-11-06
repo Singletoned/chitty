@@ -94,6 +94,12 @@ class VersionBumpTest(unittest.TestCase):
         result = self.run_check()
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_initial_config_assignment_format_change_passes(self):
+        self.start_branch()
+        self.write("src/chitty/config.py", 'INITIAL_CONFIG    = """initial"""\n')
+        result = self.run_check()
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_branch_behind_main_with_no_changes_passes(self):
         self.start_branch()
         self.write_version("0.1.10")
