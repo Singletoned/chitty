@@ -313,6 +313,11 @@ class Repo:
         recorded = self.config.chitty_version
         if recorded == CHITTY_VERSION:
             return
+        # Setup belongs on main: a ticket branch's own code may be older than
+        # the upgraded setup and could not read it. It picks the setup up when
+        # rebased onto main.
+        if git.is_linked_worktree(self.root):
+            return
         if not self.config.autocommit:
             raise ChittyError("repository setup is stale; run `chitty init` before writing")
         paths = init_repo(self.root, False)

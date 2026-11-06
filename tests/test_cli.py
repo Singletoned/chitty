@@ -255,8 +255,7 @@ class TestInit(CliTestCase):
             subprocess.run(
                 ["git", "commit", "--quiet", "-m", "stale setup"], cwd=worktree, check=True
             )
-            result = self.run_cli("add", "From worktree", "-d", "x")
-            self.assertIn("skipping machine-wide Pi setup", result.stderr)
+            self.run_cli("add", "From worktree", "-d", "x")
             self.assertEqual(extension.read_bytes(), previous_extension)
             self.assertEqual(settings.read_text(), previous_settings)
         finally:

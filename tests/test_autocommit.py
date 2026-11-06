@@ -1,6 +1,8 @@
+import os
 import shlex
 import subprocess
 import sys
+from pathlib import Path
 
 from chitty.config import CHITTY_VERSION
 from tests.test_cli import CliTestCase
@@ -42,6 +44,48 @@ class TestAutocommit(CliTestCase):
         subjects = self.git("log", "-2", "--format=%s").splitlines()
         self.assertEqual(subjects, ["chitty: add TASK-1 First", "chitty: upgrade repository setup"])
         self.assertIn(CHITTY_VERSION, config.read_text())
+
+    def stale_linked_worktree(self) -> Path:
+        self.run_cli("init")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        worktree = self.tmp / "worktree"
+        self.git("worktree", "add", "--quiet", "-b", "ticket", str(worktree))
+        self.addCleanup(
+            subprocess.run,
+            ["git", "worktree", "remove", "--force", str(worktree)],
+            cwd=self.root,
+            check=True,
+        )
+        config = worktree / "chitty.toml"
+        config.write_text(config.read_text().replace(CHITTY_VERSION, "0.0.0"))
+        subprocess.run(["git", "commit", "--quiet", "-am", "stale"], cwd=worktree, check=True)
+        os.chdir(worktree)
+        return worktree
+
+    def test_linked_worktree_write_does_not_upgrade_setup(self):
+        worktree = self.stale_linked_worktree()
+        config = (worktree / "chitty.toml").read_text()
+        agents = (worktree / "AGENTS.md").read_text()
+
+        self.run_cli("add", "First", "-d", "x")
+
+        self.assertEqual((worktree / "chitty.toml").read_text(), config)
+        self.assertEqual((worktree / "AGENTS.md").read_text(), agents)
+        log = subprocess.run(
+            ["git", "log", "--format=%s"], cwd=worktree, capture_output=True, text=True, check=True
+        ).stdout
+        self.assertNotIn("chitty: upgrade repository setup", log)
+        self.assertIn("chitty: add TASK-1 First", log)
+
+    def test_linked_worktree_write_with_stale_setup_succeeds_without_autocommit(self):
+        worktree = self.stale_linked_worktree()
+        config = worktree / "chitty.toml"
+        config.write_text(config.read_text().replace("autocommit = true", "autocommit = false"))
+
+        self.run_cli("add", "First", "-d", "x")
+
+        self.assertTrue(list((worktree / "chitty" / "tasks").glob("TASK-1--*.md")))
 
     def test_each_write_is_one_commit_of_its_own_paths(self):
         (self.root / "unrelated.txt").write_text("staged by the user\n")

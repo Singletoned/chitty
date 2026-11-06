@@ -57,6 +57,9 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   with an older setup; writes require it to be current. With `autocommit =
   true`, Chitty upgrades and commits setup separately before the requested
   write; otherwise it fails loudly and tells the caller to run `chitty init`.
+  Upgrades happen only in the main checkout: a write in a linked worktree
+  skips the upgrade and the stale-setup error (still refusing a setup newer
+  than Chitty), and the branch picks up the new setup when rebased onto `main`.
   `chitty run` refreshes setup before selecting a ticket, committing setup-only
   changes in a main checkout and doing nothing in a linked worktree. From a
   linked worktree, it refuses to run when the main checkout's setup is older or
