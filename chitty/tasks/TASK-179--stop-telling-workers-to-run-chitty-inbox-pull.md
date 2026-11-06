@@ -39,6 +39,9 @@ Owner cleared: the branch now has `main`'s `chitty.toml` again, so `main`'s `chi
 
 This branch edits Chitty's managed block in `AGENTS.md`. Under `TASK-218`, branches may not: restore the block from `main` (`git checkout main -- AGENTS.md` if the rest of the file is unchanged) and change only `src/chitty/guide.md` or `src/chitty/roles/`. The main checkout regenerates `AGENTS.md` after landing.
 
+Bumped __version__ to 0.1.36 because main was already 0.1.35. updated /Users/singletoned/src/singletoned/chitty/.worktrees/task-179/chitty.toml
+updated /Users/singletoned/.local/share/chitty/inbox/chitty regenerated the managed guide and updated chitty.toml locally; chitty.toml was restored per repository guidance that ticket branches only bump __version__. Full unittest suite passed (330 tests); npm test emitted 26 passing dots but did not exit within 300 seconds.
+
 ## Summary
 
 Removed the redundant inbox pull from both worker guide sources, preserved ticket/task wording, regenerated AGENTS.md, and bumped package/setup versions to 0.1.35 after rebasing onto main. Added guide regression coverage. Verified guide output, chitty inbox --pull, uv run chitty init, chitty fix, Ruff, Pyright, 330 unittest tests, and Node tests.
@@ -65,3 +68,4 @@ Removed the redundant inbox pull from both worker guide sources, preserved ticke
 - 2026-11-06T16:54:52Z honest-gannet review → doing
 - 2026-11-06T18:13:32Z youthful-toad: changed notes
 - 2026-11-06T18:28:21Z mellow-urchin: ticked acceptance criteria
+- 2026-11-06T18:28:35Z mellow-urchin: changed notes
