@@ -53,28 +53,7 @@ npm test
 
 ## Summary
 
-Implemented linked-worktree refusal for , centralized main-checkout detection in , removed the obsolete Pi setup skip, updated guides and regression coverage, and bumped  to 0.1.38. Verified with the focused regression test and uv run ruff check --exit-zero .
-All checks passed!
-uv run ruff format .
-296 files left unchanged
-uv run python scripts/check_version_bump.py
-uv run ruff format --check .
-296 files already formatted
-uv run ruff check --no-fix .
-All checks passed!
-uv run pyright
-0 errors, 0 warnings, 0 informations
-uv run unittest-parallel -s tests -t . --level test
-Deleted branch task-1 (was ddd2359).
-Deleted branch task-1 (was 58381bf).
-Deleted branch task-2 (was e8f7420).
-npm test
-
-> test
-> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
-
-....................
-......; ready for review.
+Implemented linked-worktree refusal for `chitty init`, centralized main-checkout detection in `git.main_checkout`, removed the obsolete Pi setup skip, updated guides and regression coverage, and bumped `__version__` to 0.1.38. Verified with the focused regression test and `make format && make check`; ready for review.
 
 ## History
 
@@ -84,3 +63,4 @@ npm test
 - 2026-11-06T20:08:16Z honest-falcon: wrote the plan
 - 2026-11-06T20:13:52Z honest-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:13:52Z honest-falcon doing → review
+- 2026-11-06T20:14:10Z honest-falcon: changed summary
