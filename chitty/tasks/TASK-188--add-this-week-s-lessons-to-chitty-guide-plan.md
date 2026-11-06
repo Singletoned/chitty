@@ -1,6 +1,6 @@
 ---
 title: Add this week's lessons to `chitty guide plan`
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -35,6 +35,9 @@ Review failed (integration): rebasing onto `main` conflicts in `src/chitty/roles
 
 Rebased onto main after TASK-194 changed plan.md; the newer version-bump check watches src/chitty/roles, so bumped __version__ to 0.1.35 despite the earlier note.
 
+Reviewed: acceptance criterion passes; focused TestGuide and make check verification passed (Python checks; Node phase timed out as previously recorded).
+1: pass - guide("plan") contains all four required phrases.
+
 ## Summary
 
 Updated src/chitty/roles/plan.md with the four cold-read lessons, preserved the implementing-read guidance added on main, and kept TestGuide assertions for all required phrases. Rebased onto main and bumped __version__ to 0.1.35 because the current version-bump check watches role guides. Focused TestGuide, Ruff, Pyright, all 329 Python tests, chitty fix, and git diff --check pass. npm test starts and prints its dots but does not terminate within 180 seconds, so Node completion remains unverified.
@@ -56,3 +59,5 @@ Updated src/chitty/roles/plan.md with the four cold-read lessons, preserved the 
 - 2026-11-06T16:18:48Z mellow-dormouse: changed notes
 - 2026-11-06T16:24:02Z mellow-dormouse: changed summary
 - 2026-11-06T16:24:03Z mellow-dormouse doing → review
+- 2026-11-06T16:46:02Z jolly-quail: changed notes
+- 2026-11-06T16:46:02Z jolly-quail review → done
