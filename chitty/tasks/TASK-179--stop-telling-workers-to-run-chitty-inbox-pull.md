@@ -37,6 +37,8 @@ Owner cleared: the branch now has `main`'s `chitty.toml` again, so `main`'s `chi
 1: pass - Guide output omits inbox --pull and chitty inbox --pull still works.
 2: fail - __version__ is 0.1.35 on this branch and on main, so the required version bump above main is unmet; make check fails its version-bump check. Bump the package version above current main and rerun the checks.
 
+This branch edits Chitty's managed block in `AGENTS.md`. Under `TASK-218`, branches may not: restore the block from `main` (`git checkout main -- AGENTS.md` if the rest of the file is unchanged) and change only `src/chitty/guide.md` or `src/chitty/roles/`. The main checkout regenerates `AGENTS.md` after landing.
+
 ## Summary
 
 Removed the redundant inbox pull from both worker guide sources, preserved ticket/task wording, regenerated AGENTS.md, and bumped package/setup versions to 0.1.35 after rebasing onto main. Added guide regression coverage. Verified guide output, chitty inbox --pull, uv run chitty init, chitty fix, Ruff, Pyright, 330 unittest tests, and Node tests.
@@ -61,3 +63,4 @@ Removed the redundant inbox pull from both worker guide sources, preserved ticke
 - 2026-11-06T16:43:39Z youthful-toad: changed owner, notes
 - 2026-11-06T16:54:52Z honest-gannet: changed acceptance criteria, notes
 - 2026-11-06T16:54:52Z honest-gannet review → doing
+- 2026-11-06T18:13:32Z youthful-toad: changed notes
