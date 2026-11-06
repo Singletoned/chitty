@@ -1,6 +1,6 @@
 ---
 title: File tickets raised on a branch under `BACKLOG`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-191
@@ -36,6 +36,10 @@ Review failed (work): the branch changes `chitty.toml`; only `chitty init` on th
 
 Review follow-up: restored chitty.toml to the main-branch version; the ticket branch retains only the source version bump, while generated config upgrades remain a main-checkout operation. make format and make check pass (341 Python tests and Node tests). chitty fix was run and reported the known unresolved repository setup warning.
 
+Reviewed: independently inspected the implementation, guidance, PLAN.md, tests, and diff. make format and make check pass (341 Python tests, pyright, ruff, and Node tests).
+1: pass - Guide text, version bump, and PLAN.md decision are present and tested.
+2: pass - Linked-worktree CLI/MCP routing, explicit human numbering, and inbox default numbering are covered and passing.
+
 ## Summary
 
 Implemented linked-worktree add routing in resolve_add_target, preserving explicit contexts, missing-backlog fallback, and inbox sequential numbering. Added real Git worktree coverage for CLI/MCP, guide coverage, inbox regression coverage, and updated the planning/guidance text. Source version is 0.1.37; chitty.toml remains at the main-branch version per review guidance. Verified with make format and make check (341 Python tests, pyright, ruff, and Node tests). Follow-up: generated config upgrades belong on the main checkout.
@@ -54,3 +58,5 @@ Implemented linked-worktree add routing in resolve_add_target, preserving explic
 - 2026-11-06T19:59:51Z golden-quail review → doing
 - 2026-11-06T20:02:15Z quick-raven: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:02:15Z quick-raven doing → review
+- 2026-11-06T20:05:01Z quick-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-06T20:05:01Z quick-lapwing review → done
