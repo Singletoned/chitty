@@ -13,7 +13,7 @@ After `TASK-216`, the integration branch is `main_branch` in `chitty.toml`. Wher
 
 - `src/chitty/guide.md` and `src/chitty/roles/*.md`. These are the managed block, so bump `__version__` at patch level.
 - `README.md`, around lines 34 and 125, and wherever else `grep -n '`main`' README.md` matches.
-- `PLAN.md`, around lines 62, 134, 529, 650, 651, 716, 722 and 735, and the config section, which should document `main_branch` and the migration rule from `TASK-214`.
+- `PLAN.md`, around lines 62, 134, 529, 650, 651, 716, 722 and 735, and the config section, which should document the optional `main_branch` setting (default `main`).
 
 Don't run `chitty init` on the branch (`TASK-212`).
 
@@ -27,3 +27,4 @@ Don't run `chitty init` on the branch (`TASK-212`).
 - 2026-11-06T16:48:08Z youthful-toad → backlog
 - 2026-11-06T16:48:23Z youthful-toad: changed dependencies
 - 2026-11-06T16:48:41Z youthful-toad: changed description
+- 2026-11-06T16:49:20Z youthful-toad: changed description
