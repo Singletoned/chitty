@@ -38,6 +38,8 @@ Rebased onto `main` by a human-run session. My earlier "restore `main`'s `chitty
 - `tests/test_pi_extension.py` compares against `__version__`.
 `make check` passes (330 tests). Re-check the criteria.
 
+This branch edits Chitty's managed block in `AGENTS.md`. Under `TASK-218`, branches may not: restore the block from `main` (`git checkout main -- AGENTS.md` if the rest of the file is unchanged) and change only `src/chitty/guide.md` or `src/chitty/roles/`. The main checkout regenerates `AGENTS.md` after landing.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in the global guide and work, review, and plan role prompts; added TestGuide coverage; bumped Chitty to 0.1.33 and regenerated AGENTS.md/chitty.toml. Verified with make check: ruff, pyright, 278 unittest cases, and Node tests pass.
@@ -67,3 +69,4 @@ Restored the literal single-asterisk Markdown instruction in the global guide an
 - 2026-11-06T16:39:56Z sunny-eel: changed notes
 - 2026-11-06T16:39:56Z sunny-eel review → doing
 - 2026-11-06T18:08:19Z youthful-toad: changed notes
+- 2026-11-06T18:13:33Z youthful-toad: changed notes
