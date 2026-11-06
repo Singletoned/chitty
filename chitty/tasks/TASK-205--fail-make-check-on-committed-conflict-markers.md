@@ -23,6 +23,10 @@ Out of scope: checking for markers in Chitty itself (`chitty check`).
 - [ ] `make check` fails and prints the file and line when a tracked file contains a conflict marker line, and passes on `main` today.
 - [ ] `mate --list` still lists `check` with its `##` description.
 
+## Plan
+
+Add the exact conflict-marker git-grep recipe as the first line of Makefile's check target, preserving the existing mate description. Verify with a temporary tracked marker and without it, then run mate --list and make check.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-205/1`; failed with a marker and passed without one). Outcomes:
@@ -38,3 +42,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-205/1`; failed with a marker and passe
 - 2026-11-06T11:56:21Z youthful-toad: changed description, notes
 - 2026-11-06T11:56:21Z youthful-toad backlog → todo
 - 2026-11-06T20:30:27Z rosy-eel todo → doing
+- 2026-11-06T20:30:38Z rosy-eel: wrote the plan
