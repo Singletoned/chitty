@@ -2,6 +2,7 @@
 title: Ask agents to make fewer calls
 status: review
 priority: medium
+owner: human
 depends_on:
   - TASK-142
 parent: TASK-106
@@ -37,6 +38,8 @@ Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.p
 
 Verified the guide-output regression test for both roles and confirmed version 0.1.35 is above main's 0.1.34. Full make format && make check passes (278 Python tests and Node tests).
 
+Owner set to `human` so the review loop skips this until `TASK-212` lands: the branch records `0.1.35` and `main`'s `0.1.34` `chitty` refuses to write here. Clear the owner then.
+
 ## Summary
 
 Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.35. Verified with full make format && make check; follow-up remains to rerun TASK-170 measurement scripts.
@@ -55,3 +58,4 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-06T14:39:20Z friendly-heron review → doing
 - 2026-11-06T15:58:09Z lively-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T15:58:09Z lively-falcon doing → review
+- 2026-11-06T16:25:03Z youthful-toad: changed owner, notes
