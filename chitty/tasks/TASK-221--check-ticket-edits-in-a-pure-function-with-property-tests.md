@@ -1,6 +1,6 @@
 ---
 title: Check ticket edits in a pure function, with property tests
-status: todo
+status: doing
 labels:
   - spec-first
 priority: medium
@@ -55,3 +55,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-221/1`; the reintroduced `TASK-206` bu
 - 2026-11-06T19:18:51Z youthful-toad → backlog
 - 2026-11-06T19:28:21Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T19:28:21Z youthful-toad backlog → todo
+- 2026-11-06T20:44:37Z youthful-heron todo → doing
