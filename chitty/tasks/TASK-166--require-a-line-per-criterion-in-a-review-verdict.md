@@ -1,6 +1,6 @@
 ---
 title: Require a line per criterion in a review verdict
-status: todo
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -18,8 +18,12 @@ Existing tests that move a ticket with criteria out of `review` will need verdic
 
 ## Acceptance Criteria
 
-- [ ] Tests through the CLI and MCP show a verdict refused for a missing line, a wrong word, a duplicate, an out-of-range number, `done` with a `fail` and `doing` with no `fail`, each changing nothing, and a complete verdict accepted for `done` and `doing`
-- [ ] Tests show a third failure with a valid verdict still escalating to `blocked`, the override still needing the form, and a ticket with no criteria unaffected
+- [x] Tests through the CLI and MCP show a verdict refused for a missing line, a wrong word, a duplicate, an out-of-range number, `done` with a `fail` and `doing` with no `fail`, each changing nothing, and a complete verdict accepted for `done` and `doing`
+- [x] Tests show a third failure with a valid verdict still escalating to `blocked`, the override still needing the form, and a ticket with no criteria unaffected
+
+## Plan
+
+Add shared review-verdict validation in store.py immediately after the existing Reviewed: check. Split note and notes into lines, require exactly one lowercase pass/fail verdict for every stored criterion, reject malformed/missing/duplicate/out-of-range verdicts without mutation, and enforce status-specific pass/fail rules. Add CLI and MCP regression coverage including escalation, override, and no-criteria cases; update existing review-transition fixtures as needed.
 
 ## Notes
 
@@ -27,9 +31,25 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Too big as written, so the ins
 
 Second cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: splitting notes into lines, which count of criteria, and where the check goes. Rejected: fixing the message's wording, which a test need only match on the numbers.
 
+Reviewed: criteria and implementation independently; make check passed (306 unittest tests and Node tests).
+1: pass - CLI and MCP coverage verifies refusal, no mutation, and complete done/doing verdicts.
+2: pass - escalation, override, and no-criteria behavior are covered and verified.
+
+## Summary
+
+Implemented shared review-verdict validation in store.py. CLI and MCP tests cover malformed, missing, duplicate, out-of-range, status-specific, complete, override, escalation, and no-criteria cases. make check passes: ruff, pyright, 280 unittest tests, and Node tests. Commit 595b53d (Task: TASK-166).
+
 ## History
 
 - 2026-11-04T20:45:26Z mellow-newt → backlog
 - 2026-11-04T20:47:40Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:48:49Z mellow-newt: changed description, notes
 - 2026-11-04T20:48:50Z mellow-newt backlog → todo
+- 2026-11-05T22:51:12Z daring-eel todo → doing
+- 2026-11-05T22:51:31Z daring-eel: wrote the plan
+- 2026-11-05T22:59:54Z daring-eel: ticked acceptance criteria
+- 2026-11-05T22:59:55Z daring-eel: ticked acceptance criteria
+- 2026-11-05T23:00:01Z daring-eel: changed summary
+- 2026-11-05T23:00:01Z daring-eel doing → review
+- 2026-11-06T11:15:54Z able-zander: changed notes
+- 2026-11-06T11:15:54Z able-zander review → done

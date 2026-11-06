@@ -1017,22 +1017,36 @@ class TestReviewStatus(CliTestCase):
         os.environ["CHITTY_ACTOR"] = "reviewer"
         refused = self.run_cli("edit", "1", "-s", "doing", exit_code=1)
         self.assertIn("review → doing requires --note", refused.stderr)
-        self.run_cli("edit", "1", "-s", "doing", "--note", "Review found a problem.")
+        self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "doing",
+            "--note",
+            "Review found a problem.\n1: fail - unfinished",
+        )
         os.environ["CHITTY_ACTOR"] = "test-agent"
         self.run_cli("edit", "1", "-s", "review")
         os.environ["CHITTY_ACTOR"] = "reviewer"
-        self.run_cli("edit", "1", "-s", "done", "--note", "Reviewed: ready.")
+        self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.\n1: pass - complete",
+        )
         self.assertEqual(self.json("show", "1")["status"], "done")
 
     def fail_review(self, reason):
         self.run_cli("edit", "1", "-s", "review")
         os.environ["CHITTY_ACTOR"] = "reviewer"
-        result = self.run_cli("edit", "1", "-s", "doing", "--note", reason)
+        result = self.run_cli("edit", "1", "-s", "doing", "--note", f"{reason}\n1: fail - {reason}")
         os.environ["CHITTY_ACTOR"] = "test-agent"
         return result
 
     def test_third_failed_review_escalates_to_a_human(self):
-        self.run_cli("add", "Bounce", "-d", "x")
+        self.run_cli("add", "Bounce", "-d", "x", "--ac", "Reviewable")
         self.fail_review("First.")
         self.fail_review("Second.")
         self.assertEqual(self.json("show", "1")["status"], "doing")
@@ -1053,11 +1067,58 @@ class TestReviewStatus(CliTestCase):
         self.fail_review("Fourth.")
         self.assertEqual(self.json("show", "1")["status"], "doing")
 
+    def test_review_verdict_requires_complete_matching_lines(self):
+        self.run_cli("add", "Review me", "-d", "x", "--ac", "First", "--ac", "Second")
+        self.run_cli("edit", "1", "-s", "review")
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        before = self.json("show", "1")
+        invalid = (
+            "Reviewed: ready.",
+            "Reviewed: ready.\n1: maybe - no",
+            "Reviewed: ready.\n1: pass - one\n1: pass - duplicate\n2: pass - two",
+            "Reviewed: ready.\n1: pass - one\n2: pass - two\n3: pass - extra",
+            "Reviewed: ready.\n1: fail - one\n2: pass - two",
+        )
+        for note in invalid:
+            refused = self.run_cli("edit", "1", "-s", "done", "--note", note, exit_code=1)
+            self.assertTrue(
+                "review verdict lines" in refused.stderr
+                or "every verdict to be pass" in refused.stderr
+            )
+            self.assertEqual(self.json("show", "1"), before)
+        self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.\n1: pass - one\n2: pass - two",
+        )
+
+    def test_review_verdict_allows_a_failed_review_and_requires_a_failure(self):
+        self.run_cli("add", "Review me", "-d", "x", "--ac", "First")
+        self.run_cli("edit", "1", "-s", "review")
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        refused = self.run_cli(
+            "edit", "1", "-s", "doing", "--note", "Review\n1: pass - good", exit_code=1
+        )
+        self.assertIn("at least one fail verdict", refused.stderr)
+        self.assertEqual(self.json("show", "1")["status"], "review")
+        self.run_cli("edit", "1", "-s", "doing", "--note", "Review\n1: fail - bad")
+
     def test_self_review_requires_an_explicit_override_flag(self):
-        self.run_cli("add", "Review me", "-d", "x")
+        self.run_cli("add", "Review me", "-d", "x", "--ac", "Reviewable")
         self.run_cli("edit", "1", "-s", "review")
 
-        refused = self.run_cli("edit", "1", "-s", "done", "--note", "Reviewed: ready.", exit_code=1)
+        refused = self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: ready.\n1: pass - ready",
+            exit_code=1,
+        )
 
         self.assertIn("test-agent cannot review this task", refused.stderr)
         self.run_cli(
@@ -1066,7 +1127,7 @@ class TestReviewStatus(CliTestCase):
             "-s",
             "done",
             "--note",
-            "Reviewed: emergency approval.",
+            "Reviewed: emergency approval.\n1: pass - ready",
             "--override-review-independence",
         )
         self.assertIn("overrode review independence", self.json("show", "1")["history"])

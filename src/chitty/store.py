@@ -411,6 +411,8 @@ class Repo:
             and not any(note.startswith("Reviewed:") for note in (edit.note, *edit.notes) if note)
         ):
             raise ChittyError("moving review → done requires --note starting 'Reviewed:'")
+        if is_review_transition:
+            _validate_review_verdict(stored.task, edit)
         if edit.override_review_independence and not is_review_transition:
             raise ChittyError("--override-review-independence only applies to review transitions")
         if is_review_transition:
@@ -742,6 +744,49 @@ class Repo:
     def _write(self, path: Path, text: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
+
+
+VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
+
+
+def _validate_review_verdict(task: Task, edit: Edit) -> None:
+    """Require one pass/fail verdict line for every acceptance criterion."""
+    criterion_count = len(task.criteria)
+    if not criterion_count:
+        return
+
+    lines = [line for note in (edit.note, *edit.notes) if note for line in note.splitlines()]
+    verdicts = [
+        (int(match.group(1)), match.group(2))
+        for line in lines
+        if (match := VERDICT_LINE_RE.fullmatch(line))
+    ]
+    numbers = [number for number, _ in verdicts]
+    expected = set(range(1, criterion_count + 1))
+    counts = {number: numbers.count(number) for number in set(numbers)}
+    missing = sorted(expected - set(numbers))
+    duplicated = sorted(number for number, count in counts.items() if count > 1)
+    out_of_range = sorted(number for number in set(numbers) if number not in expected)
+    problems: list[str] = []
+    if missing:
+        problems.append(f"missing {', '.join(map(str, missing))}")
+    if duplicated:
+        problems.append(f"duplicated {', '.join(map(str, duplicated))}")
+    if out_of_range:
+        problems.append(f"out-of-range {', '.join(map(str, out_of_range))}")
+    if problems:
+        raise ChittyError(
+            "review verdict lines must match ^(\\d+): (pass|fail) - (\\S.*)$; "
+            + "; ".join(problems)
+        )
+
+    verdict_by_number = {number: verdict for number, verdict in verdicts}
+    if edit.status == "done" and any(verdict == "fail" for verdict in verdict_by_number.values()):
+        raise ChittyError("moving review → done requires every verdict to be pass")
+    if edit.status == "doing" and not any(
+        verdict == "fail" for verdict in verdict_by_number.values()
+    ):
+        raise ChittyError("moving review → doing requires at least one fail verdict")
 
 
 def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:
