@@ -74,6 +74,7 @@ class RepoConfig(BaseModel):
     format: Literal[1]
     default_context: str
     project: str | None = None
+    main_branch: str = "main"
     chitty_version: str | None = None
     autocommit: bool
     review: bool = True

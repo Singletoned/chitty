@@ -106,6 +106,32 @@ class TestInit(CliTestCase):
 
         self.assertIn("needs Chitty 99.0.0 or later", result.stderr)
 
+    def test_init_writes_main_branch_for_new_non_main_repository(self):
+        target = self.tmp / "fresh"
+        target.mkdir()
+        os.chdir(target)
+        with patch("chitty.store.git.current_branch", return_value="master"):
+            self.run_cli("init")
+        config = (target / "chitty.toml").read_text()
+        self.assertIn('main_branch = "master"', config)
+        self.assertEqual(config.count("main_branch"), 1)
+
+    def test_init_does_not_add_main_branch_to_existing_config(self):
+        config = self.root / "chitty.toml"
+        with patch("chitty.store.git.current_branch", return_value="master"):
+            self.run_cli("init")
+        self.assertNotIn("main_branch", config.read_text())
+
+    def test_init_does_not_write_main_branch_on_main_or_detached_head(self):
+        for name, branch in (("main", "main"), ("detached", None)):
+            with self.subTest(name=name):
+                target = self.tmp / name
+                target.mkdir()
+                os.chdir(target)
+                with patch("chitty.store.git.current_branch", return_value=branch):
+                    self.run_cli("init")
+                self.assertNotIn("main_branch", (target / "chitty.toml").read_text())
+
     def test_init(self):
         target = self.tmp / "fresh"
         target.mkdir()
@@ -125,6 +151,7 @@ class TestInit(CliTestCase):
         )
         self.assertNotIn("  #", config)
         self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config)
+        self.assertNotIn("main_branch", config)
         self.assertIn("review = true", config)
         self.assertIn('[contexts.human]\nprefix = "HUMAN"\nreview = false', config)
         self.assertTrue((target / "chitty" / "tasks").is_dir())

@@ -40,6 +40,24 @@ class TestRepoConfig(RepoTestCase):
         self.assertEqual(config.contexts["human"].prefix, "HUMAN")
         self.assertEqual(config.agent_command, "pi --chitty-{mode} {id}")
 
+    def test_main_branch_defaults_and_loads_from_both_sources(self):
+        for config_name, config_text in (
+            ("chitty.toml", CONFIG),
+            ("pyproject.toml", f"[tool.chitty]\n{PYPROJECT_CONFIG}"),
+        ):
+            with self.subTest(config_name=config_name):
+                (self.root / "chitty.toml").unlink(missing_ok=True)
+                (self.root / "pyproject.toml").unlink(missing_ok=True)
+                path = self.root / config_name
+                path.write_text(config_text)
+                self.assertEqual(load_repo_config(self.root).main_branch, "main")
+                path.write_text(
+                    config_text.replace(
+                        "autocommit = false", 'main_branch = "master"\nautocommit = false'
+                    )
+                )
+                self.assertEqual(load_repo_config(self.root).main_branch, "master")
+
     def test_rejects_both_config_sources(self):
         (self.root / "pyproject.toml").write_text(f"[tool.chitty]\n{PYPROJECT_CONFIG}")
 
