@@ -1,6 +1,6 @@
 ---
 title: Refuse `chitty init` on a ticket branch, and say so in the guides
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -51,6 +51,10 @@ npm test
 ....................
 ...... passes. The guides contain the required sentence and version is 0.1.38.
 
+Reviewed:
+1: pass - linked-worktree init refuses, names the main checkout, and preserves setup files.
+2: pass - guide sources and generated managed block contain the sentence, and version is bumped; full checks pass.
+
 ## Summary
 
 Implemented linked-worktree refusal for `chitty init`, centralized main-checkout detection in `git.main_checkout`, removed the obsolete Pi setup skip, updated guides and regression coverage, and bumped `__version__` to 0.1.38. Verified with the focused regression test and `make format && make check`; ready for review.
@@ -64,3 +68,5 @@ Implemented linked-worktree refusal for `chitty init`, centralized main-checkout
 - 2026-11-06T20:13:52Z honest-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-06T20:13:52Z honest-falcon doing → review
 - 2026-11-06T20:14:10Z honest-falcon: changed summary
+- 2026-11-06T20:18:00Z jolly-jay: changed notes; ticked acceptance criteria
+- 2026-11-06T20:18:00Z jolly-jay review → done
