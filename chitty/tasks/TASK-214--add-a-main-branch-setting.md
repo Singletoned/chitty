@@ -9,21 +9,18 @@ created: 2026-11-06
 
 Chitty assumes the integration branch is called `main`. This ticket adds the setting; `TASK-216` uses it in the code, and `TASK-217` in the docs and guides.
 
-Add `main_branch` to `RepoConfig` in `src/chitty/config.py`, for both `chitty.toml` and `[tool.chitty]`.
+Add an optional `main_branch` to `RepoConfig` in `src/chitty/config.py`, for both `chitty.toml` and `[tool.chitty]`, defaulting to `"main"`. Settings are never required (the human's decision, 2026-11-06): a missing key means today's behaviour, so existing configs load unchanged and need no upgrade.
 
-- **New repositories.** `chitty init` writes it from the current branch of the main checkout. If `HEAD` is detached, fail with an error that names `main_branch` and says to set it by hand. Outside Git, write nothing: non-Git use never needs a branch. In a linked worktree, `init` refuses (`TASK-212`).
-- **Existing configs (migration rule).** A config without `main_branch` whose `chitty_version` is older than the version this change ships in means `"main"`, because that was the only behaviour then. Apply this when loading, before validation, so old configs keep working until they are upgraded. The upgrade (`init_repo`, and the autocommit upgrade in the main checkout) then writes the key, from the main checkout's current branch.
-- **Missing key on a newer config.** A config at or after that version, inside Git, without the key fails to load. The error names `main_branch`.
-- **Templates and test configs.** Add `main_branch` to `INITIAL_CONFIG` and to the test configs in `tests/support.py`, `tests/test_cli.py` and `tests/test_backlog_context.py`. Tests that run `init` in a fresh directory need `git init -b main` first, unless they test non-Git use.
+For a new repository, `chitty init` writes `main_branch` only when the current branch is something other than `main`, for example `master`. On `main`, a detached `HEAD` or outside Git, it writes nothing. Upgrades of existing configs never add it.
 
-This changes what `chitty init` writes, so bump `__version__` at patch level. Don't edit this repository's `chitty.toml` on the branch: the main checkout's upgrade adds the key after the work lands.
+This changes what `chitty init` writes, so bump `__version__` at patch level. Don't edit this repository's `chitty.toml` on the branch.
 
 Out of scope: using the setting (`TASK-216`), docs (`TASK-217`), and remotes or `origin/HEAD`.
 
 ## Acceptance Criteria
 
-- [ ] Tests show `chitty init` writing `main_branch = "master"` in a new repository on `master`, failing on a detached `HEAD` with an error naming `main_branch`, and writing no key outside Git.
-- [ ] Tests show an old config without the key loading as `main` and gaining the key on upgrade, and a current-version config without it failing to load with an error naming `main_branch`.
+- [ ] Tests show a config without `main_branch` loading as `main`, and one with `main_branch = "master"` loading as `master`, from both `chitty.toml` and `[tool.chitty]`.
+- [ ] Tests show `chitty init` writing `main_branch = "master"` in a new repository on `master`, and writing no `main_branch` on `main`, outside Git, or when upgrading an existing config.
 
 ## Notes
 
@@ -38,9 +35,12 @@ The ref `refs/cold-read/TASK-214/1` followed the old design and was deleted.
 
 Split note correction: the code ticket is `TASK-216` and the docs ticket `TASK-217`; `TASK-215` is unrelated.
 
+Rescoped on 2026-11-06. The human said "The easy solution is don't have required settings", so `main_branch` is optional with default `main`. The migration rule and the missing-key error are gone. The second cold read was stopped before it reported.
+
 ## History
 
 - 2026-11-06T16:24:17Z youthful-toad → backlog
 - 2026-11-06T16:48:05Z youthful-toad: changed title, description, acceptance criteria, notes
 - 2026-11-06T16:48:37Z youthful-toad: changed description
 - 2026-11-06T16:48:42Z youthful-toad: changed notes
+- 2026-11-06T16:49:06Z youthful-toad: changed description, acceptance criteria, notes
