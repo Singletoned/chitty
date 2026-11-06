@@ -34,6 +34,10 @@ Out of scope:
 - [ ] `chitty list` ends a held ticket's row with `▶ running` (through `skip_reason`), and `README.md` and `PLAN.md` describe the record, the `show` line and the marker.
 - [ ] A test runs `chitty run` with a fake agent that runs `chitty show --json` in a child process (`python -c "from chitty.cli import cli; cli()"`) and saves the output while it runs. The saved `running` record's `actor` equals the agent's `CHITTY_ACTOR`, and its `mode` matches the run.
 
+## Plan
+
+Implement lock records and holder parsing in locks.py, thread actor/mode through run_lock callers, and expose runtime details in show/list and MCP without changing StoredTask serialization. Add regression coverage including an in-process held lock, legacy/empty records, list marker, and a fake-agent child-process run. Update README.md and the relevant PLAN.md section. Run the targeted tests first where a new regression test can demonstrate the unfixed behavior, then format and make check.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-207/1`; implemented items 1 and 2; tests failed first; `make check` OK). Outcomes:
@@ -60,3 +64,4 @@ No longer depends on `TASK-210`, which now removes the inbox pull from `chitty r
 - 2026-11-06T13:44:20Z youthful-toad: changed dependencies, description, notes
 - 2026-11-06T13:45:26Z youthful-toad: changed dependencies, description, notes
 - 2026-11-06T20:31:25Z plucky-vole todo → doing
+- 2026-11-06T20:31:53Z plucky-vole: wrote the plan
