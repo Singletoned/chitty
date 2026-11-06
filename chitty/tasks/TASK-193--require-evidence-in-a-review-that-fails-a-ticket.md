@@ -51,7 +51,7 @@ Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.p
 
 ## Summary
 
-Updated the two review-role bullets to require executable evidence and structured failure notes, and added TestGuide regression assertions for the new wording and prohibited make reference. Verified the regression test and full make check (ruff, pyright, 278 unittest tests, and Node tests); chitty fix completed with existing task-format warnings only.
+Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests), and npm test; chitty fix completed with pre-existing task-format warnings only.
 
 ## History
 
@@ -79,3 +79,4 @@ Updated the two review-role bullets to require executable evidence and structure
 - 2026-11-06T00:06:45Z youthful-adder doing → review
 - 2026-11-06T14:43:33Z lively-quail: changed notes
 - 2026-11-06T14:43:33Z lively-quail review → doing
+- 2026-11-06T16:32:01Z youthful-vole: changed summary
