@@ -22,6 +22,10 @@ Update the expected strings in the `_preflight` table test in `tests/test_next.p
 
 - [ ] Tests assert both full messages, with `chitty.toml` as the file. One more test asserts `pyproject.toml` when the config is in `[tool.chitty]`.
 
+## Plan
+
+Rename _config_source to config_source and use it in _preflight to render repository-relative config paths in actionable setup/autocommit errors. Add/update table coverage for chitty.toml and pyproject.toml using the existing PYPROJECT_CONFIG fixture, then run format/check.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-208/1`; 3 tests failed before and passed after; `make check` OK). Outcomes:
@@ -37,3 +41,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-208/1`; 3 tests failed before and pass
 - 2026-11-06T13:46:44Z youthful-toad: changed description, notes
 - 2026-11-06T13:46:44Z youthful-toad backlog → todo
 - 2026-11-06T20:36:53Z sunny-kestrel todo → doing
+- 2026-11-06T20:37:10Z sunny-kestrel: wrote the plan
