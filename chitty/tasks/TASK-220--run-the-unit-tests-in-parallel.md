@@ -1,8 +1,7 @@
 ---
 title: Run the unit tests in parallel
-status: doing
+status: review
 priority: high
-owner: human
 created: 2026-11-06
 ---
 
@@ -16,8 +15,8 @@ Out of scope: making individual tests faster, and the `test_next` restructuring 
 
 ## Acceptance Criteria
 
-- [ ] `make check` runs the unit tests through `unittest-parallel`, all tests pass, and its unit-test step takes well under half its old time on this machine. Record both timings in the ticket's summary.
-- [ ] A deliberately failing test (added temporarily, then removed) makes `make check` exit non-zero and print the failure. `mate --list` still describes `check` and `test`.
+- [x] `make check` runs the unit tests through `unittest-parallel`, all tests pass, and its unit-test step takes well under half its old time on this machine. Record both timings in the ticket's summary.
+- [x] A deliberately failing test (added temporarily, then removed) makes `make check` exit non-zero and print the failure. `mate --list` still describes `check` and `test`.
 
 ## Plan
 
@@ -27,6 +26,12 @@ Add `unittest-parallel` as a dev dependency. In the `Makefile` `check` and `test
 
 Reserved for a human-run session. The cold read was stopped before it reported, because the human asked for this to be implemented directly.
 
+Decision: pinned `unittest-parallel` exactly, like the `mdformat` pins, because its CLI is what the `Makefile` calls. The worker count is left to its default (all cores), as the ticket says.
+
+## Summary
+
+`make check` and `make test` run the unit tests with `unittest-parallel -s tests -t . --level test`, pinned at `unittest-parallel==1.8.6` as a dev dependency. Timings on this machine (16 cores, with other agents running): serial unit tests 293 s; parallel 40 s on each of two runs (335 tests, OK both times, no flakes). The full `make check` takes 44 s. A deliberate failing test made `make test` exit non-zero and print the test's name and full traceback; it was removed afterwards. `mate --list` still describes `check` and `test`. Note for review: `unittest-parallel` depends on `coverage`, which resolved to 7.17.2, published 2026-11-04 (two days ago). Pin an older `coverage` if that's a concern.
+
 ## History
 
 - 2026-11-06T19:18:23Z youthful-toad → backlog
@@ -34,3 +39,5 @@ Reserved for a human-run session. The cold read was stopped before it reported, 
 - 2026-11-06T19:24:10Z youthful-toad backlog → todo
 - 2026-11-06T19:24:13Z youthful-toad: wrote the plan
 - 2026-11-06T19:24:13Z youthful-toad todo → doing
+- 2026-11-06T19:33:08Z youthful-toad: changed owner, notes, summary; ticked acceptance criteria
+- 2026-11-06T19:33:08Z youthful-toad doing → review
