@@ -25,6 +25,10 @@ Out of scope: who sets or clears owners.
 - [ ] Tests show plain `chitty next`, `chitty run` and the MCP `next` tool skipping an owned `review` ticket as well as owned `todo` and `doing` ones, `chitty list` showing `👤 <owner>` for each, and `--owner NAME` selecting that owner's `review` ticket.
 - [ ] `README.md` and `PLAN.md` say a plain run picks up only unowned tickets, and `make check` passes.
 
+## Plan
+
+Remove the review-status early return from _skip_reason so plain selection skips every owned active ticket while preserving human and --owner behavior. Update the owner guidance in README.md and PLAN.md, revise/add regression coverage for next, run, MCP next, list, and --owner review selection, then run make format and make check.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-222/1`; the new tests failed before and passed after; `make check` OK; the whole code change was one early return). Outcomes:
@@ -41,3 +45,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-222/1`; the new tests failed before an
 - 2026-11-06T20:01:58Z youthful-toad: changed description, notes
 - 2026-11-06T20:01:58Z youthful-toad backlog → todo
 - 2026-11-06T20:14:07Z brisk-puffin todo → doing
+- 2026-11-06T20:14:23Z brisk-puffin: wrote the plan
