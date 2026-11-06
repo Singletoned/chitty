@@ -44,7 +44,7 @@ Resolved the review rebase conflict in src/chitty/__init__.py by retaining 0.1.3
 
 ## Summary
 
-Implemented and verified  preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
+Implemented and verified `check` preflight support. Checks now run after setup and before work-ticket claims, parse commands without a shell, capture combined output, record the last 20 lines on failure, and prevent agent startup. Added regression coverage for failure output, quoted arguments, unset preflight config, and init comments. Rebased onto main and resolved the version bump conflict. Verification: make check (ruff, pyright, 337 unittest tests, Node tests).
 
 ## History
 
@@ -62,3 +62,4 @@ Implemented and verified  preflight support. Checks now run after setup and befo
 - 2026-11-06T19:01:25Z brisk-lapwing review → doing
 - 2026-11-06T19:41:35Z able-yellowhammer: changed notes, summary
 - 2026-11-06T19:41:35Z able-yellowhammer doing → review
+- 2026-11-06T19:41:47Z able-yellowhammer: changed summary
