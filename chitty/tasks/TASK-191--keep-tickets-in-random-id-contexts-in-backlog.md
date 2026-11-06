@@ -1,6 +1,6 @@
 ---
 title: Keep tickets in random-ID contexts in `backlog`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-190
@@ -29,3 +29,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Serious, both fix
 - 2026-11-05T14:50:40Z mellow-newt: changed description, acceptance criteria
 - 2026-11-05T14:50:41Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:50:42Z mellow-newt backlog → todo
+- 2026-11-06T18:37:47Z mellow-gannet todo → doing
