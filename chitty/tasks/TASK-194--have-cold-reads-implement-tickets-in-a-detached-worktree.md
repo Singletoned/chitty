@@ -1,6 +1,6 @@
 ---
 title: Have cold reads implement tickets in a detached worktree
-status: todo
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -26,8 +26,12 @@ Out of scope: tooling that runs reads, which `TASK-125` holds, and deleting old 
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `implements it from the ticket alone`, `with and without the fix`, `Either way, the reader reports done meaning`, `git worktree add --detach`, `UV_PROJECT_ENVIRONMENT`, `git update-ref refs/cold-read/<ID>/<n> HEAD` and `git worktree remove --force`, and fails against the current `plan.md`
-- [ ] `PLAN.md`'s cold read paragraph describes implementing reads and reasoning reads, gives the decision's date, and says why the work is kept under a ref
+- [x] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("plan")` first so that line wrapping cannot break it, shows it containing `implements it from the ticket alone`, `with and without the fix`, `Either way, the reader reports done meaning`, `git worktree add --detach`, `UV_PROJECT_ENVIRONMENT`, `git update-ref refs/cold-read/<ID>/<n> HEAD` and `git worktree remove --force`, and fails against the current `plan.md`
+- [x] `PLAN.md`'s cold read paragraph describes implementing reads and reasoning reads, gives the decision's date, and says why the work is kept under a ref
+
+## Plan
+
+Update src/chitty/roles/plan.md with the specified implementing cold-read procedure and add a TestGuide assertion that collapses whitespace and checks the required phrases. Update PLAN.md's Cold read paragraph to describe the implementation/reasoning split, date, and ref rationale. Run the focused test first to confirm it fails, then make the edits, run the focused test and make check, fix the ticket, and set it to review.
 
 ## Notes
 
@@ -45,6 +49,14 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 
 Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref ... HEAD` from the main checkout and first kept `main`'s commit instead of its own. It noticed and corrected this. One clause; the criteria's phrases still match, so no further read.
 
+Owner set to human only so `chitty run` skips it while a separate reviewer reviews it; cleared by that review.
+
+Reviewed: criterion 1 met: TestGuide test collapses whitespace, checks all seven phrases; plan.md text matches the ticket wording; make check passes. Criterion 2 met: PLAN.md Cold read paragraph describes implementing and reasoning reads, dated 2026-11-05, and says why a ref not a branch.
+
+## Summary
+
+Implemented the detached-worktree cold-read procedure in `src/chitty/roles/plan.md`, including environment isolation, named refs, and cleanup. Updated `PLAN.md` with the 2026-11-05 decision and rationale, and added the whitespace-collapsing `TestGuide` regression test. Verification: focused test passed; `make check` passed (278 Python tests and Node tests); `chitty fix` passed with unrelated existing Markdown warnings. Commit: `0775831`.
+
 ## History
 
 - 2026-11-05T17:52:45Z mellow-newt → backlog
@@ -61,3 +73,12 @@ Added 2026-11-05 from the second read of `TASK-197`, which ran `git update-ref .
 - 2026-11-05T18:31:22Z mellow-newt: changed notes
 - 2026-11-05T18:31:23Z mellow-newt backlog → todo
 - 2026-11-05T18:39:16Z mellow-newt: changed description, notes
+- 2026-11-06T00:07:11Z plucky-badger todo → doing
+- 2026-11-06T00:07:27Z plucky-badger: wrote the plan
+- 2026-11-06T00:13:37Z plucky-badger: ticked acceptance criteria
+- 2026-11-06T00:13:39Z plucky-badger: ticked acceptance criteria
+- 2026-11-06T00:13:50Z plucky-badger: changed summary
+- 2026-11-06T00:13:50Z plucky-badger doing → review
+- 2026-11-06T10:00:08Z youthful-toad: changed owner, notes
+- 2026-11-06T10:05:12Z youthful-toad: changed owner, notes
+- 2026-11-06T10:05:12Z youthful-toad review → done
