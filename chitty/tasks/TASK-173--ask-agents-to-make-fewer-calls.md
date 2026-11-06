@@ -1,6 +1,6 @@
 ---
 title: Ask agents to make fewer calls
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-142
@@ -41,6 +41,8 @@ Owner set to `human` so the review loop skips this until `TASK-212` lands: the b
 
 Owner cleared: the branch now has `main`'s `chitty.toml` again, so `main`'s `chitty` can write here.
 
+Review failed (integration): rebasing onto `main` conflicts in `chitty.toml`.
+
 ## Summary
 
 Updated work/review guides with batched-call and autocommit guidance, added guide-output regression coverage, and bumped Chitty to 0.1.35. Verified with full make format && make check; follow-up remains to rerun TASK-170 measurement scripts.
@@ -61,3 +63,5 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-06T15:58:09Z lively-falcon doing → review
 - 2026-11-06T16:25:03Z youthful-toad: changed owner, notes
 - 2026-11-06T16:43:38Z youthful-toad: changed owner, notes
+- 2026-11-06T16:47:49Z quick-puffin: changed notes
+- 2026-11-06T16:47:49Z quick-puffin review → doing
