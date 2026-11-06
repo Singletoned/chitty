@@ -1,8 +1,7 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: blocked
+status: review
 priority: medium
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -45,6 +44,13 @@ Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.p
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Unblocked by a human-run session. All three failed reviews were rebase conflicts with `main`, mostly on `tests/test_cli.py`'s guide tests and `__version__`, not problems with the work. Rebased onto `main` (`0.1.40`):
+- Both sides of each conflicting guide test are kept.
+- The new `main` guide text sits alongside this ticket's change; the role files keep `TASK-219`'s sentence.
+- `chitty.toml` and `AGENTS.md` match `main` (`TASK-212`, `TASK-218`).
+- `__version__` is `0.1.41`.
+`make check` passes (360 tests). Several open tickets also use `0.1.41`, so whichever lands second will need its version bumped again.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -79,3 +85,5 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-06T18:19:46Z intrepid-gannet doing → review
 - 2026-11-06T18:35:31Z honest-marten: changed owner, notes
 - 2026-11-06T18:35:31Z honest-marten review → blocked
+- 2026-11-06T21:41:00Z youthful-toad: changed owner, notes
+- 2026-11-06T21:41:00Z youthful-toad blocked → review
