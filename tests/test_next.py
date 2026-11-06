@@ -1138,11 +1138,12 @@ class TestNext(CliTestCase):
         self.assertIn("review ticket TASK-1 has no branch task-1", result.stderr)
         self.assertFalse(worktree.exists())
 
-    def test_run_reviews_branch_with_newer_config_key(self):
+    def test_run_reviews_branch_with_changed_config(self):
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
         )
+        self.run_cli("init")
         self.git("init", "--quiet")
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
@@ -1155,25 +1156,15 @@ class TestNext(CliTestCase):
         branch_worktree = self.root / ".worktrees" / "prepare-task-1"
         self.git("worktree", "add", "--quiet", str(branch_worktree), "task-1")
         branch_config = branch_worktree / "chitty.toml"
-        branch_config.write_text(
-            branch_config.read_text().replace(
-                f'chitty_version = "{CHITTY_VERSION}"',
-                'chitty_version = "99.0.0"\nnew_setting = "supported later"',
-            )
-        )
+        branch_config.write_text(branch_config.read_text() + "\n# branch change\n")
         self.git("-C", str(branch_worktree), "add", "chitty.toml")
-        self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "new config")
+        self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "change config")
         self.git("worktree", "remove", "--force", str(branch_worktree))
+        marker = self.root / "started"
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
         fake.write_text(
-            "#!" + sys.executable + "\n"
-            "import subprocess\n"
-            "path = 'chitty/tasks/TASK-1--review-me.md'\n"
-            "text = open(path).read().replace('status: review', 'status: done')\n"
-            "open(path, 'w').write(text)\n"
-            "subprocess.run(['git', 'add', path], check=True)\n"
-            "subprocess.run(['git', 'commit', '--quiet', '-m', 'finish review'], check=True)\n"
+            "#!" + sys.executable + "\nfrom pathlib import Path\nPath('started').touch()\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = os.environ.get("PATH", "")
@@ -1183,7 +1174,90 @@ class TestNext(CliTestCase):
         finally:
             os.environ["PATH"] = previous
 
-        self.assertEqual(result.stdout, "TASK-1: review → done\n")
+        self.assertEqual(
+            result.stdout,
+            "TASK-1: review → doing\n",
+        )
+        task = Repo.open(self.root).find(Repo.open(self.root).resolve("TASK-1")).task
+        self.assertEqual(
+            task.section("Notes"),
+            "Review failed (work): the branch changes `chitty.toml`; "
+            "only `chitty init` on the main checkout may change it.",
+        )
+        self.assertFalse(marker.exists())
+
+    def test_run_review_compares_only_tool_chitty_in_pyproject(self):
+        config = self.root / "chitty.toml"
+        pyproject = self.root / "pyproject.toml"
+        pyproject.write_text(
+            "[tool.chitty]\n"
+            + config.read_text().replace("[contexts.", "[tool.chitty.contexts.")
+            + "\n[tool.other]\nvalue = 1\n"
+        )
+        config.unlink()
+        self.run_cli("init")
+        pyproject.write_text(
+            pyproject.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Unrelated change")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.run_cli("edit", "TASK-1", "--status", "review")
+        self.git("branch", "task-1")
+        branch_worktree = self.root / ".worktrees" / "prepare-task-1"
+        self.git("worktree", "add", "--quiet", str(branch_worktree), "task-1")
+        branch_pyproject = branch_worktree / "pyproject.toml"
+        branch_pyproject.write_text(branch_pyproject.read_text().replace("value = 1", "value = 2"))
+        self.git("-C", str(branch_worktree), "add", "pyproject.toml")
+        self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "change other tool")
+        self.git("worktree", "remove", "--force", str(branch_worktree))
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess, sys\n"
+            "path = next(\n"
+            "    __import__('pathlib').Path('chitty/tasks').glob(sys.argv[-1] + '--*.md')\n"
+            ")\n"
+            "path.write_text(path.read_text().replace('status: review', 'status: done'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'finish'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            passed = self.run_cli("run", "--ticket", "TASK-1")
+        finally:
+            os.environ["PATH"] = previous
+        self.assertEqual(passed.stdout, "TASK-1: review → done\n")
+
+        self.add("Config change")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "second ticket")
+        self.run_cli("edit", "TASK-2", "--status", "review")
+        self.git("branch", "task-2")
+        branch_worktree = self.root / ".worktrees" / "prepare-task-2"
+        self.git("worktree", "add", "--quiet", str(branch_worktree), "task-2")
+        branch_pyproject = branch_worktree / "pyproject.toml"
+        branch_pyproject.write_text(
+            branch_pyproject.read_text().replace("review = true", "review = false")
+        )
+        self.git("-C", str(branch_worktree), "add", "pyproject.toml")
+        self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "change chitty config")
+        self.git("worktree", "remove", "--force", str(branch_worktree))
+        result = self.run_cli("run", "--ticket", "TASK-2")
+        self.assertEqual(result.stdout, "TASK-2: review → doing\n")
+        task = Repo.open(self.root).find(Repo.open(self.root).resolve("TASK-2")).task
+        self.assertEqual(
+            task.section("Notes"),
+            "Review failed (work): the branch changes `pyproject.toml`; "
+            "only `chitty init` on the main checkout may change it.",
+        )
 
     def test_run_agent_rejects_unknown_and_invalid_without_claiming(self):
         config = self.root / "chitty.toml"

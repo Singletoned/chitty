@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import tomllib
 from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -18,7 +19,13 @@ from uuid import uuid4
 
 from chitty import git, locks
 from chitty.actor import actor, run_actor
-from chitty.config import CHITTY_VERSION, usage_path, version_key
+from chitty.config import (
+    CHITTY_VERSION,
+    CONFIG_NAME,
+    config_source,
+    usage_path,
+    version_key,
+)
 from chitty.errors import ChittyError
 from chitty.store import Edit, NextAction, Repo, guide, next_action, ticket_action
 
@@ -392,7 +399,41 @@ def _prepare_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunR
             action,
             f"Review failed (integration): rebasing onto `main` conflicts in {listed}.",
         )
+    if changed := _changed_config(worktree):
+        return _fail_review(
+            work_repo,
+            action,
+            "Review failed (work): the branch changes "
+            f"`{changed}`; only `chitty init` on the main checkout may change it.",
+        )
     return None
+
+
+def _changed_config(worktree: Path) -> str | None:
+    """Return the Chitty config path when the rebased branch changed it."""
+    source = config_source(worktree)
+    if source is None:
+        return None
+    relative = source.relative_to(worktree)
+    if source.name == CONFIG_NAME:
+        result = subprocess.run(
+            ["git", "diff", "--quiet", "main...HEAD", "--", str(relative)],
+            cwd=worktree,
+            check=False,
+        )
+        if result.returncode == 1:
+            return str(relative)
+        if result.returncode:
+            raise ChittyError(f"cannot compare {relative} with `main`")
+        return None
+
+    current = tomllib.loads(source.read_text()).get("tool", {}).get("chitty")
+    try:
+        main_text = _git(worktree, "show", f"main:{relative}")
+    except ChittyError:
+        return str(relative)
+    main = tomllib.loads(main_text).get("tool", {}).get("chitty")
+    return str(relative) if current != main else None
 
 
 def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:
