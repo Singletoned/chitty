@@ -1,6 +1,6 @@
 ---
 title: Stop concurrent `chitty run` sessions taking the same ticket
-status: todo
+status: doing
 priority: high
 owner: human
 parent: TASK-106
@@ -31,6 +31,13 @@ Out of scope: collisions in the main checkout itself, which `README.md` already 
 - [ ] `README.md` and `PLAN.md` say any number of workers and reviewers may run at once and describe the lock
 - [ ] Tests show a lock held by another process making `chitty next` skip that ticket and `--ticket` refuse it with its PID, and the lock free again after a run that succeeds, fails and is interrupted
 
+## Plan
+
+1. Tests first: `tests/test_run_lock.py` for `locks.run_lock`/`is_locked` (held by a child process, released on exit), `chitty next` skipping a locked ticket, `--ticket` refusing with the PID, the lock free after success, failure and interrupt, and two real `chitty run --mode review` processes with waiting fake agents reviewing different tickets while a third exits 3.
+2. `src/chitty/locks.py`: `flock` on `<git common dir>/chitty/run/<ID>.lock`, `TicketLocked`.
+3. `next_action` skips locked tickets; `run` takes the lock right after selection in a helper, retrying up to `RUN_LOCK_ATTEMPTS`.
+4. `README.md` and `PLAN.md`.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: the PID-file design raced on stale takeover, on an empty file before the PID is written, and on PID reuse, so it now uses `fcntl.flock`, which the kernel releases on exit; named the module, the API, what `next_action` calls, the retry bound, the lock directory's creation, that the lock covers the dirty-path check and early returns, the test approach, and no version bump. The size concern is answered by the simpler lock; three criteria.
@@ -43,3 +50,5 @@ Owner set to human only so chitty run leaves this ticket to this session; cleare
 - 2026-11-06T09:28:32Z youthful-toad: changed description, acceptance criteria, notes
 - 2026-11-06T09:31:14Z youthful-toad backlog → todo
 - 2026-11-06T10:00:40Z youthful-toad: changed owner, notes
+- 2026-11-06T10:00:44Z youthful-toad: wrote the plan
+- 2026-11-06T10:00:44Z youthful-toad todo → doing
