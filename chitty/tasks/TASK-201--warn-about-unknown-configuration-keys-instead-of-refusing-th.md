@@ -1,6 +1,6 @@
 ---
 title: Warn about unknown configuration keys instead of refusing them
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-182
@@ -19,9 +19,9 @@ This changes no guide or `chitty.toml` template, so no version bump is needed. A
 
 ## Acceptance Criteria
 
-- [ ] Tests show an unknown top-level key and an unknown key in a `contexts` table, in both `chitty.toml` and `[tool.chitty]`, loading with one warning naming each dotted key, whatever `chitty_version` says
-- [ ] `PLAN.md` and `README.md` describe the warning
-- [ ] Tests show `[agent_commands]` entries with any name accepted without a warning, a non-table `contexts` value still refused, and `chitty init` on a file with an unknown key succeeding and keeping the key
+- [x] Tests show an unknown top-level key and an unknown key in a `contexts` table, in both `chitty.toml` and `[tool.chitty]`, loading with one warning naming each dotted key, whatever `chitty_version` says
+- [x] `PLAN.md` and `README.md` describe the warning
+- [x] Tests show `[agent_commands]` entries with any name accepted without a warning, a non-table `contexts` value still refused, and `chitty init` on a file with an unknown key succeeding and keeping the key
 
 ## Plan
 
@@ -31,6 +31,12 @@ Inspect the configuration models and existing unknown-key tests, then add a sani
 
 Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: one line per file listing every key, key order, key paths within the Chitty table for `pyproject.toml`, non-table contexts left to validation, every test that changes named (including `test_rejections` and the prerelease case), `chitty init` with an unknown key, and that the docs gain a sentence rather than update one; added a third criterion for those cases. Rejected: changing the per-path dedupe, because a second, different set of unknown keys in one file within one process cannot happen when the file is read once per command.
 
+Regression test failed before the sanitizer with Extra inputs for unknown context keys. Verified the focused configuration and init tests, ruff, pyright, and the full Python test suite through the existing run-worktree test hang; make check and npm test timed out in that pre-existing hang after their completed checks.
+
+## Summary
+
+Implemented recursive unknown-key filtering for repository configuration. Unknown top-level and context keys now warn once per source path with dotted paths and are removed before strict validation; dynamic agent command names and malformed contexts retain validation. Added coverage for both config sources, all version states, init preservation, and docs. Focused tests, ruff, and pyright pass; full check is blocked by an existing test-suite hang in run-worktree cleanup.
+
 ## History
 
 - 2026-11-06T09:26:16Z youthful-toad → backlog
@@ -38,3 +44,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. Fixed: one line per file listi
 - 2026-11-06T09:31:15Z youthful-toad backlog → todo
 - 2026-11-06T18:48:40Z nimble-eel todo → doing
 - 2026-11-06T18:48:51Z nimble-eel: wrote the plan
+- 2026-11-06T19:17:27Z nimble-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T19:17:27Z nimble-eel doing → review
