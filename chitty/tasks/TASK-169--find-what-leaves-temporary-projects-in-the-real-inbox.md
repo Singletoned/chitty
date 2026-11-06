@@ -1,6 +1,6 @@
 ---
 title: Find what leaves temporary projects in the real inbox
-status: review
+status: done
 labels:
   - bug
 priority: low
@@ -33,6 +33,9 @@ Full-suite inbox comparison (2026-11-06): before and after make check were ident
 
 Cause review from each repo owner file: chitty, chladnify, circuitry, echonomicon, spend-model, and taidy are real registered projects. chitty-run-txsmwm, chitty-task-123-tlk9qr, t45, task149-scratch, and all six tmp-* / tmpoc0f637i entries point into /tmp or temporary scratch paths, identifying hand trials of chitty init. repo points to a temporary ctx-mode scratch repo and is also a hand trial. prj has an empty owner file, so it was registered without a checkout path; its origin cannot be established from inbox data. context-mode has an empty-owner repo file plus suggestions, so it is a real registered project whose owner path was not recorded. The temporary entries listed for human removal are: chitty-run-txsmwm, chitty-task-123-tlk9qr, prj, repo, t45, task149-scratch, tmp-1soka7lhma, tmp-mehm3w3igo, tmp-mn1utr3ave, tmp-xv9qiiwofj, tmp-yhztcyxx4f, and tmpoc0f637i.
 
+Reviewed: Independently verified the acceptance criterion. RepoTestCase isolates XDG_DATA_HOME; owner-file causes match the recorded paths, including blank owner files for prj/context-mode. Re-ran make check: Ruff, Pyright, 316 Python unittest tests, and Node tests passed; the real inbox listing was unchanged before/after. chitty fix passed with existing Markdown delimiter warnings only.
+1: pass - The recorded before/after inbox evidence and causes are substantiated.
+
 ## Summary
 
 Verified handoff: the real inbox listing was unchanged by a complete make check run. RepoTestCase isolates XDG_DATA_HOME, so no test caused the entries and no code change was required. The note records the before/after names, suite results, owner-file evidence, likely causes, and the temporary directories for human removal.
@@ -48,3 +51,5 @@ Verified handoff: the real inbox listing was unchanged by a complete make check 
 - 2026-11-06T00:32:21Z youthful-crane: ticked acceptance criteria
 - 2026-11-06T00:32:22Z youthful-crane: changed summary
 - 2026-11-06T00:32:24Z youthful-crane doing → review
+- 2026-11-06T15:10:46Z mellow-zander: changed notes
+- 2026-11-06T15:10:46Z mellow-zander review → done
