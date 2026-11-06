@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change `AGENTS.md`'s managed block
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-212
@@ -25,12 +25,38 @@ Out of scope: `CLAUDE.md`, which is a symlink here.
 
 ## Acceptance Criteria
 
-- [ ] Tests show a branch that edits inside the managed block failing review with that note and no agent run, and a branch that edits only outside it passing.
-- [ ] A unit test of `managed_block` covers marked and legacy files, and `_managed_agents` uses it with its behaviour unchanged (existing `init` tests pass).
+- [x] Tests show a branch that edits inside the managed block failing review with that note and no agent run, and a branch that edits only outside it passing.
+- [x] A unit test of `managed_block` covers marked and legacy files, and `_managed_agents` uses it with its behaviour unchanged (existing `init` tests pass).
 
 ## Plan
 
 Add git.file_at to read a committed path at a ref, and factor store.managed_block so marked and legacy AGENTS.md content is normalized through one public lookup. Extend review preparation to compare the branch and main managed blocks after rebase, failing with the exact ticket note before setup or agent execution when they differ. Add unit coverage for marked/legacy lookup and review coverage for inside-block rejection and outside-block allowance, using the real guide text in fixtures. Run the focused tests, then make format and check.
+
+## Notes
+
+Verified with make check: 340 Python tests and Node tests pass. /Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-144--mark-chitty-s-block-in-agents-md-with-strict-begin-and-end-c.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-148--log-usage-for-failed-and-interrupted-runs.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-169--find-what-leaves-temporary-projects-in-the-real-inbox.md: warning: Notes contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-177--count-other-branches-tickets-when-allocating-an-id.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-182--cover-pyproject-toml-in-newer-key-tests-and-stop-version-par.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-182--cover-pyproject-toml-in-newer-key-tests-and-stop-version-par.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-191--keep-tickets-in-random-id-contexts-in-backlog.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-199--exit-3-when-chitty-next-or-chitty-run-has-no-ticket.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/TASK-72--show-status-glyphs-and-why-chitty-next-skips-a-ticket-in-chi.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-1--reject-setext-headings-in-task-bodies.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-15--add-bash-and-zsh-completion.md: warning: Description contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-178--stop-chitty-run-from-a-ticket-worktree-changing-main-s-setup.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-184--pick-the-right-copy-of-a-ticket-when-commits-share-a-second.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-184--pick-the-right-copy-of-a-ticket-when-commits-share-a-second.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-184--pick-the-right-copy-of-a-ticket-when-commits-share-a-second.md: warning: Summary contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-45--write-chitty-toml-inline-comments-with-a-single-space.md: warning: Description contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-47--guide-tells-agents-to-put-paths-globs-and-code-in-backticks.md: warning: Description contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-49--warn-in-chitty-check-when-task-text-has-markdown-characters.md: warning: Description contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-218/chitty/tasks/archive/TASK-56--remove-prefix-from-chitty-init-prefixes-name-queues-not-proj.md: warning: Acceptance Criteria #2 contains literal '*' Markdown delimiter; use backticks for code completed with pre-existing Markdown delimiter warnings in unrelated tickets.
+
+## Summary
+
+Implemented managed-block protection for review rebases. Added `git.file_at`, public `managed_block` lookup for marked and legacy guides, exact review failure handling for block changes or damage, and regression/unit tests. Verified with `make check` (ruff, pyright, 340 Python tests, Node tests). No follow-ups.
 
 ## History
 
@@ -38,3 +64,5 @@ Add git.file_at to read a committed path at a ref, and factor store.managed_bloc
 - 2026-11-06T18:13:30Z youthful-toad backlog → todo
 - 2026-11-06T20:03:40Z eager-crane todo → doing
 - 2026-11-06T20:04:20Z eager-crane: wrote the plan
+- 2026-11-06T20:12:21Z eager-crane: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T20:12:21Z eager-crane doing → review
