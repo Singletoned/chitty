@@ -1203,6 +1203,15 @@ class TestNext(CliTestCase):
         self.assertIn("default work TASK-2", default_invocation)
 
     def test_run_cases(self):
+        # The fake agent reads descriptor 0; keep this test independent of the
+        # caller's potentially open stdin while restoring it after the test.
+        saved_stdin = os.dup(0)
+        devnull = os.open(os.devnull, os.O_RDONLY)
+        os.dup2(devnull, 0)
+        self.addCleanup(os.close, saved_stdin)
+        self.addCleanup(os.dup2, saved_stdin, 0)
+        self.addCleanup(os.close, devnull)
+
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
