@@ -1,6 +1,6 @@
 ---
 title: Ignore recorded conflict resolutions when `chitty run` rebases a review
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -31,6 +31,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-06. It reproduced the stop in a sc
 
 Owner set to human only so chitty run leaves this ticket to this session; cleared when done.
 
+Reviewed: inspected the implementation, regression test, and PLAN.md; targeted review-rebase tests (7) and make check (292 Python tests plus Node) pass. Both criteria are satisfied.
+
 ## Summary
 
 `git.rebase` now runs `git -c rerere.enabled=false rebase`, with a comment saying why, so a recorded resolution is never replayed into a review and a conflict goes back to the worker as `Review failed (integration)`. `PLAN.md` says so in step 3 of the review preparation.
@@ -47,3 +49,5 @@ Verified: `test_a_recorded_resolution_is_not_replayed_into_the_review` sets `rer
 - 2026-11-06T09:50:34Z youthful-toad todo → doing
 - 2026-11-06T09:55:10Z youthful-toad: changed owner, summary; ticked acceptance criteria
 - 2026-11-06T09:55:10Z youthful-toad doing → review
+- 2026-11-06T10:04:12Z friendly-newt: changed notes
+- 2026-11-06T10:04:12Z friendly-newt review → done
