@@ -26,28 +26,7 @@ Those bullets ship to every repository, so do not name `make`. `src/chitty/roles
 
 ## Plan
 
-Add a  regression test that normalizes whitespace in  and asserts the three required phrases. Add the two prescribed bullets to  immediately after the existing cold-read bullets, changing only line wrapping. Run the focused test before and after the guide change, then uv run ruff check --exit-zero .
-All checks passed!
-uv run ruff format .
-296 files left unchanged
-uv run python scripts/check_version_bump.py
-uv run ruff format --check .
-296 files already formatted
-uv run ruff check --no-fix .
-All checks passed!
-uv run pyright
-0 errors, 0 warnings, 0 informations
-uv run unittest-parallel -s tests -t . --level test
-Deleted branch task-1 (was da4e9b6).
-Deleted branch task-1 (was 26be8b0).
-Deleted branch task-2 (was 63151e7).
-npm test
-
-> test
-> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
-
-....................
-.......
+Add a TestGuide regression test that normalizes whitespace in guide("plan") and asserts the three required phrases. Add the two prescribed bullets to src/chitty/roles/plan.md immediately after the existing cold-read bullets, changing only line wrapping. Run the focused test before and after the guide change, then make format && make check.
 
 ## Notes
 
@@ -66,3 +45,4 @@ Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `re
 - 2026-11-05T18:18:05Z mellow-newt backlog → todo
 - 2026-11-06T20:22:49Z rosy-heron todo → doing
 - 2026-11-06T20:23:56Z rosy-heron: wrote the plan
+- 2026-11-06T20:24:06Z rosy-heron: wrote the plan
