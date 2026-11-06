@@ -1,6 +1,6 @@
 ---
 title: Shrink Chitty's block in `AGENTS.md`
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -25,7 +25,7 @@ Out of scope: the rest of a repository's `AGENTS.md`, which Chitty does not own.
 
 - [x] `README.md` and `PLAN.md` describe where instructions live
 - [x] `src/chitty/guide.md` is about ten lines and names `chitty guide <role>`, and every rule removed appears in the `TASK-141` accounting
-- [ ] A test shows `chitty init` replacing the old long block in an existing repository with the new one
+- [x] A test shows `chitty init` replacing the old long block in an existing repository with the new one
 - [x] This repository's `AGENTS.md` managed block is identical to `main`'s, the cold-read line outside it names `chitty guide plan`, and `__version__` is one patch above `main`'s.
 
 ## Plan
@@ -59,9 +59,11 @@ Review failed (tests): the migration regression test replaces a short hand-writt
 3: fail - The test does not use the old long managed block.
 4: pass - AGENTS.md matches main, the plan guide pointer is present, and version 0.1.42 is one patch above main 0.1.41.
 
+Replaced the short hand-written migration fixture with the exact 59-line legacy managed guide from before the shrink, while retaining surrounding-content assertions. Focused migration test and `make format && make check` pass; `chitty fix` reports only pre-existing ticket Markdown warnings.
+
 ## Summary
 
-Handoff: src/chitty/guide.md is the concise role-pointer guide; AGENTS.md's managed block remains identical to main; README.md and PLAN.md document the role-guide split; init and review regression coverage is current; __version__ is 0.1.42. Verification: make format && make check passed (360 Python tests and Node tests), plus managed-block and 11-line guide invariants. Follow-ups: none.
+Handoff: the migration regression now freezes the exact legacy managed guide and verifies `chitty init` installs the concise marked block without removing surrounding content. Verification: focused migration test passed; `make format && make check` passed (360 Python tests and Node tests); `chitty fix` completed with only pre-existing Markdown warnings. Follow-ups: none.
 
 ## History
 
@@ -85,3 +87,5 @@ Handoff: src/chitty/guide.md is the concise role-pointer guide; AGENTS.md's mana
 - 2026-11-06T21:49:39Z brisk-quail doing → review
 - 2026-11-06T21:53:39Z able-raven: changed acceptance criteria, notes
 - 2026-11-06T21:53:39Z able-raven review → doing
+- 2026-11-06T21:59:11Z brisk-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-06T21:59:11Z brisk-kestrel doing → review
