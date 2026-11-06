@@ -46,6 +46,8 @@ Review failed (work): `chitty run --ticket` does not run an owned work ticket. `
 
 Review failed (integration): rebasing onto `main` conflicts in `README.md`.
 
+Rebased onto `main` by a human-run session to unstick the branch. A newer `chitty` had upgraded this branch's `chitty.toml` (`df71b12`) to config this branch's code couldn't read (`TASK-204`). Resolved conflicts with the run locks (`TASK-200`) and the exit-3 change in `README.md`, `src/chitty/run.py` and `src/chitty/store.py`: `_lock_ticket` now takes `owner` and passes it to `next_action`, and `next_action` both skips locked tickets and filters by owner. `make check` passes (309 tests). The work itself is unchanged; re-check each criterion against the rebased code.
+
 ## Summary
 
 Fixed explicit-ticket owner handling: chitty run --ticket now runs tickets owned by agents while still refusing human-owned tickets. Added a real fake-agent regression test and verified the MCP next owner parameter coverage. Verification: targeted owner/run tests pass; make check passed Ruff, Pyright, and 272 unittest tests, but npm test remains hanging after 26 dot output in this environment.
@@ -78,3 +80,4 @@ Fixed explicit-ticket owner handling: chitty run --ticket now runs tickets owned
 - 2026-11-06T10:08:34Z upbeat-urchin doing → review
 - 2026-11-06T10:13:32Z kind-lapwing: changed notes
 - 2026-11-06T10:13:32Z kind-lapwing review → doing
+- 2026-11-06T11:51:08Z youthful-toad: changed notes
