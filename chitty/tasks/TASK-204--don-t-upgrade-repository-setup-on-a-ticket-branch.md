@@ -1,8 +1,7 @@
 ---
 title: Don't upgrade repository setup on a ticket branch
-status: doing
+status: review
 priority: high
-owner: human
 created: 2026-11-06
 ---
 
@@ -26,9 +25,9 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- [ ] A test makes a linked worktree whose `chitty.toml` records an older `chitty_version`, runs a ticket write there, and asserts that `chitty.toml` and `AGENTS.md` are unchanged and no commit says `chitty: upgrade repository setup`. It fails before the fix.
-- [ ] With `autocommit = false` in that linked worktree, the same write succeeds instead of raising `repository setup is stale`.
-- [ ] Existing upgrade tests in the main checkout still pass, `test_worktree_keeps_the_main_checkout_registered` no longer expects the machine-wide skip message, and the `chitty init` bullet in `PLAN.md` says upgrades happen only in the main checkout.
+- [x] A test makes a linked worktree whose `chitty.toml` records an older `chitty_version`, runs a ticket write there, and asserts that `chitty.toml` and `AGENTS.md` are unchanged and no commit says `chitty: upgrade repository setup`. It fails before the fix.
+- [x] With `autocommit = false` in that linked worktree, the same write succeeds instead of raising `repository setup is stale`.
+- [x] Existing upgrade tests in the main checkout still pass, `test_worktree_keeps_the_main_checkout_registered` no longer expects the machine-wide skip message, and the `chitty init` bullet in `PLAN.md` says upgrades happen only in the main checkout.
 
 ## Plan
 
@@ -48,6 +47,10 @@ Second case, on `task-144` (fixed by hand): `main`'s `chitty` upgraded the branc
 
 Reserved for a human-run session so the loops leave it alone.
 
+## Summary
+
+`Repo._prepare_write` returns early in a linked worktree after `_check_setup_version()`. A ticket branch is never upgraded and never gets the stale-setup error, but a recorded version newer than the running Chitty still fails. Tests in `tests/test_autocommit.py` cover autocommit on and off and failed before the fix. `test_worktree_keeps_the_main_checkout_registered` no longer expects the machine-wide skip message. The `chitty init` bullet in `PLAN.md` now says upgrades happen only in the main checkout. `make check` OK (311 tests). Built from cold read `refs/cold-read/TASK-204/1`, taking only this ticket's hunks, because `main` had moved.
+
 ## History
 
 - 2026-11-06T11:30:46Z youthful-toad → backlog
@@ -57,3 +60,5 @@ Reserved for a human-run session so the loops leave it alone.
 - 2026-11-06T13:38:00Z youthful-toad: changed owner, notes
 - 2026-11-06T13:38:03Z youthful-toad: wrote the plan
 - 2026-11-06T13:38:03Z youthful-toad todo → doing
+- 2026-11-06T13:43:25Z youthful-toad: changed owner, summary; ticked acceptance criteria
+- 2026-11-06T13:43:25Z youthful-toad doing → review
