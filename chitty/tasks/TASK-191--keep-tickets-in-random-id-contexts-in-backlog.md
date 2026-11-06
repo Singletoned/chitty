@@ -19,6 +19,10 @@ Second of three parts, after `TASK-190`. A ticket in a context with `random_ids`
 - [ ] Tests show `add` with `-s todo` creating a `backlog` ticket with no description needed, `edit -s todo` refused with that message, and `chitty move TASK-5 backlog` setting `backlog`
 - [ ] A test in a Git repository, with the ticket committed on `main`, shows `chitty move <ID> tasks` giving the next `TASK-` number, keeping `backlog`, and rewriting references in other tickets, and the returned change showing the moved ticket's own title
 
+## Plan
+
+Inspect the repository add/edit/move flows and existing tests, add regression coverage for random-ID backlog behavior and promotion/reference rewriting, implement the smallest store/CLI fixes, run format and full checks, then commit with Task: TASK-191.
+
 ## Notes
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Serious, both fixed: the description check runs before the context is known; and `Repo.move` reassigns `task` in a loop, an existing bug that would have lost the status and reports another ticket's content. Also fixed: recording History, the order in `Repo.add`, and the test needing a Git repository.
@@ -30,3 +34,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-05. Serious, both fix
 - 2026-11-05T14:50:41Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T14:50:42Z mellow-newt backlog → todo
 - 2026-11-06T18:37:47Z mellow-gannet todo → doing
+- 2026-11-06T18:38:01Z mellow-gannet: wrote the plan
