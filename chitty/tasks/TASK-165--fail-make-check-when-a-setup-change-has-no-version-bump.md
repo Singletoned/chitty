@@ -1,6 +1,6 @@
 ---
 title: Fail `make check` when a setup change has no version bump
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-04
@@ -43,6 +43,11 @@ Review failed (work): an untracked file added under a watched path is not detect
 
 Regression reproduced before fix: an untracked file under src/chitty/roles/ was ignored by git diff and the new test failed. Including untracked watched paths with git ls-files fixes it; focused tests and make check pass.
 
+Reviewed: independently inspected the implementation and tests; focused version-bump tests passed (9), make check passed including Python and npm suites.
+1: pass - temporary Git repository tests cover watched changes, version ordering, and unrelated config changes
+2: pass - branch, main, and tag-without-main edge cases verified
+3: pass - make check runs the guard and the full check passed
+
 ## Summary
 
 Added untracked-file detection for watched setup paths using Git standard-library-compatible CLI, with a regression test for new role files. Verified the regression failed before the fix, focused version-bump tests (9), make check (325 Python tests plus npm tests), and chitty fix. Follow-up: none.
@@ -71,3 +76,5 @@ Added untracked-file detection for watched setup paths using Git standard-librar
 - 2026-11-06T15:28:07Z youthful-vole: ticked acceptance criteria
 - 2026-11-06T15:35:03Z youthful-vole: changed summary
 - 2026-11-06T15:35:03Z youthful-vole doing → review
+- 2026-11-06T15:59:02Z honest-badger: changed notes
+- 2026-11-06T15:59:02Z honest-badger review → done
