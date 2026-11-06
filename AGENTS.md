@@ -83,6 +83,3 @@ task files. `chitty --help` is the full command reference.
   Suggest work for another project without touching its checkout using
   `chitty suggest PROJECT "title" -d "why"`.
   Don't do it in this session.
-
-
-<!-- chitty:end -->
