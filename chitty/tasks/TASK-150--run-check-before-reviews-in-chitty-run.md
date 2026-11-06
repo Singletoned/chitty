@@ -36,6 +36,8 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: how output
 
 Under `TASK-212`, a branch may not change `chitty.toml`. Setting `check = "make check"` in this repository is done on the main checkout by a human-run session after this lands, not on the branch.
 
+The check progress line is written to stderr so existing status output remains machine-friendly; check output itself is captured and included only on failure. Repository chitty.toml was intentionally not changed because TASK-212 notes require that main-checkout setting to land in a human session.
+
 ## History
 
 - 2026-11-04T15:11:33Z mellow-newt → todo
@@ -44,3 +46,4 @@ Under `TASK-212`, a branch may not change `chitty.toml`. Setting `check = "make 
 - 2026-11-06T16:44:17Z youthful-toad: changed notes
 - 2026-11-06T18:30:21Z witty-gannet todo → doing
 - 2026-11-06T18:30:36Z witty-gannet: wrote the plan
+- 2026-11-06T18:50:06Z witty-gannet: changed notes
