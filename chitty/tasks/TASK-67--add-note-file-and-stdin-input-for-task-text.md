@@ -1,6 +1,6 @@
 ---
 title: Add `--note-file` and stdin input for task text
-status: backlog
+status: todo
 created: 2026-11-01
 ---
 
@@ -18,6 +18,10 @@ This stays in `cli.py`: it only turns a file into one more entry in the existing
 
 Out of scope: `--summary-file`, `--ac-file`, `chitty note`, the MCP server (it takes strings, so has no shell quoting problem), and guidance changes (`TASK-68`).
 
+A multi-paragraph file is one note, paragraphs kept. An empty or whitespace-only file fails as `--note ""` already does (`note must not be empty`, from `with_note` in `model.py`); keep that.
+
+Also add `[--note-file F]` to the `chitty add` and `chitty edit` synopses in `PLAN.md` (around line 421), and mention it beside `--note TEXT` at line 305. No `__version__` bump: this is CLI-only, and `chitty init` writes nothing new.
+
 ## Acceptance Criteria
 
 - [ ] Tests show `chitty edit` and `chitty add` each storing a note read with `--note-file -` from standard input whose text contains backticks, unchanged
@@ -27,7 +31,19 @@ Out of scope: `--summary-file`, `--ac-file`, `chitty note`, the MCP server (it t
 
 Suggestion origin: circuitry
 
+Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-67/1`. It built the ticket from the description alone: all three tests failed first (`No such option '--note-file'`), then passed, and `make check` passed. Outcomes:
+
+- Fixed: the ticket did not say what an empty file does. It now keeps the existing `note must not be empty` error, as for `--note ""`.
+- Fixed: a multi-paragraph file was unspecified. It is one note with paragraphs kept, which the reader confirmed; the description says so.
+- Fixed: `PLAN.md`'s `chitty add` and `chitty edit` synopses list `--note` and needed `--note-file`; added to the description.
+- Fixed: no `__version__` bump is needed, now stated.
+- Rejected: a criterion for multi-paragraph files, because it goes through the same `with_note` path as `--note`, which already handles them.
+- Rejected: naming the flag in the empty-file error, because the store-level message already matches `--note ""` and changing it is out of scope.
+- No wrong claims found; none of these findings changes the design, so no second read.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-07T09:16:07Z vivid-dormouse: changed description, acceptance criteria
+- 2026-11-07T09:19:32Z vivid-dormouse: changed description, notes
+- 2026-11-07T09:19:32Z vivid-dormouse backlog → todo
