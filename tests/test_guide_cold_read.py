@@ -22,7 +22,7 @@ class TestColdReadGuide(unittest.TestCase):
             "git worktree add --detach .worktrees/read-<ID>",
             "UV_PROJECT_ENVIRONMENT",
             "Run no Chitty writes",
-            "fail before",
+            "should fail does fail, before implementing",
             "rather than assume",
             "git update-ref refs/cold-read/<ID>/<n> HEAD",
             "git worktree remove --force .worktrees/read-<ID>",

@@ -17,9 +17,9 @@ Acceptance Criteria; earlier notes are context only.
   `UV_PROJECT_ENVIRONMENT` unset (prefix it with
   `env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT`), or a shared install ends up
   pointing at a worktree about to be deleted. Work only inside the worktree.
-- Write the tests the criteria name first, and see each one that should fail
-  before the fix fail before it. Then implement the ticket as written and run
-  its tests and the repository's check command.
+- Write the tests the criteria name first and run them, confirming that each
+  one that should fail does fail, before implementing. Then implement the
+  ticket as written and run its tests and the repository's check command.
 - Try behaviour rather than assume: run the code on the cases you doubt, and
   the cases the planner says it doubts.
 - Commit your work in the worktree. From inside it, keep the commit with

@@ -600,10 +600,10 @@ procedure is printed for planners:
 The planner's part lives in the planning role instructions printed by
 `chitty guide plan`. The reader's part, its worktree, setup, cleanup and report
 steps, is printed by `chitty guide cold-read <ID>`, so the planner starts a
-reader with that output instead of writing the steps out each time. Keep a new ticket in `backlog` until its cold read findings
-have outcomes, and only then move it to `todo`, because `chitty run` picks up
-anything in `todo`: `TASK-147` was claimed with a wrong fix while its cold read
-was still running.
+reader with that output instead of writing the steps out each time. Keep a new
+ticket in `backlog` until its cold read findings have outcomes, and only then
+move it to `todo`, because `chitty run` picks up anything in `todo`: `TASK-147`
+was claimed with a wrong fix while its cold read was still running.
 
 Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
 private helpers or mocks of our own code. Use a round-trip property for any
