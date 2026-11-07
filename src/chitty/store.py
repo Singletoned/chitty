@@ -51,7 +51,7 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
-ROLE_NAMES = ("work", "review", "plan")
+ROLE_NAMES = ("work", "review", "plan", "cold-read")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
 RANDOM_ID_MIN = 10_000_000
 RANDOM_ID_MAX = 99_999_999

@@ -1830,10 +1830,6 @@ class TestGuide(CliTestCase):
             "implements it from the ticket alone",
             "with and without the fix",
             "Either way, the reader reports done meaning",
-            "git worktree add --detach",
-            "UV_PROJECT_ENVIRONMENT",
-            "git update-ref refs/cold-read/<ID>/<n> HEAD",
-            "git worktree remove --force",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning_guide)
@@ -1880,7 +1876,6 @@ class TestGuide(CliTestCase):
         planning_guide = guide("plan")
         self.assertIn("nothing built", planning_guide)
         self.assertIn("must not start one", planning_guide)
-        self.assertIn("rather than assume", planning_guide)
         self.assertIn("just before promoting", planning_guide)
 
     def test_prints_the_agent_guide_outside_any_repo(self):
@@ -1901,7 +1896,9 @@ class TestGuide(CliTestCase):
 
     def test_rejects_unknown_roles_and_ticket_planning(self):
         unknown = self.run_cli("guide", "writer", exit_code=1)
-        self.assertIn("unknown role 'writer'; choose from work, review, plan", unknown.stderr)
+        self.assertIn(
+            "unknown role 'writer'; choose from work, review, plan, cold-read", unknown.stderr
+        )
         plan_ticket = self.run_cli("guide", "plan", "TASK-42", exit_code=1)
         self.assertIn("does not take a ticket ID", plan_ticket.stderr)
 

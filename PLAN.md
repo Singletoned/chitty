@@ -597,8 +597,10 @@ be retained after the worktree is removed. Workers and reviewers do not do it
 (2026-11-04: a worker read the procedure in `AGENTS.md` as its own step), so the
 procedure is printed for planners:
 
-The complete procedure lives in the planning role instructions printed by
-`chitty guide plan`. Keep a new ticket in `backlog` until its cold read findings
+The planner's part lives in the planning role instructions printed by
+`chitty guide plan`. The reader's part, its worktree, setup, cleanup and report
+steps, is printed by `chitty guide cold-read <ID>`, so the planner starts a
+reader with that output instead of writing the steps out each time. Keep a new ticket in `backlog` until its cold read findings
 have outcomes, and only then move it to `todo`, because `chitty run` picks up
 anything in `todo`: `TASK-147` was claimed with a wrong fix while its cold read
 was still running.
