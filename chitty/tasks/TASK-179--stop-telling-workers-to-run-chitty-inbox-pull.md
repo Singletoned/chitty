@@ -237,6 +237,14 @@ check_version_bump: changed files require a version above main (0.1.42), but wor
   src/chitty/roles/work.md
 make: *** [check] Error 1
 
+Review failed (work): check exited with status 2:
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.42), but working tree has 0.1.41:
+  src/chitty/guide.md
+  src/chitty/roles/work.md
+make: *** [check] Error 1
+
 ## Summary
 
 Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
@@ -294,3 +302,4 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-07T09:00:05Z honest-ibis: changed notes
 - 2026-11-07T09:01:12Z zesty-raven: changed notes
 - 2026-11-07T09:02:19Z witty-newt: changed notes
+- 2026-11-07T09:03:26Z golden-puffin: changed notes
