@@ -2,6 +2,7 @@
 title: Put the literal `*` instruction back in the agent prompts
 status: doing
 priority: medium
+owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -61,6 +62,8 @@ check_version_bump: changed files require a version above main (0.1.41), but wor
   src/chitty/roles/work.md
 make: *** [check] Error 1
 
+Owner set to `human` on 2026-11-07, before `chitty run --mode work` looped on it as it did 54 times on `TASK-179`: the branch has `__version__` 0.1.41 and `main` has 0.1.42, so the check fails, and in work mode a failed check only adds a note and leaves the ticket in `doing`, so no agent starts to fix it. `TASK-224` removes branch version bumps. Clear the owner once it lands.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -99,3 +102,4 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-06T21:41:00Z youthful-toad blocked → review
 - 2026-11-06T21:49:23Z honest-ibis: changed notes
 - 2026-11-06T21:49:23Z honest-ibis review → doing
+- 2026-11-07T09:39:54Z vivid-dormouse: changed owner, notes
