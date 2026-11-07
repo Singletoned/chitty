@@ -1,6 +1,6 @@
 ---
 title: Print the cold reader's instructions with `chitty guide cold-read`
-status: doing
+status: review
 priority: medium
 owner: human
 created: 2026-11-07
@@ -23,11 +23,21 @@ Out of scope: listing `cold-read` in the managed `AGENTS.md` block (`src/chitty/
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_cold_read.py` shows `chitty guide cold-read` printing the worktree, `refs/cold-read` and no-Chitty-writes instructions, and `chitty guide cold-read TASK-1` printing them after `Work only on Chitty ticket TASK-1.`
-- [ ] A test shows `chitty guide plan` pointing at `chitty guide cold-read` and no longer containing `git update-ref refs/cold-read`
-- [ ] `make check` passes
+- [x] A test in `tests/test_guide_cold_read.py` shows `chitty guide cold-read` printing the worktree, `refs/cold-read` and no-Chitty-writes instructions, and `chitty guide cold-read TASK-1` printing them after `Work only on Chitty ticket TASK-1.`
+- [x] A test shows `chitty guide plan` pointing at `chitty guide cold-read` and no longer containing `git update-ref refs/cold-read`
+- [x] `make check` passes
+
+## Notes
+
+The three new tests in `tests/test_guide_cold_read.py` failed before the change (`unknown role 'cold-read'`) and pass after. `make check` passes: 363 tests. Wrong claim in the ticket: it said no `__version__` bump was needed, but `scripts/check_version_bump.py` watches `src/chitty/roles/`, so `make check` failed until I bumped it to 0.1.43. Phrases about the worktree steps moved from `TestGuide` in `tests/test_cli.py` to the new file; the unknown-role message now lists `cold-read`.
+
+## Summary
+
+New `src/chitty/roles/cold-read.md`, printed by `chitty guide cold-read [<ID>]`, holds the reader's steps: worktree, setup with the virtualenv variables unset, no Chitty writes, tests first, `refs/cold-read`, cleanup, the read-only variant, and the report shape. `plan.md` now points at it instead of listing those steps. `PLAN.md` says so. `__version__` is 0.1.43. Verified with `make check`. Follow-up: none.
 
 ## History
 
 - 2026-11-07T09:37:30Z vivid-dormouse → backlog
 - 2026-11-07T09:37:55Z vivid-dormouse backlog → doing
+- 2026-11-07T09:43:04Z vivid-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-07T09:43:04Z vivid-dormouse doing → review
