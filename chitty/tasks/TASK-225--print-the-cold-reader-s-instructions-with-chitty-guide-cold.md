@@ -2,7 +2,6 @@
 title: Print the cold reader's instructions with `chitty guide cold-read`
 status: done
 priority: medium
-owner: human
 created: 2026-11-07
 ---
 
@@ -48,3 +47,4 @@ New `src/chitty/roles/cold-read.md`, printed by `chitty guide cold-read [<ID>]`,
 - 2026-11-07T09:43:04Z vivid-dormouse doing → review
 - 2026-11-07T09:59:26Z vivid-dormouse: changed notes; overrode review independence
 - 2026-11-07T09:59:26Z vivid-dormouse review → done
+- 2026-11-07T10:00:31Z vivid-dormouse: changed owner
