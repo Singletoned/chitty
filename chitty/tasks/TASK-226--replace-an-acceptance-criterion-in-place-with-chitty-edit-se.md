@@ -1,6 +1,6 @@
 ---
 title: Replace an acceptance criterion in place with `chitty edit --set-ac`
-status: backlog
+status: todo
 priority: medium
 created: 2026-11-07
 ---
@@ -14,11 +14,11 @@ Add `--set-ac N TEXT` to `chitty edit`, repeatable, which replaces criterion N's
 - N is 1-based and counts the list before this edit, like `--rm-ac`, `--check` and `--uncheck`.
 - The criterion becomes unticked, because its new text has not been verified.
 - Out-of-range N fails with the same kind of message as `--rm-ac` (`--set-ac 5: there are 2 acceptance criteria`). The same N given to `--set-ac` and to `--rm-ac`, `--check` or `--uncheck` fails as those already do between each other (`criterion 2 is given to both --set-ac and --rm-ac`), and the same N twice in `--set-ac` fails with `criterion 1 is given more than once to --set-ac`. Empty text fails with the existing `acceptance criterion must not be empty`. List `--set-ac` first in `with_criteria`'s conflict check, so its messages read as above.
-- While the task's status is `review`, any edit with `--set-ac` is refused with `--set-ac is not allowed while a task is in review`, because a reviewer must judge the text that was written. That covers the review transition itself and a separate edit before it. Make it the first check in `check_edit` in `store.py`, before the `--note`, `Reviewed:` and verdict checks, so it is the message the user sees. To reword a criterion, the ticket goes back to `doing` first.
+- While the task's status is `review`, any edit with `--set-ac` is refused with `--set-ac is not allowed while a task is in review`, because a reviewer must judge the text that was written. That covers the review transition itself and a separate edit before it. Make it the first check in `check_edit` in `store.py`, before the `--note`, `Reviewed:` and verdict checks, so it is the message the user sees. To reword a criterion, the ticket goes back to `doing` first. The rule looks at the status before the edit, so the worker's own `doing` → `review` edit may still carry `--set-ac`; the reviewer then judges that text.
 - Multi-line text is refused by the existing single-line check, as for `--ac`.
 - History records it as `changed acceptance criteria`, as for `--ac` and `--rm-ac`.
 
-Behaviour lives in the model and store, so CLI and MCP cannot diverge. Add `set_criteria: Sequence[tuple[int, str]] = ()` to `Edit` in `src/chitty/store.py`, pass it to `Task.with_criteria` in `src/chitty/model.py` (which already validates indices for the other options), and add it to the History check near `store.py:1467`. In `src/chitty/cli.py`, `--set-ac` is a `click.option` with `nargs=2`, `type=(int, str)` and `multiple=True`. In `src/chitty/mcp.py`, the `edit` tool takes `set_ac: list[tuple[int, str]] | None`; clients send `"set_ac": [[2, "new text"]]`.
+Behaviour lives in the model and store, so CLI and MCP cannot diverge. Add `set_criteria: Sequence[tuple[int, str]] = ()` to `Edit` in `src/chitty/store.py`, pass it to `Task.with_criteria` in `src/chitty/model.py` as a new required parameter, with no default like its others, updating its callers (`import_backlog.py`, the one in `model.py`, and tests) to pass `()` (which already validates indices for the other options), and add it to the History check near `store.py:1467`. In `src/chitty/cli.py`, `--set-ac` is a `click.option` with `nargs=2`, `type=(int, str)` and `multiple=True`. In `src/chitty/mcp.py`, the `edit` tool takes `set_ac: list[tuple[int, str]] | None`; clients send `"set_ac": [[2, "new text"]]`.
 
 Also add `[--set-ac N TEXT]` to the `chitty edit` synopsis in `PLAN.md`.
 
@@ -53,8 +53,18 @@ Second cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/
 - Rejected: testing the MCP JSON wire shape end to end, because FastMCP validates `list[tuple[int, str]]` on the same path, and the other MCP tools are tested the same way.
 - The rule changed again, so a third read follows.
 
+Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-226/3`. Every criterion failed without the fix and passed with it, every message came out as written, nothing in `chitty run` edits criteria during review, and `make check` passed. Nothing serious. Outcomes:
+
+- Fixed: a `doing` → `review` edit may carry `--set-ac`, because the rule looks at the status before the edit; now stated.
+- Fixed: `with_criteria`'s new parameter is required, with no default, like its others, and its callers pass `()`; now stated.
+- Rejected: a separate criterion for `review` → `doing`, because the same before-status check covers it and criterion 4's plain in-review case tests that check.
+- Rejected: `--check` during review, because reviewers tick criteria; `--ac` and `--rm-ac` are the separate ticket.
+- Correction to the previous note: the review rule's criterion is the fourth, not the third.
+
 ## History
 
 - 2026-11-07T09:37:44Z vivid-dormouse → backlog
 - 2026-11-07T10:04:53Z vivid-dormouse: changed description, acceptance criteria, notes
 - 2026-11-07T10:09:04Z vivid-dormouse: changed description, acceptance criteria, notes
+- 2026-11-07T10:12:50Z vivid-dormouse: changed description, notes
+- 2026-11-07T10:12:50Z vivid-dormouse backlog → todo
