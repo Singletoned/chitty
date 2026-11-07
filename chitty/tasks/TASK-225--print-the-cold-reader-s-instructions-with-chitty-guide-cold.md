@@ -1,6 +1,6 @@
 ---
 title: Print the cold reader's instructions with `chitty guide cold-read`
-status: review
+status: done
 priority: medium
 owner: human
 created: 2026-11-07
@@ -31,6 +31,11 @@ Out of scope: listing `cold-read` in the managed `AGENTS.md` block (`src/chitty/
 
 The three new tests in `tests/test_guide_cold_read.py` failed before the change (`unknown role 'cold-read'`) and pass after. `make check` passes: 363 tests. Wrong claim in the ticket: it said no `__version__` bump was needed, but `scripts/check_version_bump.py` watches `src/chitty/roles/`, so `make check` failed until I bumped it to 0.1.43. Phrases about the worktree steps moved from `TestGuide` in `tests/test_cli.py` to the new file; the unknown-role message now lists `cold-read`.
 
+Reviewed: by a Sonnet subagent sharing the worker's actor name; the human approved the override. All criteria verified; 322efd6 (wording fixes from this review) does not change the verdict. Version bump to 0.1.43 is correct, because `scripts/check_version_bump.py` watches `src/chitty/roles`.
+1: pass - `tests/test_guide_cold_read.py` covers the worktree, `refs/cold-read`, no-Chitty-writes steps and the ticket line
+2: pass - the plan guide points at `chitty guide cold-read` and no longer contains `git update-ref refs/cold-read`
+3: pass - `make check` passes at 322efd6: 363 tests plus the Node tests
+
 ## Summary
 
 New `src/chitty/roles/cold-read.md`, printed by `chitty guide cold-read [<ID>]`, holds the reader's steps: worktree, setup with the virtualenv variables unset, no Chitty writes, tests first, `refs/cold-read`, cleanup, the read-only variant, and the report shape. `plan.md` now points at it instead of listing those steps. `PLAN.md` says so. `__version__` is 0.1.43. Verified with `make check`. Follow-up: none.
@@ -41,3 +46,5 @@ New `src/chitty/roles/cold-read.md`, printed by `chitty guide cold-read [<ID>]`,
 - 2026-11-07T09:37:55Z vivid-dormouse backlog → doing
 - 2026-11-07T09:43:04Z vivid-dormouse: changed notes, summary; ticked acceptance criteria
 - 2026-11-07T09:43:04Z vivid-dormouse doing → review
+- 2026-11-07T09:59:26Z vivid-dormouse: changed notes; overrode review independence
+- 2026-11-07T09:59:26Z vivid-dormouse review → done
