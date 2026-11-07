@@ -1,6 +1,6 @@
 ---
 title: Print the cold reader's instructions with `chitty guide cold-read`
-status: backlog
+status: doing
 priority: medium
 owner: human
 created: 2026-11-07
@@ -30,3 +30,4 @@ Out of scope: listing `cold-read` in the managed `AGENTS.md` block (`src/chitty/
 ## History
 
 - 2026-11-07T09:37:30Z vivid-dormouse → backlog
+- 2026-11-07T09:37:55Z vivid-dormouse backlog → doing
