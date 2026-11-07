@@ -2,6 +2,7 @@
 title: Stop telling workers to run `chitty inbox --pull`
 status: doing
 priority: medium
+owner: human
 depends_on:
   - TASK-142
 created: 2026-11-05
@@ -485,6 +486,8 @@ check_version_bump: changed files require a version above main (0.1.42), but wor
   src/chitty/roles/work.md
 make: *** [check] Error 1
 
+Owner set to `human` on 2026-11-07: `chitty run --mode work` looped on this ticket 54 times. Its check fails because the branch has `__version__` 0.1.41 and `main` has 0.1.42, and in work mode a failed check only adds a note and leaves the ticket in `doing`, so no agent ever starts to fix it. `TASK-224` removes branch version bumps. Clear the owner once it lands.
+
 ## Summary
 
 Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
@@ -573,3 +576,4 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-07T09:35:26Z eager-crane: changed notes
 - 2026-11-07T09:36:33Z quick-ibis: changed notes
 - 2026-11-07T09:37:41Z sunny-heron: changed notes
+- 2026-11-07T09:39:33Z vivid-dormouse: changed owner, notes
