@@ -25,8 +25,8 @@ Out of scope: autocommit context for the other Git calls inside `git.commit` (`l
 
 ## Acceptance Criteria
 
-- [ ] The two pre-commit hook tests (`tests/test_autocommit.py:288`, `tests/test_cli.py:576`) pass unchanged, and `make check` passes
 - [ ] A new test in `tests/test_git.py`, in a repository with one commit, makes `git.file_at` fail on a ref that does not exist and asserts the error contains `` `git rev-parse --verify no-such-ref` failed in `` and does not contain `autocommit`; the worker records that it failed before the fix
+- [ ] The two pre-commit hook tests (`tests/test_autocommit.py:288`, `tests/test_cli.py:576`) pass unchanged, and `make check` passes
 
 ## Notes
 
@@ -53,3 +53,4 @@ Second cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/
 - 2026-11-07T09:21:04Z vivid-dormouse: changed description, acceptance criteria, notes
 - 2026-11-07T09:26:03Z vivid-dormouse: changed description, acceptance criteria, notes
 - 2026-11-07T09:26:03Z vivid-dormouse backlog → todo
+- 2026-11-07T09:26:11Z vivid-dormouse: changed acceptance criteria
