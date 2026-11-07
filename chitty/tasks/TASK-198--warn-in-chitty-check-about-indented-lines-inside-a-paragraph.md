@@ -1,5 +1,5 @@
 ---
-title: Keep pasted command output fenced in task notes
+title: Warn in `chitty check` about indented lines inside a paragraph
 status: backlog
 created: 2026-11-05
 ---
@@ -34,3 +34,4 @@ Suggestion origin: echonomicon
 - 2026-11-05T19:11:12Z youthful-toad → backlog
 - 2026-11-05T19:11:12Z youthful-toad: changed notes
 - 2026-11-07T09:16:06Z vivid-dormouse: changed description, acceptance criteria
+- 2026-11-07T09:16:15Z vivid-dormouse: changed title
