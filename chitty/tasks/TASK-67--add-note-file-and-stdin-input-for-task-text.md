@@ -6,13 +6,22 @@ created: 2026-11-01
 
 ## Description
 
-Add `--note-file` (and accept `-` for stdin) to `chitty edit` and `chitty add`, matching the existing `--plan-file` and `--description-file`, so agents can pass text containing backticks without shell quoting. Consider the same for `--summary` and `--ac`.
+Text passed on the command line in double quotes loses anything in backticks, because the shell runs it as a command. In `circuitry` (commit `90a902f`, `CIRCUIT-67`, 2026-10-29) a reviewer's `--note "... `chitty list --all` reports ..."` pasted the full output of `chitty list --all`, 75 lines, into the note, and other backticked words vanished. Chitty's own guidance asks for backticks around code, so agents hit this often. `TASK-68` adds a guidance line about single quotes. This ticket gives agents a way to pass a note with no shell quoting at all.
 
-What happened (circuitry, commit 90a902f, task CIRCUIT-67, 2026-10-29): a reviewing agent ran something like
+Add `--note-file` to `chitty edit` and `chitty add` in `src/chitty/cli.py`, like `--description-file` and `--plan-file` on `edit`:
 
-    chitty edit CIRCUIT-67 -s doing --note "Independent review: failed. Acceptance criterion 1 is unmet: `chitty list --all` reports CIRCUIT-68, CIRCUIT-69 and CIRCUIT-71 as `doing`, not `done`. ..."
+- `type=click.File()`, so `--note-file -` reads standard input, as `--description-file -` already does.
+- Not repeatable. Its text is appended as one more note after any `--note` values, so `--note a --note-file f` gives two notes, `a` first.
+- Help text: `Read a note from a file ('-' for stdin).`
 
-The generated AGENTS.md guidance tells agents to put commands, IDs and code in backticks, but inside a double-quoted shell argument backticks are command substitution. The shell ran `chitty list --all` and pasted its full output (75 lines, every task CIRCUIT-1 to CIRCUIT-75) into the note, and the other backticked words (`doing`, `done`, a file path) ran as commands and vanished, leaving "reports ... as , not .". The agent noticed and appended a "Correction to the preceding note", but could not remove the broken one, so `chitty show CIRCUIT-67` is 129 lines, 91 of them notes, about 7 KB of which is the dump.
+This stays in `cli.py`: it only turns a file into one more entry in the existing `notes` tuple passed to `Edit` and to `add`. Nothing changes in `store.py`, `model.py` or `mcp.py`.
+
+Out of scope: `--summary-file`, `--ac-file`, `chitty note`, the MCP server (it takes strings, so has no shell quoting problem), and guidance changes (`TASK-68`).
+
+## Acceptance Criteria
+
+- [ ] Tests show `chitty edit` and `chitty add` each storing a note read with `--note-file -` from standard input whose text contains backticks, unchanged
+- [ ] A test shows `--note a --note-file f` giving two notes in that order
 
 ## Notes
 
@@ -21,3 +30,4 @@ Suggestion origin: circuitry
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-07T09:16:07Z vivid-dormouse: changed description, acceptance criteria
