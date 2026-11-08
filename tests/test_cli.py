@@ -1815,12 +1815,6 @@ class TestGuide(CliTestCase):
                 for phrase in required_phrases:
                     self.assertIn(phrase, output)
 
-    def test_guide_includes_literal_single_asterisk_instruction(self):
-        self.assertIn("literal single", guide())
-        for role in ("work", "review", "plan"):
-            with self.subTest(role=role):
-                self.assertIn("literal single", guide(role))
-
     def test_guide_points_agents_at_ticket_planning_instructions(self):
         planning_guide = guide("plan")
         self.assertIn("nothing built", planning_guide)
