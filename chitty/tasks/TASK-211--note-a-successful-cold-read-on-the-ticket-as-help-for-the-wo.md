@@ -1,6 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: backlog
+status: todo
 created: 2026-11-06
 ---
 
@@ -37,3 +37,4 @@ Implementing cold read against the revised ticket: guide regression test first f
 - 2026-11-08T14:15:32Z eager-puffin: changed description
 - 2026-11-08T14:15:34Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T14:19:36Z eager-puffin: changed notes
+- 2026-11-08T14:19:39Z eager-puffin backlog → todo
