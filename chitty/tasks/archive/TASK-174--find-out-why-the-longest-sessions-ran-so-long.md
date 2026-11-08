@@ -26,3 +26,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: which sessions, since t
 - 2026-11-04T21:41:09Z mellow-newt → backlog
 - 2026-11-04T21:44:30Z mellow-newt: changed description, notes
 - 2026-11-04T21:44:31Z mellow-newt backlog → todo
+- 2026-11-08T13:36:27Z eager-puffin todo → archived
