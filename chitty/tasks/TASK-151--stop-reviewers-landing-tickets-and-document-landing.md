@@ -19,8 +19,8 @@ Out of scope: changing landing itself.
 
 ## Acceptance Criteria
 
-- [x] A test shows the review instructions no longer mentioning merging or removing
-- [x] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
+- [ ] A test shows the review instructions no longer mentioning merging or removing
+- [ ] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
 
 ## Plan
 
@@ -45,6 +45,8 @@ Regression test failed against the original continuation prompt (expected prohib
 Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/integrations/pi/chitty.ts`, `src/chitty/integrations/pi/tests/chitty.test.ts`, `src/chitty/roles/review.md`.
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
+Review failed (design): Criterion 1 literally requires review instructions not to mention merging or removing, but both src/chitty/roles/review.md and the Pi continuation prompt mention these operations to prohibit them; the new Node test requires that prohibition, so it does not prove the criterion as written. Decide whether the rule is no mentions or no instruction to perform landing; the description suggests the latter. Test both chitty guide review and the Pi continuation prompt, not only the latter. Criterion 2 is not yet verified: src/chitty/guide.md tells agents started without chitty run to perform manual landing while telling reviewers not to, without naming who lands or when; the short manual procedure omits the configured setup and cleanup and can be mistaken for an equivalent to automatic landing. Clarify who handles manual landing and distinguish verdict, post-verdict merge/check, fast-forward, cleanup and failure handling in the docs. This branch also still has six uncommitted implementation files, the cause of all three previous review preflight failures: commit them before requesting another review. Ran make format && make check: 397 Python tests and Node tests passed; these tests do not resolve the specification mismatch. Leaving blocked for human resolution rather than attempting another failed handoff.
 
 ## Summary
 
@@ -71,3 +73,4 @@ Handoff: Review prompt and packaged role prohibit reviewers from landing or remo
 - 2026-11-08T19:52:56Z sunny-ibis doing → review
 - 2026-11-08T19:57:53Z rosy-puffin: changed owner, notes
 - 2026-11-08T19:57:53Z rosy-puffin review → blocked
+- 2026-11-08T20:01:49Z eager-puffin: changed acceptance criteria, notes
