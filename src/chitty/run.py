@@ -581,7 +581,13 @@ def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
 def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str) -> None:
     """Serialize landing operations that mutate the shared main branch."""
     with locks.landing_lock(main_repo.root):
-        _land_locked(main_repo, worktree, action, setup, check)
+        try:
+            _land_locked(main_repo, worktree, action, setup, check)
+        except ChittyError as exc:
+            raise ChittyError(
+                f"{exc}\nA human must resolve the landing problem in {worktree} "
+                "or the main checkout before retrying."
+            ) from exc
 
 
 def _land_locked(

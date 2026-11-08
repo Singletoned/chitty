@@ -32,15 +32,30 @@ class ReviewMergeTestCase(CliTestCase):
             + sys.executable
             + "\n"
             + REPORT.replace("sys.argv[1]", "sys.argv[3]")
-            + "Path(sys.argv[4]).write_text(Path('main.txt').read_text())\n"
+            + "if Path('main.txt').exists():\n"
+            "    Path(sys.argv[4]).write_text(Path('main.txt').read_text())\n"
             "path = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
             "path.write_text(path.read_text().replace('status: review', 'status: done'))\n"
             "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], check=True)\n"
+            "if Path(sys.argv[5]).exists():\n"
+            "    root = Path(sys.argv[5]).read_text().strip()\n"
+            "    Path(root, 'main-late.txt').write_text('main advanced during review\\n')\n"
+            "    subprocess.run(['git', '-C', root, 'add', 'main-late.txt'], check=True)\n"
+            "    subprocess.run(['git', '-C', root, 'commit', '--quiet', '-m', 'main advanced'], "
+            "check=True)\n"
         )
         agent.chmod(agent.stat().st_mode | stat.S_IXUSR)
         previous_path = os.environ["PATH"]
         os.environ["PATH"] = f"{agent.parent}:{previous_path}"
         self.addCleanup(os.environ.__setitem__, "PATH", previous_path)
+        check_script = self.tmp / "landing_check.py"
+        check_script.write_text(
+            "import sys\nfrom pathlib import Path\n"
+            "if Path('main-late.txt').exists():\n"
+            "    Path(sys.argv[1]).write_text('checked merged main')\n"
+            "    if Path(sys.argv[2]).exists():\n"
+            "        raise SystemExit(7)\n"
+        )
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text()
@@ -51,7 +66,12 @@ class ReviewMergeTestCase(CliTestCase):
             .replace(
                 'agent_command = "pi --chitty-{mode} {id}"',
                 f'agent_command = "fake {{mode}} {{id}} {self.logs / "agent"} '
-                f'{self.logs / "main.txt"}"',
+                f'{self.logs / "main.txt"} {self.logs / "advance_main"}"',
+            )
+            .replace(
+                'check = "true"',
+                f'check = "{sys.executable} {check_script} '
+                f'{self.logs / "landing_check"} {self.logs / "fail_landing_check"}"',
             )
         )
         self.git("init", "--quiet", "-b", "main")
@@ -159,6 +179,53 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         self.assertEqual(result.stdout, "TASK-1: review → done\n")
         self.assertTrue((self.logs / "agent").exists())
+
+    def test_review_lands_directly_without_an_extra_review(self):
+        self.branch_for_review()
+        base = self.git("rev-parse", "main").strip()
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → done")
+        self.assertEqual(self.git("merge-base", base, "main").strip(), base)
+        self.assertNotEqual(self.git("rev-parse", "main").strip(), base)
+        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "0")
+        self.assertIn(
+            "status: done", next((self.root / "chitty/tasks").glob("TASK-1--*.md")).read_text()
+        )
+        self.assertFalse(self.worktree.exists())
+        self.assertFalse(self.git("branch", "--list", "task-1").strip())
+
+    def test_main_advances_during_review_and_landing_checks_merged_branch(self):
+        self.branch_for_review()
+        (self.logs / "advance_main").write_text(str(self.root))
+        before = self.git("rev-parse", "main").strip()
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → done")
+        self.assertEqual((self.logs / "landing_check").read_text(), "checked merged main")
+        self.assertEqual((self.root / "main-late.txt").read_text(), "main advanced during review\n")
+        self.assertNotEqual(self.git("rev-parse", "main").strip(), before)
+        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "1")
+        self.assertFalse(self.worktree.exists())
+
+    def test_failing_check_after_main_advances_preserves_main_and_worktree(self):
+        self.branch_for_review()
+        (self.logs / "advance_main").write_text(str(self.root))
+        (self.logs / "fail_landing_check").write_text("fail")
+
+        result = self.run_cli("run", "--mode", "review", exit_code=1)
+
+        self.assertIn("landing check exited with status 7", result.output)
+        self.assertIn("A human must resolve the landing problem", result.output)
+        self.assertIn(str(self.worktree), result.output)
+        self.assertEqual((self.logs / "landing_check").read_text(), "checked merged main")
+        self.assertEqual(self.git("log", "-1", "--format=%s", "main").strip(), "main advanced")
+        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "0")
+        self.assertEqual(self.git("status", "--porcelain"), "")
+        self.assertTrue(self.worktree.exists())
+        self.assertTrue(self.git("branch", "--list", "task-1").strip())
 
     def test_agent_and_setup_see_the_branch_merged_with_main(self):
         self.branch_for_review()
