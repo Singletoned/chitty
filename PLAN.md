@@ -453,7 +453,7 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   unset priority), and `low` within each status; `--json` uses the same order.
   Human-readable rows show statuses as a glyph and at most five letters:
   `💤 bklog`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, and `✅ done`, and
-  priorities as `⏫` high, `🔼` medium, `🔽` low, or blank when unset. Titles are
+  priorities as `⬆️` high, `⏺️` medium, `⬇️` low, or blank when unset. Titles are
   cut with `…` so each row fits in `list_width` terminal columns, counting
   emoji as two; labels are kept whole. Rows skipped by `next`
   show the reason's glyph alone in a column before the title (`👤`, `🔒`, `▶`, or

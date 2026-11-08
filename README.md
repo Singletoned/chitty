@@ -84,7 +84,7 @@ Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
 `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then the priority
-as `⏫` high, `🔼` medium or `🔽` low. Titles are cut with `…` so rows fit in
+as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so rows fit in
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
 `chitty next` carry a glyph in a column before the title: `👤` owned or human,
 `🔒` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
