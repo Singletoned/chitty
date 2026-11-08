@@ -199,7 +199,13 @@ each ticket worktree before the agent starts; it is parsed without a shell. Set
 `"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
 Additional commands go in `[agent_commands]`; `chitty run --agent NAME` uses one
 for that run only. An unknown name lists available entries, and the selected
-entry is validated like `agent_command`. Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
+entry is validated like `agent_command`. Optional root-level `work_model` and
+`review_model` (or keys directly in `[tool.chitty]` in `pyproject.toml`) set
+independent model defaults for unattended runs. Chitty appends `--model MODEL`
+only if neither the selected command nor forwarded arguments after `--` already
+specify `--model`; an agent receiving a default must accept that option.
+Existing model arguments take precedence, without Chitty rewriting them.
+Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
 and the selected ticket ID. `{prompt}` can replace both placeholders when the
 agent accepts Chitty's role instructions as one argument. `chitty init --autocommit`
 enables

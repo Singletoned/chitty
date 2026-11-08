@@ -332,6 +332,8 @@ review = true # require review before done
 # setup = "make install" # run in every ticket worktree before the agent starts
 # check = "make check" # validate the ticket worktree before the agent starts
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
+# work_model = "provider/model" # default for work when the agent command has no model
+# review_model = "provider/model" # default for review when the agent command has no model
 # `{prompt}` may be used as one argument containing `chitty guide` output.
 archive = "move" # or "delete"; retain completed files or delete them
 # list_width = 100 # columns `chitty list` rows fit in
@@ -711,7 +713,13 @@ than a branch-local `chitty`; `pi` and `claude` come from the global `PATH`.
 This does not change `chitty.toml` on the branch. The command must include
 `{mode}` and `{id}`, unless it includes `{prompt}`; Chitty replaces them after
 splitting, and arguments after
-`--` pass through to the agent. It reopens the ticket worktree after the agent
+`--` pass through to the agent. Optional `work_model` and `review_model` add
+`--model MODEL` for the selected mode, whether using the default or a named
+agent command, only when neither that command nor forwarded arguments specify
+`--model VALUE` or `--model=VALUE`. Existing model arguments take precedence,
+and without a configured default the invocation is unchanged. Commands receiving
+a default must accept the agent CLI option `--model`; Chitty has no `--model`
+option of its own. It reopens the ticket worktree after the agent
 exits and succeeds only if the task's committed status changed. This makes
 `while chitty run; do :; done` a safe unattended loop that stops when the queue
 is empty. To wait out an idle queue instead, treat exit 3 as success:

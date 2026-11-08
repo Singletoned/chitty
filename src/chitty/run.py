@@ -185,7 +185,11 @@ def _run_ticket(
                 agent_environment.pop("UV_PROJECT_ENVIRONMENT", None)
                 try:
                     completed = subprocess.run(
-                        [*agent_command, *arguments],
+                        [
+                            *agent_command,
+                            *arguments,
+                            *_model_arguments(main_repo, action, agent_command, arguments),
+                        ],
                         cwd=worktree,
                         env=agent_environment,
                         check=False,
@@ -362,6 +366,18 @@ def _preflight(repo: Repo) -> None:
         )
     if git.current_branch(repo.root) != repo.config.main_branch:
         raise ChittyError(f"the main checkout must be on branch {repo.config.main_branch}")
+
+
+def _model_arguments(
+    repo: Repo, action: NextAction, command: tuple[str, ...], arguments: tuple[str, ...]
+) -> tuple[str, ...]:
+    """Supply the role default only when the command has no explicit model."""
+    model = repo.config.work_model if action.mode == "work" else repo.config.review_model
+    if model is None or any(
+        word == "--model" or word.startswith("--model=") for word in (*command, *arguments)
+    ):
+        return ()
+    return ("--model", model)
 
 
 def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> tuple[str, ...]:
