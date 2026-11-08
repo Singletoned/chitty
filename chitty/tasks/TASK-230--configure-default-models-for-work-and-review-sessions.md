@@ -14,13 +14,15 @@ Allow a repository to choose persistent, independent model defaults in `chitty.t
 
 - [ ] With a fake agent that records arguments, tests show an unqualified `chitty run` choosing `work_model` for a work ticket and `review_model` for a review ticket; both the default agent command and `--agent NAME` work, and no setting leaves arguments unchanged.
 - [ ] Tests show forwarded `--model VALUE` and `--model=VALUE` each suppressing the role default, and a model in the selected agent command suppressing it too; existing behavior is unchanged when both sources already specify a model.
-- [ ] Tests show blank configured model values rejected clearly, configuration in both `chitty.toml` and `[tool.chitty]` working, and `README.md`, `PLAN.md`, and the init template describing the defaults.
+- [ ] Tests show blank configured model values rejected clearly, configuration in both `chitty.toml` and `[tool.chitty]` working, and `README.md`, `PLAN.md`, and the init template describing the defaults. An init upgrade puts pyproject comments inside `[tool.chitty]` even when another table has a `work_model` key; uncommenting them parses as Chitty settings.
 
 ## Notes
 
 Read-only cold read: the first draft left precedence ambiguous when a command already had `--model`, and did not identify where `chitty init` inserts comments. Fixed the description and criterion 2: existing model arguments suppress the role default without rewriting them, and commented config examples belong before table headers. A fresh implementing cold read with tests and `make check` is still needed before promotion from backlog.
 
 Second read-only cold read found a TOML placement contradiction: pyproject examples must be placed after `[tool.chitty]`, not before the first table header. Corrected the description. Require a pyproject init test that checks placement and uncommented parsing. Implementing cold read still pending.
+
+Repeat cold read found a cross-table false-positive in init comment insertion when `[tool.other]` already has `work_model`. Added a failing regression case, and the candidate now checks only the Chitty settings section. Recheck before promotion.
 
 ## History
 
@@ -29,3 +31,4 @@ Second read-only cold read found a TOML placement contradiction: pyproject examp
 - 2026-11-08T13:23:56Z eager-puffin: changed notes
 - 2026-11-08T14:15:33Z eager-puffin: changed description
 - 2026-11-08T14:15:35Z eager-puffin: changed notes
+- 2026-11-08T14:51:01Z eager-puffin: changed acceptance criteria, notes
