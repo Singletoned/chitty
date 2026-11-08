@@ -34,7 +34,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Plan
 
-Add focused real-Git integration tests for landing's moved-main, conflict/check failure, refusal, and ignored-file cases; repair the old run integration fixtures that violate the landing contract. Then run make format && make check, verify every acceptance criterion, and commit with Task: TASK-131.
+Resolve the integration conflict with main in src/chitty/git.py and tests/test_review_merge.py by retaining both the landing serialization behavior and main’s review-merge changes. Run focused tests, then make format && make check; update ticket verification and hand off for review.
 
 ## Notes
 
@@ -278,3 +278,4 @@ Handoff: chitty run lands done tickets by merging moved main into the ticket wor
 - 2026-11-08T13:40:07Z daring-gannet doing → review
 - 2026-11-08T13:40:22Z golden-raven: changed notes
 - 2026-11-08T13:40:22Z golden-raven review → doing
+- 2026-11-08T13:42:22Z eager-vole: wrote the plan
