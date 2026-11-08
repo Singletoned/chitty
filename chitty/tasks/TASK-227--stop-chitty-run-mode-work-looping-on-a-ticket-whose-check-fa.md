@@ -46,6 +46,8 @@ Cold read 1 (Haiku, `refs/cold-read/TASK-227/1`): implemented; all three tests f
 6. Whether the `doing` note changes status. Fixed: a note-only `Edit`.
 The reader had to guess at 4, 5 and 6, so those were the gaps a weaker model hit. None changed the design, so no second read.
 
+Regression coverage failed before the fix: the two todo check-failure tests exited 0 after moving the ticket to doing, and the doing-ticket test also exited 0 before starting the agent.
+
 ## History
 
 - 2026-11-07T09:40:12Z vivid-dormouse → backlog
@@ -54,3 +56,4 @@ The reader had to guess at 4, 5 and 6, so those were the gaps a weaker model hit
 - 2026-11-08T11:20:25Z calm-eel backlog → todo
 - 2026-11-08T11:23:24Z intrepid-marten todo → doing
 - 2026-11-08T11:23:51Z intrepid-marten: wrote the plan
+- 2026-11-08T11:25:35Z intrepid-marten: changed notes
