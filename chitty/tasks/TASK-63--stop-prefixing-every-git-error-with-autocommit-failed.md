@@ -28,6 +28,10 @@ Out of scope: autocommit context for the other Git calls inside `git.commit` (`l
 - [ ] A new test in `tests/test_git.py`, in a repository with one commit, makes `git.file_at` fail on a ref that does not exist and asserts the error contains `` `git rev-parse --verify no-such-ref` failed in `` and does not contain `autocommit`; the worker records that it failed before the fix
 - [ ] The two pre-commit hook tests (`tests/test_autocommit.py:288`, `tests/test_cli.py:576`) pass unchanged, and `make check` passes
 
+## Plan
+
+Update _git to report the failed Git command directly, then wrap only git.commit failures with the autocommit context. Add the missing-ref regression test in tests/test_git.py, first run it against the current code to verify it fails, then run make check and record verification.
+
 ## Notes
 
 Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-63/1`. It built the first version from the description alone: the new test failed first, then passed, and `make check` passed. Outcomes:
@@ -55,3 +59,4 @@ Second cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/
 - 2026-11-07T09:26:03Z vivid-dormouse backlog → todo
 - 2026-11-07T09:26:11Z vivid-dormouse: changed acceptance criteria
 - 2026-11-08T09:34:54Z kind-urchin todo → doing
+- 2026-11-08T09:49:16Z kind-urchin: wrote the plan
