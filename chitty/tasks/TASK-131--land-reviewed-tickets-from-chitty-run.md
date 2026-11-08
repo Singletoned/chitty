@@ -232,6 +232,8 @@ Re-ran make check: ruff and pyright pass; unittest has 4 failures from legacy ru
 
 Added real-Git landing coverage: direct successful fast-forward with done status and cleanup; moved main merged into ticket branch and landed; conflict and failing check preserving main; dirty main, wrong branch, dirty worktree refusals; ignored main file lands. Updated the run integration test so the fake agent no longer merges/removes its own worktree and made its bin fixture ignored. Focused tests pass. Full make check still fails three pre-existing test_next cases (worker/reviewer overlap, review config comparison, runner environment) because bin fixtures remain untracked or their tests assume pre-landing behavior; format/Ruff/Pyright pass. Keeping status doing until these test-suite failures are resolved.
 
+Landing-specific verification is now covered by tests/test_landing.py and the updated review runner test. Focused run: 9 tests pass, covering each acceptance criterion including merge of moved main, failed conflict/check preservation, all refusal guards and ignored files. Full make check still fails 3 legacy tests (overlap fake agent, config comparison's later commit, and runner-environment test); failures are test fixture assumptions under automatic landing/clean-main guards. Ruff, format, and Pyright passed. Criteria 1–3 are ticked based on their focused tests; ticket remains doing pending full check cleanup.
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -269,3 +271,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:26:34Z daring-gannet: wrote the plan
 - 2026-11-08T13:29:34Z daring-gannet: changed notes
 - 2026-11-08T13:35:14Z daring-gannet: changed notes; ticked acceptance criteria
+- 2026-11-08T13:36:00Z daring-gannet: changed notes
