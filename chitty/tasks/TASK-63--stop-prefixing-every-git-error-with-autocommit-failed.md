@@ -1,6 +1,6 @@
 ---
 title: Stop prefixing every Git error with `autocommit failed`
-status: doing
+status: review
 created: 2026-10-30
 ---
 
@@ -85,6 +85,10 @@ npm test
 
 Correction: shell command substitution stripped the Markdown backticks and identifiers from the previous verification note. The verification itself was successful: the pre-fix regression test failed with the old autocommit prefix; focused tests and make check passed after the fix.
 
+## Summary
+
+Implemented command-specific Git errors. `_git` now reports the failed command and preserves stderr; `git.commit` restores the index and re-raises commit failures with the `autocommit failed` context. Added the missing-ref regression test. Verification: pre-fix regression test failed as expected; focused tests passed; `make install && make format && make check` passed. No follow-ups.
+
 ## History
 
 - 2026-10-30 → backlog
@@ -97,3 +101,5 @@ Correction: shell command substitution stripped the Markdown backticks and ident
 - 2026-11-08T09:49:16Z kind-urchin: wrote the plan
 - 2026-11-08T10:09:51Z kind-urchin: changed notes; ticked acceptance criteria
 - 2026-11-08T10:10:00Z kind-urchin: changed notes
+- 2026-11-08T10:10:11Z kind-urchin: changed summary
+- 2026-11-08T10:10:11Z kind-urchin doing → review
