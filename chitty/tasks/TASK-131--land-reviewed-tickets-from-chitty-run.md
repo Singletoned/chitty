@@ -236,9 +236,11 @@ Landing-specific verification is now covered by tests/test_landing.py and the up
 
 Review failed (integration): merging `main` conflicts in `src/chitty/git.py`, `tests/test_review_merge.py`.
 
+Resolved main integration conflicts in src/chitty/git.py and tests/test_review_merge.py, preserving TASK-131 landing behavior alongside the updated review merge logic. Focused landing/review tests: 21 passed. make format && make check passed: 384 Python tests and Node tests; Ruff and Pyright passed.
+
 ## Summary
 
-Handoff: chitty run lands done tickets by merging moved main into the ticket worktree, validating setup/check, fast-forwarding main, and removing worktree/branch; concurrent landing is serialized. Verification: all 3 acceptance criteria rechecked with tests/test_landing.py and runner integration coverage; 12 focused tests pass. make format && make check passes (373 Python tests and Node suite); Ruff and Pyright pass. Follow-up: none known.
+Handoff: landing implementation and tests integrated with main; review merge retains both branches' behavior. Verification: make format && make check passed (384 Python tests, Node suite, Ruff, Pyright); focused landing/review tests passed. Follow-up: none known.
 
 ## History
 
@@ -279,3 +281,4 @@ Handoff: chitty run lands done tickets by merging moved main into the ticket wor
 - 2026-11-08T13:40:22Z golden-raven: changed notes
 - 2026-11-08T13:40:22Z golden-raven review → doing
 - 2026-11-08T13:42:22Z eager-vole: wrote the plan
+- 2026-11-08T13:46:09Z eager-vole: changed notes, summary; ticked acceptance criteria
