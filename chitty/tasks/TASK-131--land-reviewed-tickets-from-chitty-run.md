@@ -32,6 +32,10 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 - [ ] Tests show a moved `main` handled by a clean rebase and passing `check` landing without another review, and a conflict or failing `check` leaving everything in place and exiting non-zero
 - [ ] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
+## Plan
+
+Implement landing in src/chitty/run.py with focused Git helpers in src/chitty/git.py. On a done ticket, verify main is the clean main branch and the ticket worktree is clean (including untracked but allowing ignored files), merge main into the ticket branch when needed, run setup and check, then fast-forward main and remove the worktree and branch without force. Leave all state intact and report a non-zero error on refusal, merge/check failure, or cleanup failure. Add isolated unittest coverage for successful landing, merge/check failure preservation, branch/dirty refusals, and ignored files, using real temporary Git repositories. Run the focused tests, formatter, and full make check.
+
 ## Notes
 
 The `chitty init` step and its criterion moved to `TASK-134`, at the start of every run, as suggested by the human.
@@ -58,3 +62,4 @@ The human decided on 2026-11-06 to prefer merging the main branch into a ticket 
 - 2026-11-06T16:44:07Z youthful-toad: changed notes
 - 2026-11-06T21:49:20Z youthful-toad: changed notes
 - 2026-11-08T09:10:23Z open-zander todo → doing
+- 2026-11-08T09:10:48Z open-zander: wrote the plan
