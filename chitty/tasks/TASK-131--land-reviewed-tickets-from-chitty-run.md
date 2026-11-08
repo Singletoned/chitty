@@ -2,7 +2,6 @@
 title: Land reviewed tickets from `chitty run`
 status: doing
 priority: high
-owner: human
 depends_on:
   - TASK-120
   - TASK-150
@@ -197,6 +196,8 @@ make: *** [check] Error 5
 
 Parked on 2026-11-08 (owner `human`): `chitty run --mode work` looped on this ticket because its check fails and no agent starts (`TASK-227`). Clear the owner once `TASK-227` lands.
 
+Unparked: TASK-227 now starts an agent for a doing ticket even if its pre-session check fails. The branch still needs its failing landing and concurrent-reviewer tests fixed before review.
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -224,3 +225,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T11:05:35Z plucky-jay: changed notes
 - 2026-11-08T11:07:30Z witty-yellowhammer: changed notes
 - 2026-11-08T11:09:51Z calm-eel: changed owner, notes
+- 2026-11-08T13:05:01Z eager-puffin: changed owner, notes
