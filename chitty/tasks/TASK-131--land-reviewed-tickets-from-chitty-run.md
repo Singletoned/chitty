@@ -200,6 +200,30 @@ Unparked: TASK-227 now starts an agent for a doing ticket even if its pre-sessio
 
 Clarified the landing method: the human chose merge in TASK-223; the old rebase wording in the description and criterion contradicted the plan.
 
+Check failed before this session: check exited with status 2:
+```text
+
+
+======================================================================
+test_concurrent_reviewers_take_different_tickets (tests.test_run_lock.TestRunLock.test_concurrent_reviewers_take_different_tickets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-131/tests/test_run_lock.py", line 215, in test_concurrent_reviewers_take_different_tickets
+    self.assertEqual(reviewer.returncode, 0, stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfcz151an/repo/.worktrees/task-1...
+warning: cannot read usage file /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/chitty-usage-kfvm056i/session.json: file is missing
+Error: autocommit failed: `git merge --ff-only task-1` in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfcz151an/repo:
+fatal: update_ref failed for ref 'HEAD': cannot lock ref 'HEAD': is at 08a85d3b6f4576924c74a406ca13f48c7f80f319 but expected c7537e076d862991d1bed6274ecdbb1cf560a9bf
+
+
+----------------------------------------------------------------------
+Ran 365 tests in 46.604s
+
+FAILED (failures=5)
+make: *** [check] Error 5
+```
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -230,3 +254,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:05:01Z eager-puffin: changed owner, notes
 - 2026-11-08T13:08:29Z eager-puffin: changed description
 - 2026-11-08T13:08:32Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T13:20:50Z daring-gannet: changed notes
