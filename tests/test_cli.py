@@ -1013,6 +1013,16 @@ class TestAddShowList(CliTestCase):
         self.assertIn("## History\n\n", shown)
         self.assertEqual(self.run_cli("path", "1").stdout, f"{path}\n")
 
+    def test_add_note_file_reads_backticks_from_stdin(self):
+        result = CliRunner().invoke(
+            cli,
+            ["add", "Piped note", "-d", "x", "--note-file", "-", "--json"],
+            input="Keep `chitty list --all` unchanged.\n",
+            catch_exceptions=False,
+        )
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(json.loads(result.stdout)["notes"], "Keep `chitty list --all` unchanged.")
+
     def test_add_backlog_uses_a_default_description(self):
         self.run_cli("add", "Explore sync", "-s", "backlog")
 
@@ -1533,6 +1543,24 @@ class TestEdit(CliTestCase):
         self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")
 
         self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
+
+    def test_edit_note_file_reads_backticks_from_stdin(self):
+        result = CliRunner().invoke(
+            cli,
+            ["edit", "1", "--note-file", "-"],
+            input="Keep `chitty list --all` unchanged.\n",
+            catch_exceptions=False,
+        )
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(self.json("show", "1")["notes"], "Keep `chitty list --all` unchanged.")
+
+    def test_edit_note_file_follows_inline_notes(self):
+        note_file = self.tmp / "note.md"
+        note_file.write_text("From a file.")
+
+        self.run_cli("edit", "1", "--note", "Inline.", "--note-file", str(note_file))
+
+        self.assertEqual(self.json("show", "1")["notes"], "Inline.\n\nFrom a file.")
 
     def test_note_appends_a_note(self):
         self.run_cli("note", "1", "Started work.")

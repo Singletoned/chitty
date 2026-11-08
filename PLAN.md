@@ -303,8 +303,9 @@ Serialisation is a patch over the original text, not parse-then-dump:
 - If the resulting content equals the current content, the file is not
   written.
 - `--note TEXT` appends `TEXT` as a new paragraph (preceded by a blank line)
-  to `## Notes`, creating the section if absent. No date prefix; include one
-  in the text if you want it.
+  to `## Notes`, creating the section if absent. `--note-file F` reads one note
+  from a file (`-` for stdin). No date prefix; include one in the text if you
+  want it.
 - Creating a task writes an actor-attributed UTC initial History transition.
   A changed `--status`, archiving, and restoring append a transition; a no-op
   status edit does not. Every other `edit` that changes the task appends one
@@ -411,7 +412,7 @@ chitty init [--autocommit]         write chitty.toml, chitty/tasks/, AGENTS.md b
 chitty inbox [--pull]              list waiting suggestions, or print actor then import them all
 chitty whoami                       print the stable actor name for this session
 chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
-                 [--owner X] [--depends-on ID]...
+                 [--owner X] [--depends-on ID]... [--note TEXT] [--note-file F]
 chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
                  [--all]
 chitty show ID
@@ -419,7 +420,7 @@ chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p 
                  [--owner X] [--depends-on ID]... [--rm-depends-on ID]...
                  [-d TEXT | --description-file F]
                  [--ac TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
-                 [--plan TEXT | --plan-file F] [--note TEXT]
+                 [--plan TEXT | --plan-file F] [--note TEXT] [--note-file F]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
 chitty renumber PATH               one of several files sharing an ID gets the next number
 chitty archive [ID]                  omit ID to archive every done task
