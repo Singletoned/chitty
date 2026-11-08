@@ -20,7 +20,7 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 
 ## Plan
 
-Update the two managed worker-instruction source files only: remove the initial `chitty inbox --pull` wording while preserving each file’s existing `ticket`/`task` terminology and joining the wrapped `work.md` line. Bump the package patch version because `chitty init` output changes. Add or update focused tests proving both guides omit the pull instruction and that the inbox command remains functional, then run init and the required checks.
+Update only the initial worker-instruction bullet in the two guide sources, preserving each file’s ticket/task terminology and joining the wrapped work-role line. Keep focused tests for both guides and the inbox command. Do not bump the version or run init on this branch; run the required checks and hand off for review. The main checkout regenerates managed setup after landing.
 
 ## Notes
 
@@ -580,3 +580,4 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-07T09:39:33Z vivid-dormouse: changed owner, notes
 - 2026-11-08T13:05:12Z eager-puffin: changed owner, acceptance criteria, notes
 - 2026-11-08T13:07:01Z eager-puffin: changed acceptance criteria
+- 2026-11-08T13:08:33Z eager-puffin: wrote the plan
