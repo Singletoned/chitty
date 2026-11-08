@@ -29,7 +29,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 ## Acceptance Criteria
 
 - [x] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
-- [ ] Tests show a moved `main` handled by a clean rebase and passing `check` landing without another review, and a conflict or failing `check` leaving everything in place and exiting non-zero
+- [ ] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
 - [ ] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
 ## Plan
@@ -198,6 +198,8 @@ Parked on 2026-11-08 (owner `human`): `chitty run --mode work` looped on this ti
 
 Unparked: TASK-227 now starts an agent for a doing ticket even if its pre-session check fails. The branch still needs its failing landing and concurrent-reviewer tests fixed before review.
 
+Clarified the landing method: the human chose merge in TASK-223; the old rebase wording in the description and criterion contradicted the plan.
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -227,3 +229,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T11:09:51Z calm-eel: changed owner, notes
 - 2026-11-08T13:05:01Z eager-puffin: changed owner, notes
 - 2026-11-08T13:08:29Z eager-puffin: changed description
+- 2026-11-08T13:08:32Z eager-puffin: changed acceptance criteria, notes
