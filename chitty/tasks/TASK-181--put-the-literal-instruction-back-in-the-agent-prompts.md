@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -14,8 +14,8 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_literal_star.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
-- [ ] The ticket branch leaves the managed `AGENTS.md` block, `chitty.toml`, and `__version__` unchanged; the guide sources carry the instruction for setup regeneration on main after landing.
+- [x] A test in `tests/test_guide_literal_star.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
+- [x] The ticket branch leaves the managed `AGENTS.md` block, `chitty.toml`, and `__version__` unchanged; the guide sources carry the instruction for setup regeneration on main after landing.
 
 ## Plan
 
@@ -96,9 +96,11 @@ check_version_bump: changed files require a version above main (0.1.43), but wor
 make: *** [check] Error 1
 ```
 
+Merged current main and resolved source conflicts by retaining main guidance while restoring only the literal-single-asterisk instruction. The focused guide test failed during the first full check because guide() wrapped “literal single” across lines; kept the test and adjusted the guide sentence, then it passed. make format && make check passes (378 Python tests plus Node tests). Verified AGENTS.md, chitty.toml, and src/chitty/__init__.py match main; no setup or version changes from this ticket.
+
 ## Summary
 
-Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
+Restored the literal single-asterisk Markdown instruction in the general guide and work, review, and plan role prompts; added isolated guide-output regression coverage. Merged current main to resolve the documented stale-branch integration issue. Verification: focused regression passes; make format and make check pass (378 Python tests and Node tests); chitty fix passes with existing task-text warnings. AGENTS.md, chitty.toml, and src/chitty/__init__.py match main. Follow-up: main can refresh managed setup after landing.
 
 ## History
 
@@ -146,3 +148,5 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-08T16:43:19Z eager-puffin: changed notes
 - 2026-11-08T16:43:19Z eager-puffin blocked → doing
 - 2026-11-08T16:53:47Z zesty-ibis: changed notes
+- 2026-11-08T16:58:12Z zesty-ibis: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T16:58:12Z zesty-ibis doing → review
