@@ -489,6 +489,16 @@ Owner set to `human` on 2026-11-07: `chitty run --mode work` looped on this tick
 
 Unparked after TASK-224 and TASK-227: branches no longer bump the version or regenerate managed setup; a doing ticket with a failed check now starts a worker. Recheck and finish the branch before review.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.43), but working tree has 0.1.41:
+  src/chitty/guide.md
+  src/chitty/roles/work.md
+make: *** [check] Error 1
+```
+
 ## Summary
 
 Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
@@ -581,3 +591,4 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-08T13:05:12Z eager-puffin: changed owner, acceptance criteria, notes
 - 2026-11-08T13:07:01Z eager-puffin: changed acceptance criteria
 - 2026-11-08T13:08:33Z eager-puffin: wrote the plan
+- 2026-11-08T13:47:18Z sunny-marten: changed notes
