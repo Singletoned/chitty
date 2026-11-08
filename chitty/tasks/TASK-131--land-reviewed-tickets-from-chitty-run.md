@@ -224,6 +224,8 @@ FAILED (failures=5)
 make: *** [check] Error 5
 ```
 
+Added a common-directory flock around landing, serializing fast-forwards and cleanup for different tickets. The concurrent-reviewers regression passes (python -m unittest tests.test_run_lock.TestRunLock.test_concurrent_reviewers_take_different_tickets). Full make format && make check: format, Ruff, and Pyright pass; four legacy tests fail because they create untracked bin/ fixtures in main (now correctly rejected), and one test agent manually merges/removes its own worktree. The concurrent check has shell getcwd warnings caused by test agents removing worktrees; it still passes. Acceptance criteria 2 and 3 still need explicit landing tests and have not been verified.
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -256,3 +258,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:08:32Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:20:50Z daring-gannet: changed notes
 - 2026-11-08T13:21:06Z daring-gannet: wrote the plan
+- 2026-11-08T13:24:03Z daring-gannet: changed notes
