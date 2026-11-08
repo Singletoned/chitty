@@ -1,6 +1,6 @@
 ---
 title: Add `--note-file` and stdin input for task text
-status: review
+status: done
 created: 2026-11-01
 ---
 
@@ -50,6 +50,10 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-67
 
 Verified both stdin paths preserve backticks; inline notes precede file notes. `chitty fix` completed with unrelated existing Markdown delimiter warnings in other tasks.
 
+Reviewed: focused tests and make format && make check pass.
+1: pass - add and edit preserve backticks from stdin via --note-file
+2: pass - inline notes precede the file note
+
 ## Summary
 
 Implemented `--note-file` for `chitty add` and `chitty edit`, including stdin support and ordering after repeated `--note` values. Updated `PLAN.md` and added CLI regression tests. Verified focused tests and full `make format && make check`; no follow-ups.
@@ -64,3 +68,5 @@ Implemented `--note-file` for `chitty add` and `chitty edit`, including stdin su
 - 2026-11-08T10:12:44Z friendly-dormouse: wrote the plan
 - 2026-11-08T10:15:54Z friendly-dormouse: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T10:15:54Z friendly-dormouse doing → review
+- 2026-11-08T11:01:51Z vivid-puffin: changed notes; ticked acceptance criteria
+- 2026-11-08T11:01:51Z vivid-puffin review → done
