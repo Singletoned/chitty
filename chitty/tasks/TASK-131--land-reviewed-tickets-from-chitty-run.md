@@ -228,6 +228,8 @@ Added a common-directory flock around landing, serializing fast-forwards and cle
 
 Attempted to move test fake executables outside repository to avoid dirty-main landing refusals; this broke tests whose fixture commits intentionally include bin/ artifacts, so reverted that experiment. Full check still has legacy test fixture conflicts plus tests that depend on their setup commits. Criteria 2/3 remain unverified; no criteria ticked in this session.
 
+Re-ran make check: ruff and pyright pass; unittest has 4 failures from legacy run tests creating untracked bin/ files in main, plus 4 setup errors where tests attempt empty second commits after auto-commit/landing changed their assumptions. Attempted to ignore /bin/ in test repositories, but that exposed tests relying on those files being staged; reverted the experiment. No criterion 2/3 test has been added or verified. Need revise run tests around the new contract rather than bypassing clean-check guards.
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -263,3 +265,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:24:03Z daring-gannet: changed notes
 - 2026-11-08T13:25:50Z daring-gannet: changed notes
 - 2026-11-08T13:26:34Z daring-gannet: wrote the plan
+- 2026-11-08T13:29:34Z daring-gannet: changed notes
