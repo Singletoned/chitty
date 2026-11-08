@@ -19,14 +19,17 @@ Out of scope: changing landing itself.
 ## Acceptance Criteria
 
 - [ ] A test shows the review instructions no longer mentioning merging or removing
-- [ ] `PLAN.md`, `README.md` and `src/chitty/guide.md` describe landing, and `__version__` is bumped above `main`'s
+- [ ] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
 
 ## Notes
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Repurposed: its refusals moved back into `TASK-131`, because landing without them was unsafe, and this now holds the prompt and documentation part.
+
+TASK-224 supersedes the branch-version-bump requirement; version selection happens at release.
 
 ## History
 
 - 2026-11-04T15:11:35Z mellow-newt → todo
 - 2026-11-04T15:17:39Z mellow-newt: changed title, description, acceptance criteria, notes
 - 2026-11-06T16:24:15Z youthful-toad: changed priority
+- 2026-11-08T13:05:15Z eager-puffin: changed acceptance criteria, notes
