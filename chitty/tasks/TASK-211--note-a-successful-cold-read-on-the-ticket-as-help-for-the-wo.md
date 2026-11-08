@@ -18,7 +18,10 @@ A related gap: a planner can add notes after another session has already claimed
 
 Suggestion origin: echonomicon
 
+Cold-read finding: define a successful ref as one implemented against the current ticket text with no unresolved serious findings. The non-claimant `doing`/`done` note warning is a separate feature and out of scope. Require a guide regression test that fails before the fix. Clarify the diff command uses the configured main branch.
+
 ## History
 
 - 2026-11-06T13:58:02Z youthful-toad → backlog
 - 2026-11-06T13:58:03Z youthful-toad: changed notes
+- 2026-11-08T14:15:13Z eager-puffin: changed notes
