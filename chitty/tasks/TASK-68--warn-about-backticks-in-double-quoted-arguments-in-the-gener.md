@@ -1,6 +1,6 @@
 ---
 title: Warn about backticks in double-quoted arguments in the generated guidance
-status: doing
+status: blocked
 priority: medium
 depends_on:
   - TASK-143
@@ -35,6 +35,10 @@ Seen again in `docs/pi-token-usage.md` on `pi-token-analysis`, 2026-11-04: about
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the ticket had no criteria, and following the instruction's location would have missed workers and reviewers. Mentioned apostrophes, which single quotes break on.
 
+Implementation is committed in 1448354 (Task: TASK-68). Added the shell backtick warning to the generated guide and all `work`, `review`, and `plan` role guides, with `tests/test_guide_backticks.py`. The regression test failed before the guide changes and passes after them. `make format && make check` passes.
+
+Blocked on the acceptance criterion requiring `__version__` to be above `main`'s: both this branch and `main` are `0.1.43`, but the repository instructions explicitly prohibit changing `src/chitty/__init__.py` on a ticket branch and require `make release` to choose published bumps. A maintainer must decide whether to revise the criterion or authorize a release/version change; no version file was edited.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -43,3 +47,5 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the ticket had no crite
 - 2026-11-04T21:44:41Z mellow-newt backlog → todo
 - 2026-11-08T11:12:03Z calm-badger todo → doing
 - 2026-11-08T11:12:24Z calm-badger: wrote the plan
+- 2026-11-08T11:14:55Z calm-badger: changed notes
+- 2026-11-08T11:14:55Z calm-badger doing → blocked
