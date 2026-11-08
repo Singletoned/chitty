@@ -3,6 +3,8 @@
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
+- Backticks run commands inside double-quoted shell arguments, so pass such text
+  in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Never review work you did. Review in the ticket's branch worktree, independently
   inspecting the ticket, every acceptance criterion, changes, and verification.
 - Verify first, then tick every verified criterion and add your note in one
