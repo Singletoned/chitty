@@ -19,7 +19,7 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 
 ## Plan
 
-Add the literal single-asterisk Markdown instruction to the existing backtick guidance in plan and guide, and add it as a focused bullet in work and review. Add a TestGuide regression covering guide() and guide(role) for all three roles, bump the package version, regenerate managed init files, run the required checks, and commit with Task: TASK-181.
+Add the literal single-asterisk Markdown instruction to the existing backtick guidance in plan and guide, and as a focused bullet in work and review. Keep the guide-output regression test. Do not change the branch version or managed setup files; run the required checks and hand off for review. The main checkout regenerates setup after landing.
 
 ## Notes
 
@@ -106,3 +106,4 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-07T09:39:54Z vivid-dormouse: changed owner, notes
 - 2026-11-08T13:05:13Z eager-puffin: changed owner, acceptance criteria, notes
 - 2026-11-08T13:05:42Z eager-puffin: changed description
+- 2026-11-08T13:07:02Z eager-puffin: wrote the plan
