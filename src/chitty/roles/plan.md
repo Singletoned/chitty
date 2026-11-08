@@ -4,7 +4,9 @@ Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
 - Put paths, globs, commands, IDs, and code in backticks in task titles,
-  descriptions, criteria, and notes.
+  descriptions, criteria, and notes. When you write a literal single `*` in
+  Markdown, escape it or enclose the pattern in backticks, for example
+  `files/*.jpg`.
 - Backticks run commands inside double-quoted shell arguments, so pass such text
   in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Write tickets that a fresh agent can complete and another can verify: make
