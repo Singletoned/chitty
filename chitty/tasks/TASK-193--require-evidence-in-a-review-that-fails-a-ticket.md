@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: doing
+status: blocked
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -30,7 +30,7 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_review_evidence.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
+- [x] A test in `tests/test_guide_review_evidence.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
 - [x] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, no longer containing `such as a throwaway failing test`, and not matching `\bmake\b`
 
 ## Plan
@@ -84,6 +84,8 @@ check_version_bump: changed files require a version above main (0.1.43), but wor
 make: *** [check] Error 1
 ```
 
+Focused regression test passes and verifies all required guide phrases and exclusions; chitty fix completed with pre-existing task-format warnings. make check is blocked: check_version_bump requires src/chitty/__init__.py above main 0.1.43 because src/chitty/roles/review.md changed. The ticket explicitly says no version bump is needed. Human decision needed: authorize a version bump for this check, or provide another way to satisfy it without one.
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -131,3 +133,5 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-08T13:08:50Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:08:51Z eager-puffin: wrote the plan
 - 2026-11-08T13:56:08Z lively-lapwing: changed notes
+- 2026-11-08T13:57:38Z lively-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-08T13:57:38Z lively-lapwing doing → blocked
