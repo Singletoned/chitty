@@ -1,6 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: review
+status: done
 created: 2026-11-06
 ---
 
@@ -46,6 +46,9 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Human unblock: committed the guide and regression test as 3629720 (Task: TASK-211), then merged current main. Working tree is clean; make format and make check pass (386 Python tests plus Node tests). Ready for independent review.
 
+Reviewed:
+1: pass - Guide and regression cover the current read, configured main diff, criteria warning, and superseded refs. The regression failed against the prior guide and passed against the updated guide; `make format && make check` passed (398 Python tests and Node tests).
+
 ## Summary
 
 Guide change and regression test are ready for review. Verification: focused test passed; make format and make check passed (378 Python tests and Node tests). Follow-up: reviewer should confirm wording and criteria.
@@ -77,3 +80,5 @@ Guide change and regression test are ready for review. Verification: focused tes
 - 2026-11-08T17:32:43Z sunny-marten review → blocked
 - 2026-11-08T17:57:36Z eager-puffin: changed owner, notes
 - 2026-11-08T17:57:36Z eager-puffin blocked → review
+- 2026-11-08T18:18:15Z vivid-crane: changed notes; ticked acceptance criteria
+- 2026-11-08T18:18:15Z vivid-crane review → done
