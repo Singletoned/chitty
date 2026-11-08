@@ -31,6 +31,13 @@ Out of scope: caching across commands, files changed by other processes while on
 - [ ] A regression test shows that, on one `Repo`, `tasks()` and `find()` return a task's new status after that `Repo` edits it. It passes before the fix too; it guards the cache clearing.
 - [ ] `make check` passes.
 
+## Plan
+
+1. Inspect the existing Repo, git, config, and list tests to map all cache inputs and write paths.
+2. Add Repo-scoped private accessors and invalidation covering task-location data, git-derived values, historical files, and main files; cache git_common_dir per root.
+3. Add the subprocess git-trace performance regression and the same-Repo write/read cache invalidation regression, first running the performance test against the current code.
+4. Run formatting and make check, then verify and hand off the ticket.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-229/1`): the implementation passed `make check`; the criterion 1 test failed first with `120 != 32`; `chitty list` dropped from about 4s to 1.4s. Outcomes:
@@ -49,3 +56,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-229/1`): the implementation passed `ma
 - 2026-11-08T10:37:06Z calm-eel: changed description, acceptance criteria, notes
 - 2026-11-08T10:37:06Z calm-eel backlog → todo
 - 2026-11-08T11:36:53Z able-dormouse todo → doing
+- 2026-11-08T11:37:59Z able-dormouse: wrote the plan
