@@ -207,6 +207,18 @@ class TestStore(StoreTestCase):
                 Edit(status="done", note="Reviewed: looks good\n1: pass - looks good"),
             )
 
+    def test_review_criteria_are_immutable_through_repo_edit(self):
+        stored = self.add("One")
+        self.repo.edit(stored.id, Edit(status="review"))
+        original = stored.path.read_text()
+        for mutation, message in (
+            (Edit(add_criteria=["New"]), "--ac is not allowed"),
+            (Edit(rm_criteria=[1]), "--rm-ac is not allowed"),
+        ):
+            with self.assertRaisesRegex(ChittyError, message):
+                self.repo.edit(stored.id, mutation)
+            self.assertEqual(stored.path.read_text(), original)
+
     def test_edit_that_changes_nothing_records_no_history(self):
         stored = self.add("One", priority="high")
         before = stored.path.read_text()

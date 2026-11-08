@@ -827,8 +827,14 @@ VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
 def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
     """Validate an edit that depends only on the current task and its actor."""
     previous_status = task.frontmatter.status
-    if previous_status == "review" and edit.set_criteria:
-        raise ChittyError("--set-ac is not allowed while a task is in review")
+    if previous_status == "review":
+        for criteria, option in (
+            (edit.add_criteria, "--ac"),
+            (edit.rm_criteria, "--rm-ac"),
+            (edit.set_criteria, "--set-ac"),
+        ):
+            if criteria:
+                raise ChittyError(f"{option} is not allowed while a task is in review")
     if edit.status == "blocked" and not (edit.note or edit.notes):
         raise ChittyError("setting status blocked requires --note with the reason")
     is_review_transition = previous_status == "review" and edit.status in {"doing", "done"}
