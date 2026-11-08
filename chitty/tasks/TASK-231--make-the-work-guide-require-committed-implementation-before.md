@@ -19,6 +19,9 @@ In `src/chitty/roles/work.md`, clarify that `autocommit = true` commits Chitty t
 
 Observed on TASK-131 and TASK-211: workers recorded successful make checks and moved tickets to review, but reviewers repeatedly refused dirty worktrees. The existing work guide says git status or git add after a Chitty edit is unnecessary without explicitly saying that unrelated implementation changes remain uncommitted.
 
+Read-only cold read found no serious ambiguity: change src/chitty/roles/work.md and add tests/test_guide_work_commits.py; the new guide test must be run against unchanged work.md and fail before the fix, then pass with make check. Rejected the provenance concern: chitty show in the TASK-131 and TASK-211 worktrees records three review preflight failures and human escalation each; the main checkout ticket copies are stale until those branches land. An implementing fail-first cold read remains before promotion from backlog.
+
 ## History
 
 - 2026-11-08T17:58:14Z eager-puffin → backlog
+- 2026-11-08T17:59:51Z eager-puffin: changed notes
