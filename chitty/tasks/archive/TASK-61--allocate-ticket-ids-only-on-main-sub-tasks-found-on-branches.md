@@ -13,8 +13,11 @@ Branches that `chitty add` independently collide on the next ID, and `git.delete
 
 Superseded on 2026-11-05: the human chose `BACKLOG` IDs for tickets raised on branches, rather than sending them through the inbox.
 
+Archived at the human’s request: branch-created BACKLOG tickets (TASK-190 and TASK-192) supersede the inbox-based design.
+
 ## History
 
 - 2026-10-29 → backlog
 - 2026-11-05T14:43:42Z mellow-newt: changed notes
 - 2026-11-08T14:13:14Z eager-puffin backlog → archived
+- 2026-11-08T14:13:17Z eager-puffin: changed notes
