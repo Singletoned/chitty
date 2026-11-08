@@ -145,7 +145,11 @@ reviewer sees exactly what would land; uncommitted files in the worktree or a
 merge conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed
 (integration)` note, without starting a session, and count towards the
-failed-review limit. Choose a ticket with `chitty run
+failed-review limit. In work mode, a failing check on an already-`doing`
+ticket is recorded as `Check failed before this session: ...` and the agent
+starts so it can fix the branch. A failing check on a `todo` ticket exits 1
+with `check failed before <ID> started: ...`, leaving the ticket unchanged and
+starting no agent. Choose a ticket with `chitty run
 --ticket ID`; pass agent options with `chitty run -- --model MODEL`. Use
 `chitty run --owner NAME` to select that owner's tickets; it cannot be combined
 with `--ticket`. It

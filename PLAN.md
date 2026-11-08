@@ -736,15 +736,21 @@ what would land:
    resolution Git recorded for another branch is never replayed unchecked.
 4. Only then does `setup` run, because the merge can change dependencies.
 5. `check` runs in the ticket worktree after setup, with combined output
-   captured. A failure moves the ticket to `doing` with the last 20 output lines,
-   fenced as a code block so they cannot break the ticket's Markdown, in a
-   `Review failed (work)` note and starts no agent. In work mode setup and
-   check still run before the agent claim.
+   captured. In review mode, a failure moves the ticket to `doing` with the last
+   20 output lines, fenced as a code block so they cannot break the ticket's
+   Markdown, in a `Review failed (work)` note and starts no agent. In work mode,
+   a `doing` ticket gets a note-only `Check failed before this session: ...`
+   edit and the agent starts normally; a `todo` ticket raises an error with
+   `check failed before <ID> started: ...`, changing nothing and starting no
+   agent. In all work-mode cases setup and check still run before the agent
+   claim.
 
-After either failure no agent starts, no usage line is written, and `chitty
-run` exits 0 because the status changed, printing the change. The moves go
-through `Repo.edit` under the run's own actor, which never worked on the
-ticket, so they count with reviewers' failures towards `REVIEW_FAILURE_LIMIT`.
+A review check failure starts no agent, writes no usage line, and `chitty run`
+exits 0 because the status changed, printing the change. The move goes through
+`Repo.edit` under the run's own actor, which never worked on the ticket, so it
+counts with reviewers' failures towards `REVIEW_FAILURE_LIMIT`. A work-mode
+failure on a `todo` ticket exits 1 without changing the ticket; a failure on a
+`doing` ticket proceeds to the agent, which can fix it.
 Interrupting the merge aborts it and exits 130. A clean merge is not
 repeated or re-reviewed if `main` moves during the review; landing is
 `TASK-131`.
