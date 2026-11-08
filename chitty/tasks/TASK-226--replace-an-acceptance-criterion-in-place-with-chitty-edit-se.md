@@ -1,6 +1,6 @@
 ---
 title: Replace an acceptance criterion in place with `chitty edit --set-ac`
-status: doing
+status: review
 priority: medium
 created: 2026-11-07
 ---
@@ -28,7 +28,7 @@ Out of scope: reordering criteria, and replacing a criterion's text while keepin
 
 ## Acceptance Criteria
 
-- [ ] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
+- [x] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
 - [x] Tests show `--set-ac` with an out-of-range number, and with a number also given to `--rm-ac`, failing with the messages in the description and leaving the file unchanged
 - [x] A test in `tests/test_mcp.py` shows the MCP `edit` tool doing the same replacement with `set_ac`
 - [x] Tests show `--set-ac` refused with the message in the description while the task is in `review`, both on its own and in a `review` → `done` edit with a complete `Reviewed:` note and verdicts, leaving the file unchanged
@@ -73,9 +73,11 @@ Review failed (tests): criterion 1 is not met: the required CLI regression test 
 3: pass - MCP replacement test covers three criteria.
 4: pass - Review-state refusal is tested in both forms.
 
+Corrected the CLI regression test to add a third criterion within the test, so it verifies replacing criterion 2 of 3 without changing other tests. Focused test passed; make format && make check passed (373 Python tests and Node tests). The first full check attempt exposed that changing the shared fixture broke unrelated tests, so the fixture change was narrowed to the focused test.
+
 ## Summary
 
-Handoff: added repeatable in-place acceptance-criterion replacement; replacements untick criteria, preserve order, validate conflicts and text, record history, and refuse edits while in review. Verification: focused CLI/MCP tests and `make format && make check` passed. Follow-ups: none.
+Handoff: corrected the CLI regression test to exercise --set-ac on criterion 2 of 3 and verify order plus unticking. Verification: focused test and make format && make check pass (373 Python tests and Node tests). Follow-ups: none.
 
 ## History
 
@@ -91,3 +93,5 @@ Handoff: added repeatable in-place acceptance-criterion replacement; replacement
 - 2026-11-08T11:38:16Z brisk-toad: changed acceptance criteria, notes
 - 2026-11-08T11:38:16Z brisk-toad review → doing
 - 2026-11-08T11:46:10Z vivid-yellowhammer: wrote the plan
+- 2026-11-08T11:48:53Z vivid-yellowhammer: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T11:48:53Z vivid-yellowhammer doing → review
