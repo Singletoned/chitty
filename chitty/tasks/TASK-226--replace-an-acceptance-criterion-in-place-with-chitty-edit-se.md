@@ -1,6 +1,6 @@
 ---
 title: Replace an acceptance criterion in place with `chitty edit --set-ac`
-status: review
+status: doing
 priority: medium
 created: 2026-11-07
 ---
@@ -28,7 +28,7 @@ Out of scope: reordering criteria, and replacing a criterion's text while keepin
 
 ## Acceptance Criteria
 
-- [x] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
+- [ ] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
 - [x] Tests show `--set-ac` with an out-of-range number, and with a number also given to `--rm-ac`, failing with the messages in the description and leaving the file unchanged
 - [x] A test in `tests/test_mcp.py` shows the MCP `edit` tool doing the same replacement with `set_ac`
 - [x] Tests show `--set-ac` refused with the message in the description while the task is in `review`, both on its own and in a `review` → `done` edit with a complete `Reviewed:` note and verdicts, leaving the file unchanged
@@ -67,6 +67,12 @@ Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/T
 
 Implemented `--set-ac` across the model, store, CLI, and MCP. The new CLI regression tests failed first with `No such option --set-ac` before implementation, then passed. `make format && make check` passed: 372 Python tests and Node tests.
 
+Review failed (tests): criterion 1 is not met: the required CLI regression test edits criterion 2 of 3, but tests/test_cli.py::TestEdit::test_edit_sets_criterion_in_place_and_unticks_it creates only two criteria. Update that test to cover three criteria and rerun the checks.
+1: fail - The CLI test uses two criteria instead of three.
+2: pass - Out-of-range and conflict behavior is tested with unchanged files.
+3: pass - MCP replacement test covers three criteria.
+4: pass - Review-state refusal is tested in both forms.
+
 ## Summary
 
 Handoff: added repeatable in-place acceptance-criterion replacement; replacements untick criteria, preserve order, validate conflicts and text, record history, and refuse edits while in review. Verification: focused CLI/MCP tests and `make format && make check` passed. Follow-ups: none.
@@ -82,3 +88,5 @@ Handoff: added repeatable in-place acceptance-criterion replacement; replacement
 - 2026-11-08T11:30:56Z plucky-wren: wrote the plan
 - 2026-11-08T11:34:35Z plucky-wren: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T11:34:35Z plucky-wren doing → review
+- 2026-11-08T11:38:16Z brisk-toad: changed acceptance criteria, notes
+- 2026-11-08T11:38:16Z brisk-toad review → doing
