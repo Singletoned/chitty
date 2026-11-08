@@ -1,6 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: review
+status: doing
 created: 2026-11-06
 ---
 
@@ -34,6 +34,8 @@ Implementing cold read against the revised ticket: guide regression test first f
 
 Added the plan-guide handoff and regression test. Confirmed the new test failed before the guide change; `make format && make check` passes (378 Python tests and Node tests). Candidate read ref is `refs/cold-read/TASK-211/1`; inspect with `git diff main...refs/cold-read/TASK-211/1` and check against current criteria before reuse. No unresolved serious finding.
 
+Review failed (work): the worktree has uncommitted changes: `src/chitty/roles/plan.md`, `tests/test_guide_plan.py`.
+
 ## Summary
 
 Guide change ready for review. Verification: focused test failed first, then full make format and make check passed. Follow-up: reviewer should confirm wording and criteria.
@@ -53,3 +55,5 @@ Guide change ready for review. Verification: focused test failed first, then ful
 - 2026-11-08T16:44:20Z lively-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T16:44:24Z lively-zander: changed summary
 - 2026-11-08T16:44:24Z lively-zander doing → review
+- 2026-11-08T17:15:10Z open-kestrel: changed notes
+- 2026-11-08T17:15:10Z open-kestrel review → doing
