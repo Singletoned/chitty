@@ -1,6 +1,6 @@
 ---
 title: Bump the version at release, not on ticket branches
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -47,6 +47,10 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-224/1`; 8 tests failed first and then 
 
 Verified with the five temporary-repository release tests, mate --list, make -n release, direct release-version execution, and make format && make check (361 Python tests and Node tests passed). chitty fix reported existing Markdown delimiter warnings in unrelated tickets; it made no repairs.
 
+Reviewed: release-time version selection, label handling, Makefile guards, focused tests, mate --list, and make format && make check all pass.
+1: pass - Branch checks and release guidance are updated; mate --list includes release.
+2: pass - Temporary repository release tests cover patch, minor, archived/active labels, pre-tag labels, version precedence, and missing tags; full checks pass.
+
 ## Summary
 
 Implemented release-time version selection in scripts/release_version.py, including highest valid v* tag selection, current-version precedence, patch/minor ticket-label detection, archived tickets, and clear missing-tag failure. Removed branch version enforcement, updated release guidance, and changed make release to commit, tag, push, and report push rollback instructions. Handoff: review the compact Makefile version-write command and release behavior. Verification: focused release tests and full make format && make check pass. Follow-ups: none.
@@ -61,3 +65,5 @@ Implemented release-time version selection in scripts/release_version.py, includ
 - 2026-11-08T09:27:54Z upbeat-gannet: wrote the plan
 - 2026-11-08T09:32:44Z upbeat-gannet: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T09:32:44Z upbeat-gannet doing → review
+- 2026-11-08T10:25:39Z eager-zander: changed notes; ticked acceptance criteria
+- 2026-11-08T10:25:39Z eager-zander review → done
