@@ -1,6 +1,6 @@
 ---
 title: Refuse `--ac` and `--rm-ac` while a task is in review
-status: review
+status: done
 created: 2026-11-07
 ---
 
@@ -35,6 +35,10 @@ Review failed (tests): the fail-first regression stops on the first --ac asserti
 
 Review feedback addressed: --ac and --rm-ac now have independent CLI regressions; the combined review-to-done case uses a distinct reviewer and a syntactically valid verdict. Focused tests pass, and make format && make check passed (390 Python tests plus Node tests). chitty fix completed; existing Markdown warnings are unrelated.
 
+Reviewed: verified all three independent CLI regressions fail against the old guard and pass with the fix; shared store coverage and doing-to-review pass. make format && make check passed (403 Python tests and Node tests).
+1: pass - verified fail-first cases, rejection messages and unchanged files
+2: pass - verified transition and shared store tests and checks
+
 ## Summary
 
 Rejects all criterion mutations while the task was already in review. Independent CLI regressions cover --ac, --rm-ac, and review-to-done with a different reviewer and valid verdict; shared Repo.edit coverage and doing-to-review allowance remain. Verified focused tests and make format && make check (390 Python tests plus Node tests). Follow-up: none.
@@ -58,3 +62,5 @@ Rejects all criterion mutations while the task was already in review. Independen
 - 2026-11-08T17:53:23Z golden-zander review → doing
 - 2026-11-08T17:58:41Z daring-dormouse: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T17:58:42Z daring-dormouse doing → review
+- 2026-11-08T18:22:14Z able-zander: changed notes; ticked acceptance criteria
+- 2026-11-08T18:22:14Z able-zander review → done
