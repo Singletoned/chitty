@@ -170,6 +170,30 @@ FAILED (failures=5)
 make: *** [check] Error 5
 ```
 
+Review failed (work): check exited with status 2:
+```text
+
+
+======================================================================
+test_concurrent_reviewers_take_different_tickets (tests.test_run_lock.TestRunLock.test_concurrent_reviewers_take_different_tickets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-131/tests/test_run_lock.py", line 215, in test_concurrent_reviewers_take_different_tickets
+    self.assertEqual(reviewer.returncode, 0, stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpai1ktb67/repo/.worktrees/task-1...
+warning: cannot read usage file /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/chitty-usage-ywxe80bd/session.json: file is missing
+Error: autocommit failed: `git merge --ff-only task-1` in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpai1ktb67/repo:
+fatal: update_ref failed for ref 'HEAD': cannot lock ref 'HEAD': is at fe19e617e32fbcf5a6ada1bcafcecfa50e59b383 but expected 4819d9c42d8de82f1de8c4eaaba4a6e9028d1507
+
+
+----------------------------------------------------------------------
+Ran 365 tests in 46.345s
+
+FAILED (failures=5)
+make: *** [check] Error 5
+```
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -195,3 +219,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T11:01:47Z kind-puffin: changed notes
 - 2026-11-08T11:03:41Z brisk-crane: changed notes
 - 2026-11-08T11:05:35Z plucky-jay: changed notes
+- 2026-11-08T11:07:30Z witty-yellowhammer: changed notes
