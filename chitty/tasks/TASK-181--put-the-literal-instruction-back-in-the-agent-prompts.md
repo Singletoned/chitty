@@ -19,7 +19,7 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 
 ## Plan
 
-Add the literal single-asterisk Markdown instruction to the existing backtick guidance in plan and guide, and as a focused bullet in work and review. Keep the guide-output regression test. Do not change the branch version or managed setup files; run the required checks and hand off for review. The main checkout regenerates setup after landing.
+Add the literal single-asterisk Markdown instruction to the existing backtick guidance in plan and guide, and as a focused bullet in work and review. Put the guide-output regression in tests/test_guide_literal_star.py and confirm it fails without the change. Do not change the branch version or managed setup files; run the required checks and hand off for review. The main checkout regenerates setup after landing.
 
 ## Notes
 
@@ -110,3 +110,4 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-08T13:05:42Z eager-puffin: changed description
 - 2026-11-08T13:07:02Z eager-puffin: wrote the plan
 - 2026-11-08T13:08:48Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T13:08:52Z eager-puffin: wrote the plan
