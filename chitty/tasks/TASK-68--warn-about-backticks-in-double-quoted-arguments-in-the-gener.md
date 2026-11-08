@@ -23,6 +23,10 @@ The instruction now lives in `src/chitty/guide.md` and `src/chitty/roles/plan.md
 
 - [ ] A test shows `chitty guide`, and each role's output, containing the warning, and `__version__` is bumped above `main`'s
 
+## Plan
+
+Add the shell-safety warning immediately after the backtick-formatting instruction in the generated guide and all three packaged role guides (`plan`, `work`, and `review`). Add focused guide-output regression coverage, including the version assertion required by the ticket. Keep version handling aligned with the repository's branch rules and run the full check suite before handoff.
+
 ## Notes
 
 Suggestion origin: circuitry
@@ -38,3 +42,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the ticket had no crite
 - 2026-11-04T21:44:40Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T21:44:41Z mellow-newt backlog → todo
 - 2026-11-08T11:12:03Z calm-badger todo → doing
+- 2026-11-08T11:12:24Z calm-badger: wrote the plan
