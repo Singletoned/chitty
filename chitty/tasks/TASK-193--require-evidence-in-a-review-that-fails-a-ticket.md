@@ -75,6 +75,15 @@ Unparked: TASK-227 now lets a worker fix a failing check on a doing ticket. Rech
 
 Aligned the guide regression-test location with current repository guidance: use a dedicated `tests/test_guide_<topic>.py` file rather than adding to `TestGuide` in `tests/test_cli.py`.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.43), but working tree has 0.1.41:
+  src/chitty/roles/review.md
+make: *** [check] Error 1
+```
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -121,3 +130,4 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-08T13:05:02Z eager-puffin: changed owner, notes
 - 2026-11-08T13:08:50Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:08:51Z eager-puffin: wrote the plan
+- 2026-11-08T13:56:08Z lively-lapwing: changed notes
