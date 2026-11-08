@@ -21,7 +21,7 @@ In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s desc
 ## Acceptance Criteria
 
 - [ ] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
-- [ ] `__version__` is bumped above `main`'s
+- [ ] The ticket branch does not bump `__version__`; version selection happens at release.
 
 ## Notes
 
@@ -29,9 +29,12 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my quoted phrase is not
 
 Added 2026-11-05 from the cold read of `TASK-193`, which edits the same failure-note bullet in `src/chitty/roles/review.md`: keep its rule that a claim about what code does is run first and the note gives what was run and what it printed. Whichever lands second merges the wording.
 
+TASK-224 supersedes the branch-version-bump requirement.
+
 ## History
 
 - 2026-11-04T20:47:41Z mellow-newt → backlog
 - 2026-11-04T20:48:51Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T20:48:52Z mellow-newt backlog → todo
 - 2026-11-05T17:10:25Z mellow-newt: changed notes
+- 2026-11-08T13:05:16Z eager-puffin: changed acceptance criteria, notes

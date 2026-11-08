@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` about indented lines inside a paragraph
-status: todo
+status: done
 created: 2026-11-05
 ---
 
@@ -24,8 +24,14 @@ Out of scope: other ways pasted output gets rewritten that this rule does not ca
 
 ## Acceptance Criteria
 
-- [ ] A test writes a ticket whose Notes have a paragraph with a two-space-indented second line and asserts exactly one warning with the message in the description; the worker records that it failed before the change
-- [ ] A test shows no warning for the same output in a fenced code block, an indented code block, or a numbered list item with an indented continuation line
+- [x] A test writes a ticket whose Notes have a paragraph with a two-space-indented second line and asserts exactly one warning with the message in the description; the worker records that it failed before the change
+- [x] A test shows no warning for the same output in a fenced code block, an indented code block, or a numbered list item with an indented continuation line
+
+## Plan
+
+1. Add focused tests in tests/test_check.py for indented paragraph warnings and exclusions (fenced code, indented code, list continuation), verifying the warning message and field scope.
+2. Extend _markdown_warnings in src/chitty/check.py to inspect block-level paragraph tokens and source line ranges using split("\n"), emitting one warning per affected markdown field.
+3. Run the focused regression tests, then make format and make check; record verification and finish the ticket for review.
 
 ## Notes
 
@@ -41,6 +47,20 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-19
 - Not a problem: "Deleted branch task-2" in the `make check` log comes from a test's temporary repository; this repository has no such branch.
 - None of these changes the design, so no second read.
 
+Regression test confirmed the unfixed behavior: the indented Notes paragraph test failed with [] != ['warning']; exclusion cases passed.
+
+Verification: the regression test failed before the implementation, then passed; the exclusion test passed. make format && make check passed (368 Python tests and Node tests). chitty fix reported the expected archived-ticket warnings, plus an existing warning in active TASK-63; no task files were changed.
+
+1: pass - Notes paragraph warning has the required exact message and exactly one warning.
+
+2: pass - Fenced code, indented code, and numbered-list continuation produce no warning.
+
+Reviewed: implementation and focused tests satisfy both criteria; make format && make check passed (368 Python tests and Node tests).
+
+## Summary
+
+Implemented top-level paragraph indentation warnings for Description, Plan, Notes, and Summary using markdown-it source maps and split("\n"). Added regression coverage for Notes plus fenced, indented-code, and list exclusions. Verified with make format && make check; ready for review.
+
 ## History
 
 - 2026-11-05T19:11:12Z youthful-toad → backlog
@@ -49,3 +69,10 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-19
 - 2026-11-07T09:16:15Z vivid-dormouse: changed title
 - 2026-11-07T09:20:21Z vivid-dormouse: changed description, notes
 - 2026-11-07T09:20:21Z vivid-dormouse backlog → todo
+- 2026-11-08T11:17:07Z quick-dormouse todo → doing
+- 2026-11-08T11:17:30Z quick-dormouse: wrote the plan
+- 2026-11-08T11:17:48Z quick-dormouse: changed notes
+- 2026-11-08T11:20:51Z quick-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T11:20:51Z quick-dormouse doing → review
+- 2026-11-08T11:24:24Z rosy-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-08T11:24:24Z rosy-dormouse review → done

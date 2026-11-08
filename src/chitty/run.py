@@ -606,18 +606,15 @@ def _run_check(
         )
     except FileNotFoundError:
         output = f"check command not found: {command}"
-        return _fail_check(work_repo, action, output)
+        return _handle_check_failure(work_repo, action, output)
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
     if completed.returncode == 0:
         return None
     lines = completed.stdout.splitlines()[-20:]
     output = "\n".join(lines) or "(no output)"
-    return _fail_check(
-        work_repo,
-        action,
-        f"check exited with status {completed.returncode}:\n{_code_block(output)}",
-    )
+    detail = f"check exited with status {completed.returncode}:\n{_code_block(output)}"
+    return _handle_check_failure(work_repo, action, detail)
 
 
 def _code_block(text: str) -> str:
@@ -625,6 +622,19 @@ def _code_block(text: str) -> str:
     longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
     fence = "`" * max(3, longest + 1)
     return f"{fence}text\n{text}\n{fence}"
+
+
+def _handle_check_failure(work_repo: Repo, action: NextAction, detail: str) -> RunResult | None:
+    if action.mode == "work":
+        status = work_repo.find(action.id).task.frontmatter.status
+        if status == "todo":
+            raise ChittyError(f"check failed before {action.id} started: {detail}")
+        work_repo.edit(
+            action.id,
+            Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
+        )
+        return None
+    return _fail_check(work_repo, action, detail)
 
 
 def _fail_check(work_repo: Repo, action: NextAction, detail: str) -> RunResult:

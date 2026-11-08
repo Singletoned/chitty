@@ -134,6 +134,7 @@ class Edit:
     description: str | None = None
     add_criteria: Sequence[str] = ()
     rm_criteria: Sequence[int] = ()
+    set_criteria: Sequence[tuple[int, str]] = ()
     check: Sequence[int] = ()
     uncheck: Sequence[int] = ()
     plan: str | None = None  # "" removes
@@ -174,7 +175,11 @@ class Edit:
         if self.description is not None:
             task = task.with_section(DESCRIPTION, self.description)
         task = task.with_criteria(
-            add=self.add_criteria, remove=self.rm_criteria, check=self.check, uncheck=self.uncheck
+            add=self.add_criteria,
+            remove=self.rm_criteria,
+            set_criteria=self.set_criteria,
+            check=self.check,
+            uncheck=self.uncheck,
         )
         if self.plan is not None:
             task = task.with_section(PLAN, self.plan)
@@ -200,6 +205,12 @@ class Repo:
         self.root = root
         self.config = config
         self._historical_files: list[git.HistoricalFile] | None = None
+        self._task_locations: dict[tuple[str, bool], list[StoredTask]] = {}
+        self._dirty_paths: dict[Path, set[Path]] = {}
+        self._current_branch_cached = False
+        self._current_branch_value: str | None = None
+        self._main_branch_value: str | None = None
+        self._main_files: dict[tuple[str, tuple[Path, ...]], list[tuple[Path, str]] | None] = {}
 
     @classmethod
     def open(cls, root: Path) -> "Repo":
@@ -247,6 +258,10 @@ class Repo:
         return sorted(found, key=lambda t: t.id)
 
     def _tasks_in_location(self, context: Context, archived: bool) -> list[StoredTask]:
+        key = (context.name, archived)
+        cached = self._task_locations.get(key)
+        if cached is not None:
+            return list(cached)
         local = [self._load(context, path, archived) for path in self._files(context, archived)]
         directory = context.archive_directory if archived else context.directory
         relative_directory = directory.relative_to(self.root)
@@ -270,19 +285,57 @@ class Repo:
                     file.committed_at,
                 )
         tasks = {task_id: stored for task_id, (stored, _) in historical.items()}
-        dirty = git.dirty_paths(self.root, relative_directory)
-        current_branch = git.current_branch(self.root)
+        dirty = self._dirty_paths_for(relative_directory)
+        current_branch = self._current_branch()
         for stored in local:
             relative_path = stored.path.relative_to(self.root)
             previous = tasks.get(stored.id)
             if relative_path in dirty or previous is None or previous.branch == current_branch:
                 tasks[stored.id] = stored
-        return list(tasks.values())
+        result = list(tasks.values())
+        self._task_locations[key] = result
+        return list(result)
 
     def _history(self) -> list[git.HistoricalFile]:
         if self._historical_files is None:
             self._historical_files = git.historical_files(self.root, Path(BACKLOG_DIR))
         return self._historical_files
+
+    def _dirty_paths_for(self, directory: Path) -> set[Path]:
+        if directory not in self._dirty_paths:
+            self._dirty_paths[directory] = git.dirty_paths(self.root, directory)
+        return self._dirty_paths[directory]
+
+    def _current_branch(self) -> str | None:
+        if not self._current_branch_cached:
+            self._current_branch_value = git.current_branch(self.root)
+            self._current_branch_cached = True
+        return self._current_branch_value
+
+    def _main_branch(self) -> str:
+        if self._main_branch_value is None:
+            if git.is_linked_worktree(self.root):
+                self._main_branch_value = load_repo_config(git.main_checkout(self.root)).main_branch
+            else:
+                self._main_branch_value = self.config.main_branch
+        return self._main_branch_value
+
+    def _main_files_for(
+        self, branch: str, directories: tuple[Path, ...]
+    ) -> list[tuple[Path, str]] | None:
+        key = (branch, directories)
+        if key not in self._main_files:
+            self._main_files[key] = git.main_files(self.root, branch, directories)
+        return self._main_files[key]
+
+    def _invalidate(self) -> None:
+        self._historical_files = None
+        self._task_locations.clear()
+        self._dirty_paths.clear()
+        self._current_branch_cached = False
+        self._current_branch_value = None
+        self._main_branch_value = None
+        self._main_files.clear()
 
     def all_tasks(self) -> list[StoredTask]:
         return [t for context in self.contexts() for t in self.tasks(context, "all")]
@@ -465,6 +518,7 @@ class Repo:
                 if target.exists():
                     raise ChittyError(f"cannot rename {path} to {target}: destination exists")
                 git.move(self.root, path, target)
+                self._invalidate()
                 path = target
         updated = StoredTask(stored.id, stored.context, path, stored.archived, task)
         if task.render() == stored.task.render():
@@ -666,6 +720,7 @@ class Repo:
         task = task.with_field("moved_from", str(stored.id))
         self._write(new_path, task.render())
         stored.path.unlink()
+        self._invalidate()
         return StoredTask(new_id, context.name, new_path, stored.archived, task)
 
     # -- helpers ---------------------------------------------------------
@@ -703,6 +758,7 @@ class Repo:
             message = f"chitty: {verb} {change.task.id} {title}"
             trailers = "\n".join(f"Task: {task.id}" for task in change.tasks)
             git.commit(self.root, change.paths, f"{message}\n\n{trailers}")
+        self._invalidate()
         return change
 
     def _references(self, references: Sequence[str]) -> list[str]:
@@ -723,13 +779,14 @@ class Repo:
         actor_name = actor()
         task = stored.task.with_history(datetime.now(UTC), actor_name, previous, state)
         stored.path.rename(new_path)
+        self._invalidate()
         self._write(new_path, task.render())
         moved = StoredTask(stored.id, stored.context, new_path, archived, task)
         return Change(moved, (stored.path, new_path), (moved,), actor_name)
 
     def _require_current_version(self, stored: StoredTask) -> None:
         branch = stored.branch
-        if branch is None or branch == git.current_branch(self.root):
+        if branch is None or branch == self._current_branch():
             return
         worktree = git.worktree_for_branch(self.root, branch)
         if worktree is not None:
@@ -761,6 +818,7 @@ class Repo:
     def _write(self, path: Path, text: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
+        self._invalidate()
 
 
 VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
@@ -769,6 +827,8 @@ VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
 def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
     """Validate an edit that depends only on the current task and its actor."""
     previous_status = task.frontmatter.status
+    if previous_status == "review" and edit.set_criteria:
+        raise ChittyError("--set-ac is not allowed while a task is in review")
     if edit.status == "blocked" and not (edit.note or edit.notes):
         raise ChittyError("setting status blocked requires --note with the reason")
     is_review_transition = previous_status == "review" and edit.status in {"doing", "done"}
@@ -1288,9 +1348,10 @@ def _ticket_action(
             try:
                 dependency = repo.find(dependency_id)
             except ChittyError as error:
-                if git.main_files(repo.root, _main_branch(repo), ()) is None or (
-                    "used by more than one file" not in str(error)
-                ):
+                main_branch = repo._main_branch()  # pyright: ignore[reportPrivateUsage]
+                if repo._main_files_for(  # pyright: ignore[reportPrivateUsage]
+                    main_branch, ()
+                ) is None or ("used by more than one file" not in str(error)):
                     raise ChittyError(f"{stored.id} depends on {reference}: {error}") from None
                 dependency = None
             dependencies.append((dependency_id, dependency))
@@ -1303,24 +1364,16 @@ def _ticket_action(
     return NextAction(action_mode, stored.id)
 
 
-def _main_branch(repo: Repo) -> str:
-    """Read the integration branch from the primary checkout's config."""
-    if git.is_linked_worktree(repo.root):
-        return load_repo_config(git.main_checkout(repo.root)).main_branch
-    return repo.config.main_branch
-
-
 def _dependency_is_done(repo: Repo, dependency_id: TaskId, dependency: StoredTask | None) -> bool:
     """Whether a dependency is complete on the ref used to create worktrees."""
     context = repo.context_of(dependency_id)
-    main_branch = _main_branch(repo)
-    main_files = git.main_files(
-        repo.root,
-        main_branch,
-        (
-            context.directory.relative_to(repo.root),
-            context.archive_directory.relative_to(repo.root),
-        ),
+    main_branch = repo._main_branch()  # pyright: ignore[reportPrivateUsage]
+    directories = (
+        context.directory.relative_to(repo.root),
+        context.archive_directory.relative_to(repo.root),
+    )
+    main_files = repo._main_files_for(  # pyright: ignore[reportPrivateUsage]
+        main_branch, directories
     )
     if main_files is None:
         assert dependency is not None
@@ -1465,7 +1518,7 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("parent")
     if edit.description is not None:
         changes.append("description")
-    if edit.add_criteria or edit.rm_criteria or edit.uncheck:
+    if edit.add_criteria or edit.rm_criteria or edit.set_criteria or edit.uncheck:
         changes.append("acceptance criteria")
     if edit.note is not None or edit.notes:
         changes.append("notes")

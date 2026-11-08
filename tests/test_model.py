@@ -235,8 +235,10 @@ class TestSectionEdits(unittest.TestCase):
 
 
 class TestCriteriaEdits(unittest.TestCase):
-    def edit(self, text, add=(), remove=(), check=(), uncheck=()):
-        return parse(text).with_criteria(add=add, remove=remove, check=check, uncheck=uncheck)
+    def edit(self, text, add=(), remove=(), set_criteria=(), check=(), uncheck=()):
+        return parse(text).with_criteria(
+            add=add, remove=remove, set_criteria=set_criteria, check=check, uncheck=uncheck
+        )
 
     def test_check_changes_only_the_bracket(self):
         task = self.edit(SAMPLE, check=[1], uncheck=[2])

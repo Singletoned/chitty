@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty list` re-reading git and tasks for every listed task
-status: todo
+status: done
 labels:
   - bug
 priority: medium
@@ -27,9 +27,16 @@ Out of scope: caching across commands, files changed by other processes while on
 
 ## Acceptance Criteria
 
-- [ ] A new test in `tests/test_list_performance.py` builds a git repo with a `main` branch and N `todo` tasks, each depending on a task already `done` (set `review = false` in `chitty.toml` and `CHITTY_ACTOR` to set that up). It runs `chitty list` in a subprocess (`python -c 'from chitty.cli import main; main()' list`; there is no `__main__.py`) with `GIT_TRACE` set to a file, so the process-wide `git_common_dir` cache starts empty each run. The number of `trace: built-in: git` lines is the same for N=2 and N=10. Record that this test failed before the fix.
-- [ ] A regression test shows that, on one `Repo`, `tasks()` and `find()` return a task's new status after that `Repo` edits it. It passes before the fix too; it guards the cache clearing.
-- [ ] `make check` passes.
+- [x] A new test in `tests/test_list_performance.py` builds a git repo with a `main` branch and N `todo` tasks, each depending on a task already `done` (set `review = false` in `chitty.toml` and `CHITTY_ACTOR` to set that up). It runs `chitty list` in a subprocess (`python -c 'from chitty.cli import main; main()' list`; there is no `__main__.py`) with `GIT_TRACE` set to a file, so the process-wide `git_common_dir` cache starts empty each run. The number of `trace: built-in: git` lines is the same for N=2 and N=10. Record that this test failed before the fix.
+- [x] A regression test shows that, on one `Repo`, `tasks()` and `find()` return a task's new status after that `Repo` edits it. It passes before the fix too; it guards the cache clearing.
+- [x] `make check` passes.
+
+## Plan
+
+1. Inspect the existing Repo, git, config, and list tests to map all cache inputs and write paths.
+2. Add Repo-scoped private accessors and invalidation covering task-location data, git-derived values, historical files, and main files; cache git_common_dir per root.
+3. Add the subprocess git-trace performance regression and the same-Repo write/read cache invalidation regression, first running the performance test against the current code.
+4. Run formatting and make check, then verify and hand off the ticket.
 
 ## Notes
 
@@ -43,8 +50,27 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-229/1`): the implementation passed `ma
 7. A process-wide `git_common_dir` cache goes stale if a git dir moves under the same path. Rejected: a checkout's git dir does not move during one process.
 8. The 92-subprocess and 4,307-parse figures were unchecked by the reader. Rejected: the planner measured them with `cProfile` on this repo.
 
+Verified the subprocess GIT_TRACE regression: before the fix, the new test failed with 30 git calls for N=2 versus 118 for N=10; after the fix it passes with equal counts. The same-Repo edit regression passes, and make check passes.
+
+Reviewed: inspected the implementation and tests; focused regression tests pass, and make format && make check passed (371 Python tests plus Node tests).
+
+1: pass - The subprocess GIT_TRACE regression covers N=2 versus N=10 and passes.
+2: pass - The same-Repo edit regression verifies tasks() and find() see the new status.
+3: pass - make check passed.
+
+## Summary
+
+Implemented Repo-scoped caching for task locations, history, dirty paths, current/main branch, and main-branch files; added cache invalidation at all Repo write paths and functools-cached git common directories. Added performance and cache-invalidation regressions. Verified with make check (371 Python tests and Node tests).
+
 ## History
 
 - 2026-11-08T10:31:35Z calm-eel → backlog
 - 2026-11-08T10:37:06Z calm-eel: changed description, acceptance criteria, notes
 - 2026-11-08T10:37:06Z calm-eel backlog → todo
+- 2026-11-08T11:36:53Z able-dormouse todo → doing
+- 2026-11-08T11:37:59Z able-dormouse: wrote the plan
+- 2026-11-08T11:42:57Z able-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-08T11:43:08Z able-dormouse: changed summary
+- 2026-11-08T11:43:08Z able-dormouse doing → review
+- 2026-11-08T11:46:47Z brisk-crane: changed notes; ticked acceptance criteria
+- 2026-11-08T11:46:47Z brisk-crane review → done
