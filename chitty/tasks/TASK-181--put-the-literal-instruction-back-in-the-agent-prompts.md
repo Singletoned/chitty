@@ -67,6 +67,18 @@ Unparked after TASK-224 and TASK-227: branches no longer bump the version or reg
 
 Aligned the guide regression-test location with current repository guidance: use a dedicated `tests/test_guide_<topic>.py` file rather than adding to `TestGuide` in `tests/test_cli.py`.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.43), but working tree has 0.1.41:
+  src/chitty/guide.md
+  src/chitty/roles/plan.md
+  src/chitty/roles/review.md
+  src/chitty/roles/work.md
+make: *** [check] Error 1
+```
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -111,3 +123,4 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-08T13:07:02Z eager-puffin: wrote the plan
 - 2026-11-08T13:08:48Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:08:52Z eager-puffin: wrote the plan
+- 2026-11-08T13:53:33Z vivid-otter: changed notes
