@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` about indented lines inside a paragraph
-status: doing
+status: review
 created: 2026-11-05
 ---
 
@@ -24,8 +24,8 @@ Out of scope: other ways pasted output gets rewritten that this rule does not ca
 
 ## Acceptance Criteria
 
-- [ ] A test writes a ticket whose Notes have a paragraph with a two-space-indented second line and asserts exactly one warning with the message in the description; the worker records that it failed before the change
-- [ ] A test shows no warning for the same output in a fenced code block, an indented code block, or a numbered list item with an indented continuation line
+- [x] A test writes a ticket whose Notes have a paragraph with a two-space-indented second line and asserts exactly one warning with the message in the description; the worker records that it failed before the change
+- [x] A test shows no warning for the same output in a fenced code block, an indented code block, or a numbered list item with an indented continuation line
 
 ## Plan
 
@@ -49,6 +49,12 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-19
 
 Regression test confirmed the unfixed behavior: the indented Notes paragraph test failed with [] != ['warning']; exclusion cases passed.
 
+Verification: the regression test failed before the implementation, then passed; the exclusion test passed. make format && make check passed (368 Python tests and Node tests). chitty fix reported the expected archived-ticket warnings, plus an existing warning in active TASK-63; no task files were changed.
+
+## Summary
+
+Implemented top-level paragraph indentation warnings for Description, Plan, Notes, and Summary using markdown-it source maps and split("\n"). Added regression coverage for Notes plus fenced, indented-code, and list exclusions. Verified with make format && make check; ready for review.
+
 ## History
 
 - 2026-11-05T19:11:12Z youthful-toad → backlog
@@ -60,3 +66,5 @@ Regression test confirmed the unfixed behavior: the indented Notes paragraph tes
 - 2026-11-08T11:17:07Z quick-dormouse todo → doing
 - 2026-11-08T11:17:30Z quick-dormouse: wrote the plan
 - 2026-11-08T11:17:48Z quick-dormouse: changed notes
+- 2026-11-08T11:20:51Z quick-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T11:20:51Z quick-dormouse doing → review
