@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: doing
+status: blocked
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -79,6 +79,9 @@ check_version_bump: changed files require a version above main (0.1.43), but wor
 make: *** [check] Error 1
 ```
 
+Blocked: the required ! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py fails only at : these guide-source edits require a version above main (0.1.43), but criterion 2 explicitly forbids changing  (currently 0.1.41). The test was confirmed to fail against main's guide sources and pass against this branch's sources; format succeeds. Human decision needed: reconcile the ticket's no-version-bump criterion with the check policy before completion.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -124,3 +127,5 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-08T13:08:48Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:08:52Z eager-puffin: wrote the plan
 - 2026-11-08T13:53:33Z vivid-otter: changed notes
+- 2026-11-08T13:55:00Z vivid-otter: changed notes
+- 2026-11-08T13:55:00Z vivid-otter doing → blocked
