@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-120
@@ -30,7 +30,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 - [x] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
 - [x] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
-- [x] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
+- [ ] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
 ## Plan
 
@@ -250,6 +250,12 @@ The human requested that I investigate and resolve the third-review escalation. 
 
 Completed the review feedback with end-to-end review-mode coverage for direct linear fast-forward landing, moved-main landing, and failed landing check preservation; failures identify the human and ticket worktree. Focused tests: 16 passed. make format && make check passed: 388 Python tests, Node tests, Ruff, and Pyright. `chitty fix` completed; it reported existing Markdown warnings in unrelated tickets and this ticket’s pre-existing Notes text.
 
+Review failed (work): When the ticket branch and worktree are already gone, landing must do nothing, but _land_locked checks the main checkout first. Reproduced by removing both, adding an untracked file to main, and calling _land: it raises a dirty-tree error and asks a human to resolve a nonexistent landing problem. Detect the gone branch before the clean and branch guards, and add regression coverage. make format && make check passed.
+
+1: pass - Review fast-forwards main with linear history, done status and cleanup.
+2: pass - Moved main, successful check, conflict and failing check are covered.
+3: fail - Guard handling erroneously refuses an already-landed ticket when main is dirty instead of doing nothing.
+
 ## Summary
 
 Handoff: review-driven landing tests now cover linear fast-forward, merging moved main, landing-check pass/failure, cleanup, and explicit human/worktree failure guidance. Verification: python -m unittest tests.test_review_merge (16 passed); make format && make check passed (388 Python tests, Node suite, Ruff, Pyright); chitty fix completed. Follow-ups: none known.
@@ -302,3 +308,5 @@ Handoff: review-driven landing tests now cover linear fast-forward, merging move
 - 2026-11-08T16:46:40Z brisk-dormouse: wrote the plan
 - 2026-11-08T16:52:37Z brisk-dormouse: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T16:52:37Z brisk-dormouse doing → review
+- 2026-11-08T17:05:24Z intrepid-eel: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-08T17:05:24Z intrepid-eel review → doing
