@@ -39,7 +39,7 @@ STATUS_LABELS = {
     "done": "done",
 }
 PRIORITIES = ("low", "medium", "high")
-PRIORITY_GLYPHS = {"high": "⏫", "medium": "🔼", "low": "🔽", None: ""}
+PRIORITY_GLYPHS = {"high": "⬆️", "medium": "⏺️", "low": "⬇️", None: ""}
 FIELD_ORDER = (
     "title",
     "status",

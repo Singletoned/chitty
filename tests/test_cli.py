@@ -1096,11 +1096,11 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             listed.stdout.splitlines(),
             [
-                "TASK-3  📋 todo   ⏫  High",
+                "TASK-3  📋 todo   ⬆️  High",
                 "TASK-1  📋 todo       Unset",
-                "TASK-4  📋 todo   🔼  Medium",
-                "TASK-2  📋 todo   🔽  Low",
-                "TASK-5  🔨 doing  ⏫  Doing high",
+                "TASK-4  📋 todo   ⏺️  Medium",
+                "TASK-2  📋 todo   ⬇️  Low",
+                "TASK-5  🔨 doing  ⬆️  Doing high",
             ],
         )
         tasks = self.json("list")
