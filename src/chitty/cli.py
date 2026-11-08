@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import unicodedata
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Literal, TextIO, cast
@@ -33,13 +34,16 @@ from chitty.model import (
     ACCEPTANCE_CRITERIA,
     FIELD_ORDER,
     PRIORITIES,
+    PRIORITY_GLYPHS,
     SECTION_ORDER,
     STATUS_GLYPHS,
+    STATUS_LABELS,
     STATUSES,
 )
 from chitty.run import RunInterrupted
 from chitty.run import run as run_next
 from chitty.store import (
+    BROKEN_DEPENDENCY_GLYPH,
     Change,
     Edit,
     Repo,
@@ -295,6 +299,7 @@ def import_backlog_md(context: str | None, keep_source: bool) -> None:
 @click.option("--depends-on", multiple=True, help="Task ID this is blocked on (repeatable).")
 @click.option("--parent", help="Parent task ID in this repository.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
+@click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
 @json_option
 def add(
     title: str,
@@ -308,6 +313,7 @@ def add(
     depends_on: tuple[str, ...],
     parent: str | None,
     notes: tuple[str, ...],
+    note_file: TextIO | None,
     as_json: bool,
 ) -> None:
     """Create a task with status todo.
@@ -328,6 +334,8 @@ def add(
         "depends_on": list(depends_on),
         "parent": parent,
     }
+    if note_file is not None:
+        notes = (*notes, note_file.read())
     change = target.repo.add(
         target.context, title, description, criteria, fields, date.today(), notes
     )
@@ -387,20 +395,50 @@ def list_(
         return
     width = max((len(str(t.id)) for t in tasks), default=0)
     show_priority = any(t.task.frontmatter.priority is not None for t in tasks)
-    for stored in tasks:
+    reasons = [skip_reason(repo, stored) for stored in tasks]
+    show_markers = any(reasons)
+    for stored, reason in zip(tasks, reasons, strict=True):
         fm = stored.task.frontmatter
-        line = f"{stored.id!s:<{width}}  {STATUS_GLYPHS[fm.status]} {fm.status:<7}"
+        line = f"{stored.id!s:<{width}}  {STATUS_GLYPHS[fm.status]} {STATUS_LABELS[fm.status]:<5}"
         if show_priority:
-            line += f"  {fm.priority or '-':<6}"
-        line += f"  {fm.title}"
-        if fm.labels:
-            line += f"  [{','.join(sorted(fm.labels))}]"
-        if stored.branch:
-            line += f"  ({stored.branch})"
-        reason = skip_reason(repo, stored)
-        if reason:
-            line += f"  {reason}"
-        click.echo(line)
+            line += f"  {_two_columns(PRIORITY_GLYPHS[fm.priority])}"
+        if show_markers:
+            line += f"  {_two_columns(reason.split()[0] if reason else '')}"
+        label_text = f"  [{','.join(sorted(fm.labels))}]" if fm.labels else ""
+        room = repo.config.list_width - _columns(line) - 2 - _columns(label_text)
+        click.echo(f"{line}  {_shorten(fm.title, room)}{label_text}")
+        if reason and reason.startswith(BROKEN_DEPENDENCY_GLYPH):
+            click.echo(f"warning: {reason.removeprefix(BROKEN_DEPENDENCY_GLYPH).strip()}", err=True)
+
+
+def _columns(text: str) -> int:
+    """Return how many terminal columns text takes, counting emoji as two."""
+    total = 0
+    for char in text:
+        if char == "\ufe0f":
+            total += 1  # turns the preceding narrow symbol into a wide emoji
+        elif unicodedata.east_asian_width(char) in {"W", "F"}:
+            total += 2
+        elif not unicodedata.combining(char):
+            total += 1
+    return total
+
+
+def _two_columns(glyph: str) -> str:
+    """Pad a glyph, or nothing, to two terminal columns."""
+    return glyph + " " * (2 - _columns(glyph))
+
+
+def _shorten(title: str, room: int) -> str:
+    """Cut a title to fit in room columns, ending it with an ellipsis when cut."""
+    if _columns(title) <= room:
+        return title
+    shortened = ""
+    for char in title:
+        if _columns(shortened + char) > room - 1:
+            break
+        shortened += char
+    return shortened.rstrip() + "…"
 
 
 @cli.command("next")
@@ -531,11 +569,15 @@ def _format(stored: StoredTask) -> str:
 @click.option("--description-file", type=click.File(), help="Read --description from a file.")
 @click.option("--ac", multiple=True, help="Append an acceptance criterion (repeatable).")
 @click.option("--rm-ac", type=int, multiple=True, help="Remove criterion N (repeatable).")
+@click.option(
+    "--set-ac", type=(int, str), nargs=2, multiple=True, help="Replace criterion N (repeatable)."
+)
 @click.option("--check", type=int, multiple=True, help="Tick criterion N (repeatable).")
 @click.option("--uncheck", type=int, multiple=True, help="Untick criterion N (repeatable).")
 @click.option("--plan", help="Replace the Plan section; '' removes it.")
 @click.option("--plan-file", type=click.File(), help="Read --plan from a file.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
+@click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
 @click.option("--summary", help="Replace the Summary section; '' removes it.")
 @click.option(
     "--override-review-independence",
@@ -558,11 +600,13 @@ def edit(
     description_file: TextIO | None,
     ac: tuple[str, ...],
     rm_ac: tuple[int, ...],
+    set_ac: tuple[tuple[int, str], ...],
     check: tuple[int, ...],
     uncheck: tuple[int, ...],
     plan: str | None,
     plan_file: TextIO | None,
     notes: tuple[str, ...],
+    note_file: TextIO | None,
     summary: str | None,
     override_review_independence: bool,
     as_json: bool,
@@ -582,10 +626,11 @@ def edit(
         description=_text(description, description_file, "description"),
         add_criteria=ac,
         rm_criteria=rm_ac,
+        set_criteria=set_ac,
         check=check,
         uncheck=uncheck,
         plan=_text(plan, plan_file, "plan"),
-        notes=notes,
+        notes=(*notes, note_file.read()) if note_file is not None else notes,
         summary=summary,
         override_review_independence=override_review_independence,
     )

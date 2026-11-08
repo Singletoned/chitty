@@ -1,6 +1,6 @@
 ---
 title: Warn about backticks in double-quoted arguments in the generated guidance
-status: todo
+status: done
 priority: medium
 depends_on:
   - TASK-143
@@ -21,7 +21,11 @@ The instruction now lives in `src/chitty/guide.md` and `src/chitty/roles/plan.md
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide`, and each role's output, containing the warning, and `__version__` is bumped above `main`'s
+- [x] A test shows `chitty guide` and each role guide containing the backtick warning; `make check` passes.
+
+## Plan
+
+Add the shell-safety warning immediately after the backtick-formatting instruction in the generated guide and all three packaged role guides (`plan`, `work`, and `review`). Add focused guide-output regression coverage, including the version assertion required by the ticket. Keep version handling aligned with the repository's branch rules and run the full check suite before handoff.
 
 ## Notes
 
@@ -31,9 +35,29 @@ Seen again in `docs/pi-token-usage.md` on `pi-token-analysis`, 2026-11-04: about
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the ticket had no criteria, and following the instruction's location would have missed workers and reviewers. Mentioned apostrophes, which single quotes break on.
 
+Implementation is committed in 1448354 (Task: TASK-68). Added the shell backtick warning to the generated guide and all `work`, `review`, and `plan` role guides, with `tests/test_guide_backticks.py`. The regression test failed before the guide changes and passes after them. `make format && make check` passes.
+
+Blocked on the acceptance criterion requiring `__version__` to be above `main`'s: both this branch and `main` are `0.1.43`, but the repository instructions explicitly prohibit changing `src/chitty/__init__.py` on a ticket branch and require `make release` to choose published bumps. A maintainer must decide whether to revise the criterion or authorize a release/version change; no version file was edited.
+
+Unblocked: TASK-224 moved version bumps to release, so the branch-version requirement no longer applies. Implementation and tests are committed; ready for review.
+
+Verified the revised criterion: `make check` passes (367 Python tests and Node tests); `tests/test_guide_backticks.py` covers the general guide and all roles.
+
+Reviewed:
+1: pass - Verified the warning in all four guide outputs and the regression test. make format and make check passed, including 376 Python tests and Node tests.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-04T21:41:12Z mellow-newt: changed priority, notes
 - 2026-11-04T21:44:40Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T21:44:41Z mellow-newt backlog → todo
+- 2026-11-08T11:12:03Z calm-badger todo → doing
+- 2026-11-08T11:12:24Z calm-badger: wrote the plan
+- 2026-11-08T11:14:55Z calm-badger: changed notes
+- 2026-11-08T11:14:55Z calm-badger doing → blocked
+- 2026-11-08T13:05:00Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T13:05:00Z eager-puffin blocked → review
+- 2026-11-08T13:07:00Z eager-puffin: changed notes; ticked acceptance criteria
+- 2026-11-08T13:22:58Z quick-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-08T13:22:58Z quick-kestrel review → done

@@ -21,8 +21,12 @@ From `docs/pi-token-usage.md`, recommendation 2. 7 sessions of 100 or more calls
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: which sessions, since the sample was still growing.
 
+Archived as no longer useful at the human’s request on 2026-11-08. The seven historical sessions were not investigated; no changes are recommended by this ticket.
+
 ## History
 
 - 2026-11-04T21:41:09Z mellow-newt → backlog
 - 2026-11-04T21:44:30Z mellow-newt: changed description, notes
 - 2026-11-04T21:44:31Z mellow-newt backlog → todo
+- 2026-11-08T13:36:27Z eager-puffin todo → archived
+- 2026-11-08T13:36:28Z eager-puffin: changed notes

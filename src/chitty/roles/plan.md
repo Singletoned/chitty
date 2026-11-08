@@ -7,6 +7,8 @@ task files. `chitty --help` is the full command reference.
   descriptions, criteria, and notes. When you write a literal single `*` in
   Markdown, escape it or enclose the pattern in backticks, for example
   `files/*.jpg`.
+- Backticks run commands inside double-quoted shell arguments, so pass such text
+  in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
@@ -27,24 +29,15 @@ task files. `chitty --help` is the full command reference.
 - Compare each decision in the description with the criteria, because workers
   test what criteria name. Say which test must fail without the fix, because a
   nearby test may already pass.
-- Start an implementing read with `git worktree add --detach .worktrees/read-<ID>`
-  and the repository's setup command, not on a branch, because Chitty reads
-  tickets from every branch. Run the reader with `VIRTUAL_ENV` and
-  `UV_PROJECT_ENVIRONMENT` unset, or a shared install ends up pointing at a
-  worktree about to be deleted. The reader runs no Chitty writes and leaves
-  `chitty/` unchanged. It commits its own work and, from inside the worktree,
-  keeps it with `git update-ref refs/cold-read/<ID>/<n> HEAD`, where `<n>` is the
-  next number free for that ticket, starting at 1, then runs `git worktree
-  remove --force .worktrees/read-<ID>`. `git for-each-ref refs/cold-read` lists
-  kept reads.
+- Start the reader with the output of `chitty guide cold-read <ID>`, which holds
+  its worktree, setup, cleanup and report steps. Add the code most at risk and
+  what you doubt. A reader keeps an implementing read under
+  `refs/cold-read/<ID>/<n>`; `git for-each-ref refs/cold-read` lists them.
 - Ask of each criterion: could it pass with nothing built? If so, name the case
   that fails today, and have the worker record that the test failed first.
 - A worker cannot verify a criterion needing a real `chitty run` or agent
   session, and must not start one. Give that check to a person: a separate
   `-c human` ticket that depends on this one.
-- Give the cold reader the ticket ID, the code most at risk and what you doubt.
-  Ask it to try behaviour where it can rather than assume, and to report each
-  finding with file, line, why it matters and the exact wording to change.
 - Re-check claims about other tickets just before promoting, because they can
   land during the read.
 - Do not cold-read a ticket you were given to work on or review; it is not your
