@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-120
@@ -268,6 +268,12 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Human unblock: committed the already-landed no-op fix and regression test as c825a69 (Task: TASK-131), then merged current main. Working tree is clean. make format passed; first make check hit an intermittent Hypothesis slow-generation health check in tests/test_check_edit.py, and the immediate full rerun passed (397 Python tests plus Node tests). Ready for independent review.
 
+Reviewed: make format && make check passed (397 Python tests and Node tests; Ruff and Pyright clean).
+
+1: pass - Review fast-forwards main with linear history, done status and cleanup.
+2: pass - Moved main is merged and checked; conflicts and failed checks preserve main.
+3: pass - Wrong branch, dirty main and dirty worktree refuse; ignored files land.
+
 ## Summary
 
 Handoff: Landing no-ops when both the ticket branch and worktree are already gone, before main-checkout guards. Verification: regression passed; make format && make check passed (389 Python tests, Node tests, Ruff, Pyright). Follow-ups: none known.
@@ -333,3 +339,5 @@ Handoff: Landing no-ops when both the ticket branch and worktree are already gon
 - 2026-11-08T17:21:40Z golden-eel review → blocked
 - 2026-11-08T17:54:16Z eager-puffin: changed owner, notes
 - 2026-11-08T17:54:16Z eager-puffin blocked → review
+- 2026-11-08T18:14:13Z honest-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-08T18:14:13Z honest-kestrel review → done
