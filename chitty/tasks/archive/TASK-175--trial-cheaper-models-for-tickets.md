@@ -24,6 +24,8 @@ First check each model exists for this account with `pi --list-models`, because 
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `--model` would have applied to reviews too, mixing the model's effect with the reviewer's, so this now uses `--mode`; checking the models exist; and where limits come from. It works mechanically: `chitty run` appends these arguments after `agent_command`.
 
+Archived as obsolete at the human’s request on 2026-11-08. The model trial was not run.
+
 ## History
 
 - 2026-11-04T21:41:10Z mellow-newt → backlog
@@ -31,3 +33,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `--model` would have ap
 - 2026-11-04T21:44:35Z mellow-newt backlog → todo
 - 2026-11-05T14:13:52Z mellow-newt: changed dependencies, description
 - 2026-11-08T13:31:06Z eager-puffin todo → archived
+- 2026-11-08T13:31:22Z eager-puffin: changed notes
