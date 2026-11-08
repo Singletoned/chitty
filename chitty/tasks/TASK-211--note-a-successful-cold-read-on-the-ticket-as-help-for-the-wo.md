@@ -1,6 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: doing
+status: review
 created: 2026-11-06
 ---
 
@@ -51,3 +51,5 @@ Guide change ready for review. Verification: focused test failed first, then ful
 - 2026-11-08T16:42:34Z lively-zander todo → doing
 - 2026-11-08T16:42:51Z lively-zander: wrote the plan
 - 2026-11-08T16:44:20Z lively-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T16:44:24Z lively-zander: changed summary
+- 2026-11-08T16:44:24Z lively-zander doing → review
