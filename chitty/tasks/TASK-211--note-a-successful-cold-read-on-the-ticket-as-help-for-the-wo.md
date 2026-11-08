@@ -36,9 +36,11 @@ Added the plan-guide handoff and regression test. Confirmed the new test failed 
 
 Review failed (work): the worktree has uncommitted changes: `src/chitty/roles/plan.md`, `tests/test_guide_plan.py`.
 
+Verified the focused guide regression test and full make format && make check; all passed (378 Python tests and Node tests). The prior implementation record confirms the test failed before the guide change. Kept guide changes and regression test are ready for review.
+
 ## Summary
 
-Guide change ready for review. Verification: focused test failed first, then full make format and make check passed. Follow-up: reviewer should confirm wording and criteria.
+Guide change ready for review. Verification: focused fail-first guide test, make format, and make check passed (378 Python tests and Node tests). Follow-up: reviewer should confirm wording and criteria.
 
 ## History
 
@@ -57,3 +59,4 @@ Guide change ready for review. Verification: focused test failed first, then ful
 - 2026-11-08T16:44:24Z lively-zander doing → review
 - 2026-11-08T17:15:10Z open-kestrel: changed notes
 - 2026-11-08T17:15:10Z open-kestrel review → doing
+- 2026-11-08T17:23:20Z lively-raven: changed notes, summary; ticked acceptance criteria
