@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -28,7 +28,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Acceptance Criteria
 
-- [ ] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
+- [x] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
 - [ ] Tests show a moved `main` handled by a clean rebase and passing `check` landing without another review, and a conflict or failing `check` leaving everything in place and exiting non-zero
 - [ ] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
@@ -50,6 +50,12 @@ Landing must also refuse a branch that changes the Chitty config compared with `
 
 The human decided on 2026-11-06 to prefer merging the main branch into a ticket branch over rebasing (`TASK-223`). Landing should merge `main` into the branch, run `check`, then fast-forward the main branch.
 
+Implemented landing in run.py with Git merge, fast-forward, clean-tree guards, setup/check validation, and non-forced worktree/branch cleanup. The updated review integration test verifies a moved main landing with linear history and removal. Focused review tests pass; full make check still has legacy tests that create untracked bin/ fixtures and expect pre-landing behavior, so those need updating for the new refusal/landing contract.
+
+## Summary
+
+Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
+
 ## History
 
 - 2026-11-03T20:46:17Z lively-panda → todo
@@ -63,3 +69,5 @@ The human decided on 2026-11-06 to prefer merging the main branch into a ticket 
 - 2026-11-06T21:49:20Z youthful-toad: changed notes
 - 2026-11-08T09:10:23Z open-zander todo → doing
 - 2026-11-08T09:10:48Z open-zander: wrote the plan
+- 2026-11-08T09:17:38Z open-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T09:17:38Z open-zander doing → review
