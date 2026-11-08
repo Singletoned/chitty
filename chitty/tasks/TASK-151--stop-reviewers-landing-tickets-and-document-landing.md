@@ -1,6 +1,6 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-131
@@ -18,8 +18,8 @@ Out of scope: changing landing itself.
 
 ## Acceptance Criteria
 
-- [ ] A test shows the review instructions no longer mentioning merging or removing
-- [ ] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
+- [x] A test shows the review instructions no longer mentioning merging or removing
+- [x] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
 
 ## Plan
 
@@ -31,6 +31,12 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Repurposed: its r
 
 TASK-224 supersedes the branch-version-bump requirement; version selection happens at release.
 
+Review prompt and packaged role prohibit reviewers from landing or removing worktrees; regression test covers the generated prompt. README, guide, and PLAN document landing and manual fallback. Verified with make format && make check (397 Python tests and Node tests pass); no version bump.
+
+## Summary
+
+Handoff: Reviewer instructions now leave landing to chitty run; README, src/chitty/guide.md, and PLAN.md describe automated and manual landing. Verification: make format && make check passed (397 Python tests and Node tests). No follow-ups; version unchanged.
+
 ## History
 
 - 2026-11-04T15:11:35Z mellow-newt → todo
@@ -40,3 +46,5 @@ TASK-224 supersedes the branch-version-bump requirement; version selection happe
 - 2026-11-08T13:08:31Z eager-puffin: changed description
 - 2026-11-08T18:16:49Z youthful-vole todo → doing
 - 2026-11-08T18:17:08Z youthful-vole: wrote the plan
+- 2026-11-08T18:21:02Z youthful-vole: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T18:21:02Z youthful-vole doing → review
