@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run --mode work` looping on a ticket whose check fails
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -69,6 +69,11 @@ npm test
 
 The verification note above contains shell-expanded `make check` output because the command was not quoted; verification itself passed.
 
+Reviewed: implementation, regression tests, documentation, focused tests, and make check all pass.
+1: pass - doing-ticket check failure records a fenced note and starts the agent.
+2: pass - todo-ticket check failures exit 1 without changing state or starting an agent.
+3: pass - documentation is updated and make check passes.
+
 ## Summary
 
 Implemented work-mode check failure handling. A failing check on a doing ticket is recorded as a note-only pre-session warning and the agent runs; a todo ticket exits 1 with unchanged status and no note. Added regression tests and updated PLAN.md and README.md. Verified with focused tests and make check; pre-fix regression was confirmed failing. Commit: 4062a97.
@@ -85,3 +90,5 @@ Implemented work-mode check failure handling. A failing check on a doing ticket 
 - 2026-11-08T11:27:54Z intrepid-marten: changed notes; ticked acceptance criteria
 - 2026-11-08T11:28:05Z intrepid-marten: changed notes, summary
 - 2026-11-08T11:28:05Z intrepid-marten doing → review
+- 2026-11-08T11:31:49Z youthful-adder: changed notes; ticked acceptance criteria
+- 2026-11-08T11:31:49Z youthful-adder review → done
