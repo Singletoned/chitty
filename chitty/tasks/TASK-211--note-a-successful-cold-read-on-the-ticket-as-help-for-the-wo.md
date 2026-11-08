@@ -42,7 +42,7 @@ Review failed (work): the worktree has uncommitted changes: `src/chitty/roles/pl
 
 ## Summary
 
-Guide change ready for review. Verification: focused fail-first guide test, make format, and make check passed (378 Python tests and Node tests). Follow-up: reviewer should confirm wording and criteria.
+Guide change and regression test are ready for review. Verification: focused test passed; make format and make check passed (378 Python tests and Node tests). Follow-up: reviewer should confirm wording and criteria.
 
 ## History
 
@@ -65,3 +65,4 @@ Guide change ready for review. Verification: focused fail-first guide test, make
 - 2026-11-08T17:23:21Z lively-raven doing → review
 - 2026-11-08T17:23:45Z intrepid-jay: changed notes
 - 2026-11-08T17:23:45Z intrepid-jay review → doing
+- 2026-11-08T17:26:55Z calm-heron: changed summary
