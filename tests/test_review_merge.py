@@ -208,7 +208,11 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual((self.root / "main-late.txt").read_text(), "main advanced during review\n")
         self.assertNotEqual(self.git("rev-parse", "main").strip(), before)
         self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "1")
+        self.assertIn(
+            "status: done", next((self.root / "chitty/tasks").glob("TASK-1--*.md")).read_text()
+        )
         self.assertFalse(self.worktree.exists())
+        self.assertFalse(self.git("branch", "--list", "task-1").strip())
 
     def test_failing_check_after_main_advances_preserves_main_and_worktree(self):
         self.branch_for_review()
