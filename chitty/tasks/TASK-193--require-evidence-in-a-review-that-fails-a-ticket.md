@@ -2,7 +2,6 @@
 title: Require evidence in a review that fails a ticket
 status: doing
 priority: medium
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -72,6 +71,8 @@ make: *** [check] Error 1
 
 Owner set to `human` on 2026-11-07, before `chitty run --mode work` looped on it as it did 54 times on `TASK-179`: the branch has `__version__` 0.1.41 and `main` has 0.1.42, so the check fails, and in work mode a failed check only adds a note and leaves the ticket in `doing`, so no agent starts to fix it. `TASK-224` removes branch version bumps. Clear the owner once it lands.
 
+Unparked: TASK-227 now lets a worker fix a failing check on a doing ticket. Recheck this branch before review.
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -115,3 +116,4 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-06T21:55:13Z kind-raven: changed notes
 - 2026-11-06T21:55:13Z kind-raven review → doing
 - 2026-11-07T09:39:55Z vivid-dormouse: changed owner, notes
+- 2026-11-08T13:05:02Z eager-puffin: changed owner, notes
