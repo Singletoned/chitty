@@ -3,6 +3,8 @@
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
+- When you write a literal single `*` in Markdown, escape it or enclose the
+  pattern in backticks, for example `files/*.jpg`.
 - Backticks run commands inside double-quoted shell arguments, so pass such text
   in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Never review work you did. Review in the ticket's branch worktree, independently
