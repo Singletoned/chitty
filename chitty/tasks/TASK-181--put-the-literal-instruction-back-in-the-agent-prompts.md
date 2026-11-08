@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: blocked
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -82,6 +82,8 @@ make: *** [check] Error 1
 Blocked: the required ! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
 uv run python scripts/check_version_bump.py fails only at : these guide-source edits require a version above main (0.1.43), but criterion 2 explicitly forbids changing  (currently 0.1.41). The test was confirmed to fail against main's guide sources and pass against this branch's sources; format succeeds. Human decision needed: reconcile the ticket's no-version-bump criterion with the check policy before completion.
 
+Unblocked for integration: the last blocker was the branch check_version_bump policy, which TASK-224 removed on main. This branch is 241 commits behind main and still has the old check and version. Merge current main into this branch, preserve the existing uncommitted test migration in tests/test_cli.py and tests/test_guide_literal_star.py, remove obsolete branch-only version/setup changes, then run make check before requesting review. The stale branch may still warn about setup; do not run chitty init on the ticket branch.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -129,3 +131,5 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-08T13:53:33Z vivid-otter: changed notes
 - 2026-11-08T13:55:00Z vivid-otter: changed notes
 - 2026-11-08T13:55:00Z vivid-otter doing → blocked
+- 2026-11-08T16:43:19Z eager-puffin: changed notes
+- 2026-11-08T16:43:19Z eager-puffin blocked → doing
