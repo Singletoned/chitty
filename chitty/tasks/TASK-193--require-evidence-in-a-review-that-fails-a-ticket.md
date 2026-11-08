@@ -88,6 +88,15 @@ Focused regression test passes and verifies all required guide phrases and exclu
 
 Unblocked for integration: the last blocker was the branch check_version_bump policy, which TASK-224 removed on main. This branch is 240 commits behind main and still has the old check and version. Merge current main into this branch, preserve the existing uncommitted test migration in tests/test_cli.py and tests/test_guide_review_evidence.py, leave generated setup and branch version untouched, then run make check before requesting review. Do not run chitty init on the ticket branch.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.43), but working tree has 0.1.41:
+  src/chitty/roles/review.md
+make: *** [check] Error 1
+```
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -139,3 +148,4 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-08T13:57:38Z lively-lapwing doing → blocked
 - 2026-11-08T16:43:21Z eager-puffin: changed notes
 - 2026-11-08T16:43:21Z eager-puffin blocked → doing
+- 2026-11-08T16:59:26Z calm-eel: changed notes
