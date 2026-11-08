@@ -1,6 +1,6 @@
 ---
 title: Merge `main` into a ticket branch instead of rebasing it
-status: review
+status: done
 priority: high
 created: 2026-11-06
 ---
@@ -42,6 +42,10 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-223/1`; tests failed before and passed
 
 Implemented merge-based review preparation, unfinished merge refusal, rerere-disabled conflict handling, and merge interruption cleanup. Renamed and updated review tests; updated README.md and PLAN.md. Verified with `make format && make check` (363 tests passed, Node tests passed).
 
+Reviewed: 365 Python tests and Node tests passed.
+1: pass - Review preparation merges main and handles unfinished operations and documentation.
+2: pass - Tests verify merged review state, conflict aborts, rerere isolation, and Ctrl-C cleanup.
+
 ## Summary
 
 Handoff: review `src/chitty/git.py` and `src/chitty/run.py` merge workflow, updated merge-focused tests, and documentation. Verification: `make format && make check` passes. Follow-up: none.
@@ -55,3 +59,5 @@ Handoff: review `src/chitty/git.py` and `src/chitty/run.py` merge workflow, upda
 - 2026-11-08T09:20:04Z eager-otter: wrote the plan
 - 2026-11-08T09:25:25Z eager-otter: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T09:25:25Z eager-otter doing → review
+- 2026-11-08T10:20:11Z golden-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-08T10:20:11Z golden-yellowhammer review → done
