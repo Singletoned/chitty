@@ -1,6 +1,6 @@
 ---
 title: Refuse `--ac` and `--rm-ac` while a task is in review
-status: todo
+status: doing
 created: 2026-11-07
 ---
 
@@ -25,3 +25,4 @@ Implementing cold read against the updated ticket: `tests.test_cli.TestEdit.test
 - 2026-11-08T14:15:12Z eager-puffin: changed description, acceptance criteria, notes
 - 2026-11-08T14:17:49Z eager-puffin: changed notes
 - 2026-11-08T14:17:50Z eager-puffin backlog → todo
+- 2026-11-08T17:04:21Z plucky-urchin todo → doing
