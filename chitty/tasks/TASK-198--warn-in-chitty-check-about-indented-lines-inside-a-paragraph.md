@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` about indented lines inside a paragraph
-status: todo
+status: doing
 created: 2026-11-05
 ---
 
@@ -49,3 +49,4 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-19
 - 2026-11-07T09:16:15Z vivid-dormouse: changed title
 - 2026-11-07T09:20:21Z vivid-dormouse: changed description, notes
 - 2026-11-07T09:20:21Z vivid-dormouse backlog → todo
+- 2026-11-08T11:17:07Z quick-dormouse todo → doing
