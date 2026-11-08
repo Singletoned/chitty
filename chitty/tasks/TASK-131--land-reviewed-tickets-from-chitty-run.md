@@ -34,7 +34,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Plan
 
-Complete the review feedback with end-to-end `chitty run --mode review` tests: direct fast-forward from passed review, moved-main pass/failure behavior, and explicit human/worktree guidance on landing failures. Preserve the existing uncommitted tests.test_review_merge.py changes; inspect their baseline behavior first, then add a focused failing regression test for the required diagnostics. Run focused tests, then make format && make check.
+Fix the reported already-landed edge case in the landing path: establish how a missing branch/worktree is represented, return without touching or validating main before clean/branch guards, and add a regression test reproducing a missing branch/worktree with dirty main. Run the focused regression first to confirm failure, then implement and verify focused tests followed by make format && make check.
 
 ## Notes
 
@@ -310,3 +310,4 @@ Handoff: review-driven landing tests now cover linear fast-forward, merging move
 - 2026-11-08T16:52:37Z brisk-dormouse doing → review
 - 2026-11-08T17:05:24Z intrepid-eel: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-08T17:05:24Z intrepid-eel review → doing
+- 2026-11-08T17:08:33Z able-newt: wrote the plan
