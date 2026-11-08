@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-120
@@ -52,6 +52,28 @@ The human decided on 2026-11-06 to prefer merging the main branch into a ticket 
 
 Implemented landing in run.py with Git merge, fast-forward, clean-tree guards, setup/check validation, and non-forced worktree/branch cleanup. The updated review integration test verifies a moved main landing with linear history and removal. Focused review tests pass; full make check still has legacy tests that create untracked bin/ fixtures and expect pre-landing behavior, so those need updating for the new refusal/landing contract.
 
+Review failed (work): check exited with status 2:
+AssertionError: 1 != 0 : Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdktbvbf3/repo/.worktrees/task-1...
+warning: cannot read usage file /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/chitty-usage-iwe1v9ou/session.json: file is missing
+Error: autocommit failed: `git merge --ff-only task-1` in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdktbvbf3/repo:
+hint: Diverging branches can't be fast-forwarded, you need to either:
+hint:
+hint: 	git merge --no-ff
+hint:
+hint: or:
+hint:
+hint: 	git rebase
+hint:
+hint: Disable this message with "git config set advice.diverging false"
+fatal: Not possible to fast-forward, aborting.
+
+
+----------------------------------------------------------------------
+Ran 365 tests in 85.501s
+
+FAILED (failures=5)
+make: *** [check] Error 5
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -71,3 +93,5 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T09:10:48Z open-zander: wrote the plan
 - 2026-11-08T09:17:38Z open-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T09:17:38Z open-zander doing → review
+- 2026-11-08T10:16:01Z upbeat-falcon: changed notes
+- 2026-11-08T10:16:01Z upbeat-falcon review → doing
