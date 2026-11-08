@@ -27,6 +27,13 @@ Also add `[--note-file F]` to the `chitty add` and `chitty edit` synopses in `PL
 - [ ] Tests show `chitty edit` and `chitty add` each storing a note read with `--note-file -` from standard input whose text contains backticks, unchanged
 - [ ] A test shows `--note a --note-file f` giving two notes in that order
 
+## Plan
+
+1. Add non-repeatable `--note-file` click options to `add` and `edit`, reading `click.File()` and appending the file content after repeated `--note` values before passing notes to the existing store/model path.
+2. Add CLI regression tests covering stdin backticks for both commands and ordering of inline plus file notes.
+3. Update the corresponding `PLAN.md` CLI synopsis and option documentation.
+4. Run the focused tests, then `make format && make check`.
+
 ## Notes
 
 Suggestion origin: circuitry
@@ -48,3 +55,4 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-67
 - 2026-11-07T09:19:32Z vivid-dormouse: changed description, notes
 - 2026-11-07T09:19:32Z vivid-dormouse backlog → todo
 - 2026-11-08T10:12:22Z friendly-dormouse todo → doing
+- 2026-11-08T10:12:44Z friendly-dormouse: wrote the plan
