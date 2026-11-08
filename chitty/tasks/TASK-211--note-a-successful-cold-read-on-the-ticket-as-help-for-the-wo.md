@@ -1,6 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: backlog
+status: todo
 created: 2026-11-06
 ---
 
@@ -26,6 +26,8 @@ Cold-read finding: define a successful ref as one implemented against the curren
 
 Resolved the cold-read ambiguity in the description; the guide handoff is only for a successful read against the current ticket and the stale-note warning is out of scope.
 
+Implementing cold read against the revised ticket: guide regression test first failed with missing current-text/no-serious-findings, diff, current-criteria and stale-ref-deletion instructions. After the guide change the focused test and `make check` passed (377 Python tests, Node tests). Candidate at `refs/cold-read/TASK-211/1`; inspect with `git diff main...refs/cold-read/TASK-211/1` and check against the current criteria before reuse. No remaining serious finding.
+
 ## History
 
 - 2026-11-06T13:58:02Z youthful-toad → backlog
@@ -34,3 +36,5 @@ Resolved the cold-read ambiguity in the description; the guide handoff is only f
 - 2026-11-08T14:15:30Z eager-puffin: changed description
 - 2026-11-08T14:15:32Z eager-puffin: changed description
 - 2026-11-08T14:15:34Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T14:19:36Z eager-puffin: changed notes
+- 2026-11-08T14:19:39Z eager-puffin backlog → todo

@@ -31,8 +31,11 @@ Decided with the human: `STATUSES` order is the direction tickets move in, and a
 
 Redesigned with the human: `queued` is a flag derived from `depends_on`, not a stored `waiting` status, and `blocked` becomes a `blocked_by` flag (TASK-74). The status-order decision still holds: statuses run in the direction of travel and work is pulled from the right. Back to `backlog` until the flag name is settled.
 
+The human reaffirmed on 2026-11-08 that dependency waits should be called `queued`, not `blocked`, and should carry a clear glyph. Use 🔒 for the dependency-queued indication (as in TASK-72); reserve ⛔ for a blockage requiring human intervention (TASK-74). Do not rename genuine human blockages to queued.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → backlog
+- 2026-11-08T14:56:01Z eager-puffin: changed notes
