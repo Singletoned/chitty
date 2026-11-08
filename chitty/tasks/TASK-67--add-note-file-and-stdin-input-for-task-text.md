@@ -1,6 +1,6 @@
 ---
 title: Add `--note-file` and stdin input for task text
-status: doing
+status: review
 created: 2026-11-01
 ---
 
@@ -24,8 +24,8 @@ Also add `[--note-file F]` to the `chitty add` and `chitty edit` synopses in `PL
 
 ## Acceptance Criteria
 
-- [ ] Tests show `chitty edit` and `chitty add` each storing a note read with `--note-file -` from standard input whose text contains backticks, unchanged
-- [ ] A test shows `--note a --note-file f` giving two notes in that order
+- [x] Tests show `chitty edit` and `chitty add` each storing a note read with `--note-file -` from standard input whose text contains backticks, unchanged
+- [x] A test shows `--note a --note-file f` giving two notes in that order
 
 ## Plan
 
@@ -48,6 +48,12 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-67
 - Rejected: naming the flag in the empty-file error, because the store-level message already matches `--note ""` and changing it is out of scope.
 - No wrong claims found; none of these findings changes the design, so no second read.
 
+Verified both stdin paths preserve backticks; inline notes precede file notes. `chitty fix` completed with unrelated existing Markdown delimiter warnings in other tasks.
+
+## Summary
+
+Implemented `--note-file` for `chitty add` and `chitty edit`, including stdin support and ordering after repeated `--note` values. Updated `PLAN.md` and added CLI regression tests. Verified focused tests and full `make format && make check`; no follow-ups.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -56,3 +62,5 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-67
 - 2026-11-07T09:19:32Z vivid-dormouse backlog → todo
 - 2026-11-08T10:12:22Z friendly-dormouse todo → doing
 - 2026-11-08T10:12:44Z friendly-dormouse: wrote the plan
+- 2026-11-08T10:15:54Z friendly-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T10:15:54Z friendly-dormouse doing → review
