@@ -1,6 +1,7 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: review
+status: blocked
+owner: human
 created: 2026-11-06
 ---
 
@@ -40,6 +41,10 @@ Verified the focused guide regression test and full make format && make check; a
 
 Review failed (work): the worktree has uncommitted changes: `src/chitty/roles/plan.md`, `tests/test_guide_plan.py`.
 
+Review failed (work): the worktree has uncommitted changes: `src/chitty/roles/plan.md`, `tests/test_guide_plan.py`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Guide change and regression test are ready for review. Verification: focused test passed; make format and make check passed (378 Python tests and Node tests). Follow-up: reviewer should confirm wording and criteria.
@@ -67,3 +72,5 @@ Guide change and regression test are ready for review. Verification: focused tes
 - 2026-11-08T17:23:45Z intrepid-jay review → doing
 - 2026-11-08T17:26:55Z calm-heron: changed summary
 - 2026-11-08T17:29:39Z calm-heron doing → review
+- 2026-11-08T17:32:43Z sunny-marten: changed owner, notes
+- 2026-11-08T17:32:43Z sunny-marten review → blocked
