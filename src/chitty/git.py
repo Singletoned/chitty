@@ -474,5 +474,46 @@ def merge_main(root: Path, main_branch: str) -> list[str]:
     return conflicts
 
 
+def abort_rebase(root: Path) -> None:
+    _git(root, "rebase", "--abort")
+
+
 def abort_merge(root: Path) -> None:
     _git(root, "merge", "--abort")
+
+
+def merge(root: Path, branch: str) -> list[str]:
+    """Merge ``branch`` into the current worktree, aborting conflicts."""
+    completed = subprocess.run(
+        ["git", "merge", "--no-edit", branch],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if completed.returncode == 0:
+        return []
+    conflicts = _git(root, "diff", "--name-only", "--diff-filter=U").split()
+    abort = subprocess.run(
+        ["git", "merge", "--abort"], cwd=root, capture_output=True, text=True, check=False
+    )
+    if abort.returncode:
+        raise ChittyError(f"cannot abort merge of {branch} in {root}: {abort.stderr.strip()}")
+    if conflicts:
+        return conflicts
+    raise ChittyError(f"`git merge {branch}` failed in {root}: {completed.stderr.strip()}")
+
+
+def fast_forward(root: Path, branch: str) -> None:
+    """Fast-forward the current branch to ``branch``."""
+    _git(root, "merge", "--ff-only", branch)
+
+
+def remove_worktree(root: Path, worktree: Path) -> None:
+    """Remove a clean linked worktree without forcing Git to discard files."""
+    _git(root, "worktree", "remove", str(worktree))
+
+
+def delete_branch(root: Path, branch: str) -> None:
+    """Delete a fully merged local branch without forcing deletion."""
+    _git(root, "branch", "-d", branch)

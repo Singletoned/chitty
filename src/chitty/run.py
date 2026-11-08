@@ -217,6 +217,8 @@ def _run_ticket(
                         f"{action.id} was unchanged; only committed changes are visible "
                         "to `chitty run`"
                     )
+                if new_status == "done":
+                    _land(main_repo, worktree, action, setup, check)
             finally:
                 if not usage_read:
                     models = _read_usage(usage_file)
@@ -590,6 +592,85 @@ def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
     else:
         _git(main_root, "worktree", "add", "-b", branch, str(destination), main_branch)
     return destination
+
+
+def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str) -> None:
+    """Serialize landing operations that mutate the shared main branch."""
+    with locks.landing_lock(main_repo.root):
+        try:
+            _land_locked(main_repo, worktree, action, setup, check)
+        except ChittyError as exc:
+            raise ChittyError(
+                f"{exc}\nA human must resolve the landing problem in {worktree} "
+                "or the main checkout before retrying."
+            ) from exc
+
+
+def _land_locked(
+    main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str
+) -> None:
+    """Land a completed ticket and remove its linked worktree."""
+    main_root = main_repo.root
+    branch = str(action.id).lower()
+    # A prior run or a reviewer may already have removed this ticket entirely.
+    if not git.has_local_branch(main_root, branch) and not worktree.exists():
+        return
+    main_branch = main_repo.config.main_branch
+    if git.current_branch(main_root) != main_branch:
+        raise ChittyError(f"the main checkout must be on branch {main_branch} to land a ticket")
+    git.require_clean(main_root)
+    # A session may have landed its own ticket before returning.
+    if not worktree.exists():
+        return
+    if uncommitted := git.uncommitted_paths(worktree):
+        listed = ", ".join(f"`{path}`" for path in uncommitted)
+        raise ChittyError(
+            f"cannot land {action.id}; its worktree has uncommitted changes: {listed}"
+        )
+    if changed := _changed_config(worktree, main_branch):
+        raise ChittyError(
+            f"cannot land {action.id}; the branch changes `{changed}`; "
+            "only `chitty init` on the main checkout may change it"
+        )
+    if _changed_agents_block(worktree, main_branch):
+        raise ChittyError(
+            f"cannot land {action.id}; the branch changes Chitty's managed block in AGENTS.md"
+        )
+    if conflicts := git.merge(worktree, main_branch):
+        listed = ", ".join(f"`{path}`" for path in conflicts)
+        raise ChittyError(f"cannot land {action.id}; merging `{main_branch}` conflicts in {listed}")
+    if changed := _changed_config(worktree, main_branch):
+        raise ChittyError(
+            f"cannot land {action.id}; the merged branch changes `{changed}`; "
+            "only `chitty init` on the main checkout may change it"
+        )
+    _setup(setup, worktree)
+    _landing_check(check, worktree)
+    git.fast_forward(main_root, branch)
+    git.remove_worktree(main_root, worktree)
+    git.delete_branch(main_root, branch)
+
+
+def _landing_check(command: str, worktree: Path) -> None:
+    """Run landing validation without changing the ticket on failure."""
+    try:
+        completed = subprocess.run(
+            shlex.split(command),
+            cwd=worktree,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        raise ChittyError(f"landing check command not found: {command}") from None
+    except KeyboardInterrupt:
+        raise RunInterrupted("check") from None
+    if completed.returncode:
+        lines = completed.stdout.splitlines()[-20:]
+        output = "\n".join(lines) or "(no output)"
+        raise ChittyError(f"landing check exited with status {completed.returncode}:\n{output}")
 
 
 def _setup(command: str, worktree: Path) -> None:
