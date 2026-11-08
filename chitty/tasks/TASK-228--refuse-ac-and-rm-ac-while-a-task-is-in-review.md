@@ -1,6 +1,6 @@
 ---
 title: Refuse `--ac` and `--rm-ac` while a task is in review
-status: doing
+status: review
 created: 2026-11-07
 ---
 
@@ -25,6 +25,10 @@ Implementing cold read against the updated ticket: `tests.test_cli.TestEdit.test
 
 Fail-first CLI and Repo.edit tests both failed before the guard: --ac and direct store mutation were accepted. Guard now rejects --ac, --rm-ac, and --set-ac based on pre-edit review status; tests cover review-to-done valid verdict preservation and doing-to-review. make format and make check passed (380 Python tests and Node tests).
 
+## Summary
+
+Implemented and verified criterion-mutation refusal for review tasks through CLI and shared Repo.edit validation. Verified with make format and make check. No follow-up.
+
 ## History
 
 - 2026-11-07T10:09:05Z vivid-dormouse → backlog
@@ -34,3 +38,5 @@ Fail-first CLI and Repo.edit tests both failed before the guard: --ac and direct
 - 2026-11-08T17:04:21Z plucky-urchin todo → doing
 - 2026-11-08T17:04:42Z plucky-urchin: wrote the plan
 - 2026-11-08T17:05:51Z plucky-urchin: changed notes; ticked acceptance criteria
+- 2026-11-08T17:05:57Z plucky-urchin: changed summary
+- 2026-11-08T17:05:57Z plucky-urchin doing → review
