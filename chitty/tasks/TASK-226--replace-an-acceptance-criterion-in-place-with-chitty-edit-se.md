@@ -1,6 +1,6 @@
 ---
 title: Replace an acceptance criterion in place with `chitty edit --set-ac`
-status: todo
+status: doing
 priority: medium
 created: 2026-11-07
 ---
@@ -68,3 +68,4 @@ Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/T
 - 2026-11-07T10:09:04Z vivid-dormouse: changed description, acceptance criteria, notes
 - 2026-11-07T10:12:50Z vivid-dormouse: changed description, notes
 - 2026-11-07T10:12:50Z vivid-dormouse backlog → todo
+- 2026-11-08T11:30:33Z plucky-wren todo → doing
