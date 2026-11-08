@@ -21,7 +21,7 @@ The instruction now lives in `src/chitty/guide.md` and `src/chitty/roles/plan.md
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide` and each role guide containing the backtick warning; `make check` passes.
+- [x] A test shows `chitty guide` and each role guide containing the backtick warning; `make check` passes.
 
 ## Plan
 
@@ -41,6 +41,8 @@ Blocked on the acceptance criterion requiring `__version__` to be above `main`'s
 
 Unblocked: TASK-224 moved version bumps to release, so the branch-version requirement no longer applies. Implementation and tests are committed; ready for review.
 
+Verified the revised criterion: `make check` passes (367 Python tests and Node tests); `tests/test_guide_backticks.py` covers the general guide and all roles.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -53,3 +55,4 @@ Unblocked: TASK-224 moved version bumps to release, so the branch-version requir
 - 2026-11-08T11:14:55Z calm-badger doing → blocked
 - 2026-11-08T13:05:00Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:05:00Z eager-puffin blocked → review
+- 2026-11-08T13:07:00Z eager-puffin: changed notes; ticked acceptance criteria
