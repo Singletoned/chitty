@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -99,6 +99,11 @@ make: *** [check] Error 1
 
 Merged current main, preserving its worker-guide test and moving this ticket's evidence assertions into tests/test_guide_review_evidence.py. Focused unittest passed; make format and make check passed (378 Python tests and Node tests); chitty fix completed with existing format warnings.
 
+Reviewed: Both specified bullets match the ticket. make format and make check passed (379 Python tests and Node tests).
+
+1: pass - Dedicated regression passes and fails with 10 assertions against the previous main guide.
+2: pass - The regression verifies retained wording, removed wording and absence of make.
+
 ## Summary
 
 Review-role evidence wording is present in the current main version of src/chitty/roles/review.md; added the dedicated regression test and retained main's adjacent guide coverage. Verified with focused unittest, make format, make check, and chitty fix. No follow-ups.
@@ -153,3 +158,5 @@ Review-role evidence wording is present in the current main version of src/chitt
 - 2026-11-08T16:59:26Z calm-eel: changed notes
 - 2026-11-08T17:02:05Z calm-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T17:02:07Z calm-eel doing → review
+- 2026-11-08T17:12:51Z witty-eel: changed notes; ticked acceptance criteria
+- 2026-11-08T17:12:51Z witty-eel review → done
