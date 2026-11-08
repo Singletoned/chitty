@@ -19,7 +19,7 @@ Out of scope: changing landing itself.
 
 ## Acceptance Criteria
 
-- [ ] A test shows the review instructions no longer mentioning merging or removing
+- [ ] A test shows the generated Pi review prompt does not instruct reviewers to merge or remove branches or worktrees; the packaged review guide likewise does not instruct them to do so. Explicit prohibitions are allowed.
 - [ ] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
 
 ## Plan
@@ -48,6 +48,8 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Review failed (design): Criterion 1 literally requires review instructions not to mention merging or removing, but both src/chitty/roles/review.md and the Pi continuation prompt mention these operations to prohibit them; the new Node test requires that prohibition, so it does not prove the criterion as written. Decide whether the rule is no mentions or no instruction to perform landing; the description suggests the latter. Test both chitty guide review and the Pi continuation prompt, not only the latter. Criterion 2 is not yet verified: src/chitty/guide.md tells agents started without chitty run to perform manual landing while telling reviewers not to, without naming who lands or when; the short manual procedure omits the configured setup and cleanup and can be mistaken for an equivalent to automatic landing. Clarify who handles manual landing and distinguish verdict, post-verdict merge/check, fast-forward, cleanup and failure handling in the docs. This branch also still has six uncommitted implementation files, the cause of all three previous review preflight failures: commit them before requesting another review. Ran make format && make check: 397 Python tests and Node tests passed; these tests do not resolve the specification mismatch. Leaving blocked for human resolution rather than attempting another failed handoff.
 
+Human clarification: the intended rule is no instruction for reviewers to land, not a ban on mentioning merging or removal. When an arbitrary person reviews outside chitty run, that person is responsible for arranging manual landing; no additional handoff policy is needed. The prior design/criterion-2 concerns were mistaken and are withdrawn. Committed all six previously uncommitted implementation files in d67bf2b (Task: TASK-151), merged current main, confirmed no managed setup or version changes, and reran make format && make check (403 Python tests plus Node tests passed). Worktree clean; ready for independent review.
+
 ## Summary
 
 Handoff: Review prompt and packaged role prohibit reviewers from landing or removing branches/worktrees; PLAN.md, README.md, and src/chitty/guide.md document automated and manual landing. Verification: regression test failed against original prompt and passed after fix; make format && make check and npm test passed; no version bump. Follow-ups: none.
@@ -74,3 +76,4 @@ Handoff: Review prompt and packaged role prohibit reviewers from landing or remo
 - 2026-11-08T19:57:53Z rosy-puffin: changed owner, notes
 - 2026-11-08T19:57:53Z rosy-puffin review → blocked
 - 2026-11-08T20:01:49Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T20:13:46Z eager-puffin: changed acceptance criteria, notes
