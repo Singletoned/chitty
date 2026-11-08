@@ -27,6 +27,12 @@ Out of scope: other ways pasted output gets rewritten that this rule does not ca
 - [ ] A test writes a ticket whose Notes have a paragraph with a two-space-indented second line and asserts exactly one warning with the message in the description; the worker records that it failed before the change
 - [ ] A test shows no warning for the same output in a fenced code block, an indented code block, or a numbered list item with an indented continuation line
 
+## Plan
+
+1. Add focused tests in tests/test_check.py for indented paragraph warnings and exclusions (fenced code, indented code, list continuation), verifying the warning message and field scope.
+2. Extend _markdown_warnings in src/chitty/check.py to inspect block-level paragraph tokens and source line ranges using split("\n"), emitting one warning per affected markdown field.
+3. Run the focused regression tests, then make format and make check; record verification and finish the ticket for review.
+
 ## Notes
 
 Suggestion origin: echonomicon
@@ -50,3 +56,4 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-19
 - 2026-11-07T09:20:21Z vivid-dormouse: changed description, notes
 - 2026-11-07T09:20:21Z vivid-dormouse backlog → todo
 - 2026-11-08T11:17:07Z quick-dormouse todo → doing
+- 2026-11-08T11:17:30Z quick-dormouse: wrote the plan
