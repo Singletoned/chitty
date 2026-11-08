@@ -75,6 +75,41 @@ class TestCheck(StoreTestCase):
         )
         self.assertTrue(expected_path.exists())
 
+    def test_warns_for_indented_line_inside_notes_paragraph(self):
+        stored = self.add("Indented notes")
+        text = stored.path.read_text()
+        notes = "Pasted output:\n  Using cached ad detection: true\n"
+        stored.path.write_text(text.replace("## History\n", f"## Notes\n\n{notes}\n## History\n"))
+
+        problems = check(self.repo, self.repo.contexts(), [])
+
+        self.assertEqual([problem.severity for problem in problems], ["warning"])
+        self.assertEqual(
+            [problem.message for problem in problems],
+            [
+                (
+                    "Notes has an indented line inside a paragraph; "
+                    "put pasted output in a fenced code block"
+                )
+            ],
+        )
+
+    def test_does_not_warn_for_indented_lines_in_other_markdown_constructs(self):
+        cases = {
+            "fenced": "```\noutput\n  indented output\n```",
+            "indented": "    output\n    indented output",
+            "list": "1. output\n   indented output",
+        }
+        for name, notes in cases.items():
+            with self.subTest(name=name):
+                stored = self.add(f"{name} notes")
+                text = stored.path.read_text()
+                stored.path.write_text(
+                    text.replace("## History\n", f"## Notes\n\n{notes}\n\n## History\n")
+                )
+
+                self.assertEqual(self.problems(), [])
+
     def test_warns_only_for_literal_delimiters_formatters_escape(self):
         stored = self.add("Literal delimiters")
         stored.path.write_text(

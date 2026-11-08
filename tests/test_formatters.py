@@ -47,7 +47,7 @@ def sample() -> Task:
             "moved_from": "HUMAN-3",
         },
     )
-    task = task.with_criteria(add=(), remove=(), check=[3], uncheck=())
+    task = task.with_criteria(add=(), remove=(), set_criteria=(), check=[3], uncheck=())
     task = task.with_section("Plan", "- First\n- Second")
     return task.with_note("A note.").with_note("Another note.")
 
@@ -70,7 +70,9 @@ class TestFormattersPreserveMeaning(unittest.TestCase):
 
     def test_ticking_a_wrapped_criterion_keeps_the_wrapping(self):
         wrapped = run_formatter("prettier-wrap", sample().render())
-        ticked = parse(wrapped).with_criteria(add=(), remove=(), check=[2], uncheck=())
+        ticked = parse(wrapped).with_criteria(
+            add=(), remove=(), set_criteria=(), check=[2], uncheck=()
+        )
         self.assertEqual(ticked.render(), wrapped.replace("- [ ] a criterion", "- [x] a criterion"))
         self.assertEqual(run_formatter("prettier-wrap", ticked.render()), ticked.render())
 

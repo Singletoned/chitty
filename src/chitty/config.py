@@ -6,10 +6,11 @@ import subprocess
 import sys
 import tomllib
 from collections.abc import Mapping
+from functools import cache
 from pathlib import Path
 from typing import Literal, cast
 
-from pydantic import BaseModel, ConfigDict, ValidationError, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
 from chitty import __version__
 from chitty.errors import ChittyError
@@ -20,6 +21,7 @@ PYPROJECT_NAME = "pyproject.toml"
 BACKLOG_DIR = "chitty"
 ROOT_ENV = "CHITTY_ROOT"
 CHITTY_VERSION = __version__
+LIST_WIDTH = 100
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
@@ -85,6 +87,7 @@ class RepoConfig(BaseModel):
     agent_command: str | None = None
     agent_commands: dict[str, str] = {}
     archive: Literal["move", "delete"] = "move"
+    list_width: int = Field(default=LIST_WIDTH, gt=0)
     contexts: dict[str, ContextConfig]
 
     @field_validator("project")
@@ -309,6 +312,7 @@ def _same_git_repository(owner: Path, root: Path | None) -> bool:
     return owner_git_dir is not None and owner_git_dir == root_git_dir
 
 
+@cache
 def git_common_dir(root: Path) -> Path | None:
     result = subprocess.run(
         ["git", "rev-parse", "--git-common-dir"],

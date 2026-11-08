@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import shlex
 import shutil
 import signal
@@ -152,7 +153,7 @@ def _run_ticket(
         if failed is not None:
             return failed
         work_repo = Repo.open(worktree)
-        # After the rebase, because the rebase can change dependencies.
+        # After the merge, because the merge can change dependencies.
         _setup(setup, worktree)
     else:
         work_repo = Repo.open(worktree)
@@ -413,7 +414,7 @@ def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> 
 def _prepare_review(
     work_repo: Repo, worktree: Path, action: NextAction, main_branch: str
 ) -> RunResult | None:
-    """Rebase a review ticket onto the integration branch, or fail it back to its worker.
+    """Merge the integration branch into a review ticket, or fail it back to its worker.
 
     The reviewer then sees exactly what would land. Returns the status change
     when the ticket fails here, so no review session is spent on it.
@@ -426,17 +427,17 @@ def _prepare_review(
             f"Review failed (work): the worktree has uncommitted changes: {listed}.",
         )
     try:
-        conflicts = git.rebase(worktree, main_branch)
+        conflicts = git.merge_main(worktree, main_branch)
     except KeyboardInterrupt:
-        if git.rebase_in_progress(worktree):
-            git.abort_rebase(worktree)
-        raise RunInterrupted("rebase") from None
+        if git.merge_in_progress(worktree):
+            git.abort_merge(worktree)
+        raise RunInterrupted("merge") from None
     if conflicts:
         listed = ", ".join(f"`{path}`" for path in conflicts)
         return _fail_review(
             work_repo,
             action,
-            f"Review failed (integration): rebasing onto `{main_branch}` conflicts in {listed}.",
+            f"Review failed (integration): merging `{main_branch}` conflicts in {listed}.",
         )
     if changed := _changed_config(worktree, main_branch):
         return _fail_review(
@@ -476,7 +477,7 @@ def _changed_agents_block(worktree: Path, main_branch: str | None = None) -> boo
 
 
 def _changed_config(worktree: Path, main_branch: str) -> str | None:
-    """Return the Chitty config path when the rebased branch changed it."""
+    """Return the Chitty config path when the merged branch changed it."""
     source = config_source(worktree)
     if source is None:
         # A deleted config has no current source to compare, but its path is
@@ -541,17 +542,26 @@ def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:
 def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
     branch = str(action.id).lower()
     destination = main_root / ".worktrees" / branch
-    # A rebase stopped part-way detaches HEAD, so Git no longer lists the
-    # worktree under its branch. It needs a person, not a second worktree.
-    # Its own `.git` file, so a stray directory never reads the main checkout's state.
-    if (destination / ".git").exists() and git.rebase_in_progress(destination):
-        raise ChittyError(
-            f"{destination} has an unfinished rebase; finish it or run `git rebase --abort` there"
-        )
+    # An unfinished operation needs a person, not a second worktree. Its own
+    # `.git` file means a stray directory never reads the main checkout's state.
+    if (destination / ".git").exists():
+        if git.merge_in_progress(destination):
+            raise ChittyError(
+                f"{destination} has an unfinished merge; finish it or run `git merge --abort` there"
+            )
+        if git.rebase_in_progress(destination):
+            raise ChittyError(
+                f"{destination} has an unfinished rebase; finish it or run "
+                "`git rebase --abort` there"
+            )
     existing = git.worktree_for_branch(main_root, branch)
     if existing is not None:
         if existing.resolve() == main_root.resolve():
             raise ChittyError(f"branch {branch} is checked out in the main checkout")
+        if git.merge_in_progress(existing):
+            raise ChittyError(
+                f"{existing} has an unfinished merge; finish it or run `git merge --abort` there"
+            )
         if git.rebase_in_progress(existing):
             raise ChittyError(
                 f"{existing} has an unfinished rebase; finish it or run `git rebase --abort` there"
@@ -596,18 +606,35 @@ def _run_check(
         )
     except FileNotFoundError:
         output = f"check command not found: {command}"
-        return _fail_check(work_repo, action, output)
+        return _handle_check_failure(work_repo, action, output)
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
     if completed.returncode == 0:
         return None
     lines = completed.stdout.splitlines()[-20:]
     output = "\n".join(lines) or "(no output)"
-    return _fail_check(
-        work_repo,
-        action,
-        f"check exited with status {completed.returncode}:\n{output}",
-    )
+    detail = f"check exited with status {completed.returncode}:\n{_code_block(output)}"
+    return _handle_check_failure(work_repo, action, detail)
+
+
+def _code_block(text: str) -> str:
+    """Fence command output so a note cannot read it as Markdown structure."""
+    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
+    fence = "`" * max(3, longest + 1)
+    return f"{fence}text\n{text}\n{fence}"
+
+
+def _handle_check_failure(work_repo: Repo, action: NextAction, detail: str) -> RunResult | None:
+    if action.mode == "work":
+        status = work_repo.find(action.id).task.frontmatter.status
+        if status == "todo":
+            raise ChittyError(f"check failed before {action.id} started: {detail}")
+        work_repo.edit(
+            action.id,
+            Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
+        )
+        return None
+    return _fail_check(work_repo, action, detail)
 
 
 def _fail_check(work_repo: Repo, action: NextAction, detail: str) -> RunResult:

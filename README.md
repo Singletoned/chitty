@@ -77,13 +77,18 @@ are the reference. `chitty guide` prints the managed `AGENTS.md` block; `chitty 
 block in strict `chitty:begin` and `chitty:end` markers so only Chitty's text is
 replaced. Existing unmarked blocks are migrated on the next init.
 `chitty guide work`, `review`, and `plan` print the focused instructions for
-that role. Work and review take an optional ticket ID; planning does not.
+that role from the packaged role files. The short block in `AGENTS.md` points
+agents started by hand to the matching role guide. Work and review take an
+optional ticket ID; planning does not.
 Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog and
-done tickets. Each row prefixes the status with a fixed glyph: `💤 backlog`,
-`📋 todo`, `🔨 doing`, `⛔ blocked`, `👀 review`, or `✅ done`. Rows skipped by
-`chitty next` explain why at the end: `👤 human`, `🔒 waits on ID[, ID...]`, or
-`⚠️ <message>` for a broken dependency. Review is required before `done` by default.
+done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
+`📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then the priority
+as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so rows fit in
+`list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
+`chitty next` carry a glyph in a column before the title: `👤` owned or human,
+`🔒` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
+message goes to stderr. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`
 contexts do this so people can close their own tasks directly. A context with
 `random_ids = true` numbers new tickets at random from 10000000 to 99999999
@@ -118,7 +123,7 @@ holds a lock on its ticket until it exits, an exclusive `flock` on
 lock file records JSON with the process ID, actor, `work` or `review` mode, and
 UTC start time. `chitty show` reports a held ticket as `running: <mode> by
 <actor>, process <pid>, since <HH:MM>` (local time), while `chitty list` marks
-it `▶ running`; `chitty next` and other runs skip it and `--ticket` refuses it
+it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
 with the holder's process ID. Locks are machine-local. The sessions all update
 main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
@@ -135,12 +140,16 @@ the configured agent from that worktree. The agent uses the `chitty`
 executable installed beside the runner's Python interpreter, rather than a
 branch-local `chitty`; `pi` and `claude` still come from the global `PATH`.
 This behavior is implemented without changing `chitty.toml` on the branch.
-Before a review it first rebases the branch onto the main branch, then runs setup and check, so the
+Before a review it first merges the main branch into the branch, then runs setup and check, so the
 reviewer sees exactly what would land; uncommitted files in the worktree or a
-rebase conflict instead move the
+merge conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed
 (integration)` note, without starting a session, and count towards the
-failed-review limit. Choose a ticket with `chitty run
+failed-review limit. In work mode, a failing check on an already-`doing`
+ticket is recorded as `Check failed before this session: ...` and the agent
+starts so it can fix the branch. A failing check on a `todo` ticket exits 1
+with `check failed before <ID> started: ...`, leaving the ticket unchanged and
+starting no agent. Choose a ticket with `chitty run
 --ticket ID`; pass agent options with `chitty run -- --model MODEL`. Use
 `chitty run --owner NAME` to select that owner's tickets; it cannot be combined
 with `--ticket`. It
