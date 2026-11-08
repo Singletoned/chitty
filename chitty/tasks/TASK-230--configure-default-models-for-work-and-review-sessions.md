@@ -1,6 +1,6 @@
 ---
 title: Configure default models for work and review sessions
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-08
@@ -32,6 +32,11 @@ Implementing cold read completed after the read-only findings and a repeat read:
 
 Regression evidence: the new focused test suite failed before implementation (wrong unqualified model args, blank values accepted, missing init/template examples); it passes after implementation. Verification: make format && make check passed (384 Python tests plus Node tests, ruff and pyright). chitty fix completed with only pre-existing Markdown warnings in other task files. Implemented role defaults for default/named commands, model precedence, validation, and init placement. Commit: 7a96c2e (Task: TASK-230).
 
+Reviewed: make format && make check passed: 385 Python tests, Node tests, ruff and pyright.
+1: pass - Fake agent tests cover unqualified work and review, named and default agents, and absent settings.
+2: pass - Fake agent tests cover forwarded and command models and combined precedence.
+3: pass - Tests cover validation, both config formats, template and pyproject upgrade placement; README and PLAN document defaults.
+
 ## Summary
 
 Implemented and committed as 7a96c2e. Handoff: role-specific work_model/review_model defaults are supported, documented, and covered by regression tests for both config formats, named commands, forwarded overrides, and init comment placement. Verification: focused tests and make format && make check passed. Follow-up: none; chitty fix surfaced pre-existing warnings in unrelated task files.
@@ -50,3 +55,5 @@ Implemented and committed as 7a96c2e. Handoff: role-specific work_model/review_m
 - 2026-11-08T17:13:56Z upbeat-kestrel: wrote the plan
 - 2026-11-08T17:15:48Z upbeat-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T17:15:51Z upbeat-kestrel doing → review
+- 2026-11-08T17:20:30Z calm-zander: changed notes; ticked acceptance criteria
+- 2026-11-08T17:20:30Z calm-zander review → done
