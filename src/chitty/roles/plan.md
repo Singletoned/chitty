@@ -33,6 +33,12 @@ task files. `chitty --help` is the full command reference.
   its worktree, setup, cleanup and report steps. Add the code most at risk and
   what you doubt. A reader keeps an implementing read under
   `refs/cold-read/<ID>/<n>`; `git for-each-ref refs/cold-read` lists them.
+  When a read implements the current ticket text and has no unresolved serious
+  findings, add a ticket note as a possible starting point for the worker:
+  `git diff <main-branch>...refs/cold-read/<ID>/<n>`, where `<main-branch>` is
+  the repository's configured main branch. Tell the worker to check it against
+  the current criteria, not trust it. Delete refs from reads against superseded
+  ticket text with `git update-ref -d refs/cold-read/<ID>/<n>`.
 - Ask of each criterion: could it pass with nothing built? If so, name the case
   that fails today, and have the worker record that the test failed first.
 - A worker cannot verify a criterion needing a real `chitty run` or agent
