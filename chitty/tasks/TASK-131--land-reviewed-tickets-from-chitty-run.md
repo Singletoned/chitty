@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -282,3 +282,4 @@ Handoff: landing implementation and tests integrated with main; review merge ret
 - 2026-11-08T13:40:22Z golden-raven review → doing
 - 2026-11-08T13:42:22Z eager-vole: wrote the plan
 - 2026-11-08T13:46:09Z eager-vole: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T13:46:10Z eager-vole doing → review
