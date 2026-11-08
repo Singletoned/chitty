@@ -13,6 +13,10 @@ In `src/chitty/store.py:check_edit`, reject `--ac` and `--rm-ac` while the task 
 - [ ] Fail-first tests show `--ac` and `--rm-ac` each being accepted on a review ticket before the fix, including a combined `review` to `done` edit with a valid verdict. After the fix, each is rejected with a clear message and leaves the file unchanged; `--set-ac` remains rejected.
 - [ ] Tests show criteria may still change when moving `doing` to `review`, and CLI and shared store validation agree; `make check` passes.
 
+## Plan
+
+Extend check_edit to reject --ac and --rm-ac alongside --set-ac whenever the pre-edit status is review. Add CLI and Repo.edit regression tests, including review-to-done with valid verdict and doing-to-review allowance; verify rejection preserves files. Run focused fail-first tests, then make check and format.
+
 ## Notes
 
 Cold-read finding resolved: the refusal is the decision, not an open question; guard pre-edit review status even during a simultaneous status change. Include fail-first CLI and shared-store coverage.
@@ -26,3 +30,4 @@ Implementing cold read against the updated ticket: `tests.test_cli.TestEdit.test
 - 2026-11-08T14:17:49Z eager-puffin: changed notes
 - 2026-11-08T14:17:50Z eager-puffin backlog → todo
 - 2026-11-08T17:04:21Z plucky-urchin todo → doing
+- 2026-11-08T17:04:42Z plucky-urchin: wrote the plan
