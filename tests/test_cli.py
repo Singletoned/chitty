@@ -1544,12 +1544,13 @@ class TestEdit(CliTestCase):
         self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
 
     def test_edit_sets_criterion_in_place_and_unticks_it(self):
+        self.run_cli("edit", "1", "--ac", "Three")
         self.run_cli("edit", "1", "--check", "2")
         self.run_cli("edit", "1", "--set-ac", "2", "Reworded")
 
         self.assertEqual(
             [(c["checked"], c["text"]) for c in self.json("show", "1")["acceptance_criteria"]],
-            [(False, "One"), (False, "Reworded")],
+            [(False, "One"), (False, "Reworded"), (False, "Three")],
         )
 
     def test_edit_set_criterion_rejects_invalid_and_conflicting_numbers(self):
