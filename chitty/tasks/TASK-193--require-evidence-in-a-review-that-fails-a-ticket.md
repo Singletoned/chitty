@@ -30,7 +30,7 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 
 ## Acceptance Criteria
 
-- [x] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
+- [ ] A test in `tests/test_guide_review_evidence.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
 - [x] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, no longer containing `such as a throwaway failing test`, and not matching `\bmake\b`
 
 ## Plan
@@ -72,6 +72,8 @@ make: *** [check] Error 1
 Owner set to `human` on 2026-11-07, before `chitty run --mode work` looped on it as it did 54 times on `TASK-179`: the branch has `__version__` 0.1.41 and `main` has 0.1.42, so the check fails, and in work mode a failed check only adds a note and leaves the ticket in `doing`, so no agent starts to fix it. `TASK-224` removes branch version bumps. Clear the owner once it lands.
 
 Unparked: TASK-227 now lets a worker fix a failing check on a doing ticket. Recheck this branch before review.
+
+Aligned the guide regression-test location with current repository guidance: use a dedicated `tests/test_guide_<topic>.py` file rather than adding to `TestGuide` in `tests/test_cli.py`.
 
 ## Summary
 
@@ -117,3 +119,4 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-06T21:55:13Z kind-raven review → doing
 - 2026-11-07T09:39:55Z vivid-dormouse: changed owner, notes
 - 2026-11-08T13:05:02Z eager-puffin: changed owner, notes
+- 2026-11-08T13:08:50Z eager-puffin: changed acceptance criteria, notes
