@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-120
@@ -234,6 +234,8 @@ Added real-Git landing coverage: direct successful fast-forward with done status
 
 Landing-specific verification is now covered by tests/test_landing.py and the updated review runner test. Focused run: 9 tests pass, covering each acceptance criterion including merge of moved main, failed conflict/check preservation, all refusal guards and ignored files. Full make check still fails 3 legacy tests (overlap fake agent, config comparison's later commit, and runner-environment test); failures are test fixture assumptions under automatic landing/clean-main guards. Ruff, format, and Pyright passed. Criteria 1–3 are ticked based on their focused tests; ticket remains doing pending full check cleanup.
 
+Review failed (integration): merging `main` conflicts in `src/chitty/git.py`, `tests/test_review_merge.py`.
+
 ## Summary
 
 Handoff: chitty run lands done tickets by merging moved main into the ticket worktree, validating setup/check, fast-forwarding main, and removing worktree/branch; concurrent landing is serialized. Verification: all 3 acceptance criteria rechecked with tests/test_landing.py and runner integration coverage; 12 focused tests pass. make format && make check passes (373 Python tests and Node suite); Ruff and Pyright pass. Follow-up: none known.
@@ -274,3 +276,5 @@ Handoff: chitty run lands done tickets by merging moved main into the ticket wor
 - 2026-11-08T13:36:00Z daring-gannet: changed notes
 - 2026-11-08T13:40:07Z daring-gannet: changed summary
 - 2026-11-08T13:40:07Z daring-gannet doing → review
+- 2026-11-08T13:40:22Z golden-raven: changed notes
+- 2026-11-08T13:40:22Z golden-raven review → doing
