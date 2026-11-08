@@ -16,7 +16,12 @@ Allow a repository to choose persistent, independent model defaults in `chitty.t
 - [ ] Tests show forwarded `--model VALUE` and `--model=VALUE` each suppressing the role default, and a model in the selected agent command suppressing it too; existing behavior is unchanged when both sources already specify a model.
 - [ ] Tests show blank configured model values rejected clearly, configuration in both `chitty.toml` and `[tool.chitty]` working, and `README.md`, `PLAN.md`, and the init template describing the defaults.
 
+## Notes
+
+Read-only cold read: the first draft left precedence ambiguous when a command already had `--model`, and did not identify where `chitty init` inserts comments. Fixed the description and criterion 2: existing model arguments suppress the role default without rewriting them, and commented config examples belong before table headers. A fresh implementing cold read with tests and `make check` is still needed before promotion from backlog.
+
 ## History
 
 - 2026-11-08T13:21:57Z eager-puffin → backlog
 - 2026-11-08T13:23:28Z eager-puffin: changed description, acceptance criteria
+- 2026-11-08T13:23:56Z eager-puffin: changed notes
