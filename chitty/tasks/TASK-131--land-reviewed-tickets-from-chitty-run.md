@@ -1,8 +1,7 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: blocked
+status: doing
 priority: high
-owner: human
 depends_on:
   - TASK-120
   - TASK-150
@@ -35,7 +34,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Plan
 
-Resolve the integration conflict with main in src/chitty/git.py and tests/test_review_merge.py by retaining both the landing serialization behavior and main’s review-merge changes. Run focused tests, then make format && make check; update ticket verification and hand off for review.
+Address the reviewers concrete missing end-to-end cases. Add real-Git chitty run review tests for direct fast-forward landing and for main advancing after review preparation: a passing landing check and a failing landing check must each have observable results, including preserving main on failure. Confirm the new tests expose the missing coverage before code changes, then make failure diagnostics explicitly direct a human to resolve landing conflicts or checks in the worktree. Run focused tests and make format && make check before requesting independent review.
 
 ## Notes
 
@@ -247,6 +246,8 @@ Review failed (tests): Add end-to-end coverage for the missing cases below. Land
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+The human requested that I investigate and resolve the third-review escalation. Clearing the human owner and returning to doing for the specifically identified end-to-end coverage and landing diagnostics; no criteria are presumed passed.
+
 ## Summary
 
 Handoff: landing implementation and tests integrated with main; review merge retains both branches' behavior. Verification: make format && make check passed (384 Python tests, Node suite, Ruff, Pyright); focused landing/review tests passed. Follow-up: none known.
@@ -294,3 +295,5 @@ Handoff: landing implementation and tests integrated with main; review merge ret
 - 2026-11-08T13:46:10Z eager-vole doing → review
 - 2026-11-08T13:48:35Z friendly-zander: changed owner, acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-08T13:48:35Z friendly-zander review → blocked
+- 2026-11-08T16:45:08Z eager-puffin: changed owner, notes; wrote the plan
+- 2026-11-08T16:45:08Z eager-puffin blocked → doing
