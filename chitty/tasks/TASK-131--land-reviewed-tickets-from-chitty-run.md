@@ -30,7 +30,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 - [x] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
 - [x] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
-- [ ] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
+- [x] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
 ## Plan
 
@@ -260,9 +260,11 @@ Regression confirmed before the fix: removing the ticket worktree and branch, th
 
 Review failed (work): the worktree has uncommitted changes: `src/chitty/run.py`, `tests/test_landing.py`.
 
+Regression verified: missing ticket branch and worktree with dirty main is a no-op. Focused regression passed; make format && make check passed (389 Python tests, Node tests, Ruff, Pyright).
+
 ## Summary
 
-Handoff: _land now no-ops when both the ticket branch and worktree are already gone, before main-checkout guards. Verification: regression failed before the fix; python -m unittest tests.test_landing tests.test_review_merge (25 passed); make format && make check passed (389 Python tests, Node tests, Ruff, Pyright); chitty fix completed. Follow-ups: none known.
+Handoff: Landing no-ops when both the ticket branch and worktree are already gone, before main-checkout guards. Verification: regression passed; make format && make check passed (389 Python tests, Node tests, Ruff, Pyright). Follow-ups: none known.
 
 ## History
 
@@ -319,3 +321,4 @@ Handoff: _land now no-ops when both the ticket branch and worktree are already g
 - 2026-11-08T17:11:38Z able-newt doing → review
 - 2026-11-08T17:14:06Z golden-raven: changed notes
 - 2026-11-08T17:14:06Z golden-raven review → doing
+- 2026-11-08T17:20:12Z brisk-puffin: changed notes, summary; ticked acceptance criteria
