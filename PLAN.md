@@ -59,7 +59,7 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   write; otherwise it fails loudly and tells the caller to run `chitty init`.
   Upgrades happen only in the main checkout: a write in a linked worktree
   skips the upgrade and the stale-setup error (still refusing a setup newer
-  than Chitty), and the branch picks up the new setup when rebased onto `main`.
+  than Chitty), and the branch picks up the new setup when merged with `main`.
   `chitty run` refreshes setup before selecting a ticket, committing setup-only
   changes in a main checkout and doing nothing in a linked worktree. From a
   linked worktree, it refuses to run when the main checkout's setup is older or
@@ -722,18 +722,18 @@ surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
 
 Before a review (decided with the human, 2026-11-03), after the run's actor is
 set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly
-what would land, keeping `main` linear:
+what would land:
 
-1. A rebase left unfinished, for example by a crash, is a loud error for the
-   human, with no status change.
+1. An unfinished merge or rebase, for example after a crash, is a loud error for
+   the human, with no status change.
 2. Uncommitted changes, including untracked but not ignored files, move the
    ticket to `doing` with `Review failed (work): ...` listing them.
-3. It rebases the branch onto the local `main`. On a conflict it runs
-   `git rebase --abort` and moves the ticket to `doing` with `Review failed
+3. It merges the local `main` into the branch. On a conflict it runs
+   `git merge --abort` and moves the ticket to `doing` with `Review failed
    (integration): ...` naming the conflicting files, for the worker to resolve
-   in a fresh session. The rebase runs with `rerere.enabled=false`, so a
+   in a fresh session. The merge runs with `rerere.enabled=false`, so a
    resolution Git recorded for another branch is never replayed unchecked.
-4. Only then does `setup` run, because the rebase can change dependencies.
+4. Only then does `setup` run, because the merge can change dependencies.
 5. `check` runs in the ticket worktree after setup, with combined output
    captured. A failure moves the ticket to `doing` with the last 20 output lines
    in a `Review failed (work)` note and starts no agent. In work mode setup and
@@ -743,7 +743,7 @@ After either failure no agent starts, no usage line is written, and `chitty
 run` exits 0 because the status changed, printing the change. The moves go
 through `Repo.edit` under the run's own actor, which never worked on the
 ticket, so they count with reviewers' failures towards `REVIEW_FAILURE_LIMIT`.
-Interrupting the rebase aborts it and exits 130. A clean rebase is not
+Interrupting the merge aborts it and exits 130. A clean merge is not
 repeated or re-reviewed if `main` moves during the review; landing is
 `TASK-131`.
 

@@ -184,7 +184,7 @@ class TestRunLock(RunLockTestCase):
         self.assertFalse(is_locked(self.root, failed))
         (self.logs / "fail").unlink()
 
-        with mock.patch("chitty.git.rebase", side_effect=KeyboardInterrupt):
+        with mock.patch("chitty.git.merge_main", side_effect=KeyboardInterrupt):
             self.run_cli("run", "--ticket", succeeded, exit_code=130)
         self.assertFalse(is_locked(self.root, succeeded))
 

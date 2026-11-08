@@ -140,9 +140,9 @@ the configured agent from that worktree. The agent uses the `chitty`
 executable installed beside the runner's Python interpreter, rather than a
 branch-local `chitty`; `pi` and `claude` still come from the global `PATH`.
 This behavior is implemented without changing `chitty.toml` on the branch.
-Before a review it first rebases the branch onto the main branch, then runs setup and check, so the
+Before a review it first merges the main branch into the branch, then runs setup and check, so the
 reviewer sees exactly what would land; uncommitted files in the worktree or a
-rebase conflict instead move the
+merge conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed
 (integration)` note, without starting a session, and count towards the
 failed-review limit. Choose a ticket with `chitty run
