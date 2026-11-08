@@ -1,6 +1,6 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-131
@@ -35,9 +35,11 @@ Review prompt and packaged role prohibit reviewers from landing or removing work
 
 Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/integrations/pi/chitty.ts`, `src/chitty/integrations/pi/tests/chitty.test.ts`, `src/chitty/roles/review.md`.
 
+Re-ran make format && make check: format clean, 397 Python tests passed, and Node tests passed. chitty fix completed; it reported pre-existing Markdown warnings in other tasks.
+
 ## Summary
 
-Handoff: Reviewer instructions now leave landing to chitty run; README, src/chitty/guide.md, and PLAN.md describe automated and manual landing. Verification: make format && make check passed (397 Python tests and Node tests). No follow-ups; version unchanged.
+Handoff: Review role and Pi continuation prompt prohibit landing or removing branches/worktrees; README, guide, and PLAN document automated and manual landing. Verification: make format && make check passed (397 Python tests and Node tests). No follow-ups; version unchanged.
 
 ## History
 
@@ -52,3 +54,5 @@ Handoff: Reviewer instructions now leave landing to chitty run; README, src/chit
 - 2026-11-08T18:21:02Z youthful-vole doing → review
 - 2026-11-08T18:23:24Z sunny-adder: changed notes
 - 2026-11-08T18:23:24Z sunny-adder review → doing
+- 2026-11-08T18:26:32Z plucky-wren: changed notes, summary
+- 2026-11-08T18:26:32Z plucky-wren doing → review
