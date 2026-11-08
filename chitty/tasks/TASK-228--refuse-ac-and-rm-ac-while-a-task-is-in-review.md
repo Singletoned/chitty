@@ -17,7 +17,10 @@ In `src/chitty/store.py:check_edit`, reject `--ac` and `--rm-ac` while the task 
 
 Cold-read finding resolved: the refusal is the decision, not an open question; guard pre-edit review status even during a simultaneous status change. Include fail-first CLI and shared-store coverage.
 
+Implementing cold read against the updated ticket: `tests.test_cli.TestEdit.test_edit_rejects_adding_and_removing_criteria_in_review` first failed because `--ac` succeeded; `tests.test_store.TestStore.test_review_criteria_are_immutable_through_repo_edit` first failed because `Repo.edit` accepted it. After the fix all focused tests and `make check` passed (380 Python tests, Node tests). Kept candidate implementation at `refs/cold-read/TASK-228/1`; inspect with `git diff main...refs/cold-read/TASK-228/1` and verify against the criteria before reuse. No remaining serious finding.
+
 ## History
 
 - 2026-11-07T10:09:05Z vivid-dormouse → backlog
 - 2026-11-08T14:15:12Z eager-puffin: changed description, acceptance criteria, notes
+- 2026-11-08T14:17:49Z eager-puffin: changed notes
