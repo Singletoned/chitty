@@ -1,8 +1,7 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: blocked
+status: review
 priority: high
-owner: human
 depends_on:
   - TASK-131
 parent: TASK-106
@@ -19,8 +18,8 @@ Out of scope: changing landing itself.
 
 ## Acceptance Criteria
 
-- [ ] A test shows the generated Pi review prompt does not instruct reviewers to merge or remove branches or worktrees; the packaged review guide likewise does not instruct them to do so. Explicit prohibitions are allowed.
-- [ ] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
+- [x] A test shows the generated Pi review prompt does not instruct reviewers to merge or remove branches or worktrees; the packaged review guide likewise does not instruct them to do so. Explicit prohibitions are allowed.
+- [x] `PLAN.md`, `README.md`, and `src/chitty/guide.md` describe landing; the ticket branch does not bump `__version__`.
 
 ## Plan
 
@@ -77,3 +76,5 @@ Handoff: Review prompt and packaged role prohibit reviewers from landing or remo
 - 2026-11-08T19:57:53Z rosy-puffin review → blocked
 - 2026-11-08T20:01:49Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T20:13:46Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T20:13:47Z eager-puffin: changed owner; ticked acceptance criteria
+- 2026-11-08T20:13:47Z eager-puffin blocked → review
