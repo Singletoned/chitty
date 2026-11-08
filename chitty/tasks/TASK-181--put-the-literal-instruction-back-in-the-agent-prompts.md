@@ -2,7 +2,6 @@
 title: Put the literal `*` instruction back in the agent prompts
 status: doing
 priority: medium
-owner: human
 parent: TASK-106
 created: 2026-11-05
 ---
@@ -16,7 +15,7 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 ## Acceptance Criteria
 
 - [x] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
-- [x] `__version__` is bumped above `main`'s, and `AGENTS.md`'s managed block contains `literal single`
+- [ ] The ticket branch leaves the managed `AGENTS.md` block, `chitty.toml`, and `__version__` unchanged; the guide sources carry the instruction for setup regeneration on main after landing.
 
 ## Plan
 
@@ -64,6 +63,8 @@ make: *** [check] Error 1
 
 Owner set to `human` on 2026-11-07, before `chitty run --mode work` looped on it as it did 54 times on `TASK-179`: the branch has `__version__` 0.1.41 and `main` has 0.1.42, so the check fails, and in work mode a failed check only adds a note and leaves the ticket in `doing`, so no agent starts to fix it. `TASK-224` removes branch version bumps. Clear the owner once it lands.
 
+Unparked after TASK-224 and TASK-227: branches no longer bump the version or regenerate managed setup; a doing ticket with a failed check now starts a worker. Recheck and finish the branch before review.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -103,3 +104,4 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-06T21:49:23Z honest-ibis: changed notes
 - 2026-11-06T21:49:23Z honest-ibis review → doing
 - 2026-11-07T09:39:54Z vivid-dormouse: changed owner, notes
+- 2026-11-08T13:05:13Z eager-puffin: changed owner, acceptance criteria, notes
