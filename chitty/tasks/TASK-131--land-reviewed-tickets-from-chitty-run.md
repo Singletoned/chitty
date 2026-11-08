@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -256,9 +256,11 @@ Review failed (work): When the ticket branch and worktree are already gone, land
 2: pass - Moved main, successful check, conflict and failing check are covered.
 3: fail - Guard handling erroneously refuses an already-landed ticket when main is dirty instead of doing nothing.
 
+Regression confirmed before the fix: removing the ticket worktree and branch, then dirtying main, made _land raise the clean-check error instead of returning. The landing path now detects both missing resources before checking main; focused landing/review tests pass (25), and make format && make check passes (389 Python tests plus Node tests, Ruff, Pyright). chitty fix completed; it reports existing Markdown warnings.
+
 ## Summary
 
-Handoff: review-driven landing tests now cover linear fast-forward, merging moved main, landing-check pass/failure, cleanup, and explicit human/worktree failure guidance. Verification: python -m unittest tests.test_review_merge (16 passed); make format && make check passed (388 Python tests, Node suite, Ruff, Pyright); chitty fix completed. Follow-ups: none known.
+Handoff: _land now no-ops when both the ticket branch and worktree are already gone, before main-checkout guards. Verification: regression failed before the fix; python -m unittest tests.test_landing tests.test_review_merge (25 passed); make format && make check passed (389 Python tests, Node tests, Ruff, Pyright); chitty fix completed. Follow-ups: none known.
 
 ## History
 
@@ -311,3 +313,5 @@ Handoff: review-driven landing tests now cover linear fast-forward, merging move
 - 2026-11-08T17:05:24Z intrepid-eel: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-08T17:05:24Z intrepid-eel review → doing
 - 2026-11-08T17:08:33Z able-newt: wrote the plan
+- 2026-11-08T17:11:38Z able-newt: changed notes, summary
+- 2026-11-08T17:11:38Z able-newt doing → review
