@@ -1,6 +1,6 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-131
@@ -34,3 +34,4 @@ TASK-224 supersedes the branch-version-bump requirement; version selection happe
 - 2026-11-06T16:24:15Z youthful-toad: changed priority
 - 2026-11-08T13:05:15Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:08:31Z eager-puffin: changed description
+- 2026-11-08T18:16:49Z youthful-vole todo → doing
