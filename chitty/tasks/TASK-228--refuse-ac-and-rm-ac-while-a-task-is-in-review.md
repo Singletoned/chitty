@@ -1,6 +1,6 @@
 ---
 title: Refuse `--ac` and `--rm-ac` while a task is in review
-status: review
+status: doing
 created: 2026-11-07
 ---
 
@@ -25,6 +25,8 @@ Implementing cold read against the updated ticket: `tests.test_cli.TestEdit.test
 
 Fail-first CLI and Repo.edit tests both failed before the guard: --ac and direct store mutation were accepted. Guard now rejects --ac, --rm-ac, and --set-ac based on pre-edit review status; tests cover review-to-done valid verdict preservation and doing-to-review. make format and make check passed (380 Python tests and Node tests).
 
+Review failed (work): the worktree has uncommitted changes: `src/chitty/store.py`, `tests/test_cli.py`, `tests/test_store.py`.
+
 ## Summary
 
 Implemented and verified criterion-mutation refusal for review tasks through CLI and shared Repo.edit validation. Verified with make format and make check. No follow-up.
@@ -40,3 +42,5 @@ Implemented and verified criterion-mutation refusal for review tasks through CLI
 - 2026-11-08T17:05:51Z plucky-urchin: changed notes; ticked acceptance criteria
 - 2026-11-08T17:05:57Z plucky-urchin: changed summary
 - 2026-11-08T17:05:57Z plucky-urchin doing → review
+- 2026-11-08T17:16:12Z eager-falcon: changed notes
+- 2026-11-08T17:16:12Z eager-falcon review → doing
