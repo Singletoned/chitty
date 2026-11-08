@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: blocked
+status: doing
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -86,6 +86,8 @@ make: *** [check] Error 1
 
 Focused regression test passes and verifies all required guide phrases and exclusions; chitty fix completed with pre-existing task-format warnings. make check is blocked: check_version_bump requires src/chitty/__init__.py above main 0.1.43 because src/chitty/roles/review.md changed. The ticket explicitly says no version bump is needed. Human decision needed: authorize a version bump for this check, or provide another way to satisfy it without one.
 
+Unblocked for integration: the last blocker was the branch check_version_bump policy, which TASK-224 removed on main. This branch is 240 commits behind main and still has the old check and version. Merge current main into this branch, preserve the existing uncommitted test migration in tests/test_cli.py and tests/test_guide_review_evidence.py, leave generated setup and branch version untouched, then run make check before requesting review. Do not run chitty init on the ticket branch.
+
 ## Summary
 
 Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
@@ -135,3 +137,5 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-08T13:56:08Z lively-lapwing: changed notes
 - 2026-11-08T13:57:38Z lively-lapwing: changed notes; ticked acceptance criteria
 - 2026-11-08T13:57:38Z lively-lapwing doing → blocked
+- 2026-11-08T16:43:21Z eager-puffin: changed notes
+- 2026-11-08T16:43:21Z eager-puffin blocked → doing
