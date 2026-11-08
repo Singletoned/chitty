@@ -37,6 +37,8 @@ review = true
 # setup = "make install" # run in every ticket worktree before the agent starts
 # check = "make check" # validate the ticket worktree before the agent starts
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{{mode}} {{id}}"
+# work_model = "provider/model" # default for work sessions when the command has no model
+# review_model = "provider/model" # default for review sessions when the command has no model
 archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
@@ -86,6 +88,8 @@ class RepoConfig(BaseModel):
     check: str | None = None
     agent_command: str | None = None
     agent_commands: dict[str, str] = {}
+    work_model: str | None = None
+    review_model: str | None = None
     archive: Literal["move", "delete"] = "move"
     list_width: int = Field(default=LIST_WIDTH, gt=0)
     contexts: dict[str, ContextConfig]
@@ -104,6 +108,13 @@ class RepoConfig(BaseModel):
     def _autoformat(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():
             raise ValueError("must not be empty")
+        return value
+
+    @field_validator("work_model", "review_model")
+    @classmethod
+    def _model(cls, value: str | None) -> str | None:
+        if value is not None and not value.strip():
+            raise ValueError("must not be blank")
         return value
 
     @field_validator("setup", "check")

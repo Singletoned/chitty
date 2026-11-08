@@ -1,6 +1,6 @@
 ---
 title: Require evidence in a review that fails a ticket
-status: todo
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -30,8 +30,12 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 
 ## Acceptance Criteria
 
-- [ ] A test in `TestGuide` in `tests/test_cli.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
-- [ ] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, no longer containing `such as a throwaway failing test`, and not matching `\bmake\b`
+- [x] A test in `tests/test_guide_review_evidence.py`, collapsing whitespace in `guide("review")` first so that line wrapping cannot break it, shows it containing `A criterion is unmet if nothing exercises it`, `A ticket that is itself wrong also fails`, `must be run first`, `Reasoning alone demonstrates nothing`, `file a ticket instead of failing`, `earliest stage that should have caught it`, `If you ran code, the note gives what was run and what it printed`, `says what is missing or wrong` and `what stopped you`, and fails against the current `review.md`
+- [x] The same test shows `guide("review")` still containing `Review failed (<cause>):`, `--uncheck` and `-s doing`, no longer containing `such as a throwaway failing test`, and not matching `\bmake\b`
+
+## Plan
+
+Update the review role’s two specified bullets, add a dedicated tests/test_guide_review_evidence.py regression with collapsed whitespace, confirm it fails without the change and passes with it, then run make check and hand off for review.
 
 ## Notes
 
@@ -42,6 +46,67 @@ Implementing cold read by a fresh Haiku subagent, 2026-11-05, the first read of 
 Second implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-193/2`. Serious, fixed: my rewrite still contradicted itself, because "fail only" excluded the cases the failure note then asked for, namely a criterion nothing exercises, a missing file, a wrong ticket and a broken environment, so the first bullet now names them. Also fixed: "what was run" now applies only when code ran; the causes had no meaning in this file, so it now uses `PLAN.md`'s definition; and the test checks the old wording is gone. A third read follows.
 
 Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `refs/cold-read/TASK-193/3`: nothing serious. The test failed on all ten checks without the change and passed with it, and `make check` exited 0. Fixed: a wrong ticket now names its cause, one clause that the criteria's phrases still match, so no further read. Rejected: defining every cause in the file, because "earliest stage" with the list is enough and the file should stay short; a defect outside the criteria, which the bullet already allows to fail when demonstrated; an unmet criterion against an unshown defect, since the first is about a criterion and the second about a claim; and `src/chitty/guide.md` staying as it is, which is deliberate and does not contradict this.
+
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
+Review failed (integration): rebasing onto `main` conflicts in `tests/test_cli.py`.
+
+Review failed (integration): rebasing onto `main` conflicts in `src/chitty/roles/review.md`, `tests/test_cli.py`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
+Unblocked by a human-run session. All three failed reviews were rebase conflicts with `main`, mostly on `tests/test_cli.py`'s guide tests and `__version__`, not problems with the work. Rebased onto `main` (`0.1.40`):
+- Both sides of each conflicting guide test are kept.
+- The new `main` guide text sits alongside this ticket's change; the role files keep `TASK-219`'s sentence.
+- `chitty.toml` and `AGENTS.md` match `main` (`TASK-212`, `TASK-218`).
+- `__version__` is `0.1.41`.
+`make check` passes (360 tests). Several open tickets also use `0.1.41`, so whichever lands second will need its version bumped again.
+
+Review failed (work): check exited with status 2:
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.41), but working tree has 0.1.41:
+  src/chitty/roles/review.md
+make: *** [check] Error 1
+
+Owner set to `human` on 2026-11-07, before `chitty run --mode work` looped on it as it did 54 times on `TASK-179`: the branch has `__version__` 0.1.41 and `main` has 0.1.42, so the check fails, and in work mode a failed check only adds a note and leaves the ticket in `doing`, so no agent starts to fix it. `TASK-224` removes branch version bumps. Clear the owner once it lands.
+
+Unparked: TASK-227 now lets a worker fix a failing check on a doing ticket. Recheck this branch before review.
+
+Aligned the guide regression-test location with current repository guidance: use a dedicated `tests/test_guide_<topic>.py` file rather than adding to `TestGuide` in `tests/test_cli.py`.
+
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.43), but working tree has 0.1.41:
+  src/chitty/roles/review.md
+make: *** [check] Error 1
+```
+
+Focused regression test passes and verifies all required guide phrases and exclusions; chitty fix completed with pre-existing task-format warnings. make check is blocked: check_version_bump requires src/chitty/__init__.py above main 0.1.43 because src/chitty/roles/review.md changed. The ticket explicitly says no version bump is needed. Human decision needed: authorize a version bump for this check, or provide another way to satisfy it without one.
+
+Unblocked for integration: the last blocker was the branch check_version_bump policy, which TASK-224 removed on main. This branch is 240 commits behind main and still has the old check and version. Merge current main into this branch, preserve the existing uncommitted test migration in tests/test_cli.py and tests/test_guide_review_evidence.py, leave generated setup and branch version untouched, then run make check before requesting review. Do not run chitty init on the ticket branch.
+
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+check_version_bump: changed files require a version above main (0.1.43), but working tree has 0.1.41:
+  src/chitty/roles/review.md
+make: *** [check] Error 1
+```
+
+Merged current main, preserving its worker-guide test and moving this ticket's evidence assertions into tests/test_guide_review_evidence.py. Focused unittest passed; make format and make check passed (378 Python tests and Node tests); chitty fix completed with existing format warnings.
+
+Reviewed: Both specified bullets match the ticket. make format and make check passed (379 Python tests and Node tests).
+
+1: pass - Dedicated regression passes and fails with 10 assertions against the previous main guide.
+2: pass - The regression verifies retained wording, removed wording and absence of make.
+
+## Summary
+
+Review-role evidence wording is present in the current main version of src/chitty/roles/review.md; added the dedicated regression test and retained main's adjacent guide coverage. Verified with focused unittest, make format, make check, and chitty fix. No follow-ups.
 
 ## History
 
@@ -61,3 +126,37 @@ Third implementing cold read by a fresh Haiku subagent, 2026-11-05, kept at `ref
 - 2026-11-05T18:31:05Z mellow-newt: changed acceptance criteria, notes
 - 2026-11-05T18:35:43Z mellow-newt: changed description, notes
 - 2026-11-05T18:35:43Z mellow-newt backlog → todo
+- 2026-11-05T23:52:34Z youthful-adder todo → doing
+- 2026-11-06T00:00:20Z youthful-adder: wrote the plan
+- 2026-11-06T00:06:42Z youthful-adder: ticked acceptance criteria
+- 2026-11-06T00:06:43Z youthful-adder: ticked acceptance criteria
+- 2026-11-06T00:06:44Z youthful-adder: changed summary
+- 2026-11-06T00:06:45Z youthful-adder doing → review
+- 2026-11-06T14:43:33Z lively-quail: changed notes
+- 2026-11-06T14:43:33Z lively-quail review → doing
+- 2026-11-06T16:32:01Z youthful-vole: changed summary
+- 2026-11-06T16:32:10Z youthful-vole doing → review
+- 2026-11-06T16:56:05Z jolly-gannet: changed notes
+- 2026-11-06T16:56:05Z jolly-gannet review → doing
+- 2026-11-06T18:36:27Z vivid-dormouse: changed summary
+- 2026-11-06T18:36:27Z vivid-dormouse doing → review
+- 2026-11-06T18:37:36Z brisk-quail: changed owner, notes
+- 2026-11-06T18:37:36Z brisk-quail review → blocked
+- 2026-11-06T21:41:01Z youthful-toad: changed owner, notes
+- 2026-11-06T21:41:01Z youthful-toad blocked → review
+- 2026-11-06T21:55:13Z kind-raven: changed notes
+- 2026-11-06T21:55:13Z kind-raven review → doing
+- 2026-11-07T09:39:55Z vivid-dormouse: changed owner, notes
+- 2026-11-08T13:05:02Z eager-puffin: changed owner, notes
+- 2026-11-08T13:08:50Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T13:08:51Z eager-puffin: wrote the plan
+- 2026-11-08T13:56:08Z lively-lapwing: changed notes
+- 2026-11-08T13:57:38Z lively-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-08T13:57:38Z lively-lapwing doing → blocked
+- 2026-11-08T16:43:21Z eager-puffin: changed notes
+- 2026-11-08T16:43:21Z eager-puffin blocked → doing
+- 2026-11-08T16:59:26Z calm-eel: changed notes
+- 2026-11-08T17:02:05Z calm-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T17:02:07Z calm-eel doing → review
+- 2026-11-08T17:12:51Z witty-eel: changed notes; ticked acceptance criteria
+- 2026-11-08T17:12:51Z witty-eel review → done
