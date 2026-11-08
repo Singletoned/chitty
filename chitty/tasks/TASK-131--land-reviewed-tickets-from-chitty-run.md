@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -28,8 +28,8 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Acceptance Criteria
 
-- [ ] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
-- [ ] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
+- [x] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
+- [x] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
 - [x] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
 ## Plan
@@ -248,9 +248,11 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 The human requested that I investigate and resolve the third-review escalation. Clearing the human owner and returning to doing for the specifically identified end-to-end coverage and landing diagnostics; no criteria are presumed passed.
 
+Completed the review feedback with end-to-end review-mode coverage for direct linear fast-forward landing, moved-main landing, and failed landing check preservation; failures identify the human and ticket worktree. Focused tests: 16 passed. make format && make check passed: 388 Python tests, Node tests, Ruff, and Pyright. `chitty fix` completed; it reported existing Markdown warnings in unrelated tickets and this ticket’s pre-existing Notes text.
+
 ## Summary
 
-Handoff: landing implementation and tests integrated with main; review merge retains both branches' behavior. Verification: make format && make check passed (384 Python tests, Node suite, Ruff, Pyright); focused landing/review tests passed. Follow-up: none known.
+Handoff: review-driven landing tests now cover linear fast-forward, merging moved main, landing-check pass/failure, cleanup, and explicit human/worktree failure guidance. Verification: python -m unittest tests.test_review_merge (16 passed); make format && make check passed (388 Python tests, Node suite, Ruff, Pyright); chitty fix completed. Follow-ups: none known.
 
 ## History
 
@@ -298,3 +300,5 @@ Handoff: landing implementation and tests integrated with main; review merge ret
 - 2026-11-08T16:45:08Z eager-puffin: changed owner, notes; wrote the plan
 - 2026-11-08T16:45:08Z eager-puffin blocked → doing
 - 2026-11-08T16:46:40Z brisk-dormouse: wrote the plan
+- 2026-11-08T16:52:37Z brisk-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T16:52:37Z brisk-dormouse doing → review
