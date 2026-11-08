@@ -1,6 +1,6 @@
 ---
 title: Bump the version at release, not on ticket branches
-status: todo
+status: doing
 priority: high
 created: 2026-11-06
 ---
@@ -47,3 +47,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-224/1`; 8 tests failed first and then 
 - 2026-11-06T22:01:44Z youthful-toad: changed description, acceptance criteria
 - 2026-11-06T22:04:43Z youthful-toad: changed description, notes
 - 2026-11-06T22:04:43Z youthful-toad backlog → todo
+- 2026-11-08T09:27:35Z upbeat-gannet todo → doing
