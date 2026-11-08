@@ -14,11 +14,17 @@ Seen in echonomicon: `TASK-56` had three reads. The first two implemented a rule
 
 A related gap: a planner can add notes after another session has already claimed or finished a ticket. In echonomicon, a note offering the worker a starting point landed on `TASK-56` after it was merged, and `TASK-57` had moved to a worktree in `doing`. It might help if `chitty edit --note` warned when the ticket is `doing` or `done` and the actor is not its claimant.
 
+## Acceptance Criteria
+
+- [ ] A fail-first guide test verifies `chitty guide plan` tells planners to note a successful ref from a read of the current ticket with no serious findings, include a diff against the configured main branch, warn the worker to check the current criteria, and delete superseded refs; `make check` passes.
+
 ## Notes
 
 Suggestion origin: echonomicon
 
 Cold-read finding: define a successful ref as one implemented against the current ticket text with no unresolved serious findings. The non-claimant `doing`/`done` note warning is a separate feature and out of scope. Require a guide regression test that fails before the fix. Clarify the diff command uses the configured main branch.
+
+Resolved the cold-read ambiguity in the description; the guide handoff is only for a successful read against the current ticket and the stale-note warning is out of scope.
 
 ## History
 
@@ -27,3 +33,4 @@ Cold-read finding: define a successful ref as one implemented against the curren
 - 2026-11-08T14:15:13Z eager-puffin: changed notes
 - 2026-11-08T14:15:30Z eager-puffin: changed description
 - 2026-11-08T14:15:32Z eager-puffin: changed description
+- 2026-11-08T14:15:34Z eager-puffin: changed acceptance criteria, notes
