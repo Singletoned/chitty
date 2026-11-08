@@ -16,6 +16,10 @@ Allow a repository to choose persistent, independent model defaults in `chitty.t
 - [ ] Tests show forwarded `--model VALUE` and `--model=VALUE` each suppressing the role default, and a model in the selected agent command suppressing it too; existing behavior is unchanged when both sources already specify a model.
 - [ ] Tests show blank configured model values rejected clearly, configuration in both `chitty.toml` and `[tool.chitty]` working, and `README.md`, `PLAN.md`, and the init template describing the defaults. An init upgrade puts pyproject comments inside `[tool.chitty]` even when another table has a `work_model` key; uncommenting them parses as Chitty settings.
 
+## Plan
+
+Port and independently verify the cold-read candidate against the current ticket: add validated role model settings and template/init comments, append the selected role default only when command and forwarded args lack a model, and update README/PLAN. First run the focused regression tests against the unfixed branch to confirm failure, then apply the candidate, run focused tests, format and full checks, inspect the final diff, and complete the ticket with verification notes.
+
 ## Notes
 
 Read-only cold read: the first draft left precedence ambiguous when a command already had `--model`, and did not identify where `chitty init` inserts comments. Fixed the description and criterion 2: existing model arguments suppress the role default without rewriting them, and commented config examples belong before table headers. A fresh implementing cold read with tests and `make check` is still needed before promotion from backlog.
@@ -37,3 +41,4 @@ Implementing cold read completed after the read-only findings and a repeat read:
 - 2026-11-08T14:55:45Z eager-puffin: changed notes
 - 2026-11-08T14:55:46Z eager-puffin backlog → todo
 - 2026-11-08T17:13:34Z upbeat-kestrel todo → doing
+- 2026-11-08T17:13:56Z upbeat-kestrel: wrote the plan
