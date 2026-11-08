@@ -23,9 +23,9 @@ Out of scope: limiting how many work sessions a `doing` ticket gets, and the set
 
 ## Acceptance Criteria
 
-- [ ] A new test in `tests/test_next.py` runs `chitty run --mode work` on a `doing` ticket that has its own branch (set up as in `test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review`), with a failing check. It asserts the agent started (the `started` file the fake agent writes), the status is still `doing`, and the notes contain `Check failed before this session` with the check output inside a fence. A fake agent that changes nothing makes the run exit 1 with `was unchanged`; the test may assert that. Record that it failed before the fix.
-- [ ] The two existing `todo` check-failure tests named in the Description expect exit 1 with `check failed before TASK-1 started` and the check output in stderr, status `todo`, no new note, and no `started` file. Record that they failed before the fix.
-- [ ] `PLAN.md` (`chitty run` section, step 5 and the paragraph after it) and `README.md` (around line 146) describe the two work-mode cases, and `make check` passes.
+- [x] A new test in `tests/test_next.py` runs `chitty run --mode work` on a `doing` ticket that has its own branch (set up as in `test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review`), with a failing check. It asserts the agent started (the `started` file the fake agent writes), the status is still `doing`, and the notes contain `Check failed before this session` with the check output inside a fence. A fake agent that changes nothing makes the run exit 1 with `was unchanged`; the test may assert that. Record that it failed before the fix.
+- [x] The two existing `todo` check-failure tests named in the Description expect exit 1 with `check failed before TASK-1 started` and the check output in stderr, status `todo`, no new note, and no `started` file. Record that they failed before the fix.
+- [x] `PLAN.md` (`chitty run` section, step 5 and the paragraph after it) and `README.md` (around line 146) describe the two work-mode cases, and `make check` passes.
 
 ## Plan
 
@@ -48,6 +48,25 @@ The reader had to guess at 4, 5 and 6, so those were the gaps a weaker model hit
 
 Regression coverage failed before the fix: the two todo check-failure tests exited 0 after moving the ticket to doing, and the doing-ticket test also exited 0 before starting the agent.
 
+Verified focused regression tests and full ! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+306 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Deleted branch task-1 (was d08fbfe).
+Deleted branch task-1 (was 9ab3d55).
+Deleted branch task-2 (was 091b3b4).
+npm test
+
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+...... (ruff, pyright, unittest, and Node tests) pass. Todo failures exit 1 unchanged; doing failures record the fenced pre-session note and start the agent.
+
 ## History
 
 - 2026-11-07T09:40:12Z vivid-dormouse → backlog
@@ -57,3 +76,4 @@ Regression coverage failed before the fix: the two todo check-failure tests exit
 - 2026-11-08T11:23:24Z intrepid-marten todo → doing
 - 2026-11-08T11:23:51Z intrepid-marten: wrote the plan
 - 2026-11-08T11:25:35Z intrepid-marten: changed notes
+- 2026-11-08T11:27:54Z intrepid-marten: changed notes; ticked acceptance criteria
