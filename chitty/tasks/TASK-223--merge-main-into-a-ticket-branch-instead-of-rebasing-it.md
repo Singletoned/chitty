@@ -26,6 +26,10 @@ Out of scope: guide text telling agents to rebase, which `TASK-151` rewrites.
 - [ ] No code path in `src/chitty/run.py` rebases, an unfinished merge in a ticket worktree is refused like an unfinished rebase, `README.md` and `PLAN.md` say "merge", and `make check` passes.
 - [ ] Tests show a review of a branch behind the main branch merging it in, so the reviewer sees both changes (a branch with no commits of its own may fast-forward instead); a conflicting branch failing as `integration` with the merge aborted and the worktree clean; a recorded rerere resolution not being replayed; and Ctrl-C during the merge aborting it.
 
+## Plan
+
+Implement merge-based review preparation in src/chitty/git.py and run.py, including merge conflict cleanup, unfinished-merge detection, and interruption handling. Update review and lock tests to cover merge behavior and rename rebase terminology where applicable. Revise README.md and PLAN.md review documentation, then run formatting and the full check suite.
+
 ## Notes
 
 Cold read 1 (Sonnet, `refs/cold-read/TASK-223/1`; tests failed before and passed after; `make check` OK, 362 tests). Outcomes:
@@ -42,3 +46,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-223/1`; tests failed before and passed
 - 2026-11-06T21:58:26Z youthful-toad: changed acceptance criteria, notes
 - 2026-11-06T21:58:26Z youthful-toad backlog → todo
 - 2026-11-08T09:19:45Z eager-otter todo → doing
+- 2026-11-08T09:20:04Z eager-otter: wrote the plan
