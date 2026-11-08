@@ -21,7 +21,10 @@ The real cause, found only when the human stepped in, was that the SVG defining 
 
 Suggestion origin: circuitry
 
+Archived at the human’s request: TASK-64 implemented escalation after three failed reviews; the proposal to change the threshold to two is not being pursued.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-08T14:13:16Z eager-puffin backlog → archived
+- 2026-11-08T14:13:19Z eager-puffin: changed notes
