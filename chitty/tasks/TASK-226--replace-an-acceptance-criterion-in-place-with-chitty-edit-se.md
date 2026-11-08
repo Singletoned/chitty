@@ -1,6 +1,6 @@
 ---
 title: Replace an acceptance criterion in place with `chitty edit --set-ac`
-status: doing
+status: review
 priority: medium
 created: 2026-11-07
 ---
@@ -28,10 +28,10 @@ Out of scope: reordering criteria, and replacing a criterion's text while keepin
 
 ## Acceptance Criteria
 
-- [ ] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
-- [ ] Tests show `--set-ac` with an out-of-range number, and with a number also given to `--rm-ac`, failing with the messages in the description and leaving the file unchanged
-- [ ] A test in `tests/test_mcp.py` shows the MCP `edit` tool doing the same replacement with `set_ac`
-- [ ] Tests show `--set-ac` refused with the message in the description while the task is in `review`, both on its own and in a `review` → `done` edit with a complete `Reviewed:` note and verdicts, leaving the file unchanged
+- [x] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
+- [x] Tests show `--set-ac` with an out-of-range number, and with a number also given to `--rm-ac`, failing with the messages in the description and leaving the file unchanged
+- [x] A test in `tests/test_mcp.py` shows the MCP `edit` tool doing the same replacement with `set_ac`
+- [x] Tests show `--set-ac` refused with the message in the description while the task is in `review`, both on its own and in a `review` → `done` edit with a complete `Reviewed:` note and verdicts, leaving the file unchanged
 
 ## Plan
 
@@ -65,6 +65,12 @@ Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/T
 - Rejected: `--check` during review, because reviewers tick criteria; `--ac` and `--rm-ac` are the separate ticket.
 - Correction to the previous note: the review rule's criterion is the fourth, not the third.
 
+Implemented `--set-ac` across the model, store, CLI, and MCP. The new CLI regression tests failed first with `No such option --set-ac` before implementation, then passed. `make format && make check` passed: 372 Python tests and Node tests.
+
+## Summary
+
+Handoff: added repeatable in-place acceptance-criterion replacement; replacements untick criteria, preserve order, validate conflicts and text, record history, and refuse edits while in review. Verification: focused CLI/MCP tests and `make format && make check` passed. Follow-ups: none.
+
 ## History
 
 - 2026-11-07T09:37:44Z vivid-dormouse → backlog
@@ -74,3 +80,5 @@ Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/T
 - 2026-11-07T10:12:50Z vivid-dormouse backlog → todo
 - 2026-11-08T11:30:33Z plucky-wren todo → doing
 - 2026-11-08T11:30:56Z plucky-wren: wrote the plan
+- 2026-11-08T11:34:35Z plucky-wren: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T11:34:35Z plucky-wren doing → review
