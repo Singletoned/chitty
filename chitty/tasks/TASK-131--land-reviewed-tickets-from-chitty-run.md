@@ -1,7 +1,8 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: review
+status: blocked
 priority: high
+owner: human
 depends_on:
   - TASK-120
   - TASK-150
@@ -28,8 +29,8 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Acceptance Criteria
 
-- [x] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
-- [x] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
+- [ ] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
+- [ ] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
 - [x] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
 ## Plan
@@ -238,6 +239,14 @@ Review failed (integration): merging `main` conflicts in `src/chitty/git.py`, `t
 
 Resolved main integration conflicts in src/chitty/git.py and tests/test_review_merge.py, preserving TASK-131 landing behavior alongside the updated review merge logic. Focused landing/review tests: 21 passed. make format && make check passed: 384 Python tests and Node tests; Ruff and Pyright passed.
 
+Review failed (tests): Add end-to-end coverage for the missing cases below. Landing failure messages must also tell the user that a human must resolve the problem in the worktree, as the ticket requires.
+
+1: fail - Linear landing is tested only through the private helper, not a passed review; the review integration test includes a merge commit.
+2: fail - Tests do not demonstrate that a moved-main landing runs a passing check without another review, or that a failing check after main moves exits non-zero and preserves main.
+3: pass - Real Git tests cover wrong branch, dirty main, dirty worktree, and ignored files.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Handoff: landing implementation and tests integrated with main; review merge retains both branches' behavior. Verification: make format && make check passed (384 Python tests, Node suite, Ruff, Pyright); focused landing/review tests passed. Follow-up: none known.
@@ -283,3 +292,5 @@ Handoff: landing implementation and tests integrated with main; review merge ret
 - 2026-11-08T13:42:22Z eager-vole: wrote the plan
 - 2026-11-08T13:46:09Z eager-vole: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T13:46:10Z eager-vole doing → review
+- 2026-11-08T13:48:35Z friendly-zander: changed owner, acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-08T13:48:35Z friendly-zander review → blocked
