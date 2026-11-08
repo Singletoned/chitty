@@ -12,7 +12,6 @@ install: ## install Python and node dev dependencies
 
 check: ## lint, type-check and run the tests
 	! git grep -nE '^(<<<<<<< |>>>>>>> |=======$$)'
-	uv run python scripts/check_version_bump.py
 	uv run ruff format --check .
 	uv run ruff check --no-fix .
 	uv run pyright
@@ -36,7 +35,13 @@ release: ## tag this version and push it, so the workflow publishes it to PyPI
 	@test -z "$$(git status --porcelain)" || { echo "release: tree is not clean" >&2; exit 1; }
 	git fetch origin
 	@git merge-base --is-ancestor origin/main HEAD || { echo "release: behind origin/main" >&2; exit 1; }
-	version=$$(sed -n 's/^__version__ = "\(.*\)"$$/\1/p' src/chitty/__init__.py) && \
+	version=$$(uv run python scripts/release_version.py) && \
+		uv run python -c "from pathlib import Path; import re, sys; p=Path('src/chitty/__init__.py'); p.write_text(re.sub(r'__version__ = \"[^\"]+\"', f'__version__ = \"{sys.argv[1]}\"', p.read_text()))" "$$version" && \
+		git add src/chitty/__init__.py && git commit -m "Release $$version" && \
+		git tag "v$$version" && \
+		if ! git push --atomic origin main "v$$version"; then \
+			echo "release: push failed; undo with git tag -d v$$version && git reset --hard HEAD~1" >&2; \
+			exit 1; \
+		fi && \
 		pending="$${XDG_DATA_HOME:-$$HOME/.local/share}/chitty/pending-release" && \
-		git tag "v$$version" && git push --atomic origin main "v$$version" && \
 		mkdir -p "$$(dirname "$$pending")" && echo "$$version" > "$$pending"
