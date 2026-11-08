@@ -36,11 +36,11 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
     _git(root, "add", "--", *present)
     try:
         _git(root, "commit", "--quiet", "--only", "-m", message, "--", *included)
-    except ChittyError:
+    except ChittyError as error:
         _git(root, "reset", "--", *relative)
         if staged:
             _apply_cached(root, staged)
-        raise
+        raise ChittyError(f"autocommit failed: {error}") from error
 
 
 def move(root: Path, old: Path, new: Path) -> None:
@@ -420,7 +420,7 @@ def _git(root: Path, *args: str) -> str:
     result = subprocess.run(command, check=False, cwd=root, capture_output=True, text=True)
     if result.returncode != 0:
         shown = " ".join(command)
-        raise ChittyError(f"autocommit failed: `{shown}` in {root}:\n{result.stderr.strip()}")
+        raise ChittyError(f"`{shown}` failed in {root}:\n{result.stderr.strip()}")
     return result.stdout
 
 
