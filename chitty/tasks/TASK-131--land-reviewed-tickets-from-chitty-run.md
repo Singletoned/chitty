@@ -29,8 +29,8 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 ## Acceptance Criteria
 
 - [x] Tests show a passed review fast-forwarding `main` with a linear history, the ticket `done` there, and the worktree and branch removed
-- [ ] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
-- [ ] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
+- [x] Tests show a moved `main` handled by merging it into the ticket branch and a passing `check` landing without another review, and a merge conflict or failing `check` leaving the main checkout unchanged and exiting non-zero.
+- [x] Tests show the main checkout on another branch or not clean, and uncommitted files in the worktree, each refusing and changing nothing, while an ignored file lands
 
 ## Plan
 
@@ -230,6 +230,8 @@ Attempted to move test fake executables outside repository to avoid dirty-main l
 
 Re-ran make check: ruff and pyright pass; unittest has 4 failures from legacy run tests creating untracked bin/ files in main, plus 4 setup errors where tests attempt empty second commits after auto-commit/landing changed their assumptions. Attempted to ignore /bin/ in test repositories, but that exposed tests relying on those files being staged; reverted the experiment. No criterion 2/3 test has been added or verified. Need revise run tests around the new contract rather than bypassing clean-check guards.
 
+Added real-Git landing coverage: direct successful fast-forward with done status and cleanup; moved main merged into ticket branch and landed; conflict and failing check preserving main; dirty main, wrong branch, dirty worktree refusals; ignored main file lands. Updated the run integration test so the fake agent no longer merges/removes its own worktree and made its bin fixture ignored. Focused tests pass. Full make check still fails three pre-existing test_next cases (worker/reviewer overlap, review config comparison, runner environment) because bin fixtures remain untracked or their tests assume pre-landing behavior; format/Ruff/Pyright pass. Keeping status doing until these test-suite failures are resolved.
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -266,3 +268,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:25:50Z daring-gannet: changed notes
 - 2026-11-08T13:26:34Z daring-gannet: wrote the plan
 - 2026-11-08T13:29:34Z daring-gannet: changed notes
+- 2026-11-08T13:35:14Z daring-gannet: changed notes; ticked acceptance criteria
