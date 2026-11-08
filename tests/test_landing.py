@@ -40,6 +40,16 @@ class TestLanding(CliTestCase):
         action = NextAction("review", self.main_repo.resolve(self.ticket))
         _land(self.main_repo, self.worktree, action, "true", "true")
 
+    def test_missing_ticket_branch_is_noop_even_when_main_is_dirty(self):
+        self.finish_ticket()
+        self.git("worktree", "remove", str(self.worktree))
+        self.git("branch", "-D", self.branch)
+        (self.root / "untracked").write_text("local change")
+
+        self.land()
+
+        self.assertTrue((self.root / "untracked").exists())
+
     def test_ticket_fast_forwards_main_and_cleans_up(self):
         self.finish_ticket()
         self.land()

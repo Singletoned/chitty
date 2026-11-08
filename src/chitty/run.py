@@ -595,6 +595,10 @@ def _land_locked(
 ) -> None:
     """Land a completed ticket and remove its linked worktree."""
     main_root = main_repo.root
+    branch = str(action.id).lower()
+    # A prior run or a reviewer may already have removed this ticket entirely.
+    if not git.has_local_branch(main_root, branch) and not worktree.exists():
+        return
     main_branch = main_repo.config.main_branch
     if git.current_branch(main_root) != main_branch:
         raise ChittyError(f"the main checkout must be on branch {main_branch} to land a ticket")
@@ -626,7 +630,6 @@ def _land_locked(
         )
     _setup(setup, worktree)
     _landing_check(check, worktree)
-    branch = str(action.id).lower()
     git.fast_forward(main_root, branch)
     git.remove_worktree(main_root, worktree)
     git.delete_branch(main_root, branch)
