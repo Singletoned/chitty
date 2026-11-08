@@ -17,3 +17,4 @@ Superseded on 2026-11-05: the human chose `BACKLOG` IDs for tickets raised on br
 
 - 2026-10-29 → backlog
 - 2026-11-05T14:43:42Z mellow-newt: changed notes
+- 2026-11-08T14:13:14Z eager-puffin backlog → archived
