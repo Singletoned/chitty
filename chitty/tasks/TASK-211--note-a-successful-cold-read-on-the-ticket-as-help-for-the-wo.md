@@ -8,7 +8,7 @@ created: 2026-11-06
 
 When an implementing cold read against the current ticket text succeeds (its fail-first tests fail on the main branch and pass after its change, and it has no unresolved serious findings), the planning guide should tell the planner to add a ticket note pointing at the kept ref (`refs/cold-read/<ID>/<n>`), with the diff command, as a possible starting point for the worker, and a reminder to check it against the criteria rather than trust it.
 
-The guide should also say to delete refs from reads made against superseded ticket text (`git update-ref -d`). Their tests pass, so a worker could trust them and copy behaviour the ticket has since changed.
+The guide should also say to delete refs from reads made against superseded ticket text (`git update-ref -d refs/cold-read/<ID>/<n>`). The note gives `git diff <main-branch>...refs/cold-read/<ID>/<n>` with `<main-branch>` being the repository’s configured main branch. The proposed warning on notes added by non-claimants to `doing` or `done` tickets is out of scope for this guide-only change. Their tests pass, so a worker could trust them and copy behaviour the ticket has since changed.
 
 Seen in echonomicon: `TASK-56` had three reads. The first two implemented a rule that a later finding replaced ("no word starts before the cut" became "no word ends before it"). Only the third matched the final ticket, and nothing on the ticket said which one to use.
 
@@ -26,3 +26,4 @@ Cold-read finding: define a successful ref as one implemented against the curren
 - 2026-11-06T13:58:03Z youthful-toad: changed notes
 - 2026-11-08T14:15:13Z eager-puffin: changed notes
 - 2026-11-08T14:15:30Z eager-puffin: changed description
+- 2026-11-08T14:15:32Z eager-puffin: changed description
