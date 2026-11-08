@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -236,7 +236,7 @@ Landing-specific verification is now covered by tests/test_landing.py and the up
 
 ## Summary
 
-Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
+Handoff: chitty run lands done tickets by merging moved main into the ticket worktree, validating setup/check, fast-forwarding main, and removing worktree/branch; concurrent landing is serialized. Verification: all 3 acceptance criteria rechecked with tests/test_landing.py and runner integration coverage; 12 focused tests pass. make format && make check passes (373 Python tests and Node suite); Ruff and Pyright pass. Follow-up: none known.
 
 ## History
 
@@ -272,3 +272,5 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:29:34Z daring-gannet: changed notes
 - 2026-11-08T13:35:14Z daring-gannet: changed notes; ticked acceptance criteria
 - 2026-11-08T13:36:00Z daring-gannet: changed notes
+- 2026-11-08T13:40:07Z daring-gannet: changed summary
+- 2026-11-08T13:40:07Z daring-gannet doing → review
