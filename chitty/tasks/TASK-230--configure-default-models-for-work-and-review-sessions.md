@@ -1,6 +1,6 @@
 ---
 title: Configure default models for work and review sessions
-status: doing
+status: review
 priority: medium
 parent: TASK-106
 created: 2026-11-08
@@ -49,3 +49,4 @@ Implemented and committed as 7a96c2e. Handoff: role-specific work_model/review_m
 - 2026-11-08T17:13:34Z upbeat-kestrel todo → doing
 - 2026-11-08T17:13:56Z upbeat-kestrel: wrote the plan
 - 2026-11-08T17:15:48Z upbeat-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T17:15:51Z upbeat-kestrel doing → review
