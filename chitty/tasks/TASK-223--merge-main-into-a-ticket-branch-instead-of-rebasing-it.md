@@ -1,6 +1,6 @@
 ---
 title: Merge `main` into a ticket branch instead of rebasing it
-status: todo
+status: doing
 priority: high
 created: 2026-11-06
 ---
@@ -41,3 +41,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-223/1`; tests failed before and passed
 - 2026-11-06T21:49:17Z youthful-toad → backlog
 - 2026-11-06T21:58:26Z youthful-toad: changed acceptance criteria, notes
 - 2026-11-06T21:58:26Z youthful-toad backlog → todo
+- 2026-11-08T09:19:45Z eager-otter todo → doing
