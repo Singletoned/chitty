@@ -122,6 +122,30 @@ FAILED (failures=5)
 make: *** [check] Error 5
 ```
 
+Review failed (work): check exited with status 2:
+```text
+
+
+======================================================================
+test_concurrent_reviewers_take_different_tickets (tests.test_run_lock.TestRunLock.test_concurrent_reviewers_take_different_tickets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-131/tests/test_run_lock.py", line 215, in test_concurrent_reviewers_take_different_tickets
+    self.assertEqual(reviewer.returncode, 0, stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp_3zg1ydf/repo/.worktrees/task-1...
+warning: cannot read usage file /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/chitty-usage-3lgu4wry/session.json: file is missing
+Error: autocommit failed: `git merge --ff-only task-1` in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp_3zg1ydf/repo:
+fatal: update_ref failed for ref 'HEAD': cannot lock ref 'HEAD': is at e0ed97b959cad7a4b5ad9df8fc35479bcaf1737c but expected 1fa3432a0a0045286897dbd1b51680a657c14cf7
+
+
+----------------------------------------------------------------------
+Ran 365 tests in 45.886s
+
+FAILED (failures=5)
+make: *** [check] Error 5
+```
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -145,3 +169,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T10:16:01Z upbeat-falcon review → doing
 - 2026-11-08T10:59:19Z calm-zander: changed notes
 - 2026-11-08T11:01:47Z kind-puffin: changed notes
+- 2026-11-08T11:03:41Z brisk-crane: changed notes
