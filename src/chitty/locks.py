@@ -19,6 +19,7 @@ from chitty.config import git_common_dir
 from chitty.errors import ChittyError
 
 LOCK_SUFFIX = ".lock"
+LANDING_LOCK = "landing.lock"
 
 
 class TicketLocked(ChittyError):
@@ -66,6 +67,21 @@ def run_lock(
         }
         os.ftruncate(descriptor, 0)
         os.write(descriptor, (json.dumps(record) + "\n").encode())
+        yield
+    finally:
+        os.close(descriptor)
+
+
+@contextmanager
+def landing_lock(root: Path) -> Generator[None]:
+    """Serialize Git mutations that land different tickets onto the same branch."""
+    directory = _directory(root)
+    if directory is None:
+        raise ChittyError(f"{root} is not in a Git repository")
+    directory.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(directory / LANDING_LOCK, os.O_RDWR | os.O_CREAT, 0o644)
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
         yield
     finally:
         os.close(descriptor)

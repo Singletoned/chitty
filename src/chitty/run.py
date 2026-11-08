@@ -569,6 +569,14 @@ def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
 
 
 def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str) -> None:
+    """Serialize landing operations that mutate the shared main branch."""
+    with locks.landing_lock(main_repo.root):
+        _land_locked(main_repo, worktree, action, setup, check)
+
+
+def _land_locked(
+    main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str
+) -> None:
     """Land a completed ticket and remove its linked worktree."""
     main_root = main_repo.root
     main_branch = main_repo.config.main_branch
