@@ -1,6 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: doing
+status: review
 created: 2026-11-06
 ---
 
@@ -60,3 +60,4 @@ Guide change ready for review. Verification: focused fail-first guide test, make
 - 2026-11-08T17:15:10Z open-kestrel: changed notes
 - 2026-11-08T17:15:10Z open-kestrel review → doing
 - 2026-11-08T17:23:20Z lively-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T17:23:21Z lively-raven doing → review
