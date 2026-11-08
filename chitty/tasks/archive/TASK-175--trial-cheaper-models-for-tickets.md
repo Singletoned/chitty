@@ -30,3 +30,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: `--model` would have ap
 - 2026-11-04T21:44:33Z mellow-newt: changed dependencies, description, notes
 - 2026-11-04T21:44:35Z mellow-newt backlog → todo
 - 2026-11-05T14:13:52Z mellow-newt: changed dependencies, description
+- 2026-11-08T13:31:06Z eager-puffin todo → archived
