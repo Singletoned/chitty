@@ -33,6 +33,10 @@ Out of scope: reordering criteria, and replacing a criterion's text while keepin
 - [ ] A test in `tests/test_mcp.py` shows the MCP `edit` tool doing the same replacement with `set_ac`
 - [ ] Tests show `--set-ac` refused with the message in the description while the task is in `review`, both on its own and in a `review` → `done` edit with a complete `Reviewed:` note and verdicts, leaving the file unchanged
 
+## Plan
+
+Implement set-ac end to end: add the model/store Edit data and validation with review protection and in-place unticking replacement, expose repeatable CLI and MCP options, update all callers and history tracking, revise PLAN.md, and add focused CLI/MCP regression tests. First run the new regression tests against the current code to record their expected failure, then format and run the full check suite.
+
 ## Notes
 
 Cold read by a fresh Haiku subagent, 2026-11-07, started with `chitty guide cold-read TASK-226`, kept as `refs/cold-read/TASK-226/1`. It built the ticket from the description: the CLI tests failed first (`No such option '--set-ac'`), then passed, and `make check` passed with no version bump. It confirmed click's `nargs=2` form, FastMCP's `list[tuple[int, str]]`, numbering with `--ac` in the same edit, and that refused edits leave the file unchanged. Outcomes:
@@ -69,3 +73,4 @@ Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/T
 - 2026-11-07T10:12:50Z vivid-dormouse: changed description, notes
 - 2026-11-07T10:12:50Z vivid-dormouse backlog → todo
 - 2026-11-08T11:30:33Z plucky-wren todo → doing
+- 2026-11-08T11:30:56Z plucky-wren: wrote the plan
