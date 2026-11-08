@@ -24,3 +24,4 @@ Superseded for the pilot by `TASK-123`, which removes queue selection from the e
 
 - 2026-11-01 → backlog
 - 2026-11-03T12:40:40Z lively-panda: changed notes
+- 2026-11-08T14:13:15Z eager-puffin backlog → archived
