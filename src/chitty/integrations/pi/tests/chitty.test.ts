@@ -485,6 +485,14 @@ test("settles work after its ticket leaves todo or doing", () => {
   });
 });
 
+test("review continuation instructions leave landing to chitty run", () => {
+  const prompt = continuationPrompt("review", "TASK-151");
+  assert.match(prompt, /Never review work you have done/);
+  assert.match(prompt, /Do not merge branches or remove branches or worktrees/);
+  assert.match(prompt, /`chitty run` lands a passing review/);
+  assert.doesNotMatch(prompt, /merge its branch|remove its branch/i);
+});
+
 test("settles review after its ticket leaves review", () => {
   for (const status of ["doing", "blocked", "done"]) {
     assert.deepEqual(settlementDecision("review", status, 0), {

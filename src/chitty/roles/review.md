@@ -33,9 +33,9 @@ task files. `chitty --help` is the full command reference.
   the code, it says what stopped you, with the cause `integration`.
 - If the ticket is too large, say so in the failure note and suggest how to
   split it. Do not edit spec tests.
-- On a pass, set `-s done --note "Reviewed: ..."`; then merge its branch into
-  the main branch and remove its branch and worktree. The third failed review blocks the
-  ticket for `human`; leave it there for a person to unblock.
+- On a pass, set `-s done --note "Reviewed: ..."`. Do not merge or remove
+  branches or worktrees; `chitty run` lands a passing review. The third failed
+  review blocks the ticket for `human`; leave it there for a person to unblock.
 - Found unrelated work on this ticket's branch? Use plain `chitty add`, which
   files it as `BACKLOG` for the planning session. A person planning should do
   this from the main checkout to get normal numbers. Use `-c human` if a person

@@ -145,7 +145,11 @@ reviewer sees exactly what would land; uncommitted files in the worktree or a
 merge conflict instead move the
 ticket back to `doing` with a `Review failed (work)` or `Review failed
 (integration)` note, without starting a session, and count towards the
-failed-review limit. In work mode, a failing check on an already-`doing`
+failed-review limit. A passing review lands by fast-forwarding `main` only
+after these checks pass; the reviewer should not merge or remove branches or
+worktrees. Without `chitty run`, merge `main` into the ticket branch in its
+worktree, run the configured checks, and only then fast-forward `main`. In work
+mode, a failing check on an already-`doing`
 ticket is recorded as `Check failed before this session: ...` and the agent
 starts so it can fix the branch. A failing check on a `todo` ticket exits 1
 with `check failed before <ID> started: ...`, leaving the ticket unchanged and

@@ -761,7 +761,11 @@ failure on a `todo` ticket exits 1 without changing the ticket; a failure on a
 `doing` ticket proceeds to the agent, which can fix it.
 Interrupting the merge aborts it and exits 130. A clean merge is not
 repeated or re-reviewed if `main` moves during the review; landing is
-`TASK-131`.
+`TASK-131`. Reviewers record the verdict and do not merge or remove branches
+or worktrees. On a pass, `chitty run` lands by fast-forwarding `main` after the
+branch has been integrated with `main` and configured checks pass. Without
+`chitty run`, merge `main` into the ticket branch in its worktree, run the
+configured checks, and only then fast-forward `main`.
 
 Each agent session appends one JSON line to the machine-local usage log at
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory
