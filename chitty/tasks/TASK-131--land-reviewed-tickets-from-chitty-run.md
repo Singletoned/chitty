@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-120
@@ -57,3 +57,4 @@ The human decided on 2026-11-06 to prefer merging the main branch into a ticket 
 - 2026-11-06T16:24:14Z youthful-toad: changed priority
 - 2026-11-06T16:44:07Z youthful-toad: changed notes
 - 2026-11-06T21:49:20Z youthful-toad: changed notes
+- 2026-11-08T09:10:23Z open-zander todo → doing
