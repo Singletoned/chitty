@@ -1,6 +1,6 @@
 ---
 title: Warn about backticks in double-quoted arguments in the generated guidance
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-143
@@ -43,6 +43,9 @@ Unblocked: TASK-224 moved version bumps to release, so the branch-version requir
 
 Verified the revised criterion: `make check` passes (367 Python tests and Node tests); `tests/test_guide_backticks.py` covers the general guide and all roles.
 
+Reviewed:
+1: pass - Verified the warning in all four guide outputs and the regression test. make format and make check passed, including 376 Python tests and Node tests.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -56,3 +59,5 @@ Verified the revised criterion: `make check` passes (367 Python tests and Node t
 - 2026-11-08T13:05:00Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:05:00Z eager-puffin blocked → review
 - 2026-11-08T13:07:00Z eager-puffin: changed notes; ticked acceptance criteria
+- 2026-11-08T13:22:58Z quick-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-08T13:22:58Z quick-kestrel review → done
