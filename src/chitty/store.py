@@ -134,6 +134,7 @@ class Edit:
     description: str | None = None
     add_criteria: Sequence[str] = ()
     rm_criteria: Sequence[int] = ()
+    set_criteria: Sequence[tuple[int, str]] = ()
     check: Sequence[int] = ()
     uncheck: Sequence[int] = ()
     plan: str | None = None  # "" removes
@@ -174,7 +175,11 @@ class Edit:
         if self.description is not None:
             task = task.with_section(DESCRIPTION, self.description)
         task = task.with_criteria(
-            add=self.add_criteria, remove=self.rm_criteria, check=self.check, uncheck=self.uncheck
+            add=self.add_criteria,
+            remove=self.rm_criteria,
+            set_criteria=self.set_criteria,
+            check=self.check,
+            uncheck=self.uncheck,
         )
         if self.plan is not None:
             task = task.with_section(PLAN, self.plan)
@@ -769,6 +774,8 @@ VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
 def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
     """Validate an edit that depends only on the current task and its actor."""
     previous_status = task.frontmatter.status
+    if previous_status == "review" and edit.set_criteria:
+        raise ChittyError("--set-ac is not allowed while a task is in review")
     if edit.status == "blocked" and not (edit.note or edit.notes):
         raise ChittyError("setting status blocked requires --note with the reason")
     is_review_transition = previous_status == "review" and edit.status in {"doing", "done"}
@@ -1465,7 +1472,7 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("parent")
     if edit.description is not None:
         changes.append("description")
-    if edit.add_criteria or edit.rm_criteria or edit.uncheck:
+    if edit.add_criteria or edit.rm_criteria or edit.set_criteria or edit.uncheck:
         changes.append("acceptance criteria")
     if edit.note is not None or edit.notes:
         changes.append("notes")

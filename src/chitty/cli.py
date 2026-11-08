@@ -569,6 +569,9 @@ def _format(stored: StoredTask) -> str:
 @click.option("--description-file", type=click.File(), help="Read --description from a file.")
 @click.option("--ac", multiple=True, help="Append an acceptance criterion (repeatable).")
 @click.option("--rm-ac", type=int, multiple=True, help="Remove criterion N (repeatable).")
+@click.option(
+    "--set-ac", type=(int, str), nargs=2, multiple=True, help="Replace criterion N (repeatable)."
+)
 @click.option("--check", type=int, multiple=True, help="Tick criterion N (repeatable).")
 @click.option("--uncheck", type=int, multiple=True, help="Untick criterion N (repeatable).")
 @click.option("--plan", help="Replace the Plan section; '' removes it.")
@@ -597,6 +600,7 @@ def edit(
     description_file: TextIO | None,
     ac: tuple[str, ...],
     rm_ac: tuple[int, ...],
+    set_ac: tuple[tuple[int, str], ...],
     check: tuple[int, ...],
     uncheck: tuple[int, ...],
     plan: str | None,
@@ -622,6 +626,7 @@ def edit(
         description=_text(description, description_file, "description"),
         add_criteria=ac,
         rm_criteria=rm_ac,
+        set_criteria=set_ac,
         check=check,
         uncheck=uncheck,
         plan=_text(plan, plan_file, "plan"),

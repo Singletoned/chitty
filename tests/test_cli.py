@@ -1541,8 +1541,48 @@ class TestEdit(CliTestCase):
 
     def test_edit_appends_repeated_notes_in_order(self):
         self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")
-
         self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
+
+    def test_edit_sets_criterion_in_place_and_unticks_it(self):
+        self.run_cli("edit", "1", "--check", "2")
+        self.run_cli("edit", "1", "--set-ac", "2", "Reworded")
+
+        self.assertEqual(
+            [(c["checked"], c["text"]) for c in self.json("show", "1")["acceptance_criteria"]],
+            [(False, "One"), (False, "Reworded")],
+        )
+
+    def test_edit_set_criterion_rejects_invalid_and_conflicting_numbers(self):
+        original = self.path.read_text()
+        result = self.run_cli("edit", "1", "--set-ac", "3", "Nope", exit_code=1)
+        self.assertIn("--set-ac 3: there are 2 acceptance criteria", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+        result = self.run_cli("edit", "1", "--set-ac", "2", "Nope", "--rm-ac", "2", exit_code=1)
+        self.assertIn("criterion 2 is given to both --set-ac and --rm-ac", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+    def test_edit_set_criterion_is_rejected_in_review(self):
+        self.run_cli("edit", "1", "-s", "review")
+        original = self.path.read_text()
+        result = self.run_cli("edit", "1", "--set-ac", "1", "Nope", exit_code=1)
+        self.assertIn("--set-ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+        result = self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--set-ac",
+            "1",
+            "Nope",
+            "--note",
+            "Reviewed: ready.\n1: pass - checked\n2: pass - checked",
+            exit_code=1,
+        )
+        self.assertIn("--set-ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
 
     def test_edit_note_file_reads_backticks_from_stdin(self):
         result = CliRunner().invoke(

@@ -332,12 +332,18 @@ class Task:
         self,
         add: Sequence[str],
         remove: Sequence[int],
+        set_criteria: Sequence[tuple[int, str]],
         check: Sequence[int],
         uncheck: Sequence[int],
     ) -> "Task":
         """Edit acceptance criteria. Indices are 1-based, against the current list."""
         count = len(self.criteria)
-        named = {"--rm-ac": remove, "--check": check, "--uncheck": uncheck}
+        named = {
+            "--set-ac": [index for index, _ in set_criteria],
+            "--rm-ac": remove,
+            "--check": check,
+            "--uncheck": uncheck,
+        }
         for flag, indices in named.items():
             for index in indices:
                 if not 1 <= index <= count:
@@ -346,8 +352,14 @@ class Task:
             both = sorted(set(named[a]) & set(named[b]))
             if both:
                 raise TaskError(f"criterion {both[0]} is given to both {a} and {b}")
+        seen_set: set[int] = set()
+        for index, text in set_criteria:
+            if index in seen_set:
+                raise TaskError(f"criterion {index} is given more than once to --set-ac")
+            seen_set.add(index)
+            _criterion_text(text)
         new_lines = [f"- [ ] {_criterion_text(text)}\n" for text in add]
-        if not (remove or check or uncheck or new_lines):
+        if not (remove or set_criteria or check or uncheck or new_lines):
             return self
         index = self._section_index(ACCEPTANCE_CRITERIA)
         if index is None or not self.criteria:
@@ -361,6 +373,9 @@ class Task:
             if number in remove:
                 continue
             own = lines[item.start : item.end]
+            replacement = next((text for index, text in set_criteria if index == number), None)
+            if replacement is not None:
+                own = [f"- [ ] {_criterion_text(replacement)}\n"]
             if number in check or number in uncheck:
                 mark = "x" if number in check else " "
                 first = own[0]
@@ -470,7 +485,7 @@ def new_task(
     task = parse(text).with_field("title", title).with_section(DESCRIPTION, description)
     for key, value in fields.items():
         task = task.with_field(key, value)
-    task = task.with_criteria(add=criteria, remove=(), check=(), uncheck=())
+    task = task.with_criteria(add=criteria, remove=(), set_criteria=(), check=(), uncheck=())
     return task.with_legacy_history(created, None, task.frontmatter.status)
 
 
