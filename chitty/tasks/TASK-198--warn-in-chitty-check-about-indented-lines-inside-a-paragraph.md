@@ -47,6 +47,8 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-19
 - Not a problem: "Deleted branch task-2" in the `make check` log comes from a test's temporary repository; this repository has no such branch.
 - None of these changes the design, so no second read.
 
+Regression test confirmed the unfixed behavior: the indented Notes paragraph test failed with [] != ['warning']; exclusion cases passed.
+
 ## History
 
 - 2026-11-05T19:11:12Z youthful-toad → backlog
@@ -57,3 +59,4 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-19
 - 2026-11-07T09:20:21Z vivid-dormouse backlog → todo
 - 2026-11-08T11:17:07Z quick-dormouse todo → doing
 - 2026-11-08T11:17:30Z quick-dormouse: wrote the plan
+- 2026-11-08T11:17:48Z quick-dormouse: changed notes
