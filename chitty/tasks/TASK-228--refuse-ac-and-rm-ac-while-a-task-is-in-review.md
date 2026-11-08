@@ -1,6 +1,6 @@
 ---
 title: Refuse `--ac` and `--rm-ac` while a task is in review
-status: doing
+status: review
 created: 2026-11-07
 ---
 
@@ -27,9 +27,11 @@ Fail-first CLI and Repo.edit tests both failed before the guard: --ac and direct
 
 Review failed (work): the worktree has uncommitted changes: `src/chitty/store.py`, `tests/test_cli.py`, `tests/test_store.py`.
 
+Reverified both criteria: focused CLI and Repo.edit regressions pass; make format and make check pass (380 Python tests and Node tests). chitty fix completed with existing Markdown warnings in other task files.
+
 ## Summary
 
-Implemented and verified criterion-mutation refusal for review tasks through CLI and shared Repo.edit validation. Verified with make format and make check. No follow-up.
+Rejects --ac, --rm-ac, and --set-ac for tasks already in review, using pre-edit status. CLI and Repo.edit tests cover refusal, unchanged files, valid review-to-done verdict, and allowed doing-to-review edits. Verified focused regressions and make format && make check (380 Python tests and Node tests). No follow-up.
 
 ## History
 
@@ -44,3 +46,5 @@ Implemented and verified criterion-mutation refusal for review tasks through CLI
 - 2026-11-08T17:05:57Z plucky-urchin doing → review
 - 2026-11-08T17:16:12Z eager-falcon: changed notes
 - 2026-11-08T17:16:12Z eager-falcon review → doing
+- 2026-11-08T17:47:05Z youthful-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T17:47:05Z youthful-zander doing → review
