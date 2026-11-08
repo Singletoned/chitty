@@ -1,6 +1,6 @@
 ---
 title: Merge `main` into a ticket branch instead of rebasing it
-status: doing
+status: review
 priority: high
 created: 2026-11-06
 ---
@@ -23,8 +23,8 @@ Out of scope: guide text telling agents to rebase, which `TASK-151` rewrites.
 
 ## Acceptance Criteria
 
-- [ ] No code path in `src/chitty/run.py` rebases, an unfinished merge in a ticket worktree is refused like an unfinished rebase, `README.md` and `PLAN.md` say "merge", and `make check` passes.
-- [ ] Tests show a review of a branch behind the main branch merging it in, so the reviewer sees both changes (a branch with no commits of its own may fast-forward instead); a conflicting branch failing as `integration` with the merge aborted and the worktree clean; a recorded rerere resolution not being replayed; and Ctrl-C during the merge aborting it.
+- [x] No code path in `src/chitty/run.py` rebases, an unfinished merge in a ticket worktree is refused like an unfinished rebase, `README.md` and `PLAN.md` say "merge", and `make check` passes.
+- [x] Tests show a review of a branch behind the main branch merging it in, so the reviewer sees both changes (a branch with no commits of its own may fast-forward instead); a conflicting branch failing as `integration` with the merge aborted and the worktree clean; a recorded rerere resolution not being replayed; and Ctrl-C during the merge aborting it.
 
 ## Plan
 
@@ -40,6 +40,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-223/1`; tests failed before and passed
 - Renaming `tests/test_review_rebase.py` to `tests/test_review_merge.py`: accepted.
 - The `TASK-131` note: already added.
 
+Implemented merge-based review preparation, unfinished merge refusal, rerere-disabled conflict handling, and merge interruption cleanup. Renamed and updated review tests; updated README.md and PLAN.md. Verified with `make format && make check` (363 tests passed, Node tests passed).
+
+## Summary
+
+Handoff: review `src/chitty/git.py` and `src/chitty/run.py` merge workflow, updated merge-focused tests, and documentation. Verification: `make format && make check` passes. Follow-up: none.
+
 ## History
 
 - 2026-11-06T21:49:17Z youthful-toad → backlog
@@ -47,3 +53,5 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-223/1`; tests failed before and passed
 - 2026-11-06T21:58:26Z youthful-toad backlog → todo
 - 2026-11-08T09:19:45Z eager-otter todo → doing
 - 2026-11-08T09:20:04Z eager-otter: wrote the plan
+- 2026-11-08T09:25:25Z eager-otter: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T09:25:25Z eager-otter doing → review
