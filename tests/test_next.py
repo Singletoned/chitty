@@ -1217,21 +1217,21 @@ class TestNext(CliTestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
-        result = self.run_cli("run")
+        result = self.run_cli("run", exit_code=1)
 
-        self.assertEqual(result.stdout, "TASK-1: todo → doing\n")
+        self.assertIn("check failed before TASK-1 started", result.stderr)
+        self.assertIn("check line 6", result.stderr)
+        self.assertIn("check line 25", result.stderr)
+        self.assertEqual(result.stdout, "")
         checked = (self.root / ".worktrees/task-1/check-args").read_text()
         self.assertIn("['quoted argument']", checked)
         self.assertIn("status: todo", checked)
-        self.assertNotIn("check line 1", result.stderr)
         self.assertIn("Running check", result.stderr)
         self.assertFalse((self.root / ".worktrees/task-1/started").exists())
         repo = Repo.open(self.root)
-        notes = repo.find(repo.resolve("TASK-1")).task.section("Notes") or ""
-        self.assertIn("Review failed (work): check exited with status 1:", notes)
-        self.assertNotIn("\ncheck line 1\n", f"\n{notes}\n")
-        self.assertIn("check line 6", notes)
-        self.assertIn("check line 25", notes)
+        task = repo.find(repo.resolve("TASK-1")).task
+        self.assertEqual(task.frontmatter.status, "todo")
+        self.assertIsNone(task.section("Notes"))
 
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
@@ -1256,13 +1256,61 @@ class TestNext(CliTestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
-        result = self.run_cli("run")
+        result = self.run_cli("run", exit_code=1)
 
-        self.assertEqual(result.stdout, "TASK-1: todo → doing\n", result.stderr)
+        self.assertIn("check failed before TASK-1 started", result.stderr)
+        self.assertIn("FAIL: test_something", result.stderr)
+        self.assertIn("# not a heading", result.stderr)
+        self.assertEqual(result.stdout, "")
         repo = Repo.open(self.root)
-        notes = repo.find(repo.resolve("TASK-1")).task.section("Notes") or ""
-        self.assertIn("FAIL: test_something\n" + "-" * 70 + "\n", notes)
-        self.assertIn("# not a heading", notes)
+        task = repo.find(repo.resolve("TASK-1")).task
+        self.assertEqual(task.frontmatter.status, "todo")
+        self.assertIsNone(task.section("Notes"))
+
+    def test_run_check_failure_on_doing_ticket_starts_agent(self):
+        config = self.root / "chitty.toml"
+        checker = self.root / "check.py"
+        checker.write_text(
+            "for number in range(1, 4): print(f'check line {number}')\nraise SystemExit(1)\n"
+        )
+        config.write_text(
+            config.read_text()
+            .replace('check = "true"', f'check = "{sys.executable} {checker}"')
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.run_cli("edit", "TASK-1", "--status", "doing")
+        self.git("branch", "task-1")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!"
+            + sys.executable
+            + "\nfrom pathlib import Path\nPath('started').write_text('yes')\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            result = self.run_cli("run", exit_code=1)
+        finally:
+            os.environ["PATH"] = previous
+
+        self.assertIn("TASK-1 was unchanged", result.stderr)
+        self.assertTrue((self.root / ".worktrees/task-1/started").exists())
+        repo = Repo.open(self.root)
+        task = repo.find(repo.resolve("TASK-1")).task
+        self.assertEqual(task.frontmatter.status, "doing")
+        notes = task.section("Notes") or ""
+        self.assertIn("Check failed before this session", notes)
+        self.assertIn("check line 1", notes)
+        self.assertIn("```text", notes)
 
     def test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review(self):
         config = self.root / "chitty.toml"
