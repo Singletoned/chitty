@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty list` re-reading git and tasks for every listed task
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -52,6 +52,10 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-229/1`): the implementation passed `ma
 
 Verified the subprocess GIT_TRACE regression: before the fix, the new test failed with 30 git calls for N=2 versus 118 for N=10; after the fix it passes with equal counts. The same-Repo edit regression passes, and make check passes.
 
+## Summary
+
+Implemented Repo-scoped caching for task locations, history, dirty paths, current/main branch, and main-branch files; added cache invalidation at all Repo write paths and functools-cached git common directories. Added performance and cache-invalidation regressions. Verified with make check (371 Python tests and Node tests).
+
 ## History
 
 - 2026-11-08T10:31:35Z calm-eel → backlog
@@ -60,3 +64,5 @@ Verified the subprocess GIT_TRACE regression: before the fix, the new test faile
 - 2026-11-08T11:36:53Z able-dormouse todo → doing
 - 2026-11-08T11:37:59Z able-dormouse: wrote the plan
 - 2026-11-08T11:42:57Z able-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-08T11:43:08Z able-dormouse: changed summary
+- 2026-11-08T11:43:08Z able-dormouse doing → review
