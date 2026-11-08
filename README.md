@@ -84,8 +84,9 @@ Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row prefixes the status with a fixed glyph: `💤 backlog`,
 `📋 todo`, `🔨 doing`, `⛔ blocked`, `👀 review`, or `✅ done`. Rows skipped by
-`chitty next` explain why at the end: `👤 human`, `🔒 waits on ID[, ID...]`, or
-`⚠️ <message>` for a broken dependency. Review is required before `done` by default.
+`chitty next` carry a glyph in a column before the title: `👤` owned or human,
+`🔒` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
+message goes to stderr. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`
 contexts do this so people can close their own tasks directly. A context with
 `random_ids = true` numbers new tickets at random from 10000000 to 99999999
@@ -120,7 +121,7 @@ holds a lock on its ticket until it exits, an exclusive `flock` on
 lock file records JSON with the process ID, actor, `work` or `review` mode, and
 UTC start time. `chitty show` reports a held ticket as `running: <mode> by
 <actor>, process <pid>, since <HH:MM>` (local time), while `chitty list` marks
-it `▶ running`; `chitty next` and other runs skip it and `--ticket` refuses it
+it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
 with the holder's process ID. Locks are machine-local. The sessions all update
 main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be

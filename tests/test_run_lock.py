@@ -138,7 +138,7 @@ class TestRunLock(RunLockTestCase):
             self.assertEqual(record["mode"], "review")
             self.assertEqual(record["pid"], os.getpid())
             self.assertIn("running: review by alice, process", self.run_cli("show", ticket).stdout)
-            self.assertIn("▶ running", self.run_cli("list").stdout)
+            self.assertIn("▶   Visible", self.run_cli("list").stdout)
 
             lock_path = next((self.root / ".git/chitty/run").glob(f"{ticket}.lock"))
             lock_path.write_text("12345\n")

@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import unicodedata
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Literal, TextIO, cast
@@ -40,6 +41,7 @@ from chitty.model import (
 from chitty.run import RunInterrupted
 from chitty.run import run as run_next
 from chitty.store import (
+    BROKEN_DEPENDENCY_GLYPH,
     Change,
     Edit,
     Repo,
@@ -387,20 +389,30 @@ def list_(
         return
     width = max((len(str(t.id)) for t in tasks), default=0)
     show_priority = any(t.task.frontmatter.priority is not None for t in tasks)
-    for stored in tasks:
+    reasons = [skip_reason(repo, stored) for stored in tasks]
+    show_markers = any(reasons)
+    for stored, reason in zip(tasks, reasons, strict=True):
         fm = stored.task.frontmatter
         line = f"{stored.id!s:<{width}}  {STATUS_GLYPHS[fm.status]} {fm.status:<7}"
         if show_priority:
             line += f"  {fm.priority or '-':<6}"
+        if show_markers:
+            line += f"  {_marker(reason)}"
         line += f"  {fm.title}"
         if fm.labels:
             line += f"  [{','.join(sorted(fm.labels))}]"
-        if stored.branch:
-            line += f"  ({stored.branch})"
-        reason = skip_reason(repo, stored)
-        if reason:
-            line += f"  {reason}"
         click.echo(line)
+        if reason and reason.startswith(BROKEN_DEPENDENCY_GLYPH):
+            click.echo(f"warning: {reason.removeprefix(BROKEN_DEPENDENCY_GLYPH).strip()}", err=True)
+
+
+def _marker(reason: str | None) -> str:
+    """Return a skip reason's glyph padded to two terminal columns."""
+    if reason is None:
+        return "  "
+    glyph = reason.split()[0]
+    wide = unicodedata.east_asian_width(glyph[0]) == "W" or glyph.endswith("\ufe0f")
+    return glyph if wide else f"{glyph} "
 
 
 @cli.command("next")

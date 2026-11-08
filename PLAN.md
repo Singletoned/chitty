@@ -452,8 +452,10 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   unset priority), and `low` within each status; `--json` uses the same order.
   Human-readable rows prefix statuses with fixed glyphs: `💤 backlog`, `📋 todo`,
   `🔨 doing`, `⛔ blocked`, `👀 review`, and `✅ done`. Rows skipped by `next`
-  end with `👤 human`, `🔒 waits on ID[, ID...]`, or `⚠️ <message>` for a broken
-  dependency. JSON keeps status words and adds `skipped`.
+  show the reason's glyph alone in a column before the title (`👤`, `🔒`, `▶`, or
+  `⚠️`, whose message goes to stderr); the column appears only when a row needs
+  it. Rows do not show the branch. JSON keeps status words and adds `skipped`,
+  the full reason: `👤 human`, `🔒 waits on ID[, ID...]`, or `⚠️ <message>`.
 - `Summary` is an optional final handoff section after Notes; set it with
   `edit --summary` when completing work.
 - `parent` is an optional full task ID for grouping flat tasks. `add` and
@@ -675,8 +677,8 @@ including retries, not per run.
 `TaskId`.
 Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
 an unmet dependency is excluded, while `doing` and `review` work remains
-visible. `list` reports these exclusions with `👤 human`, `🔒 waits on ID[, ID...]`,
-or `⚠️ <message>` for a broken dependency; `doing` and `review` ignore
+visible. `list` marks these exclusions with `👤`, `🔒`, or `⚠️` for a broken
+dependency; `doing` and `review` ignore
 dependencies. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value. `--mode review` limits the
 choice to `review` tasks and `--mode work` to `doing` and `todo`, in the same

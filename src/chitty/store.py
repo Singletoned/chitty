@@ -51,6 +51,7 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 # Failed reviews (review → doing) before a task is escalated to a human.
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
+BROKEN_DEPENDENCY_GLYPH = "⚠️"
 ROLE_NAMES = ("work", "review", "plan", "cold-read")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
 RANDOM_ID_MIN = 10_000_000
@@ -1241,7 +1242,7 @@ def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str 
             dependency = repo.find(dependency_id)
             complete = _dependency_is_done(repo, dependency_id, dependency)
         except ChittyError as error:
-            return f"⚠️ {stored.id} depends on {reference}: {error}"
+            return f"{BROKEN_DEPENDENCY_GLYPH} {stored.id} depends on {reference}: {error}"
         if not complete:
             unfinished.append(str(dependency_id))
     if unfinished:

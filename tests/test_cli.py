@@ -1169,13 +1169,21 @@ class TestAddShowList(CliTestCase):
         )
         self.run_cli("edit", "7", "-s", "review")
 
-        lines = self.run_cli("list", "--all").stdout.splitlines()
-        self.assertEqual(lines[0].split()[1:3], ["💤", "backlog"])
-        self.assertIn("🔒 waits on TASK-1", lines[1])
-        self.assertIn("⚠️ TASK-4 depends on TASK-99", lines[2])
-        self.assertIn("👤 human", lines[3])
-        self.assertNotIn("🔒", lines[4])
-        self.assertNotIn("🔒", lines[5])
+        listed = self.run_cli("list", "--all")
+        lines = listed.stdout.splitlines()
+        self.assertEqual(
+            lines,
+            [
+                "TASK-1  💤 backlog      Backlog",
+                "TASK-3  📋 todo     🔒  Waiting",
+                "TASK-4  📋 todo     ⚠️  Broken",
+                "TASK-5  📋 todo     👤  Human",
+                "TASK-6  🔨 doing        Doing",
+                "TASK-7  👀 review       Review",
+                "TASK-2  ✅ done         Done",
+            ],
+        )
+        self.assertIn("warning: TASK-4 depends on TASK-99", listed.stderr)
         self.assertEqual(self.json("list", "--all")[1]["skipped"], "🔒 waits on TASK-1")
         self.assertIsNone(self.json("list", "--all")[4]["skipped"])
 
@@ -1187,8 +1195,8 @@ class TestAddShowList(CliTestCase):
         self.run_cli("add", "Ready", "-d", "x")
 
         lines = self.run_cli("list").stdout.splitlines()
-        self.assertEqual(sum("👤 agent" in line for line in lines), 3)
-        self.assertEqual(sum("👤" in line for line in lines), 3)
+        self.assertEqual(sum("👤  Agent" in line for line in lines), 3)
+        self.assertNotIn("agent", self.run_cli("list").stdout)
         self.assertEqual(self.run_cli("next").stdout, "work TASK-4\n")
 
     def test_list_preserves_context_and_numeric_order_for_priority_ties(self):
