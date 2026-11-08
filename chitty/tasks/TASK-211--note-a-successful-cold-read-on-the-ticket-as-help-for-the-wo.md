@@ -6,7 +6,7 @@ created: 2026-11-06
 
 ## Description
 
-When an implementing cold read succeeds (its fail-first tests fail on `main` and pass after its change, and its findings left the ticket unchanged), the planning guide should tell the planner to add a ticket note pointing at the kept ref (`refs/cold-read/<ID>/<n>`), with the diff command, as a possible starting point for the worker, and a reminder to check it against the criteria rather than trust it.
+When an implementing cold read against the current ticket text succeeds (its fail-first tests fail on the main branch and pass after its change, and it has no unresolved serious findings), the planning guide should tell the planner to add a ticket note pointing at the kept ref (`refs/cold-read/<ID>/<n>`), with the diff command, as a possible starting point for the worker, and a reminder to check it against the criteria rather than trust it.
 
 The guide should also say to delete refs from reads made against superseded ticket text (`git update-ref -d`). Their tests pass, so a worker could trust them and copy behaviour the ticket has since changed.
 
@@ -25,3 +25,4 @@ Cold-read finding: define a successful ref as one implemented against the curren
 - 2026-11-06T13:58:02Z youthful-toad → backlog
 - 2026-11-06T13:58:03Z youthful-toad: changed notes
 - 2026-11-08T14:15:13Z eager-puffin: changed notes
+- 2026-11-08T14:15:30Z eager-puffin: changed description
