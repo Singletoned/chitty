@@ -16,7 +16,7 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 ## Acceptance Criteria
 
 - [x] `chitty guide work` and `chitty guide` no longer contain `inbox --pull`, shown by a test, and `chitty inbox --pull` itself still works
-- [ ] The ticket branch does not change the managed `AGENTS.md` block, `chitty.toml`, or `__version__`; the main checkout regenerates setup after landing.
+- [x] The ticket branch does not change the managed `AGENTS.md` block, `chitty.toml`, or `__version__`; the main checkout regenerates setup after landing.
 
 ## Plan
 
@@ -499,6 +499,8 @@ check_version_bump: changed files require a version above main (0.1.43), but wor
 make: *** [check] Error 1
 ```
 
+Verified both guide outputs omit inbox --pull and the inbox pull still works (focused tests passed). Merged current main to bring in TASK-224; AGENTS.md, chitty.toml, and __version__ now match main exactly. Main's refreshed guide output already omits the pull; this branch retains the task-specific work-role change. make format && make check passes (377 Python tests and Node tests).
+
 ## Summary
 
 Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
@@ -592,3 +594,4 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-08T13:07:01Z eager-puffin: changed acceptance criteria
 - 2026-11-08T13:08:33Z eager-puffin: wrote the plan
 - 2026-11-08T13:47:18Z sunny-marten: changed notes
+- 2026-11-08T13:52:00Z sunny-marten: changed notes; ticked acceptance criteria
