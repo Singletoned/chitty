@@ -1,6 +1,6 @@
 ---
 title: Refuse `--ac` and `--rm-ac` while a task is in review
-status: doing
+status: review
 created: 2026-11-07
 ---
 
@@ -57,3 +57,4 @@ Rejects all criterion mutations while the task was already in review. Independen
 - 2026-11-08T17:53:23Z golden-zander: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-08T17:53:23Z golden-zander review → doing
 - 2026-11-08T17:58:41Z daring-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T17:58:42Z daring-dormouse doing → review
