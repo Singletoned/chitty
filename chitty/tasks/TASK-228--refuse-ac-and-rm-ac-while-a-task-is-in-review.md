@@ -1,6 +1,6 @@
 ---
 title: Refuse `--ac` and `--rm-ac` while a task is in review
-status: review
+status: doing
 created: 2026-11-07
 ---
 
@@ -10,7 +10,7 @@ In `src/chitty/store.py:check_edit`, reject `--ac` and `--rm-ac` while the task 
 
 ## Acceptance Criteria
 
-- [x] Fail-first tests show `--ac` and `--rm-ac` each being accepted on a review ticket before the fix, including a combined `review` to `done` edit with a valid verdict. After the fix, each is rejected with a clear message and leaves the file unchanged; `--set-ac` remains rejected.
+- [ ] Fail-first tests show `--ac` and `--rm-ac` each being accepted on a review ticket before the fix, including a combined `review` to `done` edit with a valid verdict. After the fix, each is rejected with a clear message and leaves the file unchanged; `--set-ac` remains rejected.
 - [x] Tests show criteria may still change when moving `doing` to `review`, and CLI and shared store validation agree; `make check` passes.
 
 ## Plan
@@ -28,6 +28,10 @@ Fail-first CLI and Repo.edit tests both failed before the guard: --ac and direct
 Review failed (work): the worktree has uncommitted changes: `src/chitty/store.py`, `tests/test_cli.py`, `tests/test_store.py`.
 
 Reverified both criteria: focused CLI and Repo.edit regressions pass; make format and make check pass (380 Python tests and Node tests). chitty fix completed with existing Markdown warnings in other task files.
+
+Review failed (tests): the fail-first regression stops on the first --ac assertion, so it does not demonstrate --rm-ac or the combined transition before the fix. The combined CLI case also uses the actor who moved the task to review, so it is rejected by review independence without the new guard. Give each case an independent fail-first test and use a different reviewer for the valid review-to-done verdict. Running the old check_edit with the current CLI fixture printed exit 0 for --ac and --rm-ac, but the combined edit printed Error: test-agent cannot review this task: moved the task to review; using reviewer as the actor instead printed updated TASK-1. make format && make check passed (388 Python tests and Node tests).
+1: fail - fail-first tests do not independently exercise all cases
+2: pass - focused tests and checks pass
 
 ## Summary
 
@@ -48,3 +52,5 @@ Rejects --ac, --rm-ac, and --set-ac for tasks already in review, using pre-edit 
 - 2026-11-08T17:16:12Z eager-falcon review → doing
 - 2026-11-08T17:47:05Z youthful-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T17:47:05Z youthful-zander doing → review
+- 2026-11-08T17:53:23Z golden-zander: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-08T17:53:23Z golden-zander review → doing
