@@ -1,6 +1,6 @@
 ---
 title: Warn about backticks in double-quoted arguments in the generated guidance
-status: blocked
+status: review
 priority: medium
 depends_on:
   - TASK-143
@@ -21,7 +21,7 @@ The instruction now lives in `src/chitty/guide.md` and `src/chitty/roles/plan.md
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide`, and each role's output, containing the warning, and `__version__` is bumped above `main`'s
+- [ ] A test shows `chitty guide` and each role guide containing the backtick warning; `make check` passes.
 
 ## Plan
 
@@ -39,6 +39,8 @@ Implementation is committed in 1448354 (Task: TASK-68). Added the shell backtick
 
 Blocked on the acceptance criterion requiring `__version__` to be above `main`'s: both this branch and `main` are `0.1.43`, but the repository instructions explicitly prohibit changing `src/chitty/__init__.py` on a ticket branch and require `make release` to choose published bumps. A maintainer must decide whether to revise the criterion or authorize a release/version change; no version file was edited.
 
+Unblocked: TASK-224 moved version bumps to release, so the branch-version requirement no longer applies. Implementation and tests are committed; ready for review.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -49,3 +51,5 @@ Blocked on the acceptance criterion requiring `__version__` to be above `main`'s
 - 2026-11-08T11:12:24Z calm-badger: wrote the plan
 - 2026-11-08T11:14:55Z calm-badger: changed notes
 - 2026-11-08T11:14:55Z calm-badger doing → blocked
+- 2026-11-08T13:05:00Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T13:05:00Z eager-puffin blocked → review
