@@ -10,7 +10,7 @@ In `src/chitty/store.py:check_edit`, reject `--ac` and `--rm-ac` while the task 
 
 ## Acceptance Criteria
 
-- [ ] Fail-first tests show `--ac` and `--rm-ac` each being accepted on a review ticket before the fix, including a combined `review` to `done` edit with a valid verdict. After the fix, each is rejected with a clear message and leaves the file unchanged; `--set-ac` remains rejected.
+- [x] Fail-first tests show `--ac` and `--rm-ac` each being accepted on a review ticket before the fix, including a combined `review` to `done` edit with a valid verdict. After the fix, each is rejected with a clear message and leaves the file unchanged; `--set-ac` remains rejected.
 - [x] Tests show criteria may still change when moving `doing` to `review`, and CLI and shared store validation agree; `make check` passes.
 
 ## Plan
@@ -33,9 +33,11 @@ Review failed (tests): the fail-first regression stops on the first --ac asserti
 1: fail - fail-first tests do not independently exercise all cases
 2: pass - focused tests and checks pass
 
+Review feedback addressed: --ac and --rm-ac now have independent CLI regressions; the combined review-to-done case uses a distinct reviewer and a syntactically valid verdict. Focused tests pass, and make format && make check passed (390 Python tests plus Node tests). chitty fix completed; existing Markdown warnings are unrelated.
+
 ## Summary
 
-Rejects --ac, --rm-ac, and --set-ac for tasks already in review, using pre-edit status. CLI and Repo.edit tests cover refusal, unchanged files, valid review-to-done verdict, and allowed doing-to-review edits. Verified focused regressions and make format && make check (380 Python tests and Node tests). No follow-up.
+Rejects all criterion mutations while the task was already in review. Independent CLI regressions cover --ac, --rm-ac, and review-to-done with a different reviewer and valid verdict; shared Repo.edit coverage and doing-to-review allowance remain. Verified focused tests and make format && make check (390 Python tests plus Node tests). Follow-up: none.
 
 ## History
 
@@ -54,3 +56,4 @@ Rejects --ac, --rm-ac, and --set-ac for tasks already in review, using pre-edit 
 - 2026-11-08T17:47:05Z youthful-zander doing → review
 - 2026-11-08T17:53:23Z golden-zander: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-08T17:53:23Z golden-zander review → doing
+- 2026-11-08T17:58:41Z daring-dormouse: changed notes, summary; ticked acceptance criteria
