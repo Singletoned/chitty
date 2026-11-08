@@ -1233,6 +1233,37 @@ class TestNext(CliTestCase):
         self.assertIn("check line 6", notes)
         self.assertIn("check line 25", notes)
 
+    def test_run_check_failure_records_markdown_like_output(self):
+        config = self.root / "chitty.toml"
+        checker = self.root / "check.py"
+        checker.write_text(
+            "print('FAIL: test_something')\n"
+            "print('-' * 70)\n"
+            "print('```')\n"
+            "print('# not a heading')\n"
+            "raise SystemExit(1)\n"
+        )
+        config.write_text(
+            config.read_text()
+            .replace('check = "true"', f'check = "{sys.executable} {checker}"')
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+
+        result = self.run_cli("run")
+
+        self.assertEqual(result.stdout, "TASK-1: todo → doing\n", result.stderr)
+        repo = Repo.open(self.root)
+        notes = repo.find(repo.resolve("TASK-1")).task.section("Notes") or ""
+        self.assertIn("FAIL: test_something\n" + "-" * 70 + "\n", notes)
+        self.assertIn("# not a heading", notes)
+
     def test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review(self):
         config = self.root / "chitty.toml"
         config.write_text(

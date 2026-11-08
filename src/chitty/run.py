@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import shlex
 import shutil
 import signal
@@ -615,8 +616,15 @@ def _run_check(
     return _fail_check(
         work_repo,
         action,
-        f"check exited with status {completed.returncode}:\n{output}",
+        f"check exited with status {completed.returncode}:\n{_code_block(output)}",
     )
+
+
+def _code_block(text: str) -> str:
+    """Fence command output so a note cannot read it as Markdown structure."""
+    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
+    fence = "`" * max(3, longest + 1)
+    return f"{fence}text\n{text}\n{fence}"
 
 
 def _fail_check(work_repo: Repo, action: NextAction, detail: str) -> RunResult:

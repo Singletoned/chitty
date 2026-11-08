@@ -735,8 +735,9 @@ what would land:
    resolution Git recorded for another branch is never replayed unchecked.
 4. Only then does `setup` run, because the merge can change dependencies.
 5. `check` runs in the ticket worktree after setup, with combined output
-   captured. A failure moves the ticket to `doing` with the last 20 output lines
-   in a `Review failed (work)` note and starts no agent. In work mode setup and
+   captured. A failure moves the ticket to `doing` with the last 20 output lines,
+   fenced as a code block so they cannot break the ticket's Markdown, in a
+   `Review failed (work)` note and starts no agent. In work mode setup and
    check still run before the agent claim.
 
 After either failure no agent starts, no usage line is written, and `chitty
