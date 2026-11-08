@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run --mode work` looping on a ticket whose check fails
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -48,3 +48,4 @@ The reader had to guess at 4, 5 and 6, so those were the gaps a weaker model hit
 - 2026-11-08T11:10:30Z calm-eel: changed description, acceptance criteria, notes
 - 2026-11-08T11:20:25Z calm-eel: changed description, acceptance criteria, notes
 - 2026-11-08T11:20:25Z calm-eel backlog → todo
+- 2026-11-08T11:23:24Z intrepid-marten todo → doing
