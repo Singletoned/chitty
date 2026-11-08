@@ -1970,6 +1970,11 @@ class TestGuide(CliTestCase):
                 for phrase in required_phrases:
                     self.assertIn(phrase, output)
 
+    def test_worker_guides_start_with_show_without_pulling_inbox(self):
+        self.assertNotIn("chitty inbox --pull", guide())
+        self.assertNotIn("chitty inbox --pull", guide("work"))
+        self.assertIn("chitty show <ID>", guide("work"))
+
     def test_guide_points_agents_at_ticket_planning_instructions(self):
         planning_guide = guide("plan")
         self.assertIn("nothing built", planning_guide)

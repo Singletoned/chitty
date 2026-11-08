@@ -20,7 +20,11 @@ Once the extension lives here (TASK-87) and `chitty next` exists (TASK-76), the 
 
 Superseded for the pilot by `TASK-123`, which removes queue selection from the extension. Close this if `TASK-110` needs nothing more.
 
+Archived at the human’s request: TASK-123 and TASK-124 placed queue selection in chitty next/run rather than the Pi extension.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-03T12:40:40Z lively-panda: changed notes
+- 2026-11-08T14:13:15Z eager-puffin backlog → archived
+- 2026-11-08T14:13:18Z eager-puffin: changed notes
