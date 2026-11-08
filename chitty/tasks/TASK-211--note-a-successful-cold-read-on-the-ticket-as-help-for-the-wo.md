@@ -1,6 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: doing
+status: review
 created: 2026-11-06
 ---
 
@@ -66,3 +66,4 @@ Guide change and regression test are ready for review. Verification: focused tes
 - 2026-11-08T17:23:45Z intrepid-jay: changed notes
 - 2026-11-08T17:23:45Z intrepid-jay review → doing
 - 2026-11-08T17:26:55Z calm-heron: changed summary
+- 2026-11-08T17:29:39Z calm-heron doing → review
