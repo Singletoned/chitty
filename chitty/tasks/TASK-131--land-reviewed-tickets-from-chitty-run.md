@@ -34,7 +34,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Plan
 
-Implement landing in src/chitty/run.py with focused Git helpers in src/chitty/git.py. On a done ticket, verify main is the clean main branch and the ticket worktree is clean (including untracked but allowing ignored files), merge main into the ticket branch when needed, run setup and check, then fast-forward main and remove the worktree and branch without force. Leave all state intact and report a non-zero error on refusal, merge/check failure, or cleanup failure. Add isolated unittest coverage for successful landing, merge/check failure preservation, branch/dirty refusals, and ignored files, using real temporary Git repositories. Run the focused tests, formatter, and full make check.
+Fix review-mode landing and serialization so concurrent reviewers do not race while running checks or autocommit. Inspect runner lock boundaries and existing failure tests; add regression coverage for the reported autocommit merge race and update outdated landing expectations. Run focused tests, then make format && make check; commit fixes with Task: TASK-131.
 
 ## Notes
 
@@ -255,3 +255,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:08:29Z eager-puffin: changed description
 - 2026-11-08T13:08:32Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T13:20:50Z daring-gannet: changed notes
+- 2026-11-08T13:21:06Z daring-gannet: wrote the plan
