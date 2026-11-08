@@ -1,6 +1,6 @@
 ---
 title: Add `--note-file` and stdin input for task text
-status: todo
+status: doing
 created: 2026-11-01
 ---
 
@@ -47,3 +47,4 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-67
 - 2026-11-07T09:16:07Z vivid-dormouse: changed description, acceptance criteria
 - 2026-11-07T09:19:32Z vivid-dormouse: changed description, notes
 - 2026-11-07T09:19:32Z vivid-dormouse backlog → todo
+- 2026-11-08T10:12:22Z friendly-dormouse todo → doing
