@@ -18,6 +18,10 @@ A related gap: a planner can add notes after another session has already claimed
 
 - [ ] A fail-first guide test verifies `chitty guide plan` tells planners to note a successful ref from a read of the current ticket with no serious findings, include a diff against the configured main branch, warn the worker to check the current criteria, and delete superseded refs; `make check` passes.
 
+## Plan
+
+Inspect the planning role guide and its tests, run the focused regression test before changes, then update the guide to give the successful-current-read note, configured-main diff, criteria warning, and stale-ref deletion instructions. Run format and make check, then record verification and hand off for review.
+
 ## Notes
 
 Suggestion origin: echonomicon
@@ -39,3 +43,4 @@ Implementing cold read against the revised ticket: guide regression test first f
 - 2026-11-08T14:19:36Z eager-puffin: changed notes
 - 2026-11-08T14:19:39Z eager-puffin backlog → todo
 - 2026-11-08T16:42:34Z lively-zander todo → doing
+- 2026-11-08T16:42:51Z lively-zander: wrote the plan
