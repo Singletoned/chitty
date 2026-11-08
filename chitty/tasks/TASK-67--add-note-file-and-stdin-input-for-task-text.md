@@ -1,6 +1,6 @@
 ---
 title: Add `--note-file` and stdin input for task text
-status: todo
+status: done
 created: 2026-11-01
 ---
 
@@ -24,8 +24,15 @@ Also add `[--note-file F]` to the `chitty add` and `chitty edit` synopses in `PL
 
 ## Acceptance Criteria
 
-- [ ] Tests show `chitty edit` and `chitty add` each storing a note read with `--note-file -` from standard input whose text contains backticks, unchanged
-- [ ] A test shows `--note a --note-file f` giving two notes in that order
+- [x] Tests show `chitty edit` and `chitty add` each storing a note read with `--note-file -` from standard input whose text contains backticks, unchanged
+- [x] A test shows `--note a --note-file f` giving two notes in that order
+
+## Plan
+
+1. Add non-repeatable `--note-file` click options to `add` and `edit`, reading `click.File()` and appending the file content after repeated `--note` values before passing notes to the existing store/model path.
+2. Add CLI regression tests covering stdin backticks for both commands and ordering of inline plus file notes.
+3. Update the corresponding `PLAN.md` CLI synopsis and option documentation.
+4. Run the focused tests, then `make format && make check`.
 
 ## Notes
 
@@ -41,9 +48,25 @@ Cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/TASK-67
 - Rejected: naming the flag in the empty-file error, because the store-level message already matches `--note ""` and changing it is out of scope.
 - No wrong claims found; none of these findings changes the design, so no second read.
 
+Verified both stdin paths preserve backticks; inline notes precede file notes. `chitty fix` completed with unrelated existing Markdown delimiter warnings in other tasks.
+
+Reviewed: focused tests and make format && make check pass.
+1: pass - add and edit preserve backticks from stdin via --note-file
+2: pass - inline notes precede the file note
+
+## Summary
+
+Implemented `--note-file` for `chitty add` and `chitty edit`, including stdin support and ordering after repeated `--note` values. Updated `PLAN.md` and added CLI regression tests. Verified focused tests and full `make format && make check`; no follow-ups.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-07T09:16:07Z vivid-dormouse: changed description, acceptance criteria
 - 2026-11-07T09:19:32Z vivid-dormouse: changed description, notes
 - 2026-11-07T09:19:32Z vivid-dormouse backlog → todo
+- 2026-11-08T10:12:22Z friendly-dormouse todo → doing
+- 2026-11-08T10:12:44Z friendly-dormouse: wrote the plan
+- 2026-11-08T10:15:54Z friendly-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T10:15:54Z friendly-dormouse doing → review
+- 2026-11-08T11:01:51Z vivid-puffin: changed notes; ticked acceptance criteria
+- 2026-11-08T11:01:51Z vivid-puffin review → done

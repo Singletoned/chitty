@@ -22,14 +22,14 @@ read only that section. Update it when a decision changes.
 - Releases: `make release` tags the version in `src/chitty/__init__.py` and pushes
   it. `.github/workflows/release.yml` checks, builds and publishes to PyPI by
   trusted publishing (environment `pypi`).
-- Any change that existing repos only pick up by re-running `chitty init`
-  (the managed guide block, `chitty.toml` template or upgrades, inbox
-  registration) must bump `__version__` in `src/chitty/__init__.py`, at least at patch
-  level, in the same change. The version recorded in `chitty.toml` is how
-  other repos learn that `init` needs re-running (TASK-52). Bump only
-  `__version__`: never edit `chitty.toml` or the managed block below, or run
-  `chitty init`, on a ticket branch. The main checkout's `chitty` upgrades
-  both after the work lands (TASK-212).
+- Branches never change `__version__` in `src/chitty/__init__.py`; `make release`
+  chooses the published bump. Never edit `chitty.toml` or the managed block below,
+  or run `chitty init`, on a ticket branch. The main checkout's `chitty` upgrades
+  setup files after the work lands (TASK-212).
+- Whoever writes, works or reviews a ticket may add `needs-minor` when users must
+  notice or act on the change: a new required setting, changed default or
+  selection rule, something needing `chitty init` re-run, or a removed command or
+  option.
 
 <!-- chitty:begin - managed by `chitty init`; edits here are replaced -->
 
@@ -37,6 +37,7 @@ read only that section. Update it when a decision changes.
 
 Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit task files.
 Put paths, commands, IDs, and code in backticks.
+Backticks run commands inside double-quoted shell arguments, so pass such text in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 Run `chitty --help` for the command reference.
 
 When starting an agent by hand, run the matching focused guide:

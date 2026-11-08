@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tomllib
 from collections.abc import Mapping
+from functools import cache
 from pathlib import Path
 from typing import Literal, cast
 
@@ -311,6 +312,7 @@ def _same_git_repository(owner: Path, root: Path | None) -> bool:
     return owner_git_dir is not None and owner_git_dir == root_git_dir
 
 
+@cache
 def git_common_dir(root: Path) -> Path | None:
     result = subprocess.run(
         ["git", "rev-parse", "--git-common-dir"],

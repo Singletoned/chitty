@@ -1,6 +1,6 @@
 ---
 title: Replace an acceptance criterion in place with `chitty edit --set-ac`
-status: todo
+status: done
 priority: medium
 created: 2026-11-07
 ---
@@ -28,10 +28,14 @@ Out of scope: reordering criteria, and replacing a criterion's text while keepin
 
 ## Acceptance Criteria
 
-- [ ] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
-- [ ] Tests show `--set-ac` with an out-of-range number, and with a number also given to `--rm-ac`, failing with the messages in the description and leaving the file unchanged
-- [ ] A test in `tests/test_mcp.py` shows the MCP `edit` tool doing the same replacement with `set_ac`
-- [ ] Tests show `--set-ac` refused with the message in the description while the task is in `review`, both on its own and in a `review` → `done` edit with a complete `Reviewed:` note and verdicts, leaving the file unchanged
+- [x] A CLI test edits criterion 2 of 3, ticked beforehand, with `--set-ac 2 TEXT` and shows the criteria in their old order with 2 reworded and unticked; the worker records that it failed first
+- [x] Tests show `--set-ac` with an out-of-range number, and with a number also given to `--rm-ac`, failing with the messages in the description and leaving the file unchanged
+- [x] A test in `tests/test_mcp.py` shows the MCP `edit` tool doing the same replacement with `set_ac`
+- [x] Tests show `--set-ac` refused with the message in the description while the task is in `review`, both on its own and in a `review` → `done` edit with a complete `Reviewed:` note and verdicts, leaving the file unchanged
+
+## Plan
+
+Correct the existing CLI regression test to create three criteria and verify --set-ac 2 replaces the middle criterion in place while unticking it. Then run the focused test without the fix if needed, apply the test-only correction, run format and the full check suite, and hand off for review.
 
 ## Notes
 
@@ -61,6 +65,26 @@ Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/T
 - Rejected: `--check` during review, because reviewers tick criteria; `--ac` and `--rm-ac` are the separate ticket.
 - Correction to the previous note: the review rule's criterion is the fourth, not the third.
 
+Implemented `--set-ac` across the model, store, CLI, and MCP. The new CLI regression tests failed first with `No such option --set-ac` before implementation, then passed. `make format && make check` passed: 372 Python tests and Node tests.
+
+Review failed (tests): criterion 1 is not met: the required CLI regression test edits criterion 2 of 3, but tests/test_cli.py::TestEdit::test_edit_sets_criterion_in_place_and_unticks_it creates only two criteria. Update that test to cover three criteria and rerun the checks.
+1: fail - The CLI test uses two criteria instead of three.
+2: pass - Out-of-range and conflict behavior is tested with unchanged files.
+3: pass - MCP replacement test covers three criteria.
+4: pass - Review-state refusal is tested in both forms.
+
+Corrected the CLI regression test to add a third criterion within the test, so it verifies replacing criterion 2 of 3 without changing other tests. Focused test passed; make format && make check passed (373 Python tests and Node tests). The first full check attempt exposed that changing the shared fixture broke unrelated tests, so the fixture change was narrowed to the focused test.
+
+Reviewed: verified all four acceptance criteria; make format && make check passed.
+1: pass - CLI replacement test verifies order and unticking.
+2: pass - invalid and conflicting edits preserve the file.
+3: pass - MCP replacement test verifies order and unticking.
+4: pass - review-state refusals preserve the file.
+
+## Summary
+
+Handoff: corrected the CLI regression test to exercise --set-ac on criterion 2 of 3 and verify order plus unticking. Verification: focused test and make format && make check pass (373 Python tests and Node tests). Follow-ups: none.
+
 ## History
 
 - 2026-11-07T09:37:44Z vivid-dormouse → backlog
@@ -68,3 +92,14 @@ Third cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/T
 - 2026-11-07T10:09:04Z vivid-dormouse: changed description, acceptance criteria, notes
 - 2026-11-07T10:12:50Z vivid-dormouse: changed description, notes
 - 2026-11-07T10:12:50Z vivid-dormouse backlog → todo
+- 2026-11-08T11:30:33Z plucky-wren todo → doing
+- 2026-11-08T11:30:56Z plucky-wren: wrote the plan
+- 2026-11-08T11:34:35Z plucky-wren: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T11:34:35Z plucky-wren doing → review
+- 2026-11-08T11:38:16Z brisk-toad: changed acceptance criteria, notes
+- 2026-11-08T11:38:16Z brisk-toad review → doing
+- 2026-11-08T11:46:10Z vivid-yellowhammer: wrote the plan
+- 2026-11-08T11:48:53Z vivid-yellowhammer: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T11:48:53Z vivid-yellowhammer doing → review
+- 2026-11-08T11:52:31Z intrepid-stoat: changed notes; ticked acceptance criteria
+- 2026-11-08T11:52:31Z intrepid-stoat review → done

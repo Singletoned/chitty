@@ -1013,6 +1013,16 @@ class TestAddShowList(CliTestCase):
         self.assertIn("## History\n\n", shown)
         self.assertEqual(self.run_cli("path", "1").stdout, f"{path}\n")
 
+    def test_add_note_file_reads_backticks_from_stdin(self):
+        result = CliRunner().invoke(
+            cli,
+            ["add", "Piped note", "-d", "x", "--note-file", "-", "--json"],
+            input="Keep `chitty list --all` unchanged.\n",
+            catch_exceptions=False,
+        )
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(json.loads(result.stdout)["notes"], "Keep `chitty list --all` unchanged.")
+
     def test_add_backlog_uses_a_default_description(self):
         self.run_cli("add", "Explore sync", "-s", "backlog")
 
@@ -1086,11 +1096,11 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             listed.stdout.splitlines(),
             [
-                "TASK-3  📋 todo   ⏫  High",
+                "TASK-3  📋 todo   ⬆️  High",
                 "TASK-1  📋 todo       Unset",
-                "TASK-4  📋 todo   🔼  Medium",
-                "TASK-2  📋 todo   🔽  Low",
-                "TASK-5  🔨 doing  ⏫  Doing high",
+                "TASK-4  📋 todo   ⏺️  Medium",
+                "TASK-2  📋 todo   ⬇️  Low",
+                "TASK-5  🔨 doing  ⬆️  Doing high",
             ],
         )
         tasks = self.json("list")
@@ -1531,8 +1541,67 @@ class TestEdit(CliTestCase):
 
     def test_edit_appends_repeated_notes_in_order(self):
         self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")
-
         self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
+
+    def test_edit_sets_criterion_in_place_and_unticks_it(self):
+        self.run_cli("edit", "1", "--ac", "Three")
+        self.run_cli("edit", "1", "--check", "2")
+        self.run_cli("edit", "1", "--set-ac", "2", "Reworded")
+
+        self.assertEqual(
+            [(c["checked"], c["text"]) for c in self.json("show", "1")["acceptance_criteria"]],
+            [(False, "One"), (False, "Reworded"), (False, "Three")],
+        )
+
+    def test_edit_set_criterion_rejects_invalid_and_conflicting_numbers(self):
+        original = self.path.read_text()
+        result = self.run_cli("edit", "1", "--set-ac", "3", "Nope", exit_code=1)
+        self.assertIn("--set-ac 3: there are 2 acceptance criteria", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+        result = self.run_cli("edit", "1", "--set-ac", "2", "Nope", "--rm-ac", "2", exit_code=1)
+        self.assertIn("criterion 2 is given to both --set-ac and --rm-ac", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+    def test_edit_set_criterion_is_rejected_in_review(self):
+        self.run_cli("edit", "1", "-s", "review")
+        original = self.path.read_text()
+        result = self.run_cli("edit", "1", "--set-ac", "1", "Nope", exit_code=1)
+        self.assertIn("--set-ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+        result = self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--set-ac",
+            "1",
+            "Nope",
+            "--note",
+            "Reviewed: ready.\n1: pass - checked\n2: pass - checked",
+            exit_code=1,
+        )
+        self.assertIn("--set-ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+    def test_edit_note_file_reads_backticks_from_stdin(self):
+        result = CliRunner().invoke(
+            cli,
+            ["edit", "1", "--note-file", "-"],
+            input="Keep `chitty list --all` unchanged.\n",
+            catch_exceptions=False,
+        )
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(self.json("show", "1")["notes"], "Keep `chitty list --all` unchanged.")
+
+    def test_edit_note_file_follows_inline_notes(self):
+        note_file = self.tmp / "note.md"
+        note_file.write_text("From a file.")
+
+        self.run_cli("edit", "1", "--note", "Inline.", "--note-file", str(note_file))
+
+        self.assertEqual(self.json("show", "1")["notes"], "Inline.\n\nFrom a file.")
 
     def test_note_appends_a_note(self):
         self.run_cli("note", "1", "Started work.")

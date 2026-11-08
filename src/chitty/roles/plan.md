@@ -5,6 +5,8 @@ task files. `chitty --help` is the full command reference.
 
 - Put paths, globs, commands, IDs, and code in backticks in task titles,
   descriptions, criteria, and notes.
+- Backticks run commands inside double-quoted shell arguments, so pass such text
+  in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three

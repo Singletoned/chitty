@@ -299,6 +299,7 @@ def import_backlog_md(context: str | None, keep_source: bool) -> None:
 @click.option("--depends-on", multiple=True, help="Task ID this is blocked on (repeatable).")
 @click.option("--parent", help="Parent task ID in this repository.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
+@click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
 @json_option
 def add(
     title: str,
@@ -312,6 +313,7 @@ def add(
     depends_on: tuple[str, ...],
     parent: str | None,
     notes: tuple[str, ...],
+    note_file: TextIO | None,
     as_json: bool,
 ) -> None:
     """Create a task with status todo.
@@ -332,6 +334,8 @@ def add(
         "depends_on": list(depends_on),
         "parent": parent,
     }
+    if note_file is not None:
+        notes = (*notes, note_file.read())
     change = target.repo.add(
         target.context, title, description, criteria, fields, date.today(), notes
     )
@@ -565,11 +569,15 @@ def _format(stored: StoredTask) -> str:
 @click.option("--description-file", type=click.File(), help="Read --description from a file.")
 @click.option("--ac", multiple=True, help="Append an acceptance criterion (repeatable).")
 @click.option("--rm-ac", type=int, multiple=True, help="Remove criterion N (repeatable).")
+@click.option(
+    "--set-ac", type=(int, str), nargs=2, multiple=True, help="Replace criterion N (repeatable)."
+)
 @click.option("--check", type=int, multiple=True, help="Tick criterion N (repeatable).")
 @click.option("--uncheck", type=int, multiple=True, help="Untick criterion N (repeatable).")
 @click.option("--plan", help="Replace the Plan section; '' removes it.")
 @click.option("--plan-file", type=click.File(), help="Read --plan from a file.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
+@click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
 @click.option("--summary", help="Replace the Summary section; '' removes it.")
 @click.option(
     "--override-review-independence",
@@ -592,11 +600,13 @@ def edit(
     description_file: TextIO | None,
     ac: tuple[str, ...],
     rm_ac: tuple[int, ...],
+    set_ac: tuple[tuple[int, str], ...],
     check: tuple[int, ...],
     uncheck: tuple[int, ...],
     plan: str | None,
     plan_file: TextIO | None,
     notes: tuple[str, ...],
+    note_file: TextIO | None,
     summary: str | None,
     override_review_independence: bool,
     as_json: bool,
@@ -616,10 +626,11 @@ def edit(
         description=_text(description, description_file, "description"),
         add_criteria=ac,
         rm_criteria=rm_ac,
+        set_criteria=set_ac,
         check=check,
         uncheck=uncheck,
         plan=_text(plan, plan_file, "plan"),
-        notes=notes,
+        notes=(*notes, note_file.read()) if note_file is not None else notes,
         summary=summary,
         override_review_independence=override_review_independence,
     )

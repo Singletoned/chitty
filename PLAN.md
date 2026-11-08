@@ -59,7 +59,7 @@ Put in a chitty; an agent (or you) picks it up; the file is the record.
   write; otherwise it fails loudly and tells the caller to run `chitty init`.
   Upgrades happen only in the main checkout: a write in a linked worktree
   skips the upgrade and the stale-setup error (still refusing a setup newer
-  than Chitty), and the branch picks up the new setup when rebased onto `main`.
+  than Chitty), and the branch picks up the new setup when merged with `main`.
   `chitty run` refreshes setup before selecting a ticket, committing setup-only
   changes in a main checkout and doing nothing in a linked worktree. From a
   linked worktree, it refuses to run when the main checkout's setup is older or
@@ -303,8 +303,9 @@ Serialisation is a patch over the original text, not parse-then-dump:
 - If the resulting content equals the current content, the file is not
   written.
 - `--note TEXT` appends `TEXT` as a new paragraph (preceded by a blank line)
-  to `## Notes`, creating the section if absent. No date prefix; include one
-  in the text if you want it.
+  to `## Notes`, creating the section if absent. `--note-file F` reads one note
+  from a file (`-` for stdin). No date prefix; include one in the text if you
+  want it.
 - Creating a task writes an actor-attributed UTC initial History transition.
   A changed `--status`, archiving, and restoring append a transition; a no-op
   status edit does not. Every other `edit` that changes the task appends one
@@ -411,15 +412,15 @@ chitty init [--autocommit]         write chitty.toml, chitty/tasks/, AGENTS.md b
 chitty inbox [--pull]              list waiting suggestions, or print actor then import them all
 chitty whoami                       print the stable actor name for this session
 chitty add TITLE [-d TEXT] [-s STATUS] [-c CTX] [--ac TEXT]... [-l LABEL]... [-p PRIO]
-                 [--owner X] [--depends-on ID]...
+                 [--owner X] [--depends-on ID]... [--note TEXT] [--note-file F]
 chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
                  [--all]
 chitty show ID
 chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p PRIO]
                  [--owner X] [--depends-on ID]... [--rm-depends-on ID]...
                  [-d TEXT | --description-file F]
-                 [--ac TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
-                 [--plan TEXT | --plan-file F] [--note TEXT]
+                 [--ac TEXT]... [--set-ac N TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
+                 [--plan TEXT | --plan-file F] [--note TEXT] [--note-file F]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
 chitty renumber PATH               one of several files sharing an ID gets the next number
 chitty archive [ID]                  omit ID to archive every done task
@@ -453,7 +454,7 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   unset priority), and `low` within each status; `--json` uses the same order.
   Human-readable rows show statuses as a glyph and at most five letters:
   `💤 bklog`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, and `✅ done`, and
-  priorities as `⏫` high, `🔼` medium, `🔽` low, or blank when unset. Titles are
+  priorities as `⬆️` high, `⏺️` medium, `⬇️` low, or blank when unset. Titles are
   cut with `…` so each row fits in `list_width` terminal columns, counting
   emoji as two; labels are kept whole. Rows skipped by `next`
   show the reason's glyph alone in a column before the title (`👤`, `🔒`, `▶`, or
@@ -722,28 +723,35 @@ surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
 
 Before a review (decided with the human, 2026-11-03), after the run's actor is
 set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly
-what would land, keeping `main` linear:
+what would land:
 
-1. A rebase left unfinished, for example by a crash, is a loud error for the
-   human, with no status change.
+1. An unfinished merge or rebase, for example after a crash, is a loud error for
+   the human, with no status change.
 2. Uncommitted changes, including untracked but not ignored files, move the
    ticket to `doing` with `Review failed (work): ...` listing them.
-3. It rebases the branch onto the local `main`. On a conflict it runs
-   `git rebase --abort` and moves the ticket to `doing` with `Review failed
+3. It merges the local `main` into the branch. On a conflict it runs
+   `git merge --abort` and moves the ticket to `doing` with `Review failed
    (integration): ...` naming the conflicting files, for the worker to resolve
-   in a fresh session. The rebase runs with `rerere.enabled=false`, so a
+   in a fresh session. The merge runs with `rerere.enabled=false`, so a
    resolution Git recorded for another branch is never replayed unchecked.
-4. Only then does `setup` run, because the rebase can change dependencies.
+4. Only then does `setup` run, because the merge can change dependencies.
 5. `check` runs in the ticket worktree after setup, with combined output
-   captured. A failure moves the ticket to `doing` with the last 20 output lines
-   in a `Review failed (work)` note and starts no agent. In work mode setup and
-   check still run before the agent claim.
+   captured. In review mode, a failure moves the ticket to `doing` with the last
+   20 output lines, fenced as a code block so they cannot break the ticket's
+   Markdown, in a `Review failed (work)` note and starts no agent. In work mode,
+   a `doing` ticket gets a note-only `Check failed before this session: ...`
+   edit and the agent starts normally; a `todo` ticket raises an error with
+   `check failed before <ID> started: ...`, changing nothing and starting no
+   agent. In all work-mode cases setup and check still run before the agent
+   claim.
 
-After either failure no agent starts, no usage line is written, and `chitty
-run` exits 0 because the status changed, printing the change. The moves go
-through `Repo.edit` under the run's own actor, which never worked on the
-ticket, so they count with reviewers' failures towards `REVIEW_FAILURE_LIMIT`.
-Interrupting the rebase aborts it and exits 130. A clean rebase is not
+A review check failure starts no agent, writes no usage line, and `chitty run`
+exits 0 because the status changed, printing the change. The move goes through
+`Repo.edit` under the run's own actor, which never worked on the ticket, so it
+counts with reviewers' failures towards `REVIEW_FAILURE_LIMIT`. A work-mode
+failure on a `todo` ticket exits 1 without changing the ticket; a failure on a
+`doing` ticket proceeds to the agent, which can fix it.
+Interrupting the merge aborts it and exits 130. A clean merge is not
 repeated or re-reviewed if `main` moves during the review; landing is
 `TASK-131`.
 

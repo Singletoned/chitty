@@ -46,7 +46,7 @@ def _formatter_escapes(character: str, text: str, index: int) -> bool:
 
 
 def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
-    """Report literal Markdown delimiters that formatters will escape."""
+    """Report Markdown that formatters will rewrite unexpectedly."""
     fields = [(name, task.section(name)) for name in MARKDOWN_FIELDS]
     fields += [
         (f"Acceptance Criteria #{index}", criterion.text)
@@ -56,6 +56,25 @@ def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
     for field, text in fields:
         if text is None:
             continue
+        tokens = MARKDOWN.parse(text)
+        if field in MARKDOWN_FIELDS and any(
+            token.type == "paragraph_open"
+            and token.level == 0
+            and token.map is not None
+            and any(
+                line.startswith((" ", "\t"))
+                for line in text.split("\n")[token.map[0] + 1 : token.map[1]]
+            )
+            for token in tokens
+        ):
+            warnings.append(
+                Problem(
+                    path,
+                    f"{field} has an indented line inside a paragraph; "
+                    "put pasted output in a fenced code block",
+                    "warning",
+                )
+            )
         seen: set[str] = set()
         for token in MARKDOWN.parseInline(text):
             for child in token.children or []:
