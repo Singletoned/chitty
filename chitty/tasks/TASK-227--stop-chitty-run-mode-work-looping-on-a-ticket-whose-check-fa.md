@@ -27,6 +27,10 @@ Out of scope: limiting how many work sessions a `doing` ticket gets, and the set
 - [ ] The two existing `todo` check-failure tests named in the Description expect exit 1 with `check failed before TASK-1 started` and the check output in stderr, status `todo`, no new note, and no `started` file. Record that they failed before the fix.
 - [ ] `PLAN.md` (`chitty run` section, step 5 and the paragraph after it) and `README.md` (around line 146) describe the two work-mode cases, and `make check` passes.
 
+## Plan
+
+Update run-mode check handling so a failing check on an already-doing work ticket is recorded as a note-only pre-session warning and the agent proceeds, while a todo ticket raises ChittyError without changing ticket state. Add regression coverage for both paths, and document the behavior in PLAN.md and README.md. Verify with the focused tests and make check.
+
 ## Notes
 
 Needs the human's decision on the proposal before refining and a cold read.
@@ -49,3 +53,4 @@ The reader had to guess at 4, 5 and 6, so those were the gaps a weaker model hit
 - 2026-11-08T11:20:25Z calm-eel: changed description, acceptance criteria, notes
 - 2026-11-08T11:20:25Z calm-eel backlog → todo
 - 2026-11-08T11:23:24Z intrepid-marten todo → doing
+- 2026-11-08T11:23:51Z intrepid-marten: wrote the plan
