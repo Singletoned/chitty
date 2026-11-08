@@ -34,7 +34,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Plan
 
-Address the reviewers concrete missing end-to-end cases. Add real-Git chitty run review tests for direct fast-forward landing and for main advancing after review preparation: a passing landing check and a failing landing check must each have observable results, including preserving main on failure. Confirm the new tests expose the missing coverage before code changes, then make failure diagnostics explicitly direct a human to resolve landing conflicts or checks in the worktree. Run focused tests and make format && make check before requesting independent review.
+Complete the review feedback with end-to-end `chitty run --mode review` tests: direct fast-forward from passed review, moved-main pass/failure behavior, and explicit human/worktree guidance on landing failures. Preserve the existing uncommitted tests.test_review_merge.py changes; inspect their baseline behavior first, then add a focused failing regression test for the required diagnostics. Run focused tests, then make format && make check.
 
 ## Notes
 
@@ -297,3 +297,4 @@ Handoff: landing implementation and tests integrated with main; review merge ret
 - 2026-11-08T13:48:35Z friendly-zander review → blocked
 - 2026-11-08T16:45:08Z eager-puffin: changed owner, notes; wrote the plan
 - 2026-11-08T16:45:08Z eager-puffin blocked → doing
+- 2026-11-08T16:46:40Z brisk-dormouse: wrote the plan
