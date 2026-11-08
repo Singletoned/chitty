@@ -1,7 +1,6 @@
 ---
 title: Note a successful cold read on the ticket as help for the worker
-status: blocked
-owner: human
+status: review
 created: 2026-11-06
 ---
 
@@ -45,6 +44,8 @@ Review failed (work): the worktree has uncommitted changes: `src/chitty/roles/pl
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Human unblock: committed the guide and regression test as 3629720 (Task: TASK-211), then merged current main. Working tree is clean; make format and make check pass (386 Python tests plus Node tests). Ready for independent review.
+
 ## Summary
 
 Guide change and regression test are ready for review. Verification: focused test passed; make format and make check passed (378 Python tests and Node tests). Follow-up: reviewer should confirm wording and criteria.
@@ -74,3 +75,5 @@ Guide change and regression test are ready for review. Verification: focused tes
 - 2026-11-08T17:29:39Z calm-heron doing → review
 - 2026-11-08T17:32:43Z sunny-marten: changed owner, notes
 - 2026-11-08T17:32:43Z sunny-marten review → blocked
+- 2026-11-08T17:57:36Z eager-puffin: changed owner, notes
+- 2026-11-08T17:57:36Z eager-puffin blocked → review
