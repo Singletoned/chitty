@@ -1,6 +1,6 @@
 ---
 title: Put the literal `*` instruction back in the agent prompts
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-05
@@ -98,6 +98,10 @@ make: *** [check] Error 1
 
 Merged current main and resolved source conflicts by retaining main guidance while restoring only the literal-single-asterisk instruction. The focused guide test failed during the first full check because guide() wrapped “literal single” across lines; kept the test and adjusted the guide sentence, then it passed. make format && make check passes (378 Python tests plus Node tests). Verified AGENTS.md, chitty.toml, and src/chitty/__init__.py match main; no setup or version changes from this ticket.
 
+Reviewed: make format and make check pass.
+1: pass - focused test covers the general guide and all three roles.
+2: pass - managed setup and version match main; all four sources contain the instruction.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in the general guide and work, review, and plan role prompts; added isolated guide-output regression coverage. Merged current main to resolve the documented stale-branch integration issue. Verification: focused regression passes; make format and make check pass (378 Python tests and Node tests); chitty fix passes with existing task-text warnings. AGENTS.md, chitty.toml, and src/chitty/__init__.py match main. Follow-up: main can refresh managed setup after landing.
@@ -150,3 +154,5 @@ Restored the literal single-asterisk Markdown instruction in the general guide a
 - 2026-11-08T16:53:47Z zesty-ibis: changed notes
 - 2026-11-08T16:58:12Z zesty-ibis: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T16:58:12Z zesty-ibis doing → review
+- 2026-11-08T17:08:57Z tidy-marten: changed notes; ticked acceptance criteria
+- 2026-11-08T17:08:57Z tidy-marten review → done
