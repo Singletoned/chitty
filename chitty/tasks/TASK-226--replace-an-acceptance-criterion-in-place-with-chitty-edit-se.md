@@ -35,7 +35,7 @@ Out of scope: reordering criteria, and replacing a criterion's text while keepin
 
 ## Plan
 
-Implement set-ac end to end: add the model/store Edit data and validation with review protection and in-place unticking replacement, expose repeatable CLI and MCP options, update all callers and history tracking, revise PLAN.md, and add focused CLI/MCP regression tests. First run the new regression tests against the current code to record their expected failure, then format and run the full check suite.
+Correct the existing CLI regression test to create three criteria and verify --set-ac 2 replaces the middle criterion in place while unticking it. Then run the focused test without the fix if needed, apply the test-only correction, run format and the full check suite, and hand off for review.
 
 ## Notes
 
@@ -90,3 +90,4 @@ Handoff: added repeatable in-place acceptance-criterion replacement; replacement
 - 2026-11-08T11:34:35Z plucky-wren doing → review
 - 2026-11-08T11:38:16Z brisk-toad: changed acceptance criteria, notes
 - 2026-11-08T11:38:16Z brisk-toad review → doing
+- 2026-11-08T11:46:10Z vivid-yellowhammer: wrote the plan
