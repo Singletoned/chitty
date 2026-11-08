@@ -13,12 +13,12 @@ from tests.test_cli import CliTestCase
 REPORT = (
     "import subprocess, sys\n"
     "from pathlib import Path\n"
-    "rebased = subprocess.run(['git', 'merge-base', '--is-ancestor', 'main', 'HEAD']).returncode\n"
-    "Path(sys.argv[1]).write_text('rebased' if rebased == 0 else 'not rebased')\n"
+    "merged = subprocess.run(['git', 'merge-base', '--is-ancestor', 'main', 'HEAD']).returncode\n"
+    "Path(sys.argv[1]).write_text('merged' if merged == 0 else 'not merged')\n"
 )
 
 
-class ReviewRebaseTestCase(CliTestCase):
+class ReviewMergeTestCase(CliTestCase):
     def setUp(self):
         super().setUp()
         self.logs = self.tmp / "logs"
@@ -103,13 +103,12 @@ class ReviewRebaseTestCase(CliTestCase):
         repo = Repo.open(self.worktree)
         return repo.find(repo.resolve("1")).task
 
-    def assert_no_rebase_in_progress(self) -> None:
-        for name in ("rebase-merge", "rebase-apply"):
-            path = self.git("rev-parse", "--git-path", name, cwd=self.worktree).strip()
-            self.assertFalse((self.worktree / path).exists(), name)
+    def assert_no_merge_in_progress(self) -> None:
+        path = self.git("rev-parse", "--git-path", "MERGE_HEAD", cwd=self.worktree).strip()
+        self.assertFalse((self.worktree / path).exists(), "MERGE_HEAD")
 
 
-class TestReviewRebase(ReviewRebaseTestCase):
+class TestReviewMerge(ReviewMergeTestCase):
     def test_agents_file_present_only_on_branch_is_detected(self):
         self.branch_for_review()
         self.git("switch", "--quiet", "main")
@@ -126,7 +125,10 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.git("switch", "--quiet", "task-1")
         agents = self.root / "AGENTS.md"
         agents.write_text(
-            agents.read_text().replace("Tasks live in `chitty/`.", "Tasks live elsewhere.")
+            agents.read_text().replace(
+                "Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit",
+                "Tasks live elsewhere; use the `chitty` CLI or MCP, and do not hand-edit",
+            )
         )
         self.git("add", "AGENTS.md")
         self.git("commit", "--quiet", "-m", "change managed guide")
@@ -158,7 +160,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.assertEqual(result.stdout, "TASK-1: review → done\n")
         self.assertTrue((self.logs / "agent").exists())
 
-    def test_agent_and_setup_see_the_branch_rebased_on_main(self):
+    def test_agent_and_setup_see_the_branch_merged_with_main(self):
         self.branch_for_review()
         self.move_main()
         main_head = self.git("rev-parse", "main").strip()
@@ -166,11 +168,11 @@ class TestReviewRebase(ReviewRebaseTestCase):
         result = self.run_cli("run", "--mode", "review")
 
         self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → done")
-        self.assertEqual((self.logs / "setup").read_text(), "rebased")
-        self.assertEqual((self.logs / "agent").read_text(), "rebased")
+        self.assertEqual((self.logs / "setup").read_text(), "merged")
+        self.assertEqual((self.logs / "agent").read_text(), "merged")
         self.assertEqual((self.logs / "main.txt").read_text(), "from main\n")
         self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
-        self.assertEqual(self.git("rev-list", "--merges", "--count", "main..task-1").strip(), "0")
+        self.assertEqual(self.git("rev-list", "--merges", "--count", "main..task-1").strip(), "1")
 
     def test_conflict_moves_the_ticket_to_doing_without_starting_the_agent(self):
         self.branch_for_review(shared="from the branch\n")
@@ -182,7 +184,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertFalse((self.logs / "agent").exists())
         self.assertFalse((self.logs / "setup").exists())
-        self.assert_no_rebase_in_progress()
+        self.assert_no_merge_in_progress()
         self.assertEqual(self.git("status", "--porcelain", cwd=self.worktree), "")
         self.assertEqual(self.git("rev-parse", "task-1~1").strip(), branch_head)
         notes = self.ticket().section("Notes") or ""
@@ -191,18 +193,18 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
     def test_a_recorded_resolution_is_not_replayed_into_the_review(self):
         # With `rerere.autoupdate`, Git stages a replayed resolution, leaving no
-        # unmerged path, yet the rebase still stops.
+        # unmerged path, yet the merge still stops.
         self.git("config", "rerere.enabled", "true")
         self.git("config", "rerere.autoupdate", "true")
         self.branch_for_review(shared="from the branch\n")
         self.move_main(shared="from main\n")
         branch_head = self.git("rev-parse", "task-1").strip()
         self.git("switch", "--quiet", "task-1")
-        subprocess.run(["git", "rebase", "main"], cwd=self.root, capture_output=True, check=False)
+        subprocess.run(["git", "merge", "main"], cwd=self.root, capture_output=True, check=False)
         (self.root / "shared.txt").write_text("resolved\n")
         self.git("add", "shared.txt")
         subprocess.run(
-            ["git", "rebase", "--continue"],
+            ["git", "commit", "--quiet", "--no-edit"],
             cwd=self.root,
             capture_output=True,
             check=True,
@@ -215,7 +217,7 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertFalse((self.logs / "agent").exists())
-        self.assert_no_rebase_in_progress()
+        self.assert_no_merge_in_progress()
         self.assertEqual(self.git("status", "--porcelain", cwd=self.worktree), "")
         notes = self.ticket().section("Notes") or ""
         self.assertIn("Review failed (integration):", notes)
@@ -274,18 +276,18 @@ class TestReviewRebase(ReviewRebaseTestCase):
 
         self.assertIn("review verdict lines must match", result.stderr)
 
-    def test_an_unfinished_rebase_fails_loudly_without_a_status_change(self):
+    def test_an_unfinished_merge_fails_loudly_without_a_status_change(self):
         self.branch_for_review(shared="from the branch\n")
         self.move_main(shared="from main\n")
         self.git("worktree", "add", "--quiet", str(self.worktree), "task-1")
-        rebase = subprocess.run(
-            ["git", "rebase", "main"], cwd=self.worktree, capture_output=True, check=False
+        merge = subprocess.run(
+            ["git", "merge", "main"], cwd=self.worktree, capture_output=True, check=False
         )
-        self.assertNotEqual(rebase.returncode, 0)
+        self.assertNotEqual(merge.returncode, 0)
 
         result = self.run_cli("run", "--mode", "review", exit_code=1)
 
-        self.assertIn("unfinished rebase", result.stderr)
+        self.assertIn("unfinished merge", result.stderr)
         self.assertEqual(self.ticket().frontmatter.status, "review")
         self.assertFalse((self.logs / "agent").exists())
 
@@ -300,17 +302,19 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.assertEqual((frontmatter.status, frontmatter.owner), ("blocked", "human"))
         self.assertIn("failed review 3 times", self.ticket().section("Notes") or "")
 
-    def test_interrupting_the_rebase_aborts_it_and_exits_130(self):
+    def test_interrupting_the_merge_aborts_it_and_exits_130(self):
         self.branch_for_review(shared="from the branch\n")
         self.move_main(shared="from main\n")
 
         def interrupted(root: Path, onto: str) -> list[str]:
-            subprocess.run(["git", "rebase", onto], cwd=root, capture_output=True, check=False)
+            subprocess.run(
+                ["git", "merge", "--no-edit", onto], cwd=root, capture_output=True, check=False
+            )
             raise KeyboardInterrupt
 
-        with mock.patch("chitty.git.rebase", side_effect=interrupted):
+        with mock.patch("chitty.git.merge_main", side_effect=interrupted):
             result = self.run_cli("run", "--mode", "review", exit_code=130)
 
-        self.assertIn("interrupted during rebase", result.stderr)
-        self.assert_no_rebase_in_progress()
+        self.assertIn("interrupted during merge", result.stderr)
+        self.assert_no_merge_in_progress()
         self.assertEqual(self.ticket().frontmatter.status, "review")

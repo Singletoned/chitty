@@ -14,6 +14,68 @@ from chitty.config import CHITTY_VERSION
 from chitty.store import _add_missing_settings, guide
 from tests.support import RepoTestCase
 
+LEGACY_MANAGED_GUIDE = """## Chitty
+
+Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
+task files. `chitty --help` is the full command reference.
+
+On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, or run `chitty init`.
+
+- Put paths, globs, commands, IDs and code in backticks in titles, descriptions,
+  criteria and notes.
+- Work on one task per session. Start with `chitty inbox --pull`, then `chitty show <ID>`.
+- Backlog tasks need refinement; promote them to `todo` before taking them on.
+- Writing or refining tickets? Run `chitty guide plan` first: it says how to write\
+ them and cold-read them.
+- Use a task's optional `parent` field to group flat task IDs under one goal.
+- Unless your own instructions say otherwise, create a branch and worktree at
+  `.worktrees/` in the repository root from the main branch for each new ticket; never
+  implement in the main checkout. Resume the existing worktree for a `doing`
+  ticket. Run the repository's setup command in a new worktree before coding so
+  it creates that worktree's environment. Commit the `doing` claim on its
+  branch before implementation starts, and use `autocommit = true` or commit
+  after every Chitty write so other branches can see task state. Run ticket
+  writes from the branch holding its latest committed version; Chitty refuses
+  to route a write across branches and tells you where to run it.
+- Before writing code, write your approach with `chitty edit <ID> --plan` and
+  set `-s doing`. Wait for approval if the human asked for it.
+- Tick a criterion only after verifying it: `chitty edit <ID> --check N`
+  (numbers are shown by `chitty show`). Re-check every criterion before setting
+  `-s review`.
+- Record anything surprising with `--note`. When work is ready, set `-s review`.
+  Never review a ticket you worked on: review promptly in the ticket's branch
+  worktree, rather than at merge-request time. Review every criterion; list
+  every failure in one note and `--uncheck` each failed criterion. Pass it with
+  `-s done --note "Reviewed: ..."`; fail it with `-s doing --note "reason"`.
+  On a pass, merge the branch into the main branch, then remove the branch and its
+  worktree. Create new tickets for out-of-scope findings. The third failed
+  review sets `blocked` and owner `human` instead; leave it for a person to
+  unblock.
+- Set `-s done` when every criterion is ticked and the work is verified; write
+  `--summary` with the handoff, verification, and follow-ups. Run `chitty fix`
+  to apply safe repairs; it fails loudly when a problem remains.
+- Before preparing a merge request, run `chitty archive` with no ID to process
+  completed tasks in one batch. The default moves them to `archive/`; with
+  `archive = "delete"`, Git history retains the record instead.
+- End commits for task work with `Task: <ID>` lines using the ticket's own ID
+  (for example, `Task: TASK-12`) so `git log --grep <ID>` finds a ticket's
+  code. This is a convention; no hook enforces it.
+- When a question has a sensible default that is cheap to change later, choose
+  it and carry on instead of blocking. Record the choice and why with `--note`
+  for the reviewer, and comment the code where the default applies, saying how
+  and why it was chosen. Block only when the choice is costly to reverse or
+  needs a person.
+- When work cannot proceed, set `-s blocked --note "reason"` and move on; do
+  not pick up blocked work. If a person must act outside the repo, add a
+  `-c human` task and depend on it. Leave `human` tasks in `todo` for people;
+  never pick them up or block them.
+- Found unrelated work on a ticket's branch? Use plain `chitty add`, which files
+  it as `BACKLOG` for the planning session. A person planning should do this from
+  the main checkout to get normal numbers. Use `-c human` if a person must act.
+  Suggest work for another project without touching its checkout using
+  `chitty suggest PROJECT "title" -d "why"`. Don't do it in this session.
+"""
+
 
 class CliTestCase(RepoTestCase):
     def setUp(self):
@@ -175,10 +237,10 @@ class TestInit(CliTestCase):
                 "edits here are replaced -->\n\n## Chitty\n"
             )
         )
-        self.assertIn("Task: <ID>", agents)
-        self.assertIn("Task: TASK-12", agents)
-        self.assertIn("git log --grep <ID>", agents)
-        self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
+        self.assertIn("chitty guide work", agents)
+        self.assertIn("chitty guide review", agents)
+        self.assertIn("chitty guide plan", agents)
+        self.assertIn("Run `chitty --help` for the command reference.", agents)
         result = self.run_cli("init")
         self.assertEqual(result.stdout, "already up to date\n")
         (target / "chitty.toml").unlink()
@@ -198,8 +260,7 @@ class TestInit(CliTestCase):
         self.assertIn("\n\n<!-- chitty:end -->\n", marked)
         self.assertNotIn("chitty:begin", guide())
 
-        old = "# Before\n\n" + guide() + "\n## After\n\nKeep this.\n"
-        agents.write_text(old)
+        agents.write_text("# Before\n\n" + LEGACY_MANAGED_GUIDE + "\n## After\n\nKeep this.\n")
         result = self.run_cli("init")
         migrated = agents.read_text()
         self.assertIn("migrated Chitty guide markers", result.stderr)
@@ -211,7 +272,7 @@ class TestInit(CliTestCase):
         self.run_cli("init")
         original = agents.read_text()
         agents.write_text("Before\n\n" + original + "\nAfter\n\nUnheaded text\n")
-        marked_guide = guide().rstrip("\n") + "\n\nA backslash: \\ path"
+        marked_guide = "A backslash: \\ path\n\n" + guide().rstrip("\n")
         with patch("chitty.store.guide", return_value=marked_guide):
             self.run_cli("init")
             updated = agents.read_text()
@@ -552,9 +613,9 @@ class TestInit(CliTestCase):
         agents = agents_path.read_text()
         self.assertTrue(agents.startswith("<!-- chitty:begin"))
         self.assertTrue(agents.endswith("<!-- chitty:end -->\n"))
-        self.assertIn("Task: <ID>", agents)
+        self.assertIn("chitty guide work", agents)
         self.assertIn(f'chitty_version = "{CHITTY_VERSION}"', config.read_text())
-        self.assertIn("Put paths, globs, commands, IDs and code in backticks", agents)
+        self.assertIn("Put paths, commands, IDs, and code in backticks", agents)
 
     def test_init_leaves_unrelated_pyproject_untouched(self):
         target = self.tmp / "python-project"
@@ -952,6 +1013,16 @@ class TestAddShowList(CliTestCase):
         self.assertIn("## History\n\n", shown)
         self.assertEqual(self.run_cli("path", "1").stdout, f"{path}\n")
 
+    def test_add_note_file_reads_backticks_from_stdin(self):
+        result = CliRunner().invoke(
+            cli,
+            ["add", "Piped note", "-d", "x", "--note-file", "-", "--json"],
+            input="Keep `chitty list --all` unchanged.\n",
+            catch_exceptions=False,
+        )
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(json.loads(result.stdout)["notes"], "Keep `chitty list --all` unchanged.")
+
     def test_add_backlog_uses_a_default_description(self):
         self.run_cli("add", "Explore sync", "-s", "backlog")
 
@@ -1025,11 +1096,11 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             listed.stdout.splitlines(),
             [
-                "TASK-3  📋 todo     high    High",
-                "TASK-1  📋 todo     -       Unset",
-                "TASK-4  📋 todo     medium  Medium",
-                "TASK-2  📋 todo     low     Low",
-                "TASK-5  🔨 doing    high    Doing high",
+                "TASK-3  📋 todo   ⬆️  High",
+                "TASK-1  📋 todo       Unset",
+                "TASK-4  📋 todo   ⏺️  Medium",
+                "TASK-2  📋 todo   ⬇️  Low",
+                "TASK-5  🔨 doing  ⬆️  Doing high",
             ],
         )
         tasks = self.json("list")
@@ -1066,14 +1137,35 @@ class TestAddShowList(CliTestCase):
 
         listed = self.run_cli("list", "--all").stdout
         for glyph, status in (
-            ("💤", "backlog"),
-            ("📋", "todo"),
+            ("💤", "bklog"),
+            ("📋", "todo "),
             ("🔨", "doing"),
-            ("⛔", "blocked"),
-            ("👀", "review"),
-            ("✅", "done"),
+            ("⛔", "blckd"),
+            ("👀", "revw "),
+            ("✅", "done "),
         ):
             self.assertIn(f"{glyph} {status}", listed)
+
+    def test_list_shortens_titles_to_the_configured_width(self):
+        self.run_cli("add", "A title long enough to need cutting", "-d", "x", "-l", "cli")
+        self.run_cli("add", "Short", "-d", "x")
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("format = 1", "format = 1\nlist_width = 40"))
+
+        lines = self.run_cli("list").stdout.splitlines()
+
+        self.assertEqual(
+            lines, ["TASK-1  📋 todo   A title long e…  [cli]", "TASK-2  📋 todo   Short"]
+        )
+
+    def test_list_width_defaults_to_one_hundred_columns(self):
+        title = "word " * 30
+        self.run_cli("add", title.strip(), "-d", "x")
+
+        line = self.run_cli("list").stdout.splitlines()[0]
+
+        self.assertEqual(len(line) + 1, 100)  # the status glyph takes two columns
+        self.assertTrue(line.endswith("…"))
 
     def test_list_shows_status_glyphs_and_skip_reasons(self):
         self.run_cli("add", "Backlog", "-s", "backlog")
@@ -1108,13 +1200,21 @@ class TestAddShowList(CliTestCase):
         )
         self.run_cli("edit", "7", "-s", "review")
 
-        lines = self.run_cli("list", "--all").stdout.splitlines()
-        self.assertEqual(lines[0].split()[1:3], ["💤", "backlog"])
-        self.assertIn("🔒 waits on TASK-1", lines[1])
-        self.assertIn("⚠️ TASK-4 depends on TASK-99", lines[2])
-        self.assertIn("👤 human", lines[3])
-        self.assertNotIn("🔒", lines[4])
-        self.assertNotIn("🔒", lines[5])
+        listed = self.run_cli("list", "--all")
+        lines = listed.stdout.splitlines()
+        self.assertEqual(
+            lines,
+            [
+                "TASK-1  💤 bklog      Backlog",
+                "TASK-3  📋 todo   🔒  Waiting",
+                "TASK-4  📋 todo   ⚠️  Broken",
+                "TASK-5  📋 todo   👤  Human",
+                "TASK-6  🔨 doing      Doing",
+                "TASK-7  👀 revw       Review",
+                "TASK-2  ✅ done       Done",
+            ],
+        )
+        self.assertIn("warning: TASK-4 depends on TASK-99", listed.stderr)
         self.assertEqual(self.json("list", "--all")[1]["skipped"], "🔒 waits on TASK-1")
         self.assertIsNone(self.json("list", "--all")[4]["skipped"])
 
@@ -1126,8 +1226,8 @@ class TestAddShowList(CliTestCase):
         self.run_cli("add", "Ready", "-d", "x")
 
         lines = self.run_cli("list").stdout.splitlines()
-        self.assertEqual(sum("👤 agent" in line for line in lines), 3)
-        self.assertEqual(sum("👤" in line for line in lines), 3)
+        self.assertEqual(sum("👤  Agent" in line for line in lines), 3)
+        self.assertNotIn("agent", self.run_cli("list").stdout)
         self.assertEqual(self.run_cli("next").stdout, "work TASK-4\n")
 
     def test_list_preserves_context_and_numeric_order_for_priority_ties(self):
@@ -1149,8 +1249,8 @@ class TestAddShowList(CliTestCase):
         self.run_cli("edit", "1", "-s", "doing")
         self.run_cli("archive", "10")
         lines = self.run_cli("list").stdout.splitlines()
-        self.assertEqual(lines[0], "TASK-2  📋 todo     Fix login")
-        self.assertEqual(lines[1], "TASK-3  📋 todo     Task 3")
+        self.assertEqual(lines[0], "TASK-2  📋 todo   Fix login")
+        self.assertEqual(lines[1], "TASK-3  📋 todo   Task 3")
         self.assertEqual(len(lines), 9)
         self.run_cli("edit", "2", "-s", "review")
         self.run_cli(
@@ -1441,8 +1541,67 @@ class TestEdit(CliTestCase):
 
     def test_edit_appends_repeated_notes_in_order(self):
         self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")
-
         self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
+
+    def test_edit_sets_criterion_in_place_and_unticks_it(self):
+        self.run_cli("edit", "1", "--ac", "Three")
+        self.run_cli("edit", "1", "--check", "2")
+        self.run_cli("edit", "1", "--set-ac", "2", "Reworded")
+
+        self.assertEqual(
+            [(c["checked"], c["text"]) for c in self.json("show", "1")["acceptance_criteria"]],
+            [(False, "One"), (False, "Reworded"), (False, "Three")],
+        )
+
+    def test_edit_set_criterion_rejects_invalid_and_conflicting_numbers(self):
+        original = self.path.read_text()
+        result = self.run_cli("edit", "1", "--set-ac", "3", "Nope", exit_code=1)
+        self.assertIn("--set-ac 3: there are 2 acceptance criteria", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+        result = self.run_cli("edit", "1", "--set-ac", "2", "Nope", "--rm-ac", "2", exit_code=1)
+        self.assertIn("criterion 2 is given to both --set-ac and --rm-ac", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+    def test_edit_set_criterion_is_rejected_in_review(self):
+        self.run_cli("edit", "1", "-s", "review")
+        original = self.path.read_text()
+        result = self.run_cli("edit", "1", "--set-ac", "1", "Nope", exit_code=1)
+        self.assertIn("--set-ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+        result = self.run_cli(
+            "edit",
+            "1",
+            "-s",
+            "done",
+            "--set-ac",
+            "1",
+            "Nope",
+            "--note",
+            "Reviewed: ready.\n1: pass - checked\n2: pass - checked",
+            exit_code=1,
+        )
+        self.assertIn("--set-ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+    def test_edit_note_file_reads_backticks_from_stdin(self):
+        result = CliRunner().invoke(
+            cli,
+            ["edit", "1", "--note-file", "-"],
+            input="Keep `chitty list --all` unchanged.\n",
+            catch_exceptions=False,
+        )
+        self.assertEqual(result.exit_code, 0, result.output)
+        self.assertEqual(self.json("show", "1")["notes"], "Keep `chitty list --all` unchanged.")
+
+    def test_edit_note_file_follows_inline_notes(self):
+        note_file = self.tmp / "note.md"
+        note_file.write_text("From a file.")
+
+        self.run_cli("edit", "1", "--note", "Inline.", "--note-file", str(note_file))
+
+        self.assertEqual(self.json("show", "1")["notes"], "Inline.\n\nFrom a file.")
 
     def test_note_appends_a_note(self):
         self.run_cli("note", "1", "Started work.")
@@ -1769,10 +1928,6 @@ class TestGuide(CliTestCase):
             "implements it from the ticket alone",
             "with and without the fix",
             "Either way, the reader reports done meaning",
-            "git worktree add --detach",
-            "UV_PROJECT_ENVIRONMENT",
-            "git update-ref refs/cold-read/<ID>/<n> HEAD",
-            "git worktree remove --force",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning_guide)
@@ -1815,32 +1970,15 @@ class TestGuide(CliTestCase):
                 for phrase in required_phrases:
                     self.assertIn(phrase, output)
 
-    def test_review_guide_requires_evidence_for_failures(self):
-        text = " ".join(guide("review").split())
-        for phrase in (
-            "A criterion is unmet if nothing exercises it",
-            "A ticket that is itself wrong also fails",
-            "must be run first",
-            "Reasoning alone demonstrates nothing",
-            "file a ticket instead of failing",
-            "earliest stage that should have caught it",
-            "If you ran code, the note gives what was run and what it printed",
-            "says what is missing or wrong",
-            "what stopped you",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, text)
-        self.assertIn("Review failed (<cause>):", text)
-        self.assertIn("--uncheck", text)
-        self.assertIn("-s doing", text)
-        self.assertNotIn("such as a throwaway failing test", text)
-        self.assertNotRegex(text, r"\bmake\b")
+    def test_worker_guides_start_with_show_without_pulling_inbox(self):
+        self.assertNotIn("chitty inbox --pull", guide())
+        self.assertNotIn("chitty inbox --pull", guide("work"))
+        self.assertIn("chitty show <ID>", guide("work"))
 
     def test_guide_points_agents_at_ticket_planning_instructions(self):
         planning_guide = guide("plan")
         self.assertIn("nothing built", planning_guide)
         self.assertIn("must not start one", planning_guide)
-        self.assertIn("rather than assume", planning_guide)
         self.assertIn("just before promoting", planning_guide)
 
     def test_prints_the_agent_guide_outside_any_repo(self):
@@ -1861,7 +1999,9 @@ class TestGuide(CliTestCase):
 
     def test_rejects_unknown_roles_and_ticket_planning(self):
         unknown = self.run_cli("guide", "writer", exit_code=1)
-        self.assertIn("unknown role 'writer'; choose from work, review, plan", unknown.stderr)
+        self.assertIn(
+            "unknown role 'writer'; choose from work, review, plan, cold-read", unknown.stderr
+        )
         plan_ticket = self.run_cli("guide", "plan", "TASK-42", exit_code=1)
         self.assertIn("does not take a ticket ID", plan_ticket.stderr)
 

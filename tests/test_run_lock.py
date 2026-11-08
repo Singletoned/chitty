@@ -138,7 +138,7 @@ class TestRunLock(RunLockTestCase):
             self.assertEqual(record["mode"], "review")
             self.assertEqual(record["pid"], os.getpid())
             self.assertIn("running: review by alice, process", self.run_cli("show", ticket).stdout)
-            self.assertIn("▶ running", self.run_cli("list").stdout)
+            self.assertIn("▶   Visible", self.run_cli("list").stdout)
 
             lock_path = next((self.root / ".git/chitty/run").glob(f"{ticket}.lock"))
             lock_path.write_text("12345\n")
@@ -184,7 +184,7 @@ class TestRunLock(RunLockTestCase):
         self.assertFalse(is_locked(self.root, failed))
         (self.logs / "fail").unlink()
 
-        with mock.patch("chitty.git.rebase", side_effect=KeyboardInterrupt):
+        with mock.patch("chitty.git.merge_main", side_effect=KeyboardInterrupt):
             self.run_cli("run", "--ticket", succeeded, exit_code=130)
         self.assertFalse(is_locked(self.root, succeeded))
 

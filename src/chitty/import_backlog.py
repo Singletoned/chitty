@@ -94,7 +94,7 @@ def convert(
     checked = [
         index + 1 for index, (mark, _) in enumerate(CRITERION.findall(body)) if mark.lower() == "x"
     ]
-    task = task.with_criteria((), (), checked, ())
+    task = task.with_criteria((), (), (), checked, ())
     for name, content in sections.items():
         task = task.with_section(name, content)
     for note in notes:

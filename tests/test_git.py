@@ -41,6 +41,20 @@ class TestHistoricalFiles(RepoTestCase):
         ):
             git.historical_files(self.root, Path("chitty/tasks"))
 
+    def test_file_at_missing_ref_names_git_command(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        (self.root / "file.txt").write_text("content")
+        self.commit("initial")
+
+        with self.assertRaisesRegex(
+            ChittyError, r"`git rev-parse --verify no-such-ref` failed in .*"
+        ) as raised:
+            git.file_at(self.root, "no-such-ref", "file.txt")
+
+        self.assertNotIn("autocommit", str(raised.exception))
+
     def test_non_repository_has_no_history(self):
         directory = self.tmp / "not-a-repository"
         directory.mkdir()

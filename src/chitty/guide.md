@@ -1,59 +1,12 @@
 ## Chitty
 
-Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
-task files. `chitty --help` is the full command reference.
+Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit task files.
+Put paths, commands, IDs, and code in backticks.
+Backticks run commands inside double-quoted shell arguments, so pass such text in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
+Run `chitty --help` for the command reference.
 
-On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, or run `chitty init`.
+When starting an agent by hand, run the matching focused guide:
 
-- Put paths, globs, commands, IDs and code in backticks in titles, descriptions,
-  criteria and notes.
-- Work on one task per session. Start with `chitty inbox --pull`, then `chitty show <ID>`.
-- Backlog tasks need refinement; promote them to `todo` before taking them on.
-- Writing or refining tickets? Run `chitty guide plan` first: it says how to write them and cold-read them.
-- Use a task's optional `parent` field to group flat task IDs under one goal.
-- Unless your own instructions say otherwise, create a branch and worktree at
-  `.worktrees/` in the repository root from the main branch for each new ticket; never
-  implement in the main checkout. Resume the existing worktree for a `doing`
-  ticket. Run the repository's setup command in a new worktree before coding so
-  it creates that worktree's environment. Commit the `doing` claim on its
-  branch before implementation starts, and use `autocommit = true` or commit
-  after every Chitty write so other branches can see task state. Run ticket
-  writes from the branch holding its latest committed version; Chitty refuses
-  to route a write across branches and tells you where to run it.
-- Before writing code, write your approach with `chitty edit <ID> --plan` and
-  set `-s doing`. Wait for approval if the human asked for it.
-- Tick a criterion only after verifying it: `chitty edit <ID> --check N`
-  (numbers are shown by `chitty show`). Re-check every criterion before setting
-  `-s review`.
-- Record anything surprising with `--note`. When work is ready, set `-s review`.
-  Never review a ticket you worked on: review promptly in the ticket's branch
-  worktree, rather than at merge-request time. Review every criterion; list
-  every failure in one note and `--uncheck` each failed criterion. Pass it with
-  `-s done --note "Reviewed: ..."`; fail it with `-s doing --note "reason"`.
-  On a pass, merge the branch into the main branch, then remove the branch and its
-  worktree. Create new tickets for out-of-scope findings. The third failed
-  review sets `blocked` and owner `human` instead; leave it for a person to
-  unblock.
-- Set `-s done` when every criterion is ticked and the work is verified; write
-  `--summary` with the handoff, verification, and follow-ups. Run `chitty fix`
-  to apply safe repairs; it fails loudly when a problem remains.
-- Before preparing a merge request, run `chitty archive` with no ID to process
-  completed tasks in one batch. The default moves them to `archive/`; with
-  `archive = "delete"`, Git history retains the record instead.
-- End commits for task work with `Task: <ID>` lines using the ticket's own ID
-  (for example, `Task: TASK-12`) so `git log --grep <ID>` finds a ticket's
-  code. This is a convention; no hook enforces it.
-- When a question has a sensible default that is cheap to change later, choose
-  it and carry on instead of blocking. Record the choice and why with `--note`
-  for the reviewer, and comment the code where the default applies, saying how
-  and why it was chosen. Block only when the choice is costly to reverse or
-  needs a person.
-- When work cannot proceed, set `-s blocked --note "reason"` and move on; do
-  not pick up blocked work. If a person must act outside the repo, add a
-  `-c human` task and depend on it. Leave `human` tasks in `todo` for people;
-  never pick them up or block them.
-- Found unrelated work on a ticket's branch? Use plain `chitty add`, which files
-  it as `BACKLOG` for the planning session. A person planning should do this from
-  the main checkout to get normal numbers. Use `-c human` if a person must act.
-  Suggest work for another project without touching its checkout using
-  `chitty suggest PROJECT "title" -d "why"`. Don't do it in this session.
+- `chitty guide work` for implementation.
+- `chitty guide review` for review.
+- `chitty guide plan` for writing or refining tickets.

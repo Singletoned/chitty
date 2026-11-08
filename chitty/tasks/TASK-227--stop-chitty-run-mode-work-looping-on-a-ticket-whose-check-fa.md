@@ -1,0 +1,94 @@
+---
+title: Stop `chitty run --mode work` looping on a ticket whose check fails
+status: done
+labels:
+  - bug
+priority: high
+created: 2026-11-07
+---
+
+## Description
+
+In work mode, `chitty run` runs the configured `check` in the ticket worktree before starting the agent (`_run_check`, `src/chitty/run.py:160` and `run.py:592`). When the check fails, `_fail_check` (`run.py:630`) adds a `Review failed (work)` note, moves the ticket to `doing`, starts no agent, and exits 0. In work mode nobody else will fix the branch, so `while uv run chitty run --mode work || [ $? -eq 3 ]; do sleep 60; done` picks the same ticket every minute. This was seen with `TASK-179` (54 times) on 2026-11-07 and `TASK-131` on 2026-11-08. `REVIEW_FAILURE_LIMIT` never stops it, because `_escalate_repeated_failure` counts only review → `doing` moves.
+
+Decided with the human on 2026-11-08:
+- In both cases below, `<detail>` is the text `_run_check` already builds: `check exited with status N:` plus the last 20 output lines fenced with `_code_block`, or `check command not found: X` when the executable is missing.
+- Work mode, ticket already `doing`: the failing check is the worker's job to fix. Add the note `Check failed before this session: <detail>` with a note-only `Edit` (no status, so History records no transition). Then start the agent as usual, with the claim step unchanged. Do not use the `Review failed` wording, so the note is not mistaken for a review verdict.
+- Work mode, ticket in `todo`: no agent can fix it in this run. On a new branch the failure is `main`'s; on an existing branch (which `_worktree` reuses) it is that branch's. Raise `ChittyError` (exit 1) with `check failed before <ID> started: <detail>`. Change nothing in the ticket and start no agent. Leave the worktree and branch in place.
+- Review mode is unchanged.
+
+This changes `test_run_check_failure_records_output_and_does_not_claim_or_start_agent` in `tests/test_next.py`, which runs work mode on a `todo` ticket. It must now expect exit 1, no note and status `todo`. `test_run_check_failure_records_markdown_like_output`, next to it, does the same and needs the same change.
+
+Out of scope: limiting how many work sessions a `doing` ticket gets, and the setup step's failures.
+
+## Acceptance Criteria
+
+- [x] A new test in `tests/test_next.py` runs `chitty run --mode work` on a `doing` ticket that has its own branch (set up as in `test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review`), with a failing check. It asserts the agent started (the `started` file the fake agent writes), the status is still `doing`, and the notes contain `Check failed before this session` with the check output inside a fence. A fake agent that changes nothing makes the run exit 1 with `was unchanged`; the test may assert that. Record that it failed before the fix.
+- [x] The two existing `todo` check-failure tests named in the Description expect exit 1 with `check failed before TASK-1 started` and the check output in stderr, status `todo`, no new note, and no `started` file. Record that they failed before the fix.
+- [x] `PLAN.md` (`chitty run` section, step 5 and the paragraph after it) and `README.md` (around line 146) describe the two work-mode cases, and `make check` passes.
+
+## Plan
+
+Update run-mode check handling so a failing check on an already-doing work ticket is recorded as a note-only pre-session warning and the agent proceeds, while a todo ticket raises ChittyError without changing ticket state. Add regression coverage for both paths, and document the behavior in PLAN.md and README.md. Verify with the focused tests and make check.
+
+## Notes
+
+Needs the human's decision on the proposal before refining and a cold read.
+
+The human adopted the proposal on 2026-11-08. Refined to it; cold read next.
+
+Cold read 1 (Haiku, `refs/cold-read/TASK-227/1`): implemented; all three tests failed first, `make check` passed. Outcomes:
+1. `_fail_check` is at `run.py:630`, not 622. Fixed.
+2. A `todo` ticket can have an existing branch, so `check failed on main` could blame the wrong place. Fixed: the message is `check failed before <ID> started`, and the Description names both cases.
+3. A missing check executable gives `check command not found: X`, not `check exited with status N`. Fixed: both cases use `<detail>`, defined as `_run_check`'s existing text.
+4. Whether the `todo` error is fenced. Fixed: it uses the same `<detail>`, so it is.
+5. The new test's exit status was unstated. Fixed: a do-nothing fake agent exits 1 with `was unchanged`, and the criterion says so.
+6. Whether the `doing` note changes status. Fixed: a note-only `Edit`.
+The reader had to guess at 4, 5 and 6, so those were the gaps a weaker model hit. None changed the design, so no second read.
+
+Regression coverage failed before the fix: the two todo check-failure tests exited 0 after moving the ticket to doing, and the doing-ticket test also exited 0 before starting the agent.
+
+Verified focused regression tests and full ! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+306 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Deleted branch task-1 (was d08fbfe).
+Deleted branch task-1 (was 9ab3d55).
+Deleted branch task-2 (was 091b3b4).
+npm test
+
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+...... (ruff, pyright, unittest, and Node tests) pass. Todo failures exit 1 unchanged; doing failures record the fenced pre-session note and start the agent.
+
+The verification note above contains shell-expanded `make check` output because the command was not quoted; verification itself passed.
+
+Reviewed: implementation, regression tests, documentation, focused tests, and make check all pass.
+1: pass - doing-ticket check failure records a fenced note and starts the agent.
+2: pass - todo-ticket check failures exit 1 without changing state or starting an agent.
+3: pass - documentation is updated and make check passes.
+
+## Summary
+
+Implemented work-mode check failure handling. A failing check on a doing ticket is recorded as a note-only pre-session warning and the agent runs; a todo ticket exits 1 with unchanged status and no note. Added regression tests and updated PLAN.md and README.md. Verified with focused tests and make check; pre-fix regression was confirmed failing. Commit: 4062a97.
+
+## History
+
+- 2026-11-07T09:40:12Z vivid-dormouse → backlog
+- 2026-11-08T11:10:30Z calm-eel: changed description, acceptance criteria, notes
+- 2026-11-08T11:20:25Z calm-eel: changed description, acceptance criteria, notes
+- 2026-11-08T11:20:25Z calm-eel backlog → todo
+- 2026-11-08T11:23:24Z intrepid-marten todo → doing
+- 2026-11-08T11:23:51Z intrepid-marten: wrote the plan
+- 2026-11-08T11:25:35Z intrepid-marten: changed notes
+- 2026-11-08T11:27:54Z intrepid-marten: changed notes; ticked acceptance criteria
+- 2026-11-08T11:28:05Z intrepid-marten: changed notes, summary
+- 2026-11-08T11:28:05Z intrepid-marten doing → review
+- 2026-11-08T11:31:49Z youthful-adder: changed notes; ticked acceptance criteria
+- 2026-11-08T11:31:49Z youthful-adder review → done
