@@ -74,6 +74,30 @@ Ran 365 tests in 85.501s
 FAILED (failures=5)
 make: *** [check] Error 5
 
+Review failed (work): check exited with status 2:
+```text
+AssertionError: 1 != 0 : Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpeqobikgr/repo/.worktrees/task-1...
+warning: cannot read usage file /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/chitty-usage-7e7vl3di/session.json: file is missing
+Error: autocommit failed: `git merge --ff-only task-1` in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpeqobikgr/repo:
+hint: Diverging branches can't be fast-forwarded, you need to either:
+hint:
+hint: 	git merge --no-ff
+hint:
+hint: or:
+hint:
+hint: 	git rebase
+hint:
+hint: Disable this message with "git config set advice.diverging false"
+fatal: Not possible to fast-forward, aborting.
+
+
+----------------------------------------------------------------------
+Ran 365 tests in 69.749s
+
+FAILED (failures=5)
+make: *** [check] Error 5
+```
+
 ## Summary
 
 Handoff: landing now merges main into a done ticket branch, validates setup and check, fast-forwards main, and removes the worktree and branch without force. Verification: focused review tests and ruff/pyright pass; full make check is blocked by legacy test expectations around pre-landing behavior and untracked bin fixtures. Follow-up: update those legacy tests and add explicit dirty-main/worktree and failed-check landing coverage.
@@ -95,3 +119,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T09:17:38Z open-zander doing → review
 - 2026-11-08T10:16:01Z upbeat-falcon: changed notes
 - 2026-11-08T10:16:01Z upbeat-falcon review → doing
+- 2026-11-08T10:59:19Z calm-zander: changed notes
