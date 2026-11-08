@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` about indented lines inside a paragraph
-status: review
+status: done
 created: 2026-11-05
 ---
 
@@ -51,6 +51,12 @@ Regression test confirmed the unfixed behavior: the indented Notes paragraph tes
 
 Verification: the regression test failed before the implementation, then passed; the exclusion test passed. make format && make check passed (368 Python tests and Node tests). chitty fix reported the expected archived-ticket warnings, plus an existing warning in active TASK-63; no task files were changed.
 
+1: pass - Notes paragraph warning has the required exact message and exactly one warning.
+
+2: pass - Fenced code, indented code, and numbered-list continuation produce no warning.
+
+Reviewed: implementation and focused tests satisfy both criteria; make format && make check passed (368 Python tests and Node tests).
+
 ## Summary
 
 Implemented top-level paragraph indentation warnings for Description, Plan, Notes, and Summary using markdown-it source maps and split("\n"). Added regression coverage for Notes plus fenced, indented-code, and list exclusions. Verified with make format && make check; ready for review.
@@ -68,3 +74,5 @@ Implemented top-level paragraph indentation warnings for Description, Plan, Note
 - 2026-11-08T11:17:48Z quick-dormouse: changed notes
 - 2026-11-08T11:20:51Z quick-dormouse: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T11:20:51Z quick-dormouse doing → review
+- 2026-11-08T11:24:24Z rosy-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-08T11:24:24Z rosy-dormouse review → done
