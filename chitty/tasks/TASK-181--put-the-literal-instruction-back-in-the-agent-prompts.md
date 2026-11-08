@@ -10,7 +10,7 @@ created: 2026-11-05
 
 `chittyPrompt` in `src/chitty/integrations/pi/chitty.ts`, which `TASK-142` deleted in commit `2fc5a23`, told agents: "When you write a literal single `*` in Markdown, escape it or enclose the pattern in backticks, for example `files/*.jpg`." Agents now get their prompt from `chitty guide <mode> <ID>`, and that line is in no file under `src/chitty/roles/` nor in `src/chitty/guide.md`, so it has been lost.
 
-Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and to `src/chitty/guide.md`, because all of those agents write ticket text. `plan.md` and `guide.md` already have a bullet about backticks, so extend that; `work.md` and `review.md` get a new one. After bumping `__version__`, run `uv run chitty init` and commit `AGENTS.md` and `chitty.toml`, because a global `chitty` may be another checkout's code, because `guide.md` reaches `AGENTS.md`'s managed block only that way. `TASK-173` and `TASK-179` edit the same files, so touch only this bullet.
+Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and to `src/chitty/guide.md`, because all of those agents write ticket text. `plan.md` and `guide.md` already have a bullet about backticks, so extend that; `work.md` and `review.md` get a new one. Do not bump `__version__` or run `chitty init` on this branch: after landing, the main checkout refreshes its managed `AGENTS.md` block and `chitty.toml` from the guide sources. `TASK-173` and `TASK-179` edit the same files, so touch only this bullet.
 
 ## Acceptance Criteria
 
@@ -105,3 +105,4 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-06T21:49:23Z honest-ibis review → doing
 - 2026-11-07T09:39:54Z vivid-dormouse: changed owner, notes
 - 2026-11-08T13:05:13Z eager-puffin: changed owner, acceptance criteria, notes
+- 2026-11-08T13:05:42Z eager-puffin: changed description
