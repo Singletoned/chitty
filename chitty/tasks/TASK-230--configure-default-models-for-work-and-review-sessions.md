@@ -24,6 +24,8 @@ Second read-only cold read found a TOML placement contradiction: pyproject examp
 
 Repeat cold read found a cross-table false-positive in init comment insertion when `[tool.other]` already has `work_model`. Added a failing regression case, and the candidate now checks only the Chitty settings section. Recheck before promotion.
 
+Implementing cold read completed after the read-only findings and a repeat read: unqualified work/review model test failed against the unfixed runner (`default work TASK-1` instead of `--model work-model`); blank-model, override, and cross-table init tests also failed before their fixes. The final candidate passes the focused six tests and full `make check` (383 Python tests and Node tests). No remaining serious finding. Kept the implementation at `refs/cold-read/TASK-230/1`; use `git diff main...refs/cold-read/TASK-230/1` as a possible starting point, verifying it against the current criteria. The earlier note saying implementing cold read was pending is superseded.
+
 ## History
 
 - 2026-11-08T13:21:57Z eager-puffin → backlog
@@ -32,3 +34,4 @@ Repeat cold read found a cross-table false-positive in init comment insertion wh
 - 2026-11-08T14:15:33Z eager-puffin: changed description
 - 2026-11-08T14:15:35Z eager-puffin: changed notes
 - 2026-11-08T14:51:01Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T14:55:45Z eager-puffin: changed notes
