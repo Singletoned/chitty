@@ -97,9 +97,11 @@ check_version_bump: changed files require a version above main (0.1.43), but wor
 make: *** [check] Error 1
 ```
 
+Merged current main, preserving its worker-guide test and moving this ticket's evidence assertions into tests/test_guide_review_evidence.py. Focused unittest passed; make format and make check passed (378 Python tests and Node tests); chitty fix completed with existing format warnings.
+
 ## Summary
 
-Updated the two review-role bullets and added TestGuide regression assertions requiring executable evidence and structured failure notes. Verified the focused regression test, make check (ruff, pyright, 278 unittest tests, and npm test), and chitty fix; fix reported only pre-existing task-format warnings.
+Review-role evidence wording is present in the current main version of src/chitty/roles/review.md; added the dedicated regression test and retained main's adjacent guide coverage. Verified with focused unittest, make format, make check, and chitty fix. No follow-ups.
 
 ## History
 
@@ -149,3 +151,4 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-08T16:43:21Z eager-puffin: changed notes
 - 2026-11-08T16:43:21Z eager-puffin blocked → doing
 - 2026-11-08T16:59:26Z calm-eel: changed notes
+- 2026-11-08T17:02:05Z calm-eel: changed notes, summary; ticked acceptance criteria
