@@ -25,8 +25,8 @@ Out of scope: autocommit context for the other Git calls inside `git.commit` (`l
 
 ## Acceptance Criteria
 
-- [ ] A new test in `tests/test_git.py`, in a repository with one commit, makes `git.file_at` fail on a ref that does not exist and asserts the error contains `` `git rev-parse --verify no-such-ref` failed in `` and does not contain `autocommit`; the worker records that it failed before the fix
-- [ ] The two pre-commit hook tests (`tests/test_autocommit.py:288`, `tests/test_cli.py:576`) pass unchanged, and `make check` passes
+- [x] A new test in `tests/test_git.py`, in a repository with one commit, makes `git.file_at` fail on a ref that does not exist and asserts the error contains `` `git rev-parse --verify no-such-ref` failed in `` and does not contain `autocommit`; the worker records that it failed before the fix
+- [x] The two pre-commit hook tests (`tests/test_autocommit.py:288`, `tests/test_cli.py:576`) pass unchanged, and `make check` passes
 
 ## Plan
 
@@ -50,6 +50,39 @@ Second cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/
 - Rejected, now stated as out of scope: wrapping the other Git calls inside `git.commit`. A stale `index.lock` gives ``Error: `git add -- ...` failed in ...: fatal: Unable to create ... index.lock``, which already names the command and the cause, and wrapping the whole body, handler included, is more change than this ticket needs.
 - Rejected: "failed" appearing twice in the hook message. It reads clearly.
 
+Verified: the new missing-ref test failed before the fix with the old  message. After changing  and preserving the wrapper in , the focused missing-ref and both unchanged pre-commit hook tests pass; uv sync --all-extras
+npm ci
+
+added 1 package, and audited 2 packages in 362ms
+
+1 package is looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+uv run ruff check --exit-zero .
+All checks passed!
+uv run ruff format .
+305 files left unchanged
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run python scripts/check_version_bump.py
+uv run ruff format --check .
+305 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Deleted branch task-1 (was bf720e4).
+Deleted branch task-1 (was 48c7524).
+Deleted branch task-2 (was b27ebc1).
+npm test
+
+> test
+> node --experimental-strip-types --test-reporter=dot --test src/chitty/integrations/pi/tests/chitty.test.ts
+
+....................
+...... passes (366 Python tests and Node tests).
+
 ## History
 
 - 2026-10-30 → backlog
@@ -60,3 +93,4 @@ Second cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/
 - 2026-11-07T09:26:11Z vivid-dormouse: changed acceptance criteria
 - 2026-11-08T09:34:54Z kind-urchin todo → doing
 - 2026-11-08T09:49:16Z kind-urchin: wrote the plan
+- 2026-11-08T10:09:51Z kind-urchin: changed notes; ticked acceptance criteria
