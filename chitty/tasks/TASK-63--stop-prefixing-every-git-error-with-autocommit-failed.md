@@ -1,6 +1,6 @@
 ---
 title: Stop prefixing every Git error with `autocommit failed`
-status: todo
+status: doing
 created: 2026-10-30
 ---
 
@@ -54,3 +54,4 @@ Second cold read by a fresh Haiku subagent, 2026-11-07, kept as `refs/cold-read/
 - 2026-11-07T09:26:03Z vivid-dormouse: changed description, acceptance criteria, notes
 - 2026-11-07T09:26:03Z vivid-dormouse backlog → todo
 - 2026-11-07T09:26:11Z vivid-dormouse: changed acceptance criteria
+- 2026-11-08T09:34:54Z kind-urchin todo → doing
