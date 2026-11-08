@@ -1,6 +1,6 @@
 ---
 title: Warn about backticks in double-quoted arguments in the generated guidance
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-143
@@ -37,3 +37,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the ticket had no crite
 - 2026-11-04T21:41:12Z mellow-newt: changed priority, notes
 - 2026-11-04T21:44:40Z mellow-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-04T21:44:41Z mellow-newt backlog → todo
+- 2026-11-08T11:12:03Z calm-badger todo → doing
