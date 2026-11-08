@@ -1086,11 +1086,11 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             listed.stdout.splitlines(),
             [
-                "TASK-3  📋 todo     high    High",
-                "TASK-1  📋 todo     -       Unset",
-                "TASK-4  📋 todo     medium  Medium",
-                "TASK-2  📋 todo     low     Low",
-                "TASK-5  🔨 doing    high    Doing high",
+                "TASK-3  📋 todo   ⏫  High",
+                "TASK-1  📋 todo       Unset",
+                "TASK-4  📋 todo   🔼  Medium",
+                "TASK-2  📋 todo   🔽  Low",
+                "TASK-5  🔨 doing  ⏫  Doing high",
             ],
         )
         tasks = self.json("list")
@@ -1127,14 +1127,35 @@ class TestAddShowList(CliTestCase):
 
         listed = self.run_cli("list", "--all").stdout
         for glyph, status in (
-            ("💤", "backlog"),
-            ("📋", "todo"),
+            ("💤", "bklog"),
+            ("📋", "todo "),
             ("🔨", "doing"),
-            ("⛔", "blocked"),
-            ("👀", "review"),
-            ("✅", "done"),
+            ("⛔", "blckd"),
+            ("👀", "revw "),
+            ("✅", "done "),
         ):
             self.assertIn(f"{glyph} {status}", listed)
+
+    def test_list_shortens_titles_to_the_configured_width(self):
+        self.run_cli("add", "A title long enough to need cutting", "-d", "x", "-l", "cli")
+        self.run_cli("add", "Short", "-d", "x")
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("format = 1", "format = 1\nlist_width = 40"))
+
+        lines = self.run_cli("list").stdout.splitlines()
+
+        self.assertEqual(
+            lines, ["TASK-1  📋 todo   A title long e…  [cli]", "TASK-2  📋 todo   Short"]
+        )
+
+    def test_list_width_defaults_to_one_hundred_columns(self):
+        title = "word " * 30
+        self.run_cli("add", title.strip(), "-d", "x")
+
+        line = self.run_cli("list").stdout.splitlines()[0]
+
+        self.assertEqual(len(line) + 1, 100)  # the status glyph takes two columns
+        self.assertTrue(line.endswith("…"))
 
     def test_list_shows_status_glyphs_and_skip_reasons(self):
         self.run_cli("add", "Backlog", "-s", "backlog")
@@ -1174,13 +1195,13 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             lines,
             [
-                "TASK-1  💤 backlog      Backlog",
-                "TASK-3  📋 todo     🔒  Waiting",
-                "TASK-4  📋 todo     ⚠️  Broken",
-                "TASK-5  📋 todo     👤  Human",
-                "TASK-6  🔨 doing        Doing",
-                "TASK-7  👀 review       Review",
-                "TASK-2  ✅ done         Done",
+                "TASK-1  💤 bklog      Backlog",
+                "TASK-3  📋 todo   🔒  Waiting",
+                "TASK-4  📋 todo   ⚠️  Broken",
+                "TASK-5  📋 todo   👤  Human",
+                "TASK-6  🔨 doing      Doing",
+                "TASK-7  👀 revw       Review",
+                "TASK-2  ✅ done       Done",
             ],
         )
         self.assertIn("warning: TASK-4 depends on TASK-99", listed.stderr)
@@ -1218,8 +1239,8 @@ class TestAddShowList(CliTestCase):
         self.run_cli("edit", "1", "-s", "doing")
         self.run_cli("archive", "10")
         lines = self.run_cli("list").stdout.splitlines()
-        self.assertEqual(lines[0], "TASK-2  📋 todo     Fix login")
-        self.assertEqual(lines[1], "TASK-3  📋 todo     Task 3")
+        self.assertEqual(lines[0], "TASK-2  📋 todo   Fix login")
+        self.assertEqual(lines[1], "TASK-3  📋 todo   Task 3")
         self.assertEqual(len(lines), 9)
         self.run_cli("edit", "2", "-s", "review")
         self.run_cli(

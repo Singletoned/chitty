@@ -333,6 +333,7 @@ review = true # require review before done
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
 # `{prompt}` may be used as one argument containing `chitty guide` output.
 archive = "move" # or "delete"; retain completed files or delete them
+# list_width = 100 # columns `chitty list` rows fit in
 
 [contexts.tasks]
 prefix = "TASK"
@@ -450,8 +451,11 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
 - `list` includes a priority column only when a listed task has a priority.
   It orders the selected statuses first, then `high`, `medium` (including
   unset priority), and `low` within each status; `--json` uses the same order.
-  Human-readable rows prefix statuses with fixed glyphs: `💤 backlog`, `📋 todo`,
-  `🔨 doing`, `⛔ blocked`, `👀 review`, and `✅ done`. Rows skipped by `next`
+  Human-readable rows show statuses as a glyph and at most five letters:
+  `💤 bklog`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, and `✅ done`, and
+  priorities as `⏫` high, `🔼` medium, `🔽` low, or blank when unset. Titles are
+  cut with `…` so each row fits in `list_width` terminal columns, counting
+  emoji as two; labels are kept whole. Rows skipped by `next`
   show the reason's glyph alone in a column before the title (`👤`, `🔒`, `▶`, or
   `⚠️`, whose message goes to stderr); the column appears only when a row needs
   it. Rows do not show the branch. JSON keeps status words and adds `skipped`,

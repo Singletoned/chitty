@@ -82,8 +82,10 @@ agents started by hand to the matching role guide. Work and review take an
 optional ticket ID; planning does not.
 Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog and
-done tickets. Each row prefixes the status with a fixed glyph: `💤 backlog`,
-`📋 todo`, `🔨 doing`, `⛔ blocked`, `👀 review`, or `✅ done`. Rows skipped by
+done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
+`📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then the priority
+as `⏫` high, `🔼` medium or `🔽` low. Titles are cut with `…` so rows fit in
+`list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
 `chitty next` carry a glyph in a column before the title: `👤` owned or human,
 `🔒` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
 message goes to stderr. `--json` gives the full reason as `skipped`. Review is required before `done` by default.

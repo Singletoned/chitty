@@ -30,7 +30,16 @@ STATUS_GLYPHS = {
     "review": "👀",
     "done": "✅",
 }
+STATUS_LABELS = {
+    "backlog": "bklog",
+    "todo": "todo",
+    "doing": "doing",
+    "blocked": "blckd",
+    "review": "revw",
+    "done": "done",
+}
 PRIORITIES = ("low", "medium", "high")
+PRIORITY_GLYPHS = {"high": "⏫", "medium": "🔼", "low": "🔽", None: ""}
 FIELD_ORDER = (
     "title",
     "status",

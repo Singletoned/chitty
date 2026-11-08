@@ -34,8 +34,10 @@ from chitty.model import (
     ACCEPTANCE_CRITERIA,
     FIELD_ORDER,
     PRIORITIES,
+    PRIORITY_GLYPHS,
     SECTION_ORDER,
     STATUS_GLYPHS,
+    STATUS_LABELS,
     STATUSES,
 )
 from chitty.run import RunInterrupted
@@ -393,26 +395,46 @@ def list_(
     show_markers = any(reasons)
     for stored, reason in zip(tasks, reasons, strict=True):
         fm = stored.task.frontmatter
-        line = f"{stored.id!s:<{width}}  {STATUS_GLYPHS[fm.status]} {fm.status:<7}"
+        line = f"{stored.id!s:<{width}}  {STATUS_GLYPHS[fm.status]} {STATUS_LABELS[fm.status]:<5}"
         if show_priority:
-            line += f"  {fm.priority or '-':<6}"
+            line += f"  {_two_columns(PRIORITY_GLYPHS[fm.priority])}"
         if show_markers:
-            line += f"  {_marker(reason)}"
-        line += f"  {fm.title}"
-        if fm.labels:
-            line += f"  [{','.join(sorted(fm.labels))}]"
-        click.echo(line)
+            line += f"  {_two_columns(reason.split()[0] if reason else '')}"
+        label_text = f"  [{','.join(sorted(fm.labels))}]" if fm.labels else ""
+        room = repo.config.list_width - _columns(line) - 2 - _columns(label_text)
+        click.echo(f"{line}  {_shorten(fm.title, room)}{label_text}")
         if reason and reason.startswith(BROKEN_DEPENDENCY_GLYPH):
             click.echo(f"warning: {reason.removeprefix(BROKEN_DEPENDENCY_GLYPH).strip()}", err=True)
 
 
-def _marker(reason: str | None) -> str:
-    """Return a skip reason's glyph padded to two terminal columns."""
-    if reason is None:
-        return "  "
-    glyph = reason.split()[0]
-    wide = unicodedata.east_asian_width(glyph[0]) == "W" or glyph.endswith("\ufe0f")
-    return glyph if wide else f"{glyph} "
+def _columns(text: str) -> int:
+    """Return how many terminal columns text takes, counting emoji as two."""
+    total = 0
+    for char in text:
+        if char == "\ufe0f":
+            total += 1  # turns the preceding narrow symbol into a wide emoji
+        elif unicodedata.east_asian_width(char) in {"W", "F"}:
+            total += 2
+        elif not unicodedata.combining(char):
+            total += 1
+    return total
+
+
+def _two_columns(glyph: str) -> str:
+    """Pad a glyph, or nothing, to two terminal columns."""
+    return glyph + " " * (2 - _columns(glyph))
+
+
+def _shorten(title: str, room: int) -> str:
+    """Cut a title to fit in room columns, ending it with an ellipsis when cut."""
+    if _columns(title) <= room:
+        return title
+    shortened = ""
+    for char in title:
+        if _columns(shortened + char) > room - 1:
+            break
+        shortened += char
+    return shortened.rstrip() + "…"
 
 
 @cli.command("next")
