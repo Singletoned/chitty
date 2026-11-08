@@ -34,7 +34,7 @@ Out of scope: pushing, repositories whose main branch is not `main`, the spec-te
 
 ## Plan
 
-Fix review-mode landing and serialization so concurrent reviewers do not race while running checks or autocommit. Inspect runner lock boundaries and existing failure tests; add regression coverage for the reported autocommit merge race and update outdated landing expectations. Run focused tests, then make format && make check; commit fixes with Task: TASK-131.
+Add focused real-Git integration tests for landing's moved-main, conflict/check failure, refusal, and ignored-file cases; repair the old run integration fixtures that violate the landing contract. Then run make format && make check, verify every acceptance criterion, and commit with Task: TASK-131.
 
 ## Notes
 
@@ -262,3 +262,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T13:21:06Z daring-gannet: wrote the plan
 - 2026-11-08T13:24:03Z daring-gannet: changed notes
 - 2026-11-08T13:25:50Z daring-gannet: changed notes
+- 2026-11-08T13:26:34Z daring-gannet: wrote the plan
