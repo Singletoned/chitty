@@ -172,8 +172,11 @@ class TestReviewRebase(ReviewRebaseTestCase):
         self.assertEqual((self.logs / "setup").read_text(), "rebased")
         self.assertEqual((self.logs / "agent").read_text(), "rebased")
         self.assertEqual((self.logs / "main.txt").read_text(), "from main\n")
-        self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
-        self.assertEqual(self.git("rev-list", "--merges", "--count", "main..task-1").strip(), "0")
+        landed_head = self.git("rev-parse", "main").strip()
+        self.assertNotEqual(landed_head, main_head)
+        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "0")
+        self.assertFalse(self.worktree.exists())
+        self.assertFalse(self.git("branch", "--list", "task-1").strip())
 
     def test_conflict_moves_the_ticket_to_doing_without_starting_the_agent(self):
         self.branch_for_review(shared="from the branch\n")
