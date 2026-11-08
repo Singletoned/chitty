@@ -16,7 +16,7 @@ Remove the instruction from both files, leaving `chitty show <ID>` as the first 
 ## Acceptance Criteria
 
 - [x] `chitty guide work` and `chitty guide` no longer contain `inbox --pull`, shown by a test, and `chitty inbox --pull` itself still works
-- [ ] The ticket branch changes only the guide sources and tests, not the managed `AGENTS.md` block, `chitty.toml`, or `__version__`; the main checkout regenerates setup after landing.
+- [ ] The ticket branch does not change the managed `AGENTS.md` block, `chitty.toml`, or `__version__`; the main checkout regenerates setup after landing.
 
 ## Plan
 
@@ -579,3 +579,4 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-07T09:37:41Z sunny-heron: changed notes
 - 2026-11-07T09:39:33Z vivid-dormouse: changed owner, notes
 - 2026-11-08T13:05:12Z eager-puffin: changed owner, acceptance criteria, notes
+- 2026-11-08T13:07:01Z eager-puffin: changed acceptance criteria
