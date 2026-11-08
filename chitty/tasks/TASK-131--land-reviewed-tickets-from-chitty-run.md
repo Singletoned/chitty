@@ -18,7 +18,7 @@ This follows `TASK-120` and `TASK-150`, which rebase and check before a review. 
 After a session that moves its ticket to `done`, in work or review mode. `TASK-152` adds landing at the start of a run, so until then a landing that fails needs a person, and its message says so:
 
 1. Refuse, with a message and a non-zero exit, changing nothing, if the main checkout is not on branch `main` or is not clean, using the existing `git.require_clean`, which includes untracked files. Ignored files are allowed. Also refuse if the ticket's worktree has uncommitted changes, including untracked files; otherwise they would only surface when removal fails, after landing.
-2. If `main` is not an ancestor of the branch, rebase the branch onto `main` in its worktree, then run `setup` and `check`. Ticket commits land on `main` often, so this will be common. A clean rebase with a passing `check` lands without another review. On a conflict or failed check, abort any rebase, leave everything in place, and exit non-zero naming the problem, for the human to resolve in the worktree.
+2. If `main` is not an ancestor of the branch, merge `main` into the branch in its worktree, then run `setup` and `check`. Ticket commits land on `main` often, so this will be common. A clean merge with a passing `check` lands without another review. On a conflict or failed check, abort any merge, leave everything in place, and exit non-zero naming the problem, for the human to resolve in the worktree.
 3. Run `git merge --ff-only <branch>` in the main checkout. Never resolve anything there. `TASK-134` then refreshes setup at the start of the next run.
 4. Remove the worktree with `git worktree remove` and the branch with `git branch -d`, never forced. A failure exits non-zero.
 
@@ -226,3 +226,4 @@ Handoff: landing now merges main into a done ticket branch, validates setup and 
 - 2026-11-08T11:07:30Z witty-yellowhammer: changed notes
 - 2026-11-08T11:09:51Z calm-eel: changed owner, notes
 - 2026-11-08T13:05:01Z eager-puffin: changed owner, notes
+- 2026-11-08T13:08:29Z eager-puffin: changed description
