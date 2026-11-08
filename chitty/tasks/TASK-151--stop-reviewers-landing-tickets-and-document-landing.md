@@ -1,7 +1,8 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: review
+status: blocked
 priority: high
+owner: human
 depends_on:
   - TASK-131
 parent: TASK-106
@@ -41,6 +42,10 @@ Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.m
 
 Regression test failed against the original continuation prompt (expected prohibition absent), then passed after restoring the updated prompt. Re-verified generated review instructions, packaged review role, landing docs in PLAN.md, README.md, and src/chitty/guide.md; no version change. make format && make check and npm test passed. chitty fix reports existing Markdown warnings in unrelated task files.
 
+Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/integrations/pi/chitty.ts`, `src/chitty/integrations/pi/tests/chitty.test.ts`, `src/chitty/roles/review.md`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Handoff: Review prompt and packaged role prohibit reviewers from landing or removing branches/worktrees; PLAN.md, README.md, and src/chitty/guide.md document automated and manual landing. Verification: regression test failed against original prompt and passed after fix; make format && make check and npm test passed; no version bump. Follow-ups: none.
@@ -64,3 +69,5 @@ Handoff: Review prompt and packaged role prohibit reviewers from landing or remo
 - 2026-11-08T18:27:32Z able-heron review → doing
 - 2026-11-08T19:52:56Z sunny-ibis: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T19:52:56Z sunny-ibis doing → review
+- 2026-11-08T19:57:53Z rosy-puffin: changed owner, notes
+- 2026-11-08T19:57:53Z rosy-puffin review → blocked
