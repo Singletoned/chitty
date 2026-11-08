@@ -1,6 +1,6 @@
 ---
 title: Bump the version at release, not on ticket branches
-status: doing
+status: review
 priority: high
 created: 2026-11-06
 ---
@@ -28,8 +28,8 @@ Out of scope: major versions, changelogs, and Chitty's own `chitty.toml` (the ma
 
 ## Acceptance Criteria
 
-- [ ] `make check` no longer runs the version-bump check (the script and its test are gone), `mate --list` still describes `release`, and `AGENTS.md` says branches don't bump `__version__` and explains `needs-minor`.
-- [ ] Tests of `scripts/release_version.py` in a temporary repository show: a patch bump with no labelled ticket since the last tag; a minor bump when an archived or active ticket changed since the tag has `needs-minor`; a ticket labelled only before the tag being ignored; counting from `__version__` when it is ahead of the tag; and a missing tag failing with a clear error.
+- [x] `make check` no longer runs the version-bump check (the script and its test are gone), `mate --list` still describes `release`, and `AGENTS.md` says branches don't bump `__version__` and explains `needs-minor`.
+- [x] Tests of `scripts/release_version.py` in a temporary repository show: a patch bump with no labelled ticket since the last tag; a minor bump when an archived or active ticket changed since the tag has `needs-minor`; a ticket labelled only before the tag being ignored; counting from `__version__` when it is ahead of the tag; and a missing tag failing with a clear error.
 
 ## Plan
 
@@ -45,6 +45,12 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-224/1`; 8 tests failed first and then 
 - `release.yml` still checks the tag against `__version__`: confirmed, because the bump is committed before tagging.
 - `PLAN.md`'s "Stack" note about bumps on `main`: still accurate, unchanged.
 
+Verified with the five temporary-repository release tests, mate --list, make -n release, direct release-version execution, and make format && make check (361 Python tests and Node tests passed). chitty fix reported existing Markdown delimiter warnings in unrelated tickets; it made no repairs.
+
+## Summary
+
+Implemented release-time version selection in scripts/release_version.py, including highest valid v* tag selection, current-version precedence, patch/minor ticket-label detection, archived tickets, and clear missing-tag failure. Removed branch version enforcement, updated release guidance, and changed make release to commit, tag, push, and report push rollback instructions. Handoff: review the compact Makefile version-write command and release behavior. Verification: focused release tests and full make format && make check pass. Follow-ups: none.
+
 ## History
 
 - 2026-11-06T22:01:24Z youthful-toad → backlog
@@ -53,3 +59,5 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-224/1`; 8 tests failed first and then 
 - 2026-11-06T22:04:43Z youthful-toad backlog → todo
 - 2026-11-08T09:27:35Z upbeat-gannet todo → doing
 - 2026-11-08T09:27:54Z upbeat-gannet: wrote the plan
+- 2026-11-08T09:32:44Z upbeat-gannet: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T09:32:44Z upbeat-gannet doing → review
