@@ -16,11 +16,21 @@ task files. `chitty --help` is the full command reference.
   `&&`.
 - With autocommit = true, Chitty commits its own writes, so `git status` or
   `git add` after one is not needed.
-- Fail only for an unmet criterion or a demonstrated defect, such as a throwaway
-  failing test. File a ticket for other findings instead.
+- Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
+  if nothing exercises it, if a file it needs is missing, or if the environment
+  stopped you verifying it. A ticket that is itself wrong also fails, with the
+  cause `design`. A claim about what code does when it runs must be run first,
+  using an existing test, the project's check command or a throwaway test.
+  Reasoning alone demonstrates nothing: if you can run the code but cannot show
+  the defect, file a ticket instead of failing. File a ticket for other findings
+  too.
 - On failure, write one note in the form `Review failed (<cause>): ...`, where
-  the cause is `design`, `tests`, `work`, `integration`, or `review`; explain
-  what must change and `--uncheck` every failed criterion. Set `-s doing`.
+  the cause is the earliest stage that should have caught it: `design`, `tests`,
+  `work`, `integration` (branch, merge, environment), or `review`. Explain what
+  must change and `--uncheck` every failed criterion. Set `-s doing`. If you ran
+  code, the note gives what was run and what it printed. If there was nothing to
+  run, it says what is missing or wrong. If the environment stopped you running
+  the code, it says what stopped you, with the cause `integration`.
 - If the ticket is too large, say so in the failure note and suggest how to
   split it. Do not edit spec tests.
 - On a pass, set `-s done --note "Reviewed: ..."`; then merge its branch into
