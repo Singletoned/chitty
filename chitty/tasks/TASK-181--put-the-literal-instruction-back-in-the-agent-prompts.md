@@ -14,7 +14,7 @@ Add the sentence to `src/chitty/roles/work.md`, `review.md` and `plan.md`, and t
 
 ## Acceptance Criteria
 
-- [x] A test in `TestGuide` in `tests/test_cli.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
+- [ ] A test in `tests/test_guide_literal_star.py` shows `literal single` in `guide()` and in `guide(role)` for each of work, review and plan
 - [ ] The ticket branch leaves the managed `AGENTS.md` block, `chitty.toml`, and `__version__` unchanged; the guide sources carry the instruction for setup regeneration on main after landing.
 
 ## Plan
@@ -65,6 +65,8 @@ Owner set to `human` on 2026-11-07, before `chitty run --mode work` looped on it
 
 Unparked after TASK-224 and TASK-227: branches no longer bump the version or regenerate managed setup; a doing ticket with a failed check now starts a worker. Recheck and finish the branch before review.
 
+Aligned the guide regression-test location with current repository guidance: use a dedicated `tests/test_guide_<topic>.py` file rather than adding to `TestGuide` in `tests/test_cli.py`.
+
 ## Summary
 
 Restored the literal single-asterisk Markdown instruction in guide.md and the work, review, and plan role prompts; added TestGuide coverage; bumped __version__ to 0.1.36; regenerated the managed AGENTS.md block. Verification: make check passes (ruff, pyright, 330 unittest tests, and Node tests). Follow-ups: none.
@@ -107,3 +109,4 @@ Restored the literal single-asterisk Markdown instruction in guide.md and the wo
 - 2026-11-08T13:05:13Z eager-puffin: changed owner, acceptance criteria, notes
 - 2026-11-08T13:05:42Z eager-puffin: changed description
 - 2026-11-08T13:07:02Z eager-puffin: wrote the plan
+- 2026-11-08T13:08:48Z eager-puffin: changed acceptance criteria, notes
