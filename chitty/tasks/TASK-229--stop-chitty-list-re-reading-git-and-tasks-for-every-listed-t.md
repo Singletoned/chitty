@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty list` re-reading git and tasks for every listed task
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -48,3 +48,4 @@ Cold read 1 (Sonnet, `refs/cold-read/TASK-229/1`): the implementation passed `ma
 - 2026-11-08T10:31:35Z calm-eel → backlog
 - 2026-11-08T10:37:06Z calm-eel: changed description, acceptance criteria, notes
 - 2026-11-08T10:37:06Z calm-eel backlog → todo
+- 2026-11-08T11:36:53Z able-dormouse todo → doing
