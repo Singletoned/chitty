@@ -1,8 +1,7 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: blocked
+status: review
 priority: high
-owner: human
 depends_on:
   - TASK-120
   - TASK-150
@@ -267,6 +266,8 @@ Review failed (work): the worktree has uncommitted changes: `src/chitty/run.py`,
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Human unblock: committed the already-landed no-op fix and regression test as c825a69 (Task: TASK-131), then merged current main. Working tree is clean. make format passed; first make check hit an intermittent Hypothesis slow-generation health check in tests/test_check_edit.py, and the immediate full rerun passed (397 Python tests plus Node tests). Ready for independent review.
+
 ## Summary
 
 Handoff: Landing no-ops when both the ticket branch and worktree are already gone, before main-checkout guards. Verification: regression passed; make format && make check passed (389 Python tests, Node tests, Ruff, Pyright). Follow-ups: none known.
@@ -330,3 +331,5 @@ Handoff: Landing no-ops when both the ticket branch and worktree are already gon
 - 2026-11-08T17:20:14Z brisk-puffin doing → review
 - 2026-11-08T17:21:40Z golden-eel: changed owner, notes
 - 2026-11-08T17:21:40Z golden-eel review → blocked
+- 2026-11-08T17:54:16Z eager-puffin: changed owner, notes
+- 2026-11-08T17:54:16Z eager-puffin blocked → review
