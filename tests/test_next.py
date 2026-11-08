@@ -451,6 +451,8 @@ class TestNext(CliTestCase):
             .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
         )
         self.git("init", "--quiet")
+        exclude = self.root / ".git" / "info" / "exclude"
+        exclude.write_text(exclude.read_text() + "\n/bin/\n")
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
@@ -478,10 +480,6 @@ class TestNext(CliTestCase):
             "    command = [chitty, 'edit', ticket, '--status', 'done',\n"
             "               '--note', 'Reviewed: overlap test']\n"
             "subprocess.run(command, check=True, stdout=subprocess.DEVNULL)\n"
-            "if mode == 'review':\n"
-            "    main = pathlib.Path(os.environ['MAIN'])\n"
-            "    branch = ticket.lower()\n"
-            "    subprocess.run(['git', '-C', str(main), 'merge', '--quiet', branch], check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         self.addCleanup(
@@ -491,21 +489,20 @@ class TestNext(CliTestCase):
             "--force",
             str(self.root / ".worktrees" / worker_id.lower()),
         )
+        reviewer_worktree = self.root / ".worktrees" / reviewer_id.lower()
         self.addCleanup(
-            self.git,
-            "worktree",
-            "remove",
-            "--force",
-            str(self.root / ".worktrees" / reviewer_id.lower()),
+            lambda: (
+                self.git("worktree", "remove", "--force", str(reviewer_worktree))
+                if reviewer_worktree.exists()
+                else None
+            )
         )
         previous_path = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous_path}"
-        os.environ["MAIN"] = str(self.root)
         try:
             result = self.run_cli("run", "--mode", "work")
         finally:
             os.environ["PATH"] = previous_path
-            os.environ.pop("MAIN", None)
 
         self.assertEqual(result.stdout, f"{worker_id}: doing → blocked\n")
         worker = self.root / ".worktrees" / worker_id.lower()
@@ -751,6 +748,8 @@ class TestNext(CliTestCase):
             .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
         )
         self.git("init", "--quiet")
+        exclude = self.root / ".git" / "info" / "exclude"
+        exclude.write_text(exclude.read_text() + "\n/bin/\n")
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
@@ -1395,6 +1394,8 @@ class TestNext(CliTestCase):
             pyproject.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
         )
         self.git("init", "--quiet")
+        exclude = self.root / ".git" / "info" / "exclude"
+        exclude.write_text(exclude.read_text() + "\n/bin/\n")
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
@@ -1432,8 +1433,6 @@ class TestNext(CliTestCase):
         self.assertEqual(passed.stdout, "TASK-1: review → done\n")
 
         self.add("Config change")
-        self.git("add", "--all")
-        self.git("commit", "--quiet", "-m", "second ticket")
         self.run_cli("edit", "TASK-2", "--status", "review")
         self.git("branch", "task-2")
         branch_worktree = self.root / ".worktrees" / "prepare-task-2"
