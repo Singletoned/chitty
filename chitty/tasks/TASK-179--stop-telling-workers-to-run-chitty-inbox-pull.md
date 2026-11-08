@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to run `chitty inbox --pull`
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-142
@@ -503,7 +503,7 @@ Verified both guide outputs omit inbox --pull and the inbox pull still works (fo
 
 ## Summary
 
-Removed the redundant inbox pull from the worker and general guide sources, preserving each file's ticket/task wording, and regenerated AGENTS.md. Bumped __version__ to 0.1.36 above main. Verified guide and inbox regression tests, uv run chitty init, chitty fix, Ruff, Pyright, version check, and 330 unittest tests. Node tests started and emitted passing results but did not exit within 300 seconds.
+Removed the redundant inbox pull from worker guidance; current main's general guide also omits it. Merged main (including TASK-224), preserving its AGENTS.md, chitty.toml, and version exactly. Verified both acceptance criteria. make format && make check passed (377 Python tests and Node tests); focused inbox and guide tests passed. chitty fix completed with pre-existing task-text warnings. No follow-up.
 
 ## History
 
@@ -595,3 +595,5 @@ Removed the redundant inbox pull from the worker and general guide sources, pres
 - 2026-11-08T13:08:33Z eager-puffin: wrote the plan
 - 2026-11-08T13:47:18Z sunny-marten: changed notes
 - 2026-11-08T13:52:00Z sunny-marten: changed notes; ticked acceptance criteria
+- 2026-11-08T13:52:14Z sunny-marten: changed summary
+- 2026-11-08T13:52:14Z sunny-marten doing → review
