@@ -1,6 +1,6 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-131
@@ -39,9 +39,11 @@ Re-ran make format && make check: format clean, 397 Python tests passed, and Nod
 
 Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/integrations/pi/chitty.ts`, `src/chitty/integrations/pi/tests/chitty.test.ts`, `src/chitty/roles/review.md`.
 
+Regression test failed against the original continuation prompt (expected prohibition absent), then passed after restoring the updated prompt. Re-verified generated review instructions, packaged review role, landing docs in PLAN.md, README.md, and src/chitty/guide.md; no version change. make format && make check and npm test passed. chitty fix reports existing Markdown warnings in unrelated task files.
+
 ## Summary
 
-Handoff: Review role and Pi continuation prompt prohibit landing or removing branches/worktrees; README, guide, and PLAN document automated and manual landing. Verification: make format && make check passed (397 Python tests and Node tests). No follow-ups; version unchanged.
+Handoff: Review prompt and packaged role prohibit reviewers from landing or removing branches/worktrees; PLAN.md, README.md, and src/chitty/guide.md document automated and manual landing. Verification: regression test failed against original prompt and passed after fix; make format && make check and npm test passed; no version bump. Follow-ups: none.
 
 ## History
 
@@ -60,3 +62,5 @@ Handoff: Review role and Pi continuation prompt prohibit landing or removing bra
 - 2026-11-08T18:26:32Z plucky-wren doing → review
 - 2026-11-08T18:27:32Z able-heron: changed notes
 - 2026-11-08T18:27:32Z able-heron review → doing
+- 2026-11-08T19:52:56Z sunny-ibis: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T19:52:56Z sunny-ibis doing → review
