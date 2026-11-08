@@ -16,7 +16,7 @@ A related gap: a planner can add notes after another session has already claimed
 
 ## Acceptance Criteria
 
-- [ ] A fail-first guide test verifies `chitty guide plan` tells planners to note a successful ref from a read of the current ticket with no serious findings, include a diff against the configured main branch, warn the worker to check the current criteria, and delete superseded refs; `make check` passes.
+- [x] A fail-first guide test verifies `chitty guide plan` tells planners to note a successful ref from a read of the current ticket with no serious findings, include a diff against the configured main branch, warn the worker to check the current criteria, and delete superseded refs; `make check` passes.
 
 ## Plan
 
@@ -32,6 +32,12 @@ Resolved the cold-read ambiguity in the description; the guide handoff is only f
 
 Implementing cold read against the revised ticket: guide regression test first failed with missing current-text/no-serious-findings, diff, current-criteria and stale-ref-deletion instructions. After the guide change the focused test and `make check` passed (377 Python tests, Node tests). Candidate at `refs/cold-read/TASK-211/1`; inspect with `git diff main...refs/cold-read/TASK-211/1` and check against the current criteria before reuse. No remaining serious finding.
 
+Added the plan-guide handoff and regression test. Confirmed the new test failed before the guide change; `make format && make check` passes (378 Python tests and Node tests). Candidate read ref is `refs/cold-read/TASK-211/1`; inspect with `git diff main...refs/cold-read/TASK-211/1` and check against current criteria before reuse. No unresolved serious finding.
+
+## Summary
+
+Guide change ready for review. Verification: focused test failed first, then full make format and make check passed. Follow-up: reviewer should confirm wording and criteria.
+
 ## History
 
 - 2026-11-06T13:58:02Z youthful-toad → backlog
@@ -44,3 +50,4 @@ Implementing cold read against the revised ticket: guide regression test first f
 - 2026-11-08T14:19:39Z eager-puffin backlog → todo
 - 2026-11-08T16:42:34Z lively-zander todo → doing
 - 2026-11-08T16:42:51Z lively-zander: wrote the plan
+- 2026-11-08T16:44:20Z lively-zander: changed notes, summary; ticked acceptance criteria
