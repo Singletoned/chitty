@@ -20,9 +20,12 @@ Allow a repository to choose persistent, independent model defaults in `chitty.t
 
 Read-only cold read: the first draft left precedence ambiguous when a command already had `--model`, and did not identify where `chitty init` inserts comments. Fixed the description and criterion 2: existing model arguments suppress the role default without rewriting them, and commented config examples belong before table headers. A fresh implementing cold read with tests and `make check` is still needed before promotion from backlog.
 
+Second read-only cold read found a TOML placement contradiction: pyproject examples must be placed after `[tool.chitty]`, not before the first table header. Corrected the description. Require a pyproject init test that checks placement and uncommented parsing. Implementing cold read still pending.
+
 ## History
 
 - 2026-11-08T13:21:57Z eager-puffin → backlog
 - 2026-11-08T13:23:28Z eager-puffin: changed description, acceptance criteria
 - 2026-11-08T13:23:56Z eager-puffin: changed notes
 - 2026-11-08T14:15:33Z eager-puffin: changed description
+- 2026-11-08T14:15:35Z eager-puffin: changed notes
