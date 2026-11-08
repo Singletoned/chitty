@@ -1,6 +1,6 @@
 ---
 title: Configure default models for work and review sessions
-status: backlog
+status: todo
 priority: medium
 parent: TASK-106
 created: 2026-11-08
@@ -35,3 +35,4 @@ Implementing cold read completed after the read-only findings and a repeat read:
 - 2026-11-08T14:15:35Z eager-puffin: changed notes
 - 2026-11-08T14:51:01Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T14:55:45Z eager-puffin: changed notes
+- 2026-11-08T14:55:46Z eager-puffin backlog → todo
