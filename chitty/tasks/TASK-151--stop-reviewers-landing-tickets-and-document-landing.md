@@ -1,6 +1,6 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-131
@@ -33,6 +33,8 @@ TASK-224 supersedes the branch-version-bump requirement; version selection happe
 
 Review prompt and packaged role prohibit reviewers from landing or removing worktrees; regression test covers the generated prompt. README, guide, and PLAN document landing and manual fallback. Verified with make format && make check (397 Python tests and Node tests pass); no version bump.
 
+Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/integrations/pi/chitty.ts`, `src/chitty/integrations/pi/tests/chitty.test.ts`, `src/chitty/roles/review.md`.
+
 ## Summary
 
 Handoff: Reviewer instructions now leave landing to chitty run; README, src/chitty/guide.md, and PLAN.md describe automated and manual landing. Verification: make format && make check passed (397 Python tests and Node tests). No follow-ups; version unchanged.
@@ -48,3 +50,5 @@ Handoff: Reviewer instructions now leave landing to chitty run; README, src/chit
 - 2026-11-08T18:17:08Z youthful-vole: wrote the plan
 - 2026-11-08T18:21:02Z youthful-vole: changed notes, summary; ticked acceptance criteria
 - 2026-11-08T18:21:02Z youthful-vole doing → review
+- 2026-11-08T18:23:24Z sunny-adder: changed notes
+- 2026-11-08T18:23:24Z sunny-adder review → doing
