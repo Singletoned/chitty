@@ -35,7 +35,7 @@ Out of scope: having Chitty enforce the format of a failure note, and which mode
 
 ## Plan
 
-Update the review role's two specified bullets exactly as ticketed, add the TestGuide regression assertions with collapsed whitespace, run the focused test and full make check, then apply chitty fix and record verification.
+Update the review role’s two specified bullets, add a dedicated tests/test_guide_review_evidence.py regression with collapsed whitespace, confirm it fails without the change and passes with it, then run make check and hand off for review.
 
 ## Notes
 
@@ -120,3 +120,4 @@ Updated the two review-role bullets and added TestGuide regression assertions re
 - 2026-11-07T09:39:55Z vivid-dormouse: changed owner, notes
 - 2026-11-08T13:05:02Z eager-puffin: changed owner, notes
 - 2026-11-08T13:08:50Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-08T13:08:51Z eager-puffin: wrote the plan
