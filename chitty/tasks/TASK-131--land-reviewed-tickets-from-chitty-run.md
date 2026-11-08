@@ -1,6 +1,6 @@
 ---
 title: Land reviewed tickets from `chitty run`
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-120
@@ -322,3 +322,4 @@ Handoff: Landing no-ops when both the ticket branch and worktree are already gon
 - 2026-11-08T17:14:06Z golden-raven: changed notes
 - 2026-11-08T17:14:06Z golden-raven review → doing
 - 2026-11-08T17:20:12Z brisk-puffin: changed notes, summary; ticked acceptance criteria
+- 2026-11-08T17:20:14Z brisk-puffin doing → review
