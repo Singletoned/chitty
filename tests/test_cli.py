@@ -1585,27 +1585,46 @@ class TestEdit(CliTestCase):
         self.assertIn("--set-ac is not allowed while a task is in review", result.stderr)
         self.assertEqual(self.path.read_text(), original)
 
-    def test_edit_rejects_adding_and_removing_criteria_in_review(self):
+    def test_edit_rejects_adding_criterion_in_review(self):
         self.run_cli("edit", "1", "-s", "review")
         original = self.path.read_text()
-        for args, message in (
-            (("--ac", "Unexpected"), "--ac is not allowed while a task is in review"),
-            (("--rm-ac", "1"), "--rm-ac is not allowed while a task is in review"),
-            (
-                (
-                    "-s",
-                    "done",
-                    "--rm-ac",
-                    "1",
-                    "--note",
-                    "Reviewed: ready.\n1: pass - checked\n2: pass - checked",
-                ),
-                "--rm-ac is not allowed while a task is in review",
-            ),
-        ):
-            result = self.run_cli("edit", "1", *args, exit_code=1)
-            self.assertIn(message, result.stderr)
-            self.assertEqual(self.path.read_text(), original)
+
+        result = self.run_cli("edit", "1", "--ac", "Unexpected", exit_code=1)
+
+        self.assertIn("--ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+    def test_edit_rejects_removing_criterion_in_review(self):
+        self.run_cli("edit", "1", "-s", "review")
+        original = self.path.read_text()
+
+        result = self.run_cli("edit", "1", "--rm-ac", "1", exit_code=1)
+
+        self.assertIn("--rm-ac is not allowed while a task is in review", result.stderr)
+        self.assertEqual(self.path.read_text(), original)
+
+    def test_edit_rejects_removing_criterion_when_completing_review(self):
+        self.run_cli("edit", "1", "-s", "review")
+        original = self.path.read_text()
+        result = CliRunner().invoke(
+            cli,
+            [
+                "edit",
+                "1",
+                "-s",
+                "done",
+                "--rm-ac",
+                "1",
+                "--note",
+                "Reviewed: ready.\n1: pass - checked\n2: pass - checked",
+            ],
+            env={"CHITTY_ACTOR": "reviewer"},
+            catch_exceptions=False,
+        )
+
+        self.assertEqual(result.exit_code, 1, result.output)
+        self.assertIn("--rm-ac is not allowed while a task is in review", result.output)
+        self.assertEqual(self.path.read_text(), original)
 
     def test_edit_can_add_criterion_when_entering_review(self):
         self.run_cli("edit", "1", "-s", "doing")
