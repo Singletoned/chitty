@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-166
@@ -38,3 +38,4 @@ TASK-224 supersedes the branch-version-bump requirement.
 - 2026-11-04T20:48:52Z mellow-newt backlog → todo
 - 2026-11-05T17:10:25Z mellow-newt: changed notes
 - 2026-11-08T13:05:16Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-09T09:52:13Z youthful-puffin todo → doing
