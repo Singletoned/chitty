@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-166
@@ -62,3 +62,4 @@ Handoff: reviewer guidance, role prompt, CLI regression coverage, README example
 - 2026-11-09T12:30:37Z intrepid-puffin: changed notes
 - 2026-11-09T12:30:37Z intrepid-puffin review → doing
 - 2026-11-09T12:34:44Z lively-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-09T12:34:46Z lively-zander doing → review
