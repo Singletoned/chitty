@@ -14,7 +14,7 @@ review = true
 
 list_width = 80
 
-chitty_version = "0.1.44"
+chitty_version = "0.1.45"
 # work_model = "provider/model" # default for work sessions
 # review_model = "provider/model" # default for review sessions
 
