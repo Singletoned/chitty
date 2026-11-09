@@ -1,6 +1,6 @@
 ---
 title: Land waiting tickets at the start of `chitty run`
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-151
@@ -37,3 +37,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: where this
 - 2026-11-04T15:17:40Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-05T10:07:35Z mellow-newt: changed description
 - 2026-11-05T10:23:47Z mellow-newt: changed description
+- 2026-11-09T09:33:52Z calm-adder todo → doing
