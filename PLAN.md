@@ -429,7 +429,7 @@ chitty archive [ID]                  omit ID to archive every done task
 chitty check [-c CTX] [PATH]...    validate; non-zero on any error
 chitty fix [-c CTX] [PATH]...      repair safe problems; fail if any remain
 chitty path ID                     print the file path (for editors/agents)
-chitty guide                       print the agent instructions (the AGENTS.md block)
+chitty guide [setup|work|review|plan|cold-read] [ID]  print agent instructions; setup explains run configuration
 chitty mcp                         stdio MCP server (needs the mcp extra)
 ```
 
@@ -540,9 +540,11 @@ When starting an agent by hand, run the matching focused guide:
 ```
 
 That is the whole pointer prompt. The complete work, review, and planning rules
-live in the packaged role files printed by `chitty guide <role>`. Statuses are
-fixed, so the block is always correct. `chitty guide` prints the same unmarked
-block, and `chitty --help` points agents at it.
+live in the packaged role files printed by `chitty guide <role>`. `chitty guide
+setup` is a separate checklist for configuring `chitty run` from the main
+checkout, and `chitty guide --help` lists the roles with usage examples.
+Statuses are fixed, so the block is always correct. `chitty guide` prints the
+same unmarked block, and `chitty --help` points agents at it.
 
 ## Pipeline and feedback
 

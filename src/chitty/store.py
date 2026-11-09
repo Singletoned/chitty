@@ -52,7 +52,7 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 BROKEN_DEPENDENCY_GLYPH = "⚠️"
-ROLE_NAMES = ("work", "review", "plan", "cold-read")
+ROLE_NAMES = ("work", "review", "plan", "cold-read", "setup")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
 RANDOM_ID_MIN = 10_000_000
 RANDOM_ID_MAX = 99_999_999
@@ -952,8 +952,8 @@ def guide(role: str | None = None, ticket_id: str | None = None) -> str:
         return files("chitty").joinpath("guide.md").read_text()
     if role not in ROLE_NAMES:
         raise ChittyError(f"unknown role {role!r}; choose from {', '.join(ROLE_NAMES)}")
-    if ticket_id is not None and role == "plan":
-        raise ChittyError("the plan role does not take a ticket ID")
+    if ticket_id is not None and role in {"plan", "setup"}:
+        raise ChittyError(f"the {role} role does not take a ticket ID")
 
     text = files("chitty").joinpath("roles", f"{role}.md").read_text()
     return f"Work only on Chitty ticket {ticket_id}.\n\n{text}" if ticket_id is not None else text

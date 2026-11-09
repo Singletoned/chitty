@@ -67,6 +67,7 @@ chitty check                      # validate everything; non-zero on problems
 chitty fix                        # repair safe problems; fail if any remain
 chitty archive                     # process every completed task before a merge request
 chitty guide                      # managed `AGENTS.md` instructions for coding agents
+chitty guide setup                # help an agent configure `chitty run`
 chitty guide work TASK-12         # instructions for one implementation ticket
 chitty guide review TASK-12       # instructions for one review ticket
 chitty guide plan                 # instructions for writing and refining tickets
@@ -76,10 +77,12 @@ Every command takes `--json`. `chitty --help` and `chitty <command> --help`
 are the reference. `chitty guide` prints the managed `AGENTS.md` block; `chitty init` wraps that
 block in strict `chitty:begin` and `chitty:end` markers so only Chitty's text is
 replaced. Existing unmarked blocks are migrated on the next init.
-`chitty guide work`, `review`, and `plan` print the focused instructions for
-that role from the packaged role files. The short block in `AGENTS.md` points
-agents started by hand to the matching role guide. Work and review take an
-optional ticket ID; planning does not.
+`chitty guide setup` prints a repository-independent checklist for configuring
+`chitty run` from the main checkout; `chitty guide --help` lists every guide
+and shows example commands. `chitty guide work`, `review`, and `plan` print the
+focused instructions for those roles from the packaged role files. The short
+block in `AGENTS.md` points agents started by hand to their matching role guide.
+Work, review and cold-read take an optional ticket ID; setup and planning do not.
 Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
 tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,

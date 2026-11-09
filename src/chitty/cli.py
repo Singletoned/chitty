@@ -788,9 +788,21 @@ def archive(task_id: str | None, as_json: bool) -> None:
 
 @cli.command("guide")
 @click.argument("role", required=False)
-@click.argument("task_id", metavar="ID", required=False)
+@click.argument("task_id", metavar="[ID]", required=False)
 def guide_(role: str | None, task_id: str | None) -> None:
-    """Print general or role-specific instructions for coding agents."""
+    """Print general or role-specific instructions for coding agents.
+
+    \b
+    Examples:
+      chitty guide                    General agent instructions
+      chitty guide setup              Configure chitty run in a repository
+      chitty guide work TASK-12       Work on a ticket
+      chitty guide review TASK-12     Review a ticket
+      chitty guide plan               Write or refine tickets
+      chitty guide cold-read TASK-12  Cold-read a proposed ticket
+
+    Work, review and cold-read accept an optional ticket ID. Setup and plan do not.
+    """
     click.echo(guide(role, task_id), nl=False)
     if role is None and pi_session_environment_missing():
         click.echo(
