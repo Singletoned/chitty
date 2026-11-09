@@ -21,7 +21,10 @@ Observed on TASK-131 and TASK-211: workers recorded successful make checks and m
 
 Read-only cold read found no serious ambiguity: change src/chitty/roles/work.md and add tests/test_guide_work_commits.py; the new guide test must be run against unchanged work.md and fail before the fix, then pass with make check. Rejected the provenance concern: chitty show in the TASK-131 and TASK-211 worktrees records three review preflight failures and human escalation each; the main checkout ticket copies are stale until those branches land. An implementing fail-first cold read remains before promotion from backlog.
 
+Implemented directly for the human request in commit 80ce143: the guide now requires commits and a clean status before review; the same change adds a review transition guard, chitty check diagnostic, and immediate human blocking for dirty review branches. This backlog guide-only ticket is superseded.
+
 ## History
 
 - 2026-11-08T17:58:14Z eager-puffin → backlog
 - 2026-11-08T17:59:51Z eager-puffin: changed notes
+- 2026-11-09T21:08:31Z eager-puffin: changed notes
