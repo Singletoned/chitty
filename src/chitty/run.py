@@ -206,6 +206,8 @@ def _run_ticket(
         work_repo = Repo.open(worktree)
     if failed := _run_check(work_repo, worktree, action, check):
         return failed
+    if action.mode == "review" and (blocked := _block_dirty_review(work_repo, worktree, action)):
+        return blocked
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
         work_repo.edit(action.id, claim_edit())
     old_status = work_repo.find(action.id).task.frontmatter.status
@@ -484,13 +486,8 @@ def _prepare_review(
     The reviewer then sees exactly what would land. Returns the status change
     when the ticket fails here, so no review session is spent on it.
     """
-    if uncommitted := git.uncommitted_paths(worktree):
-        listed = ", ".join(f"`{path}`" for path in uncommitted)
-        return _fail_review(
-            work_repo,
-            action,
-            f"Review failed (work): the worktree has uncommitted changes: {listed}.",
-        )
+    if blocked := _block_dirty_review(work_repo, worktree, action):
+        return blocked
     try:
         conflicts = git.merge_main(worktree, main_branch)
     except KeyboardInterrupt:
@@ -519,6 +516,24 @@ def _prepare_review(
             "only chitty init on the main checkout may change it. Restore that block from main.",
         )
     return None
+
+
+def _block_dirty_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunResult | None:
+    if not (uncommitted := git.uncommitted_paths(worktree)):
+        return None
+    listed = ", ".join(f"`{path}`" for path in uncommitted)
+    old_status = work_repo.find(action.id).task.frontmatter.status
+    change = work_repo.edit(
+        action.id,
+        Edit(
+            status="blocked",
+            owner="human",
+            note="Review blocked (work): the worktree has uncommitted changes: "
+            f"{listed}. A human must resolve the files and decide when to resume.",
+            skip_verdicts=True,
+        ),
+    )
+    return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
 def _changed_agents_block(worktree: Path, main_branch: str | None = None) -> bool:
@@ -778,6 +793,8 @@ def _handle_check_failure(work_repo: Repo, action: NextAction, detail: str) -> R
             Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
         )
         return None
+    if blocked := _block_dirty_review(work_repo, work_repo.root, action):
+        return blocked
     return _fail_check(work_repo, action, detail)
 
 

@@ -483,6 +483,16 @@ class Repo:
             and previous_status != "review"
         ):
             raise ChittyError("setting status done requires -s review first")
+        entering_review = edit.status == "review" and previous_status != "review"
+        passing_review = previous_status == "review" and edit.status == "done"
+        if (entering_review or passing_review) and (self.root / ".git").exists():
+            self._require_current_version(stored)
+            if uncommitted := git.uncommitted_paths(self.root):
+                listed = ", ".join(f"`{path}`" for path in uncommitted)
+                raise ChittyError(
+                    f"cannot move {task_id} to {edit.status}; the worktree has "
+                    f"uncommitted changes: {listed}. Commit or resolve them before changing status"
+                )
         edit = check_edit(stored.task, edit, actor())
         edit = replace(
             edit,
@@ -745,7 +755,9 @@ class Repo:
                 for path in existing
                 if any(path.resolve().is_relative_to(directory) for directory in directories)
             ]
-            _, problems = fix(self, self.contexts(), task_paths)
+            # The task file is temporarily dirty until its autocommit below;
+            # validate content here, but leave worktree cleanliness to `chitty check`.
+            _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
             if blocking := errors(problems):
                 details = "\n".join(str(problem) for problem in blocking)
                 raise ChittyError(

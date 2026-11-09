@@ -745,8 +745,9 @@ what would land:
 
 1. An unfinished merge or rebase, for example after a crash, is a loud error for
    the human, with no status change.
-2. Uncommitted changes, including untracked but not ignored files, move the
-   ticket to `doing` with `Review failed (work): ...` listing them.
+2. Uncommitted changes, including untracked but not ignored files, block the
+   ticket for `human` immediately with `Review blocked (work): ...` listing
+   them. No reviewer starts and the human decides when to resume.
 3. It merges the local `main` into the branch. On a conflict it runs
    `git merge --abort` and moves the ticket to `doing` with `Review failed
    (integration): ...` naming the conflicting files, for the worker to resolve
@@ -754,7 +755,9 @@ what would land:
    resolution Git recorded for another branch is never replayed unchecked.
 4. Only then does `setup` run, because the merge can change dependencies.
 5. `check` runs in the ticket worktree after setup, with combined output
-   captured. In review mode, a failure moves the ticket to `doing` with the last
+   captured. If setup or check leaves uncommitted files in review mode, block
+   for `human` before launching the reviewer. Otherwise a check failure moves
+   the ticket to `doing` with the last
    20 output lines, fenced as a code block so they cannot break the ticket's
    Markdown, in a `Review failed (work)` note and starts no agent. In work mode,
    a `doing` ticket gets a note-only `Check failed before this session: ...`
@@ -763,7 +766,14 @@ what would land:
    agent. In all work-mode cases setup and check still run before the agent
    claim.
 
-A review check failure starts no agent, writes no usage line, and `chitty run`
+Entering `review` or passing it to `done` through the shared store requires
+a clean current worktree; a dirty branch may still be moved to `blocked` for
+human resolution. `chitty check` reports dirty files on the current ticket
+branch while in
+review, but allows dirty `doing` work during development. Direct manual
+reviewers also check `git status --short` first and block dirty tickets for
+`human` rather than returning them to a worker. A review check failure starts
+no agent, writes no usage line, and `chitty run`
 exits 0 because the status changed, printing the change. The move goes through
 `Repo.edit` under the run's own actor, which never worked on the ticket, so it
 counts with reviewers' failures towards `REVIEW_FAILURE_LIMIT`. A work-mode

@@ -1371,6 +1371,8 @@ class TestNext(CliTestCase):
 
         self.git("worktree", "remove", "--force", str(worktree))
         self.git("branch", "-D", "task-1")
+        self.git("add", "bin/pi")
+        self.git("commit", "--quiet", "-m", "install test agent")
         self.run_cli("edit", "TASK-1", "--status", "review")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
@@ -2112,6 +2114,7 @@ class TestNext(CliTestCase):
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
+        (self.root / ".gitignore").write_text("setup-ran\npi-ran\nagent-arguments-*\ninterpreted\n")
         self.add("Todo")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")

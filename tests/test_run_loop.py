@@ -39,6 +39,8 @@ class TestRunLoop(CliTestCase):
             "from pathlib import Path\n"
             "import subprocess, sys\n"
             "Path('agent-args').write_text(repr(sys.argv[1:]))\n"
+            "subprocess.run(['git', 'add', 'agent-args'], check=True)\n"
+            "subprocess.run(['git', 'commit', '-m', 'work\\n\\nTask: TASK-1'], check=True)\n"
             "subprocess.run(['chitty', 'edit', 'TASK-1', '-s', 'review'], check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
