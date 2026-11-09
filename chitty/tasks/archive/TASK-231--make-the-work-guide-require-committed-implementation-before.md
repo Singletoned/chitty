@@ -28,3 +28,4 @@ Implemented directly for the human request in commit 80ce143: the guide now requ
 - 2026-11-08T17:58:14Z eager-puffin → backlog
 - 2026-11-08T17:59:51Z eager-puffin: changed notes
 - 2026-11-09T21:08:31Z eager-puffin: changed notes
+- 2026-11-09T21:09:37Z eager-puffin backlog → archived
