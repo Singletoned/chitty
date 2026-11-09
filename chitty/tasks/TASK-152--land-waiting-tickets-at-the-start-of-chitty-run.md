@@ -37,6 +37,10 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: where this
 
 Verified all four criteria: pending tickets land in ID order and stop on the first failure; an unfinished rebase fails loudly, and removal failure retries; run lands before agent startup and a subsequent run selects work; a failed run completes landing on retry after the cause is removed. `make format && make check` passes (408 Python tests plus Node tests). Commit: b3f2efd.
 
+## Summary
+
+Implemented pending landing retries before plain-run ticket selection, using local branch names and Repo.find statuses. Tests cover ordering, stop/error retries, no-agent landing followed by selection, and retry on a later run. Verification: make format && make check passes (408 Python tests and Node tests). Follow-up: none.
+
 ## History
 
 - 2026-11-04T15:11:36Z mellow-newt → todo
@@ -46,3 +50,4 @@ Verified all four criteria: pending tickets land in ID order and stop on the fir
 - 2026-11-09T09:33:52Z calm-adder todo → doing
 - 2026-11-09T09:34:18Z calm-adder: wrote the plan
 - 2026-11-09T09:49:58Z calm-adder: changed notes; ticked acceptance criteria
+- 2026-11-09T09:49:59Z calm-adder: changed summary
