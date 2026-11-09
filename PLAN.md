@@ -696,6 +696,11 @@ its own, so an idle reviewer is distinguishable from a broken one, which exits
 1. An idle queue includes one where every `todo` task waits on a dependency.
 `chitty run` exits 3 in the same case. The MCP tool keeps the default.
 
+A plain `chitty run` first retries landing non-archived `done` tickets that
+still have a local branch named for their ID, in ID order. It stops after the
+first landing and exits successfully; the next invocation refreshes setup before
+selecting an agent ticket. `--ticket` skips this recovery pass.
+
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
 Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips owned `todo` and `doing` tickets, while still selecting owned `review` tickets; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.

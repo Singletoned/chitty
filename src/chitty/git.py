@@ -249,6 +249,12 @@ def worktree_for_branch(root: Path, branch: str) -> Path | None:
     return None
 
 
+def local_branches(root: Path) -> list[str]:
+    """Return local branch names, excluding remote refs."""
+    output = _git(root, "for-each-ref", "--format=%(refname:short)", "refs/heads")
+    return output.splitlines()
+
+
 def has_local_branch(root: Path, branch: str) -> bool:
     """Report whether ``branch`` names a local branch."""
     try:
