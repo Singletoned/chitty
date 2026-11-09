@@ -1,6 +1,6 @@
 ---
 title: Stop reviewers landing tickets, and document landing
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-131
@@ -49,6 +49,10 @@ Review failed (design): Criterion 1 literally requires review instructions not t
 
 Human clarification: the intended rule is no instruction for reviewers to land, not a ban on mentioning merging or removal. When an arbitrary person reviews outside chitty run, that person is responsible for arranging manual landing; no additional handoff policy is needed. The prior design/criterion-2 concerns were mistaken and are withdrawn. Committed all six previously uncommitted implementation files in d67bf2b (Task: TASK-151), merged current main, confirmed no managed setup or version changes, and reran make format && make check (403 Python tests plus Node tests passed). Worktree clean; ready for independent review.
 
+Reviewed: make format && make check passed (403 Python tests and Node tests); version unchanged.
+1: pass - Pi prompt regression test and packaged review guide prohibit reviewer landing.
+2: pass - PLAN.md, README.md and src/chitty/guide.md describe landing; version unchanged.
+
 ## Summary
 
 Handoff: Review prompt and packaged role prohibit reviewers from landing or removing branches/worktrees; PLAN.md, README.md, and src/chitty/guide.md document automated and manual landing. Verification: regression test failed against original prompt and passed after fix; make format && make check and npm test passed; no version bump. Follow-ups: none.
@@ -78,3 +82,5 @@ Handoff: Review prompt and packaged role prohibit reviewers from landing or remo
 - 2026-11-08T20:13:46Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-08T20:13:47Z eager-puffin: changed owner; ticked acceptance criteria
 - 2026-11-08T20:13:47Z eager-puffin blocked → review
+- 2026-11-09T08:17:41Z nimble-adder: changed notes; ticked acceptance criteria
+- 2026-11-09T08:17:41Z nimble-adder review → done
