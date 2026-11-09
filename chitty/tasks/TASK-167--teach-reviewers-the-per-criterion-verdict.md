@@ -1,7 +1,8 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: review
+status: blocked
 priority: medium
+owner: human
 depends_on:
   - TASK-166
   - TASK-142
@@ -48,6 +49,10 @@ Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.m
 
 Verified: `python -m unittest tests.test_guide_review_evidence` passed; `chitty guide review` shows numbered pass/fail lines and test-without-change evidence. README.md, PLAN.md and src/chitty/guide.md show the form. `src/chitty/roles/review.md` preserves run-output instructions. `make format && make check` passed (403 Python tests and Node tests); `git diff --check` passed. No version change. `chitty fix` passed with existing task-format warnings.
 
+Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/roles/review.md`, `tests/test_guide_review_evidence.py`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Handoff: per-criterion review verdict guidance, regression coverage, README example and PLAN description are in place. Verification: guide test, generated guide, `make format && make check` (403 Python tests and Node tests), and `git diff --check` passed; no version bump. Follow-ups: none.
@@ -71,3 +76,5 @@ Handoff: per-criterion review verdict guidance, regression coverage, README exam
 - 2026-11-09T12:37:33Z tidy-falcon review → doing
 - 2026-11-09T12:41:21Z honest-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-09T12:41:21Z honest-eel doing → review
+- 2026-11-09T12:41:40Z plucky-ibis: changed owner, notes
+- 2026-11-09T12:41:40Z plucky-ibis review → blocked
