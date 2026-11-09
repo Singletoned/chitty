@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-166
@@ -44,6 +44,8 @@ Reviewed: updated review guidance requires a verdict line per criterion, and che
 2: pass - src/chitty/__init__.py version unchanged.
 Verification: `make format && make check` passed (403 Python tests and Node tests). `chitty fix` completed with pre-existing task-format warnings.
 
+Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/roles/review.md`, `tests/test_guide_review_evidence.py`.
+
 ## Summary
 
 Handoff: reviewer guidance, role prompt, CLI regression coverage, README example and PLAN description now specify per-criterion verdict lines and test-failure evidence. Verification: `make format && make check` passed (403 Python tests and Node tests); generated `chitty guide review` checked; no version bump. Follow-ups: none.
@@ -63,3 +65,5 @@ Handoff: reviewer guidance, role prompt, CLI regression coverage, README example
 - 2026-11-09T12:30:37Z intrepid-puffin review → doing
 - 2026-11-09T12:34:44Z lively-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-09T12:34:46Z lively-zander doing → review
+- 2026-11-09T12:37:33Z tidy-falcon: changed notes
+- 2026-11-09T12:37:33Z tidy-falcon review → doing
