@@ -20,8 +20,8 @@ In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s desc
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
-- [ ] The ticket branch does not bump `__version__`; version selection happens at release.
+- [x] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
+- [x] The ticket branch does not bump `__version__`; version selection happens at release.
 
 ## Plan
 
@@ -35,6 +35,12 @@ Added 2026-11-05 from the cold read of `TASK-193`, which edits the same failure-
 
 TASK-224 supersedes the branch-version-bump requirement.
 
+Verified: the guide-review regression test passes; generated chitty guide review contains the verdict form and test-failure evidence requirement; README.md, PLAN.md, and src/chitty/guide.md include the form; src/chitty/roles/review.md preserves the run-output requirement. make format && make check passed (403 Python tests and Node tests). No version change.
+
+## Summary
+
+Handoff: review notes now require one evidence/reason verdict line per criterion, with test-criterion evidence showing the test fails without the change. Verification: guide regression test and generated guide checked; README.md, PLAN.md and src/chitty/guide.md checked; make format && make check passed (403 Python tests and Node tests). Follow-ups: none.
+
 ## History
 
 - 2026-11-04T20:47:41Z mellow-newt → backlog
@@ -44,3 +50,4 @@ TASK-224 supersedes the branch-version-bump requirement.
 - 2026-11-08T13:05:16Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-09T09:52:13Z youthful-puffin todo → doing
 - 2026-11-09T09:52:39Z youthful-puffin: wrote the plan
+- 2026-11-09T09:55:48Z youthful-puffin: changed notes, summary; ticked acceptance criteria
