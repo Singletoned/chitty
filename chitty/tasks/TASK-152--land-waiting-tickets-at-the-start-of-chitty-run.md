@@ -1,6 +1,6 @@
 ---
 title: Land waiting tickets at the start of `chitty run`
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-151
@@ -51,3 +51,4 @@ Implemented pending landing retries before plain-run ticket selection, using loc
 - 2026-11-09T09:34:18Z calm-adder: wrote the plan
 - 2026-11-09T09:49:58Z calm-adder: changed notes; ticked acceptance criteria
 - 2026-11-09T09:49:59Z calm-adder: changed summary
+- 2026-11-09T09:50:01Z calm-adder doing → review
