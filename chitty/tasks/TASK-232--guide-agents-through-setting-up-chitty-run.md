@@ -1,6 +1,6 @@
 ---
 title: Guide agents through setting up chitty run
-status: review
+status: done
 priority: medium
 parent: TASK-106
 created: 2026-11-09
@@ -25,6 +25,10 @@ Read-only cold read clarified that there are two mutually exclusive config locat
 
 Fail-first: new tests/test_guide_setup.py produced 8 assertion failures before implementation: setup was an unknown role, the guide help omitted examples, and setup with a ticket ID was not handled. After adding the setup guide and help, 15 focused tests passed. make format && make check passed after merging current main (406 Python tests and Node tests); chitty fix reported only existing warnings in unrelated ticket files. No version, managed agent block or repository configuration changed on this branch.
 
+Reviewed: verified the setup guide and help outside a repository, inspected dispatch, documentation and tests, and reproduced eight failures against main. make format && make check passed (406 Python tests and Node tests).
+1: pass - Setup guide and help cover the requested instructions and examples.
+2: pass - Dedicated tests fail against main and pass on this branch; documentation and full checks pass.
+
 ## Summary
 
 Handoff: chitty guide setup provides main-checkout configuration instructions for new and existing repositories, Pi or other agents, and a real-run verification path. chitty guide --help lists roles and examples and shows optional ID correctly. Verified fail-first tests, focused guide tests, and full checks after main integration. No follow-ups.
@@ -37,3 +41,5 @@ Handoff: chitty guide setup provides main-checkout configuration instructions fo
 - 2026-11-09T11:53:37Z eager-puffin todo → doing
 - 2026-11-09T12:00:51Z eager-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-09T12:00:51Z eager-puffin doing → review
+- 2026-11-09T12:35:22Z witty-raven: changed notes; ticked acceptance criteria
+- 2026-11-09T12:35:22Z witty-raven review → done
