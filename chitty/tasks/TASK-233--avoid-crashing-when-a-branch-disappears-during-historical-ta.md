@@ -14,7 +14,7 @@ Observed in Echonomicon on 2026-11-09 at 10:49:59, running `chitty list` with Ch
 
 ## Acceptance Criteria
 
-- [ ] Deterministic real-Git regression tests delete a ticket branch after ref enumeration and after `git log`, fail against the old behavior, and show `chitty list` and `historical_files` still return a consistent view of surviving tickets rather than a bad-revision error.
+- [ ] Deterministic real-Git regression tests delete a ticket branch after ref enumeration and after `git log`, fail against the old behavior, and show `historical_files` uses one captured ref snapshot rather than raising a bad-revision error; the next call reflects the deleted branch.
 - [ ] A test moves a ref between enumeration and tree reading and shows history and blobs use the same captured commit; unrelated Git failures still raise errors rather than being swallowed. `make check` passes.
 
 ## Notes
@@ -23,8 +23,11 @@ Suggestion origin: echonomicon
 
 Triage: distinct from completed TASK-164, which deliberately surfaced Git errors instead of silently discarding tickets. This suggestion addresses only concurrent ref deletion/movement by using the ref object IDs captured at enumeration, without relaxing failures for repository corruption. Keep the imported reproduction in the description; backlog until implementing cold read.
 
+Clarification: one call uses the refs captured at its start, including a branch deleted during the call; the next call may omit it. This matches the proposed immutable-object-ID fix and avoids a contradictory requirement to both preserve the snapshot and immediately drop the branch. The tests should fail against the original mutable-name implementation.
+
 ## History
 
 - 2026-11-09T12:03:06Z eager-puffin → backlog
 - 2026-11-09T12:03:08Z eager-puffin: changed notes
 - 2026-11-09T12:04:53Z eager-puffin: changed labels, priority, parent, acceptance criteria, notes
+- 2026-11-09T12:07:50Z eager-puffin: changed acceptance criteria, notes
