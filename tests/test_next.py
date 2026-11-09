@@ -24,6 +24,17 @@ from tests.test_cli import CliTestCase
 
 
 class TestNext(CliTestCase):
+    def install_fake_pi(self, body: str) -> None:
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir(exist_ok=True)
+        fake.write_text("#!" + sys.executable + "\n" + body)
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        environment = patch.dict(
+            os.environ, {"PATH": f"{fake.parent}:{os.environ.get('PATH', '')}"}
+        )
+        environment.start()
+        self.addCleanup(environment.stop)
+
     def add(self, title: str, *, status: str = "todo", **fields: object) -> str:
         args = ["add", title, "-d", "Description.", "-s", status]
         if priority := fields.get("priority"):
@@ -1218,6 +1229,7 @@ class TestNext(CliTestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
+        self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
         result = self.run_cli("run", exit_code=1)
 
         self.assertIn("check failed before TASK-1 started", result.stderr)
@@ -1257,6 +1269,7 @@ class TestNext(CliTestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
+        self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
         result = self.run_cli("run", exit_code=1)
 
         self.assertIn("check failed before TASK-1 started", result.stderr)
@@ -1490,10 +1503,7 @@ class TestNext(CliTestCase):
         self.git("-C", str(branch_worktree), "add", "pyproject.toml")
         self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "change other tool")
         self.git("worktree", "remove", "--force", str(branch_worktree))
-        fake = self.root / "bin" / "pi"
-        fake.parent.mkdir()
-        fake.write_text(
-            "#!" + sys.executable + "\n"
+        self.install_fake_pi(
             "import subprocess, sys\n"
             "path = next(\n"
             "    __import__('pathlib').Path('chitty/tasks').glob(sys.argv[-1] + '--*.md')\n"
@@ -1502,13 +1512,7 @@ class TestNext(CliTestCase):
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'finish'], check=True)\n"
         )
-        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
-        previous = os.environ.get("PATH", "")
-        os.environ["PATH"] = f"{fake.parent}:{previous}"
-        try:
-            passed = self.run_cli("run", "--ticket", "TASK-1")
-        finally:
-            os.environ["PATH"] = previous
+        passed = self.run_cli("run", "--ticket", "TASK-1")
         self.assertEqual(passed.stdout, "TASK-1: review → done\n")
 
         self.add("Config change")
