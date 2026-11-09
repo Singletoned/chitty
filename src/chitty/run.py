@@ -34,6 +34,7 @@ from chitty.store import (
     Edit,
     NextAction,
     Repo,
+    StoredTask,
     guide,
     managed_block,
     next_action,
@@ -87,9 +88,42 @@ def run(
     if project is None:
         raise ChittyError("`chitty run` requires a project name after setup refresh")
 
+    if ticket is None:
+        landed = _land_pending(main_repo)
+        if landed is not None:
+            return landed
+
     with ExitStack() as held:
         action = _lock_ticket(held, main_repo, ticket, mode, owner)
         return _run_ticket(main_repo, project, action, arguments, agent)
+
+
+def _land_pending(main_repo: Repo) -> RunResult | None:
+    """Retry completed local ticket branches before choosing new work."""
+    tasks = {str(task.id).lower(): task.id for task in main_repo.all_tasks()}
+    pending: list[StoredTask] = []
+    for branch in git.local_branches(main_repo.root):
+        task_id = tasks.get(branch)
+        if task_id is None:
+            continue
+        stored = main_repo.find(task_id)
+        if not stored.archived and stored.task.frontmatter.status == "done":
+            pending.append(stored)
+    pending.sort(key=lambda stored: stored.id)
+    if not pending:
+        return None
+    setup = main_repo.config.setup
+    check = main_repo.config.check
+    assert setup is not None
+    assert check is not None
+    for stored in pending:
+        task_id = stored.id
+        action = NextAction("review", task_id)
+        worktree = _worktree(main_repo.root, action, main_repo.config.main_branch)
+        _land(main_repo, worktree, action, setup, check)
+        print(f"landed {task_id}")
+        return RunResult(action, "done", "done")
+    raise AssertionError("unreachable")
 
 
 def _lock_ticket(
