@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-166
@@ -46,9 +46,11 @@ Verification: `make format && make check` passed (403 Python tests and Node test
 
 Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/roles/review.md`, `tests/test_guide_review_evidence.py`.
 
+Verified: `python -m unittest tests.test_guide_review_evidence` passed; `chitty guide review` shows numbered pass/fail lines and test-without-change evidence. README.md, PLAN.md and src/chitty/guide.md show the form. `src/chitty/roles/review.md` preserves run-output instructions. `make format && make check` passed (403 Python tests and Node tests); `git diff --check` passed. No version change. `chitty fix` passed with existing task-format warnings.
+
 ## Summary
 
-Handoff: reviewer guidance, role prompt, CLI regression coverage, README example and PLAN description now specify per-criterion verdict lines and test-failure evidence. Verification: `make format && make check` passed (403 Python tests and Node tests); generated `chitty guide review` checked; no version bump. Follow-ups: none.
+Handoff: per-criterion review verdict guidance, regression coverage, README example and PLAN description are in place. Verification: guide test, generated guide, `make format && make check` (403 Python tests and Node tests), and `git diff --check` passed; no version bump. Follow-ups: none.
 
 ## History
 
@@ -67,3 +69,5 @@ Handoff: reviewer guidance, role prompt, CLI regression coverage, README example
 - 2026-11-09T12:34:46Z lively-zander doing → review
 - 2026-11-09T12:37:33Z tidy-falcon: changed notes
 - 2026-11-09T12:37:33Z tidy-falcon review → doing
+- 2026-11-09T12:41:21Z honest-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-09T12:41:21Z honest-eel doing → review
