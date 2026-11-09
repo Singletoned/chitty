@@ -22,10 +22,10 @@ Out of scope: pushing.
 
 ## Acceptance Criteria
 
-- [ ] Tests show two pending tickets landing in ID order and a stop at the first failure
-- [ ] Tests show a leftover unfinished rebase stopping loudly, and a retry completing after a failed worktree removal
-- [ ] A test shows a landing at the start of a run exiting 0 without starting the agent, and the next run selecting a ticket
-- [ ] A test shows a landing that failed being completed by a later run once its cause is fixed
+- [x] Tests show two pending tickets landing in ID order and a stop at the first failure
+- [x] Tests show a leftover unfinished rebase stopping loudly, and a retry completing after a failed worktree removal
+- [x] A test shows a landing at the start of a run exiting 0 without starting the agent, and the next run selecting a ticket
+- [x] A test shows a landing that failed being completed by a later run once its cause is fixed
 
 ## Plan
 
@@ -35,6 +35,8 @@ Inspect the runner, repository/worktree helpers, and existing run tests. Add pen
 
 Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: where this runs, how it reads status, and `--ticket`; took over "a later run lands it" from `TASK-131`. Rejected: an order against `TASK-136` and the others changing `src/chitty/run.py`, because one ticket is in work at a time, and each rebases on what has landed.
 
+Verified all four criteria: pending tickets land in ID order and stop on the first failure; an unfinished rebase fails loudly, and removal failure retries; run lands before agent startup and a subsequent run selects work; a failed run completes landing on retry after the cause is removed. `make format && make check` passes (408 Python tests plus Node tests). Commit: b3f2efd.
+
 ## History
 
 - 2026-11-04T15:11:36Z mellow-newt → todo
@@ -43,3 +45,4 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: where this
 - 2026-11-05T10:23:47Z mellow-newt: changed description
 - 2026-11-09T09:33:52Z calm-adder todo → doing
 - 2026-11-09T09:34:18Z calm-adder: wrote the plan
+- 2026-11-09T09:49:58Z calm-adder: changed notes; ticked acceptance criteria
