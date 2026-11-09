@@ -1,6 +1,6 @@
 ---
 title: Land waiting tickets at the start of `chitty run`
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-151
@@ -37,6 +37,13 @@ Cold read of the split by a fresh Sonnet subagent, 2026-11-04. Fixed: where this
 
 Verified all four criteria: pending tickets land in ID order and stop on the first failure; an unfinished rebase fails loudly, and removal failure retries; run lands before agent startup and a subsequent run selects work; a failed run completes landing on retry after the cause is removed. `make format && make check` passes (408 Python tests plus Node tests). Commit: b3f2efd.
 
+Reviewed:
+1: pass - Tests verify ID ordering and stopping at the first failure.
+2: pass - Tests verify unfinished rebase refusal and retry after removal failure.
+3: pass - Test verifies landing without an agent and subsequent ticket selection.
+4: pass - Test verifies a later run completes landing after the cause is fixed.
+`make format && make check` passed, including 408 Python tests and Node tests.
+
 ## Summary
 
 Implemented pending landing retries before plain-run ticket selection, using local branch names and Repo.find statuses. Tests cover ordering, stop/error retries, no-agent landing followed by selection, and retry on a later run. Verification: make format && make check passes (408 Python tests and Node tests). Follow-up: none.
@@ -52,3 +59,5 @@ Implemented pending landing retries before plain-run ticket selection, using loc
 - 2026-11-09T09:49:58Z calm-adder: changed notes; ticked acceptance criteria
 - 2026-11-09T09:49:59Z calm-adder: changed summary
 - 2026-11-09T09:50:01Z calm-adder doing → review
+- 2026-11-09T12:04:28Z eager-ibis: changed notes; ticked acceptance criteria
+- 2026-11-09T12:04:28Z eager-ibis review → done
