@@ -40,7 +40,7 @@ from chitty.model import (
     STATUS_LABELS,
     STATUSES,
 )
-from chitty.run import RunInterrupted
+from chitty.run import RunInterrupted, run_loop
 from chitty.run import run as run_next
 from chitty.store import (
     BROKEN_DEPENDENCY_GLYPH,
@@ -464,6 +464,11 @@ def claude_usage_hook() -> None:
 @click.option("--ticket", metavar="ID", help="Run the next ticket, or the one named by --ticket.")
 @click.option("--owner", help="Choose tickets owned by this agent.")
 @click.option("--agent", metavar="NAME", help="Use the named command from [agent_commands].")
+@click.option(
+    "--loop",
+    is_flag=True,
+    help="Keep running; wait 60 seconds between attempts, including when idle. Stop on errors.",
+)
 @mode_option
 @click.pass_context
 def run(
@@ -471,10 +476,24 @@ def run(
     ticket: str | None,
     owner: str | None,
     agent: str | None,
+    loop: bool,
     mode: Literal["work", "review"] | None,
 ) -> None:
     """Run the next ticket, or the one named by --ticket; other arguments go to the agent."""
+    if loop and ticket is not None:
+        raise click.UsageError("--loop cannot be used with --ticket")
     try:
+        if loop:
+            options: list[str] = []
+            if owner is not None:
+                options.extend(("--owner", owner))
+            if agent is not None:
+                options.extend(("--agent", agent))
+            if mode is not None:
+                options.extend(("--mode", mode))
+            if ctx.args:
+                options.extend(("--", *ctx.args))
+            raise click.exceptions.Exit(run_loop(tuple(options)))
         result = run_next(
             _repo(warn_setup_version=False),
             ticket,
@@ -485,6 +504,9 @@ def run(
         )
     except RunInterrupted as interrupted:
         click.echo(f"interrupted during {interrupted.phase}", err=True)
+        raise click.exceptions.Exit(130) from None
+    except KeyboardInterrupt:
+        click.echo("interrupted while waiting for work", err=True)
         raise click.exceptions.Exit(130) from None
     click.echo(f"{result.action.id}: {result.old_status} → {result.new_status}")
 

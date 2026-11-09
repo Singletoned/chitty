@@ -51,7 +51,7 @@ chitty add "Add search" -d "Search titles and bodies." \
     --note "Useful context, repeatable."
 chitty list
 chitty next                       # print the next `work ID` or `review ID` action
-while chitty run; do :; done      # ask the configured agent to complete actions until no progress
+chitty run --loop --mode work     # keep working; wait for new tickets when idle
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
 chitty edit 1 -s review
@@ -161,10 +161,12 @@ starting no agent. Choose a ticket with `chitty run
 `chitty run --owner NAME` to select that owner's tickets; it cannot be combined
 with `--ticket`. It
 succeeds only when the agent commits a status change, so
-`while chitty run; do :; done` stops when no action remains or a session makes
-no progress. To keep a loop waiting for work, treat exit 3 as success:
-`while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`. Each pass
-still checks configuration, refreshes setup before
+`chitty run --loop --mode work -- --model MODEL` keeps running, waiting 60
+seconds between attempts after both successful actions and idle queues. Each
+attempt starts a fresh process, so it picks up code landed by the last run. It
+stops on any real failure or interruption (Ctrl-C exits 130); `--loop` cannot
+be used with `--ticket`. Without `--loop`, `chitty run` still exits 3 on an
+idle queue. Each loop pass checks configuration and refreshes setup before
 selecting, so a broken configuration exits 1 and stops the loop. Each agent
 session appends one JSON line to the machine-local
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data

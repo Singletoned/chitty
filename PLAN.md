@@ -728,13 +728,16 @@ and without a configured default the invocation is unchanged. Commands receiving
 a default must accept the agent CLI option `--model`; Chitty has no `--model`
 option of its own. It reopens the ticket worktree after the agent
 exits and succeeds only if the task's committed status changed. This makes
-`while chitty run; do :; done` a safe unattended loop that stops when the queue
-is empty. To wait out an idle queue instead, treat exit 3 as success:
-`while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done` runs until
-something fails. `chitty run` checks its configuration, refreshes setup
-before selecting, so each idle pass does that, and a broken
-configuration exits 1, not 3. An agent's or setup's own exit status always
-surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
+`chitty run --loop --mode work -- --model MODEL` keeps running, waiting 60
+seconds after each successful run or idle queue before trying again. Each
+attempt starts a fresh `chitty run` process so a completed landing cannot leave
+the next ticket running with code loaded before that landing. It accepts
+`--mode`, `--owner`, `--agent`, and forwarded agent arguments; `--ticket` cannot
+be used with `--loop`. Without `--loop`, an idle queue still exits 3. Each loop
+pass checks configuration and refreshes setup before selecting, so a broken
+configuration stops the loop with exit 1. An agent's or setup's own failure
+also stops it with exit 1. Interrupting the agent, setup, or idle wait stops
+with exit 130 without a traceback.
 
 Before a review (decided with the human, 2026-11-03), after the run's actor is
 set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly

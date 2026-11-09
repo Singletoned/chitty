@@ -28,7 +28,7 @@ from chitty.config import (
     usage_path,
     version_key,
 )
-from chitty.errors import ChittyError, ManagedGuideError
+from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError
 from chitty.store import (
     AGENTS_FILE,
     Edit,
@@ -43,6 +43,7 @@ from chitty.store import (
 
 # Each lost race removes a candidate, so a few attempts are plenty.
 RUN_LOCK_ATTEMPTS = 10
+RUN_LOOP_PAUSE_SECONDS = 60
 
 
 class RunInterrupted(Exception):
@@ -96,6 +97,18 @@ def run(
     with ExitStack() as held:
         action = _lock_ticket(held, main_repo, ticket, mode, owner)
         return _run_ticket(main_repo, project, action, arguments, agent)
+
+
+def run_loop(arguments: tuple[str, ...]) -> int:
+    """Run each attempt in a fresh process so newly landed code is used."""
+    executable = Path(sys.executable).parent / "chitty"
+    if not executable.is_file():
+        raise ChittyError(f"runner chitty executable not found: {executable}")
+    while True:
+        completed = subprocess.run([str(executable), "run", *arguments], check=False)
+        if completed.returncode not in (0, NO_NEXT_TICKET_EXIT):
+            return completed.returncode if completed.returncode > 0 else 128 - completed.returncode
+        time.sleep(RUN_LOOP_PAUSE_SECONDS)
 
 
 def _land_pending(main_repo: Repo) -> RunResult | None:
