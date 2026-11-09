@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-166
@@ -37,6 +37,8 @@ TASK-224 supersedes the branch-version-bump requirement.
 
 Verified: the guide-review regression test passes; generated chitty guide review contains the verdict form and test-failure evidence requirement; README.md, PLAN.md, and src/chitty/guide.md include the form; src/chitty/roles/review.md preserves the run-output requirement. make format && make check passed (403 Python tests and Node tests). No version change.
 
+Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.md`, `src/chitty/guide.md`, `src/chitty/roles/review.md`, `tests/test_guide_review_evidence.py`.
+
 ## Summary
 
 Handoff: review notes now require one evidence/reason verdict line per criterion, with test-criterion evidence showing the test fails without the change. Verification: guide regression test and generated guide checked; README.md, PLAN.md and src/chitty/guide.md checked; make format && make check passed (403 Python tests and Node tests). Follow-ups: none.
@@ -52,3 +54,5 @@ Handoff: review notes now require one evidence/reason verdict line per criterion
 - 2026-11-09T09:52:39Z youthful-puffin: wrote the plan
 - 2026-11-09T09:55:48Z youthful-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-09T09:55:50Z youthful-puffin doing → review
+- 2026-11-09T12:30:37Z intrepid-puffin: changed notes
+- 2026-11-09T12:30:37Z intrepid-puffin review → doing
