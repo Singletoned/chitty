@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-166
@@ -51,3 +51,4 @@ Handoff: review notes now require one evidence/reason verdict line per criterion
 - 2026-11-09T09:52:13Z youthful-puffin todo → doing
 - 2026-11-09T09:52:39Z youthful-puffin: wrote the plan
 - 2026-11-09T09:55:48Z youthful-puffin: changed notes, summary; ticked acceptance criteria
+- 2026-11-09T09:55:50Z youthful-puffin doing → review
