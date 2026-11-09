@@ -23,6 +23,10 @@ In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s desc
 - [ ] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
 - [ ] The ticket branch does not bump `__version__`; version selection happens at release.
 
+## Plan
+
+Update the review guide and role wording to require one numbered pass/fail evidence line per criterion, including test-failure-without-change evidence; add CLI guide coverage, and update the README example and PLAN review description. Preserve existing evidence-reporting rules and verify with make format and make check.
+
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my quoted phrase is not in `src/chitty/roles/review.md`, how the lines fit with the failure note's form, and what `README.md` and `PLAN.md` gain.
@@ -39,3 +43,4 @@ TASK-224 supersedes the branch-version-bump requirement.
 - 2026-11-05T17:10:25Z mellow-newt: changed notes
 - 2026-11-08T13:05:16Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-09T09:52:13Z youthful-puffin todo → doing
+- 2026-11-09T09:52:39Z youthful-puffin: wrote the plan
