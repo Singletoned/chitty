@@ -1,6 +1,6 @@
 ---
 title: "Plan guide: stub-first reds, fixed mutant lists, splitting crowded criteria"
-status: review
+status: doing
 created: 2026-11-10
 ---
 
@@ -17,7 +17,7 @@ Keep each addition to one or two lines. Wording is the worker's choice; tests as
 
 ## Acceptance Criteria
 
-- [x] `guide("plan")` says tickets that add a module have the worker first create it with the imported names raising `NotImplementedError`.
+- [ ] `guide("plan")` says tickets that add a module have the worker first create it with the imported names raising `NotImplementedError`.
 - [x] `guide("plan")` says to give every read of a ticket the same mutant list, extended only with survivors that were fixed.
 - [x] `guide("plan")` says the starting-point note names the ticket paths to take with `git show <ref>:<path>`, and no longer recommends `git diff <main-branch>...refs/cold-read/<ID>/<n>`.
 - [x] `guide("plan")` says to split a ticket when one criterion collects more than about five separate checks.
@@ -31,6 +31,13 @@ Update the planning role with the four requested instructions, revise the existi
 Cold read 1 (Haiku): fixed: criterion 2 bundled two rules; split into criteria 2 and 4. Fixed: threshold named (about five checks); the `tests/test_guide_plan.py` phrases to drop are named. Rejected: pinning exact phrases in the ticket; wording is free and the reviewer checks meaning. Rejected: defining line length; one or two lines is a guide, not a test. Possible starting point: `git diff main...refs/cold-read/TASK-240/1`; check it against the current criteria, not trust it.
 
 New guide tests failed against the original guide before implementation. Full make format && make check passed after correcting an assertion wording mismatch.
+
+Review failed (tests): The stub instruction tells the planner to create the module during a cold read, not to have the ticket instruct its worker to create the stubs first. Make the guide explicitly require that ticket instruction and test that meaning. `chitty guide plan` printed: "Cold-read every ticket, even a small one. If it adds a module, first create it with the names the tests import, each raising `NotImplementedError`". `make format && make check` passed, including 427 Python tests and the Node tests, but the phrase assertions do not exercise who must create the stubs.
+
+1: fail - The guide does not tell planners to put the stub-first instruction in the ticket for the worker.
+2: pass - The guide specifies the fixed mutant list and fixed survivors.
+3: pass - The guide names ticket paths and `git show <ref>:<path>` without the old diff advice.
+4: pass - The guide specifies splitting at more than about five checks.
 
 ## Summary
 
@@ -46,3 +53,5 @@ Implemented the requested planning-guide guidance and tests. Verified with make 
 - 2026-11-10T17:04:49Z open-newt: changed notes; ticked acceptance criteria
 - 2026-11-10T17:04:54Z open-newt: changed summary
 - 2026-11-10T17:04:54Z open-newt doing → review
+- 2026-11-10T17:53:39Z rosy-zander: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-10T17:53:39Z rosy-zander review → doing
