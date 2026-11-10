@@ -1,6 +1,6 @@
 ---
 title: Replace text in a description with `chitty edit --replace-in-description`
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -21,9 +21,9 @@ Out of scope: the same for criteria (`--set-ac` covers them), plan or notes.
 
 ## Acceptance Criteria
 
-- [ ] A test replaces a phrase occurring once in the Description; only that text changes.
-- [ ] Tests show OLD occurring zero times and twice each fails with an error naming the count, and an empty OLD fails; each leaves the file unchanged.
-- [ ] A test in `tests/test_mcp.py` does the replacement through the MCP `edit` tool.
+- [x] A test replaces a phrase occurring once in the Description; only that text changes.
+- [x] Tests show OLD occurring zero times and twice each fails with an error naming the count, and an empty OLD fails; each leaves the file unchanged.
+- [x] A test in `tests/test_mcp.py` does the replacement through the MCP `edit` tool.
 
 ## Plan
 
@@ -33,6 +33,12 @@ Add replacement semantics to store.Edit, validate exclusivity with whole-descrip
 
 Cold read 1 (Haiku): fixed: empty OLD counted len+1 matches; now rejected. Decided and stated: match against the pre-edit Description; History `changed description`; allowed in review, like `-d`; emptying keeps the existing required-section error. Left to the worker: exact combination error text and the MCP parameter shape. Possible starting point: `git diff main...refs/cold-read/TASK-243/1`; check it against the current criteria, not trust it.
 
+Implementation verified: focused CLI and MCP tests pass; make format and make check pass (425 Python tests and Node tests). Exact multiplicity and empty OLD validation happen before writing, preserving files on errors. The regression tests were run after implementation rather than against the unfixed behavior.
+
+## Summary
+
+Implemented --replace-in-description OLD NEW through the CLI, MCP, and shared store; documented it in PLAN.md. Verification: focused CLI/MCP tests and make format && make check pass. No follow-ups.
+
 ## History
 
 - 2026-11-10T14:08:43Z jolly-heron → backlog
@@ -40,3 +46,5 @@ Cold read 1 (Haiku): fixed: empty OLD counted len+1 matches; now rejected. Decid
 - 2026-11-10T14:19:33Z jolly-heron backlog → todo
 - 2026-11-10T17:16:36Z sunny-puffin todo → doing
 - 2026-11-10T17:16:54Z sunny-puffin: wrote the plan
+- 2026-11-10T17:19:34Z sunny-puffin: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T17:19:34Z sunny-puffin doing → review
