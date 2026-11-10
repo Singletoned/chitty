@@ -1,6 +1,6 @@
 ---
 title: Time out the agent started by chitty run
-status: doing
+status: review
 labels:
   - needs-minor
 created: 2026-11-10
@@ -18,9 +18,9 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 
 ## Acceptance Criteria
 
-- [ ] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
-- [ ] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the limit is the default constant, which is 7200, and a test that patches that constant to 2 sees `agent timed out after 2 seconds`.
-- [ ] The agent runs in the same process group as `chitty run` (the fake agent records `os.getpgid(0)`), so terminal input and Ctrl-C reach it as today.
+- [x] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
+- [x] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the limit is the default constant, which is 7200, and a test that patches that constant to 2 sees `agent timed out after 2 seconds`.
+- [x] The agent runs in the same process group as `chitty run` (the fake agent records `os.getpgid(0)`), so terminal input and Ctrl-C reach it as today.
 
 ## Plan
 
@@ -33,6 +33,12 @@ Suggestion origin: echonomicon
 Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all green; new tests failed first. Outcomes: (1) `process_group=0` breaks interactive terminal input, and `start_new_session` drops the controlling terminal: fixed, now kills the descendant tree and keeps the agent in the same group, which replaced the Ctrl-C criterion. (2) The "longer than any test limit" bound was untestable: fixed, now 3 seconds. (3) `"10"` needs strict integer parsing: fixed, the description says a string is an error. (4) Usage log after a timeout was untested: fixed, added to criterion 1. (5) Reader skipped the `PLAN.md` and docs updates: no change, the description already asks for them.
 
 Approach recorded; implementing.
+
+Verified end-to-end timeout with child cleanup and usage-log entry; verified zero disables timeout, strict invalid-value rejection, 7200 default and patched 2-second default; verified inherited process group. make format && make check passed (429 suites plus Node tests). chitty fix completed; tree is clean.
+
+## Summary
+
+Implemented configurable agent timeout, descendant TERM/KILL cleanup, usage logging on timeout, and configuration/runner tests. Verified acceptance criteria 1–3; make format and make check pass. Follow-up: none.
 
 ## History
 
@@ -49,3 +55,5 @@ Approach recorded; implementing.
 - 2026-11-10T17:35:46Z brisk-yellowhammer todo → doing
 - 2026-11-10T17:35:55Z brisk-yellowhammer: wrote the plan
 - 2026-11-10T17:36:08Z brisk-yellowhammer: changed notes
+- 2026-11-10T17:45:06Z brisk-yellowhammer: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T17:45:06Z brisk-yellowhammer doing → review
