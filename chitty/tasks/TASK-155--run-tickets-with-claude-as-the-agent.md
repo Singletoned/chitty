@@ -13,24 +13,24 @@ created: 2026-11-04
 
 ## Description
 
-Prove that `chitty run --agent claude` can work and review a real ticket, using the `claude` entry already in `chitty.toml` (`claude -p`, Sonnet, an allow-list, `git push` denied). Pi stays the default; `claude` is the fallback when Pi tokens run out.
+Prove that `chitty run --agent claude` can work and review a real ticket, using the `claude` entry in `chitty.toml`: `claude -p` on Haiku, as workers normally run on Luna or Haiku, with `bypassPermissions` and only `git push` denied. Pi stays the default; `claude` is the fallback when Pi tokens run out.
 
-The human runs it, from an ordinary shell rather than inside an agent, because it starts an agent session:
+The human runs it from an ordinary shell, because it starts an agent session:
 
 1. Pick a `todo` ticket with no owner and run `chitty run --agent claude --ticket <ID>`.
 2. Run the same command again to review that work.
-3. Report: the model the session used, any commands it was denied and what that cost, whether it stopped without changing the ticket, and the cost if shown.
+3. Report whether it stopped without changing the ticket, anything it could not do, and the cost if shown.
 
-The planning session then records that in a note, fixes the allow-list where a denial was wrong, and documents the entry in `README.md`.
+The planning session records the outcome in a note and documents the entry in `README.md`.
 
 ## Acceptance Criteria
 
-- [ ] `chitty run --agent claude` works a real ticket and then reviews it on Sonnet, and a note records the outcome and the three reported checks.
-- [ ] `README.md` shows the `claude` entry for `[agent_commands]`, with its allow-list and why `git push` is denied.
+- [ ] `chitty run --agent claude` works a real ticket and then reviews it, and a note records the outcome.
+- [ ] `README.md` shows the `claude` entry for `[agent_commands]` and why `git push` is denied.
 
 ## Notes
 
-Allow-list taken from the commands agents actually ran (human analysis, 2026-11-04): Chitty, Git, `make`, `uv run`, `python`, `npm test`, and search and text tools. Occasional commands such as `rm`, `cp` and `mkdir` are left out; agents should adapt.
+Trial 1 (2026-11-10, TASK-247, Haiku by the human's choice): the allow-list in `dontAsk` mode refused 7 of 30 calls (`ps`, `.venv/bin/python`, compound commands, long quoted `chitty edit` notes), so the agent could not see tests fail first or update the ticket. The human then dropped the allow-list for `bypassPermissions`.
 
 ## History
 
@@ -46,3 +46,5 @@ Allow-list taken from the commands agents actually ran (human analysis, 2026-11-
 - 2026-11-04T20:15:23Z mellow-newt: changed notes
 - 2026-11-04T20:32:40Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-10T20:51:48Z jolly-heron: replaced notes; changed description, acceptance criteria
+- 2026-11-10T21:58:25Z jolly-heron: changed notes
+- 2026-11-10T22:10:17Z jolly-heron: replaced notes; changed description, acceptance criteria

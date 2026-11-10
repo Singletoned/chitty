@@ -590,6 +590,7 @@ def _format(stored: StoredTask) -> str:
 @click.option("--parent", help="Parent task ID; '' unsets.")
 @click.option("-d", "--description", help="Replace the Description section.")
 @click.option("--description-file", type=click.File(), help="Read --description from a file.")
+@click.option("--replace-in-description", nargs=2, metavar="OLD NEW")
 @click.option("--ac", multiple=True, help="Append an acceptance criterion (repeatable).")
 @click.option("--rm-ac", type=int, multiple=True, help="Remove criterion N (repeatable).")
 @click.option(
@@ -623,6 +624,7 @@ def edit(
     parent: str | None,
     description: str | None,
     description_file: TextIO | None,
+    replace_in_description: tuple[str, str] | None,
     ac: tuple[str, ...],
     rm_ac: tuple[int, ...],
     set_ac: tuple[tuple[int, str], ...],
@@ -651,6 +653,7 @@ def edit(
         rm_depends_on=rm_depends_on,
         parent=parent,
         description=_text(description, description_file, "description"),
+        replace_in_description=replace_in_description,
         add_criteria=ac,
         rm_criteria=rm_ac,
         set_criteria=set_ac,
