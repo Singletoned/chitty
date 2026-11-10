@@ -95,6 +95,31 @@ class TestDirectAgentTimeout(RepoTestCase):
             )
             self.assertTrue(not result.stdout.strip() or result.stdout.strip().startswith("Z"))
 
+    def test_descendant_gets_grace_period_after_agent_exits(self):
+        marker = self.root / "child-cleanup"
+        child_script = (
+            "import signal, time\n"
+            "def cleanup(signum, frame):\n"
+            "    time.sleep(0.5)\n"
+            f"    open({str(marker)!r}, 'w').write('done')\n"
+            "    raise SystemExit(0)\n"
+            "signal.signal(signal.SIGTERM, cleanup)\n"
+            "time.sleep(60)\n"
+        )
+        agent_script = (
+            "import subprocess, sys, time\n"
+            f"subprocess.Popen([sys.executable, '-c', {child_script!r}])\n"
+            "time.sleep(60)\n"
+        )
+        with self.assertRaisesRegex(ChittyError, "agent timed out after 1 seconds"):
+            _run_agent(
+                [sys.executable, "-c", agent_script],
+                cwd=self.root,
+                env=os.environ.copy(),
+                timeout=1,
+            )
+        self.assertTrue(marker.exists(), "descendant cleanup was cut short by SIGKILL")
+
     def test_patched_default_enforces_two_second_deadline(self):
         with patch.object(config_module, "DEFAULT_AGENT_TIMEOUT", 2):
             timeout = load_repo_config(self.root).agent_timeout

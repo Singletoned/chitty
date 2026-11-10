@@ -123,11 +123,13 @@ def _run_agent(
         descendants = _process_descendants(process.pid)
         for pid in [*descendants, process.pid]:
             _signal_process(pid, signal.SIGTERM)
-        try:
-            process.wait(timeout=AGENT_KILL_GRACE_SECONDS)
-        except subprocess.TimeoutExpired:
-            pass
-        for pid in [*descendants, process.pid]:
+        grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
+        while time.monotonic() < grace_deadline:
+            remaining = _running_processes([*descendants, process.pid])
+            if not remaining:
+                break
+            time.sleep(min(0.05, grace_deadline - time.monotonic()))
+        for pid in _running_processes([*descendants, process.pid]):
             _signal_process(pid, signal.SIGKILL)
         process.wait()
         raise ChittyError(f"agent timed out after {timeout} seconds") from None
@@ -150,6 +152,19 @@ def _process_descendants(parent: int) -> list[int]:
         found.append(pid)
         pending.extend(parents.get(pid, []))
     return found
+
+
+def _running_processes(pids: list[int]) -> list[int]:
+    """Return requested PIDs that still have a live process-table entry."""
+    result = subprocess.run(
+        ["ps", "-A", "-o", "pid=", "-o", "stat="], capture_output=True, text=True, check=True
+    )
+    states = {
+        int(pid): state
+        for line in result.stdout.splitlines()
+        for pid, state in [line.split(maxsplit=1)]
+    }
+    return [pid for pid in pids if pid in states and not states[pid].startswith("Z")]
 
 
 def _signal_process(pid: int, sig: signal.Signals) -> None:
