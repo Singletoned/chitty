@@ -1,6 +1,6 @@
 ---
 title: "Plan guide: stub-first reds, fixed mutant lists, splitting crowded criteria"
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -41,6 +41,13 @@ Review failed (tests): The stub instruction tells the planner to create the modu
 
 Review finding addressed: the guide now tells the ticket author to require its worker to create importable stubs first. Strengthened the regression test; it failed before the guide change. An initial assertion phrase did not match the guide wording, corrected the assertion before rerunning checks.
 
+Reviewed: `make format && make check` passed: 432 Python tests and Node tests; the formatter left the worktree unchanged.
+
+1: pass - The guide tells the ticket author to require worker-created importable stubs first.
+2: pass - Each read uses the same mutant list, extended only with fixed survivors.
+3: pass - The starting-point note names ticket paths and `git show <ref>:<path>`, without the old diff advice.
+4: pass - The guide calls for splitting when a criterion has more than about five checks.
+
 ## Summary
 
 Updated the planning guide and strengthened its convergence regression test so the ticket must instruct its worker to create importable stubs first. Verified the regression test failed before the guide change; make format && make check passes (427 Python tests and Node tests). No follow-ups.
@@ -60,3 +67,5 @@ Updated the planning guide and strengthened its convergence regression test so t
 - 2026-11-10T18:00:46Z rosy-toad: changed notes; ticked acceptance criteria
 - 2026-11-10T18:00:55Z rosy-toad: changed summary
 - 2026-11-10T18:00:55Z rosy-toad doing → review
+- 2026-11-10T18:03:37Z jolly-crane: changed notes; ticked acceptance criteria
+- 2026-11-10T18:03:37Z jolly-crane review → done
