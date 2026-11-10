@@ -22,6 +22,10 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 - [ ] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the limit is the default constant, which is 7200, and a test that patches that constant to 2 sees `agent timed out after 2 seconds`.
 - [ ] The agent runs in the same process group as `chitty run` (the fake agent records `os.getpgid(0)`), so terminal input and Ctrl-C reach it as today.
 
+## Plan
+
+Add strict agent_timeout configuration with a 7200-second module constant and zero disabling; enforce deadline in run.py, terminate descendants then agent with TERM and KILL after a grace period without changing process group/session; add regression tests for timeout, descendant cleanup, usage logging, validation, default, and process group; update PLAN.md and configuration docs.
+
 ## Notes
 
 Suggestion origin: echonomicon
@@ -41,3 +45,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all gre
 - 2026-11-10T17:34:48Z jolly-heron: changed acceptance criteria
 - 2026-11-10T17:34:48Z jolly-heron backlog → todo
 - 2026-11-10T17:35:46Z brisk-yellowhammer todo → doing
+- 2026-11-10T17:35:55Z brisk-yellowhammer: wrote the plan
