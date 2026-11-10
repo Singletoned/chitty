@@ -1,6 +1,6 @@
 ---
 title: Tell a worker when the run lock in `chitty show` is its own
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -32,3 +32,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-247/1`): implemented, all green; new tes
 - 2026-11-10T19:38:18Z jolly-heron: changed notes
 - 2026-11-10T19:38:19Z jolly-heron backlog → todo
 - 2026-11-10T20:51:10Z jolly-heron: changed title, description, acceptance criteria
+- 2026-11-10T21:47:36Z tidy-vole todo → doing
