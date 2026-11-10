@@ -13,43 +13,24 @@ created: 2026-11-04
 
 ## Description
 
-Requested by the human on 2026-11-04: use `claude` instead of `pi` to work on tickets, with a weaker model. Token efficiency is why agents may change, and `agent_command` from `TASK-136` and `{prompt}` from `TASK-142` should make this mostly configuration. This ticket proves it and fixes what that proof finds.
+Prove that `chitty run --agent claude` can work and review a real ticket, using the `claude` entry already in `chitty.toml` (`claude -p`, Sonnet, an allow-list, `git push` denied). Pi stays the default; `claude` is the fallback when Pi tokens run out.
 
-Pi stays this repository's default: the human decided on 2026-11-04 that it is the most token efficient, and `claude` is the fallback when tokens run out. The trial uses the entry `--agent` adds:
+The human runs it, from an ordinary shell rather than inside an agent, because it starts an agent session:
 
-```toml
-[agent_commands]
-claude = "claude -p {prompt} --model sonnet --permission-mode dontAsk --allowedTools 'Read Edit Write Bash(chitty *) Bash(git *) Bash(make *) Bash(uv run *) Bash(python *) Bash(npm test*) Bash(rg *) Bash(head *) Bash(grep *) Bash(find *) Bash(sort *) Bash(tail *) Bash(sed *) Bash(nl *) Bash(awk *) Bash(cat *) Bash(ls *) Bash(wc *)' --disallowedTools 'Bash(git push *)'"
-```
+1. Pick a `todo` ticket with no owner and run `chitty run --agent claude --ticket <ID>`.
+2. Run the same command again to review that work.
+3. Report: the model the session used, any commands it was denied and what that cost, whether it stopped without changing the ticket, and the cost if shown.
 
-Use `-p`: an interactive session stays open after the agent finishes, and `chitty run` waits for it to exit. `sonnet` is the CLI's alias, so it follows the current Sonnet. `{prompt}` comes first because `--allowedTools` takes several values and would otherwise swallow it. A `-p` session cannot ask a person. The human decided on 2026-11-04 that the list comes from the commands agents really ran, in the note below: all of Chitty and Git, the project commands, and search and text tools. The occasional group, such as `rm`, `cp` and `mkdir`, is left out, and agents should adapt. `dontAsk` denies anything else, and a denial should appear in the session rather than stall it. `git push` is denied because pushing needs a person's request. The trial records every denial and what it cost, changes the list where a denial was wrong, and confirms bare commands such as `ls` and pipelines match these patterns. This repository also starts the agent through `env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync`, as its current `agent_command` does, so `chitty` is the branch's own; the trial uses that prefix, and `README.md` shows the command without it.
-
-`claude` reads `CLAUDE.md`, a symlink to `AGENTS.md`, so it gets the repository's instructions. Unlike Pi, nothing continues a stopped session: if it stops without changing the ticket, `chitty run` exits non-zero, and running it again resumes in a fresh session. See how often this happens before building anything, so `TASK-89`'s loop may not be needed. `requireLinkedWorktree` is only in the Pi extension, so it does not apply here, but `chitty run` has already chosen the worktree.
-
-This ticket belongs to the human and the planning session, not a worker, because it is an agent starting agents: the human runs `chitty run --agent claude` from an ordinary shell, and the planning session records the result. Use the next `todo` ticket, working it and then reviewing that same work. Check, and record: that the session really used Sonnet; the `git push` denial; whether a session stops without changing its ticket; what it cost, if shown; and anything that needed fixing. Say in `README.md` how to use it.
-
-Out of scope: writing `CHITTY_USAGE_FILE` from `claude`, which has its own ticket, so the usage log shows `models` null for these sessions; `chitty init` installing anything for Claude Code; and `TASK-89`'s `/chitty` command.
+The planning session then records that in a note, fixes the allow-list where a denial was wrong, and documents the entry in `README.md`.
 
 ## Acceptance Criteria
 
-- [ ] `chitty run` works a real ticket and then reviews that work with `claude` on Sonnet, and a note records the commands, the outcome, each check the description lists, and anything fixed
-- [ ] `README.md` shows the `claude` entry for `[agent_commands]`, including the allow-list and why
+- [ ] `chitty run --agent claude` works a real ticket and then reviews it on Sonnet, and a note records the outcome and the three reported checks.
+- [ ] `README.md` shows the `claude` entry for `[agent_commands]`, with its allow-list and why `git push` is denied.
 
 ## Notes
 
-Same cold read as `TASK-154`. Fixed: the allow-list as a third option, which my text missed; `{prompt}` before `--allowedTools`, which takes several values, found while checking `claude --help`; `git push` denied; and the trial now covers a nested session, inherited stdin and the model. Rejected: a criterion for an early stop exiting non-zero, because the code does it and existing tests cover it. Which ticket to try, which is the trial's choice. Stays in `backlog` until the human decides on permissions.
-
-The human decided permissions on 2026-11-04: permissive, replacing the allow-list, because write access plus `Bash(make *)` already allows anything; a container if that ever matters.
-
-Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the checks were not in a criterion; and a cheap worker could not run this at all, because the command is read from `main`, and it would be an agent starting agents, so the ticket is now the human's. Found while checking the report, not by it: testing the `git push` denial against a real remote would push if the denial failed, so it uses a local bare repository. Removed the nested-session and non-terminal stdin checks, because the human runs this from an ordinary shell. Rejected: splitting, since one trial answers these together, and a threshold for `TASK-89`, which the human can judge from the result. Waits for `TASK-142` and `TASK-154`, which the dependencies already say.
-
-Changed 2026-11-04: Pi stays the default and `claude` is the fallback, by the human's decision, so the trial uses `--agent` from a new ticket and commits nothing that changes the default. Back in `backlog` until the changed ticket has been cold-read.
-
-Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: the trial uses `--agent` but did not depend on `TASK-156`, and a criterion still named `agent_command`.
-
-Data for the trial, from a human-run analysis of real sessions, 2026-11-04. Commands agents ran: Chitty, all subcommands; Git reads: `status` 879, `diff` 467, `log` 322, `show` 115, `branch` 45, `merge-base` 23, `rev-parse` 18; Git writes: `commit` 256, `add` 252, `worktree` 107, `merge` 15, `rebase` 10, `reset` 8, `restore` 5; project: `make check` 322, `uv run python` 238, `make format` 164, `python` 90, `npm test` 58, `uv run ruff` 28, `make install` 26, `uv run pyright` 9; search and text: `rg` 344, `head` 129, `grep` 112, `find` 68, and `sort`, `tail`, `sed`, `nl`, `awk`, `cat`, `ls`, `wc`; occasional: `mktemp` 17, `xargs` 9, `mkdir`, `cp`, `tee`, `ps`, `rm`, `env`, `node`. If an allow-list is ever wanted, this is its starting point. The project group runs arbitrary code, so a list would still prevent accidents rather than contain an agent.
-
-Changed 2026-11-04: this replaces the permissive decision above, at the human's direction, using the command table. The `git push` check against a bare repository stays.
+Allow-list taken from the commands agents actually ran (human analysis, 2026-11-04): Chitty, Git, `make`, `uv run`, `python`, `npm test`, and search and text tools. Occasional commands such as `rm`, `cp` and `mkdir` are left out; agents should adapt.
 
 ## History
 
@@ -64,3 +45,4 @@ Changed 2026-11-04: this replaces the permissive decision above, at the human's 
 - 2026-11-04T18:01:16Z mellow-newt backlog → todo
 - 2026-11-04T20:15:23Z mellow-newt: changed notes
 - 2026-11-04T20:32:40Z mellow-newt: changed description, acceptance criteria, notes
+- 2026-11-10T20:51:48Z jolly-heron: replaced notes; changed description, acceptance criteria
