@@ -1,6 +1,6 @@
 ---
 title: Time out the agent started by chitty run
-status: todo
+status: backlog
 created: 2026-11-10
 ---
 
@@ -32,3 +32,4 @@ Suggestion origin: echonomicon
 - 2026-11-10T16:53:45Z jolly-heron: changed notes
 - 2026-11-10T16:54:04Z jolly-heron: changed description, acceptance criteria
 - 2026-11-10T16:54:04Z jolly-heron backlog → todo
+- 2026-11-10T16:54:11Z jolly-heron todo → backlog
