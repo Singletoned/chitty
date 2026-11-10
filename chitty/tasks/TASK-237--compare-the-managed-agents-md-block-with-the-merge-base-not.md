@@ -1,6 +1,6 @@
 ---
 title: Compare the managed `AGENTS.md` block with the merge-base, not main
-status: review
+status: doing
 priority: high
 created: 2026-11-10
 ---
@@ -22,7 +22,7 @@ Existing tests: `tests/test_review_merge.py` (around line 141) and `tests/test_l
 ## Acceptance Criteria
 
 - [x] A test creates a ticket branch, then commits a changed managed block on main; `_changed_agents_block` on the untouched branch returns `False`. The test fails before the fix.
-- [x] A test where the branch itself edits the managed block still returns `True`, including when main has also changed it since the branch was created.
+- [ ] A test where the branch itself edits the managed block still returns `True`, including when main has also changed it since the branch was created.
 - [x] A test in `tests/test_landing.py` lands a ticket whose branch predates a managed-block change on main; main is fast-forwarded and keeps the newer block.
 
 ## Plan
@@ -34,6 +34,12 @@ Add a git helper beside file_at that resolves the merge-base of the supplied ref
 Cold read 1 (Haiku): fixed: the review gate merges main before the check, so only landing refuses; description corrected. Fixed: no merge-base now raises `ChittyError`; criterion 3 setup described. Decided: keep the `main_branch=None` default (out of scope). Accepted: criterion 2 is a guard and passes before the fix. Possible starting point: `git diff main...refs/cold-read/TASK-237/1`; check it against the current criteria, not trust it.
 
 Regression test confirmed failing before the fix: the untouched ticket branch was reported as changed after main refreshed the managed block. Added merge-base file lookup with explicit no-base errors; main-only refresh now passes, branch edits remain detected, and landing retains main’s refreshed block. make format and make check passed.
+
+Review failed (tests): Add a test asserting `_changed_agents_block` returns `True` when both main and the ticket branch change the managed block. `make format && make check` passed: 425 Python tests and 27 Node tests.
+
+1: pass - The main-only refresh regression exercises the unchanged branch.
+2: fail - No test changes the managed block on both main and the ticket branch.
+3: pass - The landing regression preserves the refreshed block on main.
 
 ## Summary
 
@@ -48,3 +54,5 @@ Implemented and committed as 285e294 (Task: TASK-237). Verification: regression 
 - 2026-11-10T16:53:33Z friendly-falcon: wrote the plan
 - 2026-11-10T16:55:07Z friendly-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T16:55:07Z friendly-falcon doing → review
+- 2026-11-10T17:47:40Z sunny-crane: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-10T17:47:40Z sunny-crane review → doing
