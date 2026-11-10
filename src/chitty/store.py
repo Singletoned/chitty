@@ -1563,7 +1563,7 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("dependencies")
     if edit.parent is not None:
         changes.append("parent")
-    if edit.description is not None:
+    if edit.description is not None or edit.replace_in_description is not None:
         changes.append("description")
     if edit.add_criteria or edit.rm_criteria or edit.set_criteria or edit.uncheck:
         changes.append("acceptance criteria")
