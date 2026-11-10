@@ -140,6 +140,21 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         self.assertTrue(_changed_agents_block(self.root))
 
+    def test_main_only_managed_block_change_does_not_change_branch(self):
+        self.branch_for_review()
+        agents = self.root / "AGENTS.md"
+        agents.write_text(
+            agents.read_text().replace(
+                "Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit",
+                "Tasks live in `tickets/`; use the `chitty` CLI or MCP, and do not hand-edit",
+            )
+        )
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "refresh managed guide")
+        self.git("switch", "--quiet", "task-1")
+
+        self.assertFalse(_changed_agents_block(self.root))
+
     def test_managed_block_change_fails_without_starting_review(self):
         self.branch_for_review()
         self.git("switch", "--quiet", "task-1")
