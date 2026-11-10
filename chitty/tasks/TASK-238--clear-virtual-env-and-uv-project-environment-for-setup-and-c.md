@@ -1,6 +1,6 @@
 ---
 title: Clear `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` for setup and check commands
-status: doing
+status: review
 priority: low
 created: 2026-11-10
 ---
@@ -15,7 +15,7 @@ Implement this now. The person is also fixing their shell environment globally, 
 
 ## Acceptance Criteria
 
-- [ ] With both variables set in `os.environ`, tests running `_setup`, `_run_check` and `_landing_check` with a command that writes its environment to a file show neither variable; each test fails before the fix.
+- [x] With both variables set in `os.environ`, tests running `_setup`, `_run_check` and `_landing_check` with a command that writes its environment to a file show neither variable; each test fails before the fix.
 
 ## Plan
 
@@ -35,7 +35,7 @@ Replaced the _run_check subprocess mock with a real child that records its envir
 
 ## Summary
 
-Implemented a shared environment-copy helper that removes only VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT and applied it to agent, setup, check, and landing-check subprocesses. Verification: focused regression tests and make format && make check pass. Code committed as c2c7d57 (Task: TASK-238). Follow-up: review necessity on/after 2026-11-17 per ticket.
+Updated the _run_check regression test to verify a real child process environment. Confirmed failure with environment stripping disabled; make format && make check passed. Implementation remains committed as c2c7d57; test update committed separately. Follow-up: review necessity on or after 2026-11-17.
 
 ## History
 
@@ -51,3 +51,5 @@ Implemented a shared environment-copy helper that removes only VIRTUAL_ENV and U
 - 2026-11-10T18:18:14Z eager-puffin review → doing
 - 2026-11-10T22:21:29Z calm-dormouse: wrote the plan
 - 2026-11-10T22:23:13Z calm-dormouse: changed notes
+- 2026-11-10T22:23:30Z calm-dormouse: changed summary; ticked acceptance criteria
+- 2026-11-10T22:23:30Z calm-dormouse doing → review
