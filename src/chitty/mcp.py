@@ -178,6 +178,7 @@ def edit(
     uncheck: list[int] | None = None,
     plan: str | None = None,
     note: str | None = None,
+    set_notes: str | None = None,
     summary: str | None = None,
     override_review_independence: bool = False,
 ) -> dict[str, Any]:
@@ -201,6 +202,7 @@ def edit(
         uncheck=uncheck or (),
         plan=plan,
         note=note,
+        set_notes=set_notes,
         summary=summary,
         override_review_independence=override_review_independence,
     )

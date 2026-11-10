@@ -405,6 +405,25 @@ def _git_path(root: Path, argument: str) -> Path:
     return (root / path).resolve() if not path.is_absolute() else path.resolve()
 
 
+def file_at_merge_base(root: Path, first_ref: str, second_ref: str, path: Path | str) -> str | None:
+    """Read a file at the merge-base of two refs, or report when none exists."""
+    result = subprocess.run(
+        ["git", "merge-base", first_ref, second_ref],
+        check=False,
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 1:
+        raise ChittyError(f"refs `{first_ref}` and `{second_ref}` have no merge-base")
+    if result.returncode:
+        raise ChittyError(
+            f"cannot find merge-base of `{first_ref}` and `{second_ref}` in {root}: "
+            f"{result.stderr.strip()}"
+        )
+    return file_at(root, result.stdout.strip(), path)
+
+
 def file_at(root: Path, ref: str, path: Path | str) -> str | None:
     """Read a file at a Git ref, returning ``None`` when it is absent."""
     relative = str(path)
