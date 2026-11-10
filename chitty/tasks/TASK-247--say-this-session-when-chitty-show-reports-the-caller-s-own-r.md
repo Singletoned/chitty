@@ -21,9 +21,12 @@ Out of scope: TASK-234 (telling agents to leave a locked ticket alone), and Pi n
 
 Suggestion origin: mullion
 
+Haiku cold read 1 (`refs/cold-read/TASK-247/1`): implemented, all green; new tests failed first. Outcomes: (1) lock records without `actor` (empty or bare-pid files): fixed, the description says these are not this session. (2) `actor()` raises with no identity, which the reader handled by catching the error: fixed, compare with `CHITTY_ACTOR` directly so nothing is caught. (3) Tests need a Git repository for `run_lock`, and `CliTestCase` has none: fixed, pointed at `RunLockTestCase`. (4) An existing exact-dictionary assertion changes: fixed, named in the description. (5) MCP show had no held-lock test: no change, criterion 2 already requires one.
+
 ## History
 
 - 2026-11-10T19:32:32Z jolly-heron → backlog
 - 2026-11-10T19:32:33Z jolly-heron: changed notes
 - 2026-11-10T19:32:50Z jolly-heron: changed title, description, acceptance criteria
 - 2026-11-10T19:38:17Z jolly-heron: changed description, acceptance criteria
+- 2026-11-10T19:38:18Z jolly-heron: changed notes
