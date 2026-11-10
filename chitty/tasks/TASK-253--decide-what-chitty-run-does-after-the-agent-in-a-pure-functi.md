@@ -1,6 +1,6 @@
 ---
 title: Decide what `chitty run` does after the agent in a pure function, with property tests
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -47,3 +47,4 @@ Implemented and committed pure run outcome decisions (ff4237c). Verified both ac
 - 2026-11-10T23:10:44Z calm-adder: wrote the plan
 - 2026-11-10T23:12:44Z calm-adder: changed notes
 - 2026-11-10T23:13:51Z calm-adder: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T23:13:52Z calm-adder doing → review
