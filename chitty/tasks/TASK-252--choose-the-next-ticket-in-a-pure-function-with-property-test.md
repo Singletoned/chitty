@@ -30,6 +30,10 @@ Bias the generator so most examples have two or more choosable tickets, and shuf
 - [ ] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
 - [ ] Existing `chitty next`, `chitty list` and `chitty run` tests pass unchanged.
 
+## Plan
+
+Extract selection into pure functions over gathered ticket facts. Preserve lazy dependency reads for eligible todo tickets and existing messages/list output. Add Hypothesis properties with independently defined ranking, biased/shuffled fixtures, and mutation-style checks by temporarily removing each rule. Run focused properties and existing next/list/run tests, then format and full check.
+
 ## Notes
 
 Possible starting point: `refs/cold-read/TASK-252/2` (`git show refs/cold-read/TASK-252/2:<path>`). It reads dependencies for every `todo` ticket, which made `chitty next` about 40% slower; the ticket now says not to. Check it against the criteria; don't trust it.
@@ -41,3 +45,4 @@ Possible starting point: `refs/cold-read/TASK-252/2` (`git show refs/cold-read/T
 - 2026-11-10T22:34:54Z jolly-heron: replaced notes; changed description
 - 2026-11-10T22:34:54Z jolly-heron backlog → todo
 - 2026-11-10T22:43:14Z nimble-yellowhammer todo → doing
+- 2026-11-10T22:43:53Z nimble-yellowhammer: wrote the plan
