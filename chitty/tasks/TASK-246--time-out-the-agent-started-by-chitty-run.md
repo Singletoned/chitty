@@ -24,7 +24,7 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 
 ## Plan
 
-Add strict agent_timeout configuration with a 7200-second module constant and zero disabling; enforce deadline in run.py, terminate descendants then agent with TERM and KILL after a grace period without changing process group/session; add regression tests for timeout, descendant cleanup, usage logging, validation, default, and process group; update PLAN.md and configuration docs.
+Fix timeout escalation so the configured grace period applies to surviving descendants even if the direct agent exits promptly. Add a regression test with a SIGTERM-handling child that delays then records cleanup; run it against current code first to confirm failure, then implement and run focused plus full checks.
 
 ## Notes
 
@@ -90,3 +90,4 @@ Implemented configurable agent timeout, descendant TERM/KILL cleanup, usage logg
 - 2026-11-10T18:11:52Z tidy-urchin: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T18:11:52Z tidy-urchin review → doing
 - 2026-11-10T18:13:59Z youthful-otter: changed notes
+- 2026-11-10T18:14:35Z youthful-otter: wrote the plan
