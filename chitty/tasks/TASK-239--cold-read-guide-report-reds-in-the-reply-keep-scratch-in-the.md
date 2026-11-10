@@ -1,6 +1,6 @@
 ---
 title: "Cold-read guide: report reds in the reply, keep scratch in the worktree, filter findings"
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -33,6 +33,12 @@ Cold read 1 (Haiku): fixed: the new filter clashed with the existing report list
 
 Added report rules for test-summary evidence, scratch-file handling, and filtered findings; focused guide test and full make check passed.
 
+Reviewed: make format && make check passed; Python reported Ran 424 tests and OK, and Node tests passed.
+1: pass - Guide directs failing output to the report, not a ticket note.
+2: pass - Scratch stays in the worktree and is deleted before checks.
+3: pass - Findings are filtered and worker choices listed in one line.
+4: pass - Guide requires the runner summary rather than an exit status.
+
 ## Summary
 
 Implemented the four cold-read guide additions and added tests/test_guide_cold_read_reports.py. Verified focused test and full make format && make check (424 Python suites and Node tests passed). Commit: 5d2aefc. No follow-ups.
@@ -47,3 +53,5 @@ Implemented the four cold-read guide additions and added tests/test_guide_cold_r
 - 2026-11-10T16:58:50Z friendly-falcon: wrote the plan
 - 2026-11-10T17:00:53Z friendly-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T17:00:53Z friendly-falcon doing → review
+- 2026-11-10T17:50:16Z mellow-wren: changed notes; ticked acceptance criteria
+- 2026-11-10T17:50:16Z mellow-wren review → done
