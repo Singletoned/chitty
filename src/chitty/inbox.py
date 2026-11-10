@@ -26,6 +26,8 @@ def suggest(
     task: str | None = None,
 ) -> Path:
     """Atomically write a suggestion to a registered project's inbox."""
+    if "\n" in title or "\r" in title:
+        raise ChittyError("suggestion title must be one line")
     projects = registered_projects()
     if project in projects:
         pass
@@ -43,9 +45,15 @@ def suggest(
         register_project(project, None)
     directory = inbox_path(project)
     origin = _origin(cwd)
-    task_line = f"task: {task}\n" if task else ""
-    text = f"---\ntitle: {title}\ncreated: {date.today().isoformat()}\norigin: {origin}\n"
-    text += task_line + "---\n\n"
+    frontmatter: dict[str, str] = {
+        "title": title,
+        "created": date.today().isoformat(),
+        "origin": origin,
+    }
+    if task:
+        frontmatter["task"] = task
+    text = "---\n" + yaml.safe_dump(frontmatter, sort_keys=False, allow_unicode=True)
+    text += "---\n\n"
     if description:
         text += f"## Description\n\n{description}\n"
     fd, temporary = tempfile.mkstemp(prefix=".suggest-", dir=directory, text=True)
@@ -130,8 +138,11 @@ def list_waiting(repo: Repo) -> list[dict[str, object]]:
 
 
 def _read_suggestion(path: Path) -> dict[str, object]:
-    _, frontmatter, body = path.read_text().split("---\n", 2)
-    data = yaml.safe_load(frontmatter)
+    try:
+        _, frontmatter, body = path.read_text().split("---\n", 2)
+        data = yaml.safe_load(frontmatter)
+    except (ValueError, yaml.YAMLError) as error:
+        raise ChittyError(f"{path}: invalid suggestion frontmatter") from error
     if not isinstance(data, dict):
         raise ChittyError(f"{path}: invalid suggestion frontmatter")
     suggestion = cast(dict[str, object], cast(dict[str, Any], data))
