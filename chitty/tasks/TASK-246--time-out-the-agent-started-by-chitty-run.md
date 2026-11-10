@@ -1,6 +1,6 @@
 ---
 title: Time out the agent started by chitty run
-status: doing
+status: review
 labels:
   - needs-minor
 created: 2026-11-10
@@ -18,7 +18,7 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 
 ## Acceptance Criteria
 
-- [ ] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
+- [x] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
 - [x] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the limit is the default constant, which is 7200, and a test that patches that constant to 2 sees `agent timed out after 2 seconds`.
 - [x] The agent runs in the same process group as `chitty run` (the fake agent records `os.getpgid(0)`), so terminal input and Ctrl-C reach it as today.
 
@@ -66,9 +66,11 @@ FAILED (failures=1)
 make: *** [check] Error 1
 ```
 
+Fixed escalation to wait through the grace period for any live descendant, even when the agent exits immediately on SIGTERM. Added a regression test that failed before the fix and passes after it. make format and make check passed (443 Python tests and Node tests); focused timeout tests passed.
+
 ## Summary
 
-Implemented configurable agent timeout, descendant TERM/KILL cleanup, usage logging on timeout, and configuration/runner tests. Verified acceptance criteria 1–3; make format and make check pass. Follow-up: none.
+Implemented and verified timeout descendant grace-period escalation. Regression test demonstrated failure before the fix; focused tests, make format, and make check pass. Ready for review; no follow-ups.
 
 ## History
 
@@ -91,3 +93,5 @@ Implemented configurable agent timeout, descendant TERM/KILL cleanup, usage logg
 - 2026-11-10T18:11:52Z tidy-urchin review → doing
 - 2026-11-10T18:13:59Z youthful-otter: changed notes
 - 2026-11-10T18:14:35Z youthful-otter: wrote the plan
+- 2026-11-10T18:16:25Z youthful-otter: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T18:16:25Z youthful-otter doing → review
