@@ -1,6 +1,6 @@
 ---
 title: "Setup guide: validate setup and check in a throwaway worktree; bootstrap targets"
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -28,6 +28,10 @@ Cold read 1 (Haiku): no serious findings. Accepted: placement of each addition i
 
 The new focused guide tests failed before the guide instructions were added, then passed. Full make format and make check passed (425 Python suites and Node tests). The throwaway-worktree validation and placeholder-target guidance are concise additions at the end of setup step 4.
 
+Reviewed: make format and make check passed (426 Python tests and Node tests); no formatter changes.
+1: pass - Guide and focused test cover detached worktree validation without chitty run.
+2: pass - Guide and focused test cover committing placeholder targets for the first ticket.
+
 ## Summary
 
 Implemented in f6753c0 (Task: TASK-241). Added focused setup-guide coverage; focused tests and full make format/make check pass. No known follow-ups.
@@ -41,3 +45,5 @@ Implemented in f6753c0 (Task: TASK-241). Added focused setup-guide coverage; foc
 - 2026-11-10T17:06:50Z calm-crane: wrote the plan
 - 2026-11-10T17:08:56Z calm-crane: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T17:08:56Z calm-crane doing → review
+- 2026-11-10T17:56:50Z brisk-wren: changed notes; ticked acceptance criteria
+- 2026-11-10T17:56:50Z brisk-wren review → done
