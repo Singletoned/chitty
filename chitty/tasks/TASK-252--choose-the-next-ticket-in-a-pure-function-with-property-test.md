@@ -1,6 +1,6 @@
 ---
 title: Choose the next ticket in a pure function, with property tests
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -47,9 +47,11 @@ Review failed (tests): The selection property mutation record does not include r
 1: fail - The mutation trials do not record status ordering or inactive-status skip-reason removal.
 2: pass - Existing tests passed unchanged in `make check`.
 
+Review follow-up: added a regression test for a dependency read on an agent-owned todo when no owner is requested. It failed before the fix at _selection_facts/_dependency_is_done, then passed after owner eligibility required owner=None; explicit owner selection still reads only matching tickets. Property mutation with reversed status rank failed on a review-vs-doing case. The inactive-status guard in skip_reason is behaviorally redundant: removing its status test still returns None because non-todo statuses return immediately afterward, so there is no distinct behavior for a test to kill. Full make format && make check passes (461 Python tests and Node tests). Implementation committed as 9c8dc77. No unrelated files changed.
+
 ## Summary
 
-Implemented pure ticket facts, skip reasons and selection; dependency reads remain lazy for eligible todo tickets. Added Hypothesis properties and direct dependency coverage. Mutation trials killed each distinct selection rule; the explicit human-owner check is subsumed by general owner exclusion. Verified make format and make check (460 Python suites and Node tests). Handoff: ready for review; no known follow-ups.
+Fixed lazy dependency gathering for plain next: agent-owned todo tickets are now excluded before reading dependencies. Added regression coverage; confirmed it failed pre-fix and passed after. Reversed status-rank mutation is killed by property ordering. The inactive-status skip_reason check is redundant with the subsequent non-todo return, documented in Notes. make format && make check pass (461 Python tests and Node tests). Commit: 9c8dc77. Acceptance criterion 1 remains unchecked only for the behaviorally redundant inactive-status guard mutation.
 
 ## History
 
@@ -65,3 +67,5 @@ Implemented pure ticket facts, skip reasons and selection; dependency reads rema
 - 2026-11-10T23:00:46Z tidy-wren: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T23:00:46Z tidy-wren review → doing
 - 2026-11-10T23:05:27Z lively-puffin: wrote the plan
+- 2026-11-10T23:08:22Z lively-puffin: changed notes, summary
+- 2026-11-10T23:08:22Z lively-puffin doing → review
