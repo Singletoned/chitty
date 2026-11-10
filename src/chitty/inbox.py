@@ -14,7 +14,8 @@ import yaml
 
 from chitty.config import inbox_path, load_repo_config, register_project, registered_projects
 from chitty.errors import ChittyError
-from chitty.store import Change, Edit, Repo
+from chitty.model import new_task
+from chitty.store import BACKLOG_DESCRIPTION, Change, Edit, Repo
 
 
 def suggest(
@@ -28,6 +29,16 @@ def suggest(
     """Atomically write a suggestion to a registered project's inbox."""
     if "\n" in title or "\r" in title:
         raise ChittyError("suggestion title must be one line")
+    normalized = (description or "").strip()
+    normalized = "\n".join(line.rstrip() for line in normalized.split("\n"))
+    if not normalized:
+        normalized = BACKLOG_DESCRIPTION
+    # Validate against the same model pull uses before persisting an unimportable suggestion.
+    candidate = new_task(title, date.today(), normalized, (), {})
+    if candidate.frontmatter.title != title:
+        raise ChittyError("suggestion title does not round-trip through task storage")
+    if candidate.section("Description") != normalized:
+        raise ChittyError("suggestion Description does not round-trip through task storage")
     projects = registered_projects()
     if project in projects:
         pass
@@ -139,9 +150,17 @@ def list_waiting(repo: Repo) -> list[dict[str, object]]:
 
 def _read_suggestion(path: Path) -> dict[str, object]:
     try:
-        _, frontmatter, body = path.read_text().split("---\n", 2)
+        lines = path.read_text().splitlines(keepends=True)
+        opening = next(index for index, line in enumerate(lines) if line.rstrip("\r\n") == "---")
+        closing = next(
+            index
+            for index in range(opening + 1, len(lines))
+            if lines[index].rstrip("\r\n") == "---"
+        )
+        frontmatter = "".join(lines[opening + 1 : closing])
+        body = "".join(lines[closing + 1 :])
         data = yaml.safe_load(frontmatter)
-    except (ValueError, yaml.YAMLError) as error:
+    except (ValueError, StopIteration, yaml.YAMLError) as error:
         raise ChittyError(f"{path}: invalid suggestion frontmatter") from error
     if not isinstance(data, dict):
         raise ChittyError(f"{path}: invalid suggestion frontmatter")
