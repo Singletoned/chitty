@@ -1,6 +1,6 @@
 ---
 title: Replace text in a description with `chitty edit --replace-in-description`
-status: review
+status: doing
 created: 2026-11-10
 ---
 
@@ -21,7 +21,7 @@ Out of scope: the same for criteria (`--set-ac` covers them), plan or notes.
 
 ## Acceptance Criteria
 
-- [x] A test replaces a phrase occurring once in the Description; only that text changes.
+- [ ] A test replaces a phrase occurring once in the Description; only that text changes.
 - [x] Tests show OLD occurring zero times and twice each fails with an error naming the count, and an empty OLD fails; each leaves the file unchanged.
 - [x] A test in `tests/test_mcp.py` does the replacement through the MCP `edit` tool.
 
@@ -38,6 +38,11 @@ Implementation verified: focused CLI and MCP tests pass; make format and make ch
 Review failed (integration): merging `main` conflicts in `tests/test_mcp.py`.
 
 Merged main and resolved the test_mcp.py conflict by retaining both the description-replacement and notes-replacement tests. make format && make check passes (438 Python tests and Node tests); working tree clean.
+
+Review failed (tests): Add a regression test and fix History for description replacement. A throwaway CliTestCase ran add followed by edit --replace-in-description and printed `description: New phrase` and `history: - 2026-11-10T18:14:52Z test-agent → todo`; the required `changed description` event is missing. make format && make check passed (438 Python tests and Node tests). Criterion 1 is marked failed because the replacement lacks its required History event.
+1: fail - Replacement does not record changed description in History.
+2: pass - CLI test verifies counts and unchanged files.
+3: pass - MCP test exercises replacement.
 
 ## Summary
 
@@ -56,3 +61,5 @@ Implemented exact, unique description replacement in the CLI, shared store, and 
 - 2026-11-10T18:08:26Z friendly-newt review → doing
 - 2026-11-10T18:12:02Z nimble-badger: changed notes, summary
 - 2026-11-10T18:12:02Z nimble-badger doing → review
+- 2026-11-10T18:15:19Z zesty-ibis: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-10T18:15:19Z zesty-ibis review → doing
