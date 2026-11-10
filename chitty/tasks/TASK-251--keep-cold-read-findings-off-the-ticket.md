@@ -22,6 +22,10 @@ Put the tests in `tests/test_guide_cold_read_notes.py`, checking the printed gui
 - [ ] `chitty guide cold-read <ID>` tells the reader to skip Notes, and `chitty guide plan` says to give finding outcomes in the reply, not a ticket note.
 - [ ] `chitty guide plan` no longer tells planners to replace notes once reads converge, and still describes the starting-point note.
 
+## Plan
+
+Update the cold-read and planning role guides to keep earlier findings out of ticket Notes, and replace the removed wording test with focused printed-guide tests. Verify the new tests fail before the guide changes, then run formatting and the full check suite.
+
 ## Notes
 
 Possible starting point: `refs/cold-read/TASK-251/1` (`git show refs/cold-read/TASK-251/1:<path>`). Check it against the criteria; don't trust it.
@@ -32,3 +36,4 @@ Possible starting point: `refs/cold-read/TASK-251/1` (`git show refs/cold-read/T
 - 2026-11-10T22:00:41Z jolly-heron: replaced notes; changed description
 - 2026-11-10T22:00:41Z jolly-heron backlog → todo
 - 2026-11-10T22:32:09Z able-eel todo → doing
+- 2026-11-10T22:32:28Z able-eel: wrote the plan
