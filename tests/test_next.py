@@ -139,6 +139,13 @@ class TestNext(CliTestCase):
         ready = self.add("Ready after archive", depends_on=[archived])
         self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
 
+    def test_unselected_owner_dependency_is_not_read(self):
+        dependency = self.add("Dependency", status="blocked")
+        self.add("Agent-owned", owner="agent", depends_on=[dependency])
+        ready = self.add("Ready")
+        with patch("chitty.store._dependency_is_done", side_effect=AssertionError("read")):
+            self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
+
     def test_todo_dependency_must_be_done_on_main(self):
         config = self.root / "chitty.toml"
         config.write_text(
