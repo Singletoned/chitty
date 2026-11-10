@@ -25,6 +25,10 @@ Out of scope: the same for criteria (`--set-ac` covers them), plan or notes.
 - [ ] Tests show OLD occurring zero times and twice each fails with an error naming the count, and an empty OLD fails; each leaves the file unchanged.
 - [ ] A test in `tests/test_mcp.py` does the replacement through the MCP `edit` tool.
 
+## Plan
+
+Add replacement semantics to store.Edit, validate exclusivity with whole-description replacement and unique nonempty old text, and preserve existing description validation/history behavior. Expose the option in CLI and MCP, add focused store/CLI/MCP tests including unchanged files on errors, and document the CLI option in PLAN.md. Run regression tests before implementation where practical, then format/check.
+
 ## Notes
 
 Cold read 1 (Haiku): fixed: empty OLD counted len+1 matches; now rejected. Decided and stated: match against the pre-edit Description; History `changed description`; allowed in review, like `-d`; emptying keeps the existing required-section error. Left to the worker: exact combination error text and the MCP parameter shape. Possible starting point: `git diff main...refs/cold-read/TASK-243/1`; check it against the current criteria, not trust it.
@@ -35,3 +39,4 @@ Cold read 1 (Haiku): fixed: empty OLD counted len+1 matches; now rejected. Decid
 - 2026-11-10T14:19:32Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:19:33Z jolly-heron backlog → todo
 - 2026-11-10T17:16:36Z sunny-puffin todo → doing
+- 2026-11-10T17:16:54Z sunny-puffin: wrote the plan
