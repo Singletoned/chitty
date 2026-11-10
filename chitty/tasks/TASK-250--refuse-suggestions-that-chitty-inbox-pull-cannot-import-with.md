@@ -1,6 +1,6 @@
 ---
 title: Refuse suggestions that `chitty inbox --pull` cannot import, with a property test
-status: doing
+status: review
 depends_on:
   - TASK-249
 created: 2026-11-10
@@ -30,7 +30,7 @@ Depends on TASK-249, whose re-parse check makes `new_task` reject `## Notes` lin
 ## Acceptance Criteria
 
 - [x] The property test fails before the fix, on the inputs above or others the generator finds, and passes after.
-- [ ] `chitty suggest` with a U+2028 title, a title ending in `---`, or a setext-heading description exits non-zero and writes no suggestion file; a following `chitty inbox --pull` of another suggestion succeeds.
+- [x] `chitty suggest` with a U+2028 title, a title ending in `---`, or a setext-heading description exits non-zero and writes no suggestion file; a following `chitty inbox --pull` of another suggestion succeeds.
 
 ## Plan
 
@@ -42,6 +42,57 @@ Possible starting point: `refs/cold-read/TASK-250/2` (`git show refs/cold-read/T
 
 Property test initially exposed a real mismatch beyond the listed examples: U+0085 in a title was normalized during task rendering. Validation now rejects any candidate whose title or normalized Description fails to round-trip. The property test passed (50 examples), and make format && make check passed (455 Python tests plus Node tests). The initial pre-fix property run failed during pull for rejected title/Description examples; after refining to catch suggest rejections, pre-fix failure showed pull could fail for accepted titles. CLI-specific acceptance scenarios were not separately exercised.
 
+Re-verified both criteria: the property suite passed with 50 examples; the CLI regression confirmed U+2028, trailing --- and setext-heading suggestions exit non-zero without writing files, then a valid suggestion pulled successfully. The CLI test initially exposed trailing --- being accepted despite the ticket requirement; suggest now rejects that delimiter-like title. /Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-131--land-reviewed-tickets-from-chitty-run.md: warning: Notes contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-131--land-reviewed-tickets-from-chitty-run.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-144--mark-chitty-s-block-in-agents-md-with-strict-begin-and-end-c.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-148--log-usage-for-failed-and-interrupted-runs.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-169--find-what-leaves-temporary-projects-in-the-real-inbox.md: warning: Notes contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-177--count-other-branches-tickets-when-allocating-an-id.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-179--stop-telling-workers-to-run-chitty-inbox-pull.md: warning: Notes has an indented line inside a paragraph; put pasted output in a fenced code block
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-179--stop-telling-workers-to-run-chitty-inbox-pull.md: warning: Notes contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-181--put-the-literal-instruction-back-in-the-agent-prompts.md: warning: Notes has an indented line inside a paragraph; put pasted output in a fenced code block
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-181--put-the-literal-instruction-back-in-the-agent-prompts.md: warning: Notes contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-182--cover-pyproject-toml-in-newer-key-tests-and-stop-version-par.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-182--cover-pyproject-toml-in-newer-key-tests-and-stop-version-par.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-191--keep-tickets-in-random-id-contexts-in-backlog.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-193--require-evidence-in-a-review-that-fails-a-ticket.md: warning: Notes has an indented line inside a paragraph; put pasted output in a fenced code block
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-193--require-evidence-in-a-review-that-fails-a-ticket.md: warning: Notes contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-198--warn-in-chitty-check-about-indented-lines-inside-a-paragraph.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-199--exit-3-when-chitty-next-or-chitty-run-has-no-ticket.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-208--explain-the-setup-and-autocommit-errors-from-chitty-run.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-216--use-main-branch-instead-of-main-in-the-code.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-218--refuse-ticket-branches-that-change-agents-md-s-managed-block.md: warning: Notes contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-218--refuse-ticket-branches-that-change-agents-md-s-managed-block.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-222--leave-every-owned-ticket-out-of-a-plain-chitty-run.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-222--leave-every-owned-ticket-out-of-a-plain-chitty-run.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-224--bump-the-version-at-release-not-on-ticket-branches.md: warning: Summary contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-237--compare-the-managed-agents-md-block-with-the-merge-base-not.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-237--compare-the-managed-agents-md-block-with-the-merge-base-not.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-238--clear-virtual-env-and-uv-project-environment-for-setup-and-c.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-238--clear-virtual-env-and-uv-project-environment-for-setup-and-c.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-238--clear-virtual-env-and-uv-project-environment-for-setup-and-c.md: warning: Summary contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-246--time-out-the-agent-started-by-chitty-run.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-63--stop-prefixing-every-git-error-with-autocommit-failed.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-63--stop-prefixing-every-git-error-with-autocommit-failed.md: warning: Notes has an indented line inside a paragraph; put pasted output in a fenced code block
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/TASK-72--show-status-glyphs-and-why-chitty-next-skips-a-ticket-in-chi.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-1--reject-setext-headings-in-task-bodies.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-124--add-chitty-next-and-chitty-run-to-do-the-next-ticket.md: warning: Notes has an indented line inside a paragraph; put pasted output in a fenced code block
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-126--chitty-run-prepares-the-worktree-and-claim-before-starting-p.md: warning: Notes has an indented line inside a paragraph; put pasted output in a fenced code block
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-129--do-not-install-the-pi-extension-from-a-linked-worktree.md: warning: Notes has an indented line inside a paragraph; put pasted output in a fenced code block
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-15--add-bash-and-zsh-completion.md: warning: Description contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-178--stop-chitty-run-from-a-ticket-worktree-changing-main-s-setup.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-184--pick-the-right-copy-of-a-ticket-when-commits-share-a-second.md: warning: Plan contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-184--pick-the-right-copy-of-a-ticket-when-commits-share-a-second.md: warning: Notes contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-184--pick-the-right-copy-of-a-ticket-when-commits-share-a-second.md: warning: Summary contains literal '_' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-45--write-chitty-toml-inline-comments-with-a-single-space.md: warning: Description contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-47--guide-tells-agents-to-put-paths-globs-and-code-in-backticks.md: warning: Description contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-49--warn-in-chitty-check-when-task-text-has-markdown-characters.md: warning: Description contains literal '*' Markdown delimiter; use backticks for code
+/Users/singletoned/src/singletoned/chitty/.worktrees/task-250/chitty/tasks/archive/TASK-56--remove-prefix-from-chitty-init-prefixes-name-queues-not-proj.md: warning: Acceptance Criteria #2 contains literal '*' Markdown delimiter; use backticks for code, make format, and make check passed (456 Python tests and Node tests).
+
+## Summary
+
+Handoff: suggest validates the constructed task and rejects titles/Descriptions that fail round-trip; inbox frontmatter parsing uses delimiter-only lines. Added property and CLI regressions. Verified both acceptance criteria, focused tests, and full checks. Commits: 7a2d6b3 and 0686452. No follow-ups.
+
 ## History
 
 - 2026-11-10T21:12:38Z jolly-heron → backlog
@@ -52,3 +103,5 @@ Property test initially exposed a real mismatch beyond the listed examples: U+00
 - 2026-11-10T22:37:01Z eager-raven todo → doing
 - 2026-11-10T22:37:16Z eager-raven: wrote the plan
 - 2026-11-10T22:39:52Z eager-raven: changed notes; ticked acceptance criteria
+- 2026-11-10T22:41:28Z eager-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T22:41:28Z eager-raven doing → review
