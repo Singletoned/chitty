@@ -1,6 +1,6 @@
 ---
 title: "Cold-read guide: report reds in the reply, keep scratch in the worktree, filter findings"
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -18,10 +18,10 @@ Keep each addition to one or two lines. Put tests in a new `tests/test_guide_col
 
 ## Acceptance Criteria
 
-- [ ] `guide("cold-read")` tells readers to put failing test output in their report, not in a ticket note.
-- [ ] `guide("cold-read")` tells readers to keep scratch files inside the read worktree and delete them before running the check.
-- [ ] `guide("cold-read")` tells readers to report only findings that change what a worker builds or how a reviewer verifies it, and to list worker choices in one line.
-- [ ] `guide("cold-read")` tells readers to quote the test runner's own summary line, not an exit status, as evidence that tests passed or failed.
+- [x] `guide("cold-read")` tells readers to put failing test output in their report, not in a ticket note.
+- [x] `guide("cold-read")` tells readers to keep scratch files inside the read worktree and delete them before running the check.
+- [x] `guide("cold-read")` tells readers to report only findings that change what a worker builds or how a reviewer verifies it, and to list worker choices in one line.
+- [x] `guide("cold-read")` tells readers to quote the test runner's own summary line, not an exit status, as evidence that tests passed or failed.
 
 ## Plan
 
@@ -31,6 +31,12 @@ Update the cold-read report instructions with the four requested constraints, th
 
 Cold read 1 (Haiku): fixed: the new filter clashed with the existing report list (unverified behaviour, wrong claims); the description now says the filter governs every report item and the list stays. Rejected: pinning exact test phrases in the ticket; repository guide tests assert phrases the worker chooses, and the reviewer checks the meaning. Possible starting point: `git diff main...refs/cold-read/TASK-239/1`; check it against the current criteria, not trust it.
 
+Added report rules for test-summary evidence, scratch-file handling, and filtered findings; focused guide test and full make check passed.
+
+## Summary
+
+Implemented the four cold-read guide additions and added tests/test_guide_cold_read_reports.py. Verified focused test and full make format && make check (424 Python suites and Node tests passed). Commit: 5d2aefc. No follow-ups.
+
 ## History
 
 - 2026-11-10T14:08:40Z jolly-heron → backlog
@@ -39,3 +45,5 @@ Cold read 1 (Haiku): fixed: the new filter clashed with the existing report list
 - 2026-11-10T14:26:23Z jolly-heron: changed description, acceptance criteria
 - 2026-11-10T16:58:23Z friendly-falcon todo → doing
 - 2026-11-10T16:58:50Z friendly-falcon: wrote the plan
+- 2026-11-10T17:00:53Z friendly-falcon: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T17:00:53Z friendly-falcon doing → review
