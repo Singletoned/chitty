@@ -600,6 +600,8 @@ def _format(stored: StoredTask) -> str:
 @click.option("--plan-file", type=click.File(), help="Read --plan from a file.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
 @click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
+@click.option("--set-notes", help="Replace the Notes section; '' removes it.")
+@click.option("--set-notes-file", type=click.File(), help="Read replacement Notes from a file.")
 @click.option("--summary", help="Replace the Summary section; '' removes it.")
 @click.option(
     "--override-review-independence",
@@ -629,6 +631,8 @@ def edit(
     plan_file: TextIO | None,
     notes: tuple[str, ...],
     note_file: TextIO | None,
+    set_notes: str | None,
+    set_notes_file: TextIO | None,
     summary: str | None,
     override_review_independence: bool,
     as_json: bool,
@@ -653,6 +657,7 @@ def edit(
         uncheck=uncheck,
         plan=_text(plan, plan_file, "plan"),
         notes=(*notes, note_file.read()) if note_file is not None else notes,
+        set_notes=_text(set_notes, set_notes_file, "set-notes"),
         summary=summary,
         override_review_independence=override_review_independence,
     )

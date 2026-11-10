@@ -1543,6 +1543,25 @@ class TestEdit(CliTestCase):
         self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")
         self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
 
+    def test_edit_replaces_notes_and_records_history(self):
+        self.run_cli("add", "Notes", "-d", "x", "--note", "First", "--note", "Second")
+        self.run_cli("edit", "1", "--set-notes", "Only this")
+        shown = self.run_cli("show", "1").stdout
+        self.assertIn("## Notes\n\nOnly this", shown)
+        self.assertIn("replaced notes", shown)
+        self.run_cli("edit", "1", "--set-notes", "")
+        self.assertNotIn("## Notes", self.run_cli("show", "1").stdout)
+
+    def test_set_notes_rejects_append_and_review_without_writing(self):
+        self.run_cli("add", "Notes", "-d", "x", "--note", "First")
+        before = self.run_cli("show", "1").stdout
+        self.run_cli("edit", "1", "--set-notes", "Replacement", "--note", "Append", exit_code=1)
+        self.assertEqual(self.run_cli("show", "1").stdout, before)
+        self.run_cli("edit", "1", "-s", "review")
+        before = self.run_cli("show", "1").stdout
+        self.run_cli("edit", "1", "--set-notes", "Replacement", exit_code=1)
+        self.assertEqual(self.run_cli("show", "1").stdout, before)
+
     def test_edit_sets_criterion_in_place_and_unticks_it(self):
         self.run_cli("edit", "1", "--ac", "Three")
         self.run_cli("edit", "1", "--check", "2")

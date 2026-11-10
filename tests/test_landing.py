@@ -71,6 +71,30 @@ class TestLanding(CliTestCase):
         self.assertFalse(self.worktree.exists())
         self.assertEqual(self.git("branch", "--list", self.branch), "")
 
+    def test_landing_preserves_managed_block_refreshed_on_main(self):
+        self.git("worktree", "remove", str(self.worktree))
+        self.git("branch", "-D", self.branch)
+        self.run_cli("init")
+        self.git("add", "AGENTS.md", "CLAUDE.md", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "install managed guide")
+        self.git("branch", self.branch)
+        self.git("worktree", "add", "--quiet", str(self.worktree), self.branch)
+        agents = self.root / "AGENTS.md"
+        agents.write_text(
+            agents.read_text().replace(
+                "Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit",
+                "Tasks live in `tickets/`; use the `chitty` CLI or MCP, and do not hand-edit",
+            )
+        )
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "refresh managed guide")
+        self.finish_ticket()
+
+        self.land()
+
+        self.assertIn("Tasks live in `tickets/`", agents.read_text())
+        self.assertFalse(self.worktree.exists())
+
     def test_moved_main_is_merged_into_ticket_branch_before_landing(self):
         self.finish_ticket()
         (self.root / "main-change").write_text("main advanced\n")
