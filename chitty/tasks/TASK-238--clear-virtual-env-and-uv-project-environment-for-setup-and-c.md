@@ -19,7 +19,7 @@ Implement this now. The person is also fixing their shell environment globally, 
 
 ## Plan
 
-Add one run.py helper that copies os.environ and removes only VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT. Use it for agent launch, setup, check, and landing-check subprocess environments. Add regression tests for the three commands, first verifying they fail against current behavior.
+Replace the mocked _run_check assertion with a real child process that records its environment, matching the setup and landing-check tests. Run the focused test with the environment helper temporarily disabled to prove it fails, restore the fix, then run formatting and checks.
 
 ## Notes
 
@@ -47,3 +47,4 @@ Implemented a shared environment-copy helper that removes only VIRTUAL_ENV and U
 - 2026-11-10T17:23:57Z witty-zander doing → review
 - 2026-11-10T18:18:14Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-10T18:18:14Z eager-puffin review → doing
+- 2026-11-10T22:21:29Z calm-dormouse: wrote the plan
