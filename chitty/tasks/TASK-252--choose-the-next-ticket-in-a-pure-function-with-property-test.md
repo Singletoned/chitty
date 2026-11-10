@@ -32,7 +32,7 @@ Bias the generator so most examples have two or more choosable tickets, and shuf
 
 ## Plan
 
-Extract selection into pure functions over gathered ticket facts. Preserve lazy dependency reads for eligible todo tickets and existing messages/list output. Add Hypothesis properties with independently defined ranking, biased/shuffled fixtures, and mutation-style checks by temporarily removing each rule. Run focused properties and existing next/list/run tests, then format and full check.
+Fix dependency gathering so a todo ticket is read only after the requested owner filter passes. Strengthen property tests for status ordering and inactive skip reasons, then run focused tests with mutation trials for those omitted rules. Run format and full checks.
 
 ## Notes
 
@@ -64,3 +64,4 @@ Implemented pure ticket facts, skip reasons and selection; dependency reads rema
 - 2026-11-10T22:57:58Z nimble-yellowhammer doing → review
 - 2026-11-10T23:00:46Z tidy-wren: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T23:00:46Z tidy-wren review → doing
+- 2026-11-10T23:05:27Z lively-puffin: wrote the plan
