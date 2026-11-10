@@ -29,6 +29,8 @@ Add pure outcome functions for agent exits, status transitions, and loop steps, 
 
 Possible starting point: `refs/cold-read/TASK-253/2` (`git show refs/cold-read/TASK-253/2:<path>`). It lets `-SIGINT` win over a timeout, which the ticket now reverses. Check it against the criteria; don't trust it.
 
+Confirmed the three direct timeout tests passed against the original implementation before changing them. Property tests now encode the three decision rules and explicit boundary values. `make format && make check` passes (462 Python tests plus Node tests).
+
 ## History
 
 - 2026-11-10T22:10:57Z jolly-heron → backlog
@@ -37,3 +39,4 @@ Possible starting point: `refs/cold-read/TASK-253/2` (`git show refs/cold-read/T
 - 2026-11-10T22:19:11Z jolly-heron backlog → todo
 - 2026-11-10T23:10:32Z calm-adder todo → doing
 - 2026-11-10T23:10:44Z calm-adder: wrote the plan
+- 2026-11-10T23:12:44Z calm-adder: changed notes
