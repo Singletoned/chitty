@@ -1,6 +1,6 @@
 ---
 title: "Setup guide: validate setup and check in a throwaway worktree; bootstrap targets"
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -15,8 +15,8 @@ Keep each addition to one or two lines. Tests go in a new `tests/test_guide_setu
 
 ## Acceptance Criteria
 
-- [ ] `guide("setup")` tells the person to run the configured `setup` and `check` in a throwaway detached worktree before declaring the runner ready, without `chitty run`.
-- [ ] `guide("setup")` describes committing placeholder setup and check targets when the first ticket creates the real ones.
+- [x] `guide("setup")` tells the person to run the configured `setup` and `check` in a throwaway detached worktree before declaring the runner ready, without `chitty run`.
+- [x] `guide("setup")` describes committing placeholder setup and check targets when the first ticket creates the real ones.
 
 ## Plan
 
@@ -26,6 +26,12 @@ Add focused setup-guide tests asserting both new instructions. Run them first to
 
 Cold read 1 (Haiku): no serious findings. Accepted: placement of each addition is the worker's choice; the throwaway-worktree phrase is the real check for criterion 1. Rejected: specifying failure handling; step 4 already says to fix the reported error before retrying. Possible starting point: `git diff main...refs/cold-read/TASK-241/1`; check it against the current criteria, not trust it.
 
+The new focused guide tests failed before the guide instructions were added, then passed. Full make format and make check passed (425 Python suites and Node tests). The throwaway-worktree validation and placeholder-target guidance are concise additions at the end of setup step 4.
+
+## Summary
+
+Implemented in f6753c0 (Task: TASK-241). Added focused setup-guide coverage; focused tests and full make format/make check pass. No known follow-ups.
+
 ## History
 
 - 2026-11-10T14:08:41Z jolly-heron → backlog
@@ -33,3 +39,5 @@ Cold read 1 (Haiku): no serious findings. Accepted: placement of each addition i
 - 2026-11-10T14:20:04Z jolly-heron backlog → todo
 - 2026-11-10T17:06:34Z calm-crane todo → doing
 - 2026-11-10T17:06:50Z calm-crane: wrote the plan
+- 2026-11-10T17:08:56Z calm-crane: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T17:08:56Z calm-crane doing → review
