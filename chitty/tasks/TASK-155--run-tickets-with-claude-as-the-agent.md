@@ -32,6 +32,14 @@ The planning session then records that in a note, fixes the allow-list where a d
 
 Allow-list taken from the commands agents actually ran (human analysis, 2026-11-04): Chitty, Git, `make`, `uv run`, `python`, `npm test`, and search and text tools. Occasional commands such as `rm`, `cp` and `mkdir` are left out; agents should adapt.
 
+Trial 1, 2026-11-10, TASK-247 work (human ran `chitty run --agent claude --ticket TASK-247`):
+
+- Model: all 61 turns were `claude-haiku-5-5`, despite `--model sonnet`. From the planning session, `claude -p --model sonnet` gives `claude-sonnet-5-5`, so the cause is in the run environment; not yet found.
+- Denials: 7 of 30 calls, all Bash in `dontAsk` mode: `ps`, `.venv/bin/python -m unittest`, compound commands (`&&`, `;`, pipes, `$(...)`), and every `chitty edit` with a long quoted `--plan` or `--note`.
+- Cost: implemented and committed (`7ed917e`) and `make check` passed, but it could not see the tests fail first or update the ticket. `chitty run` exited 1 (`TASK-247 was unchanged`), leaving it in `doing`.
+- It also read its own run lock as another session (`tidy-vole`), the bug TASK-247 fixes.
+- No usage recorded, as expected.
+
 ## History
 
 - 2026-11-04T15:38:29Z mellow-newt → backlog
@@ -46,3 +54,4 @@ Allow-list taken from the commands agents actually ran (human analysis, 2026-11-
 - 2026-11-04T20:15:23Z mellow-newt: changed notes
 - 2026-11-04T20:32:40Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-10T20:51:48Z jolly-heron: replaced notes; changed description, acceptance criteria
+- 2026-11-10T21:58:25Z jolly-heron: changed notes
