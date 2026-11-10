@@ -1,6 +1,6 @@
 ---
 title: Keep cold-read findings off the ticket
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -32,6 +32,10 @@ Possible starting point: `refs/cold-read/TASK-251/1` (`git show refs/cold-read/T
 
 New printed-guide tests failed before the guide updates (2 failures; Ran 4 tests, failures=2). After the changes, make check passed, including all 454 Python tests and Node tests.
 
+Reviewed: checked both printed guides and focused regression tests; make format and make check passed (457 Python tests and Node tests).
+1: pass - Printed guides direct readers to skip Notes and planners to report outcomes in replies.
+2: pass - Printed planning guide removes replacement instruction and retains starting-point note.
+
 ## Summary
 
 Updated the cold-read and planning guides, replaced the wording test with printed-guide regression coverage, and removed the obsolete set-notes test. Verified with make format and make check; focused regression tests failed before the guide changes and passed in the full suite. No follow-ups.
@@ -45,3 +49,5 @@ Updated the cold-read and planning guides, replaced the wording test with printe
 - 2026-11-10T22:32:28Z able-eel: wrote the plan
 - 2026-11-10T22:34:52Z able-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T22:34:52Z able-eel doing → review
+- 2026-11-10T22:37:12Z vivid-ibis: changed notes; ticked acceptance criteria
+- 2026-11-10T22:37:12Z vivid-ibis review → done
