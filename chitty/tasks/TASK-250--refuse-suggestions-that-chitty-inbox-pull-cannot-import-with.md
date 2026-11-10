@@ -34,9 +34,7 @@ Depends on TASK-249, whose re-parse check makes `new_task` reject `## Notes` lin
 
 ## Notes
 
-Haiku cold read 1 (`refs/cold-read/TASK-250/1`): `new_task` alone missed the empty-Description normalisation and the `---` title; both are in the fix now. Heading, fence and form-feed cases moved to TASK-249.
-
-Haiku cold read 2 (`refs/cold-read/TASK-250/2`): green, `make check` passed. Added the empty-title case; decided `suggest` writes the text as given.
+Possible starting point: `refs/cold-read/TASK-250/2` (`git show refs/cold-read/TASK-250/2:<path>`). Check it against the criteria; don't trust it.
 
 ## History
 
@@ -44,3 +42,4 @@ Haiku cold read 2 (`refs/cold-read/TASK-250/2`): green, `make check` passed. Add
 - 2026-11-10T21:17:27Z jolly-heron: replaced notes; changed description, acceptance criteria
 - 2026-11-10T21:21:56Z jolly-heron: changed description, notes
 - 2026-11-10T21:21:56Z jolly-heron backlog → todo
+- 2026-11-10T21:58:53Z jolly-heron: replaced notes
