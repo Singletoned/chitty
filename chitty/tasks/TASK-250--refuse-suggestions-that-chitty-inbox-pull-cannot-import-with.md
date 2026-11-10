@@ -1,6 +1,6 @@
 ---
 title: Refuse suggestions that `chitty inbox --pull` cannot import, with a property test
-status: doing
+status: review
 depends_on:
   - TASK-249
 created: 2026-11-10
@@ -29,7 +29,7 @@ Depends on TASK-249, whose re-parse check makes `new_task` reject `## Notes` lin
 
 ## Acceptance Criteria
 
-- [ ] The property test fails before the fix, on the inputs above or others the generator finds, and passes after.
+- [x] The property test fails before the fix, on the inputs above or others the generator finds, and passes after.
 - [x] `chitty suggest` with a U+2028 title, a title ending in `---`, or a setext-heading description exits non-zero and writes no suggestion file; a following `chitty inbox --pull` of another suggestion succeeds.
 
 ## Plan
@@ -96,9 +96,11 @@ Review failed (tests): The property generator explicitly filters out Description
 
 Review failed (tests): Inspection of tests/test_property_inbox.py shows DESCRIPTION_LINES filters out lines beginning with `## `, fences, and form feeds in _safe_description_line; it only separately includes `---`. Therefore the property does not draw the TASK-249 rejection cases required by criterion 1, nor verify they are rejected without polluting replay. `make format && make check` passed (459 Python tests and Node tests), but these tests do not cover that requirement.
 
+Expanded the property generator and explicit examples to cover heading lines, unclosed fences, and form feeds; failed pulls clean up only that example’s new suggestions so Hypothesis replay/shrinking is stable. Confirmed regression: with inbox.py temporarily restored from 9f9d887, `uv run python -m unittest tests.test_property_inbox -v` failed on explicit malformed-description examples during pull. Restored implementation and reran property test successfully. Rechecked CLI scenario with `uv run python -m unittest tests.test_cli.TestInbox.test_unimportable_suggestions_are_rejected_without_poisoning_pull -v`; passed. `make format && make check` passed (459 Python tests and Node tests).
+
 ## Summary
 
-Handoff: suggest validates the constructed task and rejects titles/Descriptions that fail round-trip; inbox frontmatter parsing uses delimiter-only lines. Added property and CLI regressions. Verified both acceptance criteria, focused tests, and full checks. Commits: 7a2d6b3 and 0686452. No follow-ups.
+Handoff: property coverage now explicitly includes required TASK-249 invalid Description forms and cleanup avoids leftover suggestions on failed pull. Verified pre-fix regression failure, post-fix property and CLI tests, and full make format/check (459 Python tests plus Node tests). Follow-ups: none.
 
 ## History
 
@@ -115,3 +117,5 @@ Handoff: suggest validates the constructed task and rejects titles/Descriptions 
 - 2026-11-10T22:44:17Z zesty-dormouse: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T22:44:17Z zesty-dormouse review → doing
 - 2026-11-10T23:00:57Z open-marten: changed acceptance criteria, notes
+- 2026-11-10T23:02:59Z open-marten: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T23:02:59Z open-marten doing → review
