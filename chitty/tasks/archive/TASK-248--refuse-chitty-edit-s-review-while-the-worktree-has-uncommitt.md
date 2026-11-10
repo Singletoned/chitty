@@ -25,3 +25,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-248/1`) found the refusal already exists
 
 - 2026-11-10T19:32:56Z jolly-heron → backlog
 - 2026-11-10T19:37:36Z jolly-heron: changed notes
+- 2026-11-10T19:37:37Z jolly-heron backlog → archived
