@@ -24,6 +24,8 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 
 Suggestion origin: echonomicon
 
+Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all green; new tests failed first. Outcomes: (1) `process_group=0` breaks interactive terminal input, and `start_new_session` drops the controlling terminal: fixed, now kills the descendant tree and keeps the agent in the same group, which replaced the Ctrl-C criterion. (2) The "longer than any test limit" bound was untestable: fixed, now 3 seconds. (3) `"10"` needs strict integer parsing: fixed, the description says a string is an error. (4) Usage log after a timeout was untested: fixed, added to criterion 1. (5) Reader skipped the `PLAN.md` and docs updates: no change, the description already asks for them.
+
 ## History
 
 - 2026-11-10T16:53:45Z jolly-heron → backlog
@@ -32,3 +34,4 @@ Suggestion origin: echonomicon
 - 2026-11-10T16:54:04Z jolly-heron backlog → todo
 - 2026-11-10T16:54:11Z jolly-heron todo → backlog
 - 2026-11-10T16:59:38Z jolly-heron: changed description, acceptance criteria
+- 2026-11-10T16:59:40Z jolly-heron: changed notes
