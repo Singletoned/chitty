@@ -43,6 +43,8 @@ Review failed (tests): Add a test asserting `_changed_agents_block` returns `Tru
 
 Criterion 2 regression test is in progress. Test setup commits distinct managed-block edits on task-1 and main, but _changed_agents_block currently returns False; investigating ref/file lookup before accepting criterion.
 
+Criterion 2 remains unverified. The test mutation is made in the branch worktree, but the test fixture subsequently reports identical AGENTS.md blobs at task-1 and its merge-base despite an asserted text mutation. Need diagnose fixture/Git setup before a valid criterion test can be completed.
+
 ## Summary
 
 Implemented and committed as 285e294 (Task: TASK-237). Verification: regression failed before the fix; make format and make check passed (422 Python suites plus Node tests). Follow-up: none.
@@ -59,3 +61,4 @@ Implemented and committed as 285e294 (Task: TASK-237). Verification: regression 
 - 2026-11-10T17:47:40Z sunny-crane: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T17:47:40Z sunny-crane review → doing
 - 2026-11-10T17:52:08Z mellow-adder: changed notes
+- 2026-11-10T17:53:25Z mellow-adder: changed notes
