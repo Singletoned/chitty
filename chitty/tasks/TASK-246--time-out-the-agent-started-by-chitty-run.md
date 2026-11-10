@@ -32,6 +32,8 @@ Suggestion origin: echonomicon
 
 Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all green; new tests failed first. Outcomes: (1) `process_group=0` breaks interactive terminal input, and `start_new_session` drops the controlling terminal: fixed, now kills the descendant tree and keeps the agent in the same group, which replaced the Ctrl-C criterion. (2) The "longer than any test limit" bound was untestable: fixed, now 3 seconds. (3) `"10"` needs strict integer parsing: fixed, the description says a string is an error. (4) Usage log after a timeout was untested: fixed, added to criterion 1. (5) Reader skipped the `PLAN.md` and docs updates: no change, the description already asks for them.
 
+Approach recorded; implementing.
+
 ## History
 
 - 2026-11-10T16:53:45Z jolly-heron → backlog
@@ -46,3 +48,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all gre
 - 2026-11-10T17:34:48Z jolly-heron backlog → todo
 - 2026-11-10T17:35:46Z brisk-yellowhammer todo → doing
 - 2026-11-10T17:35:55Z brisk-yellowhammer: wrote the plan
+- 2026-11-10T17:36:08Z brisk-yellowhammer: changed notes
