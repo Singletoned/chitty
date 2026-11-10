@@ -1358,7 +1358,9 @@ def skip_reason(repo: Repo, stored: StoredTask) -> str | None:
     return _skip_reason(repo, stored, include_owner=True)
 
 
-def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str | None:
+def _skip_reason(
+    repo: Repo, stored: StoredTask, *, include_owner: bool, owner: str | None = None
+) -> str | None:
     is_locked = locks.is_locked(repo.root, str(stored.id))
     fm = stored.task.frontmatter
     may_read_dependencies = (
@@ -1367,7 +1369,10 @@ def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str 
         and not is_locked
         and stored.context != "human"
         and fm.owner != "human"
-        and (not include_owner or fm.owner is None)
+        and (
+            (include_owner and fm.owner is None)
+            or (not include_owner and owner is not None and fm.owner == owner)
+        )
     )
     fact = _selection_facts(repo, stored, locked=is_locked, dependencies=may_read_dependencies)
     return pure_skip_reason(fact, include_owner=include_owner)
@@ -1400,7 +1405,7 @@ def _ticket_action(
             raise ChittyError(f"cannot run {stored.id}: owner is human")
         return None
     if not refuse:
-        if _skip_reason(repo, stored, include_owner=owner is None) is not None:
+        if _skip_reason(repo, stored, include_owner=owner is None, owner=owner) is not None:
             return None
         if owner is not None and frontmatter.owner != owner:
             return None
@@ -1504,7 +1509,7 @@ def next_action(
             and not is_locked
             and stored.context != "human"
             and fm.owner != "human"
-            and (owner is None or fm.owner == owner)
+            and (fm.owner is None if owner is None else fm.owner == owner)
         )
         fact = _selection_facts(repo, stored, locked=is_locked, dependencies=eligible)
         facts.append(fact)
