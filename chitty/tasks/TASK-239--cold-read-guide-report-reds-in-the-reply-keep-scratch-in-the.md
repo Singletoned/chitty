@@ -10,7 +10,7 @@ Three additions to the cold-read guide, `src/chitty/roles/cold-read.md`, from pl
 
 - Readers may not write to Chitty, so tickets that ask the worker to record a failing test in a note confused them. Tell readers to put red test output in their report, never in a ticket note.
 - Readers wrote scratch logs to `/tmp` or the main checkout. Tell them to keep every scratch file inside the read worktree and delete it before running the check, because the check may lint stray files.
-- Reads converged only once readers reported just the findings that change what a worker builds or how a reviewer verifies it, and listed choices left to the worker in one line without asking for a ticket change. Say that in the report section.
+- Reads converged only once readers reported just the findings that change what a worker builds or how a reviewer verifies it, and listed choices left to the worker in one line without asking for a ticket change. Say that in the report section, as a rule over the whole list: keep the existing report items, but report an unverified behaviour, unhandled state or wrong claim only when it passes that filter.
 
 Keep each addition to one or two lines. Put tests in a new `tests/test_guide_cold_read_reports.py` in the style of `tests/test_guide_plan.py` (assert phrases in the whitespace-normalised `guide("cold-read")` text).
 
@@ -20,6 +20,11 @@ Keep each addition to one or two lines. Put tests in a new `tests/test_guide_col
 - [ ] `guide("cold-read")` tells readers to keep scratch files inside the read worktree and delete them before running the check.
 - [ ] `guide("cold-read")` tells readers to report only findings that change what a worker builds or how a reviewer verifies it, and to list worker choices in one line.
 
+## Notes
+
+Cold read 1 (Haiku): fixed: the new filter clashed with the existing report list (unverified behaviour, wrong claims); the description now says the filter governs every report item and the list stays. Rejected: pinning exact test phrases in the ticket; repository guide tests assert phrases the worker chooses, and the reviewer checks the meaning. Possible starting point: `git diff main...refs/cold-read/TASK-239/1`; check it against the current criteria, not trust it.
+
 ## History
 
 - 2026-11-10T14:08:40Z jolly-heron → backlog
+- 2026-11-10T14:16:57Z jolly-heron: changed description, notes
