@@ -1,6 +1,6 @@
 ---
 title: Compare the managed `AGENTS.md` block with the merge-base, not main
-status: backlog
+status: todo
 priority: high
 created: 2026-11-10
 ---
@@ -33,3 +33,4 @@ Cold read 1 (Haiku): fixed: the review gate merges main before the check, so onl
 
 - 2026-11-10T14:08:38Z jolly-heron → backlog
 - 2026-11-10T14:17:35Z jolly-heron: changed description, notes
+- 2026-11-10T14:17:43Z jolly-heron backlog → todo
