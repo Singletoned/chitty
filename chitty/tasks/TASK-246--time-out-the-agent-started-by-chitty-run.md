@@ -1,6 +1,8 @@
 ---
 title: Time out the agent started by chitty run
 status: backlog
+labels:
+  - needs-minor
 created: 2026-11-10
 ---
 
@@ -8,7 +10,7 @@ created: 2026-11-10
 
 In echonomicon, a `chitty run --mode work` agent (Pi, `gpt-6-luna`) ran `while ps -p <pid of chitty run>; do sleep 5; done`, waiting on its own parent. `chitty run` waits for the agent (`subprocess.run` in `src/chitty/run.py`, around line 236), so both hung for about 20 hours with no warning.
 
-Add an optional setting, `agent_timeout` in `chitty.toml`: a whole number of seconds, greater than zero. Unset means no limit, as today. A value that is not a positive TOML integer (a string such as `"10"` included) is a configuration error naming the key.
+Add an optional setting, `agent_timeout` in `chitty.toml`: a whole number of seconds. It defaults to 7200 (two hours, a module-level constant), decided with the human on 2026-11-10; `0` means no limit. A negative number or a value that is not a TOML integer (a string such as `"10"` included) is a configuration error naming the key. The default changes behaviour for every project, so this ticket carries `needs-minor`.
 
 When the limit passes, `chitty run` stops the agent and everything it started. The configured agent command is usually a wrapper (`env ... uv run ... pi`), so killing only the direct child would leave Pi running. List the agent's descendants (for example from `ps -A -o pid= -o ppid=`), send each and the agent `SIGTERM`, then `SIGKILL` any still running after a short grace period (a module-level constant). Keep the agent in `chitty run`'s own process group and session: a cold read found that `process_group=0` stops an interactive agent reading the terminal, and `start_new_session=True` takes its controlling terminal away. Staying in the same group also leaves Ctrl-C working exactly as today. It then fails like any other agent failure: it prints `agent timed out after N seconds` and exits 1. The ticket is left as the agent left it, the usage log records the run as usual, and `--loop` stops, as it does for every agent failure (see "Next action and runner" in `PLAN.md`).
 
@@ -17,7 +19,7 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 ## Acceptance Criteria
 
 - [ ] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
-- [ ] With no `agent_timeout`, an agent that sleeps for 3 seconds finishes normally; and `agent_timeout = 0`, `-5` or `"10"` fails with a configuration error naming `agent_timeout`.
+- [ ] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the run uses a 7200-second limit (shown by the timeout message when the default constant is patched to 2 in a test).
 - [ ] The agent runs in the same process group as `chitty run` (the fake agent records `os.getpgid(0)`), so terminal input and Ctrl-C reach it as today.
 
 ## Notes
@@ -35,3 +37,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all gre
 - 2026-11-10T16:54:11Z jolly-heron todo → backlog
 - 2026-11-10T16:59:38Z jolly-heron: changed description, acceptance criteria
 - 2026-11-10T16:59:40Z jolly-heron: changed notes
+- 2026-11-10T17:34:39Z jolly-heron: changed labels, description, acceptance criteria
