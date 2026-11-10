@@ -16,7 +16,7 @@ task files. `chitty --help` is the full command reference.
 - Keep a new ticket in `backlog` until its cold read findings have outcomes;
   then promote it to `todo`. Use its optional `parent` field to group flat IDs.
 - For every read of a ticket, use the same fixed list of mutants (breaks the tests should catch), extending it only with survivors you fixed.
-- Cold-read every ticket, even a small one. If it adds a module, first create it with the names the tests import, each raising `NotImplementedError`, so tests fail independently rather than at import.
+- Cold-read every ticket, even a small one. If it adds a module, tell its worker to first create it with the names the tests import, each raising `NotImplementedError`, so tests fail independently rather than at import.
 - Cold-read every ticket, even a small one. If it changes code, a fresh agent on
   a cheap model, close to the one that will do the work, implements it from the
   ticket alone in a throwaway worktree, and runs its tests with and without the
