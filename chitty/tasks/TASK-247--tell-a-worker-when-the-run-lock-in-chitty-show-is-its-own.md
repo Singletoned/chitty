@@ -17,6 +17,10 @@ Tests: hold a lock with `run_lock(...)` inside a Git repository, as `RunLockTest
 - [ ] With a lock held by actor `lively-adder` and `CHITTY_ACTOR=lively-adder`, `chitty show <ID>` prints a line starting `running: you (lively-adder, work,`; with `CHITTY_ACTOR=other-name` it prints `running: work by lively-adder,` as today.
 - [ ] `chitty show --json` and the MCP show tool report `"you": true` or `false` inside `running` for those two cases, `false` with `CHITTY_ACTOR` unset or a pid-only lock file, and `running` is `null` with no lock.
 
+## Plan
+
+Add a `you` key to every record locks.holder returns: true when the record actor equals a non-empty CHITTY_ACTOR, read from the environment directly rather than actor(). cli.show renders `running: you (actor, mode, process pid, since HH:MM)` for those and the existing line otherwise; mcp.show gets the key through holder. Tests first in tests/test_run_lock.py: CLI text and --json for the four lock cases, the existing exact assertion gains "you": false, and MCP show with a held lock. Confirm they fail, then implement in locks.py and cli.py, then run make check.
+
 ## Notes
 
 Suggestion origin: mullion
@@ -33,3 +37,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-247/1`): implemented, all green; new tes
 - 2026-11-10T19:38:19Z jolly-heron backlog → todo
 - 2026-11-10T20:51:10Z jolly-heron: changed title, description, acceptance criteria
 - 2026-11-10T21:47:36Z tidy-vole todo → doing
+- 2026-11-10T21:48:19Z tidy-vole: wrote the plan
