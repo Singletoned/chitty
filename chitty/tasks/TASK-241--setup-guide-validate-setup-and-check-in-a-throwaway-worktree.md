@@ -1,6 +1,6 @@
 ---
 title: "Setup guide: validate setup and check in a throwaway worktree; bootstrap targets"
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -27,3 +27,4 @@ Cold read 1 (Haiku): no serious findings. Accepted: placement of each addition i
 - 2026-11-10T14:08:41Z jolly-heron → backlog
 - 2026-11-10T14:20:04Z jolly-heron: changed notes
 - 2026-11-10T14:20:04Z jolly-heron backlog → todo
+- 2026-11-10T17:06:34Z calm-crane todo → doing
