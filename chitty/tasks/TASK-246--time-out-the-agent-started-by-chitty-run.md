@@ -1,6 +1,6 @@
 ---
 title: Time out the agent started by chitty run
-status: todo
+status: doing
 labels:
   - needs-minor
 created: 2026-11-10
@@ -40,3 +40,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all gre
 - 2026-11-10T17:34:39Z jolly-heron: changed labels, description, acceptance criteria
 - 2026-11-10T17:34:48Z jolly-heron: changed acceptance criteria
 - 2026-11-10T17:34:48Z jolly-heron backlog → todo
+- 2026-11-10T17:35:46Z brisk-yellowhammer todo → doing
