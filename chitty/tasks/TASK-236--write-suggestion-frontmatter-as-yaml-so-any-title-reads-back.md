@@ -1,6 +1,6 @@
 ---
 title: Write suggestion frontmatter as YAML so any title reads back
-status: todo
+status: doing
 priority: high
 created: 2026-11-10
 ---
@@ -34,3 +34,4 @@ Cold read 1 (Haiku): fixed: a title holding a `---` line broke the delimiter spl
 - 2026-11-10T14:08:37Z jolly-heron → backlog
 - 2026-11-10T14:18:07Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:18:53Z jolly-heron backlog → todo
+- 2026-11-10T16:48:24Z youthful-zander todo → doing
