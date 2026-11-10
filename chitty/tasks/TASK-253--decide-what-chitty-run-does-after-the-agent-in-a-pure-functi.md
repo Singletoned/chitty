@@ -1,6 +1,6 @@
 ---
 title: Decide what `chitty run` does after the agent in a pure function, with property tests
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -31,3 +31,4 @@ Possible starting point: `refs/cold-read/TASK-253/2` (`git show refs/cold-read/T
 - 2026-11-10T22:14:52Z jolly-heron: changed description, acceptance criteria
 - 2026-11-10T22:19:11Z jolly-heron: replaced notes; changed description, acceptance criteria
 - 2026-11-10T22:19:11Z jolly-heron backlog → todo
+- 2026-11-10T23:10:32Z calm-adder todo → doing
