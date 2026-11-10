@@ -38,6 +38,8 @@ Extract selection into pure functions over gathered ticket facts. Preserve lazy 
 
 Possible starting point: `refs/cold-read/TASK-252/2` (`git show refs/cold-read/TASK-252/2:<path>`). It reads dependencies for every `todo` ticket, which made `chitty next` about 40% slower; the ticket now says not to. Check it against the criteria; don't trust it.
 
+Implemented pure selection and property coverage; full make check passes (459 Python tests and Node tests), including existing next/list/run coverage. I have not yet performed the requested mutation trials removing each individual selection rule, so criterion 1 is not fully verified and remains unchecked.
+
 ## History
 
 - 2026-11-10T22:10:57Z jolly-heron → backlog
@@ -46,3 +48,4 @@ Possible starting point: `refs/cold-read/TASK-252/2` (`git show refs/cold-read/T
 - 2026-11-10T22:34:54Z jolly-heron backlog → todo
 - 2026-11-10T22:43:14Z nimble-yellowhammer todo → doing
 - 2026-11-10T22:43:53Z nimble-yellowhammer: wrote the plan
+- 2026-11-10T22:55:28Z nimble-yellowhammer: changed notes
