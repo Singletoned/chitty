@@ -18,6 +18,10 @@ Keep each addition to one or two lines. Tests go in a new `tests/test_guide_setu
 - [ ] `guide("setup")` tells the person to run the configured `setup` and `check` in a throwaway detached worktree before declaring the runner ready, without `chitty run`.
 - [ ] `guide("setup")` describes committing placeholder setup and check targets when the first ticket creates the real ones.
 
+## Plan
+
+Add focused setup-guide tests asserting both new instructions. Run them first to confirm they fail, then add concise guidance to the setup role. Run format and full checks, verify criteria, commit implementation, and move the ticket to review.
+
 ## Notes
 
 Cold read 1 (Haiku): no serious findings. Accepted: placement of each addition is the worker's choice; the throwaway-worktree phrase is the real check for criterion 1. Rejected: specifying failure handling; step 4 already says to fix the reported error before retrying. Possible starting point: `git diff main...refs/cold-read/TASK-241/1`; check it against the current criteria, not trust it.
@@ -28,3 +32,4 @@ Cold read 1 (Haiku): no serious findings. Accepted: placement of each addition i
 - 2026-11-10T14:20:04Z jolly-heron: changed notes
 - 2026-11-10T14:20:04Z jolly-heron backlog → todo
 - 2026-11-10T17:06:34Z calm-crane todo → doing
+- 2026-11-10T17:06:50Z calm-crane: wrote the plan
