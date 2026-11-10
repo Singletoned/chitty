@@ -1,6 +1,6 @@
 ---
 title: Replace a ticket's notes with `chitty edit --set-notes`
-status: todo
+status: done
 created: 2026-11-10
 ---
 
@@ -18,17 +18,40 @@ Decisions:
 
 ## Acceptance Criteria
 
-- [ ] A test sets two notes, runs `chitty edit ID --set-notes TEXT`, and `chitty show` has exactly TEXT as Notes; with `--set-notes ''` the Notes section is gone; History records `replaced notes`.
-- [ ] Tests show `--set-notes` combined with `--note` fails, and `--set-notes` on a task in review fails; neither changes the file.
-- [ ] A test in `tests/test_mcp.py` replaces notes through the MCP `edit` tool with `set_notes`.
-- [ ] `guide("plan")` tells planners to replace converged notes with only verified facts and the reviewer checklist.
+- [x] A test sets two notes, runs `chitty edit ID --set-notes TEXT`, and `chitty show` has exactly TEXT as Notes; with `--set-notes ''` the Notes section is gone; History records `replaced notes`.
+- [x] Tests show `--set-notes` combined with `--note` fails, and `--set-notes` on a task in review fails; neither changes the file.
+- [x] A test in `tests/test_mcp.py` replaces notes through the MCP `edit` tool with `set_notes`.
+- [x] `guide("plan")` tells planners to replace converged notes with only verified facts and the reviewer checklist.
+
+## Plan
+
+Add `set_notes` to `Edit`, with replacement/removal semantics and a History entry in the store edit path. Enforce incompatibility with append-note inputs and reject replacement during review, while preserving required transition-note validation. Expose `--set-notes` and `--set-notes-file` in CLI and `set_notes` in MCP. Update the plan role guide and the Notes/CLI sections in `PLAN.md`. Add focused store/CLI and MCP tests plus a separate `tests/test_guide_set_notes.py`; run the regression tests before the implementation to confirm failure, then format and check.
 
 ## Notes
 
 Cold read 1 (Haiku): decided: `--set-notes` does not satisfy required status-change notes and is rejected in review, so review evidence stays. Stated: guide test file, no-op on absent Notes. Accepted: four criteria is within the limit. Possible starting point: `git diff main...refs/cold-read/TASK-242/1`; check it against the current criteria, not trust it; it lacks the in-review rejection.
+
+Implemented replacement in store, CLI and MCP; added CLI/MCP/guide coverage and updated PLAN.md. `make format && make check` passes (427 Python tests and Node tests). Note: the new regression tests were run after the implementation rather than confirmed failing before it; this remains a verification limitation.
+
+Reviewed: make format && make check passed (436 Python tests and Node tests); independently inspected implementation and tests.
+1: pass - CLI tests cover replacement, removal and history.
+2: pass - CLI tests cover append conflict and review rejection without changes.
+3: pass - MCP test exercises replacement.
+4: pass - plan guide test checks converged notes guidance.
+
+## Summary
+
+Implemented `--set-notes` / `--set-notes-file` and MCP `set_notes`, including note append conflicts, review rejection, removal/no-op semantics and History. Updated role guidance and PLAN.md. Verified with `make format && make check`; 427 Python tests and Node tests pass. Regression tests were added after the fix and were not demonstrated failing on the original behavior. Commit: `69b8bc8`.
 
 ## History
 
 - 2026-11-10T14:08:42Z jolly-heron → backlog
 - 2026-11-10T14:19:52Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:19:53Z jolly-heron backlog → todo
+- 2026-11-10T17:10:35Z mellow-newt todo → doing
+- 2026-11-10T17:10:49Z mellow-newt: wrote the plan
+- 2026-11-10T17:14:50Z mellow-newt: changed notes; ticked acceptance criteria
+- 2026-11-10T17:14:57Z mellow-newt: changed summary
+- 2026-11-10T17:14:57Z mellow-newt doing → review
+- 2026-11-10T18:06:45Z open-eel: changed notes; ticked acceptance criteria
+- 2026-11-10T18:06:45Z open-eel review → done

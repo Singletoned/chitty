@@ -548,7 +548,7 @@ def _changed_agents_block(worktree: Path, main_branch: str | None = None) -> boo
         main_branch = Repo.open(git.main_checkout(worktree)).config.main_branch
     agents = worktree / AGENTS_FILE
     branch_text = agents.read_text() if agents.exists() else None
-    main_text = git.file_at(worktree, main_branch, AGENTS_FILE)
+    main_text = git.file_at_merge_base(worktree, main_branch, "HEAD", AGENTS_FILE)
     if (branch_text is None) != (main_text is None):
         return True
     try:

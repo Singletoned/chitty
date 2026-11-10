@@ -190,7 +190,9 @@ Free markdown, written by the agent before implementing.
 
 ## Notes
 
-Free markdown. Append-only by convention; not enforced.
+Free markdown. Append-only by convention except `chitty edit --set-notes` and
+`--set-notes-file`, which replace the section (`''` removes it). Replacement
+cannot be combined with append-note options and is forbidden during review.
 
 ## History
 
@@ -423,6 +425,7 @@ chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p 
                  [-d TEXT | --description-file F]
                  [--ac TEXT]... [--set-ac N TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
                  [--plan TEXT | --plan-file F] [--note TEXT] [--note-file F]
+                 [--set-notes TEXT | --set-notes-file F]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
 chitty renumber PATH               one of several files sharing an ID gets the next number
 chitty archive [ID]                  omit ID to archive every done task
@@ -463,6 +466,9 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   `⚠️`, whose message goes to stderr); the column appears only when a row needs
   it. Rows do not show the branch. JSON keeps status words and adds `skipped`,
   the full reason: `👤 human`, `🔒 waits on ID[, ID...]`, or `⚠️ <message>`.
+- Notes can be appended with `--note` or `--note-file`, or replaced with
+  `--set-notes` or `--set-notes-file`; empty replacement removes the section.
+  Replacement cannot be combined with append and is not allowed in review.
 - `Summary` is an optional final handoff section after Notes; set it with
   `edit --summary` when completing work.
 - `parent` is an optional full task ID for grouping flat tasks. `add` and
