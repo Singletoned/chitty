@@ -64,6 +64,30 @@ def independently_choosable(fact, mode=None, owner=None):
 
 
 class TestPropertyNext(unittest.TestCase):
+    def test_unfinished_and_broken_todo_dependencies_are_excluded(self):
+        blocked = TicketFacts(
+            "TASK-1",
+            "work",
+            "todo",
+            "high",
+            None,
+            False,
+            False,
+            (DependencyFact("TASK-900", "unfinished"),),
+        )
+        broken = TicketFacts(
+            "TASK-2",
+            "work",
+            "todo",
+            "high",
+            None,
+            False,
+            False,
+            (DependencyFact("TASK-901", "broken", "missing"),),
+        )
+        ready = TicketFacts("TASK-3", "work", "todo", "low", None, False, False)
+        self.assertEqual(choose((ready, blocked, broken)), ready)
+
     @settings(max_examples=300)
     @given(
         facts_strategy(),
