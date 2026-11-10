@@ -13,7 +13,8 @@ First of two trial tickets for property tests (Hypothesis is already a dev depen
 **Fails today** (all found by a cold read's Hypothesis test):
 
 - a `## Notes`, `## Plan` or `## Summary` line, including `##<tab>Plan`, moves what follows into that section;
-- an unclosed fence (a lone ```` ``` ```` or `~~~`) swallows every following section.
+- an unclosed fence (a lone ```` ``` ```` or `~~~`) swallows every following section;
+- a form feed, or another character `str.splitlines` treats as a line break, before a `## ` line cuts the section short.
 
 **Fix:** don't add another heading rule. In `src/chitty/model.py`, after building the new task, re-parse it and check the property itself. On a mismatch, raise `TaskError` naming the section and saying to use `###` for headings and to close code fences.
 
@@ -32,3 +33,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-249/1`): the first fix (reject `## ` lin
 
 - 2026-11-10T21:12:37Z jolly-heron → backlog
 - 2026-11-10T21:17:09Z jolly-heron: replaced notes; changed description, acceptance criteria
+- 2026-11-10T21:17:43Z jolly-heron: changed description
