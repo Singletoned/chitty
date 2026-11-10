@@ -1,7 +1,7 @@
 import os
 from unittest import mock
 
-from hypothesis import given, settings
+from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
 from chitty.config import inbox_path, load_repo_config, register_project
@@ -18,15 +18,11 @@ CHARACTERS = st.characters(blacklist_characters="\r\n", blacklist_categories=("C
 TITLES = st.lists(st.one_of(CHARACTERS, TITLE_SPECIALS), max_size=12).map("".join)
 
 
-def _safe_description_line(line: str) -> bool:
-    return not (line.lstrip().startswith(("## ", "```", "~~~")) or "\f" in line)
-
-
 DESCRIPTION_LINES = st.one_of(
-    st.lists(st.one_of(CHARACTERS, st.sampled_from(["\u2028", "-", " ", "\t"])), max_size=40)
-    .map("".join)
-    .filter(_safe_description_line),
-    st.just("---"),
+    st.lists(st.one_of(CHARACTERS, st.sampled_from(["\u2028", "-", " ", "\t"])), max_size=40).map(
+        "".join
+    ),
+    st.sampled_from(["## Notes", "```", "~~~", "text\n## Notes", "text\n---", "\f"]),
 )
 DESCRIPTIONS = st.one_of(st.none(), st.lists(DESCRIPTION_LINES, max_size=6).map("\n".join))
 
@@ -55,19 +51,28 @@ class TestInboxProperties(RepoTestCase):
         return sorted(inbox_path("target").glob("suggestion-*.md"))
 
     @settings(max_examples=EXAMPLES, deadline=None)
+    @example(title="valid", description="## Notes")
+    @example(title="valid", description="```")
+    @example(title="valid", description="~~~")
+    @example(title="valid", description="\f")
     @given(title=TITLES, description=DESCRIPTIONS)
     def test_accepted_suggestion_pulls_with_the_same_title_and_description(
         self, title, description
     ):
-        before = len(self._suggestion_files())
+        before = set(self._suggestion_files())
         try:
             suggest("target", title, description, True, self.root)
         except ChittyError:
-            self.assertEqual(len(self._suggestion_files()), before)
+            self.assertEqual(set(self._suggestion_files()), before)
             return
 
-        self.assertEqual(len(self._suggestion_files()), before + 1)
-        task_ids = pull(self.repo)
+        self.assertEqual(len(self._suggestion_files()), len(before) + 1)
+        try:
+            task_ids = pull(self.repo)
+        except BaseException:
+            for path in set(self._suggestion_files()) - before:
+                path.unlink(missing_ok=True)
+            raise
         self.assertEqual(len(task_ids), 1)
         self.assertEqual(len(self._suggestion_files()), 0)
         task = self.repo.find(self.repo.resolve(task_ids[0])).task
