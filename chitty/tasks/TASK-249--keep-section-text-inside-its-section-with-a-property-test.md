@@ -1,6 +1,6 @@
 ---
 title: Keep section text inside its section, with a property test
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -22,7 +22,7 @@ First of two trial tickets for property tests (Hypothesis is already a dev depen
 
 ## Acceptance Criteria
 
-- [ ] The property test fails before the fix with a `## ` section line or an unclosed fence as the counterexample, and passes after.
+- [x] The property test fails before the fix with a `## ` section line or an unclosed fence as the counterexample, and passes after.
 - [ ] `chitty edit <ID> -d` with text containing a `## Plan` line exits non-zero, says to use `###`, and leaves the file unchanged; text with a `### Plan` line stays in the Description.
 
 ## Plan
@@ -32,6 +32,12 @@ Add the Hypothesis property test in tests/test_property_sections.py, first confi
 ## Notes
 
 Possible starting point: `refs/cold-read/TASK-249/2` (`git show refs/cold-read/TASK-249/2:<path>`). Check it against the criteria; don't trust it.
+
+Hypothesis regression test failed before the fix with a lone ``` counterexample in both section replacement and note append. make format && make check passes (451 Python tests and Node tests); CLI regression confirms ## Plan is rejected without changing the file and ### Plan remains in Description.
+
+## Summary
+
+Implemented re-parse/property verification for section replacements and Notes appends, with actionable errors for changed boundaries or parse failures. Verified Hypothesis failed pre-fix, CLI file-preservation and ### cases, and full format/check. No follow-ups.
 
 ## History
 
@@ -43,3 +49,5 @@ Possible starting point: `refs/cold-read/TASK-249/2` (`git show refs/cold-read/T
 - 2026-11-10T21:58:52Z jolly-heron: replaced notes
 - 2026-11-10T22:25:14Z tidy-heron todo → doing
 - 2026-11-10T22:25:27Z tidy-heron: wrote the plan
+- 2026-11-10T22:30:04Z tidy-heron: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T22:30:04Z tidy-heron doing → review
