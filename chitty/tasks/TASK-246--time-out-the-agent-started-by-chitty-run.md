@@ -1,6 +1,6 @@
 ---
 title: Time out the agent started by chitty run
-status: review
+status: doing
 labels:
   - needs-minor
 created: 2026-11-10
@@ -18,7 +18,7 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 
 ## Acceptance Criteria
 
-- [x] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
+- [ ] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
 - [x] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the limit is the default constant, which is 7200, and a test that patches that constant to 2 sees `agent timed out after 2 seconds`.
 - [x] The agent runs in the same process group as `chitty run` (the fake agent records `os.getpgid(0)`), so terminal input and Ctrl-C reach it as today.
 
@@ -35,6 +35,12 @@ Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all gre
 Approach recorded; implementing.
 
 Verified end-to-end timeout with child cleanup and usage-log entry; verified zero disables timeout, strict invalid-value rejection, 7200 default and patched 2-second default; verified inherited process group. make format && make check passed (429 suites plus Node tests). chitty fix completed; tree is clean.
+
+Review failed (tests): Descendants do not receive the specified grace period when the agent exits on SIGTERM: the runner waits only for the agent, then immediately SIGKILLs remaining descendants. Add a regression test with a descendant that handles SIGTERM and needs time to clean up, and wait the grace period for surviving descendants before escalation. A throwaway _run_agent test with a child whose SIGTERM handler sleeps 0.5 seconds then writes a marker printed `agent timed out after 2 seconds` and `elapsed: 2.84 child cleanup completed: False` (including a subsequent 0.8-second wait). `make format && make check` passed: 442 Python tests and Node tests.
+
+1: fail - Descendant cleanup escalates without the specified grace period.
+2: pass - Configuration and default timeout tests passed.
+3: pass - Inherited process group test passed.
 
 ## Summary
 
@@ -57,3 +63,5 @@ Implemented configurable agent timeout, descendant TERM/KILL cleanup, usage logg
 - 2026-11-10T17:36:08Z brisk-yellowhammer: changed notes
 - 2026-11-10T17:45:06Z brisk-yellowhammer: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T17:45:06Z brisk-yellowhammer doing → review
+- 2026-11-10T18:11:52Z tidy-urchin: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-10T18:11:52Z tidy-urchin review → doing
