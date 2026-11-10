@@ -1,6 +1,6 @@
 ---
 title: Time out the agent started by chitty run
-status: review
+status: done
 labels:
   - needs-minor
 created: 2026-11-10
@@ -68,6 +68,12 @@ make: *** [check] Error 1
 
 Fixed escalation to wait through the grace period for any live descendant, even when the agent exits immediately on SIGTERM. Added a regression test that failed before the fix and passes after it. make format and make check passed (443 Python tests and Node tests); focused timeout tests passed.
 
+Reviewed: make format && make check passed (443 Python tests and Node tests); end-to-end timeout test passed in 3.623 seconds.
+
+1: pass - Timeout, descendant cleanup and grace period, and usage logging verified.
+2: pass - Configuration validation, disabled timeout and patchable default verified.
+3: pass - Agent inherits the runner process group.
+
 ## Summary
 
 Implemented and verified timeout descendant grace-period escalation. Regression test demonstrated failure before the fix; focused tests, make format, and make check pass. Ready for review; no follow-ups.
@@ -95,3 +101,5 @@ Implemented and verified timeout descendant grace-period escalation. Regression 
 - 2026-11-10T18:14:35Z youthful-otter: wrote the plan
 - 2026-11-10T18:16:25Z youthful-otter: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T18:16:25Z youthful-otter doing → review
+- 2026-11-10T18:20:55Z vivid-quail: changed notes; ticked acceptance criteria
+- 2026-11-10T18:20:55Z vivid-quail review → done
