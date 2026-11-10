@@ -17,6 +17,8 @@ read only that section. Update it when a decision changes.
   ticket's tests collide.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
+- Other agents commit in this checkout at the same time. Stage only the paths
+  you changed; never `git add -A` or all of `chitty/`.
 - Writing tickets with the human? Cold-read them, as `PLAN.md` describes. If you
   were given a ticket to work on or review, skip this: it is not your step.
 - Releases: `make release` tags the version in `src/chitty/__init__.py` and pushes
