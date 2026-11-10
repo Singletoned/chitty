@@ -24,6 +24,9 @@ task files. `chitty --help` is the full command reference.
   claims. Record every finding's outcome in a ticket note: fix it or reject it
   with a specific reason. Ask whether odd existing behaviour is a bug before
   writing around it. Split rather than exceed about five criteria.
+- Once a ticket's reads converge, replace its notes with only what the worker
+  and reviewer need: verified facts and the mutant list as a reviewer checklist.
+  Outcomes stay in git history.
 - Repeat the cold read after fixing a serious finding, until a read finds none:
   fixes are a source of new faults.
 - Compare each decision in the description with the criteria, because workers

@@ -94,6 +94,12 @@ class TestMcp(CliTestCase):
         self.assertEqual(call("check"), self.json("check"))
         self.assertEqual(call("fix"), self.json("fix"))
 
+    def test_edit_replaces_notes(self):
+        call("add", title="Notes", description="x", note=["First", "Second"])
+        edited = call("edit", id="1", set_notes="Only this")
+        self.assertEqual(edited["notes"], "Only this")
+        self.assertIn("replaced notes", edited["history"])
+
     def test_edit_replaces_criterion_in_place_and_unticks_it(self):
         call("add", title="Criteria", description="x", ac=["One", "Two", "Three"])
         call("edit", id="1", check=[2])

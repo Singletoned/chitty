@@ -140,6 +140,7 @@ class Edit:
     plan: str | None = None  # "" removes
     note: str | None = None
     notes: Sequence[str] = ()
+    set_notes: str | None = None  # "" removes
     summary: str | None = None  # "" removes
     override_review_independence: bool = False
     # Internal, not exposed in the CLI or MCP: `chitty run` fails a review
@@ -187,6 +188,8 @@ class Edit:
             task = task.with_note(self.note)
         for note in self.notes:
             task = task.with_note(note)
+        if self.set_notes is not None:
+            task = task.with_section("Notes", self.set_notes)
         if self.summary is not None:
             task = task.with_section(SUMMARY, self.summary)
         return task
@@ -839,6 +842,10 @@ VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
 def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
     """Validate an edit that depends only on the current task and its actor."""
     previous_status = task.frontmatter.status
+    if edit.set_notes is not None and (edit.note is not None or edit.notes):
+        raise ChittyError("--set-notes cannot be combined with --note or --note-file")
+    if previous_status == "review" and edit.set_notes is not None:
+        raise ChittyError("--set-notes is not allowed while a task is in review")
     if previous_status == "review":
         for criteria, option in (
             (edit.add_criteria, "--ac"),
@@ -1543,7 +1550,9 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("description")
     if edit.add_criteria or edit.rm_criteria or edit.set_criteria or edit.uncheck:
         changes.append("acceptance criteria")
-    if edit.note is not None or edit.notes:
+    if edit.set_notes is not None:
+        actions.append("replaced notes")
+    elif edit.note is not None or edit.notes:
         changes.append("notes")
     if edit.summary is not None:
         changes.append("summary")
