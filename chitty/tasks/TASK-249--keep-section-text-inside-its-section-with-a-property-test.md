@@ -27,9 +27,7 @@ First of two trial tickets for property tests (Hypothesis is already a dev depen
 
 ## Notes
 
-Haiku cold read 1 (`refs/cold-read/TASK-249/1`): the first fix (reject `## ` lines outside fences) still failed the property on unclosed fences and `##<tab>`. Replaced it with a re-parse check.
-
-Haiku cold read 2 (`refs/cold-read/TASK-249/2`): green, `make check` passed. Fixed: parse errors pre-empted the `###` advice; misleading line numbers.
+Possible starting point: `refs/cold-read/TASK-249/2` (`git show refs/cold-read/TASK-249/2:<path>`). Check it against the criteria; don't trust it.
 
 ## History
 
@@ -38,3 +36,4 @@ Haiku cold read 2 (`refs/cold-read/TASK-249/2`): green, `make check` passed. Fix
 - 2026-11-10T21:17:43Z jolly-heron: changed description
 - 2026-11-10T21:20:59Z jolly-heron: changed description, notes
 - 2026-11-10T21:20:59Z jolly-heron backlog → todo
+- 2026-11-10T21:58:52Z jolly-heron: replaced notes
