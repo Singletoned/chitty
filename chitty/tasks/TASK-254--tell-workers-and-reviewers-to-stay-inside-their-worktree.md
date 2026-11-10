@@ -1,6 +1,6 @@
 ---
 title: Tell workers and reviewers to stay inside their worktree
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -14,7 +14,7 @@ Tests in `tests/test_guide_worktree_boundary.py`, checking the printed guides.
 
 ## Acceptance Criteria
 
-- [ ] `chitty guide work <ID>` and `chitty guide review <ID>` both say to read and change only files inside the ticket's worktree, and that reading other branches through Git or `chitty` is fine.
+- [x] `chitty guide work <ID>` and `chitty guide review <ID>` both say to read and change only files inside the ticket's worktree, and that reading other branches through Git or `chitty` is fine.
 
 ## Plan
 
@@ -24,6 +24,12 @@ Add focused guide tests that assert the work and review guide outputs include th
 
 Possible starting point: `refs/cold-read/TASK-254/1` (`git show refs/cold-read/TASK-254/1:<path>`). Check it against the criteria; don't trust it.
 
+The focused guide test failed for both roles before the role updates, then passed afterward. make format and make check passed (464 Python suites and Node tests); chitty fix reported pre-existing warnings in unrelated task files.
+
+## Summary
+
+Handoff: Work and review guides now state the ticket-worktree boundary, with Git and chitty cross-branch reads allowed. Added printed-guide regression coverage. Verification: focused unittest, make format, and make check passed. Follow-ups: none.
+
 ## History
 
 - 2026-11-10T22:10:58Z jolly-heron → backlog
@@ -31,3 +37,5 @@ Possible starting point: `refs/cold-read/TASK-254/1` (`git show refs/cold-read/T
 - 2026-11-10T22:13:11Z jolly-heron backlog → todo
 - 2026-11-10T23:15:51Z calm-raven todo → doing
 - 2026-11-10T23:16:10Z calm-raven: wrote the plan
+- 2026-11-10T23:18:10Z calm-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T23:18:10Z calm-raven doing → review
