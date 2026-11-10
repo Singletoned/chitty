@@ -11,7 +11,7 @@ created: 2026-11-10
 
 Decision: one helper in `run.py` returns a copy of `os.environ` without those two variables; the agent launch and all three commands use it via `env=`. Do not unset anything else.
 
-The person is fixing their shell environment globally. Review this ticket on or after 2026-11-17 and delete it if the problem has gone away for them; keep it only if other users are likely to hit it.
+Implement this now. The person is also fixing their shell environment globally, so a follow-up human ticket reviews on or after 2026-11-17 whether this code is still needed, and removes it if not.
 
 ## Acceptance Criteria
 
@@ -25,3 +25,4 @@ Cold read 1 (Haiku): no serious findings. Accepted: the agent launch is already 
 
 - 2026-11-10T14:08:39Z jolly-heron → backlog
 - 2026-11-10T14:15:02Z jolly-heron: changed notes
+- 2026-11-10T14:15:33Z jolly-heron: changed description
