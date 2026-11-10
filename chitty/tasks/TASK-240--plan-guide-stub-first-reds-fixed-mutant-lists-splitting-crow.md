@@ -1,6 +1,6 @@
 ---
 title: "Plan guide: stub-first reds, fixed mutant lists, splitting crowded criteria"
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -32,6 +32,10 @@ Cold read 1 (Haiku): fixed: criterion 2 bundled two rules; split into criteria 2
 
 New guide tests failed against the original guide before implementation. Full make format && make check passed after correcting an assertion wording mismatch.
 
+## Summary
+
+Implemented the requested planning-guide guidance and tests. Verified with make format && make check; regression tests were confirmed failing against the original guide. No known follow-ups.
+
 ## History
 
 - 2026-11-10T14:08:41Z jolly-heron → backlog
@@ -40,3 +44,5 @@ New guide tests failed against the original guide before implementation. Full ma
 - 2026-11-10T17:02:34Z open-newt todo → doing
 - 2026-11-10T17:02:53Z open-newt: wrote the plan
 - 2026-11-10T17:04:49Z open-newt: changed notes; ticked acceptance criteria
+- 2026-11-10T17:04:54Z open-newt: changed summary
+- 2026-11-10T17:04:54Z open-newt doing → review
