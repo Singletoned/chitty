@@ -23,6 +23,10 @@ Decisions:
 - [ ] A test in `tests/test_mcp.py` replaces notes through the MCP `edit` tool with `set_notes`.
 - [ ] `guide("plan")` tells planners to replace converged notes with only verified facts and the reviewer checklist.
 
+## Plan
+
+Add `set_notes` to `Edit`, with replacement/removal semantics and a History entry in the store edit path. Enforce incompatibility with append-note inputs and reject replacement during review, while preserving required transition-note validation. Expose `--set-notes` and `--set-notes-file` in CLI and `set_notes` in MCP. Update the plan role guide and the Notes/CLI sections in `PLAN.md`. Add focused store/CLI and MCP tests plus a separate `tests/test_guide_set_notes.py`; run the regression tests before the implementation to confirm failure, then format and check.
+
 ## Notes
 
 Cold read 1 (Haiku): decided: `--set-notes` does not satisfy required status-change notes and is rejected in review, so review evidence stays. Stated: guide test file, no-op on absent Notes. Accepted: four criteria is within the limit. Possible starting point: `git diff main...refs/cold-read/TASK-242/1`; check it against the current criteria, not trust it; it lacks the in-review rejection.
@@ -33,3 +37,4 @@ Cold read 1 (Haiku): decided: `--set-notes` does not satisfy required status-cha
 - 2026-11-10T14:19:52Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:19:53Z jolly-heron backlog → todo
 - 2026-11-10T17:10:35Z mellow-newt todo → doing
+- 2026-11-10T17:10:49Z mellow-newt: wrote the plan
