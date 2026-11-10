@@ -27,7 +27,7 @@ Out of scope: the same for criteria (`--set-ac` covers them), plan or notes.
 
 ## Plan
 
-Add replacement semantics to store.Edit, validate exclusivity with whole-description replacement and unique nonempty old text, and preserve existing description validation/history behavior. Expose the option in CLI and MCP, add focused store/CLI/MCP tests including unchanged files on errors, and document the CLI option in PLAN.md. Run regression tests before implementation where practical, then format/check.
+Add a regression test that proves replacement records `changed description` in History, run it to confirm the failure, then fix the edit-history classification and run focused plus full checks.
 
 ## Notes
 
@@ -63,3 +63,4 @@ Implemented exact, unique description replacement in the CLI, shared store, and 
 - 2026-11-10T18:12:02Z nimble-badger doing → review
 - 2026-11-10T18:15:19Z zesty-ibis: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T18:15:19Z zesty-ibis review → doing
+- 2026-11-10T21:06:49Z sunny-adder: wrote the plan
