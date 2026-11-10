@@ -1,6 +1,6 @@
 ---
 title: "Cold-read guide: report reds in the reply, keep scratch in the worktree, filter findings"
-status: backlog
+status: todo
 created: 2026-11-10
 ---
 
@@ -28,3 +28,4 @@ Cold read 1 (Haiku): fixed: the new filter clashed with the existing report list
 
 - 2026-11-10T14:08:40Z jolly-heron → backlog
 - 2026-11-10T14:16:57Z jolly-heron: changed description, notes
+- 2026-11-10T14:17:46Z jolly-heron backlog → todo
