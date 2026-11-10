@@ -1,6 +1,6 @@
 ---
 title: Clear `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` for setup and check commands
-status: review
+status: done
 priority: low
 created: 2026-11-10
 ---
@@ -33,6 +33,10 @@ Review failed (tests): `uv run python -m unittest tests.test_run_environment -v`
 
 Replaced the _run_check subprocess mock with a real child that records its environment. Confirmed this regression test fails when _command_environment stops stripping the variables, then passes with the fix. make format && make check passed.
 
+Reviewed: `make format && make check` passed (451 Python tests and Node tests). HUMAN-10 tracks the follow-up.
+
+1: pass - All three real child-process environment tests pass; substituting an unfiltered environment makes all three fail.
+
 ## Summary
 
 Updated the _run_check regression test to verify a real child process environment. Confirmed failure with environment stripping disabled; make format && make check passed. Implementation remains committed as c2c7d57; test update committed separately. Follow-up: review necessity on or after 2026-11-17.
@@ -53,3 +57,5 @@ Updated the _run_check regression test to verify a real child process environmen
 - 2026-11-10T22:23:13Z calm-dormouse: changed notes
 - 2026-11-10T22:23:30Z calm-dormouse: changed summary; ticked acceptance criteria
 - 2026-11-10T22:23:30Z calm-dormouse doing → review
+- 2026-11-10T22:27:18Z friendly-otter: changed notes; ticked acceptance criteria
+- 2026-11-10T22:27:18Z friendly-otter review → done
