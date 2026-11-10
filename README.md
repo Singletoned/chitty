@@ -208,6 +208,9 @@ written task file before any autocommit. Set `setup` to the command that prepare
 each ticket worktree before the agent starts; it is parsed without a shell. Set
 `agent_command` to the default agent invocation, for example
 `"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
+The optional `agent_timeout` is a non-negative integer number of seconds and
+defaults to 7200; set it to `0` for no limit. On timeout, `chitty run` stops the
+agent and its child processes and exits with an error.
 Additional commands go in `[agent_commands]`; `chitty run --agent NAME` uses one
 for that run only. An unknown name lists available entries, and the selected
 entry is validated like `agent_command`. Optional root-level `work_model` and

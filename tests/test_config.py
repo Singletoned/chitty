@@ -19,6 +19,19 @@ class TestRepoConfig(RepoTestCase):
         self.assertEqual(config.archive, "move")
         self.assertTrue(config.review)
         self.assertEqual(config.agent_command, "pi --chitty-{mode} {id}")
+        self.assertEqual(config.agent_timeout, 7200)
+
+    def test_agent_timeout_requires_nonnegative_toml_integer(self):
+        config_path = self.root / "chitty.toml"
+        for value in ("-5", '"10"'):
+            with self.subTest(value=value):
+                config_path.write_text(
+                    CONFIG.replace(
+                        "autocommit = false", f"agent_timeout = {value}\nautocommit = false"
+                    )
+                )
+                with self.assertRaisesRegex(ChittyError, "agent_timeout"):
+                    load_repo_config(self.root)
 
     def test_context_review_override_loads(self):
         config_path = self.root / "chitty.toml"

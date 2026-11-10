@@ -787,6 +787,8 @@ branch has been integrated with `main` and configured checks pass. Without
 `chitty run`, merge `main` into the ticket branch in its worktree, run the
 configured checks, and only then fast-forward `main`.
 
+The optional root-level `agent_timeout` is a non-negative TOML integer in seconds. It defaults to 7200; `0` disables the limit. On expiry, `chitty run` terminates the agent and its descendants, then escalates from `SIGTERM` to `SIGKILL` after a short grace period, reports `agent timed out after N seconds`, and exits 1. The agent remains in the runner's process group and session so terminal input and Ctrl-C behave normally. Timeout is an agent failure: the run is logged and `--loop` stops.
+
 Each agent session appends one JSON line to the machine-local usage log at
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory
 when `XDG_DATA_HOME` is unset). The line records the ticket, mode, actor,
