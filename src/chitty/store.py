@@ -40,6 +40,8 @@ from chitty.model import (
     new_task,
     parse,
 )
+from chitty.selection import DependencyFact, TicketFacts, choose
+from chitty.selection import skip_reason as pure_skip_reason
 
 ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
@@ -1324,37 +1326,51 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
     )
 
 
+def _selection_facts(
+    repo: Repo, stored: StoredTask, *, locked: bool, dependencies: bool
+) -> TicketFacts:
+    fm = stored.task.frontmatter
+    dependency_facts: list[DependencyFact] = []
+    if dependencies and fm.status == "todo" and not stored.archived:
+        for reference in fm.depends_on:
+            dependency_id = TaskId.parse(reference)
+            try:
+                dependency = repo.find(dependency_id)
+                complete = _dependency_is_done(repo, dependency_id, dependency)
+            except ChittyError as error:
+                dependency_facts.append(DependencyFact(reference, "broken", str(error)))
+                break
+            dependency_facts.append(DependencyFact(reference, "done" if complete else "unfinished"))
+    return TicketFacts(
+        str(stored.id),
+        stored.context,
+        fm.status,
+        fm.priority,
+        fm.owner,
+        stored.archived,
+        locked,
+        tuple(dependency_facts),
+    )
+
+
 def skip_reason(repo: Repo, stored: StoredTask) -> str | None:
     """Return the reason `next` would skip a ticket, or None when selectable."""
     return _skip_reason(repo, stored, include_owner=True)
 
 
 def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str | None:
-    frontmatter = stored.task.frontmatter
-    if stored.archived or frontmatter.status not in {"review", "doing", "todo"}:
-        return None
-    if locks.is_locked(repo.root, str(stored.id)):
-        return "▶ running"
-    if stored.context == "human" or frontmatter.owner == "human":
-        return "👤 human"
-    if include_owner and frontmatter.owner is not None:
-        return f"👤 {frontmatter.owner}"
-    if frontmatter.status != "todo":
-        return None
-
-    unfinished: list[str] = []
-    for reference in frontmatter.depends_on:
-        dependency_id = TaskId.parse(reference)
-        try:
-            dependency = repo.find(dependency_id)
-            complete = _dependency_is_done(repo, dependency_id, dependency)
-        except ChittyError as error:
-            return f"{BROKEN_DEPENDENCY_GLYPH} {stored.id} depends on {reference}: {error}"
-        if not complete:
-            unfinished.append(str(dependency_id))
-    if unfinished:
-        return f"🔒 waits on {', '.join(unfinished)}"
-    return None
+    is_locked = locks.is_locked(repo.root, str(stored.id))
+    fm = stored.task.frontmatter
+    may_read_dependencies = (
+        fm.status == "todo"
+        and not stored.archived
+        and not is_locked
+        and stored.context != "human"
+        and fm.owner != "human"
+        and (not include_owner or fm.owner is None)
+    )
+    fact = _selection_facts(repo, stored, locked=is_locked, dependencies=may_read_dependencies)
+    return pure_skip_reason(fact, include_owner=include_owner)
 
 
 def _ticket_action(
@@ -1473,27 +1489,33 @@ def next_action(
     """
     if owner in ("", "human"):
         raise ChittyError("--owner must name an agent, not human or empty")
-    status_order = {"review": 0, "doing": 1, "todo": 2}
     locked = locks.locked_ids(repo.root)
-    candidates = [
-        (stored, action)
-        for stored in repo.all_tasks()
-        if mode is None or stored.task.frontmatter.status in MODE_STATUSES[mode]
-        if str(stored.id) not in locked
-        if (action := _ticket_action(repo, stored, refuse=False, owner=owner)) is not None
-    ]
-    if not candidates:
+    facts: list[TicketFacts] = []
+    stored_by_id: dict[str, StoredTask] = {}
+    for stored in repo.all_tasks():
+        fm = stored.task.frontmatter
+        if mode is not None and fm.status not in MODE_STATUSES[mode]:
+            continue
+        is_locked = str(stored.id) in locked
+        # Keep dependency reads lazy: only otherwise-eligible todo tickets need them.
+        eligible = (
+            not stored.archived
+            and fm.status == "todo"
+            and not is_locked
+            and stored.context != "human"
+            and fm.owner != "human"
+            and (owner is None or fm.owner == owner)
+        )
+        fact = _selection_facts(repo, stored, locked=is_locked, dependencies=eligible)
+        facts.append(fact)
+        stored_by_id[str(stored.id)] = stored
+    selected = choose(tuple(facts), mode=mode, owner=owner)
+    if selected is None:
         raise NoNextTicket(
             "no next ticket" if mode is None else f"no next ticket for --mode {mode}"
         )
-    return min(
-        candidates,
-        key=lambda pair: (
-            status_order[pair[0].task.frontmatter.status],
-            PRIORITY_ORDER[pair[0].task.frontmatter.priority],
-            pair[0].id,
-        ),
-    )[1]
+    stored = stored_by_id[selected.id]
+    return NextAction("review" if stored.task.frontmatter.status == "review" else "work", stored.id)
 
 
 def matches(
