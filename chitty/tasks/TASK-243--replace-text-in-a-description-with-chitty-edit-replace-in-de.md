@@ -1,6 +1,6 @@
 ---
 title: Replace text in a description with `chitty edit --replace-in-description`
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -46,6 +46,11 @@ Review failed (tests): Add a regression test and fix History for description rep
 
 Added a store regression test for the missing History event. It failed before the fix (History contained only the initial status event) and passes after `_history_action` classifies replacement edits as changed description. `make format` passes; `make check` has 438 passing tests and one unrelated existing failure: `test_warning_is_in_every_generated_guide` finds the generated guide differs from the source. Committed as 47eb138.
 
+Reviewed: make format && make check pass (446 Python tests and Node tests). A throwaway test verified conflicting description options, empty result and editing in review.
+1: pass - CLI test replaces the unique phrase and checks the resulting description; History regression passes.
+2: pass - CLI test checks zero and two matches and empty OLD, preserving the file.
+3: pass - MCP tool test replaces a phrase in the description.
+
 ## Summary
 
 Handoff: description replacements now record `changed description` in History; regression test added. Verification: focused regression passes; format passes; full check blocked by unrelated generated-guide mismatch (`test_warning_is_in_every_generated_guide`; 438 other tests pass). Follow-up: resolve that guide mismatch.
@@ -68,3 +73,5 @@ Handoff: description replacements now record `changed description` in History; r
 - 2026-11-10T21:06:49Z sunny-adder: wrote the plan
 - 2026-11-10T21:09:04Z sunny-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T21:09:04Z sunny-adder doing → review
+- 2026-11-10T22:19:50Z mellow-jay: changed notes; ticked acceptance criteria
+- 2026-11-10T22:19:50Z mellow-jay review → done
