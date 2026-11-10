@@ -47,6 +47,14 @@ RUN_LOOP_PAUSE_SECONDS = 60
 AGENT_KILL_GRACE_SECONDS = 2
 
 
+def _command_environment() -> dict[str, str]:
+    """Copy the environment without shell-selected project virtualenvs."""
+    environment = os.environ.copy()
+    environment.pop("VIRTUAL_ENV", None)
+    environment.pop("UV_PROJECT_ENVIRONMENT", None)
+    return environment
+
+
 class RunInterrupted(Exception):
     """The user interrupted a `chitty run` phase; the command must stop a shell loop."""
 
@@ -289,12 +297,10 @@ def _run_ticket(
                 runner_chitty = Path(sys.executable).parent / "chitty"
                 if not runner_chitty.is_file():
                     raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
-                agent_environment = os.environ.copy()
+                agent_environment = _command_environment()
                 agent_environment["PATH"] = os.pathsep.join(
                     (str(runner_chitty.parent), agent_environment.get("PATH", ""))
                 )
-                agent_environment.pop("VIRTUAL_ENV", None)
-                agent_environment.pop("UV_PROJECT_ENVIRONMENT", None)
                 try:
                     completed = _run_agent(
                         [
@@ -783,6 +789,7 @@ def _landing_check(command: str, worktree: Path) -> None:
             shlex.split(command),
             cwd=worktree,
             stdin=subprocess.DEVNULL,
+            env=_command_environment(),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -801,7 +808,11 @@ def _landing_check(command: str, worktree: Path) -> None:
 def _setup(command: str, worktree: Path) -> None:
     try:
         completed = subprocess.run(
-            shlex.split(command), cwd=worktree, stdin=subprocess.DEVNULL, check=False
+            shlex.split(command),
+            cwd=worktree,
+            stdin=subprocess.DEVNULL,
+            env=_command_environment(),
+            check=False,
         )
     except FileNotFoundError:
         raise ChittyError(f"setup command not found: {command}") from None
@@ -821,6 +832,7 @@ def _run_check(
             shlex.split(command),
             cwd=worktree,
             stdin=subprocess.DEVNULL,
+            env=_command_environment(),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
