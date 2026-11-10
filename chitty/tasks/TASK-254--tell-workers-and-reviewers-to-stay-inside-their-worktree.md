@@ -16,6 +16,10 @@ Tests in `tests/test_guide_worktree_boundary.py`, checking the printed guides.
 
 - [ ] `chitty guide work <ID>` and `chitty guide review <ID>` both say to read and change only files inside the ticket's worktree, and that reading other branches through Git or `chitty` is fine.
 
+## Plan
+
+Add focused guide tests that assert the work and review guide outputs include the ticket-worktree-only boundary and explicitly allow Git/chitty reads across branches. Add the single boundary instruction to both role guides, run the focused regression test before implementation to confirm failure, then run make format and make check.
+
 ## Notes
 
 Possible starting point: `refs/cold-read/TASK-254/1` (`git show refs/cold-read/TASK-254/1:<path>`). Check it against the criteria; don't trust it.
@@ -26,3 +30,4 @@ Possible starting point: `refs/cold-read/TASK-254/1` (`git show refs/cold-read/T
 - 2026-11-10T22:13:11Z jolly-heron: replaced notes; changed description, acceptance criteria
 - 2026-11-10T22:13:11Z jolly-heron backlog → todo
 - 2026-11-10T23:15:51Z calm-raven todo → doing
+- 2026-11-10T23:16:10Z calm-raven: wrote the plan
