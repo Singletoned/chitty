@@ -1,6 +1,6 @@
 ---
 title: Tell a worker when the run lock in `chitty show` is its own
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -29,6 +29,11 @@ Haiku cold read 1 (`refs/cold-read/TASK-247/1`): implemented, all green; new tes
 
 Verified: make format and make check pass (445 unittest suites plus Node tests); chitty fix passes with existing repository-wide Markdown warnings only. Regression tests were observed failing without the implementation in the cold read.
 
+Reviewed: make format && make check passed (448 Python tests and Node tests). Independently exercised MCP with no lock, an unset CHITTY_ACTOR, and a pid-only lock.
+
+1: pass - CLI displays the expected own and other actor lines.
+2: pass - CLI JSON and MCP return the expected running values for each lock case.
+
 ## Summary
 
 Implemented own-lock reporting through locks.holder for CLI and MCP JSON, and rendered the own-session marker in CLI text. Verified all acceptance criteria and full make format && make check. No follow-ups.
@@ -46,3 +51,5 @@ Implemented own-lock reporting through locks.holder for CLI and MCP JSON, and re
 - 2026-11-10T21:48:19Z tidy-vole: wrote the plan
 - 2026-11-10T22:19:25Z able-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T22:19:25Z able-puffin doing → review
+- 2026-11-10T22:23:49Z nimble-jay: changed notes; ticked acceptance criteria
+- 2026-11-10T22:23:49Z nimble-jay review → done
