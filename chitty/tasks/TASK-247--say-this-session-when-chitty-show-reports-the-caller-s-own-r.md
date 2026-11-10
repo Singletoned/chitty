@@ -1,6 +1,6 @@
 ---
 title: Say "this session" when `chitty show` reports the caller's own run lock
-status: backlog
+status: todo
 created: 2026-11-10
 ---
 
@@ -30,3 +30,4 @@ Haiku cold read 1 (`refs/cold-read/TASK-247/1`): implemented, all green; new tes
 - 2026-11-10T19:32:50Z jolly-heron: changed title, description, acceptance criteria
 - 2026-11-10T19:38:17Z jolly-heron: changed description, acceptance criteria
 - 2026-11-10T19:38:18Z jolly-heron: changed notes
+- 2026-11-10T19:38:19Z jolly-heron backlog → todo
