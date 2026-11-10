@@ -132,6 +132,7 @@ class Edit:
     rm_depends_on: Sequence[str] = ()
     parent: str | None = None  # "" removes
     description: str | None = None
+    replace_in_description: tuple[str, str] | None = None
     add_criteria: Sequence[str] = ()
     rm_criteria: Sequence[int] = ()
     set_criteria: Sequence[tuple[int, str]] = ()
@@ -174,6 +175,11 @@ class Edit:
             task = task.with_field("parent", self.parent or None)
         if self.description is not None:
             task = task.with_section(DESCRIPTION, self.description)
+        if self.replace_in_description is not None:
+            old, new = self.replace_in_description
+            task = task.with_section(
+                DESCRIPTION, (task.section(DESCRIPTION) or "").replace(old, new)
+            )
         task = task.with_criteria(
             add=self.add_criteria,
             remove=self.rm_criteria,
@@ -492,6 +498,17 @@ class Repo:
                 raise ChittyError(
                     f"cannot move {task_id} to {edit.status}; the worktree has "
                     f"uncommitted changes: {listed}. Commit or resolve them before changing status"
+                )
+        if edit.replace_in_description is not None:
+            old, _ = edit.replace_in_description
+            if edit.description is not None:
+                raise ChittyError("--replace-in-description cannot be combined with --description")
+            if not old:
+                raise ChittyError("--replace-in-description OLD cannot be empty")
+            count = (stored.task.section(DESCRIPTION) or "").count(old)
+            if count != 1:
+                raise ChittyError(
+                    f"--replace-in-description OLD must occur exactly once; found {count}"
                 )
         edit = check_edit(stored.task, edit, actor())
         edit = replace(

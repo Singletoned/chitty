@@ -420,7 +420,7 @@ chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
 chitty show ID
 chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p PRIO]
                  [--owner X] [--depends-on ID]... [--rm-depends-on ID]...
-                 [-d TEXT | --description-file F]
+                 [-d TEXT | --description-file F] [--replace-in-description OLD NEW]
                  [--ac TEXT]... [--set-ac N TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
                  [--plan TEXT | --plan-file F] [--note TEXT] [--note-file F]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
