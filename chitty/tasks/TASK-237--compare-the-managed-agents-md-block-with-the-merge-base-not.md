@@ -1,6 +1,6 @@
 ---
 title: Compare the managed `AGENTS.md` block with the merge-base, not main
-status: doing
+status: review
 priority: high
 created: 2026-11-10
 ---
@@ -21,9 +21,9 @@ Existing tests: `tests/test_review_merge.py` (around line 141) and `tests/test_l
 
 ## Acceptance Criteria
 
-- [ ] A test creates a ticket branch, then commits a changed managed block on main; `_changed_agents_block` on the untouched branch returns `False`. The test fails before the fix.
-- [ ] A test where the branch itself edits the managed block still returns `True`, including when main has also changed it since the branch was created.
-- [ ] A test in `tests/test_landing.py` lands a ticket whose branch predates a managed-block change on main; main is fast-forwarded and keeps the newer block.
+- [x] A test creates a ticket branch, then commits a changed managed block on main; `_changed_agents_block` on the untouched branch returns `False`. The test fails before the fix.
+- [x] A test where the branch itself edits the managed block still returns `True`, including when main has also changed it since the branch was created.
+- [x] A test in `tests/test_landing.py` lands a ticket whose branch predates a managed-block change on main; main is fast-forwarded and keeps the newer block.
 
 ## Plan
 
@@ -33,6 +33,12 @@ Add a git helper beside file_at that resolves the merge-base of the supplied ref
 
 Cold read 1 (Haiku): fixed: the review gate merges main before the check, so only landing refuses; description corrected. Fixed: no merge-base now raises `ChittyError`; criterion 3 setup described. Decided: keep the `main_branch=None` default (out of scope). Accepted: criterion 2 is a guard and passes before the fix. Possible starting point: `git diff main...refs/cold-read/TASK-237/1`; check it against the current criteria, not trust it.
 
+Regression test confirmed failing before the fix: the untouched ticket branch was reported as changed after main refreshed the managed block. Added merge-base file lookup with explicit no-base errors; main-only refresh now passes, branch edits remain detected, and landing retains main’s refreshed block. make format and make check passed.
+
+## Summary
+
+Implemented and committed as 285e294 (Task: TASK-237). Verification: regression failed before the fix; make format and make check passed (422 Python suites plus Node tests). Follow-up: none.
+
 ## History
 
 - 2026-11-10T14:08:38Z jolly-heron → backlog
@@ -40,3 +46,5 @@ Cold read 1 (Haiku): fixed: the review gate merges main before the check, so onl
 - 2026-11-10T14:17:43Z jolly-heron backlog → todo
 - 2026-11-10T16:53:07Z friendly-falcon todo → doing
 - 2026-11-10T16:53:33Z friendly-falcon: wrote the plan
+- 2026-11-10T16:55:07Z friendly-falcon: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T16:55:07Z friendly-falcon doing → review
