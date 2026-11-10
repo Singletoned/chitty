@@ -31,6 +31,8 @@ Review failed (tests): `uv run python -m unittest tests.test_run_environment -v`
 
 1: fail - The `_run_check` test mocks `subprocess.run` and runs `true` instead of running a command that writes its environment to a file. Replace the mock with a real child command that records its environment, and demonstrate that this test fails against the unfixed behavior and passes with the fix.
 
+Replaced the _run_check subprocess mock with a real child that records its environment. Confirmed this regression test fails when _command_environment stops stripping the variables, then passes with the fix. make format && make check passed.
+
 ## Summary
 
 Implemented a shared environment-copy helper that removes only VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT and applied it to agent, setup, check, and landing-check subprocesses. Verification: focused regression tests and make format && make check pass. Code committed as c2c7d57 (Task: TASK-238). Follow-up: review necessity on/after 2026-11-17 per ticket.
@@ -48,3 +50,4 @@ Implemented a shared environment-copy helper that removes only VIRTUAL_ENV and U
 - 2026-11-10T18:18:14Z eager-puffin: changed acceptance criteria, notes
 - 2026-11-10T18:18:14Z eager-puffin review → doing
 - 2026-11-10T22:21:29Z calm-dormouse: wrote the plan
+- 2026-11-10T22:23:13Z calm-dormouse: changed notes
