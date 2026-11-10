@@ -12,9 +12,11 @@ task files. `chitty --help` is the full command reference.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
-  criteria. About five criteria is the limit; split larger work.
+  criteria. About five criteria is the limit; split larger work. Split a ticket when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until its cold read findings have outcomes;
   then promote it to `todo`. Use its optional `parent` field to group flat IDs.
+- For every read of a ticket, use the same fixed list of mutants (breaks the tests should catch), extending it only with survivors you fixed.
+- Cold-read every ticket, even a small one. If it adds a module, first create it with the names the tests import, each raising `NotImplementedError`, so tests fail independently rather than at import.
 - Cold-read every ticket, even a small one. If it changes code, a fresh agent on
   a cheap model, close to the one that will do the work, implements it from the
   ticket alone in a throwaway worktree, and runs its tests with and without the
@@ -35,8 +37,8 @@ task files. `chitty --help` is the full command reference.
   `refs/cold-read/<ID>/<n>`; `git for-each-ref refs/cold-read` lists them.
   When a read implements the current ticket text and has no unresolved serious
   findings, add a ticket note as a possible starting point for the worker:
-  `git diff <main-branch>...refs/cold-read/<ID>/<n>`, where `<main-branch>` is
-  the repository's configured main branch. Tell the worker to check it against
+  the ticket's own paths, with their starting-point contents available via
+  `git show <ref>:<path>`. Tell the worker to check it against
   the current criteria, not trust it. Delete refs from reads against superseded
   ticket text with `git update-ref -d refs/cold-read/<ID>/<n>`.
 - Ask of each criterion: could it pass with nothing built? If so, name the case

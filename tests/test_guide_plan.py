@@ -9,8 +9,8 @@ class TestPlanGuide(unittest.TestCase):
         for phrase in (
             "current ticket text",
             "no unresolved serious findings",
-            "git diff <main-branch>...refs/cold-read/<ID>/<n>",
-            "configured main branch",
+            "git show <ref>:<path>",
+            "ticket's own paths",
             "check it against the current criteria",
             "git update-ref -d refs/cold-read/<ID>/<n>",
             "superseded ticket text",
