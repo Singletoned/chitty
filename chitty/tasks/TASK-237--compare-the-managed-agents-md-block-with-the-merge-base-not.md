@@ -41,6 +41,8 @@ Review failed (tests): Add a test asserting `_changed_agents_block` returns `Tru
 2: fail - No test changes the managed block on both main and the ticket branch.
 3: pass - The landing regression preserves the refreshed block on main.
 
+Criterion 2 regression test is in progress. Test setup commits distinct managed-block edits on task-1 and main, but _changed_agents_block currently returns False; investigating ref/file lookup before accepting criterion.
+
 ## Summary
 
 Implemented and committed as 285e294 (Task: TASK-237). Verification: regression failed before the fix; make format and make check passed (422 Python suites plus Node tests). Follow-up: none.
@@ -56,3 +58,4 @@ Implemented and committed as 285e294 (Task: TASK-237). Verification: regression 
 - 2026-11-10T16:55:07Z friendly-falcon doing → review
 - 2026-11-10T17:47:40Z sunny-crane: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T17:47:40Z sunny-crane review → doing
+- 2026-11-10T17:52:08Z mellow-adder: changed notes
