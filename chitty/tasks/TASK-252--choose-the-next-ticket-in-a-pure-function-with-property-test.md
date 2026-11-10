@@ -1,6 +1,6 @@
 ---
 title: Choose the next ticket in a pure function, with property tests
-status: review
+status: doing
 created: 2026-11-10
 ---
 
@@ -27,7 +27,7 @@ Bias the generator so most examples have two or more choosable tickets, and shuf
 
 ## Acceptance Criteria
 
-- [x] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
+- [ ] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
 - [x] Existing `chitty next`, `chitty list` and `chitty run` tests pass unchanged.
 
 ## Plan
@@ -41,6 +41,11 @@ Possible starting point: `refs/cold-read/TASK-252/2` (`git show refs/cold-read/T
 Implemented pure selection and property coverage; full make check passes (459 Python tests and Node tests), including existing next/list/run coverage. I have not yet performed the requested mutation trials removing each individual selection rule, so criterion 1 is not fully verified and remains unchecked.
 
 Mutation trials: the property suite failed after removing archived exclusion, lock exclusion, human-context exclusion, work-mode filtering, review-mode filtering, general owner exclusion, unfinished-dependency exclusion, broken-dependency handling, priority ranking, and numeric ID ranking. Removing only the explicit owner==human clause survived because the general owner exclusion independently rejects that ticket; this is intentional redundant coverage, and generated cases include human owners. Added a fixed unfinished/broken dependency fixture after the first dependency mutation survived the generated examples. Re-verified make format && make check: 460 Python tests plus Node tests pass; existing next/list/run tests unchanged.
+
+Review failed (tests): The selection property mutation record does not include removal of status ordering or the inactive-status skip-reason rule. Dependency gathering also reads an agent-owned todo when no owner is supplied, contrary to the required owner check. A throwaway `next_action` call printed `unexpected dependency read: TASK-2` then `no next ticket`. Add coverage, avoid the read, and record the missing mutation trials. `make format && make check` passed 460 Python tests and the Node tests.
+
+1: fail - The mutation trials do not record status ordering or inactive-status skip-reason removal.
+2: pass - Existing tests passed unchanged in `make check`.
 
 ## Summary
 
@@ -57,3 +62,5 @@ Implemented pure ticket facts, skip reasons and selection; dependency reads rema
 - 2026-11-10T22:55:28Z nimble-yellowhammer: changed notes
 - 2026-11-10T22:57:58Z nimble-yellowhammer: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T22:57:58Z nimble-yellowhammer doing → review
+- 2026-11-10T23:00:46Z tidy-wren: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-10T23:00:46Z tidy-wren review → doing
