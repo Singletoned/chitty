@@ -25,6 +25,10 @@ First of two trial tickets for property tests (Hypothesis is already a dev depen
 - [ ] The property test fails before the fix with a `## ` section line or an unclosed fence as the counterexample, and passes after.
 - [ ] `chitty edit <ID> -d` with text containing a `## Plan` line exits non-zero, says to use `###`, and leaves the file unchanged; text with a `### Plan` line stays in the Description.
 
+## Plan
+
+Add the Hypothesis property test in tests/test_property_sections.py, first confirming it fails on current behavior. Update Task.with_section/with_note to re-parse the rendered task and compare the requested normalized text plus all other sections, including Acceptance Criteria; raise an actionable TaskError on parse errors or mismatches. Update the existing heading test, verify both CLI acceptance cases, then run format/check and commit implementation files.
+
 ## Notes
 
 Possible starting point: `refs/cold-read/TASK-249/2` (`git show refs/cold-read/TASK-249/2:<path>`). Check it against the criteria; don't trust it.
@@ -38,3 +42,4 @@ Possible starting point: `refs/cold-read/TASK-249/2` (`git show refs/cold-read/T
 - 2026-11-10T21:20:59Z jolly-heron backlog → todo
 - 2026-11-10T21:58:52Z jolly-heron: replaced notes
 - 2026-11-10T22:25:14Z tidy-heron todo → doing
+- 2026-11-10T22:25:27Z tidy-heron: wrote the plan
