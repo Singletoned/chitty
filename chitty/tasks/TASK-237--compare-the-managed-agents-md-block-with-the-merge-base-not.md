@@ -1,6 +1,6 @@
 ---
 title: Compare the managed `AGENTS.md` block with the merge-base, not main
-status: review
+status: done
 priority: high
 created: 2026-11-10
 ---
@@ -47,6 +47,12 @@ Criterion 2 remains unverified. The test mutation is made in the branch worktree
 
 Added coverage proving a branch managed-block edit is detected even after main independently changes its block. The initial failing test setup mutated main rather than task-1 because branch_for_review returns on main; corrected by explicitly switching to task-1 first. make format and make check passed (426 Python tests and Node tests).
 
+Reviewed: `make format && make check` passed (429 Python tests and 27 Node tests). A throwaway unrelated-history repository confirmed the no-merge-base error names both refs.
+
+1: pass - Main-only refresh leaves the branch unchanged.
+2: pass - Independent edits on both branches detect the branch change.
+3: pass - Landing retains the refreshed main block.
+
 ## Summary
 
 Handoff: Added and committed the criterion-2 regression test (8ea851c, Task: TASK-237). Verification: main-only refresh, branch-edit-after-main-refresh, and landing preservation tests pass; make format and make check pass (426 Python tests plus Node tests). Follow-up: none.
@@ -66,3 +72,5 @@ Handoff: Added and committed the criterion-2 regression test (8ea851c, Task: TAS
 - 2026-11-10T17:53:25Z mellow-adder: changed notes
 - 2026-11-10T17:56:06Z mellow-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T17:56:43Z mellow-adder doing → review
+- 2026-11-10T18:00:25Z kind-heron: changed notes; ticked acceptance criteria
+- 2026-11-10T18:00:25Z kind-heron review → done
