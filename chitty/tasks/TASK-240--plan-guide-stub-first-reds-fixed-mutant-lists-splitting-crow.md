@@ -1,6 +1,6 @@
 ---
 title: "Plan guide: stub-first reds, fixed mutant lists, splitting crowded criteria"
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -31,3 +31,4 @@ Cold read 1 (Haiku): fixed: criterion 2 bundled two rules; split into criteria 2
 - 2026-11-10T14:08:41Z jolly-heron → backlog
 - 2026-11-10T14:18:48Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:18:51Z jolly-heron backlog → todo
+- 2026-11-10T17:02:34Z open-newt todo → doing
