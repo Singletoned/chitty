@@ -1,6 +1,6 @@
 ---
 title: Replace a ticket's notes with `chitty edit --set-notes`
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -32,3 +32,4 @@ Cold read 1 (Haiku): decided: `--set-notes` does not satisfy required status-cha
 - 2026-11-10T14:08:42Z jolly-heron → backlog
 - 2026-11-10T14:19:52Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:19:53Z jolly-heron backlog → todo
+- 2026-11-10T17:10:35Z mellow-newt todo → doing
