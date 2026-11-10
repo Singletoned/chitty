@@ -545,9 +545,10 @@ def _running_line(record: dict[str, Any]) -> str:
         return f"process {pid}"
     started = datetime.fromisoformat(str(record["started"]))
     local_time = started.astimezone().strftime("%H:%M")
-    return (
-        f"{record.get('mode', 'unknown')} by {record['actor']}, process {pid}, since {local_time}"
-    )
+    mode = record.get("mode", "unknown")
+    if record["you"]:
+        return f"you ({record['actor']}, {mode}, process {pid}, since {local_time})"
+    return f"{mode} by {record['actor']}, process {pid}, since {local_time}"
 
 
 def _format(stored: StoredTask) -> str:

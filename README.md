@@ -125,8 +125,10 @@ holds a lock on its ticket until it exits, an exclusive `flock` on
 `.git/chitty/run/<ID>.lock` that the kernel releases however the run ends. The
 lock file records JSON with the process ID, actor, `work` or `review` mode, and
 UTC start time. `chitty show` reports a held ticket as `running: <mode> by
-<actor>, process <pid>, since <HH:MM>` (local time), while `chitty list` marks
-it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
+<actor>, process <pid>, since <HH:MM>` (local time), or `running: you (<actor>,
+<mode>, process <pid>, since <HH:MM>)` when the actor is this session's
+`CHITTY_ACTOR`; `--json` and MCP show give the same answer as `"you"`. `chitty
+list` marks it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
 with the holder's process ID. Locks are machine-local. The sessions all update
 main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
