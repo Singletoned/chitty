@@ -1,6 +1,6 @@
 ---
 title: Write suggestion frontmatter as YAML so any title reads back
-status: review
+status: done
 priority: high
 created: 2026-11-10
 ---
@@ -35,6 +35,11 @@ Cold read 1 (Haiku): fixed: a title holding a `---` line broke the delimiter spl
 
 Implemented YAML serialization, single-line title validation, and path-bearing ChittyError handling for malformed frontmatter. Focused inbox tests pass; make format and make check pass. Regression was not run against the pre-fix implementation before editing; initial full check exposed a test expectation/path mismatch and a newline-test fixture issue, both corrected.
 
+Reviewed: make format && make check passed; the punctuation regression fails against main with YAML ScannerError.
+1: pass - Punctuation title round trips.
+2: pass - Both malformed files report their paths.
+3: pass - Newline title is rejected without a file.
+
 ## Summary
 
 Implemented and committed as recorded under TASK-236. Verified: focused inbox tests and make format && make check pass; working tree clean after commit. Follow-up: none.
@@ -48,3 +53,5 @@ Implemented and committed as recorded under TASK-236. Verified: focused inbox te
 - 2026-11-10T16:48:45Z youthful-zander: wrote the plan
 - 2026-11-10T16:51:22Z youthful-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T16:51:22Z youthful-zander doing → review
+- 2026-11-10T16:53:39Z witty-badger: changed notes; ticked acceptance criteria
+- 2026-11-10T16:53:39Z witty-badger review → done
