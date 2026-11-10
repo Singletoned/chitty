@@ -6,19 +6,15 @@ created: 2026-11-10
 
 ## Description
 
-After the agent exits, `src/chitty/run.py` (around lines 300 to 335) decides through scattered `if`s and exceptions: interrupted on `-SIGINT`, failed on another non-zero status or a timeout, an error when the ticket's status is unchanged, and landing when it is `done`. `run_loop` (around line 110) then decides whether to continue and with which exit code.
+After the agent exits, `src/chitty/run.py` decides through scattered `if`s and exceptions (around lines 300 to 335), and `run_loop` decides whether to continue (around line 110). Make those decisions three pure functions, called where they are made now, with the same messages and exit codes:
 
-**Change:** two pure functions, called where those decisions are made now, with the same messages and exit codes:
+- `agent_exit(returncode, timed_out)`: interrupted, timed out, failed, or ok. `-SIGINT` wins over a timeout. `_run_agent` reports a timeout to its caller instead of raising, and the caller still builds `agent timed out after N seconds`.
+- `status_outcome(old_status, new_status)`: unchanged, land (the new status is `done` and the old one was not), or changed. Called only after `agent_exit` returns ok, where `new_status` is read today.
+- `loop_step(returncode)`: continue on 0 and 3; otherwise stop with an exit code, where `-N` (N from 1 to 127) gives `128 + N`.
 
-- `agent_outcome(returncode, timed_out, old_status, new_status)` returns one of: interrupted, timed out, agent failed (with the status), unchanged, land, or changed.
-- `loop_step(returncode)` returns continue, or stop with the loop's exit code.
+Out of scope: reviews that fail before the agent starts (`_prepare_review`, `_fail_check` and the like), which return early.
 
-**Properties** (`tests/test_property_run_outcome.py`):
-
-- `-SIGINT` is interrupted whatever the statuses; a timeout is timed out whatever the return code.
-- Land only when the return code is 0, no timeout, and the status went from something else to `done`.
-- Unchanged exactly when the return code is 0, no timeout, and the status is the same.
-- The loop continues exactly on 0 and 3; otherwise its exit code is between 1 and 255 (a signal `-N` gives `128 + N`).
+**Properties** (`tests/test_property_run_outcome.py`): one per rule above, including changed. Draw 0, 3 and `-SIGINT` explicitly alongside other integers, or Hypothesis rarely reaches them.
 
 ## Acceptance Criteria
 
@@ -28,3 +24,4 @@ After the agent exits, `src/chitty/run.py` (around lines 300 to 335) decides thr
 ## History
 
 - 2026-11-10T22:10:57Z jolly-heron → backlog
+- 2026-11-10T22:14:52Z jolly-heron: changed description, acceptance criteria
