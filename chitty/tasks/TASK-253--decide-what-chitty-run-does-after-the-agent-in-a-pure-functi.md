@@ -18,8 +18,8 @@ Out of scope: reviews that fail before the agent starts (`_prepare_review`, `_fa
 
 ## Acceptance Criteria
 
-- [ ] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
-- [ ] Existing `chitty run` and `chitty run --loop` tests pass unchanged, except the three `TestDirectAgentTimeout` tests in `tests/test_run_timeout.py`, which assert the returned timeout instead of a raised `ChittyError`.
+- [x] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
+- [x] Existing `chitty run` and `chitty run --loop` tests pass unchanged, except the three `TestDirectAgentTimeout` tests in `tests/test_run_timeout.py`, which assert the returned timeout instead of a raised `ChittyError`.
 
 ## Plan
 
@@ -31,6 +31,12 @@ Possible starting point: `refs/cold-read/TASK-253/2` (`git show refs/cold-read/T
 
 Confirmed the three direct timeout tests passed against the original implementation before changing them. Property tests now encode the three decision rules and explicit boundary values. `make format && make check` passes (462 Python tests plus Node tests).
 
+Mutation checks confirmed each property test detects its rule being removed: timeout precedence in agent_exit, unchanged handling in status_outcome, and continue handling in loop_step. Restored the source after each mutation; the full make format && make check passed afterward (462 Python tests and Node tests). Verified existing run/loop tests remain unchanged; only the three TestDirectAgentTimeout assertions were updated.
+
+## Summary
+
+Implemented and committed pure run outcome decisions (ff4237c). Verified both acceptance criteria: mutation testing showed each property fails when its corresponding decision is removed; full formatting and checks pass. Direct timeout tests now assert the returned timeout result. No follow-up.
+
 ## History
 
 - 2026-11-10T22:10:57Z jolly-heron → backlog
@@ -40,3 +46,4 @@ Confirmed the three direct timeout tests passed against the original implementat
 - 2026-11-10T23:10:32Z calm-adder todo → doing
 - 2026-11-10T23:10:44Z calm-adder: wrote the plan
 - 2026-11-10T23:12:44Z calm-adder: changed notes
+- 2026-11-10T23:13:51Z calm-adder: changed notes, summary; ticked acceptance criteria
