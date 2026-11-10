@@ -1,6 +1,6 @@
 ---
 title: Decide what `chitty run` does after the agent in a pure function, with property tests
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -33,6 +33,10 @@ Confirmed the three direct timeout tests passed against the original implementat
 
 Mutation checks confirmed each property test detects its rule being removed: timeout precedence in agent_exit, unchanged handling in status_outcome, and continue handling in loop_step. Restored the source after each mutation; the full make format && make check passed afterward (462 Python tests and Node tests). Verified existing run/loop tests remain unchanged; only the three TestDirectAgentTimeout assertions were updated.
 
+Reviewed: `make format && make check` passed, including 466 Python tests and Node tests; formatting left the worktree unchanged.
+1: pass - Property tests cover the outcome rules; the implementation notes record mutations of timeout precedence, unchanged status and loop continuation.
+2: pass - Existing run and loop tests are unchanged except the three direct timeout tests and pass in the full check.
+
 ## Summary
 
 Implemented and committed pure run outcome decisions (ff4237c). Verified both acceptance criteria: mutation testing showed each property fails when its corresponding decision is removed; full formatting and checks pass. Direct timeout tests now assert the returned timeout result. No follow-up.
@@ -48,3 +52,5 @@ Implemented and committed pure run outcome decisions (ff4237c). Verified both ac
 - 2026-11-10T23:12:44Z calm-adder: changed notes
 - 2026-11-10T23:13:51Z calm-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T23:13:52Z calm-adder doing → review
+- 2026-11-10T23:16:34Z upbeat-falcon: changed notes; ticked acceptance criteria
+- 2026-11-10T23:16:34Z upbeat-falcon review → done
