@@ -1,6 +1,6 @@
 ---
 title: Clear `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` for setup and check commands
-status: doing
+status: review
 priority: low
 created: 2026-11-10
 ---
@@ -40,3 +40,4 @@ Implemented a shared environment-copy helper that removes only VIRTUAL_ENV and U
 - 2026-11-10T17:21:14Z witty-zander todo → doing
 - 2026-11-10T17:21:29Z witty-zander: wrote the plan
 - 2026-11-10T17:23:56Z witty-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T17:23:57Z witty-zander doing → review
