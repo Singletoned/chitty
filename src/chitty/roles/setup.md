@@ -48,4 +48,11 @@ configure the runner.
    A successful run changes the ticket's status; a run with no eligible ticket
    exits 3. If a command fails, fix the reported setup or configuration error
    before retrying. `chitty run` creates the ticket worktree and runs setup and
-   checks there; the agent should not configure Chitty inside it.
+   checks there; the agent should not configure Chitty inside it. Before
+   declaring the runner ready, run the configured `setup` and `check` commands
+   in a throwaway detached worktree (`git worktree add --detach`), without
+   `chitty run`, then remove it.
+
+   In a new repository where the first ticket creates the real setup and check
+   targets, commit placeholder targets that only print a message; have that
+   ticket replace them.
