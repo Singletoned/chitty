@@ -23,6 +23,10 @@ Keep each addition to one or two lines. Put tests in a new `tests/test_guide_col
 - [ ] `guide("cold-read")` tells readers to report only findings that change what a worker builds or how a reviewer verifies it, and to list worker choices in one line.
 - [ ] `guide("cold-read")` tells readers to quote the test runner's own summary line, not an exit status, as evidence that tests passed or failed.
 
+## Plan
+
+Update the cold-read report instructions with the four requested constraints, then add focused phrase assertions in tests/test_guide_cold_read_reports.py. Run the new test, formatter and full checks, verify each criterion, commit implementation files, and hand off the ticket for review.
+
 ## Notes
 
 Cold read 1 (Haiku): fixed: the new filter clashed with the existing report list (unverified behaviour, wrong claims); the description now says the filter governs every report item and the list stays. Rejected: pinning exact test phrases in the ticket; repository guide tests assert phrases the worker chooses, and the reviewer checks the meaning. Possible starting point: `git diff main...refs/cold-read/TASK-239/1`; check it against the current criteria, not trust it.
@@ -34,3 +38,4 @@ Cold read 1 (Haiku): fixed: the new filter clashed with the existing report list
 - 2026-11-10T14:17:46Z jolly-heron backlog → todo
 - 2026-11-10T14:26:23Z jolly-heron: changed description, acceptance criteria
 - 2026-11-10T16:58:23Z friendly-falcon todo → doing
+- 2026-11-10T16:58:50Z friendly-falcon: wrote the plan
