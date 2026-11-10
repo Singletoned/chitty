@@ -1479,6 +1479,15 @@ class TestEdit(CliTestCase):
         self.run_cli("add", "Task", "-d", "Describe.", "--ac", "One", "--ac", "Two", "-l", "a")
         self.path = self.root / "chitty/tasks/TASK-1--task.md"
 
+    def test_description_headings_cannot_create_sections(self):
+        before = self.path.read_text()
+        result = self.run_cli("edit", "1", "-d", "Text.\n\n## Plan\nInjected.", exit_code=1)
+        self.assertIn("use ###", result.stderr)
+        self.assertEqual(self.path.read_text(), before)
+
+        self.run_cli("edit", "1", "-d", "Text.\n\n### Plan\nKept here.")
+        self.assertIn("### Plan", self.json("show", "1")["description"])
+
     def test_replace_in_description_requires_exactly_one_nonempty_match(self):
         before = self.path.read_text()
         self.run_cli("edit", "1", "--replace-in-description", "Describe", "Explain here")
@@ -1707,11 +1716,11 @@ class TestEdit(CliTestCase):
             ("edit", "1", "--check", "3"): "there are 2",
             ("edit", "1", "--rm-label", "zzz"): "no label 'zzz'",
             ("edit", "1", "-p", "urgent"): "low, medium, high",
-            ("edit", "1", "-d", ""): "'## Description' section is required",
+            ("edit", "1", "-d", ""): "use ###",
             ("edit", "1", "--plan", "x", "--plan-file", "-"): "not both",
             ("edit", "9", "-s", "done"): "no task TASK-9",
             ("edit", "1", "--depends-on", "TASK-9"): "no task TASK-9",
-            ("edit", "1", "--plan", "# Heading"): "'#' headings",
+            ("edit", "1", "--plan", "# Heading"): "use ###",
         }
         for args, message in cases.items():
             with self.subTest(args=args):
