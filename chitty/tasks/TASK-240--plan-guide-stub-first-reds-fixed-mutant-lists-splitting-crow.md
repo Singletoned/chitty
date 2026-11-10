@@ -1,6 +1,6 @@
 ---
 title: "Plan guide: stub-first reds, fixed mutant lists, splitting crowded criteria"
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -43,7 +43,7 @@ Review finding addressed: the guide now tells the ticket author to require its w
 
 ## Summary
 
-Implemented the requested planning-guide guidance and tests. Verified with make format && make check; regression tests were confirmed failing against the original guide. No known follow-ups.
+Updated the planning guide and strengthened its convergence regression test so the ticket must instruct its worker to create importable stubs first. Verified the regression test failed before the guide change; make format && make check passes (427 Python tests and Node tests). No follow-ups.
 
 ## History
 
@@ -58,3 +58,5 @@ Implemented the requested planning-guide guidance and tests. Verified with make 
 - 2026-11-10T17:53:39Z rosy-zander: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T17:53:39Z rosy-zander review → doing
 - 2026-11-10T18:00:46Z rosy-toad: changed notes; ticked acceptance criteria
+- 2026-11-10T18:00:55Z rosy-toad: changed summary
+- 2026-11-10T18:00:55Z rosy-toad doing → review
