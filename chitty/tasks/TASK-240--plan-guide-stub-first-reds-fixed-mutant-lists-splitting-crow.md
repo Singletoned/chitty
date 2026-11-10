@@ -17,7 +17,7 @@ Keep each addition to one or two lines. Wording is the worker's choice; tests as
 
 ## Acceptance Criteria
 
-- [ ] `guide("plan")` says tickets that add a module have the worker first create it with the imported names raising `NotImplementedError`.
+- [x] `guide("plan")` says tickets that add a module have the worker first create it with the imported names raising `NotImplementedError`.
 - [x] `guide("plan")` says to give every read of a ticket the same mutant list, extended only with survivors that were fixed.
 - [x] `guide("plan")` says the starting-point note names the ticket paths to take with `git show <ref>:<path>`, and no longer recommends `git diff <main-branch>...refs/cold-read/<ID>/<n>`.
 - [x] `guide("plan")` says to split a ticket when one criterion collects more than about five separate checks.
@@ -39,6 +39,8 @@ Review failed (tests): The stub instruction tells the planner to create the modu
 3: pass - The guide names ticket paths and `git show <ref>:<path>` without the old diff advice.
 4: pass - The guide specifies splitting at more than about five checks.
 
+Review finding addressed: the guide now tells the ticket author to require its worker to create importable stubs first. Strengthened the regression test; it failed before the guide change. An initial assertion phrase did not match the guide wording, corrected the assertion before rerunning checks.
+
 ## Summary
 
 Implemented the requested planning-guide guidance and tests. Verified with make format && make check; regression tests were confirmed failing against the original guide. No known follow-ups.
@@ -55,3 +57,4 @@ Implemented the requested planning-guide guidance and tests. Verified with make 
 - 2026-11-10T17:04:54Z open-newt doing → review
 - 2026-11-10T17:53:39Z rosy-zander: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T17:53:39Z rosy-zander review → doing
+- 2026-11-10T18:00:46Z rosy-toad: changed notes; ticked acceptance criteria
