@@ -209,7 +209,7 @@ class TestSectionEdits(unittest.TestCase):
         self.assertTrue(task.render().endswith("- [X] Loose item\n"))
 
     def test_heading_in_text_is_rejected(self):
-        with self.assertRaisesRegex(TaskError, "unknown section"):
+        with self.assertRaisesRegex(TaskError, r"use ###"):
             parse(SAMPLE).with_section("Plan", "## Steps\n\nfoo")
 
     def test_append_note(self):
