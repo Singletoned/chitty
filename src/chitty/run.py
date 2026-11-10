@@ -44,6 +44,7 @@ from chitty.store import (
 # Each lost race removes a candidate, so a few attempts are plenty.
 RUN_LOCK_ATTEMPTS = 10
 RUN_LOOP_PAUSE_SECONDS = 60
+AGENT_KILL_GRACE_SECONDS = 2
 
 
 class RunInterrupted(Exception):
@@ -109,6 +110,68 @@ def run_loop(arguments: tuple[str, ...]) -> int:
         if completed.returncode not in (0, NO_NEXT_TICKET_EXIT):
             return completed.returncode if completed.returncode > 0 else 128 - completed.returncode
         time.sleep(RUN_LOOP_PAUSE_SECONDS)
+
+
+def _run_agent(
+    command: list[str], *, cwd: Path, env: dict[str, str], timeout: int
+) -> subprocess.CompletedProcess[bytes]:
+    """Wait for an agent, terminating its process tree when its deadline expires."""
+    process = subprocess.Popen(command, cwd=cwd, env=env)
+    try:
+        process.wait(timeout=timeout or None)
+    except subprocess.TimeoutExpired:
+        descendants = _process_descendants(process.pid)
+        for pid in [*descendants, process.pid]:
+            _signal_process(pid, signal.SIGTERM)
+        grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
+        while time.monotonic() < grace_deadline:
+            remaining = _running_processes([*descendants, process.pid])
+            if not remaining:
+                break
+            time.sleep(min(0.05, grace_deadline - time.monotonic()))
+        for pid in _running_processes([*descendants, process.pid]):
+            _signal_process(pid, signal.SIGKILL)
+        process.wait()
+        raise ChittyError(f"agent timed out after {timeout} seconds") from None
+    return subprocess.CompletedProcess(command, process.returncode)
+
+
+def _process_descendants(parent: int) -> list[int]:
+    """Return descendants from the system process table in parent-first order."""
+    result = subprocess.run(
+        ["ps", "-A", "-o", "pid=", "-o", "ppid="], capture_output=True, text=True, check=True
+    )
+    parents: dict[int, list[int]] = {}
+    for line in result.stdout.splitlines():
+        pid, ppid = (int(value) for value in line.split())
+        parents.setdefault(ppid, []).append(pid)
+    found: list[int] = []
+    pending = list(parents.get(parent, []))
+    while pending:
+        pid = pending.pop(0)
+        found.append(pid)
+        pending.extend(parents.get(pid, []))
+    return found
+
+
+def _running_processes(pids: list[int]) -> list[int]:
+    """Return requested PIDs that still have a live process-table entry."""
+    result = subprocess.run(
+        ["ps", "-A", "-o", "pid=", "-o", "stat="], capture_output=True, text=True, check=True
+    )
+    states = {
+        int(pid): state
+        for line in result.stdout.splitlines()
+        for pid, state in [line.split(maxsplit=1)]
+    }
+    return [pid for pid in pids if pid in states and not states[pid].startswith("Z")]
+
+
+def _signal_process(pid: int, sig: signal.Signals) -> None:
+    try:
+        os.kill(pid, sig)
+    except ProcessLookupError:
+        pass
 
 
 def _land_pending(main_repo: Repo) -> RunResult | None:
@@ -233,7 +296,7 @@ def _run_ticket(
                 agent_environment.pop("VIRTUAL_ENV", None)
                 agent_environment.pop("UV_PROJECT_ENVIRONMENT", None)
                 try:
-                    completed = subprocess.run(
+                    completed = _run_agent(
                         [
                             *agent_command,
                             *arguments,
@@ -241,7 +304,7 @@ def _run_ticket(
                         ],
                         cwd=worktree,
                         env=agent_environment,
-                        check=False,
+                        timeout=main_repo.config.agent_timeout,
                     )
                 except FileNotFoundError:
                     raise ChittyError(f"agent command not found: {agent_command[0]}") from None
