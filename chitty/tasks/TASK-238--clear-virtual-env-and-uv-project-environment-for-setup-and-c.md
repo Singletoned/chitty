@@ -1,6 +1,6 @@
 ---
 title: Clear `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` for setup and check commands
-status: todo
+status: doing
 priority: low
 created: 2026-11-10
 ---
@@ -27,3 +27,4 @@ Cold read 1 (Haiku): no serious findings. Accepted: the agent launch is already 
 - 2026-11-10T14:15:02Z jolly-heron: changed notes
 - 2026-11-10T14:15:33Z jolly-heron: changed description
 - 2026-11-10T14:16:08Z jolly-heron backlog → todo
+- 2026-11-10T17:21:14Z witty-zander todo → doing
