@@ -1,6 +1,6 @@
 ---
 title: Keep section text inside its section, with a property test
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -37,3 +37,4 @@ Possible starting point: `refs/cold-read/TASK-249/2` (`git show refs/cold-read/T
 - 2026-11-10T21:20:59Z jolly-heron: changed description, notes
 - 2026-11-10T21:20:59Z jolly-heron backlog → todo
 - 2026-11-10T21:58:52Z jolly-heron: replaced notes
+- 2026-11-10T22:25:14Z tidy-heron todo → doing
