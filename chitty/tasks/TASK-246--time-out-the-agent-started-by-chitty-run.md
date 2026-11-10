@@ -1,6 +1,6 @@
 ---
 title: Time out the agent started by chitty run
-status: backlog
+status: todo
 labels:
   - needs-minor
 created: 2026-11-10
@@ -19,7 +19,7 @@ Out of scope: an idle or no-output limit (the agent writes straight to the termi
 ## Acceptance Criteria
 
 - [ ] With `agent_timeout = 2` and an agent command that starts a child process which sleeps for 60 seconds, `chitty run` exits 1 within 10 seconds, prints `agent timed out after 2 seconds`, neither process is still running afterwards, and the usage log has an entry for the run.
-- [ ] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the run uses a 7200-second limit (shown by the timeout message when the default constant is patched to 2 in a test).
+- [ ] With `agent_timeout = 0`, an agent that sleeps for 3 seconds finishes normally; `agent_timeout = -5` or `"10"` fails with a configuration error naming `agent_timeout`; and with no `agent_timeout` set, the limit is the default constant, which is 7200, and a test that patches that constant to 2 sees `agent timed out after 2 seconds`.
 - [ ] The agent runs in the same process group as `chitty run` (the fake agent records `os.getpgid(0)`), so terminal input and Ctrl-C reach it as today.
 
 ## Notes
@@ -38,3 +38,5 @@ Haiku cold read 1 (`refs/cold-read/TASK-246/1`): implemented as written, all gre
 - 2026-11-10T16:59:38Z jolly-heron: changed description, acceptance criteria
 - 2026-11-10T16:59:40Z jolly-heron: changed notes
 - 2026-11-10T17:34:39Z jolly-heron: changed labels, description, acceptance criteria
+- 2026-11-10T17:34:48Z jolly-heron: changed acceptance criteria
+- 2026-11-10T17:34:48Z jolly-heron backlog → todo
