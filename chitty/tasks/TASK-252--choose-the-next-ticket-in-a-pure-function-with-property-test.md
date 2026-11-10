@@ -1,6 +1,6 @@
 ---
 title: Choose the next ticket in a pure function, with property tests
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -27,8 +27,8 @@ Bias the generator so most examples have two or more choosable tickets, and shuf
 
 ## Acceptance Criteria
 
-- [ ] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
-- [ ] Existing `chitty next`, `chitty list` and `chitty run` tests pass unchanged.
+- [x] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
+- [x] Existing `chitty next`, `chitty list` and `chitty run` tests pass unchanged.
 
 ## Plan
 
@@ -40,6 +40,12 @@ Possible starting point: `refs/cold-read/TASK-252/2` (`git show refs/cold-read/T
 
 Implemented pure selection and property coverage; full make check passes (459 Python tests and Node tests), including existing next/list/run coverage. I have not yet performed the requested mutation trials removing each individual selection rule, so criterion 1 is not fully verified and remains unchecked.
 
+Mutation trials: the property suite failed after removing archived exclusion, lock exclusion, human-context exclusion, work-mode filtering, review-mode filtering, general owner exclusion, unfinished-dependency exclusion, broken-dependency handling, priority ranking, and numeric ID ranking. Removing only the explicit owner==human clause survived because the general owner exclusion independently rejects that ticket; this is intentional redundant coverage, and generated cases include human owners. Added a fixed unfinished/broken dependency fixture after the first dependency mutation survived the generated examples. Re-verified make format && make check: 460 Python tests plus Node tests pass; existing next/list/run tests unchanged.
+
+## Summary
+
+Implemented pure ticket facts, skip reasons and selection; dependency reads remain lazy for eligible todo tickets. Added Hypothesis properties and direct dependency coverage. Mutation trials killed each distinct selection rule; the explicit human-owner check is subsumed by general owner exclusion. Verified make format and make check (460 Python suites and Node tests). Handoff: ready for review; no known follow-ups.
+
 ## History
 
 - 2026-11-10T22:10:57Z jolly-heron → backlog
@@ -49,3 +55,5 @@ Implemented pure selection and property coverage; full make check passes (459 Py
 - 2026-11-10T22:43:14Z nimble-yellowhammer todo → doing
 - 2026-11-10T22:43:53Z nimble-yellowhammer: wrote the plan
 - 2026-11-10T22:55:28Z nimble-yellowhammer: changed notes
+- 2026-11-10T22:57:58Z nimble-yellowhammer: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T22:57:58Z nimble-yellowhammer doing → review
