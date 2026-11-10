@@ -1,6 +1,6 @@
 ---
 title: "Setup guide: validate setup and check in a throwaway worktree; bootstrap targets"
-status: backlog
+status: todo
 created: 2026-11-10
 ---
 
@@ -18,6 +18,12 @@ Keep each addition to one or two lines. Tests go in a new `tests/test_guide_setu
 - [ ] `guide("setup")` tells the person to run the configured `setup` and `check` in a throwaway detached worktree before declaring the runner ready, without `chitty run`.
 - [ ] `guide("setup")` describes committing placeholder setup and check targets when the first ticket creates the real ones.
 
+## Notes
+
+Cold read 1 (Haiku): no serious findings. Accepted: placement of each addition is the worker's choice; the throwaway-worktree phrase is the real check for criterion 1. Rejected: specifying failure handling; step 4 already says to fix the reported error before retrying. Possible starting point: `git diff main...refs/cold-read/TASK-241/1`; check it against the current criteria, not trust it.
+
 ## History
 
 - 2026-11-10T14:08:41Z jolly-heron → backlog
+- 2026-11-10T14:20:04Z jolly-heron: changed notes
+- 2026-11-10T14:20:04Z jolly-heron backlog → todo
