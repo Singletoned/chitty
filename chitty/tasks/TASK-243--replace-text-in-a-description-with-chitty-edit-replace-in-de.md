@@ -1,6 +1,6 @@
 ---
 title: Replace text in a description with `chitty edit --replace-in-description`
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -21,7 +21,7 @@ Out of scope: the same for criteria (`--set-ac` covers them), plan or notes.
 
 ## Acceptance Criteria
 
-- [ ] A test replaces a phrase occurring once in the Description; only that text changes.
+- [x] A test replaces a phrase occurring once in the Description; only that text changes.
 - [x] Tests show OLD occurring zero times and twice each fails with an error naming the count, and an empty OLD fails; each leaves the file unchanged.
 - [x] A test in `tests/test_mcp.py` does the replacement through the MCP `edit` tool.
 
@@ -44,9 +44,11 @@ Review failed (tests): Add a regression test and fix History for description rep
 2: pass - CLI test verifies counts and unchanged files.
 3: pass - MCP test exercises replacement.
 
+Added a store regression test for the missing History event. It failed before the fix (History contained only the initial status event) and passes after `_history_action` classifies replacement edits as changed description. `make format` passes; `make check` has 438 passing tests and one unrelated existing failure: `test_warning_is_in_every_generated_guide` finds the generated guide differs from the source. Committed as 47eb138.
+
 ## Summary
 
-Implemented exact, unique description replacement in the CLI, shared store, and MCP; documented in PLAN.md. Verification: make format && make check pass after merging main. No follow-ups.
+Handoff: description replacements now record `changed description` in History; regression test added. Verification: focused regression passes; format passes; full check blocked by unrelated generated-guide mismatch (`test_warning_is_in_every_generated_guide`; 438 other tests pass). Follow-up: resolve that guide mismatch.
 
 ## History
 
@@ -64,3 +66,5 @@ Implemented exact, unique description replacement in the CLI, shared store, and 
 - 2026-11-10T18:15:19Z zesty-ibis: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T18:15:19Z zesty-ibis review → doing
 - 2026-11-10T21:06:49Z sunny-adder: wrote the plan
+- 2026-11-10T21:09:04Z sunny-adder: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T21:09:04Z sunny-adder doing → review
