@@ -42,6 +42,30 @@ Review failed (tests): Descendants do not receive the specified grace period whe
 2: pass - Configuration and default timeout tests passed.
 3: pass - Inherited process group test passed.
 
+Check failed before this session: check exited with status 2:
+```text
+.....TASK-1: doing → review
+.......no next ticket for --mode work
+.......landed TASK-1
+landed TASK-2
+landed TASK-1
+
+======================================================================
+test_run_overlaps_one_worker_and_one_reviewer (tests.test_next.TestNext.test_run_overlaps_one_worker_and_one_reviewer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-246/tests/test_next.py", line 537, in test_run_overlaps_one_worker_and_one_reviewer
+    self.assertNotEqual(worker_actors, review_actors)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'nimble-falcon'} == {'nimble-falcon'}
+
+----------------------------------------------------------------------
+Ran 442 tests in 42.253s
+
+FAILED (failures=1)
+make: *** [check] Error 1
+```
+
 ## Summary
 
 Implemented configurable agent timeout, descendant TERM/KILL cleanup, usage logging on timeout, and configuration/runner tests. Verified acceptance criteria 1–3; make format and make check pass. Follow-up: none.
@@ -65,3 +89,4 @@ Implemented configurable agent timeout, descendant TERM/KILL cleanup, usage logg
 - 2026-11-10T17:45:06Z brisk-yellowhammer doing → review
 - 2026-11-10T18:11:52Z tidy-urchin: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-10T18:11:52Z tidy-urchin review → doing
+- 2026-11-10T18:13:59Z youthful-otter: changed notes
