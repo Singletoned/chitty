@@ -1,6 +1,6 @@
 ---
 title: Compare the managed `AGENTS.md` block with the merge-base, not main
-status: doing
+status: review
 priority: high
 created: 2026-11-10
 ---
@@ -65,3 +65,4 @@ Handoff: Added and committed the criterion-2 regression test (8ea851c, Task: TAS
 - 2026-11-10T17:52:08Z mellow-adder: changed notes
 - 2026-11-10T17:53:25Z mellow-adder: changed notes
 - 2026-11-10T17:56:06Z mellow-adder: changed notes, summary; ticked acceptance criteria
+- 2026-11-10T17:56:43Z mellow-adder doing → review
