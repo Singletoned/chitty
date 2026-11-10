@@ -1,6 +1,6 @@
 ---
 title: Replace text in a description with `chitty edit --replace-in-description`
-status: backlog
+status: todo
 created: 2026-11-10
 ---
 
@@ -33,3 +33,4 @@ Cold read 1 (Haiku): fixed: empty OLD counted len+1 matches; now rejected. Decid
 
 - 2026-11-10T14:08:43Z jolly-heron → backlog
 - 2026-11-10T14:19:32Z jolly-heron: changed description, acceptance criteria, notes
+- 2026-11-10T14:19:33Z jolly-heron backlog → todo
