@@ -47,6 +47,32 @@ RUN_LOOP_PAUSE_SECONDS = 60
 AGENT_KILL_GRACE_SECONDS = 2
 
 
+def agent_exit(
+    returncode: int, timed_out: bool
+) -> Literal["interrupted", "timed out", "failed", "ok"]:
+    if timed_out:
+        return "timed out"
+    if returncode == -signal.SIGINT:
+        return "interrupted"
+    if returncode:
+        return "failed"
+    return "ok"
+
+
+def status_outcome(old_status: str, new_status: str) -> Literal["unchanged", "land", "changed"]:
+    if old_status == new_status:
+        return "unchanged"
+    if new_status == "done":
+        return "land"
+    return "changed"
+
+
+def loop_step(returncode: int) -> tuple[bool, int]:
+    if returncode in (0, NO_NEXT_TICKET_EXIT):
+        return True, 0
+    return False, returncode if returncode > 0 else 128 - returncode
+
+
 def _command_environment() -> dict[str, str]:
     """Copy the environment without shell-selected project virtualenvs."""
     environment = os.environ.copy()
@@ -115,8 +141,9 @@ def run_loop(arguments: tuple[str, ...]) -> int:
         raise ChittyError(f"runner chitty executable not found: {executable}")
     while True:
         completed = subprocess.run([str(executable), "run", *arguments], check=False)
-        if completed.returncode not in (0, NO_NEXT_TICKET_EXIT):
-            return completed.returncode if completed.returncode > 0 else 128 - completed.returncode
+        keep_running, exit_code = loop_step(completed.returncode)
+        if not keep_running:
+            return exit_code
         time.sleep(RUN_LOOP_PAUSE_SECONDS)
 
 
@@ -140,7 +167,7 @@ def _run_agent(
         for pid in _running_processes([*descendants, process.pid]):
             _signal_process(pid, signal.SIGKILL)
         process.wait()
-        raise ChittyError(f"agent timed out after {timeout} seconds") from None
+        return subprocess.CompletedProcess(command, process.returncode, stderr=b"timed out")
     return subprocess.CompletedProcess(command, process.returncode)
 
 
@@ -321,21 +348,28 @@ def _run_ticket(
                         os.environ.pop("CHITTY_USAGE_FILE", None)
                     else:
                         os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
-                if completed.returncode == -signal.SIGINT:
+                timed_out = completed.stderr == b"timed out"
+                outcome = agent_exit(completed.returncode, timed_out)
+                if outcome == "interrupted":
                     raise RunInterrupted("agent")
-                if completed.returncode:
+                if outcome == "timed out":
+                    raise ChittyError(
+                        f"agent timed out after {main_repo.config.agent_timeout} seconds"
+                    )
+                if outcome == "failed":
                     raise ChittyError(f"agent exited with status {completed.returncode}")
                 models = _read_usage(usage_file)
                 usage_read = True
 
                 # Pi commonly commits from this worktree. Reopen so history is re-read.
                 new_status = _status_after_agent(main_root, worktree, action)
-                if new_status == old_status:
+                status_result = status_outcome(old_status, new_status)
+                if status_result == "unchanged":
                     raise ChittyError(
                         f"{action.id} was unchanged; only committed changes are visible "
                         "to `chitty run`"
                     )
-                if new_status == "done":
+                if status_result == "land":
                     _land(main_repo, worktree, action, setup, check)
             finally:
                 if not usage_read:
