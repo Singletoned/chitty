@@ -22,6 +22,7 @@ BACKLOG_DIR = "chitty"
 ROOT_ENV = "CHITTY_ROOT"
 CHITTY_VERSION = __version__
 LIST_WIDTH = 100
+DEFAULT_AGENT_TIMEOUT = 7200
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
@@ -87,6 +88,7 @@ class RepoConfig(BaseModel):
     setup: str | None = None
     check: str | None = None
     agent_command: str | None = None
+    agent_timeout: int = Field(default_factory=lambda: DEFAULT_AGENT_TIMEOUT, ge=0)
     agent_commands: dict[str, str] = {}
     work_model: str | None = None
     review_model: str | None = None

@@ -125,8 +125,10 @@ holds a lock on its ticket until it exits, an exclusive `flock` on
 `.git/chitty/run/<ID>.lock` that the kernel releases however the run ends. The
 lock file records JSON with the process ID, actor, `work` or `review` mode, and
 UTC start time. `chitty show` reports a held ticket as `running: <mode> by
-<actor>, process <pid>, since <HH:MM>` (local time), while `chitty list` marks
-it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
+<actor>, process <pid>, since <HH:MM>` (local time), or `running: you (<actor>,
+<mode>, process <pid>, since <HH:MM>)` when the actor is this session's
+`CHITTY_ACTOR`; `--json` and MCP show give the same answer as `"you"`. `chitty
+list` marks it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
 with the holder's process ID. Locks are machine-local. The sessions all update
 main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
@@ -208,6 +210,9 @@ written task file before any autocommit. Set `setup` to the command that prepare
 each ticket worktree before the agent starts; it is parsed without a shell. Set
 `agent_command` to the default agent invocation, for example
 `"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
+The optional `agent_timeout` is a non-negative integer number of seconds and
+defaults to 7200; set it to `0` for no limit. On timeout, `chitty run` stops the
+agent and its child processes and exits with an error.
 Additional commands go in `[agent_commands]`; `chitty run --agent NAME` uses one
 for that run only. An unknown name lists available entries, and the selected
 entry is validated like `agent_command`. Optional root-level `work_model` and

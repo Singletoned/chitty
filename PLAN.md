@@ -86,6 +86,17 @@ Milestones. Docs/decisions directories. Wizards. Shell completions (v1).
 Configurable statuses (v1). Moving tasks between repos. ID collision
 handling beyond reporting it.
 
+## Direction
+
+Stated by the human on 2026-11-10:
+
+- Short term, in order: stabilise, have agents write property tests, then run
+  agents in containers.
+- Long term: run both locally with worktrees and in a forge's runner pool.
+  Tickets stay files in git; the forge is only a remote and a runner pool.
+- So design changes to work from a fresh clone that pushes to a remote, as
+  well as from a local worktree. `../pithos/` has tried the container side.
+
 ## Layout
 
 ```
@@ -324,6 +335,11 @@ Repository config is either `chitty.toml` at repo root (`chitty init` writes it)
 or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error. Unknown
 configuration keys are ignored with a warning.
 
+Settings are optional, and their defaults keep existing behaviour, so no
+config needs migrating (decided with the human, 2026-11-06). Settings with no
+safe existing behaviour, such as `setup` and `agent_command`, fail loudly where
+`chitty run` uses them.
+
 ```toml
 format = 1
 default_context = "tasks"
@@ -422,7 +438,7 @@ chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
 chitty show ID
 chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p PRIO]
                  [--owner X] [--depends-on ID]... [--rm-depends-on ID]...
-                 [-d TEXT | --description-file F]
+                 [-d TEXT | --description-file F] [--replace-in-description OLD NEW]
                  [--ac TEXT]... [--set-ac N TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
                  [--plan TEXT | --plan-file F] [--note TEXT] [--note-file F]
                  [--set-notes TEXT | --set-notes-file F]
@@ -622,6 +638,14 @@ ticket in `backlog` until its cold read findings have outcomes, and only then
 move it to `todo`, because `chitty run` picks up anything in `todo`: `TASK-147`
 was claimed with a wrong fix while its cold read was still running.
 
+Planning practice in this repository (from the human):
+
+- Readers run on Haiku, to show what a weak model struggles with.
+- Ticket text is concise: tight sentences, bullets, the current decision only.
+  Git keeps the history.
+- While a planner's own subagent reviews a ticket, the ticket keeps an owner,
+  so `chitty run` leaves it alone.
+
 Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
 private helpers or mocks of our own code. Use a round-trip property for any
 parser or serialiser, and a table row for any state transition. They are
@@ -792,6 +816,8 @@ or worktrees. On a pass, `chitty run` lands by fast-forwarding `main` after the
 branch has been integrated with `main` and configured checks pass. Without
 `chitty run`, merge `main` into the ticket branch in its worktree, run the
 configured checks, and only then fast-forward `main`.
+
+The optional root-level `agent_timeout` is a non-negative TOML integer in seconds. It defaults to 7200; `0` disables the limit. On expiry, `chitty run` terminates the agent and its descendants, then escalates from `SIGTERM` to `SIGKILL` after a short grace period, reports `agent timed out after N seconds`, and exits 1. The agent remains in the runner's process group and session so terminal input and Ctrl-C behave normally. Timeout is an agent failure: the run is logged and `--loop` stops.
 
 Each agent session appends one JSON line to the machine-local usage log at
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory

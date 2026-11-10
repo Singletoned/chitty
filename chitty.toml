@@ -30,4 +30,7 @@ prefix = "BACKLOG"
 random_ids = true
 
 [agent_commands]
-claude = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync claude -p {prompt} --model sonnet --permission-mode dontAsk --allowedTools 'Read Edit Write Bash(chitty *) Bash(git *) Bash(make *) Bash(uv run *) Bash(python *) Bash(npm test*) Bash(rg *) Bash(head *) Bash(grep *) Bash(find *) Bash(sort *) Bash(tail *) Bash(sed *) Bash(nl *) Bash(awk *) Bash(cat *) Bash(ls *) Bash(wc *)' --disallowedTools 'Bash(git push *)'"
+# Trial (2026-11-10): Pi without its interface or the chitty.ts extension.
+pi-print = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync pi -p --no-extensions --no-skills --skill ~/.pi/agent/skills/python-dev {prompt}"
+# Unrestricted inside the worktree (the human decided, 2026-11-10); `git push` stays denied.
+claude = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync claude -p {prompt} --model haiku --permission-mode bypassPermissions --disallowedTools 'Bash(git push *)'"

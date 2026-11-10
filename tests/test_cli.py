@@ -1479,6 +1479,20 @@ class TestEdit(CliTestCase):
         self.run_cli("add", "Task", "-d", "Describe.", "--ac", "One", "--ac", "Two", "-l", "a")
         self.path = self.root / "chitty/tasks/TASK-1--task.md"
 
+    def test_replace_in_description_requires_exactly_one_nonempty_match(self):
+        before = self.path.read_text()
+        self.run_cli("edit", "1", "--replace-in-description", "Describe", "Explain here")
+        self.assertEqual(self.json("show", "1")["description"], "Explain here.")
+        for old, count in (("absent", "0"), ("e", "2")):
+            snapshot = self.path.read_text()
+            result = self.run_cli("edit", "1", "--replace-in-description", old, "x", exit_code=1)
+            self.assertIn(count, result.output)
+            self.assertEqual(self.path.read_text(), snapshot)
+        snapshot = self.path.read_text()
+        self.run_cli("edit", "1", "--replace-in-description", "", "x", exit_code=1)
+        self.assertEqual(self.path.read_text(), snapshot)
+        self.assertNotEqual(before, self.path.read_text())
+
     def test_edit_everything(self):
         result = self.run_cli(
             "edit",
