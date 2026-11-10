@@ -1,6 +1,6 @@
 ---
 title: Replace text in a description with `chitty edit --replace-in-description`
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -37,9 +37,11 @@ Implementation verified: focused CLI and MCP tests pass; make format and make ch
 
 Review failed (integration): merging `main` conflicts in `tests/test_mcp.py`.
 
+Merged main and resolved the test_mcp.py conflict by retaining both the description-replacement and notes-replacement tests. make format && make check passes (438 Python tests and Node tests); working tree clean.
+
 ## Summary
 
-Implemented --replace-in-description OLD NEW through the CLI, MCP, and shared store; documented it in PLAN.md. Verification: focused CLI/MCP tests and make format && make check pass. No follow-ups.
+Implemented exact, unique description replacement in the CLI, shared store, and MCP; documented in PLAN.md. Verification: make format && make check pass after merging main. No follow-ups.
 
 ## History
 
@@ -52,3 +54,5 @@ Implemented --replace-in-description OLD NEW through the CLI, MCP, and shared st
 - 2026-11-10T17:19:34Z sunny-puffin doing → review
 - 2026-11-10T18:08:26Z friendly-newt: changed notes
 - 2026-11-10T18:08:26Z friendly-newt review → doing
+- 2026-11-10T18:12:02Z nimble-badger: changed notes, summary
+- 2026-11-10T18:12:02Z nimble-badger doing → review
