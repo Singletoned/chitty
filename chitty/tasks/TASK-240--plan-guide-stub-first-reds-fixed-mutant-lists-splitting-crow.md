@@ -22,6 +22,10 @@ Keep each addition to one or two lines. Wording is the worker's choice; tests as
 - [ ] `guide("plan")` says the starting-point note names the ticket paths to take with `git show <ref>:<path>`, and no longer recommends `git diff <main-branch>...refs/cold-read/<ID>/<n>`.
 - [ ] `guide("plan")` says to split a ticket when one criterion collects more than about five separate checks.
 
+## Plan
+
+Update the planning role with the four requested instructions, revise the existing starting-point guide test, and add focused convergence tests in tests/test_guide_plan_convergence.py. Run the new tests against the current guide first to confirm they fail, then implement and verify with make format and make check.
+
 ## Notes
 
 Cold read 1 (Haiku): fixed: criterion 2 bundled two rules; split into criteria 2 and 4. Fixed: threshold named (about five checks); the `tests/test_guide_plan.py` phrases to drop are named. Rejected: pinning exact phrases in the ticket; wording is free and the reviewer checks meaning. Rejected: defining line length; one or two lines is a guide, not a test. Possible starting point: `git diff main...refs/cold-read/TASK-240/1`; check it against the current criteria, not trust it.
@@ -32,3 +36,4 @@ Cold read 1 (Haiku): fixed: criterion 2 bundled two rules; split into criteria 2
 - 2026-11-10T14:18:48Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:18:51Z jolly-heron backlog → todo
 - 2026-11-10T17:02:34Z open-newt todo → doing
+- 2026-11-10T17:02:53Z open-newt: wrote the plan
