@@ -17,6 +17,10 @@ Implement this now. The person is also fixing their shell environment globally, 
 
 - [ ] With both variables set in `os.environ`, tests running `_setup`, `_run_check` and `_landing_check` with a command that writes its environment to a file show neither variable; each test fails before the fix.
 
+## Plan
+
+Add one run.py helper that copies os.environ and removes only VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT. Use it for agent launch, setup, check, and landing-check subprocess environments. Add regression tests for the three commands, first verifying they fail against current behavior.
+
 ## Notes
 
 Cold read 1 (Haiku): no serious findings. Accepted: the agent launch is already covered by `test_run_uses_runner_chitty_and_strips_worktree_environment` in `tests/test_next.py`; keep it as the launch check, no new launch test needed. A `_run_check` test may build a real repo with one ticket (`Repo.open`, `NextAction`). Possible starting point: `git diff main...refs/cold-read/TASK-238/1`; check it against the current criteria, not trust it.
@@ -28,3 +32,4 @@ Cold read 1 (Haiku): no serious findings. Accepted: the agent launch is already 
 - 2026-11-10T14:15:33Z jolly-heron: changed description
 - 2026-11-10T14:16:08Z jolly-heron backlog → todo
 - 2026-11-10T17:21:14Z witty-zander todo → doing
+- 2026-11-10T17:21:29Z witty-zander: wrote the plan
