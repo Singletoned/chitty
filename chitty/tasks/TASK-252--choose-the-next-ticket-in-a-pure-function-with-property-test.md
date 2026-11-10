@@ -1,6 +1,6 @@
 ---
 title: Choose the next ticket in a pure function, with property tests
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -27,7 +27,7 @@ Bias the generator so most examples have two or more choosable tickets, and shuf
 
 ## Acceptance Criteria
 
-- [ ] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
+- [x] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
 - [x] Existing `chitty next`, `chitty list` and `chitty run` tests pass unchanged.
 
 ## Plan
@@ -49,6 +49,11 @@ Review failed (tests): The selection property mutation record does not include r
 
 Review follow-up: added a regression test for a dependency read on an agent-owned todo when no owner is requested. It failed before the fix at _selection_facts/_dependency_is_done, then passed after owner eligibility required owner=None; explicit owner selection still reads only matching tickets. Property mutation with reversed status rank failed on a review-vs-doing case. The inactive-status guard in skip_reason is behaviorally redundant: removing its status test still returns None because non-todo statuses return immediately afterward, so there is no distinct behavior for a test to kill. Full make format && make check passes (461 Python tests and Node tests). Implementation committed as 9c8dc77. No unrelated files changed.
 
+Reviewed: make format && make check passed, including 463 Python tests and Node tests. The inactive-status mutation was tested independently in memory; the property failed with a locked done ticket returning ▶ running, so the guard is not redundant. Earlier notes record the other selection-rule mutation trials.
+
+1: pass - Property tests pass and recorded mutation trials exercise the rules.
+2: pass - Existing next, list and run tests pass unchanged.
+
 ## Summary
 
 Fixed lazy dependency gathering for plain next: agent-owned todo tickets are now excluded before reading dependencies. Added regression coverage; confirmed it failed pre-fix and passed after. Reversed status-rank mutation is killed by property ordering. The inactive-status skip_reason check is redundant with the subsequent non-todo return, documented in Notes. make format && make check pass (461 Python tests and Node tests). Commit: 9c8dc77. Acceptance criterion 1 remains unchecked only for the behaviorally redundant inactive-status guard mutation.
@@ -69,3 +74,5 @@ Fixed lazy dependency gathering for plain next: agent-owned todo tickets are now
 - 2026-11-10T23:05:27Z lively-puffin: wrote the plan
 - 2026-11-10T23:08:22Z lively-puffin: changed notes, summary
 - 2026-11-10T23:08:22Z lively-puffin doing → review
+- 2026-11-10T23:11:00Z daring-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-10T23:11:00Z daring-yellowhammer review → done
