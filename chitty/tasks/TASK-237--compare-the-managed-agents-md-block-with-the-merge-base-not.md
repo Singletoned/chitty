@@ -22,7 +22,7 @@ Existing tests: `tests/test_review_merge.py` (around line 141) and `tests/test_l
 ## Acceptance Criteria
 
 - [x] A test creates a ticket branch, then commits a changed managed block on main; `_changed_agents_block` on the untouched branch returns `False`. The test fails before the fix.
-- [ ] A test where the branch itself edits the managed block still returns `True`, including when main has also changed it since the branch was created.
+- [x] A test where the branch itself edits the managed block still returns `True`, including when main has also changed it since the branch was created.
 - [x] A test in `tests/test_landing.py` lands a ticket whose branch predates a managed-block change on main; main is fast-forwarded and keeps the newer block.
 
 ## Plan
@@ -45,9 +45,11 @@ Criterion 2 regression test is in progress. Test setup commits distinct managed-
 
 Criterion 2 remains unverified. The test mutation is made in the branch worktree, but the test fixture subsequently reports identical AGENTS.md blobs at task-1 and its merge-base despite an asserted text mutation. Need diagnose fixture/Git setup before a valid criterion test can be completed.
 
+Added coverage proving a branch managed-block edit is detected even after main independently changes its block. The initial failing test setup mutated main rather than task-1 because branch_for_review returns on main; corrected by explicitly switching to task-1 first. make format and make check passed (426 Python tests and Node tests).
+
 ## Summary
 
-Implemented and committed as 285e294 (Task: TASK-237). Verification: regression failed before the fix; make format and make check passed (422 Python suites plus Node tests). Follow-up: none.
+Handoff: Added and committed the criterion-2 regression test (8ea851c, Task: TASK-237). Verification: main-only refresh, branch-edit-after-main-refresh, and landing preservation tests pass; make format and make check pass (426 Python tests plus Node tests). Follow-up: none.
 
 ## History
 
@@ -62,3 +64,4 @@ Implemented and committed as 285e294 (Task: TASK-237). Verification: regression 
 - 2026-11-10T17:47:40Z sunny-crane review → doing
 - 2026-11-10T17:52:08Z mellow-adder: changed notes
 - 2026-11-10T17:53:25Z mellow-adder: changed notes
+- 2026-11-10T17:56:06Z mellow-adder: changed notes, summary; ticked acceptance criteria
