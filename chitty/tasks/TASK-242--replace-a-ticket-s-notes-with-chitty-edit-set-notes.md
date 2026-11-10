@@ -1,6 +1,6 @@
 ---
 title: Replace a ticket's notes with `chitty edit --set-notes`
-status: doing
+status: review
 created: 2026-11-10
 ---
 
@@ -33,6 +33,10 @@ Cold read 1 (Haiku): decided: `--set-notes` does not satisfy required status-cha
 
 Implemented replacement in store, CLI and MCP; added CLI/MCP/guide coverage and updated PLAN.md. `make format && make check` passes (427 Python tests and Node tests). Note: the new regression tests were run after the implementation rather than confirmed failing before it; this remains a verification limitation.
 
+## Summary
+
+Implemented `--set-notes` / `--set-notes-file` and MCP `set_notes`, including note append conflicts, review rejection, removal/no-op semantics and History. Updated role guidance and PLAN.md. Verified with `make format && make check`; 427 Python tests and Node tests pass. Regression tests were added after the fix and were not demonstrated failing on the original behavior. Commit: `69b8bc8`.
+
 ## History
 
 - 2026-11-10T14:08:42Z jolly-heron → backlog
@@ -41,3 +45,5 @@ Implemented replacement in store, CLI and MCP; added CLI/MCP/guide coverage and 
 - 2026-11-10T17:10:35Z mellow-newt todo → doing
 - 2026-11-10T17:10:49Z mellow-newt: wrote the plan
 - 2026-11-10T17:14:50Z mellow-newt: changed notes; ticked acceptance criteria
+- 2026-11-10T17:14:57Z mellow-newt: changed summary
+- 2026-11-10T17:14:57Z mellow-newt doing → review
