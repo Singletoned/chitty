@@ -21,6 +21,10 @@ Out of scope: reviews that fail before the agent starts (`_prepare_review`, `_fa
 - [ ] The property tests pass, and each fails when its rule is removed from the pure functions (record which removals you tried in a note).
 - [ ] Existing `chitty run` and `chitty run --loop` tests pass unchanged, except the three `TestDirectAgentTimeout` tests in `tests/test_run_timeout.py`, which assert the returned timeout instead of a raised `ChittyError`.
 
+## Plan
+
+Add pure outcome functions for agent exits, status transitions, and loop steps, then call them at the existing decision points. Make _run_agent return a timeout result instead of raising, update the three direct timeout tests, and add Hypothesis property tests covering explicit boundary values. Run regression tests before fixing, then make check and commit implementation.
+
 ## Notes
 
 Possible starting point: `refs/cold-read/TASK-253/2` (`git show refs/cold-read/TASK-253/2:<path>`). It lets `-SIGINT` win over a timeout, which the ticket now reverses. Check it against the criteria; don't trust it.
@@ -32,3 +36,4 @@ Possible starting point: `refs/cold-read/TASK-253/2` (`git show refs/cold-read/T
 - 2026-11-10T22:19:11Z jolly-heron: replaced notes; changed description, acceptance criteria
 - 2026-11-10T22:19:11Z jolly-heron backlog → todo
 - 2026-11-10T23:10:32Z calm-adder todo → doing
+- 2026-11-10T23:10:44Z calm-adder: wrote the plan
