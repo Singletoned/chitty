@@ -13,6 +13,7 @@ task files. `chitty --help` is the full command reference.
   inspect or fix them: record the paths and reason in a note, set `-s blocked`
   and `--owner human`, then stop. A review branch must be clean; a human decides
   how to resolve it and when to resume.
+- Read and change only files inside the ticket's worktree, including scratch files; do not touch the main checkout, other worktrees or files elsewhere on the machine. Reading other branches through Git or `chitty` is fine, such as `git diff main...`.
 - Verify first, then tick every verified criterion and add your note in one
   `chitty edit`, using repeated --check options, rather than one call for each.
 - Request several reads in one call when none depends on another.

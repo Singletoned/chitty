@@ -11,6 +11,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - Backticks run commands inside double-quoted shell arguments, so pass such text
   in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Work on one ticket per session. Start with `chitty show <ID>`.
+- Read and change only files inside the ticket's worktree, including scratch files; do not touch the main checkout, other worktrees or files elsewhere on the machine. Reading other branches through Git or `chitty` is fine, such as `git diff main...`.
 - Before writing code, write your approach with `chitty edit <ID> --plan`.
   Wait for approval if the human asked for it.
 - Verify first, then tick every verified criterion and add your note in one
