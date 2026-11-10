@@ -1,6 +1,6 @@
 ---
 title: Replace text in a description with `chitty edit --replace-in-description`
-status: review
+status: doing
 created: 2026-11-10
 ---
 
@@ -35,6 +35,8 @@ Cold read 1 (Haiku): fixed: empty OLD counted len+1 matches; now rejected. Decid
 
 Implementation verified: focused CLI and MCP tests pass; make format and make check pass (425 Python tests and Node tests). Exact multiplicity and empty OLD validation happen before writing, preserving files on errors. The regression tests were run after implementation rather than against the unfixed behavior.
 
+Review failed (integration): merging `main` conflicts in `tests/test_mcp.py`.
+
 ## Summary
 
 Implemented --replace-in-description OLD NEW through the CLI, MCP, and shared store; documented it in PLAN.md. Verification: focused CLI/MCP tests and make format && make check pass. No follow-ups.
@@ -48,3 +50,5 @@ Implemented --replace-in-description OLD NEW through the CLI, MCP, and shared st
 - 2026-11-10T17:16:54Z sunny-puffin: wrote the plan
 - 2026-11-10T17:19:34Z sunny-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T17:19:34Z sunny-puffin doing → review
+- 2026-11-10T18:08:26Z friendly-newt: changed notes
+- 2026-11-10T18:08:26Z friendly-newt review → doing
