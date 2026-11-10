@@ -1,6 +1,6 @@
 ---
 title: Tell workers and reviewers to stay inside their worktree
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -26,6 +26,9 @@ Possible starting point: `refs/cold-read/TASK-254/1` (`git show refs/cold-read/T
 
 The focused guide test failed for both roles before the role updates, then passed afterward. make format and make check passed (464 Python suites and Node tests); chitty fix reported pre-existing warnings in unrelated task files.
 
+Reviewed:
+1: pass - Both printed guides state the worktree boundary and permit Git and chitty cross-branch reads. make format && make check passed (467 Python tests and Node tests).
+
 ## Summary
 
 Handoff: Work and review guides now state the ticket-worktree boundary, with Git and chitty cross-branch reads allowed. Added printed-guide regression coverage. Verification: focused unittest, make format, and make check passed. Follow-ups: none.
@@ -39,3 +42,5 @@ Handoff: Work and review guides now state the ticket-worktree boundary, with Git
 - 2026-11-10T23:16:10Z calm-raven: wrote the plan
 - 2026-11-10T23:18:10Z calm-raven: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T23:18:10Z calm-raven doing → review
+- 2026-11-10T23:20:01Z daring-gannet: changed notes; ticked acceptance criteria
+- 2026-11-10T23:20:01Z daring-gannet review → done
