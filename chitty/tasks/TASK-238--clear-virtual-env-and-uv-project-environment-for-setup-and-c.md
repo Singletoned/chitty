@@ -17,6 +17,11 @@ The person is fixing their shell environment globally. Review this ticket on or 
 
 - [ ] With both variables set in `os.environ`, tests running `_setup`, `_run_check` and `_landing_check` with a command that writes its environment to a file show neither variable; each test fails before the fix.
 
+## Notes
+
+Cold read 1 (Haiku): no serious findings. Accepted: the agent launch is already covered by `test_run_uses_runner_chitty_and_strips_worktree_environment` in `tests/test_next.py`; keep it as the launch check, no new launch test needed. A `_run_check` test may build a real repo with one ticket (`Repo.open`, `NextAction`). Possible starting point: `git diff main...refs/cold-read/TASK-238/1`; check it against the current criteria, not trust it.
+
 ## History
 
 - 2026-11-10T14:08:39Z jolly-heron → backlog
+- 2026-11-10T14:15:02Z jolly-heron: changed notes
