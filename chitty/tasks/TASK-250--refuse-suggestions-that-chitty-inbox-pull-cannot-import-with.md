@@ -32,6 +32,10 @@ Depends on TASK-249, whose re-parse check makes `new_task` reject `## Notes` lin
 - [ ] The property test fails before the fix, on the inputs above or others the generator finds, and passes after.
 - [ ] `chitty suggest` with a U+2028 title, a title ending in `---`, or a setext-heading description exits non-zero and writes no suggestion file; a following `chitty inbox --pull` of another suggestion succeeds.
 
+## Plan
+
+Add a RepoTestCase property test covering accepted suggestions through pull and verifying imported title/normalised Description. First confirm it fails on current behavior. Update inbox.suggest to validate the exact normalized task via model.new_task before writing, and parse suggestion frontmatter using delimiter lines. Add CLI regression coverage for rejected inputs and all-or-nothing pull safety. Run make format and make check, then commit implementation changes with Task: TASK-250.
+
 ## Notes
 
 Possible starting point: `refs/cold-read/TASK-250/2` (`git show refs/cold-read/TASK-250/2:<path>`). Check it against the criteria; don't trust it.
@@ -44,3 +48,4 @@ Possible starting point: `refs/cold-read/TASK-250/2` (`git show refs/cold-read/T
 - 2026-11-10T21:21:56Z jolly-heron backlog → todo
 - 2026-11-10T21:58:53Z jolly-heron: replaced notes
 - 2026-11-10T22:37:01Z eager-raven todo → doing
+- 2026-11-10T22:37:16Z eager-raven: wrote the plan
