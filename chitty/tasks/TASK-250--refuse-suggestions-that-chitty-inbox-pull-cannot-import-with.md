@@ -1,6 +1,6 @@
 ---
 title: Refuse suggestions that `chitty inbox --pull` cannot import, with a property test
-status: review
+status: done
 depends_on:
   - TASK-249
 created: 2026-11-10
@@ -98,6 +98,11 @@ Review failed (tests): Inspection of tests/test_property_inbox.py shows DESCRIPT
 
 Expanded the property generator and explicit examples to cover heading lines, unclosed fences, and form feeds; failed pulls clean up only that example’s new suggestions so Hypothesis replay/shrinking is stable. Confirmed regression: with inbox.py temporarily restored from 9f9d887, `uv run python -m unittest tests.test_property_inbox -v` failed on explicit malformed-description examples during pull. Restored implementation and reran property test successfully. Rechecked CLI scenario with `uv run python -m unittest tests.test_cli.TestInbox.test_unimportable_suggestions_are_rejected_without_poisoning_pull -v`; passed. `make format && make check` passed (459 Python tests and Node tests).
 
+Reviewed: make format && make check passed (459 Python tests and Node tests). The property test failed against the pre-fix inbox with an unclosed fence during pull, and passed with the fix.
+
+1: pass - Generated and explicit cases exercise accepted round trips and rejected suggestions.
+2: pass - CLI regression covers the three inputs and subsequent pull; the property test checks rejected suggestions leave no files.
+
 ## Summary
 
 Handoff: property coverage now explicitly includes required TASK-249 invalid Description forms and cleanup avoids leftover suggestions on failed pull. Verified pre-fix regression failure, post-fix property and CLI tests, and full make format/check (459 Python tests plus Node tests). Follow-ups: none.
@@ -119,3 +124,5 @@ Handoff: property coverage now explicitly includes required TASK-249 invalid Des
 - 2026-11-10T23:00:57Z open-marten: changed acceptance criteria, notes
 - 2026-11-10T23:02:59Z open-marten: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T23:02:59Z open-marten doing → review
+- 2026-11-10T23:06:50Z daring-crane: changed notes; ticked acceptance criteria
+- 2026-11-10T23:06:50Z daring-crane review → done
