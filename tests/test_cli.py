@@ -935,6 +935,24 @@ class TestImport(CliTestCase):
 
 
 class TestInbox(CliTestCase):
+    def test_unimportable_suggestions_are_rejected_without_poisoning_pull(self):
+        self.run_cli("init")
+        invalid = (
+            ("\u2028", "description"),
+            ("Ends in ---", "description"),
+            ("Setext", "text\n---"),
+        )
+        inbox = Path.home() / ".local/share/chitty/inbox" / self.root.name
+        for title, description in invalid:
+            with self.subTest(title=title, description=description):
+                self.run_cli("suggest", self.root.name, title, "-d", description, exit_code=1)
+                self.assertEqual(list(inbox.glob("suggestion-*.md")), [])
+
+        self.run_cli("suggest", self.root.name, "Importable", "-d", "description")
+        pulled = self.run_cli("inbox", "--pull")
+        self.assertIn("pulled TASK-1", pulled.stdout)
+        self.assertEqual(list(inbox.glob("suggestion-*.md")), [])
+
     def test_inbox_lists_and_pulls_suggestions(self):
         self.run_cli("init")
         self.run_cli("suggest", self.root.name, "Waiting", "-d", "Inbox description")

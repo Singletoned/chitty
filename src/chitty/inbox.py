@@ -29,6 +29,9 @@ def suggest(
     """Atomically write a suggestion to a registered project's inbox."""
     if "\n" in title or "\r" in title:
         raise ChittyError("suggestion title must be one line")
+    # Avoid ambiguous delimiter-like titles in the human-readable suggestion file.
+    if title.endswith("---"):
+        raise ChittyError("suggestion title cannot end in '---'")
     normalized = (description or "").strip()
     normalized = "\n".join(line.rstrip() for line in normalized.split("\n"))
     if not normalized:
