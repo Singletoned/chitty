@@ -23,12 +23,9 @@ task files. `chitty --help` is the full command reference.
   fix. If there is nothing to run, a stronger model reads the ticket and
   referenced code instead. Either way, the reader reports done meaning, likely
   files, open decisions, unverified behaviour, unhandled states, and wrong
-  claims. Record every finding's outcome in a ticket note: fix it or reject it
-  with a specific reason. Ask whether odd existing behaviour is a bug before
-  writing around it. Split rather than exceed about five criteria.
-- Once a ticket's reads converge, replace its notes with only what the worker
-  and reviewer need: verified facts and the mutant list as a reviewer checklist.
-  Outcomes stay in git history.
+  claims. Fix or reject each finding in the ticket text, and give the outcomes
+  in your reply, not in a ticket note. Ask whether odd existing behaviour is a
+  bug before writing around it. Split rather than exceed about five criteria.
 - Repeat the cold read after fixing a serious finding, until a read finds none:
   fixes are a source of new faults.
 - Compare each decision in the description with the criteria, because workers

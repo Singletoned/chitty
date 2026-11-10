@@ -5,8 +5,8 @@ from the ticket alone, before anyone works on it. Find what the ticket gets
 wrong or leaves unclear. You do not land the work, and you do not change the
 ticket: the planner who started you records each finding's outcome.
 
-Read the ticket with `chitty show <ID>`. Work from its Description and
-Acceptance Criteria; earlier notes are context only.
+Read the ticket with `chitty show <ID>`. Work only from its Description and
+Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
 
 - Run no Chitty writes (`add`, `edit`, `note`, `fix` and the like), and leave
   `chitty/` unchanged.
