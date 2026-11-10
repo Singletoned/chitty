@@ -25,6 +25,10 @@ Existing tests: `tests/test_review_merge.py` (around line 141) and `tests/test_l
 - [ ] A test where the branch itself edits the managed block still returns `True`, including when main has also changed it since the branch was created.
 - [ ] A test in `tests/test_landing.py` lands a ticket whose branch predates a managed-block change on main; main is fast-forwarded and keeps the newer block.
 
+## Plan
+
+Add a git helper beside file_at that resolves the merge-base of the supplied refs, raises ChittyError naming both refs when none exists, and reads the requested file at that commit. Update _changed_agents_block to compare the branch block with the merge-base block while retaining malformed-branch detection and existing missing-file semantics. Add regression coverage for a main-only managed-block refresh and landing, plus the existing branch-edit guard; run the focused tests before the fix, then make check/format.
+
 ## Notes
 
 Cold read 1 (Haiku): fixed: the review gate merges main before the check, so only landing refuses; description corrected. Fixed: no merge-base now raises `ChittyError`; criterion 3 setup described. Decided: keep the `main_branch=None` default (out of scope). Accepted: criterion 2 is a guard and passes before the fix. Possible starting point: `git diff main...refs/cold-read/TASK-237/1`; check it against the current criteria, not trust it.
@@ -35,3 +39,4 @@ Cold read 1 (Haiku): fixed: the review gate merges main before the check, so onl
 - 2026-11-10T14:17:35Z jolly-heron: changed description, notes
 - 2026-11-10T14:17:43Z jolly-heron backlog → todo
 - 2026-11-10T16:53:07Z friendly-falcon todo → doing
+- 2026-11-10T16:53:33Z friendly-falcon: wrote the plan
