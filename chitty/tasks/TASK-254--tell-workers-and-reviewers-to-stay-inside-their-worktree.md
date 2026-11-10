@@ -1,6 +1,6 @@
 ---
 title: Tell workers and reviewers to stay inside their worktree
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -25,3 +25,4 @@ Possible starting point: `refs/cold-read/TASK-254/1` (`git show refs/cold-read/T
 - 2026-11-10T22:10:58Z jolly-heron → backlog
 - 2026-11-10T22:13:11Z jolly-heron: replaced notes; changed description, acceptance criteria
 - 2026-11-10T22:13:11Z jolly-heron backlog → todo
+- 2026-11-10T23:15:51Z calm-raven todo → doing
