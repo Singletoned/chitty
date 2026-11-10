@@ -29,7 +29,7 @@ Depends on TASK-249, whose re-parse check makes `new_task` reject `## Notes` lin
 
 ## Acceptance Criteria
 
-- [ ] The property test fails before the fix, on the inputs above or others the generator finds, and passes after.
+- [x] The property test fails before the fix, on the inputs above or others the generator finds, and passes after.
 - [ ] `chitty suggest` with a U+2028 title, a title ending in `---`, or a setext-heading description exits non-zero and writes no suggestion file; a following `chitty inbox --pull` of another suggestion succeeds.
 
 ## Plan
@@ -40,6 +40,8 @@ Add a RepoTestCase property test covering accepted suggestions through pull and 
 
 Possible starting point: `refs/cold-read/TASK-250/2` (`git show refs/cold-read/TASK-250/2:<path>`). Check it against the criteria; don't trust it.
 
+Property test initially exposed a real mismatch beyond the listed examples: U+0085 in a title was normalized during task rendering. Validation now rejects any candidate whose title or normalized Description fails to round-trip. The property test passed (50 examples), and make format && make check passed (455 Python tests plus Node tests). The initial pre-fix property run failed during pull for rejected title/Description examples; after refining to catch suggest rejections, pre-fix failure showed pull could fail for accepted titles. CLI-specific acceptance scenarios were not separately exercised.
+
 ## History
 
 - 2026-11-10T21:12:38Z jolly-heron → backlog
@@ -49,3 +51,4 @@ Possible starting point: `refs/cold-read/TASK-250/2` (`git show refs/cold-read/T
 - 2026-11-10T21:58:53Z jolly-heron: replaced notes
 - 2026-11-10T22:37:01Z eager-raven todo → doing
 - 2026-11-10T22:37:16Z eager-raven: wrote the plan
+- 2026-11-10T22:39:52Z eager-raven: changed notes; ticked acceptance criteria
