@@ -25,6 +25,10 @@ Tests go in `tests/test_inbox.py` (`TestInbox` inherits `RepoTestCase`, so the i
 - [ ] Tests write waiting suggestion files with invalid-YAML frontmatter and with no `---` delimiters; `list_waiting` raises `ChittyError` whose message contains the file path for each.
 - [ ] `suggest()` with a title containing a newline raises `ChittyError` and writes no file.
 
+## Plan
+
+Serialize suggestion frontmatter with safe_dump, reject multiline titles, and normalize malformed/missing frontmatter errors to path-bearing ChittyError. Add focused inbox tests, verify regression failure first, then run format/check and commit implementation.
+
 ## Notes
 
 Cold read 1 (Haiku): fixed: a title holding a `---` line broke the delimiter split, so `suggest()` now rejects newlines in titles. Fixed: `allow_unicode=True`. Fixed: missing delimiters raised a raw `ValueError`; now the same `ChittyError`, and the existing pull test is updated. Verified: `created` reads back unchanged; `pull`/`claim` need no change. Possible starting point: `git diff main...refs/cold-read/TASK-236/1`; check it against the current criteria, not trust it.
@@ -35,3 +39,4 @@ Cold read 1 (Haiku): fixed: a title holding a `---` line broke the delimiter spl
 - 2026-11-10T14:18:07Z jolly-heron: changed description, acceptance criteria, notes
 - 2026-11-10T14:18:53Z jolly-heron backlog → todo
 - 2026-11-10T16:48:24Z youthful-zander todo → doing
+- 2026-11-10T16:48:45Z youthful-zander: wrote the plan
