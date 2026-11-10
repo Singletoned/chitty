@@ -1,6 +1,6 @@
 ---
 title: Refuse suggestions that `chitty inbox --pull` cannot import, with a property test
-status: todo
+status: doing
 depends_on:
   - TASK-249
 created: 2026-11-10
@@ -43,3 +43,4 @@ Possible starting point: `refs/cold-read/TASK-250/2` (`git show refs/cold-read/T
 - 2026-11-10T21:21:56Z jolly-heron: changed description, notes
 - 2026-11-10T21:21:56Z jolly-heron backlog → todo
 - 2026-11-10T21:58:53Z jolly-heron: replaced notes
+- 2026-11-10T22:37:01Z eager-raven todo → doing
