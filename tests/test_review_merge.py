@@ -155,6 +155,40 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         self.assertFalse(_changed_agents_block(self.root))
 
+    def test_branch_managed_block_change_is_detected_after_main_changes_too(self):
+        self.branch_for_review()
+        self.git("switch", "--quiet", "task-1")
+        agents = self.root / "AGENTS.md"
+        branch_text = agents.read_text()
+        changed_branch_text = branch_text.replace(
+            "Tasks live in `chitty/`", "Tasks live in `branch-tickets/`"
+        )
+        self.assertNotEqual(branch_text, changed_branch_text)
+        agents.write_text(changed_branch_text)
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "change branch managed guide")
+        self.git("switch", "--quiet", "main")
+        agents.write_text(self.git("show", "main:AGENTS.md"))
+        main_text = agents.read_text()
+        agents.write_text(
+            main_text.replace("<!-- chitty:end -->", "Main refresh.\n<!-- chitty:end -->")
+        )
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "refresh main managed guide")
+        self.git("switch", "--quiet", "task-1")
+        agents.write_text(self.git("show", "task-1:AGENTS.md"))
+
+        self.assertNotEqual(
+            self.git("show", "task-1:AGENTS.md"),
+            self.git("show", "main:AGENTS.md"),
+        )
+        merge_base = self.git("merge-base", "main", "task-1").strip()
+        self.assertNotEqual(
+            self.git("show", f"{merge_base}:AGENTS.md"),
+            self.git("show", "task-1:AGENTS.md"),
+        )
+        self.assertTrue(_changed_agents_block(self.root, "main"))
+
     def test_managed_block_change_fails_without_starting_review(self):
         self.branch_for_review()
         self.git("switch", "--quiet", "task-1")
