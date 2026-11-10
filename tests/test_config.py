@@ -1,6 +1,7 @@
 import contextlib
 import io
 import os
+from unittest.mock import patch
 
 from chitty import config as config_module
 from chitty.config import CHITTY_VERSION, find_root, load_repo_config, load_user_contexts
@@ -20,6 +21,16 @@ class TestRepoConfig(RepoTestCase):
         self.assertTrue(config.review)
         self.assertEqual(config.agent_command, "pi --chitty-{mode} {id}")
         self.assertEqual(config.agent_timeout, 7200)
+
+    def test_agent_timeout_can_be_disabled_and_uses_patchable_default(self):
+        config_path = self.root / "chitty.toml"
+        config_path.write_text(
+            CONFIG.replace("autocommit = false", "agent_timeout = 0\nautocommit = false")
+        )
+        self.assertEqual(load_repo_config(self.root).agent_timeout, 0)
+        config_path.write_text(CONFIG)
+        with patch.object(config_module, "DEFAULT_AGENT_TIMEOUT", 2):
+            self.assertEqual(load_repo_config(self.root).agent_timeout, 2)
 
     def test_agent_timeout_requires_nonnegative_toml_integer(self):
         config_path = self.root / "chitty.toml"
