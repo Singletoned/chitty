@@ -1,6 +1,6 @@
 ---
 title: Choose the next ticket in a pure function, with property tests
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -40,3 +40,4 @@ Possible starting point: `refs/cold-read/TASK-252/2` (`git show refs/cold-read/T
 - 2026-11-10T22:20:35Z jolly-heron: changed description
 - 2026-11-10T22:34:54Z jolly-heron: replaced notes; changed description
 - 2026-11-10T22:34:54Z jolly-heron backlog → todo
+- 2026-11-10T22:43:14Z nimble-yellowhammer todo → doing
