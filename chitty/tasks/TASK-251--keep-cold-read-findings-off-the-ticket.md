@@ -1,6 +1,6 @@
 ---
 title: Keep cold-read findings off the ticket
-status: todo
+status: doing
 created: 2026-11-10
 ---
 
@@ -31,3 +31,4 @@ Possible starting point: `refs/cold-read/TASK-251/1` (`git show refs/cold-read/T
 - 2026-11-10T21:58:44Z jolly-heron → backlog
 - 2026-11-10T22:00:41Z jolly-heron: replaced notes; changed description
 - 2026-11-10T22:00:41Z jolly-heron backlog → todo
+- 2026-11-10T22:32:09Z able-eel todo → doing
