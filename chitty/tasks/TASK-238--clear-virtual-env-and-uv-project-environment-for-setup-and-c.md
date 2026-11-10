@@ -1,6 +1,6 @@
 ---
 title: Clear `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` for setup and check commands
-status: review
+status: doing
 priority: low
 created: 2026-11-10
 ---
@@ -15,7 +15,7 @@ Implement this now. The person is also fixing their shell environment globally, 
 
 ## Acceptance Criteria
 
-- [x] With both variables set in `os.environ`, tests running `_setup`, `_run_check` and `_landing_check` with a command that writes its environment to a file show neither variable; each test fails before the fix.
+- [ ] With both variables set in `os.environ`, tests running `_setup`, `_run_check` and `_landing_check` with a command that writes its environment to a file show neither variable; each test fails before the fix.
 
 ## Plan
 
@@ -26,6 +26,10 @@ Add one run.py helper that copies os.environ and removes only VIRTUAL_ENV and UV
 Cold read 1 (Haiku): no serious findings. Accepted: the agent launch is already covered by `test_run_uses_runner_chitty_and_strips_worktree_environment` in `tests/test_next.py`; keep it as the launch check, no new launch test needed. A `_run_check` test may build a real repo with one ticket (`Repo.open`, `NextAction`). Possible starting point: `git diff main...refs/cold-read/TASK-238/1`; check it against the current criteria, not trust it.
 
 Regression tests failed before implementation for setup and landing-check; all three command paths now pass with both variables set. make format and make check pass (426 Python tests and Node tests). Test for _run_check verifies subprocess env directly; setup and landing check execute a child that records its environment.
+
+Review failed (tests): `uv run python -m unittest tests.test_run_environment -v` printed 3 tests OK, and `make format && make check` passed 439 Python tests and the Node tests.
+
+1: fail - The `_run_check` test mocks `subprocess.run` and runs `true` instead of running a command that writes its environment to a file. Replace the mock with a real child command that records its environment, and demonstrate that this test fails against the unfixed behavior and passes with the fix.
 
 ## Summary
 
@@ -41,3 +45,5 @@ Implemented a shared environment-copy helper that removes only VIRTUAL_ENV and U
 - 2026-11-10T17:21:29Z witty-zander: wrote the plan
 - 2026-11-10T17:23:56Z witty-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T17:23:57Z witty-zander doing → review
+- 2026-11-10T18:18:14Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-10T18:18:14Z eager-puffin review → doing
