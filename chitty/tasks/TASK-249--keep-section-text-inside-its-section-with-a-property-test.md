@@ -1,6 +1,6 @@
 ---
 title: Keep section text inside its section, with a property test
-status: review
+status: done
 created: 2026-11-10
 ---
 
@@ -23,7 +23,7 @@ First of two trial tickets for property tests (Hypothesis is already a dev depen
 ## Acceptance Criteria
 
 - [x] The property test fails before the fix with a `## ` section line or an unclosed fence as the counterexample, and passes after.
-- [ ] `chitty edit <ID> -d` with text containing a `## Plan` line exits non-zero, says to use `###`, and leaves the file unchanged; text with a `### Plan` line stays in the Description.
+- [x] `chitty edit <ID> -d` with text containing a `## Plan` line exits non-zero, says to use `###`, and leaves the file unchanged; text with a `### Plan` line stays in the Description.
 
 ## Plan
 
@@ -34,6 +34,11 @@ Add the Hypothesis property test in tests/test_property_sections.py, first confi
 Possible starting point: `refs/cold-read/TASK-249/2` (`git show refs/cold-read/TASK-249/2:<path>`). Check it against the criteria; don't trust it.
 
 Hypothesis regression test failed before the fix with a lone ``` counterexample in both section replacement and note append. make format && make check passes (451 Python tests and Node tests); CLI regression confirms ## Plan is rejected without changing the file and ### Plan remains in Description.
+
+Reviewed:
+1: pass - Property tests fail against main with an unclosed fence and pass after the fix.
+2: pass - CLI regression verifies rejection, unchanged file and retained third-level heading.
+make format && make check passed (454 Python tests and Node tests).
 
 ## Summary
 
@@ -51,3 +56,5 @@ Implemented re-parse/property verification for section replacements and Notes ap
 - 2026-11-10T22:25:27Z tidy-heron: wrote the plan
 - 2026-11-10T22:30:04Z tidy-heron: changed notes, summary; ticked acceptance criteria
 - 2026-11-10T22:30:04Z tidy-heron doing → review
+- 2026-11-10T22:32:21Z witty-jay: changed notes; ticked acceptance criteria
+- 2026-11-10T22:32:21Z witty-jay review → done
