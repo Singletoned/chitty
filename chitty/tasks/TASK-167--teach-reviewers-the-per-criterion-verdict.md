@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-166
@@ -62,6 +62,10 @@ Regression test failed before README fix because the example passed literal back
 
 Verified: generated `chitty guide review` includes per-criterion pass/fail lines and test-without-change evidence; README.md, PLAN.md, and src/chitty/guide.md include the form. Regression test covers the guide and README newline. `make format` passed. `make check` passed with `CHITTY_PI_SESSION_ID=task-167` (489 Python suites and Node tests); without it, the unrelated Pi generated-guide test fails. `git diff main...HEAD -- src/chitty/__init__.py` is empty. `chitty fix` passed with pre-existing task-format warnings.
 
+Reviewed: review guidance and version verified; make format && CHITTY_PI_SESSION_ID=task-167 make check passed (489 tests and Node tests).
+1: pass - uv run python -m unittest tests.test_guide_review_evidence -v passed; uv run chitty guide review and the README.md, PLAN.md and src/chitty/guide.md diff show the form. Prior review recorded the guide test failing against main.
+2: pass - git diff main...HEAD -- src/chitty/__init__.py printed no differences.
+
 ## Summary
 
 Handoff: per-criterion review verdict instructions and coverage are committed. Verification: `make format` and `CHITTY_PI_SESSION_ID=task-167 make check` passed; ticket diff is clean and version unchanged. Follow-up: none.
@@ -95,3 +99,5 @@ Handoff: per-criterion review verdict instructions and coverage are committed. V
 - 2026-11-11T16:18:38Z jolly-heron: changed notes
 - 2026-11-11T18:45:48Z friendly-stoat: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T18:45:48Z friendly-stoat doing → review
+- 2026-11-11T18:47:44Z vivid-badger: changed notes; ticked acceptance criteria
+- 2026-11-11T18:47:44Z vivid-badger review → done
