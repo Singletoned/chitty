@@ -1,6 +1,6 @@
 ---
 title: Tell cold readers how to apply the planner's mutants
-status: review
+status: done
 parent: TASK-284
 created: 2026-11-11
 ---
@@ -24,6 +24,9 @@ Possible starting point: `git diff main...refs/cold-read/TASK-299/1`. Check it a
 
 Regression test failed before guide change; make format and make check pass.
 
+Reviewed:
+1: pass - `uv run python -m unittest tests.test_guide_cold_read_mutants -v` printed OK; with `chitty.store.files` patched to read the main-branch guide, the same test printed FAILED (failures=1). `chitty guide cold-read` printed the mutant procedure and separate survivor report bullet. `make format && make check` passed (504 Python tests OK and Node tests passed).
+
 ## Summary
 
 Added mutant execution and survivor reporting instructions to the cold-read guide, with regression coverage. Verified: targeted test failed before fix; make format && make check pass. No follow-ups.
@@ -39,3 +42,5 @@ Added mutant execution and survivor reporting instructions to the cold-read guid
 - 2026-11-11T22:07:21Z kind-lilac-toad: wrote the plan
 - 2026-11-11T22:09:33Z kind-lilac-toad: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T22:09:33Z kind-lilac-toad doing → review
+- 2026-11-11T22:12:01Z calm-violet-ibis: changed notes; ticked acceptance criteria
+- 2026-11-11T22:12:01Z calm-violet-ibis review → done
