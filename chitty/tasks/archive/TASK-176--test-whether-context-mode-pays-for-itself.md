@@ -35,3 +35,4 @@ Withdrawn 2026-11-11 by the human: `context-mode` has been off since 2026-11-05 
 - 2026-11-08T13:31:33Z eager-puffin: changed dependencies, description, notes
 - 2026-11-11T10:17:44Z vivid-yellowhammer: changed parent
 - 2026-11-11T15:57:49Z vivid-yellowhammer: changed notes
+- 2026-11-11T15:57:49Z vivid-yellowhammer todo → archived
