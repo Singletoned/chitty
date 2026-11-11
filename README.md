@@ -220,6 +220,11 @@ each ticket worktree before the agent starts; it is parsed without a shell. Set
 The optional `agent_timeout` is a non-negative integer number of seconds and
 defaults to 7200; set it to `0` for no limit. On timeout, `chitty run` stops the
 agent and its child processes and exits with an error.
+Optional `error_reporter` is a command, parsed without a shell like `agent_command`,
+that runs when `chitty run` exits with a Chitty error. `{message}` is the error
+text and `{context}` is JSON containing `actor` and, where known, `project`,
+`ticket` and `mode`. Empty queues and Ctrl-C are not reported. A failing reporter
+prints a warning and does not hide the original error.
 Additional commands go in `[agent_commands]`; `chitty run --agent NAME` uses one
 for that run only. An unknown name lists available entries, and the selected
 entry is validated like `agent_command`. Optional root-level `work_model` and

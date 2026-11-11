@@ -27,7 +27,7 @@ from chitty.config import (
     usage_path,
     version_key,
 )
-from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError
+from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError, NoNextTicket
 from chitty.store import (
     AGENTS_FILE,
     Edit,
@@ -121,21 +121,54 @@ def run(
     os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
     main_root = git.main_checkout(repo.root)
     main_repo = Repo.open(main_root)
-    _refuse_stale_linked_worktree(repo, main_repo)
-    _preflight(main_repo)
-    main_repo.refresh_setup()
-    project = main_repo.config.project
-    if project is None:
-        raise ChittyError("`chitty run` requires a project name after setup refresh")
+    context = {"actor": actor()}
+    try:
+        _refuse_stale_linked_worktree(repo, main_repo)
+        _preflight(main_repo)
+        main_repo.refresh_setup()
+        project = main_repo.config.project
+        if project is None:
+            raise ChittyError("`chitty run` requires a project name after setup refresh")
+        context["project"] = project
 
-    if ticket is None:
-        landed = _land_pending(main_repo)
-        if landed is not None:
-            return landed
+        if ticket is None:
+            landed = _land_pending(main_repo)
+            if landed is not None:
+                return landed
 
-    with ExitStack() as held:
-        action = _lock_ticket(held, main_repo, ticket, modes, owner)
-        return _run_ticket(main_repo, project, action, arguments, agent)
+        with ExitStack() as held:
+            action = _lock_ticket(held, main_repo, ticket, modes, owner)
+            context.update(ticket=str(action.id), mode=action.mode)
+            return _run_ticket(main_repo, project, action, arguments, agent)
+    except ChittyError as error:
+        if not isinstance(error, NoNextTicket):
+            report_error(main_repo, error, context)
+        raise
+
+
+_PLACEHOLDER = re.compile(r"\{(message|context)\}")
+
+
+def report_error(repo: Repo, error: ChittyError, context: dict[str, str]) -> None:
+    """Run `error_reporter`; a failing reporter warns without replacing `error`."""
+    command = repo.config.error_reporter
+    if command is None:
+        return
+    values = {"message": str(error), "context": json.dumps(context, sort_keys=True)}
+    try:
+        argv = [
+            _PLACEHOLDER.sub(lambda match: values[match.group(1)], word)
+            for word in shlex.split(command)
+        ]
+        completed = subprocess.run(argv, check=False, env=_command_environment())
+    except (OSError, ValueError) as reporter_error:
+        print(f"warning: error_reporter did not run: {reporter_error}", file=sys.stderr)
+        return
+    if completed.returncode:
+        print(
+            f"warning: error_reporter exited with status {completed.returncode}",
+            file=sys.stderr,
+        )
 
 
 def run_loop(arguments: tuple[str, ...]) -> int:

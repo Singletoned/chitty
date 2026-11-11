@@ -352,6 +352,7 @@ review = true # require review before done
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
 # work_model = "provider/model" # default for work when the agent command has no model
 # review_model = "provider/model" # default for review when the agent command has no model
+# error_reporter = "sump capture chitty --message {message} --context-json {context}" # run when `chitty run` fails
 # `{prompt}` may be used as one argument containing `chitty guide` output.
 archive = "move" # or "delete"; retain completed files or delete them
 # list_width = 100 # columns `chitty list` rows fit in
@@ -370,6 +371,8 @@ random_ids = true # random eight-digit numbers instead of sequential ones
 [agent_commands]
 # Other parsed agent commands, selected for one run with `chitty run --agent NAME`.
 ```
+
+`error_reporter` runs without a shell when `chitty run` exits with a Chitty error, with `{message}` and `{context}` (JSON containing `actor` and, once known, `project`, `ticket` and `mode`) substituted after splitting the command. A failing reporter warns without replacing the original error. Empty queues and interrupts are not reported.
 
 Context directory is `chitty/<name>/`. Not configurable. `review` defaults to
 `true`; with it enabled, only `review → done` can complete a task. A context
