@@ -1,6 +1,6 @@
 ---
 title: Tell cold readers to implement, and planners not to promote on a probe
-status: backlog
+status: cold-read
 parent: TASK-284
 created: 2026-11-11
 ---
@@ -18,3 +18,4 @@ created: 2026-11-11
 ## History
 
 - 2026-11-11T21:10:09Z vivid-yellow-raven → backlog
+- 2026-11-11T21:10:20Z vivid-yellow-raven backlog → cold-read
