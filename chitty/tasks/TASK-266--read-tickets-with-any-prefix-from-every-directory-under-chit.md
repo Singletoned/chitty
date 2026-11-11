@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: review
+status: doing
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -16,7 +16,7 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [x] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
+- [ ] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
 - [x] A `todo` ticket with `depends_on: [OTHER-1]` passes `chitty check`, and while `OTHER-1` is unfinished `chitty next` neither fails with a dependency error nor selects either ticket.
 - [x] `OTHER-1` in both `chitty/other/` and `chitty/more/` makes `chitty check` fail, naming both paths.
 - [x] `chitty edit OTHER-1 -s doing` fails with a Chitty error naming the directory, not a traceback.
@@ -53,6 +53,13 @@ All acceptance criteria and checks are verified, but I cannot finish the require
 
 Planner removed the stray `uv-9442cfda52155b85.lock` (an agent ran `TMPDIR="$PWD" uv run`); `uv-*.lock` is now ignored on `main`.
 
+Review failed (tests): Historical-only unconfigured directories remain undiscoverable; add regression coverage and discover historical directory names. A throwaway Git repository with OTHER-1 committed only on another branch returned exit 1 from `chitty show OTHER-1`, printing `no context ... has prefix OTHER`. `uv run python -m unittest tests.test_unconfigured_directories` passed 4 tests. `make format && make check` failed: `test_warning_is_in_every_generated_guide` reported generated guide output differs from `guide()`; investigate the merged branch check failure too.
+
+1: fail - Historical-only directories are not discovered.
+2: pass - Dependency check and next exercised.
+3: pass - Duplicate paths reported.
+4: pass - Edit reports a plain error.
+
 ## Summary
 
 Implementation and regression coverage are committed. Re-verified all four acceptance criteria: focused directory tests pass; make format and make check pass (489 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts. Not moved to review because an existing untracked empty uv lock file remains in the worktree and is left untouched.
@@ -84,3 +91,5 @@ Implementation and regression coverage are committed. Re-verified all four accep
 - 2026-11-11T14:54:00Z youthful-toad doing → blocked
 - 2026-11-11T15:57:17Z vivid-yellowhammer: changed notes
 - 2026-11-11T15:57:17Z vivid-yellowhammer blocked → review
+- 2026-11-11T16:05:27Z zesty-adder: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-11T16:05:27Z zesty-adder review → doing
