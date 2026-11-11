@@ -1,6 +1,6 @@
 ---
 title: Do not count review edits as work for review independence
-status: todo
+status: doing
 labels:
   - bug
 parent: TASK-283
@@ -29,3 +29,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-286/1`. Check it a
 - 2026-11-11T16:13:30Z vivid-yellowhammer: changed description
 - 2026-11-11T16:13:31Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T16:13:31Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T21:09:26Z witty-dusky-toad todo → doing
