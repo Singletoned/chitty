@@ -1,6 +1,6 @@
 ---
 title: Accept ticket IDs with an alphanumeric suffix
-status: todo
+status: doing
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -33,3 +33,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-263/2`, which keep
 - 2026-11-11T13:44:10Z vivid-yellowhammer planning → cold-read
 - 2026-11-11T13:47:07Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T13:47:07Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T13:55:07Z friendly-adder todo → doing
