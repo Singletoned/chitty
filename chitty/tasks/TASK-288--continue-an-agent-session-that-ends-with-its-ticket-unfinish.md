@@ -10,9 +10,11 @@ created: 2026-11-11
 ## Description
 
 - Print-mode Pi has no Chitty extension, so nothing continues a session that stops early. TASK-270's worker stopped after `make check` failed, leaving uncommitted changes; `chitty run` then raised `TASK-270 was unchanged`, which ended the human's `--loop`.
-- When a work agent exits 0 with the ticket still `doing`, or a review agent with it still `review`, `chitty run` continues the same session in the same worktree: it runs the agent's continue command with a continuation prompt, up to `MAX_CONTINUATIONS` (5, a module constant) times, then raises the existing error.
-- The continue command is a new optional root setting, `agent_continue_command`, and for `--agent NAME` an entry `NAME` in a new `[agent_continue_commands]` table; both take `{prompt}`. Without one, behaviour is as today. This repository sets `pi -p -c ... {prompt}` (same prefix and flags as `agent_command`), and `claude -p -c ...` for `claude`, on `main`.
-- The prompt, adapted from `continuationPrompt` in `src/chitty/integrations/pi/chitty.ts`: "Continue working only on Chitty ticket <ID>. Either finish it, or set it to `blocked` with a note giving the reason. Do not stop with it unfinished." Document the settings in `README.md` and `PLAN.md` "Config".
+- When a work agent exits 0 with the ticket still `doing`, or a review agent with it still `review`, `chitty run` continues the same session in the same worktree: it runs the agent's continue command with a continuation prompt. It continues at most `MAX_CONTINUATIONS` (5, a module constant) times per run, judging by status alone, then raises the existing `was unchanged` error. Any other status (`review`, `done`, `blocked`, `todo`) ends the run as today.
+- Each continuation is a session like the first: the same `--model` default and forwarded `--` arguments, its own `agent_timeout`, and a timeout or non-zero exit fails the run as for the first session. One usage record covers the whole run.
+- The continue command is a new optional root setting, `agent_continue_command`, and for `--agent NAME` the entry `NAME` in a new `[agent_continue_commands]` table, parsed like `agent_command` and `[agent_commands]`; both take `{prompt}`. Without one, behaviour is as today. Pi and Claude Code both continue the directory's latest session with `-c`. After this lands, the planner sets them in this repository on `main`; the branch leaves `chitty.toml` alone.
+- The prompt, adapted from `continuationPrompt` in `src/chitty/integrations/pi/chitty.ts`. Work: "Continue working only on Chitty ticket <ID>. Either finish it and set it to `review`, or set it to `blocked` with a note giving the reason. Do not stop with it unfinished." Review: "Continue reviewing only Chitty ticket <ID>. Either pass it (`done`) or fail it (`doing`, with the failures in one note), or set it to `blocked` with a note giving the reason. Do not merge or remove branches or worktrees."
+- Document the settings in `README.md` and `PLAN.md` "Config".
 
 ## Acceptance Criteria
 
@@ -25,3 +27,4 @@ created: 2026-11-11
 - 2026-11-11T18:50:19Z vivid-yellowhammer: changed title, description
 - 2026-11-11T18:50:20Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T18:50:56Z vivid-yellowhammer backlog → cold-read
+- 2026-11-11T18:54:41Z vivid-yellowhammer: changed description
