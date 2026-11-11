@@ -24,16 +24,17 @@ commands. Use `uv run chitty` to run a worktree's own code. Do not export
 `VIRTUAL_ENV` or `UV_PROJECT_ENVIRONMENT` from `.envrc`: direnv passes them down
 to worktrees, where `uv` would repoint a shared install at the worktree.
 
-On a machine used to develop Chitty, install the global `chitty` as an editable
-install of the main checkout, which only receives reviewed merges:
+Keep the global `chitty` on the latest PyPI release, as above, so other
+repositories run released code. In the Chitty clone itself, `main` is usually
+ahead of PyPI, and the global `chitty` would refuse to write. Add this to the
+clone's ignored `.envrc`, so a bare `chitty` there, worktrees included, runs the
+main checkout's `.venv`:
 
 ```sh
-uv tool install --force --editable '/path/to/chitty[mcp]'
+PATH_add .venv/bin
 ```
 
-Every repository on that machine then runs `main`, so a broken `main` breaks them
-all. Editable installs do not pick up new dependencies: re-run the command after
-a merge that changes them.
+Adding to `PATH` repoints no `uv` environment, unlike the variables above.
 
 ## Use
 
