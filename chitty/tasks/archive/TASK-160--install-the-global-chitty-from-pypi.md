@@ -42,3 +42,4 @@ Done 2026-11-11: the global `chitty` is a non-editable PyPI 0.2.1 install, `.ven
 - 2026-11-11T10:17:32Z vivid-yellowhammer: changed parent
 - 2026-11-11T10:20:38Z vivid-yellowhammer: changed notes
 - 2026-11-11T15:57:47Z vivid-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-11T15:57:48Z vivid-yellowhammer todo → archived
