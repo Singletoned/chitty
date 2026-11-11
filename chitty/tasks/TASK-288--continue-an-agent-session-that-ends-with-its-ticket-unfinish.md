@@ -1,6 +1,6 @@
 ---
 title: Continue an agent session that ends with its ticket unfinished
-status: backlog
+status: cold-read
 labels:
   - bug
 parent: TASK-275
@@ -24,3 +24,4 @@ created: 2026-11-11
 - 2026-11-11T16:17:51Z vivid-yellowhammer → backlog
 - 2026-11-11T18:50:19Z vivid-yellowhammer: changed title, description
 - 2026-11-11T18:50:20Z vivid-yellowhammer: changed acceptance criteria
+- 2026-11-11T18:50:56Z vivid-yellowhammer backlog → cold-read
