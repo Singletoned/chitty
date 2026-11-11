@@ -27,6 +27,30 @@ Add strict optional job_order validation to RepoConfig, defaulting selection to 
 
 Possible starting point: `git diff main...refs/cold-read/TASK-270/1`. Check it against the current criteria; do not trust it. It lacks the random-order property test and the docs.
 
+Check failed before this session: check exited with status 2:
+```text
+....TASK-1: doing → review
+.............no next ticket for --mode work
+.......landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_configured_job_order_and_omitted_status (tests.test_next.TestNext.test_configured_job_order_and_omitted_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-270/tests/test_next.py", line 104, in test_configured_job_order_and_omitted_status
+    with self.assertRaisesRegex(ChittyError, "no next ticket"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ChittyError not raised
+
+----------------------------------------------------------------------
+Ran 490 tests in 40.408s
+
+FAILED (failures=1)
+make: *** [check] Error 1
+```
+
 ## History
 
 - 2026-11-11T13:21:06Z vivid-yellowhammer → backlog
@@ -36,3 +60,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-270/1`. Check it a
 - 2026-11-11T13:43:01Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T14:55:45Z golden-crane todo → doing
 - 2026-11-11T14:56:04Z golden-crane: wrote the plan
+- 2026-11-11T18:47:42Z able-ibis: changed notes
