@@ -11,8 +11,13 @@ created: 2026-11-11
 - Children add the runner and one tool each: bandit, pip-audit, `npm audit`, trivy (filesystem: vulnerabilities, secrets, misconfiguration). Mutation testing is a separate `make mutate`, run overnight (TASK-295). Add checkov when the repository gains containers or infrastructure code.
 - Python tools are dev dependencies; trivy is a system install, and the audit fails plainly if it is missing.
 
+## Notes
+
+Open: the scanners (bandit, pip-audit, npm audit, trivy) may belong in `taidy security` instead, with this repository's audit only turning its findings into suggestions.
+
 ## History
 
 - 2026-11-11T16:18:07Z vivid-yellowhammer → backlog
 - 2026-11-11T18:50:46Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:47Z vivid-yellowhammer: changed description
+- 2026-11-11T18:50:48Z vivid-yellowhammer: changed notes
