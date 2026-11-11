@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-120
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -101,3 +100,4 @@ Implemented and verified `check` preflight support. Checks now run after setup a
 - 2026-11-06T21:35:52Z youthful-toad: changed notes
 - 2026-11-06T21:46:50Z able-quail: changed notes; ticked acceptance criteria
 - 2026-11-06T21:46:50Z able-quail review → done
+- 2026-11-11T10:17:24Z vivid-yellowhammer: changed parent
