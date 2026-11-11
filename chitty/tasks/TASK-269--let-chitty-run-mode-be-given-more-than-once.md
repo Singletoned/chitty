@@ -18,6 +18,10 @@ created: 2026-11-11
 - [ ] `chitty run --mode review --mode work`, with only a `todo` ticket, runs a work session (use the fake agent in `tests/test_next.py`). This guards the new code; it passes today.
 - [ ] `chitty run --loop --mode review --mode work` passes both `--mode` options to each run it starts.
 
+## Plan
+
+Change the mode filter from a single optional mode to a repeatable tuple through next selection and run selection, preserving the current no-mode behavior and --ticket refusal. Add tests proving next selection/order and run selection, plus loop argument forwarding. Update the Next action and runner design text in PLAN.md to specify repeated-mode semantics. First run the next regression test against current behavior and record the failure.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-269/1`. Check it against the current criteria; do not trust it. It does not test `--loop` forwarding.
@@ -31,3 +35,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-269/1`. Check it a
 - 2026-11-11T13:44:29Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T13:44:35Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T14:18:34Z kind-newt todo → doing
+- 2026-11-11T14:19:01Z kind-newt: wrote the plan
