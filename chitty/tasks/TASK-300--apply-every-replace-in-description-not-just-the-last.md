@@ -1,6 +1,6 @@
 ---
 title: Apply every `--replace-in-description`, not just the last
-status: doing
+status: review
 labels:
   - bug
 parent: TASK-284
@@ -14,9 +14,9 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test: `chitty edit` with two `--replace-in-description` options changes both parts of the Description. It fails today.
+- [x] A test: `chitty edit` with two `--replace-in-description` options changes both parts of the Description. It fails today.
 - [x] If any OLD does not occur exactly once in the Description as the earlier pairs leave it, the edit fails naming that OLD and changes nothing. On "Keep a.", pairs (a→b, b→c) give "Keep c."; on "Keep a b.", the same pairs fail naming `b`.
-- [ ] MCP `edit` with two `replace_in_description` pairs changes both parts, and the History line for it reads `changed description`, not repeated.
+- [x] MCP `edit` with two `replace_in_description` pairs changes both parts, and the History line for it reads `changed description`, not repeated.
 
 ## Plan
 
@@ -33,9 +33,11 @@ Review failed (tests): Add CLI and MCP coverage replacing two distinct parts of 
 2: pass - `make check` passed; `test_replace_in_description_applies_pairs_in_order` and `test_replace_in_description_checks_each_result_before_writing` exercise sequential success and atomic duplicate failure naming b. Against pre-fix source they failed with found 0 and exit 0 instead of 1 respectively.
 3: fail - `test_edit_replaces_text_in_description` changes one phrase twice, not two parts, though it asserts one changed description history action. The pre-fix run rejected the pair list with two validation errors.
 
+Review follow-up: updated CLI and MCP coverage to replace two distinct parts of each Description. The CLI regression failed against pre-fix source (first pair was discarded); make format and make check pass with the fix.
+
 ## Summary
 
-Implemented ordered, repeatable description replacement through CLI, store, and MCP. Verification: regression failed before the fix; make format and make check passed. No follow-up.
+Handoff: strengthened CLI/MCP regressions to replace distinct Description parts, asserting one History action. Verification: CLI regression failed against pre-fix source; make format and make check passed. No follow-ups.
 
 ## History
 
@@ -51,3 +53,5 @@ Implemented ordered, repeatable description replacement through CLI, store, and 
 - 2026-11-11T22:14:09Z open-dusky-dormouse doing → review
 - 2026-11-11T22:16:52Z zesty-ochre-crane: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-11T22:16:52Z zesty-ochre-crane review → doing
+- 2026-11-11T22:19:51Z sunny-violet-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T22:19:51Z sunny-violet-eel doing → review
