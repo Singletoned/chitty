@@ -98,10 +98,12 @@ class TestSetupVersion(CliTestCase):
     def test_warns_for_missing_older_and_newer_setup_versions(self):
         config = self.root / "chitty.toml"
         original = config.read_text()
+        # Derive "newer" from the running version: a fixed one goes stale on release.
+        newer = f"{int(CHITTY_VERSION.split('.')[0]) + 1}.0.0"
         cases = (
             (None, "re-run `chitty init`"),
             ("0.1.9", "re-run `chitty init`"),
-            ("0.1.100", "upgrade chitty"),
+            (newer, "upgrade chitty"),
             ("1.0rc1", "recorded version cannot be read"),
         )
         line = f'chitty_version = "{CHITTY_VERSION}"\n'
