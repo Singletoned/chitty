@@ -5,7 +5,6 @@ priority: high
 depends_on:
   - TASK-120
   - TASK-150
-parent: TASK-106
 created: 2026-11-03
 ---
 
@@ -341,3 +340,4 @@ Handoff: Landing no-ops when both the ticket branch and worktree are already gon
 - 2026-11-08T17:54:16Z eager-puffin blocked → review
 - 2026-11-08T18:14:13Z honest-kestrel: changed notes; ticked acceptance criteria
 - 2026-11-08T18:14:13Z honest-kestrel review → done
+- 2026-11-11T10:17:19Z vivid-yellowhammer: changed parent
