@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` reading a usage file
-status: doing
+status: review
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -15,7 +15,7 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A `chitty run` whose fake agent prints nothing and moves the ticket to `blocked` prints no `cannot read usage file` warning, the agent environment has no `CHITTY_USAGE_FILE`, and the usage log line has no `models` key. It fails today.
+- [x] A `chitty run` whose fake agent prints nothing and moves the ticket to `blocked` prints no `cannot read usage file` warning, the agent environment has no `CHITTY_USAGE_FILE`, and the usage log line has no `models` key. It fails today.
 
 ## Plan
 
@@ -30,6 +30,22 @@ Writers (claude-usage-hook, Pi extension) are left alone per the ticket.
 
 Possible starting point: `git diff main...refs/cold-read/TASK-277/1`. Check it against the current criteria; do not trust it.
 
+Regression test: test_run_without_usage_file_is_silent_and_logs_no_models in tests/test_next.py. Run before the fix it failed with warning: cannot read usage file ... file is missing. After the fix it passes.
+
+Decision (cheap to reverse): _command_environment now also drops an inherited CHITTY_USAGE_FILE. The shell that ran the tests exported it, so the agent inherited it and the criterion failed. Remove that pop if you would rather not strip it.
+
+Consequence for review: because the variable is no longer set or stripped for agents, the Pi extension and claude-usage-hook write nothing during chitty run until TASK-279 and TASK-281 remove them.
+
+Tests: test_run_cases expected one record for the removed invalid-usage run, so it now expects four doing rows. test_usage_validation_warns_and_accepts_null_cost was deleted because it covered the removed _read_usage. Kept the name test_run_records_usage_outside_repository_and_appends_runs; it still fits.
+
+## Summary
+
+Handoff: chitty run no longer sets, reads or records CHITTY_USAGE_FILE. The usage log line has no models key. _read_usage is removed. PLAN.md and README.md now point to scripts/pi_tokens.py for spend by model. Two commits: 15257b0 (code and tests) and 12059c7 (docs).
+
+Verification: make format and make check pass (ruff, pyright 0 errors, 488 unittest suites, Node tests). The new regression test failed before the fix and passes after it.
+
+Follow-ups: TASK-279 and TASK-281 remove the Pi writer and claude-usage-hook. chitty fix printed Markdown delimiter warnings for archived tickets; those are not from this change and were left alone.
+
 ## History
 
 - 2026-11-11T13:21:33Z vivid-yellowhammer → backlog
@@ -39,3 +55,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-277/1`. Check it a
 - 2026-11-11T13:43:48Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T15:58:34Z quick-adder todo → doing
 - 2026-11-11T15:58:58Z quick-adder: wrote the plan
+- 2026-11-11T16:04:39Z quick-adder: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T16:04:39Z quick-adder doing → review
