@@ -18,6 +18,10 @@ created: 2026-11-11
 - [ ] If any OLD does not occur exactly once in the Description as the earlier pairs leave it, the edit fails naming that OLD and changes nothing. On "Keep a.", pairs (a→b, b→c) give "Keep c."; on "Keep a b.", the same pairs fail naming `b`.
 - [ ] MCP `edit` with two `replace_in_description` pairs changes both parts, and the History line for it reads `changed description`, not repeated.
 
+## Plan
+
+Update Edit to carry ordered replacement pairs; validate and apply each pair sequentially before writing so any failure leaves the task unchanged. Make the CLI option repeatable and accept a list of pairs through MCP. Add CLI and MCP regression coverage, including uniqueness after earlier replacements and one History action. Run the new regression tests against the current implementation first, then format and check.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-300/1`. Check it against the current criteria; do not trust it.
@@ -31,3 +35,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-300/1`. Check it a
 - 2026-11-11T21:16:07Z vivid-yellow-raven: changed acceptance criteria, notes
 - 2026-11-11T21:16:07Z vivid-yellow-raven cold-read → todo
 - 2026-11-11T22:11:49Z open-dusky-dormouse todo → doing
+- 2026-11-11T22:12:04Z open-dusky-dormouse: wrote the plan
