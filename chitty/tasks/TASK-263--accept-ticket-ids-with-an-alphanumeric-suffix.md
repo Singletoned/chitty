@@ -1,6 +1,6 @@
 ---
 title: Accept ticket IDs with an alphanumeric suffix
-status: review
+status: done
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -29,6 +29,11 @@ Possible starting point: `git diff main...refs/cold-read/TASK-263/2`, which keep
 
 Implemented alphanumeric suffix parsing, canonicalization, mixed sorting, and numeric-only allocation scans. Focused 15 tests and full make check passed (483 Python suites plus Node tests); chitty fix completed. Existing chitty fix warnings in unrelated task files remain.
 
+Reviewed: make format && make check passed; also exercised CLI edit and parent in a temporary test.
+1: pass - Show, edit and dependency verified.
+2: pass - List ordering, check and add verified.
+3: pass - Padded numeric rejection and alphanumeric acceptance verified.
+
 ## Summary
 
 Implementation committed as a4ace8a (Task: TASK-263). Verified all three acceptance criteria with focused regression tests and full make check. No follow-up required.
@@ -47,3 +52,5 @@ Implementation committed as a4ace8a (Task: TASK-263). Verified all three accepta
 - 2026-11-11T13:55:26Z friendly-adder: wrote the plan
 - 2026-11-11T13:57:27Z friendly-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T13:57:27Z friendly-adder doing → review
+- 2026-11-11T14:00:10Z rosy-wren: changed notes; ticked acceptance criteria
+- 2026-11-11T14:00:10Z rosy-wren review → done
