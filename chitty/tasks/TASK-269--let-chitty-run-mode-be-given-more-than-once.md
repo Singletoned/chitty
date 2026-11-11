@@ -16,6 +16,7 @@ created: 2026-11-11
 
 - [ ] With one `todo` and one `review` ticket, `chitty next --mode review --mode work` picks the `review` ticket; today it picks the `todo` one, because only the last `--mode` counts. `--mode work` alone picks the `todo` one.
 - [ ] `chitty run --mode review --mode work`, with only a `todo` ticket, runs a work session (use the fake agent in `tests/test_next.py`). This guards the new code; it passes today.
+- [ ] `chitty run --loop --mode review --mode work` passes both `--mode` options to each run it starts.
 
 ## Notes
 
@@ -28,3 +29,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-269/1`. Check it a
 - 2026-11-11T13:39:49Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T13:44:29Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:44:29Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T13:44:35Z vivid-yellowhammer: changed acceptance criteria
