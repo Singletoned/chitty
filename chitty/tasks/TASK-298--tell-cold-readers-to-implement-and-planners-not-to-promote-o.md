@@ -1,6 +1,6 @@
 ---
 title: Tell cold readers to implement, and planners not to promote on a probe
-status: review
+status: done
 parent: TASK-284
 created: 2026-11-11
 ---
@@ -26,6 +26,10 @@ Possible starting point: `git diff main...refs/cold-read/TASK-298/1`. Check it a
 
 The new guide test failed before the role-text change. Full make check passes after the implementation.
 
+Reviewed: `make format && make check` passed: 503 Python tests and Node tests OK; format changed no files.
+1: pass - `uv run python -m unittest tests.test_guide_cold_read -v` ran 4 tests, OK. Running the new test with both guide texts from `main` printed `FAILED (failures=1)`; the baseline probe-only assertion printed `False`.
+2: pass - the focused test asserts the phrase occurs once and passed; the same count on `main` printed 2.
+
 ## Summary
 
 Updated the cold-read and planning guides and added a regression test. Verified with make format && make check; the new test failed before the fix. No follow-up.
@@ -41,3 +45,5 @@ Updated the cold-read and planning guides and added a regression test. Verified 
 - 2026-11-11T22:01:44Z mellow-yellow-adder: wrote the plan
 - 2026-11-11T22:04:57Z mellow-yellow-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T22:04:57Z mellow-yellow-adder doing → review
+- 2026-11-11T22:07:32Z intrepid-white-quail: changed notes; ticked acceptance criteria
+- 2026-11-11T22:07:32Z intrepid-white-quail review → done
