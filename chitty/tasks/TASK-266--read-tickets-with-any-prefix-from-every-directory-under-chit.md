@@ -23,7 +23,7 @@ created: 2026-11-11
 
 ## Plan
 
-Add repository-wide discovery for ticket directories while keeping selection and write targets restricted to configured contexts. Resolve IDs by scanning full IDs across configured and extra directories; use discovered context metadata for show/list/dependencies and reject writes to unconfigured contexts with ChittyError. Expand check defaults and duplicate detection, while preserving -c configured-only semantics. Relax historical prefix filtering. Add focused unittest coverage for active/archive reads, dependency and next behavior, duplicate IDs, and write errors; first run regression tests unfixed, then make the implementation, run format/check, inspect status, commit code, and update verified criteria.
+Add regression coverage for a configured directory containing a ticket whose prefix differs from its configured prefix, exercising show and check. Confirm it fails before changes. Update discovery/scan to accept full-ID lookup independent of directory prefix while retaining configured-context selection and writes. Run the focused test, then make format and make check; inspect and commit only implementation/test paths.
 
 ## Notes
 
@@ -59,3 +59,4 @@ Implemented full-ID discovery and reading from unconfigured ticket directories, 
 - 2026-11-11T14:06:49Z friendly-eel doing → review
 - 2026-11-11T14:10:40Z brisk-jay: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-11T14:10:40Z brisk-jay review → doing
+- 2026-11-11T14:13:37Z kind-raven: wrote the plan
