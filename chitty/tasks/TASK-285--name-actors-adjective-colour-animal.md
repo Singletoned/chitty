@@ -19,7 +19,7 @@ created: 2026-11-11
 
 ## Plan
 
-Add the specified 25-colour vocabulary, derive adjective/colour/animal from digest bytes 0/1/2, and extend actor tests for stable three-word names, valid middle-word membership, and independent variation across 500 IDs. First demonstrate the new regression tests fail on current code, then implement and run checks.
+Verify the existing colour-based actor implementation and regression tests against the ticket. Run the focused tests, then the repository formatter and full checks; resolve any failures and commit only implementation paths.
 
 ## Notes
 
@@ -35,3 +35,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it a
 - 2026-11-11T16:12:12Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T19:01:45Z sunny-falcon todo → doing
 - 2026-11-11T19:02:00Z sunny-falcon: wrote the plan
+- 2026-11-11T20:06:30Z eager-urchin: wrote the plan
