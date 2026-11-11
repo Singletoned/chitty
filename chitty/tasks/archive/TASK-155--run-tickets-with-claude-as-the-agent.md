@@ -58,3 +58,4 @@ Trial 2 review run (2026-11-11, by the human): passed and landed TASK-277 in abo
 - 2026-11-11T16:05:06Z vivid-yellowhammer: changed notes
 - 2026-11-11T16:17:26Z vivid-yellowhammer: replaced notes; ticked acceptance criteria
 - 2026-11-11T16:17:27Z vivid-yellowhammer: changed notes
+- 2026-11-11T16:17:28Z vivid-yellowhammer todo → archived
