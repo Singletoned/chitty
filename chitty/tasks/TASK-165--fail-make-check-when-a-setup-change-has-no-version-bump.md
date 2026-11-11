@@ -2,7 +2,6 @@
 title: Fail `make check` when a setup change has no version bump
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -78,3 +77,4 @@ Added untracked-file detection for watched setup paths using Git standard-librar
 - 2026-11-06T15:35:03Z youthful-vole doing → review
 - 2026-11-06T15:59:02Z honest-badger: changed notes
 - 2026-11-06T15:59:02Z honest-badger review → done
+- 2026-11-11T10:17:38Z vivid-yellowhammer: changed parent
