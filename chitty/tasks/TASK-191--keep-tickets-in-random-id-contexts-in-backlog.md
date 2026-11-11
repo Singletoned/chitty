@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-190
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -50,3 +49,4 @@ Implemented random-ID backlog enforcement: descriptionless adds resolve context 
 - 2026-11-06T18:47:20Z mellow-gannet doing → review
 - 2026-11-06T18:55:58Z honest-jay: changed notes; ticked acceptance criteria
 - 2026-11-06T18:55:58Z honest-jay review → done
+- 2026-11-11T10:17:51Z vivid-yellowhammer: changed parent
