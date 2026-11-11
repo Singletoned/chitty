@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: backlog
+status: cold-read
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -19,3 +19,4 @@ created: 2026-11-11
 
 - 2026-11-11T11:35:15Z vivid-yellowhammer → backlog
 - 2026-11-11T13:39:48Z vivid-yellowhammer: changed acceptance criteria
+- 2026-11-11T13:39:54Z vivid-yellowhammer backlog → cold-read
