@@ -1,6 +1,6 @@
 ---
 title: Do not count review edits as work for review independence
-status: review
+status: done
 labels:
   - bug
 parent: TASK-283
@@ -28,6 +28,11 @@ Possible starting point: `git diff main...refs/cold-read/TASK-286/1`. Check it a
 
 Regression test 1 failed without the model change with reviewer cannot review this task: ticked acceptance criteria. Restored fix; focused tests and make check pass.
 
+Reviewed: make format && make check passed: 499 Python tests, pyright, ruff and Node tests.
+1: pass - test_tick_made_during_review_does_not_block_the_reviewers_verdict passes; with main model it printed reviewer cannot review this task: ticked acceptance criteria and failed.
+2: pass - test_tick_made_during_doing_still_blocks_the_reviewer passed in make check.
+3: pass - test_plan_written_during_review_still_blocks_the_reviewer passed in make check.
+
 ## Summary
 
 Implemented History-order status tracking so ticks from review edits do not count as independent work; plan writes and non-review ticks still count. Verified with focused store tests and make format && make check (495 tests and Node tests). Regression confirmed failing without fix. No follow-ups.
@@ -44,3 +49,5 @@ Implemented History-order status tracking so ticks from review edits do not coun
 - 2026-11-11T21:37:35Z sunny-bronze-lapwing: wrote the plan
 - 2026-11-11T21:39:14Z sunny-bronze-lapwing: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T21:39:14Z sunny-bronze-lapwing doing → review
+- 2026-11-11T21:43:05Z able-navy-raven: changed notes; ticked acceptance criteria
+- 2026-11-11T21:43:05Z able-navy-raven review → done
