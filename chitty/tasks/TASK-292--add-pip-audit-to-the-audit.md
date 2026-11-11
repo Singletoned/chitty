@@ -15,6 +15,11 @@ created: 2026-11-11
 
 - [ ] A test with a requirements file pinning a package with a known vulnerability gets one suggestion naming the package and ID. It fails today.
 
+## Notes
+
+Moved to taidy, 2026-11-11: the scanners belong in `taidy security`.
+
 ## History
 
 - 2026-11-11T16:18:24Z vivid-yellowhammer → backlog
+- 2026-11-11T18:59:33Z vivid-yellowhammer: changed notes
