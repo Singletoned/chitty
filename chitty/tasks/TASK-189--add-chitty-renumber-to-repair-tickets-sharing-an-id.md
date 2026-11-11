@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-177
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -63,3 +62,4 @@ Verified: `tests/test_renumber.py` (seen failing first) and the MCP parity test;
 - 2026-11-05T21:27:21Z youthful-toad doing → review
 - 2026-11-05T22:20:46Z witty-lapwing: changed notes
 - 2026-11-05T22:20:46Z witty-lapwing review → done
+- 2026-11-11T10:17:53Z vivid-yellowhammer: changed parent
