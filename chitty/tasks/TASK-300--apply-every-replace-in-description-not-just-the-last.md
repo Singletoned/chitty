@@ -1,6 +1,6 @@
 ---
 title: Apply every `--replace-in-description`, not just the last
-status: doing
+status: review
 labels:
   - bug
 parent: TASK-284
@@ -14,9 +14,9 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test: `chitty edit` with two `--replace-in-description` options changes both parts of the Description. It fails today.
-- [ ] If any OLD does not occur exactly once in the Description as the earlier pairs leave it, the edit fails naming that OLD and changes nothing. On "Keep a.", pairs (a→b, b→c) give "Keep c."; on "Keep a b.", the same pairs fail naming `b`.
-- [ ] MCP `edit` with two `replace_in_description` pairs changes both parts, and the History line for it reads `changed description`, not repeated.
+- [x] A test: `chitty edit` with two `--replace-in-description` options changes both parts of the Description. It fails today.
+- [x] If any OLD does not occur exactly once in the Description as the earlier pairs leave it, the edit fails naming that OLD and changes nothing. On "Keep a.", pairs (a→b, b→c) give "Keep c."; on "Keep a b.", the same pairs fail naming `b`.
+- [x] MCP `edit` with two `replace_in_description` pairs changes both parts, and the History line for it reads `changed description`, not repeated.
 
 ## Plan
 
@@ -25,6 +25,12 @@ Update Edit to carry ordered replacement pairs; validate and apply each pair seq
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-300/1`. Check it against the current criteria; do not trust it.
+
+Regression test failed before the implementation: the CLI rejected a second replacement as having zero matches. Verified sequential matching and no-write-on-error behavior; MCP accepts multiple pairs and records one description history action. Full make format and make check passed.
+
+## Summary
+
+Implemented ordered, repeatable description replacement through CLI, store, and MCP. Verification: regression failed before the fix; make format and make check passed. No follow-up.
 
 ## History
 
@@ -36,3 +42,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-300/1`. Check it a
 - 2026-11-11T21:16:07Z vivid-yellow-raven cold-read → todo
 - 2026-11-11T22:11:49Z open-dusky-dormouse todo → doing
 - 2026-11-11T22:12:04Z open-dusky-dormouse: wrote the plan
+- 2026-11-11T22:14:09Z open-dusky-dormouse: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T22:14:09Z open-dusky-dormouse doing → review
