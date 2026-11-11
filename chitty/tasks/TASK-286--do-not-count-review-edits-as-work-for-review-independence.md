@@ -1,6 +1,6 @@
 ---
 title: Do not count review edits as work for review independence
-status: backlog
+status: cold-read
 labels:
   - bug
 parent: TASK-283
@@ -20,3 +20,4 @@ created: 2026-11-11
 ## History
 
 - 2026-11-11T16:09:09Z vivid-yellowhammer → backlog
+- 2026-11-11T16:09:47Z vivid-yellowhammer backlog → cold-read
