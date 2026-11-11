@@ -1,5 +1,5 @@
 ---
-title: Run a weekly audit of `main` that suggests tickets
+title: Run an occasional audit of `main` that suggests tickets
 status: backlog
 created: 2026-11-11
 ---
@@ -21,3 +21,4 @@ Open: the scanners (bandit, pip-audit, npm audit, trivy) may belong in `taidy se
 - 2026-11-11T18:50:46Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:47Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:48Z vivid-yellowhammer: changed notes
+- 2026-11-11T18:50:55Z vivid-yellowhammer: changed title
