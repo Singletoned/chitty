@@ -2,7 +2,6 @@
 title: Check whether a conflict-resolved merge hides a ticket
 status: backlog
 priority: low
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -13,3 +12,4 @@ Raised by the cold read of `TASK-184` on 2026-11-05, reasoned from the code and 
 ## History
 
 - 2026-11-05T12:06:16Z mellow-newt → backlog
+- 2026-11-11T10:17:49Z vivid-yellowhammer: changed parent
