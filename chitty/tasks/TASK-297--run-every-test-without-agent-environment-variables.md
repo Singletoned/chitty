@@ -13,7 +13,7 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_agent_environment.py`, run with `PI_CODING_AGENT=true`, `CLAUDE_CODE_SESSION_ID=x` and `CHITTY_ACTOR=x` exported, finds no variable starting `PI_`, `CLAUDE_`, `CODEX_` or `CHITTY_` in `os.environ`, both in the full run and when run alone. It fails today.
+- [x] A test in `tests/test_agent_environment.py`, run with `PI_CODING_AGENT=true`, `CLAUDE_CODE_SESSION_ID=x` and `CHITTY_ACTOR=x` exported, finds no variable starting `PI_`, `CLAUDE_`, `CODEX_` or `CHITTY_` in `os.environ`, both in the full run and when run alone. It fails today.
 - [ ] `make check` passes with those variables exported.
 
 ## Plan
@@ -24,6 +24,8 @@ Add a focused unittest in tests/test_agent_environment.py that asserts no PI_, C
 
 Possible starting point: `git diff main...refs/cold-read/TASK-297/1`. Check it against the current criteria; do not trust it.
 
+Confirmed regression: the isolated test failed before implementation with PI_CODING_AGENT, CLAUDE_CODE_SESSION_ID, and CHITTY_ACTOR exported. After clearing all four prefixes in tests/__init__.py, it passes in isolation with those exports. make check passed Ruff, pyright, and all 502 Python tests. It reached npm test but returned without its normal summary, so the full check remains unverified.
+
 ## History
 
 - 2026-11-11T21:09:07Z vivid-yellow-raven → backlog
@@ -33,3 +35,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-297/1`. Check it a
 - 2026-11-11T21:18:04Z vivid-yellow-raven cold-read → todo
 - 2026-11-11T21:54:52Z brisk-ebony-kestrel todo → doing
 - 2026-11-11T21:55:14Z brisk-ebony-kestrel: wrote the plan
+- 2026-11-11T21:57:59Z brisk-ebony-kestrel: changed notes; ticked acceptance criteria
