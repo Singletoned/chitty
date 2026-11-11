@@ -17,6 +17,15 @@ created: 2026-11-11
 
 - [ ] A `chitty run` whose fake agent prints nothing and moves the ticket to `blocked` prints no `cannot read usage file` warning, the agent environment has no `CHITTY_USAGE_FILE`, and the usage log line has no `models` key. It fails today.
 
+## Plan
+
+1. Add a regression test in tests/test_next.py that runs a fake agent which prints nothing and moves the ticket to blocked; assert no 'cannot read usage file' warning, no CHITTY_USAGE_FILE in the agent env, and no 'models' key in the usage line. Run it first and confirm it fails.
+2. In src/chitty/run.py remove the CHITTY_USAGE_FILE set/restore, the temporary usage dir, the _read_usage call sites, and _read_usage itself; drop the 'models' key from _record_usage. Drop now-unused imports (tempfile, cast if unused).
+3. Update existing tests in tests/test_next.py: fake agents stop writing CHITTY_USAGE_FILE and assert it is absent; remove the 'cannot read usage file' and USAGE_MODE invalid cases; the usage-log test drops the models expectation and is renamed to fit; delete test_usage_validation_warns_and_accepts_null_cost.
+4. Update PLAN.md 'Next action and runner' usage paragraph and README.md usage log text, saying per-model totals come from scripts/pi_tokens.py.
+5. Run make format and make check, commit in logical commits with 'Task: TASK-277', verify git status clean, then chitty fix and move to review with a summary.
+Writers (claude-usage-hook, Pi extension) are left alone per the ticket.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-277/1`. Check it against the current criteria; do not trust it.
@@ -29,3 +38,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-277/1`. Check it a
 - 2026-11-11T13:43:48Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:43:48Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T15:58:34Z quick-adder todo → doing
+- 2026-11-11T15:58:58Z quick-adder: wrote the plan
