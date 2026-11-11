@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: cold-read
+status: planning
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -17,6 +17,7 @@ created: 2026-11-11
 
 - [ ] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
 - [ ] A `todo` ticket with `depends_on: [OTHER-1]` passes `chitty check`, and `chitty next` neither errors nor picks it while `OTHER-1` is unfinished.
+- [ ] `OTHER-1` in both `chitty/other/` and `chitty/more/` makes `chitty check` fail, naming both paths.
 
 ## History
 
@@ -24,3 +25,5 @@ created: 2026-11-11
 - 2026-11-11T13:39:48Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T13:39:54Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T13:42:22Z vivid-yellowhammer: changed description, acceptance criteria
+- 2026-11-11T13:42:29Z vivid-yellowhammer: changed acceptance criteria
+- 2026-11-11T13:42:29Z vivid-yellowhammer cold-read → planning
