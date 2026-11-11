@@ -35,6 +35,8 @@ The human reaffirmed on 2026-11-08 that dependency waits should be called `queue
 
 Archived in backlog triage (human approved, 2026-11-11): folded into the open questions of TASK-255.
 
+Restored from the archive (human, 2026-11-11): kept as its own ticket after TASK-255 was split.
+
 ## History
 
 - 2026-11-01 → backlog
@@ -42,3 +44,4 @@ Archived in backlog triage (human approved, 2026-11-11): folded into the open qu
 - 2026-11-01 todo → backlog
 - 2026-11-08T14:56:01Z eager-puffin: changed notes
 - 2026-11-11T10:18:44Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:36:44Z vivid-yellowhammer: changed notes
