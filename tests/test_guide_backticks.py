@@ -16,7 +16,9 @@ class TestBacktickGuideWarning(unittest.TestCase):
         runner = CliRunner()
         for args in ((), ("work",), ("review",), ("plan",)):
             with self.subTest(args=args):
-                result = runner.invoke(cli, ["guide", *args], catch_exceptions=False)
+                # Inside Pi, `chitty guide` may append a diagnostic that `guide()` lacks.
+                env = {"PI_CODING_AGENT": None}
+                result = runner.invoke(cli, ["guide", *args], env=env, catch_exceptions=False)
                 self.assertEqual(result.exit_code, 0, result.output)
                 self.assertIn(" ".join(WARNING.split()), " ".join(result.stdout.split()))
                 self.assertEqual(result.stdout, guide(*args))

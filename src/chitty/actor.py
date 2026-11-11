@@ -239,6 +239,13 @@ def install_pi_extension(environment: Mapping[str, str] | None = None) -> Path |
 
 
 def pi_session_environment_missing(environment: Mapping[str, str] | None = None) -> bool:
-    """Whether a Pi agent lacks the identity its shell session should expose."""
+    """Whether a Pi agent lacks the identity its shell session should expose.
+
+    `CHITTY_ACTOR` supplies one, as `chitty run` does for print-mode Pi.
+    """
     env = os.environ if environment is None else environment
-    return env.get("PI_CODING_AGENT") == "true" and not env.get("CHITTY_PI_SESSION_ID")
+    return (
+        env.get("PI_CODING_AGENT") == "true"
+        and not env.get("CHITTY_PI_SESSION_ID")
+        and not env.get("CHITTY_ACTOR", "").strip()
+    )
