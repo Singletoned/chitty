@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: review
+status: doing
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -40,6 +40,13 @@ Review failed (tests): Add regression coverage and support for mixed prefixes in
 
 Review follow-up: configured directories now accept tickets with other prefixes. Added regression coverage; it failed before the fix with the prefix-mismatch error. Updated the former wrong-prefix rejection unit test to assert acceptance. make format and make check pass (487 Python tests and Node tests).
 
+Review failed (tests): Historical discovery must include unconfigured directories that exist only on another branch, not just directories present in the current worktree. A throwaway Git repository with OTHER-1 committed only on another branch returned exit 1 from `chitty show OTHER-1` and printed `no context ... has prefix OTHER`. Add regression coverage and discover directory names from historical paths. `make format && make check` passed (489 Python tests and Node tests).
+
+1: fail - Historical-only directories are not discovered.
+2: pass - Dependency check and next exercised.
+3: pass - Duplicate paths reported.
+4: pass - Edit reports a plain error.
+
 ## Summary
 
 Fixed review finding: mixed ticket prefixes in configured directories are now discovered by show/check and store scanning. Added failing-before-fix regressions and updated the obsolete prefix-rejection test. Verification: focused tests, make format, make check; all pass. Follow-up: TASK-280 still owns writes in unconfigured contexts.
@@ -64,3 +71,5 @@ Fixed review finding: mixed ticket prefixes in configured directories are now di
 - 2026-11-11T14:13:37Z kind-raven: wrote the plan
 - 2026-11-11T14:16:37Z kind-raven: changed notes, summary
 - 2026-11-11T14:16:37Z kind-raven doing → review
+- 2026-11-11T14:19:55Z sunny-toad: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-11T14:19:55Z sunny-toad review → doing
