@@ -2,7 +2,6 @@
 title: Treat a dependency as done only once it has reached `main`
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -59,3 +58,4 @@ Verified with targeted regression tests, `make check` (259 Python tests plus Nod
 - 2026-11-05T19:03:19Z honest-vole doing → review
 - 2026-11-05T19:09:52Z intrepid-heron: changed notes
 - 2026-11-05T19:09:52Z intrepid-heron review → done
+- 2026-11-11T10:17:34Z vivid-yellowhammer: changed parent
