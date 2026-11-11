@@ -53,6 +53,8 @@ Retro: a `TASK-126` worker put `make check` in backticks inside a double-quoted 
 
 Retro: by 2026-11-04 `TASK-126` had 5 failed reviews and 15 sessions costing about $8.25 at list price, on 16 criteria and a diff of about 1,000 lines, 326 of them outside tests. Each fresh reviewer finds something new, mostly a case a test does not assert, because criteria that list cases can always be read more strictly. Questions: should criteria state behaviour and leave case lists to the tests; should a reviewer fail only for an unmet criterion or a demonstrated defect, and file a ticket for anything else; and does the failure limit reset too easily, given that a block cleared by a human restarts the count.
 
+Archived in backlog triage (human approved, 2026-11-11): the spec-first pilot never ran; practice moved on, and TASK-255 is the pipeline change now.
+
 ## History
 
 - 2026-11-02T17:11:36Z lively-otter → backlog
@@ -62,3 +64,4 @@ Retro: by 2026-11-04 `TASK-126` had 5 failed reviews and 15 sessions costing abo
 - 2026-11-04T11:57:56Z lively-panda: changed notes
 - 2026-11-04T12:40:38Z lively-panda: changed notes
 - 2026-11-04T14:28:19Z mellow-newt: changed notes
+- 2026-11-11T10:16:59Z vivid-yellowhammer: changed notes
