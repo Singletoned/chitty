@@ -15,8 +15,9 @@ created: 2026-11-11
 ## Acceptance Criteria
 
 - [ ] A test: `chitty edit` with two `--replace-in-description` options changes both parts of the Description. It fails today.
-- [ ] If any OLD is not found, the edit fails naming it and changes nothing.
+- [ ] If any OLD does not occur exactly once in the Description as the earlier pairs leave it, the edit fails naming that OLD and changes nothing.
 
 ## History
 
 - 2026-11-11T21:10:11Z vivid-yellow-raven → backlog
+- 2026-11-11T21:10:18Z vivid-yellow-raven: changed acceptance criteria
