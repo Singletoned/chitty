@@ -636,7 +636,10 @@ adding one means removing one.
 
 A failure's cause is the earliest stage that should have caught it: `design`,
 `tests`, `work`, `integration` (branch, merge, environment) or `review` (the
-reviewer was wrong). Record it as `Review failed (<cause>): ...`. A later bug
+reviewer was wrong). Record it as `Review failed (<cause>): ...`. Every review
+note, passing or failing, has one line per criterion below that first line:
+`<number>: pass - <evidence>` or `<number>: fail - <reason>`. A test criterion
+passes only with evidence that its test fails without the change. A later bug
 gets the label `escape` and a note naming its source ticket.
 
 A retro is a ticket, opened after every 10 `done` tickets. It proposes a few

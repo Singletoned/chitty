@@ -24,4 +24,12 @@ class TestReviewGuideEvidence(unittest.TestCase):
         self.assertIn("--uncheck", text)
         self.assertIn("-s doing", text)
         self.assertNotIn("such as a throwaway failing test", text)
+        for phrase in (
+            "one line for every criterion",
+            "<number>: pass - <evidence>",
+            "<number>: fail - <reason>",
+            "fails without the change",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, text)
         self.assertNotRegex(text, re.compile(r"\bmake\b"))
