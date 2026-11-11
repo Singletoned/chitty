@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run --mode` be given more than once
-status: todo
+status: doing
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -30,3 +30,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-269/1`. Check it a
 - 2026-11-11T13:44:29Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:44:29Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T13:44:35Z vivid-yellowhammer: changed acceptance criteria
+- 2026-11-11T14:18:34Z kind-newt todo → doing
