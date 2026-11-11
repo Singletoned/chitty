@@ -5,7 +5,6 @@ priority: high
 depends_on:
   - TASK-137
   - TASK-142
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -70,3 +69,4 @@ Verified: `make check` (ruff, pyright, 249 unittest tests, Node tests); `chitty 
 - 2026-11-05T17:13:07Z open-eel doing → review
 - 2026-11-05T18:19:34Z tidy-jay: changed notes
 - 2026-11-05T18:19:34Z tidy-jay review → done
+- 2026-11-11T10:17:30Z vivid-yellowhammer: changed parent
