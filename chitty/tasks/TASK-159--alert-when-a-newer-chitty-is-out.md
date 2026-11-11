@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-80
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -71,3 +70,4 @@ Verification: all 255 unittest tests passed during make check; targeted upgrade 
 - 2026-11-05T18:43:02Z tidy-stoat doing → review
 - 2026-11-05T18:46:23Z witty-yellowhammer: changed notes
 - 2026-11-05T18:46:23Z witty-yellowhammer review → done
+- 2026-11-11T10:17:31Z vivid-yellowhammer: changed parent
