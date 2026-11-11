@@ -25,11 +25,15 @@ The planning session records the outcome in a note and documents the entry in `R
 ## Acceptance Criteria
 
 - [ ] `chitty run --agent claude` works a real ticket and then reviews it, and a note records the outcome.
-- [ ] `README.md` shows the `claude` entry for `[agent_commands]` and why `git push` is denied.
+- [x] `README.md` shows the `claude` entry for `[agent_commands]` and why `git push` is denied.
 
 ## Notes
 
 Trial 1 (2026-11-10, TASK-247, Haiku by the human's choice): the allow-list in `dontAsk` mode refused 7 of 30 calls (`ps`, `.venv/bin/python`, compound commands, long quoted `chitty edit` notes), so the agent could not see tests fail first or update the ticket. The human then dropped the allow-list for `bypassPermissions`.
+
+Trial 2 started 2026-11-11 by the planning session: `chitty run --agent claude --ticket TASK-277`.
+
+Trial 2 work run (2026-11-11, TASK-277, Haiku, `bypassPermissions`): finished in about 6 minutes with no refused calls. It committed code and docs, showed the new test failing first, passed `make check`, and moved the ticket to `review`. Review run not yet done.
 
 ## History
 
@@ -48,3 +52,5 @@ Trial 1 (2026-11-10, TASK-247, Haiku by the human's choice): the allow-list in `
 - 2026-11-10T21:58:25Z jolly-heron: changed notes
 - 2026-11-10T22:10:17Z jolly-heron: replaced notes; changed description, acceptance criteria
 - 2026-11-11T10:17:27Z vivid-yellowhammer: changed parent
+- 2026-11-11T15:58:20Z vivid-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-11T16:05:06Z vivid-yellowhammer: changed notes

@@ -225,7 +225,18 @@ specify `--model`; an agent receiving a default must accept that option.
 Existing model arguments take precedence, without Chitty rewriting them.
 Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
 and the selected ticket ID. `{prompt}` can replace both placeholders when the
-agent accepts Chitty's role instructions as one argument. `chitty init --autocommit`
+agent accepts Chitty's role instructions as one argument. For example, this entry
+runs Claude Code unattended on Haiku with `chitty run --agent claude`:
+
+```toml
+[agent_commands]
+claude = "claude -p {prompt} --model haiku --permission-mode bypassPermissions --disallowedTools 'Bash(git push *)'"
+```
+
+`bypassPermissions` lets it run tests and `chitty` commands in the ticket
+worktree without prompting; `git push` stays denied because publishing is a
+person's decision, and a passing review lands on `main` through `chitty run`.
+`chitty init --autocommit`
 enables
 `autocommit = true` and commits only the repository setup files it changed
 (`chitty.toml` or `pyproject.toml`, `.gitignore`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
