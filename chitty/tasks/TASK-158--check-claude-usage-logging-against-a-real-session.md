@@ -6,7 +6,6 @@ owner: human
 depends_on:
   - TASK-155
   - TASK-157
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -28,3 +27,4 @@ Cold read with `TASK-157`, 2026-11-04. Fixed: per-model comparison, subagent tra
 - 2026-11-04T18:01:19Z mellow-newt → backlog
 - 2026-11-04T18:03:11Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T18:03:11Z mellow-newt backlog → todo
+- 2026-11-11T10:17:29Z vivid-yellowhammer: changed parent
