@@ -21,8 +21,11 @@ Suggestion origin: echonomicon
 
 Triage: guide-only gap, not duplicate TASK-125, which considers automation of a separate cold-read mode. The current planning guide says cheap/close to worker, but does not prohibit stronger substitution on model failure. Keep in backlog pending implementing cold read.
 
+Archived in backlog triage (human approved, 2026-11-11): already done or superseded.
+
 ## History
 
 - 2026-11-09T12:03:10Z eager-puffin → backlog
 - 2026-11-09T12:03:12Z eager-puffin: changed notes
 - 2026-11-09T12:04:55Z eager-puffin: changed priority, parent, acceptance criteria, notes
+- 2026-11-11T10:16:55Z vivid-yellowhammer: changed notes
