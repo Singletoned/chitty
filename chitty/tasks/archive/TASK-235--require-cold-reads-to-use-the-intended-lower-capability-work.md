@@ -29,3 +29,4 @@ Archived in backlog triage (human approved, 2026-11-11): already done or superse
 - 2026-11-09T12:03:12Z eager-puffin: changed notes
 - 2026-11-09T12:04:55Z eager-puffin: changed priority, parent, acceptance criteria, notes
 - 2026-11-11T10:16:55Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:16:56Z vivid-yellowhammer backlog → archived
