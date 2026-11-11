@@ -1,6 +1,6 @@
 ---
 title: Run every test without agent environment variables
-status: backlog
+status: cold-read
 labels:
   - bug
 created: 2026-11-11
@@ -19,3 +19,4 @@ created: 2026-11-11
 ## History
 
 - 2026-11-11T21:09:07Z vivid-yellow-raven → backlog
+- 2026-11-11T21:10:19Z vivid-yellow-raven backlog → cold-read
