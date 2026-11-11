@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: backlog
+status: cold-read
 created: 2026-11-11
 ---
 
@@ -22,3 +22,4 @@ created: 2026-11-11
 - 2026-11-11T18:50:21Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:28Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:29Z vivid-yellowhammer: changed acceptance criteria
+- 2026-11-11T18:50:57Z vivid-yellowhammer backlog → cold-read
