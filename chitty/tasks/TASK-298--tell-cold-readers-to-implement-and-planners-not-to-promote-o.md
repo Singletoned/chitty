@@ -16,6 +16,10 @@ created: 2026-11-11
 - [ ] A test in `tests/test_guide_cold_read.py` shows `chitty guide cold-read` saying to implement unless probing found a problem, and `chitty guide plan` saying a probe-only read does not make a ticket ready. It fails today.
 - [ ] `chitty guide plan` contains "Cold-read every ticket, even a small one" exactly once.
 
+## Plan
+
+Add a focused test in tests/test_guide_cold_read.py asserting cold-read tells readers to implement unless probing found a blocking problem, and plan guide says probe-only reads do not qualify. Run it before edits to confirm failure. Update the cold-read and planning role text, merging the duplicate “Cold-read every ticket, even a small one” bullets, then run the focused test and full format/check.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-298/1`. Check it against the current criteria; do not trust it.
@@ -28,3 +32,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-298/1`. Check it a
 - 2026-11-11T21:15:02Z vivid-yellow-raven: changed acceptance criteria, notes
 - 2026-11-11T21:15:02Z vivid-yellow-raven cold-read → todo
 - 2026-11-11T22:01:25Z mellow-yellow-adder todo → doing
+- 2026-11-11T22:01:44Z mellow-yellow-adder: wrote the plan
