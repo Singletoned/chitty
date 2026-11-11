@@ -1,6 +1,6 @@
 ---
 title: Name actors adjective-colour-animal
-status: cold-read
+status: todo
 parent: TASK-283
 created: 2026-11-11
 ---
@@ -15,6 +15,11 @@ created: 2026-11-11
 ## Acceptance Criteria
 
 - [ ] A test shows the same session always getting the same name, matching `^[a-z]+-[a-z]+-[a-z]+$`, with its middle word from `_COLOURS`. It fails today.
+- [ ] A test over many session IDs shows adjective and colour varying independently (more than 100 distinct pairs from 500 sessions).
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it against the current criteria; do not trust it.
 
 ## History
 
@@ -22,3 +27,5 @@ created: 2026-11-11
 - 2026-11-11T16:09:46Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T16:12:10Z vivid-yellowhammer: changed description
 - 2026-11-11T16:12:11Z vivid-yellowhammer: changed description
+- 2026-11-11T16:12:12Z vivid-yellowhammer: changed acceptance criteria, notes
+- 2026-11-11T16:12:12Z vivid-yellowhammer cold-read → todo
