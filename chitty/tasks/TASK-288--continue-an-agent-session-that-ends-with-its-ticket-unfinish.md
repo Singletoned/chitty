@@ -16,10 +16,11 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A `chitty run` whose fake agent exits without changing the ticket the first time and moves it to `review` the second time ends with the ticket in `review`, having started the agent twice. It fails today.
-- [ ] A fake agent that never changes the ticket is started 6 times in all, then `chitty run` fails with `was unchanged`.
+- [ ] A `chitty run` whose fake agent leaves the ticket in `doing` and whose fake continue command moves it to `review` ends with the ticket in `review`; the continue command received the continuation prompt naming the ticket. It fails today.
+- [ ] A continue command that never changes the ticket is run 5 times, then `chitty run` fails with `was unchanged`. Without a continue command it fails after the first session, as today.
 
 ## History
 
 - 2026-11-11T16:17:51Z vivid-yellowhammer → backlog
 - 2026-11-11T18:50:19Z vivid-yellowhammer: changed title, description
+- 2026-11-11T18:50:20Z vivid-yellowhammer: changed acceptance criteria
