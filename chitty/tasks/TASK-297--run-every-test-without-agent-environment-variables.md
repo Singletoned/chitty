@@ -1,6 +1,6 @@
 ---
 title: Run every test without agent environment variables
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-11
@@ -27,3 +27,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-297/1`. Check it a
 - 2026-11-11T21:18:03Z vivid-yellow-raven: changed description
 - 2026-11-11T21:18:04Z vivid-yellow-raven: changed acceptance criteria, notes
 - 2026-11-11T21:18:04Z vivid-yellow-raven cold-read → todo
+- 2026-11-11T21:54:52Z brisk-ebony-kestrel todo → doing
