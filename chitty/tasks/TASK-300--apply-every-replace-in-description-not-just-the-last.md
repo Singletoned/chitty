@@ -1,6 +1,6 @@
 ---
 title: Apply every `--replace-in-description`, not just the last
-status: todo
+status: doing
 labels:
   - bug
 parent: TASK-284
@@ -30,3 +30,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-300/1`. Check it a
 - 2026-11-11T21:16:06Z vivid-yellow-raven: changed description
 - 2026-11-11T21:16:07Z vivid-yellow-raven: changed acceptance criteria, notes
 - 2026-11-11T21:16:07Z vivid-yellow-raven cold-read → todo
+- 2026-11-11T22:11:49Z open-dusky-dormouse todo → doing
