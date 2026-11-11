@@ -25,7 +25,10 @@ read only that section. Update it when a decision changes.
   were given a ticket to work on or review, skip this: it is not your step.
 - Releases: `make release` tags the version in `src/chitty/__init__.py` and pushes
   it. `.github/workflows/release.yml` checks, builds and publishes to PyPI by
-  trusted publishing (environment `pypi`).
+  trusted publishing (environment `pypi`). `make release` then waits for that
+  run (`scripts/watch_release.py`): on success it upgrades the global `chitty`;
+  on failure it records the failure with `sump capture chitty` and exits
+  non-zero.
 - Branches never change `__version__` in `src/chitty/__init__.py`; `make release`
   chooses the published bump. Never edit `chitty.toml` or the managed block below,
   or run `chitty init`, on a ticket branch. The main checkout's `chitty` upgrades

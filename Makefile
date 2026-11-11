@@ -30,7 +30,7 @@ build: ## build the sdist and wheel into dist/
 	rm -rf dist
 	uv build
 
-release: ## tag this version and push it, so the workflow publishes it to PyPI
+release: ## tag and push this version, wait for PyPI, upgrade the global chitty
 	@test "$$(git branch --show-current)" = main || { echo "release: not on main" >&2; exit 1; }
 	@test -z "$$(git status --porcelain)" || { echo "release: tree is not clean" >&2; exit 1; }
 	git fetch origin
@@ -44,4 +44,5 @@ release: ## tag this version and push it, so the workflow publishes it to PyPI
 			exit 1; \
 		fi && \
 		pending="$${XDG_DATA_HOME:-$$HOME/.local/share}/chitty/pending-release" && \
-		mkdir -p "$$(dirname "$$pending")" && echo "$$version" > "$$pending"
+		mkdir -p "$$(dirname "$$pending")" && echo "$$version" > "$$pending" && \
+		python3 scripts/watch_release.py "$$version"
