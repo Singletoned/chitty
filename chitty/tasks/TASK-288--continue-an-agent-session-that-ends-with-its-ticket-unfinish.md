@@ -1,6 +1,6 @@
 ---
 title: Continue an agent session that ends with its ticket unfinished
-status: todo
+status: doing
 labels:
   - bug
 parent: TASK-275
@@ -40,3 +40,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it a
 - 2026-11-11T18:59:03Z vivid-yellowhammer: changed description
 - 2026-11-11T18:59:04Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T18:59:13Z vivid-yellowhammer: changed description
+- 2026-11-11T21:28:23Z daring-bronze-crane todo → doing
