@@ -22,9 +22,12 @@ The planning session adds the `--settings` part from `TASK-157` to this reposito
 
 Cold read with `TASK-157`, 2026-11-04. Fixed: per-model comparison, subagent transcripts, what happens if the hook does not fire, and it now holds the connecting and documentation from `TASK-157`.
 
+Archived (human, 2026-11-11): usage is now gathered from session files as a separate analysis (TASK-275).
+
 ## History
 
 - 2026-11-04T18:01:19Z mellow-newt → backlog
 - 2026-11-04T18:03:11Z mellow-newt: changed description, acceptance criteria, notes
 - 2026-11-04T18:03:11Z mellow-newt backlog → todo
 - 2026-11-11T10:17:29Z vivid-yellowhammer: changed parent
+- 2026-11-11T13:39:10Z vivid-yellowhammer: changed notes
