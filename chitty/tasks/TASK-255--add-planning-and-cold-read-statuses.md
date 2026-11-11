@@ -1,6 +1,6 @@
 ---
 title: Add planning and cold-read statuses
-status: backlog
+status: todo
 labels:
   - plan-next
   - needs-minor
@@ -47,3 +47,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it a
 - 2026-11-11T10:49:39Z vivid-yellowhammer: changed description, acceptance criteria
 - 2026-11-11T10:52:00Z vivid-yellowhammer: changed description, acceptance criteria
 - 2026-11-11T10:52:01Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:52:02Z vivid-yellowhammer backlog → todo
