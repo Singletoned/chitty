@@ -4,7 +4,6 @@ status: done
 labels:
   - bug
 priority: high
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -51,3 +50,4 @@ Reviewed and passed. Independently inspected the implementation and acceptance c
 - 2026-11-05T20:32:13Z kind-adder doing → review
 - 2026-11-05T20:35:58Z intrepid-eel: changed notes, summary
 - 2026-11-05T20:35:58Z intrepid-eel review → done
+- 2026-11-11T10:17:39Z vivid-yellowhammer: changed parent
