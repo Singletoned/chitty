@@ -1,6 +1,8 @@
 ---
 title: Add a Codex `/chitty` work and review loop
 status: backlog
+labels:
+  - needs-discussion
 priority: low
 depends_on:
   - TASK-87
@@ -25,3 +27,4 @@ Before this can make another agent work, two things must leave Pi: the worker an
 
 - 2026-11-01 → backlog
 - 2026-11-04T09:39:38Z lively-panda: changed notes
+- 2026-11-11T10:17:08Z vivid-yellowhammer: changed labels
