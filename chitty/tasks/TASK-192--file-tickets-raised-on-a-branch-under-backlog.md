@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-191
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -60,3 +59,4 @@ Implemented linked-worktree add routing in resolve_add_target, preserving explic
 - 2026-11-06T20:02:15Z quick-raven doing → review
 - 2026-11-06T20:05:01Z quick-lapwing: changed notes; ticked acceptance criteria
 - 2026-11-06T20:05:01Z quick-lapwing review → done
+- 2026-11-11T10:17:54Z vivid-yellowhammer: changed parent
