@@ -21,6 +21,9 @@ TASK-79 was implemented and then passed by the same Pi session, using a read-onl
 
 Absorbed TASK-54's guide half: make 'never review a ticket you worked on' prominent, say that review needs a session that did not write the code, and that an agent that finishes work stops at `review`. Evidence from TASK-54: TASK-39 to TASK-42 went from review to done with only the author's notes.
 
+Archived in backlog triage (human approved, 2026-11-11): merged into TASK-209.
+
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-11T10:18:39Z vivid-yellowhammer: changed notes
