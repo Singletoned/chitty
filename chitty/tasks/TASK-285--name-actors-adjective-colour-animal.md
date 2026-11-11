@@ -1,6 +1,6 @@
 ---
 title: Name actors adjective-colour-animal
-status: doing
+status: review
 parent: TASK-283
 created: 2026-11-11
 ---
@@ -27,6 +27,8 @@ Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it a
 
 Actor tests pass (uv run python -m unittest tests.test_actor). The regression assertions were committed with the implementation; branch history shows commit 1c2d166. Full make check currently fails in unrelated tests.test_guide_backticks.TestBacktickGuideWarning because generated guide output differs from guide(); no actor-related failures.
 
+Planner moved this to `review`, 2026-11-11: the work is committed in `1c2d166`, and the only `make check` failure was `test_guide_backticks`, which failed inside every print-mode Pi worker and is fixed on `main` in `eb8a01a`.
+
 ## History
 
 - 2026-11-11T16:09:08Z vivid-yellowhammer → backlog
@@ -39,3 +41,5 @@ Actor tests pass (uv run python -m unittest tests.test_actor). The regression as
 - 2026-11-11T19:02:00Z sunny-falcon: wrote the plan
 - 2026-11-11T20:06:30Z eager-urchin: wrote the plan
 - 2026-11-11T20:07:25Z eager-urchin: changed notes; ticked acceptance criteria
+- 2026-11-11T20:17:27Z vivid-yellowhammer: changed notes
+- 2026-11-11T20:17:27Z vivid-yellowhammer doing → review
