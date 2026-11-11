@@ -16,6 +16,9 @@ Decided with the human:
 
 Multiple review kinds (`review/code/…`, `review/ux/…`) were considered as a robustness test only; they should run in sequence because parallel reviews conflict when appending Notes. Not to be built.
 
+Archived in backlog triage (human approved, 2026-11-11): already done or superseded.
+
 ## History
 
 - 2026-10-29 → backlog
+- 2026-11-11T10:16:49Z vivid-yellowhammer: changed notes
