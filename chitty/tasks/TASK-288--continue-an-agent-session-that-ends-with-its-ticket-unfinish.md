@@ -22,6 +22,17 @@ created: 2026-11-11
 - [ ] A fake agent that never changes the ticket is started 6 times (the first session and 5 continuations), then `chitty run` fails with `was unchanged`. A `{mode} {id}` agent fails after the first session, as today.
 - [ ] A fake agent that sets the ticket to `blocked` when continued is continued once, and the run ends with the ticket `blocked`.
 
+## Plan
+
+Plan: add continuation inside `_run_ticket` in src/chitty/run.py, with no new setting.
+
+- Extract the agent session (spawn, exit handling) into a helper and loop it. After a session exits 0, if the status is unchanged and the command has `{prompt}`, run the same command again with the continuation prompt in place of `{prompt}` and `-c` appended after the model arguments. Cap at a module constant `MAX_CONTINUATIONS = 5`. A `{mode} {id}` command, or a run past the cap, raises the existing `was unchanged` error.
+- Continuation prompts: module-level functions `work_continuation_prompt` and `review_continuation_prompt`, with the wording from the ticket.
+- Timeout, non-zero exit, and interrupt handling are shared with the first session. One usage record is still written in the existing `finally`.
+- Tests in tests/test_run_continue.py cover AC 1 to 3 with fake `{prompt}` agents. I will write them first and confirm they fail on main.
+- Docs: README.md run section and PLAN.md "Next action and runner".
+- I am not using the cold-read branch: its `agent_continue_command` setting breaks "no new settings".
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it against the current criteria; do not trust it.
@@ -41,3 +52,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it a
 - 2026-11-11T18:59:04Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T18:59:13Z vivid-yellowhammer: changed description
 - 2026-11-11T21:28:23Z daring-bronze-crane todo → doing
+- 2026-11-11T21:28:56Z daring-bronze-crane: wrote the plan
