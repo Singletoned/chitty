@@ -7,8 +7,10 @@ created: 2026-11-11
 ## Description
 
 - Errors from `chitty run --loop` show only in its terminal, and are easy to miss.
-- Add an optional root setting `error_reporter`, a command like `agent_command`. When `chitty run` exits with a Chitty error, it runs this command with `{message}` (the error text) and `{context}` (JSON with project, ticket, mode, actor and worktree, where known), then exits as before. A failing report command prints a warning and does not hide the original error.
-- This repository sets `error_reporter = "sump capture chitty --message {message} --context-json {context}"`, on `main`. TASK-256 later reads errors back from Sump.
+- Add an optional root setting `error_reporter`, a command parsed like `agent_command` (split first, then each word substituted in one pass, so a message containing spaces, quotes or `{context}` stays one argument). When `chitty run` fails with a Chitty error, it runs this command with `{message}` (the error text) and `{context}` (JSON with `actor`, and `project`, `ticket` and `mode` once known), then exits as before. Hook it in `run()` in `src/chitty/run.py`, where the config and ticket are known.
+- Not reported: an empty queue (`NoNextTicket`), Ctrl-C (`RunInterrupted`), and config errors before the config loads. Under `--loop`, each failing child reports once and the parent does not.
+- A failing reporter prints a warning and does not hide the original error.
+- After this lands, the planner sets `error_reporter = "sump capture chitty --message {message} --context-json {context}"` on `main`; the branch leaves `chitty.toml` alone. TASK-256 later reads errors back from Sump.
 - Document it in `README.md` and `PLAN.md` "Config".
 
 ## Acceptance Criteria
@@ -23,3 +25,4 @@ created: 2026-11-11
 - 2026-11-11T18:50:28Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:29Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T18:50:57Z vivid-yellowhammer backlog → cold-read
+- 2026-11-11T18:54:56Z vivid-yellowhammer: changed description
