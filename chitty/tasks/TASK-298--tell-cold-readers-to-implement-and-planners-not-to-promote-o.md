@@ -1,6 +1,6 @@
 ---
 title: Tell cold readers to implement, and planners not to promote on a probe
-status: doing
+status: review
 parent: TASK-284
 created: 2026-11-11
 ---
@@ -13,8 +13,8 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_cold_read.py` shows `chitty guide cold-read` saying to implement unless probing found a problem, and `chitty guide plan` saying a probe-only read does not make a ticket ready. It fails today.
-- [ ] `chitty guide plan` contains "Cold-read every ticket, even a small one" exactly once.
+- [x] A test in `tests/test_guide_cold_read.py` shows `chitty guide cold-read` saying to implement unless probing found a problem, and `chitty guide plan` saying a probe-only read does not make a ticket ready. It fails today.
+- [x] `chitty guide plan` contains "Cold-read every ticket, even a small one" exactly once.
 
 ## Plan
 
@@ -23,6 +23,12 @@ Add a focused test in tests/test_guide_cold_read.py asserting cold-read tells re
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-298/1`. Check it against the current criteria; do not trust it.
+
+The new guide test failed before the role-text change. Full make check passes after the implementation.
+
+## Summary
+
+Updated the cold-read and planning guides and added a regression test. Verified with make format && make check; the new test failed before the fix. No follow-up.
 
 ## History
 
@@ -33,3 +39,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-298/1`. Check it a
 - 2026-11-11T21:15:02Z vivid-yellow-raven cold-read → todo
 - 2026-11-11T22:01:25Z mellow-yellow-adder todo → doing
 - 2026-11-11T22:01:44Z mellow-yellow-adder: wrote the plan
+- 2026-11-11T22:04:57Z mellow-yellow-adder: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T22:04:57Z mellow-yellow-adder doing → review
