@@ -16,7 +16,7 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
+- [x] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
 - [x] A `todo` ticket with `depends_on: [OTHER-1]` passes `chitty check`, and while `OTHER-1` is unfinished `chitty next` neither fails with a dependency error nor selects either ticket.
 - [x] `OTHER-1` in both `chitty/other/` and `chitty/more/` makes `chitty check` fail, naming both paths.
 - [x] `chitty edit OTHER-1 -s doing` fails with a Chitty error naming the directory, not a traceback.
@@ -47,9 +47,11 @@ Review failed (tests): Historical discovery must include unconfigured directorie
 3: pass - Duplicate paths reported.
 4: pass - Edit reports a plain error.
 
+Re-verified all four acceptance criteria with tests/test_unconfigured_directories.py; all four tests pass. make format and make check also pass (489 Python tests and Node tests). Historical-only directory discovery is included in the implementation.
+
 ## Summary
 
-Fixed review finding: mixed ticket prefixes in configured directories are now discovered by show/check and store scanning. Added failing-before-fix regressions and updated the obsolete prefix-rejection test. Verification: focused tests, make format, make check; all pass. Follow-up: TASK-280 still owns writes in unconfigured contexts.
+Implementation and regression coverage are committed. Re-verified all four acceptance criteria: focused directory tests pass; make format and make check pass (489 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts. Not moved to review because an existing untracked empty uv lock file remains in the worktree and is left untouched.
 
 ## History
 
@@ -73,3 +75,4 @@ Fixed review finding: mixed ticket prefixes in configured directories are now di
 - 2026-11-11T14:16:37Z kind-raven doing → review
 - 2026-11-11T14:19:55Z sunny-toad: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-11T14:19:55Z sunny-toad review → doing
+- 2026-11-11T14:53:26Z youthful-toad: changed notes, summary; ticked acceptance criteria
