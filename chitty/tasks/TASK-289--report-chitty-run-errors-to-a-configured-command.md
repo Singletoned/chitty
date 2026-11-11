@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: cold-read
+status: todo
 created: 2026-11-11
 ---
 
@@ -15,8 +15,13 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` that fails with a Chitty error leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
-- [ ] Without `error_reporter`, behaviour is unchanged.
+- [ ] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` whose agent command exits 1 leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
+- [ ] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
+- [ ] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-289/1`. Check it against the current criteria; do not trust it.
 
 ## History
 
@@ -26,3 +31,5 @@ created: 2026-11-11
 - 2026-11-11T18:50:29Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T18:50:57Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T18:54:56Z vivid-yellowhammer: changed description
+- 2026-11-11T18:54:58Z vivid-yellowhammer: changed acceptance criteria, notes
+- 2026-11-11T18:54:58Z vivid-yellowhammer cold-read → todo
