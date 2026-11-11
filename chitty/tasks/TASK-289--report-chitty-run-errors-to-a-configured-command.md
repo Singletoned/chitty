@@ -1,6 +1,7 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: review
+status: blocked
+owner: human
 created: 2026-11-11
 ---
 
@@ -34,6 +35,8 @@ Review failed (tests): Cover and report Chitty errors raised by argument validat
 2: pass - `make check` passed existing runs without a reporter and the empty queue test; a throwaway successful `TestRunContinue` integration run with a configured reporter printed `successful run: 0 report exists: False`.
 3: pass - A throwaway failing-reporter integration run printed `warning: error_reporter exited with status 7` and `Error: agent exited with status 1`, exit 1; disabling `report_error` made `test_failing_reporter_warns_and_preserves_failure` fail.
 
+Review blocked: The configured reporter is not invoked for the post-configuration Chitty error from `run --ticket TASK-1 --mode work`, contrary to the description. All numbered criteria passed, so Chitty rejected the requested transition to doing with `moving review → doing requires at least one fail verdict`. A human must resolve the mismatch between the review workflow and this demonstrated defect. See the preceding review note for evidence and criterion verdicts.
+
 ## Summary
 
 Implemented configurable error reporting in `chitty run`, including error message/context substitution and warning-only handling for reporter failures. Verified with `make format && make check`; 502 Python suites and Node tests pass. Regression test was confirmed failing before the fix. Ready for review; no known follow-ups.
@@ -53,3 +56,5 @@ Implemented configurable error reporting in `chitty run`, including error messag
 - 2026-11-11T21:52:43Z rosy-fawn-badger: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T21:52:43Z rosy-fawn-badger doing → review
 - 2026-11-11T21:56:50Z rosy-lilac-marten: changed notes
+- 2026-11-11T21:57:09Z rosy-lilac-marten: changed owner, notes
+- 2026-11-11T21:57:09Z rosy-lilac-marten review → blocked
