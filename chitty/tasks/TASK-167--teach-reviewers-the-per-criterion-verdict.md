@@ -1,8 +1,7 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: blocked
+status: review
 priority: medium
-owner: human
 depends_on:
   - TASK-166
   - TASK-142
@@ -53,6 +52,8 @@ Review failed (work): the worktree has uncommitted changes: `PLAN.md`, `README.m
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Planner committed the work, which earlier sessions had verified but left uncommitted. TASK-282 makes `chitty run` catch that when the work session ends.
+
 ## Summary
 
 Handoff: per-criterion review verdict guidance, regression coverage, README example and PLAN description are in place. Verification: guide test, generated guide, `make format && make check` (403 Python tests and Node tests), and `git diff --check` passed; no version bump. Follow-ups: none.
@@ -78,3 +79,5 @@ Handoff: per-criterion review verdict guidance, regression coverage, README exam
 - 2026-11-09T12:41:21Z honest-eel doing → review
 - 2026-11-09T12:41:40Z plucky-ibis: changed owner, notes
 - 2026-11-09T12:41:40Z plucky-ibis review → blocked
+- 2026-11-11T15:57:24Z vivid-yellowhammer: changed owner, notes
+- 2026-11-11T15:57:24Z vivid-yellowhammer blocked → review
