@@ -8,7 +8,7 @@ created: 2026-11-11
 
 - Errors from `chitty run --loop` show only in its terminal, and are easy to miss.
 - Add an optional root setting `report_error`, a command like `agent_command`. When `chitty run` exits with a Chitty error, it runs this command with `{message}` (the error text) and `{context}` (JSON with project, ticket, mode, actor and worktree, where known), then exits as before. A failing report command prints a warning and does not hide the original error.
-- This repository sets `report_error = "sump capture chitty --message {message} --context-json {context}"`, on `main`. TASK-256 later reads errors back from Sump.
+- This repository sets `error_reporter = "sump capture chitty --message {message} --context-json {context}"`, on `main`. TASK-256 later reads errors back from Sump.
 - Document it in `README.md` and `PLAN.md` "Config".
 
 ## Acceptance Criteria
@@ -19,3 +19,4 @@ created: 2026-11-11
 ## History
 
 - 2026-11-11T16:17:52Z vivid-yellowhammer → backlog
+- 2026-11-11T18:50:21Z vivid-yellowhammer: changed description
