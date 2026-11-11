@@ -1870,6 +1870,60 @@ class TestCrossBranchWrites(CliTestCase):
         self.assertIn("Still on main.", self.path.read_text())
 
 
+class TestColdReadBranchesAreNotTicketSources(CliTestCase):
+    def setUp(self):
+        super().setUp()
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("branch", "-M", "main")
+        self.run_cli("add", "Task", "-d", "Describe.")
+        self.commit("main task", seconds=1)
+        self.path = self.root / "chitty/tasks/TASK-1--task.md"
+
+    def git(self, *args: str) -> None:
+        subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
+
+    def commit(self, message: str, seconds: int) -> None:
+        stamp = f"2026-10-23T00:00:{seconds:02}+00:00"
+        self.git("add", "--all")
+        subprocess.run(
+            ["git", "commit", "--quiet", "-m", message],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+            env={**os.environ, "GIT_AUTHOR_DATE": stamp, "GIT_COMMITTER_DATE": stamp},
+        )
+
+    def make_newer_copy_on(self, branch: str) -> None:
+        self.git("checkout", "--quiet", "-b", branch)
+        self.path.write_text(self.path.read_text().replace("Describe.", "Newer copy."))
+        self.commit("newer copy", seconds=2)
+        self.git("checkout", "--quiet", "main")
+
+    def test_local_cold_read_branch_is_not_a_source(self):
+        self.make_newer_copy_on("cold-read/task-1/1")
+
+        result = self.run_cli("show", "1")
+
+        self.assertIn("Describe.", result.stdout)
+        self.assertNotIn("Newer copy.", result.stdout)
+
+    def test_remote_cold_read_branch_is_not_a_source(self):
+        self.make_newer_copy_on("cold-read/task-1/1")
+        self.git(
+            "update-ref",
+            "refs/remotes/origin/cold-read/task-1/1",
+            "cold-read/task-1/1",
+        )
+        self.git("branch", "-D", "cold-read/task-1/1")
+
+        result = self.run_cli("show", "1")
+
+        self.assertIn("Describe.", result.stdout)
+        self.assertNotIn("Newer copy.", result.stdout)
+
+
 class TestCheck(CliTestCase):
     def test_check(self):
         self.run_cli("add", "One", "-d", "x")
