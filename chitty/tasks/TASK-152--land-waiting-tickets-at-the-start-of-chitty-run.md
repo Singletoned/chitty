@@ -4,7 +4,6 @@ status: done
 priority: medium
 depends_on:
   - TASK-151
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -61,3 +60,4 @@ Implemented pending landing retries before plain-run ticket selection, using loc
 - 2026-11-09T09:50:01Z calm-adder doing → review
 - 2026-11-09T12:04:28Z eager-ibis: changed notes; ticked acceptance criteria
 - 2026-11-09T12:04:28Z eager-ibis review → done
+- 2026-11-11T10:17:28Z vivid-yellowhammer: changed parent
