@@ -14,7 +14,7 @@ created: 2026-11-11
 - Each continuation is a session like the first: the same `--model` default and forwarded `--` arguments, its own `agent_timeout`, and a timeout or non-zero exit fails the run as for the first session. One usage record covers the whole run.
 - Only `{prompt}` commands are continued; a `{mode} {id}` command, which loads the Pi extension, fails as today. There are no new settings.
 - The prompt, adapted from `continuationPrompt` in `src/chitty/integrations/pi/chitty.ts`. Work: "Continue working only on Chitty ticket <ID>. Either finish it and set it to `review`, or set it to `blocked` with a note giving the reason. Do not stop with it unfinished." Review: "Continue reviewing only Chitty ticket <ID>. Either pass it (`done`) or fail it (`doing`, with the failures in one note), or set it to `blocked` with a note giving the reason. Do not merge or remove branches or worktrees."
-- Document the settings in `README.md` and `PLAN.md` "Config".
+- Document continuation in `README.md` and `PLAN.md` "Next action and runner".
 
 ## Acceptance Criteria
 
@@ -37,3 +37,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it a
 - 2026-11-11T18:54:42Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T18:58:52Z vivid-yellowhammer: changed description
 - 2026-11-11T18:59:02Z vivid-yellowhammer: changed description
+- 2026-11-11T18:59:03Z vivid-yellowhammer: changed description
