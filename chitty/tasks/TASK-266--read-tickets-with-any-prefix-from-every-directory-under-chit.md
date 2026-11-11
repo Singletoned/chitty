@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: doing
+status: review
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -38,9 +38,11 @@ Review failed (tests): Add regression coverage and support for mixed prefixes in
 3: pass - Duplicate paths reported.
 4: pass - Edit reports a plain error.
 
+Review follow-up: configured directories now accept tickets with other prefixes. Added regression coverage; it failed before the fix with the prefix-mismatch error. Updated the former wrong-prefix rejection unit test to assert acceptance. make format and make check pass (487 Python tests and Node tests).
+
 ## Summary
 
-Implemented full-ID discovery and reading from unconfigured ticket directories, including archives; preserved configured-context selection and write restrictions. Verified all four acceptance criteria with tests/test_unconfigured_directories.py. Verification: focused tests, make format, and make check pass. Follow-up: TASK-280 owns writing tickets in unconfigured contexts.
+Fixed review finding: mixed ticket prefixes in configured directories are now discovered by show/check and store scanning. Added failing-before-fix regressions and updated the obsolete prefix-rejection test. Verification: focused tests, make format, make check; all pass. Follow-up: TASK-280 still owns writes in unconfigured contexts.
 
 ## History
 
@@ -60,3 +62,5 @@ Implemented full-ID discovery and reading from unconfigured ticket directories, 
 - 2026-11-11T14:10:40Z brisk-jay: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-11T14:10:40Z brisk-jay review → doing
 - 2026-11-11T14:13:37Z kind-raven: wrote the plan
+- 2026-11-11T14:16:37Z kind-raven: changed notes, summary
+- 2026-11-11T14:16:37Z kind-raven doing → review
