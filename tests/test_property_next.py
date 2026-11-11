@@ -97,7 +97,7 @@ class TestPropertyNext(unittest.TestCase):
     def test_choice_obeys_filters_and_independent_order(self, facts, mode, owner):
         # Shuffle so source ordering cannot accidentally satisfy ranking.
         random.Random(len(facts) * 173 + sum(map(len, (f.id for f in facts)))).shuffle(facts)
-        selected = choose(tuple(facts), mode=mode, owner=owner)
+        selected = choose(tuple(facts), modes=(mode,) if mode else (), owner=owner)
         expected = sorted(
             (fact for fact in facts if independently_choosable(fact, mode, owner)),
             key=lambda f: (

@@ -100,11 +100,11 @@ def run(
     ticket: str | None,
     arguments: tuple[str, ...] = (),
     agent: str | None = None,
-    mode: Literal["work", "review"] | None = None,
+    modes: tuple[Literal["work", "review"], ...] = (),
     owner: str | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
-    if mode is not None and ticket is not None:
+    if modes and ticket is not None:
         # A named ticket already decides its mode, so a mode could only disagree.
         raise ChittyError("--mode cannot be used with --ticket")
     if ticket is not None and owner is not None:
@@ -130,7 +130,7 @@ def run(
             return landed
 
     with ExitStack() as held:
-        action = _lock_ticket(held, main_repo, ticket, mode, owner)
+        action = _lock_ticket(held, main_repo, ticket, modes, owner)
         return _run_ticket(main_repo, project, action, arguments, agent)
 
 
@@ -241,7 +241,7 @@ def _lock_ticket(
     held: ExitStack,
     main_repo: Repo,
     ticket: str | None,
-    mode: Literal["work", "review"] | None,
+    modes: tuple[Literal["work", "review"], ...],
     owner: str | None,
 ) -> NextAction:
     """Choose the ticket and take its run lock, which `held` releases."""
@@ -252,7 +252,7 @@ def _lock_ticket(
         )
         return action
     for _ in range(RUN_LOCK_ATTEMPTS - 1):
-        action = next_action(main_repo, mode=mode, owner=owner)
+        action = next_action(main_repo, modes=modes, owner=owner)
         try:
             held.enter_context(
                 locks.run_lock(main_repo.root, str(action.id), actor=actor(), mode=action.mode)
@@ -261,7 +261,7 @@ def _lock_ticket(
             # Another run locked it after `next_action` looked; it skips it now.
             continue
         return action
-    action = next_action(main_repo, mode=mode, owner=owner)
+    action = next_action(main_repo, modes=modes, owner=owner)
     held.enter_context(
         locks.run_lock(main_repo.root, str(action.id), actor=actor(), mode=action.mode)
     )

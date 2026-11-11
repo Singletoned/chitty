@@ -40,7 +40,7 @@ from chitty.model import (
     new_task,
     parse,
 )
-from chitty.selection import DependencyFact, TicketFacts, choose
+from chitty.selection import DependencyFact, TicketFacts, choose, mode_statuses
 from chitty.selection import skip_reason as pure_skip_reason
 
 ARCHIVE_DIR = "archive"
@@ -1481,30 +1481,28 @@ def ticket_action(repo: Repo, task_id: TaskId) -> NextAction:
     return action
 
 
-MODE_STATUSES: dict[str, tuple[str, ...]] = {"work": ("doing", "todo"), "review": ("review",)}
-
-
 def next_action(
     repo: Repo,
     *,
-    mode: Literal["work", "review"] | None = None,
+    modes: tuple[Literal["work", "review"], ...] = (),
     owner: str | None = None,
 ) -> NextAction:
     """Select the one ticket to review or work next across every context.
 
-    A `mode` limits the choice to that mode's statuses. It filters before
-    `_ticket_action` checks dependencies, so a bad reference on a ticket in the
-    other mode does not stop this one. A ticket another `chitty run` holds the
-    run lock for is skipped.
+    Each mode adds its statuses to the choice; no mode means every mode. It
+    filters before `_ticket_action` checks dependencies, so a bad reference on a
+    ticket outside the modes does not stop this one. A ticket another
+    `chitty run` holds the run lock for is skipped.
     """
     if owner in ("", "human"):
         raise ChittyError("--owner must name an agent, not human or empty")
     locked = locks.locked_ids(repo.root)
+    statuses = mode_statuses(modes)
     facts: list[TicketFacts] = []
     stored_by_id: dict[str, StoredTask] = {}
     for stored in repo.all_tasks():
         fm = stored.task.frontmatter
-        if mode is not None and fm.status not in MODE_STATUSES[mode]:
+        if statuses is not None and fm.status not in statuses:
             continue
         is_locked = str(stored.id) in locked
         # Keep dependency reads lazy: only otherwise-eligible todo tickets need them.
@@ -1519,10 +1517,10 @@ def next_action(
         fact = _selection_facts(repo, stored, locked=is_locked, dependencies=eligible)
         facts.append(fact)
         stored_by_id[str(stored.id)] = stored
-    selected = choose(tuple(facts), mode=mode, owner=owner)
+    selected = choose(tuple(facts), modes=modes, owner=owner)
     if selected is None:
         raise NoNextTicket(
-            "no next ticket" if mode is None else f"no next ticket for --mode {mode}"
+            "no next ticket" if not modes else f"no next ticket for --mode {' or '.join(modes)}"
         )
     stored = stored_by_id[selected.id]
     return NextAction("review" if stored.task.frontmatter.status == "review" else "work", stored.id)

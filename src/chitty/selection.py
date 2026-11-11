@@ -27,6 +27,16 @@ class TicketFacts:
 
 STATUSES = ("review", "doing", "todo")
 STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
+MODE_STATUSES: dict[str, tuple[str, ...]] = {"work": ("doing", "todo"), "review": ("review",)}
+
+
+def mode_statuses(modes: tuple[str, ...]) -> set[str] | None:
+    """Return allowed statuses, or None when no mode limits the choice."""
+    if not modes:
+        return None
+    return {status for mode in modes for status in MODE_STATUSES[mode]}
+
+
 PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
 
 
@@ -60,17 +70,16 @@ def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
 def choose(
     facts: tuple[TicketFacts, ...],
     *,
-    mode: Literal["work", "review"] | None = None,
+    modes: tuple[Literal["work", "review"], ...] = (),
     owner: str | None = None,
 ) -> TicketFacts | None:
     """Return the first selectable ticket in status, priority, ID order."""
+    statuses = mode_statuses(modes)
     candidates: list[TicketFacts] = []
     for fact in facts:
         if fact.archived or fact.status not in STATUS_RANK:
             continue
-        if mode == "work" and fact.status not in {"doing", "todo"}:
-            continue
-        if mode == "review" and fact.status != "review":
+        if statuses is not None and fact.status not in statuses:
             continue
         if skip_reason(fact, include_owner=owner is None) is not None:
             continue
