@@ -13,11 +13,12 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] With `report_error` set to a script that writes its arguments to a file, a `chitty run` that fails with a Chitty error leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
-- [ ] Without `report_error`, behaviour is unchanged.
+- [ ] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` that fails with a Chitty error leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
+- [ ] Without `error_reporter`, behaviour is unchanged.
 
 ## History
 
 - 2026-11-11T16:17:52Z vivid-yellowhammer → backlog
 - 2026-11-11T18:50:21Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:28Z vivid-yellowhammer: changed description
+- 2026-11-11T18:50:29Z vivid-yellowhammer: changed acceptance criteria
