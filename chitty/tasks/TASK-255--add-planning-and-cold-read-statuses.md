@@ -17,12 +17,12 @@ Add two statuses so ticket writing is visible: `planning` (a ticket being writte
 - `chitty next` and `chitty run` never pick `planning` or `cold-read` tickets. `src/chitty/selection.py` already ignores statuses it does not rank, and `MODE_STATUSES` in `src/chitty/store.py` stays as it is.
 - `src/chitty/roles/plan.md`: move a ticket to `planning` while writing it, to `cold-read` while a reader works on it, back to `planning` for the outcomes, then to `todo`.
 - Docs that name the statuses or the list default: the `status` row in `PLAN.md` "Task file", the `list` bullet in "CLI", the glyph list and list default in `README.md`, and the MCP list tool description. In `PLAN.md` "Pipeline and feedback", delete "Until it lands the statuses above stand."
-- Update the existing tests that assert the default list: `tests/test_cli.py` around lines 1296 and 1304. Click wraps help text, so assert single words there.
+- Update the existing tests that assert the default list: `tests/test_cli.py` around lines 1296 and 1304. Click wraps help text, so assert single words there: both `planning` and `cold-read`.
 
 Out of scope:
 - Transitions stay unenforced: any status may follow any other, as today.
-- `chitty add` without `-d` still requires `-s backlog`.
-- In random-ID contexts, `-s planning` and `-s cold-read` are stored as `backlog`, as other statuses are.
+- `chitty add` without `-d` still requires `-s backlog`, outside random-ID contexts.
+- In random-ID contexts, `chitty add` stores `-s planning` and `-s cold-read` as `backlog`, as it does other statuses, and `chitty edit` to either is refused, as for any status but `backlog`.
 - `chitty run` running cold reads (TASK-259); `queued` and `blocked_by` flags (TASK-70, TASK-74).
 
 Put new tests in `tests/test_statuses_planning.py`. Each fails today, because both statuses are rejected.
@@ -31,7 +31,7 @@ Put new tests in `tests/test_statuses_planning.py`. Each fails today, because bo
 
 - [ ] `chitty add -s planning -d TEXT` and `chitty edit -s cold-read` succeed, and MCP edit accepts both statuses.
 - [ ] `chitty list` with no `-s` shows a `planning` and a `cold-read` ticket, as `📝 plan` and `🔎 cold`, and still hides `backlog` and `done`; MCP list without a status filter returns the same tickets.
-- [ ] After `chitty add -s planning -d x`, and `chitty add -d x` followed by `chitty edit -s cold-read`, `chitty next` prints `no next ticket`. Today this fails at the first `add`.
+- [ ] After `chitty add -s planning -d x`, and `chitty add -d x` followed by `chitty edit -s cold-read`, `chitty next` exits 3 with `no next ticket` on stderr. Today this fails at the first `add`.
 - [ ] `chitty guide plan` tells planners to use `-s planning` and `-s cold-read`, and `PLAN.md` and `README.md` list both statuses.
 
 ## History
@@ -41,3 +41,4 @@ Put new tests in `tests/test_statuses_planning.py`. Each fails today, because bo
 - 2026-11-11T10:36:54Z vivid-yellowhammer: changed description
 - 2026-11-11T10:44:16Z vivid-yellowhammer: changed labels, description, acceptance criteria
 - 2026-11-11T10:49:39Z vivid-yellowhammer: changed description, acceptance criteria
+- 2026-11-11T10:52:00Z vivid-yellowhammer: changed description, acceptance criteria
