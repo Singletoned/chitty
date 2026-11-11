@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: review
+status: doing
 priority: medium
 depends_on:
   - TASK-166
@@ -20,7 +20,7 @@ In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s desc
 
 ## Acceptance Criteria
 
-- [x] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
+- [ ] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
 - [x] The ticket branch does not bump `__version__`; version selection happens at release.
 
 ## Plan
@@ -54,6 +54,10 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Planner committed the work, which earlier sessions had verified but left uncommitted. TASK-282 makes `chitty run` catch that when the work session ends.
 
+Review failed (tests): The README example passes a literal backslash-n in double quotes, not a newline, so it cannot submit a valid review verdict. Use a shell-safe real newline and test the documented command.
+1: fail - A throwaway call to `_validate_review_verdict` with the exact README note printed `review verdict lines must match ...; missing 1`. The guide regression passed normally and failed four assertions when the review role was restored to main. `make format && make check` passed with `CHITTY_PI_SESSION_ID` set (488 Python tests and Node tests); without it the existing guide-backticks test failed because Pi session identity was missing.
+2: pass - `git diff main...HEAD -- src/chitty/__init__.py` printed no differences.
+
 ## Summary
 
 Handoff: per-criterion review verdict guidance, regression coverage, README example and PLAN description are in place. Verification: guide test, generated guide, `make format && make check` (403 Python tests and Node tests), and `git diff --check` passed; no version bump. Follow-ups: none.
@@ -81,3 +85,5 @@ Handoff: per-criterion review verdict guidance, regression coverage, README exam
 - 2026-11-09T12:41:40Z plucky-ibis review → blocked
 - 2026-11-11T15:57:24Z vivid-yellowhammer: changed owner, notes
 - 2026-11-11T15:57:24Z vivid-yellowhammer blocked → review
+- 2026-11-11T16:01:53Z upbeat-crane: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-11T16:01:53Z upbeat-crane review → doing
