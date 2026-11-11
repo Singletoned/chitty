@@ -1,6 +1,6 @@
 ---
 title: Mark the start and end of each `chitty run --loop` attempt
-status: doing
+status: review
 created: 2026-11-11
 ---
 
@@ -12,9 +12,9 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test runs `run_loop` with a child that exits 0 once and then non-zero: the output has a start rule before each attempt, a `finished · next run at` rule after the first, and a `stopped · exit` rule after the second. It fails today.
-- [ ] A child exiting `NO_NEXT_TICKET_EXIT` (3) is followed by a `no ticket · next run at` rule, not `finished`.
-- [ ] The `next run at` time is `RUN_LOOP_PAUSE_SECONDS` after the end of that attempt, not its start.
+- [x] A test runs `run_loop` with a child that exits 0 once and then non-zero: the output has a start rule before each attempt, a `finished · next run at` rule after the first, and a `stopped · exit` rule after the second. It fails today.
+- [x] A child exiting `NO_NEXT_TICKET_EXIT` (3) is followed by a `no ticket · next run at` rule, not `finished`.
+- [x] The `next run at` time is `RUN_LOOP_PAUSE_SECONDS` after the end of that attempt, not its start.
 
 ## Plan
 
@@ -23,6 +23,12 @@ Add focused run-loop tests for stderr output, exit-3 labeling, and scheduling fr
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-287/1`. Check it against the current criteria; do not trust it.
+
+The new focused tests failed against the original loop (missing stderr rules and idle exit returned the unexpected result); they pass with the implementation. `make check` passes (ruff, pyright, all 498 Python tests, and Node tests). `make format` and `chitty fix` completed; chitty fix reported existing warnings in unrelated task files, which were left untouched.
+
+## Summary
+
+Implemented terminal-width start, outcome, and stop rules on stderr for loop attempts. Idle exit 3 is labeled no ticket, and next-run time is calculated after the child exits. Regression tests verify output ordering and completion-based scheduling. Verified with make format and make check; all checks pass. Code committed as df96110 (Task: TASK-287). No known follow-ups.
 
 ## History
 
@@ -34,3 +40,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-287/1`. Check it a
 - 2026-11-11T16:12:21Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T21:41:08Z jolly-amber-yellowhammer todo → doing
 - 2026-11-11T21:41:27Z jolly-amber-yellowhammer: wrote the plan
+- 2026-11-11T21:47:12Z jolly-amber-yellowhammer: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T21:47:12Z jolly-amber-yellowhammer doing → review
