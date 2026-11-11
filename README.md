@@ -177,8 +177,8 @@ selecting, so a broken configuration exits 1 and stops the loop. Each agent
 session appends one JSON line to the machine-local
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data
 directory when `XDG_DATA_HOME` is unset), including the ticket, actor, timing,
-statuses, and aggregate Pi token and cost totals by model. These costs are
-provider list prices, not negotiated rates or an invoice. Empty lists explain
+and statuses. Spend by model is not in the log; run
+`scripts/pi_tokens.py` on the Pi session directories instead. Empty lists explain
 their active filters on stderr while JSON stdout remains `[]`.
 `chitty import backlog-md` refuses non-empty contexts, reports mappings. It refuses to run unless the Git working tree is clean, untracked
 files included, and removes the converted files in its import commit; use
