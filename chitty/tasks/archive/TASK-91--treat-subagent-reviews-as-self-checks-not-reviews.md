@@ -27,3 +27,4 @@ Archived in backlog triage (human approved, 2026-11-11): merged into TASK-209.
 
 - 2026-11-01 → backlog
 - 2026-11-11T10:18:39Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:18:40Z vivid-yellowhammer backlog → archived
