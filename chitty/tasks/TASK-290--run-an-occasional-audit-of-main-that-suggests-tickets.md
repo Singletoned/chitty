@@ -6,14 +6,9 @@ created: 2026-11-11
 
 ## Description
 
-- An occasional pass on `main`, queued by the human as a `low` ticket (TASK-296), runs security and test-quality tools and turns each new finding into a suggestion in this repository's inbox, for the planner to triage.
-- One entry point, `make audit`, running `scripts/audit.py`. Each tool is a small adapter returning findings with a stable key (tool, rule, file). A finding whose key already appears in a ticket title, open or archived, is skipped, so a weekly run repeats nothing.
-- Children add the runner and one tool each: bandit, pip-audit, `npm audit`, trivy (filesystem: vulnerabilities, secrets, misconfiguration). Mutation testing is a separate `make mutate`, run overnight (TASK-295). Add checkov when the repository gains containers or infrastructure code.
-- Python tools are dev dependencies; trivy is a system install, and the audit fails plainly if it is missing.
-
-## Notes
-
-Open: the scanners (bandit, pip-audit, npm audit, trivy) may belong in `taidy security` instead, with this repository's audit only turning its findings into suggestions.
+- An occasional pass on `main`, run by hand, turns security and test-quality findings into suggestions in this repository's inbox, for the planner to triage.
+- Scanners live in taidy (`taidy security`, suggested 2026-11-11). `make audit` (TASK-291) turns its findings into suggestions, skipping any whose title is already a ticket.
+- Mutation testing is a separate `make mutate`, run overnight (TASK-295).
 
 ## History
 
@@ -22,3 +17,4 @@ Open: the scanners (bandit, pip-audit, npm audit, trivy) may belong in `taidy se
 - 2026-11-11T18:50:47Z vivid-yellowhammer: changed description
 - 2026-11-11T18:50:48Z vivid-yellowhammer: changed notes
 - 2026-11-11T18:50:55Z vivid-yellowhammer: changed title
+- 2026-11-11T18:59:41Z vivid-yellowhammer: replaced notes; changed description
