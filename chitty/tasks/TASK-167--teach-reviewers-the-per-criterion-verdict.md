@@ -58,6 +58,8 @@ Review failed (tests): The README example passes a literal backslash-n in double
 1: fail - A throwaway call to `_validate_review_verdict` with the exact README note printed `review verdict lines must match ...; missing 1`. The guide regression passed normally and failed four assertions when the review role was restored to main. `make format && make check` passed with `CHITTY_PI_SESSION_ID` set (488 Python tests and Node tests); without it the existing guide-backticks test failed because Pi session identity was missing.
 2: pass - `git diff main...HEAD -- src/chitty/__init__.py` printed no differences.
 
+Regression test failed before README fix because the example passed literal backslash-n; after fix it passes. make format passed. make check failed in unrelated tests.test_guide_backticks due to generated guide output differing (Pi extension text); 489 suites ran. Committed fix as 37f681b.
+
 ## Summary
 
 Handoff: per-criterion review verdict guidance, regression coverage, README example and PLAN description are in place. Verification: guide test, generated guide, `make format && make check` (403 Python tests and Node tests), and `git diff --check` passed; no version bump. Follow-ups: none.
@@ -88,3 +90,4 @@ Handoff: per-criterion review verdict guidance, regression coverage, README exam
 - 2026-11-11T16:01:53Z upbeat-crane: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-11T16:01:53Z upbeat-crane review → doing
 - 2026-11-11T16:17:27Z jolly-heron: wrote the plan
+- 2026-11-11T16:18:38Z jolly-heron: changed notes
