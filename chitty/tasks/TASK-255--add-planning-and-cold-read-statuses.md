@@ -34,6 +34,10 @@ Put new tests in `tests/test_statuses_planning.py`. Each fails today, because bo
 - [ ] After `chitty add -s planning -d x`, and `chitty add -d x` followed by `chitty edit -s cold-read`, `chitty next` exits 3 with `no next ticket` on stderr. Today this fails at the first `add`.
 - [ ] `chitty guide plan` tells planners to use `-s planning` and `-s cold-read`, and `PLAN.md` and `README.md` list both statuses.
 
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it against the current criteria; do not trust it. It asserts only `cold-read` in the help-text test; add `planning`.
+
 ## History
 
 - 2026-11-11T10:02:51Z jolly-heron → backlog
@@ -42,3 +46,4 @@ Put new tests in `tests/test_statuses_planning.py`. Each fails today, because bo
 - 2026-11-11T10:44:16Z vivid-yellowhammer: changed labels, description, acceptance criteria
 - 2026-11-11T10:49:39Z vivid-yellowhammer: changed description, acceptance criteria
 - 2026-11-11T10:52:00Z vivid-yellowhammer: changed description, acceptance criteria
+- 2026-11-11T10:52:01Z vivid-yellowhammer: changed notes
