@@ -18,3 +18,4 @@ Archived in backlog triage (human approved, 2026-11-11): already done or superse
 
 - 2026-11-03T10:27:49Z lively-panda → backlog
 - 2026-11-11T10:16:57Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:16:58Z vivid-yellowhammer backlog → archived
