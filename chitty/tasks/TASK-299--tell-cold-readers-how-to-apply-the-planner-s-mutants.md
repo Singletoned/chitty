@@ -14,6 +14,10 @@ created: 2026-11-11
 
 - [ ] A test in `tests/test_guide_cold_read_mutants.py` shows that in `chitty guide cold-read` the mutant step says one at a time, restore before the next, and criterion wording for survivors, and that the report list separately asks for survivors with that wording. It fails today.
 
+## Plan
+
+Add a focused guide regression test that asserts the cold-read mutant procedure and survivor-report wording. Run it first to confirm it fails, then update the cold-read guide text, run format and full checks, and commit only these implementation changes.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-299/1`. Check it against the current criteria; do not trust it.
@@ -26,3 +30,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-299/1`. Check it a
 - 2026-11-11T21:14:12Z vivid-yellow-raven: changed acceptance criteria, notes
 - 2026-11-11T21:14:12Z vivid-yellow-raven cold-read → todo
 - 2026-11-11T22:07:10Z kind-lilac-toad todo → doing
+- 2026-11-11T22:07:21Z kind-lilac-toad: wrote the plan
