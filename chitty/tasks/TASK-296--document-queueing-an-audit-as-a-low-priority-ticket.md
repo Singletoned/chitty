@@ -16,7 +16,12 @@ created: 2026-11-11
 
 - [ ] `README.md` shows the command, and it creates a `low` `todo` ticket.
 
+## Notes
+
+Withdrawn 2026-11-11: the human runs `make audit` by hand for now.
+
 ## History
 
 - 2026-11-11T16:18:28Z vivid-yellowhammer → backlog
 - 2026-11-11T18:50:45Z vivid-yellowhammer: changed title, owner, description, acceptance criteria
+- 2026-11-11T18:59:39Z vivid-yellowhammer: changed notes
