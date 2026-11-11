@@ -22,8 +22,11 @@ Orchestration stays out of Chitty: it holds state, gates and evidence, and a har
 
 Revises the line above that orchestration stays out of Chitty. Decided with the human, 2026-11-03: automate as much as possible. Deterministic workflow steps belong in `chitty run`; the boundary is that Chitty never calls a model.
 
+Archived in backlog triage (human approved, 2026-11-11): the spec-first pilot never ran; practice moved on, and TASK-255 is the pipeline change now.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
 - 2026-11-03T10:28:27Z lively-panda: changed dependencies
 - 2026-11-03T16:30:17Z lively-panda: changed notes
+- 2026-11-11T10:17:02Z vivid-yellowhammer: changed notes
