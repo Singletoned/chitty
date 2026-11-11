@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-127
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -79,3 +78,4 @@ Implemented a single usage-reading finally path so failed, interrupted, and unch
 - 2026-11-05T17:05:12Z mellow-newt blocked → review
 - 2026-11-05T17:52:39Z mellow-newt: changed notes; overrode review independence
 - 2026-11-05T17:52:39Z mellow-newt review → done
+- 2026-11-11T10:17:25Z vivid-yellowhammer: changed parent
