@@ -20,3 +20,4 @@ Implemented directly as a small change (human approved, 2026-11-11) in 8c31fbd: 
 
 - 2026-11-11T10:02:53Z jolly-heron → backlog
 - 2026-11-11T10:24:36Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:24:37Z vivid-yellowhammer backlog → archived
