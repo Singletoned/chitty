@@ -18,6 +18,10 @@ created: 2026-11-11
 - [ ] A tick made by an actor while the ticket was in `doing` still counts as work, as today.
 - [ ] A `wrote the plan` by the reviewer while the ticket is in `review` still blocks that reviewer's verdict, as today.
 
+## Plan
+
+Track status as history lines are read in order. Count acceptance-criteria ticks only when the edit began outside review; continue counting plan writes regardless of status. Add store-level regression coverage for review ticks, doing ticks, and review plan writes.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-286/1`. Check it against the current criteria; do not trust it.
@@ -30,3 +34,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-286/1`. Check it a
 - 2026-11-11T16:13:31Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T16:13:31Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T21:09:26Z witty-dusky-toad todo → doing
+- 2026-11-11T21:09:43Z witty-dusky-toad: wrote the plan
