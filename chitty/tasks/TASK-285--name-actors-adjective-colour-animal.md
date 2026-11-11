@@ -14,8 +14,8 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test shows the same session always getting the same name, matching `^[a-z]+-[a-z]+-[a-z]+$`, with its middle word from `_COLOURS`. It fails today.
-- [ ] A test over many session IDs shows adjective and colour varying independently (more than 100 distinct pairs from 500 sessions).
+- [x] A test shows the same session always getting the same name, matching `^[a-z]+-[a-z]+-[a-z]+$`, with its middle word from `_COLOURS`. It fails today.
+- [x] A test over many session IDs shows adjective and colour varying independently (more than 100 distinct pairs from 500 sessions).
 
 ## Plan
 
@@ -24,6 +24,8 @@ Verify the existing colour-based actor implementation and regression tests again
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it against the current criteria; do not trust it.
+
+Actor tests pass (uv run python -m unittest tests.test_actor). The regression assertions were committed with the implementation; branch history shows commit 1c2d166. Full make check currently fails in unrelated tests.test_guide_backticks.TestBacktickGuideWarning because generated guide output differs from guide(); no actor-related failures.
 
 ## History
 
@@ -36,3 +38,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it a
 - 2026-11-11T19:01:45Z sunny-falcon todo → doing
 - 2026-11-11T19:02:00Z sunny-falcon: wrote the plan
 - 2026-11-11T20:06:30Z eager-urchin: wrote the plan
+- 2026-11-11T20:07:25Z eager-urchin: changed notes; ticked acceptance criteria
