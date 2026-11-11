@@ -1,6 +1,6 @@
 ---
 title: Mark the start and end of each `chitty run --loop` attempt
-status: review
+status: done
 created: 2026-11-11
 ---
 
@@ -26,6 +26,11 @@ Possible starting point: `git diff main...refs/cold-read/TASK-287/1`. Check it a
 
 The new focused tests failed against the original loop (missing stderr rules and idle exit returned the unexpected result); they pass with the implementation. `make check` passes (ruff, pyright, all 498 Python tests, and Node tests). `make format` and `chitty fix` completed; chitty fix reported existing warnings in unrelated task files, which were left untouched.
 
+Reviewed: `make format && make check` passed (501 Python tests and Node tests); formatting left the tree unchanged.
+1: pass - The focused `test_loop_marks_attempts_and_outcomes_on_stderr` passed; executing the same test with `main:src/chitty/run.py` loaded in memory failed with `0 != 4` output lines.
+2: pass - `test_loop_marks_idle_queue_and_schedules_from_attempt_end` passed, checking the `no ticket` rule; with the main implementation loaded in memory it failed because the rule was absent.
+3: pass - The same focused test passed with a mocked attempt start and end, asserting the completion-based `12:01:00` next-run time and pause; the main implementation failed because the timestamp was absent.
+
 ## Summary
 
 Implemented terminal-width start, outcome, and stop rules on stderr for loop attempts. Idle exit 3 is labeled no ticket, and next-run time is calculated after the child exits. Regression tests verify output ordering and completion-based scheduling. Verified with make format and make check; all checks pass. Code committed as df96110 (Task: TASK-287). No known follow-ups.
@@ -42,3 +47,5 @@ Implemented terminal-width start, outcome, and stop rules on stderr for loop att
 - 2026-11-11T21:41:27Z jolly-amber-yellowhammer: wrote the plan
 - 2026-11-11T21:47:12Z jolly-amber-yellowhammer: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T21:47:12Z jolly-amber-yellowhammer doing → review
+- 2026-11-11T21:49:52Z witty-indigo-jay: changed notes; ticked acceptance criteria
+- 2026-11-11T21:49:52Z witty-indigo-jay review → done
