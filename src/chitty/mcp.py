@@ -19,7 +19,7 @@ from chitty.errors import ChittyError
 from chitty.inbox import list_waiting
 from chitty.inbox import pull as pull_suggestions
 from chitty.inbox import suggest as send_suggestion
-from chitty.model import STATUSES
+from chitty.model import DEFAULT_LIST_STATUSES, STATUSES
 from chitty.store import (
     Edit,
     Repo,
@@ -31,7 +31,7 @@ from chitty.store import (
     skip_reason,
 )
 
-Status = Literal["backlog", "todo", "doing", "blocked", "review", "done"]
+Status = Literal["backlog", "planning", "cold-read", "todo", "doing", "blocked", "review", "done"]
 Priority = Literal["low", "medium", "high"]
 
 server = MCPServer(name="chitty", instructions=guide())
@@ -120,7 +120,8 @@ def add(
 @_tool(
     "list",
     "List tasks. `context` and `status` are repeatable; status defaults to "
-    "todo, doing, blocked, and review. `label`: all of; `search`: title and body.",
+    "planning, cold-read, todo, doing, blocked, and review. `label`: all of; `search`: "
+    "title and body.",
 )
 def list_(
     context: list[str] | None = None,
@@ -133,7 +134,7 @@ def list_(
 ) -> list[dict[str, Any]]:
     repo = _repo()
     contexts = [repo.context(name) for name in context] if context else repo.contexts()
-    statuses = list(STATUSES) if all else status or ["todo", "doing", "blocked", "review"]
+    statuses = list(STATUSES) if all else status or DEFAULT_LIST_STATUSES
     tasks = [task for selected in contexts for task in repo.tasks(selected, "active")]
     parent = str(repo.resolve(parent)) if parent else None
     found = [t for t in tasks if matches(t, statuses, label or [], owner, search, parent)]

@@ -127,11 +127,6 @@ that ambiguity is an error. Error if neither finds one.
 
 ## IDs
 
-Direction (decided 2026-11-11, TASK-262): contexts go. Tickets created off
-`main` get `BACKLOG-<alphanumeric>` IDs and a sequential ID on leaving `backlog`
-in the main checkout; `human` is replaced by `owner: human`. Until the child
-tickets land, the rules below stand.
-
 `<PREFIX>-<n>`, e.g. `TASK-13`.
 
 - `PREFIX` is the context's prefix: `[A-Z]+`, unique within a repo.
@@ -241,7 +236,7 @@ Frontmatter schema (strict: unknown keys are an error):
 | key          | type               | required | notes                                        |
 |--------------|--------------------|----------|----------------------------------------------|
 | `title`      | string             | yes      | non-empty, single line                       |
-| `status`     | `backlog\|todo\|doing\|blocked\|review\|done` | yes     | fixed in v1; backlog needs refinement; blocked needs a reason |
+| `status`     | `backlog\|planning\|cold-read\|todo\|doing\|blocked\|review\|done` | yes     | fixed in v1; backlog needs refinement; planning and cold-read are ticket-writing states; blocked needs a reason |
 | `labels`     | list[string]       | no       | absent ≡ `[]`                                |
 | `priority`   | `low\|medium\|high` | no      | absent means unset                           |
 | `owner`      | string             | no       | free text; `human`, a name, an agent         |
@@ -479,7 +474,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   It orders the selected statuses first, then `high`, `medium` (including
   unset priority), and `low` within each status; `--json` uses the same order.
   Human-readable rows show statuses as a glyph and at most five letters:
-  `💤 bklog`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, and `✅ done`, and
+  `💤 bklog`, `📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, and
+  `✅ done`, and
   priorities as `⬆️` high, `⏺️` medium, `⬇️` low, or blank when unset. Titles are
   cut with `…` so each row fits in `list_width` terminal columns, counting
   emoji as two; labels are kept whole. Rows skipped by `next`
@@ -504,8 +500,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   when errors remain. It never rewrites warning-only Markdown; use backticks
   when literal Markdown delimiters denote code. Autocommit runs it on written
   task files first and is blocked only by errors.
-- `list` reads only non-archived tasks: by default it selects `todo`, `doing`,
-  `blocked`, and `review` tasks from every context; repeat `-c` to narrow contexts
+- `list` reads only non-archived tasks: by default it selects `planning`,
+  `cold-read`, `todo`, `doing`, `blocked`, and `review` tasks from every context; repeat `-c` to narrow contexts
   or `-s` to choose statuses, including `backlog` and `done`. `--all` selects every status
   but still excludes archive folders. An empty list reports its active filters
   on stderr while keeping stdout (including JSON) empty.
@@ -577,7 +573,7 @@ same unmarked block, and `chitty --help` points agents at it.
 
 Direction, not current behaviour. The human dropped the spec-first pilot
 (TASK-109) on 2026-11-11; TASK-255 adds `planning` and `cold-read` statuses
-instead. Until it lands the statuses above stand.
+instead.
 
 ```
 backlog → design → tests → review-ticket → work → review-work → done
@@ -641,7 +637,8 @@ The planner's part lives in the planning role instructions printed by
 steps, is printed by `chitty guide cold-read <ID>`, so the planner starts a
 reader with that output instead of writing the steps out each time. Keep a new
 ticket in `backlog` until its cold read findings have outcomes, and only then
-move it to `todo`, because `chitty run` picks up anything in `todo`: `TASK-147`
+move it to `todo` (through `planning` and `cold-read` while it is written and
+read), because `chitty run` picks up anything in `todo`: `TASK-147`
 was claimed with a wrong fix while its cold read was still running.
 
 Planning practice in this repository (from the human):

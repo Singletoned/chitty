@@ -1293,12 +1293,15 @@ class TestAddShowList(CliTestCase):
         )
         empty = self.run_cli("list", "-c", "human")
         self.assertEqual(empty.stdout, "")
-        self.assertIn("no tasks: contexts=human; statuses=todo,doing,blocked,review", empty.stderr)
+        self.assertIn(
+            "no tasks: contexts=human; statuses=planning,cold-read,todo,doing,blocked,review",
+            empty.stderr,
+        )
         self.assertEqual(self.json("list", "-c", "human"), [])
         help_text = self.run_cli("list", "--help").stdout
         self.assertNotIn("--archived", help_text)
         self.assertIn("Every status (never archived tasks).", help_text)
-        self.assertIn("todo, doing, blocked, and review", help_text)
+        self.assertIn("cold-read", help_text)
 
     def test_parent_groups_tasks(self):
         self.run_cli("add", "Parent", "-d", "x")

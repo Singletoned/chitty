@@ -84,10 +84,11 @@ and shows example commands. `chitty guide work`, `review`, and `plan` print the
 focused instructions for those roles from the packaged role files. The short
 block in `AGENTS.md` points agents started by hand to their matching role guide.
 Work, review and cold-read take an optional ticket ID; setup and planning do not.
-Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
-tasks across every context; repeat `-c` or `-s` to filter, including backlog and
+Plain `chitty list` shows non-archived `planning`, `cold-read`, `todo`, `doing`,
+`blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
-`📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then the priority
+`📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then
+the priority
 as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so rows fit in
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
 `chitty next` carry a glyph in a column before the title: `👤` owned or human,

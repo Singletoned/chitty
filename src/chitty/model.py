@@ -21,9 +21,22 @@ from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 from chitty.errors import ChittyError
 from chitty.ids import ID_RE
 
-STATUSES = ("backlog", "todo", "doing", "blocked", "review", "done")
+STATUSES = (
+    "backlog",
+    "planning",
+    "cold-read",
+    "todo",
+    "doing",
+    "blocked",
+    "review",
+    "done",
+)
+# What `list` shows without a status filter: every active status but backlog and done.
+DEFAULT_LIST_STATUSES = ("planning", "cold-read", "todo", "doing", "blocked", "review")
 STATUS_GLYPHS = {
     "backlog": "💤",
+    "planning": "📝",
+    "cold-read": "🔎",
     "todo": "📋",
     "doing": "🔨",
     "blocked": "⛔",
@@ -32,6 +45,8 @@ STATUS_GLYPHS = {
 }
 STATUS_LABELS = {
     "backlog": "bklog",
+    "planning": "plan",
+    "cold-read": "cold",
     "todo": "todo",
     "doing": "doing",
     "blocked": "blckd",
@@ -125,7 +140,9 @@ class Frontmatter(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     title: str
-    status: Literal["backlog", "todo", "doing", "blocked", "review", "done"]
+    status: Literal[
+        "backlog", "planning", "cold-read", "todo", "doing", "blocked", "review", "done"
+    ]
     labels: list[str] = []
     priority: Literal["low", "medium", "high"] | None = None
     owner: str | None = None

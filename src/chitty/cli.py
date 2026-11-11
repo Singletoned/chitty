@@ -32,6 +32,7 @@ from chitty.inbox import suggest as send_suggestion
 from chitty.integrations.claude.usage import run_hook
 from chitty.model import (
     ACCEPTANCE_CRITERIA,
+    DEFAULT_LIST_STATUSES,
     FIELD_ORDER,
     PRIORITIES,
     PRIORITY_GLYPHS,
@@ -352,7 +353,10 @@ def add(
     "statuses",
     multiple=True,
     type=click.Choice(STATUSES),
-    help="Status to include (repeatable; defaults to todo, doing, blocked, and review).",
+    help=(
+        "Status to include (repeatable; defaults to planning, cold-read, todo, doing, "
+        "blocked, and review)."
+    ),
 )
 @click.option("-l", "--label", "labels", multiple=True, help="Only tasks with every label.")
 @click.option("--owner")
@@ -373,7 +377,7 @@ def list_(
     """List tasks, one per line."""
     repo = _repo()
     selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
-    selected_statuses = STATUSES if all_ else statuses or ("todo", "doing", "blocked", "review")
+    selected_statuses = STATUSES if all_ else statuses or DEFAULT_LIST_STATUSES
     parent = str(repo.resolve(parent)) if parent else None
     tasks = [
         task

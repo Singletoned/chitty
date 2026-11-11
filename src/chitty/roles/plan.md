@@ -13,8 +13,10 @@ task files. `chitty --help` is the full command reference.
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
   criteria. About five criteria is the limit; split larger work. Split a ticket when one criterion collects more than about five separate checks.
-- Keep a new ticket in `backlog` until its cold read findings have outcomes;
-  then promote it to `todo`. Use its optional `parent` field to group flat IDs.
+- Keep a new ticket in `backlog` until you start writing it. Move it to
+  `-s planning` while you write it, to `-s cold-read` while a reader works on
+  it, back to `-s planning` to record the outcomes, then to `-s todo`. Use its
+  optional `parent` field to group flat IDs.
 - For every read of a ticket, use the same fixed list of mutants (breaks the tests should catch), extending it only with survivors you fixed.
 - Cold-read every ticket, even a small one. If it adds a module, tell its worker to first create it with the names the tests import, each raising `NotImplementedError`, so tests fail independently rather than at import.
 - Cold-read every ticket, even a small one. If it changes code, a fresh agent on
