@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: blocked
+status: review
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -51,6 +51,8 @@ Re-verified all four acceptance criteria with tests/test_unconfigured_directorie
 
 All acceptance criteria and checks are verified, but I cannot finish the required clean-worktree check: uv-9442cfda52155b85.lock is an untracked empty file not created by this work. It appears to be a stale uv lock (no process has it open), but I left it untouched per the instruction to preserve unrecognized files. Human: please confirm it can be removed, or remove it, then return this ticket to review.
 
+Planner removed the stray `uv-9442cfda52155b85.lock` (an agent ran `TMPDIR="$PWD" uv run`); `uv-*.lock` is now ignored on `main`.
+
 ## Summary
 
 Implementation and regression coverage are committed. Re-verified all four acceptance criteria: focused directory tests pass; make format and make check pass (489 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts. Not moved to review because an existing untracked empty uv lock file remains in the worktree and is left untouched.
@@ -80,3 +82,5 @@ Implementation and regression coverage are committed. Re-verified all four accep
 - 2026-11-11T14:53:26Z youthful-toad: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T14:54:00Z youthful-toad: changed notes
 - 2026-11-11T14:54:00Z youthful-toad doing → blocked
+- 2026-11-11T15:57:17Z vivid-yellowhammer: changed notes
+- 2026-11-11T15:57:17Z vivid-yellowhammer blocked → review
