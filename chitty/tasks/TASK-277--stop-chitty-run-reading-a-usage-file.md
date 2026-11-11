@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` reading a usage file
-status: backlog
+status: cold-read
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -19,3 +19,4 @@ created: 2026-11-11
 
 - 2026-11-11T13:21:33Z vivid-yellowhammer → backlog
 - 2026-11-11T13:39:46Z vivid-yellowhammer: changed description, acceptance criteria
+- 2026-11-11T13:39:52Z vivid-yellowhammer backlog → cold-read
