@@ -19,7 +19,10 @@ Suggestions, cheapest first:
 
 Suggestion origin: echonomicon
 
+Split 2026-11-11 into TASK-285 (three-part names), TASK-286 (review edits are not work) and TASK-287 (one name per loop). Point 4, avoiding recent names, is left out: three-part names make clashes rare enough.
+
 ## History
 
 - 2026-11-11T16:08:27Z vivid-yellowhammer → backlog
 - 2026-11-11T16:08:27Z vivid-yellowhammer: changed notes
+- 2026-11-11T16:09:07Z vivid-yellowhammer: changed notes
