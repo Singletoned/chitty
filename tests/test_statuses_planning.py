@@ -42,6 +42,17 @@ class TestPlanningStatuses(CliTestCase):
     def test_list_without_status_shows_planning_and_cold_read(self):
         self.add_planning_and_cold_read()
         self.run_cli("add", "Idea", "-c", "tasks", "-s", "backlog")
+        self.run_cli("add", "Finished", "-c", "tasks", "-d", "x")
+        self.run_cli("edit", "TASK-4", "-s", "review")
+        self.run_cli(
+            "edit",
+            "TASK-4",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: complete",
+            "--override-review-independence",
+        )
         output = self.run_cli("list").stdout
         self.assertIn("📝 plan", output)
         self.assertIn("🔎 cold", output)
@@ -51,13 +62,24 @@ class TestPlanningStatuses(CliTestCase):
     def test_mcp_list_without_status_returns_planning_and_cold_read(self):
         self.add_planning_and_cold_read()
         self.run_cli("add", "Idea", "-s", "backlog")
+        self.run_cli("add", "Finished", "-d", "x")
+        self.run_cli("edit", "TASK-4", "-s", "review")
+        self.run_cli(
+            "edit",
+            "TASK-4",
+            "-s",
+            "done",
+            "--note",
+            "Reviewed: complete",
+            "--override-review-independence",
+        )
         ids = sorted(task["id"] for task in call("list"))
         self.assertEqual(ids, ["TASK-1", "TASK-2"])
 
     def test_next_never_picks_planning_or_cold_read(self):
         self.add_planning_and_cold_read()
         result = self.run_cli("next", exit_code=3)
-        self.assertIn("no next ticket", result.output)
+        self.assertIn("no next ticket", result.stderr)
 
     def test_plan_guide_names_both_statuses(self):
         text = " ".join(guide("plan").split())
