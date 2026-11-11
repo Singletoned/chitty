@@ -2,7 +2,6 @@
 title: Land the Pi token analysis
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -42,3 +41,4 @@ Cherry-picked the five commits from the untouched `pi-token-analysis` worktree, 
 - 2026-11-05T23:09:31Z jolly-eel doing → review
 - 2026-11-06T11:24:09Z kind-quail: changed notes
 - 2026-11-06T11:24:09Z kind-quail review → done
+- 2026-11-11T10:17:41Z vivid-yellowhammer: changed parent
