@@ -6,7 +6,8 @@ check = "make check"
 # Run the agent with this worktree's `.venv` first on `PATH`, so a bare `chitty`
 # is the branch's code, not whichever global install comes first. The `env -u`
 # stops an exported `UV_PROJECT_ENVIRONMENT` sending `uv run` to the shared one.
-agent_command = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --no-skills --skill ~/.pi/agent/skills/python-dev --chitty-{mode} {id}"
+# Print-mode Pi, without its interface or the chitty.ts extension (TASK-278).
+agent_command = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync pi -p --no-extensions --no-skills --skill ~/.pi/agent/skills/python-dev {prompt}"
 
 project = "chitty"
 archive = "move"
@@ -14,7 +15,7 @@ review = true
 
 list_width = 80
 
-chitty_version = "0.1.43"
+chitty_version = "0.2.1"
 # work_model = "provider/model" # default for work sessions
 # review_model = "provider/model" # default for review sessions
 
@@ -30,4 +31,7 @@ prefix = "BACKLOG"
 random_ids = true
 
 [agent_commands]
-claude = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync claude -p {prompt} --model sonnet --permission-mode dontAsk --allowedTools 'Read Edit Write Bash(chitty *) Bash(git *) Bash(make *) Bash(uv run *) Bash(python *) Bash(npm test*) Bash(rg *) Bash(head *) Bash(grep *) Bash(find *) Bash(sort *) Bash(tail *) Bash(sed *) Bash(nl *) Bash(awk *) Bash(cat *) Bash(ls *) Bash(wc *)' --disallowedTools 'Bash(git push *)'"
+# Pi with its interface and the chitty.ts extension, the default until TASK-278.
+pi-tui = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --no-skills --skill ~/.pi/agent/skills/python-dev --chitty-{mode} {id}"
+# Unrestricted inside the worktree (the human decided, 2026-11-10); `git push` stays denied.
+claude = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync claude -p {prompt} --model haiku --permission-mode bypassPermissions --disallowedTools 'Bash(git push *)'"

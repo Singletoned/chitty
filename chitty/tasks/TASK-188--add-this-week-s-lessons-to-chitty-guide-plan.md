@@ -2,7 +2,6 @@
 title: Add this week's lessons to `chitty guide plan`
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -61,3 +60,4 @@ Updated src/chitty/roles/plan.md with the four cold-read lessons, preserved the 
 - 2026-11-06T16:24:03Z mellow-dormouse doing → review
 - 2026-11-06T16:46:02Z jolly-quail: changed notes
 - 2026-11-06T16:46:02Z jolly-quail review → done
+- 2026-11-11T10:17:50Z vivid-yellowhammer: changed parent

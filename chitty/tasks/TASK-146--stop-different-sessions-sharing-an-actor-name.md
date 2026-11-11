@@ -5,7 +5,6 @@ labels:
   - bug
 priority: low
 owner: human
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -34,3 +33,4 @@ Parked on 2026-11-04: the human added names, so there are now 25 of each and 625
 - 2026-11-04T12:41:27Z lively-panda: changed description, acceptance criteria, notes
 - 2026-11-04T14:36:52Z mellow-newt: changed priority, owner, notes
 - 2026-11-04T14:36:52Z mellow-newt todo → backlog
+- 2026-11-11T10:17:23Z vivid-yellowhammer: changed parent

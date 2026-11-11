@@ -4,7 +4,6 @@ status: backlog
 priority: high
 depends_on:
   - TASK-104
-parent: TASK-106
 created: 2026-11-03
 ---
 
@@ -30,3 +29,4 @@ Observations are optional. Agents asked for feedback tend to invent some, so the
 ## History
 
 - 2026-11-03T10:45:23Z lively-panda → backlog
+- 2026-11-11T10:17:18Z vivid-yellowhammer: changed parent

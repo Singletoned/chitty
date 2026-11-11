@@ -98,10 +98,12 @@ class TestSetupVersion(CliTestCase):
     def test_warns_for_missing_older_and_newer_setup_versions(self):
         config = self.root / "chitty.toml"
         original = config.read_text()
+        # Derive "newer" from the running version: a fixed one goes stale on release.
+        newer = f"{int(CHITTY_VERSION.split('.')[0]) + 1}.0.0"
         cases = (
             (None, "re-run `chitty init`"),
             ("0.1.9", "re-run `chitty init`"),
-            ("0.1.100", "upgrade chitty"),
+            (newer, "upgrade chitty"),
             ("1.0rc1", "recorded version cannot be read"),
         )
         line = f'chitty_version = "{CHITTY_VERSION}"\n'
@@ -935,6 +937,24 @@ class TestImport(CliTestCase):
 
 
 class TestInbox(CliTestCase):
+    def test_unimportable_suggestions_are_rejected_without_poisoning_pull(self):
+        self.run_cli("init")
+        invalid = (
+            ("\u2028", "description"),
+            ("Ends in ---", "description"),
+            ("Setext", "text\n---"),
+        )
+        inbox = Path.home() / ".local/share/chitty/inbox" / self.root.name
+        for title, description in invalid:
+            with self.subTest(title=title, description=description):
+                self.run_cli("suggest", self.root.name, title, "-d", description, exit_code=1)
+                self.assertEqual(list(inbox.glob("suggestion-*.md")), [])
+
+        self.run_cli("suggest", self.root.name, "Importable", "-d", "description")
+        pulled = self.run_cli("inbox", "--pull")
+        self.assertIn("pulled TASK-1", pulled.stdout)
+        self.assertEqual(list(inbox.glob("suggestion-*.md")), [])
+
     def test_inbox_lists_and_pulls_suggestions(self):
         self.run_cli("init")
         self.run_cli("suggest", self.root.name, "Waiting", "-d", "Inbox description")
@@ -1273,12 +1293,15 @@ class TestAddShowList(CliTestCase):
         )
         empty = self.run_cli("list", "-c", "human")
         self.assertEqual(empty.stdout, "")
-        self.assertIn("no tasks: contexts=human; statuses=todo,doing,blocked,review", empty.stderr)
+        self.assertIn(
+            "no tasks: contexts=human; statuses=planning,cold-read,todo,doing,blocked,review",
+            empty.stderr,
+        )
         self.assertEqual(self.json("list", "-c", "human"), [])
         help_text = self.run_cli("list", "--help").stdout
         self.assertNotIn("--archived", help_text)
         self.assertIn("Every status (never archived tasks).", help_text)
-        self.assertIn("todo, doing, blocked, and review", help_text)
+        self.assertIn("cold-read", help_text)
 
     def test_parent_groups_tasks(self):
         self.run_cli("add", "Parent", "-d", "x")
@@ -1479,6 +1502,29 @@ class TestEdit(CliTestCase):
         self.run_cli("add", "Task", "-d", "Describe.", "--ac", "One", "--ac", "Two", "-l", "a")
         self.path = self.root / "chitty/tasks/TASK-1--task.md"
 
+    def test_description_headings_cannot_create_sections(self):
+        before = self.path.read_text()
+        result = self.run_cli("edit", "1", "-d", "Text.\n\n## Plan\nInjected.", exit_code=1)
+        self.assertIn("use ###", result.stderr)
+        self.assertEqual(self.path.read_text(), before)
+
+        self.run_cli("edit", "1", "-d", "Text.\n\n### Plan\nKept here.")
+        self.assertIn("### Plan", self.json("show", "1")["description"])
+
+    def test_replace_in_description_requires_exactly_one_nonempty_match(self):
+        before = self.path.read_text()
+        self.run_cli("edit", "1", "--replace-in-description", "Describe", "Explain here")
+        self.assertEqual(self.json("show", "1")["description"], "Explain here.")
+        for old, count in (("absent", "0"), ("e", "2")):
+            snapshot = self.path.read_text()
+            result = self.run_cli("edit", "1", "--replace-in-description", old, "x", exit_code=1)
+            self.assertIn(count, result.output)
+            self.assertEqual(self.path.read_text(), snapshot)
+        snapshot = self.path.read_text()
+        self.run_cli("edit", "1", "--replace-in-description", "", "x", exit_code=1)
+        self.assertEqual(self.path.read_text(), snapshot)
+        self.assertNotEqual(before, self.path.read_text())
+
     def test_edit_everything(self):
         result = self.run_cli(
             "edit",
@@ -1542,6 +1588,25 @@ class TestEdit(CliTestCase):
     def test_edit_appends_repeated_notes_in_order(self):
         self.run_cli("edit", "1", "--note", "First.", "--note", "Second.")
         self.assertEqual(self.json("show", "1")["notes"], "First.\n\nSecond.")
+
+    def test_edit_replaces_notes_and_records_history(self):
+        self.run_cli("add", "Notes", "-d", "x", "--note", "First", "--note", "Second")
+        self.run_cli("edit", "1", "--set-notes", "Only this")
+        shown = self.run_cli("show", "1").stdout
+        self.assertIn("## Notes\n\nOnly this", shown)
+        self.assertIn("replaced notes", shown)
+        self.run_cli("edit", "1", "--set-notes", "")
+        self.assertNotIn("## Notes", self.run_cli("show", "1").stdout)
+
+    def test_set_notes_rejects_append_and_review_without_writing(self):
+        self.run_cli("add", "Notes", "-d", "x", "--note", "First")
+        before = self.run_cli("show", "1").stdout
+        self.run_cli("edit", "1", "--set-notes", "Replacement", "--note", "Append", exit_code=1)
+        self.assertEqual(self.run_cli("show", "1").stdout, before)
+        self.run_cli("edit", "1", "-s", "review")
+        before = self.run_cli("show", "1").stdout
+        self.run_cli("edit", "1", "--set-notes", "Replacement", exit_code=1)
+        self.assertEqual(self.run_cli("show", "1").stdout, before)
 
     def test_edit_sets_criterion_in_place_and_unticks_it(self):
         self.run_cli("edit", "1", "--ac", "Three")
@@ -1674,11 +1739,11 @@ class TestEdit(CliTestCase):
             ("edit", "1", "--check", "3"): "there are 2",
             ("edit", "1", "--rm-label", "zzz"): "no label 'zzz'",
             ("edit", "1", "-p", "urgent"): "low, medium, high",
-            ("edit", "1", "-d", ""): "'## Description' section is required",
+            ("edit", "1", "-d", ""): "use ###",
             ("edit", "1", "--plan", "x", "--plan-file", "-"): "not both",
             ("edit", "9", "-s", "done"): "no task TASK-9",
             ("edit", "1", "--depends-on", "TASK-9"): "no task TASK-9",
-            ("edit", "1", "--plan", "# Heading"): "'#' headings",
+            ("edit", "1", "--plan", "# Heading"): "use ###",
         }
         for args, message in cases.items():
             with self.subTest(args=args):
@@ -1803,6 +1868,60 @@ class TestCrossBranchWrites(CliTestCase):
         self.run_cli("note", "1", "Still on main.")
 
         self.assertIn("Still on main.", self.path.read_text())
+
+
+class TestColdReadBranchesAreNotTicketSources(CliTestCase):
+    def setUp(self):
+        super().setUp()
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("branch", "-M", "main")
+        self.run_cli("add", "Task", "-d", "Describe.")
+        self.commit("main task", seconds=1)
+        self.path = self.root / "chitty/tasks/TASK-1--task.md"
+
+    def git(self, *args: str) -> None:
+        subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
+
+    def commit(self, message: str, seconds: int) -> None:
+        stamp = f"2026-10-23T00:00:{seconds:02}+00:00"
+        self.git("add", "--all")
+        subprocess.run(
+            ["git", "commit", "--quiet", "-m", message],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+            env={**os.environ, "GIT_AUTHOR_DATE": stamp, "GIT_COMMITTER_DATE": stamp},
+        )
+
+    def make_newer_copy_on(self, branch: str) -> None:
+        self.git("checkout", "--quiet", "-b", branch)
+        self.path.write_text(self.path.read_text().replace("Describe.", "Newer copy."))
+        self.commit("newer copy", seconds=2)
+        self.git("checkout", "--quiet", "main")
+
+    def test_local_cold_read_branch_is_not_a_source(self):
+        self.make_newer_copy_on("cold-read/task-1/1")
+
+        result = self.run_cli("show", "1")
+
+        self.assertIn("Describe.", result.stdout)
+        self.assertNotIn("Newer copy.", result.stdout)
+
+    def test_remote_cold_read_branch_is_not_a_source(self):
+        self.make_newer_copy_on("cold-read/task-1/1")
+        self.git(
+            "update-ref",
+            "refs/remotes/origin/cold-read/task-1/1",
+            "cold-read/task-1/1",
+        )
+        self.git("branch", "-D", "cold-read/task-1/1")
+
+        result = self.run_cli("show", "1")
+
+        self.assertIn("Describe.", result.stdout)
+        self.assertNotIn("Newer copy.", result.stdout)
 
 
 class TestCheck(CliTestCase):
@@ -2046,7 +2165,8 @@ class TestGuide(CliTestCase):
     def test_rejects_unknown_roles_and_ticket_planning(self):
         unknown = self.run_cli("guide", "writer", exit_code=1)
         self.assertIn(
-            "unknown role 'writer'; choose from work, review, plan, cold-read", unknown.stderr
+            "unknown role 'writer'; choose from work, review, plan, cold-read, setup",
+            unknown.stderr,
         )
         plan_ticket = self.run_cli("guide", "plan", "TASK-42", exit_code=1)
         self.assertIn("does not take a ticket ID", plan_ticket.stderr)

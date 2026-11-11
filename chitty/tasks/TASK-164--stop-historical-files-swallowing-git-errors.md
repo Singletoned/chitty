@@ -4,7 +4,6 @@ status: done
 labels:
   - bug
 priority: high
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -44,3 +43,4 @@ Removed the broad ChittyError fallback from historical_files while preserving an
 - 2026-11-05T19:27:59Z brisk-newt doing → review
 - 2026-11-05T19:33:57Z nimble-vole: changed notes
 - 2026-11-05T19:33:57Z nimble-vole review → done
+- 2026-11-11T10:17:36Z vivid-yellowhammer: changed parent

@@ -2,7 +2,6 @@
 title: Count other branches' tickets when allocating an ID
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -53,3 +52,4 @@ Implemented branch-aware ID allocation in Repo.next_number by scanning committed
 - 2026-11-05T20:56:36Z lively-vole doing → review
 - 2026-11-05T20:59:43Z daring-heron: changed notes
 - 2026-11-05T20:59:43Z daring-heron review → done
+- 2026-11-11T10:17:43Z vivid-yellowhammer: changed parent

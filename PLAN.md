@@ -86,6 +86,17 @@ Milestones. Docs/decisions directories. Wizards. Shell completions (v1).
 Configurable statuses (v1). Moving tasks between repos. ID collision
 handling beyond reporting it.
 
+## Direction
+
+Stated by the human on 2026-11-10:
+
+- Short term, in order: stabilise, have agents write property tests, then run
+  agents in containers.
+- Long term: run both locally with worktrees and in a forge's runner pool.
+  Tickets stay files in git; the forge is only a remote and a runner pool.
+- So design changes to work from a fresh clone that pushes to a remote, as
+  well as from a local worktree. `../pithos/` has tried the container side.
+
 ## Layout
 
 ```
@@ -190,7 +201,9 @@ Free markdown, written by the agent before implementing.
 
 ## Notes
 
-Free markdown. Append-only by convention; not enforced.
+Free markdown. Append-only by convention except `chitty edit --set-notes` and
+`--set-notes-file`, which replace the section (`''` removes it). Replacement
+cannot be combined with append-note options and is forbidden during review.
 
 ## History
 
@@ -223,7 +236,7 @@ Frontmatter schema (strict: unknown keys are an error):
 | key          | type               | required | notes                                        |
 |--------------|--------------------|----------|----------------------------------------------|
 | `title`      | string             | yes      | non-empty, single line                       |
-| `status`     | `backlog\|todo\|doing\|blocked\|review\|done` | yes     | fixed in v1; backlog needs refinement; blocked needs a reason |
+| `status`     | `backlog\|planning\|cold-read\|todo\|doing\|blocked\|review\|done` | yes     | fixed in v1; backlog needs refinement; planning and cold-read are ticket-writing states; blocked needs a reason |
 | `labels`     | list[string]       | no       | absent ≡ `[]`                                |
 | `priority`   | `low\|medium\|high` | no      | absent means unset                           |
 | `owner`      | string             | no       | free text; `human`, a name, an agent         |
@@ -321,6 +334,11 @@ Serialisation is a patch over the original text, not parse-then-dump:
 Repository config is either `chitty.toml` at repo root (`chitty init` writes it)
 or a `[tool.chitty]` table in `pyproject.toml`; defining both is an error. Unknown
 configuration keys are ignored with a warning.
+
+Settings are optional, and their defaults keep existing behaviour, so no
+config needs migrating (decided with the human, 2026-11-06). Settings with no
+safe existing behaviour, such as `setup` and `agent_command`, fail loudly where
+`chitty run` uses them.
 
 ```toml
 format = 1
@@ -420,16 +438,17 @@ chitty list [-c CTX]... [-s STATUS]... [-l LABEL]... [--owner X] [--search TEXT]
 chitty show ID
 chitty edit ID [--title T] [-s STATUS] [--add-label L]... [--rm-label L]... [-p PRIO]
                  [--owner X] [--depends-on ID]... [--rm-depends-on ID]...
-                 [-d TEXT | --description-file F]
+                 [-d TEXT | --description-file F] [--replace-in-description OLD NEW]
                  [--ac TEXT]... [--set-ac N TEXT]... [--rm-ac N]... [--check N]... [--uncheck N]...
                  [--plan TEXT | --plan-file F] [--note TEXT] [--note-file F]
+                 [--set-notes TEXT | --set-notes-file F]
 chitty move ID CTX                 CTX must be in this repo; new ID, sets moved_from
 chitty renumber PATH               one of several files sharing an ID gets the next number
 chitty archive [ID]                  omit ID to archive every done task
 chitty check [-c CTX] [PATH]...    validate; non-zero on any error
 chitty fix [-c CTX] [PATH]...      repair safe problems; fail if any remain
 chitty path ID                     print the file path (for editors/agents)
-chitty guide                       print the agent instructions (the AGENTS.md block)
+chitty guide [setup|work|review|plan|cold-read] [ID]  print agent instructions; setup explains run configuration
 chitty mcp                         stdio MCP server (needs the mcp extra)
 ```
 
@@ -455,7 +474,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   It orders the selected statuses first, then `high`, `medium` (including
   unset priority), and `low` within each status; `--json` uses the same order.
   Human-readable rows show statuses as a glyph and at most five letters:
-  `💤 bklog`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, and `✅ done`, and
+  `💤 bklog`, `📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, and
+  `✅ done`, and
   priorities as `⬆️` high, `⏺️` medium, `⬇️` low, or blank when unset. Titles are
   cut with `…` so each row fits in `list_width` terminal columns, counting
   emoji as two; labels are kept whole. Rows skipped by `next`
@@ -463,6 +483,9 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   `⚠️`, whose message goes to stderr); the column appears only when a row needs
   it. Rows do not show the branch. JSON keeps status words and adds `skipped`,
   the full reason: `👤 human`, `🔒 waits on ID[, ID...]`, or `⚠️ <message>`.
+- Notes can be appended with `--note` or `--note-file`, or replaced with
+  `--set-notes` or `--set-notes-file`; empty replacement removes the section.
+  Replacement cannot be combined with append and is not allowed in review.
 - `Summary` is an optional final handoff section after Notes; set it with
   `edit --summary` when completing work.
 - `parent` is an optional full task ID for grouping flat tasks. `add` and
@@ -477,8 +500,8 @@ chitty mcp                         stdio MCP server (needs the mcp extra)
   when errors remain. It never rewrites warning-only Markdown; use backticks
   when literal Markdown delimiters denote code. Autocommit runs it on written
   task files first and is blocked only by errors.
-- `list` reads only non-archived tasks: by default it selects `todo`, `doing`,
-  `blocked`, and `review` tasks from every context; repeat `-c` to narrow contexts
+- `list` reads only non-archived tasks: by default it selects `planning`,
+  `cold-read`, `todo`, `doing`, `blocked`, and `review` tasks from every context; repeat `-c` to narrow contexts
   or `-s` to choose statuses, including `backlog` and `done`. `--all` selects every status
   but still excludes archive folders. An empty list reports its active filters
   on stderr while keeping stdout (including JSON) empty.
@@ -540,14 +563,17 @@ When starting an agent by hand, run the matching focused guide:
 ```
 
 That is the whole pointer prompt. The complete work, review, and planning rules
-live in the packaged role files printed by `chitty guide <role>`. Statuses are
-fixed, so the block is always correct. `chitty guide` prints the same unmarked
-block, and `chitty --help` points agents at it.
+live in the packaged role files printed by `chitty guide <role>`. `chitty guide
+setup` is a separate checklist for configuring `chitty run` from the main
+checkout, and `chitty guide --help` lists the roles with usage examples.
+Statuses are fixed, so the block is always correct. `chitty guide` prints the
+same unmarked block, and `chitty --help` points agents at it.
 
 ## Pipeline and feedback
 
-Direction, not current behaviour: TASK-109 pilots this by hand, and TASK-110
-builds only what the pilot justifies. Until then the statuses above stand.
+Direction, not current behaviour. The human dropped the spec-first pilot
+(TASK-109) on 2026-11-11; TASK-255 adds `planning` and `cold-read` statuses
+instead.
 
 ```
 backlog → design → tests → review-ticket → work → review-work → done
@@ -611,8 +637,17 @@ The planner's part lives in the planning role instructions printed by
 steps, is printed by `chitty guide cold-read <ID>`, so the planner starts a
 reader with that output instead of writing the steps out each time. Keep a new
 ticket in `backlog` until its cold read findings have outcomes, and only then
-move it to `todo`, because `chitty run` picks up anything in `todo`: `TASK-147`
+move it to `todo` (through `planning` and `cold-read` while it is written and
+read), because `chitty run` picks up anything in `todo`: `TASK-147`
 was claimed with a wrong fix while its cold read was still running.
+
+Planning practice in this repository (from the human):
+
+- Readers run on Haiku, to show what a weak model struggles with.
+- Ticket text is concise: tight sentences, bullets, the current decision only.
+  Git keeps the history.
+- While a planner's own subagent reviews a ticket, the ticket keeps an owner,
+  so `chitty run` leaves it alone.
 
 Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
 private helpers or mocks of our own code. Use a round-trip property for any
@@ -693,18 +728,26 @@ dependencies. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value. `--mode review` limits the
 choice to `review` tasks and `--mode work` to `doing` and `todo`, in the same
 order, filtering before dependencies are checked so a bad reference on a task
-in the other mode does not stop this one. With nothing left it prints `no next
-ticket` (or `no next ticket for --mode MODE`) to stderr and exits 3, a status of
+in the other mode does not stop this one. Repeating `--mode` allows each mode
+given, so `--mode work --mode review` allows both; with no `--mode`, every mode
+is allowed. With nothing left it prints `no next ticket` (or `no next ticket for
+--mode MODE`, with several modes joined by ` or `, such as `review or work`) to
+stderr and exits 3, a status of
 its own, so an idle reviewer is distinguishable from a broken one, which exits
 1. An idle queue includes one where every `todo` task waits on a dependency.
 `chitty run` exits 3 in the same case. The MCP tool keeps the default.
 
+A plain `chitty run` first retries landing non-archived `done` tickets that
+still have a local branch named for their ID, in ID order. It stops after the
+first landing and exits successfully; the next invocation refreshes setup before
+selecting an agent ticket. `--ticket` skips this recovery pass.
+
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
 Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips owned `todo` and `doing` tickets, while still selecting owned `review` tickets; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.
-`chitty run --mode MODE` selects as `chitty next --mode MODE` does, and is
-refused with `--ticket` before anything else runs, because the ticket already
-decides its mode.
+`chitty run --mode MODE` selects as `chitty next --mode MODE` does, including
+repeated `--mode` options, and is refused with `--ticket` before anything else
+runs, because the ticket already decides its mode.
 The command may include `{prompt}` as a single argument;
 Chitty fills it with the role-specific `chitty guide <mode> <ID>` output after
 splitting the command. It finds the main checkout even when invoked from another
@@ -724,13 +767,16 @@ and without a configured default the invocation is unchanged. Commands receiving
 a default must accept the agent CLI option `--model`; Chitty has no `--model`
 option of its own. It reopens the ticket worktree after the agent
 exits and succeeds only if the task's committed status changed. This makes
-`while chitty run; do :; done` a safe unattended loop that stops when the queue
-is empty. To wait out an idle queue instead, treat exit 3 as success:
-`while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done` runs until
-something fails. `chitty run` checks its configuration, refreshes setup
-before selecting, so each idle pass does that, and a broken
-configuration exits 1, not 3. An agent's or setup's own exit status always
-surfaces as 1. Interrupting setup or the agent exits 130 without a traceback.
+`chitty run --loop --mode work -- --model MODEL` keeps running, waiting 60
+seconds after each successful run or idle queue before trying again. Each
+attempt starts a fresh `chitty run` process so a completed landing cannot leave
+the next ticket running with code loaded before that landing. It accepts
+`--mode`, `--owner`, `--agent`, and forwarded agent arguments; `--ticket` cannot
+be used with `--loop`. Without `--loop`, an idle queue still exits 3. Each loop
+pass checks configuration and refreshes setup before selecting, so a broken
+configuration stops the loop with exit 1. An agent's or setup's own failure
+also stops it with exit 1. Interrupting the agent, setup, or idle wait stops
+with exit 130 without a traceback.
 
 Before a review (decided with the human, 2026-11-03), after the run's actor is
 set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly
@@ -738,8 +784,9 @@ what would land:
 
 1. An unfinished merge or rebase, for example after a crash, is a loud error for
    the human, with no status change.
-2. Uncommitted changes, including untracked but not ignored files, move the
-   ticket to `doing` with `Review failed (work): ...` listing them.
+2. Uncommitted changes, including untracked but not ignored files, block the
+   ticket for `human` immediately with `Review blocked (work): ...` listing
+   them. No reviewer starts and the human decides when to resume.
 3. It merges the local `main` into the branch. On a conflict it runs
    `git merge --abort` and moves the ticket to `doing` with `Review failed
    (integration): ...` naming the conflicting files, for the worker to resolve
@@ -747,7 +794,9 @@ what would land:
    resolution Git recorded for another branch is never replayed unchecked.
 4. Only then does `setup` run, because the merge can change dependencies.
 5. `check` runs in the ticket worktree after setup, with combined output
-   captured. In review mode, a failure moves the ticket to `doing` with the last
+   captured. If setup or check leaves uncommitted files in review mode, block
+   for `human` before launching the reviewer. Otherwise a check failure moves
+   the ticket to `doing` with the last
    20 output lines, fenced as a code block so they cannot break the ticket's
    Markdown, in a `Review failed (work)` note and starts no agent. In work mode,
    a `doing` ticket gets a note-only `Check failed before this session: ...`
@@ -756,7 +805,14 @@ what would land:
    agent. In all work-mode cases setup and check still run before the agent
    claim.
 
-A review check failure starts no agent, writes no usage line, and `chitty run`
+Entering `review` or passing it to `done` through the shared store requires
+a clean current worktree; a dirty branch may still be moved to `blocked` for
+human resolution. `chitty check` reports dirty files on the current ticket
+branch while in
+review, but allows dirty `doing` work during development. Direct manual
+reviewers also check `git status --short` first and block dirty tickets for
+`human` rather than returning them to a worker. A review check failure starts
+no agent, writes no usage line, and `chitty run`
 exits 0 because the status changed, printing the change. The move goes through
 `Repo.edit` under the run's own actor, which never worked on the ticket, so it
 counts with reviewers' failures towards `REVIEW_FAILURE_LIMIT`. A work-mode
@@ -769,6 +825,8 @@ or worktrees. On a pass, `chitty run` lands by fast-forwarding `main` after the
 branch has been integrated with `main` and configured checks pass. Without
 `chitty run`, merge `main` into the ticket branch in its worktree, run the
 configured checks, and only then fast-forward `main`.
+
+The optional root-level `agent_timeout` is a non-negative TOML integer in seconds. It defaults to 7200; `0` disables the limit. On expiry, `chitty run` terminates the agent and its descendants, then escalates from `SIGTERM` to `SIGKILL` after a short grace period, reports `agent timed out after N seconds`, and exits 1. The agent remains in the runner's process group and session so terminal input and Ctrl-C behave normally. Timeout is an agent failure: the run is logged and `--loop` stops.
 
 Each agent session appends one JSON line to the machine-local usage log at
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory

@@ -104,7 +104,25 @@ def is_locked(root: Path, task_id: str) -> bool:
 
 
 def holder(root: Path, task_id: str) -> dict[str, Any] | None:
-    """Return the held lock record, including for a lock held by this process."""
+    """Return the held lock record, including for a lock held by this process.
+
+    The record gains `you`: true when its actor is this session's `CHITTY_ACTOR`,
+    so a worker does not mistake its own parent's lock for a rival's.
+    """
+    record = _record(root, task_id)
+    if record is None:
+        return None
+    return {**record, "you": _is_you(record)}
+
+
+def _is_you(record: dict[str, Any]) -> bool:
+    # Read the variable directly: `actor()` raises when no identity is set, and
+    # a record without an actor (a bare pid) is never this session's.
+    session = os.environ.get("CHITTY_ACTOR")
+    return bool(session) and record.get("actor") == session
+
+
+def _record(root: Path, task_id: str) -> dict[str, Any] | None:
     if not is_locked(root, task_id):
         return None
     directory = _directory(root)

@@ -4,7 +4,6 @@ status: done
 labels:
   - bug
 priority: low
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -53,3 +52,4 @@ Verified handoff: the real inbox listing was unchanged by a complete make check 
 - 2026-11-06T00:32:24Z youthful-crane doing → review
 - 2026-11-06T15:10:46Z mellow-zander: changed notes
 - 2026-11-06T15:10:46Z mellow-zander review → done
+- 2026-11-11T10:17:42Z vivid-yellowhammer: changed parent

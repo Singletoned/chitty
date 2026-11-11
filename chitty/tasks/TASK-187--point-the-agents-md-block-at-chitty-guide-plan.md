@@ -2,7 +2,6 @@
 title: Point the `AGENTS.md` block at `chitty guide plan`
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -50,3 +49,4 @@ Implemented and committed in `8430ca2`. Added the `chitty guide plan` pointer to
 - 2026-11-05T21:18:29Z quick-toad doing → review
 - 2026-11-05T22:12:39Z lively-newt: changed notes
 - 2026-11-05T22:12:39Z lively-newt review → done
+- 2026-11-11T10:17:47Z vivid-yellowhammer: changed parent

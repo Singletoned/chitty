@@ -9,13 +9,18 @@ task files. `chitty --help` is the full command reference.
   in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Never review work you did. Review in the ticket's branch worktree, independently
   inspecting the ticket, every acceptance criterion, changes, and verification.
+  First run `git status --short`. If the branch has uncommitted changes, do not
+  inspect or fix them: record the paths and reason in a note, set `-s blocked`
+  and `--owner human`, then stop. A review branch must be clean; a human decides
+  how to resolve it and when to resume.
+- Read and change only files inside the ticket's worktree, including scratch files; do not touch the main checkout, other worktrees or files elsewhere on the machine. Reading other branches through Git or `chitty` is fine, such as `git diff main...`.
 - Verify first, then tick every verified criterion and add your note in one
   `chitty edit`, using repeated --check options, rather than one call for each.
 - Request several reads in one call when none depends on another.
 - Run the repository's format and check commands in one shell call, joined with
   `&&`.
-- With autocommit = true, Chitty commits its own writes, so `git status` or
-  `git add` after one is not needed.
+- With `autocommit = true`, Chitty commits its own ticket-file edits, not code
+  or tests. Do not assume this cleans the worktree.
 - Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
   if nothing exercises it, if a file it needs is missing, or if the environment
   stopped you verifying it. A ticket that is itself wrong also fails, with the
@@ -24,7 +29,8 @@ task files. `chitty --help` is the full command reference.
   Reasoning alone demonstrates nothing: if you can run the code but cannot show
   the defect, file a ticket instead of failing. File a ticket for other findings
   too.
-- On failure, write one note in the form `Review failed (<cause>): ...`, where
+- Except for uncommitted changes, on failure write one note in the form
+  `Review failed (<cause>): ...`, where
   the cause is the earliest stage that should have caught it: `design`, `tests`,
   `work`, `integration` (branch, merge, environment), or `review`. Explain what
   must change and `--uncheck` every failed criterion. Set `-s doing`. Every

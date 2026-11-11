@@ -2,7 +2,6 @@
 title: Give each role its own instructions, outside `AGENTS.md`
 status: backlog
 priority: medium
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -29,3 +28,4 @@ Split on 2026-11-04 with the human's agreement, into `TASK-141`, `TASK-142` and 
 
 - 2026-11-04T10:09:08Z lively-panda → backlog
 - 2026-11-04T11:56:20Z lively-panda: changed notes
+- 2026-11-11T10:17:20Z vivid-yellowhammer: changed parent

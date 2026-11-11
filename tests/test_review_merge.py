@@ -140,6 +140,55 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         self.assertTrue(_changed_agents_block(self.root))
 
+    def test_main_only_managed_block_change_does_not_change_branch(self):
+        self.branch_for_review()
+        agents = self.root / "AGENTS.md"
+        agents.write_text(
+            agents.read_text().replace(
+                "Tasks live in `chitty/`; use the `chitty` CLI or MCP, and do not hand-edit",
+                "Tasks live in `tickets/`; use the `chitty` CLI or MCP, and do not hand-edit",
+            )
+        )
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "refresh managed guide")
+        self.git("switch", "--quiet", "task-1")
+
+        self.assertFalse(_changed_agents_block(self.root))
+
+    def test_branch_managed_block_change_is_detected_after_main_changes_too(self):
+        self.branch_for_review()
+        self.git("switch", "--quiet", "task-1")
+        agents = self.root / "AGENTS.md"
+        branch_text = agents.read_text()
+        changed_branch_text = branch_text.replace(
+            "Tasks live in `chitty/`", "Tasks live in `branch-tickets/`"
+        )
+        self.assertNotEqual(branch_text, changed_branch_text)
+        agents.write_text(changed_branch_text)
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "change branch managed guide")
+        self.git("switch", "--quiet", "main")
+        agents.write_text(self.git("show", "main:AGENTS.md"))
+        main_text = agents.read_text()
+        agents.write_text(
+            main_text.replace("<!-- chitty:end -->", "Main refresh.\n<!-- chitty:end -->")
+        )
+        self.git("add", "AGENTS.md")
+        self.git("commit", "--quiet", "-m", "refresh main managed guide")
+        self.git("switch", "--quiet", "task-1")
+        agents.write_text(self.git("show", "task-1:AGENTS.md"))
+
+        self.assertNotEqual(
+            self.git("show", "task-1:AGENTS.md"),
+            self.git("show", "main:AGENTS.md"),
+        )
+        merge_base = self.git("merge-base", "main", "task-1").strip()
+        self.assertNotEqual(
+            self.git("show", f"{merge_base}:AGENTS.md"),
+            self.git("show", "task-1:AGENTS.md"),
+        )
+        self.assertTrue(_changed_agents_block(self.root, "main"))
+
     def test_managed_block_change_fails_without_starting_review(self):
         self.branch_for_review()
         self.git("switch", "--quiet", "task-1")
@@ -297,7 +346,7 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertIn("Review failed (integration):", notes)
         self.assertIn("`shared.txt`", notes)
 
-    def test_uncommitted_files_move_the_ticket_to_doing_without_starting_the_agent(self):
+    def test_uncommitted_files_block_for_human_without_starting_the_agent(self):
         self.branch_for_review()
         self.git("worktree", "add", "--quiet", str(self.worktree), "task-1")
         (self.worktree / "work.txt").write_text("changed\n")
@@ -305,10 +354,13 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → blocked")
         self.assertFalse((self.logs / "agent").exists())
-        notes = self.ticket().section("Notes") or ""
-        self.assertIn("Review failed (work):", notes)
+        ticket = self.ticket()
+        self.assertEqual(ticket.frontmatter.owner, "human")
+        notes = ticket.section("Notes") or ""
+        self.assertIn("Review blocked (work):", notes)
+        self.assertIn("human", notes)
         self.assertIn("`stray.txt`", notes)
         self.assertIn("`work.txt`", notes)
 
@@ -330,8 +382,87 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
-        self.assertIn("Review failed (work):", self.ticket().section("Notes") or "")
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → blocked")
+        self.assertEqual(self.ticket().frontmatter.owner, "human")
+        self.assertIn("Review blocked (work):", self.ticket().section("Notes") or "")
+
+    def test_check_that_dirties_review_worktree_blocks_before_agent(self):
+        self.branch_for_review()
+        check_script = self.tmp / "landing_check.py"
+        check_script.write_text(
+            check_script.read_text() + "Path('check-created.txt').write_text('left over')\n"
+        )
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → blocked")
+        self.assertEqual(self.ticket().frontmatter.owner, "human")
+        self.assertFalse((self.logs / "agent").exists())
+        self.assertIn("`check-created.txt`", self.ticket().section("Notes") or "")
+
+    def test_dirty_branch_cannot_enter_review_until_committed(self):
+        self.git("switch", "--quiet", "-c", "task-1")
+        self.run_cli("edit", "1", "-s", "doing")
+        (self.root / "untracked.txt").write_text("unfinished\n")
+        self.run_cli("check")  # Work can be checked before the changes are committed.
+
+        rejected = self.run_cli("edit", "1", "-s", "review", exit_code=1)
+        self.assertIn("uncommitted changes", rejected.output)
+        self.assertIn("untracked.txt", rejected.output)
+        self.assertEqual(
+            Repo.open(self.root).find(Repo.open(self.root).resolve("1")).task.frontmatter.status,
+            "doing",
+        )
+
+        self.git("add", "untracked.txt")
+        staged = self.run_cli("edit", "1", "-s", "review", exit_code=1)
+        self.assertIn("untracked.txt", staged.output)
+        self.git("commit", "--quiet", "-m", "finish work")
+        self.run_cli("edit", "1", "-s", "review")
+
+    def test_dirty_review_worktree_cannot_be_marked_done_but_can_be_blocked(self):
+        self.branch_for_review()
+        self.git("worktree", "add", "--quiet", str(self.worktree), "task-1")
+        (self.worktree / "untracked.txt").write_text("unfinished\n")
+        os.chdir(self.worktree)
+        try:
+            rejected = self.run_cli(
+                "edit",
+                "1",
+                "-s",
+                "done",
+                "--note",
+                "Reviewed: ready.",
+                "--override-review-independence",
+                exit_code=1,
+            )
+            self.assertIn("uncommitted changes", rejected.output)
+            self.run_cli(
+                "edit",
+                "1",
+                "-s",
+                "blocked",
+                "--owner",
+                "human",
+                "--note",
+                "Review blocked (work): untracked.txt needs human resolution.",
+            )
+        finally:
+            os.chdir(self.root)
+        self.assertEqual(self.ticket().frontmatter.owner, "human")
+        self.assertEqual(self.ticket().frontmatter.status, "blocked")
+
+    def test_check_flags_a_review_worktree_that_became_dirty(self):
+        self.branch_for_review()
+        self.git("worktree", "add", "--quiet", str(self.worktree), "task-1")
+        (self.worktree / "untracked.txt").write_text("unfinished\n")
+        os.chdir(self.worktree)
+        try:
+            result = self.run_cli("check", exit_code=1)
+        finally:
+            os.chdir(self.root)
+        self.assertIn("review worktree has uncommitted changes", result.output)
+        self.assertIn("untracked.txt", result.output)
 
     def test_a_manual_review_failure_still_requires_verdict_lines(self):
         self.run_cli("edit", "1", "--ac", "It works")

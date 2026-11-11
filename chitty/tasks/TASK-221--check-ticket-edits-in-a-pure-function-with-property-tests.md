@@ -4,7 +4,6 @@ status: done
 labels:
   - spec-first
 priority: medium
-parent: TASK-106
 created: 2026-11-06
 ---
 
@@ -76,3 +75,4 @@ Implemented pure edit validation in src/chitty/store.py, with run.py helpers cla
 - 2026-11-06T20:49:37Z youthful-heron doing → review
 - 2026-11-06T21:06:32Z jolly-puffin: changed notes; ticked acceptance criteria
 - 2026-11-06T21:06:32Z jolly-puffin review → done
+- 2026-11-11T10:18:02Z vivid-yellowhammer: changed parent

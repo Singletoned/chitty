@@ -2,7 +2,6 @@
 title: Cover `pyproject.toml` in newer-key tests, and stop version parsing failing reads
 status: done
 priority: low
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -50,3 +49,4 @@ Implemented coverage for newer unknown keys in chitty.toml and pyproject.toml, i
 - 2026-11-06T10:00:07Z youthful-toad: changed owner, notes
 - 2026-11-06T10:05:00Z youthful-toad: changed owner, notes
 - 2026-11-06T10:05:00Z youthful-toad review → done
+- 2026-11-11T10:17:46Z vivid-yellowhammer: changed parent

@@ -1,6 +1,8 @@
 ---
 title: Rename status `todo` to `ready`
 status: backlog
+labels:
+  - needs-discussion
 depends_on:
   - TASK-70
   - TASK-74
@@ -15,3 +17,4 @@ Status order is the direction of travel (TASK-70), and Kanban calls the column o
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-11T10:17:04Z vivid-yellowhammer: changed labels

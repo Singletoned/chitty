@@ -99,7 +99,11 @@ def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
 
 
 def fix(
-    repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]
+    repo: Repo,
+    contexts: Sequence[Context],
+    paths: Sequence[Path],
+    *,
+    include_worktree_state: bool = True,
 ) -> tuple[list[Problem], list[Problem]]:
     """Repair safe problems, then return repairs and remaining problems."""
     repo.prepare_write()
@@ -135,10 +139,16 @@ def fix(
                     fixed.append(Problem(path, f"rewrote {field} as upper-case"))
                 except ChittyError:
                     continue
-    return fixed, check(repo, contexts, paths)
+    return fixed, check(repo, contexts, paths, include_worktree_state=include_worktree_state)
 
 
-def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> list[Problem]:
+def check(
+    repo: Repo,
+    contexts: Sequence[Context],
+    paths: Sequence[Path],
+    *,
+    include_worktree_state: bool = True,
+) -> list[Problem]:
     """Problems in the given contexts, or only in the given paths if any are given.
 
     References are always resolved against the whole repo.
@@ -170,6 +180,25 @@ def check(repo: Repo, contexts: Sequence[Context], paths: Sequence[Path]) -> lis
                         )
                 except ChittyError as error:
                     problems.append(Problem(path, str(error)))
+    # A working branch may be dirty during development, but not while its
+    # ticket is in review. Do not report other worktrees' changes from main.
+    if (
+        include_worktree_state
+        and (repo.root / ".git").exists()
+        and (branch := git.current_branch(repo.root))
+    ):
+        reviewed = [
+            path
+            for path, task in tasks.items()
+            if task.frontmatter.status == "review"
+            and str(ids.parse_filename(path.name)[0]).lower() == branch.lower()
+        ]
+        if reviewed and (uncommitted := git.uncommitted_paths(repo.root)):
+            listed = ", ".join(f"`{path}`" for path in uncommitted)
+            problems.extend(
+                Problem(path, f"review worktree has uncommitted changes: {listed}")
+                for path in reviewed
+            )
     for task_id, task_paths in by_id.items():
         if len(task_paths) > 1:
             others = ", ".join(str(p) for p in task_paths)

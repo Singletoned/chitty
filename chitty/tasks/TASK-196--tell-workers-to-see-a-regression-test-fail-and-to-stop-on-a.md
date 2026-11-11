@@ -2,7 +2,6 @@
 title: Tell workers to see a regression test fail, and to stop on a wrong ticket
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -61,3 +60,4 @@ Added the regression-test failure and wrong-ticket blocking guidance before the 
 - 2026-11-06T10:00:10Z youthful-toad: changed owner, notes
 - 2026-11-06T10:06:00Z youthful-toad: changed owner, notes; overrode review independence
 - 2026-11-06T10:06:00Z youthful-toad review → done
+- 2026-11-11T10:17:57Z vivid-yellowhammer: changed parent

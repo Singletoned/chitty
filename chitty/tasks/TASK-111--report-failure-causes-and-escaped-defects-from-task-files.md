@@ -2,9 +2,6 @@
 title: Report failure causes and escaped defects from task files
 status: backlog
 priority: medium
-depends_on:
-  - TASK-109
-parent: TASK-106
 created: 2026-11-03
 ---
 
@@ -23,3 +20,5 @@ The report should also read the `TASK-127` log, for cost per accepted ticket inc
 - 2026-11-03T10:27:48Z lively-panda → backlog
 - 2026-11-03T10:28:28Z lively-panda: changed dependencies
 - 2026-11-03T16:46:08Z lively-panda: changed notes
+- 2026-11-11T10:17:15Z vivid-yellowhammer: changed parent
+- 2026-11-11T10:18:13Z vivid-yellowhammer: changed dependencies

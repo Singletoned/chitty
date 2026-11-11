@@ -32,6 +32,7 @@ from chitty.inbox import suggest as send_suggestion
 from chitty.integrations.claude.usage import run_hook
 from chitty.model import (
     ACCEPTANCE_CRITERIA,
+    DEFAULT_LIST_STATUSES,
     FIELD_ORDER,
     PRIORITIES,
     PRIORITY_GLYPHS,
@@ -40,7 +41,7 @@ from chitty.model import (
     STATUS_LABELS,
     STATUSES,
 )
-from chitty.run import RunInterrupted
+from chitty.run import RunInterrupted, run_loop
 from chitty.run import run as run_next
 from chitty.store import (
     BROKEN_DEPENDENCY_GLYPH,
@@ -98,8 +99,10 @@ def main() -> None:
 json_option = click.option("--json", "as_json", is_flag=True, help="Print JSON.")
 mode_option = click.option(
     "--mode",
+    "modes",
     type=click.Choice(["work", "review"]),
-    help="Choose only tickets to work (doing, todo) or only tickets to review.",
+    multiple=True,
+    help="Choose only tickets to work (doing, todo) or review. Repeat to allow both.",
 )
 
 
@@ -352,7 +355,10 @@ def add(
     "statuses",
     multiple=True,
     type=click.Choice(STATUSES),
-    help="Status to include (repeatable; defaults to todo, doing, blocked, and review).",
+    help=(
+        "Status to include (repeatable; defaults to planning, cold-read, todo, doing, "
+        "blocked, and review)."
+    ),
 )
 @click.option("-l", "--label", "labels", multiple=True, help="Only tasks with every label.")
 @click.option("--owner")
@@ -373,7 +379,7 @@ def list_(
     """List tasks, one per line."""
     repo = _repo()
     selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
-    selected_statuses = STATUSES if all_ else statuses or ("todo", "doing", "blocked", "review")
+    selected_statuses = STATUSES if all_ else statuses or DEFAULT_LIST_STATUSES
     parent = str(repo.resolve(parent)) if parent else None
     tasks = [
         task
@@ -445,9 +451,9 @@ def _shorten(title: str, room: int) -> str:
 @click.option("--owner", help="Choose tickets owned by this agent.")
 @mode_option
 @json_option
-def next_(mode: Literal["work", "review"] | None, as_json: bool, owner: str | None) -> None:
+def next_(modes: tuple[Literal["work", "review"], ...], as_json: bool, owner: str | None) -> None:
     """Print the next ticket to work or review."""
-    action = next_action(_repo(), mode=mode, owner=owner)
+    action = next_action(_repo(), modes=modes, owner=owner)
     if as_json:
         _print_json(action.as_dict())
     else:
@@ -464,6 +470,11 @@ def claude_usage_hook() -> None:
 @click.option("--ticket", metavar="ID", help="Run the next ticket, or the one named by --ticket.")
 @click.option("--owner", help="Choose tickets owned by this agent.")
 @click.option("--agent", metavar="NAME", help="Use the named command from [agent_commands].")
+@click.option(
+    "--loop",
+    is_flag=True,
+    help="Keep running; wait 60 seconds between attempts, including when idle. Stop on errors.",
+)
 @mode_option
 @click.pass_context
 def run(
@@ -471,20 +482,37 @@ def run(
     ticket: str | None,
     owner: str | None,
     agent: str | None,
-    mode: Literal["work", "review"] | None,
+    loop: bool,
+    modes: tuple[Literal["work", "review"], ...],
 ) -> None:
     """Run the next ticket, or the one named by --ticket; other arguments go to the agent."""
+    if loop and ticket is not None:
+        raise click.UsageError("--loop cannot be used with --ticket")
     try:
+        if loop:
+            options: list[str] = []
+            if owner is not None:
+                options.extend(("--owner", owner))
+            if agent is not None:
+                options.extend(("--agent", agent))
+            for mode in modes:
+                options.extend(("--mode", mode))
+            if ctx.args:
+                options.extend(("--", *ctx.args))
+            raise click.exceptions.Exit(run_loop(tuple(options)))
         result = run_next(
             _repo(warn_setup_version=False),
             ticket,
             tuple(ctx.args),
             agent=agent,
-            mode=mode,
+            modes=modes,
             owner=owner,
         )
     except RunInterrupted as interrupted:
         click.echo(f"interrupted during {interrupted.phase}", err=True)
+        raise click.exceptions.Exit(130) from None
+    except KeyboardInterrupt:
+        click.echo("interrupted while waiting for work", err=True)
         raise click.exceptions.Exit(130) from None
     click.echo(f"{result.action.id}: {result.old_status} → {result.new_status}")
 
@@ -523,9 +551,10 @@ def _running_line(record: dict[str, Any]) -> str:
         return f"process {pid}"
     started = datetime.fromisoformat(str(record["started"]))
     local_time = started.astimezone().strftime("%H:%M")
-    return (
-        f"{record.get('mode', 'unknown')} by {record['actor']}, process {pid}, since {local_time}"
-    )
+    mode = record.get("mode", "unknown")
+    if record["you"]:
+        return f"you ({record['actor']}, {mode}, process {pid}, since {local_time})"
+    return f"{mode} by {record['actor']}, process {pid}, since {local_time}"
 
 
 def _format(stored: StoredTask) -> str:
@@ -567,6 +596,7 @@ def _format(stored: StoredTask) -> str:
 @click.option("--parent", help="Parent task ID; '' unsets.")
 @click.option("-d", "--description", help="Replace the Description section.")
 @click.option("--description-file", type=click.File(), help="Read --description from a file.")
+@click.option("--replace-in-description", nargs=2, metavar="OLD NEW")
 @click.option("--ac", multiple=True, help="Append an acceptance criterion (repeatable).")
 @click.option("--rm-ac", type=int, multiple=True, help="Remove criterion N (repeatable).")
 @click.option(
@@ -578,6 +608,8 @@ def _format(stored: StoredTask) -> str:
 @click.option("--plan-file", type=click.File(), help="Read --plan from a file.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
 @click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
+@click.option("--set-notes", help="Replace the Notes section; '' removes it.")
+@click.option("--set-notes-file", type=click.File(), help="Read replacement Notes from a file.")
 @click.option("--summary", help="Replace the Summary section; '' removes it.")
 @click.option(
     "--override-review-independence",
@@ -598,6 +630,7 @@ def edit(
     parent: str | None,
     description: str | None,
     description_file: TextIO | None,
+    replace_in_description: tuple[str, str] | None,
     ac: tuple[str, ...],
     rm_ac: tuple[int, ...],
     set_ac: tuple[tuple[int, str], ...],
@@ -607,6 +640,8 @@ def edit(
     plan_file: TextIO | None,
     notes: tuple[str, ...],
     note_file: TextIO | None,
+    set_notes: str | None,
+    set_notes_file: TextIO | None,
     summary: str | None,
     override_review_independence: bool,
     as_json: bool,
@@ -624,6 +659,7 @@ def edit(
         rm_depends_on=rm_depends_on,
         parent=parent,
         description=_text(description, description_file, "description"),
+        replace_in_description=replace_in_description,
         add_criteria=ac,
         rm_criteria=rm_ac,
         set_criteria=set_ac,
@@ -631,6 +667,7 @@ def edit(
         uncheck=uncheck,
         plan=_text(plan, plan_file, "plan"),
         notes=(*notes, note_file.read()) if note_file is not None else notes,
+        set_notes=_text(set_notes, set_notes_file, "set-notes"),
         summary=summary,
         override_review_independence=override_review_independence,
     )
@@ -788,9 +825,21 @@ def archive(task_id: str | None, as_json: bool) -> None:
 
 @cli.command("guide")
 @click.argument("role", required=False)
-@click.argument("task_id", metavar="ID", required=False)
+@click.argument("task_id", metavar="[ID]", required=False)
 def guide_(role: str | None, task_id: str | None) -> None:
-    """Print general or role-specific instructions for coding agents."""
+    """Print general or role-specific instructions for coding agents.
+
+    \b
+    Examples:
+      chitty guide                    General agent instructions
+      chitty guide setup              Configure chitty run in a repository
+      chitty guide work TASK-12       Work on a ticket
+      chitty guide review TASK-12     Review a ticket
+      chitty guide plan               Write or refine tickets
+      chitty guide cold-read TASK-12  Cold-read a proposed ticket
+
+    Work, review and cold-read accept an optional ticket ID. Setup and plan do not.
+    """
     click.echo(guide(role, task_id), nl=False)
     if role is None and pi_session_environment_missing():
         click.echo(

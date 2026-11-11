@@ -2,7 +2,6 @@
 title: Stop agents reading the whole of `PLAN.md`
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -40,3 +39,4 @@ Updated AGENTS.md to locate PLAN.md headings with grep and read only the relevan
 - 2026-11-05T20:42:04Z calm-otter doing → review
 - 2026-11-05T20:47:36Z honest-stoat: changed notes
 - 2026-11-05T20:47:36Z honest-stoat review → done
+- 2026-11-11T10:17:41Z vivid-yellowhammer: changed parent

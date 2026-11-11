@@ -4,7 +4,6 @@ status: done
 priority: low
 depends_on:
   - TASK-159
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -44,3 +43,4 @@ Implemented the non-editable-install PyPI interval check. Commands without pendi
 - 2026-11-06T00:28:02Z jolly-ibis doing → review
 - 2026-11-06T14:52:07Z nimble-crane: changed notes
 - 2026-11-06T14:52:07Z nimble-crane review → done
+- 2026-11-11T10:17:35Z vivid-yellowhammer: changed parent

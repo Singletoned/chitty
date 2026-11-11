@@ -156,6 +156,8 @@ class TestAutocommit(CliTestCase):
         config.write_text(
             config.read_text().replace("[contexts.tasks]", 'archive = "delete"\n\n[contexts.tasks]')
         )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure delete mode")
         self.run_cli("add", "First done", "-d", "x")
         self.run_cli("add", "Second done", "-d", "x")
         self.run_cli("edit", "1", "-s", "review")

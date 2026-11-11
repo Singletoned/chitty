@@ -10,6 +10,7 @@ from unittest import mock
 
 from chitty.locks import is_locked, run_lock
 from tests.test_cli import CliTestCase
+from tests.test_mcp import call
 
 WAIT_SECONDS = 60
 POLL_SECONDS = 0.05
@@ -142,8 +143,40 @@ class TestRunLock(RunLockTestCase):
 
             lock_path = next((self.root / ".git/chitty/run").glob(f"{ticket}.lock"))
             lock_path.write_text("12345\n")
-            self.assertEqual(self.json("show", ticket)["running"], {"pid": "12345"})
+            self.assertEqual(self.json("show", ticket)["running"], {"pid": "12345", "you": False})
             self.assertIn("running: process 12345", self.run_cli("show", ticket).stdout)
+
+    def test_show_says_when_the_lock_is_its_own(self):
+        ticket = self.add("Mine")
+
+        with run_lock(self.root, ticket, actor="lively-adder", mode="work"):
+            with mock.patch.dict(os.environ, {"CHITTY_ACTOR": "lively-adder"}):
+                shown = self.run_cli("show", ticket).stdout
+                record = self.json("show", ticket)["running"]
+            self.assertIn("running: you (lively-adder, work,", shown)
+            self.assertIs(record["you"], True)
+
+            with mock.patch.dict(os.environ, {"CHITTY_ACTOR": "other-name"}):
+                shown = self.run_cli("show", ticket).stdout
+                record = self.json("show", ticket)["running"]
+            self.assertIn("running: work by lively-adder,", shown)
+            self.assertIs(record["you"], False)
+
+            with mock.patch.dict(os.environ):
+                del os.environ["CHITTY_ACTOR"]
+                record = self.json("show", ticket)["running"]
+            self.assertIs(record["you"], False)
+
+        self.assertIsNone(self.json("show", ticket)["running"])
+
+    def test_mcp_show_says_when_the_lock_is_its_own(self):
+        ticket = self.add("Mine over MCP")
+
+        with run_lock(self.root, ticket, actor="lively-adder", mode="work"):
+            with mock.patch.dict(os.environ, {"CHITTY_ACTOR": "lively-adder"}):
+                self.assertIs(call("show", id=ticket)["running"]["you"], True)
+            with mock.patch.dict(os.environ, {"CHITTY_ACTOR": "other-name"}):
+                self.assertIs(call("show", id=ticket)["running"]["you"], False)
 
     def test_next_skips_a_locked_ticket_and_run_ticket_refuses_it(self):
         first = self.add("First")

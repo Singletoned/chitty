@@ -1,6 +1,8 @@
 ---
 title: Define label conventions for review kind and difficulty
 status: backlog
+labels:
+  - needs-discussion
 created: 2026-11-01
 ---
 
@@ -11,3 +13,4 @@ Tasks need tags such as `@design-review` and `@code-review` (which kind of revie
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-11T10:17:05Z vivid-yellowhammer: changed labels

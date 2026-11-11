@@ -2,9 +2,9 @@ import os
 from pathlib import Path
 from unittest import mock
 
-from chitty.config import load_repo_config, register_project
+from chitty.config import inbox_path, load_repo_config, register_project
 from chitty.errors import ChittyError
-from chitty.inbox import pull, suggest
+from chitty.inbox import list_waiting, pull, suggest
 from chitty.store import Repo
 from tests.support import RepoTestCase
 
@@ -83,7 +83,7 @@ class TestInbox(RepoTestCase):
         repo = Repo(self.root, load_repo_config(self.root))
         configured = repo.config
 
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ChittyError, "invalid suggestion frontmatter"):
             pull(repo)
 
         self.assertTrue(path.exists())
@@ -158,6 +158,45 @@ class TestInbox(RepoTestCase):
             pull(repo)
 
         self.assertEqual(len(list((self.root / "chitty/tasks").glob("*.md"))), 2)
+
+    def test_suggestion_title_with_yaml_punctuation_round_trips(self):
+        title = 'Guide: a title, with: colons and "quotes"'
+        suggest("target", title, None, True, self.root)
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+
+        self.assertEqual(
+            list_waiting(Repo(self.root, load_repo_config(self.root)))[0]["title"], title
+        )
+
+    def test_suggestion_title_with_newline_is_rejected_without_writing(self):
+        with self.assertRaisesRegex(ChittyError, "one line"):
+            suggest("target", "Two\nlines", None, True, self.root)
+        self.assertEqual(list(inbox_path("target").glob("suggestion-*.md")), [])
+
+    def test_list_waiting_names_file_for_invalid_yaml_or_missing_delimiters(self):
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        repo = Repo(self.root, load_repo_config(self.root))
+        directory = inbox_path("target")
+        directory.mkdir(parents=True, exist_ok=True)
+        for name, content in (
+            ("invalid", "---\ntitle: Guide: broken\n---\n"),
+            ("missing", "title: broken\n"),
+        ):
+            path = directory / f"suggestion-{name}.md"
+            path.write_text(content)
+            with self.subTest(name=name), self.assertRaisesRegex(ChittyError, str(path)):
+                list_waiting(repo)
+            path.unlink()
 
     def enter_directory_containing_chitty(self):
         """Work from a directory with a `chitty/` folder, as every Chitty repo has."""

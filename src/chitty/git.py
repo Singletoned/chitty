@@ -138,15 +138,18 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     if not is_repository(root):
         return []
     refs = [
-        line.partition("\t")[0]
-        for line in _git(
-            root,
-            "for-each-ref",
-            "--format=%(refname)%09%(symref)",
-            "refs/heads",
-            "refs/remotes",
-        ).splitlines()
-        if not line.partition("\t")[2]
+        ref
+        for ref, symref in (
+            line.partition("\t")[::2]
+            for line in _git(
+                root,
+                "for-each-ref",
+                "--format=%(refname)%09%(symref)",
+                "refs/heads",
+                "refs/remotes",
+            ).splitlines()
+        )
+        if not symref and not _is_cold_read_ref(ref)
     ]
     if not refs:
         return []
@@ -247,6 +250,12 @@ def worktree_for_branch(root: Path, branch: str) -> Path | None:
         elif line == f"branch refs/heads/{branch}":
             return worktree
     return None
+
+
+def local_branches(root: Path) -> list[str]:
+    """Return local branch names, excluding remote refs."""
+    output = _git(root, "for-each-ref", "--format=%(refname:short)", "refs/heads")
+    return output.splitlines()
 
 
 def has_local_branch(root: Path, branch: str) -> bool:
@@ -352,6 +361,17 @@ def _read_blobs(
     return result
 
 
+def _is_cold_read_ref(ref: str) -> bool:
+    """Return whether a local or remote-tracking ref names a cold-read branch."""
+    if ref.startswith("refs/heads/"):
+        name = ref.removeprefix("refs/heads/")
+    elif ref.startswith("refs/remotes/"):
+        name = ref.removeprefix("refs/remotes/").partition("/")[2]
+    else:
+        return False
+    return name.startswith("cold-read/")
+
+
 def _display_ref(ref: str) -> str:
     for prefix in ("refs/heads/", "refs/remotes/"):
         if ref.startswith(prefix):
@@ -397,6 +417,25 @@ def _git_path(root: Path, argument: str) -> Path:
     value = _git(root, "rev-parse", argument).strip()
     path = Path(value)
     return (root / path).resolve() if not path.is_absolute() else path.resolve()
+
+
+def file_at_merge_base(root: Path, first_ref: str, second_ref: str, path: Path | str) -> str | None:
+    """Read a file at the merge-base of two refs, or report when none exists."""
+    result = subprocess.run(
+        ["git", "merge-base", first_ref, second_ref],
+        check=False,
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 1:
+        raise ChittyError(f"refs `{first_ref}` and `{second_ref}` have no merge-base")
+    if result.returncode:
+        raise ChittyError(
+            f"cannot find merge-base of `{first_ref}` and `{second_ref}` in {root}: "
+            f"{result.stderr.strip()}"
+        )
+    return file_at(root, result.stdout.strip(), path)
 
 
 def file_at(root: Path, ref: str, path: Path | str) -> str | None:

@@ -2,7 +2,6 @@
 title: Require evidence in a review that fails a ticket
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -160,3 +159,4 @@ Review-role evidence wording is present in the current main version of src/chitt
 - 2026-11-08T17:02:07Z calm-eel doing → review
 - 2026-11-08T17:12:51Z witty-eel: changed notes; ticked acceptance criteria
 - 2026-11-08T17:12:51Z witty-eel review → done
+- 2026-11-11T10:17:56Z vivid-yellowhammer: changed parent

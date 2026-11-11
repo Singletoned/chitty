@@ -28,12 +28,13 @@ from chitty.config import (
     usage_path,
     version_key,
 )
-from chitty.errors import ChittyError, ManagedGuideError
+from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError
 from chitty.store import (
     AGENTS_FILE,
     Edit,
     NextAction,
     Repo,
+    StoredTask,
     guide,
     managed_block,
     next_action,
@@ -42,6 +43,42 @@ from chitty.store import (
 
 # Each lost race removes a candidate, so a few attempts are plenty.
 RUN_LOCK_ATTEMPTS = 10
+RUN_LOOP_PAUSE_SECONDS = 60
+AGENT_KILL_GRACE_SECONDS = 2
+
+
+def agent_exit(
+    returncode: int, timed_out: bool
+) -> Literal["interrupted", "timed out", "failed", "ok"]:
+    if timed_out:
+        return "timed out"
+    if returncode == -signal.SIGINT:
+        return "interrupted"
+    if returncode:
+        return "failed"
+    return "ok"
+
+
+def status_outcome(old_status: str, new_status: str) -> Literal["unchanged", "land", "changed"]:
+    if old_status == new_status:
+        return "unchanged"
+    if new_status == "done":
+        return "land"
+    return "changed"
+
+
+def loop_step(returncode: int) -> tuple[bool, int]:
+    if returncode in (0, NO_NEXT_TICKET_EXIT):
+        return True, 0
+    return False, returncode if returncode > 0 else 128 - returncode
+
+
+def _command_environment() -> dict[str, str]:
+    """Copy the environment without shell-selected project virtualenvs."""
+    environment = os.environ.copy()
+    environment.pop("VIRTUAL_ENV", None)
+    environment.pop("UV_PROJECT_ENVIRONMENT", None)
+    return environment
 
 
 class RunInterrupted(Exception):
@@ -63,11 +100,11 @@ def run(
     ticket: str | None,
     arguments: tuple[str, ...] = (),
     agent: str | None = None,
-    mode: Literal["work", "review"] | None = None,
+    modes: tuple[Literal["work", "review"], ...] = (),
     owner: str | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
-    if mode is not None and ticket is not None:
+    if modes and ticket is not None:
         # A named ticket already decides its mode, so a mode could only disagree.
         raise ChittyError("--mode cannot be used with --ticket")
     if ticket is not None and owner is not None:
@@ -87,16 +124,124 @@ def run(
     if project is None:
         raise ChittyError("`chitty run` requires a project name after setup refresh")
 
+    if ticket is None:
+        landed = _land_pending(main_repo)
+        if landed is not None:
+            return landed
+
     with ExitStack() as held:
-        action = _lock_ticket(held, main_repo, ticket, mode, owner)
+        action = _lock_ticket(held, main_repo, ticket, modes, owner)
         return _run_ticket(main_repo, project, action, arguments, agent)
+
+
+def run_loop(arguments: tuple[str, ...]) -> int:
+    """Run each attempt in a fresh process so newly landed code is used."""
+    executable = Path(sys.executable).parent / "chitty"
+    if not executable.is_file():
+        raise ChittyError(f"runner chitty executable not found: {executable}")
+    while True:
+        completed = subprocess.run([str(executable), "run", *arguments], check=False)
+        keep_running, exit_code = loop_step(completed.returncode)
+        if not keep_running:
+            return exit_code
+        time.sleep(RUN_LOOP_PAUSE_SECONDS)
+
+
+def _run_agent(
+    command: list[str], *, cwd: Path, env: dict[str, str], timeout: int
+) -> subprocess.CompletedProcess[bytes]:
+    """Wait for an agent, terminating its process tree when its deadline expires."""
+    process = subprocess.Popen(command, cwd=cwd, env=env)
+    try:
+        process.wait(timeout=timeout or None)
+    except subprocess.TimeoutExpired:
+        descendants = _process_descendants(process.pid)
+        for pid in [*descendants, process.pid]:
+            _signal_process(pid, signal.SIGTERM)
+        grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
+        while time.monotonic() < grace_deadline:
+            remaining = _running_processes([*descendants, process.pid])
+            if not remaining:
+                break
+            time.sleep(min(0.05, grace_deadline - time.monotonic()))
+        for pid in _running_processes([*descendants, process.pid]):
+            _signal_process(pid, signal.SIGKILL)
+        process.wait()
+        return subprocess.CompletedProcess(command, process.returncode, stderr=b"timed out")
+    return subprocess.CompletedProcess(command, process.returncode)
+
+
+def _process_descendants(parent: int) -> list[int]:
+    """Return descendants from the system process table in parent-first order."""
+    result = subprocess.run(
+        ["ps", "-A", "-o", "pid=", "-o", "ppid="], capture_output=True, text=True, check=True
+    )
+    parents: dict[int, list[int]] = {}
+    for line in result.stdout.splitlines():
+        pid, ppid = (int(value) for value in line.split())
+        parents.setdefault(ppid, []).append(pid)
+    found: list[int] = []
+    pending = list(parents.get(parent, []))
+    while pending:
+        pid = pending.pop(0)
+        found.append(pid)
+        pending.extend(parents.get(pid, []))
+    return found
+
+
+def _running_processes(pids: list[int]) -> list[int]:
+    """Return requested PIDs that still have a live process-table entry."""
+    result = subprocess.run(
+        ["ps", "-A", "-o", "pid=", "-o", "stat="], capture_output=True, text=True, check=True
+    )
+    states = {
+        int(pid): state
+        for line in result.stdout.splitlines()
+        for pid, state in [line.split(maxsplit=1)]
+    }
+    return [pid for pid in pids if pid in states and not states[pid].startswith("Z")]
+
+
+def _signal_process(pid: int, sig: signal.Signals) -> None:
+    try:
+        os.kill(pid, sig)
+    except ProcessLookupError:
+        pass
+
+
+def _land_pending(main_repo: Repo) -> RunResult | None:
+    """Retry completed local ticket branches before choosing new work."""
+    tasks = {str(task.id).lower(): task.id for task in main_repo.all_tasks()}
+    pending: list[StoredTask] = []
+    for branch in git.local_branches(main_repo.root):
+        task_id = tasks.get(branch)
+        if task_id is None:
+            continue
+        stored = main_repo.find(task_id)
+        if not stored.archived and stored.task.frontmatter.status == "done":
+            pending.append(stored)
+    pending.sort(key=lambda stored: stored.id)
+    if not pending:
+        return None
+    setup = main_repo.config.setup
+    check = main_repo.config.check
+    assert setup is not None
+    assert check is not None
+    for stored in pending:
+        task_id = stored.id
+        action = NextAction("review", task_id)
+        worktree = _worktree(main_repo.root, action, main_repo.config.main_branch)
+        _land(main_repo, worktree, action, setup, check)
+        print(f"landed {task_id}")
+        return RunResult(action, "done", "done")
+    raise AssertionError("unreachable")
 
 
 def _lock_ticket(
     held: ExitStack,
     main_repo: Repo,
     ticket: str | None,
-    mode: Literal["work", "review"] | None,
+    modes: tuple[Literal["work", "review"], ...],
     owner: str | None,
 ) -> NextAction:
     """Choose the ticket and take its run lock, which `held` releases."""
@@ -107,7 +252,7 @@ def _lock_ticket(
         )
         return action
     for _ in range(RUN_LOCK_ATTEMPTS - 1):
-        action = next_action(main_repo, mode=mode, owner=owner)
+        action = next_action(main_repo, modes=modes, owner=owner)
         try:
             held.enter_context(
                 locks.run_lock(main_repo.root, str(action.id), actor=actor(), mode=action.mode)
@@ -116,7 +261,7 @@ def _lock_ticket(
             # Another run locked it after `next_action` looked; it skips it now.
             continue
         return action
-    action = next_action(main_repo, mode=mode, owner=owner)
+    action = next_action(main_repo, modes=modes, owner=owner)
     held.enter_context(
         locks.run_lock(main_repo.root, str(action.id), actor=actor(), mode=action.mode)
     )
@@ -159,6 +304,8 @@ def _run_ticket(
         work_repo = Repo.open(worktree)
     if failed := _run_check(work_repo, worktree, action, check):
         return failed
+    if action.mode == "review" and (blocked := _block_dirty_review(work_repo, worktree, action)):
+        return blocked
     if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
         work_repo.edit(action.id, claim_edit())
     old_status = work_repo.find(action.id).task.frontmatter.status
@@ -177,14 +324,12 @@ def _run_ticket(
                 runner_chitty = Path(sys.executable).parent / "chitty"
                 if not runner_chitty.is_file():
                     raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
-                agent_environment = os.environ.copy()
+                agent_environment = _command_environment()
                 agent_environment["PATH"] = os.pathsep.join(
                     (str(runner_chitty.parent), agent_environment.get("PATH", ""))
                 )
-                agent_environment.pop("VIRTUAL_ENV", None)
-                agent_environment.pop("UV_PROJECT_ENVIRONMENT", None)
                 try:
-                    completed = subprocess.run(
+                    completed = _run_agent(
                         [
                             *agent_command,
                             *arguments,
@@ -192,7 +337,7 @@ def _run_ticket(
                         ],
                         cwd=worktree,
                         env=agent_environment,
-                        check=False,
+                        timeout=main_repo.config.agent_timeout,
                     )
                 except FileNotFoundError:
                     raise ChittyError(f"agent command not found: {agent_command[0]}") from None
@@ -203,21 +348,28 @@ def _run_ticket(
                         os.environ.pop("CHITTY_USAGE_FILE", None)
                     else:
                         os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
-                if completed.returncode == -signal.SIGINT:
+                timed_out = completed.stderr == b"timed out"
+                outcome = agent_exit(completed.returncode, timed_out)
+                if outcome == "interrupted":
                     raise RunInterrupted("agent")
-                if completed.returncode:
+                if outcome == "timed out":
+                    raise ChittyError(
+                        f"agent timed out after {main_repo.config.agent_timeout} seconds"
+                    )
+                if outcome == "failed":
                     raise ChittyError(f"agent exited with status {completed.returncode}")
                 models = _read_usage(usage_file)
                 usage_read = True
 
                 # Pi commonly commits from this worktree. Reopen so history is re-read.
                 new_status = _status_after_agent(main_root, worktree, action)
-                if new_status == old_status:
+                status_result = status_outcome(old_status, new_status)
+                if status_result == "unchanged":
                     raise ChittyError(
                         f"{action.id} was unchanged; only committed changes are visible "
                         "to `chitty run`"
                     )
-                if new_status == "done":
+                if status_result == "land":
                     _land(main_repo, worktree, action, setup, check)
             finally:
                 if not usage_read:
@@ -437,13 +589,8 @@ def _prepare_review(
     The reviewer then sees exactly what would land. Returns the status change
     when the ticket fails here, so no review session is spent on it.
     """
-    if uncommitted := git.uncommitted_paths(worktree):
-        listed = ", ".join(f"`{path}`" for path in uncommitted)
-        return _fail_review(
-            work_repo,
-            action,
-            f"Review failed (work): the worktree has uncommitted changes: {listed}.",
-        )
+    if blocked := _block_dirty_review(work_repo, worktree, action):
+        return blocked
     try:
         conflicts = git.merge_main(worktree, main_branch)
     except KeyboardInterrupt:
@@ -474,13 +621,31 @@ def _prepare_review(
     return None
 
 
+def _block_dirty_review(work_repo: Repo, worktree: Path, action: NextAction) -> RunResult | None:
+    if not (uncommitted := git.uncommitted_paths(worktree)):
+        return None
+    listed = ", ".join(f"`{path}`" for path in uncommitted)
+    old_status = work_repo.find(action.id).task.frontmatter.status
+    change = work_repo.edit(
+        action.id,
+        Edit(
+            status="blocked",
+            owner="human",
+            note="Review blocked (work): the worktree has uncommitted changes: "
+            f"{listed}. A human must resolve the files and decide when to resume.",
+            skip_verdicts=True,
+        ),
+    )
+    return RunResult(action, old_status, change.task.task.frontmatter.status)
+
+
 def _changed_agents_block(worktree: Path, main_branch: str | None = None) -> bool:
     """Return whether the branch changes or damages the managed guide block."""
     if main_branch is None:
         main_branch = Repo.open(git.main_checkout(worktree)).config.main_branch
     agents = worktree / AGENTS_FILE
     branch_text = agents.read_text() if agents.exists() else None
-    main_text = git.file_at(worktree, main_branch, AGENTS_FILE)
+    main_text = git.file_at_merge_base(worktree, main_branch, "HEAD", AGENTS_FILE)
     if (branch_text is None) != (main_text is None):
         return True
     try:
@@ -658,6 +823,7 @@ def _landing_check(command: str, worktree: Path) -> None:
             shlex.split(command),
             cwd=worktree,
             stdin=subprocess.DEVNULL,
+            env=_command_environment(),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -676,7 +842,11 @@ def _landing_check(command: str, worktree: Path) -> None:
 def _setup(command: str, worktree: Path) -> None:
     try:
         completed = subprocess.run(
-            shlex.split(command), cwd=worktree, stdin=subprocess.DEVNULL, check=False
+            shlex.split(command),
+            cwd=worktree,
+            stdin=subprocess.DEVNULL,
+            env=_command_environment(),
+            check=False,
         )
     except FileNotFoundError:
         raise ChittyError(f"setup command not found: {command}") from None
@@ -696,6 +866,7 @@ def _run_check(
             shlex.split(command),
             cwd=worktree,
             stdin=subprocess.DEVNULL,
+            env=_command_environment(),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -731,6 +902,8 @@ def _handle_check_failure(work_repo: Repo, action: NextAction, detail: str) -> R
             Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
         )
         return None
+    if blocked := _block_dirty_review(work_repo, work_repo.root, action):
+        return blocked
     return _fail_check(work_repo, action, detail)
 
 

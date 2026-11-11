@@ -24,16 +24,17 @@ commands. Use `uv run chitty` to run a worktree's own code. Do not export
 `VIRTUAL_ENV` or `UV_PROJECT_ENVIRONMENT` from `.envrc`: direnv passes them down
 to worktrees, where `uv` would repoint a shared install at the worktree.
 
-On a machine used to develop Chitty, install the global `chitty` as an editable
-install of the main checkout, which only receives reviewed merges:
+Keep the global `chitty` on the latest PyPI release, as above, so other
+repositories run released code. In the Chitty clone itself, `main` is usually
+ahead of PyPI, and the global `chitty` would refuse to write. Add this to the
+clone's ignored `.envrc`, so a bare `chitty` there, worktrees included, runs the
+main checkout's `.venv`:
 
 ```sh
-uv tool install --force --editable '/path/to/chitty[mcp]'
+PATH_add .venv/bin
 ```
 
-Every repository on that machine then runs `main`, so a broken `main` breaks them
-all. Editable installs do not pick up new dependencies: re-run the command after
-a merge that changes them.
+Adding to `PATH` repoints no `uv` environment, unlike the variables above.
 
 ## Use
 
@@ -51,7 +52,7 @@ chitty add "Add search" -d "Search titles and bodies." \
     --note "Useful context, repeatable."
 chitty list
 chitty next                       # print the next `work ID` or `review ID` action
-while chitty run; do :; done      # ask the configured agent to complete actions until no progress
+chitty run --loop --mode work     # keep working; wait for new tickets when idle
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
 chitty edit 1 -s review
@@ -67,6 +68,7 @@ chitty check                      # validate everything; non-zero on problems
 chitty fix                        # repair safe problems; fail if any remain
 chitty archive                     # process every completed task before a merge request
 chitty guide                      # managed `AGENTS.md` instructions for coding agents
+chitty guide setup                # help an agent configure `chitty run`
 chitty guide work TASK-12         # instructions for one implementation ticket
 chitty guide review TASK-12       # instructions for one review ticket
 chitty guide plan                 # instructions for writing and refining tickets
@@ -76,14 +78,17 @@ Every command takes `--json`. `chitty --help` and `chitty <command> --help`
 are the reference. `chitty guide` prints the managed `AGENTS.md` block; `chitty init` wraps that
 block in strict `chitty:begin` and `chitty:end` markers so only Chitty's text is
 replaced. Existing unmarked blocks are migrated on the next init.
-`chitty guide work`, `review`, and `plan` print the focused instructions for
-that role from the packaged role files. The short block in `AGENTS.md` points
-agents started by hand to the matching role guide. Work and review take an
-optional ticket ID; planning does not.
-Plain `chitty list` shows non-archived `todo`, `doing`, `blocked`, and `review`
-tasks across every context; repeat `-c` or `-s` to filter, including backlog and
+`chitty guide setup` prints a repository-independent checklist for configuring
+`chitty run` from the main checkout; `chitty guide --help` lists every guide
+and shows example commands. `chitty guide work`, `review`, and `plan` print the
+focused instructions for those roles from the packaged role files. The short
+block in `AGENTS.md` points agents started by hand to their matching role guide.
+Work, review and cold-read take an optional ticket ID; setup and planning do not.
+Plain `chitty list` shows non-archived `planning`, `cold-read`, `todo`, `doing`,
+`blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
-`📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then the priority
+`📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then
+the priority
 as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so rows fit in
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
 `chitty next` carry a glyph in a column before the title: `👤` owned or human,
@@ -122,8 +127,10 @@ holds a lock on its ticket until it exits, an exclusive `flock` on
 `.git/chitty/run/<ID>.lock` that the kernel releases however the run ends. The
 lock file records JSON with the process ID, actor, `work` or `review` mode, and
 UTC start time. `chitty show` reports a held ticket as `running: <mode> by
-<actor>, process <pid>, since <HH:MM>` (local time), while `chitty list` marks
-it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
+<actor>, process <pid>, since <HH:MM>` (local time), or `running: you (<actor>,
+<mode>, process <pid>, since <HH:MM>)` when the actor is this session's
+`CHITTY_ACTOR`; `--json` and MCP show give the same answer as `"you"`. `chitty
+list` marks it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
 with the holder's process ID. Locks are machine-local. The sessions all update
 main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
@@ -140,12 +147,14 @@ the configured agent from that worktree. The agent uses the `chitty`
 executable installed beside the runner's Python interpreter, rather than a
 branch-local `chitty`; `pi` and `claude` still come from the global `PATH`.
 This behavior is implemented without changing `chitty.toml` on the branch.
-Before a review it first merges the main branch into the branch, then runs setup and check, so the
-reviewer sees exactly what would land; uncommitted files in the worktree or a
-merge conflict instead move the
-ticket back to `doing` with a `Review failed (work)` or `Review failed
-(integration)` note, without starting a session, and count towards the
-failed-review limit. A passing review lands by fast-forwarding `main` only
+Moving a ticket to `review` requires a clean worktree. `chitty check` flags
+uncommitted files on the current ticket branch while it is in review; work
+branches can remain dirty during development. Before a review `chitty run`
+merges the main branch into the ticket branch, then runs setup and check, so
+the reviewer sees exactly what would land. Uncommitted files instead block the
+ticket for a human immediately, without starting a reviewer. Merge conflicts
+still move it back to `doing` with a `Review failed (integration)` note and
+count towards the failed-review limit. A passing review lands by fast-forwarding `main` only
 after these checks pass; the reviewer should not merge or remove branches or
 worktrees. Without `chitty run`, merge `main` into the ticket branch in its
 worktree, run the configured checks, and only then fast-forward `main`. In work
@@ -158,10 +167,12 @@ starting no agent. Choose a ticket with `chitty run
 `chitty run --owner NAME` to select that owner's tickets; it cannot be combined
 with `--ticket`. It
 succeeds only when the agent commits a status change, so
-`while chitty run; do :; done` stops when no action remains or a session makes
-no progress. To keep a loop waiting for work, treat exit 3 as success:
-`while chitty run --mode review || [ $? -eq 3 ]; do sleep 60; done`. Each pass
-still checks configuration, refreshes setup before
+`chitty run --loop --mode work -- --model MODEL` keeps running, waiting 60
+seconds between attempts after both successful actions and idle queues. Each
+attempt starts a fresh process, so it picks up code landed by the last run. It
+stops on any real failure or interruption (Ctrl-C exits 130); `--loop` cannot
+be used with `--ticket`. Without `--loop`, `chitty run` still exits 3 on an
+idle queue. Each loop pass checks configuration and refreshes setup before
 selecting, so a broken configuration exits 1 and stops the loop. Each agent
 session appends one JSON line to the machine-local
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data
@@ -201,6 +212,9 @@ written task file before any autocommit. Set `setup` to the command that prepare
 each ticket worktree before the agent starts; it is parsed without a shell. Set
 `agent_command` to the default agent invocation, for example
 `"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
+The optional `agent_timeout` is a non-negative integer number of seconds and
+defaults to 7200; set it to `0` for no limit. On timeout, `chitty run` stops the
+agent and its child processes and exits with an error.
 Additional commands go in `[agent_commands]`; `chitty run --agent NAME` uses one
 for that run only. An unknown name lists available entries, and the selected
 entry is validated like `agent_command`. Optional root-level `work_model` and

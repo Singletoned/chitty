@@ -147,6 +147,14 @@ class TestStore(StoreTestCase):
         with self.assertRaisesRegex(ChittyError, "prefix 'NOPE'"):
             self.repo.find(TaskId("NOPE", 1))
 
+    def test_description_replacement_records_history(self):
+        stored = self.add("One")
+        changed = self.repo.edit(stored.id, Edit(replace_in_description=("Describe", "Explain")))
+        self.assertIn(
+            "test-agent: changed description",
+            changed.task.task.section("History") or "",
+        )
+
     def test_save_skips_unchanged(self):
         stored = self.add("One")
         mtime = stored.path.stat().st_mtime_ns

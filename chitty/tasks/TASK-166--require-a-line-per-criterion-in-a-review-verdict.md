@@ -2,7 +2,6 @@
 title: Require a line per criterion in a review verdict
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -53,3 +52,4 @@ Implemented shared review-verdict validation in store.py. CLI and MCP tests cove
 - 2026-11-05T23:00:01Z daring-eel doing → review
 - 2026-11-06T11:15:54Z able-zander: changed notes
 - 2026-11-06T11:15:54Z able-zander review → done
+- 2026-11-11T10:17:37Z vivid-yellowhammer: changed parent

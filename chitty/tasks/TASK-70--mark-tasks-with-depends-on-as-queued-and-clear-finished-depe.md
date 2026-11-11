@@ -33,9 +33,15 @@ Redesigned with the human: `queued` is a flag derived from `depends_on`, not a s
 
 The human reaffirmed on 2026-11-08 that dependency waits should be called `queued`, not `blocked`, and should carry a clear glyph. Use 🔒 for the dependency-queued indication (as in TASK-72); reserve ⛔ for a blockage requiring human intervention (TASK-74). Do not rename genuine human blockages to queued.
 
+Archived in backlog triage (human approved, 2026-11-11): folded into the open questions of TASK-255.
+
+Restored from the archive (human, 2026-11-11): kept as its own ticket after TASK-255 was split.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-01 backlog → todo
 - 2026-11-01 todo → backlog
 - 2026-11-08T14:56:01Z eager-puffin: changed notes
+- 2026-11-11T10:18:44Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:36:44Z vivid-yellowhammer: changed notes

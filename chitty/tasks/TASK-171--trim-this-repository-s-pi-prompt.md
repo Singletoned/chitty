@@ -3,7 +3,6 @@ title: Trim this repository's Pi prompt
 status: todo
 priority: high
 owner: human
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -34,3 +33,4 @@ context-mode is now off: on 2026-11-05 its package was replaced and `build/adapt
 - 2026-11-04T21:44:22Z mellow-newt: changed priority, owner, description, acceptance criteria, notes
 - 2026-11-04T21:44:23Z mellow-newt backlog → todo
 - 2026-11-05T08:22:57Z mellow-newt: changed notes
+- 2026-11-11T10:17:40Z vivid-yellowhammer: changed parent

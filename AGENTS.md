@@ -6,6 +6,8 @@ read only that section. Update it when a decision changes.
 
 - `make install` once (Python deps including the `mcp` extra, and the pinned
   prettier used by the round-trip tests).
+- In this repository run `main`'s Chitty, `.venv/bin/chitty` in the main
+  checkout, not the global PyPI `chitty`: `main` is usually ahead of PyPI.
 - `make check` (ruff, pyright, unittest, Node tests) before every commit. `make
   format` to fix formatting.
 - Tests use `unittest` and write real files in temp dirs; no filesystem
@@ -17,11 +19,16 @@ read only that section. Update it when a decision changes.
   ticket's tests collide.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
+- Other agents commit in this checkout at the same time. Stage only the paths
+  you changed; never `git add -A` or all of `chitty/`.
 - Writing tickets with the human? Cold-read them, as `PLAN.md` describes. If you
   were given a ticket to work on or review, skip this: it is not your step.
 - Releases: `make release` tags the version in `src/chitty/__init__.py` and pushes
   it. `.github/workflows/release.yml` checks, builds and publishes to PyPI by
-  trusted publishing (environment `pypi`).
+  trusted publishing (environment `pypi`). `make release` then waits for that
+  run (`scripts/watch_release.py`): on success it upgrades the global `chitty`;
+  on failure it records the failure with `sump capture chitty` and exits
+  non-zero.
 - Branches never change `__version__` in `src/chitty/__init__.py`; `make release`
   chooses the published bump. Never edit `chitty.toml` or the managed block below,
   or run `chitty init`, on a ticket branch. The main checkout's `chitty` upgrades

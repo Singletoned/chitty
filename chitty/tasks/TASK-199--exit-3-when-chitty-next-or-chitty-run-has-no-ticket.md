@@ -2,7 +2,6 @@
 title: Exit 3 when `chitty next` or `chitty run` has no ticket
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -61,3 +60,4 @@ Reviewed and passed. Exit 3 behavior, mode and JSON coverage, idle dependency se
 - 2026-11-06T10:16:16Z jolly-raven doing → review
 - 2026-11-06T10:54:27Z jolly-badger: changed notes, summary
 - 2026-11-06T10:54:27Z jolly-badger review → done
+- 2026-11-11T10:17:58Z vivid-yellowhammer: changed parent

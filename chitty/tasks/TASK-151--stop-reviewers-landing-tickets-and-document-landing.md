@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-131
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -84,3 +83,4 @@ Handoff: Review prompt and packaged role prohibit reviewers from landing or remo
 - 2026-11-08T20:13:47Z eager-puffin blocked → review
 - 2026-11-09T08:17:41Z nimble-adder: changed notes; ticked acceptance criteria
 - 2026-11-09T08:17:41Z nimble-adder review → done
+- 2026-11-11T10:17:26Z vivid-yellowhammer: changed parent

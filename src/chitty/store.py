@@ -40,6 +40,8 @@ from chitty.model import (
     new_task,
     parse,
 )
+from chitty.selection import DependencyFact, TicketFacts, choose, mode_statuses
+from chitty.selection import skip_reason as pure_skip_reason
 
 ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
@@ -52,7 +54,7 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 BROKEN_DEPENDENCY_GLYPH = "⚠️"
-ROLE_NAMES = ("work", "review", "plan", "cold-read")
+ROLE_NAMES = ("work", "review", "plan", "cold-read", "setup")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
 RANDOM_ID_MIN = 10_000_000
 RANDOM_ID_MAX = 99_999_999
@@ -132,6 +134,7 @@ class Edit:
     rm_depends_on: Sequence[str] = ()
     parent: str | None = None  # "" removes
     description: str | None = None
+    replace_in_description: tuple[str, str] | None = None
     add_criteria: Sequence[str] = ()
     rm_criteria: Sequence[int] = ()
     set_criteria: Sequence[tuple[int, str]] = ()
@@ -140,6 +143,7 @@ class Edit:
     plan: str | None = None  # "" removes
     note: str | None = None
     notes: Sequence[str] = ()
+    set_notes: str | None = None  # "" removes
     summary: str | None = None  # "" removes
     override_review_independence: bool = False
     # Internal, not exposed in the CLI or MCP: `chitty run` fails a review
@@ -174,6 +178,11 @@ class Edit:
             task = task.with_field("parent", self.parent or None)
         if self.description is not None:
             task = task.with_section(DESCRIPTION, self.description)
+        if self.replace_in_description is not None:
+            old, new = self.replace_in_description
+            task = task.with_section(
+                DESCRIPTION, (task.section(DESCRIPTION) or "").replace(old, new)
+            )
         task = task.with_criteria(
             add=self.add_criteria,
             remove=self.rm_criteria,
@@ -187,6 +196,8 @@ class Edit:
             task = task.with_note(self.note)
         for note in self.notes:
             task = task.with_note(note)
+        if self.set_notes is not None:
+            task = task.with_section("Notes", self.set_notes)
         if self.summary is not None:
             task = task.with_section(SUMMARY, self.summary)
         return task
@@ -483,6 +494,27 @@ class Repo:
             and previous_status != "review"
         ):
             raise ChittyError("setting status done requires -s review first")
+        entering_review = edit.status == "review" and previous_status != "review"
+        passing_review = previous_status == "review" and edit.status == "done"
+        if (entering_review or passing_review) and (self.root / ".git").exists():
+            self._require_current_version(stored)
+            if uncommitted := git.uncommitted_paths(self.root):
+                listed = ", ".join(f"`{path}`" for path in uncommitted)
+                raise ChittyError(
+                    f"cannot move {task_id} to {edit.status}; the worktree has "
+                    f"uncommitted changes: {listed}. Commit or resolve them before changing status"
+                )
+        if edit.replace_in_description is not None:
+            old, _ = edit.replace_in_description
+            if edit.description is not None:
+                raise ChittyError("--replace-in-description cannot be combined with --description")
+            if not old:
+                raise ChittyError("--replace-in-description OLD cannot be empty")
+            count = (stored.task.section(DESCRIPTION) or "").count(old)
+            if count != 1:
+                raise ChittyError(
+                    f"--replace-in-description OLD must occur exactly once; found {count}"
+                )
         edit = check_edit(stored.task, edit, actor())
         edit = replace(
             edit,
@@ -529,9 +561,10 @@ class Repo:
 
     def next_number(self, context: Context) -> int:
         numbers = [
-            ids.parse_filename(p.name)[0].number
+            number
             for archived in (False, True)
             for p in self._files(context, archived)
+            if isinstance(number := ids.parse_filename(p.name)[0].number, int)
         ]
         active_directory = context.directory.relative_to(self.root)
         archive_directory = context.archive_directory.relative_to(self.root)
@@ -542,7 +575,7 @@ class Repo:
                 task_id, _ = ids.parse_filename(file.path.name)
             except ids.IdError:
                 continue
-            if task_id.prefix == context.prefix:
+            if task_id.prefix == context.prefix and isinstance(task_id.number, int):
                 numbers.append(task_id.number)
         if self.config.archive == "delete":
             numbers += self._deleted_numbers(context)
@@ -591,7 +624,11 @@ class Repo:
                 task_id, _ = ids.parse_filename(path.name)
             except ids.IdError:
                 continue
-            if task_id.prefix == context.prefix and directory in path.parents:
+            if (
+                task_id.prefix == context.prefix
+                and directory in path.parents
+                and isinstance(task_id.number, int)
+            ):
                 numbers.append(task_id.number)
         return numbers
 
@@ -745,7 +782,9 @@ class Repo:
                 for path in existing
                 if any(path.resolve().is_relative_to(directory) for directory in directories)
             ]
-            _, problems = fix(self, self.contexts(), task_paths)
+            # The task file is temporarily dirty until its autocommit below;
+            # validate content here, but leave worktree cleanliness to `chitty check`.
+            _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
             if blocking := errors(problems):
                 details = "\n".join(str(problem) for problem in blocking)
                 raise ChittyError(
@@ -827,6 +866,10 @@ VERDICT_LINE_RE = re.compile(r"^(\d+): (pass|fail) - (\S.*)$")
 def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
     """Validate an edit that depends only on the current task and its actor."""
     previous_status = task.frontmatter.status
+    if edit.set_notes is not None and (edit.note is not None or edit.notes):
+        raise ChittyError("--set-notes cannot be combined with --note or --note-file")
+    if previous_status == "review" and edit.set_notes is not None:
+        raise ChittyError("--set-notes is not allowed while a task is in review")
     if previous_status == "review":
         for criteria, option in (
             (edit.add_criteria, "--ac"),
@@ -952,8 +995,8 @@ def guide(role: str | None = None, ticket_id: str | None = None) -> str:
         return files("chitty").joinpath("guide.md").read_text()
     if role not in ROLE_NAMES:
         raise ChittyError(f"unknown role {role!r}; choose from {', '.join(ROLE_NAMES)}")
-    if ticket_id is not None and role == "plan":
-        raise ChittyError("the plan role does not take a ticket ID")
+    if ticket_id is not None and role in {"plan", "setup"}:
+        raise ChittyError(f"the {role} role does not take a ticket ID")
 
     text = files("chitty").joinpath("roles", f"{role}.md").read_text()
     return f"Work only on Chitty ticket {ticket_id}.\n\n{text}" if ticket_id is not None else text
@@ -1288,37 +1331,56 @@ def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[Stored
     )
 
 
+def _selection_facts(
+    repo: Repo, stored: StoredTask, *, locked: bool, dependencies: bool
+) -> TicketFacts:
+    fm = stored.task.frontmatter
+    dependency_facts: list[DependencyFact] = []
+    if dependencies and fm.status == "todo" and not stored.archived:
+        for reference in fm.depends_on:
+            dependency_id = TaskId.parse(reference)
+            try:
+                dependency = repo.find(dependency_id)
+                complete = _dependency_is_done(repo, dependency_id, dependency)
+            except ChittyError as error:
+                dependency_facts.append(DependencyFact(reference, "broken", str(error)))
+                break
+            dependency_facts.append(DependencyFact(reference, "done" if complete else "unfinished"))
+    return TicketFacts(
+        str(stored.id),
+        stored.context,
+        fm.status,
+        fm.priority,
+        fm.owner,
+        stored.archived,
+        locked,
+        tuple(dependency_facts),
+    )
+
+
 def skip_reason(repo: Repo, stored: StoredTask) -> str | None:
     """Return the reason `next` would skip a ticket, or None when selectable."""
     return _skip_reason(repo, stored, include_owner=True)
 
 
-def _skip_reason(repo: Repo, stored: StoredTask, *, include_owner: bool) -> str | None:
-    frontmatter = stored.task.frontmatter
-    if stored.archived or frontmatter.status not in {"review", "doing", "todo"}:
-        return None
-    if locks.is_locked(repo.root, str(stored.id)):
-        return "▶ running"
-    if stored.context == "human" or frontmatter.owner == "human":
-        return "👤 human"
-    if include_owner and frontmatter.owner is not None:
-        return f"👤 {frontmatter.owner}"
-    if frontmatter.status != "todo":
-        return None
-
-    unfinished: list[str] = []
-    for reference in frontmatter.depends_on:
-        dependency_id = TaskId.parse(reference)
-        try:
-            dependency = repo.find(dependency_id)
-            complete = _dependency_is_done(repo, dependency_id, dependency)
-        except ChittyError as error:
-            return f"{BROKEN_DEPENDENCY_GLYPH} {stored.id} depends on {reference}: {error}"
-        if not complete:
-            unfinished.append(str(dependency_id))
-    if unfinished:
-        return f"🔒 waits on {', '.join(unfinished)}"
-    return None
+def _skip_reason(
+    repo: Repo, stored: StoredTask, *, include_owner: bool, owner: str | None = None
+) -> str | None:
+    is_locked = locks.is_locked(repo.root, str(stored.id))
+    fm = stored.task.frontmatter
+    may_read_dependencies = (
+        fm.status == "todo"
+        and not stored.archived
+        and not is_locked
+        and stored.context != "human"
+        and fm.owner != "human"
+        and (
+            (include_owner and fm.owner is None)
+            or (not include_owner and owner is not None and fm.owner == owner)
+        )
+    )
+    fact = _selection_facts(repo, stored, locked=is_locked, dependencies=may_read_dependencies)
+    return pure_skip_reason(fact, include_owner=include_owner)
 
 
 def _ticket_action(
@@ -1348,7 +1410,7 @@ def _ticket_action(
             raise ChittyError(f"cannot run {stored.id}: owner is human")
         return None
     if not refuse:
-        if _skip_reason(repo, stored, include_owner=owner is None) is not None:
+        if _skip_reason(repo, stored, include_owner=owner is None, owner=owner) is not None:
             return None
         if owner is not None and frontmatter.owner != owner:
             return None
@@ -1419,45 +1481,49 @@ def ticket_action(repo: Repo, task_id: TaskId) -> NextAction:
     return action
 
 
-MODE_STATUSES: dict[str, tuple[str, ...]] = {"work": ("doing", "todo"), "review": ("review",)}
-
-
 def next_action(
     repo: Repo,
     *,
-    mode: Literal["work", "review"] | None = None,
+    modes: tuple[Literal["work", "review"], ...] = (),
     owner: str | None = None,
 ) -> NextAction:
     """Select the one ticket to review or work next across every context.
 
-    A `mode` limits the choice to that mode's statuses. It filters before
-    `_ticket_action` checks dependencies, so a bad reference on a ticket in the
-    other mode does not stop this one. A ticket another `chitty run` holds the
-    run lock for is skipped.
+    Each mode adds its statuses to the choice; no mode means every mode. It
+    filters before `_ticket_action` checks dependencies, so a bad reference on a
+    ticket outside the modes does not stop this one. A ticket another
+    `chitty run` holds the run lock for is skipped.
     """
     if owner in ("", "human"):
         raise ChittyError("--owner must name an agent, not human or empty")
-    status_order = {"review": 0, "doing": 1, "todo": 2}
     locked = locks.locked_ids(repo.root)
-    candidates = [
-        (stored, action)
-        for stored in repo.all_tasks()
-        if mode is None or stored.task.frontmatter.status in MODE_STATUSES[mode]
-        if str(stored.id) not in locked
-        if (action := _ticket_action(repo, stored, refuse=False, owner=owner)) is not None
-    ]
-    if not candidates:
-        raise NoNextTicket(
-            "no next ticket" if mode is None else f"no next ticket for --mode {mode}"
+    statuses = mode_statuses(modes)
+    facts: list[TicketFacts] = []
+    stored_by_id: dict[str, StoredTask] = {}
+    for stored in repo.all_tasks():
+        fm = stored.task.frontmatter
+        if statuses is not None and fm.status not in statuses:
+            continue
+        is_locked = str(stored.id) in locked
+        # Keep dependency reads lazy: only otherwise-eligible todo tickets need them.
+        eligible = (
+            not stored.archived
+            and fm.status == "todo"
+            and not is_locked
+            and stored.context != "human"
+            and fm.owner != "human"
+            and (fm.owner is None if owner is None else fm.owner == owner)
         )
-    return min(
-        candidates,
-        key=lambda pair: (
-            status_order[pair[0].task.frontmatter.status],
-            PRIORITY_ORDER[pair[0].task.frontmatter.priority],
-            pair[0].id,
-        ),
-    )[1]
+        fact = _selection_facts(repo, stored, locked=is_locked, dependencies=eligible)
+        facts.append(fact)
+        stored_by_id[str(stored.id)] = stored
+    selected = choose(tuple(facts), modes=modes, owner=owner)
+    if selected is None:
+        raise NoNextTicket(
+            "no next ticket" if not modes else f"no next ticket for --mode {' or '.join(modes)}"
+        )
+    stored = stored_by_id[selected.id]
+    return NextAction("review" if stored.task.frontmatter.status == "review" else "work", stored.id)
 
 
 def matches(
@@ -1527,11 +1593,13 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("dependencies")
     if edit.parent is not None:
         changes.append("parent")
-    if edit.description is not None:
+    if edit.description is not None or edit.replace_in_description is not None:
         changes.append("description")
     if edit.add_criteria or edit.rm_criteria or edit.set_criteria or edit.uncheck:
         changes.append("acceptance criteria")
-    if edit.note is not None or edit.notes:
+    if edit.set_notes is not None:
+        actions.append("replaced notes")
+    elif edit.note is not None or edit.notes:
         changes.append("notes")
     if edit.summary is not None:
         changes.append("summary")

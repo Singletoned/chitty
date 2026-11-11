@@ -11,6 +11,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - Backticks run commands inside double-quoted shell arguments, so pass such text
   in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Work on one ticket per session. Start with `chitty show <ID>`.
+- Read and change only files inside the ticket's worktree, including scratch files; do not touch the main checkout, other worktrees or files elsewhere on the machine. Reading other branches through Git or `chitty` is fine, such as `git diff main...`.
 - Before writing code, write your approach with `chitty edit <ID> --plan`.
   Wait for approval if the human asked for it.
 - Verify first, then tick every verified criterion and add your note in one
@@ -18,13 +19,15 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - Request several reads in one call when none depends on another.
 - Run the repository's format and check commands in one shell call, joined with
   `&&`.
-- With autocommit = true, Chitty commits its own writes, so `git status` or
-  `git add` after one is not needed.
-- Record anything surprising with `--note`. When implementation is ready, run
-  `chitty fix`, write `--summary` with handoff, verification, and follow-ups,
-  then set `-s review`.
-- End task-work commits with `Task: <ID>` using that ticket's ID, so
+- With `autocommit = true`, Chitty commits ticket-file edits only. It does not
+  commit code, tests, or other implementation files. Commit those in small
+  logical commits ending with `Task: <ID>` using that ticket's ID, so
   `git log --grep <ID>` finds them.
+- Record anything surprising with `--note`. When implementation is ready, run
+  `chitty fix`, format and check, then run `git status --short`. It must be empty
+  before moving the ticket to `review`; commit intended changes and resolve
+  leftover files first. Write `--summary` with handoff, verification, and
+  follow-ups, then set `-s review`.
 - When a ticket asks for a regression test, see it fail without the fix, by
   running it before you write the fix or with the fix reverted, and say so in
   a note. If it passes without the fix, it proves nothing: change the test

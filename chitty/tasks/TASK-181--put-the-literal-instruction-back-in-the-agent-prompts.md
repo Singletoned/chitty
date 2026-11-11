@@ -2,7 +2,6 @@
 title: Put the literal `*` instruction back in the agent prompts
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -156,3 +155,4 @@ Restored the literal single-asterisk Markdown instruction in the general guide a
 - 2026-11-08T16:58:12Z zesty-ibis doing → review
 - 2026-11-08T17:08:57Z tidy-marten: changed notes; ticked acceptance criteria
 - 2026-11-08T17:08:57Z tidy-marten review → done
+- 2026-11-11T10:17:47Z vivid-yellowhammer: changed parent

@@ -4,7 +4,6 @@ status: done
 priority: medium
 depends_on:
   - TASK-148
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -67,3 +66,4 @@ Implemented hidden chitty claude-usage-hook and src/chitty/integrations/claude/u
 - 2026-11-05T22:22:19Z intrepid-kestrel doing → review
 - 2026-11-06T10:59:22Z rosy-otter: changed notes
 - 2026-11-06T10:59:22Z rosy-otter review → done
+- 2026-11-11T10:17:31Z vivid-yellowhammer: changed parent

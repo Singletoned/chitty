@@ -21,9 +21,22 @@ from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 from chitty.errors import ChittyError
 from chitty.ids import ID_RE
 
-STATUSES = ("backlog", "todo", "doing", "blocked", "review", "done")
+STATUSES = (
+    "backlog",
+    "planning",
+    "cold-read",
+    "todo",
+    "doing",
+    "blocked",
+    "review",
+    "done",
+)
+# What `list` shows without a status filter: every active status but backlog and done.
+DEFAULT_LIST_STATUSES = ("planning", "cold-read", "todo", "doing", "blocked", "review")
 STATUS_GLYPHS = {
     "backlog": "💤",
+    "planning": "📝",
+    "cold-read": "🔎",
     "todo": "📋",
     "doing": "🔨",
     "blocked": "⛔",
@@ -32,6 +45,8 @@ STATUS_GLYPHS = {
 }
 STATUS_LABELS = {
     "backlog": "bklog",
+    "planning": "plan",
+    "cold-read": "cold",
     "todo": "todo",
     "doing": "doing",
     "blocked": "blckd",
@@ -125,7 +140,9 @@ class Frontmatter(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     title: str
-    status: Literal["backlog", "todo", "doing", "blocked", "review", "done"]
+    status: Literal[
+        "backlog", "planning", "cold-read", "todo", "doing", "blocked", "review", "done"
+    ]
     labels: list[str] = []
     priority: Literal["low", "medium", "high"] | None = None
     owner: str | None = None
@@ -258,17 +275,24 @@ class Task:
         lines = _text_lines(text)
         sections = list(self._sections)
         index = self._section_index(name)
-        if not lines:
-            if index is not None:
-                del sections[index]
-                _strip_trailing_blank(sections)
-            return self._rebuild(sections=sections)
-        if index is None:
-            return self._insert_section(name, lines)
-        is_last = index == len(sections) - 1
-        heading = sections[index].lines[0]
-        sections[index] = _Section(name, (heading, "\n", *lines, *([] if is_last else ["\n"])))
-        return self._rebuild(sections=sections)
+        try:
+            if not lines:
+                if index is not None:
+                    del sections[index]
+                    _strip_trailing_blank(sections)
+                candidate = self._rebuild(sections=sections)
+            elif index is None:
+                candidate = self._insert_section(name, lines)
+            else:
+                is_last = index == len(sections) - 1
+                heading = sections[index].lines[0]
+                sections[index] = _Section(
+                    name, (heading, "\n", *lines, *([] if is_last else ["\n"]))
+                )
+                candidate = self._rebuild(sections=sections)
+        except TaskError as error:
+            raise _section_text_error(name) from error
+        return _verify_section_edit(self, candidate, name, text)
 
     def with_note(self, text: str) -> "Task":
         """Append a paragraph to Notes, creating the section if absent."""
@@ -282,7 +306,11 @@ class Task:
         old = list(sections[index].lines)
         last = max(i for i, line in enumerate(old) if line.strip())
         sections[index] = _Section(NOTES, (*old[: last + 1], "\n", *lines, *old[last + 1 :]))
-        return self._rebuild(sections=sections)
+        try:
+            candidate = self._rebuild(sections=sections)
+        except TaskError as error:
+            raise _section_text_error(NOTES) from error
+        return _verify_section_edit(self, candidate, NOTES, text, append=True)
 
     def transitions(self) -> list[tuple[str | None, str]]:
         """History entries as (old, new) status pairs, oldest first."""
@@ -687,6 +715,32 @@ def _text_lines(text: str) -> list[str]:
     if not text.strip():
         return []
     return [line.rstrip() + "\n" for line in text.split("\n")]
+
+
+def _section_text_error(name: str) -> TaskError:
+    return TaskError(
+        f"{name} text changed section boundaries; use ### for headings and close code fences"
+    )
+
+
+def _verify_section_edit(
+    original: Task, candidate: Task, name: str, text: str, append: bool = False
+) -> Task:
+    expected = "".join(_text_lines(text)).strip("\n")
+    actual = candidate.section(name) or ""
+    matches = actual.endswith(expected) if append else actual == expected
+    if not matches:
+        raise _section_text_error(name)
+    for other in SECTION_ORDER:
+        if other == name:
+            continue
+        if candidate.section(other) != original.section(other):
+            raise _section_text_error(name)
+    if name != ACCEPTANCE_CRITERIA and [
+        (item.checked, item.text) for item in candidate.criteria
+    ] != [(item.checked, item.text) for item in original.criteria]:
+        raise _section_text_error(name)
+    return candidate
 
 
 def _criterion_text(text: str) -> str:

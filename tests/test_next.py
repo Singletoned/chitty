@@ -18,12 +18,23 @@ from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
 from chitty.inbox import suggest
 from chitty.mcp import server
-from chitty.run import _read_usage, _record_usage
+from chitty.run import _read_usage, _record_usage, run_loop
 from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
 
 
 class TestNext(CliTestCase):
+    def install_fake_pi(self, body: str) -> None:
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir(exist_ok=True)
+        fake.write_text("#!" + sys.executable + "\n" + body)
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        environment = patch.dict(
+            os.environ, {"PATH": f"{fake.parent}:{os.environ.get('PATH', '')}"}
+        )
+        environment.start()
+        self.addCleanup(environment.stop)
+
     def add(self, title: str, *, status: str = "todo", **fields: object) -> str:
         args = ["add", title, "-d", "Description.", "-s", status]
         if priority := fields.get("priority"):
@@ -127,6 +138,13 @@ class TestNext(CliTestCase):
         Repo.open(self.root).archive(Repo.open(self.root).resolve(archived))
         ready = self.add("Ready after archive", depends_on=[archived])
         self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
+
+    def test_unselected_owner_dependency_is_not_read(self):
+        dependency = self.add("Dependency", status="blocked")
+        self.add("Agent-owned", owner="agent", depends_on=[dependency])
+        ready = self.add("Ready")
+        with patch("chitty.store._dependency_is_done", side_effect=AssertionError("read")):
+            self.assertEqual(str(next_action(Repo.open(self.root)).id), ready)
 
     def test_todo_dependency_must_be_done_on_main(self):
         config = self.root / "chitty.toml"
@@ -308,6 +326,19 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "")
         self.assertEqual(result.stderr, "no next ticket for --mode review\n")
 
+    def test_next_repeated_modes_include_both_modes(self):
+        todo = self.add("Todo")
+        review = self.add("Review", status="review")
+        self.assertEqual(
+            self.run_cli("next", "--mode", "review", "--mode", "work").stdout,
+            f"review {review}\n",
+        )
+        self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {todo}\n")
+        for path in (self.root / "chitty/tasks").glob("*.md"):
+            path.unlink()
+        result = self.run_cli("next", "--mode", "review", "--mode", "work", exit_code=3)
+        self.assertEqual(result.stderr, "no next ticket for --mode review or work\n")
+
     def test_owner_filter_reserves_work_and_review(self):
         unowned = self.add("Unowned")
         opus_todo = self.add("Opus todo", owner="opus")
@@ -439,6 +470,51 @@ class TestNext(CliTestCase):
             self.assertEqual(idle.stderr.splitlines()[-1], "no next ticket for --mode review")
         finally:
             os.environ["PATH"] = old_path
+
+    def test_run_repeated_modes_selects_available_work(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"', 'agent_command = "fake {mode} {id}"'
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        todo = self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "fake"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess, sys\n"
+            "from pathlib import Path\n"
+            "path = next(Path('chitty/tasks').glob(sys.argv[2] + '--*.md'))\n"
+            "path.write_text(path.read_text().replace('status: doing\\n', 'status: blocked\\n'))\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-am', 'agent'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            result = self.run_cli("run", "--mode", "review", "--mode", "work")
+        finally:
+            os.environ["PATH"] = previous
+        self.assertEqual(result.stdout, f"{todo}: doing → blocked\n")
+
+    def test_run_loop_forwards_every_mode(self):
+        with (
+            patch("chitty.run.Path.is_file", return_value=True),
+            patch(
+                "chitty.run.subprocess.run", return_value=subprocess.CompletedProcess([], 1)
+            ) as run,
+        ):
+            self.assertEqual(run_loop(("--mode", "review", "--mode", "work")), 1)
+        self.assertEqual(run.call_args.args[0][-4:], ["--mode", "review", "--mode", "work"])
 
     def test_run_overlaps_one_worker_and_one_reviewer(self):
         config = self.root / "chitty.toml"
@@ -1218,6 +1294,7 @@ class TestNext(CliTestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
+        self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
         result = self.run_cli("run", exit_code=1)
 
         self.assertIn("check failed before TASK-1 started", result.stderr)
@@ -1257,6 +1334,7 @@ class TestNext(CliTestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
+        self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
         result = self.run_cli("run", exit_code=1)
 
         self.assertIn("check failed before TASK-1 started", result.stderr)
@@ -1358,6 +1436,8 @@ class TestNext(CliTestCase):
 
         self.git("worktree", "remove", "--force", str(worktree))
         self.git("branch", "-D", "task-1")
+        self.git("add", "bin/pi")
+        self.git("commit", "--quiet", "-m", "install test agent")
         self.run_cli("edit", "TASK-1", "--status", "review")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
@@ -1490,10 +1570,7 @@ class TestNext(CliTestCase):
         self.git("-C", str(branch_worktree), "add", "pyproject.toml")
         self.git("-C", str(branch_worktree), "commit", "--quiet", "-m", "change other tool")
         self.git("worktree", "remove", "--force", str(branch_worktree))
-        fake = self.root / "bin" / "pi"
-        fake.parent.mkdir()
-        fake.write_text(
-            "#!" + sys.executable + "\n"
+        self.install_fake_pi(
             "import subprocess, sys\n"
             "path = next(\n"
             "    __import__('pathlib').Path('chitty/tasks').glob(sys.argv[-1] + '--*.md')\n"
@@ -1502,13 +1579,7 @@ class TestNext(CliTestCase):
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'finish'], check=True)\n"
         )
-        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
-        previous = os.environ.get("PATH", "")
-        os.environ["PATH"] = f"{fake.parent}:{previous}"
-        try:
-            passed = self.run_cli("run", "--ticket", "TASK-1")
-        finally:
-            os.environ["PATH"] = previous
+        passed = self.run_cli("run", "--ticket", "TASK-1")
         self.assertEqual(passed.stdout, "TASK-1: review → done\n")
 
         self.add("Config change")
@@ -2108,6 +2179,7 @@ class TestNext(CliTestCase):
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
+        (self.root / ".gitignore").write_text("setup-ran\npi-ran\nagent-arguments-*\ninterpreted\n")
         self.add("Todo")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
