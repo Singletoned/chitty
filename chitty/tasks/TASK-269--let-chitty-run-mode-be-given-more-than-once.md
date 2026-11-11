@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run --mode` be given more than once
-status: doing
+status: review
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -14,9 +14,9 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] With one `todo` and one `review` ticket, `chitty next --mode review --mode work` picks the `review` ticket; today it picks the `todo` one, because only the last `--mode` counts. `--mode work` alone picks the `todo` one.
-- [ ] `chitty run --mode review --mode work`, with only a `todo` ticket, runs a work session (use the fake agent in `tests/test_next.py`). This guards the new code; it passes today.
-- [ ] `chitty run --loop --mode review --mode work` passes both `--mode` options to each run it starts.
+- [x] With one `todo` and one `review` ticket, `chitty next --mode review --mode work` picks the `review` ticket; today it picks the `todo` one, because only the last `--mode` counts. `--mode work` alone picks the `todo` one.
+- [x] `chitty run --mode review --mode work`, with only a `todo` ticket, runs a work session (use the fake agent in `tests/test_next.py`). This guards the new code; it passes today.
+- [x] `chitty run --loop --mode review --mode work` passes both `--mode` options to each run it starts.
 
 ## Plan
 
@@ -25,6 +25,12 @@ Change the mode filter from a single optional mode to a repeatable tuple through
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-269/1`. Check it against the current criteria; do not trust it. It does not test `--loop` forwarding.
+
+Implemented repeated --mode filtering across next and run selection, including the no-ticket message. Added coverage for selecting review ahead of work, running work when both modes are allowed, and forwarding all mode options through --loop. `make format` and `make check` pass (488 Python tests and Node tests). Note: the regression test was added before verification but was not run against the unfixed implementation; the existing state had only a todo ticket when I first probed duplicate modes, so there was no meaningful baseline failure.
+
+## Summary
+
+Implemented and verified repeated --mode support in next/run; loop forwards every mode. Tests: make format && make check (ruff, pyright, 488 unittest tests, Node suite). Code committed as 6171798 (Task: TASK-269). No known follow-up.
 
 ## History
 
@@ -36,3 +42,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-269/1`. Check it a
 - 2026-11-11T13:44:35Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T14:18:34Z kind-newt todo → doing
 - 2026-11-11T14:19:01Z kind-newt: wrote the plan
+- 2026-11-11T14:49:10Z kind-newt: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T14:49:10Z kind-newt doing → review
