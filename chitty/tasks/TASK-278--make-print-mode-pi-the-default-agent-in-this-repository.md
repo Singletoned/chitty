@@ -3,7 +3,6 @@ title: Make print-mode Pi the default agent in this repository
 status: backlog
 owner: human
 depends_on:
-  - TASK-276
   - TASK-277
 parent: TASK-275
 created: 2026-11-11
@@ -17,3 +16,4 @@ created: 2026-11-11
 ## History
 
 - 2026-11-11T13:21:34Z vivid-yellowhammer → backlog
+- 2026-11-11T13:41:51Z vivid-yellowhammer: changed dependencies
