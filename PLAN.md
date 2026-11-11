@@ -127,6 +127,11 @@ that ambiguity is an error. Error if neither finds one.
 
 ## IDs
 
+Direction (decided 2026-11-11, TASK-262): contexts go. Tickets created off
+`main` get `BACKLOG-<alphanumeric>` IDs and a sequential ID on leaving `backlog`
+in the main checkout; `human` is replaced by `owner: human`. Until the child
+tickets land, the rules below stand.
+
 `<PREFIX>-<n>`, e.g. `TASK-13`.
 
 - `PREFIX` is the context's prefix: `[A-Z]+`, unique within a repo.
