@@ -7,7 +7,6 @@ depends_on:
   - TASK-142
   - TASK-154
   - TASK-156
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -48,3 +47,4 @@ Trial 1 (2026-11-10, TASK-247, Haiku by the human's choice): the allow-list in `
 - 2026-11-10T20:51:48Z jolly-heron: replaced notes; changed description, acceptance criteria
 - 2026-11-10T21:58:25Z jolly-heron: changed notes
 - 2026-11-10T22:10:17Z jolly-heron: replaced notes; changed description, acceptance criteria
+- 2026-11-11T10:17:27Z vivid-yellowhammer: changed parent
