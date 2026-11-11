@@ -12,7 +12,7 @@ import time
 import tomllib
 from contextlib import ExitStack
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
 from uuid import uuid4
@@ -171,16 +171,31 @@ def report_error(repo: Repo, error: ChittyError, context: dict[str, str]) -> Non
         )
 
 
+def _loop_rule(label: str) -> str:
+    """Format a terminal-width rule for one loop event."""
+    title = f"━━━━ {label} "
+    return title + "━" * max(0, shutil.get_terminal_size().columns - len(title))
+
+
 def run_loop(arguments: tuple[str, ...]) -> int:
     """Run each attempt in a fresh process so newly landed code is used."""
     executable = Path(sys.executable).parent / "chitty"
     if not executable.is_file():
         raise ChittyError(f"runner chitty executable not found: {executable}")
     while True:
+        print(_loop_rule(f"chitty run · {datetime.now():%H:%M:%S}"), file=sys.stderr)
         completed = subprocess.run([str(executable), "run", *arguments], check=False)
         keep_running, exit_code = loop_step(completed.returncode)
         if not keep_running:
+            print(_loop_rule(f"stopped · exit {exit_code}"), file=sys.stderr)
             return exit_code
+        # Schedule from completion, so attempt duration does not shorten the wait.
+        next_run = datetime.now() + timedelta(seconds=RUN_LOOP_PAUSE_SECONDS)
+        outcome = "no ticket" if completed.returncode == NO_NEXT_TICKET_EXIT else "finished"
+        print(
+            _loop_rule(f"{outcome} · next run at {next_run:%H:%M:%S}"),
+            file=sys.stderr,
+        )
         time.sleep(RUN_LOOP_PAUSE_SECONDS)
 
 
