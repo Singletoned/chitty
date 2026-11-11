@@ -1,6 +1,6 @@
 ---
 title: Tell cold readers how to apply the planner's mutants
-status: todo
+status: doing
 parent: TASK-284
 created: 2026-11-11
 ---
@@ -25,3 +25,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-299/1`. Check it a
 - 2026-11-11T21:14:09Z vivid-yellow-raven: changed description
 - 2026-11-11T21:14:12Z vivid-yellow-raven: changed acceptance criteria, notes
 - 2026-11-11T21:14:12Z vivid-yellow-raven cold-read → todo
+- 2026-11-11T22:07:10Z kind-lilac-toad todo → doing
