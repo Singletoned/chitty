@@ -44,6 +44,9 @@ from chitty.store import (
 RUN_LOCK_ATTEMPTS = 10
 RUN_LOOP_PAUSE_SECONDS = 60
 AGENT_KILL_GRACE_SECONDS = 2
+# An agent that leaves its ticket unchanged is continued this many times at most.
+MAX_CONTINUATIONS = 5
+CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
 
 
 def agent_exit(
@@ -321,38 +324,17 @@ def _run_ticket(
         agent_environment["PATH"] = os.pathsep.join(
             (str(runner_chitty.parent), agent_environment.get("PATH", ""))
         )
-        try:
-            completed = _run_agent(
-                [
-                    *agent_command,
-                    *arguments,
-                    *_model_arguments(main_repo, action, agent_command, arguments),
-                ],
-                cwd=worktree,
-                env=agent_environment,
-                timeout=main_repo.config.agent_timeout,
-            )
-        except FileNotFoundError:
-            raise ChittyError(f"agent command not found: {agent_command[0]}") from None
-        except KeyboardInterrupt:
-            raise RunInterrupted("agent") from None
-        timed_out = completed.stderr == b"timed out"
-        outcome = agent_exit(completed.returncode, timed_out)
-        if outcome == "interrupted":
-            raise RunInterrupted("agent")
-        if outcome == "timed out":
-            raise ChittyError(f"agent timed out after {main_repo.config.agent_timeout} seconds")
-        if outcome == "failed":
-            raise ChittyError(f"agent exited with status {completed.returncode}")
-
-        # Pi commonly commits from this worktree. Reopen so history is re-read.
-        new_status = _status_after_agent(main_root, worktree, action)
-        status_result = status_outcome(old_status, new_status)
-        if status_result == "unchanged":
-            raise ChittyError(
-                f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
-            )
-        if status_result == "land":
+        new_status = _agent_sessions(
+            main_repo,
+            action,
+            agent,
+            agent_command,
+            arguments,
+            worktree,
+            agent_environment,
+            old_status,
+        )
+        if status_outcome(old_status, new_status) == "land":
             _land(main_repo, worktree, action, setup, check)
     finally:
         if new_status is None:
@@ -374,6 +356,80 @@ def _run_ticket(
         )
     assert new_status is not None
     return RunResult(action, old_status, new_status)
+
+
+def _agent_sessions(
+    main_repo: Repo,
+    action: NextAction,
+    agent: str | None,
+    agent_command: tuple[str, ...],
+    arguments: tuple[str, ...],
+    worktree: Path,
+    environment: dict[str, str],
+    old_status: str,
+) -> str:
+    """Run the agent, continuing it while its ticket stays unchanged; return the new status."""
+    continuations = 0
+    command = agent_command
+    while True:
+        continuing = continuations > 0
+        _run_session(main_repo, action, command, arguments, worktree, environment, continuing)
+        # Pi commonly commits from this worktree. Reopen so history is re-read.
+        new_status = _status_after_agent(main_repo.root, worktree, action)
+        if status_outcome(old_status, new_status) != "unchanged":
+            return new_status
+        if continuations == MAX_CONTINUATIONS or not _accepts_prompt(main_repo, agent):
+            raise ChittyError(
+                f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
+            )
+        continuations += 1
+        command = _agent_command(main_repo, action, agent, continuation=True)
+
+
+def _run_session(
+    repo: Repo,
+    action: NextAction,
+    command: tuple[str, ...],
+    arguments: tuple[str, ...],
+    worktree: Path,
+    environment: dict[str, str],
+    continuing: bool,
+) -> None:
+    """Run one agent session; raise unless it exits 0 within `agent_timeout`."""
+    session = [*command, *arguments, *_model_arguments(repo, action, command, arguments)]
+    if continuing:
+        session.append(CONTINUE_ARGUMENT)
+    try:
+        completed = _run_agent(
+            session, cwd=worktree, env=environment, timeout=repo.config.agent_timeout
+        )
+    except FileNotFoundError:
+        raise ChittyError(f"agent command not found: {command[0]}") from None
+    except KeyboardInterrupt:
+        raise RunInterrupted("agent") from None
+    timed_out = completed.stderr == b"timed out"
+    outcome = agent_exit(completed.returncode, timed_out)
+    if outcome == "interrupted":
+        raise RunInterrupted("agent")
+    if outcome == "timed out":
+        raise ChittyError(f"agent timed out after {repo.config.agent_timeout} seconds")
+    if outcome == "failed":
+        raise ChittyError(f"agent exited with status {completed.returncode}")
+
+
+def continuation_prompt(mode: Literal["work", "review"], ticket_id: str) -> str:
+    """Return the prompt that resumes an agent session which left its ticket unfinished."""
+    if mode == "work":
+        return (
+            f"Continue working only on Chitty ticket {ticket_id}. Either finish it and set "
+            "it to `review`, or set it to `blocked` with a note giving the reason. Do not "
+            "stop with it unfinished."
+        )
+    return (
+        f"Continue reviewing only Chitty ticket {ticket_id}. Either pass it (`done`) or "
+        "fail it (`doing`, with the failures in one note), or set it to `blocked` with a "
+        "note giving the reason. Do not merge or remove branches or worktrees."
+    )
 
 
 def _record_usage(project: str, record: dict[str, Any]) -> None:
@@ -454,8 +510,8 @@ def _model_arguments(
     return ("--model", model)
 
 
-def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> tuple[str, ...]:
-    """Parse and validate the selected command after setup refreshes it."""
+def _agent_setting(repo: Repo, agent: str | None) -> tuple[str, str]:
+    """Return the setting name and command text of the selected agent."""
     if agent is None:
         setting = "agent_command"
         command = repo.config.agent_command
@@ -474,13 +530,32 @@ def _agent_command(repo: Repo, action: NextAction, agent: str | None = None) -> 
         if setting == "agent_command":
             raise ChittyError(f"`chitty run` requires agent_command; for example: {example}")
         raise ChittyError(f"`chitty run` requires {setting}")
+    return setting, command
+
+
+def _accepts_prompt(repo: Repo, agent: str | None) -> bool:
+    """Whether the selected command takes `{prompt}`, which only continuation supports."""
+    return "{prompt}" in _agent_setting(repo, agent)[1]
+
+
+def _agent_command(
+    repo: Repo, action: NextAction, agent: str | None = None, continuation: bool = False
+) -> tuple[str, ...]:
+    """Parse and validate the selected command after setup refreshes it."""
+    setting, command = _agent_setting(repo, agent)
     try:
         words = shlex.split(command)
     except ValueError as error:
         raise ChittyError(f"invalid {setting}: {error}") from None
     if ("{mode}" not in command or "{id}" not in command) and "{prompt}" not in command:
         raise ChittyError(f"{setting} must contain both {{mode}} and {{id}}, or {{prompt}}")
-    prompt = guide(action.mode, str(action.id)) if "{prompt}" in command else ""
+    prompt = ""
+    if "{prompt}" in command:
+        ticket = str(action.id)
+        if continuation:
+            prompt = continuation_prompt(action.mode, ticket)
+        else:
+            prompt = guide(action.mode, ticket)
     rendered = tuple(
         os.path.expanduser(word)
         .replace("{mode}", action.mode)

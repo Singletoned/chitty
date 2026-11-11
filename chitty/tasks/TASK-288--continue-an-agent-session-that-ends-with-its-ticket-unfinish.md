@@ -1,6 +1,6 @@
 ---
 title: Continue an agent session that ends with its ticket unfinished
-status: todo
+status: done
 labels:
   - bug
 parent: TASK-275
@@ -18,13 +18,39 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A `chitty run` whose fake `{prompt}` agent leaves the ticket in `doing` the first time, and moves it to `review` when started with `-c`, ends with the ticket in `review`; the second start received `-c` and the continuation prompt naming the ticket. It fails today.
-- [ ] A fake agent that never changes the ticket is started 6 times (the first session and 5 continuations), then `chitty run` fails with `was unchanged`. A `{mode} {id}` agent fails after the first session, as today.
-- [ ] A fake agent that sets the ticket to `blocked` when continued is continued once, and the run ends with the ticket `blocked`.
+- [x] A `chitty run` whose fake `{prompt}` agent leaves the ticket in `doing` the first time, and moves it to `review` when started with `-c`, ends with the ticket in `review`; the second start received `-c` and the continuation prompt naming the ticket. It fails today.
+- [x] A fake agent that never changes the ticket is started 6 times (the first session and 5 continuations), then `chitty run` fails with `was unchanged`. A `{mode} {id}` agent fails after the first session, as today.
+- [x] A fake agent that sets the ticket to `blocked` when continued is continued once, and the run ends with the ticket `blocked`.
+
+## Plan
+
+Plan: add continuation inside `_run_ticket` in src/chitty/run.py, with no new setting.
+
+- Extract the agent session (spawn, exit handling) into a helper and loop it. After a session exits 0, if the status is unchanged and the command has `{prompt}`, run the same command again with the continuation prompt in place of `{prompt}` and `-c` appended after the model arguments. Cap at a module constant `MAX_CONTINUATIONS = 5`. A `{mode} {id}` command, or a run past the cap, raises the existing `was unchanged` error.
+- Continuation prompts: module-level functions `work_continuation_prompt` and `review_continuation_prompt`, with the wording from the ticket.
+- Timeout, non-zero exit, and interrupt handling are shared with the first session. One usage record is still written in the existing `finally`.
+- Tests in tests/test_run_continue.py cover AC 1 to 3 with fake `{prompt}` agents. I will write them first and confirm they fail on main.
+- Docs: README.md run section and PLAN.md "Next action and runner".
+- I am not using the cold-read branch: its `agent_continue_command` setting breaks "no new settings".
 
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it against the current criteria; do not trust it.
+
+Evidence for criteria 1 to 3: tests/test_run_continue.py, run against the code before the fix, then with it. Before the fix, test_continued_session_finishes_ticket_left_in_doing exited 1 with was unchanged, test_unchanged_ticket_is_continued_five_times_then_fails gave 1 != 6, and test_ticket_blocked_when_continued_ends_run_blocked exited 1. After the fix all four pass. For the {mode} {id} clause of criterion 2, test_command_without_prompt_is_not_continued passes on both sides, so I mutated the prompt guard out: it then fails with 6 != 1.
+
+Choice: continuation reuses the existing {prompt} command with -c appended, as the ticket says. The cold-read branch refs/cold-read/TASK-288/1 added a new agent_continue_command setting, which the ticket rules out, so I did not use it.
+
+Also updated tests/test_next.py: its fake agent asserted one argument and a newline in every session, which continued sessions break. It now checks the first session in full and continued sessions by their prompt and -c. The assertions it still makes are unchanged.
+
+Reviewed: make format && make check passed: 496 Python tests and 27 Node tests; the first check overlapped my baseline test and was rerun successfully after restoration.
+1: pass - test_continued_session_finishes_ticket_left_in_doing passes; against the pre-fix run.py it failed with TASK-1 was unchanged.
+2: pass - test_unchanged_ticket_is_continued_five_times_then_fails and test_command_without_prompt_is_not_continued pass; the first failed against pre-fix run.py with 1 != 6. The implementation note records removing the prompt guard made the second fail with 6 != 1.
+3: pass - test_ticket_blocked_when_continued_ends_run_blocked passes; against pre-fix run.py it failed with TASK-1 was unchanged.
+
+## Summary
+
+Handoff: chitty run continues an agent session that exits 0 with its ticket status unchanged, when the command has {prompt}. It runs again with the continuation prompt and -c, up to MAX_CONTINUATIONS (5) times, then fails with was unchanged. Changes are in src/chitty/run.py (_agent_sessions, _run_session, continuation_prompt), with docs in README.md and PLAN.md. Verification: make check passes (496 tests, ruff, pyright). Follow-ups: the review-mode continuation prompt and its path are not covered by a test; add one if a reviewer wants it.
 
 ## History
 
@@ -40,3 +66,9 @@ Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it a
 - 2026-11-11T18:59:03Z vivid-yellowhammer: changed description
 - 2026-11-11T18:59:04Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T18:59:13Z vivid-yellowhammer: changed description
+- 2026-11-11T21:28:23Z daring-bronze-crane todo → doing
+- 2026-11-11T21:28:56Z daring-bronze-crane: wrote the plan
+- 2026-11-11T21:35:49Z daring-bronze-crane: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T21:35:49Z daring-bronze-crane doing → review
+- 2026-11-11T21:39:22Z nimble-bronze-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-11T21:39:22Z nimble-bronze-lapwing review → done
