@@ -1,6 +1,6 @@
 ---
 title: Name actors adjective-colour-animal
-status: todo
+status: doing
 parent: TASK-283
 created: 2026-11-11
 ---
@@ -29,3 +29,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it a
 - 2026-11-11T16:12:11Z vivid-yellowhammer: changed description
 - 2026-11-11T16:12:12Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T16:12:12Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T19:01:45Z sunny-falcon todo → doing
