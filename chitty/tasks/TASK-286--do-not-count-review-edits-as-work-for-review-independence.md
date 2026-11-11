@@ -20,7 +20,7 @@ created: 2026-11-11
 
 ## Plan
 
-Track status as history lines are read in order. Count acceptance-criteria ticks only when the edit began outside review; continue counting plan writes regardless of status. Add store-level regression coverage for review ticks, doing ticks, and review plan writes.
+Track status across History lines in order. Count criterion ticks only when the edit started outside review, while preserving plan-write review independence checks. Add store regression tests for each specified scenario.
 
 ## Notes
 
@@ -35,3 +35,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-286/1`. Check it a
 - 2026-11-11T16:13:31Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T21:09:26Z witty-dusky-toad todo → doing
 - 2026-11-11T21:09:43Z witty-dusky-toad: wrote the plan
+- 2026-11-11T21:37:35Z sunny-bronze-lapwing: wrote the plan
