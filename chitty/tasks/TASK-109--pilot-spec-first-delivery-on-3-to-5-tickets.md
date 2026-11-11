@@ -60,6 +60,8 @@ Also needs `TASK-153`: without it, every passed review stops an unattended loop.
 
 Dependencies trimmed on 2026-11-06 at the human's request: the pilot runs by hand, so it doesn't need landing automation (`TASK-131`, `TASK-152`) or the smaller guide block (`TASK-143`). Every other dependency is done. Another candidate: `TASK-221` (pure edit validation with property tests), which suits spec-first well.
 
+Archived in backlog triage (human approved, 2026-11-11): the spec-first pilot never ran; practice moved on, and TASK-255 is the pipeline change now.
+
 ## History
 
 - 2026-11-03T10:27:47Z lively-panda → backlog
@@ -75,3 +77,4 @@ Dependencies trimmed on 2026-11-06 at the human's request: the pilot runs by han
 - 2026-11-04T15:11:38Z mellow-newt: changed dependencies, notes
 - 2026-11-04T15:12:08Z mellow-newt: changed dependencies, notes
 - 2026-11-06T19:18:24Z youthful-toad: changed dependencies, notes
+- 2026-11-11T10:17:01Z vivid-yellowhammer: changed notes
