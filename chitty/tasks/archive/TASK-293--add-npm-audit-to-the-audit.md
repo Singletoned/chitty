@@ -23,3 +23,4 @@ Moved to taidy, 2026-11-11: the scanners belong in `taidy security`.
 
 - 2026-11-11T16:18:25Z vivid-yellowhammer → backlog
 - 2026-11-11T18:59:35Z vivid-yellowhammer: changed notes
+- 2026-11-11T18:59:36Z vivid-yellowhammer backlog → archived
