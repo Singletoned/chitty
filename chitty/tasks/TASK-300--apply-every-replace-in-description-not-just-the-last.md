@@ -1,6 +1,6 @@
 ---
 title: Apply every `--replace-in-description`, not just the last
-status: review
+status: done
 labels:
   - bug
 parent: TASK-284
@@ -35,6 +35,11 @@ Review failed (tests): Add CLI and MCP coverage replacing two distinct parts of 
 
 Review follow-up: updated CLI and MCP coverage to replace two distinct parts of each Description. The CLI regression failed against pre-fix source (first pair was discarded); make format and make check pass with the fix.
 
+Reviewed: make format && make check passed (506 Python tests and Node tests).
+1: pass - test_replace_in_description_applies_pairs_in_order passed; against main it failed with Describe this; preserve that instead of Explain this; preserve that.
+2: pass - test_replace_in_description_checks_each_result_before_writing passed, naming b and preserving the file; replace_pairs on Keep a. with a to b and b to c printed Keep c.
+3: pass - test_edit_replaces_text_in_description passed with one changed description history action; against main it errored with two MCP validation errors.
+
 ## Summary
 
 Handoff: strengthened CLI/MCP regressions to replace distinct Description parts, asserting one History action. Verification: CLI regression failed against pre-fix source; make format and make check passed. No follow-ups.
@@ -55,3 +60,5 @@ Handoff: strengthened CLI/MCP regressions to replace distinct Description parts,
 - 2026-11-11T22:16:52Z zesty-ochre-crane review → doing
 - 2026-11-11T22:19:51Z sunny-violet-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T22:19:51Z sunny-violet-eel doing → review
+- 2026-11-11T22:22:07Z intrepid-teal-wren: changed notes; ticked acceptance criteria
+- 2026-11-11T22:22:07Z intrepid-teal-wren review → done
