@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: todo
+status: doing
 created: 2026-11-11
 ---
 
@@ -33,3 +33,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-289/1`. Check it a
 - 2026-11-11T18:54:56Z vivid-yellowhammer: changed description
 - 2026-11-11T18:54:58Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T18:54:58Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T21:49:16Z rosy-fawn-badger todo → doing
