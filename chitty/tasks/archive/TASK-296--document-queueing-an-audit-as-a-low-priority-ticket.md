@@ -25,3 +25,4 @@ Withdrawn 2026-11-11: the human runs `make audit` by hand for now.
 - 2026-11-11T16:18:28Z vivid-yellowhammer → backlog
 - 2026-11-11T18:50:45Z vivid-yellowhammer: changed title, owner, description, acceptance criteria
 - 2026-11-11T18:59:39Z vivid-yellowhammer: changed notes
+- 2026-11-11T18:59:40Z vivid-yellowhammer backlog → archived
