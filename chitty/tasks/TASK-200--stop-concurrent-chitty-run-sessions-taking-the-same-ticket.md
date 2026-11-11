@@ -2,7 +2,6 @@
 title: Stop concurrent `chitty run` sessions taking the same ticket
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-06
 ---
 
@@ -65,3 +64,4 @@ Verified: `tests/test_run_lock.py` (three of four failed before wiring the lock 
 - 2026-11-06T10:09:19Z youthful-toad doing → review
 - 2026-11-06T10:47:18Z upbeat-crane: changed notes
 - 2026-11-06T10:47:18Z upbeat-crane review → done
+- 2026-11-11T10:18:00Z vivid-yellowhammer: changed parent
