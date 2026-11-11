@@ -2,7 +2,6 @@
 title: Have cold reads implement tickets in a detached worktree
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -82,3 +81,4 @@ Implemented the detached-worktree cold-read procedure in `src/chitty/roles/plan.
 - 2026-11-06T10:00:08Z youthful-toad: changed owner, notes
 - 2026-11-06T10:05:12Z youthful-toad: changed owner, notes
 - 2026-11-06T10:05:12Z youthful-toad review → done
+- 2026-11-11T10:17:56Z vivid-yellowhammer: changed parent
