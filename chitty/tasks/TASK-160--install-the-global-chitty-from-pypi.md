@@ -23,14 +23,16 @@ Once `main` is ready, in this order, in the human's shell and with the planning 
 
 ## Acceptance Criteria
 
-- [ ] `chitty --version` outside this repository reports the PyPI release from a non-editable install, and in the main checkout `chitty next` works when `main` is ahead of it
-- [ ] `README.md` describes installing from PyPI, and using `.venv` when developing Chitty
+- [x] `chitty --version` outside this repository reports the PyPI release from a non-editable install, and in the main checkout `chitty next` works when `main` is ahead of it
+- [x] `README.md` describes installing from PyPI, and using `.venv` when developing Chitty
 
 ## Notes
 
 Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: a stale count, the `.envrc` comment, which did forbid `PATH`, and `make install` first. `TASK-122` assumes the editable global this reverses, so it is archived. Rejected: a criterion for deleting `~/.envs/chitty`, which is the human's own clean-up; and a repeatable test of `.envrc`, which is local to this machine.
 
 Step 2 waits on a republish: the v0.2.0 publish failed in `make check` (run 42982880317), so PyPI still has 0.1.47. Step 3 done: `.envrc` has `PATH_add .venv/bin` with a corrected comment, and `README.md` is updated. Agent shells may not load direnv, so `AGENTS.md` names `.venv/bin/chitty` too.
+
+Done 2026-11-11: the global `chitty` is a non-editable PyPI 0.2.1 install, `.venv/bin/chitty` serves this repo, and `README.md` covers both.
 
 ## History
 
@@ -39,3 +41,4 @@ Step 2 waits on a republish: the v0.2.0 publish failed in `make check` (run 4298
 - 2026-11-04T19:36:41Z mellow-newt backlog → todo
 - 2026-11-11T10:17:32Z vivid-yellowhammer: changed parent
 - 2026-11-11T10:20:38Z vivid-yellowhammer: changed notes
+- 2026-11-11T15:57:47Z vivid-yellowhammer: changed notes; ticked acceptance criteria
