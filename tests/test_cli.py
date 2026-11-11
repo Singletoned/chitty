@@ -1526,6 +1526,7 @@ class TestEdit(CliTestCase):
         self.assertNotEqual(before, self.path.read_text())
 
     def test_replace_in_description_applies_pairs_in_order(self):
+        self.run_cli("edit", "1", "-d", "Describe this; retain that.")
         self.run_cli(
             "edit",
             "1",
@@ -1533,12 +1534,15 @@ class TestEdit(CliTestCase):
             "Describe",
             "Explain",
             "--replace-in-description",
-            "Explain",
-            "Clarify",
+            "retain",
+            "preserve",
         )
-        self.assertEqual(self.json("show", "1")["description"], "Clarify.")
+        self.assertEqual(
+            self.json("show", "1")["description"],
+            "Explain this; preserve that.",
+        )
         history = self.path.read_text().split("## History", 1)[1]
-        self.assertEqual(history.count("changed description"), 1)
+        self.assertEqual(history.count("changed description"), 2)
 
     def test_replace_in_description_checks_each_result_before_writing(self):
         self.run_cli("edit", "1", "-d", "Keep a b.")
