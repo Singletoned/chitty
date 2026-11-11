@@ -1,6 +1,6 @@
 ---
 title: Accept ticket IDs with an alphanumeric suffix
-status: doing
+status: review
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -15,9 +15,9 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A ticket file `chitty/backlog/BACKLOG-K3F9X2AB--x.md` with title `x`, written by a test, can be shown with `chitty show backlog-k3f9x2ab`, edited, and named in another ticket's `depends_on`. It fails today.
-- [ ] `chitty list` shows `BACKLOG-12` before `BACKLOG-K3F9X2AB`, `chitty check` reports no problem, and `chitty add -c backlog` next to them still succeeds.
-- [ ] `BACKLOG-013` is still rejected as an ID, with an error saying `expected PREFIX-N or PREFIX-SUFFIX`, and `BACKLOG-0A` is accepted.
+- [x] A ticket file `chitty/backlog/BACKLOG-K3F9X2AB--x.md` with title `x`, written by a test, can be shown with `chitty show backlog-k3f9x2ab`, edited, and named in another ticket's `depends_on`. It fails today.
+- [x] `chitty list` shows `BACKLOG-12` before `BACKLOG-K3F9X2AB`, `chitty check` reports no problem, and `chitty add -c backlog` next to them still succeeds.
+- [x] `BACKLOG-013` is still rejected as an ID, with an error saying `expected PREFIX-N or PREFIX-SUFFIX`, and `BACKLOG-0A` is accepted.
 
 ## Plan
 
@@ -26,6 +26,12 @@ Update TaskId parsing and mixed numeric/alphanumeric ordering, adapt selection o
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-263/2`, which keeps `TaskId.number` as `int | str`. Check it against the current criteria; do not trust it. It keeps the old error text. Shell completion order (`_complete_task_id` in `cli.py`) is out of scope; it already sorts by string.
+
+Implemented alphanumeric suffix parsing, canonicalization, mixed sorting, and numeric-only allocation scans. Focused 15 tests and full make check passed (483 Python suites plus Node tests); chitty fix completed. Existing chitty fix warnings in unrelated task files remain.
+
+## Summary
+
+Implementation committed as a4ace8a (Task: TASK-263). Verified all three acceptance criteria with focused regression tests and full make check. No follow-up required.
 
 ## History
 
@@ -39,3 +45,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-263/2`, which keep
 - 2026-11-11T13:47:07Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T13:55:07Z friendly-adder todo → doing
 - 2026-11-11T13:55:26Z friendly-adder: wrote the plan
+- 2026-11-11T13:57:27Z friendly-adder: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T13:57:27Z friendly-adder doing → review
