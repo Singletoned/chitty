@@ -19,6 +19,11 @@ class TestUnconfiguredDirectories(CliTestCase):
         self.assertIn("OTHER-2", self.run_cli("show", "OTHER-2").stdout)
         self.assertIn("OTHER-1", self.run_cli("list").stdout)
 
+    def test_configured_directory_accepts_ticket_with_another_prefix(self):
+        self.write_ticket("tasks/OTHER-1--one.md", "One")
+        self.assertIn("OTHER-1", self.run_cli("show", "OTHER-1").stdout)
+        self.run_cli("check")
+
     def test_dependency_check_next_and_write_error(self):
         self.write_ticket("other/OTHER-1--one.md", "One")
         self.write_ticket("tasks/TASK-1--two.md", "Two", extra="depends_on:\n  - OTHER-1\n")

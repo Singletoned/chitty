@@ -758,9 +758,7 @@ class Repo:
         """The context, archive flag and scanned path of a task file, without collapsing IDs."""
         for context in self.discovered_contexts():
             for archived in (False, True):
-                for candidate, problem in scan(
-                    context, archived, allow_any_prefix=context.prefix == ""
-                ):
+                for candidate, problem in scan(context, archived, allow_any_prefix=True):
                     if candidate.resolve() != path:
                         continue
                     if problem:
@@ -861,7 +859,7 @@ class Repo:
 
     def _files(self, context: Context, archived: bool) -> list[Path]:
         files: list[Path] = []
-        for path, problem in scan(context, archived, allow_any_prefix=context.prefix == ""):
+        for path, problem in scan(context, archived, allow_any_prefix=True):
             if problem:
                 raise ChittyError(f"{path}: {problem}")
             files.append(path)

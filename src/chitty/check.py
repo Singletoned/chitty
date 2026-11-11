@@ -111,7 +111,7 @@ def fix(
     fixed: list[Problem] = []
     for context in contexts:
         for archived in (False, True):
-            for path, problem in scan(context, archived, allow_any_prefix=context.prefix == ""):
+            for path, problem in scan(context, archived, allow_any_prefix=True):
                 if problem or (wanted and path.resolve() not in wanted):
                     continue
                 try:
@@ -159,7 +159,7 @@ def check(
     in_context: dict[Path, Context] = {}
     for context in repo.discovered_contexts():
         for archived in (False, True):
-            for path, problem in scan(context, archived, allow_any_prefix=context.prefix == ""):
+            for path, problem in scan(context, archived, allow_any_prefix=True):
                 in_context[path] = context
                 if problem:
                     problems.append(Problem(path, problem))
