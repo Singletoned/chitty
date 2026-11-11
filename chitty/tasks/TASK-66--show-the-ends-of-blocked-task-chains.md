@@ -1,6 +1,8 @@
 ---
 title: Show the ends of blocked-task chains
 status: backlog
+labels:
+  - needs-discussion
 depends_on:
   - TASK-70
 created: 2026-11-01
@@ -28,3 +30,4 @@ Suggestion origin: circuitry
 ## History
 
 - 2026-11-01 → backlog
+- 2026-11-11T10:17:06Z vivid-yellowhammer: changed labels
