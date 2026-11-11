@@ -37,3 +37,4 @@ Superseded 2026-11-11 by TASK-285: three-part names with a colour word.
 - 2026-11-04T14:36:52Z mellow-newt todo → backlog
 - 2026-11-11T10:17:23Z vivid-yellowhammer: changed parent
 - 2026-11-11T16:09:38Z vivid-yellowhammer: changed notes
+- 2026-11-11T16:09:39Z vivid-yellowhammer backlog → archived
