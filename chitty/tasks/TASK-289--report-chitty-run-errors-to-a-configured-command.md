@@ -19,6 +19,10 @@ created: 2026-11-11
 - [ ] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
 - [ ] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
 
+## Plan
+
+Add optional `error_reporter` config validation and document the setting. In `run()`, retain run context as it becomes known and report caught Chitty errors except empty-queue and interruption cases; parse and substitute reporter arguments safely, warn on reporter failure, then preserve the original exception. Add integration tests for failing/successful/idle runs and reporter failure, including message and ticket context.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-289/1`. Check it against the current criteria; do not trust it.
@@ -34,3 +38,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-289/1`. Check it a
 - 2026-11-11T18:54:58Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T18:54:58Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T21:49:16Z rosy-fawn-badger todo → doing
+- 2026-11-11T21:49:37Z rosy-fawn-badger: wrote the plan
