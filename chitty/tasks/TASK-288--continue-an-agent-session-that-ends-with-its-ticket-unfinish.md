@@ -1,6 +1,6 @@
 ---
 title: Continue an agent session that ends with its ticket unfinished
-status: review
+status: done
 labels:
   - bug
 parent: TASK-275
@@ -43,6 +43,11 @@ Choice: continuation reuses the existing {prompt} command with -c appended, as t
 
 Also updated tests/test_next.py: its fake agent asserted one argument and a newline in every session, which continued sessions break. It now checks the first session in full and continued sessions by their prompt and -c. The assertions it still makes are unchanged.
 
+Reviewed: make format && make check passed: 496 Python tests and 27 Node tests; the first check overlapped my baseline test and was rerun successfully after restoration.
+1: pass - test_continued_session_finishes_ticket_left_in_doing passes; against the pre-fix run.py it failed with TASK-1 was unchanged.
+2: pass - test_unchanged_ticket_is_continued_five_times_then_fails and test_command_without_prompt_is_not_continued pass; the first failed against pre-fix run.py with 1 != 6. The implementation note records removing the prompt guard made the second fail with 6 != 1.
+3: pass - test_ticket_blocked_when_continued_ends_run_blocked passes; against pre-fix run.py it failed with TASK-1 was unchanged.
+
 ## Summary
 
 Handoff: chitty run continues an agent session that exits 0 with its ticket status unchanged, when the command has {prompt}. It runs again with the continuation prompt and -c, up to MAX_CONTINUATIONS (5) times, then fails with was unchanged. Changes are in src/chitty/run.py (_agent_sessions, _run_session, continuation_prompt), with docs in README.md and PLAN.md. Verification: make check passes (496 tests, ruff, pyright). Follow-ups: the review-mode continuation prompt and its path are not covered by a test; add one if a reviewer wants it.
@@ -65,3 +70,5 @@ Handoff: chitty run continues an agent session that exits 0 with its ticket stat
 - 2026-11-11T21:28:56Z daring-bronze-crane: wrote the plan
 - 2026-11-11T21:35:49Z daring-bronze-crane: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T21:35:49Z daring-bronze-crane doing → review
+- 2026-11-11T21:39:22Z nimble-bronze-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-11T21:39:22Z nimble-bronze-lapwing review → done
