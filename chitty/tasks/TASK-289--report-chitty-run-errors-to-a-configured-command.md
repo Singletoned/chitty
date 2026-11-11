@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: doing
+status: review
 created: 2026-11-11
 ---
 
@@ -15,9 +15,9 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` whose agent command exits 1 leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
-- [ ] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
-- [ ] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
+- [x] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` whose agent command exits 1 leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
+- [x] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
+- [x] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
 
 ## Plan
 
@@ -26,6 +26,12 @@ Add optional `error_reporter` config validation and document the setting. In `ru
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-289/1`. Check it against the current criteria; do not trust it.
+
+Regression tests failed before implementation (unknown error_reporter config; no report file), then passed after implementation. `make format && make check` passes all 502 Python suites and Node tests. Empty queue is an expected exit status 3 and does not invoke reporter. Commit: 14688ec.
+
+## Summary
+
+Implemented configurable error reporting in `chitty run`, including error message/context substitution and warning-only handling for reporter failures. Verified with `make format && make check`; 502 Python suites and Node tests pass. Regression test was confirmed failing before the fix. Ready for review; no known follow-ups.
 
 ## History
 
@@ -39,3 +45,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-289/1`. Check it a
 - 2026-11-11T18:54:58Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T21:49:16Z rosy-fawn-badger todo → doing
 - 2026-11-11T21:49:37Z rosy-fawn-badger: wrote the plan
+- 2026-11-11T21:52:43Z rosy-fawn-badger: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T21:52:43Z rosy-fawn-badger doing → review
