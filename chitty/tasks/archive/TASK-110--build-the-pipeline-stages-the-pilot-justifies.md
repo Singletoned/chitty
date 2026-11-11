@@ -30,3 +30,4 @@ Archived in backlog triage (human approved, 2026-11-11): the spec-first pilot ne
 - 2026-11-03T10:28:27Z lively-panda: changed dependencies
 - 2026-11-03T16:30:17Z lively-panda: changed notes
 - 2026-11-11T10:17:02Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:17:03Z vivid-yellowhammer backlog → archived
