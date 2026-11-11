@@ -25,7 +25,7 @@ In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s desc
 
 ## Plan
 
-Update the review guide and role wording to require one numbered pass/fail evidence line per criterion, including test-failure-without-change evidence; add CLI guide coverage, and update the README example and PLAN review description. Preserve existing evidence-reporting rules and verify with make format and make check.
+Fix the README review-note example to pass a real newline rather than literal backslash-n, and add a test that extracts/runs the documented verdict against the validator. Verify it fails before the fix, then format and check.
 
 ## Notes
 
@@ -87,3 +87,4 @@ Handoff: per-criterion review verdict guidance, regression coverage, README exam
 - 2026-11-11T15:57:24Z vivid-yellowhammer blocked → review
 - 2026-11-11T16:01:53Z upbeat-crane: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-11T16:01:53Z upbeat-crane review → doing
+- 2026-11-11T16:17:27Z jolly-heron: wrote the plan
