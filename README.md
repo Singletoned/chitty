@@ -141,6 +141,11 @@ NAME` selects an entry from `[agent_commands]`. Both commands are parsed
 without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.
 Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
+If the agent exits 0 but leaves the ticket's status unchanged, Chitty continues
+the same session when the command has `{prompt}`: it runs the command again with
+a continuation prompt in place of `{prompt}` and `-c` appended, up to five times
+per run, then fails with `was unchanged`. A command with only `{mode}` and `{id}`
+is not continued.
 `chitty run` creates or reuses the ticket worktree, runs setup there, claims a
 `todo` ticket, and invokes
 the configured agent from that worktree. The agent uses the `chitty`

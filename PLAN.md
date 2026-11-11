@@ -766,7 +766,13 @@ agent command, only when neither that command nor forwarded arguments specify
 and without a configured default the invocation is unchanged. Commands receiving
 a default must accept the agent CLI option `--model`; Chitty has no `--model`
 option of its own. It reopens the ticket worktree after the agent
-exits and succeeds only if the task's committed status changed. This makes
+exits and succeeds only if the task's committed status changed. An exit 0 with
+the status unchanged continues the same session, if the command has `{prompt}`:
+the command runs again with the continuation prompt in place of `{prompt}` and
+`-c` appended after the other arguments, at most `MAX_CONTINUATIONS` (5) times
+per run, then fails with `was unchanged`. A `{mode} {id}` command is not
+continued. Each session has its own `agent_timeout`, and one usage line covers
+the run. This makes
 `chitty run --loop --mode work -- --model MODEL` keeps running, waiting 60
 seconds after each successful run or idle queue before trying again. Each
 attempt starts a fresh `chitty run` process so a completed landing cannot leave
