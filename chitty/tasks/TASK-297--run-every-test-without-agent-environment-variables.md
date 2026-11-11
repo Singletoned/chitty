@@ -1,6 +1,6 @@
 ---
 title: Run every test without agent environment variables
-status: cold-read
+status: todo
 labels:
   - bug
 created: 2026-11-11
@@ -13,11 +13,17 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test, run with `PI_CODING_AGENT=true`, `CLAUDE_CODE_SESSION_ID=x` and `CHITTY_ACTOR=x` exported, finds none of them in `os.environ`. It fails today.
+- [ ] A test in `tests/test_agent_environment.py`, run with `PI_CODING_AGENT=true`, `CLAUDE_CODE_SESSION_ID=x` and `CHITTY_ACTOR=x` exported, finds no variable starting `PI_`, `CLAUDE_`, `CODEX_` or `CHITTY_` in `os.environ`, both in the full run and when run alone. It fails today.
 - [ ] `make check` passes with those variables exported.
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-297/1`. Check it against the current criteria; do not trust it.
 
 ## History
 
 - 2026-11-11T21:09:07Z vivid-yellow-raven → backlog
 - 2026-11-11T21:10:19Z vivid-yellow-raven backlog → cold-read
 - 2026-11-11T21:18:03Z vivid-yellow-raven: changed description
+- 2026-11-11T21:18:04Z vivid-yellow-raven: changed acceptance criteria, notes
+- 2026-11-11T21:18:04Z vivid-yellow-raven cold-read → todo
