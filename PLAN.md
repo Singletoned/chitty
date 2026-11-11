@@ -725,8 +725,11 @@ dependencies. It prints `work ID` or `review ID`; `--json` and the read-only MCP
 `next` tool return the same `{mode, id}` value. `--mode review` limits the
 choice to `review` tasks and `--mode work` to `doing` and `todo`, in the same
 order, filtering before dependencies are checked so a bad reference on a task
-in the other mode does not stop this one. With nothing left it prints `no next
-ticket` (or `no next ticket for --mode MODE`) to stderr and exits 3, a status of
+in the other mode does not stop this one. Repeating `--mode` allows each mode
+given, so `--mode work --mode review` allows both; with no `--mode`, every mode
+is allowed. With nothing left it prints `no next ticket` (or `no next ticket for
+--mode MODE`, with several modes joined by ` or `, such as `review or work`) to
+stderr and exits 3, a status of
 its own, so an idle reviewer is distinguishable from a broken one, which exits
 1. An idle queue includes one where every `todo` task waits on a dependency.
 `chitty run` exits 3 in the same case. The MCP tool keeps the default.
@@ -739,9 +742,9 @@ selecting an agent ticket. `--ticket` skips this recovery pass.
 `chitty run` requires `autocommit = true`, a configured `setup` command, and
 an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
 Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips owned `todo` and `doing` tickets, while still selecting owned `review` tickets; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.
-`chitty run --mode MODE` selects as `chitty next --mode MODE` does, and is
-refused with `--ticket` before anything else runs, because the ticket already
-decides its mode.
+`chitty run --mode MODE` selects as `chitty next --mode MODE` does, including
+repeated `--mode` options, and is refused with `--ticket` before anything else
+runs, because the ticket already decides its mode.
 The command may include `{prompt}` as a single argument;
 Chitty fills it with the role-specific `chitty guide <mode> <ID>` output after
 splitting the command. It finds the main checkout even when invoked from another

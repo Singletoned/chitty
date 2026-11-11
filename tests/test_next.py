@@ -18,7 +18,7 @@ from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
 from chitty.inbox import suggest
 from chitty.mcp import server
-from chitty.run import _read_usage, _record_usage
+from chitty.run import _read_usage, _record_usage, run_loop
 from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
 
@@ -326,6 +326,19 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "")
         self.assertEqual(result.stderr, "no next ticket for --mode review\n")
 
+    def test_next_repeated_modes_include_both_modes(self):
+        todo = self.add("Todo")
+        review = self.add("Review", status="review")
+        self.assertEqual(
+            self.run_cli("next", "--mode", "review", "--mode", "work").stdout,
+            f"review {review}\n",
+        )
+        self.assertEqual(self.run_cli("next", "--mode", "work").stdout, f"work {todo}\n")
+        for path in (self.root / "chitty/tasks").glob("*.md"):
+            path.unlink()
+        result = self.run_cli("next", "--mode", "review", "--mode", "work", exit_code=3)
+        self.assertEqual(result.stderr, "no next ticket for --mode review or work\n")
+
     def test_owner_filter_reserves_work_and_review(self):
         unowned = self.add("Unowned")
         opus_todo = self.add("Opus todo", owner="opus")
@@ -457,6 +470,51 @@ class TestNext(CliTestCase):
             self.assertEqual(idle.stderr.splitlines()[-1], "no next ticket for --mode review")
         finally:
             os.environ["PATH"] = old_path
+
+    def test_run_repeated_modes_selects_available_work(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"', 'agent_command = "fake {mode} {id}"'
+            )
+            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        todo = self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "fake"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import subprocess, sys\n"
+            "from pathlib import Path\n"
+            "path = next(Path('chitty/tasks').glob(sys.argv[2] + '--*.md'))\n"
+            "path.write_text(path.read_text().replace('status: doing\\n', 'status: blocked\\n'))\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-am', 'agent'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        previous = os.environ.get("PATH", "")
+        os.environ["PATH"] = f"{fake.parent}:{previous}"
+        try:
+            result = self.run_cli("run", "--mode", "review", "--mode", "work")
+        finally:
+            os.environ["PATH"] = previous
+        self.assertEqual(result.stdout, f"{todo}: doing → blocked\n")
+
+    def test_run_loop_forwards_every_mode(self):
+        with (
+            patch("chitty.run.Path.is_file", return_value=True),
+            patch(
+                "chitty.run.subprocess.run", return_value=subprocess.CompletedProcess([], 1)
+            ) as run,
+        ):
+            self.assertEqual(run_loop(("--mode", "review", "--mode", "work")), 1)
+        self.assertEqual(run.call_args.args[0][-4:], ["--mode", "review", "--mode", "work"])
 
     def test_run_overlaps_one_worker_and_one_reviewer(self):
         config = self.root / "chitty.toml"

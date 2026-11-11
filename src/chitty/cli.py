@@ -99,8 +99,10 @@ def main() -> None:
 json_option = click.option("--json", "as_json", is_flag=True, help="Print JSON.")
 mode_option = click.option(
     "--mode",
+    "modes",
     type=click.Choice(["work", "review"]),
-    help="Choose only tickets to work (doing, todo) or only tickets to review.",
+    multiple=True,
+    help="Choose only tickets to work (doing, todo) or review. Repeat to allow both.",
 )
 
 
@@ -451,9 +453,9 @@ def _shorten(title: str, room: int) -> str:
 @click.option("--owner", help="Choose tickets owned by this agent.")
 @mode_option
 @json_option
-def next_(mode: Literal["work", "review"] | None, as_json: bool, owner: str | None) -> None:
+def next_(modes: tuple[Literal["work", "review"], ...], as_json: bool, owner: str | None) -> None:
     """Print the next ticket to work or review."""
-    action = next_action(_repo(), mode=mode, owner=owner)
+    action = next_action(_repo(), modes=modes, owner=owner)
     if as_json:
         _print_json(action.as_dict())
     else:
@@ -483,7 +485,7 @@ def run(
     owner: str | None,
     agent: str | None,
     loop: bool,
-    mode: Literal["work", "review"] | None,
+    modes: tuple[Literal["work", "review"], ...],
 ) -> None:
     """Run the next ticket, or the one named by --ticket; other arguments go to the agent."""
     if loop and ticket is not None:
@@ -495,7 +497,7 @@ def run(
                 options.extend(("--owner", owner))
             if agent is not None:
                 options.extend(("--agent", agent))
-            if mode is not None:
+            for mode in modes:
                 options.extend(("--mode", mode))
             if ctx.args:
                 options.extend(("--", *ctx.args))
@@ -505,7 +507,7 @@ def run(
             ticket,
             tuple(ctx.args),
             agent=agent,
-            mode=mode,
+            modes=modes,
             owner=owner,
         )
     except RunInterrupted as interrupted:

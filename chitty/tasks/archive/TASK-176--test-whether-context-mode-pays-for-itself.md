@@ -24,6 +24,8 @@ context-mode was disabled on 2026-11-05, because its package upgrade removed the
 
 TASK-175 was archived as obsolete at the human’s request; this separate trial no longer waits on it.
 
+Withdrawn 2026-11-11 by the human: `context-mode` has been off since 2026-11-05 and nothing has missed it.
+
 ## History
 
 - 2026-11-04T21:41:11Z mellow-newt → backlog
@@ -32,3 +34,5 @@ TASK-175 was archived as obsolete at the human’s request; this separate trial 
 - 2026-11-05T08:22:58Z mellow-newt: changed notes
 - 2026-11-08T13:31:33Z eager-puffin: changed dependencies, description, notes
 - 2026-11-11T10:17:44Z vivid-yellowhammer: changed parent
+- 2026-11-11T15:57:49Z vivid-yellowhammer: changed notes
+- 2026-11-11T15:57:49Z vivid-yellowhammer todo → archived
