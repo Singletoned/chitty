@@ -65,3 +65,4 @@ Archived in backlog triage (human approved, 2026-11-11): the spec-first pilot ne
 - 2026-11-04T12:40:38Z lively-panda: changed notes
 - 2026-11-04T14:28:19Z mellow-newt: changed notes
 - 2026-11-11T10:16:59Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:17:00Z vivid-yellowhammer backlog → archived
