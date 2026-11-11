@@ -570,8 +570,9 @@ same unmarked block, and `chitty --help` points agents at it.
 
 ## Pipeline and feedback
 
-Direction, not current behaviour: TASK-109 pilots this by hand, and TASK-110
-builds only what the pilot justifies. Until then the statuses above stand.
+Direction, not current behaviour. The human dropped the spec-first pilot
+(TASK-109) on 2026-11-11; TASK-255 adds `planning` and `cold-read` statuses
+instead. Until it lands the statuses above stand.
 
 ```
 backlog → design → tests → review-ticket → work → review-work → done
