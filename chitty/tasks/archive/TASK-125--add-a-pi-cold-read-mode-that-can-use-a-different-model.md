@@ -34,3 +34,4 @@ Archived in backlog triage (human approved, 2026-11-11): already done or superse
 - 2026-11-03T19:23:02Z lively-panda: changed priority, notes
 - 2026-11-03T20:18:27Z lively-panda: changed notes
 - 2026-11-11T10:16:54Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:16:54Z vivid-yellowhammer backlog → archived
