@@ -24,7 +24,7 @@ The planning session records the outcome in a note and documents the entry in `R
 
 ## Acceptance Criteria
 
-- [ ] `chitty run --agent claude` works a real ticket and then reviews it, and a note records the outcome.
+- [x] `chitty run --agent claude` works a real ticket and then reviews it, and a note records the outcome.
 - [x] `README.md` shows the `claude` entry for `[agent_commands]` and why `git push` is denied.
 
 ## Notes
@@ -33,7 +33,7 @@ Trial 1 (2026-11-10, TASK-247, Haiku by the human's choice): the allow-list in `
 
 Trial 2 started 2026-11-11 by the planning session: `chitty run --agent claude --ticket TASK-277`.
 
-Trial 2 work run (2026-11-11, TASK-277, Haiku, `bypassPermissions`): finished in about 6 minutes with no refused calls. It committed code and docs, showed the new test failing first, passed `make check`, and moved the ticket to `review`. Review run not yet done.
+Trial 2 work run (2026-11-11, TASK-277, Haiku, `bypassPermissions`): finished in about 6 minutes with no refused calls. It committed code and docs, showed the new test failing first, passed `make check`, and moved the ticket to `review`.
 
 ## History
 
@@ -54,3 +54,4 @@ Trial 2 work run (2026-11-11, TASK-277, Haiku, `bypassPermissions`): finished in
 - 2026-11-11T10:17:27Z vivid-yellowhammer: changed parent
 - 2026-11-11T15:58:20Z vivid-yellowhammer: changed notes; ticked acceptance criteria
 - 2026-11-11T16:05:06Z vivid-yellowhammer: changed notes
+- 2026-11-11T16:17:26Z vivid-yellowhammer: replaced notes; ticked acceptance criteria
