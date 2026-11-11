@@ -1,6 +1,7 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: doing
+status: blocked
+owner: human
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -60,6 +61,8 @@ Review failed (tests): Historical-only unconfigured directories remain undiscove
 3: pass - Duplicate paths reported.
 4: pass - Edit reports a plain error.
 
+Third failed review; blocked for human resolution.
+
 ## Summary
 
 Implementation and regression coverage are committed. Re-verified all four acceptance criteria: focused directory tests pass; make format and make check pass (489 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts. Not moved to review because an existing untracked empty uv lock file remains in the worktree and is left untouched.
@@ -93,3 +96,5 @@ Implementation and regression coverage are committed. Re-verified all four accep
 - 2026-11-11T15:57:17Z vivid-yellowhammer blocked → review
 - 2026-11-11T16:05:27Z zesty-adder: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-11T16:05:27Z zesty-adder review → doing
+- 2026-11-11T16:05:40Z zesty-adder: changed owner, notes
+- 2026-11-11T16:05:40Z zesty-adder doing → blocked
