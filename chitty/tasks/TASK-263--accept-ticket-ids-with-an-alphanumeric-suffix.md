@@ -1,6 +1,6 @@
 ---
 title: Accept ticket IDs with an alphanumeric suffix
-status: cold-read
+status: todo
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -15,9 +15,13 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A ticket file `chitty/backlog/BACKLOG-K3F9X2AB--x.md` written by a test can be shown with `chitty show backlog-k3f9x2ab`, edited, and named in another ticket's `depends_on`. It fails today.
+- [ ] A ticket file `chitty/backlog/BACKLOG-K3F9X2AB--x.md` with title `x`, written by a test, can be shown with `chitty show backlog-k3f9x2ab`, edited, and named in another ticket's `depends_on`. It fails today.
 - [ ] `chitty list` shows `BACKLOG-12` before `BACKLOG-K3F9X2AB`, `chitty check` reports no problem, and `chitty add -c backlog` next to them still succeeds.
-- [ ] `BACKLOG-013` is still rejected as an ID, and `BACKLOG-0A` is accepted.
+- [ ] `BACKLOG-013` is still rejected as an ID, with an error saying `expected PREFIX-N or PREFIX-SUFFIX`, and `BACKLOG-0A` is accepted.
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-263/2`, which keeps `TaskId.number` as `int | str`. Check it against the current criteria; do not trust it. It keeps the old error text. Shell completion order (`_complete_task_id` in `cli.py`) is out of scope; it already sorts by string.
 
 ## History
 
@@ -27,3 +31,5 @@ created: 2026-11-11
 - 2026-11-11T13:43:23Z vivid-yellowhammer: changed title, description, acceptance criteria
 - 2026-11-11T13:43:23Z vivid-yellowhammer cold-read → planning
 - 2026-11-11T13:44:10Z vivid-yellowhammer planning → cold-read
+- 2026-11-11T13:47:07Z vivid-yellowhammer: changed acceptance criteria, notes
+- 2026-11-11T13:47:07Z vivid-yellowhammer cold-read → todo
