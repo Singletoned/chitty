@@ -8,14 +8,13 @@ import shutil
 import signal
 import subprocess
 import sys
-import tempfile
 import time
 import tomllib
 from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Any, Literal
 from uuid import uuid4
 
 from chitty import git, locks
@@ -74,10 +73,12 @@ def loop_step(returncode: int) -> tuple[bool, int]:
 
 
 def _command_environment() -> dict[str, str]:
-    """Copy the environment without shell-selected project virtualenvs."""
+    """Copy the environment without shell-selected project virtualenvs or usage files."""
     environment = os.environ.copy()
     environment.pop("VIRTUAL_ENV", None)
     environment.pop("UV_PROJECT_ENVIRONMENT", None)
+    # An inherited value would make an agent write a file `chitty run` no longer reads.
+    environment.pop("CHITTY_USAGE_FILE", None)
     return environment
 
 
@@ -312,69 +313,47 @@ def _run_ticket(
     started = datetime.now(UTC)
     elapsed_start = time.monotonic()
     new_status: str | None = None
-    models: list[dict[str, Any]] | None = None
-    usage_file: Path | None = None
-    usage_read = False
     try:
-        with tempfile.TemporaryDirectory(prefix="chitty-usage-") as temporary:
-            usage_file = Path(temporary) / "session.json"
-            previous_usage_file = os.environ.get("CHITTY_USAGE_FILE")
-            os.environ["CHITTY_USAGE_FILE"] = str(usage_file)
-            try:
-                runner_chitty = Path(sys.executable).parent / "chitty"
-                if not runner_chitty.is_file():
-                    raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
-                agent_environment = _command_environment()
-                agent_environment["PATH"] = os.pathsep.join(
-                    (str(runner_chitty.parent), agent_environment.get("PATH", ""))
-                )
-                try:
-                    completed = _run_agent(
-                        [
-                            *agent_command,
-                            *arguments,
-                            *_model_arguments(main_repo, action, agent_command, arguments),
-                        ],
-                        cwd=worktree,
-                        env=agent_environment,
-                        timeout=main_repo.config.agent_timeout,
-                    )
-                except FileNotFoundError:
-                    raise ChittyError(f"agent command not found: {agent_command[0]}") from None
-                except KeyboardInterrupt:
-                    raise RunInterrupted("agent") from None
-                finally:
-                    if previous_usage_file is None:
-                        os.environ.pop("CHITTY_USAGE_FILE", None)
-                    else:
-                        os.environ["CHITTY_USAGE_FILE"] = previous_usage_file
-                timed_out = completed.stderr == b"timed out"
-                outcome = agent_exit(completed.returncode, timed_out)
-                if outcome == "interrupted":
-                    raise RunInterrupted("agent")
-                if outcome == "timed out":
-                    raise ChittyError(
-                        f"agent timed out after {main_repo.config.agent_timeout} seconds"
-                    )
-                if outcome == "failed":
-                    raise ChittyError(f"agent exited with status {completed.returncode}")
-                models = _read_usage(usage_file)
-                usage_read = True
+        runner_chitty = Path(sys.executable).parent / "chitty"
+        if not runner_chitty.is_file():
+            raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
+        agent_environment = _command_environment()
+        agent_environment["PATH"] = os.pathsep.join(
+            (str(runner_chitty.parent), agent_environment.get("PATH", ""))
+        )
+        try:
+            completed = _run_agent(
+                [
+                    *agent_command,
+                    *arguments,
+                    *_model_arguments(main_repo, action, agent_command, arguments),
+                ],
+                cwd=worktree,
+                env=agent_environment,
+                timeout=main_repo.config.agent_timeout,
+            )
+        except FileNotFoundError:
+            raise ChittyError(f"agent command not found: {agent_command[0]}") from None
+        except KeyboardInterrupt:
+            raise RunInterrupted("agent") from None
+        timed_out = completed.stderr == b"timed out"
+        outcome = agent_exit(completed.returncode, timed_out)
+        if outcome == "interrupted":
+            raise RunInterrupted("agent")
+        if outcome == "timed out":
+            raise ChittyError(f"agent timed out after {main_repo.config.agent_timeout} seconds")
+        if outcome == "failed":
+            raise ChittyError(f"agent exited with status {completed.returncode}")
 
-                # Pi commonly commits from this worktree. Reopen so history is re-read.
-                new_status = _status_after_agent(main_root, worktree, action)
-                status_result = status_outcome(old_status, new_status)
-                if status_result == "unchanged":
-                    raise ChittyError(
-                        f"{action.id} was unchanged; only committed changes are visible "
-                        "to `chitty run`"
-                    )
-                if status_result == "land":
-                    _land(main_repo, worktree, action, setup, check)
-            finally:
-                if not usage_read:
-                    models = _read_usage(usage_file)
-                    usage_read = True
+        # Pi commonly commits from this worktree. Reopen so history is re-read.
+        new_status = _status_after_agent(main_root, worktree, action)
+        status_result = status_outcome(old_status, new_status)
+        if status_result == "unchanged":
+            raise ChittyError(
+                f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
+            )
+        if status_result == "land":
+            _land(main_repo, worktree, action, setup, check)
     finally:
         if new_status is None:
             try:
@@ -391,69 +370,10 @@ def _run_ticket(
                 "seconds": round(time.monotonic() - elapsed_start, 3),
                 "status_before": old_status,
                 "status_after": new_status,
-                "models": models,
             },
         )
     assert new_status is not None
     return RunResult(action, old_status, new_status)
-
-
-def _read_usage(path: Path) -> list[dict[str, Any]] | None:
-    try:
-        if not path.exists():
-            raise ValueError("file is missing")
-        data = json.loads(path.read_text())
-        if not isinstance(data, dict):
-            raise TypeError("expected a JSON object with a `sessions` object")
-        data_dict = cast(dict[str, object], data)
-        if not isinstance(data_dict.get("sessions"), dict):
-            raise TypeError("expected a JSON object with a `sessions` object")
-        sessions = cast(dict[str, object], data_dict["sessions"])
-        totals: dict[tuple[str, str], dict[str, Any]] = {}
-        for entries in sessions.values():
-            if not isinstance(entries, list):
-                raise TypeError("each session must contain a list of entries")
-            for raw_entry in cast(list[object], entries):
-                if not isinstance(raw_entry, dict):
-                    raise TypeError("each usage entry must be an object")
-                entry = cast(dict[str, Any], raw_entry)
-                fields = ("provider", "model", "input", "output", "cacheRead", "cacheWrite", "cost")
-                if any(field not in entry for field in fields):
-                    raise ValueError("usage entry is missing a field")
-                if not isinstance(entry["provider"], str) or not isinstance(entry["model"], str):
-                    raise TypeError("provider and model must be strings")
-                if any(
-                    not isinstance(entry[field], (int, float)) or isinstance(entry[field], bool)
-                    for field in fields[2:-1]
-                ):
-                    raise ValueError("token counts must be numbers")
-                if entry["cost"] is not None and (
-                    not isinstance(entry["cost"], (int, float)) or isinstance(entry["cost"], bool)
-                ):
-                    raise ValueError("cost must be a number or null")
-                key = (entry["provider"], entry["model"])
-                total = totals.setdefault(
-                    key,
-                    {
-                        "provider": entry["provider"],
-                        "model": entry["model"],
-                        "input": 0,
-                        "output": 0,
-                        "cacheRead": 0,
-                        "cacheWrite": 0,
-                        "cost": 0,
-                    },
-                )
-                for field in fields[2:-1]:
-                    total[field] += entry[field]
-                if total["cost"] is None or entry["cost"] is None:
-                    total["cost"] = None
-                else:
-                    total["cost"] += entry["cost"]
-        return list(totals.values())
-    except Exception as error:  # noqa: BLE001 - invalid usage must not abort the run
-        print(f"warning: cannot read usage file {path}: {error}", file=sys.stderr)
-        return None
 
 
 def _record_usage(project: str, record: dict[str, Any]) -> None:
