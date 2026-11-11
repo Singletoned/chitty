@@ -1,6 +1,6 @@
 ---
 title: Run every test without agent environment variables
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-11
@@ -28,6 +28,10 @@ Confirmed regression: the isolated test failed before implementation with PI_COD
 
 Verified make check with PI_CODING_AGENT=true, CLAUDE_CODE_SESSION_ID=x, and CHITTY_ACTOR=x exported: exit status 0. Ruff, pyright, all 502 Python tests, and npm test completed successfully. The Node dot reporter emits no trailing summary; its exit status is zero.
 
+Reviewed:
+1: pass - With the three requested variables exported, the isolated unittest printed OK and the full check ran 502 tests OK. Running the same test with the parent commit version of tests/__init__.py in a temporary worktree directory printed FAILED, listing CHITTY_ACTOR, CLAUDE_CODE_SESSION_ID and PI_CODING_AGENT among the leaked variables.
+2: pass - With the requested variables exported, make format && make check exited 0: Ruff passed, pyright reported 0 errors, 502 Python tests printed OK, and npm test passed.
+
 ## Summary
 
 Implemented environment-prefix clearing in tests/__init__.py and added the agent-environment regression test. Verified the regression failed before the fix, passes in isolation, and make check exits 0 with the requested variables exported. Commit: e7e934b (Task: TASK-297). No follow-ups.
@@ -44,3 +48,5 @@ Implemented environment-prefix clearing in tests/__init__.py and added the agent
 - 2026-11-11T21:57:59Z brisk-ebony-kestrel: changed notes; ticked acceptance criteria
 - 2026-11-11T21:59:04Z brisk-ebony-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T21:59:04Z brisk-ebony-kestrel doing → review
+- 2026-11-11T22:01:20Z witty-umber-eel: changed notes; ticked acceptance criteria
+- 2026-11-11T22:01:20Z witty-umber-eel review → done
