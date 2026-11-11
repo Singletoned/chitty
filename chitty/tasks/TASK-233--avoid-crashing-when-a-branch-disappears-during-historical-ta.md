@@ -4,7 +4,6 @@ status: backlog
 labels:
   - bug
 priority: high
-parent: TASK-106
 created: 2026-11-09
 ---
 
@@ -31,3 +30,4 @@ Clarification: one call uses the refs captured at its start, including a branch 
 - 2026-11-09T12:03:08Z eager-puffin: changed notes
 - 2026-11-09T12:04:53Z eager-puffin: changed labels, priority, parent, acceptance criteria, notes
 - 2026-11-09T12:07:50Z eager-puffin: changed acceptance criteria, notes
+- 2026-11-11T10:18:05Z vivid-yellowhammer: changed parent
