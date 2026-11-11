@@ -32,6 +32,10 @@ Put new tests in `tests/test_statuses_planning.py`. Each fails today, because bo
 - [ ] After `chitty add -s planning -d x`, and `chitty add -d x` followed by `chitty edit -s cold-read`, `chitty next` exits 3 with `no next ticket` on stderr. Today this fails at the first `add`.
 - [ ] `chitty guide plan` tells planners to use `-s planning` and `-s cold-read`, and `PLAN.md` and `README.md` list both statuses.
 
+## Plan
+
+Add planning and cold-read to model validation, display metadata, and MCP Literal types. Centralize default list statuses and use them in CLI/MCP; update planning guide, status documentation, and existing help/list assertions. Add focused regression coverage for CLI/MCP acceptance, default lists, next selection, guide, and docs; verify regression tests fail before implementation, then run format and full checks.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it against the current criteria; do not trust it. It asserts only `cold-read` in the help-text test; add `planning`.
@@ -48,3 +52,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it a
 - 2026-11-11T10:52:02Z vivid-yellowhammer backlog → todo
 - 2026-11-11T11:39:07Z vivid-yellowhammer: changed description
 - 2026-11-11T12:02:40Z youthful-wren todo → doing
+- 2026-11-11T12:03:01Z youthful-wren: wrote the plan
