@@ -5,7 +5,6 @@ priority: medium
 owner: human
 depends_on:
   - TASK-80
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -36,3 +35,4 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: a stale count, the `.en
 - 2026-11-04T19:32:39Z mellow-newt → backlog
 - 2026-11-04T19:36:40Z mellow-newt: changed description, notes
 - 2026-11-04T19:36:41Z mellow-newt backlog → todo
+- 2026-11-11T10:17:32Z vivid-yellowhammer: changed parent
