@@ -31,3 +31,4 @@ Archived (human, 2026-11-11): usage is now gathered from session files as a sepa
 - 2026-11-04T18:03:11Z mellow-newt backlog → todo
 - 2026-11-11T10:17:29Z vivid-yellowhammer: changed parent
 - 2026-11-11T13:39:10Z vivid-yellowhammer: changed notes
+- 2026-11-11T13:39:11Z vivid-yellowhammer todo → archived
