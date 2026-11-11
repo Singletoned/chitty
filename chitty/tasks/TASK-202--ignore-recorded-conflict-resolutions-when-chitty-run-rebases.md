@@ -4,7 +4,6 @@ status: done
 labels:
   - bug
 priority: high
-parent: TASK-106
 created: 2026-11-06
 ---
 
@@ -51,3 +50,4 @@ Verified: `test_a_recorded_resolution_is_not_replayed_into_the_review` sets `rer
 - 2026-11-06T09:55:10Z youthful-toad doing → review
 - 2026-11-06T10:04:12Z friendly-newt: changed notes
 - 2026-11-06T10:04:12Z friendly-newt review → done
+- 2026-11-11T10:18:01Z vivid-yellowhammer: changed parent
