@@ -1,6 +1,6 @@
 ---
 title: Let `chitty run --mode` be given more than once
-status: review
+status: done
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -28,6 +28,12 @@ Possible starting point: `git diff main...refs/cold-read/TASK-269/1`. Check it a
 
 Implemented repeated --mode filtering across next and run selection, including the no-ticket message. Added coverage for selecting review ahead of work, running work when both modes are allowed, and forwarding all mode options through --loop. `make format` and `make check` pass (488 Python tests and Node tests). Note: the regression test was added before verification but was not run against the unfixed implementation; the existing state had only a todo ticket when I first probed duplicate modes, so there was no meaningful baseline failure.
 
+Reviewed: make format && make check passed (488 Python tests and Node tests). Independently exercised loop CLI for two attempts and confirmed both mode options were forwarded each time.
+
+1: pass - Next selects review first and work alone selects todo.
+2: pass - Fake agent runs the available work ticket.
+3: pass - Both loop attempts receive both mode options.
+
 ## Summary
 
 Implemented and verified repeated --mode support in next/run; loop forwards every mode. Tests: make format && make check (ruff, pyright, 488 unittest tests, Node suite). Code committed as 6171798 (Task: TASK-269). No known follow-up.
@@ -44,3 +50,5 @@ Implemented and verified repeated --mode support in next/run; loop forwards ever
 - 2026-11-11T14:19:01Z kind-newt: wrote the plan
 - 2026-11-11T14:49:10Z kind-newt: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T14:49:10Z kind-newt doing → review
+- 2026-11-11T14:51:56Z youthful-toad: changed notes; ticked acceptance criteria
+- 2026-11-11T14:51:56Z youthful-toad review → done
