@@ -2,7 +2,6 @@
 title: Give each `chitty run` session one actor, whatever the agent
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -51,3 +50,4 @@ Implemented the run-scoped actor identity. `chitty run` now derives `CHITTY_ACTO
 - 2026-11-05T16:50:59Z plucky-newt doing → review
 - 2026-11-05T16:56:17Z open-stoat: changed notes
 - 2026-11-05T16:56:17Z open-stoat review → done
+- 2026-11-11T10:17:25Z vivid-yellowhammer: changed parent
