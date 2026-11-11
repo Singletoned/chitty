@@ -15,6 +15,11 @@ created: 2026-11-11
 
 - [ ] A test with a committed fake secret in a temporary repository gets one trivy suggestion naming the file. It fails today.
 
+## Notes
+
+Moved to taidy, 2026-11-11: the scanners belong in `taidy security`.
+
 ## History
 
 - 2026-11-11T16:18:26Z vivid-yellowhammer → backlog
+- 2026-11-11T18:59:37Z vivid-yellowhammer: changed notes
