@@ -2,7 +2,6 @@
 title: Guide agents through setting up chitty run
 status: done
 priority: medium
-parent: TASK-106
 created: 2026-11-09
 ---
 
@@ -43,3 +42,4 @@ Handoff: chitty guide setup provides main-checkout configuration instructions fo
 - 2026-11-09T12:00:51Z eager-puffin doing → review
 - 2026-11-09T12:35:22Z witty-raven: changed notes; ticked acceptance criteria
 - 2026-11-09T12:35:22Z witty-raven review → done
+- 2026-11-11T10:18:03Z vivid-yellowhammer: changed parent
