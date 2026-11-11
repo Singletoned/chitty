@@ -59,4 +59,10 @@ When starting an agent by hand, run the matching focused guide:
 - `chitty guide review` for review.
 - `chitty guide plan` for writing or refining tickets.
 
+Every review note, whether passing or failing, has one line per criterion below
+its `Reviewed:` or `Review failed (<cause>):` first line: `<number>: pass -
+<evidence>` or `<number>: fail - <reason>`. Evidence is the command or test that
+shows it. A test criterion passes only with evidence that the test fails without
+the change.
+
 <!-- chitty:end -->
