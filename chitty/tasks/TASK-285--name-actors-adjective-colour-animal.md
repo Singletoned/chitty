@@ -1,6 +1,6 @@
 ---
 title: Name actors adjective-colour-animal
-status: backlog
+status: cold-read
 parent: TASK-283
 created: 2026-11-11
 ---
@@ -19,3 +19,4 @@ created: 2026-11-11
 ## History
 
 - 2026-11-11T16:09:08Z vivid-yellowhammer → backlog
+- 2026-11-11T16:09:46Z vivid-yellowhammer backlog → cold-read
