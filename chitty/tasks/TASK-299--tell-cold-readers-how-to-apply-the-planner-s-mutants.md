@@ -1,6 +1,6 @@
 ---
 title: Tell cold readers how to apply the planner's mutants
-status: backlog
+status: cold-read
 parent: TASK-284
 created: 2026-11-11
 ---
@@ -17,3 +17,4 @@ created: 2026-11-11
 ## History
 
 - 2026-11-11T21:10:10Z vivid-yellow-raven → backlog
+- 2026-11-11T21:10:21Z vivid-yellow-raven backlog → cold-read
