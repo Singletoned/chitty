@@ -6,7 +6,6 @@ depends_on:
   - TASK-163
   - TASK-164
   - TASK-186
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -71,3 +70,4 @@ Implemented concurrent work/review support documentation and regression coverage
 - 2026-11-05T20:16:39Z nimble-vole doing → review
 - 2026-11-05T20:23:59Z brisk-vole: changed notes
 - 2026-11-05T20:23:59Z brisk-vole review → done
+- 2026-11-11T10:17:33Z vivid-yellowhammer: changed parent
