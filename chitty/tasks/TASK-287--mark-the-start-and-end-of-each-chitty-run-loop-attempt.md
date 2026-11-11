@@ -1,6 +1,6 @@
 ---
 title: Mark the start and end of each `chitty run --loop` attempt
-status: cold-read
+status: todo
 created: 2026-11-11
 ---
 
@@ -13,6 +13,12 @@ created: 2026-11-11
 ## Acceptance Criteria
 
 - [ ] A test runs `run_loop` with a child that exits 0 once and then non-zero: the output has a start rule before each attempt, a `finished · next run at` rule after the first, and a `stopped · exit` rule after the second. It fails today.
+- [ ] A child exiting `NO_NEXT_TICKET_EXIT` (3) is followed by a `no ticket · next run at` rule, not `finished`.
+- [ ] The `next run at` time is `RUN_LOOP_PAUSE_SECONDS` after the end of that attempt, not its start.
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-287/1`. Check it against the current criteria; do not trust it.
 
 ## History
 
@@ -20,3 +26,5 @@ created: 2026-11-11
 - 2026-11-11T16:09:36Z vivid-yellowhammer: changed parent
 - 2026-11-11T16:09:48Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T16:12:20Z vivid-yellowhammer: changed description
+- 2026-11-11T16:12:21Z vivid-yellowhammer: changed acceptance criteria, notes
+- 2026-11-11T16:12:21Z vivid-yellowhammer cold-read → todo
