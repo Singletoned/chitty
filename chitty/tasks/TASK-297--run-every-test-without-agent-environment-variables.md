@@ -1,6 +1,6 @@
 ---
 title: Run every test without agent environment variables
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-11
@@ -14,7 +14,7 @@ created: 2026-11-11
 ## Acceptance Criteria
 
 - [x] A test in `tests/test_agent_environment.py`, run with `PI_CODING_AGENT=true`, `CLAUDE_CODE_SESSION_ID=x` and `CHITTY_ACTOR=x` exported, finds no variable starting `PI_`, `CLAUDE_`, `CODEX_` or `CHITTY_` in `os.environ`, both in the full run and when run alone. It fails today.
-- [ ] `make check` passes with those variables exported.
+- [x] `make check` passes with those variables exported.
 
 ## Plan
 
@@ -26,6 +26,12 @@ Possible starting point: `git diff main...refs/cold-read/TASK-297/1`. Check it a
 
 Confirmed regression: the isolated test failed before implementation with PI_CODING_AGENT, CLAUDE_CODE_SESSION_ID, and CHITTY_ACTOR exported. After clearing all four prefixes in tests/__init__.py, it passes in isolation with those exports. make check passed Ruff, pyright, and all 502 Python tests. It reached npm test but returned without its normal summary, so the full check remains unverified.
 
+Verified make check with PI_CODING_AGENT=true, CLAUDE_CODE_SESSION_ID=x, and CHITTY_ACTOR=x exported: exit status 0. Ruff, pyright, all 502 Python tests, and npm test completed successfully. The Node dot reporter emits no trailing summary; its exit status is zero.
+
+## Summary
+
+Implemented environment-prefix clearing in tests/__init__.py and added the agent-environment regression test. Verified the regression failed before the fix, passes in isolation, and make check exits 0 with the requested variables exported. Commit: e7e934b (Task: TASK-297). No follow-ups.
+
 ## History
 
 - 2026-11-11T21:09:07Z vivid-yellow-raven → backlog
@@ -36,3 +42,5 @@ Confirmed regression: the isolated test failed before implementation with PI_COD
 - 2026-11-11T21:54:52Z brisk-ebony-kestrel todo → doing
 - 2026-11-11T21:55:14Z brisk-ebony-kestrel: wrote the plan
 - 2026-11-11T21:57:59Z brisk-ebony-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-11T21:59:04Z brisk-ebony-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T21:59:04Z brisk-ebony-kestrel doing → review
