@@ -1,6 +1,6 @@
 ---
 title: Mark the start and end of each `chitty run --loop` attempt
-status: todo
+status: doing
 created: 2026-11-11
 ---
 
@@ -28,3 +28,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-287/1`. Check it a
 - 2026-11-11T16:12:20Z vivid-yellowhammer: changed description
 - 2026-11-11T16:12:21Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T16:12:21Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T21:41:08Z jolly-amber-yellowhammer todo → doing
