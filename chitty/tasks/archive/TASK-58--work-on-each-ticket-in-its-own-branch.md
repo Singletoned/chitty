@@ -22,3 +22,4 @@ Archived in backlog triage (human approved, 2026-11-11): already done or superse
 
 - 2026-10-29 → backlog
 - 2026-11-11T10:16:49Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:16:49Z vivid-yellowhammer backlog → archived
