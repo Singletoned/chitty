@@ -1,6 +1,6 @@
 ---
 title: Skip `cold-read/*` branches when reading tickets from Git
-status: todo
+status: doing
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -27,3 +27,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-268/1`. Check it a
 - 2026-11-11T13:39:49Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T13:42:50Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:42:50Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T14:09:06Z able-gannet todo → doing
