@@ -5,7 +5,6 @@ priority: low
 owner: human
 depends_on:
   - TASK-156
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -32,3 +31,4 @@ TASK-175 was archived as obsolete at the human’s request; this separate trial 
 - 2026-11-04T21:44:38Z mellow-newt backlog → todo
 - 2026-11-05T08:22:58Z mellow-newt: changed notes
 - 2026-11-08T13:31:33Z eager-puffin: changed dependencies, description, notes
+- 2026-11-11T10:17:44Z vivid-yellowhammer: changed parent
