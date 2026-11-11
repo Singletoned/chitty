@@ -2,7 +2,6 @@
 title: Add `--mode` to `chitty next` and `chitty run`
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -55,3 +54,4 @@ Verified: three new tests in `tests/test_next.py` (seen failing first), and `mak
 - 2026-11-05T19:27:46Z youthful-toad doing → review
 - 2026-11-05T19:31:21Z youthful-toad: changed owner, notes; overrode review independence
 - 2026-11-05T19:31:21Z youthful-toad review → done
+- 2026-11-11T10:17:48Z vivid-yellowhammer: changed parent
