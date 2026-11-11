@@ -1,6 +1,6 @@
 ---
 title: Name actors adjective-colour-animal
-status: review
+status: done
 parent: TASK-283
 created: 2026-11-11
 ---
@@ -29,6 +29,10 @@ Actor tests pass (uv run python -m unittest tests.test_actor). The regression as
 
 Planner moved this to `review`, 2026-11-11: the work is committed in `1c2d166`, and the only `make check` failure was `test_guide_backticks`, which failed inside every print-mode Pi worker and is fixed on `main` in `eb8a01a`.
 
+Reviewed: Focused actor tests and make format && make check passed; full checks ran 492 Python tests and Node tests.
+1: pass - test_harness_session_names_are_stable_and_readable passes; substituting main _readable_name produced four regex failures, including mellow-eel.
+2: pass - test_names_vary_independently_across_sessions passes and 500 sessions produced 350 distinct pairs; substituting main _readable_name raised ValueError for two-word names.
+
 ## History
 
 - 2026-11-11T16:09:08Z vivid-yellowhammer → backlog
@@ -43,3 +47,5 @@ Planner moved this to `review`, 2026-11-11: the work is committed in `1c2d166`, 
 - 2026-11-11T20:07:25Z eager-urchin: changed notes; ticked acceptance criteria
 - 2026-11-11T20:17:27Z vivid-yellowhammer: changed notes
 - 2026-11-11T20:17:27Z vivid-yellowhammer doing → review
+- 2026-11-11T20:19:52Z friendly-eel: changed notes; ticked acceptance criteria
+- 2026-11-11T20:19:52Z friendly-eel review → done
