@@ -3,12 +3,16 @@
 import re
 from collections.abc import Iterable
 from dataclasses import dataclass
+from functools import total_ordering
 
 from chitty.errors import ChittyError
 
 SLUG_MAX_LENGTH = 60
 
-ID_RE = re.compile(r"(?P<prefix>[A-Z]+)-(?P<number>[1-9][0-9]*)", re.IGNORECASE)
+ID_RE = re.compile(
+    r"(?P<prefix>[A-Z]+)-(?P<suffix>[1-9][0-9]*|(?=[0-9A-Z]*[A-Z])[0-9A-Z]+)",
+    re.IGNORECASE,
+)
 PREFIX_RE = re.compile(r"[A-Z]+")
 SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 NUMBER_RE = re.compile(r"[1-9][0-9]*")
@@ -20,20 +24,34 @@ class IdError(ChittyError):
     pass
 
 
-@dataclass(frozen=True, order=True)
+@total_ordering
+@dataclass(frozen=True)
 class TaskId:
     prefix: str
-    number: int
+    number: int | str
 
     def __str__(self) -> str:
         return f"{self.prefix}-{self.number}"
+
+    def __lt__(self, other: "TaskId") -> bool:
+        # Numeric IDs sort first; suffix IDs follow in lexical suffix order.
+        return (self.prefix, *self._number_key()) < (other.prefix, *other._number_key())
+
+    def _number_key(self) -> tuple[int, int | str]:
+        if isinstance(self.number, int):
+            return (0, self.number)
+        return (1, self.number)
 
     @classmethod
     def parse(cls, text: str) -> "TaskId":
         match = ID_RE.fullmatch(text)
         if match is None:
-            raise IdError(f"invalid task ID {text!r}: expected PREFIX-N, e.g. TASK-13")
-        return cls(match["prefix"].upper(), int(match["number"]))
+            raise IdError(
+                f"invalid task ID {text!r}: expected PREFIX-N or PREFIX-SUFFIX, e.g. TASK-13"
+            )
+        suffix = match["suffix"].upper()
+        number: int | str = int(suffix) if suffix.isdigit() else suffix
+        return cls(match["prefix"].upper(), number)
 
 
 def resolve(text: str, default_prefix: str) -> TaskId:

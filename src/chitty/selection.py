@@ -3,6 +3,8 @@
 from dataclasses import dataclass
 from typing import Literal
 
+from chitty.ids import TaskId
+
 
 @dataclass(frozen=True)
 class DependencyFact:
@@ -28,9 +30,8 @@ STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
 PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
 
 
-def _id_key(value: str) -> tuple[str, int]:
-    prefix, number = value.rsplit("-", 1)
-    return prefix, int(number)
+def _id_key(value: str) -> TaskId:
+    return TaskId.parse(value)
 
 
 def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:

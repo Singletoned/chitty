@@ -578,9 +578,10 @@ class Repo:
 
     def next_number(self, context: Context) -> int:
         numbers = [
-            ids.parse_filename(p.name)[0].number
+            number
             for archived in (False, True)
             for p in self._files(context, archived)
+            if isinstance(number := ids.parse_filename(p.name)[0].number, int)
         ]
         active_directory = context.directory.relative_to(self.root)
         archive_directory = context.archive_directory.relative_to(self.root)
@@ -591,7 +592,7 @@ class Repo:
                 task_id, _ = ids.parse_filename(file.path.name)
             except ids.IdError:
                 continue
-            if task_id.prefix == context.prefix:
+            if task_id.prefix == context.prefix and isinstance(task_id.number, int):
                 numbers.append(task_id.number)
         if self.config.archive == "delete":
             numbers += self._deleted_numbers(context)
@@ -640,7 +641,11 @@ class Repo:
                 task_id, _ = ids.parse_filename(path.name)
             except ids.IdError:
                 continue
-            if task_id.prefix == context.prefix and directory in path.parents:
+            if (
+                task_id.prefix == context.prefix
+                and directory in path.parents
+                and isinstance(task_id.number, int)
+            ):
                 numbers.append(task_id.number)
         return numbers
 
