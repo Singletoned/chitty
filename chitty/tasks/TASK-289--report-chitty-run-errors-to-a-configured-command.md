@@ -29,6 +29,11 @@ Possible starting point: `git diff main...refs/cold-read/TASK-289/1`. Check it a
 
 Regression tests failed before implementation (unknown error_reporter config; no report file), then passed after implementation. `make format && make check` passes all 502 Python suites and Node tests. Empty queue is an expected exit status 3 and does not invoke reporter. Commit: 14688ec.
 
+Review failed (tests): Cover and report Chitty errors raised by argument validation after configuration loads. A throwaway integration run with a configured file-writing reporter and `run --ticket TASK-1 --mode work` printed `Error: --mode cannot be used with --ticket` and `report exists: False`; it must invoke the reporter. Validation occurs before the reporting handler. The CLI refused the transition to doing because all criterion verdicts pass, although the description requirement fails.
+1: pass - `make format && make check` passed; `test_failing_run_reports_message_and_ticket_context` passed, and disabling `report_error` made it error with a missing report file.
+2: pass - `make check` passed existing runs without a reporter and the empty queue test; a throwaway successful `TestRunContinue` integration run with a configured reporter printed `successful run: 0 report exists: False`.
+3: pass - A throwaway failing-reporter integration run printed `warning: error_reporter exited with status 7` and `Error: agent exited with status 1`, exit 1; disabling `report_error` made `test_failing_reporter_warns_and_preserves_failure` fail.
+
 ## Summary
 
 Implemented configurable error reporting in `chitty run`, including error message/context substitution and warning-only handling for reporter failures. Verified with `make format && make check`; 502 Python suites and Node tests pass. Regression test was confirmed failing before the fix. Ready for review; no known follow-ups.
@@ -47,3 +52,4 @@ Implemented configurable error reporting in `chitty run`, including error messag
 - 2026-11-11T21:49:37Z rosy-fawn-badger: wrote the plan
 - 2026-11-11T21:52:43Z rosy-fawn-badger: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T21:52:43Z rosy-fawn-badger doing → review
+- 2026-11-11T21:56:50Z rosy-lilac-marten: changed notes
