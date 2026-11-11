@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: review
+status: doing
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -16,7 +16,7 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [x] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
+- [ ] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
 - [x] A `todo` ticket with `depends_on: [OTHER-1]` passes `chitty check`, and while `OTHER-1` is unfinished `chitty next` neither fails with a dependency error nor selects either ticket.
 - [x] `OTHER-1` in both `chitty/other/` and `chitty/more/` makes `chitty check` fail, naming both paths.
 - [x] `chitty edit OTHER-1 -s doing` fails with a Chitty error naming the directory, not a traceback.
@@ -30,6 +30,13 @@ Add repository-wide discovery for ticket directories while keeping selection and
 Possible starting point for tests: `git show refs/cold-read/TASK-266/2:tests/test_unconfigured_directories.py`. Check it against the current criteria; do not trust it.
 
 Verified: regression tests fail before the implementation and pass afterward. `chitty next` reports its normal no-ticket exit when the only eligible ticket is blocked; the test verifies it does not report a dependency error or select either ticket.
+
+Review failed (tests): Add regression coverage and support for mixed prefixes in configured directories, as the description requires full-ID lookup in any directory. A throwaway CliRunner test placed OTHER-1 in chitty/tasks; both show OTHER-1 and check exited 1 with "prefix OTHER does not belong in context tasks (prefix TASK)". make format and make check passed.
+
+1: fail - The specified example passes, but full-ID discovery still rejects other prefixes in configured directories.
+2: pass - Dependency check and next exercised.
+3: pass - Duplicate paths reported.
+4: pass - Edit reports a plain error.
 
 ## Summary
 
@@ -50,3 +57,5 @@ Implemented full-ID discovery and reading from unconfigured ticket directories, 
 - 2026-11-11T13:59:53Z friendly-eel: wrote the plan
 - 2026-11-11T14:06:49Z friendly-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T14:06:49Z friendly-eel doing → review
+- 2026-11-11T14:10:40Z brisk-jay: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-11T14:10:40Z brisk-jay review → doing
