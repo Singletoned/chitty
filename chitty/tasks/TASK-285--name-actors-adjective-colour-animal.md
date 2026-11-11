@@ -17,6 +17,10 @@ created: 2026-11-11
 - [ ] A test shows the same session always getting the same name, matching `^[a-z]+-[a-z]+-[a-z]+$`, with its middle word from `_COLOURS`. It fails today.
 - [ ] A test over many session IDs shows adjective and colour varying independently (more than 100 distinct pairs from 500 sessions).
 
+## Plan
+
+Add the specified 25-colour vocabulary, derive adjective/colour/animal from digest bytes 0/1/2, and extend actor tests for stable three-word names, valid middle-word membership, and independent variation across 500 IDs. First demonstrate the new regression tests fail on current code, then implement and run checks.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it against the current criteria; do not trust it.
@@ -30,3 +34,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it a
 - 2026-11-11T16:12:12Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T16:12:12Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T19:01:45Z sunny-falcon todo → doing
+- 2026-11-11T19:02:00Z sunny-falcon: wrote the plan
