@@ -19,6 +19,10 @@ created: 2026-11-11
 - [ ] With `job_order = ["todo"]` and only a `review` ticket, `chitty next` prints `no next ticket`; `job_order = ["typo"]` fails with an error naming `typo`.
 - [ ] The property tests in `tests/test_property_next.py` also draw a random `job_order` and check `choose` against it.
 
+## Plan
+
+Add strict optional job_order validation to RepoConfig, defaulting selection to the existing STATUSES. Pass the configured order through next_action into choose while keeping mode filters and list markers unchanged. Add focused config/selection integration tests and extend the property test to generate status orders; update the Config, Next action and runner, and README pick-order docs. Verify with make format and make check, then commit implementation and update ticket.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-270/1`. Check it against the current criteria; do not trust it. It lacks the random-order property test and the docs.
@@ -31,3 +35,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-270/1`. Check it a
 - 2026-11-11T13:43:01Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:43:01Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T14:55:45Z golden-crane todo → doing
+- 2026-11-11T14:56:04Z golden-crane: wrote the plan
