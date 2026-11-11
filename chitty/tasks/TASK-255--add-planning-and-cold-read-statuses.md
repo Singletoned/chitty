@@ -1,6 +1,6 @@
 ---
 title: Add planning and cold-read statuses
-status: doing
+status: review
 labels:
   - plan-next
   - needs-minor
@@ -27,10 +27,10 @@ Put new tests in `tests/test_statuses_planning.py`. Each fails today, because bo
 
 ## Acceptance Criteria
 
-- [ ] `chitty add -s planning -d TEXT` and `chitty edit -s cold-read` succeed, and MCP edit accepts both statuses.
-- [ ] `chitty list` with no `-s` shows a `planning` and a `cold-read` ticket, as `📝 plan` and `🔎 cold`, and still hides `backlog` and `done`; MCP list without a status filter returns the same tickets.
-- [ ] After `chitty add -s planning -d x`, and `chitty add -d x` followed by `chitty edit -s cold-read`, `chitty next` exits 3 with `no next ticket` on stderr. Today this fails at the first `add`.
-- [ ] `chitty guide plan` tells planners to use `-s planning` and `-s cold-read`, and `PLAN.md` and `README.md` list both statuses.
+- [x] `chitty add -s planning -d TEXT` and `chitty edit -s cold-read` succeed, and MCP edit accepts both statuses.
+- [x] `chitty list` with no `-s` shows a `planning` and a `cold-read` ticket, as `📝 plan` and `🔎 cold`, and still hides `backlog` and `done`; MCP list without a status filter returns the same tickets.
+- [x] After `chitty add -s planning -d x`, and `chitty add -d x` followed by `chitty edit -s cold-read`, `chitty next` exits 3 with `no next ticket` on stderr. Today this fails at the first `add`.
+- [x] `chitty guide plan` tells planners to use `-s planning` and `-s cold-read`, and `PLAN.md` and `README.md` list both statuses.
 
 ## Plan
 
@@ -39,6 +39,12 @@ Add planning and cold-read to model validation, display metadata, and MCP Litera
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it against the current criteria; do not trust it. It asserts only `cold-read` in the help-text test; add `planning`.
+
+Verified all four acceptance criteria: CLI/MCP status writes, CLI/MCP default lists with backlog/done excluded, next exits 3 for planning/cold-read, and guide/docs mention both statuses. Regression tests failed before implementation; format and full check pass (476 Python suites plus Node tests). chitty fix completed with existing unrelated warnings.
+
+## Summary
+
+Implemented planning and cold-read statuses, list defaults, guide and docs. Verified all four criteria; make format and make check pass. Commits: b9a1aee and 3c61e3d (Task: TASK-255). Follow-up: none.
 
 ## History
 
@@ -53,3 +59,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it a
 - 2026-11-11T11:39:07Z vivid-yellowhammer: changed description
 - 2026-11-11T12:02:40Z youthful-wren todo → doing
 - 2026-11-11T12:03:01Z youthful-wren: wrote the plan
+- 2026-11-11T12:09:20Z youthful-wren: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T12:09:20Z youthful-wren doing → review
