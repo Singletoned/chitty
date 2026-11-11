@@ -4,7 +4,6 @@ status: done
 priority: medium
 depends_on:
   - TASK-142
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -81,3 +80,4 @@ Updated work/review guides with batched-call and autocommit guidance, added guid
 - 2026-11-06T18:12:36Z honest-urchin doing → review
 - 2026-11-06T18:33:09Z sunny-dormouse: changed notes; ticked acceptance criteria
 - 2026-11-06T18:33:09Z sunny-dormouse review → done
+- 2026-11-11T10:17:45Z vivid-yellowhammer: changed parent
