@@ -56,7 +56,7 @@ chitty run --loop --mode work     # keep working; wait for new tickets when idle
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
 chitty edit 1 -s review
-chitty edit 1 -s done --note "Reviewed: ready to merge.\n1: pass - tests/test_store.py"
+chitty edit 1 -s done --note $'Reviewed: ready to merge.\n1: pass - tests/test_store.py'
 chitty edit 1 --note "Safari needs a polyfill."
 chitty edit 1 -s blocked --note "Awaiting a product decision."
 chitty add "Refine sync idea" -s backlog  # stores a default refinement note
