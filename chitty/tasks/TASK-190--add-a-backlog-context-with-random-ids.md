@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-177
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -76,3 +75,4 @@ Verified: `tests/test_backlog_context.py` (seen failing first) and `make check` 
 - 2026-11-06T08:52:43Z youthful-toad: changed owner, notes
 - 2026-11-06T09:07:51Z youthful-toad: changed owner, notes; overrode review independence
 - 2026-11-06T09:07:51Z youthful-toad review → done
+- 2026-11-11T10:17:52Z vivid-yellowhammer: changed parent
