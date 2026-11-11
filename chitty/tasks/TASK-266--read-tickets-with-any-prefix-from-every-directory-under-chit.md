@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: planning
+status: cold-read
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -27,3 +27,4 @@ created: 2026-11-11
 - 2026-11-11T13:42:22Z vivid-yellowhammer: changed description, acceptance criteria
 - 2026-11-11T13:42:29Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T13:42:29Z vivid-yellowhammer cold-read → planning
+- 2026-11-11T13:44:11Z vivid-yellowhammer planning → cold-read
