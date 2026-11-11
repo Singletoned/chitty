@@ -2,8 +2,6 @@
 title: Open retros and audits on a schedule
 status: backlog
 priority: medium
-depends_on:
-  - TASK-109
 created: 2026-11-03
 ---
 
@@ -18,3 +16,4 @@ Run them by hand until the pilot and first retros show what the tickets should c
 - 2026-11-03T10:27:49Z lively-panda → backlog
 - 2026-11-03T10:28:29Z lively-panda: changed dependencies
 - 2026-11-11T10:17:17Z vivid-yellowhammer: changed parent
+- 2026-11-11T10:18:14Z vivid-yellowhammer: changed dependencies
