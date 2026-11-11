@@ -149,7 +149,7 @@ class TestStore(StoreTestCase):
 
     def test_description_replacement_records_history(self):
         stored = self.add("One")
-        changed = self.repo.edit(stored.id, Edit(replace_in_description=("Describe", "Explain")))
+        changed = self.repo.edit(stored.id, Edit(replace_in_description=[("Describe", "Explain")]))
         self.assertIn(
             "test-agent: changed description",
             changed.task.task.section("History") or "",

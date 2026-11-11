@@ -96,8 +96,13 @@ class TestMcp(CliTestCase):
 
     def test_edit_replaces_text_in_description(self):
         call("add", title="Description", description="Keep this phrase here.")
-        edited = call("edit", id="1", replace_in_description=("this phrase", "that phrase"))
-        self.assertEqual(edited["description"], "Keep that phrase here.")
+        edited = call(
+            "edit",
+            id="1",
+            replace_in_description=[("this phrase", "that phrase"), ("that phrase", "the phrase")],
+        )
+        self.assertEqual(edited["description"], "Keep the phrase here.")
+        self.assertEqual(edited["history"].count("changed description"), 1)
 
     def test_edit_replaces_notes(self):
         call("add", title="Notes", description="x", note=["First", "Second"])

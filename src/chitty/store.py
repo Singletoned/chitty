@@ -134,7 +134,7 @@ class Edit:
     rm_depends_on: Sequence[str] = ()
     parent: str | None = None  # "" removes
     description: str | None = None
-    replace_in_description: tuple[str, str] | None = None
+    replace_in_description: Sequence[tuple[str, str]] = ()
     add_criteria: Sequence[str] = ()
     rm_criteria: Sequence[int] = ()
     set_criteria: Sequence[tuple[int, str]] = ()
@@ -178,10 +178,10 @@ class Edit:
             task = task.with_field("parent", self.parent or None)
         if self.description is not None:
             task = task.with_section(DESCRIPTION, self.description)
-        if self.replace_in_description is not None:
-            old, new = self.replace_in_description
+        if self.replace_in_description:
             task = task.with_section(
-                DESCRIPTION, (task.section(DESCRIPTION) or "").replace(old, new)
+                DESCRIPTION,
+                replace_pairs(task.section(DESCRIPTION) or "", self.replace_in_description),
             )
         task = task.with_criteria(
             add=self.add_criteria,
@@ -504,17 +504,12 @@ class Repo:
                     f"cannot move {task_id} to {edit.status}; the worktree has "
                     f"uncommitted changes: {listed}. Commit or resolve them before changing status"
                 )
-        if edit.replace_in_description is not None:
-            old, _ = edit.replace_in_description
+        if edit.replace_in_description:
             if edit.description is not None:
                 raise ChittyError("--replace-in-description cannot be combined with --description")
-            if not old:
+            if any(not old for old, _ in edit.replace_in_description):
                 raise ChittyError("--replace-in-description OLD cannot be empty")
-            count = (stored.task.section(DESCRIPTION) or "").count(old)
-            if count != 1:
-                raise ChittyError(
-                    f"--replace-in-description OLD must occur exactly once; found {count}"
-                )
+            replace_pairs(stored.task.section(DESCRIPTION) or "", edit.replace_in_description)
         edit = check_edit(stored.task, edit, actor())
         edit = replace(
             edit,
@@ -1577,6 +1572,18 @@ def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
     return entries
 
 
+def replace_pairs(text: str, pairs: Sequence[tuple[str, str]]) -> str:
+    """Apply replacements in order, requiring each OLD exactly once as we go."""
+    for old, new in pairs:
+        count = text.count(old)
+        if count != 1:
+            raise ChittyError(
+                f"--replace-in-description OLD must occur exactly once; found {count} of {old!r}"
+            )
+        text = text.replace(old, new)
+    return text
+
+
 def _history_action(edit: Edit) -> str | None:
     """Describe an edit's deliberate non-status changes as one History event."""
     actions: list[str] = []
@@ -1593,7 +1600,7 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("dependencies")
     if edit.parent is not None:
         changes.append("parent")
-    if edit.description is not None or edit.replace_in_description is not None:
+    if edit.description is not None or edit.replace_in_description:
         changes.append("description")
     if edit.add_criteria or edit.rm_criteria or edit.set_criteria or edit.uncheck:
         changes.append("acceptance criteria")
