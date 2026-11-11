@@ -1,6 +1,6 @@
 ---
 title: Keep a log of each `chitty run` agent session
-status: planning
+status: cold-read
 depends_on:
   - TASK-278
 parent: TASK-275
@@ -30,3 +30,4 @@ created: 2026-11-11
 - 2026-11-11T13:41:47Z vivid-yellowhammer: changed description, acceptance criteria
 - 2026-11-11T13:41:55Z vivid-yellowhammer: changed dependencies
 - 2026-11-11T13:41:55Z vivid-yellowhammer cold-read → planning
+- 2026-11-11T13:44:12Z vivid-yellowhammer planning → cold-read
