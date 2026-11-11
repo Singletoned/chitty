@@ -4,7 +4,6 @@ status: done
 priority: high
 depends_on:
   - TASK-148
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -50,3 +49,4 @@ Documented the machine-local Pi usage JSONL log and list-price semantics in `PLA
 - 2026-11-05T18:27:43Z friendly-eel doing → review
 - 2026-11-05T18:32:59Z honest-urchin: changed notes
 - 2026-11-05T18:32:59Z honest-urchin review → done
+- 2026-11-11T10:17:22Z vivid-yellowhammer: changed parent
