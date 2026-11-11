@@ -21,6 +21,10 @@ created: 2026-11-11
 - [ ] `OTHER-1` in both `chitty/other/` and `chitty/more/` makes `chitty check` fail, naming both paths.
 - [ ] `chitty edit OTHER-1 -s doing` fails with a Chitty error naming the directory, not a traceback.
 
+## Plan
+
+Add repository-wide discovery for ticket directories while keeping selection and write targets restricted to configured contexts. Resolve IDs by scanning full IDs across configured and extra directories; use discovered context metadata for show/list/dependencies and reject writes to unconfigured contexts with ChittyError. Expand check defaults and duplicate detection, while preserving -c configured-only semantics. Relax historical prefix filtering. Add focused unittest coverage for active/archive reads, dependency and next behavior, duplicate IDs, and write errors; first run regression tests unfixed, then make the implementation, run format/check, inspect status, commit code, and update verified criteria.
+
 ## Notes
 
 Possible starting point for tests: `git show refs/cold-read/TASK-266/2:tests/test_unconfigured_directories.py`. Check it against the current criteria; do not trust it.
@@ -37,3 +41,4 @@ Possible starting point for tests: `git show refs/cold-read/TASK-266/2:tests/tes
 - 2026-11-11T13:46:10Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:46:10Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T13:59:25Z friendly-eel todo → doing
+- 2026-11-11T13:59:53Z friendly-eel: wrote the plan
