@@ -19,6 +19,10 @@ created: 2026-11-11
 - [ ] `chitty list` shows `BACKLOG-12` before `BACKLOG-K3F9X2AB`, `chitty check` reports no problem, and `chitty add -c backlog` next to them still succeeds.
 - [ ] `BACKLOG-013` is still rejected as an ID, with an error saying `expected PREFIX-N or PREFIX-SUFFIX`, and `BACKLOG-0A` is accepted.
 
+## Plan
+
+Update TaskId parsing and mixed numeric/alphanumeric ordering, adapt selection ordering and numeric ID allocation scans, then add regression coverage for CLI/file/reference behavior and validation. Review the cold-read diff against current criteria rather than applying it blindly; run focused tests, then format and full checks.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-263/2`, which keeps `TaskId.number` as `int | str`. Check it against the current criteria; do not trust it. It keeps the old error text. Shell completion order (`_complete_task_id` in `cli.py`) is out of scope; it already sorts by string.
@@ -34,3 +38,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-263/2`, which keep
 - 2026-11-11T13:47:07Z vivid-yellowhammer: changed acceptance criteria, notes
 - 2026-11-11T13:47:07Z vivid-yellowhammer cold-read → todo
 - 2026-11-11T13:55:07Z friendly-adder todo → doing
+- 2026-11-11T13:55:26Z friendly-adder: wrote the plan
