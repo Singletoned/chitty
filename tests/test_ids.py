@@ -46,6 +46,28 @@ class TestSlugs(unittest.TestCase):
                 parse_filename(name)
 
 
+class TestAlphanumericTaskId(unittest.TestCase):
+    def test_parses_suffix_and_preserves_numeric_type(self):
+        self.assertEqual(str(TaskId.parse("backlog-k3f9x2ab")), "BACKLOG-K3F9X2AB")
+        self.assertEqual(TaskId.parse("BACKLOG-0A"), TaskId("BACKLOG", "0A"))
+        self.assertEqual(TaskId.parse("BACKLOG-48213907"), TaskId("BACKLOG", 48213907))
+
+    def test_rejects_padded_numeric_id_with_updated_error(self):
+        with self.assertRaisesRegex(IdError, "expected PREFIX-N or PREFIX-SUFFIX"):
+            TaskId.parse("BACKLOG-013")
+
+    def test_sorts_numeric_before_alphanumeric(self):
+        values = [TaskId.parse(value) for value in ("BACKLOG-K3F9X2AB", "BACKLOG-12", "BACKLOG-0A")]
+        self.assertEqual(
+            [str(value) for value in sorted(values)],
+            ["BACKLOG-12", "BACKLOG-0A", "BACKLOG-K3F9X2AB"],
+        )
+
+    def test_alphanumeric_filename_round_trip(self):
+        task_id = TaskId.parse("BACKLOG-K3F9X2AB")
+        self.assertEqual(parse_filename("BACKLOG-K3F9X2AB--x.md"), (task_id, "x"))
+
+
 class TestNextNumber(unittest.TestCase):
     def test_next_number(self):
         self.assertEqual(next_number([]), 1)
