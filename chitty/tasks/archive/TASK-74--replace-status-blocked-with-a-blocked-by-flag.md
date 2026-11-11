@@ -31,3 +31,4 @@ Archived in backlog triage (human approved, 2026-11-11): folded into the open qu
 
 - 2026-11-01 → backlog
 - 2026-11-11T10:18:45Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:18:46Z vivid-yellowhammer backlog → archived
