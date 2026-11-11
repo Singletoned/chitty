@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` reading a usage file
-status: review
+status: done
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -38,6 +38,10 @@ Consequence for review: because the variable is no longer set or stripped for ag
 
 Tests: test_run_cases expected one record for the removed invalid-usage run, so it now expects four doing rows. test_usage_validation_warns_and_accepts_null_cost was deleted because it covered the removed _read_usage. Kept the name test_run_records_usage_outside_repository_and_appends_runs; it still fits.
 
+1: pass - nothing is wrong with the change; regression test fails on main and passes here, including with CHITTY_USAGE_FILE exported.
+
+Reviewed: AC1 verified independently. The regression test test_run_without_usage_file_is_silent_and_logs_no_models fails on the main version of src/chitty/run.py with "cannot read usage file ... file is missing" and passes on this branch. It also passes with CHITTY_USAGE_FILE exported in the test shell, so _command_environment strips the inherited value. make check exits 0: 488 unittest tests OK and the Node tests pass. PLAN.md and README.md match the code and point to scripts/pi_tokens.py. Worktree is clean after the checks. No defects found; the writers (claude-usage-hook, Pi extension) stay for TASK-279 and TASK-281 as the ticket says.
+
 ## Summary
 
 Handoff: chitty run no longer sets, reads or records CHITTY_USAGE_FILE. The usage log line has no models key. _read_usage is removed. PLAN.md and README.md now point to scripts/pi_tokens.py for spend by model. Two commits: 15257b0 (code and tests) and 12059c7 (docs).
@@ -57,3 +61,5 @@ Follow-ups: TASK-279 and TASK-281 remove the Pi writer and claude-usage-hook. ch
 - 2026-11-11T15:58:58Z quick-adder: wrote the plan
 - 2026-11-11T16:04:39Z quick-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T16:04:39Z quick-adder doing → review
+- 2026-11-11T16:09:58Z lively-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-11T16:09:58Z lively-yellowhammer review → done
