@@ -1,6 +1,6 @@
 ---
 title: Teach reviewers the per-criterion verdict
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-166
@@ -20,7 +20,7 @@ In `README.md`, the example at line 58 gains the verdict lines. `PLAN.md`'s desc
 
 ## Acceptance Criteria
 
-- [ ] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
+- [x] A test shows `chitty guide review` containing the form, and `README.md`, `PLAN.md` and `src/chitty/guide.md` show it
 - [x] The ticket branch does not bump `__version__`; version selection happens at release.
 
 ## Plan
@@ -60,9 +60,11 @@ Review failed (tests): The README example passes a literal backslash-n in double
 
 Regression test failed before README fix because the example passed literal backslash-n; after fix it passes. make format passed. make check failed in unrelated tests.test_guide_backticks due to generated guide output differing (Pi extension text); 489 suites ran. Committed fix as 37f681b.
 
+Verified: generated `chitty guide review` includes per-criterion pass/fail lines and test-without-change evidence; README.md, PLAN.md, and src/chitty/guide.md include the form. Regression test covers the guide and README newline. `make format` passed. `make check` passed with `CHITTY_PI_SESSION_ID=task-167` (489 Python suites and Node tests); without it, the unrelated Pi generated-guide test fails. `git diff main...HEAD -- src/chitty/__init__.py` is empty. `chitty fix` passed with pre-existing task-format warnings.
+
 ## Summary
 
-Handoff: per-criterion review verdict guidance, regression coverage, README example and PLAN description are in place. Verification: guide test, generated guide, `make format && make check` (403 Python tests and Node tests), and `git diff --check` passed; no version bump. Follow-ups: none.
+Handoff: per-criterion review verdict instructions and coverage are committed. Verification: `make format` and `CHITTY_PI_SESSION_ID=task-167 make check` passed; ticket diff is clean and version unchanged. Follow-up: none.
 
 ## History
 
@@ -91,3 +93,5 @@ Handoff: per-criterion review verdict guidance, regression coverage, README exam
 - 2026-11-11T16:01:53Z upbeat-crane review → doing
 - 2026-11-11T16:17:27Z jolly-heron: wrote the plan
 - 2026-11-11T16:18:38Z jolly-heron: changed notes
+- 2026-11-11T18:45:48Z friendly-stoat: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T18:45:48Z friendly-stoat doing → review
