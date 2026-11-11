@@ -35,6 +35,8 @@ Trial 2 started 2026-11-11 by the planning session: `chitty run --agent claude -
 
 Trial 2 work run (2026-11-11, TASK-277, Haiku, `bypassPermissions`): finished in about 6 minutes with no refused calls. It committed code and docs, showed the new test failing first, passed `make check`, and moved the ticket to `review`.
 
+Trial 2 review run (2026-11-11, by the human): passed and landed TASK-277 in about 5 minutes, verifying the regression test against `main` and running `make check`. `claude` works as the fallback agent.
+
 ## History
 
 - 2026-11-04T15:38:29Z mellow-newt → backlog
@@ -55,3 +57,4 @@ Trial 2 work run (2026-11-11, TASK-277, Haiku, `bypassPermissions`): finished in
 - 2026-11-11T15:58:20Z vivid-yellowhammer: changed notes; ticked acceptance criteria
 - 2026-11-11T16:05:06Z vivid-yellowhammer: changed notes
 - 2026-11-11T16:17:26Z vivid-yellowhammer: replaced notes; ticked acceptance criteria
+- 2026-11-11T16:17:27Z vivid-yellowhammer: changed notes
