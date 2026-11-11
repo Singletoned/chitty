@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: todo
+status: doing
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -36,3 +36,4 @@ Possible starting point for tests: `git show refs/cold-read/TASK-266/2:tests/tes
 - 2026-11-11T13:44:11Z vivid-yellowhammer planning → cold-read
 - 2026-11-11T13:46:10Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:46:10Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T13:59:25Z friendly-eel todo → doing
