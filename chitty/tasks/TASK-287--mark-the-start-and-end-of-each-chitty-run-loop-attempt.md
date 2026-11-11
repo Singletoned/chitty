@@ -1,6 +1,6 @@
 ---
 title: Mark the start and end of each `chitty run --loop` attempt
-status: backlog
+status: cold-read
 created: 2026-11-11
 ---
 
@@ -18,3 +18,4 @@ created: 2026-11-11
 
 - 2026-11-11T16:09:29Z vivid-yellowhammer → backlog
 - 2026-11-11T16:09:36Z vivid-yellowhammer: changed parent
+- 2026-11-11T16:09:48Z vivid-yellowhammer backlog → cold-read
