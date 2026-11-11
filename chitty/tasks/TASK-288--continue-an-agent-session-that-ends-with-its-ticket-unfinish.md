@@ -18,9 +18,9 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A `chitty run` whose fake agent leaves the ticket in `doing` and whose fake continue command moves it to `review` ends with the ticket in `review`; the continue command received the continuation prompt naming the ticket. It fails today.
-- [ ] A continue command that never changes the ticket is run 5 times, then `chitty run` fails with `was unchanged`. Without a continue command it fails after the first session, as today.
-- [ ] A continue command that sets the ticket to `blocked` runs once, and the run ends with the ticket `blocked`.
+- [ ] A `chitty run` whose fake `{prompt}` agent leaves the ticket in `doing` the first time, and moves it to `review` when started with `-c`, ends with the ticket in `review`; the second start received `-c` and the continuation prompt naming the ticket. It fails today.
+- [ ] A fake agent that never changes the ticket is started 6 times (the first session and 5 continuations), then `chitty run` fails with `was unchanged`. A `{mode} {id}` agent fails after the first session, as today.
+- [ ] A fake agent that sets the ticket to `blocked` when continued is continued once, and the run ends with the ticket `blocked`.
 
 ## Notes
 
@@ -38,3 +38,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it a
 - 2026-11-11T18:58:52Z vivid-yellowhammer: changed description
 - 2026-11-11T18:59:02Z vivid-yellowhammer: changed description
 - 2026-11-11T18:59:03Z vivid-yellowhammer: changed description
+- 2026-11-11T18:59:04Z vivid-yellowhammer: changed acceptance criteria
