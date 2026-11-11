@@ -1,6 +1,6 @@
 ---
 title: Continue an agent session that ends with its ticket unfinished
-status: cold-read
+status: todo
 labels:
   - bug
 parent: TASK-275
@@ -20,6 +20,11 @@ created: 2026-11-11
 
 - [ ] A `chitty run` whose fake agent leaves the ticket in `doing` and whose fake continue command moves it to `review` ends with the ticket in `review`; the continue command received the continuation prompt naming the ticket. It fails today.
 - [ ] A continue command that never changes the ticket is run 5 times, then `chitty run` fails with `was unchanged`. Without a continue command it fails after the first session, as today.
+- [ ] A continue command that sets the ticket to `blocked` runs once, and the run ends with the ticket `blocked`.
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-288/1`. Check it against the current criteria; do not trust it.
 
 ## History
 
@@ -28,3 +33,5 @@ created: 2026-11-11
 - 2026-11-11T18:50:20Z vivid-yellowhammer: changed acceptance criteria
 - 2026-11-11T18:50:56Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T18:54:41Z vivid-yellowhammer: changed description
+- 2026-11-11T18:54:42Z vivid-yellowhammer: changed acceptance criteria, notes
+- 2026-11-11T18:54:42Z vivid-yellowhammer cold-read → todo
