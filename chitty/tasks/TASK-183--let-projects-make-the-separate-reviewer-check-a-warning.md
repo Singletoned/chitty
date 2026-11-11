@@ -12,7 +12,10 @@ A reviewer subagent spawned by a session shares that session`s `chitty` actor, s
 
 Suggestion origin: echonomicon
 
+Archived in backlog triage (human approved, 2026-11-11): merged into TASK-209.
+
 ## History
 
 - 2026-11-05T11:05:03Z able-yellowhammer → backlog
 - 2026-11-05T11:05:03Z able-yellowhammer: changed notes
+- 2026-11-11T10:18:41Z vivid-yellowhammer: changed notes
