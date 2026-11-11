@@ -1,6 +1,6 @@
 ---
 title: Make the order of `chitty run` jobs configurable
-status: todo
+status: doing
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -30,3 +30,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-270/1`. Check it a
 - 2026-11-11T13:39:50Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T13:43:01Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:43:01Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T14:55:45Z golden-crane todo → doing
