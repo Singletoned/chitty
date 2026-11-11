@@ -30,7 +30,10 @@ With the human: callers may have one role (for example only a reviewer), and mod
 
 Narrow version split out as `TASK-124` for the pilot. Role options, label filters and caller-aware selection wait for `TASK-110`.
 
+Archived in backlog triage (human approved, 2026-11-11): already done or superseded.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-03T12:40:39Z lively-panda: changed notes
+- 2026-11-11T10:16:52Z vivid-yellowhammer: changed notes
