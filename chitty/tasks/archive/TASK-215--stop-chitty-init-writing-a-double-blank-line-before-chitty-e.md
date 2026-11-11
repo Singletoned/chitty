@@ -19,3 +19,4 @@ Archived in backlog triage (human approved, 2026-11-11): already done or superse
 - 2026-11-06T16:25:28Z youthful-vole → backlog
 - 2026-11-06T16:25:29Z youthful-vole: changed notes
 - 2026-11-11T10:16:41Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:16:42Z vivid-yellowhammer backlog → archived
