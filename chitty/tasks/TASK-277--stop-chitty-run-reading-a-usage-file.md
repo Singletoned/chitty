@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` reading a usage file
-status: todo
+status: doing
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -28,3 +28,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-277/1`. Check it a
 - 2026-11-11T13:39:52Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T13:43:48Z vivid-yellowhammer: changed description, acceptance criteria, notes
 - 2026-11-11T13:43:48Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T15:58:34Z quick-adder todo → doing
