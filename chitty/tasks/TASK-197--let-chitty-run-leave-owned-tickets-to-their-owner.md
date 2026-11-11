@@ -2,7 +2,6 @@
 title: Let `chitty run` leave owned tickets to their owner
 status: done
 priority: high
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -93,3 +92,4 @@ Owner reservation and explicit-ticket handling are implemented. Verified owner f
 - 2026-11-06T12:08:50Z witty-eel doing → review
 - 2026-11-06T12:48:54Z golden-dormouse: changed notes
 - 2026-11-06T12:48:54Z golden-dormouse review → done
+- 2026-11-11T10:17:59Z vivid-yellowhammer: changed parent
