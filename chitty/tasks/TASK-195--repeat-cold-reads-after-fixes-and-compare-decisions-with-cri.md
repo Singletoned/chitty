@@ -4,7 +4,6 @@ status: done
 priority: medium
 depends_on:
   - TASK-194
-parent: TASK-106
 created: 2026-11-05
 ---
 
@@ -62,3 +61,4 @@ Implemented the two planning-role bullets and a whitespace-normalized `TestGuide
 - 2026-11-06T20:26:57Z rosy-heron doing → review
 - 2026-11-06T20:29:48Z upbeat-raven: changed notes; ticked acceptance criteria
 - 2026-11-06T20:29:48Z upbeat-raven review → done
+- 2026-11-11T10:17:55Z vivid-yellowhammer: changed parent
