@@ -1,6 +1,6 @@
 ---
 title: Accept ticket IDs with a lowercase alphanumeric suffix
-status: backlog
+status: cold-read
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -21,3 +21,4 @@ created: 2026-11-11
 
 - 2026-11-11T11:35:12Z vivid-yellowhammer → backlog
 - 2026-11-11T13:39:47Z vivid-yellowhammer: changed description, acceptance criteria
+- 2026-11-11T13:39:53Z vivid-yellowhammer backlog → cold-read
