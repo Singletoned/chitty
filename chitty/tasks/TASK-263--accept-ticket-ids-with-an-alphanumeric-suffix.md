@@ -1,6 +1,6 @@
 ---
 title: Accept ticket IDs with an alphanumeric suffix
-status: planning
+status: cold-read
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -26,3 +26,4 @@ created: 2026-11-11
 - 2026-11-11T13:39:53Z vivid-yellowhammer backlog → cold-read
 - 2026-11-11T13:43:23Z vivid-yellowhammer: changed title, description, acceptance criteria
 - 2026-11-11T13:43:23Z vivid-yellowhammer cold-read → planning
+- 2026-11-11T13:44:10Z vivid-yellowhammer planning → cold-read
