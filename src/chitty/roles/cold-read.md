@@ -10,7 +10,9 @@ Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
 
 - Run no Chitty writes (`add`, `edit`, `note`, `fix` and the like), and leave
   `chitty/` unchanged.
-- If the ticket changes code, implement it. From the main checkout, run
+- If the ticket changes code, implement it unless probing has already found a
+  problem that will change the ticket; then say so and stop. From the main
+  checkout, run
   `git worktree add --detach .worktrees/read-<ID>`, then the repository's setup
   command inside it. Use a detached worktree, not a branch, because Chitty reads
   tickets from every branch. Run every command with `VIRTUAL_ENV` and
