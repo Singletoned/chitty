@@ -68,6 +68,33 @@ _ANIMALS = (
     "zander",
 )
 
+_COLOURS = (
+    "amber",
+    "bronze",
+    "coral",
+    "dusky",
+    "ebony",
+    "fawn",
+    "ginger",
+    "hazel",
+    "indigo",
+    "jade",
+    "khaki",
+    "lilac",
+    "maroon",
+    "navy",
+    "ochre",
+    "pearl",
+    "quartz",
+    "russet",
+    "silver",
+    "teal",
+    "umber",
+    "violet",
+    "white",
+    "yellow",
+    "zinc",
+)
 _PI_EXTENSION_STATE = "chitty-extension.sha256"
 _PI_EXTENSION_STATE_LINES = 2
 
@@ -99,7 +126,10 @@ def actor(environment: Mapping[str, str] | None = None) -> str:
 
 def _readable_name(source: str, identity: str) -> str:
     digest = hashlib.sha256(f"{source}:{identity}".encode()).digest()
-    return f"{_ADJECTIVES[digest[0] % len(_ADJECTIVES)]}-{_ANIMALS[digest[1] % len(_ANIMALS)]}"
+    adjective = _ADJECTIVES[digest[0] % len(_ADJECTIVES)]
+    colour = _COLOURS[digest[1] % len(_COLOURS)]
+    animal = _ANIMALS[digest[2] % len(_ANIMALS)]
+    return f"{adjective}-{colour}-{animal}"
 
 
 def pi_settings_path(environment: Mapping[str, str] | None = None) -> Path:

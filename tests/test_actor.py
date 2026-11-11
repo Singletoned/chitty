@@ -16,7 +16,7 @@ class TestActor(unittest.TestCase):
         from chitty.actor import run_actor
 
         self.assertEqual(run_actor("run-session"), run_actor("run-session"))
-        self.assertRegex(run_actor("run-session"), r"^[a-z]+-[a-z]+$")
+        self.assertRegex(run_actor("run-session"), r"^[a-z]+-[a-z]+-[a-z]+$")
         self.assertNotEqual(
             run_actor("run-session"), self.resolve({"PI_SESSION_ID": "run-session"})
         )
@@ -36,7 +36,21 @@ class TestActor(unittest.TestCase):
             with self.subTest(variable=variable):
                 first = self.resolve({variable: "session-123"})
                 self.assertEqual(first, self.resolve({variable: "session-123"}))
-                self.assertRegex(first, r"^[a-z]+-[a-z]+$")
+                self.assertRegex(first, r"^[a-z]+-[a-z]+-[a-z]+$")
+                from chitty.actor import _COLOURS
+
+                self.assertIn(first.split("-")[1], _COLOURS)
+
+    def test_names_vary_independently_across_sessions(self):
+        from chitty.actor import _COLOURS
+
+        pairs = set()
+        for number in range(500):
+            name = self.resolve({"PI_SESSION_ID": f"session-{number}"})
+            adjective, colour, _animal = name.split("-")
+            self.assertIn(colour, _COLOURS)
+            pairs.add((adjective, colour))
+        self.assertGreater(len(pairs), 100)
 
     def test_chitty_pi_session_identity_takes_precedence_over_child_session(self):
         parent = self.resolve({"PI_SESSION_ID": "parent-session"})
