@@ -18,7 +18,10 @@ Observation from planning TASK-82, TASK-98, TASK-113 and TASK-114 in echonomicon
 
 Suggestion origin: echonomicon
 
+Split 2026-11-11 into TASK-298 (implementing reads), TASK-299 (mutants in the cold-read guide) and TASK-300 (repeated `--replace-in-description`).
+
 ## History
 
 - 2026-11-11T16:08:27Z vivid-yellowhammer → backlog
 - 2026-11-11T16:08:28Z vivid-yellowhammer: changed notes
+- 2026-11-11T21:10:07Z vivid-yellow-raven: changed notes
