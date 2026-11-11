@@ -1,6 +1,6 @@
 ---
 title: Add planning and cold-read statuses
-status: todo
+status: doing
 labels:
   - plan-next
   - needs-minor
@@ -47,3 +47,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it a
 - 2026-11-11T10:52:01Z vivid-yellowhammer: changed notes
 - 2026-11-11T10:52:02Z vivid-yellowhammer backlog → todo
 - 2026-11-11T11:39:07Z vivid-yellowhammer: changed description
+- 2026-11-11T12:02:40Z youthful-wren todo → doing
