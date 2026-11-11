@@ -1,6 +1,6 @@
 ---
 title: Add planning and cold-read statuses
-status: review
+status: done
 labels:
   - plan-next
   - needs-minor
@@ -42,6 +42,12 @@ Possible starting point: `git diff main...refs/cold-read/TASK-255/1`. Check it a
 
 Verified all four acceptance criteria: CLI/MCP status writes, CLI/MCP default lists with backlog/done excluded, next exits 3 for planning/cold-read, and guide/docs mention both statuses. Regression tests failed before implementation; format and full check pass (476 Python suites plus Node tests). chitty fix completed with existing unrelated warnings.
 
+Reviewed: make format && make check passed, including 476 Python and 27 Node tests.
+1: pass - CLI and MCP status writes are tested.
+2: pass - CLI glyphs and MCP default list filtering are tested.
+3: pass - next exits 3 with no next ticket.
+4: pass - planning guide and both documents include the statuses.
+
 ## Summary
 
 Implemented planning and cold-read statuses, list defaults, guide and docs. Verified all four criteria; make format and make check pass. Commits: b9a1aee and 3c61e3d (Task: TASK-255). Follow-up: none.
@@ -61,3 +67,5 @@ Implemented planning and cold-read statuses, list defaults, guide and docs. Veri
 - 2026-11-11T12:03:01Z youthful-wren: wrote the plan
 - 2026-11-11T12:09:20Z youthful-wren: changed notes, summary; ticked acceptance criteria
 - 2026-11-11T12:09:20Z youthful-wren doing → review
+- 2026-11-11T12:11:51Z vivid-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-11T12:11:51Z vivid-dormouse review → done
