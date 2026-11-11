@@ -1,6 +1,6 @@
 ---
 title: Apply every `--replace-in-description`, not just the last
-status: backlog
+status: cold-read
 labels:
   - bug
 parent: TASK-284
@@ -21,3 +21,4 @@ created: 2026-11-11
 
 - 2026-11-11T21:10:11Z vivid-yellow-raven → backlog
 - 2026-11-11T21:10:18Z vivid-yellow-raven: changed acceptance criteria
+- 2026-11-11T21:10:22Z vivid-yellow-raven backlog → cold-read
