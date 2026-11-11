@@ -1,6 +1,6 @@
 ---
 title: Make the order of `chitty run` jobs configurable
-status: doing
+status: blocked
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -75,6 +75,8 @@ FAILED (failures=1)
 make: *** [check] Error 1
 ```
 
+Blocked by the planner, 2026-11-11: two print-mode sessions stopped early with uncommitted work (`make check` failing in the omitted-status test and a guide test), and each stop ended the human's `--loop`. Return to `doing` once TASK-288 (continuing sessions) lands; the uncommitted work stays in this worktree.
+
 ## History
 
 - 2026-11-11T13:21:06Z vivid-yellowhammer → backlog
@@ -86,3 +88,5 @@ make: *** [check] Error 1
 - 2026-11-11T14:56:04Z golden-crane: wrote the plan
 - 2026-11-11T18:47:42Z able-ibis: changed notes
 - 2026-11-11T18:55:22Z sunny-marten: changed notes
+- 2026-11-11T18:59:14Z vivid-yellowhammer: changed notes
+- 2026-11-11T18:59:14Z vivid-yellowhammer doing → blocked
