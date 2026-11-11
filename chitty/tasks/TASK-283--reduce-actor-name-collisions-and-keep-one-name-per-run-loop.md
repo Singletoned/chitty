@@ -19,10 +19,11 @@ Suggestions, cheapest first:
 
 Suggestion origin: echonomicon
 
-Split 2026-11-11 into TASK-285 (three-part names), TASK-286 (review edits are not work) and TASK-287 (one name per loop). Point 4, avoiding recent names, is left out: three-part names make clashes rare enough.
+Split 2026-11-11 into TASK-285 (three-part names, using the human's colour list) and TASK-286 (review edits are not work). Left out: point 3, one name per loop, which would make a work-and-review loop refuse its own reviews; and point 4, avoiding recent names. With 15,625 names, neither is needed yet.
 
 ## History
 
 - 2026-11-11T16:08:27Z vivid-yellowhammer → backlog
 - 2026-11-11T16:08:27Z vivid-yellowhammer: changed notes
 - 2026-11-11T16:09:07Z vivid-yellowhammer: changed notes
+- 2026-11-11T16:09:37Z vivid-yellowhammer: replaced notes
