@@ -27,7 +27,10 @@ TASK-64's escalation currently sets status `blocked`; it should set `blocked_by`
 
 Archived in backlog triage (human approved, 2026-11-11): folded into the open questions of TASK-255.
 
+Restored from the archive (human, 2026-11-11): kept as its own ticket after TASK-255 was split.
+
 ## History
 
 - 2026-11-01 → backlog
 - 2026-11-11T10:18:45Z vivid-yellowhammer: changed notes
+- 2026-11-11T10:36:45Z vivid-yellowhammer: changed notes
