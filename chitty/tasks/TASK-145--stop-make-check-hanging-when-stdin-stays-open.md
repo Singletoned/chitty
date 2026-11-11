@@ -4,7 +4,6 @@ status: done
 labels:
   - bug
 priority: medium
-parent: TASK-106
 created: 2026-11-04
 ---
 
@@ -52,3 +51,4 @@ Implemented the test-only stdin isolation in `tests/test_next.py`: `test_run_cas
 - 2026-11-05T22:09:59Z rosy-adder doing → review
 - 2026-11-06T10:12:11Z open-marten: changed notes
 - 2026-11-06T10:12:11Z open-marten review → done
+- 2026-11-11T10:17:21Z vivid-yellowhammer: changed parent
