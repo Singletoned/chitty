@@ -2,7 +2,6 @@
 title: Tell agents to leave tickets unchanged while another run holds the lock
 status: backlog
 priority: medium
-parent: TASK-106
 created: 2026-11-09
 ---
 
@@ -29,3 +28,4 @@ Decision from the user: guide-only fix, not automatic unblock. The imported desc
 - 2026-11-09T12:03:10Z eager-puffin: changed notes
 - 2026-11-09T12:04:58Z eager-puffin: changed owner, notes
 - 2026-11-09T12:07:36Z eager-puffin: changed title, priority, owner, parent, description, acceptance criteria, notes
+- 2026-11-11T10:18:05Z vivid-yellowhammer: changed parent
