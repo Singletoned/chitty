@@ -10,9 +10,10 @@ created: 2026-11-12
 ## Description
 
 - A `[difficulty]` table maps `low`, `medium` and `high` to names in `[agent_commands]`, so changing which model takes a level is a one-line config edit.
-- `chitty run` (and each `--loop` attempt) runs a ticket's work and review with its level's agent. `--agent NAME` overrides. A level with no entry uses `agent_command`.
-- Open, from the parent: review at the same level or one higher; what an unset difficulty uses.
+- `chitty run` (and each `--loop` attempt) runs a ticket's work with its level's agent and its review with the next level up, capped at `high`. `--agent NAME` overrides. A level with no entry uses `agent_command`.
+- An unset difficulty is `low`.
 
 ## History
 
 - 2026-11-12T21:44:05Z kind-yellow-vole → backlog
+- 2026-11-12T22:13:16Z kind-yellow-vole: changed description
