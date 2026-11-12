@@ -1,6 +1,6 @@
 ---
 title: Make the order of `chitty run` jobs configurable
-status: blocked
+status: doing
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -90,3 +90,4 @@ Blocked by the planner, 2026-11-11: two print-mode sessions stopped early with u
 - 2026-11-11T18:55:22Z sunny-marten: changed notes
 - 2026-11-11T18:59:14Z vivid-yellowhammer: changed notes
 - 2026-11-11T18:59:14Z vivid-yellowhammer doing → blocked
+- 2026-11-12T18:02:14Z kind-yellow-vole blocked → doing
