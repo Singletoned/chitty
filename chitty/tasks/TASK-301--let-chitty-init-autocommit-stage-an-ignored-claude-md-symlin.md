@@ -1,6 +1,6 @@
 ---
 title: Let `chitty init --autocommit` stage an ignored `CLAUDE.md` symlink
-status: backlog
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -20,3 +20,4 @@ In the `taidy` repository on 2026-11-12, `chitty init --autocommit` migrated the
 ## History
 
 - 2026-11-12T18:07:33Z lively-violet-puffin → backlog
+- 2026-11-12T18:07:41Z lively-violet-puffin backlog → cold-read
