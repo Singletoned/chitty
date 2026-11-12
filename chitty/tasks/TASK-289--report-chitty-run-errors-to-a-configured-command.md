@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: doing
+status: review
 created: 2026-11-11
 ---
 
@@ -18,7 +18,7 @@ created: 2026-11-11
 - [x] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` whose agent command exits 1 leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
 - [x] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
 - [x] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
-- [ ] With `error_reporter` set, `chitty run --ticket TASK-1 --mode work` runs the reporter with the message `--mode cannot be used with --ticket`, and still exits non-zero. Every other Chitty error `run()` raises after the config loads is reported the same way. It fails today.
+- [x] With `error_reporter` set, `chitty run --ticket TASK-1 --mode work` runs the reporter with the message `--mode cannot be used with --ticket`, and still exits non-zero. Every other Chitty error `run()` raises after the config loads is reported the same way. It fails today.
 
 ## Plan
 
@@ -39,9 +39,11 @@ Review blocked: The configured reporter is not invoked for the post-configuratio
 
 Planner, 2026-11-12: added criterion 4 for the defect the last review found (argument errors in `run()` are raised before the reporting `try`, so they are not reported). Move the `try` to cover them; the earlier criteria still stand.
 
+Regression test test_argument_error_reports_message_and_ticket_context failed before the fix because the reporter file was not created, then passed afterward. Validation remains before Git preflight and reports using the already-loaded repo config. make format && make check passed (505 Python tests and Node tests); committed as 8dced16.
+
 ## Summary
 
-Implemented configurable error reporting in `chitty run`, including error message/context substitution and warning-only handling for reporter failures. Verified with `make format && make check`; 502 Python suites and Node tests pass. Regression test was confirmed failing before the fix. Ready for review; no known follow-ups.
+Extended error reporting to post-config argument validation without moving validation past Git preflight. Regression test confirmed failure before the fix and passes now. Verified with make format && make check (505 Python tests and Node tests); commit 8dced16. Ready for review.
 
 ## History
 
@@ -63,3 +65,5 @@ Implemented configurable error reporting in `chitty run`, including error messag
 - 2026-11-12T18:13:28Z kind-yellow-vole: changed owner, acceptance criteria, notes
 - 2026-11-12T18:13:28Z kind-yellow-vole blocked → doing
 - 2026-11-12T18:18:06Z jolly-yellow-raven: wrote the plan
+- 2026-11-12T18:22:53Z jolly-yellow-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-12T18:22:53Z jolly-yellow-raven doing → review
