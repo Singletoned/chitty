@@ -10,7 +10,9 @@ Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
 
 - Run no Chitty writes (`add`, `edit`, `note`, `fix` and the like), and leave
   `chitty/` unchanged.
-- If the ticket changes code, implement it. From the main checkout, run
+- If the ticket changes code, implement it unless probing has already found a
+  problem that will change the ticket; then say so and stop. From the main
+  checkout, run
   `git worktree add --detach .worktrees/read-<ID>`, then the repository's setup
   command inside it. Use a detached worktree, not a branch, because Chitty reads
   tickets from every branch. Run every command with `VIRTUAL_ENV` and
@@ -22,7 +24,10 @@ Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
   one that should fail does fail, before implementing. Then implement the
   ticket as written and run its tests and the repository's check command.
 - Try behaviour rather than assume: run the code on the cases you doubt, and
-  the cases the planner says it doubts.
+  the cases the planner says it doubts. If the planner names mutants, after
+  the tests pass apply each mutant alone to the implementation, run the ticket's
+  tests, then restore it before the next mutant. For each mutant that survives,
+  report criterion wording that would catch it.
 - Commit your work in the worktree. From inside it, keep the commit with
   `git update-ref refs/cold-read/<ID>/<n> HEAD`, where `<n>` is the next number
   free for that ticket, starting at 1 (`git for-each-ref refs/cold-read` lists
@@ -40,6 +45,8 @@ Report briefly:
   quote the test runner's own summary line, not an exit status, as evidence of pass or fail.
 - Open decisions the ticket leaves to the worker, listed in one line without
   asking for a ticket change.
+- Surviving mutants, each with criterion wording that would catch it, or
+  `none`.
 - Unverified behaviour, and states the ticket does not handle.
 - Wrong claims in the ticket.
 

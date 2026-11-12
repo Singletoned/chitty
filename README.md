@@ -56,7 +56,7 @@ chitty run --loop --mode work     # keep working; wait for new tickets when idle
 chitty show 1                     # bare numbers mean the default context
 chitty edit 1 -s doing --plan "Use casefold()." --check 1
 chitty edit 1 -s review
-chitty edit 1 -s done --note "Reviewed: ready to merge."
+chitty edit 1 -s done --note $'Reviewed: ready to merge.\n1: pass - tests/test_store.py'
 chitty edit 1 --note "Safari needs a polyfill."
 chitty edit 1 -s blocked --note "Awaiting a product decision."
 chitty add "Refine sync idea" -s backlog  # stores a default refinement note
@@ -142,6 +142,11 @@ NAME` selects an entry from `[agent_commands]`. Both commands are parsed
 without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.
 Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
+If the agent exits 0 but leaves the ticket's status unchanged, Chitty continues
+the same session when the command has `{prompt}`: it runs the command again with
+a continuation prompt in place of `{prompt}` and `-c` appended, up to five times
+per run, then fails with `was unchanged`. A command with only `{mode}` and `{id}`
+is not continued.
 `chitty run` creates or reuses the ticket worktree, runs setup there, claims a
 `todo` ticket, and invokes
 the configured agent from that worktree. The agent uses the `chitty`
@@ -178,8 +183,8 @@ selecting, so a broken configuration exits 1 and stops the loop. Each agent
 session appends one JSON line to the machine-local
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` usage log (or the platform data
 directory when `XDG_DATA_HOME` is unset), including the ticket, actor, timing,
-statuses, and aggregate Pi token and cost totals by model. These costs are
-provider list prices, not negotiated rates or an invoice. Empty lists explain
+and statuses. Spend by model is not in the log; run
+`scripts/pi_tokens.py` on the Pi session directories instead. Empty lists explain
 their active filters on stderr while JSON stdout remains `[]`.
 `chitty import backlog-md` refuses non-empty contexts, reports mappings. It refuses to run unless the Git working tree is clean, untracked
 files included, and removes the converted files in its import commit; use
@@ -226,7 +231,18 @@ specify `--model`; an agent receiving a default must accept that option.
 Existing model arguments take precedence, without Chitty rewriting them.
 Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
 and the selected ticket ID. `{prompt}` can replace both placeholders when the
-agent accepts Chitty's role instructions as one argument. `chitty init --autocommit`
+agent accepts Chitty's role instructions as one argument. For example, this entry
+runs Claude Code unattended on Haiku with `chitty run --agent claude`:
+
+```toml
+[agent_commands]
+claude = "claude -p {prompt} --model haiku --permission-mode bypassPermissions --disallowedTools 'Bash(git push *)'"
+```
+
+`bypassPermissions` lets it run tests and `chitty` commands in the ticket
+worktree without prompting; `git push` stays denied because publishing is a
+person's decision, and a passing review lands on `main` through `chitty run`.
+`chitty init --autocommit`
 enables
 `autocommit = true` and commits only the repository setup files it changed
 (`chitty.toml` or `pyproject.toml`, `.gitignore`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
