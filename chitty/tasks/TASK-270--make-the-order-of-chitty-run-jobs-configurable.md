@@ -77,6 +77,8 @@ make: *** [check] Error 1
 
 Blocked by the planner, 2026-11-11: two print-mode sessions stopped early with uncommitted work (`make check` failing in the omitted-status test and a guide test), and each stop ended the human's `--loop`. Return to `doing` once TASK-288 (continuing sessions) lands; the uncommitted work stays in this worktree.
 
+Unblocked by the planner, 2026-11-12: TASK-288 (continuing sessions) is done. The uncommitted work in this worktree is still there; `make check` failed in `test_configured_job_order_and_omitted_status`.
+
 ## History
 
 - 2026-11-11T13:21:06Z vivid-yellowhammer → backlog
@@ -91,3 +93,4 @@ Blocked by the planner, 2026-11-11: two print-mode sessions stopped early with u
 - 2026-11-11T18:59:14Z vivid-yellowhammer: changed notes
 - 2026-11-11T18:59:14Z vivid-yellowhammer doing → blocked
 - 2026-11-12T18:02:14Z kind-yellow-vole blocked → doing
+- 2026-11-12T18:02:15Z kind-yellow-vole: changed notes
