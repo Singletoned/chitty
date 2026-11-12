@@ -1,7 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: blocked
-owner: human
+status: doing
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -63,6 +62,8 @@ Review failed (tests): Historical-only unconfigured directories remain undiscove
 
 Third failed review; blocked for human resolution.
 
+Planner, 2026-11-12: the historical-only failure is real. `discovered_contexts()` in `src/chitty/store.py` lists only directories on disk, so a directory committed only on another branch never becomes a context. Also add a context for each directory name in `self._history()` (path `chitty/<dir>/...`, so `file.path.parts[1]` when there are at least three parts). Add the regression test the reviews describe: `OTHER-1` committed only on another branch, `chitty show OTHER-1` works. Then merge `main` and fix `test_warning_is_in_every_generated_guide`, which failed in the last review.
+
 ## Summary
 
 Implementation and regression coverage are committed. Re-verified all four acceptance criteria: focused directory tests pass; make format and make check pass (489 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts. Not moved to review because an existing untracked empty uv lock file remains in the worktree and is left untouched.
@@ -98,3 +99,5 @@ Implementation and regression coverage are committed. Re-verified all four accep
 - 2026-11-11T16:05:27Z zesty-adder review → doing
 - 2026-11-11T16:05:40Z zesty-adder: changed owner, notes
 - 2026-11-11T16:05:40Z zesty-adder doing → blocked
+- 2026-11-12T18:18:47Z kind-yellow-vole: changed owner, notes
+- 2026-11-12T18:18:47Z kind-yellow-vole blocked → doing
