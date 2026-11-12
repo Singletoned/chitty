@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: planning
+status: cold-read
 owner: human
 created: 2026-11-12
 ---
@@ -97,3 +97,4 @@ Shared signal list. Create `src/chitty/roles/property-signals.md` holding exactl
 - 2026-11-12T19:58:06Z kind-yellow-vole cold-read → planning
 - 2026-11-12T20:18:19Z kind-yellow-vole: changed description, acceptance criteria
 - 2026-11-12T20:18:41Z kind-yellow-vole: replaced notes; changed acceptance criteria
+- 2026-11-12T20:18:55Z kind-yellow-vole planning → cold-read
