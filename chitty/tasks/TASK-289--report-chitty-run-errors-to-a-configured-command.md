@@ -12,7 +12,7 @@ created: 2026-11-11
 - Not reported: an empty queue (`NoNextTicket`), Ctrl-C (`RunInterrupted`), and config errors before the config loads. Under `--loop`, each failing child reports once and the parent does not.
 - A failing reporter prints a warning and does not hide the original error.
 - After this lands, the planner sets `error_reporter = "sump capture chitty --message {message} --context-json {context}"` on `main`; the branch leaves `chitty.toml` alone. TASK-256 later reads errors back from Sump.
-- Document it in `README.md` and `PLAN.md` "Config".
+- Document it in `README.md` and `docs/plan/config.md`.
 
 ## Acceptance Criteria
 
@@ -54,6 +54,8 @@ Review failed (tests): Cover errors from main checkout discovery after configura
 
 Third failed review: blocked for human resolution. See the preceding review note for the unmet criterion and reproduction.
 
+Planner, 2026-11-12: `main` split `PLAN.md` into `docs/plan/` (commit `23ba131`). Merging `main` gives a modify/delete conflict on `PLAN.md`: move this branch's `error_reporter` lines into `docs/plan/config.md` and delete `PLAN.md`.
+
 ## Summary
 
 Implemented configured error reporting for Chitty run failures, including post-config argument validation, preserved exclusions/context, and documented the setting. Regression tests confirmed the reported validation error failed before the fix and passes now. Merged main, resolved the PLAN.md Config conflict, and verified with make format && make check (517 Python test suites and Node tests). No follow-ups.
@@ -88,3 +90,4 @@ Implemented configured error reporting for Chitty run failures, including post-c
 - 2026-11-12T20:32:03Z lively-khaki-gannet review → doing
 - 2026-11-12T20:32:17Z lively-khaki-gannet: changed owner, notes
 - 2026-11-12T20:32:17Z lively-khaki-gannet doing → blocked
+- 2026-11-12T21:35:10Z kind-yellow-vole: changed description, notes
