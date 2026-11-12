@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: review
+status: done
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -66,6 +66,13 @@ Planner, 2026-11-12: the historical-only failure is real. `discovered_contexts()
 
 Added a historical-only directory regression test; it failed before the implementation with no context ... has prefix OTHER and now passes. discovered_contexts() now derives directory contexts from historical chitty/<directory>/ paths. After merging main, make format and make check pass (513 Python tests and Node tests); chitty fix completes with pre-existing Markdown warnings.
 
+Reviewed: `make format && make check` passed: 513 Python tests and Node tests; formatter left 416 files unchanged. `uv run python -m unittest tests.test_unconfigured_directories` printed `Ran 5 tests` and `OK`. Running those tests with the three implementation files from `main` produced `FAILED (failures=5)`.
+
+1: pass - The show/list and historical-only regression tests pass; both failed against `main` with no context for OTHER.
+2: pass - The dependency test passes check and next exits 3 without selecting a ticket or reporting a dependency error; against `main`, check reported `depends_on OTHER-1: no such task`.
+3: pass - The duplicate test passes and asserts both paths; against `main`, check exited 0 instead of 1.
+4: pass - The edit test verifies exit 1, names other and contains no traceback.
+
 ## Summary
 
 Historical-only unconfigured directories are now discoverable for reading, with regression coverage that failed before the fix. All acceptance criteria re-verified; focused tests and make format && make check pass (513 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts.
@@ -106,3 +113,5 @@ Historical-only unconfigured directories are now discoverable for reading, with 
 - 2026-11-12T18:24:54Z golden-hazel-yellowhammer: wrote the plan
 - 2026-11-12T18:26:22Z golden-hazel-yellowhammer: changed notes, summary; ticked acceptance criteria
 - 2026-11-12T18:26:22Z golden-hazel-yellowhammer doing → review
+- 2026-11-12T20:21:35Z vivid-violet-zander: changed notes; ticked acceptance criteria
+- 2026-11-12T20:21:35Z vivid-violet-zander review → done
