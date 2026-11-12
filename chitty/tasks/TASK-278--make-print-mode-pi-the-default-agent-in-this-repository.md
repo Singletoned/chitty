@@ -13,8 +13,13 @@ created: 2026-11-11
 - In the main checkout, set `agent_command` in `chitty.toml` to the `pi-print` command, passing the guide as `{prompt}`. Pi can take it in its system prompt instead, with `--append-system-prompt {prompt}`; that is the command's choice, and Chitty needs no change for it.
 - Then try one work run and one review run, by hand. A config change on `main`, not a ticket branch.
 
+## Notes
+
+Moved to todo by the planner, 2026-11-12: TASK-277 is done.
+
 ## History
 
 - 2026-11-11T13:21:34Z vivid-yellowhammer → backlog
 - 2026-11-11T13:41:51Z vivid-yellowhammer: changed dependencies
 - 2026-11-12T18:02:16Z kind-yellow-vole backlog → todo
+- 2026-11-12T18:02:17Z kind-yellow-vole: changed notes
