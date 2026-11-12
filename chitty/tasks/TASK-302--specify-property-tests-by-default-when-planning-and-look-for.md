@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: doing
+status: review
 created: 2026-11-12
 ---
 
@@ -78,9 +78,9 @@ Shared signal list. Create `src/chitty/roles/property-signals.md` holding exactl
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_property_tests.py` shows that `chitty guide plan` contains the planning block, with its `<!-- property-signals -->` line replaced by the shared signal list, after collapsing whitespace, and no longer contains `Compare each decision in the description with the criteria, because workers test what criteria name. Say which` (the old bullet). It fails today.
-- [ ] A test in the same file shows that `chitty guide cold-read TASK-1` contains the shared signal list and the `Missed properties` bullet, after collapsing whitespace, and that neither guide prints `<!-- property-signals -->`. It fails today.
-- [ ] A test in the same file reads the files in `src/chitty/roles/` and shows that only `property-signals.md` contains `These signal a property`, that `plan.md` and `cold-read.md` each contain the line `<!-- property-signals -->`, and that no role file matches `python|pytest|unittest|quickcheck|fast-check|jest` (case-insensitive). It fails today.
+- [x] A test in `tests/test_guide_property_tests.py` shows that `chitty guide plan` contains the planning block, with its `<!-- property-signals -->` line replaced by the shared signal list, after collapsing whitespace, and no longer contains `Compare each decision in the description with the criteria, because workers test what criteria name. Say which` (the old bullet). It fails today.
+- [x] A test in the same file shows that `chitty guide cold-read TASK-1` contains the shared signal list and the `Missed properties` bullet, after collapsing whitespace, and that neither guide prints `<!-- property-signals -->`. It fails today.
+- [x] A test in the same file reads the files in `src/chitty/roles/` and shows that only `property-signals.md` contains `These signal a property`, that `plan.md` and `cold-read.md` each contain the line `<!-- property-signals -->`, and that no role file matches `python|pytest|unittest|quickcheck|fast-check|jest` (case-insensitive). It fails today.
 
 ## Plan
 
@@ -89,6 +89,12 @@ Add tests in tests/test_guide_property_tests.py first and confirm they fail agai
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it against the current criteria; do not trust it. Its criterion 3 is not yet a test (copying the list into both role files passes its tests), its pure-function sentence predates the internal-surface wording, and its `PLAN.md` change is superseded by `main`: leave `PLAN.md` alone.
+
+Regression tests failed before implementation (two missing shared-file errors and one missing-source assertion), then passed. make format and make check passed, including all 517 Python test suites and Node tests. chitty fix reported existing task-text warnings only.
+
+## Summary
+
+Implemented and committed as 140bade (Task: TASK-302). Shared property signals expand in plan and cold-read guides before ticket prefixing; ROLE_NAMES remains unchanged. Verified all three criteria with tests/test_guide_property_tests.py, then make format and make check. No follow-up work.
 
 ## History
 
@@ -111,3 +117,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it a
 - 2026-11-12T21:30:14Z kind-yellow-vole: changed description
 - 2026-11-12T21:34:10Z able-ginger-urchin todo → doing
 - 2026-11-12T21:34:32Z able-ginger-urchin: wrote the plan
+- 2026-11-12T21:37:15Z able-ginger-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-12T21:37:15Z able-ginger-urchin doing → review
