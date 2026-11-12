@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: doing
+status: review
 created: 2026-11-11
 ---
 
@@ -18,7 +18,7 @@ created: 2026-11-11
 - [x] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` whose agent command exits 1 leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
 - [x] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
 - [x] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
-- [ ] With `error_reporter` set, `chitty run --ticket TASK-1 --mode work` runs the reporter with the message `--mode cannot be used with --ticket`, and still exits non-zero. Every other Chitty error `run()` raises after the config loads is reported the same way. It fails today.
+- [x] With `error_reporter` set, `chitty run --ticket TASK-1 --mode work` runs the reporter with the message `--mode cannot be used with --ticket`, and still exits non-zero. Every other Chitty error `run()` raises after the config loads is reported the same way. It fails today.
 
 ## Plan
 
@@ -57,9 +57,11 @@ Planner, 2026-11-12: `main` split `PLAN.md` into `docs/plan/` (commit `23ba131`)
 
 Planner, 2026-11-12: the third review is right. `git.main_checkout()` and `Repo.open()` in `run()` raise before the reporting `try`, so their errors (for example a repository whose `.git` is gone) are not reported. Start the `try` straight after `repo` is passed in, before `git.main_checkout`, and add a regression test for that case. Merging `main` will also conflict on `PLAN.md`: see the note above.
 
+Added test_main_checkout_discovery_error_reports. It failed before the fix because reporter output was absent, then passed after moving Git discovery and Repo.open inside the reporter boundary; it verifies the Chitty error is recorded. make format && make check passed (519 Python tests and Node tests). chitty fix passed with existing task-content warnings. Implementation committed as 31d8c94; worktree clean.
+
 ## Summary
 
-Implemented configured error reporting for Chitty run failures, including post-config argument validation, preserved exclusions/context, and documented the setting. Regression tests confirmed the reported validation error failed before the fix and passes now. Merged main, resolved the PLAN.md Config conflict, and verified with make format && make check (517 Python test suites and Node tests). No follow-ups.
+Configured error reporting now covers post-config argument validation and main-checkout discovery failures, as well as existing run failures. Regression for missing Git metadata failed before the fix and passes now. make format && make check passed all 519 Python tests and Node tests; chitty fix completed. Implementation commit: 31d8c94. No follow-ups.
 
 ## History
 
@@ -95,3 +97,5 @@ Implemented configured error reporting for Chitty run failures, including post-c
 - 2026-11-12T21:43:22Z kind-yellow-vole: changed owner, notes
 - 2026-11-12T21:43:22Z kind-yellow-vole blocked → doing
 - 2026-11-12T21:44:35Z calm-coral-raven: wrote the plan
+- 2026-11-12T21:47:40Z calm-coral-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-12T21:47:40Z calm-coral-raven doing → review
