@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: review
+status: doing
 created: 2026-11-11
 ---
 
@@ -18,7 +18,7 @@ created: 2026-11-11
 - [x] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` whose agent command exits 1 leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
 - [x] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
 - [x] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
-- [x] With `error_reporter` set, `chitty run --ticket TASK-1 --mode work` runs the reporter with the message `--mode cannot be used with --ticket`, and still exits non-zero. Every other Chitty error `run()` raises after the config loads is reported the same way. It fails today.
+- [ ] With `error_reporter` set, `chitty run --ticket TASK-1 --mode work` runs the reporter with the message `--mode cannot be used with --ticket`, and still exits non-zero. Every other Chitty error `run()` raises after the config loads is reported the same way. It fails today.
 
 ## Plan
 
@@ -44,6 +44,12 @@ Regression test test_argument_error_reports_message_and_ticket_context failed be
 Review failed (integration): merging `main` conflicts in `PLAN.md`.
 
 Merged main; resolved the PLAN.md Config conflict by retaining both error_reporter and job_order settings. make format && make check passes on the merged branch (517 Python test suites and Node tests). chitty fix passes with pre-existing task-content warnings.
+
+Review failed (tests): Cover errors from main checkout discovery after configuration loads and move that operation inside the reporter boundary. A configured reporter is not invoked when Git discovery fails.
+1: pass - `make format && make check` printed `Ran 518 tests` and `OK`; disabling `report_error` made `test_failing_run_reports_message_and_ticket_context` error with a missing report file.
+2: pass - `make check` passed existing runs and `test_empty_queue_does_not_report`; the preceding review also ran a successful configured-reporter run and printed `successful run: 0 report exists: False`.
+3: pass - `make check` passed `test_failing_reporter_warns_and_preserves_failure`; disabling `report_error` made that test fail. The preceding review ran the failing reporter and printed `warning: error_reporter exited with status 7` and `Error: agent exited with status 1`.
+4: fail - `test_argument_error_reports_message_and_ticket_context` passes and errors with a missing report when reporting is disabled, but a throwaway CLI run with configured reporter after removing the temporary repository `.git` printed `Error: `git rev-parse --git-common-dir` failed` and `report exists: False`. This post-config Chitty error must also be reported.
 
 ## Summary
 
@@ -75,3 +81,5 @@ Implemented configured error reporting for Chitty run failures, including post-c
 - 2026-11-12T20:23:31Z zesty-umber-puffin review → doing
 - 2026-11-12T20:27:54Z jolly-silver-zander: changed notes, summary
 - 2026-11-12T20:27:54Z jolly-silver-zander doing → review
+- 2026-11-12T20:32:03Z lively-khaki-gannet: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-12T20:32:03Z lively-khaki-gannet review → doing
