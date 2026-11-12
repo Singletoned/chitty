@@ -1,7 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: blocked
-owner: human
+status: doing
 created: 2026-11-11
 ---
 
@@ -19,6 +18,7 @@ created: 2026-11-11
 - [x] With `error_reporter` set to a script that writes its arguments to a file, a `chitty run` whose agent command exits 1 leaves the message and a JSON context naming the ticket in that file, and still exits non-zero. It fails today.
 - [x] Without `error_reporter`, behaviour is unchanged; with it, a successful run and an empty queue run no reporter.
 - [x] A reporter that exits non-zero prints a warning, and `chitty run` still fails with the agent's error.
+- [ ] With `error_reporter` set, `chitty run --ticket TASK-1 --mode work` runs the reporter with the message `--mode cannot be used with --ticket`, and still exits non-zero. Every other Chitty error `run()` raises after the config loads is reported the same way. It fails today.
 
 ## Plan
 
@@ -36,6 +36,8 @@ Review failed (tests): Cover and report Chitty errors raised by argument validat
 3: pass - A throwaway failing-reporter integration run printed `warning: error_reporter exited with status 7` and `Error: agent exited with status 1`, exit 1; disabling `report_error` made `test_failing_reporter_warns_and_preserves_failure` fail.
 
 Review blocked: The configured reporter is not invoked for the post-configuration Chitty error from `run --ticket TASK-1 --mode work`, contrary to the description. All numbered criteria passed, so Chitty rejected the requested transition to doing with `moving review → doing requires at least one fail verdict`. A human must resolve the mismatch between the review workflow and this demonstrated defect. See the preceding review note for evidence and criterion verdicts.
+
+Planner, 2026-11-12: added criterion 4 for the defect the last review found (argument errors in `run()` are raised before the reporting `try`, so they are not reported). Move the `try` to cover them; the earlier criteria still stand.
 
 ## Summary
 
@@ -58,3 +60,5 @@ Implemented configurable error reporting in `chitty run`, including error messag
 - 2026-11-11T21:56:50Z rosy-lilac-marten: changed notes
 - 2026-11-11T21:57:09Z rosy-lilac-marten: changed owner, notes
 - 2026-11-11T21:57:09Z rosy-lilac-marten review → blocked
+- 2026-11-12T18:13:28Z kind-yellow-vole: changed owner, acceptance criteria, notes
+- 2026-11-12T18:13:28Z kind-yellow-vole blocked → doing
