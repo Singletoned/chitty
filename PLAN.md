@@ -352,6 +352,7 @@ review = true # require review before done
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
 # work_model = "provider/model" # default for work when the agent command has no model
 # review_model = "provider/model" # default for review when the agent command has no model
+# job_order = ["review", "doing", "todo"] # statuses selected by `next`/`run`, in pick order
 # `{prompt}` may be used as one argument containing `chitty guide` output.
 archive = "move" # or "delete"; retain completed files or delete them
 # list_width = 100 # columns `chitty list` rows fit in
@@ -671,7 +672,10 @@ adding one means removing one.
 
 A failure's cause is the earliest stage that should have caught it: `design`,
 `tests`, `work`, `integration` (branch, merge, environment) or `review` (the
-reviewer was wrong). Record it as `Review failed (<cause>): ...`. A later bug
+reviewer was wrong). Record it as `Review failed (<cause>): ...`. Every review
+note, passing or failing, has one line per criterion below that first line:
+`<number>: pass - <evidence>` or `<number>: fail - <reason>`. A test criterion
+passes only with evidence that its test fails without the change. A later bug
 gets the label `escape` and a note naming its source ticket.
 
 A retro is a ticket, opened after every 10 `done` tickets. It proposes a few
@@ -714,9 +718,10 @@ including retries, not per run.
 
 ## Next action and runner
 
-`chitty next` selects one active task across every context: `review` before
-`doing` before `todo`, then high/medium (including unset)/low priority and
-`TaskId`.
+`chitty next` selects one active task across every context: the optional
+`job_order` setting (default `review`, `doing`, `todo`), then high/medium
+(including unset)/low priority and `TaskId`. It must be a non-empty list of
+unique active statuses; omitted statuses are never selected.
 Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
 an unmet dependency is excluded, while `doing` and `review` work remains
 visible. `list` marks these exclusions with `👤`, `🔒`, or `⚠️` for a broken
@@ -763,7 +768,13 @@ agent command, only when neither that command nor forwarded arguments specify
 and without a configured default the invocation is unchanged. Commands receiving
 a default must accept the agent CLI option `--model`; Chitty has no `--model`
 option of its own. It reopens the ticket worktree after the agent
-exits and succeeds only if the task's committed status changed. This makes
+exits and succeeds only if the task's committed status changed. An exit 0 with
+the status unchanged continues the same session, if the command has `{prompt}`:
+the command runs again with the continuation prompt in place of `{prompt}` and
+`-c` appended after the other arguments, at most `MAX_CONTINUATIONS` (5) times
+per run, then fails with `was unchanged`. A `{mode} {id}` command is not
+continued. Each session has its own `agent_timeout`, and one usage line covers
+the run. This makes
 `chitty run --loop --mode work -- --model MODEL` keeps running, waiting 60
 seconds after each successful run or idle queue before trying again. Each
 attempt starts a fresh `chitty run` process so a completed landing cannot leave
@@ -828,12 +839,9 @@ The optional root-level `agent_timeout` is a non-negative TOML integer in second
 Each agent session appends one JSON line to the machine-local usage log at
 `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory
 when `XDG_DATA_HOME` is unset). The line records the ticket, mode, actor,
-start time, elapsed seconds, statuses, and the Pi session's aggregate token and
-cost totals by provider and model. The cost values are provider list prices,
-not an invoice or a negotiated rate. A real scratch-repository Pi session was
-checked against its session JSONL: the log and session file both reported
-`input=7645`, `output=917`, `cacheRead=32000`, `cacheWrite=0`, and
-`cost=0.0032694` (0% difference).
+start time, elapsed seconds, and statuses. `chitty run` does not read token or
+cost data from the agent. Spend by model comes from the agent's session files:
+run `scripts/pi_tokens.py` on the Pi session directories.
 
 ## Module layout
 

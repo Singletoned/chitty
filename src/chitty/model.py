@@ -333,15 +333,19 @@ class Task:
     def review_work(self, actor: str) -> list[str]:
         """Return review-relevant work previously recorded for an actor."""
         work: list[str] = []
+        status: str | None = None
         for line in (self.section(HISTORY) or "").splitlines():
             if transition := HISTORY_LINE_RE.fullmatch(line):
-                if transition["actor"] == actor and transition["new"] == "review":
+                status = transition["new"]
+                if transition["actor"] == actor and status == "review":
                     work.append("moved the task to review")
             elif (event := HISTORY_EVENT_RE.fullmatch(line)) and event["actor"] == actor:
+                # The event precedes its transition, so this is the edit's starting status.
                 work += [
                     action
                     for action in event["action"].split(HISTORY_ACTION_SEPARATOR)
-                    if action in {"wrote the plan", "ticked acceptance criteria"}
+                    if action == "wrote the plan"
+                    or (action == "ticked acceptance criteria" and status != "review")
                 ]
         return work
 

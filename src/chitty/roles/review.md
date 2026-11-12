@@ -33,7 +33,12 @@ task files. `chitty --help` is the full command reference.
   `Review failed (<cause>): ...`, where
   the cause is the earliest stage that should have caught it: `design`, `tests`,
   `work`, `integration` (branch, merge, environment), or `review`. Explain what
-  must change and `--uncheck` every failed criterion. Set `-s doing`. If you ran
+  must change and `--uncheck` every failed criterion. Set `-s doing`. Every
+  review note, whether it passes or fails, has one line for every criterion,
+  below its `Reviewed:` or `Review failed (<cause>):` first line, in the form
+  `<number>: pass - <evidence>` or `<number>: fail - <reason>`. Evidence is the
+  command or test that shows it; a test criterion passes only with evidence
+  that the test fails without the change. If you ran
   code, the note gives what was run and what it printed. If there was nothing to
   run, it says what is missing or wrong. If the environment stopped you running
   the code, it says what stopped you, with the cause `integration`.

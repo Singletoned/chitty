@@ -93,6 +93,7 @@ class RepoConfig(BaseModel):
     work_model: str | None = None
     review_model: str | None = None
     archive: Literal["move", "delete"] = "move"
+    job_order: list[str] | None = None
     list_width: int = Field(default=LIST_WIDTH, gt=0)
     contexts: dict[str, ContextConfig]
 
@@ -124,6 +125,21 @@ class RepoConfig(BaseModel):
     def _command(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():
             raise ValueError("must not be empty")
+        return value
+
+    @field_validator("job_order")
+    @classmethod
+    def _job_order(cls, value: list[str] | None) -> list[str] | None:
+        if value is None:
+            return None
+        allowed = {"review", "doing", "todo"}
+        invalid = [status for status in value if status not in allowed]
+        if invalid:
+            raise ValueError(f"job_order contains invalid status {invalid[0]!r}")
+        if not value:
+            raise ValueError("job_order must not be empty")
+        if len(set(value)) != len(value):
+            raise ValueError("job_order must not repeat statuses")
         return value
 
     @model_validator(mode="after")

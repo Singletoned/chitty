@@ -1,14 +1,69 @@
+import io
 import os
 import stat
 import subprocess
 import sys
+from contextlib import redirect_stderr
+from datetime import datetime, timedelta
 from unittest.mock import patch
 
+from chitty.errors import NO_NEXT_TICKET_EXIT
+from chitty.run import RUN_LOOP_PAUSE_SECONDS, run_loop
 from chitty.store import Repo
 from tests.test_cli import CliTestCase
 
 
 class TestRunLoop(CliTestCase):
+    def test_loop_marks_attempts_and_outcomes_on_stderr(self):
+        output = io.StringIO()
+        children = [
+            subprocess.CompletedProcess([], 0),
+            subprocess.CompletedProcess([], 2),
+        ]
+        with (
+            patch("chitty.run.Path.is_file", return_value=True),
+            patch("chitty.run.subprocess.run", side_effect=children) as run,
+            patch("chitty.run.time.sleep"),
+            patch("chitty.run.shutil.get_terminal_size", return_value=os.terminal_size((80, 24))),
+            redirect_stderr(output),
+        ):
+            self.assertEqual(run_loop(()), 2)
+        self.assertEqual(run.call_count, 2)
+        lines = output.getvalue().splitlines()
+        self.assertEqual(len(lines), 4, lines)
+        self.assertRegex(lines[0], r"^━━━━ chitty run · \d{2}:\d{2}:\d{2} ━+$")
+        self.assertRegex(lines[1], r"^━━━━ finished · next run at \d{2}:\d{2}:\d{2} ━+$")
+        self.assertRegex(lines[2], r"^━━━━ chitty run · \d{2}:\d{2}:\d{2} ━+$")
+        self.assertRegex(lines[3], r"^━━━━ stopped · exit 2 ━+$")
+
+    def test_loop_marks_idle_queue_and_schedules_from_attempt_end(self):
+        output = io.StringIO()
+        attempt_end = datetime(2026, 1, 1, 12, 0, 0)
+        with (
+            patch("chitty.run.Path.is_file", return_value=True),
+            patch(
+                "chitty.run.subprocess.run",
+                side_effect=[
+                    subprocess.CompletedProcess([], NO_NEXT_TICKET_EXIT),
+                    subprocess.CompletedProcess([], 2),
+                ],
+            ),
+            patch("chitty.run.time.sleep") as sleep,
+            patch("chitty.run.datetime") as clock,
+            patch("chitty.run.shutil.get_terminal_size", return_value=os.terminal_size((80, 24))),
+            redirect_stderr(output),
+        ):
+            clock.now.side_effect = [
+                datetime(2026, 1, 1, 11, 59, 0),
+                attempt_end,
+                attempt_end,
+            ]
+            clock.side_effect = datetime
+            self.assertEqual(run_loop(()), 2)
+        next_run = attempt_end + timedelta(seconds=RUN_LOOP_PAUSE_SECONDS)
+        self.assertIn(f"no ticket · next run at {next_run:%H:%M:%S}", output.getvalue())
+        sleep.assert_called_once_with(RUN_LOOP_PAUSE_SECONDS)
+
     def git(self, *args: str) -> None:
         subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
 

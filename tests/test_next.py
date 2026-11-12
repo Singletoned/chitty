@@ -18,7 +18,7 @@ from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
 from chitty.inbox import suggest
 from chitty.mcp import server
-from chitty.run import _read_usage, _record_usage, run_loop
+from chitty.run import _record_usage, run_loop
 from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
 
@@ -86,6 +86,23 @@ class TestNext(CliTestCase):
                 self.assertEqual((action.mode, str(action.id)), expected)
                 for path in (self.root / "chitty/tasks").glob("*.md"):
                     path.unlink()
+
+    def test_configured_job_order_and_omitted_status(self):
+        self.add("Review", status="review")
+        todo = self.add("Todo")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                "autocommit = false", 'job_order = ["todo", "review"]\nautocommit = false'
+            )
+        )
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), todo)
+        config.write_text(config.read_text().replace('["todo", "review"]', '["todo"]'))
+        for path in (self.root / "chitty/tasks").glob("*.md"):
+            if path.name.startswith(f"{todo}--"):
+                path.unlink()
+        with self.assertRaisesRegex(ChittyError, "no next ticket"):
+            next_action(Repo.open(self.root))
 
     def test_numeric_id_ordering_and_unmet_doing_dependency(self):
         for number in range(1, 13):
@@ -860,8 +877,6 @@ class TestNext(CliTestCase):
             "task.write_text(task.read_text().replace('status: doing', 'status: done'))\n"
             "subprocess.run(['git', 'add', str(task)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
-            "pathlib.Path(os.environ['CHITTY_USAGE_FILE']).write_text(\n"
-            "    '{\"sessions\": {}}')\n"
         )
         agent.chmod(agent.stat().st_mode | stat.S_IXUSR)
         previous = {
@@ -883,7 +898,7 @@ class TestNext(CliTestCase):
         self.assertEqual(environment["chitty"], str(runner_chitty))
         self.assertIsNone(environment["virtual_env"])
         self.assertIsNone(environment["uv_project_environment"])
-        self.assertTrue(environment["usage_file"])
+        self.assertIsNone(environment["usage_file"])
 
     def test_run_inherits_stdin(self):
         config = self.root / "chitty.toml"
@@ -1729,9 +1744,6 @@ class TestNext(CliTestCase):
             "    open(path, 'w').write(text.replace('status: doing', 'status: blocked'))\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
             "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
-            "if os.environ.get('USAGE_MODE') == 'invalid':\n"
-            "    import pathlib\n"
-            "    pathlib.Path(os.environ['CHITTY_USAGE_FILE']).write_text('not json')\n"
             "if os.environ.get('PI_SIGNAL'):\n"
             "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
             "    os.kill(os.getpid(), signal.SIGINT)\n"
@@ -1764,13 +1776,8 @@ class TestNext(CliTestCase):
             os.environ["PI_EXIT"] = "7"
             failed = self.run_cli("run", exit_code=1)
             self.assertIn("agent exited with status 7", failed.stderr)
-            self.assertIn("warning: cannot read usage file", failed.stderr)
+            self.assertNotIn("cannot read usage file", failed.stderr)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
-            os.environ["USAGE_MODE"] = "invalid"
-            invalid = self.run_cli("run", exit_code=1)
-            self.assertIn("agent exited with status 7", invalid.stderr)
-            self.assertIn("warning: cannot read usage file", invalid.stderr)
-            os.environ.pop("USAGE_MODE")
             os.environ.pop("PI_EXIT")
             os.environ["PI_SIGNAL"] = "1"
             interrupted = self.run_cli("run", exit_code=130)
@@ -1786,9 +1793,9 @@ class TestNext(CliTestCase):
             records = [json.loads(line) for line in log.read_text().splitlines()]
             self.assertEqual(
                 [record["status_after"] for record in records],
-                ["doing", "doing", "doing", "doing", "doing", "blocked"],
+                ["doing", "doing", "doing", "doing", "blocked"],
             )
-            self.assertTrue(all(record["models"] is None for record in records))
+            self.assertTrue(all("models" not in record for record in records))
             no_next = self.run_cli("run", exit_code=3)
             self.assertEqual(no_next.stdout, "")
             self.assertEqual(no_next.stderr, "no next ticket\n")
@@ -1803,7 +1810,6 @@ class TestNext(CliTestCase):
             os.environ.pop("PI_EXIT", None)
             os.environ.pop("CHANGE", None)
             os.environ.pop("TASK_PATH", None)
-            os.environ.pop("USAGE_MODE", None)
 
     def test_run_records_usage_outside_repository_and_appends_runs(self):
         config = self.root / "chitty.toml"
@@ -1821,22 +1827,10 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import json, os, pathlib, subprocess\n"
+            "import pathlib, subprocess\n"
             "root = pathlib.Path.cwd()\n"
             "ticket = next((root / 'chitty/tasks').glob('*.md'))\n"
             "ticket.write_text(ticket.read_text().replace('status: doing', 'status: blocked'))\n"
-            "sessions = {\n"
-            "  'first-session': [\n"
-            "    {'provider': 'p', 'model': 'a', 'input': 1, 'output': 2,\n"
-            "     'cacheRead': 3, 'cacheWrite': 4, 'cost': 0.5},\n"
-            "    {'provider': 'p', 'model': 'a', 'input': 5, 'output': 6,\n"
-            "     'cacheRead': 7, 'cacheWrite': 8, 'cost': 1.5}],\n"
-            "  'second-session': [{'provider': 'p', 'model': 'b',\n"
-            "    'input': 9, 'output': 10, 'cacheRead': 11,\n"
-            "    'cacheWrite': 12, 'cost': 2.5}]\n"
-            "}\n"
-            "path = pathlib.Path(os.environ['CHITTY_USAGE_FILE'])\n"
-            "path.write_text(json.dumps({'sessions': sessions}))\n"
             "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
         )
@@ -1865,35 +1859,58 @@ class TestNext(CliTestCase):
                 "seconds",
                 "status_before",
                 "status_after",
-                "models",
             },
-        )
-        self.assertEqual(
-            records[0]["models"],
-            [
-                {
-                    "provider": "p",
-                    "model": "a",
-                    "input": 6,
-                    "output": 8,
-                    "cacheRead": 10,
-                    "cacheWrite": 12,
-                    "cost": 2.0,
-                },
-                {
-                    "provider": "p",
-                    "model": "b",
-                    "input": 9,
-                    "output": 10,
-                    "cacheRead": 11,
-                    "cacheWrite": 12,
-                    "cost": 2.5,
-                },
-            ],
         )
         self.assertEqual(records[0]["status_before"], "doing")
         self.assertEqual(records[0]["status_after"], "blocked")
         self.assertEqual(self.git("status", "--porcelain"), "")
+
+    def test_run_without_usage_file_is_silent_and_logs_no_models(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("First")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        fake = self.root / "bin" / "pi"
+        fake.parent.mkdir()
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "import os, pathlib, subprocess\n"
+            "report = pathlib.Path(os.environ['REPORT'])\n"
+            "report.write_text(str('CHITTY_USAGE_FILE' in os.environ))\n"
+            "root = pathlib.Path.cwd()\n"
+            "ticket = next((root / 'chitty/tasks').glob('*.md'))\n"
+            "ticket.write_text(ticket.read_text().replace('status: doing', 'status: blocked'))\n"
+            "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        report = self.tmp / "report.txt"
+        previous = {key: os.environ.get(key) for key in ("PATH", "REPORT")}
+        os.environ["PATH"] = f"{fake.parent}:{previous['PATH'] or ''}"
+        os.environ["REPORT"] = str(report)
+        try:
+            result = self.run_cli("run")
+        finally:
+            for key, value in previous.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
+
+        self.assertEqual(result.stdout, "TASK-1: doing → blocked\n")
+        self.assertNotIn("cannot read usage file", result.stderr)
+        self.assertEqual(report.read_text(), "False")
+        log = self.tmp / "data" / "chitty" / "usage" / "repo.jsonl"
+        records = [json.loads(line) for line in log.read_text().splitlines()]
+        self.assertEqual(len(records), 1)
+        self.assertNotIn("models", records[0])
 
     def test_usage_log_write_failure_warns_without_raising(self):
         stderr = io.StringIO()
@@ -1933,64 +1950,6 @@ class TestNext(CliTestCase):
             os.environ["PATH"] = previous
         self.assertIn("agent exited with status 7", result.stderr)
         self.assertIn("warning: cannot write usage log: disk full", result.stderr)
-
-    def test_usage_validation_warns_and_accepts_null_cost(self):
-        usage = self.tmp / "usage.json"
-        usage.write_text(
-            json.dumps(
-                {
-                    "sessions": {
-                        "session": [
-                            {
-                                "provider": "p",
-                                "model": "m",
-                                "input": 1,
-                                "output": 2,
-                                "cacheRead": 3,
-                                "cacheWrite": 4,
-                                "cost": None,
-                            },
-                            {
-                                "provider": "p",
-                                "model": "m",
-                                "input": 5,
-                                "output": 6,
-                                "cacheRead": 7,
-                                "cacheWrite": 8,
-                                "cost": 1,
-                            },
-                        ]
-                    }
-                }
-            )
-        )
-        stderr = io.StringIO()
-        with redirect_stderr(stderr):
-            models = _read_usage(usage)
-        assert models is not None
-        self.assertEqual(models[0]["cost"], None)
-        self.assertEqual(stderr.getvalue(), "")
-        self.assertEqual(
-            models,
-            [
-                {
-                    "provider": "p",
-                    "model": "m",
-                    "input": 6,
-                    "output": 8,
-                    "cacheRead": 10,
-                    "cacheWrite": 12,
-                    "cost": None,
-                }
-            ],
-        )
-        invalid = self.tmp / "invalid.json"
-        invalid.write_text("not json")
-        stderr = io.StringIO()
-        with redirect_stderr(stderr):
-            self.assertIsNone(_read_usage(invalid))
-            self.assertIsNone(_read_usage(self.tmp / "missing.json"))
-        self.assertIn("warning:", stderr.getvalue())
 
     def test_run_logs_under_project_added_by_setup_refresh(self):
         config = self.root / "chitty.toml"
@@ -2191,9 +2150,13 @@ class TestNext(CliTestCase):
             "import os, sys\n"
             "status = Path('chitty/tasks/TASK-1--todo.md').read_text()\n"
             "name = 'work' if 'status: doing' in status else 'review'\n"
-            "Path('agent-arguments-' + name).write_text(repr(sys.argv[1:]))\n"
-            "assert len(sys.argv[1:]) == 1\n"
-            "assert '\\n' in sys.argv[1]\n"
+            # A continued session appends `-c` after a continuation prompt.
+            "if sys.argv[2:] == ['-c']:\n"
+            "    assert sys.argv[1].startswith('Continue ')\n"
+            "else:\n"
+            "    assert sys.argv[2:] == []\n"
+            "    assert '\\n' in sys.argv[1]\n"
+            "    Path('agent-arguments-' + name).write_text(repr(sys.argv[1:]))\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert Path('setup-ran').read_text() in {'1', '2', '3'}\n"
             "Path('pi-ran').write_text('yes')\n"

@@ -1525,6 +1525,42 @@ class TestEdit(CliTestCase):
         self.assertEqual(self.path.read_text(), snapshot)
         self.assertNotEqual(before, self.path.read_text())
 
+    def test_replace_in_description_applies_pairs_in_order(self):
+        self.run_cli("edit", "1", "-d", "Describe this; retain that.")
+        self.run_cli(
+            "edit",
+            "1",
+            "--replace-in-description",
+            "Describe",
+            "Explain",
+            "--replace-in-description",
+            "retain",
+            "preserve",
+        )
+        self.assertEqual(
+            self.json("show", "1")["description"],
+            "Explain this; preserve that.",
+        )
+        history = self.path.read_text().split("## History", 1)[1]
+        self.assertEqual(history.count("changed description"), 2)
+
+    def test_replace_in_description_checks_each_result_before_writing(self):
+        self.run_cli("edit", "1", "-d", "Keep a b.")
+        snapshot = self.path.read_text()
+        result = self.run_cli(
+            "edit",
+            "1",
+            "--replace-in-description",
+            "a",
+            "b",
+            "--replace-in-description",
+            "b",
+            "c",
+            exit_code=1,
+        )
+        self.assertIn("'b'", result.output)
+        self.assertEqual(self.path.read_text(), snapshot)
+
     def test_edit_everything(self):
         result = self.run_cli(
             "edit",
@@ -2072,6 +2108,7 @@ class TestIdentity(CliTestCase):
         self.assertEqual(self.json("whoami"), {"actor": name})
         os.environ.pop("PI_SESSION_ID")
         os.environ["PI_CODING_AGENT"] = "true"
+        os.environ.pop("CHITTY_ACTOR", None)
         self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
 
     def test_init_removes_ineffective_pi_session_environment_setting(self):
@@ -2173,6 +2210,7 @@ class TestGuide(CliTestCase):
 
     def test_role_guides_omit_the_pi_session_diagnostic(self):
         os.environ["PI_CODING_AGENT"] = "true"
+        os.environ.pop("CHITTY_ACTOR", None)
         self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
         for role in ("work", "review", "plan"):
             with self.subTest(role=role):

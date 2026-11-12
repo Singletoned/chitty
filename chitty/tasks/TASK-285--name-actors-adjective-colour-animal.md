@@ -1,0 +1,51 @@
+---
+title: Name actors adjective-colour-animal
+status: done
+parent: TASK-283
+created: 2026-11-11
+---
+
+## Description
+
+- `_readable_name` in `src/chitty/actor.py` builds `adjective-animal` from two digest bytes: 625 names, so busy repositories get clashes (TASK-283).
+- Add a `_COLOURS` tuple of 25 words (amber, bronze, coral, dusky, ebony, fawn, ginger, hazel, indigo, jade, khaki, lilac, maroon, navy, ochre, pearl, quartz, russet, silver, teal, umber, violet, white, yellow, zinc) and name actors `adjective-colour-animal`, such as `vivid-amber-yellowhammer`, with the adjective from `digest[0]`, colour from `digest[1]` and animal from `digest[2]`: 15,625 names.
+- Names already in History stay as written.
+- Update the shape assertion in `tests/test_actor.py` (`^[a-z]+-[a-z]+$`). `README.md` and `PLAN.md` hold no actor names.
+
+## Acceptance Criteria
+
+- [x] A test shows the same session always getting the same name, matching `^[a-z]+-[a-z]+-[a-z]+$`, with its middle word from `_COLOURS`. It fails today.
+- [x] A test over many session IDs shows adjective and colour varying independently (more than 100 distinct pairs from 500 sessions).
+
+## Plan
+
+Verify the existing colour-based actor implementation and regression tests against the ticket. Run the focused tests, then the repository formatter and full checks; resolve any failures and commit only implementation paths.
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-285/1`. Check it against the current criteria; do not trust it.
+
+Actor tests pass (uv run python -m unittest tests.test_actor). The regression assertions were committed with the implementation; branch history shows commit 1c2d166. Full make check currently fails in unrelated tests.test_guide_backticks.TestBacktickGuideWarning because generated guide output differs from guide(); no actor-related failures.
+
+Planner moved this to `review`, 2026-11-11: the work is committed in `1c2d166`, and the only `make check` failure was `test_guide_backticks`, which failed inside every print-mode Pi worker and is fixed on `main` in `eb8a01a`.
+
+Reviewed: Focused actor tests and make format && make check passed; full checks ran 492 Python tests and Node tests.
+1: pass - test_harness_session_names_are_stable_and_readable passes; substituting main _readable_name produced four regex failures, including mellow-eel.
+2: pass - test_names_vary_independently_across_sessions passes and 500 sessions produced 350 distinct pairs; substituting main _readable_name raised ValueError for two-word names.
+
+## History
+
+- 2026-11-11T16:09:08Z vivid-yellowhammer → backlog
+- 2026-11-11T16:09:46Z vivid-yellowhammer backlog → cold-read
+- 2026-11-11T16:12:10Z vivid-yellowhammer: changed description
+- 2026-11-11T16:12:11Z vivid-yellowhammer: changed description
+- 2026-11-11T16:12:12Z vivid-yellowhammer: changed acceptance criteria, notes
+- 2026-11-11T16:12:12Z vivid-yellowhammer cold-read → todo
+- 2026-11-11T19:01:45Z sunny-falcon todo → doing
+- 2026-11-11T19:02:00Z sunny-falcon: wrote the plan
+- 2026-11-11T20:06:30Z eager-urchin: wrote the plan
+- 2026-11-11T20:07:25Z eager-urchin: changed notes; ticked acceptance criteria
+- 2026-11-11T20:17:27Z vivid-yellowhammer: changed notes
+- 2026-11-11T20:17:27Z vivid-yellowhammer doing → review
+- 2026-11-11T20:19:52Z friendly-eel: changed notes; ticked acceptance criteria
+- 2026-11-11T20:19:52Z friendly-eel review → done

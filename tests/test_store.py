@@ -149,7 +149,7 @@ class TestStore(StoreTestCase):
 
     def test_description_replacement_records_history(self):
         stored = self.add("One")
-        changed = self.repo.edit(stored.id, Edit(replace_in_description=("Describe", "Explain")))
+        changed = self.repo.edit(stored.id, Edit(replace_in_description=[("Describe", "Explain")]))
         self.assertIn(
             "test-agent: changed description",
             changed.task.task.section("History") or "",
@@ -210,6 +210,47 @@ class TestStore(StoreTestCase):
             ChittyError,
             "test-agent cannot review this task: wrote the plan, ticked acceptance criteria$",
         ):
+            self.repo.edit(
+                stored.id,
+                Edit(status="done", note="Reviewed: looks good\n1: pass - looks good"),
+            )
+
+    def test_tick_made_during_review_does_not_block_the_reviewers_verdict(self):
+        stored = self.add("One")
+        self.repo.edit(stored.id, Edit(add_criteria=["Works"]))
+        os.environ["CHITTY_ACTOR"] = "author"
+        self.repo.edit(stored.id, Edit(status="review"))
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        self.repo.edit(stored.id, Edit(check=[1]))
+
+        changed = self.repo.edit(stored.id, Edit(status="doing", note="Review\n1: fail - bad"))
+        self.assertEqual(changed.task.task.frontmatter.status, "doing")
+
+    def test_tick_made_during_doing_still_blocks_the_reviewer(self):
+        stored = self.add("One")
+        self.repo.edit(stored.id, Edit(add_criteria=["Works"]))
+        self.repo.edit(stored.id, Edit(status="doing"))
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        self.repo.edit(stored.id, Edit(check=[1]))
+        os.environ["CHITTY_ACTOR"] = "author"
+        self.repo.edit(stored.id, Edit(status="review"))
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+
+        with self.assertRaisesRegex(ChittyError, "ticked acceptance criteria"):
+            self.repo.edit(
+                stored.id,
+                Edit(status="done", note="Reviewed: looks good\n1: pass - looks good"),
+            )
+
+    def test_plan_written_during_review_still_blocks_the_reviewer(self):
+        stored = self.add("One")
+        self.repo.edit(stored.id, Edit(add_criteria=["Works"]))
+        os.environ["CHITTY_ACTOR"] = "author"
+        self.repo.edit(stored.id, Edit(status="review"))
+        os.environ["CHITTY_ACTOR"] = "reviewer"
+        self.repo.edit(stored.id, Edit(plan="Second thoughts."))
+
+        with self.assertRaisesRegex(ChittyError, "wrote the plan"):
             self.repo.edit(
                 stored.id,
                 Edit(status="done", note="Reviewed: looks good\n1: pass - looks good"),

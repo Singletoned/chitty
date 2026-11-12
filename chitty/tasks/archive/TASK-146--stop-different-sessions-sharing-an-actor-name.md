@@ -27,6 +27,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. Fixed: my numbers, which were 
 
 Parked on 2026-11-04: the human added names, so there are now 25 of each and 625 in all, and will consider other ways of doing this, such as separate names for workers and reviewers. The numbers in the description predate that.
 
+Superseded 2026-11-11 by TASK-285: three-part names with a colour word.
+
 ## History
 
 - 2026-11-04T12:40:34Z lively-panda → todo
@@ -34,3 +36,5 @@ Parked on 2026-11-04: the human added names, so there are now 25 of each and 625
 - 2026-11-04T14:36:52Z mellow-newt: changed priority, owner, notes
 - 2026-11-04T14:36:52Z mellow-newt todo → backlog
 - 2026-11-11T10:17:23Z vivid-yellowhammer: changed parent
+- 2026-11-11T16:09:38Z vivid-yellowhammer: changed notes
+- 2026-11-11T16:09:39Z vivid-yellowhammer backlog → archived
