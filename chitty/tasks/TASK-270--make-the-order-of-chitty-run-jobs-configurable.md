@@ -1,6 +1,6 @@
 ---
 title: Make the order of `chitty run` jobs configurable
-status: review
+status: done
 parent: TASK-259
 created: 2026-11-11
 ---
@@ -129,6 +129,11 @@ landed TASK-2 reached all 490 tests but failed only in unrelated : CLI guide out
 
 Correction: shell expanded backtick-delimited text in my previous note, so that note and verification transcript are corrupted. The actual verified results are: make format passed; make check failed only at tests.test_guide_backticks.TestBacktickGuideWarning.test_warning_is_in_every_generated_guide; focused config, selection, and property tests passed. No implementation files were changed by that check.
 
+Reviewed: make format && make check passed: 508 Python tests and 27 Node tests; ruff and pyright clean.
+1: pass - CliRunner next printed review TASK-1 by default and work TASK-2 with todo before review.
+2: pass - CliRunner next printed no next ticket with todo only and exited 3; typo exited 1 and named typo.
+3: pass - make check passed the random-order property test; replacing choose with historical fixed-order behavior made that test fail, selecting review instead of doing.
+
 ## Summary
 
 Implemented configurable job_order validation and selection with historical default; updated Config, runner, and README docs. Added config/selection regression coverage and random status-order property testing. Focused tests, formatting, ruff, and pyright pass. Full check remains blocked by the unrelated generated-guide mismatch noted above; reviewer should resolve or confirm it separately.
@@ -152,3 +157,5 @@ Implemented configurable job_order validation and selection with historical defa
 - 2026-11-12T18:07:16Z tidy-russet-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-12T18:07:16Z tidy-russet-falcon doing → review
 - 2026-11-12T18:07:32Z tidy-russet-falcon: changed notes
+- 2026-11-12T18:10:33Z nimble-dusky-jay: changed notes; ticked acceptance criteria
+- 2026-11-12T18:10:33Z nimble-dusky-jay review → done
