@@ -43,6 +43,19 @@ class TestColdReadGuide(unittest.TestCase):
         self.assertIn("chitty guide cold-read <ID>", planning)
         self.assertNotIn("git update-ref refs/cold-read", planning)
 
+    def test_guides_distinguish_probe_only_reads_from_implementation(self):
+        cold_read = _flat(guide("cold-read"))
+        planning = _flat(guide("plan"))
+        self.assertIn(
+            "implement it unless probing has already found a problem that will change the ticket",
+            cold_read,
+        )
+        self.assertIn(
+            "A read that only probed does not make a ticket ready",
+            planning,
+        )
+        self.assertEqual(planning.count("Cold-read every ticket, even a small one"), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

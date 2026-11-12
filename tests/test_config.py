@@ -22,6 +22,26 @@ class TestRepoConfig(RepoTestCase):
         self.assertEqual(config.agent_command, "pi --chitty-{mode} {id}")
         self.assertEqual(config.agent_timeout, 7200)
 
+    def test_job_order_validates_statuses_and_duplicates(self):
+        config_path = self.root / "chitty.toml"
+        config_path.write_text(
+            CONFIG.replace(
+                "autocommit = false", 'job_order = ["todo", "review"]\nautocommit = false'
+            )
+        )
+        self.assertEqual(load_repo_config(self.root).job_order, ["todo", "review"])
+        for value, message in (
+            ("[]", "empty"),
+            ('["typo"]', "typo"),
+            ('["todo", "todo"]', "repeat"),
+        ):
+            with self.subTest(value=value):
+                config_path.write_text(
+                    CONFIG.replace("autocommit = false", f"job_order = {value}\nautocommit = false")
+                )
+                with self.assertRaisesRegex(ChittyError, message):
+                    load_repo_config(self.root)
+
     def test_agent_timeout_can_be_disabled_and_uses_patchable_default(self):
         config_path = self.root / "chitty.toml"
         config_path.write_text(

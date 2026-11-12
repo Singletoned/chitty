@@ -1,6 +1,6 @@
 ---
 title: Tell cold readers how to apply the planner's mutants
-status: todo
+status: done
 parent: TASK-284
 created: 2026-11-11
 ---
@@ -12,11 +12,24 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_cold_read_mutants.py` shows that in `chitty guide cold-read` the mutant step says one at a time, restore before the next, and criterion wording for survivors, and that the report list separately asks for survivors with that wording. It fails today.
+- [x] A test in `tests/test_guide_cold_read_mutants.py` shows that in `chitty guide cold-read` the mutant step says one at a time, restore before the next, and criterion wording for survivors, and that the report list separately asks for survivors with that wording. It fails today.
+
+## Plan
+
+Add a focused guide regression test that asserts the cold-read mutant procedure and survivor-report wording. Run it first to confirm it fails, then update the cold-read guide text, run format and full checks, and commit only these implementation changes.
 
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-299/1`. Check it against the current criteria; do not trust it.
+
+Regression test failed before guide change; make format and make check pass.
+
+Reviewed:
+1: pass - `uv run python -m unittest tests.test_guide_cold_read_mutants -v` printed OK; with `chitty.store.files` patched to read the main-branch guide, the same test printed FAILED (failures=1). `chitty guide cold-read` printed the mutant procedure and separate survivor report bullet. `make format && make check` passed (504 Python tests OK and Node tests passed).
+
+## Summary
+
+Added mutant execution and survivor reporting instructions to the cold-read guide, with regression coverage. Verified: targeted test failed before fix; make format && make check pass. No follow-ups.
 
 ## History
 
@@ -25,3 +38,9 @@ Possible starting point: `git diff main...refs/cold-read/TASK-299/1`. Check it a
 - 2026-11-11T21:14:09Z vivid-yellow-raven: changed description
 - 2026-11-11T21:14:12Z vivid-yellow-raven: changed acceptance criteria, notes
 - 2026-11-11T21:14:12Z vivid-yellow-raven cold-read → todo
+- 2026-11-11T22:07:10Z kind-lilac-toad todo → doing
+- 2026-11-11T22:07:21Z kind-lilac-toad: wrote the plan
+- 2026-11-11T22:09:33Z kind-lilac-toad: changed notes, summary; ticked acceptance criteria
+- 2026-11-11T22:09:33Z kind-lilac-toad doing → review
+- 2026-11-11T22:12:01Z calm-violet-ibis: changed notes; ticked acceptance criteria
+- 2026-11-11T22:12:01Z calm-violet-ibis review → done

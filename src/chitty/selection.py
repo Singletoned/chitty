@@ -72,12 +72,13 @@ def choose(
     *,
     modes: tuple[Literal["work", "review"], ...] = (),
     owner: str | None = None,
+    order: tuple[str, ...] = STATUSES,
 ) -> TicketFacts | None:
-    """Return the first selectable ticket in status, priority, ID order."""
+    """Return the first selectable ticket in configured status, priority, ID order."""
     statuses = mode_statuses(modes)
     candidates: list[TicketFacts] = []
     for fact in facts:
-        if fact.archived or fact.status not in STATUS_RANK:
+        if fact.archived or fact.status not in order:
             continue
         if statuses is not None and fact.status not in statuses:
             continue
@@ -88,6 +89,6 @@ def choose(
         candidates.append(fact)
     return min(
         candidates,
-        key=lambda fact: (STATUS_RANK[fact.status], PRIORITY_RANK[fact.priority], _id_key(fact.id)),
+        key=lambda fact: (order.index(fact.status), PRIORITY_RANK[fact.priority], _id_key(fact.id)),
         default=None,
     )

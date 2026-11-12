@@ -149,7 +149,7 @@ class TestStore(StoreTestCase):
 
     def test_description_replacement_records_history(self):
         stored = self.add("One")
-        changed = self.repo.edit(stored.id, Edit(replace_in_description=("Describe", "Explain")))
+        changed = self.repo.edit(stored.id, Edit(replace_in_description=[("Describe", "Explain")]))
         self.assertIn(
             "test-agent: changed description",
             changed.task.task.section("History") or "",
@@ -342,11 +342,15 @@ class TestStore(StoreTestCase):
         with self.assertRaisesRegex(ChittyError, "notes.txt"):
             self.repo.tasks(self.tasks, "active")
 
-    def test_wrong_prefix_is_an_error(self):
+    def test_another_prefix_is_allowed_in_a_context_directory(self):
         self.tasks.directory.mkdir(parents=True)
-        (self.tasks.directory / "HUMAN-1.md").write_text("x")
-        with self.assertRaisesRegex(ChittyError, "does not belong"):
-            self.repo.tasks(self.tasks, "active")
+        path = self.tasks.directory / "HUMAN-1--person-needed.md"
+        path.write_text(
+            "---\ntitle: Person needed\nstatus: todo\ncreated: 2026-11-11\n---\n"
+            "\n## Description\n\nHelp\n"
+        )
+        tasks = self.repo.tasks(self.tasks, "active")
+        self.assertEqual([str(task.id) for task in tasks], ["HUMAN-1"])
 
     def test_malformed_file_error_names_path(self):
         stored = self.add("One")

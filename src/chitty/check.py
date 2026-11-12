@@ -111,7 +111,7 @@ def fix(
     fixed: list[Problem] = []
     for context in contexts:
         for archived in (False, True):
-            for path, problem in scan(context, archived):
+            for path, problem in scan(context, archived, allow_any_prefix=True):
                 if problem or (wanted and path.resolve() not in wanted):
                     continue
                 try:
@@ -157,9 +157,9 @@ def check(
     by_id: dict[TaskId, list[Path]] = defaultdict(list)
     tasks: dict[Path, Task] = {}
     in_context: dict[Path, Context] = {}
-    for context in repo.contexts():
+    for context in repo.discovered_contexts():
         for archived in (False, True):
-            for path, problem in scan(context, archived):
+            for path, problem in scan(context, archived, allow_any_prefix=True):
                 in_context[path] = context
                 if problem:
                     problems.append(Problem(path, problem))
@@ -254,6 +254,8 @@ def check(
         ]
         return [p for p in problems if p.path in wanted]
     names = {c.name for c in contexts}
+    if not names:
+        names = {context.name for context in repo.discovered_contexts()}
     return [p for p in problems if p.path not in in_context or in_context[p.path].name in names]
 
 

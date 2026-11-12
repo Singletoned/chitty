@@ -40,7 +40,7 @@ from chitty.model import (
     new_task,
     parse,
 )
-from chitty.selection import DependencyFact, TicketFacts, choose, mode_statuses
+from chitty.selection import STATUSES, DependencyFact, TicketFacts, choose, mode_statuses
 from chitty.selection import skip_reason as pure_skip_reason
 
 ARCHIVE_DIR = "archive"
@@ -134,7 +134,7 @@ class Edit:
     rm_depends_on: Sequence[str] = ()
     parent: str | None = None  # "" removes
     description: str | None = None
-    replace_in_description: tuple[str, str] | None = None
+    replace_in_description: Sequence[tuple[str, str]] = ()
     add_criteria: Sequence[str] = ()
     rm_criteria: Sequence[int] = ()
     set_criteria: Sequence[tuple[int, str]] = ()
@@ -178,10 +178,10 @@ class Edit:
             task = task.with_field("parent", self.parent or None)
         if self.description is not None:
             task = task.with_section(DESCRIPTION, self.description)
-        if self.replace_in_description is not None:
-            old, new = self.replace_in_description
+        if self.replace_in_description:
             task = task.with_section(
-                DESCRIPTION, (task.section(DESCRIPTION) or "").replace(old, new)
+                DESCRIPTION,
+                replace_pairs(task.section(DESCRIPTION) or "", self.replace_in_description),
             )
         task = task.with_criteria(
             add=self.add_criteria,
@@ -249,10 +249,32 @@ class Repo:
         return self.config.review if override is None else override
 
     def context_of(self, task_id: TaskId) -> Context:
+        matches = [
+            (context, task)
+            for context in self.discovered_contexts()
+            for task in self.tasks(context, "all")
+            if task.id == task_id
+        ]
+        if matches:
+            return matches[0][0]
         for context in self.contexts():
             if context.prefix == task_id.prefix:
                 return context
         raise ChittyError(f"{task_id}: no context in {self.root} has prefix {task_id.prefix!r}")
+
+    def discovered_contexts(self) -> list[Context]:
+        """Configured contexts plus on-disk directories containing ticket files."""
+        root = self.root / BACKLOG_DIR
+        contexts = {context.name: context for context in self.contexts()}
+        if root.is_dir():
+            for directory in sorted(path for path in root.iterdir() if path.is_dir()):
+                contexts.setdefault(directory.name, Context(directory.name, "", directory))
+        # Historical-only directories still contain readable ticket versions.
+        for file in self._history():
+            if len(file.path.parts) >= 3 and file.path.parts[0] == BACKLOG_DIR:
+                name = file.path.parts[1]
+                contexts.setdefault(name, Context(name, "", root / name))
+        return list(contexts.values())
 
     def resolve(self, text: str) -> TaskId:
         """`TASK-13`, or bare `13` for the default context."""
@@ -285,8 +307,6 @@ class Repo:
                 task = parse(file.content)
             except (ids.IdError, TaskError) as error:
                 raise ChittyError(f"{file.ref}:{file.path}: {error}") from None
-            if task_id.prefix != context.prefix:
-                continue
             previous = historical.get(task_id)
             if previous is None or file.committed_at > previous[1]:
                 historical[task_id] = (
@@ -477,6 +497,8 @@ class Repo:
         if edit.is_empty():
             raise ChittyError("nothing to change")
         stored = self.find(task_id)
+        if stored.context not in self.config.contexts:
+            raise ChittyError(f"cannot write ticket in unconfigured context {stored.context!r}")
         previous_status = stored.task.frontmatter.status
         if (
             edit.status is not None
@@ -504,17 +526,12 @@ class Repo:
                     f"cannot move {task_id} to {edit.status}; the worktree has "
                     f"uncommitted changes: {listed}. Commit or resolve them before changing status"
                 )
-        if edit.replace_in_description is not None:
-            old, _ = edit.replace_in_description
+        if edit.replace_in_description:
             if edit.description is not None:
                 raise ChittyError("--replace-in-description cannot be combined with --description")
-            if not old:
+            if any(not old for old, _ in edit.replace_in_description):
                 raise ChittyError("--replace-in-description OLD cannot be empty")
-            count = (stored.task.section(DESCRIPTION) or "").count(old)
-            if count != 1:
-                raise ChittyError(
-                    f"--replace-in-description OLD must occur exactly once; found {count}"
-                )
+            replace_pairs(stored.task.section(DESCRIPTION) or "", edit.replace_in_description)
         edit = check_edit(stored.task, edit, actor())
         edit = replace(
             edit,
@@ -739,9 +756,9 @@ class Repo:
 
     def _locate_task_file(self, path: Path) -> tuple[Context, bool, Path]:
         """The context, archive flag and scanned path of a task file, without collapsing IDs."""
-        for context in self.contexts():
+        for context in self.discovered_contexts():
             for archived in (False, True):
-                for candidate, problem in scan(context, archived):
+                for candidate, problem in scan(context, archived, allow_any_prefix=True):
                     if candidate.resolve() != path:
                         continue
                     if problem:
@@ -809,6 +826,8 @@ class Repo:
         if stored.archived == archived:
             state = "archived" if archived else "not archived"
             raise ChittyError(f"{task_id} is already {state}")
+        if stored.context not in self.config.contexts:
+            raise ChittyError(f"cannot write ticket in unconfigured context {stored.context!r}")
         context = self.context(stored.context)
         directory = context.archive_directory if archived else context.directory
         new_path = directory / stored.path.name
@@ -840,7 +859,7 @@ class Repo:
 
     def _files(self, context: Context, archived: bool) -> list[Path]:
         files: list[Path] = []
-        for path, problem in scan(context, archived):
+        for path, problem in scan(context, archived, allow_any_prefix=True):
             if problem:
                 raise ChittyError(f"{path}: {problem}")
             files.append(path)
@@ -1517,7 +1536,9 @@ def next_action(
         fact = _selection_facts(repo, stored, locked=is_locked, dependencies=eligible)
         facts.append(fact)
         stored_by_id[str(stored.id)] = stored
-    selected = choose(tuple(facts), modes=modes, owner=owner)
+    # Keep omitted statuses out of selection; None preserves the historical order.
+    order = STATUSES if repo.config.job_order is None else tuple(repo.config.job_order)
+    selected = choose(tuple(facts), modes=modes, owner=owner, order=order)
     if selected is None:
         raise NoNextTicket(
             "no next ticket" if not modes else f"no next ticket for --mode {' or '.join(modes)}"
@@ -1552,7 +1573,9 @@ def matches(
     return any(search.casefold() in text.casefold() for text in texts if text)
 
 
-def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
+def scan(
+    context: Context, archived: bool, *, allow_any_prefix: bool = False
+) -> list[tuple[Path, str | None]]:
     """Every entry in a context directory, with the reason it is invalid (if it is)."""
     directory = context.archive_directory if archived else context.directory
     if not directory.is_dir():
@@ -1569,12 +1592,24 @@ def scan(context: Context, archived: bool) -> list[tuple[Path, str | None]]:
         except ids.IdError as error:
             entries.append((path, str(error)))
             continue
-        if task_id.prefix != context.prefix:
+        if not allow_any_prefix and task_id.prefix != context.prefix:
             message = f"prefix {task_id.prefix!r} does not belong in context {context.name!r}"
             entries.append((path, f"{message} (prefix {context.prefix!r})"))
             continue
         entries.append((path, None))
     return entries
+
+
+def replace_pairs(text: str, pairs: Sequence[tuple[str, str]]) -> str:
+    """Apply replacements in order, requiring each OLD exactly once as we go."""
+    for old, new in pairs:
+        count = text.count(old)
+        if count != 1:
+            raise ChittyError(
+                f"--replace-in-description OLD must occur exactly once; found {count} of {old!r}"
+            )
+        text = text.replace(old, new)
+    return text
 
 
 def _history_action(edit: Edit) -> str | None:
@@ -1593,7 +1628,7 @@ def _history_action(edit: Edit) -> str | None:
         changes.append("dependencies")
     if edit.parent is not None:
         changes.append("parent")
-    if edit.description is not None or edit.replace_in_description is not None:
+    if edit.description is not None or edit.replace_in_description:
         changes.append("description")
     if edit.add_criteria or edit.rm_criteria or edit.set_criteria or edit.uncheck:
         changes.append("acceptance criteria")
