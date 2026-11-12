@@ -82,6 +82,10 @@ Shared signal list. Create `src/chitty/roles/property-signals.md` holding exactl
 - [ ] A test in the same file shows that `chitty guide cold-read TASK-1` contains the shared signal list and the `Missed properties` bullet, after collapsing whitespace, and that neither guide prints `<!-- property-signals -->`. It fails today.
 - [ ] A test in the same file reads the files in `src/chitty/roles/` and shows that only `property-signals.md` contains `These signal a property`, that `plan.md` and `cold-read.md` each contain the line `<!-- property-signals -->`, and that no role file matches `python|pytest|unittest|quickcheck|fast-check|jest` (case-insensitive). It fails today.
 
+## Plan
+
+Add tests in tests/test_guide_property_tests.py first and confirm they fail against current behavior. Cover both generated guides after whitespace normalization and scan role files for the shared-block markers, unique signal-list source, and language/tool-specific terms. Implement the exact planning and cold-read text, add the shared property-signals.md block, and expand its marker in store.guide before applying the ticket prefix; leave ROLE_NAMES unchanged. Run the focused test to verify the regression, then make format and make check pass, inspect the diff/status, commit implementation files with Task: TASK-302, and update verified criteria and handoff before review.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it against the current criteria; do not trust it. Its criterion 3 is not yet a test (copying the list into both role files passes its tests), its pure-function sentence predates the internal-surface wording, and its `PLAN.md` change is superseded by `main`: leave `PLAN.md` alone.
@@ -106,3 +110,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it a
 - 2026-11-12T20:59:55Z kind-yellow-vole planning → todo
 - 2026-11-12T21:30:14Z kind-yellow-vole: changed description
 - 2026-11-12T21:34:10Z able-ginger-urchin todo → doing
+- 2026-11-12T21:34:32Z able-ginger-urchin: wrote the plan
