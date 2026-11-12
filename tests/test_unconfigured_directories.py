@@ -12,6 +12,31 @@ class TestUnconfiguredDirectories(CliTestCase):
         file.parent.mkdir(parents=True, exist_ok=True)
         file.write_text(TICKET.format(title=title, status=status, extra=extra))
 
+    def test_finds_directory_that_exists_only_in_branch_history(self):
+        import subprocess
+
+        def git(*args):
+            subprocess.run(
+                ["git", *args],
+                cwd=self.root,
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+        git("init", "--quiet", "-b", "main")
+        git("config", "user.email", "test@example.com")
+        git("config", "user.name", "Test")
+        git("add", "chitty.toml")
+        git("commit", "--quiet", "-m", "setup")
+        git("switch", "--quiet", "-c", "ticket")
+        self.write_ticket("other/OTHER-1--x.md", "x")
+        git("add", "chitty/other/OTHER-1--x.md")
+        git("commit", "--quiet", "-m", "ticket")
+        git("switch", "--quiet", "main")
+
+        self.assertIn("OTHER-1", self.run_cli("show", "OTHER-1").stdout)
+
     def test_show_and_list_find_tickets_in_a_directory_without_a_context(self):
         self.write_ticket("other/OTHER-1--x.md", "x")
         self.write_ticket("other/archive/OTHER-2--y.md", "y", status="done")

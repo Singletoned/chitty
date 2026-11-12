@@ -269,6 +269,11 @@ class Repo:
         if root.is_dir():
             for directory in sorted(path for path in root.iterdir() if path.is_dir()):
                 contexts.setdefault(directory.name, Context(directory.name, "", directory))
+        # Historical-only directories still contain readable ticket versions.
+        for file in self._history():
+            if len(file.path.parts) >= 3 and file.path.parts[0] == BACKLOG_DIR:
+                name = file.path.parts[1]
+                contexts.setdefault(name, Context(name, "", root / name))
         return list(contexts.values())
 
     def resolve(self, text: str) -> TaskId:
