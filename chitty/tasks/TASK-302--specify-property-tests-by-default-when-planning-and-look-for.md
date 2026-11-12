@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: cold-read
+status: planning
 owner: human
 created: 2026-11-12
 ---
@@ -14,7 +14,7 @@ created: 2026-11-12
 ```markdown
 - Specify property tests by default. Compare each decision in the description
   with the criteria, because workers test what criteria name. For each
-  behaviour, write the property and what the test generates, for example "for
+  behaviour, write the property and what the test generates (the kinds and ranges of input), for example "for
   any criteria list and valid N, only criterion N changes". If no property
   suits the ticket, give the reason in one line: a docs-only change, a small
   fixed set tested case by case, or behaviour that needs real external
@@ -56,14 +56,19 @@ created: 2026-11-12
   `none`. Say if a stated reason for having no property does not hold.
 ```
 
-- `PLAN.md` "Pipeline and feedback": the paragraph beginning `Spec tests exercise the public surface` also allows calling a pure function the ticket names, and says property tests are the default, with a stated reason when none suits.
+- `PLAN.md` "Pipeline and feedback": the paragraph beginning `Spec tests exercise the public surface` also allows calling a pure function the ticket names, and says `Property tests are the default`, with a stated reason when none suits. Replace its "table row for any state transition" with a property over sequences of operations.
 - Out of scope: `src/chitty/roles/work.md` and `review.md`, and checking tickets mechanically for these words.
 
 ## Acceptance Criteria
 
 - [ ] `chitty guide plan` prints the new bullets and no longer prints the old one: a test in `tests/test_guide_property_tests.py` asserts `Specify property tests by default`, `These signal a property`, `pure function` and `must fail without the fix` are present and `- Compare each decision` is absent. It fails today.
-- [ ] `chitty guide cold-read TASK-1` prints the `Missed properties` report bullet; a test in the same file asserts it. It fails today.
+- [ ] `chitty guide cold-read TASK-1` prints the `Missed properties` report bullet; a test in the same file asserts `Missed properties` and `Give each property and what to generate`. It fails today.
 - [ ] Guard, which passes before the change too: `grep -niE "python|hypothesis|pytest|unittest|quickcheck|fast-check|jest" src/chitty/roles/plan.md src/chitty/roles/cold-read.md` prints nothing.
+- [ ] `grep -n "Property tests are the default" PLAN.md` prints one line, in the paragraph that also names the pure-function exception, and `grep -n "table row for any state transition" PLAN.md` prints nothing.
+
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it against the current criteria; do not trust it. It predates the `(the kinds and ranges of input)` wording, the second phrase in criterion 2, and criterion 4 (its `PLAN.md` paragraph keeps the table-row sentence).
 
 ## History
 
@@ -74,3 +79,5 @@ created: 2026-11-12
 - 2026-11-12T19:56:03Z kind-yellow-vole: changed description, acceptance criteria
 - 2026-11-12T19:56:03Z kind-yellow-vole cold-read → planning
 - 2026-11-12T19:56:04Z kind-yellow-vole planning → cold-read
+- 2026-11-12T19:58:06Z kind-yellow-vole: changed description, acceptance criteria, notes
+- 2026-11-12T19:58:06Z kind-yellow-vole cold-read → planning
