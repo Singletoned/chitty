@@ -1,70 +1,65 @@
 # Principles
 
-- The files are the truth. No database, no index, no cache. A directory scan
-  is fast enough for thousands of tasks.
-- One task, one file, one writer at a time. No locking or automatic conflict
-  repair. Task reads use committed state from every local and remote-tracking
-  Git branch, selecting each task's most recently changed version; uncommitted
-  files in the current worktree override that state. A write refuses when the
-  latest committed version is on another branch, directing the caller to its
-  worktree or checkout; it never routes writes across branches. Worktrees must
-  therefore use `autocommit = true` (or commit every Chitty write) so other
-  branches can see their task state. IDs are sequential; task creation is expected to be
-  centralised (one agent or human), so we assume parallel branches don't
-  collide. `check` reports it if they do.
-- Simple first. Add complexity when real-world use shows it is needed, not
-  before.
-- Each repository has a validated lowercase `project` name. `init` registers
-  its machine-local inbox under XDG data storage and refuses a name owned by a
-  different repository. `suggest` writes atomic cross-project ideas there;
-  `inbox` lists waiting suggestions without changing anything; `inbox --pull`
-  converts them into backlog tasks at session start (`pull` only says to run
-  `inbox --pull`).
-  User-level contexts are ignored; use `suggest` for cross-project ideas.
-- Plain markdown. Every file must survive a round trip through the supported
-  formatters (below) without changing meaning. No HTML comments, no sentinel
-  markers, no numbering inside checklist text.
-- Loud errors. Malformed files are rejected with a path and a reason, never
+- **Files are the truth.** No database, index or cache. A directory scan is
+  fast enough for thousands of tickets.
+- **One ticket, one file, one writer.** No locking or automatic conflict
+  repair.
+  - Reads use committed state from every local and remote-tracking branch,
+    taking each ticket's most recently changed version. Uncommitted files in
+    the current worktree override it.
+  - A write refuses when the latest version is on another branch, and names
+    that branch's worktree. Writes never cross branches.
+  - So worktrees need `autocommit = true` (or commit every Chitty write).
+  - IDs are sequential and tickets are created centrally, so branches rarely
+    collide; `check` reports it when they do.
+- **Simple first.** Add complexity when use shows the need.
+- **Plain Markdown.** Every ticket file survives the supported formatters
+  unchanged in meaning ([Task file](task-file.md)). No HTML comments, sentinel
+  markers or numbers in checklist text.
+- **Loud errors.** A malformed file is rejected with a path and a reason, never
   silently repaired. `chitty check` is the compile step.
-- Chitty does the bookkeeping. Anything the tool can work out or keep
-  consistent itself (status that follows from other fields, references to
-  finished tasks, dates, who did what) it does automatically, rather than
-  asking agents to remember. Agent instructions are for judgement, not
-  upkeep. This covers workflow steps too: whatever a script can do reliably
-  (creating branches and worktrees, setup, claiming, merging) `chitty run`
-  does, and the agent is told only about what is left. Chitty never calls a
-  model: models sit only in the worker and reviewer seats. Which agent sits
-  there is configuration, not design: Pi is today's choice, and token
-  efficiency may change it, so agent-specific code stays in integrations.
-- The tool carries the rules, not a prompt. Validation and `--help` are the
-  documentation; the agent instructions are ~20 lines and static.
-- Minimal diffs. The tool never touches a line it didn't change, and never
-  writes a file whose content would be unchanged. `init` is idempotent: it
-  adds missing setup only and refreshes the managed agent-guide block.
-- `chitty init` is the idempotent setup and format-migration path. It installs
-  the machine-wide Pi extension only from a main Git checkout; linked worktrees
-  skip all machine-wide Pi setup. Non-Git directories remain eligible to install
-  it. Reads work
-  with an older setup; writes require it to be current. With `autocommit =
-  true`, Chitty upgrades and commits setup separately before the requested
-  write; otherwise it fails loudly and tells the caller to run `chitty init`.
-  Upgrades happen only in the main checkout: a write in a linked worktree
-  skips the upgrade and the stale-setup error (still refusing a setup newer
-  than Chitty), and the branch picks up the new setup when merged with `main`.
-  `chitty run` refreshes setup before selecting a ticket, committing setup-only
-  changes in a main checkout and doing nothing in a linked worktree. From a
-  linked worktree, it refuses to run when the main checkout's setup is older or
-  unrecorded; run it from the main checkout instead. A Chitty version older than
-  the recorded setup refuses writes clearly.
-  `chitty import backlog-md` is an explicit,
-  one-way converter from a Backlog.md `backlog/` directory. Git history is the
-  safety net, so it refuses to run, before writing anything, unless the Git
-  working tree is clean, untracked files included; that also keeps its
-  changes apart from unrelated work. Duplicate tickets are worse than
-  deletion, so after a successful import it `git rm`s each converted source
-  file in the import's commit; `--keep-source` leaves them instead.
-  `backlog/config.yml` is consumed by the import and removed under the same
-  rules. Statuses it declares map to `backlog` with one summary line each;
-  only undeclared statuses are reported as unknown. Other non-task files stay
-  and are reported, and `backlog/` goes only if it ends up empty. It never
-  prompts.
+- **Chitty does the bookkeeping.** Whatever the tool can work out or keep
+  consistent (derived status, references to finished tickets, dates, who did
+  what), it does. Whatever a script can do reliably (branches, worktrees,
+  setup, claiming, merging), `chitty run` does. Agents get only the judgement.
+- **Chitty never calls a model.** Models sit only in the worker and reviewer
+  seats. Which agent is configuration: agent-specific code stays in
+  integrations.
+- **The tool carries the rules.** Validation and `--help` document them; agent
+  instructions stay short and static.
+- **Minimal diffs.** Never touch a line that did not change; never write an
+  unchanged file.
+- **Projects and suggestions.** Each repository has a validated lower-case
+  `project` name. `init` registers its machine-local inbox (XDG data) and
+  refuses a name another repository owns. `suggest` writes an idea to another
+  project's inbox; `inbox` lists them; `inbox --pull` imports them as backlog
+  tickets.
+
+## Setup and upgrades
+
+- `chitty init` is idempotent: it adds missing setup, refreshes the managed
+  `AGENTS.md` block, and migrates formats.
+- It installs the machine-wide Pi extension only from a main checkout (or a
+  directory outside Git); linked worktrees skip machine-wide setup.
+- Reads work with older setup; writes need it current. With
+  `autocommit = true`, Chitty upgrades and commits setup separately before the
+  write; otherwise it fails and says to run `chitty init`.
+- Upgrades happen only in the main checkout. In a linked worktree a write
+  skips the upgrade and the stale-setup error (but still refuses setup newer
+  than Chitty); the branch gets the new setup when it merges `main`.
+- `chitty run` refreshes setup before choosing a ticket: commits it in the main
+  checkout, does nothing in a linked worktree. From a linked worktree it refuses
+  when the main checkout's setup is older or unrecorded.
+- A Chitty older than the recorded setup refuses writes.
+
+## `chitty import backlog-md`
+
+- One-way, from a Backlog.md `backlog/` directory. Never prompts.
+- Refuses before writing unless the working tree is clean, untracked files
+  included: Git history is the safety net.
+- Duplicates are worse than deletion, so it `git rm`s each converted file in
+  the import's commit. `--keep-source` keeps them.
+- `backlog/config.yml` is consumed and removed under the same rules. Its
+  declared statuses map to `backlog`, with one summary line each; only
+  undeclared statuses are reported as unknown.
+- Other non-ticket files stay and are reported. `backlog/` goes only if empty.
