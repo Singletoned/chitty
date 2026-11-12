@@ -87,7 +87,7 @@ class TestPlanningStatuses(CliTestCase):
         self.assertIn("-s cold-read", text)
 
     def test_docs_list_both_statuses(self):
-        for name in ("PLAN.md", "README.md"):
+        for name in ("docs/plan/cli.md", "README.md"):
             text = (REPO / name).read_text()
             with self.subTest(document=name):
                 self.assertIn("📝 plan", text)
