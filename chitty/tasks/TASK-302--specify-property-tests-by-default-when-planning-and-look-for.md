@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: todo
+status: doing
 created: 2026-11-12
 ---
 
@@ -105,3 +105,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it a
 - 2026-11-12T20:59:55Z kind-yellow-vole: replaced notes; changed owner, description, acceptance criteria
 - 2026-11-12T20:59:55Z kind-yellow-vole planning → todo
 - 2026-11-12T21:30:14Z kind-yellow-vole: changed description
+- 2026-11-12T21:34:10Z able-ginger-urchin todo → doing
