@@ -1,6 +1,6 @@
 ---
 title: Let `chitty init --autocommit` stage an ignored `CLAUDE.md` symlink
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -28,3 +28,4 @@ Cold read 1 by a fresh Sonnet subagent, `refs/cold-read/TASK-301/1`; the regress
 - 2026-11-12T18:11:02Z lively-violet-puffin: changed notes
 - 2026-11-12T18:11:02Z lively-violet-puffin cold-read → planning
 - 2026-11-12T18:11:07Z lively-violet-puffin planning → todo
+- 2026-11-12T18:13:28Z upbeat-coral-toad todo → doing
