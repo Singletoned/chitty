@@ -79,6 +79,30 @@ Blocked by the planner, 2026-11-11: two print-mode sessions stopped early with u
 
 Unblocked by the planner, 2026-11-12: TASK-288 (continuing sessions) is done. The uncommitted work in this worktree is still there; `make check` failed in `test_configured_job_order_and_omitted_status`.
 
+Check failed before this session: check exited with status 2:
+```text
+.TASK-1: doing → review
+.............no next ticket for --mode work
+.......landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_configured_job_order_and_omitted_status (tests.test_next.TestNext.test_configured_job_order_and_omitted_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-270/tests/test_next.py", line 104, in test_configured_job_order_and_omitted_status
+    with self.assertRaisesRegex(ChittyError, "no next ticket"):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ChittyError not raised
+
+----------------------------------------------------------------------
+Ran 490 tests in 29.425s
+
+FAILED (failures=1)
+make: *** [check] Error 1
+```
+
 ## History
 
 - 2026-11-11T13:21:06Z vivid-yellowhammer → backlog
@@ -94,3 +118,4 @@ Unblocked by the planner, 2026-11-12: TASK-288 (continuing sessions) is done. Th
 - 2026-11-11T18:59:14Z vivid-yellowhammer doing → blocked
 - 2026-11-12T18:02:14Z kind-yellow-vole blocked → doing
 - 2026-11-12T18:02:15Z kind-yellow-vole: changed notes
+- 2026-11-12T18:03:32Z tidy-russet-falcon: changed notes
