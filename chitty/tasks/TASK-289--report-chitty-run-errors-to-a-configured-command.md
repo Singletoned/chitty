@@ -1,6 +1,7 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: doing
+status: blocked
+owner: human
 created: 2026-11-11
 ---
 
@@ -51,6 +52,8 @@ Review failed (tests): Cover errors from main checkout discovery after configura
 3: pass - `make check` passed `test_failing_reporter_warns_and_preserves_failure`; disabling `report_error` made that test fail. The preceding review ran the failing reporter and printed `warning: error_reporter exited with status 7` and `Error: agent exited with status 1`.
 4: fail - `test_argument_error_reports_message_and_ticket_context` passes and errors with a missing report when reporting is disabled, but a throwaway CLI run with configured reporter after removing the temporary repository `.git` printed `Error: `git rev-parse --git-common-dir` failed` and `report exists: False`. This post-config Chitty error must also be reported.
 
+Third failed review: blocked for human resolution. See the preceding review note for the unmet criterion and reproduction.
+
 ## Summary
 
 Implemented configured error reporting for Chitty run failures, including post-config argument validation, preserved exclusions/context, and documented the setting. Regression tests confirmed the reported validation error failed before the fix and passes now. Merged main, resolved the PLAN.md Config conflict, and verified with make format && make check (517 Python test suites and Node tests). No follow-ups.
@@ -83,3 +86,5 @@ Implemented configured error reporting for Chitty run failures, including post-c
 - 2026-11-12T20:27:54Z jolly-silver-zander doing → review
 - 2026-11-12T20:32:03Z lively-khaki-gannet: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-12T20:32:03Z lively-khaki-gannet review → doing
+- 2026-11-12T20:32:17Z lively-khaki-gannet: changed owner, notes
+- 2026-11-12T20:32:17Z lively-khaki-gannet doing → blocked
