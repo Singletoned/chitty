@@ -23,7 +23,7 @@ created: 2026-11-11
 
 ## Plan
 
-Add regression coverage for a configured directory containing a ticket whose prefix differs from its configured prefix, exercising show and check. Confirm it fails before changes. Update discovery/scan to accept full-ID lookup independent of directory prefix while retaining configured-context selection and writes. Run the focused test, then make format and make check; inspect and commit only implementation/test paths.
+Merge main into this worktree. Add a regression test proving a ticket in a directory present only in branch history is discoverable by full ID, first confirm it fails. Extend discovered_contexts() to include context directory names from historical ticket paths. Run the focused tests, then make format && make check, inspect diffs and status, and commit implementation/tests.
 
 ## Notes
 
@@ -101,3 +101,4 @@ Implementation and regression coverage are committed. Re-verified all four accep
 - 2026-11-11T16:05:40Z zesty-adder doing → blocked
 - 2026-11-12T18:18:47Z kind-yellow-vole: changed owner, notes
 - 2026-11-12T18:18:47Z kind-yellow-vole blocked → doing
+- 2026-11-12T18:24:54Z golden-hazel-yellowhammer: wrote the plan
