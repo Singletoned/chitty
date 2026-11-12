@@ -79,14 +79,10 @@ Shared signal list. Create `src/chitty/roles/property-signals.md` holding exactl
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_property_tests.py` shows that `chitty guide plan` contains the planning block and the shared signal list, after collapsing whitespace, and no longer contains `Compare each decision in the description with the criteria, because workers test what criteria name. Say which` (the old bullet). It fails today.
+- [ ] A test in `tests/test_guide_property_tests.py` shows that `chitty guide plan` contains the planning block, with its `<!-- property-signals -->` line replaced by the shared signal list, after collapsing whitespace, and no longer contains `Compare each decision in the description with the criteria, because workers test what criteria name. Say which` (the old bullet). It fails today.
 - [ ] A test in the same file shows that `chitty guide cold-read TASK-1` contains the shared signal list and the `Missed properties` bullet, after collapsing whitespace, and that neither guide prints `<!-- property-signals -->`. It fails today.
 - [ ] Guard, which passes before the change too: `grep -c "These signal a property" src/chitty/roles/*.md` prints a non-zero count only for `property-signals.md`, and `grep -niE "python|pytest|unittest|quickcheck|fast-check|jest" src/chitty/roles/*.md` prints nothing.
 - [ ] A test in the same file shows that `PLAN.md`, after collapsing whitespace, contains `Property tests are the default` and `pure function` in the paragraph beginning `Spec tests exercise the public surface`, and no longer contains `table row for any state transition`.
-
-## Notes
-
-Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it against the current criteria; do not trust it. It predates the `(the kinds and ranges of input)` wording, the second phrase in criterion 2, and criterion 4 (its `PLAN.md` paragraph keeps the table-row sentence).
 
 ## History
 
@@ -100,3 +96,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it a
 - 2026-11-12T19:58:06Z kind-yellow-vole: changed description, acceptance criteria, notes
 - 2026-11-12T19:58:06Z kind-yellow-vole cold-read → planning
 - 2026-11-12T20:18:19Z kind-yellow-vole: changed description, acceptance criteria
+- 2026-11-12T20:18:41Z kind-yellow-vole: replaced notes; changed acceptance criteria
