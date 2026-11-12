@@ -102,7 +102,9 @@ asking the first.
 | replay        | past work rerun against its spec tests                 | prompt and model choices      |
 
 - A retro ticket every 10 `done` tickets proposes a few changes, each naming
-  the failure class it should reduce; the human accepts or rejects. An audit
+  the failure class it should reduce; the human accepts or rejects. It also
+  checks `docs/plan/` against the code, fixes stale facts, and drops decisions
+  that use has overturned. An audit
   samples 1 in 5 `done` tickets. Both rates are starting points.
 - Agents never see these metrics. First-pass yield also rises when reviewers go
   soft, so read it only alongside escapes. Judge cost per accepted ticket,

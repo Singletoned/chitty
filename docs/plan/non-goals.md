@@ -1,5 +1,8 @@
 # Non-goals
 
+Current, not permanent: half the original list was later built.
+
+
 - TUI or web UI.
 - Remote or HTTP contexts: sync a directory instead.
 - Subtask IDs (`24.1`); use `parent`.

@@ -7,8 +7,11 @@ surface area.
 
 Put in a chitty; an agent (or you) picks it up; the file is the record.
 
-This plan records past decisions and suggestions, not rules. Parts of it are
-old. When the evidence points elsewhere, say so and change it.
+This plan is a guide, not a rulebook: past decisions and suggestions, some of
+them old. Half of its original non-goals (reading tickets across branches,
+file locks, format migration, shell completion, handling ID collisions) were
+later built because use showed the need. When the evidence points elsewhere,
+say so and change it.
 
 One file per topic; read only the one you need.
 
