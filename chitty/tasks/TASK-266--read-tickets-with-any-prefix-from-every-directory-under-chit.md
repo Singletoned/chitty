@@ -1,6 +1,6 @@
 ---
 title: Read tickets with any prefix from every directory under `chitty/`
-status: doing
+status: review
 parent: TASK-262
 created: 2026-11-11
 ---
@@ -16,7 +16,7 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
+- [x] A test writes `chitty/other/OTHER-1--x.md` and `chitty/other/archive/OTHER-2--y.md`, with no `other` context in `chitty.toml`. `chitty show OTHER-1` and `chitty show OTHER-2` work, and `chitty list` includes `OTHER-1`. It fails today.
 - [x] A `todo` ticket with `depends_on: [OTHER-1]` passes `chitty check`, and while `OTHER-1` is unfinished `chitty next` neither fails with a dependency error nor selects either ticket.
 - [x] `OTHER-1` in both `chitty/other/` and `chitty/more/` makes `chitty check` fail, naming both paths.
 - [x] `chitty edit OTHER-1 -s doing` fails with a Chitty error naming the directory, not a traceback.
@@ -64,9 +64,11 @@ Third failed review; blocked for human resolution.
 
 Planner, 2026-11-12: the historical-only failure is real. `discovered_contexts()` in `src/chitty/store.py` lists only directories on disk, so a directory committed only on another branch never becomes a context. Also add a context for each directory name in `self._history()` (path `chitty/<dir>/...`, so `file.path.parts[1]` when there are at least three parts). Add the regression test the reviews describe: `OTHER-1` committed only on another branch, `chitty show OTHER-1` works. Then merge `main` and fix `test_warning_is_in_every_generated_guide`, which failed in the last review.
 
+Added a historical-only directory regression test; it failed before the implementation with no context ... has prefix OTHER and now passes. discovered_contexts() now derives directory contexts from historical chitty/<directory>/ paths. After merging main, make format and make check pass (513 Python tests and Node tests); chitty fix completes with pre-existing Markdown warnings.
+
 ## Summary
 
-Implementation and regression coverage are committed. Re-verified all four acceptance criteria: focused directory tests pass; make format and make check pass (489 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts. Not moved to review because an existing untracked empty uv lock file remains in the worktree and is left untouched.
+Historical-only unconfigured directories are now discoverable for reading, with regression coverage that failed before the fix. All acceptance criteria re-verified; focused tests and make format && make check pass (513 Python tests and Node tests). Follow-up: TASK-280 owns writes in unconfigured contexts.
 
 ## History
 
@@ -102,3 +104,5 @@ Implementation and regression coverage are committed. Re-verified all four accep
 - 2026-11-12T18:18:47Z kind-yellow-vole: changed owner, notes
 - 2026-11-12T18:18:47Z kind-yellow-vole blocked → doing
 - 2026-11-12T18:24:54Z golden-hazel-yellowhammer: wrote the plan
+- 2026-11-12T18:26:22Z golden-hazel-yellowhammer: changed notes, summary; ticked acceptance criteria
+- 2026-11-12T18:26:22Z golden-hazel-yellowhammer doing → review
