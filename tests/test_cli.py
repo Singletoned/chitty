@@ -530,6 +530,43 @@ class TestInit(CliTestCase):
             commits,
         )
 
+    def test_init_autocommit_stages_ignored_claude_without_other_ignored_files(self):
+        target = self.tmp / "ignored-claude"
+        target.mkdir()
+        os.chdir(target)
+        subprocess.run(["git", "init", "--quiet"], cwd=target, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=target, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=target, check=True)
+        (target / ".gitignore").write_text("CLAUDE.md\nignored.txt\n")
+        subprocess.run(["git", "add", ".gitignore"], cwd=target, check=True)
+        subprocess.run(
+            ["git", "commit", "--quiet", "-m", "ignore generated files"], cwd=target, check=True
+        )
+        (target / "ignored.txt").write_text("leave untracked and ignored\n")
+
+        self.run_cli("init", "--autocommit")
+
+        committed = subprocess.run(
+            ["git", "show", "--name-only", "--format=", "HEAD"],
+            cwd=target,
+            capture_output=True,
+            check=True,
+            text=True,
+        ).stdout.splitlines()
+        self.assertIn("CLAUDE.md", committed)
+        self.assertNotIn("ignored.txt", committed)
+        self.assertTrue((target / "ignored.txt").exists())
+        self.assertNotIn(
+            "ignored.txt",
+            subprocess.run(
+                ["git", "status", "--short"],
+                cwd=target,
+                capture_output=True,
+                check=True,
+                text=True,
+            ).stdout,
+        )
+
     def test_init_autocommit_refuses_a_dirty_working_tree(self):
         self.git("init", "--quiet")
         self.git("config", "user.email", "test@example.com")
