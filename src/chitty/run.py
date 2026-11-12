@@ -119,14 +119,16 @@ def run(
     except ChittyError as error:
         report_error(repo, error, {"actor": actor()})
         raise
-    # Set the run identity before selecting or locking a ticket so the lock
-    # record describes the session even when setup or preparation fails.
-    os.environ.pop("CHITTY_ACTOR", None)
-    os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
-    main_root = git.main_checkout(repo.root)
-    main_repo = Repo.open(main_root)
+    main_repo = repo
     context = {"actor": actor()}
     try:
+        # Set identity before selecting or locking a ticket so lock records
+        # describe the session even when setup or preparation fails.
+        os.environ.pop("CHITTY_ACTOR", None)
+        os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
+        context["actor"] = actor()
+        main_root = git.main_checkout(repo.root)
+        main_repo = Repo.open(main_root)
         _refuse_stale_linked_worktree(repo, main_repo)
         _preflight(main_repo)
         main_repo.refresh_setup()

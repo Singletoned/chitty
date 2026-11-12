@@ -85,6 +85,17 @@ class TestRunErrorReporter(CliTestCase):
         self.assertEqual(message, "--mode cannot be used with --ticket")
         self.assertIn("actor", json.loads(context))
 
+    def test_main_checkout_discovery_error_reports(self):
+        reporter, record = self.write_reporter()
+        self.setup_repo(reporter)
+        self.add_ticket()
+        (self.root / ".git").rename(self.root / "git-metadata")
+        result = self.run_cli("run", "--ticket", "TASK-1", exit_code=1)
+        self.assertIn("git rev-parse --git-common-dir", result.stderr)
+        message, context = json.loads(record.read_text())
+        self.assertIn("git rev-parse --git-common-dir", message)
+        self.assertTrue(json.loads(context)["actor"])
+
     def test_empty_queue_does_not_report(self):
         reporter, record = self.write_reporter()
         self.setup_repo(reporter)
