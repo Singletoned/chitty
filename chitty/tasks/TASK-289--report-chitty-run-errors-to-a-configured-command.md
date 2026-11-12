@@ -1,7 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: blocked
-owner: human
+status: doing
 created: 2026-11-11
 ---
 
@@ -56,6 +55,8 @@ Third failed review: blocked for human resolution. See the preceding review note
 
 Planner, 2026-11-12: `main` split `PLAN.md` into `docs/plan/` (commit `23ba131`). Merging `main` gives a modify/delete conflict on `PLAN.md`: move this branch's `error_reporter` lines into `docs/plan/config.md` and delete `PLAN.md`.
 
+Planner, 2026-11-12: the third review is right. `git.main_checkout()` and `Repo.open()` in `run()` raise before the reporting `try`, so their errors (for example a repository whose `.git` is gone) are not reported. Start the `try` straight after `repo` is passed in, before `git.main_checkout`, and add a regression test for that case. Merging `main` will also conflict on `PLAN.md`: see the note above.
+
 ## Summary
 
 Implemented configured error reporting for Chitty run failures, including post-config argument validation, preserved exclusions/context, and documented the setting. Regression tests confirmed the reported validation error failed before the fix and passes now. Merged main, resolved the PLAN.md Config conflict, and verified with make format && make check (517 Python test suites and Node tests). No follow-ups.
@@ -91,3 +92,5 @@ Implemented configured error reporting for Chitty run failures, including post-c
 - 2026-11-12T20:32:17Z lively-khaki-gannet: changed owner, notes
 - 2026-11-12T20:32:17Z lively-khaki-gannet doing → blocked
 - 2026-11-12T21:35:10Z kind-yellow-vole: changed description, notes
+- 2026-11-12T21:43:22Z kind-yellow-vole: changed owner, notes
+- 2026-11-12T21:43:22Z kind-yellow-vole blocked → doing
