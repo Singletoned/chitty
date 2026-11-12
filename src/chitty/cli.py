@@ -378,7 +378,9 @@ def list_(
 ) -> None:
     """List tasks, one per line."""
     repo = _repo()
-    selected = [repo.context(context) for context in contexts] if contexts else repo.contexts()
+    selected = (
+        [repo.context(context) for context in contexts] if contexts else repo.discovered_contexts()
+    )
     selected_statuses = STATUSES if all_ else statuses or DEFAULT_LIST_STATUSES
     parent = str(repo.resolve(parent)) if parent else None
     tasks = [
@@ -703,7 +705,7 @@ def check_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
     just -c CONTEXT.
     """
     repo = _repo()
-    contexts = [repo.context(context)] if context else repo.contexts()
+    contexts = [repo.context(context)] if context else repo.discovered_contexts()
     problems = check_repo(repo, contexts, paths)
     if as_json:
         _print_json(
@@ -723,7 +725,7 @@ def check_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
 def fix_(context: str | None, paths: tuple[Path, ...], as_json: bool) -> None:
     """Repair safe task-file problems; exits non-zero for unresolved problems."""
     repo = _repo()
-    contexts = [repo.context(context)] if context else repo.contexts()
+    contexts = [repo.context(context)] if context else repo.discovered_contexts()
     fixed, problems = fix_repo(repo, contexts, paths)
     if as_json:
         _print_json(
