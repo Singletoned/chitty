@@ -40,120 +40,94 @@ cannot be combined with append-note options and is forbidden during review.
 - 2026-10-28T14:03:05Z lively-otter todo → doing
 ```
 
-`History` is tool-managed, always last, and records every deliberate change:
+## Frontmatter
 
-- Creation by `add`, `suggest` or inbox pull writes
-  `- YYYY-MM-DDTHH:MM:SSZ actor → status`, with a UTC timestamp and the
-  creating actor.
-- An import keeps the source's creation entry, which may be the legacy
-  date-only `- YYYY-MM-DD → status` form, and appends
-  `- YYYY-MM-DDTHH:MM:SSZ actor: imported task`.
-- A status change, archive or restore appends
-  `- YYYY-MM-DDTHH:MM:SSZ actor old → new`.
-- An `edit` that changes anything other than status appends one event,
-  `- YYYY-MM-DDTHH:MM:SSZ actor: action; action`, naming what changed, for
-  example `changed priority, notes; wrote the plan; ticked acceptance
-  criteria`. Review independence reads `wrote the plan` and `ticked acceptance
-  criteria` from these events. An `edit` that changes nothing writes nothing.
+Strict: unknown keys are an error.
 
-Not recorded: rewriting references in other tasks after a move, rename or
-delete, `chitty fix` repairs, and `delete`, which removes the task and its
-History. Existing date-only entries remain valid.
+| key          | type                | required | notes                                   |
+| ------------ | ------------------- | -------- | --------------------------------------- |
+| `title`      | string              | yes      | non-empty, one line                     |
+| `status`     | see below           | yes      |                                         |
+| `labels`     | list[string]        | no       | absent means `[]`                       |
+| `priority`   | `low\|medium\|high` | no       | absent means unset                      |
+| `owner`      | string              | no       | one line: `human`, a name, an agent     |
+| `depends_on` | list[ID]            | no       | any context in the same repo            |
+| `parent`     | ID                  | no       | groups tickets; same repo               |
+| `created`    | date                | yes      | ISO 8601, set once                      |
+| `moved_from` | ID                  | no       | set by `move`: the ID in the old context |
 
-Frontmatter schema (strict: unknown keys are an error):
+- Statuses: `backlog` (needs refining), `planning` and `cold-read` (being
+  written), `todo`, `doing`, `blocked` (needs a reason), `review`, `done`.
+- An owner reserves `todo` and `doing` tickets for that agent: see
+  [Next action and runner](next-action-and-runner.md). `chitty run --ticket ID`
+  ignores non-human owners.
+- No `updated` field: Git has it, and the field would conflict on every merge.
+- YAML scalars all load as strings, so `owner: no` is `"no"` and `status: on`
+  is an unknown status, not `True`.
+- Written free text (`title`, `owner`, `labels`) is quoted when YAML 1.1 or 1.2
+  would read it as a non-string (`"no"`, `"2026-10-23"`, `"1e3"`). `created` is
+  written unquoted.
 
-| key          | type               | required | notes                                        |
-|--------------|--------------------|----------|----------------------------------------------|
-| `title`      | string             | yes      | non-empty, single line                       |
-| `status`     | `backlog\|planning\|cold-read\|todo\|doing\|blocked\|review\|done` | yes     | fixed in v1; backlog needs refinement; planning and cold-read are ticket-writing states; blocked needs a reason |
-| `labels`     | list[string]       | no       | absent ≡ `[]`                                |
-| `priority`   | `low\|medium\|high` | no      | absent means unset                           |
-| `owner`      | string             | no       | free text; `human`, a name, an agent         |
-| `depends_on` | list[ID]           | no       | any context in the same repo                 |
-| `created`    | date               | yes      | ISO 8601 date, set once                      |
-| `moved_from` | ID                 | no       | set by `move`; the ID in the source context  |
+## Body
 
-An owner reserves work tickets for that agent. Plain `chitty next` and
-`chitty run` select unowned `todo`/`doing` tickets, but still select owned
-`review` tickets unless the owner is `human`; `--owner NAME` selects only that
-agent's tickets in any active status. Empty and `human` owner filters are
-refused. Explicit `chitty run --ticket ID` ignores non-human ownership.
-
-There is no `updated` field. Git records when a file changed; the field would
-add a line to every diff and conflict on every merge.
-
-YAML is loaded with every scalar as a string (no implicit typing), so
-`owner: no` is the string `"no"` and `status: on` fails validation as an
-unknown status rather than becoming `True`. Pydantic parses `created` from
-the string. When the tool *writes* a free-text field (`title`, `owner`,
-`labels`) it quotes anything YAML 1.1 or 1.2 would read as a non-string
-(`"no"`, `"2026-10-23"`, `"1e3"`), because other tools reading the file
-won't be as careful. `created` is a real date and is written unquoted.
-
-Body rules:
-
-- Sections are `##` headings. Recognised: `Description`, `Acceptance
-  Criteria`, `Plan`, `Notes`, `Summary`, `History`. `History` is last and
-  contains only tool-written status entries. Unrecognised `##` headings, any `#` heading,
-  and non-blank content before the first `##` are errors. Use `###` and below
-  inside a section for structure.
-- The parser is fence-aware: `##` inside a fenced code block is not a heading.
+- Sections are `##` headings: `Description`, `Acceptance Criteria`, `Plan`,
+  `Notes`, `Summary`, `History`. Any other `##`, any `#`, or text before the
+  first `##` is an error. Use `###` and below inside a section.
+- Fence-aware: `##` in a code block is not a heading.
 - `Description` is required and non-empty.
-- `Acceptance Criteria` contains only a flat task list. An item starts with
-  `- [ ]`, `- [x]` or `- [X]` at column 0 and may continue on following
-  indented lines (formatters wrap long items). Blank lines between items are
-  allowed. Nested lists, unindented prose, and anything else in the section
-  are errors. Each item is one criterion, addressed by 1-based position in
-  the CLI; no numbers are stored in the text. The tool writes `- [x]`.
-- Everything else is free markdown.
+- `Acceptance Criteria` is a flat task list only. Items start `- [ ]`, `- [x]`
+  or `- [X]` at column 0 and may continue on indented lines. Blank lines
+  between items are allowed; anything else is an error. Items are numbered by
+  position in the CLI, never in the text. The tool writes `- [x]`.
+- Everything else is free Markdown.
+
+## History
+
+Tool-written, always last. Each deliberate change appends one line:
+
+- create (`add`, `suggest`, inbox pull): `- <UTC time> actor → status`;
+- status change, archive, restore: `- <UTC time> actor old → new`;
+- any other edit that changes something: `- <UTC time> actor: action; action`,
+  for example `changed priority, notes; wrote the plan; ticked acceptance
+  criteria`. Review independence reads `wrote the plan` and `ticked
+  acceptance criteria` from these;
+- import: the source's creation line, which may be date-only, then
+  `- <UTC time> actor: imported task`.
+
+Not recorded: no-op edits, `chitty fix` repairs, reference rewrites in other
+tickets, and `delete` (which removes the file). Date-only lines stay valid.
 
 ## Supported formatters
 
-The round-trip guarantee is tested against, and only claimed for:
+The round trip is tested, and claimed, only for:
 
-- `prettier` with default settings, and with `proseWrap: always`;
-- `mdformat` with the `mdformat-gfm` and `mdformat-frontmatter` plugins
-  (plain CommonMark mdformat turns `---` into a heading and escapes `[ ]`).
+- `prettier`, default settings and `proseWrap: always`;
+- `mdformat` with `mdformat-gfm` and `mdformat-frontmatter` (plain mdformat
+  turns `---` into a heading and escapes `[ ]`).
 
-Both are pinned to exact versions. If either is missing, the round-trip
-tests fail loudly; they are never skipped.
+Notes:
 
-"Survives" means the file still parses to the same task. Byte-for-byte
-no-op is only claimed for ordinary content: `mdformat-frontmatter`
-re-serialises YAML as 1.2 and drops the quotes the tool adds for 1.1
-readers (`"no"` becomes `no`), and mdformat renumbers ordered lists in free
-markdown.
+- Both are pinned. If either is missing the tests fail; they never skip.
+- "Survives" means the file parses to the same task. Byte-identical output is
+  claimed only for ordinary content: `mdformat-frontmatter` writes YAML 1.2
+  and drops the tool's 1.1 quotes, and mdformat renumbers ordered lists.
 
 ## Writing
 
-Serialisation is a patch over the original text, not parse-then-dump:
+A patch over the original text, never parse-then-dump:
 
-- Frontmatter is split into one span per top-level key (the key's line plus
-  any indented lines under it). Changed keys have their span replaced, new
-  keys are appended in table order, removed keys have their span deleted.
-  Every other byte — comments, quoting, blank lines — is left alone.
-  Comment and blank lines belong to the key below them, so replacing a key
-  keeps the comment above it.
-- The body is split the same way, one span per `##` section. Only sections
-  the command changed are rewritten; new sections are appended in the
-  canonical order above.
-- Acceptance Criteria are patched per item, so formatter wrapping survives:
-  `--check`/`--uncheck` change only the bracket character, `--rm-ac`
-  deletes that item's lines, `--ac` appends one line.
-- Lists are written block-style (one item per line). Flow style is accepted
-  on read and left alone if the key isn't being changed.
-- If the resulting content equals the current content, the file is not
-  written.
-- `--note TEXT` appends `TEXT` as a new paragraph (preceded by a blank line)
-  to `## Notes`, creating the section if absent. `--note-file F` reads one note
-  from a file (`-` for stdin). No date prefix; include one in the text if you
-  want it.
-- Creating a task writes an actor-attributed UTC initial History transition.
-  A changed `--status`, archiving, and restoring append a transition; a no-op
-  status edit does not. Every other `edit` that changes the task appends one
-  actor-attributed event naming the changed fields, notes, plan or criteria.
-  Imports retain their source creation entry and append an import event; safe
-  `fix` repairs, `delete`, and reference rewrites in other tasks append none.
-- All checklist indices in a single `edit` refer to the list as it was
-  before the command ran. `show` prints the numbers next to each criterion so
-  callers don't count.
+- Frontmatter: one span per top-level key, with its indented lines and the
+  comments and blank lines above it. Changed keys are replaced, new keys
+  appended in table order, removed keys deleted. Every other byte stays.
+- Body: one span per `##` section. Only changed sections are rewritten; new
+  ones go in the order above.
+- Criteria are patched per item, so wrapping survives: `--check`/`--uncheck`
+  change the bracket, `--rm-ac` deletes the item, `--set-ac` replaces it in
+  place unticked, `--ac` appends.
+- Lists are written block style. Flow style is read and left alone unless that
+  key changes.
+- Unchanged content is not written.
+- `--note TEXT` appends a paragraph to `## Notes`, creating it if needed.
+  `--note-file F` reads it from a file (`-` for stdin). No date prefix.
+- Criterion numbers in one `edit` refer to the list before it. `show` prints
+  them.
