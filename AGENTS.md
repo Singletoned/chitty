@@ -17,6 +17,9 @@ read only that section. Update it when a decision changes.
 - Put a ticket's new guide tests in their own file, `tests/test_guide_<topic>.py`,
   not at the end of `TestGuide` in `tests/test_cli.py`, where every guide
   ticket's tests collide.
+- The guides (`src/chitty/guide.md` and `src/chitty/roles/`) reach every
+  repository that uses Chitty, in any language. Keep their advice general:
+  nothing specific to this repository, Python or Hypothesis.
 - `cli.py` and `mcp.py` stay thin: behaviour lives in `store.py` and
   `model.py` so the two front ends cannot diverge.
 - Other agents commit in this checkout at the same time. Stage only the paths
