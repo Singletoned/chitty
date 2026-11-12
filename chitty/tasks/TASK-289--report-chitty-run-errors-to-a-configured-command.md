@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: review
+status: doing
 created: 2026-11-11
 ---
 
@@ -41,6 +41,8 @@ Planner, 2026-11-12: added criterion 4 for the defect the last review found (arg
 
 Regression test test_argument_error_reports_message_and_ticket_context failed before the fix because the reporter file was not created, then passed afterward. Validation remains before Git preflight and reports using the already-loaded repo config. make format && make check passed (505 Python tests and Node tests); committed as 8dced16.
 
+Review failed (integration): merging `main` conflicts in `PLAN.md`.
+
 ## Summary
 
 Extended error reporting to post-config argument validation without moving validation past Git preflight. Regression test confirmed failure before the fix and passes now. Verified with make format && make check (505 Python tests and Node tests); commit 8dced16. Ready for review.
@@ -67,3 +69,5 @@ Extended error reporting to post-config argument validation without moving valid
 - 2026-11-12T18:18:06Z jolly-yellow-raven: wrote the plan
 - 2026-11-12T18:22:53Z jolly-yellow-raven: changed notes, summary; ticked acceptance criteria
 - 2026-11-12T18:22:53Z jolly-yellow-raven doing → review
+- 2026-11-12T20:23:31Z zesty-umber-puffin: changed notes
+- 2026-11-12T20:23:31Z zesty-umber-puffin review → doing
