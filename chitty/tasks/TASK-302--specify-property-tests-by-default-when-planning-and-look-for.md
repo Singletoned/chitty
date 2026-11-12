@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: planning
+status: cold-read
 owner: human
 created: 2026-11-12
 ---
@@ -28,3 +28,4 @@ created: 2026-11-12
 - 2026-11-12T18:38:04Z kind-yellow-vole → backlog
 - 2026-11-12T19:53:21Z kind-yellow-vole: changed title, owner, description, acceptance criteria
 - 2026-11-12T19:53:21Z kind-yellow-vole backlog → planning
+- 2026-11-12T19:53:34Z kind-yellow-vole planning → cold-read
