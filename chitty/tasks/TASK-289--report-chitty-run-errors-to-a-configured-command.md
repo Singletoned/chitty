@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: doing
+status: review
 created: 2026-11-11
 ---
 
@@ -43,9 +43,11 @@ Regression test test_argument_error_reports_message_and_ticket_context failed be
 
 Review failed (integration): merging `main` conflicts in `PLAN.md`.
 
+Merged main; resolved the PLAN.md Config conflict by retaining both error_reporter and job_order settings. make format && make check passes on the merged branch (517 Python test suites and Node tests). chitty fix passes with pre-existing task-content warnings.
+
 ## Summary
 
-Extended error reporting to post-config argument validation without moving validation past Git preflight. Regression test confirmed failure before the fix and passes now. Verified with make format && make check (505 Python tests and Node tests); commit 8dced16. Ready for review.
+Implemented configured error reporting for Chitty run failures, including post-config argument validation, preserved exclusions/context, and documented the setting. Regression tests confirmed the reported validation error failed before the fix and passes now. Merged main, resolved the PLAN.md Config conflict, and verified with make format && make check (517 Python test suites and Node tests). No follow-ups.
 
 ## History
 
@@ -71,3 +73,5 @@ Extended error reporting to post-config argument validation without moving valid
 - 2026-11-12T18:22:53Z jolly-yellow-raven doing → review
 - 2026-11-12T20:23:31Z zesty-umber-puffin: changed notes
 - 2026-11-12T20:23:31Z zesty-umber-puffin review → doing
+- 2026-11-12T20:27:54Z jolly-silver-zander: changed notes, summary
+- 2026-11-12T20:27:54Z jolly-silver-zander doing → review
