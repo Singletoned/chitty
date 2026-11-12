@@ -7,6 +7,9 @@ surface area.
 
 Put in a chitty; an agent (or you) picks it up; the file is the record.
 
+This plan records past decisions and suggestions, not rules. Parts of it are
+old. When the evidence points elsewhere, say so and change it.
+
 ## Principles
 
 - The files are the truth. No database, no index, no cache. A directory scan
@@ -650,9 +653,12 @@ Planning practice in this repository (from the human):
 - While a planner's own subagent reviews a ticket, the ticket keeps an owner,
   so `chitty run` leaves it alone.
 
-Spec tests exercise the public surface (CLI, MCP, HTTP, file format), never
-private helpers or mocks of our own code. Use a round-trip property for any
-parser or serialiser, and a table row for any state transition. They are
+Spec tests exercise a surface, never mocks of our own code. Code should have
+several surfaces: the outer ones (CLI, MCP, HTTP, file format) and internal ones
+such as a module or a pure function. A surface the ticket names is part of its
+spec, so tests may call it directly. Property tests are the default, with a
+one-line reason when none suits: a round trip for any parser or serialiser, and
+a property over sequences of operations for any state machine. Spec tests are
 written from the ticket, before and without sight of the implementation.
 
 ### Feedback loops
