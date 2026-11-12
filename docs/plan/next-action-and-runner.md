@@ -1,126 +1,124 @@
 # Next action and runner
 
-`chitty next` selects one active task across every context: the optional
-`job_order` setting (default `review`, `doing`, `todo`), then high/medium
-(including unset)/low priority and `TaskId`. It must be a non-empty list of
-unique active statuses; omitted statuses are never selected.
-Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
-an unmet dependency is excluded, while `doing` and `review` work remains
-visible. `list` marks these exclusions with `👤`, `🔒`, or `⚠️` for a broken
-dependency; `doing` and `review` ignore
-dependencies. It prints `work ID` or `review ID`; `--json` and the read-only MCP
-`next` tool return the same `{mode, id}` value. `--mode review` limits the
-choice to `review` tasks and `--mode work` to `doing` and `todo`, in the same
-order, filtering before dependencies are checked so a bad reference on a task
-in the other mode does not stop this one. Repeating `--mode` allows each mode
-given, so `--mode work --mode review` allows both; with no `--mode`, every mode
-is allowed. With nothing left it prints `no next ticket` (or `no next ticket for
---mode MODE`, with several modes joined by ` or `, such as `review or work`) to
-stderr and exits 3, a status of
-its own, so an idle reviewer is distinguishable from a broken one, which exits
-1. An idle queue includes one where every `todo` task waits on a dependency.
-`chitty run` exits 3 in the same case. The MCP tool keeps the default.
+## `chitty next`
 
-A plain `chitty run` first retries landing non-archived `done` tickets that
-still have a local branch named for their ID, in ID order. It stops after the
-first landing and exits successfully; the next invocation refreshes setup before
-selecting an agent ticket. `--ticket` skips this recovery pass.
+- Picks one active ticket across all contexts, ordered by:
+  - status, from `job_order` (default `review`, `doing`, `todo`); statuses left
+    out are never picked;
+  - priority: high, then medium or unset, then low;
+  - ID.
+- Skips:
+  - human-context tickets and tickets owned by `human`;
+  - `todo` tickets with an unmet dependency (`doing` and `review` ignore
+    dependencies).
+- `chitty list` marks skips: `👤` human, `🔒` waiting on a dependency, `⚠️` a
+  broken dependency.
+- Prints `work ID` or `review ID`. `--json` and the read-only MCP `next` tool
+  give `{mode, id}`.
+- `--mode review` allows `review`; `--mode work` allows `doing` and `todo`.
+  Repeat to allow several; none allows all. Mode filtering comes before the
+  dependency check, so a bad reference in the other mode cannot block this one.
+- Nothing to pick: `no next ticket` (or `no next ticket for --mode review or
+  work`) on stderr, exit 3, so idle differs from broken (exit 1). Every `todo`
+  waiting on a dependency counts as idle. `chitty run` exits 3 the same way.
 
-`chitty run` requires `autocommit = true`, a configured `setup` command, and
-an `agent_command`, unless `--agent NAME` selects an entry from `[agent_commands]`.
-Use `chitty run --ticket ID` to choose a ticket instead of using the next selected ticket. A plain run skips owned `todo` and `doing` tickets, while still selecting owned `review` tickets; use `--owner NAME` to select that agent's tickets at any active status. `--owner human` and an empty owner are refused, as is combining `--owner` with `--ticket`.
-`chitty run --mode MODE` selects as `chitty next --mode MODE` does, including
-repeated `--mode` options, and is refused with `--ticket` before anything else
-runs, because the ticket already decides its mode.
-The command may include `{prompt}` as a single argument;
-Chitty fills it with the role-specific `chitty guide <mode> <ID>` output after
-splitting the command. It finds the main checkout even when invoked from another
-worktree, creates or reuses the selected
-ticket's worktree, runs parsed setup there, and claims a `todo` work ticket on
-that branch before launching the parsed agent command. The agent uses the
-`chitty` executable installed beside the runner's Python interpreter, rather
-than a branch-local `chitty`; `pi` and `claude` come from the global `PATH`.
-This does not change `chitty.toml` on the branch. The command must include
-`{mode}` and `{id}`, unless it includes `{prompt}`; Chitty replaces them after
-splitting, and arguments after
-`--` pass through to the agent. Optional `work_model` and `review_model` add
-`--model MODEL` for the selected mode, whether using the default or a named
-agent command, only when neither that command nor forwarded arguments specify
-`--model VALUE` or `--model=VALUE`. Existing model arguments take precedence,
-and without a configured default the invocation is unchanged. Commands receiving
-a default must accept the agent CLI option `--model`; Chitty has no `--model`
-option of its own. It reopens the ticket worktree after the agent
-exits and succeeds only if the task's committed status changed. An exit 0 with
-the status unchanged continues the same session, if the command has `{prompt}`:
-the command runs again with the continuation prompt in place of `{prompt}` and
-`-c` appended after the other arguments, at most `MAX_CONTINUATIONS` (5) times
-per run, then fails with `was unchanged`. A `{mode} {id}` command is not
-continued. Each session has its own `agent_timeout`, and one usage line covers
-the run. This makes
-`chitty run --loop --mode work -- --model MODEL` keeps running, waiting 60
-seconds after each successful run or idle queue before trying again. Each
-attempt starts a fresh `chitty run` process so a completed landing cannot leave
-the next ticket running with code loaded before that landing. It accepts
-`--mode`, `--owner`, `--agent`, and forwarded agent arguments; `--ticket` cannot
-be used with `--loop`. Without `--loop`, an idle queue still exits 3. Each loop
-pass checks configuration and refreshes setup before selecting, so a broken
-configuration stops the loop with exit 1. An agent's or setup's own failure
-also stops it with exit 1. Interrupting the agent, setup, or idle wait stops
-with exit 130 without a traceback.
+## `chitty run`
 
-Before a review (decided with the human, 2026-11-03), after the run's actor is
-set, `chitty run` prepares the ticket's worktree so the reviewer sees exactly
-what would land:
+- Requires `autocommit = true`, `setup`, and `agent_command` (or
+  `--agent NAME` from `[agent_commands]`).
+- A plain run first lands any non-archived `done` ticket that still has a
+  branch named for its ID, in ID order. It lands one, then exits 0; the next
+  run refreshes setup first. `--ticket` skips this.
+- Selection: as `chitty next`, including `--mode`. Plain runs skip owned `todo`
+  and `doing` tickets but still take owned `review` tickets. `--owner NAME`
+  takes only that agent's tickets, at any active status.
+- Refused: `--mode` or `--owner` with `--ticket`, `--owner human`, empty
+  `--owner`.
+- Works from any worktree: finds the main checkout, creates or reuses the
+  ticket's worktree, runs `setup` there, then claims a `todo` ticket on its
+  branch before starting the agent.
+- The agent uses the `chitty` beside the runner's Python, not the branch's.
+  `pi` and `claude` come from `PATH`. The branch's `chitty.toml` is untouched.
 
-1. An unfinished merge or rebase, for example after a crash, is a loud error for
-   the human, with no status change.
-2. Uncommitted changes, including untracked but not ignored files, block the
-   ticket for `human` immediately with `Review blocked (work): ...` listing
-   them. No reviewer starts and the human decides when to resume.
-3. It merges the local `main` into the branch. On a conflict it runs
-   `git merge --abort` and moves the ticket to `doing` with `Review failed
-   (integration): ...` naming the conflicting files, for the worker to resolve
-   in a fresh session. The merge runs with `rerere.enabled=false`, so a
-   resolution Git recorded for another branch is never replayed unchecked.
-4. Only then does `setup` run, because the merge can change dependencies.
-5. `check` runs in the ticket worktree after setup, with combined output
-   captured. If setup or check leaves uncommitted files in review mode, block
-   for `human` before launching the reviewer. Otherwise a check failure moves
-   the ticket to `doing` with the last
-   20 output lines, fenced as a code block so they cannot break the ticket's
-   Markdown, in a `Review failed (work)` note and starts no agent. In work mode,
-   a `doing` ticket gets a note-only `Check failed before this session: ...`
-   edit and the agent starts normally; a `todo` ticket raises an error with
-   `check failed before <ID> started: ...`, changing nothing and starting no
-   agent. In all work-mode cases setup and check still run before the agent
-   claim.
+### Agent command
 
-Entering `review` or passing it to `done` through the shared store requires
-a clean current worktree; a dirty branch may still be moved to `blocked` for
-human resolution. `chitty check` reports dirty files on the current ticket
-branch while in
-review, but allows dirty `doing` work during development. Direct manual
-reviewers also check `git status --short` first and block dirty tickets for
-`human` rather than returning them to a worker. A review check failure starts
-no agent, writes no usage line, and `chitty run`
-exits 0 because the status changed, printing the change. The move goes through
-`Repo.edit` under the run's own actor, which never worked on the ticket, so it
-counts with reviewers' failures towards `REVIEW_FAILURE_LIMIT`. A work-mode
-failure on a `todo` ticket exits 1 without changing the ticket; a failure on a
-`doing` ticket proceeds to the agent, which can fix it.
-Interrupting the merge aborts it and exits 130. A clean merge is not
-repeated or re-reviewed if `main` moves during the review; landing is
-`TASK-131`. Reviewers record the verdict and do not merge or remove branches
-or worktrees. On a pass, `chitty run` lands by fast-forwarding `main` after the
-branch has been integrated with `main` and configured checks pass. Without
-`chitty run`, merge `main` into the ticket branch in its worktree, run the
-configured checks, and only then fast-forward `main`.
+- Split like a shell, then placeholders replaced per word.
+- `{prompt}` is the `chitty guide <mode> <ID>` output, as one argument.
+  Without it the command must have `{mode}` and `{id}`.
+- Arguments after `--` go to the agent.
+- `work_model`/`review_model` add `--model MODEL` for that mode, unless the
+  command or forwarded arguments already give `--model`. Chitty has no
+  `--model` option of its own.
+- Success means the ticket's committed status changed.
+- Exit 0 with the status unchanged, and the command has `{prompt}`: run again
+  with the continuation prompt and `-c` appended, up to `MAX_CONTINUATIONS`
+  (5) times, then fail with `was unchanged`. `{mode} {id}` commands are not
+  continued.
+- `agent_timeout` (default 7200 seconds, `0` no limit) applies per session. On
+  expiry: `SIGTERM` the agent and its descendants, `SIGKILL` after
+  `AGENT_KILL_GRACE_SECONDS`, print `agent timed out after N seconds`, exit 1.
+- The agent stays in the runner's process group and session, so the terminal
+  and Ctrl-C work. Never `start_new_session`.
 
-The optional root-level `agent_timeout` is a non-negative TOML integer in seconds. It defaults to 7200; `0` disables the limit. On expiry, `chitty run` terminates the agent and its descendants, then escalates from `SIGTERM` to `SIGKILL` after a short grace period, reports `agent timed out after N seconds`, and exits 1. The agent remains in the runner's process group and session so terminal input and Ctrl-C behave normally. Timeout is an agent failure: the run is logged and `--loop` stops.
+### `--loop`
 
-Each agent session appends one JSON line to the machine-local usage log at
-`$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or the platform data directory
-when `XDG_DATA_HOME` is unset). The line records the ticket, mode, actor,
-start time, elapsed seconds, and statuses. `chitty run` does not read token or
-cost data from the agent. Spend by model comes from the agent's session files:
-run `scripts/pi_tokens.py` on the Pi session directories.
+- Repeats, waiting `RUN_LOOP_PAUSE_SECONDS` (60) after each success or idle
+  queue. Each attempt is a fresh `chitty run` process, so code changed by a
+  landing is reloaded.
+- Takes `--mode`, `--owner`, `--agent` and forwarded arguments; not
+  `--ticket`.
+- Each attempt checks config and refreshes setup first. Config, setup or agent
+  failure stops the loop with exit 1; Ctrl-C with exit 130, no traceback.
+- Prints rules to stderr: `chitty run · HH:MM:SS` before each attempt, then
+  `finished · next run at …`, `no ticket · next run at …`, or
+  `stopped · exit N`.
+
+## Before a review
+
+`chitty run` prepares the worktree so the reviewer sees what would land:
+
+1. An unfinished merge or rebase is an error for the human; no status change.
+2. Uncommitted files (untracked and not ignored included): block for `human`
+   with `Review blocked (work): ...`. No reviewer starts.
+3. Merge local `main` into the branch, with `rerere.enabled=false`. Conflict:
+   `git merge --abort`, move to `doing` with `Review failed (integration): ...`
+   naming the files.
+4. A branch that changes the Chitty config (`chitty.toml` or `[tool.chitty]`)
+   or the managed block in `AGENTS.md`: move to `doing` with
+   `Review failed (work): ...`.
+5. Run `setup`, then `check`. Files left uncommitted: block for `human`. Check
+   failure: move to `doing` with the last 20 lines, fenced, in
+   `Review failed (work)`; no agent, no usage line, exit 0.
+
+- These moves use the run's own actor, so they count towards
+  `REVIEW_FAILURE_LIMIT`. Ctrl-C during the merge aborts it, exit 130.
+- Work mode runs `setup` and `check` before claiming. A failure on a `doing`
+  ticket adds a `Check failed before this session` note and the agent starts.
+  On a `todo` ticket it fails with `check failed before <ID> started`, changing
+  nothing.
+- Entering `review`, or `review → done`, needs a clean worktree; `blocked` does
+  not. `chitty check` reports dirty files on a branch in review.
+- Reviewers record a verdict only; they never merge or remove branches or
+  worktrees. A manual reviewer checks `git status --short` first and blocks a
+  dirty ticket for `human`.
+
+## Landing
+
+On a pass, under the landing lock:
+
+- The main checkout must be on `main_branch` and clean.
+- Refused: uncommitted files in the worktree, a changed Chitty config, or a
+  changed managed block in `AGENTS.md`, before or after merging.
+- Merge `main_branch` into the branch, run `setup` and `check`, fast-forward
+  `main_branch`, then remove the worktree and branch.
+- A failure leaves the ticket as it was and asks a human to resolve it.
+- Without `chitty run`: merge `main` into the branch in its worktree, run the
+  checks, then only fast-forward `main`.
+
+## Usage log
+
+- One JSON line per run in `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or
+  the platform data directory): ticket, mode, actor, start, elapsed seconds,
+  statuses.
+- No token or cost data. Spend by model comes from the agent's session files,
+  for Pi via `scripts/pi_tokens.py`.
