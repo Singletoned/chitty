@@ -1,6 +1,6 @@
 ---
 title: Let `chitty init --autocommit` stage an ignored `CLAUDE.md` symlink
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -27,6 +27,11 @@ Cold read 1 by a fresh Sonnet subagent, `refs/cold-read/TASK-301/1`; the regress
 
 The new regression test failed before the fix because Git rejected ignored CLAUDE.md; it passes after force-adding only the explicitly changed paths. Focused TestInit (35 tests) and make check (509 Python tests, ruff, pyright, Node tests) passed.
 
+Reviewed: independently verified the change and regression.
+1: pass - The ignored CLAUDE.md regression test passed; TestInit also checks the committed CLAUDE.md is a symlink to AGENTS.md, and make check printed OK.
+2: pass - The ignored-file regression test passed and checks ignored.txt is absent from the commit and Git status.
+3: pass - The regression test printed OK with the fix; running it with git add restored to pre-fix arguments printed FAILED and reported Git rejecting ignored CLAUDE.md. make format && make check passed, including 514 Python tests and Node tests.
+
 ## Summary
 
 Implemented and committed as cdd8784 (Task: TASK-301). Force-add is constrained to init-supplied paths, so unrelated ignored files are not staged. Verified regression failure before fix, then focused TestInit and make check pass. No follow-ups.
@@ -42,3 +47,5 @@ Implemented and committed as cdd8784 (Task: TASK-301). Force-add is constrained 
 - 2026-11-12T18:13:44Z upbeat-coral-toad: wrote the plan
 - 2026-11-12T18:16:13Z upbeat-coral-toad: changed notes, summary; ticked acceptance criteria
 - 2026-11-12T18:16:13Z upbeat-coral-toad doing → review
+- 2026-11-12T20:27:40Z kind-white-gannet: changed notes; ticked acceptance criteria
+- 2026-11-12T20:27:40Z kind-white-gannet review → done
