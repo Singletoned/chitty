@@ -28,6 +28,7 @@ Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
   the tests pass apply each mutant alone to the implementation, run the ticket's
   tests, then restore it before the next mutant. For each mutant that survives,
   report criterion wording that would catch it.
+<!-- property-signals -->
 - Commit your work in the worktree. From inside it, keep the commit with
   `git update-ref refs/cold-read/<ID>/<n> HEAD`, where `<n>` is the next number
   free for that ticket, starting at 1 (`git for-each-ref refs/cold-read` lists
@@ -47,6 +48,11 @@ Report briefly:
   asking for a ticket change.
 - Surviving mutants, each with criterion wording that would catch it, or
   `none`.
+- Missed properties: behaviour tested only by example where a signal above
+  fits, state the tests never vary (files present, branches, config), a reason
+  for having no property that does not hold, and logic that could be a pure
+  function but is not specified as one. Give each property and what to
+  generate, or `none`.
 - Unverified behaviour, and states the ticket does not handle.
 - Wrong claims in the ticket.
 

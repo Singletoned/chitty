@@ -1017,7 +1017,10 @@ def guide(role: str | None = None, ticket_id: str | None = None) -> str:
     if ticket_id is not None and role in {"plan", "setup"}:
         raise ChittyError(f"the {role} role does not take a ticket ID")
 
-    text = files("chitty").joinpath("roles", f"{role}.md").read_text()
+    roles = files("chitty").joinpath("roles")
+    text = roles.joinpath(f"{role}.md").read_text()
+    signals = roles.joinpath("property-signals.md").read_text().rstrip()
+    text = text.replace("<!-- property-signals -->", signals)
     return f"Work only on Chitty ticket {ticket_id}.\n\n{text}" if ticket_id is not None else text
 
 
