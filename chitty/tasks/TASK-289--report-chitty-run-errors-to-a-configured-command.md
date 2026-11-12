@@ -22,7 +22,7 @@ created: 2026-11-11
 
 ## Plan
 
-Move the error-reporting try boundary in src/chitty/run.py so it includes post-configuration argument validation; preserve reporter context and exclusions. Add a regression integration test for --ticket with --mode, verify it fails before the fix, then passes. Run chitty fix, make format/check, and commit implementation.
+Move Git main-checkout discovery and Repo.open inside the error-reporting boundary, using the input repo to report failures before main_repo exists. Add a regression integration test that removes the temporary repository Git metadata and confirms the configured reporter receives the failure. Run the regression before the fix, then chitty fix, make format/check, commit, and update ticket verification.
 
 ## Notes
 
@@ -94,3 +94,4 @@ Implemented configured error reporting for Chitty run failures, including post-c
 - 2026-11-12T21:35:10Z kind-yellow-vole: changed description, notes
 - 2026-11-12T21:43:22Z kind-yellow-vole: changed owner, notes
 - 2026-11-12T21:43:22Z kind-yellow-vole blocked → doing
+- 2026-11-12T21:44:35Z calm-coral-raven: wrote the plan
