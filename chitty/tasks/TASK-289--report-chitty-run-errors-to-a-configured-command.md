@@ -22,7 +22,7 @@ created: 2026-11-11
 
 ## Plan
 
-Add optional `error_reporter` config validation and document the setting. In `run()`, retain run context as it becomes known and report caught Chitty errors except empty-queue and interruption cases; parse and substitute reporter arguments safely, warn on reporter failure, then preserve the original exception. Add integration tests for failing/successful/idle runs and reporter failure, including message and ticket context.
+Move the error-reporting try boundary in src/chitty/run.py so it includes post-configuration argument validation; preserve reporter context and exclusions. Add a regression integration test for --ticket with --mode, verify it fails before the fix, then passes. Run chitty fix, make format/check, and commit implementation.
 
 ## Notes
 
@@ -62,3 +62,4 @@ Implemented configurable error reporting in `chitty run`, including error messag
 - 2026-11-11T21:57:09Z rosy-lilac-marten review → blocked
 - 2026-11-12T18:13:28Z kind-yellow-vole: changed owner, acceptance criteria, notes
 - 2026-11-12T18:13:28Z kind-yellow-vole blocked → doing
+- 2026-11-12T18:18:06Z jolly-yellow-raven: wrote the plan
