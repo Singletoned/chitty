@@ -87,6 +87,23 @@ class TestNext(CliTestCase):
                 for path in (self.root / "chitty/tasks").glob("*.md"):
                     path.unlink()
 
+    def test_configured_job_order_and_omitted_status(self):
+        self.add("Review", status="review")
+        todo = self.add("Todo")
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                "autocommit = false", 'job_order = ["todo", "review"]\nautocommit = false'
+            )
+        )
+        self.assertEqual(str(next_action(Repo.open(self.root)).id), todo)
+        config.write_text(config.read_text().replace('["todo", "review"]', '["todo"]'))
+        for path in (self.root / "chitty/tasks").glob("*.md"):
+            if path.name.startswith(f"{todo}--"):
+                path.unlink()
+        with self.assertRaisesRegex(ChittyError, "no next ticket"):
+            next_action(Repo.open(self.root))
+
     def test_numeric_id_ordering_and_unmet_doing_dependency(self):
         for number in range(1, 13):
             self.add(f"Task {number}", status="blocked" if number < 9 else "todo")

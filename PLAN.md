@@ -352,6 +352,7 @@ review = true # require review before done
 # agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
 # work_model = "provider/model" # default for work when the agent command has no model
 # review_model = "provider/model" # default for review when the agent command has no model
+# job_order = ["review", "doing", "todo"] # statuses selected by `next`/`run`, in pick order
 # `{prompt}` may be used as one argument containing `chitty guide` output.
 archive = "move" # or "delete"; retain completed files or delete them
 # list_width = 100 # columns `chitty list` rows fit in
@@ -714,9 +715,10 @@ including retries, not per run.
 
 ## Next action and runner
 
-`chitty next` selects one active task across every context: `review` before
-`doing` before `todo`, then high/medium (including unset)/low priority and
-`TaskId`.
+`chitty next` selects one active task across every context: the optional
+`job_order` setting (default `review`, `doing`, `todo`), then high/medium
+(including unset)/low priority and `TaskId`. It must be a non-empty list of
+unique active statuses; omitted statuses are never selected.
 Human-context tasks and tasks owned by `human` are excluded. A `todo` task with
 an unmet dependency is excluded, while `doing` and `review` work remains
 visible. `list` marks these exclusions with `👤`, `🔒`, or `⚠️` for a broken

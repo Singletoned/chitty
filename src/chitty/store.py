@@ -40,7 +40,7 @@ from chitty.model import (
     new_task,
     parse,
 )
-from chitty.selection import DependencyFact, TicketFacts, choose, mode_statuses
+from chitty.selection import STATUSES, DependencyFact, TicketFacts, choose, mode_statuses
 from chitty.selection import skip_reason as pure_skip_reason
 
 ARCHIVE_DIR = "archive"
@@ -1517,7 +1517,9 @@ def next_action(
         fact = _selection_facts(repo, stored, locked=is_locked, dependencies=eligible)
         facts.append(fact)
         stored_by_id[str(stored.id)] = stored
-    selected = choose(tuple(facts), modes=modes, owner=owner)
+    # Keep omitted statuses out of selection; None preserves the historical order.
+    order = STATUSES if repo.config.job_order is None else tuple(repo.config.job_order)
+    selected = choose(tuple(facts), modes=modes, owner=owner, order=order)
     if selected is None:
         raise NoNextTicket(
             "no next ticket" if not modes else f"no next ticket for --mode {' or '.join(modes)}"

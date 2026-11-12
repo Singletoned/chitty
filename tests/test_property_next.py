@@ -6,6 +6,7 @@ import unittest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
+from chitty.selection import STATUSES as PICK_ORDER
 from chitty.selection import DependencyFact, TicketFacts, choose, skip_reason
 
 STATUSES = ("review", "doing", "todo", "done", "backlog", "blocked")
@@ -86,22 +87,23 @@ class TestPropertyNext(unittest.TestCase):
             (DependencyFact("TASK-901", "broken", "missing"),),
         )
         ready = TicketFacts("TASK-3", "work", "todo", "low", None, False, False)
-        self.assertEqual(choose((ready, blocked, broken)), ready)
+        self.assertEqual(choose((ready, blocked, broken), order=PICK_ORDER), ready)
 
     @settings(max_examples=300)
     @given(
         facts_strategy(),
         st.sampled_from((None, "work", "review")),
         st.sampled_from((None, "agent")),
+        st.permutations(PICK_ORDER),
     )
-    def test_choice_obeys_filters_and_independent_order(self, facts, mode, owner):
+    def test_choice_obeys_filters_and_independent_order(self, facts, mode, owner, order):
         # Shuffle so source ordering cannot accidentally satisfy ranking.
         random.Random(len(facts) * 173 + sum(map(len, (f.id for f in facts)))).shuffle(facts)
-        selected = choose(tuple(facts), modes=(mode,) if mode else (), owner=owner)
+        selected = choose(tuple(facts), modes=(mode,) if mode else (), owner=owner, order=order)
         expected = sorted(
             (fact for fact in facts if independently_choosable(fact, mode, owner)),
             key=lambda f: (
-                TEST_STATUS_RANK[f.status],
+                order.index(f.status),
                 TEST_PRIORITY_RANK[f.priority],
                 (f.id.rsplit("-", 1)[0], int(f.id.rsplit("-", 1)[1])),
             ),
@@ -115,6 +117,8 @@ class TestPropertyNext(unittest.TestCase):
     def test_skip_reason_agrees_with_single_ticket_choice(self, facts):
         for fact in facts:
             if fact.status in {"review", "doing", "todo"} and not fact.archived:
-                self.assertEqual(skip_reason(fact) is None, choose((fact,)) == fact)
+                self.assertEqual(
+                    skip_reason(fact) is None, choose((fact,), order=PICK_ORDER) == fact
+                )
             if fact.status in {"done", "backlog", "blocked"}:
                 self.assertIsNone(skip_reason(fact))
