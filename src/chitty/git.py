@@ -33,7 +33,9 @@ def commit(root: Path, paths: Sequence[Path], message: str) -> None:
         _git(root, "diff", "--cached", "--no-renames", "--name-only", "--", *relative).splitlines()
     )
     included = [p for p in relative if p in present or p in tracked or p in staged_paths]
-    _git(root, "add", "--", *present)
+    # Init can intentionally manage an ignored CLAUDE.md; limit force-add to
+    # these explicit paths so other ignored files remain untouched.
+    _git(root, "add", "--force", "--", *present)
     try:
         _git(root, "commit", "--quiet", "--only", "-m", message, "--", *included)
     except ChittyError as error:
