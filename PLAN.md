@@ -655,8 +655,8 @@ Planning practice in this repository (from the human):
 
 Spec tests exercise a surface, never mocks of our own code. Code should have
 several surfaces: the outer ones (CLI, MCP, HTTP, file format) and internal ones
-such as a module or a pure function. A surface the ticket names is part of its
-spec, so tests may call it directly. Property tests are the default, with a
+such as a module, a pure function or an internal API (a facade, for example). A
+surface the ticket names is part of its spec, so tests may call it directly. Property tests are the default, with a
 one-line reason when none suits: a round trip for any parser or serialiser, and
 a property over sequences of operations for any state machine. Spec tests are
 written from the ticket, before and without sight of the implementation.
