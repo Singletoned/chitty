@@ -2,29 +2,33 @@
 
 ```
 src/chitty/
-  __init__.py
-  model.py       Task, Frontmatter, Criterion — parse/validate/serialise ONE file
-  ids.py         ID and filename parsing, slugs, next number, shorthand
-  config.py      RepoConfig, UserContexts — load + validate TOML
-  actor.py       stable actor names from harness session identities
-  store.py       Context, find/list/read/write/move/archive
-  check.py       cross-file validation: parse errors, duplicate IDs,
-                 dangling or self depends_on
-  errors.py      ChittyError, the base of every user-facing error
-  git.py         optional autocommit
-  run.py         Pi subprocess runner for `chitty run`
-  cli.py         click commands; thin, calls store/model, prints
-  mcp.py         tool definitions wrapping the same functions as cli.py
-                 (mcp ≥ 2: MCPServer, not FastMCP)
-  guide.md       the AGENTS.md block, as package data
-  roles/         work, review, and planning instructions, as package data
+  model.py           Task, Frontmatter, Criterion: parse, validate, write one file
+  ids.py             IDs, filenames, slugs, shorthand
+  config.py          RepoConfig: load and validate TOML
+  store.py           Repo: find, list, read, write, move, archive; next_action
+  selection.py       pure ticket eligibility and ordering for `next`
+  check.py           cross-file validation: parse errors, duplicate IDs, bad depends_on
+  formatter.py       run the configured task-file formatter
+  git.py             Git calls, autocommit
+  locks.py           per-ticket run locks
+  run.py             `chitty run`
+  inbox.py           machine-local suggestion inboxes
+  import_backlog.py  pure conversion of one Backlog.md task file
+  upgrade.py         advice about newer Chitty releases
+  actor.py           stable actor names from harness session IDs
+  errors.py          ChittyError, base of every user-facing error
+  cli.py             Click commands: thin
+  mcp.py             MCP tools (mcp ≥ 2, `MCPServer`): thin
+  guide.md           the managed AGENTS.md block, package data
+  roles/             per-role guides, package data
+  integrations/      agent-specific code: Pi extension (`pi/chitty.ts`), Claude
+                     usage hook (`claude/usage.py`)
 ```
 
-`cli.py` and `mcp.py` contain no logic; both call the same functions in
-`store.py`/`model.py` so behaviour cannot diverge. Actor identity comes from
-`CHITTY_ACTOR` or a supported harness session variable. Chitty's Pi extension
-copies the session ID into `CHITTY_PI_SESSION_ID` at session start, which takes
-precedence over Pi's shell-only variable so descendants retain their parent's
-identity. context-mode's server starts at `before_agent_start`, after that,
-so its commands inherit the variable. Only a server started before
-`session_start` needs the `CHITTY_ACTOR` workaround.
+- `cli.py` and `mcp.py` hold no logic; both call `store.py` and `model.py`, so
+  they cannot diverge.
+- Actor identity comes from `CHITTY_ACTOR`, else a harness session variable
+  (`CLAUDE_CODE_SESSION_ID`, `CHITTY_PI_SESSION_ID`, `PI_SESSION_ID`,
+  `CODEX_SESSION_ID`). The Pi extension copies Pi's session ID into
+  `CHITTY_PI_SESSION_ID` at session start, so descendants keep the parent's
+  identity.

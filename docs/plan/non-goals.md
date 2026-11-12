@@ -1,7 +1,10 @@
 # Non-goals
 
-TUI. Web UI. Cross-branch task resolution. File locking. Format migrations.
-Remote/HTTP contexts (sync a directory instead). Subtask IDs (`24.1`).
-Milestones. Docs/decisions directories. Wizards. Shell completions (v1).
-Configurable statuses (v1). Moving tasks between repos. ID collision
-handling beyond reporting it.
+- TUI or web UI.
+- Remote or HTTP contexts: sync a directory instead.
+- Subtask IDs (`24.1`); use `parent`.
+- Milestones.
+- Wizards or prompts.
+- Configurable statuses.
+- Moving tickets between repositories: `suggest` there, `archive` here.
+- Writing a ticket on another branch: writes name that branch's worktree.

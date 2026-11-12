@@ -1,12 +1,8 @@
 # Dependencies
 
-`depends_on` may reference any context in the same repo (`TASK-3` blocked on
-`HUMAN-1` is the common case). Rules:
-
-- A reference to an ID that doesn't exist in the repo is a `check` error.
-- A reference to an archived task is fine; archived is not deleted.
-- `move` gives the task a new ID in the target context and rewrites every
-  reference to the old ID across the repo, reporting which files it touched.
-- User-level contexts are write targets only; nothing can depend on a task
-  in another repo. If you need to track it, write the foreign ID in your own
-  task's Notes.
+- `depends_on` may name a ticket in any context of the same repository
+  (`TASK-3` waiting on `HUMAN-1` is the common case).
+- An ID that does not exist is a `check` error. An archived ticket is fine.
+- `move` gives the ticket a new ID and rewrites every reference to the old one,
+  reporting the files it touched.
+- Nothing depends on another repository's ticket. Name it in Notes instead.

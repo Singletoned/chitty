@@ -27,4 +27,3 @@ One file per topic; read only the one you need.
 - [Stack](stack.md)
 - [Next action and runner](next-action-and-runner.md)
 - [Module layout](module-layout.md)
-- [Build order](build-order.md)

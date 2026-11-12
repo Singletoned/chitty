@@ -1,43 +1,40 @@
 # IDs
 
-`<PREFIX>-<n>`, e.g. `TASK-13`.
+- `<PREFIX>-<n>`, such as `TASK-13`. The ID is not repeated in frontmatter.
+- `PREFIX` is the context's prefix: `[A-Z]+`, unique in the repository. It
+  names a queue (`TASK` for `tasks/`, `HUMAN` for `human/`), not a project or
+  type: a ticket's type can change but its ID cannot, so type is a label. New
+  repositories get `TASK`; custom prefixes keep working.
+- `n` is unpadded: one above the highest number in committed ticket files on
+  every local and remote-tracking branch, active or archived, plus uncommitted
+  files in this checkout.
+- `random_ids = true` draws `n` from 10000000 to 99999999 instead
+  (`BACKLOG-48213907`), retrying up to `RANDOM_ID_ATTEMPTS` times. Random IDs
+  cannot collide across branches, so only `main` hands out sequential ones.
+- The `backlog` context (`chitty/backlog/`, prefix `BACKLOG`) uses random IDs.
+  It is unrelated to the `backlog` status. Plain `chitty add` in a linked
+  worktree files there; an explicit `-c` wins, and inbox pulls use the default
+  context.
 
-- `PREFIX` is the context's prefix: `[A-Z]+`, unique within a repo.
-  Prefixes name queues (`TASK` for `tasks/`, `HUMAN` for `human/`), not
-  projects or types: a ticket's project is the repo it lives in, and its
-  type (bug, suggestion) can change while its ID must not, so type is a
-  label. New repos always get `TASK`; existing custom prefixes keep working.
-- `n` is a positive integer, unpadded: one above the highest number in
-  committed ticket files on all local and remote-tracking branches, in the
-  context's active or archive directory, plus uncommitted files in this
-  checkout. Uncommitted tickets in other worktrees and unpushed work on other
-  machines are not visible.
-- A context with `random_ids = true` instead draws `n` at random from
-  10000000 to 99999999, such as `BACKLOG-48213907`, retrying (a bounded number
-  of times, then failing) when a number in that same visible set is taken.
-  Random IDs let tickets raised on any branch avoid colliding, so only `main`
-  hands out sequential numbers (decided 2026-11-05). The generated `backlog`
-  context (`chitty/backlog/`, prefix `BACKLOG`) uses it; it is unrelated to the
-  `backlog` status. Plain `chitty add` in a linked worktree targets this context
-  so unrelated branch discoveries are filed for planning; explicit contexts
-  still win, and inbox pulls use the default context.
+## Filenames
 
-Filename: `<ID>--<slug>.md`, or `<ID>.md` when the slug is empty. The slug
-is derived from the title (lowercase, `[a-z0-9-]`, collapsed hyphens, max 60
-chars; empty if the title has no ASCII alphanumerics) and follows it:
-`edit --title` renames the file (`git mv` when tracked), and `chitty fix`
-renames files whose slug has gone stale. It is there so `ls` is readable; the
-ID is the identity, so renames never break references. Slugs never contain `--`, so the ID is everything before the
-first `--`. The ID is not repeated in frontmatter.
+- `<ID>--<slug>.md`, or `<ID>.md` when the slug is empty.
+- The slug comes from the title: lower case, `[a-z0-9-]`, hyphens collapsed, at
+  most 60 characters, empty without ASCII letters or digits. It never contains
+  `--`, so the ID is everything before the first `--`.
+- `edit --title` renames the file (`git mv` when tracked); `chitty fix` renames
+  stale slugs. The slug only makes `ls` readable, so renames break nothing.
 
-Collisions: allocation counts committed ticket files on all local and
-remote-tracking branches, in active and archive directories, so branches get
-separate IDs. It does not see uncommitted tickets in other worktrees or
-unpushed work on other machines; those can still collide. If a collision does
-occur, `chitty check` reports the files involved; the human renames one and
-fixes references by hand. Likewise, moving the highest-numbered task out of a
-context lets its number be reused; accepted.
+## Collisions
 
-Referencing: commands accept `TASK-13`, or bare `13` for the default
-context. Stored references (`depends_on`, `moved_from`) are always the full
-`PREFIX-n` form; shorthand is expanded before writing.
+- Uncommitted tickets in other worktrees and unpushed work elsewhere are not
+  visible, so they can collide. `chitty check` reports the files;
+  `chitty renumber PATH` gives one the next number ([CLI](cli.md)).
+- Moving the highest-numbered ticket out of a context lets its number be
+  reused; accepted.
+
+## References
+
+- Commands take `TASK-13` or bare `13` for the default context.
+- Stored references (`depends_on`, `parent`, `moved_from`) are always full
+  `PREFIX-n`.
