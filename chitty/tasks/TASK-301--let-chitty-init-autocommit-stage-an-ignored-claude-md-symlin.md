@@ -1,6 +1,6 @@
 ---
 title: Let `chitty init --autocommit` stage an ignored `CLAUDE.md` symlink
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -13,9 +13,9 @@ In the `taidy` repository on 2026-11-12, `chitty init --autocommit` migrated the
 
 ## Acceptance Criteria
 
-- [ ] In a repository where `CLAUDE.md` is ignored, `chitty init --autocommit` completes and its commit includes the managed `CLAUDE.md` symlink.
-- [ ] The autocommit path does not stage an unrelated ignored file that was present before `chitty init` ran.
-- [ ] A regression test fails against the current implementation before the fix and passes afterward; the existing `chitty init` checks continue to pass.
+- [x] In a repository where `CLAUDE.md` is ignored, `chitty init --autocommit` completes and its commit includes the managed `CLAUDE.md` symlink.
+- [x] The autocommit path does not stage an unrelated ignored file that was present before `chitty init` ran.
+- [x] A regression test fails against the current implementation before the fix and passes afterward; the existing `chitty init` checks continue to pass.
 
 ## Plan
 
@@ -24,6 +24,12 @@ Inspect init autocommit staging and its tests. Add a regression test for an igno
 ## Notes
 
 Cold read 1 by a fresh Sonnet subagent, `refs/cold-read/TASK-301/1`; the regression test failed before the fix with Git rejecting ignored `CLAUDE.md`, then passed after the fix. `TestInit` (34 tests) and `make check` (507 tests, lint, typing, and Node tests) passed. No serious findings or surviving mutants. Starting point to inspect, not trust: `src/chitty/git.py` and `tests/test_cli.py` from `git show refs/cold-read/TASK-301/1:<path>`. The reader verified that force-adding only the explicitly touched paths does not include unrelated ignored files, and that the existing clean-tree requirement rejects unrelated staged or modified files.
+
+The new regression test failed before the fix because Git rejected ignored CLAUDE.md; it passes after force-adding only the explicitly changed paths. Focused TestInit (35 tests) and make check (509 Python tests, ruff, pyright, Node tests) passed.
+
+## Summary
+
+Implemented and committed as cdd8784 (Task: TASK-301). Force-add is constrained to init-supplied paths, so unrelated ignored files are not staged. Verified regression failure before fix, then focused TestInit and make check pass. No follow-ups.
 
 ## History
 
@@ -34,3 +40,5 @@ Cold read 1 by a fresh Sonnet subagent, `refs/cold-read/TASK-301/1`; the regress
 - 2026-11-12T18:11:07Z lively-violet-puffin planning → todo
 - 2026-11-12T18:13:28Z upbeat-coral-toad todo → doing
 - 2026-11-12T18:13:44Z upbeat-coral-toad: wrote the plan
+- 2026-11-12T18:16:13Z upbeat-coral-toad: changed notes, summary; ticked acceptance criteria
+- 2026-11-12T18:16:13Z upbeat-coral-toad doing → review
