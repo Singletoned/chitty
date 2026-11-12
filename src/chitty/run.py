@@ -108,13 +108,17 @@ def run(
     owner: str | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
-    if modes and ticket is not None:
-        # A named ticket already decides its mode, so a mode could only disagree.
-        raise ChittyError("--mode cannot be used with --ticket")
-    if ticket is not None and owner is not None:
-        raise ChittyError("--owner cannot be used with --ticket")
-    if owner in ("", "human"):
-        raise ChittyError("--owner must name an agent, not human or empty")
+    try:
+        if modes and ticket is not None:
+            # A named ticket already decides its mode, so a mode could only disagree.
+            raise ChittyError("--mode cannot be used with --ticket")
+        if ticket is not None and owner is not None:
+            raise ChittyError("--owner cannot be used with --ticket")
+        if owner in ("", "human"):
+            raise ChittyError("--owner must name an agent, not human or empty")
+    except ChittyError as error:
+        report_error(repo, error, {"actor": actor()})
+        raise
     # Set the run identity before selecting or locking a ticket so the lock
     # record describes the session even when setup or preparation fails.
     os.environ.pop("CHITTY_ACTOR", None)

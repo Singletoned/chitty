@@ -75,6 +75,16 @@ class TestRunErrorReporter(CliTestCase):
         self.assertTrue(record.exists())
         self.assertIn("error_reporter exited with status 7", result.stderr)
 
+    def test_argument_error_reports_message_and_ticket_context(self):
+        reporter, record = self.write_reporter()
+        self.setup_repo(reporter)
+        self.add_ticket()
+        result = self.run_cli("run", "--ticket", "TASK-1", "--mode", "work", exit_code=1)
+        self.assertIn("--mode cannot be used with --ticket", result.stderr)
+        message, context = json.loads(record.read_text())
+        self.assertEqual(message, "--mode cannot be used with --ticket")
+        self.assertIn("actor", json.loads(context))
+
     def test_empty_queue_does_not_report(self):
         reporter, record = self.write_reporter()
         self.setup_repo(reporter)
