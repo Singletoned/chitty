@@ -33,9 +33,9 @@ Planning guide. In `src/chitty/roles/plan.md`, replace the bullet beginning `Com
 <!-- property-signals -->
 - Where behaviour can be a pure function, taking values and returning values
   with no file, network or clock access inside it, have the ticket name that
-  function and state its properties: it is far easier to test. A function or
-  module the ticket names is an internal surface and part of its spec, so its
-  tests may call it directly.
+  function and state its properties: it is far easier to test. A function,
+  module or internal API (such as a facade) the ticket names is an internal
+  surface and part of its spec, so its tests may call it directly.
 ```
 
 Shared signal list. Create `src/chitty/roles/property-signals.md` holding exactly this block, so the list has one copy:
@@ -104,3 +104,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-302/1`. Check it a
 - 2026-11-12T20:24:25Z kind-yellow-vole cold-read → planning
 - 2026-11-12T20:59:55Z kind-yellow-vole: replaced notes; changed owner, description, acceptance criteria
 - 2026-11-12T20:59:55Z kind-yellow-vole planning → todo
+- 2026-11-12T21:30:14Z kind-yellow-vole: changed description
