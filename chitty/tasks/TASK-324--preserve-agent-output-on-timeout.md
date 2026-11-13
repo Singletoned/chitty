@@ -1,6 +1,6 @@
 ---
 title: Preserve agent output on timeout
-status: doing
+status: review
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -23,6 +23,10 @@ Possible starting point: `git diff main...refs/cold-read/TASK-324/1`. Check it a
 
 Regression confirmed failing before the implementation: ticket error included the timeout duration but omitted TIMEOUT_MARKER. After the fix, the focused real-subprocess test passes. Full make format && make check passes.
 
+## Summary
+
+Handoff: timeout errors now retain captured agent stdout alongside the configured timeout duration; ticket error notes include both. The real-subprocess regression failed before the fix because TIMEOUT_MARKER was missing, and passes after. Verification: focused timeout test and make format && make check pass. Follow-up: none.
+
 ## History
 
 - 2026-11-13T23:27:49Z mellow-umber-lapwing → backlog
@@ -37,3 +41,5 @@ Regression confirmed failing before the implementation: ticket error included th
 - 2026-11-13T23:32:53Z vivid-fawn-wren todo → doing
 - 2026-11-13T23:33:15Z vivid-fawn-wren: wrote the plan
 - 2026-11-13T23:34:54Z vivid-fawn-wren: changed notes; ticked acceptance criteria
+- 2026-11-13T23:35:04Z vivid-fawn-wren: changed summary
+- 2026-11-13T23:35:04Z vivid-fawn-wren doing → review
