@@ -2186,9 +2186,9 @@ class TestGuide(CliTestCase):
         for phrase in (
             "see it fail without the fix",
             "change the test until it fails without the fix",
-            "do not work around it",
-            "a person's decision",
-            "An unclear detail with a cheap default is not this",
+            "Do not work around the problem or weaken the tests",
+            "set `-s planning`",
+            "For a cheap-to-reverse default, choose it",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, work_guide)
