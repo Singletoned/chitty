@@ -1,9 +1,8 @@
 ---
 title: Retire the Chitty Pi extension
-status: cold-read
+status: planning
 labels:
   - needs-minor
-owner: planning
 depends_on:
   - TASK-278
 parent: TASK-275
@@ -42,3 +41,5 @@ Use Hypothesis for properties. Test first and record failure without the change.
 - 2026-11-13T22:19:36Z mellow-umber-lapwing: changed description
 - 2026-11-13T22:19:36Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:19:38Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T22:23:01Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:23:01Z mellow-umber-lapwing cold-read → planning
