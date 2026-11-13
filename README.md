@@ -7,7 +7,7 @@ Each task is one markdown file with YAML frontmatter under
 `chitty/<context>/`, e.g. `chitty/tasks/TASK-12--add-search.md`. The files are
 the only state: no database, no index. The tool only ever changes the lines
 it means to, so prettier and mdformat leave its output alone and diffs stay
-small. See `PLAN.md` for the full design.
+small. See `docs/plan/` for the full design.
 
 ## Install
 

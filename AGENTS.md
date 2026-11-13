@@ -1,8 +1,9 @@
 # Agents
 
-Chitty is a markdown-native task tracker. `PLAN.md` is the design; before
-changing behaviour, find the relevant section with `grep -n '^## ' PLAN.md` and
-read only that section. Update it when a decision changes.
+Chitty is a markdown-native task tracker. The design is in `docs/plan/`, one
+file per topic, indexed in `docs/plan/README.md`. Before changing behaviour,
+read only the file you need. It holds suggestions and past decisions, not
+rules, and parts are old: update it when a decision changes.
 
 - `make install` once (Python deps including the `mcp` extra, and the pinned
   prettier used by the round-trip tests).
@@ -24,8 +25,9 @@ read only that section. Update it when a decision changes.
   `model.py` so the two front ends cannot diverge.
 - Other agents commit in this checkout at the same time. Stage only the paths
   you changed; never `git add -A` or all of `chitty/`.
-- Writing tickets with the human? Cold-read them, as `PLAN.md` describes. If you
-  were given a ticket to work on or review, skip this: it is not your step.
+- Writing tickets with the human? Cold-read them, as
+  `docs/plan/pipeline-and-feedback.md` describes. If you were given a ticket to
+  work on or review, skip this: it is not your step.
 - Releases: `make release` tags the version in `src/chitty/__init__.py` and pushes
   it. `.github/workflows/release.yml` checks, builds and publishes to PyPI by
   trusted publishing (environment `pypi`). `make release` then waits for that

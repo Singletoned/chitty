@@ -11,7 +11,7 @@ created: 2026-11-11
 
 - In print mode an agent prints only its final message, so nobody can see what it did. `chitty run` copies the agent's stdout and stderr to a log file per session through pipes, still printing them as they arrive. Stdin stays inherited. Whole lines go to the log under one lock, in arrival order across both streams.
 - Piped output is not a TTY, so an interactive agent such as the Pi TUI loses its interface. That is intended: TASK-278 moves this repository to print mode first.
-- Keep the agent in the runner's process group and session (`PLAN.md` "Next action and runner"); no `start_new_session`. The readers are daemon threads joined against one shared deadline, a module constant of 2 seconds, so a descendant holding the pipe cannot keep the run alive. Detach the log before closing it; later output goes to the console only.
+- Keep the agent in the runner's process group and session (`docs/plan/next-action-and-runner.md`); no `start_new_session`. The readers are daemon threads joined against one shared deadline, a module constant of 2 seconds, so a descendant holding the pipe cannot keep the run alive. Detach the log before closing it; later output goes to the console only.
 - `_run_agent` keeps its current signature for `tests/test_run_timeout.py`: the log is an optional keyword argument, and the `stderr=b"timed out"` sentinel survives.
 - Log path: `<git common dir>/chitty/run/<ID>-<YYYYMMDDTHHMMSSffffffZ>.log`, UTC with microseconds, created exclusively (`open(..., "x")`), never committed. Create it in `_run_ticket` before `claim_edit`, so a failure to create it leaves the ticket unchanged.
 - Print `log: <path>` to stderr in a `finally` around the agent run, so it appears on success, failure, timeout and interrupt.
@@ -39,3 +39,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-276/2`. Check it a
 - 2026-11-11T13:44:12Z vivid-yellowhammer planning → cold-read
 - 2026-11-11T13:51:57Z vivid-yellowhammer: changed description, notes
 - 2026-11-11T13:51:57Z vivid-yellowhammer cold-read → todo
+- 2026-11-12T21:35:00Z kind-yellow-vole: changed description
