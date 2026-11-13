@@ -1,6 +1,6 @@
 ---
 title: Handle review tickets whose branch no longer exists
-status: planning
+status: todo
 labels:
   - bug
 priority: medium
@@ -27,3 +27,4 @@ Cold read 1 by a fresh Sonnet subagent, `refs/cold-read/TASK-314/1`; the real-Gi
 - 2026-11-13T13:32:50Z lively-violet-puffin backlog → cold-read
 - 2026-11-13T13:35:55Z lively-violet-puffin: changed notes
 - 2026-11-13T13:35:55Z lively-violet-puffin cold-read → planning
+- 2026-11-13T13:35:57Z lively-violet-puffin planning → todo
