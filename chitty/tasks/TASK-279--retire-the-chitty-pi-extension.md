@@ -1,8 +1,9 @@
 ---
 title: Retire the Chitty Pi extension
-status: planning
+status: cold-read
 labels:
   - needs-minor
+owner: planning
 depends_on:
   - TASK-278
   - TASK-320
@@ -39,3 +40,5 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 - 2026-11-13T22:23:01Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:23:01Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:24:52Z mellow-umber-lapwing: changed dependencies, description, acceptance criteria
+- 2026-11-13T22:44:35Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:44:35Z mellow-umber-lapwing planning → cold-read
