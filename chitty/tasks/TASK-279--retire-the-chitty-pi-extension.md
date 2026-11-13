@@ -1,6 +1,6 @@
 ---
 title: Retire the Chitty Pi extension
-status: cold-read
+status: planning
 labels:
   - needs-minor
 owner: planning
@@ -16,7 +16,7 @@ Retire the Chitty Pi extension: `chitty run` already passes the guide using `{pr
 
 Stop `chitty init` installing or updating the extension and remove the bundled extension and its tests. Do not automatically delete or overwrite existing installed copies or user Pi settings: these may contain user edits. Remove the existing `exposeSessionEnvironment` settings migration too; preserve that setting whether present or absent. Neither inspect nor modify existing extension files or `chitty-extension.sha256` state files; leave them untouched and document optional manual removal. Document that an old copy can still autoload and that users must inspect and remove it themselves, migrate extension-based agent commands to a `{prompt}` command, and restart Pi. Update setup guidance, generated configuration examples, warnings and current documentation to stop requiring or recommending the extension. A missing-identity warning must not claim the plugin is required; `PI_SESSION_ID` is a valid identity.
 
-Do not edit `chitty.toml` on a ticket branch. Its local `pi-tui` command needs a separate human-owned main-checkout migration. Preserve unrelated Node tooling, including Prettier. Historical tickets need not be rewritten.
+Do not edit `chitty.toml` on a ticket branch. Its local `pi-tui` command needs a separate human-owned main-checkout migration. Rewrite or remove stale extension installation, settings migration, warning and command expectations throughout the test suite, including `tests/test_cli.py` and `tests/test_next.py`; `make check` must pass. Preserve unrelated Node tooling, including Prettier. Historical tickets need not be rewritten.
 
 Use Hypothesis for properties. Test first and record failure without the change. For installation, generate existing extension file contents and presence/absence across repeated `chitty init` runs and assert the installed file is never created or changed. Cover both fresh and previously initialised projects. For identity, generate Pi environments with and without `PI_SESSION_ID` and `CHITTY_ACTOR`, and test the warning and actor selection. Runner identity protection needs a fake agent and child process: prove the child inherits the runner actor; do not start a real agent session.
 
@@ -39,3 +39,5 @@ Use Hypothesis for properties. Test first and record failure without the change.
 - 2026-11-13T22:17:01Z mellow-umber-lapwing: changed description
 - 2026-11-13T22:17:01Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:17:02Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T22:19:36Z mellow-umber-lapwing: changed description
+- 2026-11-13T22:19:36Z mellow-umber-lapwing cold-read → planning
