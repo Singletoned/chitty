@@ -96,9 +96,7 @@ class TestRunErrorReporter(CliTestCase):
         self.setup_repo(reporter)
         agent = self.tmp / "interrupt-agent"
         agent.write_text(
-            "#!" + sys.executable + "\n"
-            "import os, signal\n"
-            "os.kill(os.getpid(), signal.SIGINT)\n"
+            "#!" + sys.executable + "\nimport os, signal\nos.kill(os.getpid(), signal.SIGINT)\n"
         )
         agent.chmod(agent.stat().st_mode | stat.S_IXUSR)
         config = self.root / "chitty.toml"
