@@ -1,6 +1,6 @@
 ---
 title: Preserve agent output on timeout
-status: review
+status: done
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -23,6 +23,9 @@ Possible starting point: `git diff main...refs/cold-read/TASK-324/1`. Check it a
 
 Regression confirmed failing before the implementation: ticket error included the timeout duration but omitted TIMEOUT_MARKER. After the fix, the focused real-subprocess test passes. Full make format && make check passes.
 
+Reviewed: Real subprocess timeout regression and full checks pass.
+1: pass - `python -m unittest tests.test_run_timeout.TestAgentTimeout.test_run_timeout_records_usage_and_exits_one` with pre-fix `run.py` failed because TIMEOUT_MARKER was absent from the error showing 2 seconds; with the fix it printed OK. `make format && make check` printed OK for 544 tests, with lint, type checks and Node tests passing.
+
 ## Summary
 
 Handoff: timeout errors now retain captured agent stdout alongside the configured timeout duration; ticket error notes include both. The real-subprocess regression failed before the fix because TIMEOUT_MARKER was missing, and passes after. Verification: focused timeout test and make format && make check pass. Follow-up: none.
@@ -43,3 +46,5 @@ Handoff: timeout errors now retain captured agent stdout alongside the configure
 - 2026-11-13T23:34:54Z vivid-fawn-wren: changed notes; ticked acceptance criteria
 - 2026-11-13T23:35:04Z vivid-fawn-wren: changed summary
 - 2026-11-13T23:35:04Z vivid-fawn-wren doing → review
+- 2026-11-13T23:42:55Z mellow-pearl-wren: changed notes; ticked acceptance criteria
+- 2026-11-13T23:42:55Z mellow-pearl-wren review → done
