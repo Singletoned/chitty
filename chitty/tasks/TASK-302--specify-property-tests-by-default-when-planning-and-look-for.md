@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: doing
+status: review
 created: 2026-11-12
 ---
 
@@ -123,9 +123,11 @@ FAILED (failures=1)
 make: *** [check] Error 1
 ```
 
+The earlier full check failed once in TestNext.test_run_review_compares_only_tool_chitty_in_pyproject because a concurrent test run had moved its temporary TASK-2 to review. Re-ran make format && make check; all 522 Python tests and Node tests passed.
+
 ## Summary
 
-Restored the pure-function/internal-surface bullet after the expanded property signals in the planning guide. The planning guide test now verifies the complete specified block and ordering. Regression test failed before the guide change and passed after. Focused tests and make format && make check passed (517 Python suites and Node tests); chitty fix reported pre-existing task-text warnings. Follow-up: none.
+Implemented the shared property-signals expansion and planning/cold-read guidance, including the pure-function/internal-surface planning requirement. Regression tests failed before the implementation and passed afterward. Verification: chitty fix (only existing task-text warnings), make format && make check (522 Python tests and Node tests passed). Follow-up: none.
 
 ## History
 
@@ -157,3 +159,5 @@ Restored the pure-function/internal-surface bullet after the expanded property s
 - 2026-11-13T08:57:27Z honest-ginger-puffin doing → review
 - 2026-11-13T11:22:39Z eager-coral-puffin: changed notes
 - 2026-11-13T11:22:39Z eager-coral-puffin review → doing
+- 2026-11-13T11:25:13Z calm-yellow-puffin: changed notes, summary; ticked acceptance criteria
+- 2026-11-13T11:25:13Z calm-yellow-puffin doing → review
