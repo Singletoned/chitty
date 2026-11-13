@@ -1,6 +1,6 @@
 ---
 title: Handle review tickets whose branch no longer exists
-status: review
+status: done
 labels:
   - bug
 priority: medium
@@ -29,6 +29,11 @@ The real-Git missing-branch regression failed before the fix with `review ticket
 
 Verification: `make format && make check` passed, including 523 Python tests and Node tests. A real-Git test fails before the fix and passes after it; blocked review is not selected again.
 
+Reviewed:
+1: pass - The real-Git test `tests.test_review_merge.TestReviewMerge.test_missing_review_branch_blocks_ticket_and_is_not_selected_again` on the parent implementation failed with `Error: review ticket TASK-1 has no branch task-1`; on this branch it ran 1 test and printed `OK`.
+2: pass - The same test printed `OK` and asserts `TASK-1: review → blocked`, the ticket and branch in the actionable note, and no agent launch.
+3: pass - The same test printed `OK` and asserts the next review selection prints `no next ticket for --mode review`; `make format && make check` passed, including 523 Python tests and Node tests.
+
 ## Summary
 
 Review tickets with missing branches are now blocked on main before reviewer command validation or launch, with a human-owned note naming the ticket and missing branch and directing a person to restore it or choose its final state. Added real-Git coverage for missing branch handling, no agent launch, and subsequent review selection; updated the prior unbranched-review expectation. Verified: `make format && make check` passes. No follow-up known.
@@ -45,3 +50,5 @@ Review tickets with missing branches are now blocked on main before reviewer com
 - 2026-11-13T13:43:06Z quick-pearl-zander: changed notes
 - 2026-11-13T13:44:05Z quick-pearl-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-13T13:44:11Z quick-pearl-zander doing → review
+- 2026-11-13T13:46:28Z lively-ginger-quail: changed notes; ticked acceptance criteria
+- 2026-11-13T13:46:28Z lively-ginger-quail review → done
