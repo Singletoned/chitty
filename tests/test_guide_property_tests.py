@@ -42,8 +42,14 @@ class TestPropertyTestGuides(unittest.TestCase):
             - Say which test must fail without the fix, because a nearby test may already
             pass."""
         )
-        self.assertIn(expected, planning)
-        self.assertIn(signals, planning)
+        pure_function = _flat(
+            """- Where behaviour can be a pure function, taking values and returning values
+            with no file, network or clock access inside it, have the ticket name that
+            function and state its properties: it is far easier to test. A function,
+            module or internal API (such as a facade) the ticket names is an internal
+            surface and part of its spec, so its tests may call it directly."""
+        )
+        self.assertIn(f"{expected} {signals} {pure_function}", planning)
         self.assertNotIn(
             "Compare each decision in the description with the criteria, because "
             "workers test what criteria name. Say which",

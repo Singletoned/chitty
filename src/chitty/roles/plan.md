@@ -38,6 +38,11 @@ task files. `chitty --help` is the full command reference.
 - Say which test must fail without the fix, because a nearby test may already
   pass.
 <!-- property-signals -->
+- Where behaviour can be a pure function, taking values and returning values
+  with no file, network or clock access inside it, have the ticket name that
+  function and state its properties: it is far easier to test. A function,
+  module or internal API (such as a facade) the ticket names is an internal
+  surface and part of its spec, so its tests may call it directly.
 - Start the reader with the output of `chitty guide cold-read <ID>`, which holds
   its worktree, setup, cleanup and report steps. Add the code most at risk and
   what you doubt. A reader keeps an implementing read under
