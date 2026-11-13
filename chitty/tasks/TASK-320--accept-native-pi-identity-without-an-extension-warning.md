@@ -1,6 +1,6 @@
 ---
 title: Accept native Pi identity without an extension warning
-status: cold-read
+status: planning
 owner: planning
 parent: TASK-275
 created: 2026-11-13
@@ -14,6 +14,10 @@ The warning in `src/chitty/actor.py` and `src/chitty/cli.py` says Pi needs the C
 
 - [ ] Generated tests show native `PI_SESSION_ID` suppresses the warning, whitespace-only identities do not, and a genuinely missing Pi identity gets a warning that does not require the extension; the native ID test fails before the fix.
 
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-320/1`. Check it against the current criteria; do not trust it.
+
 ## History
 
 - 2026-11-13T22:24:26Z mellow-umber-lapwing → backlog
@@ -25,3 +29,5 @@ The warning in `src/chitty/actor.py` and `src/chitty/cli.py` says Pi needs the C
 - 2026-11-13T22:26:24Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:32:39Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:32:39Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T22:36:42Z mellow-umber-lapwing: changed notes
+- 2026-11-13T22:36:42Z mellow-umber-lapwing cold-read → planning
