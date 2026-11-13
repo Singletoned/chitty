@@ -1,9 +1,8 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: cold-read
+status: todo
 labels:
   - needs-minor
-owner: planning
 depends_on:
   - TASK-278
 parent: TASK-275
@@ -19,6 +18,10 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 - [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
 - [ ] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-321/1`. Check it against the current criteria; do not trust it.
+
 ## History
 
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
@@ -30,3 +33,7 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 - 2026-11-13T22:26:25Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:32:40Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:32:40Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T22:44:31Z mellow-umber-lapwing: changed notes
+- 2026-11-13T22:44:31Z mellow-umber-lapwing cold-read → planning
+- 2026-11-13T22:44:33Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:44:33Z mellow-umber-lapwing planning → todo
