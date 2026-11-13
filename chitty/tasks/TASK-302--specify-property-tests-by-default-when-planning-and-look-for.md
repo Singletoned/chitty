@@ -84,7 +84,7 @@ Shared signal list. Create `src/chitty/roles/property-signals.md` holding exactl
 
 ## Plan
 
-Add tests in tests/test_guide_property_tests.py first and confirm they fail against current behavior. Cover both generated guides after whitespace normalization and scan role files for the shared-block markers, unique signal-list source, and language/tool-specific terms. Implement the exact planning and cold-read text, add the shared property-signals.md block, and expand its marker in store.guide before applying the ticket prefix; leave ROLE_NAMES unchanged. Run the focused test to verify the regression, then make format and make check pass, inspect the diff/status, commit implementation files with Task: TASK-302, and update verified criteria and handoff before review.
+Add the missing pure-function/internal-surface bullet immediately after the property-signals marker in src/chitty/roles/plan.md. Extend the planning guide test to assert the exact full block including that bullet after shared signals expansion. First run the focused test against the current behavior to confirm it fails, then implement and verify focused test plus make format and make check.
 
 ## Notes
 
@@ -126,3 +126,4 @@ Implemented and committed as 140bade (Task: TASK-302). Shared property signals e
 - 2026-11-12T21:37:15Z able-ginger-urchin doing → review
 - 2026-11-13T08:52:39Z mellow-ebony-marten: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-13T08:52:39Z mellow-ebony-marten review → doing
+- 2026-11-13T08:55:55Z honest-ginger-puffin: wrote the plan
