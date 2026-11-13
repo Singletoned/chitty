@@ -1,6 +1,6 @@
 ---
 title: Accept native Pi identity without an extension warning
-status: review
+status: done
 parent: TASK-275
 created: 2026-11-13
 ---
@@ -24,6 +24,9 @@ Possible starting point: `git diff main...refs/cold-read/TASK-320/1`. Check it a
 Regression-first evidence: `.venv/bin/python -m unittest tests.test_guide_pi_warning` failed before implementation. Hypothesis found PI_SESSION_ID="0" still considered missing; whitespace in CHITTY_PI_SESSION_ID was incorrectly treated as present; the old extension-only message also failed the revised expectations.
 
 Hypothesis regression suite failed before the fix (including native PI_SESSION_ID and whitespace identities), then passed after the identity predicate and guide diagnostic were corrected. Full make check passes.
+
+Reviewed:
+1: pass - `uv run python -m unittest tests.test_guide_pi_warning` printed `Ran 7 tests` and `OK`; generated cases cover native, extension and actor identities and whitespace in Pi and non-Pi environments, and the guide test checks the remedy. Running the native generated test with `pi_session_environment_missing` loaded from `git show main:src/chitty/actor.py` printed `FAILED (failures=1)` with identity `0`; it passes on this branch. `make format && make check` passed (544 Python tests and Node tests).
 
 ## Summary
 
@@ -49,3 +52,5 @@ Implemented native Pi identity recognition and actionable missing-identity guida
 - 2026-11-13T22:39:12Z sunny-russet-gannet: changed notes
 - 2026-11-13T22:41:51Z sunny-russet-gannet: changed notes, summary; ticked acceptance criteria
 - 2026-11-13T22:41:51Z sunny-russet-gannet doing → review
+- 2026-11-13T23:38:41Z tidy-amber-falcon: changed notes; ticked acceptance criteria
+- 2026-11-13T23:38:41Z tidy-amber-falcon review → done
