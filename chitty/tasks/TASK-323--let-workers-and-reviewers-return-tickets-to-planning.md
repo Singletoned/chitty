@@ -4,6 +4,7 @@ status: review
 labels:
   - workflow
   - review
+  - needs-minor
 priority: high
 created: 2026-11-13
 moved_from: BACKLOG-48584236
@@ -28,9 +29,11 @@ Use existing planning status and selection machinery, not a new command or runne
 
 Implemented return-to-planning validation, runner handoff, tests and guides. make check passes with 536 Python tests plus Node tests.
 
+Compared and consolidated both implementations on `task-323` in `c1c4c5b`. Kept the broader Hypothesis, real-file CLI/MCP and subprocess tests plus the worker generic/Pi guidance; removed redundant runner tests and contradictory blocked/design guidance. The original Python regressions failed before implementation (12 tests, 31 failing subtests), then passed; the additional Pi prompt regression failed before the prompt correction and now passes. Final `make format` and `make check`: 539 Python tests and 28 Node tests pass. Neither implementation was independently reviewed here.
+
 ## Summary
 
-Handoff: shared CLI and MCP validation accepts doing/review to planning with meaningful notes, review verdicts and ownership release; runner and Pi prompts stop cleanly while preserving branches. Verification: make check. Follow-up: independent review.
+Ready for independent review in `.worktrees/task-323` on `task-323`. Consolidation commit `c1c4c5b` preserves both implementation histories. Returns from doing/review to planning require a nonblank note and release ownership; review independence and failing per-criterion verdicts remain enforced. Guides, Python and Pi continuation prompts agree on planning for requirement/design gaps, doing for implementation defects, and blocked for external help. Worktree/branch preservation and planning selection exclusion have real-file/subprocess coverage. Existing escalation and dirty-review stop remain unchanged. Verification: original Python tests failed before the fix; added Pi design-decision prompt test also failed before its fix. Final make format and make check pass: 539 Python tests, 28 Node tests. No changes merged to main. Duplicate manual worktree is being removed after confirming its entire history is reachable here.
 
 ## History
 
@@ -40,3 +43,4 @@ Handoff: shared CLI and MCP validation accepts doing/review to planning with mea
 - 2026-11-13T23:06:15Z brisk-yellow-urchin: changed summary
 - 2026-11-13T23:07:25Z rosy-coral-falcon: changed notes, summary; ticked acceptance criteria
 - 2026-11-13T23:07:25Z rosy-coral-falcon doing → review
+- 2026-11-13T23:13:43Z brisk-yellow-urchin: changed labels, notes, summary
