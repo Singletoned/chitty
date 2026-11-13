@@ -66,12 +66,56 @@ class TestRunErrorReporter(CliTestCase):
         self.assertFalse(record.exists())
         self.assertEqual(self.json("show", "TASK-1")["status"], "error")
 
+    def test_setup_failure_handoff_preserves_full_output(self):
+        self.setup_repo(None)
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                'setup = "true"', "setup = \"sh -c 'echo SETUP_MARKER; exit 9'\""
+            )
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure failing setup")
+        self.add_ticket()
+
+        self.run_cli("run", "--mode", "work")
+
+        note = self.json("show", "TASK-1")["notes"]
+        self.assertIn("setup exited with status 9", note)
+        self.assertIn("SETUP_MARKER", note)
+
     def test_recoverable_ticket_failure_does_not_call_reporter(self):
         reporter, record = self.write_reporter(exit_code=7)
         self.setup_repo(reporter)
         self.add_ticket()
         self.run_cli("run", "--mode", "work")
         self.assertFalse(record.exists())
+
+    def test_interrupted_agent_calls_reporter(self):
+        reporter, record = self.write_reporter()
+        self.setup_repo(reporter)
+        agent = self.tmp / "interrupt-agent"
+        agent.write_text(
+            "#!" + sys.executable + "\nimport os, signal\nos.kill(os.getpid(), signal.SIGINT)\n"
+        )
+        agent.chmod(agent.stat().st_mode | stat.S_IXUSR)
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                'agent_command = "false {mode} {id}"',
+                f'agent_command = "{agent} {{mode}} {{id}}"',
+            )
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure interrupting agent")
+        self.add_ticket()
+
+        result = self.run_cli("run", "--mode", "work", exit_code=130)
+
+        self.assertIn("interrupted during agent", result.stderr)
+        message, context = json.loads(record.read_text())
+        self.assertEqual(message, "interrupted during agent")
+        self.assertEqual(json.loads(context)["phase"], "agent")
 
     def test_argument_error_reports_message_and_ticket_context(self):
         reporter, record = self.write_reporter()
