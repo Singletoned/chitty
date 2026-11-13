@@ -1,6 +1,6 @@
 ---
 title: Accept native Pi identity without an extension warning
-status: doing
+status: review
 parent: TASK-275
 created: 2026-11-13
 ---
@@ -11,7 +11,7 @@ The warning in `src/chitty/actor.py` and `src/chitty/cli.py` says Pi needs the C
 
 ## Acceptance Criteria
 
-- [ ] Generated tests show native `PI_SESSION_ID` suppresses the warning, whitespace-only identities do not, and a genuinely missing Pi identity gets a warning that does not require the extension; the native ID test fails before the fix.
+- [x] Generated tests show native `PI_SESSION_ID` suppresses the warning, whitespace-only identities do not, and a genuinely missing Pi identity gets a warning that does not require the extension; the native ID test fails before the fix.
 
 ## Plan
 
@@ -22,6 +22,12 @@ Update the Pi missing-identity predicate to use the same trimmed identity preced
 Possible starting point: `git diff main...refs/cold-read/TASK-320/1`. Check it against the current criteria; do not trust it.
 
 Regression-first evidence: `.venv/bin/python -m unittest tests.test_guide_pi_warning` failed before implementation. Hypothesis found PI_SESSION_ID="0" still considered missing; whitespace in CHITTY_PI_SESSION_ID was incorrectly treated as present; the old extension-only message also failed the revised expectations.
+
+Hypothesis regression suite failed before the fix (including native PI_SESSION_ID and whitespace identities), then passed after the identity predicate and guide diagnostic were corrected. Full make check passes.
+
+## Summary
+
+Implemented native Pi identity recognition and actionable missing-identity guidance. Verified with focused Hypothesis tests and full make check. No follow-ups.
 
 ## History
 
@@ -41,3 +47,5 @@ Regression-first evidence: `.venv/bin/python -m unittest tests.test_guide_pi_war
 - 2026-11-13T22:38:29Z sunny-russet-gannet todo → doing
 - 2026-11-13T22:38:51Z sunny-russet-gannet: wrote the plan
 - 2026-11-13T22:39:12Z sunny-russet-gannet: changed notes
+- 2026-11-13T22:41:51Z sunny-russet-gannet: changed notes, summary; ticked acceptance criteria
+- 2026-11-13T22:41:51Z sunny-russet-gannet doing → review
