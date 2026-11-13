@@ -12,7 +12,9 @@ task files. `chitty --help` is the full command reference.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
-  criteria. About five criteria is the limit; split larger work. Split a ticket when one criterion collects more than about five separate checks.
+  criteria. Err on the side of splitting: a ticket that seems too small is not
+  a problem. About five criteria is the limit; split larger work. Split a ticket
+  when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until you start writing it. Move it to
   `-s planning` while you write it, to `-s cold-read` while a reader works on
   it, back to `-s planning` to record the outcomes, then to `-s todo`. Use its
