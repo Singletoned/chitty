@@ -16,6 +16,10 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 - [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
 - [ ] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
+## Plan
+
+Add Hypothesis regression coverage for repeated fresh and existing-project init runs across present/absent arbitrary extension, state, and settings files; run it before implementation and record failures. Remove init installation, validation, and Pi settings migration behavior while retaining the bundled extension. Replace obsolete assertions and document manual cleanup and restart guidance. Run make format and make check, then commit code and tests.
+
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-321/1`. Check it against the current criteria; do not trust it.
@@ -39,3 +43,4 @@ The configuration prerequisite was completed in `c2eae4b`; the human work and re
 - 2026-11-13T22:44:33Z mellow-umber-lapwing planning → todo
 - 2026-11-13T23:23:47Z mellow-umber-lapwing: changed dependencies, notes
 - 2026-11-13T23:25:37Z jolly-indigo-otter todo → doing
+- 2026-11-13T23:25:50Z jolly-indigo-otter: wrote the plan
