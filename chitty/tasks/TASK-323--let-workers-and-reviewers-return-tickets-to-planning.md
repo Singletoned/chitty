@@ -24,8 +24,13 @@ Workers and reviewers must be able to return a ticket with missing or contradict
 
 Use existing planning status and selection machinery, not a new command or runner mode. Add shared validation for doing/review returns requiring a meaningful note and releasing ownership; include review-to-planning in review independence and criterion-verdict validation without altering existing review-to-doing escalation. Write Hypothesis and real-file interface tests first, plus focused guide and fake-agent runner tests; show new regressions fail before implementing. Update both role guides, continuation prompts, README and pipeline notes. Run format and all checks, commit intended paths only, and leave ready for independent review.
 
+## Summary
+
+Manual implementation is complete on `return-to-planning`, commit `e097ef6`, but another `chitty run` concurrently claimed this ticket in `.worktrees/task-323` while it was unowned. Do not discard either workspace or change status without coordinating. The implementation commit can be inspected or cherry-picked as a starting point; verify it against current criteria rather than trusting it. Shared validation now requires a nonblank reason, releases ownership, and applies review independence and failing criterion verdicts to review-to-planning returns. Both role guides, continuation prompts, README and pipeline notes explain routing and preserved work. New Hypothesis, real-file CLI/MCP, rendered-guide and real-subprocess fake-agent tests: `Ran 12 tests`, `FAILED (failures=31)` before implementation, then `Ran 12 tests`, `OK`. Final `make format` and `make check` pass: 539 Python tests plus Node tests. No real model session was started for testing; existing review-to-doing escalation is unchanged. All implementation changes are committed; status intentionally remains doing because the concurrent worker is active.
+
 ## History
 
 - 2026-11-13T19:51:56Z zesty-umber-puffin → backlog
 - 2026-11-13T22:55:51Z brisk-yellow-urchin: changed title, description, acceptance criteria; wrote the plan
 - 2026-11-13T22:55:51Z brisk-yellow-urchin backlog → doing
+- 2026-11-13T23:06:15Z brisk-yellow-urchin: changed summary
