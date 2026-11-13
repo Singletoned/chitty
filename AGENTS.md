@@ -71,3 +71,8 @@ shows it. A test criterion passes only with evidence that the test fails without
 the change.
 
 <!-- chitty:end -->
+
+## Learned Rules (managed by /learn)
+<!-- pi:learn:start -->
+- Never make implementation or documentation fixes directly on `main`, including fixes made by the assistant. Create or use a dedicated workspace/worktree, commit the change there, and merge it into `main` only after verification. Preserve isolation because multiple sessions may run concurrently.
+<!-- pi:learn:end -->
