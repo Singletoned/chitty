@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: doing
+status: review
 created: 2026-11-11
 ---
 
@@ -61,9 +61,11 @@ Added test_main_checkout_discovery_error_reports. It failed before the fix becau
 
 Review failed (integration): merging `main` conflicts in `PLAN.md`.
 
+Merged main; resolved PLAN.md deletion by carrying error_reporter documentation into docs/plan/config.md. make format && make check passed (519 Python tests and Node tests). chitty fix on the TASK-289 task file passed. Worktree clean.
+
 ## Summary
 
-Configured error reporting now covers post-config argument validation and main-checkout discovery failures, as well as existing run failures. Regression for missing Git metadata failed before the fix and passes now. make format && make check passed all 519 Python tests and Node tests; chitty fix completed. Implementation commit: 31d8c94. No follow-ups.
+Error reporting covers configured failures including argument validation and main-checkout discovery, and docs now live in docs/plan/config.md after merging main. Regression test for missing Git metadata fails without the fix and passes with it. Verified with make format && make check (519 Python tests and Node tests) and chitty fix. Main merge committed as 8ff0ce4; implementation commit 31d8c94.
 
 ## History
 
@@ -103,3 +105,5 @@ Configured error reporting now covers post-config argument validation and main-c
 - 2026-11-12T21:47:40Z calm-coral-raven doing → review
 - 2026-11-13T08:49:03Z zesty-ginger-zander: changed notes
 - 2026-11-13T08:49:03Z zesty-ginger-zander review → doing
+- 2026-11-13T08:53:35Z kind-ginger-heron: changed notes, summary; ticked acceptance criteria
+- 2026-11-13T08:53:35Z kind-ginger-heron doing → review
