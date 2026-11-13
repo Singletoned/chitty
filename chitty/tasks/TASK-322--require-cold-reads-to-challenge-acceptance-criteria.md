@@ -6,6 +6,7 @@ labels:
   - planning
 priority: high
 created: 2026-11-13
+moved_from: BACKLOG-10274890
 ---
 
 ## Description
