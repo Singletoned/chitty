@@ -13,10 +13,10 @@ When automated ticket work fails, the failure currently disappears into terminal
 
 ## Acceptance Criteria
 
-- [ ] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
+- [x] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
 - [x] Normal `chitty next` and `chitty run` never select `error`; explicit `chitty run --errors` selects only error tickets, uses a repair-oriented agent prompt, and rejects `--ticket`, `--mode`, and `--owner` combinations.
-- [ ] A repair run requires the agent to set a repaired ticket to `review` or a ticket requiring a human decision to `blocked`; any other final status is reported as an error.
-- [ ] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
+- [x] A repair run requires the agent to set a repaired ticket to `review` or a ticket requiring a human decision to `blocked`; any other final status is reported as an error.
+- [x] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
 
 ## Plan
 
@@ -34,6 +34,8 @@ Review failed (tests): Add regression coverage and fix the missing output captur
 `make format && make check` passed: 525 Python tests and Node tests.
 
 Follow-up verification: setup failures now retain command output in the error note; interruption reporter regression confirms phase context. Full `make format && make check` passed (526 Python tests and Node tests). The only uncommitted formatter adjustment previously observed is now absent; working tree is clean.
+
+Implemented the review fixes in commits `1a1348b` and `b4689bb`: setup and agent output are captured in handoff errors, invalid repair final statuses raise a reported error, and interruptions are reported through the configured reporter. Added regression tests for all three findings. `make check` passes 527 Python tests plus Node tests.
 
 ## Summary
 
@@ -58,3 +60,4 @@ Committed runner failure-output capture and repair-status validation in 1a1348b 
 - 2026-11-13T19:30:40Z sunny-zinc-ibis review → doing
 - 2026-11-13T19:36:45Z friendly-ochre-quail: changed notes, summary
 - 2026-11-13T19:36:45Z friendly-ochre-quail doing → review
+- 2026-11-13T19:36:48Z zesty-umber-puffin: changed notes; ticked acceptance criteria
