@@ -13,16 +13,21 @@ When automated ticket work fails, the failure currently disappears into terminal
 
 ## Acceptance Criteria
 
-- [ ] Ticket-scoped runner failures move the ticket to `error`, preserve its branch and worktree, and record the phase, error output, and recovery context in the ticket notes.
-- [ ] Normal ticket selection skips `error`; an explicit `chitty run --errors` selects only error tickets and gives the agent a repair-oriented prompt.
-- [ ] `chitty list` and `chitty show` expose error tickets and their recovery history, while a repaired ticket can return to the normal review or blocked flow.
-- [ ] Failures without a safe ticket handoff invoke the configured `error_reporter` with phase, ticket, mode, worktree, and error context.
+- [ ] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
+- [ ] Normal `chitty next` and `chitty run` never select `error`; explicit `chitty run --errors` selects only error tickets, uses a repair-oriented agent prompt, and rejects `--ticket`, `--mode`, and `--owner` combinations.
+- [ ] A repair run requires the agent to set a repaired ticket to `review` or a ticket requiring a human decision to `blocked`; any other final status is reported as an error.
+- [ ] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
 
 ## Plan
 
-1. Add `error` to the task status model, selection/display, guides, and status-transition validation; keep `blocked` for human or external prerequisites. 2. Refactor `chitty run` failure boundaries so ticket-scoped recoverable failures write an `error` handoff while preserving the worktree, and global/catastrophic failures continue through `error_reporter` with structured context. 3. Add explicit `chitty run --errors` selection and a repair prompt/agent mode; cover landing, agent, setup/check, and unassignable failure paths with real-file tests. 4. Update runner documentation and run format/check.
+1. Add `error` to the task status model, validation, selection/display, status transitions, and guides; keep `blocked` for human or external prerequisites. 2. Add a dedicated `--errors` run selection and repair prompt, with explicit option validation and repair result validation. 3. Refactor run failure boundaries so setup, check, agent, and landing failures after ticket/worktree resolution write an error handoff without deleting the worktree or branch; preserve existing behavior for interruptions and unsafe global failures. 4. Pass structured phase/ticket/mode/worktree/error context to `error_reporter`, and add focused real-file tests for each failure class. 5. Update runner documentation and run format/check.
+
+## Notes
+
+Cold read found four ambiguities. Resolved here: recoverable failures are setup/check/agent/landing after ticket and worktree resolution; unsafe failures are reported without changing task state; `--errors` is mutually exclusive with `--ticket`, `--mode`, and `--owner`; repair agents must finish in `review` or `blocked`; reporter context has five fields and full captured output.
 
 ## History
 
 - 2026-11-13T18:27:49Z zesty-umber-puffin → planning
 - 2026-11-13T18:28:00Z zesty-umber-puffin: wrote the plan
+- 2026-11-13T18:29:28Z zesty-umber-puffin: changed acceptance criteria, notes; wrote the plan
