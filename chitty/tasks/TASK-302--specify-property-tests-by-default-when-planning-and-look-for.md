@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: doing
+status: review
 created: 2026-11-12
 ---
 
@@ -78,7 +78,7 @@ Shared signal list. Create `src/chitty/roles/property-signals.md` holding exactl
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_guide_property_tests.py` shows that `chitty guide plan` contains the planning block, with its `<!-- property-signals -->` line replaced by the shared signal list, after collapsing whitespace, and no longer contains `Compare each decision in the description with the criteria, because workers test what criteria name. Say which` (the old bullet). It fails today.
+- [x] A test in `tests/test_guide_property_tests.py` shows that `chitty guide plan` contains the planning block, with its `<!-- property-signals -->` line replaced by the shared signal list, after collapsing whitespace, and no longer contains `Compare each decision in the description with the criteria, because workers test what criteria name. Say which` (the old bullet). It fails today.
 - [x] A test in the same file shows that `chitty guide cold-read TASK-1` contains the shared signal list and the `Missed properties` bullet, after collapsing whitespace, and that neither guide prints `<!-- property-signals -->`. It fails today.
 - [x] A test in the same file reads the files in `src/chitty/roles/` and shows that only `property-signals.md` contains `These signal a property`, that `plan.md` and `cold-read.md` each contain the line `<!-- property-signals -->`, and that no role file matches `python|pytest|unittest|quickcheck|fast-check|jest` (case-insensitive). It fails today.
 
@@ -97,9 +97,11 @@ Review failed (tests): Add the missing pure-function and internal-surface bullet
 2: pass - The focused test printed OK; against an archived `main` source tree it raised FileNotFoundError for the missing shared list, and the specified signal and report text are present.
 3: pass - The focused test printed OK; against archived `main` it failed with `[] != ['property-signals.md']`. `make format && make check` passed with 517 tests OK and Node tests passing.
 
+Review fix regression was verified: the extended planning-guide test failed before adding the missing bullet, then passed after the guide change. Focused guide tests and make format && make check passed; chitty fix emitted existing task-text warnings only.
+
 ## Summary
 
-Implemented and committed as 140bade (Task: TASK-302). Shared property signals expand in plan and cold-read guides before ticket prefixing; ROLE_NAMES remains unchanged. Verified all three criteria with tests/test_guide_property_tests.py, then make format and make check. No follow-up work.
+Restored the pure-function/internal-surface bullet after the expanded property signals in the planning guide. The planning guide test now verifies the complete specified block and ordering. Regression test failed before the guide change and passed after. Focused tests and make format && make check passed (517 Python suites and Node tests); chitty fix reported pre-existing task-text warnings. Follow-up: none.
 
 ## History
 
@@ -127,3 +129,5 @@ Implemented and committed as 140bade (Task: TASK-302). Shared property signals e
 - 2026-11-13T08:52:39Z mellow-ebony-marten: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-13T08:52:39Z mellow-ebony-marten review → doing
 - 2026-11-13T08:55:55Z honest-ginger-puffin: wrote the plan
+- 2026-11-13T08:57:27Z honest-ginger-puffin: changed notes, summary; ticked acceptance criteria
+- 2026-11-13T08:57:27Z honest-ginger-puffin doing → review
