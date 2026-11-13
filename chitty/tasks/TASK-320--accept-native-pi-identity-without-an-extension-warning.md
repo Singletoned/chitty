@@ -1,6 +1,7 @@
 ---
 title: Accept native Pi identity without an extension warning
-status: planning
+status: cold-read
+owner: planning
 parent: TASK-275
 created: 2026-11-13
 ---
@@ -18,3 +19,5 @@ The warning in `src/chitty/actor.py` and `src/chitty/cli.py` says Pi needs the C
 - 2026-11-13T22:24:26Z mellow-umber-lapwing → backlog
 - 2026-11-13T22:24:49Z mellow-umber-lapwing: changed description, acceptance criteria
 - 2026-11-13T22:24:49Z mellow-umber-lapwing backlog → planning
+- 2026-11-13T22:25:07Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:25:07Z mellow-umber-lapwing planning → cold-read
