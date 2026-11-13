@@ -1,6 +1,6 @@
 ---
 title: Report `chitty run` errors to a configured command
-status: review
+status: done
 created: 2026-11-11
 ---
 
@@ -63,6 +63,12 @@ Review failed (integration): merging `main` conflicts in `PLAN.md`.
 
 Merged main; resolved PLAN.md deletion by carrying error_reporter documentation into docs/plan/config.md. make format && make check passed (519 Python tests and Node tests). chitty fix on the TASK-289 task file passed. Worktree clean.
 
+Reviewed: `make format && make check` passed: 519 Python tests and Node tests; worktree remained clean.
+1: pass - `test_failing_run_reports_message_and_ticket_context` passed; with `report_error` disabled in memory it errored with missing report.json.
+2: pass - `test_empty_queue_does_not_report` and existing unconfigured runs passed; a configured successful TestRunContinue run printed `successful run: 0 report exists: False`.
+3: pass - `test_failing_reporter_warns_and_preserves_failure` passed; disabling `report_error` made it fail on the missing report. Earlier review observed the warning and original agent error.
+4: pass - `test_argument_error_reports_message_and_ticket_context` and `test_main_checkout_discovery_error_reports` passed; disabling `report_error` made both error with missing report.json.
+
 ## Summary
 
 Error reporting covers configured failures including argument validation and main-checkout discovery, and docs now live in docs/plan/config.md after merging main. Regression test for missing Git metadata fails without the fix and passes with it. Verified with make format && make check (519 Python tests and Node tests) and chitty fix. Main merge committed as 8ff0ce4; implementation commit 31d8c94.
@@ -107,3 +113,5 @@ Error reporting covers configured failures including argument validation and mai
 - 2026-11-13T08:49:03Z zesty-ginger-zander review → doing
 - 2026-11-13T08:53:35Z kind-ginger-heron: changed notes, summary; ticked acceptance criteria
 - 2026-11-13T08:53:35Z kind-ginger-heron doing → review
+- 2026-11-13T08:57:31Z sunny-ebony-vole: changed notes; ticked acceptance criteria
+- 2026-11-13T08:57:31Z sunny-ebony-vole review → done
