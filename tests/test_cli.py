@@ -2146,7 +2146,7 @@ class TestIdentity(CliTestCase):
         os.environ.pop("PI_SESSION_ID")
         os.environ["PI_CODING_AGENT"] = "true"
         os.environ.pop("CHITTY_ACTOR", None)
-        self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
+        self.assertIn("Set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
 
     def test_init_removes_ineffective_pi_session_environment_setting(self):
         settings = self.tmp / "home" / ".pi" / "agent" / "settings.json"
@@ -2248,7 +2248,7 @@ class TestGuide(CliTestCase):
     def test_role_guides_omit_the_pi_session_diagnostic(self):
         os.environ["PI_CODING_AGENT"] = "true"
         os.environ.pop("CHITTY_ACTOR", None)
-        self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
+        self.assertIn("Set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
         for role in ("work", "review", "plan"):
             with self.subTest(role=role):
                 self.assertNotIn("set `CHITTY_ACTOR`", self.run_cli("guide", role).stdout)

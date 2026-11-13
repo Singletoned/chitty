@@ -246,6 +246,6 @@ def pi_session_environment_missing(environment: Mapping[str, str] | None = None)
     env = os.environ if environment is None else environment
     return (
         env.get("PI_CODING_AGENT") == "true"
-        and not env.get("CHITTY_PI_SESSION_ID")
+        and not any(env.get(variable, "").strip() for variable, _ in _SESSION_IDENTITIES)
         and not env.get("CHITTY_ACTOR", "").strip()
     )
