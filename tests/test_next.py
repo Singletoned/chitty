@@ -1808,6 +1808,8 @@ class TestNext(CliTestCase):
             self.assertNotEqual(self.git("rev-parse", "main").strip(), main_head)
             self.assertEqual(self.git("status", "--porcelain"), main_status)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+            invalid = self.run_cli("run", "--errors", exit_code=1)
+            self.assertIn("repair agent left TASK-1 in invalid status error", invalid.stderr)
             os.environ["PI_EXIT"] = "3"
             failed = self.run_cli("run", "--errors")
             self.assertEqual(failed.stdout, "TASK-1: error → error\n")

@@ -92,6 +92,10 @@ class RunInterrupted(Exception):
         self.phase = phase
 
 
+class RepairError(ChittyError):
+    """A repair agent finished without reaching an accepted final status."""
+
+
 @dataclass(frozen=True)
 class RunResult:
     action: NextAction
@@ -153,6 +157,13 @@ def run(
             action = _lock_ticket(held, main_repo, ticket, modes, owner)
             context.update(ticket=str(action.id), mode=action.mode, phase="ticket")
             return _run_ticket(main_repo, project, action, arguments, agent, context)
+    except RunInterrupted as interrupted:
+        report_error(
+            main_repo,
+            ChittyError(f"interrupted during {interrupted.phase}"),
+            {**context, "phase": interrupted.phase},
+        )
+        raise
     except ChittyError as error:
         if not isinstance(error, NoNextTicket):
             report_error(main_repo, error, context)
@@ -216,9 +227,11 @@ def _run_agent(
     command: list[str], *, cwd: Path, env: dict[str, str], timeout: int
 ) -> subprocess.CompletedProcess[bytes]:
     """Wait for an agent, terminating its process tree when its deadline expires."""
-    process = subprocess.Popen(command, cwd=cwd, env=env)
+    process = subprocess.Popen(
+        command, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    )
     try:
-        process.wait(timeout=timeout or None)
+        output, _ = process.communicate(timeout=timeout or None)
     except subprocess.TimeoutExpired:
         descendants = _process_descendants(process.pid)
         for pid in [*descendants, process.pid]:
@@ -231,9 +244,11 @@ def _run_agent(
             time.sleep(min(0.05, grace_deadline - time.monotonic()))
         for pid in _running_processes([*descendants, process.pid]):
             _signal_process(pid, signal.SIGKILL)
-        process.wait()
-        return subprocess.CompletedProcess(command, process.returncode, stderr=b"timed out")
-    return subprocess.CompletedProcess(command, process.returncode)
+        output, _ = process.communicate()
+        return subprocess.CompletedProcess(
+            command, process.returncode, stdout=output, stderr=b"timed out"
+        )
+    return subprocess.CompletedProcess(command, process.returncode, stdout=output)
 
 
 def _process_descendants(parent: int) -> list[int]:
@@ -423,12 +438,12 @@ def _run_ticket(
             agent_environment,
             "error" if repairing else old_status,
         )
-        if repairing and new_status not in {"review", "blocked", "error"}:
-            raise ChittyError(
+        if repairing and new_status not in {"review", "blocked"}:
+            raise RepairError(
                 f"repair agent left {action.id} in invalid status {new_status}; "
-                "expected review, blocked, or error"
+                "expected review or blocked"
             )
-        if repairing and new_status in {"review", "blocked"}:
+        if repairing:
             note = (
                 None
                 if new_status == "review"
@@ -446,8 +461,12 @@ def _run_ticket(
         if status_outcome(old_status, new_status) == "land":
             context["phase"] = "landing"
             _land(main_repo, worktree, action, setup, check)
+    except RunInterrupted:
+        raise
+    except RepairError:
+        raise
     except ChittyError as error:
-        handoff = _record_ticket_error(main_repo, action, worktree, "run", error)
+        handoff = _record_ticket_error(main_repo, action, worktree, context["phase"], error)
     finally:
         if new_status is None:
             try:
@@ -530,7 +549,8 @@ def _run_session(
     if outcome == "timed out":
         raise ChittyError(f"agent timed out after {repo.config.agent_timeout} seconds")
     if outcome == "failed":
-        raise ChittyError(f"agent exited with status {completed.returncode}")
+        output = completed.stdout.decode(errors="replace") if completed.stdout else "(no output)"
+        raise ChittyError(f"agent exited with status {completed.returncode}:\n{output}")
 
 
 def continuation_prompt(mode: Literal["work", "review"], ticket_id: str) -> str:
@@ -968,6 +988,9 @@ def _setup(command: str, worktree: Path) -> None:
             cwd=worktree,
             stdin=subprocess.DEVNULL,
             env=_command_environment(),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
             check=False,
         )
     except FileNotFoundError:
@@ -975,7 +998,8 @@ def _setup(command: str, worktree: Path) -> None:
     except KeyboardInterrupt:
         raise RunInterrupted("setup") from None
     if completed.returncode:
-        raise ChittyError(f"setup exited with status {completed.returncode}")
+        output = completed.stdout or "(no output)"
+        raise ChittyError(f"setup exited with status {completed.returncode}:\n{output}")
 
 
 def _record_ticket_error(
