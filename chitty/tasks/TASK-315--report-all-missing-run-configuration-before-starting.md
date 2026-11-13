@@ -1,6 +1,7 @@
 ---
 title: Report all missing run configuration before starting
-status: review
+status: blocked
+owner: human
 created: 2026-11-13
 ---
 
@@ -24,6 +25,8 @@ Suggestion origin: injustice-league
 
 Regression test failed before the implementation: `test_run_reports_all_missing_preflight_settings_together` received only the missing `setup` error. After the fix, it reports missing `setup`, `check`, and `agent_command` together, with examples, and does not create a worktree. Focused preflight tests pass. `make format && make check` passed: 524 Python tests, Ruff, Pyright, and Node tests.
 
+Review blocked: TASK-315 has no branch `task-315`. A person must restore the branch or choose the ticket's final state.
+
 ## Summary
 
 Implemented and committed as 5499298 (Task: TASK-315). `chitty run` now preflights all static required configuration, reports every missing setting in one error with examples, and names the config source. Added regression coverage and documented the required configuration and preflight behavior. Verification: regression failed before the fix; focused tests and `make format && make check` pass. No follow-ups.
@@ -36,3 +39,5 @@ Implemented and committed as 5499298 (Task: TASK-315). `chitty run` now prefligh
 - 2026-11-13T14:03:18Z zesty-umber-puffin backlog → doing
 - 2026-11-13T14:06:21Z zesty-umber-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-13T14:06:21Z zesty-umber-puffin doing → review
+- 2026-11-13T14:23:43Z plucky-dusky-gannet: changed owner, notes
+- 2026-11-13T14:23:43Z plucky-dusky-gannet review → blocked
