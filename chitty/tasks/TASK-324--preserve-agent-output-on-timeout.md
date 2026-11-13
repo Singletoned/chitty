@@ -1,6 +1,6 @@
 ---
 title: Preserve agent output on timeout
-status: todo
+status: doing
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -28,3 +28,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-324/1`. Check it a
 - 2026-11-13T23:31:23Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T23:31:24Z mellow-umber-lapwing: changed owner
 - 2026-11-13T23:31:24Z mellow-umber-lapwing planning → todo
+- 2026-11-13T23:32:53Z vivid-fawn-wren todo → doing
