@@ -39,8 +39,11 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - For a cheap-to-reverse default, choose it, note the choice and why for the
   reviewer, and comment the code where it applies. Block only for a costly
   reversal or a person decision.
-- When blocked, note the problem, who can resolve it, and what is needed; then
-  set `-s blocked`. Do not work blocked tickets. Leave `human` tickets in
+- If requirements are missing or contradictory, return the ticket to planning with
+  `-s planning --note` describing the discovery, problem and decision needed. This
+  releases ownership and preserves committed implementation work; planning and
+  cold-read must make it ready again before resumption. Use `blocked` only for an
+  external obstacle requiring help. Do not work blocked tickets. Leave `human` tickets in
   `todo`; never pick them up or block them.
 - Found unrelated work on this ticket's branch? Use plain `chitty add`, which
   files it as `BACKLOG` for the planning session. A person planning should do

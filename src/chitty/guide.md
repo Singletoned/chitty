@@ -17,6 +17,12 @@ When starting an agent by hand, run the matching focused guide:
 - `chitty guide review` for review.
 - `chitty guide plan` for writing or refining tickets.
 
+Workers and reviewers return a ticket to `planning` when requirements are missing
+or contradictory. Use `chitty edit ID -s planning --note "discovery, problem,
+decision needed"`; preserve committed implementation work, and require normal
+planning and cold-read readiness before resuming. Clear implementation defects stay
+in `work`; external obstacles go to `blocked`.
+
 Every review note, whether passing or failing, has one line per criterion below
 its `Reviewed:` or `Review failed (<cause>):` first line: `<number>: pass -
 <evidence>` or `<number>: fail - <reason>`. Evidence is the command or test that

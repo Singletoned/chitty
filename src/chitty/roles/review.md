@@ -21,7 +21,11 @@ task files. `chitty --help` is the full command reference.
   `&&`.
 - With `autocommit = true`, Chitty commits its own ticket-file edits, not code
   or tests. Do not assume this cleans the worktree.
-- Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
+- If requirements are missing or contradictory, return the ticket to planning with
+  `-s planning --note` describing the discovery, problem and decision needed, rather
+  than failing implementation. This preserves committed work and releases ownership;
+  normal planning and cold-read readiness apply before resumption. Use `blocked` only
+  for an external obstacle requiring help. Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
   if nothing exercises it, if a file it needs is missing, or if the environment
   stopped you verifying it. A ticket that is itself wrong also fails, with the
   cause `design`. A claim about what code does when it runs must be run first,

@@ -13,8 +13,11 @@
   the human (`REVIEW_FAILURE_LIMIT`): by then the ticket is the likely problem.
 - A failed review restarts in a fresh session, with the finding added as a
   criterion (TASK-307 lets reviewers fail on an uncovered requirement).
-- Workers and reviewers block for the human when the ticket is wrong. They
-  never weaken its tests.
+- Workers and reviewers return tickets to `planning` when requirements are missing
+  or contradictory, with a note describing the discovery, problem and decision needed.
+  This releases ownership and preserves committed work; planning and cold-read make
+  the ticket ready before resumption. Clear implementation defects stay in work;
+  external obstacles remain `blocked`.
 - The earlier spec-first pipeline (separate `design`, `tests` and
   `review-ticket` stages, TASK-109) was dropped on 2026-11-11; git has it.
 
