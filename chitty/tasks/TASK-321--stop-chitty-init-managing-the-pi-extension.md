@@ -1,8 +1,9 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: planning
+status: cold-read
 labels:
   - needs-minor
+owner: planning
 depends_on:
   - TASK-278
 parent: TASK-275
@@ -23,3 +24,5 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
 - 2026-11-13T22:24:50Z mellow-umber-lapwing: changed labels, dependencies, description, acceptance criteria
 - 2026-11-13T22:24:50Z mellow-umber-lapwing backlog → planning
+- 2026-11-13T22:25:23Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:25:23Z mellow-umber-lapwing planning → cold-read
