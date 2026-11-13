@@ -1,6 +1,7 @@
 ---
 title: Preserve agent output on timeout
-status: planning
+status: cold-read
+owner: planning
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -18,3 +19,5 @@ The review of `TASK-318` found that `_run_session` in `src/chitty/run.py` drops 
 - 2026-11-13T23:27:49Z mellow-umber-lapwing → backlog
 - 2026-11-13T23:28:19Z mellow-umber-lapwing: changed description, acceptance criteria
 - 2026-11-13T23:28:19Z mellow-umber-lapwing backlog → planning
+- 2026-11-13T23:28:52Z mellow-umber-lapwing: changed owner
+- 2026-11-13T23:28:52Z mellow-umber-lapwing planning → cold-read
