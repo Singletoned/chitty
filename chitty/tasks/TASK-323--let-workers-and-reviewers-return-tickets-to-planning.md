@@ -1,6 +1,6 @@
 ---
 title: Let workers and reviewers return tickets to planning
-status: doing
+status: review
 labels:
   - workflow
   - review
@@ -15,18 +15,22 @@ Workers and reviewers must be able to return a ticket with missing or contradict
 
 ## Acceptance Criteria
 
-- [ ] The shared `check_edit` validation used by CLI and MCP requires a nonblank note for `doing → planning` and `review → planning` and clears ownership on accepted returns. Review returns retain review independence and one verdict per criterion, including at least one fail when criteria exist; workers can return their own work. Hypothesis tests vary source status, criteria, owner, note presence/content and note versus repeated-notes delivery, checking rejection without mutation and preservation of unrelated ticket content.
-- [ ] Real-file CLI and MCP tests verify successful worker and reviewer returns, explanatory note and transition history, preserved implementation artifacts, empty owner, visibility in `list -s planning`, and exclusion from `next` and explicit runner selection. Invalid note or review verdict is refused before writing.
-- [ ] A real-subprocess fake-agent runner regression covers both work and review returning to planning: the run stops without continuation, landing or starting another worker; the existing worktree and branch survive. Continuation prompts offer planning as an outcome for both roles. No real model session is required.
-- [ ] Work and review guides, README and pipeline design notes explain routing to planning versus work or blocked, the discovery/problem/decision note, preservation of committed work and normal planning/cold-read readiness before resumption. Rendered-guide tests fail before the update; fixed guidance text has no variable-input property. Existing dirty-review stop and review-failure escalation remain unchanged.
+- [x] The shared `check_edit` validation used by CLI and MCP requires a nonblank note for `doing → planning` and `review → planning` and clears ownership on accepted returns. Review returns retain review independence and one verdict per criterion, including at least one fail when criteria exist; workers can return their own work. Hypothesis tests vary source status, criteria, owner, note presence/content and note versus repeated-notes delivery, checking rejection without mutation and preservation of unrelated ticket content.
+- [x] Real-file CLI and MCP tests verify successful worker and reviewer returns, explanatory note and transition history, preserved implementation artifacts, empty owner, visibility in `list -s planning`, and exclusion from `next` and explicit runner selection. Invalid note or review verdict is refused before writing.
+- [x] A real-subprocess fake-agent runner regression covers both work and review returning to planning: the run stops without continuation, landing or starting another worker; the existing worktree and branch survive. Continuation prompts offer planning as an outcome for both roles. No real model session is required.
+- [x] Work and review guides, README and pipeline design notes explain routing to planning versus work or blocked, the discovery/problem/decision note, preservation of committed work and normal planning/cold-read readiness before resumption. Rendered-guide tests fail before the update; fixed guidance text has no variable-input property. Existing dirty-review stop and review-failure escalation remain unchanged.
 
 ## Plan
 
 Use existing planning status and selection machinery, not a new command or runner mode. Add shared validation for doing/review returns requiring a meaningful note and releasing ownership; include review-to-planning in review independence and criterion-verdict validation without altering existing review-to-doing escalation. Write Hypothesis and real-file interface tests first, plus focused guide and fake-agent runner tests; show new regressions fail before implementing. Update both role guides, continuation prompts, README and pipeline notes. Run format and all checks, commit intended paths only, and leave ready for independent review.
 
+## Notes
+
+Implemented return-to-planning validation, runner handoff, tests and guides. make check passes with 536 Python tests plus Node tests.
+
 ## Summary
 
-Manual implementation is complete on `return-to-planning`, commit `e097ef6`, but another `chitty run` concurrently claimed this ticket in `.worktrees/task-323` while it was unowned. Do not discard either workspace or change status without coordinating. The implementation commit can be inspected or cherry-picked as a starting point; verify it against current criteria rather than trusting it. Shared validation now requires a nonblank reason, releases ownership, and applies review independence and failing criterion verdicts to review-to-planning returns. Both role guides, continuation prompts, README and pipeline notes explain routing and preserved work. New Hypothesis, real-file CLI/MCP, rendered-guide and real-subprocess fake-agent tests: `Ran 12 tests`, `FAILED (failures=31)` before implementation, then `Ran 12 tests`, `OK`. Final `make format` and `make check` pass: 539 Python tests plus Node tests. No real model session was started for testing; existing review-to-doing escalation is unchanged. All implementation changes are committed; status intentionally remains doing because the concurrent worker is active.
+Handoff: shared CLI and MCP validation accepts doing/review to planning with meaningful notes, review verdicts and ownership release; runner and Pi prompts stop cleanly while preserving branches. Verification: make check. Follow-up: independent review.
 
 ## History
 
@@ -34,3 +38,5 @@ Manual implementation is complete on `return-to-planning`, commit `e097ef6`, but
 - 2026-11-13T22:55:51Z brisk-yellow-urchin: changed title, description, acceptance criteria; wrote the plan
 - 2026-11-13T22:55:51Z brisk-yellow-urchin backlog → doing
 - 2026-11-13T23:06:15Z brisk-yellow-urchin: changed summary
+- 2026-11-13T23:07:25Z rosy-coral-falcon: changed notes, summary; ticked acceptance criteria
+- 2026-11-13T23:07:25Z rosy-coral-falcon doing → review
