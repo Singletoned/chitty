@@ -13,7 +13,10 @@ created: 2026-11-05
 
 Reproduced on 2026-11-13 in `echonomicon`: `uv run chitty run --loop --mode work -- --model gpt-6-luna` failed before starting the run with `cannot determine actor; set CHITTY_ACTOR or provide one of CLAUDE_CODE_SESSION_ID, CHITTY_PI_SESSION_ID, PI_SESSION_ID, CODEX_THREAD_ID, CODEX_SESSION_ID`. This is the same underlying human-shell case: `chitty run` resolves the actor while preparing its error context, before assigning its generated run actor.
 
+Fixed the `chitty run` path on 2026-11-13: it now assigns its generated run actor before argument validation and queue selection, so an ordinary shell without agent identity can start a run. Regression coverage is in `tests/test_run_error_reporter.py`; direct human writes such as `chitty edit` still require the separate actor decision described by this ticket.
+
 ## History
 
 - 2026-11-05T09:37:44Z mellow-newt → backlog
 - 2026-11-13T10:29:08Z lively-violet-puffin: changed notes
+- 2026-11-13T10:32:41Z lively-violet-puffin: changed notes
