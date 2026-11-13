@@ -1,6 +1,6 @@
 ---
 title: Retire the Chitty Pi extension
-status: planning
+status: cold-read
 labels:
   - needs-minor
 owner: planning
@@ -35,3 +35,4 @@ Use Hypothesis for properties. Test first and record failure without the change.
 - 2026-11-13T22:14:36Z mellow-umber-lapwing planning → cold-read
 - 2026-11-13T22:16:03Z mellow-umber-lapwing: changed description, acceptance criteria
 - 2026-11-13T22:16:03Z mellow-umber-lapwing cold-read → planning
+- 2026-11-13T22:16:06Z mellow-umber-lapwing planning → cold-read
