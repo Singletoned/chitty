@@ -558,13 +558,16 @@ def continuation_prompt(mode: Literal["work", "review"], ticket_id: str) -> str:
     if mode == "work":
         return (
             f"Continue working only on Chitty ticket {ticket_id}. Either finish it and set "
-            "it to `review`, or set it to `blocked` with a note giving the reason. Do not "
-            "stop with it unfinished."
+            "it to `review`, return it to `planning` with a note explaining the requirement "
+            "problem and decision needed, or set it to `blocked` with a note giving the "
+            "external obstacle. Do not stop with it unfinished."
         )
     return (
         f"Continue reviewing only Chitty ticket {ticket_id}. Either pass it (`done`) or "
-        "fail it (`doing`, with the failures in one note), or set it to `blocked` with a "
-        "note giving the reason. Do not merge or remove branches or worktrees."
+        "fail it (`doing`, with the failures in one note), return it to `planning` with "
+        "a review note explaining the requirement problem and decision needed, or set it "
+        "to `blocked` with a note giving the external obstacle. Keep one verdict per "
+        "criterion. Do not merge or remove branches or worktrees."
     )
 
 

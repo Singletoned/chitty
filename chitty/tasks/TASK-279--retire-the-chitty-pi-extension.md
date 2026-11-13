@@ -1,10 +1,9 @@
 ---
 title: Retire the Chitty Pi extension
-status: planning
+status: todo
 labels:
   - needs-minor
 depends_on:
-  - TASK-278
   - TASK-320
   - TASK-321
 parent: TASK-275
@@ -19,6 +18,12 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 
 - [ ] The bundled extension and its extension-only tests are removed; current generated examples and guidance use `{prompt}` without extension flags. A generated-example regression test fails before the change.
 - [ ] A fake `chitty run` agent and its child inherit the same `CHITTY_ACTOR`; demonstrate the test catches removal of runner actor propagation by mutation. `make check` passes.
+
+## Notes
+
+Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prerequisites; inspect with `git show refs/cold-read/TASK-279/1:<path>`. Check against the current criteria; do not trust it. The ref includes trial prerequisite commits.
+
+The extension-based repository command was removed in `c2eae4b`; the human trials in `TASK-278` are independent of extension removal.
 
 ## History
 
@@ -39,3 +44,10 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 - 2026-11-13T22:23:01Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:23:01Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:24:52Z mellow-umber-lapwing: changed dependencies, description, acceptance criteria
+- 2026-11-13T22:44:35Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:44:35Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T22:51:59Z mellow-umber-lapwing: changed notes
+- 2026-11-13T22:51:59Z mellow-umber-lapwing cold-read → planning
+- 2026-11-13T22:52:01Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:52:01Z mellow-umber-lapwing planning → todo
+- 2026-11-13T23:23:50Z mellow-umber-lapwing: changed dependencies, notes
