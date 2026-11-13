@@ -1,6 +1,6 @@
 ---
 title: Record recoverable runner failures as error tickets
-status: review
+status: doing
 labels:
   - bug
   - runner
@@ -13,10 +13,10 @@ When automated ticket work fails, the failure currently disappears into terminal
 
 ## Acceptance Criteria
 
-- [x] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
+- [ ] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
 - [x] Normal `chitty next` and `chitty run` never select `error`; explicit `chitty run --errors` selects only error tickets, uses a repair-oriented agent prompt, and rejects `--ticket`, `--mode`, and `--owner` combinations.
-- [x] A repair run requires the agent to set a repaired ticket to `review` or a ticket requiring a human decision to `blocked`; any other final status is reported as an error.
-- [x] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
+- [ ] A repair run requires the agent to set a repaired ticket to `review` or a ticket requiring a human decision to `blocked`; any other final status is reported as an error.
+- [ ] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
 
 ## Plan
 
@@ -25,6 +25,13 @@ When automated ticket work fails, the failure currently disappears into terminal
 ## Notes
 
 Cold-read findings were resolved before implementation. Regression evidence: the new explicit error-repair test failed on the pre-change tree with `Error: Invalid value for -s / --status: error is not one of ...`; it passes with the implementation. `make format && make check` passes: Ruff, Pyright, 525 unittest tests, and Node tests.
+
+Review failed (tests): Add regression coverage and fix the missing output capture, repair result validation, and interruption reporting before retrying.
+1: fail - Running `_setup` with a command that printed `SETUP_MARKER` and exited 9 printed the marker to the terminal but the handoff error contained only `setup exited with status 9`; the full output is lost.
+2: pass - `test_error_tickets_need_explicit_repair_and_repair_updates_main_state` passed; each forbidden `--errors` combination printed the usage error, and `guide("repair", "TASK-318")` printed the repair instructions.
+3: fail - A successful fake agent that left the ticket in error produced `TASK-1: error → error` and exit 0, rather than reporting an error.
+4: fail - A fake agent interrupted with `KeyboardInterrupt` printed `interrupted during agent`, but the configured reporter was not called.
+`make format && make check` passed: 525 Python tests and Node tests.
 
 ## Summary
 
@@ -45,3 +52,5 @@ Implemented and committed as 44bca53 (Task: TASK-318). Added the `error` status 
 - 2026-11-13T19:03:39Z zesty-umber-puffin: replaced notes
 - 2026-11-13T19:03:53Z zesty-umber-puffin: ticked acceptance criteria
 - 2026-11-13T19:03:53Z zesty-umber-puffin doing → review
+- 2026-11-13T19:30:40Z sunny-zinc-ibis: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-13T19:30:40Z sunny-zinc-ibis review → doing
