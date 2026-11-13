@@ -129,7 +129,7 @@ def run(
         main_root = git.main_checkout(repo.root)
         main_repo = Repo.open(main_root)
         _refuse_stale_linked_worktree(repo, main_repo)
-        _preflight(main_repo)
+        _preflight(main_repo, agent)
         main_repo.refresh_setup()
         project = main_repo.config.project
         if project is None:
@@ -540,26 +540,36 @@ def _refuse_stale_linked_worktree(repo: Repo, main_repo: Repo) -> None:
     )
 
 
-def _preflight(repo: Repo) -> None:
+def _preflight(repo: Repo, agent: str | None) -> None:
     source = config_source(repo.root)
     assert source is not None  # `Repo.open` rejects repositories without config.
     config_file = source.relative_to(repo.root)
+    problems: list[str] = []
     if not repo.config.autocommit:
-        raise ChittyError(
+        problems.append(
             f"`chitty run` requires `autocommit = true` in {config_file}, "
             "so ticket changes reach every branch; `chitty init --autocommit` sets it"
         )
     if repo.config.setup is None:
-        raise ChittyError(
+        problems.append(
             f"`chitty run` requires `setup` in {config_file}: the command that installs "
             "a new ticket worktree's environment before the agent starts, for example "
             'setup = "make install"'
         )
     if repo.config.check is None:
-        raise ChittyError(
+        problems.append(
             f"`chitty run` requires `check` in {config_file}: the command that validates "
             'a ticket worktree before the agent starts, for example check = "make check"'
         )
+    if agent is None and not (repo.config.agent_command or "").strip():
+        problems.append(
+            "agent_command is the default agent command; example: "
+            'agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
+            '--chitty-{mode} {id}"'
+        )
+    if problems:
+        details = "\n".join(f"- {problem}" for problem in problems)
+        raise ChittyError(f"`chitty run` configuration is incomplete in {config_file}:\n{details}")
     if git.current_branch(repo.root) != repo.config.main_branch:
         raise ChittyError(f"the main checkout must be on branch {repo.config.main_branch}")
 

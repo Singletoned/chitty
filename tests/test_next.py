@@ -1121,6 +1121,32 @@ class TestNext(CliTestCase):
             ["git", *args], cwd=self.root, capture_output=True, text=True, check=True
         ).stdout
 
+    def test_run_reports_all_missing_preflight_settings_together(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text()
+            .replace("autocommit = false", "autocommit = true")
+            .replace('check = "true"\n', "")
+            .replace('agent_command = "pi --chitty-{mode} {id}"\n', "")
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Todo")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+
+        result = self.run_cli("run", exit_code=1)
+
+        self.assertIn("`chitty run` configuration is incomplete in chitty.toml", result.stderr)
+        self.assertIn('setup = "make install"', result.stderr)
+        self.assertIn('check = "make check"', result.stderr)
+        self.assertIn("agent_command = ", result.stderr)
+        self.assertIn("requires `setup`", result.stderr)
+        self.assertIn("requires `check`", result.stderr)
+        self.assertFalse((self.root / ".worktrees").exists())
+
     def test_run_refuses_preflight_without_mutating(self):
         config = self.root / "chitty.toml"
         config.write_text(

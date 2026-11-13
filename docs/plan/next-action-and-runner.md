@@ -24,8 +24,22 @@
 
 ## `chitty run`
 
-- Requires `autocommit = true`, `setup`, and `agent_command` (or
-  `--agent NAME` from `[agent_commands]`).
+- Before starting, preflight reports every missing required setting in one error;
+  it does not run setup, select a ticket, or launch an agent until the error is
+  fixed. The configuration looks like this (use the repository's actual
+  commands):
+
+  ```toml
+  autocommit = true
+  setup = "make install"
+  check = "make check"
+  agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
+  ```
+
+  `autocommit`, `setup`, and `check` are always required. The default
+  `agent_command` is required unless `--agent NAME` selects a command from
+  `[agent_commands]`. The error names the config file it checked and includes
+  an example for each missing setting.
 - A plain run first lands any non-archived `done` ticket that still has a
   branch named for its ID, in ID order. It lands one, then exits 0; the next
   run refreshes setup first. `--ticket` skips this.
