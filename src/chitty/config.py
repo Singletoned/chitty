@@ -88,6 +88,7 @@ class RepoConfig(BaseModel):
     setup: str | None = None
     check: str | None = None
     agent_command: str | None = None
+    error_reporter: str | None = None
     agent_timeout: int = Field(default_factory=lambda: DEFAULT_AGENT_TIMEOUT, ge=0)
     agent_commands: dict[str, str] = {}
     work_model: str | None = None
@@ -120,7 +121,7 @@ class RepoConfig(BaseModel):
             raise ValueError("must not be blank")
         return value
 
-    @field_validator("setup", "check")
+    @field_validator("setup", "check", "error_reporter")
     @classmethod
     def _command(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():

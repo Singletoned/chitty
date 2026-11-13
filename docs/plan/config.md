@@ -19,6 +19,7 @@ review = true # done only through review → done
 # setup = "make install" # run in each ticket worktree before the agent
 # check = "make check" # validates the worktree before the agent and on landing
 # agent_command = "pi --chitty-{mode} {id}" # `{prompt}` is the guide, one arg
+# error_reporter = "sump capture chitty --message {message} --context-json {context}"
 # agent_timeout = 7200 # seconds; 0 is no limit
 # work_model = "provider/model" # when the agent command names no model
 # review_model = "provider/model"

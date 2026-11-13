@@ -27,7 +27,7 @@ from chitty.config import (
     usage_path,
     version_key,
 )
-from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError
+from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError, NoNextTicket
 from chitty.store import (
     AGENTS_FILE,
     Edit,
@@ -108,34 +108,72 @@ def run(
     owner: str | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
-    if modes and ticket is not None:
-        # A named ticket already decides its mode, so a mode could only disagree.
-        raise ChittyError("--mode cannot be used with --ticket")
-    if ticket is not None and owner is not None:
-        raise ChittyError("--owner cannot be used with --ticket")
-    if owner in ("", "human"):
-        raise ChittyError("--owner must name an agent, not human or empty")
-    # Set the run identity before selecting or locking a ticket so the lock
-    # record describes the session even when setup or preparation fails.
+    # Set identity before validating arguments or selecting a ticket so this
+    # command also works when launched from an ordinary human shell.
     os.environ.pop("CHITTY_ACTOR", None)
     os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
-    main_root = git.main_checkout(repo.root)
-    main_repo = Repo.open(main_root)
-    _refuse_stale_linked_worktree(repo, main_repo)
-    _preflight(main_repo)
-    main_repo.refresh_setup()
-    project = main_repo.config.project
-    if project is None:
-        raise ChittyError("`chitty run` requires a project name after setup refresh")
+    main_repo = repo
+    context = {"actor": actor()}
+    try:
+        if modes and ticket is not None:
+            # A named ticket already decides its mode, so a mode could only disagree.
+            raise ChittyError("--mode cannot be used with --ticket")
+        if ticket is not None and owner is not None:
+            raise ChittyError("--owner cannot be used with --ticket")
+        if owner in ("", "human"):
+            raise ChittyError("--owner must name an agent, not human or empty")
+    except ChittyError as error:
+        report_error(main_repo, error, context)
+        raise
+    try:
+        main_root = git.main_checkout(repo.root)
+        main_repo = Repo.open(main_root)
+        _refuse_stale_linked_worktree(repo, main_repo)
+        _preflight(main_repo)
+        main_repo.refresh_setup()
+        project = main_repo.config.project
+        if project is None:
+            raise ChittyError("`chitty run` requires a project name after setup refresh")
+        context["project"] = project
 
-    if ticket is None:
-        landed = _land_pending(main_repo)
-        if landed is not None:
-            return landed
+        if ticket is None:
+            landed = _land_pending(main_repo)
+            if landed is not None:
+                return landed
 
-    with ExitStack() as held:
-        action = _lock_ticket(held, main_repo, ticket, modes, owner)
-        return _run_ticket(main_repo, project, action, arguments, agent)
+        with ExitStack() as held:
+            action = _lock_ticket(held, main_repo, ticket, modes, owner)
+            context.update(ticket=str(action.id), mode=action.mode)
+            return _run_ticket(main_repo, project, action, arguments, agent)
+    except ChittyError as error:
+        if not isinstance(error, NoNextTicket):
+            report_error(main_repo, error, context)
+        raise
+
+
+_PLACEHOLDER = re.compile(r"\{(message|context)\}")
+
+
+def report_error(repo: Repo, error: ChittyError, context: dict[str, str]) -> None:
+    """Run `error_reporter`; a failing reporter warns without replacing `error`."""
+    command = repo.config.error_reporter
+    if command is None:
+        return
+    values = {"message": str(error), "context": json.dumps(context, sort_keys=True)}
+    try:
+        argv = [
+            _PLACEHOLDER.sub(lambda match: values[match.group(1)], word)
+            for word in shlex.split(command)
+        ]
+        completed = subprocess.run(argv, check=False, env=_command_environment())
+    except (OSError, ValueError) as reporter_error:
+        print(f"warning: error_reporter did not run: {reporter_error}", file=sys.stderr)
+        return
+    if completed.returncode:
+        print(
+            f"warning: error_reporter exited with status {completed.returncode}",
+            file=sys.stderr,
+        )
 
 
 def _loop_rule(label: str) -> str:
