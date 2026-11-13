@@ -11,9 +11,14 @@ Chitty does the bookkeeping, so nobody should have to remember these. Starting f
 
 Run them by hand until the pilot and first retros show what the tickets should contain.
 
+## Notes
+
+Planner, 2026-11-12: each retro also reviews `docs/plan/` against the code. Checking it on 2026-11-12 found stale facts in most files, and half of the non-goals already built. See `docs/plan/pipeline-and-feedback.md`.
+
 ## History
 
 - 2026-11-03T10:27:49Z lively-panda → backlog
 - 2026-11-03T10:28:29Z lively-panda: changed dependencies
 - 2026-11-11T10:17:17Z vivid-yellowhammer: changed parent
 - 2026-11-11T10:18:14Z vivid-yellowhammer: changed dependencies
+- 2026-11-12T22:18:36Z kind-yellow-vole: changed notes
