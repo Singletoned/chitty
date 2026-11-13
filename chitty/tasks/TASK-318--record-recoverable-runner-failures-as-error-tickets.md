@@ -18,6 +18,11 @@ When automated ticket work fails, the failure currently disappears into terminal
 - [ ] `chitty list` and `chitty show` expose error tickets and their recovery history, while a repaired ticket can return to the normal review or blocked flow.
 - [ ] Failures without a safe ticket handoff invoke the configured `error_reporter` with phase, ticket, mode, worktree, and error context.
 
+## Plan
+
+1. Add `error` to the task status model, selection/display, guides, and status-transition validation; keep `blocked` for human or external prerequisites. 2. Refactor `chitty run` failure boundaries so ticket-scoped recoverable failures write an `error` handoff while preserving the worktree, and global/catastrophic failures continue through `error_reporter` with structured context. 3. Add explicit `chitty run --errors` selection and a repair prompt/agent mode; cover landing, agent, setup/check, and unassignable failure paths with real-file tests. 4. Update runner documentation and run format/check.
+
 ## History
 
 - 2026-11-13T18:27:49Z zesty-umber-puffin → planning
+- 2026-11-13T18:28:00Z zesty-umber-puffin: wrote the plan
