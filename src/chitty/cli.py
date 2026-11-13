@@ -857,9 +857,8 @@ def guide_(role: str | None, task_id: str | None) -> None:
     click.echo(guide(role, task_id), nl=False)
     if role is None and pi_session_environment_missing():
         click.echo(
-            "\nPi needs Chitty's extension to set its session identity. Reload the extension or "
-            "set `CHITTY_ACTOR` when starting Pi; servers started before the extension use "
-            "that workaround."
+            "\nPi has no session identity. Set `CHITTY_ACTOR` when starting Pi, or provide a "
+            "native Pi session ID."
         )
 
 
