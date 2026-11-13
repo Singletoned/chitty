@@ -8,7 +8,7 @@
   migrated once; malformed or ambiguous markers fail loudly for a person to fix.
 - The block is a short pointer: Markdown and shell quoting rules, landing,
   review-note format, and which `chitty guide <role>` to run. The full rules
-  are the role files, printed by `chitty guide work|review|plan|cold-read`.
+  are the role files, printed by `chitty guide work|review|repair|plan|cold-read`.
   `chitty guide setup` is the checklist for configuring `chitty run`.
 - `chitty guide` prints the block without markers; `chitty --help` points
   agents at it; MCP serves it as `chitty://guide`.

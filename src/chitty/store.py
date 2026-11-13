@@ -54,7 +54,7 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 BROKEN_DEPENDENCY_GLYPH = "⚠️"
-ROLE_NAMES = ("work", "review", "plan", "cold-read", "setup")
+ROLE_NAMES = ("work", "review", "repair", "plan", "cold-read", "setup")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
 RANDOM_ID_MIN = 10_000_000
 RANDOM_ID_MAX = 99_999_999
@@ -149,6 +149,9 @@ class Edit:
     # Internal, not exposed in the CLI or MCP: `chitty run` fails a review
     # before any criterion is reviewed, so there is nothing to give a verdict on.
     skip_verdicts: bool = False
+    # Internal runner handoff: synchronize a status in the main checkout after
+    # an error repair, even though the repair branch has a newer task revision.
+    skip_current_version: bool = False
 
     def is_empty(self) -> bool:
         return not any(
@@ -518,7 +521,11 @@ class Repo:
             raise ChittyError("setting status done requires -s review first")
         entering_review = edit.status == "review" and previous_status != "review"
         passing_review = previous_status == "review" and edit.status == "done"
-        if (entering_review or passing_review) and (self.root / ".git").exists():
+        if (
+            (entering_review or passing_review)
+            and (self.root / ".git").exists()
+            and not edit.skip_current_version
+        ):
             self._require_current_version(stored)
             if uncommitted := git.uncommitted_paths(self.root):
                 listed = ", ".join(f"`{path}`" for path in uncommitted)
@@ -550,12 +557,18 @@ class Repo:
                 task = task.with_history_event(now, actor_name, action)
             if edit.status is not None and edit.status != stored.task.frontmatter.status:
                 task = task.with_history(now, actor_name, previous_status, edit.status)
-        return self._commit(replace(self._save(stored, task), actor=actor_name), "edit")
+        return self._commit(
+            replace(
+                self._save(stored, task, allow_stale=edit.skip_current_version), actor=actor_name
+            ),
+            "edit",
+        )
 
-    def _save(self, stored: StoredTask, task: Task) -> Change:
+    def _save(self, stored: StoredTask, task: Task, *, allow_stale: bool = False) -> Change:
         """Write an edited task; touches nothing if the content is unchanged."""
         # Guard every shared-store write so CLI and MCP cannot fork a task differently.
-        self._require_current_version(stored)
+        if not allow_stale:
+            self._require_current_version(stored)
         if task.frontmatter.depends_on != stored.task.frontmatter.depends_on:
             self.check_dependencies(task.frontmatter.depends_on)
         if task.frontmatter.parent and task.frontmatter.parent != stored.task.frontmatter.parent:
@@ -1414,7 +1427,7 @@ def _ticket_action(
 ) -> NextAction | None:
     """Validate a ticket for running, or return None when selecting the next ticket."""
     frontmatter = stored.task.frontmatter
-    status_order = {"review": 0, "doing": 1, "todo": 2}
+    status_order = {"review": 0, "doing": 1, "todo": 2, "error": 3}
     if stored.archived:
         if refuse:
             raise ChittyError(f"cannot run archived ticket {stored.id}")
@@ -1423,6 +1436,8 @@ def _ticket_action(
         if refuse:
             raise ChittyError(f"cannot run {stored.id}: status is {frontmatter.status}")
         return None
+    if refuse and frontmatter.status == "error":
+        raise ChittyError(f"cannot run {stored.id}: use `chitty run --errors` to repair it")
     if stored.context == "human":
         if refuse:
             raise ChittyError(f"cannot run human ticket {stored.id}")
@@ -1506,7 +1521,7 @@ def ticket_action(repo: Repo, task_id: TaskId) -> NextAction:
 def next_action(
     repo: Repo,
     *,
-    modes: tuple[Literal["work", "review"], ...] = (),
+    modes: tuple[Literal["work", "review", "errors"], ...] = (),
     owner: str | None = None,
 ) -> NextAction:
     """Select the one ticket to review or work next across every context.
@@ -1539,12 +1554,20 @@ def next_action(
         fact = _selection_facts(repo, stored, locked=is_locked, dependencies=eligible)
         facts.append(fact)
         stored_by_id[str(stored.id)] = stored
-    # Keep omitted statuses out of selection; None preserves the historical order.
-    order = STATUSES if repo.config.job_order is None else tuple(repo.config.job_order)
+    # Keep omitted statuses out of selection; error tickets are opt-in.
+    configured_order = STATUSES if repo.config.job_order is None else tuple(repo.config.job_order)
+    if "errors" in modes:
+        order = ("error",)
+    else:
+        order = tuple(status for status in configured_order if status != "error")
     selected = choose(tuple(facts), modes=modes, owner=owner, order=order)
     if selected is None:
         raise NoNextTicket(
-            "no next ticket" if not modes else f"no next ticket for --mode {' or '.join(modes)}"
+            "no error ticket"
+            if modes == ("errors",)
+            else "no next ticket"
+            if not modes
+            else f"no next ticket for --mode {' or '.join(modes)}"
         )
     stored = stored_by_id[selected.id]
     return NextAction("review" if stored.task.frontmatter.status == "review" else "work", stored.id)

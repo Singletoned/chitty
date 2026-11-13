@@ -50,8 +50,9 @@ class TestAgentTimeout(CliTestCase):
         env = os.environ.copy()
         env["PATH"] = f"{bindir}:{env['PATH']}"
         with patch.dict(os.environ, env):
-            result = self.run_cli("run", "--mode", "work", exit_code=1)
-        self.assertIn("agent timed out after 2 seconds", result.output)
+            result = self.run_cli("run", "--mode", "work")
+        self.assertEqual(result.stdout, "TASK-1: todo → error\n")
+        self.assertIn("agent timed out after 2 seconds", self.run_cli("show", "TASK-1").stdout)
         usage = self.tmp / "data/chitty/usage/timeout-test.jsonl"
         self.assertTrue(usage.exists())
         entries = [json.loads(line) for line in usage.read_text().splitlines()]

@@ -212,7 +212,7 @@ class TestRunLock(RunLockTestCase):
 
         failed = self.add("Fails")
         (self.logs / "fail").touch()
-        self.run_cli("run", "--ticket", failed, exit_code=1)
+        self.run_cli("run", "--ticket", failed)
         self.assertEqual((self.logs / f"{failed}.locked").read_text(), "True")
         self.assertFalse(is_locked(self.root, failed))
         (self.logs / "fail").unlink()

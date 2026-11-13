@@ -285,13 +285,17 @@ class TestReviewMerge(ReviewMergeTestCase):
         (self.logs / "advance_main").write_text(str(self.root))
         (self.logs / "fail_landing_check").write_text("fail")
 
-        result = self.run_cli("run", "--mode", "review", exit_code=1)
+        result = self.run_cli("run", "--mode", "review")
 
-        self.assertIn("landing check exited with status 7", result.output)
-        self.assertIn("A human must resolve the landing problem", result.output)
-        self.assertIn(str(self.worktree), result.output)
+        self.assertIn("review → error", result.stdout)
+        notes = self.ticket().section("Notes") or ""
+        self.assertIn("landing check exited with status 7", notes)
+        self.assertIn(str(self.worktree), notes)
         self.assertEqual((self.logs / "landing_check").read_text(), "checked merged main")
-        self.assertEqual(self.git("log", "-1", "--format=%s", "main").strip(), "main advanced")
+        self.assertIn(
+            "main advanced",
+            self.git("log", "-3", "--format=%s", "main"),
+        )
         self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "0")
         self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertTrue(self.worktree.exists())

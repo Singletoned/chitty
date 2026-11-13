@@ -3,7 +3,8 @@
 ## Flow
 
 - `backlog` → `planning` → `cold-read` → `planning` → `todo` → `doing` →
-  `review` → `done`.
+  `review` → `done`; recoverable runner failures enter `error` and use an
+  explicit repair run before returning to `review` or `blocked`.
 - A different session does each step; nobody reviews their own work.
 - Scripted gates come first: they cost no tokens and cannot be argued with.
   They never relax. Only the human's sampling rate moves, and only on measured
