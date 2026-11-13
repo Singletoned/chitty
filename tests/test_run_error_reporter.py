@@ -96,8 +96,19 @@ class TestRunErrorReporter(CliTestCase):
         self.assertIn("git rev-parse --git-common-dir", message)
         self.assertTrue(json.loads(context)["actor"])
 
-    def test_empty_queue_does_not_report(self):
+    def test_empty_queue_does_not_report_without_agent_identity(self):
         reporter, record = self.write_reporter()
         self.setup_repo(reporter)
-        self.run_cli("run", "--mode", "work", exit_code=3)
+        with patch.dict(
+            os.environ,
+            {
+                "CHITTY_ACTOR": "",
+                "CLAUDE_CODE_SESSION_ID": "",
+                "CHITTY_PI_SESSION_ID": "",
+                "PI_SESSION_ID": "",
+                "CODEX_THREAD_ID": "",
+                "CODEX_SESSION_ID": "",
+            },
+        ):
+            self.run_cli("run", "--mode", "work", exit_code=3)
         self.assertFalse(record.exists())

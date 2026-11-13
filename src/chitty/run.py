@@ -108,6 +108,12 @@ def run(
     owner: str | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
+    # Set identity before validating arguments or selecting a ticket so this
+    # command also works when launched from an ordinary human shell.
+    os.environ.pop("CHITTY_ACTOR", None)
+    os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
+    main_repo = repo
+    context = {"actor": actor()}
     try:
         if modes and ticket is not None:
             # A named ticket already decides its mode, so a mode could only disagree.
@@ -117,16 +123,9 @@ def run(
         if owner in ("", "human"):
             raise ChittyError("--owner must name an agent, not human or empty")
     except ChittyError as error:
-        report_error(repo, error, {"actor": actor()})
+        report_error(main_repo, error, context)
         raise
-    main_repo = repo
-    context = {"actor": actor()}
     try:
-        # Set identity before selecting or locking a ticket so lock records
-        # describe the session even when setup or preparation fails.
-        os.environ.pop("CHITTY_ACTOR", None)
-        os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
-        context["actor"] = actor()
         main_root = git.main_checkout(repo.root)
         main_repo = Repo.open(main_root)
         _refuse_stale_linked_worktree(repo, main_repo)
