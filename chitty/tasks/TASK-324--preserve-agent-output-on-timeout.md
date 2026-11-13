@@ -11,7 +11,7 @@ The review of `TASK-318` found that `_run_session` in `src/chitty/run.py` drops 
 
 ## Acceptance Criteria
 
-- [ ] A fake agent prints `TIMEOUT_MARKER` and times out; its ticket enters `error`, and the recorded error includes both the marker and timeout duration. The regression fails before the fix and passes after it.
+- [x] A fake agent prints `TIMEOUT_MARKER` and times out; its ticket enters `error`, and the recorded error includes both the marker and timeout duration. The regression fails before the fix and passes after it.
 
 ## Plan
 
@@ -20,6 +20,8 @@ Update the existing real-subprocess timeout integration test to print and flush 
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-324/1`. Check it against the current criteria; do not trust it.
+
+Regression confirmed failing before the implementation: ticket error included the timeout duration but omitted TIMEOUT_MARKER. After the fix, the focused real-subprocess test passes. Full make format && make check passes.
 
 ## History
 
@@ -34,3 +36,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-324/1`. Check it a
 - 2026-11-13T23:31:24Z mellow-umber-lapwing planning → todo
 - 2026-11-13T23:32:53Z vivid-fawn-wren todo → doing
 - 2026-11-13T23:33:15Z vivid-fawn-wren: wrote the plan
+- 2026-11-13T23:34:54Z vivid-fawn-wren: changed notes; ticked acceptance criteria
