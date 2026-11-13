@@ -3,8 +3,6 @@ title: Stop chitty init managing the Pi extension
 status: todo
 labels:
   - needs-minor
-depends_on:
-  - TASK-278
 parent: TASK-275
 created: 2026-11-13
 ---
@@ -22,6 +20,8 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 
 Possible starting point: `git diff main...refs/cold-read/TASK-321/1`. Check it against the current criteria; do not trust it.
 
+The configuration prerequisite was completed in `c2eae4b`; the human work and review trials in `TASK-278` do not block stopping installation.
+
 ## History
 
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
@@ -37,3 +37,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-321/1`. Check it a
 - 2026-11-13T22:44:31Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:44:33Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:44:33Z mellow-umber-lapwing planning → todo
+- 2026-11-13T23:23:47Z mellow-umber-lapwing: changed dependencies, notes

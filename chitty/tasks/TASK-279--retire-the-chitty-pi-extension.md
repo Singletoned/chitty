@@ -4,7 +4,6 @@ status: todo
 labels:
   - needs-minor
 depends_on:
-  - TASK-278
   - TASK-320
   - TASK-321
 parent: TASK-275
@@ -23,6 +22,8 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 ## Notes
 
 Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prerequisites; inspect with `git show refs/cold-read/TASK-279/1:<path>`. Check against the current criteria; do not trust it. The ref includes trial prerequisite commits.
+
+The extension-based repository command was removed in `c2eae4b`; the human trials in `TASK-278` are independent of extension removal.
 
 ## History
 
@@ -49,3 +50,4 @@ Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prer
 - 2026-11-13T22:51:59Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:52:01Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:52:01Z mellow-umber-lapwing planning → todo
+- 2026-11-13T23:23:50Z mellow-umber-lapwing: changed dependencies, notes
