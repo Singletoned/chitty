@@ -1,9 +1,8 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: planning
+status: todo
 labels:
   - needs-minor
-owner: planning
 depends_on:
   - TASK-278
 parent: TASK-275
@@ -36,3 +35,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-321/1`. Check it a
 - 2026-11-13T22:32:40Z mellow-umber-lapwing planning → cold-read
 - 2026-11-13T22:44:31Z mellow-umber-lapwing: changed notes
 - 2026-11-13T22:44:31Z mellow-umber-lapwing cold-read → planning
+- 2026-11-13T22:44:33Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:44:33Z mellow-umber-lapwing planning → todo
