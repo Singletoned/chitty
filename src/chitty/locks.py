@@ -37,7 +37,7 @@ def run_lock(
     task_id: str,
     *,
     actor: str,
-    mode: Literal["work", "review"],
+    mode: Literal["work", "review", "errors"],
 ) -> Generator[None]:
     """Hold `task_id`'s run lock for the block, or raise `TicketLocked`."""
     directory = _directory(root)

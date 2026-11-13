@@ -57,7 +57,8 @@ Strict: unknown keys are an error.
 | `moved_from` | ID                  | no       | set by `move`: the ID in the old context |
 
 - Statuses: `backlog` (needs refining), `planning` and `cold-read` (being
-  written), `todo`, `doing`, `blocked` (needs a reason), `review`, `done`.
+  written), `todo`, `doing`, `error` (recoverable automation failure),
+  `blocked` (needs a human or external prerequisite), `review`, `done`.
 - An owner reserves `todo` and `doing` tickets for that agent: see
   [Next action and runner](next-action-and-runner.md). `chitty run --ticket ID`
   ignores non-human owners.

@@ -104,7 +104,7 @@ def run(
     ticket: str | None,
     arguments: tuple[str, ...] = (),
     agent: str | None = None,
-    modes: tuple[Literal["work", "review"], ...] = (),
+    modes: tuple[Literal["work", "review", "errors"], ...] = (),
     owner: str | None = None,
 ) -> RunResult:
     """Prepare the selected ticket and run Pi with inherited streams."""
@@ -113,7 +113,13 @@ def run(
     os.environ.pop("CHITTY_ACTOR", None)
     os.environ["CHITTY_ACTOR"] = run_actor(str(uuid4()))
     main_repo = repo
-    context = {"actor": actor()}
+    context: dict[str, Any] = {
+        "actor": actor(),
+        "phase": "startup",
+        "ticket": None,
+        "mode": None,
+        "worktree": None,
+    }
     try:
         if modes and ticket is not None:
             # A named ticket already decides its mode, so a mode could only disagree.
@@ -129,6 +135,7 @@ def run(
         main_root = git.main_checkout(repo.root)
         main_repo = Repo.open(main_root)
         _refuse_stale_linked_worktree(repo, main_repo)
+        context["phase"] = "preflight"
         _preflight(main_repo, agent)
         main_repo.refresh_setup()
         project = main_repo.config.project
@@ -142,9 +149,10 @@ def run(
                 return landed
 
         with ExitStack() as held:
+            context["phase"] = "selection"
             action = _lock_ticket(held, main_repo, ticket, modes, owner)
-            context.update(ticket=str(action.id), mode=action.mode)
-            return _run_ticket(main_repo, project, action, arguments, agent)
+            context.update(ticket=str(action.id), mode=action.mode, phase="ticket")
+            return _run_ticket(main_repo, project, action, arguments, agent, context)
     except ChittyError as error:
         if not isinstance(error, NoNextTicket):
             report_error(main_repo, error, context)
@@ -154,7 +162,7 @@ def run(
 _PLACEHOLDER = re.compile(r"\{(message|context)\}")
 
 
-def report_error(repo: Repo, error: ChittyError, context: dict[str, str]) -> None:
+def report_error(repo: Repo, error: ChittyError, context: dict[str, Any]) -> None:
     """Run `error_reporter`; a failing reporter warns without replacing `error`."""
     command = repo.config.error_reporter
     if command is None:
@@ -298,7 +306,7 @@ def _lock_ticket(
     held: ExitStack,
     main_repo: Repo,
     ticket: str | None,
-    modes: tuple[Literal["work", "review"], ...],
+    modes: tuple[Literal["work", "review", "errors"], ...],
     owner: str | None,
 ) -> NextAction:
     """Choose the ticket and take its run lock, which `held` releases."""
@@ -331,10 +339,12 @@ def _run_ticket(
     action: NextAction,
     arguments: tuple[str, ...],
     agent: str | None,
+    context: dict[str, Any],
 ) -> RunResult:
     """Prepare the locked ticket's worktree and run its agent."""
     main_root = main_repo.root
     stored = main_repo.find(action.id)
+    repairing = stored.task.frontmatter.status == "error"
     if action.mode == "review":
         branch = str(action.id).lower()
         existing_worktree = git.worktree_for_branch(main_root, branch)
@@ -352,14 +362,20 @@ def _run_ticket(
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
+    context["worktree"] = str(worktree)
     setup = main_repo.config.setup
     check = main_repo.config.check
     assert setup is not None  # `_preflight` rejects an unset setup command.
     assert check is not None  # `_preflight` rejects an unset check command.
     if action.mode == "work":
-        _setup(setup, worktree)
+        context["phase"] = "setup"
+        try:
+            _setup(setup, worktree)
+        except ChittyError as error:
+            return _record_ticket_error(main_repo, action, worktree, "setup", error)
 
     if action.mode == "review":
+        context["phase"] = "review preparation"
         # The config may be deleted on a branch, so use main's config until the
         # review preflight has confirmed that the branch still has one.
         work_repo = Repo(worktree, main_repo.config)
@@ -369,9 +385,14 @@ def _run_ticket(
             return failed
         work_repo = Repo.open(worktree)
         # After the merge, because the merge can change dependencies.
-        _setup(setup, worktree)
+        context["phase"] = "setup"
+        try:
+            _setup(setup, worktree)
+        except ChittyError as error:
+            return _record_ticket_error(main_repo, action, worktree, "setup", error)
     else:
         work_repo = Repo.open(worktree)
+    context["phase"] = "check"
     if failed := _run_check(work_repo, worktree, action, check):
         return failed
     if action.mode == "review" and (blocked := _block_dirty_review(work_repo, worktree, action)):
@@ -382,6 +403,8 @@ def _run_ticket(
     started = datetime.now(UTC)
     elapsed_start = time.monotonic()
     new_status: str | None = None
+    handoff: RunResult | None = None
+    context["phase"] = "agent"
     try:
         runner_chitty = Path(sys.executable).parent / "chitty"
         if not runner_chitty.is_file():
@@ -398,10 +421,33 @@ def _run_ticket(
             arguments,
             worktree,
             agent_environment,
-            old_status,
+            "error" if repairing else old_status,
         )
+        if repairing and new_status not in {"review", "blocked", "error"}:
+            raise ChittyError(
+                f"repair agent left {action.id} in invalid status {new_status}; "
+                "expected review, blocked, or error"
+            )
+        if repairing and new_status in {"review", "blocked"}:
+            note = (
+                None
+                if new_status == "review"
+                else "Repair agent determined that human action is required."
+            )
+            main_repo.edit(
+                action.id,
+                Edit(
+                    status=new_status,
+                    note=note,
+                    skip_verdicts=True,
+                    skip_current_version=True,
+                ),
+            )
         if status_outcome(old_status, new_status) == "land":
+            context["phase"] = "landing"
             _land(main_repo, worktree, action, setup, check)
+    except ChittyError as error:
+        handoff = _record_ticket_error(main_repo, action, worktree, "run", error)
     finally:
         if new_status is None:
             try:
@@ -420,6 +466,8 @@ def _run_ticket(
                 "status_after": new_status,
             },
         )
+    if handoff is not None:
+        return handoff
     assert new_status is not None
     return RunResult(action, old_status, new_status)
 
@@ -442,6 +490,8 @@ def _agent_sessions(
         _run_session(main_repo, action, command, arguments, worktree, environment, continuing)
         # Pi commonly commits from this worktree. Reopen so history is re-read.
         new_status = _status_after_agent(main_repo.root, worktree, action)
+        if old_status == "error" and new_status == "error":
+            return new_status
         if status_outcome(old_status, new_status) != "unchanged":
             return new_status
         if continuations == MAX_CONTINUATIONS or not _accepts_prompt(main_repo, agent):
@@ -630,6 +680,8 @@ def _agent_command(
         ticket = str(action.id)
         if continuation:
             prompt = continuation_prompt(action.mode, ticket)
+        elif repo.find(action.id).task.frontmatter.status == "error":
+            prompt = guide("repair", ticket)
         else:
             prompt = guide(action.mode, ticket)
     rendered = tuple(
@@ -837,7 +889,7 @@ def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check
             _land_locked(main_repo, worktree, action, setup, check)
         except ChittyError as exc:
             raise ChittyError(
-                f"{exc}\nA human must resolve the landing problem in {worktree} "
+                f"{exc}\nResolve the landing problem in {worktree} "
                 "or the main checkout before retrying."
             ) from exc
 
@@ -905,8 +957,7 @@ def _landing_check(command: str, worktree: Path) -> None:
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
     if completed.returncode:
-        lines = completed.stdout.splitlines()[-20:]
-        output = "\n".join(lines) or "(no output)"
+        output = completed.stdout or "(no output)"
         raise ChittyError(f"landing check exited with status {completed.returncode}:\n{output}")
 
 
@@ -925,6 +976,38 @@ def _setup(command: str, worktree: Path) -> None:
         raise RunInterrupted("setup") from None
     if completed.returncode:
         raise ChittyError(f"setup exited with status {completed.returncode}")
+
+
+def _record_ticket_error(
+    main_repo: Repo, action: NextAction, worktree: Path, phase: str, error: ChittyError
+) -> RunResult:
+    """Persist a recoverable runner failure without discarding the ticket worktree."""
+    if not worktree.exists():
+        raise ChittyError(
+            f"cannot record runner error for {action.id}: worktree {worktree} is gone; "
+            f"original error: {error}"
+        )
+    old_status = main_repo.find(action.id).task.frontmatter.status
+    note = (
+        f"Runner error ({phase}): {error}\n\n"
+        f"Worktree: `{worktree}`\n\n"
+        f"Error output:\n{_code_block(str(error))}"
+    )
+    try:
+        change = main_repo.edit(
+            action.id,
+            Edit(
+                status="error",
+                note=note,
+                skip_verdicts=True,
+                skip_current_version=True,
+            ),
+        )
+    except ChittyError as handoff_error:
+        raise ChittyError(
+            f"cannot record runner error for {action.id}: {handoff_error}; original error: {error}"
+        ) from handoff_error
+    return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
 def _run_check(
@@ -950,8 +1033,7 @@ def _run_check(
         raise RunInterrupted("check") from None
     if completed.returncode == 0:
         return None
-    lines = completed.stdout.splitlines()[-20:]
-    output = "\n".join(lines) or "(no output)"
+    output = completed.stdout or "(no output)"
     detail = f"check exited with status {completed.returncode}:\n{_code_block(output)}"
     return _handle_check_failure(work_repo, action, detail)
 
@@ -964,27 +1046,13 @@ def _code_block(text: str) -> str:
 
 
 def _handle_check_failure(work_repo: Repo, action: NextAction, detail: str) -> RunResult | None:
-    if action.mode == "work":
-        status = work_repo.find(action.id).task.frontmatter.status
-        if status == "todo":
-            raise ChittyError(f"check failed before {action.id} started: {detail}")
-        work_repo.edit(
-            action.id,
-            Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
-        )
-        return None
-    if blocked := _block_dirty_review(work_repo, work_repo.root, action):
-        return blocked
-    return _fail_check(work_repo, action, detail)
-
-
-def _fail_check(work_repo: Repo, action: NextAction, detail: str) -> RunResult:
-    old_status = work_repo.find(action.id).task.frontmatter.status
-    change = work_repo.edit(
-        action.id,
-        Edit(status="doing", note=f"Review failed (work): {detail}", skip_verdicts=True),
+    return _record_ticket_error(
+        Repo.open(git.main_checkout(work_repo.root)),
+        action,
+        work_repo.root,
+        "check",
+        ChittyError(detail),
     )
-    return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
 def _git(root: Path, *arguments: str) -> str:

@@ -60,7 +60,7 @@ export default function chitty(pi: ExtensionAPI) {
   ): Promise<void> {
     await requireLinkedWorktree(pi, ctx);
     const ticket = await ticketSnapshot(pi, ctx, ticketId);
-    const prompt = await ticketGuide(pi, ctx, mode, ticketId);
+    const prompt = await ticketGuide(pi, ctx, mode, ticketId, ticket.status);
     state = {
       enabled: true,
       mode,
@@ -316,6 +316,9 @@ export function settlementDecision(
   if (isFailedAssistantResponse(stopReason)) {
     return { action: "shutdown", reason: `agent response ended with ${stopReason}` };
   }
+  if (mode === "work" && status === "error" && !ticketChanged) {
+    return { action: "shutdown", reason: "repair agent left the ticket in error" };
+  }
   if (!isActiveStatus(mode, status)) {
     return {
       action: "shutdown",
@@ -365,8 +368,10 @@ async function ticketGuide(
   ctx: ExtensionContext,
   mode: ChittyMode,
   ticketId: string,
+  status: string,
 ): Promise<string> {
-  const result = await pi.exec("chitty", ["guide", mode, ticketId], {
+  const role = status === "error" ? "repair" : mode;
+  const result = await pi.exec("chitty", ["guide", role, ticketId], {
     cwd: ctx.cwd,
     signal: ctx.signal,
   });
@@ -419,7 +424,7 @@ async function ticketSnapshot(
 
 function isActiveStatus(mode: ChittyMode, status: string): boolean {
   return mode === "work"
-    ? status === "todo" || status === "doing"
+    ? status === "todo" || status === "doing" || status === "error"
     : status === "review";
 }
 

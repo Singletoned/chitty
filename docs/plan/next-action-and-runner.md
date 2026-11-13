@@ -9,6 +9,7 @@
   - ID.
 - Skips:
   - human-context tickets and tickets owned by `human`;
+  - `error` tickets, which require explicit repair selection;
   - `todo` tickets with an unmet dependency (`doing` and `review` ignore
     dependencies).
 - `chitty list` marks skips: `👤` human, `🔒` waiting on a dependency, `⚠️` a
@@ -45,9 +46,11 @@
   run refreshes setup first. `--ticket` skips this.
 - Selection: as `chitty next`, including `--mode`. Plain runs skip owned `todo`
   and `doing` tickets but still take owned `review` tickets. `--owner NAME`
-  takes only that agent's tickets, at any active status.
+  takes only that agent's tickets, at any active status. `--errors` selects only
+  `error` tickets and supplies a repair prompt; it cannot be combined with
+  `--ticket`, `--mode`, or `--owner`.
 - Refused: `--mode` or `--owner` with `--ticket`, `--owner human`, empty
-  `--owner`.
+  `--owner`, and the `--errors` combinations described above.
 - Works from any worktree: finds the main checkout, creates or reuses the
   ticket's worktree, runs `setup` there, then claims a `todo` ticket on its
   branch before starting the agent.
@@ -63,7 +66,9 @@
 - `work_model`/`review_model` add `--model MODEL` for that mode, unless the
   command or forwarded arguments already give `--model`. Chitty has no
   `--model` option of its own.
-- Success means the ticket's committed status changed.
+- Success means the ticket's committed status changed. An error repair must
+  finish in `review`, `blocked`, or `error`; the repair prompt explains these
+  outcomes.
 - Exit 0 with the status unchanged, and the command has `{prompt}`: run again
   with the continuation prompt and `-c` appended, up to `MAX_CONTINUATIONS`
   (5) times, then fail with `was unchanged`. `{mode} {id}` commands are not
@@ -125,7 +130,10 @@ On a pass, under the landing lock:
   changed managed block in `AGENTS.md`, before or after merging.
 - Merge `main_branch` into the branch, run `setup` and `check`, fast-forward
   `main_branch`, then remove the worktree and branch.
-- A failure leaves the ticket as it was and asks a human to resolve it.
+- A ticket-scoped setup, check, agent, or landing failure moves the ticket to
+  `error`, records the phase, output, and worktree in Notes, and preserves its
+  branch and worktree. Failures before a safe ticket handoff leave task state
+  unchanged and use `error_reporter` when configured.
 - Without `chitty run`: merge `main` into the branch in its worktree, run the
   checks, then only fast-forward `main`.
 

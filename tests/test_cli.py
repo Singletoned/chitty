@@ -1331,7 +1331,7 @@ class TestAddShowList(CliTestCase):
         empty = self.run_cli("list", "-c", "human")
         self.assertEqual(empty.stdout, "")
         self.assertIn(
-            "no tasks: contexts=human; statuses=planning,cold-read,todo,doing,blocked,review",
+            "no tasks: contexts=human; statuses=planning,cold-read,todo,doing,blocked,error,review",
             empty.stderr,
         )
         self.assertEqual(self.json("list", "-c", "human"), [])
@@ -2239,7 +2239,7 @@ class TestGuide(CliTestCase):
     def test_rejects_unknown_roles_and_ticket_planning(self):
         unknown = self.run_cli("guide", "writer", exit_code=1)
         self.assertIn(
-            "unknown role 'writer'; choose from work, review, plan, cold-read, setup",
+            "unknown role 'writer'; choose from work, review, repair, plan, cold-read, setup",
             unknown.stderr,
         )
         plan_ticket = self.run_cli("guide", "plan", "TASK-42", exit_code=1)

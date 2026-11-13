@@ -31,7 +31,17 @@ from chitty.store import (
     skip_reason,
 )
 
-Status = Literal["backlog", "planning", "cold-read", "todo", "doing", "blocked", "review", "done"]
+Status = Literal[
+    "backlog",
+    "planning",
+    "cold-read",
+    "todo",
+    "doing",
+    "blocked",
+    "error",
+    "review",
+    "done",
+]
 Priority = Literal["low", "medium", "high"]
 
 server = MCPServer(name="chitty", instructions=guide())

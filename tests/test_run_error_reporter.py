@@ -56,24 +56,22 @@ class TestRunErrorReporter(CliTestCase):
         env = os.environ.copy()
         env["PATH"] = f"{bindir}:{env['PATH']}"
         with patch.dict(os.environ, env):
-            self.run_cli("run", "--mode", "work", exit_code=1)
+            self.run_cli("run", "--mode", "work")
 
-    def test_failing_run_reports_message_and_ticket_context(self):
+    def test_failing_ticket_run_becomes_error_without_reporter(self):
         reporter, record = self.write_reporter()
         self.setup_repo(reporter)
         self.add_ticket()
         self.run_failing_agent()
-        message, context = json.loads(record.read_text())
-        self.assertIn("agent exited with status", message)
-        self.assertEqual(json.loads(context)["ticket"], "TASK-1")
+        self.assertFalse(record.exists())
+        self.assertEqual(self.json("show", "TASK-1")["status"], "error")
 
-    def test_failing_reporter_warns_and_preserves_failure(self):
+    def test_recoverable_ticket_failure_does_not_call_reporter(self):
         reporter, record = self.write_reporter(exit_code=7)
         self.setup_repo(reporter)
         self.add_ticket()
-        result = self.run_cli("run", "--mode", "work", exit_code=1)
-        self.assertTrue(record.exists())
-        self.assertIn("error_reporter exited with status 7", result.stderr)
+        self.run_cli("run", "--mode", "work")
+        self.assertFalse(record.exists())
 
     def test_argument_error_reports_message_and_ticket_context(self):
         reporter, record = self.write_reporter()

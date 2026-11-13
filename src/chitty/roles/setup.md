@@ -40,14 +40,17 @@ configure the runner.
    For another agent, configure a command and a way to pass Chitty's role
    instructions, such as its prompt argument with `{prompt}`. Run work and
    review under distinct agent identities; a worker must not review its own
-   ticket.
+   ticket. Recoverable runner failures enter `error`; a stronger repair agent
+   can process them with `chitty run --errors --agent NAME`.
 4. Check the config and Git changes in the main checkout, and commit any manual
    configuration changes. When ready to start an agent, use an actual eligible
    ticket, for example `chitty run --ticket ID`, or choose an agent with
    `chitty run --agent NAME`. This starts a real session; it is not a dry run.
    A successful run changes the ticket's status; a run with no eligible ticket
-   exits 3. If a command fails, fix the reported setup or configuration error
-   before retrying. `chitty run` creates the ticket worktree and runs setup and
+   exits 3. Ticket-scoped failures become `error` tickets for an explicit repair
+   run. If a command fails before a safe ticket handoff, fix the reported setup
+   or configuration error before retrying; configured `error_reporter` commands
+   can send catastrophic failures to systems such as Sump. `chitty run` creates the ticket worktree and runs setup and
    checks there; the agent should not configure Chitty inside it. Before
    declaring the runner ready, run the configured `setup` and `check` commands
    in a throwaway detached worktree (`git worktree add --detach`), without

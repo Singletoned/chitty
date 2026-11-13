@@ -931,8 +931,8 @@ class TestNext(CliTestCase):
             text=True,
             check=False,
         )
-        self.assertEqual(result.returncode, 1)
-        self.assertIn("TASK-1 was unchanged", result.stderr)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("TASK-1: todo → error", result.stdout)
 
     def test_run_refreshes_setup_before_starting_pi(self):
         self.add("Todo")
@@ -972,7 +972,7 @@ class TestNext(CliTestCase):
             PATH=f"{fake.parent}:{old_path}", PI_CODING_AGENT_DIR=str(agent), SEEN=str(seen)
         )
         try:
-            result = self.run_cli("run", exit_code=1)
+            result = self.run_cli("run")
         finally:
             os.environ["PATH"] = old_path
             os.environ.pop("PI_CODING_AGENT_DIR", None)
@@ -982,11 +982,21 @@ class TestNext(CliTestCase):
         self.assertNotEqual(extension.read_text(), "old extension")
         self.assertIn(str(config), result.stderr)
         self.assertNotIn("re-run `chitty init`", result.stderr)
-        self.assertEqual(
-            self.git("log", "-1", "--format=%s").strip(), "chitty: upgrade repository setup"
+        self.assertIn(
+            "chitty: upgrade repository setup",
+            self.git("log", "-3", "--format=%s"),
         )
         changed = self.git("show", "--format=", "--name-only", "HEAD").splitlines()
-        self.assertTrue(set(changed) <= {"chitty.toml", "AGENTS.md", ".gitignore", "CLAUDE.md"})
+        self.assertTrue(
+            set(changed)
+            <= {
+                "chitty.toml",
+                "AGENTS.md",
+                ".gitignore",
+                "CLAUDE.md",
+                "chitty/tasks/TASK-1--todo.md",
+            }
+        )
 
     def test_run_replaces_an_outdated_extension_before_starting_pi(self):
         self.add("Todo")
@@ -1024,7 +1034,7 @@ class TestNext(CliTestCase):
             PATH=f"{fake.parent}:{old_path}", PI_CODING_AGENT_DIR=str(agent), SEEN=str(seen)
         )
         try:
-            self.run_cli("run", exit_code=1)
+            self.run_cli("run")
         finally:
             os.environ["PATH"] = old_path
             os.environ.pop("PI_CODING_AGENT_DIR", None)
@@ -1099,8 +1109,8 @@ class TestNext(CliTestCase):
         os.environ["PATH"] = f"{fake.parent}:{old_path}"
         try:
             before = self.git("rev-parse", "HEAD")
-            current = self.run_cli("run", exit_code=1)
-            self.assertEqual(self.git("rev-parse", "HEAD"), before)
+            current = self.run_cli("run")
+            self.assertNotEqual(self.git("rev-parse", "HEAD"), before)
             self.assertNotIn("setup", current.stderr)
             worktree = self.tmp / "worktree"
             self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
@@ -1108,10 +1118,10 @@ class TestNext(CliTestCase):
             previous = Path.cwd()
             os.chdir(worktree)
             try:
-                linked = self.run_cli("run", exit_code=1)
+                linked = self.run_cli("run", exit_code=3)
             finally:
                 os.chdir(previous)
-            self.assertEqual(self.git("rev-parse", "HEAD"), before)
+            self.assertNotEqual(self.git("rev-parse", "HEAD"), before)
             self.assertNotIn("setup", linked.stderr)
         finally:
             os.environ["PATH"] = old_path
@@ -1299,16 +1309,16 @@ class TestNext(CliTestCase):
         previous = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
-            result = self.run_cli("run", exit_code=1)
+            result = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
-        self.assertIn("setup exited with status 1", result.stderr)
+        self.assertIn("todo → error", result.stdout)
         self.assertFalse(marker.exists())
         worktree = self.root / ".worktrees" / "task-1"
         self.assertTrue(worktree.is_dir())
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
-            "todo",
+            "error",
         )
 
     def test_run_check_failure_records_output_and_does_not_claim_or_start_agent(self):
@@ -1336,12 +1346,10 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "setup")
 
         self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
-        result = self.run_cli("run", exit_code=1)
+        result = self.run_cli("run")
 
-        self.assertIn("check failed before TASK-1 started", result.stderr)
-        self.assertIn("check line 6", result.stderr)
-        self.assertIn("check line 25", result.stderr)
-        self.assertEqual(result.stdout, "")
+        self.assertIn("todo → error", result.stdout)
+        self.assertEqual(result.stdout.count("TASK-1"), 1)
         checked = (self.root / ".worktrees/task-1/check-args").read_text()
         self.assertIn("['quoted argument']", checked)
         self.assertIn("status: todo", checked)
@@ -1349,8 +1357,8 @@ class TestNext(CliTestCase):
         self.assertFalse((self.root / ".worktrees/task-1/started").exists())
         repo = Repo.open(self.root)
         task = repo.find(repo.resolve("TASK-1")).task
-        self.assertEqual(task.frontmatter.status, "todo")
-        self.assertIsNone(task.section("Notes"))
+        self.assertEqual(task.frontmatter.status, "error")
+        self.assertIn("check line 6", task.section("Notes") or "")
 
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
@@ -1376,16 +1384,15 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "setup")
 
         self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
-        result = self.run_cli("run", exit_code=1)
+        result = self.run_cli("run")
 
-        self.assertIn("check failed before TASK-1 started", result.stderr)
-        self.assertIn("FAIL: test_something", result.stderr)
-        self.assertIn("# not a heading", result.stderr)
-        self.assertEqual(result.stdout, "")
+        self.assertIn("todo → error", result.stdout)
         repo = Repo.open(self.root)
         task = repo.find(repo.resolve("TASK-1")).task
-        self.assertEqual(task.frontmatter.status, "todo")
-        self.assertIsNone(task.section("Notes"))
+        self.assertEqual(task.frontmatter.status, "error")
+        notes = task.section("Notes") or ""
+        self.assertIn("FAIL: test_something", notes)
+        self.assertIn("# not a heading", notes)
 
     def test_run_check_failure_on_doing_ticket_starts_agent(self):
         config = self.root / "chitty.toml"
@@ -1418,17 +1425,17 @@ class TestNext(CliTestCase):
         previous = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
-            result = self.run_cli("run", exit_code=1)
+            result = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
 
-        self.assertIn("TASK-1 was unchanged", result.stderr)
-        self.assertTrue((self.root / ".worktrees/task-1/started").exists())
+        self.assertIn("doing → error", result.stdout)
+        self.assertFalse((self.root / ".worktrees/task-1/started").exists())
         repo = Repo.open(self.root)
         task = repo.find(repo.resolve("TASK-1")).task
-        self.assertEqual(task.frontmatter.status, "doing")
+        self.assertEqual(task.frontmatter.status, "error")
         notes = task.section("Notes") or ""
-        self.assertIn("Check failed before this session", notes)
+        self.assertIn("check line 1", notes)
         self.assertIn("check line 1", notes)
         self.assertIn("```text", notes)
 
@@ -1458,21 +1465,21 @@ class TestNext(CliTestCase):
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         os.environ["EXPECTED_ROOT"] = str(self.root / ".worktrees" / "task-1")
         try:
-            unchanged = self.run_cli("run", exit_code=1)
+            unchanged = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
             if previous_root is None:
                 os.environ.pop("EXPECTED_ROOT", None)
             else:
                 os.environ["EXPECTED_ROOT"] = previous_root
-        self.assertIn("TASK-1 was unchanged", unchanged.stderr)
+        self.assertIn("todo → error", unchanged.stdout)
         worktree = self.root / ".worktrees" / "task-1"
         self.assertEqual(
             self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1"
         )
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
-            "doing",
+            "error",
         )
 
         self.git("worktree", "remove", "--force", str(worktree))
@@ -1770,7 +1777,9 @@ class TestNext(CliTestCase):
             "if os.environ.get('CHANGE'):\n"
             "    path = os.environ['TASK_PATH']\n"
             "    text = open(path).read()\n"
-            "    open(path, 'w').write(text.replace('status: doing', 'status: blocked'))\n"
+            "    text = text.replace('status: doing', 'status: blocked')\n"
+            "    text = text.replace('status: error', 'status: blocked')\n"
+            "    open(path, 'w').write(text)\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
             "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
             "if os.environ.get('PI_SIGNAL'):\n"
@@ -1784,8 +1793,8 @@ class TestNext(CliTestCase):
         os.environ["PATH"] = f"{fake.parent}:{old_path}"
         os.environ["EXPECTED_ROOT"] = str(self.root / ".worktrees" / "task-1")
         try:
-            unchanged = self.run_cli("run", exit_code=1)
-            self.assertIn("TASK-1 was unchanged", unchanged.stderr)
+            unchanged = self.run_cli("run")
+            self.assertEqual(unchanged.stdout, "TASK-1: todo → error\n")
             worktree = self.root / ".worktrees" / "task-1"
             self.assertEqual(
                 self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1"
@@ -1794,36 +1803,33 @@ class TestNext(CliTestCase):
                 Repo.open(worktree)
                 .find(Repo.open(worktree).resolve("TASK-1"))
                 .task.frontmatter.status,
-                "doing",
+                "error",
             )
-            self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
+            self.assertNotEqual(self.git("rev-parse", "main").strip(), main_head)
             self.assertEqual(self.git("status", "--porcelain"), main_status)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ["PI_EXIT"] = "3"
-            failed = self.run_cli("run", exit_code=1)
-            self.assertIn("agent exited with status 3", failed.stderr)
+            failed = self.run_cli("run", "--errors")
+            self.assertEqual(failed.stdout, "TASK-1: error → error\n")
             os.environ["PI_EXIT"] = "7"
-            failed = self.run_cli("run", exit_code=1)
-            self.assertIn("agent exited with status 7", failed.stderr)
+            failed = self.run_cli("run", "--errors")
+            self.assertEqual(failed.stdout, "TASK-1: error → error\n")
             self.assertNotIn("cannot read usage file", failed.stderr)
             self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             os.environ.pop("PI_EXIT")
             os.environ["PI_SIGNAL"] = "1"
-            interrupted = self.run_cli("run", exit_code=130)
+            interrupted = self.run_cli("run", "--errors", exit_code=130)
             self.assertIn("interrupted during agent", interrupted.stderr)
             os.environ.pop("PI_SIGNAL")
             os.environ["CHANGE"] = "1"
             os.environ["TASK_PATH"] = str(
                 self.root / ".worktrees" / "task-1" / "chitty/tasks/TASK-1--todo.md"
             )
-            changed = self.run_cli("run")
-            self.assertEqual(changed.stdout, "TASK-1: doing → blocked\n")
+            changed = self.run_cli("run", "--errors")
+            self.assertEqual(changed.stdout, "TASK-1: error → blocked\n")
             log = self.tmp / "data" / "chitty" / "usage" / "repo.jsonl"
             records = [json.loads(line) for line in log.read_text().splitlines()]
-            self.assertEqual(
-                [record["status_after"] for record in records],
-                ["doing", "doing", "doing", "doing", "blocked"],
-            )
+            self.assertEqual(records[-1]["status_after"], "blocked")
             self.assertTrue(all("models" not in record for record in records))
             no_next = self.run_cli("run", exit_code=3)
             self.assertEqual(no_next.stdout, "")
@@ -1974,10 +1980,10 @@ class TestNext(CliTestCase):
                 patch("chitty.run._append_usage", side_effect=OSError("disk full")),
                 redirect_stderr(stderr),
             ):
-                result = self.run_cli("run", exit_code=1)
+                result = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
-        self.assertIn("agent exited with status 7", result.stderr)
+        self.assertIn("todo → error", result.stdout)
         self.assertIn("warning: cannot write usage log: disk full", result.stderr)
 
     def test_run_logs_under_project_added_by_setup_refresh(self):
@@ -2132,7 +2138,7 @@ class TestNext(CliTestCase):
         previous = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
-            self.run_cli("run", exit_code=1)
+            self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
         self.assertTrue(pending.exists())
@@ -2197,21 +2203,21 @@ class TestNext(CliTestCase):
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         os.environ["EXPECTED_ROOT"] = str(worktree)
         try:
-            result = self.run_cli("run", exit_code=1)
-            repeated = self.run_cli("run", exit_code=1)
+            result = self.run_cli("run")
+            repeated = self.run_cli("run", exit_code=3)
         finally:
             os.environ["PATH"] = previous
             if previous_root is None:
                 os.environ.pop("EXPECTED_ROOT", None)
             else:
                 os.environ["EXPECTED_ROOT"] = previous_root
-        self.assertIn("TASK-1 was unchanged", result.stderr)
-        self.assertIn("TASK-1 was unchanged", repeated.stderr)
+        self.assertEqual(result.stdout, "TASK-1: todo → error\n")
+        self.assertEqual(repeated.stderr, "no next ticket\n")
         self.assertTrue((worktree / "pi-ran").exists())
         self.assertEqual(
             (worktree / "agent-arguments-work").read_text(), repr([guide("work", "TASK-1")])
         )
-        self.assertEqual((worktree / "setup-ran").read_text(), "2")
+        self.assertEqual((worktree / "setup-ran").read_text(), "1")
         self.assertFalse((worktree / "interpreted").exists())
 
         self.git("worktree", "remove", "--force", str(worktree))
@@ -2221,17 +2227,17 @@ class TestNext(CliTestCase):
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         os.environ["EXPECTED_ROOT"] = str(worktree)
         try:
-            review = self.run_cli("run", exit_code=1)
+            review = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
             os.environ.pop("EXPECTED_ROOT", None)
-        self.assertIn("TASK-1 was unchanged", review.stderr)
+        self.assertEqual(review.stdout, "TASK-1: review → error\n")
         review_prompt = (worktree / "agent-arguments-review").read_text()
         self.assertEqual(review_prompt, repr([guide("review", "TASK-1")]))
         self.assertIn('"', review_prompt)
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
-            "review",
+            "error",
         )
 
     def test_run_from_linked_worktree_refuses_older_main_setup(self):
@@ -2354,3 +2360,30 @@ class TestNext(CliTestCase):
             os.environ["PATH"] = previous
         self.assertIn("has uncommitted changes in the main checkout", result.stderr)
         self.assertFalse((self.root / ".worktrees").exists())
+
+    def test_error_tickets_need_explicit_repair_and_repair_updates_main_state(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+        )
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.add("Broken", status="error")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.assertEqual(self.run_cli("next", exit_code=3).stderr, "no next ticket\n")
+        self.run_cli("run", "--ticket", "TASK-1", exit_code=1)
+
+        self.install_fake_pi(
+            "from pathlib import Path\n"
+            "import subprocess\n"
+            "path = next(Path('chitty/tasks').glob('*.md'))\n"
+            "path.write_text(path.read_text().replace('status: error', 'status: review'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'repair'], check=True)\n"
+        )
+        result = self.run_cli("run", "--errors")
+        self.assertEqual(result.stdout, "TASK-1: error → review\n", result.stderr)
+        self.assertEqual(self.json("show", "TASK-1")["status"], "review")

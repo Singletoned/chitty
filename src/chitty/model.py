@@ -28,11 +28,20 @@ STATUSES = (
     "todo",
     "doing",
     "blocked",
+    "error",
     "review",
     "done",
 )
 # What `list` shows without a status filter: every active status but backlog and done.
-DEFAULT_LIST_STATUSES = ("planning", "cold-read", "todo", "doing", "blocked", "review")
+DEFAULT_LIST_STATUSES = (
+    "planning",
+    "cold-read",
+    "todo",
+    "doing",
+    "blocked",
+    "error",
+    "review",
+)
 STATUS_GLYPHS = {
     "backlog": "💤",
     "planning": "📝",
@@ -40,6 +49,7 @@ STATUS_GLYPHS = {
     "todo": "📋",
     "doing": "🔨",
     "blocked": "⛔",
+    "error": "💥",
     "review": "👀",
     "done": "✅",
 }
@@ -50,6 +60,7 @@ STATUS_LABELS = {
     "todo": "todo",
     "doing": "doing",
     "blocked": "blckd",
+    "error": "error",
     "review": "revw",
     "done": "done",
 }
@@ -141,7 +152,15 @@ class Frontmatter(BaseModel):
 
     title: str
     status: Literal[
-        "backlog", "planning", "cold-read", "todo", "doing", "blocked", "review", "done"
+        "backlog",
+        "planning",
+        "cold-read",
+        "todo",
+        "doing",
+        "blocked",
+        "error",
+        "review",
+        "done",
     ]
     labels: list[str] = []
     priority: Literal["low", "medium", "high"] | None = None

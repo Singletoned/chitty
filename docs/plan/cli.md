@@ -32,14 +32,14 @@ file holds the decisions behind them.
 ## `list`
 
 - Non-archived tickets only. Default statuses: `planning`, `cold-read`,
-  `todo`, `doing`, `blocked`, `review`, from every context. `-c` and `-s`
+  `todo`, `doing`, `blocked`, `error`, `review`, from every context. `-c` and `-s`
   narrow and repeat; `-s` can add `backlog` and `done`. `--all` is every
   status, still without archives.
 - Order: selected statuses, then `high`, `medium` or unset, `low`. `--json`
   uses the same order.
 - Rows: `TASK-12  🔨 doing  ⬆️  Add search to the task list  [cli,search]`.
   - Status glyphs: `💤 bklog`, `📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`,
-    `⛔ blckd`, `👀 revw`, `✅ done`.
+    `⛔ blckd`, `💥 error`, `👀 revw`, `✅ done`.
   - Priority column only when a listed ticket has one: `⬆️` high, `⏺️`
     medium, `⬇️` low, blank unset.
   - Skip column, only when needed: `👤` human, `🔒` waiting, `▶` running, `⚠️`

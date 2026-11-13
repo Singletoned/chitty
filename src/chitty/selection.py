@@ -27,7 +27,11 @@ class TicketFacts:
 
 STATUSES = ("review", "doing", "todo")
 STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
-MODE_STATUSES: dict[str, tuple[str, ...]] = {"work": ("doing", "todo"), "review": ("review",)}
+MODE_STATUSES: dict[str, tuple[str, ...]] = {
+    "work": ("doing", "todo"),
+    "review": ("review",),
+    "errors": ("error",),
+}
 
 
 def mode_statuses(modes: tuple[str, ...]) -> set[str] | None:
@@ -70,7 +74,7 @@ def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
 def choose(
     facts: tuple[TicketFacts, ...],
     *,
-    modes: tuple[Literal["work", "review"], ...] = (),
+    modes: tuple[Literal["work", "review", "errors"], ...] = (),
     owner: str | None = None,
     order: tuple[str, ...] = STATUSES,
 ) -> TicketFacts | None:

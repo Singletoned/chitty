@@ -472,6 +472,7 @@ def claude_usage_hook() -> None:
 @click.option("--ticket", metavar="ID", help="Run the next ticket, or the one named by --ticket.")
 @click.option("--owner", help="Choose tickets owned by this agent.")
 @click.option("--agent", metavar="NAME", help="Use the named command from [agent_commands].")
+@click.option("--errors", is_flag=True, help="Repair error tickets only.")
 @click.option(
     "--loop",
     is_flag=True,
@@ -484,10 +485,13 @@ def run(
     ticket: str | None,
     owner: str | None,
     agent: str | None,
+    errors: bool,
     loop: bool,
     modes: tuple[Literal["work", "review"], ...],
 ) -> None:
     """Run the next ticket, or the one named by --ticket; other arguments go to the agent."""
+    if errors and (ticket is not None or modes or owner is not None):
+        raise click.UsageError("--errors cannot be combined with --ticket, --mode, or --owner")
     if loop and ticket is not None:
         raise click.UsageError("--loop cannot be used with --ticket")
     try:
@@ -497,6 +501,8 @@ def run(
                 options.extend(("--owner", owner))
             if agent is not None:
                 options.extend(("--agent", agent))
+            if errors:
+                options.append("--errors")
             for mode in modes:
                 options.extend(("--mode", mode))
             if ctx.args:
@@ -507,7 +513,7 @@ def run(
             ticket,
             tuple(ctx.args),
             agent=agent,
-            modes=modes,
+            modes=("errors",) if errors else modes,
             owner=owner,
         )
     except RunInterrupted as interrupted:
