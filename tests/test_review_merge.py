@@ -229,6 +229,23 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual(result.stdout, "TASK-1: review → done\n")
         self.assertTrue((self.logs / "agent").exists())
 
+    def test_missing_review_branch_blocks_ticket_and_is_not_selected_again(self):
+        self.branch_for_review()
+        self.git("branch", "-D", "task-1")
+        self.run_cli("edit", "1", "-s", "review")
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout, "TASK-1: review → blocked\n")
+        self.assertFalse((self.logs / "agent").exists())
+        ticket = Repo.open(self.root).find(Repo.open(self.root).resolve("1")).task
+        notes = ticket.section("Notes") or ""
+        self.assertIn("TASK-1", notes)
+        self.assertIn("task-1", notes)
+        self.assertIn("restore the branch or choose the ticket's final state", notes)
+        idle = self.run_cli("run", "--mode", "review", exit_code=3)
+        self.assertEqual(idle.stderr.splitlines()[-1], "no next ticket for --mode review")
+
     def test_review_lands_directly_without_an_extra_review(self):
         self.branch_for_review()
         base = self.git("rev-parse", "main").strip()

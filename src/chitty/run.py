@@ -334,8 +334,21 @@ def _run_ticket(
 ) -> RunResult:
     """Prepare the locked ticket's worktree and run its agent."""
     main_root = main_repo.root
-    agent_command = _agent_command(main_repo, action, agent)
     stored = main_repo.find(action.id)
+    if action.mode == "review":
+        branch = str(action.id).lower()
+        existing_worktree = git.worktree_for_branch(main_root, branch)
+        if existing_worktree is None and not git.has_local_branch(main_root, branch):
+            note = (
+                f"Review blocked: {action.id} has no branch `{branch}`. "
+                "A person must restore the branch or choose the ticket's final state."
+            )
+            change = main_repo.edit(
+                action.id,
+                Edit(status="blocked", owner="human", note=note, skip_verdicts=True),
+            )
+            return RunResult(action, "review", change.task.task.frontmatter.status)
+    agent_command = _agent_command(main_repo, action, agent)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)

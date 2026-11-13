@@ -1456,10 +1456,13 @@ class TestNext(CliTestCase):
         self.run_cli("edit", "TASK-1", "--status", "review")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
-            result = self.run_cli("run", exit_code=1)
+            result = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
-        self.assertIn("review ticket TASK-1 has no branch task-1", result.stderr)
+        self.assertEqual(result.stdout, "TASK-1: review → blocked\n")
+        ticket = Repo.open(self.root).find(Repo.open(self.root).resolve("TASK-1")).task
+        self.assertIn("TASK-1", ticket.section("Notes") or "")
+        self.assertIn("task-1", ticket.section("Notes") or "")
         self.assertFalse(worktree.exists())
 
     def test_run_reviews_branch_with_changed_config(self):
