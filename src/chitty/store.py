@@ -912,7 +912,14 @@ def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
                 raise ChittyError(f"{option} is not allowed while a task is in review")
     if edit.status == "blocked" and not (edit.note or edit.notes):
         raise ChittyError("setting status blocked requires --note with the reason")
-    is_review_transition = previous_status == "review" and edit.status in {"doing", "done"}
+    is_planning_return = previous_status in {"doing", "review"} and edit.status == "planning"
+    is_review_transition = previous_status == "review" and edit.status in {
+        "doing",
+        "done",
+        "planning",
+    }
+    if is_planning_return and not any(note and note.strip() for note in (edit.note, *edit.notes)):
+        raise ChittyError("moving doing/review → planning requires a nonblank --note")
     if edit.status == "doing" and is_review_transition and not (edit.note or edit.notes):
         raise ChittyError("moving review → doing requires --note with the reason")
     if (
@@ -931,6 +938,10 @@ def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
             raise ChittyError(f"{reviewer} cannot review this task: {', '.join(work)}")
     if edit.status == "doing" and is_review_transition:
         return _escalate_repeated_failure(task, edit)
+    if is_planning_return:
+        # Returning to planning releases the current worker/reviewer; planning
+        # must be able to expose the ticket to its next owner.
+        return replace(edit, owner="")
     return edit
 
 
@@ -968,10 +979,10 @@ def _validate_review_verdict(task: Task, edit: Edit) -> None:
     verdict_by_number = {number: verdict for number, verdict in verdicts}
     if edit.status == "done" and any(verdict == "fail" for verdict in verdict_by_number.values()):
         raise ChittyError("moving review → done requires every verdict to be pass")
-    if edit.status == "doing" and not any(
+    if edit.status in {"doing", "planning"} and not any(
         verdict == "fail" for verdict in verdict_by_number.values()
     ):
-        raise ChittyError("moving review → doing requires at least one fail verdict")
+        raise ChittyError(f"moving review → {edit.status} requires at least one fail verdict")
 
 
 def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:

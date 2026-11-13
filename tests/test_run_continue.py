@@ -36,6 +36,11 @@ if continued:
 """
 # Acceptance criterion 2: the agent never changes the ticket.
 NO_CHANGE = ""
+RETURN_TO_PLANNING = """
+if (not continued and sys.argv[1] == 'work') or sys.argv[1] == 'review':
+    text = text.replace('status: doing', 'status: planning')
+    text = text.replace('status: review', 'status: planning')
+"""
 
 
 class TestRunContinue(CliTestCase):
@@ -116,6 +121,34 @@ class TestRunContinue(CliTestCase):
         result = self.run_cli("run", "--ticket", ticket)
         self.assertEqual(result.stdout, f"{ticket}: todo → error\n")
         self.assertEqual(len(self.invocations_seen()), 1)
+
+    def test_return_to_planning_stops_work_without_continuation(self):
+        ticket = self.ticket()
+        self.write_fake(RETURN_TO_PLANNING)
+        self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(self.json("show", ticket)["status"], "planning")
+        self.assertEqual(len(self.invocations_seen()), 1)
+        self.assertTrue((self.root / ".git" / "worktrees").exists())
+        self.run_cli("run", "--ticket", ticket, exit_code=1)
+
+    def test_return_to_planning_stops_review_without_landing(self):
+        ticket = self.ticket()
+        self.write_fake(FINISH_WHEN_CONTINUED)
+        self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(self.json("show", ticket)["status"], "review")
+        self.write_fake(RETURN_TO_PLANNING)
+        self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(self.json("show", ticket)["status"], "planning")
+        self.assertEqual(len(self.invocations_seen()), 3)
+        self.assertTrue(
+            subprocess.run(
+                ["git", "branch", "--list", ticket.lower()],
+                cwd=self.root,
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+        )
 
     def test_ticket_blocked_when_continued_ends_run_blocked(self):
         ticket = self.ticket()
