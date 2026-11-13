@@ -17,6 +17,10 @@ On 2026-11-09 in `circuitry`, `uv run chitty run --loop --mode review -- --model
 - [ ] When a review ticket’s branch is missing, `chitty run --mode review` moves the ticket to `blocked` with a note naming the ticket and branch, without launching the reviewer.
 - [ ] A subsequent review loop does not select the blocked ticket again, and existing review and loop checks pass.
 
+## Plan
+
+Add a real-Git regression in the review merge tests that deletes the review branch, invokes review mode, and verifies the ticket is blocked with an actionable note and no reviewer launch; verify a second selection skips it. Run the regression before changing behavior. Then handle the missing-branch condition at review worktree preparation by updating the ticket through Repo and returning a status result, while preserving errors for other worktree failures. Run focused review/loop tests, format, and full checks; commit the implementation and update the ticket with verified criteria and handoff.
+
 ## Notes
 
 Cold read 1 by a fresh Sonnet subagent, `refs/cold-read/TASK-314/1`; the real-Git regression failed before the fix with `Error: review ticket TASK-1 has no branch task-1`, then the focused test passed after the fix. Review and loop suites passed (28 tests). The reader found no serious findings, open decisions, surviving mutants, or missed properties. Starting point to inspect, not trust: `src/chitty/run.py` and `tests/test_review_merge.py` from `git show refs/cold-read/TASK-314/1:<path>`. Full `make check` was blocked in the detached environment by pre-existing missing `mcp`/`mcp_types` imports in pyright.
@@ -29,3 +33,4 @@ Cold read 1 by a fresh Sonnet subagent, `refs/cold-read/TASK-314/1`; the real-Gi
 - 2026-11-13T13:35:55Z lively-violet-puffin cold-read → planning
 - 2026-11-13T13:35:57Z lively-violet-puffin planning → todo
 - 2026-11-13T13:37:56Z quick-pearl-zander todo → doing
+- 2026-11-13T13:38:17Z quick-pearl-zander: wrote the plan
