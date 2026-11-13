@@ -24,17 +24,7 @@ When automated ticket work fails, the failure currently disappears into terminal
 
 ## Notes
 
-Cold read found four ambiguities. Resolved here: recoverable failures are setup/check/agent/landing after ticket and worktree resolution; unsafe failures are reported without changing task state; `--errors` is mutually exclusive with `--ticket`, `--mode`, and `--owner`; repair agents must finish in `review` or `blocked`; reporter context has five fields and full captured output.
-
-Implementation is blocked pending human decomposition. The accepted scope couples a new persisted status and selection rules with a second runner mode, repair-agent status validation, multiple failure-boundary semantics, full output capture, and cross-cutting docs/tests. Delivering only part would leave `error` tickets unable to be safely discovered or recovered. Please split into independently verifiable status/selection, repair-run, and failure-handoff tickets.
-
 Cold-read findings were resolved before implementation. Regression evidence: the new explicit error-repair test failed on the pre-change tree with `Error: Invalid value for -s / --status: error is not one of ...`; it passes with the implementation. `make format && make check` passes: Ruff, Pyright, 525 unittest tests, and Node tests.
-
-Review failed (design): stale cold-read note required removal.
-1: fail - stale note
-2: pass - implementation is complete
-3: pass - implementation is complete
-4: pass - implementation is complete
 
 ## Summary
 
@@ -52,3 +42,4 @@ Implemented and committed as 44bca53 (Task: TASK-318). Added the `error` status 
 - 2026-11-13T19:02:19Z zesty-umber-puffin blocked → review
 - 2026-11-13T19:03:34Z zesty-umber-puffin: changed acceptance criteria, notes; overrode review independence
 - 2026-11-13T19:03:34Z zesty-umber-puffin review → doing
+- 2026-11-13T19:03:39Z zesty-umber-puffin: replaced notes
