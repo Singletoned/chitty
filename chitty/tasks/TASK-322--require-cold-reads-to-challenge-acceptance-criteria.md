@@ -1,6 +1,6 @@
 ---
 title: Require cold reads to challenge acceptance criteria
-status: review
+status: done
 labels:
   - workflow
   - planning
@@ -24,6 +24,14 @@ Prevent avoidable work–review cycles caused by criteria that allow a plausible
 
 Write the agreed guidance myself. Keep literal implementation and ambiguity reporting with the fresh reader; put the adversarial sufficiency judgement in the original planning session, using the actual implementation and report. Add focused rendered-guide tests first and confirm failure, update the two role guides and pipeline notes, then run format and all checks. Keep runner behaviour unchanged and leave the committed ticket ready for independent review.
 
+## Notes
+
+Reviewed: Independent review of guidance, design notes and rendered-guide tests; no runner changes.
+1: pass - `python -m unittest tests.test_guide_cold_read_sufficiency` ran 3 tests and printed OK; the fresh-reader test checks literal implementation, individual ambiguity and reporting instructions.
+2: pass - The same test run printed OK; the planner test checks individual and combined coverage, counterexamples, inputs or state, distinguishing results and proposed wording.
+3: pass - The same test run printed OK; the readiness test checks resolution before todo, ticket requirements, another read for serious findings and the optional stronger reader.
+4: pass - With both role files from `63b7db9^` in an isolated package, the same test ran 3 tests and printed FAILED (failures=23); with current guidance it printed OK. Pipeline notes match the guidance. `make format && make check` passed: 530 Python tests printed OK and Node tests passed.
+
 ## Summary
 
 Implemented in `63b7db9`. Wrote both role guides and pipeline notes directly: the fresh reader builds the simplest literal solution and reports ambiguity; the original planner examines the implementation, tests and report against each criterion and combined coverage. Sufficiency gaps need counterexamples, distinguishing verification and proposed criteria, resolved in the ticket before `todo`; a separate stronger reader remains optional. No runner changes. All three new rendered-guide tests failed first (`FAILED (failures=23)`), then passed; updated the existing outcome-reporting test for the revised wording without dropping its intent. `make format` and `make check` pass (530 Python tests plus Node tests). Fixed-text guidance has no variable-input property. Guidance tests verify instruction delivery, not actual model compliance. Committed and ready for independent review; not merged.
@@ -35,3 +43,5 @@ Implemented in `63b7db9`. Wrote both role guides and pipeline notes directly: th
 - 2026-11-13T22:39:36Z brisk-yellow-urchin backlog → doing
 - 2026-11-13T22:42:38Z brisk-yellow-urchin: changed summary; ticked acceptance criteria
 - 2026-11-13T22:42:38Z brisk-yellow-urchin doing → review
+- 2026-11-13T23:24:30Z youthful-ebony-ibis: changed notes; ticked acceptance criteria
+- 2026-11-13T23:24:30Z youthful-ebony-ibis review → done
