@@ -1,6 +1,6 @@
 ---
 title: Handle review tickets whose branch no longer exists
-status: backlog
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -20,3 +20,4 @@ On 2026-11-09 in `circuitry`, `uv run chitty run --loop --mode review -- --model
 ## History
 
 - 2026-11-13T13:32:42Z lively-violet-puffin → backlog
+- 2026-11-13T13:32:50Z lively-violet-puffin backlog → cold-read
