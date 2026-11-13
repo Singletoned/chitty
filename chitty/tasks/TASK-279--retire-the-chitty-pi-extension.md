@@ -1,9 +1,8 @@
 ---
 title: Retire the Chitty Pi extension
-status: planning
+status: todo
 labels:
   - needs-minor
-owner: planning
 depends_on:
   - TASK-278
   - TASK-320
@@ -48,3 +47,5 @@ Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prer
 - 2026-11-13T22:44:35Z mellow-umber-lapwing planning → cold-read
 - 2026-11-13T22:51:59Z mellow-umber-lapwing: changed notes
 - 2026-11-13T22:51:59Z mellow-umber-lapwing cold-read → planning
+- 2026-11-13T22:52:01Z mellow-umber-lapwing: changed owner
+- 2026-11-13T22:52:01Z mellow-umber-lapwing planning → todo
