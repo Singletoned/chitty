@@ -1,7 +1,6 @@
 ---
 title: Report all missing run configuration before starting
-status: blocked
-owner: human
+status: review
 created: 2026-11-13
 ---
 
@@ -27,6 +26,8 @@ Regression test failed before the implementation: `test_run_reports_all_missing_
 
 Review blocked: TASK-315 has no branch `task-315`. A person must restore the branch or choose the ticket's final state.
 
+Restored `task-315` at `5499298`. That implementation commit is already on `main`; review `git show 5499298` and its tests, since the branch diff against `main` is empty.
+
 ## Summary
 
 Implemented and committed as 5499298 (Task: TASK-315). `chitty run` now preflights all static required configuration, reports every missing setting in one error with examples, and names the config source. Added regression coverage and documented the required configuration and preflight behavior. Verification: regression failed before the fix; focused tests and `make format && make check` pass. No follow-ups.
@@ -41,3 +42,5 @@ Implemented and committed as 5499298 (Task: TASK-315). `chitty run` now prefligh
 - 2026-11-13T14:06:21Z zesty-umber-puffin doing → review
 - 2026-11-13T14:23:43Z plucky-dusky-gannet: changed owner, notes
 - 2026-11-13T14:23:43Z plucky-dusky-gannet review → blocked
+- 2026-11-13T23:24:45Z mellow-umber-lapwing: changed owner, notes
+- 2026-11-13T23:24:45Z mellow-umber-lapwing blocked → review
