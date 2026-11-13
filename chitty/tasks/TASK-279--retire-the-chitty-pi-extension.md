@@ -5,25 +5,20 @@ labels:
   - needs-minor
 depends_on:
   - TASK-278
+  - TASK-320
+  - TASK-321
 parent: TASK-275
 created: 2026-11-11
 ---
 
 ## Description
 
-Retire the Chitty Pi extension: `chitty run` already passes the guide using `{prompt}`, continues unfinished sessions, and exports `CHITTY_ACTOR`. Preserve that shared actor for runner descendants. Interactive Pi sessions outside `chitty run` need not share an identity with their subagents; Pi's native `PI_SESSION_ID` remains supported. Remove the extension's interactive commands, startup flags and usage-file writer without replacements.
-
-Stop `chitty init` installing or updating the extension and remove the bundled extension and its tests. Do not automatically delete or overwrite existing installed copies or user Pi settings: these may contain user edits. Remove the existing `exposeSessionEnvironment` settings migration too; preserve that setting whether present or absent. Neither inspect nor modify existing extension files or `chitty-extension.sha256` state files; leave them untouched and document optional manual removal. Document that an old copy can still autoload and that users must inspect and remove it themselves, migrate extension-based agent commands to a `{prompt}` command, and restart Pi. Update setup guidance, generated configuration examples, warnings and current documentation to stop requiring or recommending the extension. A missing-identity warning must not claim the plugin is required; `PI_SESSION_ID` is a valid identity.
-
-Do not edit `chitty.toml` on a ticket branch. Its local `pi-tui` command needs a separate human-owned main-checkout migration. Rewrite or remove stale extension installation, settings migration, warning and command expectations throughout the test suite, including `tests/test_cli.py` and `tests/test_next.py`; `make check` must pass. Preserve unrelated Node tooling, including Prettier. Historical tickets need not be rewritten.
-
-Use Hypothesis for properties. Test first and record failure without the change. For installation, generate existing extension file contents and presence/absence across repeated `chitty init` runs and assert the installed file is never created or changed. Cover both fresh and previously initialised projects. For identity, generate Pi environments with and without `PI_SESSION_ID` and `CHITTY_ACTOR`, and test the warning and actor selection. Runner identity protection needs a fake agent and child process: prove the child inherits the runner actor; do not start a real agent session.
+Remove the bundled Pi extension and its interactive commands, startup flags and usage-file writer without replacements, once `chitty init` no longer installs it. Update current setup guidance, generated examples and documentation to use a `{prompt}` runner command instead of extension flags. Update or remove remaining extension-specific tests, but preserve unrelated Node tooling including Prettier. Do not edit `chitty.toml` on a ticket branch; its local `pi-tui` migration is in `TASK-278`. Historical tickets need not be rewritten. `chitty run` must continue to pass `CHITTY_ACTOR` to descendants: add a fake agent and child process regression without starting a real agent session. No property is needed for fixed documentation text; enumerate changed examples. Write tests first and record failure without the change.
 
 ## Acceptance Criteria
 
-- [ ] Generated fresh and repeat `chitty init` tests prove no extension is created or an existing copy changed, and Pi settings including `exposeSessionEnvironment` are unchanged; they fail against the current installer and settings migration. The bundled extension and extension-only tests are removed.
-- [ ] Generated Pi identity tests prove `PI_SESSION_ID` is accepted without an extension warning, missing identity gets an actionable warning, and a fake runner agent and its child inherit the same `CHITTY_ACTOR`. The warning regression fails before the change.
-- [ ] Current setup guidance, generated examples and documentation use `{prompt}` rather than extension commands and explain the manual migration and removal of existing installed copies. The removed interactive commands, flags and usage-file writer have no replacement.
+- [ ] The bundled extension and its extension-only tests are removed; current generated examples and guidance use `{prompt}` without extension flags. A generated-example regression test fails before the change.
+- [ ] A fake `chitty run` agent and its child inherit the same `CHITTY_ACTOR`; demonstrate the test catches removal of runner actor propagation by mutation. `make check` passes.
 
 ## History
 
@@ -43,3 +38,4 @@ Use Hypothesis for properties. Test first and record failure without the change.
 - 2026-11-13T22:19:38Z mellow-umber-lapwing planning → cold-read
 - 2026-11-13T22:23:01Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:23:01Z mellow-umber-lapwing cold-read → planning
+- 2026-11-13T22:24:52Z mellow-umber-lapwing: changed dependencies, description, acceptance criteria
