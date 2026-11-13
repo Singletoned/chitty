@@ -1,6 +1,6 @@
 ---
 title: Retire the Chitty Pi extension
-status: cold-read
+status: planning
 labels:
   - needs-minor
 owner: planning
@@ -14,7 +14,7 @@ created: 2026-11-11
 
 Retire the Chitty Pi extension: `chitty run` already passes the guide using `{prompt}`, continues unfinished sessions, and exports `CHITTY_ACTOR`. Preserve that shared actor for runner descendants. Interactive Pi sessions outside `chitty run` need not share an identity with their subagents; Pi's native `PI_SESSION_ID` remains supported. Remove the extension's interactive commands, startup flags and usage-file writer without replacements.
 
-Stop `chitty init` installing or updating the extension and remove the bundled extension and its tests. Do not automatically delete or overwrite existing installed copies or user Pi settings: these may contain user edits. Document that an old copy can still autoload and that users must inspect and remove it themselves, migrate extension-based agent commands to a `{prompt}` command, and restart Pi. Update setup guidance, generated configuration examples, warnings and current documentation to stop requiring or recommending the extension. A missing-identity warning must not claim the plugin is required; `PI_SESSION_ID` is a valid identity.
+Stop `chitty init` installing or updating the extension and remove the bundled extension and its tests. Do not automatically delete or overwrite existing installed copies or user Pi settings: these may contain user edits. Remove the existing `exposeSessionEnvironment` settings migration too; preserve that setting whether present or absent. Document that an old copy can still autoload and that users must inspect and remove it themselves, migrate extension-based agent commands to a `{prompt}` command, and restart Pi. Update setup guidance, generated configuration examples, warnings and current documentation to stop requiring or recommending the extension. A missing-identity warning must not claim the plugin is required; `PI_SESSION_ID` is a valid identity.
 
 Do not edit `chitty.toml` on a ticket branch. Its local `pi-tui` command needs a separate human-owned main-checkout migration. Preserve unrelated Node tooling, including Prettier. Historical tickets need not be rewritten.
 
@@ -22,7 +22,7 @@ Use Hypothesis for properties. Test first and record failure without the change.
 
 ## Acceptance Criteria
 
-- [ ] Generated fresh and repeat `chitty init` tests prove no extension is created or an existing copy changed; they fail against the current installer. The bundled extension and extension-only tests are removed.
+- [ ] Generated fresh and repeat `chitty init` tests prove no extension is created or an existing copy changed, and Pi settings including `exposeSessionEnvironment` are unchanged; they fail against the current installer and settings migration. The bundled extension and extension-only tests are removed.
 - [ ] Generated Pi identity tests prove `PI_SESSION_ID` is accepted without an extension warning, missing identity gets an actionable warning, and a fake runner agent and its child inherit the same `CHITTY_ACTOR`. The warning regression fails before the change.
 - [ ] Current setup guidance, generated examples and documentation use `{prompt}` rather than extension commands and explain the manual migration and removal of existing installed copies. The removed interactive commands, flags and usage-file writer have no replacement.
 
@@ -33,3 +33,5 @@ Use Hypothesis for properties. Test first and record failure without the change.
 - 2026-11-13T22:14:12Z mellow-umber-lapwing backlog → planning
 - 2026-11-13T22:14:35Z mellow-umber-lapwing: changed title, description, acceptance criteria
 - 2026-11-13T22:14:36Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T22:16:03Z mellow-umber-lapwing: changed description, acceptance criteria
+- 2026-11-13T22:16:03Z mellow-umber-lapwing cold-read → planning
