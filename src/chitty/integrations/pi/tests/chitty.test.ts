@@ -494,6 +494,16 @@ test("review continuation instructions leave landing to chitty run", () => {
   assert.doesNotMatch(prompt, /merge its branch|remove its branch/i);
 });
 
+test("both continuation prompts route design decisions to planning", () => {
+  for (const mode of ["work", "review"] as const) {
+    const prompt = continuationPrompt(mode, "TASK-323");
+    assert.match(prompt, /unresolved design decision/);
+    assert.match(prompt, /return the ticket to `planning`/);
+    assert.match(prompt, /external obstacles/);
+  }
+  assert.match(continuationPrompt("review", "TASK-323"), /one verdict per criterion/);
+});
+
 test("settles review after its ticket leaves review", () => {
   for (const status of ["doing", "planning", "blocked", "done"]) {
     assert.deepEqual(settlementDecision("review", status, 0), {

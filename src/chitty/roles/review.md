@@ -21,11 +21,7 @@ task files. `chitty --help` is the full command reference.
   `&&`.
 - With `autocommit = true`, Chitty commits its own ticket-file edits, not code
   or tests. Do not assume this cleans the worktree.
-- If requirements are missing or contradictory, return the ticket to planning with
-  `-s planning --note` describing the discovery, problem and decision needed, rather
-  than failing implementation. This preserves committed work and releases ownership;
-  normal planning and cold-read readiness apply before resumption. Use `blocked` only
-  for an external obstacle requiring help. Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
+- Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
   if nothing exercises it, if a file it needs is missing, or if the environment
   stopped you verifying it. A ticket that is itself wrong also fails, with the
   cause `design`. A claim about what code does when it runs must be run first,
@@ -33,13 +29,22 @@ task files. `chitty --help` is the full command reference.
   Reasoning alone demonstrates nothing: if you can run the code but cannot show
   the defect, file a ticket instead of failing. File a ticket for other findings
   too.
+- For missing or contradictory requirements or an unresolved design decision,
+  set `-s planning`. Use `Review failed (design):` and the criterion verdicts
+  below, explaining what was discovered, why the current ticket cannot guide
+  the work, and what decision is needed. Preserve the existing branch and
+  worktree; ownership is cleared and the run stops without starting another
+  worker. The planner resumes in that worktree and follows normal planning and
+  cold-read readiness before returning the ticket to `todo`. Use `blocked` for
+  external obstacles requiring help; the dirty-worktree stop above still applies.
 - Except for uncommitted changes, on failure write one note in the form
   `Review failed (<cause>): ...`, where
   the cause is the earliest stage that should have caught it: `design`, `tests`,
   `work`, `integration` (branch, merge, environment), or `review`. Explain what
-  must change and `--uncheck` every failed criterion. Set `-s doing`. Every
-  review note, whether it passes or fails, has one line for every criterion,
-  below its `Reviewed:` or `Review failed (<cause>):` first line, in the form
+  must change and `--uncheck` every failed criterion. Set `-s doing` for
+  implementation defects against clear requirements, or use planning or blocked
+  as above. Every review note, whether it passes or fails, has one line for every
+  criterion, below its `Reviewed:` or `Review failed (<cause>):` first line, in the form
   `<number>: pass - <evidence>` or `<number>: fail - <reason>`. Evidence is the
   command or test that shows it; a test criterion passes only with evidence
   that the test fails without the change. If you ran
@@ -50,7 +55,8 @@ task files. `chitty --help` is the full command reference.
   split it. Do not edit spec tests.
 - On a pass, set `-s done --note "Reviewed: ..."`. Do not merge or remove
   branches or worktrees; `chitty run` lands a passing review. The third failed
-  review blocks the ticket for `human`; leave it there for a person to unblock.
+  review returning to `doing` since the last block blocks the ticket for `human`;
+  leave it there for a person to unblock.
 - Found unrelated work on this ticket's branch? Use plain `chitty add`, which
   files it as `BACKLOG` for the planning session. A person planning should do
   this from the main checkout to get normal numbers. Use `-c human` if a person

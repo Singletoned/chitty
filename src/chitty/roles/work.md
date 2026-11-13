@@ -31,19 +31,21 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - When a ticket asks for a regression test, see it fail without the fix, by
   running it before you write the fix or with the fix reverted, and say so in
   a note. If it passes without the fix, it proves nothing: change the test
-  until it fails without the fix. If the ticket itself is wrong, because
-  following it would break something or a claim in it is false, do not work
-  around it. That is a person's decision, however cheap the fix looks: note
-  what you found and set `-s blocked`. An unclear detail with a cheap default
-  is not this: choose it, as below.
+  until it fails without the fix.
+- For missing or contradictory requirements or an unresolved design decision,
+  set `-s planning` with a note explaining what was discovered, why the current
+  ticket cannot guide the work, and what decision is needed. Do not work around
+  the problem or weaken the tests. Preserve the existing branch and worktree;
+  commit intended partial work and explain unfinished verification. On return,
+  ownership is cleared and the run stops without starting another worker. The
+  planner resumes in that worktree and follows normal planning and cold-read
+  readiness before returning the ticket to `todo`.
 - For a cheap-to-reverse default, choose it, note the choice and why for the
-  reviewer, and comment the code where it applies. Block only for a costly
-  reversal or a person decision.
-- If requirements are missing or contradictory, return the ticket to planning with
-  `-s planning --note` describing the discovery, problem and decision needed. This
-  releases ownership and preserves committed implementation work; planning and
-  cold-read must make it ready again before resumption. Use `blocked` only for an
-  external obstacle requiring help. Do not work blocked tickets. Leave `human` tickets in
+  reviewer, and comment the code where it applies. Requirement or design
+  decisions go to planning instead.
+- Use `blocked` for external obstacles requiring help. When blocked, note the
+  problem, who can resolve it, and what is needed; then
+  set `-s blocked`. Do not work blocked tickets. Leave `human` tickets in
   `todo`; never pick them up or block them.
 - Found unrelated work on this ticket's branch? Use plain `chitty add`, which
   files it as `BACKLOG` for the planning session. A person planning should do
