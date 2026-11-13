@@ -1,6 +1,6 @@
 ---
 title: Record recoverable runner failures as error tickets
-status: doing
+status: review
 labels:
   - bug
   - runner
@@ -13,7 +13,7 @@ When automated ticket work fails, the failure currently disappears into terminal
 
 ## Acceptance Criteria
 
-- [ ] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
+- [x] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
 - [x] Normal `chitty next` and `chitty run` never select `error`; explicit `chitty run --errors` selects only error tickets, uses a repair-oriented agent prompt, and rejects `--ticket`, `--mode`, and `--owner` combinations.
 - [x] A repair run requires the agent to set a repaired ticket to `review` or a ticket requiring a human decision to `blocked`; any other final status is reported as an error.
 - [x] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
@@ -43,3 +43,5 @@ Implemented and committed as 44bca53 (Task: TASK-318). Added the `error` status 
 - 2026-11-13T19:03:34Z zesty-umber-puffin: changed acceptance criteria, notes; overrode review independence
 - 2026-11-13T19:03:34Z zesty-umber-puffin review → doing
 - 2026-11-13T19:03:39Z zesty-umber-puffin: replaced notes
+- 2026-11-13T19:03:53Z zesty-umber-puffin: ticked acceptance criteria
+- 2026-11-13T19:03:53Z zesty-umber-puffin doing → review
