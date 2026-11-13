@@ -1,6 +1,6 @@
 ---
 title: Record recoverable runner failures as error tickets
-status: planning
+status: doing
 labels:
   - bug
   - runner
@@ -31,3 +31,4 @@ Cold read found four ambiguities. Resolved here: recoverable failures are setup/
 - 2026-11-13T18:27:49Z zesty-umber-puffin → planning
 - 2026-11-13T18:28:00Z zesty-umber-puffin: wrote the plan
 - 2026-11-13T18:29:28Z zesty-umber-puffin: changed acceptance criteria, notes; wrote the plan
+- 2026-11-13T18:29:32Z zesty-umber-puffin planning → doing
