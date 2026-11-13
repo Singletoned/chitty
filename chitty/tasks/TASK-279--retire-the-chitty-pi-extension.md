@@ -1,6 +1,6 @@
 ---
 title: Retire the Chitty Pi extension
-status: cold-read
+status: planning
 labels:
   - needs-minor
 owner: planning
@@ -20,6 +20,10 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 
 - [ ] The bundled extension and its extension-only tests are removed; current generated examples and guidance use `{prompt}` without extension flags. A generated-example regression test fails before the change.
 - [ ] A fake `chitty run` agent and its child inherit the same `CHITTY_ACTOR`; demonstrate the test catches removal of runner actor propagation by mutation. `make check` passes.
+
+## Notes
+
+Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prerequisites; inspect with `git show refs/cold-read/TASK-279/1:<path>`. Check against the current criteria; do not trust it. The ref includes trial prerequisite commits.
 
 ## History
 
@@ -42,3 +46,5 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 - 2026-11-13T22:24:52Z mellow-umber-lapwing: changed dependencies, description, acceptance criteria
 - 2026-11-13T22:44:35Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:44:35Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T22:51:59Z mellow-umber-lapwing: changed notes
+- 2026-11-13T22:51:59Z mellow-umber-lapwing cold-read → planning
