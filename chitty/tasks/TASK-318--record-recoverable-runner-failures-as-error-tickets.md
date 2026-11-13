@@ -1,6 +1,6 @@
 ---
 title: Record recoverable runner failures as error tickets
-status: doing
+status: blocked
 labels:
   - bug
   - runner
@@ -26,9 +26,13 @@ When automated ticket work fails, the failure currently disappears into terminal
 
 Cold read found four ambiguities. Resolved here: recoverable failures are setup/check/agent/landing after ticket and worktree resolution; unsafe failures are reported without changing task state; `--errors` is mutually exclusive with `--ticket`, `--mode`, and `--owner`; repair agents must finish in `review` or `blocked`; reporter context has five fields and full captured output.
 
+Implementation is blocked pending human decomposition. The accepted scope couples a new persisted status and selection rules with a second runner mode, repair-agent status validation, multiple failure-boundary semantics, full output capture, and cross-cutting docs/tests. Delivering only part would leave `error` tickets unable to be safely discovered or recovered. Please split into independently verifiable status/selection, repair-run, and failure-handoff tickets.
+
 ## History
 
 - 2026-11-13T18:27:49Z zesty-umber-puffin → planning
 - 2026-11-13T18:28:00Z zesty-umber-puffin: wrote the plan
 - 2026-11-13T18:29:28Z zesty-umber-puffin: changed acceptance criteria, notes; wrote the plan
 - 2026-11-13T18:29:32Z zesty-umber-puffin planning → doing
+- 2026-11-13T18:31:46Z witty-silver-urchin: changed notes
+- 2026-11-13T18:31:46Z witty-silver-urchin doing → blocked
