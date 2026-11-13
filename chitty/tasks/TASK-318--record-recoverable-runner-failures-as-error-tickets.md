@@ -1,6 +1,6 @@
 ---
 title: Record recoverable runner failures as error tickets
-status: doing
+status: review
 labels:
   - bug
   - runner
@@ -33,9 +33,11 @@ Review failed (tests): Add regression coverage and fix the missing output captur
 4: fail - A fake agent interrupted with `KeyboardInterrupt` printed `interrupted during agent`, but the configured reporter was not called.
 `make format && make check` passed: 525 Python tests and Node tests.
 
+Follow-up verification: setup failures now retain command output in the error note; interruption reporter regression confirms phase context. Full `make format && make check` passed (526 Python tests and Node tests). The only uncommitted formatter adjustment previously observed is now absent; working tree is clean.
+
 ## Summary
 
-Implemented and committed as 44bca53 (Task: TASK-318). Added the `error` status for recoverable ticket-scoped runner failures, preserved branches/worktrees and recorded repair notes, added explicit `chitty run --errors` selection with repair guidance, synchronized repaired status back to main, and retained `error_reporter` for unsafe/global failures. Updated Pi integration, guides, docs, and regression coverage. Verification: pre-change regression failed because `error` was not a valid status; current full checks pass. No follow-ups.
+Committed runner failure-output capture and repair-status validation in 1a1348b (Task: TASK-318). Full make format && make check passed: 526 Python tests and Node tests. Added regressions for setup output and interrupted-agent reporter context. Working tree is clean; ready for independent review.
 
 ## History
 
@@ -54,3 +56,5 @@ Implemented and committed as 44bca53 (Task: TASK-318). Added the `error` status 
 - 2026-11-13T19:03:53Z zesty-umber-puffin doing → review
 - 2026-11-13T19:30:40Z sunny-zinc-ibis: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-13T19:30:40Z sunny-zinc-ibis review → doing
+- 2026-11-13T19:36:45Z friendly-ochre-quail: changed notes, summary
+- 2026-11-13T19:36:45Z friendly-ochre-quail doing → review
