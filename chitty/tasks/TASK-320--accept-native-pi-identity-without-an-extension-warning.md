@@ -1,6 +1,6 @@
 ---
 title: Accept native Pi identity without an extension warning
-status: todo
+status: doing
 parent: TASK-275
 created: 2026-11-13
 ---
@@ -32,3 +32,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-320/1`. Check it a
 - 2026-11-13T22:36:42Z mellow-umber-lapwing cold-read → planning
 - 2026-11-13T22:36:43Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:36:43Z mellow-umber-lapwing planning → todo
+- 2026-11-13T22:38:29Z sunny-russet-gannet todo → doing
