@@ -1,6 +1,6 @@
 ---
 title: Handle review tickets whose branch no longer exists
-status: doing
+status: review
 labels:
   - bug
 priority: medium
@@ -44,3 +44,4 @@ Review tickets with missing branches are now blocked on main before reviewer com
 - 2026-11-13T13:38:17Z quick-pearl-zander: wrote the plan
 - 2026-11-13T13:43:06Z quick-pearl-zander: changed notes
 - 2026-11-13T13:44:05Z quick-pearl-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-13T13:44:11Z quick-pearl-zander doing → review
