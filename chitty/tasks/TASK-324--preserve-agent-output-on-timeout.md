@@ -1,6 +1,6 @@
 ---
 title: Preserve agent output on timeout
-status: cold-read
+status: planning
 owner: planning
 parent: TASK-318
 created: 2026-11-13
@@ -14,6 +14,10 @@ The review of `TASK-318` found that `_run_session` in `src/chitty/run.py` drops 
 
 - [ ] A fake agent prints `TIMEOUT_MARKER` and times out; its ticket enters `error`, and the recorded error includes both the marker and timeout duration. The regression fails before the fix and passes after it.
 
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-324/1`. Check it against the current criteria; do not trust it.
+
 ## History
 
 - 2026-11-13T23:27:49Z mellow-umber-lapwing → backlog
@@ -21,3 +25,5 @@ The review of `TASK-318` found that `_run_session` in `src/chitty/run.py` drops 
 - 2026-11-13T23:28:19Z mellow-umber-lapwing backlog → planning
 - 2026-11-13T23:28:52Z mellow-umber-lapwing: changed owner
 - 2026-11-13T23:28:52Z mellow-umber-lapwing planning → cold-read
+- 2026-11-13T23:31:23Z mellow-umber-lapwing: changed notes
+- 2026-11-13T23:31:23Z mellow-umber-lapwing cold-read → planning
