@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: review
+status: doing
 created: 2026-11-12
 ---
 
@@ -99,6 +99,30 @@ Review failed (tests): Add the missing pure-function and internal-surface bullet
 
 Review fix regression was verified: the extended planning-guide test failed before adding the missing bullet, then passed after the guide change. Focused guide tests and make format && make check passed; chitty fix emitted existing task-text warnings only.
 
+Review failed (work): check exited with status 2:
+```text
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_run_review_compares_only_tool_chitty_in_pyproject (tests.test_next.TestNext.test_run_review_compares_only_tool_chitty_in_pyproject)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-302/tests/test_next.py", line 1612, in test_run_review_compares_only_tool_chitty_in_pyproject
+    result = self.run_cli("run", "--ticket", "TASK-2")
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-302/tests/test_cli.py", line 90, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Error: youthful-ebony-toad cannot review this task: moved the task to review
+
+
+----------------------------------------------------------------------
+Ran 522 tests in 42.348s
+
+FAILED (failures=1)
+make: *** [check] Error 1
+```
+
 ## Summary
 
 Restored the pure-function/internal-surface bullet after the expanded property signals in the planning guide. The planning guide test now verifies the complete specified block and ordering. Regression test failed before the guide change and passed after. Focused tests and make format && make check passed (517 Python suites and Node tests); chitty fix reported pre-existing task-text warnings. Follow-up: none.
@@ -131,3 +155,5 @@ Restored the pure-function/internal-surface bullet after the expanded property s
 - 2026-11-13T08:55:55Z honest-ginger-puffin: wrote the plan
 - 2026-11-13T08:57:27Z honest-ginger-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-13T08:57:27Z honest-ginger-puffin doing → review
+- 2026-11-13T11:22:39Z eager-coral-puffin: changed notes
+- 2026-11-13T11:22:39Z eager-coral-puffin review → doing
