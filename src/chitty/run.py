@@ -547,7 +547,8 @@ def _run_session(
     if outcome == "interrupted":
         raise RunInterrupted("agent")
     if outcome == "timed out":
-        raise ChittyError(f"agent timed out after {repo.config.agent_timeout} seconds")
+        output = completed.stdout.decode(errors="replace") if completed.stdout else "(no output)"
+        raise ChittyError(f"agent timed out after {repo.config.agent_timeout} seconds:\n{output}")
     if outcome == "failed":
         output = completed.stdout.decode(errors="replace") if completed.stdout else "(no output)"
         raise ChittyError(f"agent exited with status {completed.returncode}:\n{output}")
