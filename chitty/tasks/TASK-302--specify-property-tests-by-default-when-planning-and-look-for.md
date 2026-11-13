@@ -1,6 +1,6 @@
 ---
 title: Specify property tests by default when planning, and look for missed ones in cold reads
-status: review
+status: done
 created: 2026-11-12
 ---
 
@@ -125,6 +125,11 @@ make: *** [check] Error 1
 
 The earlier full check failed once in TestNext.test_run_review_compares_only_tool_chitty_in_pyproject because a concurrent test run had moved its temporary TASK-2 to review. Re-ran make format && make check; all 522 Python tests and Node tests passed.
 
+Reviewed: Focused tests and `make format && make check` passed (522 Python tests and Node tests); `chitty guide property-signals` printed unknown role. Against an archived `main` with the new test file, the focused suite printed FAILED (failures=1, errors=2).
+1: pass - `python -m unittest tests.test_guide_property_tests -v` printed OK; on archived `main`, the planning test errored because the shared list was missing.
+2: pass - The focused suite printed OK; on archived `main`, the cold-read test errored because the shared list was missing.
+3: pass - The focused suite printed OK; on archived `main`, the source test failed with `[] != ["property-signals.md"]`.
+
 ## Summary
 
 Implemented the shared property-signals expansion and planning/cold-read guidance, including the pure-function/internal-surface planning requirement. Regression tests failed before the implementation and passed afterward. Verification: chitty fix (only existing task-text warnings), make format && make check (522 Python tests and Node tests passed). Follow-up: none.
@@ -161,3 +166,5 @@ Implemented the shared property-signals expansion and planning/cold-read guidanc
 - 2026-11-13T11:22:39Z eager-coral-puffin review → doing
 - 2026-11-13T11:25:13Z calm-yellow-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-13T11:25:13Z calm-yellow-puffin doing → review
+- 2026-11-13T11:27:48Z quick-jade-adder: changed notes; ticked acceptance criteria
+- 2026-11-13T11:27:48Z quick-jade-adder review → done
