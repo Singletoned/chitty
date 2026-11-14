@@ -1,6 +1,6 @@
 ---
 title: Add a workflow setting, tickets by default
-status: doing
+status: review
 labels:
   - needs-minor
 priority: medium
@@ -49,7 +49,7 @@ Review regression reproduced TypeErrors for workflow = [] and {} before the fix.
 
 ## Summary
 
-Implemented workflow resolution with 0.5.0 as the first tickets-default setup, validation, and workflow-dependent review defaults. Added property/boundary and 18-case review tests, plus config and direction docs. Verified the new regression tests fail on the original behavior, then pass; make format and make check pass. No follow-up in scope; chitty init remains for TASK-331.
+Implemented workflow resolution, workflow-dependent review defaults, and robust validation for non-string workflow values. Added property/boundary and review-matrix tests and updated the config and direction docs. Verified regression failure before the validation fix; make format && make check passes (559 Python tests and Node tests). TASK-331 remains responsible for chitty init migration.
 
 ## History
 
@@ -74,3 +74,5 @@ Implemented workflow resolution with 0.5.0 as the first tickets-default setup, v
 - 2026-11-14T18:45:36Z youthful-bronze-heron: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-14T18:45:36Z youthful-bronze-heron review → doing
 - 2026-11-14T19:51:39Z kind-amber-vole: changed notes; ticked acceptance criteria
+- 2026-11-14T19:51:58Z kind-amber-vole: changed summary
+- 2026-11-14T19:51:58Z kind-amber-vole doing → review
