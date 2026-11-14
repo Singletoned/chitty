@@ -78,6 +78,20 @@ asking the first.
 
 ## Review notes
 
+- Inspect every acceptance criterion and the complete diff before writing the
+  note; do not stop at the first defect. Check coherence, useful property-test
+  opportunities, and whether the result makes sense to users. A dirty worktree
+  still stops review immediately. Missing resources limit verification: report
+  the limits and continue the checks that can safely run, without passing
+  unverified parts.
+- Report all findings from the pass together in one note. Group actionable
+  findings under the relevant criterion, allowing multiple findings per
+  criterion, each stating what must change. Existing failure rules still apply:
+  fail for unmet criteria or demonstrated defects, not unrelated improvements.
+- Distinguish newly discovered findings from previously reported findings that
+  remain unresolved, citing the earlier note for unresolved findings. Later
+  passes are expected to discover additional bugs; a new discovery is not
+  evidence of an earlier process failure.
 - First line `Reviewed: ...` or `Review failed (<cause>): ...`. The cause is the
   earliest step that should have caught it: `design`, `tests`, `work`,
   `integration` (branch, merge, environment) or `review`.

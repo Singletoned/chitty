@@ -14,6 +14,12 @@ task files. `chitty --help` is the full command reference.
   and `--owner human`, then stop. A review branch must be clean; a human decides
   how to resolve it and when to resume.
 - Read and change only files inside the ticket's worktree, including scratch files; do not touch the main checkout, other worktrees or files elsewhere on the machine. Reading other branches through Git or `chitty` is fine, such as `git diff main...`.
+- Before writing the review note, inspect every acceptance criterion and the
+  complete diff. Do not stop at the first defect. Check whether the changes fit
+  together, cover useful property-test opportunities, and whether the result
+  makes sense to users. The dirty-worktree stop above still applies. If resources
+  are missing, report the verification limits and continue the checks you can
+  safely perform; do not claim the unverified parts passed.
 - Verify first, then tick every verified criterion and add your note in one
   `chitty edit`, using repeated --check options, rather than one call for each.
 - Request several reads in one call when none depends on another.
@@ -36,12 +42,20 @@ task files. `chitty --help` is the full command reference.
   must change and `--uncheck` every failed criterion. Set `-s doing`. Every
   review note, whether it passes or fails, has one line for every criterion,
   below its `Reviewed:` or `Review failed (<cause>):` first line, in the form
-  `<number>: pass - <evidence>` or `<number>: fail - <reason>`. Evidence is the
+  `<number>: pass - <evidence>` or `<number>: fail - <reason>`.
+  Report all findings from this pass together in that one note. Group actionable
+  findings under the relevant criterion; a criterion may have multiple findings,
+  each stating what must change. Evidence is the
   command or test that shows it; a test criterion passes only with evidence
   that the test fails without the change. If you ran
   code, the note gives what was run and what it printed. If there was nothing to
   run, it says what is missing or wrong. If the environment stopped you running
   the code, it says what stopped you, with the cause `integration`.
+- Compare findings with earlier review notes. Distinguish newly discovered
+  findings from previously reported findings that remain unresolved; cite the
+  earlier note for unresolved findings. Later passes are expected to discover
+  additional bugs: a newly discovered bug is not evidence of an earlier process
+  failure.
 - If the ticket is too large, say so in the failure note and suggest how to
   split it. Do not edit spec tests.
 - On a pass, set `-s done --note "Reviewed: ..."`. Do not merge or remove
