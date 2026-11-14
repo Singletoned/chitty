@@ -1,6 +1,7 @@
 ---
 title: Write a tickets-only managed block under the tickets workflow
-status: planning
+status: cold-read
+owner: friendly-ginger-adder
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -29,3 +30,5 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), the
 - 2026-11-14T18:21:55Z friendly-ginger-adder → planning
 - 2026-11-14T18:23:28Z friendly-ginger-adder: changed dependencies
 - 2026-11-14T18:29:47Z friendly-ginger-adder: changed description, acceptance criteria
+- 2026-11-14T18:37:24Z friendly-ginger-adder: changed owner
+- 2026-11-14T18:37:24Z friendly-ginger-adder planning → cold-read
