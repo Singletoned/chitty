@@ -4,7 +4,7 @@ status: planning
 labels:
   - needs-minor
 depends_on:
-  - TASK-331
+  - TASK-330
 created: 2026-11-14
 ---
 
@@ -27,3 +27,4 @@ Under `workflow = "tickets"`, hide the runner commands.
 ## History
 
 - 2026-11-14T18:21:57Z friendly-ginger-adder → planning
+- 2026-11-14T18:23:30Z friendly-ginger-adder: changed dependencies
