@@ -1,6 +1,6 @@
 ---
 title: Add a workflow setting, tickets by default
-status: doing
+status: review
 labels:
   - needs-minor
 priority: medium
@@ -22,10 +22,10 @@ Chitty was meant to be a plain ticketing system; the runner pipeline (worktrees,
 
 ## Acceptance Criteria
 
-- [ ] Property: for any `v` that is `None`, a string of one to four dot-separated non-negative integers, or any other text, `resolve_workflow(None, v)` is `"runner"` exactly when `v` is `None`, unreadable by `version_key`, or `version_key(v) < version_key("0.5.0")`, and `"tickets"` otherwise; it never raises; and for each explicit `w` in (`"tickets"`, `"runner"`) and every such `v`, `resolve_workflow(w, v) == w`. The property test also checks the boundary values `0.4.9`, `0.5`, `0.5.0` and `0.5.0.0` explicitly (Hypothesis `@example`). Fails today because the function does not exist.
-- [ ] Loading a temp repository config: no `workflow` with `chitty_version = "0.4.2"`, `"0.5.0"`, `"1.0rc1"`, and none gives `config.workflow` of `runner`, `tickets`, `runner`, `runner`; `workflow = "bogus"` and `workflow = 1` fail with an error naming `workflow`, `tickets` and `runner`; `chitty_version = 1` fails with an error that does not mention `workflow`. Existing `tests/test_config.py` and `TestSetupVersion` in `tests/test_cli.py` pass unchanged.
-- [ ] For every combination of workflow (`tickets`, `runner`), repository `review` (unset, `true`, `false`) and context `review` (unset, `true`, `false`), `config.review` is the repository value if set, else `false` under `tickets` and `true` under `runner`; and `Repo.review_required` returns the context value if set, else `config.review`. A small fixed set of 18 cases, each tested, so no property is needed. The `tickets` with both unset case fails today.
-- [ ] `docs/plan/config.md` documents `workflow`, `FIRST_WORKFLOW_VERSION` and the changed-default decision; `docs/plan/direction.md` records that tickets-only is the original purpose; `make check` passes.
+- [x] Property: for any `v` that is `None`, a string of one to four dot-separated non-negative integers, or any other text, `resolve_workflow(None, v)` is `"runner"` exactly when `v` is `None`, unreadable by `version_key`, or `version_key(v) < version_key("0.5.0")`, and `"tickets"` otherwise; it never raises; and for each explicit `w` in (`"tickets"`, `"runner"`) and every such `v`, `resolve_workflow(w, v) == w`. The property test also checks the boundary values `0.4.9`, `0.5`, `0.5.0` and `0.5.0.0` explicitly (Hypothesis `@example`). Fails today because the function does not exist.
+- [x] Loading a temp repository config: no `workflow` with `chitty_version = "0.4.2"`, `"0.5.0"`, `"1.0rc1"`, and none gives `config.workflow` of `runner`, `tickets`, `runner`, `runner`; `workflow = "bogus"` and `workflow = 1` fail with an error naming `workflow`, `tickets` and `runner`; `chitty_version = 1` fails with an error that does not mention `workflow`. Existing `tests/test_config.py` and `TestSetupVersion` in `tests/test_cli.py` pass unchanged.
+- [x] For every combination of workflow (`tickets`, `runner`), repository `review` (unset, `true`, `false`) and context `review` (unset, `true`, `false`), `config.review` is the repository value if set, else `false` under `tickets` and `true` under `runner`; and `Repo.review_required` returns the context value if set, else `config.review`. A small fixed set of 18 cases, each tested, so no property is needed. The `tickets` with both unset case fails today.
+- [x] `docs/plan/config.md` documents `workflow`, `FIRST_WORKFLOW_VERSION` and the changed-default decision; `docs/plan/direction.md` records that tickets-only is the original purpose; `make check` passes.
 
 ## Plan
 
@@ -36,6 +36,12 @@ Add resolve_workflow and validate the explicit setting; resolve workflow and the
 Replanned with the human on 2026-11-14. The original ask (agents feel they must write tickets for a weaker agent and cannot review their own) is solved by a tickets-only workflow chosen at install time, not by an exploratory agent mode. Stages: this ticket (setting), then `chitty init` with migration, then the managed block, hidden runner commands and hidden role guides. Earlier cold-read questions about `chitty run` invocation no longer apply.
 
 Cold read starting point: `refs/cold-read/TASK-330/2` (a Haiku implementing read against this text, `make check` green). Its files: `src/chitty/config.py`, `tests/test_config_workflow.py`, `docs/plan/config.md`, `docs/plan/direction.md`; see them with `git show refs/cold-read/TASK-330/2:<path>`. Check it against the current criteria rather than trusting it.
+
+The new regression suite failed before implementation: resolve_workflow was absent, workflow was ignored, and tickets with review unset still required review. It passes with the implementation. make check passes, including 559 Python suites and Node tests. chitty fix needed the ticket path explicitly; the pathless invocation treated TASK-330 as a filesystem path.
+
+## Summary
+
+Implemented workflow resolution with 0.5.0 as the first tickets-default setup, validation, and workflow-dependent review defaults. Added property/boundary and 18-case review tests, plus config and direction docs. Verified the new regression tests fail on the original behavior, then pass; make format and make check pass. No follow-up in scope; chitty init remains for TASK-331.
 
 ## History
 
@@ -55,3 +61,5 @@ Cold read starting point: `refs/cold-read/TASK-330/2` (a Haiku implementing read
 - 2026-11-14T18:37:17Z friendly-ginger-adder planning → todo
 - 2026-11-14T18:38:34Z mellow-silver-marten todo → doing
 - 2026-11-14T18:38:52Z mellow-silver-marten: wrote the plan
+- 2026-11-14T18:42:33Z mellow-silver-marten: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T18:42:33Z mellow-silver-marten doing → review
