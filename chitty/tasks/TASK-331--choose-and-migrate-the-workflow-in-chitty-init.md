@@ -5,6 +5,7 @@ labels:
   - needs-minor
 depends_on:
   - TASK-330
+  - TASK-279
 created: 2026-11-14
 ---
 
@@ -31,3 +32,4 @@ created: 2026-11-14
 
 - 2026-11-14T18:21:54Z friendly-ginger-adder → planning
 - 2026-11-14T18:23:27Z friendly-ginger-adder: changed description, acceptance criteria
+- 2026-11-14T18:25:42Z friendly-ginger-adder: changed dependencies
