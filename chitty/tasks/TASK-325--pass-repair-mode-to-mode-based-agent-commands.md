@@ -1,6 +1,7 @@
 ---
 title: Pass repair mode to mode-based agent commands
-status: planning
+status: cold-read
+owner: planning
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -20,3 +21,5 @@ An error repair is currently selected by `chitty run --errors` but internally tr
 - 2026-11-13T23:28:22Z mellow-umber-lapwing: changed description
 - 2026-11-14T09:23:14Z mellow-umber-lapwing: changed title, description, acceptance criteria
 - 2026-11-14T09:23:14Z mellow-umber-lapwing backlog → planning
+- 2026-11-14T09:23:18Z mellow-umber-lapwing: changed owner
+- 2026-11-14T09:23:18Z mellow-umber-lapwing planning → cold-read
