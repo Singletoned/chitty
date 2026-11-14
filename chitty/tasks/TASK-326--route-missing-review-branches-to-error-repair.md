@@ -1,7 +1,6 @@
 ---
 title: Route missing review branches to error repair
-status: cold-read
-owner: planning
+status: planning
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -26,3 +25,5 @@ When review finds that the ticket branch and its worktree are missing, transitio
 - 2026-11-14T09:27:58Z mellow-umber-lapwing: changed description, acceptance criteria
 - 2026-11-14T09:27:58Z mellow-umber-lapwing cold-read → planning
 - 2026-11-14T09:28:01Z mellow-umber-lapwing planning → cold-read
+- 2026-11-14T09:32:06Z mellow-umber-lapwing: changed owner
+- 2026-11-14T09:32:06Z mellow-umber-lapwing cold-read → planning
