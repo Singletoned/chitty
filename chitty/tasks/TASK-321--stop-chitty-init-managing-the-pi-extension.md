@@ -3,6 +3,8 @@ title: Stop chitty init managing the Pi extension
 status: error
 labels:
   - needs-minor
+depends_on:
+  - TASK-329
 parent: TASK-275
 created: 2026-11-13
 ---
@@ -333,6 +335,8 @@ make: *** [check] Error 9
 ```
 ````
 
+Planner, 2026-11-14: this `error` comes from the pre-session check failing on unfinished work, not from the ticket. Once TASK-329 lands, `chitty run --errors` (or a return to `doing`) will start the agent despite the failing check. The previous worker's uncommitted changes in `.worktrees/task-321` are the implementation so far.
+
 ## History
 
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
@@ -357,3 +361,4 @@ make: *** [check] Error 9
 - 2026-11-14T09:21:01Z jolly-silver-falcon blocked → doing
 - 2026-11-14T09:27:05Z mellow-lilac-jay: changed notes
 - 2026-11-14T09:27:05Z mellow-lilac-jay doing → error
+- 2026-11-14T11:43:09Z jolly-silver-falcon: changed dependencies, notes
