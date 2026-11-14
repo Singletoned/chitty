@@ -1,6 +1,6 @@
 ---
 title: Add a workflow setting, tickets by default
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: medium
@@ -49,3 +49,4 @@ Cold read starting point: `refs/cold-read/TASK-330/2` (a Haiku implementing read
 - 2026-11-14T18:37:15Z friendly-ginger-adder cold-read → planning
 - 2026-11-14T18:37:17Z friendly-ginger-adder: changed owner
 - 2026-11-14T18:37:17Z friendly-ginger-adder planning → todo
+- 2026-11-14T18:38:34Z mellow-silver-marten todo → doing
