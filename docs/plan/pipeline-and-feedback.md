@@ -5,7 +5,9 @@
 - `backlog` → `planning` → `cold-read` → `planning` → `todo` → `doing` →
   `review` → `done`; recoverable runner failures enter `error` and use an
   explicit repair run before returning to `review` or `blocked`.
-- A different session does each step; nobody reviews their own work.
+- Planning, cold reading, work and review use different sessions; nobody reviews
+  their own work. The sufficiency read is part of planning: the original planner
+  evaluates the independent cold read, rather than starting another session.
 - Scripted gates come first: they cost no tokens and cannot be argued with.
   They never relax. Only the human's sampling rate moves, and only on measured
   escapes.
@@ -66,9 +68,26 @@ asking the first.
 
 - The planner's part is `chitty guide plan`; the reader's is
   `chitty guide cold-read <ID>`, which the planner passes to the reader.
-- Code-changing ticket: a fresh, cheap-model agent implements it in a detached
-  worktree and runs its tests with and without the fix. Otherwise a stronger
-  model reads the ticket and the code it names.
+- Code-changing ticket: a fresh, cheap-model agent implements the simplest
+  solution the written description and criteria permit in a detached worktree,
+  and runs its tests with and without the fix. It examines each criterion for
+  vague or bundled behaviour and reports ambiguities and decisions rather than
+  silently supplying missing requirements. Otherwise a stronger model reads the
+  ticket and the code it names.
+- The original planning session then checks sufficiency using the implementing
+  commit, tests and report (or proposed text, referenced code and report when
+  there is nothing to run). For each criterion and the ticket as a whole, ask
+  whether a plausible minimal implementation could meet the criteria but still
+  reasonably fail a good review.
+- Each gap needs a concrete counterexample, relevant varying inputs or state,
+  distinguishing verification and observable result, and proposed criterion
+  wording. Prefer general properties to accumulating examples; challenge
+  coverage of the agreed problem, not speculative features.
+- Before `todo`, resolve reader findings and sufficiency gaps by strengthening
+  or splitting the ticket, or explicitly rejecting findings as out of scope.
+  Write missing requirements into the ticket, not just the conversation. Repeat
+  the cold read after serious revisions. A fresh stronger sufficiency reader is
+  optional for uncertainty or repeated work–review failures, not mandatory.
 - The implementing commit is kept under `refs/cold-read/<ID>/<n>`, not a
   branch, because Chitty reads tickets from every branch.
 - Workers and reviewers never cold-read.
