@@ -3,7 +3,7 @@ import unittest
 from click.testing import CliRunner
 
 from chitty.cli import cli
-from chitty.store import guide
+from chitty.store import guide, managed_guide
 
 WARNING = (
     "Backticks run commands inside double-quoted shell arguments, so pass such text "
@@ -21,7 +21,8 @@ class TestBacktickGuideWarning(unittest.TestCase):
                 result = runner.invoke(cli, ["guide", *args], env=env, catch_exceptions=False)
                 self.assertEqual(result.exit_code, 0, result.output)
                 self.assertIn(" ".join(WARNING.split()), " ".join(result.stdout.split()))
-                self.assertEqual(result.stdout, guide(*args))
+                expected = guide(*args) if args else managed_guide("runner")
+                self.assertEqual(result.stdout, expected)
 
 
 if __name__ == "__main__":

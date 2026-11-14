@@ -55,6 +55,7 @@ from chitty.store import (
     next_action,
     ordered,
     renumbered_dict,
+    repository_guide,
     resolve_add_target,
     skip_reason,
 )
@@ -854,7 +855,8 @@ def guide_(role: str | None, task_id: str | None) -> None:
 
     Work, review and cold-read accept an optional ticket ID. Setup and plan do not.
     """
-    click.echo(guide(role, task_id), nl=False)
+    text = repository_guide(Path.cwd()) if role is None else guide(role, task_id)
+    click.echo(text, nl=False)
     if role is None and pi_session_environment_missing():
         click.echo(
             "\nPi has no session identity. Set `CHITTY_ACTOR` when starting Pi, or provide a "

@@ -15,7 +15,7 @@ import yaml
 from chitty import git, ids
 from chitty.actor import actor
 from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
-from chitty.store import Change, Context, Repo, StoredTask, guide
+from chitty.store import Change, Context, Repo, StoredTask, managed_guide
 
 STATUS = {"To Do": "todo", "In Progress": "doing", "Done": "done"}
 SECTIONS = {
@@ -244,7 +244,11 @@ def import_directory(
             updated, count = re.subn(marker_pattern, "", previous_agents)
             if not count:
                 pattern = r"(?ms)^## Backlog\.md Workflow\n.*?(?=^## |\Z)"
-                replacement = "" if "## Chitty" in previous_agents else guide().rstrip() + "\n"
+                replacement = (
+                    ""
+                    if "## Chitty" in previous_agents
+                    else managed_guide(repo.config.workflow).rstrip() + "\n"
+                )
                 updated, count = re.subn(pattern, replacement, previous_agents)
             if count:
                 agent_path.write_text(updated)

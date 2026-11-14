@@ -23,10 +23,10 @@ from chitty.model import DEFAULT_LIST_STATUSES, STATUSES
 from chitty.store import (
     Edit,
     Repo,
-    guide,
     matches,
     next_action,
     renumbered_dict,
+    repository_guide,
     resolve_add_target,
     skip_reason,
 )
@@ -44,33 +44,47 @@ Status = Literal[
 ]
 Priority = Literal["low", "medium", "high"]
 
-server = MCPServer(name="chitty", instructions=guide())
+# Tools declared by `_tool`, registered on each server by `create_server`.
+_TOOLS: list[tuple[str, str, Callable[..., Any]]] = []
 
 
 def _tool[F: Callable[..., Any]](name: str, description: str) -> Callable[[F], F]:
-    """Register a tool whose ChittyErrors reach the client as tool errors."""
+    """Declare a tool whose ChittyErrors reach the client as tool errors."""
 
     def decorator(func: F) -> F:
-        @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            try:
-                return func(*args, **kwargs)
-            except ChittyError as error:
-                raise ToolError(str(error)) from error
-
-        server.tool(name=name, description=description)(wrapper)
+        _TOOLS.append((name, description, func))
         return func
 
     return decorator
 
 
+def _as_tool(func: Callable[..., Any]) -> Callable[..., Any]:
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        try:
+            return func(*args, **kwargs)
+        except ChittyError as error:
+            raise ToolError(str(error)) from error
+
+    return wrapper
+
+
+def create_server(start_dir: Path) -> MCPServer:
+    """Build the server; its instructions and guide follow the repository at `start_dir`."""
+    text = repository_guide(start_dir)
+    server = MCPServer(name="chitty", instructions=text)
+
+    @server.resource("chitty://guide", name="guide", mime_type="text/markdown")
+    def guide_resource() -> str:
+        return text
+
+    for name, description, func in _TOOLS:
+        server.tool(name=name, description=description)(_as_tool(func))
+    return server
+
+
 def _repo() -> Repo:
     return Repo.open(find_root(Path.cwd()))
-
-
-@server.resource("chitty://guide", name="guide", mime_type="text/markdown")
-def guide_resource() -> str:
-    return guide()
 
 
 @_tool("whoami", "Return the stable name Chitty uses for this actor.")
@@ -288,4 +302,4 @@ def path(id: str) -> dict[str, Any]:
 
 
 def run() -> None:
-    server.run("stdio")
+    create_server(Path.cwd()).run("stdio")
