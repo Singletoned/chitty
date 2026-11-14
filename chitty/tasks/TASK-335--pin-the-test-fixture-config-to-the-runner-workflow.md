@@ -1,6 +1,6 @@
 ---
 title: Pin the test fixture config to the runner workflow
-status: doing
+status: review
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -18,7 +18,7 @@ After TASK-330, a config with no `workflow` line resolves by its `chitty_version
 ## Acceptance Criteria
 
 - [x] A repository written from `CONFIG` in `tests/support.py`, with its `chitty_version` rewritten to `"0.5.0"`, loads through `load_repo_config` with `config.workflow == "runner"` and `config.review is True`. Fails before the change (`'tickets' != 'runner'`).
-- [ ] `make check` passes, and also passes with `__version__` in `src/chitty/__init__.py` temporarily set to `0.5.0` (restore it afterwards; do not commit the change).
+- [x] `make check` passes, and also passes with `__version__` in `src/chitty/__init__.py` temporarily set to `0.5.0` (restore it afterwards; do not commit the change).
 
 ## Plan
 
@@ -34,9 +34,11 @@ Review failed (work): The release-version check still fails; update the init tes
 1: pass - `uv run python -m unittest tests.test_config_workflow.TestFixtureConfig` printed OK; removing the fixture workflow line first printed FAIL with `AssertionError: 'tickets' != 'runner'`.
 2: fail - `make format && make check` passed at 0.4.2 (578 tests OK and Node tests passed). With `__version__` temporarily set to 0.5.0, `make check` printed FAILED (failures=1): `tests.test_cli.TestInit.test_init` expected `chitty guide work` in the generated AGENTS.md, but it was absent. The version was restored.
 
+Fixed TestInit to assert the generated managed guide for resolve_workflow(None, CHITTY_VERSION), covering runner and tickets defaults. make format && make check passed at 0.4.2 and make check passed with __version__ temporarily set to 0.5.0; restored to 0.4.2. Commit 0264c3d.
+
 ## Summary
 
-Pinned tests/support.py CONFIG to runner and adjusted TestWorkflowConfig helper to remove the fixture default before adding variant settings. Added a fixed 0.5.0 regression test verifying runner and review=True via load_repo_config. Verified regression failed before fix; make format and make check passed at normal and temporary 0.5.0 versions. No follow-ups.
+Pinned the test fixture to runner and added the 0.5.0 regression test (prior commit e9d3db0). Updated TestInit expectations for version-selected managed guides (commit 0264c3d). Verification: make format && make check passed at installed 0.4.2; make check passed with __version__ temporarily set to 0.5.0; restored afterward. No follow-ups.
 
 ## History
 
@@ -53,3 +55,5 @@ Pinned tests/support.py CONFIG to runner and adjusted TestWorkflowConfig helper 
 - 2026-11-14T20:10:58Z rosy-indigo-lapwing doing → review
 - 2026-11-14T20:20:48Z witty-ochre-quail: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-14T20:20:48Z witty-ochre-quail review → doing
+- 2026-11-14T20:31:58Z rosy-amber-ibis: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T20:31:58Z rosy-amber-ibis doing → review
