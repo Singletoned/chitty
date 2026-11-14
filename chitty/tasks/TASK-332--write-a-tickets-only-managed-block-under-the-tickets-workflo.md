@@ -1,7 +1,6 @@
 ---
 title: Write a tickets-only managed block under the tickets workflow
-status: planning
-owner: friendly-ginger-adder
+status: todo
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -44,3 +43,5 @@ Cold read starting point: `refs/cold-read/TASK-332/2` (a Haiku implementing read
 - 2026-11-14T18:46:37Z friendly-ginger-adder planning → cold-read
 - 2026-11-14T18:56:10Z friendly-ginger-adder: changed description, acceptance criteria, notes
 - 2026-11-14T18:56:10Z friendly-ginger-adder cold-read → planning
+- 2026-11-14T18:56:12Z friendly-ginger-adder: changed owner
+- 2026-11-14T18:56:12Z friendly-ginger-adder planning → todo
