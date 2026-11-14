@@ -1,8 +1,9 @@
 ---
 title: Hide role guides under the tickets workflow
-status: planning
+status: cold-read
 labels:
   - needs-minor
+owner: friendly-ginger-adder
 depends_on:
   - TASK-330
   - TASK-332
@@ -31,3 +32,5 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 - 2026-11-14T18:23:32Z friendly-ginger-adder: changed dependencies
 - 2026-11-14T18:29:50Z friendly-ginger-adder: changed description, acceptance criteria
 - 2026-11-14T18:30:01Z friendly-ginger-adder: changed dependencies
+- 2026-11-14T18:56:14Z friendly-ginger-adder: changed owner
+- 2026-11-14T18:56:14Z friendly-ginger-adder planning → cold-read
