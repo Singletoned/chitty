@@ -18,8 +18,11 @@ from chitty.check import errors
 from chitty.check import fix as fix_repo
 from chitty.config import (
     CHITTY_VERSION,
+    configured_workflow,
     find_root,
+    load_repo_config,
     registered_projects,
+    require_runner,
     search_root,
     user_contexts_path,
     version_key,
@@ -61,8 +64,36 @@ from chitty.store import (
 )
 from chitty.upgrade import check_for_upgrade
 
+RUNNER_COMMANDS = ("run", "next")
+
+
+def _tickets_workflow() -> bool:
+    """Keep runner commands visible when config is absent or cannot be read."""
+    try:
+        return configured_workflow(Path.cwd()) == "tickets"
+    except ChittyError:
+        return False
+
 
 class _Group(click.Group):
+    def list_commands(self, ctx: click.Context) -> list[str]:
+        names = super().list_commands(ctx)
+        return (
+            [name for name in names if name not in RUNNER_COMMANDS]
+            if _tickets_workflow()
+            else names
+        )
+
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None:
+        if cmd_name in RUNNER_COMMANDS and _tickets_workflow():
+
+            def refuse() -> None:
+                root = find_root(Path.cwd())
+                require_runner(load_repo_config(root), cmd_name)
+
+            return click.Command(cmd_name, callback=refuse)
+        return super().get_command(ctx, cmd_name)
+
     def invoke(self, ctx: click.Context) -> Any:
         if user_contexts_path().exists():
             click.echo("warning: contexts.toml is ignored; use chitty suggest", err=True)

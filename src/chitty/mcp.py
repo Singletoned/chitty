@@ -14,7 +14,7 @@ from chitty import locks
 from chitty.actor import actor
 from chitty.check import check as check_repo
 from chitty.check import fix as fix_repo
-from chitty.config import find_root, search_root
+from chitty.config import configured_workflow, find_root, search_root
 from chitty.errors import ChittyError
 from chitty.inbox import list_waiting
 from chitty.inbox import pull as pull_suggestions
@@ -78,7 +78,10 @@ def create_server(start_dir: Path) -> MCPServer:
     def guide_resource() -> str:
         return text
 
+    tickets = configured_workflow(start_dir) == "tickets"
     for name, description, func in _TOOLS:
+        if tickets and name == "next":
+            continue
         server.tool(name=name, description=description)(_as_tool(func))
     return server
 
