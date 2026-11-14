@@ -1,6 +1,7 @@
 ---
 title: Pin the test fixture config to the runner workflow
-status: planning
+status: cold-read
+owner: friendly-ginger-adder
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -22,3 +23,5 @@ After TASK-330, a config with no `workflow` line resolves by its `chitty_version
 ## History
 
 - 2026-11-14T18:46:23Z friendly-ginger-adder → planning
+- 2026-11-14T18:46:39Z friendly-ginger-adder: changed owner
+- 2026-11-14T18:46:39Z friendly-ginger-adder planning → cold-read
