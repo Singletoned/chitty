@@ -1056,14 +1056,14 @@ def _run_check(
         )
     except FileNotFoundError:
         output = f"check command not found: {command}"
-        return _handle_check_failure(work_repo, action, output)
+        return _handle_check_failure(work_repo, action, output, exited=False)
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
     if completed.returncode == 0:
         return None
     output = completed.stdout or "(no output)"
     detail = f"check exited with status {completed.returncode}:\n{_code_block(output)}"
-    return _handle_check_failure(work_repo, action, detail)
+    return _handle_check_failure(work_repo, action, detail, exited=True)
 
 
 def _code_block(text: str) -> str:
@@ -1073,7 +1073,18 @@ def _code_block(text: str) -> str:
     return f"{fence}text\n{text}\n{fence}"
 
 
-def _handle_check_failure(work_repo: Repo, action: NextAction, detail: str) -> RunResult | None:
+def _handle_check_failure(
+    work_repo: Repo, action: NextAction, detail: str, *, exited: bool
+) -> RunResult | None:
+    """Start the agent on an unfinished work ticket whose check exited non-zero."""
+    if action.mode == "work" and exited:
+        status = work_repo.find(action.id).task.frontmatter.status
+        if status in {"doing", "error"}:
+            work_repo.edit(
+                action.id,
+                Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
+            )
+            return None
     return _record_ticket_error(
         Repo.open(git.main_checkout(work_repo.root)),
         action,
