@@ -27,6 +27,10 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), the
 - [ ] In a temp repository, changing an explicit `workflow` line from `runner` to `tickets` and re-running `chitty init` replaces the block in `AGENTS.md`, leaving text outside the markers unchanged; and the reverse. Existing tests for damaged guide markers still pass, with no file written before that error.
 - [ ] No sentence of the body of `guide.md` (the text after its `## Chitty` heading) appears in `guide-runner.md`; `src/chitty/mcp.py` imports no name starting with `_` from the `mcp` package and reads no such attribute of its objects; `make check` passes.
 
+## Plan
+
+Split the managed guide into the shared short guide and runner-only continuation. Add workflow-aware guide selection in store using resolved repository config, then update init, CLI, backlog import, and MCP to use it. Convert MCP module registration to a server factory with per-repository instructions/resources/tools. Add focused workflow block tests, update callers to pass roles where required, and verify regression behavior plus make format/check.
+
 ## Notes
 
 Cold read starting point: `refs/cold-read/TASK-332/2` (a Haiku implementing read on top of TASK-330's read; `make check` green; mutants M1 to M5 killed). Its files: `src/chitty/guide.md`, `src/chitty/guide-runner.md`, `src/chitty/store.py`, `src/chitty/cli.py`, `src/chitty/import_backlog.py`, `src/chitty/mcp.py`, `tests/test_guide_workflow_block.py`, `tests/fixtures/guide-before-workflow.md`, and one-token call-site swaps in `tests/test_cli.py`, `tests/test_mcp.py`, `tests/test_next.py`, `tests/test_renumber.py`, `tests/test_statuses_planning.py`, `tests/test_guide_backticks.py`, `tests/test_guide_literal_star.py`. See them with `git show refs/cold-read/TASK-332/2:<path>`. Rebase onto the real TASK-330 on `main`; check against the current criteria rather than trusting it.
@@ -46,3 +50,4 @@ Cold read starting point: `refs/cold-read/TASK-332/2` (a Haiku implementing read
 - 2026-11-14T18:56:12Z friendly-ginger-adder: changed owner
 - 2026-11-14T18:56:12Z friendly-ginger-adder planning → todo
 - 2026-11-14T20:01:11Z vivid-pearl-urchin todo → doing
+- 2026-11-14T20:01:28Z vivid-pearl-urchin: wrote the plan
