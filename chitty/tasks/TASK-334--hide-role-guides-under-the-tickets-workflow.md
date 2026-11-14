@@ -10,20 +10,22 @@ created: 2026-11-14
 
 ## Description
 
-Under `workflow = "tickets"`, hide the role guides.
+Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hide the role guides.
 
-- `chitty guide` with no role still prints the managed block.
-- The roles `work`, `review`, `repair`, `cold-read`, `setup` and `plan` are not offered: `chitty guide --help` shows only the plain `chitty guide` example, and asking for one of them fails, exit 1, saying it needs `workflow = "runner"` in the config.
-- Outside a Chitty repository, and under `workflow = "runner"`, behaviour is unchanged.
+- `chitty guide` with no role still prints the managed block (TASK-332 decides its text).
+- Every role in `ROLE_NAMES` (`work`, `review`, `repair`, `plan`, `cold-read`, `setup`) is unavailable: `chitty guide <role> [ID]` exits 1 with `chitty guide <role> needs workflow = "runner" in the Chitty config`, and `chitty guide --help` shows only the plain `chitty guide` example, with no role examples or the line about which roles take an ID.
+- Put the refusal in `guide()` in `src/chitty/store.py`, which gains the workflow as a parameter, so every caller decides; `src/chitty/run.py` passes its repository's workflow.
+- When no config is found, or it fails to load, behave as `runner`, as today.
+- No property test: a small fixed set (six roles, two workflows, no repository), each case tested. Tests go in `tests/test_guide_workflow.py`.
 
 ## Acceptance Criteria
 
-- [ ] Under `tickets`, `chitty guide` prints the managed block and `chitty guide --help` shows no role examples.
-- [ ] Under `tickets`, `chitty guide <role>` for `work`, `review`, `repair`, `cold-read`, `setup` or `plan` exits 1 with a message naming `workflow = "runner"`.
-- [ ] Outside a Chitty repository and under `runner`, `chitty guide` and its help are unchanged.
-- [ ] Tests in `tests/test_guide_workflow.py` cover criteria 1 to 3, and fail without the change.
+- [ ] In a temp repository with `workflow = "tickets"`, for each of the six roles, `chitty guide <role>` exits 1 with the message naming the role and `workflow = "runner"`, and prints nothing on stdout. Fails today.
+- [ ] Under `tickets`, `chitty guide` exits 0 and prints the managed block, and `chitty guide --help` mentions no role name.
+- [ ] Under `runner`, and outside a repository, each role guide and `chitty guide --help` give the same output as before (compare with the output at the commit before this change). `make check` passes.
 
 ## History
 
 - 2026-11-14T18:21:59Z friendly-ginger-adder → planning
 - 2026-11-14T18:23:32Z friendly-ginger-adder: changed dependencies
+- 2026-11-14T18:29:50Z friendly-ginger-adder: changed description, acceptance criteria
