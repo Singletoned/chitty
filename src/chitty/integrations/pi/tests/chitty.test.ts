@@ -473,7 +473,7 @@ test("exits cleanly when Chitty starts outside a linked worktree", async () => {
 });
 
 test("settles work after its ticket leaves todo or doing", () => {
-  for (const status of ["review", "blocked", "done"]) {
+  for (const status of ["review", "planning", "blocked", "done"]) {
     assert.deepEqual(settlementDecision("work", status, 0), {
       action: "shutdown",
       reason: `ticket left work with status ${status}`,
@@ -490,11 +490,22 @@ test("review continuation instructions leave landing to chitty run", () => {
   assert.match(prompt, /Never review work you have done/);
   assert.match(prompt, /Do not merge branches or remove branches or worktrees/);
   assert.match(prompt, /`chitty run` lands a passing review/);
+  assert.match(prompt, /return the ticket to `planning`/);
   assert.doesNotMatch(prompt, /merge its branch|remove its branch/i);
 });
 
+test("both continuation prompts route design decisions to planning", () => {
+  for (const mode of ["work", "review"] as const) {
+    const prompt = continuationPrompt(mode, "TASK-323");
+    assert.match(prompt, /unresolved design decision/);
+    assert.match(prompt, /return the ticket to `planning`/);
+    assert.match(prompt, /external obstacles/);
+  }
+  assert.match(continuationPrompt("review", "TASK-323"), /one verdict per criterion/);
+});
+
 test("settles review after its ticket leaves review", () => {
-  for (const status of ["doing", "blocked", "done"]) {
+  for (const status of ["doing", "planning", "blocked", "done"]) {
     assert.deepEqual(settlementDecision("review", status, 0), {
       action: "shutdown",
       reason: `ticket left review with status ${status}`,

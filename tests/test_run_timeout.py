@@ -42,6 +42,7 @@ class TestAgentTimeout(CliTestCase):
         fake.write_text(
             "#!" + sys.executable + "\n"
             "import os, subprocess, sys, time\n"
+            "print('TIMEOUT_MARKER', flush=True)\n"
             "child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'])\n"
             f"open({str(pid_file)!r}, 'w').write(str(os.getpid()) + ' ' + str(child.pid))\n"
             "time.sleep(60)\n"
@@ -52,7 +53,9 @@ class TestAgentTimeout(CliTestCase):
         with patch.dict(os.environ, env):
             result = self.run_cli("run", "--mode", "work")
         self.assertEqual(result.stdout, "TASK-1: todo → error\n")
-        self.assertIn("agent timed out after 2 seconds", self.run_cli("show", "TASK-1").stdout)
+        error = self.run_cli("show", "TASK-1").stdout
+        self.assertIn("agent timed out after 2 seconds", error)
+        self.assertIn("TIMEOUT_MARKER", error)
         usage = self.tmp / "data/chitty/usage/timeout-test.jsonl"
         self.assertTrue(usage.exists())
         entries = [json.loads(line) for line in usage.read_text().splitlines()]

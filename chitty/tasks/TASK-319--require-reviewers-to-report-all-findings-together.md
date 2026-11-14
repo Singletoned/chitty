@@ -1,6 +1,6 @@
 ---
 title: Require reviewers to report all findings together
-status: review
+status: error
 labels:
   - workflow
   - review
@@ -15,23 +15,30 @@ Reviewers often stop after the first defect, causing avoidable review cycles and
 
 ## Acceptance Criteria
 
-- [x] The review guide requires inspecting every acceptance criterion and the complete diff before writing the review note.
-- [x] A failing review note reports all findings from that pass together, with actionable findings grouped by criterion; a criterion may have multiple findings.
-- [x] The review guide requires checking that the changes fit together, cover useful property-test opportunities, and make sense to users.
-- [x] The guide distinguishes newly discovered findings from previously reported findings that remain unresolved. Discovering another bug on a later pass is expected, not evidence of an earlier process failure.
+- [ ] The review guide requires inspecting every acceptance criterion and the complete diff before writing the review note.
+- [ ] A failing review note reports all findings from that pass together, with actionable findings grouped by criterion; a criterion may have multiple findings.
+- [ ] The review guide requires checking that the changes fit together, cover useful property-test opportunities, and make sense to users.
+- [ ] The guide distinguishes newly discovered findings from previously reported findings that remain unresolved. Discovering another bug on a later pass is expected, not evidence of an earlier process failure.
 
 ## Plan
 
 Update the review guide and pipeline design notes to require a complete inspection before one consolidated verdict, preserving dirty-worktree and verification-limit handling. Group all actionable findings under the existing criterion lines, and distinguish new discoveries from unresolved earlier findings without blaming prior reviewers. Add fixed-text rendered-guide regression tests (no property tests: fixed instructions with no variable input), demonstrate failure before the guidance change, then run format and all checks. Scope excludes runner changes and review-note parsing.
 
-## Summary
+## Notes
 
-Implemented in commit 14670e2. Updated `src/chitty/roles/review.md` and `docs/plan/pipeline-and-feedback.md`: inspect the complete change before a consolidated verdict, report all findings per pass, preserve dirty-worktree and verification-limit handling, and distinguish new discoveries from unresolved earlier findings without treating later discoveries as earlier process failures. Added `tests/test_guide_review_completeness.py`: all three tests failed before the guidance change (15 failing subtests), then passed with the change. `make format` and `make check` pass, including existing review-evidence tests. Fixed-text guidance needs no property tests. Ready for independent review; not merged.
+Runner error (agent): TASK-319 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-319`
+
+Error output:
+```text
+TASK-319 was unchanged; only committed changes are visible to `chitty run`
+```
 
 ## History
 
 - 2026-11-13T19:51:41Z zesty-umber-puffin → backlog
 - 2026-11-13T22:24:02Z brisk-yellow-urchin: changed acceptance criteria; wrote the plan
 - 2026-11-13T22:24:02Z brisk-yellow-urchin backlog → doing
-- 2026-11-13T22:25:44Z brisk-yellow-urchin: changed summary; ticked acceptance criteria
-- 2026-11-13T22:25:44Z brisk-yellow-urchin doing → review
+- 2026-11-13T22:27:19Z daring-pearl-dormouse: changed notes
+- 2026-11-13T22:27:19Z daring-pearl-dormouse doing → error

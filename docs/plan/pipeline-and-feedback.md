@@ -9,12 +9,26 @@
 - Scripted gates come first: they cost no tokens and cannot be argued with.
   They never relax. Only the human's sampling rate moves, and only on measured
   escapes.
-- The third failed review since the ticket was last `blocked` blocks it for
-  the human (`REVIEW_FAILURE_LIMIT`): by then the ticket is the likely problem.
-- A failed review restarts in a fresh session, with the finding added as a
-  criterion (TASK-307 lets reviewers fail on an uncovered requirement).
-- Workers and reviewers block for the human when the ticket is wrong. They
-  never weaken its tests.
+- The third `review → doing` failure since the ticket was last `blocked` blocks
+  it for the human (`REVIEW_FAILURE_LIMIT`), to investigate the repeated failures.
+- A failed review of implementation against clear requirements returns to
+  `doing` for a fresh worker session. Missing or contradictory requirements or
+  unresolved design decisions return to `planning`, from either `doing` or
+  `review`; external obstacles requiring help use `blocked` instead.
+- A return to planning requires a nonblank note explaining the discovery, why
+  the ticket cannot guide the work, and the decision needed. Reviewers retain
+  independence and one verdict per criterion, with at least one fail when
+  criteria exist. Ownership is cleared; existing implementation, branch and
+  worktree are preserved. The run ends without landing or starting another
+  worker. Workers keep cheap reversible implementation choices rather than
+  escalating those to planning. Neither role weakens tests to fit the work.
+- Returned tickets appear in planning lists, not automatic work/review
+  selection. The planner resumes in the existing ticket worktree, revises or
+  splits the requirements, and follows the normal planning and cold-read
+  readiness steps before `todo`. The existing escalation counts only
+  `review → doing` failures. Repeated-cycle diagnosis is separate work across
+  the whole project pipeline: requirements, implementation, verification, review
+  or workflow may be responsible; repeated failures do not prove planning failed.
 - The earlier spec-first pipeline (separate `design`, `tests` and
   `review-ticket` stages, TASK-109) was dropped on 2026-11-11; git has it.
 

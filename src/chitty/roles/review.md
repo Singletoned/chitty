@@ -35,13 +35,22 @@ task files. `chitty --help` is the full command reference.
   Reasoning alone demonstrates nothing: if you can run the code but cannot show
   the defect, file a ticket instead of failing. File a ticket for other findings
   too.
+- For missing or contradictory requirements or an unresolved design decision,
+  set `-s planning`. Use `Review failed (design):` and the criterion verdicts
+  below, explaining what was discovered, why the current ticket cannot guide
+  the work, and what decision is needed. Preserve the existing branch and
+  worktree; ownership is cleared and the run stops without starting another
+  worker. The planner resumes in that worktree and follows normal planning and
+  cold-read readiness before returning the ticket to `todo`. Use `blocked` for
+  external obstacles requiring help; the dirty-worktree stop above still applies.
 - Except for uncommitted changes, on failure write one note in the form
   `Review failed (<cause>): ...`, where
   the cause is the earliest stage that should have caught it: `design`, `tests`,
   `work`, `integration` (branch, merge, environment), or `review`. Explain what
-  must change and `--uncheck` every failed criterion. Set `-s doing`. Every
-  review note, whether it passes or fails, has one line for every criterion,
-  below its `Reviewed:` or `Review failed (<cause>):` first line, in the form
+  must change and `--uncheck` every failed criterion. Set `-s doing` for
+  implementation defects against clear requirements, or use planning or blocked
+  as above. Every review note, whether it passes or fails, has one line for every
+  criterion, below its `Reviewed:` or `Review failed (<cause>):` first line, in the form
   `<number>: pass - <evidence>` or `<number>: fail - <reason>`.
   Report all findings from this pass together in that one note. Group actionable
   findings under the relevant criterion; a criterion may have multiple findings,
@@ -60,7 +69,8 @@ task files. `chitty --help` is the full command reference.
   split it. Do not edit spec tests.
 - On a pass, set `-s done --note "Reviewed: ..."`. Do not merge or remove
   branches or worktrees; `chitty run` lands a passing review. The third failed
-  review blocks the ticket for `human`; leave it there for a person to unblock.
+  review returning to `doing` since the last block blocks the ticket for `human`;
+  leave it there for a person to unblock.
 - Found unrelated work on this ticket's branch? Use plain `chitty add`, which
   files it as `BACKLOG` for the planning session. A person planning should do
   this from the main checkout to get normal numbers. Use `-c human` if a person

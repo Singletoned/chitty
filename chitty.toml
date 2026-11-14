@@ -31,7 +31,5 @@ prefix = "BACKLOG"
 random_ids = true
 
 [agent_commands]
-# Pi with its interface and the chitty.ts extension, the default until TASK-278.
-pi-tui = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --no-skills --skill ~/.pi/agent/skills/python-dev --chitty-{mode} {id}"
 # Unrestricted inside the worktree (the human decided, 2026-11-10); `git push` stays denied.
 claude = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync claude -p {prompt} --model haiku --permission-mode bypassPermissions --disallowedTools 'Bash(git push *)'"
