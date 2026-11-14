@@ -1,6 +1,6 @@
 ---
 title: Pass repair mode to mode-based agent commands
-status: cold-read
+status: planning
 owner: planning
 parent: TASK-318
 created: 2026-11-13
@@ -13,7 +13,7 @@ An error repair is currently selected by `chitty run --errors` but internally tr
 ## Acceptance Criteria
 
 - [ ] Generated command-rendering tests show error repair renders `{mode}` as `repair` rather than `work`, without changing other arguments; work and review remain unchanged. The repair case fails before the fix.
-- [ ] A fake repair agent invoked via `chitty run --errors` receives `repair` in a `{mode} {id}` command; a `{prompt}` command receives the repair guide. Existing repair result validation remains effective.
+- [ ] A fake agent invoked through `chitty run --errors` with a `{mode} {id}` command records its actual received arguments, which the test asserts contain `repair` and the ticket ID; a separate `{prompt}` command receives the repair guide. Existing repair result validation remains effective.
 
 ## History
 
@@ -25,3 +25,5 @@ An error repair is currently selected by `chitty run --errors` but internally tr
 - 2026-11-14T09:23:18Z mellow-umber-lapwing planning → cold-read
 - 2026-11-14T09:27:53Z mellow-umber-lapwing cold-read → planning
 - 2026-11-14T09:27:55Z mellow-umber-lapwing planning → cold-read
+- 2026-11-14T09:32:00Z mellow-umber-lapwing: changed acceptance criteria
+- 2026-11-14T09:32:00Z mellow-umber-lapwing cold-read → planning
