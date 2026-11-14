@@ -478,7 +478,8 @@ export function continuationPrompt(mode: ChittyMode, ticketId: string): string {
     `Continue working only on Chitty ticket ${ticketId}.`,
     mode === "work"
       ? "Tick a criterion only after verifying it. Carry on to the next criterion without stopping to report, and re-check every criterion before setting `review`."
-      : "Never review work you have done. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. Do not merge branches or remove branches or worktrees; `chitty run` lands a passing review.",
-    "If you need a person to answer a question, record it in a Chitty note and set the ticket to `blocked`; do not end the turn.",
+      : "Never review work you have done. Check every criterion, list every failure in one note, and `--uncheck` each failed criterion. Keep one verdict per criterion when returning to planning. Do not merge branches or remove branches or worktrees; `chitty run` lands a passing review.",
+    "For missing or contradictory requirements or an unresolved design decision, return the ticket to `planning` with a note explaining the discovery, why the ticket cannot guide the work, and the decision needed. Use `blocked` for external obstacles requiring help.",
+    "Preserve committed implementation work when returning to planning; normal planning and cold-read readiness apply before resumption.",
   ].join("\n");
 }

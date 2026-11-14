@@ -111,10 +111,12 @@
 
 - These moves use the run's own actor, so they count towards
   `REVIEW_FAILURE_LIMIT`. Ctrl-C during the merge aborts it, exit 130.
-- Work mode runs `setup` and `check` before claiming. A failure on a `doing`
-  ticket adds a `Check failed before this session` note and the agent starts.
-  On a `todo` ticket it fails with `check failed before <ID> started`, changing
-  nothing.
+- Work mode runs `setup` and `check` before claiming. A non-zero `check` exit
+  on a `doing` or `error` ticket appends a `Check failed before this session`
+  note with the full output, leaves the status unchanged, and starts the agent;
+  an `error` ticket's agent is the repair agent. On a `todo` ticket, or when the
+  `check` command is not found, the ticket moves to `error` with the output in
+  Notes and no agent starts.
 - Entering `review`, or `review → done`, needs a clean worktree; `blocked` does
   not. `chitty check` reports dirty files on a branch in review.
 - Reviewers record a verdict only; they never merge or remove branches or
@@ -132,7 +134,9 @@ On a pass, under the landing lock:
   `main_branch`, then remove the worktree and branch.
 - A ticket-scoped setup, check, agent, or landing failure moves the ticket to
   `error`, records the phase, output, and worktree in Notes, and preserves its
-  branch and worktree. Failures before a safe ticket handoff leave task state
+  branch and worktree. The exception is the work-mode non-zero `check` exit on
+  a `doing` or `error` ticket described under "Before a review": the agent
+  starts instead. Failures before a safe ticket handoff leave task state
   unchanged and use `error_reporter` when configured.
 - Without `chitty run`: merge `main` into the branch in its worktree, run the
   checks, then only fast-forward `main`.

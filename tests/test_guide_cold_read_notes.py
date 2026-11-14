@@ -18,8 +18,9 @@ class TestGuideColdReadNotes(unittest.TestCase):
         self.assertIn("skip Notes", output)
 
     def test_plan_reports_finding_outcomes_in_reply(self):
-        output = self.run_guide("plan")
-        self.assertIn("Fix or reject each finding", output)
+        output = " ".join(self.run_guide("plan").split())
+        self.assertIn("resolve every reader finding and sufficiency gap", output)
+        self.assertIn("strengthen the ticket, split it, or explicitly reject the finding", output)
         self.assertIn("in your reply, not in a ticket note", output)
 
     def test_plan_does_not_replace_converged_read_notes(self):

@@ -100,7 +100,20 @@ contexts do this so people can close their own tasks directly. A context with
 instead of sequentially, so tickets raised on different branches do not
 collide; `chitty init` adds such a `backlog` context (prefix `BACKLOG`) to new
 and existing repositories, unless one or a `BACKLOG` prefix already exists. The third failed review (`review → doing`) since a task was last blocked sets it
-`blocked` with owner `human` instead, so agents stop bouncing it. Use `--parent TASK-1` to show a parent's direct children.
+`blocked` with owner `human` instead, so agents stop bouncing it.
+Workers and reviewers can return a ticket with missing or contradictory
+requirements or an unresolved design decision with
+`chitty edit ID -s planning --note TEXT`. The note must explain what was
+discovered, why the ticket cannot guide the work, and the decision needed. Reviewers still supply an independent
+review note with one verdict per criterion, including at least one fail when
+criteria exist. The return clears ownership, preserves the branch, worktree and
+implementation, and ends the run without landing or starting another worker.
+Find returned tickets with `chitty list -s planning`; `next` and `run` do not
+select them. Resume planning in the existing ticket worktree, then follow normal
+planning and cold-read readiness before `todo`. Clear requirements with an
+incorrect implementation return to `doing`; external obstacles requiring help
+use `blocked`. Workers keep cheap reversible implementation choices.
+Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 When a merge leaves two files sharing an ID, which `chitty check` reports,
 `chitty renumber PATH` gives that one file the next number in its context,

@@ -5,16 +5,32 @@
 - `backlog` → `planning` → `cold-read` → `planning` → `todo` → `doing` →
   `review` → `done`; recoverable runner failures enter `error` and use an
   explicit repair run before returning to `review` or `blocked`.
-- A different session does each step; nobody reviews their own work.
+- Planning, cold reading, work and review use different sessions; nobody reviews
+  their own work. The sufficiency read is part of planning: the original planner
+  evaluates the independent cold read, rather than starting another session.
 - Scripted gates come first: they cost no tokens and cannot be argued with.
   They never relax. Only the human's sampling rate moves, and only on measured
   escapes.
-- The third failed review since the ticket was last `blocked` blocks it for
-  the human (`REVIEW_FAILURE_LIMIT`): by then the ticket is the likely problem.
-- A failed review restarts in a fresh session, with the finding added as a
-  criterion (TASK-307 lets reviewers fail on an uncovered requirement).
-- Workers and reviewers block for the human when the ticket is wrong. They
-  never weaken its tests.
+- The third `review → doing` failure since the ticket was last `blocked` blocks
+  it for the human (`REVIEW_FAILURE_LIMIT`), to investigate the repeated failures.
+- A failed review of implementation against clear requirements returns to
+  `doing` for a fresh worker session. Missing or contradictory requirements or
+  unresolved design decisions return to `planning`, from either `doing` or
+  `review`; external obstacles requiring help use `blocked` instead.
+- A return to planning requires a nonblank note explaining the discovery, why
+  the ticket cannot guide the work, and the decision needed. Reviewers retain
+  independence and one verdict per criterion, with at least one fail when
+  criteria exist. Ownership is cleared; existing implementation, branch and
+  worktree are preserved. The run ends without landing or starting another
+  worker. Workers keep cheap reversible implementation choices rather than
+  escalating those to planning. Neither role weakens tests to fit the work.
+- Returned tickets appear in planning lists, not automatic work/review
+  selection. The planner resumes in the existing ticket worktree, revises or
+  splits the requirements, and follows the normal planning and cold-read
+  readiness steps before `todo`. The existing escalation counts only
+  `review → doing` failures. Repeated-cycle diagnosis is separate work across
+  the whole project pipeline: requirements, implementation, verification, review
+  or workflow may be responsible; repeated failures do not prove planning failed.
 - The earlier spec-first pipeline (separate `design`, `tests` and
   `review-ticket` stages, TASK-109) was dropped on 2026-11-11; git has it.
 
@@ -52,9 +68,26 @@ asking the first.
 
 - The planner's part is `chitty guide plan`; the reader's is
   `chitty guide cold-read <ID>`, which the planner passes to the reader.
-- Code-changing ticket: a fresh, cheap-model agent implements it in a detached
-  worktree and runs its tests with and without the fix. Otherwise a stronger
-  model reads the ticket and the code it names.
+- Code-changing ticket: a fresh, cheap-model agent implements the simplest
+  solution the written description and criteria permit in a detached worktree,
+  and runs its tests with and without the fix. It examines each criterion for
+  vague or bundled behaviour and reports ambiguities and decisions rather than
+  silently supplying missing requirements. Otherwise a stronger model reads the
+  ticket and the code it names.
+- The original planning session then checks sufficiency using the implementing
+  commit, tests and report (or proposed text, referenced code and report when
+  there is nothing to run). For each criterion and the ticket as a whole, ask
+  whether a plausible minimal implementation could meet the criteria but still
+  reasonably fail a good review.
+- Each gap needs a concrete counterexample, relevant varying inputs or state,
+  distinguishing verification and observable result, and proposed criterion
+  wording. Prefer general properties to accumulating examples; challenge
+  coverage of the agreed problem, not speculative features.
+- Before `todo`, resolve reader findings and sufficiency gaps by strengthening
+  or splitting the ticket, or explicitly rejecting findings as out of scope.
+  Write missing requirements into the ticket, not just the conversation. Repeat
+  the cold read after serious revisions. A fresh stronger sufficiency reader is
+  optional for uncertainty or repeated work–review failures, not mandatory.
 - The implementing commit is kept under `refs/cold-read/<ID>/<n>`, not a
   branch, because Chitty reads tickets from every branch.
 - Workers and reviewers never cold-read.
@@ -78,6 +111,20 @@ asking the first.
 
 ## Review notes
 
+- Inspect every acceptance criterion and the complete diff before writing the
+  note; do not stop at the first defect. Check coherence, useful property-test
+  opportunities, and whether the result makes sense to users. A dirty worktree
+  still stops review immediately. Missing resources limit verification: report
+  the limits and continue the checks that can safely run, without passing
+  unverified parts.
+- Report all findings from the pass together in one note. Group actionable
+  findings under the relevant criterion, allowing multiple findings per
+  criterion, each stating what must change. Existing failure rules still apply:
+  fail for unmet criteria or demonstrated defects, not unrelated improvements.
+- Distinguish newly discovered findings from previously reported findings that
+  remain unresolved, citing the earlier note for unresolved findings. Later
+  passes are expected to discover additional bugs; a new discovery is not
+  evidence of an earlier process failure.
 - First line `Reviewed: ...` or `Review failed (<cause>): ...`. The cause is the
   earliest step that should have caught it: `design`, `tests`, `work`,
   `integration` (branch, merge, environment) or `review`.
