@@ -1,6 +1,6 @@
 ---
 title: Hide run and next under the tickets workflow
-status: review
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -23,8 +23,8 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 
 ## Acceptance Criteria
 
-- [x] In a temp repository with `workflow = "tickets"`, `chitty --help` lists neither `run` nor `next` but still lists `list` and `add`; `chitty run` and `chitty next` each exit 1 with the message naming the command and `workflow = "runner"`. Both fail today.
-- [x] With `workflow = "runner"`, and in a directory with no Chitty config, `chitty --help` lists `run` and `next` and both commands behave as before; `tests/test_next.py` passes, changed only by adding `workflow = "runner"` to configs that would otherwise resolve to `tickets`. With a config that fails to load, `chitty --help` lists every command and `chitty next` reports the config error.
+- [ ] In a temp repository with `workflow = "tickets"`, `chitty --help` lists neither `run` nor `next` but still lists `list` and `add`; `chitty run` and `chitty next` each exit 1 with the message naming the command and `workflow = "runner"`. Both fail today.
+- [ ] With `workflow = "runner"`, and in a directory with no Chitty config, `chitty --help` lists `run` and `next` and both commands behave as before; `tests/test_next.py` passes, changed only by adding `workflow = "runner"` to configs that would otherwise resolve to `tickets`. With a config that fails to load, `chitty --help` lists every command and `chitty next` reports the config error.
 - [x] An MCP server started in a `tickets` repository lists no `next` tool, and one started in a `runner` repository lists it; use the existing pattern in `tests/test_mcp.py`. `make check` passes.
 
 ## Plan
@@ -36,6 +36,11 @@ Use the shared configured workflow lookup and runner guard for CLI and MCP. Add 
 Cold read starting point: `refs/cold-read/TASK-333/1` (on top of TASK-332's read; mutants M1 to M5 killed). Its files: `src/chitty/config.py` (`configured_workflow`), `src/chitty/cli.py` (a `click.Group` subclass), `src/chitty/mcp.py`, `tests/test_workflow_commands.py`; see them with `git show refs/cold-read/TASK-333/1:<path>`. It did not yet fix `test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty`, which needs `workflow = "runner"`. Check it against the current criteria rather than trusting it.
 
 Added CLI visibility/refusal and MCP tool filtering using shared config workflow lookup; added explicit runner workflow to the run regression fixture. `make check` passed (584 Python tests and Node tests). Note: focused tests were first run after implementation, not against the unfixed behavior.
+
+Review failed (tests): Add coverage for the missing command cases and make the tickets refusal apply before Click parses command options. These are newly discovered findings; there are no earlier review failures.
+1: fail - A throwaway CliRunner invocation in a tickets repository printed exit 2 and `No such option` for `next --json` and `run --mode work`; `run --help` printed exit 0 and generic help. All invocations must instead exit 1 with the required workflow message. Bare-command tests pass and fail against main, but do not cover arguments.
+2: fail - `tests/test_workflow_commands.py` checks only help outside a repository, not execution of both `run` and `next` there; it also does not execute both commands with an explicitly configured runner workflow. Add the requested fixed cases. `make check` passed 584 Python tests and Node tests; broken-config next reports invalid TOML.
+3: pass - `make format && make check` passed, including MCP workflow tests. Running `tests.test_workflow_commands` with main source via PYTHONPATH failed `test_mcp_next_follows_workflow` because tickets still listed `next`, demonstrating regression coverage.
 
 ## Summary
 
@@ -58,3 +63,5 @@ Implemented and committed as f2dcf5b (Task: TASK-333). `make format` and `make c
 - 2026-11-14T20:19:07Z jolly-indigo-vole: wrote the plan
 - 2026-11-14T20:24:02Z jolly-indigo-vole: changed notes, summary; ticked acceptance criteria
 - 2026-11-14T20:24:02Z jolly-indigo-vole doing → review
+- 2026-11-14T20:27:35Z plucky-bronze-marten: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-14T20:27:35Z plucky-bronze-marten review → doing
