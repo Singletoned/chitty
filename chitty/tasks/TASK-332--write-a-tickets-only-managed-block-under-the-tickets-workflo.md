@@ -1,6 +1,6 @@
 ---
 title: Write a tickets-only managed block under the tickets workflow
-status: doing
+status: review
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -22,10 +22,10 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), the
 
 ## Acceptance Criteria
 
-- [ ] `managed_guide("runner")` equals the `guide.md` text at the commit before this change (read it with `git show`, or embed it in the test), and `managed_guide("tickets")` is that text up to and including the `chitty --help` line; `managed_guide("other")` raises `ChittyError`. The tickets case fails today.
-- [ ] In a temp repository with `workflow = "tickets"`, `chitty init` writes the tickets block into `AGENTS.md`, `chitty guide` prints it, the import in `src/chitty/import_backlog.py` writes it, and a server from `create_server` returns it as its instructions and its `chitty://guide` resource; with `workflow = "runner"` all four give the runner block, and outside any repository `chitty guide` and `create_server` give the runner block.
-- [ ] In a temp repository, changing an explicit `workflow` line from `runner` to `tickets` and re-running `chitty init` replaces the block in `AGENTS.md`, leaving text outside the markers unchanged; and the reverse. Existing tests for damaged guide markers still pass, with no file written before that error.
-- [ ] No sentence of the body of `guide.md` (the text after its `## Chitty` heading) appears in `guide-runner.md`; `src/chitty/mcp.py` imports no name starting with `_` from the `mcp` package and reads no such attribute of its objects; `make check` passes.
+- [x] `managed_guide("runner")` equals the `guide.md` text at the commit before this change (read it with `git show`, or embed it in the test), and `managed_guide("tickets")` is that text up to and including the `chitty --help` line; `managed_guide("other")` raises `ChittyError`. The tickets case fails today.
+- [x] In a temp repository with `workflow = "tickets"`, `chitty init` writes the tickets block into `AGENTS.md`, `chitty guide` prints it, the import in `src/chitty/import_backlog.py` writes it, and a server from `create_server` returns it as its instructions and its `chitty://guide` resource; with `workflow = "runner"` all four give the runner block, and outside any repository `chitty guide` and `create_server` give the runner block.
+- [x] In a temp repository, changing an explicit `workflow` line from `runner` to `tickets` and re-running `chitty init` replaces the block in `AGENTS.md`, leaving text outside the markers unchanged; and the reverse. Existing tests for damaged guide markers still pass, with no file written before that error.
+- [x] No sentence of the body of `guide.md` (the text after its `## Chitty` heading) appears in `guide-runner.md`; `src/chitty/mcp.py` imports no name starting with `_` from the `mcp` package and reads no such attribute of its objects; `make check` passes.
 
 ## Plan
 
@@ -34,6 +34,12 @@ Split the managed guide into the shared short guide and runner-only continuation
 ## Notes
 
 Cold read starting point: `refs/cold-read/TASK-332/2` (a Haiku implementing read on top of TASK-330's read; `make check` green; mutants M1 to M5 killed). Its files: `src/chitty/guide.md`, `src/chitty/guide-runner.md`, `src/chitty/store.py`, `src/chitty/cli.py`, `src/chitty/import_backlog.py`, `src/chitty/mcp.py`, `tests/test_guide_workflow_block.py`, `tests/fixtures/guide-before-workflow.md`, and one-token call-site swaps in `tests/test_cli.py`, `tests/test_mcp.py`, `tests/test_next.py`, `tests/test_renumber.py`, `tests/test_statuses_planning.py`, `tests/test_guide_backticks.py`, `tests/test_guide_literal_star.py`. See them with `git show refs/cold-read/TASK-332/2:<path>`. Rebase onto the real TASK-330 on `main`; check against the current criteria rather than trusting it.
+
+make format/check passed (577 Python test suites and Node tests); git diff --check passed. chitty fix completed with existing task-content warnings only. The initial chitty fix TASK-332 invocation treated the ID as a path and failed; the correct no-argument chitty fix then passed.
+
+## Summary
+
+Implemented workflow-specific managed guide blocks and per-directory MCP server factory. Added workflow coverage for init, guide CLI, backlog import, and MCP instructions/resource; updated role-only guide callers. Verified with make format and make check (577 test suites, Node tests), plus diff --check. Committed as 66225bd (Task: TASK-332). Ready for independent review.
 
 ## History
 
@@ -51,3 +57,5 @@ Cold read starting point: `refs/cold-read/TASK-332/2` (a Haiku implementing read
 - 2026-11-14T18:56:12Z friendly-ginger-adder planning → todo
 - 2026-11-14T20:01:11Z vivid-pearl-urchin todo → doing
 - 2026-11-14T20:01:28Z vivid-pearl-urchin: wrote the plan
+- 2026-11-14T20:04:41Z vivid-pearl-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T20:04:41Z vivid-pearl-urchin doing → review
