@@ -1,6 +1,6 @@
 ---
 title: Start the agent when the pre-session check fails on a doing or error ticket
-status: doing
+status: review
 labels:
   - bug
   - runner
@@ -27,9 +27,9 @@ Tests go in `tests/test_next.py`, using its fake `pi` pattern and a check script
 
 ## Acceptance Criteria
 
-- [ ] Rewrite `test_run_check_failure_on_doing_ticket_starts_agent` in `tests/test_next.py` (it now asserts the opposite). For a `doing` ticket whose check prints 25 numbered lines and exits 1, the fake agent starts, records the ticket it sees, then commits `-s review`. The recorded ticket has status `doing` and notes containing `Check failed before this session` and all 25 lines; the run prints `doing → review`. Record that it fails on `main` before the fix.
-- [ ] A new test in `tests/test_next.py`: `chitty run --errors` on an `error` ticket whose check exits 1 starts the fake repair agent, which sees status `error` and the same note, then commits `-s review`; the run prints `error → review`. Record that it fails before the fix.
-- [ ] `test_run_check_failure_records_output_and_does_not_claim_or_start_agent` (a `todo` ticket goes to `error`, no agent) passes unchanged; a `doing` ticket whose check command does not exist still goes to `error` without starting the agent; `docs/plan/next-action-and-runner.md` describes the `todo`, `doing` and `error` cases consistently; `make check` passes.
+- [x] Rewrite `test_run_check_failure_on_doing_ticket_starts_agent` in `tests/test_next.py` (it now asserts the opposite). For a `doing` ticket whose check prints 25 numbered lines and exits 1, the fake agent starts, records the ticket it sees, then commits `-s review`. The recorded ticket has status `doing` and notes containing `Check failed before this session` and all 25 lines; the run prints `doing → review`. Record that it fails on `main` before the fix.
+- [x] A new test in `tests/test_next.py`: `chitty run --errors` on an `error` ticket whose check exits 1 starts the fake repair agent, which sees status `error` and the same note, then commits `-s review`; the run prints `error → review`. Record that it fails before the fix.
+- [x] `test_run_check_failure_records_output_and_does_not_claim_or_start_agent` (a `todo` ticket goes to `error`, no agent) passes unchanged; a `doing` ticket whose check command does not exist still goes to `error` without starting the agent; `docs/plan/next-action-and-runner.md` describes the `todo`, `doing` and `error` cases consistently; `make check` passes.
 
 ## Plan
 
@@ -38,6 +38,12 @@ Update _handle_check_failure to distinguish a check process exiting non-zero fro
 ## Notes
 
 Possible starting point: `git diff main...refs/cold-read/TASK-329/1` (a cold read of the current text: tests failed first, all six mutants killed, `make check` passed). Check it against the current criteria; do not trust it.
+
+The doing and error regression tests were run before the fix and both failed with the runner changing the ticket to error before an agent could commit review. After the fix, all four focused tests pass: doing, error repair, todo failure without claim/agent, and missing check command. make format && make check passed (549 Python suites and Node tests). Commit: 668c3fd.
+
+## Summary
+
+Implemented and committed as 668c3fd. Pre-session non-zero checks on doing/error work tickets now record the complete output and preserve status while allowing the agent to start; todo and missing-command behavior remains error handling. Updated runner design notes. Verified regression tests fail before the fix, focused tests pass, make format && make check pass, and git status is clean. Ready for review.
 
 ## History
 
@@ -53,3 +59,5 @@ Possible starting point: `git diff main...refs/cold-read/TASK-329/1` (a cold rea
 - 2026-11-14T11:42:55Z jolly-silver-falcon planning → todo
 - 2026-11-14T11:43:45Z calm-silver-puffin todo → doing
 - 2026-11-14T11:44:00Z calm-silver-puffin: wrote the plan
+- 2026-11-14T11:45:59Z calm-silver-puffin: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T11:45:59Z calm-silver-puffin doing → review
