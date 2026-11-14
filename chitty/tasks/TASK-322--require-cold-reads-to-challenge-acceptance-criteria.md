@@ -1,6 +1,6 @@
 ---
 title: Require cold reads to challenge acceptance criteria
-status: review
+status: done
 labels:
   - workflow
   - planning
@@ -59,6 +59,12 @@ Resolve the landing problem in /Users/singletoned/src/singletoned/chitty-cold-re
 
 Planner, 2026-11-14: the earlier review on branch `task-322` passed (its `Reviewed:` note is on the branch); only the fast-forward failed because `main` moved during the landing check. Back to `review` so `chitty run` re-checks and lands it.
 
+Reviewed: Independent review of the complete branch diff and all criteria; no new or unresolved findings. `make format && make check` passed: 550 Python tests and Node tests passed; format left the worktree clean.
+1: pass - `tests.test_guide_cold_read_sufficiency.TestColdReadSufficiencyGuide.test_fresh_reader_implements_literally_and_reports_ambiguities` passed and checks the rendered cold-read responsibilities.
+2: pass - `test_original_planner_challenges_individual_and_combined_coverage` passed and checks the rendered planner instructions and concrete challenge evidence.
+3: pass - `test_sufficiency_gaps_are_resolved_before_ready` passed and checks the readiness gate, repeat read and optional stronger reader.
+4: pass - Running `tests.test_guide_cold_read_sufficiency` against role guides from `63b7db9^` printed `FAILED (failures=23)`; against current guides it printed `Ran 3 tests` and `OK`. The pipeline notes match the guides; fixed text has no variable-input property.
+
 ## Summary
 
 Implemented in `63b7db9`. Wrote both role guides and pipeline notes directly: the fresh reader builds the simplest literal solution and reports ambiguity; the original planner examines the implementation, tests and report against each criterion and combined coverage. Sufficiency gaps need counterexamples, distinguishing verification and proposed criteria, resolved in the ticket before `todo`; a separate stronger reader remains optional. No runner changes. All three new rendered-guide tests failed first (`FAILED (failures=23)`), then passed; updated the existing outcome-reporting test for the revised wording without dropping its intent. `make format` and `make check` pass (530 Python tests plus Node tests). Fixed-text guidance has no variable-input property. Guidance tests verify instruction delivery, not actual model compliance. Committed and ready for independent review; not merged.
@@ -74,3 +80,5 @@ Implemented in `63b7db9`. Wrote both role guides and pipeline notes directly: th
 - 2026-11-13T23:25:49Z youthful-ebony-ibis review → error
 - 2026-11-14T09:19:55Z jolly-silver-falcon: changed notes
 - 2026-11-14T09:19:55Z jolly-silver-falcon error → review
+- 2026-11-14T18:28:53Z jolly-maroon-toad: changed notes; ticked acceptance criteria
+- 2026-11-14T18:28:53Z jolly-maroon-toad review → done
