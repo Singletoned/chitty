@@ -5,6 +5,7 @@ labels:
   - needs-minor
 depends_on:
   - TASK-330
+  - TASK-332
 created: 2026-11-14
 ---
 
@@ -30,3 +31,4 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 - 2026-11-14T18:21:57Z friendly-ginger-adder → planning
 - 2026-11-14T18:23:30Z friendly-ginger-adder: changed dependencies
 - 2026-11-14T18:29:48Z friendly-ginger-adder: changed description, acceptance criteria
+- 2026-11-14T18:29:59Z friendly-ginger-adder: changed dependencies
