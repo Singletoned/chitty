@@ -1,6 +1,6 @@
 ---
 title: Start the agent when the pre-session check fails on a doing or error ticket
-status: todo
+status: doing
 labels:
   - bug
   - runner
@@ -47,3 +47,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-329/1` (a cold rea
 - 2026-11-14T11:42:53Z jolly-silver-falcon: changed notes
 - 2026-11-14T11:42:53Z jolly-silver-falcon cold-read → planning
 - 2026-11-14T11:42:55Z jolly-silver-falcon planning → todo
+- 2026-11-14T11:43:45Z calm-silver-puffin todo → doing
