@@ -4,7 +4,7 @@ status: planning
 labels:
   - needs-minor
 depends_on:
-  - TASK-331
+  - TASK-330
 created: 2026-11-14
 ---
 
@@ -26,3 +26,4 @@ Under `workflow = "tickets"`, hide the role guides.
 ## History
 
 - 2026-11-14T18:21:59Z friendly-ginger-adder → planning
+- 2026-11-14T18:23:32Z friendly-ginger-adder: changed dependencies
