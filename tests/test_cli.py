@@ -10,7 +10,7 @@ from unittest.mock import patch
 from click.testing import CliRunner, Result
 
 from chitty.cli import _complete_context, _complete_task_id, cli
-from chitty.config import CHITTY_VERSION
+from chitty.config import CHITTY_VERSION, resolve_workflow
 from chitty.store import _add_missing_settings, guide, managed_guide
 from tests.support import RepoTestCase
 
@@ -239,9 +239,14 @@ class TestInit(CliTestCase):
                 "edits here are replaced -->\n\n## Chitty\n"
             )
         )
-        self.assertIn("chitty guide work", agents)
-        self.assertIn("chitty guide review", agents)
-        self.assertIn("chitty guide plan", agents)
+        if resolve_workflow(None, CHITTY_VERSION) == "runner":
+            self.assertIn("chitty guide work", agents)
+            self.assertIn("chitty guide review", agents)
+            self.assertIn("chitty guide plan", agents)
+        else:
+            self.assertNotIn("chitty guide work", agents)
+            self.assertNotIn("chitty guide review", agents)
+            self.assertNotIn("chitty guide plan", agents)
         self.assertIn("Run `chitty --help` for the command reference.", agents)
         result = self.run_cli("init")
         self.assertEqual(result.stdout, "already up to date\n")

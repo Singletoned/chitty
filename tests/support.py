@@ -12,6 +12,7 @@ CONFIG = textwrap.dedent(
     format = 1
     default_context = "tasks"
     chitty_version = "{CHITTY_VERSION}"
+    workflow = "runner"
     autocommit = false
     check = "true"
     agent_command = "pi --chitty-{{mode}} {{id}}"

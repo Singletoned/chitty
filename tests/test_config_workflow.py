@@ -51,9 +51,21 @@ class TestResolveWorkflow(unittest.TestCase):
         self.assertEqual(config_module.resolve_workflow(workflow, version), workflow)
 
 
+class TestFixtureConfig(RepoTestCase):
+    def test_runner_workflow_and_review_survive_release_version(self):
+        text = CONFIG.replace(VERSION_LINE, 'chitty_version = "0.5.0"\n')
+        (self.root / "chitty.toml").write_text(text)
+
+        config = load_repo_config(self.root)
+
+        self.assertEqual(config.workflow, "runner")
+        self.assertIs(config.review, True)
+
+
 class TestWorkflowConfig(RepoTestCase):
     def config_text(self, version_line: str = VERSION_LINE, extra: str = "") -> str:
-        text = CONFIG.replace(VERSION_LINE, version_line)
+        text = CONFIG.replace('workflow = "runner"\n', "")
+        text = text.replace(VERSION_LINE, version_line)
         return text.replace("autocommit = false", f"{extra}autocommit = false")
 
     def test_missing_workflow_resolves_from_setup_version(self):
