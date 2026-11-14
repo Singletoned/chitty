@@ -23,6 +23,7 @@ ROOT_ENV = "CHITTY_ROOT"
 CHITTY_VERSION = __version__
 LIST_WIDTH = 100
 DEFAULT_AGENT_TIMEOUT = 7200
+FIRST_WORKFLOW_VERSION = "0.5.0"
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
@@ -82,8 +83,9 @@ class RepoConfig(BaseModel):
     project: str | None = None
     main_branch: str = "main"
     chitty_version: str | None = None
+    workflow: str
     autocommit: bool
-    review: bool = True
+    review: bool
     autoformat: str | None = None
     setup: str | None = None
     check: str | None = None
@@ -97,6 +99,28 @@ class RepoConfig(BaseModel):
     job_order: list[str] | None = None
     list_width: int = Field(default=LIST_WIDTH, gt=0)
     contexts: dict[str, ContextConfig]
+
+    @model_validator(mode="before")
+    @classmethod
+    def _workflow_defaults(cls, data: object) -> object:
+        """Resolve omitted workflow and review defaults before frozen validation."""
+        if not isinstance(data, Mapping):
+            return data
+        settings = dict(cast(Mapping[str, object], data))
+        version = settings.get("chitty_version")
+        setup_version = version if isinstance(version, str) else None
+        if "workflow" not in settings:
+            settings["workflow"] = resolve_workflow(None, setup_version)
+        if "review" not in settings:
+            settings["review"] = settings["workflow"] == "runner"
+        return settings
+
+    @field_validator("workflow", mode="before")
+    @classmethod
+    def _workflow(cls, value: object) -> str:
+        if not isinstance(value, str) or value not in {"tickets", "runner"}:
+            raise ValueError("must be a string: 'tickets' or 'runner'")
+        return value
 
     @field_validator("project")
     @classmethod
@@ -244,6 +268,19 @@ def _remove_unknown_configuration_keys(data: object, source: Path) -> object:
         )
         _WARNED_UNKNOWN_KEYS.add(source)
     return cleaned
+
+
+def resolve_workflow(workflow: str | None, chitty_version: str | None) -> str:
+    """Resolve the workflow; older or unreadable setups retain runner behavior."""
+    if workflow is not None:
+        return workflow
+    if chitty_version is None:
+        return "runner"
+    try:
+        key = version_key(chitty_version)
+    except ChittyError:
+        return "runner"
+    return "runner" if key < version_key(FIRST_WORKFLOW_VERSION) else "tickets"
 
 
 def _version_key(value: str) -> tuple[int, ...]:

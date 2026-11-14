@@ -3,9 +3,15 @@
 - In `chitty.toml` at the repo root (written by `chitty init`) or `[tool.chitty]`
   in `pyproject.toml`. Both is an error.
 - Unknown keys warn and are ignored.
-- New settings are optional, and their defaults keep existing behaviour, so
-  configs never need migrating. Settings with no safe default (`setup`,
-  `check`, `agent_command`) fail where `chitty run` needs them.
+- New settings are optional, and their defaults generally keep existing
+  behaviour, so configs never need migrating. `workflow` deliberately breaks
+  that rule for repositories set up at `FIRST_WORKFLOW_VERSION` (`0.5.0`) or
+  later: they default to tickets-only, while older or unversioned setups retain
+  the runner. This
+  makes tickets-only Chitty's default for new setups without changing existing
+  runner setups.
+- Settings with no safe default (`setup`, `check`, `agent_command`) fail where
+  `chitty run` needs them.
 
 ```toml
 format = 1
@@ -14,7 +20,8 @@ autocommit = false # required; true commits each write
 # project = "name" # registered name; `chitty run` needs it, `init` derives it
 # main_branch = "main" # init writes it only for a new repo on another branch
 chitty_version = "0.1.2" # written by init; warns when setup is stale
-review = true # done only through review → done
+# workflow = "tickets" # or "runner"; absent resolves from chitty_version
+review = true # done only through review → done; default follows workflow
 # autoformat = "taidy format" # run on each written task file
 # setup = "make install" # run in each ticket worktree before the agent
 # check = "make check" # validates the worktree before the agent and on landing

@@ -1,6 +1,6 @@
 ---
 title: Add a workflow setting, tickets by default
-status: todo
+status: done
 labels:
   - needs-minor
 priority: medium
@@ -22,16 +22,40 @@ Chitty was meant to be a plain ticketing system; the runner pipeline (worktrees,
 
 ## Acceptance Criteria
 
-- [ ] Property: for any `v` that is `None`, a string of one to four dot-separated non-negative integers, or any other text, `resolve_workflow(None, v)` is `"runner"` exactly when `v` is `None`, unreadable by `version_key`, or `version_key(v) < version_key("0.5.0")`, and `"tickets"` otherwise; it never raises; and for each explicit `w` in (`"tickets"`, `"runner"`) and every such `v`, `resolve_workflow(w, v) == w`. The property test also checks the boundary values `0.4.9`, `0.5`, `0.5.0` and `0.5.0.0` explicitly (Hypothesis `@example`). Fails today because the function does not exist.
-- [ ] Loading a temp repository config: no `workflow` with `chitty_version = "0.4.2"`, `"0.5.0"`, `"1.0rc1"`, and none gives `config.workflow` of `runner`, `tickets`, `runner`, `runner`; `workflow = "bogus"` and `workflow = 1` fail with an error naming `workflow`, `tickets` and `runner`; `chitty_version = 1` fails with an error that does not mention `workflow`. Existing `tests/test_config.py` and `TestSetupVersion` in `tests/test_cli.py` pass unchanged.
-- [ ] For every combination of workflow (`tickets`, `runner`), repository `review` (unset, `true`, `false`) and context `review` (unset, `true`, `false`), `config.review` is the repository value if set, else `false` under `tickets` and `true` under `runner`; and `Repo.review_required` returns the context value if set, else `config.review`. A small fixed set of 18 cases, each tested, so no property is needed. The `tickets` with both unset case fails today.
-- [ ] `docs/plan/config.md` documents `workflow`, `FIRST_WORKFLOW_VERSION` and the changed-default decision; `docs/plan/direction.md` records that tickets-only is the original purpose; `make check` passes.
+- [x] Property: for any `v` that is `None`, a string of one to four dot-separated non-negative integers, or any other text, `resolve_workflow(None, v)` is `"runner"` exactly when `v` is `None`, unreadable by `version_key`, or `version_key(v) < version_key("0.5.0")`, and `"tickets"` otherwise; it never raises; and for each explicit `w` in (`"tickets"`, `"runner"`) and every such `v`, `resolve_workflow(w, v) == w`. The property test also checks the boundary values `0.4.9`, `0.5`, `0.5.0` and `0.5.0.0` explicitly (Hypothesis `@example`). Fails today because the function does not exist.
+- [x] Loading a temp repository config: no `workflow` with `chitty_version = "0.4.2"`, `"0.5.0"`, `"1.0rc1"`, and none gives `config.workflow` of `runner`, `tickets`, `runner`, `runner`; `workflow = "bogus"` and `workflow = 1` fail with an error naming `workflow`, `tickets` and `runner`; `chitty_version = 1` fails with an error that does not mention `workflow`. Existing `tests/test_config.py` and `TestSetupVersion` in `tests/test_cli.py` pass unchanged.
+- [x] For every combination of workflow (`tickets`, `runner`), repository `review` (unset, `true`, `false`) and context `review` (unset, `true`, `false`), `config.review` is the repository value if set, else `false` under `tickets` and `true` under `runner`; and `Repo.review_required` returns the context value if set, else `config.review`. A small fixed set of 18 cases, each tested, so no property is needed. The `tickets` with both unset case fails today.
+- [x] `docs/plan/config.md` documents `workflow`, `FIRST_WORKFLOW_VERSION` and the changed-default decision; `docs/plan/direction.md` records that tickets-only is the original purpose; `make check` passes.
+
+## Plan
+
+Add resolve_workflow and validate the explicit setting; resolve workflow and the workflow-dependent review default in a before-model validator, preserving chitty_version type errors and warning behavior. Add Hypothesis and fixed-matrix tests in tests/test_config_workflow.py. Update config and direction design docs as specified. Verify regression tests first, then make format and make check.
 
 ## Notes
 
 Replanned with the human on 2026-11-14. The original ask (agents feel they must write tickets for a weaker agent and cannot review their own) is solved by a tickets-only workflow chosen at install time, not by an exploratory agent mode. Stages: this ticket (setting), then `chitty init` with migration, then the managed block, hidden runner commands and hidden role guides. Earlier cold-read questions about `chitty run` invocation no longer apply.
 
 Cold read starting point: `refs/cold-read/TASK-330/2` (a Haiku implementing read against this text, `make check` green). Its files: `src/chitty/config.py`, `tests/test_config_workflow.py`, `docs/plan/config.md`, `docs/plan/direction.md`; see them with `git show refs/cold-read/TASK-330/2:<path>`. Check it against the current criteria rather than trusting it.
+
+The new regression suite failed before implementation: resolve_workflow was absent, workflow was ignored, and tickets with review unset still required review. It passes with the implementation. make check passes, including 559 Python suites and Node tests. chitty fix needed the ticket path explicitly; the pathless invocation treated TASK-330 as a filesystem path.
+
+Review failed (tests): Newly discovered invalid non-string workflow values are not covered; add regression cases and make validation report the allowed values for every non-string.
+1: pass - make check passed; the Hypothesis tests fail against main config with missing resolve_workflow, and pass on this branch.
+2: fail - A throwaway load_repo_config test with workflow = [] and workflow = {} printed TypeError unhashable type: list and TypeError unhashable type: dict, respectively, instead of a config error naming workflow, tickets and runner. The existing test covers only integer non-strings. This is newly discovered; there are no earlier review notes.
+3: pass - make check passed the 18-case matrix; running it against main config failed with True is not False for tickets with repository review unset.
+4: pass - inspected both plan documents; make format && make check passed, including 559 Python tests and Node tests.
+
+Review regression reproduced TypeErrors for workflow = [] and {} before the fix. Validation now checks string type before set membership; make format && make check passes (559 Python tests and Node tests).
+
+Reviewed: Previous review finding for list and table workflow values is resolved; the expanded validation test passes.
+1: pass - make format && make check passed; running tests.test_config_workflow against main printed AttributeError for the missing resolve_workflow.
+2: pass - make check passed the config tests, including invalid list and table values and existing setup version tests; against main the new tests printed missing workflow and ChittyError not raised.
+3: pass - make check passed the 18-case matrix; against main it printed True is not False for tickets with repository review unset.
+4: pass - inspected docs/plan/config.md and docs/plan/direction.md; make format && make check printed OK for 559 tests and passed Node tests.
+
+## Summary
+
+Implemented workflow resolution, workflow-dependent review defaults, and robust validation for non-string workflow values. Added property/boundary and review-matrix tests and updated the config and direction docs. Verified regression failure before the validation fix; make format && make check passes (559 Python tests and Node tests). TASK-331 remains responsible for chitty init migration.
 
 ## History
 
@@ -49,3 +73,14 @@ Cold read starting point: `refs/cold-read/TASK-330/2` (a Haiku implementing read
 - 2026-11-14T18:37:15Z friendly-ginger-adder cold-read → planning
 - 2026-11-14T18:37:17Z friendly-ginger-adder: changed owner
 - 2026-11-14T18:37:17Z friendly-ginger-adder planning → todo
+- 2026-11-14T18:38:34Z mellow-silver-marten todo → doing
+- 2026-11-14T18:38:52Z mellow-silver-marten: wrote the plan
+- 2026-11-14T18:42:33Z mellow-silver-marten: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T18:42:33Z mellow-silver-marten doing → review
+- 2026-11-14T18:45:36Z youthful-bronze-heron: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-14T18:45:36Z youthful-bronze-heron review → doing
+- 2026-11-14T19:51:39Z kind-amber-vole: changed notes; ticked acceptance criteria
+- 2026-11-14T19:51:58Z kind-amber-vole: changed summary
+- 2026-11-14T19:51:58Z kind-amber-vole doing → review
+- 2026-11-14T19:54:40Z daring-navy-eel: changed notes; ticked acceptance criteria
+- 2026-11-14T19:54:40Z daring-navy-eel review → done
