@@ -4,7 +4,7 @@ from pathlib import Path
 
 from mcp_types import CallToolResult
 
-from chitty.mcp import server
+from chitty.mcp import create_server
 from tests.test_cli import CliTestCase
 
 
@@ -82,7 +82,9 @@ class TestRenumber(CliTestCase):
 
     def test_mcp_tool_matches_the_cli_json(self):
         result = asyncio.run(
-            server.call_tool("renumber", {"path": str(self.tasks / "TASK-24--second.md")})
+            create_server(Path.cwd()).call_tool(
+                "renumber", {"path": str(self.tasks / "TASK-24--second.md")}
+            )
         )
         assert isinstance(result, CallToolResult)
         content = result.structured_content

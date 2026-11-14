@@ -24,6 +24,8 @@ from chitty.config import (
     RepoConfig,
     check_setup_version,
     load_repo_config,
+    resolve_workflow,
+    search_root,
     validate_repo_config,
 )
 from chitty.errors import ChittyError, ManagedGuideError, NoNextTicket
@@ -1031,10 +1033,26 @@ def resolve_add_target(local: Repo | None, name: str | None) -> Target:
     return Target(local, local.default_context)
 
 
-def guide(role: str | None = None, ticket_id: str | None = None) -> str:
-    """Return prefix-independent general or role-specific agent guidance."""
-    if role is None:
-        return files("chitty").joinpath("guide.md").read_text()
+def managed_guide(workflow: str) -> str:
+    """Return the general guide for a workflow: tickets-only, or the runner too."""
+    tickets = files("chitty").joinpath("guide.md").read_text()
+    if workflow == "tickets":
+        return tickets
+    if workflow == "runner":
+        return f"{tickets}\n{files('chitty').joinpath('guide-runner.md').read_text()}"
+    raise ChittyError(f"unknown workflow {workflow!r}; choose from tickets, runner")
+
+
+def repository_guide(start_dir: Path) -> str:
+    """Return the general guide for the repository found from `start_dir`."""
+    root = search_root(start_dir)
+    # Outside any repository there is no workflow setting, so keep the full guide.
+    workflow = "runner" if root is None else load_repo_config(root).workflow
+    return managed_guide(workflow)
+
+
+def guide(role: str, ticket_id: str | None = None) -> str:
+    """Return prefix-independent role-specific agent guidance."""
     if role not in ROLE_NAMES:
         raise ChittyError(f"unknown role {role!r}; choose from {', '.join(ROLE_NAMES)}")
     if ticket_id is not None and role in {"plan", "setup"}:
@@ -1228,9 +1246,9 @@ def managed_block(existing: str) -> str | None:
     return match.group() if match else None
 
 
-def _managed_agents(existing: str, agents: Path) -> str:
+def _managed_agents(existing: str, agents: Path, workflow: str) -> str:
     """Return `AGENTS.md` with the exact managed guide block installed."""
-    rendered = f"{GUIDE_BEGIN}\n\n{guide().rstrip('\n')}\n\n{GUIDE_END}\n"
+    rendered = f"{GUIDE_BEGIN}\n\n{managed_guide(workflow).rstrip('\n')}\n\n{GUIDE_END}\n"
     try:
         block = managed_block(existing)
     except ManagedGuideError:
@@ -1271,16 +1289,23 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     agents = directory / AGENTS_FILE
     gitignore = directory / ".gitignore"
     existing_agents = agents.read_text() if agents.exists() else ""
-    updated_agents = _managed_agents(existing_agents, agents)
-    validate_pi_extension()
-    originals = {
-        path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
-    }
     has_pyproject_config = False
     if not config_path.exists() and pyproject_path.exists():
         pyproject_data = tomllib.loads(pyproject_path.read_text())
         tool = pyproject_data.get("tool")
         has_pyproject_config = isinstance(tool, Mapping) and "chitty" in tool
+    # The block must match the workflow the config will have, so load it before
+    # rendering. Damaged markers still raise here, before any file is written.
+    if config_path.exists() or has_pyproject_config:
+        workflow = load_repo_config(directory).workflow
+    else:
+        # A new config omits `workflow`, so it gets the default for this version.
+        workflow = resolve_workflow(None, CHITTY_VERSION)
+    updated_agents = _managed_agents(existing_agents, agents, workflow)
+    validate_pi_extension()
+    originals = {
+        path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
+    }
     written: list[Path] = []
     if not config_path.exists() and not has_pyproject_config:
         project = _default_project(directory.name)
