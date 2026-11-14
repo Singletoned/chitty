@@ -1,4 +1,3 @@
-import hashlib
 import json
 import os
 import subprocess
@@ -354,60 +353,6 @@ class TestInit(CliTestCase):
         self.assertIsNone(settings.get("agent_command"))
         self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
-    def test_init_replaces_a_tracked_pi_extension(self):
-        agent = self.tmp / "pi-agent"
-        extension = agent / "extensions" / "chitty.ts"
-        extension.parent.mkdir(parents=True)
-        previous_source = b"previous Chitty extension"
-        extension.write_bytes(previous_source)
-        (agent / "chitty-extension.sha256").write_text(
-            hashlib.sha256(previous_source).hexdigest() + "\n"
-        )
-        os.environ["PI_CODING_AGENT_DIR"] = str(agent)
-
-        self.run_cli("init")
-
-        self.assertNotEqual(extension.read_bytes(), previous_source)
-
-    def test_init_keeps_a_newer_pi_extension_and_finishes_setup(self):
-        agent = self.tmp / "pi-agent"
-        agent.mkdir()
-        os.environ["PI_CODING_AGENT_DIR"] = str(agent)
-        self.run_cli("init")
-        extension = agent / "extensions" / "chitty.ts"
-        original = extension.read_bytes()
-        (agent / "chitty-extension.sha256").write_text(
-            hashlib.sha256(original).hexdigest() + "\n99.0.0\n"
-        )
-
-        result = self.run_cli("init")
-
-        self.assertIn(CHITTY_VERSION, result.stderr)
-        self.assertIn("99.0.0", result.stderr)
-        self.assertEqual(extension.read_bytes(), original)
-        self.assertTrue((self.root / "AGENTS.md").exists())
-
-    def test_init_failure_leaves_setup_files_unchanged(self):
-        config = self.root / "chitty.toml"
-        original_config = config.read_text().replace(
-            f'chitty_version = "{CHITTY_VERSION}"', 'chitty_version = "0.0.0"'
-        )
-        config.write_text(original_config)
-        agents = self.root / "AGENTS.md"
-        original_agents = "# Existing guide\n"
-        agents.write_text(original_agents)
-        agent = self.tmp / "pi-agent"
-        extension = agent / "extensions" / "chitty.ts"
-        extension.parent.mkdir(parents=True)
-        extension.write_text("local edits")
-        os.environ["PI_CODING_AGENT_DIR"] = str(agent)
-
-        result = self.run_cli("init", exit_code=1)
-
-        self.assertIn(str(extension), result.stderr)
-        self.assertEqual(config.read_text(), original_config)
-        self.assertEqual(agents.read_text(), original_agents)
-
     def test_init_refuses_a_linked_worktree_without_changes(self):
         config = self.root / "chitty.toml"
         config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
@@ -440,31 +385,6 @@ class TestInit(CliTestCase):
         self.assertIn(str(self.root), result.stderr)
         self.assertEqual(config.read_bytes(), original_config)
         self.assertEqual(agents.read_bytes(), original_agents)
-
-    def test_init_installs_pi_extension_from_subdirectory_and_outside_git(self):
-        self.git("init", "--quiet")
-        self.git("config", "user.email", "test@example.com")
-        self.git("config", "user.name", "Test")
-        agent = self.tmp / "pi-agent"
-        extension = agent / "extensions" / "chitty.ts"
-        extension.parent.mkdir(parents=True)
-        os.environ["PI_CODING_AGENT_DIR"] = str(agent)
-
-        for directory in (self.root / "subdirectory", self.tmp / "outside-git"):
-            with self.subTest(directory=directory):
-                directory.mkdir()
-                previous_extension = directory.name.encode()
-                extension.write_bytes(previous_extension)
-                (agent / "chitty-extension.sha256").write_text(
-                    hashlib.sha256(previous_extension).hexdigest() + "\n"
-                )
-                previous = Path.cwd()
-                os.chdir(directory)
-                try:
-                    self.run_cli("init")
-                finally:
-                    os.chdir(previous)
-                self.assertNotEqual(extension.read_bytes(), previous_extension)
 
     def test_init_adds_worktrees_to_gitignore(self):
         target = self.tmp / "worktrees"
@@ -2147,17 +2067,6 @@ class TestIdentity(CliTestCase):
         os.environ["PI_CODING_AGENT"] = "true"
         os.environ.pop("CHITTY_ACTOR", None)
         self.assertIn("Set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
-
-    def test_init_removes_ineffective_pi_session_environment_setting(self):
-        settings = self.tmp / "home" / ".pi" / "agent" / "settings.json"
-        settings.parent.mkdir(parents=True)
-        settings.write_text('{\n    "other": [1, 2],\n    "exposeSessionEnvironment": false\n}\n')
-
-        result = self.run_cli("init")
-
-        self.assertIn(f"updated {settings}", result.stdout)
-        self.assertEqual(settings.read_text(), '{\n    "other": [1, 2]\n}\n')
-        self.assertEqual(self.run_cli("init").stdout, "already up to date\n")
 
 
 class TestGuide(CliTestCase):

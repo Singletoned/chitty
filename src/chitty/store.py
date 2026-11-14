@@ -15,7 +15,7 @@ from typing import Any, Literal
 from pydantic import ValidationError
 
 from chitty import formatter, git, ids, locks
-from chitty.actor import actor, remove_pi_session_environment
+from chitty.actor import actor
 from chitty.config import (
     BACKLOG_DIR,
     CHITTY_VERSION,
@@ -1263,7 +1263,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     claude = directory / CLAUDE_FILE
     if claude.exists() and not claude.is_symlink():
         raise ChittyError(f"{claude} exists and must be replaced with a symlink to {AGENTS_FILE}")
-    from chitty.actor import install_pi_extension, validate_pi_extension
     from chitty.config import inbox_path, load_repo_config, register_project
 
     config_path = directory / CONFIG_NAME
@@ -1272,7 +1271,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     gitignore = directory / ".gitignore"
     existing_agents = agents.read_text() if agents.exists() else ""
     updated_agents = _managed_agents(existing_agents, agents)
-    validate_pi_extension()
     originals = {
         path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
     }
@@ -1339,12 +1337,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
             written.append(inbox)
     if _add_worktrees_to_gitignore(gitignore):
         written.append(gitignore)
-    pi_settings = remove_pi_session_environment()
-    if pi_settings is not None:
-        written.append(pi_settings)
-    pi_extension = install_pi_extension()
-    if pi_extension is not None:
-        written.append(pi_extension)
     if updated_agents != existing_agents:
         agents.write_text(updated_agents)
         written.append(agents)

@@ -979,7 +979,7 @@ class TestNext(CliTestCase):
             os.environ.pop("SEEN", None)
 
         self.assertEqual(seen.read_text(), CHITTY_VERSION)
-        self.assertNotEqual(extension.read_text(), "old extension")
+        self.assertEqual(extension.read_text(), "old extension")
         self.assertIn(str(config), result.stderr)
         self.assertNotIn("re-run `chitty init`", result.stderr)
         self.assertIn(
@@ -1040,7 +1040,7 @@ class TestNext(CliTestCase):
             os.environ.pop("PI_CODING_AGENT_DIR", None)
             os.environ.pop("SEEN", None)
 
-        self.assertNotEqual(seen.read_bytes(), b"old extension")
+        self.assertEqual(seen.read_bytes(), b"old extension")
 
     def test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty(self):
         self.add("Todo")

@@ -6,9 +6,11 @@ never in a ticket worktree or ticket branch. Do not edit a ticket's files to
 configure the runner.
 
 1. From the main checkout, run `chitty init` if the repository is not initialized.
-   If using Pi, ensure its agent directory (`~/.pi/agent/`, or
-   `PI_CODING_AGENT_DIR`) exists first: Chitty installs the extension there only
-   when that directory exists. For a clean Git tree, `chitty init --autocommit`
+   `chitty init` does not manage Pi extensions or settings. Existing installations
+   may still autoload: inspect `~/.pi/agent/extensions/chitty.ts` (or the
+   `PI_CODING_AGENT_DIR` equivalent), remove it and
+   `chitty-extension.sha256` manually if appropriate, then restart Pi. For a
+   clean Git tree, `chitty init --autocommit`
    also enables autocommit and commits the setup files it changes. On an
    existing repository, inspect its configuration before changing it; use
    `chitty init` from main to refresh outdated setup. Do not run init on a
@@ -33,11 +35,11 @@ configure the runner.
    from `[agent_commands]` (or `[tool.chitty.agent_commands]` in `pyproject.toml`)
    with `chitty run --agent NAME`. Whichever command is selected must contain
    both `{mode}` and `{id}`, or `{prompt}` as one argument.
-3. For Pi, `chitty init` creates the `extensions/` directory and installs the
-   shipped Chitty extension when the Pi agent directory exists. Reload or
-   restart Pi after installation. Use the Pi command above with that extension;
-   `--chitty-{mode}` starts its work or review flow.
-   For another agent, configure a command and a way to pass Chitty's role
+3. For Pi, configure a command and a way to pass Chitty's role instructions,
+   such as its prompt argument with `{prompt}`. Chitty does not install or
+   update the bundled Pi extension or modify Pi settings. Existing copies may
+   continue to autoload until manually inspected and removed; restart Pi after
+   cleanup. For another agent, configure a command and a way to pass Chitty's role
    instructions, such as its prompt argument with `{prompt}`. Run work and
    review under distinct agent identities; a worker must not review its own
    ticket. Recoverable runner failures enter `error`; a stronger repair agent
