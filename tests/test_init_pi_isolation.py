@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 from pathlib import Path
@@ -10,6 +11,16 @@ from tests.support import CONFIG, RepoTestCase
 
 
 class TestInitPiIsolation(RepoTestCase):
+    def test_init_preserves_valid_pi_settings_with_session_environment(self):
+        settings_path = Path(os.environ["HOME"]) / ".pi" / "agent" / "settings.json"
+        settings_path.parent.mkdir(parents=True)
+        original = {"exposeSessionEnvironment": True, "other": "preserved"}
+        settings_path.write_text(json.dumps(original))
+
+        init_repo(self.root, False)
+
+        self.assertEqual(json.loads(settings_path.read_text()), original)
+
     def setUp(self):
         super().setUp()
         self.agent = Path(os.environ["HOME"]) / ".pi" / "agent"
