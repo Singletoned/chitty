@@ -15,10 +15,10 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 
 - CLI (`src/chitty/cli.py`): when the current directory is in a Chitty repository whose config loads with workflow `tickets`, `chitty --help` does not list `run` or `next`. Invoking either exits 1 with `chitty <command> needs workflow = "runner" in the Chitty config` on stderr, not click's "No such command". A custom `click.Group` overriding `list_commands` and `get_command` is one way.
 - When no config is found, or it fails to load, `--help` lists every command, so help still works while diagnosing a broken config; running `run` or `next` then reports the config error as today.
-- MCP (`src/chitty/mcp.py`): register the `next` tool only when the workflow is `runner`, deciding when `chitty mcp` starts from the config of the directory it starts in (today tools register at import). Under `tickets`, the tool list has no `next`.
+- MCP (`src/chitty/mcp.py`): in `create_server(start_dir)` (added by TASK-332), register the `next` tool only when the workflow of the config found from `start_dir` is `runner`, or when no config is found. Under `tickets`, the tool list has no `next`.
 - Under `runner`, and outside a repository, nothing changes.
 - Keep the check in one place in `store.py` or `config.py` (for example `require_runner(config, command)`), so the CLI and MCP cannot diverge.
-- No property test: a small fixed set (two workflows, plus no repository, times two commands), each case tested. Tests go in `tests/test_workflow_commands.py`.
+- No property test: a small fixed set (two workflows, plus no repository, times two commands), each case tested. Tests go in `tests/test_workflow_commands.py`, and set `workflow` explicitly in every config they write.
 
 ## Acceptance Criteria
 
@@ -32,3 +32,4 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 - 2026-11-14T18:23:30Z friendly-ginger-adder: changed dependencies
 - 2026-11-14T18:29:48Z friendly-ginger-adder: changed description, acceptance criteria
 - 2026-11-14T18:29:59Z friendly-ginger-adder: changed dependencies
+- 2026-11-14T18:47:00Z friendly-ginger-adder: changed description
