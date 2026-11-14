@@ -1,6 +1,6 @@
 ---
 title: Start the agent when the pre-session check fails on a doing or error ticket
-status: cold-read
+status: planning
 labels:
   - bug
   - runner
@@ -31,6 +31,10 @@ Tests go in `tests/test_next.py`, using its fake `pi` pattern and a check script
 - [ ] A new test in `tests/test_next.py`: `chitty run --errors` on an `error` ticket whose check exits 1 starts the fake repair agent, which sees status `error` and the same note, then commits `-s review`; the run prints `error → review`. Record that it fails before the fix.
 - [ ] `test_run_check_failure_records_output_and_does_not_claim_or_start_agent` (a `todo` ticket goes to `error`, no agent) passes unchanged; a `doing` ticket whose check command does not exist still goes to `error` without starting the agent; `docs/plan/next-action-and-runner.md` describes the `todo`, `doing` and `error` cases consistently; `make check` passes.
 
+## Notes
+
+Possible starting point: `git diff main...refs/cold-read/TASK-329/1` (a cold read of the current text: tests failed first, all six mutants killed, `make check` passed). Check it against the current criteria; do not trust it.
+
 ## History
 
 - 2026-11-14T11:33:09Z jolly-silver-falcon → backlog
@@ -40,3 +44,5 @@ Tests go in `tests/test_next.py`, using its fake `pi` pattern and a check script
 - 2026-11-14T11:37:56Z jolly-silver-falcon: changed description, acceptance criteria
 - 2026-11-14T11:37:56Z jolly-silver-falcon cold-read → planning
 - 2026-11-14T11:38:10Z jolly-silver-falcon planning → cold-read
+- 2026-11-14T11:42:53Z jolly-silver-falcon: changed notes
+- 2026-11-14T11:42:53Z jolly-silver-falcon cold-read → planning
