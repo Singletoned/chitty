@@ -1,6 +1,6 @@
 ---
 title: Pin the test fixture config to the runner workflow
-status: review
+status: done
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -36,6 +36,10 @@ Review failed (work): The release-version check still fails; update the init tes
 
 Fixed TestInit to assert the generated managed guide for resolve_workflow(None, CHITTY_VERSION), covering runner and tickets defaults. make format && make check passed at 0.4.2 and make check passed with __version__ temporarily set to 0.5.0; restored to 0.4.2. Commit 0264c3d.
 
+Reviewed: Previous release-version failure is resolved; no new findings.
+1: pass - `uv run python -m unittest tests.test_config_workflow.TestFixtureConfig` printed OK; removing the fixture workflow line printed FAIL with `AssertionError: 'tickets' != 'runner'`.
+2: pass - `make format && make check` printed OK for 578 tests and passed Node tests at 0.4.2; `make check` with version temporarily set to 0.5.0 printed OK for 578 tests and passed Node tests. Version restored.
+
 ## Summary
 
 Pinned the test fixture to runner and added the 0.5.0 regression test (prior commit e9d3db0). Updated TestInit expectations for version-selected managed guides (commit 0264c3d). Verification: make format && make check passed at installed 0.4.2; make check passed with __version__ temporarily set to 0.5.0; restored afterward. No follow-ups.
@@ -57,3 +61,5 @@ Pinned the test fixture to runner and added the 0.5.0 regression test (prior com
 - 2026-11-14T20:20:48Z witty-ochre-quail review → doing
 - 2026-11-14T20:31:58Z rosy-amber-ibis: changed notes, summary; ticked acceptance criteria
 - 2026-11-14T20:31:58Z rosy-amber-ibis doing → review
+- 2026-11-14T20:36:28Z brisk-yellow-gannet: changed notes; ticked acceptance criteria
+- 2026-11-14T20:36:28Z brisk-yellow-gannet review → done
