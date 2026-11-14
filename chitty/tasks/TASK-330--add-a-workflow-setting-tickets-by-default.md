@@ -23,7 +23,7 @@ Chitty was meant to be a plain ticketing system; the runner pipeline (worktrees,
 ## Acceptance Criteria
 
 - [x] Property: for any `v` that is `None`, a string of one to four dot-separated non-negative integers, or any other text, `resolve_workflow(None, v)` is `"runner"` exactly when `v` is `None`, unreadable by `version_key`, or `version_key(v) < version_key("0.5.0")`, and `"tickets"` otherwise; it never raises; and for each explicit `w` in (`"tickets"`, `"runner"`) and every such `v`, `resolve_workflow(w, v) == w`. The property test also checks the boundary values `0.4.9`, `0.5`, `0.5.0` and `0.5.0.0` explicitly (Hypothesis `@example`). Fails today because the function does not exist.
-- [ ] Loading a temp repository config: no `workflow` with `chitty_version = "0.4.2"`, `"0.5.0"`, `"1.0rc1"`, and none gives `config.workflow` of `runner`, `tickets`, `runner`, `runner`; `workflow = "bogus"` and `workflow = 1` fail with an error naming `workflow`, `tickets` and `runner`; `chitty_version = 1` fails with an error that does not mention `workflow`. Existing `tests/test_config.py` and `TestSetupVersion` in `tests/test_cli.py` pass unchanged.
+- [x] Loading a temp repository config: no `workflow` with `chitty_version = "0.4.2"`, `"0.5.0"`, `"1.0rc1"`, and none gives `config.workflow` of `runner`, `tickets`, `runner`, `runner`; `workflow = "bogus"` and `workflow = 1` fail with an error naming `workflow`, `tickets` and `runner`; `chitty_version = 1` fails with an error that does not mention `workflow`. Existing `tests/test_config.py` and `TestSetupVersion` in `tests/test_cli.py` pass unchanged.
 - [x] For every combination of workflow (`tickets`, `runner`), repository `review` (unset, `true`, `false`) and context `review` (unset, `true`, `false`), `config.review` is the repository value if set, else `false` under `tickets` and `true` under `runner`; and `Repo.review_required` returns the context value if set, else `config.review`. A small fixed set of 18 cases, each tested, so no property is needed. The `tickets` with both unset case fails today.
 - [x] `docs/plan/config.md` documents `workflow`, `FIRST_WORKFLOW_VERSION` and the changed-default decision; `docs/plan/direction.md` records that tickets-only is the original purpose; `make check` passes.
 
@@ -44,6 +44,8 @@ Review failed (tests): Newly discovered invalid non-string workflow values are n
 2: fail - A throwaway load_repo_config test with workflow = [] and workflow = {} printed TypeError unhashable type: list and TypeError unhashable type: dict, respectively, instead of a config error naming workflow, tickets and runner. The existing test covers only integer non-strings. This is newly discovered; there are no earlier review notes.
 3: pass - make check passed the 18-case matrix; running it against main config failed with True is not False for tickets with repository review unset.
 4: pass - inspected both plan documents; make format && make check passed, including 559 Python tests and Node tests.
+
+Review regression reproduced TypeErrors for workflow = [] and {} before the fix. Validation now checks string type before set membership; make format && make check passes (559 Python tests and Node tests).
 
 ## Summary
 
@@ -71,3 +73,4 @@ Implemented workflow resolution with 0.5.0 as the first tickets-default setup, v
 - 2026-11-14T18:42:33Z mellow-silver-marten doing → review
 - 2026-11-14T18:45:36Z youthful-bronze-heron: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-14T18:45:36Z youthful-bronze-heron review → doing
+- 2026-11-14T19:51:39Z kind-amber-vole: changed notes; ticked acceptance criteria
