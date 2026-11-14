@@ -1,9 +1,10 @@
 ---
 title: Add a workflow setting, tickets by default
-status: planning
+status: cold-read
 labels:
   - needs-minor
 priority: medium
+owner: friendly-ginger-adder
 created: 2026-11-14
 ---
 
@@ -37,3 +38,5 @@ Replanned with the human on 2026-11-14. The original ask (agents feel they must 
 - 2026-11-14T18:21:52Z friendly-ginger-adder: replaced notes; changed title, labels, description, acceptance criteria
 - 2026-11-14T18:23:25Z friendly-ginger-adder: changed description, acceptance criteria
 - 2026-11-14T18:28:28Z friendly-ginger-adder: changed title, description, acceptance criteria
+- 2026-11-14T18:28:41Z friendly-ginger-adder: changed owner
+- 2026-11-14T18:28:41Z friendly-ginger-adder planning → cold-read
