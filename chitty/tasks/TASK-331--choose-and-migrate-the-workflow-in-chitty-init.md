@@ -18,6 +18,7 @@ created: 2026-11-14
 - Migration on an existing repository: add a pure function `add_runner_workflow(text: str, recorded_version: str | None, pyproject: bool) -> str`, beside the other `_add_missing_*` helpers in `store.py`. When the parsed config has no `workflow` key and `resolve_workflow(None, recorded_version)` is `"runner"`, it returns the text with `workflow = "runner"` added directly after the `chitty_version` line (in `[tool.chitty]` for `pyproject.toml`); otherwise it returns the text unchanged. `init_repo` calls it with the version recorded before it rewrites `chitty_version`, and prints one line when it changed the text. Without this, raising the version would silently turn a runner repository into a tickets one.
 - Switching an existing repository to `runner` does not add or change `review`. If `review` is then unset or `false`, print one line saying reviews stay off until `review = true` is set.
 - Change no other config line.
+- Existing tests that set up a repository with `chitty init` and then exercise the runner (many in `tests/test_next.py`, `tests/test_landing.py` and others) will get `workflow = "tickets"`; make them pass `--workflow runner` rather than changing behaviour.
 - Hypothesis is the property-testing tool; tests go in `tests/test_init_workflow.py`.
 
 ## Acceptance Criteria
@@ -34,3 +35,4 @@ created: 2026-11-14
 - 2026-11-14T18:25:42Z friendly-ginger-adder: changed dependencies
 - 2026-11-14T18:30:19Z friendly-ginger-adder: changed description, acceptance criteria
 - 2026-11-14T18:30:31Z friendly-ginger-adder: changed description, acceptance criteria
+- 2026-11-14T19:22:00Z friendly-ginger-adder: changed description
