@@ -79,7 +79,7 @@ class TestWorkflowConfig(RepoTestCase):
                 self.assertEqual(load_repo_config(self.root).workflow, expected)
 
     def test_invalid_workflow_names_the_setting_and_allowed_values(self):
-        for value in ('"bogus"', "1"):
+        for value in ('"bogus"', "1", "[]", "{}"):
             with self.subTest(value=value):
                 (self.root / "chitty.toml").write_text(
                     self.config_text(extra=f"workflow = {value}\n")

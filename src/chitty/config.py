@@ -118,9 +118,9 @@ class RepoConfig(BaseModel):
     @field_validator("workflow", mode="before")
     @classmethod
     def _workflow(cls, value: object) -> str:
-        if value not in {"tickets", "runner"}:
+        if not isinstance(value, str) or value not in {"tickets", "runner"}:
             raise ValueError("must be a string: 'tickets' or 'runner'")
-        return cast(str, value)
+        return value
 
     @field_validator("project")
     @classmethod
