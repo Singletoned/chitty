@@ -1,6 +1,6 @@
 ---
 title: Make print-mode Pi the default agent in this repository
-status: doing
+status: review
 owner: human
 depends_on:
   - TASK-277
@@ -19,6 +19,8 @@ Moved to todo by the planner, 2026-11-12: TASK-277 is done.
 
 The default was already print-mode Pi with `{prompt}`. Removed the obsolete `pi-tui` command from `chitty.toml` in commit `c2eae4b`; `make check` passed. Human verification remains: one work run and one review run.
 
+Human, 2026-11-14: one work run and one review run with print-mode Pi completed by hand, as the human reported.
+
 ## History
 
 - 2026-11-11T13:21:34Z vivid-yellowhammer → backlog
@@ -28,3 +30,5 @@ The default was already print-mode Pi with `{prompt}`. Removed the obsolete `pi-
 - 2026-11-13T22:16:05Z mellow-umber-lapwing: changed description
 - 2026-11-13T22:56:25Z mellow-umber-lapwing: changed notes
 - 2026-11-13T22:56:25Z mellow-umber-lapwing todo → doing
+- 2026-11-14T09:26:09Z jolly-silver-falcon: changed notes
+- 2026-11-14T09:26:09Z jolly-silver-falcon doing → review
