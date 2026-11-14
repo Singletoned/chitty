@@ -1,6 +1,6 @@
 ---
 title: Make print-mode Pi the default agent in this repository
-status: review
+status: done
 owner: human
 depends_on:
   - TASK-277
@@ -21,6 +21,8 @@ The default was already print-mode Pi with `{prompt}`. Removed the obsolete `pi-
 
 Human, 2026-11-14: one work run and one review run with print-mode Pi completed by hand, as the human reported.
 
+Reviewed: both trial runs done by hand.
+
 ## History
 
 - 2026-11-11T13:21:34Z vivid-yellowhammer → backlog
@@ -32,3 +34,5 @@ Human, 2026-11-14: one work run and one review run with print-mode Pi completed 
 - 2026-11-13T22:56:25Z mellow-umber-lapwing todo → doing
 - 2026-11-14T09:26:09Z jolly-silver-falcon: changed notes
 - 2026-11-14T09:26:09Z jolly-silver-falcon doing → review
+- 2026-11-14T09:37:19Z human: changed notes; overrode review independence
+- 2026-11-14T09:37:19Z human review → done
