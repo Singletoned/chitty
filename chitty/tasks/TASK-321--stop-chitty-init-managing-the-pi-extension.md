@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: review
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -15,7 +15,7 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 
 ## Acceptance Criteria
 
-- [x] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
+- [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
 - [x] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
 ## Plan
@@ -467,6 +467,10 @@ make: *** [check] Error 8
 
 The generated Hypothesis regression test failed before the implementation with extension, state, and settings inputs; it now passes with deadline disabled for repeated init cost. Removed obsolete installer and settings-migration assertions, and updated runner setup tests to assert extensions remain unchanged. Verification: focused unittest command passed (94 tests); make format && make check passed (548 Python tests and Node tests). `chitty fix` passed for the ticket file.
 
+Review failed (tests): Add generated or explicit valid settings examples containing `exposeSessionEnvironment` and demonstrate the settings migration regression independently of extension installation. This is newly discovered; the earlier block concerned unfinished legacy tests and the deadline, not this coverage gap.
+1: fail - `tests/test_init_pi_isolation.py` generates only arbitrary binary settings, with no structured JSON strategy or explicit example for `exposeSessionEnvironment`; nothing reliably exercises the required migration. Running the property against the old store printed four failures for extension validation, installation, and malformed settings, but none for the valid migration. Calling its inner test with valid settings printed `explicit migration example: PASS` on the current store and an assertion failure on the old store, though that old assertion also includes extension installation; isolate the migration and make the case part of the test suite.
+2: pass - `make format && make check` printed 548 Python tests OK and 28 Node tests passed; `src/chitty/roles/setup.md` describes inspecting and removing the extension and state file and restarting Pi.
+
 ## Summary
 
 Stopped init from validating, installing, or updating Pi extensions and settings; retained the bundled extension. Added Hypothesis coverage across arbitrary present/absent Pi files and repeated fresh/existing init; documented manual cleanup and restart. Verified with focused tests and make format && make check. No follow-up required.
@@ -501,3 +505,5 @@ Stopped init from validating, installing, or updating Pi extensions and settings
 - 2026-11-14T19:43:12Z open-quartz-lapwing: changed notes
 - 2026-11-14T19:48:01Z open-quartz-lapwing: changed notes, summary; ticked acceptance criteria
 - 2026-11-14T19:48:01Z open-quartz-lapwing doing → review
+- 2026-11-14T19:51:03Z friendly-amber-falcon: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-14T19:51:03Z friendly-amber-falcon review → doing
