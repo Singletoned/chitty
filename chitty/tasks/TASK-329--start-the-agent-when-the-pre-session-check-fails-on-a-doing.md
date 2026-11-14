@@ -1,6 +1,6 @@
 ---
 title: Start the agent when the pre-session check fails on a doing or error ticket
-status: review
+status: done
 labels:
   - bug
   - runner
@@ -41,6 +41,11 @@ Possible starting point: `git diff main...refs/cold-read/TASK-329/1` (a cold rea
 
 The doing and error regression tests were run before the fix and both failed with the runner changing the ticket to error before an agent could commit review. After the fix, all four focused tests pass: doing, error repair, todo failure without claim/agent, and missing check command. make format && make check passed (549 Python suites and Node tests). Commit: 668c3fd.
 
+Reviewed:
+1: pass - make check passed; test_run_check_failure_on_doing_ticket_starts_agent passed and, with main run.py in a temporary PYTHONPATH, failed with doing → error instead of doing → review.
+2: pass - make check passed; test_run_check_failure_on_error_ticket_starts_repair_agent passed and, with main run.py in a temporary PYTHONPATH, failed with error → error instead of error → review.
+3: pass - make format && make check passed (552 tests and Node tests); the unchanged todo test and missing-command test passed, and docs/plan/next-action-and-runner.md describes all three statuses consistently.
+
 ## Summary
 
 Implemented and committed as 668c3fd. Pre-session non-zero checks on doing/error work tickets now record the complete output and preserve status while allowing the agent to start; todo and missing-command behavior remains error handling. Updated runner design notes. Verified regression tests fail before the fix, focused tests pass, make format && make check pass, and git status is clean. Ready for review.
@@ -61,3 +66,5 @@ Implemented and committed as 668c3fd. Pre-session non-zero checks on doing/error
 - 2026-11-14T11:44:00Z calm-silver-puffin: wrote the plan
 - 2026-11-14T11:45:59Z calm-silver-puffin: changed notes, summary; ticked acceptance criteria
 - 2026-11-14T11:45:59Z calm-silver-puffin doing → review
+- 2026-11-14T18:32:44Z honest-indigo-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-14T18:32:44Z honest-indigo-dormouse review → done
