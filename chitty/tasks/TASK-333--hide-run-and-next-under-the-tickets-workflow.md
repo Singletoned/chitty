@@ -1,6 +1,6 @@
 ---
 title: Hide run and next under the tickets workflow
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -23,8 +23,8 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 
 ## Acceptance Criteria
 
-- [ ] In a temp repository with `workflow = "tickets"`, `chitty --help` lists neither `run` nor `next` but still lists `list` and `add`; `chitty run` and `chitty next` each exit 1 with the message naming the command and `workflow = "runner"`. Both fail today.
-- [ ] With `workflow = "runner"`, and in a directory with no Chitty config, `chitty --help` lists `run` and `next` and both commands behave as before; `tests/test_next.py` passes, changed only by adding `workflow = "runner"` to configs that would otherwise resolve to `tickets`. With a config that fails to load, `chitty --help` lists every command and `chitty next` reports the config error.
+- [x] In a temp repository with `workflow = "tickets"`, `chitty --help` lists neither `run` nor `next` but still lists `list` and `add`; `chitty run` and `chitty next` each exit 1 with the message naming the command and `workflow = "runner"`. Both fail today.
+- [x] With `workflow = "runner"`, and in a directory with no Chitty config, `chitty --help` lists `run` and `next` and both commands behave as before; `tests/test_next.py` passes, changed only by adding `workflow = "runner"` to configs that would otherwise resolve to `tickets`. With a config that fails to load, `chitty --help` lists every command and `chitty next` reports the config error.
 - [x] An MCP server started in a `tickets` repository lists no `next` tool, and one started in a `runner` repository lists it; use the existing pattern in `tests/test_mcp.py`. `make check` passes.
 
 ## Plan
@@ -42,9 +42,11 @@ Review failed (tests): Add coverage for the missing command cases and make the t
 2: fail - `tests/test_workflow_commands.py` checks only help outside a repository, not execution of both `run` and `next` there; it also does not execute both commands with an explicitly configured runner workflow. Add the requested fixed cases. `make check` passed 584 Python tests and Node tests; broken-config next reports invalid TOML.
 3: pass - `make format && make check` passed, including MCP workflow tests. Running `tests.test_workflow_commands` with main source via PYTHONPATH failed `test_mcp_next_follows_workflow` because tickets still listed `next`, demonstrating regression coverage.
 
+Fixed tickets workflow refusals to raise during command resolution, before Click parses options or handles --help. Expanded tests for argument/help invocations and command execution in runner and no-config contexts. Verified: focused workflow tests and make format && make check pass (584 Python tests and Node tests). The requested regression test was not run before the fix in this revision; prior review evidence reports the original defect. No follow-ups.
+
 ## Summary
 
-Implemented and committed as f2dcf5b (Task: TASK-333). `make format` and `make check` pass, including all 584 Python tests and Node tests. Focused workflow tests cover tickets, runner, missing and broken config, plus MCP visibility. Follow-up: reviewer can inspect the workflow test coverage; no known outstanding issues.
+Implemented and committed as f2b6bb9 (Task: TASK-333). Tickets workflow commands now refuse before option parsing, with coverage for arguments and --help. Verified with focused workflow tests and make format && make check (584 Python tests and Node tests). No follow-ups.
 
 ## History
 
@@ -65,3 +67,5 @@ Implemented and committed as f2dcf5b (Task: TASK-333). `make format` and `make c
 - 2026-11-14T20:24:02Z jolly-indigo-vole doing → review
 - 2026-11-14T20:27:35Z plucky-bronze-marten: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-14T20:27:35Z plucky-bronze-marten review → doing
+- 2026-11-14T20:38:06Z rosy-silver-marten: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T20:38:06Z rosy-silver-marten doing → review
