@@ -2,7 +2,7 @@
 title: Write a tickets-only managed block under the tickets workflow
 status: planning
 depends_on:
-  - TASK-331
+  - TASK-330
 created: 2026-11-14
 ---
 
@@ -26,3 +26,4 @@ Under `workflow = "tickets"`, the managed block that `chitty init` writes into `
 ## History
 
 - 2026-11-14T18:21:55Z friendly-ginger-adder → planning
+- 2026-11-14T18:23:28Z friendly-ginger-adder: changed dependencies
