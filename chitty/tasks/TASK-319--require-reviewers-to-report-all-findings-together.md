@@ -1,6 +1,6 @@
 ---
 title: Require reviewers to report all findings together
-status: error
+status: review
 labels:
   - workflow
   - review
@@ -35,6 +35,8 @@ Error output:
 TASK-319 was unchanged; only committed changes are visible to `chitty run`
 ```
 
+Planner, 2026-11-14: the runner error was a branch mix-up. The work (`14670e2`) was done on `backlog-93769170` in `../chitty-review-completeness` before the ticket was renumbered, so `task-319` had nothing. Merged that branch and `main` into `task-319` (review guide conflict resolved keeping both the planning/blocked wording from `main` and the consolidated-findings wording); `make check` passes. Ready for independent review.
+
 ## History
 
 - 2026-11-13T19:51:41Z zesty-umber-puffin → backlog
@@ -42,3 +44,5 @@ TASK-319 was unchanged; only committed changes are visible to `chitty run`
 - 2026-11-13T22:24:02Z brisk-yellow-urchin backlog → doing
 - 2026-11-13T22:27:19Z daring-pearl-dormouse: changed notes
 - 2026-11-13T22:27:19Z daring-pearl-dormouse doing → error
+- 2026-11-14T09:20:45Z jolly-silver-falcon: changed notes
+- 2026-11-14T09:20:45Z jolly-silver-falcon error → review
