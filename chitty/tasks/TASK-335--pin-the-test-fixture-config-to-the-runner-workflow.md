@@ -1,6 +1,6 @@
 ---
 title: Pin the test fixture config to the runner workflow
-status: doing
+status: review
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -17,8 +17,8 @@ After TASK-330, a config with no `workflow` line resolves by its `chitty_version
 
 ## Acceptance Criteria
 
-- [ ] A repository written from `CONFIG` in `tests/support.py`, with its `chitty_version` rewritten to `"0.5.0"`, loads through `load_repo_config` with `config.workflow == "runner"` and `config.review is True`. Fails before the change (`'tickets' != 'runner'`).
-- [ ] `make check` passes, and also passes with `__version__` in `src/chitty/__init__.py` temporarily set to `0.5.0` (restore it afterwards; do not commit the change).
+- [x] A repository written from `CONFIG` in `tests/support.py`, with its `chitty_version` rewritten to `"0.5.0"`, loads through `load_repo_config` with `config.workflow == "runner"` and `config.review is True`. Fails before the change (`'tickets' != 'runner'`).
+- [x] `make check` passes, and also passes with `__version__` in `src/chitty/__init__.py` temporarily set to `0.5.0` (restore it afterwards; do not commit the change).
 
 ## Plan
 
@@ -27,6 +27,12 @@ Pin the shared tests/support.py CONFIG to workflow = "runner". Update TestWorkfl
 ## Notes
 
 Cold read starting point: `refs/cold-read/TASK-335/1` (on top of TASK-330's read). Its files: `tests/support.py`, `tests/test_config_workflow.py`; see them with `git show refs/cold-read/TASK-335/1:<path>`. Rebase onto the real TASK-330 on `main`, whose test file may differ, and check against the current criteria. At `0.5.0` without the fix, these failed: `TestReviewStatus` (two tests) in `tests/test_cli.py`, `TestRepoConfig.test_loads`, and `TestMcp.test_adds_backlog_without_a_description`.
+
+Regression test was run before the fixture change and failed as expected: workflow was tickets instead of runner. make check passed at the installed version and with __version__ temporarily set to 0.5.0; restored __version__ to 0.4.2 afterwards. Final make check passed. Commit: e9d3db0.
+
+## Summary
+
+Pinned tests/support.py CONFIG to runner and adjusted TestWorkflowConfig helper to remove the fixture default before adding variant settings. Added a fixed 0.5.0 regression test verifying runner and review=True via load_repo_config. Verified regression failed before fix; make format and make check passed at normal and temporary 0.5.0 versions. No follow-ups.
 
 ## History
 
@@ -39,3 +45,5 @@ Cold read starting point: `refs/cold-read/TASK-335/1` (on top of TASK-330's read
 - 2026-11-14T18:50:06Z friendly-ginger-adder planning → todo
 - 2026-11-14T20:07:15Z rosy-indigo-lapwing todo → doing
 - 2026-11-14T20:07:27Z rosy-indigo-lapwing: wrote the plan
+- 2026-11-14T20:10:58Z rosy-indigo-lapwing: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T20:10:58Z rosy-indigo-lapwing doing → review
