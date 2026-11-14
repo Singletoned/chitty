@@ -1,6 +1,6 @@
 ---
 title: Pin the test fixture config to the runner workflow
-status: todo
+status: doing
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -33,3 +33,4 @@ Cold read starting point: `refs/cold-read/TASK-335/1` (on top of TASK-330's read
 - 2026-11-14T18:50:04Z friendly-ginger-adder cold-read → planning
 - 2026-11-14T18:50:06Z friendly-ginger-adder: changed owner
 - 2026-11-14T18:50:06Z friendly-ginger-adder planning → todo
+- 2026-11-14T20:07:15Z rosy-indigo-lapwing todo → doing
