@@ -1,6 +1,6 @@
 ---
 title: Add a workflow setting, tickets by default
-status: review
+status: done
 labels:
   - needs-minor
 priority: medium
@@ -47,6 +47,12 @@ Review failed (tests): Newly discovered invalid non-string workflow values are n
 
 Review regression reproduced TypeErrors for workflow = [] and {} before the fix. Validation now checks string type before set membership; make format && make check passes (559 Python tests and Node tests).
 
+Reviewed: Previous review finding for list and table workflow values is resolved; the expanded validation test passes.
+1: pass - make format && make check passed; running tests.test_config_workflow against main printed AttributeError for the missing resolve_workflow.
+2: pass - make check passed the config tests, including invalid list and table values and existing setup version tests; against main the new tests printed missing workflow and ChittyError not raised.
+3: pass - make check passed the 18-case matrix; against main it printed True is not False for tickets with repository review unset.
+4: pass - inspected docs/plan/config.md and docs/plan/direction.md; make format && make check printed OK for 559 tests and passed Node tests.
+
 ## Summary
 
 Implemented workflow resolution, workflow-dependent review defaults, and robust validation for non-string workflow values. Added property/boundary and review-matrix tests and updated the config and direction docs. Verified regression failure before the validation fix; make format && make check passes (559 Python tests and Node tests). TASK-331 remains responsible for chitty init migration.
@@ -76,3 +82,5 @@ Implemented workflow resolution, workflow-dependent review defaults, and robust 
 - 2026-11-14T19:51:39Z kind-amber-vole: changed notes; ticked acceptance criteria
 - 2026-11-14T19:51:58Z kind-amber-vole: changed summary
 - 2026-11-14T19:51:58Z kind-amber-vole doing → review
+- 2026-11-14T19:54:40Z daring-navy-eel: changed notes; ticked acceptance criteria
+- 2026-11-14T19:54:40Z daring-navy-eel review → done
