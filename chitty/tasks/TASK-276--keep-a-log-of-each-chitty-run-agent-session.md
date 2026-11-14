@@ -1,8 +1,6 @@
 ---
 title: Keep a log of each `chitty run` agent session
 status: todo
-depends_on:
-  - TASK-278
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -28,6 +26,8 @@ created: 2026-11-11
 
 Possible starting point: `git diff main...refs/cold-read/TASK-276/2`. Check it against the current criteria; do not trust it. It uses second-resolution stamps, which break `tests/test_next.py` around line 1708; the ticket now asks for microseconds.
 
+Planner, 2026-11-14: removed the dependency on TASK-278. Its only prerequisite for this ticket, print-mode Pi as `agent_command`, is already on `main` (`c2eae4b`); TASK-278 waits only on human trial runs.
+
 ## History
 
 - 2026-11-11T13:21:33Z vivid-yellowhammer → backlog
@@ -40,3 +40,4 @@ Possible starting point: `git diff main...refs/cold-read/TASK-276/2`. Check it a
 - 2026-11-11T13:51:57Z vivid-yellowhammer: changed description, notes
 - 2026-11-11T13:51:57Z vivid-yellowhammer cold-read → todo
 - 2026-11-12T21:35:00Z kind-yellow-vole: changed description
+- 2026-11-14T09:20:55Z jolly-silver-falcon: changed dependencies, notes
