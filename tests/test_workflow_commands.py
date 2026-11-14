@@ -44,18 +44,25 @@ class TestWorkflowCommands(CliTestCase):
         self.write_config("tickets")
         for command in ("run", "next"):
             with self.subTest(command=command):
-                result = CliRunner().invoke(cli, [command])
-                self.assertEqual(result.exit_code, 1, result.output)
-                self.assertIn(
-                    f'chitty {command} needs workflow = "runner" in the Chitty config',
-                    result.stderr,
-                )
+                for args in ([command], [command, "--json"], [command, "--help"]):
+                    with self.subTest(args=args):
+                        result = CliRunner().invoke(cli, args)
+                        self.assertEqual(result.exit_code, 1, result.output)
+                        self.assertIn(
+                            f'chitty {command} needs workflow = "runner" in the Chitty config',
+                            result.stderr,
+                        )
 
     def test_runner_help_lists_runner_commands(self):
         self.write_config("runner")
         commands = listed_commands(self.run_cli("--help").output)
         self.assertIn("run", commands)
         self.assertIn("next", commands)
+        for command in ("run", "next"):
+            with self.subTest(command=command):
+                result = CliRunner().invoke(cli, [command])
+                self.assertNotIn('needs workflow = "runner"', result.output)
+                self.assertNotIn("No such command", result.output)
 
     def test_missing_config_keeps_commands_visible(self):
         (self.root / "chitty.toml").unlink()
@@ -65,6 +72,11 @@ class TestWorkflowCommands(CliTestCase):
         commands = listed_commands(self.run_cli("--help").output)
         self.assertIn("run", commands)
         self.assertIn("next", commands)
+        for command in ("run", "next"):
+            with self.subTest(command=command):
+                result = CliRunner().invoke(cli, [command])
+                self.assertNotIn("No such command", result.output)
+                self.assertNotIn('needs workflow = "runner"', result.output)
 
     def test_broken_config_keeps_help_available_and_reports_error(self):
         (self.root / "chitty.toml").write_text("this is = not [valid toml\\n")

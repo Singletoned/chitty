@@ -86,12 +86,11 @@ class _Group(click.Group):
 
     def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None:
         if cmd_name in RUNNER_COMMANDS and _tickets_workflow():
-
-            def refuse() -> None:
-                root = find_root(Path.cwd())
+            root = find_root(Path.cwd())
+            try:
                 require_runner(load_repo_config(root), cmd_name)
-
-            return click.Command(cmd_name, callback=refuse)
+            except ChittyError as error:
+                raise click.ClickException(str(error)) from error
         return super().get_command(ctx, cmd_name)
 
     def invoke(self, ctx: click.Context) -> Any:
