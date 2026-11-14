@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -15,7 +15,7 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 
 ## Acceptance Criteria
 
-- [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
+- [x] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
 - [x] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
 ## Plan
@@ -471,9 +471,11 @@ Review failed (tests): Add generated or explicit valid settings examples contain
 1: fail - `tests/test_init_pi_isolation.py` generates only arbitrary binary settings, with no structured JSON strategy or explicit example for `exposeSessionEnvironment`; nothing reliably exercises the required migration. Running the property against the old store printed four failures for extension validation, installation, and malformed settings, but none for the valid migration. Calling its inner test with valid settings printed `explicit migration example: PASS` on the current store and an assertion failure on the old store, though that old assertion also includes extension installation; isolate the migration and make the case part of the test suite.
 2: pass - `make format && make check` printed 548 Python tests OK and 28 Node tests passed; `src/chitty/roles/setup.md` describes inspecting and removing the extension and state file and restarting Pi.
 
+Added an explicit valid-JSON regression case for exposeSessionEnvironment=true. Unlike arbitrary binary settings, this isolates the settings assertion from extension installation; focused test passes, and make format && make check passes (549 Python tests and Node tests). The prior implementation called remove_pi_session_environment() from init; the targeted test now directly guards against that migration.
+
 ## Summary
 
-Stopped init from validating, installing, or updating Pi extensions and settings; retained the bundled extension. Added Hypothesis coverage across arbitrary present/absent Pi files and repeated fresh/existing init; documented manual cleanup and restart. Verified with focused tests and make format && make check. No follow-up required.
+Init no longer manages Pi extensions or settings; bundled extension retained. Added explicit valid-settings isolation regression coverage alongside Hypothesis variation and documented manual cleanup/restart. Verified focused test and make format && make check (549 Python tests and Node tests). Changes committed as 3c3153d. No follow-up.
 
 ## History
 
@@ -507,3 +509,5 @@ Stopped init from validating, installing, or updating Pi extensions and settings
 - 2026-11-14T19:48:01Z open-quartz-lapwing doing → review
 - 2026-11-14T19:51:03Z friendly-amber-falcon: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-14T19:51:03Z friendly-amber-falcon review → doing
+- 2026-11-14T19:58:43Z witty-indigo-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T19:58:43Z witty-indigo-urchin doing → review
