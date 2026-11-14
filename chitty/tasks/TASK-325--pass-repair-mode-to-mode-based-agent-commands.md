@@ -23,3 +23,5 @@ An error repair is currently selected by `chitty run --errors` but internally tr
 - 2026-11-14T09:23:14Z mellow-umber-lapwing backlog → planning
 - 2026-11-14T09:23:18Z mellow-umber-lapwing: changed owner
 - 2026-11-14T09:23:18Z mellow-umber-lapwing planning → cold-read
+- 2026-11-14T09:27:53Z mellow-umber-lapwing cold-read → planning
+- 2026-11-14T09:27:55Z mellow-umber-lapwing planning → cold-read
