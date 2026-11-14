@@ -1,8 +1,9 @@
 ---
 title: Hide run and next under the tickets workflow
-status: planning
+status: cold-read
 labels:
   - needs-minor
+owner: friendly-ginger-adder
 depends_on:
   - TASK-330
   - TASK-332
@@ -33,3 +34,5 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 - 2026-11-14T18:29:48Z friendly-ginger-adder: changed description, acceptance criteria
 - 2026-11-14T18:29:59Z friendly-ginger-adder: changed dependencies
 - 2026-11-14T18:47:00Z friendly-ginger-adder: changed description
+- 2026-11-14T18:56:15Z friendly-ginger-adder: changed owner
+- 2026-11-14T18:56:15Z friendly-ginger-adder planning → cold-read
