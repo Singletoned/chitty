@@ -20,6 +20,10 @@ After TASK-330, a config with no `workflow` line resolves by its `chitty_version
 - [ ] A repository written from `CONFIG` in `tests/support.py`, with its `chitty_version` rewritten to `"0.5.0"`, loads through `load_repo_config` with `config.workflow == "runner"` and `config.review is True`. Fails before the change (`'tickets' != 'runner'`).
 - [ ] `make check` passes, and also passes with `__version__` in `src/chitty/__init__.py` temporarily set to `0.5.0` (restore it afterwards; do not commit the change).
 
+## Plan
+
+Pin the shared tests/support.py CONFIG to workflow = "runner". Update TestWorkflowConfig’s helper to remove that default line before inserting each workflow variant. Add the fixed-version regression test in tests/test_config_workflow.py: write CONFIG to a temporary repository with chitty_version rewritten to "0.5.0", load via load_repo_config, and assert runner workflow and reviews enabled. Run the regression test before implementation to confirm failure, then make format and make check; temporarily set __version__ to 0.5.0 for the second full check and restore it. Commit only intended implementation files with a Task: TASK-335 message, then update ticket verification and handoff.
+
 ## Notes
 
 Cold read starting point: `refs/cold-read/TASK-335/1` (on top of TASK-330's read). Its files: `tests/support.py`, `tests/test_config_workflow.py`; see them with `git show refs/cold-read/TASK-335/1:<path>`. Rebase onto the real TASK-330 on `main`, whose test file may differ, and check against the current criteria. At `0.5.0` without the fix, these failed: `TestReviewStatus` (two tests) in `tests/test_cli.py`, `TestRepoConfig.test_loads`, and `TestMcp.test_adds_backlog_without_a_description`.
@@ -34,3 +38,4 @@ Cold read starting point: `refs/cold-read/TASK-335/1` (on top of TASK-330's read
 - 2026-11-14T18:50:06Z friendly-ginger-adder: changed owner
 - 2026-11-14T18:50:06Z friendly-ginger-adder planning → todo
 - 2026-11-14T20:07:15Z rosy-indigo-lapwing todo → doing
+- 2026-11-14T20:07:27Z rosy-indigo-lapwing: wrote the plan
