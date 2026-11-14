@@ -27,6 +27,10 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 - [ ] With `workflow = "runner"`, and in a directory with no Chitty config, `chitty --help` lists `run` and `next` and both commands behave as before; `tests/test_next.py` passes, changed only by adding `workflow = "runner"` to configs that would otherwise resolve to `tickets`. With a config that fails to load, `chitty --help` lists every command and `chitty next` reports the config error.
 - [ ] An MCP server started in a `tickets` repository lists no `next` tool, and one started in a `runner` repository lists it; use the existing pattern in `tests/test_mcp.py`. `make check` passes.
 
+## Plan
+
+Use the shared configured workflow lookup and runner guard for CLI and MCP. Add focused tests for tickets, runner, absent config, and broken config behavior; explicitly set workflow in test configs that rely on runner commands. Verify the regression tests fail before implementation, then run format and full checks.
+
 ## Notes
 
 Cold read starting point: `refs/cold-read/TASK-333/1` (on top of TASK-332's read; mutants M1 to M5 killed). Its files: `src/chitty/config.py` (`configured_workflow`), `src/chitty/cli.py` (a `click.Group` subclass), `src/chitty/mcp.py`, `tests/test_workflow_commands.py`; see them with `git show refs/cold-read/TASK-333/1:<path>`. It did not yet fix `test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty`, which needs `workflow = "runner"`. Check it against the current criteria rather than trusting it.
@@ -45,3 +49,4 @@ Cold read starting point: `refs/cold-read/TASK-333/1` (on top of TASK-332's read
 - 2026-11-14T19:21:57Z friendly-ginger-adder: changed owner
 - 2026-11-14T19:21:57Z friendly-ginger-adder planning → todo
 - 2026-11-14T20:18:54Z jolly-indigo-vole todo → doing
+- 2026-11-14T20:19:07Z jolly-indigo-vole: wrote the plan
