@@ -1,6 +1,6 @@
 ---
 title: Write a tickets-only managed block under the tickets workflow
-status: review
+status: done
 depends_on:
   - TASK-330
 created: 2026-11-14
@@ -37,6 +37,12 @@ Cold read starting point: `refs/cold-read/TASK-332/2` (a Haiku implementing read
 
 make format/check passed (577 Python test suites and Node tests); git diff --check passed. chitty fix completed with existing task-content warnings only. The initial chitty fix TASK-332 invocation treated the ID as a path and failed; the correct no-argument chitty fix then passed.
 
+Reviewed: Independent review passed; no earlier review findings.
+1: pass - Fixture matches `git show 66225bd^:src/chitty/guide.md`; workflow tests pass in `make check`. Forcing tickets to return the runner text makes `test_tickets_block_is_the_first_paragraph` fail with an assertion error.
+2: pass - `TestWorkflowBlockInstalled` exercises init, guide, import and MCP for both workflows and outside-repository defaults; `make check` reports OK.
+3: pass - `TestWorkflowChangesReplaceOnlyTheBlock` exercises both transitions and damaged markers; existing tests and `make check` report OK.
+4: pass - `TestSplitGuide` and `TestNoPrivateMcpNames` pass; `make format && make check` reports 577 tests OK and Node tests pass, with no formatting changes.
+
 ## Summary
 
 Implemented workflow-specific managed guide blocks and per-directory MCP server factory. Added workflow coverage for init, guide CLI, backlog import, and MCP instructions/resource; updated role-only guide callers. Verified with make format and make check (577 test suites, Node tests), plus diff --check. Committed as 66225bd (Task: TASK-332). Ready for independent review.
@@ -59,3 +65,5 @@ Implemented workflow-specific managed guide blocks and per-directory MCP server 
 - 2026-11-14T20:01:28Z vivid-pearl-urchin: wrote the plan
 - 2026-11-14T20:04:41Z vivid-pearl-urchin: changed notes, summary; ticked acceptance criteria
 - 2026-11-14T20:04:41Z vivid-pearl-urchin doing → review
+- 2026-11-14T20:07:25Z calm-amber-eel: changed notes; ticked acceptance criteria
+- 2026-11-14T20:07:25Z calm-amber-eel review → done
