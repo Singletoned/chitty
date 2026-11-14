@@ -1,6 +1,6 @@
 ---
 title: Require cold reads to challenge acceptance criteria
-status: error
+status: review
 labels:
   - workflow
   - planning
@@ -57,6 +57,8 @@ fatal: Not possible to fast-forward, aborting.
 Resolve the landing problem in /Users/singletoned/src/singletoned/chitty-cold-read-sufficiency or the main checkout before retrying.
 ```
 
+Planner, 2026-11-14: the earlier review on branch `task-322` passed (its `Reviewed:` note is on the branch); only the fast-forward failed because `main` moved during the landing check. Back to `review` so `chitty run` re-checks and lands it.
+
 ## Summary
 
 Implemented in `63b7db9`. Wrote both role guides and pipeline notes directly: the fresh reader builds the simplest literal solution and reports ambiguity; the original planner examines the implementation, tests and report against each criterion and combined coverage. Sufficiency gaps need counterexamples, distinguishing verification and proposed criteria, resolved in the ticket before `todo`; a separate stronger reader remains optional. No runner changes. All three new rendered-guide tests failed first (`FAILED (failures=23)`), then passed; updated the existing outcome-reporting test for the revised wording without dropping its intent. `make format` and `make check` pass (530 Python tests plus Node tests). Fixed-text guidance has no variable-input property. Guidance tests verify instruction delivery, not actual model compliance. Committed and ready for independent review; not merged.
@@ -70,3 +72,5 @@ Implemented in `63b7db9`. Wrote both role guides and pipeline notes directly: th
 - 2026-11-13T22:42:38Z brisk-yellow-urchin doing → review
 - 2026-11-13T23:25:49Z youthful-ebony-ibis: changed notes
 - 2026-11-13T23:25:49Z youthful-ebony-ibis review → error
+- 2026-11-14T09:19:55Z jolly-silver-falcon: changed notes
+- 2026-11-14T09:19:55Z jolly-silver-falcon error → review
