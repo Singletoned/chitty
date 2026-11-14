@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: blocked
+status: doing
 labels:
   - needs-minor
 parent: TASK-275
@@ -28,6 +28,8 @@ The configuration prerequisite was completed in `c2eae4b`; the human work and re
 
 Blocked: The implementation removes Pi extension/settings handling from init and the Hypothesis regression test failed before the fix, showing extension validation, installation, and settings migration failures. After the implementation, make check still fails in legacy assertions in tests/test_cli.py and tests/test_next.py that expect init/runner setup to replace extensions; one legacy setup-failure test also expects validation to abort init. The new property test additionally hits Hypothesis’s 200 ms deadline because repeated init is slow and must configure an appropriate deadline. These are in-scope test rewrites, but need to be completed and reverified before review; no criteria are being claimed as complete.
 
+Planner, 2026-11-14: the block note lists only in-scope work (rewriting legacy init/extension assertions in `tests/test_cli.py` and `tests/test_next.py`, and giving the Hypothesis test a suitable `deadline`), not an external obstacle, so this returns to `doing`. Continue from the existing commits on `task-321`.
+
 ## History
 
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
@@ -48,3 +50,5 @@ Blocked: The implementation removes Pi extension/settings handling from init and
 - 2026-11-13T23:25:50Z jolly-indigo-otter: wrote the plan
 - 2026-11-13T23:28:40Z jolly-indigo-otter: changed notes
 - 2026-11-13T23:28:40Z jolly-indigo-otter doing → blocked
+- 2026-11-14T09:21:01Z jolly-silver-falcon: changed notes
+- 2026-11-14T09:21:01Z jolly-silver-falcon blocked → doing
