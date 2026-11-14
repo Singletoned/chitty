@@ -1,8 +1,9 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: review
+status: blocked
 labels:
   - needs-minor
+owner: human
 depends_on:
   - TASK-329
 parent: TASK-275
@@ -15,8 +16,8 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 
 ## Acceptance Criteria
 
-- [x] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
-- [x] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
+- [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
+- [ ] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
 ## Plan
 
@@ -473,6 +474,10 @@ Review failed (tests): Add generated or explicit valid settings examples contain
 
 Added an explicit valid-JSON regression case for exposeSessionEnvironment=true. Unlike arbitrary binary settings, this isolates the settings assertion from extension installation; focused test passes, and make format && make check passes (549 Python tests and Node tests). The prior implementation called remove_pi_session_environment() from init; the targeted test now directly guards against that migration.
 
+Review failed (integration): Verification requires a test scratch location outside the worktree, which this review explicitly forbids. Please provide an isolated in-worktree test environment or authorize an external temporary directory before resuming review. This is an environment limitation, not a demonstrated implementation defect.
+1: fail - The earlier review reported missing isolated migration coverage; the new explicit valid-settings test addresses its shape, but could not be verified. With TMPDIR set inside the worktree, make check printed ChittyError: chitty init cannot run in linked worktree for both isolation tests, so neither current behavior nor failure against the old implementation was established.
+2: fail - Documentation in src/chitty/roles/setup.md describes manual inspection, removal and restart. make format passed, but make check with in-worktree TMPDIR printed FAILED (failures=46, errors=2): temporary repositories inherit the enclosing worktree and project configuration. Therefore the required passing check is unverified.
+
 ## Summary
 
 Init no longer manages Pi extensions or settings; bundled extension retained. Added explicit valid-settings isolation regression coverage alongside Hypothesis variation and documented manual cleanup/restart. Verified focused test and make format && make check (549 Python tests and Node tests). Changes committed as 3c3153d. No follow-up.
@@ -511,3 +516,5 @@ Init no longer manages Pi extensions or settings; bundled extension retained. Ad
 - 2026-11-14T19:51:03Z friendly-amber-falcon review → doing
 - 2026-11-14T19:58:43Z witty-indigo-urchin: changed notes, summary; ticked acceptance criteria
 - 2026-11-14T19:58:43Z witty-indigo-urchin doing → review
+- 2026-11-14T20:02:42Z plucky-fawn-quail: changed owner, acceptance criteria, notes
+- 2026-11-14T20:02:42Z plucky-fawn-quail review → blocked
