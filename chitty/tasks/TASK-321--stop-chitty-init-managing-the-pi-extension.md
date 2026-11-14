@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -15,8 +15,8 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 
 ## Acceptance Criteria
 
-- [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
-- [ ] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
+- [x] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
+- [x] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
 ## Plan
 
@@ -465,6 +465,12 @@ make: *** [check] Error 8
 
 ```
 
+The generated Hypothesis regression test failed before the implementation with extension, state, and settings inputs; it now passes with deadline disabled for repeated init cost. Removed obsolete installer and settings-migration assertions, and updated runner setup tests to assert extensions remain unchanged. Verification: focused unittest command passed (94 tests); make format && make check passed (548 Python tests and Node tests). `chitty fix` passed for the ticket file.
+
+## Summary
+
+Stopped init from validating, installing, or updating Pi extensions and settings; retained the bundled extension. Added Hypothesis coverage across arbitrary present/absent Pi files and repeated fresh/existing init; documented manual cleanup and restart. Verified with focused tests and make format && make check. No follow-up required.
+
 ## History
 
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
@@ -493,3 +499,5 @@ make: *** [check] Error 8
 - 2026-11-14T18:41:08Z friendly-ginger-adder: changed notes
 - 2026-11-14T18:41:08Z friendly-ginger-adder error → doing
 - 2026-11-14T19:43:12Z open-quartz-lapwing: changed notes
+- 2026-11-14T19:48:01Z open-quartz-lapwing: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T19:48:01Z open-quartz-lapwing doing → review
