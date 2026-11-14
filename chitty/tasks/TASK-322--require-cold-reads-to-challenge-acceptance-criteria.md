@@ -1,6 +1,6 @@
 ---
 title: Require cold reads to challenge acceptance criteria
-status: done
+status: review
 labels:
   - workflow
   - planning
@@ -26,11 +26,38 @@ Write the agreed guidance myself. Keep literal implementation and ambiguity repo
 
 ## Notes
 
-Reviewed: Independent review of guidance, design notes and rendered-guide tests; no runner changes.
-1: pass - `python -m unittest tests.test_guide_cold_read_sufficiency` ran 3 tests and printed OK; the fresh-reader test checks literal implementation, individual ambiguity and reporting instructions.
-2: pass - The same test run printed OK; the planner test checks individual and combined coverage, counterexamples, inputs or state, distinguishing results and proposed wording.
-3: pass - The same test run printed OK; the readiness test checks resolution before todo, ticket requirements, another read for serious findings and the optional stronger reader.
-4: pass - With both role files from `63b7db9^` in an isolated package, the same test ran 3 tests and printed FAILED (failures=23); with current guidance it printed OK. Pipeline notes match the guidance. `make format && make check` passed: 530 Python tests printed OK and Node tests passed.
+Runner error (landing): `git merge --ff-only task-322` failed in /Users/singletoned/src/singletoned/chitty:
+hint: Diverging branches can't be fast-forwarded, you need to either:
+hint:
+hint: 	git merge --no-ff
+hint:
+hint: or:
+hint:
+hint: 	git rebase
+hint:
+hint: Disable this message with "git config set advice.diverging false"
+fatal: Not possible to fast-forward, aborting.
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty-cold-read-sufficiency or the main checkout before retrying.
+
+Worktree: `/Users/singletoned/src/singletoned/chitty-cold-read-sufficiency`
+
+Error output:
+```text
+`git merge --ff-only task-322` failed in /Users/singletoned/src/singletoned/chitty:
+hint: Diverging branches can't be fast-forwarded, you need to either:
+hint:
+hint: 	git merge --no-ff
+hint:
+hint: or:
+hint:
+hint: 	git rebase
+hint:
+hint: Disable this message with "git config set advice.diverging false"
+fatal: Not possible to fast-forward, aborting.
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty-cold-read-sufficiency or the main checkout before retrying.
+```
+
+Planner, 2026-11-14: the earlier review on branch `task-322` passed (its `Reviewed:` note is on the branch); only the fast-forward failed because `main` moved during the landing check. Back to `review` so `chitty run` re-checks and lands it.
 
 ## Summary
 
@@ -43,5 +70,7 @@ Implemented in `63b7db9`. Wrote both role guides and pipeline notes directly: th
 - 2026-11-13T22:39:36Z brisk-yellow-urchin backlog → doing
 - 2026-11-13T22:42:38Z brisk-yellow-urchin: changed summary; ticked acceptance criteria
 - 2026-11-13T22:42:38Z brisk-yellow-urchin doing → review
-- 2026-11-13T23:24:30Z youthful-ebony-ibis: changed notes; ticked acceptance criteria
-- 2026-11-13T23:24:30Z youthful-ebony-ibis review → done
+- 2026-11-13T23:25:49Z youthful-ebony-ibis: changed notes
+- 2026-11-13T23:25:49Z youthful-ebony-ibis review → error
+- 2026-11-14T09:19:55Z jolly-silver-falcon: changed notes
+- 2026-11-14T09:19:55Z jolly-silver-falcon error → review
