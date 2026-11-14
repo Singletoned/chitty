@@ -1,6 +1,6 @@
 ---
 title: Start the agent when the pre-session check fails on a doing or error ticket
-status: planning
+status: cold-read
 labels:
   - bug
   - runner
@@ -39,3 +39,4 @@ Tests go in `tests/test_next.py`, using its fake `pi` pattern and a check script
 - 2026-11-14T11:33:26Z jolly-silver-falcon planning → cold-read
 - 2026-11-14T11:37:56Z jolly-silver-falcon: changed description, acceptance criteria
 - 2026-11-14T11:37:56Z jolly-silver-falcon cold-read → planning
+- 2026-11-14T11:38:10Z jolly-silver-falcon planning → cold-read
