@@ -1,6 +1,6 @@
 ---
 title: Hide run and next under the tickets workflow
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -44,3 +44,4 @@ Cold read starting point: `refs/cold-read/TASK-333/1` (on top of TASK-332's read
 - 2026-11-14T19:21:54Z friendly-ginger-adder cold-read → planning
 - 2026-11-14T19:21:57Z friendly-ginger-adder: changed owner
 - 2026-11-14T19:21:57Z friendly-ginger-adder planning → todo
+- 2026-11-14T20:18:54Z jolly-indigo-vole todo → doing
