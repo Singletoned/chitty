@@ -339,6 +339,132 @@ Planner, 2026-11-14: this `error` comes from the pre-session check failing on un
 
 Planner, 2026-11-14: TASK-329 has landed, so a failing pre-session check on a `doing` ticket now adds a note and starts the agent. Returned from `error` to `doing` so the normal runner resumes it; the earlier uncommitted work in `.worktrees/task-321` (`src/chitty/roles/setup.md`, `src/chitty/store.py`, `tests/test_init_pi_isolation.py`) is the implementation so far.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+478 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 553 test suites (553 total tests) across 16 workers
+........................................................................................................F..............................F.....E........F...FF...............................................................................................................................................................................................................━━━━ chitty run · 19:42:41 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+...................F..F.......................................................................Running check in /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp2ywn3ejh...
+........................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+....../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/CLAUDE.md
+..Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/.worktrees/task-1...
+................................TASK-1: doing → review
+........chitty 0.1.31 is out: run uv tool upgrade chitty
+....no next ticket for --mode work
+.....................landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_init_keeps_a_newer_pi_extension_and_finishes_setup (tests.test_cli.TestInit.test_init_keeps_a_newer_pi_extension_and_finishes_setup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 378, in test_init_keeps_a_newer_pi_extension_and_finishes_setup
+    original = extension.read_bytes()
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_abc.py", line 625, in read_bytes
+    with self.open(mode='rb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpprbgjhp4/pi-agent/extensions/chitty.ts'
+
+======================================================================
+test_init_removes_ineffective_pi_session_environment_setting (tests.test_cli.TestIdentity.test_init_removes_ineffective_pi_session_environment_setting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 2158, in test_init_removes_ineffective_pi_session_environment_setting
+    self.assertIn(f"updated {settings}", result.stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/home/.pi/agent/settings.json' not found in 'updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty.toml\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty/tasks\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty/human\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty/backlog\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/data/chitty/inbox/repo\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/.gitignore\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/AGENTS.md\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/CLAUDE.md\n'
+
+======================================================================
+test_init_failure_leaves_setup_files_unchanged (tests.test_cli.TestInit.test_init_failure_leaves_setup_files_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 405, in test_init_failure_leaves_setup_files_unchanged
+    result = self.run_cli("init", exit_code=1)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 90, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty.toml
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty/tasks
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty/human
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty/backlog
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/data/chitty/inbox/repo
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/.gitignore
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/AGENTS.md
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/CLAUDE.md
+
+
+======================================================================
+test_init_installs_pi_extension_from_subdirectory_and_outside_git (tests.test_cli.TestInit.test_init_installs_pi_extension_from_subdirectory_and_outside_git) (directory=PosixPath('/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxk05z4j4/repo/subdirectory'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 467, in test_init_installs_pi_extension_from_subdirectory_and_outside_git
+    self.assertNotEqual(extension.read_bytes(), previous_extension)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'subdirectory' == b'subdirectory'
+
+======================================================================
+test_init_installs_pi_extension_from_subdirectory_and_outside_git (tests.test_cli.TestInit.test_init_installs_pi_extension_from_subdirectory_and_outside_git) (directory=PosixPath('/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxk05z4j4/outside-git'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 467, in test_init_installs_pi_extension_from_subdirectory_and_outside_git
+    self.assertNotEqual(extension.read_bytes(), previous_extension)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'outside-git' == b'outside-git'
+
+======================================================================
+test_init_replaces_a_tracked_pi_extension (tests.test_cli.TestInit.test_init_replaces_a_tracked_pi_extension)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 370, in test_init_replaces_a_tracked_pi_extension
+    self.assertNotEqual(extension.read_bytes(), previous_source)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'previous Chitty extension' == b'previous Chitty extension'
+
+======================================================================
+test_run_refreshes_setup_before_starting_pi (tests.test_next.TestNext.test_run_refreshes_setup_before_starting_pi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_next.py", line 982, in test_run_refreshes_setup_before_starting_pi
+    self.assertNotEqual(extension.read_text(), "old extension")
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'old extension' == 'old extension'
+
+======================================================================
+test_run_replaces_an_outdated_extension_before_starting_pi (tests.test_next.TestNext.test_run_replaces_an_outdated_extension_before_starting_pi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_next.py", line 1043, in test_run_replaces_an_outdated_extension_before_starting_pi
+    self.assertNotEqual(seen.read_bytes(), b"old extension")
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'old extension' == b'old extension'
+
+----------------------------------------------------------------------
+Ran 553 tests in 41.442s
+
+FAILED (failures=7, errors=1)
+make: *** [check] Error 8
+
+```
+
 ## History
 
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
@@ -366,3 +492,4 @@ Planner, 2026-11-14: TASK-329 has landed, so a failing pre-session check on a `d
 - 2026-11-14T11:43:09Z jolly-silver-falcon: changed dependencies, notes
 - 2026-11-14T18:41:08Z friendly-ginger-adder: changed notes
 - 2026-11-14T18:41:08Z friendly-ginger-adder error → doing
+- 2026-11-14T19:43:12Z open-quartz-lapwing: changed notes
