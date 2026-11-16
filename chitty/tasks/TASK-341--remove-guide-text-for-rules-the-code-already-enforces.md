@@ -1,6 +1,6 @@
 ---
 title: Remove guide text for rules the code already enforces
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -17,3 +17,4 @@ Retro 2026-11-16: the role guides total about 4100 words and reach every reposit
 - 2026-11-16T10:38:31Z intrepid-coral-raven backlog → planning
 - 2026-11-16T10:50:29Z intrepid-coral-raven: changed description
 - 2026-11-16T16:48:10Z open-russet-eel: changed labels, owner
+- 2026-11-16T16:48:25Z open-russet-eel planning → todo
