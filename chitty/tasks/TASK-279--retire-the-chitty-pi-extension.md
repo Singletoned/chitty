@@ -19,6 +19,10 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 - [ ] The bundled extension and its extension-only tests are removed; current generated examples and guidance use `{prompt}` without extension flags. A generated-example regression test fails before the change.
 - [ ] A fake `chitty run` agent and its child inherit the same `CHITTY_ACTOR`; demonstrate the test catches removal of runner actor propagation by mutation. `make check` passes.
 
+## Plan
+
+Add regression coverage first for generated agent examples and CHITTY_ACTOR inheritance through a fake run agent/child, verifying the tests fail against current behavior (including mutation of actor propagation). Then remove the bundled Pi extension and extension-only tests, update current setup guidance/examples to {prompt} commands, and remove extension-specific CLI startup behavior/tests while retaining unrelated Node/Prettier tooling. Run make format and make check, inspect the diff, commit implementation changes with Task: TASK-279, and report verified criteria.
+
 ## Notes
 
 Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prerequisites; inspect with `git show refs/cold-read/TASK-279/1:<path>`. Check against the current criteria; do not trust it. The ref includes trial prerequisite commits.
@@ -52,3 +56,4 @@ The extension-based repository command was removed in `c2eae4b`; the human trial
 - 2026-11-13T22:52:01Z mellow-umber-lapwing planning → todo
 - 2026-11-13T23:23:50Z mellow-umber-lapwing: changed dependencies, notes
 - 2026-11-16T11:02:33Z intrepid-maroon-kestrel todo → doing
+- 2026-11-16T11:02:49Z intrepid-maroon-kestrel: wrote the plan
