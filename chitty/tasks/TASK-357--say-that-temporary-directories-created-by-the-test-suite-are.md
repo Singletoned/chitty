@@ -1,6 +1,6 @@
 ---
 title: Say that temporary directories created by the test suite are allowed
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -16,3 +16,4 @@ Stopgap until agents run in containers (`docs/plan/direction.md`, 2026-11-16): k
 
 - 2026-11-16T10:29:27Z intrepid-coral-raven → backlog
 - 2026-11-16T10:37:05Z intrepid-coral-raven: changed notes
+- 2026-11-16T10:38:58Z intrepid-coral-raven backlog → planning
