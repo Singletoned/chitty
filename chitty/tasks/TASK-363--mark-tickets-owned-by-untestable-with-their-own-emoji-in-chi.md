@@ -1,6 +1,7 @@
 ---
 title: Mark tickets owned by `untestable` with their own emoji in `chitty list`
-status: planning
+status: cold-read
+owner: open-russet-eel
 created: 2026-11-16
 ---
 
@@ -22,3 +23,5 @@ Out of scope: keying anything on the `untestable` label, and changing what `chit
 ## History
 
 - 2026-11-16T16:48:55Z open-russet-eel → planning
+- 2026-11-16T16:49:07Z open-russet-eel: changed owner
+- 2026-11-16T16:49:07Z open-russet-eel planning → cold-read
