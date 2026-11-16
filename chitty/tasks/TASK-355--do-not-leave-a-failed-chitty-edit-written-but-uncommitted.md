@@ -16,7 +16,7 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 
 ## Acceptance Criteria
 
-- [ ] Hypothesis property in `tests/test_property_refused_write.py`, against one real repository holding `TASK-1` and `TASK-2` with `TASK-2` depending on `TASK-1`: draw an edit of `TASK-1` that the post-write check refuses (one of: depends on itself, depends on `TASK-2` making a cycle, parent itself), combined with optional generated `--note` text and an optional generated new title. `Repo.edit` raises `ChittyError` containing `cannot finalize task write`; afterwards `git status --porcelain` is empty and every file under `chitty/` has the same bytes as before. Use `max_examples` of at least 25 and `deadline=None`. Fails before the change.
+- [ ] Hypothesis property in `tests/test_property_refused_write.py`, against one real repository holding `TASK-1` and `TASK-2` with `TASK-2` depending on `TASK-1`: draw an edit of `TASK-1` that the post-write check refuses (one of: depends on itself, depends on `TASK-2` making a cycle, parent itself), combined with optional generated `--note` text and an optional generated new title. `Repo.edit` raises `ChittyError` containing `cannot finalize task write`; afterwards `git status --porcelain` is empty and every file under `chitty/` has the same bytes as before. Use `max_examples` of at least 25 and `deadline=None`. Fails before the change. `make check` passes.
 
 ## History
 
@@ -24,3 +24,4 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 - 2026-11-16T10:38:55Z intrepid-coral-raven backlog → planning
 - 2026-11-16T16:56:28Z open-russet-eel: changed description, acceptance criteria
 - 2026-11-16T16:56:39Z open-russet-eel: changed description, acceptance criteria
+- 2026-11-16T16:56:42Z open-russet-eel: changed acceptance criteria
