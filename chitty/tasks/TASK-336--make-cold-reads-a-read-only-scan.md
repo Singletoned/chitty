@@ -1,6 +1,6 @@
 ---
 title: Make cold reads a read-only scan
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -25,13 +25,21 @@ No property tests: this is fixed guide text with no input. Phrase checks on the 
 
 ## Acceptance Criteria
 
-- [ ] Flattened `guide("cold-read")` contains `Run no Chitty writes`, `no worktree, branch, ref, commit or file change`, `Try behaviour rather than assume`, and the report items `What done means`, `would change`, `Ambiguities`, `Missed properties`, `Unverified behaviour`, `Wrong claims` and `the exact wording to change`. It contains none of: `worktree add`, `worktree remove`, `update-ref`, `refs/cold-read`, `implement it`, `Implement the simplest`, `mutant`, `failed before the fix`, `UV_PROJECT_ENVIRONMENT`, `Commit your work`, `nothing to run`. A test in `tests/test_guide_read_only_cold_read.py` checks each phrase as a subtest and fails before the change.
-- [ ] Flattened `guide("plan")` contains `one read-only cold read`, `cheap model`, `expected route`, `NotImplementedError`, `a plausible minimal implementation` and `must fail without the fix`, and none of: `mutant`, `A read that only probed`, `until a read finds none`, `Repeat the cold read`, `implementing`, `throwaway worktree`, `with and without the fix`, `refs/cold-read`, `possible starting point`. Tested in `tests/test_guide_read_only_cold_read.py`; the test fails before the change.
-- [ ] The Cold read section of `docs/plan/pipeline-and-feedback.md` (from `## Cold read` to the next `##`) contains `read-only` and none of `refs/cold-read`, `mutant`, `worktree`, `implementing`; tested in the same file. No assertion in `tests/` requires text this ticket removes. `make check` passes.
+- [x] Flattened `guide("cold-read")` contains `Run no Chitty writes`, `no worktree, branch, ref, commit or file change`, `Try behaviour rather than assume`, and the report items `What done means`, `would change`, `Ambiguities`, `Missed properties`, `Unverified behaviour`, `Wrong claims` and `the exact wording to change`. It contains none of: `worktree add`, `worktree remove`, `update-ref`, `refs/cold-read`, `implement it`, `Implement the simplest`, `mutant`, `failed before the fix`, `UV_PROJECT_ENVIRONMENT`, `Commit your work`, `nothing to run`. A test in `tests/test_guide_read_only_cold_read.py` checks each phrase as a subtest and fails before the change.
+- [x] Flattened `guide("plan")` contains `one read-only cold read`, `cheap model`, `expected route`, `NotImplementedError`, `a plausible minimal implementation` and `must fail without the fix`, and none of: `mutant`, `A read that only probed`, `until a read finds none`, `Repeat the cold read`, `implementing`, `throwaway worktree`, `with and without the fix`, `refs/cold-read`, `possible starting point`. Tested in `tests/test_guide_read_only_cold_read.py`; the test fails before the change.
+- [x] The Cold read section of `docs/plan/pipeline-and-feedback.md` (from `## Cold read` to the next `##`) contains `read-only` and none of `refs/cold-read`, `mutant`, `worktree`, `implementing`; tested in the same file. No assertion in `tests/` requires text this ticket removes. `make check` passes.
 
 ## Plan
 
 Rewrite the cold-read and plan guides plus the pipeline design section to describe one read-only pass, preserving the planner sufficiency read and existing optional stronger reader. Update the specifically named guide tests and add tests/test_guide_read_only_cold_read.py with flattened phrase assertions. First run the new focused test against current text to confirm it fails, then implement, format/check, inspect status and diff, commit implementation files with Task: TASK-336, and verify every criterion before recording the ticket note and moving to review.
+
+## Notes
+
+Verification: the new read-only guide test failed before the guide rewrite (24 failures, including forbidden legacy phrases); after the fix, `make check` passed with `Ran 577 tests in 19.721s` and `OK`. `chitty fix` reported only pre-existing warnings in unrelated task files and made no changes. The full suite emits an expected fixture error about incomplete `autocommit` configuration, but the suite still passes.
+
+## Summary
+
+Implemented one read-only cold read across the cold-read and plan guides and pipeline design, with updated phrase tests and new regression coverage. Handoff: review commit `989a26a`. Verification: `make format && make check` passes; working tree is clean. Follow-up: none.
 
 ## History
 
@@ -47,3 +55,5 @@ Rewrite the cold-read and plan guides plus the pipeline design section to descri
 - 2026-11-16T12:54:40Z open-russet-eel planning → todo
 - 2026-11-16T12:55:40Z tidy-white-kestrel todo → doing
 - 2026-11-16T12:55:53Z tidy-white-kestrel: wrote the plan
+- 2026-11-16T13:01:25Z tidy-white-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-16T13:01:25Z tidy-white-kestrel doing → review
