@@ -1,6 +1,6 @@
 ---
 title: Hide run and next under the tickets workflow
-status: error
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -415,6 +415,8 @@ make: *** [check] Error 9
 ```
 ````
 
+Landing failed after merging `main`: `TASK-335` (`e9d3db0`) pinned `workflow = "runner"` in `tests.support.CONFIG`, and this branch added a second `workflow` line in `tests/test_workflow_commands.py` and `tests/test_next.py`, so the fixture became invalid TOML (8 failures, 1 error, reproduced in the worktree). Fixed in the branch by the human session: `config_with` now replaces the pinned line, and the now-redundant `test_next.py` change is dropped. `make check` passes. Ready for an independent review.
+
 ## Summary
 
 Implemented and committed as f2b6bb9 (Task: TASK-333). Tickets workflow commands now refuse before option parsing, with coverage for arguments and --help. Verified with focused workflow tests and make format && make check (584 Python tests and Node tests). No follow-ups.
@@ -442,3 +444,5 @@ Implemented and committed as f2b6bb9 (Task: TASK-333). Tickets workflow commands
 - 2026-11-14T20:38:06Z rosy-silver-marten doing → review
 - 2026-11-14T20:39:41Z daring-zinc-newt: changed notes
 - 2026-11-14T20:39:41Z daring-zinc-newt review → error
+- 2026-11-16T10:27:43Z intrepid-coral-raven: changed notes
+- 2026-11-16T10:27:43Z intrepid-coral-raven error → review
