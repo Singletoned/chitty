@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: review
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -479,6 +479,8 @@ Review failed (integration): Verification requires a test scratch location outsi
 
 Human session, 2026-11-16: the last review failure was not a defect. The guide rule to keep scratch files inside the worktree does not cover temporary directories the test suite itself creates under the system temp dir; those are fine. Setting `TMPDIR` inside the worktree nests the test repositories inside this git worktree, which is what produced the 46 failures and the linked-worktree `chitty init` refusal. Review again with the normal `make check`.
 
+Review failed (integration): merging `main` conflicts in `src/chitty/store.py`.
+
 ## Summary
 
 Init no longer manages Pi extensions or settings; bundled extension retained. Added explicit valid-settings isolation regression coverage alongside Hypothesis variation and documented manual cleanup/restart. Verified focused test and make format && make check (549 Python tests and Node tests). Changes committed as 3c3153d. No follow-up.
@@ -521,3 +523,5 @@ Init no longer manages Pi extensions or settings; bundled extension retained. Ad
 - 2026-11-14T20:02:42Z plucky-fawn-quail review → blocked
 - 2026-11-16T10:28:17Z intrepid-coral-raven: changed owner, notes
 - 2026-11-16T10:28:17Z intrepid-coral-raven blocked → review
+- 2026-11-16T10:29:08Z able-khaki-raven: changed notes
+- 2026-11-16T10:29:08Z able-khaki-raven review → doing
