@@ -1,6 +1,6 @@
 ---
 title: Show referenced tickets when promoting a ticket to todo
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T10:00:02Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:46Z intrepid-coral-raven backlog → planning
