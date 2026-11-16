@@ -1,13 +1,13 @@
 ---
-title: Run an occasional audit of `main` that suggests tickets
+title: Run an occasional audit of `main` that writes reports for planning
 status: backlog
 created: 2026-11-11
 ---
 
 ## Description
 
-- An occasional pass on `main`, run by hand, turns security and test-quality findings into suggestions in this repository's inbox, for the planner to triage.
-- Scanners live in taidy (`taidy security`, suggested 2026-11-11). `make audit` (TASK-291) turns its findings into suggestions, skipping any whose title is already a ticket.
+- An occasional pass on `main`, run by hand, writes security and test-quality reports for a planner to read and turn into tickets.
+- Scanners live in taidy (`taidy security`, suggested 2026-11-11). `make audit` (TASK-291) writes its findings to a report.
 - Mutation testing is a separate `make mutate`, run overnight (TASK-295).
 
 ## History
@@ -18,3 +18,5 @@ created: 2026-11-11
 - 2026-11-11T18:50:48Z vivid-yellowhammer: changed notes
 - 2026-11-11T18:50:55Z vivid-yellowhammer: changed title
 - 2026-11-11T18:59:41Z vivid-yellowhammer: replaced notes; changed description
+- 2026-11-16T10:29:03Z intrepid-coral-raven: changed description
+- 2026-11-16T10:29:23Z intrepid-coral-raven: changed title

@@ -20,3 +20,11 @@ python3 scripts/pi_tokens.py ~/.pi/agent/sessions/*chitty*
 Billing totals are exact. Splits within a call are estimated from characters,
 then scaled to that call's exact total. Model calls that Pi does not log, such
 as observational memory's, are not counted.
+
+# Retro numbers
+
+`python3 scripts/retro.py REPO [REPO ...]` prints, per ISO week, reviews passed
+and failed, first-review pass rates with and without a cold read, `chitty run`
+sessions and hours, and the share of Chitty autocommits; then failure causes
+and the tickets that failed review most often. It reads ticket files, `git log`
+and the machine-local usage log, and changes nothing.

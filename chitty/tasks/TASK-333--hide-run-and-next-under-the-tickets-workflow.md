@@ -44,6 +44,379 @@ Review failed (tests): Add coverage for the missing command cases and make the t
 
 Fixed tickets workflow refusals to raise during command resolution, before Click parses options or handles --help. Expanded tests for argument/help invocations and command execution in runner and no-config contexts. Verified: focused workflow tests and make format && make check pass (584 Python tests and Node tests). The requested regression test was not run before the fix in this revision; prior review evidence reports the original defect. No follow-ups.
 
+Runner error (check): check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+482 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 585 test suites (585 total tests) across 16 workers
+...................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 20:39:10 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+......................F.......................................................................Running check in /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp88qpzu01...
+.......................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+......./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/CLAUDE.md
+..Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/.worktrees/task-1...
+..............................TASK-1: doing → review
+..........chitty 0.1.31 is out: run uv tool upgrade chitty
+...no next ticket for --mode work
+........E...FFFFFFF...............landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_mcp_next_follows_workflow (tests.test_workflow_commands.TestWorkflowCommands.test_mcp_next_follows_workflow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 92, in test_mcp_next_follows_workflow
+    self.assertNotIn("next", tool_names(self.root))
+                             ~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 28, in tool_names
+    return {tool.name for tool in asyncio.run(create_server(start).list_tools())}
+                                              ~~~~~~~~~~~~~^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/src/chitty/mcp.py", line 74, in create_server
+    text = repository_guide(start_dir)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/src/chitty/store.py", line 1050, in repository_guide
+    workflow = "runner" if root is None else load_repo_config(root).workflow
+                                             ~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/src/chitty/config.py", line 230, in load_repo_config
+    raise ChittyError(f"{source}: invalid TOML: {error}") from None
+chitty.errors.ChittyError: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuk_s0yx9/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)
+
+======================================================================
+test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty (tests.test_next.TestNext.test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_next.py", line 1057, in test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty
+    self.run_cli("init")
+    ~~~~~~~~~~~~^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_cli.py", line 90, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjba2nd66/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)
+
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['run'], command='run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty run needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['run', '--json'], command='run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty run needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['run', '--help'], command='run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 50, in test_tickets_commands_refuse
+    self.assertEqual(result.exit_code, 1, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : Usage: cli run [OPTIONS]
+
+  Run the next ticket, or the one named by --ticket; other arguments go to the
+  agent.
+
+Options:
+  --ticket ID           Run the next ticket, or the one named by --ticket.
+  --owner TEXT          Choose tickets owned by this agent.
+  --agent NAME          Use the named command from [agent_commands].
+  --errors              Repair error tickets only.
+  --loop                Keep running; wait 60 seconds between attempts,
+                        including when idle. Stop on errors.
+  --mode [work|review]  Choose only tickets to work (doing, todo) or review.
+                        Repeat to allow both.
+  --help                Show this message and exit.
+
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['next'], command='next')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty next needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['next', '--json'], command='next')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty next needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['next', '--help'], command='next')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 50, in test_tickets_commands_refuse
+    self.assertEqual(result.exit_code, 1, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : Usage: cli next [OPTIONS]
+
+  Print the next ticket to work or review.
+
+Options:
+  --owner TEXT          Choose tickets owned by this agent.
+  --mode [work|review]  Choose only tickets to work (doing, todo) or review.
+                        Repeat to allow both.
+  --json                Print JSON.
+  --help                Show this message and exit.
+
+
+======================================================================
+test_tickets_help_hides_run_and_next (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_help_hides_run_and_next)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 38, in test_tickets_help_hides_run_and_next
+    self.assertNotIn("run", commands)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 'run' unexpectedly found in {'fix', 'suggest', 'path', 'Markdown-native', 'show', 'next', 'mcp', 'pull', 'renumber', 'check', '--help', 'Tasks', 'init', 'list', 'archive', 'guide', 'Coding', 'move', 'run', 'inbox', '--version', 'TASK-13);', 'edit', 'whoami', 'note', 'add', 'import'}
+
+----------------------------------------------------------------------
+Ran 585 tests in 40.580s
+
+FAILED (failures=8, errors=1)
+make: *** [check] Error 9
+
+```
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-333`
+
+Error output:
+````text
+check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+482 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 585 test suites (585 total tests) across 16 workers
+...................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 20:39:10 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+......................F.......................................................................Running check in /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp88qpzu01...
+.......................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+......./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/CLAUDE.md
+..Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj712ieeu/repo/.worktrees/task-1...
+..............................TASK-1: doing → review
+..........chitty 0.1.31 is out: run uv tool upgrade chitty
+...no next ticket for --mode work
+........E...FFFFFFF...............landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_mcp_next_follows_workflow (tests.test_workflow_commands.TestWorkflowCommands.test_mcp_next_follows_workflow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 92, in test_mcp_next_follows_workflow
+    self.assertNotIn("next", tool_names(self.root))
+                             ~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 28, in tool_names
+    return {tool.name for tool in asyncio.run(create_server(start).list_tools())}
+                                              ~~~~~~~~~~~~~^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/src/chitty/mcp.py", line 74, in create_server
+    text = repository_guide(start_dir)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/src/chitty/store.py", line 1050, in repository_guide
+    workflow = "runner" if root is None else load_repo_config(root).workflow
+                                             ~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/src/chitty/config.py", line 230, in load_repo_config
+    raise ChittyError(f"{source}: invalid TOML: {error}") from None
+chitty.errors.ChittyError: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuk_s0yx9/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)
+
+======================================================================
+test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty (tests.test_next.TestNext.test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_next.py", line 1057, in test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty
+    self.run_cli("init")
+    ~~~~~~~~~~~~^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_cli.py", line 90, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjba2nd66/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)
+
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['run'], command='run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty run needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['run', '--json'], command='run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty run needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['run', '--help'], command='run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 50, in test_tickets_commands_refuse
+    self.assertEqual(result.exit_code, 1, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : Usage: cli run [OPTIONS]
+
+  Run the next ticket, or the one named by --ticket; other arguments go to the
+  agent.
+
+Options:
+  --ticket ID           Run the next ticket, or the one named by --ticket.
+  --owner TEXT          Choose tickets owned by this agent.
+  --agent NAME          Use the named command from [agent_commands].
+  --errors              Repair error tickets only.
+  --loop                Keep running; wait 60 seconds between attempts,
+                        including when idle. Stop on errors.
+  --mode [work|review]  Choose only tickets to work (doing, todo) or review.
+                        Repeat to allow both.
+  --help                Show this message and exit.
+
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['next'], command='next')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty next needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['next', '--json'], command='next')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 51, in test_tickets_commands_refuse
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        f'chitty {command} needs workflow = "runner" in the Chitty config',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        result.stderr,
+        ^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'chitty next needs workflow = "runner" in the Chitty config' not found in 'Error: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9q61j6hp/repo/chitty.toml: invalid TOML: Cannot overwrite a value (at line 5, column 20)\n'
+
+======================================================================
+test_tickets_commands_refuse (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_commands_refuse) (args=['next', '--help'], command='next')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 50, in test_tickets_commands_refuse
+    self.assertEqual(result.exit_code, 1, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : Usage: cli next [OPTIONS]
+
+  Print the next ticket to work or review.
+
+Options:
+  --owner TEXT          Choose tickets owned by this agent.
+  --mode [work|review]  Choose only tickets to work (doing, todo) or review.
+                        Repeat to allow both.
+  --json                Print JSON.
+  --help                Show this message and exit.
+
+
+======================================================================
+test_tickets_help_hides_run_and_next (tests.test_workflow_commands.TestWorkflowCommands.test_tickets_help_hides_run_and_next)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-333/tests/test_workflow_commands.py", line 38, in test_tickets_help_hides_run_and_next
+    self.assertNotIn("run", commands)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 'run' unexpectedly found in {'fix', 'suggest', 'path', 'Markdown-native', 'show', 'next', 'mcp', 'pull', 'renumber', 'check', '--help', 'Tasks', 'init', 'list', 'archive', 'guide', 'Coding', 'move', 'run', 'inbox', '--version', 'TASK-13);', 'edit', 'whoami', 'note', 'add', 'import'}
+
+----------------------------------------------------------------------
+Ran 585 tests in 40.580s
+
+FAILED (failures=8, errors=1)
+make: *** [check] Error 9
+
+```
+````
+
+Landing failed after merging `main`: `TASK-335` (`e9d3db0`) pinned `workflow = "runner"` in `tests.support.CONFIG`, and this branch added a second `workflow` line in `tests/test_workflow_commands.py` and `tests/test_next.py`, so the fixture became invalid TOML (8 failures, 1 error, reproduced in the worktree). Fixed in the branch by the human session: `config_with` now replaces the pinned line, and the now-redundant `test_next.py` change is dropped. `make check` passes. Ready for an independent review.
+
 ## Summary
 
 Implemented and committed as f2b6bb9 (Task: TASK-333). Tickets workflow commands now refuse before option parsing, with coverage for arguments and --help. Verified with focused workflow tests and make format && make check (584 Python tests and Node tests). No follow-ups.
@@ -69,3 +442,7 @@ Implemented and committed as f2b6bb9 (Task: TASK-333). Tickets workflow commands
 - 2026-11-14T20:27:35Z plucky-bronze-marten review → doing
 - 2026-11-14T20:38:06Z rosy-silver-marten: changed notes, summary; ticked acceptance criteria
 - 2026-11-14T20:38:06Z rosy-silver-marten doing → review
+- 2026-11-14T20:39:41Z daring-zinc-newt: changed notes
+- 2026-11-14T20:39:41Z daring-zinc-newt review → error
+- 2026-11-16T10:27:43Z intrepid-coral-raven: changed notes
+- 2026-11-16T10:27:43Z intrepid-coral-raven error → review
