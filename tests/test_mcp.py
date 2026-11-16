@@ -1,19 +1,20 @@
 import asyncio
 import os
 import subprocess
+from pathlib import Path
 from typing import Any
 from unittest import mock
 
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
 
-from chitty.mcp import server
-from chitty.store import guide
+from chitty.mcp import create_server
+from chitty.store import repository_guide
 from tests.test_cli import CliTestCase
 
 
 def call(name: str, **arguments: Any) -> Any:
-    result = asyncio.run(server.call_tool(name, arguments))
+    result = asyncio.run(create_server(Path.cwd()).call_tool(name, arguments))
     assert isinstance(result, CallToolResult)
     content = result.structured_content
     assert content is not None
@@ -52,7 +53,7 @@ class TestMcp(CliTestCase):
         self.assertEqual(task["id"], "BACKLOG-48213907")
 
     def test_tools_mirror_the_cli(self):
-        tools = asyncio.run(server.list_tools())
+        tools = asyncio.run(create_server(Path.cwd()).list_tools())
         self.assertEqual(
             sorted(t.name for t in tools),
             sorted(
@@ -228,6 +229,7 @@ class TestMcp(CliTestCase):
             call("note", id="1", text="Blocked.")
 
     def test_guide_resource(self):
+        server = create_server(Path.cwd())
         contents = asyncio.run(server.read_resource("chitty://guide"))
-        self.assertEqual([c.content for c in contents], [guide()])  # type: ignore[union-attr]
-        self.assertEqual(server.instructions, guide())
+        self.assertEqual([c.content for c in contents], [repository_guide(Path.cwd())])  # type: ignore[union-attr]
+        self.assertEqual(server.instructions, repository_guide(Path.cwd()))

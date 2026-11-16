@@ -17,7 +17,7 @@ from mcp_types import CallToolResult
 from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
 from chitty.inbox import suggest
-from chitty.mcp import server
+from chitty.mcp import create_server
 from chitty.run import _record_usage, run_loop
 from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
@@ -259,7 +259,7 @@ class TestNext(CliTestCase):
     def test_cli_and_mcp_return_the_same_action(self):
         self.add("Todo")
         cli = self.json("next")
-        result = asyncio.run(server.call_tool("next", {}))
+        result = asyncio.run(create_server(Path.cwd()).call_tool("next", {}))
         assert isinstance(result, CallToolResult)
         content = result.structured_content
         assert content is not None
@@ -316,7 +316,7 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "")
         self.assertEqual(result.stderr, "no next ticket\n")
         with self.assertRaisesRegex(ToolError, "no next ticket"):
-            asyncio.run(server.call_tool("next", {}))
+            asyncio.run(create_server(Path.cwd()).call_tool("next", {}))
 
     def test_next_mode_selects_only_its_own_tickets(self):
         self.add("Todo")
@@ -367,7 +367,7 @@ class TestNext(CliTestCase):
             self.run_cli("next", "--owner", "opus", "--mode", "work").stdout,
             f"work {opus_todo}\n",
         )
-        result = asyncio.run(server.call_tool("next", {"owner": "opus"}))
+        result = asyncio.run(create_server(Path.cwd()).call_tool("next", {"owner": "opus"}))
         assert isinstance(result, CallToolResult)
         self.assertEqual(
             result.structured_content.get("result", result.structured_content),

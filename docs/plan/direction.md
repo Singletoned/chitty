@@ -11,3 +11,13 @@ Stated by the human on 2026-11-10:
   Tickets stay files in git; the forge is only a remote and a runner pool.
 - So design changes to work from a fresh clone that pushes to a remote, as
   well as from a local worktree. `../pithos/` has tried the container side.
+
+Stated by the human on 2026-11-16:
+
+- Once agents run in containers, one loop starts an agent for whatever ticket
+  is next, in whichever mode it needs: work, review, or repair of an `error`
+  ticket. Until then, `chitty run --errors` stays a separate, explicit run, so
+  do not add error repair to the normal loop as a stopgap.
+- Containers also replace guide rules about where agents may read and write
+  (for example "keep scratch files inside the worktree"): the sandbox
+  enforces it, and the rule can be removed from the guides.
