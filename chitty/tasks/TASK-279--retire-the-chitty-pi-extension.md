@@ -1,6 +1,6 @@
 ---
 title: Retire the Chitty Pi extension
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -51,3 +51,4 @@ The extension-based repository command was removed in `c2eae4b`; the human trial
 - 2026-11-13T22:52:01Z mellow-umber-lapwing: changed owner
 - 2026-11-13T22:52:01Z mellow-umber-lapwing planning → todo
 - 2026-11-13T23:23:50Z mellow-umber-lapwing: changed dependencies, notes
+- 2026-11-16T11:02:33Z intrepid-maroon-kestrel todo → doing
