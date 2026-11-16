@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: review
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -485,6 +485,8 @@ Reviewed: merged main cleanly; make format && make check passed (556 Python test
 1: pass - tests/test_init_pi_isolation.py varies extension, state, and settings file presence and arbitrary bytes across fresh/existing and repeated init; its pre-fix failure was recorded in the first implementation run. The added valid JSON test exercises exposeSessionEnvironment=true without depending on extension installation.
 2: pass - src/chitty/roles/setup.md instructs users to inspect/remove the extension and state file and restart Pi; make format && make check passed, including Python and Node tests.
 
+Review failed (integration): merging `main` conflicts in `src/chitty/store.py`.
+
 ## Summary
 
 Review handoff: init no longer manages Pi extensions or settings; bundled extension remains. Verified merged branch with make format && make check (556 Python tests; Node tests passed). Manual cleanup/restart guidance is documented. No follow-ups.
@@ -531,3 +533,5 @@ Review handoff: init no longer manages Pi extensions or settings; bundled extens
 - 2026-11-16T10:29:08Z able-khaki-raven review → doing
 - 2026-11-16T10:35:47Z sunny-teal-otter: changed notes, summary; ticked acceptance criteria
 - 2026-11-16T10:35:47Z sunny-teal-otter doing → review
+- 2026-11-16T10:51:40Z able-amber-gannet: changed notes
+- 2026-11-16T10:51:40Z able-amber-gannet review → doing
