@@ -1,7 +1,6 @@
 ---
 title: Make cold reads a read-only scan
-status: planning
-owner: open-russet-eel
+status: todo
 created: 2026-11-16
 ---
 
@@ -40,3 +39,5 @@ No property tests: this is fixed guide text with no input. Phrase checks on the 
 - 2026-11-16T12:51:12Z open-russet-eel planning → cold-read
 - 2026-11-16T12:54:30Z open-russet-eel: changed description, acceptance criteria
 - 2026-11-16T12:54:30Z open-russet-eel cold-read → planning
+- 2026-11-16T12:54:40Z open-russet-eel: changed owner
+- 2026-11-16T12:54:40Z open-russet-eel planning → todo
