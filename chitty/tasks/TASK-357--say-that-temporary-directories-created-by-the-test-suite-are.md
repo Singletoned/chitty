@@ -1,6 +1,9 @@
 ---
 title: Say that temporary directories created by the test suite are allowed
 status: planning
+labels:
+  - untestable
+owner: untestable
 created: 2026-11-16
 ---
 
@@ -17,3 +20,4 @@ Stopgap until agents run in containers (`docs/plan/direction.md`, 2026-11-16): k
 - 2026-11-16T10:29:27Z intrepid-coral-raven → backlog
 - 2026-11-16T10:37:05Z intrepid-coral-raven: changed notes
 - 2026-11-16T10:38:58Z intrepid-coral-raven backlog → planning
+- 2026-11-16T16:48:16Z open-russet-eel: changed labels, owner
