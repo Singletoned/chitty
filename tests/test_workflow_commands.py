@@ -14,10 +14,9 @@ from tests.test_cli import CliTestCase
 
 
 def config_with(workflow: str) -> str:
-    return CONFIG.replace(
-        'default_context = "tasks"\n',
-        f'default_context = "tasks"\nworkflow = "{workflow}"\n',
-    )
+    if 'workflow = "runner"\n' not in CONFIG:
+        raise AssertionError("tests.support.CONFIG no longer pins workflow = runner")
+    return CONFIG.replace('workflow = "runner"\n', f'workflow = "{workflow}"\n')
 
 
 def listed_commands(help_text: str) -> set[str]:

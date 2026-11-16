@@ -1046,9 +1046,7 @@ class TestNext(CliTestCase):
         self.add("Todo")
         config = self.root / "chitty.toml"
         config.write_text(
-            config.read_text()
-            .replace('default_context = "tasks"', 'default_context = "tasks"\nworkflow = "runner"')
-            .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
         )
         self.git("init", "--quiet")
         self.git("branch", "-M", "main")
