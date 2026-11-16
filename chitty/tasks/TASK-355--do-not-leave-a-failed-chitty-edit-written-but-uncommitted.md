@@ -1,6 +1,6 @@
 ---
 title: Do not leave a failed chitty edit written but uncommitted
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Seen 2026-11-16 in `.worktrees/task-318`: `chitty edit TASK-318 --depends-on TAS
 ## History
 
 - 2026-11-16T10:29:24Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:55Z intrepid-coral-raven backlog → planning
