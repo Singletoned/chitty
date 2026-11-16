@@ -1,6 +1,6 @@
 ---
 title: Retire the Chitty Pi extension
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -16,8 +16,8 @@ Remove the bundled Pi extension and its interactive commands, startup flags and 
 
 ## Acceptance Criteria
 
-- [ ] The bundled extension and its extension-only tests are removed; current generated examples and guidance use `{prompt}` without extension flags. A generated-example regression test fails before the change.
-- [ ] A fake `chitty run` agent and its child inherit the same `CHITTY_ACTOR`; demonstrate the test catches removal of runner actor propagation by mutation. `make check` passes.
+- [x] The bundled extension and its extension-only tests are removed; current generated examples and guidance use `{prompt}` without extension flags. A generated-example regression test fails before the change.
+- [x] A fake `chitty run` agent and its child inherit the same `CHITTY_ACTOR`; demonstrate the test catches removal of runner actor propagation by mutation. `make check` passes.
 
 ## Plan
 
@@ -28,6 +28,12 @@ Add regression coverage first for generated agent examples and CHITTY_ACTOR inhe
 Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prerequisites; inspect with `git show refs/cold-read/TASK-279/1:<path>`. Check against the current criteria; do not trust it. The ref includes trial prerequisite commits.
 
 The extension-based repository command was removed in `c2eae4b`; the human trials in `TASK-278` are independent of extension removal.
+
+Regression-first evidence: tests.test_pi_retirement failed before changing generated examples because the example still contained extension flags. The fake-agent actor test passed normally and failed when I temporarily removed run_actor assignment, confirming it catches lost CHITTY_ACTOR propagation. make format && make check passed: 577 Python tests, Ruff and Pyright; the extension-only Node test was removed while npm ci and pinned Prettier remain. chitty fix passed; implementation committed as 8a74ebf (Task: TASK-279).
+
+## Summary
+
+Handoff: removed the bundled Pi extension, usage writer and extension-only tests; updated generated/default setup examples, guidance and docs to use pi -p {prompt}, retaining manual cleanup guidance for existing installations. Added generated-example regression and fake-run-agent plus child-process CHITTY_ACTOR regression. Verification: generated test failed before the change; actor test failed under propagation-removal mutation; make format && make check passed (577 Python tests, Ruff, Pyright); chitty fix passed. Commit: 8a74ebf. No follow-ups.
 
 ## History
 
@@ -57,3 +63,5 @@ The extension-based repository command was removed in `c2eae4b`; the human trial
 - 2026-11-13T23:23:50Z mellow-umber-lapwing: changed dependencies, notes
 - 2026-11-16T11:02:33Z intrepid-maroon-kestrel todo → doing
 - 2026-11-16T11:02:49Z intrepid-maroon-kestrel: wrote the plan
+- 2026-11-16T11:11:55Z intrepid-maroon-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-16T11:11:55Z intrepid-maroon-kestrel doing → review
