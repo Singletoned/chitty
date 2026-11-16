@@ -1,6 +1,6 @@
 ---
 title: Have the runner block a review branch with uncommitted changes
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T09:59:54Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:36Z intrepid-coral-raven backlog → planning
