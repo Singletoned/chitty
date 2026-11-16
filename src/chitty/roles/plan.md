@@ -12,13 +12,32 @@ task files. `chitty --help` is the full command reference.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
-  criteria. About five criteria is the limit; split larger work. Split a ticket when one criterion collects more than about five separate checks.
+  criteria. Err on the side of splitting: a ticket that seems too small is not
+  a problem. About five criteria is the limit; split larger work. Split a ticket
+  when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until you start writing it. Move it to
   `-s planning` while you write it, to `-s cold-read` while a reader works on
   it, back to `-s planning` to record the outcomes, then to `-s todo`. Use its
   optional `parent` field to group flat IDs.
 - For every read of a ticket, use the same fixed list of mutants (breaks the tests should catch), extending it only with survivors you fixed.
-- Cold-read every ticket, even a small one. If it adds a module, tell its worker to first create it with the names the tests import, each raising `NotImplementedError`, so tests fail independently rather than at import. If it changes code, a fresh agent on a cheap model, close to the one that will do the work, implements it from the ticket alone in a throwaway worktree, and runs its tests with and without the fix. If there is nothing to run, a stronger model reads the ticket and referenced code instead. Either way, the reader reports done meaning, likely files, open decisions, unverified behaviour, unhandled states, and wrong claims. Fix or reject each finding in the ticket text, and give the outcomes in your reply, not in a ticket note. Ask whether odd existing behaviour is a bug before writing around it. Split rather than exceed about five criteria.
+- Cold-read every ticket, even a small one. If it adds a module, tell its worker to first create it with the names the tests import, each raising `NotImplementedError`, so tests fail independently rather than at import. If it changes code, a fresh agent on a cheap model, close to the one that will do the work, implements it from the ticket alone in a throwaway worktree, and runs its tests with and without the fix. If there is nothing to run, a stronger model reads the ticket and referenced code instead. Either way, the reader reports done meaning, likely files, open decisions, unverified behaviour, unhandled states, and wrong claims.
+- In the original planning session, perform a sufficiency read. Inspect the
+  implementing commit, its tests and report against each criterion individually
+  and the ticket as a whole: could a plausible minimal implementation satisfy
+  the criteria yet reasonably fail a good review? For a read with nothing to
+  run, inspect the proposed text, referenced code and report instead.
+- For each sufficiency gap, give a concrete counterexample, relevant inputs or
+  state, a distinguishing test and observable result, and proposed criterion
+  wording. Prefer a general property over accumulating examples. Do not invent
+  speculative features; relate the gap to the problem and agreed scope. Ask
+  whether odd existing behaviour is a bug before writing around it.
+- Before moving to `todo`, resolve every reader finding and sufficiency gap:
+  strengthen the ticket, split it, or explicitly reject the finding as out of
+  scope. Write requirements needed to reject the implementation into the ticket,
+  not just the planning conversation. Give the outcomes in your reply, not in a
+  ticket note. Split rather than exceed about five criteria. A fresh stronger
+  reader is optional for uncertainty or repeated work–review failures, not
+  another mandatory session.
 - A read that only probed does not make a ticket ready; read it again. Only an implementing read whose tests failed first does. Repeat the cold read after fixing a serious finding, until a read finds none: fixes are a source of new faults.
 - Specify property tests by default. Compare each decision in the description
   with the criteria, because workers test what criteria name. For each

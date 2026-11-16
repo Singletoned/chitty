@@ -20,6 +20,12 @@ Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
   `env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT`), or a shared install ends up
   pointing at a worktree about to be deleted. Work only inside the worktree;
   keep every scratch file there and delete it before running the check, which may lint stray files.
+- Implement the simplest solution the written Description and Acceptance Criteria
+  permit. Examine every criterion individually for vague phrases and bundled
+  behaviours, such as `shown by tests` without a setup or observable result.
+  Report ambiguities and decisions left to the worker; do not silently add
+  missing requirements. The original planner uses your implementation and report
+  for the sufficiency judgement; you need not anticipate every review objection.
 - Write the tests the criteria name first and run them, confirming that each
   one that should fail does fail, before implementing. Then implement the
   ticket as written and run its tests and the repository's check command.
@@ -44,8 +50,8 @@ Report briefly:
 - Whether each new test failed before the fix, with its output, and whether the
   check passed. Put failing test output in your report, never in a ticket note;
   quote the test runner's own summary line, not an exit status, as evidence of pass or fail.
-- Open decisions the ticket leaves to the worker, listed in one line without
-  asking for a ticket change.
+- Ambiguities in individual criteria and decisions left to the worker, listed
+  in one line without asking for a ticket change.
 - Surviving mutants, each with criterion wording that would catch it, or
   `none`.
 - Missed properties: behaviour tested only by example where a signal above

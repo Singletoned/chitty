@@ -5,7 +5,7 @@ from typing import Any
 
 from mcp_types import CallToolResult
 
-from chitty.mcp import server
+from chitty.mcp import create_server
 from chitty.store import guide
 from tests.test_cli import CliTestCase
 
@@ -13,7 +13,7 @@ REPO = Path(__file__).resolve().parents[1]
 
 
 def call(name: str, **arguments: Any) -> Any:
-    result = asyncio.run(server.call_tool(name, arguments))
+    result = asyncio.run(create_server(Path.cwd()).call_tool(name, arguments))
     assert isinstance(result, CallToolResult)
     content = result.structured_content
     assert content is not None

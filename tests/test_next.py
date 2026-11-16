@@ -17,7 +17,7 @@ from mcp_types import CallToolResult
 from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
 from chitty.inbox import suggest
-from chitty.mcp import server
+from chitty.mcp import create_server
 from chitty.run import _record_usage, run_loop
 from chitty.store import Repo, guide, next_action, ticket_action
 from tests.test_cli import CliTestCase
@@ -259,7 +259,7 @@ class TestNext(CliTestCase):
     def test_cli_and_mcp_return_the_same_action(self):
         self.add("Todo")
         cli = self.json("next")
-        result = asyncio.run(server.call_tool("next", {}))
+        result = asyncio.run(create_server(Path.cwd()).call_tool("next", {}))
         assert isinstance(result, CallToolResult)
         content = result.structured_content
         assert content is not None
@@ -316,7 +316,7 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "")
         self.assertEqual(result.stderr, "no next ticket\n")
         with self.assertRaisesRegex(ToolError, "no next ticket"):
-            asyncio.run(server.call_tool("next", {}))
+            asyncio.run(create_server(Path.cwd()).call_tool("next", {}))
 
     def test_next_mode_selects_only_its_own_tickets(self):
         self.add("Todo")
@@ -367,7 +367,7 @@ class TestNext(CliTestCase):
             self.run_cli("next", "--owner", "opus", "--mode", "work").stdout,
             f"work {opus_todo}\n",
         )
-        result = asyncio.run(server.call_tool("next", {"owner": "opus"}))
+        result = asyncio.run(create_server(Path.cwd()).call_tool("next", {"owner": "opus"}))
         assert isinstance(result, CallToolResult)
         self.assertEqual(
             result.structured_content.get("result", result.structured_content),
@@ -1394,50 +1394,93 @@ class TestNext(CliTestCase):
         self.assertIn("FAIL: test_something", notes)
         self.assertIn("# not a heading", notes)
 
-    def test_run_check_failure_on_doing_ticket_starts_agent(self):
-        config = self.root / "chitty.toml"
-        checker = self.root / "check.py"
-        checker.write_text(
-            "for number in range(1, 4): print(f'check line {number}')\nraise SystemExit(1)\n"
-        )
-        config.write_text(
-            config.read_text()
-            .replace('check = "true"', f'check = "{sys.executable} {checker}"')
+    def check_project(self, check: str) -> None:
+        """Set up a git repository whose configured check runs `check`."""
+        (self.root / "chitty.toml").write_text(
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('check = "true"', f"check = {json.dumps(check)}")
             .replace("autocommit = false", 'autocommit = true\nsetup = "true"')
         )
         self.git("init", "--quiet")
         self.git("branch", "-M", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
-        self.add("Todo")
+
+    def write_failing_checker(self) -> None:
+        checker = self.root / "check.py"
+        checker.write_text(
+            "for number in range(1, 26): print(f'check line {number}')\nraise SystemExit(1)\n"
+        )
+        self.check_project(f"{sys.executable} {checker}")
+
+    def commit_ticket(self, title: str, status: str) -> None:
+        self.add(title, status=status)
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
-        self.run_cli("edit", "TASK-1", "--status", "doing")
+
+    def test_run_check_failure_on_doing_ticket_starts_agent(self):
+        self.write_failing_checker()
+        self.commit_ticket("Doing", "doing")
         self.git("branch", "task-1")
-        fake = self.root / "bin" / "pi"
-        fake.parent.mkdir()
-        fake.write_text(
-            "#!"
-            + sys.executable
-            + "\nfrom pathlib import Path\nPath('started').write_text('yes')\n"
+        seen = self.root / "seen"
+        self.install_fake_pi(
+            "from pathlib import Path\n"
+            "import subprocess\n"
+            f"seen = Path({str(seen)!r})\n"
+            "path = next(Path('chitty/tasks').glob('*.md'))\n"
+            "seen.write_text(path.read_text())\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: review'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'review'], check=True)\n"
         )
-        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
-        previous = os.environ.get("PATH", "")
-        os.environ["PATH"] = f"{fake.parent}:{previous}"
-        try:
-            result = self.run_cli("run")
-        finally:
-            os.environ["PATH"] = previous
+        result = self.run_cli("run")
+
+        self.assertEqual(result.stdout, "TASK-1: doing → review\n", result.stderr)
+        recorded = seen.read_text()
+        self.assertIn("status: doing", recorded)
+        self.assertIn("Check failed before this session", recorded)
+        for number in range(1, 26):
+            self.assertIn(f"check line {number}\n", recorded)
+        self.assertEqual(self.json("show", "TASK-1")["status"], "review")
+
+    def test_run_check_failure_on_error_ticket_starts_repair_agent(self):
+        self.write_failing_checker()
+        self.commit_ticket("Broken", "error")
+        seen = self.root / "seen"
+        self.install_fake_pi(
+            "from pathlib import Path\n"
+            "import subprocess\n"
+            f"seen = Path({str(seen)!r})\n"
+            "path = next(Path('chitty/tasks').glob('*.md'))\n"
+            "seen.write_text(path.read_text())\n"
+            "path.write_text(path.read_text().replace('status: error', 'status: review'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'repair'], check=True)\n"
+        )
+        result = self.run_cli("run", "--errors")
+
+        self.assertEqual(result.stdout, "TASK-1: error → review\n", result.stderr)
+        recorded = seen.read_text()
+        self.assertIn("status: error", recorded)
+        self.assertIn("Check failed before this session", recorded)
+        for number in range(1, 26):
+            self.assertIn(f"check line {number}\n", recorded)
+        self.assertEqual(self.json("show", "TASK-1")["status"], "review")
+
+    def test_run_check_command_not_found_on_doing_ticket_errors_without_agent(self):
+        self.check_project("no-such-chitty-check-command")
+        self.commit_ticket("Doing", "doing")
+        self.git("branch", "task-1")
+        self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
+        result = self.run_cli("run")
 
         self.assertIn("doing → error", result.stdout)
         self.assertFalse((self.root / ".worktrees/task-1/started").exists())
         repo = Repo.open(self.root)
         task = repo.find(repo.resolve("TASK-1")).task
         self.assertEqual(task.frontmatter.status, "error")
-        notes = task.section("Notes") or ""
-        self.assertIn("check line 1", notes)
-        self.assertIn("check line 1", notes)
-        self.assertIn("```text", notes)
+        self.assertIn("check command not found", task.section("Notes") or "")
 
     def test_run_adds_worktree_for_existing_branch_and_refuses_unbranched_review(self):
         config = self.root / "chitty.toml"
@@ -1771,7 +1814,7 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, signal, subprocess, sys\n"
+            "import os, signal, subprocess, sys, time\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
             "if os.environ.get('CHANGE'):\n"
@@ -1781,7 +1824,13 @@ class TestNext(CliTestCase):
             "    text = text.replace('status: error', 'status: blocked')\n"
             "    open(path, 'w').write(text)\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
-            "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
+            # Chitty orders ticket versions across branches by whole-second
+            # commit time. A real agent commits well after the error was
+            # recorded on main, so date this commit later to avoid a tie.
+            "    later = {**os.environ, 'GIT_COMMITTER_DATE': f'@{int(time.time()) + 1} +0000'}\n"
+            "    subprocess.run(\n"
+            "        ['git', 'commit', '--quiet', '-m', 'worker change'], check=True, env=later\n"
+            "    )\n"
             "if os.environ.get('PI_SIGNAL'):\n"
             "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
             "    os.kill(os.getpid(), signal.SIGINT)\n"
@@ -1864,9 +1913,10 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import pathlib, subprocess\n"
+            "import pathlib, subprocess, sys\n"
             "root = pathlib.Path.cwd()\n"
-            "ticket = next((root / 'chitty/tasks').glob('*.md'))\n"
+            # Glob order differs between filesystems; pick the ticket being run.
+            "(ticket,) = (root / 'chitty/tasks').glob(sys.argv[-1] + '--*.md')\n"
             "ticket.write_text(ticket.read_text().replace('status: doing', 'status: blocked'))\n"
             "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
@@ -2004,9 +2054,10 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import pathlib, subprocess\n"
+            "import pathlib, subprocess, sys\n"
             "root = pathlib.Path.cwd()\n"
-            "ticket = next((root / 'chitty/tasks').glob('*.md'))\n"
+            # Glob order differs between filesystems; pick the ticket being run.
+            "(ticket,) = (root / 'chitty/tasks').glob(sys.argv[-1] + '--*.md')\n"
             "ticket.write_text(ticket.read_text().replace('status: doing', 'status: blocked'))\n"
             "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"

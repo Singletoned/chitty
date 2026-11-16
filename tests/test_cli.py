@@ -10,8 +10,8 @@ from unittest.mock import patch
 from click.testing import CliRunner, Result
 
 from chitty.cli import _complete_context, _complete_task_id, cli
-from chitty.config import CHITTY_VERSION
-from chitty.store import _add_missing_settings, guide
+from chitty.config import CHITTY_VERSION, resolve_workflow
+from chitty.store import _add_missing_settings, guide, managed_guide
 from tests.support import RepoTestCase
 
 LEGACY_MANAGED_GUIDE = """## Chitty
@@ -239,9 +239,14 @@ class TestInit(CliTestCase):
                 "edits here are replaced -->\n\n## Chitty\n"
             )
         )
-        self.assertIn("chitty guide work", agents)
-        self.assertIn("chitty guide review", agents)
-        self.assertIn("chitty guide plan", agents)
+        if resolve_workflow(None, CHITTY_VERSION) == "runner":
+            self.assertIn("chitty guide work", agents)
+            self.assertIn("chitty guide review", agents)
+            self.assertIn("chitty guide plan", agents)
+        else:
+            self.assertNotIn("chitty guide work", agents)
+            self.assertNotIn("chitty guide review", agents)
+            self.assertNotIn("chitty guide plan", agents)
         self.assertIn("Run `chitty --help` for the command reference.", agents)
         result = self.run_cli("init")
         self.assertEqual(result.stdout, "already up to date\n")
@@ -260,7 +265,7 @@ class TestInit(CliTestCase):
             marked,
         )
         self.assertIn("\n\n<!-- chitty:end -->\n", marked)
-        self.assertNotIn("chitty:begin", guide())
+        self.assertNotIn("chitty:begin", managed_guide("runner"))
 
         agents.write_text("# Before\n\n" + LEGACY_MANAGED_GUIDE + "\n## After\n\nKeep this.\n")
         result = self.run_cli("init")
@@ -274,8 +279,8 @@ class TestInit(CliTestCase):
         self.run_cli("init")
         original = agents.read_text()
         agents.write_text("Before\n\n" + original + "\nAfter\n\nUnheaded text\n")
-        marked_guide = "A backslash: \\ path\n\n" + guide().rstrip("\n")
-        with patch("chitty.store.guide", return_value=marked_guide):
+        marked_guide = "A backslash: \\ path\n\n" + managed_guide("runner").rstrip("\n")
+        with patch("chitty.store.managed_guide", return_value=marked_guide):
             self.run_cli("init")
             updated = agents.read_text()
             self.assertTrue(updated.startswith("Before\n\n"))
@@ -646,7 +651,7 @@ class TestInit(CliTestCase):
         )
 
         agents_path = target / "AGENTS.md"
-        agents_path.write_text(guide().replace("Task: <ID>", "Task: CIRCUIT-N"))
+        agents_path.write_text(managed_guide("runner").replace("Task: <ID>", "Task: CIRCUIT-N"))
         self.run_cli("init")
 
         agents = agents_path.read_text()
@@ -2146,7 +2151,7 @@ class TestIdentity(CliTestCase):
         os.environ.pop("PI_SESSION_ID")
         os.environ["PI_CODING_AGENT"] = "true"
         os.environ.pop("CHITTY_ACTOR", None)
-        self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
+        self.assertIn("Set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
 
     def test_init_removes_ineffective_pi_session_environment_setting(self):
         settings = self.tmp / "home" / ".pi" / "agent" / "settings.json"
@@ -2186,9 +2191,9 @@ class TestGuide(CliTestCase):
         for phrase in (
             "see it fail without the fix",
             "change the test until it fails without the fix",
-            "do not work around it",
-            "a person's decision",
-            "An unclear detail with a cheap default is not this",
+            "Do not work around the problem or weaken the tests",
+            "set `-s planning`",
+            "For a cheap-to-reverse default, choose it",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, work_guide)
@@ -2210,7 +2215,7 @@ class TestGuide(CliTestCase):
                     self.assertIn(phrase, output)
 
     def test_worker_guides_start_with_show_without_pulling_inbox(self):
-        self.assertNotIn("chitty inbox --pull", guide())
+        self.assertNotIn("chitty inbox --pull", managed_guide("runner"))
         self.assertNotIn("chitty inbox --pull", guide("work"))
         self.assertIn("chitty show <ID>", guide("work"))
 
@@ -2222,7 +2227,7 @@ class TestGuide(CliTestCase):
 
     def test_prints_the_agent_guide_outside_any_repo(self):
         os.chdir(self.tmp)
-        self.assertEqual(self.run_cli("guide").stdout, guide())
+        self.assertEqual(self.run_cli("guide").stdout, managed_guide("runner"))
 
     def test_prints_role_guides_without_a_repository(self):
         os.chdir(self.tmp)
@@ -2248,7 +2253,7 @@ class TestGuide(CliTestCase):
     def test_role_guides_omit_the_pi_session_diagnostic(self):
         os.environ["PI_CODING_AGENT"] = "true"
         os.environ.pop("CHITTY_ACTOR", None)
-        self.assertIn("set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
+        self.assertIn("Set `CHITTY_ACTOR` when starting Pi", self.run_cli("guide").stdout)
         for role in ("work", "review", "plan"):
             with self.subTest(role=role):
                 self.assertNotIn("set `CHITTY_ACTOR`", self.run_cli("guide", role).stdout)
