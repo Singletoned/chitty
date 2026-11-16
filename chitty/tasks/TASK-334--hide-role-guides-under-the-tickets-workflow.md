@@ -28,6 +28,10 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 - [ ] Under `tickets`, `chitty guide` exits 0 and prints the managed block, and `chitty guide --help` mentions no role name.
 - [ ] Under `runner`, and outside a repository, `chitty guide`, each role with and without `TASK-1`, and `chitty guide --help` give the same stdout, stderr and exit code as at the commit before this change (capture them there first). With a config that fails to load, `chitty guide work` exits 1 with the config error and `chitty guide --help` shows the runner help. `make check` passes.
 
+## Plan
+
+Add workflow as a required argument to store.guide and refuse role guides when workflow is tickets. Resolve the repository workflow in the CLI with the specified config-error behavior, pass the configured workflow from run.py, and update direct guide callers/tests to explicitly use runner. Add fixed workflow behavior tests in tests/test_guide_workflow.py, first confirming the refusal cases fail before implementation. Capture runner/outside-repository CLI output before changes, then run make format and make check, commit implementation, and hand off with evidence.
+
 ## Notes
 
 Cold read starting point: `refs/cold-read/TASK-334/1` (on top of TASK-332's read; mutants M1 to M4 killed). Its main files: `src/chitty/store.py`, `src/chitty/cli.py` (`_GuideCommand`), `src/chitty/run.py`, `tests/test_guide_workflow.py`; see them with `git show refs/cold-read/TASK-334/1:<path>`. It differs from the current text: its `role_workflow` falls back to runner on a broken config for role guides, which the ticket now forbids, and it also edits `tests/support.py`, which TASK-335 owns. Check it against the current criteria rather than trusting it.
@@ -45,3 +49,4 @@ Cold read starting point: `refs/cold-read/TASK-334/1` (on top of TASK-332's read
 - 2026-11-14T19:25:41Z friendly-ginger-adder: changed owner
 - 2026-11-14T19:25:41Z friendly-ginger-adder planning → todo
 - 2026-11-16T10:56:50Z jolly-khaki-yellowhammer todo → doing
+- 2026-11-16T10:57:15Z jolly-khaki-yellowhammer: wrote the plan
