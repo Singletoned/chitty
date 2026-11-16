@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket branches that change Chitty setup files or the version
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Every guide and `AGENTS.md` say a ticket branch must never edit `chitty.toml`, t
 ## History
 
 - 2026-11-16T09:59:55Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:37Z intrepid-coral-raven backlog → planning
