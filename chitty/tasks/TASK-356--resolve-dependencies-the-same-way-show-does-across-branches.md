@@ -1,6 +1,7 @@
 ---
 title: Resolve dependencies the same way show does, across branches
-status: planning
+status: cold-read
+owner: open-russet-eel
 created: 2026-11-16
 ---
 
@@ -26,3 +27,5 @@ No property test: the states are a small fixed set, each listed in the criterion
 - 2026-11-16T10:29:26Z intrepid-coral-raven → backlog
 - 2026-11-16T10:38:56Z intrepid-coral-raven backlog → planning
 - 2026-11-16T16:56:57Z open-russet-eel: changed description, acceptance criteria
+- 2026-11-16T16:57:34Z open-russet-eel: changed owner
+- 2026-11-16T16:57:34Z open-russet-eel planning → cold-read
