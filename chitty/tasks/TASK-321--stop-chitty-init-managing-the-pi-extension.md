@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -487,9 +487,11 @@ Reviewed: merged main cleanly; make format && make check passed (556 Python test
 
 Review failed (integration): merging `main` conflicts in `src/chitty/store.py`.
 
+Merged current main and resolved its init_repo conflict by retaining workflow-specific managed-agent rendering while removing the obsolete Pi-extension validator call. Verified with make format && make check after the merge: Ruff and Pyright passed, 577 Python tests passed, and Node tests passed. chitty fix passed; git status was clean before this ticket update.
+
 ## Summary
 
-Review handoff: init no longer manages Pi extensions or settings; bundled extension remains. Verified merged branch with make format && make check (556 Python tests; Node tests passed). Manual cleanup/restart guidance is documented. No follow-ups.
+Handoff: init no longer validates, installs or updates Pi extensions or modifies Pi settings; bundled extension remains. Documented manual inspection/removal of existing extension and state file, then restart Pi. Verified regression coverage includes Hypothesis variation and explicit exposeSessionEnvironment JSON; recorded pre-fix failures in earlier notes. Verification after merging main: make format && make check passed (577 Python tests plus Node tests, Ruff, Pyright). chitty fix passed; working tree was clean. No follow-ups.
 
 ## History
 
@@ -535,3 +537,5 @@ Review handoff: init no longer manages Pi extensions or settings; bundled extens
 - 2026-11-16T10:35:47Z sunny-teal-otter doing → review
 - 2026-11-16T10:51:40Z able-amber-gannet: changed notes
 - 2026-11-16T10:51:40Z able-amber-gannet review → doing
+- 2026-11-16T10:55:05Z sunny-pearl-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-16T10:55:05Z sunny-pearl-eel doing → review
