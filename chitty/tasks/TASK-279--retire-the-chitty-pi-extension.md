@@ -1,6 +1,6 @@
 ---
 title: Retire the Chitty Pi extension
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -30,6 +30,10 @@ Possible starting point: ticket files at `refs/cold-read/TASK-279/1`, after prer
 The extension-based repository command was removed in `c2eae4b`; the human trials in `TASK-278` are independent of extension removal.
 
 Regression-first evidence: tests.test_pi_retirement failed before changing generated examples because the example still contained extension flags. The fake-agent actor test passed normally and failed when I temporarily removed run_actor assignment, confirming it catches lost CHITTY_ACTOR propagation. make format && make check passed: 577 Python tests, Ruff and Pyright; the extension-only Node test was removed while npm ci and pinned Prettier remain. chitty fix passed; implementation committed as 8a74ebf (Task: TASK-279).
+
+Reviewed:
+1: pass - Complete diff removes bundled extension and tests; examples enumerated in README.md, docs/plan/config.md, docs/plan/next-action-and-runner.md, src/chitty/roles/setup.md, src/chitty/config.py, src/chitty/store.py and src/chitty/run.py use {prompt}. The generated-example test passed in make check and failed against the main-branch _add_missing_settings with AssertionError showing the old extension command.
+2: pass - make format && make check passed 577 tests, Ruff and Pyright. The fake-agent and child actor test passed in make check; temporarily removing runner CHITTY_ACTOR assignment made that test fail, printing TASK-1: todo → error instead of TASK-1: doing → blocked. Restored the runner afterward.
 
 ## Summary
 
@@ -65,3 +69,5 @@ Handoff: removed the bundled Pi extension, usage writer and extension-only tests
 - 2026-11-16T11:02:49Z intrepid-maroon-kestrel: wrote the plan
 - 2026-11-16T11:11:55Z intrepid-maroon-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-16T11:11:55Z intrepid-maroon-kestrel doing → review
+- 2026-11-16T11:14:13Z intrepid-white-zander: changed notes; ticked acceptance criteria
+- 2026-11-16T11:14:13Z intrepid-white-zander review → done
