@@ -1,6 +1,6 @@
 ---
 title: Remove efficiency tips from the role guides
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ The guides tell agents to request several reads in one call, join format and che
 ## History
 
 - 2026-11-16T10:00:04Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:48Z intrepid-coral-raven backlog → planning
