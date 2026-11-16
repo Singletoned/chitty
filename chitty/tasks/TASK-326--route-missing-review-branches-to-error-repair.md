@@ -1,7 +1,6 @@
 ---
 title: Route missing review branches to error repair
-status: planning
-owner: open-russet-eel
+status: todo
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -48,3 +47,5 @@ No property test: one fixed state (branch and worktree missing at review), which
 - 2026-11-16T17:04:26Z open-russet-eel planning → cold-read
 - 2026-11-16T17:08:35Z open-russet-eel: changed description, acceptance criteria
 - 2026-11-16T17:08:35Z open-russet-eel cold-read → planning
+- 2026-11-16T17:08:37Z open-russet-eel: changed owner
+- 2026-11-16T17:08:37Z open-russet-eel planning → todo
