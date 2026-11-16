@@ -1,6 +1,6 @@
 ---
 title: Route missing review branches to error repair
-status: cold-read
+status: planning
 owner: open-russet-eel
 parent: TASK-318
 created: 2026-11-13
@@ -10,21 +10,25 @@ created: 2026-11-13
 
 A missing ticket branch at review is a runner error, not a human block. Today `_run_session` in `src/chitty/run.py` (the `action.mode == "review"` block that writes `Review blocked: ... has no branch`) sets the ticket to `blocked` with owner `human`. Seen on `TASK-318`, whose work had landed by hand and whose branch was then gone.
 
-Change it to set the ticket to `error`, leaving the owner as it is, with a note in the `Runner error (<phase>): ...` form `_record_ticket_error` writes, phase `review`, naming the missing branch and saying no worktree exists. `_record_ticket_error` itself refuses when the worktree is gone, so write this note directly with `main_repo.edit` (`status="error"`, `skip_verdicts=True`). No agent starts.
+Change it to set the ticket to `error`, leaving the owner as it is, with a note in the `Runner error (<phase>): ...` form `_record_ticket_error` writes, phase `review`, naming the missing branch and saying no worktree exists. `_record_ticket_error` itself refuses when the worktree is gone, so write this note directly with `main_repo.edit(..., Edit(status="error", note=..., skip_verdicts=True, skip_current_version=True))`, as `_record_ticket_error` does. No agent starts.
 
-Repair needs no new selection: `chitty run --errors` already selects `error` tickets, and for a ticket with no branch `_worktree` creates the branch from `main` as the repair agent's workspace. That empty branch must not pass as recovered work: when a repair session ends with the ticket in `review` and its branch has no commits that are not on `main`, raise `RepairError` saying the repair returned the ticket to review with no commits beyond `main`. This check applies to every repair, since a review of a branch with nothing on it has nothing to review.
+Repair needs no new selection: `chitty run --errors` already selects `error` tickets (action mode `work`), and for a ticket with no branch `_worktree` creates the branch from `main` as the repair agent's workspace. Guarding against that empty branch passing as recovered work is `TASK-364`.
 
-Add to `src/chitty/roles/repair.md` one bullet: if the ticket branch was missing, find the original implementation commit (reflogs, `git log --all --grep 'Task: <ID>'`, other worktrees), reset the branch to it, note the commit ID and the evidence, then set `review`; if none can be found, set `blocked` and say what was searched.
+In `src/chitty/roles/repair.md`, qualify the first bullet (`inspect the preserved branch and worktree`) with "if they exist", and add after it: if the ticket branch was missing, find the original implementation commit (reflogs, other worktrees, `git log --all` commits whose `Task:` trailer is exactly this ID and that change files other than the ticket file, since every Chitty edit also carries the trailer), reset the branch to it, note the commit ID and the evidence, then set `review`; if none can be found, set `blocked` and say what was searched.
 
-Files: `src/chitty/run.py`, `src/chitty/roles/repair.md`, `tests/test_review_merge.py` (rename and rewrite `test_missing_review_branch_blocks_ticket_and_is_not_selected_again`), and a new `tests/test_repair_missing_branch.py` using the fake agents of `tests/test_review_merge.py` or `install_fake_pi` in `tests/test_next.py`. No real model session.
+Update `docs/plan/next-action-and-runner.md`: add the missing branch to the list under "Before a review", and say in the error-note bullet that this note has no worktree.
 
-No property test: the states are a small fixed set (branch missing at review; repair ending in `review` with commits, in `review` without commits, in `blocked`), each listed in the criteria and tested, and each needs real git branches and a subprocess agent.
+Files: `src/chitty/run.py`, `src/chitty/roles/repair.md`, `docs/plan/next-action-and-runner.md`, `tests/test_review_merge.py` (rename and rewrite `test_missing_review_branch_blocks_ticket_and_is_not_selected_again`), and `tests/test_guide_repair_missing_branch.py`.
+
+Out of scope: a leftover `.worktrees/task-<n>` directory with no branch.
+
+No property test: one fixed state (branch and worktree missing at review), which needs real git and the runner; the guide change is fixed text.
 
 ## Acceptance Criteria
 
 - [ ] In `tests/test_review_merge.py`: a review whose branch and worktree are gone prints `TASK-1: review → error`, starts no agent, keeps the owner unchanged, and leaves a note containing `Runner error (review)`, `TASK-1` and `task-1`. `chitty run --mode review` and `chitty run --mode work` then exit 3 with no next ticket, and `chitty next` finds nothing; `chitty run --errors` selects it. Fails before the change (today it prints `review → blocked`).
-- [ ] In `tests/test_repair_missing_branch.py`, after the missing-branch error: a fake repair agent that resets `task-1` to a commit kept from the deleted branch and sets `review` ends with `TASK-1` in `review`; one that sets `review` without adding commits makes `chitty run --errors` exit non-zero with the `RepairError` text, and the ticket stays `error`; one that sets `blocked` ends in `blocked`. The no-commits case fails before the change.
-- [ ] `src/chitty/roles/repair.md` has the missing-branch bullet described above. `make check` passes.
+- [ ] Flattened `guide("repair")` contains `if they exist`, `was missing`, `exactly this ID`, and `say what was searched`; tested in `tests/test_guide_repair_missing_branch.py`, which fails before the change.
+- [ ] `docs/plan/next-action-and-runner.md` lists the missing branch under "Before a review". `make check` passes.
 
 ## History
 
@@ -42,3 +46,5 @@ No property test: the states are a small fixed set (branch missing at review; re
 - 2026-11-16T17:04:24Z open-russet-eel: changed description, acceptance criteria
 - 2026-11-16T17:04:26Z open-russet-eel: changed owner
 - 2026-11-16T17:04:26Z open-russet-eel planning → cold-read
+- 2026-11-16T17:08:35Z open-russet-eel: changed description, acceptance criteria
+- 2026-11-16T17:08:35Z open-russet-eel cold-read → planning
