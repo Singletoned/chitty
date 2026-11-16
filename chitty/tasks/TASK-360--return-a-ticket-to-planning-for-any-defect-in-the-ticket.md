@@ -37,6 +37,10 @@ No property tests: fixed text, and the defects are a small fixed set, each liste
 - [ ] `continuation_prompt("work", ...)` and `continuation_prompt("review", ...)` each contain the literal `a defect in the ticket` and still offer `blocked`; flattened `managed_guide("runner")` contains all five defect phrases. Tested in `tests/test_guide_return_scope.py`; the test fails before the change. `tests/test_guide_workflow_block.py` passes with the updated fixture.
 - [ ] The `README.md` paragraph and the two `docs/plan/pipeline-and-feedback.md` bullets named above list the same five defects; the reviewer quotes each in the evidence. `make check` passes.
 
+## Plan
+
+Update the work/review guides, continuation prompt, runner guide and fixture, README, and pipeline plan to route all five specified ticket defects to planning while preserving blocked and implementation-defect guidance. First inspect the existing text and tests, add/update focused guide tests so they fail before the documentation changes, then implement the wording, run the focused regression tests followed by make format && make check, review the diff, commit only implementation files with a Task: TASK-360 message, and finish with chitty fix and a clean review handoff.
+
 ## History
 
 - 2026-11-16T12:50:58Z open-russet-eel → planning
@@ -47,3 +51,4 @@ No property tests: fixed text, and the defects are a small fixed set, each liste
 - 2026-11-16T12:54:42Z open-russet-eel: changed owner
 - 2026-11-16T12:54:42Z open-russet-eel planning → todo
 - 2026-11-16T12:55:40Z daring-yellow-jay todo → doing
+- 2026-11-16T12:55:53Z daring-yellow-jay: wrote the plan
