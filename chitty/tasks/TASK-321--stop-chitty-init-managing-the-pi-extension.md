@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -489,6 +489,10 @@ Review failed (integration): merging `main` conflicts in `src/chitty/store.py`.
 
 Merged current main and resolved its init_repo conflict by retaining workflow-specific managed-agent rendering while removing the obsolete Pi-extension validator call. Verified with make format && make check after the merge: Ruff and Pyright passed, 577 Python tests passed, and Node tests passed. chitty fix passed; git status was clean before this ticket update.
 
+Reviewed: main is an ancestor of the branch; the prior migration-coverage finding is resolved and the earlier integration conflicts are resolved.
+1: pass - make check ran both isolation tests successfully. Running them with main:src/chitty/store.py in an isolated package copy printed FAILED (errors=2): the valid settings case raised cannot safely remove obsolete Pi setting, while Hypothesis found extension validation, installation and settings failures.
+2: pass - src/chitty/roles/setup.md describes inspecting and manually removing the extension and state file and restarting Pi. make format && make check printed 584 Python tests OK, 28 Node tests passed, and Ruff and Pyright passed.
+
 ## Summary
 
 Handoff: init no longer validates, installs or updates Pi extensions or modifies Pi settings; bundled extension remains. Documented manual inspection/removal of existing extension and state file, then restart Pi. Verified regression coverage includes Hypothesis variation and explicit exposeSessionEnvironment JSON; recorded pre-fix failures in earlier notes. Verification after merging main: make format && make check passed (577 Python tests plus Node tests, Ruff, Pyright). chitty fix passed; working tree was clean. No follow-ups.
@@ -539,3 +543,5 @@ Handoff: init no longer validates, installs or updates Pi extensions or modifies
 - 2026-11-16T10:51:40Z able-amber-gannet review → doing
 - 2026-11-16T10:55:05Z sunny-pearl-eel: changed notes, summary; ticked acceptance criteria
 - 2026-11-16T10:55:05Z sunny-pearl-eel doing → review
+- 2026-11-16T10:57:20Z eager-quartz-otter: changed notes; ticked acceptance criteria
+- 2026-11-16T10:57:20Z eager-quartz-otter review → done
