@@ -1,6 +1,6 @@
 ---
 title: Restore planning advice that TASK-336 removed
-status: doing
+status: review
 owner: open-russet-eel
 created: 2026-11-16
 ---
@@ -30,6 +30,14 @@ Out of scope: any other change to the read-only procedure. No property tests: fi
 - [ ] No rendered role guide (`guide(role)` for every name in `ROLE_NAMES`) and no `src/chitty/guide*.md` file matches `TASK-[0-9]`; flattened `guide("cold-read")` contains none of `Use these report headings exactly`, `expected route`, `Every ticket gets one read-only cold read`, and still passes `tests/test_guide_read_only_cold_read.py`. Tested in the same file; fails before the change.
 - [ ] `docs/plan/pipeline-and-feedback.md` contains `readers run on Haiku` and `the ticket keeps an owner`. `make check` passes.
 
+## Notes
+
+Implemented by the planner, since wording tickets go to the stronger model. Regression evidence: `tests/test_guide_plan_restored.py` failed before the guide edits (`FAILED (failures=17)`), then passed. Final `make format && make check` in `.worktrees/task-361`: `Ran 583 tests`, `OK`. Commit `a486380` on `task-361`.
+
+## Summary
+
+Commit `a486380` on `task-361` restores the plan-guide advice `989a26a` dropped, removes its wrong wording and the `TASK-323` ID, restores the reader criterion bullet and the planner-records-outcomes clause in the cold-read guide, and restores the Haiku and owner bullet in `docs/plan/pipeline-and-feedback.md`. `make check` passes. Follow-ups: none.
+
 ## History
 
 - 2026-11-16T13:04:45Z open-russet-eel → planning
@@ -39,3 +47,5 @@ Out of scope: any other change to the read-only procedure. No property tests: fi
 - 2026-11-16T13:10:43Z open-russet-eel cold-read → planning
 - 2026-11-16T13:10:45Z open-russet-eel planning → todo
 - 2026-11-16T13:10:47Z open-russet-eel todo → doing
+- 2026-11-16T13:11:03Z open-russet-eel: changed notes, summary
+- 2026-11-16T13:11:03Z open-russet-eel doing → review
