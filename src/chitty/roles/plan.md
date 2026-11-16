@@ -13,19 +13,18 @@ task files. `chitty --help` is the full command reference.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
-  criteria. Split a ticket when one criterion collects more than about five
-  separate checks. Split a ticket when the requirements cannot be verified
-  together.
+  criteria. Err on the side of splitting: a ticket that seems too small is not
+  a problem. About five criteria is the limit; split larger work. Split a ticket
+  when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until you start writing it. Move it to
   `-s planning` while you write it, to `-s cold-read` for its one read-only
-  cold read, back to `-s planning` to record outcomes, then to `-s todo`.
+  cold read, back to `-s planning` to record outcomes, then to `-s todo`. Use
+  its optional `parent` field to group flat IDs.
 - Cold-read every ticket, even a small one. A fresh agent on a cheap model
   close to the worker reads the ticket and the named code and documents, then
   reports without changing the checkout. If a ticket adds a module, tell its
   worker to first create it with the names the tests import, each raising
   `NotImplementedError`, so tests fail independently rather than at import.
-  Keep the reader's starting point as the ticket's current paths and criteria,
-  not as a substitute for checking the requirements.
 - Ask of each criterion: could it pass with nothing built? If so, name the case
   that fails today, and say which test must fail without the fix.
 - In the original planning session, perform a sufficiency read on the current
@@ -35,13 +34,16 @@ task files. `chitty --help` is the full command reference.
   review? For each gap, give a concrete counterexample, relevant inputs or
   state, a distinguishing test and observable result, and proposed criterion
   wording. Prefer a general property over accumulating examples. Do not invent
-  speculative features; relate the gap to the problem and agreed scope.
+  speculative features; relate the gap to the problem and agreed scope. Ask
+  whether odd existing behaviour is a bug before writing around it.
 - Before moving to `todo`, resolve every reader finding and sufficiency gap:
   strengthen the ticket, split it, or explicitly reject the finding as out of
-  scope. Write requirements needed to reject the finding into the ticket, not
-  just the planning conversation. The expected route for a problem missed by
-  the read is a return to planning (`TASK-323`). A stronger reader remains
-  optional for uncertainty or repeated work–review failures, not mandatory.
+  scope. Write requirements needed to reject the implementation into the ticket,
+  not just the planning conversation. Give the outcomes in your reply, not in a
+  ticket note. Split rather than exceed about five criteria. The expected route
+  for a problem the read missed is a return to planning by its worker or
+  reviewer. A stronger reader remains optional for uncertainty or repeated
+  work–review failures, not mandatory.
 - Specify property tests by default. Compare each decision in the description
   with the criteria, because workers test what criteria name. For each
   behaviour, write the property and what the test generates: the inputs and
@@ -64,12 +66,15 @@ task files. `chitty --help` is the full command reference.
   with no file, network or clock access inside it, have the ticket name that
   function and state its properties: it is far easier to test. A function,
   module or internal API (such as a facade) the ticket names is an internal
-  surface and part of its spec, so its tests may call it directly. Start a
-  reader with `chitty guide cold-read <ID>` plus the code most at risk
-  and what you doubt.
+  surface and part of its spec, so its tests may call it directly.
+- Start the reader with the output of `chitty guide cold-read <ID>`. Add the
+  code most at risk and what you doubt.
 - A worker cannot verify a criterion needing a real `chitty run` or agent
-  session and must not start one. Give that check to a person in a separate
-  `-c human` ticket.
-- Re-check claims about other tickets just before promoting. Do not cold-read a
-  ticket you were given to work on or review.
-- Before preparing a merge request, run `chitty archive` with no ID.
+  session, and must not start one. Give that check to a person: a separate
+  `-c human` ticket that depends on this one.
+- Re-check claims about other tickets just before promoting, because they can
+  land during the read.
+- Do not cold-read a ticket you were given to work on or review; it is not your
+  planning step.
+- Before preparing a merge request, run `chitty archive` with no ID to process
+  completed tickets in one batch.

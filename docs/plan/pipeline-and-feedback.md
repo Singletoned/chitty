@@ -96,6 +96,9 @@ asking the first.
 - Workers and reviewers never cold-read.
 - A ticket reaches `todo` only after its findings have outcomes, because
   `chitty run` takes anything in `todo` (`TASK-147` was claimed mid-read).
+- In this repository readers run on Haiku, to show what a weak model struggles
+  with. While a planner's own subagent works on a ticket, the ticket keeps an
+  owner, so `chitty run` leaves it alone.
 
 ## Spec tests
 

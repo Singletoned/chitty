@@ -23,10 +23,6 @@ class TestGuideColdReadNotes(unittest.TestCase):
         self.assertIn("strengthen the ticket, split it, or explicitly reject the finding", output)
         self.assertIn("expected route", output)
 
-    def test_plan_uses_current_paths_as_starting_point(self):
-        output = self.run_guide("plan")
-        self.assertIn("ticket's current paths and criteria", output)
-
 
 if __name__ == "__main__":
     unittest.main()
