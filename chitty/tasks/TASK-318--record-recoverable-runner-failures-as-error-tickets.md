@@ -1,6 +1,6 @@
 ---
 title: Record recoverable runner failures as error tickets
-status: review
+status: done
 labels:
   - bug
   - runner
