@@ -1,6 +1,6 @@
 ---
 title: Warn in chitty check when a ticket has more than five criteria
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T10:00:01Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:44Z intrepid-coral-raven backlog → planning
