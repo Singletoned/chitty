@@ -30,19 +30,23 @@ task files. `chitty --help` is the full command reference.
 - Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
   if nothing exercises it, if a file it needs is missing, or if the environment
   stopped you verifying it. A ticket that is itself wrong also fails, with the
-  cause `design`. A claim about what code does when it runs must be run first,
-  using an existing test, the project's check command or a throwaway test.
+  cause `design`, and it goes to `planning`. A claim about what code does when
+  it runs must be run first, using an existing test, the project's check command
+  or a throwaway test.
   Reasoning alone demonstrates nothing: if you can run the code but cannot show
   the defect, file a ticket instead of failing. File a ticket for other findings
   too.
-- For missing or contradictory requirements or an unresolved design decision,
-  set `-s planning`. Use `Review failed (design):` and the criterion verdicts
-  below, explaining what was discovered, why the current ticket cannot guide
-  the work, and what decision is needed. Preserve the existing branch and
-  worktree; ownership is cleared and the run stops without starting another
-  worker. The planner resumes in that worktree and follows normal planning and
-  cold-read readiness before returning the ticket to `todo`. Use `blocked` for
-  external obstacles requiring help; the dirty-worktree stop above still applies.
+- For missing or contradictory requirements, an unresolved design decision, a
+  wrong claim about the code, files or other tickets, a criterion that cannot be
+  verified as written or would pass with nothing built, or a ticket too large to
+  finish in one session, set `-s planning`. Use `Review failed (design):` and
+  the criterion verdicts below, explaining what was discovered, why the current
+  ticket cannot guide the work, and what decision is needed. Preserve the
+  existing branch and worktree; ownership is cleared and the run stops without
+  starting another worker. The planner resumes in that worktree and follows
+  normal planning and cold-read readiness before returning the ticket to `todo`.
+  Use `blocked` for external obstacles requiring help; the dirty-worktree stop
+  above still applies.
 - Except for uncommitted changes, on failure write one note in the form
   `Review failed (<cause>): ...`, where
   the cause is the earliest stage that should have caught it: `design`, `tests`,
@@ -65,8 +69,8 @@ task files. `chitty --help` is the full command reference.
   earlier note for unresolved findings. Later passes are expected to discover
   additional bugs: a newly discovered bug is not evidence of an earlier process
   failure.
-- If the ticket is too large, say so in the failure note and suggest how to
-  split it. Do not edit spec tests.
+- If the ticket is too large to finish in one session, route it to `planning`
+  and suggest how to split it in the failure note. Do not edit spec tests.
 - On a pass, set `-s done --note "Reviewed: ..."`. Do not merge or remove
   branches or worktrees; `chitty run` lands a passing review. The third failed
   review returning to `doing` since the last block blocks the ticket for `human`;
