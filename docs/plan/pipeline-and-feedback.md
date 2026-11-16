@@ -14,16 +14,23 @@
 - The third `review → doing` failure since the ticket was last `blocked` blocks
   it for the human (`REVIEW_FAILURE_LIMIT`), to investigate the repeated failures.
 - A failed review of implementation against clear requirements returns to
-  `doing` for a fresh worker session. Missing or contradictory requirements or
-  unresolved design decisions return to `planning`, from either `doing` or
-  `review`; external obstacles requiring help use `blocked` instead.
-- A return to planning requires a nonblank note explaining the discovery, why
-  the ticket cannot guide the work, and the decision needed. Reviewers retain
-  independence and one verdict per criterion, with at least one fail when
-  criteria exist. Ownership is cleared; existing implementation, branch and
-  worktree are preserved. The run ends without landing or starting another
-  worker. Workers keep cheap reversible implementation choices rather than
-  escalating those to planning. Neither role weakens tests to fit the work.
+  `doing` for a fresh worker session. Missing or contradictory requirements, an
+  unresolved design decision, a wrong claim about the code, files or other
+  tickets, a criterion that cannot be verified as written or would pass with
+  nothing built, or a ticket too large to finish in one session returns to
+  `planning`, from either `doing` or `review`; external obstacles requiring help
+  use `blocked` instead.
+- A return to planning for missing or contradictory requirements, an unresolved
+  design decision, a wrong claim about the code, files or other tickets, a
+  criterion that cannot be verified as written or would pass with nothing built,
+  or a ticket too large to finish in one session requires a nonblank note
+  explaining the discovery, why the ticket cannot guide the work, and the
+  decision needed. Reviewers retain independence and one verdict per criterion,
+  with at least one fail when criteria exist. Ownership is cleared; existing
+  implementation, branch and worktree are preserved. The run ends without
+  landing or starting another worker. Workers keep cheap reversible
+  implementation choices rather than escalating those to planning. Neither role
+  weakens tests to fit the work.
 - Returned tickets appear in planning lists, not automatic work/review
   selection. The planner resumes in the existing ticket worktree, revises or
   splits the requirements, and follows the normal planning and cold-read
