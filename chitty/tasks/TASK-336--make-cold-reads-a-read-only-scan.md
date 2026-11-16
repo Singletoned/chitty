@@ -1,6 +1,7 @@
 ---
 title: Make cold reads a read-only scan
-status: planning
+status: cold-read
+owner: open-russet-eel
 created: 2026-11-16
 ---
 
@@ -30,3 +31,5 @@ No property tests: this is fixed guide text with no input. Phrase checks on the 
 - 2026-11-16T09:59:48Z intrepid-coral-raven: changed description
 - 2026-11-16T10:38:24Z intrepid-coral-raven backlog → planning
 - 2026-11-16T12:50:12Z open-russet-eel: changed description, acceptance criteria
+- 2026-11-16T12:51:12Z open-russet-eel: changed owner
+- 2026-11-16T12:51:12Z open-russet-eel planning → cold-read
