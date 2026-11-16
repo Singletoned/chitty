@@ -17,19 +17,15 @@ class TestGuideColdReadNotes(unittest.TestCase):
         self.assertIn("Acceptance Criteria; skip Notes", output)
         self.assertIn("skip Notes", output)
 
-    def test_plan_reports_finding_outcomes_in_reply(self):
+    def test_plan_reports_finding_outcomes(self):
         output = " ".join(self.run_guide("plan").split())
         self.assertIn("resolve every reader finding and sufficiency gap", output)
         self.assertIn("strengthen the ticket, split it, or explicitly reject the finding", output)
-        self.assertIn("in your reply, not in a ticket note", output)
+        self.assertIn("expected route", output)
 
-    def test_plan_does_not_replace_converged_read_notes(self):
+    def test_plan_uses_current_paths_as_starting_point(self):
         output = self.run_guide("plan")
-        self.assertNotIn("replace its notes once reads converge", output)
-
-    def test_plan_keeps_starting_point_note(self):
-        output = self.run_guide("plan")
-        self.assertIn("add a ticket note as a possible starting point", output)
+        self.assertIn("ticket's current paths and criteria", output)
 
 
 if __name__ == "__main__":

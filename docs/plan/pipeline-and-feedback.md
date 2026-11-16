@@ -68,34 +68,27 @@ asking the first.
 
 - The planner's part is `chitty guide plan`; the reader's is
   `chitty guide cold-read <ID>`, which the planner passes to the reader.
-- Code-changing ticket: a fresh, cheap-model agent implements the simplest
-  solution the written description and criteria permit in a detached worktree,
-  and runs its tests with and without the fix. It examines each criterion for
-  vague or bundled behaviour and reports ambiguities and decisions rather than
-  silently supplying missing requirements. Otherwise a stronger model reads the
-  ticket and the code it names.
-- The original planning session then checks sufficiency using the implementing
-  commit, tests and report (or proposed text, referenced code and report when
-  there is nothing to run). For each criterion and the ticket as a whole, ask
-  whether a plausible minimal implementation could meet the criteria but still
-  reasonably fail a good review.
+- Every ticket gets one read-only cold read. A fresh, cheap-model agent reads
+  the ticket and the code and documents it names, reports ambiguities and
+  decisions, and makes no branch, ref, commit or file change. It may
+  try existing behaviour with commands that leave `git status` unchanged.
+- The original planning session then performs the sufficiency read on the
+  ticket text, named code and documents, and reader report. For each criterion
+  and the ticket as a whole, ask whether a plausible minimal implementation
+  could meet the criteria but still reasonably fail a good review.
 - Each gap needs a concrete counterexample, relevant varying inputs or state,
   distinguishing verification and observable result, and proposed criterion
   wording. Prefer general properties to accumulating examples; challenge
   coverage of the agreed problem, not speculative features.
 - Before `todo`, resolve reader findings and sufficiency gaps by strengthening
   or splitting the ticket, or explicitly rejecting findings as out of scope.
-  Write missing requirements into the ticket, not just the conversation. Repeat
-  the cold read after serious revisions. A fresh stronger sufficiency reader is
-  optional for uncertainty or repeated work–review failures, not mandatory.
-- The implementing commit is kept under `refs/cold-read/<ID>/<n>`, not a
-  branch, because Chitty reads tickets from every branch.
+  Write missing requirements into the ticket, not just the conversation. A
+  problem the read misses follows the expected route back to planning. A
+  stronger reader is optional for uncertainty or repeated work–review failures,
+  not mandatory.
 - Workers and reviewers never cold-read.
 - A ticket reaches `todo` only after its findings have outcomes, because
   `chitty run` takes anything in `todo` (`TASK-147` was claimed mid-read).
-- In this repository readers run on Haiku, to show what a weak model struggles
-  with. While a planner's own subagent works on a ticket, the ticket keeps an
-  owner, so `chitty run` leaves it alone.
 
 ## Spec tests
 

@@ -19,14 +19,9 @@ class TestColdReadGuide(unittest.TestCase):
     def test_prints_the_reader_procedure(self):
         output = _flat(self.run_cli("guide", "cold-read"))
         for phrase in (
-            "git worktree add --detach .worktrees/read-<ID>",
-            "UV_PROJECT_ENVIRONMENT",
             "Run no Chitty writes",
-            "should fail does fail, before implementing",
-            "rather than assume",
-            "git update-ref refs/cold-read/<ID>/<n> HEAD",
-            "git worktree remove --force .worktrees/read-<ID>",
-            "nothing to run",
+            "no worktree, branch, ref, commit or file change",
+            "Try behaviour rather than assume",
             "the exact wording to change",
         ):
             with self.subTest(phrase=phrase):
@@ -41,20 +36,7 @@ class TestColdReadGuide(unittest.TestCase):
     def test_plan_guide_points_at_the_reader_guide(self):
         planning = _flat(guide("plan"))
         self.assertIn("chitty guide cold-read <ID>", planning)
-        self.assertNotIn("git update-ref refs/cold-read", planning)
-
-    def test_guides_distinguish_probe_only_reads_from_implementation(self):
-        cold_read = _flat(guide("cold-read"))
-        planning = _flat(guide("plan"))
-        self.assertIn(
-            "implement it unless probing has already found a problem that will change the ticket",
-            cold_read,
-        )
-        self.assertIn(
-            "A read that only probed does not make a ticket ready",
-            planning,
-        )
-        self.assertEqual(planning.count("Cold-read every ticket, even a small one"), 1)
+        self.assertIn("one read-only cold read", planning)
 
 
 if __name__ == "__main__":

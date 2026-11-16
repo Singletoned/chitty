@@ -10,10 +10,10 @@ class TestPlanGuideConvergence(unittest.TestCase):
         self.assertIn("names the tests import", planning)
         self.assertIn("NotImplementedError", planning)
 
-    def test_ticket_reads_share_a_fixed_mutant_list(self):
+    def test_read_problems_return_to_planning(self):
         planning = " ".join(guide("plan").split())
-        self.assertIn("same fixed list of mutants", planning)
-        self.assertIn("survivors you fixed", planning)
+        self.assertIn("expected route", planning)
+        self.assertIn("return to planning", planning)
 
     def test_crowded_criteria_are_split(self):
         planning = " ".join(guide("plan").split())

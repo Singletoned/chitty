@@ -10,45 +10,24 @@ class TestColdReadSufficiencyGuide(unittest.TestCase):
             with self.subTest(role=role, phrase=phrase):
                 self.assertIn(phrase, text)
 
-    def test_fresh_reader_implements_literally_and_reports_ambiguities(self):
+    def test_reader_reports_ambiguities_and_planner_checks_sufficiency(self):
         self.assert_phrases(
             "cold-read",
             (
-                (
-                    "Implement the simplest solution the written Description "
-                    "and Acceptance Criteria permit"
-                ),
-                "Examine every criterion individually for vague phrases and bundled behaviours",
-                "do not silently add missing requirements",
-                (
-                    "The original planner uses your implementation and report "
-                    "for the sufficiency judgement"
-                ),
-                "Ambiguities in individual criteria and decisions left to the worker",
+                "Work only from its Description and Acceptance Criteria",
+                "Ambiguities in individual criteria",
+                "exact wording to change",
             ),
         )
-
-    def test_original_planner_challenges_individual_and_combined_coverage(self):
         self.assert_phrases(
             "plan",
             (
-                "In the original planning session, perform a sufficiency read",
-                "Inspect the implementing commit, its tests and report",
+                "perform a sufficiency read",
                 "each criterion individually and the ticket as a whole",
-                (
-                    "could a plausible minimal implementation satisfy the criteria "
-                    "yet reasonably fail a good review?"
-                ),
-                (
-                    "For a read with nothing to run, inspect the proposed text, "
-                    "referenced code and report instead"
-                ),
+                "a plausible minimal implementation",
                 "a concrete counterexample",
-                "relevant inputs or state",
                 "a distinguishing test and observable result",
                 "proposed criterion wording",
-                "Prefer a general property over accumulating examples",
-                "Do not invent speculative features",
             ),
         )
 
@@ -56,13 +35,14 @@ class TestColdReadSufficiencyGuide(unittest.TestCase):
         self.assert_phrases(
             "plan",
             (
-                "Before moving to `todo`, resolve every reader finding and sufficiency gap",
-                "strengthen the ticket, split it, or explicitly reject the finding as out of scope",
-                "Write requirements needed to reject the implementation into the ticket",
-                "not just the planning conversation",
-                "Repeat the cold read after fixing a serious finding",
-                "fresh stronger reader is optional",
-                "uncertainty or repeated work–review failures",
-                "not another mandatory session",
+                "resolve every reader finding and sufficiency gap",
+                "strengthen the ticket, split it, or explicitly reject",
+                "return to planning",
+                "A stronger reader remains optional",
+                "not mandatory",
             ),
         )
+
+
+if __name__ == "__main__":
+    unittest.main()

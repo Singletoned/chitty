@@ -2075,22 +2075,22 @@ class TestIdentity(CliTestCase):
 
 
 class TestGuide(CliTestCase):
-    def test_plan_guide_describes_implementing_cold_reads(self):
+    def test_plan_guide_describes_read_only_cold_reads(self):
         planning_guide = " ".join(guide("plan").split())
         for phrase in (
-            "implements it from the ticket alone",
-            "with and without the fix",
-            "Either way, the reader reports done meaning",
+            "one read-only cold read",
+            "cheap model",
+            "reports without changing the checkout",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning_guide)
 
-    def test_plan_guide_requires_repeat_reads_and_decision_tests(self):
+    def test_plan_guide_requires_decision_tests_and_expected_route(self):
         planning_guide = " ".join(guide("plan").split())
         for phrase in (
-            "until a read finds none",
-            "what criteria name",
-            "must fail without the fix",
+            "which test must fail without the fix",
+            "expected route",
+            "return to planning",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning_guide)
