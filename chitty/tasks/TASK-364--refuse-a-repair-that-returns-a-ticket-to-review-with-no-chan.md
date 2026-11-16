@@ -1,6 +1,7 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: planning
+status: cold-read
+owner: open-russet-eel
 created: 2026-11-16
 ---
 
@@ -28,3 +29,5 @@ Files: `src/chitty/run.py`, `src/chitty/git.py`, `tests/test_next.py`, new `test
 ## History
 
 - 2026-11-16T17:08:51Z open-russet-eel → planning
+- 2026-11-16T17:09:05Z open-russet-eel: changed owner
+- 2026-11-16T17:09:05Z open-russet-eel planning → cold-read
