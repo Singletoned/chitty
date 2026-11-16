@@ -1,6 +1,6 @@
 ---
 title: Remove guide text for rules the code already enforces
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Retro 2026-11-16: the role guides total about 4100 words and reach every reposit
 ## History
 
 - 2026-11-16T09:59:49Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:31Z intrepid-coral-raven backlog → planning
