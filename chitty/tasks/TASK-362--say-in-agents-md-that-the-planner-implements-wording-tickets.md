@@ -1,6 +1,6 @@
 ---
 title: Say in AGENTS.md that the planner implements wording tickets
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -16,3 +16,4 @@ Human decision, 2026-11-16: tickets that change only wording (guides, docs, prom
 
 - 2026-11-16T13:11:19Z open-russet-eel → planning
 - 2026-11-16T13:12:07Z open-russet-eel planning → todo
+- 2026-11-16T13:12:10Z open-russet-eel todo → doing
