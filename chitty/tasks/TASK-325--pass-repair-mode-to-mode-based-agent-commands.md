@@ -1,7 +1,6 @@
 ---
 title: Pass repair mode to mode-based agent commands
-status: planning
-owner: open-russet-eel
+status: todo
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -47,3 +46,5 @@ Out of scope: missing-branch recovery (`TASK-326`), and the continuation prompt 
 - 2026-11-16T16:58:32Z open-russet-eel planning → cold-read
 - 2026-11-16T17:03:32Z open-russet-eel: changed description, acceptance criteria
 - 2026-11-16T17:03:32Z open-russet-eel cold-read → planning
+- 2026-11-16T17:03:34Z open-russet-eel: changed owner
+- 2026-11-16T17:03:34Z open-russet-eel planning → todo
