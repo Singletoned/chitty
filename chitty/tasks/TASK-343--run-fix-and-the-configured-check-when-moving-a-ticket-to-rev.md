@@ -1,6 +1,6 @@
 ---
 title: Run fix and the configured check when moving a ticket to review
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T09:59:52Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:34Z intrepid-coral-raven backlog → planning
