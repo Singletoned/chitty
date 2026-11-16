@@ -1,6 +1,6 @@
 ---
 title: Tell workers and reviewers to list every problem when returning a ticket to planning
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T10:19:38Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:53Z intrepid-coral-raven backlog → planning
