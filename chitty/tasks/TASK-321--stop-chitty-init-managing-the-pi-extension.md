@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -15,8 +15,8 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 
 ## Acceptance Criteria
 
-- [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
-- [ ] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
+- [x] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
+- [x] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
 ## Plan
 
@@ -481,9 +481,13 @@ Human session, 2026-11-16: the last review failure was not a defect. The guide r
 
 Review failed (integration): merging `main` conflicts in `src/chitty/store.py`.
 
+Reviewed: merged main cleanly; make format && make check passed (556 Python tests, Node tests, ruff, pyright). The earlier review recorded the Hypothesis test failing before removal of installation/validation; the explicit valid-JSON exposeSessionEnvironment=true case specifically guards the settings migration.
+1: pass - tests/test_init_pi_isolation.py varies extension, state, and settings file presence and arbitrary bytes across fresh/existing and repeated init; its pre-fix failure was recorded in the first implementation run. The added valid JSON test exercises exposeSessionEnvironment=true without depending on extension installation.
+2: pass - src/chitty/roles/setup.md instructs users to inspect/remove the extension and state file and restart Pi; make format && make check passed, including Python and Node tests.
+
 ## Summary
 
-Init no longer manages Pi extensions or settings; bundled extension retained. Added explicit valid-settings isolation regression coverage alongside Hypothesis variation and documented manual cleanup/restart. Verified focused test and make format && make check (549 Python tests and Node tests). Changes committed as 3c3153d. No follow-up.
+Review handoff: init no longer manages Pi extensions or settings; bundled extension remains. Verified merged branch with make format && make check (556 Python tests; Node tests passed). Manual cleanup/restart guidance is documented. No follow-ups.
 
 ## History
 
@@ -525,3 +529,5 @@ Init no longer manages Pi extensions or settings; bundled extension retained. Ad
 - 2026-11-16T10:28:17Z intrepid-coral-raven blocked → review
 - 2026-11-16T10:29:08Z able-khaki-raven: changed notes
 - 2026-11-16T10:29:08Z able-khaki-raven review → doing
+- 2026-11-16T10:35:47Z sunny-teal-otter: changed notes, summary; ticked acceptance criteria
+- 2026-11-16T10:35:47Z sunny-teal-otter doing → review
