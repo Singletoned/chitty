@@ -18,3 +18,4 @@ Already done before this ticket was written: `_block_dirty_review` in `src/chitt
 - 2026-11-16T10:38:36Z intrepid-coral-raven backlog → planning
 - 2026-11-16T10:50:33Z intrepid-coral-raven: changed notes
 - 2026-11-16T10:50:33Z intrepid-coral-raven planning → backlog
+- 2026-11-16T10:50:34Z intrepid-coral-raven backlog → archived
