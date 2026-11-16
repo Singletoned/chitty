@@ -1,6 +1,6 @@
 ---
 title: Make cold reads a read-only scan
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -37,6 +37,11 @@ Rewrite the cold-read and plan guides plus the pipeline design section to descri
 
 Verification: the new read-only guide test failed before the guide rewrite (24 failures, including forbidden legacy phrases); after the fix, `make check` passed with `Ran 577 tests in 19.721s` and `OK`. `chitty fix` reported only pre-existing warnings in unrelated task files and made no changes. The full suite emits an expected fixture error about incomplete `autocommit` configuration, but the suite still passes.
 
+Reviewed: Read-only cold-read procedure and planning guidance match the ticket, and the named regression coverage is present.
+1: pass - Focused guide tests passed; the implementation notes record the pre-change focused test failure with 24 failures.
+2: pass - Focused guide tests passed for the read-only planning phrases and forbidden legacy phrases.
+3: pass - make format && make check passed: ruff, pyright, and 580 tests completed with OK; the suite also reports its documented incomplete-autocommit fixture error.
+
 ## Summary
 
 Implemented one read-only cold read across the cold-read and plan guides and pipeline design, with updated phrase tests and new regression coverage. Handoff: review commit `989a26a`. Verification: `make format && make check` passes; working tree is clean. Follow-up: none.
@@ -57,3 +62,5 @@ Implemented one read-only cold read across the cold-read and plan guides and pip
 - 2026-11-16T12:55:53Z tidy-white-kestrel: wrote the plan
 - 2026-11-16T13:01:25Z tidy-white-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-16T13:01:25Z tidy-white-kestrel doing → review
+- 2026-11-16T13:03:31Z vivid-fawn-stoat: changed notes; ticked acceptance criteria
+- 2026-11-16T13:03:31Z vivid-fawn-stoat review → done
