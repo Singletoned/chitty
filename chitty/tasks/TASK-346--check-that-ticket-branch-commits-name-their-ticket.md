@@ -1,6 +1,6 @@
 ---
 title: Check that ticket branch commits name their ticket
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T09:59:56Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:39Z intrepid-coral-raven backlog → planning
