@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -44,3 +44,4 @@ Cold read starting point: `refs/cold-read/TASK-334/1` (on top of TASK-332's read
 - 2026-11-14T19:25:40Z friendly-ginger-adder cold-read → planning
 - 2026-11-14T19:25:41Z friendly-ginger-adder: changed owner
 - 2026-11-14T19:25:41Z friendly-ginger-adder planning → todo
+- 2026-11-16T10:56:50Z jolly-khaki-yellowhammer todo → doing
