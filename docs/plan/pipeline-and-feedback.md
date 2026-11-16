@@ -8,11 +8,14 @@
 - Planning, cold reading, work and review use different sessions; nobody reviews
   their own work. The sufficiency read is part of planning: the original planner
   evaluates the independent cold read, rather than starting another session.
-- Wording in guides, docs and prompts, and content writing, skip the pipeline
-  (decided 2026-11-16): the planner writes and lands them directly, without a
-  ticket or review. They are quicker to make than to specify, need a strong
-  model, and review only checks them against their criteria. `TASK-336`, a
-  guide rewrite, passed review while deleting unrelated advice.
+- Tickets that can't be tested get the label and owner `untestable`
+  (decided 2026-11-16), and skip the cold read, work and review: a human has
+  a strong agent do them from time to time. Wording in guides, docs and
+  prompts, and content writing, are the usual case: quicker to make than to
+  specify, and review only checks them against their criteria (`TASK-336`, a
+  guide rewrite, passed review while deleting unrelated advice). The plan guide
+  deliberately does not say who does them: a planner told they are its own
+  work labels too much as `untestable`, because doing it itself looks cheaper.
 - Scripted gates come first: they cost no tokens and cannot be argued with.
   They never relax. Only the human's sampling rate moves, and only on measured
   escapes.

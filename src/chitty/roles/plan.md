@@ -3,11 +3,11 @@
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
-Some changes do not suit tickets: wording in guides, docs and prompts, and
-content writing. They are quicker to make than to specify, need a strong model,
-and a reviewer can only check them against the criteria that describe them. Do
-not write tickets for them. Make them yourself in the planning session, on a
-branch or worktree, run the repository's check, and land them without review.
+Label a ticket `untestable` when it can't be tested: no test or check can show
+it is done, and a reviewer could only compare it with its own criteria. Wording
+in guides, docs and prompts, and content writing, are usually untestable. Set
+its owner to `untestable` too, so the runner leaves it alone, and skip the cold
+read. Describe the change and why it is needed; criteria are optional.
 
 - Put paths, globs, commands, IDs, and code in backticks in task titles,
   descriptions, criteria, and notes. When you write a literal single `*` in
