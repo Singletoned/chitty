@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: review
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -26,7 +26,7 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 
 - [x] In a temp repository with `workflow = "tickets"`, for each of the six roles, `chitty guide <role>` exits 1, prints nothing on stdout, and prints the message naming the role and `workflow = "runner"` on stderr. Fails today.
 - [x] Under `tickets`, `chitty guide` exits 0 and prints the managed block, and `chitty guide --help` mentions no role name.
-- [x] Under `runner`, and outside a repository, `chitty guide`, each role with and without `TASK-1`, and `chitty guide --help` give the same stdout, stderr and exit code as at the commit before this change (capture them there first). With a config that fails to load, `chitty guide work` exits 1 with the config error and `chitty guide --help` shows the runner help. `make check` passes.
+- [ ] Under `runner`, and outside a repository, `chitty guide`, each role with and without `TASK-1`, and `chitty guide --help` give the same stdout, stderr and exit code as at the commit before this change (capture them there first). With a config that fails to load, `chitty guide work` exits 1 with the config error and `chitty guide --help` shows the runner help. `make check` passes.
 
 ## Plan
 
@@ -37,6 +37,11 @@ Add workflow as a required argument to store.guide and refuse role guides when w
 Cold read starting point: `refs/cold-read/TASK-334/1` (on top of TASK-332's read; mutants M1 to M4 killed). Its main files: `src/chitty/store.py`, `src/chitty/cli.py` (`_GuideCommand`), `src/chitty/run.py`, `tests/test_guide_workflow.py`; see them with `git show refs/cold-read/TASK-334/1:<path>`. It differs from the current text: its `role_workflow` falls back to runner on a broken config for role guides, which the ticket now forbids, and it also edits `tests/support.py`, which TASK-335 owns. Check it against the current criteria rather than trusting it.
 
 Regression evidence: tests.test_guide_workflow failed before the fix on all six tickets-workflow role refusals and role-bearing help; after the implementation, the workflow and compatibility tests pass. Verification: make format && make check passed (591 Python test suites and Node tests); git status --short was empty after commit c7ed80f.
+
+Review failed (tests): Newly discovered coverage gap: add the required baseline-capture compatibility tests for every specified case to tests/test_guide_workflow.py, checking stdout, stderr and exit code rather than comparing current output with the current implementation. No earlier review findings exist.
+1: pass - tests.test_guide_workflow passes; running TestRoleGuidesUnderTickets against c7ed80f^ printed FAILED (failures=7), including all six refusals. A separate six-role probe with TASK-1 printed six roles refused.
+2: pass - TestRoleGuidesUnderTickets passes; against c7ed80f^ it failed because help contained work. The managed guide assertion passed in both versions.
+3: fail - tests/test_guide_workflow.py does not capture baseline output or exercise all runner and outside-repository cases and all three result fields: it omits general guide, plan/setup with ID, most outside cases, exit codes and stderr. The required fixed-case compatibility tests are missing. Independent comparison against current main printed runner 14 comparisons; differences: [] and outside 14 comparisons; differences: [] (outside simulated by patching root discovery). Broken TOML probes printed exit 1 for guide and guide work, and help exit 0 with the runner example. make format && make check passed: 588 Python tests and Node tests. Comparing to c7ed80f^ instead showed setup output differences from a separately merged main change, so baseline selection must account for that merge.
 
 ## Summary
 
@@ -58,3 +63,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-16T10:57:15Z jolly-khaki-yellowhammer: wrote the plan
 - 2026-11-16T11:01:00Z jolly-khaki-yellowhammer: changed notes, summary; ticked acceptance criteria
 - 2026-11-16T11:01:00Z jolly-khaki-yellowhammer doing → review
+- 2026-11-16T11:04:20Z vivid-navy-newt: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-16T11:04:20Z vivid-navy-newt review → doing
