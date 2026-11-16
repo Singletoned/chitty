@@ -1,6 +1,7 @@
 ---
 title: Say in AGENTS.md that the planner implements wording tickets
-status: review
+status: blocked
+owner: human
 created: 2026-11-16
 ---
 
@@ -16,6 +17,8 @@ Human decision, 2026-11-16: tickets that change only wording (guides, docs, prom
 
 Implemented by the planner. No separate cold read: one fixed sentence the human dictated. No test fails first: docs-only. `make format && make check` in `.worktrees/task-362`: `Ran 580 tests`, `OK`. Commit `04c5290`.
 
+Human decision, 2026-11-16: wording changes are not worth reviewing, and the rule belongs in the plan guide so every repository gets it. The planner makes the change directly; a human closes this ticket.
+
 ## Summary
 
 Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged part of `AGENTS.md`; managed block untouched. Follow-ups: none.
@@ -27,3 +30,5 @@ Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged p
 - 2026-11-16T13:12:10Z open-russet-eel todo → doing
 - 2026-11-16T13:12:12Z open-russet-eel: changed notes, summary
 - 2026-11-16T13:12:12Z open-russet-eel doing → review
+- 2026-11-16T16:29:48Z open-russet-eel: changed owner, notes
+- 2026-11-16T16:29:48Z open-russet-eel review → blocked
