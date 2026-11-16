@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -43,6 +43,8 @@ Review failed (tests): Newly discovered coverage gap: add the required baseline-
 2: pass - TestRoleGuidesUnderTickets passes; against c7ed80f^ it failed because help contained work. The managed guide assertion passed in both versions.
 3: fail - tests/test_guide_workflow.py does not capture baseline output or exercise all runner and outside-repository cases and all three result fields: it omits general guide, plan/setup with ID, most outside cases, exit codes and stderr. The required fixed-case compatibility tests are missing. Independent comparison against current main printed runner 14 comparisons; differences: [] and outside 14 comparisons; differences: [] (outside simulated by patching root discovery). Broken TOML probes printed exit 1 for guide and guide work, and help exit 0 with the runner example. make format && make check passed: 588 Python tests and Node tests. Comparing to c7ed80f^ instead showed setup output differences from a separately merged main change, so baseline selection must account for that merge.
 
+Review follow-up cannot be completed safely from the current criterion: “same output as at the commit before this change” does not identify whether the baseline is the pre-implementation parent c7ed80f^ (which includes an upstream merge and has unrelated setup-guide output differences) or the earlier implementation base before that merge. The review explicitly observed different setup output when comparing against c7ed80f^ and says baseline selection must account for the merge. Please decide which behavior is the compatibility contract (the exact pre-change tree, or behavior with unrelated merged-main changes excluded) and identify the baseline revision. Until then, snapshots risk locking in unrelated changes or testing the wrong output.
+
 ## Summary
 
 Implemented workflow-gated role guides. CLI loads repository config for role requests (broken config errors propagate), defaults to runner outside repositories, runner help remains available when config is broken, and run.py passes repo.config.workflow. Added six-role workflow tests and updated direct callers. Verified with make format and make check; regression tests were observed failing before the fix. Commit: c7ed80f. No known follow-ups.
@@ -66,3 +68,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-16T11:04:20Z vivid-navy-newt: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-16T11:04:20Z vivid-navy-newt review → doing
 - 2026-11-16T11:13:52Z honest-hazel-yellowhammer: wrote the plan
+- 2026-11-16T11:14:42Z honest-hazel-yellowhammer: changed owner, notes
+- 2026-11-16T11:14:42Z honest-hazel-yellowhammer doing → planning
