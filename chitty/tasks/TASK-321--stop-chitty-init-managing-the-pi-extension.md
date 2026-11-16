@@ -1,9 +1,8 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: blocked
+status: review
 labels:
   - needs-minor
-owner: human
 depends_on:
   - TASK-329
 parent: TASK-275
@@ -478,6 +477,8 @@ Review failed (integration): Verification requires a test scratch location outsi
 1: fail - The earlier review reported missing isolated migration coverage; the new explicit valid-settings test addresses its shape, but could not be verified. With TMPDIR set inside the worktree, make check printed ChittyError: chitty init cannot run in linked worktree for both isolation tests, so neither current behavior nor failure against the old implementation was established.
 2: fail - Documentation in src/chitty/roles/setup.md describes manual inspection, removal and restart. make format passed, but make check with in-worktree TMPDIR printed FAILED (failures=46, errors=2): temporary repositories inherit the enclosing worktree and project configuration. Therefore the required passing check is unverified.
 
+Human session, 2026-11-16: the last review failure was not a defect. The guide rule to keep scratch files inside the worktree does not cover temporary directories the test suite itself creates under the system temp dir; those are fine. Setting `TMPDIR` inside the worktree nests the test repositories inside this git worktree, which is what produced the 46 failures and the linked-worktree `chitty init` refusal. Review again with the normal `make check`.
+
 ## Summary
 
 Init no longer manages Pi extensions or settings; bundled extension retained. Added explicit valid-settings isolation regression coverage alongside Hypothesis variation and documented manual cleanup/restart. Verified focused test and make format && make check (549 Python tests and Node tests). Changes committed as 3c3153d. No follow-up.
@@ -518,3 +519,5 @@ Init no longer manages Pi extensions or settings; bundled extension retained. Ad
 - 2026-11-14T19:58:43Z witty-indigo-urchin doing → review
 - 2026-11-14T20:02:42Z plucky-fawn-quail: changed owner, acceptance criteria, notes
 - 2026-11-14T20:02:42Z plucky-fawn-quail review → blocked
+- 2026-11-16T10:28:17Z intrepid-coral-raven: changed owner, notes
+- 2026-11-16T10:28:17Z intrepid-coral-raven blocked → review
