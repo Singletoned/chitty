@@ -1,5 +1,5 @@
 ---
-title: Run an occasional audit of `main` that suggests tickets
+title: Run an occasional audit of `main` that writes reports for planning
 status: backlog
 created: 2026-11-11
 ---
@@ -19,3 +19,4 @@ created: 2026-11-11
 - 2026-11-11T18:50:55Z vivid-yellowhammer: changed title
 - 2026-11-11T18:59:41Z vivid-yellowhammer: replaced notes; changed description
 - 2026-11-16T10:29:03Z intrepid-coral-raven: changed description
+- 2026-11-16T10:29:23Z intrepid-coral-raven: changed title
