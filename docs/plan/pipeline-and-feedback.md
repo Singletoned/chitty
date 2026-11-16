@@ -10,12 +10,10 @@
   evaluates the independent cold read, rather than starting another session.
 - Tickets that can't be tested get the label and owner `untestable`
   (decided 2026-11-16), and skip the cold read, work and review: a human has
-  a strong agent do them from time to time. Wording in guides, docs and
-  prompts, and content writing, are the usual case: quicker to make than to
-  specify, and review only checks them against their criteria (`TASK-336`, a
-  guide rewrite, passed review while deleting unrelated advice). The plan guide
-  deliberately does not say who does them: a planner told they are its own
-  work labels too much as `untestable`, because doing it itself looks cheaper.
+  a strong agent do them. Wording in guides, docs and prompts, and content
+  writing, are the usual case: quicker to make than to specify, and review only
+  checks them against their criteria (`TASK-336`, a guide rewrite, passed review
+  while deleting unrelated advice).
 - Scripted gates come first: they cost no tokens and cannot be argued with.
   They never relax. Only the human's sampling rate moves, and only on measured
   escapes.
