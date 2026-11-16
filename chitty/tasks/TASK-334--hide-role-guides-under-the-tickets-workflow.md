@@ -30,7 +30,7 @@ Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hid
 
 ## Plan
 
-Add workflow as a required argument to store.guide and refuse role guides when workflow is tickets. Resolve the repository workflow in the CLI with the specified config-error behavior, pass the configured workflow from run.py, and update direct guide callers/tests to explicitly use runner. Add fixed workflow behavior tests in tests/test_guide_workflow.py, first confirming the refusal cases fail before implementation. Capture runner/outside-repository CLI output before changes, then run make format and make check, commit implementation, and hand off with evidence.
+Add explicit compatibility assertions in tests/test_guide_workflow.py for runner and outside-repository invocation cases, covering stdout, stderr, and exit status for general guide, all roles with and without TASK-1, and help. Capture expected results from the pre-change revision inside this worktree, accounting for main changes merged afterward; then run the focused tests, format/check, and commit the test-only follow-up.
 
 ## Notes
 
@@ -65,3 +65,4 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-16T11:01:00Z jolly-khaki-yellowhammer doing → review
 - 2026-11-16T11:04:20Z vivid-navy-newt: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-16T11:04:20Z vivid-navy-newt review → doing
+- 2026-11-16T11:13:52Z honest-hazel-yellowhammer: wrote the plan
