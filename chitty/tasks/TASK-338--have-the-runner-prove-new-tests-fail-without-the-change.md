@@ -1,6 +1,6 @@
 ---
 title: Have the runner prove new tests fail without the change
-status: backlog
+status: planning
 depends_on:
   - TASK-353
 created: 2026-11-16
@@ -19,3 +19,4 @@ From the retro discussion: the worker should see which tests passed without the 
 - 2026-11-16T09:50:19Z intrepid-coral-raven → backlog
 - 2026-11-16T10:00:09Z intrepid-coral-raven: changed notes
 - 2026-11-16T10:00:14Z intrepid-coral-raven: changed dependencies
+- 2026-11-16T10:38:27Z intrepid-coral-raven backlog → planning
