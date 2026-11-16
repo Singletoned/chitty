@@ -1,5 +1,5 @@
 ---
-title: Add `make audit` that suggests tickets from `taidy security`
+title: Add `make audit` that writes a report from `taidy security`
 status: backlog
 parent: TASK-290
 created: 2026-11-11
@@ -13,10 +13,11 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test feeds the script recorded `taidy security --json` output with one finding: one suggestion arrives, titled with the tool, rule and file. Running it again sends none. It fails today.
+- [ ] A test feeds the script recorded `taidy security --json` output with one finding: the report lists it under its tool and file, and no suggestion is sent. It fails today.
 
 ## History
 
 - 2026-11-11T16:18:23Z vivid-yellowhammer → backlog
 - 2026-11-11T18:59:32Z vivid-yellowhammer: changed title, description, acceptance criteria
 - 2026-11-16T10:29:01Z intrepid-coral-raven: changed description
+- 2026-11-16T10:29:21Z intrepid-coral-raven: changed title, acceptance criteria
