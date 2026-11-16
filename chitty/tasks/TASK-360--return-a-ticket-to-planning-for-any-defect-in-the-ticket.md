@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to planning for any defect in the ticket
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -46,3 +46,4 @@ No property tests: fixed text, and the defects are a small fixed set, each liste
 - 2026-11-16T12:53:25Z open-russet-eel cold-read → planning
 - 2026-11-16T12:54:42Z open-russet-eel: changed owner
 - 2026-11-16T12:54:42Z open-russet-eel planning → todo
+- 2026-11-16T12:55:40Z daring-yellow-jay todo → doing
