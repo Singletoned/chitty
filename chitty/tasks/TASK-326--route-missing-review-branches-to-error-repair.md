@@ -7,12 +7,23 @@ created: 2026-11-13
 
 ## Description
 
-When review finds that the ticket branch and its worktree are missing, transition the ticket to `error`, not `blocked`, and record the missing branch and review context in the error note. An explicit `chitty run --errors` must select it for repair: the repair agent can recover the original branch and return it to `review`, or set it to `blocked` when human help is needed. The repair agent may recover a known original implementation commit from Git objects, reflogs or other locally available evidence; it must record the commit ID and evidence before returning to `review`. If no original commit can be identified, it must set the ticket to `blocked` with an explanation. Do not automatically recreate the missing ticket branch from `main` and present it as recovered work. Preserve unrelated unsafe-failure reporting. Update `tests/test_review_merge.py` and the relevant runner guidance. Use real temporary repositories and fake agents; no real model session. A missing branch and its Git worktree require real Git operations, so a pure function cannot test the recovery boundary. Write the regression first and record its pre-fix failure.
+A missing ticket branch at review is a runner error, not a human block. Today `_run_session` in `src/chitty/run.py` (the `action.mode == "review"` block that writes `Review blocked: ... has no branch`) sets the ticket to `blocked` with owner `human`. Seen on `TASK-318`, whose work had landed by hand and whose branch was then gone.
+
+Change it to set the ticket to `error`, leaving the owner as it is, with a note in the `Runner error (<phase>): ...` form `_record_ticket_error` writes, phase `review`, naming the missing branch and saying no worktree exists. `_record_ticket_error` itself refuses when the worktree is gone, so write this note directly with `main_repo.edit` (`status="error"`, `skip_verdicts=True`). No agent starts.
+
+Repair needs no new selection: `chitty run --errors` already selects `error` tickets, and for a ticket with no branch `_worktree` creates the branch from `main` as the repair agent's workspace. That empty branch must not pass as recovered work: when a repair session ends with the ticket in `review` and its branch has no commits that are not on `main`, raise `RepairError` saying the repair returned the ticket to review with no commits beyond `main`. This check applies to every repair, since a review of a branch with nothing on it has nothing to review.
+
+Add to `src/chitty/roles/repair.md` one bullet: if the ticket branch was missing, find the original implementation commit (reflogs, `git log --all --grep 'Task: <ID>'`, other worktrees), reset the branch to it, note the commit ID and the evidence, then set `review`; if none can be found, set `blocked` and say what was searched.
+
+Files: `src/chitty/run.py`, `src/chitty/roles/repair.md`, `tests/test_review_merge.py` (rename and rewrite `test_missing_review_branch_blocks_ticket_and_is_not_selected_again`), and a new `tests/test_repair_missing_branch.py` using the fake agents of `tests/test_review_merge.py` or `install_fake_pi` in `tests/test_next.py`. No real model session.
+
+No property test: the states are a small fixed set (branch missing at review; repair ending in `review` with commits, in `review` without commits, in `blocked`), each listed in the criteria and tested, and each needs real git branches and a subprocess agent.
 
 ## Acceptance Criteria
 
-- [ ] A review with no ticket branch or worktree changes the ticket to `error`, records the missing branch and review context, and is not selected by ordinary work or review; the regression fails before the change.
-- [ ] An explicit fake-agent repair restores a known original implementation commit and records its ID and evidence before returning to `review`; if the original commit cannot be identified, it sets the ticket to `blocked`. The runner does not automatically recreate the missing ticket branch from `main` as though it were restored.
+- [ ] In `tests/test_review_merge.py`: a review whose branch and worktree are gone prints `TASK-1: review → error`, starts no agent, keeps the owner unchanged, and leaves a note containing `Runner error (review)`, `TASK-1` and `task-1`. `chitty run --mode review` and `chitty run --mode work` then exit 3 with no next ticket, and `chitty next` finds nothing; `chitty run --errors` selects it. Fails before the change (today it prints `review → blocked`).
+- [ ] In `tests/test_repair_missing_branch.py`, after the missing-branch error: a fake repair agent that resets `task-1` to a commit kept from the deleted branch and sets `review` ends with `TASK-1` in `review`; one that sets `review` without adding commits makes `chitty run --errors` exit non-zero with the `RepairError` text, and the ticket stays `error`; one that sets `blocked` ends in `blocked`. The no-commits case fails before the change.
+- [ ] `src/chitty/roles/repair.md` has the missing-branch bullet described above. `make check` passes.
 
 ## History
 
@@ -27,3 +38,4 @@ When review finds that the ticket branch and its worktree are missing, transitio
 - 2026-11-14T09:28:01Z mellow-umber-lapwing planning → cold-read
 - 2026-11-14T09:32:06Z mellow-umber-lapwing: changed owner
 - 2026-11-14T09:32:06Z mellow-umber-lapwing cold-read → planning
+- 2026-11-16T17:04:24Z open-russet-eel: changed description, acceptance criteria
