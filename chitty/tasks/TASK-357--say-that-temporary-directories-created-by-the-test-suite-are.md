@@ -8,6 +8,11 @@ created: 2026-11-16
 
 Seen 2026-11-16 on `TASK-321`: the review guide says to read and change only files inside the worktree, including scratch files. A reviewer took that to forbid the test suite using the system temp dir, set `TMPDIR` inside the worktree, which nested test repositories inside the git worktree and produced 46 failures, then failed the review as `integration`. In `src/chitty/roles/review.md` and `work.md`, make the rule cover files the agent creates, and say that temporary directories the repository tests create for themselves are fine. Revisit when agents run in containers.
 
+## Notes
+
+Stopgap until agents run in containers (`docs/plan/direction.md`, 2026-11-16): keep the wording change to one sentence, since the sandbox will replace the rule.
+
 ## History
 
 - 2026-11-16T10:29:27Z intrepid-coral-raven → backlog
+- 2026-11-16T10:37:05Z intrepid-coral-raven: changed notes
