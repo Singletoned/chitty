@@ -16,10 +16,11 @@ created: 2026-11-11
 
 ## Acceptance Criteria
 
-- [ ] A test mutates a temporary module whose test does not check its return value: one survivor is suggested, with its file and line. It fails today.
+- [ ] A test mutates a temporary module whose test does not check its return value: the report lists one survivor under that file, with its line and diff, and no suggestion is sent. It fails today.
 
 ## History
 
 - 2026-11-11T16:18:27Z vivid-yellowhammer → backlog
 - 2026-11-11T18:50:44Z vivid-yellowhammer: changed description
 - 2026-11-16T10:28:59Z intrepid-coral-raven: changed description
+- 2026-11-16T10:29:20Z intrepid-coral-raven: changed acceptance criteria
