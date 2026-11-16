@@ -1,7 +1,7 @@
 ---
 title: Restore planning advice that TASK-336 removed
-status: review
-owner: open-russet-eel
+status: blocked
+owner: human
 created: 2026-11-16
 ---
 
@@ -34,6 +34,8 @@ Out of scope: any other change to the read-only procedure. No property tests: fi
 
 Implemented by the planner, since wording tickets go to the stronger model. Regression evidence: `tests/test_guide_plan_restored.py` failed before the guide edits (`FAILED (failures=17)`), then passed. Final `make format && make check` in `.worktrees/task-361`: `Ran 583 tests`, `OK`. Commit `a486380` on `task-361`.
 
+Landed directly on `main` (fast-forward to `19ba601`) after merging `main` and passing `make check` (583 tests OK), without review, by the human decision that wording changes are not worth reviewing. A human closes this ticket.
+
 ## Summary
 
 Commit `a486380` on `task-361` restores the plan-guide advice `989a26a` dropped, removes its wrong wording and the `TASK-323` ID, restores the reader criterion bullet and the planner-records-outcomes clause in the cold-read guide, and restores the Haiku and owner bullet in `docs/plan/pipeline-and-feedback.md`. `make check` passes. Follow-ups: none.
@@ -49,3 +51,5 @@ Commit `a486380` on `task-361` restores the plan-guide advice `989a26a` dropped,
 - 2026-11-16T13:10:47Z open-russet-eel todo → doing
 - 2026-11-16T13:11:03Z open-russet-eel: changed notes, summary
 - 2026-11-16T13:11:03Z open-russet-eel doing → review
+- 2026-11-16T16:30:32Z open-russet-eel: changed owner, notes
+- 2026-11-16T16:30:32Z open-russet-eel review → blocked
