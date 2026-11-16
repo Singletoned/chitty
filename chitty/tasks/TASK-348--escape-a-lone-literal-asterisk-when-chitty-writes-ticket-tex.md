@@ -1,6 +1,6 @@
 ---
 title: Escape a lone literal asterisk when Chitty writes ticket text
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Every guide tells agents to escape a single literal `*` or wrap it in backticks,
 ## History
 
 - 2026-11-16T09:59:59Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:42Z intrepid-coral-raven backlog → planning
