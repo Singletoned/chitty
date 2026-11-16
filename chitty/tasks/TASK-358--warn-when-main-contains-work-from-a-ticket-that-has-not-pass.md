@@ -1,6 +1,6 @@
 ---
 title: Warn when main contains work from a ticket that has not passed review
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Seen 2026-11-16: `TASK-318` code reached `main` in `6a9e3ee` (Merge TASK-318 run
 ## History
 
 - 2026-11-16T10:29:29Z intrepid-coral-raven → backlog
+- 2026-11-16T10:39:00Z intrepid-coral-raven backlog → planning
