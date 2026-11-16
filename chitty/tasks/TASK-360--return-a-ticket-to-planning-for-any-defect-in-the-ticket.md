@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to planning for any defect in the ticket
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -45,6 +45,11 @@ Update the work/review guides, continuation prompt, runner guide and fixture, RE
 
 Implemented all five ticket-defect routes to planning across work/review/runner guidance, continuation prompts, README, and pipeline plan. Regression tests were run before the fix and failed (11 failures), then passed after the fix. Verification: uv run python -m unittest tests.test_guide_return_scope tests.test_guide_return_to_planning tests.test_guide_workflow_block; make format; make check. Commit: 9527b6f.
 
+Reviewed: all criteria pass after independent diff inspection and verification.
+1: pass - tests/test_guide_return_scope.py and tests/test_guide_return_to_planning.py pass; work.md and review.md route missing or contradictory requirements, an unresolved design decision, a wrong claim about the code, files or other tickets, a criterion that cannot be verified as written or would pass with nothing built, and a ticket too large to finish in one session to planning while preserving the cheap-default and implementation-defect rules.
+2: pass - continuation_prompt tests pass for both roles; guide workflow tests pass with the updated fixture, and managed_guide("runner") contains all five defect phrases.
+3: pass - README.md and both named pipeline bullets list missing or contradictory requirements, an unresolved design decision, a wrong claim about the code, files or other tickets, a criterion that cannot be verified as written or would pass with nothing built, and a ticket too large to finish in one session; make format && make check passed all 580 tests, ruff, pyright, and formatting checks.
+
 ## Summary
 
 Handoff: documentation and continuation-prompt guidance now routes missing or contradictory requirements, an unresolved design decision, a wrong claim about the code, files or other tickets, a criterion that cannot be verified as written or would pass with nothing built, and a ticket too large to finish in one session to planning. Review should inspect commit 9527b6f. Verification: focused guide tests passed; make format && make check passed; worktree is clean. Follow-ups: none.
@@ -62,3 +67,5 @@ Handoff: documentation and continuation-prompt guidance now routes missing or co
 - 2026-11-16T12:55:53Z daring-yellow-jay: wrote the plan
 - 2026-11-16T12:58:21Z daring-yellow-jay: changed notes, summary; ticked acceptance criteria
 - 2026-11-16T12:58:21Z daring-yellow-jay doing → review
+- 2026-11-16T13:00:09Z nimble-jade-toad: changed notes; ticked acceptance criteria
+- 2026-11-16T13:00:09Z nimble-jade-toad review → done
