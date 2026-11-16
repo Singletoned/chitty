@@ -1,6 +1,6 @@
 ---
 title: Make cold reads a read-only scan
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -12,3 +12,4 @@ Retro of 2026-11-16: cold-read tickets passed their first review no more often t
 
 - 2026-11-16T09:50:16Z intrepid-coral-raven → backlog
 - 2026-11-16T09:59:48Z intrepid-coral-raven: changed description
+- 2026-11-16T10:38:24Z intrepid-coral-raven backlog → planning
