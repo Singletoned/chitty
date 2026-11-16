@@ -1,6 +1,6 @@
 ---
 title: Refuse to move a ticket to review with uncommitted changes
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T09:59:51Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:32Z intrepid-coral-raven backlog → planning
