@@ -270,6 +270,18 @@ def _remove_unknown_configuration_keys(data: object, source: Path) -> object:
     return cleaned
 
 
+def configured_workflow(start: Path) -> str | None:
+    """Return the configured workflow, or None when no repository is found."""
+    root = search_root(start)
+    return None if root is None else load_repo_config(root).workflow
+
+
+def require_runner(config: RepoConfig, command: str) -> None:
+    """Reject runner-only commands for repositories using the tickets workflow."""
+    if config.workflow != "runner":
+        raise ChittyError(f'chitty {command} needs workflow = "runner" in the Chitty config')
+
+
 def resolve_workflow(workflow: str | None, chitty_version: str | None) -> str:
     """Resolve the workflow; older or unreadable setups retain runner behavior."""
     if workflow is not None:
