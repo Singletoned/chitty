@@ -1,5 +1,5 @@
 ---
-title: Say in AGENTS.md that the planner implements wording tickets
+title: Make wording and content changes without tickets
 status: blocked
 owner: human
 created: 2026-11-16
@@ -19,6 +19,8 @@ Implemented by the planner. No separate cold read: one fixed sentence the human 
 
 Human decision, 2026-11-16: wording changes are not worth reviewing, and the rule belongs in the plan guide so every repository gets it. The planner makes the change directly; a human closes this ticket.
 
+Done directly as the rule itself says: the plan guide and `docs/plan/pipeline-and-feedback.md` now send wording and content changes around the pipeline. Not in `AGENTS.md`, so every repository gets it. Landed on `main` at `8ae811b` with `make check` 583 tests OK. A human closes this ticket.
+
 ## Summary
 
 Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged part of `AGENTS.md`; managed block untouched. Follow-ups: none.
@@ -32,3 +34,4 @@ Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged p
 - 2026-11-16T13:12:12Z open-russet-eel doing → review
 - 2026-11-16T16:29:48Z open-russet-eel: changed owner, notes
 - 2026-11-16T16:29:48Z open-russet-eel review → blocked
+- 2026-11-16T16:31:20Z open-russet-eel: changed title, notes
