@@ -1,6 +1,6 @@
 ---
 title: Resolve dependencies the same way show does, across branches
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Seen 2026-11-16: `TASK-318` must be edited on its branch (Chitty refuses on `mai
 ## History
 
 - 2026-11-16T10:29:26Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:56Z intrepid-coral-raven backlog → planning
