@@ -5,6 +5,9 @@ labels:
   - bug
   - runner
 owner: human
+depends_on:
+  - TASK-325
+  - TASK-326
 created: 2026-11-13
 ---
 
@@ -46,6 +49,8 @@ Review failed (tests): Add regressions and fix timeout output capture, repair pr
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Human session, 2026-11-16: this ticket code already reached `main` in `6a9e3ee` (Merge TASK-318 runner error fixes, 19:37 on 2026-11-13), between the worker moving it to review and the third review failing, so there is nothing left on the branch to land. The third review findings are now separate tickets: timeout output (`TASK-324`, done), repair prompts for mode-based agent commands (`TASK-325`) and missing review branches (`TASK-326`). Leave this blocked until those land, then mark it done and archive it.
+
 ## Summary
 
 Committed runner failure-output capture and repair-status validation in 1a1348b (Task: TASK-318). Full make format && make check passed: 526 Python tests and Node tests. Added regressions for setup output and interrupted-agent reporter context. Working tree is clean; ready for independent review.
@@ -72,3 +77,4 @@ Committed runner failure-output capture and repair-status validation in 1a1348b 
 - 2026-11-13T19:36:48Z zesty-umber-puffin: changed notes; ticked acceptance criteria
 - 2026-11-13T19:44:27Z intrepid-teal-toad: changed owner, acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-13T19:44:27Z intrepid-teal-toad review → blocked
+- 2026-11-16T10:28:15Z intrepid-coral-raven: changed dependencies, notes
