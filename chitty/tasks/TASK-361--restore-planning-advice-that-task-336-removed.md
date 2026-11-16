@@ -1,6 +1,7 @@
 ---
 title: Restore planning advice that TASK-336 removed
-status: planning
+status: cold-read
+owner: open-russet-eel
 created: 2026-11-16
 ---
 
@@ -32,3 +33,5 @@ Out of scope: any other change to the read-only procedure. No property tests: fi
 ## History
 
 - 2026-11-16T13:04:45Z open-russet-eel → planning
+- 2026-11-16T13:04:56Z open-russet-eel: changed owner
+- 2026-11-16T13:04:56Z open-russet-eel planning → cold-read
