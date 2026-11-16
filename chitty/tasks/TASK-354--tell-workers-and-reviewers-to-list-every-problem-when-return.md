@@ -1,6 +1,6 @@
 ---
 title: Tell workers and reviewers to list every problem when returning a ticket to planning
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -19,3 +19,4 @@ created: 2026-11-16
 - 2026-11-16T10:38:53Z intrepid-coral-raven backlog → planning
 - 2026-11-16T12:51:08Z open-russet-eel: changed dependencies
 - 2026-11-16T16:48:14Z open-russet-eel: changed labels, owner
+- 2026-11-16T16:48:29Z open-russet-eel planning → todo
