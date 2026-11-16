@@ -1,6 +1,6 @@
 ---
 title: Keep the output of the last check run in a gitignored log
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Runner check output is written into ticket notes (`Check failed before this sess
 ## History
 
 - 2026-11-16T10:00:06Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:51Z intrepid-coral-raven backlog → planning
