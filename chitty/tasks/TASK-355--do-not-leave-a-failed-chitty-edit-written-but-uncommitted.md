@@ -1,6 +1,7 @@
 ---
 title: Do not leave a failed chitty edit written but uncommitted
-status: planning
+status: cold-read
+owner: open-russet-eel
 created: 2026-11-16
 ---
 
@@ -25,3 +26,5 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 - 2026-11-16T16:56:28Z open-russet-eel: changed description, acceptance criteria
 - 2026-11-16T16:56:39Z open-russet-eel: changed description, acceptance criteria
 - 2026-11-16T16:56:42Z open-russet-eel: changed acceptance criteria
+- 2026-11-16T16:57:31Z open-russet-eel: changed owner
+- 2026-11-16T16:57:31Z open-russet-eel planning → cold-read
