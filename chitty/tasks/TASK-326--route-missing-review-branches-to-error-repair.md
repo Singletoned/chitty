@@ -1,6 +1,7 @@
 ---
 title: Route missing review branches to error repair
-status: planning
+status: cold-read
+owner: open-russet-eel
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -39,3 +40,5 @@ No property test: the states are a small fixed set (branch missing at review; re
 - 2026-11-14T09:32:06Z mellow-umber-lapwing: changed owner
 - 2026-11-14T09:32:06Z mellow-umber-lapwing cold-read → planning
 - 2026-11-16T17:04:24Z open-russet-eel: changed description, acceptance criteria
+- 2026-11-16T17:04:26Z open-russet-eel: changed owner
+- 2026-11-16T17:04:26Z open-russet-eel planning → cold-read
