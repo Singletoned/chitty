@@ -16,11 +16,9 @@ check: ## lint, type-check and run the tests
 	uv run ruff check --no-fix .
 	uv run pyright
 	uv run unittest-parallel -s tests -t . --level test
-	npm test
 
-test: ## run the tests
+test: ## run the Python tests
 	uv run unittest-parallel -s tests -t . --level test
-	npm test
 
 format: ## format and auto-fix Python code
 	uv run ruff check --exit-zero .

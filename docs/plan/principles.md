@@ -39,8 +39,7 @@
 
 - `chitty init` is idempotent: it adds missing setup, refreshes the managed
   `AGENTS.md` block, and migrates formats.
-- It installs the machine-wide Pi extension only from a main checkout (or a
-  directory outside Git); linked worktrees skip machine-wide setup.
+- It does not inspect or manage machine-wide Pi extensions or settings.
 - Reads work with older setup; writes need it current. With
   `autocommit = true`, Chitty upgrades and commits setup separately before the
   write; otherwise it fails and says to run `chitty init`.

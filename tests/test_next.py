@@ -1,5 +1,4 @@
 import asyncio
-import hashlib
 import io
 import json
 import os
@@ -950,13 +949,6 @@ class TestNext(CliTestCase):
         config.write_text(config.read_text().replace(CHITTY_VERSION, "0.0.0"))
         self.git("add", "chitty.toml")
         self.git("commit", "--quiet", "-m", "stale setup")
-        agent = self.tmp / "pi-agent"
-        extension = agent / "extensions" / "chitty.ts"
-        extension.parent.mkdir(parents=True)
-        extension.write_text("old extension")
-        (agent / "chitty-extension.sha256").write_text(
-            hashlib.sha256(b"old extension").hexdigest() + "\n"
-        )
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
         seen = self.tmp / "seen-version"
@@ -968,18 +960,14 @@ class TestNext(CliTestCase):
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         old_path = os.environ.get("PATH", "")
-        os.environ.update(
-            PATH=f"{fake.parent}:{old_path}", PI_CODING_AGENT_DIR=str(agent), SEEN=str(seen)
-        )
+        os.environ.update(PATH=f"{fake.parent}:{old_path}", SEEN=str(seen))
         try:
             result = self.run_cli("run")
         finally:
             os.environ["PATH"] = old_path
-            os.environ.pop("PI_CODING_AGENT_DIR", None)
             os.environ.pop("SEEN", None)
 
         self.assertEqual(seen.read_text(), CHITTY_VERSION)
-        self.assertEqual(extension.read_text(), "old extension")
         self.assertIn(str(config), result.stderr)
         self.assertNotIn("re-run `chitty init`", result.stderr)
         self.assertIn(
@@ -997,50 +985,6 @@ class TestNext(CliTestCase):
                 "chitty/tasks/TASK-1--todo.md",
             }
         )
-
-    def test_run_replaces_an_outdated_extension_before_starting_pi(self):
-        self.add("Todo")
-        config = self.root / "chitty.toml"
-        config.write_text(
-            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
-        )
-        self.git("init", "--quiet")
-        self.git("branch", "-M", "main")
-        self.git("config", "user.email", "test@example.com")
-        self.git("config", "user.name", "Test")
-        self.run_cli("init")
-        self.git("add", "--all")
-        self.git("commit", "--quiet", "-m", "base")
-        agent = self.tmp / "pi-agent"
-        extension = agent / "extensions" / "chitty.ts"
-        extension.parent.mkdir(parents=True)
-        extension.write_text("old extension")
-        (agent / "chitty-extension.sha256").write_text(
-            hashlib.sha256(b"old extension").hexdigest() + "\n"
-        )
-        seen = self.tmp / "seen-extension"
-        fake = self.root / "bin" / "pi"
-        fake.parent.mkdir()
-        fake.write_text(
-            "#!" + sys.executable + "\n"
-            "import os, pathlib\n"
-            "agent = pathlib.Path(os.environ['PI_CODING_AGENT_DIR'])\n"
-            "pathlib.Path(os.environ['SEEN']).write_bytes(\n"
-            "    (agent / 'extensions/chitty.ts').read_bytes()\n)\n"
-        )
-        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
-        old_path = os.environ.get("PATH", "")
-        os.environ.update(
-            PATH=f"{fake.parent}:{old_path}", PI_CODING_AGENT_DIR=str(agent), SEEN=str(seen)
-        )
-        try:
-            self.run_cli("run")
-        finally:
-            os.environ["PATH"] = old_path
-            os.environ.pop("PI_CODING_AGENT_DIR", None)
-            os.environ.pop("SEEN", None)
-
-        self.assertEqual(seen.read_bytes(), b"old extension")
 
     def test_run_stops_before_pi_when_refresh_fails_or_setup_is_dirty(self):
         self.add("Todo")
@@ -2078,7 +2022,15 @@ class TestNext(CliTestCase):
     def test_run_forwards_arguments_and_uses_a_fresh_actor_per_invocation(self):
         config = self.root / "chitty.toml"
         config.write_text(
-            config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
+            config.read_text()
+            .replace(
+                "autocommit = false",
+                'autocommit = true\nsetup = "true"',
+            )
+            .replace(
+                'agent_command = "pi --chitty-{mode} {id}"',
+                'agent_command = "pi -p {prompt}"',
+            )
         )
         self.git("init", "--quiet")
         self.git("branch", "-M", "main")
@@ -2091,14 +2043,17 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, pathlib, subprocess, sys\n"
+            "import os, pathlib, re, subprocess, sys\n"
             "root = pathlib.Path(os.getcwd())\n"
             "(root / 'pi-arguments').write_text(repr(sys.argv[1:]))\n"
             "(root / 'run-actor').write_text(os.environ['CHITTY_ACTOR'])\n"
+            "subprocess.run([sys.executable, '-c', \"import os,pathlib; "
+            "pathlib.Path('child-actor').write_text(os.environ['CHITTY_ACTOR'])\"], check=True)\n"
             "(root / 'pi-session-id').write_text(os.environ.get('CHITTY_PI_SESSION_ID', ''))\n"
             "os.environ['CLAUDE_CODE_SESSION_ID'] = 'agent-session'\n"
             "chitty = str(pathlib.Path(sys.executable).with_name('chitty'))\n"
-            "subprocess.run([chitty, 'edit', sys.argv[2], '--status', 'blocked', "
+            "ticket = re.search(r'TASK-\\d+', sys.argv[2]).group()\n"
+            "subprocess.run([chitty, 'edit', ticket, '--status', 'blocked', "
             "'--note', 'fake agent write'], check=True, stdout=subprocess.DEVNULL)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
@@ -2122,10 +2077,10 @@ class TestNext(CliTestCase):
                     "TASK-1: doing → blocked\n",
                 )
                 worktree = self.root / ".worktrees" / "task-1"
-                self.assertEqual(
-                    (worktree / "pi-arguments").read_text(),
-                    "['--chitty-work', 'TASK-1', '--from-test']",
-                )
+                pi_arguments = (worktree / "pi-arguments").read_text()
+                self.assertIn("['-p',", pi_arguments)
+                self.assertIn("Work only on Chitty ticket TASK-1", pi_arguments)
+                self.assertIn("'--from-test'", pi_arguments)
                 history = (
                     Repo.open(worktree)
                     .find(Repo.open(worktree).resolve("TASK-1"))
@@ -2140,6 +2095,7 @@ class TestNext(CliTestCase):
                 self.assertEqual(len(actors), 1)
                 first_actor = (worktree / "run-actor").read_text()
                 self.assertEqual(first_actor, next(iter(actors)))
+                self.assertEqual((worktree / "child-actor").read_text(), first_actor)
                 self.assertEqual((worktree / "pi-session-id").read_text(), "")
 
                 os.environ["CHITTY_ACTOR"] = "test-agent"
@@ -2159,6 +2115,7 @@ class TestNext(CliTestCase):
                 second_actor = second_history.splitlines()[-1].split()[2]
                 second_run_actor = (second / "run-actor").read_text()
                 self.assertEqual(second_actor, second_run_actor)
+                self.assertEqual((second / "child-actor").read_text(), second_run_actor)
                 self.assertNotEqual(first_actor, second_run_actor)
                 self.assertNotIn("fixed-actor", {second_actor})
                 self.assertEqual((second / "pi-session-id").read_text(), "")

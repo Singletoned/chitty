@@ -1105,10 +1105,7 @@ def _add_missing_settings(
             ),
             (
                 "agent_command",
-                (
-                    '# agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
-                    '--chitty-{mode} {id}"'
-                ),
+                ('# agent_command = "pi -p {prompt}"'),
             ),
             ("work_model", '# work_model = "provider/model" # default for work sessions'),
             ("review_model", '# review_model = "provider/model" # default for review sessions'),

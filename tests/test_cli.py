@@ -221,7 +221,7 @@ class TestInit(CliTestCase):
             '# check = "make check" # validate the ticket worktree before the agent starts',
             config,
         )
-        self.assertIn('# agent_command = "pi --no-extensions', config)
+        self.assertIn('# agent_command = "pi -p {prompt}"', config)
         self.assertIn(
             'archive = "move" # or "delete"; retain completed files or delete them', config
         )
@@ -353,7 +353,7 @@ class TestInit(CliTestCase):
         self.assertFalse(settings["contexts"]["human"]["review"])
         self.assertIn('# setup = "make install"', config.read_text())
         self.assertIn('# check = "make check"', config.read_text())
-        self.assertIn('# agent_command = "pi --no-extensions', config.read_text())
+        self.assertIn('# agent_command = "pi -p {prompt}"', config.read_text())
         self.assertIsNone(settings.get("setup"))
         self.assertIsNone(settings.get("agent_command"))
         self.assertEqual(self.run_cli("init").stdout, "already up to date\n")

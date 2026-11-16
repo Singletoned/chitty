@@ -24,7 +24,7 @@ configure the runner.
    autocommit = true
    setup = "make install"
    check = "make check"
-   agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
+   agent_command = "pi -p {prompt}"
    ```
 
    Use this repository's actual worktree setup and validation commands instead
@@ -37,7 +37,7 @@ configure the runner.
    both `{mode}` and `{id}`, or `{prompt}` as one argument.
 3. For Pi, configure a command and a way to pass Chitty's role instructions,
    such as its prompt argument with `{prompt}`. Chitty does not install or
-   update the bundled Pi extension or modify Pi settings. Existing copies may
+   install or update a Pi extension or modify Pi settings. Existing copies may
    continue to autoload until manually inspected and removed; restart Pi after
    cleanup. For another agent, configure a command and a way to pass Chitty's role
    instructions, such as its prompt argument with `{prompt}`. Run work and
