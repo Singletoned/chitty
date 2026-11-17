@@ -20,8 +20,6 @@ class TestRepairRequiresWork(TestRunContinue):
             "from pathlib import Path\n"
             "import subprocess\n"
             f"ticket = next(Path('chitty/tasks').glob('{ticket}--*.md'))\n"
-            "ticket.write_text(ticket.read_text().replace('status: error', 'status: review' if "
-            f"{case_name!r} != 'blocked' else 'status: blocked'))\n"
         )
         if case_name == "edit":
             script += (
@@ -29,17 +27,21 @@ class TestRepairRequiresWork(TestRunContinue):
             )
         elif case_name == "code":
             script += (
-                "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
-                "subprocess.run(['git', 'commit', '--quiet', '-m', 'ticket status'], check=True)\n"
                 "Path('repair.py').write_text('fixed = True\\n')\n"
                 "subprocess.run(['git', 'add', 'repair.py'], check=True)\n"
-                f"subprocess.run(['git', 'commit', '--quiet', '-m', 'Task: {ticket}'], "
+                "subprocess.run(['git', 'commit', '--quiet', '-m', 'Repair', "
+                f"'-m', 'Task: {ticket}'], "
                 "check=True)\n"
+                f"subprocess.run(['chitty', 'edit', {ticket!r}, '-s', 'review'], check=True)\n"
             )
         elif case_name == "uncommitted":
-            pass
+            script += (
+                "ticket.write_text(ticket.read_text().replace('status: error', 'status: review'))\n"
+            )
         else:
             script += (
+                "ticket.write_text(ticket.read_text().replace("
+                "'status: error', 'status: blocked'))\n"
                 "subprocess.run(['git', 'add', str(ticket)], check=True)\n"
                 "subprocess.run(['git', 'commit', '--quiet', '-m', 'blocked'], check=True)\n"
             )
@@ -52,7 +54,10 @@ class TestRepairRequiresWork(TestRunContinue):
                 f"repair agent returned {ticket} to review with no change beyond its ticket files",
                 result.stderr,
             )
-            self.assertEqual(self.json("show", ticket)["status"], "error")
+            # `chitty show` prefers the repair branch's newer committed version,
+            # so read the main checkout's own ticket file.
+            ticket_file = next((self.root / "chitty" / "tasks").glob(f"{ticket}--*.md"))
+            self.assertIn("\nstatus: error\n", ticket_file.read_text())
         else:
             result = self.run_cli("run", "--errors")
             expected = "blocked" if case_name == "blocked" else "review"
