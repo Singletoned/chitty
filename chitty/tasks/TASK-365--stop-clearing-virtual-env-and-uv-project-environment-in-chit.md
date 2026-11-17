@@ -22,6 +22,10 @@ No property tests: this removes code, and the remaining behaviour (removing `CHI
 - [ ] `git grep -n "VIRTUAL_ENV\|UV_PROJECT_ENVIRONMENT" -- src tests` finds nothing except phrases in `tests/test_guide_read_only_cold_read.py` that do not concern the runner environment, and `tests/test_run_environment.py` is gone
 - [ ] `test_run_uses_runner_chitty_and_drops_usage_file` sets `CHITTY_USAGE_FILE` in the parent environment and passes, and fails with the `CHITTY_USAGE_FILE` pop removed, shown in a note; `make check` passes
 
+## Plan
+
+Update run environment construction to preserve inherited virtual-environment variables while continuing to remove CHITTY_USAGE_FILE. First adjust the next-run integration test to set and verify the usage-file behavior and remove its virtual-environment assertions; run it against current behavior and verify it fails for the missing parent variable setup expectation. Then remove the obsolete environment tests and implementation pops, run formatting and make check, and commit the implementation.
+
 ## Notes
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: criterion 2 passed with nothing built (no test set `CHITTY_USAGE_FILE`); the leftover `tests/test_run_environment.py` and its helper; a wrong claim of a comment on the two pops; the stale docstring; the conditional rename; the `commands.py` alternative (`TASK-343` has not landed, and its move keeps the function body). Checked: the `Makefile` exports each checkout's own `.venv`, so removing the pops does not change `make check` in a worktree. The `chitty.toml` step after landing is the planning session's, by hand.
@@ -37,3 +41,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: criterion 2 passed with nothin
 - 2026-11-17T22:01:52Z kind-umber-toad: changed owner
 - 2026-11-17T22:01:52Z kind-umber-toad planning → todo
 - 2026-11-17T22:36:57Z open-russet-ibis todo → doing
+- 2026-11-17T22:37:11Z open-russet-ibis: wrote the plan
