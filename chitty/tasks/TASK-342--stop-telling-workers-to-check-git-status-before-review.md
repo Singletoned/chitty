@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to check git status before review
-status: blocked
+status: review
 labels:
   - untestable
 owner: human
@@ -27,3 +27,4 @@ Implemented by the planner on branch `task-342` (worktree `.worktrees/task-342`)
 - 2026-11-17T16:22:58Z kind-umber-toad: changed description
 - 2026-11-17T16:32:59Z kind-umber-toad: changed owner, notes
 - 2026-11-17T16:32:59Z kind-umber-toad planning → blocked
+- 2026-11-17T17:24:58Z kind-umber-toad blocked → review
