@@ -97,6 +97,7 @@ class RepoConfig(BaseModel):
     review_model: str | None = None
     archive: Literal["move", "delete"] = "move"
     job_order: list[str] | None = None
+    protected_paths: list[str] = []
     list_width: int = Field(default=LIST_WIDTH, gt=0)
     contexts: dict[str, ContextConfig]
 
