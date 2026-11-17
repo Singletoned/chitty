@@ -151,7 +151,7 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
                 "refs/remotes",
             ).splitlines()
         )
-        if not symref and not _is_cold_read_ref(ref)
+        if not symref
     ]
     if not refs:
         return []
@@ -361,17 +361,6 @@ def _read_blobs(
     if returncode != 0:
         raise ChittyError(f"cannot read historical task files: {stderr.strip()}")
     return result
-
-
-def _is_cold_read_ref(ref: str) -> bool:
-    """Return whether a local or remote-tracking ref names a cold-read branch."""
-    if ref.startswith("refs/heads/"):
-        name = ref.removeprefix("refs/heads/")
-    elif ref.startswith("refs/remotes/"):
-        name = ref.removeprefix("refs/remotes/").partition("/")[2]
-    else:
-        return False
-    return name.startswith("cold-read/")
 
 
 def _display_ref(ref: str) -> str:
