@@ -1,6 +1,6 @@
 ---
 title: Stop ignoring `cold-read/` branches when reading ticket history
-status: todo
+status: doing
 depends_on:
   - TASK-336
 created: 2026-11-16
@@ -29,3 +29,4 @@ No property test and no test that fails first: this removes code; existing histo
 - 2026-11-16T16:58:17Z open-russet-eel cold-read → planning
 - 2026-11-16T16:58:19Z open-russet-eel: changed owner
 - 2026-11-16T16:58:19Z open-russet-eel planning → todo
+- 2026-11-17T17:29:59Z rosy-zinc-yellowhammer todo → doing
