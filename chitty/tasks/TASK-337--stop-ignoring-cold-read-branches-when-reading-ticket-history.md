@@ -16,6 +16,10 @@ No property test and no test that fails first: this removes code; existing histo
 
 - [ ] `git grep -n -e _is_cold_read_ref -e cold_read_branch -e make_newer_copy_on -- src tests` prints nothing. `make check` passes.
 
+## Plan
+
+Remove the cold-read ref predicate/filter and the two obsolete cold-read history tests plus their helper. Run the required grep and full make check, then record verification and commit implementation changes.
+
 ## History
 
 - 2026-11-16T09:50:18Z intrepid-coral-raven → backlog
@@ -30,3 +34,4 @@ No property test and no test that fails first: this removes code; existing histo
 - 2026-11-16T16:58:19Z open-russet-eel: changed owner
 - 2026-11-16T16:58:19Z open-russet-eel planning → todo
 - 2026-11-17T17:29:59Z rosy-zinc-yellowhammer todo → doing
+- 2026-11-17T17:30:16Z rosy-zinc-yellowhammer: wrote the plan
