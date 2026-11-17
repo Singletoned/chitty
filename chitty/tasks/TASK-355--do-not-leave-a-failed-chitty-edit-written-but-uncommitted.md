@@ -1,6 +1,6 @@
 ---
 title: Do not leave a failed chitty edit written but uncommitted
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -16,7 +16,7 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 
 ## Acceptance Criteria
 
-- [ ] Hypothesis property in `tests/test_property_refused_write.py`: draw an edit of `TASK-1` that the post-write check refuses (one of: depends on itself, depends on `TASK-2` making a cycle, parent itself), combined with an optional generated note and an optional generated new title. Notes are non-blank, LF only, with no line starting with `#` or a code fence; titles are one line with at least one letter or digit. `Repo.edit` raises `ChittyError` containing `cannot finalize task write`; afterwards `git status --porcelain` is empty and every file under `chitty/` has the same bytes as before. `max_examples` at least 25, `deadline=None`. Fails before the change. `make check` passes.
+- [x] Hypothesis property in `tests/test_property_refused_write.py`: draw an edit of `TASK-1` that the post-write check refuses (one of: depends on itself, depends on `TASK-2` making a cycle, parent itself), combined with an optional generated note and an optional generated new title. Notes are non-blank, LF only, with no line starting with `#` or a code fence; titles are one line with at least one letter or digit. `Repo.edit` raises `ChittyError` containing `cannot finalize task write`; afterwards `git status --porcelain` is empty and every file under `chitty/` has the same bytes as before. `max_examples` at least 25, `deadline=None`. Fails before the change. `make check` passes.
 
 ## Plan
 
@@ -29,9 +29,11 @@ The regression property failed without rollback: Hypothesis observed both a refu
 Review failed (tests): The property must establish and assert a clean Git status, not merely compare against its baseline.
 1: fail - Newly discovered: running TestRefusedEditProperty.setUp and printing repr(case._snapshot()[1]) produced '?? chitty.toml\n'; the property compares statuses without asserting empty, so it does not meet the clean-status requirement. Commit or otherwise track the fixture config and explicitly assert empty status after each edit. make format && make check passed (603 tests); the property passed on this branch and failed against main store.py with a changed-file assertion and Hypothesis FlakyFailure.
 
+Fixed the review finding: the property fixture now commits chitty.toml, asserts the baseline Git status is clean, and verifies status remains clean after every refused edit. Focused property passed; make format and make check passed (603 tests; make check exit 0).
+
 ## Summary
 
-Implemented rollback of task-context file bytes and the Git index when edit finalization refuses, including title renames and fix rewrites. Added the required Hypothesis regression property. Verified with make format, make check, and an unfixed-behaviour run of the property. No follow-up known.
+Updated the refused-edit property to assert a genuinely clean Git working tree and unchanged chitty/ bytes. Verified with the focused property and make format && make check (603 tests, exit 0). No follow-up known.
 
 ## History
 
@@ -53,3 +55,5 @@ Implemented rollback of task-context file bytes and the Git index when edit fina
 - 2026-11-17T18:09:24Z youthful-khaki-adder: changed acceptance criteria, notes
 - 2026-11-17T18:09:24Z youthful-khaki-adder review → doing
 - 2026-11-17T18:17:22Z eager-indigo-crane: wrote the plan
+- 2026-11-17T18:19:17Z eager-indigo-crane: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T18:19:17Z eager-indigo-crane doing → review
