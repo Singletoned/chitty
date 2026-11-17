@@ -77,10 +77,8 @@ def loop_step(returncode: int) -> tuple[bool, int]:
 
 
 def _command_environment() -> dict[str, str]:
-    """Copy the environment without shell-selected project virtualenvs or usage files."""
+    """Copy the environment without an inherited usage file."""
     environment = os.environ.copy()
-    environment.pop("VIRTUAL_ENV", None)
-    environment.pop("UV_PROJECT_ENVIRONMENT", None)
     # An inherited value would make an agent write a file `chitty run` no longer reads.
     environment.pop("CHITTY_USAGE_FILE", None)
     return environment
