@@ -1,6 +1,6 @@
 ---
 title: Squash Chitty bookkeeping commits when a ticket lands
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ In the 14 days to 2026-11-16, 2392 of 2870 commits were `chitty: ...` autocommit
 ## History
 
 - 2026-11-16T09:50:21Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:29Z intrepid-coral-raven backlog → planning

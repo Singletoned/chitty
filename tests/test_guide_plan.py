@@ -8,12 +8,10 @@ class TestPlanGuide(unittest.TestCase):
         planning = " ".join(guide("plan").split())
         for phrase in (
             "current ticket text",
-            "no unresolved serious findings",
-            "git show <ref>:<path>",
-            "ticket's own paths",
-            "check it against the current criteria",
-            "git update-ref -d refs/cold-read/<ID>/<n>",
-            "superseded ticket text",
+            "ticket text, the named code and documents",
+            "reader report",
+            "one read-only cold read",
+            "expected route",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning)

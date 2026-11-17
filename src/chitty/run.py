@@ -559,14 +559,16 @@ def continuation_prompt(mode: Literal["work", "review"], ticket_id: str) -> str:
     if mode == "work":
         return (
             f"Continue working only on Chitty ticket {ticket_id}. Either finish it and set "
-            "it to `review`, return it to `planning` with a note explaining the requirement "
-            "problem and decision needed, or set it to `blocked` with a note giving the "
+            "it to `review`, return it to `planning` for a defect in the ticket with a note "
+            "explaining the problem and decision needed, or set it to `blocked` with a note "
+            "giving the "
             "external obstacle. Do not stop with it unfinished."
         )
     return (
         f"Continue reviewing only Chitty ticket {ticket_id}. Either pass it (`done`) or "
-        "fail it (`doing`, with the failures in one note), return it to `planning` with "
-        "a review note explaining the requirement problem and decision needed, or set it "
+        "fail it (`doing`, with the failures in one note), return it to `planning` for "
+        "a defect in the ticket with a review note explaining the problem and decision "
+        "needed, or set it "
         "to `blocked` with a note giving the external obstacle. Keep one verdict per "
         "criterion. Do not merge or remove branches or worktrees."
     )
@@ -637,9 +639,7 @@ def _preflight(repo: Repo, agent: str | None) -> None:
         )
     if agent is None and not (repo.config.agent_command or "").strip():
         problems.append(
-            "agent_command is the default agent command; example: "
-            'agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
-            '--chitty-{mode} {id}"'
+            'agent_command is the default agent command; example: agent_command = "pi -p {prompt}"'
         )
     if problems:
         details = "\n".join(f"- {problem}" for problem in problems)
@@ -672,10 +672,7 @@ def _agent_setting(repo: Repo, agent: str | None) -> tuple[str, str]:
             raise ChittyError(f"unknown agent {agent!r}; available names: {names}")
         setting = f"agent_commands.{agent}"
         command = repo.config.agent_commands[agent]
-    example = (
-        'agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
-        '--chitty-{mode} {id}"'
-    )
+    example = 'agent_command = "pi -p {prompt}"'
     if command is None or not command.strip():
         if setting == "agent_command":
             raise ChittyError(f"`chitty run` requires agent_command; for example: {example}")

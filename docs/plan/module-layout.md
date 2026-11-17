@@ -21,14 +21,12 @@ src/chitty/
   mcp.py             MCP tools (mcp ≥ 2, `MCPServer`): thin
   guide.md           the managed AGENTS.md block, package data
   roles/             per-role guides, package data
-  integrations/      agent-specific code: Pi extension (`pi/chitty.ts`), Claude
-                     usage hook (`claude/usage.py`)
+  integrations/      agent-specific code: Claude usage hook (`claude/usage.py`)
 ```
 
 - `cli.py` and `mcp.py` hold no logic; both call `store.py` and `model.py`, so
   they cannot diverge.
 - Actor identity comes from `CHITTY_ACTOR`, else a harness session variable
   (`CLAUDE_CODE_SESSION_ID`, `CHITTY_PI_SESSION_ID`, `PI_SESSION_ID`,
-  `CODEX_SESSION_ID`). The Pi extension copies Pi's session ID into
-  `CHITTY_PI_SESSION_ID` at session start, so descendants keep the parent's
-  identity.
+  `CODEX_SESSION_ID`). `chitty run` sets `CHITTY_ACTOR` for the agent and its
+  descendants so they share one identity.

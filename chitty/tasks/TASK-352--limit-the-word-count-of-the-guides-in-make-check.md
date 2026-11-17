@@ -1,6 +1,6 @@
 ---
 title: Limit the word count of the guides in make check
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ Retro 2026-11-16: the guides grew to about 4100 words because each failure added
 ## History
 
 - 2026-11-16T10:00:05Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:49Z intrepid-coral-raven backlog → planning

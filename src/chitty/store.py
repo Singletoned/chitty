@@ -15,7 +15,7 @@ from typing import Any, Literal
 from pydantic import ValidationError
 
 from chitty import formatter, git, ids, locks
-from chitty.actor import actor, remove_pi_session_environment
+from chitty.actor import actor
 from chitty.config import (
     BACKLOG_DIR,
     CHITTY_VERSION,
@@ -1105,10 +1105,7 @@ def _add_missing_settings(
             ),
             (
                 "agent_command",
-                (
-                    '# agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts '
-                    '--chitty-{mode} {id}"'
-                ),
+                ('# agent_command = "pi -p {prompt}"'),
             ),
             ("work_model", '# work_model = "provider/model" # default for work sessions'),
             ("review_model", '# review_model = "provider/model" # default for review sessions'),
@@ -1281,7 +1278,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     claude = directory / CLAUDE_FILE
     if claude.exists() and not claude.is_symlink():
         raise ChittyError(f"{claude} exists and must be replaced with a symlink to {AGENTS_FILE}")
-    from chitty.actor import install_pi_extension, validate_pi_extension
     from chitty.config import inbox_path, load_repo_config, register_project
 
     config_path = directory / CONFIG_NAME
@@ -1289,6 +1285,9 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     agents = directory / AGENTS_FILE
     gitignore = directory / ".gitignore"
     existing_agents = agents.read_text() if agents.exists() else ""
+    originals = {
+        path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
+    }
     has_pyproject_config = False
     if not config_path.exists() and pyproject_path.exists():
         pyproject_data = tomllib.loads(pyproject_path.read_text())
@@ -1302,7 +1301,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         # A new config omits `workflow`, so it gets the default for this version.
         workflow = resolve_workflow(None, CHITTY_VERSION)
     updated_agents = _managed_agents(existing_agents, agents, workflow)
-    validate_pi_extension()
     originals = {
         path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
     }
@@ -1364,12 +1362,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
             written.append(inbox)
     if _add_worktrees_to_gitignore(gitignore):
         written.append(gitignore)
-    pi_settings = remove_pi_session_environment()
-    if pi_settings is not None:
-        written.append(pi_settings)
-    pi_extension = install_pi_extension()
-    if pi_extension is not None:
-        written.append(pi_extension)
     if updated_agents != existing_agents:
         agents.write_text(updated_agents)
         written.append(agents)

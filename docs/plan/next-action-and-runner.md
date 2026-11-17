@@ -34,7 +34,7 @@
   autocommit = true
   setup = "make install"
   check = "make check"
-  agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"
+  agent_command = "pi -p {prompt}"
   ```
 
   `autocommit`, `setup`, and `check` are always required. The default

@@ -1,6 +1,11 @@
 ---
 title: Tell workers and reviewers to list every problem when returning a ticket to planning
-status: backlog
+status: todo
+labels:
+  - untestable
+owner: untestable
+depends_on:
+  - TASK-360
 created: 2026-11-16
 ---
 
@@ -11,3 +16,7 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T10:19:38Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:53Z intrepid-coral-raven backlog → planning
+- 2026-11-16T12:51:08Z open-russet-eel: changed dependencies
+- 2026-11-16T16:48:14Z open-russet-eel: changed labels, owner
+- 2026-11-16T16:48:29Z open-russet-eel planning → todo

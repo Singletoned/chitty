@@ -1,6 +1,6 @@
 ---
 title: Accept every long text option from a file or stdin
-status: backlog
+status: planning
 created: 2026-11-16
 ---
 
@@ -11,3 +11,4 @@ created: 2026-11-16
 ## History
 
 - 2026-11-16T09:59:58Z intrepid-coral-raven → backlog
+- 2026-11-16T10:38:41Z intrepid-coral-raven backlog → planning

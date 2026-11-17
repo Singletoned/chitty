@@ -1,6 +1,6 @@
 ---
 title: Hide run and next under the tickets workflow
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -417,6 +417,11 @@ make: *** [check] Error 9
 
 Landing failed after merging `main`: `TASK-335` (`e9d3db0`) pinned `workflow = "runner"` in `tests.support.CONFIG`, and this branch added a second `workflow` line in `tests/test_workflow_commands.py` and `tests/test_next.py`, so the fixture became invalid TOML (8 failures, 1 error, reproduced in the worktree). Fixed in the branch by the human session: `config_with` now replaces the pinned line, and the now-redundant `test_next.py` change is dropped. `make check` passes. Ready for an independent review.
 
+Reviewed: Previously reported argument parsing and missing command cases are resolved; the post-merge duplicate workflow fixture failure is resolved.
+1: pass - make format && make check passed; test_workflow_commands against archived main failed with run in help, next exit 3 and both command help invocations exit 0.
+2: pass - make format && make check passed 587 Python tests and Node tests, including runner, no-config, broken-config and test_next cases; main baseline passed the unchanged workflow compatibility cases.
+3: pass - make format && make check passed; test_mcp_next_follows_workflow against archived main failed because next was listed under tickets.
+
 ## Summary
 
 Implemented and committed as f2b6bb9 (Task: TASK-333). Tickets workflow commands now refuse before option parsing, with coverage for arguments and --help. Verified with focused workflow tests and make format && make check (584 Python tests and Node tests). No follow-ups.
@@ -446,3 +451,5 @@ Implemented and committed as f2b6bb9 (Task: TASK-333). Tickets workflow commands
 - 2026-11-14T20:39:41Z daring-zinc-newt review → error
 - 2026-11-16T10:27:43Z intrepid-coral-raven: changed notes
 - 2026-11-16T10:27:43Z intrepid-coral-raven error → review
+- 2026-11-16T10:53:54Z plucky-teal-wren: changed notes; ticked acceptance criteria
+- 2026-11-16T10:53:54Z plucky-teal-wren review → done

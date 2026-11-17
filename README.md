@@ -101,8 +101,10 @@ instead of sequentially, so tickets raised on different branches do not
 collide; `chitty init` adds such a `backlog` context (prefix `BACKLOG`) to new
 and existing repositories, unless one or a `BACKLOG` prefix already exists. The third failed review (`review → doing`) since a task was last blocked sets it
 `blocked` with owner `human` instead, so agents stop bouncing it.
-Workers and reviewers can return a ticket with missing or contradictory
-requirements or an unresolved design decision with
+Workers and reviewers can return a ticket for missing or contradictory
+requirements, an unresolved design decision, a wrong claim about the code, files
+or other tickets, a criterion that cannot be verified as written or would pass
+with nothing built, or a ticket too large to finish in one session with
 `chitty edit ID -s planning --note TEXT`. The note must explain what was
 discovered, why the ticket cannot guide the work, and the decision needed. Reviewers still supply an independent
 review note with one verdict per criterion, including at least one fail when
@@ -110,9 +112,9 @@ criteria exist. The return clears ownership, preserves the branch, worktree and
 implementation, and ends the run without landing or starting another worker.
 Find returned tickets with `chitty list -s planning`; `next` and `run` do not
 select them. Resume planning in the existing ticket worktree, then follow normal
-planning and cold-read readiness before `todo`. Clear requirements with an
-incorrect implementation return to `doing`; external obstacles requiring help
-use `blocked`. Workers keep cheap reversible implementation choices.
+planning and cold-read readiness before `todo`. Implementation defects against
+clear requirements return to `doing`; external obstacles requiring help use
+`blocked`. Workers keep cheap reversible implementation choices.
 Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 When a merge leaves two files sharing an ID, which `chitty check` reports,
@@ -217,20 +219,15 @@ eval "$(_CHITTY_COMPLETE=zsh_source chitty)"
 
 `chitty whoami` derives a stable readable name from `CHITTY_ACTOR` (when set),
 or a coding harness session identity: `CLAUDE_CODE_SESSION_ID`, `PI_SESSION_ID`,
-`CODEX_THREAD_ID`, or `CODEX_SESSION_ID`. `CHITTY_ACTOR` is for people and other
-tools. Chitty's Pi extension records Pi's session ID in `CHITTY_PI_SESSION_ID`
-at session start, so shell commands, `pi.exec`, and subagents share the parent
-actor name. Reload or restart Pi after `chitty init` installs or updates the
-extension. context-mode starts its server at the first agent turn, after the
-variable is set, so its `ctx_execute` commands share the name too. A server
-started before `session_start` cannot receive it; start Pi with
-`CHITTY_ACTOR=<name>` if one needs the same identity.
+`CODEX_THREAD_ID`, or `CODEX_SESSION_ID`. `CHITTY_ACTOR` is for people and other tools. `chitty run` sets it for its
+agent and descendants so they share one actor name. For standalone Pi sessions,
+use Pi's native `PI_SESSION_ID` or set `CHITTY_ACTOR` in the environment.
 
 Set `autoformat = "mdformat"` in repository config to run a formatter on each
 written task file before any autocommit. Set `setup` to the command that prepares
 each ticket worktree before the agent starts; it is parsed without a shell. Set
 `agent_command` to the default agent invocation, for example
-`"pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`.
+`"pi -p {prompt}"`.
 The optional `agent_timeout` is a non-negative integer number of seconds and
 defaults to 7200; set it to `0` for no limit. On timeout, `chitty run` stops the
 agent and its child processes and exits with an error.
@@ -308,6 +305,10 @@ make check      # ruff, pyright, unittest
 make format
 ```
 
-## Pi extension
+## Pi
 
-`chitty init` installs the shipped Pi `/chitty` workflow extension into an existing `~/.pi/agent/extensions/` directory. Configure Pi with `agent_command` to start work or review with `chitty run`; pass agent options after `--`, for example `chitty run -- --model MODEL`. Each invocation works only on the selected ticket, continuing until it leaves `todo`/`doing` in work mode or `review` in review mode. `src/chitty/integrations/pi/chitty.ts` is the source of truth: make extension edits in this repository, not in the installed copy. If the installed file differs, `chitty init` fails rather than overwriting possible local work; review it, then replace or remove it before retrying. Restart or reload Pi after installation.
+Chitty no longer bundles or manages a Pi extension. Existing copies may still
+autoload; inspect and remove `~/.pi/agent/extensions/chitty.ts` and
+`~/.pi/agent/chitty-extension.sha256` if present, then restart Pi. Configure
+`agent_command = "pi -p {prompt}"` to pass Chitty's role instructions to Pi
+when using `chitty run`.

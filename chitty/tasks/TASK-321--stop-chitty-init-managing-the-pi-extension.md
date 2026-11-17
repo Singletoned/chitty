@@ -1,6 +1,6 @@
 ---
 title: Stop chitty init managing the Pi extension
-status: doing
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -15,8 +15,8 @@ Stop `chitty init` validating, installing or updating the Pi extension, or chang
 
 ## Acceptance Criteria
 
-- [ ] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
-- [ ] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
+- [x] Generated tests show repeated `chitty init` never creates or changes the installed extension or state file and never changes Pi settings, including `exposeSessionEnvironment`; tests fail against the current installer and migration.
+- [x] Documentation describes manual cleanup; `make check` passes without tests requiring Chitty to manage Pi extension files or settings.
 
 ## Plan
 
@@ -339,6 +339,164 @@ Planner, 2026-11-14: this `error` comes from the pre-session check failing on un
 
 Planner, 2026-11-14: TASK-329 has landed, so a failing pre-session check on a `doing` ticket now adds a note and starts the agent. Returned from `error` to `doing` so the normal runner resumes it; the earlier uncommitted work in `.worktrees/task-321` (`src/chitty/roles/setup.md`, `src/chitty/store.py`, `tests/test_init_pi_isolation.py`) is the implementation so far.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+478 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 553 test suites (553 total tests) across 16 workers
+........................................................................................................F..............................F.....E........F...FF...............................................................................................................................................................................................................━━━━ chitty run · 19:42:41 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+...................F..F.......................................................................Running check in /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp2ywn3ejh...
+........................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+....../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/CLAUDE.md
+..Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmiruc0x3/repo/.worktrees/task-1...
+................................TASK-1: doing → review
+........chitty 0.1.31 is out: run uv tool upgrade chitty
+....no next ticket for --mode work
+.....................landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_init_keeps_a_newer_pi_extension_and_finishes_setup (tests.test_cli.TestInit.test_init_keeps_a_newer_pi_extension_and_finishes_setup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 378, in test_init_keeps_a_newer_pi_extension_and_finishes_setup
+    original = extension.read_bytes()
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_abc.py", line 625, in read_bytes
+    with self.open(mode='rb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpprbgjhp4/pi-agent/extensions/chitty.ts'
+
+======================================================================
+test_init_removes_ineffective_pi_session_environment_setting (tests.test_cli.TestIdentity.test_init_removes_ineffective_pi_session_environment_setting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 2158, in test_init_removes_ineffective_pi_session_environment_setting
+    self.assertIn(f"updated {settings}", result.stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/home/.pi/agent/settings.json' not found in 'updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty.toml\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty/tasks\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty/human\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/chitty/backlog\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/data/chitty/inbox/repo\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/.gitignore\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/AGENTS.md\nupdated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpj5y8lsdh/repo/CLAUDE.md\n'
+
+======================================================================
+test_init_failure_leaves_setup_files_unchanged (tests.test_cli.TestInit.test_init_failure_leaves_setup_files_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 405, in test_init_failure_leaves_setup_files_unchanged
+    result = self.run_cli("init", exit_code=1)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 90, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty.toml
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty/tasks
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty/human
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/chitty/backlog
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/data/chitty/inbox/repo
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/.gitignore
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/AGENTS.md
+updated /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyy08f6f2/repo/CLAUDE.md
+
+
+======================================================================
+test_init_installs_pi_extension_from_subdirectory_and_outside_git (tests.test_cli.TestInit.test_init_installs_pi_extension_from_subdirectory_and_outside_git) (directory=PosixPath('/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxk05z4j4/repo/subdirectory'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 467, in test_init_installs_pi_extension_from_subdirectory_and_outside_git
+    self.assertNotEqual(extension.read_bytes(), previous_extension)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'subdirectory' == b'subdirectory'
+
+======================================================================
+test_init_installs_pi_extension_from_subdirectory_and_outside_git (tests.test_cli.TestInit.test_init_installs_pi_extension_from_subdirectory_and_outside_git) (directory=PosixPath('/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxk05z4j4/outside-git'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 467, in test_init_installs_pi_extension_from_subdirectory_and_outside_git
+    self.assertNotEqual(extension.read_bytes(), previous_extension)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'outside-git' == b'outside-git'
+
+======================================================================
+test_init_replaces_a_tracked_pi_extension (tests.test_cli.TestInit.test_init_replaces_a_tracked_pi_extension)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_cli.py", line 370, in test_init_replaces_a_tracked_pi_extension
+    self.assertNotEqual(extension.read_bytes(), previous_source)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'previous Chitty extension' == b'previous Chitty extension'
+
+======================================================================
+test_run_refreshes_setup_before_starting_pi (tests.test_next.TestNext.test_run_refreshes_setup_before_starting_pi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_next.py", line 982, in test_run_refreshes_setup_before_starting_pi
+    self.assertNotEqual(extension.read_text(), "old extension")
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'old extension' == 'old extension'
+
+======================================================================
+test_run_replaces_an_outdated_extension_before_starting_pi (tests.test_next.TestNext.test_run_replaces_an_outdated_extension_before_starting_pi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-321/tests/test_next.py", line 1043, in test_run_replaces_an_outdated_extension_before_starting_pi
+    self.assertNotEqual(seen.read_bytes(), b"old extension")
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'old extension' == b'old extension'
+
+----------------------------------------------------------------------
+Ran 553 tests in 41.442s
+
+FAILED (failures=7, errors=1)
+make: *** [check] Error 8
+
+```
+
+The generated Hypothesis regression test failed before the implementation with extension, state, and settings inputs; it now passes with deadline disabled for repeated init cost. Removed obsolete installer and settings-migration assertions, and updated runner setup tests to assert extensions remain unchanged. Verification: focused unittest command passed (94 tests); make format && make check passed (548 Python tests and Node tests). `chitty fix` passed for the ticket file.
+
+Review failed (tests): Add generated or explicit valid settings examples containing `exposeSessionEnvironment` and demonstrate the settings migration regression independently of extension installation. This is newly discovered; the earlier block concerned unfinished legacy tests and the deadline, not this coverage gap.
+1: fail - `tests/test_init_pi_isolation.py` generates only arbitrary binary settings, with no structured JSON strategy or explicit example for `exposeSessionEnvironment`; nothing reliably exercises the required migration. Running the property against the old store printed four failures for extension validation, installation, and malformed settings, but none for the valid migration. Calling its inner test with valid settings printed `explicit migration example: PASS` on the current store and an assertion failure on the old store, though that old assertion also includes extension installation; isolate the migration and make the case part of the test suite.
+2: pass - `make format && make check` printed 548 Python tests OK and 28 Node tests passed; `src/chitty/roles/setup.md` describes inspecting and removing the extension and state file and restarting Pi.
+
+Added an explicit valid-JSON regression case for exposeSessionEnvironment=true. Unlike arbitrary binary settings, this isolates the settings assertion from extension installation; focused test passes, and make format && make check passes (549 Python tests and Node tests). The prior implementation called remove_pi_session_environment() from init; the targeted test now directly guards against that migration.
+
+Review failed (integration): Verification requires a test scratch location outside the worktree, which this review explicitly forbids. Please provide an isolated in-worktree test environment or authorize an external temporary directory before resuming review. This is an environment limitation, not a demonstrated implementation defect.
+1: fail - The earlier review reported missing isolated migration coverage; the new explicit valid-settings test addresses its shape, but could not be verified. With TMPDIR set inside the worktree, make check printed ChittyError: chitty init cannot run in linked worktree for both isolation tests, so neither current behavior nor failure against the old implementation was established.
+2: fail - Documentation in src/chitty/roles/setup.md describes manual inspection, removal and restart. make format passed, but make check with in-worktree TMPDIR printed FAILED (failures=46, errors=2): temporary repositories inherit the enclosing worktree and project configuration. Therefore the required passing check is unverified.
+
+Human session, 2026-11-16: the last review failure was not a defect. The guide rule to keep scratch files inside the worktree does not cover temporary directories the test suite itself creates under the system temp dir; those are fine. Setting `TMPDIR` inside the worktree nests the test repositories inside this git worktree, which is what produced the 46 failures and the linked-worktree `chitty init` refusal. Review again with the normal `make check`.
+
+Review failed (integration): merging `main` conflicts in `src/chitty/store.py`.
+
+Reviewed: merged main cleanly; make format && make check passed (556 Python tests, Node tests, ruff, pyright). The earlier review recorded the Hypothesis test failing before removal of installation/validation; the explicit valid-JSON exposeSessionEnvironment=true case specifically guards the settings migration.
+1: pass - tests/test_init_pi_isolation.py varies extension, state, and settings file presence and arbitrary bytes across fresh/existing and repeated init; its pre-fix failure was recorded in the first implementation run. The added valid JSON test exercises exposeSessionEnvironment=true without depending on extension installation.
+2: pass - src/chitty/roles/setup.md instructs users to inspect/remove the extension and state file and restart Pi; make format && make check passed, including Python and Node tests.
+
+Review failed (integration): merging `main` conflicts in `src/chitty/store.py`.
+
+Merged current main and resolved its init_repo conflict by retaining workflow-specific managed-agent rendering while removing the obsolete Pi-extension validator call. Verified with make format && make check after the merge: Ruff and Pyright passed, 577 Python tests passed, and Node tests passed. chitty fix passed; git status was clean before this ticket update.
+
+Reviewed: main is an ancestor of the branch; the prior migration-coverage finding is resolved and the earlier integration conflicts are resolved.
+1: pass - make check ran both isolation tests successfully. Running them with main:src/chitty/store.py in an isolated package copy printed FAILED (errors=2): the valid settings case raised cannot safely remove obsolete Pi setting, while Hypothesis found extension validation, installation and settings failures.
+2: pass - src/chitty/roles/setup.md describes inspecting and manually removing the extension and state file and restarting Pi. make format && make check printed 584 Python tests OK, 28 Node tests passed, and Ruff and Pyright passed.
+
+## Summary
+
+Handoff: init no longer validates, installs or updates Pi extensions or modifies Pi settings; bundled extension remains. Documented manual inspection/removal of existing extension and state file, then restart Pi. Verified regression coverage includes Hypothesis variation and explicit exposeSessionEnvironment JSON; recorded pre-fix failures in earlier notes. Verification after merging main: make format && make check passed (577 Python tests plus Node tests, Ruff, Pyright). chitty fix passed; working tree was clean. No follow-ups.
+
 ## History
 
 - 2026-11-13T22:24:27Z mellow-umber-lapwing → backlog
@@ -366,3 +524,24 @@ Planner, 2026-11-14: TASK-329 has landed, so a failing pre-session check on a `d
 - 2026-11-14T11:43:09Z jolly-silver-falcon: changed dependencies, notes
 - 2026-11-14T18:41:08Z friendly-ginger-adder: changed notes
 - 2026-11-14T18:41:08Z friendly-ginger-adder error → doing
+- 2026-11-14T19:43:12Z open-quartz-lapwing: changed notes
+- 2026-11-14T19:48:01Z open-quartz-lapwing: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T19:48:01Z open-quartz-lapwing doing → review
+- 2026-11-14T19:51:03Z friendly-amber-falcon: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-14T19:51:03Z friendly-amber-falcon review → doing
+- 2026-11-14T19:58:43Z witty-indigo-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-14T19:58:43Z witty-indigo-urchin doing → review
+- 2026-11-14T20:02:42Z plucky-fawn-quail: changed owner, acceptance criteria, notes
+- 2026-11-14T20:02:42Z plucky-fawn-quail review → blocked
+- 2026-11-16T10:28:17Z intrepid-coral-raven: changed owner, notes
+- 2026-11-16T10:28:17Z intrepid-coral-raven blocked → review
+- 2026-11-16T10:29:08Z able-khaki-raven: changed notes
+- 2026-11-16T10:29:08Z able-khaki-raven review → doing
+- 2026-11-16T10:35:47Z sunny-teal-otter: changed notes, summary; ticked acceptance criteria
+- 2026-11-16T10:35:47Z sunny-teal-otter doing → review
+- 2026-11-16T10:51:40Z able-amber-gannet: changed notes
+- 2026-11-16T10:51:40Z able-amber-gannet review → doing
+- 2026-11-16T10:55:05Z sunny-pearl-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-16T10:55:05Z sunny-pearl-eel doing → review
+- 2026-11-16T10:57:20Z eager-quartz-otter: changed notes; ticked acceptance criteria
+- 2026-11-16T10:57:20Z eager-quartz-otter review → done

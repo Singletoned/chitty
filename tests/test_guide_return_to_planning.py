@@ -9,7 +9,11 @@ class TestGuideReturnToPlanning(unittest.TestCase):
         for role in ("work", "review"):
             text = " ".join(guide(role).split())
             for phrase in (
-                "missing or contradictory requirements or an unresolved design decision",
+                "missing or contradictory requirements",
+                "an unresolved design decision",
+                "a wrong claim about the code, files or other tickets",
+                "a criterion that cannot be verified as written or would pass with nothing built",
+                "a ticket too large to finish in one session",
                 "set `-s planning`",
                 "what was discovered",
                 "why the current ticket cannot guide the work",
@@ -24,6 +28,7 @@ class TestGuideReturnToPlanning(unittest.TestCase):
     def test_worker_keeps_cheap_reversible_choices(self):
         text = " ".join(guide("work").split())
         self.assertIn("For a cheap-to-reverse default, choose it", text)
+        self.assertIn("This applies only to choices the ticket leaves open", text)
         self.assertNotIn("what you found and set `-s blocked`", text)
 
     def test_review_keeps_verdicts_and_work_fix_route(self):
@@ -39,4 +44,5 @@ class TestGuideReturnToPlanning(unittest.TestCase):
                 text = continuation_prompt(role, "TASK-1")
                 self.assertIn("`planning`", text)
                 self.assertIn("decision", text)
+                self.assertIn("a defect in the ticket", text)
                 self.assertIn("`blocked`", text)

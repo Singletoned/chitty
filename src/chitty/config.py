@@ -38,7 +38,7 @@ review = true
 # autoformat = "taidy format" # run on every written task file
 # setup = "make install" # run in every ticket worktree before the agent starts
 # check = "make check" # validate the ticket worktree before the agent starts
-# agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{{mode}} {{id}}"
+# agent_command = "pi -p {{prompt}}"
 # work_model = "provider/model" # default for work sessions when the command has no model
 # review_model = "provider/model" # default for review sessions when the command has no model
 archive = "move" # or "delete"; retain completed files or delete them
@@ -268,6 +268,18 @@ def _remove_unknown_configuration_keys(data: object, source: Path) -> object:
         )
         _WARNED_UNKNOWN_KEYS.add(source)
     return cleaned
+
+
+def configured_workflow(start: Path) -> str | None:
+    """Return the configured workflow, or None when no repository is found."""
+    root = search_root(start)
+    return None if root is None else load_repo_config(root).workflow
+
+
+def require_runner(config: RepoConfig, command: str) -> None:
+    """Reject runner-only commands for repositories using the tickets workflow."""
+    if config.workflow != "runner":
+        raise ChittyError(f'chitty {command} needs workflow = "runner" in the Chitty config')
 
 
 def resolve_workflow(workflow: str | None, chitty_version: str | None) -> str:
