@@ -28,6 +28,8 @@ Cold read by a fresh Sonnet subagent, 2026-11-04. A worker could not do the real
 
 context-mode is now off: on 2026-11-05 its package was replaced and `build/adapters/pi/extension.js` no longer exists, so `chitty run` failed at startup. The human chose to disable it, so `agent_command` drops its `-e` and `--exclude-tools`. The before and after comparison now also includes removing context-mode.
 
+Dropped at the human's request, 2026-11-17. The config change landed in `f22caf1c` on 2026-11-04 and has been in use since; the before-and-after token measurement was not done.
+
 ## History
 
 - 2026-11-04T21:41:06Z mellow-newt → backlog
@@ -37,3 +39,4 @@ context-mode is now off: on 2026-11-05 its package was replaced and `build/adapt
 - 2026-11-05T08:22:57Z mellow-newt: changed notes
 - 2026-11-11T10:17:40Z vivid-yellowhammer: changed parent
 - 2026-11-17T17:32:32Z kind-umber-toad: changed labels, owner
+- 2026-11-17T22:03:09Z kind-umber-toad: changed notes
