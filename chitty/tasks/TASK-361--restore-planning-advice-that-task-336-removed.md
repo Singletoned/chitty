@@ -1,6 +1,6 @@
 ---
 title: Restore planning advice that TASK-336 removed
-status: blocked
+status: review
 owner: human
 created: 2026-11-16
 ---
@@ -53,3 +53,4 @@ Commit `a486380` on `task-361` restores the plan-guide advice `989a26a` dropped,
 - 2026-11-16T13:11:03Z open-russet-eel doing → review
 - 2026-11-16T16:30:32Z open-russet-eel: changed owner, notes
 - 2026-11-16T16:30:32Z open-russet-eel review → blocked
+- 2026-11-17T17:23:17Z kind-umber-toad blocked → review
