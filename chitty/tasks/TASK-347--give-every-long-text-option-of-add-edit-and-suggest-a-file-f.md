@@ -1,7 +1,6 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: planning
-owner: planner-cold-read
+status: todo
 created: 2026-11-16
 ---
 
@@ -46,3 +45,5 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: `add` checks the required desc
 - 2026-11-17T19:59:14Z kind-umber-toad: changed acceptance criteria
 - 2026-11-17T20:01:10Z kind-umber-toad: changed description, acceptance criteria, notes
 - 2026-11-17T20:01:10Z kind-umber-toad cold-read → planning
+- 2026-11-17T22:01:56Z kind-umber-toad: changed owner
+- 2026-11-17T22:01:56Z kind-umber-toad planning → todo
