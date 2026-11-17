@@ -1,6 +1,6 @@
 ---
 title: Stop ignoring `cold-read/` branches when reading ticket history
-status: doing
+status: review
 depends_on:
   - TASK-336
 created: 2026-11-16
@@ -14,11 +14,19 @@ No property test and no test that fails first: this removes code; existing histo
 
 ## Acceptance Criteria
 
-- [ ] `git grep -n -e _is_cold_read_ref -e cold_read_branch -e make_newer_copy_on -- src tests` prints nothing. `make check` passes.
+- [x] `git grep -n -e _is_cold_read_ref -e cold_read_branch -e make_newer_copy_on -- src tests` prints nothing. `make check` passes.
 
 ## Plan
 
 Remove the cold-read ref predicate/filter and the two obsolete cold-read history tests plus their helper. Run the required grep and full make check, then record verification and commit implementation changes.
+
+## Notes
+
+Removed the cold-read ref filter, predicate, and obsolete tests/helper. `git grep -n -e _is_cold_read_ref -e cold_read_branch -e make_newer_copy_on -- src tests` found no matches. `make format && make check` passed (581 tests). `chitty fix TASK-337` could not resolve the worktree-relative ID; plain `chitty fix` succeeded with pre-existing warnings in unrelated task files.
+
+## Summary
+
+Removed cold-read filtering from ticket history and deleted its obsolete tests/helper. Verification: required git grep clean; make format and make check passed (581 tests). Follow-up: none.
 
 ## History
 
@@ -35,3 +43,5 @@ Remove the cold-read ref predicate/filter and the two obsolete cold-read history
 - 2026-11-16T16:58:19Z open-russet-eel planning → todo
 - 2026-11-17T17:29:59Z rosy-zinc-yellowhammer todo → doing
 - 2026-11-17T17:30:16Z rosy-zinc-yellowhammer: wrote the plan
+- 2026-11-17T17:31:48Z rosy-zinc-yellowhammer: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T17:31:48Z rosy-zinc-yellowhammer doing → review
