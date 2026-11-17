@@ -1,6 +1,6 @@
 ---
 title: Resolve dependencies the same way show does, across branches
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -32,3 +32,4 @@ No property test: the states are a small fixed set, each listed in the criterion
 - 2026-11-16T17:03:14Z open-russet-eel cold-read → planning
 - 2026-11-16T17:03:16Z open-russet-eel: changed owner
 - 2026-11-16T17:03:16Z open-russet-eel planning → todo
+- 2026-11-17T18:08:46Z plucky-jade-heron todo → doing
