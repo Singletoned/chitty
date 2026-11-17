@@ -20,6 +20,10 @@ Out of scope: warning from `chitty edit` or `chitty add`, configuring the limit,
 - [ ] `chitty check` on a repository whose only problem is a `todo` ticket with six criteria prints a line containing `warning:` and the ticket path, and exits 0.
 - [ ] In `src/chitty/roles/plan.md`, `About five criteria is the limit; split larger work.` is replaced with exactly `` `chitty check` warns above five criteria; split larger work. ``, and `tests/test_guide_plan_restored.py` asserts that sentence instead of the old one. The later sentence `Split rather than exceed about five criteria.` stays. `make check` passes.
 
+## Plan
+
+Add a module-level criteria threshold and append warning Problems during check() for parsed tickets whose status is planning or todo and whose criterion count exceeds the threshold. Test the property across generated ticket sets in a fresh RepoTestCase repository, add CLI exit/output coverage, and update the planning guide assertion and wording.
+
 ## History
 
 - 2026-11-16T10:00:01Z intrepid-coral-raven → backlog
@@ -30,3 +34,4 @@ Out of scope: warning from `chitty edit` or `chitty add`, configuring the limit,
 - 2026-11-17T16:02:55Z kind-umber-toad cold-read → planning
 - 2026-11-17T16:04:10Z kind-umber-toad planning → todo
 - 2026-11-17T17:45:59Z rosy-zinc-jay todo → doing
+- 2026-11-17T17:46:19Z rosy-zinc-jay: wrote the plan
