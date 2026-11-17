@@ -30,6 +30,10 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 - [ ] CLI test: no reference lines are printed by a second `chitty edit TASK-1 -s todo` (which prints `unchanged TASK-1`), by `chitty edit TASK-1 --title x` on a `todo` ticket, by `-s doing` from `planning`, or by `-s todo --json` from `planning` (whose output stays valid JSON).
 - [ ] The plan guide bullet is replaced with the exact sentence in the Description, and `tests/test_guide_plan_restored.py` asserts that sentence (after `_flat`) instead of `because they can land during the read`. `make check` passes.
 
+## Plan
+
+Implement ASCII-boundary ticket reference parsing in ids.py with property and example tests. Track the prior status in Change, resolve description and criterion references after qualifying CLI status promotion, and update the plan guide plus its restored-guide test. Verify regression failures first, then run formatting and make check.
+
 ## History
 
 - 2026-11-16T10:00:02Z intrepid-coral-raven → backlog
@@ -40,3 +44,4 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 - 2026-11-17T16:04:31Z kind-umber-toad: changed description, acceptance criteria
 - 2026-11-17T16:22:03Z kind-umber-toad cold-read → todo
 - 2026-11-17T22:28:15Z youthful-hazel-newt todo → doing
+- 2026-11-17T22:28:23Z youthful-hazel-newt: wrote the plan
