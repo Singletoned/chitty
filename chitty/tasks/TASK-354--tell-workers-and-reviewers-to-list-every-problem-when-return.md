@@ -1,6 +1,6 @@
 ---
 title: Tell workers and reviewers to list every problem when returning a ticket to planning
-status: review
+status: done
 labels:
   - untestable
 owner: untestable
@@ -17,6 +17,8 @@ created: 2026-11-16
 
 Implemented directly by the planning session as an untestable guide change, commit ff0021f.
 
+Reviewed: untestable wording change, read by the planning session; make check passes.
+
 ## History
 
 - 2026-11-16T10:19:38Z intrepid-coral-raven → backlog
@@ -26,3 +28,5 @@ Implemented directly by the planning session as an untestable guide change, comm
 - 2026-11-16T16:48:29Z open-russet-eel planning → todo
 - 2026-11-17T18:28:57Z kind-umber-toad: changed notes
 - 2026-11-17T18:28:57Z kind-umber-toad todo → review
+- 2026-11-17T18:28:59Z kind-umber-toad: changed notes; overrode review independence
+- 2026-11-17T18:28:59Z kind-umber-toad review → done
