@@ -41,3 +41,4 @@ Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged p
 - 2026-11-17T17:23:45Z kind-umber-toad blocked → review
 - 2026-11-17T17:23:47Z kind-umber-toad: changed notes; overrode review independence
 - 2026-11-17T17:23:47Z kind-umber-toad review → done
+- 2026-11-17T17:25:07Z kind-umber-toad done → archived
