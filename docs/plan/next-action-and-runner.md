@@ -59,6 +59,7 @@
 
 ### Agent command
 
+- `{mode}` is `work`, `review`, or `repair` for an error ticket.
 - Split like a shell, then placeholders replaced per word.
 - `{prompt}` is the `chitty guide <mode> <ID>` output, as one argument.
   Without it the command must have `{mode}` and `{id}`.

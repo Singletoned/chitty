@@ -1,0 +1,45 @@
+from tests.test_run_continue import TestRunContinue
+
+
+class TestRunRepairMode(TestRunContinue):
+    def test_error_ticket_gets_repair_mode(self):
+        ticket = self.json("add", "Repair ticket", "-d", "Description.", "-s", "todo")["id"]
+        self.run_cli("edit", ticket, "-s", "error")
+        self.write_fake("text = text.replace('status: error', 'status: review')")
+        self.run_cli("run", "--errors")
+        self.assertEqual(self.invocations_seen()[0][:2], ["repair", ticket])
+
+    def test_todo_ticket_gets_work_mode(self):
+        ticket = self.json("add", "Work ticket", "-d", "Description.", "-s", "todo")["id"]
+        self.write_fake("text = text.replace('status: todo', 'status: review')")
+        self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(self.invocations_seen()[0][:2], ["work", ticket])
+
+    def test_review_ticket_gets_review_mode(self):
+        ticket = self.json("add", "Review ticket", "-d", "Description.", "-s", "review")["id"]
+        self.git("branch", ticket.lower())
+        self.write_fake("text = text.replace('status: review', 'status: doing')")
+        self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(self.invocations_seen()[0][:2], ["review", ticket])
+
+    def test_prompt_command_uses_repair_guide(self):
+        ticket = self.json("add", "Repair prompt", "-d", "Description.", "-s", "todo")["id"]
+        self.run_cli("edit", ticket, "-s", "error")
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("{mode} {id} {prompt}", "{prompt}"))
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "prompt command")
+        from chitty.store import guide
+
+        fake = self.bindir / "fake-agent"
+        fake.write_text(
+            f"#!{__import__('sys').executable}\\n"
+            "import subprocess, sys\\n"
+            f"assert sys.argv[1] == {guide('repair', ticket)!r}\\n"
+            f"path = next(__import__('pathlib').Path('chitty/tasks').glob('{ticket}--*.md'))\\n"
+            "path.write_text(path.read_text().replace('status: error', 'status: review'))\\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'repair'], check=True)\\n"
+        )
+        fake.chmod(fake.stat().st_mode | __import__("stat").S_IXUSR)
+        self.run_cli("run", "--errors")

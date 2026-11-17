@@ -10,6 +10,7 @@ import subprocess
 import sys
 import time
 import tomllib
+from collections.abc import Sequence
 from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -168,6 +169,17 @@ def run(
         if not isinstance(error, NoNextTicket):
             report_error(main_repo, error, context)
         raise
+
+
+def render_command(words: Sequence[str], mode: str, ticket_id: str, prompt: str) -> tuple[str, ...]:
+    """Expand command words in order, keeping placeholder text in prompt literal."""
+    return tuple(
+        os.path.expanduser(word)
+        .replace("{mode}", mode)
+        .replace("{id}", ticket_id)
+        .replace("{prompt}", prompt)
+        for word in words
+    )
 
 
 _PLACEHOLDER = re.compile(r"\{(message|context)\}")
@@ -705,13 +717,9 @@ def _agent_command(
             prompt = guide("repair", ticket)
         else:
             prompt = guide(action.mode, ticket)
-    rendered = tuple(
-        os.path.expanduser(word)
-        .replace("{mode}", action.mode)
-        .replace("{id}", str(action.id))
-        .replace("{prompt}", prompt)
-        for word in words
-    )
+    is_repair = repo.find(action.id).task.frontmatter.status == "error"
+    command_mode = "repair" if is_repair else action.mode
+    rendered = render_command(words, command_mode, str(action.id), prompt)
     first = rendered[0]
     if "/" in first and not Path(first).is_absolute():
         raise ChittyError(f"{setting} must use an absolute path when its first word contains '/'")
