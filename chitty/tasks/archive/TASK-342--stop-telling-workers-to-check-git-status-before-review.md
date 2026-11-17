@@ -32,3 +32,4 @@ Reviewed: the human reviewed the diff and asked for it to land. Merged `main` in
 - 2026-11-17T17:24:58Z kind-umber-toad blocked → review
 - 2026-11-17T17:25:00Z kind-umber-toad: changed notes; overrode review independence
 - 2026-11-17T17:25:00Z kind-umber-toad review → done
+- 2026-11-17T17:25:03Z kind-umber-toad done → archived
