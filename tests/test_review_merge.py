@@ -229,22 +229,33 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual(result.stdout, "TASK-1: review → done\n")
         self.assertTrue((self.logs / "agent").exists())
 
-    def test_missing_review_branch_blocks_ticket_and_is_not_selected_again(self):
+    def test_missing_review_branch_errors_and_is_selected_for_repair(self):
         self.branch_for_review()
+        self.git("worktree", "add", "--quiet", str(self.worktree), "task-1")
+        self.git("worktree", "remove", "--force", str(self.worktree))
         self.git("branch", "-D", "task-1")
         self.run_cli("edit", "1", "-s", "review")
+        self.assertEqual(
+            Repo.open(self.root).find(Repo.open(self.root).resolve("1")).task.frontmatter.status,
+            "review",
+        )
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertEqual(result.stdout, "TASK-1: review → blocked\n")
+        self.assertEqual(result.stdout, "TASK-1: review → error\n")
         self.assertFalse((self.logs / "agent").exists())
         ticket = Repo.open(self.root).find(Repo.open(self.root).resolve("1")).task
+        self.assertIsNone(ticket.frontmatter.owner)
         notes = ticket.section("Notes") or ""
+        self.assertIn("Runner error (review)", notes)
         self.assertIn("TASK-1", notes)
         self.assertIn("task-1", notes)
-        self.assertIn("restore the branch or choose the ticket's final state", notes)
-        idle = self.run_cli("run", "--mode", "review", exit_code=3)
-        self.assertEqual(idle.stderr.splitlines()[-1], "no next ticket for --mode review")
+        for mode in ("review", "work"):
+            idle = self.run_cli("run", "--mode", mode, exit_code=3)
+            self.assertIn("no next ticket", idle.stderr)
+        self.run_cli("next", exit_code=3)
+        repair = self.run_cli("run", "--errors")
+        self.assertEqual(repair.stdout, "TASK-1: error → error\n")
 
     def test_review_lands_directly_without_an_extra_review(self):
         self.branch_for_review()

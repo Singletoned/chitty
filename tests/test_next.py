@@ -1479,7 +1479,7 @@ class TestNext(CliTestCase):
             result = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
-        self.assertEqual(result.stdout, "TASK-1: review → blocked\n")
+        self.assertEqual(result.stdout, "TASK-1: review → error\n")
         ticket = Repo.open(self.root).find(Repo.open(self.root).resolve("TASK-1")).task
         self.assertIn("TASK-1", ticket.section("Notes") or "")
         self.assertIn("task-1", ticket.section("Notes") or "")
