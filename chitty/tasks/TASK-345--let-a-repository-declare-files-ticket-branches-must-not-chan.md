@@ -38,6 +38,8 @@ Add protected_paths to RepoConfig first, then regression tests and validation fo
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and match directory prefixes (now `--literal-pathspecs` plus exact filtering); tests would have failed on `extra="forbid"` rather than behaviour; test locations; missing cases (add, delete, rename, prefix-alike names, `main` changing a listed file); the validator message lacking the entry; the trailing NUL; the wrong `TASK-179` claim (dropped). Not adopted: case-only differences on case-insensitive filesystems, out of scope.
 
+Regression evidence: with the review guard temporarily removed, test_protected_file_is_changed failed because the reviewer agent started; restored the guard and the focused suite passes.
+
 ## History
 
 - 2026-11-16T09:59:55Z intrepid-coral-raven → backlog
@@ -52,3 +54,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and ma
 - 2026-11-17T22:01:54Z kind-umber-toad planning → todo
 - 2026-11-17T22:13:17Z jolly-russet-stoat todo → doing
 - 2026-11-17T22:13:31Z jolly-russet-stoat: wrote the plan
+- 2026-11-17T22:20:53Z jolly-russet-stoat: changed notes
