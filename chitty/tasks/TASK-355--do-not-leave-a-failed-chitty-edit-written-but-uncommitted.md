@@ -1,6 +1,6 @@
 ---
 title: Do not leave a failed chitty edit written but uncommitted
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -31,6 +31,9 @@ Review failed (tests): The property must establish and assert a clean Git status
 
 Fixed the review finding: the property fixture now commits chitty.toml, asserts the baseline Git status is clean, and verifies status remains clean after every refused edit. Focused property passed; make format and make check passed (603 tests; make check exit 0).
 
+Reviewed: Previous clean-baseline finding is resolved.
+1: pass - The property asserts an empty baseline and final Git status and identical chitty file bytes, with 30 generated examples and no deadline. Running it against main store.py failed with a modified TASK-1 status; running it against the branch printed OK. make format && make check passed: 603 tests, OK, and no formatting changes.
+
 ## Summary
 
 Updated the refused-edit property to assert a genuinely clean Git working tree and unchanged chitty/ bytes. Verified with the focused property and make format && make check (603 tests, exit 0). No follow-up known.
@@ -57,3 +60,5 @@ Updated the refused-edit property to assert a genuinely clean Git working tree a
 - 2026-11-17T18:17:22Z eager-indigo-crane: wrote the plan
 - 2026-11-17T18:19:17Z eager-indigo-crane: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T18:19:17Z eager-indigo-crane doing → review
+- 2026-11-17T18:21:21Z friendly-lilac-urchin: changed notes; ticked acceptance criteria
+- 2026-11-17T18:21:21Z friendly-lilac-urchin review → done
