@@ -13,7 +13,7 @@ created: 2026-11-16
 Decisions:
 
 - Add a pure function `ticket_references(text: str, prefixes: Collection[str]) -> list[TaskId]` in `src/chitty/ids.py`. It returns each ID in `text` whose prefix is exactly one of `prefixes` (upper-case, case-sensitive), in order of first appearance, without repeats. An ID counts only when the character before it is not a letter, digit or `-`, and the character after it is not a letter or digit. So `TASK-12.` and `` `TASK-12` `` give `TASK-12`; `XTASK-12`, `task-12` and `UTF-8` give nothing when the prefixes are `TASK` and `HUMAN`.
-- Add `Repo.referenced_tasks(stored: StoredTask) -> list[tuple[TaskId, StoredTask | None]]` in `src/chitty/store.py`. It scans the Description and every criterion's text, with the prefixes of every context in the repo, leaves out the ticket'\''s own ID, and looks each ID up with `Repo.lookup` from `TASK-356` (`None` when no ticket has it).
+- Add `Repo.referenced_tasks(stored: StoredTask) -> list[tuple[TaskId, StoredTask | None]]` in `src/chitty/store.py`. It scans the Description and every criterion's text, with the prefixes of every context in the repo, leaves out the ticket's own ID, and looks each ID up with `Repo.lookup` from `TASK-356` (`None` when no ticket has it).
 - `chitty edit` in `src/chitty/cli.py`, when the edit changes the status to `todo` from another status, prints after its `updated` line one line per reference, in order: `<ID> <status> <title>`, or `<ID> no such task`. It prints nothing extra when the status was already `todo`, for other statuses, or with `--json`.
 - Replace the plan guide bullet `Re-check claims about other tickets just before promoting, because they can land during the read.` with `` `chitty edit -s todo` lists the tickets a ticket mentions: check that its claims about them still hold. ``
 
@@ -34,3 +34,4 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case IDs
 - 2026-11-16T10:38:46Z intrepid-coral-raven backlog → planning
 - 2026-11-17T16:02:05Z kind-umber-toad: changed dependencies, description, acceptance criteria
 - 2026-11-17T16:02:05Z kind-umber-toad planning → cold-read
+- 2026-11-17T16:02:13Z kind-umber-toad: changed description
