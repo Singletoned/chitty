@@ -20,7 +20,7 @@ read. Describe the change and why it is needed; criteria are optional.
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
   criteria. Err on the side of splitting: a ticket that seems too small is not
-  a problem. About five criteria is the limit; split larger work. Split a ticket
+  a problem. `chitty check` warns above five criteria; split larger work. Split a ticket
   when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until you start writing it. Move it to
   `-s planning` while you write it, to `-s cold-read` for its one read-only

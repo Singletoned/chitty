@@ -16,7 +16,7 @@ class TestPlanGuideRestored(unittest.TestCase):
         planning = _flat(guide("plan"))
         for phrase in (
             "Err on the side of splitting",
-            "About five criteria is the limit; split larger work.",
+            "`chitty check` warns above five criteria; split larger work.",
             "Use its optional `parent` field to group flat IDs.",
             "Ask whether odd existing behaviour is a bug before writing around it.",
             "Write requirements needed to reject the implementation into the ticket",
