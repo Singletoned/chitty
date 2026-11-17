@@ -153,6 +153,21 @@ class RepoConfig(BaseModel):
             raise ValueError("must not be empty")
         return value
 
+    @field_validator("protected_paths")
+    @classmethod
+    def _protected_paths(cls, paths: list[str]) -> list[str]:
+        for entry in paths:
+            parts = entry.split("/")
+            if (
+                not entry.strip()
+                or entry.startswith("/")
+                or entry.endswith("/")
+                or "\\" in entry
+                or any(part in {"", ".", ".."} for part in parts)
+            ):
+                raise ValueError(f"invalid protected path {entry!r}")
+        return paths
+
     @field_validator("job_order")
     @classmethod
     def _job_order(cls, value: list[str] | None) -> list[str] | None:

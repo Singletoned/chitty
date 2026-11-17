@@ -42,6 +42,33 @@ class TestRepoConfig(RepoTestCase):
                 with self.assertRaisesRegex(ChittyError, message):
                     load_repo_config(self.root)
 
+    def test_protected_paths_validation(self):
+        config_path = self.root / "chitty.toml"
+        config_path.write_text(
+            CONFIG.replace("autocommit = false", 'protected_paths = ["a..b"]\nautocommit = false')
+        )
+        self.assertEqual(load_repo_config(self.root).protected_paths, ["a..b"])
+        for entry, value in (
+            ("", "''"),
+            ("  ", "'  '"),
+            ("/x", '"/x"'),
+            ("x/", '"x/"'),
+            ("a//b", '"a//b"'),
+            ("./x", '"./x"'),
+            ("a/../b", '"a/../b"'),
+            ("a\\b", "'a\\b'"),
+        ):
+            with self.subTest(entry=entry):
+                config_path.write_text(
+                    CONFIG.replace(
+                        "autocommit = false",
+                        f"protected_paths = [{value}]\nautocommit = false",
+                    )
+                )
+                with self.assertRaises(ChittyError) as raised:
+                    load_repo_config(self.root)
+                self.assertIn(repr(entry), str(raised.exception))
+
     def test_agent_timeout_can_be_disabled_and_uses_patchable_default(self):
         config_path = self.root / "chitty.toml"
         config_path.write_text(
