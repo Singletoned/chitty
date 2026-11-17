@@ -12,7 +12,7 @@ class TestRunReturnToPlanning(ReviewMergeTestCase):
         self.git("switch", "--quiet", "-c", "task-1")
         (self.root / "work.txt").write_text("Partial implementation\n")
         self.git("add", "work.txt")
-        self.git("commit", "--quiet", "-m", "partial implementation")
+        self.git("commit", "--quiet", "-m", "partial implementation\n\nTask: TASK-1")
         self.run_cli("edit", "1", "-s", "doing")
         if source == "review":
             self.run_cli("edit", "1", "-s", "review")

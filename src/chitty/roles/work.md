@@ -21,8 +21,8 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
   `&&`.
 - With `autocommit = true`, Chitty commits ticket-file edits only. It does not
   commit code, tests, or other implementation files. Commit those in small
-  logical commits ending with `Task: <ID>` using that ticket's ID, so
-  `git log --grep <ID>` finds them.
+  logical commits ending with a `Task: <ID>` trailer; `chitty edit -s review`
+  refuses branch commits without one.
 - Record anything surprising with `--note`. When implementation is ready, run
   `chitty fix`, format and check, then commit your changes: `chitty edit -s
   review` refuses while the worktree has uncommitted files. Write `--summary`

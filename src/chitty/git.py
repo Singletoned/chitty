@@ -6,6 +6,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from chitty.errors import ChittyError
+from chitty.ids import TaskId
+
+
+@dataclass(frozen=True)
+class Commit:
+    """A Git commit's object ID and full message."""
+
+    sha: str
+    message: str
 
 
 @dataclass(frozen=True)
@@ -16,6 +25,43 @@ class HistoricalFile:
     content: str
     ref: str
     committed_at: int
+
+
+def commits_missing_trailer(commits: Sequence[Commit], task_id: TaskId) -> list[Commit]:
+    """Return non-Chitty commits without this task's trailer in their last paragraph."""
+    missing: list[Commit] = []
+    for commit in commits:
+        lines = commit.message.splitlines()
+        if lines and lines[0].startswith("chitty: "):
+            continue
+        text = commit.message.rstrip()
+        paragraphs = text.splitlines()
+        if not any(not line.strip() for line in paragraphs):
+            missing.append(commit)
+            continue
+        last: list[str] = []
+        for line in reversed(paragraphs):
+            if not line.strip():
+                break
+            last.append(line)
+        if not any(line.strip() == f"Task: {task_id}" for line in last):
+            missing.append(commit)
+    return missing
+
+
+def short_sha(root: Path, sha: str) -> str:
+    """Return Git's abbreviated object ID for ``sha``."""
+    return _git(root, "rev-parse", "--short", sha).strip()
+
+
+def branch_commits(root: Path, main_branch: str) -> list[Commit]:
+    """Return non-merge commits unique to HEAD, oldest first."""
+    shas = _git(root, "rev-list", "--no-merges", "--reverse", f"{main_branch}..HEAD").splitlines()
+    commits: list[Commit] = []
+    for sha in shas:
+        message = _git(root, "show", "-s", "--format=%B", sha)
+        commits.append(Commit(sha, message))
+    return commits
 
 
 def commit(root: Path, paths: Sequence[Path], message: str) -> None:
