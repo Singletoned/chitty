@@ -43,6 +43,8 @@ Review failed (tests): Correct the fake-agent scenarios and rerun their regressi
 
 The revised regression fixture still fails: the CLI-only case ends with the main ticket in review instead of triggering the expected refusal, while the code-change case ends in error instead of review. The generated fake agent invokes chitty edit but the test does not currently establish which repository that command edits or why the repair state differs. Need inspect run_cli/worktree environment and revise the fake-agent setup so each case performs the specified action inside the repair worktree; acceptance criterion 2 cannot be verified until this is resolved.
 
+Planning, 2026-11-17: no ticket defect found. Likely cause of the fixture confusion: `chitty show` resolves a ticket across branches and prefers the newest committed version, so after a refused repair whose agent committed `review` on the repair branch it reports `review` although `main` still says `error` (see `TASK-366`). Assert the status in the main checkout's ticket file (parse it, or `git show main:<path>`), not with `chitty show`. The worktree has an uncommitted change to `tests/test_repair_requires_work.py` from the last session.
+
 ## Summary
 
 Implemented committed diff-path detection for repair handoffs. Verification: make check passes; focused repair, property, and real-git tests pass. Regression evidence: disabling the check makes the two no-work fake-agent cases fail as expected. Changes committed in add740b with Task: TASK-364. No follow-ups.
@@ -64,3 +66,4 @@ Implemented committed diff-path detection for repair handoffs. Verification: mak
 - 2026-11-17T18:37:35Z able-navy-badger review → doing
 - 2026-11-17T18:40:43Z able-ochre-kestrel: changed owner, notes
 - 2026-11-17T18:40:43Z able-ochre-kestrel doing → planning
+- 2026-11-17T19:59:36Z kind-umber-toad: changed notes
