@@ -1,7 +1,7 @@
 """Task IDs, filenames and slugs."""
 
 import re
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Collection, Iterable
 from dataclasses import dataclass
 from functools import total_ordering
 
@@ -63,6 +63,24 @@ def provisional_suffix(draw: Callable[[int], int]) -> str:
     return PROVISIONAL_LETTERS[draw(len(PROVISIONAL_LETTERS))] + "".join(
         alphabet[draw(len(alphabet))] for _ in range(PROVISIONAL_LENGTH - 1)
     )
+
+
+def ticket_references(text: str, prefixes: Collection[str]) -> list[TaskId]:
+    """Find valid, case-sensitive ticket references in text, in appearance order."""
+    allowed = set(prefixes)
+    found: list[TaskId] = []
+    seen: set[TaskId] = set()
+    for match in re.finditer(r"(?<![A-Za-z0-9-])([A-Za-z]+)-([A-Za-z0-9]+)", text):
+        if match[1] not in allowed:
+            continue
+        try:
+            task_id = TaskId.parse(match[0])
+        except IdError:
+            continue
+        if task_id not in seen:
+            seen.add(task_id)
+            found.append(task_id)
+    return found
 
 
 def resolve(text: str, default_prefix: str) -> TaskId:

@@ -2110,7 +2110,7 @@ class TestGuide(CliTestCase):
         planning_guide = guide("plan", directory=Path.cwd())
         self.assertIn("nothing built", planning_guide)
         self.assertIn("must not start one", planning_guide)
-        self.assertIn("just before promoting", planning_guide)
+        self.assertIn("`chitty edit -s todo` lists the tickets a ticket mentions", planning_guide)
 
     def test_prints_the_agent_guide_outside_any_repo(self):
         os.chdir(self.tmp)

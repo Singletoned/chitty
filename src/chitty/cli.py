@@ -806,6 +806,18 @@ def edit(
                 os.environ["CHITTY_ACTOR"] = previous_actor
     escalated = status == "doing" and change.task.task.frontmatter.status == "blocked"
     _report(change, as_json, "escalated to human review" if escalated else "updated")
+    if (
+        not as_json
+        and change.previous_status != "todo"
+        and change.task.task.frontmatter.status == "todo"
+    ):
+        for reference, stored in repo.referenced_tasks(change.task):
+            if stored is None:
+                click.echo(f"{reference} no such task")
+            else:
+                click.echo(
+                    f"{reference} {stored.task.frontmatter.status} {stored.task.frontmatter.title}"
+                )
 
 
 @cli.command()

@@ -23,7 +23,10 @@ class TestPlanGuideRestored(unittest.TestCase):
             "Write requirements needed to reject the implementation into the ticket",
             "Give the outcomes in your reply, not in a ticket note.",
             "that depends on this one",
-            "because they can land during the read",
+            (
+                "`chitty edit -s todo` lists the tickets a ticket mentions: "
+                "check that its claims about them still hold."
+            ),
             "it is not your planning step",
             "to process completed tickets in one batch",
         ):

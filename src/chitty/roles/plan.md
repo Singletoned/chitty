@@ -98,8 +98,7 @@ read. Describe the change and why it is needed; criteria are optional.
 - A worker cannot verify a criterion needing a real `chitty run` or agent
   session, and must not start one. Give that check to a person: a separate
   `-c human` ticket that depends on this one.
-- Re-check claims about other tickets just before promoting, because they can
-  land during the read.
+- `chitty edit -s todo` lists the tickets a ticket mentions: check that its claims about them still hold.
 - If a ticket's text relies on something an unfinished ticket is building,
   such as a function, file, format or setting, keep it in `planning` with a
   note naming that ticket. When that ticket is done, compare this one with

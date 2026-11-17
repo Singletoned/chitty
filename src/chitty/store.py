@@ -129,6 +129,7 @@ class Change:
     paths: tuple[Path, ...]
     tasks: tuple[StoredTask, ...]
     actor: str | None = None
+    previous_status: str | None = None
 
 
 @dataclass(frozen=True)
@@ -624,6 +625,20 @@ class Repo:
             raise ChittyError(f"{task_id} is used by more than one file: {paths}")
         return matches[0]
 
+    def referenced_tasks(self, stored: StoredTask) -> list[tuple[TaskId, StoredTask | None]]:
+        prefixes = [context.prefix for context in self.contexts()]
+        text = "\n".join(
+            [
+                stored.task.section(DESCRIPTION) or "",
+                *(criterion.text for criterion in stored.task.criteria),
+            ]
+        )
+        return [
+            (task_id, self.lookup(task_id))
+            for task_id in ids.ticket_references(text, prefixes)
+            if task_id != stored.id
+        ]
+
     def find(self, task_id: TaskId) -> StoredTask:
         task = self.lookup(task_id)
         if task is None:
@@ -860,7 +875,9 @@ class Repo:
                 task = task.with_history(now, actor_name, previous_status, edit.status)
         with self._all_or_nothing():
             change = replace(
-                self._save(stored, task, allow_stale=edit.skip_current_version), actor=actor_name
+                self._save(stored, task, allow_stale=edit.skip_current_version),
+                actor=actor_name,
+                previous_status=previous_status,
             )
             return self._commit(change, "edit")
 
