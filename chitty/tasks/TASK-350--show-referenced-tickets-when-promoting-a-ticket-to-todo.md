@@ -1,6 +1,6 @@
 ---
 title: Show referenced tickets when promoting a ticket to todo
-status: cold-read
+status: todo
 depends_on:
   - TASK-356
 created: 2026-11-16
@@ -38,3 +38,4 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 - 2026-11-17T16:02:05Z kind-umber-toad planning → cold-read
 - 2026-11-17T16:02:13Z kind-umber-toad: changed description
 - 2026-11-17T16:04:31Z kind-umber-toad: changed description, acceptance criteria
+- 2026-11-17T16:22:03Z kind-umber-toad cold-read → todo
