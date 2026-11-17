@@ -49,7 +49,13 @@ class TestRefusedEditProperty(RepoTestCase):
             tasks, "Second", "Describe.", [], {"depends_on": ["TASK-1"]}, date(2026, 10, 23)
         )
         subprocess.run(
-            ["git", "commit", "--quiet", "--allow-empty", "-m", "test baseline"],
+            ["git", "add", "chitty.toml"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "commit", "--quiet", "-m", "test baseline"],
             cwd=self.root,
             check=True,
             capture_output=True,
@@ -78,6 +84,7 @@ class TestRefusedEditProperty(RepoTestCase):
     )
     def test_refused_edit_restores_repository(self, invalid, note, title):
         before = self._snapshot()
+        self.assertEqual(before[1], "")
         kwargs = {"note": note, "title": title}
         if invalid == "self-dependency":
             kwargs["depends_on"] = ["TASK-1"]
@@ -87,4 +94,6 @@ class TestRefusedEditProperty(RepoTestCase):
             kwargs["parent"] = "TASK-1"
         with self.assertRaisesRegex(ChittyError, "cannot finalize task write"):
             self.repo.edit(TaskId("TASK", 1), Edit(**kwargs))
-        self.assertEqual(self._snapshot(), before)
+        after = self._snapshot()
+        self.assertEqual(after[1], "")
+        self.assertEqual(after[0], before[0])
