@@ -15,7 +15,16 @@ class TestCommitTrailers(unittest.TestCase):
             st.tuples(
                 st.booleans(),
                 st.lists(
-                    st.sampled_from(("Task: TASK-1", "Task: TASK-2", "Other: value", "text")),
+                    st.lists(
+                        st.tuples(
+                            st.sampled_from(
+                                ("Task: TASK-1", "Task: TASK-2", "Other: value", "text")
+                            ),
+                            st.sampled_from(("", " ", "  ", "\t")),
+                            st.sampled_from(("", " ", "  ", "\t")),
+                        ),
+                        max_size=3,
+                    ),
                     max_size=4,
                 ),
             ),
@@ -25,15 +34,22 @@ class TestCommitTrailers(unittest.TestCase):
     def test_missing_trailers(self, samples):
         commits = []
         expected = []
-        for index, (chitty, lines) in enumerate(samples):
+        for index, (chitty, paragraphs) in enumerate(samples):
             subject = "chitty: generated" if chitty else "Fix"
             message = subject
-            if lines:
-                message += "\n\n" + "\n".join(lines)
-            message += "\n\n"
+            for paragraph in paragraphs:
+                message += "\n\n" + "\n".join(
+                    f"{before}{line}{after}" for line, before, after in paragraph
+                )
+            message += "\n\n" * (index % 3)
             commit = Commit(str(index), message)
             commits.append(commit)
-            has_trailer = any(line.strip() == "Task: TASK-1" for line in lines)
+            last_paragraph = paragraphs
+            while last_paragraph and not any(line.strip() for line, _, _ in last_paragraph[-1]):
+                last_paragraph = last_paragraph[:-1]
+            has_trailer = bool(last_paragraph) and any(
+                line.strip() == "Task: TASK-1" for line, _, _ in last_paragraph[-1]
+            )
             if not chitty and not has_trailer:
                 expected.append(commit)
         self.assertEqual(commits_missing_trailer(commits, TaskId.parse("TASK-1")), expected)
@@ -65,12 +81,26 @@ class TestReviewTrailerGate(ReviewMergeTestCase):
         repo = Repo.open(self.root)
         self.assertEqual(repo.find(repo.resolve("1")).task.frontmatter.status, "doing")
         self.git("commit", "--amend", "--quiet", "-m", "Add x\n\nTask: TASK-1")
+        self.git("switch", "--quiet", "main")
+        (self.root / "main-change").write_text("main\n")
+        self.git("add", "main-change")
+        self.git("commit", "--quiet", "-m", "main change")
+        self.git("switch", "--quiet", "task-1")
+        self.git("merge", "--quiet", "--no-edit", "main")
+        (self.root / "chitty-commit").write_text("chitty\n")
+        self.git("add", "chitty-commit")
+        self.git("commit", "--quiet", "-m", "chitty: generated commit")
         self.run_cli("edit", "1", "-s", "review")
 
     def test_skip_current_version_bypasses_gate(self):
         self.git("switch", "--quiet", "-c", "task-1")
+        (self.root / "untrailed").write_text("work\n")
+        self.git("add", "untrailed")
+        self.git("commit", "--quiet", "-m", "No trailer")
         repo = Repo.open(self.root)
         repo.edit(repo.resolve("1"), Edit(status="review", skip_current_version=True))
+        updated = Repo.open(self.root)
+        self.assertEqual(updated.find(updated.resolve("1")).task.frontmatter.status, "review")
 
     def test_review_to_done_does_not_gate(self):
         self.git("switch", "--quiet", "-c", "task-1")

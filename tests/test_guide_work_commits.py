@@ -12,6 +12,7 @@ class TestWorkCommitsGuide(unittest.TestCase):
             "Task: <ID>",
             "then commit your changes",
             "refuses while the worktree has uncommitted files",
+            "refuses branch commits without one",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)
