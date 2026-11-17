@@ -4,6 +4,8 @@ status: planning
 labels:
   - needs-minor
 owner: planner-cold-read
+depends_on:
+  - TASK-347
 created: 2026-11-16
 ---
 
@@ -48,3 +50,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: the rule as first written (Com
 - 2026-11-17T19:57:06Z kind-umber-toad planning → cold-read
 - 2026-11-17T19:58:42Z kind-umber-toad: changed labels, description, acceptance criteria, notes
 - 2026-11-17T19:58:42Z kind-umber-toad cold-read → planning
+- 2026-11-17T20:01:19Z kind-umber-toad: changed dependencies
