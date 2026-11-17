@@ -376,13 +376,15 @@ def _run_ticket(
         branch = str(action.id).lower()
         existing_worktree = git.worktree_for_branch(main_root, branch)
         if existing_worktree is None and not git.has_local_branch(main_root, branch):
-            note = (
-                f"Review blocked: {action.id} has no branch `{branch}`. "
-                "A person must restore the branch or choose the ticket's final state."
-            )
+            note = f"Runner error (review): {action.id} has no branch `{branch}` and no worktree."
             change = main_repo.edit(
                 action.id,
-                Edit(status="blocked", owner="human", note=note, skip_verdicts=True),
+                Edit(
+                    status="error",
+                    note=note,
+                    skip_verdicts=True,
+                    skip_current_version=True,
+                ),
             )
             return RunResult(action, "review", change.task.task.frontmatter.status)
     agent_command = _agent_command(main_repo, action, agent)

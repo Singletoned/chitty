@@ -97,16 +97,17 @@
 
 `chitty run` prepares the worktree so the reviewer sees what would land:
 
-1. An unfinished merge or rebase is an error for the human; no status change.
-2. Uncommitted files (untracked and not ignored included): block for `human`
+1. A missing ticket branch and worktree is a runner error: set `error` with a `Runner error (review)` note naming the missing branch and saying no worktree exists; do not change the owner or start an agent.
+2. An unfinished merge or rebase is an error for the human; no status change.
+3. Uncommitted files (untracked and not ignored included): block for `human`
    with `Review blocked (work): ...`. No reviewer starts.
-3. Merge local `main` into the branch, with `rerere.enabled=false`. Conflict:
+4. Merge local `main` into the branch, with `rerere.enabled=false`. Conflict:
    `git merge --abort`, move to `doing` with `Review failed (integration): ...`
    naming the files.
-4. A branch that changes the Chitty config (`chitty.toml` or `[tool.chitty]`)
+5. A branch that changes the Chitty config (`chitty.toml` or `[tool.chitty]`)
    or the managed block in `AGENTS.md`: move to `doing` with
    `Review failed (work): ...`.
-5. Run `setup`, then `check`. Files left uncommitted: block for `human`. Check
+6. Run `setup`, then `check`. Files left uncommitted: block for `human`. Check
    failure: move to `doing` with the last 20 lines, fenced, in
    `Review failed (work)`; no agent, no usage line, exit 0.
 
