@@ -1,6 +1,6 @@
 ---
 title: Do not leave a failed chitty edit written but uncommitted
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -31,3 +31,4 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 - 2026-11-16T17:03:01Z open-russet-eel cold-read → planning
 - 2026-11-16T17:03:03Z open-russet-eel: changed owner
 - 2026-11-16T17:03:03Z open-russet-eel planning → todo
+- 2026-11-17T18:01:08Z daring-teal-crane todo → doing
