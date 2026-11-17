@@ -1,6 +1,6 @@
 ---
 title: Stop ignoring `cold-read/` branches when reading ticket history
-status: review
+status: done
 depends_on:
   - TASK-336
 created: 2026-11-16
@@ -24,6 +24,9 @@ Remove the cold-read ref predicate/filter and the two obsolete cold-read history
 
 Removed the cold-read ref filter, predicate, and obsolete tests/helper. `git grep -n -e _is_cold_read_ref -e cold_read_branch -e make_newer_copy_on -- src tests` found no matches. `make format && make check` passed (581 tests). `chitty fix TASK-337` could not resolve the worktree-relative ID; plain `chitty fix` succeeded with pre-existing warnings in unrelated task files.
 
+Reviewed:
+1: pass - The required git grep printed nothing and exited 1; make format && make check passed, including 595 tests. The complete diff removes the predicate, filter, obsolete tests and helper; refs/cold-read remains outside the queried branch namespaces.
+
 ## Summary
 
 Removed cold-read filtering from ticket history and deleted its obsolete tests/helper. Verification: required git grep clean; make format and make check passed (581 tests). Follow-up: none.
@@ -45,3 +48,5 @@ Removed cold-read filtering from ticket history and deleted its obsolete tests/h
 - 2026-11-17T17:30:16Z rosy-zinc-yellowhammer: wrote the plan
 - 2026-11-17T17:31:48Z rosy-zinc-yellowhammer: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T17:31:48Z rosy-zinc-yellowhammer doing → review
+- 2026-11-17T17:33:55Z intrepid-silver-urchin: changed notes; ticked acceptance criteria
+- 2026-11-17T17:33:55Z intrepid-silver-urchin review → done
