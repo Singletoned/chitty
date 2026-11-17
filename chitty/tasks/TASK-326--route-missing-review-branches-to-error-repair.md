@@ -46,6 +46,8 @@ Reviewed:
 2: pass - `make check` passed the repair guide test; running it with the main-branch guide failed all four phrase assertions.
 3: pass - inspected `docs/plan/next-action-and-runner.md` before-review list and error note; `make format && make check` passed (584 tests, ruff and pyright clean).
 
+Landed by hand on 2026-11-17 after the runner lost a landing race; the review above passed.
+
 ## Summary
 
 Implemented direct review-phase error handoff for a missing branch/worktree while preserving owner, expanded runner and repair guidance, and added regression coverage. Verified with make format and make check (584 tests). Commit: 34e5d2a. No known follow-ups.

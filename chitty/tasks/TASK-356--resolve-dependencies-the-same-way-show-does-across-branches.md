@@ -33,6 +33,8 @@ Reviewed: Independent review of the complete diff and criteria; no prior review 
 1: pass - `python -m unittest -v tests.test_check_cross_branch_references` passed; with pre-fix `check.py` and `store.py`, both other-branch subtests and the malformed-file test failed with no-such-task diagnostics instead of successful lookup or parse error.
 2: pass - The same focused test passed and failed against pre-fix code with `cannot finalize task write` and `depends_on TASK-2: no such task`; `make format && make check` passed, including 605 test suites.
 
+Landed by hand on 2026-11-17 after the runner lost a landing race; the review above passed.
+
 ## Summary
 
 Implemented Repo.lookup and made check resolve depends_on and parent references across branches while keeping duplicate and cycle graphs local. Added real-Git coverage for active, archived, other-branch, missing, malformed historical references, and the reported autocommit edit. Verification: chitty fix; make format; make check (605 suites pass); focused new regression tests pass. Follow-up: none.
