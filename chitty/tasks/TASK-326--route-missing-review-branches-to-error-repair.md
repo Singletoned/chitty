@@ -1,6 +1,6 @@
 ---
 title: Route missing review branches to error repair
-status: review
+status: done
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -41,6 +41,11 @@ PASS: tests.test_guide_repair_missing_branch passes against flattened guide("rep
 
 PASS: updated Before a review guidance; make check passes.
 
+Reviewed:
+1: pass - `make check` passed 584 tests, including the missing-review-branch runner regression; running that test with the main-branch runner printed `TASK-1: review → blocked` and failed against the expected error.
+2: pass - `make check` passed the repair guide test; running it with the main-branch guide failed all four phrase assertions.
+3: pass - inspected `docs/plan/next-action-and-runner.md` before-review list and error note; `make format && make check` passed (584 tests, ruff and pyright clean).
+
 ## Summary
 
 Implemented direct review-phase error handoff for a missing branch/worktree while preserving owner, expanded runner and repair guidance, and added regression coverage. Verified with make format and make check (584 tests). Commit: 34e5d2a. No known follow-ups.
@@ -69,3 +74,5 @@ Implemented direct review-phase error handoff for a missing branch/worktree whil
 - 2026-11-17T17:18:13Z nimble-amber-urchin: wrote the plan
 - 2026-11-17T17:21:46Z nimble-amber-urchin: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T17:21:46Z nimble-amber-urchin doing → review
+- 2026-11-17T17:24:56Z brisk-coral-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-17T17:24:56Z brisk-coral-kestrel review → done
