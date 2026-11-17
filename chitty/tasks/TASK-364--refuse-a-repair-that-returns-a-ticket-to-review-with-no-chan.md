@@ -1,6 +1,6 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: doing
+status: planning
 created: 2026-11-16
 ---
 
@@ -41,6 +41,8 @@ Review failed (tests): Correct the fake-agent scenarios and rerun their regressi
 2: fail - Newly discovered: `tests/test_repair_requires_work.py` writes review directly before every case, including the purported `chitty edit`-only case, so it does not exercise the required CLI-only handoff. The code case also writes and commits review before committing code, rather than committing code then setting review. Construct the cases in the specified order and demonstrate that both no-work cases fail without the refusal. The existing focused suite printed `Ran 16 tests` and `OK`; the worker reported the bypass regression, but it does not establish the missing CLI-only scenario.
 3: pass - `tests.test_git` exercised the real rename and Unicode paths in the focused run, which printed `OK`; `make check` passed 617 tests.
 
+The revised regression fixture still fails: the CLI-only case ends with the main ticket in review instead of triggering the expected refusal, while the code-change case ends in error instead of review. The generated fake agent invokes chitty edit but the test does not currently establish which repository that command edits or why the repair state differs. Need inspect run_cli/worktree environment and revise the fake-agent setup so each case performs the specified action inside the repair worktree; acceptance criterion 2 cannot be verified until this is resolved.
+
 ## Summary
 
 Implemented committed diff-path detection for repair handoffs. Verification: make check passes; focused repair, property, and real-git tests pass. Regression evidence: disabling the check makes the two no-work fake-agent cases fail as expected. Changes committed in add740b with Task: TASK-364. No follow-ups.
@@ -60,3 +62,5 @@ Implemented committed diff-path detection for repair handoffs. Verification: mak
 - 2026-11-17T18:35:31Z calm-teal-ibis doing → review
 - 2026-11-17T18:37:35Z able-navy-badger: changed acceptance criteria, notes
 - 2026-11-17T18:37:35Z able-navy-badger review → doing
+- 2026-11-17T18:40:43Z able-ochre-kestrel: changed owner, notes
+- 2026-11-17T18:40:43Z able-ochre-kestrel doing → planning
