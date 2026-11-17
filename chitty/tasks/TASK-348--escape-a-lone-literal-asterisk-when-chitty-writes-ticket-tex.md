@@ -1,6 +1,7 @@
 ---
 title: Escape a lone literal asterisk when Chitty writes ticket text
-status: planning
+status: cold-read
+owner: planner-cold-read
 created: 2026-11-16
 ---
 
@@ -36,3 +37,5 @@ Out of scope: `_`, titles, escaping on read and rewriting existing tickets.
 - 2026-11-16T09:59:59Z intrepid-coral-raven → backlog
 - 2026-11-16T10:38:42Z intrepid-coral-raven backlog → planning
 - 2026-11-17T19:57:03Z kind-umber-toad: changed description, acceptance criteria
+- 2026-11-17T19:57:06Z kind-umber-toad: changed owner
+- 2026-11-17T19:57:06Z kind-umber-toad planning → cold-read
