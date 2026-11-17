@@ -1,6 +1,6 @@
 ---
 title: Stop clearing `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` in `chitty run`
-status: todo
+status: doing
 created: 2026-11-17
 ---
 
@@ -36,3 +36,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: criterion 2 passed with nothin
 - 2026-11-17T19:55:17Z kind-umber-toad: changed description
 - 2026-11-17T22:01:52Z kind-umber-toad: changed owner
 - 2026-11-17T22:01:52Z kind-umber-toad planning → todo
+- 2026-11-17T22:36:57Z open-russet-ibis todo → doing
