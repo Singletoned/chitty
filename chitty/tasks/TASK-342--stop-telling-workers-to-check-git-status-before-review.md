@@ -1,6 +1,6 @@
 ---
 title: Stop telling workers to check git status before review
-status: review
+status: done
 labels:
   - untestable
 owner: human
@@ -19,6 +19,8 @@ In `work.md`, replace ``then run `git status --short`. It must be empty before m
 
 Implemented by the planner on branch `task-342` (worktree `.worktrees/task-342`), commit `4a59e28`: the `work.md` sentence and `tests/test_guide_work_commits.py` as the Description says. `make check` in the worktree: `Ran 583 tests`, `OK`. Untestable, so no cold read or runner review: a human reviews the diff and lands it.
 
+Reviewed: the human reviewed the diff and asked for it to land. Merged `main` into `task-342`, `make check` passed (583 tests OK), and `main` fast-forwarded to `38c2f5f`.
+
 ## History
 
 - 2026-11-16T09:59:51Z intrepid-coral-raven → backlog
@@ -28,3 +30,5 @@ Implemented by the planner on branch `task-342` (worktree `.worktrees/task-342`)
 - 2026-11-17T16:32:59Z kind-umber-toad: changed owner, notes
 - 2026-11-17T16:32:59Z kind-umber-toad planning → blocked
 - 2026-11-17T17:24:58Z kind-umber-toad blocked → review
+- 2026-11-17T17:25:00Z kind-umber-toad: changed notes; overrode review independence
+- 2026-11-17T17:25:00Z kind-umber-toad review → done
