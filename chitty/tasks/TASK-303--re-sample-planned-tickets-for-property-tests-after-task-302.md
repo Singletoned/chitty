@@ -1,6 +1,6 @@
 ---
 title: Re-sample planned tickets for property tests after TASK-302
-status: backlog
+status: review
 owner: human
 depends_on:
   - TASK-302
@@ -21,3 +21,4 @@ Re-sample, 2026-11-17: all 16 done tickets first promoted to `todo` after `TASK-
 
 - 2026-11-12T20:18:42Z kind-yellow-vole → backlog
 - 2026-11-17T17:56:57Z kind-umber-toad: changed notes
+- 2026-11-17T18:17:56Z kind-umber-toad backlog → review
