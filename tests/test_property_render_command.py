@@ -9,10 +9,27 @@ from chitty.run import render_command
 
 class TestRenderCommand(unittest.TestCase):
     @given(
-        words=st.lists(st.text().filter(lambda word: not word.startswith("~"))),
+        words=st.lists(
+            st.lists(
+                st.one_of(
+                    st.text().filter(lambda part: "{" not in part),
+                    st.sampled_from(("{mode}", "{id}", "{prompt}")),
+                ),
+                min_size=1,
+            )
+            .map("".join)
+            .filter(lambda word: not word.startswith("~")),
+            min_size=1,
+        ),
         mode=st.sampled_from(("work", "review", "repair")),
         ticket_id=st.text(),
-        prompt=st.text(),
+        prompt=st.lists(
+            st.one_of(
+                st.text().filter(lambda part: "{" not in part),
+                st.sampled_from(("{mode}", "{id}", "{prompt}")),
+            ),
+            min_size=1,
+        ).map("".join),
     )
     def test_replaces_placeholders_in_order(self, words, mode, ticket_id, prompt):
         expected = tuple(
