@@ -1,6 +1,6 @@
 ---
 title: Mark tickets owned by `untestable` with their own emoji in `chitty list`
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -28,3 +28,4 @@ Out of scope: keying anything on the `untestable` label, and changing what `chit
 - 2026-11-16T16:50:22Z open-russet-eel cold-read → planning
 - 2026-11-16T16:50:24Z open-russet-eel: changed owner
 - 2026-11-16T16:50:24Z open-russet-eel planning → todo
+- 2026-11-17T18:21:12Z golden-amber-quail todo → doing
