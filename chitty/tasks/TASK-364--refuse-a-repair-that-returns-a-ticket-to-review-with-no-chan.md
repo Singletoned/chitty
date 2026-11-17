@@ -1,6 +1,6 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -24,13 +24,21 @@ Files: `src/chitty/run.py`, `src/chitty/git.py`, `tests/test_next.py`, new `test
 
 ## Acceptance Criteria
 
-- [ ] Hypothesis properties in `tests/test_property_repair_work.py`, with paths built from one to four non-empty segments, no `..` and no leading `/`, including paths inside, outside, prefix-alike (`chitty/tasksX/a.md` against `chitty/tasks`), equal to a directory, and empty sets: `has_work_beyond_tickets` is true exactly when some path is not inside any ticket directory; shuffling or duplicating either input does not change the result; adding a path never turns true into false. First add the function raising `NotImplementedError`; the test fails with that before the change.
-- [ ] Fake-agent tests in `tests/test_repair_requires_work.py`, one subtest per case, on an `error` ticket whose branch exists at the tip of `main` (the state `_worktree` also creates for a missing branch): the agent sets `review` through `chitty edit` only; writes `status: review` to the ticket file without committing; commits a code file then sets `review`; sets `blocked`. Only the code-file case ends in `review`; the first two make `chitty run --errors` exit non-zero with the `RepairError` text and leave the ticket `error`; `blocked` ends in `blocked`. The first two cases fail before the change. The two repair tests in `tests/test_next.py` are updated to commit a code file and pass.
-- [ ] Real-git tests of `changed_paths`: a branch that moves `src/a.py` to `chitty/tasks/a.md` returns both paths; a branch adding `chitty/tasks/é.md` returns that path unquoted. `make check` passes.
+- [x] Hypothesis properties in `tests/test_property_repair_work.py`, with paths built from one to four non-empty segments, no `..` and no leading `/`, including paths inside, outside, prefix-alike (`chitty/tasksX/a.md` against `chitty/tasks`), equal to a directory, and empty sets: `has_work_beyond_tickets` is true exactly when some path is not inside any ticket directory; shuffling or duplicating either input does not change the result; adding a path never turns true into false. First add the function raising `NotImplementedError`; the test fails with that before the change.
+- [x] Fake-agent tests in `tests/test_repair_requires_work.py`, one subtest per case, on an `error` ticket whose branch exists at the tip of `main` (the state `_worktree` also creates for a missing branch): the agent sets `review` through `chitty edit` only; writes `status: review` to the ticket file without committing; commits a code file then sets `review`; sets `blocked`. Only the code-file case ends in `review`; the first two make `chitty run --errors` exit non-zero with the `RepairError` text and leave the ticket `error`; `blocked` ends in `blocked`. The first two cases fail before the change. The two repair tests in `tests/test_next.py` are updated to commit a code file and pass.
+- [x] Real-git tests of `changed_paths`: a branch that moves `src/a.py` to `chitty/tasks/a.md` returns both paths; a branch adding `chitty/tasks/é.md` returns that path unquoted. `make check` passes.
 
 ## Plan
 
 Add a pure path-based work detector and a NUL-delimited git diff helper. In repair completion, before persisting final status to main, reject review when the repair branch diff from configured main has no paths outside all repository ticket directories. Add property tests, real-git helper tests, and fake-agent repair cases; update existing repair fixtures to commit real code work.
+
+## Notes
+
+Verified the repair refusal regression tests fail without the refusal: temporarily bypassing the path check caused the ticket-only edit and uncommitted-status cases to succeed unexpectedly. Restored the check and reran the focused tests successfully. make check passes.
+
+## Summary
+
+Implemented committed diff-path detection for repair handoffs. Verification: make check passes; focused repair, property, and real-git tests pass. Regression evidence: disabling the check makes the two no-work fake-agent cases fail as expected. Changes committed in add740b with Task: TASK-364. No follow-ups.
 
 ## History
 
@@ -43,3 +51,5 @@ Add a pure path-based work detector and a NUL-delimited git diff helper. In repa
 - 2026-11-16T17:10:35Z open-russet-eel planning → todo
 - 2026-11-17T18:25:30Z calm-teal-ibis todo → doing
 - 2026-11-17T18:25:46Z calm-teal-ibis: wrote the plan
+- 2026-11-17T18:35:31Z calm-teal-ibis: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T18:35:31Z calm-teal-ibis doing → review
