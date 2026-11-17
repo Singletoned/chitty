@@ -22,12 +22,26 @@ class TestTicketReferences(unittest.TestCase):
 
     @settings(max_examples=100)
     @given(
-        st.tuples(st.sampled_from(PREFIXES), st.integers(1, 9999)),
+        st.lists(
+            st.tuples(st.sampled_from(PREFIXES), st.integers(1, 9999)),
+            min_size=1,
+            max_size=15,
+            unique=True,
+        ),
         st.sampled_from("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-"),
+        st.data(),
     )
-    def test_preceding_ascii_word_or_hyphen_character_blocks_reference(self, part, char):
-        prefix, number = part
-        self.assertEqual(ticket_references(f"{char}{prefix}-{number}", PREFIXES), [])
+    def test_preceding_ascii_word_or_hyphen_character_blocks_one_reference(self, parts, char, data):
+        selected = data.draw(st.integers(min_value=0, max_value=len(parts) - 1))
+        fragments = [f"{prefix}-{number}" for prefix, number in parts]
+        fragments[selected] = char + fragments[selected]
+        text = " ".join(fragments)
+        expected = [
+            TaskId(prefix, number)
+            for index, (prefix, number) in enumerate(parts)
+            if index != selected
+        ]
+        self.assertEqual(ticket_references(text, PREFIXES), expected)
 
     @settings(max_examples=200)
     @given(st.text(), st.sets(st.text(min_size=1)))
