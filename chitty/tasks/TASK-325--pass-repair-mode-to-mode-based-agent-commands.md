@@ -1,6 +1,6 @@
 ---
 title: Pass repair mode to mode-based agent commands
-status: todo
+status: done
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -23,8 +23,30 @@ Out of scope: missing-branch recovery (`TASK-326`), and the continuation prompt 
 
 ## Acceptance Criteria
 
-- [ ] Hypothesis property in `tests/test_property_render_command.py`: for any generated list of words (free text, some containing `{mode}`, `{id}` or `{prompt}` zero or more times, none starting with `~`), any mode from `work`, `review`, `repair`, any generated ticket ID, and generated prompt text that may itself contain `{mode}`, `{id}` or `{prompt}`, `render_command` returns one word per input word, equal to the input with `{mode}`, `{id}` replaced and then `{prompt}` replaced, so placeholder text from the prompt stays literal; words without placeholders are unchanged. Example tests: `~/x` expands to the home directory, `a~b` is unchanged.
-- [ ] Fake-agent tests in `tests/test_run_repair_mode.py`, reusing the argv-logging `FAKE_AGENT` template from `tests/test_run_continue.py`: with `agent_command = "<fake> {mode} {id}"`, `chitty run --errors` on an `error` ticket passes exactly `repair` and the ticket ID; `chitty run` on a `todo` ticket passes `work`, and on a `review` ticket `review`. With a `{prompt}` command, the repair run passes one argument equal to `guide("repair", <ID>)`. The `{mode} {id}` repair case fails before the change by assertion (it receives `work`). `make check` passes.
+- [x] Hypothesis property in `tests/test_property_render_command.py`: for any generated list of words (free text, some containing `{mode}`, `{id}` or `{prompt}` zero or more times, none starting with `~`), any mode from `work`, `review`, `repair`, any generated ticket ID, and generated prompt text that may itself contain `{mode}`, `{id}` or `{prompt}`, `render_command` returns one word per input word, equal to the input with `{mode}`, `{id}` replaced and then `{prompt}` replaced, so placeholder text from the prompt stays literal; words without placeholders are unchanged. Example tests: `~/x` expands to the home directory, `a~b` is unchanged.
+- [x] Fake-agent tests in `tests/test_run_repair_mode.py`, reusing the argv-logging `FAKE_AGENT` template from `tests/test_run_continue.py`: with `agent_command = "<fake> {mode} {id}"`, `chitty run --errors` on an `error` ticket passes exactly `repair` and the ticket ID; `chitty run` on a `todo` ticket passes `work`, and on a `review` ticket `review`. With a `{prompt}` command, the repair run passes one argument equal to `guide("repair", <ID>)`. The `{mode} {id}` repair case fails before the change by assertion (it receives `work`). `make check` passes.
+
+## Plan
+
+Extract per-word command substitution into render_command(words, mode, ticket_id, prompt), preserving expansion and replacement order. Pass repair mode only to command rendering for error tickets while retaining repair guide selection and work-mode action semantics. Add property and fake-agent regression tests, update both docs, then run format/check and commit.
+
+## Notes
+
+The repair-mode regression assertion was run with command_mode temporarily set to action.mode and failed as expected: argv was [work, TASK-1], not [repair, TASK-1]. Restored the fix and verified the tests pass. The first review-mode test setup lacked the branch required by review preparation; creating the ticket branch resolved it.
+
+Review failed (tests): Both criteria need effective coverage before review can pass. These findings are new; there are no earlier review failures.
+1: fail - The Hypothesis strategy uses only arbitrary text, without generating placeholder-bearing words or prompts. Running the property with render_command replaced by an identity function printed `identity mutation passed: True`; explicitly generate placeholders and verify substitution and prompt literalness.
+2: fail - The mode tests inherit a command containing `{prompt}` and compare only the first two arguments, rather than configuring `<fake> {mode} {id}` and asserting the exact argv. The prompt fake writes literal backslash-n characters instead of newlines and its assertion is not observed: running the test with the rendered prompt replaced by `WRONG` printed `wrong-prompt mutation passed: True`. Make the fake executable and assert its recorded exact single argument and successful repair. The repair mode regression itself is effective: forcing work printed an assertion failure showing `[work, TASK-1]` versus `[repair, TASK-1]`. `make format && make check` passed, including 597 tests.
+
+Strengthened Hypothesis generation to ensure placeholder-bearing command words and prompts are exercised; the earlier logged pre-fix regression confirmed repair argv was work instead of repair.
+
+Reviewed: Earlier test-coverage findings are resolved.
+1: pass - `make format && make check` passed 597 tests; replacing `render_command` with identity made the property fail on `{mode}` versus `work`. Tilde examples pass.
+2: pass - `make format && make check` passed 597 tests. Forcing repair mode to `work` made the fake-agent test fail with `[work, TASK-1]` versus `[repair, TASK-1]`; replacing the prompt with `WRONG` made the prompt test fail with `[[WRONG]]` versus the repair guide. Exact work, review and repair argv tests pass.
+
+## Summary
+
+Strengthened placeholder property and fake-agent regressions after review feedback. Verified with make format && make check (597 tests pass). Prompt fake asserts exact repair guide argv and completes repair. No known follow-ups.
 
 ## History
 
@@ -48,3 +70,13 @@ Out of scope: missing-branch recovery (`TASK-326`), and the continuation prompt 
 - 2026-11-16T17:03:32Z open-russet-eel cold-read → planning
 - 2026-11-16T17:03:34Z open-russet-eel: changed owner
 - 2026-11-16T17:03:34Z open-russet-eel planning → todo
+- 2026-11-17T17:10:58Z sunny-white-quail todo → doing
+- 2026-11-17T17:11:15Z sunny-white-quail: wrote the plan
+- 2026-11-17T17:16:07Z sunny-white-quail: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T17:16:07Z sunny-white-quail doing → review
+- 2026-11-17T17:18:35Z vivid-dusky-eel: changed acceptance criteria, notes
+- 2026-11-17T17:18:35Z vivid-dusky-eel review → doing
+- 2026-11-17T17:28:17Z sunny-indigo-ibis: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T17:28:17Z sunny-indigo-ibis doing → review
+- 2026-11-17T17:30:41Z honest-white-zander: changed notes; ticked acceptance criteria
+- 2026-11-17T17:30:41Z honest-white-zander review → done

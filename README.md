@@ -244,8 +244,8 @@ independent model defaults for unattended runs. Chitty appends `--model MODEL`
 only if neither the selected command nor forwarded arguments after `--` already
 specify `--model`; an agent receiving a default must accept that option.
 Existing model arguments take precedence, without Chitty rewriting them.
-Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
-and the selected ticket ID. `{prompt}` can replace both placeholders when the
+Each word expands a leading `~`; `{mode}` and `{id}` become `work`, `review`,
+or `repair` for an error ticket, and the selected ticket ID. `{prompt}` can replace both placeholders when the
 agent accepts Chitty's role instructions as one argument. For example, this entry
 runs Claude Code unattended on Haiku with `chitty run --agent claude`:
 
