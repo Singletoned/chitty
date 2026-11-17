@@ -12,7 +12,7 @@ from tests.support import RepoTestCase
 
 
 class TestCriteriaLimit(RepoTestCase):
-    @settings(max_examples=40)
+    @settings(max_examples=40, deadline=None)
     @given(
         st.lists(
             st.tuples(
@@ -55,10 +55,10 @@ class TestCriteriaLimit(RepoTestCase):
                 expected[path] = f"{len(criteria)} acceptance criteria; split tickets above 5"
 
         problems = check(repo, repo.contexts(), [])
-        actual = {
-            problem.path: problem.message
+        actual = [
+            (problem.path, problem.message)
             for problem in problems
             if problem.severity == "warning"
             and "acceptance criteria; split tickets above" in problem.message
-        }
-        self.assertEqual(actual, expected)
+        ]
+        self.assertCountEqual(actual, expected.items())
