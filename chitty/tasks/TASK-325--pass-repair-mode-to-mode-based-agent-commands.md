@@ -1,6 +1,6 @@
 ---
 title: Pass repair mode to mode-based agent commands
-status: review
+status: doing
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -23,8 +23,8 @@ Out of scope: missing-branch recovery (`TASK-326`), and the continuation prompt 
 
 ## Acceptance Criteria
 
-- [x] Hypothesis property in `tests/test_property_render_command.py`: for any generated list of words (free text, some containing `{mode}`, `{id}` or `{prompt}` zero or more times, none starting with `~`), any mode from `work`, `review`, `repair`, any generated ticket ID, and generated prompt text that may itself contain `{mode}`, `{id}` or `{prompt}`, `render_command` returns one word per input word, equal to the input with `{mode}`, `{id}` replaced and then `{prompt}` replaced, so placeholder text from the prompt stays literal; words without placeholders are unchanged. Example tests: `~/x` expands to the home directory, `a~b` is unchanged.
-- [x] Fake-agent tests in `tests/test_run_repair_mode.py`, reusing the argv-logging `FAKE_AGENT` template from `tests/test_run_continue.py`: with `agent_command = "<fake> {mode} {id}"`, `chitty run --errors` on an `error` ticket passes exactly `repair` and the ticket ID; `chitty run` on a `todo` ticket passes `work`, and on a `review` ticket `review`. With a `{prompt}` command, the repair run passes one argument equal to `guide("repair", <ID>)`. The `{mode} {id}` repair case fails before the change by assertion (it receives `work`). `make check` passes.
+- [ ] Hypothesis property in `tests/test_property_render_command.py`: for any generated list of words (free text, some containing `{mode}`, `{id}` or `{prompt}` zero or more times, none starting with `~`), any mode from `work`, `review`, `repair`, any generated ticket ID, and generated prompt text that may itself contain `{mode}`, `{id}` or `{prompt}`, `render_command` returns one word per input word, equal to the input with `{mode}`, `{id}` replaced and then `{prompt}` replaced, so placeholder text from the prompt stays literal; words without placeholders are unchanged. Example tests: `~/x` expands to the home directory, `a~b` is unchanged.
+- [ ] Fake-agent tests in `tests/test_run_repair_mode.py`, reusing the argv-logging `FAKE_AGENT` template from `tests/test_run_continue.py`: with `agent_command = "<fake> {mode} {id}"`, `chitty run --errors` on an `error` ticket passes exactly `repair` and the ticket ID; `chitty run` on a `todo` ticket passes `work`, and on a `review` ticket `review`. With a `{prompt}` command, the repair run passes one argument equal to `guide("repair", <ID>)`. The `{mode} {id}` repair case fails before the change by assertion (it receives `work`). `make check` passes.
 
 ## Plan
 
@@ -33,6 +33,10 @@ Extract per-word command substitution into render_command(words, mode, ticket_id
 ## Notes
 
 The repair-mode regression assertion was run with command_mode temporarily set to action.mode and failed as expected: argv was [work, TASK-1], not [repair, TASK-1]. Restored the fix and verified the tests pass. The first review-mode test setup lacked the branch required by review preparation; creating the ticket branch resolved it.
+
+Review failed (tests): Both criteria need effective coverage before review can pass. These findings are new; there are no earlier review failures.
+1: fail - The Hypothesis strategy uses only arbitrary text, without generating placeholder-bearing words or prompts. Running the property with render_command replaced by an identity function printed `identity mutation passed: True`; explicitly generate placeholders and verify substitution and prompt literalness.
+2: fail - The mode tests inherit a command containing `{prompt}` and compare only the first two arguments, rather than configuring `<fake> {mode} {id}` and asserting the exact argv. The prompt fake writes literal backslash-n characters instead of newlines and its assertion is not observed: running the test with the rendered prompt replaced by `WRONG` printed `wrong-prompt mutation passed: True`. Make the fake executable and assert its recorded exact single argument and successful repair. The repair mode regression itself is effective: forcing work printed an assertion failure showing `[work, TASK-1]` versus `[repair, TASK-1]`. `make format && make check` passed, including 597 tests.
 
 ## Summary
 
@@ -64,3 +68,5 @@ Implemented pure render_command substitution and repair-mode rendering for error
 - 2026-11-17T17:11:15Z sunny-white-quail: wrote the plan
 - 2026-11-17T17:16:07Z sunny-white-quail: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T17:16:07Z sunny-white-quail doing → review
+- 2026-11-17T17:18:35Z vivid-dusky-eel: changed acceptance criteria, notes
+- 2026-11-17T17:18:35Z vivid-dusky-eel review → doing
