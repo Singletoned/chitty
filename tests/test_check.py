@@ -27,7 +27,7 @@ class TestCheck(StoreTestCase):
     def test_reports_every_problem(self):
         good = self.add("Good")
         blocker = self.add("Blocker", context=self.human)
-        dependent = self.add("Blocked", depends_on=[str(blocker.id)])
+        self.add("Blocked")
         broken = self.add("Broken")
         broken.path.write_text("nope\n")
         duplicate = self.tasks.directory / "TASK-1--again.md"
@@ -39,9 +39,8 @@ class TestCheck(StoreTestCase):
         self.assertIn(f"{duplicate}: TASK-1 is used by more than one file", problems)
         self.assertIn(f"{good.path}: TASK-1 is used by more than one file", problems)
         self.assertIn(f"{duplicate}: filename slug is stale; expected TASK-1--good.md", problems)
-        self.assertIn(f"{dependent.path}: depends_on HUMAN-1: no such task", problems)
         self.assertIn("stray.txt: task filename", problems)
-        self.assertEqual(len(self.problems()), 6)
+        self.assertEqual(len(self.problems()), 5)
 
     def test_fix_refuses_stale_setup_before_repairing(self):
         stored = self.add("Correct title")

@@ -377,7 +377,7 @@ class Repo:
     def all_tasks(self) -> list[StoredTask]:
         return [t for context in self.contexts() for t in self.tasks(context, "all")]
 
-    def find(self, task_id: TaskId) -> StoredTask:
+    def lookup(self, task_id: TaskId) -> StoredTask | None:
         context = self.context_of(task_id)
         matches = [
             task
@@ -386,11 +386,18 @@ class Repo:
             if task.id == task_id
         ]
         if not matches:
-            raise ChittyError(f"no task {task_id} in {context.directory}")
+            return None
         if len(matches) > 1:
             paths = ", ".join(str(task.path) for task in matches)
             raise ChittyError(f"{task_id} is used by more than one file: {paths}")
         return matches[0]
+
+    def find(self, task_id: TaskId) -> StoredTask:
+        task = self.lookup(task_id)
+        if task is None:
+            context = self.context_of(task_id)
+            raise ChittyError(f"no task {task_id} in {context.directory}")
+        return task
 
     def check_dependencies(self, references: Sequence[str]) -> None:
         for reference in references:
