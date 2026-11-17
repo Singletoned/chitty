@@ -31,6 +31,98 @@ Review failed (tests): New findings; assert warning multiplicity and make the pr
 2: pass - `uv run python -m unittest tests.test_cli.TestCheck.test_criteria_warning_does_not_fail_check tests.test_guide_plan_restored` printed `Ran 5 tests` and `OK`; the CLI test checks warning output, path and zero exit.
 3: fail - The guide and assertion contain the required replacement, and `rg` confirms the later sentence remains. However, `make format && make check` failed: Hypothesis reported `FlakyFailure`, with a 260.48ms example exceeding the 200ms deadline on the first run and taking 157.97ms on retry. Remove the timing sensitivity and rerun the full check.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+520 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 597 test suites (597 total tests) across 16 workers
+....................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 17:57:15 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+.................E...........................................................................Running check in /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuy1myy7y...
+.............................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+.../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/repo/CLAUDE.md
+..Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp04se_ut2/repo/.worktrees/task-1...
+.....TASK-1: doing → review
+.....no next ticket for --mode work
+.........................................chitty 0.1.31 is out: run uv tool upgrade chitty
+...............................landed TASK-1
+landed TASK-2
+landed TASK-1
+
+======================================================================
+test_warning_paths_and_messages_match_property (tests.test_check_criteria_limit.TestCriteriaLimit.test_warning_paths_and_messages_match_property)
+----------------------------------------------------------------------
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/tests/test_check_criteria_limit.py", line 16, in test_warning_paths_and_messages_match_property
+  |     @given(
+  |
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 2334, in wrapped_test
+  |     raise the_error_hypothesis_found
+  | hypothesis.errors.FlakyFailure: Hypothesis test_warning_paths_and_messages_match_property(self=<tests.test_check_criteria_limit.TestCriteriaLimit testMethod=test_warning_paths_and_messages_match_property>, examples=[('backlog', [], False),
+  |  ('backlog', [], False),
+  |  ('backlog', [], False),
+  |  ('backlog', [], False),
+  |  ('backlog', [], False),
+  |  ('backlog', [], False),
+  |  ('backlog', [], False),
+  |  ('backlog', [], False),
+  |  ('backlog', ['a', 'a'], False),
+  |  ('backlog', [], False)]) produces unreliable results: Failed on the first call but did not on a subsequent one (1 sub-exception)
+  | Failing test case: test_warning_paths_and_messages_match_property(
+  |     self=<tests.test_check_criteria_limit.TestCriteriaLimit testMethod=test_warning_paths_and_messages_match_property>,
+  |     examples=[('backlog', [], False),
+  |      ('backlog', [], False),
+  |      ('backlog', [], False),
+  |      ('backlog', [], False),
+  |      ('backlog', [], False),
+  |      ('backlog', [], False),
+  |      ('backlog', [], False),
+  |      ('backlog', [], False),
+  |      ('backlog', ['a', 'a'], False),
+  |      ('backlog', [], False)],
+  | )
+  | Unreliable test timings! On an initial run, this test took 346.00ms, which exceeded the deadline of 200.00ms, but on a subsequent run it took 133.11 ms, which did not. If you expect this sort of variability in your test timings, consider turning deadlines off for this test by setting deadline=None.
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1253, in _execute_once_for_engine
+    |     result = self.execute_once(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1187, in execute_once
+    |     result = self.test_runner(data, run)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 831, in default_executor
+    |     return function(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1144, in run
+    |     return test(*args, **kwargs)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/tests/test_check_criteria_limit.py", line 16, in test_warning_paths_and_messages_match_property
+    |     @given(
+    |
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-349/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1040, in test
+    |     raise DeadlineExceeded(
+    |         datetime.timedelta(seconds=runtime), self.settings.deadline
+    |     )
+    | hypothesis.errors.DeadlineExceeded: Test took 346.00ms, which exceeds the deadline of 200.00ms. If you expect test cases to take this long, you can use @settings(deadline=...) to either set a higher deadline, or to disable it with deadline=None.
+    +------------------------------------
+
+----------------------------------------------------------------------
+Ran 597 tests in 26.826s
+
+FAILED (errors=1)
+make: *** [check] Error 1
+
+```
+
 ## Summary
 
 Implemented criteria-limit warnings in check(), updated guide wording, and added property, CLI, and guide coverage. Verified with make format and make check (all pass). Follow-up: reviewer should confirm archived-ticket property coverage.
@@ -50,3 +142,4 @@ Implemented criteria-limit warnings in check(), updated guide wording, and added
 - 2026-11-17T17:50:08Z rosy-zinc-jay doing → review
 - 2026-11-17T17:52:48Z intrepid-dusky-lapwing: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-17T17:52:48Z intrepid-dusky-lapwing review → doing
+- 2026-11-17T17:57:32Z quick-bronze-kestrel: changed notes
