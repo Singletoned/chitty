@@ -26,7 +26,7 @@ def facts_strategy(draw):
         context=st.sampled_from(("work", "human", "other")),
         status=st.sampled_from(STATUSES),
         priority=st.sampled_from(PRIORITIES),
-        owner=st.sampled_from((None, "agent", "human")),
+        owner=st.sampled_from((None, "agent", "human", "untestable")),
         archived=st.booleans(),
         locked=st.booleans(),
         dependencies=dependency,
@@ -111,6 +111,31 @@ class TestPropertyNext(unittest.TestCase):
         self.assertEqual(selected, expected[0] if expected else None)
         if selected is not None:
             self.assertTrue(independently_choosable(selected, mode, owner))
+
+    @settings(max_examples=300)
+    @given(facts_strategy(), st.booleans())
+    def test_untestable_marker_only_replaces_owned_skip_reason(self, facts, include_owner):
+        for fact in facts:
+            expected = None
+            if not fact.archived and fact.status in TEST_STATUS_RANK:
+                if fact.locked:
+                    expected = "▶ running"
+                elif fact.context == "human" or fact.owner == "human":
+                    expected = "👤 human"
+                elif include_owner and fact.owner is not None:
+                    expected = f"👤 {fact.owner}"
+                elif fact.status == "todo":
+                    unfinished = [d.reference for d in fact.dependencies if d.state == "unfinished"]
+                    broken = next((d for d in fact.dependencies if d.state == "broken"), None)
+                    if broken:
+                        expected = f"⚠️ {fact.id} depends on {broken.reference}: {broken.error}"
+                    elif unfinished:
+                        expected = f"🔒 waits on {', '.join(unfinished)}"
+            actual = skip_reason(fact, include_owner=include_owner)
+            if expected == "👤 untestable":
+                self.assertEqual(actual, "✍️ untestable")
+            else:
+                self.assertEqual(actual, expected)
 
     @settings(max_examples=200)
     @given(facts_strategy())

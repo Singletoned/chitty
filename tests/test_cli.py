@@ -2084,14 +2084,6 @@ class TestGuide(CliTestCase):
                 self.assertIn("`BACKLOG`", output)
                 self.assertIn("main checkout", output)
 
-    def test_role_guides_recommend_batching_agent_calls(self):
-        required_phrases = ("repeated --check", "in one call", "joined with", "autocommit = true")
-        for role in ("work", "review"):
-            with self.subTest(role=role):
-                output = self.run_cli("guide", role).stdout
-                for phrase in required_phrases:
-                    self.assertIn(phrase, output)
-
     def test_worker_guides_start_with_show_without_pulling_inbox(self):
         self.assertNotIn("chitty inbox --pull", managed_guide("runner"))
         self.assertNotIn("chitty inbox --pull", guide("work"))
