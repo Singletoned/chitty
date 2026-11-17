@@ -1,6 +1,6 @@
 ---
 title: Check that ticket branch commits name their ticket
-status: doing
+status: review
 labels:
   - needs-minor
 created: 2026-11-16
@@ -26,15 +26,23 @@ Out of scope: checking commits outside review, rewording commits automatically, 
 
 ## Acceptance Criteria
 
-- [ ] Hypothesis property on `commits_missing_trailer`: generate lists of commits, each with a subject that starts with `chitty: ` or not, and zero or more further paragraphs, each holding `Task: <this ID>`, `Task: <another ID>`, another trailer, or plain text, with optional surrounding whitespace on lines and trailing blank lines. The result is exactly the commits that are not `chitty: ` commits and whose last paragraph lacks this ID's trailer, in input order; a `Task: <this ID>` line in an earlier paragraph does not count. Fails before the change.
-- [ ] Example tests on `commits_missing_trailer`: a single-line message `Task: TASK-1` is missing (one paragraph); `Fix\n\nTask: TASK-1` is not; `Fix\n\nTask: TASK-1\n\nMore text` is missing (the trailer is not in the last paragraph); `Fix\n\nTask: TASK-10` is missing for `TASK-1`.
-- [ ] Real repository on branch `task-1` with `TASK-1` in `doing`: after one commit `Add x` without a trailer, `chitty edit 1 -s review` exits 1, its output contains `git rev-parse --short` of that commit and `Add x`, and `TASK-1` stays `doing`. After rewording it to end with `Task: TASK-1`, the same command moves `TASK-1` to `review`. A merge commit from `main` into the branch and Chitty's own `chitty: ` autocommits never block. Fails before the change.
-- [ ] Guards, which pass before the change too: a direct `Repo.edit` with `Edit(status="review", skip_current_version=True)` on a branch with a commit lacking the trailer moves the ticket to `review`; and a commit without a trailer made while the ticket is in `review` does not stop `review` to `done`.
-- [ ] The `work.md` sentence is replaced as the Description says, and `tests/test_guide_work_commits.py` still passes, asserting `refuses branch commits without one`. `make check` passes.
+- [x] Hypothesis property on `commits_missing_trailer`: generate lists of commits, each with a subject that starts with `chitty: ` or not, and zero or more further paragraphs, each holding `Task: <this ID>`, `Task: <another ID>`, another trailer, or plain text, with optional surrounding whitespace on lines and trailing blank lines. The result is exactly the commits that are not `chitty: ` commits and whose last paragraph lacks this ID's trailer, in input order; a `Task: <this ID>` line in an earlier paragraph does not count. Fails before the change.
+- [x] Example tests on `commits_missing_trailer`: a single-line message `Task: TASK-1` is missing (one paragraph); `Fix\n\nTask: TASK-1` is not; `Fix\n\nTask: TASK-1\n\nMore text` is missing (the trailer is not in the last paragraph); `Fix\n\nTask: TASK-10` is missing for `TASK-1`.
+- [x] Real repository on branch `task-1` with `TASK-1` in `doing`: after one commit `Add x` without a trailer, `chitty edit 1 -s review` exits 1, its output contains `git rev-parse --short` of that commit and `Add x`, and `TASK-1` stays `doing`. After rewording it to end with `Task: TASK-1`, the same command moves `TASK-1` to `review`. A merge commit from `main` into the branch and Chitty's own `chitty: ` autocommits never block. Fails before the change.
+- [x] Guards, which pass before the change too: a direct `Repo.edit` with `Edit(status="review", skip_current_version=True)` on a branch with a commit lacking the trailer moves the ticket to `review`; and a commit without a trailer made while the ticket is in `review` does not stop `review` to `done`.
+- [x] The `work.md` sentence is replaced as the Description says, and `tests/test_guide_work_commits.py` still passes, asserting `refuses branch commits without one`. `make check` passes.
 
 ## Plan
 
 Implement commit trailer validation as specified: add Commit and pure trailer detection plus branch commit discovery; enforce it only on entry to review after the dirty-tree guard; update focused tests and work guide, then run format/check and commit.
+
+## Notes
+
+The review-entry regression test failed as expected with the trailer gate temporarily disabled, then passed with it enabled. make check and the focused work-guide test passed.
+
+## Summary
+
+Implemented commit trailer detection and review-entry enforcement; updated guide and fixtures. Verified with make check, focused trailer tests, and tests.test_guide_work_commits. Regression gate test failed with the gate temporarily disabled. Ready for independent review.
 
 ## History
 
@@ -47,3 +55,5 @@ Implement commit trailer validation as specified: add Commit and pure trailer de
 - 2026-11-17T17:06:27Z kind-umber-toad planning → todo
 - 2026-11-17T17:37:08Z friendly-lilac-crane todo → doing
 - 2026-11-17T17:37:21Z friendly-lilac-crane: wrote the plan
+- 2026-11-17T17:44:06Z friendly-lilac-crane: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T17:44:06Z friendly-lilac-crane doing → review
