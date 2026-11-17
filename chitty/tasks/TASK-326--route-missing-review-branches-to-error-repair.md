@@ -1,6 +1,6 @@
 ---
 title: Route missing review branches to error repair
-status: todo
+status: error
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -25,9 +25,40 @@ No property test: one fixed state (branch and worktree missing at review), which
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_review_merge.py`: a review whose branch and worktree are gone prints `TASK-1: review → error`, starts no agent, keeps the owner unchanged, and leaves a note containing `Runner error (review)`, `TASK-1` and `task-1`. `chitty run --mode review` and `chitty run --mode work` then exit 3 with no next ticket, and `chitty next` finds nothing; `chitty run --errors` selects it. Fails before the change (today it prints `review → blocked`).
-- [ ] Flattened `guide("repair")` contains `if they exist`, `was missing`, `exactly this ID`, and `say what was searched`; tested in `tests/test_guide_repair_missing_branch.py`, which fails before the change.
-- [ ] `docs/plan/next-action-and-runner.md` lists the missing branch under "Before a review". `make check` passes.
+- [x] In `tests/test_review_merge.py`: a review whose branch and worktree are gone prints `TASK-1: review → error`, starts no agent, keeps the owner unchanged, and leaves a note containing `Runner error (review)`, `TASK-1` and `task-1`. `chitty run --mode review` and `chitty run --mode work` then exit 3 with no next ticket, and `chitty next` finds nothing; `chitty run --errors` selects it. Fails before the change (today it prints `review → blocked`).
+- [x] Flattened `guide("repair")` contains `if they exist`, `was missing`, `exactly this ID`, and `say what was searched`; tested in `tests/test_guide_repair_missing_branch.py`, which fails before the change.
+- [x] `docs/plan/next-action-and-runner.md` lists the missing branch under "Before a review". `make check` passes.
+
+## Plan
+
+Update missing-review-branch handling to record a review-phase runner error directly without changing owner or starting an agent. Add regression coverage proving error selection/availability behavior and repair-guide recovery instructions, update the runner plan, run focused tests before the fix where possible, then format and run make check.
+
+## Notes
+
+PASS: tests.test_review_merge.TestReviewMerge.test_missing_review_branch_errors_and_is_selected_for_repair and the updated test_next regression pass; the test verifies error status, unchanged owner, no reviewer agent, no-next results, and --errors selection.
+
+PASS: tests.test_guide_repair_missing_branch passes against flattened guide("repair", "TASK-1").
+
+PASS: updated Before a review guidance; make check passes.
+
+Runner error (landing): working tree is dirty in /Users/singletoned/src/singletoned/chitty; commit or stash these first:
+ D chitty/tasks/TASK-342--stop-telling-workers-to-check-git-status-before-review.md
+?? chitty/tasks/archive/TASK-342--stop-telling-workers-to-check-git-status-before-review.md
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-326 or the main checkout before retrying.
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-326`
+
+Error output:
+```text
+working tree is dirty in /Users/singletoned/src/singletoned/chitty; commit or stash these first:
+ D chitty/tasks/TASK-342--stop-telling-workers-to-check-git-status-before-review.md
+?? chitty/tasks/archive/TASK-342--stop-telling-workers-to-check-git-status-before-review.md
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-326 or the main checkout before retrying.
+```
+
+## Summary
+
+Implemented direct review-phase error handoff for a missing branch/worktree while preserving owner, expanded runner and repair guidance, and added regression coverage. Verified with make format and make check (584 tests). Commit: 34e5d2a. No known follow-ups.
 
 ## History
 
@@ -49,3 +80,9 @@ No property test: one fixed state (branch and worktree missing at review), which
 - 2026-11-16T17:08:35Z open-russet-eel cold-read → planning
 - 2026-11-16T17:08:37Z open-russet-eel: changed owner
 - 2026-11-16T17:08:37Z open-russet-eel planning → todo
+- 2026-11-17T17:18:03Z nimble-amber-urchin todo → doing
+- 2026-11-17T17:18:13Z nimble-amber-urchin: wrote the plan
+- 2026-11-17T17:21:46Z nimble-amber-urchin: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T17:21:46Z nimble-amber-urchin doing → review
+- 2026-11-17T17:25:03Z brisk-coral-kestrel: changed notes
+- 2026-11-17T17:25:03Z brisk-coral-kestrel review → error
