@@ -1,6 +1,6 @@
 ---
 title: Let a repository declare files ticket branches must not change
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -40,6 +40,11 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and ma
 
 Regression evidence: with the review guard temporarily removed, test_protected_file_is_changed failed because the reviewer agent started; restored the guard and the focused suite passes.
 
+Reviewed:
+1: pass - `python -m unittest tests.test_protected_paths` exercises add, change, delete, rename and reviewer/landing cases; worker regression note reports changed-file test failed with reviewer started when guard removed.
+2: pass - landing test passes; with `chitty.git.changed_files` patched to return `[]`, it fails with `AssertionError: ChittyError not raised`.
+3: pass - config validation test passes for rejected entries and `a..b`; `docs/plan/config.md` documents the setting; `make check` passed 617 tests, ruff and pyright.
+
 ## Summary
 
 Implemented protected_paths validation, literal exact-path Git diff detection, review and landing enforcement, documentation, and real-repository regression coverage. Verification: make check passes; protected-path tests pass. Regression test test_protected_file_is_changed was run with the review guard removed and failed because the reviewer agent started, then passed with the guard restored. Follow-up after landing: main checkout should configure src/chitty/__init__.py and remove the obsolete version instruction from AGENTS.md as described in the ticket.
@@ -61,3 +66,5 @@ Implemented protected_paths validation, literal exact-path Git diff detection, r
 - 2026-11-17T22:20:53Z jolly-russet-stoat: changed notes
 - 2026-11-17T22:21:26Z jolly-russet-stoat: changed summary
 - 2026-11-17T22:21:26Z jolly-russet-stoat doing → review
+- 2026-11-17T22:23:21Z kind-teal-vole: changed notes
+- 2026-11-17T22:23:21Z kind-teal-vole review → done
