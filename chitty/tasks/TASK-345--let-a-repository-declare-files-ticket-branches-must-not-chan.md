@@ -1,6 +1,6 @@
 ---
 title: Let a repository declare files ticket branches must not change
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -46,3 +46,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and ma
 - 2026-11-17T19:57:35Z kind-umber-toad cold-read → planning
 - 2026-11-17T22:01:54Z kind-umber-toad: changed owner
 - 2026-11-17T22:01:54Z kind-umber-toad planning → todo
+- 2026-11-17T22:13:17Z jolly-russet-stoat todo → doing
