@@ -91,7 +91,7 @@ done tickets. Each row shows the status as a glyph and at most five letters: `�
 the priority
 as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so rows fit in
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
-`chitty next` carry a glyph in a column before the title: `👤` owned or human,
+`chitty next` carry a glyph in a column before the title: `👤` owned or human, `✍️` untestable,
 `🔒` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
 message goes to stderr. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`

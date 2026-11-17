@@ -208,7 +208,7 @@ class TestStore(StoreTestCase):
 
         with self.assertRaisesRegex(
             ChittyError,
-            "test-agent cannot review this task: wrote the plan, ticked acceptance criteria$",
+            "test-agent cannot review this task: wrote the plan, ticked acceptance criteria;",
         ):
             self.repo.edit(
                 stored.id,

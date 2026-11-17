@@ -964,7 +964,10 @@ def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
     if is_review_transition:
         work = task.review_work(reviewer)
         if work and not edit.override_review_independence:
-            raise ChittyError(f"{reviewer} cannot review this task: {', '.join(work)}")
+            raise ChittyError(
+                f"{reviewer} cannot review this task: {', '.join(work)}; "
+                "leave the review to another agent"
+            )
     if edit.status == "doing" and is_review_transition:
         return _escalate_repeated_failure(task, edit)
     # Planning is a handoff, not another assignment to the current worker.
@@ -1000,6 +1003,7 @@ def _validate_review_verdict(task: Task, edit: Edit) -> None:
         raise ChittyError(
             "review verdict lines must match ^(\\d+): (pass|fail) - (\\S.*)$; "
             + "; ".join(problems)
+            + ". Give each criterion one such line in the note"
         )
 
     verdict_by_number = {number: verdict for number, verdict in verdicts}

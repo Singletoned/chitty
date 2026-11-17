@@ -7,24 +7,20 @@ task files. `chitty --help` is the full command reference.
   pattern in backticks, for example `files/*.jpg`.
 - Backticks run commands inside double-quoted shell arguments, so pass such text
   in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
-- Never review work you did. Review in the ticket's branch worktree, independently
-  inspecting the ticket, every acceptance criterion, changes, and verification.
-  First run `git status --short`. If the branch has uncommitted changes, do not
-  inspect or fix them: record the paths and reason in a note, set `-s blocked`
-  and `--owner human`, then stop. A review branch must be clean; a human decides
-  how to resolve it and when to resume.
-- Read and change only files inside the ticket's worktree, including scratch files; do not touch the main checkout, other worktrees or files elsewhere on the machine. Reading other branches through Git or `chitty` is fine, such as `git diff main...`.
+- Review in the ticket's branch worktree. First run `git status --short`; if
+  there are uncommitted changes, do not inspect or fix them: note the paths, set
+  `-s blocked --owner human` and stop.
+- Read and change only files inside the ticket's worktree, and create your
+  own files, including scratch files, only there; do not touch the main
+  checkout, other worktrees or files elsewhere on the machine. Temporary
+  directories the repository's tests create for themselves are fine. Reading
+  other branches through Git or `chitty` is fine, such as `git diff main...`.
 - Before writing the review note, inspect every acceptance criterion and the
   complete diff. Do not stop at the first defect. Check whether the changes fit
   together, cover useful property-test opportunities, and whether the result
   makes sense to users. The dirty-worktree stop above still applies. If resources
   are missing, report the verification limits and continue the checks you can
   safely perform; do not claim the unverified parts passed.
-- Verify first, then tick every verified criterion and add your note in one
-  `chitty edit`, using repeated --check options, rather than one call for each.
-- Request several reads in one call when none depends on another.
-- Run the repository's format and check commands in one shell call, joined with
-  `&&`.
 - With `autocommit = true`, Chitty commits its own ticket-file edits, not code
   or tests. Do not assume this cleans the worktree.
 - Fail only for an unmet criterion or a demonstrated defect. A criterion is unmet
@@ -39,8 +35,9 @@ task files. `chitty --help` is the full command reference.
 - For missing or contradictory requirements, an unresolved design decision, a
   wrong claim about the code, files or other tickets, a criterion that cannot be
   verified as written or would pass with nothing built, or a ticket too large to
-  finish in one session, set `-s planning`. Use `Review failed (design):` and
-  the criterion verdicts below, explaining what was discovered, why the current
+  finish in one session, set `-s planning`. List every such problem you found
+  in the one note, with `Review failed (design):` and the criterion verdicts
+  below, explaining what was discovered, why the current
   ticket cannot guide the work, and what decision is needed. Preserve the
   existing branch and worktree; ownership is cleared and the run stops without
   starting another worker. The planner resumes in that worktree and follows
@@ -53,9 +50,8 @@ task files. `chitty --help` is the full command reference.
   `work`, `integration` (branch, merge, environment), or `review`. Explain what
   must change and `--uncheck` every failed criterion. Set `-s doing` for
   implementation defects against clear requirements, or use planning or blocked
-  as above. Every review note, whether it passes or fails, has one line for every
-  criterion, below its `Reviewed:` or `Review failed (<cause>):` first line, in the form
-  `<number>: pass - <evidence>` or `<number>: fail - <reason>`.
+  as above. Every review note has one line for every criterion below its first
+  line: `<number>: pass - <evidence>` or `<number>: fail - <reason>`.
   Report all findings from this pass together in that one note. Group actionable
   findings under the relevant criterion; a criterion may have multiple findings,
   each stating what must change. Evidence is the
@@ -72,9 +68,7 @@ task files. `chitty --help` is the full command reference.
 - If the ticket is too large to finish in one session, route it to `planning`
   and suggest how to split it in the failure note. Do not edit spec tests.
 - On a pass, set `-s done --note "Reviewed: ..."`. Do not merge or remove
-  branches or worktrees; `chitty run` lands a passing review. The third failed
-  review returning to `doing` since the last block blocks the ticket for `human`;
-  leave it there for a person to unblock.
+  branches or worktrees; `chitty run` lands a passing review.
 - Found unrelated work on this ticket's branch? Use plain `chitty add`, which
   files it as `BACKLOG` for the planning session. A person planning should do
   this from the main checkout to get normal numbers. Use `-c human` if a person
