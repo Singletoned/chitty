@@ -1,6 +1,6 @@
 ---
 title: Run the configured check when moving a ticket to review
-status: planning
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -45,3 +45,4 @@ Tests go in a new `tests/test_review_check.py`, with classes inheriting `ReviewM
 - 2026-11-17T16:34:09Z kind-umber-toad planning → cold-read
 - 2026-11-17T17:06:38Z kind-umber-toad: changed title, labels, description, acceptance criteria
 - 2026-11-17T17:06:38Z kind-umber-toad cold-read → planning
+- 2026-11-17T17:07:45Z kind-umber-toad planning → todo
