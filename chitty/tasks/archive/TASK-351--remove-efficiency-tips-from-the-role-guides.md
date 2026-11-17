@@ -17,6 +17,8 @@ Implemented directly by the planning session as an untestable guide change, comm
 
 Reviewed: untestable wording change, read by the planning session; make check passes.
 
+Correction: the change landed on main as 8377661; the commit named above was wrong.
+
 ## History
 
 - 2026-11-16T10:00:04Z intrepid-coral-raven → backlog
@@ -28,3 +30,4 @@ Reviewed: untestable wording change, read by the planning session; make check pa
 - 2026-11-17T18:28:53Z kind-umber-toad: changed notes; overrode review independence
 - 2026-11-17T18:28:53Z kind-umber-toad review → done
 - 2026-11-17T18:28:55Z kind-umber-toad done → archived
+- 2026-11-17T18:29:56Z kind-umber-toad: changed notes
