@@ -4,6 +4,10 @@ status: done
 labels:
   - bug
   - runner
+owner: human
+depends_on:
+  - TASK-325
+  - TASK-326
 created: 2026-11-13
 ---
 
@@ -13,10 +17,10 @@ When automated ticket work fails, the failure currently disappears into terminal
 
 ## Acceptance Criteria
 
-- [x] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
-- [x] Normal `chitty next` and `chitty run` never select `error`; explicit `chitty run --errors` selects only error tickets, uses a repair-oriented agent prompt, and rejects `--ticket`, `--mode`, and `--owner` combinations.
+- [ ] Ticket-scoped failures after a ticket and worktree are resolved—setup, check, agent, or landing failures—move the ticket to `error`, preserve its branch and worktree, and record the phase, full captured error output, and recovery context in its notes.
+- [ ] Normal `chitty next` and `chitty run` never select `error`; explicit `chitty run --errors` selects only error tickets, uses a repair-oriented agent prompt, and rejects `--ticket`, `--mode`, and `--owner` combinations.
 - [x] A repair run requires the agent to set a repaired ticket to `review` or a ticket requiring a human decision to `blocked`; any other final status is reported as an error.
-- [x] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
+- [ ] Failures before a safe ticket handoff, including invalid configuration, dirty main checkout, missing branch, interruption, or failure to write the handoff, leave task state unchanged and invoke `error_reporter` with `phase`, `ticket`, `mode`, `worktree`, and full error output.
 
 ## Plan
 
@@ -36,6 +40,16 @@ Review failed (tests): Add regression coverage and fix the missing output captur
 Follow-up verification: setup failures now retain command output in the error note; interruption reporter regression confirms phase context. Full `make format && make check` passed (526 Python tests and Node tests). The only uncommitted formatter adjustment previously observed is now absent; working tree is clean.
 
 Implemented the review fixes in commits `1a1348b` and `b4689bb`: setup and agent output are captured in handoff errors, invalid repair final statuses raise a reported error, and interruptions are reported through the configured reporter. Added regression tests for all three findings. `make check` passes 527 Python tests plus Node tests.
+
+Review failed (tests): Add regressions and fix timeout output capture, repair prompting for mode-based agent commands, and missing-branch handling before retrying.
+1: fail - Running `_run_session` with `sh -c 'echo TIMEOUT_MARKER; sleep 5'` and a one-second timeout printed `agent timed out after 1 seconds` as the error, without `TIMEOUT_MARKER`; the handoff loses captured output.
+2: fail - Running `_agent_command` for an error ticket with `agent_command = "echo --chitty-{mode} {id}"` printed `(/bin/echo, --chitty-work, TASK-1)`, not a repair prompt. The passing explicit repair test covers only the prompt-enabled configuration.
+3: pass - `make format && make check` passed 527 Python tests and Node tests; `tests/test_next.py` checks that an unchanged repair exits 1 with `repair agent left TASK-1 in invalid status error`, and that blocked is accepted.
+4: fail - `uv run python -m unittest tests.test_review_merge.TestReviewMerge.test_missing_review_branch_blocks_ticket_and_is_not_selected_again -v` printed `OK`: the existing test confirms that a missing review branch changes the ticket to blocked, contrary to the required unchanged state and reporter handoff. The interruption reporter test passed.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
+Human session, 2026-11-16: this ticket code already reached `main` in `6a9e3ee` (Merge TASK-318 runner error fixes, 19:37 on 2026-11-13), between the worker moving it to review and the third review failing, so there is nothing left on the branch to land. The third review findings are now separate tickets: timeout output (`TASK-324`, done), repair prompts for mode-based agent commands (`TASK-325`) and missing review branches (`TASK-326`). Leave this blocked until those land, then mark it done and archive it.
 
 ## Summary
 
@@ -61,3 +75,6 @@ Committed runner failure-output capture and repair-status validation in 1a1348b 
 - 2026-11-13T19:36:45Z friendly-ochre-quail: changed notes, summary
 - 2026-11-13T19:36:45Z friendly-ochre-quail doing → review
 - 2026-11-13T19:36:48Z zesty-umber-puffin: changed notes; ticked acceptance criteria
+- 2026-11-13T19:44:27Z intrepid-teal-toad: changed owner, acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-13T19:44:27Z intrepid-teal-toad review → blocked
+- 2026-11-16T10:28:15Z intrepid-coral-raven: changed dependencies, notes

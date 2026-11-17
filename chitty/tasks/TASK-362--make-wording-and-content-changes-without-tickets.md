@@ -1,6 +1,6 @@
 ---
 title: Make wording and content changes without tickets
-status: blocked
+status: done
 owner: human
 created: 2026-11-16
 ---
@@ -21,6 +21,9 @@ Human decision, 2026-11-16: wording changes are not worth reviewing, and the rul
 
 Done directly as the rule itself says: the plan guide and `docs/plan/pipeline-and-feedback.md` now send wording and content changes around the pipeline. Not in `AGENTS.md`, so every repository gets it. Landed on `main` at `8ae811b` with `make check` 583 tests OK. A human closes this ticket.
 
+Reviewed: closed at the human's request. The rule landed in the plan guide and `docs/plan/pipeline-and-feedback.md` at `8ae811b` instead of `AGENTS.md`, by the later human decision recorded in the notes.
+1: pass - superseded by that decision: the rule is in `src/chitty/roles/plan.md:6-10` and `docs/plan/pipeline-and-feedback.md:11-16`, not in `AGENTS.md`.
+
 ## Summary
 
 Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged part of `AGENTS.md`; managed block untouched. Follow-ups: none.
@@ -35,3 +38,6 @@ Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged p
 - 2026-11-16T16:29:48Z open-russet-eel: changed owner, notes
 - 2026-11-16T16:29:48Z open-russet-eel review → blocked
 - 2026-11-16T16:31:20Z open-russet-eel: changed title, notes
+- 2026-11-17T17:23:45Z kind-umber-toad blocked → review
+- 2026-11-17T17:23:47Z kind-umber-toad: changed notes; overrode review independence
+- 2026-11-17T17:23:47Z kind-umber-toad review → done
