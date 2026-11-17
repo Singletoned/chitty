@@ -27,3 +27,4 @@ Reviewed: untestable wording change, read by the planning session; make check pa
 - 2026-11-17T18:28:50Z kind-umber-toad todo → review
 - 2026-11-17T18:28:53Z kind-umber-toad: changed notes; overrode review independence
 - 2026-11-17T18:28:53Z kind-umber-toad review → done
+- 2026-11-17T18:28:55Z kind-umber-toad done → archived
