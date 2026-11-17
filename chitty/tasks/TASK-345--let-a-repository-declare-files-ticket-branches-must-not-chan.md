@@ -30,6 +30,10 @@ Out of scope: globs or line patterns, protecting paths outside review and landin
 - [ ] `_land` refuses a merged branch that changes a listed file with the specified `ChittyError` and leaves `main` unmoved, tested in `tests/test_protected_paths.py`; the test fails before the change
 - [ ] Loading a config whose `protected_paths` has an entry the validator rejects fails with a message containing that entry, while `a..b` loads; `docs/plan/config.md` documents the setting; `make check` passes
 
+## Plan
+
+Add protected_paths to RepoConfig first, then regression tests and validation for exact protected-file matching; implement git.changed_files with literal pathspecs and exact filtering; enforce the rule during review and landing; document the setting. Run regression tests against the pre-enforcement behavior, then make check, format if needed, and commit implementation in logical commits with Task: TASK-345 trailers.
+
 ## Notes
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and match directory prefixes (now `--literal-pathspecs` plus exact filtering); tests would have failed on `extra="forbid"` rather than behaviour; test locations; missing cases (add, delete, rename, prefix-alike names, `main` changing a listed file); the validator message lacking the entry; the trailing NUL; the wrong `TASK-179` claim (dropped). Not adopted: case-only differences on case-insensitive filesystems, out of scope.
@@ -47,3 +51,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and ma
 - 2026-11-17T22:01:54Z kind-umber-toad: changed owner
 - 2026-11-17T22:01:54Z kind-umber-toad planning → todo
 - 2026-11-17T22:13:17Z jolly-russet-stoat todo → doing
+- 2026-11-17T22:13:31Z jolly-russet-stoat: wrote the plan
