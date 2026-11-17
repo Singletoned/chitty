@@ -1,6 +1,6 @@
 ---
 title: Pass repair mode to mode-based agent commands
-status: review
+status: done
 parent: TASK-318
 created: 2026-11-13
 ---
@@ -40,6 +40,10 @@ Review failed (tests): Both criteria need effective coverage before review can p
 
 Strengthened Hypothesis generation to ensure placeholder-bearing command words and prompts are exercised; the earlier logged pre-fix regression confirmed repair argv was work instead of repair.
 
+Reviewed: Earlier test-coverage findings are resolved.
+1: pass - `make format && make check` passed 597 tests; replacing `render_command` with identity made the property fail on `{mode}` versus `work`. Tilde examples pass.
+2: pass - `make format && make check` passed 597 tests. Forcing repair mode to `work` made the fake-agent test fail with `[work, TASK-1]` versus `[repair, TASK-1]`; replacing the prompt with `WRONG` made the prompt test fail with `[[WRONG]]` versus the repair guide. Exact work, review and repair argv tests pass.
+
 ## Summary
 
 Strengthened placeholder property and fake-agent regressions after review feedback. Verified with make format && make check (597 tests pass). Prompt fake asserts exact repair guide argv and completes repair. No known follow-ups.
@@ -74,3 +78,5 @@ Strengthened placeholder property and fake-agent regressions after review feedba
 - 2026-11-17T17:18:35Z vivid-dusky-eel review → doing
 - 2026-11-17T17:28:17Z sunny-indigo-ibis: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T17:28:17Z sunny-indigo-ibis doing → review
+- 2026-11-17T17:30:41Z honest-white-zander: changed notes; ticked acceptance criteria
+- 2026-11-17T17:30:41Z honest-white-zander review → done
