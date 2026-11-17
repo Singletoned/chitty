@@ -26,3 +26,4 @@ Reviewed: closed at the human's request. The re-sample is recorded in the note a
 - 2026-11-17T18:17:56Z kind-umber-toad backlog → review
 - 2026-11-17T18:18:05Z kind-umber-toad: changed notes; overrode review independence
 - 2026-11-17T18:18:05Z kind-umber-toad review → done
+- 2026-11-17T18:18:17Z kind-umber-toad done → archived
