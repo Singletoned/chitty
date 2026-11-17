@@ -1,6 +1,6 @@
 ---
 title: Warn in chitty check when a ticket has more than five criteria
-status: review
+status: doing
 created: 2026-11-16
 ---
 
@@ -16,13 +16,20 @@ Out of scope: warning from `chitty edit` or `chitty add`, configuring the limit,
 
 ## Acceptance Criteria
 
-- [x] Property test with Hypothesis: generate a set of 1 to 12 tickets, each with a status from `STATUSES` in `src/chitty/model.py`, 0 to 10 criteria whose text is ASCII letters only, and archived or not. Write each example into a fresh repository (or clear `chitty/` between examples). The set of paths with a criteria-limit warning from `check()` equals the set of tickets in `planning` or `todo` with more than `MAX_CRITERIA` criteria, each warned once with the exact message. The test fails on `main` because of the missing warning, not only because `MAX_CRITERIA` cannot be imported.
+- [ ] Property test with Hypothesis: generate a set of 1 to 12 tickets, each with a status from `STATUSES` in `src/chitty/model.py`, 0 to 10 criteria whose text is ASCII letters only, and archived or not. Write each example into a fresh repository (or clear `chitty/` between examples). The set of paths with a criteria-limit warning from `check()` equals the set of tickets in `planning` or `todo` with more than `MAX_CRITERIA` criteria, each warned once with the exact message. The test fails on `main` because of the missing warning, not only because `MAX_CRITERIA` cannot be imported.
 - [x] `chitty check` on a repository whose only problem is a `todo` ticket with six criteria prints a line containing `warning:` and the ticket path, and exits 0.
-- [x] In `src/chitty/roles/plan.md`, `About five criteria is the limit; split larger work.` is replaced with exactly `` `chitty check` warns above five criteria; split larger work. ``, and `tests/test_guide_plan_restored.py` asserts that sentence instead of the old one. The later sentence `Split rather than exceed about five criteria.` stays. `make check` passes.
+- [ ] In `src/chitty/roles/plan.md`, `About five criteria is the limit; split larger work.` is replaced with exactly `` `chitty check` warns above five criteria; split larger work. ``, and `tests/test_guide_plan_restored.py` asserts that sentence instead of the old one. The later sentence `Split rather than exceed about five criteria.` stays. `make check` passes.
 
 ## Plan
 
 Add a module-level criteria threshold and append warning Problems during check() for parsed tickets whose status is planning or todo and whose criterion count exceeds the threshold. Test the property across generated ticket sets in a fresh RepoTestCase repository, add CLI exit/output coverage, and update the planning guide assertion and wording.
+
+## Notes
+
+Review failed (tests): New findings; assert warning multiplicity and make the property test reliable under the full suite.
+1: fail - A throwaway unittest run wrapping `check` to duplicate every criteria warning printed `OK` and `DUPLICATED WARNING TEST RESULT: True`: the dictionary comprehension silently collapses duplicates, so the required once-per-ticket property is not tested. Wrapping `check` to remove criteria warnings printed `FAILED (failures=1)` for a planning ticket with six criteria, confirming the missing-warning case is exercised.
+2: pass - `uv run python -m unittest tests.test_cli.TestCheck.test_criteria_warning_does_not_fail_check tests.test_guide_plan_restored` printed `Ran 5 tests` and `OK`; the CLI test checks warning output, path and zero exit.
+3: fail - The guide and assertion contain the required replacement, and `rg` confirms the later sentence remains. However, `make format && make check` failed: Hypothesis reported `FlakyFailure`, with a 260.48ms example exceeding the 200ms deadline on the first run and taking 157.97ms on retry. Remove the timing sensitivity and rerun the full check.
 
 ## Summary
 
@@ -41,3 +48,5 @@ Implemented criteria-limit warnings in check(), updated guide wording, and added
 - 2026-11-17T17:46:19Z rosy-zinc-jay: wrote the plan
 - 2026-11-17T17:50:08Z rosy-zinc-jay: changed summary; ticked acceptance criteria
 - 2026-11-17T17:50:08Z rosy-zinc-jay doing → review
+- 2026-11-17T17:52:48Z intrepid-dusky-lapwing: changed acceptance criteria, notes; ticked acceptance criteria
+- 2026-11-17T17:52:48Z intrepid-dusky-lapwing review → doing
