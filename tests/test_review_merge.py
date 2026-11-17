@@ -96,7 +96,7 @@ class ReviewMergeTestCase(CliTestCase):
         if shared is not None:
             (self.root / "shared.txt").write_text(shared)
         self.git("add", "--all")
-        self.git("commit", "--quiet", "-m", "work")
+        self.git("commit", "--quiet", "-m", "work\n\nTask: TASK-1")
         self.run_cli("edit", "1", "-s", "doing")
         self.run_cli("edit", "1", "-s", "review")
         for number in range(failures):
@@ -438,7 +438,7 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.git("add", "untracked.txt")
         staged = self.run_cli("edit", "1", "-s", "review", exit_code=1)
         self.assertIn("untracked.txt", staged.output)
-        self.git("commit", "--quiet", "-m", "finish work")
+        self.git("commit", "--quiet", "-m", "finish work\n\nTask: TASK-1")
         self.run_cli("edit", "1", "-s", "review")
 
     def test_dirty_review_worktree_cannot_be_marked_done_but_can_be_blocked(self):

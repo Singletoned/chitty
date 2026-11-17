@@ -14,7 +14,10 @@ Found 2026-11-12 while listing projects to post a suggestion.
 
 Suggestion origin: /Users/singletoned/src/efficio/margay-eye-south
 
+The existing leftover registrations (16 inboxes whose repo pointed into temp or scratchpad directories) were deleted by hand on 2026-11-17. Pruning future dead registrations is `TASK-50`.
+
 ## History
 
 - 2026-11-12T21:43:35Z kind-yellow-vole → backlog
 - 2026-11-12T21:43:37Z kind-yellow-vole: changed notes
+- 2026-11-17T17:55:08Z kind-umber-toad: changed notes
