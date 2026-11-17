@@ -1,6 +1,6 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: cold-read
+status: planning
 owner: planner-cold-read
 created: 2026-11-16
 ---
@@ -11,15 +11,17 @@ Agents pass long ticket text as shell arguments, and the guides spend a paragrap
 
 Decisions:
 
-- Add `--description-file` to `chitty add` and `chitty suggest`, and `--summary-file` to `chitty edit`, each `type=click.File()`, combined with its text option through `_text` in `src/chitty/cli.py`, so giving both is the existing usage error.
+- Add `--description-file` to `chitty add` and `chitty suggest`, and `--summary-file` to `chitty edit`, each combined with its text option through `_text` in `src/chitty/cli.py`, so giving both is the existing usage error. In `add`, resolve the description file before the `--description is required` check.
+- Every `-file` option of the three commands, old and new, uses `click.File(encoding="utf-8")`, so non-ASCII text does not depend on the locale.
 - Every `-file` option of `add`, `edit` and `suggest` says `('-' for stdin)` in its help.
-- Two `-file` options in one command both given `-` is a `click.UsageError` naming them, because only the first would get the text.
+- Two `-file` options in one command both given `-` is a `click.UsageError` naming them, because the second would silently read nothing. Check it in one helper in `cli.py` that each command calls with all its `-file` options, `--note-file` included. A text option and a different `-file` option together stay allowed, for example `--note` and `--note-file`.
 - `--ac` and `--set-ac` get no file form: criteria are one line each.
 - `cli.py` stays thin: no change to `store.py`, `mcp.py` or `inbox.py`.
-- Replace the quoting paragraph (the two lines starting `Backticks run commands inside double-quoted shell arguments`) in `src/chitty/guide.md`, `src/chitty/roles/work.md`, `review.md` and `plan.md` with one line: ``Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.`` Update `tests/test_guide_backticks.py` to that line, and `tests/fixtures/guide-before-workflow.md` only if a test fails without it. Do not change `AGENTS.md` on the branch: after this lands, the main checkout's `chitty init` refreshes the managed block, and the planning session updates the hand-written copy in the `## Chitty` section.
+- Replace the quoting advice (the text starting `Backticks run commands inside double-quoted shell arguments`) in `src/chitty/guide.md`, `src/chitty/roles/work.md`, `review.md` and `plan.md` with one line: ``Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.`` Update `tests/test_guide_backticks.py` to that line, and `tests/fixtures/guide-before-workflow.md` only if a test fails without it. Do not change `AGENTS.md` on the branch: after this lands, the main checkout's `chitty init` refreshes the managed block, and the planning session updates the hand-written copy in the `## Chitty` section.
+- Update the option lists in `docs/plan/cli.md` and the stdin mention in `docs/plan/task-file.md`.
 - `TASK-306` (`--description-file` for `chitty add`) is superseded and gets archived by the planning session when this lands.
 
-Tests: a Hypothesis property in a new `tests/test_property_text_files.py`, using Click's `CliRunner` as `tests/test_cli.py` does: for any text, without NUL or carriage return, that has non-whitespace content, each text option and its `-file` form (a file and `-` with that stdin) write the same ticket file. It covers `add -d`, `add --note`, `edit -d`, `--plan`, `--note`, `--set-notes` and `--summary`. Example tests in the same file: `suggest --description-file -` sends the same suggestion as `-d`, and two `-` options are refused naming both.
+Tests: a Hypothesis property in a new `tests/test_property_text_files.py`, in a class inheriting `RepoTestCase` (the inbox must not be touched), using Click's `CliRunner` as `tests/test_cli.py` does. Text is generated from `a`, `b`, `1`, a space, a newline, a backtick, `'`, `"`, `$`, `\`, `*` and `é`, with at least one letter: this avoids headings and fences, which the store refuses as section changes whatever the option, and whitespace-only text, which it also refuses. For each example, create a fresh repository in a new temporary directory under the test's own (with one seeded ticket for `edit`), and run each text option three ways: inline, from a UTF-8 file, and from `-` with that text on stdin. The three runs must leave the same `description`, `plan`, `notes`, `summary` and `criteria` in `chitty show --json` (History differs by timestamp, so compare those fields only). It covers `add -d`, `add --note`, `edit -d`, `--plan`, `--note`, `--set-notes` and `--summary`. Keep `max_examples` small (25) because each example runs the CLI. `suggest` is not in the property. Example tests in the same file: `suggest --description-file -` sends the same suggestion as `-d`, and two `-` options in `add` and in `edit` are refused naming both.
 
 Out of scope: MCP, file forms for criteria or titles, and reading files relative to anything but the working directory.
 
@@ -27,7 +29,11 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 
 - [ ] The Hypothesis property in `tests/test_property_text_files.py` shows each listed text option and its `-file` form, from a file and from `-`, write the same ticket; it fails before the change for the options that have no file form yet
 - [ ] `suggest --description-file -` sends the same suggestion as `-d`, and giving `-` to two `-file` options exits with a usage error naming both; the tests fail before the change
-- [ ] The four guides carry the one-line file advice in place of the quoting paragraph, every `-file` option help ends with the stdin wording given in Decisions, and `make check` passes
+- [ ] The four guides carry the one-line file advice in place of the quoting advice, every `-file` option help ends with the stdin wording given in Decisions, `docs/plan/cli.md` lists the new options, and `make check` passes
+
+## Notes
+
+Cold read by a Haiku subagent, 2026-11-17. Fixed: `add` checks the required description before reading a file; the property generator could produce text the store refuses whatever the option; History timestamps made "same ticket file" unverifiable; per-example repositories and `RepoTestCase`; UTF-8 file encoding; where the two-stdin check lives; the docs to update. Not adopted: none.
 
 ## History
 
@@ -38,3 +44,5 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 - 2026-11-17T19:59:05Z kind-umber-toad: changed owner
 - 2026-11-17T19:59:05Z kind-umber-toad planning → cold-read
 - 2026-11-17T19:59:14Z kind-umber-toad: changed acceptance criteria
+- 2026-11-17T20:01:10Z kind-umber-toad: changed description, acceptance criteria, notes
+- 2026-11-17T20:01:10Z kind-umber-toad cold-read → planning
