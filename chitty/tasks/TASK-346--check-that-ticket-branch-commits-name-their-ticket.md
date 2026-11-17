@@ -32,6 +32,10 @@ Out of scope: checking commits outside review, rewording commits automatically, 
 - [ ] Guards, which pass before the change too: a direct `Repo.edit` with `Edit(status="review", skip_current_version=True)` on a branch with a commit lacking the trailer moves the ticket to `review`; and a commit without a trailer made while the ticket is in `review` does not stop `review` to `done`.
 - [ ] The `work.md` sentence is replaced as the Description says, and `tests/test_guide_work_commits.py` still passes, asserting `refuses branch commits without one`. `make check` passes.
 
+## Plan
+
+Implement commit trailer validation as specified: add Commit and pure trailer detection plus branch commit discovery; enforce it only on entry to review after the dirty-tree guard; update focused tests and work guide, then run format/check and commit.
+
 ## History
 
 - 2026-11-16T09:59:56Z intrepid-coral-raven → backlog
@@ -42,3 +46,4 @@ Out of scope: checking commits outside review, rewording commits automatically, 
 - 2026-11-17T16:37:57Z kind-umber-toad cold-read → planning
 - 2026-11-17T17:06:27Z kind-umber-toad planning → todo
 - 2026-11-17T17:37:08Z friendly-lilac-crane todo → doing
+- 2026-11-17T17:37:21Z friendly-lilac-crane: wrote the plan
