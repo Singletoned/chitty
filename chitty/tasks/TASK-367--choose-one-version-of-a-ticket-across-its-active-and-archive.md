@@ -37,6 +37,10 @@ Out of scope: a failed write leaving its file uncommitted (a separate ticket), a
 - [ ] The two real-Git tests in Tests pass (archive of a referenced ticket commits and leaves `git status` clean; an older worktree can add a dependency on an archived ticket and sees it archived), and both fail before the change
 - [ ] `make check` passes
 
+## Plan
+
+Add frozen Version and pure choose_version selection in store.py, then unify local and historical candidates across active/archive directories per context so tasks, all_tasks, and lookup expose one chosen version. Add Hypothesis selector properties and the two real-Git regressions, verify each regression fails before the fix, then run make format and make check.
+
 ## Notes
 
 Also seen 2026-11-17: in the `task-364` worktree, which branched before `TASK-356` was archived on `main`, `chitty edit TASK-364 --note ...` failed with `TASK-356 is used by more than one file` (the local active file and `main`'s archived one), after writing the note to the ticket file and without committing it, despite `TASK-355`. So every worktree created before an archive on `main` cannot edit any ticket until it merges `main`.
@@ -56,3 +60,4 @@ Escape: introduced by `TASK-356`, whose cross-branch `lookup` in `check` made ar
 - 2026-11-17T20:22:20Z kind-umber-toad: changed owner
 - 2026-11-17T20:22:20Z kind-umber-toad planning → todo
 - 2026-11-17T22:03:54Z witty-ochre-yellowhammer todo → doing
+- 2026-11-17T22:04:06Z witty-ochre-yellowhammer: wrote the plan
