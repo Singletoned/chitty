@@ -17,9 +17,13 @@ ticket = sys.argv[2]
 continued = "-c" in sys.argv[3:]
 path = next(Path("chitty/tasks").glob(f"{{ticket}}--*.md"))
 text = path.read_text()
+repairing = "status: error" in text
 {edit}
 path.write_text(text)
 subprocess.run(["git", "add", str(path)], check=True)
+if repairing and "status: review" in text:
+    Path("repair.py").write_text("fixed = True\\n")
+    subprocess.run(["git", "add", "repair.py"], check=True)
 subprocess.run(["git", "commit", "--quiet", "--allow-empty", "-m", "agent"], check=True)
 """
 

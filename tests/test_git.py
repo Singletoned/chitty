@@ -1,5 +1,5 @@
 import subprocess
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from unittest import mock
 
 from chitty import git
@@ -54,6 +54,29 @@ class TestHistoricalFiles(RepoTestCase):
             git.file_at(self.root, "no-such-ref", "file.txt")
 
         self.assertNotIn("autocommit", str(raised.exception))
+
+    def test_changed_paths_disables_rename_detection_and_preserves_unicode(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        (self.root / "src").mkdir()
+        (self.root / "src/a.py").write_text("code\n")
+        self.commit("initial")
+        self.git("branch", "main")
+        self.git("checkout", "-b", "worker")
+        (self.root / "src/a.py").rename(self.root / "src/a.tmp")
+        (self.root / "chitty/tasks").mkdir(parents=True)
+        (self.root / "src/a.tmp").rename(self.root / "chitty/tasks/a.md")
+        self.commit("move")
+        self.assertEqual(
+            git.changed_paths(self.root, "main", "worker"),
+            [PurePosixPath("chitty/tasks/a.md"), PurePosixPath("src/a.py")],
+        )
+        (self.root / "chitty/tasks/é.md").write_text("task\n")
+        self.commit("unicode")
+        self.assertIn(
+            PurePosixPath("chitty/tasks/é.md"), git.changed_paths(self.root, "main", "worker")
+        )
 
     def test_non_repository_has_no_history(self):
         directory = self.tmp / "not-a-repository"

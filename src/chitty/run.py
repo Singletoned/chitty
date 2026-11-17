@@ -10,11 +10,11 @@ import subprocess
 import sys
 import time
 import tomllib
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Literal
 from uuid import uuid4
 
@@ -48,6 +48,17 @@ AGENT_KILL_GRACE_SECONDS = 2
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
+
+
+def has_work_beyond_tickets(
+    changed_paths: Iterable[PurePosixPath], ticket_directories: Iterable[PurePosixPath]
+) -> bool:
+    """Whether a branch changes any path outside all ticket directories."""
+    directories = tuple(ticket_directories)
+    return any(
+        not any(path.is_relative_to(directory) for directory in directories)
+        for path in changed_paths
+    )
 
 
 def agent_exit(
@@ -456,6 +467,19 @@ def _run_ticket(
                 "expected review or blocked"
             )
         if repairing:
+            if new_status == "review":
+                changed = git.changed_paths(
+                    worktree, main_repo.config.main_branch, str(action.id).lower()
+                )
+                ticket_directories = (
+                    PurePosixPath(context.directory.relative_to(main_root).as_posix())
+                    for context in main_repo.contexts()
+                )
+                if not has_work_beyond_tickets(changed, ticket_directories):
+                    raise RepairError(
+                        f"repair agent returned {action.id} to review with no change beyond "
+                        "its ticket files"
+                    )
             note = (
                 None
                 if new_status == "review"

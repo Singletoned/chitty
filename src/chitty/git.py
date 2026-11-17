@@ -3,7 +3,7 @@
 import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
@@ -52,6 +52,20 @@ def commits_missing_trailer(commits: Sequence[Commit], task_id: TaskId) -> list[
 def short_sha(root: Path, sha: str) -> str:
     """Return Git's abbreviated object ID for ``sha``."""
     return _git(root, "rev-parse", "--short", sha).strip()
+
+
+def changed_paths(root: Path, base: str, branch: str) -> list[PurePosixPath]:
+    """Return committed paths changed from the merge base to ``branch``."""
+    result = subprocess.run(
+        ["git", "diff", "-z", "--no-renames", "--name-only", f"{base}...{branch}"],
+        check=False,
+        cwd=root,
+        capture_output=True,
+    )
+    if result.returncode:
+        command = f"git diff -z --no-renames --name-only {base}...{branch}"
+        raise ChittyError(f"`{command}` failed in {root}:\n{result.stderr.decode().strip()}")
+    return [PurePosixPath(path.decode()) for path in result.stdout.split(b"\0") if path]
 
 
 def branch_commits(root: Path, main_branch: str) -> list[Commit]:

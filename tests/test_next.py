@@ -1401,6 +1401,9 @@ class TestNext(CliTestCase):
             "path.write_text(path.read_text().replace('status: error', 'status: review'))\n"
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'repair'], check=True)\n"
+            "Path('repair.py').write_text('fixed = True\\n')\n"
+            "subprocess.run(['git', 'add', 'repair.py'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'Task: TASK-1'], check=True)\n"
         )
         result = self.run_cli("run", "--errors")
 
@@ -2393,6 +2396,9 @@ class TestNext(CliTestCase):
             "path.write_text(path.read_text().replace('status: error', 'status: review'))\n"
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'repair'], check=True)\n"
+            "Path('repair.py').write_text('fixed = True\\n')\n"
+            "subprocess.run(['git', 'add', 'repair.py'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'Task: TASK-1'], check=True)\n"
         )
         result = self.run_cli("run", "--errors")
         self.assertEqual(result.stdout, "TASK-1: error → review\n", result.stderr)

@@ -61,6 +61,9 @@ class TestRunRepairMode(TestRunContinue):
             "path.write_text(path.read_text().replace('status: error', 'status: review'))\n"
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'repair'], check=True)\n"
+            "Path('repair.py').write_text('fixed = True\\n')\n"
+            "subprocess.run(['git', 'add', 'repair.py'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'repair work'], check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | __import__("stat").S_IXUSR)
         self.run_cli("run", "--errors")
