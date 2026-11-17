@@ -1,6 +1,6 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -37,3 +37,4 @@ Files: `src/chitty/run.py`, `src/chitty/git.py`, `tests/test_next.py`, new `test
 - 2026-11-16T17:10:33Z open-russet-eel cold-read → planning
 - 2026-11-16T17:10:35Z open-russet-eel: changed owner
 - 2026-11-16T17:10:35Z open-russet-eel planning → todo
+- 2026-11-17T18:25:30Z calm-teal-ibis todo → doing
