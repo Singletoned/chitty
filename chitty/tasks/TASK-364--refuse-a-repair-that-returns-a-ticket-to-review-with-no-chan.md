@@ -1,6 +1,6 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: planning
+status: todo
 created: 2026-11-16
 ---
 
@@ -67,3 +67,5 @@ Implemented committed diff-path detection for repair handoffs. Verification: mak
 - 2026-11-17T18:40:43Z able-ochre-kestrel: changed owner, notes
 - 2026-11-17T18:40:43Z able-ochre-kestrel doing → planning
 - 2026-11-17T19:59:36Z kind-umber-toad: changed notes
+- 2026-11-17T20:22:36Z kind-umber-toad: changed owner
+- 2026-11-17T20:22:36Z kind-umber-toad planning → todo
