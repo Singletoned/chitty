@@ -1,6 +1,7 @@
 ---
 title: Let a repository declare files ticket branches must not change
-status: planning
+status: cold-read
+owner: planner-cold-read
 created: 2026-11-16
 ---
 
@@ -34,3 +35,5 @@ Out of scope: globs or line patterns, protecting paths outside review and landin
 - 2026-11-16T10:38:37Z intrepid-coral-raven backlog → planning
 - 2026-11-16T10:50:31Z intrepid-coral-raven: changed title, description
 - 2026-11-17T19:54:38Z kind-umber-toad: changed title, description, acceptance criteria
+- 2026-11-17T19:55:19Z kind-umber-toad: changed owner
+- 2026-11-17T19:55:19Z kind-umber-toad planning → cold-read
