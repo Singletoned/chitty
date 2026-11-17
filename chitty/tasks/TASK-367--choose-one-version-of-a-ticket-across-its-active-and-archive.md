@@ -1,6 +1,6 @@
 ---
 title: Choose one version of a ticket across its active and archive directories
-status: doing
+status: planning
 labels:
   - bug
   - escape
@@ -47,6 +47,8 @@ Also seen 2026-11-17: in the `task-364` worktree, which branched before `TASK-35
 
 Escape: introduced by `TASK-356`, whose cross-branch `lookup` in `check` made archiving a referenced ticket fail. Cold read by a Haiku subagent, 2026-11-17. Fixed: neither real-Git test failed before the change as first written (a plain archive and a plain edit both work), so the tests now use the reproduction, found by the planner; `autocommit = true` for the clean-status check; tie-breaking and detached HEAD; how a `Version` maps back to a ticket and which historical versions are candidates; the outcome when another branch edits an archived ticket (accepted, stated). Not adopted: a repository-level property over `tasks`; the unit properties and two real tests cover it.
 
+Planning return: the selector rule and older-version property conflict when the input contains only a clean local version. The rule says a historical version from another branch wins over a clean local version; adding any historical candidate therefore changes the result, even if it is older than every existing candidate (the local candidate has no committed_at). The property requires adding such an older historical version never to change the choice. Please decide whether that property applies only when at least one historical candidate already exists, or revise the selection rule for local-versus-historical comparison. Also, make check currently fails the existing TestRenumber duplicate-file diagnostic assertion after the selector change; determine the expected diagnostic path while refining the design. Partial implementation is committed as 0c9354ac; property tests and the first real-Git reproduction pass, but the full check and second regression evidence are incomplete.
+
 ## History
 
 - 2026-11-17T19:53:05Z kind-umber-toad → todo
@@ -61,3 +63,5 @@ Escape: introduced by `TASK-356`, whose cross-branch `lookup` in `check` made ar
 - 2026-11-17T20:22:20Z kind-umber-toad planning → todo
 - 2026-11-17T22:03:54Z witty-ochre-yellowhammer todo → doing
 - 2026-11-17T22:04:06Z witty-ochre-yellowhammer: wrote the plan
+- 2026-11-17T22:10:39Z witty-ochre-yellowhammer: changed owner, notes
+- 2026-11-17T22:10:39Z witty-ochre-yellowhammer doing → planning
