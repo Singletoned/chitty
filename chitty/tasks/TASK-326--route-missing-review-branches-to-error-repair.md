@@ -29,6 +29,10 @@ No property test: one fixed state (branch and worktree missing at review), which
 - [ ] Flattened `guide("repair")` contains `if they exist`, `was missing`, `exactly this ID`, and `say what was searched`; tested in `tests/test_guide_repair_missing_branch.py`, which fails before the change.
 - [ ] `docs/plan/next-action-and-runner.md` lists the missing branch under "Before a review". `make check` passes.
 
+## Plan
+
+Update missing-review-branch handling to record a review-phase runner error directly without changing owner or starting an agent. Add regression coverage proving error selection/availability behavior and repair-guide recovery instructions, update the runner plan, run focused tests before the fix where possible, then format and run make check.
+
 ## History
 
 - 2026-11-13T23:27:55Z mellow-umber-lapwing → backlog
@@ -50,3 +54,4 @@ No property test: one fixed state (branch and worktree missing at review), which
 - 2026-11-16T17:08:37Z open-russet-eel: changed owner
 - 2026-11-16T17:08:37Z open-russet-eel planning → todo
 - 2026-11-17T17:18:03Z nimble-amber-urchin todo → doing
+- 2026-11-17T17:18:13Z nimble-amber-urchin: wrote the plan
