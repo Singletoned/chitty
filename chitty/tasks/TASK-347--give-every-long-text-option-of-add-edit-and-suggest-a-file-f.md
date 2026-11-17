@@ -1,6 +1,7 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: planning
+status: cold-read
+owner: planner-cold-read
 created: 2026-11-16
 ---
 
@@ -34,3 +35,5 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 - 2026-11-16T10:38:41Z intrepid-coral-raven backlog → planning
 - 2026-11-17T17:52:25Z kind-umber-toad: changed title, description
 - 2026-11-17T19:59:02Z kind-umber-toad: changed title, description, acceptance criteria
+- 2026-11-17T19:59:05Z kind-umber-toad: changed owner
+- 2026-11-17T19:59:05Z kind-umber-toad planning → cold-read
