@@ -29,6 +29,7 @@ class Problem:
 MARKDOWN = MarkdownIt("commonmark")
 MARKDOWN_FIELDS = ("Description", "Plan", "Notes", "Summary")
 DELIMITERS = "*_"
+MAX_CRITERIA = 5
 
 
 def errors(problems: Sequence[Problem]) -> list[Problem]:
@@ -169,6 +170,18 @@ def check(
                     task = parse(path.read_text())
                     tasks[path] = task
                     problems += _markdown_warnings(path, task)
+                    if (
+                        task.frontmatter.status in {"planning", "todo"}
+                        and len(task.criteria) > MAX_CRITERIA
+                    ):
+                        problems.append(
+                            Problem(
+                                path,
+                                f"{len(task.criteria)} acceptance criteria; "
+                                f"split tickets above {MAX_CRITERIA}",
+                                "warning",
+                            )
+                        )
                     task_id, _slug = ids.parse_filename(path.name)
                     expected_name = ids.filename(task_id, ids.slugify(task.frontmatter.title))
                     if path.name != expected_name:

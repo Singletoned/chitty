@@ -1884,6 +1884,29 @@ class TestCheck(CliTestCase):
         result = self.run_cli("check", exit_code=1)
         self.assertIn("History' may only contain", result.stdout)
 
+    def test_criteria_warning_does_not_fail_check(self):
+        self.run_cli(
+            "add",
+            "Many",
+            "-d",
+            "x",
+            "--ac",
+            "A",
+            "--ac",
+            "B",
+            "--ac",
+            "C",
+            "--ac",
+            "D",
+            "--ac",
+            "E",
+            "--ac",
+            "F",
+        )
+        result = self.run_cli("check")
+        self.assertIn("warning:", result.stdout)
+        self.assertIn("chitty/tasks/TASK-1--many.md", result.stdout)
+
     def test_warning_does_not_fail_check(self):
         self.run_cli("add", "Glob", "-d", "static/photos/*.jpg")
 
