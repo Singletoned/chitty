@@ -1,11 +1,10 @@
 ---
 title: Choose one version of a ticket across its active and archive directories
-status: planning
+status: todo
 labels:
   - bug
   - escape
 priority: high
-owner: planner-cold-read
 created: 2026-11-17
 ---
 
@@ -54,3 +53,5 @@ Escape: introduced by `TASK-356`, whose cross-branch `lookup` in `check` made ar
 - 2026-11-17T20:00:42Z kind-umber-toad planning → cold-read
 - 2026-11-17T20:05:01Z kind-umber-toad: changed labels, description, acceptance criteria, notes
 - 2026-11-17T20:05:01Z kind-umber-toad cold-read → planning
+- 2026-11-17T20:22:20Z kind-umber-toad: changed owner
+- 2026-11-17T20:22:20Z kind-umber-toad planning → todo
