@@ -36,3 +36,4 @@ Reviewed: both trial runs done by hand.
 - 2026-11-14T09:26:09Z jolly-silver-falcon doing → review
 - 2026-11-14T09:37:19Z human: changed notes; overrode review independence
 - 2026-11-14T09:37:19Z human review → done
+- 2026-11-17T17:25:09Z kind-umber-toad done → archived

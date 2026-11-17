@@ -24,10 +24,9 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
   logical commits ending with `Task: <ID>` using that ticket's ID, so
   `git log --grep <ID>` finds them.
 - Record anything surprising with `--note`. When implementation is ready, run
-  `chitty fix`, format and check, then run `git status --short`. It must be empty
-  before moving the ticket to `review`; commit intended changes and resolve
-  leftover files first. Write `--summary` with handoff, verification, and
-  follow-ups, then set `-s review`.
+  `chitty fix`, format and check, then commit your changes: `chitty edit -s
+  review` refuses while the worktree has uncommitted files. Write `--summary`
+  with handoff, verification, and follow-ups, then set `-s review`.
 - When a ticket asks for a regression test, see it fail without the fix, by
   running it before you write the fix or with the fix reverted, and say so in
   a note. If it passes without the fix, it proves nothing: change the test
