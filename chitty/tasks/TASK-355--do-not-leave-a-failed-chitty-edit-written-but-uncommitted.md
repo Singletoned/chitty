@@ -20,7 +20,7 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 
 ## Plan
 
-Add a property test using an autocommit Git repository with two linked tasks; generate edits that post-write validation rejects, and assert task bytes and Git status remain unchanged. First run the property to confirm it fails. Then snapshot bytes for all task files in configured contexts during Repo.edit; on finalization refusal, reverse a title rename, restore changed bytes, invalidate caches, and re-raise the original error. Keep other write paths out of scope. Run make format and make check, then commit with a Task: TASK-355 trailer.
+Update the refusal property fixture so chitty.toml is committed into the clean Git baseline, and assert the fixture starts clean and remains clean after every refused edit. Run the focused test, make format and make check, then commit the regression-test correction with a Task: TASK-355 trailer.
 
 ## Notes
 
@@ -52,3 +52,4 @@ Implemented rollback of task-context file bytes and the Git index when edit fina
 - 2026-11-17T18:06:40Z daring-teal-crane doing → review
 - 2026-11-17T18:09:24Z youthful-khaki-adder: changed acceptance criteria, notes
 - 2026-11-17T18:09:24Z youthful-khaki-adder review → doing
+- 2026-11-17T18:17:22Z eager-indigo-crane: wrote the plan
