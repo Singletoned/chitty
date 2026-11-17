@@ -1,6 +1,6 @@
 ---
 title: Show referenced tickets when promoting a ticket to todo
-status: doing
+status: review
 depends_on:
   - TASK-356
 created: 2026-11-16
@@ -51,3 +51,4 @@ Implemented ticket reference parsing, promotion output, and plan-guide update. A
 - 2026-11-17T22:28:23Z youthful-hazel-newt: wrote the plan
 - 2026-11-17T22:33:26Z youthful-hazel-newt: changed summary
 - 2026-11-17T22:33:32Z youthful-hazel-newt: ticked acceptance criteria
+- 2026-11-17T22:33:33Z youthful-hazel-newt doing → review
