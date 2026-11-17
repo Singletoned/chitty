@@ -1,6 +1,6 @@
 ---
 title: Mark tickets owned by `untestable` with their own emoji in `chitty list`
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -27,6 +27,10 @@ Add UNTESTABLE_OWNER and special-case its owner marker after the existing runnin
 
 Both regression tests failed before the implementation: the property found 👤 untestable, and the CLI test found no ✍️ marker. make check passes; chitty fix reports pre-existing Markdown warnings on other tickets.
 
+Reviewed:
+1: pass - The property test passes on HEAD; with main selection.py it fails with 👤 untestable != ✍️ untestable. It compares the reference rule across generated facts and include_owner values.
+2: pass - tests.test_list_untestable passes on HEAD and fails with main selection.py because ✍️ is absent. The three specified docs name the glyph. make format && make check passed; 605 tests OK.
+
 ## Summary
 
 Implemented distinct ✍️ skip marker for owner untestable, preserving running/human precedence and selection behavior. Updated property and real-file CLI coverage plus the three requested docs. Verified with make check (604 tests), chitty fix, and regression tests; commit 7c152e7. No follow-ups.
@@ -44,3 +48,5 @@ Implemented distinct ✍️ skip marker for owner untestable, preserving running
 - 2026-11-17T18:21:35Z golden-amber-quail: wrote the plan
 - 2026-11-17T18:23:36Z golden-amber-quail: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T18:23:36Z golden-amber-quail doing → review
+- 2026-11-17T18:25:50Z tidy-pearl-stoat: changed notes; ticked acceptance criteria
+- 2026-11-17T18:25:50Z tidy-pearl-stoat review → done
