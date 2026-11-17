@@ -21,6 +21,10 @@ No property test: the states are a small fixed set, each listed in the criterion
 - [ ] For each field (`depends_on`, `parent`) and each place the referenced ticket lives, as a separate subtest: active in the current checkout; archived with `chitty archive` in the current checkout; created on a branch that is not checked out, with no copy on the current branch; nowhere. Each subtest runs both `chitty show <ID>` and `chitty check` and asserts `check` reports `<field> <ID>: no such task` exactly when `show` exits non-zero. One more subtest commits a malformed task file on another branch: `chitty check` fails with that file's parse error, not `no such task`. The other-branch subtests fail before the change.
 - [ ] A real-file test of the reported case: create branch `b` from `main`, add `TASK-2` on `main`, switch back to `b`, then `chitty edit TASK-1 --depends-on TASK-2` exits 0, commits the edit, and leaves `git status --porcelain` empty. Fails before the change. `make check` passes.
 
+## Plan
+
+Add Repo.lookup(task_id) returning StoredTask or None for absence while preserving find error behavior, and make find delegate to it. Update check reference existence diagnostics to use lookup, retaining by_id for duplicate detection and cycle graphs. Add focused real-Git CLI regression tests for both reference fields across active, archived, other-branch, and missing references, malformed historical task files, plus the cross-branch edit/autocommit report. Run the new tests against the current implementation first to confirm the regressions, then implement, run make format && make check, and commit code/tests with a Task: TASK-356 trailer.
+
 ## History
 
 - 2026-11-16T10:29:26Z intrepid-coral-raven → backlog
@@ -33,3 +37,4 @@ No property test: the states are a small fixed set, each listed in the criterion
 - 2026-11-16T17:03:16Z open-russet-eel: changed owner
 - 2026-11-16T17:03:16Z open-russet-eel planning → todo
 - 2026-11-17T18:08:46Z plucky-jade-heron todo → doing
+- 2026-11-17T18:09:14Z plucky-jade-heron: wrote the plan
