@@ -1,6 +1,6 @@
 ---
 title: Restore planning advice that TASK-336 removed
-status: review
+status: done
 owner: human
 created: 2026-11-16
 ---
@@ -36,6 +36,11 @@ Implemented by the planner, since wording tickets go to the stronger model. Regr
 
 Landed directly on `main` (fast-forward to `19ba601`) after merging `main` and passing `make check` (583 tests OK), without review, by the human decision that wording changes are not worth reviewing. A human closes this ticket.
 
+Reviewed: closed at the human's request; the change landed on `main` at `19ba601`.
+1: pass - `.venv/bin/python -m unittest tests.test_guide_plan_restored` OK on `main`; `test_plan_uses_current_paths_as_starting_point` no longer exists in `tests/`.
+2: pass - `.venv/bin/python -m unittest tests.test_guide_read_only_cold_read` OK on `main`; `tests/test_guide_plan_restored.py` covers the `TASK-[0-9]` and removed-phrase checks.
+3: pass - `docs/plan/pipeline-and-feedback.md:105-107` contains `readers run on Haiku` and `the ticket keeps an owner` (wrapped across lines).
+
 ## Summary
 
 Commit `a486380` on `task-361` restores the plan-guide advice `989a26a` dropped, removes its wrong wording and the `TASK-323` ID, restores the reader criterion bullet and the planner-records-outcomes clause in the cold-read guide, and restores the Haiku and owner bullet in `docs/plan/pipeline-and-feedback.md`. `make check` passes. Follow-ups: none.
@@ -54,3 +59,5 @@ Commit `a486380` on `task-361` restores the plan-guide advice `989a26a` dropped,
 - 2026-11-16T16:30:32Z open-russet-eel: changed owner, notes
 - 2026-11-16T16:30:32Z open-russet-eel review → blocked
 - 2026-11-17T17:23:17Z kind-umber-toad blocked → review
+- 2026-11-17T17:23:42Z kind-umber-toad: changed notes; overrode review independence
+- 2026-11-17T17:23:42Z kind-umber-toad review → done
