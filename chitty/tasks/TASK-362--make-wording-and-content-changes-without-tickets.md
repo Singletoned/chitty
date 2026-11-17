@@ -1,6 +1,6 @@
 ---
 title: Make wording and content changes without tickets
-status: blocked
+status: review
 owner: human
 created: 2026-11-16
 ---
@@ -35,3 +35,4 @@ Commit `04c5290` on `task-362` adds the wording-ticket bullet to the unmanaged p
 - 2026-11-16T16:29:48Z open-russet-eel: changed owner, notes
 - 2026-11-16T16:29:48Z open-russet-eel review → blocked
 - 2026-11-16T16:31:20Z open-russet-eel: changed title, notes
+- 2026-11-17T17:23:45Z kind-umber-toad blocked → review
