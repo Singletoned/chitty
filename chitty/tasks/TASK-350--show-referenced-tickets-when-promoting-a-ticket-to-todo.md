@@ -1,6 +1,6 @@
 ---
 title: Show referenced tickets when promoting a ticket to todo
-status: review
+status: planning
 depends_on:
   - TASK-356
 created: 2026-11-16
@@ -24,15 +24,24 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 
 ## Acceptance Criteria
 
-- [x] Property tests with Hypothesis on `ticket_references`, comparing `TaskId` values: (a) for any list of IDs (prefix from a fixed set, number 1 to 9999) joined by separators drawn from space, newline, comma, full stop, backtick, `(` and `)`, the result is that list with repeats removed, first appearance kept; (b) prefixing any one of those IDs with an ASCII letter, digit or `-` drops it from the result and keeps the rest; (c) for any text (`st.text()`) and prefix set, the call never raises, and every returned ID has a prefix in the set and its text appears in the input. Fail on `main`, where the function does not exist.
+- [ ] Property tests with Hypothesis on `ticket_references`, comparing `TaskId` values: (a) for any list of IDs (prefix from a fixed set, number 1 to 9999) joined by separators drawn from space, newline, comma, full stop, backtick, `(` and `)`, the result is that list with repeats removed, first appearance kept; (b) prefixing any one of those IDs with an ASCII letter, digit or `-` drops it from the result and keeps the rest; (c) for any text (`st.text()`) and prefix set, the call never raises, and every returned ID has a prefix in the set and its text appears in the input. Fail on `main`, where the function does not exist.
 - [x] Example tests on `ticket_references` with prefixes `TASK`, `TASKS` and `HUMAN` give exactly the results listed in the Description for each of `see TASK-12.`, `` `TASK-12` ``, `TASK-1-2`, `TASK-12a`, `TASKS-3`, `XTASK-12`, `task-12`, `a-TASK-1`, `TASK-012` and `UTF-8`.
 - [x] CLI test: `TASK-1` in `planning` mentions `TASK-2` (a `doing` ticket) in its Description, and `TASK-1` itself, `TASK-9` (no such ticket) and `TASK-2` again in a criterion. `chitty edit TASK-1 -s todo` prints its `updated` line followed by exactly `TASK-2 doing <title of TASK-2>` and `TASK-9 no such task`, and nothing else. Fails on `main`.
-- [x] CLI test: no reference lines are printed by a second `chitty edit TASK-1 -s todo` (which prints `unchanged TASK-1`), by `chitty edit TASK-1 --title x` on a `todo` ticket, by `-s doing` from `planning`, or by `-s todo --json` from `planning` (whose output stays valid JSON).
+- [ ] CLI test: no reference lines are printed by a second `chitty edit TASK-1 -s todo` (which prints `unchanged TASK-1`), by `chitty edit TASK-1 --title x` on a `todo` ticket, by `-s doing` from `planning`, or by `-s todo --json` from `planning` (whose output stays valid JSON).
 - [x] The plan guide bullet is replaced with the exact sentence in the Description, and `tests/test_guide_plan_restored.py` asserts that sentence (after `_flat`) instead of `because they can land during the read`. `make check` passes.
 
 ## Plan
 
 Implement ASCII-boundary ticket reference parsing in ids.py with property and example tests. Track the prior status in Change, resolve description and criterion references after qualifying CLI status promotion, and update the plan guide plus its restored-guide test. Verify regression failures first, then run formatting and make check.
+
+## Notes
+
+Review failed (design): Criterion 1(c) contradicts the required normalization in the Description and criterion 2: decide whether input matching should be case-insensitive or should preserve the original suffix, then specify a consistent property. The existing implementation is preserved. The test coverage issues below are newly discovered; there are no earlier review notes.
+1: fail - Running ticket_references on `TASK-12a` with prefix `TASK` returned `TASK-12A`; `str(result[0]) in text` printed `False`, although criterion 2 requires this result. The arbitrary-text property therefore cannot hold as written. Also the separator property cycles through a fixed sequence rather than generating arbitrary separators; generate separator choices after the property is clarified. Baseline main fails to import ticket_references; focused tests pass on this branch.
+2: pass - `uv run python -m unittest tests.test_promote_references tests.test_promote_references_cli` ran 6 tests and printed OK, including all documented examples.
+3: pass - The focused CLI promotion test passes; running the same test against an archive of main failed with `AssertionError: 1 != 3`.
+4: fail - The title edit and planning-to-doing checks use startswith and do not assert there are no additional lines; assert the complete output or exact line count for both cases. The focused suite currently prints OK but would not detect extra reference lines in these cases.
+5: pass - The guide and restored-guide assertion contain the required sentence; `make check` printed OK for 623 tests, with ruff and pyright passing.
 
 ## Summary
 
@@ -52,3 +61,5 @@ Implemented ticket reference parsing, promotion output, and plan-guide update. A
 - 2026-11-17T22:33:26Z youthful-hazel-newt: changed summary
 - 2026-11-17T22:33:32Z youthful-hazel-newt: ticked acceptance criteria
 - 2026-11-17T22:33:33Z youthful-hazel-newt doing → review
+- 2026-11-17T22:35:50Z intrepid-yellow-adder: changed owner, acceptance criteria, notes
+- 2026-11-17T22:35:50Z intrepid-yellow-adder review → planning
