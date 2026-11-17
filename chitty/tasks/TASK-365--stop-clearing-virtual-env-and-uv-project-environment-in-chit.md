@@ -9,7 +9,7 @@ created: 2026-11-17
 
 `TASK-238` made `chitty run` remove `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` from the environment of the agent and of the setup, check and landing-check commands, because one person's shell exported them pointing at a shared environment. That shell has since been fixed, and the human decided (`HUMAN-10`, 2026-11-17) that no other users should hit it. Remove the code.
 
-- In `_command_environment` in `src/chitty/run.py`, delete the two `pop` lines for `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT`. Keep the `CHITTY_USAGE_FILE` pop and its comment. Change the docstring to `Copy the environment without an inherited usage file.`
+- In `_command_environment` in `src/chitty/run.py` (or, if `TASK-343` has landed, `command_environment` in `src/chitty/commands.py`, where it moves unchanged), delete the two `pop` lines for `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT`. Keep the `CHITTY_USAGE_FILE` pop and its comment. Change the docstring to `Copy the environment without an inherited usage file.`
 - Delete `tests/test_run_environment.py`: all three of its tests assert the two variables are removed.
 - In `test_run_uses_runner_chitty_and_strips_worktree_environment` in `tests/test_next.py`, remove the parts that set, record and check `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT`. Keep its `PATH` and runner-`chitty` assertions. Make it also set `CHITTY_USAGE_FILE` in the parent environment (restored afterwards, as it restores the others now) and keep its assertion that the agent sees none. Rename it `test_run_uses_runner_chitty_and_drops_usage_file`.
 - No test sets `CHITTY_USAGE_FILE` today, so the existing `usage_file` assertion passes even without the pop. The changed test must fail when the `CHITTY_USAGE_FILE` pop is removed.
@@ -34,3 +34,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: criterion 2 passed with nothin
 - 2026-11-17T19:53:43Z kind-umber-toad planning → cold-read
 - 2026-11-17T19:55:02Z kind-umber-toad: changed description, acceptance criteria, notes
 - 2026-11-17T19:55:02Z kind-umber-toad cold-read → planning
+- 2026-11-17T19:55:17Z kind-umber-toad: changed description
