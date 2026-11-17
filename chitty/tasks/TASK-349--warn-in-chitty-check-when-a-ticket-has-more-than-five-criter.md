@@ -1,6 +1,6 @@
 ---
 title: Warn in chitty check when a ticket has more than five criteria
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -29,3 +29,4 @@ Out of scope: warning from `chitty edit` or `chitty add`, configuring the limit,
 - 2026-11-17T16:02:55Z kind-umber-toad: changed description, acceptance criteria
 - 2026-11-17T16:02:55Z kind-umber-toad cold-read → planning
 - 2026-11-17T16:04:10Z kind-umber-toad planning → todo
+- 2026-11-17T17:45:59Z rosy-zinc-jay todo → doing
