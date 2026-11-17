@@ -1,6 +1,6 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: error
+status: review
 created: 2026-11-16
 ---
 
@@ -25,7 +25,7 @@ Files: `src/chitty/run.py`, `src/chitty/git.py`, `tests/test_next.py`, new `test
 ## Acceptance Criteria
 
 - [x] Hypothesis properties in `tests/test_property_repair_work.py`, with paths built from one to four non-empty segments, no `..` and no leading `/`, including paths inside, outside, prefix-alike (`chitty/tasksX/a.md` against `chitty/tasks`), equal to a directory, and empty sets: `has_work_beyond_tickets` is true exactly when some path is not inside any ticket directory; shuffling or duplicating either input does not change the result; adding a path never turns true into false. First add the function raising `NotImplementedError`; the test fails with that before the change.
-- [ ] Fake-agent tests in `tests/test_repair_requires_work.py`, one subtest per case, on an `error` ticket whose branch exists at the tip of `main` (the state `_worktree` also creates for a missing branch): the agent sets `review` through `chitty edit` only; writes `status: review` to the ticket file without committing; commits a code file then sets `review`; sets `blocked`. Only the code-file case ends in `review`; the first two make `chitty run --errors` exit non-zero with the `RepairError` text and leave the ticket `error`; `blocked` ends in `blocked`. The first two cases fail before the change. The two repair tests in `tests/test_next.py` are updated to commit a code file and pass.
+- [x] Fake-agent tests in `tests/test_repair_requires_work.py`, one subtest per case, on an `error` ticket whose branch exists at the tip of `main` (the state `_worktree` also creates for a missing branch): the agent sets `review` through `chitty edit` only; writes `status: review` to the ticket file without committing; commits a code file then sets `review`; sets `blocked`. Only the code-file case ends in `review`; the first two make `chitty run --errors` exit non-zero with the `RepairError` text and leave the ticket `error`; `blocked` ends in `blocked`. The first two cases fail before the change. The two repair tests in `tests/test_next.py` are updated to commit a code file and pass.
 - [x] Real-git tests of `changed_paths`: a branch that moves `src/a.py` to `chitty/tasks/a.md` returns both paths; a branch adding `chitty/tasks/é.md` returns that path unquoted. `make check` passes.
 
 ## Plan
@@ -204,6 +204,8 @@ make: *** [check] Error 2
 ```
 ````
 
+Error repair, 2026-11-17: the runner's pre-session check failed on the uncommitted fixture rewrite in `tests/test_repair_requires_work.py`. Two causes, both in the test: the `code` agent committed with the one-paragraph message `Task: TASK-1`, which `TASK-346`'s trailer check (now on `main`) treats as no trailer; and the refused cases asserted with `chitty show`, which returns the repair branch's committed `review` while `main` stays `error`. Fixed both in the test; `make check` passes on the branch. With the refusal disabled (`if False and ...` at `src/chitty/run.py:480`), exactly the `edit` and `uncommitted` cases fail.
+
 ## Summary
 
 Implemented committed diff-path detection for repair handoffs. Verification: make check passes; focused repair, property, and real-git tests pass. Regression evidence: disabling the check makes the two no-work fake-agent cases fail as expected. Changes committed in add740b with Task: TASK-364. No follow-ups.
@@ -230,3 +232,5 @@ Implemented committed diff-path detection for repair handoffs. Verification: mak
 - 2026-11-17T20:22:36Z kind-umber-toad planning → todo
 - 2026-11-17T22:35:27Z open-dusky-raven: changed notes
 - 2026-11-17T22:35:27Z open-dusky-raven todo → error
+- 2026-11-17T22:48:42Z kind-umber-toad: changed notes; ticked acceptance criteria
+- 2026-11-17T22:48:42Z kind-umber-toad error → review
