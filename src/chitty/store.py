@@ -3,6 +3,7 @@
 import json
 import re
 import secrets
+import subprocess
 import sys
 import tomllib
 from collections.abc import Mapping, Sequence
@@ -573,12 +574,22 @@ class Repo:
                 task = task.with_history_event(now, actor_name, action)
             if edit.status is not None and edit.status != stored.task.frontmatter.status:
                 task = task.with_history(now, actor_name, previous_status, edit.status)
-        return self._commit(
-            replace(
+        before = _task_file_bytes(self.contexts())
+        index = _git_index_path(self.root) if git.is_repository(self.root) else None
+        index_before = index.read_bytes() if index and index.exists() else None
+        try:
+            change = replace(
                 self._save(stored, task, allow_stale=edit.skip_current_version), actor=actor_name
-            ),
-            "edit",
-        )
+            )
+            return self._commit(change, "edit")
+        except ChittyError as error:
+            if "cannot finalize task write" not in str(error):
+                raise
+            _restore_task_files(self.contexts(), before)
+            if index is not None and index_before is not None:
+                index.write_bytes(index_before)
+            self._invalidate()
+            raise
 
     def _save(self, stored: StoredTask, task: Task, *, allow_stale: bool = False) -> Change:
         """Write an edited task; touches nothing if the content is unchanged."""
@@ -1209,6 +1220,39 @@ def _add_worktrees_to_gitignore(path: Path) -> bool:
         f"{text if not text or text.endswith(chr(10)) else text + chr(10)}.worktrees/\n"
     )
     return True
+
+
+def _git_index_path(root: Path) -> Path:
+    result = subprocess.run(
+        ["git", "rev-parse", "--git-path", "index"],
+        check=True,
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    path = Path(result.stdout.strip())
+    return (root / path).resolve() if not path.is_absolute() else path
+
+
+def _task_file_bytes(contexts: Sequence[Context]) -> dict[Path, bytes]:
+    return {
+        path: path.read_bytes()
+        for context in contexts
+        for directory in (context.directory, context.archive_directory)
+        if directory.exists()
+        for path in directory.rglob("*.md")
+        if path.is_file()
+    }
+
+
+def _restore_task_files(contexts: Sequence[Context], before: Mapping[Path, bytes]) -> None:
+    current = _task_file_bytes(contexts)
+    for path in current.keys() - before.keys():
+        path.unlink()
+    for path, content in before.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not path.exists() or path.read_bytes() != content:
+            path.write_bytes(content)
 
 
 def _file_state(path: Path) -> tuple[str, bytes | Path] | None:
