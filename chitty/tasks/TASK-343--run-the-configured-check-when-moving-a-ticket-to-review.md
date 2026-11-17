@@ -1,6 +1,6 @@
 ---
 title: Run the configured check when moving a ticket to review
-status: error
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -104,6 +104,8 @@ make: *** [check] Error 1
 ```
 ````
 
+Error repair, 2026-11-17: the runner's pre-session check failed on the earlier partial work: `src/chitty/commands.py` was unformatted and `tests/test_guide_work_commits.py` still pinned the old `work.md` wording. Formatted it and updated the two phrases to the ticket's new wording on the `task-343` branch; `make check` passes there. The rest of the implementation (`Repo.edit` integration, runner refactor, regression tests) is still to do.
+
 ## History
 
 - 2026-11-16T09:59:52Z intrepid-coral-raven → backlog
@@ -121,3 +123,5 @@ make: *** [check] Error 1
 - 2026-11-17T20:22:49Z kind-umber-toad planning → todo
 - 2026-11-17T22:11:48Z jolly-dusky-badger: changed notes
 - 2026-11-17T22:11:48Z jolly-dusky-badger todo → error
+- 2026-11-17T22:43:50Z kind-umber-toad: changed notes
+- 2026-11-17T22:43:50Z kind-umber-toad error → todo
