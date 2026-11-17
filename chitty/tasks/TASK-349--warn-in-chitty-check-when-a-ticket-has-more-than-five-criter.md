@@ -1,6 +1,6 @@
 ---
 title: Warn in chitty check when a ticket has more than five criteria
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -125,6 +125,11 @@ make: *** [check] Error 1
 
 Fixed review findings: warning assertions now preserve multiplicity with assertCountEqual, and Hypothesis deadline is disabled for filesystem-heavy examples. Focused property test passes; full make format && make check passes (597 tests). The duplicated-warning mutation now fails the multiplicity assertion. chitty fix reports existing Markdown warnings in unrelated tickets; no files changed by it.
 
+Reviewed: Earlier multiplicity and timing findings are resolved; no new findings.
+1: pass - `make format && make check` printed `Ran 602 tests` and `OK`. Running the property against `main:src/chitty/check.py` with the current constant available printed `FAILED (failures=1)`, missing the six-criteria warning; duplicating warnings also printed `FAILED (failures=1)` with counts 2 versus 1. Deadline is disabled.
+2: pass - The focused CLI test printed `OK`; its fixture has `status: todo` and `check` printed the ticket path with `warning: 6 acceptance criteria; split tickets above 5`, exit 0. Running that test with main check printed `FAILED (failures=1)`, no warning.
+3: pass - Guide and assertion contain the exact replacement; `rg` confirms the later sentence remains. `make format && make check` printed `Ran 602 tests` and `OK`.
+
 ## Summary
 
 Implemented criteria-limit warnings and updated the guide. Property coverage includes archived tickets and now verifies one warning per ticket without timing flakiness; CLI output and exit status covered. Verified with `make format && make check` (597 tests) and focused property test. Commit: f11e338. Ready for review.
@@ -147,3 +152,5 @@ Implemented criteria-limit warnings and updated the guide. Property coverage inc
 - 2026-11-17T17:57:32Z quick-bronze-kestrel: changed notes
 - 2026-11-17T17:59:04Z quick-bronze-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T17:59:04Z quick-bronze-kestrel doing → review
+- 2026-11-17T18:02:29Z lively-quartz-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-17T18:02:29Z lively-quartz-yellowhammer review → done
