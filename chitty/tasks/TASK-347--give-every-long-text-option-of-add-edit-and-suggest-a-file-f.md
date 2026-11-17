@@ -27,7 +27,7 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 
 - [ ] The Hypothesis property in `tests/test_property_text_files.py` shows each listed text option and its `-file` form, from a file and from `-`, write the same ticket; it fails before the change for the options that have no file form yet
 - [ ] `suggest --description-file -` sends the same suggestion as `-d`, and giving `-` to two `-file` options exits with a usage error naming both; the tests fail before the change
-- [ ] The four guides carry the one-line file advice in place of the quoting paragraph, every `-file` help says `(-` for stdin`)`, and `make check` passes
+- [ ] The four guides carry the one-line file advice in place of the quoting paragraph, every `-file` option help ends with the stdin wording given in Decisions, and `make check` passes
 
 ## History
 
@@ -37,3 +37,4 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 - 2026-11-17T19:59:02Z kind-umber-toad: changed title, description, acceptance criteria
 - 2026-11-17T19:59:05Z kind-umber-toad: changed owner
 - 2026-11-17T19:59:05Z kind-umber-toad planning → cold-read
+- 2026-11-17T19:59:14Z kind-umber-toad: changed acceptance criteria
