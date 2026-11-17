@@ -91,7 +91,7 @@ done tickets. Each row shows the status as a glyph and at most five letters: `�
 the priority
 as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so rows fit in
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
-`chitty next` carry a glyph in a column before the title: `👤` owned or human,
+`chitty next` carry a glyph in a column before the title: `👤` owned or human, `✍️` untestable,
 `🔒` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
 message goes to stderr. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`
@@ -244,8 +244,8 @@ independent model defaults for unattended runs. Chitty appends `--model MODEL`
 only if neither the selected command nor forwarded arguments after `--` already
 specify `--model`; an agent receiving a default must accept that option.
 Existing model arguments take precedence, without Chitty rewriting them.
-Each word expands a leading `~`; `{mode}` and `{id}` become `work` or `review`
-and the selected ticket ID. `{prompt}` can replace both placeholders when the
+Each word expands a leading `~`; `{mode}` and `{id}` become `work`, `review`,
+or `repair` for an error ticket, and the selected ticket ID. `{prompt}` can replace both placeholders when the
 agent accepts Chitty's role instructions as one argument. For example, this entry
 runs Claude Code unattended on Haiku with `chitty run --agent claude`:
 

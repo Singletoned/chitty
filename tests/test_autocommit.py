@@ -13,7 +13,7 @@ class TestAutocommit(CliTestCase):
         super().setUp()
         config = self.root / "chitty.toml"
         config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
-        self.git("init", "--quiet")
+        self.git("init", "--quiet", "-b", "main")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.git("add", "chitty.toml")

@@ -12,8 +12,8 @@
   - `error` tickets, which require explicit repair selection;
   - `todo` tickets with an unmet dependency (`doing` and `review` ignore
     dependencies).
-- `chitty list` marks skips: `👤` human, `🔒` waiting on a dependency, `⚠️` a
-  broken dependency.
+- `chitty list` marks skips: `👤` human or owned, `✍️` untestable,
+  `🔒` waiting on a dependency, `⚠️` a broken dependency.
 - Prints `work ID` or `review ID`. `--json` and the read-only MCP `next` tool
   give `{mode, id}`.
 - `--mode review` allows `review`; `--mode work` allows `doing` and `todo`.
@@ -59,6 +59,7 @@
 
 ### Agent command
 
+- `{mode}` is `work`, `review`, or `repair` for an error ticket.
 - Split like a shell, then placeholders replaced per word.
 - `{prompt}` is the `chitty guide <mode> <ID>` output, as one argument.
   Without it the command must have `{mode}` and `{id}`.

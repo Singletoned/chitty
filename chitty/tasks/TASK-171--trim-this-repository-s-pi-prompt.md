@@ -1,8 +1,10 @@
 ---
 title: Trim this repository's Pi prompt
 status: todo
+labels:
+  - untestable
 priority: high
-owner: human
+owner: untestable
 created: 2026-11-04
 ---
 
@@ -34,3 +36,4 @@ context-mode is now off: on 2026-11-05 its package was replaced and `build/adapt
 - 2026-11-04T21:44:23Z mellow-newt backlog → todo
 - 2026-11-05T08:22:57Z mellow-newt: changed notes
 - 2026-11-11T10:17:40Z vivid-yellowhammer: changed parent
+- 2026-11-17T17:32:32Z kind-umber-toad: changed labels, owner

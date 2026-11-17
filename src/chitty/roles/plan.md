@@ -20,7 +20,7 @@ read. Describe the change and why it is needed; criteria are optional.
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three
   criteria. Err on the side of splitting: a ticket that seems too small is not
-  a problem. About five criteria is the limit; split larger work. Split a ticket
+  a problem. `chitty check` warns above five criteria; split larger work. Split a ticket
   when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until you start writing it. Move it to
   `-s planning` while you write it, to `-s cold-read` for its one read-only
@@ -62,9 +62,10 @@ read. Describe the change and why it is needed; criteria are optional.
   such tool, say whether the ticket adds one.
 - When a behaviour has no property, give the reason in one line. Valid
   reasons: fixed text with no input, such as a docs-only change; a small fixed
-  set, with every member listed in the ticket and each one tested; or behaviour
+  set, with every member listed in the ticket and each one tested; behaviour
   that needs real external processes, with why no pure core can be taken out
-  of it and given properties.
+  of it and given properties; or a change that only removes code, with the
+  existing tests that cover what remains.
 - Say which test must fail without the fix, because a nearby test may already
   pass.
 <!-- property-signals -->

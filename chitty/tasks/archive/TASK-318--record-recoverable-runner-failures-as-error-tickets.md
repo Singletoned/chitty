@@ -78,3 +78,4 @@ Committed runner failure-output capture and repair-status validation in 1a1348b 
 - 2026-11-13T19:44:27Z intrepid-teal-toad: changed owner, acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-13T19:44:27Z intrepid-teal-toad review → blocked
 - 2026-11-16T10:28:15Z intrepid-coral-raven: changed dependencies, notes
+- 2026-11-17T17:25:12Z kind-umber-toad done → archived

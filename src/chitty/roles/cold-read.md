@@ -29,8 +29,9 @@ Report briefly:
   in one line without asking for a ticket change.
 - Missed properties: behaviour tested only by example where a signal above
   fits, state the tests never vary (files present, branches, config), a reason
-  for having no property that does not hold, and logic that could be a pure
-  function but is not specified as one. Give each property and what to
+  for having no property that does not hold, a specified generator that would
+  never produce the cases the property is about, and logic that could be a
+  pure function but is not specified as one. Give each property and what to
   generate, or `none`.
 - Unverified behaviour, and states the ticket does not handle.
 - Wrong claims in the ticket.
