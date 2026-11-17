@@ -18,6 +18,10 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 
 - [ ] Hypothesis property in `tests/test_property_refused_write.py`: draw an edit of `TASK-1` that the post-write check refuses (one of: depends on itself, depends on `TASK-2` making a cycle, parent itself), combined with an optional generated note and an optional generated new title. Notes are non-blank, LF only, with no line starting with `#` or a code fence; titles are one line with at least one letter or digit. `Repo.edit` raises `ChittyError` containing `cannot finalize task write`; afterwards `git status --porcelain` is empty and every file under `chitty/` has the same bytes as before. `max_examples` at least 25, `deadline=None`. Fails before the change. `make check` passes.
 
+## Plan
+
+Add a property test using an autocommit Git repository with two linked tasks; generate edits that post-write validation rejects, and assert task bytes and Git status remain unchanged. First run the property to confirm it fails. Then snapshot bytes for all task files in configured contexts during Repo.edit; on finalization refusal, reverse a title rename, restore changed bytes, invalidate caches, and re-raise the original error. Keep other write paths out of scope. Run make format and make check, then commit with a Task: TASK-355 trailer.
+
 ## History
 
 - 2026-11-16T10:29:24Z intrepid-coral-raven → backlog
@@ -32,3 +36,4 @@ Files: `src/chitty/store.py`; tests in a new `tests/test_property_refused_write.
 - 2026-11-16T17:03:03Z open-russet-eel: changed owner
 - 2026-11-16T17:03:03Z open-russet-eel planning → todo
 - 2026-11-17T18:01:08Z daring-teal-crane todo → doing
+- 2026-11-17T18:02:02Z daring-teal-crane: wrote the plan
