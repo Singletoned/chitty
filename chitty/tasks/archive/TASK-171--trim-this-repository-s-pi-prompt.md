@@ -40,3 +40,4 @@ Dropped at the human's request, 2026-11-17. The config change landed in `f22caf1
 - 2026-11-11T10:17:40Z vivid-yellowhammer: changed parent
 - 2026-11-17T17:32:32Z kind-umber-toad: changed labels, owner
 - 2026-11-17T22:03:09Z kind-umber-toad: changed notes
+- 2026-11-17T22:03:11Z kind-umber-toad todo → archived
