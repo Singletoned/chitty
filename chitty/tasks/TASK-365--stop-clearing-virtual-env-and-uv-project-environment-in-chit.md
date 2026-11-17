@@ -1,6 +1,6 @@
 ---
 title: Stop clearing `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` in `chitty run`
-status: review
+status: done
 created: 2026-11-17
 ---
 
@@ -32,6 +32,10 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: criterion 2 passed with nothin
 
 Regression evidence: the updated focused test passed with the CHITTY_USAGE_FILE pop, then failed when that pop was temporarily removed (agent observed /parent/usage.jsonl); the pop was restored.
 
+Reviewed:
+1: pass - `git grep -n "VIRTUAL_ENV\|UV_PROJECT_ENVIRONMENT" -- src tests` returned only the permitted guide test; `tests/test_run_environment.py` is absent.
+2: pass - `make check` passed 614 tests; the focused unittest printed OK with the pop and FAILED with `AssertionError: '/parent/usage.jsonl' is not None` when the pop was removed, then restored.
+
 ## Summary
 
 Removed clearing of VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT from _command_environment; retained CHITTY_USAGE_FILE removal and updated its docstring. Deleted obsolete environment tests and updated the runner integration test. Verification: focused test passed; it failed with the usage-file pop temporarily removed; make check passed (614 tests); git grep found only the permitted guide-test phrases. chitty fix TASK-365 was attempted but the CLI rejected this task path as not a task file in any context. No follow-ups beyond the planned main-branch chitty.toml cleanup.
@@ -50,3 +54,5 @@ Removed clearing of VIRTUAL_ENV and UV_PROJECT_ENVIRONMENT from _command_environ
 - 2026-11-17T22:37:11Z open-russet-ibis: wrote the plan
 - 2026-11-17T22:38:38Z open-russet-ibis: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T22:38:38Z open-russet-ibis doing → review
+- 2026-11-17T22:40:29Z brisk-teal-toad: changed notes
+- 2026-11-17T22:40:29Z brisk-teal-toad review → done
