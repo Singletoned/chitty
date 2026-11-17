@@ -42,6 +42,7 @@ def mode_statuses(modes: tuple[str, ...]) -> set[str] | None:
 
 
 PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
+UNTESTABLE_OWNER = "untestable"
 
 
 def _id_key(value: str) -> TaskId:
@@ -57,7 +58,9 @@ def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
     if fact.context == "human" or fact.owner == "human":
         return "👤 human"
     if include_owner and fact.owner is not None:
-        return f"👤 {fact.owner}"
+        # Give planners' untestable tickets a distinct list marker.
+        glyph = "✍️" if fact.owner == UNTESTABLE_OWNER else "👤"
+        return f"{glyph} {fact.owner}"
     if fact.status != "todo":
         return None
     unfinished: list[str] = []
