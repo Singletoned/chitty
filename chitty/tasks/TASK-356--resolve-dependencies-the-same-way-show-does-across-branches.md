@@ -1,6 +1,6 @@
 ---
 title: Resolve dependencies the same way show does, across branches
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -29,6 +29,10 @@ Add Repo.lookup(task_id) returning StoredTask or None for absence while preservi
 
 Confirmed the cross-branch regression tests failed before the fix: check missed references found by show, and edit could not commit a dependency present only on main. The malformed historical-file check also confirms lookup errors propagate instead of becoming no-such-task diagnostics.
 
+Reviewed: Independent review of the complete diff and criteria; no prior review findings.
+1: pass - `python -m unittest -v tests.test_check_cross_branch_references` passed; with pre-fix `check.py` and `store.py`, both other-branch subtests and the malformed-file test failed with no-such-task diagnostics instead of successful lookup or parse error.
+2: pass - The same focused test passed and failed against pre-fix code with `cannot finalize task write` and `depends_on TASK-2: no such task`; `make format && make check` passed, including 605 test suites.
+
 ## Summary
 
 Implemented Repo.lookup and made check resolve depends_on and parent references across branches while keeping duplicate and cycle graphs local. Added real-Git coverage for active, archived, other-branch, missing, malformed historical references, and the reported autocommit edit. Verification: chitty fix; make format; make check (605 suites pass); focused new regression tests pass. Follow-up: none.
@@ -48,3 +52,5 @@ Implemented Repo.lookup and made check resolve depends_on and parent references 
 - 2026-11-17T18:09:14Z plucky-jade-heron: wrote the plan
 - 2026-11-17T18:14:59Z plucky-jade-heron: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T18:14:59Z plucky-jade-heron doing → review
+- 2026-11-17T18:17:44Z brisk-khaki-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-17T18:17:44Z brisk-khaki-yellowhammer review → done
