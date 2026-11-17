@@ -11,14 +11,13 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - Backticks run commands inside double-quoted shell arguments, so pass such text
   in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
 - Work on one ticket per session. Start with `chitty show <ID>`.
-- Read and change only files inside the ticket's worktree, including scratch files; do not touch the main checkout, other worktrees or files elsewhere on the machine. Reading other branches through Git or `chitty` is fine, such as `git diff main...`.
+- Read and change only files inside the ticket's worktree, and create your
+  own files, including scratch files, only there; do not touch the main
+  checkout, other worktrees or files elsewhere on the machine. Temporary
+  directories the repository's tests create for themselves are fine. Reading
+  other branches through Git or `chitty` is fine, such as `git diff main...`.
 - Before writing code, write your approach with `chitty edit <ID> --plan`.
   Wait for approval if the human asked for it.
-- Verify first, then tick every verified criterion and add your note in one
-  `chitty edit`, using repeated --check options, rather than one call for each.
-- Request several reads in one call when none depends on another.
-- Run the repository's format and check commands in one shell call, joined with
-  `&&`.
 - With `autocommit = true`, Chitty commits ticket-file edits only. It does not
   commit code, tests, or other implementation files. Commit those in small
   logical commits ending with a `Task: <ID>` trailer; `chitty edit -s review`
@@ -34,8 +33,9 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - For missing or contradictory requirements, an unresolved design decision, a
   wrong claim about the code, files or other tickets, a criterion that cannot be
   verified as written or would pass with nothing built, or a ticket too large to
-  finish in one session, always set `-s planning` with a note explaining what
-  was discovered, why the current ticket cannot guide the work, and what
+  finish in one session, always set `-s planning`. First finish reading the
+  ticket and the code it touches, and list every such problem in one note
+  explaining what was discovered, why the current ticket cannot guide the work, and what
   decision is needed. Do not work around the problem or weaken the tests.
   Preserve the existing branch and worktree; commit intended partial work and
   explain unfinished verification. On return, ownership is cleared and the run
