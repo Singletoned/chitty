@@ -1,6 +1,6 @@
 ---
 title: Check that ticket branch commits name their ticket
-status: planning
+status: todo
 labels:
   - needs-minor
 created: 2026-11-16
@@ -40,3 +40,4 @@ Out of scope: checking commits outside review, rewording commits automatically, 
 - 2026-11-17T16:35:05Z kind-umber-toad planning → cold-read
 - 2026-11-17T16:37:57Z kind-umber-toad: changed labels, description, acceptance criteria
 - 2026-11-17T16:37:57Z kind-umber-toad cold-read → planning
+- 2026-11-17T17:06:27Z kind-umber-toad planning → todo
