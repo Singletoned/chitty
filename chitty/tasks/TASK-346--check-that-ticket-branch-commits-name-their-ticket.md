@@ -1,6 +1,6 @@
 ---
 title: Check that ticket branch commits name their ticket
-status: review
+status: done
 labels:
   - needs-minor
 created: 2026-11-16
@@ -49,6 +49,13 @@ Review failed (tests): Newly discovered coverage gaps must be fixed; no earlier 
 
 Addressed review coverage gaps: the Hypothesis property now varies multiple paragraphs, whitespace, and trailing blanks; real-repository coverage includes a main merge and chitty: commit; the skip-version guard commits an untrailed change; guide test asserts the refusal wording. Focused tests and make format && make check pass.
 
+Reviewed: Earlier coverage findings are resolved.
+1: pass - Focused Hypothesis property passed; replacing the function with a NotImplementedError stub produced FAILED (errors=1). Multiple paragraphs and whitespace are generated.
+2: pass - `uv run python -m unittest tests.test_review_trailers tests.test_guide_work_commits` printed OK for 6 tests, including the four examples.
+3: pass - The real repository test passed with the merge and chitty commit; patching the gate to return an empty list produced FAILED with exit code 0 instead of 1.
+4: pass - The focused suite printed OK; bypass uses an untrailed commit and review to done runs after another untrailed commit.
+5: pass - The guide and assertion contain the required sentence; `make format && make check` printed OK for 600 tests, with format, ruff and pyright passing.
+
 ## Summary
 
 Trailer validation implementation and requested review coverage complete. Verified by make format && make check and focused trailer/guide tests. No follow-ups.
@@ -70,3 +77,5 @@ Trailer validation implementation and requested review coverage complete. Verifi
 - 2026-11-17T17:46:27Z lively-ebony-adder review → doing
 - 2026-11-17T17:55:44Z nimble-indigo-gannet: changed notes, summary; ticked acceptance criteria
 - 2026-11-17T17:55:44Z nimble-indigo-gannet doing → review
+- 2026-11-17T17:57:44Z friendly-white-otter: changed notes; ticked acceptance criteria
+- 2026-11-17T17:57:44Z friendly-white-otter review → done
