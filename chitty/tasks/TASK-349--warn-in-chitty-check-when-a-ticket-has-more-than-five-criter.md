@@ -1,6 +1,6 @@
 ---
 title: Warn in chitty check when a ticket has more than five criteria
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -16,9 +16,9 @@ Out of scope: warning from `chitty edit` or `chitty add`, configuring the limit,
 
 ## Acceptance Criteria
 
-- [ ] Property test with Hypothesis: generate a set of 1 to 12 tickets, each with a status from `STATUSES` in `src/chitty/model.py`, 0 to 10 criteria whose text is ASCII letters only, and archived or not. Write each example into a fresh repository (or clear `chitty/` between examples). The set of paths with a criteria-limit warning from `check()` equals the set of tickets in `planning` or `todo` with more than `MAX_CRITERIA` criteria, each warned once with the exact message. The test fails on `main` because of the missing warning, not only because `MAX_CRITERIA` cannot be imported.
+- [x] Property test with Hypothesis: generate a set of 1 to 12 tickets, each with a status from `STATUSES` in `src/chitty/model.py`, 0 to 10 criteria whose text is ASCII letters only, and archived or not. Write each example into a fresh repository (or clear `chitty/` between examples). The set of paths with a criteria-limit warning from `check()` equals the set of tickets in `planning` or `todo` with more than `MAX_CRITERIA` criteria, each warned once with the exact message. The test fails on `main` because of the missing warning, not only because `MAX_CRITERIA` cannot be imported.
 - [x] `chitty check` on a repository whose only problem is a `todo` ticket with six criteria prints a line containing `warning:` and the ticket path, and exits 0.
-- [ ] In `src/chitty/roles/plan.md`, `About five criteria is the limit; split larger work.` is replaced with exactly `` `chitty check` warns above five criteria; split larger work. ``, and `tests/test_guide_plan_restored.py` asserts that sentence instead of the old one. The later sentence `Split rather than exceed about five criteria.` stays. `make check` passes.
+- [x] In `src/chitty/roles/plan.md`, `About five criteria is the limit; split larger work.` is replaced with exactly `` `chitty check` warns above five criteria; split larger work. ``, and `tests/test_guide_plan_restored.py` asserts that sentence instead of the old one. The later sentence `Split rather than exceed about five criteria.` stays. `make check` passes.
 
 ## Plan
 
@@ -123,9 +123,11 @@ make: *** [check] Error 1
 
 ```
 
+Fixed review findings: warning assertions now preserve multiplicity with assertCountEqual, and Hypothesis deadline is disabled for filesystem-heavy examples. Focused property test passes; full make format && make check passes (597 tests). The duplicated-warning mutation now fails the multiplicity assertion. chitty fix reports existing Markdown warnings in unrelated tickets; no files changed by it.
+
 ## Summary
 
-Implemented criteria-limit warnings in check(), updated guide wording, and added property, CLI, and guide coverage. Verified with make format and make check (all pass). Follow-up: reviewer should confirm archived-ticket property coverage.
+Implemented criteria-limit warnings and updated the guide. Property coverage includes archived tickets and now verifies one warning per ticket without timing flakiness; CLI output and exit status covered. Verified with `make format && make check` (597 tests) and focused property test. Commit: f11e338. Ready for review.
 
 ## History
 
@@ -143,3 +145,5 @@ Implemented criteria-limit warnings in check(), updated guide wording, and added
 - 2026-11-17T17:52:48Z intrepid-dusky-lapwing: changed acceptance criteria, notes; ticked acceptance criteria
 - 2026-11-17T17:52:48Z intrepid-dusky-lapwing review → doing
 - 2026-11-17T17:57:32Z quick-bronze-kestrel: changed notes
+- 2026-11-17T17:59:04Z quick-bronze-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-17T17:59:04Z quick-bronze-kestrel doing → review
