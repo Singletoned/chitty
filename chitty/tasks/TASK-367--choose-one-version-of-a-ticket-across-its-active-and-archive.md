@@ -1,9 +1,10 @@
 ---
 title: Choose one version of a ticket across its active and archive directories
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
+owner: planner-cold-read
 created: 2026-11-17
 ---
 
@@ -41,3 +42,5 @@ Also seen 2026-11-17: in the `task-364` worktree, which branched before `TASK-35
 - 2026-11-17T19:59:48Z kind-umber-toad: changed priority, notes
 - 2026-11-17T20:00:40Z kind-umber-toad: changed title, description, acceptance criteria
 - 2026-11-17T20:00:40Z kind-umber-toad todo → planning
+- 2026-11-17T20:00:42Z kind-umber-toad: changed owner
+- 2026-11-17T20:00:42Z kind-umber-toad planning → cold-read
