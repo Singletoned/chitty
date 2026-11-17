@@ -28,6 +28,10 @@ Files: `src/chitty/run.py`, `src/chitty/git.py`, `tests/test_next.py`, new `test
 - [ ] Fake-agent tests in `tests/test_repair_requires_work.py`, one subtest per case, on an `error` ticket whose branch exists at the tip of `main` (the state `_worktree` also creates for a missing branch): the agent sets `review` through `chitty edit` only; writes `status: review` to the ticket file without committing; commits a code file then sets `review`; sets `blocked`. Only the code-file case ends in `review`; the first two make `chitty run --errors` exit non-zero with the `RepairError` text and leave the ticket `error`; `blocked` ends in `blocked`. The first two cases fail before the change. The two repair tests in `tests/test_next.py` are updated to commit a code file and pass.
 - [ ] Real-git tests of `changed_paths`: a branch that moves `src/a.py` to `chitty/tasks/a.md` returns both paths; a branch adding `chitty/tasks/é.md` returns that path unquoted. `make check` passes.
 
+## Plan
+
+Add a pure path-based work detector and a NUL-delimited git diff helper. In repair completion, before persisting final status to main, reject review when the repair branch diff from configured main has no paths outside all repository ticket directories. Add property tests, real-git helper tests, and fake-agent repair cases; update existing repair fixtures to commit real code work.
+
 ## History
 
 - 2026-11-16T17:08:51Z open-russet-eel → planning
@@ -38,3 +42,4 @@ Files: `src/chitty/run.py`, `src/chitty/git.py`, `tests/test_next.py`, new `test
 - 2026-11-16T17:10:35Z open-russet-eel: changed owner
 - 2026-11-16T17:10:35Z open-russet-eel planning → todo
 - 2026-11-17T18:25:30Z calm-teal-ibis todo → doing
+- 2026-11-17T18:25:46Z calm-teal-ibis: wrote the plan
