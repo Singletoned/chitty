@@ -1,6 +1,7 @@
 ---
 title: Stop clearing `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` in `chitty run`
-status: planning
+status: cold-read
+owner: planner-cold-read
 created: 2026-11-17
 ---
 
@@ -22,3 +23,5 @@ No property tests: this removes code, and the remaining behaviour (removing `CHI
 ## History
 
 - 2026-11-17T17:26:19Z kind-umber-toad → planning
+- 2026-11-17T19:53:43Z kind-umber-toad: changed owner
+- 2026-11-17T19:53:43Z kind-umber-toad planning → cold-read
