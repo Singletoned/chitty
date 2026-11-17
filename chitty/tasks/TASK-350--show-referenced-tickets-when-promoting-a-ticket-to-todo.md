@@ -34,6 +34,10 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 
 Implement ASCII-boundary ticket reference parsing in ids.py with property and example tests. Track the prior status in Change, resolve description and criterion references after qualifying CLI status promotion, and update the plan guide plus its restored-guide test. Verify regression failures first, then run formatting and make check.
 
+## Summary
+
+Implemented ticket reference parsing, promotion output, and plan-guide update. Added Hypothesis, example, and CLI coverage. Verified with make format, make check (623 suites), focused tests, and chitty fix. Follow-up: none.
+
 ## History
 
 - 2026-11-16T10:00:02Z intrepid-coral-raven → backlog
@@ -45,3 +49,4 @@ Implement ASCII-boundary ticket reference parsing in ids.py with property and ex
 - 2026-11-17T16:22:03Z kind-umber-toad cold-read → todo
 - 2026-11-17T22:28:15Z youthful-hazel-newt todo → doing
 - 2026-11-17T22:28:23Z youthful-hazel-newt: wrote the plan
+- 2026-11-17T22:33:26Z youthful-hazel-newt: changed summary
