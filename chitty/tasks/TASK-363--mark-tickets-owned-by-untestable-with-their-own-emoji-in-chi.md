@@ -19,6 +19,10 @@ Out of scope: keying anything on the `untestable` label, and changing what `chit
 - [ ] Hypothesis property in `tests/test_property_next.py`: add `"untestable"` to the owner values `facts_strategy` samples, and draw `include_owner` with `st.booleans()`. For any generated `TicketFacts` and `include_owner`, `skip_reason` returns `✍️ untestable` exactly when a reference copy of the pre-change rule (written in the test with the literal `"untestable"`, not `UNTESTABLE_OWNER`) returns `👤 untestable`, and otherwise returns the same value as the reference. Fails before the change.
 - [ ] A real-file test in `tests/test_list_untestable.py` creates a `todo` ticket owned `untestable` and another owned `alice`; `chitty list` shows `✍️` on the first line and `👤` on the second, and both titles start at the same display column as counted by `chitty.cli._columns`. Fails before the change. The three docs name `✍️`. `make check` passes.
 
+## Plan
+
+Add UNTESTABLE_OWNER and special-case its owner marker after the existing running/human precedence. Extend the Hypothesis property to compare against the literal pre-change skip rule across include_owner values; add a real-file list test using CliTestCase, checking markers and title columns. Update the three specified docs, then run the regression tests before the implementation where feasible, and finish with make format and make check.
+
 ## History
 
 - 2026-11-16T16:48:55Z open-russet-eel → planning
@@ -29,3 +33,4 @@ Out of scope: keying anything on the `untestable` label, and changing what `chit
 - 2026-11-16T16:50:24Z open-russet-eel: changed owner
 - 2026-11-16T16:50:24Z open-russet-eel planning → todo
 - 2026-11-17T18:21:12Z golden-amber-quail todo → doing
+- 2026-11-17T18:21:35Z golden-amber-quail: wrote the plan
