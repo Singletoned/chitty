@@ -61,3 +61,4 @@ Commit `a486380` on `task-361` restores the plan-guide advice `989a26a` dropped,
 - 2026-11-17T17:23:17Z kind-umber-toad blocked → review
 - 2026-11-17T17:23:42Z kind-umber-toad: changed notes; overrode review independence
 - 2026-11-17T17:23:42Z kind-umber-toad review → done
+- 2026-11-17T17:25:05Z kind-umber-toad done → archived
