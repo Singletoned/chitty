@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: review
+status: planning
 priority: high
 created: 2026-11-18
 ---
@@ -22,7 +22,7 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 
 ## Acceptance Criteria
 
-- [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
+- [ ] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
 - [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
 - [x] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
@@ -53,6 +53,12 @@ Review failed (work): Newly discovered worktree identity defect; earlier review 
 
 Follow-up: `make check` passed (642 tests), including the mismatched conventional-worktree regression and stopped-rebase fake-agent prompt test. A throwaway reproducer of the previous defect returned the wrong worktree before the fix; afterward the regression test verifies rejection. The original runner prompt behavior remains passing.
 
+Review failed (design): Newly discovered ticket/code mismatch: the description says MCP passes the current directory to role-specific `guide()`, but `src/chitty/mcp.py` exposes only the repository-wide `chitty://guide` resource and never calls `guide()`. There is no existing MCP role-guide entry point to update. Decide whether MCP needs a new role-guide interface and acceptance coverage, or remove that requirement; the ticket cannot guide that part of the work as written. Earlier review findings about linked-worktree coverage and worktree identity are resolved by the focused tests.
+1: fail - The CLI role test printed OK, but the associated MCP requirement has no existing role-guide entry point; decide its intended scope.
+2: pass - Focused tests printed OK for both backends, directories and linked worktree; patching rebase detection false printed FAILED (failures=2).
+3: pass - Focused tests printed OK for clean and outside-repository output comparisons.
+4: pass - The fake-agent stopped-rebase and mismatched-worktree tests printed OK; the earlier note records the runner test failing before the fix. `make check` printed OK (642 tests).
+
 ## Summary
 
 Validated conventional worktree identity during stopped rebases using Git rebase metadata; unrelated worktrees are rejected. Added mismatched-worktree regression coverage. `make check` passes (642 tests). Ready for review.
@@ -77,3 +83,5 @@ Validated conventional worktree identity during stopped rebases using Git rebase
 - 2026-11-18T11:35:03Z zesty-khaki-vole: changed acceptance criteria, notes
 - 2026-11-18T11:37:55Z zesty-khaki-vole: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T11:37:55Z zesty-khaki-vole doing → review
+- 2026-11-18T11:40:57Z witty-maroon-newt: changed owner, acceptance criteria, notes
+- 2026-11-18T11:40:57Z witty-maroon-newt review → planning
