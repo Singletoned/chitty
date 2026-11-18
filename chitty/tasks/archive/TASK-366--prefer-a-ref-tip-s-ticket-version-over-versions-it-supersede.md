@@ -453,6 +453,8 @@ make: *** [check] Error 15
 ```
 ````
 
+Obsolete 2026-11-18: the one-authoritative-copy model (`docs/plan/ticket-state.md`, `TASK-376`) replaces the history scan this ticket patched. Archived.
+
 ## History
 
 - 2026-11-17T19:53:03Z kind-umber-toad → todo
@@ -460,3 +462,5 @@ make: *** [check] Error 15
 - 2026-11-17T22:40:39Z vivid-amber-vole: wrote the plan
 - 2026-11-17T22:50:14Z youthful-silver-ibis: changed notes
 - 2026-11-17T22:50:14Z youthful-silver-ibis doing → error
+- 2026-11-18T16:25:12Z lively-quartz-crane: changed notes
+- 2026-11-18T16:25:22Z lively-quartz-crane error → archived
