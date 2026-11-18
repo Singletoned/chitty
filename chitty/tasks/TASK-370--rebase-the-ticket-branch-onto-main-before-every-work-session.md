@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: planning
+status: todo
 labels:
   - bug
   - needs-minor
@@ -91,3 +91,4 @@ Cold read 2026-11-18 (the `directory` bullet) outcomes: accepted a `doing` case 
 - 2026-11-18T20:44:44Z lively-quartz-crane planning → cold-read
 - 2026-11-18T20:46:32Z lively-quartz-crane: changed description, acceptance criteria, notes
 - 2026-11-18T20:46:32Z lively-quartz-crane cold-read → planning
+- 2026-11-18T20:46:37Z lively-quartz-crane planning → todo
