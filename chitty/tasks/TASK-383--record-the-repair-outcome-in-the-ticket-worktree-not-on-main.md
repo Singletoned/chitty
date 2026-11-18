@@ -21,14 +21,22 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_repair_on_bran
 
 ## Acceptance Criteria
 
-- [ ] A repair run whose fake agent commits a code change and moves the ticket to `review` in the worktree leaves `git rev-parse main` unchanged and the ticket file on the branch at `review`, with no runner commit after the agent's; `chitty show <ID>` in the main checkout reports `review`; the test fails before the change
-- [ ] A repair run whose fake agent moves the ticket to `blocked` with its own note leaves `main` unchanged, and the ticket on the branch is `blocked`, keeps the agent's note, has `Repair agent determined that human action is required.` appended after it, and its owner unchanged; the test fails before the change
-- [ ] Regression guard: the existing `RepairError` cases in `tests/test_repair_requires_work.py` (invalid status after repair, `review` with only ticket-file changes) still pass
-- [ ] A repair run on an `error` ticket with no branch creates `task-<n>` from `main`, records the outcome on it, and leaves `main` unchanged; `make check` passes
+- [x] A repair run whose fake agent commits a code change and moves the ticket to `review` in the worktree leaves `git rev-parse main` unchanged and the ticket file on the branch at `review`, with no runner commit after the agent's; `chitty show <ID>` in the main checkout reports `review`; the test fails before the change
+- [x] A repair run whose fake agent moves the ticket to `blocked` with its own note leaves `main` unchanged, and the ticket on the branch is `blocked`, keeps the agent's note, has `Repair agent determined that human action is required.` appended after it, and its owner unchanged; the test fails before the change
+- [x] Regression guard: the existing `RepairError` cases in `tests/test_repair_requires_work.py` (invalid status after repair, `review` with only ticket-file changes) still pass
+- [x] A repair run on an `error` ticket with no branch creates `task-<n>` from `main`, records the outcome on it, and leaves `main` unchanged; `make check` passes
 
 ## Plan
 
 Add real-Git fake-agent runner tests for repair outcomes on an existing branch and an unbranched error ticket. Verify main remains unchanged, branch ticket state/notes/owner, and absence of an extra review commit. Then change _run_ticket to write the blocked runner note through a Repo rooted at the worktree and remove the main checkout edit. Run focused tests against old behavior first, then make check, format, update ticket handoff and commit implementation.
+
+## Notes
+
+Regression tests failed before the implementation: the original runner advanced main for both review and blocked repair outcomes. After the fix, the new real-Git tests and existing RepairError cases pass.
+
+## Summary
+
+Implemented branch-local repair outcomes. Verification: `make check` passes; the new review, blocked, and unbranched repair tests pass; focused tests failed against the original implementation. No follow-ups.
 
 ## History
 
@@ -45,3 +53,4 @@ Add real-Git fake-agent runner tests for repair outcomes on an existing branch a
 - 2026-11-18T16:31:29Z lively-quartz-crane planning → todo
 - 2026-11-18T22:12:26Z vivid-russet-raven todo → doing
 - 2026-11-18T22:13:09Z vivid-russet-raven: wrote the plan
+- 2026-11-18T22:22:03Z vivid-russet-raven: changed notes, summary; ticked acceptance criteria
