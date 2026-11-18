@@ -1,6 +1,6 @@
 ---
 title: Check every ticket a multi-ticket write touches before writing any
-status: planning
+status: todo
 depends_on:
   - TASK-385
 parent: TASK-376
@@ -40,3 +40,4 @@ Tests: tickets that must be deleted are first made `done` through `review`. Real
 - 2026-11-18T17:56:18Z lively-quartz-crane planning → cold-read
 - 2026-11-18T18:00:38Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T18:00:38Z lively-quartz-crane cold-read → planning
+- 2026-11-18T18:00:40Z lively-quartz-crane planning → todo
