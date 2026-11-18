@@ -1136,10 +1136,12 @@ def _add_missing_settings(
     if pyproject:
         match = re.search(r"(?m)^\[tool\.chitty\]\s*$", text)
         assert match is not None
-        following = re.search(r"(?m)^\[", text[match.end() :])
-        position = match.end() + following.start() if following else len(text)
-        section = text[match.end() : position]
+        section_start = match.end()
+        following = re.search(r"(?m)^\[", text[section_start:])
+        position = section_start + following.start() if following else len(text)
+        section = text[section_start:position]
     else:
+        section_start = 0
         following = re.search(r"(?m)^\[", text)
         position = following.start() if following else len(text)
         section = text[:position]
@@ -1177,28 +1179,19 @@ def _add_missing_settings(
         return text
     rebase_comment = '# rebase_model = "provider/model" # default for rebase sessions'
     if rebase_comment in additions:
-        lines = text.splitlines(keepends=True)
+        section_lines = section.splitlines(keepends=True)
         review_index = next(
             (
                 index
-                for index, line in enumerate(lines)
-                if re.match(r"^[ \t]*review_model[ \t]*=", line)
+                for index, line in enumerate(section_lines)
+                if re.match(r"^[ \t]*(?:#[ \t]*)?review_model[ \t]*=", line)
             ),
             None,
         )
-        if review_index is None:
-            review_index = next(
-                (
-                    index
-                    for index, line in enumerate(lines)
-                    if re.match(r"^[ \t]*#[ \t]*review_model[ \t]*=", line)
-                ),
-                None,
-            )
         if review_index is not None:
             additions.remove(rebase_comment)
-            lines.insert(review_index + 1, rebase_comment + "\n")
-            text = "".join(lines)
+            insertion = section_start + sum(len(line) for line in section_lines[: review_index + 1])
+            text = text[:insertion] + rebase_comment + "\n" + text[insertion:]
             position += len(rebase_comment) + 1
     if not additions:
         return text

@@ -165,6 +165,26 @@ class TestRunModelDefaults(CliTestCase):
         self.assertEqual(parsed["tool"]["chitty"]["work_model"], "provider/model")
         self.assertEqual(Repo.open(self.root).config.review_model, "provider/model")
 
+    def test_init_does_not_find_review_model_in_another_pyproject_table(self):
+        (self.root / "chitty.toml").unlink()
+        config = self.root / "pyproject.toml"
+        config.write_text(
+            "[tool.chitty]\nformat = 1\ndefault_context = 'tasks'\n"
+            "autocommit = true\nsetup = 'true'\nreview = true\n"
+            "# review_model = 'provider/model'\n\n"
+            "[tool.other]\nreview_model = 'other/model'\nvalue = true\n\n"
+            "[tool.chitty.contexts.tasks]\nprefix = 'TASK'\n"
+        )
+
+        self.run_cli("init")
+
+        parsed = tomllib.loads(config.read_text())
+        self.assertEqual(parsed["tool"]["other"]["review_model"], "other/model")
+        self.assertIn(
+            '# rebase_model = "provider/model" # default for rebase sessions',
+            config.read_text(),
+        )
+
     def test_init_adds_rebase_model_after_review_model_when_upgrading(self):
         config = self.root / "chitty.toml"
         config.write_text(config.read_text().replace('rebase_model = "rebase-model"\n', ""))
