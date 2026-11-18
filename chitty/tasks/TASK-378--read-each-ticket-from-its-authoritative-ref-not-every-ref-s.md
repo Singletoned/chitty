@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: planning
+status: cold-read
 depends_on:
   - TASK-377
   - TASK-382
@@ -42,3 +42,4 @@ Tests: a Hypothesis property with real Git in a new `tests/test_property_ticket_
 - 2026-11-18T16:23:16Z lively-quartz-crane: changed dependencies
 - 2026-11-18T16:32:51Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-18T16:32:51Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:33:20Z lively-quartz-crane planning → cold-read
