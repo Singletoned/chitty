@@ -27,6 +27,12 @@ Decisions:
 
 Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/test_renumber_provisional.py`, inheriting `RepoTestCase` from `tests/support.py`, running `git init` and setting `autocommit = true` (its default config has `autocommit = false`). Patch the provisional draw (`_provisional_draw`, `TASK-389`) so suffixes are known. Make provisional tickets with `chitty add` on a branch (archive one there), `git switch main`, `git merge` the branch, and stay on `main`. No property beyond `TASK-381`'s: file plumbing over the cases in the criteria.
 
+## Acceptance Criteria
+
+- [ ] On `main`, with `TASK-3` the highest number, an active and an archived provisional ticket, and a third ticket listing one in `depends_on` and mentioning both in its Description: the provisional tickets get `TASK-4` and `TASK-5` in ascending order of their provisional suffixes; both files are renamed, lose `provisional` and have `moved_from` set to their provisional IDs; the third ticket's `depends_on` and Description are rewritten and its History is not; one commit names all three in `Task:` trailers
+- [ ] A second call returns no changes and makes no commit; off `main` and on a detached `HEAD` it raises `ChittyError` and changes nothing; a ticket existing only on another branch that mentions a provisional ID is left unchanged there and does not stop the run
+- [ ] With a `.git/hooks/pre-commit` that exits 1 (as `tests/test_autocommit.py` sets up), the call raises, `git status --porcelain` equals what it was before, and the provisional files are still on disk; with an unparseable ticket file planted, it raises before writing anything; `make check` passes
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -35,3 +41,4 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - 2026-11-18T16:35:13Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:37:35Z lively-quartz-crane: changed title, description, acceptance criteria
 - 2026-11-18T16:37:35Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:37:37Z lively-quartz-crane: changed acceptance criteria
