@@ -20,8 +20,8 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 
 ## Acceptance Criteria
 
-- [ ] With `archive = "delete"`, archiving a `done` ticket that no other ticket references, while another ticket holds `depends_on: [task-1]` in lower case, succeeds, leaves that other file byte-identical and `git status --porcelain` clean; this fails before the change
-- [ ] Regression guard: `chitty fix` with no arguments still repairs that lower-case reference; `tests/test_check.py` passes unchanged; `make check` passes
+- [x] With `archive = "delete"`, archiving a `done` ticket that no other ticket references, while another ticket holds `depends_on: [task-1]` in lower case, succeeds, leaves that other file byte-identical and `git status --porcelain` clean; this fails before the change
+- [x] Regression guard: `chitty fix` with no arguments still repairs that lower-case reference; `tests/test_check.py` passes unchanged; `make check` passes
 
 ## Plan
 
@@ -38,3 +38,4 @@ Add a real-Git regression test in tests/test_commit_empty_paths.py using CliTest
 - 2026-11-18T17:58:17Z lively-quartz-crane planning → todo
 - 2026-11-18T23:09:38Z open-quartz-jay todo → doing
 - 2026-11-18T23:10:47Z open-quartz-jay: wrote the plan
+- 2026-11-18T23:12:42Z open-quartz-jay: ticked acceptance criteria
