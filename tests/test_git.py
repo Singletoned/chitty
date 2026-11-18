@@ -2,9 +2,104 @@ import subprocess
 from pathlib import Path, PurePosixPath
 from unittest import mock
 
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
 from chitty import git
 from chitty.errors import ChittyError
 from tests.support import RepoTestCase
+
+
+class TestBranchTipFiles(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        self.git("init", "--quiet", "-b", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+
+    def git(self, *args: str) -> str:
+        result = subprocess.run(
+            ["git", *args], cwd=self.root, check=True, capture_output=True, text=True
+        )
+        return result.stdout
+
+    def commit(self, message: str) -> str:
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", message)
+        return self.git("rev-parse", "HEAD").strip()
+
+    def test_branch_tips_keep_full_refs_distinct(self):
+        (self.root / "base").write_text("base")
+        main = self.commit("base")
+        self.git("branch", "origin/task-5")
+        self.git("checkout", "-b", "task-5")
+        (self.root / "different").write_text("different")
+        remote = self.commit("different tip")
+        self.git("update-ref", "refs/remotes/origin/task-5", main)
+        tips = git.branch_tips(self.root)
+        self.assertEqual(tips["refs/heads/origin/task-5"], main)
+        self.assertEqual(tips["refs/remotes/origin/task-5"], main)
+        self.assertNotEqual(tips["refs/heads/task-5"], tips["refs/remotes/origin/task-5"])
+        self.assertEqual(tips["refs/heads/task-5"], remote)
+        self.assertNotIn("refs/remotes/origin/HEAD", tips)
+
+    def test_ref_resolution_and_ancestry(self):
+        (self.root / "one").write_text("one")
+        first = self.commit("one")
+        self.git("checkout", "-b", "worker")
+        (self.root / "two").write_text("two")
+        second = self.commit("two")
+        self.assertTrue(git.is_ancestor(self.root, first, second))
+        self.assertTrue(git.is_ancestor(self.root, first, first))
+        self.assertFalse(git.is_ancestor(self.root, second, first))
+        self.assertEqual(git.ref_commit(self.root, "worker"), second)
+        self.assertIsNone(git.ref_commit(self.root, "missing"))
+        self.git("tag", "-a", "annotated", "-m", "tag")
+        self.assertEqual(git.ref_commit(self.root, "annotated"), second)
+        with self.assertRaises(ChittyError):
+            git.is_ancestor(self.root, "unknown", second)
+
+    @settings(max_examples=8, deadline=None)
+    @given(st.text(alphabet="abcé", min_size=1, max_size=12))
+    def test_files_at_preserves_odd_paths_and_content(self, content):
+        paths = [
+            Path('chitty/tasks/a"b\tc\ndé[x].md'),
+            Path('chitty/tasks/archive/z"y\tw\nvé[x].md'),
+        ]
+        expected = {}
+        for path in paths:
+            (self.root / path).parent.mkdir(parents=True, exist_ok=True)
+            (self.root / path).write_text(content)
+            expected[path] = content
+        self.commit("tickets")
+        self.assertEqual(dict(git.files_at(self.root, "main", [Path("chitty/tasks")])), expected)
+
+    def test_files_at_rejects_non_utf8(self):
+        path = Path("chitty/tasks/TASK-1.md")
+        (self.root / path).parent.mkdir(parents=True, exist_ok=True)
+        (self.root / path).write_bytes(b"\xff")
+        self.commit("invalid utf8")
+        with self.assertRaisesRegex(ChittyError, str(path)):
+            git.files_at(self.root, "main", [Path("chitty/tasks")])
+
+    def test_changed_since_split_literal_path_and_unrelated_history(self):
+        path = Path("ticket[x].md")
+        (self.root / path).write_text("base")
+        self.commit("base")
+        self.git("checkout", "-b", "against")
+        (self.root / path).write_text("against")
+        self.commit("against change")
+        self.git("checkout", "-b", "ref", "main")
+        self.assertFalse(git.changed_since_split(self.root, "ref", "against", [path]))
+        (self.root / path).write_text("ref")
+        self.commit("ref change")
+        self.assertTrue(git.changed_since_split(self.root, "ref", "against", [path]))
+        self.git("checkout", "--orphan", "other")
+        self.git("rm", "-rf", ".")
+        (self.root / "other").write_text("other")
+        self.commit("unrelated")
+        with self.assertRaisesRegex(ChittyError, "unrelated histories"):
+            git.changed_since_split(self.root, "other", "main", [path])
 
 
 class TestHistoricalFiles(RepoTestCase):
