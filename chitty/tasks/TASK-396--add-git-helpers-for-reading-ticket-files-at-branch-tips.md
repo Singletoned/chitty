@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -51,3 +51,4 @@ Implemented the requested Git helpers and real-Git tests for branch tips, refs, 
 - 2026-11-18T22:46:22Z lively-silver-wren todo → doing
 - 2026-11-18T22:47:28Z lively-silver-wren: wrote the plan
 - 2026-11-18T22:50:18Z lively-silver-wren: changed notes, summary
+- 2026-11-18T22:50:20Z lively-silver-wren doing → review
