@@ -40,9 +40,10 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 ## Acceptance Criteria
 
 - [ ] A work run on a `doing` ticket whose branch exists, with a new non-conflicting commit on `main`: afterwards `main` is an ancestor of the branch and `git rev-list main..task-<n>` lists only the branch's own commits, and a fake `check` command records `main`'s new commit in `git log` before the agent starts; this fails before the change
-- [ ] A work run on an `error` ticket whose rebase stops on a code conflict starts the repair agent with a rebase in progress and a prompt starting with the rebase instructions (both recorded by the fake agent), and a fake `setup` and `check` record that they did not run
-- [ ] An uncommitted change to a tracked file and an untracked file, neither touched by `main`, are back in the worktree, uncommitted, when the agent starts
-- [ ] When restoring the stash conflicts (`main` changed the same lines as an uncommitted edit), the ticket moves to `error` on the branch with a `Runner error (rebase)` note saying the work is in the stash, the stash entry exists, and no agent starts; `make check` passes
+- [ ] A work run on an `error` ticket whose rebase stops on a code conflict starts the repair agent with a rebase in progress and a prompt containing the rebase instructions after its first line (both recorded by the fake agent), and a fake `setup` and `check` record that they did not run
+- [ ] After `main` gains a commit touching another file, an unstaged edit to a tracked file, a staged edit and an untracked file are all present with the same content when the agent starts, the branch has been rebased, and `git stash list` has no entry left by the run; this fails before the change
+- [ ] When applying the stash conflicts (`main` changed the same lines as an uncommitted edit), the worktree matches `HEAD` when the agent starts, the stash entry exists and is named by ID in a note on the branch's ticket, and the agent starts; when the rebase stops on a conflict with a stash made, the prompt names the stash ID
+- [ ] A `rebase_onto` failure that is not a conflict records `Runner error (rebase)` on the branch and starts no agent; `make check` passes
 
 ## Notes
 
@@ -74,3 +75,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:00:07Z lively-quartz-crane planning → cold-read
 - 2026-11-18T18:16:56Z lively-quartz-crane: changed dependencies, description
 - 2026-11-18T18:16:56Z lively-quartz-crane cold-read → planning
+- 2026-11-18T18:16:58Z lively-quartz-crane: changed acceptance criteria
