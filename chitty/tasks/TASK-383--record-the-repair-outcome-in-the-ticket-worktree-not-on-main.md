@@ -1,6 +1,6 @@
 ---
 title: Record the repair outcome in the ticket worktree, not on `main`
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -54,3 +54,4 @@ Implemented branch-local repair outcomes. Verification: `make check` passes; the
 - 2026-11-18T22:12:26Z vivid-russet-raven todo → doing
 - 2026-11-18T22:13:09Z vivid-russet-raven: wrote the plan
 - 2026-11-18T22:22:03Z vivid-russet-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T22:22:15Z vivid-russet-raven doing → review
