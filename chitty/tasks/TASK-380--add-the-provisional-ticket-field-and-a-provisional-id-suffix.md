@@ -1,6 +1,6 @@
 ---
 title: Add the `provisional` ticket field and a provisional ID suffix
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -39,6 +39,12 @@ Review failed (tests): Add the missing specified coverage and fix the newly disc
 3: fail - test_only_true_is_accepted uses arbitrary text but does not explicitly include yes, on, True, false and 1, and only checks that the error contains provisional, so an unknown frontmatter key error naming provisional would incorrectly pass. Add explicit examples and reject that error; make check otherwise printed OK.
 4: pass - make check printed OK for 634 tests including formatter round trips; tests/test_formatters.py includes provisional True and docs/plan/task-file.md documents the optional true marker for renumbering.
 
+Reviewed: Previous findings are resolved; make check printed OK for 635 tests, with ruff and pyright passing.
+1: pass - test_suffix_round_trips and test_suffix_uses_boundary_draws passed in make check; the previous review recorded FAILED (errors=1) with the suffix stub.
+2: pass - test_field_round_trips passed in make check, covering generated marker states, removal, dictionary and text output, and strict mutation. Replacing the Frontmatter validator in memory with a NotImplementedError stub printed FAILED (errors=1), with the falsifying example provisional=True.
+3: pass - test_only_true_is_accepted, test_yaml_boolean_lookalikes_are_rejected and test_true_parses passed in make check; the property checks the error names provisional and excludes unknown-key errors.
+4: pass - make check printed OK for 635 tests including formatter round trips; tests/test_formatters.py supplies provisional True and docs/plan/task-file.md documents the optional renumbering marker.
+
 ## Summary
 
 Closed review findings: provisional mutation now accepts only exact True or None, and property coverage checks generated ticket round-trips, rendered line removal, text show formatting, and invalid values including false-like inputs. Parser properties reject arbitrary non-true text and explicitly cover yes/on/True/false/1 without unknown-key errors. Verification: make check passes (635 tests; ruff and pyright clean). Commit 807c67a8 (Task: TASK-380). Prior review note records suffix stub failure evidence and boundary draws; formatter/docs coverage remains passing.
@@ -68,3 +74,5 @@ Closed review findings: provisional mutation now accepts only exact True or None
 - 2026-11-18T20:17:09Z nimble-violet-yellowhammer: wrote the plan
 - 2026-11-18T20:20:52Z nimble-violet-yellowhammer: changed summary
 - 2026-11-18T20:20:55Z nimble-violet-yellowhammer doing → review
+- 2026-11-18T20:24:13Z daring-violet-adder: changed notes
+- 2026-11-18T20:24:13Z daring-violet-adder review → done
