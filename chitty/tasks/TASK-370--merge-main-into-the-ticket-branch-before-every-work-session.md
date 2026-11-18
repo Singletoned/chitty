@@ -4,7 +4,6 @@ status: planning
 labels:
   - bug
 depends_on:
-  - TASK-359
   - TASK-371
 created: 2026-11-18
 ---
@@ -46,3 +45,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_merges_ma
 - 2026-11-18T09:25:21Z witty-ginger-falcon planning → todo
 - 2026-11-18T09:28:17Z witty-ginger-falcon: changed description
 - 2026-11-18T09:32:30Z witty-ginger-falcon todo → planning
+- 2026-11-18T09:51:40Z witty-ginger-falcon: changed dependencies
