@@ -1,11 +1,12 @@
 import unittest
+from pathlib import Path
 
 from chitty.store import guide
 
 
 class TestPlanGuide(unittest.TestCase):
     def test_hands_off_only_a_successful_current_ticket_read(self):
-        planning = " ".join(guide("plan").split())
+        planning = " ".join(guide("plan", directory=Path.cwd()).split())
         for phrase in (
             "current ticket text",
             "ticket text, the named code and documents",

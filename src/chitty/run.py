@@ -397,7 +397,9 @@ def _run_ticket(
                 ),
             )
             return RunResult(action, "review", change.task.task.frontmatter.status)
-    agent_command = _agent_command(main_repo, action, agent)
+    existing_worktree = git.worktree_for_branch(main_root, str(action.id).lower())
+    prompt_directory = existing_worktree or main_root / ".worktrees" / str(action.id).lower()
+    agent_command = _agent_command(main_repo, action, directory=prompt_directory, agent=agent)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
     if action.mode == "work" and selected_status == "todo":
@@ -406,7 +408,7 @@ def _run_ticket(
             action.id,
             Edit(status="doing", skip_verdicts=True, skip_current_version=True),
         )
-    worktree = _worktree(main_root, action, main_repo.config.main_branch)
+    worktree = _worktree(main_root, action, main_repo.config.main_branch, allow_rebase=True)
     context["worktree"] = str(worktree)
     setup = main_repo.config.setup
     check = main_repo.config.check
@@ -562,7 +564,9 @@ def _agent_sessions(
                 f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
             )
         continuations += 1
-        command = _agent_command(main_repo, action, agent, continuation=True)
+        command = _agent_command(
+            main_repo, action, directory=worktree, agent=agent, continuation=True
+        )
 
 
 def _run_session(
@@ -730,7 +734,12 @@ def _accepts_prompt(repo: Repo, agent: str | None) -> bool:
 
 
 def _agent_command(
-    repo: Repo, action: NextAction, agent: str | None = None, continuation: bool = False
+    repo: Repo,
+    action: NextAction,
+    *,
+    directory: Path,
+    agent: str | None = None,
+    continuation: bool = False,
 ) -> tuple[str, ...]:
     """Parse and validate the selected command after setup refreshes it."""
     setting, command = _agent_setting(repo, agent)
@@ -746,9 +755,9 @@ def _agent_command(
         if continuation:
             prompt = continuation_prompt(action.mode, ticket)
         elif repo.find(action.id).task.frontmatter.status == "error":
-            prompt = guide("repair", ticket)
+            prompt = guide("repair", ticket, directory=directory)
         else:
-            prompt = guide(action.mode, ticket)
+            prompt = guide(action.mode, ticket, directory=directory)
     is_repair = repo.find(action.id).task.frontmatter.status == "error"
     command_mode = "repair" if is_repair else action.mode
     rendered = render_command(words, command_mode, str(action.id), prompt)
@@ -914,7 +923,9 @@ def _fail_review(work_repo: Repo, action: NextAction, note: str) -> RunResult:
     return RunResult(action, "review", change.task.task.frontmatter.status)
 
 
-def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
+def _worktree(
+    main_root: Path, action: NextAction, main_branch: str, *, allow_rebase: bool = False
+) -> Path:
     branch = str(action.id).lower()
     destination = main_root / ".worktrees" / branch
     # An unfinished operation needs a person, not a second worktree. Its own
@@ -924,7 +935,7 @@ def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
             raise ChittyError(
                 f"{destination} has an unfinished merge; finish it or run `git merge --abort` there"
             )
-        if git.rebase_in_progress(destination):
+        if not allow_rebase and git.rebase_in_progress(destination):
             raise ChittyError(
                 f"{destination} has an unfinished rebase; finish it or run "
                 "`git rebase --abort` there"
@@ -937,7 +948,7 @@ def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
             raise ChittyError(
                 f"{existing} has an unfinished merge; finish it or run `git merge --abort` there"
             )
-        if git.rebase_in_progress(existing):
+        if not allow_rebase and git.rebase_in_progress(existing):
             raise ChittyError(
                 f"{existing} has an unfinished rebase; finish it or run `git rebase --abort` there"
             )

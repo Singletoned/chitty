@@ -882,10 +882,13 @@ def guide_(role: str | None, task_id: str | None) -> None:
       chitty guide review TASK-12     Review a ticket
       chitty guide plan               Write or refine tickets
       chitty guide cold-read TASK-12  Cold-read a proposed ticket
+      chitty guide rebase TASK-12    Finish a stopped rebase
 
-    Work, review and cold-read accept an optional ticket ID. Setup and plan do not.
+    Work, review, cold-read and rebase accept an optional ticket ID. Setup and plan do not.
     """
-    text = repository_guide(Path.cwd()) if role is None else guide(role, task_id)
+    text = (
+        repository_guide(Path.cwd()) if role is None else guide(role, task_id, directory=Path.cwd())
+    )
     click.echo(text, nl=False)
     if role is None and pi_session_environment_missing():
         click.echo(

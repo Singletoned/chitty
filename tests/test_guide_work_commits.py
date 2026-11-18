@@ -1,11 +1,12 @@
 import unittest
+from pathlib import Path
 
 from chitty.store import guide
 
 
 class TestWorkCommitsGuide(unittest.TestCase):
     def test_implementation_is_committed_before_review(self):
-        text = " ".join(guide("work").split())
+        text = " ".join(guide("work", directory=Path.cwd()).split())
         for phrase in (
             "Chitty commits ticket-file edits only",
             "code, tests, or other implementation files",
