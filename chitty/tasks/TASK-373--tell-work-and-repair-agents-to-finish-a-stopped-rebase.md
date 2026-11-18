@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: doing
+status: review
 priority: high
 created: 2026-11-18
 ---
@@ -61,3 +61,4 @@ Added exact linked-worktree placement coverage for work and repair. Fixed runner
 - 2026-11-18T11:21:53Z tidy-silver-quail: changed acceptance criteria, notes
 - 2026-11-18T11:21:53Z tidy-silver-quail review → doing
 - 2026-11-18T11:29:52Z youthful-indigo-ibis: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T11:30:01Z youthful-indigo-ibis doing → review
