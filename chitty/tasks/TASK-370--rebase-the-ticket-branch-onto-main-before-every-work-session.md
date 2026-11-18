@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: planning
+status: cold-read
 labels:
   - bug
   - needs-minor
@@ -51,3 +51,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 - 2026-11-18T09:51:40Z witty-ginger-falcon: changed dependencies
 - 2026-11-18T09:51:42Z witty-ginger-falcon: changed dependencies
 - 2026-11-18T09:51:44Z witty-ginger-falcon: changed title, labels, priority, dependencies, description, acceptance criteria
+- 2026-11-18T09:52:37Z witty-ginger-falcon planning → cold-read
