@@ -42,7 +42,7 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 
 ## Plan
 
-Add pure ticket_source module implementing specified candidate filtering, ancestry selection, conflicts and changed-on-both guard; add focused Hypothesis property tests for chains/forks and all rules; run stub tests first and record failure, then implementation and make check.
+Replace narrow examples with generated, case-directed Hypothesis properties over chain and fork graphs. Cover all selection/error rules, tie breaking, decoy invariance, and dropped-candidate message exclusion; run tests and make check.
 
 ## Notes
 
@@ -84,3 +84,4 @@ Implemented pure authoritative ticket-ref selection with branch candidate filter
 - 2026-11-18T20:05:34Z jolly-dusky-badger doing → review
 - 2026-11-18T20:07:15Z witty-quartz-toad: changed acceptance criteria, notes
 - 2026-11-18T20:07:15Z witty-quartz-toad review → doing
+- 2026-11-18T20:11:54Z youthful-teal-eel: wrote the plan
