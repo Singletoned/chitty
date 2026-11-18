@@ -51,3 +51,4 @@ Superseded 2026-11-18 by the rebase design: `TASK-372` claims on `main` first, a
 - 2026-11-18T09:28:25Z witty-ginger-falcon: changed title
 - 2026-11-18T09:32:32Z witty-ginger-falcon todo → planning
 - 2026-11-18T09:52:27Z witty-ginger-falcon: changed notes
+- 2026-11-18T09:52:29Z witty-ginger-falcon planning → archived
