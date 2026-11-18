@@ -1,4 +1,7 @@
+import json
+import os
 import subprocess
+import sys
 from pathlib import Path, PurePosixPath
 from unittest import mock
 
@@ -8,6 +11,53 @@ from tests.support import RepoTestCase
 
 
 class TestHistoricalFiles(RepoTestCase):
+    def test_read_blobs_handles_output_larger_than_pipe_buffers(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        contents = {}
+        for index in range(5000):
+            path = Path(f"files/{index:04}.txt")
+            content = f"{index:04}" + "x" * 1019
+            (self.root / path).parent.mkdir(exist_ok=True)
+            (self.root / path).write_text(content)
+            contents[str(path)] = content
+        self.commit("large blob set")
+
+        script = f"""
+import json
+from pathlib import Path
+import chitty.git
+from chitty.git import _read_blobs
+
+source = Path(chitty.git.__file__).resolve()
+assert source.is_relative_to(Path({str(Path(git.__file__).resolve().parent.parent)!r}))
+objects = []
+for line in __import__("subprocess").run(
+    ["git", "ls-tree", "-r", "--full-tree", "HEAD"],
+    check=True, capture_output=True, text=True,
+).stdout.splitlines():
+    metadata, filename = line.split("\\t", 1)
+    object_id = metadata.split()[2]
+    if filename.startswith("files/"):
+        objects.append((object_id, Path(filename)))
+result = _read_blobs(Path.cwd(), objects)
+print(json.dumps({{str(path): content for (_, path), (_, content) in result.items()}}))
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=20,
+            env={
+                **os.environ,
+                "PYTHONPATH": str(Path(git.__file__).resolve().parent.parent),
+            },
+        )
+        self.assertEqual(json.loads(result.stdout), contents)
+
     def git(self, *args: str) -> str:
         result = subprocess.run(
             ["git", *args], cwd=self.root, check=True, capture_output=True, text=True
