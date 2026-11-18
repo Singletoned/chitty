@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets on `main` with `chitty renumber`
-status: planning
+status: cold-read
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -40,3 +40,4 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`; gene
 - 2026-11-18T16:30:08Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:30:08Z lively-quartz-crane backlog → planning
 - 2026-11-18T16:30:16Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T16:30:29Z lively-quartz-crane planning → cold-read
