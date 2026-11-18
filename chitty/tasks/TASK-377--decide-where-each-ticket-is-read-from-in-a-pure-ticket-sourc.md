@@ -48,6 +48,10 @@ Add pure ticket_source module implementing specified candidate filtering, ancest
 
 Verified against the NotImplementedError stub: unittest tests.test_property_ticket_source fails all six tests (six errors). Implementation then passed make check (635 tests). Initial check exposed a fallback property fixture error; corrected it to use a candidate at the main tip.
 
+## Summary
+
+Implemented pure authoritative ticket-ref selection with branch candidate filtering, ancestry-based resolution, divergence/change conflict errors, and provisional/main handling. Added Hypothesis-backed unittest coverage for provisional, fallback, descendant selection, divergence, changed-on-both, and decoys. Verified stub failure: all six tests errored against NotImplementedError; make check passed (635 tests). Follow-up: none.
+
 ## History
 
 - 2026-11-18T16:20:02Z lively-quartz-crane → backlog
@@ -70,3 +74,4 @@ Verified against the NotImplementedError stub: unittest tests.test_property_tick
 - 2026-11-18T20:01:15Z jolly-dusky-badger todo → doing
 - 2026-11-18T20:02:17Z jolly-dusky-badger: wrote the plan
 - 2026-11-18T20:05:29Z jolly-dusky-badger: changed notes
+- 2026-11-18T20:05:32Z jolly-dusky-badger: changed summary
