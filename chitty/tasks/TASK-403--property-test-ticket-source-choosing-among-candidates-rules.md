@@ -15,9 +15,9 @@ Build inputs whose answer is known by construction, rather than recomputing the 
 
 - Chain: draw `main_tip` as a commit index m from 0 to n-1, so a commit lies above it, or `None`, when candidates go on any commit. Place one to four candidates (the local name and remote names) on commits above m, and optionally dropped candidates at or below m. The expected tip is the highest candidate commit above m; the expected name is the local candidate at that commit if there is one, else the remote whose remote name (before its first `/`) sorts first.
 - Fork: put every remaining candidate on one arm, so they are comparable, and `main_tip` on the shared chain or on the other arm, so it contains none of them. Expected as for the chain.
-- Draw `current_branch` from the local candidate name, `main_branch`, a decoy and `None`. The result is `WORKING_TREE` exactly when `current_branch` is the local candidate name and the local candidate is at the expected tip; otherwise the expected name. In some examples include a remote candidate strictly ahead of a checked-out local one (the result is the remote name).
-- Ties: in about half the examples put the local candidate, or two or more remotes, on the expected tip, so that tie-breaking is exercised.
-- Rule 6: the same inputs with `changed_on_both` true for the expected name, and for any other names drawn: `ChittyError` whose message contains the ticket ID, the expected ref and `main_branch`, each quoted in backticks. With `changed_on_both` true only for other names: the rule 4 result.
+- Draw `current_branch` from the local candidate name, `main_branch`, a decoy and `None`. The result is `WORKING_TREE` exactly when `current_branch` is the local candidate name and the local candidate is at the expected tip; otherwise the expected name. Draw a boolean that, when true, builds a remote candidate strictly ahead of a checked-out local one (the result is the remote name).
+- Ties: draw a boolean that, when true, puts the local candidate, or two or more remotes, on the expected tip, so that tie-breaking is exercised.
+- Rule 6: the same inputs with `changed_on_both` true for the expected name (other names may also be true), also when the rule 4 result would be `WORKING_TREE`: `ChittyError` whose message contains the ticket ID, the expected ref and `main_branch`, each quoted in backticks. With `changed_on_both` true only for other names: the rule 4 result.
 
 Each property asserts a returned value or `ChittyError` specifically. Tests match quoted names, so `task-5` is not found inside `origin/task-5`.
 
@@ -33,6 +33,8 @@ The code already exists, so evidence that the tests catch a wrong implementation
 
 Cold read 2026-11-18 outcomes: forced ties so tie mutants die; defined the range of m and the `None` case.
 
+Second cold read 2026-11-18 outcomes: remote-ahead and tie cases forced by drawn booleans; rule 6 wording no longer reads as an error for other names; rule 6 also applies when the result would be `WORKING_TREE`.
+
 ## History
 
 - 2026-11-18T21:31:03Z lively-quartz-crane → backlog
@@ -41,3 +43,4 @@ Cold read 2026-11-18 outcomes: forced ties so tie mutants die; defined the range
 - 2026-11-18T21:32:16Z lively-quartz-crane planning → cold-read
 - 2026-11-18T21:35:18Z lively-quartz-crane: changed description, notes
 - 2026-11-18T21:35:18Z lively-quartz-crane cold-read → planning
+- 2026-11-18T21:37:49Z lively-quartz-crane: changed description, notes
