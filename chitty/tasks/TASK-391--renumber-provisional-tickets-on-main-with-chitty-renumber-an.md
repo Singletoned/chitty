@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets on `main` with `chitty renumber` and no path
-status: planning
+status: cold-read
 depends_on:
   - TASK-381
   - TASK-389
@@ -40,3 +40,4 @@ Tests: real-file CLI tests in a new `tests/test_renumber_provisional.py`, inheri
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
 - 2026-11-18T16:34:50Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-18T16:34:50Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:35:13Z lively-quartz-crane planning → cold-read
