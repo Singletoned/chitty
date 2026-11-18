@@ -40,6 +40,10 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 - [ ] Properties pass for rule 5 and decoys: when no remaining candidate contains all the others, `ChittyError` names each remaining candidate, including when `main_tip` contains a third, dropped one; adding or removing decoy and unrelated branches never changes the result
 - [ ] The notes record every property failing against the `NotImplementedError` stub, and `make check` passes
 
+## Plan
+
+Add pure ticket_source module implementing specified candidate filtering, ancestry selection, conflicts and changed-on-both guard; add focused Hypothesis property tests for chains/forks and all rules; run stub tests first and record failure, then implementation and make check.
+
 ## History
 
 - 2026-11-18T16:20:02Z lively-quartz-crane → backlog
@@ -60,3 +64,4 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 - 2026-11-18T17:50:41Z lively-quartz-crane planning → todo
 - 2026-11-18T17:53:59Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T20:01:15Z jolly-dusky-badger todo → doing
+- 2026-11-18T20:02:17Z jolly-dusky-badger: wrote the plan
