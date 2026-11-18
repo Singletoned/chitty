@@ -1,6 +1,6 @@
 ---
 title: Add the `provisional` ticket field and a provisional ID suffix
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -67,3 +67,4 @@ Closed review findings: provisional mutation now accepts only exact True or None
 - 2026-11-18T20:12:29Z jolly-jade-eel review → doing
 - 2026-11-18T20:17:09Z nimble-violet-yellowhammer: wrote the plan
 - 2026-11-18T20:20:52Z nimble-violet-yellowhammer: changed summary
+- 2026-11-18T20:20:55Z nimble-violet-yellowhammer doing → review
