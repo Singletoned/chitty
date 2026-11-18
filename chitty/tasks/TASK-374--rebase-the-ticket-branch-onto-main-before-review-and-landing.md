@@ -26,6 +26,13 @@ Decisions:
 
 Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `tests/test_landing.py`, with `git init -b main`; the fake reviewer writes a marker file when it starts. No property: real Git and runner processes over the fixed cases in the criteria; `rebase_onto`'s two outcomes are tested directly in `tests/test_git.py`.
 
+## Acceptance Criteria
+
+- [ ] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
+- [ ] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
+- [ ] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with `Review failed (integration)` naming the path in backticks, and no reviewer starts
+- [ ] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); `git.merge` and `git.merge_main` are gone; the doc has the principle and the rebase under both headings; `make check` passes
+
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
@@ -41,3 +48,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T15:47:46Z witty-ginger-falcon todo → planning
 - 2026-11-18T17:57:37Z lively-quartz-crane: changed dependencies, description
 - 2026-11-18T17:57:39Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T17:57:41Z lively-quartz-crane: changed acceptance criteria
