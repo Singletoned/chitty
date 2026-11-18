@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: doing
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -64,6 +64,8 @@ Review failed (tests): The expanded suite still uses fixed scenarios where the t
 
 The ticket requirements are actionable; continuing implementation of the missing generated, case-directed properties identified in the reviews.
 
+Verification: `make check` passed (637 tests). The previously reviewed test-coverage gaps remain unresolved: the current properties still use fixed cases rather than the specified generated, case-directed ref maps and graph inputs. Returning to planning is appropriate only for ticket defects, and no defect in the written requirements was found; do not claim review readiness.
+
 ## Summary
 
 Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, and decoy refs. Verification: `make check` passed (637 tests). Follow-up: none.
@@ -101,3 +103,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T20:16:38Z witty-dusky-toad review → doing
 - 2026-11-18T20:23:31Z calm-quartz-zander: wrote the plan
 - 2026-11-18T20:26:07Z calm-quartz-zander: changed notes
+- 2026-11-18T20:26:55Z calm-quartz-zander: changed owner, notes
+- 2026-11-18T20:26:55Z calm-quartz-zander doing → planning
