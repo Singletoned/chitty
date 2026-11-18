@@ -10,7 +10,7 @@ class TestPlanGuide(unittest.TestCase):
             "current ticket text",
             "ticket text, the named code and documents",
             "reader report",
-            "one read-only cold read",
+            "for its cold read",
             "expected route",
         ):
             with self.subTest(phrase=phrase):

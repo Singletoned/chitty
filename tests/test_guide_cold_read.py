@@ -20,7 +20,7 @@ class TestColdReadGuide(unittest.TestCase):
         output = _flat(self.run_cli("guide", "cold-read"))
         for phrase in (
             "Run no Chitty writes",
-            "no worktree, branch, ref, commit or file change",
+            "no worktree, branch, ref or commit",
             "Try behaviour rather than assume",
             "the exact wording to change",
         ):
@@ -36,7 +36,7 @@ class TestColdReadGuide(unittest.TestCase):
     def test_plan_guide_points_at_the_reader_guide(self):
         planning = _flat(guide("plan"))
         self.assertIn("chitty guide cold-read <ID>", planning)
-        self.assertIn("one read-only cold read", planning)
+        self.assertIn("for its cold read", planning)
 
 
 if __name__ == "__main__":
