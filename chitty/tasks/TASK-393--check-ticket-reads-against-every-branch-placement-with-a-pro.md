@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads against every branch placement with a property
-status: planning
+status: todo
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -46,3 +46,4 @@ No production code changes unless a test finds a bug; then fix it here, with the
 - 2026-11-18T17:51:26Z lively-quartz-crane planning → cold-read
 - 2026-11-18T17:54:01Z lively-quartz-crane: changed description
 - 2026-11-18T17:54:01Z lively-quartz-crane cold-read → planning
+- 2026-11-18T17:54:03Z lively-quartz-crane planning → todo
