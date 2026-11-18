@@ -37,6 +37,10 @@ Tests:
 - [ ] After a title change to the ticket on `main`, a work run leaves exactly one file for that ticket ID in the worktree, at `main`'s path
 - [ ] With the worktree ticket file modified but uncommitted, no sync commit is made and the file is not replaced by `main`'s copy
 
+## Notes
+
+Superseded 2026-11-18 by the rebase design: `TASK-372` claims on `main` first, and `TASK-370` rebases the branch onto `main`, merging ticket files with `TASK-359`. Copying `main`'s ticket over the branch's would also lose the branch's notes.
+
 ## History
 
 - 2026-11-18T09:24:53Z witty-ginger-falcon → cold-read
@@ -46,3 +50,4 @@ Tests:
 - 2026-11-18T09:28:19Z witty-ginger-falcon planning → todo
 - 2026-11-18T09:28:25Z witty-ginger-falcon: changed title
 - 2026-11-18T09:32:32Z witty-ginger-falcon todo → planning
+- 2026-11-18T09:52:27Z witty-ginger-falcon: changed notes
