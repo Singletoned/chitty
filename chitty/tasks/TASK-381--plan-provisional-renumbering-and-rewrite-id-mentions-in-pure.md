@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering and rewrite ID mentions in pure functions
-status: doing
+status: review
 depends_on:
   - TASK-380
 parent: TASK-376
@@ -158,3 +158,4 @@ Completed the requested renumbering property coverage, including mixed-case look
 - 2026-11-18T21:35:36Z witty-bronze-dormouse review → doing
 - 2026-11-18T21:51:36Z tidy-maroon-kestrel: changed notes
 - 2026-11-18T21:52:51Z tidy-maroon-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T21:52:57Z tidy-maroon-kestrel doing → review
