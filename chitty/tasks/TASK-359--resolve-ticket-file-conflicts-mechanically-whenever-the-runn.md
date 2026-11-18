@@ -3,6 +3,7 @@ title: Resolve ticket-file conflicts mechanically whenever the runner merges `ma
 status: todo
 labels:
   - bug
+priority: high
 created: 2026-11-16
 ---
 
@@ -49,3 +50,4 @@ Tests:
 - 2026-11-18T09:24:14Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:24:15Z witty-ginger-falcon: changed description, acceptance criteria
 - 2026-11-18T09:25:19Z witty-ginger-falcon planning → todo
+- 2026-11-18T09:28:27Z witty-ginger-falcon: changed priority
