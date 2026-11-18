@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -75,3 +75,4 @@ Implemented pure authoritative ticket-ref selection with branch candidate filter
 - 2026-11-18T20:02:17Z jolly-dusky-badger: wrote the plan
 - 2026-11-18T20:05:29Z jolly-dusky-badger: changed notes
 - 2026-11-18T20:05:32Z jolly-dusky-badger: changed summary
+- 2026-11-18T20:05:34Z jolly-dusky-badger doing → review
