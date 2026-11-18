@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -44,7 +44,7 @@ Review follow-up: added the origin/HEAD symref and distinct commits for same-suf
 
 ## Summary
 
-Implemented the requested Git helpers and real-Git tests for branch tips, refs, odd file paths, UTF-8 errors, pathspecs, and unrelated histories. Targeted tests pass. Ruff and pyright pass; make check reports all 657 Python test suites passing, but exits nonzero in a pre-existing Chitty runner test whose fixture lacks required autocommit configuration. Follow-up: none.
+Addressed review findings with distinct local/remote refs plus origin/HEAD symref, unborn-branch coverage, and generated active/archive odd-path trees. Focused tests pass. make check: Ruff, pyright, and all 667 tests pass; command exits nonzero because existing runner fixture lacks required autocommit configuration.
 
 ## History
 
@@ -63,3 +63,5 @@ Implemented the requested Git helpers and real-Git tests for branch tips, refs, 
 - 2026-11-18T22:52:59Z nimble-dusky-puffin: changed acceptance criteria, notes
 - 2026-11-18T22:52:59Z nimble-dusky-puffin review → doing
 - 2026-11-18T23:01:00Z sunny-white-newt: changed notes
+- 2026-11-18T23:01:15Z sunny-white-newt: changed summary
+- 2026-11-18T23:01:15Z sunny-white-newt doing → review
