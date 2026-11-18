@@ -28,7 +28,7 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 
 ## Plan
 
-Add the specified pure functions in src/chitty/renumbering.py. Validate duplicate and non-provisional inputs, then allocate per-prefix consecutive IDs in TaskId order. Implement ID rewriting with one combined regex and a single substitution pass. Add Hypothesis property coverage in tests/test_property_renumbering.py, run it against the stubs to verify failure, then implement and run make format and make check.
+Expand the properties to generate shuffled provisional IDs from multiple prefixes and independently verify each prefix allocation. Generate several disjoint provisional-to-numeric mappings, including uppercase-prefix/lowercase-suffix look-alikes, and independently construct expected rewritten text. Confirm new properties fail against the previous inadequate tests/implementation assumptions, then run make format and make check.
 
 ## Notes
 
@@ -66,3 +66,4 @@ Implemented pure per-prefix sequential ID allocation and simultaneous boundary-a
 - 2026-11-18T20:31:24Z sunny-dusky-falcon doing → review
 - 2026-11-18T20:33:44Z open-amber-puffin: changed acceptance criteria, notes
 - 2026-11-18T20:33:44Z open-amber-puffin review → doing
+- 2026-11-18T20:47:46Z rosy-white-adder: wrote the plan
