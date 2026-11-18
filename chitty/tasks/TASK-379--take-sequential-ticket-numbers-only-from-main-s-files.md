@@ -1,6 +1,6 @@
 ---
 title: Take sequential ticket numbers only from main's files
-status: doing
+status: review
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -80,3 +80,4 @@ Review follow-up: fixed checkout-file regression to use a real committed main ch
 - 2026-11-18T22:59:58Z lively-ginger-raven: changed acceptance criteria, notes
 - 2026-11-18T22:59:58Z lively-ginger-raven review → doing
 - 2026-11-18T23:04:20Z sunny-ginger-falcon: changed notes, summary
+- 2026-11-18T23:04:23Z sunny-ginger-falcon doing → review
