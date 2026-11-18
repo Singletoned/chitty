@@ -49,6 +49,8 @@ Escape: introduced by `TASK-356`, whose cross-branch `lookup` in `check` made ar
 
 Planning return: the selector rule and older-version property conflict when the input contains only a clean local version. The rule says a historical version from another branch wins over a clean local version; adding any historical candidate therefore changes the result, even if it is older than every existing candidate (the local candidate has no committed_at). The property requires adding such an older historical version never to change the choice. Please decide whether that property applies only when at least one historical candidate already exists, or revise the selection rule for local-versus-historical comparison. Also, make check currently fails the existing TestRenumber duplicate-file diagnostic assertion after the selector change; determine the expected diagnostic path while refining the design. Partial implementation is committed as 0c9354ac; property tests and the first real-Git reproduction pass, but the full check and second regression evidence are incomplete.
 
+Same-checkout case still exists: Reproduced 2026-11-18 in `.worktrees/task-359` (branch `task-359`, clean worktree, ticket committed there and also present on `main`): `chitty edit TASK-359 --note ...` succeeded, then `chitty archive TASK-359` failed with `TASK-359 is used by more than one file: .../chitty/tasks/TASK-359--....md, .../chitty/tasks/archive/TASK-359--....md`, leaving the active file deleted and the archive file untracked, uncommitted. The same command on `main` for `TASK-366` (also on branch `task-366`) succeeded. Undone by hand with `git restore` and `rm`.
+
 ## History
 
 - 2026-11-17T19:53:05Z kind-umber-toad → todo
@@ -65,3 +67,4 @@ Planning return: the selector rule and older-version property conflict when the 
 - 2026-11-17T22:04:06Z witty-ochre-yellowhammer: wrote the plan
 - 2026-11-17T22:10:39Z witty-ochre-yellowhammer: changed owner, notes
 - 2026-11-17T22:10:39Z witty-ochre-yellowhammer doing → planning
+- 2026-11-18T16:25:59Z lively-quartz-crane: changed notes
