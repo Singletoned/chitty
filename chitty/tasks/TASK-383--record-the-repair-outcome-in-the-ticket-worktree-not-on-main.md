@@ -1,6 +1,6 @@
 ---
 title: Record the repair outcome in the ticket worktree, not on `main`
-status: todo
+status: cold-read
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -34,3 +34,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_repair_on_bran
 - 2026-11-18T16:26:38Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:26:38Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:26:53Z lively-quartz-crane planning → todo
+- 2026-11-18T16:29:25Z lively-quartz-crane todo → cold-read
