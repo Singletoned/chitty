@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: planning
+status: cold-read
 depends_on:
   - TASK-391
 parent: TASK-376
@@ -42,3 +42,4 @@ Tests: CLI tests in `tests/test_renumber_provisional.py` (`TASK-391`'s file). Se
 - 2026-11-18T17:44:51Z lively-quartz-crane planning → cold-read
 - 2026-11-18T17:46:21Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:46:21Z lively-quartz-crane cold-read → planning
+- 2026-11-18T17:48:26Z lively-quartz-crane planning → cold-read
