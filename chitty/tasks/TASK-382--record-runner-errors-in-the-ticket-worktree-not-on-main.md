@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: todo
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -24,7 +24,7 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 
 - [ ] Each case uses its own ticket. For each, the newest commit on `task-<n>` sets the ticket to `error` with a note containing `Runner error (<phase>)` and the failure's own message, and no commit on `main` sets `error`: a work-mode `setup` failure, and an agent exiting non-zero with a passing `check`, both on a `doing` ticket whose branch was made with `git branch task-<n> main`, leave `git rev-parse main` unchanged; a review-mode `setup` failure leaves it unchanged; a `check` failure on a ticket chosen as `todo` gives `main` exactly one commit, the claim (`todo → doing`); each case fails before the change
 - [ ] After each of those runs, `git show main:<ticket path>` still has the status the ticket had on `main` before the failure (`doing`, `review`, or `doing` after the claim), while `chitty show <ID>` in the main checkout reports `error` and `next_action` (`src/chitty/store.py`) on the main checkout with `modes=("errors",)` returns that ticket's ID; the `main` file check fails before the change
-- [ ] For a `check` failure on a ticket chosen as `todo`, a spy on `chitty.git.main_checkout` shows no call from `_handle_check_failure` (any calls during the run are with the main checkout's root only); this fails before the change
+- [ ] Code check: `_handle_check_failure` takes the branch-side repo and its body has no `git.main_checkout` call (shown by the diff; `Repo._main_branch()` may still call it, legitimately); the observable effect is covered by criteria 1 and 2
 - [ ] After that `check` failure, the newest commit on `task-<n>` is a new commit after the claim that changes only the ticket file, and a file the failing `check` wrote in the worktree is still untracked; a `check` failure on a `doing` ticket still writes the `Check failed before this session` note on the branch and starts the agent
 - [ ] A landing failure: in a review run whose `check` passes before the reviewer, the fake reviewer sets `done` and writes a marker file that makes `check` fail from then on, so `_landing_check` fails before `fast_forward`; `main` is unchanged and the newest `task-<n>` commit has `Runner error (landing)`; `make check` passes
 
@@ -50,3 +50,5 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 - 2026-11-18T16:38:23Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:38:32Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T16:38:34Z lively-quartz-crane planning → todo
+- 2026-11-18T17:47:08Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T17:47:08Z lively-quartz-crane todo → planning
