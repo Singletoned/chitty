@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket in the main checkout before preparing its worktree
-status: done
+status: planning
 labels:
   - bug
 priority: high
@@ -53,6 +53,8 @@ Reviewed: The previous stale-history regression finding is resolved; no new defe
 3: pass - The three focused `TestNext` setup failure, todo check failure and doing check failure tests report OK.
 4: pass - The diff contains both requested documentation replacements; `make check` reports 629 tests OK, Ruff clean and Pyright 0 errors.
 
+On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
+
 ## Summary
 
 Strengthened the stale-history regression with deterministic author and committer dates and assertions that the main checkout records the claim and the fake agent starts. Verified the regression fails with the pre-change runner and passes with the fix; `python -m unittest tests.test_run_claims_on_main -v` passes (2 tests), and `make check` passes (629 tests). `chitty fix` completes with existing warnings only. No follow-ups.
@@ -75,3 +77,5 @@ Strengthened the stale-history regression with deterministic author and committe
 - 2026-11-18T11:00:53Z vivid-hazel-wren doing → review
 - 2026-11-18T11:03:34Z upbeat-teal-ibis: changed notes
 - 2026-11-18T11:03:34Z upbeat-teal-ibis review → done
+- 2026-11-18T15:47:44Z witty-ginger-falcon: changed notes
+- 2026-11-18T15:47:44Z witty-ginger-falcon done → planning
