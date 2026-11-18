@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: review
+status: doing
 priority: high
 created: 2026-11-18
 ---
@@ -25,7 +25,7 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 - [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
 - [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
-- [x] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
+- [ ] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
 
 ## Plan
 
@@ -42,6 +42,12 @@ Review failed (tests): Newly discovered coverage gaps must be addressed; there a
 4: fail - `make check` printed OK (632 tests), but no test runs a fake agent with a stopped rebase in the ticket worktree while main is clean. Add that runner regression test and show it fails without the change.
 
 Regression evidence: the linked-worktree test now checks exact insertion placement for both work and repair. The runner regression test failed without the fix: a stopped rebase detached HEAD, so Git no longer reported the ticket branch in worktree-list and the runner tried to add an already-existing worktree. After returning the conventional ticket worktree path when it exists, the fake agent received rebase instructions while main did not. Verified focused test and make check (637 tests).
+
+Review failed (work): Newly discovered worktree identity defect; the earlier review coverage gaps are resolved.
+1: pass - `uv run python -m unittest tests.test_guide_rebase -v` printed OK; the role names continuation and forbids abort and skip.
+2: pass - The focused tests printed OK for both roles and linked-worktree placement; patching `chitty.store.git.rebase_in_progress` to return false printed FAILED (failures=3), including both backends and the linked worktree.
+3: pass - The focused tests printed OK for clean and outside-repository output comparisons.
+4: fail - `make check` printed OK (637 tests), and the fake-agent rebase test passed. However, a throwaway test using `TestRunContinue` created a conventional task-1 worktree on branch other and called `_worktree` with task-1; it printed `requested: task-1 returned branch: other`. The new unconditional return accepts an unrelated checkout and can send the agent to the wrong branch. Verify the worktree belongs to the ticket, including detached rebase identity, before returning it; reject mismatches and add regression coverage.
 
 ## Summary
 
@@ -62,3 +68,5 @@ Added exact linked-worktree placement coverage for work and repair. Fixed runner
 - 2026-11-18T11:21:53Z tidy-silver-quail review → doing
 - 2026-11-18T11:29:52Z youthful-indigo-ibis: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T11:30:01Z youthful-indigo-ibis doing → review
+- 2026-11-18T11:32:49Z eager-ebony-crane: changed acceptance criteria, notes
+- 2026-11-18T11:32:49Z eager-ebony-crane review → doing
