@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -12,20 +12,21 @@ Under the new ticket state model (`docs/plan/ticket-state.md`, "Planning decisio
 Decisions:
 
 - `_run_ticket` builds one branch-side repo, `branch_repo = Repo(worktree, main_repo.config)`, as soon as the worktree exists: the main checkout's config, because the branch's may be missing or changed, as `_prepare_review` already allows. `_record_ticket_error(branch_repo, action, phase, error)` takes it in place of `main_repo` and the worktree path, reads the old status from it, and writes through it, so the edit commits on the ticket branch and `main` gets no error commit.
-- It still raises, as today, when the worktree is gone.
+- It still raises, as today, when the worktree is gone (unchanged, not newly tested).
 - Every caller passes the worktree it already has: `setup` failure in work and in review mode, a `ChittyError` in the agent or landing phase (both caught by the same `except` in `_run_ticket`), and `_handle_check_failure`. `_run_check` (one caller) takes `branch_repo` in place of its `work_repo` and `worktree` arguments and passes it to `_handle_check_failure`, which uses it for both its `doing`/`error` note and the error, and stops calling `git.main_checkout`. In review mode `branch_repo` is this same `Repo(worktree, main_repo.config)`, built once; `_prepare_review` and the reviewer keep their own repos (work is planned to run in containers, where the runner may not be able to reach the main checkout from the worktree).
 - Keep `skip_current_version=True` on this edit for now: a branch can still hold an older copy than `main` until `TASK-385` removes the guard.
 - Only the ticket file is committed. Other uncommitted files in the worktree stay uncommitted.
-- Out of scope: an error recorded while `main` still holds a newer copy of the ticket (today's read then takes `main`'s content; `TASK-378` and `TASK-385` remove that); a landing failure after `main` has been fast-forwarded (recorded on the branch as before, whatever then happens to it); failures that are not recorded today (`_worktree` raising after the claim, a non-conflict `git.merge_main` error) stay unrecorded; the review-with-no-branch handoff in `_run_ticket`, which stays on `main` (with no branch, `main` is authoritative); the repair outcome write (`TASK-383`); the claim (`TASK-384`).
+- Out of scope: an error recorded while `main` still holds a newer copy of the ticket (today's read then takes `main`'s content; `TASK-378` and `TASK-385` remove that); a landing failure after `main` has been fast-forwarded (recorded on the branch, as every runner error now is, whatever then happens to it); failures that are not recorded today (`_worktree` raising after the claim, a non-conflict `git.merge_main` error) stay unrecorded; the review-with-no-branch handoff in `_run_ticket`, which stays on `main` (with no branch, `main` is authoritative); the repair outcome write (`TASK-383`); the claim (`TASK-384`).
 
-Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_branch.py`, in the style of `tests/test_run_claims_on_main.py`, inheriting `CliTestCase` from `tests/test_cli.py` as that file does. Update every existing test that expects the error commit on `main`, including the one in `tests/test_next.py` around line 1797 that asserts `main` moves; `tests/test_review_merge.py`'s `Runner error (review)` case is the no-branch handoff and stays. No property: a fixed set of four failure phases, each listed in the criteria and each tested; the behaviour drives real Git and runner processes.
+Tests: the `check` failures are non-zero exits (not a missing command), and notes are asserted by the text `_run_check` produces today. Fixtures set `autocommit = true` and a `setup` command as `tests/test_run_claims_on_main.py` `setUp` does. Real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_branch.py`, in the style of `tests/test_run_claims_on_main.py`, inheriting `CliTestCase` from `tests/test_cli.py` as that file does. Update every existing test that expects the error commit on `main`, including the one in `tests/test_next.py` around line 1797 that asserts `main` moves; `tests/test_review_merge.py`'s `Runner error (review)` case is the no-branch handoff and stays. No property: a fixed set of four failure phases, each listed in the criteria and each tested; the behaviour drives real Git and runner processes.
 
 ## Acceptance Criteria
 
 - [ ] Each case uses its own ticket. For each, the newest commit on `task-<n>` sets the ticket to `error` with a note containing `Runner error (<phase>)` and the failure's own message, and no commit on `main` sets `error`: a work-mode `setup` failure, and an agent exiting non-zero with a passing `check`, both on a `doing` ticket whose branch was made with `git branch task-<n> main`, leave `git rev-parse main` unchanged; a review-mode `setup` failure leaves it unchanged; a `check` failure on a ticket chosen as `todo` gives `main` exactly one commit, the claim (`todo → doing`); each case fails before the change
 - [ ] After each of those runs, `git show main:<ticket path>` still has the status the ticket had on `main` before the failure (`doing`, `review`, or `doing` after the claim), while `chitty show <ID>` in the main checkout reports `error` and `next_action` (`src/chitty/store.py`) on the main checkout with `modes=("errors",)` returns that ticket's ID; the `main` file check fails before the change
-- [ ] For a `check` failure on a ticket chosen as `todo`, with `chitty.git.main_checkout` wrapped to record its arguments, it is never called with the worktree path; this fails before the change
-- [ ] Regression guard: a file the failing `check` command writes in the worktree is still uncommitted after the error is recorded; `make check` passes
+- [ ] For a `check` failure on a ticket chosen as `todo`, a spy on `chitty.git.main_checkout` shows no call from `_handle_check_failure` (any calls during the run are with the main checkout's root only); this fails before the change
+- [ ] After that `check` failure, the newest commit on `task-<n>` is a new commit after the claim that changes only the ticket file, and a file the failing `check` wrote in the worktree is still untracked; a `check` failure on a `doing` ticket still writes the `Check failed before this session` note on the branch and starts the agent
+- [ ] A landing failure (the fake agent sets `review`... `done` and writes a marker file that makes the `check` command fail only on its second run, so `_landing_check` fails before `fast_forward`) leaves `main` unchanged and puts `Runner error (landing)` on the newest `task-<n>` commit; `make check` passes
 
 ## History
 
@@ -45,3 +46,5 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_bran
 - 2026-11-18T16:35:33Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:35:33Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:35:35Z lively-quartz-crane planning → cold-read
+- 2026-11-18T16:38:23Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T16:38:23Z lively-quartz-crane cold-read → planning
