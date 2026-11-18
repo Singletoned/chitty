@@ -20,6 +20,12 @@ Decisions:
 
 Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Generate prefixes matching `[A-Z]+`, sets of used numbers, provisional IDs from `ids.provisional_suffix` (`TASK-380`) with random draws (deduplicated, except in the duplicate test), and text mixing bounded mentions, look-alikes (each form listed above), lower-case forms and unrelated text. The `replace_ids` oracle is built independently in the test (for example, by inserting known mentions at known places in generated text), not by calling the same regular expression.
 
+## Acceptance Criteria
+
+- [ ] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
+- [ ] `replace_ids` property: in generated text every inserted bounded mention becomes its new ID, every look-alike and lower-case form listed in the Description is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
+- [ ] `make check` passes
+
 ## History
 
 - 2026-11-18T16:20:09Z lively-quartz-crane → backlog
@@ -31,3 +37,4 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 - 2026-11-18T16:30:29Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:34:46Z lively-quartz-crane: changed title, dependencies, description, acceptance criteria
 - 2026-11-18T16:34:46Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:34:48Z lively-quartz-crane: changed acceptance criteria
