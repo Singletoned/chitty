@@ -1,6 +1,6 @@
 ---
 title: Commit or restore a ticket file when a Chitty write fails after writing it
-status: doing
+status: error
 labels:
   - bug
 parent: TASK-376
@@ -30,6 +30,163 @@ Reproduced 2026-11-18 in `.worktrees/task-359` (branch `task-359`, clean worktre
 
 Also on `main` 2026-11-18: `chitty edit TASK-372 --note ...` then `chitty archive TASK-372` (status `planning`, no local or remote `task-372` branch; the branch existed earlier and was removed after landing) failed the same way and left the move uncommitted. `TASK-366` archived fine on `main` minutes earlier. Repro candidate: a ticket whose active path appears in the history of a deleted branch or of `main` itself.
 
+Runner error (check): check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+570 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 641 test suites (641 total tests) across 16 workers
+..........................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 22:23:45 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+......................................./Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+............E..............................................................................................................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/CLAUDE.md
+...Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/.worktrees/task-1...
+........TASK-1: doing → review
+......no next ticket for --mode work
+....................................chitty 0.1.31 is out: run uv tool upgrade chitty
+..............................landed TASK-1
+landed TASK-2
+landed TASK-1
+
+======================================================================
+test_suffix_round_trips (tests.test_property_provisional.TestProvisionalProperties.test_suffix_round_trips)
+----------------------------------------------------------------------
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/tests/test_property_provisional.py", line 29, in test_suffix_round_trips
+  |     def test_suffix_round_trips(self, prefix, seed):
+  |                ^^^^^^^
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 2334, in wrapped_test
+  |     raise the_error_hypothesis_found
+  | hypothesis.errors.FlakyFailure: Hypothesis test_suffix_round_trips(self=<tests.test_property_provisional.TestProvisionalProperties testMethod=test_suffix_round_trips>, prefix='FPQPEC', seed=HypothesisRandom(generated data)) produces unreliable results: Failed on the first call but did not on a subsequent one (1 sub-exception)
+  | Failing test case: test_suffix_round_trips(
+  |     self=<tests.test_property_provisional.TestProvisionalProperties testMethod=test_suffix_round_trips>,
+  |     prefix='FPQPEC',
+  |     seed=HypothesisRandom(generated data),
+  | )
+  | Unreliable test timings! On an initial run, this test took 278.76ms, which exceeded the deadline of 200.00ms, but on a subsequent run it took 0.06 ms, which did not. If you expect this sort of variability in your test timings, consider turning deadlines off for this test by setting deadline=None.
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1253, in _execute_once_for_engine
+    |     result = self.execute_once(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1187, in execute_once
+    |     result = self.test_runner(data, run)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 831, in default_executor
+    |     return function(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1144, in run
+    |     return test(*args, **kwargs)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/tests/test_property_provisional.py", line 29, in test_suffix_round_trips
+    |     def test_suffix_round_trips(self, prefix, seed):
+    |                ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1040, in test
+    |     raise DeadlineExceeded(
+    |         datetime.timedelta(seconds=runtime), self.settings.deadline
+    |     )
+    | hypothesis.errors.DeadlineExceeded: Test took 278.76ms, which exceeds the deadline of 200.00ms. If you expect test cases to take this long, you can use @settings(deadline=...) to either set a higher deadline, or to disable it with deadline=None.
+    +------------------------------------
+
+----------------------------------------------------------------------
+Ran 641 tests in 45.538s
+
+FAILED (errors=1)
+make: *** [check] Error 1
+
+```
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-388`
+
+Error output:
+````text
+check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+570 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 641 test suites (641 total tests) across 16 workers
+..........................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 22:23:45 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+......................................./Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+............E..............................................................................................................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/CLAUDE.md
+...Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvf_kn42c/repo/.worktrees/task-1...
+........TASK-1: doing → review
+......no next ticket for --mode work
+....................................chitty 0.1.31 is out: run uv tool upgrade chitty
+..............................landed TASK-1
+landed TASK-2
+landed TASK-1
+
+======================================================================
+test_suffix_round_trips (tests.test_property_provisional.TestProvisionalProperties.test_suffix_round_trips)
+----------------------------------------------------------------------
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/tests/test_property_provisional.py", line 29, in test_suffix_round_trips
+  |     def test_suffix_round_trips(self, prefix, seed):
+  |                ^^^^^^^
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 2334, in wrapped_test
+  |     raise the_error_hypothesis_found
+  | hypothesis.errors.FlakyFailure: Hypothesis test_suffix_round_trips(self=<tests.test_property_provisional.TestProvisionalProperties testMethod=test_suffix_round_trips>, prefix='FPQPEC', seed=HypothesisRandom(generated data)) produces unreliable results: Failed on the first call but did not on a subsequent one (1 sub-exception)
+  | Failing test case: test_suffix_round_trips(
+  |     self=<tests.test_property_provisional.TestProvisionalProperties testMethod=test_suffix_round_trips>,
+  |     prefix='FPQPEC',
+  |     seed=HypothesisRandom(generated data),
+  | )
+  | Unreliable test timings! On an initial run, this test took 278.76ms, which exceeded the deadline of 200.00ms, but on a subsequent run it took 0.06 ms, which did not. If you expect this sort of variability in your test timings, consider turning deadlines off for this test by setting deadline=None.
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1253, in _execute_once_for_engine
+    |     result = self.execute_once(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1187, in execute_once
+    |     result = self.test_runner(data, run)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 831, in default_executor
+    |     return function(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1144, in run
+    |     return test(*args, **kwargs)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/tests/test_property_provisional.py", line 29, in test_suffix_round_trips
+    |     def test_suffix_round_trips(self, prefix, seed):
+    |                ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-388/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1040, in test
+    |     raise DeadlineExceeded(
+    |         datetime.timedelta(seconds=runtime), self.settings.deadline
+    |     )
+    | hypothesis.errors.DeadlineExceeded: Test took 278.76ms, which exceeds the deadline of 200.00ms. If you expect test cases to take this long, you can use @settings(deadline=...) to either set a higher deadline, or to disable it with deadline=None.
+    +------------------------------------
+
+----------------------------------------------------------------------
+Ran 641 tests in 45.538s
+
+FAILED (errors=1)
+make: *** [check] Error 1
+
+```
+````
+
 ## History
 
 - 2026-11-18T16:20:21Z lively-quartz-crane → backlog
@@ -43,3 +200,5 @@ Also on `main` 2026-11-18: `chitty edit TASK-372 --note ...` then `chitty archiv
 - 2026-11-18T17:59:25Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:59:27Z lively-quartz-crane planning → todo
 - 2026-11-18T22:23:26Z kind-lilac-eel todo → doing
+- 2026-11-18T22:24:19Z kind-lilac-eel: changed notes
+- 2026-11-18T22:24:19Z kind-lilac-eel doing → error
