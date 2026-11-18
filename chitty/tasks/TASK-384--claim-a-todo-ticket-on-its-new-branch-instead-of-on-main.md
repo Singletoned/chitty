@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket on its new branch instead of on `main`
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-382
@@ -37,3 +37,4 @@ Tests: real-Git, fake-agent runner tests. Replace `tests/test_run_claims_on_main
 - 2026-11-18T16:23:21Z lively-quartz-crane: changed dependencies
 - 2026-11-18T16:33:47Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-18T16:33:47Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:40:32Z lively-quartz-crane planning → cold-read
