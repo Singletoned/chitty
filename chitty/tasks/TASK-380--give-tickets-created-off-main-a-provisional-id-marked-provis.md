@@ -1,6 +1,6 @@
 ---
 title: "Give tickets created off `main` a provisional ID marked `provisional: true`"
-status: planning
+status: cold-read
 labels:
   - needs-minor
 parent: TASK-376
@@ -39,3 +39,4 @@ Tests: a Hypothesis property for `provisional_suffix` in a new `tests/test_prope
 - 2026-11-18T16:20:07Z lively-quartz-crane → backlog
 - 2026-11-18T16:22:50Z lively-quartz-crane: changed labels, description, acceptance criteria
 - 2026-11-18T16:22:50Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:23:29Z lively-quartz-crane planning → cold-read
