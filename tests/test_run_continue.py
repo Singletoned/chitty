@@ -102,7 +102,7 @@ class TestRunContinue(CliTestCase):
         ticket = self.ticket()
         self.write_fake(NO_CHANGE)
         result = self.run_cli("run", "--ticket", ticket)
-        self.assertEqual(result.stdout, f"{ticket}: todo → error\n")
+        self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 6)
 
     def test_command_without_prompt_is_not_continued(self):
@@ -118,7 +118,7 @@ class TestRunContinue(CliTestCase):
         ticket = self.ticket()
         self.write_fake(NO_CHANGE)
         result = self.run_cli("run", "--ticket", ticket)
-        self.assertEqual(result.stdout, f"{ticket}: todo → error\n")
+        self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 1)
 
     def test_ticket_blocked_when_continued_ends_run_blocked(self):

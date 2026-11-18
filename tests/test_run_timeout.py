@@ -52,7 +52,7 @@ class TestAgentTimeout(CliTestCase):
         env["PATH"] = f"{bindir}:{env['PATH']}"
         with patch.dict(os.environ, env):
             result = self.run_cli("run", "--mode", "work")
-        self.assertEqual(result.stdout, "TASK-1: todo → error\n")
+        self.assertEqual(result.stdout, "TASK-1: doing → error\n")
         error = self.run_cli("show", "TASK-1").stdout
         self.assertIn("agent timed out after 2 seconds", error)
         self.assertIn("TIMEOUT_MARKER", error)

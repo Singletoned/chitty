@@ -51,9 +51,9 @@
   `--ticket`, `--mode`, or `--owner`.
 - Refused: `--mode` or `--owner` with `--ticket`, `--owner human`, empty
   `--owner`, and the `--errors` combinations described above.
-- Works from any worktree: finds the main checkout, creates or reuses the
-  ticket's worktree, runs `setup` there, then claims a `todo` ticket on its
-  branch before starting the agent.
+- Works from any worktree: finds the main checkout, claims a `todo` ticket in
+  the main checkout, then makes or reuses its worktree and runs `setup` there
+  before starting the agent.
 - The agent uses the `chitty` beside the runner's Python, not the branch's.
   `pi` and `claude` come from `PATH`. The branch's `chitty.toml` is untouched.
 
@@ -113,7 +113,8 @@
 
 - These moves use the run's own actor, so they count towards
   `REVIEW_FAILURE_LIMIT`. Ctrl-C during the merge aborts it, exit 130.
-- Work mode runs `setup` and `check` before claiming. A non-zero `check` exit
+- Work mode claims a `todo` ticket in the main checkout before preparing the
+  worktree, then runs `setup` and `check`. A non-zero `check` exit
   on a `doing` or `error` ticket appends a `Check failed before this session`
   note with the full output, leaves the status unchanged, and starts the agent;
   an `error` ticket's agent is the repair agent. On a `todo` ticket, or when the

@@ -646,7 +646,7 @@ class TestNext(CliTestCase):
             "import os, pathlib, subprocess, time\n"
             "assert pathlib.Path.cwd() == pathlib.Path(os.environ['WORKER'])\n"
             "path = pathlib.Path(os.environ['WORKER']) / 'chitty/tasks/TASK-1--todo.md'\n"
-            "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
+            "path.write_text(path.read_text().replace('status: todo', 'status: blocked'))\n"
             "time.sleep(1)\n"
             "subprocess.run(['git', 'add', str(path)], cwd=os.environ['WORKER'], check=True)\n"
             "subprocess.run(\n"
@@ -666,11 +666,11 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "TASK-1: doing → blocked\n")
         self.assertEqual(self.git("-C", str(worker), "branch", "--show-current").strip(), "task-1")
         self.assertIn(
-            "status: todo",
+            "status: doing",
             (self.root / "chitty/tasks/TASK-1--todo.md").read_text(),
         )
         self.assertIn(
-            "chitty: edit TASK-1",
+            "worker change",
             self.git("log", "--format=%s", "main..task-1"),
         )
 
@@ -924,7 +924,7 @@ class TestNext(CliTestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 0)
-        self.assertIn("TASK-1: todo → error", result.stdout)
+        self.assertIn("TASK-1: doing → error", result.stdout)
 
     def test_run_refreshes_setup_before_starting_pi(self):
         self.add("Todo")
@@ -1289,7 +1289,7 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout.count("TASK-1"), 1)
         checked = (self.root / ".worktrees/task-1/check-args").read_text()
         self.assertIn("['quoted argument']", checked)
-        self.assertIn("status: todo", checked)
+        self.assertIn("status: doing", checked)
         self.assertIn("Running check", result.stderr)
         self.assertFalse((self.root / ".worktrees/task-1/started").exists())
         repo = Repo.open(self.root)
@@ -1455,7 +1455,7 @@ class TestNext(CliTestCase):
                 os.environ.pop("EXPECTED_ROOT", None)
             else:
                 os.environ["EXPECTED_ROOT"] = previous_root
-        self.assertIn("todo → error", unchanged.stdout)
+        self.assertIn("doing → error", unchanged.stdout)
         worktree = self.root / ".worktrees" / "task-1"
         self.assertEqual(
             self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1"
@@ -1783,7 +1783,7 @@ class TestNext(CliTestCase):
         os.environ["EXPECTED_ROOT"] = str(self.root / ".worktrees" / "task-1")
         try:
             unchanged = self.run_cli("run")
-            self.assertEqual(unchanged.stdout, "TASK-1: todo → error\n")
+            self.assertEqual(unchanged.stdout, "TASK-1: doing → error\n")
             worktree = self.root / ".worktrees" / "task-1"
             self.assertEqual(
                 self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1"
@@ -1796,7 +1796,7 @@ class TestNext(CliTestCase):
             )
             self.assertNotEqual(self.git("rev-parse", "main").strip(), main_head)
             self.assertEqual(self.git("status", "--porcelain"), main_status)
-            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "0")
             invalid = self.run_cli("run", "--errors", exit_code=1)
             self.assertIn("repair agent left TASK-1 in invalid status error", invalid.stderr)
             os.environ["PI_EXIT"] = "3"
@@ -1806,7 +1806,7 @@ class TestNext(CliTestCase):
             failed = self.run_cli("run", "--errors")
             self.assertEqual(failed.stdout, "TASK-1: error → error\n")
             self.assertNotIn("cannot read usage file", failed.stderr)
-            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "0")
             os.environ.pop("PI_EXIT")
             os.environ["PI_SIGNAL"] = "1"
             interrupted = self.run_cli("run", "--errors", exit_code=130)
@@ -1975,7 +1975,7 @@ class TestNext(CliTestCase):
                 result = self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
-        self.assertIn("todo → error", result.stdout)
+        self.assertIn("doing → error", result.stdout)
         self.assertIn("warning: cannot write usage log: disk full", result.stderr)
 
     def test_run_logs_under_project_added_by_setup_refresh(self):
@@ -2217,7 +2217,7 @@ class TestNext(CliTestCase):
                 os.environ.pop("EXPECTED_ROOT", None)
             else:
                 os.environ["EXPECTED_ROOT"] = previous_root
-        self.assertEqual(result.stdout, "TASK-1: todo → error\n")
+        self.assertEqual(result.stdout, "TASK-1: doing → error\n")
         self.assertEqual(repeated.stderr, "no next ticket\n")
         self.assertTrue((worktree / "pi-ran").exists())
         self.assertEqual(
@@ -2329,7 +2329,7 @@ class TestNext(CliTestCase):
         previous_cwd = os.getcwd()
         os.chdir(other)
         try:
-            result = self.run_cli("run", exit_code=1)
+            result = self.run_cli("run")
         finally:
             os.chdir(previous_cwd)
             os.environ["PATH"] = previous_path
@@ -2337,7 +2337,7 @@ class TestNext(CliTestCase):
                 os.environ.pop("EXPECTED_ROOT", None)
             else:
                 os.environ["EXPECTED_ROOT"] = previous_root
-        self.assertIn("latest committed version is on branch main", result.stderr)
+        self.assertNotIn("latest committed version is on branch main", result.stderr)
         self.assertEqual(self.git("-C", str(target), "branch", "--show-current").strip(), "task-1")
 
     def test_run_refuses_an_uncommitted_ticket_in_main(self):

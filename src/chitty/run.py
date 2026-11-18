@@ -380,7 +380,8 @@ def _run_ticket(
     """Prepare the locked ticket's worktree and run its agent."""
     main_root = main_repo.root
     stored = main_repo.find(action.id)
-    repairing = stored.task.frontmatter.status == "error"
+    selected_status = stored.task.frontmatter.status
+    repairing = selected_status == "error"
     if action.mode == "review":
         branch = str(action.id).lower()
         existing_worktree = git.worktree_for_branch(main_root, branch)
@@ -399,6 +400,12 @@ def _run_ticket(
     agent_command = _agent_command(main_repo, action, agent)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
+    if action.mode == "work" and selected_status == "todo":
+        # Claim on main so a new branch inherits its latest ticket version.
+        main_repo.edit(
+            action.id,
+            Edit(status="doing", skip_verdicts=True, skip_current_version=True),
+        )
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
     context["worktree"] = str(worktree)
     setup = main_repo.config.setup
@@ -410,7 +417,8 @@ def _run_ticket(
         try:
             _setup(setup, worktree)
         except ChittyError as error:
-            return _record_ticket_error(main_repo, action, worktree, "setup", error)
+            failed = _record_ticket_error(main_repo, action, worktree, "setup", error)
+            return RunResult(action, selected_status, failed.new_status)
 
     if action.mode == "review":
         context["phase"] = "review preparation"
@@ -431,12 +439,12 @@ def _run_ticket(
     else:
         work_repo = Repo.open(worktree)
     context["phase"] = "check"
-    if failed := _run_check(work_repo, worktree, action, check):
+    if failed := _run_check(work_repo, worktree, action, check, selected_status):
+        if action.mode == "work" and selected_status == "todo":
+            return RunResult(action, selected_status, failed.new_status)
         return failed
     if action.mode == "review" and (blocked := _block_dirty_review(work_repo, worktree, action)):
         return blocked
-    if action.mode == "work" and work_repo.find(action.id).task.frontmatter.status == "todo":
-        work_repo.edit(action.id, claim_edit())
     old_status = work_repo.find(action.id).task.frontmatter.status
     started = datetime.now(UTC)
     elapsed_start = time.monotonic()
@@ -1079,7 +1087,11 @@ def _record_ticket_error(
 
 
 def _run_check(
-    work_repo: Repo, worktree: Path, action: NextAction, command: str
+    work_repo: Repo,
+    worktree: Path,
+    action: NextAction,
+    command: str,
+    selected_status: str,
 ) -> RunResult | None:
     """Validate the prepared worktree before spending an agent or review session."""
     print(f"Running check in {worktree}...", file=sys.stderr)
@@ -1096,14 +1108,18 @@ def _run_check(
         )
     except FileNotFoundError:
         output = f"check command not found: {command}"
-        return _handle_check_failure(work_repo, action, output, exited=False)
+        return _handle_check_failure(
+            work_repo, action, output, exited=False, selected_status=selected_status
+        )
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
     if completed.returncode == 0:
         return None
     output = completed.stdout or "(no output)"
     detail = f"check exited with status {completed.returncode}:\n{_code_block(output)}"
-    return _handle_check_failure(work_repo, action, detail, exited=True)
+    return _handle_check_failure(
+        work_repo, action, detail, exited=True, selected_status=selected_status
+    )
 
 
 def _code_block(text: str) -> str:
@@ -1114,17 +1130,20 @@ def _code_block(text: str) -> str:
 
 
 def _handle_check_failure(
-    work_repo: Repo, action: NextAction, detail: str, *, exited: bool
+    work_repo: Repo,
+    action: NextAction,
+    detail: str,
+    *,
+    exited: bool,
+    selected_status: str,
 ) -> RunResult | None:
     """Start the agent on an unfinished work ticket whose check exited non-zero."""
-    if action.mode == "work" and exited:
-        status = work_repo.find(action.id).task.frontmatter.status
-        if status in {"doing", "error"}:
-            work_repo.edit(
-                action.id,
-                Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
-            )
-            return None
+    if action.mode == "work" and exited and selected_status in {"doing", "error"}:
+        work_repo.edit(
+            action.id,
+            Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
+        )
+        return None
     return _record_ticket_error(
         Repo.open(git.main_checkout(work_repo.root)),
         action,
