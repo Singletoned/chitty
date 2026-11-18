@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -52,9 +52,11 @@ Review failed (tests): Some earlier coverage gaps remain unresolved; the landing
 4: pass - `test_run_check_failure_records_output_and_does_not_claim_or_start_agent` asserts one branch commit, its sole changed path and the untracked check output; the doing-ticket test checks the note and agent. Against `main` runner code the former fails on main status error; `make check` passed 644 tests on rerun.
 5: fail - The new landing test writes `review-marker`, but its check script tests ticket status instead of marker existence, so it does not exercise the specified marker-triggered failure. Make the check depend on the marker and assert the branch-head landing note. Against `main` runner code the test fails with review → error instead of done → error. `make check` passed on rerun; its first run failed with a Hypothesis timing deadline (265 ms versus 200 ms).
 
+Corrected landing-failure regression to fail when the reviewer-created marker exists; focused test and full make check pass.
+
 ## Summary
 
-Runner errors are recorded through the ticket worktree Repo. Added explicit regressions for work and review setup, agent failure, check-failure commit scope and errors selection, and landing failure. Verification: focused runner-error tests pass; make check passes all 644 tests. No follow-up.
+Runner errors are recorded on ticket branches. Completed branch-only regression coverage; landing check now fails from the reviewer-created marker as specified. Verification: focused landing test and make check (644 tests) pass. No follow-up.
 
 ## History
 
@@ -91,3 +93,5 @@ Runner errors are recorded through the ticket worktree Repo. Added explicit regr
 - 2026-11-18T21:48:48Z kind-amber-kestrel doing → review
 - 2026-11-18T21:53:01Z brisk-ochre-wren: changed acceptance criteria, notes
 - 2026-11-18T21:53:01Z brisk-ochre-wren review → doing
+- 2026-11-18T21:57:42Z mellow-ebony-toad: changed notes, summary
+- 2026-11-18T21:57:42Z mellow-ebony-toad doing → review
