@@ -463,3 +463,4 @@ Obsolete 2026-11-18: the one-authoritative-copy model (`docs/plan/ticket-state.m
 - 2026-11-17T22:50:14Z youthful-silver-ibis: changed notes
 - 2026-11-17T22:50:14Z youthful-silver-ibis doing → error
 - 2026-11-18T16:25:12Z lively-quartz-crane: changed notes
+- 2026-11-18T16:25:22Z lively-quartz-crane error → archived
