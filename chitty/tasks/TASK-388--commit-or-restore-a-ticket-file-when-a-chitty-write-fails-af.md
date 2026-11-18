@@ -21,7 +21,7 @@ Tests: real-Git tests in a new `tests/test_failed_writes_restore.py`, inheriting
 
 ## Acceptance Criteria
 
-- [ ] With the failing hook, each of `chitty add`, `chitty edit --note`, `chitty archive <ID>`, `chitty archive` (no ID), `chitty restore <ID>`, `chitty move <ID> human` and `chitty renumber <PATH>` exits 1 with the autocommit error, and afterwards `git status --porcelain` and every ticket file's bytes equal what they were before; each command except `edit` fails before the change
+- [ ] With the failing hook, each of `chitty add`, `chitty edit --note`, `chitty archive <ID>`, `chitty archive` (no ID), `chitty move <ID> human`, `chitty renumber <PATH>`, and a direct `Repo.restore(<ID>)` call (there is no CLI command) fails with the autocommit error, and afterwards `git status --porcelain` and every ticket file's bytes equal what they were before; each except `edit` fails before the change
 - [ ] The same holds with `archive = "delete"` for `chitty archive <ID>`; a later run of each command without the hook succeeds; `make check` passes
 
 ## Notes
@@ -38,3 +38,4 @@ Also on `main` 2026-11-18: `chitty edit TASK-372 --note ...` then `chitty archiv
 - 2026-11-18T17:56:41Z lively-quartz-crane: changed labels, description, acceptance criteria
 - 2026-11-18T17:56:41Z lively-quartz-crane backlog → planning
 - 2026-11-18T17:56:43Z lively-quartz-crane planning → cold-read
+- 2026-11-18T17:56:59Z lively-quartz-crane: changed acceptance criteria
