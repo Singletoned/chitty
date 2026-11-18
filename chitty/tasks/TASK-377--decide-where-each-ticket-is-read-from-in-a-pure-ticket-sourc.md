@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -88,3 +88,4 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T20:07:15Z witty-quartz-toad review → doing
 - 2026-11-18T20:11:54Z youthful-teal-eel: wrote the plan
 - 2026-11-18T20:14:05Z youthful-teal-eel: changed notes, summary
+- 2026-11-18T20:14:08Z youthful-teal-eel doing → review
