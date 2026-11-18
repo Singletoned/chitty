@@ -1,6 +1,6 @@
 ---
 title: Merge `main` into the ticket branch before every work session
-status: planning
+status: todo
 labels:
   - bug
 depends_on:
@@ -43,3 +43,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_merges_ma
 - 2026-11-18T09:22:43Z witty-ginger-falcon planning → cold-read
 - 2026-11-18T09:25:16Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:25:17Z witty-ginger-falcon: changed dependencies, description, acceptance criteria
+- 2026-11-18T09:25:21Z witty-ginger-falcon planning → todo
