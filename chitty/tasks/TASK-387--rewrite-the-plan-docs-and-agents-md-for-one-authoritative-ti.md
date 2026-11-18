@@ -6,6 +6,7 @@ labels:
 owner: untestable
 depends_on:
   - TASK-385
+  - TASK-397
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -33,3 +34,4 @@ Wording in docs; no test can show it is done.
 - 2026-11-18T16:23:27Z lively-quartz-crane: changed dependencies
 - 2026-11-18T16:36:25Z lively-quartz-crane: changed labels, owner, description
 - 2026-11-18T16:36:25Z lively-quartz-crane backlog → todo
+- 2026-11-18T17:53:42Z lively-quartz-crane: changed dependencies
