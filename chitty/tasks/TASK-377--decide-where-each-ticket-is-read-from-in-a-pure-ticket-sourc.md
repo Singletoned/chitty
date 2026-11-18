@@ -42,7 +42,7 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 
 ## Plan
 
-Replace narrow examples with generated, case-directed Hypothesis properties over chain and fork graphs. Cover all selection/error rules, tie breaking, decoy invariance, and dropped-candidate message exclusion; run tests and make check.
+Replace fixed test scenarios with generated case-directed Hypothesis properties. Generate chain and fork commit graphs with ancestry reachability, candidate/decoy/unrelated ref maps, task IDs, checkout states, main tips, and changed-ref sets. Ensure each rule is deliberately reached and compare values or exact error messages under decoy additions. Verify every property against a NotImplementedError stub before implementation, then make check and commit.
 
 ## Notes
 
@@ -61,6 +61,8 @@ Review failed (tests): The expanded suite still uses fixed scenarios where the t
 2: fail - Previously reported selection and conflict coverage remains incomplete: the only descendant case selects local, local tie is tested only while checked out, and conflict tests only a remote. Generate candidate maps, checkout states and changed-ref sets, including remote descendants over a checked-out local and local conflicts, on both shapes.
 3: fail - The previously reported decoy invariance gap remains: `test_decoys_and_unrelated_refs_do_not_change_result` compares only one successful case with fixed maps, never errors or their messages. Generate maps and compare results and error messages across both graph shapes, including ignored remote names without a slash. The dropped-candidate divergence case now exists, but uses a fixed graph and fixed tips.
 4: pass - Notes record the original six stub failures; an in-memory `NotImplementedError` replacement run against the current suite printed `Ran 8 tests` and `FAILED (errors=8)`. `make check` printed `Ran 637 tests` and `OK`.
+
+The ticket requirements are actionable; continuing implementation of the missing generated, case-directed properties identified in the reviews.
 
 ## Summary
 
@@ -97,3 +99,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T20:14:08Z youthful-teal-eel doing → review
 - 2026-11-18T20:16:38Z witty-dusky-toad: changed acceptance criteria, notes
 - 2026-11-18T20:16:38Z witty-dusky-toad review → doing
+- 2026-11-18T20:23:31Z calm-quartz-zander: wrote the plan
+- 2026-11-18T20:26:07Z calm-quartz-zander: changed notes
