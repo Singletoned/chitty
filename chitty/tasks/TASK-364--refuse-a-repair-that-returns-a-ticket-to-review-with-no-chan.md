@@ -1,6 +1,6 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -206,6 +206,11 @@ make: *** [check] Error 2
 
 Error repair, 2026-11-17: the runner's pre-session check failed on the uncommitted fixture rewrite in `tests/test_repair_requires_work.py`. Two causes, both in the test: the `code` agent committed with the one-paragraph message `Task: TASK-1`, which `TASK-346`'s trailer check (now on `main`) treats as no trailer; and the refused cases asserted with `chitty show`, which returns the repair branch's committed `review` while `main` stays `error`. Fixed both in the test; `make check` passes on the branch. With the refusal disabled (`if False and ...` at `src/chitty/run.py:480`), exactly the `edit` and `uncommitted` cases fail.
 
+Reviewed: The earlier fixture-order finding is resolved; the fake agent now uses the specified actions and order.
+1: pass - make check passed; the earlier review recorded all three property tests erroring with a NotImplementedError stub.
+2: pass - make check passed 627 tests including the four fake-agent cases and updated repair fixtures. The worker recorded that disabling the refusal makes exactly the edit and uncommitted cases fail.
+3: pass - make check passed the real-git rename and Unicode test; replacing the helper in memory with git diff --name-only made the rename assertion fail, showing only chitty/tasks/a.md instead of both paths.
+
 ## Summary
 
 Implemented committed diff-path detection for repair handoffs. Verification: make check passes; focused repair, property, and real-git tests pass. Regression evidence: disabling the check makes the two no-work fake-agent cases fail as expected. Changes committed in add740b with Task: TASK-364. No follow-ups.
@@ -234,3 +239,5 @@ Implemented committed diff-path detection for repair handoffs. Verification: mak
 - 2026-11-17T22:35:27Z open-dusky-raven todo → error
 - 2026-11-17T22:48:42Z kind-umber-toad: changed notes; ticked acceptance criteria
 - 2026-11-17T22:48:42Z kind-umber-toad error → review
+- 2026-11-18T09:30:45Z youthful-lilac-badger: changed notes
+- 2026-11-18T09:30:45Z youthful-lilac-badger review → done
