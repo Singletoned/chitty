@@ -15,7 +15,7 @@ Decisions:
 
 - New role file `src/chitty/roles/rebase.md`, printed by `chitty guide rebase <ID>`. It says: a rebase onto the integration branch stopped on conflicts; resolve each conflicted file keeping the intent of both sides; `git add` it; run `git -c core.editor=true rebase --continue`; repeat until no rebase is in progress; never run `git rebase --abort` or `--skip`; then run the configured setup and check commands and fix what the rebase broke. Keep it general (no repository-specific advice), as `AGENTS.md` requires of the guides.
 - Add `rebase` to `ROLE_NAMES` in `src/chitty/store.py`, and to the role list in the `guide` command's help in `src/chitty/cli.py`; it takes a ticket ID like `work`.
-- `guide()` in `src/chitty/store.py` gains a `directory: Path` argument (no default): the checkout whose state it reads. The CLI and MCP pass the current directory. The runner's `_agent_command` in `src/chitty/run.py` passes the ticket worktree, since the runner's own directory is the main checkout. This ticket makes that change, so `TASK-370` only relies on it.
+- `guide()` in `src/chitty/store.py` gains a `directory: Path` argument (no default): the checkout whose state it reads. The CLI passes the current directory. MCP has no role-guide entry point (`src/chitty/mcp.py`), so it needs no change. The runner's `_agent_command` in `src/chitty/run.py` passes the ticket worktree, since the runner's own directory is the main checkout. This ticket makes that change, so `TASK-370` only relies on it.
 - For roles `work` and `repair`, when `git.is_repository(directory)` and `git.rebase_in_progress(directory)` are both true, insert the `rebase` role text, followed by a blank line, directly after the `Work only on Chitty ticket <ID>.` line and before the role's usual text. Outside a repository there is no rebase, so nothing is added; any Git error inside a repository raises as usual.
 
 Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, with real repositories: a rebase stopped on a real conflict, with both backends (`rebase-merge` by default and `rebase-apply` with `git rebase --apply`), from the worktree root and from a subdirectory, and from a linked worktree; a clean repository; and a directory outside any repository. The oracle for "unchanged" is that, with no rebase in progress, the output equals the stopped-rebase output with the inserted rebase text and its blank line removed, and equals the output outside a repository. No property: a fixed set of states and two guides, all listed.
@@ -59,6 +59,8 @@ Review failed (design): Newly discovered ticket/code mismatch: the description s
 3: pass - Focused tests printed OK for clean and outside-repository output comparisons.
 4: pass - The fake-agent stopped-rebase and mismatched-worktree tests printed OK; the earlier note records the runner test failing before the fix. `make check` printed OK (642 tests).
 
+Planning 2026-11-18: removed the requirement that MCP passes the current directory to `guide()`; `src/chitty/mcp.py` has no role-guide entry point. Nothing else changed; the implementation on this branch stands. Fits the one-authoritative-copy model (`docs/plan/ticket-state.md`).
+
 ## Summary
 
 Validated conventional worktree identity during stopped rebases using Git rebase metadata; unrelated worktrees are rejected. Added mismatched-worktree regression coverage. `make check` passes (642 tests). Ready for review.
@@ -85,3 +87,4 @@ Validated conventional worktree identity during stopped rebases using Git rebase
 - 2026-11-18T11:37:55Z zesty-khaki-vole doing → review
 - 2026-11-18T11:40:57Z witty-maroon-newt: changed owner, acceptance criteria, notes
 - 2026-11-18T11:40:57Z witty-maroon-newt review → planning
+- 2026-11-18T16:30:36Z lively-quartz-crane: changed description, notes
