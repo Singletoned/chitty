@@ -488,6 +488,12 @@ def _git_path(root: Path, argument: str) -> Path:
     return (root / path).resolve() if not path.is_absolute() else path.resolve()
 
 
+def _git_dir_path(root: Path, path: str) -> Path:
+    value = _git(root, "rev-parse", "--git-path", path).strip()
+    resolved = Path(value)
+    return (root / resolved).resolve() if not resolved.is_absolute() else resolved.resolve()
+
+
 def file_at_merge_base(root: Path, first_ref: str, second_ref: str, path: Path | str) -> str | None:
     """Read a file at the merge-base of two refs, or report when none exists."""
     result = subprocess.run(
@@ -534,10 +540,19 @@ def _git(root: Path, *args: str) -> str:
 
 def rebase_in_progress(root: Path) -> bool:
     """Whether this worktree has a rebase stopped part-way."""
-    return any(
-        (root / _git(root, "rev-parse", "--git-path", name).strip()).exists()
-        for name in ("rebase-merge", "rebase-apply")
-    )
+    return any(_git_dir_path(root, name).exists() for name in ("rebase-merge", "rebase-apply"))
+
+
+def rebasing_branch(root: Path) -> str | None:
+    """Return the branch being rebased, when a rebase records its identity."""
+    for backend in ("rebase-merge", "rebase-apply"):
+        metadata = _git_dir_path(root, backend)
+        if metadata.exists():
+            head_name = metadata / "head-name"
+            if head_name.exists():
+                name = head_name.read_text().strip()
+                return name.removeprefix("refs/heads/")
+    return None
 
 
 def merge_in_progress(root: Path) -> bool:

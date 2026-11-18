@@ -145,6 +145,31 @@ class TestRunContinue(CliTestCase):
 
         self.assertNotIn("git rebase --continue", guide("work", ticket, directory=self.root))
 
+    def test_worktree_for_another_branch_is_rejected(self):
+        from chitty.errors import ChittyError
+        from chitty.ids import TaskId
+        from chitty.run import _worktree
+        from chitty.store import NextAction
+
+        ticket = self.ticket()
+        branch = ticket.lower()
+        self.git("branch", "other")
+        worktree = self.root / ".worktrees" / branch
+        worktree.parent.mkdir(exist_ok=True)
+        subprocess.run(
+            ["git", "worktree", "add", "--quiet", str(worktree), "other"],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        with self.assertRaisesRegex(ChittyError, "not the worktree"):
+            _worktree(
+                self.root,
+                NextAction("work", TaskId.parse(ticket)),
+                "main",
+                allow_rebase=True,
+            )
+
     def test_command_without_prompt_is_not_continued(self):
         config = self.root / "chitty.toml"
         config.write_text(

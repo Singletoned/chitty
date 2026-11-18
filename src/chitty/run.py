@@ -940,8 +940,13 @@ def _worktree(
                 f"{destination} has an unfinished rebase; finish it or run "
                 "`git rebase --abort` there"
             )
-        # A stopped rebase detaches HEAD, hiding the ticket branch from Git's
-        # worktree list. The conventional path still identifies its worktree.
+        expected_branch = (
+            git.rebasing_branch(destination)
+            if git.rebase_in_progress(destination)
+            else git.current_branch(destination)
+        )
+        if expected_branch != branch:
+            raise ChittyError(f"{destination} is not the worktree for branch {branch}")
         return destination.resolve()
     existing = git.worktree_for_branch(main_root, branch)
     if existing is not None:
