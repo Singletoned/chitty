@@ -23,6 +23,10 @@ Tests: in `tests/test_run_model_defaults.py`, which tests the existing model set
 - [ ] `chitty init` writes the commented `rebase_model` line directly after `review_model`, and a second `chitty init` does not add it again (a new test in `tests/test_run_model_defaults.py` or beside the existing init tests); `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
 - [ ] `docs/plan/config.md` and `docs/plan/next-action-and-runner.md` mention `rebase_model`; `make check` passes
 
+## Plan
+
+Add optional rebase_model to configuration validation and both generated templates. Make _model_arguments select an explicit model setting from its mode and reject unknown modes; update its caller. Cover set/unset/model-override and invalid mode, config validation, plus init insertion/idempotence in model-default tests. Document the setting and run focused tests followed by make format and make check.
+
 ## History
 
 - 2026-11-18T18:17:25Z lively-quartz-crane → backlog
@@ -32,3 +36,4 @@ Tests: in `tests/test_run_model_defaults.py`, which tests the existing model set
 - 2026-11-18T18:19:11Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:19:13Z lively-quartz-crane planning → todo
 - 2026-11-18T23:20:15Z plucky-bronze-jay todo → doing
+- 2026-11-18T23:21:07Z plucky-bronze-jay: wrote the plan
