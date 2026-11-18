@@ -1,6 +1,6 @@
 ---
 title: Stop `git._read_blobs` hanging on a few thousand objects
-status: doing
+status: review
 labels:
   - bug
 parent: TASK-376
@@ -20,12 +20,20 @@ Tests: in `tests/test_git.py`, inheriting `RepoTestCase`, a repository with 5000
 
 ## Acceptance Criteria
 
-- [ ] `_read_blobs` returns all 5000 objects of the large case, each with the content written, within the 20 s timeout; the test fails (times out) before the change
+- [x] `_read_blobs` returns all 5000 objects of the large case, each with the content written, within the 20 s timeout; the test fails (times out) before the change
 - [ ] The existing `tests/test_git.py` tests pass unchanged, and `make check` passes
 
 ## Plan
 
 Add a RepoTestCase regression test that creates and commits 5,000 approximately 1 KB files, invokes this checkout’s chitty.git._read_blobs in a subprocess with a 20-second timeout, and verifies every returned object and content. Run it against the current implementation to confirm the hang. Replace the sequential blocking pipe writes/reads in _read_blobs with subprocess.communicate(input=...), then parse its returned stdout using the existing cat-file batch framing and preserve missing-object, malformed-header, non-blob, decoding, and Git-failure behavior. Run the focused test, formatting, and make check; commit implementation and test with a Task: TASK-395 trailer, record verification, then set the ticket to review.
+
+## Notes
+
+The 5,000-object regression test timed out at 20 seconds against the original implementation, then passed after the communicate-based fix. Focused tests passed. make check reached all 653 tests but failed twice on the unrelated existing Hypothesis test test_refused_edit_restores_repository, with generated note 0 newline = triggering a TaskError message mismatch; ruff and pyright passed.
+
+## Summary
+
+Implemented communicate-based Git cat-file batching and added a subprocess regression test covering 5,000 committed 1 KB blobs. The regression timed out before the fix and passes after it; all tests in tests/test_git.py pass. make check was attempted twice and failed both times in unrelated tests/test_property_refused_write.py::TestRefusedEditProperty.test_refused_edit_restores_repository. Ruff formatting/check and pyright pass. Commit: 8f416fbd (Task: TASK-395). Reviewer: assess the unrelated full-check failure; no follow-up implementation needed.
 
 ## History
 
@@ -38,3 +46,5 @@ Add a RepoTestCase regression test that creates and commits 5,000 approximately 
 - 2026-11-18T17:45:11Z lively-quartz-crane planning → todo
 - 2026-11-18T22:37:28Z zesty-russet-raven todo → doing
 - 2026-11-18T22:38:30Z zesty-russet-raven: wrote the plan
+- 2026-11-18T22:42:00Z zesty-russet-raven: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T22:42:00Z zesty-russet-raven doing → review
