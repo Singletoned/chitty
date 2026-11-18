@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-18
 ---
@@ -25,7 +25,7 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 
 - [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
-- [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
+- [ ] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
 - [ ] The prompt comes from the directory given: calling `_agent_command` with `directory` set to a worktree with a stopped rebase gives a work prompt containing the rebase text, while the main checkout has none; on `main` this test fails because the prompt lacks the rebase text. `_worktree` is unchanged from `main`: a work run on a `doing` ticket whose `.worktrees/<branch>` holds a leftover stopped rebase exits 1 with `has an unfinished rebase` on stderr and the fake agent never runs. `make check` passes
 
 ## Plan
@@ -112,3 +112,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T20:37:38Z lively-quartz-crane planning → cold-read
 - 2026-11-18T20:39:50Z lively-quartz-crane: changed description, acceptance criteria, notes
 - 2026-11-18T20:39:50Z lively-quartz-crane cold-read → planning
+- 2026-11-18T20:40:10Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T20:40:10Z lively-quartz-crane planning → cold-read
