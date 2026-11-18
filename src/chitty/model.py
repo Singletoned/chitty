@@ -281,7 +281,7 @@ class Task:
         """Set a frontmatter key; None or [] removes it."""
         if key not in FIELD_ORDER:
             raise TaskError(f"unknown frontmatter key {key!r}")
-        if key == "provisional" and value not in (True, None):
+        if key == "provisional" and value is not True and value is not None:
             raise TaskError("provisional must be True or None")
         fields = list(self._fields)
         index = next((i for i, s in enumerate(fields) if s.key == key), None)
