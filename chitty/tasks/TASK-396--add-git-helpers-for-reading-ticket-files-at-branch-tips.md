@@ -30,6 +30,14 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 
 Add the requested branch/ref/tree helpers in src/chitty/git.py, reusing _read_blobs and the existing error conventions. Add real-Git tests in tests/test_git.py for each specified edge case, including a Hypothesis odd-path round trip for active and archive trees. Run the new tests against the existing implementation first where possible, then make the change, format, run make check, and commit with a Task trailer.
 
+## Notes
+
+The new tests initially exposed failures around unusual filenames passed to cat-file, literal pathspec option placement, and UTF-8 decode errors. They pass after the fixes.
+
+## Summary
+
+Implemented the requested Git helpers and real-Git tests for branch tips, refs, odd file paths, UTF-8 errors, pathspecs, and unrelated histories. Targeted tests pass. Ruff and pyright pass; make check reports all 657 Python test suites passing, but exits nonzero in a pre-existing Chitty runner test whose fixture lacks required autocommit configuration. Follow-up: none.
+
 ## History
 
 - 2026-11-18T17:51:42Z lively-quartz-crane → backlog
@@ -42,3 +50,4 @@ Add the requested branch/ref/tree helpers in src/chitty/git.py, reusing _read_bl
 - 2026-11-18T17:55:01Z lively-quartz-crane: changed description
 - 2026-11-18T22:46:22Z lively-silver-wren todo → doing
 - 2026-11-18T22:47:28Z lively-silver-wren: wrote the plan
+- 2026-11-18T22:50:18Z lively-silver-wren: changed notes, summary
