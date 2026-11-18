@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket in the main checkout before preparing its worktree
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -27,7 +27,7 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_claims_on_main
 ## Acceptance Criteria
 
 - [x] A work run on a `todo` ticket with no branch: the claim commit (`todo → doing`) is on `main` and is an ancestor of the new branch, and the fake agent records the worktree ticket as `doing`; the test fails before the change
-- [ ] The `TASK-343` state, made with real commits (branch created and its ticket edited, then a later edit to the ticket committed on `main`): a work run on the `todo` ticket claims it on `main` without the `latest committed version` error and the fake agent starts; the test fails before the change
+- [x] The `TASK-343` state, made with real commits (branch created and its ticket edited, then a later edit to the ticket committed on `main`): a work run on the `todo` ticket claims it on `main` without the `latest committed version` error and the fake agent starts; the test fails before the change
 - [x] A ticket chosen as `todo` whose `setup` fails, and one whose `check` fails, both end `error` with no agent started; a `doing` ticket whose `check` fails still starts the agent
 - [x] `docs/plan/next-action-and-runner.md` has the two replacement sentences from the Description, and `make check` passes
 
@@ -45,9 +45,11 @@ Review failed (tests): Strengthen the stale-history regression so it reproduces 
 3: pass - The focused setup-failure, todo check-failure, and doing check-failure tests all report ok and exercise the required outcomes.
 4: pass - The diff contains both requested documentation replacements; make check reports 629 tests OK, ruff clean, and pyright 0 errors.
 
+Stale-history regression verified: running the focused test with run.py from the parent of the implementation commit fails with the original `latest committed version is on branch main` error before the fake agent starts. The fixed runner passes and records todo → doing on main.
+
 ## Summary
 
-Claimed todo work on main before preparing its worktree; check-failure handling retains the selected status. Added real-Git coverage for claim ancestry and stale main ticket history; updated runner docs and affected expectations. Verified with `make check`, focused regression tests, and `chitty fix`. No follow-ups.
+Strengthened the stale-history regression with deterministic author and committer dates and assertions that the main checkout records the claim and the fake agent starts. Verified the regression fails with the pre-change runner and passes with the fix; `python -m unittest tests.test_run_claims_on_main -v` passes (2 tests), and `make check` passes (629 tests). `chitty fix` completes with existing warnings only. No follow-ups.
 
 ## History
 
@@ -63,3 +65,5 @@ Claimed todo work on main before preparing its worktree; check-failure handling 
 - 2026-11-18T10:52:01Z eager-teal-crane doing → review
 - 2026-11-18T10:54:40Z friendly-dusky-wren: changed acceptance criteria, notes
 - 2026-11-18T10:54:40Z friendly-dusky-wren review → doing
+- 2026-11-18T11:00:53Z vivid-hazel-wren: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T11:00:53Z vivid-hazel-wren doing → review
