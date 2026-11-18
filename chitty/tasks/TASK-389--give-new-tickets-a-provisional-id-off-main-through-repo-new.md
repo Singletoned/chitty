@@ -1,6 +1,6 @@
 ---
 title: Give new tickets a provisional ID off `main` through `Repo.new_id`
-status: cold-read
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -19,21 +19,21 @@ Starts after `TASK-380` lands: `ids.provisional_suffix` and the `provisional` fi
 
 Decisions:
 
-- "Off `main`" means a Git checkout (`git.is_repository`) whose current branch is not the main branch (`Repo._main_branch()`), including a detached `HEAD`. A directory outside Git is never off `main`: it keeps sequential numbers.
+- "Off `main`" means a Git checkout (`git.is_repository`) whose current branch is not the main branch (`Repo._main_branch()`), including a detached `HEAD`. A directory outside Git is never off `main`: it keeps sequential numbers. Off `main` while the configured main branch has no local branch (for example a repository on `master` with the default `main_branch`), `new_id` raises `ChittyError` naming the missing branch and `main_branch` in `chitty.toml`, rather than silently handing out provisional IDs for a configuration mistake.
 - New method `Repo.new_id(context) -> tuple[TaskId, bool]`, checked in this order: a context with `random_ids = true` gets a numeric random ID as today and `False`; off `main`, a provisional ID from `ids.provisional_suffix(_provisional_draw)` and `True`; otherwise `next_number` and `False`. `_provisional_draw(n)` is a module function in `src/chitty/store.py` returning `secrets.randbelow(n)`, the seam tests patch, like `_random_number`. A provisional ID already used by a ticket file in this checkout (active or archive directory of any context) is redrawn, up to `RANDOM_ID_ATTEMPTS`, then `ChittyError`.
-- `Repo.add`, `Repo.move` and `Repo.renumber` get new IDs only from `new_id`, and set the ticket's `provisional` field from its boolean (`True`, or `None` to remove it). So `move` or `renumber` on `main` of a provisional ticket gives a sequential ID and clears the field.
+- `Repo.add`, `Repo.move` and `Repo.renumber` get new IDs only from `new_id`, and set the ticket's `provisional` field from its boolean (`True`, or `None` to remove it). So `move` or `renumber` on `main` of a provisional ticket gives a sequential ID and clears the field. `renumber` sets the field on the task it passes to `_relocate`, which only sets `moved_from`. `Inbox` pulls (`src/chitty/inbox.py`) go through `add`, so off `main` they get provisional IDs too: intended.
 - Remove the rule in `resolve_add_target` filing plain `add` in a linked worktree into `backlog`: with no `-c`, `add` uses `default_context` everywhere. MCP `add` goes through the same function.
-- Update `tests/test_backlog_context.py` (the linked-worktree case) and `tests/test_store.py` `test_numbers_count_committed_tasks_on_another_branch`, which adds from a linked worktree and now gets provisional IDs. The guides, README and docs are `TASK-390`.
+- Update every test that expects a plain `add` in a worktree, on a non-`main` branch, or in a repository on `master` (under `RepoTestCase`'s isolated `HOME`, `git init` makes `master`) to use `git init -b main` or expect a provisional ID or the default context. Known cases from a cold read that ran the suite: `tests/test_backlog_context.py` (`test_plain_add_in_a_linked_worktree_uses_backlog`, including its `-c human` line); `tests/test_mcp.py` (`test_plain_add_in_a_linked_worktree_uses_backlog`); `tests/test_autocommit.py` (`test_linked_worktree_write_does_not_upgrade_setup`, `test_linked_worktree_write_with_stale_setup_succeeds_without_autocommit`); `tests/test_check_cross_branch_references.py` (the "other branch" case of `test_reference_existence_matches_show`); `tests/test_property_refused_write.py` (`setUp`); `tests/test_cli.py` (`TestInit.test_stale_writes_warn_and_skip_damaged_guide_upgrade`); `tests/test_store.py` (`test_numbers_count_committed_tasks_on_another_branch`: commit its numeric file on `other` directly with Git, since `add` there is now provisional). The guides, README and docs are `TASK-390`.
 - Label `needs-minor`: plain `add` in a worktree changes context and ID form.
 
-Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, inheriting `RepoTestCase` from `tests/support.py` and running `git init` itself. Provisional tickets are referred to by full ID (`TASK-K7Q2M`): bare suffixes do not resolve. No property: a fixed set of checkout states (main, linked worktree on a branch, main checkout switched to a branch, detached `HEAD`, outside Git) and commands (`add`, `move`, `renumber`), each listed in the criteria and tested.
+Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, inheriting `CliTestCase` from `tests/test_cli.py` (for `run_cli`) and running `git init -b main` itself. Provisional tickets are referred to by full ID (`TASK-K7Q2M`): bare suffixes do not resolve. No property: a fixed set of checkout states (main, linked worktree on a branch, main checkout switched to a branch, detached `HEAD`, outside Git) and commands (`add`, `move`, `renumber`), each listed in the criteria and tested.
 
 ## Acceptance Criteria
 
 - [ ] Plain `chitty add` (no `-c`) in a linked worktree on branch `feature`, in the main checkout switched to `feature`, and on a detached `HEAD` each creates a ticket in `default_context` whose ID suffix contains a letter and whose file has `provisional: true`; the linked-worktree case fails before the change
-- [ ] Plain `chitty add` on `main` and in a directory outside Git gives the next sequential number with no `provisional` key, and `chitty add -c backlog` on `feature` still gives a numeric random ID with no `provisional` key
-- [ ] `chitty move` to another context on `feature` gives a provisional ID with `provisional: true`; after `git merge feature` into `main`, `chitty move` of that ticket in the main checkout gives a sequential ID and removes the key, and `chitty renumber` of a provisional file that shares its ID with another file on `main` does the same
-- [ ] With `_provisional_draw` patched so the first suffix equals an existing ticket's, `chitty add` on `feature` gets a different ID; when every draw clashes it fails with `ChittyError` after `RANDOM_ID_ATTEMPTS`; `make check` passes
+- [ ] Plain `chitty add` on `main` and in a directory outside Git gives the next sequential number with no `provisional` key; `chitty add -c backlog` on `feature` still gives a numeric random ID with no `provisional` key; in a repository on `master` with the default `main_branch`, `chitty add` fails naming `main` and `main_branch` and creates no file
+- [ ] `chitty move` to the `human` context on `feature` gives a provisional ID with `provisional: true`; after `git merge feature` into `main`, `chitty move` of that ticket in the main checkout gives a sequential ID and removes the key, and `chitty renumber` of a provisional file that shares its ID with a copy under another slug on `main` (as `tests/test_renumber.py` builds duplicates) does the same
+- [ ] With `_provisional_draw` patched to return 0 for its first six calls and 1 after, and a ticket `TASK-AAAAAA` already present, `chitty add` on `feature` gets `TASK-BBBBBB`; patched to always return 0, it fails with `ChittyError` after `RANDOM_ID_ATTEMPTS` attempts; `make check` passes
 
 ## History
 
@@ -41,3 +41,5 @@ Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, 
 - 2026-11-18T16:28:38Z lively-quartz-crane: changed labels, dependencies, description, acceptance criteria
 - 2026-11-18T16:28:38Z lively-quartz-crane backlog → planning
 - 2026-11-18T16:29:27Z lively-quartz-crane planning → cold-read
+- 2026-11-18T16:41:13Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T16:41:13Z lively-quartz-crane cold-read → planning
