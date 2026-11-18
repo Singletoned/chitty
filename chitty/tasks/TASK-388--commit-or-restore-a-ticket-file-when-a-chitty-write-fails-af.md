@@ -1,6 +1,6 @@
 ---
 title: Commit or restore a ticket file when a Chitty write fails after writing it
-status: todo
+status: doing
 labels:
   - bug
 parent: TASK-376
@@ -42,3 +42,4 @@ Also on `main` 2026-11-18: `chitty edit TASK-372 --note ...` then `chitty archiv
 - 2026-11-18T17:59:25Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:59:25Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:59:27Z lively-quartz-crane planning → todo
+- 2026-11-18T22:23:26Z kind-lilac-eel todo → doing
