@@ -5,30 +5,26 @@ labels:
   - bug
   - needs-minor
 priority: high
-depends_on:
-  - TASK-359
 created: 2026-11-18
 ---
 
 ## Description
 
-Today `_prepare_review` merges `main` into the ticket branch with `git.merge_main`, and `_land` merges it again with `git.merge` before fast-forwarding `main` (`src/chitty/run.py`). A conflict only in the ticket file fails the review and, writing that failure from the worktree, can stop `chitty run --loop` with `<ID>'s latest committed version is on branch main` (`TASK-333` 2026-11-16, `TASK-364` 2026-11-17).
+Principle (decided 2026-11-18, `docs/plan/ticket-state.md`, on branch `plan/ticket-state` until it lands on `main`): `main` is the base every ticket branch builds on. The runner rebases the branch onto `main` whenever it touches it. Under the one-authoritative-copy model a ticket file changes only on its branch, so ticket files rebase like any other file; there is no ticket merge (`TASK-359` is archived). Any conflict, ticket file or not, goes to an agent.
 
-Principle (decided 2026-11-18): `main` is the base every ticket branch builds on. The runner rebases the branch onto `main` whenever it touches it; this is mechanical. Ticket files are merged mechanically too, because the branch's ticket commits carry the worker's progress. Only code conflicts go to an agent.
-
-Starts after `TASK-359` lands: `merge_ticket` and `TicketMergeConflict` do not exist yet.
+Today `_prepare_review` merges `main` into the ticket branch with `git.merge_main`, and `_land` merges it again with `git.merge` before fast-forwarding `main` (`src/chitty/run.py`), leaving merge commits on the branch and in `main`.
 
 Decisions:
 
-- Pure function `ticket_only_conflicts(conflicts: Sequence[tuple[str, Path]], ticket_directories: Sequence[Path]) -> bool` in `src/chitty/git.py`, over `(status code, path)` pairs from `git status --porcelain`: true exactly when the list is non-empty and every entry has code `UU` and a path whose parent is exactly one of the directories. Any other unmerged code (`AA`, `AU`, `UA`, `DU`, `UD`, `DD`), a nested path, or a sibling directory sharing a prefix (`tasks-old` beside `tasks`) makes it false.
-- Build `git.rebase_onto(root: Path, main_branch: str, ticket_directories: Sequence[Path]) -> list[str]` here; `TASK-370` reuses it. `ticket_directories` are the active and archive directories of every configured context, relative to the repository. It runs `git -c rerere.enabled=false rebase --autostash <main_branch>`. At each stop where `ticket_only_conflicts` holds, it resolves each path with `merge_ticket` (`TASK-359`) from index stages 1, 2 and 3, writes and stages it, and continues with `git -c core.editor=true rebase --continue`, as many times as the rebase stops. It returns `[]` when the rebase completes. Otherwise, it leaves the rebase stopped and returns every unmerged path, ticket files included; a `TicketMergeConflict` makes its path count as unmerged. A Git failure that is not a conflict raises `ChittyError`.
-- `_prepare_review` calls it instead of `merge_main`. On a returned conflict it runs `git rebase --abort` and fails the review as `Review failed (integration)` naming every path in backticks, as today. `TASK-375` later replaces that with a conflict-resolution session.
-- `_land` calls it too, instead of `git.merge`, then fast-forwards `main`. A conflict aborts the rebase and is a landing error, as today. Remove `git.merge` and `git.merge_main`; nothing else uses them.
-- Ctrl-C during either rebase aborts it, exit 130: `_prepare_review` keeps its `KeyboardInterrupt` handler, and `_land` gains one that aborts the rebase and raises `RunInterrupted("landing")`. No test: it needs a signal mid-rebase.
+- New `git.rebase_onto(root: Path, main_branch: str) -> list[str]` in `src/chitty/git.py`: runs `git -c rerere.enabled=false rebase --autostash <main_branch>`; returns `[]` when it completes; on a conflict, leaves the rebase stopped and returns every unmerged path (from `git diff --name-only --diff-filter=U`). Any other Git failure raises `ChittyError`. `TASK-370` reuses it.
+- `_prepare_review` calls it instead of `merge_main`. On conflicts it runs `git rebase --abort` and fails the review as `Review failed (integration): rebasing onto <main> conflicts in <paths>` with each path in backticks, as today's merge failure does. `TASK-375` later replaces the abort with a resolution session.
+- `_land` calls it instead of `git.merge`, then fast-forwards `main`. A conflict aborts the rebase and is a landing error, as today.
+- Remove `git.merge` and `git.merge_main` once nothing uses them.
+- Ctrl-C during either rebase aborts it and raises `RunInterrupted` (exit 130): `_prepare_review` adapts its `KeyboardInterrupt` handler, and `_land` gains one. No test: it needs a signal mid-rebase.
 - The uncommitted-files block before a review stays.
-- In `docs/plan/next-action-and-runner.md`, add the principle paragraph, and say under `## Before a review` (step 4) and `## Landing` that the branch is rebased onto `main` and ticket-file conflicts are merged mechanically.
+- In `docs/plan/next-action-and-runner.md`, add the principle paragraph, and say under `## Before a review` and `## Landing` that the branch is rebased onto `main`.
 
-Tests: a Hypothesis property for `ticket_only_conflicts` in a new `tests/test_property_ticket_conflicts.py`: generate directory lists and conflict lists mixing every unmerged code with paths directly in a directory, nested below one, in a prefix-sharing sibling, and elsewhere; the result is true exactly when the list is non-empty and every entry qualifies, whatever the order. Create the function first raising `NotImplementedError`. Real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `tests/test_landing.py`, using `GIT_COMMITTER_DATE` where order matters, as `tests/test_store.py` does; the fake reviewer writes a marker file when it starts. The runner paths have no property: real Git and runner processes over the fixed cases in the criteria.
+Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `tests/test_landing.py`, with `git init -b main`; the fake reviewer writes a marker file when it starts. No property: real Git and runner processes over the fixed cases in the criteria; `rebase_onto`'s two outcomes are tested directly in `tests/test_git.py`.
 
 ## Acceptance Criteria
 
@@ -51,3 +47,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T09:56:05Z witty-ginger-falcon planning → todo
 - 2026-11-18T15:47:46Z witty-ginger-falcon: changed notes
 - 2026-11-18T15:47:46Z witty-ginger-falcon todo → planning
+- 2026-11-18T17:57:37Z lively-quartz-crane: changed dependencies, description
