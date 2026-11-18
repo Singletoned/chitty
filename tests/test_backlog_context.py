@@ -28,7 +28,7 @@ class TestRandomIds(CliTestCase):
         self.assertEqual(self.json("add", "Sequential", "-d", "x")["id"], "TASK-1")
         self.run_cli("check")
 
-    def test_plain_add_in_a_linked_worktree_uses_backlog(self):
+    def test_plain_add_in_a_linked_worktree_uses_default_context(self):
         git = ["git", "-C", str(self.root)]
         subprocess.run([*git, "init", "--quiet", "-b", "main"], check=True)
         subprocess.run([*git, "config", "user.email", "test@example.com"], check=True)
@@ -46,12 +46,11 @@ class TestRandomIds(CliTestCase):
         )
         os.chdir(worktree)
 
-        with mock.patch("chitty.store._random_number", side_effect=[48213907, 12345678]):
-            self.run_cli("add", "Idea")
-            self.run_cli("add", "Human idea", "-c", "human", "-d", "x")
+        self.run_cli("add", "Idea", "-d", "Description.")
+        self.run_cli("add", "Human idea", "-c", "human", "-d", "x")
 
-        self.assertTrue((worktree / "chitty/backlog/BACKLOG-48213907--idea.md").exists())
-        self.assertTrue((worktree / "chitty/human/HUMAN-1--human-idea.md").exists())
+        self.assertTrue(list((worktree / "chitty/tasks").glob("TASK-*--idea.md")))
+        self.assertTrue(list((worktree / "chitty/human").glob("HUMAN-*--human-idea.md")))
 
     def test_retries_a_number_already_used(self):
         self.add_backlog(48213907)

@@ -74,9 +74,19 @@ class TestStore(StoreTestCase):
         self.addCleanup(self.remove_worktree, worktree)
         branch_repo = Repo.open(worktree)
         branch_tasks = branch_repo.context("tasks")
-        branch_repo.add(branch_tasks, "Archived branch task", "Describe.", [], {}, TODAY)
+        first = branch_repo.add(
+            branch_tasks, "Archived branch task", "Describe.", [], {}, TODAY
+        ).task
+        first_path = branch_tasks.directory / "TASK-1--archived-branch-task.md"
+        first_path.write_text(first.task.with_field("provisional", None).render())
+        first.path.unlink()
         branch_repo.archive(TaskId("TASK", 1))
-        branch_repo.add(branch_tasks, "Active branch task", "Describe.", [], {}, TODAY)
+        second = branch_repo.add(
+            branch_tasks, "Active branch task", "Describe.", [], {}, TODAY
+        ).task
+        second_path = branch_tasks.directory / "TASK-2--active-branch-task.md"
+        second_path.write_text(second.task.with_field("provisional", None).render())
+        second.path.unlink()
         self.commit("branch tasks", "2026-10-23T00:00:01+00:00", cwd=worktree)
         self.git("worktree", "remove", "--force", str(worktree))
 

@@ -62,7 +62,6 @@ class TestHistoricalFiles(RepoTestCase):
         (self.root / "src").mkdir()
         (self.root / "src/a.py").write_text("code\n")
         self.commit("initial")
-        self.git("branch", "main")
         self.git("checkout", "-b", "worker")
         (self.root / "src/a.py").rename(self.root / "src/a.tmp")
         (self.root / "chitty/tasks").mkdir(parents=True)

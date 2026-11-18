@@ -22,7 +22,7 @@ def call(name: str, **arguments: Any) -> Any:
 
 
 class TestMcp(CliTestCase):
-    def test_plain_add_in_a_linked_worktree_uses_backlog(self):
+    def test_plain_add_in_a_linked_worktree_uses_default_context(self):
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text() + '\n[contexts.backlog]\nprefix = "BACKLOG"\nrandom_ids = true\n'
@@ -47,10 +47,11 @@ class TestMcp(CliTestCase):
         )
         os.chdir(worktree)
 
-        with mock.patch("chitty.store._random_number", return_value=48213907):
-            task = call("add", title="Idea")
+        with mock.patch("chitty.store._provisional_draw", return_value=0):
+            task = call("add", title="Idea", description="Description.")
 
-        self.assertEqual(task["id"], "BACKLOG-48213907")
+        self.assertEqual(task["id"], "TASK-AAAAAA")
+        self.assertTrue(task["provisional"])
 
     def test_tools_mirror_the_cli(self):
         tools = asyncio.run(create_server(Path.cwd()).list_tools())
