@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: cold-read
+status: planning
 labels:
   - bug
   - needs-minor
@@ -39,3 +39,4 @@ Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `te
 
 - 2026-11-18T09:51:20Z witty-ginger-falcon → planning
 - 2026-11-18T09:52:34Z witty-ginger-falcon planning → cold-read
+- 2026-11-18T09:56:01Z witty-ginger-falcon cold-read → planning
