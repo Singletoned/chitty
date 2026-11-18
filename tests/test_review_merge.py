@@ -1,4 +1,5 @@
 import os
+import re
 import stat
 import subprocess
 import sys
@@ -291,6 +292,24 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertFalse(self.worktree.exists())
         self.assertFalse(self.git("branch", "--list", "task-1").strip())
 
+    def test_review_setup_failure_records_error_on_branch(self):
+        self.branch_for_review()
+        config = self.root / "chitty.toml"
+        # Keep the failing setup command in a main commit so review preflight uses it.
+        config.write_text(
+            re.sub(r"^setup = .*$", 'setup = "false"', config.read_text(), flags=re.MULTILINE)
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure failing setup")
+        main_head = self.git("rev-parse", "main").strip()
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertIn("review → error", result.stdout)
+        self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
+        self.assertIn("Runner error (setup)", self.ticket().section("Notes") or "")
+        self.assertIn("status: todo", self.git("show", "main:chitty/tasks/TASK-1--review-me.md"))
+
     def test_failing_check_after_main_advances_preserves_main_and_worktree(self):
         self.branch_for_review()
         (self.logs / "advance_main").write_text(str(self.root))
@@ -298,7 +317,7 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertIn("review → error", result.stdout)
+        self.assertIn("done → error", result.stdout)
         notes = self.ticket().section("Notes") or ""
         self.assertIn("landing check exited with status 7", notes)
         self.assertIn(str(self.worktree), notes)

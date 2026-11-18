@@ -77,9 +77,18 @@ class TestRunErrorReporter(CliTestCase):
         self.git("add", "chitty.toml")
         self.git("commit", "--quiet", "-m", "configure failing setup")
         self.add_ticket()
-
+        self.run_cli("edit", "TASK-1", "-s", "doing")
+        self.git("branch", "task-1")
         self.run_cli("run", "--mode", "work")
 
+        main_ticket = subprocess.run(
+            ["git", "show", "main:chitty/tasks/TASK-1--work.md"],
+            cwd=self.root,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+        self.assertIn("status: doing", main_ticket)
         note = self.json("show", "TASK-1")["notes"]
         self.assertIn("setup exited with status 9", note)
         self.assertIn("SETUP_MARKER", note)

@@ -1296,6 +1296,12 @@ class TestNext(CliTestCase):
         task = repo.find(repo.resolve("TASK-1")).task
         self.assertEqual(task.frontmatter.status, "error")
         self.assertIn("check line 6", task.section("Notes") or "")
+        worktree = self.root / ".worktrees/task-1"
+        ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
+        main_ticket = self.git("show", f"main:{ticket_path.relative_to(worktree)}")
+        self.assertIn("status: doing", main_ticket)
+        self.assertIn("?? check-args", self.git("-C", str(worktree), "status", "--short"))
+        self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
 
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
@@ -1460,9 +1466,9 @@ class TestNext(CliTestCase):
         self.assertEqual(
             self.git("-C", str(worktree), "branch", "--show-current").strip(), "task-1"
         )
-        self.assertEqual(
-            Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,
-            "error",
+        branch_ticket = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
+        self.assertIn(
+            "status: error", self.git("show", f"task-1:{branch_ticket.relative_to(worktree)}")
         )
 
         self.git("worktree", "remove", "--force", str(worktree))
@@ -1794,9 +1800,10 @@ class TestNext(CliTestCase):
                 .task.frontmatter.status,
                 "error",
             )
-            self.assertNotEqual(self.git("rev-parse", "main").strip(), main_head)
+            main_after_claim = self.git("rev-parse", "main").strip()
+            self.assertEqual(self.git("rev-list", "--count", f"{main_head}..main").strip(), "1")
             self.assertEqual(self.git("status", "--porcelain"), main_status)
-            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "0")
+            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
             invalid = self.run_cli("run", "--errors", exit_code=1)
             self.assertIn("repair agent left TASK-1 in invalid status error", invalid.stderr)
             os.environ["PI_EXIT"] = "3"
@@ -1806,7 +1813,8 @@ class TestNext(CliTestCase):
             failed = self.run_cli("run", "--errors")
             self.assertEqual(failed.stdout, "TASK-1: error → error\n")
             self.assertNotIn("cannot read usage file", failed.stderr)
-            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "0")
+            self.assertGreater(int(self.git("rev-list", "--count", "main..task-1").strip()), 1)
+            self.assertEqual(self.git("rev-parse", "main").strip(), main_after_claim)
             os.environ.pop("PI_EXIT")
             os.environ["PI_SIGNAL"] = "1"
             interrupted = self.run_cli("run", "--errors", exit_code=130)
