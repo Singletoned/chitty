@@ -26,6 +26,10 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 - [ ] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
 - [ ] `make check` passes
 
+## Plan
+
+Add the specified pure functions in src/chitty/renumbering.py. Validate duplicate and non-provisional inputs, then allocate per-prefix consecutive IDs in TaskId order. Implement ID rewriting with one combined regex and a single substitution pass. Add Hypothesis property coverage in tests/test_property_renumbering.py, run it against the stubs to verify failure, then implement and run make format and make check.
+
 ## History
 
 - 2026-11-18T16:20:09Z lively-quartz-crane → backlog
@@ -43,3 +47,4 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 - 2026-11-18T16:36:40Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:36:42Z lively-quartz-crane planning → todo
 - 2026-11-18T20:28:05Z sunny-dusky-falcon todo → doing
+- 2026-11-18T20:29:04Z sunny-dusky-falcon: wrote the plan
