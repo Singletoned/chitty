@@ -50,7 +50,7 @@ Review failed (tests): The property still needs generated directory trees and fi
 
 ## Summary
 
-Addressed review findings with distinct local/remote refs plus origin/HEAD symref, unborn-branch coverage, and generated active/archive odd-path trees. Focused tests pass. make check: Ruff, pyright, and all 667 tests pass; command exits nonzero because existing runner fixture lacks required autocommit configuration.
+Expanded the files_at Hypothesis property to generate varying active/archive paths, file counts, and contents; each example now starts from a fresh real-Git repo so generated trees are isolated. Verification: focused property passes; make check runs Ruff, pyright, and all 667 tests successfully. The command exits nonzero only because the runner fixture lacks autocommit configuration. Follow-up: none.
 
 ## History
 
@@ -73,3 +73,4 @@ Addressed review findings with distinct local/remote refs plus origin/HEAD symre
 - 2026-11-18T23:01:15Z sunny-white-newt doing → review
 - 2026-11-18T23:03:39Z youthful-teal-dormouse: changed acceptance criteria, notes
 - 2026-11-18T23:03:39Z youthful-teal-dormouse review → doing
+- 2026-11-18T23:08:24Z vivid-maroon-crane: changed summary
