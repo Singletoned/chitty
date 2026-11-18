@@ -1,6 +1,6 @@
 ---
 title: Give new tickets a provisional ID off `main` through `Repo.new_id`
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -43,3 +43,4 @@ Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, 
 - 2026-11-18T16:29:27Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:41:13Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:41:13Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:41:15Z lively-quartz-crane planning → cold-read
