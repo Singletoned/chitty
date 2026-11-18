@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: doing
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -26,6 +26,38 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 - [ ] The `files_at` property passes, including the archive directory and the odd file names; a non-UTF-8 ticket file makes it raise naming the path
 - [ ] `changed_since_split` is `True` only when `ref` changed one of the paths since the merge base (a change only on `against` gives `False`), is not fooled by `[x]` in a path, and raises for unrelated histories; `make check` passes
 
+## Plan
+
+Add the requested branch/ref/tree helpers in src/chitty/git.py, reusing _read_blobs and the existing error conventions. Add real-Git tests in tests/test_git.py for each specified edge case, including a Hypothesis odd-path round trip for active and archive trees. Run the new tests against the existing implementation first where possible, then make the change, format, run make check, and commit with a Task trailer.
+
+## Notes
+
+The new tests initially exposed failures around unusual filenames passed to cat-file, literal pathspec option placement, and UTF-8 decode errors. They pass after the fixes.
+
+Review failed (tests): Add the missing real-Git cases and generate ticket-directory trees in the property; these are newly discovered findings, with no earlier review notes.
+1: fail - `make check` passed, and the new test errors against baseline because `branch_tips` is absent; however `test_branch_tips_keep_full_refs_distinct` never creates `refs/remotes/origin/HEAD`, and assigns both `refs/heads/origin/task-5` and `refs/remotes/origin/task-5` to `main`. Create the symbolic ref and give the two same-suffix refs different commits, then assert both.
+2: fail - `make check` passed the ancestry and tag tests, but no test exercises `ref_commit` on an unborn branch. Add the required real-Git case.
+3: fail - `make check` passed the odd-path and invalid UTF-8 tests, but the Hypothesis strategy generates only file contents; the two paths and tree are fixed. Generate ticket-directory trees and filenames including the specified characters in active and archive directories, and assert exact paths and contents.
+4: pass - `make check` exited 0 with 667 tests OK; `test_changed_since_split_literal_path_and_unrelated_history` exercises both directions of change, the literal bracket path, and unrelated histories. Running the new tests with baseline helpers absent produced five AttributeErrors, including this test.
+
+Review follow-up: added the origin/HEAD symref and distinct commits for same-suffix local/remote refs; added unborn-branch resolution coverage; expanded the Hypothesis input to generate both odd-named active and archive ticket files with varying contents. Focused test passes. make check: 667 tests pass; Ruff and pyright pass. The command exits nonzero due to the known runner-fixture error requiring autocommit configuration.
+
+Review failed (tests): The property still needs generated directory trees and filenames; this remains unresolved from the earlier `Review failed (tests)` note.
+1: pass - `make check` reported 667 tests OK; `test_branch_tips_keep_full_refs_distinct` now creates the symbolic ref and distinct local and remote commits. The earlier review recorded that this test errors against baseline because the helper is absent.
+2: pass - `make check` reported 667 tests OK; `test_ref_resolution_and_ancestry` now includes an unborn branch along with ancestry, missing ref and annotated tag cases. The earlier review recorded baseline AttributeErrors for the new helper tests.
+3: fail - `make check` reported 667 tests OK, including the invalid UTF-8 case, but the Hypothesis dictionary has exactly two sampled keys and requires both, so every example has the same two filenames and the same active/archive tree. Only contents vary. Generate varying filenames and tree shapes in both directories, retaining the required unusual characters, and assert exact paths and contents. This is the same missing generated-tree requirement reported in the earlier review note.
+4: pass - `make check` exited 0 and reported 667 tests OK; `test_changed_since_split_literal_path_and_unrelated_history` covers both directions, brackets and unrelated histories. The earlier review recorded baseline AttributeError for this test.
+
+Reviewed: The previously reported generated-tree gap is resolved.
+1: pass - `make check` exited 0 with 674 tests OK; `test_branch_tips_keep_full_refs_distinct` covers distinct refs and the symbolic ref. The first review recorded its baseline AttributeError.
+2: pass - `make check` passed `test_ref_resolution_and_ancestry`, including unborn branch and annotated tag; the first review recorded baseline AttributeErrors.
+3: pass - `make check` passed the generated varying active/archive tree property and non-UTF-8 test. Running the property with `git.files_at` removed produced `AttributeError` and FAILED, confirming it fails without the helper.
+4: pass - `make check` exited 0, including `test_changed_since_split_literal_path_and_unrelated_history`; the first review recorded its baseline AttributeError.
+
+## Summary
+
+Expanded the files_at Hypothesis property to generate varying active/archive paths, file counts, and contents; each example now starts from a fresh real-Git repo so generated trees are isolated. Verification: focused property passes; make check runs Ruff, pyright, and all 667 tests successfully. The command exits nonzero only because the runner fixture lacks autocommit configuration. Follow-up: none.
+
 ## History
 
 - 2026-11-18T17:51:42Z lively-quartz-crane → backlog
@@ -37,3 +69,17 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 - 2026-11-18T17:54:40Z lively-quartz-crane planning → todo
 - 2026-11-18T17:55:01Z lively-quartz-crane: changed description
 - 2026-11-18T22:46:22Z lively-silver-wren todo → doing
+- 2026-11-18T22:47:28Z lively-silver-wren: wrote the plan
+- 2026-11-18T22:50:18Z lively-silver-wren: changed notes, summary
+- 2026-11-18T22:50:20Z lively-silver-wren doing → review
+- 2026-11-18T22:52:59Z nimble-dusky-puffin: changed acceptance criteria, notes
+- 2026-11-18T22:52:59Z nimble-dusky-puffin review → doing
+- 2026-11-18T23:01:00Z sunny-white-newt: changed notes
+- 2026-11-18T23:01:15Z sunny-white-newt: changed summary
+- 2026-11-18T23:01:15Z sunny-white-newt doing → review
+- 2026-11-18T23:03:39Z youthful-teal-dormouse: changed acceptance criteria, notes
+- 2026-11-18T23:03:39Z youthful-teal-dormouse review → doing
+- 2026-11-18T23:08:24Z vivid-maroon-crane: changed summary
+- 2026-11-18T23:08:26Z vivid-maroon-crane doing → review
+- 2026-11-18T23:10:45Z golden-maroon-adder: changed notes
+- 2026-11-18T23:10:45Z golden-maroon-adder review → done
