@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: planning
+status: cold-read
 depends_on:
   - TASK-381
   - TASK-389
@@ -46,3 +46,4 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - 2026-11-18T16:40:38Z lively-quartz-crane planning → cold-read
 - 2026-11-18T17:46:06Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:46:06Z lively-quartz-crane cold-read → planning
+- 2026-11-18T17:48:24Z lively-quartz-crane planning → cold-read
