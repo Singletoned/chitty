@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -12,7 +12,7 @@ Today Chitty answers "what is TASK-X now?" by scanning every ref's history and t
 Decisions:
 
 - New module `src/chitty/ticket_source.py`. Before implementing, create it with the names below and the function raising `NotImplementedError`, run the new tests against that stub and record in the ticket's notes that every property fails; commit the stub only together with the implementation, so every commit passes `make check`.
-- `WORKING_TREE` is a module constant meaning "read this checkout's file". Otherwise the result is the short name of a ref (`task-5`, `origin/task-5`, `main`) whose tip holds the ticket.
+- `WORKING_TREE = ""` is a module constant meaning "read this checkout's file" (the empty string is never a ref name). Otherwise the result is the short name of a ref (`task-5`, `origin/task-5`, `main`) whose tip holds the ticket.
 - `ticket_source(task_id: TaskId, provisional: bool, current_branch: str | None, main_branch: str, main_tip: str | None, local_tips: Mapping[str, str], remote_tips: Mapping[str, str], contains: Callable[[str, str], bool], changed_on_both: Callable[[str], bool]) -> str`. The function does no Git, file or clock access.
   - `local_tips` maps every visible local branch name to its commit; `remote_tips` maps every visible remote-tracking branch (`origin/task-5`) to its commit (a key without `/` is ignored). `main_tip` is `main_branch`'s commit, or `None` when it has none; it is used for `main`, whatever `local_tips` says.
   - `contains(a, b)` is true when commit `a` has `b` in its history, and `contains(c, c)` is true; callers pass Git ancestry, a partial order. Nothing is contained by a `None` `main_tip`.
@@ -21,7 +21,7 @@ Decisions:
 - Rules, in order:
   1. `provisional` true: `WORKING_TREE`.
   2. Drop every candidate whose commit `main_tip` contains (merged or stale: the branch equals `main` or is behind it). Decided with the owner 2026-11-18; deleting such branches is a separate clean-up, never part of a read.
-  3. No candidates left: `main` is authoritative. `WORKING_TREE` when `current_branch == main_branch`, else `main_branch`.
+  3. No candidates left: `main` is authoritative. `WORKING_TREE` when `current_branch == main_branch`; else `main_branch`, unless `main_tip` is `None`, which raises `ChittyError` naming `main_branch` (a missing configured main branch is a configuration error).
   4. Otherwise, the chosen tip is the remaining candidate commit that contains every other remaining candidate. Among candidates at that commit, the local branch wins, else the remote-tracking candidate whose remote name (the part before its first `/`) sorts first. For example, `current_branch` is `task-5`, local `task-5` is at `A` and `origin/task-5` at a descendant `B`: the chosen name is `origin/task-5`.
   5. No remaining candidate contains all the others (diverged): raise `ChittyError` whose message contains each remaining candidate's full short name.
   6. If `changed_on_both(chosen name)`, raise `ChittyError` naming the ticket, the chosen ref and `main` (the ticket file changed on both sides). Otherwise the result is `WORKING_TREE` when `current_branch` is the local candidate and its commit is the chosen one, else the chosen name.
@@ -31,12 +31,12 @@ Decisions:
 
 Out of scope: any caller, reading files, computing `changed_on_both`, and the write guard (`TASK-385`).
 
-Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Generate commit graphs of two explicit shapes, so no property filters most inputs away: a chain (ancestry is index order) and a fork with at least two incomparable tips, both with extra unrelated commits; `contains` is reachability including self. Use both shapes for every rule. Draw `main_tip` from the graph (sometimes ahead of, equal to or behind each candidate, sometimes containing one fork tip but not the other) or `None`. Generate a task ID with a random prefix and number; local and remote branch maps drawn from candidate names, decoy names (as listed above, including the case variant) and unrelated names, pointing at random commits; `current_branch` drawn from candidate names, decoys, `main_branch`, `None`, and a candidate name absent from `local_tips`; remote names without `/`; `provisional`; and `changed_on_both` as a generated set of refs for which it is true. Each property compares a returned value or asserts `ChittyError` specifically. "Unchanged by decoys" means the same return value, or `ChittyError` with the same message.
+Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Generate commit graphs of two explicit shapes, so no property filters most inputs away: a chain (ancestry is index order) and a fork with at least two incomparable tips, both with extra unrelated commits; `contains` is reachability including self. Use both shapes for every rule. Draw `main_tip` from the graph (sometimes ahead of, equal to or behind each candidate, sometimes containing one fork tip but not the other) or `None`. Generate a task ID with a random prefix and number; local and remote branch maps drawn from candidate names, decoy names (as listed above, including the case variant) and unrelated names, pointing at random commits; `current_branch` drawn from candidate names, decoys, `main_branch`, `None`, and a candidate name absent from `local_tips`; remote names without `/`; `provisional`; and `changed_on_both` as a generated set of refs for which it is true. Each property compares a returned value or asserts `ChittyError` specifically. Every name in an error message is quoted in backticks, and tests match the quoted names, so `task-5` is not found inside `origin/task-5`; a dropped candidate is not named. Each rule's property builds inputs that reach its case (rule 5: always two incomparable remaining candidates; rule 6: `changed_on_both` always true for the chosen name), rather than relying on chance. Decoys with one `/` (`feature/task-5`) go only in `local_tips`; remote decoys are `origin/task-50` and `origin/x/task-5`. "Unchanged by decoys" means the same return value, or `ChittyError` with the same message.
 
 ## Acceptance Criteria
 
-- [ ] Properties pass for rules 1 to 3: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch`, else `main_branch`
-- [ ] Properties pass for rules 4 and 6: whenever one remaining candidate commit contains all the others, the result is `WORKING_TREE` exactly when `current_branch` is the local candidate at that commit, otherwise a candidate at that commit, the local one when it is there, else the remote whose remote name sorts first; and when `changed_on_both` is true for that name, `ChittyError` names the ticket, that ref and `main` instead
+- [ ] Properties pass for rules 1 to 3: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch`, else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
+- [ ] Properties pass for rules 4 and 6: whenever one remaining candidate commit contains all the others, the result is `WORKING_TREE` exactly when `current_branch` is the remaining local candidate at that commit, otherwise a candidate at that commit, the local one when it is there, else the remote whose remote name sorts first; and when `changed_on_both` is true for that name, `ChittyError` names the ticket, that ref and `main` instead
 - [ ] Properties pass for rule 5 and decoys: when no remaining candidate contains all the others, `ChittyError` names each remaining candidate, including when `main_tip` contains a third, dropped one; adding or removing decoy and unrelated branches never changes the result
 - [ ] The notes record every property failing against the `NotImplementedError` stub, and `make check` passes
 
@@ -55,3 +55,5 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 - 2026-11-18T17:46:57Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:46:57Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:48:22Z lively-quartz-crane planning → cold-read
+- 2026-11-18T17:50:39Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T17:50:39Z lively-quartz-crane cold-read → planning
