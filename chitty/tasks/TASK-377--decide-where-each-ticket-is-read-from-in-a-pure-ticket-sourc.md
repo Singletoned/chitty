@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -59,3 +59,4 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 - 2026-11-18T17:50:39Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:50:41Z lively-quartz-crane planning → todo
 - 2026-11-18T17:53:59Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T20:01:15Z jolly-dusky-badger todo → doing
