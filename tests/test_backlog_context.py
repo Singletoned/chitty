@@ -72,8 +72,9 @@ class TestRandomIds(CliTestCase):
         subprocess.run([*git, "switch", "--quiet", "main"], check=True)
         self.assertFalse((self.root / "chitty/backlog/BACKLOG-55555555--idea.md").exists())
 
-        result, _ = self.add_backlog(55555555, 66666666)
-        self.assertIn("BACKLOG-66666666", result.stdout)
+        result, patched = self.add_backlog(55555555)
+        self.assertIn("BACKLOG-55555555", result.stdout)
+        self.assertEqual(patched.call_count, 1)
 
     def test_raises_when_no_number_is_free(self):
         self.add_backlog(48213907)

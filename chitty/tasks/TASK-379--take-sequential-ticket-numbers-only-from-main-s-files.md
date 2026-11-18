@@ -1,6 +1,6 @@
 ---
 title: Take sequential ticket numbers only from main's files
-status: doing
+status: done
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -40,6 +40,30 @@ Tests: real-Git tests in a new `tests/test_next_number_main.py`, inheriting `Cli
 - [ ] A direct `Repo.next_number` call for a sequential context raises `ChittyError` in a linked worktree on `feature`, in the main checkout switched to `feature`, and on a detached `HEAD` (each fails before the change); regression guards that pass before too: outside Git it returns a number, and for a `random_ids` context on `feature` it returns a number
 - [ ] `docs/plan/ids.md` has the replacement text from the Description; the two updated tests pass; regression guard: with `archive = "delete"`, a number deleted on another branch is still counted; `make check` passes
 
+## Plan
+
+Remove history scanning from Repo.next_number while retaining checkout files and delete-mode deleted-number handling. Make sequential allocation fail off main (but allow random contexts first), document main-only sequential IDs, update the two existing regression tests, and add focused real-Git coverage for main, worktree/branch/detached states and checkout-local files. Run focused tests, make format, make check, then commit implementation with Task: TASK-379.
+
+## Notes
+
+Review failed (tests): Add a real-Git main checkout to the checkout-file regression test; this is a newly discovered coverage gap, with no earlier review note.
+1: pass - make check passed; test_add_ignores_other_local_and_remote_branches on the pre-change store printed TASK-61 != TASK-4.
+2: fail - test_add_counts_uncommitted_and_archived_numbers passes in make check but never calls init_git, so it exercises outside Git, not main. Initialize and commit a main checkout before creating the uncommitted TASK-7 and archived TASK-9, and verify TASK-10.
+3: pass - make check passed. With the pre-change store, the feature and linked-worktree assertions printed ChittyError not raised; rerunning the detached assertion independently also printed ChittyError not raised. The outside-Git guard and an independently run random-context guard printed OK on the pre-change store.
+4: pass - make check printed 669 tests OK, including the two updated tests and delete-mode guard; inspected docs/plan/ids.md for the requested replacement.
+
+Review follow-up: initialized a committed main checkout before adding uncommitted TASK-7 and archived TASK-9, so the checkout-file regression now exercises the stated main-branch behavior. The focused test passes. make check reports 669 tests OK, Ruff and Pyright clean; its output contains an expected fixture-level chitty run configuration error.
+
+Reviewed: The earlier criterion 2 coverage gap is resolved by initializing and committing main before creating the checkout files.
+1: pass - make check printed 669 tests OK; prior review ran test_add_ignores_other_local_and_remote_branches against the pre-change store and printed TASK-61 != TASK-4.
+2: pass - make check printed 669 tests OK; test_add_counts_uncommitted_and_archived_numbers now initializes committed main and asserts TASK-10.
+3: pass - make check printed 669 tests OK; prior review ran the pre-change store and observed ChittyError not raised for feature, linked worktree and detached HEAD; outside-Git and random guards printed OK.
+4: pass - make check printed 669 tests OK, Ruff clean and Pyright clean; the updated tests and delete-mode regression ran; inspected docs/plan/ids.md for the replacement.
+
+## Summary
+
+Review follow-up: fixed checkout-file regression to use a real committed main checkout. Verification: focused regression test passes; make check reports 669 tests, Ruff and Pyright clean. Implementation commits: 354fc719 and cada6327; coverage commit: see current branch history. No follow-ups.
+
 ## History
 
 - 2026-11-18T16:20:05Z lively-quartz-crane → backlog
@@ -56,3 +80,12 @@ Tests: real-Git tests in a new `tests/test_next_number_main.py`, inheriting `Cli
 - 2026-11-18T17:47:43Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:47:45Z lively-quartz-crane planning → todo
 - 2026-11-18T22:51:32Z zesty-hazel-ibis todo → doing
+- 2026-11-18T22:52:39Z zesty-hazel-ibis: wrote the plan
+- 2026-11-18T22:57:23Z zesty-hazel-ibis: changed summary
+- 2026-11-18T22:57:25Z zesty-hazel-ibis doing → review
+- 2026-11-18T22:59:58Z lively-ginger-raven: changed acceptance criteria, notes
+- 2026-11-18T22:59:58Z lively-ginger-raven review → doing
+- 2026-11-18T23:04:20Z sunny-ginger-falcon: changed notes, summary
+- 2026-11-18T23:04:23Z sunny-ginger-falcon doing → review
+- 2026-11-18T23:06:14Z witty-jade-vole: changed notes
+- 2026-11-18T23:06:14Z witty-jade-vole review → done
