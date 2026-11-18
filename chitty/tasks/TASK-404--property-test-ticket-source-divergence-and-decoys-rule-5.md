@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: planning
+status: todo
 depends_on:
   - TASK-377
   - TASK-403
@@ -40,3 +40,4 @@ Second cold read 2026-11-18 outcome: named the call that supplies the extra refs
 - 2026-11-18T21:35:23Z lively-quartz-crane: changed description, notes
 - 2026-11-18T21:35:23Z lively-quartz-crane cold-read → planning
 - 2026-11-18T21:37:52Z lively-quartz-crane: changed description, notes
+- 2026-11-18T21:38:00Z lively-quartz-crane planning → todo
