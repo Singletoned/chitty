@@ -1,6 +1,6 @@
 ---
 title: Add the `provisional` ticket field and a provisional ID suffix
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -31,6 +31,10 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 
 Add the deterministic provisional ID suffix and optional `provisional: true` frontmatter support. Add the specified Hypothesis properties and formatter sample, update the task-file reference, then run the focused tests and `make check`.
 
+## Summary
+
+Implemented provisional suffix generation and strict optional frontmatter serialization, parsing, and text display; updated task-file documentation and formatter coverage. Verification: focused property/formatter tests and `make check` pass; `chitty fix` completed with pre-existing warnings in other tickets. Follow-up: review acceptance criteria, including CLI show behavior.
+
 ## History
 
 - 2026-11-18T16:20:07Z lively-quartz-crane → backlog
@@ -49,3 +53,5 @@ Add the deterministic provisional ID suffix and optional `provisional: true` fro
 - 2026-11-18T16:33:07Z lively-quartz-crane planning → todo
 - 2026-11-18T20:06:44Z honest-pearl-wren todo → doing
 - 2026-11-18T20:07:41Z honest-pearl-wren: wrote the plan
+- 2026-11-18T20:09:42Z honest-pearl-wren: changed summary
+- 2026-11-18T20:09:42Z honest-pearl-wren doing → review
