@@ -30,6 +30,13 @@ Decisions:
 
 Tests: real-Git tests in a new `tests/test_ticket_reads.py`, inheriting `RepoTestCase` from `tests/support.py`, one test per placement in the criteria, with `GIT_COMMITTER_DATE` set on commits where order matters. Commit `main`'s copy directly with Git where `chitty edit` on `main` would be refused. A generated property over placements is `TASK-393`. No property here: a fixed set of placements, each listed and tested.
 
+## Acceptance Criteria
+
+- [ ] From the main checkout: a ticket only on `main` reads `main`'s copy; a ticket edited on `task-<n>`, with `main`'s copy committed later by `GIT_COMMITTER_DATE`, reads the branch copy and `chitty show` prints `branch: task-<n>` (fails before the change); a ticket only on `origin/task-<n>` ahead of `main` reads that copy; local `task-<n>` behind `origin/task-<n>` reads the remote copy; a ticket only on an unrelated branch is not listed by `chitty list`
+- [ ] A ticket archived on its branch but active on `main` is listed once, as archived, by `chitty list --all` in the main checkout; a `todo` ticket whose branch says `doing` lists as `doing`; a ticket whose branch deletes its file is not listed
+- [ ] In the linked worktree of `task-5`, `TASK-5` shows an uncommitted edit made there, and `TASK-7` (no branch) shows `main`'s tip copy even though the worktree's copy differs; on a branch `feature`, an existing ticket shows `main`'s copy
+- [ ] With local `task-<n>` and `origin/task-<n>` diverged, `chitty show` and `chitty list` in the main checkout fail naming both; outside a Git repository tickets read from the working tree; with `git.historical_files` patched to raise, `chitty show` and `chitty list` still work; `make check` passes
+
 ## History
 
 - 2026-11-18T16:20:04Z lively-quartz-crane → backlog
@@ -40,3 +47,4 @@ Tests: real-Git tests in a new `tests/test_ticket_reads.py`, inheriting `RepoTes
 - 2026-11-18T16:33:20Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:38:58Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:38:58Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:39:00Z lively-quartz-crane: changed acceptance criteria
