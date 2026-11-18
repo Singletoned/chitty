@@ -105,6 +105,46 @@ class TestRunContinue(CliTestCase):
         self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 6)
 
+    def test_stopped_ticket_rebase_is_included_in_work_prompt(self):
+        ticket = self.ticket()
+        self.write_fake(NO_CHANGE)
+        self.git("branch", ticket.lower())
+        worktree = self.root / ".worktrees" / ticket.lower()
+        subprocess.run(
+            ["git", "worktree", "add", "--quiet", str(worktree), ticket.lower()],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+        )
+        (self.root / "conflict.txt").write_text("base\n")
+        self.git("add", "conflict.txt")
+        self.git("commit", "--quiet", "-m", "conflict base")
+        # Refresh the task branch with the base before creating divergent edits.
+        subprocess.run(
+            ["git", "merge", "--quiet", "main"], cwd=worktree, check=True, capture_output=True
+        )
+        (worktree / "conflict.txt").write_text("ticket\n")
+        subprocess.run(["git", "add", "conflict.txt"], cwd=worktree, check=True)
+        subprocess.run(
+            ["git", "commit", "--quiet", "-m", "ticket conflict"],
+            cwd=worktree,
+            check=True,
+            capture_output=True,
+        )
+        (self.root / "conflict.txt").write_text("main\n")
+        self.git("add", "conflict.txt")
+        self.git("commit", "--quiet", "-m", "main conflict")
+        result = subprocess.run(
+            ["git", "rebase", "main"], cwd=worktree, check=False, capture_output=True
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.run_cli("run", "--ticket", ticket)
+        prompt = self.invocations_seen()[0][2]
+        self.assertIn("git rebase --continue", prompt)
+        from chitty.store import guide
+
+        self.assertNotIn("git rebase --continue", guide("work", ticket, directory=self.root))
+
     def test_command_without_prompt_is_not_continued(self):
         config = self.root / "chitty.toml"
         config.write_text(

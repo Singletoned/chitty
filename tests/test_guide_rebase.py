@@ -87,4 +87,12 @@ class TestGuideRebase(unittest.TestCase):
             ["git", "rebase", "topic"], check=False, cwd=linked, capture_output=True
         )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("git rebase --continue", guide("work", "TASK-1", directory=linked))
+        insertion = (Path(__file__).parents[1] / "src/chitty/roles/rebase.md").read_text().rstrip()
+        outside = Path(tempfile.mkdtemp())
+        for role in ("work", "repair"):
+            output = guide(role, "TASK-1", directory=linked)
+            self.assertIn(f"Work only on Chitty ticket TASK-1.\n\n{insertion}\n\n", output)
+            self.assertEqual(
+                output.replace(insertion + "\n\n", "", 1),
+                guide(role, "TASK-1", directory=outside),
+            )
