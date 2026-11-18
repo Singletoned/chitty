@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -56,6 +56,12 @@ Review failed (tests): Add the specified case-directed properties; the current t
 
 Expanded the focused tests across generated IDs and both graph shapes; `make check` passed (637 tests). The first focused run exposed two incorrect test assumptions; corrected them before the passing full check.
 
+Review failed (tests): The expanded suite still uses fixed scenarios where the ticket requires generated, case-directed graphs and inputs. The prior review identified these missing properties; remaining gaps are identified below.
+1: fail - Previously reported generated-input gaps remain: `test_provisional_always_uses_working_tree` fixes main tip, candidate maps and checkout choices; `test_main_drops_contained_candidates` only tests a single equal tip. Generate maps, commits, checkout branches and main tips, including strictly stale candidates, on both graph shapes.
+2: fail - Previously reported selection and conflict coverage remains incomplete: the only descendant case selects local, local tie is tested only while checked out, and conflict tests only a remote. Generate candidate maps, checkout states and changed-ref sets, including remote descendants over a checked-out local and local conflicts, on both shapes.
+3: fail - The previously reported decoy invariance gap remains: `test_decoys_and_unrelated_refs_do_not_change_result` compares only one successful case with fixed maps, never errors or their messages. Generate maps and compare results and error messages across both graph shapes, including ignored remote names without a slash. The dropped-candidate divergence case now exists, but uses a fixed graph and fixed tips.
+4: pass - Notes record the original six stub failures; an in-memory `NotImplementedError` replacement run against the current suite printed `Ran 8 tests` and `FAILED (errors=8)`. `make check` printed `Ran 637 tests` and `OK`.
+
 ## Summary
 
 Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, and decoy refs. Verification: `make check` passed (637 tests). Follow-up: none.
@@ -89,3 +95,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T20:11:54Z youthful-teal-eel: wrote the plan
 - 2026-11-18T20:14:05Z youthful-teal-eel: changed notes, summary
 - 2026-11-18T20:14:08Z youthful-teal-eel doing → review
+- 2026-11-18T20:16:38Z witty-dusky-toad: changed acceptance criteria, notes
+- 2026-11-18T20:16:38Z witty-dusky-toad review → doing
