@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -32,6 +32,14 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 
 Create one branch-side Repo(worktree, main_repo.config) after obtaining the ticket worktree and pass it through setup, check, agent/landing error paths. Change runner-error recording to read and edit through that repo; make check-failure handling use the supplied branch repo and retain its existing note/agent behavior. Add real-Git/fake-agent regression coverage for the four specified failure phases and branch-only commits, update existing assertions that expect main to move, then run focused tests and make check.
 
+## Notes
+
+Regression evidence: before the fix, the focused branch-recording tests failed (main received runner-error commits; branch history lacked the error commit). After the fix, the focused tests and full `make check` pass. Coverage includes work setup, agent failure, todo check failure with its untracked check output preserved, review setup, and landing failure; existing doing-ticket check behavior remains covered.
+
+## Summary
+
+Runner errors now edit and commit through one branch-side Repo built with main config; check-failure handling uses that repo and avoids main-checkout discovery. Updated branch/main assertions and failure-phase coverage. Verification: the focused regressions failed with the fix reverted; `make check` passes. No follow-up required.
+
 ## History
 
 - 2026-11-18T16:20:11Z lively-quartz-crane → backlog
@@ -59,3 +67,5 @@ Create one branch-side Repo(worktree, main_repo.config) after obtaining the tick
 - 2026-11-18T17:47:10Z lively-quartz-crane planning → todo
 - 2026-11-18T20:32:35Z eager-ochre-gannet todo → doing
 - 2026-11-18T20:33:49Z eager-ochre-gannet: wrote the plan
+- 2026-11-18T20:44:20Z eager-ochre-gannet: changed notes, summary
+- 2026-11-18T20:44:20Z eager-ochre-gannet doing → review
