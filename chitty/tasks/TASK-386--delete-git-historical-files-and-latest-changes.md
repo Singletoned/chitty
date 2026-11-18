@@ -1,6 +1,6 @@
 ---
 title: Delete `git.historical_files` and `_latest_changes`
-status: planning
+status: todo
 depends_on:
   - TASK-378
   - TASK-379
@@ -38,3 +38,4 @@ No property: a change that only removes code; the existing tests cover what rema
 - 2026-11-18T16:40:36Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:42:13Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:42:13Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:42:15Z lively-quartz-crane planning → todo
