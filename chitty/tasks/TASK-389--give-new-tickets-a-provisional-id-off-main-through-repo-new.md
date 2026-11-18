@@ -1,6 +1,6 @@
 ---
 title: Give new tickets a provisional ID off `main` through `Repo.new_id`
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -30,14 +30,22 @@ Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, 
 
 ## Acceptance Criteria
 
-- [ ] Plain `chitty add` (no `-c`) in a linked worktree on branch `feature`, in the main checkout switched to `feature`, and on a detached `HEAD` each creates a ticket in `default_context` whose ID suffix contains a letter and whose file has `provisional: true`; the linked-worktree case fails before the change
-- [ ] Plain `chitty add` on `main` and in a directory outside Git gives the next sequential number with no `provisional` key; `chitty add -c backlog` on `feature` still gives a numeric random ID with no `provisional` key; in a repository on `master` with the default `main_branch`, `chitty add` fails naming `main` and `main_branch` and creates no file
-- [ ] `chitty move TASK-1 human` on `feature` (`TASK-1` in `tasks`) gives a provisional `HUMAN-` ID with `provisional: true`; after `git merge feature` into `main`, `chitty move <that ID> tasks` in the main checkout gives a sequential `TASK-` ID and removes the key; `chitty renumber` of a provisional file copied under another slug on `main` (as `tests/test_renumber.py` builds duplicates) gives a sequential ID and removes the key
-- [ ] With `_provisional_draw` patched to return 0 for its first six calls and 1 after, and `TASK-AAAAAA` present, `chitty add` on `feature` gets `TASK-BBBBBB`; patched to always return 0 with `TASK-AAAAAA` present, it exits 1 with `no unused provisional ID`; with only `origin/main` (no local `main`) on a ticket branch, `chitty add` gives a provisional ID; `make check` passes
+- [x] Plain `chitty add` (no `-c`) in a linked worktree on branch `feature`, in the main checkout switched to `feature`, and on a detached `HEAD` each creates a ticket in `default_context` whose ID suffix contains a letter and whose file has `provisional: true`; the linked-worktree case fails before the change
+- [x] Plain `chitty add` on `main` and in a directory outside Git gives the next sequential number with no `provisional` key; `chitty add -c backlog` on `feature` still gives a numeric random ID with no `provisional` key; in a repository on `master` with the default `main_branch`, `chitty add` fails naming `main` and `main_branch` and creates no file
+- [x] `chitty move TASK-1 human` on `feature` (`TASK-1` in `tasks`) gives a provisional `HUMAN-` ID with `provisional: true`; after `git merge feature` into `main`, `chitty move <that ID> tasks` in the main checkout gives a sequential `TASK-` ID and removes the key; `chitty renumber` of a provisional file copied under another slug on `main` (as `tests/test_renumber.py` builds duplicates) gives a sequential ID and removes the key
+- [x] With `_provisional_draw` patched to return 0 for its first six calls and 1 after, and `TASK-AAAAAA` present, `chitty add` on `feature` gets `TASK-BBBBBB`; patched to always return 0 with `TASK-AAAAAA` present, it exits 1 with `no unused provisional ID`; with only `origin/main` (no local `main`) on a ticket branch, `chitty add` gives a provisional ID; `make check` passes
 
 ## Plan
 
 Implement Git-aware Repo.new_id selection and provisional collision checks; route add/move/renumber through it, including provisional markers. Remove linked-worktree backlog routing. Add focused real-Git CLI tests for checkout states and ID transitions, adjust existing tests for changed behavior, then run make format and make check and commit implementation in a small Task: TASK-389 commit.
+
+## Notes
+
+Regression evidence: before updating the linked-worktree test, make check failed because plain add routed to backlog and rejected the missing description. The updated real-Git CLI test now verifies a provisional ID in default_context; main-checkout switched, detached, outside-Git, move/renumber, collisions and remote-only main-ref cases are covered.
+
+## Summary
+
+Implemented Git-aware Repo.new_id selection, provisional markers and retries; plain add now uses default_context. Updated affected CLI, MCP, store and worktree tests. Verification: make format, chitty fix, focused provisional-ID tests and make check pass (662 tests; ruff and pyright clean). Commits: 1630266f, 0fa5d558, d3d560bf (all Task: TASK-389). Ready for review.
 
 ## History
 
@@ -54,3 +62,5 @@ Implement Git-aware Repo.new_id selection and provisional collision checks; rout
 - 2026-11-18T17:45:40Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T22:25:25Z eager-ebony-newt todo → doing
 - 2026-11-18T22:26:15Z eager-ebony-newt: wrote the plan
+- 2026-11-18T22:36:11Z eager-ebony-newt: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T22:36:11Z eager-ebony-newt doing → review
