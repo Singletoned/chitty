@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-18
 ---
@@ -118,3 +118,4 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T20:40:10Z lively-quartz-crane planning → cold-read
 - 2026-11-18T20:41:48Z lively-quartz-crane: changed description, acceptance criteria, notes
 - 2026-11-18T20:41:48Z lively-quartz-crane cold-read → planning
+- 2026-11-18T20:41:52Z lively-quartz-crane planning → cold-read
