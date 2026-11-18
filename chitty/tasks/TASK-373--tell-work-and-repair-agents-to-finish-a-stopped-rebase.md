@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: doing
+status: review
 priority: high
 created: 2026-11-18
 ---
@@ -22,14 +22,22 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 
 ## Acceptance Criteria
 
-- [ ] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
-- [ ] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
-- [ ] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
-- [ ] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
+- [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
+- [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
+- [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
+- [x] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
 
 ## Plan
 
 Add a general rebase role and inject it into work/repair guide output only when the supplied checkout is inside an active rebase. Thread the current directory through CLI/MCP and the ticket worktree through runner prompts. Add real-repository tests covering both rebase backends and location variants plus unchanged-output cases and runner prompt behavior. Run regression tests before implementation to verify failure, then make check and commit implementation.
+
+## Notes
+
+The new guide tests failed initially because the rebase role did not expose the exact continuation command wording; corrected the role and reran the focused tests. Rebase detection must use the ticket worktree, not main: the runner now selects that path before producing the prompt and allows a stopped rebase only on the work-agent startup path, while pending landing still rejects it.
+
+## Summary
+
+Added the rebase role and context-sensitive injection for work/repair guides; threaded the checkout directory through CLI and runner prompts. Added real-conflict coverage for rebase-merge and rebase-apply, root/subdirectory and linked worktree, CLI output, and unchanged output without an active rebase. make check passes. Runner prompt resolves from the existing ticket worktree; stopped-rebase handling is limited to agent startup.
 
 ## History
 
@@ -40,3 +48,5 @@ Add a general rebase role and inject it into work/repair guide output only when 
 - 2026-11-18T09:55:15Z witty-ginger-falcon planning → todo
 - 2026-11-18T11:08:04Z lively-maroon-crane todo → doing
 - 2026-11-18T11:08:56Z lively-maroon-crane: wrote the plan
+- 2026-11-18T11:19:14Z lively-maroon-crane: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T11:19:14Z lively-maroon-crane doing → review
