@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: backlog
+status: planning
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -32,3 +32,4 @@ The code already exists, so evidence that the tests catch a wrong implementation
 
 - 2026-11-18T21:31:03Z lively-quartz-crane → backlog
 - 2026-11-18T21:31:17Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T21:32:12Z lively-quartz-crane backlog → planning
