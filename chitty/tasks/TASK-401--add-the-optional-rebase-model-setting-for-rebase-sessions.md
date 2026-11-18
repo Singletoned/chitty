@@ -1,6 +1,6 @@
 ---
 title: Add the optional `rebase_model` setting for rebase sessions
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -20,7 +20,7 @@ Tests: in `tests/test_run_model_defaults.py`, which tests the existing model set
 ## Acceptance Criteria
 
 - [x] `_model_arguments` called with mode `rebase` returns `("--model", <value>)` when `rebase_model` is set and `()` when unset or when the command already has `--model`; modes `work` and `review` behave as before
-- [x] `chitty init` writes the commented `rebase_model` line directly after `review_model`, and a second `chitty init` does not add it again (a new test in `tests/test_run_model_defaults.py` or beside the existing init tests); `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
+- [ ] `chitty init` writes the commented `rebase_model` line directly after `review_model`, and a second `chitty init` does not add it again (a new test in `tests/test_run_model_defaults.py` or beside the existing init tests); `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
 - [x] `docs/plan/config.md` and `docs/plan/next-action-and-runner.md` mention `rebase_model`; `make check` passes
 
 ## Plan
@@ -37,6 +37,11 @@ Review failed (tests): Newly discovered upgrade case: insert the new comment imm
 Implementation attempt: added an upgrade adjacency regression test (confirmed it fails before the change) and adjusted init insertion. The focused test still fails: upgrade does not insert the comment adjacent to the active review_model line. Root cause remains unresolved; no full check run. Preserve this partial work for follow-up.
 
 Resolved the upgrade adjacency case: init now inserts the missing rebase_model comment immediately after the active review_model line and adjusts the subsequent insertion offset. The focused model-default tests pass, including repeated init idempotence and pyproject configuration. Verification: make check (678 tests, OK); make format; chitty fix on the ticket file (warning only for existing plan markdown). The earlier failing-test note records the pre-fix discovery.
+
+Review failed (tests): Newly discovered configuration corruption in init; restrict review_model lookup and insertion offset to the Chitty section and add regression coverage for other TOML tables. The earlier adjacency failure in the previous review note is resolved by the upgrade regression test.
+1: pass - make check printed Ran 678 tests and OK; mode selection test exercises set, unset rebase and explicit override.
+2: fail - Running _add_missing_settings on a pyproject with a commented review_model in [tool.chitty] and an active review_model in [tool.other] inserted rebase_model in the other table and split its comment with other additions; tomllib.loads printed TOMLDecodeError Expected equals after a key. The prior upgrade adjacency test was reported failing before the fix in the implementation attempt note and now passes in make check. Blank validation and unknown mode also pass in make check.
+3: pass - Both plan documents mention rebase_model; make check printed Ran 678 tests and OK.
 
 ## Summary
 
@@ -59,3 +64,5 @@ Implemented and verified optional rebase_model configuration, runner selection, 
 - 2026-11-18T23:29:18Z able-coral-zander: changed notes
 - 2026-11-18T23:33:58Z able-coral-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T23:33:58Z able-coral-zander doing → review
+- 2026-11-18T23:35:34Z able-lilac-yellowhammer: changed acceptance criteria, notes
+- 2026-11-18T23:35:34Z able-lilac-yellowhammer review → doing
