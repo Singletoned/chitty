@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: doing
+status: review
 priority: high
 created: 2026-11-18
 ---
@@ -22,7 +22,7 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 
 ## Acceptance Criteria
 
-- [ ] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
+- [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
 - [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
 - [x] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
@@ -63,7 +63,7 @@ Planning 2026-11-18: removed the requirement that MCP passes the current directo
 
 ## Summary
 
-Validated conventional worktree identity during stopped rebases using Git rebase metadata; unrelated worktrees are rejected. Added mismatched-worktree regression coverage. `make check` passes (642 tests). Ready for review.
+Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
 
 ## History
 
@@ -90,3 +90,5 @@ Validated conventional worktree identity during stopped rebases using Git rebase
 - 2026-11-18T16:30:36Z lively-quartz-crane: changed description, notes
 - 2026-11-18T16:30:56Z lively-quartz-crane planning → todo
 - 2026-11-18T19:52:23Z tidy-pearl-falcon todo → doing
+- 2026-11-18T19:59:24Z tidy-pearl-falcon: changed summary; ticked acceptance criteria
+- 2026-11-18T19:59:24Z tidy-pearl-falcon doing → review
