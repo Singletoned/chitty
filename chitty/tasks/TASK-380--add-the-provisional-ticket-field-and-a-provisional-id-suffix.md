@@ -27,6 +27,10 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 - [ ] Parser property: for any generated text other than `true`, a ticket file with `provisional: <json.dumps(text)>` fails with `TaskError` naming `provisional` and never with `unknown frontmatter key` or another exception; the examples `yes`, `on`, `True`, `false` and `1` are among those tested; `provisional: true` parses
 - [ ] `tests/test_formatters.py` round trips a `sample()` ticket with `"provisional": True` through prettier and mdformat (today `sample()` raises `TaskError` for it); `docs/plan/task-file.md` has a `provisional` row giving type `true`, not required, and that it marks a provisional ID for renumbering; `make check` passes
 
+## Plan
+
+Add the deterministic provisional ID suffix and optional `provisional: true` frontmatter support. Add the specified Hypothesis properties and formatter sample, update the task-file reference, then run the focused tests and `make check`.
+
 ## History
 
 - 2026-11-18T16:20:07Z lively-quartz-crane → backlog
@@ -44,3 +48,4 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 - 2026-11-18T16:33:05Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:33:07Z lively-quartz-crane planning → todo
 - 2026-11-18T20:06:44Z honest-pearl-wren todo → doing
+- 2026-11-18T20:07:41Z honest-pearl-wren: wrote the plan
