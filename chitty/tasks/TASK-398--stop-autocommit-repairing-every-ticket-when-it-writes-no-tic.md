@@ -23,6 +23,10 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 - [ ] With `archive = "delete"`, archiving a `done` ticket that no other ticket references, while another ticket holds `depends_on: [task-1]` in lower case, succeeds, leaves that other file byte-identical and `git status --porcelain` clean; this fails before the change
 - [ ] Regression guard: `chitty fix` with no arguments still repairs that lower-case reference; `tests/test_check.py` passes unchanged; `make check` passes
 
+## Plan
+
+Add a real-Git regression test in tests/test_commit_empty_paths.py using CliTestCase: configure delete archiving/autocommit, create and commit a done ticket plus a lower-case dependency in another ticket, then verify archive succeeds, preserves the other file byte-for-byte, and leaves Git clean. Run that test first to demonstrate the failure. In Repo._commit, run fix/validation only when task_paths is non-empty; preserve formatting and commit behavior. Add/verify the no-argument chitty fix regression guard, then run focused tests and make check.
+
 ## History
 
 - 2026-11-18T17:54:12Z lively-quartz-crane → backlog
@@ -33,3 +37,4 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 - 2026-11-18T17:58:15Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:58:17Z lively-quartz-crane planning → todo
 - 2026-11-18T23:09:38Z open-quartz-jay todo → doing
+- 2026-11-18T23:10:47Z open-quartz-jay: wrote the plan
