@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -30,3 +30,4 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 - 2026-11-18T17:51:42Z lively-quartz-crane → backlog
 - 2026-11-18T17:51:58Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:51:58Z lively-quartz-crane backlog → planning
+- 2026-11-18T17:52:46Z lively-quartz-crane planning → cold-read
