@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -11,9 +11,9 @@ Under the new ticket state model (`docs/plan/ticket-state.md`, "Planning decisio
 
 Decisions:
 
-- `_record_ticket_error` writes through a `Repo` rooted at the ticket worktree and built with the main checkout's config (`Repo(worktree, main_repo.config)`), because the branch's config may be missing or changed, as `_prepare_review` already allows. The edit commits on the ticket branch. `main` gets no commit.
+- `_run_ticket` builds one branch-side repo, `branch_repo = Repo(worktree, main_repo.config)`, as soon as the worktree exists: the main checkout's config, because the branch's may be missing or changed, as `_prepare_review` already allows. `_record_ticket_error(branch_repo, action, phase, error)` takes it in place of `main_repo` and the worktree path, reads the old status from it, and writes through it, so the edit commits on the ticket branch and `main` gets no error commit.
 - It still raises, as today, when the worktree is gone.
-- Every caller passes the worktree it already has: `setup` failure in work and in review mode, a `ChittyError` in the agent or landing phase (both caught by the same `except` in `_run_ticket`), and `_handle_check_failure`. `_run_ticket` passes the main config through `_run_check` into `_handle_check_failure` as a new `main_config: RepoConfig` parameter, and `_handle_check_failure` stops calling `git.main_checkout` (work is planned to run in containers, where the runner may not be able to reach the main checkout from the worktree).
+- Every caller passes the worktree it already has: `setup` failure in work and in review mode, a `ChittyError` in the agent or landing phase (both caught by the same `except` in `_run_ticket`), and `_handle_check_failure`. `_run_ticket` passes `branch_repo` to `_run_check` (its only caller), which passes it to `_handle_check_failure`; `_handle_check_failure` stops calling `git.main_checkout` (work is planned to run in containers, where the runner may not be able to reach the main checkout from the worktree).
 - Keep `skip_current_version=True` on this edit for now: a branch can still hold an older copy than `main` until `TASK-385` removes the guard.
 - Only the ticket file is committed. Other uncommitted files in the worktree stay uncommitted.
 - Out of scope: failures that are not recorded today (`_worktree` raising after the claim, a non-conflict `git.merge_main` error) stay unrecorded; the review-with-no-branch handoff in `_run_ticket`, which stays on `main` (with no branch, `main` is authoritative); the repair outcome write (`TASK-383`); the claim (`TASK-384`).
@@ -22,9 +22,9 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_bran
 
 ## Acceptance Criteria
 
-- [ ] For each phase the newest commit on the ticket branch sets the ticket to `error` with a `Runner error (<phase>)` note, and `main` gets no error commit: work-mode `setup` failure and an agent exiting non-zero, both on a `doing` ticket whose branch exists, leave `git rev-parse main` unchanged; review-mode `setup` failure leaves it unchanged; a `check` failure on a ticket chosen as `todo` advances `main` only by the claim commit (`todo → doing`, moved by `TASK-384`); each case fails before the change
-- [ ] After each of those runs, `chitty show <ID>` in the main checkout reports status `error`, and `next_action` (`src/chitty/store.py`) on the main checkout with `modes=("errors",)` returns that ticket
-- [ ] With `chitty.run.git.main_checkout` patched to raise, a `check` failure still records `error` on the branch; a file the failing `check` command writes in the worktree is still uncommitted afterwards
+- [ ] For each phase the newest commit on the ticket branch sets the ticket to `error` with a `Runner error (<phase>)` note, and no commit on `main` sets `error`: a work-mode `setup` failure, and an agent exiting non-zero with a passing `check`, both on a `doing` ticket whose branch was made with `git branch <id> main`, leave `git rev-parse main` unchanged; a review-mode `setup` failure leaves it unchanged; a `check` failure on a ticket chosen as `todo` gives `main` exactly one commit, the claim (`todo → doing`); each case fails before the change
+- [ ] After the two `doing` cases and the review case, `chitty show <ID>` in the main checkout reports status `error`, and `next_action` (`src/chitty/store.py`) on the main checkout with `modes=("errors",)` returns that ticket (the `todo` case is left out: its claim on `main` and the error on the branch can share a commit second, which today's newest-commit read cannot order)
+- [ ] For a `check` failure on a ticket chosen as `todo`, `git.main_checkout` wrapped to record its arguments is never called with the worktree path, and a file the failing `check` command writes in the worktree is still uncommitted afterwards
 - [ ] `make check` passes
 
 ## History
@@ -39,3 +39,5 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_bran
 - 2026-11-18T16:28:00Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:28:00Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:29:23Z lively-quartz-crane planning → cold-read
+- 2026-11-18T16:32:26Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T16:32:26Z lively-quartz-crane cold-read → planning
