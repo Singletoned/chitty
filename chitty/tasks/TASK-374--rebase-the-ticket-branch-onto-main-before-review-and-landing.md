@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: planning
+status: todo
 labels:
   - bug
   - needs-minor
@@ -44,3 +44,4 @@ Tests: a Hypothesis property for `ticket_only_conflicts` in a new `tests/test_pr
 - 2026-11-18T09:52:34Z witty-ginger-falcon planning → cold-read
 - 2026-11-18T09:56:01Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:56:03Z witty-ginger-falcon: changed description, acceptance criteria
+- 2026-11-18T09:56:05Z witty-ginger-falcon planning → todo
