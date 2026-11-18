@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: planning
+status: todo
 priority: high
 created: 2026-11-18
 ---
@@ -88,3 +88,4 @@ Validated conventional worktree identity during stopped rebases using Git rebase
 - 2026-11-18T11:40:57Z witty-maroon-newt: changed owner, acceptance criteria, notes
 - 2026-11-18T11:40:57Z witty-maroon-newt review → planning
 - 2026-11-18T16:30:36Z lively-quartz-crane: changed description, notes
+- 2026-11-18T16:30:56Z lively-quartz-crane planning → todo
