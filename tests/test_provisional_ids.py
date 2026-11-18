@@ -160,6 +160,7 @@ class TestProvisionalIds(CliTestCase):
     def test_missing_main_ref_fails_on_master(self):
         # Deliberately create a master-only repository with no main ref.
         self.git("branch", "-m", "master")
+        self.git("update-ref", "refs/heads/other/main", "HEAD")
         result = self.run_cli("add", "No ticket", "-d", "Description.", exit_code=1)
         self.assertIn("main", result.output)
         self.assertIn("main_branch", result.output)

@@ -350,7 +350,14 @@ def has_local_branch(root: Path, branch: str) -> bool:
 def has_branch_ref(root: Path, branch: str) -> bool:
     """Whether a local or remote branch ref exists; Git errors are surfaced."""
     refs = _git(root, "for-each-ref", "--format=%(refname)", "refs/heads", "refs/remotes")
-    return any(ref.endswith(f"/{branch}") for ref in refs.splitlines())
+    for ref in refs.splitlines():
+        if ref == f"refs/heads/{branch}":
+            return True
+        if ref.startswith("refs/remotes/"):
+            _, _, remote_branch = ref.removeprefix("refs/remotes/").partition("/")
+            if remote_branch == branch:
+                return True
+    return False
 
 
 def dirty_paths(root: Path, directory: Path) -> set[Path]:
