@@ -9,6 +9,7 @@ depends_on:
   - TASK-372
   - TASK-373
   - TASK-374
+  - TASK-384
 created: 2026-11-18
 ---
 
@@ -64,3 +65,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T17:57:44Z lively-quartz-crane: changed dependencies, description
 - 2026-11-18T17:57:46Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T17:57:48Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T17:57:51Z lively-quartz-crane: changed dependencies
