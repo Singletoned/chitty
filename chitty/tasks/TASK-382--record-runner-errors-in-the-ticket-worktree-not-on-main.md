@@ -26,7 +26,7 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 - [ ] After each of those runs, `git show main:<ticket path>` still has the status the ticket had on `main` before the failure (`doing`, `review`, or `doing` after the claim), while `chitty show <ID>` in the main checkout reports `error` and `next_action` (`src/chitty/store.py`) on the main checkout with `modes=("errors",)` returns that ticket's ID; the `main` file check fails before the change
 - [ ] For a `check` failure on a ticket chosen as `todo`, a spy on `chitty.git.main_checkout` shows no call from `_handle_check_failure` (any calls during the run are with the main checkout's root only); this fails before the change
 - [ ] After that `check` failure, the newest commit on `task-<n>` is a new commit after the claim that changes only the ticket file, and a file the failing `check` wrote in the worktree is still untracked; a `check` failure on a `doing` ticket still writes the `Check failed before this session` note on the branch and starts the agent
-- [ ] A landing failure (the fake agent sets `review`... `done` and writes a marker file that makes the `check` command fail only on its second run, so `_landing_check` fails before `fast_forward`) leaves `main` unchanged and puts `Runner error (landing)` on the newest `task-<n>` commit; `make check` passes
+- [ ] A landing failure: in a review run whose `check` passes before the reviewer, the fake reviewer sets `done` and writes a marker file that makes `check` fail from then on, so `_landing_check` fails before `fast_forward`; `main` is unchanged and the newest `task-<n>` commit has `Runner error (landing)`; `make check` passes
 
 ## History
 
@@ -48,3 +48,4 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 - 2026-11-18T16:35:35Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:38:23Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:38:23Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:38:32Z lively-quartz-crane: changed acceptance criteria
