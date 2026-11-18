@@ -1,6 +1,6 @@
 ---
 title: Resolve ticket-file conflicts mechanically whenever the runner merges `main`
-status: cold-read
+status: planning
 labels:
   - bug
 created: 2026-11-16
@@ -41,3 +41,4 @@ Tests: Hypothesis property for `newer_side` in a new `tests/test_property_newer_
 - 2026-11-18T09:13:54Z witty-ginger-falcon: changed title, description
 - 2026-11-18T09:22:40Z witty-ginger-falcon: changed labels, description, acceptance criteria
 - 2026-11-18T09:22:42Z witty-ginger-falcon planning → cold-read
+- 2026-11-18T09:24:14Z witty-ginger-falcon cold-read → planning
