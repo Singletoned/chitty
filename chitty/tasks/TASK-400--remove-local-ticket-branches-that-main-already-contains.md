@@ -1,6 +1,6 @@
 ---
 title: Remove local ticket branches that `main` already contains
-status: planning
+status: todo
 depends_on:
   - TASK-396
 parent: TASK-376
@@ -36,3 +36,4 @@ Tests: real-Git runner tests in a new `tests/test_run_removes_merged_branches.py
 - 2026-11-18T18:00:04Z lively-quartz-crane backlog → cold-read
 - 2026-11-18T18:02:13Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T18:02:13Z lively-quartz-crane cold-read → planning
+- 2026-11-18T18:02:15Z lively-quartz-crane planning → todo
