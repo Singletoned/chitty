@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -48,7 +48,7 @@ Each property asserts a returned value or `ChittyError` specifically. Every name
 ## Acceptance Criteria
 
 - [ ] Properties pass for rules 1 to 3 on both graph shapes, built as the Tests paragraph says: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch` (even when `main_tip` is `None`, an unborn `main`), else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
-- [ ] The notes record every property failing against the `NotImplementedError` stub, and `make check` passes
+- [ ] The notes name at least three mutants of `ticket_source`, run by hand and not committed, among them ignoring `provisional`, keeping a candidate equal to `main_tip`, and returning `main_branch` for an unborn `main` checked out; each fails a property of this ticket; `make check` passes
 
 ## Plan
 
@@ -118,3 +118,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T20:26:55Z calm-quartz-zander: changed owner, notes
 - 2026-11-18T20:26:55Z calm-quartz-zander doing → planning
 - 2026-11-18T21:31:44Z lively-quartz-crane: changed owner, description, acceptance criteria, notes
+- 2026-11-18T21:32:06Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T21:32:06Z lively-quartz-crane planning → cold-read
