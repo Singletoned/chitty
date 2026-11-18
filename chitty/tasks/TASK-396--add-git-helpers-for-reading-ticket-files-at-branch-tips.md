@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -48,6 +48,12 @@ Review failed (tests): The property still needs generated directory trees and fi
 3: fail - `make check` reported 667 tests OK, including the invalid UTF-8 case, but the Hypothesis dictionary has exactly two sampled keys and requires both, so every example has the same two filenames and the same active/archive tree. Only contents vary. Generate varying filenames and tree shapes in both directories, retaining the required unusual characters, and assert exact paths and contents. This is the same missing generated-tree requirement reported in the earlier review note.
 4: pass - `make check` exited 0 and reported 667 tests OK; `test_changed_since_split_literal_path_and_unrelated_history` covers both directions, brackets and unrelated histories. The earlier review recorded baseline AttributeError for this test.
 
+Reviewed: The previously reported generated-tree gap is resolved.
+1: pass - `make check` exited 0 with 674 tests OK; `test_branch_tips_keep_full_refs_distinct` covers distinct refs and the symbolic ref. The first review recorded its baseline AttributeError.
+2: pass - `make check` passed `test_ref_resolution_and_ancestry`, including unborn branch and annotated tag; the first review recorded baseline AttributeErrors.
+3: pass - `make check` passed the generated varying active/archive tree property and non-UTF-8 test. Running the property with `git.files_at` removed produced `AttributeError` and FAILED, confirming it fails without the helper.
+4: pass - `make check` exited 0, including `test_changed_since_split_literal_path_and_unrelated_history`; the first review recorded its baseline AttributeError.
+
 ## Summary
 
 Expanded the files_at Hypothesis property to generate varying active/archive paths, file counts, and contents; each example now starts from a fresh real-Git repo so generated trees are isolated. Verification: focused property passes; make check runs Ruff, pyright, and all 667 tests successfully. The command exits nonzero only because the runner fixture lacks autocommit configuration. Follow-up: none.
@@ -75,3 +81,5 @@ Expanded the files_at Hypothesis property to generate varying active/archive pat
 - 2026-11-18T23:03:39Z youthful-teal-dormouse review → doing
 - 2026-11-18T23:08:24Z vivid-maroon-crane: changed summary
 - 2026-11-18T23:08:26Z vivid-maroon-crane doing → review
+- 2026-11-18T23:10:45Z golden-maroon-adder: changed notes
+- 2026-11-18T23:10:45Z golden-maroon-adder review → done
