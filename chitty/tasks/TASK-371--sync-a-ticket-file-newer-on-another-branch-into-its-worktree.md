@@ -1,6 +1,6 @@
 ---
 title: Sync a ticket file newer on another branch into its worktree before a work session
-status: cold-read
+status: planning
 labels:
   - bug
 priority: high
@@ -36,3 +36,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_syncs_ticket.p
 
 - 2026-11-18T09:24:53Z witty-ginger-falcon → cold-read
 - 2026-11-18T09:25:14Z witty-ginger-falcon: changed dependencies
+- 2026-11-18T09:28:13Z witty-ginger-falcon cold-read → planning
