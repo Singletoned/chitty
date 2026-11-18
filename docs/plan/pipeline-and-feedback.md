@@ -102,6 +102,18 @@ asking the first.
 - Workers and reviewers never cold-read.
 - A ticket reaches `todo` only after its findings have outcomes, because
   `chitty run` takes anything in `todo` (`TASK-147` was claimed mid-read).
+- Rounds: the ticket-state migration (2026-11-18, 29 tickets) took about 2.5
+  reads per ticket, two to four on most strong fixes and 13 across `TASK-378`
+  and its splits. Later rounds mostly found errors the fixes had introduced (a
+  command that does not exist, a wrong test base class, a spy on a function
+  the code calls legitimately), not misses by earlier readers. So check every
+  new claim about code, commands or tests against the source before rereading,
+  and split a ticket whose third read still finds problems rather than patching
+  it again.
+- Read-only reads (from 2026-11-16) cost about a third less each than the
+  earlier reads that wrote probe tests (Haiku, 79 reads against 78: about 12
+  turns each against 26), and still found design flaws. More rounds per ticket
+  used up the saving: cost per ticket stayed about the same.
 - In this repository readers run on Haiku, to show what a weak model struggles
   with. While a planner's own subagent works on a ticket, the ticket keeps an
   owner, so `chitty run` leaves it alone.
