@@ -355,7 +355,8 @@ class TestReviewMerge(ReviewMergeTestCase):
         check_script.write_text(
             "from pathlib import Path\n"
             "ticket = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
-            "if 'status: done' in ticket.read_text(): raise SystemExit(7)\n"
+            "if Path('review-marker').exists() or 'status: done' in ticket.read_text():\n"
+            "    raise SystemExit(7)\n"
         )
         config = self.root / "chitty.toml"
         config.write_text(
