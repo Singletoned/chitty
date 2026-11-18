@@ -1,6 +1,6 @@
 ---
 title: Sync a ticket file newer on another branch into its worktree before a work session
-status: planning
+status: todo
 labels:
   - bug
 priority: high
@@ -43,3 +43,4 @@ Tests:
 - 2026-11-18T09:25:14Z witty-ginger-falcon: changed dependencies
 - 2026-11-18T09:28:13Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:28:15Z witty-ginger-falcon: changed description, acceptance criteria
+- 2026-11-18T09:28:19Z witty-ginger-falcon planning → todo
