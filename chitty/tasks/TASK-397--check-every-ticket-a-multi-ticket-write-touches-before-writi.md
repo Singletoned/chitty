@@ -1,6 +1,6 @@
 ---
 title: Check every ticket a multi-ticket write touches before writing any
-status: planning
+status: cold-read
 depends_on:
   - TASK-385
 parent: TASK-376
@@ -35,3 +35,4 @@ Tests: real-Git tests in a new `tests/test_multi_ticket_writes.py`, inheriting `
 - 2026-11-18T17:53:36Z lively-quartz-crane → backlog
 - 2026-11-18T17:53:40Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-18T17:53:40Z lively-quartz-crane backlog → planning
+- 2026-11-18T17:56:18Z lively-quartz-crane planning → cold-read
