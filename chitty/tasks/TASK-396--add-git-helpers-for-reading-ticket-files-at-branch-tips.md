@@ -40,6 +40,8 @@ Review failed (tests): Add the missing real-Git cases and generate ticket-direct
 3: fail - `make check` passed the odd-path and invalid UTF-8 tests, but the Hypothesis strategy generates only file contents; the two paths and tree are fixed. Generate ticket-directory trees and filenames including the specified characters in active and archive directories, and assert exact paths and contents.
 4: pass - `make check` exited 0 with 667 tests OK; `test_changed_since_split_literal_path_and_unrelated_history` exercises both directions of change, the literal bracket path, and unrelated histories. Running the new tests with baseline helpers absent produced five AttributeErrors, including this test.
 
+Review follow-up: added the origin/HEAD symref and distinct commits for same-suffix local/remote refs; added unborn-branch resolution coverage; expanded the Hypothesis input to generate both odd-named active and archive ticket files with varying contents. Focused test passes. make check: 667 tests pass; Ruff and pyright pass. The command exits nonzero due to the known runner-fixture error requiring autocommit configuration.
+
 ## Summary
 
 Implemented the requested Git helpers and real-Git tests for branch tips, refs, odd file paths, UTF-8 errors, pathspecs, and unrelated histories. Targeted tests pass. Ruff and pyright pass; make check reports all 657 Python test suites passing, but exits nonzero in a pre-existing Chitty runner test whose fixture lacks required autocommit configuration. Follow-up: none.
@@ -60,3 +62,4 @@ Implemented the requested Git helpers and real-Git tests for branch tips, refs, 
 - 2026-11-18T22:50:20Z lively-silver-wren doing → review
 - 2026-11-18T22:52:59Z nimble-dusky-puffin: changed acceptance criteria, notes
 - 2026-11-18T22:52:59Z nimble-dusky-puffin review → doing
+- 2026-11-18T23:01:00Z sunny-white-newt: changed notes
