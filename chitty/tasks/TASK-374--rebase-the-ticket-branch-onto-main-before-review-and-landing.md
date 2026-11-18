@@ -26,14 +26,6 @@ Decisions:
 
 Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `tests/test_landing.py`, with `git init -b main`; the fake reviewer writes a marker file when it starts. No property: real Git and runner processes over the fixed cases in the criteria; `rebase_onto`'s two outcomes are tested directly in `tests/test_git.py`.
 
-## Acceptance Criteria
-
-- [ ] The `ticket_only_conflicts` property in `tests/test_property_ticket_conflicts.py` passes and fails against the `NotImplementedError` stub
-- [ ] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..<branch>` is empty, `main` is an ancestor of the branch, and the fake reviewer records one start
-- [ ] A review run where `main` and the branch both appended different notes to the ticket, the branch in two separate commits so the rebase stops twice, and the same for a ticket in an archive directory (a context with `archive = "move"`): the rebase completes with every note kept, no rebase is in progress, and the fake reviewer records one start without the `latest committed version` error; the test fails before the change
-- [ ] A review run whose rebase stops with both a ticket-file conflict and a code conflict (both sides changed the same lines of one source file): no rebase is in progress, the ticket is `doing`, its note contains `Review failed (integration)` and both paths in backticks, and no reviewer starts
-- [ ] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit; `git.merge` and `git.merge_main` are gone; `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
-
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
@@ -48,3 +40,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T15:47:46Z witty-ginger-falcon: changed notes
 - 2026-11-18T15:47:46Z witty-ginger-falcon todo → planning
 - 2026-11-18T17:57:37Z lively-quartz-crane: changed dependencies, description
+- 2026-11-18T17:57:39Z lively-quartz-crane: changed acceptance criteria
