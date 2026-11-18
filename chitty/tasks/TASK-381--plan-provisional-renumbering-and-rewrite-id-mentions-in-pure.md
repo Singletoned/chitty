@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering and rewrite ID mentions in pure functions
-status: cold-read
+status: planning
 depends_on:
   - TASK-380
 parent: TASK-376
@@ -14,16 +14,16 @@ Under the new ticket state model (`docs/plan/ticket-state.md`, "Planning decisio
 Decisions:
 
 - New module `src/chitty/renumbering.py`. Create it first with these names raising `NotImplementedError`, so the tests fail on behaviour rather than at import.
-- `plan_renumbering(used: Mapping[str, set[int]], provisional: Sequence[TaskId]) -> dict[TaskId, TaskId]`. `used` maps each prefix to the sequential numbers already taken in its context (prefixes are unique across contexts: `src/chitty/config.py` rejects duplicates). Each prefix's provisional IDs, in sorted `TaskId` order, get the consecutive numbers starting one above the highest used number of that prefix (from 1 when none). A provisional ID listed twice raises `ChittyError` naming it: two branches can draw the same suffix. A non-provisional ID (an `int` number) in `provisional` also raises `ChittyError`.
-- `replace_ids(text: str, mapping: Mapping[TaskId, TaskId]) -> str` replaces every mention of each old ID. A mention is the old ID matched by the ASCII regular expression `(?<![A-Za-z0-9-])<ID>(?![A-Za-z0-9])`, case-sensitive. So mentions after a backtick, `(`, `[`, `"`, `/`, `_` or at line start are rewritten, and so are `TASK-K7Q2MX--slug.md` and `TASK-K7Q2MX-foo`; `XTASK-K7Q2MX`, `-TASK-K7Q2MX`, `TASK-K7Q2MXY` and lower-case forms such as the branch name `task-k7q2mx` are not. Accepted: a lower-case mention then dangles.
+- `plan_renumbering(used: Mapping[str, set[int]], provisional: Sequence[TaskId]) -> dict[TaskId, TaskId]`. `used` maps each prefix to the sequential numbers already taken in its context (prefixes are unique across contexts: `src/chitty/config.py` rejects duplicates). Each prefix's provisional IDs, in sorted order (`TaskId.__lt__`), get the consecutive numbers starting at `max(used[prefix], default=0) + 1`; a prefix missing from `used` starts at 1 and is not an error; empty `provisional` returns `{}`. Keys are the input `TaskId`s. Errors are `ChittyError` from `chitty.errors`. A provisional ID listed twice raises `ChittyError` naming it: two branches can draw the same suffix. A non-provisional ID (an `int` number) in `provisional` also raises `ChittyError`.
+- `replace_ids(text: str, mapping: Mapping[TaskId, TaskId]) -> str` replaces every mention of each old ID in one simultaneous pass (a replaced ID is never replaced again in the same call). A mention is the old ID matched by the ASCII regular expression `(?<![A-Za-z0-9-])<ID>(?![A-Za-z0-9])`, case-sensitive. So mentions after a backtick, `(`, `[`, `"`, `/`, `_` or at line start are rewritten, and so are `TASK-K7Q2MX--slug.md` and `TASK-K7Q2MX-foo`; `XTASK-K7Q2MX`, `-TASK-K7Q2MX`, `TASK-K7Q2MXY` and any form not in exact case, such as the branch name `task-k7q2mx` or `TASK-k7q2mx`, are not. Accepted: such a mention then dangles.
 - Which parts of which files `replace_ids` is applied to is `TASK-391`'s decision.
 
-Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Generate prefixes matching `[A-Z]+`, sets of used numbers, provisional IDs from `ids.provisional_suffix` (`TASK-380`) with random draws (deduplicated, except in the duplicate test), and text mixing bounded mentions, look-alikes (each form listed above), lower-case forms and unrelated text. The `replace_ids` oracle is built independently in the test (for example, by inserting known mentions at known places in generated text), not by calling the same regular expression.
+Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Generate prefixes matching `[A-Z]+`, sets of used numbers of at least 1 with gaps (so `{1, 5}` must give 6, not 2), provisional IDs from `ids.provisional_suffix` (`TASK-380`) with random draws (deduplicated, except in the duplicate test), and text mixing bounded mentions, look-alikes (each form listed above), lower-case forms and unrelated text. The `replace_ids` oracle is built independently in the test, not by calling the same regular expression: insert known mentions and look-alikes at known places into filler drawn from an alphabet that cannot form an ID (no letters or digits), padding each mention with a separator outside `[A-Za-z0-9-]`. Keep the mapping's keys and values disjoint, as real inputs are (keys provisional, values numeric).
 
 ## Acceptance Criteria
 
 - [ ] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
-- [ ] `replace_ids` property: in generated text every inserted bounded mention becomes its new ID, every look-alike and lower-case form listed in the Description is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
+- [ ] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
 - [ ] `make check` passes
 
 ## History
@@ -39,3 +39,5 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 - 2026-11-18T16:34:46Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:34:48Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T16:35:11Z lively-quartz-crane planning → cold-read
+- 2026-11-18T16:36:40Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T16:36:40Z lively-quartz-crane cold-read → planning
