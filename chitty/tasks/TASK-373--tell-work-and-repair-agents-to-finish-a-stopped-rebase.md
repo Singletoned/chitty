@@ -1,7 +1,8 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: review
+status: blocked
 priority: high
+owner: human
 created: 2026-11-18
 ---
 
@@ -25,7 +26,7 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 - [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
 - [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
-- [x] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
+- [ ] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
 
 ## Plan
 
@@ -61,6 +62,14 @@ Review failed (design): Newly discovered ticket/code mismatch: the description s
 
 Planning 2026-11-18: removed the requirement that MCP passes the current directory to `guide()`; `src/chitty/mcp.py` has no role-guide entry point. Nothing else changed; the implementation on this branch stands. Fits the one-authoritative-copy model (`docs/plan/ticket-state.md`).
 
+Review failed (work): Newly discovered nonconventional worktree defect; earlier linked-worktree coverage and conventional worktree identity findings were resolved.
+1: pass - `uv run python -m unittest tests.test_guide_rebase -v` printed OK; the CLI exposes the role and its text requires continuation and forbids abort and skip.
+2: pass - The focused tests printed OK for both roles, both backends, root, subdirectory and linked worktree; the earlier review recorded FAILED (failures=3) with rebase detection disabled.
+3: pass - The focused tests printed OK comparing stopped-rebase output minus insertion to clean and outside-repository output for both roles.
+4: fail - `make check` printed OK (642 tests), including the conventional worktree fake-agent test; the worker recorded that test failing before the fix. A throwaway invocation based on `TestRunContinue` created a ticket branch in a linked worktree at `custom`, stopped a real conflicting rebase there, and ran `chitty run --ticket TASK-1`. It exited 1 with `fatal: 'task-1' is already used by worktree at .../repo/custom` instead of invoking the agent. Git reports detached HEAD during rebase, so branch lookup misses nonconventional worktrees and the conventional-path fallback creates another checkout. Locate the rebasing ticket worktree by its recorded branch identity regardless of path, use it for the prompt and add a regression test.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
@@ -92,3 +101,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T19:52:23Z tidy-pearl-falcon todo → doing
 - 2026-11-18T19:59:24Z tidy-pearl-falcon: changed summary; ticked acceptance criteria
 - 2026-11-18T19:59:24Z tidy-pearl-falcon doing → review
+- 2026-11-18T20:02:27Z honest-teal-quail: changed owner, acceptance criteria, notes
+- 2026-11-18T20:02:27Z honest-teal-quail review → blocked
