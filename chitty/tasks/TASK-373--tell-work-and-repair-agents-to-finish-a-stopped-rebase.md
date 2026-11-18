@@ -24,7 +24,7 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 
 ## Acceptance Criteria
 
-- [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
+- [ ] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [ ] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; evidence of failing without the change is these tests failing on the rebase-text assertion with injection disabled (for example `git.rebase_in_progress` patched to return false), not a `TypeError` on `main`
 - [ ] With no rebase in progress, outside a repository, or in a directory that does not exist, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed; during a stopped rebase, the review, plan and cold-read guides equal their output with no rebase in progress
 - [ ] The runner and Git helpers are unchanged apart from passing `directory=repo.root` to `guide()`: `git diff main -- src/chitty/run.py src/chitty/git.py` shows only that, and `git diff main -- tests/test_run_continue.py` adds no test that mentions a rebase; `make check` passes
@@ -129,3 +129,4 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T20:47:46Z lively-quartz-crane planning → todo
 - 2026-11-18T20:49:48Z lively-quartz-crane todo → planning
 - 2026-11-18T20:51:08Z lively-quartz-crane: changed description, acceptance criteria, notes
+- 2026-11-18T20:51:10Z lively-quartz-crane: changed acceptance criteria
