@@ -1,6 +1,6 @@
 ---
 title: Resolve review rebase conflicts in a separate agent session
-status: cold-read
+status: planning
 priority: medium
 depends_on:
   - TASK-374
@@ -35,3 +35,4 @@ Tests: real-Git runner tests with a fake agent command in a new `tests/test_revi
 
 - 2026-11-18T09:51:22Z witty-ginger-falcon → planning
 - 2026-11-18T09:52:36Z witty-ginger-falcon planning → cold-read
+- 2026-11-18T09:56:28Z witty-ginger-falcon cold-read → planning
