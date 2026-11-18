@@ -1,6 +1,6 @@
 ---
 title: Resolve review rebase conflicts in a separate agent session
-status: todo
+status: planning
 priority: medium
 depends_on:
   - TASK-374
@@ -35,6 +35,10 @@ Tests: real-Git runner tests with a fake agent command in a new `tests/test_revi
 - [ ] With `rebase_model` set, the rebase session command gets `--model <value>` and the reviewer gets `review_model`'s; unset, the rebase session gets no `--model`; `chitty init` writes the commented `rebase_model` line beside the other model lines
 - [ ] The usage log has a separate line with mode `rebase` for the session; `docs/plan/config.md` lists `rebase_model` and its unset behaviour, and `## Before a review` names the session, its mode and its failure note; `make check` passes
 
+## Notes
+
+On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
+
 ## History
 
 - 2026-11-18T09:51:22Z witty-ginger-falcon → planning
@@ -42,3 +46,5 @@ Tests: real-Git runner tests with a fake agent command in a new `tests/test_revi
 - 2026-11-18T09:56:28Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:56:29Z witty-ginger-falcon: changed description, acceptance criteria
 - 2026-11-18T09:56:31Z witty-ginger-falcon planning → todo
+- 2026-11-18T15:47:48Z witty-ginger-falcon: changed notes
+- 2026-11-18T15:47:48Z witty-ginger-falcon todo → planning
