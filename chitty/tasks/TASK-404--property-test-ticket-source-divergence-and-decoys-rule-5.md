@@ -19,6 +19,13 @@ Each property asserts a returned value or `ChittyError` specifically, and tests 
 
 The code already exists, so evidence that the tests catch a wrong implementation comes from mutants run by hand and not committed: each changes `ticket_source` in one way, and the notes record which property failed.
 
+## Acceptance Criteria
+
+- [ ] A rule 5 property passes on generated forks: `ChittyError` names each remaining candidate, quoted, and never a candidate that `main_tip` dropped
+- [ ] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
+- [ ] The notes name at least three mutants of `ticket_source`, among them treating `task-50` or local `feature/task-5` as a candidate and naming dropped candidates, each failing a property of this ticket; `make check` passes
+
 ## History
 
 - 2026-11-18T21:31:15Z lively-quartz-crane → backlog
+- 2026-11-18T21:31:19Z lively-quartz-crane: changed acceptance criteria
