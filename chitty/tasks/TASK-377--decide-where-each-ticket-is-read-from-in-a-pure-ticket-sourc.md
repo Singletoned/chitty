@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -33,15 +33,15 @@ Out of scope: any caller, reading files, computing `changed_on_both`, and the wr
 
 Tests: Hypothesis properties in `tests/test_property_ticket_source.py`. `TASK-403` (rules 4 and 6) and `TASK-404` (rule 5 and decoys) extend the file after this ticket (split out 2026-11-18, after two reviews rejected fixed examples), so put these generators at module level for them to reuse:
 
-- `graphs()` draws one of two shapes, so no property filters most inputs away. A chain `c0` to `cn` (n from 1 to 6), where `contains(a, b)` is true when `a`'s index is at least `b`'s. Or a fork: a shared chain `c0` to `ck`, then two arms `a1` to `ai` and `b1` to `bj` (each at least one commit), where an arm commit contains the earlier commits of its arm and the whole shared chain, and nothing on the other arm. Both shapes add up to three unrelated commits `u0`, `u1`, `u2` that contain only themselves. It returns the commits and `contains`.
-- `task_ids()` draws a prefix from `[A-Z]+` and a number.
-- `ref_maps()` draws `local_tips` and `remote_tips` over a given set of commits, from candidate names (the local branch name, and remote names such as `origin/task-5`, with remote names drawn from lowercase letters), decoy names (as listed above) and unrelated names. Decoys with one `/` (`feature/task-5`) go only in `local_tips`; remote decoys are `origin/task-50` and `origin/x/task-5`.
+- `graphs()` draws one of two shapes, so no property filters most inputs away. A chain `c0` to `cn` (n from 1 to 6), where `contains(a, b)` is true when `a`'s index is at least `b`'s. Or a fork: a shared chain `c0` to `ck` (k from 0 to 3), then two arms `a1` to `ai` and `b1` to `bj` (each 1 to 3 commits), where an arm commit contains the earlier commits of its arm and the whole shared chain, and nothing on the other arm. Both shapes add up to three unrelated commits `u0`, `u1`, `u2` that contain only themselves. It returns the commits, `contains`, and the structure the recipes need: for a chain, the commits in index order; for a fork, the shared chain and each arm, in order.
+- `task_ids()` draws a prefix of 1 to 5 letters `A` to `Z` and a number from 1 to 99.
+- `ref_maps(commits, with_candidates)` draws `local_tips` and `remote_tips` with values from `commits`. Candidate names, only when `with_candidates` is true: the local branch name and remote names such as `origin/<branch>`, with remote names of lowercase letters. Decoy names, derived from the drawn ID so they never equal a candidate (`<branch>` is the ticket branch name): local `<branch>0`, `feature/<branch>` and the upper-case ID; remote `origin/<branch>0`, `origin/x/<branch>`, and the key `<branch>` without a `/`, which is ignored. Unrelated names match no candidate and no decoy, such as `other` and `origin/other`.
 
 Properties for this ticket, each building inputs whose answer is known by construction:
 
 - Rule 1: any graph, maps over all commits, any `current_branch` (a candidate name, a decoy, `main_branch`, `None`, or a candidate name absent from `local_tips`), `main_tip` drawn or `None`, any `changed_on_both` set: `WORKING_TREE`.
-- Rules 2 and 3, all dropped: draw `main_tip` from the graph, then place candidates only on commits `main_tip` contains (in a fork, on the shared chain and, when `main_tip` is on an arm, on that arm, including at `main_tip` itself and strictly behind it), and decoys anywhere: `WORKING_TREE` when `current_branch == main_branch`, else `main_branch`.
-- Rule 3, no candidates: maps without candidate names, `main_tip` drawn or `None`: as above, except that with `main_tip` `None` and `current_branch != main_branch` it is `ChittyError` whose message contains `main_branch` quoted in backticks; with `main_tip` `None` and `current_branch == main_branch` (an unborn `main`), `WORKING_TREE`.
+- Rules 2 and 3, all dropped: draw `main_tip` from the graph, then place candidates only on commits `main_tip` contains (in a fork, on the shared chain and, when `main_tip` is on an arm, on that arm, including at `main_tip` itself and strictly behind it), and decoys on any commit, including `u0` to `u2`: `WORKING_TREE` when `current_branch == main_branch`, else `main_branch`.
+- Rule 3, no candidates: maps from `ref_maps(commits, False)`, `main_tip` drawn or `None`: as above, except that with `main_tip` `None` and `current_branch != main_branch` it is `ChittyError` whose message contains `main_branch` quoted in backticks; with `main_tip` `None` and `current_branch == main_branch` (an unborn `main`), `WORKING_TREE`.
 
 Each property asserts a returned value or `ChittyError` specifically. Every name in an error message is quoted in backticks, and tests match the quoted names. The fixed-example tests for rules 4 to 6 and decoys already on this branch stay until `TASK-403` and `TASK-404` replace them.
 
@@ -49,10 +49,6 @@ Each property asserts a returned value or `ChittyError` specifically. Every name
 
 - [ ] Properties pass for rules 1 to 3 on both graph shapes, built as the Tests paragraph says: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch` (even when `main_tip` is `None`, an unborn `main`), else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
 - [ ] The notes name at least three mutants of `ticket_source`, run by hand and not committed, among them ignoring `provisional`, keeping a candidate equal to `main_tip`, and returning `main_branch` for an unborn `main` checked out; each fails a property of this ticket; `make check` passes
-
-## Plan
-
-Replace fixed test scenarios with generated case-directed Hypothesis properties. Generate chain and fork commit graphs with ancestry reachability, candidate/decoy/unrelated ref maps, task IDs, checkout states, main tips, and changed-ref sets. Ensure each rule is deliberately reached and compare values or exact error messages under decoy additions. Verify every property against a NotImplementedError stub before implementation, then make check and commit.
 
 ## Notes
 
@@ -77,6 +73,8 @@ The ticket requirements are actionable; continuing implementation of the missing
 Verification: `make check` passed (637 tests). The previously reviewed test-coverage gaps remain unresolved: the current properties still use fixed cases rather than the specified generated, case-directed ref maps and graph inputs. Returning to planning is appropriate only for ticket defects, and no defect in the written requirements was found; do not claim review readiness.
 
 Planning 2026-11-18: split after two failed reviews and a worker who could not see how to generate the inputs. Rules 4 and 6 moved to `TASK-403`, rule 5 and decoys to `TASK-404`; this ticket keeps the implementation, the shared generators and rules 1 to 3. The Tests paragraph now says how to build inputs whose answer is known. The implementation was never faulted.
+
+Cold read 2026-11-18 outcomes: decoys derived from the drawn ID (fixed `task-50` collided with ticket 50), `graphs()` returns its structure with bounds, `ref_maps` can omit candidates, decoys include a remote key without `/`; removed the stale Plan.
 
 ## Summary
 
@@ -120,3 +118,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T21:31:44Z lively-quartz-crane: changed owner, description, acceptance criteria, notes
 - 2026-11-18T21:32:06Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T21:32:06Z lively-quartz-crane planning → cold-read
+- 2026-11-18T21:35:09Z lively-quartz-crane: changed description, notes; wrote the plan
+- 2026-11-18T21:35:09Z lively-quartz-crane cold-read → planning
