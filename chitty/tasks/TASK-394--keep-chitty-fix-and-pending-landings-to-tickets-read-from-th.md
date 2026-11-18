@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` and pending landings to tickets read from this checkout
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -38,3 +38,4 @@ Tests: real-Git tests in a new `tests/test_fix_and_landing_sources.py`, inheriti
 - 2026-11-18T16:40:44Z lively-quartz-crane planning → cold-read
 - 2026-11-18T17:51:22Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:51:22Z lively-quartz-crane cold-read → planning
+- 2026-11-18T17:51:24Z lively-quartz-crane planning → cold-read
