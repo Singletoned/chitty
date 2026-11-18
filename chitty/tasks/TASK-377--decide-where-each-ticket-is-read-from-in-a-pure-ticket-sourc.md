@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -48,6 +48,12 @@ Add pure ticket_source module implementing specified candidate filtering, ancest
 
 Verified against the NotImplementedError stub: unittest tests.test_property_ticket_source fails all six tests (six errors). Implementation then passed make check (635 tests). Initial check exposed a fallback property fixture error; corrected it to use a candidate at the main tip.
 
+Review failed (tests): Add the specified case-directed properties; the current tests pass but exercise only narrow fixed examples. These are newly discovered findings; there are no earlier review notes.
+1: fail - `tests/test_property_ticket_source.py` fixes the ID and inputs in the provisional test and only tests a candidate equal to main in fallback. No property exercises no candidates, missing main including unborn main, or generated candidate and current-branch combinations on both graph shapes.
+2: fail - The descendant property only exercises a remote descendant on a chain; the conflict property only exercises a local ref on a chain. No property checks local working-tree selection, equal-tip local precedence, remote-name tie-breaking, or chosen remote conflict, across both shapes.
+3: fail - The divergence test does not include a third candidate dropped by main or check its absence from the message. The decoy test is one fixed successful example, not a property comparing returns and error messages across both shapes. Add the specified generated maps, IDs, decoys and conflict cases.
+4: pass - The existing note records all six properties erroring against the stub; `make check` printed `Ran 635 tests` and `OK` on this review.
+
 ## Summary
 
 Implemented pure authoritative ticket-ref selection with branch candidate filtering, ancestry-based resolution, divergence/change conflict errors, and provisional/main handling. Added Hypothesis-backed unittest coverage for provisional, fallback, descendant selection, divergence, changed-on-both, and decoys. Verified stub failure: all six tests errored against NotImplementedError; make check passed (635 tests). Follow-up: none.
@@ -76,3 +82,5 @@ Implemented pure authoritative ticket-ref selection with branch candidate filter
 - 2026-11-18T20:05:29Z jolly-dusky-badger: changed notes
 - 2026-11-18T20:05:32Z jolly-dusky-badger: changed summary
 - 2026-11-18T20:05:34Z jolly-dusky-badger doing → review
+- 2026-11-18T20:07:15Z witty-quartz-toad: changed acceptance criteria, notes
+- 2026-11-18T20:07:15Z witty-quartz-toad review → doing
