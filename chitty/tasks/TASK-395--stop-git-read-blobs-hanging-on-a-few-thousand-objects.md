@@ -1,6 +1,6 @@
 ---
 title: Stop `git._read_blobs` hanging on a few thousand objects
-status: planning
+status: cold-read
 labels:
   - bug
 parent: TASK-376
@@ -28,3 +28,4 @@ Tests: in `tests/test_git.py`, inheriting `RepoTestCase`, a repository with 5000
 - 2026-11-18T16:38:07Z lively-quartz-crane → backlog
 - 2026-11-18T16:39:31Z lively-quartz-crane: changed title, labels, description, acceptance criteria
 - 2026-11-18T16:39:31Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:40:46Z lively-quartz-crane planning → cold-read
