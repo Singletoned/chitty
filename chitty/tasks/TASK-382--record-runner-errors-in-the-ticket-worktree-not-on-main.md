@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -43,9 +43,11 @@ Review failed (tests): Add the specified real-Git regressions, including the req
 4: fail - `tests/test_next.py::test_run_check_failure_records_output_and_does_not_claim_or_start_agent` checks the untracked file and one branch commit but does not assert that commit changes only the ticket file. Add that assertion. The doing case checks the note and agent in `test_run_check_failure_on_doing_ticket_starts_agent`.
 5: fail - `make check` passed 636 tests, but the existing landing failure test advances main during review and does not assert the specified reviewer-created marker, unchanged main, and newest branch commit containing Runner error (landing). Add the specified scenario.
 
+Added tests/test_run_errors_on_branch.py for work setup, agent, and review setup errors, plus landing-failure coverage and branch-only commit assertions. The new focused tests pass; make check passes 644 tests.
+
 ## Summary
 
-Runner errors now edit and commit through one branch-side Repo built with main config; check-failure handling uses that repo and avoids main-checkout discovery. Updated branch/main assertions and failure-phase coverage. Verification: the focused regressions failed with the fix reverted; `make check` passes. No follow-up required.
+Runner errors are recorded through the ticket worktree Repo. Added explicit regressions for work and review setup, agent failure, check-failure commit scope and errors selection, and landing failure. Verification: focused runner-error tests pass; make check passes all 644 tests. No follow-up.
 
 ## History
 
@@ -78,3 +80,5 @@ Runner errors now edit and commit through one branch-side Repo built with main c
 - 2026-11-18T20:44:20Z eager-ochre-gannet doing → review
 - 2026-11-18T21:12:21Z honest-fawn-crane: changed acceptance criteria, notes
 - 2026-11-18T21:12:21Z honest-fawn-crane review → doing
+- 2026-11-18T21:48:48Z kind-amber-kestrel: changed notes, summary
+- 2026-11-18T21:48:48Z kind-amber-kestrel doing → review
