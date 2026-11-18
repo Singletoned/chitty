@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -45,6 +45,13 @@ Review failed (tests): Add the specified real-Git regressions, including the req
 
 Added tests/test_run_errors_on_branch.py for work setup, agent, and review setup errors, plus landing-failure coverage and branch-only commit assertions. The new focused tests pass; make check passes 644 tests.
 
+Review failed (tests): Some earlier coverage gaps remain unresolved; the landing marker mismatch is newly discovered. Add the missing assertions and scenario below.
+1: fail - The prior review requested the complete matrix and branch-head notes. The new setup and agent tests inspect the worktree file rather than `git show task-1:<path>`; review setup does not assert the failure message, and the todo check test does not assert the phase note or exactly one main commit. Assert each required branch-head status and note, including its own message and the main claim count. Running the four focused cases against `main` runner code produced four failures, including changed main heads and main status error.
+2: fail - The prior review requested main-file checks for every case. Review setup captures `main_status` before the run and checks that stale value afterward, so it does not exercise the required post-run main file check. Read it after the run. The todo check main-file assertion fails against `main` runner code, printing status error instead of doing.
+3: pass - `git diff main...HEAD -- src/chitty/run.py` shows `_handle_check_failure` receives `branch_repo` and has no `git.main_checkout` call.
+4: pass - `test_run_check_failure_records_output_and_does_not_claim_or_start_agent` asserts one branch commit, its sole changed path and the untracked check output; the doing-ticket test checks the note and agent. Against `main` runner code the former fails on main status error; `make check` passed 644 tests on rerun.
+5: fail - The new landing test writes `review-marker`, but its check script tests ticket status instead of marker existence, so it does not exercise the specified marker-triggered failure. Make the check depend on the marker and assert the branch-head landing note. Against `main` runner code the test fails with review → error instead of done → error. `make check` passed on rerun; its first run failed with a Hypothesis timing deadline (265 ms versus 200 ms).
+
 ## Summary
 
 Runner errors are recorded through the ticket worktree Repo. Added explicit regressions for work and review setup, agent failure, check-failure commit scope and errors selection, and landing failure. Verification: focused runner-error tests pass; make check passes all 644 tests. No follow-up.
@@ -82,3 +89,5 @@ Runner errors are recorded through the ticket worktree Repo. Added explicit regr
 - 2026-11-18T21:12:21Z honest-fawn-crane review → doing
 - 2026-11-18T21:48:48Z kind-amber-kestrel: changed notes, summary
 - 2026-11-18T21:48:48Z kind-amber-kestrel doing → review
+- 2026-11-18T21:53:01Z brisk-ochre-wren: changed acceptance criteria, notes
+- 2026-11-18T21:53:01Z brisk-ochre-wren review → doing
