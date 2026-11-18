@@ -34,6 +34,8 @@ Review failed (tests): Newly discovered upgrade case: insert the new comment imm
 2: fail - Created a repository with `chitty init`, removed only the new comment, then ran `chitty init` again: both commands exited 0, but review_model was on line 12 and rebase_model on line 15, not directly after it. Existing init test checks less-than rather than adjacency. Blank validation and unknown mode are exercised by `make check`.
 3: pass - Both plan documents mention rebase_model; `make check` printed `Ran 677 tests` and `OK`.
 
+Implementation attempt: added an upgrade adjacency regression test (confirmed it fails before the change) and adjusted init insertion. The focused test still fails: upgrade does not insert the comment adjacent to the active review_model line. Root cause remains unresolved; no full check run. Preserve this partial work for follow-up.
+
 ## Summary
 
 Implemented optional rebase_model configuration, init template support, mode-specific runner selection, validation, and documentation. Verification: focused tests and make check pass. No follow-up work.
@@ -52,3 +54,4 @@ Implemented optional rebase_model configuration, init template support, mode-spe
 - 2026-11-18T23:23:10Z plucky-bronze-jay doing → review
 - 2026-11-18T23:25:53Z open-ochre-marten: changed acceptance criteria, notes
 - 2026-11-18T23:25:53Z open-ochre-marten review → doing
+- 2026-11-18T23:29:18Z able-coral-zander: changed notes
