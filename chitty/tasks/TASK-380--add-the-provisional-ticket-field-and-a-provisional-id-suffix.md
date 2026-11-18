@@ -29,7 +29,7 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 
 ## Plan
 
-Add the deterministic provisional ID suffix and optional `provisional: true` frontmatter support. Add the specified Hypothesis properties and formatter sample, update the task-file reference, then run the focused tests and `make check`.
+Close review findings: enforce provisional values by identity, add property coverage for generated ticket round-trips/removal/serialization/show output, and tighten parser rejection cases. Run tests before fixes to capture regression failures, then make check and commit.
 
 ## Notes
 
@@ -65,3 +65,4 @@ Implemented provisional suffix generation and strict optional frontmatter serial
 - 2026-11-18T20:09:42Z honest-pearl-wren doing → review
 - 2026-11-18T20:12:29Z jolly-jade-eel: changed acceptance criteria, notes
 - 2026-11-18T20:12:29Z jolly-jade-eel review → doing
+- 2026-11-18T20:17:09Z nimble-violet-yellowhammer: wrote the plan
