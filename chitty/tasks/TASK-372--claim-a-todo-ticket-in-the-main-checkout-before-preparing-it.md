@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket in the main checkout before preparing its worktree
-status: review
+status: doing
 labels:
   - bug
 priority: high
@@ -27,7 +27,7 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_claims_on_main
 ## Acceptance Criteria
 
 - [x] A work run on a `todo` ticket with no branch: the claim commit (`todo → doing`) is on `main` and is an ancestor of the new branch, and the fake agent records the worktree ticket as `doing`; the test fails before the change
-- [x] The `TASK-343` state, made with real commits (branch created and its ticket edited, then a later edit to the ticket committed on `main`): a work run on the `todo` ticket claims it on `main` without the `latest committed version` error and the fake agent starts; the test fails before the change
+- [ ] The `TASK-343` state, made with real commits (branch created and its ticket edited, then a later edit to the ticket committed on `main`): a work run on the `todo` ticket claims it on `main` without the `latest committed version` error and the fake agent starts; the test fails before the change
 - [x] A ticket chosen as `todo` whose `setup` fails, and one whose `check` fails, both end `error` with no agent started; a `doing` ticket whose `check` fails still starts the agent
 - [x] `docs/plan/next-action-and-runner.md` has the two replacement sentences from the Description, and `make check` passes
 
@@ -38,6 +38,12 @@ In `src/chitty/run.py`, capture the selected status and, for work-mode `todo`, c
 ## Notes
 
 Regression evidence: `tests.test_run_claims_on_main` fails against the pre-change runner and passes with the fix. Verification: `make check` passes (629 tests), and `chitty fix` completes with existing repository warnings only.
+
+Review failed (tests): Strengthen the stale-history regression so it reproduces the original claim failure and fails for that behavior, not only for the changed run summary. This is newly discovered; there are no earlier review failures.
+1: pass - The focused test passes; with main version of run.py and the summary assertion removed it errors because the branch tip is not an ancestor of main.
+2: fail - The focused test passes with the fix, but when run against main version of run.py with only the doing-to-error stdout assertion removed it also passes: the fake agent starts and no latest committed version error occurs. Construct and verify the TASK-343 history so the old claim actually fails, then assert the claim is committed on main and the agent starts with the fix.
+3: pass - The focused setup-failure, todo check-failure, and doing check-failure tests all report ok and exercise the required outcomes.
+4: pass - The diff contains both requested documentation replacements; make check reports 629 tests OK, ruff clean, and pyright 0 errors.
 
 ## Summary
 
@@ -55,3 +61,5 @@ Claimed todo work on main before preparing its worktree; check-failure handling 
 - 2026-11-18T10:41:09Z eager-teal-crane: changed notes
 - 2026-11-18T10:52:01Z eager-teal-crane: replaced notes; changed summary; ticked acceptance criteria
 - 2026-11-18T10:52:01Z eager-teal-crane doing → review
+- 2026-11-18T10:54:40Z friendly-dusky-wren: changed acceptance criteria, notes
+- 2026-11-18T10:54:40Z friendly-dusky-wren review → doing
