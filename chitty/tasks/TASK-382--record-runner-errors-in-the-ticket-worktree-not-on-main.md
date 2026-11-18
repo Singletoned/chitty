@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -36,6 +36,13 @@ Create one branch-side Repo(worktree, main_repo.config) after obtaining the tick
 
 Regression evidence: before the fix, the focused branch-recording tests failed (main received runner-error commits; branch history lacked the error commit). After the fix, the focused tests and full `make check` pass. Coverage includes work setup, agent failure, todo check failure with its untracked check output preserved, review setup, and landing failure; existing doing-ticket check behavior remains covered.
 
+Review failed (tests): Add the specified real-Git regressions, including the required new test file and evidence they fail against the original implementation. These are newly discovered findings; no earlier review failure is recorded.
+1: fail - `ls tests/test_run_errors_on_branch.py` reports no such file. Existing tests do not exercise the complete four-case matrix with each required branch-head note, failure message, and main commit assertion. Add the specified cases and demonstrate each fails before the fix.
+2: fail - The required new test file is missing; existing assertions do not check main file status, main checkout show, and errors-mode next_action for each of the four cases, nor demonstrate the main-file checks fail before the fix.
+3: pass - `git diff main...HEAD -- src/chitty/run.py` shows `_handle_check_failure` takes branch_repo and no longer calls git.main_checkout.
+4: fail - `tests/test_next.py::test_run_check_failure_records_output_and_does_not_claim_or_start_agent` checks the untracked file and one branch commit but does not assert that commit changes only the ticket file. Add that assertion. The doing case checks the note and agent in `test_run_check_failure_on_doing_ticket_starts_agent`.
+5: fail - `make check` passed 636 tests, but the existing landing failure test advances main during review and does not assert the specified reviewer-created marker, unchanged main, and newest branch commit containing Runner error (landing). Add the specified scenario.
+
 ## Summary
 
 Runner errors now edit and commit through one branch-side Repo built with main config; check-failure handling uses that repo and avoids main-checkout discovery. Updated branch/main assertions and failure-phase coverage. Verification: the focused regressions failed with the fix reverted; `make check` passes. No follow-up required.
@@ -69,3 +76,5 @@ Runner errors now edit and commit through one branch-side Repo built with main c
 - 2026-11-18T20:33:49Z eager-ochre-gannet: wrote the plan
 - 2026-11-18T20:44:20Z eager-ochre-gannet: changed notes, summary
 - 2026-11-18T20:44:20Z eager-ochre-gannet doing → review
+- 2026-11-18T21:12:21Z honest-fawn-crane: changed acceptance criteria, notes
+- 2026-11-18T21:12:21Z honest-fawn-crane review → doing
