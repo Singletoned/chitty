@@ -27,6 +27,10 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 - [ ] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
 - [ ] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
 
+## Plan
+
+Add a general rebase role and inject it into work/repair guide output only when the supplied checkout is inside an active rebase. Thread the current directory through CLI/MCP and the ticket worktree through runner prompts. Add real-repository tests covering both rebase backends and location variants plus unchanged-output cases and runner prompt behavior. Run regression tests before implementation to verify failure, then make check and commit implementation.
+
 ## History
 
 - 2026-11-18T09:50:54Z witty-ginger-falcon → planning
@@ -35,3 +39,4 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 - 2026-11-18T09:55:13Z witty-ginger-falcon: changed description, acceptance criteria
 - 2026-11-18T09:55:15Z witty-ginger-falcon planning → todo
 - 2026-11-18T11:08:04Z lively-maroon-crane todo → doing
+- 2026-11-18T11:08:56Z lively-maroon-crane: wrote the plan
