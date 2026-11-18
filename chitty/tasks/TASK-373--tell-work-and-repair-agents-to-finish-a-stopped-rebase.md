@@ -23,9 +23,9 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 ## Acceptance Criteria
 
 - [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
-- [ ] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
+- [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
 - [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
-- [ ] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
+- [x] The runner passes the ticket worktree: a work run whose worktree has a stopped rebase gives the fake agent a prompt containing the rebase text, though the main checkout has none; `make check` passes
 
 ## Plan
 
@@ -41,9 +41,11 @@ Review failed (tests): Newly discovered coverage gaps must be addressed; there a
 3: pass - The focused test printed OK for both roles, comparing clean and outside-repository output with stopped-rebase output minus the insertion.
 4: fail - `make check` printed OK (632 tests), but no test runs a fake agent with a stopped rebase in the ticket worktree while main is clean. Add that runner regression test and show it fails without the change.
 
+Regression evidence: the linked-worktree test now checks exact insertion placement for both work and repair. The runner regression test failed without the fix: a stopped rebase detached HEAD, so Git no longer reported the ticket branch in worktree-list and the runner tried to add an already-existing worktree. After returning the conventional ticket worktree path when it exists, the fake agent received rebase instructions while main did not. Verified focused test and make check (637 tests).
+
 ## Summary
 
-Added the rebase role and context-sensitive injection for work/repair guides; threaded the checkout directory through CLI and runner prompts. Added real-conflict coverage for rebase-merge and rebase-apply, root/subdirectory and linked worktree, CLI output, and unchanged output without an active rebase. make check passes. Runner prompt resolves from the existing ticket worktree; stopped-rebase handling is limited to agent startup.
+Added exact linked-worktree placement coverage for work and repair. Fixed runner lookup of the conventional ticket worktree during a stopped rebase, when Git detaches HEAD and hides its branch from worktree-list. Added a fake-agent runner regression test proving the work prompt contains rebase instructions while main does not. Verified the regression fails without the fix, focused test passes, and make check passes (637 tests).
 
 ## History
 
@@ -58,3 +60,4 @@ Added the rebase role and context-sensitive injection for work/repair guides; th
 - 2026-11-18T11:19:14Z lively-maroon-crane doing → review
 - 2026-11-18T11:21:53Z tidy-silver-quail: changed acceptance criteria, notes
 - 2026-11-18T11:21:53Z tidy-silver-quail review → doing
+- 2026-11-18T11:29:52Z youthful-indigo-ibis: changed notes, summary; ticked acceptance criteria
