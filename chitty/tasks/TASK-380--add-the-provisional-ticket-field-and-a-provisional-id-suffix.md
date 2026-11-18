@@ -1,6 +1,6 @@
 ---
 title: Add the `provisional` ticket field and a provisional ID suffix
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -35,3 +35,4 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 - 2026-11-18T16:27:46Z lively-quartz-crane: changed title, labels, description, acceptance criteria
 - 2026-11-18T16:27:46Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:27:48Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T16:29:21Z lively-quartz-crane planning → cold-read
