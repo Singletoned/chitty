@@ -1,6 +1,6 @@
 ---
 title: Stop autocommit repairing every ticket when it writes no ticket file
-status: planning
+status: cold-read
 labels:
   - bug
 parent: TASK-376
@@ -28,3 +28,4 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 - 2026-11-18T17:54:12Z lively-quartz-crane → backlog
 - 2026-11-18T17:55:03Z lively-quartz-crane: changed labels, description, acceptance criteria
 - 2026-11-18T17:55:03Z lively-quartz-crane backlog → planning
+- 2026-11-18T17:56:20Z lively-quartz-crane planning → cold-read
