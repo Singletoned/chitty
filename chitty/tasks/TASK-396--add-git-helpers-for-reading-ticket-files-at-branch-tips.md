@@ -17,7 +17,7 @@ Decisions, all in `src/chitty/git.py`. Refs passed in and out are full ref names
 - `files_at(root: Path, ref: str, directories: Sequence[Path]) -> list[tuple[Path, str]]`: every blob below the directories at that ref's tip, with its text, from `git ls-tree -r -z --full-tree` split on NUL, then one `_read_blobs` call. A selected blob reported `missing`, or content that is not UTF-8, raises `ChittyError` naming the path. A directory absent at that ref gives nothing. `main_files` may be rewritten on top of it.
 - `changed_since_split(root: Path, ref: str, against: str, paths: Sequence[Path]) -> bool`: whether `ref` changed any of the paths since its merge base with `against`: `git merge-base <ref> <against>` (exit 1, unrelated histories, raises `ChittyError` saying so), then `git diff --quiet --literal-pathspecs <merge base> <ref> -- <paths>`, where exit 0 is `False`, exit 1 is `True`, any other exit raises. `TASK-378` builds `changed_on_both` from two calls, one each way.
 
-Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `git init -b main` and a configured user. A Hypothesis property for `files_at` ("nothing lost"): generate ticket-directory trees whose file names include `\"`, a tab, a newline, non-ASCII letters and `[x]`, in the active and archive directories (`chitty/tasks/` and `chitty/tasks/archive/`), and check that `files_at` returns exactly the paths and contents written (small `max_examples`, `deadline=None`). The other helpers wrap one Git command over a fixed set of cases, each in the criteria.
+Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `git init -b main` and a configured user. A Hypothesis property for `files_at` ("nothing lost"): generate ticket-directory trees whose file names include a double quote, a tab, a newline, non-ASCII letters and `[x]`, in the active and archive directories (`chitty/tasks/` and `chitty/tasks/archive/`), and check that `files_at` returns exactly the paths and contents written (small `max_examples`, `deadline=None`). The other helpers wrap one Git command over a fixed set of cases, each in the criteria.
 
 ## Acceptance Criteria
 
@@ -35,3 +35,4 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 - 2026-11-18T17:54:38Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:54:38Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:54:40Z lively-quartz-crane planning → todo
+- 2026-11-18T17:55:01Z lively-quartz-crane: changed description
