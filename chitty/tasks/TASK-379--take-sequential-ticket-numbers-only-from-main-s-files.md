@@ -44,6 +44,10 @@ Tests: real-Git tests in a new `tests/test_next_number_main.py`, inheriting `Cli
 
 Remove history scanning from Repo.next_number while retaining checkout files and delete-mode deleted-number handling. Make sequential allocation fail off main (but allow random contexts first), document main-only sequential IDs, update the two existing regression tests, and add focused real-Git coverage for main, worktree/branch/detached states and checkout-local files. Run focused tests, make format, make check, then commit implementation with Task: TASK-379.
 
+## Summary
+
+Removed git-history scanning from sequential number allocation; it uses checkout files plus delete-mode history, and refuses sequential allocation off main. Added real-Git coverage for local/remote branch exclusion, uncommitted/archive counting, feature/worktree/detached rejection, random-context and outside-Git guards, and delete-mode deleted IDs. Verification: focused tests (45 pass), make format, make check (669 tests, Ruff, Pyright), and chitty fix. Commits: 354fc719 and cada6327 (Task: TASK-379). Regression fail-before evidence was not captured.
+
 ## History
 
 - 2026-11-18T16:20:05Z lively-quartz-crane → backlog
@@ -61,3 +65,4 @@ Remove history scanning from Repo.next_number while retaining checkout files and
 - 2026-11-18T17:47:45Z lively-quartz-crane planning → todo
 - 2026-11-18T22:51:32Z zesty-hazel-ibis todo → doing
 - 2026-11-18T22:52:39Z zesty-hazel-ibis: wrote the plan
+- 2026-11-18T22:57:23Z zesty-hazel-ibis: changed summary
