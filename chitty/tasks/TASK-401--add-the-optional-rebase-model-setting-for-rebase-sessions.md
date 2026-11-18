@@ -1,6 +1,6 @@
 ---
 title: Add the optional `rebase_model` setting for rebase sessions
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -43,9 +43,11 @@ Review failed (tests): Newly discovered configuration corruption in init; restri
 2: fail - Running _add_missing_settings on a pyproject with a commented review_model in [tool.chitty] and an active review_model in [tool.other] inserted rebase_model in the other table and split its comment with other additions; tomllib.loads printed TOMLDecodeError Expected equals after a key. The prior upgrade adjacency test was reported failing before the fix in the implementation attempt note and now passes in make check. Blank validation and unknown mode also pass in make check.
 3: pass - Both plan documents mention rebase_model; make check printed Ran 678 tests and OK.
 
+Review follow-up: scoped review_model adjacency lookup to the [tool.chitty] section, preventing a review_model in another pyproject table from being used as the insertion point and corrupting TOML. Added regression coverage preserving [tool.other]. Focused model-default tests pass (9 tests); make check passes (679 tests). make format run; chitty fix reports existing Markdown underscore warnings.
+
 ## Summary
 
-Implemented and verified optional rebase_model configuration, runner selection, validation, init template insertion/idempotence including upgrade adjacency, and documentation. Verification: make check (678 tests, OK), make format, and chitty fix on the ticket file. No follow-ups.
+Implemented optional rebase_model and fixed init upgrade insertion to stay within the Chitty configuration table. Added regression coverage for another pyproject table containing review_model. Verification: focused model-default tests (9 pass), make format, make check (679 tests pass), and chitty fix (existing Markdown warnings only). Commit: 51a62c77. No follow-ups.
 
 ## History
 
@@ -66,3 +68,5 @@ Implemented and verified optional rebase_model configuration, runner selection, 
 - 2026-11-18T23:33:58Z able-coral-zander doing → review
 - 2026-11-18T23:35:34Z able-lilac-yellowhammer: changed acceptance criteria, notes
 - 2026-11-18T23:35:34Z able-lilac-yellowhammer review → doing
+- 2026-11-18T23:38:58Z intrepid-violet-lapwing: changed notes, summary
+- 2026-11-18T23:38:58Z intrepid-violet-lapwing doing → review
