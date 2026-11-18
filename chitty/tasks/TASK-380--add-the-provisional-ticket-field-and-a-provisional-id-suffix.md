@@ -1,6 +1,6 @@
 ---
 title: Add the `provisional` ticket field and a provisional ID suffix
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -14,17 +14,18 @@ This ticket adds only the two building blocks, with no caller: the marker field 
 Decisions:
 
 - Pure function `provisional_suffix(draw: Callable[[int], int]) -> str` in `src/chitty/ids.py`, where `draw(n)` returns an index below `n`. Module constants `PROVISIONAL_LETTERS = "ABCDEFGHJKMNPQRSTVWXYZ"`, `PROVISIONAL_DIGITS = "23456789"` and `PROVISIONAL_LENGTH = 6`. The first character is drawn from the letters, the other five from letters plus digits, so it always contains a letter with no retry loop. `TaskId.parse(f"{prefix}-{suffix}").number == suffix`, a `str`, never an `int`. `ids.ID_RE` already accepts such suffixes; do not change it.
-- New optional frontmatter field `provisional` in `Frontmatter` (`src/chitty/model.py`), typed `Literal[True] | None`. It is written `provisional: true`, after `moved_from`, and absent when `None`. Only the text `true` is accepted: the YAML loader reads every scalar as a string, so any other value (`yes`, `on`, `True`, `false`) is a parse error naming the field. Add it to `FIELD_ORDER`, `FieldValue` and `_render_field`, so `with_field("provisional", True)` writes it and `with_field("provisional", None)` removes it. `show --json` includes `"provisional": true` or `null`, like other optional fields.
+- New optional frontmatter field `provisional` in `Frontmatter` (`src/chitty/model.py`), typed `Literal[True] | None`. It is written `provisional: true`, after `moved_from`, and absent when `None`. The YAML loader (`_StringLoader`) reads every scalar as a string, and `Literal[True]` alone rejects the string `"true"`, so add a `field_validator("provisional", mode="before")` that maps exactly the string `true` to `True`, passes Python `True` through (as `with_field` supplies it), and passes every other value on unchanged, so `yes`, `on`, `True`, `false`, `1` and an empty value fail with Pydantic's value error naming `provisional`. A quoted `"true"` loads the same as `true` and is accepted. Add the key to `FIELD_ORDER` and `bool` to `FieldValue`, and give `_render_field` an explicit branch writing `true` (`render_scalar` takes only strings). Text `show` prints `provisional: true`. Together, so `with_field("provisional", True)` writes it and `with_field("provisional", None)` removes it. `show --json` includes `"provisional": true` or `null`, like other optional fields.
 - `chitty check` does not validate the field against the ID form.
 - Add its row to the table in `docs/plan/task-file.md`, and `"provisional": True` to the `sample()` fields in `tests/test_formatters.py`, so the formatter round trips cover it.
 
-Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for `provisional_suffix`, generate `draw` from `st.randoms()` (`lambda n: rng.randrange(n)`) and prefixes matching `[A-Z]+`; for the field, generate tickets with and without it and check parse, render and `with_field` round trips. Create both names first raising `NotImplementedError` (the field as a stub validator), so the tests fail on behaviour.
+Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for `provisional_suffix`, generate `draw` from `st.randoms()` (`lambda n: rng.randrange(n)`) and prefixes matching `[A-Z]+`; for the field, generate tickets with and without it and check parse, render and `with_field` round trips. Create both first raising `NotImplementedError`: `provisional_suffix`, and the field declared on `Frontmatter` with its before-validator raising, so the tests fail on behaviour rather than on `unknown frontmatter key`. The suffix test builds `f"{prefix}-{suffix}"` itself; `provisional_suffix` takes no prefix.
 
 ## Acceptance Criteria
 
-- [ ] The `provisional_suffix` property passes: for generated draws and prefixes the suffix has `PROVISIONAL_LENGTH` characters, a first character from `PROVISIONAL_LETTERS`, only letters and digits from the two constants, and `TaskId.parse` gives it back as a `str`; it fails against a `NotImplementedError` stub
-- [ ] For generated tickets, rendering then parsing keeps `provisional` (`true` or absent), `with_field("provisional", None)` removes the line, and a ticket file with `provisional: yes`, `on`, `True` or `false` fails to parse with an error naming `provisional`; the test fails before the change
-- [ ] `tests/test_formatters.py` round trips a ticket with `provisional: true` through prettier and mdformat; `docs/plan/task-file.md` lists the field; `make check` passes
+- [ ] The `provisional_suffix` property passes: for generated draws and prefixes the suffix has `PROVISIONAL_LENGTH` characters, a first character from `PROVISIONAL_LETTERS`, only letters and digits from the two constants, and `TaskId.parse` gives it back as a `str`; and it uses the draws: `draw` always returning `0` gives `AAAAAA`, always returning `n - 1` gives `Z99999`; it fails against a `NotImplementedError` stub
+- [ ] For generated tickets, rendering then parsing keeps `provisional` (`true` or absent), `with_field("provisional", None)` removes the line, and `show --json` has `"provisional": true` or `null`; the test fails before the change
+- [ ] A ticket file with `provisional: yes`, `on`, `True`, `false` or `1` fails to parse with an error about the value of `provisional`, not `unknown frontmatter key`; `provisional: true` parses
+- [ ] `tests/test_formatters.py` round trips a `sample()` ticket with `"provisional": True` through prettier and mdformat (today `sample()` raises `TaskError` for it); `docs/plan/task-file.md` lists the field; `make check` passes
 
 ## History
 
@@ -36,3 +37,5 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 - 2026-11-18T16:27:46Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:27:48Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T16:29:21Z lively-quartz-crane planning → cold-read
+- 2026-11-18T16:31:16Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T16:31:16Z lively-quartz-crane cold-read → planning
