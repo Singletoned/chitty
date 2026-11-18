@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -42,6 +42,12 @@ Review failed (tests): Add the missing real-Git cases and generate ticket-direct
 
 Review follow-up: added the origin/HEAD symref and distinct commits for same-suffix local/remote refs; added unborn-branch resolution coverage; expanded the Hypothesis input to generate both odd-named active and archive ticket files with varying contents. Focused test passes. make check: 667 tests pass; Ruff and pyright pass. The command exits nonzero due to the known runner-fixture error requiring autocommit configuration.
 
+Review failed (tests): The property still needs generated directory trees and filenames; this remains unresolved from the earlier `Review failed (tests)` note.
+1: pass - `make check` reported 667 tests OK; `test_branch_tips_keep_full_refs_distinct` now creates the symbolic ref and distinct local and remote commits. The earlier review recorded that this test errors against baseline because the helper is absent.
+2: pass - `make check` reported 667 tests OK; `test_ref_resolution_and_ancestry` now includes an unborn branch along with ancestry, missing ref and annotated tag cases. The earlier review recorded baseline AttributeErrors for the new helper tests.
+3: fail - `make check` reported 667 tests OK, including the invalid UTF-8 case, but the Hypothesis dictionary has exactly two sampled keys and requires both, so every example has the same two filenames and the same active/archive tree. Only contents vary. Generate varying filenames and tree shapes in both directories, retaining the required unusual characters, and assert exact paths and contents. This is the same missing generated-tree requirement reported in the earlier review note.
+4: pass - `make check` exited 0 and reported 667 tests OK; `test_changed_since_split_literal_path_and_unrelated_history` covers both directions, brackets and unrelated histories. The earlier review recorded baseline AttributeError for this test.
+
 ## Summary
 
 Addressed review findings with distinct local/remote refs plus origin/HEAD symref, unborn-branch coverage, and generated active/archive odd-path trees. Focused tests pass. make check: Ruff, pyright, and all 667 tests pass; command exits nonzero because existing runner fixture lacks required autocommit configuration.
@@ -65,3 +71,5 @@ Addressed review findings with distinct local/remote refs plus origin/HEAD symre
 - 2026-11-18T23:01:00Z sunny-white-newt: changed notes
 - 2026-11-18T23:01:15Z sunny-white-newt: changed summary
 - 2026-11-18T23:01:15Z sunny-white-newt doing → review
+- 2026-11-18T23:03:39Z youthful-teal-dormouse: changed acceptance criteria, notes
+- 2026-11-18T23:03:39Z youthful-teal-dormouse review → doing
