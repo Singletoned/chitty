@@ -1,10 +1,13 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: cold-read
+status: planning
 labels:
   - bug
   - needs-minor
 priority: high
+depends_on:
+  - TASK-382
+  - TASK-383
 created: 2026-11-18
 ---
 
@@ -16,11 +19,14 @@ Today `_prepare_review` merges `main` into the ticket branch with `git.merge_mai
 
 Decisions:
 
-- New `git.rebase_onto(root: Path, main_branch: str) -> list[str]` in `src/chitty/git.py`: runs `git -c rerere.enabled=false rebase --autostash <main_branch>`; returns `[]` when it completes; on a conflict, leaves the rebase stopped and returns every unmerged path (from `git diff --name-only --diff-filter=U`). Any other Git failure raises `ChittyError`. `TASK-370` reuses it.
+Starts after `TASK-382` and `TASK-383` land, which stop the runner writing tickets with a branch on `main`; until then a ticket file can change on both sides and conflict.
+
+- New `git.rebase_onto(root: Path, main_branch: str) -> list[str]` in `src/chitty/git.py`: runs `git -c rerere.enabled=false rebase --autostash <main_branch>`. Exit 0: return `[]`. Non-zero with a rebase still in progress and unmerged paths (`git diff --name-only --diff-filter=U`): leave it stopped and return those paths. Non-zero with a rebase in progress but no unmerged paths: run `git rebase --abort` and raise `ChittyError` with Git's output. Non-zero with no rebase in progress: raise `ChittyError` with Git's output. `TASK-370` reuses it.
 - `_prepare_review` calls it instead of `merge_main`. On conflicts it runs `git rebase --abort` and fails the review as `Review failed (integration): rebasing onto <main> conflicts in <paths>` with each path in backticks, as today's merge failure does. `TASK-375` later replaces the abort with a resolution session.
 - `_land` calls it instead of `git.merge`, then fast-forwards `main`. A conflict aborts the rebase and is a landing error, as today.
 - Remove `git.merge` and `git.merge_main` once nothing uses them.
-- Ctrl-C during either rebase aborts it and raises `RunInterrupted` (exit 130): `_prepare_review` adapts its `KeyboardInterrupt` handler, and `_land` gains one. No test: it needs a signal mid-rebase.
+- Ctrl-C during either rebase aborts it and raises `RunInterrupted("rebase")` (exit 130): `_prepare_review` adapts its `KeyboardInterrupt` handler, and `_land` gains one. Retarget the two existing tests that patch `chitty.git.merge_main` to raise `KeyboardInterrupt` (`tests/test_review_merge.py` `test_interrupting_the_merge_aborts_it_and_exits_130` and the one in `tests/test_run_lock.py`) to `chitty.git.rebase_onto`, keeping their exit-130 and abort assertions, with `interrupted during rebase`.
+- Existing assertions that a review leaves one merge commit (`tests/test_review_merge.py` around lines 287 and 328, `rev-list --merges --count`) now expect `0`.
 - The uncommitted-files block before a review stays.
 - In `docs/plan/next-action-and-runner.md`, add the principle paragraph, and say under `## Before a review` and `## Landing` that the branch is rebased onto `main`.
 
@@ -30,8 +36,9 @@ Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `te
 
 - [ ] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
 - [ ] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
-- [ ] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with `Review failed (integration)` naming the path in backticks, and no reviewer starts
-- [ ] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); `git.merge` and `git.merge_main` are gone; the doc has the principle and the rebase under both headings; `make check` passes
+- [ ] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with a note containing `Review failed (integration): rebasing onto `main` conflicts in` and the path in backticks, and no reviewer starts; this fails before the change (today's note says `merging`)
+- [ ] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); this fails before the change
+- [ ] `git.merge` and `git.merge_main` are gone, the retargeted interrupt tests and the flipped merge-count assertions pass, and `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
 
 ## Notes
 
@@ -50,3 +57,5 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T17:57:39Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T17:57:41Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T18:00:09Z lively-quartz-crane planning → cold-read
+- 2026-11-18T18:02:09Z lively-quartz-crane: changed dependencies, description, acceptance criteria
+- 2026-11-18T18:02:09Z lively-quartz-crane cold-read → planning
