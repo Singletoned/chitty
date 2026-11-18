@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket writes outside the authoritative checkout, replacing the stale-copy guard
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-382
@@ -41,3 +41,4 @@ Tests: a Hypothesis property with real Git in a new `tests/test_property_ticket_
 - 2026-11-18T16:23:23Z lively-quartz-crane: changed dependencies
 - 2026-11-18T16:35:59Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:35:59Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:40:34Z lively-quartz-crane planning → cold-read
