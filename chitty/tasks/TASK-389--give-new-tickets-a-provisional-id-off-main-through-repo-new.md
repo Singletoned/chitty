@@ -1,6 +1,6 @@
 ---
 title: Give new tickets a provisional ID off `main` through `Repo.new_id`
-status: review
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -31,7 +31,7 @@ Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, 
 ## Acceptance Criteria
 
 - [x] Plain `chitty add` (no `-c`) in a linked worktree on branch `feature`, in the main checkout switched to `feature`, and on a detached `HEAD` each creates a ticket in `default_context` whose ID suffix contains a letter and whose file has `provisional: true`; the linked-worktree case fails before the change
-- [x] Plain `chitty add` on `main` and in a directory outside Git gives the next sequential number with no `provisional` key; `chitty add -c backlog` on `feature` still gives a numeric random ID with no `provisional` key; in a repository on `master` with the default `main_branch`, `chitty add` fails naming `main` and `main_branch` and creates no file
+- [ ] Plain `chitty add` on `main` and in a directory outside Git gives the next sequential number with no `provisional` key; `chitty add -c backlog` on `feature` still gives a numeric random ID with no `provisional` key; in a repository on `master` with the default `main_branch`, `chitty add` fails naming `main` and `main_branch` and creates no file
 - [x] `chitty move TASK-1 human` on `feature` (`TASK-1` in `tasks`) gives a provisional `HUMAN-` ID with `provisional: true`; after `git merge feature` into `main`, `chitty move <that ID> tasks` in the main checkout gives a sequential `TASK-` ID and removes the key; `chitty renumber` of a provisional file copied under another slug on `main` (as `tests/test_renumber.py` builds duplicates) gives a sequential ID and removes the key
 - [x] With `_provisional_draw` patched to return 0 for its first six calls and 1 after, and `TASK-AAAAAA` present, `chitty add` on `feature` gets `TASK-BBBBBB`; patched to always return 0 with `TASK-AAAAAA` present, it exits 1 with `no unused provisional ID`; with only `origin/main` (no local `main`) on a ticket branch, `chitty add` gives a provisional ID; `make check` passes
 
@@ -42,6 +42,12 @@ Implement Git-aware Repo.new_id selection and provisional collision checks; rout
 ## Notes
 
 Regression evidence: before updating the linked-worktree test, make check failed because plain add routed to backlog and rejected the missing description. The updated real-Git CLI test now verifies a provisional ID in default_context; main-checkout switched, detached, outside-Git, move/renumber, collisions and remote-only main-ref cases are covered.
+
+Review failed (tests): A newly discovered missing-main-ref case is accepted; add a regression test and match local refs exactly and remote branch names after the remote component.
+1: pass - make check: 662 tests OK, including linked, switched and detached checkout tests; worker recorded the linked-worktree test failing before the change because add routed to backlog.
+2: fail - make check passes the listed cases, but a real-Git CLI probe renamed main to master, created only refs/heads/other/main, and ran add: exit 0, added TASK-DT2QRP. No refs/heads/main or refs/remotes/*/main exists, so it must fail naming main and main_branch and create no file.
+3: pass - make check: move feature to main and duplicate renumber tests pass.
+4: pass - make check: collision retry, exhaustion and remote-only main tests pass; 662 tests OK, ruff and pyright clean.
 
 ## Summary
 
@@ -64,3 +70,5 @@ Implemented Git-aware Repo.new_id selection, provisional markers and retries; pl
 - 2026-11-18T22:26:15Z eager-ebony-newt: wrote the plan
 - 2026-11-18T22:36:11Z eager-ebony-newt: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T22:36:11Z eager-ebony-newt doing → review
+- 2026-11-18T22:38:06Z eager-silver-vole: changed acceptance criteria, notes
+- 2026-11-18T22:38:06Z eager-silver-vole review → doing
