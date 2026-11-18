@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 from pathlib import Path, PurePosixPath
 from unittest import mock
@@ -66,21 +67,24 @@ class TestBranchTipFiles(RepoTestCase):
     @settings(max_examples=8, deadline=None)
     @given(
         st.dictionaries(
-            st.sampled_from(
-                (
-                    'a"b\tc\ndé[x].md',
-                    'z"y\tw\nvé[x].md',
-                )
+            st.tuples(
+                st.sampled_from(("chitty/tasks", "chitty/tasks/archive")),
+                st.integers(min_value=0, max_value=20),
             ),
             st.text(alphabet="abcé", min_size=1, max_size=12),
-            min_size=2,
-            max_size=2,
+            min_size=1,
+            max_size=8,
         )
     )
     def test_files_at_preserves_odd_paths_and_content(self, tree):
+        shutil.rmtree(self.root / ".git", ignore_errors=True)
+        shutil.rmtree(self.root / "chitty", ignore_errors=True)
+        self.git("init", "--quiet", "-b", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
         expected = {}
-        for filename, content in tree.items():
-            directory = "chitty/tasks/archive" if filename.startswith("z") else "chitty/tasks"
+        for (directory, index), content in tree.items():
+            filename = f'{index}"quote\ttab\nnewline-é[x].md'
             path = Path(directory) / filename
             (self.root / path).parent.mkdir(parents=True, exist_ok=True)
             (self.root / path).write_text(content)
