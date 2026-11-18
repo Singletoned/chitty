@@ -1,6 +1,6 @@
 ---
 title: Resolve review rebase conflicts in a separate agent session
-status: planning
+status: cold-read
 priority: medium
 depends_on:
   - TASK-374
@@ -10,7 +10,7 @@ created: 2026-11-18
 
 ## Description
 
-Principle (decided 2026-11-18): `main` is the base every ticket branch builds on. The runner rebases the branch onto `main` whenever it touches it; this is mechanical. Ticket files are merged mechanically too, because the branch's ticket commits carry the worker's progress. Only code conflicts go to an agent.
+Principle (decided 2026-11-18): `main` is the base every ticket branch builds on. The runner rebases the branch onto `main` whenever it touches it. Under the one-authoritative-copy model (`docs/plan/ticket-state.md`, on branch `plan/ticket-state` until it lands on `main`) a ticket file changes only on its branch, so it rebases like any other file; there is no ticket merge. Any conflict goes to an agent.
 
 When the rebase before a review (`TASK-374`) stops on a code conflict, the review fails back to `doing`, and a full work session is spent on what is only conflict resolution. A separate, cheaper agent session should resolve it, so conflict context never mixes with review context.
 
@@ -48,3 +48,5 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T09:56:31Z witty-ginger-falcon planning → todo
 - 2026-11-18T15:47:48Z witty-ginger-falcon: changed notes
 - 2026-11-18T15:47:48Z witty-ginger-falcon todo → planning
+- 2026-11-18T18:02:34Z lively-quartz-crane: changed description
+- 2026-11-18T18:02:34Z lively-quartz-crane planning → cold-read
