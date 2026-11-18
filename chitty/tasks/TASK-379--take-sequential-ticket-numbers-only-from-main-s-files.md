@@ -40,6 +40,10 @@ Tests: real-Git tests in a new `tests/test_next_number_main.py`, inheriting `Cli
 - [ ] A direct `Repo.next_number` call for a sequential context raises `ChittyError` in a linked worktree on `feature`, in the main checkout switched to `feature`, and on a detached `HEAD` (each fails before the change); regression guards that pass before too: outside Git it returns a number, and for a `random_ids` context on `feature` it returns a number
 - [ ] `docs/plan/ids.md` has the replacement text from the Description; the two updated tests pass; regression guard: with `archive = "delete"`, a number deleted on another branch is still counted; `make check` passes
 
+## Plan
+
+Remove history scanning from Repo.next_number while retaining checkout files and delete-mode deleted-number handling. Make sequential allocation fail off main (but allow random contexts first), document main-only sequential IDs, update the two existing regression tests, and add focused real-Git coverage for main, worktree/branch/detached states and checkout-local files. Run focused tests, make format, make check, then commit implementation with Task: TASK-379.
+
 ## History
 
 - 2026-11-18T16:20:05Z lively-quartz-crane → backlog
@@ -56,3 +60,4 @@ Tests: real-Git tests in a new `tests/test_next_number_main.py`, inheriting `Cli
 - 2026-11-18T17:47:43Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:47:45Z lively-quartz-crane planning → todo
 - 2026-11-18T22:51:32Z zesty-hazel-ibis todo → doing
+- 2026-11-18T22:52:39Z zesty-hazel-ibis: wrote the plan
