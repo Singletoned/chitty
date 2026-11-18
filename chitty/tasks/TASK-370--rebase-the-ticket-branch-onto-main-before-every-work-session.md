@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: todo
+status: planning
 labels:
   - bug
   - needs-minor
@@ -41,6 +41,10 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 - [ ] An uncommitted change to a tracked file and an untracked file, neither touched by `main`, are back in the worktree, uncommitted, when the agent starts
 - [ ] When restoring the stash conflicts (`main` changed the same lines as an uncommitted edit), the ticket moves to `error` with a `Runner error (rebase)` note saying the work is in the stash, the stash entry exists, and no agent starts; `make check` passes
 
+## Notes
+
+On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -57,3 +61,5 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 - 2026-11-18T09:54:24Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:54:26Z witty-ginger-falcon: changed dependencies, description, acceptance criteria
 - 2026-11-18T09:54:27Z witty-ginger-falcon planning → todo
+- 2026-11-18T15:47:42Z witty-ginger-falcon: changed notes
+- 2026-11-18T15:47:42Z witty-ginger-falcon todo → planning
