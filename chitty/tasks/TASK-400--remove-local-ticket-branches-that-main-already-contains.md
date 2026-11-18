@@ -29,6 +29,10 @@ Tests: real-Git runner tests in a new `tests/test_run_removes_merged_branches.py
 - [ ] It keeps, with a `kept merged branch` line, a merged branch whose run lock is held, one whose worktree has an uncommitted file, one with a rebase in progress, and one with a merge in progress; it never removes a branch ahead of `main`, a non-ticket branch such as `feature`, or a remote-tracking `origin/task-<n>`; a worktree whose directory was deleted by hand does not stop the run
 - [ ] `docs/plan/next-action-and-runner.md` says the clean-up runs at the start of `chitty run`, before pending landings, under the landing lock, lists the reasons a merged branch is kept, and gives the `removed merged branch` and `kept merged branch` lines; `make check` passes
 
+## Plan
+
+At startup after setup refresh, under the landing lock, prune stale worktree registrations and remove merged local ticket branches before pending landings. Add focused real-Git runner tests covering deletion and every keep condition, update the runner plan, then format/check and commit implementation with Task trailer.
+
 ## History
 
 - 2026-11-18T18:00:02Z lively-quartz-crane → backlog
@@ -38,3 +42,4 @@ Tests: real-Git runner tests in a new `tests/test_run_removes_merged_branches.py
 - 2026-11-18T18:02:13Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:02:15Z lively-quartz-crane planning → todo
 - 2026-11-18T23:14:01Z golden-quartz-heron todo → doing
+- 2026-11-18T23:15:19Z golden-quartz-heron: wrote the plan
