@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering and rewrite ID mentions in pure functions
-status: planning
+status: todo
 depends_on:
   - TASK-380
 parent: TASK-376
@@ -41,3 +41,4 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 - 2026-11-18T16:35:11Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:36:40Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:36:40Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:36:42Z lively-quartz-crane planning → todo
