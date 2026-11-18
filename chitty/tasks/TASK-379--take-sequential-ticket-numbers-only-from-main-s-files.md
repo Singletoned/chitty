@@ -1,6 +1,6 @@
 ---
 title: Take sequential ticket numbers only from main's files
-status: review
+status: done
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -54,6 +54,12 @@ Review failed (tests): Add a real-Git main checkout to the checkout-file regress
 
 Review follow-up: initialized a committed main checkout before adding uncommitted TASK-7 and archived TASK-9, so the checkout-file regression now exercises the stated main-branch behavior. The focused test passes. make check reports 669 tests OK, Ruff and Pyright clean; its output contains an expected fixture-level chitty run configuration error.
 
+Reviewed: The earlier criterion 2 coverage gap is resolved by initializing and committing main before creating the checkout files.
+1: pass - make check printed 669 tests OK; prior review ran test_add_ignores_other_local_and_remote_branches against the pre-change store and printed TASK-61 != TASK-4.
+2: pass - make check printed 669 tests OK; test_add_counts_uncommitted_and_archived_numbers now initializes committed main and asserts TASK-10.
+3: pass - make check printed 669 tests OK; prior review ran the pre-change store and observed ChittyError not raised for feature, linked worktree and detached HEAD; outside-Git and random guards printed OK.
+4: pass - make check printed 669 tests OK, Ruff clean and Pyright clean; the updated tests and delete-mode regression ran; inspected docs/plan/ids.md for the replacement.
+
 ## Summary
 
 Review follow-up: fixed checkout-file regression to use a real committed main checkout. Verification: focused regression test passes; make check reports 669 tests, Ruff and Pyright clean. Implementation commits: 354fc719 and cada6327; coverage commit: see current branch history. No follow-ups.
@@ -81,3 +87,5 @@ Review follow-up: fixed checkout-file regression to use a real committed main ch
 - 2026-11-18T22:59:58Z lively-ginger-raven review → doing
 - 2026-11-18T23:04:20Z sunny-ginger-falcon: changed notes, summary
 - 2026-11-18T23:04:23Z sunny-ginger-falcon doing → review
+- 2026-11-18T23:06:14Z witty-jade-vole: changed notes
+- 2026-11-18T23:06:14Z witty-jade-vole review → done
