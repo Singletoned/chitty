@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: doing
+status: blocked
 priority: high
 created: 2026-11-18
 ---
@@ -81,6 +81,8 @@ Third cold read 2026-11-18 found two serious problems, both in the runner half: 
 
 Fourth cold read 2026-11-18 outcomes: kept `_agent_command` signature here (`TASK-370` adds `directory`); fails-before evidence by disabling injection rather than a `TypeError`; checkable wording for criterion 4; role text says part-way; README and `docs/plan/agent-instructions.md` added. Unticked criteria 1 and 2: the branch tests check only that `--abort` and `--skip` appear, not that they are forbidden, and the linked worktree only with one backend. Code gaps for the worker, not ticket changes: criterion 3 tests for other roles, the missing directory and the outside check are not written yet; the help line alignment.
 
+Blocked: Chitty rejects task edits from the TASK-373 worktree because the latest committed version is on branch main and directs task updates to this checkout. This session is restricted to the ticket worktree, so implementation and verification cannot proceed without violating that boundary. A human must authorize task-state edits from the main checkout or fix Chitty ticket/worktree association.
+
 ## Summary
 
 Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
@@ -132,3 +134,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T20:51:10Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T20:51:14Z lively-quartz-crane planning → todo
 - 2026-11-18T21:58:55Z youthful-bronze-gannet todo → doing
+- 2026-11-18T22:05:14Z youthful-bronze-gannet: changed notes
+- 2026-11-18T22:05:14Z youthful-bronze-gannet doing → blocked
