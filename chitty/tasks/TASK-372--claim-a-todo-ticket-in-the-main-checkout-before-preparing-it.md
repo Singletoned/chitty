@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket in the main checkout before preparing its worktree
-status: cold-read
+status: planning
 labels:
   - bug
 priority: high
@@ -32,3 +32,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_claims_on_main
 
 - 2026-11-18T09:50:52Z witty-ginger-falcon → planning
 - 2026-11-18T09:52:30Z witty-ginger-falcon planning → cold-read
+- 2026-11-18T09:54:52Z witty-ginger-falcon cold-read → planning
