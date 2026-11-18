@@ -37,6 +37,31 @@ class TestRenumberingProperties(unittest.TestCase):
         self.assertEqual(len(mapping), len(ids))
         self.assertTrue(all(new_id.number not in used_numbers for new_id in mapping.values()))
 
+    @given(seed=st.randoms())
+    def test_mixed_prefix_shuffled_ids_allocate_independently(self, seed):
+        prefixes = ["A", "BC", "XYZ"]
+        ids_by_prefix = {
+            prefix: provisional_ids(prefix, seed, 1 + seed.randrange(4)) for prefix in prefixes
+        }
+        provisional = [task_id for ids in ids_by_prefix.values() for task_id in ids]
+        seed.shuffle(provisional)
+        used = {"A": {1, 5}, "BC": {2, 8, 11}, "UNUSED": {4}}
+
+        mapping = plan_renumbering(used, provisional)
+
+        expected = {}
+        for prefix, ids in ids_by_prefix.items():
+            number = max(used.get(prefix, set()), default=0) + 1
+            expected.update(
+                (task_id, TaskId(prefix, number + index))
+                for index, task_id in enumerate(sorted(ids))
+            )
+        self.assertEqual(mapping, expected)
+        self.assertEqual(len(mapping), len(provisional))
+        self.assertTrue(
+            all(new_id.number not in used.get(new_id.prefix, set()) for new_id in mapping.values())
+        )
+
     @given(prefix=PREFIX, seed=st.randoms())
     def test_missing_prefix_starts_at_one(self, prefix, seed):
         ids = provisional_ids(prefix, seed, 1 + seed.randrange(4))
@@ -54,33 +79,16 @@ class TestRenumberingProperties(unittest.TestCase):
             plan_renumbering({}, [TaskId(prefix, 1)])
 
     @given(
-        prefix=PREFIX,
         seed=st.randoms(),
         filler=st.text(alphabet=" .,/()[]_\n", min_size=1, max_size=40),
     )
-    def test_replace_mentions_only_at_specified_boundaries(self, prefix, seed, filler):
-        old = provisional_ids(prefix, seed, 1)[0]
-        new = TaskId(prefix, 123)
-        mapping = {old: new}
+    def test_replace_mentions_only_at_specified_boundaries(self, seed, filler):
+        prefixes = ["TASK", "NOTE", "BUG"]
+        olds = [provisional_ids(prefix, seed, 1)[0] for prefix in prefixes]
+        mapping = {old: TaskId(old.prefix, 123 + index) for index, old in enumerate(olds)}
+        old = olds[0]
+        new = mapping[old]
         old_text = str(old)
-        text = filler.join(
-            [
-                old_text,
-                f"`{old_text}`",
-                f"({old_text})",
-                f"[{old_text}]",
-                f'"{old_text}"',
-                f"/{old_text}/",
-                f"_{old_text}_",
-                f"{old_text}--slug.md",
-                f"{old_text}-foo",
-                f"X{old_text}",
-                f"-{old_text}",
-                f"{old_text}Y",
-                old_text.lower(),
-                f"{prefix}-{old.number}".lower(),
-            ]
-        )
         # Build the oracle from explicitly selected occurrences, independent of regex.
         pieces = [
             (old_text, str(new)),
@@ -96,9 +104,17 @@ class TestRenumberingProperties(unittest.TestCase):
             (f"-{old_text}", f"-{old_text}"),
             (f"{old_text}Y", f"{old_text}Y"),
             (old_text.lower(), old_text.lower()),
-            (f"{prefix}-{old.number}".lower(), f"{prefix}-{old.number}".lower()),
+            (
+                f"{old.prefix}-{old.number}".lower(),
+                f"{old.prefix}-{old.number}".lower(),
+            ),
         ]
-        self.assertEqual(text, filler.join(source for source, _ in pieces))
+        for other in olds[1:]:
+            other_text = str(other)
+            other_new = str(mapping[other])
+            pieces.append((other_text, other_new))
+            pieces.append((f"`{other_text}`", f"`{other_new}`"))
+        text = filler.join(source for source, _ in pieces)
         expected = filler.join(result for _, result in pieces)
         rewritten = replace_ids(text, mapping)
         self.assertEqual(rewritten, expected)
