@@ -1302,6 +1302,10 @@ class TestNext(CliTestCase):
         self.assertIn("status: doing", main_ticket)
         self.assertIn("?? check-args", self.git("-C", str(worktree), "status", "--short"))
         self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+        changed_paths = self.git(
+            "show", "--pretty=format:", "--name-only", "task-1"
+        ).splitlines()
+        self.assertEqual(changed_paths, [str(ticket_path.relative_to(worktree))])
 
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
