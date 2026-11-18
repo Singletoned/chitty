@@ -1,6 +1,6 @@
 ---
 title: Delete `git.historical_files` and `_latest_changes`
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-379
@@ -35,3 +35,4 @@ No property: a change that only removes code; the existing tests cover what rema
 - 2026-11-18T16:23:25Z lively-quartz-crane: changed dependencies
 - 2026-11-18T16:36:14Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:36:14Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:40:36Z lively-quartz-crane planning → cold-read
