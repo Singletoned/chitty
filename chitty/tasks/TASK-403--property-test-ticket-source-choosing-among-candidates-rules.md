@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: planning
+status: todo
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -44,3 +44,4 @@ Second cold read 2026-11-18 outcomes: remote-ahead and tie cases forced by drawn
 - 2026-11-18T21:35:18Z lively-quartz-crane: changed description, notes
 - 2026-11-18T21:35:18Z lively-quartz-crane cold-read → planning
 - 2026-11-18T21:37:49Z lively-quartz-crane: changed description, notes
+- 2026-11-18T21:37:56Z lively-quartz-crane planning → todo
