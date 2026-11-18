@@ -56,6 +56,7 @@ class TestNextNumberMain(CliTestCase):
 
     def test_add_counts_uncommitted_and_archived_numbers(self):
         self.run_cli("add", "Seed", "-d", "Description.")
+        self.init_git()
         existing = next((self.root / "chitty/tasks").glob("TASK-1--seed.md"))
         for number in (7, 9):
             duplicate = existing.with_name(f"TASK-{number}--seed-{number}.md")
