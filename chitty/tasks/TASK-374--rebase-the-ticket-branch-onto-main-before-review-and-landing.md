@@ -21,7 +21,7 @@ Decisions:
 
 Starts after `TASK-382` and `TASK-383` land, which stop the runner writing tickets with a branch on `main`; until then a ticket file can change on both sides and conflict.
 
-- New `git.rebase_onto(root: Path, main_branch: str) -> list[str]` in `src/chitty/git.py`: runs `git -c rerere.enabled=false rebase --autostash <main_branch>`. Exit 0: return `[]`. Non-zero with a rebase still in progress and unmerged paths (`git diff --name-only --diff-filter=U`): leave it stopped and return those paths. Non-zero with a rebase in progress but no unmerged paths: run `git rebase --abort` and raise `ChittyError` with Git's output. Non-zero with no rebase in progress: raise `ChittyError` with Git's output. `TASK-370` reuses it.
+- New `git.rebase_onto(root: Path, main_branch: str) -> list[str]` in `src/chitty/git.py`: runs `git -c rerere.enabled=false rebase <main_branch>`, without `--autostash` (review and landing already refuse a dirty worktree; `TASK-370` stashes explicitly). Exit 0: return `[]`. Non-zero with a rebase still in progress and unmerged paths (`git diff --name-only --diff-filter=U`): leave it stopped and return those paths. Non-zero with a rebase in progress but no unmerged paths: run `git rebase --abort` and raise `ChittyError` with Git's output. Non-zero with no rebase in progress: raise `ChittyError` with Git's output. `TASK-370` reuses it.
 - `_prepare_review` calls it instead of `merge_main`. On conflicts it runs `git rebase --abort` and fails the review as `Review failed (integration): rebasing onto <main> conflicts in <paths>` with each path in backticks, as today's merge failure does. `TASK-375` later replaces the abort with a resolution session.
 - `_land` calls it instead of `git.merge`, then fast-forwards `main`. A conflict aborts the rebase and is a landing error, as today.
 - Remove `git.merge` and `git.merge_main` once nothing uses them.
@@ -60,3 +60,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:02:09Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-18T18:02:09Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:02:11Z lively-quartz-crane planning → todo
+- 2026-11-18T18:17:15Z lively-quartz-crane: changed description
