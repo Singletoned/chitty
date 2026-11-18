@@ -1,6 +1,6 @@
 ---
 title: Take sequential ticket numbers only from main's files
-status: doing
+status: review
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -66,3 +66,4 @@ Removed git-history scanning from sequential number allocation; it uses checkout
 - 2026-11-18T22:51:32Z zesty-hazel-ibis todo → doing
 - 2026-11-18T22:52:39Z zesty-hazel-ibis: wrote the plan
 - 2026-11-18T22:57:23Z zesty-hazel-ibis: changed summary
+- 2026-11-18T22:57:25Z zesty-hazel-ibis doing → review
