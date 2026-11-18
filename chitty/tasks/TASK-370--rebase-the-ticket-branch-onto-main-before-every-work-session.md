@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: planning
+status: cold-read
 labels:
   - bug
   - needs-minor
@@ -86,3 +86,4 @@ Planning 2026-11-18: took over giving `_agent_command` a `directory` from `TASK-
 - 2026-11-18T18:19:36Z lively-quartz-crane planning → todo
 - 2026-11-18T20:44:39Z lively-quartz-crane: changed description, notes
 - 2026-11-18T20:44:39Z lively-quartz-crane todo → planning
+- 2026-11-18T20:44:44Z lively-quartz-crane planning → cold-read
