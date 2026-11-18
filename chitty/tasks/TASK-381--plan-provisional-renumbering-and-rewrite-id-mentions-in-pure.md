@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering and rewrite ID mentions in pure functions
-status: review
+status: done
 depends_on:
   - TASK-380
 parent: TASK-376
@@ -124,6 +124,11 @@ make: *** [check] Error 1
 
 Fixed remaining mixed-case coverage to construct an uppercase-prefix/lowercase-suffix look-alike. Disabled Hypothesis timing deadlines on duplicate/numeric error property: parallel load caused an occasional >200ms first run (309ms) followed by fast runs. Focused tests pass; make check passes all 641 tests, ruff and pyright.
 
+Reviewed: Prior mixed-case and multi-prefix findings are resolved.
+1: pass - make check reported 641 tests OK; in-process NotImplementedError stubs produced four planning test errors.
+2: pass - make check reported 641 tests OK; in-process NotImplementedError stubs produced two replacement test errors. The generated oracle now includes uppercase-prefix/lowercase-suffix look-alikes.
+3: pass - make check exited 0; ruff and pyright passed and 641 tests reported OK.
+
 ## Summary
 
 Completed the requested renumbering property coverage, including mixed-case look-alikes; no implementation or caller changes. Verification: focused tests and make check (641 tests, ruff, pyright) pass. Follow-up: none.
@@ -159,3 +164,5 @@ Completed the requested renumbering property coverage, including mixed-case look
 - 2026-11-18T21:51:36Z tidy-maroon-kestrel: changed notes
 - 2026-11-18T21:52:51Z tidy-maroon-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T21:52:57Z tidy-maroon-kestrel doing → review
+- 2026-11-18T21:55:53Z mellow-coral-ibis: changed notes
+- 2026-11-18T21:55:53Z mellow-coral-ibis review → done
