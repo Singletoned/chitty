@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -34,6 +34,12 @@ Add the requested branch/ref/tree helpers in src/chitty/git.py, reusing _read_bl
 
 The new tests initially exposed failures around unusual filenames passed to cat-file, literal pathspec option placement, and UTF-8 decode errors. They pass after the fixes.
 
+Review failed (tests): Add the missing real-Git cases and generate ticket-directory trees in the property; these are newly discovered findings, with no earlier review notes.
+1: fail - `make check` passed, and the new test errors against baseline because `branch_tips` is absent; however `test_branch_tips_keep_full_refs_distinct` never creates `refs/remotes/origin/HEAD`, and assigns both `refs/heads/origin/task-5` and `refs/remotes/origin/task-5` to `main`. Create the symbolic ref and give the two same-suffix refs different commits, then assert both.
+2: fail - `make check` passed the ancestry and tag tests, but no test exercises `ref_commit` on an unborn branch. Add the required real-Git case.
+3: fail - `make check` passed the odd-path and invalid UTF-8 tests, but the Hypothesis strategy generates only file contents; the two paths and tree are fixed. Generate ticket-directory trees and filenames including the specified characters in active and archive directories, and assert exact paths and contents.
+4: pass - `make check` exited 0 with 667 tests OK; `test_changed_since_split_literal_path_and_unrelated_history` exercises both directions of change, the literal bracket path, and unrelated histories. Running the new tests with baseline helpers absent produced five AttributeErrors, including this test.
+
 ## Summary
 
 Implemented the requested Git helpers and real-Git tests for branch tips, refs, odd file paths, UTF-8 errors, pathspecs, and unrelated histories. Targeted tests pass. Ruff and pyright pass; make check reports all 657 Python test suites passing, but exits nonzero in a pre-existing Chitty runner test whose fixture lacks required autocommit configuration. Follow-up: none.
@@ -52,3 +58,5 @@ Implemented the requested Git helpers and real-Git tests for branch tips, refs, 
 - 2026-11-18T22:47:28Z lively-silver-wren: wrote the plan
 - 2026-11-18T22:50:18Z lively-silver-wren: changed notes, summary
 - 2026-11-18T22:50:20Z lively-silver-wren doing → review
+- 2026-11-18T22:52:59Z nimble-dusky-puffin: changed acceptance criteria, notes
+- 2026-11-18T22:52:59Z nimble-dusky-puffin review → doing
