@@ -1,6 +1,6 @@
 ---
 title: Commit or restore a ticket file when a Chitty write fails after writing it
-status: planning
+status: cold-read
 labels:
   - bug
 parent: TASK-376
@@ -37,3 +37,4 @@ Also on `main` 2026-11-18: `chitty edit TASK-372 --note ...` then `chitty archiv
 - 2026-11-18T16:26:22Z lively-quartz-crane: changed notes
 - 2026-11-18T17:56:41Z lively-quartz-crane: changed labels, description, acceptance criteria
 - 2026-11-18T17:56:41Z lively-quartz-crane backlog → planning
+- 2026-11-18T17:56:43Z lively-quartz-crane planning → cold-read
