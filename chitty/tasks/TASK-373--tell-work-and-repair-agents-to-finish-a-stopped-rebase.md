@@ -49,6 +49,8 @@ Review failed (work): Newly discovered worktree identity defect; the earlier rev
 3: pass - The focused tests printed OK for clean and outside-repository output comparisons.
 4: fail - `make check` printed OK (637 tests), and the fake-agent rebase test passed. However, a throwaway test using `TestRunContinue` created a conventional task-1 worktree on branch other and called `_worktree` with task-1; it printed `requested: task-1 returned branch: other`. The new unconditional return accepts an unrelated checkout and can send the agent to the wrong branch. Verify the worktree belongs to the ticket, including detached rebase identity, before returning it; reject mismatches and add regression coverage.
 
+Review failed (work): Newly discovered worktree identity defect; earlier review gaps were resolved.\n1: pass - `uv run python -m unittest tests.test_guide_rebase -v` plus CLI role assertions verify continuation and both prohibitions.\n2: pass - Focused tests exercise both backends, both roles, root/subdirectory, linked worktree placement; disabling rebase detection makes them fail.\n3: pass - Focused tests compare clean and outside-repository output with stopped-rebase output minus insertion.\n4: fail - `make check` printed OK (637 tests), including the fake-agent stopped-rebase prompt test. However, a throwaway Python invocation created a valid conventional worktree at `.worktrees/task-1` on branch `task-1`, then called `_worktree` for `TASK-1` with `allow_rebase=True`; it returned that worktree even though no rebase was active. The unconditional conventional-path return bypasses verifying the worktree belongs to the requested ticket, reproducing the prior review finding. Validate ticket identity (including detached HEAD during rebase) before returning the path and add a mismatched-worktree regression test.
+
 ## Summary
 
 Added exact linked-worktree placement coverage for work and repair. Fixed runner lookup of the conventional ticket worktree during a stopped rebase, when Git detaches HEAD and hides its branch from worktree-list. Added a fake-agent runner regression test proving the work prompt contains rebase instructions while main does not. Verified the regression fails without the fix, focused test passes, and make check passes (637 tests).
@@ -70,3 +72,4 @@ Added exact linked-worktree placement coverage for work and repair. Fixed runner
 - 2026-11-18T11:30:01Z youthful-indigo-ibis doing → review
 - 2026-11-18T11:32:49Z eager-ebony-crane: changed acceptance criteria, notes
 - 2026-11-18T11:32:49Z eager-ebony-crane review → doing
+- 2026-11-18T11:35:03Z zesty-khaki-vole: changed acceptance criteria, notes
