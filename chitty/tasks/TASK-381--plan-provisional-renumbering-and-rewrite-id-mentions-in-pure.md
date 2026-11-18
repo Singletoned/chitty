@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering and rewrite ID mentions in pure functions
-status: review
+status: doing
 depends_on:
   - TASK-380
 parent: TASK-376
@@ -23,7 +23,7 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 ## Acceptance Criteria
 
 - [x] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
-- [x] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
+- [ ] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
 - [x] `make check` passes
 
 ## Plan
@@ -40,6 +40,11 @@ Review failed (tests): Expand the properties to exercise the required input and 
 3: pass - make check exited 0, with 640 tests OK, ruff and pyright passing.
 
 Addressed review feedback: allocation coverage now uses shuffled provisional IDs across three prefixes with separate used-number sets; replacement coverage exercises three disjoint mappings and explicitly checks uppercase-prefix/lowercase-suffix non-matches. Focused tests pass. make format and make check pass (641 test suites; expected chitty run diagnostic printed by an existing test).
+
+Review failed (tests): Restore the missing mixed-case suffix coverage.
+1: pass - make check passed; mixed-prefix shuffled allocation and error properties exercise the requirements. Running all six tests with in-process NotImplementedError stubs produced six errors, including all four planning tests.
+2: fail - Previously reported in the earlier Review failed (tests) note and still unresolved: tests/test_property_renumbering.py lowercases the whole ID twice, so it never inserts TASK-k7q2mx-style uppercase-prefix/lowercase-suffix look-alikes. Generate that form independently and assert it remains unchanged. The multi-mapping part of the earlier finding is resolved. In-process stubs produced two replacement-test errors.
+3: pass - make check exited 0: ruff and pyright passed and 641 test suites reported OK.
 
 ## Summary
 
@@ -71,3 +76,5 @@ Expanded property coverage for mixed-prefix shuffled allocation and simultaneous
 - 2026-11-18T20:47:46Z rosy-white-adder: wrote the plan
 - 2026-11-18T21:32:36Z rosy-white-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T21:32:36Z rosy-white-adder doing → review
+- 2026-11-18T21:35:36Z witty-bronze-dormouse: changed acceptance criteria, notes
+- 2026-11-18T21:35:36Z witty-bronze-dormouse review → doing
