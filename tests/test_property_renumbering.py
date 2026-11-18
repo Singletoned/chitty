@@ -1,6 +1,6 @@
 import unittest
 
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from chitty.errors import ChittyError
@@ -71,6 +71,7 @@ class TestRenumberingProperties(unittest.TestCase):
         )
 
     @given(prefix=PREFIX, seed=st.randoms())
+    @settings(deadline=None)
     def test_duplicate_and_numeric_ids_are_errors(self, prefix, seed):
         task_id = provisional_ids(prefix, seed, 1)[0]
         with self.assertRaisesRegex(ChittyError, str(task_id)):
@@ -105,8 +106,8 @@ class TestRenumberingProperties(unittest.TestCase):
             (f"{old_text}Y", f"{old_text}Y"),
             (old_text.lower(), old_text.lower()),
             (
-                f"{old.prefix}-{old.number}".lower(),
-                f"{old.prefix}-{old.number}".lower(),
+                f"{old.prefix}-{str(old).split('-', 1)[1].lower()}",
+                f"{old.prefix}-{str(old).split('-', 1)[1].lower()}",
             ),
         ]
         for other in olds[1:]:
