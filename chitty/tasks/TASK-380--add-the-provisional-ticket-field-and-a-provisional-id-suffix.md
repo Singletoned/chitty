@@ -41,7 +41,7 @@ Review failed (tests): Add the missing specified coverage and fix the newly disc
 
 ## Summary
 
-Implemented provisional suffix generation and strict optional frontmatter serialization, parsing, and text display; updated task-file documentation and formatter coverage. Verification: focused property/formatter tests and `make check` pass; `chitty fix` completed with pre-existing warnings in other tickets. Follow-up: review acceptance criteria, including CLI show behavior.
+Closed review findings: provisional mutation now accepts only exact True or None, and property coverage checks generated ticket round-trips, rendered line removal, text show formatting, and invalid values including false-like inputs. Parser properties reject arbitrary non-true text and explicitly cover yes/on/True/false/1 without unknown-key errors. Verification: make check passes (635 tests; ruff and pyright clean). Commit 807c67a8 (Task: TASK-380). Prior review note records suffix stub failure evidence and boundary draws; formatter/docs coverage remains passing.
 
 ## History
 
@@ -66,3 +66,4 @@ Implemented provisional suffix generation and strict optional frontmatter serial
 - 2026-11-18T20:12:29Z jolly-jade-eel: changed acceptance criteria, notes
 - 2026-11-18T20:12:29Z jolly-jade-eel review → doing
 - 2026-11-18T20:17:09Z nimble-violet-yellowhammer: wrote the plan
+- 2026-11-18T20:20:52Z nimble-violet-yellowhammer: changed summary
