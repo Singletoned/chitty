@@ -143,7 +143,15 @@ class TestRunModelDefaults(CliTestCase):
         )
         self.run_cli("init")
         text = config.read_text()
-        self.assertLess(text.index("# review_model ="), text.index("# rebase_model ="))
+        self.assertEqual(
+            text.splitlines()[
+                text.splitlines().index(
+                    '# review_model = "provider/model" # default for review sessions'
+                )
+                + 1
+            ],
+            '# rebase_model = "provider/model" # default for rebase sessions',
+        )
         self.run_cli("init")
         self.assertEqual(config.read_text().count("# rebase_model ="), 1)
         self.assertLess(text.index("[tool.chitty]"), text.index("# work_model ="))
@@ -156,6 +164,19 @@ class TestRunModelDefaults(CliTestCase):
         parsed = tomllib.loads(config.read_text())
         self.assertEqual(parsed["tool"]["chitty"]["work_model"], "provider/model")
         self.assertEqual(Repo.open(self.root).config.review_model, "provider/model")
+
+    def test_init_adds_rebase_model_after_review_model_when_upgrading(self):
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace('rebase_model = "rebase-model"\n', ""))
+
+        self.run_cli("init")
+
+        lines = config.read_text().splitlines()
+        review_line = lines.index('review_model = "review-model"')
+        self.assertEqual(
+            lines[review_line + 1],
+            '# rebase_model = "provider/model" # default for rebase sessions',
+        )
 
     def test_model_arguments_select_each_mode_and_reject_unknown_modes(self):
         repo = Repo.open(self.root)

@@ -1168,8 +1168,23 @@ def _add_missing_settings(
         )
         if key not in settings
         and not (key in {"setup", "check", "agent_command"} and f"{key} =" in text)
-        and not (key in {"work_model", "review_model", "rebase_model"} and f"{key} =" in section)
+        and not (
+            key in {"work_model", "review_model", "rebase_model"}
+            and re.search(rf"(?m)^\s*{key}\s*=", section) is not None
+        )
     ]
+    if not additions:
+        return text
+    rebase_comment = '# rebase_model = "provider/model" # default for rebase sessions'
+    if rebase_comment in additions:
+        review_line = re.search(r"(?m)^\s*review_model\s*=.*$", section)
+        if review_line is None:
+            review_line = re.search(r"(?m)^\s*#\s*review_model\s*=.*$", section)
+        if review_line is not None:
+            additions.remove(rebase_comment)
+            insertion = match.end() + review_line.end() if pyproject else review_line.end()
+            text = text[:insertion] + "\n" + rebase_comment + text[insertion:]
+            section = section + rebase_comment
     if not additions:
         return text
     return text[:position] + "\n".join(additions) + "\n\n" + text[position:]
