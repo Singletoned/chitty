@@ -1,6 +1,6 @@
 ---
 title: Stop autocommit repairing every ticket when it writes no ticket file
-status: doing
+status: review
 labels:
   - bug
 parent: TASK-376
@@ -27,6 +27,10 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 
 Add a real-Git regression test in tests/test_commit_empty_paths.py using CliTestCase: configure delete archiving/autocommit, create and commit a done ticket plus a lower-case dependency in another ticket, then verify archive succeeds, preserves the other file byte-for-byte, and leaves Git clean. Run that test first to demonstrate the failure. In Repo._commit, run fix/validation only when task_paths is non-empty; preserve formatting and commit behavior. Add/verify the no-argument chitty fix regression guard, then run focused tests and make check.
 
+## Summary
+
+Skipped fix and validation when a change has no existing task paths; formatting and autocommit remain unchanged. Added regression coverage for delete-mode archiving with an unrelated lower-case dependency and for no-argument `chitty fix`. Verified the regression failed before the fix because it rewrote the unrelated ticket. `make check` passed (671 tests); focused `tests.test_commit_empty_paths` and `tests.test_check` passed. No follow-ups.
+
 ## History
 
 - 2026-11-18T17:54:12Z lively-quartz-crane → backlog
@@ -39,3 +43,5 @@ Add a real-Git regression test in tests/test_commit_empty_paths.py using CliTest
 - 2026-11-18T23:09:38Z open-quartz-jay todo → doing
 - 2026-11-18T23:10:47Z open-quartz-jay: wrote the plan
 - 2026-11-18T23:12:42Z open-quartz-jay: ticked acceptance criteria
+- 2026-11-18T23:12:49Z open-quartz-jay: changed summary
+- 2026-11-18T23:12:49Z open-quartz-jay doing → review
