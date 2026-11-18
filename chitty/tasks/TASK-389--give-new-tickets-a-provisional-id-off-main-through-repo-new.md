@@ -49,6 +49,8 @@ Review failed (tests): A newly discovered missing-main-ref case is accepted; add
 3: pass - make check: move feature to main and duplicate renumber tests pass.
 4: pass - make check: collision retry, exhaustion and remote-only main tests pass; 662 tests OK, ruff and pyright clean.
 
+Regression evidence: the expanded missing-main-ref test failed before the fix when refs/heads/other/main existed; has_branch_ref matched that suffix as main. Exact local-ref and remote-branch parsing now makes the test pass.
+
 ## Summary
 
 Implemented Git-aware Repo.new_id selection, provisional markers and retries; plain add now uses default_context. Updated affected CLI, MCP, store and worktree tests. Verification: make format, chitty fix, focused provisional-ID tests and make check pass (662 tests; ruff and pyright clean). Commits: 1630266f, 0fa5d558, d3d560bf (all Task: TASK-389). Ready for review.
@@ -72,3 +74,4 @@ Implemented Git-aware Repo.new_id selection, provisional markers and retries; pl
 - 2026-11-18T22:36:11Z eager-ebony-newt doing → review
 - 2026-11-18T22:38:06Z eager-silver-vole: changed acceptance criteria, notes
 - 2026-11-18T22:38:06Z eager-silver-vole review → doing
+- 2026-11-18T22:44:19Z youthful-jade-otter: changed notes
