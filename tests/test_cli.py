@@ -2047,7 +2047,7 @@ class TestGuide(CliTestCase):
     def test_plan_guide_describes_read_only_cold_reads(self):
         planning_guide = " ".join(guide("plan").split())
         for phrase in (
-            "one read-only cold read",
+            "for its cold read",
             "cheap model",
             "reports without changing the checkout",
         ):

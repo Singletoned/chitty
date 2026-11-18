@@ -45,6 +45,7 @@ def sample() -> Task:
             "owner": "ed",
             "depends_on": ["TASK-7", "HUMAN-1"],
             "moved_from": "HUMAN-3",
+            "provisional": True,
         },
     )
     task = task.with_criteria(add=(), remove=(), set_criteria=(), check=[3], uncheck=())

@@ -76,6 +76,7 @@ FIELD_ORDER = (
     "parent",
     "created",
     "moved_from",
+    "provisional",
 )
 DESCRIPTION = "Description"
 ACCEPTANCE_CRITERIA = "Acceptance Criteria"
@@ -169,6 +170,12 @@ class Frontmatter(BaseModel):
     parent: str | None = None
     created: date
     moved_from: str | None = None
+    provisional: Literal[True] | None = None
+
+    @field_validator("provisional", mode="before")
+    @classmethod
+    def _provisional(cls, value: object) -> object:
+        return True if value == "true" else value
 
     @field_validator("title", "owner")
     @classmethod
@@ -227,7 +234,7 @@ class _Section:
     lines: tuple[str, ...]  # heading first
 
 
-FieldValue = str | list[str] | date | None
+FieldValue = str | list[str] | date | bool | None
 
 
 @dataclass(frozen=True)
@@ -274,6 +281,8 @@ class Task:
         """Set a frontmatter key; None or [] removes it."""
         if key not in FIELD_ORDER:
             raise TaskError(f"unknown frontmatter key {key!r}")
+        if key == "provisional" and value is not True and value is not None:
+            raise TaskError("provisional must be True or None")
         fields = list(self._fields)
         index = next((i for i, s in enumerate(fields) if s.key == key), None)
         if value is None or value == []:
@@ -702,7 +711,11 @@ def _parse_criteria(sections: list[_Section]) -> tuple[Criterion, ...]:
 # -- rendering --------------------------------------------------------------
 
 
-def _render_field(key: str, value: str | list[str] | date) -> list[str]:
+def _render_field(key: str, value: str | list[str] | date | bool) -> list[str]:
+    if key == "provisional":
+        return [f"{key}: true\n"]
+    if isinstance(value, bool):
+        raise TaskError(f"{key} does not accept boolean values")
     if isinstance(value, date):
         return [f"{key}: {value.isoformat()}\n"]
     if isinstance(value, list):

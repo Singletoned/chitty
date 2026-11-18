@@ -55,6 +55,7 @@ Strict: unknown keys are an error.
 | `parent`     | ID                  | no       | groups tickets; same repo               |
 | `created`    | date                | yes      | ISO 8601, set once                      |
 | `moved_from` | ID                  | no       | set by `move`: the ID in the old context |
+| `provisional` | `true`              | no       | marks a provisional ID for renumbering |
 
 - Statuses: `backlog` (needs refining), `planning` and `cold-read` (being
   written), `todo`, `doing`, `error` (recoverable automation failure),
