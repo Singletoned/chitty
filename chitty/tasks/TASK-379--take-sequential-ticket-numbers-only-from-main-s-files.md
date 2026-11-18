@@ -52,9 +52,11 @@ Review failed (tests): Add a real-Git main checkout to the checkout-file regress
 3: pass - make check passed. With the pre-change store, the feature and linked-worktree assertions printed ChittyError not raised; rerunning the detached assertion independently also printed ChittyError not raised. The outside-Git guard and an independently run random-context guard printed OK on the pre-change store.
 4: pass - make check printed 669 tests OK, including the two updated tests and delete-mode guard; inspected docs/plan/ids.md for the requested replacement.
 
+Review follow-up: initialized a committed main checkout before adding uncommitted TASK-7 and archived TASK-9, so the checkout-file regression now exercises the stated main-branch behavior. The focused test passes. make check reports 669 tests OK, Ruff and Pyright clean; its output contains an expected fixture-level chitty run configuration error.
+
 ## Summary
 
-Removed git-history scanning from sequential number allocation; it uses checkout files plus delete-mode history, and refuses sequential allocation off main. Added real-Git coverage for local/remote branch exclusion, uncommitted/archive counting, feature/worktree/detached rejection, random-context and outside-Git guards, and delete-mode deleted IDs. Verification: focused tests (45 pass), make format, make check (669 tests, Ruff, Pyright), and chitty fix. Commits: 354fc719 and cada6327 (Task: TASK-379). Regression fail-before evidence was not captured.
+Review follow-up: fixed checkout-file regression to use a real committed main checkout. Verification: focused regression test passes; make check reports 669 tests, Ruff and Pyright clean. Implementation commits: 354fc719 and cada6327; coverage commit: see current branch history. No follow-ups.
 
 ## History
 
@@ -77,3 +79,4 @@ Removed git-history scanning from sequential number allocation; it uses checkout
 - 2026-11-18T22:57:25Z zesty-hazel-ibis doing → review
 - 2026-11-18T22:59:58Z lively-ginger-raven: changed acceptance criteria, notes
 - 2026-11-18T22:59:58Z lively-ginger-raven review → doing
+- 2026-11-18T23:04:20Z sunny-ginger-falcon: changed notes, summary
