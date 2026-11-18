@@ -1,6 +1,6 @@
 ---
 title: Resolve ticket-file conflicts mechanically whenever the runner merges `main`
-status: planning
+status: todo
 labels:
   - bug
 created: 2026-11-16
@@ -48,3 +48,4 @@ Tests:
 - 2026-11-18T09:22:42Z witty-ginger-falcon planning → cold-read
 - 2026-11-18T09:24:14Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:24:15Z witty-ginger-falcon: changed description, acceptance criteria
+- 2026-11-18T09:25:19Z witty-ginger-falcon planning → todo
