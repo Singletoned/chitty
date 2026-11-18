@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -9,21 +9,22 @@ created: 2026-11-18
 
 `TASK-378` reads each ticket from one ref tip chosen by `ticket_source` (`TASK-377`), instead of every ref's history. It needs a few Git helpers that do not exist yet. Build them on their own, so `TASK-378` is only `Repo` wiring. Context: `docs/plan/ticket-state.md`, "Planning decisions" (on branch `plan/ticket-state` until it lands on `main`).
 
-Decisions, all in `src/chitty/git.py`, each raising `ChittyError` (through `_git`) on any Git failure not named here:
+Decisions, all in `src/chitty/git.py`. Refs passed in and out are full ref names (`refs/heads/task-5`, `refs/remotes/origin/task-5`) or commit IDs, never short names: a local branch named `origin/task-5` makes the short name ambiguous. Paths are relative to the repository root, as `ls-tree --full-tree` prints them. Git failures not named here raise `ChittyError` (through `_git`).
 
-- `branch_tips(root: Path) -> tuple[dict[str, str], dict[str, str]]`: local branch name to commit, and remote-tracking branch name (`origin/task-5`) to commit. Enumerate with `git for-each-ref --format=%(refname)%09%(objectname)%09%(symref) refs/heads refs/remotes`, skip symbolic refs (`origin/HEAD`), and strip the `refs/heads/` or `refs/remotes/` prefix; never use `%(refname:short)`, which can print `heads/origin/task-5`.
+- `branch_tips(root: Path) -> dict[str, str]`: full ref name to commit for every ref under `refs/heads` and `refs/remotes`, from `git for-each-ref --format=%(refname)%09%(objectname)%09%(symref) refs/heads refs/remotes`, skipping symbolic refs (`refs/remotes/origin/HEAD`). Callers strip the prefixes for display and matching.
 - `is_ancestor(root: Path, ancestor: str, descendant: str) -> bool`: `git merge-base --is-ancestor`; exit 0 is `True`, exit 1 is `False`, any other exit raises. Do not build it on `_git`, which raises on exit 1.
-- `ref_commit(root: Path, ref: str) -> str | None`: the commit a ref points at, or `None` when the ref does not exist (an unborn branch counts as not existing).
-- `files_at(root: Path, ref: str, directories: Sequence[Path]) -> list[tuple[Path, str]]`: every blob below the directories at that ref's tip, with its text, read with `git ls-tree -r --full-tree` and one `_read_blobs` call, as `main_files` does. `main_files` may be rewritten on top of it.
-- `changed_since_merge_base(root: Path, base_of: str, other: str, paths: Sequence[Path]) -> bool`: true when `git diff --quiet <merge-base> <base_of> -- <paths>` reports a change, where the merge base is that of `base_of` and `other`; unrelated histories (no merge base) raise. `TASK-378` builds `changed_on_both` from two calls.
+- `ref_commit(root: Path, ref: str) -> str | None`: `git rev-parse --verify --quiet <ref>^{commit}`; exit 0 gives the commit, exit 1 gives `None` (a missing ref or an unborn branch), anything else raises.
+- `files_at(root: Path, ref: str, directories: Sequence[Path]) -> list[tuple[Path, str]]`: every blob below the directories at that ref's tip, with its text, from `git ls-tree -r -z --full-tree` split on NUL, then one `_read_blobs` call. A selected blob reported `missing`, or content that is not UTF-8, raises `ChittyError` naming the path. A directory absent at that ref gives nothing. `main_files` may be rewritten on top of it.
+- `changed_since_split(root: Path, ref: str, against: str, paths: Sequence[Path]) -> bool`: whether `ref` changed any of the paths since its merge base with `against`: `git merge-base <ref> <against>` (exit 1, unrelated histories, raises `ChittyError` saying so), then `git diff --quiet --literal-pathspecs <merge base> <ref> -- <paths>`, where exit 0 is `False`, exit 1 is `True`, any other exit raises. `TASK-378` builds `changed_on_both` from two calls, one each way.
 
-Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `git init -b main` and a configured user. No property: each helper wraps one Git command over a fixed set of cases, each in the criteria.
+Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `git init -b main` and a configured user. A Hypothesis property for `files_at` ("nothing lost"): generate ticket-directory trees whose file names include `\"`, a tab, a newline, non-ASCII letters and `[x]`, in the active and archive directories (`chitty/tasks/` and `chitty/tasks/archive/`), and check that `files_at` returns exactly the paths and contents written (small `max_examples`, `deadline=None`). The other helpers wrap one Git command over a fixed set of cases, each in the criteria.
 
 ## Acceptance Criteria
 
-- [ ] `branch_tips` returns local and remote-tracking tips, skips `origin/HEAD`, and names a local branch `origin/task-5` (alongside a remote `origin/task-5`) correctly in the local map
-- [ ] `is_ancestor` returns `True` for an ancestor and for the same commit, `False` for a non-ancestor, and raises for an unknown commit; `ref_commit` returns `None` for a missing ref and an unborn branch
-- [ ] `files_at` returns the ticket files at a branch tip that differ from the working tree, including the archive directory; `changed_since_merge_base` is true only when the first ref changed one of the paths since the merge base, and raises for unrelated histories; `make check` passes
+- [ ] `branch_tips` returns full ref names for local and remote-tracking branches, skips `refs/remotes/origin/HEAD`, and keeps a local branch `refs/heads/origin/task-5` and a remote `refs/remotes/origin/task-5` at different commits apart; fails before the change
+- [ ] `is_ancestor` returns `True` for an ancestor and for the same commit, `False` for a non-ancestor, and raises for an unknown commit; `ref_commit` returns the commit for a branch, `None` for a missing ref and for an unborn branch, and the commit (not the tree) for a ref given as a tag name
+- [ ] The `files_at` property passes, including the archive directory and the odd file names; a non-UTF-8 ticket file makes it raise naming the path
+- [ ] `changed_since_split` is `True` only when `ref` changed one of the paths since the merge base (a change only on `against` gives `False`), is not fooled by `[x]` in a path, and raises for unrelated histories; `make check` passes
 
 ## History
 
@@ -31,3 +32,5 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 - 2026-11-18T17:51:58Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:51:58Z lively-quartz-crane backlog → planning
 - 2026-11-18T17:52:46Z lively-quartz-crane planning → cold-read
+- 2026-11-18T17:54:38Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T17:54:38Z lively-quartz-crane cold-read → planning
