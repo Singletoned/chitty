@@ -1,6 +1,6 @@
 ---
 title: Stop autocommit repairing every ticket when it writes no ticket file
-status: cold-read
+status: planning
 labels:
   - bug
 parent: TASK-376
@@ -13,15 +13,15 @@ A cold read on 2026-11-18 reproduced this in a scratch repository: `chitty archi
 
 Decisions:
 
-- `_commit` skips the fix-and-validate step when the change has no existing ticket path; it still formats and commits as today.
-- `fix(repo, paths: Sequence[Path] | None)`: `None` means every ticket file; a sequence, even empty, means only those. CLI `fix` with no arguments and MCP `fix` with no paths (`src/chitty/mcp.py`, today `paths or []`) pass `None`. Apply the same to `check` if it has the same empty-means-all rule, and say so in the commit.
+- `_commit` skips the fix-and-validate step when `task_paths` (the change's existing paths inside a configured context) is empty; it still formats and commits as today.
+- `fix` and `check` keep their empty-means-all rule and signatures: changing them would ripple through the CLI, MCP and about ten existing tests for no gain, since `_commit` is the only caller that can pass an empty list by accident.
 
-Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `CliTestCase` from `tests/test_cli.py`, with `git init -b main`, `autocommit = true` and `archive = "delete"`. No property: one empty-list case through each caller, each in the criteria.
+Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `CliTestCase` from `tests/test_cli.py`, with `git init -b main`, `autocommit = true` and `archive = "delete"`. The other ticket's lower-case reference is written directly to its file and committed before the archive (`chitty add` or `edit` would correct it). No property: the bug is one empty-list case in `_commit`; existing `fix` tests cover path filtering.
 
 ## Acceptance Criteria
 
 - [ ] With `archive = "delete"`, archiving a `done` ticket that no other ticket references, while another ticket holds `depends_on: [task-1]` in lower case, succeeds, leaves that other file byte-identical and `git status --porcelain` clean; this fails before the change
-- [ ] `chitty fix` with no arguments, and MCP `fix` with no paths, still repair that lower-case reference in every ticket; `fix` given an explicitly empty list repairs nothing; `make check` passes
+- [ ] Regression guard: `chitty fix` with no arguments still repairs that lower-case reference; `tests/test_check.py` passes unchanged; `make check` passes
 
 ## History
 
@@ -29,3 +29,5 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 - 2026-11-18T17:55:03Z lively-quartz-crane: changed labels, description, acceptance criteria
 - 2026-11-18T17:55:03Z lively-quartz-crane backlog → planning
 - 2026-11-18T17:56:20Z lively-quartz-crane planning → cold-read
+- 2026-11-18T17:58:15Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T17:58:15Z lively-quartz-crane cold-read → planning
