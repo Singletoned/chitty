@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: todo
+status: doing
 priority: high
 created: 2026-11-18
 ---
@@ -34,3 +34,4 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 - 2026-11-18T09:55:11Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:55:13Z witty-ginger-falcon: changed description, acceptance criteria
 - 2026-11-18T09:55:15Z witty-ginger-falcon planning → todo
+- 2026-11-18T11:08:04Z lively-maroon-crane todo → doing
