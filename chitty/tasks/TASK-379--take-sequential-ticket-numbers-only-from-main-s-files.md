@@ -1,6 +1,6 @@
 ---
 title: Take sequential ticket numbers only from main's files
-status: review
+status: doing
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -44,6 +44,14 @@ Tests: real-Git tests in a new `tests/test_next_number_main.py`, inheriting `Cli
 
 Remove history scanning from Repo.next_number while retaining checkout files and delete-mode deleted-number handling. Make sequential allocation fail off main (but allow random contexts first), document main-only sequential IDs, update the two existing regression tests, and add focused real-Git coverage for main, worktree/branch/detached states and checkout-local files. Run focused tests, make format, make check, then commit implementation with Task: TASK-379.
 
+## Notes
+
+Review failed (tests): Add a real-Git main checkout to the checkout-file regression test; this is a newly discovered coverage gap, with no earlier review note.
+1: pass - make check passed; test_add_ignores_other_local_and_remote_branches on the pre-change store printed TASK-61 != TASK-4.
+2: fail - test_add_counts_uncommitted_and_archived_numbers passes in make check but never calls init_git, so it exercises outside Git, not main. Initialize and commit a main checkout before creating the uncommitted TASK-7 and archived TASK-9, and verify TASK-10.
+3: pass - make check passed. With the pre-change store, the feature and linked-worktree assertions printed ChittyError not raised; rerunning the detached assertion independently also printed ChittyError not raised. The outside-Git guard and an independently run random-context guard printed OK on the pre-change store.
+4: pass - make check printed 669 tests OK, including the two updated tests and delete-mode guard; inspected docs/plan/ids.md for the requested replacement.
+
 ## Summary
 
 Removed git-history scanning from sequential number allocation; it uses checkout files plus delete-mode history, and refuses sequential allocation off main. Added real-Git coverage for local/remote branch exclusion, uncommitted/archive counting, feature/worktree/detached rejection, random-context and outside-Git guards, and delete-mode deleted IDs. Verification: focused tests (45 pass), make format, make check (669 tests, Ruff, Pyright), and chitty fix. Commits: 354fc719 and cada6327 (Task: TASK-379). Regression fail-before evidence was not captured.
@@ -67,3 +75,5 @@ Removed git-history scanning from sequential number allocation; it uses checkout
 - 2026-11-18T22:52:39Z zesty-hazel-ibis: wrote the plan
 - 2026-11-18T22:57:23Z zesty-hazel-ibis: changed summary
 - 2026-11-18T22:57:25Z zesty-hazel-ibis doing → review
+- 2026-11-18T22:59:58Z lively-ginger-raven: changed acceptance criteria, notes
+- 2026-11-18T22:59:58Z lively-ginger-raven review → doing
