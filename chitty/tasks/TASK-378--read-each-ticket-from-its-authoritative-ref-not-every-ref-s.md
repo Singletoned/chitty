@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: cold-read
+status: planning
 depends_on:
   - TASK-377
   - TASK-382
@@ -17,23 +17,18 @@ Starts after `TASK-377`, `TASK-382` and `TASK-383` land. The last two stop the r
 
 Decisions:
 
-- Which tickets exist: every ticket file in this checkout's working tree, in `main`'s tip tree, and, for each visible ticket branch, its own ticket file at that branch's tip. A ticket branch is a local branch, or a remote-tracking branch after its first `/`, whose name is `<prefix>-<suffix>` lower-cased for a configured context prefix (`task-5`, `origin/task-5`). A ticket present only on some other branch is not listed.
-- For each ticket, call `ticket_source` with: whether this checkout's copy (or, if none, the source copy) has `provisional: true` (`TASK-380`; until it lands, pass `False`), `git.current_branch`, `Repo._main_branch()`, the local and remote-tracking branch tips (`git for-each-ref`, skipping symbolic refs such as `origin/HEAD`), and `contains` backed by `git merge-base --is-ancestor`, called only when a ticket has several candidates. Add the Git helpers to `src/chitty/git.py`.
-- `WORKING_TREE`: read this checkout's file, committed or not. A ref: read the file at that ref's tip (`git ls-tree` on the context's active and archive directories, then one `git cat-file --batch` for all blobs, as `git.historical_files` does today). The same ticket in both the active and archive directory of its source stays the existing `used by more than one file` error.
-- `StoredTask.branch` is the source ref, or `None` for `WORKING_TREE`, so `show` prints `branch: <ref>` for a ticket read from elsewhere, and `_require_current_version` keeps guarding writes until `TASK-385` replaces it. `StoredTask.path` stays this checkout's path for that file.
-- `discovered_contexts` finds directories in the working tree and in `main`'s tip tree, not in history.
+- Branches: enumerate with full ref names (`refs/heads/...`, `refs/remotes/...`, skipping symbolic refs such as `origin/HEAD`) and strip the prefix; never use `%(refname:short)`, which can print `heads/origin/task-5`. A ticket branch is a local branch, or a remote-tracking branch after its first `/`, whose name is a configured context prefix plus `-<suffix>`, lower-cased (`task-5`, `origin/task-5`; not `task-5-fix` or `plan/ticket-state`).
+- Which ticket IDs exist: every ticket file in this checkout's working tree, in `main`'s tip tree, and, for each ticket branch, that branch's own ticket at its tip. Contexts are discovered from the same three places. A ticket only on some other branch is not listed.
+- Once per `Repo` (cached like today, cleared by `_invalidate`), build a map from ID to source and file: call `ticket_source` for each ID with whether its copy (this checkout's, else main's or its branch's) has `provisional: true` (`TASK-380`; pass `False` until it lands), `git.current_branch`, `Repo._main_branch()`, the branch tips, and `contains` backed by `git merge-base --is-ancestor`, called only for an ID with several candidates. Add the Git helpers to `src/chitty/git.py`. Build each location's list (`_tasks_in_location`) from that map, so an ID is listed once, in whichever directory (active or archive, any context) holds its source copy. The same ID in both directories of its source stays the existing `used by more than one file` error.
+- `WORKING_TREE`: read this checkout's file, committed or not. A ref: read the file at that ref's tip (`git ls-tree` on the ticket directories, then `git cat-file --batch`). If the source has no file for the ID (deleted there), the ticket is not listed.
+- So on a branch that is neither `main` nor the ticket's own branch, an existing ticket is read from `main`'s tip, and an uncommitted edit to it in this checkout is not shown. Intended: the rule makes that copy not the ticket.
+- `StoredTask.branch` is the source ref, or `None` for `WORKING_TREE`; `show` prints `branch: <ref>` for it, and `_require_current_version` keeps guarding writes until `TASK-385` replaces it. `StoredTask.path` is this checkout's root joined with the source copy's relative path, whether or not that file exists here.
+- `ticket_source`'s `ChittyError` for diverged branches propagates from every read that reaches that ticket (`show`, `list`, `next`, `run`), loudly, as errors should be.
 - Outside a Git repository every ticket is read from the working tree, as today.
-- `next_number` keeps its `_history()` loop until `TASK-379`; `TASK-386` deletes the history code.
-- Out of scope: write guards (`TASK-385`), numbering (`TASK-379`), docs (`TASK-387`). Update existing tests that assert the newest-commit choice (likely in `tests/test_store.py`, `tests/test_cli.py`, `tests/test_check_cross_branch_references.py`) to the rule; keep `tests/test_list_performance.py` passing.
+- Unchanged here: `next_number` keeps its `_history()` loop until `TASK-379`; `check.py`'s `check` and `fix` scan this checkout's files as today (`TASK-394` limits `fix`); `_dependency_is_done` keeps reading dependencies from `main`'s files, because done means landed on `main`; `TASK-386` deletes the history code.
+- Migrate the existing tests that assert the old choice or visibility, including in `tests/test_check_cross_branch_references.py` the "other branch" row of `test_reference_existence_matches_show`, `test_malformed_task_on_another_branch_reports_parse_error` and `test_edit_can_depend_on_task_only_on_main`, and any in `tests/test_store.py` and `tests/test_cli.py`. Keep `tests/test_list_performance.py` passing.
 
-Tests: a Hypothesis property with real Git in a new `tests/test_property_ticket_reads.py`, inheriting `RepoTestCase` from `tests/support.py`, with `deadline=None` and a small `max_examples` (about 20) because each example builds a repository. Generate a few tickets, each placed in one of: only on `main`; on `main` and edited on its own local branch; on `main` and edited on a remote-tracking branch only (made with `git update-ref refs/remotes/origin/<branch>`); only on an unrelated branch; and give the branch commits random `GIT_COMMITTER_DATE`s earlier or later than `main`'s. Read from the main checkout and from one ticket's linked worktree. The expected copy is the one `ticket_source` names for the same inputs.
-
-## Acceptance Criteria
-
-- [ ] The property passes: for generated placements, from the main checkout and from a ticket worktree, `Repo.find` and `Repo.tasks` return each listed ticket with the content of the copy `ticket_source` names, and a ticket present only on an unrelated branch is not listed; it fails before the change
-- [ ] The `TASK-366` case: a ticket edited on its branch, then edited on `main` with a later `GIT_COMMITTER_DATE`, is read from the branch in the main checkout (`chitty show` prints the branch edit and `branch: task-<n>`); a `todo` ticket whose branch says `doing` lists as `doing` in `chitty list` on `main`; the test fails before the change
-- [ ] With only `origin/task-<n>` (no local branch) ahead of `main`, `chitty show` in the main checkout prints its copy; with local `task-<n>` and `origin/task-<n>` diverged, `chitty show` fails naming both
-- [ ] With `git.historical_files` patched to raise, `chitty show`, `chitty list` and `chitty check` still work in the main checkout and in a ticket worktree; `make check` passes
+Tests: real-Git tests in a new `tests/test_ticket_reads.py`, inheriting `RepoTestCase` from `tests/support.py`, one test per placement in the criteria, with `GIT_COMMITTER_DATE` set on commits where order matters. Commit `main`'s copy directly with Git where `chitty edit` on `main` would be refused. A generated property over placements is `TASK-393`. No property here: a fixed set of placements, each listed and tested.
 
 ## History
 
@@ -43,3 +38,5 @@ Tests: a Hypothesis property with real Git in a new `tests/test_property_ticket_
 - 2026-11-18T16:32:51Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-18T16:32:51Z lively-quartz-crane backlog → planning
 - 2026-11-18T16:33:20Z lively-quartz-crane planning → cold-read
+- 2026-11-18T16:38:58Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-18T16:38:58Z lively-quartz-crane cold-read → planning
