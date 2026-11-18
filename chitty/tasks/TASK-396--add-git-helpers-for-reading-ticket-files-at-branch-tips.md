@@ -26,6 +26,10 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 - [ ] The `files_at` property passes, including the archive directory and the odd file names; a non-UTF-8 ticket file makes it raise naming the path
 - [ ] `changed_since_split` is `True` only when `ref` changed one of the paths since the merge base (a change only on `against` gives `False`), is not fooled by `[x]` in a path, and raises for unrelated histories; `make check` passes
 
+## Plan
+
+Add the requested branch/ref/tree helpers in src/chitty/git.py, reusing _read_blobs and the existing error conventions. Add real-Git tests in tests/test_git.py for each specified edge case, including a Hypothesis odd-path round trip for active and archive trees. Run the new tests against the existing implementation first where possible, then make the change, format, run make check, and commit with a Task trailer.
+
 ## History
 
 - 2026-11-18T17:51:42Z lively-quartz-crane → backlog
@@ -37,3 +41,4 @@ Tests: real-Git tests in `tests/test_git.py`, inheriting `RepoTestCase`, with `g
 - 2026-11-18T17:54:40Z lively-quartz-crane planning → todo
 - 2026-11-18T17:55:01Z lively-quartz-crane: changed description
 - 2026-11-18T22:46:22Z lively-silver-wren todo → doing
+- 2026-11-18T22:47:28Z lively-silver-wren: wrote the plan
