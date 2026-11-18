@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: planning
+status: cold-read
 depends_on:
   - TASK-377
   - TASK-382
@@ -48,3 +48,4 @@ Tests: real-Git tests in a new `tests/test_ticket_reads.py`, inheriting `RepoTes
 - 2026-11-18T16:38:58Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:38:58Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:39:00Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T16:40:28Z lively-quartz-crane planning → cold-read
