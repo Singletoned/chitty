@@ -35,6 +35,10 @@ Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, 
 - [ ] `chitty move TASK-1 human` on `feature` (`TASK-1` in `tasks`) gives a provisional `HUMAN-` ID with `provisional: true`; after `git merge feature` into `main`, `chitty move <that ID> tasks` in the main checkout gives a sequential `TASK-` ID and removes the key; `chitty renumber` of a provisional file copied under another slug on `main` (as `tests/test_renumber.py` builds duplicates) gives a sequential ID and removes the key
 - [ ] With `_provisional_draw` patched to return 0 for its first six calls and 1 after, and `TASK-AAAAAA` present, `chitty add` on `feature` gets `TASK-BBBBBB`; patched to always return 0 with `TASK-AAAAAA` present, it exits 1 with `no unused provisional ID`; with only `origin/main` (no local `main`) on a ticket branch, `chitty add` gives a provisional ID; `make check` passes
 
+## Plan
+
+Implement Git-aware Repo.new_id selection and provisional collision checks; route add/move/renumber through it, including provisional markers. Remove linked-worktree backlog routing. Add focused real-Git CLI tests for checkout states and ID transitions, adjust existing tests for changed behavior, then run make format and make check and commit implementation in a small Task: TASK-389 commit.
+
 ## History
 
 - 2026-11-18T16:28:10Z lively-quartz-crane → backlog
@@ -49,3 +53,4 @@ Tests: real-Git tests through the CLI in a new `tests/test_provisional_ids.py`, 
 - 2026-11-18T17:45:32Z lively-quartz-crane planning → todo
 - 2026-11-18T17:45:40Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T22:25:25Z eager-ebony-newt todo → doing
+- 2026-11-18T22:26:15Z eager-ebony-newt: wrote the plan
