@@ -22,9 +22,9 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 
 ## Acceptance Criteria
 
-- [ ] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
-- [ ] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
-- [ ] `make check` passes
+- [x] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
+- [x] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
+- [x] `make check` passes
 
 ## Plan
 
@@ -33,6 +33,10 @@ Add the specified pure functions in src/chitty/renumbering.py. Validate duplicat
 ## Notes
 
 The new property tests were run against the initial NotImplementedError stubs and failed there as expected; after implementation, all five focused tests pass. make check passes all 640 suites, though a pre-existing expected diagnostic from a chitty run test prints during the suite.
+
+## Summary
+
+Implemented pure per-prefix sequential ID allocation and simultaneous boundary-aware ID rewriting in src/chitty/renumbering.py. Added Hypothesis coverage in tests/test_property_renumbering.py. Verified the new tests fail against the initial stubs, then pass after implementation; make check passes all 640 test suites. No follow-up caller work included.
 
 ## History
 
@@ -53,3 +57,4 @@ The new property tests were run against the initial NotImplementedError stubs an
 - 2026-11-18T20:28:05Z sunny-dusky-falcon todo → doing
 - 2026-11-18T20:29:04Z sunny-dusky-falcon: wrote the plan
 - 2026-11-18T20:31:06Z sunny-dusky-falcon: changed notes
+- 2026-11-18T20:31:22Z sunny-dusky-falcon: changed summary; ticked acceptance criteria
