@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` when ticket text names code that does not exist
-status: todo
+status: doing
 created: 2026-11-18
 ---
 
@@ -11,3 +11,4 @@ Planners write claims about code from memory: in the 2026-11-18 ticket-state pla
 ## History
 
 - 2026-11-18T20:24:11Z lively-quartz-crane → todo
+- 2026-11-18T23:24:21Z friendly-indigo-wren todo → doing
