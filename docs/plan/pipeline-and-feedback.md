@@ -81,10 +81,17 @@ asking the first.
 
 - The planner's part is `chitty guide plan`; the reader's is
   `chitty guide cold-read <ID>`, which the planner passes to the reader.
-- Every ticket gets one read-only cold read. A fresh, cheap-model agent reads
-  the ticket and the code and documents it names, reports ambiguities and
-  decisions, and makes no branch, ref, commit or file change. It may
-  try existing behaviour with commands that leave `git status` unchanged.
+- Every ticket gets a cold read. A fresh, cheap-model agent reads the ticket
+  and the code and documents it names, and reports ambiguities and decisions.
+  Its key question: are the tests the ticket asks for good, failing on today's
+  code and on a plausible wrong implementation? It makes no branch, ref or
+  commit and leaves `git status` unchanged, but may write throwaway files
+  outside the checkout, such as a probe test, when that settles a doubt
+  (decided 2026-11-18, loosening the read-only rule of 2026-11-16). Finding
+  problems, not building, is its purpose.
+- The planner checks each claim about code, commands and tests against the
+  source as it writes it, runs `chitty check` before starting a reader, and
+  plans one ticket at a time (2026-11-18).
 - The original planning session then performs the sufficiency read on the
   ticket text, named code and documents, and reader report. For each criterion
   and the ticket as a whole, ask whether a plausible minimal implementation

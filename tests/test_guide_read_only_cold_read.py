@@ -10,7 +10,7 @@ class TestReadOnlyColdReadGuide(unittest.TestCase):
         text = " ".join(guide("cold-read").split())
         required = (
             "Run no Chitty writes",
-            "no worktree, branch, ref, commit or file change",
+            "no worktree, branch, ref or commit",
             "Try behaviour rather than assume",
             "What done means",
             "would change",
@@ -19,6 +19,9 @@ class TestReadOnlyColdReadGuide(unittest.TestCase):
             "Unverified behaviour",
             "Wrong claims",
             "the exact wording to change",
+            "Weak tests",
+            "outside the checkout",
+            "not building it",
         )
         forbidden = (
             "worktree add",
@@ -43,7 +46,7 @@ class TestReadOnlyColdReadGuide(unittest.TestCase):
     def test_plan_guide_describes_read_only_cold_reads(self):
         text = " ".join(guide("plan").split())
         required = (
-            "one read-only cold read",
+            "for its cold read",
             "cheap model",
             "expected route",
             "NotImplementedError",

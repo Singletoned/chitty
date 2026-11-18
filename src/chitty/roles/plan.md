@@ -23,14 +23,22 @@ read. Describe the change and why it is needed; criteria are optional.
   a problem. `chitty check` warns above five criteria; split larger work. Split a ticket
   when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until you start writing it. Move it to
-  `-s planning` while you write it, to `-s cold-read` for its one read-only
-  cold read, back to `-s planning` to record outcomes, then to `-s todo`. Use
+  `-s planning` while you write it, to `-s cold-read` for its cold read, back to `-s planning` to record outcomes, then to `-s todo`. Use
   its optional `parent` field to group flat IDs.
 - Cold-read every ticket, even a small one. A fresh agent on a cheap model
   close to the worker reads the ticket and the named code and documents, then
   reports without changing the checkout. If a ticket adds a module, tell its
   worker to first create it with the names the tests import, each raising
   `NotImplementedError`, so tests fail independently rather than at import.
+- Check every claim about code, commands, tests or other tickets against the
+  source as you write it, not from memory or a summary; otherwise readers spend
+  their rounds on your fixes. Run `chitty check` on the ticket file and fix what
+  it reports before starting a reader.
+- Plan one ticket at a time: write, read and settle it before starting the
+  next. Fixes written for several tickets at once drift from the code.
+- After a fix that changes what a worker builds, cold-read the ticket again. If
+  a third read still finds serious problems, split the ticket rather than
+  patching it.
 - Ask of each criterion: could it pass with nothing built? If so, name the case
   that fails today, and say which test must fail without the fix.
 - In the original planning session, perform a sufficiency read on the current
