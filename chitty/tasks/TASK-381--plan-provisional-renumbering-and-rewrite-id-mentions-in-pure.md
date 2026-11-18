@@ -46,6 +46,82 @@ Review failed (tests): Restore the missing mixed-case suffix coverage.
 2: fail - Previously reported in the earlier Review failed (tests) note and still unresolved: tests/test_property_renumbering.py lowercases the whole ID twice, so it never inserts TASK-k7q2mx-style uppercase-prefix/lowercase-suffix look-alikes. Generate that form independently and assert it remains unchanged. The multi-mapping part of the earlier finding is resolved. In-process stubs produced two replacement-test errors.
 3: pass - make check exited 0: ruff and pyright passed and 641 test suites reported OK.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+570 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 641 test suites (641 total tests) across 16 workers
+..........................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 21:50:59 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+......................................./Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+............E...............................................................................................................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+.../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/repo/CLAUDE.md
+..Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxjzsub2d/repo/.worktrees/task-1...
+............TASK-1: doing → review
+......no next ticket for --mode work
+...............................chitty 0.1.31 is out: run uv tool upgrade chitty
+..............................landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_duplicate_and_numeric_ids_are_errors (tests.test_property_renumbering.TestRenumberingProperties.test_duplicate_and_numeric_ids_are_errors)
+----------------------------------------------------------------------
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/tests/test_property_renumbering.py", line 74, in test_duplicate_and_numeric_ids_are_errors
+  |     def test_duplicate_and_numeric_ids_are_errors(self, prefix, seed):
+  |                ^^^^^^^
+  |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 2334, in wrapped_test
+  |     raise the_error_hypothesis_found
+  | hypothesis.errors.FlakyFailure: Hypothesis test_duplicate_and_numeric_ids_are_errors(self=<tests.test_property_renumbering.TestRenumberingProperties testMethod=test_duplicate_and_numeric_ids_are_errors>, prefix='DT', seed=HypothesisRandom(generated data)) produces unreliable results: Failed on the first call but did not on a subsequent one (1 sub-exception)
+  | Failing test case: test_duplicate_and_numeric_ids_are_errors(
+  |     self=<tests.test_property_renumbering.TestRenumberingProperties testMethod=test_duplicate_and_numeric_ids_are_errors>,
+  |     prefix='DT',
+  |     seed=HypothesisRandom(generated data),
+  | )
+  | Unreliable test timings! On an initial run, this test took 309.19ms, which exceeded the deadline of 200.00ms, but on a subsequent run it took 0.04 ms, which did not. If you expect this sort of variability in your test timings, consider turning deadlines off for this test by setting deadline=None.
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1253, in _execute_once_for_engine
+    |     result = self.execute_once(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1187, in execute_once
+    |     result = self.test_runner(data, run)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 831, in default_executor
+    |     return function(data)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1144, in run
+    |     return test(*args, **kwargs)
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/tests/test_property_renumbering.py", line 74, in test_duplicate_and_numeric_ids_are_errors
+    |     def test_duplicate_and_numeric_ids_are_errors(self, prefix, seed):
+    |                ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-381/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 1040, in test
+    |     raise DeadlineExceeded(
+    |         datetime.timedelta(seconds=runtime), self.settings.deadline
+    |     )
+    | hypothesis.errors.DeadlineExceeded: Test took 309.19ms, which exceeds the deadline of 200.00ms. If you expect test cases to take this long, you can use @settings(deadline=...) to either set a higher deadline, or to disable it with deadline=None.
+    +------------------------------------
+
+----------------------------------------------------------------------
+Ran 641 tests in 45.255s
+
+FAILED (errors=1)
+make: *** [check] Error 1
+
+```
+
 ## Summary
 
 Expanded property coverage for mixed-prefix shuffled allocation and simultaneous rewriting of multiple IDs, including the TASK-k7q2mx-style look-alike. Verification: focused renumbering tests, make format, and make check pass. No implementation or caller changes.
@@ -78,3 +154,4 @@ Expanded property coverage for mixed-prefix shuffled allocation and simultaneous
 - 2026-11-18T21:32:36Z rosy-white-adder doing → review
 - 2026-11-18T21:35:36Z witty-bronze-dormouse: changed acceptance criteria, notes
 - 2026-11-18T21:35:36Z witty-bronze-dormouse review → doing
+- 2026-11-18T21:51:36Z tidy-maroon-kestrel: changed notes
