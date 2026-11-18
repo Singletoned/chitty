@@ -6,6 +6,7 @@ import tomllib
 
 from chitty.config import INITIAL_CONFIG
 from chitty.errors import ChittyError
+from chitty.run import _model_arguments
 from chitty.store import Repo
 from tests.test_cli import CliTestCase
 
@@ -27,7 +28,8 @@ class TestRunModelDefaults(CliTestCase):
             .replace(
                 'agent_command = "pi --chitty-{mode} {id}"',
                 'agent_command = "fake-agent default {mode} {id}"\n'
-                'work_model = "work-model"\nreview_model = "review-model"\n\n'
+                'work_model = "work-model"\nreview_model = "review-model"\n'
+                'rebase_model = "rebase-model"\n\n'
                 '[agent_commands]\nchosen = "fake-agent chosen {mode} {id}"\n'
                 'pinned = "fake-agent pinned {mode} {id} --model pinned-model"',
             )
@@ -126,6 +128,9 @@ class TestRunModelDefaults(CliTestCase):
         self.assertLess(
             INITIAL_CONFIG.index("# review_model ="), INITIAL_CONFIG.index("[contexts.tasks]")
         )
+        self.assertLess(
+            INITIAL_CONFIG.index("# review_model ="), INITIAL_CONFIG.index("# rebase_model =")
+        )
 
     def test_pyproject_models_and_init_comments_use_chitty_table(self):
         (self.root / "chitty.toml").unlink()
@@ -138,6 +143,9 @@ class TestRunModelDefaults(CliTestCase):
         )
         self.run_cli("init")
         text = config.read_text()
+        self.assertLess(text.index("# review_model ="), text.index("# rebase_model ="))
+        self.run_cli("init")
+        self.assertEqual(config.read_text().count("# rebase_model ="), 1)
         self.assertLess(text.index("[tool.chitty]"), text.index("# work_model ="))
         self.assertLess(text.index("# review_model ="), text.index("[tool.other]"))
         config.write_text(
@@ -149,10 +157,29 @@ class TestRunModelDefaults(CliTestCase):
         self.assertEqual(parsed["tool"]["chitty"]["work_model"], "provider/model")
         self.assertEqual(Repo.open(self.root).config.review_model, "provider/model")
 
+    def test_model_arguments_select_each_mode_and_reject_unknown_modes(self):
+        repo = Repo.open(self.root)
+        for mode, expected in (
+            ("work", ("--model", "work-model")),
+            ("review", ("--model", "review-model")),
+            ("rebase", ("--model", "rebase-model")),
+        ):
+            with self.subTest(mode=mode):
+                self.assertEqual(_model_arguments(repo, mode, (), ()), expected)
+                self.assertEqual(_model_arguments(repo, mode, (), ("--model", "manual")), ())
+
+        with self.assertRaisesRegex(ChittyError, "other"):
+            _model_arguments(repo, "other", (), ())
+
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace('rebase_model = "rebase-model"\n', ""))
+        repo = Repo.open(self.root)
+        self.assertEqual(_model_arguments(repo, "rebase", (), ()), ())
+
     def test_blank_models_are_rejected(self):
         config = self.root / "chitty.toml"
         original = config.read_text()
-        for name in ("work_model", "review_model"):
+        for name in ("work_model", "review_model", "rebase_model"):
             with self.subTest(name=name):
                 config.write_text(
                     original.replace(f'{name} = "{name.split("_")[0]}-model"', f'{name} = "  "')
