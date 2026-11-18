@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket in the main checkout before preparing its worktree
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -26,10 +26,10 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_claims_on_main
 
 ## Acceptance Criteria
 
-- [ ] A work run on a `todo` ticket with no branch: the claim commit (`todo → doing`) is on `main` and is an ancestor of the new branch, and the fake agent records the worktree ticket as `doing`; the test fails before the change
-- [ ] The `TASK-343` state, made with real commits (branch created and its ticket edited, then a later edit to the ticket committed on `main`): a work run on the `todo` ticket claims it on `main` without the `latest committed version` error and the fake agent starts; the test fails before the change
-- [ ] A ticket chosen as `todo` whose `setup` fails, and one whose `check` fails, both end `error` with no agent started; a `doing` ticket whose `check` fails still starts the agent
-- [ ] `docs/plan/next-action-and-runner.md` has the two replacement sentences from the Description, and `make check` passes
+- [x] A work run on a `todo` ticket with no branch: the claim commit (`todo → doing`) is on `main` and is an ancestor of the new branch, and the fake agent records the worktree ticket as `doing`; the test fails before the change
+- [x] The `TASK-343` state, made with real commits (branch created and its ticket edited, then a later edit to the ticket committed on `main`): a work run on the `todo` ticket claims it on `main` without the `latest committed version` error and the fake agent starts; the test fails before the change
+- [x] A ticket chosen as `todo` whose `setup` fails, and one whose `check` fails, both end `error` with no agent started; a `doing` ticket whose `check` fails still starts the agent
+- [x] `docs/plan/next-action-and-runner.md` has the two replacement sentences from the Description, and `make check` passes
 
 ## Plan
 
@@ -37,7 +37,11 @@ In `src/chitty/run.py`, capture the selected status and, for work-mode `todo`, c
 
 ## Notes
 
-The claim now commits on main before worktree preparation, so setup/check failures report the post-claim transition `doing → error`; the existing runner suite has assertions for the former `todo → error` behavior. Full `make check` currently has 27 failures, mostly expectations and fake-agent scripts that assume a todo-status worktree. New real-Git tests cover main ancestry and a newer main ticket commit.
+Regression evidence: `tests.test_run_claims_on_main` fails against the pre-change runner and passes with the fix. Verification: `make check` passes (629 tests), and `chitty fix` completes with existing repository warnings only.
+
+## Summary
+
+Claimed todo work on main before preparing its worktree; check-failure handling retains the selected status. Added real-Git coverage for claim ancestry and stale main ticket history; updated runner docs and affected expectations. Verified with `make check`, focused regression tests, and `chitty fix`. No follow-ups.
 
 ## History
 
@@ -49,3 +53,5 @@ The claim now commits on main before worktree preparation, so setup/check failur
 - 2026-11-18T10:36:15Z eager-teal-crane todo → doing
 - 2026-11-18T10:36:35Z eager-teal-crane: wrote the plan
 - 2026-11-18T10:41:09Z eager-teal-crane: changed notes
+- 2026-11-18T10:52:01Z eager-teal-crane: replaced notes; changed summary; ticked acceptance criteria
+- 2026-11-18T10:52:01Z eager-teal-crane doing → review
