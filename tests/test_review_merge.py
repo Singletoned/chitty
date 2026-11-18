@@ -38,6 +38,8 @@ class ReviewMergeTestCase(CliTestCase):
             "path = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
             "path.write_text(path.read_text().replace('status: review', 'status: done'))\n"
             "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], check=True)\n"
+            "if len(sys.argv) > 6 and Path(sys.argv[6]).exists():\n"
+            "    Path('review-marker').write_text('fail landing check')\n"
             "if Path(sys.argv[5]).exists():\n"
             "    root = Path(sys.argv[5]).read_text().strip()\n"
             "    Path(root, 'main-late.txt').write_text('main advanced during review\\n')\n"
@@ -52,7 +54,7 @@ class ReviewMergeTestCase(CliTestCase):
         check_script = self.tmp / "landing_check.py"
         check_script.write_text(
             "import sys\nfrom pathlib import Path\n"
-            "if Path('main-late.txt').exists():\n"
+            "if Path('main-late.txt').exists() or Path('review-marker').exists():\n"
             "    Path(sys.argv[1]).write_text('checked merged main')\n"
             "    if Path(sys.argv[2]).exists():\n"
             "        raise SystemExit(7)\n"
@@ -330,6 +332,55 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertTrue(self.worktree.exists())
         self.assertTrue(self.git("branch", "--list", "task-1").strip())
+
+    def test_landing_failure_records_error_on_branch_without_advancing_main(self):
+        self.branch_for_review()
+        fake = self.root / "bin" / "fake"
+        fake.parent.mkdir(exist_ok=True)
+        fake.write_text(
+            "#!" + sys.executable + "\n"
+            "from pathlib import Path\n"
+            "import subprocess\n"
+            "ticket = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
+            "ticket.write_text(ticket.read_text().replace('status: review', 'status: done'))\n"
+            f"Path({str(self.worktree / 'review-marker')!r}).write_text('fail landing check')\n"
+            f"subprocess.run(['git', 'add', {str(self.worktree / 'review-marker')!r}], "
+            "check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], check=True)\n"
+        )
+        fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
+        self.git("add", "bin/fake")
+        self.git("commit", "--quiet", "-m", "configure landing reviewer")
+        check_script = self.tmp / "landing_check.py"
+        check_script.write_text(
+            "from pathlib import Path\n"
+            "ticket = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
+            "if 'status: done' in ticket.read_text(): raise SystemExit(7)\n"
+        )
+        config = self.root / "chitty.toml"
+        config.write_text(
+            re.sub(
+                r"^check = .*",
+                f'check = "{sys.executable} {check_script}"',
+                config.read_text(),
+                flags=re.MULTILINE,
+            )
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure marker check")
+        main_head = self.git("rev-parse", "main").strip()
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertIn("done → error", result.stdout)
+        self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
+        notes = self.ticket().section("Notes") or ""
+        self.assertIn("Runner error (landing)", notes)
+        self.assertIn("landing check exited with status 7", notes)
+        latest_paths = self.git(
+            "diff-tree", "--no-commit-id", "--name-only", "-r", "task-1"
+        ).splitlines()
+        self.assertEqual(latest_paths, ["chitty/tasks/TASK-1--review-me.md"])
 
     def test_agent_and_setup_see_the_branch_merged_with_main(self):
         self.branch_for_review()

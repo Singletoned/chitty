@@ -1295,6 +1295,7 @@ class TestNext(CliTestCase):
         repo = Repo.open(self.root)
         task = repo.find(repo.resolve("TASK-1")).task
         self.assertEqual(task.frontmatter.status, "error")
+        self.assertEqual(str(next_action(repo, modes=("errors",)).id), "TASK-1")
         self.assertIn("check line 6", task.section("Notes") or "")
         worktree = self.root / ".worktrees/task-1"
         ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
@@ -1302,9 +1303,7 @@ class TestNext(CliTestCase):
         self.assertIn("status: doing", main_ticket)
         self.assertIn("?? check-args", self.git("-C", str(worktree), "status", "--short"))
         self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
-        changed_paths = self.git(
-            "show", "--pretty=format:", "--name-only", "task-1"
-        ).splitlines()
+        changed_paths = self.git("show", "--pretty=format:", "--name-only", "task-1").splitlines()
         self.assertEqual(changed_paths, [str(ticket_path.relative_to(worktree))])
 
     def test_run_check_failure_records_markdown_like_output(self):
