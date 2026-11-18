@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: planning
+status: todo
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -123,3 +123,4 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T21:35:09Z lively-quartz-crane: changed description, notes; wrote the plan
 - 2026-11-18T21:35:09Z lively-quartz-crane cold-read → planning
 - 2026-11-18T21:37:46Z lively-quartz-crane: changed description, notes
+- 2026-11-18T21:38:04Z lively-quartz-crane planning → todo
