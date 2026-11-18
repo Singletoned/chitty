@@ -4,8 +4,6 @@ status: cold-read
 labels:
   - bug
 priority: high
-depends_on:
-  - TASK-359
 created: 2026-11-18
 ---
 
@@ -37,3 +35,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_syncs_ticket.p
 ## History
 
 - 2026-11-18T09:24:53Z witty-ginger-falcon → cold-read
+- 2026-11-18T09:25:14Z witty-ginger-falcon: changed dependencies
