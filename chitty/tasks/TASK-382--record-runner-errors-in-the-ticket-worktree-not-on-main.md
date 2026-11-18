@@ -28,6 +28,10 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 - [ ] After that `check` failure, the newest commit on `task-<n>` is a new commit after the claim that changes only the ticket file, and a file the failing `check` wrote in the worktree is still untracked; a `check` failure on a `doing` ticket still writes the `Check failed before this session` note on the branch and starts the agent
 - [ ] A landing failure: in a review run whose `check` passes before the reviewer, the fake reviewer sets `done` and writes a marker file that makes `check` fail from then on, so `_landing_check` fails before `fast_forward`; `main` is unchanged and the newest `task-<n>` commit has `Runner error (landing)`; `make check` passes
 
+## Plan
+
+Create one branch-side Repo(worktree, main_repo.config) after obtaining the ticket worktree and pass it through setup, check, agent/landing error paths. Change runner-error recording to read and edit through that repo; make check-failure handling use the supplied branch repo and retain its existing note/agent behavior. Add real-Git/fake-agent regression coverage for the four specified failure phases and branch-only commits, update existing assertions that expect main to move, then run focused tests and make check.
+
 ## History
 
 - 2026-11-18T16:20:11Z lively-quartz-crane → backlog
@@ -54,3 +58,4 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 - 2026-11-18T17:47:08Z lively-quartz-crane todo → planning
 - 2026-11-18T17:47:10Z lively-quartz-crane planning → todo
 - 2026-11-18T20:32:35Z eager-ochre-gannet todo → doing
+- 2026-11-18T20:33:49Z eager-ochre-gannet: wrote the plan
