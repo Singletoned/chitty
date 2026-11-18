@@ -22,6 +22,13 @@ Each property asserts a returned value or `ChittyError` specifically. Tests matc
 
 The code already exists, so evidence that the tests catch a wrong implementation comes from mutants run by hand and not committed: each changes `ticket_source` in one way, and the notes record which property failed.
 
+## Acceptance Criteria
+
+- [ ] Properties for rule 4 pass on both graph shapes: the result is `WORKING_TREE` exactly when `current_branch` is the local candidate name and the local candidate is at the expected tip, otherwise the candidate at the expected tip, the local one when it is there, else the remote whose remote name sorts first; generated examples include a remote strictly ahead of a checked-out local candidate
+- [ ] Properties for rule 6 pass: with `changed_on_both` true for the expected name, `ChittyError` names the ticket, that ref and `main_branch`, each quoted; with it true only for other names, the result is the rule 4 result
+- [ ] The notes name at least three mutants of `ticket_source`, among them remotes winning ties, the wrong remote order, and ignoring `changed_on_both`, each failing a property of this ticket; `make check` passes
+
 ## History
 
 - 2026-11-18T21:31:03Z lively-quartz-crane → backlog
+- 2026-11-18T21:31:17Z lively-quartz-crane: changed acceptance criteria
