@@ -1,6 +1,6 @@
 ---
 title: Run the configured check when moving a ticket to review
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -125,3 +125,4 @@ Error repair, 2026-11-17: the runner's pre-session check failed on the earlier p
 - 2026-11-17T22:11:48Z jolly-dusky-badger todo → error
 - 2026-11-17T22:43:50Z kind-umber-toad: changed notes
 - 2026-11-17T22:43:50Z kind-umber-toad error → todo
+- 2026-11-18T11:20:28Z sunny-pearl-adder todo → doing
