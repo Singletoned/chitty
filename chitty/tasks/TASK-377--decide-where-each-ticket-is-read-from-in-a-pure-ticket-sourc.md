@@ -35,7 +35,7 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 
 ## Acceptance Criteria
 
-- [ ] Properties pass for rules 1 to 3: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch`, else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
+- [ ] Properties pass for rules 1 to 3: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch` (even when `main_tip` is `None`, an unborn `main`), else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
 - [ ] Properties pass for rules 4 and 6: whenever one remaining candidate commit contains all the others, the result is `WORKING_TREE` exactly when `current_branch` is the remaining local candidate at that commit, otherwise a candidate at that commit, the local one when it is there, else the remote whose remote name sorts first; and when `changed_on_both` is true for that name, `ChittyError` names the ticket, that ref and `main` instead
 - [ ] Properties pass for rule 5 and decoys: when no remaining candidate contains all the others, `ChittyError` names each remaining candidate, including when `main_tip` contains a third, dropped one; adding or removing decoy and unrelated branches never changes the result
 - [ ] The notes record every property failing against the `NotImplementedError` stub, and `make check` passes
@@ -58,3 +58,4 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 - 2026-11-18T17:50:39Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:50:39Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:50:41Z lively-quartz-crane planning → todo
+- 2026-11-18T17:53:59Z lively-quartz-crane: changed acceptance criteria
