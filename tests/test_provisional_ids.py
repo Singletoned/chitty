@@ -39,9 +39,11 @@ class TestProvisionalIds(CliTestCase):
     def test_main_checkout_switched_to_feature_and_detached_head_are_provisional(self):
         self.git("switch", "-c", "feature")
         switched = self.json("add", "Switched", "-d", "Description.")
+        self.assertRegex(switched["id"], r"^TASK-[A-Z0-9]*[A-Z][A-Z0-9]*$")
         self.assertTrue(switched["provisional"])
         self.git("checkout", "--detach")
         detached = self.json("add", "Detached", "-d", "Description.")
+        self.assertRegex(detached["id"], r"^TASK-[A-Z0-9]*[A-Z][A-Z0-9]*$")
         self.assertTrue(detached["provisional"])
 
     def test_linked_worktree_uses_default_context_with_provisional_id(self):
@@ -67,7 +69,7 @@ class TestProvisionalIds(CliTestCase):
             ticket = self.json("add", "Linked", "-d", "Description.")
         finally:
             os.chdir(previous)
-        self.assertTrue(ticket["id"].startswith("TASK-"))
+        self.assertRegex(ticket["id"], r"^TASK-[A-Z0-9]*[A-Z][A-Z0-9]*$")
         self.assertTrue(ticket["provisional"])
 
     def test_outside_git_keeps_sequential_ids(self):
