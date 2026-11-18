@@ -869,12 +869,13 @@ class Repo:
             ]
             # The task file is temporarily dirty until its autocommit below;
             # validate content here, but leave worktree cleanliness to `chitty check`.
-            _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
-            if blocking := errors(problems):
-                details = "\n".join(str(problem) for problem in blocking)
-                raise ChittyError(
-                    f"cannot finalize task write with unresolved problems:\n{details}"
-                )
+            if task_paths:
+                _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
+                if blocking := errors(problems):
+                    details = "\n".join(str(problem) for problem in blocking)
+                    raise ChittyError(
+                        f"cannot finalize task write with unresolved problems:\n{details}"
+                    )
         if self.config.autoformat:
             formatter.run(self.root, self.config.autoformat, existing)
         if self.config.autocommit:
