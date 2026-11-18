@@ -1,6 +1,6 @@
 ---
 title: Add the `provisional` ticket field and a provisional ID suffix
-status: review
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -31,6 +31,14 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 
 Add the deterministic provisional ID suffix and optional `provisional: true` frontmatter support. Add the specified Hypothesis properties and formatter sample, update the task-file reference, then run the focused tests and `make check`.
 
+## Notes
+
+Review failed (tests): Add the missing specified coverage and fix the newly discovered strict-value defect. No earlier review findings exist.
+1: pass - make check printed OK for 634 tests; monkeypatching provisional_suffix to raise NotImplementedError made test_suffix_round_trips print FAILED (errors=1), and boundary draws are asserted.
+2: fail - Newly discovered: running new_task(...).with_field("provisional", 1) and with 1.0 printed True for both, although only True or None are allowed; use identity checks and test other values. The property does not exercise text chitty show, assert removal of the rendered line, or build generated tickets with st.builds as requested. Its True-case failure against the specified Frontmatter validator stub is not demonstrated: replacing with_field with a stub produced FAILED on the absent case instead. Add the specified regression evidence and exercise both show outputs.
+3: fail - test_only_true_is_accepted uses arbitrary text but does not explicitly include yes, on, True, false and 1, and only checks that the error contains provisional, so an unknown frontmatter key error naming provisional would incorrectly pass. Add explicit examples and reject that error; make check otherwise printed OK.
+4: pass - make check printed OK for 634 tests including formatter round trips; tests/test_formatters.py includes provisional True and docs/plan/task-file.md documents the optional true marker for renumbering.
+
 ## Summary
 
 Implemented provisional suffix generation and strict optional frontmatter serialization, parsing, and text display; updated task-file documentation and formatter coverage. Verification: focused property/formatter tests and `make check` pass; `chitty fix` completed with pre-existing warnings in other tickets. Follow-up: review acceptance criteria, including CLI show behavior.
@@ -55,3 +63,5 @@ Implemented provisional suffix generation and strict optional frontmatter serial
 - 2026-11-18T20:07:41Z honest-pearl-wren: wrote the plan
 - 2026-11-18T20:09:42Z honest-pearl-wren: changed summary
 - 2026-11-18T20:09:42Z honest-pearl-wren doing → review
+- 2026-11-18T20:12:29Z jolly-jade-eel: changed acceptance criteria, notes
+- 2026-11-18T20:12:29Z jolly-jade-eel review → doing
