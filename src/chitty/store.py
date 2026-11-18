@@ -1170,21 +1170,36 @@ def _add_missing_settings(
         and not (key in {"setup", "check", "agent_command"} and f"{key} =" in text)
         and not (
             key in {"work_model", "review_model", "rebase_model"}
-            and re.search(rf"(?m)^\s*{key}\s*=", section) is not None
+            and re.search(rf"(?m)^[ \t]*(?:#[ \t]*)?{key}[ \t]*=", section) is not None
         )
     ]
     if not additions:
         return text
     rebase_comment = '# rebase_model = "provider/model" # default for rebase sessions'
     if rebase_comment in additions:
-        review_line = re.search(r"(?m)^\s*review_model\s*=.*$", section)
-        if review_line is None:
-            review_line = re.search(r"(?m)^\s*#\s*review_model\s*=.*$", section)
-        if review_line is not None:
+        lines = text.splitlines(keepends=True)
+        review_index = next(
+            (
+                index
+                for index, line in enumerate(lines)
+                if re.match(r"^[ \t]*review_model[ \t]*=", line)
+            ),
+            None,
+        )
+        if review_index is None:
+            review_index = next(
+                (
+                    index
+                    for index, line in enumerate(lines)
+                    if re.match(r"^[ \t]*#[ \t]*review_model[ \t]*=", line)
+                ),
+                None,
+            )
+        if review_index is not None:
             additions.remove(rebase_comment)
-            insertion = match.end() + review_line.end() if pyproject else review_line.end()
-            text = text[:insertion] + "\n" + rebase_comment + text[insertion:]
-            section = section + rebase_comment
+            lines.insert(review_index + 1, rebase_comment + "\n")
+            text = "".join(lines)
+            position += len(rebase_comment) + 1
     if not additions:
         return text
     return text[:position] + "\n".join(additions) + "\n\n" + text[position:]
