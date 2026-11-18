@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: planning
+status: cold-read
 labels:
   - bug
   - needs-minor
@@ -49,3 +49,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T17:57:37Z lively-quartz-crane: changed dependencies, description
 - 2026-11-18T17:57:39Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T17:57:41Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T18:00:09Z lively-quartz-crane planning → cold-read
