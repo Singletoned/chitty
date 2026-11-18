@@ -1,6 +1,6 @@
 ---
 title: Merge `main` into the ticket branch before every work session
-status: cold-read
+status: planning
 labels:
   - bug
 depends_on:
@@ -39,3 +39,4 @@ Tests: real-Git, fake-agent tests in a new `tests/test_run_work_merges_main.py`,
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
 - 2026-11-18T09:22:43Z witty-ginger-falcon planning → cold-read
+- 2026-11-18T09:25:16Z witty-ginger-falcon cold-read → planning
