@@ -1,6 +1,7 @@
 ---
 title: Add the optional `rebase_model` setting for rebase sessions
-status: review
+status: blocked
+owner: human
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -45,6 +46,13 @@ Review failed (tests): Newly discovered configuration corruption in init; restri
 
 Review follow-up: scoped review_model adjacency lookup to the [tool.chitty] section, preventing a review_model in another pyproject table from being used as the insertion point and corrupting TOML. Added regression coverage preserving [tool.other]. Focused model-default tests pass (9 tests); make check passes (679 tests). make format run; chitty fix reports existing Markdown underscore warnings.
 
+Review failed (tests): Newly discovered missing final newline case: ensure insertion starts on a new line and add regression coverage, including repeated init. The earlier adjacency and other-table corruption findings are resolved for their reported inputs; the prior notes document their pre-fix failures.
+1: pass - `make check` printed `Ran 679 tests` and `OK`; mode tests exercise configured models, unset rebase and explicit override.
+2: fail - Running `_add_missing_settings` with valid TOML `review_model = "some/model"` without a final newline printed `review_model = "some/model"# rebase_model = ...`, placing the comment on the same line rather than directly after it. Add a newline before the inserted comment. Existing tests cover blank models and unknown modes; the prior implementation note records the adjacency regression failing before its fix, and the preceding review note records the other-table corruption reproduction.
+3: pass - Both plan documents mention `rebase_model`; `make check` printed `Ran 679 tests` and `OK`.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Implemented optional rebase_model and fixed init upgrade insertion to stay within the Chitty configuration table. Added regression coverage for another pyproject table containing review_model. Verification: focused model-default tests (9 pass), make format, make check (679 tests pass), and chitty fix (existing Markdown warnings only). Commit: 51a62c77. No follow-ups.
@@ -70,3 +78,5 @@ Implemented optional rebase_model and fixed init upgrade insertion to stay withi
 - 2026-11-18T23:35:34Z able-lilac-yellowhammer review → doing
 - 2026-11-18T23:38:58Z intrepid-violet-lapwing: changed notes, summary
 - 2026-11-18T23:38:58Z intrepid-violet-lapwing doing → review
+- 2026-11-18T23:41:16Z witty-coral-gannet: changed owner, acceptance criteria, notes
+- 2026-11-18T23:41:16Z witty-coral-gannet review → blocked
