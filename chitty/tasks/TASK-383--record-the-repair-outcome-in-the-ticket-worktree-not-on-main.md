@@ -1,6 +1,6 @@
 ---
 title: Record the repair outcome in the ticket worktree, not on `main`
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -34,6 +34,12 @@ Add real-Git fake-agent runner tests for repair outcomes on an existing branch a
 
 Regression tests failed before the implementation: the original runner advanced main for both review and blocked repair outcomes. After the fix, the new real-Git tests and existing RepairError cases pass.
 
+Reviewed: Complete diff inspected; no prior review failures.
+1: pass - make check ran the review repair test successfully; with main version of run.py the test failed because main advanced (TASK-1: error → review).
+2: pass - make check ran the blocked repair test successfully; with main version of run.py the test failed because main advanced (TASK-1: error → blocked).
+3: pass - make check ran the existing RepairError regression tests; 652 tests passed.
+4: pass - make check ran the unbranched repair test; 652 tests passed and all checks succeeded.
+
 ## Summary
 
 Implemented branch-local repair outcomes. Verification: `make check` passes; the new review, blocked, and unbranched repair tests pass; focused tests failed against the original implementation. No follow-ups.
@@ -55,3 +61,5 @@ Implemented branch-local repair outcomes. Verification: `make check` passes; the
 - 2026-11-18T22:13:09Z vivid-russet-raven: wrote the plan
 - 2026-11-18T22:22:03Z vivid-russet-raven: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T22:22:15Z vivid-russet-raven doing → review
+- 2026-11-18T22:24:44Z witty-lilac-heron: changed notes
+- 2026-11-18T22:24:44Z witty-lilac-heron review → done
