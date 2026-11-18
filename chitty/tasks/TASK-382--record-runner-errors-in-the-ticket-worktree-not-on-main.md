@@ -18,7 +18,7 @@ Decisions:
 - Only the ticket file is committed. Other uncommitted files in the worktree stay uncommitted.
 - Out of scope: the review-with-no-branch handoff in `_run_ticket`, which stays on `main` (with no branch, `main` is authoritative); the repair outcome write (`TASK-383`); the claim (`TASK-384`).
 
-Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_branch.py`, in the style of `tests/test_run_claims_on_main.py`, inheriting `CliTestCase` from `tests/support.py`. Update existing runner tests that expect the error commit on `main`. No property: a fixed set of four failure phases, each listed in the criteria and each tested; the behaviour drives real Git and runner processes.
+Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_branch.py`, in the style of `tests/test_run_claims_on_main.py`, inheriting `CliTestCase` from `tests/test_cli.py` as that file does. Update existing runner tests that expect the error commit on `main`. No property: a fixed set of four failure phases, each listed in the criteria and each tested; the behaviour drives real Git and runner processes.
 
 ## Acceptance Criteria
 
@@ -34,3 +34,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_bran
 - 2026-11-18T16:24:19Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T16:24:24Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T16:25:01Z lively-quartz-crane planning → cold-read
+- 2026-11-18T16:26:40Z lively-quartz-crane: changed description
