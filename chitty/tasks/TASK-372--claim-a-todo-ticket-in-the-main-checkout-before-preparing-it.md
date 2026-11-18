@@ -31,6 +31,10 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_claims_on_main
 - [ ] A ticket chosen as `todo` whose `setup` fails, and one whose `check` fails, both end `error` with no agent started; a `doing` ticket whose `check` fails still starts the agent
 - [ ] `docs/plan/next-action-and-runner.md` has the two replacement sentences from the Description, and `make check` passes
 
+## Plan
+
+In `src/chitty/run.py`, capture the selected status and, for work-mode `todo`, claim through `main_repo.edit` before preparing the worktree. Remove the worktree claim and pass the selected status through check handling so failure decisions retain the pre-claim behavior. Add real-Git fake-agent regression coverage in `tests/test_run_claims_on_main.py`, including main ancestry, stale-ticket commits, and todo/doing setup/check outcomes. Update the two runner descriptions in `docs/plan/next-action-and-runner.md`; run focused tests and `make check`.
+
 ## History
 
 - 2026-11-18T09:50:52Z witty-ginger-falcon → planning
@@ -39,3 +43,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_claims_on_main
 - 2026-11-18T09:54:54Z witty-ginger-falcon: changed description, acceptance criteria
 - 2026-11-18T09:54:56Z witty-ginger-falcon planning → todo
 - 2026-11-18T10:36:15Z eager-teal-crane todo → doing
+- 2026-11-18T10:36:35Z eager-teal-crane: wrote the plan
