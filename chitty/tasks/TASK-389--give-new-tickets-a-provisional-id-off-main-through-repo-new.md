@@ -1,6 +1,6 @@
 ---
 title: Give new tickets a provisional ID off `main` through `Repo.new_id`
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -53,7 +53,7 @@ Regression evidence: the expanded missing-main-ref test failed before the fix wh
 
 ## Summary
 
-Implemented Git-aware Repo.new_id selection, provisional markers and retries; plain add now uses default_context. Updated affected CLI, MCP, store and worktree tests. Verification: make format, chitty fix, focused provisional-ID tests and make check pass (662 tests; ruff and pyright clean). Commits: 1630266f, 0fa5d558, d3d560bf (all Task: TASK-389). Ready for review.
+Fixed main-ref detection to match refs/heads/<main> exactly and remote refs by stripping the remote name before comparison. Regression test adds refs/heads/other/main; it failed before the fix and passes now. Verification: focused test passes; make check passes (662 tests, ruff, pyright; suite emitted expected chitty run fixture output). Commit: 2c95966c (Task: TASK-389).
 
 ## History
 
@@ -75,3 +75,5 @@ Implemented Git-aware Repo.new_id selection, provisional markers and retries; pl
 - 2026-11-18T22:38:06Z eager-silver-vole: changed acceptance criteria, notes
 - 2026-11-18T22:38:06Z eager-silver-vole review → doing
 - 2026-11-18T22:44:19Z youthful-jade-otter: changed notes
+- 2026-11-18T22:45:11Z youthful-jade-otter: changed summary
+- 2026-11-18T22:45:11Z youthful-jade-otter doing → review
