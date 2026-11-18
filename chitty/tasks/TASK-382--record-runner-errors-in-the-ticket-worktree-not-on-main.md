@@ -23,7 +23,7 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_bran
 ## Acceptance Criteria
 
 - [ ] For each phase (work-mode `setup` failure, review-mode `setup` failure, a work-mode `check` failure on a ticket chosen as `todo`, and a `ChittyError` raised during the agent phase) the run leaves `git rev-parse main` unchanged, and the newest commit on the ticket branch sets the ticket to `error` with a `Runner error (<phase>)` note; each case fails before the change
-- [ ] After each of those runs, `chitty show <ID>` in the main checkout reports status `error`, and `next_action(main_repo, modes=("errors",), owner=None)` in `src/chitty/selection.py` or `run.py` (wherever it is defined) returns that ticket
+- [ ] After each of those runs, `chitty show <ID>` in the main checkout reports status `error`, and `next_action` (`src/chitty/store.py`) on the main checkout with `modes=("errors",)` returns that ticket
 - [ ] An unrelated uncommitted file in the worktree is still uncommitted after the error is recorded, and `_handle_check_failure` no longer calls `git.main_checkout`; `make check` passes
 
 ## History
@@ -32,3 +32,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_bran
 - 2026-11-18T16:24:12Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:24:12Z lively-quartz-crane backlog → planning
 - 2026-11-18T16:24:19Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T16:24:24Z lively-quartz-crane: changed acceptance criteria
