@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: planning
+status: todo
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -46,3 +46,4 @@ Tests: real-Git tests in a new `tests/test_fix_sources.py`, inheriting `CliTestC
 - 2026-11-18T17:59:14Z lively-quartz-crane planning → cold-read
 - 2026-11-18T18:00:54Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T18:00:54Z lively-quartz-crane cold-read → planning
+- 2026-11-18T18:00:56Z lively-quartz-crane planning → todo
