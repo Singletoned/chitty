@@ -1,9 +1,10 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: todo
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
+  - TASK-378
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -18,7 +19,7 @@ Decisions:
 
 - New `Repo.renumber_provisional() -> tuple[Change, ...]` in `src/chitty/store.py`, returning one `Change` per renumbered ticket (empty when none).
 - It acts only "on `main`": outside a Git repository (`git.is_repository` false), or in one whose current branch is the main branch. Off `main`, including a detached `HEAD`, it raises `ProvisionalOffMain`, a new `ChittyError` subclass in `src/chitty/errors.py`, saying provisional tickets are renumbered on main; the CLI turns that into a no-op (`TASK-392`).
-- It works on this checkout's ticket files on disk (active and archive directories of every context), not on `all_tasks()`: a ticket read from another ref must not be written, and tickets only on other branches are not touched (their mentions then dangle; accepted).
+- It works on this checkout's ticket files on disk (active and archive directories of every context), but skips every file whose ticket `Repo` reads from another ref (`StoredTask.branch` is not `None`, after `TASK-378`): the main checkout also holds `main`'s stale copies of in-flight tickets, and writing them would make the ticket change on both sides. Such tickets, and tickets only on other branches, keep their mentions of the old ID (dangling; accepted).
 - First parse every ticket file and plan everything (`plan_renumbering`), so an unparseable file fails before any write. Two files with the same provisional ID make `plan_renumbering` raise; `renumber_provisional` adds both paths to the message and writes nothing (`chitty renumber PATH` then separates them).
 - Extract `Repo._used_numbers(context) -> set[int]` from `next_number`, keeping everything `next_number` counts (active and archive files, and `_deleted_numbers` in delete mode); `next_number` then returns `ids.next_number` of it for sequential contexts, its random branch unchanged. Pass those sets to `plan_renumbering`. A provisional ticket in a `random_ids` context is left alone.
 - For each renumbered ticket: a new helper (do not change `_relocate`, which `move` and `renumber PATH` share) moves the file to the new ID with the same slug in the same directory (active or archive), removes `provisional`, sets `moved_from` to the provisional ID (replacing any earlier value), and adds a History event `renumbered from <old ID>`.
@@ -33,6 +34,7 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - [ ] A second call returns no changes and makes no commit; off `main` and on a detached `HEAD` it raises `ChittyError` and changes nothing; a ticket existing only on another branch that mentions a provisional ID is left unchanged there and does not stop the run
 - [ ] With a `.git/hooks/pre-commit` that exits 1, the call raises `ChittyError` containing `autocommit failed`, and `git status --porcelain` and every ticket file's bytes equal what they were before; with a ticket file planted in `chitty/tasks/` under a valid name but unparseable content, it raises `ChittyError` naming that file before writing anything; with two files sharing one provisional ID, it raises naming both paths and writes nothing
 - [ ] The `rewrite_task` property passes and fails against a `NotImplementedError` stub; `make check` passes
+- [ ] A ticket in flight on `task-<n>` whose `main` copy mentions a provisional ID is left byte-identical on `main`, and the rest of the run succeeds
 
 ## History
 
@@ -51,3 +53,5 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - 2026-11-18T17:50:43Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:50:45Z lively-quartz-crane planning → todo
 - 2026-11-18T17:50:53Z lively-quartz-crane: changed description
+- 2026-11-18T17:53:03Z lively-quartz-crane: changed dependencies, description, acceptance criteria
+- 2026-11-18T17:53:03Z lively-quartz-crane todo → planning
