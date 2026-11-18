@@ -1,6 +1,7 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: review
+status: blocked
+owner: human
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -54,6 +55,15 @@ Review failed (tests): Some earlier coverage gaps remain unresolved; the landing
 
 Corrected landing-failure regression to fail when the reviewer-created marker exists; focused test and full make check pass.
 
+Review failed (tests): The previous review findings remain unresolved; complete the requested assertions and rerun the regressions against the original runner. No new findings in this pass.
+1: fail - As reported in the preceding review, `tests/test_run_errors_on_branch.py` reads worktree files rather than `git show task-1:<path>` for setup and agent errors; review setup omits its failure message and branch-head assertion. The todo check case in `tests/test_next.py` still omits the check phase note, failure message in the branch head, and exactly one main commit assertion. Add these assertions for each case. The preceding review ran all four cases against the original runner and reported four failures.
+2: fail - As reported in the preceding review, review setup saves `main_status` before running and asserts that stale value afterward; read main after the run. The preceding review reported the todo main-file assertion fails against the original runner with error instead of doing.
+3: pass - `git diff main...HEAD -- src/chitty/run.py` shows `_handle_check_failure` takes `branch_repo` and does not call `git.main_checkout`.
+4: pass - `test_run_check_failure_records_output_and_does_not_claim_or_start_agent` asserts the sole changed path and untracked output, and `test_run_check_failure_on_doing_ticket_starts_agent` covers the note and agent. The preceding review reported the former fails against the original runner with main status error; `make check` passed 650 tests.
+5: fail - The preceding review requested a marker-triggered check and branch-head note. The check still also fails on ticket status done, so it does not prove the marker causes failure; the note is read from the worktree, not the newest commit. Make the check depend on the marker alone and inspect the branch head. The preceding review reported the landing test fails against the original runner; `make check` passed 650 tests.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Runner errors are recorded on ticket branches. Completed branch-only regression coverage; landing check now fails from the reviewer-created marker as specified. Verification: focused landing test and make check (644 tests) pass. No follow-up.
@@ -95,3 +105,5 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-18T21:53:01Z brisk-ochre-wren review → doing
 - 2026-11-18T21:57:42Z mellow-ebony-toad: changed notes, summary
 - 2026-11-18T21:57:42Z mellow-ebony-toad doing → review
+- 2026-11-18T22:00:21Z witty-ebony-quail: changed owner, acceptance criteria, notes
+- 2026-11-18T22:00:21Z witty-ebony-quail review → blocked
