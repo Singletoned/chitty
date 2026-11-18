@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket in the main checkout before preparing its worktree
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -47,6 +47,12 @@ Review failed (tests): Strengthen the stale-history regression so it reproduces 
 
 Stale-history regression verified: running the focused test with run.py from the parent of the implementation commit fails with the original `latest committed version is on branch main` error before the fake agent starts. The fixed runner passes and records todo → doing on main.
 
+Reviewed: The previous stale-history regression finding is resolved; no new defects found.
+1: pass - `python -m unittest tests.test_run_claims_on_main -v` reports both tests OK; the prior review verified the ancestry assertion fails without the change, and the current test also fails against the parent runner.
+2: pass - The focused tests report OK; with `run.py` from `321c7647^`, the stale-history test fails with `latest committed version is on branch main`, resolving the earlier review finding.
+3: pass - The three focused `TestNext` setup failure, todo check failure and doing check failure tests report OK.
+4: pass - The diff contains both requested documentation replacements; `make check` reports 629 tests OK, Ruff clean and Pyright 0 errors.
+
 ## Summary
 
 Strengthened the stale-history regression with deterministic author and committer dates and assertions that the main checkout records the claim and the fake agent starts. Verified the regression fails with the pre-change runner and passes with the fix; `python -m unittest tests.test_run_claims_on_main -v` passes (2 tests), and `make check` passes (629 tests). `chitty fix` completes with existing warnings only. No follow-ups.
@@ -67,3 +73,5 @@ Strengthened the stale-history regression with deterministic author and committe
 - 2026-11-18T10:54:40Z friendly-dusky-wren review → doing
 - 2026-11-18T11:00:53Z vivid-hazel-wren: changed notes, summary; ticked acceptance criteria
 - 2026-11-18T11:00:53Z vivid-hazel-wren doing → review
+- 2026-11-18T11:03:34Z upbeat-teal-ibis: changed notes
+- 2026-11-18T11:03:34Z upbeat-teal-ibis review → done
