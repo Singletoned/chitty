@@ -35,12 +35,12 @@ Tests: Hypothesis properties in `tests/test_property_ticket_source.py`. `TASK-40
 
 - `graphs()` draws one of two shapes, so no property filters most inputs away. A chain `c0` to `cn` (n from 1 to 6), where `contains(a, b)` is true when `a`'s index is at least `b`'s. Or a fork: a shared chain `c0` to `ck` (k from 0 to 3), then two arms `a1` to `ai` and `b1` to `bj` (each 1 to 3 commits), where an arm commit contains the earlier commits of its arm and the whole shared chain, and nothing on the other arm. Both shapes add up to three unrelated commits `u0`, `u1`, `u2` that contain only themselves. It returns the commits, `contains`, and the structure the recipes need: for a chain, the commits in index order; for a fork, the shared chain and each arm, in order.
 - `task_ids()` draws a prefix of 1 to 5 letters `A` to `Z` and a number from 1 to 99.
-- `ref_maps(commits, with_candidates)` draws `local_tips` and `remote_tips` with values from `commits`. Candidate names, only when `with_candidates` is true: the local branch name and remote names such as `origin/<branch>`, with remote names of lowercase letters. Decoy names, derived from the drawn ID so they never equal a candidate (`<branch>` is the ticket branch name): local `<branch>0`, `feature/<branch>` and the upper-case ID; remote `origin/<branch>0`, `origin/x/<branch>`, and the key `<branch>` without a `/`, which is ignored. Unrelated names match no candidate and no decoy, such as `other` and `origin/other`.
+- `ref_maps(commits, with_candidates)` draws `local_tips` and `remote_tips` with values from `commits`. Candidate names, only when `with_candidates` is true: the local branch name and remote names such as `origin/<branch>`, with remote names of lowercase letters. Decoy names, derived from the drawn ID so they never equal a candidate (`<branch>` is the ticket branch name): local `<branch>0`, `feature/<branch>` and the upper-case ID; remote `origin/<branch>0`, `origin/x/<branch>`, and the key `<branch>` without a `/`, which is ignored. Unrelated names match no candidate and no decoy, such as `other` and `origin/other`. Decoy and unrelated names are drawn whatever `with_candidates` is.
 
 Properties for this ticket, each building inputs whose answer is known by construction:
 
 - Rule 1: any graph, maps over all commits, any `current_branch` (a candidate name, a decoy, `main_branch`, `None`, or a candidate name absent from `local_tips`), `main_tip` drawn or `None`, any `changed_on_both` set: `WORKING_TREE`.
-- Rules 2 and 3, all dropped: draw `main_tip` from the graph, then place candidates only on commits `main_tip` contains (in a fork, on the shared chain and, when `main_tip` is on an arm, on that arm, including at `main_tip` itself and strictly behind it), and decoys on any commit, including `u0` to `u2`: `WORKING_TREE` when `current_branch == main_branch`, else `main_branch`.
+- Rules 2 and 3, all dropped: draw `main_tip` from any commit of the graph, `u0` to `u2` included, then place candidates only on commits `main_tip` contains (in a fork, on the shared chain and, when `main_tip` is on an arm, on that arm, including at `main_tip` itself and strictly behind it), and decoys on any commit, including `u0` to `u2`: `WORKING_TREE` when `current_branch == main_branch`, else `main_branch`.
 - Rule 3, no candidates: maps from `ref_maps(commits, False)`, `main_tip` drawn or `None`: as above, except that with `main_tip` `None` and `current_branch != main_branch` it is `ChittyError` whose message contains `main_branch` quoted in backticks; with `main_tip` `None` and `current_branch == main_branch` (an unborn `main`), `WORKING_TREE`.
 
 Each property asserts a returned value or `ChittyError` specifically. Every name in an error message is quoted in backticks, and tests match the quoted names. The fixed-example tests for rules 4 to 6 and decoys already on this branch stay until `TASK-403` and `TASK-404` replace them.
@@ -75,6 +75,8 @@ Verification: `make check` passed (637 tests). The previously reviewed test-cove
 Planning 2026-11-18: split after two failed reviews and a worker who could not see how to generate the inputs. Rules 4 and 6 moved to `TASK-403`, rule 5 and decoys to `TASK-404`; this ticket keeps the implementation, the shared generators and rules 1 to 3. The Tests paragraph now says how to build inputs whose answer is known. The implementation was never faulted.
 
 Cold read 2026-11-18 outcomes: decoys derived from the drawn ID (fixed `task-50` collided with ticket 50), `graphs()` returns its structure with bounds, `ref_maps` can omit candidates, decoys include a remote key without `/`; removed the stale Plan.
+
+Second cold read 2026-11-18: about 20,000 probe cases per recipe agreed with `ticket_source.py`. Outcomes: decoys drawn whatever `with_candidates`; `main_tip` may be an unrelated commit.
 
 ## Summary
 
@@ -120,3 +122,4 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T21:32:06Z lively-quartz-crane planning → cold-read
 - 2026-11-18T21:35:09Z lively-quartz-crane: changed description, notes; wrote the plan
 - 2026-11-18T21:35:09Z lively-quartz-crane cold-read → planning
+- 2026-11-18T21:37:46Z lively-quartz-crane: changed description, notes
