@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: planning
+status: todo
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -52,3 +52,4 @@ Tests: the `check` failures are non-zero exits (not a missing command), and note
 - 2026-11-18T16:38:34Z lively-quartz-crane planning → todo
 - 2026-11-18T17:47:08Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T17:47:08Z lively-quartz-crane todo → planning
+- 2026-11-18T17:47:10Z lively-quartz-crane planning → todo
