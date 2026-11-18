@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: planning
+status: todo
 priority: high
 created: 2026-11-18
 ---
@@ -130,3 +130,4 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T20:49:48Z lively-quartz-crane todo → planning
 - 2026-11-18T20:51:08Z lively-quartz-crane: changed description, acceptance criteria, notes
 - 2026-11-18T20:51:10Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T20:51:14Z lively-quartz-crane planning → todo
