@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering and rewrite ID mentions in pure functions
-status: doing
+status: review
 depends_on:
   - TASK-380
 parent: TASK-376
@@ -58,3 +58,4 @@ Implemented pure per-prefix sequential ID allocation and simultaneous boundary-a
 - 2026-11-18T20:29:04Z sunny-dusky-falcon: wrote the plan
 - 2026-11-18T20:31:06Z sunny-dusky-falcon: changed notes
 - 2026-11-18T20:31:22Z sunny-dusky-falcon: changed summary; ticked acceptance criteria
+- 2026-11-18T20:31:24Z sunny-dusky-falcon doing → review
