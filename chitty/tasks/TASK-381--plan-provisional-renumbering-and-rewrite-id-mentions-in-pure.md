@@ -30,6 +30,10 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 
 Add the specified pure functions in src/chitty/renumbering.py. Validate duplicate and non-provisional inputs, then allocate per-prefix consecutive IDs in TaskId order. Implement ID rewriting with one combined regex and a single substitution pass. Add Hypothesis property coverage in tests/test_property_renumbering.py, run it against the stubs to verify failure, then implement and run make format and make check.
 
+## Notes
+
+The new property tests were run against the initial NotImplementedError stubs and failed there as expected; after implementation, all five focused tests pass. make check passes all 640 suites, though a pre-existing expected diagnostic from a chitty run test prints during the suite.
+
 ## History
 
 - 2026-11-18T16:20:09Z lively-quartz-crane → backlog
@@ -48,3 +52,4 @@ Add the specified pure functions in src/chitty/renumbering.py. Validate duplicat
 - 2026-11-18T16:36:42Z lively-quartz-crane planning → todo
 - 2026-11-18T20:28:05Z sunny-dusky-falcon todo → doing
 - 2026-11-18T20:29:04Z sunny-dusky-falcon: wrote the plan
+- 2026-11-18T20:31:06Z sunny-dusky-falcon: changed notes
