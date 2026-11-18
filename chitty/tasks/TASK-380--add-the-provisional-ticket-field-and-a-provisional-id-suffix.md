@@ -20,6 +20,12 @@ Decisions:
 
 Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for `provisional_suffix`, generate `draw` from `st.randoms()` (`lambda n: rng.randrange(n)`) and prefixes matching `[A-Z]+`; for the field, generate tickets with and without it and check parse, render and `with_field` round trips. Create both names first raising `NotImplementedError` (the field as a stub validator), so the tests fail on behaviour.
 
+## Acceptance Criteria
+
+- [ ] The `provisional_suffix` property passes: for generated draws and prefixes the suffix has `PROVISIONAL_LENGTH` characters, a first character from `PROVISIONAL_LETTERS`, only letters and digits from the two constants, and `TaskId.parse` gives it back as a `str`; it fails against a `NotImplementedError` stub
+- [ ] For generated tickets, rendering then parsing keeps `provisional` (`true` or absent), `with_field("provisional", None)` removes the line, and a ticket file with `provisional: yes`, `on`, `True` or `false` fails to parse with an error naming `provisional`; the test fails before the change
+- [ ] `tests/test_formatters.py` round trips a ticket with `provisional: true` through prettier and mdformat; `docs/plan/task-file.md` lists the field; `make check` passes
+
 ## History
 
 - 2026-11-18T16:20:07Z lively-quartz-crane → backlog
@@ -28,3 +34,4 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 - 2026-11-18T16:23:29Z lively-quartz-crane planning → cold-read
 - 2026-11-18T16:27:46Z lively-quartz-crane: changed title, labels, description, acceptance criteria
 - 2026-11-18T16:27:46Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:27:48Z lively-quartz-crane: changed acceptance criteria
