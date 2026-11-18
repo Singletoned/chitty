@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: cold-read
+status: planning
 labels:
   - bug
   - needs-minor
@@ -29,7 +29,7 @@ Decisions:
   2. Rebase with `git.rebase_onto` (`TASK-374`), which never uses `--autostash`.
   3. If the rebase completed: `git stash apply <ID>` (without `--index`: staged edits come back unstaged, accepted). On success, drop the entry. On any non-zero exit (a conflict, or `already exists, no checkout` when `main` added a path the stash holds untracked), reset the worktree to `HEAD` (`git reset --hard` and `git clean -fd`, which keeps ignored files), keep the entry, and add a note on the ticket through `branch_repo`: `Uncommitted changes from before the rebase did not apply cleanly; they are in stash <ID>.` Then carry on.
   4. If the rebase stopped on a conflict (any file): leave it stopped and the stash entry in place, skip `setup` and `check`, and start the agent (the work agent, or the repair agent for an `error` ticket). Write nothing to the ticket while the rebase is stopped. When a stash was made, the agent's prompt also says `Uncommitted changes from before the rebase are in stash <ID>; re-apply them after the rebase if they are still useful.`
-- `_agent_command` gains a keyword argument `directory: Path`, with no default, which it passes to `guide()` (`TASK-373` gives `guide()` its `directory` argument and has `_agent_command` pass `repo.root`; moved here from `TASK-373` 2026-11-18). Keep today's call before the claim, passing `repo.root`, so a bad `agent_command` still fails before anything is written; render it again after `_worktree` and the rebase, passing the worktree, and use that second rendering, so the prompt reflects the stopped rebase. `_agent_sessions` passes the worktree for continuations. Criterion 2 is the check that the worktree, not the main checkout, reaches `guide()`.
+- `_agent_command` gains a keyword-only argument (`*, directory: Path`), with no default, which it passes to `guide()` (`TASK-373` gives `guide()` its `directory` argument and has `_agent_command` pass `repo.root`; moved here from `TASK-373` 2026-11-18). Keep today's call before the claim, passing `repo.root`, so a bad `agent_command` still fails before anything is written; render it again after `_worktree` and the rebase, passing the worktree, and use that second rendering, so the prompt reflects the stopped rebase. `_agent_sessions` passes the worktree for continuations. Criterion 2 is the check that the worktree, not the main checkout, reaches `guide()`.
 - A `rebase_onto` error that is not a conflict is recorded as a ticket error on the branch (`_record_ticket_error(branch_repo, ...)`, phase `rebase`), whose note also says `Uncommitted changes from before the rebase are in stash <ID>.` when a stash was made; no agent starts.
 - A rebase still in progress at the start of a later run is refused by `_worktree`, as today, for a human.
 - Ctrl-C during the rebase runs `git rebase --abort` and raises `RunInterrupted("rebase")` (exit 130); the stash entry stays and the interrupt message names its ID. No test: it needs a signal mid-rebase (accepted).
@@ -41,7 +41,7 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 ## Acceptance Criteria
 
 - [ ] A work run on a `doing` ticket whose branch exists, with a new non-conflicting commit on `main`: afterwards `main` is an ancestor of the branch and `git rev-list main..task-<n>` lists only the branch's own commits, and a fake `check` command records `main`'s new commit in `git log` before the agent starts; this fails before the change
-- [ ] A work run on an `error` ticket whose rebase stops on a code conflict starts the repair agent with a rebase in progress and a prompt containing the rebase instructions after its first line (both recorded by the fake agent), and a fake `setup` and `check` record that they did not run
+- [ ] A work run whose rebase stops on a code conflict, once on a `doing` ticket and once on an `error` ticket, starts the work agent or the repair agent respectively with a rebase in progress and a prompt in which the body of `src/chitty/roles/rebase.md` directly follows the `Work only on Chitty ticket TASK-<n>.` line (both recorded by a fake agent whose command has `{prompt}`); a fake `setup` and `check` record that they did not run; this fails before the change
 - [ ] After `main` gains a commit touching another file, an unstaged edit to a tracked file, a staged edit and an untracked file are all present with the same content when the agent starts, the branch has been rebased, and `git stash list` has no entry left by the run; this fails before the change
 - [ ] When applying the stash conflicts (`main` changed the same lines as an uncommitted edit), the worktree matches `HEAD` when the agent starts, the stash entry exists and is named by ID in a note on the branch's ticket, and the agent starts; when the rebase stops on a conflict with a stash made, the prompt names the stash ID
 - [ ] A `rebase_onto` failure that is not a conflict, with an uncommitted file present, records `Runner error (rebase)` on the branch naming the stash ID, and starts no agent; `make check` passes
@@ -51,6 +51,8 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
 
 Planning 2026-11-18: took over giving `_agent_command` a `directory` from `TASK-373`, whose third cold read showed the runner half could not be tested there, because `_worktree` refuses a leftover rebase.
+
+Cold read 2026-11-18 (the `directory` bullet) outcomes: accepted a `doing` case alongside the `error` case in criterion 2, so both render paths are checked; the exact rebase text and its position; the fails-before clause; keyword-only `directory`.
 
 ## History
 
@@ -87,3 +89,5 @@ Planning 2026-11-18: took over giving `_agent_command` a `directory` from `TASK-
 - 2026-11-18T20:44:39Z lively-quartz-crane: changed description, notes
 - 2026-11-18T20:44:39Z lively-quartz-crane todo → planning
 - 2026-11-18T20:44:44Z lively-quartz-crane planning → cold-read
+- 2026-11-18T20:46:32Z lively-quartz-crane: changed description, acceptance criteria, notes
+- 2026-11-18T20:46:32Z lively-quartz-crane cold-read → planning
