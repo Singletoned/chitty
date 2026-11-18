@@ -3,7 +3,6 @@ title: Keep `chitty fix` to ticket files read from this checkout
 status: cold-read
 depends_on:
   - TASK-378
-  - TASK-398
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -12,7 +11,7 @@ created: 2026-11-18
 
 After `TASK-378`, a ticket in flight is read from its branch, but `chitty fix` (`fix` in `src/chitty/check.py`) still scans and rewrites this checkout's ticket files. In the main checkout it can rewrite `main`'s stale copy of an in-flight ticket, a write on `main` for a ticket with a branch, which the new model forbids (`docs/plan/ticket-state.md`, on branch `plan/ticket-state` until it lands on `main`) and which `TASK-377` then reports as changed on both sides.
 
-Starts after `TASK-378` and `TASK-398` (which gives `fix` its `paths: Sequence[Path] | None` signature) land.
+Starts after `TASK-378` lands.
 
 Decisions:
 
@@ -39,3 +38,4 @@ Tests: real-Git tests in a new `tests/test_fix_sources.py`, inheriting `CliTestC
 - 2026-11-18T17:55:48Z lively-quartz-crane: changed title, dependencies, description, acceptance criteria
 - 2026-11-18T17:55:48Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:56:16Z lively-quartz-crane planning → cold-read
+- 2026-11-18T17:58:19Z lively-quartz-crane: changed dependencies, description
