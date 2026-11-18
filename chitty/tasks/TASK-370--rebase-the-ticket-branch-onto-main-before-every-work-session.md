@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: planning
+status: todo
 labels:
   - bug
   - needs-minor
@@ -56,3 +56,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 - 2026-11-18T09:52:37Z witty-ginger-falcon planning → cold-read
 - 2026-11-18T09:54:24Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:54:26Z witty-ginger-falcon: changed dependencies, description, acceptance criteria
+- 2026-11-18T09:54:27Z witty-ginger-falcon planning → todo
