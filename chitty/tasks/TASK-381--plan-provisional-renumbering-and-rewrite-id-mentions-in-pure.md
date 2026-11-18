@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering and rewrite ID mentions in pure functions
-status: review
+status: doing
 depends_on:
   - TASK-380
 parent: TASK-376
@@ -22,8 +22,8 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 
 ## Acceptance Criteria
 
-- [x] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
-- [x] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
+- [ ] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
+- [ ] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
 - [x] `make check` passes
 
 ## Plan
@@ -33,6 +33,11 @@ Add the specified pure functions in src/chitty/renumbering.py. Validate duplicat
 ## Notes
 
 The new property tests were run against the initial NotImplementedError stubs and failed there as expected; after implementation, all five focused tests pass. make check passes all 640 suites, though a pre-existing expected diagnostic from a chitty run test prints during the suite.
+
+Review failed (tests): Expand the properties to exercise the required input and mention cases.
+1: fail - Newly found: tests/test_property_renumbering.py always supplies sorted IDs for one prefix at a time, so it does not exercise sorting unsorted input or independent allocation across prefixes. Generate mixed-prefix, shuffled input and check each allocation. In-process NotImplementedError stubs produced 5 errors across the suite.
+2: fail - Newly found: the mixed-case suffix example TASK-k7q2mx is never generated: both purported case variants call lower() on the entire ID. Generate an uppercase prefix with a lowercase suffix and assert it remains unchanged. The tests also only use one mapping entry, so generate multiple disjoint mappings and mentions to exercise replacement of each ID in one pass. In-process NotImplementedError stubs produced 5 errors across the suite.
+3: pass - make check exited 0, with 640 tests OK, ruff and pyright passing.
 
 ## Summary
 
@@ -59,3 +64,5 @@ Implemented pure per-prefix sequential ID allocation and simultaneous boundary-a
 - 2026-11-18T20:31:06Z sunny-dusky-falcon: changed notes
 - 2026-11-18T20:31:22Z sunny-dusky-falcon: changed summary; ticked acceptance criteria
 - 2026-11-18T20:31:24Z sunny-dusky-falcon doing → review
+- 2026-11-18T20:33:44Z open-amber-puffin: changed acceptance criteria, notes
+- 2026-11-18T20:33:44Z open-amber-puffin review → doing
