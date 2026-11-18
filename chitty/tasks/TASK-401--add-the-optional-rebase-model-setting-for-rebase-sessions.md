@@ -1,6 +1,6 @@
 ---
 title: Add the optional `rebase_model` setting for rebase sessions
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -20,7 +20,7 @@ Tests: in `tests/test_run_model_defaults.py`, which tests the existing model set
 ## Acceptance Criteria
 
 - [x] `_model_arguments` called with mode `rebase` returns `("--model", <value>)` when `rebase_model` is set and `()` when unset or when the command already has `--model`; modes `work` and `review` behave as before
-- [ ] `chitty init` writes the commented `rebase_model` line directly after `review_model`, and a second `chitty init` does not add it again (a new test in `tests/test_run_model_defaults.py` or beside the existing init tests); `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
+- [x] `chitty init` writes the commented `rebase_model` line directly after `review_model`, and a second `chitty init` does not add it again (a new test in `tests/test_run_model_defaults.py` or beside the existing init tests); `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
 - [x] `docs/plan/config.md` and `docs/plan/next-action-and-runner.md` mention `rebase_model`; `make check` passes
 
 ## Plan
@@ -36,9 +36,11 @@ Review failed (tests): Newly discovered upgrade case: insert the new comment imm
 
 Implementation attempt: added an upgrade adjacency regression test (confirmed it fails before the change) and adjusted init insertion. The focused test still fails: upgrade does not insert the comment adjacent to the active review_model line. Root cause remains unresolved; no full check run. Preserve this partial work for follow-up.
 
+Resolved the upgrade adjacency case: init now inserts the missing rebase_model comment immediately after the active review_model line and adjusts the subsequent insertion offset. The focused model-default tests pass, including repeated init idempotence and pyproject configuration. Verification: make check (678 tests, OK); make format; chitty fix on the ticket file (warning only for existing plan markdown). The earlier failing-test note records the pre-fix discovery.
+
 ## Summary
 
-Implemented optional rebase_model configuration, init template support, mode-specific runner selection, validation, and documentation. Verification: focused tests and make check pass. No follow-up work.
+Implemented and verified optional rebase_model configuration, runner selection, validation, init template insertion/idempotence including upgrade adjacency, and documentation. Verification: make check (678 tests, OK), make format, and chitty fix on the ticket file. No follow-ups.
 
 ## History
 
@@ -55,3 +57,5 @@ Implemented optional rebase_model configuration, init template support, mode-spe
 - 2026-11-18T23:25:53Z open-ochre-marten: changed acceptance criteria, notes
 - 2026-11-18T23:25:53Z open-ochre-marten review → doing
 - 2026-11-18T23:29:18Z able-coral-zander: changed notes
+- 2026-11-18T23:33:58Z able-coral-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-18T23:33:58Z able-coral-zander doing → review
