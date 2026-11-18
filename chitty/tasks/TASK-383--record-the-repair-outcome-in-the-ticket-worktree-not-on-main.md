@@ -26,6 +26,10 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_repair_on_bran
 - [ ] Regression guard: the existing `RepairError` cases in `tests/test_repair_requires_work.py` (invalid status after repair, `review` with only ticket-file changes) still pass
 - [ ] A repair run on an `error` ticket with no branch creates `task-<n>` from `main`, records the outcome on it, and leaves `main` unchanged; `make check` passes
 
+## Plan
+
+Add real-Git fake-agent runner tests for repair outcomes on an existing branch and an unbranched error ticket. Verify main remains unchanged, branch ticket state/notes/owner, and absence of an extra review commit. Then change _run_ticket to write the blocked runner note through a Repo rooted at the worktree and remove the main checkout edit. Run focused tests against old behavior first, then make check, format, update ticket handoff and commit implementation.
+
 ## History
 
 - 2026-11-18T16:20:12Z lively-quartz-crane → backlog
@@ -40,3 +44,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_repair_on_bran
 - 2026-11-18T16:31:17Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:31:29Z lively-quartz-crane planning → todo
 - 2026-11-18T22:12:26Z vivid-russet-raven todo → doing
+- 2026-11-18T22:13:09Z vivid-russet-raven: wrote the plan
