@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-398
@@ -38,3 +38,4 @@ Tests: real-Git tests in a new `tests/test_fix_sources.py`, inheriting `CliTestC
 - 2026-11-18T17:51:24Z lively-quartz-crane planning → cold-read
 - 2026-11-18T17:55:48Z lively-quartz-crane: changed title, dependencies, description, acceptance criteria
 - 2026-11-18T17:55:48Z lively-quartz-crane cold-read → planning
+- 2026-11-18T17:56:16Z lively-quartz-crane planning → cold-read
