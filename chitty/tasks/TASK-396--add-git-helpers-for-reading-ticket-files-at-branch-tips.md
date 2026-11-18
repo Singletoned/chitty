@@ -1,6 +1,6 @@
 ---
 title: Add Git helpers for reading ticket files at branch tips
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -74,3 +74,4 @@ Expanded the files_at Hypothesis property to generate varying active/archive pat
 - 2026-11-18T23:03:39Z youthful-teal-dormouse: changed acceptance criteria, notes
 - 2026-11-18T23:03:39Z youthful-teal-dormouse review → doing
 - 2026-11-18T23:08:24Z vivid-maroon-crane: changed summary
+- 2026-11-18T23:08:26Z vivid-maroon-crane doing → review
