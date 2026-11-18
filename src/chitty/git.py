@@ -545,6 +545,11 @@ def worktree_for_branch(root: Path, branch: str) -> Path | None:
     return None
 
 
+def prune_worktrees(root: Path) -> None:
+    """Forget linked worktrees whose directories were removed outside Git."""
+    _git(root, "worktree", "prune")
+
+
 def local_branches(root: Path) -> list[str]:
     """Return local branch names, excluding remote refs."""
     output = _git(root, "for-each-ref", "--format=%(refname:short)", "refs/heads")

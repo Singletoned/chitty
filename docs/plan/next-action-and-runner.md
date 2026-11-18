@@ -43,6 +43,12 @@
   `agent_command` is required unless `--agent NAME` selects a command from
   `[agent_commands]`. The error names the config file it checked and includes
   an example for each missing setting.
+- At the start of every run, under the landing lock and after pruning stale
+  worktree registrations, remove local ticket branches whose tips are contained
+  by `main_branch`; this precedes pending landings. A merged branch is kept if
+  its run lock is held, its worktree is dirty or has a merge/rebase in progress,
+  it is the main checkout, or worktree/branch removal fails. Emit
+  `removed merged branch <b>` or `kept merged branch <b>: <reason>` to stderr.
 - A plain run first lands any non-archived `done` ticket that still has a
   branch named for its ID, in ID order. It lands one, then exits 0; the next
   run refreshes setup first. `--ticket` skips this.

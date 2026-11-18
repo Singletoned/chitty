@@ -176,6 +176,9 @@ def run(
             raise ChittyError("`chitty run` requires a project name after setup refresh")
         context["project"] = project
 
+        with locks.landing_lock(main_repo.root):
+            _remove_merged_branches(main_repo)
+
         if ticket is None:
             landed = _land_pending(main_repo)
             if landed is not None:
@@ -339,6 +342,45 @@ def _signal_process(pid: int, sig: signal.Signals) -> None:
         os.kill(pid, sig)
     except ProcessLookupError:
         pass
+
+
+def _remove_merged_branches(main_repo: Repo) -> None:
+    """Remove clean linked worktrees for local ticket branches contained by main."""
+    root = main_repo.root
+    # A missing worktree directory leaves stale metadata; prune before looking up branches.
+    git.prune_worktrees(root)
+    tasks = {str(task.id).lower(): task.id for task in main_repo.all_tasks()}
+    prefixes = tuple(f"{context.prefix.lower()}-" for context in main_repo.config.contexts.values())
+    main_tip = main_repo.config.main_branch
+    for branch in git.local_branches(root):
+        if not branch.startswith(prefixes):
+            continue
+        task_id = tasks.get(branch)
+        if task_id is None or not git.is_ancestor(root, branch, main_tip):
+            continue
+        worktree = git.worktree_for_branch(root, branch)
+        reason = None
+        if locks.is_locked(root, str(task_id)):
+            reason = "run lock is held"
+        elif worktree is not None and worktree.resolve() == root.resolve():
+            reason = "is the main checkout"
+        elif worktree is not None and git.uncommitted_paths(worktree):
+            reason = "worktree has uncommitted changes"
+        elif worktree is not None and git.rebase_in_progress(worktree):
+            reason = "rebase in progress"
+        elif worktree is not None and git.merge_in_progress(worktree):
+            reason = "merge in progress"
+        if reason:
+            print(f"kept merged branch {branch}: {reason}", file=sys.stderr)
+            continue
+        try:
+            if worktree is not None:
+                git.remove_worktree(root, worktree)
+            git.delete_branch(root, branch)
+        except ChittyError as error:
+            print(f"kept merged branch {branch}: {error}", file=sys.stderr)
+            continue
+        print(f"removed merged branch {branch}", file=sys.stderr)
 
 
 def _land_pending(main_repo: Repo) -> RunResult | None:
