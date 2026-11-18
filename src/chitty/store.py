@@ -658,17 +658,6 @@ class Repo:
             for p in self._files(context, archived)
             if isinstance(number := ids.parse_filename(p.name)[0].number, int)
         ]
-        active_directory = context.directory.relative_to(self.root)
-        archive_directory = context.archive_directory.relative_to(self.root)
-        for file in self._history():
-            if file.path.parent not in (active_directory, archive_directory):
-                continue
-            try:
-                task_id, _ = ids.parse_filename(file.path.name)
-            except ids.IdError:
-                continue
-            if task_id.prefix == context.prefix and isinstance(task_id.number, int):
-                numbers.append(task_id.number)
         if self.config.archive == "delete":
             numbers += self._deleted_numbers(context)
         if self.config.contexts[context.name].random_ids:
@@ -680,6 +669,8 @@ class Repo:
                 f"no unused random number in context {context.name!r} "
                 f"after {RANDOM_ID_ATTEMPTS} attempts"
             )
+        if git.is_repository(self.root) and self._current_branch() != self._main_branch():
+            raise ChittyError("sequential ticket numbers can only be allocated on main")
         return ids.next_number(numbers)
 
     def archive(self, task_id: TaskId) -> Change:
