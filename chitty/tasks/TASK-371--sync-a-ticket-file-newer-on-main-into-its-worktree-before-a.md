@@ -1,6 +1,6 @@
 ---
 title: Sync a ticket file newer on `main` into its worktree before a work session
-status: todo
+status: planning
 labels:
   - bug
 priority: high
@@ -45,3 +45,4 @@ Tests:
 - 2026-11-18T09:28:15Z witty-ginger-falcon: changed description, acceptance criteria
 - 2026-11-18T09:28:19Z witty-ginger-falcon planning → todo
 - 2026-11-18T09:28:25Z witty-ginger-falcon: changed title
+- 2026-11-18T09:32:32Z witty-ginger-falcon todo → planning
