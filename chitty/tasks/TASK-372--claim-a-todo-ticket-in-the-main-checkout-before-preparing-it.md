@@ -35,6 +35,10 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_claims_on_main
 
 In `src/chitty/run.py`, capture the selected status and, for work-mode `todo`, claim through `main_repo.edit` before preparing the worktree. Remove the worktree claim and pass the selected status through check handling so failure decisions retain the pre-claim behavior. Add real-Git fake-agent regression coverage in `tests/test_run_claims_on_main.py`, including main ancestry, stale-ticket commits, and todo/doing setup/check outcomes. Update the two runner descriptions in `docs/plan/next-action-and-runner.md`; run focused tests and `make check`.
 
+## Notes
+
+The claim now commits on main before worktree preparation, so setup/check failures report the post-claim transition `doing → error`; the existing runner suite has assertions for the former `todo → error` behavior. Full `make check` currently has 27 failures, mostly expectations and fake-agent scripts that assume a todo-status worktree. New real-Git tests cover main ancestry and a newer main ticket commit.
+
 ## History
 
 - 2026-11-18T09:50:52Z witty-ginger-falcon → planning
@@ -44,3 +48,4 @@ In `src/chitty/run.py`, capture the selected status and, for work-mode `todo`, c
 - 2026-11-18T09:54:56Z witty-ginger-falcon planning → todo
 - 2026-11-18T10:36:15Z eager-teal-crane todo → doing
 - 2026-11-18T10:36:35Z eager-teal-crane: wrote the plan
+- 2026-11-18T10:41:09Z eager-teal-crane: changed notes
