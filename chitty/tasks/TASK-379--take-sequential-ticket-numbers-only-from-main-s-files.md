@@ -1,6 +1,6 @@
 ---
 title: Take sequential ticket numbers only from main's files
-status: todo
+status: doing
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -55,3 +55,4 @@ Tests: real-Git tests in a new `tests/test_next_number_main.py`, inheriting `Cli
 - 2026-11-18T17:47:43Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:47:43Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:47:45Z lively-quartz-crane planning → todo
+- 2026-11-18T22:51:32Z zesty-hazel-ibis todo → doing
