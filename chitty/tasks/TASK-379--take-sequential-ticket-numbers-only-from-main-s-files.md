@@ -1,6 +1,6 @@
 ---
 title: Take sequential ticket numbers only from main's files
-status: planning
+status: cold-read
 depends_on:
   - TASK-389
 parent: TASK-376
@@ -37,3 +37,4 @@ Tests: real-Git tests through the CLI in a new `tests/test_next_number_main.py`,
 - 2026-11-18T16:27:09Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:27:09Z lively-quartz-crane backlog → planning
 - 2026-11-18T16:28:40Z lively-quartz-crane: changed dependencies, description
+- 2026-11-18T16:40:30Z lively-quartz-crane planning → cold-read
