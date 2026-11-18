@@ -84,7 +84,10 @@ class TestRunClaimsOnMain(CliTestCase):
             "--quiet",
             "-m",
             "branch ticket edit",
-            env={"GIT_COMMITTER_DATE": "2026-11-18T10:00:00+00:00"},
+            env={
+                "GIT_AUTHOR_DATE": "2030-01-01T10:00:00+00:00",
+                "GIT_COMMITTER_DATE": "2030-01-01T10:00:00+00:00",
+            },
         )
         self.git("switch", "--quiet", "main")
         task = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
@@ -95,7 +98,10 @@ class TestRunClaimsOnMain(CliTestCase):
             "--quiet",
             "-m",
             "newer main ticket edit",
-            env={"GIT_COMMITTER_DATE": "2026-11-18T10:01:00+00:00"},
+            env={
+                "GIT_AUTHOR_DATE": "2031-01-01T10:00:00+00:00",
+                "GIT_COMMITTER_DATE": "2031-01-01T10:00:00+00:00",
+            },
         )
         self.git("switch", "--quiet", "task-1")
         self.git("switch", "--quiet", "main")
@@ -104,4 +110,7 @@ class TestRunClaimsOnMain(CliTestCase):
 
         self.assertIn("doing → error", result.stdout)
         self.assertTrue((self.logs / "agent").exists())
+        self.assertIn("Branch edit.", (self.logs / "agent").read_text())
+        main_ticket = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
+        self.assertIn("todo → doing", main_ticket.read_text())
         self.assertNotIn("latest committed version", result.stderr)
