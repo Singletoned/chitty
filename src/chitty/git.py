@@ -347,6 +347,12 @@ def has_local_branch(root: Path, branch: str) -> bool:
     return branch in branches.splitlines()
 
 
+def has_branch_ref(root: Path, branch: str) -> bool:
+    """Whether a local or remote branch ref exists; Git errors are surfaced."""
+    refs = _git(root, "for-each-ref", "--format=%(refname)", "refs/heads", "refs/remotes")
+    return any(ref.endswith(f"/{branch}") for ref in refs.splitlines())
+
+
 def dirty_paths(root: Path, directory: Path) -> set[Path]:
     """Return changed or untracked paths below ``directory`` in this worktree."""
     try:
