@@ -32,6 +32,13 @@ Decisions:
 
 Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_review_merge.py`, with `git init -b main`. The fake agent records what it saw when it started (`git status`, `git.rebase_in_progress`, its prompt) in a marker file. No property: real Git and runner processes over the fixed cases in the criteria.
 
+## Acceptance Criteria
+
+- [ ] A work run on a `doing` ticket whose branch exists, with a new non-conflicting commit on `main`: afterwards `main` is an ancestor of the branch and `git rev-list main..task-<n>` lists only the branch's own commits, and a fake `check` command records `main`'s new commit in `git log` before the agent starts; this fails before the change
+- [ ] A work run on an `error` ticket whose rebase stops on a code conflict starts the repair agent with a rebase in progress and a prompt starting with the rebase instructions (both recorded by the fake agent), and a fake `setup` and `check` record that they did not run
+- [ ] An uncommitted change to a tracked file and an untracked file, neither touched by `main`, are back in the worktree, uncommitted, when the agent starts
+- [ ] When restoring the stash conflicts (`main` changed the same lines as an uncommitted edit), the ticket moves to `error` on the branch with a `Runner error (rebase)` note saying the work is in the stash, the stash entry exists, and no agent starts; `make check` passes
+
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
@@ -56,3 +63,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T15:47:42Z witty-ginger-falcon todo → planning
 - 2026-11-18T17:57:44Z lively-quartz-crane: changed dependencies, description
 - 2026-11-18T17:57:46Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-18T17:57:48Z lively-quartz-crane: changed acceptance criteria
