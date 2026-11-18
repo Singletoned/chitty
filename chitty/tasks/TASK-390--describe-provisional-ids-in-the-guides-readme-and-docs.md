@@ -6,13 +6,14 @@ labels:
 owner: untestable
 depends_on:
   - TASK-389
+  - TASK-391
 parent: TASK-376
 created: 2026-11-18
 ---
 
 ## Description
 
-After `TASK-389`, plain `chitty add` off `main` files the ticket in the default context with a provisional ID (`TASK-K7Q2M`, marked `provisional: true`), and `chitty renumber` with no argument gives provisional tickets sequential numbers on `main` (`TASK-381`). The text that still describes the old rule (worktree adds filed as `BACKLOG`, numbers from every branch) must change. Rule source: `docs/plan/ticket-state.md`, "Planning decisions".
+After `TASK-389`, plain `chitty add` off `main` files the ticket in the default context with a provisional ID (`TASK-K7Q2M`, marked `provisional: true`), and `chitty renumber` with no argument gives provisional tickets sequential numbers on `main` (`TASK-391`). The text that still describes the old rule (worktree adds filed as `BACKLOG`, numbers from every branch) must change. Rule source: `docs/plan/ticket-state.md`, "Planning decisions".
 
 Change:
 
@@ -22,10 +23,11 @@ Change:
 - `src/chitty/cli.py` help for `renumber` and `move` ("gives the next number"), and `docs/plan/cli.md` for both.
 - `docs/plan/principles.md` ("IDs are sequential"): sequential on `main`, provisional elsewhere.
 
-Starts after `TASK-389`; the `renumber` wording after `TASK-381` if that has landed, otherwise leave `renumber` with no argument out.
+Starts after `TASK-389`; the `renumber` wording after `TASK-391` if that has landed, otherwise leave `renumber` with no argument out.
 
 ## History
 
 - 2026-11-18T16:28:12Z lively-quartz-crane → backlog
 - 2026-11-18T16:28:55Z lively-quartz-crane: changed labels, owner, dependencies, description
 - 2026-11-18T16:28:55Z lively-quartz-crane backlog → todo
+- 2026-11-18T16:34:52Z lively-quartz-crane: changed dependencies, description
