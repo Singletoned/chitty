@@ -29,7 +29,7 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`; gene
 
 - [ ] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above the highest used number of that prefix (or from 1), no new ID is in `used`, and every input ID appears once; it fails against the stub
 - [ ] `replace_ids` property: every bounded mention of an old ID becomes its new ID, text with no bounded mention is unchanged (including look-alikes and lower-case forms), and applying it twice equals applying it once; it fails against the stub
-- [ ] On `main`, with an active and an archived provisional ticket and another ticket that lists one in `depends_on` and mentions both in its Description, `chitty renumber` gives both sequential IDs, renames the files, removes `provisional`, sets `moved_from`, rewrites the other ticket'"'"'s `depends_on` and Description, and makes one commit; running it again prints `nothing to renumber` and makes no commit
+- [ ] On `main`, with an active and an archived provisional ticket and another ticket that lists one in `depends_on` and mentions both in its Description, `chitty renumber` gives both sequential IDs, renames the files, removes `provisional`, sets `moved_from`, rewrites the other ticket's `depends_on` and Description, and makes one commit; running it again prints `nothing to renumber` and makes no commit
 - [ ] Off `main`, `chitty renumber` changes no file, makes no commit and exits 0; `chitty renumber PATH` for two files sharing an ID behaves as before; `make check` passes
 
 ## History
@@ -39,3 +39,4 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`; gene
 - 2026-11-18T16:28:42Z lively-quartz-crane: changed dependencies
 - 2026-11-18T16:30:08Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:30:08Z lively-quartz-crane backlog → planning
+- 2026-11-18T16:30:16Z lively-quartz-crane: changed acceptance criteria
