@@ -1,6 +1,6 @@
 ---
 title: Stop autocommit repairing every ticket when it writes no ticket file
-status: todo
+status: doing
 labels:
   - bug
 parent: TASK-376
@@ -32,3 +32,4 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 - 2026-11-18T17:58:15Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:58:15Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:58:17Z lively-quartz-crane planning → todo
+- 2026-11-18T23:09:38Z open-quartz-jay todo → doing
