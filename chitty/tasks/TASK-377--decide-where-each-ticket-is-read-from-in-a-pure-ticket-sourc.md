@@ -44,6 +44,10 @@ Tests: Hypothesis properties in a new `tests/test_property_ticket_source.py`. Ge
 
 Add pure ticket_source module implementing specified candidate filtering, ancestry selection, conflicts and changed-on-both guard; add focused Hypothesis property tests for chains/forks and all rules; run stub tests first and record failure, then implementation and make check.
 
+## Notes
+
+Verified against the NotImplementedError stub: unittest tests.test_property_ticket_source fails all six tests (six errors). Implementation then passed make check (635 tests). Initial check exposed a fallback property fixture error; corrected it to use a candidate at the main tip.
+
 ## History
 
 - 2026-11-18T16:20:02Z lively-quartz-crane → backlog
@@ -65,3 +69,4 @@ Add pure ticket_source module implementing specified candidate filtering, ancest
 - 2026-11-18T17:53:59Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T20:01:15Z jolly-dusky-badger todo → doing
 - 2026-11-18T20:02:17Z jolly-dusky-badger: wrote the plan
+- 2026-11-18T20:05:29Z jolly-dusky-badger: changed notes
