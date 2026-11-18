@@ -604,7 +604,8 @@ def _format(stored: StoredTask) -> str:
         if isinstance(value, list):
             lines.append(f"{key}: {', '.join(cast(list[str], value))}")
         elif value is not None:
-            lines.append(f"{key}: {value}")
+            rendered = "true" if key == "provisional" else value
+            lines.append(f"{key}: {rendered}")
     lines.append(f"path: {stored.path}")
     if stored.branch:
         lines.append(f"branch: {stored.branch}")
