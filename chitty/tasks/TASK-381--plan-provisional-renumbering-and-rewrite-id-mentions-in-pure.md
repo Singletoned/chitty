@@ -23,7 +23,7 @@ Tests: Hypothesis properties in a new `tests/test_property_renumbering.py`. Gene
 ## Acceptance Criteria
 
 - [x] `plan_renumbering` property: for generated inputs, each prefix's provisional IDs map, in sorted `TaskId` order, onto exactly the consecutive numbers above that prefix's highest used number (or from 1), no new ID is in `used`, and the mapping has one entry per input ID; duplicate or non-provisional input raises `ChittyError`; it fails against the stub
-- [ ] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
+- [x] `replace_ids` property: in generated text every inserted mention (the form in the Description) becomes its new ID, every look-alike and non-exact-case form is left unchanged, text with no mention is unchanged, and applying it twice equals applying it once; it fails against the stub
 - [x] `make check` passes
 
 ## Plan
@@ -122,9 +122,11 @@ make: *** [check] Error 1
 
 ```
 
+Fixed remaining mixed-case coverage to construct an uppercase-prefix/lowercase-suffix look-alike. Disabled Hypothesis timing deadlines on duplicate/numeric error property: parallel load caused an occasional >200ms first run (309ms) followed by fast runs. Focused tests pass; make check passes all 641 tests, ruff and pyright.
+
 ## Summary
 
-Expanded property coverage for mixed-prefix shuffled allocation and simultaneous rewriting of multiple IDs, including the TASK-k7q2mx-style look-alike. Verification: focused renumbering tests, make format, and make check pass. No implementation or caller changes.
+Completed the requested renumbering property coverage, including mixed-case look-alikes; no implementation or caller changes. Verification: focused tests and make check (641 tests, ruff, pyright) pass. Follow-up: none.
 
 ## History
 
@@ -155,3 +157,4 @@ Expanded property coverage for mixed-prefix shuffled allocation and simultaneous
 - 2026-11-18T21:35:36Z witty-bronze-dormouse: changed acceptance criteria, notes
 - 2026-11-18T21:35:36Z witty-bronze-dormouse review → doing
 - 2026-11-18T21:51:36Z tidy-maroon-kestrel: changed notes
+- 2026-11-18T21:52:51Z tidy-maroon-kestrel: changed notes, summary; ticked acceptance criteria
