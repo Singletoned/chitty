@@ -54,9 +54,11 @@ Review failed (tests): Add the specified case-directed properties; the current t
 3: fail - The divergence test does not include a third candidate dropped by main or check its absence from the message. The decoy test is one fixed successful example, not a property comparing returns and error messages across both shapes. Add the specified generated maps, IDs, decoys and conflict cases.
 4: pass - The existing note records all six properties erroring against the stub; `make check` printed `Ran 635 tests` and `OK` on this review.
 
+Expanded the focused tests across generated IDs and both graph shapes; `make check` passed (637 tests). The first focused run exposed two incorrect test assumptions; corrected them before the passing full check.
+
 ## Summary
 
-Implemented pure authoritative ticket-ref selection with branch candidate filtering, ancestry-based resolution, divergence/change conflict errors, and provisional/main handling. Added Hypothesis-backed unittest coverage for provisional, fallback, descendant selection, divergence, changed-on-both, and decoys. Verified stub failure: all six tests errored against NotImplementedError; make check passed (635 tests). Follow-up: none.
+Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, and decoy refs. Verification: `make check` passed (637 tests). Follow-up: none.
 
 ## History
 
@@ -85,3 +87,4 @@ Implemented pure authoritative ticket-ref selection with branch candidate filter
 - 2026-11-18T20:07:15Z witty-quartz-toad: changed acceptance criteria, notes
 - 2026-11-18T20:07:15Z witty-quartz-toad review → doing
 - 2026-11-18T20:11:54Z youthful-teal-eel: wrote the plan
+- 2026-11-18T20:14:05Z youthful-teal-eel: changed notes, summary
