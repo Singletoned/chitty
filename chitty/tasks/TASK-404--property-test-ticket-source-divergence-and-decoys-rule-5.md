@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: planning
+status: cold-read
 depends_on:
   - TASK-377
   - TASK-403
@@ -30,3 +30,4 @@ The code already exists, so evidence that the tests catch a wrong implementation
 - 2026-11-18T21:31:15Z lively-quartz-crane → backlog
 - 2026-11-18T21:31:19Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-18T21:32:18Z lively-quartz-crane backlog → planning
+- 2026-11-18T21:32:20Z lively-quartz-crane planning → cold-read
