@@ -30,17 +30,18 @@ class TestBranchTipFiles(RepoTestCase):
 
     def test_branch_tips_keep_full_refs_distinct(self):
         (self.root / "base").write_text("base")
-        main = self.commit("base")
+        self.commit("base")
         self.git("branch", "origin/task-5")
         self.git("checkout", "-b", "task-5")
         (self.root / "different").write_text("different")
         remote = self.commit("different tip")
-        self.git("update-ref", "refs/remotes/origin/task-5", main)
+        local = self.git("rev-parse", "refs/heads/origin/task-5").strip()
+        self.git("update-ref", "refs/remotes/origin/task-5", remote)
+        self.git("symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/task-5")
         tips = git.branch_tips(self.root)
-        self.assertEqual(tips["refs/heads/origin/task-5"], main)
-        self.assertEqual(tips["refs/remotes/origin/task-5"], main)
-        self.assertNotEqual(tips["refs/heads/task-5"], tips["refs/remotes/origin/task-5"])
-        self.assertEqual(tips["refs/heads/task-5"], remote)
+        self.assertEqual(tips["refs/heads/origin/task-5"], local)
+        self.assertEqual(tips["refs/remotes/origin/task-5"], remote)
+        self.assertNotEqual(tips["refs/heads/origin/task-5"], tips["refs/remotes/origin/task-5"])
         self.assertNotIn("refs/remotes/origin/HEAD", tips)
 
     def test_ref_resolution_and_ancestry(self):
@@ -54,20 +55,33 @@ class TestBranchTipFiles(RepoTestCase):
         self.assertFalse(git.is_ancestor(self.root, second, first))
         self.assertEqual(git.ref_commit(self.root, "worker"), second)
         self.assertIsNone(git.ref_commit(self.root, "missing"))
+        self.git("checkout", "--orphan", "unborn")
+        self.assertIsNone(git.ref_commit(self.root, "unborn"))
+        self.git("checkout", "worker")
         self.git("tag", "-a", "annotated", "-m", "tag")
         self.assertEqual(git.ref_commit(self.root, "annotated"), second)
         with self.assertRaises(ChittyError):
             git.is_ancestor(self.root, "unknown", second)
 
     @settings(max_examples=8, deadline=None)
-    @given(st.text(alphabet="abcé", min_size=1, max_size=12))
-    def test_files_at_preserves_odd_paths_and_content(self, content):
-        paths = [
-            Path('chitty/tasks/a"b\tc\ndé[x].md'),
-            Path('chitty/tasks/archive/z"y\tw\nvé[x].md'),
-        ]
+    @given(
+        st.dictionaries(
+            st.sampled_from(
+                (
+                    'a"b\tc\ndé[x].md',
+                    'z"y\tw\nvé[x].md',
+                )
+            ),
+            st.text(alphabet="abcé", min_size=1, max_size=12),
+            min_size=2,
+            max_size=2,
+        )
+    )
+    def test_files_at_preserves_odd_paths_and_content(self, tree):
         expected = {}
-        for path in paths:
+        for filename, content in tree.items():
+            directory = "chitty/tasks/archive" if filename.startswith("z") else "chitty/tasks"
+            path = Path(directory) / filename
             (self.root / path).parent.mkdir(parents=True, exist_ok=True)
             (self.root / path).write_text(content)
             expected[path] = content
