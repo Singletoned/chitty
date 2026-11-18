@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: planning
+status: todo
 depends_on:
   - TASK-381
   - TASK-389
@@ -55,3 +55,4 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - 2026-11-18T17:50:53Z lively-quartz-crane: changed description
 - 2026-11-18T17:53:03Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-18T17:53:03Z lively-quartz-crane todo → planning
+- 2026-11-18T17:53:05Z lively-quartz-crane planning → todo
