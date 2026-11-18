@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads against every branch placement with a property
-status: cold-read
+status: planning
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -11,19 +11,19 @@ created: 2026-11-18
 
 `TASK-378` makes `Repo` read each ticket from the place `ticket_source` (`TASK-377`) names and tests a fixed list of placements. Bugs in the wiring (wrong inputs to `ticket_source`, such as `main_tip`, `changed_on_both` or swapped `contains` arguments, or a missed directory) can hide between fixed cases. Add a generated property over placements. Context: `docs/plan/ticket-state.md`, "Planning decisions" (on branch `plan/ticket-state` until it lands on `main`).
 
-Starts after `TASK-378` lands; the mutation targets below exist only then. Provisional tickets (rule 1) are not covered here; a follow-up adds them after `TASK-380` and `TASK-389`.
+Starts after `TASK-378` lands; the mutation targets below exist only then. A missing `main` (rule 3 with no `main` commit) is covered by `TASK-377`'s unit properties, not here. Provisional tickets (rule 1) are not covered here either; a follow-up adds them after `TASK-380` and `TASK-389`.
 
 Decisions:
 
 - New `tests/test_property_ticket_reads.py`, inheriting `RepoTestCase` from `tests/support.py`. Each repository is built fresh in its own subdirectory (`tempfile.mkdtemp(dir=self.tmp)`): `git init -b main`, `git config user.name` and `user.email` (`RepoTestCase` empties `HOME`), and its own `chitty.toml` with contexts `tasks` (`TASK`) and `human` (`HUMAN`), as `tests/test_backlog_context.py` sets up. Pin `GIT_AUTHOR_DATE` and `GIT_COMMITTER_DATE` on every commit, drawn at random so commit order differs from causal order.
-- Placements, each for one ticket, in either context, active or archived on `main`: (a) only on `main`; (b) edited on its local branch; (c) edited only on `origin/<branch>` (`git update-ref`); (d) local branch, with `origin/<branch>` ahead; (e) local and remote diverged; (f) only on an unrelated branch `other`; (g) archived on its local branch; (h) deleted on its local branch; (i) a new uncommitted file in the main checkout only; (j) local branch edited, then merged into `main` by fast-forward, then `main` advanced (the branch is behind `main`); (k) edited on its local branch and also edited on `main` after the branch was made (changed on both). Ticket numbers are drawn so they never equal a decoy's number. Decoy branches (`task-50` for `TASK-5`, `TASK-5`, `feature/task-5`) are added at random.
+- Placements, each for one ticket; except (f) and (i), each ticket is on `main`, active or archived, in either context: (a) only on `main`; (b) edited on its local branch; (c) edited only on `origin/<branch>` (`git update-ref`); (d) local branch, with `origin/<branch>` ahead; (e) local and remote diverged; (f) only on an unrelated branch `other`; (g) archived on its local branch; (h) deleted on its local branch; (i) a new uncommitted file in the main checkout only; (j) local branch edited, then merged into `main` by fast-forward, then `main` advanced (the branch is behind `main`); (k) edited on its local branch and also edited on `main` after the branch was made (changed on both); (l) local branch fast-forward merged into `main`, with `origin/<branch>` ahead of it; (m) edited only on `origin/<branch>` and also edited on `main` after the split. Ticket numbers are drawn so they never equal a decoy's number. Decoy branches (`task-50` for `TASK-5`, `TASK-5`, `feature/task-5`) are added at random.
 - Checkout kinds: (1) the main checkout; (2) the ticket's own linked worktree (placements with a local branch); (3) another ticket's linked worktree; (4) a checkout of branch `feature`, made from `main`'s tip after all `main` commits, so it holds `main`'s copies; (5) a detached `HEAD` at `main`. At random, leave an uncommitted edit to the ticket's file in the reading checkout.
 - Expected result, from the placement, not from calling `ticket_source`:
-  - in checkout kinds (1), (3), (4), (5): (a) `main`'s content, plus the uncommitted edit only in (1); (b), (g) the local branch's content (archived for (g)); (c), (d) the remote's content; (e) `ChittyError` naming both refs; (f), (h) not listed; (i) listed with its content in (1) only; (j) `main`'s content (plus the uncommitted edit in (1)); (k) `ChittyError` naming the ticket, its branch and `main`;
-  - in kind (2), the ticket's own worktree: (b), (g) its working tree, with any uncommitted edit; (h) listed only if the file is present there; (d) the remote's content; (e) and (k) raise as above (rule 6 applies before the working-tree result).
+  - in checkout kinds (1), (3), (4), (5): (a) `main`'s content, plus the uncommitted edit only in (1); (b), (g) the local branch's content (archived for (g)); (c), (d) the remote's content; (e) `ChittyError` naming both refs; (f), (h) not listed; (i) listed with its content in (1) only; (j) `main`'s content (plus the uncommitted edit in (1)); (k) `ChittyError` naming the ticket, its branch and `main`; (l) the remote's content (the stale local branch is dropped); (m) `ChittyError` naming the ticket, `origin/<branch>` and `main`;
+  - in kind (2), the ticket's own worktree: (b), (g) its working tree, with any uncommitted edit; (h) listed only if the file is present there; (d) the remote's content; (e) and (k) raise as above (rule 6 applies before the working-tree result); (j) `main`'s content, and the worktree's edit does not show; (l) the remote's content.
   - Uncommitted edits in any other checkout never show; decoys never change the result.
 - Multi-ticket draws: compare `Repo.find` per ID; `Repo.tasks` must raise when any drawn ticket's expected result is an error, else list exactly the expected tickets.
-- Two tests: `test_every_placement_and_checkout` loops over every compatible (placement, checkout kind) pair once, with one ticket and fixed dates, so coverage does not depend on random draws or test order under `unittest-parallel`; and the property `test_generated_placements` (`deadline=None`, `max_examples=40`, `derandomize=True`, `database=None`) drawing 1 to 4 tickets with placements from `st.sampled_from`, a checkout kind, dates and uncommitted edits.
+- Two tests: `test_every_placement_and_checkout` loops over every compatible (placement, checkout kind) pair once, with fixed dates, one ticket in `tasks`, active on `main` where it is on `main`, and a second ticket `TASK-<m>` on its own `task-<m>` branch only for kind (3); in kind (1) it runs each pair with and without the uncommitted edit (about 55 repositories, measured at 15 to 25 s), so coverage does not depend on random draws or test order under `unittest-parallel`; and the property `test_generated_placements` (`deadline=None`, `max_examples=40`, `derandomize=True`, `database=None`) drawing 1 to 4 tickets with placements from `st.sampled_from`, a checkout kind, dates and uncommitted edits.
 
 No production code changes unless a test finds a bug; then fix it here, with the failing case kept as an explicit test.
 
@@ -44,3 +44,5 @@ No production code changes unless a test finds a bug; then fix it here, with the
 - 2026-11-18T17:50:16Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:50:16Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:51:26Z lively-quartz-crane planning → cold-read
+- 2026-11-18T17:54:01Z lively-quartz-crane: changed description
+- 2026-11-18T17:54:01Z lively-quartz-crane cold-read → planning
