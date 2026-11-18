@@ -1,6 +1,6 @@
 ---
 title: Remove local ticket branches that `main` already contains
-status: doing
+status: planning
 depends_on:
   - TASK-396
 parent: TASK-376
@@ -33,6 +33,10 @@ Tests: real-Git runner tests in a new `tests/test_run_removes_merged_branches.py
 
 At startup after setup refresh, under the landing lock, prune stale worktree registrations and remove merged local ticket branches before pending landings. Add focused real-Git runner tests covering deletion and every keep condition, update the runner plan, then format/check and commit implementation with Task trailer.
 
+## Notes
+
+Planning issue discovered: the required startup cleanup deletes every local ticket branch whose tip is contained by main, including branches for tickets already in review. The existing runner requires a branch/worktree to review and changes such tickets to error when missing; therefore a routine chitty run can delete the branch and then fail the same ticket during selection. The ticket does not specify whether such tickets should be exempt, returned to a workable status/recreated from main, or treated as an expected runner error. Existing runner tests also assume newly created equal-to-main ticket branches survive startup, so the required cleanup changes their expected behavior. Please decide the selection/review behavior after cleanup and update acceptance/tests accordingly.
+
 ## History
 
 - 2026-11-18T18:00:02Z lively-quartz-crane → backlog
@@ -43,3 +47,5 @@ At startup after setup refresh, under the landing lock, prune stale worktree reg
 - 2026-11-18T18:02:15Z lively-quartz-crane planning → todo
 - 2026-11-18T23:14:01Z golden-quartz-heron todo → doing
 - 2026-11-18T23:15:19Z golden-quartz-heron: wrote the plan
+- 2026-11-18T23:18:59Z golden-quartz-heron: changed owner, notes
+- 2026-11-18T23:18:59Z golden-quartz-heron doing → planning
