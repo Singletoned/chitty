@@ -829,7 +829,7 @@ class TestNext(CliTestCase):
         self.assertIn("TASK-2", result.stderr)
         self.assertIn("worktree and branch were removed", result.stderr)
 
-    def test_run_uses_runner_chitty_and_strips_worktree_environment(self):
+    def test_run_uses_runner_chitty_and_drops_usage_file(self):
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text()
@@ -868,8 +868,6 @@ class TestNext(CliTestCase):
             f"report = pathlib.Path({str(report)!r})\n"
             "report.write_text(json.dumps({\n"
             "    'chitty': shutil.which('chitty'),\n"
-            "    'virtual_env': os.environ.get('VIRTUAL_ENV'),\n"
-            "    'uv_project_environment': os.environ.get('UV_PROJECT_ENVIRONMENT'),\n"
             "    'usage_file': os.environ.get('CHITTY_USAGE_FILE'),\n"
             "}))\n"
             "task = next(pathlib.Path('chitty/tasks').glob('TASK-1--*.md'))\n"
@@ -878,12 +876,9 @@ class TestNext(CliTestCase):
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
         )
         agent.chmod(agent.stat().st_mode | stat.S_IXUSR)
-        previous = {
-            key: os.environ.get(key) for key in ("PATH", "VIRTUAL_ENV", "UV_PROJECT_ENVIRONMENT")
-        }
+        previous = {key: os.environ.get(key) for key in ("PATH", "CHITTY_USAGE_FILE")}
         os.environ["PATH"] = f"{bin_dir}:{os.environ.get('PATH', '')}"
-        os.environ["VIRTUAL_ENV"] = "/branch/.venv"
-        os.environ["UV_PROJECT_ENVIRONMENT"] = "/branch/.venv"
+        os.environ["CHITTY_USAGE_FILE"] = "/parent/usage.jsonl"
         try:
             result = self.run_cli("run")
         finally:
@@ -895,8 +890,6 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "TASK-1: doing → done\n")
         environment = json.loads(report.read_text())
         self.assertEqual(environment["chitty"], str(runner_chitty))
-        self.assertIsNone(environment["virtual_env"])
-        self.assertIsNone(environment["uv_project_environment"])
         self.assertIsNone(environment["usage_file"])
 
     def test_run_inherits_stdin(self):

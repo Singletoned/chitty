@@ -49,6 +49,24 @@ def commits_missing_trailer(commits: Sequence[Commit], task_id: TaskId) -> list[
     return missing
 
 
+def changed_files(root: Path, base: str, paths: Sequence[str]) -> list[str]:
+    """Return exactly listed paths changed on the branch from ``base``."""
+    if not paths:
+        return []
+    output = _git(
+        root,
+        "--literal-pathspecs",
+        "diff",
+        "-z",
+        "--no-renames",
+        "--name-only",
+        f"{base}...HEAD",
+        "--",
+        *paths,
+    )
+    return [path for path in output.split("\0") if path and path in paths]
+
+
 def short_sha(root: Path, sha: str) -> str:
     """Return Git's abbreviated object ID for ``sha``."""
     return _git(root, "rev-parse", "--short", sha).strip()

@@ -33,6 +33,7 @@ review = true # done only through review → done; default follows workflow
 # job_order = ["review", "doing", "todo"] # statuses `next`/`run` pick, in order
 archive = "move" # or "delete"
 # list_width = 100 # columns for `chitty list`
+# protected_paths = ["src/chitty/__init__.py"] # files only main may change
 
 [contexts.tasks]
 prefix = "TASK"

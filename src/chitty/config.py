@@ -97,6 +97,7 @@ class RepoConfig(BaseModel):
     review_model: str | None = None
     archive: Literal["move", "delete"] = "move"
     job_order: list[str] | None = None
+    protected_paths: list[str] = []
     list_width: int = Field(default=LIST_WIDTH, gt=0)
     contexts: dict[str, ContextConfig]
 
@@ -151,6 +152,21 @@ class RepoConfig(BaseModel):
         if value is not None and not value.strip():
             raise ValueError("must not be empty")
         return value
+
+    @field_validator("protected_paths")
+    @classmethod
+    def _protected_paths(cls, paths: list[str]) -> list[str]:
+        for entry in paths:
+            parts = entry.split("/")
+            if (
+                not entry.strip()
+                or entry.startswith("/")
+                or entry.endswith("/")
+                or "\\" in entry
+                or any(part in {"", ".", ".."} for part in parts)
+            ):
+                raise ValueError(f"invalid protected path {entry!r}")
+        return paths
 
     @field_validator("job_order")
     @classmethod

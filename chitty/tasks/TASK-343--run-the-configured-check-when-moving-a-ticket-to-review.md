@@ -37,6 +37,75 @@ Tests go in a new `tests/test_review_check.py`, with classes inheriting `ReviewM
 - [ ] `_run_check` in `src/chitty/run.py` calls `run_check` from `src/chitty/commands.py`; `run.py` defines neither `_command_environment` nor `_code_block`; `commands.py` imports neither `chitty.run` nor `chitty.store`; and the existing runner check tests in `tests/test_next.py` and `tests/test_run_environment.py` pass unchanged.
 - [ ] The `work.md` sentence is replaced as the Description says, and `tests/test_guide_work_commits.py` asserts `runs the configured check and refuses if it fails` in place of `then commit your changes` and `refuses while the worktree has uncommitted files`. `make check` passes.
 
+## Plan
+
+Extract shared command helpers and check execution into commands.py; wire Repo.edit to run the configured check on entry to review with the specified guards and failure/refusal behavior. Add focused real-subprocess/git regression tests and update the work guide and its test.
+
+## Notes
+
+Implementation is partial: shared command helpers and the work guide text are committed in a2204fa, but Repo.edit integration, runner refactor, regression tests, and verification are unfinished. I cannot identify a defect in the ticket requirements or an external obstacle; returning to planning is not justified by the ticket rules. The worktree and branch are preserved for a worker to continue.
+
+Runner error (check): check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+unformatted: File would be reformatted
+  --> src/chitty/commands.py:36:34
+   |
+35 |         completed = subprocess.run(
+   -             shlex.split(command), cwd=root, stdin=subprocess.DEVNULL,
+   -             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+   -             check=False, env=command_environment(),
+36 +             shlex.split(command),
+37 +             cwd=root,
+38 +             stdin=subprocess.DEVNULL,
+39 +             stdout=subprocess.PIPE,
+40 +             stderr=subprocess.STDOUT,
+41 +             text=True,
+42 +             check=False,
+43 +             env=command_environment(),
+44 |         )
+   |
+
+1 file would be reformatted, 528 files already formatted
+make: *** [check] Error 1
+
+```
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-343`
+
+Error output:
+````text
+check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+unformatted: File would be reformatted
+  --> src/chitty/commands.py:36:34
+   |
+35 |         completed = subprocess.run(
+   -             shlex.split(command), cwd=root, stdin=subprocess.DEVNULL,
+   -             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+   -             check=False, env=command_environment(),
+36 +             shlex.split(command),
+37 +             cwd=root,
+38 +             stdin=subprocess.DEVNULL,
+39 +             stdout=subprocess.PIPE,
+40 +             stderr=subprocess.STDOUT,
+41 +             text=True,
+42 +             check=False,
+43 +             env=command_environment(),
+44 |         )
+   |
+
+1 file would be reformatted, 528 files already formatted
+make: *** [check] Error 1
+
+```
+````
+
+Error repair, 2026-11-17: the runner's pre-session check failed on the earlier partial work: `src/chitty/commands.py` was unformatted and `tests/test_guide_work_commits.py` still pinned the old `work.md` wording. Formatted it and updated the two phrases to the ticket's new wording on the `task-343` branch; `make check` passes there. The rest of the implementation (`Repo.edit` integration, runner refactor, regression tests) is still to do.
+
 ## History
 
 - 2026-11-16T09:59:52Z intrepid-coral-raven → backlog
@@ -46,3 +115,13 @@ Tests go in a new `tests/test_review_check.py`, with classes inheriting `ReviewM
 - 2026-11-17T17:06:38Z kind-umber-toad: changed title, labels, description, acceptance criteria
 - 2026-11-17T17:06:38Z kind-umber-toad cold-read → planning
 - 2026-11-17T17:07:45Z kind-umber-toad planning → todo
+- 2026-11-17T17:33:32Z tidy-maroon-gannet todo → doing
+- 2026-11-17T17:33:48Z tidy-maroon-gannet: wrote the plan
+- 2026-11-17T17:35:30Z tidy-maroon-gannet: changed owner, notes
+- 2026-11-17T17:35:30Z tidy-maroon-gannet doing → planning
+- 2026-11-17T20:22:49Z kind-umber-toad: changed owner
+- 2026-11-17T20:22:49Z kind-umber-toad planning → todo
+- 2026-11-17T22:11:48Z jolly-dusky-badger: changed notes
+- 2026-11-17T22:11:48Z jolly-dusky-badger todo → error
+- 2026-11-17T22:43:50Z kind-umber-toad: changed notes
+- 2026-11-17T22:43:50Z kind-umber-toad error → todo

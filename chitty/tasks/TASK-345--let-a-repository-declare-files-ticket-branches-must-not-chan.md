@@ -1,7 +1,6 @@
 ---
 title: Let a repository declare files ticket branches must not change
-status: planning
-owner: planner-cold-read
+status: done
 created: 2026-11-16
 ---
 
@@ -31,9 +30,24 @@ Out of scope: globs or line patterns, protecting paths outside review and landin
 - [ ] `_land` refuses a merged branch that changes a listed file with the specified `ChittyError` and leaves `main` unmoved, tested in `tests/test_protected_paths.py`; the test fails before the change
 - [ ] Loading a config whose `protected_paths` has an entry the validator rejects fails with a message containing that entry, while `a..b` loads; `docs/plan/config.md` documents the setting; `make check` passes
 
+## Plan
+
+Add protected_paths to RepoConfig first, then regression tests and validation for exact protected-file matching; implement git.changed_files with literal pathspecs and exact filtering; enforce the rule during review and landing; document the setting. Run regression tests against the pre-enforcement behavior, then make check, format if needed, and commit implementation in logical commits with Task: TASK-345 trailers.
+
 ## Notes
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and match directory prefixes (now `--literal-pathspecs` plus exact filtering); tests would have failed on `extra="forbid"` rather than behaviour; test locations; missing cases (add, delete, rename, prefix-alike names, `main` changing a listed file); the validator message lacking the entry; the trailing NUL; the wrong `TASK-179` claim (dropped). Not adopted: case-only differences on case-insensitive filesystems, out of scope.
+
+Regression evidence: with the review guard temporarily removed, test_protected_file_is_changed failed because the reviewer agent started; restored the guard and the focused suite passes.
+
+Reviewed:
+1: pass - `python -m unittest tests.test_protected_paths` exercises add, change, delete, rename and reviewer/landing cases; worker regression note reports changed-file test failed with reviewer started when guard removed.
+2: pass - landing test passes; with `chitty.git.changed_files` patched to return `[]`, it fails with `AssertionError: ChittyError not raised`.
+3: pass - config validation test passes for rejected entries and `a..b`; `docs/plan/config.md` documents the setting; `make check` passed 617 tests, ruff and pyright.
+
+## Summary
+
+Implemented protected_paths validation, literal exact-path Git diff detection, review and landing enforcement, documentation, and real-repository regression coverage. Verification: make check passes; protected-path tests pass. Regression test test_protected_file_is_changed was run with the review guard removed and failed because the reviewer agent started, then passed with the guard restored. Follow-up after landing: main checkout should configure src/chitty/__init__.py and remove the obsolete version instruction from AGENTS.md as described in the ticket.
 
 ## History
 
@@ -45,3 +59,12 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: git pathspecs are globs and ma
 - 2026-11-17T19:55:19Z kind-umber-toad planning → cold-read
 - 2026-11-17T19:57:35Z kind-umber-toad: changed description, acceptance criteria, notes
 - 2026-11-17T19:57:35Z kind-umber-toad cold-read → planning
+- 2026-11-17T22:01:54Z kind-umber-toad: changed owner
+- 2026-11-17T22:01:54Z kind-umber-toad planning → todo
+- 2026-11-17T22:13:17Z jolly-russet-stoat todo → doing
+- 2026-11-17T22:13:31Z jolly-russet-stoat: wrote the plan
+- 2026-11-17T22:20:53Z jolly-russet-stoat: changed notes
+- 2026-11-17T22:21:26Z jolly-russet-stoat: changed summary
+- 2026-11-17T22:21:26Z jolly-russet-stoat doing → review
+- 2026-11-17T22:23:21Z kind-teal-vole: changed notes
+- 2026-11-17T22:23:21Z kind-teal-vole review → done

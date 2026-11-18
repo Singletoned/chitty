@@ -88,10 +88,8 @@ def loop_step(returncode: int) -> tuple[bool, int]:
 
 
 def _command_environment() -> dict[str, str]:
-    """Copy the environment without shell-selected project virtualenvs or usage files."""
+    """Copy the environment without an inherited usage file."""
     environment = os.environ.copy()
-    environment.pop("VIRTUAL_ENV", None)
-    environment.pop("UV_PROJECT_ENVIRONMENT", None)
     # An inherited value would make an agent write a file `chitty run` no longer reads.
     environment.pop("CHITTY_USAGE_FILE", None)
     return environment
@@ -796,6 +794,14 @@ def _prepare_review(
             "Review failed (work): the branch changes Chitty's managed block in AGENTS.md; "
             "only chitty init on the main checkout may change it. Restore that block from main.",
         )
+    if changed := git.changed_files(worktree, main_branch, work_repo.config.protected_paths):
+        listed = ", ".join(f"`{path}`" for path in changed)
+        return _fail_review(
+            work_repo,
+            action,
+            "Review failed (work): the branch changes protected files: "
+            f"{listed}. Restore them from `{main_branch}`.",
+        )
     return None
 
 
@@ -987,6 +993,9 @@ def _land_locked(
             f"cannot land {action.id}; the merged branch changes `{changed}`; "
             "only `chitty init` on the main checkout may change it"
         )
+    if changed := git.changed_files(worktree, main_branch, main_repo.config.protected_paths):
+        listed = ", ".join(f"`{path}`" for path in changed)
+        raise ChittyError(f"cannot land {action.id}; the branch changes protected files: {listed}")
     _setup(setup, worktree)
     _landing_check(check, worktree)
     git.fast_forward(main_root, branch)

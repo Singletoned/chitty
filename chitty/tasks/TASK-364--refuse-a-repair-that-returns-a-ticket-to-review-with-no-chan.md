@@ -1,6 +1,6 @@
 ---
 title: Refuse a repair that returns a ticket to review with no change beyond its ticket files
-status: todo
+status: review
 created: 2026-11-16
 ---
 
@@ -25,7 +25,7 @@ Files: `src/chitty/run.py`, `src/chitty/git.py`, `tests/test_next.py`, new `test
 ## Acceptance Criteria
 
 - [x] Hypothesis properties in `tests/test_property_repair_work.py`, with paths built from one to four non-empty segments, no `..` and no leading `/`, including paths inside, outside, prefix-alike (`chitty/tasksX/a.md` against `chitty/tasks`), equal to a directory, and empty sets: `has_work_beyond_tickets` is true exactly when some path is not inside any ticket directory; shuffling or duplicating either input does not change the result; adding a path never turns true into false. First add the function raising `NotImplementedError`; the test fails with that before the change.
-- [ ] Fake-agent tests in `tests/test_repair_requires_work.py`, one subtest per case, on an `error` ticket whose branch exists at the tip of `main` (the state `_worktree` also creates for a missing branch): the agent sets `review` through `chitty edit` only; writes `status: review` to the ticket file without committing; commits a code file then sets `review`; sets `blocked`. Only the code-file case ends in `review`; the first two make `chitty run --errors` exit non-zero with the `RepairError` text and leave the ticket `error`; `blocked` ends in `blocked`. The first two cases fail before the change. The two repair tests in `tests/test_next.py` are updated to commit a code file and pass.
+- [x] Fake-agent tests in `tests/test_repair_requires_work.py`, one subtest per case, on an `error` ticket whose branch exists at the tip of `main` (the state `_worktree` also creates for a missing branch): the agent sets `review` through `chitty edit` only; writes `status: review` to the ticket file without committing; commits a code file then sets `review`; sets `blocked`. Only the code-file case ends in `review`; the first two make `chitty run --errors` exit non-zero with the `RepairError` text and leave the ticket `error`; `blocked` ends in `blocked`. The first two cases fail before the change. The two repair tests in `tests/test_next.py` are updated to commit a code file and pass.
 - [x] Real-git tests of `changed_paths`: a branch that moves `src/a.py` to `chitty/tasks/a.md` returns both paths; a branch adding `chitty/tasks/é.md` returns that path unquoted. `make check` passes.
 
 ## Plan
@@ -44,6 +44,167 @@ Review failed (tests): Correct the fake-agent scenarios and rerun their regressi
 The revised regression fixture still fails: the CLI-only case ends with the main ticket in review instead of triggering the expected refusal, while the code-change case ends in error instead of review. The generated fake agent invokes chitty edit but the test does not currently establish which repository that command edits or why the repair state differs. Need inspect run_cli/worktree environment and revise the fake-agent setup so each case performs the specified action inside the repair worktree; acceptance criterion 2 cannot be verified until this is resolved.
 
 Planning, 2026-11-17: no ticket defect found. Likely cause of the fixture confusion: `chitty show` resolves a ticket across branches and prefers the newest committed version, so after a refused repair whose agent committed `review` on the repair branch it reports `review` although `main` still says `error` (see `TASK-366`). Assert the status in the main checkout's ticket file (parse it, or `git show main:<path>`), not with `chitty show`. The worktree has an uncommitted change to `tests/test_repair_requires_work.py` from the last session.
+
+Runner error (check): check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+530 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 621 test suites (621 total tests) across 16 workers
+.........................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 22:34:58 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+........................................................................................F......................F..Running check in /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpqc11shkd...
+.......................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+....../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/CLAUDE.md
+...Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/.worktrees/task-1...
+.....TASK-1: doing → review
+...no next ticket for --mode work
+............................................chitty 0.1.31 is out: run uv tool upgrade chitty
+...............................landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_repair_requires_committed_work_outside_ticket_directories (tests.test_repair_requires_work.TestRepairRequiresWork.test_repair_requires_committed_work_outside_ticket_directories) (case='edit')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 12, in test_repair_requires_committed_work_outside_ticket_directories
+    case._run_repair_case(case_name)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 56, in _run_repair_case
+    self.assertEqual(self.json("show", ticket)["status"], "error")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'review' != 'error'
+- review
++ error
+
+
+======================================================================
+test_repair_requires_committed_work_outside_ticket_directories (tests.test_repair_requires_work.TestRepairRequiresWork.test_repair_requires_committed_work_outside_ticket_directories) (case='code')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 12, in test_repair_requires_committed_work_outside_ticket_directories
+    case._run_repair_case(case_name)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 60, in _run_repair_case
+    self.assertEqual(self.json("show", ticket)["status"], expected, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' != 'review'
+- error
++ review
+ : /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/CLAUDE.md
+Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/.worktrees/task-1...
+
+
+----------------------------------------------------------------------
+Ran 621 tests in 39.140s
+
+FAILED (failures=2)
+make: *** [check] Error 2
+
+```
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-364`
+
+Error output:
+````text
+check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+530 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 621 test suites (621 total tests) across 16 workers
+.........................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 22:34:58 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+........................................................................................F......................F..Running check in /var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpqc11shkd...
+.......................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+....../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/CLAUDE.md
+...Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpyyi96fmf/repo/.worktrees/task-1...
+.....TASK-1: doing → review
+...no next ticket for --mode work
+............................................chitty 0.1.31 is out: run uv tool upgrade chitty
+...............................landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_repair_requires_committed_work_outside_ticket_directories (tests.test_repair_requires_work.TestRepairRequiresWork.test_repair_requires_committed_work_outside_ticket_directories) (case='edit')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 12, in test_repair_requires_committed_work_outside_ticket_directories
+    case._run_repair_case(case_name)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 56, in _run_repair_case
+    self.assertEqual(self.json("show", ticket)["status"], "error")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'review' != 'error'
+- review
++ error
+
+
+======================================================================
+test_repair_requires_committed_work_outside_ticket_directories (tests.test_repair_requires_work.TestRepairRequiresWork.test_repair_requires_committed_work_outside_ticket_directories) (case='code')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 12, in test_repair_requires_committed_work_outside_ticket_directories
+    case._run_repair_case(case_name)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-364/tests/test_repair_requires_work.py", line 60, in _run_repair_case
+    self.assertEqual(self.json("show", ticket)["status"], expected, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' != 'review'
+- error
++ review
+ : /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/CLAUDE.md
+Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpej5gw_8d/repo/.worktrees/task-1...
+
+
+----------------------------------------------------------------------
+Ran 621 tests in 39.140s
+
+FAILED (failures=2)
+make: *** [check] Error 2
+
+```
+````
+
+Error repair, 2026-11-17: the runner's pre-session check failed on the uncommitted fixture rewrite in `tests/test_repair_requires_work.py`. Two causes, both in the test: the `code` agent committed with the one-paragraph message `Task: TASK-1`, which `TASK-346`'s trailer check (now on `main`) treats as no trailer; and the refused cases asserted with `chitty show`, which returns the repair branch's committed `review` while `main` stays `error`. Fixed both in the test; `make check` passes on the branch. With the refusal disabled (`if False and ...` at `src/chitty/run.py:480`), exactly the `edit` and `uncommitted` cases fail.
 
 ## Summary
 
@@ -69,3 +230,7 @@ Implemented committed diff-path detection for repair handoffs. Verification: mak
 - 2026-11-17T19:59:36Z kind-umber-toad: changed notes
 - 2026-11-17T20:22:36Z kind-umber-toad: changed owner
 - 2026-11-17T20:22:36Z kind-umber-toad planning → todo
+- 2026-11-17T22:35:27Z open-dusky-raven: changed notes
+- 2026-11-17T22:35:27Z open-dusky-raven todo → error
+- 2026-11-17T22:48:42Z kind-umber-toad: changed notes; ticked acceptance criteria
+- 2026-11-17T22:48:42Z kind-umber-toad error → review
