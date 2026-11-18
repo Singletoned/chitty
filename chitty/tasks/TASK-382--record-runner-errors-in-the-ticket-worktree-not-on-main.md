@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -38,3 +38,4 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_errors_on_bran
 - 2026-11-18T16:26:40Z lively-quartz-crane: changed description
 - 2026-11-18T16:28:00Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:28:00Z lively-quartz-crane cold-read → planning
+- 2026-11-18T16:29:23Z lively-quartz-crane planning → cold-read
