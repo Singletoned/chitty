@@ -1,6 +1,6 @@
 ---
 title: Resolve review rebase conflicts in a separate agent session
-status: planning
+status: todo
 priority: medium
 depends_on:
   - TASK-374
@@ -55,3 +55,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:18:14Z lively-quartz-crane planning → cold-read
 - 2026-11-18T18:19:57Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T18:19:57Z lively-quartz-crane cold-read → planning
+- 2026-11-18T18:19:59Z lively-quartz-crane planning → todo
