@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: cold-read
+status: planning
 priority: high
 created: 2026-11-18
 ---
@@ -14,19 +14,19 @@ When the runner's rebase stops on a code conflict, the agent finishes it (`TASK-
 Decisions:
 
 - New role file `src/chitty/roles/rebase.md`, printed by `chitty guide rebase <ID>`. It says: a rebase onto the integration branch stopped on conflicts; resolve each conflicted file keeping the intent of both sides; `git add` it; run `git -c core.editor=true rebase --continue`; repeat until no rebase is in progress; never run `git rebase --abort` or `--skip`; then run the configured setup and check commands and fix what the rebase broke. Keep it general (no repository-specific advice), as `AGENTS.md` requires of the guides.
-- Add `rebase` to `ROLE_NAMES` in `src/chitty/store.py`, and to the role list in the `guide` command's help in `src/chitty/cli.py`; it takes a ticket ID like `work`.
-- `guide()` in `src/chitty/store.py` gains a `directory: Path` argument (no default): the checkout whose state it reads. The CLI passes the current directory. MCP has no role-guide entry point (`src/chitty/mcp.py`), so it needs no change. The runner's `_agent_command` in `src/chitty/run.py` takes the directory to build the prompt from and is given the ticket worktree, since the runner's own directory is the main checkout: the worktree `git.worktree_for_branch` finds for the ticket branch, else `.worktrees/<branch>` under the main checkout, which is where `_worktree` creates it. Continuations pass the worktree too. This ticket makes that change, so `TASK-370` only relies on it.
+- Add `rebase` to `ROLE_NAMES` in `src/chitty/store.py`. In the `guide` command's help in `src/chitty/cli.py`, add the example `chitty guide rebase TASK-12`, and add rebase to the sentence listing roles that accept an optional ticket ID.
+- `guide()` in `src/chitty/store.py` gains a `directory: Path` argument (no default): the checkout whose state it reads. The CLI passes the current directory. MCP has no role-guide entry point (`src/chitty/mcp.py`), so it needs no change. The runner's `_agent_command` in `src/chitty/run.py` gains a keyword argument `directory: Path`, with no default, and builds the prompt from it, since the runner's own directory is the main checkout. `_run_ticket` keeps its call before the claim and `_worktree`, so a bad `agent_command` still fails before anything is written, and passes the worktree `git.worktree_for_branch` finds for the ticket branch, else `.worktrees/<branch>` under the main checkout. That directory may not exist yet (a fresh ticket); a missing directory is not a repository (`git.is_repository` returns false), so nothing is added. During a rebase Git reports the worktree as detached, so `git.worktree_for_branch` finds nothing; that is accepted, because `_worktree` refuses a leftover rebase anyway and `TASK-370` renders the prompt again from the worktree it rebased. `_agent_sessions` passes the worktree for continuations. This ticket makes that change, so `TASK-370` only relies on it.
 - `_worktree` and `git` keep their behaviour on `main`: a run that finds a leftover stopped rebase in the ticket worktree still fails with `has an unfinished rebase`, for a person to finish. Only `TASK-370` and `TASK-375` reach an agent during a rebase, by starting it after their own rebase stops, so no lookup of a rebasing worktree is needed. (Planning 2026-11-18: an earlier criterion 4 implied a run should reach the agent with a leftover rebase; it should not.)
 - For roles `work` and `repair`, when `git.is_repository(directory)` and `git.rebase_in_progress(directory)` are both true, insert the `rebase` role text, followed by a blank line, directly after the `Work only on Chitty ticket <ID>.` line and before the role's usual text. Outside a repository there is no rebase, so nothing is added; any Git error inside a repository raises as usual.
 
-Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, with real repositories: a rebase stopped on a real conflict, with both backends (`rebase-merge` by default and `rebase-apply` with `git rebase --apply`), from the worktree root and from a subdirectory, and from a linked worktree; a clean repository; and a directory outside any repository. The oracle for "unchanged" is that, with no rebase in progress, the output equals the stopped-rebase output with the inserted rebase text and its blank line removed, and equals the output outside a repository. No property: a fixed set of states and two guides, all listed.
+Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, with real repositories: a rebase stopped on a real conflict, with both backends (`rebase-merge` by default and `rebase-apply` with `git rebase --apply`), from the worktree root and from a subdirectory, and from a linked worktree; a clean repository; a directory outside any repository; and a directory that does not exist. The oracle for "unchanged" is that, with no rebase in progress, the output equals the stopped-rebase output with the inserted rebase text and its blank line removed, and equals the output outside a repository. No property: a fixed set of states and two guides, all listed.
 
 ## Acceptance Criteria
 
 - [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; the test fails before the change
 - [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed
-- [ ] The runner builds the prompt from the ticket worktree: calling `_agent_command` with a worktree that has a stopped rebase gives a work prompt containing the rebase text, though the main checkout has none; `_worktree` is unchanged from `main`, and a work run whose worktree holds a leftover stopped rebase exits 1 with `has an unfinished rebase` and starts no agent; `make check` passes
+- [ ] The prompt comes from the directory given: calling `_agent_command` with `directory` set to a worktree with a stopped rebase gives a work prompt containing the rebase text, while the main checkout has none; on `main` this test fails because the prompt lacks the rebase text. `_worktree` is unchanged from `main`: a work run on a `doing` ticket whose `.worktrees/<branch>` holds a leftover stopped rebase exits 1 with `has an unfinished rebase` on stderr and the fake agent never runs. `make check` passes
 
 ## Plan
 
@@ -72,6 +72,8 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Planning 2026-11-18, after three failed reviews: the reviews found real defects, but in code the ticket should never have needed. Criterion 4 asked a work run to reach the agent while the worktree held a stopped rebase, which `_worktree` on `main` refuses, so the worker loosened it (`allow_rebase`, `git.rebasing_branch`) and each review found a new gap in that lookup. In the real flow `TASK-370` and `TASK-375` start the agent after their own rebase stops and never go through that check. Decision: revert `allow_rebase` and `git.rebasing_branch`, keep the rest of the implementation, and test `_agent_command` directly. Criteria 1 to 3 stand.
 
+Cold read 2026-11-18 outcomes: accepted the detached-worktree lookup gap (documented as accepted, `TASK-370` re-renders from the rebased worktree), the missing-directory case, the conventional path and `doing` start for the refusal test, the failing-on-main wording, and the help wording. Rejected a runner test that patches `chitty.run._worktree`: it mocks our own code, and the end-to-end path belongs to `TASK-370`.
+
 ## Summary
 
 Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
@@ -108,3 +110,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T20:37:13Z lively-quartz-crane: changed owner, description, acceptance criteria, notes
 - 2026-11-18T20:37:13Z lively-quartz-crane blocked → planning
 - 2026-11-18T20:37:38Z lively-quartz-crane planning → cold-read
+- 2026-11-18T20:39:50Z lively-quartz-crane: changed description, acceptance criteria, notes
+- 2026-11-18T20:39:50Z lively-quartz-crane cold-read → planning
