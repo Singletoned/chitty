@@ -23,6 +23,10 @@ Tests: in `tests/test_git.py`, inheriting `RepoTestCase`, a repository with 5000
 - [ ] `_read_blobs` returns all 5000 objects of the large case, each with the content written, within the 20 s timeout; the test fails (times out) before the change
 - [ ] The existing `tests/test_git.py` tests pass unchanged, and `make check` passes
 
+## Plan
+
+Add a RepoTestCase regression test that creates and commits 5,000 approximately 1 KB files, invokes this checkout’s chitty.git._read_blobs in a subprocess with a 20-second timeout, and verifies every returned object and content. Run it against the current implementation to confirm the hang. Replace the sequential blocking pipe writes/reads in _read_blobs with subprocess.communicate(input=...), then parse its returned stdout using the existing cat-file batch framing and preserve missing-object, malformed-header, non-blob, decoding, and Git-failure behavior. Run the focused test, formatting, and make check; commit implementation and test with a Task: TASK-395 trailer, record verification, then set the ticket to review.
+
 ## History
 
 - 2026-11-18T16:38:07Z lively-quartz-crane → backlog
@@ -33,3 +37,4 @@ Tests: in `tests/test_git.py`, inheriting `RepoTestCase`, a repository with 5000
 - 2026-11-18T17:45:09Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:45:11Z lively-quartz-crane planning → todo
 - 2026-11-18T22:37:28Z zesty-russet-raven todo → doing
+- 2026-11-18T22:38:30Z zesty-russet-raven: wrote the plan
