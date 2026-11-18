@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: todo
+status: planning
 labels:
   - bug
   - needs-minor
@@ -38,6 +38,10 @@ Tests: a Hypothesis property for `ticket_only_conflicts` in a new `tests/test_pr
 - [ ] A review run whose rebase stops with both a ticket-file conflict and a code conflict (both sides changed the same lines of one source file): no rebase is in progress, the ticket is `doing`, its note contains `Review failed (integration)` and both paths in backticks, and no reviewer starts
 - [ ] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit; `git.merge` and `git.merge_main` are gone; `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
 
+## Notes
+
+On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
+
 ## History
 
 - 2026-11-18T09:51:20Z witty-ginger-falcon → planning
@@ -45,3 +49,5 @@ Tests: a Hypothesis property for `ticket_only_conflicts` in a new `tests/test_pr
 - 2026-11-18T09:56:01Z witty-ginger-falcon cold-read → planning
 - 2026-11-18T09:56:03Z witty-ginger-falcon: changed description, acceptance criteria
 - 2026-11-18T09:56:05Z witty-ginger-falcon planning → todo
+- 2026-11-18T15:47:46Z witty-ginger-falcon: changed notes
+- 2026-11-18T15:47:46Z witty-ginger-falcon todo → planning
