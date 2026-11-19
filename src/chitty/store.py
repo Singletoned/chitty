@@ -3,6 +3,7 @@
 import json
 import re
 import secrets
+import shutil
 import subprocess
 import sys
 import tomllib
@@ -629,6 +630,17 @@ class Repo:
 
     def _prepare_write(self) -> None:
         self._check_setup_version()
+        if self.config.autocommit:
+            if shutil.which("git") is None:
+                raise ChittyError(
+                    "autocommit requires Git, but `git` was not found on PATH; "
+                    "install Git or set `autocommit = false`"
+                )
+            if not git.is_repository(self.root):
+                raise ChittyError(
+                    f"autocommit requires {self.root} to be in a Git work tree; "
+                    "run `git init` or set `autocommit = false`"
+                )
         recorded = self.config.chitty_version
         if recorded == CHITTY_VERSION:
             return
