@@ -41,6 +41,7 @@ review = true
 # agent_command = "pi -p {{prompt}}"
 # work_model = "provider/model" # default for work sessions when the command has no model
 # review_model = "provider/model" # default for review sessions when the command has no model
+# rebase_model = "provider/model" # default for rebase sessions when the command has no model
 archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
@@ -95,6 +96,7 @@ class RepoConfig(BaseModel):
     agent_commands: dict[str, str] = {}
     work_model: str | None = None
     review_model: str | None = None
+    rebase_model: str | None = None
     archive: Literal["move", "delete"] = "move"
     job_order: list[str] | None = None
     protected_paths: list[str] = []
@@ -139,7 +141,7 @@ class RepoConfig(BaseModel):
             raise ValueError("must not be empty")
         return value
 
-    @field_validator("work_model", "review_model")
+    @field_validator("work_model", "review_model", "rebase_model")
     @classmethod
     def _model(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():

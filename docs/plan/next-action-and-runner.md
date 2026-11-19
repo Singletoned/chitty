@@ -64,7 +64,7 @@
 - `{prompt}` is the `chitty guide <mode> <ID>` output, as one argument.
   Without it the command must have `{mode}` and `{id}`.
 - Arguments after `--` go to the agent.
-- `work_model`/`review_model` add `--model MODEL` for that mode, unless the
+- `work_model`/`review_model`/`rebase_model` add `--model MODEL` for that mode, unless the
   command or forwarded arguments already give `--model`. Chitty has no
   `--model` option of its own.
 - Success means the ticket's committed status changed. An error repair must
