@@ -6,6 +6,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from chitty.errors import ChittyError
+from chitty.git import add_task_trailers
+from chitty.ids import TaskId
 from chitty.run import _land, _land_pending
 from chitty.store import NextAction, Repo
 from tests.test_cli import CliTestCase
@@ -52,6 +54,75 @@ class LandingTestCase(CliTestCase):
 
 
 class TestLanding(LandingTestCase):
+    def test_landing_adds_trailers_and_preserves_commit_data(self):
+        messages = (
+            "first subject",
+            "second subject\n\nSigned-off-by: A <a@example.com>",
+            "third subject\n\nTask: TASK-1",
+        )
+        before = {}
+        for index, message in enumerate(messages):
+            path = self.worktree / f"file-{index}"
+            path.write_text(f"{index}\n")
+            self.git("add", path.name, cwd=self.worktree)
+            self.git(
+                "-c",
+                "user.name=Author",
+                "-c",
+                "user.email=author@example.com",
+                "commit",
+                "--quiet",
+                "-m",
+                message,
+                cwd=self.worktree,
+            )
+            sha = self.git("rev-parse", "HEAD", cwd=self.worktree).strip()
+            before[message.splitlines()[0]] = (
+                self.git(
+                    "show", "-s", "--format=%an%x00%ae%x00%ad", "--date=raw", sha, cwd=self.worktree
+                ).strip(),
+                self.git("rev-parse", f"{sha}^{{tree}}", cwd=self.worktree).strip(),
+            )
+        self.finish_ticket()
+        self.land()
+        for subject, (author, tree) in before.items():
+            sha = self.git("log", "--format=%H", "--grep", subject, "main").splitlines()[0]
+            body = self.git("show", "-s", "--format=%B", sha).rstrip().splitlines()
+            last = body
+            for index in range(len(body) - 1, -1, -1):
+                if not body[index].strip():
+                    last = body[index + 1 :]
+                    break
+            self.assertEqual(last.count("Task: TASK-1"), 1)
+            self.assertEqual(
+                self.git("show", "-s", "--format=%an%x00%ae%x00%ad", "--date=raw", sha).strip(),
+                author,
+            )
+            self.assertEqual(self.git("rev-parse", f"{sha}^{{tree}}").strip(), tree)
+
+    def test_add_task_trailers_noop_and_merge_rejection(self):
+        (self.worktree / "tracked").write_text("work\n")
+        self.git("add", "tracked", cwd=self.worktree)
+        self.git("commit", "--quiet", "-m", "work\n\nTask: TASK-1", cwd=self.worktree)
+        head = self.git("rev-parse", "HEAD", cwd=self.worktree)
+        self.assertEqual(
+            add_task_trailers(self.worktree, "main", self.branch, TaskId.parse("TASK-1")), 0
+        )
+        self.assertEqual(self.git("rev-parse", "HEAD", cwd=self.worktree), head)
+        self.git("switch", "--quiet", "main", cwd=self.worktree)
+        self.git("switch", "--quiet", "-c", "side", cwd=self.worktree)
+        (self.worktree / "side").write_text("side\n")
+        self.git("add", "side", cwd=self.worktree)
+        self.git("commit", "--quiet", "-m", "side", cwd=self.worktree)
+        self.git("switch", "--quiet", "main", cwd=self.worktree)
+        (self.worktree / "main-side").write_text("main\n")
+        self.git("add", "main-side", cwd=self.worktree)
+        self.git("commit", "--quiet", "-m", "main side", cwd=self.worktree)
+        self.git("switch", "--quiet", self.branch, cwd=self.worktree)
+        self.git("merge", "--quiet", "--no-ff", "side", cwd=self.worktree)
+        with self.assertRaisesRegex(ChittyError, "merge commits"):
+            add_task_trailers(self.worktree, "main", self.branch, TaskId.parse("TASK-1"))
+
     def test_missing_ticket_branch_is_noop_even_when_main_is_dirty(self):
         self.finish_ticket()
         self.git("worktree", "remove", str(self.worktree))

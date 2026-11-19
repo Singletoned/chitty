@@ -1152,6 +1152,7 @@ def _land_locked(
             raise ChittyError(
                 f"cannot land {action.id}; rebasing onto `{main_branch}` conflicts in {listed}"
             )
+        git.add_task_trailers(worktree, main_branch, branch, action.id)
         if changed := _changed_config(worktree, main_branch):
             raise ChittyError(
                 f"cannot land {action.id}; the merged branch changes `{changed}`; "

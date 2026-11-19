@@ -266,10 +266,9 @@ person's decision, and a passing review lands on `main` through `chitty run`.
 enables
 `autocommit = true` and commits only the repository setup files it changed
 (`chitty.toml` or `pyproject.toml`, `.gitignore`, `AGENTS.md`, and `CLAUDE.md`); it refuses a
-dirty Git working tree. Commits for task work should end with
-`Task: <ID>` lines using the ticket's own ID (for example, `Task: TASK-12`) so
-`git log --grep <ID>` finds a ticket's code. This is a convention, not an
-enforced check. Set `archive = "delete"` to delete
+dirty Git working tree. When `chitty run` lands a ticket, it adds a
+`Task: <ID>` trailer to each commit on the ticket branch so
+`git log --grep <ID>` finds the ticket's code. Set `archive = "delete"` to delete
 completed task files at merge-request time instead of moving them to `archive/`;
 it also removes exact `depends_on` entries and requires complete Git history to
 avoid reusing IDs. The default, `archive = "move"`, retains task files.

@@ -68,29 +68,15 @@ class TestCommitTrailers(unittest.TestCase):
 
 
 class TestReviewTrailerGate(ReviewMergeTestCase):
-    def test_review_entry_requires_trailer(self):
+    def test_review_entry_does_not_require_trailer(self):
         self.git("switch", "--quiet", "-c", "task-1")
         self.run_cli("edit", "1", "-s", "doing")
         (self.root / "x").write_text("x\n")
         self.git("add", "x")
         self.git("commit", "--quiet", "-m", "Add x")
-        sha = self.git("rev-parse", "--short", "HEAD").strip()
-        result = self.run_cli("edit", "1", "-s", "review", exit_code=1)
-        self.assertIn(sha, result.stderr)
-        self.assertIn("Add x", result.stderr)
-        repo = Repo.open(self.root)
-        self.assertEqual(repo.find(repo.resolve("1")).task.frontmatter.status, "doing")
-        self.git("commit", "--amend", "--quiet", "-m", "Add x\n\nTask: TASK-1")
-        self.git("switch", "--quiet", "main")
-        (self.root / "main-change").write_text("main\n")
-        self.git("add", "main-change")
-        self.git("commit", "--quiet", "-m", "main change")
-        self.git("switch", "--quiet", "task-1")
-        self.git("merge", "--quiet", "--no-edit", "main")
-        (self.root / "chitty-commit").write_text("chitty\n")
-        self.git("add", "chitty-commit")
-        self.git("commit", "--quiet", "-m", "chitty: generated commit")
         self.run_cli("edit", "1", "-s", "review")
+        repo = Repo.open(self.root)
+        self.assertEqual(repo.find(repo.resolve("1")).task.frontmatter.status, "review")
 
     def test_skip_current_version_bypasses_gate(self):
         self.git("switch", "--quiet", "-c", "task-1")

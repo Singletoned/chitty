@@ -10,10 +10,9 @@ class TestWorkCommitsGuide(unittest.TestCase):
         for phrase in (
             "Chitty commits ticket-file edits only",
             "code, tests, or other implementation files",
-            "Task: <ID>",
             "then commit your changes",
             "refuses while the worktree has uncommitted files",
-            "refuses branch commits without one",
+            "Chitty adds a `Task: <ID>` trailer to each commit when it lands the ticket",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)

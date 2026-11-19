@@ -830,13 +830,8 @@ class Repo:
             and previous_status != "review"
         ):
             raise ChittyError("setting status done requires -s review first")
-        entering_review = edit.status == "review" and previous_status != "review"
         passing_review = previous_status == "review" and edit.status == "done"
-        if (
-            (entering_review or passing_review)
-            and (self.root / ".git").exists()
-            and not edit.skip_current_version
-        ):
+        if passing_review and (self.root / ".git").exists() and not edit.skip_current_version:
             self._require_current_version(stored)
             if uncommitted := git.uncommitted_paths(self.root):
                 listed = ", ".join(f"`{path}`" for path in uncommitted)
@@ -844,20 +839,6 @@ class Repo:
                     f"cannot move {task_id} to {edit.status}; the worktree has "
                     f"uncommitted changes: {listed}. Commit or resolve them before changing status"
                 )
-            if entering_review:
-                missing = git.commits_missing_trailer(
-                    git.branch_commits(self.root, self.config.main_branch), task_id
-                )
-                if missing:
-                    listed = "\n".join(
-                        f"{git.short_sha(self.root, commit.sha)} {commit.message.splitlines()[0]}"
-                        for commit in missing
-                    )
-                    raise ChittyError(
-                        f"cannot move {task_id} to review; these commits lack a Task: "
-                        f"{task_id} trailer:\n{listed}\nReword them (for example with "
-                        "`git rebase -i`) and retry"
-                    )
         if edit.replace_in_description:
             if edit.description is not None:
                 raise ChittyError("--replace-in-description cannot be combined with --description")

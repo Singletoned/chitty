@@ -1,6 +1,7 @@
 """Optional autocommit: commit exactly the paths a write touched."""
 
 import os
+import re
 import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -48,6 +49,71 @@ def commits_missing_trailer(commits: Sequence[Commit], task_id: TaskId) -> list[
         if not any(line.strip() == f"Task: {task_id}" for line in last):
             missing.append(commit)
     return missing
+
+
+def with_task_trailer(message: str, task_id: TaskId) -> str:
+    """Add this task's trailer, joining a final paragraph of trailers when possible."""
+    if not commits_missing_trailer([Commit("", message)], task_id):
+        return message
+    body = message.rstrip()
+    if not body:
+        return f"Task: {task_id}\n"
+    lines = body.splitlines()
+    last_paragraph = lines
+    for index in range(len(lines) - 1, -1, -1):
+        if not lines[index].strip():
+            last_paragraph = lines[index + 1 :]
+            break
+    if last_paragraph and all(re.fullmatch(r"[A-Za-z0-9-]+: .+", line) for line in last_paragraph):
+        return f"{body}\nTask: {task_id}\n"
+    return f"{body}\n\nTask: {task_id}\n"
+
+
+def add_task_trailers(root: Path, main_branch: str, branch: str, task_id: TaskId) -> int:
+    """Rewrite ticket commits with task trailers, preserving trees and authors."""
+    if _git(root, "rev-list", "--merges", f"{main_branch}..HEAD").strip():
+        raise ChittyError(f"cannot add task trailers to merge commits on {branch}")
+    commits = branch_commits(root, main_branch)
+    missing = {commit.sha for commit in commits if commits_missing_trailer([commit], task_id)}
+    if not missing:
+        return 0
+    old_tip = _git(root, "rev-parse", "HEAD").strip()
+    parent = _git(root, "rev-parse", main_branch).strip()
+    for commit in commits:
+        metadata = (
+            _git(root, "show", "-s", "--format=%an%x00%ae%x00%ad", "--date=raw", commit.sha)
+            .rstrip("\n")
+            .split("\0")
+        )
+        environment = os.environ.copy()
+        environment.update(
+            GIT_AUTHOR_NAME=metadata[0],
+            GIT_AUTHOR_EMAIL=metadata[1],
+            GIT_AUTHOR_DATE=metadata[2],
+        )
+        message = with_task_trailer(commit.message, task_id)
+        result = subprocess.run(
+            [
+                "git",
+                "commit-tree",
+                _git(root, "show", "-s", "--format=%T", commit.sha).strip(),
+                "-p",
+                parent,
+                "-F",
+                "-",
+            ],
+            input=message,
+            text=True,
+            capture_output=True,
+            cwd=root,
+            env=environment,
+            check=False,
+        )
+        if result.returncode:
+            raise ChittyError(f"`git commit-tree` failed in {root}:\n{result.stderr.strip()}")
+        parent = result.stdout.strip()
+    _git(root, "update-ref", f"refs/heads/{branch}", parent, old_tip)
+    return len(missing)
 
 
 def changed_files(root: Path, base: str, paths: Sequence[str]) -> list[str]:
