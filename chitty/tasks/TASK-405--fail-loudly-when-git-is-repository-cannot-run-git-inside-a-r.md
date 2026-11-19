@@ -27,6 +27,10 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 - [ ] Example test: `is_repository` on a path that does not exist, and on a regular file, raises `ChittyError` naming the resolved path, both with `git` on `PATH` and without it. Fails on `main`, which returns `False` for the missing path and raises `NotADirectoryError` for the file.
 - [ ] No-regression guard, passing before and after the change: with `git` on `PATH`, `True` for a work tree root and a subdirectory of it, `False` with the directory set to a repository `.git` directory and for a plain temporary directory outside any repository. `make check` passes.
 
+## Plan
+
+Update git.is_repository to validate the resolved directory before invoking git, and distinguish missing git from a missing directory using nearest-ancestor .git markers via lexists. Add Hypothesis coverage and examples in tests/test_git.py, first run regression tests against the current implementation, then run formatting and make check.
+
 ## History
 
 - 2026-11-19T08:43:02Z lively-quartz-crane → planning
@@ -40,3 +44,4 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 - 2026-11-19T08:46:58Z lively-quartz-crane cold-read → planning
 - 2026-11-19T08:47:02Z lively-quartz-crane planning → todo
 - 2026-11-19T08:47:30Z nimble-pearl-eel todo → doing
+- 2026-11-19T08:48:22Z nimble-pearl-eel: wrote the plan
