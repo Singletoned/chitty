@@ -1,6 +1,6 @@
 ---
 title: Add an optional `landing_check` setting that replaces `check` when landing
-status: review
+status: done
 priority: medium
 created: 2026-11-19
 ---
@@ -44,6 +44,13 @@ Integration regressions verified red with both landing callers temporarily resto
 
 Additional baseline checks: with the review caller using landing_command but the pending caller still passing check, the pending integration test raises `landing check exited with status 1`. Without landing_check in the command validator, the blank-setting test fails because `chitty list` exits 0 instead of 1.
 
+Reviewed: Complete diff inspected; no prior review findings.
+1: pass - `make check` ran 777 tests OK, including all five selection cases; worker note records NotImplementedError failures.
+2: pass - `make check` ran both review cases OK; worker note records baseline check/check for the set case.
+3: pass - `make check` ran pending landing OK; worker notes record status 1 failures with both callers unchanged and with only review changed.
+4: pass - `make check` ran both loading cases OK; worker note records blank setting baseline exited 0 instead of 1.
+5: pass - inspected `docs/plan/config.md` and `README.md`; `make check` passed ruff, pyright, and 777 tests.
+
 ## Summary
 
 Implemented optional landing_check selection for review and pending landing while preserving check before agent sessions. Added five selection cases, config-loading coverage, review and pending integration regressions, and config/README docs. Verified with `python -m unittest tests.test_landing_check_setting` and `make check` (ruff, pyright, 775 suites). No follow-up required.
@@ -64,3 +71,5 @@ Implemented optional landing_check selection for review and pending landing whil
 - 2026-11-19T20:49:51Z brisk-white-otter: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T20:50:41Z brisk-white-otter: changed notes
 - 2026-11-19T20:50:50Z brisk-white-otter doing → review
+- 2026-11-19T21:13:44Z honest-jade-zander: changed notes
+- 2026-11-19T21:13:44Z honest-jade-zander review → done
