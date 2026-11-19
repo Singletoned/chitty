@@ -36,6 +36,10 @@ Out of scope: setting `landing_check` in this repository's `chitty.toml` (a late
 
 Add landing_check configuration validation and landing_command selection, route both landing paths through it while preserving check for preflight/worktree checks, and add focused regression tests for selection, review/pending landing, and config loading. Update config and README documentation, run required red/green tests and make check, then commit implementation with Task: TASK-430.
 
+## Notes
+
+Confirmed all five landing_command regression cases fail while the function raises NotImplementedError (python -m unittest tests.test_landing_check_setting). The required test-first failure is recorded.
+
 ## History
 
 - 2026-11-19T18:41:20Z daring-amber-kestrel → planning
@@ -48,3 +52,4 @@ Add landing_check configuration validation and landing_command selection, route 
 - 2026-11-19T18:43:56Z daring-amber-kestrel planning → todo
 - 2026-11-19T20:35:29Z witty-lilac-falcon todo → doing
 - 2026-11-19T20:41:56Z brisk-white-otter: wrote the plan
+- 2026-11-19T20:42:46Z brisk-white-otter: changed notes
