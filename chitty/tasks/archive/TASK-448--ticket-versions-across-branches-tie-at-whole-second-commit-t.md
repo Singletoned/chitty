@@ -19,3 +19,4 @@ Archived as covered by the ticket-state work: `TASK-367`, `TASK-378`, `TASK-386`
 - 2026-11-19T20:55:22Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:23Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:56:47Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:56:50Z sunny-white-dormouse backlog → archived
