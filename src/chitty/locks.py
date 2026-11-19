@@ -73,18 +73,42 @@ def run_lock(
         os.close(descriptor)
 
 
+# Lock files this process holds through `main_checkout_lock`, with how many
+# entries are open. `flock` belongs to an open file description, so a second
+# `os.open` and `flock` in the same process would wait on itself forever; a
+# nested entry (a store write inside a landing, or one write inside another)
+# reuses the held lock instead.
+_HELD_MAIN_CHECKOUT_LOCKS: dict[Path, int] = {}
+
+
 @contextmanager
 def main_checkout_lock(root: Path) -> Generator[None]:
-    """Serialize brief writes to a repository's primary checkout."""
+    """Serialize brief writes to a repository's primary checkout.
+
+    Re-entrant within one process: only the outermost entry takes and releases
+    the `flock`.
+    """
     directory = _directory(root)
     if directory is None:
         yield
         return
+    path = (directory / MAIN_CHECKOUT_LOCK).resolve()
+    if path in _HELD_MAIN_CHECKOUT_LOCKS:
+        _HELD_MAIN_CHECKOUT_LOCKS[path] += 1
+        try:
+            yield
+        finally:
+            _HELD_MAIN_CHECKOUT_LOCKS[path] -= 1
+        return
     directory.mkdir(parents=True, exist_ok=True)
-    descriptor = os.open(directory / MAIN_CHECKOUT_LOCK, os.O_RDWR | os.O_CREAT, 0o644)
+    descriptor = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
     try:
         fcntl.flock(descriptor, fcntl.LOCK_EX)
-        yield
+        _HELD_MAIN_CHECKOUT_LOCKS[path] = 1
+        try:
+            yield
+        finally:
+            del _HELD_MAIN_CHECKOUT_LOCKS[path]
     finally:
         os.close(descriptor)
 

@@ -108,3 +108,37 @@ class TestMainCheckoutLock(CliTestCase):
             text=True,
         ).stdout
         self.assertTrue(subject.startswith("chitty: edit TASK-1"))
+
+
+NESTED = """import subprocess, sys
+from pathlib import Path
+from chitty.locks import main_checkout_lock
+root, lock = Path(sys.argv[1]), sys.argv[2]
+probe = ("import fcntl, sys\\nf = open(sys.argv[1], 'a')\\n"
+         "try:\\n    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)\\n    print('free')\\n"
+         "except BlockingIOError:\\n    print('held')\\n")
+def state():
+    return subprocess.run([sys.executable, '-c', probe, lock], capture_output=True,
+                          text=True, check=True).stdout.strip()
+with main_checkout_lock(root):
+    with main_checkout_lock(root):
+        pass
+    print('after inner:', state())
+print('after outer:', state())
+"""
+
+
+class TestMainCheckoutLockReentry(CliTestCase):
+    def test_nested_entry_in_one_process_does_not_deadlock(self):
+        subprocess.run(["git", "init", "--quiet", "-b", "main"], cwd=self.root, check=True)
+        lock = self.root / ".git/chitty/run/main-checkout.lock"
+        result = subprocess.run(
+            [sys.executable, "-c", NESTED, str(self.root), str(lock)],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
+        self.assertEqual(
+            result.stdout.splitlines(), ["after inner: held", "after outer: free"], result.stderr
+        )
