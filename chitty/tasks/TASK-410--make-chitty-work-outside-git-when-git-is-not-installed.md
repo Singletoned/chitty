@@ -1,6 +1,6 @@
 ---
 title: Make Chitty work outside Git when `git` is not installed
-status: doing
+status: review
 created: 2026-11-19
 ---
 
@@ -28,6 +28,14 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 
 Add tests in tests/test_no_git_installed.py for the outside-Git command equivalence and Git failure behavior. First run the focused regression tests against current code and record the failures. Then guard dirty_paths/current_branch/git_common_dir with git.is_repository(root), preserving empty results outside Git; allow command failures inside repositories to surface as ChittyError, including git_common_dir stderr. Run formatting and make check, then commit implementation and tests with the required Task trailer.
 
+## Notes
+
+Regression tests were run before the fix: both helper cases failed as expected (missing Git raised FileNotFoundError outside a repository; corrupt Git index was hidden as an empty dirty-path set). The new command-equivalence coverage exercises list, show, path, next, edit, note, check and move outside Git; it does not yet cover archive or compare resulting filesystem snapshots, so acceptance criterion 1 is only partially covered. make check passes.
+
+## Summary
+
+Implemented guarded Git helper calls and added regression tests for no-Git helper behavior, corrupt-index error propagation, and command output equivalence for the core outside-Git commands. Verification: focused unittest and make check pass. Follow-up: complete criterion 1 archive and filesystem-content comparison coverage.
+
 ## History
 
 - 2026-11-19T09:13:54Z lively-quartz-crane → planning
@@ -40,3 +48,5 @@ Add tests in tests/test_no_git_installed.py for the outside-Git command equivale
 - 2026-11-19T09:21:21Z lively-quartz-crane cold-read → todo
 - 2026-11-19T09:21:56Z tidy-pearl-otter todo → doing
 - 2026-11-19T09:22:57Z tidy-pearl-otter: wrote the plan
+- 2026-11-19T09:26:33Z tidy-pearl-otter: changed notes, summary
+- 2026-11-19T09:26:33Z tidy-pearl-otter doing → review
