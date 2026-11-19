@@ -1,6 +1,6 @@
 ---
 title: Serialise writes and landings in the main checkout with one short lock
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -357,3 +357,4 @@ Main-checkout locking now serializes both processes and concurrent threads while
 - 2026-11-19T23:18:13Z sunny-ochre-gannet review → doing
 - 2026-11-19T23:20:46Z jolly-yellow-badger: wrote the plan
 - 2026-11-19T23:22:10Z jolly-yellow-badger: changed notes, summary
+- 2026-11-19T23:22:12Z jolly-yellow-badger doing → review
