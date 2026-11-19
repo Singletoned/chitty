@@ -24,6 +24,10 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 - [ ] Tests inside a real repository with `git` on `PATH`, where `.git/index` is overwritten with `garbage` after `git init` (so `git rev-parse --is-inside-work-tree` prints `true` but `git status` exits 128 with `index file smaller than expected`): `git.dirty_paths` raises `ChittyError` whose message contains `index file smaller than expected`. Fails on `main`, which returns an empty set. Also, in a root outside Git with `PATH` set to an empty directory: `git.dirty_paths` returns `set()`, and `git.current_branch` and `config.git_common_dir` return `None` (each fails on `main` with `FileNotFoundError`).
 - [ ] `make check` passes.
 
+## Plan
+
+Add tests in tests/test_no_git_installed.py for the outside-Git command equivalence and Git failure behavior. First run the focused regression tests against current code and record the failures. Then guard dirty_paths/current_branch/git_common_dir with git.is_repository(root), preserving empty results outside Git; allow command failures inside repositories to surface as ChittyError, including git_common_dir stderr. Run formatting and make check, then commit implementation and tests with the required Task trailer.
+
 ## History
 
 - 2026-11-19T09:13:54Z lively-quartz-crane → planning
@@ -35,3 +39,4 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 - 2026-11-19T09:21:21Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-19T09:21:21Z lively-quartz-crane cold-read → todo
 - 2026-11-19T09:21:56Z tidy-pearl-otter todo → doing
+- 2026-11-19T09:22:57Z tidy-pearl-otter: wrote the plan
