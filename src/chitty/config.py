@@ -12,7 +12,7 @@ from typing import Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
-from chitty import __version__
+from chitty import __version__, git
 from chitty.errors import ChittyError
 from chitty.ids import PREFIX_RE
 
@@ -23,7 +23,7 @@ ROOT_ENV = "CHITTY_ROOT"
 CHITTY_VERSION = __version__
 LIST_WIDTH = 100
 DEFAULT_AGENT_TIMEOUT = 7200
-FIRST_WORKFLOW_VERSION = "0.5.0"
+LAST_RUNNER_DEFAULT_VERSION = "0.5.0"
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
@@ -41,6 +41,7 @@ review = true
 # agent_command = "pi -p {{prompt}}"
 # work_model = "provider/model" # default for work sessions when the command has no model
 # review_model = "provider/model" # default for review sessions when the command has no model
+# rebase_model = "provider/model" # default for rebase sessions when the command has no model
 archive = "move" # or "delete"; retain completed files or delete them
 
 [contexts.tasks]
@@ -95,6 +96,7 @@ class RepoConfig(BaseModel):
     agent_commands: dict[str, str] = {}
     work_model: str | None = None
     review_model: str | None = None
+    rebase_model: str | None = None
     archive: Literal["move", "delete"] = "move"
     job_order: list[str] | None = None
     protected_paths: list[str] = []
@@ -139,7 +141,7 @@ class RepoConfig(BaseModel):
             raise ValueError("must not be empty")
         return value
 
-    @field_validator("work_model", "review_model")
+    @field_validator("work_model", "review_model", "rebase_model")
     @classmethod
     def _model(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():
@@ -308,7 +310,14 @@ def resolve_workflow(workflow: str | None, chitty_version: str | None) -> str:
         key = version_key(chitty_version)
     except ChittyError:
         return "runner"
-    return "runner" if key < version_key(FIRST_WORKFLOW_VERSION) else "tickets"
+    # Treat trailing zero components as equivalent for this compatibility boundary.
+    normalized = key
+    while normalized and normalized[-1] == 0:
+        normalized = normalized[:-1]
+    boundary = version_key(LAST_RUNNER_DEFAULT_VERSION)
+    while boundary and boundary[-1] == 0:
+        boundary = boundary[:-1]
+    return "runner" if normalized <= boundary else "tickets"
 
 
 def _version_key(value: str) -> tuple[int, ...]:
@@ -409,6 +418,8 @@ def _same_git_repository(owner: Path, root: Path | None) -> bool:
 
 @cache
 def git_common_dir(root: Path) -> Path | None:
+    if not git.is_repository(root):
+        return None
     result = subprocess.run(
         ["git", "rev-parse", "--git-common-dir"],
         cwd=root,
@@ -417,7 +428,8 @@ def git_common_dir(root: Path) -> Path | None:
         check=False,
     )
     if result.returncode:
-        return None
+        command = "git rev-parse --git-common-dir"
+        raise ChittyError(f"`{command}` failed in {root}:\n{result.stderr.strip()}")
     common_dir = Path(result.stdout.strip())
     return (root / common_dir).resolve() if not common_dir.is_absolute() else common_dir.resolve()
 

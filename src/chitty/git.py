@@ -1,5 +1,6 @@
 """Optional autocommit: commit exactly the paths a write touched."""
 
+import os
 import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -173,6 +174,119 @@ def restore_sources(root: Path, originals: dict[Path, tuple[bytes, str]]) -> Non
         pass
 
 
+def branch_tips(root: Path) -> dict[str, str]:
+    """Return commit IDs for local and remote-tracking refs, excluding symrefs."""
+    output = _git(
+        root,
+        "for-each-ref",
+        "--format=%(refname)%09%(objectname)%09%(symref)",
+        "refs/heads",
+        "refs/remotes",
+    )
+    return {
+        ref: commit
+        for line in output.splitlines()
+        for ref, commit, symref in [line.split("\t")]
+        if not symref
+    }
+
+
+def is_ancestor(root: Path, ancestor: str, descendant: str) -> bool:
+    """Whether ancestor is reachable from descendant."""
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor, descendant],
+        check=False,
+        cwd=root,
+        capture_output=True,
+    )
+    if result.returncode in (0, 1):
+        return result.returncode == 0
+    command = f"git merge-base --is-ancestor {ancestor} {descendant}"
+    raise ChittyError(f"`{command}` failed in {root}:\n{result.stderr.decode().strip()}")
+
+
+def ref_commit(root: Path, ref: str) -> str | None:
+    """Resolve a ref or commit-ish to a commit ID; return None if absent/unborn."""
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}"],
+        check=False,
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        return result.stdout.strip()
+    if result.returncode == 1:
+        return None
+    raise ChittyError(
+        f"`git rev-parse --verify --quiet {ref}^{{commit}}` failed in {root}:\n"
+        f"{result.stderr.strip()}"
+    )
+
+
+def files_at(root: Path, ref: str, directories: Sequence[Path]) -> list[tuple[Path, str]]:
+    """Read all blobs below directories at a ref tip."""
+    objects: list[tuple[str, Path]] = []
+    seen: set[Path] = set()
+    for directory in directories:
+        output = _git(root, "ls-tree", "-r", "-z", "--full-tree", ref, "--", str(directory))
+        for entry in output.split("\0"):
+            if not entry:
+                continue
+            metadata, filename = entry.split("\t", 1)
+            _mode, kind, object_id = metadata.split()
+            if kind != "blob":
+                continue
+            path = Path(filename)
+            if path not in seen:
+                seen.add(path)
+                objects.append((object_id, path))
+    contents = _read_blobs(root, objects)
+    files: list[tuple[Path, str]] = []
+    for object_id, path in objects:
+        result = contents.get((object_id, path))
+        if result is None:
+            raise ChittyError(f"selected Git blob is missing: {path}")
+        files.append((path, result[1]))
+    return files
+
+
+def changed_since_split(root: Path, ref: str, against: str, paths: Sequence[Path]) -> bool:
+    """Whether ref changed any selected path since diverging from against."""
+    result = subprocess.run(
+        ["git", "merge-base", ref, against], check=False, cwd=root, capture_output=True, text=True
+    )
+    if result.returncode == 1:
+        raise ChittyError(f"refs {ref} and {against} have unrelated histories")
+    if result.returncode != 0:
+        raise ChittyError(
+            f"`git merge-base {ref} {against}` failed in {root}:\n{result.stderr.strip()}"
+        )
+    if not paths:
+        return False
+    diff = subprocess.run(
+        [
+            "git",
+            "--literal-pathspecs",
+            "diff",
+            "--quiet",
+            result.stdout.strip(),
+            ref,
+            "--",
+            *map(str, paths),
+        ],
+        check=False,
+        cwd=root,
+        capture_output=True,
+    )
+    if diff.returncode in (0, 1):
+        return diff.returncode == 1
+    raise ChittyError(
+        f"`git diff --quiet --literal-pathspecs {result.stdout.strip()} {ref} -- ...` "
+        f"failed in {root}:\n{diff.stderr.decode().strip()}"
+    )
+
+
 def main_files(
     root: Path, branch: str, directories: Sequence[Path]
 ) -> list[tuple[Path, str]] | None:
@@ -255,19 +369,46 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     return files
 
 
+def repository_answer(
+    command: Sequence[str], directory: Path, returncode: int, stdout: str, stderr: str
+) -> bool:
+    if returncode == 0:
+        return stdout.strip() == "true"
+    if returncode == 128 and "not a git repository" in stderr:
+        return False
+    shown = " ".join(command)
+    raise ChittyError(f"`{shown}` failed in {directory}:\n{stderr.strip()}")
+
+
 def is_repository(directory: Path) -> bool:
     """Whether ``directory`` is inside a Git worktree."""
+    directory = directory.resolve()
+    if not directory.is_dir():
+        raise ChittyError(f"Not a directory: {directory}")
     try:
         result = subprocess.run(
             ["git", "rev-parse", "--is-inside-work-tree"],
             check=False,
             cwd=directory,
+            env={**os.environ, "LC_ALL": "C"},
             capture_output=True,
             text=True,
         )
-    except FileNotFoundError:
+    except FileNotFoundError as error:
+        for parent in (directory, *directory.parents):
+            marker = parent / ".git"
+            if os.path.lexists(marker):
+                raise ChittyError(
+                    f"`git` is unavailable on PATH, but repository marker exists: {marker}"
+                ) from error
         return False
-    return result.returncode == 0 and result.stdout.strip() == "true"
+    return repository_answer(
+        ["git", "rev-parse", "--is-inside-work-tree"],
+        directory,
+        result.returncode,
+        result.stdout,
+        result.stderr,
+    )
 
 
 def is_linked_worktree(directory: Path) -> bool:
@@ -310,10 +451,9 @@ def main_checkout(root: Path) -> Path:
 
 def current_branch(root: Path) -> str | None:
     """Return the checked-out branch, or ``None`` outside Git or when detached."""
-    try:
-        branch = _git(root, "branch", "--show-current").strip()
-    except ChittyError:
+    if not is_repository(root):
         return None
+    branch = _git(root, "branch", "--show-current").strip()
     return branch or None
 
 
@@ -347,14 +487,26 @@ def has_local_branch(root: Path, branch: str) -> bool:
     return branch in branches.splitlines()
 
 
+def has_branch_ref(root: Path, branch: str) -> bool:
+    """Whether a local or remote branch ref exists; Git errors are surfaced."""
+    refs = _git(root, "for-each-ref", "--format=%(refname)", "refs/heads", "refs/remotes")
+    for ref in refs.splitlines():
+        if ref == f"refs/heads/{branch}":
+            return True
+        if ref.startswith("refs/remotes/"):
+            _, _, remote_branch = ref.removeprefix("refs/remotes/").partition("/")
+            if remote_branch == branch:
+                return True
+    return False
+
+
 def dirty_paths(root: Path, directory: Path) -> set[Path]:
     """Return changed or untracked paths below ``directory`` in this worktree."""
-    try:
-        lines = _git(
-            root, "status", "--porcelain", "--untracked-files=all", "--", str(directory)
-        ).splitlines()
-    except ChittyError:
+    if not is_repository(root):
         return set()
+    lines = _git(
+        root, "status", "--porcelain", "--untracked-files=all", "--", str(directory)
+    ).splitlines()
     return {Path(line[3:]) for line in lines if len(line) > 3}
 
 
@@ -432,7 +584,11 @@ def _read_blobs(
         content_end = position + int(size)
         content = stdout[position:content_end]
         position = content_end + 1
-        result[(object_id, path)] = (returned, content.decode())
+        try:
+            decoded = content.decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise ChittyError(f"Git file is not UTF-8: {path}") from error
+        result[(object_id, path)] = (returned, decoded)
     if process.returncode != 0:
         raise ChittyError(f"cannot read historical task files: {stderr.decode().strip()}")
     return result

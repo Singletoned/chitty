@@ -498,7 +498,8 @@ class Repo:
         )
         for note in notes:
             task = task.with_note(note)
-        task_id = TaskId(context.prefix, self.next_number(context))
+        task_id, provisional = self.new_id(context)
+        task = task.with_field("provisional", True if provisional else None)
         path = context.directory / ids.filename(task_id, ids.slugify(title))
         self._write(path, task.render())
         stored = StoredTask(task_id, context.name, path, False, task)
@@ -623,6 +624,33 @@ class Repo:
         paths = (stored.path, path) if path != stored.path else (path,)
         return Change(updated, paths, (updated,))
 
+    def new_id(self, context: Context) -> tuple[TaskId, bool]:
+        """Choose an ID appropriate to the context and current Git checkout."""
+        if self.config.contexts[context.name].random_ids:
+            return TaskId(context.prefix, self.next_number(context)), False
+        if git.is_repository(self.root):
+            main_branch = self._main_branch()
+            if self._current_branch() != main_branch:
+                if not git.has_branch_ref(self.root, main_branch):
+                    raise ChittyError(
+                        f"main branch {main_branch!r} has no ref; "
+                        "configure main_branch in chitty.toml"
+                    )
+                used = {
+                    task.id.number
+                    for task in self.all_tasks()
+                    if task.id.prefix == context.prefix and isinstance(task.id.number, str)
+                }
+                for _ in range(RANDOM_ID_ATTEMPTS):
+                    task_id = TaskId(context.prefix, ids.provisional_suffix(_provisional_draw))
+                    if task_id.number not in used:
+                        return task_id, True
+                raise ChittyError(
+                    f"no unused provisional ID in context {context.name} "
+                    f"after {RANDOM_ID_ATTEMPTS} attempts"
+                )
+        return TaskId(context.prefix, self.next_number(context)), False
+
     def next_number(self, context: Context) -> int:
         numbers = [
             number
@@ -630,17 +658,6 @@ class Repo:
             for p in self._files(context, archived)
             if isinstance(number := ids.parse_filename(p.name)[0].number, int)
         ]
-        active_directory = context.directory.relative_to(self.root)
-        archive_directory = context.archive_directory.relative_to(self.root)
-        for file in self._history():
-            if file.path.parent not in (active_directory, archive_directory):
-                continue
-            try:
-                task_id, _ = ids.parse_filename(file.path.name)
-            except ids.IdError:
-                continue
-            if task_id.prefix == context.prefix and isinstance(task_id.number, int):
-                numbers.append(task_id.number)
         if self.config.archive == "delete":
             numbers += self._deleted_numbers(context)
         if self.config.contexts[context.name].random_ids:
@@ -652,6 +669,8 @@ class Repo:
                 f"no unused random number in context {context.name!r} "
                 f"after {RANDOM_ID_ATTEMPTS} attempts"
             )
+        if git.is_repository(self.root) and self._current_branch() != self._main_branch():
+            raise ChittyError("sequential ticket numbers can only be allocated on main")
         return ids.next_number(numbers)
 
     def archive(self, task_id: TaskId) -> Change:
@@ -730,7 +749,7 @@ class Repo:
         self._require_current_version(stored)
         if target.name == stored.context:
             raise ChittyError(f"{task_id} is already in context {target.name!r}")
-        new_id = TaskId(target.prefix, self.next_number(target))
+        new_id, provisional = self.new_id(target)
         directory = target.archive_directory if stored.archived else target.directory
         old, new = str(task_id), str(new_id)
         moved_task = stored.task.with_field(
@@ -746,6 +765,7 @@ class Repo:
                 datetime.now(UTC), actor(), moved_task.frontmatter.status, "backlog"
             )
             moved_task = moved_task.with_field("status", "backlog")
+        moved_task = moved_task.with_field("provisional", True if provisional else None)
         moved = self._relocate(stored, new_id, target, directory, moved_task)
         touched = [stored.path, moved.path]
         changes: list[Change] = []
@@ -787,8 +807,9 @@ class Repo:
             )
         # Refuse before preparing the write, so a refused renumber changes nothing.
         self._prepare_write()
-        new_id = TaskId(context.prefix, self.next_number(context))
-        renumbered = self._relocate(stored, new_id, context, directory, stored.task)
+        new_id, provisional = self.new_id(context)
+        task = stored.task.with_field("provisional", True if provisional else None)
+        renumbered = self._relocate(stored, new_id, context, directory, task)
         change = self._commit(
             Change(renumbered, (stored.path, renumbered.path), (renumbered,)), "renumber"
         )
@@ -848,12 +869,13 @@ class Repo:
             ]
             # The task file is temporarily dirty until its autocommit below;
             # validate content here, but leave worktree cleanliness to `chitty check`.
-            _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
-            if blocking := errors(problems):
-                details = "\n".join(str(problem) for problem in blocking)
-                raise ChittyError(
-                    f"cannot finalize task write with unresolved problems:\n{details}"
-                )
+            if task_paths:
+                _, problems = fix(self, self.contexts(), task_paths, include_worktree_state=False)
+                if blocking := errors(problems):
+                    details = "\n".join(str(problem) for problem in blocking)
+                    raise ChittyError(
+                        f"cannot finalize task write with unresolved problems:\n{details}"
+                    )
         if self.config.autoformat:
             formatter.run(self.root, self.config.autoformat, existing)
         if self.config.autocommit:
@@ -1063,9 +1085,6 @@ def resolve_add_target(local: Repo | None, name: str | None) -> Target:
         raise ChittyError("no chitty.toml here or in any parent (run `chitty init`)")
     if name:
         return Target(local, local.context(name))
-    # Branch worktrees file discoveries as backlog; main keeps sequential IDs.
-    if git.is_linked_worktree(local.root) and "backlog" in local.config.contexts:
-        return Target(local, local.context("backlog"))
     return Target(local, local.default_context)
 
 
@@ -1111,6 +1130,32 @@ def _default_project(directory_name: str) -> str:
     return project
 
 
+def add_runner_workflow(text: str, recorded_version: str | None, pyproject: bool) -> str:
+    if pyproject:
+        header = re.search(r"(?m)^\[tool\.chitty\][ \t]*$", text)
+        if header is None:
+            return text
+        following = re.search(r"(?m)^\[", text[header.end() :])
+        end = header.end() + following.start() if following else len(text)
+        start = header.end()
+    else:
+        following = re.search(r"(?m)^\[", text)
+        start, end = 0, following.start() if following else len(text)
+    section = text[start:end]
+    if re.search(r"(?m)^[ \t]*workflow[ \t]*=", section):
+        return text
+    if resolve_workflow(None, recorded_version) != "runner":
+        return text
+    version = re.search(r"(?m)^[ \t]*chitty_version[ \t]*=", section)
+    if version is None:
+        raise ChittyError("cannot add workflow: Chitty section has no chitty_version line")
+    line_end = text.find("\n", start + version.start())
+    if line_end < 0 or line_end >= end:
+        return text + '\nworkflow = "runner"\n'
+    insertion = line_end + 1
+    return text[:insertion] + 'workflow = "runner"\n' + text[insertion:]
+
+
 def _add_missing_settings(
     text: str, settings: Mapping[str, object], pyproject: bool, project: str
 ) -> str:
@@ -1145,10 +1190,11 @@ def _add_missing_settings(
             ),
             ("work_model", '# work_model = "provider/model" # default for work sessions'),
             ("review_model", '# review_model = "provider/model" # default for review sessions'),
+            ("rebase_model", '# rebase_model = "provider/model" # default for rebase sessions'),
         )
         if key not in settings
         and not (key in {"setup", "check", "agent_command"} and f"{key} =" in text)
-        and not (key in {"work_model", "review_model"} and f"{key} =" in section)
+        and not (key in {"work_model", "review_model", "rebase_model"} and f"{key} =" in section)
     ]
     if not additions:
         return text
@@ -1162,6 +1208,10 @@ def _add_missing_agent_commands_table(
         return text
     prefix = "tool.chitty." if pyproject else ""
     return text.rstrip() + f"\n\n[{prefix}agent_commands]\n"
+
+
+def _provisional_draw(n: int) -> int:
+    return secrets.randbelow(n)
 
 
 def _random_number() -> int:
@@ -1402,6 +1452,13 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         updated = _add_missing_settings(
             text, settings, source == pyproject_path, _default_project(directory.name)
         )
+        recorded_version = settings.get("chitty_version")
+        if recorded_version != CHITTY_VERSION:
+            updated = add_runner_workflow(
+                updated,
+                recorded_version if isinstance(recorded_version, str) else None,
+                source == pyproject_path,
+            )
         updated = _add_missing_agent_commands_table(updated, settings, source == pyproject_path)
         updated = _add_missing_human_review(updated, config, source == pyproject_path)
         updated = _add_missing_backlog_context(updated, config, source == pyproject_path)

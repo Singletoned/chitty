@@ -7,7 +7,7 @@ from hypothesis import example, given
 from hypothesis import strategies as st
 
 from chitty import config as config_module
-from chitty.config import CHITTY_VERSION, load_repo_config, version_key
+from chitty.config import CHITTY_VERSION, load_repo_config
 from chitty.errors import ChittyError
 from chitty.store import Repo
 from tests.support import CONFIG, RepoTestCase
@@ -28,10 +28,12 @@ def expected_workflow(version: str | None) -> str:
     if version is None:
         return "runner"
     try:
-        key = version_key(version)
-    except ChittyError:
+        parts = tuple(int(part) for part in version.split("."))
+    except ValueError:
         return "runner"
-    return "runner" if key < version_key("0.5.0") else "tickets"
+    while parts and parts[-1] == 0:
+        parts = parts[:-1]
+    return "runner" if parts <= (0, 5) else "tickets"
 
 
 class TestResolveWorkflow(unittest.TestCase):
@@ -39,7 +41,13 @@ class TestResolveWorkflow(unittest.TestCase):
     @example("0.4.9")
     @example("0.5")
     @example("0.5.0")
+    @example("0.5.00")
     @example("0.5.0.0")
+    @example("0.5.0.1")
+    @example("0.5.1")
+    @example("0.10")
+    @example("0")
+    @example("0.0")
     @example(None)
     def test_missing_workflow_follows_setup_version(self, version):
         self.assertEqual(config_module.resolve_workflow(None, version), expected_workflow(version))
@@ -70,15 +78,18 @@ class TestWorkflowConfig(RepoTestCase):
 
     def test_missing_workflow_resolves_from_setup_version(self):
         cases = (
-            ("", "runner"),
-            ('chitty_version = "0.4.2"\n', "runner"),
-            ('chitty_version = "0.5.0"\n', "tickets"),
-            ('chitty_version = "1.0rc1"\n', "runner"),
+            ("", "runner", True),
+            ('chitty_version = "0.4.2"\n', "runner", True),
+            ('chitty_version = "0.5.0"\n', "runner", True),
+            ('chitty_version = "0.5.1"\n', "tickets", False),
+            ('chitty_version = "1.0rc1"\n', "runner", True),
         )
-        for version_line, expected in cases:
+        for version_line, expected, review in cases:
             with self.subTest(version_line=version_line):
                 (self.root / "chitty.toml").write_text(self.config_text(version_line))
-                self.assertEqual(load_repo_config(self.root).workflow, expected)
+                config = load_repo_config(self.root)
+                self.assertEqual(config.workflow, expected)
+                self.assertIs(config.review, review)
 
     def test_explicit_workflow_wins_over_setup_version(self):
         cases = (

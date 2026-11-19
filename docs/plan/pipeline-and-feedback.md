@@ -91,7 +91,17 @@ asking the first.
   problems, not building, is its purpose.
 - The planner checks each claim about code, commands and tests against the
   source as it writes it, runs `chitty check` before starting a reader, and
-  plans one ticket at a time (2026-11-18).
+  plans one ticket at a time (2026-11-18). When the tested code already
+  exists, the ticket lists wrong versions for the worker to run against the
+  tests, the planner runs each generator recipe against the real code before
+  the read, and distractor values are built from the drawn value.
+- These habits worked on their first use (2026-11-19, `TASK-370`, `TASK-373`,
+  `TASK-377`, `TASK-403`, `TASK-404`): checking a claim at the source showed a
+  revert was safe; the third-read split caught a claim written without
+  checking; asking whether the tests are good found unforced tie cases,
+  distractors equal to the ticket branch, and a criterion failing on `main`
+  for the wrong reason; a probe of about 20,000 cases per recipe agreed with
+  the implementation.
 - The original planning session then performs the sufficiency read on the
   ticket text, named code and documents, and reader report. For each criterion
   and the ticket as a whole, ask whether a plausible minimal implementation
