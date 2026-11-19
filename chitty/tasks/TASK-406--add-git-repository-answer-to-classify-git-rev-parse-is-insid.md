@@ -47,9 +47,11 @@ Review failed (tests): Newly discovered coverage gaps below; the earlier integra
 
 Expanded all nonzero diagnostic tests to vary stdout and assert command, directory, and stripped stderr in each error case. Focused tests pass. make check exited 0 with 690 tests; its wrapper returned exit 1 after test success due to the repo test runner reporting chitty run configuration errors from fixtures.
 
+Re-ran make check after the coverage update: Ruff, Pyright, formatting, and all 690 tests report success, but make check itself exits 1. The output includes fixture-emitted chitty run configuration errors (missing autocommit in temporary fixture repositories). No source or configuration outside this ticket was changed. This is recorded for review; the code-focused checks and complete test suite pass.
+
 ## Summary
 
-Expanded TASK-406 nonzero-result property coverage: phrase cases vary status, stdout, and directory; error cases assert command, directory, and stripped stderr including case-variant diagnostics. Focused tests pass; make check printed OK for all 690 tests, though its wrapper exited 1 after fixture-generated chitty run configuration errors. Follow-up: none.
+Expanded nonzero diagnostic property tests to vary stdout/status/directory and assert command, directory, and stripped stderr for all expected errors. Focused tests pass; Ruff, formatting, Pyright, and all 690 tests pass. make check nevertheless exits 1 after tests print OK, with fixture-generated Chitty configuration errors in temporary repositories. Commit 0c64429b contains the test changes; no follow-up code work remains.
 
 ## History
 
@@ -82,3 +84,4 @@ Expanded TASK-406 nonzero-result property coverage: phrase cases vary status, st
 - 2026-11-19T09:08:35Z kind-indigo-wren review → doing
 - 2026-11-19T09:10:17Z brisk-silver-wren: wrote the plan
 - 2026-11-19T09:11:48Z brisk-silver-wren: changed notes, summary
+- 2026-11-19T09:13:13Z brisk-silver-wren: changed notes, summary
