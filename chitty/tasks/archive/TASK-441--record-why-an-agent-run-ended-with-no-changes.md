@@ -19,3 +19,4 @@ Archived: folded into `TASK-276`, whose agent-phase errors now name the per-sess
 - 2026-11-19T20:55:13Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:14Z sunny-white-dormouse: changed notes
 - 2026-11-19T21:12:51Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:12:56Z sunny-white-dormouse backlog → archived
