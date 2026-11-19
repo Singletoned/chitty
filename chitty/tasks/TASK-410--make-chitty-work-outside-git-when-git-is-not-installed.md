@@ -1,6 +1,6 @@
 ---
 title: Make Chitty work outside Git when `git` is not installed
-status: doing
+status: review
 created: 2026-11-19
 ---
 
@@ -37,9 +37,11 @@ Review failed (tests): Complete the specified equivalence regression; this is th
 2: pass - `make check` ran all 686 tests successfully, including both helper tests. Running the new tests against source extracted from main produced `ChittyError not raised` for the corrupt index and `FileNotFoundError` outside Git; separate calls against main printed `FileNotFoundError` for each of dirty_paths, current_branch and git_common_dir.
 3: pass - `make check` exited 0; ruff, pyright and all 686 tests passed.
 
+Completed acceptance criterion 1 follow-up: the equivalence test now archives by the HUMAN ID printed by move and compares relative file paths and contents with History timestamps normalized. Focused tests pass. `make check` passes (ruff, pyright, 686 unittest cases; Node checks run by target). Commit: 6d0a4691.
+
 ## Summary
 
-Implemented guarded Git helper calls and added regression tests for no-Git helper behavior, corrupt-index error propagation, and command output equivalence for the core outside-Git commands. Verification: focused unittest and make check pass. Follow-up: complete criterion 1 archive and filesystem-content comparison coverage.
+Completed outside-Git command equivalence coverage, including archive via the moved HUMAN ID and normalized filesystem snapshots. Verification: focused unittest passes; make check passes (ruff, pyright, 686 unittest cases, and remaining configured checks). No follow-ups.
 
 ## History
 
@@ -58,3 +60,5 @@ Implemented guarded Git helper calls and added regression tests for no-Git helpe
 - 2026-11-19T09:29:56Z quick-hazel-newt: changed acceptance criteria, notes
 - 2026-11-19T09:29:56Z quick-hazel-newt review → doing
 - 2026-11-19T09:32:31Z jolly-yellow-quail: wrote the plan
+- 2026-11-19T09:34:40Z jolly-yellow-quail: changed notes, summary
+- 2026-11-19T09:34:40Z jolly-yellow-quail doing → review
