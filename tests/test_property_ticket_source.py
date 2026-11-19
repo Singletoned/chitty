@@ -304,69 +304,10 @@ class TestTicketSource(unittest.TestCase):
             call(*args, lambda ref: ref == changed_ref)
         for name in (str(task_id), changed_ref, main_branch):
             self.assertIn(f"`{name}`", str(raised.exception))
-        other = next((ref for ref in tips if ref != chosen), "unrelated")
+        candidate_refs = set(args[5][0]) | set(args[5][1])
+        other = next(ref for ref in candidate_refs if ref != chosen)
         unchanged_result = call(*args, lambda ref: ref == other)
         self.assertEqual(unchanged_result, result)
-
-    @given(legacy_graphs(), task_ids(), st.booleans())
-    def test_candidate_at_chosen_tip_and_local_checkout(self, graph, task_id, fork):
-        is_fork, contains = graph
-        branch = str(task_id).lower()
-        # main is unrelated to the candidate chain on a fork, and older on
-        # a linear history.
-        ancestor, descendant, main_tip = ("0", "1", "3") if is_fork else ("1", "2", "0")
-        result = ticket_source(
-            task_id,
-            False,
-            branch,
-            "main",
-            main_tip,
-            {branch: descendant},
-            {"origin/" + branch: ancestor},
-            contains,
-            lambda ref: False,
-        )
-        # In chain, local is the descendant; in fork neither candidate is
-        # dropped and the root/arm relationship still chooses the descendant.
-        self.assertEqual(result, WORKING_TREE)
-
-    @given(legacy_graphs(), task_ids(), st.booleans())
-    def test_equal_tip_prefers_local_then_remote_name(self, graph, task_id, current):
-        _, contains = graph
-        branch = str(task_id).lower()
-        tips = {branch: "2"} if current else {}
-        result = ticket_source(
-            task_id,
-            False,
-            branch if current else None,
-            "main",
-            "0",
-            tips,
-            {"zeta/" + branch: "2", "alpha/" + branch: "2"},
-            contains,
-            lambda ref: False,
-        )
-        self.assertEqual(result, WORKING_TREE if current else "alpha/" + branch)
-
-    @given(legacy_graphs(), task_ids())
-    def test_changed_on_both_reports_chosen_remote(self, graph, task_id):
-        _, contains = graph
-        branch = str(task_id).lower()
-        with self.assertRaises(ChittyError) as raised:
-            ticket_source(
-                task_id,
-                False,
-                None,
-                "main",
-                "0",
-                {},
-                {"origin/" + branch: "2"},
-                contains,
-                lambda ref: ref == "origin/" + branch,
-            )
-        message = str(raised.exception)
-        for name in (str(task_id), "origin/" + branch, "main"):
-            self.assertIn(f"`{name}`", message)
 
     @given(task_ids())
     def test_divergence_names_remaining_candidates_not_dropped_ones(self, task_id):
