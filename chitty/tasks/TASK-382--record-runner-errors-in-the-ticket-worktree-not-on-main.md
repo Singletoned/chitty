@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: planning
+status: todo
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -13,18 +13,18 @@ The code change is built on this branch and every review found it correct; the t
 
 The change, as built: `_run_ticket` builds `branch_repo = Repo(worktree, main_repo.config)` once the worktree exists. `_record_ticket_error(branch_repo, action, phase, error)` reads the old status from it and writes through it, so the edit commits on the ticket branch and `main` gets no error commit. `_run_check(branch_repo, action, check, selected_status)` and `_handle_check_failure(branch_repo, ...)` use it too, and `_handle_check_failure` no longer calls `git.main_checkout`. `skip_current_version=True` stays on the edit until `TASK-385`. Only the ticket file is committed.
 
-Tests, in `tests/test_run_errors_on_branch.py`, class `TestRunErrorsOnBranch(TestRunClaimsOnMain)`, both already written on this branch:
+Tests, in `tests/test_run_errors_on_branch.py`, class `TestRunErrorsOnBranch(TestRunClaimsOnMain)`, both already written on this branch. The class also inherits two tests from `TestRunClaimsOnMain`, and the file also holds `TestReviewSetupErrorOnBranch`, which belongs to `TASK-422`; neither is verified by this ticket.
 
 - Fixture, shared: the `TestRunClaimsOnMain` repository (Git, `autocommit = true`, `setup = "true"`, ticket `TASK-1`, file `chitty/tasks/TASK-1--claim-me.md`), with `chitty edit TASK-1 -s doing` and `git branch task-1 main`.
 - `test_work_setup_failure_is_only_recorded_on_branch`: commit `setup = "false"` to `chitty.toml` on `main`, record `git rev-parse main`, run `chitty run --ticket TASK-1`.
 - `test_agent_failure_keeps_error_and_message_on_branch`: replace `bin/fake` with a script that exits 7, record `git rev-parse main`, run `chitty run --ticket TASK-1`; the output contains `doing → error`.
-- Assertions in both, all read after the run: `git rev-parse main` is unchanged; `git show task-1:<ticket path>` contains `status: error`, `Runner error (<phase>)` (`setup` or `agent`) and the failure's message (`setup exited with status 1`, or `7`); `git show task-1~1:<ticket path>` contains neither `status: error` nor that note, so the newest commit on the branch is the one that recorded it; `git show main:<ticket path>` contains `status: doing`; `chitty show TASK-1 --json` in the main checkout reports `error`; `next_action(Repo.open(<main checkout>), modes=("errors",))` returns `TASK-1`.
+- Assertions in both, all read after the run: `git rev-parse main` is unchanged; `git show task-1:<ticket path>` contains `status: error`, `Runner error (<phase>)` (`setup` or `agent`) and the failure's message (`setup exited with status 1`, or `agent exited with status 7`); `git show task-1~1:<ticket path>` contains neither `status: error` nor that note, so the newest commit on the branch is the one that recorded it; `git show main:<ticket path>` contains `status: doing`; `chitty show TASK-1 --json` in the main checkout reports `error`; `next_action(Repo.open(<main checkout>), modes=("errors",))` returns `TASK-1`.
 
 No property: two fixed failure phases, both listed and tested; the behaviour drives real Git and runner processes.
 
 ## Acceptance Criteria
 
-- [ ] Both tests in `TestRunErrorsOnBranch` pass with every assertion listed in Tests, and fail before the change: run against `main`'s `src/chitty/run.py` (restore it afterwards) and record the failing assertion in a note
+- [ ] The two tests defined in `TestRunErrorsOnBranch`, `test_work_setup_failure_is_only_recorded_on_branch` and `test_agent_failure_keeps_error_and_message_on_branch`, pass with every assertion listed in Tests, and fail before the change: run against `main`'s `src/chitty/run.py` (restore it afterwards) and record the failing assertion in a note
 - [ ] Code check: `_handle_check_failure` takes the branch-side repo and its body has no `git.main_checkout` call (shown by `git diff main -- src/chitty/run.py`)
 - [ ] `make check` passes
 
@@ -64,6 +64,8 @@ Review failed (tests): The previous review findings remain unresolved; complete 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
 Planning 2026-11-19, with the owner: the three failed reviews were the ticket's fault, not the worker's: criterion 1 listed four failure cases and about twelve checks without describing the tests. Split: this ticket keeps the code and the two work-mode tests (now written by the planner); `TASK-422` and `TASK-423` take the other cases.
+
+Cold read 2026-11-19: both tests fail against `main`'s `run.py` at the first assertion, `git rev-parse main` unchanged, and pass on the branch. One `make check` run failed once in `tests.test_next.TestNext.test_run_cases` (`TASK-1: blocked → error`, expected exit 3) and the next passed; this looks like the known flaky test in the inbox suggestion of 2026-11-14, so rerun `make check` if it fails there.
 
 ## Summary
 
@@ -113,3 +115,5 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-19T13:30:03Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T13:30:20Z quick-ginger-lapwing planning → cold-read
 - 2026-11-19T13:33:37Z quick-ginger-lapwing cold-read → planning
+- 2026-11-19T13:33:41Z quick-ginger-lapwing: changed description, acceptance criteria, notes
+- 2026-11-19T13:33:41Z quick-ginger-lapwing planning → todo
