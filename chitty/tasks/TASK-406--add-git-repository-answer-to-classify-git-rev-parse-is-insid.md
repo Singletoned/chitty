@@ -27,7 +27,7 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 
 ## Plan
 
-Expand nonzero-status property coverage so every diagnostic/status case draws stdout from true, padded true, and arbitrary text, and every expected ChittyError verifies command, drawn directory, and stripped stderr. Include phrase-bearing diagnostics across arbitrary nonzero statuses and case variants with the same contextual assertions. Run focused and full checks, then commit the test change with Task: TASK-406.
+Add a property that always supplies status 128 with the lowercase phrase, drawn prefix and suffix, and STDOUTS. First verify the property fails against a throwaway mutant that raises for this valid case, then run focused tests and make check; record the evidence and commit the test change.
 
 ## Notes
 
@@ -108,3 +108,4 @@ Expanded nonzero diagnostic property tests to vary stdout/status/directory and a
 - 2026-11-19T09:33:31Z quick-ginger-lapwing blocked → review
 - 2026-11-19T10:35:59Z friendly-jade-otter: changed acceptance criteria, notes
 - 2026-11-19T10:35:59Z friendly-jade-otter review → doing
+- 2026-11-19T10:38:25Z vivid-hazel-wren: wrote the plan
