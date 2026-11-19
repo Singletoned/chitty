@@ -22,6 +22,10 @@ Test: in `tests/test_next.py`, next to `test_todo_dependency_must_be_done_on_mai
 - [ ] A test with a malformed body in a ticket other than the dependency on `main` still reports the dependency done; against the old code it raises `ChittyError` (recorded in the notes)
 - [ ] `chitty list` in this repository is timed before and after in the notes; `make check` passes
 
+## Plan
+
+Filter cached main-branch paths by parsed filename ID before parsing ticket contents. Add fixed-file regression tests for exact parse count and unrelated malformed body, verify both regressions fail on the old implementation, time chitty list before/after, then run make check and commit implementation.
+
 ## Notes
 
 Check failed before this session: check exited with status 2:
@@ -83,3 +87,4 @@ make: *** [check] Error 1
 
 - 2026-11-19T14:29:04Z quick-ginger-lapwing → doing
 - 2026-11-19T14:31:01Z plucky-umber-wren: changed notes
+- 2026-11-19T14:31:14Z plucky-umber-wren: wrote the plan
