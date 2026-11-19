@@ -12,7 +12,10 @@ This ticket needs refining.
 
 Suggestion origin: chitty
 
+Archived: done; `make release` already works in a temporary worktree (`scripts/release.sh`).
+
 ## History
 
 - 2026-11-19T20:55:33Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:34Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:56:54Z sunny-white-dormouse: changed notes
