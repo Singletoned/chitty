@@ -1,6 +1,6 @@
 ---
 title: Add the optional `rebase_model` setting for rebase sessions
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -54,6 +54,11 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 
 Planning decision 2026-11-19, with the owner, after three failed reviews: "directly after `review_model`" applies to a fresh `chitty init` only. An upgrade adds `rebase_model` in the block of missing settings, exactly as `work_model` is added today; placing settings neatly in an existing file is a separate job (a config reformat, its own ticket). Criterion 2 reworded to say so. Reverted the splice in `_add_missing_settings` (`src/chitty/store.py` now differs from `main` only by the `rebase_model` entry and its key in the set) and replaced the upgrade-adjacency test with `test_init_adds_rebase_model_once_when_upgrading`, which runs `init` twice and checks one line and valid TOML. The other-table test stays. `make check` passes.
 
+Reviewed: Previous upgrade adjacency and missing-newline findings were superseded by the documented planning decision; the other-table corruption regression is covered.
+1: pass - `make check` printed `Ran 686 tests` and `OK`; model selection tests exercise configured modes, unset rebase and explicit override.
+2: pass - `make check` printed `Ran 686 tests` and `OK`, including upgrade idempotence, TOML parsing, other-table preservation, blank validation and unknown mode; inspecting `INITIAL_CONFIG` printed the rebase comment immediately after review_model.
+3: pass - Both plan documents mention rebase_model and its use; `make check` printed `Ran 686 tests` and `OK`.
+
 ## Summary
 
 Implemented optional rebase_model and fixed init upgrade insertion to stay within the Chitty configuration table. Added regression coverage for another pyproject table containing review_model. Verification: focused model-default tests (9 pass), make format, make check (679 tests pass), and chitty fix (existing Markdown warnings only). Commit: 51a62c77. No follow-ups.
@@ -84,3 +89,5 @@ Implemented optional rebase_model and fixed init upgrade insertion to stay withi
 - 2026-11-19T10:00:28Z quick-ginger-lapwing: changed owner, acceptance criteria, notes
 - 2026-11-19T10:00:28Z quick-ginger-lapwing blocked → review
 - 2026-11-19T10:00:39Z quick-ginger-lapwing: ticked acceptance criteria
+- 2026-11-19T10:32:35Z witty-coral-gannet: changed notes
+- 2026-11-19T10:32:35Z witty-coral-gannet review → done
