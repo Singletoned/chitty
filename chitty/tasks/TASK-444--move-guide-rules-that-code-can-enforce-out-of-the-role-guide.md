@@ -12,7 +12,10 @@ The role guides total about 4,100 words (`plan.md` 1074, `review.md` 885, `cold-
 
 Suggestion origin: chitty
 
+Archived: its rules are tracked separately: `TASK-338` (prove new tests fail), `TASK-352` (guide word count), `TASK-358` (unreviewed work on main), `TASK-347` (file forms of text options), `TASK-453` (automatic `Task:` trailer), `TASK-343` (check when moving to review).
+
 ## History
 
 - 2026-11-19T20:55:17Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:18Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:53Z sunny-white-dormouse: changed notes
