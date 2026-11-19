@@ -72,6 +72,7 @@ chitty guide setup                # help an agent configure `chitty run`
 chitty guide work TASK-12         # instructions for one implementation ticket
 chitty guide review TASK-12       # instructions for one review ticket
 chitty guide plan                 # instructions for writing and refining tickets
+chitty guide rebase TASK-12       # instructions for finishing a stopped rebase
 ```
 
 Every command takes `--json`. `chitty --help` and `chitty <command> --help`
@@ -83,7 +84,7 @@ replaced. Existing unmarked blocks are migrated on the next init.
 and shows example commands. `chitty guide work`, `review`, and `plan` print the
 focused instructions for those roles from the packaged role files. The short
 block in `AGENTS.md` points agents started by hand to their matching role guide.
-Work, review and cold-read take an optional ticket ID; setup and planning do not.
+Work, review, cold-read and rebase take an optional ticket ID; setup and planning do not.
 Plain `chitty list` shows non-archived `planning`, `cold-read`, `todo`, `doing`,
 `blocked`, and `review` tasks across every context; repeat `-c` or `-s` to filter, including backlog and
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,

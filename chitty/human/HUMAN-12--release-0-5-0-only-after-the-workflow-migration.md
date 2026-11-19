@@ -1,6 +1,6 @@
 ---
 title: Release 0.5.0 only after the workflow migration
-status: todo
+status: done
 depends_on:
   - TASK-331
   - TASK-335
@@ -15,6 +15,12 @@ TASK-330 makes a missing `workflow` resolve to `tickets` for configs recorded at
 
 - [ ] `make release` for `0.5.0` runs only after TASK-331 and TASK-335 are `done`.
 
+## Notes
+
+Closed 2026-11-19: replaced by the `blocks-release` guard in `make release` (`TASK-412`). `0.5.0` was released early and yanked; the migration it waited for is `TASK-415` and `TASK-416`, both done.
+
 ## History
 
 - 2026-11-14T18:46:35Z friendly-ginger-adder → todo
+- 2026-11-19T13:53:20Z quick-ginger-lapwing: changed notes
+- 2026-11-19T13:53:20Z quick-ginger-lapwing todo → done

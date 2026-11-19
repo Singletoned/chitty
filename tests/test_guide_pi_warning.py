@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from click.testing import CliRunner
@@ -6,14 +7,18 @@ from hypothesis import strategies as st
 
 from chitty.actor import pi_session_environment_missing
 from chitty.cli import cli
+from tests.support import RepoTestCase
 
 _NONEMPTY = st.text(min_size=1).filter(lambda value: bool(value.strip()))
 _WHITESPACE = st.text(alphabet=st.sampled_from((" ", "\t", "\n", "\r", "\v", "\f")), min_size=1)
 _IDENTITY_VARIABLES = st.sampled_from(("PI_SESSION_ID", "CHITTY_PI_SESSION_ID", "CHITTY_ACTOR"))
 
 
-class TestGuidePiWarning(unittest.TestCase):
+class TestGuidePiWarning(RepoTestCase):
     def guide(self, env: dict[str, str | None]) -> str:
+        old_directory = os.getcwd()
+        os.chdir(self.root)
+        self.addCleanup(os.chdir, old_directory)
         result = CliRunner().invoke(cli, ["guide"], env=env, catch_exceptions=False)
         self.assertEqual(result.exit_code, 0, result.output)
         return result.stdout

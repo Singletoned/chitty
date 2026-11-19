@@ -1,6 +1,8 @@
+import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path, PurePosixPath
 from unittest import mock
@@ -11,6 +13,92 @@ from hypothesis import strategies as st
 from chitty import git
 from chitty.errors import ChittyError
 from tests.support import RepoTestCase
+
+# Standard output for non-zero statuses: `true`, padded `true`, or any text.
+STDOUTS = st.one_of(st.sampled_from(("true", " \ttrue ")), st.text())
+
+
+class TestRepositoryAnswer(RepoTestCase):
+    command = ("git", "rev-parse", "--is-inside-work-tree")
+    not_repository = "not a git repository"
+
+    @settings(max_examples=30, deadline=None)
+    @given(st.text())
+    def test_success_requires_exact_true_output(self, stderr):
+        self.assertTrue(git.repository_answer(self.command, self.root, 0, " \ttrue\n", stderr))
+        for stdout in ("false", "True", "TRUE", "truex", "xtrue", "true false", ""):
+            self.assertFalse(git.repository_answer(self.command, self.root, 0, stdout, stderr))
+
+    @settings(max_examples=30, deadline=None)
+    @given(st.text().filter(lambda text: text.strip() != "true"), st.text())
+    def test_success_other_output_is_false(self, stdout, stderr):
+        self.assertFalse(git.repository_answer(self.command, self.root, 0, stdout, stderr))
+
+    def assert_error_context(self, directory, stderr, code, stdout):
+        with self.assertRaises(ChittyError) as raised:
+            git.repository_answer(self.command, directory, code, stdout, stderr)
+        message = str(raised.exception)
+        self.assertIn("`git rev-parse --is-inside-work-tree`", message)
+        self.assertIn(str(directory), message)
+        self.assertIn(stderr.strip(), message)
+
+    @settings(max_examples=50, deadline=None)
+    @given(
+        st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
+        st.text(),
+        st.text(),
+        STDOUTS,
+        st.text(),
+    )
+    def test_phrase_only_classifies_status_128(self, code, before, after, stdout, directory_name):
+        stderr = before + self.not_repository + after
+        directory = self.root / directory_name
+        if code == 128:
+            self.assertFalse(git.repository_answer(self.command, directory, code, stdout, stderr))
+        else:
+            self.assert_error_context(directory, stderr, code, stdout)
+
+    @settings(max_examples=50, deadline=None)
+    @given(st.text(), st.text(), STDOUTS, st.text())
+    def test_status_128_phrase_always_means_not_a_repository(
+        self, before, after, stdout, directory_name
+    ):
+        stderr = before + self.not_repository + after
+        answer = git.repository_answer(
+            self.command, self.root / directory_name, 128, stdout, stderr
+        )
+        self.assertFalse(answer)
+
+    @settings(max_examples=30, deadline=None)
+    @given(
+        st.sampled_from(("Not a git repository", "NOT A GIT REPOSITORY")),
+        STDOUTS,
+        st.text(),
+    )
+    def test_repository_phrase_is_case_sensitive(self, stderr, stdout, directory_name):
+        self.assert_error_context(self.root / directory_name, stderr, 128, stdout)
+
+    @settings(max_examples=100, deadline=None)
+    @given(
+        st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
+        st.text().filter(lambda text: "not a git repository" not in text),
+        STDOUTS,
+        st.text(),
+    )
+    def test_other_failures_raise_with_context(self, code, stderr, stdout, directory_name):
+        self.assert_error_context(self.root / directory_name, stderr, code, stdout)
+
+    def test_status_128_without_repository_phrase_raises(self):
+        self.assert_error_context(self.root, "", 128, "true")
+
+    @settings(max_examples=100, deadline=None)
+    @given(st.integers(), st.text(), st.text())
+    def test_arbitrary_results_return_bool_or_raise_chitty_error(self, code, stdout, stderr):
+        try:
+            result = git.repository_answer(self.command, self.root, code, stdout, stderr)
+        except ChittyError:
+            return
+        self.assertIs(type(result), bool)
 
 
 class TestIsRepository(RepoTestCase):
@@ -73,6 +161,38 @@ class TestIsRepository(RepoTestCase):
         self.assertTrue(git.is_repository(nested))
         self.assertFalse(git.is_repository(self.root / ".git"))
         with tempfile.TemporaryDirectory() as temporary:
+            self.assertFalse(git.is_repository(Path(temporary)))
+
+    def test_invalid_repository_format_raises(self):
+        self.git_init()
+        config = self.root / ".git" / "config"
+        config.write_text(
+            config.read_text().replace(
+                "repositoryformatversion = 0", "repositoryformatversion = 99"
+            )
+        )
+        with self.assertRaisesRegex(ChittyError, "found 99"):
+            git.is_repository(self.root)
+
+    def test_not_repository_detection_uses_c_locale(self):
+        fake_bin = self.tmp / "fake-bin"
+        fake_bin.mkdir()
+        fake_git = fake_bin / "git"
+        fake_git.write_text(
+            "#!/bin/sh\n"
+            'if [ "$LC_ALL" = C ]; then\n'
+            '  echo "fatal: not a git repository" >&2\n'
+            "else\n"
+            '  echo "Schwerwiegend: Kein Git-Repository" >&2\n'
+            "fi\n"
+            "exit 128\n"
+        )
+        fake_git.chmod(0o755)
+        with (
+            tempfile.TemporaryDirectory() as temporary,
+            mock.patch.dict(os.environ, {"PATH": str(fake_bin), "LANG": "de_DE.UTF-8"}),
+        ):
+            os.environ.pop("LC_ALL", None)
             self.assertFalse(git.is_repository(Path(temporary)))
 
     def git_init(self):
@@ -189,6 +309,53 @@ class TestBranchTipFiles(RepoTestCase):
 
 
 class TestHistoricalFiles(RepoTestCase):
+    def test_read_blobs_handles_output_larger_than_pipe_buffers(self):
+        self.git("init", "--quiet")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        contents = {}
+        for index in range(5000):
+            path = Path(f"files/{index:04}.txt")
+            content = f"{index:04}" + "x" * 1019
+            (self.root / path).parent.mkdir(exist_ok=True)
+            (self.root / path).write_text(content)
+            contents[str(path)] = content
+        self.commit("large blob set")
+
+        script = f"""
+import json
+from pathlib import Path
+import chitty.git
+from chitty.git import _read_blobs
+
+source = Path(chitty.git.__file__).resolve()
+assert source.is_relative_to(Path({str(Path(git.__file__).resolve().parent.parent)!r}))
+objects = []
+for line in __import__("subprocess").run(
+    ["git", "ls-tree", "-r", "--full-tree", "HEAD"],
+    check=True, capture_output=True, text=True,
+).stdout.splitlines():
+    metadata, filename = line.split("\\t", 1)
+    object_id = metadata.split()[2]
+    if filename.startswith("files/"):
+        objects.append((object_id, Path(filename)))
+result = _read_blobs(Path.cwd(), objects)
+print(json.dumps({{str(path): content for (_, path), (_, content) in result.items()}}))
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=self.root,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=20,
+            env={
+                **os.environ,
+                "PYTHONPATH": str(Path(git.__file__).resolve().parent.parent),
+            },
+        )
+        self.assertEqual(json.loads(result.stdout), contents)
+
     def git(self, *args: str) -> str:
         result = subprocess.run(
             ["git", *args], cwd=self.root, check=True, capture_output=True, text=True

@@ -43,6 +43,7 @@ from chitty.store import (
 
 # Each lost race removes a candidate, so a few attempts are plenty.
 RUN_LOCK_ATTEMPTS = 10
+LANDING_ATTEMPTS = 3
 RUN_LOOP_PAUSE_SECONDS = 60
 AGENT_KILL_GRACE_SECONDS = 2
 # An agent that leaves its ticket unchanged is continued this many times at most.
@@ -573,7 +574,7 @@ def _run_session(
     continuing: bool,
 ) -> None:
     """Run one agent session; raise unless it exits 0 within `agent_timeout`."""
-    session = [*command, *arguments, *_model_arguments(repo, action, command, arguments)]
+    session = [*command, *arguments, *_model_arguments(repo, action.mode, command, arguments)]
     if continuing:
         session.append(CONTINUE_ARGUMENT)
     try:
@@ -691,10 +692,17 @@ def _preflight(repo: Repo, agent: str | None) -> None:
 
 
 def _model_arguments(
-    repo: Repo, action: NextAction, command: tuple[str, ...], arguments: tuple[str, ...]
+    repo: Repo, mode: str, command: tuple[str, ...], arguments: tuple[str, ...]
 ) -> tuple[str, ...]:
-    """Supply the role default only when the command has no explicit model."""
-    model = repo.config.work_model if action.mode == "work" else repo.config.review_model
+    """Supply the mode default only when the command has no explicit model."""
+    model_settings = {
+        "work": repo.config.work_model,
+        "review": repo.config.review_model,
+        "rebase": repo.config.rebase_model,
+    }
+    if mode not in model_settings:
+        raise ChittyError(f"unknown session mode {mode!r}")
+    model = model_settings[mode]
     if model is None or any(
         word == "--model" or word.startswith("--model=") for word in (*command, *arguments)
     ):
@@ -744,9 +752,9 @@ def _agent_command(
         if continuation:
             prompt = continuation_prompt(action.mode, ticket)
         elif repo.find(action.id).task.frontmatter.status == "error":
-            prompt = guide("repair", ticket)
+            prompt = guide("repair", ticket, directory=repo.root)
         else:
-            prompt = guide(action.mode, ticket)
+            prompt = guide(action.mode, ticket, directory=repo.root)
     is_repair = repo.find(action.id).task.frontmatter.status == "error"
     command_mode = "repair" if is_repair else action.mode
     rendered = render_command(words, command_mode, str(action.id), prompt)
@@ -991,20 +999,35 @@ def _land_locked(
         raise ChittyError(
             f"cannot land {action.id}; the branch changes Chitty's managed block in AGENTS.md"
         )
-    if conflicts := git.merge(worktree, main_branch):
-        listed = ", ".join(f"`{path}`" for path in conflicts)
-        raise ChittyError(f"cannot land {action.id}; merging `{main_branch}` conflicts in {listed}")
-    if changed := _changed_config(worktree, main_branch):
-        raise ChittyError(
-            f"cannot land {action.id}; the merged branch changes `{changed}`; "
-            "only `chitty init` on the main checkout may change it"
-        )
-    if changed := git.changed_files(worktree, main_branch, main_repo.config.protected_paths):
-        listed = ", ".join(f"`{path}`" for path in changed)
-        raise ChittyError(f"cannot land {action.id}; the branch changes protected files: {listed}")
-    _setup(setup, worktree)
-    _landing_check(check, worktree)
-    git.fast_forward(main_root, branch)
+    for attempt in range(LANDING_ATTEMPTS):
+        if conflicts := git.merge(worktree, main_branch):
+            listed = ", ".join(f"`{path}`" for path in conflicts)
+            raise ChittyError(
+                f"cannot land {action.id}; merging `{main_branch}` conflicts in {listed}"
+            )
+        if changed := _changed_config(worktree, main_branch):
+            raise ChittyError(
+                f"cannot land {action.id}; the merged branch changes `{changed}`; "
+                "only `chitty init` on the main checkout may change it"
+            )
+        if changed := git.changed_files(worktree, main_branch, main_repo.config.protected_paths):
+            listed = ", ".join(f"`{path}`" for path in changed)
+            raise ChittyError(
+                f"cannot land {action.id}; the branch changes protected files: {listed}"
+            )
+        _setup(setup, worktree)
+        _landing_check(check, worktree)
+        try:
+            git.fast_forward(main_root, branch)
+        except ChittyError:
+            if not git.is_ancestor(main_root, main_branch, branch):
+                if attempt + 1 < LANDING_ATTEMPTS:
+                    continue
+                raise ChittyError(
+                    f"main moved during each of the {LANDING_ATTEMPTS} landing attempts"
+                ) from None
+            raise
+        break
     git.remove_worktree(main_root, worktree)
     git.delete_branch(main_root, branch)
 
