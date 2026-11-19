@@ -90,6 +90,7 @@ class RepoConfig(BaseModel):
     autoformat: str | None = None
     setup: str | None = None
     check: str | None = None
+    landing_check: str | None = None
     agent_command: str | None = None
     error_reporter: str | None = None
     agent_timeout: int = Field(default_factory=lambda: DEFAULT_AGENT_TIMEOUT, ge=0)
@@ -148,7 +149,7 @@ class RepoConfig(BaseModel):
             raise ValueError("must not be blank")
         return value
 
-    @field_validator("setup", "check", "error_reporter")
+    @field_validator("setup", "check", "landing_check", "error_reporter")
     @classmethod
     def _command(cls, value: str | None) -> str | None:
         if value is not None and not value.strip():
@@ -210,6 +211,15 @@ class UserContexts(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
 
     contexts: dict[str, UserContext] = {}
+
+
+def landing_command(check: str | None, landing_check: str | None) -> str:
+    """Choose the command used to validate a branch before landing."""
+    if landing_check is not None:
+        return landing_check
+    if check is None:
+        raise ChittyError("check is required when landing_check is unset")
+    return check
 
 
 def find_root(start: Path) -> Path:

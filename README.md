@@ -154,8 +154,9 @@ dirty file collision fails loudly; rerun the affected session. `--mode` cannot b
 combined with `--ticket`. `chitty run` requires
 `autocommit = true`, `setup` (for example, `setup = "make install"`), `check`
 (for example, `check = "make check"`), and an `agent_command`, unless `--agent
-NAME` selects an entry from `[agent_commands]`. Both commands are parsed
-without a shell; it must include `{mode}` and `{id}`, or `{prompt}`.
+NAME` selects an entry from `[agent_commands]`. `landing_check` optionally
+replaces `check` when landing. Both commands are parsed without a shell; it
+must include `{mode}` and `{id}`, or `{prompt}`.
 Chitty replaces placeholders after splitting it;
 `{prompt}` contains `chitty guide <mode> <ID>` output as one argument.
 If the agent exits 0 but leaves the ticket's status unchanged, Chitty continues

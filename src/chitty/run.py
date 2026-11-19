@@ -25,6 +25,7 @@ from chitty.config import (
     CONFIG_NAME,
     PYPROJECT_NAME,
     config_source,
+    landing_command,
     usage_path,
     version_key,
 )
@@ -333,7 +334,13 @@ def _land_pending(main_repo: Repo) -> RunResult | None:
         task_id = stored.id
         action = NextAction("review", task_id)
         worktree = _worktree(main_repo.root, action, main_repo.config.main_branch)
-        _land(main_repo, worktree, action, setup, check)
+        _land(
+            main_repo,
+            worktree,
+            action,
+            setup,
+            landing_command(main_repo.config.check, main_repo.config.landing_check),
+        )
         print(f"landed {task_id}")
         return RunResult(action, "done", "done")
     raise AssertionError("unreachable")
@@ -532,7 +539,13 @@ def _run_ticket(
                 )
         if status_outcome(old_status, new_status) == "land":
             context["phase"] = "landing"
-            _land(main_repo, worktree, action, setup, check)
+            _land(
+                main_repo,
+                worktree,
+                action,
+                setup,
+                landing_command(main_repo.config.check, main_repo.config.landing_check),
+            )
     except RunInterrupted:
         raise
     except RepairError:
