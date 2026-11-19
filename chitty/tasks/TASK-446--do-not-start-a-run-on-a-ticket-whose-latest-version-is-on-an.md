@@ -12,7 +12,10 @@ On 2026-11-13 a hand-run session promoted `BACKLOG-93769170` to TASK-319, set it
 
 Suggestion origin: chitty
 
+Planner, 2026-11-19: held, not planned. The ticket-state migration (`TASK-378`, `TASK-385`, `TASK-386`) reads each ticket only from `task-<n>` or `main`; `TASK-386` deletes `git.historical_files`, the cross-branch scan that let `chitty run` see `TASK-319` as `doing` from branch `backlog-93769170`. After that the runner cannot see a ticket on an unconventionally named branch, so this bug should disappear. Re-check once `TASK-386` is done, then archive or plan.
+
 ## History
 
 - 2026-11-19T20:55:19Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:20Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:21:17Z sunny-white-dormouse: changed notes
