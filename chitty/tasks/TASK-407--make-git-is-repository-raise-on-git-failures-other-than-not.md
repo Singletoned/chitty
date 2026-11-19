@@ -1,6 +1,6 @@
 ---
 title: Make `git.is_repository` raise on `git` failures other than "not a git repository"
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -33,3 +33,4 @@ Property tests: none here; the decision is `TASK-406`'s pure function, which car
 - 2026-11-19T08:54:27Z lively-quartz-crane cold-read → planning
 - 2026-11-19T08:54:41Z lively-quartz-crane: changed labels, description, acceptance criteria
 - 2026-11-19T08:54:41Z lively-quartz-crane planning → todo
+- 2026-11-19T10:43:58Z honest-quartz-lapwing todo → doing
