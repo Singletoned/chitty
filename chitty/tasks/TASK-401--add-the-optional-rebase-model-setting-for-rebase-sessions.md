@@ -1,7 +1,6 @@
 ---
 title: Add the optional `rebase_model` setting for rebase sessions
-status: blocked
-owner: human
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -21,7 +20,7 @@ Tests: in `tests/test_run_model_defaults.py`, which tests the existing model set
 ## Acceptance Criteria
 
 - [x] `_model_arguments` called with mode `rebase` returns `("--model", <value>)` when `rebase_model` is set and `()` when unset or when the command already has `--model`; modes `work` and `review` behave as before
-- [ ] `chitty init` writes the commented `rebase_model` line directly after `review_model`, and a second `chitty init` does not add it again (a new test in `tests/test_run_model_defaults.py` or beside the existing init tests); `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
+- [ ] [x] `chitty init` in a new repository writes the commented `rebase_model` line directly after `review_model`; upgrading an existing config adds it once, with the other missing settings, as for `work_model`, and the result parses as TOML; a second `chitty init` does not add it again; `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
 - [x] `docs/plan/config.md` and `docs/plan/next-action-and-runner.md` mention `rebase_model`; `make check` passes
 
 ## Plan
@@ -53,6 +52,8 @@ Review failed (tests): Newly discovered missing final newline case: ensure inser
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Planning decision 2026-11-19, with the owner, after three failed reviews: "directly after `review_model`" applies to a fresh `chitty init` only. An upgrade adds `rebase_model` in the block of missing settings, exactly as `work_model` is added today; placing settings neatly in an existing file is a separate job (a config reformat, its own ticket). Criterion 2 reworded to say so. Reverted the splice in `_add_missing_settings` (`src/chitty/store.py` now differs from `main` only by the `rebase_model` entry and its key in the set) and replaced the upgrade-adjacency test with `test_init_adds_rebase_model_once_when_upgrading`, which runs `init` twice and checks one line and valid TOML. The other-table test stays. `make check` passes.
+
 ## Summary
 
 Implemented optional rebase_model and fixed init upgrade insertion to stay within the Chitty configuration table. Added regression coverage for another pyproject table containing review_model. Verification: focused model-default tests (9 pass), make format, make check (679 tests pass), and chitty fix (existing Markdown warnings only). Commit: 51a62c77. No follow-ups.
@@ -80,3 +81,5 @@ Implemented optional rebase_model and fixed init upgrade insertion to stay withi
 - 2026-11-18T23:38:58Z intrepid-violet-lapwing doing → review
 - 2026-11-18T23:41:16Z witty-coral-gannet: changed owner, acceptance criteria, notes
 - 2026-11-18T23:41:16Z witty-coral-gannet review → blocked
+- 2026-11-19T10:00:28Z quick-ginger-lapwing: changed owner, acceptance criteria, notes
+- 2026-11-19T10:00:28Z quick-ginger-lapwing blocked → review
