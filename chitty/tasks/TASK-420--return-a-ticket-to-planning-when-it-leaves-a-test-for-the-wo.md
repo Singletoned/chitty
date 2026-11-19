@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to planning when it leaves a test for the worker to design
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -21,3 +21,4 @@ Change the guides, keeping the advice general because they reach every repositor
 
 - 2026-11-19T13:22:19Z quick-ginger-lapwing → todo
 - 2026-11-19T13:24:40Z quick-ginger-lapwing: changed title, description
+- 2026-11-19T21:37:42Z daring-amber-kestrel todo → doing
