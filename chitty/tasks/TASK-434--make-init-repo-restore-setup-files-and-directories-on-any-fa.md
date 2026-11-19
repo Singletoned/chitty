@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: doing
+status: planning
 labels:
   - bug
 priority: high
@@ -46,6 +46,8 @@ Keep the second pre-write originals snapshot only. Track every previously absent
 
 Suggestion origin: chitty
 
+Implementation has not started. The initial edit attempt changed indentation incorrectly and was discarded; ticket requirements and existing init_repo/test patterns were inspected. No code or tests have been changed.
+
 ## History
 
 - 2026-11-19T20:55:05Z sunny-white-dormouse → backlog
@@ -69,3 +71,5 @@ Suggestion origin: chitty
 - 2026-11-19T21:19:12Z sunny-white-dormouse cold-read → todo
 - 2026-11-19T23:16:08Z brisk-khaki-urchin todo → doing
 - 2026-11-19T23:17:41Z brisk-khaki-urchin: wrote the plan
+- 2026-11-19T23:18:27Z brisk-khaki-urchin: changed owner, notes
+- 2026-11-19T23:18:27Z brisk-khaki-urchin doing → planning
