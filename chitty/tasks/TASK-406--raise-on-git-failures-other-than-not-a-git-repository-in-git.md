@@ -14,7 +14,8 @@ Decisions:
 
 - Take the decision out into a pure function in `src/chitty/git.py`: `repository_answer(command: Sequence[str], directory: Path, returncode: int, stdout: str, stderr: str) -> bool`. It returns `True` for status 0 with standard output `true`, `False` for status 0 with any other output, `False` for status 128 when standard error contains `not a git repository`, and otherwise raises `ChittyError` containing the command, `directory` and the stripped standard error, in the style of `_git` (`src/chitty/git.py:656`).
 - `is_repository` runs `git` with `LC_ALL=C` added to the environment so the message is English, and returns `repository_answer(...)`.
-- `TASK-405`'s handling of a missing directory or missing `git` stays as it is.
+- `TASK-405`'s handling of a missing directory or missing `git` stays as it is. `is_repository` passes `repository_answer` the resolved directory that `TASK-405` introduces.
+- Negative statuses (a signal killed `git`) are other failures and raise.
 
 Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypothesis.
 
@@ -29,3 +30,4 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 - 2026-11-19T08:43:27Z lively-quartz-crane → planning
 - 2026-11-19T08:43:53Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-19T08:47:04Z lively-quartz-crane planning → cold-read
+- 2026-11-19T08:48:59Z lively-quartz-crane: changed description
