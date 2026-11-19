@@ -6,7 +6,8 @@ import secrets
 import subprocess
 import sys
 import tomllib
-from collections.abc import Mapping, Sequence
+from collections.abc import Generator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime
 from importlib.resources import files
@@ -461,6 +462,23 @@ class Repo:
     def _check_setup_version(self) -> None:
         check_setup_version(self.config)
 
+    @contextmanager
+    def _all_or_nothing(self) -> Generator[None, None, None]:
+        before = _task_file_bytes(self.contexts())
+        index = _git_index_path(self.root) if git.is_repository(self.root) else None
+        index_before = index.read_bytes() if index and index.exists() else None
+        try:
+            yield
+        except BaseException:
+            _restore_task_files(self.contexts(), before)
+            if index is not None:
+                if index_before is None:
+                    index.unlink(missing_ok=True)
+                else:
+                    index.write_bytes(index_before)
+            self._invalidate()
+            raise
+
     def add(
         self,
         context: Context,
@@ -501,9 +519,10 @@ class Repo:
         task_id, provisional = self.new_id(context)
         task = task.with_field("provisional", True if provisional else None)
         path = context.directory / ids.filename(task_id, ids.slugify(title))
-        self._write(path, task.render())
-        stored = StoredTask(task_id, context.name, path, False, task)
-        return self._commit(Change(stored, (path,), (stored,)), "add")
+        with self._all_or_nothing():
+            self._write(path, task.render())
+            stored = StoredTask(task_id, context.name, path, False, task)
+            return self._commit(Change(stored, (path,), (stored,)), "add")
 
     def edit(self, task_id: TaskId, edit: Edit) -> Change:
         """Apply an edit. References in depends_on may be shorthand."""
@@ -582,22 +601,11 @@ class Repo:
                 task = task.with_history_event(now, actor_name, action)
             if edit.status is not None and edit.status != stored.task.frontmatter.status:
                 task = task.with_history(now, actor_name, previous_status, edit.status)
-        before = _task_file_bytes(self.contexts())
-        index = _git_index_path(self.root) if git.is_repository(self.root) else None
-        index_before = index.read_bytes() if index and index.exists() else None
-        try:
+        with self._all_or_nothing():
             change = replace(
                 self._save(stored, task, allow_stale=edit.skip_current_version), actor=actor_name
             )
             return self._commit(change, "edit")
-        except ChittyError as error:
-            if "cannot finalize task write" not in str(error):
-                raise
-            _restore_task_files(self.contexts(), before)
-            if index is not None and index_before is not None:
-                index.write_bytes(index_before)
-            self._invalidate()
-            raise
 
     def _save(self, stored: StoredTask, task: Task, *, allow_stale: bool = False) -> Change:
         """Write an edited task; touches nothing if the content is unchanged."""
@@ -675,24 +683,26 @@ class Repo:
 
     def archive(self, task_id: TaskId) -> Change:
         self._prepare_write()
-        change = self._archive(task_id)
-        return self._commit(change, "delete" if self.config.archive == "delete" else "archive")
+        with self._all_or_nothing():
+            change = self._archive(task_id)
+            return self._commit(change, "delete" if self.config.archive == "delete" else "archive")
 
     def archive_done(self) -> tuple[Change, ...]:
         """Archive every non-archived done task in one finalization."""
         self._prepare_write()
-        changes = tuple(
-            self._archive(task.id)
-            for context in self.contexts()
-            for task in self.tasks(context, "active")
-            if task.task.frontmatter.status == "done"
-        )
-        if changes:
-            paths = tuple(path for change in changes for path in change.paths)
-            verb = "delete" if self.config.archive == "delete" else "archive"
-            tasks = _unique_tasks(tuple(task for change in changes for task in change.tasks))
-            self._commit(Change(changes[-1].task, paths, tasks), f"{verb} done tasks")
-        return changes
+        with self._all_or_nothing():
+            changes = tuple(
+                self._archive(task.id)
+                for context in self.contexts()
+                for task in self.tasks(context, "active")
+                if task.task.frontmatter.status == "done"
+            )
+            if changes:
+                paths = tuple(path for change in changes for path in change.paths)
+                verb = "delete" if self.config.archive == "delete" else "archive"
+                tasks = _unique_tasks(tuple(task for change in changes for task in change.tasks))
+                self._commit(Change(changes[-1].task, paths, tasks), f"{verb} done tasks")
+            return changes
 
     def _archive(self, task_id: TaskId) -> Change:
         if self.config.archive == "move":
@@ -740,7 +750,8 @@ class Repo:
 
     def restore(self, task_id: TaskId) -> Change:
         self._prepare_write()
-        return self._commit(self._set_archived(task_id, False), "restore")
+        with self._all_or_nothing():
+            return self._commit(self._set_archived(task_id, False), "restore")
 
     def move(self, task_id: TaskId, target: Context) -> Change:
         """Give a task the next ID in another context and rewrite references to it."""
@@ -766,22 +777,23 @@ class Repo:
             )
             moved_task = moved_task.with_field("status", "backlog")
         moved_task = moved_task.with_field("provisional", True if provisional else None)
-        moved = self._relocate(stored, new_id, target, directory, moved_task)
-        touched = [stored.path, moved.path]
-        changes: list[Change] = []
-        for other in self.all_tasks():
-            task = other.task
-            if old in task.frontmatter.depends_on:
-                task = task.with_field(
-                    "depends_on", _replace(task.frontmatter.depends_on, old, new)
-                )
-            if task.frontmatter.parent == old:
-                task = task.with_field("parent", new)
-            change = self._save(other, task)
-            touched += change.paths
-            changes.append(change)
-        tasks = _unique_tasks((moved, *(task for change in changes for task in change.tasks)))
-        return self._commit(Change(moved, tuple(touched), tasks), "move")
+        with self._all_or_nothing():
+            moved = self._relocate(stored, new_id, target, directory, moved_task)
+            touched = [stored.path, moved.path]
+            changes: list[Change] = []
+            for other in self.all_tasks():
+                task = other.task
+                if old in task.frontmatter.depends_on:
+                    task = task.with_field(
+                        "depends_on", _replace(task.frontmatter.depends_on, old, new)
+                    )
+                if task.frontmatter.parent == old:
+                    task = task.with_field("parent", new)
+                change = self._save(other, task)
+                touched += change.paths
+                changes.append(change)
+            tasks = _unique_tasks((moved, *(task for change in changes for task in change.tasks)))
+            return self._commit(Change(moved, tuple(touched), tasks), "move")
 
     def renumber(self, path: Path) -> tuple[Change, tuple[StoredTask, ...]]:
         """Give one of several files sharing an ID the next number in its context.
@@ -809,18 +821,21 @@ class Repo:
         self._prepare_write()
         new_id, provisional = self.new_id(context)
         task = stored.task.with_field("provisional", True if provisional else None)
-        renumbered = self._relocate(stored, new_id, context, directory, task)
-        change = self._commit(
-            Change(renumbered, (stored.path, renumbered.path), (renumbered,)), "renumber"
-        )
-        old = str(task_id)
-        references = tuple(
-            other
-            for other in self.all_tasks()
-            if other.id != new_id
-            and (old in other.task.frontmatter.depends_on or other.task.frontmatter.parent == old)
-        )
-        return change, references
+        with self._all_or_nothing():
+            renumbered = self._relocate(stored, new_id, context, directory, task)
+            change = self._commit(
+                Change(renumbered, (stored.path, renumbered.path), (renumbered,)), "renumber"
+            )
+            old = str(task_id)
+            references = tuple(
+                other
+                for other in self.all_tasks()
+                if other.id != new_id
+                and (
+                    old in other.task.frontmatter.depends_on or other.task.frontmatter.parent == old
+                )
+            )
+            return change, references
 
     def _locate_task_file(self, path: Path) -> tuple[Context, bool, Path]:
         """The context, archive flag and scanned path of a task file, without collapsing IDs."""

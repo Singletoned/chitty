@@ -149,7 +149,7 @@ class TestAutocommit(CliTestCase):
 
         self.run_cli("add", "Blocked", "-d", "x", exit_code=1)
 
-        self.assertEqual(self.git("status", "--porcelain", "chitty"), "?? chitty/\n")
+        self.assertEqual(self.git("status", "--porcelain", "chitty"), "")
 
     def test_delete_mode_preserves_ids_from_git_history(self):
         config = self.root / "chitty.toml"
