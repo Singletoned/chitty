@@ -12,7 +12,10 @@ On 2026-11-13 at 19:37 a hand-run session merged `task-318` into `main` ("Merge 
 
 Suggestion origin: chitty
 
+Archived as covered by `TASK-358`.
+
 ## History
 
 - 2026-11-19T20:55:27Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:28Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:00Z sunny-white-dormouse: changed notes
