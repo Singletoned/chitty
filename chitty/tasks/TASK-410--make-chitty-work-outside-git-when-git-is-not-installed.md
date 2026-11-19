@@ -1,6 +1,6 @@
 ---
 title: Make Chitty work outside Git when `git` is not installed
-status: doing
+status: done
 created: 2026-11-19
 ---
 
@@ -24,6 +24,30 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 - [ ] Tests inside a real repository with `git` on `PATH`, where `.git/index` is overwritten with `garbage` after `git init` (so `git rev-parse --is-inside-work-tree` prints `true` but `git status` exits 128 with `index file smaller than expected`): `git.dirty_paths` raises `ChittyError` whose message contains `index file smaller than expected`. Fails on `main`, which returns an empty set. Also, in a root outside Git with `PATH` set to an empty directory: `git.dirty_paths` returns `set()`, and `git.current_branch` and `config.git_common_dir` return `None` (each fails on `main` with `FileNotFoundError`).
 - [ ] `make check` passes.
 
+## Plan
+
+Extend the outside-Git command equivalence test to include archive and compare post-command filesystem snapshots, normalizing History timestamps and replacing the root path. Use move output to identify the archived ticket, clear git_common_dir cache between executions, then format, verify the focused regression and full checks, and commit the coverage.
+
+## Notes
+
+Regression tests were run before the fix: both helper cases failed as expected (missing Git raised FileNotFoundError outside a repository; corrupt Git index was hidden as an empty dirty-path set). The new command-equivalence coverage exercises list, show, path, next, edit, note, check and move outside Git; it does not yet cover archive or compare resulting filesystem snapshots, so acceptance criterion 1 is only partially covered. make check passes.
+
+Review failed (tests): Complete the specified equivalence regression; this is the first review and the missing coverage was already identified in the worker notes.
+1: fail - `tests/test_no_git_installed.py::test_commands_match_with_and_without_git` omits archive, does not compare relative file paths or contents with normalized History timestamps, and does not clear `git_common_dir` cache between runs. Add these assertions and exercise archive using the ID printed by move.
+2: pass - `make check` ran all 686 tests successfully, including both helper tests. Running the new tests against source extracted from main produced `ChittyError not raised` for the corrupt index and `FileNotFoundError` outside Git; separate calls against main printed `FileNotFoundError` for each of dirty_paths, current_branch and git_common_dir.
+3: pass - `make check` exited 0; ruff, pyright and all 686 tests passed.
+
+Completed acceptance criterion 1 follow-up: the equivalence test now archives by the HUMAN ID printed by move and compares relative file paths and contents with History timestamps normalized. Focused tests pass. `make check` passes (ruff, pyright, 686 unittest cases; Node checks run by target). Commit: 6d0a4691.
+
+Reviewed: Previous equivalence coverage findings are resolved.
+1: pass - make check passed the nine command subtests, including archive and normalized snapshots; running tests.test_no_git_installed against main source printed eight command subtest failures.
+2: pass - make check passed the helper tests; against main they printed ChittyError not raised and FileNotFoundError. The previous review also verified each helper separately against main.
+3: pass - make check exited 0: ruff, pyright and 689 tests passed.
+
+## Summary
+
+Completed outside-Git command equivalence coverage, including archive via the moved HUMAN ID and normalized filesystem snapshots. Verification: focused unittest passes; make check passes (ruff, pyright, 686 unittest cases, and remaining configured checks). No follow-ups.
+
 ## History
 
 - 2026-11-19T09:13:54Z lively-quartz-crane → planning
@@ -35,3 +59,13 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 - 2026-11-19T09:21:21Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-19T09:21:21Z lively-quartz-crane cold-read → todo
 - 2026-11-19T09:21:56Z tidy-pearl-otter todo → doing
+- 2026-11-19T09:22:57Z tidy-pearl-otter: wrote the plan
+- 2026-11-19T09:26:33Z tidy-pearl-otter: changed notes, summary
+- 2026-11-19T09:26:33Z tidy-pearl-otter doing → review
+- 2026-11-19T09:29:56Z quick-hazel-newt: changed acceptance criteria, notes
+- 2026-11-19T09:29:56Z quick-hazel-newt review → doing
+- 2026-11-19T09:32:31Z jolly-yellow-quail: wrote the plan
+- 2026-11-19T09:34:40Z jolly-yellow-quail: changed notes, summary
+- 2026-11-19T09:34:40Z jolly-yellow-quail doing → review
+- 2026-11-19T10:39:28Z daring-dusky-heron: changed notes
+- 2026-11-19T10:39:28Z daring-dusky-heron review → done

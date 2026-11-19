@@ -574,7 +574,7 @@ def _run_session(
     continuing: bool,
 ) -> None:
     """Run one agent session; raise unless it exits 0 within `agent_timeout`."""
-    session = [*command, *arguments, *_model_arguments(repo, action, command, arguments)]
+    session = [*command, *arguments, *_model_arguments(repo, action.mode, command, arguments)]
     if continuing:
         session.append(CONTINUE_ARGUMENT)
     try:
@@ -692,10 +692,17 @@ def _preflight(repo: Repo, agent: str | None) -> None:
 
 
 def _model_arguments(
-    repo: Repo, action: NextAction, command: tuple[str, ...], arguments: tuple[str, ...]
+    repo: Repo, mode: str, command: tuple[str, ...], arguments: tuple[str, ...]
 ) -> tuple[str, ...]:
-    """Supply the role default only when the command has no explicit model."""
-    model = repo.config.work_model if action.mode == "work" else repo.config.review_model
+    """Supply the mode default only when the command has no explicit model."""
+    model_settings = {
+        "work": repo.config.work_model,
+        "review": repo.config.review_model,
+        "rebase": repo.config.rebase_model,
+    }
+    if mode not in model_settings:
+        raise ChittyError(f"unknown session mode {mode!r}")
+    model = model_settings[mode]
     if model is None or any(
         word == "--model" or word.startswith("--model=") for word in (*command, *arguments)
     ):
@@ -745,9 +752,9 @@ def _agent_command(
         if continuation:
             prompt = continuation_prompt(action.mode, ticket)
         elif repo.find(action.id).task.frontmatter.status == "error":
-            prompt = guide("repair", ticket)
+            prompt = guide("repair", ticket, directory=repo.root)
         else:
-            prompt = guide(action.mode, ticket)
+            prompt = guide(action.mode, ticket, directory=repo.root)
     is_repair = repo.find(action.id).task.frontmatter.status == "error"
     command_mode = "repair" if is_repair else action.mode
     rendered = render_command(words, command_mode, str(action.id), prompt)
