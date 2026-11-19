@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-19
 ---
@@ -42,3 +42,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:20:41Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:22:53Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:22:53Z sunny-white-dormouse cold-read → planning
+- 2026-11-19T21:22:58Z sunny-white-dormouse planning → cold-read
