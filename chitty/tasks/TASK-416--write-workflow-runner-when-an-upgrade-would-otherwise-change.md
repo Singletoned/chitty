@@ -1,6 +1,6 @@
 ---
 title: Write `workflow = "runner"` when an upgrade would otherwise change a runner repository to tickets
-status: doing
+status: review
 labels:
   - blocks-release
 priority: high
@@ -53,7 +53,7 @@ Review found the property generator does not exercise the specified section perm
 
 ## Summary
 
-Implemented section-scoped runner workflow migration during stale setup upgrades, with property-style tests for both config formats and integration coverage for init idempotence and autocommit upgrade commits. Verified the new test failed against the NotImplementedError stub, then passed after implementation. `make format` and `make check` pass. Follow-up: none.
+Expanded Hypothesis config generation to cover permuted Chitty-section lines, workflow/comment variants, and out-of-section decoys. Fixed EOF insertion to separate TOML lines. Verified focused workflow tests and make check (701 tests, lint, typecheck; full command completed successfully).
 
 ## History
 
@@ -77,3 +77,5 @@ Implemented section-scoped runner workflow migration during stale setup upgrades
 - 2026-11-19T11:13:46Z youthful-bronze-crane: changed acceptance criteria, notes
 - 2026-11-19T11:13:46Z youthful-bronze-crane review → doing
 - 2026-11-19T11:19:43Z calm-amber-eel: changed notes
+- 2026-11-19T11:22:42Z calm-amber-eel: changed summary
+- 2026-11-19T11:22:42Z calm-amber-eel doing → review
