@@ -1,6 +1,6 @@
 ---
 title: Stop two property tests failing at random under `make check`
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -36,6 +36,10 @@ Register and load a Hypothesis settings profile with deadline=None in tests/__in
 
 The ticket records the main reproduction: Repo.edit(Edit(note="0\n=", depends_on=["TASK-1"])) raises the section-boundary error instead of the expected finalize-write error. The specified plain_note cases prevent that class of invalid generated note.
 
+## Summary
+
+Implemented the global Hypothesis deadline=None test profile and plain_note filtering with fixed-case coverage. The new profile regression test failed before the profile change (default deadline was 200 ms); afterward focused tests passed. The recorded ticket reproduction explains why setext boundaries must be filtered. Verification: make format; make check (ruff, pyright, unittest-parallel and configured checks passed); grep -n deadline tests/test_property_provisional.py produced no output. Commit: ec4529b0. No follow-ups.
+
 ## History
 
 - 2026-11-19T11:34:07Z quick-ginger-lapwing → planning
@@ -49,3 +53,5 @@ The ticket records the main reproduction: Repo.edit(Edit(note="0\n=", depends_on
 - 2026-11-19T12:05:55Z honest-coral-gannet todo → doing
 - 2026-11-19T12:06:49Z honest-coral-gannet: wrote the plan
 - 2026-11-19T12:06:57Z honest-coral-gannet: changed notes
+- 2026-11-19T12:08:58Z honest-coral-gannet: changed summary
+- 2026-11-19T12:08:58Z honest-coral-gannet doing → review
