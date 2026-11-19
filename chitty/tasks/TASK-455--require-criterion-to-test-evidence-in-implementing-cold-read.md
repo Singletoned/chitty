@@ -12,7 +12,10 @@ In injustice-league planning, two implementing cold readers reported READY despi
 
 Suggestion origin: injustice-league
 
+Archived: Chitty cold readers do not implement the ticket, so a criterion-to-test matrix of an implementation does not apply; the weak-tests report in `src/chitty/roles/cold-read.md` covers the Chitty case.
+
 ## History
 
 - 2026-11-19T20:55:30Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:32Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:58:56Z sunny-white-dormouse: changed notes
