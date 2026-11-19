@@ -12,7 +12,10 @@ TASK-322 passed review, but `chitty run` moved it to `error` because `git merge 
 
 Suggestion origin: chitty
 
+Archived: already done; `_land_locked` (`src/chitty/run.py`) retries the rebase, setup, check and fast-forward up to `LANDING_ATTEMPTS` times when `main` moves (`tests/test_landing_retry.py`).
+
 ## History
 
 - 2026-11-19T20:55:11Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:12Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:20:03Z sunny-white-dormouse: changed notes
