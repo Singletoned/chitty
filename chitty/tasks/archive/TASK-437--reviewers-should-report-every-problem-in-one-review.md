@@ -19,3 +19,4 @@ Archived: `src/chitty/roles/review.md` already says to inspect every criterion a
 - 2026-11-19T20:55:08Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:09Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:58:43Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:58:46Z sunny-white-dormouse backlog → archived
