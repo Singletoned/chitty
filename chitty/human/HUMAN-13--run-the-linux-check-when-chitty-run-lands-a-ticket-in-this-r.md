@@ -1,6 +1,6 @@
 ---
 title: Run the Linux check when `chitty run` lands a ticket in this repository
-status: planning
+status: todo
 depends_on:
   - TASK-429
   - TASK-430
@@ -27,3 +27,4 @@ Docker must then be running on any machine that runs `chitty run` here; without 
 - 2026-11-19T18:44:29Z daring-amber-kestrel planning → cold-read
 - 2026-11-19T18:45:04Z daring-amber-kestrel: changed description, acceptance criteria
 - 2026-11-19T18:45:04Z daring-amber-kestrel cold-read → planning
+- 2026-11-19T18:45:09Z daring-amber-kestrel planning → todo
