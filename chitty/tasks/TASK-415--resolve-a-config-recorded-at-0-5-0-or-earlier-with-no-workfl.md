@@ -1,6 +1,6 @@
 ---
 title: Resolve a config recorded at `0.5.0` or earlier with no `workflow` to the runner
-status: planning
+status: cold-read
 labels:
   - blocks-release
 priority: high
@@ -31,3 +31,4 @@ Tests: in `tests/test_config_workflow.py`, using Hypothesis, the repository's pr
 ## History
 
 - 2026-11-19T10:39:34Z quick-ginger-lapwing → planning
+- 2026-11-19T10:39:45Z quick-ginger-lapwing planning → cold-read
