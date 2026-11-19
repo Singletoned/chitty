@@ -1,6 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: doing
+status: review
 created: 2026-11-19
 ---
 
@@ -85,3 +85,4 @@ Expanded nonzero diagnostic property tests to vary stdout/status/directory and a
 - 2026-11-19T09:10:17Z brisk-silver-wren: wrote the plan
 - 2026-11-19T09:11:48Z brisk-silver-wren: changed notes, summary
 - 2026-11-19T09:13:13Z brisk-silver-wren: changed notes, summary
+- 2026-11-19T09:13:15Z brisk-silver-wren doing → review
