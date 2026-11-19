@@ -31,6 +31,10 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 - [ ] `test_run_check_failure_on_todo_ticket_records_error_on_branch` exists in place of the old name and passes with every existing and added assertion listed in the Description
 - [ ] A note records the assertion that fails first against the wrong version of `run.py` described under Evidence; `make check` passes
 
+## Plan
+
+Strengthen the existing TestNext regression test only: rename it, capture main before chitty run, assert main has only the ticket claim commit, and inspect the branch ticket error contents. First run the requested wrong-run.py experiment and record which assertion fails first; restore run.py immediately. Then run the focused test and make check, commit test changes with Task: TASK-423, record verification and summary, and move the ticket to review.
+
 ## History
 
 - 2026-11-19T13:29:53Z quick-ginger-lapwing → backlog
@@ -44,3 +48,4 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 - 2026-11-19T13:43:06Z quick-ginger-lapwing: changed description
 - 2026-11-19T13:43:06Z quick-ginger-lapwing planning → todo
 - 2026-11-19T14:36:29Z able-jade-urchin todo → doing
+- 2026-11-19T14:37:24Z able-jade-urchin: wrote the plan
