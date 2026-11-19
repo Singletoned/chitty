@@ -383,6 +383,11 @@ def _run_ticket(
     stored = main_repo.find(action.id)
     selected_status = stored.task.frontmatter.status
     repairing = selected_status == "error"
+    agent_environment = _command_environment()
+    planned_worktree = main_root / ".worktrees" / str(action.id).lower()
+    agent_command = _agent_command(
+        main_repo, action, agent, worktree=planned_worktree, mode=action.mode
+    )
     if action.mode == "review":
         branch = str(action.id).lower()
         existing_worktree = git.worktree_for_branch(main_root, branch)
@@ -398,7 +403,6 @@ def _run_ticket(
                 ),
             )
             return RunResult(action, "review", change.task.task.frontmatter.status)
-    agent_command = _agent_command(main_repo, action, agent)
     if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
         raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
     if action.mode == "work" and selected_status == "todo":
@@ -410,6 +414,9 @@ def _run_ticket(
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
     context["worktree"] = str(worktree)
     branch_repo = Repo(worktree, main_repo.config)
+    agent_command = _agent_command(
+        Repo(worktree, main_repo.config), action, agent, worktree=worktree, mode=action.mode
+    )
     setup = main_repo.config.setup
     check = main_repo.config.check
     assert setup is not None  # `_preflight` rejects an unset setup command.
@@ -428,7 +435,26 @@ def _run_ticket(
         # review preflight has confirmed that the branch still has one.
         work_repo = Repo(worktree, main_repo.config)
         # The run's own actor never worked on the ticket, so it may fail it.
-        failed = _prepare_review(work_repo, worktree, action, main_repo.config.main_branch)
+        context["phase"] = "review preparation"
+        try:
+            runner_chitty = Path(sys.executable).parent / "chitty"
+            if not runner_chitty.is_file():
+                raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
+            agent_environment["PATH"] = os.pathsep.join(
+                (str(runner_chitty.parent), agent_environment.get("PATH", ""))
+            )
+        except ChittyError as error:
+            failed = _record_ticket_error(work_repo, action, "review preparation", error)
+            return RunResult(action, selected_status, failed.new_status)
+        failed = _prepare_review(
+            work_repo,
+            worktree,
+            action,
+            main_repo.config.main_branch,
+            agent,
+            project,
+            agent_environment,
+        )
         if failed is not None:
             return failed
         work_repo = Repo.open(worktree)
@@ -454,13 +480,14 @@ def _run_ticket(
     handoff: RunResult | None = None
     context["phase"] = "agent"
     try:
-        runner_chitty = Path(sys.executable).parent / "chitty"
-        if not runner_chitty.is_file():
-            raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
-        agent_environment = _command_environment()
-        agent_environment["PATH"] = os.pathsep.join(
-            (str(runner_chitty.parent), agent_environment.get("PATH", ""))
-        )
+        if action.mode != "review":
+            runner_chitty = Path(sys.executable).parent / "chitty"
+            if not runner_chitty.is_file():
+                raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
+            agent_environment = _command_environment()
+            agent_environment["PATH"] = os.pathsep.join(
+                (str(runner_chitty.parent), agent_environment.get("PATH", ""))
+            )
         new_status = _agent_sessions(
             main_repo,
             action,
@@ -550,7 +577,9 @@ def _agent_sessions(
     command = agent_command
     while True:
         continuing = continuations > 0
-        _run_session(main_repo, action, command, arguments, worktree, environment, continuing)
+        _run_session(
+            main_repo, action, command, arguments, worktree, environment, continuing, action.mode
+        )
         # Pi commonly commits from this worktree. Reopen so history is re-read.
         new_status = _status_after_agent(main_repo.root, worktree, action)
         if old_status == "error" and new_status == "error":
@@ -562,7 +591,9 @@ def _agent_sessions(
                 f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
             )
         continuations += 1
-        command = _agent_command(main_repo, action, agent, continuation=True)
+        command = _agent_command(
+            main_repo, action, agent, worktree=worktree, mode=action.mode, continuation=True
+        )
 
 
 def _run_session(
@@ -573,9 +604,10 @@ def _run_session(
     worktree: Path,
     environment: dict[str, str],
     continuing: bool,
+    mode: str,
 ) -> None:
     """Run one agent session; raise unless it exits 0 within `agent_timeout`."""
-    session = [*command, *arguments, *_model_arguments(repo, action.mode, command, arguments)]
+    session = [*command, *arguments, *_model_arguments(repo, mode, command, arguments)]
     if continuing:
         session.append(CONTINUE_ARGUMENT)
     try:
@@ -737,7 +769,12 @@ def _accepts_prompt(repo: Repo, agent: str | None) -> bool:
 
 
 def _agent_command(
-    repo: Repo, action: NextAction, agent: str | None = None, continuation: bool = False
+    repo: Repo,
+    action: NextAction,
+    agent: str | None,
+    worktree: Path,
+    mode: str,
+    continuation: bool = False,
 ) -> tuple[str, ...]:
     """Parse and validate the selected command after setup refreshes it."""
     setting, command = _agent_setting(repo, agent)
@@ -745,6 +782,8 @@ def _agent_command(
         words = shlex.split(command)
     except ValueError as error:
         raise ChittyError(f"invalid {setting}: {error}") from None
+    if mode == "rebase" and "{prompt}" not in command:
+        raise ChittyError("the rebase session needs {prompt} in agent_command")
     if ("{mode}" not in command or "{id}" not in command) and "{prompt}" not in command:
         raise ChittyError(f"{setting} must contain both {{mode}} and {{id}}, or {{prompt}}")
     prompt = ""
@@ -752,12 +791,14 @@ def _agent_command(
         ticket = str(action.id)
         if continuation:
             prompt = continuation_prompt(action.mode, ticket)
+        elif mode == "rebase":
+            prompt = guide("rebase", ticket, directory=worktree if worktree.is_dir() else repo.root)
         elif repo.find(action.id).task.frontmatter.status == "error":
-            prompt = guide("repair", ticket, directory=repo.root)
+            prompt = guide("repair", ticket, directory=worktree if worktree.is_dir() else repo.root)
         else:
-            prompt = guide(action.mode, ticket, directory=repo.root)
+            prompt = guide(mode, ticket, directory=worktree if worktree.is_dir() else repo.root)
     is_repair = repo.find(action.id).task.frontmatter.status == "error"
-    command_mode = "repair" if is_repair else action.mode
+    command_mode = mode if mode == "rebase" else "repair" if is_repair else mode
     rendered = render_command(words, command_mode, str(action.id), prompt)
     first = rendered[0]
     if "/" in first and not Path(first).is_absolute():
@@ -773,7 +814,13 @@ def _agent_command(
 
 
 def _prepare_review(
-    work_repo: Repo, worktree: Path, action: NextAction, main_branch: str
+    work_repo: Repo,
+    worktree: Path,
+    action: NextAction,
+    main_branch: str,
+    agent: str | None,
+    project: str,
+    environment: dict[str, str],
 ) -> RunResult | None:
     """Rebase a review ticket onto main, or fail it back to its worker.
 
@@ -789,13 +836,53 @@ def _prepare_review(
             git.abort_rebase(worktree)
         raise RunInterrupted("rebase") from None
     if conflicts:
-        git.abort_rebase(worktree)
         listed = ", ".join(f"`{path}`" for path in conflicts)
-        return _fail_review(
-            work_repo,
-            action,
-            f"Review failed (integration): rebasing onto `{main_branch}` conflicts in {listed}.",
-        )
+        old_status = work_repo.find(action.id).task.frontmatter.status
+        started = datetime.now(UTC)
+        elapsed_start = time.monotonic()
+        failure: str | None = None
+        try:
+            command = _agent_command(work_repo, action, agent, worktree=worktree, mode="rebase")
+            _run_session(work_repo, action, command, (), worktree, environment, False, "rebase")
+            if git.rebase_in_progress(worktree):
+                raise ChittyError("rebase still in progress")
+            if uncommitted := git.uncommitted_paths(worktree):
+                raise ChittyError(", ".join(f"`{path}`" for path in uncommitted))
+        except (RunInterrupted, KeyboardInterrupt):
+            if git.rebase_in_progress(worktree):
+                git.abort_rebase(worktree)
+            raise RunInterrupted("rebase") from None
+        except ChittyError as error:
+            failure = str(error).splitlines()[0]
+            if git.rebase_in_progress(worktree):
+                git.abort_rebase(worktree)
+            # Repo caches the current branch; during a stopped rebase it cached
+            # detached HEAD, which is stale after abort restores the ticket branch.
+            work_repo = Repo(worktree, work_repo.config)
+        finally:
+            try:
+                status_after = work_repo.find(action.id).task.frontmatter.status
+            except Exception:  # noqa: BLE001 - preserve the session outcome
+                status_after = old_status
+            _record_usage(
+                project,
+                {
+                    "ticket": str(action.id),
+                    "mode": "rebase",
+                    "actor": actor(),
+                    "started": started.isoformat().replace("+00:00", "Z"),
+                    "seconds": round(time.monotonic() - elapsed_start, 3),
+                    "status_before": "review",
+                    "status_after": status_after,
+                },
+            )
+        if failure is not None:
+            return _fail_review(
+                work_repo,
+                action,
+                "Review failed (integration): rebasing onto `main` conflicts in "
+                f"{listed}; the rebase session failed: {failure}",
+            )
     if changed := _changed_config(worktree, main_branch):
         return _fail_review(
             work_repo,

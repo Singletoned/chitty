@@ -105,9 +105,13 @@ rebase like any other file; conflicts go to an agent, not a ticket merge.
 2. An unfinished merge or rebase is an error for the human; no status change.
 3. Uncommitted files (untracked and not ignored included): block for `human`
    with `Review blocked (work): ...`. No reviewer starts.
-4. Rebase the branch onto local `main`, with `rerere.enabled=false`. Conflict:
-   `git rebase --abort`, move to `doing` with `Review failed (integration): ...`
-   naming the files.
+4. Rebase the branch onto local `main`, with `rerere.enabled=false`. On conflict,
+   run one agent session with mode `rebase` and the `chitty guide rebase` prompt
+   before starting a separate reviewer. The session must finish the rebase and
+   leave the worktree clean. Otherwise abort any remaining rebase and move to
+   `doing` with a one-line `Review failed (integration):` note naming the
+   conflicts in `main` and the paths, followed by `the rebase session failed:`
+   and the session error's first line. No reviewer starts after session failure.
 5. A branch that changes the Chitty config (`chitty.toml` or `[tool.chitty]`)
    or the managed block in `AGENTS.md`: move to `doing` with
    `Review failed (work): ...`.
