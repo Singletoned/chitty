@@ -751,9 +751,9 @@ def _agent_command(
         if continuation:
             prompt = continuation_prompt(action.mode, ticket)
         elif repo.find(action.id).task.frontmatter.status == "error":
-            prompt = guide("repair", ticket)
+            prompt = guide("repair", ticket, directory=repo.root)
         else:
-            prompt = guide(action.mode, ticket)
+            prompt = guide(action.mode, ticket, directory=repo.root)
     is_repair = repo.find(action.id).task.frontmatter.status == "error"
     command_mode = "repair" if is_repair else action.mode
     rendered = render_command(words, command_mode, str(action.id), prompt)

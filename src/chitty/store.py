@@ -57,7 +57,7 @@ BACKLOG_DESCRIPTION = "This ticket needs refining."
 REVIEW_FAILURE_LIMIT = 3
 PRIORITY_ORDER = {"high": 0, "medium": 1, None: 1, "low": 2}
 BROKEN_DEPENDENCY_GLYPH = "⚠️"
-ROLE_NAMES = ("work", "review", "repair", "plan", "cold-read", "setup")
+ROLE_NAMES = ("work", "review", "repair", "plan", "cold-read", "setup", "rebase")
 # Random IDs have eight digits with no leading zero, which `ID_RE` requires.
 RANDOM_ID_MIN = 10_000_000
 RANDOM_ID_MAX = 99_999_999
@@ -1106,7 +1106,7 @@ def repository_guide(start_dir: Path) -> str:
     return managed_guide(workflow)
 
 
-def guide(role: str, ticket_id: str | None = None) -> str:
+def guide(role: str, ticket_id: str | None = None, *, directory: Path) -> str:
     """Return prefix-independent role-specific agent guidance."""
     if role not in ROLE_NAMES:
         raise ChittyError(f"unknown role {role!r}; choose from {', '.join(ROLE_NAMES)}")
@@ -1117,6 +1117,14 @@ def guide(role: str, ticket_id: str | None = None) -> str:
     text = roles.joinpath(f"{role}.md").read_text()
     signals = roles.joinpath("property-signals.md").read_text().rstrip()
     text = text.replace("<!-- property-signals -->", signals)
+    if (
+        ticket_id is not None
+        and role in {"work", "repair"}
+        and git.is_repository(directory)
+        and git.rebase_in_progress(directory)
+    ):
+        rebase = roles.joinpath("rebase.md").read_text().rstrip()
+        return f"Work only on Chitty ticket {ticket_id}.\n\n{rebase}\n\n{text}"
     return f"Work only on Chitty ticket {ticket_id}.\n\n{text}" if ticket_id is not None else text
 
 

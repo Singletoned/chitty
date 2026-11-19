@@ -1,5 +1,6 @@
 import os
 import subprocess
+import unittest
 from datetime import date
 from unittest import mock
 
@@ -12,20 +13,52 @@ from chitty.ids import TaskId
 from chitty.store import Edit, Repo
 from tests.support import RepoTestCase
 
+
+def plain_note(text: str) -> bool:
+    if not text.strip():
+        return False
+    for line in text.splitlines():
+        content = line.lstrip(" ")
+        if content.startswith(("#", "```", "~~~")):
+            return False
+        underline = content.rstrip(" ")
+        if underline and (set(underline) == {"="} or set(underline) == {"-"}):
+            return False
+    return True
+
+
 NOTES = st.text(
     alphabet=st.one_of(st.characters(min_codepoint=32, max_codepoint=126), st.just("\n")),
     min_size=1,
     max_size=80,
-).filter(
-    lambda text: (
-        text.strip() and all(not line.startswith(("#", "```", "~~~")) for line in text.splitlines())
-    )
-)
+).filter(plain_note)
 TITLES = st.text(
     alphabet=st.characters(min_codepoint=32, max_codepoint=126),
     min_size=1,
     max_size=40,
 ).filter(lambda title: any(character.isalnum() for character in title))
+
+
+class TestPlainNote(unittest.TestCase):
+    def test_rejects_section_boundaries_and_blank_text(self):
+        for text in (
+            "0\n=",
+            "x\n-",
+            "x\n  ---",
+            "x\n=  ",
+            " # x",
+            "x\n  ## y",
+            " ```",
+            "  ~~~",
+            "   ",
+        ):
+            with self.subTest(text=text):
+                self.assertFalse(plain_note(text))
+
+    def test_accepts_plain_text(self):
+        for text in ("plain text", "a\nb = c", "x - y"):
+            with self.subTest(text=text):
+                self.assertTrue(plain_note(text))
 
 
 class TestRefusedEditProperty(RepoTestCase):
