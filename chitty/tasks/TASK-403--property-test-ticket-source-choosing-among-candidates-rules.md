@@ -46,6 +46,8 @@ Review failed (tests): Expand the generated cases and complete the required muta
 2: fail - `make check` printed `OK`, but the rule 6 properties use only a shared-chain tip with `main_tip=None`, rather than the same generated chain and fork selection inputs required by the ticket. Exercise expected and other changed refs across those inputs, including checkout and remote-ahead cases. No mutation evidence establishes the properties fail without correct behavior.
 3: fail - `make check` printed `Ran 746 tests` and `OK`, but the existing verification note explicitly says the three required mutant runs remain outstanding. Run and record the remote-tie, remote-order and ignored-changed-on-both mutants and identify the property each fails.
 
+Updated rule 4 and rule 6 coverage to generate chain/fork candidate layouts, main tips, candidate refs, decoys, current branches, changed-ref errors, and remote-ahead cases. Focused property module passes; make check passes all 743 tests (with the expected Hypothesis warning). Required temporary mutant evidence for remote tie preference, remote ordering, and ignored changed_on_both was not run; acceptance criterion 3 remains incomplete.
+
 ## Summary
 
 Added generated rule 4 selection and checkout coverage, remote-ahead scenario, and rule 6 expected-ref / other-ref coverage in tests/test_property_ticket_source.py. Focused tests and make check pass. Required temporary mutant runs and their failure evidence remain outstanding.
@@ -68,3 +70,4 @@ Added generated rule 4 selection and checkout coverage, remote-ahead scenario, a
 - 2026-11-19T15:33:00Z sunny-silver-ibis: changed acceptance criteria, notes
 - 2026-11-19T15:33:00Z sunny-silver-ibis review → doing
 - 2026-11-19T15:34:22Z lively-teal-yellowhammer: wrote the plan
+- 2026-11-19T15:36:31Z lively-teal-yellowhammer: changed notes
