@@ -369,6 +369,17 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     return files
 
 
+def repository_answer(
+    command: Sequence[str], directory: Path, returncode: int, stdout: str, stderr: str
+) -> bool:
+    if returncode == 0:
+        return stdout.strip() == "true"
+    if returncode == 128 and "not a git repository" in stderr:
+        return False
+    shown = " ".join(command)
+    raise ChittyError(f"`{shown}` failed in {directory}:\n{stderr.strip()}")
+
+
 def is_repository(directory: Path) -> bool:
     """Whether ``directory`` is inside a Git worktree."""
     directory = directory.resolve()
@@ -379,6 +390,7 @@ def is_repository(directory: Path) -> bool:
             ["git", "rev-parse", "--is-inside-work-tree"],
             check=False,
             cwd=directory,
+            env={**os.environ, "LC_ALL": "C"},
             capture_output=True,
             text=True,
         )
@@ -390,7 +402,13 @@ def is_repository(directory: Path) -> bool:
                     f"`git` is unavailable on PATH, but repository marker exists: {marker}"
                 ) from error
         return False
-    return result.returncode == 0 and result.stdout.strip() == "true"
+    return repository_answer(
+        ["git", "rev-parse", "--is-inside-work-tree"],
+        directory,
+        result.returncode,
+        result.stdout,
+        result.stderr,
+    )
 
 
 def is_linked_worktree(directory: Path) -> bool:
@@ -433,10 +451,9 @@ def main_checkout(root: Path) -> Path:
 
 def current_branch(root: Path) -> str | None:
     """Return the checked-out branch, or ``None`` outside Git or when detached."""
-    try:
-        branch = _git(root, "branch", "--show-current").strip()
-    except ChittyError:
+    if not is_repository(root):
         return None
+    branch = _git(root, "branch", "--show-current").strip()
     return branch or None
 
 
@@ -485,12 +502,11 @@ def has_branch_ref(root: Path, branch: str) -> bool:
 
 def dirty_paths(root: Path, directory: Path) -> set[Path]:
     """Return changed or untracked paths below ``directory`` in this worktree."""
-    try:
-        lines = _git(
-            root, "status", "--porcelain", "--untracked-files=all", "--", str(directory)
-        ).splitlines()
-    except ChittyError:
+    if not is_repository(root):
         return set()
+    lines = _git(
+        root, "status", "--porcelain", "--untracked-files=all", "--", str(directory)
+    ).splitlines()
     return {Path(line[3:]) for line in lines if len(line) > 3}
 
 
