@@ -44,6 +44,8 @@ Review failed (tests): The decoy property must generate changed sets that can in
 2: fail - `test_decoys_and_unrelated_refs_do_not_change_generated_result` draws `changed` only from baseline `local_tips` and `remote_tips`, so newly added refs can never be changed, contrary to the required arbitrary `changed_on_both` set. Draw from the union of baseline and added ref names. `make check` reported 765 tests OK, but does not exercise this case.
 3: pass - Worker notes record three executed mutants and their failing properties, including both requested decoy forms and a dropped name; `make check` exited 0 with 765 tests OK.
 
+Review follow-up: changed refs are now generated from the union of baseline and expanded maps, allowing newly introduced decoys/unrelated refs to appear in changed_on_both. Focused property suite passes (6 tests). make check passes formatting, lint, typecheck, and 765 tests; its exit status is 0.
+
 ## Summary
 
 Implemented generated rule 5 and decoy properties; no production-code fix was needed. Verification: focused suite passed after restoring all three mutants; `make check` passed (766 tests). Three temporary mutants each failed the intended property, recorded in Notes. Follow-up: review the property coverage and mutant evidence.
@@ -67,3 +69,4 @@ Implemented generated rule 5 and decoy properties; no production-code fix was ne
 - 2026-11-19T17:57:56Z upbeat-ochre-adder doing → review
 - 2026-11-19T18:01:40Z honest-zinc-wren: changed acceptance criteria, notes
 - 2026-11-19T18:01:40Z honest-zinc-wren review → doing
+- 2026-11-19T20:09:52Z friendly-silver-kestrel: changed notes
