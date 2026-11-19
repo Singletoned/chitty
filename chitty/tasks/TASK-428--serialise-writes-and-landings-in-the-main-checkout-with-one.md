@@ -1,6 +1,6 @@
 ---
 title: Serialise writes and landings in the main checkout with one short lock
-status: error
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -229,6 +229,8 @@ make: *** [check] Error 143
 ```
 ````
 
+Back to `doing` 2026-11-19 (human-approved): the review check hung twice in `make check`, 27 minutes and then 19 minutes, and was killed both times; the error recorded just before this note is that kill. Cause: `main_checkout_lock` in `src/chitty/locks.py` opens `main-checkout.lock` and takes an exclusive `fcntl.flock` on each entry. `flock` belongs to the open file description, so a second entry in the same process (a new `os.open` of the same file) blocks forever. A test worker was seen holding the file open twice. The lock is taken around landing (`run.py` near lines 1073 and 1118) and also inside store writes (`store.py` near lines 428, 450 and 472), so a store write made while the landing lock is held, or one write nested in another, deadlocks. Fix: make the lock re-entrant within a process (a per-process depth count keyed by lock path, locking only on the first entry and unlocking on the last), or make sure the inner callers never take it. Add a test that enters `main_checkout_lock` twice in one process, run under a short timeout, so it fails rather than hangs without the fix. Run `make check` with a timeout (for example `timeout 600 make check`) to confirm the suite finishes.
+
 ## Summary
 
 Implemented the main-checkout lock and process-level tests for serialized main writes, landing/write coordination, and the linked-worktree guard. Verification: focused suites pass (43 tests); format, Ruff, Pyright pass. Follow-up: full make check remains unverified because unittest-parallel stalls and exceeded 3600 seconds.
@@ -246,3 +248,5 @@ Implemented the main-checkout lock and process-level tests for serialized main w
 - 2026-11-19T20:04:12Z daring-lilac-vole doing → review
 - 2026-11-19T20:59:03Z golden-coral-badger: changed notes
 - 2026-11-19T20:59:03Z golden-coral-badger review → error
+- 2026-11-19T20:59:27Z daring-amber-kestrel: changed notes
+- 2026-11-19T20:59:27Z daring-amber-kestrel error → doing
