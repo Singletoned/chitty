@@ -1,6 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: todo
+status: doing
 created: 2026-11-19
 ---
 
@@ -41,3 +41,4 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 - 2026-11-19T08:52:50Z lively-quartz-crane cold-read → planning
 - 2026-11-19T08:52:52Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-19T08:52:52Z lively-quartz-crane planning → todo
+- 2026-11-19T08:56:36Z youthful-pearl-eel todo → doing
