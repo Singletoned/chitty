@@ -1,0 +1,22 @@
+import unittest
+
+from chitty.store import guide
+
+
+class TestPlannerEvidence(unittest.TestCase):
+    def setUp(self):
+        self.planning = " ".join(guide("plan").split())
+
+    def test_existing_code_uses_wrong_versions_not_a_stub(self):
+        self.assertIn("a stub cannot show the tests fail", self.planning)
+        self.assertIn("plausible wrong versions of the code", self.planning)
+
+    def test_recipes_are_probed_against_existing_code(self):
+        self.assertIn("run each specified generator recipe against it", self.planning)
+
+    def test_distractors_come_from_the_drawn_value(self):
+        self.assertIn("from the drawn value itself", self.planning)
+
+
+if __name__ == "__main__":
+    unittest.main()
