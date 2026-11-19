@@ -19,3 +19,4 @@ Archived: Chitty cold readers do not implement the ticket, so a criterion-to-tes
 - 2026-11-19T20:55:30Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:32Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:58:56Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:58:59Z sunny-white-dormouse backlog → archived
