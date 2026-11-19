@@ -25,7 +25,7 @@ Tests: no property. This is real process and pipe handling, and its parts (an ag
 - [ ] An agent printing `out-1` to `out-5` on stdout and `err-1` to `err-5` on stderr, each with `flush=True`, alternating, then writing `tail` with `sys.stdout.write` and no newline, exits 0: the log and the captured stderr each hold each of those eleven pieces exactly once and in that order, the returned `stdout` holds them all as bytes, and the returncode is 0. It fails today (nothing is echoed or logged).
 - [ ] An agent that writes `b"\xff bad\n"`, then `é\n`, then ends with `b"\xe2\x82"` and no newline (raw bytes via `sys.stdout.buffer`, flushed) gives a log containing ` bad`, `é` and a final line, and no thread exception (`threading.excepthook` replaced to record calls records none). A log opened on a closed file object gives `ChittyError` starting `cannot write agent output`. It fails today.
 - [ ] An agent that starts a descendant printing `LATE` after 4 seconds and then exits at once: the call returns in under 3.5 seconds; the test sleeps until 5 seconds have passed, then `LATE` is not in the log and no thread raised; the test kills the descendant in a `finally`. It fails today (the call waits about 4 seconds).
-- [ ] With `timeout=2`, an agent that prints `TIMEOUT_MARKER` with `flush=True`, starts a descendant ignoring `SIGTERM` that prints `LATE2` after 5 seconds, and sleeps 60 seconds returns the `timed out` sentinel with `TIMEOUT_MARKER` in `stdout`; the log contains `TIMEOUT_MARKER` and, checked after 8 seconds, not `LATE2`. Today it fails because `_run_agent` takes no `log` argument. `tests/test_run_timeout.py` passes with only `log=None` added. `make check` passes.
+- [ ] With `timeout=2`, an agent that prints `TIMEOUT_MARKER` with `flush=True` and sleeps 60 seconds returns the `timed out` sentinel with `TIMEOUT_MARKER` in `stdout`, and the log contains `TIMEOUT_MARKER`. Today it fails because `_run_agent` takes no `log` argument. `tests/test_run_timeout.py` passes with only `log=None` added. `make check` passes.
 
 ## Notes
 
@@ -61,3 +61,4 @@ Planner, 2026-11-19: rewritten from scratch and split twice after cold reads. Th
 - 2026-11-19T21:23:53Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:24:55Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:24:55Z sunny-white-dormouse cold-read → todo
+- 2026-11-19T21:25:08Z sunny-white-dormouse: changed acceptance criteria
