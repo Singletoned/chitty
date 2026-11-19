@@ -12,7 +12,10 @@ Agents planning tickets write long descriptions to a file and pass them in. `chi
 
 Suggestion origin: chitty
 
+Archived as covered by `TASK-347`.
+
 ## History
 
 - 2026-11-19T20:55:06Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:07Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:56:22Z sunny-white-dormouse: changed notes
