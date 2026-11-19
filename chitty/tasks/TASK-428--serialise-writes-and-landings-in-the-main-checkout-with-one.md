@@ -1,6 +1,6 @@
 ---
 title: Serialise writes and landings in the main checkout with one short lock
-status: review
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -27,7 +27,7 @@ Tests, new file `tests/test_main_checkout_lock.py`. Both use a holder: a Python 
 
 ## Acceptance Criteria
 
-- [ ] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
+- [x] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
 - [x] The existing landing tests in `tests/test_review_merge.py` and `tests/test_landing.py` still pass; `make check` passes
 
 ## Plan
@@ -330,6 +330,10 @@ Review failed (work): Newly discovered: the reentrant lock treats a different th
 
 Addressed review finding: main_checkout_lock now guards its per-process held-path bookkeeping and lock lifetime with threading.RLock. Same-thread nesting remains re-entrant; other threads block. Added deterministic two-thread regression. Focused lock tests pass (4 tests); timeout 600 make check passes (783 tests). The two-thread test was confirmed necessary by review probe showing the previous code allowed concurrent entry.
 
+Reviewed: The previously reported thread-serialization finding is resolved by the guarded reentrant lock and its thread test.
+1: pass - `timeout 600 make check` printed `Ran 783 tests` and `OK`, including both lock tests and the worktree guard. The previous review recorded both new tests failing against a Git archive of `main`: the write returned `0 is not None` and landing printed `TASK-1: done → error`; the guard passed.
+2: pass - `timeout 600 make check` printed `Ran 783 tests` and `OK`, including the landing and review-merge suites.
+
 ## Summary
 
 Main-checkout locking now serializes both processes and concurrent threads while preserving same-thread reentrancy. Verification: focused lock tests pass; timeout 600 make check passes (783 tests), including review and landing suites. The full suite no longer stalls.
@@ -358,3 +362,5 @@ Main-checkout locking now serializes both processes and concurrent threads while
 - 2026-11-19T23:20:46Z jolly-yellow-badger: wrote the plan
 - 2026-11-19T23:22:10Z jolly-yellow-badger: changed notes, summary
 - 2026-11-19T23:22:12Z jolly-yellow-badger doing → review
+- 2026-11-19T23:24:59Z daring-jade-quail: changed notes; ticked acceptance criteria
+- 2026-11-19T23:24:59Z daring-jade-quail review → done
