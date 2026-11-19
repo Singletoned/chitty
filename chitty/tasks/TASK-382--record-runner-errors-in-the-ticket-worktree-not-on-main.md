@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: doing
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -24,9 +24,9 @@ No property: two fixed failure phases, both listed and tested; the behaviour dri
 
 ## Acceptance Criteria
 
-- [ ] The two tests defined in `TestRunErrorsOnBranch`, `test_work_setup_failure_is_only_recorded_on_branch` and `test_agent_failure_keeps_error_and_message_on_branch`, pass with every assertion listed in Tests, and fail before the change: run against `main`'s `src/chitty/run.py` (restore it afterwards) and record the failing assertion in a note
-- [ ] Code check: `_handle_check_failure` takes the branch-side repo and its body has no `git.main_checkout` call (shown by `git diff main -- src/chitty/run.py`)
-- [ ] `make check` passes
+- [x] The two tests defined in `TestRunErrorsOnBranch`, `test_work_setup_failure_is_only_recorded_on_branch` and `test_agent_failure_keeps_error_and_message_on_branch`, pass with every assertion listed in Tests, and fail before the change: run against `main`'s `src/chitty/run.py` (restore it afterwards) and record the failing assertion in a note
+- [x] Code check: `_handle_check_failure` takes the branch-side repo and its body has no `git.main_checkout` call (shown by `git diff main -- src/chitty/run.py`)
+- [x] `make check` passes
 
 ## Plan
 
@@ -67,9 +67,18 @@ Planning 2026-11-19, with the owner: the three failed reviews were the ticket's 
 
 Cold read 2026-11-19: both tests fail against `main`'s `run.py` at the first assertion, `git rev-parse main` unchanged, and pass on the branch. One `make check` run failed once in `tests.test_next.TestNext.test_run_cases` (`TASK-1: blocked → error`, expected exit 3) and the next passed; this looks like the known flaky test in the inbox suggestion of 2026-11-14, so rerun `make check` if it fails there.
 
+Blocked: Chitty CLI refuses ticket edits in this worktree because the latest committed version is reported on branch `main` and directs edits to the main checkout. That conflicts with the work instruction to operate only in this ticket worktree. Human/planner decision needed: reconcile the ticket's canonical branch/version so its state can be updated here without editing the main checkout.
+
+Unblocked 2026-11-19: the claim was written on `main` while this branch already existed, so `main` held the newest copy. Merged `main` into this branch; edits work here again. The cause is fixed by `TASK-370` and `TASK-384`. Finish the handoff: the summary above says the work is complete.
+
+Reviewed: Earlier test findings were narrowed by planning and the two retained work-mode cases now cover the specified assertions; review and landing cases are assigned to TASK-422 and TASK-423.
+1: pass - The two named unittest cases printed OK on the branch; replacing src/chitty/run.py temporarily with main version printed FAILED (failures=2), both at the unchanged main-head assertion; restored the branch file.
+2: pass - git diff main -- src/chitty/run.py shows _handle_check_failure takes branch_repo and has no git.main_checkout call.
+3: pass - make check printed OK, 734 tests; ruff and pyright passed.
+
 ## Summary
 
-Runner errors are recorded on ticket branches. Completed branch-only regression coverage; landing check now fails from the reviewer-created marker as specified. Verification: focused landing test and make check (644 tests) pass. No follow-up.
+Runner errors are recorded on ticket branches. Verification: focused tests.test_run_errors_on_branch (7 tests), make check (734 tests), and git diff --check pass. _handle_check_failure uses branch_repo and contains no git.main_checkout call. No follow-up.
 
 ## History
 
@@ -118,3 +127,11 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-19T13:33:41Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T13:33:41Z quick-ginger-lapwing planning → todo
 - 2026-11-19T13:44:18Z sunny-khaki-badger todo → doing
+- 2026-11-19T13:56:25Z sunny-khaki-badger: changed notes
+- 2026-11-19T13:56:25Z sunny-khaki-badger doing → blocked
+- 2026-11-19T14:14:02Z quick-ginger-lapwing: changed notes
+- 2026-11-19T14:14:02Z quick-ginger-lapwing blocked → doing
+- 2026-11-19T14:16:04Z jolly-ochre-ibis: changed summary
+- 2026-11-19T14:16:04Z jolly-ochre-ibis doing → review
+- 2026-11-19T14:18:35Z open-zinc-eel: changed notes; ticked acceptance criteria
+- 2026-11-19T14:18:35Z open-zinc-eel review → done

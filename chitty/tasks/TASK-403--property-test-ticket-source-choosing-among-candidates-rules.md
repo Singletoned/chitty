@@ -9,7 +9,7 @@ created: 2026-11-18
 
 ## Description
 
-`TASK-377` builds `ticket_source` in `src/chitty/ticket_source.py` and property-tests rules 1 to 3; the rules are in its description. This ticket replaces the fixed-example tests for rules 4 and 6 in `tests/test_property_ticket_source.py` with properties, reusing that file's `graphs()`, `task_ids()` and `ref_maps()` generators. Split from `TASK-377` on 2026-11-18, after two reviews rejected fixed examples. Change `src/chitty/ticket_source.py` only if a property finds a bug; then fix it and say so in the notes.
+`TASK-377` builds `ticket_source` in `src/chitty/ticket_source.py` and property-tests rules 1 to 3; the rules are in its description. This ticket replaces the fixed-example tests for rules 4 and 6 in `tests/test_property_ticket_source.py` with properties, reusing that file's `graphs()` (a `Graph` with `ancestors`), `task_ids()`, `ref_maps(task_id, candidate_commits, decoy_commits, with_candidates)`, `decoy_names()`, `current_branches()` and `call()` helpers. Split from `TASK-377` on 2026-11-18, after two reviews rejected fixed examples. Change `src/chitty/ticket_source.py` only if a property finds a bug; then fix it and say so in the notes.
 
 Build inputs whose answer is known by construction, rather than recomputing the rules in the test:
 
@@ -45,3 +45,4 @@ Second cold read 2026-11-18 outcomes: remote-ahead and tie cases forced by drawn
 - 2026-11-18T21:35:18Z lively-quartz-crane cold-read → planning
 - 2026-11-18T21:37:49Z lively-quartz-crane: changed description, notes
 - 2026-11-18T21:37:56Z lively-quartz-crane planning → todo
+- 2026-11-19T14:20:34Z quick-ginger-lapwing: changed description
