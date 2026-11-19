@@ -18,7 +18,7 @@ Decisions:
 - The script exits with `make check`'s status. When Docker is missing or not running, `docker` fails and the script exits non-zero with its error; it never skips.
 - No Makefile target: later tickets call the script. Add one line about it to the `make check` bullet in `AGENTS.md`.
 
-A prototype of exactly this, run on 2026-11-19, took about 20 seconds with warm caches. It passed at `main` (`a6dcd13b`) and at `251c161a^` it failed exactly `test_main_behind_origin_is_refused` and `test_wrapped_criterion_is_one_criterion`. The output names failing tests in the `unittest` summary (`test_x (tests.module.Class.test_x)` lines after `=====`); `unittest-parallel` prints no `FAIL:` prefix.
+A prototype of exactly this, run on 2026-11-19, took about 20 seconds with warm caches. It passed at `main` (`a6dcd13b`) and at `251c161a^` (before both fixes) it failed exactly `test_main_behind_origin_is_refused` and `test_wrapped_criterion_is_one_criterion`. The output names failing tests in the `unittest` summary (`test_x (tests.module.Class.test_x)` lines after `=====`); `unittest-parallel` prints no `FAIL:` prefix.
 
 No property and no unit test: the behaviour is real Docker and Git processes, with no pure core to take out. The evidence is running the script.
 
@@ -27,10 +27,11 @@ Out of scope: running it on landing (later tickets) or in `make release`, CI cha
 ## Acceptance Criteria
 
 - [ ] At `HEAD`, `sh scripts/check_linux.sh` exits 0 and its output ends with the `unittest` `OK` summary; a note records the command, exit status and run time
-- [ ] In a scratch worktree at `251c161a^` with the new script files copied in and committed, the script exits non-zero and its output names `test_main_behind_origin_is_refused` and `test_wrapped_criterion_is_one_criterion` as failing; a note records this. The scratch worktree and branch are then removed
+- [ ] With the script committed, a temporary commit made in the ticket worktree by `git revert --no-edit 251c161a b4bd8406` then `git reset --soft HEAD~2` and `git commit -m revert-fixes` (it undoes both 2026-11-19 Linux fixes) makes `sh scripts/check_linux.sh` exit non-zero, and its output names `test_main_behind_origin_is_refused` and `test_wrapped_criterion_is_one_criterion` as failing; a note records this; `git reset --hard HEAD~1` then removes the temporary commit
 - [ ] After a run, `git status --porcelain` in the checkout is unchanged, and `.venv` and `node_modules` were not modified (record their modification times before and after in the note); `make check` passes
 
 ## History
 
 - 2026-11-19T18:36:33Z daring-amber-kestrel → planning
 - 2026-11-19T18:36:49Z daring-amber-kestrel: changed description
+- 2026-11-19T18:37:05Z daring-amber-kestrel: changed description, acceptance criteria
