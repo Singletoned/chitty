@@ -28,6 +28,10 @@ Tests use Hypothesis (the repository tool) for the pure function, in a new `test
 - [ ] A landing test with real Git: a ticket branch with three commits with distinct subjects (one with no trailer, one whose last paragraph is `Signed-off-by: A <a@example.com>`, one already ending `Task: TASK-1`) lands through `chitty run`; afterwards each commit on `main`, matched by subject, has `Task: TASK-1` exactly once among the `splitlines()` of its last paragraph, the same author and raw author date (`%ad` with `--date=raw`), and the same `^{tree}` as before landing. Direct `add_task_trailers` tests: on a branch whose commits all have the trailer it returns 0 and `HEAD` is unchanged; on a branch with a merge commit it raises `ChittyError`. It fails today.
 - [ ] `chitty edit TASK-1 -s review` on a branch whose commits have no trailer exits 0 and the ticket is in `review`: invert `TestReviewTrailerGate.test_review_entry_requires_trailer` in `tests/test_review_trailers.py` to assert this, dropping its stderr assertions. `make check` passes.
 
+## Plan
+
+Implement trailer generation in chitty.git, preserving each commit tree and author identity while safely replaying linear ticket commits. Invoke it after landing rebase and before landing checks; remove the review-entry gate. Add property and real-Git landing tests, invert the review gate test, update work guide and README, then run focused tests and make check.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -46,3 +50,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:24:34Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:24:34Z sunny-white-dormouse cold-read → todo
 - 2026-11-19T23:23:20Z quick-navy-raven todo → doing
+- 2026-11-19T23:24:55Z quick-navy-raven: wrote the plan
