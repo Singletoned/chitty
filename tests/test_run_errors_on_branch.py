@@ -47,11 +47,15 @@ class TestRunErrorsOnBranch(TestRunClaimsOnMain):
         self.assertIn("doing → error", result.stdout)
 
     def assert_branch_error(self, phase: str, message: str) -> None:
-        ticket = next((self.root / ".worktrees/task-1/chitty/tasks").glob("*.md"))
-        text = ticket.read_text()
-        self.assertIn("status: error", text)
-        self.assertIn(f"Runner error ({phase})", text)
-        self.assertIn(message, text)
+        """The newest commit on `task-1` is the one that records the error."""
+        path = "chitty/tasks/TASK-1--claim-me.md"
+        tip = self.git("show", f"task-1:{path}")
+        self.assertIn("status: error", tip)
+        self.assertIn(f"Runner error ({phase})", tip)
+        self.assertIn(message, tip)
+        parent = self.git("show", f"task-1~1:{path}")
+        self.assertNotIn("status: error", parent)
+        self.assertNotIn(f"Runner error ({phase})", parent)
 
     def main_ticket(self) -> str:
         return self.git("show", "main:chitty/tasks/TASK-1--claim-me.md")
