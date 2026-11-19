@@ -1,6 +1,6 @@
 ---
 title: Parse only the dependency's file when checking a dependency on `main`
-status: review
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -316,6 +316,11 @@ make: *** [check] Error 1
 
 Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext.test_run_cases`, fixed on `main` in `fe1ef0cd`; back to `review`.
 
+Reviewed:
+1: pass - The new call-count test passed; loading the old function from `main` and running the same test printed `AssertionError: 10 != 1`.
+2: pass - The malformed-other-ticket test passed; with the old function it raised `ChittyError` for `TASK-2--done-1.md` invalid YAML.
+3: pass - The implementation notes record 4.23 and 4.25 seconds before, 1.29 and 1.29 seconds after; review `make check` printed `Ran 752 tests` and `OK`.
+
 ## Summary
 
 Dependency checks on `main` now parse only the file of the dependency. `chitty list` here went from 4.2 s to 1.3 s. Verified by two new tests that fail on the old code and by `make check` (744 tests). No follow-up.
@@ -332,3 +337,5 @@ Dependency checks on `main` now parse only the file of the dependency. `chitty l
 - 2026-11-19T14:34:55Z upbeat-umber-eel review → error
 - 2026-11-19T16:01:56Z quick-ginger-lapwing: changed notes
 - 2026-11-19T16:01:56Z quick-ginger-lapwing error → review
+- 2026-11-19T16:08:54Z quick-zinc-urchin: changed notes
+- 2026-11-19T16:08:54Z quick-zinc-urchin review → done
