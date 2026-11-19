@@ -28,8 +28,9 @@ rules, and parts are old: update it when a decision changes.
 - Writing tickets with the human? Cold-read them, as
   `docs/plan/pipeline-and-feedback.md` describes. If you were given a ticket to
   work on or review, skip this: it is not your step.
-- Releases: `make release` tags the version in `src/chitty/__init__.py` and pushes
-  it. `.github/workflows/release.yml` checks, builds and publishes to PyPI by
+- Releases: `make release` refuses while any ticket labelled `blocks-release`
+  is not `done`. It tags the version in `src/chitty/__init__.py` and pushes it.
+  `.github/workflows/release.yml` checks, builds and publishes to PyPI by
   trusted publishing (environment `pypi`). `make release` then waits for that
   run (`scripts/watch_release.py`): on success it upgrades the global `chitty`;
   on failure it records the failure with `sump capture chitty` and exits
@@ -41,7 +42,7 @@ rules, and parts are old: update it when a decision changes.
 - Whoever writes, works or reviews a ticket may add `needs-minor` when users must
   notice or act on the change: a new required setting, changed default or
   selection rule, something needing `chitty init` re-run, or a removed command or
-  option.
+  option. Only `done` tickets labelled `needs-minor` count toward a minor release.
 
 <!-- chitty:begin - managed by `chitty init`; edits here are replaced -->
 

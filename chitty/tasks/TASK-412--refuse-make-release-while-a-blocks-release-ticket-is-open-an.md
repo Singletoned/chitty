@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: doing
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -29,6 +29,28 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 - [ ] Subprocess tests in the existing style, with the blocker unchanged since the tag as Tests describes: an open `blocks-release` ticket `TASK-1` under `chitty/tasks/`, and one `HUMAN-12` under `chitty/human/`, each make the script exit non-zero, print nothing on standard output, and print `<ID>: <title>` with that full ID on standard error; with the tag at `v0.1.10` and the ticket `done`, it prints `0.1.11`. A `needs-minor` ticket with status `todo` changed since the tag gives a patch bump and is not listed. The open-blocker and `needs-minor` `todo` tests fail before the change; the `done` test passes before and after
 - [ ] The `Releases` paragraph of `AGENTS.md` names the `blocks-release` label and says `make release` refuses while such a ticket is open; the `needs-minor` paragraph says only `done` tickets count. `make check` passes
 
+## Plan
+
+Implement and property-test the release blocker/minor ticket selectors, then verify the release-version subprocess behavior and update AGENTS.md release guidance. Run the focused tests before and after the implementation, then make check and commit the implementation changes with Task: TASK-412.
+
+## Notes
+
+Review failed (tests): Add the missing subprocess scenarios and validate every scanned filename before printing a version. These findings are newly discovered; there are no earlier review failures.
+1: pass - `make check` passed the Hypothesis property; replacing each selector separately with a `NotImplementedError` stub made the property error with that exception.
+2: fail - `test_human_blocker_fails` does not tag after committing the blocker or commit an unrelated change, so it does not verify an unchanged human blocker. There is no test of a done `blocks-release` ticket at tag `v0.1.10`; `test_label_before_tag_is_ignored` uses `needs-minor` instead. Add both scenarios and confirm the done-blocker test passes before and after. Also a throwaway subprocess using the existing test helper with a valid task body at `chitty/tasks/not-a-ticket.md` printed exit 0, stdout `0.1.10\n`, stderr empty: the specification requires `parse_filename` errors to propagate for every scanned active file, not only blockers. Validate all scanned filenames and add a regression test. Against `main`, the existing task-blocker and human-blocker tests failed because exit was 0, and the todo minor test failed with `0.2.0` instead of `0.1.10`.
+3: pass - `AGENTS.md` documents both rules; `make check` passed 700 tests, ruff, pyright, and Node checks.
+
+Added the missing regression cases: the unchanged HUMAN-12 blocker and a done blocker at tag v0.1.10 both pass; the malformed active ticket filename test first failed against the existing implementation (exit 0), then passed after validating every scanned active filename with parse_filename. The focused suite now passes (11 tests); make check passes (702 tests plus ruff and pyright).
+
+Reviewed: Previous review findings are resolved.
+1: pass - `make check` passed the Hypothesis selector property; the prior review verified each selector stub raised `NotImplementedError` in the property.
+2: pass - `make check` passed all subprocess cases, including unchanged human and task blockers, done blocker, malformed filename and todo minor. Running the four blocker and todo cases against the script from `main` produced three expected failures (open blockers returned 0 and todo printed `0.2.0`) and the done case passed. This resolves the earlier review note.
+3: pass - `AGENTS.md` documents both rules; `make check` passed 702 tests, ruff and pyright.
+
+## Summary
+
+Validated every active ticket filename before release selection; added regression coverage for unchanged human blockers, done blockers at the tag, and malformed filenames. Verification: focused release-version tests (11) and make check (702 tests, ruff, pyright) pass. Follow-up: independent review.
+
 ## History
 
 - 2026-11-19T10:01:36Z quick-ginger-lapwing → planning
@@ -42,3 +64,12 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 - 2026-11-19T11:10:17Z quick-ginger-lapwing: changed acceptance criteria
 - 2026-11-19T11:10:17Z quick-ginger-lapwing planning → todo
 - 2026-11-19T11:11:52Z jolly-ebony-toad todo → doing
+- 2026-11-19T11:12:56Z jolly-ebony-toad: wrote the plan
+- 2026-11-19T11:17:18Z jolly-ebony-toad: changed summary
+- 2026-11-19T11:17:18Z jolly-ebony-toad doing → review
+- 2026-11-19T11:20:18Z rosy-umber-falcon: changed acceptance criteria, notes
+- 2026-11-19T11:20:18Z rosy-umber-falcon review → doing
+- 2026-11-19T11:26:13Z rosy-pearl-falcon: changed notes, summary
+- 2026-11-19T11:26:13Z rosy-pearl-falcon doing → review
+- 2026-11-19T11:27:59Z honest-dusky-gannet: changed notes
+- 2026-11-19T11:27:59Z honest-dusky-gannet review → done
