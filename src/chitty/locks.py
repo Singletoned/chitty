@@ -9,6 +9,7 @@ is never stale. Locks are machine-local: Chitty runs on one machine today.
 import fcntl
 import json
 import os
+import threading
 from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import UTC, datetime
@@ -79,6 +80,7 @@ def run_lock(
 # nested entry (a store write inside a landing, or one write inside another)
 # reuses the held lock instead.
 _HELD_MAIN_CHECKOUT_LOCKS: dict[Path, int] = {}
+_MAIN_CHECKOUT_LOCK_GUARD = threading.RLock()
 
 
 @contextmanager
@@ -93,24 +95,27 @@ def main_checkout_lock(root: Path) -> Generator[None]:
         yield
         return
     path = (directory / MAIN_CHECKOUT_LOCK).resolve()
-    if path in _HELD_MAIN_CHECKOUT_LOCKS:
-        _HELD_MAIN_CHECKOUT_LOCKS[path] += 1
+    # RLock permits same-thread nesting while making the held-path map and
+    # critical section exclusive between threads in this process.
+    with _MAIN_CHECKOUT_LOCK_GUARD:
+        if path in _HELD_MAIN_CHECKOUT_LOCKS:
+            _HELD_MAIN_CHECKOUT_LOCKS[path] += 1
+            try:
+                yield
+            finally:
+                _HELD_MAIN_CHECKOUT_LOCKS[path] -= 1
+            return
+        directory.mkdir(parents=True, exist_ok=True)
+        descriptor = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
         try:
-            yield
+            fcntl.flock(descriptor, fcntl.LOCK_EX)
+            _HELD_MAIN_CHECKOUT_LOCKS[path] = 1
+            try:
+                yield
+            finally:
+                del _HELD_MAIN_CHECKOUT_LOCKS[path]
         finally:
-            _HELD_MAIN_CHECKOUT_LOCKS[path] -= 1
-        return
-    directory.mkdir(parents=True, exist_ok=True)
-    descriptor = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
-    try:
-        fcntl.flock(descriptor, fcntl.LOCK_EX)
-        _HELD_MAIN_CHECKOUT_LOCKS[path] = 1
-        try:
-            yield
-        finally:
-            del _HELD_MAIN_CHECKOUT_LOCKS[path]
-    finally:
-        os.close(descriptor)
+            os.close(descriptor)
 
 
 @contextmanager

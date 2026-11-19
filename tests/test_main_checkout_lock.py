@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import threading
 import time
 
 from tests.test_cli import CliTestCase
@@ -142,3 +143,35 @@ class TestMainCheckoutLockReentry(CliTestCase):
         self.assertEqual(
             result.stdout.splitlines(), ["after inner: held", "after outer: free"], result.stderr
         )
+
+    def test_different_threads_are_serialized(self):
+        from chitty.locks import main_checkout_lock
+
+        subprocess.run(["git", "init", "--quiet", "-b", "main"], cwd=self.root, check=True)
+        first_entered = threading.Event()
+        release_first = threading.Event()
+        second_entered = threading.Event()
+
+        def first():
+            with main_checkout_lock(self.root):
+                first_entered.set()
+                self.assertTrue(release_first.wait(timeout=10))
+
+        def second():
+            with main_checkout_lock(self.root):
+                second_entered.set()
+
+        first_thread = threading.Thread(target=first)
+        second_thread = threading.Thread(target=second)
+        first_thread.start()
+        self.assertTrue(first_entered.wait(timeout=10))
+        second_thread.start()
+        try:
+            self.assertFalse(second_entered.wait(timeout=0.2))
+        finally:
+            release_first.set()
+        first_thread.join(timeout=10)
+        second_thread.join(timeout=10)
+        self.assertFalse(first_thread.is_alive())
+        self.assertFalse(second_thread.is_alive())
+        self.assertTrue(second_entered.is_set())
