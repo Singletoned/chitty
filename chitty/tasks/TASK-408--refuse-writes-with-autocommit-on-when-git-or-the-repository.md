@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: planning
+status: cold-read
 created: 2026-11-19
 ---
 
@@ -22,10 +22,12 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_autocommit_requires_git.py` runs each of `chitty add`, `chitty edit <ID> -s planning` and `chitty note <ID> x` (the ticket made beforehand with `autocommit = false`) in every combination of `autocommit` on or off, `git` on `PATH` or not, and `git init` run or not, as a `subTest` each (24 cases). With `autocommit` off, each succeeds. With it on and `git init` run with `git` on `PATH`, each succeeds and commits. Otherwise each exits non-zero with a `ChittyError` message, no traceback, naming `autocommit` and either `PATH` or `git init`, and every file under the root has the same content as before.
+- [ ] A test in `tests/test_autocommit_requires_git.py` runs each of `chitty add`, `chitty edit <ID> -s planning` and `chitty note <ID> x` (the ticket made beforehand with `autocommit = false` and `git` on `PATH`) in every combination of `autocommit` on or off, `git` on `PATH` or not, and `git init` run or not, as a `subTest` each (24 cases). Succeeds: `autocommit` off without `git init`, whether or not `git` is on `PATH`; `autocommit` off with `git init` and `git` on `PATH`; `autocommit` on with `git init` and `git` on `PATH`, which also commits. `autocommit` off with `git init` but no `git`: exits non-zero with the existing `TASK-405` error naming `PATH`. Every other case: exits non-zero with a `ChittyError` message, no traceback, naming `autocommit` and either `PATH` or `git init`. In every failing case every file under the root has the same content as before.
 - [ ] On `main` this test fails: the not-a-repository and missing-`git` cases with `autocommit` on change the files (or show a `FileNotFoundError` traceback). Record that run in a note.
 - [ ] `make check` passes, with any existing test that enabled `autocommit` without a repository fixed to create one.
 
 ## History
 
 - 2026-11-19T09:06:20Z lively-quartz-crane → planning
+- 2026-11-19T09:06:59Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-19T09:06:59Z lively-quartz-crane planning → cold-read
