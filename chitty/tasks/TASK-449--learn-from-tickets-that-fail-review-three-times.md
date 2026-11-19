@@ -12,7 +12,10 @@ Three failed reviews means the plan was wrong, and nothing currently captures wh
 
 Suggestion origin: echonomicon
 
+Archived: folded into `TASK-411` (retro on tickets reaching a third failed review).
+
 ## History
 
 - 2026-11-19T20:55:23Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:24Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:59:05Z sunny-white-dormouse: changed notes
