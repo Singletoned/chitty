@@ -4,6 +4,9 @@ status: backlog
 labels:
   - bug
 priority: high
+depends_on:
+  - TASK-434
+  - TASK-428
 created: 2026-11-19
 ---
 
@@ -18,3 +21,4 @@ Direction agreed in planning: move the commit into `init_repo` so its restore co
 ## History
 
 - 2026-11-19T21:17:37Z sunny-white-dormouse → backlog
+- 2026-11-19T21:17:46Z sunny-white-dormouse: changed dependencies
