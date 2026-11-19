@@ -11,7 +11,7 @@ from chitty.store import NextAction, Repo
 from tests.test_cli import CliTestCase
 
 
-class TestLanding(CliTestCase):
+class LandingTestCase(CliTestCase):
     def setUp(self):
         super().setUp()
         self.git("init", "--quiet", "-b", "main")
@@ -50,6 +50,8 @@ class TestLanding(CliTestCase):
         action = NextAction("review", self.main_repo.resolve(self.ticket))
         _land(self.main_repo, self.worktree, action, "true", "true")
 
+
+class TestLanding(LandingTestCase):
     def test_missing_ticket_branch_is_noop_even_when_main_is_dirty(self):
         self.finish_ticket()
         self.git("worktree", "remove", str(self.worktree))
