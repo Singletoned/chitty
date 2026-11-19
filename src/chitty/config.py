@@ -23,7 +23,7 @@ ROOT_ENV = "CHITTY_ROOT"
 CHITTY_VERSION = __version__
 LIST_WIDTH = 100
 DEFAULT_AGENT_TIMEOUT = 7200
-FIRST_WORKFLOW_VERSION = "0.5.0"
+LAST_RUNNER_DEFAULT_VERSION = "0.5.0"
 CONTEXT_NAME_RE = re.compile(r"[a-z0-9][a-z0-9_-]*")
 PROJECT_NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?")
 RESERVED_CONTEXT_NAMES = ("archive",)
@@ -310,7 +310,14 @@ def resolve_workflow(workflow: str | None, chitty_version: str | None) -> str:
         key = version_key(chitty_version)
     except ChittyError:
         return "runner"
-    return "runner" if key < version_key(FIRST_WORKFLOW_VERSION) else "tickets"
+    # Treat trailing zero components as equivalent for this compatibility boundary.
+    normalized = key
+    while normalized and normalized[-1] == 0:
+        normalized = normalized[:-1]
+    boundary = version_key(LAST_RUNNER_DEFAULT_VERSION)
+    while boundary and boundary[-1] == 0:
+        boundary = boundary[:-1]
+    return "runner" if normalized <= boundary else "tickets"
 
 
 def _version_key(value: str) -> tuple[int, ...]:
