@@ -51,6 +51,9 @@ class RepoTestCase(unittest.TestCase):
         environ["HOME"] = str(self.tmp / "home")
         environ["XDG_CONFIG_HOME"] = str(self.config_home)
         environ["XDG_DATA_HOME"] = str(self.tmp / "data")
+        environ["GIT_CONFIG_COUNT"] = "1"
+        environ["GIT_CONFIG_KEY_0"] = "init.defaultBranch"
+        environ["GIT_CONFIG_VALUE_0"] = "main"
         patcher = mock.patch.dict(os.environ, environ, clear=True)
         patcher.start()
         self.addCleanup(patcher.stop)

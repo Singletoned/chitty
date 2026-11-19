@@ -1,6 +1,6 @@
 ---
 title: Add the optional `rebase_model` setting for rebase sessions
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -31,3 +31,4 @@ Tests: in `tests/test_run_model_defaults.py`, which tests the existing model set
 - 2026-11-18T18:19:11Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T18:19:11Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:19:13Z lively-quartz-crane planning → todo
+- 2026-11-18T23:20:15Z plucky-bronze-jay todo → doing

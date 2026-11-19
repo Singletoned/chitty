@@ -489,20 +489,18 @@ def _run_ticket(
                         f"repair agent returned {action.id} to review with no change beyond "
                         "its ticket files"
                     )
-            note = (
-                None
-                if new_status == "review"
-                else "Repair agent determined that human action is required."
-            )
-            main_repo.edit(
-                action.id,
-                Edit(
-                    status=new_status,
-                    note=note,
-                    skip_verdicts=True,
-                    skip_current_version=True,
-                ),
-            )
+            if new_status == "blocked":
+                # Keep the repair outcome on its ticket branch; the agent's note
+                # remains first, followed by the runner's handoff context.
+                work_repo = Repo(worktree, main_repo.config)
+                work_repo.edit(
+                    action.id,
+                    Edit(
+                        note="Repair agent determined that human action is required.",
+                        skip_verdicts=True,
+                        skip_current_version=True,
+                    ),
+                )
         if status_outcome(old_status, new_status) == "land":
             context["phase"] = "landing"
             _land(main_repo, worktree, action, setup, check)
