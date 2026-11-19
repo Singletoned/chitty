@@ -1,6 +1,6 @@
 ---
 title: Let a person edit a branch ticket from the main checkout with `chitty edit --human`
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-19
 ---
@@ -37,3 +37,4 @@ Out of scope: the same flag on other commands (`archive`, `move`), the MCP front
 ## History
 
 - 2026-11-19T22:04:44Z daring-amber-kestrel → planning
+- 2026-11-19T22:04:56Z daring-amber-kestrel planning → cold-read
