@@ -14,7 +14,7 @@ Decisions:
 
 - `directory` does not exist, or is not a directory: raise `ChittyError` naming it. Check this before running `git`, so the two causes of `FileNotFoundError` never share a branch.
 - `git` is not on `PATH`: look for a `.git` entry (file or directory) in `directory` and each of its parents. None found: return `False`. One found: raise `ChittyError` naming `git`, saying it was not found on `PATH`, and naming the `.git` path found.
-- Everything else is unchanged; non-zero exits from `git` are `TASK-B`'s.
+- Everything else is unchanged; non-zero exits from `git` are `TASK-406`'s.
 
 Out of scope: `GIT_DIR` and other Git environment variables; other functions in `git.py` that run `git` (they already fail loudly with `FileNotFoundError`).
 
@@ -31,3 +31,4 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 - 2026-11-19T08:43:02Z lively-quartz-crane → planning
 - 2026-11-19T08:43:24Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-19T08:44:03Z lively-quartz-crane planning → cold-read
+- 2026-11-19T08:44:18Z lively-quartz-crane: changed description
