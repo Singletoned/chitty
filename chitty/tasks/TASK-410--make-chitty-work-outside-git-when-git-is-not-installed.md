@@ -18,9 +18,10 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 ## Acceptance Criteria
 
 - [ ] Equivalence test: in a root outside Git with `autocommit = false`, holding one ticket made beforehand, each of `chitty list`, `chitty show <ID>`, `chitty edit <ID> -s planning`, `chitty note <ID> x`, `chitty check`, `chitty move <ID> human` and `chitty archive <ID>` runs once with `git` on `PATH` and once, in a fresh copy of the same root, with `PATH` set to an empty directory. Both runs give the same exit status (0), the same standard output after replacing the root path, and the same files and contents afterwards. Each command is a `subTest`; the test first asserts `git.is_repository(root)` is `False`. Fails on `main`, where the runs without `git` show a `FileNotFoundError` traceback.
-- [ ] Test: inside a real repository with `git` on `PATH`, `git.dirty_paths` raises `ChittyError` when `git status` fails (make it fail by setting `repositoryformatversion = 99` in `.git/config` after `git init`). Fails on `main`, which returns an empty set.
+- [ ] Test: inside a real repository with `git` on `PATH`, where `.git/index` is overwritten with `garbage` after `git init` (so `git rev-parse --is-inside-work-tree` prints `true` but `git status` exits 128 with `index file smaller than expected`), `git.dirty_paths` raises `ChittyError` containing that message. Fails on `main`, which returns an empty set.
 - [ ] `make check` passes.
 
 ## History
 
 - 2026-11-19T09:13:54Z lively-quartz-crane → planning
+- 2026-11-19T09:14:25Z lively-quartz-crane: changed acceptance criteria
