@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: review
+status: error
 labels:
   - bug
   - needs-minor
@@ -50,6 +50,229 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 
 Implemented `git.rebase_onto`; review and landing now rebase onto main, abort conflicts, and translate Ctrl-C to `RunInterrupted("rebase")`. Removed merge helpers. Added direct clean/conflict Git tests; updated real runner, retry, and guide coverage. Focused suites passed (72 tests). `make check` passed all 736 tests; first full run had one transient existing `tests.test_next.TestNext.test_run_cases` failure, and rerun passed. `git diff --check` passed. `chitty fix` completed with existing warnings in unrelated task files.
 
+Runner error (check): check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+606 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 744 test suites (744 total tests) across 16 workers
+...................................................................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 14:30:29 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+.............................................../Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+...........................................................................................F............................................................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+........../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/CLAUDE.md
+.......Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/.worktrees/task-1...
+..TASK-1: doing → review
+.no next ticket for --mode work
+......./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/CLAUDE.md
+...............................................chitty 0.1.31 is out: run uv tool upgrade chitty
+................................landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_run_cases (tests.test_next.TestNext.test_run_cases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-374/tests/test_next.py", line 1836, in test_run_cases
+    no_next = self.run_cli("run", exit_code=3)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-374/tests/test_cli.py", line 89, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 3 : TASK-1: blocked → error
+Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp2bw5fj54/repo/.worktrees/task-1...
+
+
+----------------------------------------------------------------------
+Ran 744 tests in 36.057s
+
+FAILED (failures=1)
+make: *** [check] Error 1
+
+```
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-374`
+
+Error output:
+````text
+check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+606 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 744 test suites (744 total tests) across 16 workers
+...................................................................................................................................................................................................................................................................................................................................................................................................................................................━━━━ chitty run · 14:30:29 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+.............................................../Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+...........................................................................................F............................................................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+........../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/CLAUDE.md
+.......Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpd940zmb5/repo/.worktrees/task-1...
+..TASK-1: doing → review
+.no next ticket for --mode work
+......./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpkpz8xu6v/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpdafm5l6f/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8dzupf1l/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp6g1tfifr/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnbzhembc/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpvedem84k/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp9nv8iof5/repo/CLAUDE.md
+...............................................chitty 0.1.31 is out: run uv tool upgrade chitty
+................................landed TASK-1
+landed TASK-1
+landed TASK-2
+
+======================================================================
+test_run_cases (tests.test_next.TestNext.test_run_cases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-374/tests/test_next.py", line 1836, in test_run_cases
+    no_next = self.run_cli("run", exit_code=3)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-374/tests/test_cli.py", line 89, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 3 : TASK-1: blocked → error
+Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp2bw5fj54/repo/.worktrees/task-1...
+
+
+----------------------------------------------------------------------
+Ran 744 tests in 36.057s
+
+FAILED (failures=1)
+make: *** [check] Error 1
+
+```
+````
+
 ## Summary
 
 Replaced runner merge integration with rebasing in review and landing; removed obsolete merge helpers. Updated runner guide and real-Git regression tests. Verification: focused tests (72), `make check` (736 tests), `git diff --check`, and `chitty fix`. Implementation commit: 706614ca (Task: TASK-374). No follow-ups.
@@ -75,3 +298,5 @@ Replaced runner merge integration with rebasing in review and landing; removed o
 - 2026-11-19T14:21:56Z sunny-bronze-ibis: wrote the plan
 - 2026-11-19T14:29:41Z sunny-bronze-ibis: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T14:29:41Z sunny-bronze-ibis doing → review
+- 2026-11-19T14:30:59Z sunny-indigo-vole: changed notes
+- 2026-11-19T14:30:59Z sunny-indigo-vole review → error
