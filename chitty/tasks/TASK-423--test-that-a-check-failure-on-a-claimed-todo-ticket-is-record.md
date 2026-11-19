@@ -1,6 +1,6 @@
 ---
 title: Test that a `check` failure on a claimed `todo` ticket is recorded on the ticket branch
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-382
@@ -16,7 +16,7 @@ In `tests/test_next.py`, class `TestNext`, rename `test_run_check_failure_record
 
 Add:
 
-- Before `chitty run`, record `main_before = git rev-parse main`.
+- Directly before `chitty run` (after the fake agent is installed), record `main_before = git rev-parse main`, stripped.
 - After it: `git log --format=%s <main_before>..main -- <path>` prints exactly one line, `chitty: edit TASK-1 Todo` (the claim), so no other commit on `main` touched the ticket. Limit it to the ticket path: `main` also gains a `chitty: upgrade repository setup` commit during the run, because the fixture's config is older than `chitty init` writes.
 - `git show task-1:<path>`, where `<path>` is the ticket path the test already computes, contains `status: error`, `Runner error (check)`, `check exited with status 1` and `check line 6`.
 
@@ -41,3 +41,5 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 - 2026-11-19T13:41:43Z quick-ginger-lapwing: changed description
 - 2026-11-19T13:41:47Z quick-ginger-lapwing planning → cold-read
 - 2026-11-19T13:43:03Z quick-ginger-lapwing cold-read → planning
+- 2026-11-19T13:43:06Z quick-ginger-lapwing: changed description
+- 2026-11-19T13:43:06Z quick-ginger-lapwing planning → todo
