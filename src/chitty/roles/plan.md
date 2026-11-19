@@ -98,6 +98,8 @@ read. Describe the change and why it is needed; criteria are optional.
   `-c human` ticket that depends on this one.
 - Re-check claims about other tickets just before promoting, because they can
   land during the read.
+- Change a ticket's status in the same edit command as the text it depends
+  on, so a rejected edit cannot move the ticket on.
 - Do not cold-read a ticket you were given to work on or review; it is not your
   planning step.
 - Before preparing a merge request, run `chitty archive` with no ID to process

@@ -17,6 +17,9 @@ class TestPlannerEvidence(unittest.TestCase):
     def test_distractors_come_from_the_drawn_value(self):
         self.assertIn("from the drawn value itself", self.planning)
 
+    def test_status_changes_with_the_text_it_depends_on(self):
+        self.assertIn("in the same edit command as the text", self.planning)
+
 
 if __name__ == "__main__":
     unittest.main()
