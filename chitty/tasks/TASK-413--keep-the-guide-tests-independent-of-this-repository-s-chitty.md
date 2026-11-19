@@ -1,6 +1,6 @@
 ---
 title: Keep the guide tests independent of this repository's `chitty.toml`
-status: planning
+status: todo
 labels:
   - blocks-release
 priority: high
@@ -25,7 +25,7 @@ No property: the change only removes one case and moves one test class into a te
 
 ## Acceptance Criteria
 
-- [ ] Recorded in a note with the commands and the test names that fail or pass: copies made with `git archive <ref> | tar -x -C <dir>` under `/private/tmp/claude-501/` (`main` for before, the ticket branch for after), each with its `chitty.toml` edited, run from `<dir>` with the checkout's `.venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` and `PYTHONPATH=<dir>/src`. Before, `workflow = "tickets"` fails the backticks test and `workflow = "bogus"` fails the Pi warning test; after, both pass with `workflow = "bogus"`
+- [ ] Recorded in a note with the commands and the test names that fail or pass: copies made with `git archive <ref> | tar -x -C <dir>`, where `<dir>` is under this worktree's `tmp/` (add `tmp/` to `.gitignore` on this branch if it is not ignored; `main` for before, the ticket branch for after), each with its `chitty.toml` edited, run from `<dir>` with the worktree's `.venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` and `PYTHONPATH=<dir>/src`. Before, `workflow = "tickets"` fails the backticks test and `workflow = "bogus"` fails the Pi warning test; after, both pass with `workflow = "bogus"`. Delete the copies afterwards
 - [ ] `test_guide_command_prints_the_repository_workflow` still passes unchanged; `make check` passes in the real worktree after `make install` (a copy has no `node_modules`, so prettier tests fail there)
 
 ## Plan
@@ -39,6 +39,8 @@ Changed the tests as planned. Verification: `PYTHONPATH=src .venv/bin/python -m 
 Review failed (integration): merging `main` conflicts in `tests/test_guide_backticks.py`.
 
 The required acceptance-criterion 1 validation cannot be run under the active worktree boundary: it explicitly requires creating two archived copies under /private/tmp/claude-501/, while the session instruction says to create files only inside this ticket worktree. The earlier attempt correctly left it unrun; I did not create any files outside the worktree. Please decide whether to revise the criterion to permit temporary copies under this worktree (or explicitly authorize the specified outside path) before implementation can be returned to review. After merging main, resolved the conflict in tests/test_guide_backticks.py by retaining only the role cases and adapting expected output to guide(*args, directory=Path.cwd()). make check passed: 714 suites/tests, ruff format, ruff, and pyright; test_guide_command_prints_the_repository_workflow is included in that full suite. Commit: 576797ea.
+
+Planning 2026-11-19: the worker was right; criterion 1 asked for copies outside the worktree, which workers may not create. The copies now go in this worktree's ignored `tmp/`. The code change and its tests are done; only this evidence is missing. No new cold read: only the copy location changed.
 
 ## Summary
 
@@ -65,3 +67,5 @@ Handoff: removed the repository-config-dependent no-role guide assertion and ran
 - 2026-11-19T13:19:41Z able-ochre-badger review → doing
 - 2026-11-19T13:23:59Z plucky-fawn-dormouse: changed owner, notes
 - 2026-11-19T13:23:59Z plucky-fawn-dormouse doing → planning
+- 2026-11-19T13:53:08Z quick-ginger-lapwing: changed acceptance criteria, notes
+- 2026-11-19T13:53:08Z quick-ginger-lapwing planning → todo
