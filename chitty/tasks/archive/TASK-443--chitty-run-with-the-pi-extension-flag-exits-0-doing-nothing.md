@@ -19,3 +19,4 @@ Archived: the Chitty part (record why the agent ended, via a per-session log nam
 - 2026-11-19T20:55:16Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:17Z sunny-white-dormouse: changed notes
 - 2026-11-19T21:13:01Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:13:05Z sunny-white-dormouse backlog → archived
