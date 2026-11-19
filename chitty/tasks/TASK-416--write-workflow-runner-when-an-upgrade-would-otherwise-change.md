@@ -1,6 +1,6 @@
 ---
 title: Write `workflow = "runner"` when an upgrade would otherwise change a runner repository to tickets
-status: doing
+status: review
 labels:
   - blocks-release
 priority: high
@@ -64,3 +64,4 @@ Implemented section-scoped runner workflow migration during stale setup upgrades
 - 2026-11-19T11:06:53Z youthful-ochre-vole: wrote the plan
 - 2026-11-19T11:10:35Z youthful-ochre-vole: changed summary
 - 2026-11-19T11:10:37Z youthful-ochre-vole: ticked acceptance criteria
+- 2026-11-19T11:10:40Z youthful-ochre-vole doing → review
