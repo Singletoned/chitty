@@ -1,6 +1,6 @@
 ---
 title: Keep the guide tests independent of this repository's `chitty.toml`
-status: cold-read
+status: planning
 labels:
   - blocks-release
 priority: high
@@ -37,3 +37,4 @@ No property: the change only removes one case and moves one test class into a te
 - 2026-11-19T11:24:33Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T11:24:37Z quick-ginger-lapwing: changed title, description, acceptance criteria
 - 2026-11-19T11:24:37Z quick-ginger-lapwing planning → cold-read
+- 2026-11-19T11:26:06Z quick-ginger-lapwing cold-read → planning
