@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: review
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -33,6 +33,13 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 
 Implement and property-test the release blocker/minor ticket selectors, then verify the release-version subprocess behavior and update AGENTS.md release guidance. Run the focused tests before and after the implementation, then make check and commit the implementation changes with Task: TASK-412.
 
+## Notes
+
+Review failed (tests): Add the missing subprocess scenarios and validate every scanned filename before printing a version. These findings are newly discovered; there are no earlier review failures.
+1: pass - `make check` passed the Hypothesis property; replacing each selector separately with a `NotImplementedError` stub made the property error with that exception.
+2: fail - `test_human_blocker_fails` does not tag after committing the blocker or commit an unrelated change, so it does not verify an unchanged human blocker. There is no test of a done `blocks-release` ticket at tag `v0.1.10`; `test_label_before_tag_is_ignored` uses `needs-minor` instead. Add both scenarios and confirm the done-blocker test passes before and after. Also a throwaway subprocess using the existing test helper with a valid task body at `chitty/tasks/not-a-ticket.md` printed exit 0, stdout `0.1.10\n`, stderr empty: the specification requires `parse_filename` errors to propagate for every scanned active file, not only blockers. Validate all scanned filenames and add a regression test. Against `main`, the existing task-blocker and human-blocker tests failed because exit was 0, and the todo minor test failed with `0.2.0` instead of `0.1.10`.
+3: pass - `AGENTS.md` documents both rules; `make check` passed 700 tests, ruff, pyright, and Node checks.
+
 ## Summary
 
 Implemented full-scan release blockers and done-only needs-minor selection; added Hypothesis property coverage plus subprocess tests for active/human blockers and todo labels. Verification: focused tests and make check pass (700 tests). No follow-ups.
@@ -53,3 +60,5 @@ Implemented full-scan release blockers and done-only needs-minor selection; adde
 - 2026-11-19T11:12:56Z jolly-ebony-toad: wrote the plan
 - 2026-11-19T11:17:18Z jolly-ebony-toad: changed summary
 - 2026-11-19T11:17:18Z jolly-ebony-toad doing → review
+- 2026-11-19T11:20:18Z rosy-umber-falcon: changed acceptance criteria, notes
+- 2026-11-19T11:20:18Z rosy-umber-falcon review → doing
