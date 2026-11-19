@@ -56,6 +56,8 @@ Review failed (tests): Newly discovered: add the six specified explicit Hypothes
 2: pass - `make check` ran both integration tests successfully. The previous review demonstrated both line checks fail with migration disabled and the guide check changes from `True` to `False` after the second init.
 3: pass - `make check` exited 0: ruff, pyright and 701 tests passed.
 
+Added deterministic Hypothesis @example cases for all six specified version boundaries. Focused tests passed; make check passed (701 tests, ruff, pyright).
+
 ## Summary
 
 Expanded Hypothesis config generation to cover permuted Chitty-section lines, workflow/comment variants, and out-of-section decoys. Fixed EOF insertion to separate TOML lines. Verified focused workflow tests and make check (701 tests, lint, typecheck; full command completed successfully).
@@ -86,3 +88,4 @@ Expanded Hypothesis config generation to cover permuted Chitty-section lines, wo
 - 2026-11-19T11:22:42Z calm-amber-eel doing → review
 - 2026-11-19T11:25:14Z eager-violet-marten: changed acceptance criteria, notes
 - 2026-11-19T11:25:14Z eager-violet-marten review → doing
+- 2026-11-19T11:29:15Z brisk-pearl-heron: changed notes
