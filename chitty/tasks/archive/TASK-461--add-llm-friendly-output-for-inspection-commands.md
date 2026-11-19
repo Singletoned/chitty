@@ -19,3 +19,4 @@ Archived as covered by `BACKLOG-54277329`.
 - 2026-11-19T20:55:37Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:38Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:57:47Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:50Z sunny-white-dormouse backlog → archived
