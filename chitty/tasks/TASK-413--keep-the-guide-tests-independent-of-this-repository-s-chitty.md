@@ -1,6 +1,6 @@
 ---
 title: Keep the guide tests independent of this repository's `chitty.toml`
-status: doing
+status: planning
 labels:
   - blocks-release
 priority: high
@@ -38,6 +38,8 @@ Changed the tests as planned. Verification: `PYTHONPATH=src .venv/bin/python -m 
 
 Review failed (integration): merging `main` conflicts in `tests/test_guide_backticks.py`.
 
+The required acceptance-criterion 1 validation cannot be run under the active worktree boundary: it explicitly requires creating two archived copies under /private/tmp/claude-501/, while the session instruction says to create files only inside this ticket worktree. The earlier attempt correctly left it unrun; I did not create any files outside the worktree. Please decide whether to revise the criterion to permit temporary copies under this worktree (or explicitly authorize the specified outside path) before implementation can be returned to review. After merging main, resolved the conflict in tests/test_guide_backticks.py by retaining only the role cases and adapting expected output to guide(*args, directory=Path.cwd()). make check passed: 714 suites/tests, ruff format, ruff, and pyright; test_guide_command_prints_the_repository_workflow is included in that full suite. Commit: 576797ea.
+
 ## Summary
 
 Handoff: removed the repository-config-dependent no-role guide assertion and ran Pi warning guide commands in RepoTestCase temporary repositories. Verified focused guide tests (26 tests) and full `make check` (702 tests). The ticket-requested archived-copy, altered-config before/after test was not run because session constraints prohibit writing outside this worktree. No follow-up code changes identified.
@@ -61,3 +63,5 @@ Handoff: removed the repository-config-dependent no-role guide assertion and ran
 - 2026-11-19T11:33:21Z golden-hazel-raven doing → review
 - 2026-11-19T13:19:41Z able-ochre-badger: changed notes
 - 2026-11-19T13:19:41Z able-ochre-badger review → doing
+- 2026-11-19T13:23:59Z plucky-fawn-dormouse: changed owner, notes
+- 2026-11-19T13:23:59Z plucky-fawn-dormouse doing → planning
