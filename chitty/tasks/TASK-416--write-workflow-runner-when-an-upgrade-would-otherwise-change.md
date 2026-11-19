@@ -60,7 +60,7 @@ Added deterministic Hypothesis @example cases for all six specified version boun
 
 ## Summary
 
-Expanded Hypothesis config generation to cover permuted Chitty-section lines, workflow/comment variants, and out-of-section decoys. Fixed EOF insertion to separate TOML lines. Verified focused workflow tests and make check (701 tests, lint, typecheck; full command completed successfully).
+Expanded the migration property test with all six required deterministic version examples. Focused tests and make check pass (701 tests, ruff, pyright). Commit: 2b900d35; no follow-ups.
 
 ## History
 
@@ -89,3 +89,4 @@ Expanded Hypothesis config generation to cover permuted Chitty-section lines, wo
 - 2026-11-19T11:25:14Z eager-violet-marten: changed acceptance criteria, notes
 - 2026-11-19T11:25:14Z eager-violet-marten review → doing
 - 2026-11-19T11:29:15Z brisk-pearl-heron: changed notes
+- 2026-11-19T11:29:36Z brisk-pearl-heron: changed summary
