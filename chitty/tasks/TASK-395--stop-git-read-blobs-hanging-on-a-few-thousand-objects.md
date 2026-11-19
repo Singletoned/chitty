@@ -1,6 +1,6 @@
 ---
 title: Stop `git._read_blobs` hanging on a few thousand objects
-status: error
+status: review
 labels:
   - bug
 parent: TASK-376
@@ -21,7 +21,7 @@ Tests: in `tests/test_git.py`, inheriting `RepoTestCase`, a repository with 5000
 ## Acceptance Criteria
 
 - [x] `_read_blobs` returns all 5000 objects of the large case, each with the content written, within the 20 s timeout; the test fails (times out) before the change
-- [ ] The existing `tests/test_git.py` tests pass unchanged, and `make check` passes
+- [x] The existing `tests/test_git.py` tests pass unchanged, and `make check` passes
 
 ## Plan
 
@@ -310,6 +310,8 @@ make: *** [check] Error 1
 ```
 ````
 
+Repaired 2026-11-19 by a planning session. The runner error was the flaky `test_refused_edit_restores_repository` (fixed by `TASK-417`), not this change. Merged `main`, resolving conflicts in `src/chitty/git.py` (kept the `communicate` reading and added `main`'s `Git file is not UTF-8` error) and the imports in `tests/test_git.py`; `make check` passes (718 tests). This fix is urgent: a review run hung for 91 minutes in `git cat-file --batch` on 2026-11-19.
+
 ## Summary
 
 Implemented communicate-based Git cat-file batching and added a subprocess regression test covering 5,000 committed 1 KB blobs. The regression timed out before the fix and passes after it; all tests in tests/test_git.py pass. make check was attempted twice and failed both times in unrelated tests/test_property_refused_write.py::TestRefusedEditProperty.test_refused_edit_restores_repository. Ruff formatting/check and pyright pass. Commit: 8f416fbd (Task: TASK-395). Reviewer: assess the unrelated full-check failure; no follow-up implementation needed.
@@ -329,3 +331,5 @@ Implemented communicate-based Git cat-file batching and added a subprocess regre
 - 2026-11-18T22:42:00Z zesty-russet-raven doing → review
 - 2026-11-18T22:42:47Z quick-yellow-dormouse: changed notes
 - 2026-11-18T22:42:47Z quick-yellow-dormouse review → error
+- 2026-11-19T13:25:47Z quick-ginger-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-19T13:25:47Z quick-ginger-lapwing error → review
