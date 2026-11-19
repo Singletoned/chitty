@@ -1,6 +1,6 @@
 ---
 title: Tell planners to cold-read again when a read found serious problems
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -14,3 +14,4 @@ Owner advice 2026-11-19: when a cold read is very useful, another read is often 
 ## History
 
 - 2026-11-19T13:22:28Z quick-ginger-lapwing → todo
+- 2026-11-19T21:41:04Z daring-amber-kestrel todo → doing
