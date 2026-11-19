@@ -1,6 +1,7 @@
 import re
 import unittest
 from importlib.resources import files
+from pathlib import Path
 
 from chitty.store import ROLE_NAMES, guide
 
@@ -13,7 +14,7 @@ def _flat(text: str) -> str:
 
 class TestPlanGuideRestored(unittest.TestCase):
     def test_restores_advice_outside_the_read_only_change(self):
-        planning = _flat(guide("plan"))
+        planning = _flat(guide("plan", directory=Path.cwd()))
         for phrase in (
             "Err on the side of splitting",
             "`chitty check` warns above five criteria; split larger work.",
@@ -30,7 +31,7 @@ class TestPlanGuideRestored(unittest.TestCase):
                 self.assertIn(phrase, planning)
 
     def test_drops_wording_the_read_only_change_added(self):
-        planning = _flat(guide("plan"))
+        planning = _flat(guide("plan", directory=Path.cwd()))
         for phrase in (
             "Keep the reader's starting point",
             "cannot be verified together",
@@ -42,7 +43,7 @@ class TestPlanGuideRestored(unittest.TestCase):
 
 class TestGuidesStayGeneral(unittest.TestCase):
     def test_no_guide_names_a_ticket(self):
-        texts = {role: guide(role) for role in ROLE_NAMES}
+        texts = {role: guide(role, directory=Path.cwd()) for role in ROLE_NAMES}
         for path in files("chitty").iterdir():
             if path.name.startswith("guide") and path.name.endswith(".md"):
                 texts[path.name] = path.read_text()
@@ -51,7 +52,7 @@ class TestGuidesStayGeneral(unittest.TestCase):
                 self.assertIsNone(TICKET_ID.search(text))
 
     def test_cold_read_guide_addresses_only_the_reader(self):
-        cold_read = _flat(guide("cold-read"))
+        cold_read = _flat(guide("cold-read", directory=Path.cwd()))
         for phrase in (
             "Use these report headings exactly",
             "expected route",
