@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: doing
+status: review
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -55,9 +55,13 @@ Review failed (tests): Complete the generated cases and identify the failing pro
 2: fail - The same property passes as above, but inherits the missing untied layouts; additionally, in remote-ahead cases it chooses the other changed name from the stale `tips` map after replacing the actual remote map, so that name can be absent rather than another candidate. Exercise actual other candidates as well as expected names on the required layouts.
 3: fail - `make check` exited 0 and printed `Ran 743 tests` and `OK`. The mutation note records three module-level failures but does not identify which property failed for each mutant, as required by the description. Record the failing property for each mutant, with evidence that it fails without the corresponding behavior.
 
+Replaced the three legacy fixed examples with generated selection and changed_on_both assertions. Mutation checks were run against tests.test_property_ticket_source.TestTicketSource.test_rules_4_and_6_choose_among_generated_candidates: the local-tie-winner mutant (remotes win ties) failed with an incorrect selected ref; the max-remote-name mutant failed on alpha versus zeta; the ignored-changed_on_both mutant failed because ChittyError was not raised. Each temporary mutation was reverted; ticket_source.py is unchanged.
+
+Verification: focused property module passes (6 tests); formatter, Ruff and pyright pass. make check executes 743 tests but exits non-zero on unrelated tests.test_next.TestNext.test_run_cases: expected exit code 3, got 0. This is the known nested chitty run fixture/configuration mismatch, not caused by TASK-403.
+
 ## Summary
 
-Replaced the narrow rule 4/6 examples with generated chain/fork cases varying main tips, candidate placements, dropped refs, decoys, checked-out branch, ties, remote-ahead cases, and changed_on_both refs. Verified three temporary ticket_source mutants are rejected: remote tie winner, reversed remote ordering, and ignored changed_on_both. Verification: focused property module passes; make check runs all 743 tests successfully and passes format, Ruff, pyright, but exits non-zero from an existing nested chitty run fixture missing autocommit=true. Follow-up: none.
+Completed generated rule 4 and 6 property coverage; removed three fixed examples. Mutant checks each failed the generated property tests as recorded in Notes, and all mutations were reverted. Focused property suite, formatting, Ruff and pyright pass. make check remains non-zero only for tests.test_next.TestNext.test_run_cases (expected 3, got 0), unrelated to this change. Implementation committed as d82b0f05 and c8a6f0da; ticket is ready for review with the suite failure disclosed.
 
 ## History
 
@@ -82,3 +86,5 @@ Replaced the narrow rule 4/6 examples with generated chain/fork cases varying ma
 - 2026-11-19T15:38:25Z lively-teal-yellowhammer doing → review
 - 2026-11-19T15:41:05Z rosy-violet-falcon: changed acceptance criteria, notes
 - 2026-11-19T15:41:05Z rosy-violet-falcon review → doing
+- 2026-11-19T15:46:08Z friendly-coral-dormouse: changed notes, summary
+- 2026-11-19T15:46:08Z friendly-coral-dormouse doing → review
