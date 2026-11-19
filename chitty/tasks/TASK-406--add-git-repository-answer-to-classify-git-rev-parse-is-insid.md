@@ -65,9 +65,11 @@ Review failed (tests): The earlier stdout-strategy finding is resolved; a newly 
 3: pass - The worker notes record the stub and all six requested mutant failures; the arbitrary integer and stream property ran in the focused suite, which printed OK.
 4: pass - make check exited 0, with Ruff and Pyright clean and Ran 693 tests, OK.
 
+Added a dedicated status-128 phrase property using drawn prefix, suffix, directory and STDOUTS. Focused tests passed (8 tests). The property failed against a throwaway mutant that raises on status 128 plus the lowercase phrase. make check printed Ruff/Pyright success and all 694 tests OK, but the command exited 1 due fixture-generated incomplete chitty run configuration errors.
+
 ## Summary
 
-Expanded nonzero diagnostic property tests to vary stdout/status/directory and assert command, directory, and stripped stderr for all expected errors. Focused tests pass; Ruff, formatting, Pyright, and all 690 tests pass. make check nevertheless exits 1 after tests print OK, with fixture-generated Chitty configuration errors in temporary repositories. Commit 0c64429b contains the test changes; no follow-up code work remains.
+Added guaranteed status-128 phrase coverage with varied stdout, diagnostic context, and directory. Focused tests pass, and a throwaway rejecting mutant failed the new property as expected. make check completed all 694 tests and lint/type checks successfully, but exited 1 due fixture-generated Chitty configuration errors.
 
 ## History
 
@@ -109,3 +111,4 @@ Expanded nonzero diagnostic property tests to vary stdout/status/directory and a
 - 2026-11-19T10:35:59Z friendly-jade-otter: changed acceptance criteria, notes
 - 2026-11-19T10:35:59Z friendly-jade-otter review → doing
 - 2026-11-19T10:38:25Z vivid-hazel-wren: wrote the plan
+- 2026-11-19T10:39:36Z vivid-hazel-wren: changed notes, summary
