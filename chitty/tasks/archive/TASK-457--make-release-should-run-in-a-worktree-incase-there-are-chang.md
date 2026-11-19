@@ -19,3 +19,4 @@ Archived: done; `make release` already works in a temporary worktree (`scripts/r
 - 2026-11-19T20:55:33Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:34Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:56:54Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:56:57Z sunny-white-dormouse backlog → archived
