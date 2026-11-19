@@ -1,6 +1,6 @@
 ---
 title: Merge `main` again and retry when `main` moves during landing
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -31,14 +31,18 @@ No property: a fixed set of four cases (moves once, moves every time, conflicts 
 
 ## Acceptance Criteria
 
-- [ ] Mode `once`: `_land` succeeds; `git rev-list main` contains the check's commit and every branch commit; the count file has two lines; the worktree and branch are removed. It fails before the change with the `--ff-only` error
-- [ ] Mode `always`: `_land` raises `ChittyError` with `main moved during each of the 3 landing attempts`; the count file has three lines; `git rev-list <start>..main` has exactly three commits, none of them a branch commit; the worktree and branch remain
-- [ ] Mode `conflict`: on the second attempt `_land` raises the existing conflict error, whose message contains `conflicts in`; the count file has one line (the merge fails before the check runs again); no branch commit is in `git rev-list main`; the worktree remains
-- [ ] Mode `untracked`: `_land` raises `ChittyError` after one attempt: the count file has one line, the message does not contain `main moved`, and `main` and the worktree are unchanged. This passes before the change too; it is the case that rejects retrying on every fast-forward failure. `tests.test_landing` still runs and passes its existing tests. `make check` passes
+- [x] Mode `once`: `_land` succeeds; `git rev-list main` contains the check's commit and every branch commit; the count file has two lines; the worktree and branch are removed. It fails before the change with the `--ff-only` error
+- [x] Mode `always`: `_land` raises `ChittyError` with `main moved during each of the 3 landing attempts`; the count file has three lines; `git rev-list <start>..main` has exactly three commits, none of them a branch commit; the worktree and branch remain
+- [x] Mode `conflict`: on the second attempt `_land` raises the existing conflict error, whose message contains `conflicts in`; the count file has one line (the merge fails before the check runs again); no branch commit is in `git rev-list main`; the worktree remains
+- [x] Mode `untracked`: `_land` raises `ChittyError` after one attempt: the count file has one line, the message does not contain `main moved`, and `main` and the worktree are unchanged. This passes before the change too; it is the case that rejects retrying on every fast-forward failure. `tests.test_landing` still runs and passes its existing tests. `make check` passes
 
 ## Plan
 
 Add a three-attempt loop around the full landing sequence, retrying only when fast-forward fails and main is no longer an ancestor of the ticket branch. Extract the existing landing test setup/helpers into LandingTestCase, then add the four scripted race/failure cases in tests/test_landing_retry.py. Verify the retry test fails before the implementation, run formatting and make check, and commit implementation/tests with a Task: TASK-418 trailer.
+
+## Summary
+
+Implemented bounded landing retries when main advances during the check. Added four scripted landing regression cases and retained the existing landing suite. Verification: the new tests failed before the fix with the expected ff-only failure; `make check` passes. Commit: 3dbbcf9e (Task: TASK-418). No follow-ups.
 
 ## History
 
@@ -53,3 +57,5 @@ Add a three-attempt loop around the full landing sequence, retrying only when fa
 - 2026-11-19T12:12:18Z quick-ginger-lapwing planning → todo
 - 2026-11-19T12:13:22Z quick-jade-jay todo → doing
 - 2026-11-19T12:14:21Z quick-jade-jay: wrote the plan
+- 2026-11-19T12:40:21Z quick-jade-jay: changed summary; ticked acceptance criteria
+- 2026-11-19T12:40:21Z quick-jade-jay doing → review
