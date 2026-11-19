@@ -1,6 +1,6 @@
 ---
 title: Fail loudly when `git.is_repository` cannot run `git` inside a repository
-status: planning
+status: cold-read
 created: 2026-11-19
 ---
 
@@ -30,3 +30,4 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 
 - 2026-11-19T08:43:02Z lively-quartz-crane → planning
 - 2026-11-19T08:43:24Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-19T08:44:03Z lively-quartz-crane planning → cold-read
