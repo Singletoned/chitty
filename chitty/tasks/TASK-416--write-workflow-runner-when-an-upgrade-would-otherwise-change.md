@@ -1,6 +1,6 @@
 ---
 title: Write `workflow = "runner"` when an upgrade would otherwise change a runner repository to tickets
-status: doing
+status: review
 labels:
   - blocks-release
 priority: high
@@ -90,3 +90,4 @@ Expanded the migration property test with all six required deterministic version
 - 2026-11-19T11:25:14Z eager-violet-marten review → doing
 - 2026-11-19T11:29:15Z brisk-pearl-heron: changed notes
 - 2026-11-19T11:29:36Z brisk-pearl-heron: changed summary
+- 2026-11-19T11:29:38Z brisk-pearl-heron doing → review
