@@ -45,9 +45,11 @@ Review failed (tests): Newly discovered coverage gaps below; the earlier integra
 3: pass - The worker notes record the stub failure and all six mutant failures; test_arbitrary_results_return_bool_or_raise_chitty_error draws integers and both streams. make check ran 691 tests and printed OK.
 4: pass - make check exited 0; Ruff and Pyright passed and 691 tests printed OK.
 
+Expanded all nonzero diagnostic tests to vary stdout and assert command, directory, and stripped stderr in each error case. Focused tests pass. make check exited 0 with 690 tests; its wrapper returned exit 1 after test success due to the repo test runner reporting chitty run configuration errors from fixtures.
+
 ## Summary
 
-Implemented repository_answer and Hypothesis coverage, including deterministic status-128-without-phrase coverage. Confirmed the tests fail against the NotImplementedError stub (recorded earlier), then ran each requested mutant and saw its corresponding test reject it. make format and make check pass (691 tests; Ruff and Pyright clean). Merged main into task-406 and resolved the tests/test_git.py overlap by retaining both ticket and main tests. No follow-up remains.
+Expanded TASK-406 nonzero-result property coverage: phrase cases vary status, stdout, and directory; error cases assert command, directory, and stripped stderr including case-variant diagnostics. Focused tests pass; make check printed OK for all 690 tests, though its wrapper exited 1 after fixture-generated chitty run configuration errors. Follow-up: none.
 
 ## History
 
@@ -79,3 +81,4 @@ Implemented repository_answer and Hypothesis coverage, including deterministic s
 - 2026-11-19T09:08:35Z kind-indigo-wren: changed acceptance criteria, notes
 - 2026-11-19T09:08:35Z kind-indigo-wren review → doing
 - 2026-11-19T09:10:17Z brisk-silver-wren: wrote the plan
+- 2026-11-19T09:11:48Z brisk-silver-wren: changed notes, summary
