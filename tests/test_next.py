@@ -1774,7 +1774,7 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, signal, subprocess, sys, time\n"
+            "import os, signal, subprocess, sys\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
             "if os.environ.get('CHANGE'):\n"
@@ -1784,13 +1784,7 @@ class TestNext(CliTestCase):
             "    text = text.replace('status: error', 'status: blocked')\n"
             "    open(path, 'w').write(text)\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
-            # Chitty orders ticket versions across branches by whole-second
-            # commit time. A real agent commits well after the error was
-            # recorded on main, so date this commit later to avoid a tie.
-            "    later = {**os.environ, 'GIT_COMMITTER_DATE': f'@{int(time.time()) + 1} +0000'}\n"
-            "    subprocess.run(\n"
-            "        ['git', 'commit', '--quiet', '-m', 'worker change'], check=True, env=later\n"
-            "    )\n"
+            "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
             "if os.environ.get('PI_SIGNAL'):\n"
             "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
             "    os.kill(os.getpid(), signal.SIGINT)\n"
