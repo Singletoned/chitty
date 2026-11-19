@@ -1,6 +1,6 @@
 ---
 title: Make `git.is_repository` raise on `git` failures other than "not a git repository"
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -34,6 +34,10 @@ Update `is_repository` to pass `LC_ALL=C` to the subprocess, preserving the reso
 
 Regression evidence: `test_invalid_repository_format_raises` failed before the implementation because current `is_repository` returned False for repositoryformatversion 99. The fake-git locale test passes with current code, as expected; after implementation, removing the explicit `LC_ALL` entry must make this test fail.
 
+## Summary
+
+Updated `is_repository` to force `LC_ALL=C` for Git probes and delegate return classification to `repository_answer`, preserving existing missing-directory and missing-Git behavior. Added repositoryformatversion and localized fake-Git tests. Verification: `make check` passed (ruff, pyright, 696 unittest tests, and remaining configured checks); formatter applied to tests. Follow-up: none.
+
 ## History
 
 - 2026-11-19T08:51:09Z lively-quartz-crane → planning
@@ -44,3 +48,5 @@ Regression evidence: `test_invalid_repository_format_raises` failed before the i
 - 2026-11-19T10:43:58Z honest-quartz-lapwing todo → doing
 - 2026-11-19T10:45:02Z honest-quartz-lapwing: wrote the plan
 - 2026-11-19T10:45:39Z honest-quartz-lapwing: changed notes
+- 2026-11-19T10:47:14Z honest-quartz-lapwing: changed summary
+- 2026-11-19T10:47:14Z honest-quartz-lapwing doing → review
