@@ -1,11 +1,12 @@
 import unittest
+from pathlib import Path
 
 from chitty.store import guide
 
 
 class TestColdReadSufficiencyGuide(unittest.TestCase):
     def assert_phrases(self, role, phrases):
-        text = " ".join(guide(role).split())
+        text = " ".join(guide(role, directory=Path.cwd()).split())
         for phrase in phrases:
             with self.subTest(role=role, phrase=phrase):
                 self.assertIn(phrase, text)
