@@ -25,7 +25,7 @@ Decisions:
 
 Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's property-testing tool:
 
-- Generator for configs: a Chitty section made of lines drawn from `format = 1`, `default_context = "tasks"`, `autocommit = true`, `review = true`, `# a comment` and a blank line, in drawn order, with the `chitty_version = "<version>"` line at a drawn position, and optionally a `workflow = "runner"` or `workflow = "tickets"` line at a drawn position. For `chitty.toml`, the section is followed by `[contexts.tasks]` with `prefix = "TASK"`, and optionally `[agent_commands]` with `workflow = "pi -p {prompt}"`. For `pyproject.toml`, `[project]` with `name = "x"` comes first, then `[tool.chitty]` and the section, then optionally `[tool.other]` with `workflow = "tickets"` and `chitty_version = "9.9.9"`. Versions are drawn from `VERSIONS` in `tests/test_config_workflow.py` plus `0.4.2`, `0.5.0` and `0.5.1`; `recorded_version` is the version in the text. The expected workflow comes from `resolve_workflow`, which `TASK-415` tests.
+- Generator for configs: a Chitty section made of lines drawn from `format = 1`, `default_context = "tasks"`, `autocommit = true`, `review = true`, `# a comment` and a blank line, in drawn order, with the `chitty_version = <version>` line at a drawn position, the version written with `json.dumps` so any drawn text stays valid TOML, and optionally a `workflow = "runner"` or `workflow = "tickets"` line at a drawn position. For `chitty.toml`, the section is followed by `[contexts.tasks]` with `prefix = "TASK"`, and optionally `[agent_commands]` with `workflow = "pi -p {prompt}"`. For `pyproject.toml`, `[project]` with `name = "x"` comes first, then `[tool.chitty]` and the section, then optionally `[tool.other]` with `workflow = "tickets"` and `chitty_version = "9.9.9"`. Versions are drawn from `VERSIONS` in `tests/test_config_workflow.py` plus `0.4.2`, `0.5.0` and `0.5.1`; `recorded_version` is the drawn version (what `tomllib` reads back from the line). The expected workflow comes from `resolve_workflow`, which `TASK-415` tests.
 - Existing tests that compare an upgraded config with exact expected text gain the new line when their recorded version is at most `0.5.0` and they have no `workflow` line; update their expected text rather than the behaviour.
 
 ## Acceptance Criteria
@@ -37,3 +37,4 @@ Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's
 ## History
 
 - 2026-11-19T10:50:03Z quick-ginger-lapwing → planning
+- 2026-11-19T10:50:14Z quick-ginger-lapwing: changed description
