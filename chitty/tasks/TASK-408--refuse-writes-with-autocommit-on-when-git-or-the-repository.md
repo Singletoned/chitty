@@ -29,6 +29,10 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 - [ ] Evidence, recorded in a note: on `main`, every refusing row of criteria 1 and 2 fails (it exits 0 without refusing, changes files, or shows a traceback).
 - [ ] `make check` passes, with any existing test that enabled `autocommit` without a repository fixed to create one.
 
+## Plan
+
+Add a pre-write autocommit prerequisite check in Repo._prepare_write, with focused grid and integration tests plus adaptations for existing autocommit tests. Verify refusal behavior before/after and run make check.
+
 ## History
 
 - 2026-11-19T09:06:20Z lively-quartz-crane → planning
@@ -40,3 +44,4 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 - 2026-11-19T09:14:28Z lively-quartz-crane: changed dependencies, description, acceptance criteria
 - 2026-11-19T09:21:32Z lively-quartz-crane cold-read → todo
 - 2026-11-19T11:42:06Z sunny-ochre-raven todo → doing
+- 2026-11-19T11:42:57Z sunny-ochre-raven: wrote the plan
