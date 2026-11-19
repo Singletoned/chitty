@@ -1,6 +1,6 @@
 ---
 title: Add `scripts/check_linux.sh` to run `make check` in a Linux container
-status: doing
+status: review
 priority: medium
 created: 2026-11-19
 ---
@@ -64,3 +64,4 @@ Implemented and committed Linux Docker check as 0442e9c5. Verified Linux check p
 - 2026-11-19T20:11:21Z calm-ochre-quail todo → doing
 - 2026-11-19T20:17:28Z calm-ochre-quail: wrote the plan
 - 2026-11-19T20:34:16Z calm-ochre-quail: changed notes, summary
+- 2026-11-19T20:34:21Z calm-ochre-quail doing → review
