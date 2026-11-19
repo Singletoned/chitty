@@ -1,6 +1,6 @@
 ---
 title: Add an optional `landing_check` setting that replaces `check` when landing
-status: doing
+status: review
 priority: medium
 created: 2026-11-19
 ---
@@ -63,3 +63,4 @@ Implemented optional landing_check selection for review and pending landing whil
 - 2026-11-19T20:42:46Z brisk-white-otter: changed notes
 - 2026-11-19T20:49:51Z brisk-white-otter: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T20:50:41Z brisk-white-otter: changed notes
+- 2026-11-19T20:50:50Z brisk-white-otter doing → review
