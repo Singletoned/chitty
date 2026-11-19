@@ -1,6 +1,6 @@
 ---
 title: Test that a `check` failure on a claimed `todo` ticket is recorded on the ticket branch
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-382
@@ -39,6 +39,10 @@ Strengthen the existing TestNext regression test only: rename it, capture main b
 
 Wrong-version experiment: temporarily changed _handle_check_failure to record via the main checkout. The focused existing test failed first at tests/test_next.py:1303, asserting status: doing in main; wrong version left status: error on main. Restored src/chitty/run.py immediately.
 
+## Summary
+
+Renamed and strengthened the todo check-failure test to verify main contains only the claim and task-1 contains the runner error. Focused regression passes; make check passes (742 tests). Wrong-version experiment failed first on the existing main status assertion, as expected. Commit: cce5c733.
+
 ## History
 
 - 2026-11-19T13:29:53Z quick-ginger-lapwing → backlog
@@ -54,3 +58,5 @@ Wrong-version experiment: temporarily changed _handle_check_failure to record vi
 - 2026-11-19T14:36:29Z able-jade-urchin todo → doing
 - 2026-11-19T14:37:24Z able-jade-urchin: wrote the plan
 - 2026-11-19T14:37:43Z able-jade-urchin: changed notes
+- 2026-11-19T14:40:01Z able-jade-urchin: changed summary
+- 2026-11-19T14:40:01Z able-jade-urchin doing → review
