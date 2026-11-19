@@ -35,6 +35,10 @@ Tests: real-Git runner tests with a fake agent command in a new `tests/test_revi
 - [ ] With `rebase_model` set, the rebase session command gets `--model <value>` and the reviewer gets `review_model`'s; with `_run_session` patched to raise `RunInterrupted("agent")` for the rebase session, no rebase is in progress afterwards, the run exits 130 with `interrupted during rebase`, and no reviewer starts; an `agent_command` without `{prompt}` fails the review with `the rebase session needs {prompt}`
 - [ ] The usage log has a separate line with mode `rebase` for the session; `docs/plan/config.md` lists `rebase_model` and its unset behaviour, and `## Before a review` names the session, its mode and its failure note; `make check` passes
 
+## Plan
+
+Implement the dedicated rebase session inside `_prepare_review`, using the existing `rebase_model`, `git.rebase_onto`, and `git.abort_rebase`. Extend `_agent_command` with required worktree and explicit session mode, and `_run_session` with required mode so rebase uses the rebase guide/model independently of ticket status; update all existing callers. Build the selected agent environment before review preparation and pass agent/project/environment through. On a conflict, run one timed session without continuations, record a separate rebase usage line in `finally`, then require exit 0, no active rebase, and a clean worktree before continuing review preparation. On errors fail back to doing with a one-line integration note containing conflict paths and first-line error; abort any stopped rebase. Translate interruption to `RunInterrupted("rebase")`. Add real-Git tests for all 12 exit/rebase/worktree combinations, prompt/guide and ticket-file preservation, model selection, interruption, missing prompt, and usage logging. Document rebase-session behavior and failure note. First run regression tests against pre-change behavior, then focused tests, `make format`, `make check`, `chitty fix`, inspect diff, and commit implementation with Task: TASK-375.
+
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
@@ -57,3 +61,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:19:57Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:19:59Z lively-quartz-crane planning → todo
 - 2026-11-19T16:18:42Z zesty-dusky-zander todo → doing
+- 2026-11-19T16:20:04Z zesty-dusky-zander: wrote the plan
