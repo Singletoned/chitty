@@ -1,6 +1,6 @@
 ---
 title: Run the Linux check in `make release` before tagging
-status: cold-read
+status: planning
 priority: medium
 depends_on:
   - TASK-429
@@ -9,18 +9,18 @@ created: 2026-11-19
 
 ## Description
 
-`scripts/release.sh` runs `make check` in its temporary release worktree, then commits the version bump, tags and pushes. A Linux-only failure is found only by the GitHub publish workflow after the tag is pushed, which is how `v0.6.0` was lost on 2026-11-19. After `TASK-429` adds `scripts/check_linux.sh`, run it in `make release` before anything is tagged or pushed.
+`scripts/release.sh` runs `make check` in its temporary release worktree, then commits the version bump, tags and pushes. A Linux-only failure is found only by the GitHub publish workflow after the tag is pushed, which is how `v0.6.0` was lost on 2026-11-19. This ticket depends on `TASK-429`, which adds `scripts/check_linux.sh`; start it only once that has landed. Then run it in `make release` before anything is tagged or pushed.
 
 Decisions:
 
-- In `scripts/release.sh`, after `git commit --quiet -m "Release $version"` and before `git tag "v$version"`, run `sh scripts/check_linux.sh`. It checks committed `HEAD` only, so it must follow the commit. On failure, print `release: Linux check failed at $version; nothing was pushed` to stderr and exit 1. No tag is made; the existing `EXIT` trap removes the release worktree, and the release commit, on a detached `HEAD`, is left unreferenced.
+- In `scripts/release.sh`, after `git commit --quiet -m "Release $version"` and before `git tag "v$version"`, run it as `if ! sh scripts/check_linux.sh; then ... fi`, the same form as the `make check` step (a bare call under `set -eu` would exit without the message). It checks committed `HEAD` only, so it must follow the commit. Its own output, including a `docker` error when Docker is missing or not running, goes straight to the terminal, so the real cause stays visible; `make release` therefore needs Docker running. On failure, after that output, print `release: Linux check failed at $version; nothing was pushed` to stderr and exit 1. No tag is made; the existing `EXIT` trap removes the release worktree, and the release commit, on a detached `HEAD`, is left unreferenced.
 - Update the step list in the comment at the top of `scripts/release.sh` and the release bullet in `AGENTS.md` (`make release` ... checks the version there) to mention the Linux check.
 
-Tests, in `tests/test_release_script.py` (`TestReleaseScript`). Its `setUp` copies only `release.sh` and `release_version.py` into the fixture repository, so also write a fake `scripts/check_linux.sh` there before the `base` commit, with two lines: `git log -1 --format=%s >> "<tmp>/linux-ran"` and `sh "<tmp>/linux.sh"`, where `<tmp>` is `self.tmp` and `self.tmp / "linux.sh"` holds `true` by default (as `check_script` holds `true`).
+Tests, in `tests/test_release_script.py` (`TestReleaseScript`). Its `setUp` copies only `release.sh` and `release_version.py` into the fixture repository, so also write a fake `scripts/check_linux.sh` there before the `base` commit, with two lines: `git log -1 --format=%s >> "<tmp>/linux-ran"` and `sh "<tmp>/linux.sh"`, where `<tmp>` is `self.tmp`. `setUp` also writes `self.tmp / "linux.sh"` containing `true`, next to where it writes `check_script` (also `true`); tests that need a failure overwrite it.
 
 - `test_releases_while_main_moves_and_the_checkout_is_dirty`: also assert `linux-ran` reads exactly `Release 0.1.1\n` (the Linux check ran once, on the release commit).
-- New `test_failed_linux_check_pushes_nothing_and_removes_the_worktree`: `linux.sh` holds `exit 1`. Assert a non-zero exit; stderr contains `Linux check failed at 0.1.1`; `origin_git("rev-parse", "main")` and local `git rev-parse main` are unchanged; `git tag --list v0.1.1` and `origin_git("tag", "--list", "v0.1.1")` are empty; `.worktrees/release` does not exist; `self.watched` does not exist. Today it exits 0 and pushes.
-- `test_failed_check_publishes_nothing_and_removes_the_worktree`: also assert `linux-ran` does not exist (a failing `make check` stops before the Linux check).
+- New `test_failed_linux_check_pushes_nothing_and_removes_the_worktree`: `linux.sh` holds `exit 1`. Assert a non-zero exit; stderr contains `Linux check failed at 0.1.1`; `origin_git("rev-parse", "main")` and local `git rev-parse main` are unchanged; `git tag --list v0.1.1` and `origin_git("tag", "--list", "v0.1.1")` are empty; `.worktrees/release` does not exist; `self.watched` does not exist. Today it exits 0 and pushes. This test is the evidence that the check runs before the tag and push; the success-path assertion only shows it ran once, on the release commit.
+- `test_failed_check_publishes_nothing_and_removes_the_worktree`: also assert `linux-ran` does not exist (a failing `make check` stops before the Linux check). This assertion passes on today's code too: it guards the order of the two checks and is not evidence for the change.
 
 No property: one fixed step in a shell script, driven through real Git with every outcome listed above and tested.
 
@@ -36,3 +36,5 @@ Out of scope: the landing check (`HUMAN-13`), retrying, and the GitHub workflows
 
 - 2026-11-19T18:45:25Z daring-amber-kestrel → planning
 - 2026-11-19T18:46:31Z daring-amber-kestrel planning → cold-read
+- 2026-11-19T20:34:52Z daring-amber-kestrel: changed description
+- 2026-11-19T20:34:52Z daring-amber-kestrel cold-read → planning
