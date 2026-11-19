@@ -18,8 +18,9 @@ Docker must then be running on any machine that runs `chitty run` here; without 
 ## Acceptance Criteria
 
 - [ ] `git show main:chitty.toml` contains `landing_check = "sh scripts/check_linux.sh"` at the top level
-- [ ] The next ticket landed by `chitty run` lands, and the run took noticeably longer at landing (about 20 seconds with warm caches); if it fails, the ticket note shows the `landing check exited` output
+- [ ] While `chitty run` lands the next ticket, `docker ps --filter ancestor=chitty-linux-check` lists a running container, and the ticket lands (or, if the Linux check fails, its note shows `landing check exited` with the failing tests)
 
 ## History
 
 - 2026-11-19T18:44:12Z daring-amber-kestrel → planning
+- 2026-11-19T18:44:24Z daring-amber-kestrel: changed acceptance criteria
