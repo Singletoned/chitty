@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -30,13 +30,13 @@ Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_rest
   - registration: before the write, `register_project(name, other)` (`src/chitty/config.py`) where `other` is another fresh directory and `name` is the `project` read from `chitty.toml` (stale) or `_default_project(root.name)` from `src/chitty/store.py` (fresh).
   - hook (fresh kind only, since the stale kind's failing commit is `TASK-464`'s): `.git/hooks/pre-commit` is an executable script that prints `HOOKSTDERR` to stderr and exits 1, installed before the write.
 - Add an `@example` for each kind and failure pair, so every case runs every time.
-- Snapshot before and after the write: `git status --porcelain --untracked-files=all`; for each of `chitty.toml`, `AGENTS.md`, `CLAUDE.md`, `.gitignore`: absent, `os.readlink` when a symlink, else bytes; and the set of directories at or under `chitty/` (an explicit walk, because Git does not show empty directories).
+- Snapshot before and after the write: `git rev-parse HEAD`; `git status --porcelain --untracked-files=all`; for each of `chitty.toml`, `AGENTS.md`, `CLAUDE.md`, `.gitignore`: absent, `os.readlink` when a symlink, else bytes; and the set of directories at or under `chitty/` (an explicit walk, because Git does not show empty directories).
 
 ## Acceptance Criteria
 
 - [ ] Property: for every drawn kind and failure, the write exits non-zero with output containing the original message (`is registered to`, or `HOOKSTDERR`), and the snapshot after equals the snapshot before. It fails on `main`: the stale registration case leaves ` M chitty.toml`, and the fresh hook case leaves a `chitty/` directory.
-- [ ] With no failure, the stale write leaves `git status --porcelain` empty with `chitty_version` upgraded, and `chitty init --autocommit` on a fresh repository commits `chitty: initialize and enable autocommit`; existing tests in `tests/test_init_workflow.py` and `tests/test_autocommit.py` pass unchanged.
-- [ ] Plausible wrong versions, each run against the property, with the failing case and command recorded in a note: today's restore, around the commit only; restoring files but not removing created directories; removing only the leaf backlog directory, not parents created with it. `make check` passes.
+- [ ] With no failure, after the stale `chitty add` autocommits, `git status --porcelain` is empty and `chitty_version` is upgraded; `chitty init --autocommit` on a fresh repository commits `chitty: initialize and enable autocommit`; existing tests in `tests/test_init_workflow.py` and `tests/test_autocommit.py` pass unchanged.
+- [ ] Plausible wrong versions, each run against the property, with the failing case and command recorded in a note: today's restore, around the commit only; restoring files but not removing created directories; removing only the leaf backlog directory, not parents created with it (caught by the fresh hook case, where `chitty/` is created with `chitty/tasks`). `make check` passes.
 
 ## Notes
 
@@ -61,3 +61,5 @@ Suggestion origin: chitty
 - 2026-11-19T21:17:05Z sunny-white-dormouse cold-read → planning
 - 2026-11-19T21:17:27Z sunny-white-dormouse: changed acceptance criteria
 - 2026-11-19T21:17:52Z sunny-white-dormouse planning → cold-read
+- 2026-11-19T21:19:12Z sunny-white-dormouse: changed description, acceptance criteria
+- 2026-11-19T21:19:12Z sunny-white-dormouse cold-read → todo
