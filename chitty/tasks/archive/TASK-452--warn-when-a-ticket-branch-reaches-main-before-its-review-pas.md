@@ -19,3 +19,4 @@ Archived as covered by `TASK-358`.
 - 2026-11-19T20:55:27Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:28Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:57:00Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:04Z sunny-white-dormouse backlog → archived
