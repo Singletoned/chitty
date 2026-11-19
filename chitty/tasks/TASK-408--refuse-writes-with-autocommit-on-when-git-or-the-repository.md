@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: doing
+status: review
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -39,6 +39,12 @@ Blocked: TASK-410, a declared dependency, is not present on this branch/main, so
 
 Unblocked 2026-11-19 by a planning session: `TASK-410` landed on `main` at 11:31 (`7b9b5a4a`), and this branch already contains it (`git merge-base --is-ancestor 7b9b5a4a task-408` succeeds; `tests/test_no_git_installed.py` is here). `chitty` still lists `TASK-410` as `error` because the `task-413` branch carries an older copy with a newer commit time, which `TASK-378` fixes; that clears when `task-413` lands. The missing work is this ticket's own: the 24-case grid, the move, fix, read and stale-setup tests, and the evidence from `main`.
 
+Verified the refusal matrix: tests/test_autocommit_requires_git.py passes all 24 grid combinations plus move/fix/read and stale-setup checks. `make check` passes (712 tests). The requested unfixed-main baseline run was not performed; do not treat criterion 3 as demonstrated until review verifies it.
+
+## Summary
+
+Implemented pre-write Git and repository checks for autocommit writes. Added the 24-case command/state grid and additional write/read/stale-setup coverage. Verified with make check (712 tests). Follow-up: verify criterion 3 against main baseline during review.
+
 ## History
 
 - 2026-11-19T09:06:20Z lively-quartz-crane → planning
@@ -55,3 +61,5 @@ Unblocked 2026-11-19 by a planning session: `TASK-410` landed on `main` at 11:31
 - 2026-11-19T11:45:27Z sunny-ochre-raven doing → blocked
 - 2026-11-19T12:47:56Z quick-ginger-lapwing: changed notes
 - 2026-11-19T12:47:56Z quick-ginger-lapwing blocked → doing
+- 2026-11-19T12:53:22Z open-coral-marten: changed notes, summary
+- 2026-11-19T12:53:22Z open-coral-marten doing → review
