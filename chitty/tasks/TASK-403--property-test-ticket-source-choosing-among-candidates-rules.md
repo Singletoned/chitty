@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: review
+status: doing
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -50,6 +50,11 @@ Updated rule 4 and rule 6 coverage to generate chain/fork candidate layouts, mai
 
 Mutation evidence: temporary mutant making remotes win equal-tip ties failed the focused property module (exit 1); temporary mutant reversing remote-name ordering failed it (exit 1); temporary mutant ignoring changed_on_both failed it (exit 1). Mutations were reverted before verification. Final focused property module passes. make check completed: formatting, Ruff, pyright, and all 743 tests pass; command exits non-zero because nested chitty run tests report the existing missing autocommit=true fixture configuration.
 
+Review failed (tests): Complete the generated cases and identify the failing property for each mutant. The earlier review reported inadequate generated layouts and missing mutation evidence; the remaining gaps below are newly identified in the replacement.
+1: fail - `uv run python -m unittest tests.test_property_ticket_source` printed `Ran 9 tests` and `OK`, but the generated selection property always forces a tie unless it switches to remote-ahead, so it never exercises a sole local or sole remote candidate, nor a unique local tip ahead of remotes. The description requires one to four candidates and a boolean enabling ties. Generate untied layouts too and replace the three legacy fixed rule 4/6 examples as requested.
+2: fail - The same property passes as above, but inherits the missing untied layouts; additionally, in remote-ahead cases it chooses the other changed name from the stale `tips` map after replacing the actual remote map, so that name can be absent rather than another candidate. Exercise actual other candidates as well as expected names on the required layouts.
+3: fail - `make check` exited 0 and printed `Ran 743 tests` and `OK`. The mutation note records three module-level failures but does not identify which property failed for each mutant, as required by the description. Record the failing property for each mutant, with evidence that it fails without the corresponding behavior.
+
 ## Summary
 
 Replaced the narrow rule 4/6 examples with generated chain/fork cases varying main tips, candidate placements, dropped refs, decoys, checked-out branch, ties, remote-ahead cases, and changed_on_both refs. Verified three temporary ticket_source mutants are rejected: remote tie winner, reversed remote ordering, and ignored changed_on_both. Verification: focused property module passes; make check runs all 743 tests successfully and passes format, Ruff, pyright, but exits non-zero from an existing nested chitty run fixture missing autocommit=true. Follow-up: none.
@@ -75,3 +80,5 @@ Replaced the narrow rule 4/6 examples with generated chain/fork cases varying ma
 - 2026-11-19T15:36:31Z lively-teal-yellowhammer: changed notes
 - 2026-11-19T15:38:22Z lively-teal-yellowhammer: changed notes, summary
 - 2026-11-19T15:38:25Z lively-teal-yellowhammer doing → review
+- 2026-11-19T15:41:05Z rosy-violet-falcon: changed acceptance criteria, notes
+- 2026-11-19T15:41:05Z rosy-violet-falcon review → doing
