@@ -1,6 +1,6 @@
 ---
 title: Write `workflow = "runner"` when an upgrade would otherwise change a runner repository to tickets
-status: planning
+status: cold-read
 labels:
   - blocks-release
 priority: high
@@ -38,3 +38,4 @@ Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's
 
 - 2026-11-19T10:50:03Z quick-ginger-lapwing → planning
 - 2026-11-19T10:50:14Z quick-ginger-lapwing: changed description
+- 2026-11-19T10:50:19Z quick-ginger-lapwing planning → cold-read
