@@ -1,6 +1,6 @@
 ---
 title: Make `git.is_repository` raise on `git` failures other than "not a git repository"
-status: planning
+status: cold-read
 depends_on:
   - TASK-405
   - TASK-406
@@ -26,3 +26,4 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase`. Set envir
 ## History
 
 - 2026-11-19T08:51:09Z lively-quartz-crane → planning
+- 2026-11-19T08:52:57Z lively-quartz-crane planning → cold-read
