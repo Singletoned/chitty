@@ -328,9 +328,11 @@ Review failed (work): Newly discovered: the reentrant lock treats a different th
 1: fail - A Python probe using two threads and `main_checkout_lock` printed `second thread entered while first holds lock: True`; both critical sections can run together. The specified regression tests do pass: `make check` reported 782 tests OK. Running the two new tests against a Git archive of `main` with the branch tests copied in produced `0 is not None` for the write and `TASK-1: done → error` for landing; the worktree guard passed.
 2: pass - `timeout 600 make check` completed with 782 tests OK, including the existing landing and review-merge suites; the previously reported suite hang did not recur.
 
+Addressed review finding: main_checkout_lock now guards its per-process held-path bookkeeping and lock lifetime with threading.RLock. Same-thread nesting remains re-entrant; other threads block. Added deterministic two-thread regression. Focused lock tests pass (4 tests); timeout 600 make check passes (783 tests). The two-thread test was confirmed necessary by review probe showing the previous code allowed concurrent entry.
+
 ## Summary
 
-Implemented main-checkout write/landing serialization, including process-reentrant locking to prevent nested flock deadlocks. Verification: timeout 600 make check passed (769 tests, 43.9s); Ruff format/check and Pyright passed. No known follow-ups.
+Main-checkout locking now serializes both processes and concurrent threads while preserving same-thread reentrancy. Verification: focused lock tests pass; timeout 600 make check passes (783 tests), including review and landing suites. The full suite no longer stalls.
 
 ## History
 
@@ -354,3 +356,4 @@ Implemented main-checkout write/landing serialization, including process-reentra
 - 2026-11-19T23:18:13Z sunny-ochre-gannet: changed acceptance criteria, notes
 - 2026-11-19T23:18:13Z sunny-ochre-gannet review → doing
 - 2026-11-19T23:20:46Z jolly-yellow-badger: wrote the plan
+- 2026-11-19T23:22:10Z jolly-yellow-badger: changed notes, summary
