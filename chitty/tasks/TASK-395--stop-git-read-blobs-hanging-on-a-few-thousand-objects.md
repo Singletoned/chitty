@@ -1,6 +1,6 @@
 ---
 title: Stop `git._read_blobs` hanging on a few thousand objects
-status: review
+status: done
 labels:
   - bug
 parent: TASK-376
@@ -312,6 +312,10 @@ make: *** [check] Error 1
 
 Repaired 2026-11-19 by a planning session. The runner error was the flaky `test_refused_edit_restores_repository` (fixed by `TASK-417`), not this change. Merged `main`, resolving conflicts in `src/chitty/git.py` (kept the `communicate` reading and added `main`'s `Git file is not UTF-8` error) and the imports in `tests/test_git.py`; `make check` passes (718 tests). This fix is urgent: a review run hung for 91 minutes in `git cat-file --batch` on 2026-11-19.
 
+Reviewed: Complete diff inspected; no additional property test needed for this size-threshold regression.
+1: pass - `.venv/bin/python -m unittest tests.test_git` printed 23 tests OK, including the 5000-object content comparison; rerunning the regression with `main` `src/chitty/git.py` in a temporary local package printed `TimeoutExpired` after 20 seconds.
+2: pass - existing Git tests are unchanged and the focused run printed OK; `make check` printed 718 tests OK, with ruff and pyright passing. The earlier runner failure was resolved by TASK-417.
+
 ## Summary
 
 Implemented communicate-based Git cat-file batching and added a subprocess regression test covering 5,000 committed 1 KB blobs. The regression timed out before the fix and passes after it; all tests in tests/test_git.py pass. make check was attempted twice and failed both times in unrelated tests/test_property_refused_write.py::TestRefusedEditProperty.test_refused_edit_restores_repository. Ruff formatting/check and pyright pass. Commit: 8f416fbd (Task: TASK-395). Reviewer: assess the unrelated full-check failure; no follow-up implementation needed.
@@ -333,3 +337,5 @@ Implemented communicate-based Git cat-file batching and added a subprocess regre
 - 2026-11-18T22:42:47Z quick-yellow-dormouse review → error
 - 2026-11-19T13:25:47Z quick-ginger-lapwing: changed notes; ticked acceptance criteria
 - 2026-11-19T13:25:47Z quick-ginger-lapwing error → review
+- 2026-11-19T13:33:12Z lively-quartz-eel: changed notes
+- 2026-11-19T13:33:12Z lively-quartz-eel review → done
