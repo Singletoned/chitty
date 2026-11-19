@@ -15,6 +15,7 @@ Decisions:
 - In `src/chitty/git.py`: `merge_base(root: Path, first: str, second: str) -> str` (`git merge-base`), and `paths_changed(root: Path, old: str, new: str) -> list[str]` (`git diff -z --no-renames --name-only <old> <new>`, so a rename lists both sides).
 - In `_land_locked`, when `git.fast_forward` fails and `main` has moved (`not git.is_ancestor(main_root, main_branch, branch)`, as today): let `base = git.merge_base(main_root, branch, main_branch)`, the commit the checked branch was rebased onto. If `_only_ticket_paths(git.paths_changed(main_root, base, main_branch), list(main_repo.config.contexts))`, rebase onto `main` again (a conflict raises the same `cannot land ...; rebasing onto ... conflicts in ...` error as today) and try `git.fast_forward` again without running `setup` or the landing check. Repeat this quick path while `main` keeps moving by ticket files only, at most `QUICK_LANDING_ATTEMPTS = 10` times in all (a new module constant next to `LANDING_ATTEMPTS`); after that, raise `main moved during each of the 10 quick landing attempts`. When the new commits change any other path, fall back to today's full attempt, which counts toward `LANDING_ATTEMPTS` as now.
 - The `chitty.toml` and protected-file refusals need no rerun on the quick path: a ticket-only move changes neither.
+- Docs: add one bullet near the landing bullets in `docs/plan/next-action-and-runner.md` describing the quick path. A probe on 2026-11-19 with the `ticket` mode below against today's code ran the check twice and then landed.
 
 Tests:
 
@@ -34,3 +35,4 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 ## History
 
 - 2026-11-19T21:23:51Z daring-amber-kestrel → planning
+- 2026-11-19T21:24:10Z daring-amber-kestrel: changed description
