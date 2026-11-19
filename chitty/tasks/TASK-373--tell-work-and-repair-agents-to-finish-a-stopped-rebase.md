@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: planning
+status: doing
 priority: high
 created: 2026-11-18
 ---
@@ -18,15 +18,15 @@ Decisions:
 - Add `rebase` to `ROLE_NAMES` in `src/chitty/store.py`. In the `guide` command's help in `src/chitty/cli.py`, add the example `chitty guide rebase TASK-12`, and add rebase to the sentence listing roles that accept an optional ticket ID.
 - `guide()` in `src/chitty/store.py` gains a `directory: Path` argument (no default): the checkout whose state it reads. The CLI passes the current directory. MCP has no role-guide entry point (`src/chitty/mcp.py`), so it needs no change. The runner's `_agent_command` in `src/chitty/run.py` keeps its signature; its two `guide()` calls pass `directory=repo.root`, the main checkout, where the runner builds the prompt today, so the runner's prompts are unchanged. Giving the runner the ticket worktree is `TASK-370`'s, which renders the prompt again after its own rebase stops (split out 2026-11-18). Every existing test call to `guide()` passes a directory, such as the test repository's root (`git grep -n 'guide(' tests` finds them).
 - On this branch, revert `allow_rebase` in `_worktree`, `git.rebasing_branch`, `git._git_dir_path`, and every other change to `src/chitty/run.py` and `src/chitty/git.py` beyond passing `repo.root` to `guide()`; remove `test_worktree_for_another_branch_is_rejected` and `test_stopped_ticket_rebase_is_included_in_work_prompt` from `tests/test_run_continue.py`. (Planning 2026-11-18: an earlier criterion 4 implied a run should reach the agent with a leftover rebase; it should not.)
-- For roles `work` and `repair`, when `git.is_repository(directory)` and `git.rebase_in_progress(directory)` are both true, insert the `rebase` role text, followed by a blank line, directly after the `Work only on Chitty ticket <ID>.` line and before the role's usual text. Outside a repository, or in a directory that does not exist (`git.is_repository` returns false for both), there is no rebase, so nothing is added; any Git error inside a repository raises as usual.
+- For roles `work` and `repair`, when `git.is_repository(directory)` and `git.rebase_in_progress(directory)` are both true, insert the `rebase` role text, followed by a blank line, directly after the `Work only on Chitty ticket <ID>.` line and before the role's usual text. Outside a repository (`git.is_repository` returns false) there is no rebase, so nothing is added. A directory that does not exist raises `ChittyError`, because `git.is_repository` raises for it (`TASK-405`); any Git error inside a repository raises as usual.
 
-Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, with real repositories: a rebase stopped on a real conflict, with both backends (`rebase-merge` by default and `rebase-apply` with `git rebase --apply`), from the worktree root and from a subdirectory, and from a linked worktree; a clean repository; a temporary directory outside any repository (the test asserts `git rev-parse --is-inside-work-tree` fails there); and a directory that does not exist. Also during a stopped rebase, the review, plan and cold-read guides equal their output with no rebase. The oracle for "unchanged" is that, with no rebase in progress, the output equals the stopped-rebase output with the inserted rebase text (the body of `src/chitty/roles/rebase.md`) and its blank line removed, and equals the output outside a repository. No property: a fixed set of states and two guides, all listed.
+Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, with real repositories: a rebase stopped on a real conflict, with both backends (`rebase-merge` by default and `rebase-apply` with `git rebase --apply`), from the worktree root and from a subdirectory, and from a linked worktree; a clean repository; a temporary directory outside any repository (the test asserts `git rev-parse --is-inside-work-tree` fails there); and a directory that does not exist, where `guide()` raises `ChittyError` for the work and repair roles. Also during a stopped rebase, the review, plan and cold-read guides equal their output with no rebase. The oracle for "unchanged" is that, with no rebase in progress, the output equals the stopped-rebase output with the inserted rebase text (the body of `src/chitty/roles/rebase.md`) and its blank line removed, and equals the output outside a repository. No property: a fixed set of states and two guides, all listed.
 
 ## Acceptance Criteria
 
 - [ ] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
 - [ ] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; evidence of failing without the change is these tests failing on the rebase-text assertion with injection disabled (for example `git.rebase_in_progress` patched to return false), not a `TypeError` on `main`
-- [ ] With no rebase in progress, outside a repository, or in a directory that does not exist, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed; during a stopped rebase, the review, plan and cold-read guides equal their output with no rebase in progress
+- [ ] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed; in a directory that does not exist they raise `ChittyError`; during a stopped rebase, the review, plan and cold-read guides equal their output with no rebase in progress
 - [ ] The runner and Git helpers are unchanged apart from passing `directory=repo.root` to `guide()`: `git diff main -- src/chitty/run.py src/chitty/git.py` shows only that, and `git diff main -- tests/test_run_continue.py` adds no test that mentions a rebase; `make check` passes
 
 ## Plan
@@ -89,6 +89,8 @@ The ticket requires a missing directory to behave like outside-repository input 
 
 Criterion 3 conflicts with existing behavior: src/chitty/git.py::is_repository raises ChittyError for a path that is not a directory, rather than returning false. A new test for the ticket-required missing-directory equivalence failed on that exception. Decide whether missing directories must be supported (allowing a helper change) or remove this expectation. No implementation/test edits retained.
 
+Planning 2026-11-19: decided the worker's question. A directory that does not exist raises `ChittyError`, as `git.is_repository` does since `TASK-405`; criterion 3 and the Tests paragraph now say so. Only the expected result for that one case changed, so no new cold read. Merged `main` into the branch first.
+
 ## Summary
 
 Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
@@ -148,3 +150,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-19T10:32:36Z rosy-khaki-puffin: changed notes
 - 2026-11-19T10:32:44Z rosy-khaki-puffin: changed owner, notes
 - 2026-11-19T10:32:44Z rosy-khaki-puffin doing → planning
+- 2026-11-19T13:06:50Z quick-ginger-lapwing: changed description, acceptance criteria, notes
+- 2026-11-19T13:06:50Z quick-ginger-lapwing planning → doing
