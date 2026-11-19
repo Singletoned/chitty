@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: review
+status: doing
 labels:
   - bug
   - needs-minor
@@ -34,9 +34,9 @@ Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `te
 
 ## Acceptance Criteria
 
-- [x] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
-- [x] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
-- [x] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with a note containing `Review failed (integration): rebasing onto `main` conflicts in` and the path in backticks, and no reviewer starts; this fails before the change (today's note says `merging`)
+- [ ] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
+- [ ] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
+- [ ] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with a note containing `Review failed (integration): rebasing onto `main` conflicts in` and the path in backticks, and no reviewer starts; this fails before the change (today's note says `merging`)
 - [x] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); this fails before the change
 - [x] `git.merge` and `git.merge_main` are gone, the retargeted interrupt tests and the flipped merge-count assertions pass, and `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
 
@@ -275,6 +275,13 @@ make: *** [check] Error 1
 
 Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext.test_run_cases`, fixed on `main` in `fe1ef0cd`; back to `review`.
 
+Review failed (tests): New findings; no earlier review failure note exists. Fix the conflict path parsing and add the missing review regressions.
+1: fail - The two tests passed in `python -m unittest tests.test_git.TestRebaseOnto` and fail with `rebase_onto` replaced by None, but a real Git conflict on `shared file.txt` returned `["shared", "file.txt"]` in a throwaway test using `TestRebaseOnto`; return complete paths and test whitespace.
+2: fail - `test_agent_and_setup_see_the_branch_merged_with_main` checks ancestry but only counts merges after landing and uses an overwriting marker, not reviewer start count. Add a review-stage assertion of no merges in `main..task-1` and exactly one reviewer start; demonstrate failure on the old merge behavior.
+3: fail - `test_conflict_moves_the_ticket_to_doing_without_starting_the_agent` passed in the focused unittest run, but `assert_no_merge_in_progress` checks `MERGE_HEAD`, not rebase state. Assert no rebase in progress and demonstrate the regression fails before the change. The whitespace conflict in criterion 1 also produces incorrect path names in the review note.
+4: pass - `test_main_advances_during_review_and_landing_checks_merged_branch` passed; replacing `rebase_onto` with the old merge behavior made it fail with `1 != 0` merge commits.
+5: pass - `make check` printed `Ran 744 tests` and `OK`; the diff removes both merge helpers, retargets interrupts and merge-count assertions, and updates both design headings.
+
 ## Summary
 
 Replaced runner merge integration with rebasing in review and landing; removed obsolete merge helpers. Updated runner guide and real-Git regression tests. Verification: focused tests (72), `make check` (736 tests), `git diff --check`, and `chitty fix`. Implementation commit: 706614ca (Task: TASK-374). No follow-ups.
@@ -304,3 +311,5 @@ Replaced runner merge integration with rebasing in review and landing; removed o
 - 2026-11-19T14:30:59Z sunny-indigo-vole review → error
 - 2026-11-19T16:01:48Z quick-ginger-lapwing: changed notes
 - 2026-11-19T16:01:48Z quick-ginger-lapwing error → review
+- 2026-11-19T16:05:37Z vivid-zinc-heron: changed acceptance criteria, notes
+- 2026-11-19T16:05:37Z vivid-zinc-heron review → doing
