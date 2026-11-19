@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from unittest import mock
 
+from chitty.git import rebase_in_progress
 from chitty.run import _changed_agents_block
 from chitty.store import Repo
 from tests.test_cli import CliTestCase
@@ -33,13 +34,14 @@ class ReviewMergeTestCase(CliTestCase):
             + sys.executable
             + "\n"
             + REPORT.replace("sys.argv[1]", "sys.argv[3]")
+            + "with Path(sys.argv[6]).open('a') as starts:\n"
+            "    starts.write(subprocess.check_output(\n"
+            "        ['git', 'rev-list', '--merges', '--count', 'main..HEAD'], text=True))\n"
             + "if Path('main.txt').exists():\n"
             "    Path(sys.argv[4]).write_text(Path('main.txt').read_text())\n"
             "path = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
             "path.write_text(path.read_text().replace('status: review', 'status: done'))\n"
             "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], check=True)\n"
-            "if len(sys.argv) > 6 and Path(sys.argv[6]).exists():\n"
-            "    Path('review-marker').write_text('fail landing check')\n"
             "if Path(sys.argv[5]).exists():\n"
             "    root = Path(sys.argv[5]).read_text().strip()\n"
             "    Path(root, 'main-late.txt').write_text('main advanced during review\\n')\n"
@@ -69,7 +71,8 @@ class ReviewMergeTestCase(CliTestCase):
             .replace(
                 'agent_command = "pi --chitty-{mode} {id}"',
                 f'agent_command = "fake {{mode}} {{id}} {self.logs / "agent"} '
-                f'{self.logs / "main.txt"} {self.logs / "advance_main"}"',
+                f"{self.logs / 'main.txt'} {self.logs / 'advance_main'} "
+                f'{self.logs / "review-starts"}"',
             )
             .replace(
                 'check = "true"',
@@ -126,9 +129,8 @@ class ReviewMergeTestCase(CliTestCase):
         repo = Repo.open(self.worktree)
         return repo.find(repo.resolve("1")).task
 
-    def assert_no_merge_in_progress(self) -> None:
-        path = self.git("rev-parse", "--git-path", "MERGE_HEAD", cwd=self.worktree).strip()
-        self.assertFalse((self.worktree / path).exists(), "MERGE_HEAD")
+    def assert_no_rebase_in_progress(self) -> None:
+        self.assertFalse(rebase_in_progress(self.worktree), "rebase in progress")
 
 
 class TestReviewMerge(ReviewMergeTestCase):
@@ -393,6 +395,7 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → done")
         self.assertEqual((self.logs / "setup").read_text(), "merged")
         self.assertEqual((self.logs / "agent").read_text(), "merged")
+        self.assertEqual((self.logs / "review-starts").read_text(), "0\n")
         self.assertEqual((self.logs / "main.txt").read_text(), "from main\n")
         landed_head = self.git("rev-parse", "main").strip()
         self.assertNotEqual(landed_head, main_head)
@@ -410,7 +413,8 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertFalse((self.logs / "agent").exists())
         self.assertFalse((self.logs / "setup").exists())
-        self.assert_no_merge_in_progress()
+        self.assertFalse((self.logs / "review-starts").exists())
+        self.assertFalse(rebase_in_progress(self.worktree))
         self.assertEqual(self.git("status", "--porcelain", cwd=self.worktree), "")
         self.assertEqual(self.git("rev-parse", "task-1~1").strip(), branch_head)
         notes = self.ticket().section("Notes") or ""
@@ -445,7 +449,7 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → doing")
         self.assertFalse((self.logs / "agent").exists())
-        self.assert_no_merge_in_progress()
+        self.assertFalse(rebase_in_progress(self.worktree))
         self.assertEqual(self.git("status", "--porcelain", cwd=self.worktree), "")
         notes = self.ticket().section("Notes") or ""
         self.assertIn("Review failed (integration):", notes)
@@ -624,5 +628,5 @@ class TestReviewMerge(ReviewMergeTestCase):
             result = self.run_cli("run", "--mode", "review", exit_code=130)
 
         self.assertIn("interrupted during rebase", result.stderr)
-        self.assert_no_merge_in_progress()
+        self.assertFalse(rebase_in_progress(self.worktree))
         self.assertEqual(self.ticket().frontmatter.status, "review")

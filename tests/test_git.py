@@ -231,19 +231,22 @@ class TestRebaseOnto(RepoTestCase):
         self.assertFalse(git.rebase_in_progress(self.root))
         self.assertTrue(git.is_ancestor(self.root, "main", "task-1"))
 
-    def test_conflicting_rebase_returns_paths_and_leaves_rebase_stopped(self):
-        (self.root / "shared.txt").write_text("branch\n")
+    def test_conflicting_rebase_preserves_paths_containing_spaces(self):
+        (self.root / "shared.txt").rename(self.root / "shared file.txt")
+        self._commit("rename shared file")
+        path = self.root / "shared file.txt"
+        path.write_text("branch\n")
         self._commit("branch change")
         self._git("checkout", "main")
-        (self.root / "shared.txt").write_text("main\n")
+        (self.root / "shared file.txt").write_text("main\n")
         self._commit("main change")
         self._git("checkout", "task-1")
 
-        self.assertEqual(git.rebase_onto(self.root, "main"), ["shared.txt"])
+        self.assertEqual(git.rebase_onto(self.root, "main"), ["shared file.txt"])
         self.assertTrue(git.rebase_in_progress(self.root))
         self.assertEqual(
             self._git("diff", "--name-only", "--diff-filter=U").splitlines(),
-            ["shared.txt"],
+            ["shared file.txt"],
         )
 
 

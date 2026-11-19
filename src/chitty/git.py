@@ -720,7 +720,8 @@ def rebase_onto(root: Path, main_branch: str) -> list[str]:
         part.strip() for part in (completed.stdout, completed.stderr) if part.strip()
     )
     if rebase_in_progress(root):
-        conflicts = _git(root, "diff", "--name-only", "--diff-filter=U").split()
+        conflict_output = _git(root, "diff", "--name-only", "--diff-filter=U", "-z")
+        conflicts = conflict_output.rstrip("\0").split("\0") if conflict_output else []
         if conflicts:
             return conflicts
         abort_rebase(root)
