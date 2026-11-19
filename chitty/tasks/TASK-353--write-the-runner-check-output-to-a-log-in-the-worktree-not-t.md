@@ -1,6 +1,6 @@
 ---
 title: Write the runner check output to a log in the worktree, not the ticket
-status: doing
+status: review
 priority: high
 created: 2026-11-16
 ---
@@ -46,6 +46,12 @@ Cold read 2026-11-19 outcomes: the passing-check test needed an agent that moves
 
 Second cold read 2026-11-19 outcomes: a newline before `# exit` when output lacks one, tested; exclude lines split on `\n` only, first duplicate kept; the status check is exact plus `git check-ignore`; fails-before must be on the note text; exact doc replacements; `tomllib` for the check value; `shlex.split` before the log opens; `worktree / RUN_LOG`.
 
+Regression evidence: with `src/chitty/run.py` temporarily replaced by `main` version, `uv run python -m unittest tests.test_next.TestNext.test_run_check_failure_on_todo_ticket_records_error_on_branch` failed at the intended `assertNotIn("check line", task.section("Notes"))`; the old note contained the full checker output. Restored implementation passed the focused six-test suite. `make check` passed all 770 test suites; Ruff, pyright and formatter passed. No follow-ups.
+
+## Summary
+
+Implemented worktree check logging, shared Git exclude handling, regression/property coverage, and runner documentation. Verified focused six tests and full `make check` (770 tests); old main implementation fails on the intended note-content assertion. Commit: 4f46544c.
+
 ## History
 
 - 2026-11-16T10:00:06Z intrepid-coral-raven → backlog
@@ -57,3 +63,5 @@ Second cold read 2026-11-19 outcomes: a newline before `# exit` when output lack
 - 2026-11-19T17:34:19Z quick-ginger-lapwing planning → todo
 - 2026-11-19T17:35:05Z upbeat-violet-dormouse todo → doing
 - 2026-11-19T17:36:49Z upbeat-violet-dormouse: wrote the plan
+- 2026-11-19T17:43:43Z upbeat-violet-dormouse: changed notes, summary
+- 2026-11-19T17:43:43Z upbeat-violet-dormouse doing → review
