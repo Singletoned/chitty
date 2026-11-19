@@ -1,6 +1,6 @@
 ---
 title: Resolve a config recorded at `0.5.0` or earlier with no `workflow` to the runner
-status: review
+status: done
 labels:
   - blocks-release
 priority: high
@@ -42,6 +42,14 @@ Update resolve_workflow to use LAST_RUNNER_DEFAULT_VERSION = "0.5.0", treating m
 
 Wrong implementation evidence (test cases are in tests/test_config_workflow.py): current `< 0.5.0` boundary — `0.5.0` — `TestResolveWorkflow.test_missing_workflow_follows_setup_version` fails; numeric `<= (0, 5, 0)` without stripping trailing zeros — `0.5.0.0` — `TestResolveWorkflow.test_missing_workflow_follows_setup_version` fails; text comparison against `"0.5.0"` — `0.10` — `TestResolveWorkflow.test_missing_workflow_follows_setup_version` fails.
 
+Reviewed: Complete diff and criteria inspected; no previous review notes.
+1: pass - `make check` passed; in-memory old comparator made `TestResolveWorkflow.test_missing_workflow_follows_setup_version` fail on `0.5.0` with tickets != runner.
+2: pass - `make check` passed all 696 tests; in-memory old comparator made `TestWorkflowConfig.test_missing_workflow_resolves_from_setup_version` fail on `0.5.0` with tickets != runner.
+3: pass - `make check` passed; `docs/plan/config.md` describes the boundary and its reason. Independent in-memory mutation runs printed:
+- Old numeric `< (0, 5, 0)`: `0.5.0`, property test failed with tickets != runner.
+- Numeric `<= (0, 5, 0)` without normalization: `0.5.0.0`, property test failed with tickets != runner.
+- Text `<= "0.5.0"`: `0.10`, property test failed with runner != tickets.
+
 ## Summary
 
 Implemented the runner-default compatibility boundary through 0.5.0, trailing-zero normalization, independent property oracle, config default assertions, and updated config guidance. Verification: updated regression tests failed against the old behavior on 0.5.0; make format and make check pass (696 tests). The check emitted expected fixture output during unittest but exited successfully. No follow-up.
@@ -61,3 +69,5 @@ Implemented the runner-default compatibility boundary through 0.5.0, trailing-ze
 - 2026-11-19T10:53:50Z upbeat-khaki-kestrel: changed notes
 - 2026-11-19T10:54:10Z upbeat-khaki-kestrel: changed summary; ticked acceptance criteria
 - 2026-11-19T10:54:10Z upbeat-khaki-kestrel doing → review
+- 2026-11-19T10:56:52Z friendly-ochre-falcon: changed notes
+- 2026-11-19T10:56:52Z friendly-ochre-falcon review → done
