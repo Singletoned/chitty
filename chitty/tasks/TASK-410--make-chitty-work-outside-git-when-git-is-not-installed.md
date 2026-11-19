@@ -1,6 +1,6 @@
 ---
 title: Make Chitty work outside Git when `git` is not installed
-status: review
+status: doing
 created: 2026-11-19
 ---
 
@@ -32,6 +32,11 @@ Add tests in tests/test_no_git_installed.py for the outside-Git command equivale
 
 Regression tests were run before the fix: both helper cases failed as expected (missing Git raised FileNotFoundError outside a repository; corrupt Git index was hidden as an empty dirty-path set). The new command-equivalence coverage exercises list, show, path, next, edit, note, check and move outside Git; it does not yet cover archive or compare resulting filesystem snapshots, so acceptance criterion 1 is only partially covered. make check passes.
 
+Review failed (tests): Complete the specified equivalence regression; this is the first review and the missing coverage was already identified in the worker notes.
+1: fail - `tests/test_no_git_installed.py::test_commands_match_with_and_without_git` omits archive, does not compare relative file paths or contents with normalized History timestamps, and does not clear `git_common_dir` cache between runs. Add these assertions and exercise archive using the ID printed by move.
+2: pass - `make check` ran all 686 tests successfully, including both helper tests. Running the new tests against source extracted from main produced `ChittyError not raised` for the corrupt index and `FileNotFoundError` outside Git; separate calls against main printed `FileNotFoundError` for each of dirty_paths, current_branch and git_common_dir.
+3: pass - `make check` exited 0; ruff, pyright and all 686 tests passed.
+
 ## Summary
 
 Implemented guarded Git helper calls and added regression tests for no-Git helper behavior, corrupt-index error propagation, and command output equivalence for the core outside-Git commands. Verification: focused unittest and make check pass. Follow-up: complete criterion 1 archive and filesystem-content comparison coverage.
@@ -50,3 +55,5 @@ Implemented guarded Git helper calls and added regression tests for no-Git helpe
 - 2026-11-19T09:22:57Z tidy-pearl-otter: wrote the plan
 - 2026-11-19T09:26:33Z tidy-pearl-otter: changed notes, summary
 - 2026-11-19T09:26:33Z tidy-pearl-otter doing → review
+- 2026-11-19T09:29:56Z quick-hazel-newt: changed acceptance criteria, notes
+- 2026-11-19T09:29:56Z quick-hazel-newt review → doing
