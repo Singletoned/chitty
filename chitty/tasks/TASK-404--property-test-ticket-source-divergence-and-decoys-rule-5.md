@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: doing
+status: review
 depends_on:
   - TASK-377
   - TASK-403
@@ -21,9 +21,9 @@ The code already exists, so evidence that the tests catch a wrong implementation
 
 ## Acceptance Criteria
 
-- [ ] A rule 5 property passes on generated forks: `ChittyError` names each remaining candidate, quoted, and never a candidate that `main_tip` dropped
-- [ ] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
-- [ ] The notes name at least three mutants of `ticket_source`, among them treating `task-50` or local `feature/task-5` as a candidate and naming dropped candidates, each failing a property of this ticket; `make check` passes
+- [x] A rule 5 property passes on generated forks: `ChittyError` names each remaining candidate, quoted, and never a candidate that `main_tip` dropped
+- [x] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
+- [x] The notes name at least three mutants of `ticket_source`, among them treating `task-50` or local `feature/task-5` as a candidate and naming dropped candidates, each failing a property of this ticket; `make check` passes
 
 ## Plan
 
@@ -36,6 +36,12 @@ Cold read 2026-11-18 outcomes: dropped candidate only with a `main_tip`; decoys 
 Second cold read 2026-11-18 outcome: named the call that supplies the extra refs.
 
 Verification: `make check` passed (766 tests; the suite emitted its existing Hypothesis subTest warning and a fixture diagnostic about incomplete `chitty run` configuration, but exited 0). Mutant analysis: (1) treating local `<task-id>0` as a candidate is exposed by the decoy invariance property; (2) treating local `feature/<task-id>` as a candidate is exposed by the same property; (3) reporting candidates before the `main_tip` containment filter, including a dropped `task-50`, is exposed by the rule 5 property, which asserts dropped names are absent. These are analysis of the property assertions, not mutants executed against the implementation.
+
+Executed three temporary, uncommitted mutants in `src/chitty/ticket_source.py`; each targeted property failed, and the source was restored after each run. (1) Admitting local `<task-id>0` as a candidate failed the decoy property (generated case `A-1`, `a-10` decoy, `main_tip=None`: expanded call returned `a-10` while baseline raised the no-main-tip error). (2) Admitting local `feature/<task-id>` failed the decoy property similarly (expanded call returned `feature/a-1` while baseline raised the error). (3) Including a candidate filtered by `main_tip` in divergence names failed the rule 5 property (`backup/a-1` was named though dropped). No mutant was committed.
+
+## Summary
+
+Implemented generated rule 5 and decoy properties; no production-code fix was needed. Verification: focused suite passed after restoring all three mutants; `make check` passed (766 tests). Three temporary mutants each failed the intended property, recorded in Notes. Follow-up: review the property coverage and mutant evidence.
 
 ## History
 
@@ -52,3 +58,5 @@ Verification: `make check` passed (766 tests; the suite emitted its existing Hyp
 - 2026-11-19T17:51:25Z upbeat-ochre-adder todo → doing
 - 2026-11-19T17:53:36Z upbeat-ochre-adder: wrote the plan
 - 2026-11-19T17:56:22Z upbeat-ochre-adder: changed notes
+- 2026-11-19T17:57:56Z upbeat-ochre-adder: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T17:57:56Z upbeat-ochre-adder doing → review
