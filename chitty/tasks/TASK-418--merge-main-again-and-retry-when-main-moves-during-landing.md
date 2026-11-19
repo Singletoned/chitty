@@ -36,6 +36,10 @@ No property: a fixed set of four cases (moves once, moves every time, conflicts 
 - [ ] Mode `conflict`: on the second attempt `_land` raises the existing conflict error, whose message contains `conflicts in`; the count file has one line (the merge fails before the check runs again); no branch commit is in `git rev-list main`; the worktree remains
 - [ ] Mode `untracked`: `_land` raises `ChittyError` after one attempt: the count file has one line, the message does not contain `main moved`, and `main` and the worktree are unchanged. This passes before the change too; it is the case that rejects retrying on every fast-forward failure. `tests.test_landing` still runs and passes its existing tests. `make check` passes
 
+## Plan
+
+Add a three-attempt loop around the full landing sequence, retrying only when fast-forward fails and main is no longer an ancestor of the ticket branch. Extract the existing landing test setup/helpers into LandingTestCase, then add the four scripted race/failure cases in tests/test_landing_retry.py. Verify the retry test fails before the implementation, run formatting and make check, and commit implementation/tests with a Task: TASK-418 trailer.
+
 ## History
 
 - 2026-11-19T12:06:28Z quick-ginger-lapwing → planning
@@ -48,3 +52,4 @@ No property: a fixed set of four cases (moves once, moves every time, conflicts 
 - 2026-11-19T12:12:18Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T12:12:18Z quick-ginger-lapwing planning → todo
 - 2026-11-19T12:13:22Z quick-jade-jay todo → doing
+- 2026-11-19T12:14:21Z quick-jade-jay: wrote the plan
