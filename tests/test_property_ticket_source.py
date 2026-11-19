@@ -247,14 +247,24 @@ class TestTicketSource(unittest.TestCase):
         tips = {ref: data.draw(st.sampled_from(eligible)) for ref in refs}
         local_tips = {ref: tip for ref, tip in tips.items() if "/" not in ref}
         remote_tips = {ref: tip for ref, tip in tips.items() if "/" in ref}
-        # Add dropped candidates at/below main and decoys without affecting selection.
-        if main_tip is not None and graph.chain:
-            dropped_tip = main_tip
-            remote_tips["drop/" + branch] = dropped_tip
-        local_decoys, remote_decoys = decoy_names(task_id)
-        local_tips.update({local_decoys[0]: graph.commits[0]})
-        remote_tips.update({remote_decoys[0]: graph.commits[0]})
         highest = next(commit for commit in reversed(candidate_line) if commit in tips.values())
+        # Force both kinds of ties: local beats remotes, and remote names sort.
+        tie_mode = data.draw(st.integers(min_value=0, max_value=1))
+        if tie_mode == 0:
+            tips[branch] = highest
+            tips["zeta/" + branch] = highest
+        else:
+            tips.pop(branch, None)
+            tips["zeta/" + branch] = highest
+            tips["alpha/" + branch] = highest
+        local_tips = {ref: tip for ref, tip in tips.items() if "/" not in ref}
+        remote_tips = {ref: tip for ref, tip in tips.items() if "/" in ref}
+        # Add dropped candidates at/below main and decoys without affecting selection.
+        if main_tip is not None:
+            remote_tips["drop/" + branch] = main_tip
+        local_decoys, remote_decoys = decoy_names(task_id)
+        local_tips[local_decoys[0]] = graph.commits[0]
+        remote_tips[remote_decoys[0]] = graph.commits[0]
         matching = [ref for ref, tip in tips.items() if tip == highest]
         chosen = (
             branch
