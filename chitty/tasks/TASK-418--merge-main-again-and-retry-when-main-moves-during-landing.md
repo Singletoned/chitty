@@ -1,6 +1,6 @@
 ---
 title: Merge `main` again and retry when `main` moves during landing
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-19
 ---
@@ -34,3 +34,4 @@ No property: a fixed set of four cases (moves once, moves every time, conflicts 
 - 2026-11-19T12:06:51Z quick-ginger-lapwing planning → cold-read
 - 2026-11-19T12:09:10Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T12:09:13Z quick-ginger-lapwing: changed description, acceptance criteria
+- 2026-11-19T12:09:18Z quick-ginger-lapwing planning → cold-read
