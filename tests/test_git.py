@@ -25,7 +25,7 @@ class TestIsRepository(RepoTestCase):
     ):
         with tempfile.TemporaryDirectory() as temporary:
             base = Path(temporary).resolve()
-            self.assertFalse(any((parent / ".git").exists() for parent in base.parents))
+            self.assertFalse(any(os.path.lexists(parent / ".git") for parent in base.parents))
             directories = [base]
             for _ in range(depth):
                 child = directories[-1] / "nested"
