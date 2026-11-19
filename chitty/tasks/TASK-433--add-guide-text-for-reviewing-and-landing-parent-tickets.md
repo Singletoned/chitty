@@ -12,7 +12,10 @@ Context: circuitry parent tickets CIRCUIT-67 and CIRCUIT-80 exist only to group 
 
 Suggestion origin: circuitry
 
+Archived as covered by `BACKLOG-62079086` (review parent tickets).
+
 ## History
 
 - 2026-11-19T20:55:04Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:05Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:26Z sunny-white-dormouse: changed notes
