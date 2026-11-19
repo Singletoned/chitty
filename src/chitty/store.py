@@ -1654,11 +1654,13 @@ def _dependency_is_done(repo: Repo, dependency_id: TaskId, dependency: StoredTas
     for path, content in main_files:
         try:
             task_id, _ = ids.parse_filename(path.name)
+            # Parse only the dependency's file: other tickets cannot change the answer.
+            if task_id != dependency_id:
+                continue
             task = parse(content)
         except (ids.IdError, TaskError) as error:
             raise ChittyError(f"refs/heads/{main_branch}:{path}: {error}") from None
-        if task_id == dependency_id:
-            matches.append((path.parent.name == ARCHIVE_DIR, path, task))
+        matches.append((path.parent.name == ARCHIVE_DIR, path, task))
     if not matches:
         return False
     if len(matches) > 1:
