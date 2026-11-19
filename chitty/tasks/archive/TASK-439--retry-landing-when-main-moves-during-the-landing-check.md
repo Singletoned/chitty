@@ -19,3 +19,4 @@ Archived: already done; `_land_locked` (`src/chitty/run.py`) retries the rebase,
 - 2026-11-19T20:55:11Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:12Z sunny-white-dormouse: changed notes
 - 2026-11-19T21:20:03Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:20:07Z sunny-white-dormouse backlog → archived
