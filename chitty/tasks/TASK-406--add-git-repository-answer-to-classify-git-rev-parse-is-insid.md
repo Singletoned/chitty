@@ -1,6 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: review
+status: doing
 created: 2026-11-19
 ---
 
@@ -21,7 +21,7 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 ## Acceptance Criteria
 
 - [x] Property test, Hypothesis, status 0: standard output `true` padded with whitespace that `str.strip()` removes gives `True`; output sampled from `false`, `True`, `TRUE`, `truex`, `xtrue`, `true false`, the empty string, or drawn text whose stripped form is not `true`, gives `False`. Standard error is drawn text in both.
-- [x] Property test, Hypothesis, non-zero status: status 128 with standard error made of the lowercase `not a git repository` between two drawn texts (either may be empty) gives `False`. Every other case raises `ChittyError` containing the command as `_git` shows it (`` `git rev-parse --is-inside-work-tree` ``), `str(directory)` for a drawn `directory`, and the stripped standard error: status drawn from -64 to 255 excluding 0, with 128 always among the cases, and standard error drawn text filtered to lack the phrase (empty allowed, which checks only the command and directory); status other than 128 with the phrase; 128 with `Not a git repository` or `NOT A GIT REPOSITORY`. Standard output is drawn from `true`, padded `true` and drawn text in every case.
+- [ ] Property test, Hypothesis, non-zero status: status 128 with standard error made of the lowercase `not a git repository` between two drawn texts (either may be empty) gives `False`. Every other case raises `ChittyError` containing the command as `_git` shows it (`` `git rev-parse --is-inside-work-tree` ``), `str(directory)` for a drawn `directory`, and the stripped standard error: status drawn from -64 to 255 excluding 0, with 128 always among the cases, and standard error drawn text filtered to lack the phrase (empty allowed, which checks only the command and directory); status other than 128 with the phrase; 128 with `Not a git repository` or `NOT A GIT REPOSITORY`. Standard output is drawn from `true`, padded `true` and drawn text in every case.
 - [x] Evidence, recorded in a note: the tests failed against the `NotImplementedError` stub, and each wrong version, implemented and run, fails a test from criteria 1 or 2: case-insensitive phrase match; `"true" in stdout`; `True` whenever stripped output is `true`, whatever the status; status 128 gives `False` without checking the phrase; any non-zero status gives `False`; message without the command. A Hypothesis test drawing the status from `st.integers()` and both streams from `st.text()` shows the function only returns a `bool` or raises `ChittyError`.
 - [x] `make check` passes.
 
@@ -58,6 +58,12 @@ Review failed (tests): The earlier review reported missing stdout coverage in ev
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
 Planning session 2026-11-19, after escalation: merged `main` and fixed the last review finding. A module-level `STDOUTS` strategy (`true`, padded `true`, or `st.text()`) now supplies standard output in `test_phrase_only_classifies_status_128`, `test_repository_phrase_is_case_sensitive` and `test_other_failures_raise_with_context`. The earlier note that `make check` exits 1 was wrong: it exits 0 here.
+
+Review failed (tests): The earlier stdout-strategy finding is resolved; a newly discovered status-128 coverage gap remains.
+1: pass - uv run python -m unittest tests.test_git.TestRepositoryAnswer printed Ran 7 tests and OK; the worker recorded the stub failure.
+2: fail - test_phrase_only_classifies_status_128 draws status from a broad integer range without guaranteeing 128. A throwaway in-memory mutant that raises ChittyError whenever status is 128 and stderr contains the lowercase phrase still printed Ran 7 tests, OK, and mutant passed: True. Add a property that always uses status 128 and drawn prefix, suffix and STDOUTS, and confirm it fails against that mutant.
+3: pass - The worker notes record the stub and all six requested mutant failures; the arbitrary integer and stream property ran in the focused suite, which printed OK.
+4: pass - make check exited 0, with Ruff and Pyright clean and Ran 693 tests, OK.
 
 ## Summary
 
@@ -100,3 +106,5 @@ Expanded nonzero diagnostic property tests to vary stdout/status/directory and a
 - 2026-11-19T09:15:13Z mellow-bronze-yellowhammer review → blocked
 - 2026-11-19T09:33:31Z quick-ginger-lapwing: changed owner, notes; ticked acceptance criteria
 - 2026-11-19T09:33:31Z quick-ginger-lapwing blocked → review
+- 2026-11-19T10:35:59Z friendly-jade-otter: changed acceptance criteria, notes
+- 2026-11-19T10:35:59Z friendly-jade-otter review → doing
