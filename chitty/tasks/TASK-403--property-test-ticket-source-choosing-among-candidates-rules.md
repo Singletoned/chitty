@@ -39,6 +39,12 @@ Cold read 2026-11-18 outcomes: forced ties so tie mutants die; defined the range
 
 Second cold read 2026-11-18 outcomes: remote-ahead and tie cases forced by drawn booleans; rule 6 wording no longer reads as an error for other names; rule 6 also applies when the result would be `WORKING_TREE`.
 
+Verification: focused property module passes; make check passes (746 tests). Mutant evidence not completed: the required hand-run mutants for remote tie preference, remote ordering, and changed_on_both remain a follow-up, so acceptance criterion 3 is not met.
+
+## Summary
+
+Added generated rule 4 selection and checkout coverage, remote-ahead scenario, and rule 6 expected-ref / other-ref coverage in tests/test_property_ticket_source.py. Focused tests and make check pass. Required temporary mutant runs and their failure evidence remain outstanding.
+
 ## History
 
 - 2026-11-18T21:31:03Z lively-quartz-crane → backlog
@@ -52,3 +58,4 @@ Second cold read 2026-11-18 outcomes: remote-ahead and tie cases forced by drawn
 - 2026-11-19T14:20:34Z quick-ginger-lapwing: changed description
 - 2026-11-19T15:22:31Z friendly-russet-urchin todo → doing
 - 2026-11-19T15:23:24Z friendly-russet-urchin: wrote the plan
+- 2026-11-19T15:26:25Z friendly-russet-urchin: changed notes, summary
