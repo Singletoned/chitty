@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: review
+status: done
 priority: high
 created: 2026-11-18
 ---
@@ -91,6 +91,12 @@ Criterion 3 conflicts with existing behavior: src/chitty/git.py::is_repository r
 
 Planning 2026-11-19: decided the worker's question. A directory that does not exist raises `ChittyError`, as `git.is_repository` does since `TASK-405`; criterion 3 and the Tests paragraph now say so. Only the expected result for that one case changed, so no new cold read. Merged `main` into the branch first.
 
+Reviewed:
+1: pass - `chitty guide rebase TASK-12` printed the role text, continuation command and prohibition on abort and skip; focused tests passed.
+2: pass - `python -m unittest tests.test_guide_rebase -q` ran 4 tests OK; patching `chitty.git.rebase_in_progress` to return false produced 3 rebase-text assertion failures across both backends and the linked worktree, with no errors.
+3: pass - focused tests ran clean, outside, missing-directory and unaffected-role comparisons successfully.
+4: pass - `git diff main -- src/chitty/run.py src/chitty/git.py tests/test_run_continue.py` showed only the two directory arguments; `make check` passed 714 tests and all checks.
+
 ## Summary
 
 Implemented the rebase role guide and conditional injection for work and repair guides. Updated role listings and added coverage for both rebase backends, root/subdirectory and linked worktrees, CLI output/help, non-repository/missing-directory behavior, and unaffected roles. Verification: focused guide tests and `make check` passed (714 tests); `chitty fix` completed with existing warnings in unrelated tickets. Runner/Git changes are limited to passing `directory=repo.root` to guide calls; follow-ups: none.
@@ -154,3 +160,5 @@ Implemented the rebase role guide and conditional injection for work and repair 
 - 2026-11-19T13:06:50Z quick-ginger-lapwing planning → doing
 - 2026-11-19T13:10:28Z tidy-white-lapwing: changed summary; ticked acceptance criteria
 - 2026-11-19T13:10:28Z tidy-white-lapwing doing → review
+- 2026-11-19T13:17:57Z upbeat-zinc-newt: changed notes
+- 2026-11-19T13:17:57Z upbeat-zinc-newt review → done
