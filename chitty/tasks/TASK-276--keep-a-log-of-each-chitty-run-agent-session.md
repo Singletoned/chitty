@@ -1,6 +1,6 @@
 ---
 title: Keep a log of each `chitty run` agent session
-status: todo
+status: planning
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -28,6 +28,8 @@ Possible starting point: `git diff main...refs/cold-read/TASK-276/2`. Check it a
 
 Planner, 2026-11-14: removed the dependency on TASK-278. Its only prerequisite for this ticket, print-mode Pi as `agent_command`, is already on `main` (`c2eae4b`); TASK-278 waits only on human trial runs.
 
+Planner, 2026-11-19: the earlier partial implementation on branch `task-276` (tip `e26f0cd5`) was deleted at the owner's request: it had gone stale and conflicted with `main`. Start again from `main`. Its review (2026-11-14) failed on a conflict between streaming agent output to the console and the unchanged timeout test; resolved below by streaming to stderr. That review also found a `ValueError: write to closed file` from a reader thread when a descendant printed after the log closed: detach the log before closing it, and test late output.
+
 ## History
 
 - 2026-11-11T13:21:33Z vivid-yellowhammer → backlog
@@ -41,3 +43,5 @@ Planner, 2026-11-14: removed the dependency on TASK-278. Its only prerequisite f
 - 2026-11-11T13:51:57Z vivid-yellowhammer cold-read → todo
 - 2026-11-12T21:35:00Z kind-yellow-vole: changed description
 - 2026-11-14T09:20:55Z jolly-silver-falcon: changed dependencies, notes
+- 2026-11-19T21:12:12Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:12:12Z sunny-white-dormouse todo → planning
