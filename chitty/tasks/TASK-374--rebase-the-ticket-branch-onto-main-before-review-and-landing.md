@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: doing
+status: review
 labels:
   - bug
   - needs-minor
@@ -34,11 +34,11 @@ Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `te
 
 ## Acceptance Criteria
 
-- [ ] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
-- [ ] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
-- [ ] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with a note containing `Review failed (integration): rebasing onto `main` conflicts in` and the path in backticks, and no reviewer starts; this fails before the change (today's note says `merging`)
-- [ ] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); this fails before the change
-- [ ] `git.merge` and `git.merge_main` are gone, the retargeted interrupt tests and the flipped merge-count assertions pass, and `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
+- [x] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
+- [x] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
+- [x] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with a note containing `Review failed (integration): rebasing onto `main` conflicts in` and the path in backticks, and no reviewer starts; this fails before the change (today's note says `merging`)
+- [x] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); this fails before the change
+- [x] `git.merge` and `git.merge_main` are gone, the retargeted interrupt tests and the flipped merge-count assertions pass, and `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
 
 ## Plan
 
@@ -47,6 +47,12 @@ Add direct real-Git tests for rebase_onto clean and conflict outcomes; implement
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
+
+Implemented `git.rebase_onto`; review and landing now rebase onto main, abort conflicts, and translate Ctrl-C to `RunInterrupted("rebase")`. Removed merge helpers. Added direct clean/conflict Git tests; updated real runner, retry, and guide coverage. Focused suites passed (72 tests). `make check` passed all 736 tests; first full run had one transient existing `tests.test_next.TestNext.test_run_cases` failure, and rerun passed. `git diff --check` passed. `chitty fix` completed with existing warnings in unrelated task files.
+
+## Summary
+
+Replaced runner merge integration with rebasing in review and landing; removed obsolete merge helpers. Updated runner guide and real-Git regression tests. Verification: focused tests (72), `make check` (736 tests), `git diff --check`, and `chitty fix`. Implementation commit: 706614ca (Task: TASK-374). No follow-ups.
 
 ## History
 
@@ -67,3 +73,5 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:17:15Z lively-quartz-crane: changed description
 - 2026-11-19T14:20:48Z sunny-bronze-ibis todo → doing
 - 2026-11-19T14:21:56Z sunny-bronze-ibis: wrote the plan
+- 2026-11-19T14:29:41Z sunny-bronze-ibis: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T14:29:41Z sunny-bronze-ibis doing → review
