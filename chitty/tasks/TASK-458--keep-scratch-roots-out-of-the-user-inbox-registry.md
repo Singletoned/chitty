@@ -12,7 +12,10 @@ Running `chitty init` (or other commands that register a root) in a throwaway fo
 
 Suggestion origin: chitty
 
+Archived as covered by `TASK-50` and `TASK-310`.
+
 ## History
 
 - 2026-11-19T20:55:34Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:35Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:40Z sunny-white-dormouse: changed notes
