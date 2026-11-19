@@ -1,6 +1,6 @@
 ---
 title: Parse only the dependency's file when checking a dependency on `main`
-status: error
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -314,6 +314,8 @@ make: *** [check] Error 1
 ```
 ````
 
+Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext.test_run_cases`, fixed on `main` in `fe1ef0cd`; back to `review`.
+
 ## Summary
 
 Dependency checks on `main` now parse only the file of the dependency. `chitty list` here went from 4.2 s to 1.3 s. Verified by two new tests that fail on the old code and by `make check` (744 tests). No follow-up.
@@ -328,3 +330,5 @@ Dependency checks on `main` now parse only the file of the dependency. `chitty l
 - 2026-11-19T14:33:08Z quick-ginger-lapwing doing → review
 - 2026-11-19T14:34:55Z upbeat-umber-eel: changed notes
 - 2026-11-19T14:34:55Z upbeat-umber-eel review → error
+- 2026-11-19T16:01:56Z quick-ginger-lapwing: changed notes
+- 2026-11-19T16:01:56Z quick-ginger-lapwing error → review
