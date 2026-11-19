@@ -1,6 +1,6 @@
 ---
 title: Stop two property tests failing at random under `make check`
-status: cold-read
+status: planning
 labels:
   - bug
 priority: high
@@ -32,3 +32,4 @@ No property is added: both changes fix existing property tests. Their evidence i
 
 - 2026-11-19T11:34:07Z quick-ginger-lapwing → planning
 - 2026-11-19T11:34:40Z quick-ginger-lapwing planning → cold-read
+- 2026-11-19T11:46:53Z quick-ginger-lapwing cold-read → planning
