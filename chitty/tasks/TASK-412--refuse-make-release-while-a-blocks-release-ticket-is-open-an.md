@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -40,9 +40,11 @@ Review failed (tests): Add the missing subprocess scenarios and validate every s
 2: fail - `test_human_blocker_fails` does not tag after committing the blocker or commit an unrelated change, so it does not verify an unchanged human blocker. There is no test of a done `blocks-release` ticket at tag `v0.1.10`; `test_label_before_tag_is_ignored` uses `needs-minor` instead. Add both scenarios and confirm the done-blocker test passes before and after. Also a throwaway subprocess using the existing test helper with a valid task body at `chitty/tasks/not-a-ticket.md` printed exit 0, stdout `0.1.10\n`, stderr empty: the specification requires `parse_filename` errors to propagate for every scanned active file, not only blockers. Validate all scanned filenames and add a regression test. Against `main`, the existing task-blocker and human-blocker tests failed because exit was 0, and the todo minor test failed with `0.2.0` instead of `0.1.10`.
 3: pass - `AGENTS.md` documents both rules; `make check` passed 700 tests, ruff, pyright, and Node checks.
 
+Added the missing regression cases: the unchanged HUMAN-12 blocker and a done blocker at tag v0.1.10 both pass; the malformed active ticket filename test first failed against the existing implementation (exit 0), then passed after validating every scanned active filename with parse_filename. The focused suite now passes (11 tests); make check passes (702 tests plus ruff and pyright).
+
 ## Summary
 
-Implemented full-scan release blockers and done-only needs-minor selection; added Hypothesis property coverage plus subprocess tests for active/human blockers and todo labels. Verification: focused tests and make check pass (700 tests). No follow-ups.
+Validated every active ticket filename before release selection; added regression coverage for unchanged human blockers, done blockers at the tag, and malformed filenames. Verification: focused release-version tests (11) and make check (702 tests, ruff, pyright) pass. Follow-up: independent review.
 
 ## History
 
@@ -62,3 +64,5 @@ Implemented full-scan release blockers and done-only needs-minor selection; adde
 - 2026-11-19T11:17:18Z jolly-ebony-toad doing → review
 - 2026-11-19T11:20:18Z rosy-umber-falcon: changed acceptance criteria, notes
 - 2026-11-19T11:20:18Z rosy-umber-falcon review → doing
+- 2026-11-19T11:26:13Z rosy-pearl-falcon: changed notes, summary
+- 2026-11-19T11:26:13Z rosy-pearl-falcon doing → review
