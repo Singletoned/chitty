@@ -1,6 +1,6 @@
 ---
 title: Commit or restore a ticket file when a Chitty write fails after writing it
-status: doing
+status: review
 labels:
   - bug
 parent: TASK-376
@@ -21,8 +21,8 @@ Tests: real-Git tests in a new `tests/test_failed_writes_restore.py`, inheriting
 
 ## Acceptance Criteria
 
-- [ ] With the failing hook, each of `chitty add`, `chitty edit --note`, `chitty archive <ID>`, `chitty archive` (no ID), `chitty move <ID> human`, `chitty renumber <PATH>` (a duplicate made with `git mv`), and a direct `Repo.restore(<ID>)` call (there is no CLI command) fails with the autocommit error, and afterwards `git status --porcelain` and every ticket file's bytes equal what they were before; each fails before the change
-- [ ] The same holds with `archive = "delete"` for `chitty archive <ID>`; a later run of each command without the hook succeeds; `make check` passes
+- [x] With the failing hook, each of `chitty add`, `chitty edit --note`, `chitty archive <ID>`, `chitty archive` (no ID), `chitty move <ID> human`, `chitty renumber <PATH>` (a duplicate made with `git mv`), and a direct `Repo.restore(<ID>)` call (there is no CLI command) fails with the autocommit error, and afterwards `git status --porcelain` and every ticket file's bytes equal what they were before; each fails before the change
+- [x] The same holds with `archive = "delete"` for `chitty archive <ID>`; a later run of each command without the hook succeeds; `make check` passes
 
 ## Plan
 
@@ -193,6 +193,12 @@ make: *** [check] Error 1
 
 Back to `todo` 2026-11-19: the runner error was the flaky `test_suffix_round_trips` deadline in the check before work started, fixed by `TASK-417`. No work had been done.
 
+The new regression tests fail against the pre-change store (8 failures) and pass with the fix. make check passes, including the complete test suite. Commands without the failing hook succeed after rollback checks.
+
+## Summary
+
+Implemented all-or-nothing rollback for add, edit, archive, archive_done, restore, move and renumber; added real-Git regression coverage for each listed failure path and updated the existing autocommit expectation. Verification: the eight regression tests failed on baseline and pass with the fix; make check passes (725 tests). Follow-up: none.
+
 ## History
 
 - 2026-11-18T16:20:21Z lively-quartz-crane → backlog
@@ -212,3 +218,5 @@ Back to `todo` 2026-11-19: the runner error was the flaky `test_suffix_round_tri
 - 2026-11-19T13:25:56Z quick-ginger-lapwing error → todo
 - 2026-11-19T13:27:07Z zesty-navy-zander todo → doing
 - 2026-11-19T13:29:52Z zesty-navy-zander: wrote the plan
+- 2026-11-19T13:38:40Z zesty-navy-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T13:38:40Z zesty-navy-zander doing → review
