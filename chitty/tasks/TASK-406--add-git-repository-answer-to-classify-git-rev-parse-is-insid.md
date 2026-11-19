@@ -37,6 +37,8 @@ Review failed (integration): merging `main` conflicts in `tests/test_git.py`.
 
 Merged main into task-406 and resolved the tests/test_git.py conflict by retaining both TASK-406 classifier tests and main’s TASK-405 repository-detection tests. Focused tests passed (10 tests), and make check passed all 690 tests. Criterion 3 mutant experiments were not performed for the incorrect variants, so that evidence remains outstanding. make format also removed duplicate os and tempfile imports after the merge.
 
+Added a deterministic status-128/empty-stderr test to ensure 128 is always exercised without the repository phrase. Ran each requested wrong implementation against its corresponding test: case-insensitive phrase failed the case-sensitivity test; substring true failed exact output; stdout true regardless of status and status-128-always-false each failed the status-128 error test; any non-zero false failed contextual-error assertions; omitted command failed command-context assertion. The arbitrary-integer/text Hypothesis property also passes. make format and make check pass (691 tests; Ruff and Pyright clean).
+
 ## Summary
 
 Implemented the pure repository_answer classifier and Hypothesis coverage. Verified the NotImplementedError stub fails the new tests; make format and make check pass (687 tests). Follow-up: criterion 3 requests separately implemented/run mutant checks for each listed incorrect variant; those were not performed.
@@ -65,3 +67,4 @@ Implemented the pure repository_answer classifier and Hypothesis coverage. Verif
 - 2026-11-19T09:00:56Z sunny-yellow-stoat: changed notes
 - 2026-11-19T09:00:56Z sunny-yellow-stoat review → doing
 - 2026-11-19T09:04:02Z mellow-khaki-jay: changed notes
+- 2026-11-19T09:05:45Z mellow-khaki-jay: changed notes
