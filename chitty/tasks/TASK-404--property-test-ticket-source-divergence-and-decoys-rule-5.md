@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: error
+status: review
 depends_on:
   - TASK-377
   - TASK-403
@@ -92,3 +92,4 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T21:03:17Z mellow-fawn-dormouse review → done
 - 2026-11-19T21:05:50Z mellow-fawn-dormouse: changed notes
 - 2026-11-19T21:05:50Z mellow-fawn-dormouse done → error
+- 2026-11-19T21:16:37Z daring-amber-kestrel error → review
