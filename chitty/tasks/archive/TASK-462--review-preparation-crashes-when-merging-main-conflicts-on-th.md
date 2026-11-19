@@ -19,3 +19,4 @@ Archived as covered by `TASK-370` and the one-authoritative-copy ticket-state mo
 - 2026-11-19T20:55:39Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:40Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:57:20Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:23Z sunny-white-dormouse backlog → archived
