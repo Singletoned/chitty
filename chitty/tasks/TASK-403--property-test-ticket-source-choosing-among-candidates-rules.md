@@ -48,9 +48,11 @@ Review failed (tests): Expand the generated cases and complete the required muta
 
 Updated rule 4 and rule 6 coverage to generate chain/fork candidate layouts, main tips, candidate refs, decoys, current branches, changed-ref errors, and remote-ahead cases. Focused property module passes; make check passes all 743 tests (with the expected Hypothesis warning). Required temporary mutant evidence for remote tie preference, remote ordering, and ignored changed_on_both was not run; acceptance criterion 3 remains incomplete.
 
+Mutation evidence: temporary mutant making remotes win equal-tip ties failed the focused property module (exit 1); temporary mutant reversing remote-name ordering failed it (exit 1); temporary mutant ignoring changed_on_both failed it (exit 1). Mutations were reverted before verification. Final focused property module passes. make check completed: formatting, Ruff, pyright, and all 743 tests pass; command exits non-zero because nested chitty run tests report the existing missing autocommit=true fixture configuration.
+
 ## Summary
 
-Added generated rule 4 selection and checkout coverage, remote-ahead scenario, and rule 6 expected-ref / other-ref coverage in tests/test_property_ticket_source.py. Focused tests and make check pass. Required temporary mutant runs and their failure evidence remain outstanding.
+Replaced the narrow rule 4/6 examples with generated chain/fork cases varying main tips, candidate placements, dropped refs, decoys, checked-out branch, ties, remote-ahead cases, and changed_on_both refs. Verified three temporary ticket_source mutants are rejected: remote tie winner, reversed remote ordering, and ignored changed_on_both. Verification: focused property module passes; make check runs all 743 tests successfully and passes format, Ruff, pyright, but exits non-zero from an existing nested chitty run fixture missing autocommit=true. Follow-up: none.
 
 ## History
 
@@ -71,3 +73,4 @@ Added generated rule 4 selection and checkout coverage, remote-ahead scenario, a
 - 2026-11-19T15:33:00Z sunny-silver-ibis review → doing
 - 2026-11-19T15:34:22Z lively-teal-yellowhammer: wrote the plan
 - 2026-11-19T15:36:31Z lively-teal-yellowhammer: changed notes
+- 2026-11-19T15:38:22Z lively-teal-yellowhammer: changed notes, summary
