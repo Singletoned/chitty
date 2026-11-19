@@ -1,6 +1,6 @@
 ---
 title: Resolve a config recorded at `0.5.0` or earlier with no `workflow` to the runner
-status: todo
+status: doing
 labels:
   - blocks-release
 priority: high
@@ -44,3 +44,4 @@ Tests, in `tests/test_config_workflow.py`, with Hypothesis, the repository's pro
 - 2026-11-19T10:48:54Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T10:48:58Z quick-ginger-lapwing: changed description
 - 2026-11-19T10:48:58Z quick-ginger-lapwing planning → todo
+- 2026-11-19T10:51:03Z upbeat-khaki-kestrel todo → doing
