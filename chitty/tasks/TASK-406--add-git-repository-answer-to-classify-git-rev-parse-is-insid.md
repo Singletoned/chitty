@@ -1,6 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: review
+status: done
 created: 2026-11-19
 ---
 
@@ -21,7 +21,7 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 ## Acceptance Criteria
 
 - [x] Property test, Hypothesis, status 0: standard output `true` padded with whitespace that `str.strip()` removes gives `True`; output sampled from `false`, `True`, `TRUE`, `truex`, `xtrue`, `true false`, the empty string, or drawn text whose stripped form is not `true`, gives `False`. Standard error is drawn text in both.
-- [ ] Property test, Hypothesis, non-zero status: status 128 with standard error made of the lowercase `not a git repository` between two drawn texts (either may be empty) gives `False`. Every other case raises `ChittyError` containing the command as `_git` shows it (`` `git rev-parse --is-inside-work-tree` ``), `str(directory)` for a drawn `directory`, and the stripped standard error: status drawn from -64 to 255 excluding 0, with 128 always among the cases, and standard error drawn text filtered to lack the phrase (empty allowed, which checks only the command and directory); status other than 128 with the phrase; 128 with `Not a git repository` or `NOT A GIT REPOSITORY`. Standard output is drawn from `true`, padded `true` and drawn text in every case.
+- [x] Property test, Hypothesis, non-zero status: status 128 with standard error made of the lowercase `not a git repository` between two drawn texts (either may be empty) gives `False`. Every other case raises `ChittyError` containing the command as `_git` shows it (`` `git rev-parse --is-inside-work-tree` ``), `str(directory)` for a drawn `directory`, and the stripped standard error: status drawn from -64 to 255 excluding 0, with 128 always among the cases, and standard error drawn text filtered to lack the phrase (empty allowed, which checks only the command and directory); status other than 128 with the phrase; 128 with `Not a git repository` or `NOT A GIT REPOSITORY`. Standard output is drawn from `true`, padded `true` and drawn text in every case.
 - [x] Evidence, recorded in a note: the tests failed against the `NotImplementedError` stub, and each wrong version, implemented and run, fails a test from criteria 1 or 2: case-insensitive phrase match; `"true" in stdout`; `True` whenever stripped output is `true`, whatever the status; status 128 gives `False` without checking the phrase; any non-zero status gives `False`; message without the command. A Hypothesis test drawing the status from `st.integers()` and both streams from `st.text()` shows the function only returns a `bool` or raises `ChittyError`.
 - [x] `make check` passes.
 
@@ -68,6 +68,12 @@ Review failed (tests): The earlier stdout-strategy finding is resolved; a newly 
 Added a dedicated status-128 phrase property using drawn prefix, suffix, directory and STDOUTS. Focused tests passed (8 tests). The property failed against a throwaway mutant that raises on status 128 plus the lowercase phrase. make check printed Ruff/Pyright success and all 694 tests OK, but the command exited 1 due fixture-generated incomplete chitty run configuration errors.
 
 Re-ran make check; this run exited 0 with Ruff, Pyright, formatting, and all 694 tests passing. Earlier fixture-generated configuration messages were non-fatal; the prior exit-1 report was incorrect.
+
+Reviewed: Earlier status-128 phrase coverage gap is resolved by the dedicated property; the worker recorded that its rejecting mutant failed.
+1: pass - uv run python -m unittest tests.test_git.TestRepositoryAnswer printed Ran 8 tests and OK; the worker recorded the stub failure.
+2: pass - The focused suite printed Ran 8 tests and OK; properties cover phrase, case, statuses, diagnostics and varied stdout, including guaranteed 128 cases. The worker recorded the rejecting mutant failure.
+3: pass - Worker notes record the stub and all six requested mutant failures; the arbitrary integer and streams property passed in the focused suite, which printed OK.
+4: pass - make check exited 0; Ruff and Pyright passed and the suite printed Ran 694 tests and OK.
 
 ## Summary
 
@@ -116,3 +122,5 @@ Added guaranteed status-128 phrase coverage with varied stdout, diagnostic conte
 - 2026-11-19T10:39:36Z vivid-hazel-wren: changed notes, summary
 - 2026-11-19T10:40:37Z vivid-hazel-wren: changed notes, summary
 - 2026-11-19T10:40:37Z vivid-hazel-wren doing → review
+- 2026-11-19T10:43:05Z honest-umber-zander: changed notes; ticked acceptance criteria
+- 2026-11-19T10:43:05Z honest-umber-zander review → done
