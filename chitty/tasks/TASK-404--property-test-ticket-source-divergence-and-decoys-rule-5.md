@@ -22,7 +22,7 @@ The code already exists, so evidence that the tests catch a wrong implementation
 ## Acceptance Criteria
 
 - [x] A rule 5 property passes on generated forks: `ChittyError` names each remaining candidate, quoted, and never a candidate that `main_tip` dropped
-- [ ] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
+- [x] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
 - [x] The notes name at least three mutants of `ticket_source`, among them treating `task-50` or local `feature/task-5` as a candidate and naming dropped candidates, each failing a property of this ticket; `make check` passes
 
 ## Plan
@@ -48,7 +48,7 @@ Review follow-up: changed refs are now generated from the union of baseline and 
 
 ## Summary
 
-Implemented generated rule 5 and decoy properties; no production-code fix was needed. Verification: focused suite passed after restoring all three mutants; `make check` passed (766 tests). Three temporary mutants each failed the intended property, recorded in Notes. Follow-up: review the property coverage and mutant evidence.
+Fixed the decoy property to generate changed refs from both baseline and expanded maps, including newly added decoys/unrelated refs. Verification: focused suite (6 tests) and make check (format, lint, pyright, 765 tests) pass. No production changes or follow-ups.
 
 ## History
 
@@ -70,3 +70,4 @@ Implemented generated rule 5 and decoy properties; no production-code fix was ne
 - 2026-11-19T18:01:40Z honest-zinc-wren: changed acceptance criteria, notes
 - 2026-11-19T18:01:40Z honest-zinc-wren review → doing
 - 2026-11-19T20:09:52Z friendly-silver-kestrel: changed notes
+- 2026-11-19T20:10:09Z friendly-silver-kestrel: changed summary; ticked acceptance criteria
