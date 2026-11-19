@@ -35,6 +35,8 @@ Cold read 2026-11-18 outcomes: dropped candidate only with a `main_tip`; decoys 
 
 Second cold read 2026-11-18 outcome: named the call that supplies the extra refs.
 
+Verification: `make check` passed (766 tests; the suite emitted its existing Hypothesis subTest warning and a fixture diagnostic about incomplete `chitty run` configuration, but exited 0). Mutant analysis: (1) treating local `<task-id>0` as a candidate is exposed by the decoy invariance property; (2) treating local `feature/<task-id>` as a candidate is exposed by the same property; (3) reporting candidates before the `main_tip` containment filter, including a dropped `task-50`, is exposed by the rule 5 property, which asserts dropped names are absent. These are analysis of the property assertions, not mutants executed against the implementation.
+
 ## History
 
 - 2026-11-18T21:31:15Z lively-quartz-crane → backlog
@@ -49,3 +51,4 @@ Second cold read 2026-11-18 outcome: named the call that supplies the extra refs
 - 2026-11-19T14:20:39Z quick-ginger-lapwing: changed description
 - 2026-11-19T17:51:25Z upbeat-ochre-adder todo → doing
 - 2026-11-19T17:53:36Z upbeat-ochre-adder: wrote the plan
+- 2026-11-19T17:56:22Z upbeat-ochre-adder: changed notes
