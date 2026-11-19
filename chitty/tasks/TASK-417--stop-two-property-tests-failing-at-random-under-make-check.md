@@ -1,6 +1,6 @@
 ---
 title: Stop two property tests failing at random under `make check`
-status: doing
+status: done
 labels:
   - bug
 priority: high
@@ -28,6 +28,23 @@ No property is added: both changes fix existing property tests, and `plain_note`
 - [ ] A new `TestPlainNote` class in `tests/test_property_refused_write.py` asserts `plain_note` is false for each of `"0\n="`, `"x\n-"`, `"x\n  ---"`, `"x\n=  "`, `" # x"`, `"x\n  ## y"`, three backticks after one leading space, `"  ~~~"` and `"   "`, and true for `"plain text"`, `"a\nb = c"` and `"x - y"`. Before the change it fails because `plain_note` does not exist; the evidence that matters is the `main` reproduction in the Description, recorded in a note
 - [ ] `make check` passes
 
+## Plan
+
+Register and load a Hypothesis settings profile with deadline=None in tests/__init__.py, add an isolated profile assertion test, and remove the redundant deadline setting from test_suffix_round_trips. Replace the NOTES lambda with module-level plain_note implementing the specified whitespace, heading, fence, and setext-boundary checks; add fixed-case unit tests. Record the ticket’s specified main reproduction evidence in a note, then run focused regression checks and make check.
+
+## Notes
+
+The ticket records the main reproduction: Repo.edit(Edit(note="0\n=", depends_on=["TASK-1"])) raises the section-boundary error instead of the expected finalize-write error. The specified plain_note cases prevent that class of invalid generated note.
+
+Reviewed: All criteria verified; no earlier review findings.
+1: pass - Profile diff registers and loads deadline=None; focused unittest passed; running that test with main tests/__init__.py failed with timedelta(milliseconds=200) is not None; grep -n deadline tests/test_property_provisional.py printed nothing.
+2: pass - TestPlainNote passed all specified cases; running its unchanged class against the main module produced 12 NameError errors for missing plain_note. Repo.edit with Edit(note="0\n=", depends_on=["TASK-1"]) printed TaskError: Notes text changed section boundaries; use ### for headings and close code fences. The repository code is unchanged from main.
+3: pass - make check passed: ruff, pyright, and 717 unittest suites OK.
+
+## Summary
+
+Implemented the global Hypothesis deadline=None test profile and plain_note filtering with fixed-case coverage. The new profile regression test failed before the profile change (default deadline was 200 ms); afterward focused tests passed. The recorded ticket reproduction explains why setext boundaries must be filtered. Verification: make format; make check (ruff, pyright, unittest-parallel and configured checks passed); grep -n deadline tests/test_property_provisional.py produced no output. Commit: ec4529b0. No follow-ups.
+
 ## History
 
 - 2026-11-19T11:34:07Z quick-ginger-lapwing → planning
@@ -39,3 +56,9 @@ No property is added: both changes fix existing property tests, and `plain_note`
 - 2026-11-19T12:05:12Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T12:05:12Z quick-ginger-lapwing planning → todo
 - 2026-11-19T12:05:55Z honest-coral-gannet todo → doing
+- 2026-11-19T12:06:49Z honest-coral-gannet: wrote the plan
+- 2026-11-19T12:06:57Z honest-coral-gannet: changed notes
+- 2026-11-19T12:08:58Z honest-coral-gannet: changed summary
+- 2026-11-19T12:08:58Z honest-coral-gannet doing → review
+- 2026-11-19T13:23:43Z open-maroon-vole: changed notes
+- 2026-11-19T13:23:43Z open-maroon-vole review → done

@@ -1,6 +1,6 @@
 ---
 title: Keep the guide tests independent of this repository's `chitty.toml`
-status: todo
+status: review
 labels:
   - blocks-release
 priority: high
@@ -25,8 +25,8 @@ No property: the change only removes one case and moves one test class into a te
 
 ## Acceptance Criteria
 
-- [ ] Recorded in a note with the commands and the test names that fail or pass: copies made with `git archive <ref> | tar -x -C <dir>`, where `<dir>` is under this worktree's `tmp/` (add `tmp/` to `.gitignore` on this branch if it is not ignored; `main` for before, the ticket branch for after), each with its `chitty.toml` edited, run from `<dir>` with the worktree's `.venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` and `PYTHONPATH=<dir>/src`. Before, `workflow = "tickets"` fails the backticks test and `workflow = "bogus"` fails the Pi warning test; after, both pass with `workflow = "bogus"`. Delete the copies afterwards
-- [ ] `test_guide_command_prints_the_repository_workflow` still passes unchanged; `make check` passes in the real worktree after `make install` (a copy has no `node_modules`, so prettier tests fail there)
+- [x] Recorded in a note with the commands and the test names that fail or pass: copies made with `git archive <ref> | tar -x -C <dir>`, where `<dir>` is under this worktree's `tmp/` (add `tmp/` to `.gitignore` on this branch if it is not ignored; `main` for before, the ticket branch for after), each with its `chitty.toml` edited, run from `<dir>` with the worktree's `.venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` and `PYTHONPATH=<dir>/src`. Before, `workflow = "tickets"` fails the backticks test and `workflow = "bogus"` fails the Pi warning test; after, both pass with `workflow = "bogus"`. Delete the copies afterwards
+- [x] `test_guide_command_prints_the_repository_workflow` still passes unchanged; `make check` passes in the real worktree after `make install` (a copy has no `node_modules`, so prettier tests fail there)
 
 ## Plan
 
@@ -42,9 +42,11 @@ The required acceptance-criterion 1 validation cannot be run under the active wo
 
 Planning 2026-11-19: the worker was right; criterion 1 asked for copies outside the worktree, which workers may not create. The copies now go in this worktree's ignored `tmp/`. The code change and its tests are done; only this evidence is missing. No new cold read: only the copy location changed.
 
+Archived-copy validation: `git archive main | tar -x -C tmp/task-413-before` and `git archive HEAD | tar -x -C tmp/task-413-after`; edited chitty.toml workflows and deleted copies afterward. Before, workflow = "tickets": `PYTHONPATH=tmp/task-413-before/src .venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` failed `TestBacktickGuideWarning.test_warning_is_in_every_generated_guide` for args=(). Before, workflow = "bogus": `PYTHONPATH=tmp/task-413-before/src .venv/bin/python -m unittest tests.test_guide_pi_warning` failed `TestGuidePiWarning.test_pi_without_identity_is_warned` because guide exited on invalid workflow. After, workflow = "bogus": `PYTHONPATH=tmp/task-413-after/src .venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` passed (8 tests). Real worktree `make check` passed formatting, ruff, pyright, and all 714 tests, including `test_guide_command_prints_the_repository_workflow`. Validation scratch copies removed; `tmp/` ignored in commit a38ca7f8.
+
 ## Summary
 
-Handoff: removed the repository-config-dependent no-role guide assertion and ran Pi warning guide commands in RepoTestCase temporary repositories. Verified focused guide tests (26 tests) and full `make check` (702 tests). The ticket-requested archived-copy, altered-config before/after test was not run because session constraints prohibit writing outside this worktree. No follow-up code changes identified.
+Handoff: removed config-dependent no-role guide assertion and isolated Pi warning guide invocation in a temporary repository. Archived before/after altered-config validation and full make check passed. No follow-up identified.
 
 ## History
 
@@ -69,3 +71,6 @@ Handoff: removed the repository-config-dependent no-role guide assertion and ran
 - 2026-11-19T13:23:59Z plucky-fawn-dormouse doing → planning
 - 2026-11-19T13:53:08Z quick-ginger-lapwing: changed acceptance criteria, notes
 - 2026-11-19T13:53:08Z quick-ginger-lapwing planning → todo
+- 2026-11-19T13:57:45Z daring-ochre-lapwing todo → doing
+- 2026-11-19T14:02:55Z daring-ochre-lapwing: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T14:02:55Z daring-ochre-lapwing doing → review

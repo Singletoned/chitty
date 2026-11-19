@@ -1,6 +1,6 @@
 ---
 title: Merge `main` again and retry when `main` moves during landing
-status: doing
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -31,10 +31,34 @@ No property: a fixed set of four cases (moves once, moves every time, conflicts 
 
 ## Acceptance Criteria
 
-- [ ] Mode `once`: `_land` succeeds; `git rev-list main` contains the check's commit and every branch commit; the count file has two lines; the worktree and branch are removed. It fails before the change with the `--ff-only` error
-- [ ] Mode `always`: `_land` raises `ChittyError` with `main moved during each of the 3 landing attempts`; the count file has three lines; `git rev-list <start>..main` has exactly three commits, none of them a branch commit; the worktree and branch remain
-- [ ] Mode `conflict`: on the second attempt `_land` raises the existing conflict error, whose message contains `conflicts in`; the count file has one line (the merge fails before the check runs again); no branch commit is in `git rev-list main`; the worktree remains
-- [ ] Mode `untracked`: `_land` raises `ChittyError` after one attempt: the count file has one line, the message does not contain `main moved`, and `main` and the worktree are unchanged. This passes before the change too; it is the case that rejects retrying on every fast-forward failure. `tests.test_landing` still runs and passes its existing tests. `make check` passes
+- [x] Mode `once`: `_land` succeeds; `git rev-list main` contains the check's commit and every branch commit; the count file has two lines; the worktree and branch are removed. It fails before the change with the `--ff-only` error
+- [x] Mode `always`: `_land` raises `ChittyError` with `main moved during each of the 3 landing attempts`; the count file has three lines; `git rev-list <start>..main` has exactly three commits, none of them a branch commit; the worktree and branch remain
+- [x] Mode `conflict`: on the second attempt `_land` raises the existing conflict error, whose message contains `conflicts in`; the count file has one line (the merge fails before the check runs again); no branch commit is in `git rev-list main`; the worktree remains
+- [x] Mode `untracked`: `_land` raises `ChittyError` after one attempt: the count file has one line, the message does not contain `main moved`, and `main` and the worktree are unchanged. This passes before the change too; it is the case that rejects retrying on every fast-forward failure. `tests.test_landing` still runs and passes its existing tests. `make check` passes
+
+## Plan
+
+Add a three-attempt loop around the full landing sequence, retrying only when fast-forward fails and main is no longer an ancestor of the ticket branch. Extract the existing landing test setup/helpers into LandingTestCase, then add the four scripted race/failure cases in tests/test_landing_retry.py. Verify the retry test fails before the implementation, run formatting and make check, and commit implementation/tests with a Task: TASK-418 trailer.
+
+## Notes
+
+Review failed (tests): Newly discovered coverage gaps; no earlier review findings. Add the missing assertions before returning for review.
+1: fail - `test_retries_when_main_moves_once` asserts that the final `main` tip is in `rev-list main`, which is tautological; it never captures or checks the check script commit hash. Capture that hash when the script commits and assert it is in landed history. The current test passes with the implementation and fails against pre-change `run.py` with the expected `git merge --ff-only` error.
+2: pass - `tests.test_landing_retry` passes; against pre-change `run.py`, `test_stops_after_three_main_moves` fails because it gets the ff-only error instead of the three-attempt message.
+3: pass - `tests.test_landing_retry` passes; against pre-change `run.py`, `test_conflict_on_retry_stops_before_second_check` fails because it gets the ff-only error instead of `conflicts in`.
+4: fail - The untracked test checks the main HEAD and worktree existence, but does not verify that the worktree remains unchanged; snapshot and compare its branch HEAD and tracked and untracked state around landing. The untracked test passes before and after the change as specified. `python -m unittest -v tests.test_landing tests.test_landing_retry` ran 19 tests OK; `make check` passed 721 tests, ruff and pyright.
+
+Review failed (tests): Resolved the two coverage gaps from the prior review. test_retries_when_main_moves_once now captures the check commit hash and asserts that exact hash is in landed history. test_fast_forward_failure_without_main_move_is_not_retried now snapshots the worktree branch HEAD and porcelain status and verifies both remain unchanged. Evidence: .venv/bin/python -m unittest -v tests.test_landing tests.test_landing_retry ran 19 tests OK; make check passed 721 tests, ruff and pyright. Prior review established the retry tests fail against pre-change run.py.
+
+Reviewed: Prior coverage findings are resolved; no new defects found.
+1: pass - `make check` ran 722 tests OK; the once test now checks the captured check commit. The earlier review recorded its pre-change ff-only failure.
+2: pass - `make check` ran 722 tests OK; the earlier review recorded the pre-change ff-only failure instead of the retry-limit error.
+3: pass - `make check` ran 722 tests OK; the earlier review recorded the pre-change ff-only failure instead of the conflict error.
+4: pass - `make check` ran 722 tests OK, including existing landing tests; the untracked test now compares worktree HEAD and status. The earlier review recorded that it passes before and after the change.
+
+## Summary
+
+Implemented bounded landing retries and strengthened the reported test gaps. Verification: .venv/bin/python -m unittest -v tests.test_landing tests.test_landing_retry (19 tests) and make check (721 tests, ruff, pyright) pass. Regression evidence: the earlier review confirmed retry tests fail against pre-change run.py. Follow-up commit: 079e812c (Task: TASK-418).
 
 ## History
 
@@ -48,3 +72,12 @@ No property: a fixed set of four cases (moves once, moves every time, conflicts 
 - 2026-11-19T12:12:18Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T12:12:18Z quick-ginger-lapwing planning → todo
 - 2026-11-19T12:13:22Z quick-jade-jay todo → doing
+- 2026-11-19T12:14:21Z quick-jade-jay: wrote the plan
+- 2026-11-19T12:40:21Z quick-jade-jay: changed summary; ticked acceptance criteria
+- 2026-11-19T12:40:21Z quick-jade-jay doing → review
+- 2026-11-19T13:29:31Z upbeat-dusky-stoat: changed acceptance criteria, notes
+- 2026-11-19T13:29:31Z upbeat-dusky-stoat review → doing
+- 2026-11-19T13:43:05Z kind-white-newt: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T13:43:05Z kind-white-newt doing → review
+- 2026-11-19T13:45:15Z vivid-quartz-eel: changed notes
+- 2026-11-19T13:45:15Z vivid-quartz-eel review → done
