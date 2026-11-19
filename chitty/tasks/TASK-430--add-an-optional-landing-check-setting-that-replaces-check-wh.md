@@ -26,11 +26,11 @@ Out of scope: setting `landing_check` in this repository's `chitty.toml` (a late
 
 ## Acceptance Criteria
 
-- [ ] `tests/test_landing_check_setting.py` has the five `landing_command` cases from the Description, and they pass; a note records that they fail while `landing_command` raises `NotImplementedError`
-- [ ] The review-path test passes for both cases as described: set gives `calls` exactly `check\nlanding\n`, unset gives `check\ncheck\n`; a note records that the set case fails against `src/chitty/run.py` without the change (`calls` is `check\ncheck\n`)
-- [ ] The pending-path test passes as described (`calls` exactly `landing\n`, worktree removed); a note records that it fails against `src/chitty/run.py` without the change with `landing check exited with status 1`, and that it also fails with only the review-path caller changed
-- [ ] The loading test passes: with a blank `landing_check`, `chitty list` exits 1 with `landing_check: must not be empty`; with `landing_check = "true"` it prints no `unknown configuration key` warning; a note records that the blank case fails against `src/chitty/config.py` without the change
-- [ ] `docs/plan/config.md` and `README.md` describe `landing_check` as the Description says; `make check` passes
+- [x] `tests/test_landing_check_setting.py` has the five `landing_command` cases from the Description, and they pass; a note records that they fail while `landing_command` raises `NotImplementedError`
+- [x] The review-path test passes for both cases as described: set gives `calls` exactly `check\nlanding\n`, unset gives `check\ncheck\n`; a note records that the set case fails against `src/chitty/run.py` without the change (`calls` is `check\ncheck\n`)
+- [x] The pending-path test passes as described (`calls` exactly `landing\n`, worktree removed); a note records that it fails against `src/chitty/run.py` without the change with `landing check exited with status 1`, and that it also fails with only the review-path caller changed
+- [x] The loading test passes: with a blank `landing_check`, `chitty list` exits 1 with `landing_check: must not be empty`; with `landing_check = "true"` it prints no `unknown configuration key` warning; a note records that the blank case fails against `src/chitty/config.py` without the change
+- [x] `docs/plan/config.md` and `README.md` describe `landing_check` as the Description says; `make check` passes
 
 ## Plan
 
@@ -39,6 +39,12 @@ Add landing_check configuration validation and landing_command selection, route 
 ## Notes
 
 Confirmed all five landing_command regression cases fail while the function raises NotImplementedError (python -m unittest tests.test_landing_check_setting). The required test-first failure is recorded.
+
+Integration regressions verified red with both landing callers temporarily restored to pass check: review landing recorded check/check instead of check/landing; pending landing raised `landing check exited with status 1`. With both callers changed, review set and unset cases pass with check/landing and check/check, and pending landing passes with landing and removes the worktree. The blank-setting loading test rejects with `landing_check: must not be empty`; the nonblank setting emits no unknown-key warning. `make check` passes.
+
+## Summary
+
+Implemented optional landing_check selection for review and pending landing while preserving check before agent sessions. Added five selection cases, config-loading coverage, review and pending integration regressions, and config/README docs. Verified with `python -m unittest tests.test_landing_check_setting` and `make check` (ruff, pyright, 775 suites). No follow-up required.
 
 ## History
 
@@ -53,3 +59,4 @@ Confirmed all five landing_command regression cases fail while the function rais
 - 2026-11-19T20:35:29Z witty-lilac-falcon todo → doing
 - 2026-11-19T20:41:56Z brisk-white-otter: wrote the plan
 - 2026-11-19T20:42:46Z brisk-white-otter: changed notes
+- 2026-11-19T20:49:51Z brisk-white-otter: changed notes, summary; ticked acceptance criteria
