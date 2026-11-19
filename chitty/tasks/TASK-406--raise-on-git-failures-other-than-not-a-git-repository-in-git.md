@@ -1,6 +1,6 @@
 ---
 title: Raise on `git` failures other than "not a git repository" in `git.is_repository`
-status: cold-read
+status: planning
 depends_on:
   - TASK-405
 created: 2026-11-19
@@ -35,3 +35,4 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 - 2026-11-19T08:49:15Z lively-quartz-crane cold-read → planning
 - 2026-11-19T08:49:17Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-19T08:49:37Z lively-quartz-crane planning → cold-read
+- 2026-11-19T08:51:02Z lively-quartz-crane cold-read → planning
