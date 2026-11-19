@@ -1,6 +1,6 @@
 ---
 title: Keep `tests/test_guide_backticks.py` independent of this repository's `chitty.toml`
-status: cold-read
+status: planning
 labels:
   - blocks-release
 priority: high
@@ -29,3 +29,4 @@ No property: a fixed set of two workflows, both listed and tested.
 - 2026-11-19T11:06:51Z quick-ginger-lapwing: changed labels
 - 2026-11-19T11:22:35Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T11:22:35Z quick-ginger-lapwing planning → cold-read
+- 2026-11-19T11:24:33Z quick-ginger-lapwing cold-read → planning
