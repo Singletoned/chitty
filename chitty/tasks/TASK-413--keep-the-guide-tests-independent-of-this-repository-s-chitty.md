@@ -28,6 +28,10 @@ No property: the change only removes one case and moves one test class into a te
 - [ ] Recorded in a note with the commands and the test names that fail or pass: copies made with `git archive <ref> | tar -x -C <dir>` under `/private/tmp/claude-501/` (`main` for before, the ticket branch for after), each with its `chitty.toml` edited, run from `<dir>` with the checkout's `.venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` and `PYTHONPATH=<dir>/src`. Before, `workflow = "tickets"` fails the backticks test and `workflow = "bogus"` fails the Pi warning test; after, both pass with `workflow = "bogus"`
 - [ ] `test_guide_command_prints_the_repository_workflow` still passes unchanged; `make check` passes in the real worktree after `make install` (a copy has no `node_modules`, so prettier tests fail there)
 
+## Plan
+
+Drop the no-role case from the backticks guide test and expected managed_guide import; isolate Pi warning CLI invocation in RepoTestCase temporary repository. Verify before/after config independence with archived copies, then make check and commit implementation.
+
 ## History
 
 - 2026-11-19T10:01:38Z quick-ginger-lapwing → planning
@@ -41,3 +45,4 @@ No property: the change only removes one case and moves one test class into a te
 - 2026-11-19T11:26:09Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T11:26:09Z quick-ginger-lapwing planning → todo
 - 2026-11-19T11:30:51Z golden-hazel-raven todo → doing
+- 2026-11-19T11:31:54Z golden-hazel-raven: wrote the plan
