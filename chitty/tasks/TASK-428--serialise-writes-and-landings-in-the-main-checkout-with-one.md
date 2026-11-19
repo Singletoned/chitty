@@ -1,6 +1,6 @@
 ---
 title: Serialise writes and landings in the main checkout with one short lock
-status: review
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -27,7 +27,7 @@ Tests, new file `tests/test_main_checkout_lock.py`. Both use a holder: a Python 
 
 ## Acceptance Criteria
 
-- [x] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
+- [ ] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
 - [x] The existing landing tests in `tests/test_review_merge.py` and `tests/test_landing.py` still pass; `make check` passes
 
 ## Plan
@@ -324,6 +324,10 @@ Running 768 test suites (768 total tests) across 16 workers
 
 Fixed by hand 2026-11-19 (human-approved), because the runner's pre-agent `make check` on this branch deadlocked and no worker could start (two loops hung for 19 minutes to an hour). `main_checkout_lock` in `src/chitty/locks.py` is now re-entrant within a process: a module-level `_HELD_MAIN_CHECKOUT_LOCKS` maps the resolved lock path to an entry count, and only the outermost entry opens, `flock`s and closes the file. New `TestMainCheckoutLockReentry.test_nested_entry_in_one_process_does_not_deadlock` in `tests/test_main_checkout_lock.py` enters the lock twice in a subprocess under a 20 s timeout and checks the lock is still held after the inner exit and free after the outer one; it timed out against the old code and passes now. `timeout 600 make check` passes (769 tests, 42 s). The rest of the ticket is the worker's as before.
 
+Review failed (work): Newly discovered: the reentrant lock treats a different thread as a nested entry, so it does not serialize concurrent callers in one process. Track ownership by thread and coordinate competing threads while retaining same-thread reentrancy; add a deterministic regression. This is distinct from the earlier 2026-11-19 note about same-thread deadlock.
+1: fail - A Python probe using two threads and `main_checkout_lock` printed `second thread entered while first holds lock: True`; both critical sections can run together. The specified regression tests do pass: `make check` reported 782 tests OK. Running the two new tests against a Git archive of `main` with the branch tests copied in produced `0 is not None` for the write and `TASK-1: done → error` for landing; the worktree guard passed.
+2: pass - `timeout 600 make check` completed with 782 tests OK, including the existing landing and review-merge suites; the previously reported suite hang did not recur.
+
 ## Summary
 
 Implemented main-checkout write/landing serialization, including process-reentrant locking to prevent nested flock deadlocks. Verification: timeout 600 make check passed (769 tests, 43.9s); Ruff format/check and Pyright passed. No known follow-ups.
@@ -347,3 +351,5 @@ Implemented main-checkout write/landing serialization, including process-reentra
 - 2026-11-19T23:03:03Z daring-amber-kestrel: changed notes
 - 2026-11-19T23:15:01Z nimble-pearl-newt: changed summary; ticked acceptance criteria
 - 2026-11-19T23:15:01Z nimble-pearl-newt doing → review
+- 2026-11-19T23:18:13Z sunny-ochre-gannet: changed acceptance criteria, notes
+- 2026-11-19T23:18:13Z sunny-ochre-gannet review → doing
