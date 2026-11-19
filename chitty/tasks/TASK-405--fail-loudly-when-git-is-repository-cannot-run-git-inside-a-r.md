@@ -1,6 +1,6 @@
 ---
 title: Fail loudly when `git.is_repository` cannot run `git` inside a repository
-status: doing
+status: review
 created: 2026-11-19
 ---
 
@@ -23,13 +23,21 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 
 ## Acceptance Criteria
 
-- [ ] Property test, generated with Hypothesis: each example makes its own `tempfile.TemporaryDirectory`, resolved, not `self.root` (Hypothesis runs `setUp` once for all examples), and asserts no parent of it holds a `.git`. It nests directories 1 to 4 deep inside it (level 0 is the temporary directory, level k the k-th nested one), places a `.git` directory, a `.git` file, a `.git` symbolic link to a missing path, or nothing, at a drawn level from 0 through the deepest, and calls `is_repository` on the deepest directory with `PATH` set to an empty directory. With no marker placed, the result is `False`; otherwise it raises `ChittyError` whose message contains `` `git` ``, `PATH` and the `.git` path. Every example with a marker fails on `main`, which returns `False`.
-- [ ] Example test: `is_repository` on a path that does not exist, and on a regular file, raises `ChittyError` naming the resolved path, both with `git` on `PATH` and without it. Fails on `main`, which returns `False` for the missing path and raises `NotADirectoryError` for the file.
-- [ ] No-regression guard, passing before and after the change: with `git` on `PATH`, `True` for a work tree root and a subdirectory of it, `False` with the directory set to a repository `.git` directory and for a plain temporary directory outside any repository. `make check` passes.
+- [x] Property test, generated with Hypothesis: each example makes its own `tempfile.TemporaryDirectory`, resolved, not `self.root` (Hypothesis runs `setUp` once for all examples), and asserts no parent of it holds a `.git`. It nests directories 1 to 4 deep inside it (level 0 is the temporary directory, level k the k-th nested one), places a `.git` directory, a `.git` file, a `.git` symbolic link to a missing path, or nothing, at a drawn level from 0 through the deepest, and calls `is_repository` on the deepest directory with `PATH` set to an empty directory. With no marker placed, the result is `False`; otherwise it raises `ChittyError` whose message contains `` `git` ``, `PATH` and the `.git` path. Every example with a marker fails on `main`, which returns `False`.
+- [x] Example test: `is_repository` on a path that does not exist, and on a regular file, raises `ChittyError` naming the resolved path, both with `git` on `PATH` and without it. Fails on `main`, which returns `False` for the missing path and raises `NotADirectoryError` for the file.
+- [x] No-regression guard, passing before and after the change: with `git` on `PATH`, `True` for a work tree root and a subdirectory of it, `False` with the directory set to a repository `.git` directory and for a plain temporary directory outside any repository. `make check` passes.
 
 ## Plan
 
 Update git.is_repository to validate the resolved directory before invoking git, and distinguish missing git from a missing directory using nearest-ancestor .git markers via lexists. Add Hypothesis coverage and examples in tests/test_git.py, first run regression tests against the current implementation, then run formatting and make check.
+
+## Notes
+
+Regression tests were run before the implementation and failed as expected: missing Git returned False for repository markers, and invalid directories did not raise ChittyError. The full `make check` passed after implementation.
+
+## Summary
+
+Implemented validation of resolved directories and loud handling of missing Git when an ancestor has a .git marker. Added Hypothesis marker tests and invalid-path and behavior guards in tests/test_git.py. Verification: make check passes (682 tests); committed as d2231ad1. No follow-ups.
 
 ## History
 
@@ -45,3 +53,5 @@ Update git.is_repository to validate the resolved directory before invoking git,
 - 2026-11-19T08:47:02Z lively-quartz-crane planning → todo
 - 2026-11-19T08:47:30Z nimble-pearl-eel todo → doing
 - 2026-11-19T08:48:22Z nimble-pearl-eel: wrote the plan
+- 2026-11-19T08:50:16Z nimble-pearl-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T08:50:16Z nimble-pearl-eel doing → review
