@@ -1,6 +1,6 @@
 ---
 title: Fail loudly when `git.is_repository` cannot run `git` inside a repository
-status: cold-read
+status: planning
 created: 2026-11-19
 ---
 
@@ -23,7 +23,7 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 
 ## Acceptance Criteria
 
-- [ ] Property test, generated with Hypothesis: each example builds its own new resolved temporary directory (Hypothesis runs `setUp` once for all examples), asserts no `.git` exists above it, nests directories 1 to 4 deep inside it, places a `.git` directory, a `.git` file, a `.git` symbolic link to a missing path, or nothing, at a drawn level from the temporary directory itself through the deepest directory, and calls `is_repository` on the deepest directory with `PATH` set to an empty directory. With no `.git` at or above it, the result is `False`; otherwise it raises `ChittyError` whose message contains `` `git` ``, `PATH` and the `.git` path. Fails on `main`, where every case returns `False`.
+- [ ] Property test, generated with Hypothesis: each example makes its own `tempfile.TemporaryDirectory`, resolved, not `self.root` (Hypothesis runs `setUp` once for all examples), and asserts no parent of it holds a `.git`. It nests directories 1 to 4 deep inside it (level 0 is the temporary directory, level k the k-th nested one), places a `.git` directory, a `.git` file, a `.git` symbolic link to a missing path, or nothing, at a drawn level from 0 through the deepest, and calls `is_repository` on the deepest directory with `PATH` set to an empty directory. With no marker placed, the result is `False`; otherwise it raises `ChittyError` whose message contains `` `git` ``, `PATH` and the `.git` path. Every example with a marker fails on `main`, which returns `False`.
 - [ ] Example test: `is_repository` on a path that does not exist, and on a regular file, raises `ChittyError` naming the resolved path, both with `git` on `PATH` and without it. Fails on `main`, which returns `False` for the missing path and raises `NotADirectoryError` for the file.
 - [ ] No-regression guard, passing before and after the change: with `git` on `PATH`, `True` for a work tree root and a subdirectory of it, `False` with the directory set to a repository `.git` directory and for a plain temporary directory outside any repository. `make check` passes.
 
@@ -36,3 +36,5 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 - 2026-11-19T08:46:00Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-19T08:46:00Z lively-quartz-crane cold-read → planning
 - 2026-11-19T08:46:03Z lively-quartz-crane planning → cold-read
+- 2026-11-19T08:46:58Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-19T08:46:58Z lively-quartz-crane cold-read → planning
