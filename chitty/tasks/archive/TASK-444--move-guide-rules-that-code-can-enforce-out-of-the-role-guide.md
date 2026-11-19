@@ -19,3 +19,4 @@ Archived: its rules are tracked separately: `TASK-338` (prove new tests fail), `
 - 2026-11-19T20:55:17Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:18Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:57:53Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:56Z sunny-white-dormouse backlog → archived
