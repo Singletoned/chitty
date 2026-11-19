@@ -1,6 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: planning
+status: todo
 created: 2026-11-19
 ---
 
@@ -21,8 +21,8 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 ## Acceptance Criteria
 
 - [ ] Property test, Hypothesis, status 0: standard output `true` padded with whitespace that `str.strip()` removes gives `True`; output sampled from `false`, `True`, `TRUE`, `truex`, `xtrue`, `true false`, the empty string, or drawn text whose stripped form is not `true`, gives `False`. Standard error is drawn text in both.
-- [ ] Property test, Hypothesis, non-zero status: status 128 with standard error holding the lowercase `not a git repository` at a drawn position gives `False`. Every other case raises `ChittyError` containing the stripped standard error and `str(directory)` for a drawn `directory`: status drawn from -64 to 255 excluding 0, with 128 always among the cases, and standard error lacking the phrase (empty allowed); status other than 128 with the phrase; 128 with `Not a git repository` or `NOT A GIT REPOSITORY`. Standard output is drawn from `true`, padded `true` and drawn text in every case.
-- [ ] Evidence, recorded in a note: each wrong version fails a test from criteria 1 or 2: case-insensitive phrase match; `"true" in stdout`; `True` whenever stripped output is `true`, whatever the status; status 128 gives `False` without checking the phrase; any non-zero status gives `False`. A Hypothesis test drawing any integer status and any text for both streams shows the function only returns a `bool` or raises `ChittyError`.
+- [ ] Property test, Hypothesis, non-zero status: status 128 with standard error made of the lowercase `not a git repository` between two drawn texts (either may be empty) gives `False`. Every other case raises `ChittyError` containing the command as `_git` shows it (`` `git rev-parse --is-inside-work-tree` ``), `str(directory)` for a drawn `directory`, and the stripped standard error: status drawn from -64 to 255 excluding 0, with 128 always among the cases, and standard error drawn text filtered to lack the phrase (empty allowed, which checks only the command and directory); status other than 128 with the phrase; 128 with `Not a git repository` or `NOT A GIT REPOSITORY`. Standard output is drawn from `true`, padded `true` and drawn text in every case.
+- [ ] Evidence, recorded in a note: the tests failed against the `NotImplementedError` stub, and each wrong version, implemented and run, fails a test from criteria 1 or 2: case-insensitive phrase match; `"true" in stdout`; `True` whenever stripped output is `true`, whatever the status; status 128 gives `False` without checking the phrase; any non-zero status gives `False`; message without the command. A Hypothesis test drawing the status from `st.integers()` and both streams from `st.text()` shows the function only returns a `bool` or raises `ChittyError`.
 - [ ] `make check` passes.
 
 ## History
@@ -39,3 +39,5 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 - 2026-11-19T08:51:25Z lively-quartz-crane: changed dependencies
 - 2026-11-19T08:51:30Z lively-quartz-crane planning → cold-read
 - 2026-11-19T08:52:50Z lively-quartz-crane cold-read → planning
+- 2026-11-19T08:52:52Z lively-quartz-crane: changed acceptance criteria
+- 2026-11-19T08:52:52Z lively-quartz-crane planning → todo
