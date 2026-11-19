@@ -1,6 +1,6 @@
 ---
 title: Add `scripts/check_linux.sh` to run `make check` in a Linux container
-status: planning
+status: todo
 priority: medium
 created: 2026-11-19
 ---
@@ -42,3 +42,4 @@ Out of scope: running it on landing (later tickets) or in `make release`, CI cha
 - 2026-11-19T18:38:29Z daring-amber-kestrel planning → cold-read
 - 2026-11-19T18:39:44Z daring-amber-kestrel: changed description, acceptance criteria
 - 2026-11-19T18:39:44Z daring-amber-kestrel cold-read → planning
+- 2026-11-19T18:39:55Z daring-amber-kestrel planning → todo
