@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: done
+status: error
 depends_on:
   - TASK-377
   - TASK-403
@@ -51,6 +51,17 @@ Reviewed: The earlier review finding is resolved: changed refs are drawn from th
 2: pass - `make check` ran 765 tests OK; worker notes record both candidate-decoy mutants failing the invariance property. The changed set now includes added refs.
 3: pass - Notes identify three executed mutants and their failing properties; `make check` exited 0 with 765 tests OK.
 
+Runner error (landing): main moved during each of the 3 landing attempts
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-404 or the main checkout before retrying.
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-404`
+
+Error output:
+```text
+main moved during each of the 3 landing attempts
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-404 or the main checkout before retrying.
+```
+
 ## Summary
 
 Fixed the decoy property to generate changed refs from both baseline and expanded maps, including newly added decoys/unrelated refs. Verification: focused suite (6 tests) and make check (format, lint, pyright, 765 tests) pass. No production changes or follow-ups.
@@ -79,3 +90,5 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T20:10:12Z friendly-silver-kestrel doing → review
 - 2026-11-19T21:03:17Z mellow-fawn-dormouse: changed notes
 - 2026-11-19T21:03:17Z mellow-fawn-dormouse review → done
+- 2026-11-19T21:05:50Z mellow-fawn-dormouse: changed notes
+- 2026-11-19T21:05:50Z mellow-fawn-dormouse done → error
