@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: doing
+status: planning
 priority: high
 created: 2026-11-18
 ---
@@ -87,6 +87,8 @@ Unblocked 2026-11-19 (planning session): merged `main` into `task-373`, so the b
 
 The ticket requires a missing directory to behave like outside-repository input and claims `git.is_repository` returns false for a directory that does not exist. Verified against `src/chitty/git.py`: `is_repository()` explicitly raises `ChittyError("Not a directory: ...")` when `directory.is_dir()` is false. The new missing-directory regression test fails with that exception, so criterion 3 contradicts current helper behavior and its stated exemption from changes to Git helpers. Decide whether missing directories should be supported here (and permit a helper change) or remove that expected behavior from the criterion. No implementation or test changes retained; existing implementation was untouched.
 
+Criterion 3 conflicts with existing behavior: src/chitty/git.py::is_repository raises ChittyError for a path that is not a directory, rather than returning false. A new test for the ticket-required missing-directory equivalence failed on that exception. Decide whether missing directories must be supported (allowing a helper change) or remove this expectation. No implementation/test edits retained.
+
 ## Summary
 
 Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
@@ -144,3 +146,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-19T09:32:24Z quick-ginger-lapwing blocked → doing
 - 2026-11-19T10:31:42Z rosy-khaki-puffin: wrote the plan
 - 2026-11-19T10:32:36Z rosy-khaki-puffin: changed notes
+- 2026-11-19T10:32:44Z rosy-khaki-puffin: changed owner, notes
+- 2026-11-19T10:32:44Z rosy-khaki-puffin doing → planning
