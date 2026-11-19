@@ -1,6 +1,6 @@
 ---
 title: Write the runner check output to a log in the worktree, not the ticket
-status: review
+status: planning
 priority: high
 created: 2026-11-16
 ---
@@ -48,6 +48,10 @@ Second cold read 2026-11-19 outcomes: a newline before `# exit` when output lack
 
 Regression evidence: with `src/chitty/run.py` temporarily replaced by `main` version, `uv run python -m unittest tests.test_next.TestNext.test_run_check_failure_on_todo_ticket_records_error_on_branch` failed at the intended `assertNotIn("check line", task.section("Notes"))`; the old note contained the full checker output. Restored implementation passed the focused six-test suite. `make check` passed all 770 test suites; Ruff, pyright and formatter passed. No follow-ups.
 
+Review failed (design): Criterion 1 requires every new or changed assertion, including the successful-check log and exclude assertions, to fail on old failure-note text. A successful check produces no failure note, so this cannot be verified as written; decide which failure-note assertions need old-version evidence and how to demonstrate the successful-check assertions. Preserve the implementation and revise the criterion before resuming. Separately, fix the newly discovered Unicode output defect below.
+1: fail - With main run.py, test_passing_check_writes_the_log_and_ignores_it_once errors with FileNotFoundError for the missing log, not old note text. The markdown failure test fails on FAIL: test_something in notes; doing and error tests fail on missing detail. The earlier regression note only establishes the todo test. Also, running _run_logged with command `printf é` in a freshly initialized repository raises UnicodeDecodeError at log.read(1): seeking to the last byte splits a UTF-8 character. Check the final byte without decoding arbitrary output and add a regression test.
+2: pass - `make check` exited 0: Ruff and pyright passed and 768 tests reported OK.
+
 ## Summary
 
 Implemented worktree check logging, shared Git exclude handling, regression/property coverage, and runner documentation. Verified focused six tests and full `make check` (770 tests); old main implementation fails on the intended note-content assertion. Commit: 4f46544c.
@@ -65,3 +69,5 @@ Implemented worktree check logging, shared Git exclude handling, regression/prop
 - 2026-11-19T17:36:49Z upbeat-violet-dormouse: wrote the plan
 - 2026-11-19T17:43:43Z upbeat-violet-dormouse: changed notes, summary
 - 2026-11-19T17:43:43Z upbeat-violet-dormouse doing → review
+- 2026-11-19T17:47:02Z eager-hazel-crane: changed owner, acceptance criteria, notes
+- 2026-11-19T17:47:02Z eager-hazel-crane review → planning
