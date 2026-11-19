@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -112,3 +112,4 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-19T13:29:41Z quick-ginger-lapwing blocked → planning
 - 2026-11-19T13:30:03Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T13:30:20Z quick-ginger-lapwing planning → cold-read
+- 2026-11-19T13:33:37Z quick-ginger-lapwing cold-read → planning
