@@ -49,7 +49,10 @@ class TestCrossBranchReferences(CliTestCase):
                 self.commit("archive second")
             elif location == "other branch":
                 self.git("checkout", "-B", "other", "main")
-                self.add_second()
+                source = self.root / "chitty/tasks/TASK-1--one.md"
+                target = self.root / "chitty/tasks/TASK-2--two.md"
+                target.write_text(source.read_text().replace("title: One", "title: Two"))
+                self.commit("second task")
                 self.git("checkout", "main")
             path = self.root / "chitty/tasks/TASK-1--one.md"
             reference = "depends_on:\n  - TASK-2" if field == "depends_on" else "parent: TASK-2"

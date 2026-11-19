@@ -30,6 +30,15 @@ read. Describe the change and why it is needed; criteria are optional.
   reports without changing the checkout. If a ticket adds a module, tell its
   worker to first create it with the names the tests import, each raising
   `NotImplementedError`, so tests fail independently rather than at import.
+- When the code a ticket tests already exists, a stub cannot show the tests
+  fail without the change. List plausible wrong versions of the code instead,
+  such as a dropped condition or a swapped choice, and ask the worker to run
+  each against the tests and record in a note which test failed.
+- When the code already exists, run each specified generator recipe against
+  it before the cold read, with many cases, and check the expected answers
+  agree. A disagreement is a wrong recipe or a bug; settle which.
+- Build distractor values, such as similar names a lookup must ignore, from the
+  drawn value itself, so they can never equal it by chance.
 - Check every claim about code, commands, tests or other tickets against the
   source as you write it, not from memory or a summary; otherwise readers spend
   their rounds on your fixes. Run `chitty check` on the ticket file and fix what
@@ -89,6 +98,8 @@ read. Describe the change and why it is needed; criteria are optional.
   `-c human` ticket that depends on this one.
 - Re-check claims about other tickets just before promoting, because they can
   land during the read.
+- Change a ticket's status in the same edit command as the text it depends
+  on, so a rejected edit cannot move the ticket on.
 - Do not cold-read a ticket you were given to work on or review; it is not your
   planning step.
 - Before preparing a merge request, run `chitty archive` with no ID to process

@@ -62,7 +62,20 @@ class TestStore(StoreTestCase):
         self.repo.archive(TaskId("TASK", 1))
         self.assertEqual(self.add("Two").id.number, 2)
 
-    def test_numbers_count_committed_tasks_on_another_branch(self):
+    def test_sequential_numbers_refuse_non_main_git_checkouts(self):
+        self.git("init", "--quiet", "-b", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.git("switch", "--quiet", "-c", "feature")
+        with self.assertRaisesRegex(ChittyError, "only be allocated on main"):
+            self.repo.next_number(self.tasks)
+
+    def test_sequential_numbers_work_outside_git(self):
+        self.assertEqual(self.repo.next_number(self.tasks), 1)
+
+    def test_numbers_ignore_committed_tasks_on_another_branch(self):
         self.git("init", "--quiet")
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
@@ -74,9 +87,19 @@ class TestStore(StoreTestCase):
         self.addCleanup(self.remove_worktree, worktree)
         branch_repo = Repo.open(worktree)
         branch_tasks = branch_repo.context("tasks")
-        branch_repo.add(branch_tasks, "Archived branch task", "Describe.", [], {}, TODAY)
+        first = branch_repo.add(
+            branch_tasks, "Archived branch task", "Describe.", [], {}, TODAY
+        ).task
+        first_path = branch_tasks.directory / "TASK-1--archived-branch-task.md"
+        first_path.write_text(first.task.with_field("provisional", None).render())
+        first.path.unlink()
         branch_repo.archive(TaskId("TASK", 1))
-        branch_repo.add(branch_tasks, "Active branch task", "Describe.", [], {}, TODAY)
+        second = branch_repo.add(
+            branch_tasks, "Active branch task", "Describe.", [], {}, TODAY
+        ).task
+        second_path = branch_tasks.directory / "TASK-2--active-branch-task.md"
+        second_path.write_text(second.task.with_field("provisional", None).render())
+        second.path.unlink()
         self.commit("branch tasks", "2026-10-23T00:00:01+00:00", cwd=worktree)
         self.git("worktree", "remove", "--force", str(worktree))
 
@@ -84,7 +107,7 @@ class TestStore(StoreTestCase):
         task = main_repo.add(
             main_repo.context("tasks"), "Main branch task", "Describe.", [], {}, TODAY
         ).task
-        self.assertEqual(task.id.number, 3)
+        self.assertEqual(task.id.number, 1)
 
     def test_add_checks_dependencies(self):
         with self.assertRaisesRegex(ChittyError, "no task HUMAN-1"):

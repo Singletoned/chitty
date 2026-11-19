@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: todo
+status: error
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -78,6 +78,15 @@ Cold read 2026-11-18 outcomes: decoys derived from the drawn ID (fixed `task-50`
 
 Second cold read 2026-11-18: about 20,000 probe cases per recipe agreed with `ticket_source.py`. Outcomes: decoys drawn whatever `with_candidates`; `main_tip` may be an unrelated commit.
 
+Runner error (agent): TASK-377 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-377`
+
+Error output:
+```text
+TASK-377 was unchanged; only committed changes are visible to `chitty run`
+```
+
 ## Summary
 
 Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, and decoy refs. Verification: `make check` passed (637 tests). Follow-up: none.
@@ -124,3 +133,6 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T21:35:09Z lively-quartz-crane cold-read → planning
 - 2026-11-18T21:37:46Z lively-quartz-crane: changed description, notes
 - 2026-11-18T21:38:04Z lively-quartz-crane planning → todo
+- 2026-11-18T22:06:24Z intrepid-bronze-marten todo → doing
+- 2026-11-18T22:11:20Z intrepid-bronze-marten: changed notes
+- 2026-11-18T22:11:20Z intrepid-bronze-marten doing → error

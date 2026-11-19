@@ -1,10 +1,191 @@
+import os
+import shutil
 import subprocess
+import tempfile
 from pathlib import Path, PurePosixPath
 from unittest import mock
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from chitty import git
 from chitty.errors import ChittyError
 from tests.support import RepoTestCase
+
+
+class TestIsRepository(RepoTestCase):
+    @settings(max_examples=30, deadline=None)
+    @given(
+        depth=st.integers(min_value=1, max_value=4),
+        marker=st.one_of(st.none(), st.integers(min_value=0, max_value=4)),
+        kind=st.sampled_from(("directory", "file", "symlink")),
+    )
+    def test_missing_git_distinguishes_repository_markers(
+        self, depth: int, marker: int | None, kind: str
+    ):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary).resolve()
+            self.assertFalse(any(os.path.lexists(parent / ".git") for parent in base.parents))
+            directories = [base]
+            for _ in range(depth):
+                child = directories[-1] / "nested"
+                child.mkdir()
+                directories.append(child)
+            if marker is not None:
+                level = min(marker, depth)
+                marker_path = directories[level] / ".git"
+                if kind == "directory":
+                    marker_path.mkdir()
+                elif kind == "file":
+                    marker_path.touch()
+                else:
+                    marker_path.symlink_to(base / "missing-target")
+            empty_path = base / "empty-path"
+            empty_path.mkdir()
+            with mock.patch.dict(os.environ, {"PATH": str(empty_path)}):
+                if marker is None:
+                    self.assertFalse(git.is_repository(directories[-1]))
+                else:
+                    with self.assertRaises(ChittyError) as raised:
+                        git.is_repository(directories[-1])
+                    message = str(raised.exception)
+                    self.assertIn("`git`", message)
+                    self.assertIn("PATH", message)
+                    self.assertIn(str(directories[min(int(marker), depth)] / ".git"), message)
+
+    def test_invalid_directories_raise_with_or_without_git(self):
+        path = self.tmp / "missing"
+        regular_file = self.tmp / "file"
+        regular_file.touch()
+        empty_path = self.tmp / "empty-path"
+        empty_path.mkdir()
+        for git_path in (os.environ["PATH"], str(empty_path)):
+            with mock.patch.dict(os.environ, {"PATH": git_path}):
+                for invalid in (path, regular_file):
+                    with self.assertRaisesRegex(ChittyError, str(invalid.resolve())):
+                        git.is_repository(invalid)
+
+    def test_repository_detection_without_missing_git(self):
+        self.git_init()
+        nested = self.root / "nested"
+        nested.mkdir()
+        self.assertTrue(git.is_repository(self.root))
+        self.assertTrue(git.is_repository(nested))
+        self.assertFalse(git.is_repository(self.root / ".git"))
+        with tempfile.TemporaryDirectory() as temporary:
+            self.assertFalse(git.is_repository(Path(temporary)))
+
+    def git_init(self):
+        subprocess.run(["git", "init", "--quiet"], cwd=self.root, check=True)
+
+
+class TestBranchTipFiles(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        self.git("init", "--quiet", "-b", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+
+    def git(self, *args: str) -> str:
+        result = subprocess.run(
+            ["git", *args], cwd=self.root, check=True, capture_output=True, text=True
+        )
+        return result.stdout
+
+    def commit(self, message: str) -> str:
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", message)
+        return self.git("rev-parse", "HEAD").strip()
+
+    def test_branch_tips_keep_full_refs_distinct(self):
+        (self.root / "base").write_text("base")
+        self.commit("base")
+        self.git("branch", "origin/task-5")
+        self.git("checkout", "-b", "task-5")
+        (self.root / "different").write_text("different")
+        remote = self.commit("different tip")
+        local = self.git("rev-parse", "refs/heads/origin/task-5").strip()
+        self.git("update-ref", "refs/remotes/origin/task-5", remote)
+        self.git("symbolic-ref", "refs/remotes/origin/HEAD", "refs/remotes/origin/task-5")
+        tips = git.branch_tips(self.root)
+        self.assertEqual(tips["refs/heads/origin/task-5"], local)
+        self.assertEqual(tips["refs/remotes/origin/task-5"], remote)
+        self.assertNotEqual(tips["refs/heads/origin/task-5"], tips["refs/remotes/origin/task-5"])
+        self.assertNotIn("refs/remotes/origin/HEAD", tips)
+
+    def test_ref_resolution_and_ancestry(self):
+        (self.root / "one").write_text("one")
+        first = self.commit("one")
+        self.git("checkout", "-b", "worker")
+        (self.root / "two").write_text("two")
+        second = self.commit("two")
+        self.assertTrue(git.is_ancestor(self.root, first, second))
+        self.assertTrue(git.is_ancestor(self.root, first, first))
+        self.assertFalse(git.is_ancestor(self.root, second, first))
+        self.assertEqual(git.ref_commit(self.root, "worker"), second)
+        self.assertIsNone(git.ref_commit(self.root, "missing"))
+        self.git("checkout", "--orphan", "unborn")
+        self.assertIsNone(git.ref_commit(self.root, "unborn"))
+        self.git("checkout", "worker")
+        self.git("tag", "-a", "annotated", "-m", "tag")
+        self.assertEqual(git.ref_commit(self.root, "annotated"), second)
+        with self.assertRaises(ChittyError):
+            git.is_ancestor(self.root, "unknown", second)
+
+    @settings(max_examples=8, deadline=None)
+    @given(
+        st.dictionaries(
+            st.tuples(
+                st.sampled_from(("chitty/tasks", "chitty/tasks/archive")),
+                st.integers(min_value=0, max_value=20),
+            ),
+            st.text(alphabet="abcé", min_size=1, max_size=12),
+            min_size=1,
+            max_size=8,
+        )
+    )
+    def test_files_at_preserves_odd_paths_and_content(self, tree):
+        shutil.rmtree(self.root / ".git", ignore_errors=True)
+        shutil.rmtree(self.root / "chitty", ignore_errors=True)
+        self.git("init", "--quiet", "-b", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "Test")
+        expected = {}
+        for (directory, index), content in tree.items():
+            filename = f'{index}"quote\ttab\nnewline-é[x].md'
+            path = Path(directory) / filename
+            (self.root / path).parent.mkdir(parents=True, exist_ok=True)
+            (self.root / path).write_text(content)
+            expected[path] = content
+        self.commit("tickets")
+        self.assertEqual(dict(git.files_at(self.root, "main", [Path("chitty/tasks")])), expected)
+
+    def test_files_at_rejects_non_utf8(self):
+        path = Path("chitty/tasks/TASK-1.md")
+        (self.root / path).parent.mkdir(parents=True, exist_ok=True)
+        (self.root / path).write_bytes(b"\xff")
+        self.commit("invalid utf8")
+        with self.assertRaisesRegex(ChittyError, str(path)):
+            git.files_at(self.root, "main", [Path("chitty/tasks")])
+
+    def test_changed_since_split_literal_path_and_unrelated_history(self):
+        path = Path("ticket[x].md")
+        (self.root / path).write_text("base")
+        self.commit("base")
+        self.git("checkout", "-b", "against")
+        (self.root / path).write_text("against")
+        self.commit("against change")
+        self.git("checkout", "-b", "ref", "main")
+        self.assertFalse(git.changed_since_split(self.root, "ref", "against", [path]))
+        (self.root / path).write_text("ref")
+        self.commit("ref change")
+        self.assertTrue(git.changed_since_split(self.root, "ref", "against", [path]))
+        self.git("checkout", "--orphan", "other")
+        self.git("rm", "-rf", ".")
+        (self.root / "other").write_text("other")
+        self.commit("unrelated")
+        with self.assertRaisesRegex(ChittyError, "unrelated histories"):
+            git.changed_since_split(self.root, "other", "main", [path])
 
 
 class TestHistoricalFiles(RepoTestCase):
@@ -62,7 +243,6 @@ class TestHistoricalFiles(RepoTestCase):
         (self.root / "src").mkdir()
         (self.root / "src/a.py").write_text("code\n")
         self.commit("initial")
-        self.git("branch", "main")
         self.git("checkout", "-b", "worker")
         (self.root / "src/a.py").rename(self.root / "src/a.tmp")
         (self.root / "chitty/tasks").mkdir(parents=True)
