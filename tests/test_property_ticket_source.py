@@ -240,7 +240,7 @@ class TestTicketSource(unittest.TestCase):
             eligible = candidate_line
         # One to four ticket refs are distributed on the candidate line.
         count = data.draw(st.integers(min_value=1, max_value=4))
-        has_local = count == 4 or (count > 1 and data.draw(st.booleans()))
+        has_local = count == 4 or data.draw(st.booleans())
         refs = [branch] if has_local else []
         remote_names = data.draw(
             st.lists(
