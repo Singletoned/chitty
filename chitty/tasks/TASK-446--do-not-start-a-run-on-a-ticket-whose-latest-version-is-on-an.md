@@ -1,6 +1,8 @@
 ---
 title: Do not start a run on a ticket whose latest version is on another branch
 status: backlog
+depends_on:
+  - TASK-386
 created: 2026-11-19
 ---
 
@@ -19,3 +21,4 @@ Planner, 2026-11-19: held, not planned. The ticket-state migration (`TASK-378`, 
 - 2026-11-19T20:55:19Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:20Z sunny-white-dormouse: changed notes
 - 2026-11-19T21:21:17Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:21:20Z sunny-white-dormouse: changed dependencies
