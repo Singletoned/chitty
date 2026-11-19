@@ -2,6 +2,8 @@
 title: Keep one agent log per `chitty run` ticket run and print its path
 status: backlog
 priority: high
+depends_on:
+  - TASK-276
 created: 2026-11-19
 ---
 
@@ -19,3 +21,4 @@ Follows `TASK-276`, which lets `_run_agent` copy agent output to a log it is giv
 ## History
 
 - 2026-11-19T21:23:41Z sunny-white-dormouse → backlog
+- 2026-11-19T21:23:43Z sunny-white-dormouse: changed dependencies
