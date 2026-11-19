@@ -42,6 +42,8 @@ Confirmed all five landing_command regression cases fail while the function rais
 
 Integration regressions verified red with both landing callers temporarily restored to pass check: review landing recorded check/check instead of check/landing; pending landing raised `landing check exited with status 1`. With both callers changed, review set and unset cases pass with check/landing and check/check, and pending landing passes with landing and removes the worktree. The blank-setting loading test rejects with `landing_check: must not be empty`; the nonblank setting emits no unknown-key warning. `make check` passes.
 
+Additional baseline checks: with the review caller using landing_command but the pending caller still passing check, the pending integration test raises `landing check exited with status 1`. Without landing_check in the command validator, the blank-setting test fails because `chitty list` exits 0 instead of 1.
+
 ## Summary
 
 Implemented optional landing_check selection for review and pending landing while preserving check before agent sessions. Added five selection cases, config-loading coverage, review and pending integration regressions, and config/README docs. Verified with `python -m unittest tests.test_landing_check_setting` and `make check` (ruff, pyright, 775 suites). No follow-up required.
@@ -60,3 +62,4 @@ Implemented optional landing_check selection for review and pending landing whil
 - 2026-11-19T20:41:56Z brisk-white-otter: wrote the plan
 - 2026-11-19T20:42:46Z brisk-white-otter: changed notes
 - 2026-11-19T20:49:51Z brisk-white-otter: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T20:50:41Z brisk-white-otter: changed notes
