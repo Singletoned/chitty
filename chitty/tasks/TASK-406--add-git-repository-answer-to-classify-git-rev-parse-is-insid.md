@@ -1,6 +1,7 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: review
+status: blocked
+owner: human
 created: 2026-11-19
 ---
 
@@ -49,6 +50,14 @@ Expanded all nonzero diagnostic tests to vary stdout and assert command, directo
 
 Re-ran make check after the coverage update: Ruff, Pyright, formatting, and all 690 tests report success, but make check itself exits 1. The output includes fixture-emitted chitty run configuration errors (missing autocommit in temporary fixture repositories). No source or configuration outside this ticket was changed. This is recorded for review; the code-focused checks and complete test suite pass.
 
+Review failed (tests): The earlier review reported missing stdout coverage in every nonzero diagnostic case; that finding remains partly unresolved. Expand the strategies as described below.
+1: pass - uv run python -m unittest tests.test_git.TestRepositoryAnswer printed Ran 7 tests and OK; the properties cover padded true, the specified false strings, drawn non-true output and drawn stderr.
+2: fail - Newly identified detail of the earlier stdout coverage finding: test_phrase_only_classifies_status_128 and test_repository_phrase_is_case_sensitive sample the fixed string arbitrary output instead of drawing text, and test_other_failures_raise_with_context draws only st.text() rather than explicitly sampling true and padded true as well. Use a strategy combining both explicit outputs with st.text() in every nonzero case. The focused test command printed Ran 7 tests and OK but does not exercise the required strategies.
+3: pass - Worker notes record the NotImplementedError stub and all six mutant failures; the arbitrary integer and stream property ran in the focused suite, which printed OK.
+4: pass - make check exited 0: Ruff and Pyright passed, and the parallel suite printed Ran 690 tests and OK.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Expanded nonzero diagnostic property tests to vary stdout/status/directory and assert command, directory, and stripped stderr for all expected errors. Focused tests pass; Ruff, formatting, Pyright, and all 690 tests pass. make check nevertheless exits 1 after tests print OK, with fixture-generated Chitty configuration errors in temporary repositories. Commit 0c64429b contains the test changes; no follow-up code work remains.
@@ -86,3 +95,5 @@ Expanded nonzero diagnostic property tests to vary stdout/status/directory and a
 - 2026-11-19T09:11:48Z brisk-silver-wren: changed notes, summary
 - 2026-11-19T09:13:13Z brisk-silver-wren: changed notes, summary
 - 2026-11-19T09:13:15Z brisk-silver-wren doing → review
+- 2026-11-19T09:15:13Z mellow-bronze-yellowhammer: changed owner, acceptance criteria, notes
+- 2026-11-19T09:15:13Z mellow-bronze-yellowhammer review → blocked
