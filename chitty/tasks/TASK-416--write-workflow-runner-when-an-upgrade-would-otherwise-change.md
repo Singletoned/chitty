@@ -1,6 +1,6 @@
 ---
 title: Write `workflow = "runner"` when an upgrade would otherwise change a runner repository to tickets
-status: review
+status: doing
 labels:
   - blocks-release
 priority: high
@@ -51,6 +51,11 @@ Review failed (tests): Newly discovered: implement the specified configuration g
 
 Review found the property generator does not exercise the specified section permutations, optional keys/comments, or decoy tables. It also exposed invalid TOML when the version line ends at EOF without a newline. I will expand the generator and fix the insertion boundary.
 
+Review failed (tests): Newly discovered: add the six specified explicit Hypothesis `@example` cases, rather than relying on sampled values that are not guaranteed to run.
+1: fail - `tests/test_init_workflow.py` uses `st.sampled_from` for the six boundary versions but has no `@example` decorators, so the required deterministic cases are missing. The previous review generator and EOF findings are resolved; `make check` passes, and replacing the helper with `NotImplementedError` produced three test errors, including the property.
+2: pass - `make check` ran both integration tests successfully. The previous review demonstrated both line checks fail with migration disabled and the guide check changes from `True` to `False` after the second init.
+3: pass - `make check` exited 0: ruff, pyright and 701 tests passed.
+
 ## Summary
 
 Expanded Hypothesis config generation to cover permuted Chitty-section lines, workflow/comment variants, and out-of-section decoys. Fixed EOF insertion to separate TOML lines. Verified focused workflow tests and make check (701 tests, lint, typecheck; full command completed successfully).
@@ -79,3 +84,5 @@ Expanded Hypothesis config generation to cover permuted Chitty-section lines, wo
 - 2026-11-19T11:19:43Z calm-amber-eel: changed notes
 - 2026-11-19T11:22:42Z calm-amber-eel: changed summary
 - 2026-11-19T11:22:42Z calm-amber-eel doing → review
+- 2026-11-19T11:25:14Z eager-violet-marten: changed acceptance criteria, notes
+- 2026-11-19T11:25:14Z eager-violet-marten review → doing
