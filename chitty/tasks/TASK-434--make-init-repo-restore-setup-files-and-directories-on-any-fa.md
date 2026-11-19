@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -60,3 +60,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:17:05Z sunny-white-dormouse: changed title, dependencies, description, acceptance criteria
 - 2026-11-19T21:17:05Z sunny-white-dormouse cold-read → planning
 - 2026-11-19T21:17:27Z sunny-white-dormouse: changed acceptance criteria
+- 2026-11-19T21:17:52Z sunny-white-dormouse planning → cold-read
