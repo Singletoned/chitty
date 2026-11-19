@@ -98,6 +98,12 @@ read. Describe the change and why it is needed; criteria are optional.
   `-c human` ticket that depends on this one.
 - Re-check claims about other tickets just before promoting, because they can
   land during the read.
+- A ticket that builds on what an unfinished ticket adds or changes, not only
+  on it landing first, stays in `planning` with a note naming that ticket. When
+  that ticket is done, check this one against what landed, cold-read it again,
+  then move it to `todo`. A ticket that only has to land after another, with
+  nothing of the other ticket's in its description, can go to `todo` with
+  `depends_on`.
 - Change a ticket's status in the same edit command as the text it depends
   on, so a rejected edit cannot move the ticket on.
 - Do not cold-read a ticket you were given to work on or review; it is not your
