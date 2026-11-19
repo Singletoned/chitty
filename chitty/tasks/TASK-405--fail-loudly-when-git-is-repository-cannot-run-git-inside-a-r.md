@@ -22,10 +22,11 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 
 ## Acceptance Criteria
 
-- [ ] Property test, generated with Hypothesis: build a temporary tree of nested directories 1 to 4 deep, place a `.git` directory, a `.git` file or nothing at a drawn level, and call `is_repository` on the deepest directory with `PATH` set to an empty directory. With no `.git` at or above it, the result is `False`; otherwise it raises `ChittyError` whose message contains `git`, `PATH` and the `.git` path. Fails on `main`, where every case returns `False`.
+- [ ] Property test, generated with Hypothesis: each example builds its own new temporary directory (Hypothesis runs `setUp` once for all examples), asserts no `.git` exists above it, nests directories 1 to 4 deep inside it, places a `.git` directory, a `.git` file or nothing at a drawn level, and calls `is_repository` on the deepest directory with `PATH` set to an empty directory. With no `.git` at or above it, the result is `False`; otherwise it raises `ChittyError` whose message contains `git`, `PATH` and the `.git` path. Fails on `main`, where every case returns `False`.
 - [ ] Example test: `is_repository` on a path that does not exist, and on a regular file, raises `ChittyError` naming the path, both with `git` on `PATH` and without it. Fails on `main`, which returns `False`.
 - [ ] With `git` on `PATH`, the existing behaviour holds: `True` inside a work tree, `False` in a plain temporary directory outside any repository and inside a `.git` directory. `make check` passes.
 
 ## History
 
 - 2026-11-19T08:43:02Z lively-quartz-crane → planning
+- 2026-11-19T08:43:24Z lively-quartz-crane: changed acceptance criteria
