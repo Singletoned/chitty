@@ -1,6 +1,6 @@
 ---
 title: Test that review-mode `setup` and landing failures are recorded on the ticket branch
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-382
@@ -281,3 +281,4 @@ Reset 2026-11-19: blocked because the runner claimed it on `main` while branch `
 - 2026-11-19T16:05:46Z vivid-dusky-urchin doing → blocked
 - 2026-11-19T17:36:13Z daring-amber-kestrel: changed notes
 - 2026-11-19T17:36:13Z daring-amber-kestrel blocked → todo
+- 2026-11-19T17:45:00Z vivid-white-lapwing todo → doing
