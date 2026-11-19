@@ -1,6 +1,7 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: error
+status: planning
+owner: human
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -87,6 +88,8 @@ Error output:
 TASK-377 was unchanged; only committed changes are visible to `chitty run`
 ```
 
+Planning session 2026-11-19: held back from automatic runs (owner `human`). The last session ended without changing anything, and two earlier workers could not build the input generators. Next planning step: split rules 2 and 3 into their own tickets, so that this ticket keeps the implementation, the shared generators and the rule 1 property, then cold-read each piece.
+
 ## Summary
 
 Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, and decoy refs. Verification: `make check` passed (637 tests). Follow-up: none.
@@ -136,3 +139,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T22:06:24Z intrepid-bronze-marten todo → doing
 - 2026-11-18T22:11:20Z intrepid-bronze-marten: changed notes
 - 2026-11-18T22:11:20Z intrepid-bronze-marten doing → error
+- 2026-11-19T09:38:09Z quick-ginger-lapwing: changed owner, notes
+- 2026-11-19T09:38:09Z quick-ginger-lapwing error → planning
