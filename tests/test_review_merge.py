@@ -306,13 +306,21 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.git("add", "chitty.toml")
         self.git("commit", "--quiet", "-m", "configure failing setup")
         main_head = self.git("rev-parse", "main").strip()
+        ticket_path = "chitty/tasks/TASK-1--review-me.md"
+        main_ticket = self.git("show", f"main:{ticket_path}")
 
         result = self.run_cli("run", "--mode", "review")
 
         self.assertIn("review → error", result.stdout)
         self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
-        self.assertIn("Runner error (setup)", self.ticket().section("Notes") or "")
-        self.assertIn("status: todo", self.git("show", "main:chitty/tasks/TASK-1--review-me.md"))
+        self.assertEqual(self.git("show", f"main:{ticket_path}"), main_ticket)
+        branch_ticket = self.git("show", f"task-1:{ticket_path}")
+        self.assertIn("status: error", branch_ticket)
+        self.assertIn("Runner error (setup)", branch_ticket)
+        self.assertIn("setup exited with status 1", branch_ticket)
+        prior_ticket = self.git("show", f"task-1~1:{ticket_path}")
+        self.assertIn("status: review", prior_ticket)
+        self.assertNotIn("Runner error", prior_ticket)
 
     def test_failing_check_after_main_advances_preserves_main_and_worktree(self):
         self.branch_for_review()
@@ -337,7 +345,7 @@ class TestReviewMerge(ReviewMergeTestCase):
 
     def test_landing_failure_records_error_on_branch_without_advancing_main(self):
         self.branch_for_review()
-        fake = self.root / "bin" / "fake"
+        fake = self.tmp / "bin" / "fake"
         fake.parent.mkdir(exist_ok=True)
         fake.write_text(
             "#!" + sys.executable + "\n"
@@ -345,19 +353,15 @@ class TestReviewMerge(ReviewMergeTestCase):
             "import subprocess\n"
             "ticket = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
             "ticket.write_text(ticket.read_text().replace('status: review', 'status: done'))\n"
-            f"Path({str(self.worktree / 'review-marker')!r}).write_text('fail landing check')\n"
-            f"subprocess.run(['git', 'add', {str(self.worktree / 'review-marker')!r}], "
-            "check=True)\n"
+            "Path('review-marker').write_text('fail landing check')\n"
+            "subprocess.run(['git', 'add', 'review-marker'], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
-        self.git("add", "bin/fake")
-        self.git("commit", "--quiet", "-m", "configure landing reviewer")
         check_script = self.tmp / "landing_check.py"
         check_script.write_text(
             "from pathlib import Path\n"
-            "ticket = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
-            "if Path('review-marker').exists() or 'status: done' in ticket.read_text():\n"
+            "if Path('review-marker').exists():\n"
             "    raise SystemExit(7)\n"
         )
         config = self.root / "chitty.toml"
@@ -377,13 +381,16 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         self.assertIn("done → error", result.stdout)
         self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
-        notes = self.ticket().section("Notes") or ""
-        self.assertIn("Runner error (landing)", notes)
-        self.assertIn("landing check exited with status 7", notes)
+        ticket_path = "chitty/tasks/TASK-1--review-me.md"
+        branch_ticket = self.git("show", f"task-1:{ticket_path}")
+        self.assertIn("status: error", branch_ticket)
+        self.assertIn("Runner error (landing)", branch_ticket)
+        self.assertIn("landing check exited with status 7", branch_ticket)
+        self.assertIn("status: done", self.git("show", f"task-1~1:{ticket_path}"))
         latest_paths = self.git(
             "diff-tree", "--no-commit-id", "--name-only", "-r", "task-1"
         ).splitlines()
-        self.assertEqual(latest_paths, ["chitty/tasks/TASK-1--review-me.md"])
+        self.assertEqual(latest_paths, [ticket_path])
 
     def test_agent_and_setup_see_the_branch_merged_with_main(self):
         self.branch_for_review()

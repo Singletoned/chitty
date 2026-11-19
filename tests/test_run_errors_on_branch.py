@@ -1,10 +1,8 @@
 """Runner failures are recorded on their ticket branch, not on main."""
 
-import re
 import stat
 import sys
 
-from tests.test_review_merge import ReviewMergeTestCase
 from tests.test_run_claims_on_main import TestRunClaimsOnMain
 
 
@@ -65,33 +63,3 @@ class TestRunErrorsOnBranch(TestRunClaimsOnMain):
 
         self.assertEqual(self.json("show", "TASK-1")["status"], "error")
         self.assertEqual(str(next_action(Repo.open(self.root), modes=("errors",)).id), "TASK-1")
-
-
-class TestReviewSetupErrorOnBranch(ReviewMergeTestCase):
-    def test_review_setup_failure_keeps_main_unchanged(self):
-        self.run_cli("edit", "TASK-1", "-s", "doing")
-        self.run_cli("edit", "TASK-1", "-s", "review")
-        self.git("switch", "--quiet", "-c", "task-1")
-        (self.root / "work.txt").write_text("work\n")
-        self.git("add", "--all")
-        self.git("commit", "--quiet", "-m", "work")
-        self.git("switch", "--quiet", "main")
-        config = self.root / "chitty.toml"
-        config.write_text(
-            re.sub(r"^setup = .*", 'setup = "false"', config.read_text(), flags=re.MULTILINE)
-        )
-        self.git("add", "chitty.toml")
-        self.git("commit", "--quiet", "-m", "fail review setup")
-        main_head = self.git("rev-parse", "main").strip()
-        main_status = self.git("show", "main:chitty/tasks/TASK-1--review-me.md")
-
-        self.run_cli("run", "--mode", "review")
-
-        self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
-        self.assertIn("status: review", main_status)
-        self.assertEqual(self.ticket().frontmatter.status, "error")
-        self.assertEqual(self.json("show", "TASK-1")["status"], "error")
-        from chitty.store import Repo, next_action
-
-        self.assertEqual(str(next_action(Repo.open(self.root), modes=("errors",)).id), "TASK-1")
-        self.assertIn("Runner error (setup)", self.ticket().section("Notes") or "")
