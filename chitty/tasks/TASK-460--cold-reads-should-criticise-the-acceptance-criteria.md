@@ -12,7 +12,10 @@ Cold readers currently check whether a ticket can be implemented, but not whethe
 
 Suggestion origin: echonomicon
 
+Archived: `src/chitty/roles/cold-read.md` already asks the reader to examine every criterion for vague phrases, bundled behaviours and criteria that pass with nothing built, and to report weak tests with the case that would catch them.
+
 ## History
 
 - 2026-11-19T20:55:36Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:37Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:58:49Z sunny-white-dormouse: changed notes
