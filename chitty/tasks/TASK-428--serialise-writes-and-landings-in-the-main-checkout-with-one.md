@@ -32,7 +32,7 @@ Tests, new file `tests/test_main_checkout_lock.py`. Both use a holder: a Python 
 
 ## Plan
 
-Add a blocking main-checkout flock in locks.py. Hold it across repository all-or-nothing writes and setup upgrades only in the primary checkout; linked worktrees remain unlocked. During landing, acquire it only around the initial clean-tree check and around each final clean-tree check plus fast-forward, preserving landing-lock-first ordering. Add process-level regression tests for blocked main writes, landing/write coordination, and the linked-worktree guard; document the locking model. First add and run regressions against the current implementation, then implement, format, and run make check.
+Make main_checkout_lock re-entrant only for the owning thread while serializing competing threads. Add a deterministic two-thread regression proving the second thread waits until the first exits; then format and run the focused test and make check.
 
 ## Notes
 
@@ -353,3 +353,4 @@ Implemented main-checkout write/landing serialization, including process-reentra
 - 2026-11-19T23:15:01Z nimble-pearl-newt doing → review
 - 2026-11-19T23:18:13Z sunny-ochre-gannet: changed acceptance criteria, notes
 - 2026-11-19T23:18:13Z sunny-ochre-gannet review → doing
+- 2026-11-19T23:20:46Z jolly-yellow-badger: wrote the plan
