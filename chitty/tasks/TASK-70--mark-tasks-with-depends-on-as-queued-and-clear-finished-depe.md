@@ -37,6 +37,8 @@ Archived in backlog triage (human approved, 2026-11-11): folded into the open qu
 
 Restored from the archive (human, 2026-11-11): kept as its own ticket after TASK-255 was split.
 
+Owner, 2026-11-19: the glyph for a ticket waiting on unfinished dependencies changes from 🔒 to 🔗 (a chain: the ticket is linked to the ones in front of it); ⛓️ was the alternative. 🔗 chosen because it is one code point and always two columns wide, while ⛓️ needs U+FE0F and renders one column wide where that is ignored. This supersedes the 2026-11-08 note choosing 🔒. ⛔ stays reserved for blockages needing a person (`TASK-74`).
+
 ## History
 
 - 2026-11-01 → backlog
@@ -45,3 +47,4 @@ Restored from the archive (human, 2026-11-11): kept as its own ticket after TASK
 - 2026-11-08T14:56:01Z eager-puffin: changed notes
 - 2026-11-11T10:18:44Z vivid-yellowhammer: changed notes
 - 2026-11-11T10:36:44Z vivid-yellowhammer: changed notes
+- 2026-11-19T21:56:39Z sunny-white-dormouse: changed notes
