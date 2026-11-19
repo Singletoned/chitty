@@ -1,6 +1,6 @@
 ---
 title: Test that review-mode `setup` and landing failures are recorded on the ticket branch
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-382
@@ -263,6 +263,12 @@ Blocked by Chitty branch validation: TASK-422’s latest committed ticket file i
 
 Reset 2026-11-19: blocked because the runner claimed it on `main` while branch `task-422` held a newer copy (the bug in `TASK-384`). No implementation work had been done; removed worktree and branch `task-422` (tip `37060b63`, ticket edits only); back to `todo`.
 
+Mutation evidence: with the review setup and landing _record_ticket_error calls incorrectly passed Repo(main_root, main_repo.config), setup test failed at unchanged-main git rev-parse (actual 442cab… vs expected f67cdb…); landing test failed at unchanged-main git rev-parse (actual bd3488… vs expected 3f4db6…). Restored src/chitty/run.py. With the landing fake’s review-marker write and git add removed, the landing test failed at done → error (actual review → done), confirming the check trips on the marker. Restored the fake.
+
+## Summary
+
+Updated review-mode setup and landing error regression tests to assert ticket-branch contents and commit history while main remains unchanged. Fixed fake reviewer path and marker-only landing check; removed duplicate setup test. Verified both tests pass. Mutation checks fail at unchanged-main assertions for main-repository error recording, and marker removal fails at done → error. make check passed (ruff, pyright, 765 unittest tests). Commit: 4179192d (Task: TASK-422). No follow-ups.
+
 ## History
 
 - 2026-11-19T13:29:50Z quick-ginger-lapwing → backlog
@@ -287,3 +293,5 @@ Reset 2026-11-19: blocked because the runner claimed it on `main` while branch `
 - 2026-11-19T17:36:13Z daring-amber-kestrel blocked → todo
 - 2026-11-19T17:45:00Z vivid-white-lapwing todo → doing
 - 2026-11-19T17:46:46Z vivid-white-lapwing: wrote the plan
+- 2026-11-19T17:50:17Z vivid-white-lapwing: changed notes, summary
+- 2026-11-19T17:50:17Z vivid-white-lapwing doing → review
