@@ -49,6 +49,8 @@ Review failed (tests): Newly discovered: implement the specified configuration g
 2: pass - `make check` passed the integration tests. With migration patched to return the input unchanged, both integration tests failed their line checks; separately two `init` calls exited 0 and printed guide present `True`, then `False`, confirming the guide regression.
 3: pass - `make check` exited 0: ruff, pyright, and 700 tests passed.
 
+Review found the property generator does not exercise the specified section permutations, optional keys/comments, or decoy tables. It also exposed invalid TOML when the version line ends at EOF without a newline. I will expand the generator and fix the insertion boundary.
+
 ## Summary
 
 Implemented section-scoped runner workflow migration during stale setup upgrades, with property-style tests for both config formats and integration coverage for init idempotence and autocommit upgrade commits. Verified the new test failed against the NotImplementedError stub, then passed after implementation. `make format` and `make check` pass. Follow-up: none.
@@ -74,3 +76,4 @@ Implemented section-scoped runner workflow migration during stale setup upgrades
 - 2026-11-19T11:10:40Z youthful-ochre-vole doing → review
 - 2026-11-19T11:13:46Z youthful-bronze-crane: changed acceptance criteria, notes
 - 2026-11-19T11:13:46Z youthful-bronze-crane review → doing
+- 2026-11-19T11:19:43Z calm-amber-eel: changed notes
