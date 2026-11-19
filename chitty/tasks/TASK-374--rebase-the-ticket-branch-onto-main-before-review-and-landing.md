@@ -282,6 +282,8 @@ Review failed (tests): New findings; no earlier review failure note exists. Fix 
 4: pass - `test_main_advances_during_review_and_landing_checks_merged_branch` passed; replacing `rebase_onto` with the old merge behavior made it fail with `1 != 0` merge commits.
 5: pass - `make check` printed `Ran 744 tests` and `OK`; the diff removes both merge helpers, retargets interrupts and merge-count assertions, and updates both design headings.
 
+Review follow-up: confirmed the whitespace regression before fixing it: the real-Git test returned ["shared", "file.txt"] instead of ["shared file.txt"]. NUL-delimited conflict paths now preserve filenames. The review fake-agent records merge count at startup; the regression asserts exactly one startup with zero merges. Conflict coverage also directly checks rebase_in_progress is false afterwards.
+
 ## Summary
 
 Replaced runner merge integration with rebasing in review and landing; removed obsolete merge helpers. Updated runner guide and real-Git regression tests. Verification: focused tests (72), `make check` (736 tests), `git diff --check`, and `chitty fix`. Implementation commit: 706614ca (Task: TASK-374). No follow-ups.
@@ -314,3 +316,4 @@ Replaced runner merge integration with rebasing in review and landing; removed o
 - 2026-11-19T16:05:37Z vivid-zinc-heron: changed acceptance criteria, notes
 - 2026-11-19T16:05:37Z vivid-zinc-heron review → doing
 - 2026-11-19T16:08:32Z brisk-yellow-toad: wrote the plan
+- 2026-11-19T16:12:55Z brisk-yellow-toad: changed notes
