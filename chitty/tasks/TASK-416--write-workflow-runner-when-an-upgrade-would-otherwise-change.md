@@ -38,6 +38,10 @@ Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's
 - [ ] With the installed version patched to `0.5.1`, in the integration repository: `chitty init` leaves the exact line `workflow = "runner"` in the Chitty section; a second `chitty init` leaves `chitty.toml` and `AGENTS.md` byte for byte the same, and `AGENTS.md` still contains `chitty guide work`. In a second such repository, `chitty add` makes a `chitty: upgrade repository setup` commit (the commit before the add) whose `chitty.toml` has that line. Before the change, the line checks and the `AGENTS.md` check fail
 - [ ] `make check` passes
 
+## Plan
+
+Add section-aware add_runner_workflow with regression/property and integration coverage. First land a NotImplementedError stub and tests, confirm tests fail, then implement and wire migration into init_repo upgrade flow; format, run checks, and commit implementation with Task trailer.
+
 ## History
 
 - 2026-11-19T10:50:03Z quick-ginger-lapwing → planning
@@ -53,3 +57,4 @@ Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's
 - 2026-11-19T11:05:38Z quick-ginger-lapwing: changed description
 - 2026-11-19T11:05:38Z quick-ginger-lapwing planning → todo
 - 2026-11-19T11:06:03Z youthful-ochre-vole todo → doing
+- 2026-11-19T11:06:53Z youthful-ochre-vole: wrote the plan
