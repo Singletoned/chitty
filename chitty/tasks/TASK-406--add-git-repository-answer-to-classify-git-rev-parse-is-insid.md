@@ -1,6 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: doing
+status: review
 created: 2026-11-19
 ---
 
@@ -67,9 +67,11 @@ Review failed (tests): The earlier stdout-strategy finding is resolved; a newly 
 
 Added a dedicated status-128 phrase property using drawn prefix, suffix, directory and STDOUTS. Focused tests passed (8 tests). The property failed against a throwaway mutant that raises on status 128 plus the lowercase phrase. make check printed Ruff/Pyright success and all 694 tests OK, but the command exited 1 due fixture-generated incomplete chitty run configuration errors.
 
+Re-ran make check; this run exited 0 with Ruff, Pyright, formatting, and all 694 tests passing. Earlier fixture-generated configuration messages were non-fatal; the prior exit-1 report was incorrect.
+
 ## Summary
 
-Added guaranteed status-128 phrase coverage with varied stdout, diagnostic context, and directory. Focused tests pass, and a throwaway rejecting mutant failed the new property as expected. make check completed all 694 tests and lint/type checks successfully, but exited 1 due fixture-generated Chitty configuration errors.
+Added guaranteed status-128 phrase coverage with varied stdout, diagnostic context, and directory. Focused tests pass; the rejecting mutant failed as expected. make check passes: Ruff, Pyright, formatting, and all 694 tests.
 
 ## History
 
@@ -112,3 +114,5 @@ Added guaranteed status-128 phrase coverage with varied stdout, diagnostic conte
 - 2026-11-19T10:35:59Z friendly-jade-otter review → doing
 - 2026-11-19T10:38:25Z vivid-hazel-wren: wrote the plan
 - 2026-11-19T10:39:36Z vivid-hazel-wren: changed notes, summary
+- 2026-11-19T10:40:37Z vivid-hazel-wren: changed notes, summary
+- 2026-11-19T10:40:37Z vivid-hazel-wren doing → review
