@@ -13,6 +13,11 @@ For the next retro. On 2026-11-19, four tickets were escalated after three faile
 
 Investigate whether this is a pattern or a one-off. Look at every ticket, archived ones included, whose History shows `review → doing` three times or an `Escalated to human review` note. For each, classify the main cause from its notes: an overloaded criterion, an open requirement that the reviewer settled, a wrong claim about the code, weak work against clear criteria, or a reviewer asking for more than the criteria say. Report the counts and propose changes to the planning or review guides only where a cause recurs.
 
+## Notes
+
+Folded in from `TASK-449` (echonomicon, 2026-11-13): if the retro finds a recurring cause, consider a short retrospective note on each escalated ticket naming the cause (plan gap, review gap or worker error) and one lesson, collected in a project file that the planning and cold-read guides tell readers to check. Evidence there: echonomicon `TASK-141`, `TASK-143`, `TASK-150`.
+
 ## History
 
 - 2026-11-19T09:37:53Z quick-ginger-lapwing → backlog
+- 2026-11-19T20:59:02Z sunny-white-dormouse: changed notes
