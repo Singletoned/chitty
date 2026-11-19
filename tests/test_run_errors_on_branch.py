@@ -41,7 +41,7 @@ class TestRunErrorsOnBranch(TestRunClaimsOnMain):
         result = self.run_cli("run", "--ticket", "TASK-1")
 
         self.assertEqual(self.git("rev-parse", "main").strip(), before)
-        self.assert_branch_error("agent", "7")
+        self.assert_branch_error("agent", "agent exited with status 7")
         self.assert_main_error_visible()
         self.assertIn("status: doing", self.main_ticket())
         self.assertIn("doing → error", result.stdout)
