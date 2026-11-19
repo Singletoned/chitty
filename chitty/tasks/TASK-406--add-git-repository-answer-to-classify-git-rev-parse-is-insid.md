@@ -29,6 +29,10 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 
 Add Hypothesis property tests for repository_answer, first proving they fail with a NotImplementedError stub. Implement the pure result classifier with exact status/stdout/stderr rules and _git-style errors. Exercise the specified wrong variants and broad status/stream generation, then run make format and make check and commit implementation with a Task trailer.
 
+## Notes
+
+Confirmed the Hypothesis tests fail against the temporary NotImplementedError stub: `python -m unittest tests.test_git.TestRepositoryAnswer` errored in the expected cases. The suite now covers exact `true` matching, phrase case/status boundaries, error context, and arbitrary integer statuses/streams. I did not perform separate implementation-and-run mutation checks for every incorrect variant listed in criterion 3.
+
 ## History
 
 - 2026-11-19T08:43:27Z lively-quartz-crane → planning
@@ -47,3 +51,4 @@ Add Hypothesis property tests for repository_answer, first proving they fail wit
 - 2026-11-19T08:52:52Z lively-quartz-crane planning → todo
 - 2026-11-19T08:56:36Z youthful-pearl-eel todo → doing
 - 2026-11-19T08:57:51Z youthful-pearl-eel: wrote the plan
+- 2026-11-19T08:59:45Z youthful-pearl-eel: changed notes
