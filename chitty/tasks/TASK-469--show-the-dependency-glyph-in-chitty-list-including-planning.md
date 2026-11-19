@@ -1,6 +1,6 @@
 ---
 title: Show the 🔗 dependency glyph in `chitty list`, including `planning` and `cold-read` tickets
-status: planning
+status: cold-read
 parent: TASK-70
 created: 2026-11-19
 ---
@@ -33,3 +33,4 @@ Tests use Hypothesis, the repository's property-testing tool. In `tests/test_pro
 - 2026-11-19T21:56:42Z sunny-white-dormouse: changed title, description
 - 2026-11-19T22:05:12Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T22:05:12Z sunny-white-dormouse backlog → planning
+- 2026-11-19T22:05:17Z sunny-white-dormouse planning → cold-read
