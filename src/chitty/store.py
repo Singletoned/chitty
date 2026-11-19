@@ -1130,6 +1130,30 @@ def _default_project(directory_name: str) -> str:
     return project
 
 
+def add_runner_workflow(text: str, recorded_version: str | None, pyproject: bool) -> str:
+    if pyproject:
+        header = re.search(r"(?m)^\[tool\.chitty\][ \t]*$", text)
+        if header is None:
+            return text
+        following = re.search(r"(?m)^\[", text[header.end() :])
+        end = header.end() + following.start() if following else len(text)
+        start = header.end()
+    else:
+        following = re.search(r"(?m)^\[", text)
+        start, end = 0, following.start() if following else len(text)
+    section = text[start:end]
+    if re.search(r"(?m)^[ \t]*workflow[ \t]*=", section):
+        return text
+    if resolve_workflow(None, recorded_version) != "runner":
+        return text
+    version = re.search(r"(?m)^[ \t]*chitty_version[ \t]*=", section)
+    if version is None:
+        raise ChittyError("cannot add workflow: Chitty section has no chitty_version line")
+    line_end = text.find("\n", start + version.start())
+    insertion = len(text) if line_end < 0 or line_end >= end else line_end + 1
+    return text[:insertion] + 'workflow = "runner"\n' + text[insertion:]
+
+
 def _add_missing_settings(
     text: str, settings: Mapping[str, object], pyproject: bool, project: str
 ) -> str:
@@ -1426,6 +1450,13 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
         updated = _add_missing_settings(
             text, settings, source == pyproject_path, _default_project(directory.name)
         )
+        recorded_version = settings.get("chitty_version")
+        if recorded_version != CHITTY_VERSION:
+            updated = add_runner_workflow(
+                updated,
+                recorded_version if isinstance(recorded_version, str) else None,
+                source == pyproject_path,
+            )
         updated = _add_missing_agent_commands_table(updated, settings, source == pyproject_path)
         updated = _add_missing_human_review(updated, config, source == pyproject_path)
         updated = _add_missing_backlog_context(updated, config, source == pyproject_path)
