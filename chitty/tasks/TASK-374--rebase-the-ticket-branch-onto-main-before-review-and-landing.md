@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: review
+status: done
 labels:
   - bug
   - needs-minor
@@ -284,6 +284,13 @@ Review failed (tests): New findings; no earlier review failure note exists. Fix 
 
 Review follow-up: confirmed the whitespace regression before fixing it: the real-Git test returned ["shared", "file.txt"] instead of ["shared file.txt"]. NUL-delimited conflict paths now preserve filenames. The review fake-agent records merge count at startup; the regression asserts exactly one startup with zero merges. Conflict coverage also directly checks rebase_in_progress is false afterwards.
 
+Reviewed: Earlier findings in the review failed (tests) note are resolved. Verified with make check and an in-process run replacing runner and Git functions with their 706614ca parent implementations.
+1: pass - make check ran 754 tests and printed OK, including TestRebaseOnto; the prior review and follow-up recorded the whitespace test returning ["shared", "file.txt"] before the fix.
+2: pass - make check printed OK; running test_agent_and_setup_see_the_branch_merged_with_main with the old runner and merge helpers failed with reviewer merge count 1 instead of 0.
+3: pass - make check printed OK; running test_conflict_moves_the_ticket_to_doing_without_starting_the_agent with the old runner and merge helpers failed because the note said merging instead of rebasing.
+4: pass - make check printed OK; running test_main_advances_during_review_and_landing_checks_merged_branch with the old runner and merge helpers failed with 1 merge instead of 0.
+5: pass - make check printed 754 tests OK, including the retargeted interrupt tests; the diff removes both merge helpers and updates the principle and both design headings.
+
 ## Summary
 
 Fixed whitespace-containing conflict path parsing with NUL-delimited Git output. Strengthened review regressions to verify one reviewer start with zero merge commits and no rebase remains after conflict. Verification: demonstrated the whitespace-path test failed before the fix; focused rebase/review tests passed; make check passed all 744 tests; git diff --check passed. Follow-up implementation commit: 6cd6ec24 (Task: TASK-374). Ready for review.
@@ -319,3 +326,5 @@ Fixed whitespace-containing conflict path parsing with NUL-delimited Git output.
 - 2026-11-19T16:12:55Z brisk-yellow-toad: changed notes
 - 2026-11-19T16:14:23Z brisk-yellow-toad: changed summary; ticked acceptance criteria
 - 2026-11-19T16:14:23Z brisk-yellow-toad doing → review
+- 2026-11-19T16:17:39Z intrepid-bronze-falcon: changed notes
+- 2026-11-19T16:17:39Z intrepid-bronze-falcon review → done
