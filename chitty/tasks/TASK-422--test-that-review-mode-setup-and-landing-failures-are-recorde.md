@@ -28,6 +28,10 @@ No property: two fixed failure phases, both listed and tested; the behaviour dri
 - [ ] A note records, for each test, the assertion that fails against the wrong version of `run.py` described under Evidence
 - [ ] `TestReviewSetupErrorOnBranch` no longer exists; `make check` passes
 
+## Plan
+
+Update the two specified tests in tests/test_review_merge.py to assert ticket-branch error commits while main stays unchanged, fix the landing reviewer/check fixtures as described, and remove the duplicate setup-error test and unused imports from tests/test_run_errors_on_branch.py. First inspect the existing test helpers and runner paths, then run the focused tests. Temporarily alter only src/chitty/run.py to reproduce the incorrect main-repository error recording and verify each regression test fails on its unchanged-main assertion; restore the file immediately afterward. Remove the landing marker-writing lines and verify the landing test fails on done → error. Run make check, inspect the diff, commit test changes with a Task: TASK-422 trailer, then record evidence and handoff on the ticket and set it to review.
+
 ## Notes
 
 Runner error (check): check exited with status 2:
@@ -282,3 +286,4 @@ Reset 2026-11-19: blocked because the runner claimed it on `main` while branch `
 - 2026-11-19T17:36:13Z daring-amber-kestrel: changed notes
 - 2026-11-19T17:36:13Z daring-amber-kestrel blocked → todo
 - 2026-11-19T17:45:00Z vivid-white-lapwing todo → doing
+- 2026-11-19T17:46:46Z vivid-white-lapwing: wrote the plan
