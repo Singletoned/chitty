@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -73,7 +73,7 @@ Unblocked 2026-11-19: the claim was written on `main` while this branch already 
 
 ## Summary
 
-Runner errors are recorded on ticket branches. Completed branch-only regression coverage; landing check now fails from the reviewer-created marker as specified. Verification: focused landing test and make check (644 tests) pass. No follow-up.
+Runner errors are recorded on ticket branches. Verification: focused tests.test_run_errors_on_branch (7 tests), make check (734 tests), and git diff --check pass. _handle_check_failure uses branch_repo and contains no git.main_checkout call. No follow-up.
 
 ## History
 
@@ -126,3 +126,5 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-19T13:56:25Z sunny-khaki-badger doing → blocked
 - 2026-11-19T14:14:02Z quick-ginger-lapwing: changed notes
 - 2026-11-19T14:14:02Z quick-ginger-lapwing blocked → doing
+- 2026-11-19T14:16:04Z jolly-ochre-ibis: changed summary
+- 2026-11-19T14:16:04Z jolly-ochre-ibis doing → review
