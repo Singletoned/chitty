@@ -142,7 +142,7 @@ def call(
     main_tip: str | None,
     maps: tuple[dict[str, str], dict[str, str]],
     contains: Callable[[str, str], bool],
-    changed: bool,
+    changed: bool | Callable[[str], bool],
 ) -> str:
     local_tips, remote_tips = maps
     return ticket_source(
@@ -154,7 +154,7 @@ def call(
         local_tips,
         remote_tips,
         contains,
-        lambda ref: changed,
+        changed if callable(changed) else lambda ref: changed,
     )
 
 
@@ -215,6 +215,89 @@ class TestTicketSource(unittest.TestCase):
                 result()
         else:
             self.assertEqual(result(), main_branch)
+
+    @given(graphs(), task_ids(), st.booleans(), st.booleans(), st.booleans())
+    def test_rule_4_selects_highest_candidate_and_checkout(
+        self, graph, task_id, include_local, tie, checked_out
+    ):
+        branch = str(task_id).lower()
+        candidate_commits = graph.arms[0] if graph.arms else graph.chain[1:]
+        if not candidate_commits:
+            candidate_commits = graph.chain
+        tip = candidate_commits[-1]
+        local = {branch: tip} if include_local else {}
+        remotes = {"zeta/" + branch: tip, "alpha/" + branch: tip}
+        if not tie:
+            remotes = {"zeta/" + branch: tip}
+        current = branch if checked_out else None
+        remote_winner = "alpha/" if tie else "zeta/"
+        expected = (
+            WORKING_TREE
+            if checked_out and include_local
+            else (branch if include_local else remote_winner + branch)
+        )
+        result = call(
+            task_id, False, current, "main", None, (local, remotes), graph.contains, False
+        )
+        self.assertEqual(result, expected)
+
+    @given(graphs(), task_ids(), st.booleans())
+    def test_rule_6_changed_on_both_names_expected_ref(self, graph, task_id, local):
+        branch = str(task_id).lower()
+        chosen = branch if local else "alpha/" + branch
+        local_tips = {branch: graph.chain[-1]} if local else {}
+        remote_tips = {"alpha/" + branch: graph.chain[-1]}
+        with self.assertRaises(ChittyError) as raised:
+            call(
+                task_id,
+                False,
+                branch if local else None,
+                "main",
+                None,
+                (local_tips, remote_tips),
+                graph.contains,
+                True,
+            )
+        for name in (str(task_id), chosen, "main"):
+            self.assertIn(f"`{name}`", str(raised.exception))
+
+    @given(graphs(), task_ids())
+    def test_remote_ahead_of_checked_out_local_wins(self, graph, task_id):
+        branch = str(task_id).lower()
+        line = graph.arms[0] if graph.arms else graph.chain
+        if len(line) < 2:
+            return
+        local_tip, remote_tip = line[-2:]
+        result = call(
+            task_id,
+            False,
+            branch,
+            "main",
+            None,
+            ({branch: local_tip}, {"origin/" + branch: remote_tip}),
+            graph.contains,
+            False,
+        )
+        self.assertEqual(result, "origin/" + branch)
+
+    @given(graphs(), task_ids(), st.booleans())
+    def test_changed_on_both_only_for_other_ref_keeps_rule_4_result(self, graph, task_id, local):
+        branch = str(task_id).lower()
+        local_tips = {branch: graph.chain[-1]} if local else {}
+        remote_tips = {"alpha/" + branch: graph.chain[-1]}
+        chosen = branch if local else "alpha/" + branch
+        current = branch if local else None
+        result = call(
+            task_id,
+            False,
+            current,
+            "main",
+            None,
+            (local_tips, remote_tips),
+            graph.contains,
+            lambda ref: ref != chosen,
+        )
+        self.assertEqual(result, WORKING_TREE if local else chosen)
 
     @given(legacy_graphs(), task_ids(), st.booleans())
     def test_candidate_at_chosen_tip_and_local_checkout(self, graph, task_id, fork):
