@@ -1,6 +1,6 @@
 ---
 title: Tell planners to cold-read again when a ticket it builds on lands
-status: review
+status: done
 labels:
   - untestable
 owner: untestable
@@ -23,6 +23,8 @@ Suggestion origin: injustice-league
 
 Reworded the bullet in plainer terms at the owner's request ("relies on something an unfinished ticket is building, such as a function, file, format or setting"); test phrases updated to match. `make check` passes (778 tests).
 
+Reviewed: guide wording read and approved.
+
 ## Summary
 
 Added the bullet after "Re-check claims about other tickets" in `src/chitty/roles/plan.md`: a ticket built on what an unfinished ticket adds or changes stays in `planning` with a note naming it, and is checked against what landed and cold-read again before `todo`; a ticket that only lands after another can go to `todo` with `depends_on`. No existing test pinned the bullet list; added `tests/test_guide_plan_dependency_reread.py` anyway (4 phrases, all 4 fail without the bullet). `make check` passes (778 tests).
@@ -37,3 +39,5 @@ Added the bullet after "Re-check claims about other tickets" in `src/chitty/role
 - 2026-11-19T21:43:31Z daring-amber-kestrel: changed summary
 - 2026-11-19T21:43:31Z daring-amber-kestrel doing → review
 - 2026-11-19T21:52:05Z daring-amber-kestrel: changed notes
+- 2026-11-19T21:58:13Z human: changed notes
+- 2026-11-19T21:58:13Z human review → done
