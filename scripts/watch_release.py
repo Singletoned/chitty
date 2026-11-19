@@ -38,9 +38,14 @@ def find_run(tag: str) -> dict[str, object]:
 
 
 def upgrade(version: str) -> None:
-    """Upgrade the global chitty until it reports VERSION; PyPI can lag."""
+    """Install VERSION as the global chitty until it reports it; PyPI can lag.
+
+    `uv tool upgrade` does nothing for a tool installed with an exact pin, so
+    install the released version directly. Until PyPI serves it, the install
+    fails (uv prints why) and is retried.
+    """
     for attempt in range(UPGRADE_ATTEMPTS):
-        subprocess.run(["uv", "tool", "upgrade", "chitty"], check=True)
+        subprocess.run(["uv", "tool", "install", f"chitty=={version}"], check=False)
         installed = subprocess.run(
             ["uv", "tool", "list"], check=True, capture_output=True, text=True
         ).stdout
@@ -48,7 +53,7 @@ def upgrade(version: str) -> None:
             return
         if attempt + 1 < UPGRADE_ATTEMPTS:
             time.sleep(UPGRADE_DELAY_SECONDS)
-    raise SystemExit(f"release: global chitty did not upgrade to {version}")
+    raise SystemExit(f"release: global chitty is not {version} after installing it")
 
 
 def report_failure(tag: str, url: object) -> None:

@@ -53,7 +53,7 @@ class TestWatchRelease(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertIn("gh run list --workflow release.yml --branch v1.2.3", calls)
         self.assertIn("gh run watch 7 --exit-status", calls)
-        self.assertIn("uv tool upgrade chitty", calls)
+        self.assertIn("uv tool install chitty==1.2.3", calls)
         self.assertNotIn("sump", calls)
 
     def test_failure_captures_in_sump_and_exits_non_zero(self) -> None:
@@ -64,7 +64,7 @@ class TestWatchRelease(unittest.TestCase):
             "sump capture chitty --message release v1.2.3: publish workflow failed", calls
         )
         self.assertIn("https://example.invalid/7", calls)
-        self.assertNotIn("uv tool upgrade", calls)
+        self.assertNotIn("uv tool install", calls)
 
 
 if __name__ == "__main__":

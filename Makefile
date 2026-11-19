@@ -28,5 +28,5 @@ build: ## build the sdist and wheel into dist/
 	rm -rf dist
 	uv build
 
-release: ## release from a temporary worktree, wait for PyPI, upgrade the global chitty
+release: ## release from a temporary worktree, wait for PyPI, install it as the global chitty
 	sh scripts/release.sh
