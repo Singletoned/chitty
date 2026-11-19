@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: blocked
+status: review
 owner: human
 depends_on:
   - TASK-377
@@ -118,3 +118,4 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T21:21:11Z tidy-white-jay done → error
 - 2026-11-19T21:22:42Z daring-amber-kestrel: changed owner, notes
 - 2026-11-19T21:22:42Z daring-amber-kestrel error → blocked
+- 2026-11-19T21:33:58Z human blocked → review
