@@ -1,6 +1,6 @@
 ---
 title: Merge `main` again and retry when `main` moves during landing
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-19
 ---
@@ -28,3 +28,4 @@ Tests: in a new `tests/test_landing_retry.py`, reusing the setup of `TestLanding
 
 - 2026-11-19T12:06:28Z quick-ginger-lapwing → planning
 - 2026-11-19T12:06:46Z quick-ginger-lapwing: changed acceptance criteria
+- 2026-11-19T12:06:51Z quick-ginger-lapwing planning → cold-read
