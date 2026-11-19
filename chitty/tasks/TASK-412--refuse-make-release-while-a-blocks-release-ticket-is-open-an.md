@@ -29,6 +29,10 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 - [ ] Subprocess tests in the existing style, with the blocker unchanged since the tag as Tests describes: an open `blocks-release` ticket `TASK-1` under `chitty/tasks/`, and one `HUMAN-12` under `chitty/human/`, each make the script exit non-zero, print nothing on standard output, and print `<ID>: <title>` with that full ID on standard error; with the tag at `v0.1.10` and the ticket `done`, it prints `0.1.11`. A `needs-minor` ticket with status `todo` changed since the tag gives a patch bump and is not listed. The open-blocker and `needs-minor` `todo` tests fail before the change; the `done` test passes before and after
 - [ ] The `Releases` paragraph of `AGENTS.md` names the `blocks-release` label and says `make release` refuses while such a ticket is open; the `needs-minor` paragraph says only `done` tickets count. `make check` passes
 
+## Plan
+
+Implement and property-test the release blocker/minor ticket selectors, then verify the release-version subprocess behavior and update AGENTS.md release guidance. Run the focused tests before and after the implementation, then make check and commit the implementation changes with Task: TASK-412.
+
 ## History
 
 - 2026-11-19T10:01:36Z quick-ginger-lapwing → planning
@@ -42,3 +46,4 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 - 2026-11-19T11:10:17Z quick-ginger-lapwing: changed acceptance criteria
 - 2026-11-19T11:10:17Z quick-ginger-lapwing planning → todo
 - 2026-11-19T11:11:52Z jolly-ebony-toad todo → doing
+- 2026-11-19T11:12:56Z jolly-ebony-toad: wrote the plan
