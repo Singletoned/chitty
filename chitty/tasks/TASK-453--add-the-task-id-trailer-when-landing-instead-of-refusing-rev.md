@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-19
 ---
@@ -17,7 +17,7 @@ Decisions:
 - New `git.add_task_trailers(root: Path, main_branch: str, branch: str, task_id: TaskId) -> int` returns how many commits it rewrote. It reads `branch_commits(root, main_branch)`; if none needs a trailer it changes nothing and returns 0. Otherwise it replays every commit of `main_branch..HEAD` oldest first with `git commit-tree <tree> -p <new parent> -F -` (the message from `with_task_trailer`), keeping each commit's author name, email and date (`GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_AUTHOR_DATE` from `git show -s --format=...`), then moves the branch with `git update-ref refs/heads/<branch> <new tip> <old tip>`. Trees do not change, so the worktree files and index stay as they are. It raises `ChittyError` if `main_branch..HEAD` holds a merge commit (cannot happen after the landing rebase).
 - `_land_locked` (`src/chitty/run.py`) calls it in each landing attempt, right after a successful `git.rebase_onto` and before the config and protected-path checks, so setup and the landing check run on the rewritten commits.
 - Delete the trailer refusal in `Repo.edit` (the `if entering_review:` block that calls `commits_missing_trailer`). Keep `commits_missing_trailer`.
-- Guides: in `src/chitty/roles/work.md`, replace `ending with a \`Task: <ID>\` trailer; \`chitty edit -s review\` refuses branch commits without one.` with text saying Chitty adds a `Task: <ID>` trailer to each commit when it lands the ticket, so a worker need not write one. Update `docs/plan/` where it describes the review refusal (`git grep -n "Task:" docs/plan`).
+- Guides: in `src/chitty/roles/work.md`, replace `ending with a \`Task: <ID>\` trailer; \`chitty edit -s review\` refuses branch commits without one.` with text saying Chitty adds a `Task: <ID>` trailer to each commit when it lands the ticket, so a worker need not write one; in `tests/test_guide_work_commits.py`, replace the phrases `"Task: <ID>"` and `"refuses branch commits without one"` with phrases from the new text. Update `docs/plan/` where it describes the review refusal (`git grep -n "Task:" docs/plan`).
 - Out of scope: landings done by hand without `chitty run`.
 
 Tests use Hypothesis (the repository tool) for the pure function, in a new `tests/test_property_task_trailer.py`; the landing test uses real Git, following `tests/test_landing.py`.
@@ -38,3 +38,5 @@ Suggestion origin: chitty
 - 2026-11-19T20:55:29Z sunny-white-dormouse: changed notes
 - 2026-11-19T21:20:12Z sunny-white-dormouse: changed title, priority, description, acceptance criteria
 - 2026-11-19T21:20:12Z sunny-white-dormouse backlog → planning
+- 2026-11-19T21:20:41Z sunny-white-dormouse: changed description
+- 2026-11-19T21:20:41Z sunny-white-dormouse planning → cold-read
