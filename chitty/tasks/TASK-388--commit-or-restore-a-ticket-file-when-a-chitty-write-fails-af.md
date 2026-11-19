@@ -1,6 +1,6 @@
 ---
 title: Commit or restore a ticket file when a Chitty write fails after writing it
-status: error
+status: review
 labels:
   - bug
 parent: TASK-376
@@ -226,6 +226,8 @@ fatal: Not possible to fast-forward, aborting.
 Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-388 or the main checkout before retrying.
 ```
 
+Reset 2026-11-19: the landing failed because `main` moved during landing, which `TASK-418` now retries; back to `review`.
+
 ## Summary
 
 Implemented all-or-nothing rollback for add, edit, archive, archive_done, restore, move and renumber; added real-Git regression coverage for each listed failure path and updated the existing autocommit expectation. Verification: the eight regression tests failed on baseline and pass with the fix; make check passes (725 tests). Follow-up: none.
@@ -253,3 +255,5 @@ Implemented all-or-nothing rollback for add, edit, archive, archive_done, restor
 - 2026-11-19T13:38:40Z zesty-navy-zander doing → review
 - 2026-11-19T13:42:19Z lively-ginger-wren: changed notes
 - 2026-11-19T13:42:19Z lively-ginger-wren review → error
+- 2026-11-19T16:01:59Z quick-ginger-lapwing: changed notes
+- 2026-11-19T16:01:59Z quick-ginger-lapwing error → review
