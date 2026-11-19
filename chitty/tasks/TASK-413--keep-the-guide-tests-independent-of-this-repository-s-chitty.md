@@ -1,6 +1,6 @@
 ---
 title: Keep the guide tests independent of this repository's `chitty.toml`
-status: review
+status: done
 labels:
   - blocks-release
 priority: high
@@ -44,6 +44,10 @@ Planning 2026-11-19: the worker was right; criterion 1 asked for copies outside 
 
 Archived-copy validation: `git archive main | tar -x -C tmp/task-413-before` and `git archive HEAD | tar -x -C tmp/task-413-after`; edited chitty.toml workflows and deleted copies afterward. Before, workflow = "tickets": `PYTHONPATH=tmp/task-413-before/src .venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` failed `TestBacktickGuideWarning.test_warning_is_in_every_generated_guide` for args=(). Before, workflow = "bogus": `PYTHONPATH=tmp/task-413-before/src .venv/bin/python -m unittest tests.test_guide_pi_warning` failed `TestGuidePiWarning.test_pi_without_identity_is_warned` because guide exited on invalid workflow. After, workflow = "bogus": `PYTHONPATH=tmp/task-413-after/src .venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` passed (8 tests). Real worktree `make check` passed formatting, ruff, pyright, and all 714 tests, including `test_guide_command_prints_the_repository_workflow`. Validation scratch copies removed; `tmp/` ignored in commit a38ca7f8.
 
+Reviewed: previous merge conflict and archive-location obstacle resolved; no new findings.
+1: pass - repeated git archive main and HEAD into ignored tmp copies, edited workflows and ran both unittest modules with PYTHONPATH set to each copy: main tickets failed the backticks test, main bogus failed that test and test_pi_without_identity_is_warned, HEAD bogus printed OK (8 tests). Copies deleted.
+2: pass - unchanged test_guide_command_prints_the_repository_workflow printed OK (1 test); make check printed OK (725 tests), ruff and pyright clean. Earlier worker notes record make install and passing checks.
+
 ## Summary
 
 Handoff: removed config-dependent no-role guide assertion and isolated Pi warning guide invocation in a temporary repository. Archived before/after altered-config validation and full make check passed. No follow-up identified.
@@ -74,3 +78,5 @@ Handoff: removed config-dependent no-role guide assertion and isolated Pi warnin
 - 2026-11-19T13:57:45Z daring-ochre-lapwing todo → doing
 - 2026-11-19T14:02:55Z daring-ochre-lapwing: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T14:02:55Z daring-ochre-lapwing doing → review
+- 2026-11-19T14:12:26Z jolly-jade-newt: changed notes
+- 2026-11-19T14:12:26Z jolly-jade-newt review → done
