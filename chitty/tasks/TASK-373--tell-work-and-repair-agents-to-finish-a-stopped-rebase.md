@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: blocked
+status: doing
 priority: high
 created: 2026-11-18
 ---
@@ -83,6 +83,8 @@ Fourth cold read 2026-11-18 outcomes: kept `_agent_command` signature here (`TAS
 
 Blocked: Chitty rejects task edits from the TASK-373 worktree because the latest committed version is on branch main and directs task updates to this checkout. This session is restricted to the ticket worktree, so implementation and verification cannot proceed without violating that boundary. A human must authorize task-state edits from the main checkout or fix Chitty ticket/worktree association.
 
+Unblocked 2026-11-19 (planning session): merged `main` into `task-373`, so the branch holds the newest copy of the ticket and writes from the worktree work again. Also did the revert the description asks for: `src/chitty/run.py` and `src/chitty/git.py` now differ from `main` only by `directory=repo.root` in the two `guide()` calls, and the two runner rebase tests are gone from `tests/test_run_continue.py`; `make check` passes (686 tests). Still to do, from the fourth cold read: criterion 3 tests for the other roles, the missing directory and the outside-repository check, and the help line alignment; criteria 1 and 2 are unticked for the reasons in that note.
+
 ## Summary
 
 Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
@@ -136,3 +138,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T21:58:55Z youthful-bronze-gannet todo → doing
 - 2026-11-18T22:05:14Z youthful-bronze-gannet: changed notes
 - 2026-11-18T22:05:14Z youthful-bronze-gannet doing → blocked
+- 2026-11-19T09:32:24Z quick-ginger-lapwing: changed notes
+- 2026-11-19T09:32:24Z quick-ginger-lapwing blocked → doing
