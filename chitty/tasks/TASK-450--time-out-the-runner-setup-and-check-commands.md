@@ -1,6 +1,6 @@
 ---
 title: Time out the runner `setup` and `check` commands
-status: planning
+status: cold-read
 labels:
   - needs-minor
 priority: high
@@ -46,3 +46,4 @@ Suggestion origin: chitty
 - 2026-11-19T20:55:25Z sunny-white-dormouse: changed notes
 - 2026-11-19T21:03:18Z sunny-white-dormouse: changed labels, priority, dependencies, description, acceptance criteria
 - 2026-11-19T21:03:18Z sunny-white-dormouse backlog → planning
+- 2026-11-19T21:04:02Z sunny-white-dormouse planning → cold-read
