@@ -1,6 +1,6 @@
 ---
 title: Make Chitty work outside Git when `git` is not installed
-status: review
+status: done
 created: 2026-11-19
 ---
 
@@ -39,6 +39,11 @@ Review failed (tests): Complete the specified equivalence regression; this is th
 
 Completed acceptance criterion 1 follow-up: the equivalence test now archives by the HUMAN ID printed by move and compares relative file paths and contents with History timestamps normalized. Focused tests pass. `make check` passes (ruff, pyright, 686 unittest cases; Node checks run by target). Commit: 6d0a4691.
 
+Reviewed: Previous equivalence coverage findings are resolved.
+1: pass - make check passed the nine command subtests, including archive and normalized snapshots; running tests.test_no_git_installed against main source printed eight command subtest failures.
+2: pass - make check passed the helper tests; against main they printed ChittyError not raised and FileNotFoundError. The previous review also verified each helper separately against main.
+3: pass - make check exited 0: ruff, pyright and 689 tests passed.
+
 ## Summary
 
 Completed outside-Git command equivalence coverage, including archive via the moved HUMAN ID and normalized filesystem snapshots. Verification: focused unittest passes; make check passes (ruff, pyright, 686 unittest cases, and remaining configured checks). No follow-ups.
@@ -62,3 +67,5 @@ Completed outside-Git command equivalence coverage, including archive via the mo
 - 2026-11-19T09:32:31Z jolly-yellow-quail: wrote the plan
 - 2026-11-19T09:34:40Z jolly-yellow-quail: changed notes, summary
 - 2026-11-19T09:34:40Z jolly-yellow-quail doing → review
+- 2026-11-19T10:39:28Z daring-dusky-heron: changed notes
+- 2026-11-19T10:39:28Z daring-dusky-heron review → done
