@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: todo
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -41,3 +41,4 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 - 2026-11-19T11:10:15Z quick-ginger-lapwing: changed description
 - 2026-11-19T11:10:17Z quick-ginger-lapwing: changed acceptance criteria
 - 2026-11-19T11:10:17Z quick-ginger-lapwing planning → todo
+- 2026-11-19T11:11:52Z jolly-ebony-toad todo → doing
