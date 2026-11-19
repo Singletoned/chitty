@@ -38,13 +38,13 @@ class ReleaseVersionTest(unittest.TestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", message)
 
-    def ticket(self, path: str, labels: str = "") -> None:
+    def ticket(self, path: str, labels: str = "", status: str = "done") -> None:
         labels_line = f"labels: [{labels}]\n" if labels else ""
         self.write(
             path,
             "---\n"
             "title: Example\n"
-            "status: done\n"
+            f"status: {status}\n"
             f"{labels_line}"
             "created: 2026-01-01\n"
             "---\n\n"
@@ -90,6 +90,33 @@ class ReleaseVersionTest(unittest.TestCase):
         result = self.run_script()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "0.1.11")
+        self.assertEqual(result.stderr, "")
+
+    def test_open_task_blocker_fails_even_when_unchanged_since_tag(self):
+        self.ticket("chitty/tasks/TASK-1--example.md", "blocks-release", "todo")
+        self.commit("blocker")
+        self.git("tag", "v0.1.10")
+        self.write("README.md", "changed\n")
+        self.commit("unrelated change")
+        result = self.run_script()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("TASK-1: Example", result.stderr)
+
+    def test_human_blocker_fails(self):
+        self.ticket("chitty/human/HUMAN-12--example.md", "blocks-release", "doing")
+        self.commit("blocker")
+        result = self.run_script()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("HUMAN-12: Example", result.stderr)
+
+    def test_todo_needs_minor_does_not_bump_minor(self):
+        self.ticket("chitty/tasks/TASK-1--example.md", "needs-minor", "todo")
+        self.commit("ticket")
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "0.1.10")
         self.assertEqual(result.stderr, "")
 
     def test_current_version_ahead_of_tag_is_bump_base(self):
