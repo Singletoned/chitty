@@ -24,6 +24,10 @@ Tests: real-Git tests in a new `tests/test_failed_writes_restore.py`, inheriting
 - [ ] With the failing hook, each of `chitty add`, `chitty edit --note`, `chitty archive <ID>`, `chitty archive` (no ID), `chitty move <ID> human`, `chitty renumber <PATH>` (a duplicate made with `git mv`), and a direct `Repo.restore(<ID>)` call (there is no CLI command) fails with the autocommit error, and afterwards `git status --porcelain` and every ticket file's bytes equal what they were before; each fails before the change
 - [ ] The same holds with `archive = "delete"` for `chitty archive <ID>`; a later run of each command without the hook succeeds; `make check` passes
 
+## Plan
+
+Add Repo._all_or_nothing() to snapshot task-context file bytes and the Git index after _prepare_write(), restore them and invalidate caches on any exception, then re-raise unchanged. Wrap every listed public ticket-write operation, including edit. Add real-Git regression tests in tests/test_failed_writes_restore.py for each specified failing-hook command, including archive delete mode and direct Repo.restore; verify status and ticket bytes restore, then rerun each successfully without the hook. Run regressions unfixed to confirm failure, then make check and commit implementation and tests.
+
 ## Notes
 
 Reproduced 2026-11-18 in `.worktrees/task-359` (branch `task-359`, clean worktree, ticket committed there and also present on `main`): `chitty edit TASK-359 --note ...` succeeded, then `chitty archive TASK-359` failed with `TASK-359 is used by more than one file: .../chitty/tasks/TASK-359--....md, .../chitty/tasks/archive/TASK-359--....md`, leaving the active file deleted and the archive file untracked, uncommitted. The same command on `main` for `TASK-366` (also on branch `task-366`) succeeded. Undone by hand with `git restore` and `rm`.
@@ -207,3 +211,4 @@ Back to `todo` 2026-11-19: the runner error was the flaky `test_suffix_round_tri
 - 2026-11-19T13:25:56Z quick-ginger-lapwing: changed notes
 - 2026-11-19T13:25:56Z quick-ginger-lapwing error → todo
 - 2026-11-19T13:27:07Z zesty-navy-zander todo → doing
+- 2026-11-19T13:29:52Z zesty-navy-zander: wrote the plan
