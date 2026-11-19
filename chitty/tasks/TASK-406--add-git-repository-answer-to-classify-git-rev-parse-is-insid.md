@@ -27,7 +27,7 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 
 ## Plan
 
-Add Hypothesis property tests for repository_answer, first proving they fail with a NotImplementedError stub. Implement the pure result classifier with exact status/stdout/stderr rules and _git-style errors. Exercise the specified wrong variants and broad status/stream generation, then run make format and make check and commit implementation with a Task trailer.
+Expand nonzero-status property coverage so every diagnostic/status case draws stdout from true, padded true, and arbitrary text, and every expected ChittyError verifies command, drawn directory, and stripped stderr. Include phrase-bearing diagnostics across arbitrary nonzero statuses and case variants with the same contextual assertions. Run focused and full checks, then commit the test change with Task: TASK-406.
 
 ## Notes
 
@@ -78,3 +78,4 @@ Implemented repository_answer and Hypothesis coverage, including deterministic s
 - 2026-11-19T09:05:58Z mellow-khaki-jay doing → review
 - 2026-11-19T09:08:35Z kind-indigo-wren: changed acceptance criteria, notes
 - 2026-11-19T09:08:35Z kind-indigo-wren review → doing
+- 2026-11-19T09:10:17Z brisk-silver-wren: wrote the plan
