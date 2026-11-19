@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: blocked
+status: doing
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -69,6 +69,8 @@ Cold read 2026-11-19: both tests fail against `main`'s `run.py` at the first ass
 
 Blocked: Chitty CLI refuses ticket edits in this worktree because the latest committed version is reported on branch `main` and directs edits to the main checkout. That conflicts with the work instruction to operate only in this ticket worktree. Human/planner decision needed: reconcile the ticket's canonical branch/version so its state can be updated here without editing the main checkout.
 
+Unblocked 2026-11-19: the claim was written on `main` while this branch already existed, so `main` held the newest copy. Merged `main` into this branch; edits work here again. The cause is fixed by `TASK-370` and `TASK-384`. Finish the handoff: the summary above says the work is complete.
+
 ## Summary
 
 Runner errors are recorded on ticket branches. Completed branch-only regression coverage; landing check now fails from the reviewer-created marker as specified. Verification: focused landing test and make check (644 tests) pass. No follow-up.
@@ -122,3 +124,5 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-19T13:44:18Z sunny-khaki-badger todo → doing
 - 2026-11-19T13:56:25Z sunny-khaki-badger: changed notes
 - 2026-11-19T13:56:25Z sunny-khaki-badger doing → blocked
+- 2026-11-19T14:14:02Z quick-ginger-lapwing: changed notes
+- 2026-11-19T14:14:02Z quick-ginger-lapwing blocked → doing
