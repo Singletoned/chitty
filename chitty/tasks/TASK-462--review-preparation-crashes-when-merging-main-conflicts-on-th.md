@@ -12,7 +12,10 @@ On 2026-11-14 `chitty run --loop --mode review` stopped with exit 1: "TASK-322's
 
 Suggestion origin: chitty
 
+Archived as covered by `TASK-370` and the one-authoritative-copy ticket-state model, under which ticket files change only on their branch.
+
 ## History
 
 - 2026-11-19T20:55:39Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:40Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:20Z sunny-white-dormouse: changed notes
