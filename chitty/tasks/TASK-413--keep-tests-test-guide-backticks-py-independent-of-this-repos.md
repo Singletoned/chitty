@@ -1,6 +1,8 @@
 ---
 title: Keep `tests/test_guide_backticks.py` independent of this repository's `chitty.toml`
 status: planning
+labels:
+  - blocks-release
 priority: high
 created: 2026-11-19
 ---
@@ -17,3 +19,4 @@ created: 2026-11-19
 ## History
 
 - 2026-11-19T10:01:38Z quick-ginger-lapwing → planning
+- 2026-11-19T11:06:51Z quick-ginger-lapwing: changed labels
