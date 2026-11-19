@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: doing
+status: review
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -59,3 +59,4 @@ Added generated rule 4 selection and checkout coverage, remote-ahead scenario, a
 - 2026-11-19T15:22:31Z friendly-russet-urchin todo → doing
 - 2026-11-19T15:23:24Z friendly-russet-urchin: wrote the plan
 - 2026-11-19T15:26:25Z friendly-russet-urchin: changed notes, summary
+- 2026-11-19T15:30:11Z friendly-russet-urchin doing → review
