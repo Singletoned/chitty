@@ -26,7 +26,7 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 
 ## Plan
 
-Add tests in tests/test_no_git_installed.py for the outside-Git command equivalence and Git failure behavior. First run the focused regression tests against current code and record the failures. Then guard dirty_paths/current_branch/git_common_dir with git.is_repository(root), preserving empty results outside Git; allow command failures inside repositories to surface as ChittyError, including git_common_dir stderr. Run formatting and make check, then commit implementation and tests with the required Task trailer.
+Extend the outside-Git command equivalence test to include archive and compare post-command filesystem snapshots, normalizing History timestamps and replacing the root path. Use move output to identify the archived ticket, clear git_common_dir cache between executions, then format, verify the focused regression and full checks, and commit the coverage.
 
 ## Notes
 
@@ -57,3 +57,4 @@ Implemented guarded Git helper calls and added regression tests for no-Git helpe
 - 2026-11-19T09:26:33Z tidy-pearl-otter doing → review
 - 2026-11-19T09:29:56Z quick-hazel-newt: changed acceptance criteria, notes
 - 2026-11-19T09:29:56Z quick-hazel-newt review → doing
+- 2026-11-19T09:32:31Z jolly-yellow-quail: wrote the plan
