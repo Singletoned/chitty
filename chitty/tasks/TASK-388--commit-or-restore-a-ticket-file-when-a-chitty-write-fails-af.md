@@ -1,6 +1,6 @@
 ---
 title: Commit or restore a ticket file when a Chitty write fails after writing it
-status: review
+status: done
 labels:
   - bug
 parent: TASK-376
@@ -195,38 +195,11 @@ Back to `todo` 2026-11-19: the runner error was the flaky `test_suffix_round_tri
 
 The new regression tests fail against the pre-change store (8 failures) and pass with the fix. make check passes, including the complete test suite. Commands without the failing hook succeed after rollback checks.
 
-Runner error (landing): `git merge --ff-only task-388` failed in /Users/singletoned/src/singletoned/chitty:
-hint: Diverging branches can't be fast-forwarded, you need to either:
-hint:
-hint: 	git merge --no-ff
-hint:
-hint: or:
-hint:
-hint: 	git rebase
-hint:
-hint: Disable this message with "git config set advice.diverging false"
-fatal: Not possible to fast-forward, aborting.
-Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-388 or the main checkout before retrying.
+Reviewed:
+1: pass - The eight real-Git regressions in tests.test_failed_writes_restore report 8 failures against ebea2856^ store.py and 8 OK with the change, covering all seven requested operations and checking status and file bytes.
+2: pass - The delete-mode regression is among those 8 baseline failures and 8 passes; each test reruns without the hook successfully. make check passed: 726 tests OK, ruff and pyright clean.
 
-Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-388`
-
-Error output:
-```text
-`git merge --ff-only task-388` failed in /Users/singletoned/src/singletoned/chitty:
-hint: Diverging branches can't be fast-forwarded, you need to either:
-hint:
-hint: 	git merge --no-ff
-hint:
-hint: or:
-hint:
-hint: 	git rebase
-hint:
-hint: Disable this message with "git config set advice.diverging false"
-fatal: Not possible to fast-forward, aborting.
-Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-388 or the main checkout before retrying.
-```
-
-Reset 2026-11-19: the landing failed because `main` moved during landing, which `TASK-418` now retries; back to `review`.
+Landed by hand 2026-11-19: the runner's landing at 13:42 failed because `main` moved (before `TASK-418` added the retry), and the error was recorded on `main` while this branch already said `done`. Merged `main`, kept the passing review, ran `make check`, fast-forwarded `main`.
 
 ## Summary
 
@@ -253,7 +226,5 @@ Implemented all-or-nothing rollback for add, edit, archive, archive_done, restor
 - 2026-11-19T13:29:52Z zesty-navy-zander: wrote the plan
 - 2026-11-19T13:38:40Z zesty-navy-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T13:38:40Z zesty-navy-zander doing → review
-- 2026-11-19T13:42:19Z lively-ginger-wren: changed notes
-- 2026-11-19T13:42:19Z lively-ginger-wren review → error
-- 2026-11-19T16:01:59Z quick-ginger-lapwing: changed notes
-- 2026-11-19T16:01:59Z quick-ginger-lapwing error → review
+- 2026-11-19T13:41:24Z lively-ginger-wren: changed notes
+- 2026-11-19T13:41:24Z lively-ginger-wren review → done

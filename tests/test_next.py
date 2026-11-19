@@ -13,8 +13,10 @@ from uuid import UUID
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp_types import CallToolResult
 
+from chitty import store
 from chitty.config import CHITTY_VERSION
 from chitty.errors import ChittyError
+from chitty.ids import TaskId
 from chitty.inbox import suggest
 from chitty.mcp import create_server
 from chitty.run import _record_usage, run_loop
@@ -197,6 +199,41 @@ class TestNext(CliTestCase):
         self.git("merge", "--quiet", "rename")
         self.git("branch", "-D", "rename")
         self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
+
+    def commit_done_tickets_on_main(self, count: int) -> list[str]:
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace("autocommit = false", "autocommit = false\nreview = false")
+        )
+        done = [self.add(f"Done {number}", status="done") for number in range(count)]
+        self.git("init", "--quiet")
+        self.git("branch", "-M", "main")
+        self.git("config", "user.email", "test@example.com")
+        self.git("config", "user.name", "test")
+        self.git("add", "--all")
+        self.git("commit", "--quiet", "-m", "setup")
+        return done
+
+    def test_dependency_check_parses_only_the_dependency(self):
+        done = self.commit_done_tickets_on_main(10)
+        repo = Repo.open(self.root)
+        dependency_id = TaskId.parse(done[3])
+        dependency = repo.find(dependency_id)
+        with patch("chitty.store.parse", wraps=store.parse) as counted:
+            self.assertTrue(store._dependency_is_done(repo, dependency_id, dependency))
+        self.assertEqual(counted.call_count, 1)
+
+    def test_malformed_other_ticket_on_main_does_not_break_a_dependency(self):
+        done = self.commit_done_tickets_on_main(2)
+        other = next((self.root / "chitty/tasks").glob(f"{done[1]}--*.md"))
+        good = other.read_text()
+        repo = Repo.open(self.root)
+        dependency_id = TaskId.parse(done[0])
+        dependency = repo.find(dependency_id)
+        other.write_text("---\ntitle: [unclosed\n---\n")
+        self.git("commit", "--quiet", "--all", "-m", "break another ticket")
+        other.write_text(good)
+        self.assertTrue(store._dependency_is_done(repo, dependency_id, dependency))
 
     def test_unmerged_archive_does_not_complete_dependency(self):
         config = self.root / "chitty.toml"
