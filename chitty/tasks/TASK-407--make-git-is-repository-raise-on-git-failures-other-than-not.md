@@ -30,6 +30,10 @@ Property tests: none here; the decision is `TASK-406`'s pure function, which car
 
 Update `is_repository` to pass `LC_ALL=C` to the subprocess, preserving the resolved directory and existing missing-directory/missing-git handling, then delegate its result to `repository_answer`. Add the two specified integration tests in `tests/test_git.py`; establish their behavior before implementing the change. Run `make check`, format if needed, and commit implementation/test changes with a `Task: TASK-407` trailer.
 
+## Notes
+
+Regression evidence: `test_invalid_repository_format_raises` failed before the implementation because current `is_repository` returned False for repositoryformatversion 99. The fake-git locale test passes with current code, as expected; after implementation, removing the explicit `LC_ALL` entry must make this test fail.
+
 ## History
 
 - 2026-11-19T08:51:09Z lively-quartz-crane → planning
@@ -39,3 +43,4 @@ Update `is_repository` to pass `LC_ALL=C` to the subprocess, preserving the reso
 - 2026-11-19T08:54:41Z lively-quartz-crane planning → todo
 - 2026-11-19T10:43:58Z honest-quartz-lapwing todo → doing
 - 2026-11-19T10:45:02Z honest-quartz-lapwing: wrote the plan
+- 2026-11-19T10:45:39Z honest-quartz-lapwing: changed notes
