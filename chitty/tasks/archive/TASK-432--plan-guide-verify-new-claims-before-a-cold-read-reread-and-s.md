@@ -19,3 +19,4 @@ Archived: `src/chitty/roles/plan.md` already says to check every claim against t
 - 2026-11-19T20:55:03Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:04Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:58:37Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:58:40Z sunny-white-dormouse backlog → archived
