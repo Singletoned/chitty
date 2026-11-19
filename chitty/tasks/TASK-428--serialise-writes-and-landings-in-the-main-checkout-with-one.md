@@ -322,6 +322,8 @@ Running 768 test suites (768 total tests) across 16 workers
 
 ```
 
+Fixed by hand 2026-11-19 (human-approved), because the runner's pre-agent `make check` on this branch deadlocked and no worker could start (two loops hung for 19 minutes to an hour). `main_checkout_lock` in `src/chitty/locks.py` is now re-entrant within a process: a module-level `_HELD_MAIN_CHECKOUT_LOCKS` maps the resolved lock path to an entry count, and only the outermost entry opens, `flock`s and closes the file. New `TestMainCheckoutLockReentry.test_nested_entry_in_one_process_does_not_deadlock` in `tests/test_main_checkout_lock.py` enters the lock twice in a subprocess under a 20 s timeout and checks the lock is still held after the inner exit and free after the outer one; it timed out against the old code and passes now. `timeout 600 make check` passes (769 tests, 42 s). The rest of the ticket is the worker's as before.
+
 ## Summary
 
 Implemented the main-checkout lock and process-level tests for serialized main writes, landing/write coordination, and the linked-worktree guard. Verification: focused suites pass (43 tests); format, Ruff, Pyright pass. Follow-up: full make check remains unverified because unittest-parallel stalls and exceeded 3600 seconds.
@@ -342,3 +344,4 @@ Implemented the main-checkout lock and process-level tests for serialized main w
 - 2026-11-19T20:59:27Z daring-amber-kestrel: changed notes
 - 2026-11-19T20:59:27Z daring-amber-kestrel error → doing
 - 2026-11-19T23:00:21Z sunny-ginger-falcon: changed notes
+- 2026-11-19T23:03:03Z daring-amber-kestrel: changed notes
