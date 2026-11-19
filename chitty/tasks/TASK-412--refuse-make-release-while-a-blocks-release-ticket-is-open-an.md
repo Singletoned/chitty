@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: review
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -42,6 +42,11 @@ Review failed (tests): Add the missing subprocess scenarios and validate every s
 
 Added the missing regression cases: the unchanged HUMAN-12 blocker and a done blocker at tag v0.1.10 both pass; the malformed active ticket filename test first failed against the existing implementation (exit 0), then passed after validating every scanned active filename with parse_filename. The focused suite now passes (11 tests); make check passes (702 tests plus ruff and pyright).
 
+Reviewed: Previous review findings are resolved.
+1: pass - `make check` passed the Hypothesis selector property; the prior review verified each selector stub raised `NotImplementedError` in the property.
+2: pass - `make check` passed all subprocess cases, including unchanged human and task blockers, done blocker, malformed filename and todo minor. Running the four blocker and todo cases against the script from `main` produced three expected failures (open blockers returned 0 and todo printed `0.2.0`) and the done case passed. This resolves the earlier review note.
+3: pass - `AGENTS.md` documents both rules; `make check` passed 702 tests, ruff and pyright.
+
 ## Summary
 
 Validated every active ticket filename before release selection; added regression coverage for unchanged human blockers, done blockers at the tag, and malformed filenames. Verification: focused release-version tests (11) and make check (702 tests, ruff, pyright) pass. Follow-up: independent review.
@@ -66,3 +71,5 @@ Validated every active ticket filename before release selection; added regressio
 - 2026-11-19T11:20:18Z rosy-umber-falcon review → doing
 - 2026-11-19T11:26:13Z rosy-pearl-falcon: changed notes, summary
 - 2026-11-19T11:26:13Z rosy-pearl-falcon doing → review
+- 2026-11-19T11:27:59Z honest-dusky-gannet: changed notes
+- 2026-11-19T11:27:59Z honest-dusky-gannet review → done
