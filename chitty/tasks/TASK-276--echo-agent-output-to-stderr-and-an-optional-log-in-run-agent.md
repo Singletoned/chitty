@@ -1,6 +1,6 @@
 ---
 title: Echo agent output to stderr and an optional log in `_run_agent`
-status: planning
+status: cold-read
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -58,3 +58,4 @@ Planner, 2026-11-19: rewritten from scratch and split twice after cold reads. Th
 - 2026-11-19T21:22:08Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:23:23Z sunny-white-dormouse: replaced notes; changed title, description, acceptance criteria
 - 2026-11-19T21:23:23Z sunny-white-dormouse cold-read → planning
+- 2026-11-19T21:23:53Z sunny-white-dormouse planning → cold-read
