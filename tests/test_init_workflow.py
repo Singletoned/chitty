@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest import mock
 
 from click.testing import CliRunner
-from hypothesis import given
+from hypothesis import example, given
 from hypothesis import strategies as st
 
 from chitty import config as config_module
@@ -66,6 +66,12 @@ def config_cases(draw):
 
 
 class TestAddRunnerWorkflow(RepoTestCase):
+    @example(('chitty_version = "0.4.2"\n', "0.4.2", False, 0, None))
+    @example(('chitty_version = "0.5.0"\n', "0.5.0", False, 0, None))
+    @example(('chitty_version = "0.5.0.0"\n', "0.5.0.0", False, 0, None))
+    @example(('chitty_version = "0.5.1"\n', "0.5.1", False, 0, None))
+    @example(('chitty_version = "0.6"\n', "0.6", False, 0, None))
+    @example(('chitty_version = "0.10.0"\n', "0.10.0", False, 0, None))
     @given(config_cases())
     def test_section_is_migrated_idempotently(self, case):
         text, version, pyproject, version_index, workflow = case
