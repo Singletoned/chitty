@@ -11,6 +11,7 @@ agent_command = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync p
 
 project = "chitty"
 archive = "move"
+workflow = "runner"
 review = true
 
 list_width = 80
