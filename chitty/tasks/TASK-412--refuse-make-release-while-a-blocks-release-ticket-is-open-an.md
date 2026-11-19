@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: cold-read
+status: planning
 priority: high
 created: 2026-11-19
 ---
@@ -30,3 +30,4 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 - 2026-11-19T10:01:36Z quick-ginger-lapwing → planning
 - 2026-11-19T11:06:30Z quick-ginger-lapwing: changed title, description, acceptance criteria
 - 2026-11-19T11:06:36Z quick-ginger-lapwing planning → cold-read
+- 2026-11-19T11:08:11Z quick-ginger-lapwing cold-read → planning
