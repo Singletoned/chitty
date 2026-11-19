@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tomllib
 from collections.abc import Generator, Mapping, Sequence
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime
 from importlib.resources import files
@@ -425,7 +425,13 @@ class Repo:
         if not self.config.autocommit:
             raise ChittyError("repository setup is stale; run `chitty init` before writing")
         try:
-            paths = init_repo(self.root, False)
+            with locks.main_checkout_lock(self.root):
+                paths = init_repo(self.root, False)
+                files = [
+                    path for path in paths if path.is_file() and path.is_relative_to(self.root)
+                ]
+                if files:
+                    git.commit(self.root, files, "chitty: upgrade repository setup")
         except ManagedGuideError as error:
             print(
                 f"warning: {error}; skipping repository setup upgrade until the marker lines "
@@ -433,9 +439,6 @@ class Repo:
                 file=sys.stderr,
             )
             return
-        files = [path for path in paths if path.is_file() and path.is_relative_to(self.root)]
-        if files:
-            git.commit(self.root, files, "chitty: upgrade repository setup")
         self.config = load_repo_config(self.root)
 
     def refresh_setup(self) -> None:
@@ -444,19 +447,20 @@ class Repo:
         if git.is_linked_worktree(self.root):
             return
         self._check_setup_version()
-        protected = (CONFIG_NAME, "pyproject.toml", AGENTS_FILE, ".gitignore")
-        dirty = [name for name in protected if git.dirty_paths(self.root, Path(name))]
-        if dirty:
-            raise ChittyError(
-                "repository setup files have uncommitted changes; commit or stash these first: "
-                + ", ".join(dirty)
-            )
-        paths = init_repo(self.root, False)
-        for path in paths:
-            print(path, file=sys.stderr)
-        files = [path for path in paths if path.is_file() and path.is_relative_to(self.root)]
-        if files and git.is_repository(self.root):
-            git.commit(self.root, files, "chitty: upgrade repository setup")
+        with locks.main_checkout_lock(self.root):
+            protected = (CONFIG_NAME, "pyproject.toml", AGENTS_FILE, ".gitignore")
+            dirty = [name for name in protected if git.dirty_paths(self.root, Path(name))]
+            if dirty:
+                raise ChittyError(
+                    "repository setup files have uncommitted changes; commit or stash these first: "
+                    + ", ".join(dirty)
+                )
+            paths = init_repo(self.root, False)
+            for path in paths:
+                print(path, file=sys.stderr)
+            files = [path for path in paths if path.is_file() and path.is_relative_to(self.root)]
+            if files and git.is_repository(self.root):
+                git.commit(self.root, files, "chitty: upgrade repository setup")
         self.config = load_repo_config(self.root)
 
     def _check_setup_version(self) -> None:
@@ -464,20 +468,23 @@ class Repo:
 
     @contextmanager
     def _all_or_nothing(self) -> Generator[None, None, None]:
-        before = _task_file_bytes(self.contexts())
-        index = _git_index_path(self.root) if git.is_repository(self.root) else None
-        index_before = index.read_bytes() if index and index.exists() else None
-        try:
-            yield
-        except BaseException:
-            _restore_task_files(self.contexts(), before)
-            if index is not None:
-                if index_before is None:
-                    index.unlink(missing_ok=True)
-                else:
-                    index.write_bytes(index_before)
-            self._invalidate()
-            raise
+        main_checkout = git.is_repository(self.root) and not git.is_linked_worktree(self.root)
+        lock = locks.main_checkout_lock(self.root) if main_checkout else nullcontext()
+        with lock:
+            before = _task_file_bytes(self.contexts())
+            index = _git_index_path(self.root) if git.is_repository(self.root) else None
+            index_before = index.read_bytes() if index and index.exists() else None
+            try:
+                yield
+            except BaseException:
+                _restore_task_files(self.contexts(), before)
+                if index is not None:
+                    if index_before is None:
+                        index.unlink(missing_ok=True)
+                    else:
+                        index.write_bytes(index_before)
+                self._invalidate()
+                raise
 
     def add(
         self,

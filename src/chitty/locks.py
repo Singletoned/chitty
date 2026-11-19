@@ -20,6 +20,7 @@ from chitty.errors import ChittyError
 
 LOCK_SUFFIX = ".lock"
 LANDING_LOCK = "landing.lock"
+MAIN_CHECKOUT_LOCK = "main-checkout.lock"
 
 
 class TicketLocked(ChittyError):
@@ -67,6 +68,22 @@ def run_lock(
         }
         os.ftruncate(descriptor, 0)
         os.write(descriptor, (json.dumps(record) + "\n").encode())
+        yield
+    finally:
+        os.close(descriptor)
+
+
+@contextmanager
+def main_checkout_lock(root: Path) -> Generator[None]:
+    """Serialize brief writes to a repository's primary checkout."""
+    directory = _directory(root)
+    if directory is None:
+        yield
+        return
+    directory.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(directory / MAIN_CHECKOUT_LOCK, os.O_RDWR | os.O_CREAT, 0o644)
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_EX)
         yield
     finally:
         os.close(descriptor)

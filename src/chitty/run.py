@@ -1084,7 +1084,8 @@ def _land_locked(
     main_branch = main_repo.config.main_branch
     if git.current_branch(main_root) != main_branch:
         raise ChittyError(f"the main checkout must be on branch {main_branch} to land a ticket")
-    git.require_clean(main_root)
+    with locks.main_checkout_lock(main_root):
+        git.require_clean(main_root)
     # A session may have landed its own ticket before returning.
     if not worktree.exists():
         return
@@ -1128,7 +1129,9 @@ def _land_locked(
         _setup(setup, worktree)
         _landing_check(check, worktree)
         try:
-            git.fast_forward(main_root, branch)
+            with locks.main_checkout_lock(main_root):
+                git.require_clean(main_root)
+                git.fast_forward(main_root, branch)
         except ChittyError:
             if not git.is_ancestor(main_root, main_branch, branch):
                 if attempt + 1 < LANDING_ATTEMPTS:

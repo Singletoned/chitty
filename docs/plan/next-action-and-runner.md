@@ -138,6 +138,9 @@ rebase like any other file; conflicts go to an agent, not a ticket merge.
 
 On a pass, under the landing lock:
 
+- A short main-checkout lock serializes writes and landing's clean-tree check plus
+  fast-forward. Landing takes locks in order: landing lock, then main-checkout
+  lock; it does not hold the latter during setup, checks or rebase.
 - The main checkout must be on `main_branch` and clean.
 - Refused: uncommitted files in the worktree, a changed Chitty config, or a
   changed managed block in `AGENTS.md`, before or after merging.
