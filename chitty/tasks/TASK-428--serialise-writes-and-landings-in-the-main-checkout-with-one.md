@@ -231,6 +231,97 @@ make: *** [check] Error 143
 
 Back to `doing` 2026-11-19 (human-approved): the review check hung twice in `make check`, 27 minutes and then 19 minutes, and was killed both times; the error recorded just before this note is that kill. Cause: `main_checkout_lock` in `src/chitty/locks.py` opens `main-checkout.lock` and takes an exclusive `fcntl.flock` on each entry. `flock` belongs to the open file description, so a second entry in the same process (a new `os.open` of the same file) blocks forever. A test worker was seen holding the file open twice. The lock is taken around landing (`run.py` near lines 1073 and 1118) and also inside store writes (`store.py` near lines 428, 450 and 472), so a store write made while the landing lock is held, or one write nested in another, deadlocks. Fix: make the lock re-entrant within a process (a per-process depth count keyed by lock path, locking only on the first entry and unlocking on the last), or make sure the inner callers never take it. Add a test that enters `main_checkout_lock` twice in one process, run under a short timeout, so it fails rather than hangs without the fix. Run `make check` with a timeout (for example `timeout 600 make check`) to confirm the suite finishes.
 
+Check failed before this session: check exited with status -15:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+617 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 768 test suites (768 total tests) across 16 workers
+........................................................................................................................................................................................................................................................................................................................................................................................................................................................updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpre3snmof/repo/chitty/tasks/TASK-1--one.md actor test-agent
+.......━━━━ chitty run · 22:47:39 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+.............................................../Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+...................................................................................................................................................................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+.........../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/repo/CLAUDE.md
+......Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcu3t0vuf/repo/.worktrees/task-1...
+..TASK-1: doing → review
+.no next ticket for --mode work
+........./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpcrcmwae1/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpnibe0e42/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpt7m28lrh/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4jsnjq8n/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpde5nxkm5/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpu_maazbs/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxv99vudy/repo/CLAUDE.md
+...............................................chitty 0.1.31 is out: run uv tool upgrade chitty
+...............................make: *** [check] Error 143
+/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/multiprocessing/resource_tracker.py:400: UserWarning: resource_tracker: There appear to be 11 leaked semaphore objects to clean up at shutdown: {'/mp-uhxfzyqn', '/mp-b65knatw', '/mp-fmkfrj3w', '/mp-p3890i87', '/mp-h69_y1eq', '/mp-i2as9h45', '/mp-44xww7ob', '/mp-vrlq7hw5', '/mp-qeqb5b25', '/mp-0o3kyzpz', '/mp-25_wr_gc'}
+  warnings.warn(
+
+```
+
 ## Summary
 
 Implemented the main-checkout lock and process-level tests for serialized main writes, landing/write coordination, and the linked-worktree guard. Verification: focused suites pass (43 tests); format, Ruff, Pyright pass. Follow-up: full make check remains unverified because unittest-parallel stalls and exceeded 3600 seconds.
@@ -250,3 +341,4 @@ Implemented the main-checkout lock and process-level tests for serialized main w
 - 2026-11-19T20:59:03Z golden-coral-badger review → error
 - 2026-11-19T20:59:27Z daring-amber-kestrel: changed notes
 - 2026-11-19T20:59:27Z daring-amber-kestrel error → doing
+- 2026-11-19T23:00:21Z sunny-ginger-falcon: changed notes
