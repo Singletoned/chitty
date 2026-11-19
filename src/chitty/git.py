@@ -565,13 +565,14 @@ def _read_blobs(
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    assert process.stdin is not None
-    assert process.stdout is not None
-    process.stdin.write("".join(f"{object_id}\n" for object_id, _ in objects).encode())
-    process.stdin.close()
+    input_data = "".join(f"{object_id}\n" for object_id, _ in objects).encode()
+    stdout, stderr = process.communicate(input_data)
     result: dict[tuple[str, Path], tuple[str, str]] = {}
+    position = 0
     for object_id, path in objects:
-        header = process.stdout.readline().decode().rstrip("\n")
+        end = stdout.find(b"\n", position)
+        header = stdout[position:end].decode() if end >= 0 else stdout[position:].decode()
+        position = end + 1 if end >= 0 else len(stdout)
         parts = header.split()
         if len(parts) == 2 and parts[1] == "missing":
             continue
@@ -580,20 +581,16 @@ def _read_blobs(
         returned, kind, size = parts
         if kind != "blob":
             raise ChittyError(f"Git object {object_id} is not a blob")
-        content = process.stdout.read(int(size))
-        process.stdout.read(1)
+        content_end = position + int(size)
+        content = stdout[position:content_end]
+        position = content_end + 1
         try:
             decoded = content.decode("utf-8")
         except UnicodeDecodeError as error:
             raise ChittyError(f"Git file is not UTF-8: {path}") from error
         result[(object_id, path)] = (returned, decoded)
-    stderr = process.stderr.read().decode() if process.stderr is not None else ""
-    returncode = process.wait()
-    process.stdout.close()
-    if process.stderr is not None:
-        process.stderr.close()
-    if returncode != 0:
-        raise ChittyError(f"cannot read historical task files: {stderr.strip()}")
+    if process.returncode != 0:
+        raise ChittyError(f"cannot read historical task files: {stderr.decode().strip()}")
     return result
 
 
