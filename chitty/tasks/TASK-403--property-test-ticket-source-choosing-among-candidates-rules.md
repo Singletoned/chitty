@@ -31,7 +31,7 @@ The code already exists, so evidence that the tests catch a wrong implementation
 
 ## Plan
 
-Replace fixed examples for rules 4 and 6 with generated chain/fork cases built from the existing Graph helpers. Assert expected candidate selection, checkout behavior, and changed-on-both errors; force remote-ahead and tie scenarios. Run focused properties before and after, then make check. Exercise temporary hand-written mutants and record which properties reject them in ticket notes.
+Replace the fixed rule 4 and 6 examples with shared generated chain/fork inputs: choose main tips, surviving and dropped candidates, decoys, current branches, tie cases, and remote-ahead cases. Compute expected selection from construction and assert both changed-on-both branches. Run properties against temporary mutants for remote tie preference, remote ordering, and ignored changed_on_both; record evidence, then format, check, and commit.
 
 ## Notes
 
@@ -67,3 +67,4 @@ Added generated rule 4 selection and checkout coverage, remote-ahead scenario, a
 - 2026-11-19T15:30:11Z friendly-russet-urchin doing → review
 - 2026-11-19T15:33:00Z sunny-silver-ibis: changed acceptance criteria, notes
 - 2026-11-19T15:33:00Z sunny-silver-ibis review → doing
+- 2026-11-19T15:34:22Z lively-teal-yellowhammer: wrote the plan
