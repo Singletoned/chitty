@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: error
+status: review
 labels:
   - bug
   - needs-minor
@@ -273,6 +273,8 @@ make: *** [check] Error 1
 ```
 ````
 
+Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext.test_run_cases`, fixed on `main` in `fe1ef0cd`; back to `review`.
+
 ## Summary
 
 Replaced runner merge integration with rebasing in review and landing; removed obsolete merge helpers. Updated runner guide and real-Git regression tests. Verification: focused tests (72), `make check` (736 tests), `git diff --check`, and `chitty fix`. Implementation commit: 706614ca (Task: TASK-374). No follow-ups.
@@ -300,3 +302,5 @@ Replaced runner merge integration with rebasing in review and landing; removed o
 - 2026-11-19T14:29:41Z sunny-bronze-ibis doing → review
 - 2026-11-19T14:30:59Z sunny-indigo-vole: changed notes
 - 2026-11-19T14:30:59Z sunny-indigo-vole review → error
+- 2026-11-19T16:01:48Z quick-ginger-lapwing: changed notes
+- 2026-11-19T16:01:48Z quick-ginger-lapwing error → review
