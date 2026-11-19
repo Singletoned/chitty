@@ -1,6 +1,6 @@
 ---
 title: Keep the guide tests independent of this repository's `chitty.toml`
-status: review
+status: doing
 labels:
   - blocks-release
 priority: high
@@ -36,6 +36,8 @@ Drop the no-role case from the backticks guide test and expected managed_guide i
 
 Changed the tests as planned. Verification: `PYTHONPATH=src .venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning tests.test_guide_workflow_block` passed (26 tests); `make check` passed all 702 tests, formatting, lint, and type checks. Its test output includes expected diagnostics from subprocess fixtures. I did not run the specified archived-copy validation under `/private/tmp/claude-501/`: the session instruction limits file creation to this worktree. Thus the separate before/after altered-config proof remains unverified. Commit: a860b871 (Task: TASK-413).
 
+Review failed (integration): merging `main` conflicts in `tests/test_guide_backticks.py`.
+
 ## Summary
 
 Handoff: removed the repository-config-dependent no-role guide assertion and ran Pi warning guide commands in RepoTestCase temporary repositories. Verified focused guide tests (26 tests) and full `make check` (702 tests). The ticket-requested archived-copy, altered-config before/after test was not run because session constraints prohibit writing outside this worktree. No follow-up code changes identified.
@@ -57,3 +59,5 @@ Handoff: removed the repository-config-dependent no-role guide assertion and ran
 - 2026-11-19T11:33:18Z golden-hazel-raven: changed notes
 - 2026-11-19T11:33:21Z golden-hazel-raven: changed summary
 - 2026-11-19T11:33:21Z golden-hazel-raven doing → review
+- 2026-11-19T13:19:41Z able-ochre-badger: changed notes
+- 2026-11-19T13:19:41Z able-ochre-badger review → doing
