@@ -1,6 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: todo
+status: blocked
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -67,6 +67,8 @@ Planning 2026-11-19, with the owner: the three failed reviews were the ticket's 
 
 Cold read 2026-11-19: both tests fail against `main`'s `run.py` at the first assertion, `git rev-parse main` unchanged, and pass on the branch. One `make check` run failed once in `tests.test_next.TestNext.test_run_cases` (`TASK-1: blocked → error`, expected exit 3) and the next passed; this looks like the known flaky test in the inbox suggestion of 2026-11-14, so rerun `make check` if it fails there.
 
+Blocked: Chitty CLI refuses ticket edits in this worktree because the latest committed version is reported on branch `main` and directs edits to the main checkout. That conflicts with the work instruction to operate only in this ticket worktree. Human/planner decision needed: reconcile the ticket's canonical branch/version so its state can be updated here without editing the main checkout.
+
 ## Summary
 
 Runner errors are recorded on ticket branches. Completed branch-only regression coverage; landing check now fails from the reviewer-created marker as specified. Verification: focused landing test and make check (644 tests) pass. No follow-up.
@@ -117,3 +119,6 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-19T13:33:37Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T13:33:41Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T13:33:41Z quick-ginger-lapwing planning → todo
+- 2026-11-19T13:44:18Z sunny-khaki-badger todo → doing
+- 2026-11-19T13:56:25Z sunny-khaki-badger: changed notes
+- 2026-11-19T13:56:25Z sunny-khaki-badger doing → blocked
