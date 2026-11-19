@@ -35,6 +35,20 @@ Out of scope: running it on landing (later tickets) or in `make release`, CI cha
 
 Add the pinned Linux Dockerfile and POSIX check script exactly as specified. Update the make-check guidance in AGENTS.md to describe the actual checks and Linux script. Verify the script and environment behavior, run make check, record criterion evidence in ticket notes, then commit implementation files with Task: TASK-429.
 
+## Notes
+
+Criterion 1: `sh scripts/check_linux.sh` exited 0; last output line `OK`; elapsed 18 seconds (warm cache, run after commit 0442e9c5).
+
+Criterion 2: temporary `revert-fixes` commit caused script exit status 2; both `grep -F` checks matched `test_main_behind_origin_is_refused` and `test_wrapped_criterion_is_one_criterion`. Removed temporary commit with `git reset --hard HEAD~1`; branch restored to 0442e9c5.
+
+Criterion 3: `touch` stamp immediately before script run; `find .venv node_modules -newer <stamp> | wc -l` printed 0; `git status --porcelain` identical before and after (AGENTS.md modified and two scripts untracked at that point). `make check` exited 0: ruff format/check, pyright and all 765 unittest suites passed.
+
+Criterion 4: Dockerfile inspection printed the exact pinned FROM/COPY/USER/uv install lines; `head -5 scripts/check_linux.sh` showed committed-HEAD-only comment. `env PATH=/usr/bin:/bin /bin/sh scripts/check_linux.sh` exited 127 with `docker: command not found`.
+
+## Summary
+
+Implemented and committed Linux Docker check as 0442e9c5. Verified Linux check passes (18s), demonstrated both regressions without the prior fixes and removed the temporary revert commit. `make check` passes. Working tree clean.
+
 ## History
 
 - 2026-11-19T18:36:33Z daring-amber-kestrel → planning
@@ -49,3 +63,4 @@ Add the pinned Linux Dockerfile and POSIX check script exactly as specified. Upd
 - 2026-11-19T18:39:55Z daring-amber-kestrel planning → todo
 - 2026-11-19T20:11:21Z calm-ochre-quail todo → doing
 - 2026-11-19T20:17:28Z calm-ochre-quail: wrote the plan
+- 2026-11-19T20:34:16Z calm-ochre-quail: changed notes, summary
