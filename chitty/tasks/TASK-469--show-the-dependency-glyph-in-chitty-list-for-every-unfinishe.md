@@ -1,6 +1,6 @@
 ---
 title: Show the 🔗 dependency glyph in `chitty list` for every unfinished ticket
-status: planning
+status: cold-read
 parent: TASK-70
 created: 2026-11-19
 ---
@@ -38,3 +38,4 @@ Tests use Hypothesis, the repository's property-testing tool. In `tests/test_pro
 - 2026-11-19T22:06:11Z sunny-white-dormouse cold-read → todo
 - 2026-11-19T22:53:24Z sunny-white-dormouse: changed title, description, acceptance criteria
 - 2026-11-19T22:53:24Z sunny-white-dormouse todo → planning
+- 2026-11-19T22:53:43Z sunny-white-dormouse planning → cold-read
