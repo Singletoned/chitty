@@ -1,6 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
-status: review
+status: doing
 created: 2026-11-19
 ---
 
@@ -33,6 +33,8 @@ Add Hypothesis property tests for repository_answer, first proving they fail wit
 
 Confirmed the Hypothesis tests fail against the temporary NotImplementedError stub: `python -m unittest tests.test_git.TestRepositoryAnswer` errored in the expected cases. The suite now covers exact `true` matching, phrase case/status boundaries, error context, and arbitrary integer statuses/streams. I did not perform separate implementation-and-run mutation checks for every incorrect variant listed in criterion 3.
 
+Review failed (integration): merging `main` conflicts in `tests/test_git.py`.
+
 ## Summary
 
 Implemented the pure repository_answer classifier and Hypothesis coverage. Verified the NotImplementedError stub fails the new tests; make format and make check pass (687 tests). Follow-up: criterion 3 requests separately implemented/run mutant checks for each listed incorrect variant; those were not performed.
@@ -58,3 +60,5 @@ Implemented the pure repository_answer classifier and Hypothesis coverage. Verif
 - 2026-11-19T08:59:45Z youthful-pearl-eel: changed notes
 - 2026-11-19T09:00:35Z youthful-pearl-eel: changed summary
 - 2026-11-19T09:00:35Z youthful-pearl-eel doing → review
+- 2026-11-19T09:00:56Z sunny-yellow-stoat: changed notes
+- 2026-11-19T09:00:56Z sunny-yellow-stoat review → doing
