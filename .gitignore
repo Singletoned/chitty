@@ -1,7 +1,7 @@
 .envrc
 __pycache__/
 node_modules/
-tmp/
+/tmp/
 /dist/
 .worktrees/
 uv-*.lock

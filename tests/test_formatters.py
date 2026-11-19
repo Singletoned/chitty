@@ -29,7 +29,11 @@ def run_formatter(name: str, text: str) -> str:
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "TASK-1--x.md"
         path.write_text(text)
-        subprocess.run([*FORMATTERS[name], str(path)], check=True, capture_output=True)
+        # Run inside the temp directory so no ignore file (such as a `.gitignore`
+        # matching `tmp/`) makes prettier skip the file and exit 0.
+        subprocess.run(
+            [*FORMATTERS[name], str(path)], cwd=directory, check=True, capture_output=True
+        )
         return path.read_text()
 
 
