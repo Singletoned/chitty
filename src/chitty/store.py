@@ -1136,12 +1136,10 @@ def _add_missing_settings(
     if pyproject:
         match = re.search(r"(?m)^\[tool\.chitty\]\s*$", text)
         assert match is not None
-        section_start = match.end()
-        following = re.search(r"(?m)^\[", text[section_start:])
-        position = section_start + following.start() if following else len(text)
-        section = text[section_start:position]
+        following = re.search(r"(?m)^\[", text[match.end() :])
+        position = match.end() + following.start() if following else len(text)
+        section = text[match.end() : position]
     else:
-        section_start = 0
         following = re.search(r"(?m)^\[", text)
         position = following.start() if following else len(text)
         section = text[:position]
@@ -1170,29 +1168,8 @@ def _add_missing_settings(
         )
         if key not in settings
         and not (key in {"setup", "check", "agent_command"} and f"{key} =" in text)
-        and not (
-            key in {"work_model", "review_model", "rebase_model"}
-            and re.search(rf"(?m)^[ \t]*(?:#[ \t]*)?{key}[ \t]*=", section) is not None
-        )
+        and not (key in {"work_model", "review_model", "rebase_model"} and f"{key} =" in section)
     ]
-    if not additions:
-        return text
-    rebase_comment = '# rebase_model = "provider/model" # default for rebase sessions'
-    if rebase_comment in additions:
-        section_lines = section.splitlines(keepends=True)
-        review_index = next(
-            (
-                index
-                for index, line in enumerate(section_lines)
-                if re.match(r"^[ \t]*(?:#[ \t]*)?review_model[ \t]*=", line)
-            ),
-            None,
-        )
-        if review_index is not None:
-            additions.remove(rebase_comment)
-            insertion = section_start + sum(len(line) for line in section_lines[: review_index + 1])
-            text = text[:insertion] + rebase_comment + "\n" + text[insertion:]
-            position += len(rebase_comment) + 1
     if not additions:
         return text
     return text[:position] + "\n".join(additions) + "\n\n" + text[position:]

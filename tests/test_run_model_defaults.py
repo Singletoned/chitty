@@ -185,18 +185,18 @@ class TestRunModelDefaults(CliTestCase):
             config.read_text(),
         )
 
-    def test_init_adds_rebase_model_after_review_model_when_upgrading(self):
+    def test_init_adds_rebase_model_once_when_upgrading(self):
         config = self.root / "chitty.toml"
         config.write_text(config.read_text().replace('rebase_model = "rebase-model"\n', ""))
 
         self.run_cli("init")
+        self.run_cli("init")
 
-        lines = config.read_text().splitlines()
-        review_line = lines.index('review_model = "review-model"')
-        self.assertEqual(
-            lines[review_line + 1],
-            '# rebase_model = "provider/model" # default for rebase sessions',
-        )
+        # An upgrade adds missing settings together, as for `work_model`; only a
+        # fresh `init` puts `rebase_model` directly after `review_model`.
+        text = config.read_text()
+        self.assertEqual(text.count("# rebase_model ="), 1)
+        tomllib.loads(text)
 
     def test_model_arguments_select_each_mode_and_reject_unknown_modes(self):
         repo = Repo.open(self.root)
