@@ -1,6 +1,6 @@
 ---
 title: Resolve review rebase conflicts in a separate agent session
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-374
@@ -45,6 +45,12 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 
 Regression evidence: the successful-conflict test fails against the prior abort-on-conflict preparation behavior because no rebase-resolution or reviewer agent starts. The real-Git suite covers all 12 exit/rebase/worktree combinations, mode/model selection, interrupted sessions, prompt validation, usage records, and unchanged ticket bytes across rebase-session execution.
 
+Reviewed: Real-Git session outcomes and the complete diff were reviewed; no prior review findings.
+1: pass - make check passed 768 tests; replacing preparation with prior abort-on-conflict behavior made test_successful_rebase_session_precedes_reviewer_and_logs_mode fail with 0 != 2.
+2: pass - make check passed the 11 failure outcome tests, including note, status, conflict path, no reviewer and no remaining rebase assertions.
+3: pass - make check passed model selection, interruption exit 130 and missing-prompt tests.
+4: pass - make check passed, including the separate rebase usage record assertion; docs/plan/config.md and docs/plan/next-action-and-runner.md document the model and session.
+
 ## Summary
 
 Implemented the dedicated `rebase` session when review rebasing conflicts. It uses the rebase guide and configured model, runs once without continuations, verifies the rebase finished and worktree is clean, aborts stopped rebases on failure/interruption, records its own usage line, and returns failed reviews to `doing` with a one-line integration note. Updated runner design docs. Verification: the new real-Git suite passes (14 tests); `make check` passes (768 tests), `make format` and `chitty fix` completed. The success regression was shown failing with the prior abort-on-conflict behavior. Follow-up: none.
@@ -70,3 +76,5 @@ Implemented the dedicated `rebase` session when review rebasing conflicts. It us
 - 2026-11-19T16:20:04Z zesty-dusky-zander: wrote the plan
 - 2026-11-19T17:10:49Z zesty-dusky-zander: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T17:10:49Z zesty-dusky-zander doing → review
+- 2026-11-19T17:14:22Z intrepid-hazel-adder: changed notes
+- 2026-11-19T17:14:22Z intrepid-hazel-adder review → done
