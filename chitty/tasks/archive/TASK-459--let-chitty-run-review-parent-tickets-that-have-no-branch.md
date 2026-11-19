@@ -19,3 +19,4 @@ Archived as covered by `BACKLOG-62079086` (review parent tickets).
 - 2026-11-19T20:55:35Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:36Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:57:33Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:36Z sunny-white-dormouse backlog → archived
