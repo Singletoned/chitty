@@ -36,6 +36,10 @@ Tests. `worktree` is `self.root / ".worktrees/task-1"`; `log` is `(worktree / ".
 - [ ] The property, the changed and the new tests pass; against the `run.py` of `main` before this change, each changed or new assertion in `tests/test_next.py` fails on the old note text (`check line` found in a note, or `detail` missing), not only with an `AttributeError` or a missing log file (recorded in the notes)
 - [ ] `make check` passes
 
+## Plan
+
+Implement the specified runner check log and shared Git exclude handling in src/chitty/run.py. Update the targeted runner tests, add the property test, and make only the named documentation sentence replacements. First run regression tests against the current behavior, then implement, format, run focused tests and make check; commit implementation in logical commits with Task: TASK-353 trailers.
+
 ## Notes
 
 Cold read 2026-11-19 outcomes: the passing-check test needed an agent that moves to review (an unchanged agent ends in error); a truncation check; a pure `_with_exclude_line` with a property for missing files, missing final newlines and repeats; `assertNotIn("check line")` so a tail-only note fails; the exact detail string; `Error output:` left to `TASK-427`; named the doc sentences; not-found note unchanged; exclude path resolved against the worktree; `RUN_LOG_EXCLUDE` derived from `RUN_LOG`.
@@ -52,3 +56,4 @@ Second cold read 2026-11-19 outcomes: a newline before `# exit` when output lack
 - 2026-11-19T17:34:13Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:34:19Z quick-ginger-lapwing planning → todo
 - 2026-11-19T17:35:05Z upbeat-violet-dormouse todo → doing
+- 2026-11-19T17:36:49Z upbeat-violet-dormouse: wrote the plan
