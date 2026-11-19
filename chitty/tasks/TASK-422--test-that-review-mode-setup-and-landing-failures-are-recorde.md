@@ -1,6 +1,6 @@
 ---
 title: Test that review-mode `setup` and landing failures are recorded on the ticket branch
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-382
@@ -265,6 +265,11 @@ Reset 2026-11-19: blocked because the runner claimed it on `main` while branch `
 
 Mutation evidence: with the review setup and landing _record_ticket_error calls incorrectly passed Repo(main_root, main_repo.config), setup test failed at unchanged-main git rev-parse (actual 442cab… vs expected f67cdb…); landing test failed at unchanged-main git rev-parse (actual bd3488… vs expected 3f4db6…). Restored src/chitty/run.py. With the landing fake’s review-marker write and git add removed, the landing test failed at done → error (actual review → done), confirming the check trips on the marker. Restored the fake.
 
+Reviewed:
+1: pass - make check ran 765 tests and printed OK; inspected both tests and all specified assertions. The mutation evidence note records both tests failing on unchanged main and the marker removal failing on done → error.
+2: pass - Mutation evidence note records setup and landing each failing the unchanged-main git rev-parse assertion against the specified wrong repository.
+3: pass - git diff shows TestReviewSetupErrorOnBranch and unused imports removed; make check printed OK, with ruff and pyright passing.
+
 ## Summary
 
 Updated review-mode setup and landing error regression tests to assert ticket-branch contents and commit history while main remains unchanged. Fixed fake reviewer path and marker-only landing check; removed duplicate setup test. Verified both tests pass. Mutation checks fail at unchanged-main assertions for main-repository error recording, and marker removal fails at done → error. make check passed (ruff, pyright, 765 unittest tests). Commit: 4179192d (Task: TASK-422). No follow-ups.
@@ -295,3 +300,5 @@ Updated review-mode setup and landing error regression tests to assert ticket-br
 - 2026-11-19T17:46:46Z vivid-white-lapwing: wrote the plan
 - 2026-11-19T17:50:17Z vivid-white-lapwing: changed notes, summary
 - 2026-11-19T17:50:17Z vivid-white-lapwing doing → review
+- 2026-11-19T17:54:42Z intrepid-yellow-marten: changed notes
+- 2026-11-19T17:54:42Z intrepid-yellow-marten review → done
