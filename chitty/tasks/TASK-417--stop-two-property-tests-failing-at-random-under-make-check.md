@@ -28,6 +28,10 @@ No property is added: both changes fix existing property tests, and `plain_note`
 - [ ] A new `TestPlainNote` class in `tests/test_property_refused_write.py` asserts `plain_note` is false for each of `"0\n="`, `"x\n-"`, `"x\n  ---"`, `"x\n=  "`, `" # x"`, `"x\n  ## y"`, three backticks after one leading space, `"  ~~~"` and `"   "`, and true for `"plain text"`, `"a\nb = c"` and `"x - y"`. Before the change it fails because `plain_note` does not exist; the evidence that matters is the `main` reproduction in the Description, recorded in a note
 - [ ] `make check` passes
 
+## Plan
+
+Register and load a Hypothesis settings profile with deadline=None in tests/__init__.py, add an isolated profile assertion test, and remove the redundant deadline setting from test_suffix_round_trips. Replace the NOTES lambda with module-level plain_note implementing the specified whitespace, heading, fence, and setext-boundary checks; add fixed-case unit tests. Record the ticket’s specified main reproduction evidence in a note, then run focused regression checks and make check.
+
 ## History
 
 - 2026-11-19T11:34:07Z quick-ginger-lapwing → planning
@@ -39,3 +43,4 @@ No property is added: both changes fix existing property tests, and `plain_note`
 - 2026-11-19T12:05:12Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T12:05:12Z quick-ginger-lapwing planning → todo
 - 2026-11-19T12:05:55Z honest-coral-gannet todo → doing
+- 2026-11-19T12:06:49Z honest-coral-gannet: wrote the plan
