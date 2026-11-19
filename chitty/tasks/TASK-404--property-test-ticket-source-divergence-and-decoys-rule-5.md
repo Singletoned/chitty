@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: doing
+status: review
 depends_on:
   - TASK-377
   - TASK-403
@@ -71,3 +71,4 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T18:01:40Z honest-zinc-wren review → doing
 - 2026-11-19T20:09:52Z friendly-silver-kestrel: changed notes
 - 2026-11-19T20:10:09Z friendly-silver-kestrel: changed summary; ticked acceptance criteria
+- 2026-11-19T20:10:12Z friendly-silver-kestrel doing → review
