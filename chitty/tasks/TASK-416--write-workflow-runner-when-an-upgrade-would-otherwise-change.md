@@ -1,6 +1,6 @@
 ---
 title: Write `workflow = "runner"` when an upgrade would otherwise change a runner repository to tickets
-status: review
+status: done
 labels:
   - blocks-release
 priority: high
@@ -34,7 +34,7 @@ Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's
 
 ## Acceptance Criteria
 
-- [ ] Property (Hypothesis), using the generator in Tests, for both file forms: when the section has no `workflow` key and the recorded version resolves to `runner`, the result passes the position check in Tests and `tomllib` reads `workflow` as `runner` in the Chitty section; otherwise the result equals the input. Applying the function twice equals applying it once. The direct no-`chitty_version` cases raise or return unchanged as Tests says
+- [x] Property (Hypothesis), using the generator in Tests, for both file forms: when the section has no `workflow` key and the recorded version resolves to `runner`, the result passes the position check in Tests and `tomllib` reads `workflow` as `runner` in the Chitty section; otherwise the result equals the input. Applying the function twice equals applying it once. The direct no-`chitty_version` cases raise or return unchanged as Tests says
 - [x] With the installed version patched to `0.5.1`, in the integration repository: `chitty init` leaves the exact line `workflow = "runner"` in the Chitty section; a second `chitty init` leaves `chitty.toml` and `AGENTS.md` byte for byte the same, and `AGENTS.md` still contains `chitty guide work`. In a second such repository, `chitty add` makes a `chitty: upgrade repository setup` commit (the commit before the add) whose `chitty.toml` has that line. Before the change, the line checks and the `AGENTS.md` check fail
 - [x] `make check` passes
 
@@ -57,6 +57,11 @@ Review failed (tests): Newly discovered: add the six specified explicit Hypothes
 3: pass - `make check` exited 0: ruff, pyright and 701 tests passed.
 
 Added deterministic Hypothesis @example cases for all six specified version boundaries. Focused tests passed; make check passed (701 tests, ruff, pyright).
+
+Reviewed: Earlier generator, EOF and explicit example findings are resolved.
+1: pass - `make check` passed the property and direct cases; the preceding review reported three errors including the property with the helper replaced by `NotImplementedError`.
+2: pass - `make check` passed both integration tests; the first review reported both line checks failed with migration disabled and the second init changed guide presence from `True` to `False`.
+3: pass - `make check` exited 0: ruff, pyright and 707 tests passed.
 
 ## Summary
 
@@ -91,3 +96,5 @@ Expanded the migration property test with all six required deterministic version
 - 2026-11-19T11:29:15Z brisk-pearl-heron: changed notes
 - 2026-11-19T11:29:36Z brisk-pearl-heron: changed summary
 - 2026-11-19T11:29:38Z brisk-pearl-heron doing → review
+- 2026-11-19T11:32:27Z upbeat-russet-puffin: changed notes; ticked acceptance criteria
+- 2026-11-19T11:32:27Z upbeat-russet-puffin review → done
