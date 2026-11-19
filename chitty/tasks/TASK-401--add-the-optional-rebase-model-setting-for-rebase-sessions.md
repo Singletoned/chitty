@@ -20,7 +20,7 @@ Tests: in `tests/test_run_model_defaults.py`, which tests the existing model set
 ## Acceptance Criteria
 
 - [x] `_model_arguments` called with mode `rebase` returns `("--model", <value>)` when `rebase_model` is set and `()` when unset or when the command already has `--model`; modes `work` and `review` behave as before
-- [ ] [x] `chitty init` in a new repository writes the commented `rebase_model` line directly after `review_model`; upgrading an existing config adds it once, with the other missing settings, as for `work_model`, and the result parses as TOML; a second `chitty init` does not add it again; `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
+- [x] [x] `chitty init` in a new repository writes the commented `rebase_model` line directly after `review_model`; upgrading an existing config adds it once, with the other missing settings, as for `work_model`, and the result parses as TOML; a second `chitty init` does not add it again; `rebase_model = "  "` makes `Repo.open` raise `ChittyError` naming `rebase_model`; `_model_arguments` with mode `other` raises `ChittyError` naming it
 - [x] `docs/plan/config.md` and `docs/plan/next-action-and-runner.md` mention `rebase_model`; `make check` passes
 
 ## Plan
@@ -83,3 +83,4 @@ Implemented optional rebase_model and fixed init upgrade insertion to stay withi
 - 2026-11-18T23:41:16Z witty-coral-gannet review → blocked
 - 2026-11-19T10:00:28Z quick-ginger-lapwing: changed owner, acceptance criteria, notes
 - 2026-11-19T10:00:28Z quick-ginger-lapwing blocked → review
+- 2026-11-19T10:00:39Z quick-ginger-lapwing: ticked acceptance criteria
