@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -33,6 +33,10 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 
 Implement and property-test the release blocker/minor ticket selectors, then verify the release-version subprocess behavior and update AGENTS.md release guidance. Run the focused tests before and after the implementation, then make check and commit the implementation changes with Task: TASK-412.
 
+## Summary
+
+Implemented full-scan release blockers and done-only needs-minor selection; added Hypothesis property coverage plus subprocess tests for active/human blockers and todo labels. Verification: focused tests and make check pass (700 tests). No follow-ups.
+
 ## History
 
 - 2026-11-19T10:01:36Z quick-ginger-lapwing → planning
@@ -47,3 +51,5 @@ Implement and property-test the release blocker/minor ticket selectors, then ver
 - 2026-11-19T11:10:17Z quick-ginger-lapwing planning → todo
 - 2026-11-19T11:11:52Z jolly-ebony-toad todo → doing
 - 2026-11-19T11:12:56Z jolly-ebony-toad: wrote the plan
+- 2026-11-19T11:17:18Z jolly-ebony-toad: changed summary
+- 2026-11-19T11:17:18Z jolly-ebony-toad doing → review
