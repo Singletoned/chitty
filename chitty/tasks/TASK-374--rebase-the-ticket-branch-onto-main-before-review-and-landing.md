@@ -40,6 +40,10 @@ Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `te
 - [ ] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); this fails before the change
 - [ ] `git.merge` and `git.merge_main` are gone, the retargeted interrupt tests and the flipped merge-count assertions pass, and `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
 
+## Plan
+
+Add direct real-Git tests for rebase_onto clean and conflict outcomes; implement it and remove obsolete merge helpers. Update review preparation and landing to rebase, handling conflicts and Ctrl-C as specified, then update runner tests and runner design docs. Run focused regression tests before and after the fix, format, run make check, and commit implementation changes with a Task: TASK-374 trailer.
+
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
@@ -62,3 +66,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:02:11Z lively-quartz-crane planning → todo
 - 2026-11-18T18:17:15Z lively-quartz-crane: changed description
 - 2026-11-19T14:20:48Z sunny-bronze-ibis todo → doing
+- 2026-11-19T14:21:56Z sunny-bronze-ibis: wrote the plan
