@@ -42,6 +42,10 @@ Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's
 
 Add section-aware add_runner_workflow with regression/property and integration coverage. First land a NotImplementedError stub and tests, confirm tests fail, then implement and wire migration into init_repo upgrade flow; format, run checks, and commit implementation with Task trailer.
 
+## Summary
+
+Implemented section-scoped runner workflow migration during stale setup upgrades, with property-style tests for both config formats and integration coverage for init idempotence and autocommit upgrade commits. Verified the new test failed against the NotImplementedError stub, then passed after implementation. `make format` and `make check` pass. Follow-up: none.
+
 ## History
 
 - 2026-11-19T10:50:03Z quick-ginger-lapwing → planning
@@ -58,3 +62,4 @@ Add section-aware add_runner_workflow with regression/property and integration c
 - 2026-11-19T11:05:38Z quick-ginger-lapwing planning → todo
 - 2026-11-19T11:06:03Z youthful-ochre-vole todo → doing
 - 2026-11-19T11:06:53Z youthful-ochre-vole: wrote the plan
+- 2026-11-19T11:10:35Z youthful-ochre-vole: changed summary
