@@ -7,6 +7,7 @@ from pathlib import Path
 from click.testing import CliRunner
 
 from chitty.cli import cli
+from chitty.errors import ChittyError
 from chitty.store import guide
 
 
@@ -37,10 +38,12 @@ class TestGuideRebase(unittest.TestCase):
     def test_role_and_cli_expose_rebase_instructions(self):
         text = (Path(__file__).parents[1] / "src/chitty/roles/rebase.md").read_text()
         self.assertIn("git rebase --continue", text)
-        self.assertIn("git rebase --abort", text)
-        self.assertIn("git rebase --skip", text)
+        self.assertIn("Never run `git rebase --abort` or `git rebase --skip`", text)
         result = CliRunner().invoke(cli, ["guide", "rebase", "TASK-1"], catch_exceptions=False)
         self.assertIn("git rebase --continue", result.output)
+        help_result = CliRunner().invoke(cli, ["guide", "--help"], catch_exceptions=False)
+        self.assertIn("chitty guide rebase TASK-12", help_result.output)
+        self.assertIn("rebase accept an optional ticket ID", help_result.output)
 
     def test_stopped_rebase_injects_text_for_both_guides_and_backends(self):
         insertion = (Path(__file__).parents[1] / "src/chitty/roles/rebase.md").read_text().rstrip()
@@ -67,12 +70,36 @@ class TestGuideRebase(unittest.TestCase):
                         finally:
                             os.chdir(previous)
                         self.assertEqual(cli_output, output)
+                unrelated = Path(tempfile.mkdtemp())
+                for role in ("review", "plan", "cold-read"):
+                    ticket_id = "TASK-1" if role == "review" else None
+                    self.assertEqual(
+                        guide(role, ticket_id, directory=root),
+                        guide(role, ticket_id, directory=unrelated),
+                    )
                 self.git(root, "rebase", "--abort")
                 for role in ("work", "repair"):
                     self.assertEqual(
                         guide(role, "TASK-1", directory=root),
-                        guide(role, "TASK-1", directory=Path(tempfile.mkdtemp())),
+                        guide(role, "TASK-1", directory=unrelated),
                     )
+
+    def test_outside_repository_and_missing_directory(self):
+        outside = Path(tempfile.mkdtemp())
+        result = subprocess.run(
+            ["git", "rev-parse", "--is-inside-work-tree"],
+            cwd=outside,
+            check=False,
+            capture_output=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        for role in ("work", "repair"):
+            with self.assertRaises(ChittyError):
+                guide(role, "TASK-1", directory=outside / "missing")
+            self.assertEqual(
+                guide(role, "TASK-1", directory=outside),
+                guide(role, "TASK-1", directory=Path(tempfile.mkdtemp())),
+            )
 
     def test_linked_worktree_detects_its_stopped_rebase(self):
         root = self.repository("rebase-merge")

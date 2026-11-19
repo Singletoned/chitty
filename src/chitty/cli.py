@@ -883,7 +883,7 @@ def guide_(role: str | None, task_id: str | None) -> None:
       chitty guide review TASK-12     Review a ticket
       chitty guide plan               Write or refine tickets
       chitty guide cold-read TASK-12  Cold-read a proposed ticket
-      chitty guide rebase TASK-12    Finish a stopped rebase
+      chitty guide rebase TASK-12   Finish a stopped rebase
 
     Work, review, cold-read and rebase accept an optional ticket ID. Setup and plan do not.
     """
