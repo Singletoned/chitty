@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: review
+status: planning
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -41,6 +41,12 @@ Unblocked 2026-11-19 by a planning session: `TASK-410` landed on `main` at 11:31
 
 Verified the refusal matrix: tests/test_autocommit_requires_git.py passes all 24 grid combinations plus move/fix/read and stale-setup checks. `make check` passes (712 tests). The requested unfixed-main baseline run was not performed; do not treat criterion 3 as demonstrated until review verifies it.
 
+Review failed (design): Criterion 3 requires every refusing row to fail on main, but criterion 1 explicitly requires the existing TASK-405 PATH error for autocommit off, initialized, git missing; those three rows already pass on main. Decide which rows must regress and revise criterion 3. All findings below are newly discovered; the prior note already disclosed that baseline evidence was missing.
+1: fail - The grid passes in make check, but it never asserts that errors name autocommit or that the resulting commit contains the ticket file. Add those assertions; main baseline grid printed six failures for autocommit on without a repository, but the initialized no-git rows passed because the autocommit assertion is absent.
+2: fail - make check passes the combined test, but the main baseline run stopped at move with missing git init message, so it did not demonstrate that fix and stale-setup assertions fail without the change. Isolate the cases and record baseline evidence for each.
+3: fail - Baseline using main store.py with the branch tests printed six grid failures and one combined-test failure, not failures for every refusing row. Existing off/initialized/no-git behavior is deliberately unchanged, so this criterion cannot be met as written.
+4: pass - make check printed Ran 720 tests and OK; ruff and pyright passed.
+
 ## Summary
 
 Implemented pre-write Git and repository checks for autocommit writes. Added the 24-case command/state grid and additional write/read/stale-setup coverage. Verified with make check (712 tests). Follow-up: verify criterion 3 against main baseline during review.
@@ -63,3 +69,5 @@ Implemented pre-write Git and repository checks for autocommit writes. Added the
 - 2026-11-19T12:47:56Z quick-ginger-lapwing blocked → doing
 - 2026-11-19T12:53:22Z open-coral-marten: changed notes, summary
 - 2026-11-19T12:53:22Z open-coral-marten doing → review
+- 2026-11-19T13:36:58Z nimble-ebony-zander: changed owner, acceptance criteria, notes
+- 2026-11-19T13:36:58Z nimble-ebony-zander review → planning
