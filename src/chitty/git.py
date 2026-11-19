@@ -390,6 +390,7 @@ def is_repository(directory: Path) -> bool:
             ["git", "rev-parse", "--is-inside-work-tree"],
             check=False,
             cwd=directory,
+            env={**os.environ, "LC_ALL": "C"},
             capture_output=True,
             text=True,
         )
@@ -401,7 +402,13 @@ def is_repository(directory: Path) -> bool:
                     f"`git` is unavailable on PATH, but repository marker exists: {marker}"
                 ) from error
         return False
-    return result.returncode == 0 and result.stdout.strip() == "true"
+    return repository_answer(
+        ["git", "rev-parse", "--is-inside-work-tree"],
+        directory,
+        result.returncode,
+        result.stdout,
+        result.stderr,
+    )
 
 
 def is_linked_worktree(directory: Path) -> bool:

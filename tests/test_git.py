@@ -161,6 +161,38 @@ class TestIsRepository(RepoTestCase):
         with tempfile.TemporaryDirectory() as temporary:
             self.assertFalse(git.is_repository(Path(temporary)))
 
+    def test_invalid_repository_format_raises(self):
+        self.git_init()
+        config = self.root / ".git" / "config"
+        config.write_text(
+            config.read_text().replace(
+                "repositoryformatversion = 0", "repositoryformatversion = 99"
+            )
+        )
+        with self.assertRaisesRegex(ChittyError, "found 99"):
+            git.is_repository(self.root)
+
+    def test_not_repository_detection_uses_c_locale(self):
+        fake_bin = self.tmp / "fake-bin"
+        fake_bin.mkdir()
+        fake_git = fake_bin / "git"
+        fake_git.write_text(
+            "#!/bin/sh\n"
+            'if [ "$LC_ALL" = C ]; then\n'
+            '  echo "fatal: not a git repository" >&2\n'
+            "else\n"
+            '  echo "Schwerwiegend: Kein Git-Repository" >&2\n'
+            "fi\n"
+            "exit 128\n"
+        )
+        fake_git.chmod(0o755)
+        with (
+            tempfile.TemporaryDirectory() as temporary,
+            mock.patch.dict(os.environ, {"PATH": str(fake_bin), "LANG": "de_DE.UTF-8"}),
+        ):
+            os.environ.pop("LC_ALL", None)
+            self.assertFalse(git.is_repository(Path(temporary)))
+
     def git_init(self):
         subprocess.run(["git", "init", "--quiet"], cwd=self.root, check=True)
 
