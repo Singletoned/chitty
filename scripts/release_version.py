@@ -80,6 +80,7 @@ def main() -> None:
     tickets = []
     for path in Path("chitty").rglob("*.md"):
         if "archive" not in path.parts:
+            parse_filename(path.name)
             tickets.append((path, parse(path.read_text())))
 
     blockers = release_blockers(tickets)

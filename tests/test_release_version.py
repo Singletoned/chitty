@@ -186,13 +186,35 @@ class ReleaseVersionTest(unittest.TestCase):
         self.assertEqual(result.stdout, "")
         self.assertIn("TASK-1: Example", result.stderr)
 
-    def test_human_blocker_fails(self):
+    def test_human_blocker_fails_even_when_unchanged_since_tag(self):
         self.ticket("chitty/human/HUMAN-12--example.md", "blocks-release", "doing")
         self.commit("blocker")
+        self.git("tag", "v0.1.10")
+        self.write("README.md", "changed\n")
+        self.commit("unrelated change")
         result = self.run_script()
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(result.stdout, "")
         self.assertIn("HUMAN-12: Example", result.stderr)
+
+    def test_done_blocker_at_tag_does_not_block_release(self):
+        self.ticket("chitty/tasks/TASK-1--example.md", "blocks-release")
+        self.commit("done blocker")
+        self.git("tag", "v0.1.10")
+        self.write("README.md", "changed\n")
+        self.commit("unrelated change")
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "0.1.11")
+        self.assertEqual(result.stderr, "")
+
+    def test_malformed_ticket_filename_fails(self):
+        self.ticket("chitty/tasks/not-a-ticket.md")
+        self.commit("malformed ticket filename")
+        result = self.run_script()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("invalid task ID", result.stderr)
 
     def test_todo_needs_minor_does_not_bump_minor(self):
         self.ticket("chitty/tasks/TASK-1--example.md", "needs-minor", "todo")
