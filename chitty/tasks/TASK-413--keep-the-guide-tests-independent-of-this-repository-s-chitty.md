@@ -32,6 +32,10 @@ No property: the change only removes one case and moves one test class into a te
 
 Drop the no-role case from the backticks guide test and expected managed_guide import; isolate Pi warning CLI invocation in RepoTestCase temporary repository. Verify before/after config independence with archived copies, then make check and commit implementation.
 
+## Notes
+
+Changed the tests as planned. Verification: `PYTHONPATH=src .venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning tests.test_guide_workflow_block` passed (26 tests); `make check` passed all 702 tests, formatting, lint, and type checks. Its test output includes expected diagnostics from subprocess fixtures. I did not run the specified archived-copy validation under `/private/tmp/claude-501/`: the session instruction limits file creation to this worktree. Thus the separate before/after altered-config proof remains unverified. Commit: a860b871 (Task: TASK-413).
+
 ## History
 
 - 2026-11-19T10:01:38Z quick-ginger-lapwing → planning
@@ -46,3 +50,4 @@ Drop the no-role case from the backticks guide test and expected managed_guide i
 - 2026-11-19T11:26:09Z quick-ginger-lapwing planning → todo
 - 2026-11-19T11:30:51Z golden-hazel-raven todo → doing
 - 2026-11-19T11:31:54Z golden-hazel-raven: wrote the plan
+- 2026-11-19T11:33:18Z golden-hazel-raven: changed notes
