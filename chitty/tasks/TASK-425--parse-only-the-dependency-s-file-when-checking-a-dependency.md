@@ -1,6 +1,6 @@
 ---
 title: Parse only the dependency's file when checking a dependency on `main`
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -18,9 +18,9 @@ Test: in `tests/test_next.py`, next to `test_todo_dependency_must_be_done_on_mai
 
 ## Acceptance Criteria
 
-- [ ] The test returns `True` and counts exactly one `parse` call; against the old `_dependency_is_done` it counts one per ticket file on `main` (recorded in the notes)
-- [ ] A test with a malformed body in a ticket other than the dependency on `main` still reports the dependency done; against the old code it raises `ChittyError` (recorded in the notes)
-- [ ] `chitty list` in this repository is timed before and after in the notes; `make check` passes
+- [x] The test returns `True` and counts exactly one `parse` call; against the old `_dependency_is_done` it counts one per ticket file on `main` (recorded in the notes)
+- [x] A test with a malformed body in a ticket other than the dependency on `main` still reports the dependency done; against the old code it raises `ChittyError` (recorded in the notes)
+- [x] `chitty list` in this repository is timed before and after in the notes; `make check` passes
 
 ## Plan
 
@@ -83,9 +83,23 @@ make: *** [check] Error 1
 
 ```
 
+Implemented by the planner, as the owner asked; reviewed by the normal reviewer.
+
+Evidence, `.venv/bin/python -m unittest` on the two new tests in `tests/test_next.py`:
+- Old code: `test_dependency_check_parses_only_the_dependency` fails with `AssertionError: 10 != 1` (ten files on `main`); `test_malformed_other_ticket_on_main_does_not_break_a_dependency` raises `ChittyError: refs/heads/main:chitty/tasks/TASK-2--done-1.md: frontmatter is not valid YAML`.
+- New code: both pass.
+- `chitty list` in the main checkout, two runs each: `real 4.23` and `4.25` with the Chitty of `main`; `real 1.29` and `1.29` with the Chitty of this branch.
+- `make check`: `Ran 744 tests`, `OK`. One earlier run of `tests.test_next` failed only in `test_run_cases` (`TASK-1: blocked → error`, expected exit 3), the known flaky test from the inbox; it passed on rerun and in `make check`.
+
+## Summary
+
+Dependency checks on `main` now parse only the file of the dependency. `chitty list` here went from 4.2 s to 1.3 s. Verified by two new tests that fail on the old code and by `make check` (744 tests). No follow-up.
+
 ## History
 
 - 2026-11-19T14:29:04Z quick-ginger-lapwing → doing
 - 2026-11-19T14:31:01Z plucky-umber-wren: changed notes
 - 2026-11-19T14:31:14Z plucky-umber-wren: wrote the plan
 - 2026-11-19T14:32:56Z quick-ginger-lapwing: changed acceptance criteria
+- 2026-11-19T14:33:08Z quick-ginger-lapwing: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T14:33:08Z quick-ginger-lapwing doing → review
