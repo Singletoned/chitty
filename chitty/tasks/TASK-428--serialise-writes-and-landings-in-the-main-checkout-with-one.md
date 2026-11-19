@@ -30,6 +30,10 @@ Tests, new file `tests/test_main_checkout_lock.py`. Both use a holder: a Python 
 - [ ] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
 - [ ] The existing landing tests in `tests/test_review_merge.py` and `tests/test_landing.py` still pass; `make check` passes
 
+## Plan
+
+Add a blocking main-checkout flock in locks.py. Hold it across repository all-or-nothing writes and setup upgrades only in the primary checkout; linked worktrees remain unlocked. During landing, acquire it only around the initial clean-tree check and around each final clean-tree check plus fast-forward, preserving landing-lock-first ordering. Add process-level regression tests for blocked main writes, landing/write coordination, and the linked-worktree guard; document the locking model. First add and run regressions against the current implementation, then implement, format, and run make check.
+
 ## Notes
 
 Cold read 2026-11-19 (first use of the `cold-reader` agent) outcomes: the check script waits for `held` at most 30 s, so a wrong lock fails rather than hangs; it deletes a stale `held` before each attempt; a guard that ticket-worktree writes do not wait; no locking outside a Git repository; the lock path named by the common Git directory; the no-nesting claim re-checked by the planner, including the private helpers.
@@ -44,3 +48,4 @@ Second cold read 2026-11-19 outcomes: the setup-upgrade paths are accepted untes
 - 2026-11-19T17:52:42Z quick-ginger-lapwing: changed owner, description, notes
 - 2026-11-19T17:52:42Z quick-ginger-lapwing planning → todo
 - 2026-11-19T17:59:10Z daring-lilac-vole todo → doing
+- 2026-11-19T18:01:02Z daring-lilac-vole: wrote the plan
