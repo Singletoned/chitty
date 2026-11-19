@@ -26,6 +26,10 @@ Property tests: none here; the decision is `TASK-406`'s pure function, which car
 - [ ] Example test with a fake `git`: `PATH` is set to a directory holding only an executable `git` script starting `#!/bin/sh` (not `#!/usr/bin/env sh`, which cannot find `sh` on that `PATH`), which exits 128 printing `fatal: not a git repository` to standard error when `LC_ALL` is `C`, and `Schwerwiegend: Kein Git-Repository` otherwise. With `LC_ALL` removed and `LANG=de_DE.UTF-8` set, `is_repository` on a plain temporary directory returns `False`. This passes on `main`, so the evidence, recorded in a note, is that the test raises when the `LC_ALL` entry is removed from the new `is_repository`.
 - [ ] `make check` passes.
 
+## Plan
+
+Update `is_repository` to pass `LC_ALL=C` to the subprocess, preserving the resolved directory and existing missing-directory/missing-git handling, then delegate its result to `repository_answer`. Add the two specified integration tests in `tests/test_git.py`; establish their behavior before implementing the change. Run `make check`, format if needed, and commit implementation/test changes with a `Task: TASK-407` trailer.
+
 ## History
 
 - 2026-11-19T08:51:09Z lively-quartz-crane → planning
@@ -34,3 +38,4 @@ Property tests: none here; the decision is `TASK-406`'s pure function, which car
 - 2026-11-19T08:54:41Z lively-quartz-crane: changed labels, description, acceptance criteria
 - 2026-11-19T08:54:41Z lively-quartz-crane planning → todo
 - 2026-11-19T10:43:58Z honest-quartz-lapwing todo → doing
+- 2026-11-19T10:45:02Z honest-quartz-lapwing: wrote the plan
