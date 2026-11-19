@@ -30,11 +30,7 @@ Tests: no property. This is real process and pipe handling, and its parts (an ag
 
 ## Notes
 
-Possible starting point: `git diff main...refs/cold-read/TASK-276/2`. Check it against the current criteria; do not trust it. It uses second-resolution stamps, which break `tests/test_next.py` around line 1708; the ticket now asks for microseconds.
-
-Planner, 2026-11-14: removed the dependency on TASK-278. Its only prerequisite for this ticket, print-mode Pi as `agent_command`, is already on `main` (`c2eae4b`); TASK-278 waits only on human trial runs.
-
-Planner, 2026-11-19: the earlier partial implementation on branch `task-276` (tip `e26f0cd5`) was deleted at the owner's request: it had gone stale and conflicted with `main`. Start again from `main`. Its review (2026-11-14) failed on a conflict between streaming agent output to the console and the unchanged timeout test; resolved below by streaming to stderr. That review also found a `ValueError: write to closed file` from a reader thread when a descendant printed after the log closed: detach the log before closing it, and test late output.
+Planner, 2026-11-19: rewritten from scratch. The earlier implementation on branch `task-276` (tip `e26f0cd5`) was deleted at the owner's request because it had gone stale and conflicted with `main`; ignore any `refs/cold-read/TASK-276/*` refs. Its 2026-11-14 review failed on a conflict between streaming output to the console and the unchanged timeout test, resolved here by echoing agent output to stderr. Split out: pruning (`TASK-465`) and log paths in error notes (`TASK-466`).
 
 ## History
 
@@ -55,3 +51,4 @@ Planner, 2026-11-19: the earlier partial implementation on branch `task-276` (ti
 - 2026-11-19T21:12:39Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:18:33Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:18:33Z sunny-white-dormouse cold-read → planning
+- 2026-11-19T21:18:51Z sunny-white-dormouse: replaced notes
