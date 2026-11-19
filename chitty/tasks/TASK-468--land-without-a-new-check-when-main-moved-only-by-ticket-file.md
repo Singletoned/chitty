@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-19
 ---
@@ -30,7 +30,7 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 
 ## Acceptance Criteria
 
-- [ ] The `_only_ticket_paths` property in `tests/test_property_landing_paths.py` passes, generating every path shape in the Description; a note records that it fails while the function raises `NotImplementedError`, and against a mutant that tests `startswith("chitty/<name>")` without the trailing `/`
+- [ ] The `_only_ticket_paths` property in `tests/test_property_landing_paths.py` passes, generating every path shape in the Description; a note records that it fails while the function raises `NotImplementedError`, against a mutant testing `startswith(f"chitty/{name}")` without the trailing `/`, and against a mutant testing only `startswith("chitty/")`
 - [ ] `test_ticket_only_move_lands_without_a_second_check` passes; a note records that it fails against `src/chitty/run.py` without the change (count 2)
 - [ ] `test_mixed_move_reruns_the_check`, `test_quick_path_stops_after_ten_ticket_moves` and the existing `TestLandingRetry` tests pass; a note records that the mixed test fails against a mutant that skips the check after any move, and that the ten-moves test fails, by its own call guard, against a mutant with no quick-path limit
 - [ ] `git diff --stat main` touches only `src/chitty/run.py`, `src/chitty/git.py`, the two test files and `docs/plan/next-action-and-runner.md`, whose new bullet describes the quick path and names the cases where its assumption fails; `make check` passes
@@ -45,3 +45,5 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 - 2026-11-19T21:25:47Z daring-amber-kestrel planning → cold-read
 - 2026-11-19T21:27:44Z daring-amber-kestrel: changed description, acceptance criteria
 - 2026-11-19T21:27:44Z daring-amber-kestrel cold-read → planning
+- 2026-11-19T21:27:58Z daring-amber-kestrel: changed acceptance criteria
+- 2026-11-19T21:27:58Z daring-amber-kestrel planning → cold-read
