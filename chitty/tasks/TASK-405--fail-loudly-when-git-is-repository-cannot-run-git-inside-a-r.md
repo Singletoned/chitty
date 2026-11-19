@@ -1,6 +1,6 @@
 ---
 title: Fail loudly when `git.is_repository` cannot run `git` inside a repository
-status: doing
+status: done
 created: 2026-11-19
 ---
 
@@ -23,9 +23,33 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 
 ## Acceptance Criteria
 
-- [ ] Property test, generated with Hypothesis: each example makes its own `tempfile.TemporaryDirectory`, resolved, not `self.root` (Hypothesis runs `setUp` once for all examples), and asserts no parent of it holds a `.git`. It nests directories 1 to 4 deep inside it (level 0 is the temporary directory, level k the k-th nested one), places a `.git` directory, a `.git` file, a `.git` symbolic link to a missing path, or nothing, at a drawn level from 0 through the deepest, and calls `is_repository` on the deepest directory with `PATH` set to an empty directory. With no marker placed, the result is `False`; otherwise it raises `ChittyError` whose message contains `` `git` ``, `PATH` and the `.git` path. Every example with a marker fails on `main`, which returns `False`.
-- [ ] Example test: `is_repository` on a path that does not exist, and on a regular file, raises `ChittyError` naming the resolved path, both with `git` on `PATH` and without it. Fails on `main`, which returns `False` for the missing path and raises `NotADirectoryError` for the file.
-- [ ] No-regression guard, passing before and after the change: with `git` on `PATH`, `True` for a work tree root and a subdirectory of it, `False` with the directory set to a repository `.git` directory and for a plain temporary directory outside any repository. `make check` passes.
+- [x] Property test, generated with Hypothesis: each example makes its own `tempfile.TemporaryDirectory`, resolved, not `self.root` (Hypothesis runs `setUp` once for all examples), and asserts no parent of it holds a `.git`. It nests directories 1 to 4 deep inside it (level 0 is the temporary directory, level k the k-th nested one), places a `.git` directory, a `.git` file, a `.git` symbolic link to a missing path, or nothing, at a drawn level from 0 through the deepest, and calls `is_repository` on the deepest directory with `PATH` set to an empty directory. With no marker placed, the result is `False`; otherwise it raises `ChittyError` whose message contains `` `git` ``, `PATH` and the `.git` path. Every example with a marker fails on `main`, which returns `False`.
+- [x] Example test: `is_repository` on a path that does not exist, and on a regular file, raises `ChittyError` naming the resolved path, both with `git` on `PATH` and without it. Fails on `main`, which returns `False` for the missing path and raises `NotADirectoryError` for the file.
+- [x] No-regression guard, passing before and after the change: with `git` on `PATH`, `True` for a work tree root and a subdirectory of it, `False` with the directory set to a repository `.git` directory and for a plain temporary directory outside any repository. `make check` passes.
+
+## Plan
+
+Update git.is_repository to validate the resolved directory before invoking git, and distinguish missing git from a missing directory using nearest-ancestor .git markers via lexists. Add Hypothesis coverage and examples in tests/test_git.py, first run regression tests against the current implementation, then run formatting and make check.
+
+## Notes
+
+Regression tests were run before the implementation and failed as expected: missing Git returned False for repository markers, and invalid directories did not raise ChittyError. The full `make check` passed after implementation.
+
+Review failed (tests): The parent-marker precondition does not count dangling symlinks; use `os.path.lexists` for every parent. This is newly discovered; there are no earlier review notes.
+1: fail - `tests/test_git.py` uses `Path.exists()` for the parent assertion. A temporary dangling `.git` symlink printed `exists: False lexists: True`, so the assertion does not ensure that no parent holds a `.git` entry as required. The property test otherwise fails against the `main` implementation with `ChittyError not raised` and passes in `make check`.
+2: pass - Running the new tests with `main:src/chitty/git.py` loaded in memory printed `ChittyError not raised`; a separate baseline exercise printed `False` for missing paths with and without Git and `NotADirectoryError` for files in both cases. `make check` passes the new test.
+3: pass - The guard passed against the main implementation loaded in memory and `make check` passed all 682 tests on this branch.
+
+Review follow-up: changed the Hypothesis parent-marker precondition to os.path.lexists so dangling .git symlinks are counted. make check passes all 682 tests; Ruff format/check and pyright passed. chitty fix reported pre-existing warnings in unrelated task files.
+
+Reviewed: The earlier parent-marker finding is resolved by using os.path.lexists.
+1: pass - make check passed; running TestIsRepository with main git.py loaded in memory failed the property test with ChittyError not raised.
+2: pass - make check passed; the same baseline run failed the invalid-directory test with ChittyError not raised. The earlier review recorded the separate file-path baseline raising NotADirectoryError.
+3: pass - make check passed all 683 tests; the same baseline run passed test_repository_detection_without_missing_git.
+
+## Summary
+
+Addressed review finding by checking parent .git entries with os.path.lexists, including dangling symlinks. Verification: make check passed all 682 tests (Ruff format/check, pyright, unittest). Committed as 789af53a. No follow-ups.
 
 ## History
 
@@ -40,3 +64,12 @@ Tests go in `tests/test_git.py`, in a class inheriting `RepoTestCase` (`tests/su
 - 2026-11-19T08:46:58Z lively-quartz-crane cold-read → planning
 - 2026-11-19T08:47:02Z lively-quartz-crane planning → todo
 - 2026-11-19T08:47:30Z nimble-pearl-eel todo → doing
+- 2026-11-19T08:48:22Z nimble-pearl-eel: wrote the plan
+- 2026-11-19T08:50:16Z nimble-pearl-eel: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T08:50:16Z nimble-pearl-eel doing → review
+- 2026-11-19T08:53:20Z daring-ochre-dormouse: changed acceptance criteria, notes
+- 2026-11-19T08:53:20Z daring-ochre-dormouse review → doing
+- 2026-11-19T08:55:25Z vivid-teal-yellowhammer: changed notes, summary
+- 2026-11-19T08:55:25Z vivid-teal-yellowhammer doing → review
+- 2026-11-19T08:58:14Z rosy-ginger-stoat: changed notes; ticked acceptance criteria
+- 2026-11-19T08:58:14Z rosy-ginger-stoat review → done
