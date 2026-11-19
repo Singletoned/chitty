@@ -42,7 +42,7 @@ Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `te
 
 ## Plan
 
-Add direct real-Git tests for rebase_onto clean and conflict outcomes; implement it and remove obsolete merge helpers. Update review preparation and landing to rebase, handling conflicts and Ctrl-C as specified, then update runner tests and runner design docs. Run focused regression tests before and after the fix, format, run make check, and commit implementation changes with a Task: TASK-374 trailer.
+Fix conflict path parsing by reading Git’s NUL-delimited unmerged path output, and add a real-Git filename-with-spaces test. Strengthen the review integration tests to assert no merge commits in main..task-1 and exactly one reviewer start, and to assert the conflict leaves no rebase in progress. Run the targeted tests against the current implementation first to confirm each regression, then implement and verify; format, run make check, and commit with Task: TASK-374.
 
 ## Notes
 
@@ -313,3 +313,4 @@ Replaced runner merge integration with rebasing in review and landing; removed o
 - 2026-11-19T16:01:48Z quick-ginger-lapwing error → review
 - 2026-11-19T16:05:37Z vivid-zinc-heron: changed acceptance criteria, notes
 - 2026-11-19T16:05:37Z vivid-zinc-heron review → doing
+- 2026-11-19T16:08:32Z brisk-yellow-toad: wrote the plan
