@@ -22,6 +22,64 @@ Test: in `tests/test_next.py`, next to `test_todo_dependency_must_be_done_on_mai
 - [ ] A test with a malformed body in a ticket other than the dependency on `main` still reports the dependency done; against the old code it raises `ChittyError` (recorded in the notes)
 - [ ] `chitty list` in this repository is timed before and after in the notes; `make check` passes
 
+## Notes
+
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+606 files already formatted
+uv run ruff check --no-fix .
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_next.py:1:1
+   |
+ 1 | / import asyncio
+ 2 | | import io
+ 3 | | import json
+ 4 | | import os
+ 5 | | import stat
+ 6 | | import subprocess
+ 7 | | import sys
+ 8 | | from contextlib import redirect_stderr
+ 9 | | from pathlib import Path
+10 | | from unittest.mock import patch
+11 | | from uuid import UUID
+12 | |
+13 | | from mcp.server.mcpserver.exceptions import ToolError
+14 | | from mcp_types import CallToolResult
+15 | |
+16 | | from chitty.config import CHITTY_VERSION
+17 | | from chitty.errors import ChittyError
+18 | | from chitty.inbox import suggest
+19 | | from chitty.mcp import create_server
+20 | | from chitty.run import _record_usage, run_loop
+21 | | from chitty import store
+22 | | from chitty.ids import TaskId
+23 | | from chitty.store import Repo, guide, next_action, ticket_action
+24 | | from tests.test_cli import CliTestCase
+   | |______________________________________^
+help: Organize imports
+   |
+15 |
+16 + from chitty import store
+17 | from chitty.config import CHITTY_VERSION
+18 | from chitty.errors import ChittyError
+19 + from chitty.ids import TaskId
+20 | from chitty.inbox import suggest
+21 | from chitty.mcp import create_server
+22 | from chitty.run import _record_usage, run_loop
+   - from chitty import store
+   - from chitty.ids import TaskId
+23 | from chitty.store import Repo, guide, next_action, ticket_action
+   |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.
+make: *** [check] Error 1
+
+```
+
 ## History
 
 - 2026-11-19T14:29:04Z quick-ginger-lapwing → doing
+- 2026-11-19T14:31:01Z plucky-umber-wren: changed notes
