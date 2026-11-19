@@ -1,6 +1,6 @@
 ---
 title: Add `scripts/check_linux.sh` to run `make check` in a Linux container
-status: review
+status: done
 priority: medium
 created: 2026-11-19
 ---
@@ -45,6 +45,18 @@ Criterion 3: `touch` stamp immediately before script run; `find .venv node_modul
 
 Criterion 4: Dockerfile inspection printed the exact pinned FROM/COPY/USER/uv install lines; `head -5 scripts/check_linux.sh` showed committed-HEAD-only comment. `env PATH=/usr/bin:/bin /bin/sh scripts/check_linux.sh` exited 127 with `docker: command not found`.
 
+Reviewed: Linux container and host checks passed; regression reproduced and temporary commit removed.
+1: pass - `sh scripts/check_linux.sh` exited 0 in 21 seconds; last line `OK`.
+2: pass - After the specified temporary revert commit, `sh scripts/check_linux.sh` exited 2; grep matched `test_main_behind_origin_is_refused (tests.test_release_script.TestReleaseScript.test_main_behind_origin_is_refused)` and `test_wrapped_criterion_is_one_criterion (tests.test_formatters.TestFormattersPreserveMeaning.test_wrapped_criterion_is_one_criterion)`. Reset to original HEAD.
+3: pass - Stamp and `find .venv node_modules -newer tmp/review-stamp | wc -l` printed 0; `git status --porcelain` was empty both before and after. `make check` exited 0, ran 767 tests and printed `OK`.
+4: pass - Dockerfile grep printed:
+`1:FROM ghcr.io/astral-sh/uv:0.13.5 AS uv`
+`2:FROM node:22.23.5-bookworm`
+`3:COPY --from=uv /uv /uvx /usr/local/bin/`
+`4:USER node`
+`5:RUN mkdir -p /home/node/.cache/uv /home/node/.npm && uv python install 3.12`
+`head -5 scripts/check_linux.sh` printed `#!/bin/sh`, `# Checks committed HEAD only; uncommitted changes are not included.`, `set -eu`, a blank line, and `docker build --quiet -t chitty-linux-check \`. The restricted PATH command exited 127 with `scripts/check_linux.sh: line 5: docker: command not found`.
+
 ## Summary
 
 Implemented and committed Linux Docker check as 0442e9c5. Verified Linux check passes (18s), demonstrated both regressions without the prior fixes and removed the temporary revert commit. `make check` passes. Working tree clean.
@@ -65,3 +77,5 @@ Implemented and committed Linux Docker check as 0442e9c5. Verified Linux check p
 - 2026-11-19T20:17:28Z calm-ochre-quail: wrote the plan
 - 2026-11-19T20:34:16Z calm-ochre-quail: changed notes, summary
 - 2026-11-19T20:34:21Z calm-ochre-quail doing → review
+- 2026-11-19T21:09:44Z eager-coral-urchin: changed notes
+- 2026-11-19T21:09:44Z eager-coral-urchin review → done
