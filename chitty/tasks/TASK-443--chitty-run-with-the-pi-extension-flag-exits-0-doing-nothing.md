@@ -12,7 +12,10 @@ Evidence from echonomicon on 2026-11-19 09:17-09:30: seven work tickets (TASK-15
 
 Suggestion origin: echonomicon
 
+Archived: the Chitty part (record why the agent ended, via a per-session log named in the error note) is folded into `TASK-276`. The extension at `~/.pi/agent/extensions/chitty.ts` is a local copy outside this repository; the bundled extension was retired in `TASK-279`, so the fix there is to move echonomicon to a `{prompt}` print-mode `agent_command`.
+
 ## History
 
 - 2026-11-19T20:55:16Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:17Z sunny-white-dormouse: changed notes
+- 2026-11-19T21:13:01Z sunny-white-dormouse: changed notes
