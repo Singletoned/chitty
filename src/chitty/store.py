@@ -1164,10 +1164,11 @@ def _add_missing_settings(
             ),
             ("work_model", '# work_model = "provider/model" # default for work sessions'),
             ("review_model", '# review_model = "provider/model" # default for review sessions'),
+            ("rebase_model", '# rebase_model = "provider/model" # default for rebase sessions'),
         )
         if key not in settings
         and not (key in {"setup", "check", "agent_command"} and f"{key} =" in text)
-        and not (key in {"work_model", "review_model"} and f"{key} =" in section)
+        and not (key in {"work_model", "review_model", "rebase_model"} and f"{key} =" in section)
     ]
     if not additions:
         return text

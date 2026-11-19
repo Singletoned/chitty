@@ -30,6 +30,7 @@ review = true # done only through review → done; default follows workflow
 # agent_timeout = 7200 # seconds; 0 is no limit
 # work_model = "provider/model" # when the agent command names no model
 # review_model = "provider/model"
+# rebase_model = "provider/model" # default for rebase sessions when the command has no model
 # job_order = ["review", "doing", "todo"] # statuses `next`/`run` pick, in order
 archive = "move" # or "delete"
 # list_width = 100 # columns for `chitty list`
@@ -51,7 +52,8 @@ random_ids = true # eight-digit random IDs, so branches cannot collide
 ```
 
 Commands are split like a shell (no shell runs them) and placeholders are
-substituted per word.
+substituted per word. `rebase_model` optionally supplies `--model` for rebase
+sessions; when unset, the agent command's model is left unchanged.
 
 ## Contexts
 

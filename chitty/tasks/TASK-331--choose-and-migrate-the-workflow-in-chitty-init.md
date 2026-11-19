@@ -3,6 +3,7 @@ title: Choose and migrate the workflow in chitty init
 status: planning
 labels:
   - needs-minor
+priority: high
 depends_on:
   - TASK-330
   - TASK-279
@@ -28,6 +29,10 @@ created: 2026-11-14
 - [ ] `chitty init` in an empty temp repository writes a config containing `workflow = "tickets"` and no `review` or runner-setting lines (`setup`, `check`, `agent_command`, `agent_timeout`, `work_model`, `review_model`, `error_reporter`, `[agent_commands]`, comments included); `chitty init --workflow runner` there writes today's config plus `workflow = "runner"`.
 - [ ] `--workflow tickets` and `--workflow runner` on an existing repository set the `workflow` line and change no other line; switching to `runner` with `review` unset prints the one line about reviews. `make check` passes.
 
+## Notes
+
+Planning 2026-11-19: raised to high. `0.5.0` was released without this (see `HUMAN-12`) and has been yanked; releases wait for this ticket. It has four criteria covering a new repository, migration and switching, and has never been cold-read: split it before cold reads.
+
 ## History
 
 - 2026-11-14T18:21:54Z friendly-ginger-adder → planning
@@ -36,3 +41,4 @@ created: 2026-11-14
 - 2026-11-14T18:30:19Z friendly-ginger-adder: changed description, acceptance criteria
 - 2026-11-14T18:30:31Z friendly-ginger-adder: changed description, acceptance criteria
 - 2026-11-14T19:22:00Z friendly-ginger-adder: changed description
+- 2026-11-19T10:01:42Z quick-ginger-lapwing: changed priority, notes
