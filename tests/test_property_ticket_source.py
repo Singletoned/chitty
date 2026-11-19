@@ -216,88 +216,83 @@ class TestTicketSource(unittest.TestCase):
         else:
             self.assertEqual(result(), main_branch)
 
-    @given(graphs(), task_ids(), st.booleans(), st.booleans(), st.booleans())
-    def test_rule_4_selects_highest_candidate_and_checkout(
-        self, graph, task_id, include_local, tie, checked_out
+    @given(st.data(), graphs(), task_ids(), st.sampled_from(MAIN_BRANCHES))
+    def test_rules_4_and_6_choose_among_generated_candidates(
+        self, data, graph, task_id, main_branch
     ):
         branch = str(task_id).lower()
-        candidate_commits = graph.arms[0] if graph.arms else graph.chain[1:]
-        if not candidate_commits:
-            candidate_commits = graph.chain
-        tip = candidate_commits[-1]
-        local = {branch: tip} if include_local else {}
-        remotes = {"zeta/" + branch: tip, "alpha/" + branch: tip}
-        if not tie:
-            remotes = {"zeta/" + branch: tip}
-        current = branch if checked_out else None
-        remote_winner = "alpha/" if tie else "zeta/"
-        expected = (
-            WORKING_TREE
-            if checked_out and include_local
-            else (branch if include_local else remote_winner + branch)
+        if graph.arms:
+            arm = data.draw(st.sampled_from(graph.arms))
+            candidate_line = graph.chain + arm
+            other_arm = next(line for line in graph.arms if line != arm)
+            main_choices = graph.chain + other_arm + graph.unrelated
+        else:
+            candidate_line = graph.chain
+            main_choices = graph.chain + graph.unrelated
+        main_tip = data.draw(st.none() | st.sampled_from(main_choices))
+        eligible = tuple(
+            commit
+            for commit in candidate_line
+            if main_tip is None or not graph.contains(main_tip, commit)
         )
-        result = call(
-            task_id, False, current, "main", None, (local, remotes), graph.contains, False
+        if not eligible:
+            main_tip = None
+            eligible = candidate_line
+        # One to four ticket refs are distributed on the candidate line.
+        count = data.draw(st.integers(min_value=1, max_value=4))
+        refs = [branch] if data.draw(st.booleans()) else []
+        refs.extend(f"{name}/{branch}" for name in ("zeta", "alpha", "beta")[: count - len(refs)])
+        if not refs:
+            refs = ["alpha/" + branch]
+        tips = {ref: data.draw(st.sampled_from(eligible)) for ref in refs}
+        local_tips = {ref: tip for ref, tip in tips.items() if "/" not in ref}
+        remote_tips = {ref: tip for ref, tip in tips.items() if "/" in ref}
+        # Add dropped candidates at/below main and decoys without affecting selection.
+        if main_tip is not None and graph.chain:
+            dropped_tip = main_tip
+            remote_tips["drop/" + branch] = dropped_tip
+        local_decoys, remote_decoys = decoy_names(task_id)
+        local_tips.update({local_decoys[0]: graph.commits[0]})
+        remote_tips.update({remote_decoys[0]: graph.commits[0]})
+        highest = next(commit for commit in reversed(candidate_line) if commit in tips.values())
+        matching = [ref for ref, tip in tips.items() if tip == highest]
+        chosen = (
+            branch
+            if branch in matching
+            else min(matching, key=lambda ref: (ref.split("/", 1)[0], ref))
         )
-        self.assertEqual(result, expected)
-
-    @given(graphs(), task_ids(), st.booleans())
-    def test_rule_6_changed_on_both_names_expected_ref(self, graph, task_id, local):
-        branch = str(task_id).lower()
-        chosen = branch if local else "alpha/" + branch
-        local_tips = {branch: graph.chain[-1]} if local else {}
-        remote_tips = {"alpha/" + branch: graph.chain[-1]}
-        with self.assertRaises(ChittyError) as raised:
-            call(
-                task_id,
-                False,
-                branch if local else None,
-                "main",
-                None,
-                (local_tips, remote_tips),
-                graph.contains,
-                True,
-            )
-        for name in (str(task_id), chosen, "main"):
-            self.assertIn(f"`{name}`", str(raised.exception))
-
-    @given(graphs(), task_ids())
-    def test_remote_ahead_of_checked_out_local_wins(self, graph, task_id):
-        branch = str(task_id).lower()
-        line = graph.arms[0] if graph.arms else graph.chain
-        if len(line) < 2:
-            return
-        local_tip, remote_tip = line[-2:]
-        result = call(
-            task_id,
-            False,
-            branch,
-            "main",
-            None,
-            ({branch: local_tip}, {"origin/" + branch: remote_tip}),
-            graph.contains,
-            False,
-        )
-        self.assertEqual(result, "origin/" + branch)
-
-    @given(graphs(), task_ids(), st.booleans())
-    def test_changed_on_both_only_for_other_ref_keeps_rule_4_result(self, graph, task_id, local):
-        branch = str(task_id).lower()
-        local_tips = {branch: graph.chain[-1]} if local else {}
-        remote_tips = {"alpha/" + branch: graph.chain[-1]}
-        chosen = branch if local else "alpha/" + branch
-        current = branch if local else None
-        result = call(
+        current = data.draw(st.sampled_from((branch, main_branch, local_decoys[0], None)))
+        # Force remote-ahead of a checked-out local in generated examples.
+        if graph.arms:
+            ahead_line = graph.chain + graph.arms[0]
+        else:
+            ahead_line = graph.chain
+        if len(ahead_line) >= 2 and data.draw(st.booleans()):
+            local_tips[branch] = ahead_line[-2]
+            remote_tips = {"origin/" + branch: ahead_line[-1]}
+            main_tip = None
+            current = branch
+            chosen = "origin/" + branch
+            highest = ahead_line[-1]
+        result = WORKING_TREE if current == branch and local_tips.get(branch) == highest else chosen
+        args = (
             task_id,
             False,
             current,
-            "main",
-            None,
+            main_branch,
+            main_tip,
             (local_tips, remote_tips),
             graph.contains,
-            lambda ref: ref != chosen,
         )
-        self.assertEqual(result, WORKING_TREE if local else chosen)
+        self.assertEqual(call(*args, False), result)
+        changed_ref = chosen
+        with self.assertRaises(ChittyError) as raised:
+            call(*args, lambda ref: ref == changed_ref)
+        for name in (str(task_id), changed_ref, main_branch):
+            self.assertIn(f"`{name}`", str(raised.exception))
+        other = next((ref for ref in tips if ref != chosen), "unrelated")
+        unchanged_result = call(*args, lambda ref: ref == other)
+        self.assertEqual(unchanged_result, result)
 
     @given(legacy_graphs(), task_ids(), st.booleans())
     def test_candidate_at_chosen_tip_and_local_checkout(self, graph, task_id, fork):
