@@ -132,7 +132,10 @@ asking the first.
   turns each against 26), and still found design flaws. More rounds per ticket
   used up the saving: cost per ticket stayed about the same.
 - In this repository readers run on Haiku, to show what a weak model struggles
-  with. While a planner's own subagent works on a ticket, the ticket keeps an
+  with. Planners in Claude Code start the `cold-reader` agent
+  (`.claude/agents/cold-reader.md`) with only the ticket ID: it fetches
+  `chitty guide cold-read <ID>` itself, so the guide is never pasted by hand
+  (2026-11-19, after a pasted `$(...)` reached a reader unexpanded). While a planner's own subagent works on a ticket, the ticket keeps an
   owner, so `chitty run` leaves it alone.
 
 ## Spec tests
