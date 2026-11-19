@@ -9,6 +9,10 @@ DEFECT_PHRASES = (
     "an unresolved design decision",
     "a wrong claim about the code, files or other tickets",
     "a criterion that cannot be verified as written or would pass with nothing built",
+    (
+        "a test a criterion needs that the ticket does not describe "
+        "(its fixture, action and assertions)"
+    ),
     "a ticket too large to finish in one session",
 )
 

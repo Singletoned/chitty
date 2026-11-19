@@ -32,16 +32,18 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
   until it fails without the fix.
 - For missing or contradictory requirements, an unresolved design decision, a
   wrong claim about the code, files or other tickets, a criterion that cannot be
-  verified as written or would pass with nothing built, or a ticket too large to
-  finish in one session, always set `-s planning`. First finish reading the
-  ticket and the code it touches, and list every such problem in one note
-  explaining what was discovered, why the current ticket cannot guide the work, and what
-  decision is needed. Do not work around the problem or weaken the tests.
-  Preserve the existing branch and worktree; commit intended partial work and
-  explain unfinished verification. On return, ownership is cleared and the run
-  stops without starting another worker. The planner resumes in that worktree
-  and follows normal planning and cold-read readiness before returning the
-  ticket to `todo`.
+  verified as written or would pass with nothing built, a test a criterion needs
+  that the ticket does not describe (its fixture, action and assertions), or a
+  ticket too large to finish in one session, always set `-s planning`. Do not
+  design such a test yourself. First finish reading the ticket and the code it
+  touches, and list every such problem in one note explaining what was
+  discovered, why the current ticket cannot guide the work, and what decision is
+  needed. Do not work around the problem or weaken the tests. Preserve the
+  existing branch and worktree; commit intended partial work and explain
+  unfinished verification. On return, ownership is cleared and the run stops
+  without starting another worker. The planner resumes in that worktree and
+  follows normal planning and cold-read readiness before returning the ticket to
+  `todo`.
 - For a cheap-to-reverse default, choose it, note the choice and why for the
   reviewer, and comment the code where it applies. This applies only to choices
   the ticket leaves open; ticket defects go to planning instead.

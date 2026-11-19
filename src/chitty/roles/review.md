@@ -34,10 +34,15 @@ task files. `chitty --help` is the full command reference.
   too.
 - For missing or contradictory requirements, an unresolved design decision, a
   wrong claim about the code, files or other tickets, a criterion that cannot be
-  verified as written or would pass with nothing built, or a ticket too large to
-  finish in one session, set `-s planning`. List every such problem you found
-  in the one note, with `Review failed (design):` and the criterion verdicts
-  below, explaining what was discovered, why the current
+  verified as written or would pass with nothing built, a test a criterion needs
+  that the ticket does not describe (its fixture, action and assertions), or a
+  ticket too large to finish in one session, set `-s planning`. A finding about
+  a test the ticket did not describe (a case, fixture or assertion the worker
+  had to choose) has the cause `design` and goes to `planning`, not `doing`.
+  Before failing a ticket for `tests` again, check whether the earlier failure
+  had the same cause; if so, the ticket is the problem: use `design`. List every
+  such problem you found in the one note, with `Review failed (design):` and the
+  criterion verdicts below, explaining what was discovered, why the current
   ticket cannot guide the work, and what decision is needed. Preserve the
   existing branch and worktree; ownership is cleared and the run stops without
   starting another worker. The planner resumes in that worktree and follows
