@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: doing
+status: planning
 priority: high
 created: 2026-11-19
 ---
@@ -36,6 +36,8 @@ Implement trailer generation in chitty.git, preserving each commit tree and auth
 
 Suggestion origin: chitty
 
+Blocking requirement conflict found while running the new property test. Criterion 1 requires with_task_trailer("", TASK-1) to return exactly "Task: TASK-1\n" and also requires commits_missing_trailer(result, TASK-1) to be empty. Existing commits_missing_trailer deliberately treats every one-paragraph message as missing because a trailer requires a blank-line-separated final paragraph; the requested one-line output therefore fails that assertion. The description also explicitly says a one-paragraph message has no trailer block. The planner must decide whether the empty-message example changes, or whether commits_missing_trailer semantics should accept a one-line Task trailer (which changes existing policy). I stopped before choosing or weakening the test. Focused run also found a separate test setup issue: the direct merge test tried switching to main from its linked worktree while main is checked out in the main checkout; fix that after requirements are resolved.
+
 ## History
 
 - 2026-11-19T20:55:28Z sunny-white-dormouse → backlog
@@ -51,3 +53,5 @@ Suggestion origin: chitty
 - 2026-11-19T21:24:34Z sunny-white-dormouse cold-read → todo
 - 2026-11-19T23:23:20Z quick-navy-raven todo → doing
 - 2026-11-19T23:24:55Z quick-navy-raven: wrote the plan
+- 2026-11-19T23:51:17Z quick-navy-raven: changed owner, notes
+- 2026-11-19T23:51:17Z quick-navy-raven doing → planning
