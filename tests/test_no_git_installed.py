@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -32,21 +33,51 @@ class TestGitUnavailableHelpers(RepoTestCase):
             ("note", "TASK-1", "x"),
             ("check",),
             ("move", "TASK-1", "human"),
+            ("archive",),
         )
         for index, args in enumerate(cases):
             with self.subTest(command=args):
                 outputs = []
+                snapshots = []
                 for label, path in (("git", os.environ["PATH"]), ("no-git", str(empty_path))):
                     root = self.tmp / f"{label}-{index}"
                     shutil.copytree(self.root, root)
-                    result = CliRunner().invoke(
-                        cli,
-                        list(args),
-                        env={"CHITTY_ROOT": str(root), "PATH": path, "CHITTY_ACTOR": "test"},
-                    )
+                    invocation_env = {
+                        "CHITTY_ROOT": str(root),
+                        "PATH": path,
+                        "CHITTY_ACTOR": "test",
+                    }
+                    if args[0] == "archive":
+                        moved = CliRunner().invoke(
+                            cli,
+                            ["move", "TASK-1", "human"],
+                            env=invocation_env,
+                        )
+                        self.assertEqual(moved.exit_code, 0, moved.output)
+                        moved_id = re.search(r"HUMAN-\d+", moved.output)
+                        if moved_id is None:
+                            self.fail(f"move output did not include the new ID: {moved.output}")
+                        command_args = ["archive", moved_id.group()]
+                    else:
+                        command_args = list(args)
+                    config.git_common_dir.cache_clear()
+                    result = CliRunner().invoke(cli, command_args, env=invocation_env)
                     self.assertEqual(result.exit_code, 0, result.output)
                     outputs.append(result.output.replace(str(root), "<ROOT>"))
+                    files = {}
+                    for file_path in sorted(root.rglob("*")):
+                        if file_path.is_file():
+                            relative = file_path.relative_to(root).as_posix()
+                            contents = file_path.read_text()
+                            contents = re.sub(
+                                r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
+                                "<TIMESTAMP>",
+                                contents,
+                            )
+                            files[relative] = contents
+                    snapshots.append(files)
                 self.assertEqual(outputs[0], outputs[1])
+                self.assertEqual(snapshots[0], snapshots[1])
 
     def test_helpers_return_empty_answers_without_git_outside_repository(self):
         empty_path = self.tmp / "empty-path"
