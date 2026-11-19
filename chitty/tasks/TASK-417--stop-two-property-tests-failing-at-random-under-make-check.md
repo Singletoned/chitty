@@ -1,6 +1,6 @@
 ---
 title: Stop two property tests failing at random under `make check`
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -11,21 +11,21 @@ created: 2026-11-19
 
 Two property tests fail at random under `make check`, and each failure has sent a runner ticket to `error` (`TASK-388` at its check before the agent started, `TASK-395` at landing, both 2026-11-18):
 
-- `test_suffix_round_trips` in `tests/test_property_provisional.py` exceeded Hypothesis's default deadline of 200 ms per example (it took 279 ms once, then 0.06 ms). `make check` runs 16 test workers at once, so per-example timing is noise. Thirteen tests already set `deadline=None` one by one.
-- `test_refused_edit_restores_repository` in `tests/test_property_refused_write.py` draws notes from `NOTES`, which can produce a setext heading underline, for example the note `0\n=`. `Repo.edit` then refuses it with `Notes text changed section boundaries; use ### for headings and close code fences`, not the `cannot finalize task write` the test expects. Reproduced on `main` 2026-11-19 by calling the test body with `("self-dependency", "0\n=", None)`.
+- `test_suffix_round_trips` in `tests/test_property_provisional.py` exceeded Hypothesis's default deadline of 200 ms per example (it took 279 ms once, then 0.06 ms). `make check` runs the tests on all cores at once (`unittest-parallel`), so per-example timing is noise. Thirteen tests already set `deadline=None` one by one.
+- `test_refused_edit_restores_repository` in `tests/test_property_refused_write.py` draws notes from `NOTES`, which can produce text that changes the ticket's section boundaries, for example the note `0\n=` (a setext heading underline). `Repo.edit` then refuses it with `Notes text changed section boundaries; use ### for headings and close code fences`, not the `cannot finalize task write` the test expects. The existing filter only rejects `#`, three backticks at column 0; `src/chitty/model.py` also treats a heading or fence after up to three leading spaces, and setext underlines, as boundaries.
 
 Decisions:
 
-- In `tests/__init__.py`, register and load a Hypothesis settings profile with `deadline=None`, so no test depends on machine load. Leave the existing per-test `deadline=None` settings alone.
-- Filter `NOTES` so no line is a setext underline: a line of only `=` characters, or only `-` characters, after at most three leading spaces (trailing spaces allowed). Keep the existing filters.
+- In `tests/__init__.py`, register and load a Hypothesis settings profile with `deadline=None`, so no test depends on machine load. Put the `hypothesis` import at the top of the file (ruff rejects a later import with E402). Leave the existing per-test `deadline=None` settings alone.
+- Move the `NOTES` filter into a module-level function `plain_note(text: str) -> bool` in `tests/test_property_refused_write.py`, and filter `NOTES` with it. It returns false when the text is blank after `strip()`, or when any line, after removing leading spaces (`lstrip(" ")`), starts with `#`, three backticks, or `~~~`, or is made only of `=` characters or only of `-` characters, with trailing spaces allowed. Otherwise true. Keep the `cannot finalize task write` assertion unchanged.
 - Out of scope: other flaky tests; changing how `Repo.edit` treats notes.
 
-No property is added: both changes fix existing property tests. Their evidence is in the criteria.
+No property is added: both changes fix existing property tests, and `plain_note` is checked on a fixed list of cases, every one listed in the criteria.
 
 ## Acceptance Criteria
 
-- [ ] A new test in `tests/test_hypothesis_profile.py` asserts `hypothesis.settings().deadline is None` when run on its own (`python -m unittest tests.test_hypothesis_profile`); it fails before the change
-- [ ] `test_refused_edit_restores_repository` gains `@example(invalid="self-dependency", note="0\n=", title=None)` and `@example(invalid="cycle", note="x\n  ---", title=None)`; both fail before the `NOTES` change and pass after. Run once by hand with `max_examples=3000` (not committed), it passes; the note records that run
+- [ ] The profile is registered and loaded in `tests/__init__.py` (shown by the diff), and a new test in `tests/test_hypothesis_profile.py` asserts `hypothesis.settings().deadline is None` when run on its own (`python -m unittest tests.test_hypothesis_profile`); it fails before the change; `test_suffix_round_trips` still has no per-test deadline
+- [ ] A test asserts `plain_note` is false for each of `"0\n="`, `"x\n-"`, `"x\n  ---"`, `"x\n=  "`, `" # x"`, `"x\n  ## y"`, three backticks after one leading space, `"  ~~~"` and `"   "`, and true for `"plain text"`, `"a\nb = c"` and `"x - y"`; it fails before the change
 - [ ] `make check` passes
 
 ## History
@@ -33,3 +33,5 @@ No property is added: both changes fix existing property tests. Their evidence i
 - 2026-11-19T11:34:07Z quick-ginger-lapwing → planning
 - 2026-11-19T11:34:40Z quick-ginger-lapwing planning → cold-read
 - 2026-11-19T11:46:53Z quick-ginger-lapwing cold-read → planning
+- 2026-11-19T11:46:56Z quick-ginger-lapwing: changed description, acceptance criteria
+- 2026-11-19T11:46:56Z quick-ginger-lapwing planning → cold-read
