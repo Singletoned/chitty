@@ -19,3 +19,4 @@ Archived: `src/chitty/roles/cold-read.md` already asks the reader to examine eve
 - 2026-11-19T20:55:36Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:37Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:58:49Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:58:52Z sunny-white-dormouse backlog → archived
