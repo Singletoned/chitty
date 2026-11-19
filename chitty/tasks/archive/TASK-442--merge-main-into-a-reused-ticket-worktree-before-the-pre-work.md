@@ -19,3 +19,4 @@ Archived as covered by `TASK-370` (rebase the ticket branch onto `main` before e
 - 2026-11-19T20:55:14Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:15Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:57:07Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:57:10Z sunny-white-dormouse backlog → archived
