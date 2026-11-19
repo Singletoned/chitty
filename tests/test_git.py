@@ -69,6 +69,10 @@ class TestRepositoryAnswer(RepoTestCase):
             with self.assertRaises(ChittyError):
                 git.repository_answer(self.command, self.root, 128, "true", stderr)
 
+    def test_status_128_without_repository_phrase_raises(self):
+        with self.assertRaises(ChittyError):
+            git.repository_answer(self.command, self.root, 128, "true", "")
+
     @settings(max_examples=100, deadline=None)
     @given(st.integers(), st.text(), st.text())
     def test_arbitrary_results_return_bool_or_raise_chitty_error(self, code, stdout, stderr):
