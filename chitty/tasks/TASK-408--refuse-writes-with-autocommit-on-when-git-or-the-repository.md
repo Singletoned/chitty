@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: blocked
+status: doing
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -37,6 +37,8 @@ Add a pre-write autocommit prerequisite check in Repo._prepare_write, with focus
 
 Blocked: TASK-410, a declared dependency, is not present on this branch/main, so no-git command behavior outside add cannot be verified as specified. The current implementation and two focused tests are present, and make check passed, but the required 24-case grid, additional move/fix/read/stale-setup tests, and main-baseline evidence remain incomplete. The dependency owner must land TASK-410; then resume and complete these criteria.
 
+Unblocked 2026-11-19 by a planning session: `TASK-410` landed on `main` at 11:31 (`7b9b5a4a`), and this branch already contains it (`git merge-base --is-ancestor 7b9b5a4a task-408` succeeds; `tests/test_no_git_installed.py` is here). `chitty` still lists `TASK-410` as `error` because the `task-413` branch carries an older copy with a newer commit time, which `TASK-378` fixes; that clears when `task-413` lands. The missing work is this ticket's own: the 24-case grid, the move, fix, read and stale-setup tests, and the evidence from `main`.
+
 ## History
 
 - 2026-11-19T09:06:20Z lively-quartz-crane → planning
@@ -51,3 +53,5 @@ Blocked: TASK-410, a declared dependency, is not present on this branch/main, so
 - 2026-11-19T11:42:57Z sunny-ochre-raven: wrote the plan
 - 2026-11-19T11:45:27Z sunny-ochre-raven: changed notes
 - 2026-11-19T11:45:27Z sunny-ochre-raven doing → blocked
+- 2026-11-19T12:47:56Z quick-ginger-lapwing: changed notes
+- 2026-11-19T12:47:56Z quick-ginger-lapwing blocked → doing
