@@ -1,6 +1,6 @@
 ---
 title: Commit or restore a ticket file when a Chitty write fails after writing it
-status: todo
+status: doing
 labels:
   - bug
 parent: TASK-376
@@ -206,3 +206,4 @@ Back to `todo` 2026-11-19: the runner error was the flaky `test_suffix_round_tri
 - 2026-11-18T22:24:19Z kind-lilac-eel doing → error
 - 2026-11-19T13:25:56Z quick-ginger-lapwing: changed notes
 - 2026-11-19T13:25:56Z quick-ginger-lapwing error → todo
+- 2026-11-19T13:27:07Z zesty-navy-zander todo → doing
