@@ -4,12 +4,13 @@
   in `pyproject.toml`. Both is an error.
 - Unknown keys warn and are ignored.
 - New settings are optional, and their defaults generally keep existing
-  behaviour, so configs never need migrating. `workflow` deliberately breaks
-  that rule for repositories set up at `FIRST_WORKFLOW_VERSION` (`0.5.0`) or
-  later: they default to tickets-only, while older or unversioned setups retain
-  the runner. This
-  makes tickets-only Chitty's default for new setups without changing existing
-  runner setups.
+  behaviour, so configs never need migrating. A missing `workflow` defaults to
+  the runner for unversioned, unparsable, or versions at most `0.5.0` (with
+  trailing zero parts ignored); later versions default to tickets-only. Release
+  `0.5.0` upgraded existing runner repositories before init could record an
+  explicit workflow, so it belongs on the runner side of the boundary. This
+  makes tickets-only Chitty the default for new setups without changing
+  existing runner setups.
 - Settings with no safe default (`setup`, `check`, `agent_command`) fail where
   `chitty run` needs them.
 

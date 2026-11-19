@@ -12,6 +12,92 @@ from chitty import git
 from chitty.errors import ChittyError
 from tests.support import RepoTestCase
 
+# Standard output for non-zero statuses: `true`, padded `true`, or any text.
+STDOUTS = st.one_of(st.sampled_from(("true", " \ttrue ")), st.text())
+
+
+class TestRepositoryAnswer(RepoTestCase):
+    command = ("git", "rev-parse", "--is-inside-work-tree")
+    not_repository = "not a git repository"
+
+    @settings(max_examples=30, deadline=None)
+    @given(st.text())
+    def test_success_requires_exact_true_output(self, stderr):
+        self.assertTrue(git.repository_answer(self.command, self.root, 0, " \ttrue\n", stderr))
+        for stdout in ("false", "True", "TRUE", "truex", "xtrue", "true false", ""):
+            self.assertFalse(git.repository_answer(self.command, self.root, 0, stdout, stderr))
+
+    @settings(max_examples=30, deadline=None)
+    @given(st.text().filter(lambda text: text.strip() != "true"), st.text())
+    def test_success_other_output_is_false(self, stdout, stderr):
+        self.assertFalse(git.repository_answer(self.command, self.root, 0, stdout, stderr))
+
+    def assert_error_context(self, directory, stderr, code, stdout):
+        with self.assertRaises(ChittyError) as raised:
+            git.repository_answer(self.command, directory, code, stdout, stderr)
+        message = str(raised.exception)
+        self.assertIn("`git rev-parse --is-inside-work-tree`", message)
+        self.assertIn(str(directory), message)
+        self.assertIn(stderr.strip(), message)
+
+    @settings(max_examples=50, deadline=None)
+    @given(
+        st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
+        st.text(),
+        st.text(),
+        STDOUTS,
+        st.text(),
+    )
+    def test_phrase_only_classifies_status_128(self, code, before, after, stdout, directory_name):
+        stderr = before + self.not_repository + after
+        directory = self.root / directory_name
+        if code == 128:
+            self.assertFalse(git.repository_answer(self.command, directory, code, stdout, stderr))
+        else:
+            self.assert_error_context(directory, stderr, code, stdout)
+
+    @settings(max_examples=50, deadline=None)
+    @given(st.text(), st.text(), STDOUTS, st.text())
+    def test_status_128_phrase_always_means_not_a_repository(
+        self, before, after, stdout, directory_name
+    ):
+        stderr = before + self.not_repository + after
+        answer = git.repository_answer(
+            self.command, self.root / directory_name, 128, stdout, stderr
+        )
+        self.assertFalse(answer)
+
+    @settings(max_examples=30, deadline=None)
+    @given(
+        st.sampled_from(("Not a git repository", "NOT A GIT REPOSITORY")),
+        STDOUTS,
+        st.text(),
+    )
+    def test_repository_phrase_is_case_sensitive(self, stderr, stdout, directory_name):
+        self.assert_error_context(self.root / directory_name, stderr, 128, stdout)
+
+    @settings(max_examples=100, deadline=None)
+    @given(
+        st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
+        st.text().filter(lambda text: "not a git repository" not in text),
+        STDOUTS,
+        st.text(),
+    )
+    def test_other_failures_raise_with_context(self, code, stderr, stdout, directory_name):
+        self.assert_error_context(self.root / directory_name, stderr, code, stdout)
+
+    def test_status_128_without_repository_phrase_raises(self):
+        self.assert_error_context(self.root, "", 128, "true")
+
+    @settings(max_examples=100, deadline=None)
+    @given(st.integers(), st.text(), st.text())
+    def test_arbitrary_results_return_bool_or_raise_chitty_error(self, code, stdout, stderr):
+        try:
+            result = git.repository_answer(self.command, self.root, code, stdout, stderr)
+        except ChittyError:
+            return
+        self.assertIs(type(result), bool)
+
 
 class TestIsRepository(RepoTestCase):
     @settings(max_examples=30, deadline=None)
@@ -73,6 +159,38 @@ class TestIsRepository(RepoTestCase):
         self.assertTrue(git.is_repository(nested))
         self.assertFalse(git.is_repository(self.root / ".git"))
         with tempfile.TemporaryDirectory() as temporary:
+            self.assertFalse(git.is_repository(Path(temporary)))
+
+    def test_invalid_repository_format_raises(self):
+        self.git_init()
+        config = self.root / ".git" / "config"
+        config.write_text(
+            config.read_text().replace(
+                "repositoryformatversion = 0", "repositoryformatversion = 99"
+            )
+        )
+        with self.assertRaisesRegex(ChittyError, "found 99"):
+            git.is_repository(self.root)
+
+    def test_not_repository_detection_uses_c_locale(self):
+        fake_bin = self.tmp / "fake-bin"
+        fake_bin.mkdir()
+        fake_git = fake_bin / "git"
+        fake_git.write_text(
+            "#!/bin/sh\n"
+            'if [ "$LC_ALL" = C ]; then\n'
+            '  echo "fatal: not a git repository" >&2\n'
+            "else\n"
+            '  echo "Schwerwiegend: Kein Git-Repository" >&2\n'
+            "fi\n"
+            "exit 128\n"
+        )
+        fake_git.chmod(0o755)
+        with (
+            tempfile.TemporaryDirectory() as temporary,
+            mock.patch.dict(os.environ, {"PATH": str(fake_bin), "LANG": "de_DE.UTF-8"}),
+        ):
+            os.environ.pop("LC_ALL", None)
             self.assertFalse(git.is_repository(Path(temporary)))
 
     def git_init(self):

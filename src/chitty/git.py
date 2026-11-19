@@ -369,6 +369,17 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     return files
 
 
+def repository_answer(
+    command: Sequence[str], directory: Path, returncode: int, stdout: str, stderr: str
+) -> bool:
+    if returncode == 0:
+        return stdout.strip() == "true"
+    if returncode == 128 and "not a git repository" in stderr:
+        return False
+    shown = " ".join(command)
+    raise ChittyError(f"`{shown}` failed in {directory}:\n{stderr.strip()}")
+
+
 def is_repository(directory: Path) -> bool:
     """Whether ``directory`` is inside a Git worktree."""
     directory = directory.resolve()
@@ -379,6 +390,7 @@ def is_repository(directory: Path) -> bool:
             ["git", "rev-parse", "--is-inside-work-tree"],
             check=False,
             cwd=directory,
+            env={**os.environ, "LC_ALL": "C"},
             capture_output=True,
             text=True,
         )
@@ -390,7 +402,13 @@ def is_repository(directory: Path) -> bool:
                     f"`git` is unavailable on PATH, but repository marker exists: {marker}"
                 ) from error
         return False
-    return result.returncode == 0 and result.stdout.strip() == "true"
+    return repository_answer(
+        ["git", "rev-parse", "--is-inside-work-tree"],
+        directory,
+        result.returncode,
+        result.stdout,
+        result.stderr,
+    )
 
 
 def is_linked_worktree(directory: Path) -> bool:
