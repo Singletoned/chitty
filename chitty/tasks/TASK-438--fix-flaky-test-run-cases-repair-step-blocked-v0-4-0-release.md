@@ -12,7 +12,10 @@ In `tests/test_next.py` `TestNext.test_run_cases`, the step at line 1830 (`chang
 
 Suggestion origin: chitty
 
+Archived: fixed in `c22e3a6`; superseded by the version-tie suggestion, itself covered by `TASK-367`, `TASK-378` and `TASK-386`.
+
 ## History
 
 - 2026-11-19T20:55:09Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:11Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:56:35Z sunny-white-dormouse: changed notes
