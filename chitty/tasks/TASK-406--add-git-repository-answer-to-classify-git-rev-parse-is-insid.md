@@ -35,6 +35,8 @@ Confirmed the Hypothesis tests fail against the temporary NotImplementedError st
 
 Review failed (integration): merging `main` conflicts in `tests/test_git.py`.
 
+Merged main into task-406 and resolved the tests/test_git.py conflict by retaining both TASK-406 classifier tests and main’s TASK-405 repository-detection tests. Focused tests passed (10 tests), and make check passed all 690 tests. Criterion 3 mutant experiments were not performed for the incorrect variants, so that evidence remains outstanding. make format also removed duplicate os and tempfile imports after the merge.
+
 ## Summary
 
 Implemented the pure repository_answer classifier and Hypothesis coverage. Verified the NotImplementedError stub fails the new tests; make format and make check pass (687 tests). Follow-up: criterion 3 requests separately implemented/run mutant checks for each listed incorrect variant; those were not performed.
@@ -62,3 +64,4 @@ Implemented the pure repository_answer classifier and Hypothesis coverage. Verif
 - 2026-11-19T09:00:35Z youthful-pearl-eel doing → review
 - 2026-11-19T09:00:56Z sunny-yellow-stoat: changed notes
 - 2026-11-19T09:00:56Z sunny-yellow-stoat review → doing
+- 2026-11-19T09:04:02Z mellow-khaki-jay: changed notes
