@@ -31,6 +31,10 @@ Out of scope: running it on landing (later tickets) or in `make release`, CI cha
 - [ ] In the ticket worktree, `touch <stamp>` immediately before one `sh scripts/check_linux.sh` run, then `find .venv node_modules -newer <stamp> | wc -l` prints `0`, and `git status --porcelain` is the same before and after the run; a note records both. `make check` in the ticket worktree exits 0
 - [ ] A note records the output of `grep -n -E "^FROM|^COPY|^USER|uv python install" scripts/linux-check.Dockerfile`, showing exactly the pins under Decisions, and of `head -5 scripts/check_linux.sh`, showing the comment that it checks committed `HEAD` only. `env PATH=/usr/bin:/bin /bin/sh scripts/check_linux.sh` (no `docker` on that path on this Mac) exits non-zero with an error naming `docker`, and the note records it
 
+## Plan
+
+Add the pinned Linux Dockerfile and POSIX check script exactly as specified. Update the make-check guidance in AGENTS.md to describe the actual checks and Linux script. Verify the script and environment behavior, run make check, record criterion evidence in ticket notes, then commit implementation files with Task: TASK-429.
+
 ## History
 
 - 2026-11-19T18:36:33Z daring-amber-kestrel → planning
@@ -44,3 +48,4 @@ Out of scope: running it on landing (later tickets) or in `make release`, CI cha
 - 2026-11-19T18:39:44Z daring-amber-kestrel cold-read → planning
 - 2026-11-19T18:39:55Z daring-amber-kestrel planning → todo
 - 2026-11-19T20:11:21Z calm-ochre-quail todo → doing
+- 2026-11-19T20:17:28Z calm-ochre-quail: wrote the plan
