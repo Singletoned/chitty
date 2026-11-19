@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: review
+status: done
 depends_on:
   - TASK-377
   - TASK-403
@@ -62,6 +62,11 @@ main moved during each of the 3 landing attempts
 Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-404 or the main checkout before retrying.
 ```
 
+Reviewed: The prior review finding remains resolved: changed refs are drawn from expanded maps.
+1: pass - `make check` printed 777 tests OK; the worker recorded the dropped-name mutant failing the rule 5 property.
+2: pass - `make check` printed 777 tests OK; the worker recorded both decoy candidate mutants failing the invariance property, and the changed set includes added refs.
+3: pass - The notes identify three executed mutants and their failing properties; `make check` exited 0 with 777 tests OK.
+
 ## Summary
 
 Fixed the decoy property to generate changed refs from both baseline and expanded maps, including newly added decoys/unrelated refs. Verification: focused suite (6 tests) and make check (format, lint, pyright, 765 tests) pass. No production changes or follow-ups.
@@ -93,3 +98,5 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T21:05:50Z mellow-fawn-dormouse: changed notes
 - 2026-11-19T21:05:50Z mellow-fawn-dormouse done → error
 - 2026-11-19T21:16:37Z daring-amber-kestrel error → review
+- 2026-11-19T21:18:40Z tidy-white-jay: changed notes
+- 2026-11-19T21:18:40Z tidy-white-jay review → done
