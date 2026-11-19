@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest import mock
 
 from click.testing import CliRunner
-from hypothesis import example, given
+from hypothesis import given
 from hypothesis import strategies as st
 
 from chitty import config as config_module
@@ -18,6 +18,7 @@ from chitty.store import add_runner_workflow
 from tests.support import CONFIG, RepoTestCase
 
 VERSIONS = st.one_of(
+    st.sampled_from(("0.4.2", "0.5.0", "0.5.0.0", "0.5.1", "0.6", "0.10.0")),
     st.lists(st.integers(0, 6), min_size=1, max_size=4).map(
         lambda parts: ".".join(map(str, parts))
     ),
@@ -25,33 +26,54 @@ VERSIONS = st.one_of(
         st.characters(max_codepoint=0xFFFF, exclude_characters="\x7f", exclude_categories=("Cs",))
     ),
 )
+SECTION_LINES = (
+    "format = 1",
+    'default_context = "tasks"',
+    "autocommit = true",
+    "review = true",
+    "# a comment",
+    '# workflow = "tickets"',
+    '# chitty_version = "0.1.0"',
+    "",
+)
+
+
+@st.composite
+def config_cases(draw):
+    version = draw(VERSIONS)
+    pyproject = draw(st.booleans())
+    extras = draw(st.lists(st.sampled_from(SECTION_LINES), unique=True))
+    workflow = draw(st.one_of(st.none(), st.sampled_from(("runner", "tickets"))))
+    section_lines = extras + [f"chitty_version = {json.dumps(version)}"]
+    if workflow is not None:
+        section_lines.append(f"workflow = {json.dumps(workflow)}")
+    section_lines = draw(st.permutations(section_lines))
+    version_index = section_lines.index(f"chitty_version = {json.dumps(version)}")
+    if pyproject:
+        prefix = '[project]\nname = "x"\nchitty_version = "9.9.9"\n[tool.chitty]\n'
+        suffix = (
+            '[tool.other]\nworkflow = "tickets"\nchitty_version = "9.9.9"\n'
+            if draw(st.booleans())
+            else ""
+        )
+    else:
+        prefix = ""
+        suffix = '[contexts.tasks]\nprefix = "TASK"\n'
+        if draw(st.booleans()):
+            suffix += '[agent_commands]\nworkflow = "pi -p {prompt}"\n'
+    text = prefix + "\n".join(section_lines) + "\n" + suffix
+    return text, version, pyproject, prefix.count("\n") + version_index, workflow
 
 
 class TestAddRunnerWorkflow(RepoTestCase):
-    @given(VERSIONS, st.booleans())
-    @example("0.4.2", False)
-    @example("0.5.0", True)
-    @example("0.5.0.0", False)
-    @example("0.5.1", True)
-    @example("0.6", False)
-    @example("0.10.0", True)
-    def test_section_is_migrated_idempotently(self, version, pyproject):
-        version_line = f"chitty_version = {json.dumps(version)}"
-        if pyproject:
-            text = (
-                '[project]\nname = "x"\nchitty_version = "9.9.9"\n'
-                f"[tool.chitty]\n{version_line}\n"
-                '[tool.other]\nworkflow = "tickets"\nchitty_version = "9.9.9"\n'
-            )
-            expected_index = 5
-        else:
-            text = f'{version_line}\n\n[contexts.tasks]\nprefix = "TASK"\n'
-            expected_index = 1
-        should_add = resolve_workflow(None, version) == "runner"
+    @given(config_cases())
+    def test_section_is_migrated_idempotently(self, case):
+        text, version, pyproject, version_index, workflow = case
+        should_add = workflow is None and resolve_workflow(None, version) == "runner"
         result = add_runner_workflow(text, version, pyproject)
         if should_add:
             lines = text.splitlines()
-            lines.insert(expected_index, 'workflow = "runner"')
+            lines.insert(version_index + 1, 'workflow = "runner"')
             self.assertEqual(result.splitlines(), lines)
             data = tomllib.loads(result)
             section = data["tool"]["chitty"] if pyproject else data
@@ -66,6 +88,12 @@ class TestAddRunnerWorkflow(RepoTestCase):
         with self.assertRaisesRegex(ChittyError, "chitty_version"):
             add_runner_workflow("format = 1\n", "0.4.2", False)
         self.assertEqual(add_runner_workflow("format = 1\n", "0.6.0", False), "format = 1\n")
+
+    def test_version_at_eof_gets_separating_newline(self):
+        text = 'chitty_version = "0.4.2"'
+        result = add_runner_workflow(text, "0.4.2", False)
+        self.assertEqual(result, text + '\nworkflow = "runner"\n')
+        self.assertEqual(tomllib.loads(result)["workflow"], "runner")
 
 
 class TestUpgradeWorkflow(RepoTestCase):

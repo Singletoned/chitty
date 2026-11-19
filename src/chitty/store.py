@@ -1150,7 +1150,9 @@ def add_runner_workflow(text: str, recorded_version: str | None, pyproject: bool
     if version is None:
         raise ChittyError("cannot add workflow: Chitty section has no chitty_version line")
     line_end = text.find("\n", start + version.start())
-    insertion = len(text) if line_end < 0 or line_end >= end else line_end + 1
+    if line_end < 0 or line_end >= end:
+        return text + '\nworkflow = "runner"\n'
+    insertion = line_end + 1
     return text[:insertion] + 'workflow = "runner"\n' + text[insertion:]
 
 
