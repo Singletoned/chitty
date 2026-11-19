@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -100,6 +100,10 @@ Evidence, each with `.venv/bin/python -m unittest` on the three properties, muta
 
 After merging `main`, `make check` passed (`Ran 733 tests`, `OK`).
 
+Reviewed: The earlier generated-input gaps are addressed by the three case-directed properties; rules 4 to 6 and decoy invariance were split into TASK-403 and TASK-404.
+1: pass - `make check` printed `Ran 742 tests` and `OK`; the three properties exercise generated chains and forks, provisional selection, dropped candidates and missing main. The planning note records all three properties erroring against the NotImplementedError stub.
+2: pass - The planning note records the three required uncommitted mutants and the property each failed; `make check` printed `Ran 742 tests` and `OK`.
+
 ## Summary
 
 Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, and decoy refs. Verification: `make check` passed (637 tests). Follow-up: none.
@@ -154,3 +158,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-19T14:20:31Z quick-ginger-lapwing: changed description
 - 2026-11-19T14:21:34Z quick-ginger-lapwing: changed owner, notes; ticked acceptance criteria
 - 2026-11-19T14:21:34Z quick-ginger-lapwing planning → review
+- 2026-11-19T14:23:24Z youthful-teal-lapwing: changed notes
+- 2026-11-19T14:23:24Z youthful-teal-lapwing review → done
