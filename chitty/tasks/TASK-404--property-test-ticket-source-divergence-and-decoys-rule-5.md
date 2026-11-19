@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: review
+status: done
 depends_on:
   - TASK-377
   - TASK-403
@@ -46,6 +46,11 @@ Review failed (tests): The decoy property must generate changed sets that can in
 
 Review follow-up: changed refs are now generated from the union of baseline and expanded maps, allowing newly introduced decoys/unrelated refs to appear in changed_on_both. Focused property suite passes (6 tests). make check passes formatting, lint, typecheck, and 765 tests; its exit status is 0.
 
+Reviewed: The earlier review finding is resolved: changed refs are drawn from the expanded maps.
+1: pass - `make check` ran 765 tests OK; worker notes record the dropped-name mutant failing the rule 5 property.
+2: pass - `make check` ran 765 tests OK; worker notes record both candidate-decoy mutants failing the invariance property. The changed set now includes added refs.
+3: pass - Notes identify three executed mutants and their failing properties; `make check` exited 0 with 765 tests OK.
+
 ## Summary
 
 Fixed the decoy property to generate changed refs from both baseline and expanded maps, including newly added decoys/unrelated refs. Verification: focused suite (6 tests) and make check (format, lint, pyright, 765 tests) pass. No production changes or follow-ups.
@@ -72,3 +77,5 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T20:09:52Z friendly-silver-kestrel: changed notes
 - 2026-11-19T20:10:09Z friendly-silver-kestrel: changed summary; ticked acceptance criteria
 - 2026-11-19T20:10:12Z friendly-silver-kestrel doing → review
+- 2026-11-19T21:03:17Z mellow-fawn-dormouse: changed notes
+- 2026-11-19T21:03:17Z mellow-fawn-dormouse review → done
