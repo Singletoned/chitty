@@ -1,6 +1,6 @@
 ---
 title: Tell work and repair agents to finish a stopped rebase
-status: doing
+status: review
 priority: high
 created: 2026-11-18
 ---
@@ -24,10 +24,10 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 
 ## Acceptance Criteria
 
-- [ ] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
-- [ ] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; evidence of failing without the change is these tests failing on the rebase-text assertion with injection disabled (for example `git.rebase_in_progress` patched to return false), not a `TypeError` on `main`
-- [ ] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed; in a directory that does not exist they raise `ChittyError`; during a stopped rebase, the review, plan and cold-read guides equal their output with no rebase in progress
-- [ ] The runner and Git helpers are unchanged apart from passing `directory=repo.root` to `guide()`: `git diff main -- src/chitty/run.py src/chitty/git.py` shows only that, and `git diff main -- tests/test_run_continue.py` adds no test that mentions a rebase; `make check` passes
+- [x] `chitty guide rebase TASK-<n>` prints the `rebase` role text, which names `git rebase --continue` and forbids `--abort` and `--skip`
+- [x] With a rebase stopped on a conflict (both backends, root and subdirectory, linked worktree), the work and repair guide output has the rebase text directly after the `Work only on Chitty ticket <ID>.` line; evidence of failing without the change is these tests failing on the rebase-text assertion with injection disabled (for example `git.rebase_in_progress` patched to return false), not a `TypeError` on `main`
+- [x] With no rebase in progress, or outside a repository, the work and repair guides equal the stopped-rebase output with the rebase text and its blank line removed; in a directory that does not exist they raise `ChittyError`; during a stopped rebase, the review, plan and cold-read guides equal their output with no rebase in progress
+- [x] The runner and Git helpers are unchanged apart from passing `directory=repo.root` to `guide()`: `git diff main -- src/chitty/run.py src/chitty/git.py` shows only that, and `git diff main -- tests/test_run_continue.py` adds no test that mentions a rebase; `make check` passes
 
 ## Plan
 
@@ -93,7 +93,7 @@ Planning 2026-11-19: decided the worker's question. A directory that does not ex
 
 ## Summary
 
-Implemented stopped-rebase guidance for work and repair agents, with runner prompts using the ticket worktree. Added coverage for both rebase backends, linked worktrees, clean/outside repositories, and mismatched worktree identity. Verification: `make check` passed all 642 tests; `chitty fix` completed with existing warnings in unrelated task files. Follow-ups: none.
+Implemented the rebase role guide and conditional injection for work and repair guides. Updated role listings and added coverage for both rebase backends, root/subdirectory and linked worktrees, CLI output/help, non-repository/missing-directory behavior, and unaffected roles. Verification: focused guide tests and `make check` passed (714 tests); `chitty fix` completed with existing warnings in unrelated tickets. Runner/Git changes are limited to passing `directory=repo.root` to guide calls; follow-ups: none.
 
 ## History
 
@@ -152,3 +152,5 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-19T10:32:44Z rosy-khaki-puffin doing → planning
 - 2026-11-19T13:06:50Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T13:06:50Z quick-ginger-lapwing planning → doing
+- 2026-11-19T13:10:28Z tidy-white-lapwing: changed summary; ticked acceptance criteria
+- 2026-11-19T13:10:28Z tidy-white-lapwing doing → review
