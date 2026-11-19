@@ -287,7 +287,7 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual((self.logs / "landing_check").read_text(), "checked merged main")
         self.assertEqual((self.root / "main-late.txt").read_text(), "main advanced during review\n")
         self.assertNotEqual(self.git("rev-parse", "main").strip(), before)
-        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "1")
+        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "0")
         self.assertIn(
             "status: done", next((self.root / "chitty/tasks").glob("TASK-1--*.md")).read_text()
         )
@@ -396,7 +396,7 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual((self.logs / "main.txt").read_text(), "from main\n")
         landed_head = self.git("rev-parse", "main").strip()
         self.assertNotEqual(landed_head, main_head)
-        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "1")
+        self.assertEqual(self.git("rev-list", "--merges", "--count", "main").strip(), "0")
         self.assertFalse(self.worktree.exists())
         self.assertFalse(self.git("branch", "--list", "task-1").strip())
 
@@ -414,8 +414,10 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual(self.git("status", "--porcelain", cwd=self.worktree), "")
         self.assertEqual(self.git("rev-parse", "task-1~1").strip(), branch_head)
         notes = self.ticket().section("Notes") or ""
-        self.assertIn("Review failed (integration):", notes)
-        self.assertIn("`shared.txt`", notes)
+        self.assertIn(
+            "Review failed (integration): rebasing onto `main` conflicts in `shared.txt`",
+            notes,
+        )
 
     def test_a_recorded_resolution_is_not_replayed_into_the_review(self):
         # With `rerere.autoupdate`, Git stages a replayed resolution, leaving no
@@ -610,19 +612,17 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual((frontmatter.status, frontmatter.owner), ("blocked", "human"))
         self.assertIn("failed review 3 times", self.ticket().section("Notes") or "")
 
-    def test_interrupting_the_merge_aborts_it_and_exits_130(self):
+    def test_interrupting_the_rebase_aborts_it_and_exits_130(self):
         self.branch_for_review(shared="from the branch\n")
         self.move_main(shared="from main\n")
 
         def interrupted(root: Path, onto: str) -> list[str]:
-            subprocess.run(
-                ["git", "merge", "--no-edit", onto], cwd=root, capture_output=True, check=False
-            )
+            subprocess.run(["git", "rebase", onto], cwd=root, capture_output=True, check=False)
             raise KeyboardInterrupt
 
-        with mock.patch("chitty.git.merge_main", side_effect=interrupted):
+        with mock.patch("chitty.git.rebase_onto", side_effect=interrupted):
             result = self.run_cli("run", "--mode", "review", exit_code=130)
 
-        self.assertIn("interrupted during merge", result.stderr)
+        self.assertIn("interrupted during rebase", result.stderr)
         self.assert_no_merge_in_progress()
         self.assertEqual(self.ticket().frontmatter.status, "review")

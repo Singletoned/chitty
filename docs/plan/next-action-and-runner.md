@@ -95,14 +95,18 @@
 
 ## Before a review
 
+`main` is the base every ticket branch builds on. The runner rebases the branch
+onto `main` whenever it touches it. Ticket files change only on their branch and
+rebase like any other file; conflicts go to an agent, not a ticket merge.
+
 `chitty run` prepares the worktree so the reviewer sees what would land:
 
 1. A missing ticket branch and worktree is a runner error: set `error` with a `Runner error (review)` note naming the missing branch and saying no worktree exists; do not change the owner or start an agent.
 2. An unfinished merge or rebase is an error for the human; no status change.
 3. Uncommitted files (untracked and not ignored included): block for `human`
    with `Review blocked (work): ...`. No reviewer starts.
-4. Merge local `main` into the branch, with `rerere.enabled=false`. Conflict:
-   `git merge --abort`, move to `doing` with `Review failed (integration): ...`
+4. Rebase the branch onto local `main`, with `rerere.enabled=false`. Conflict:
+   `git rebase --abort`, move to `doing` with `Review failed (integration): ...`
    naming the files.
 5. A branch that changes the Chitty config (`chitty.toml` or `[tool.chitty]`)
    or the managed block in `AGENTS.md`: move to `doing` with
@@ -112,7 +116,7 @@
    `Review failed (work)`; no agent, no usage line, exit 0.
 
 - These moves use the run's own actor, so they count towards
-  `REVIEW_FAILURE_LIMIT`. Ctrl-C during the merge aborts it, exit 130.
+  `REVIEW_FAILURE_LIMIT`. Ctrl-C during the rebase aborts it, exit 130.
 - Work mode claims a `todo` ticket in the main checkout before preparing the
   worktree, then runs `setup` and `check`. A non-zero `check` exit
   on a `doing` or `error` ticket appends a `Check failed before this session`
@@ -133,7 +137,7 @@ On a pass, under the landing lock:
 - The main checkout must be on `main_branch` and clean.
 - Refused: uncommitted files in the worktree, a changed Chitty config, or a
   changed managed block in `AGENTS.md`, before or after merging.
-- Merge `main_branch` into the branch, run `setup` and `check`, fast-forward
+- Rebase the branch onto `main_branch`, run `setup` and `check`, fast-forward
   `main_branch`, then remove the worktree and branch.
 - A ticket-scoped setup, check, agent, or landing failure moves the ticket to
   `error`, records the phase, output, and worktree in Notes, and preserves its
@@ -141,7 +145,7 @@ On a pass, under the landing lock:
   a `doing` or `error` ticket described under "Before a review": the agent
   starts instead. Failures before a safe ticket handoff leave task state
   unchanged and use `error_reporter` when configured.
-- Without `chitty run`: merge `main` into the branch in its worktree, run the
+- Without `chitty run`: rebase the branch onto `main` in its worktree, run the
   checks, then only fast-forward `main`.
 
 ## Usage log

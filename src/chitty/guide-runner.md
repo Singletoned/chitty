@@ -1,7 +1,7 @@
 A passing review lands through `chitty run`: it fast-forwards `main` only after
-merging `main` into the ticket branch and running the configured setup and
-checks. Agents started without `chitty run` should first merge `main` into the
-branch in its worktree and run the configured checks; after they pass, only
+rebasing the ticket branch onto `main` and running the configured setup and
+checks. Agents started without `chitty run` should first rebase the branch
+onto `main` in its worktree and run the configured checks; after they pass, only
 fast-forward `main`. Do not merge or remove branches or worktrees as a reviewer.
 
 When starting an agent by hand, run the matching focused guide:

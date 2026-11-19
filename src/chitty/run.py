@@ -775,7 +775,7 @@ def _agent_command(
 def _prepare_review(
     work_repo: Repo, worktree: Path, action: NextAction, main_branch: str
 ) -> RunResult | None:
-    """Merge the integration branch into a review ticket, or fail it back to its worker.
+    """Rebase a review ticket onto main, or fail it back to its worker.
 
     The reviewer then sees exactly what would land. Returns the status change
     when the ticket fails here, so no review session is spent on it.
@@ -783,17 +783,18 @@ def _prepare_review(
     if blocked := _block_dirty_review(work_repo, worktree, action):
         return blocked
     try:
-        conflicts = git.merge_main(worktree, main_branch)
+        conflicts = git.rebase_onto(worktree, main_branch)
     except KeyboardInterrupt:
-        if git.merge_in_progress(worktree):
-            git.abort_merge(worktree)
-        raise RunInterrupted("merge") from None
+        if git.rebase_in_progress(worktree):
+            git.abort_rebase(worktree)
+        raise RunInterrupted("rebase") from None
     if conflicts:
+        git.abort_rebase(worktree)
         listed = ", ".join(f"`{path}`" for path in conflicts)
         return _fail_review(
             work_repo,
             action,
-            f"Review failed (integration): merging `{main_branch}` conflicts in {listed}.",
+            f"Review failed (integration): rebasing onto `{main_branch}` conflicts in {listed}.",
         )
     if changed := _changed_config(worktree, main_branch):
         return _fail_review(
@@ -1001,10 +1002,17 @@ def _land_locked(
             f"cannot land {action.id}; the branch changes Chitty's managed block in AGENTS.md"
         )
     for attempt in range(LANDING_ATTEMPTS):
-        if conflicts := git.merge(worktree, main_branch):
+        try:
+            conflicts = git.rebase_onto(worktree, main_branch)
+        except KeyboardInterrupt:
+            if git.rebase_in_progress(worktree):
+                git.abort_rebase(worktree)
+            raise RunInterrupted("rebase") from None
+        if conflicts:
+            git.abort_rebase(worktree)
             listed = ", ".join(f"`{path}`" for path in conflicts)
             raise ChittyError(
-                f"cannot land {action.id}; merging `{main_branch}` conflicts in {listed}"
+                f"cannot land {action.id}; rebasing onto `{main_branch}` conflicts in {listed}"
             )
         if changed := _changed_config(worktree, main_branch):
             raise ChittyError(

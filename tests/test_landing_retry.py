@@ -55,10 +55,11 @@ class TestLandingRetry(LandingTestCase):
 
     def test_retries_when_main_moves_once(self):
         self.finish_ticket()
-        branch_commits = self.branch_commits()
+        branch_subjects = self.git("log", "--format=%s", f"main..{self.branch}").splitlines()
         count = self.land_with_script("once")
+        landed_subjects = self.git("log", "--format=%s", "main").splitlines()
         landed = set(self.git("rev-list", "main").splitlines())
-        self.assertTrue(branch_commits <= landed)
+        self.assertTrue(set(branch_subjects) <= set(landed_subjects))
         check_commit = (self.tmp / "check-commit").read_text().strip()
         self.assertIn(check_commit, landed)
         self.assertEqual(len(count.read_text().splitlines()), 2)

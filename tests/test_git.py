@@ -199,6 +199,54 @@ class TestIsRepository(RepoTestCase):
         subprocess.run(["git", "init", "--quiet"], cwd=self.root, check=True)
 
 
+class TestRebaseOnto(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        self._git("init", "--quiet", "-b", "main")
+        self._git("config", "user.email", "test@example.com")
+        self._git("config", "user.name", "Test")
+        (self.root / "shared.txt").write_text("base\n")
+        self._commit("base")
+        self._git("checkout", "-b", "task-1")
+
+    def _git(self, *args: str) -> str:
+        result = subprocess.run(
+            ["git", *args], cwd=self.root, capture_output=True, text=True, check=True
+        )
+        return result.stdout
+
+    def _commit(self, message: str) -> None:
+        self._git("add", "--all")
+        self._git("commit", "--quiet", "-m", message)
+
+    def test_clean_rebase_returns_empty(self):
+        (self.root / "branch.txt").write_text("branch\n")
+        self._commit("branch change")
+        self._git("checkout", "main")
+        (self.root / "main.txt").write_text("main\n")
+        self._commit("main change")
+        self._git("checkout", "task-1")
+
+        self.assertEqual(git.rebase_onto(self.root, "main"), [])
+        self.assertFalse(git.rebase_in_progress(self.root))
+        self.assertTrue(git.is_ancestor(self.root, "main", "task-1"))
+
+    def test_conflicting_rebase_returns_paths_and_leaves_rebase_stopped(self):
+        (self.root / "shared.txt").write_text("branch\n")
+        self._commit("branch change")
+        self._git("checkout", "main")
+        (self.root / "shared.txt").write_text("main\n")
+        self._commit("main change")
+        self._git("checkout", "task-1")
+
+        self.assertEqual(git.rebase_onto(self.root, "main"), ["shared.txt"])
+        self.assertTrue(git.rebase_in_progress(self.root))
+        self.assertEqual(
+            self._git("diff", "--name-only", "--diff-filter=U").splitlines(),
+            ["shared.txt"],
+        )
+
+
 class TestBranchTipFiles(RepoTestCase):
     def setUp(self):
         super().setUp()

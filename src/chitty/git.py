@@ -705,16 +705,10 @@ def uncommitted_paths(root: Path) -> list[str]:
     return sorted(line[3:] for line in lines.splitlines() if len(line) > 3)
 
 
-def merge_main(root: Path, main_branch: str) -> list[str]:
-    """Merge `main_branch` into this worktree, aborting on a conflict.
-
-    Returns the conflicting paths, or an empty list when the merge succeeded.
-    """
-    # rerere would replay a resolution recorded for some other branch, which
-    # nobody has checked for this one. A conflict goes back to the worker
-    # instead.
+def rebase_onto(root: Path, main_branch: str) -> list[str]:
+    """Rebase this worktree onto ``main_branch``; return unresolved paths."""
     completed = subprocess.run(
-        ["git", "-c", "rerere.enabled=false", "merge", "--no-edit", main_branch],
+        ["git", "-c", "rerere.enabled=false", "rebase", main_branch],
         cwd=root,
         capture_output=True,
         text=True,
@@ -722,47 +716,20 @@ def merge_main(root: Path, main_branch: str) -> list[str]:
     )
     if completed.returncode == 0:
         return []
-    if not merge_in_progress(root):
-        raise ChittyError(
-            f"`git merge {main_branch}` failed in {root}:\n{completed.stderr.strip()}"
-        )
-    conflicts = _git(root, "diff", "--name-only", "--diff-filter=U").split()
-    abort_merge(root)
-    if not conflicts:
-        raise ChittyError(
-            f"`git merge {main_branch}` stopped in {root}:\n{completed.stderr.strip()}"
-        )
-    return conflicts
+    output = "\n".join(
+        part.strip() for part in (completed.stdout, completed.stderr) if part.strip()
+    )
+    if rebase_in_progress(root):
+        conflicts = _git(root, "diff", "--name-only", "--diff-filter=U").split()
+        if conflicts:
+            return conflicts
+        abort_rebase(root)
+        raise ChittyError(f"`git rebase {main_branch}` stopped in {root}:\n{output}")
+    raise ChittyError(f"`git rebase {main_branch}` failed in {root}:\n{output}")
 
 
 def abort_rebase(root: Path) -> None:
     _git(root, "rebase", "--abort")
-
-
-def abort_merge(root: Path) -> None:
-    _git(root, "merge", "--abort")
-
-
-def merge(root: Path, branch: str) -> list[str]:
-    """Merge ``branch`` into the current worktree, aborting conflicts."""
-    completed = subprocess.run(
-        ["git", "merge", "--no-edit", branch],
-        cwd=root,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if completed.returncode == 0:
-        return []
-    conflicts = _git(root, "diff", "--name-only", "--diff-filter=U").split()
-    abort = subprocess.run(
-        ["git", "merge", "--abort"], cwd=root, capture_output=True, text=True, check=False
-    )
-    if abort.returncode:
-        raise ChittyError(f"cannot abort merge of {branch} in {root}: {abort.stderr.strip()}")
-    if conflicts:
-        return conflicts
-    raise ChittyError(f"`git merge {branch}` failed in {root}: {completed.stderr.strip()}")
 
 
 def fast_forward(root: Path, branch: str) -> None:
