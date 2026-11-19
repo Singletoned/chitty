@@ -479,6 +479,7 @@ def _run_ticket(
     new_status: str | None = None
     handoff: RunResult | None = None
     context["phase"] = "agent"
+    print(f"Check passed; {action.mode} agent is working on {action.id}...", file=sys.stderr)
     try:
         if action.mode != "review":
             runner_chitty = Path(sys.executable).parent / "chitty"
