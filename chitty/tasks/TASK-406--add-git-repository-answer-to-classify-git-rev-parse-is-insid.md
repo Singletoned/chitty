@@ -25,6 +25,10 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 - [ ] Evidence, recorded in a note: the tests failed against the `NotImplementedError` stub, and each wrong version, implemented and run, fails a test from criteria 1 or 2: case-insensitive phrase match; `"true" in stdout`; `True` whenever stripped output is `true`, whatever the status; status 128 gives `False` without checking the phrase; any non-zero status gives `False`; message without the command. A Hypothesis test drawing the status from `st.integers()` and both streams from `st.text()` shows the function only returns a `bool` or raises `ChittyError`.
 - [ ] `make check` passes.
 
+## Plan
+
+Add Hypothesis property tests for repository_answer, first proving they fail with a NotImplementedError stub. Implement the pure result classifier with exact status/stdout/stderr rules and _git-style errors. Exercise the specified wrong variants and broad status/stream generation, then run make format and make check and commit implementation with a Task trailer.
+
 ## History
 
 - 2026-11-19T08:43:27Z lively-quartz-crane → planning
@@ -42,3 +46,4 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 - 2026-11-19T08:52:52Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-19T08:52:52Z lively-quartz-crane planning → todo
 - 2026-11-19T08:56:36Z youthful-pearl-eel todo → doing
+- 2026-11-19T08:57:51Z youthful-pearl-eel: wrote the plan
