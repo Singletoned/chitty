@@ -1,6 +1,6 @@
 ---
 title: Test that a `check` failure on a claimed `todo` ticket is recorded on the ticket branch
-status: todo
+status: done
 priority: high
 depends_on:
   - TASK-382
@@ -31,6 +31,22 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 - [ ] `test_run_check_failure_on_todo_ticket_records_error_on_branch` exists in place of the old name and passes with every existing and added assertion listed in the Description
 - [ ] A note records the assertion that fails first against the wrong version of `run.py` described under Evidence; `make check` passes
 
+## Plan
+
+Strengthen the existing TestNext regression test only: rename it, capture main before chitty run, assert main has only the ticket claim commit, and inspect the branch ticket error contents. First run the requested wrong-run.py experiment and record which assertion fails first; restore run.py immediately. Then run the focused test and make check, commit test changes with Task: TASK-423, record verification and summary, and move the ticket to review.
+
+## Notes
+
+Wrong-version experiment: temporarily changed _handle_check_failure to record via the main checkout. The focused existing test failed first at tests/test_next.py:1303, asserting status: doing in main; wrong version left status: error on main. Restored src/chitty/run.py immediately.
+
+Reviewed:
+1: pass - Focused unittest passed; the requested wrong main-checkout version failed first with `status: doing` not found, showing `status: error` instead. Diff retains existing assertions and adds the specified branch and main checks.
+2: pass - The existing note records the first failing assertion; independently reproduced it with the specified wrong version and restored `src/chitty/run.py`. `make check` passed: 742 tests, ruff and pyright OK.
+
+## Summary
+
+Renamed and strengthened the todo check-failure test to verify main contains only the claim and task-1 contains the runner error. Focused regression passes; make check passes (742 tests). Wrong-version experiment failed first on the existing main status assertion, as expected. Commit: cce5c733.
+
 ## History
 
 - 2026-11-19T13:29:53Z quick-ginger-lapwing → backlog
@@ -43,3 +59,10 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 - 2026-11-19T13:43:03Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T13:43:06Z quick-ginger-lapwing: changed description
 - 2026-11-19T13:43:06Z quick-ginger-lapwing planning → todo
+- 2026-11-19T14:36:29Z able-jade-urchin todo → doing
+- 2026-11-19T14:37:24Z able-jade-urchin: wrote the plan
+- 2026-11-19T14:37:43Z able-jade-urchin: changed notes
+- 2026-11-19T14:40:01Z able-jade-urchin: changed summary
+- 2026-11-19T14:40:01Z able-jade-urchin doing → review
+- 2026-11-19T15:09:34Z calm-indigo-jay: changed notes
+- 2026-11-19T15:09:34Z calm-indigo-jay review → done

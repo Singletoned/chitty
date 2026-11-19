@@ -1295,7 +1295,7 @@ class TestNext(CliTestCase):
             "error",
         )
 
-    def test_run_check_failure_records_output_and_does_not_claim_or_start_agent(self):
+    def test_run_check_failure_on_todo_ticket_records_error_on_branch(self):
         config = self.root / "chitty.toml"
         checker = self.root / "check.py"
         checker.write_text(
@@ -1320,6 +1320,7 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "setup")
 
         self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
+        main_before = self.git("rev-parse", "main").strip()
         result = self.run_cli("run")
 
         self.assertIn("todo → error", result.stdout)
@@ -1336,12 +1337,22 @@ class TestNext(CliTestCase):
         self.assertIn("check line 6", task.section("Notes") or "")
         worktree = self.root / ".worktrees/task-1"
         ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
-        main_ticket = self.git("show", f"main:{ticket_path.relative_to(worktree)}")
+        relative_ticket_path = str(ticket_path.relative_to(worktree))
+        main_ticket = self.git("show", f"main:{relative_ticket_path}")
         self.assertIn("status: doing", main_ticket)
+        main_ticket_commits = self.git(
+            "log", "--format=%s", f"{main_before}..main", "--", relative_ticket_path
+        ).splitlines()
+        self.assertEqual(main_ticket_commits, ["chitty: edit TASK-1 Todo"])
+        branch_ticket = self.git("show", f"task-1:{relative_ticket_path}")
+        self.assertIn("status: error", branch_ticket)
+        self.assertIn("Runner error (check)", branch_ticket)
+        self.assertIn("check exited with status 1", branch_ticket)
+        self.assertIn("check line 6", branch_ticket)
         self.assertIn("?? check-args", self.git("-C", str(worktree), "status", "--short"))
         self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
         changed_paths = self.git("show", "--pretty=format:", "--name-only", "task-1").splitlines()
-        self.assertEqual(changed_paths, [str(ticket_path.relative_to(worktree))])
+        self.assertEqual(changed_paths, [relative_ticket_path])
 
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
@@ -1800,7 +1811,7 @@ class TestNext(CliTestCase):
         fake.parent.mkdir()
         fake.write_text(
             "#!" + sys.executable + "\n"
-            "import os, signal, subprocess, sys, time\n"
+            "import os, signal, subprocess, sys\n"
             "assert os.getcwd() == os.environ['EXPECTED_ROOT']\n"
             "assert sys.stdin.read() == ''\n"
             "if os.environ.get('CHANGE'):\n"
@@ -1810,13 +1821,7 @@ class TestNext(CliTestCase):
             "    text = text.replace('status: error', 'status: blocked')\n"
             "    open(path, 'w').write(text)\n"
             "    subprocess.run(['git', 'add', path], check=True)\n"
-            # Chitty orders ticket versions across branches by whole-second
-            # commit time. A real agent commits well after the error was
-            # recorded on main, so date this commit later to avoid a tie.
-            "    later = {**os.environ, 'GIT_COMMITTER_DATE': f'@{int(time.time()) + 1} +0000'}\n"
-            "    subprocess.run(\n"
-            "        ['git', 'commit', '--quiet', '-m', 'worker change'], check=True, env=later\n"
-            "    )\n"
+            "    subprocess.run(['git', 'commit', '--quiet', '-m', 'worker change'], check=True)\n"
             "if os.environ.get('PI_SIGNAL'):\n"
             "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
             "    os.kill(os.getpid(), signal.SIGINT)\n"
