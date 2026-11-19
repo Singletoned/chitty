@@ -1,8 +1,6 @@
 ---
 title: Add `git.repository_answer` to classify `git rev-parse --is-inside-work-tree` results
 status: planning
-depends_on:
-  - TASK-405
 created: 2026-11-19
 ---
 
@@ -38,3 +36,4 @@ Tests go in `tests/test_git.py`. The repository's property-testing tool is Hypot
 - 2026-11-19T08:49:37Z lively-quartz-crane planning → cold-read
 - 2026-11-19T08:51:02Z lively-quartz-crane cold-read → planning
 - 2026-11-19T08:51:05Z lively-quartz-crane: changed title, description, acceptance criteria
+- 2026-11-19T08:51:25Z lively-quartz-crane: changed dependencies
