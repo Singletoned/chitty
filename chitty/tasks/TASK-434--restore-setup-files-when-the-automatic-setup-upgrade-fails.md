@@ -1,6 +1,6 @@
 ---
 title: Restore setup files when the automatic setup upgrade fails
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -43,3 +43,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:07:15Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:08:53Z sunny-white-dormouse: changed dependencies, description, acceptance criteria
 - 2026-11-19T21:08:53Z sunny-white-dormouse cold-read → planning
+- 2026-11-19T21:09:02Z sunny-white-dormouse planning → cold-read
