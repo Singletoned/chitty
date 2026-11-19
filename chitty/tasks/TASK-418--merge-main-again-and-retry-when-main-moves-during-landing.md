@@ -22,8 +22,9 @@ Tests: in a new `tests/test_landing_retry.py`, reusing the setup of `TestLanding
 
 - [ ] When the check commits to `main` on its first run only, `_land` succeeds: `main` contains both that commit and the ticket branch's commits, the count file has two lines, and the worktree and branch are removed. It fails before the change with the `--ff-only` error
 - [ ] When the check commits to `main` on every run, `_land` raises `ChittyError` saying `main` moved during each of the 3 attempts; the count file has three lines, `main` has exactly the three new commits on top of its starting point and none of the branch's, and the worktree and branch remain
-- [ ] When the check's first run commits to `main` a change to a file the branch also changed, `_land` raises the existing `merging `main` conflicts` error on the second attempt, `main` holds no branch commit, and the worktree remains. `make check` passes
+- [ ] When the check's first run commits to `main` a change to a file the branch also changed (the ticket file, which `finish_ticket` changes), `_land` raises the existing conflict error, whose message contains `conflicts in`, on the second attempt; `main` holds no branch commit, and the worktree remains. `make check` passes
 
 ## History
 
 - 2026-11-19T12:06:28Z quick-ginger-lapwing → planning
+- 2026-11-19T12:06:46Z quick-ginger-lapwing: changed acceptance criteria
