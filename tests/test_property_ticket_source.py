@@ -158,23 +158,6 @@ def call(
     )
 
 
-@st.composite
-def legacy_graphs(draw):
-    """Digit commits for the fixed examples `TASK-403` and `TASK-404` replace."""
-    fork = draw(st.booleans())
-
-    def contains(a, b):
-        a, b = int(a), int(b)
-        if a == b:
-            return True
-        if not fork:
-            return a > b
-        # 0 is the shared root; 1 and 2 fork; 3+ are unrelated commits.
-        return a in (1, 2) and b == 0
-
-    return fork, contains
-
-
 class TestTicketSource(unittest.TestCase):
     @given(st.data(), graphs(), task_ids(), st.sampled_from(MAIN_BRANCHES), st.booleans())
     def test_rule_1_provisional_reads_the_working_tree(
@@ -309,59 +292,70 @@ class TestTicketSource(unittest.TestCase):
         unchanged_result = call(*args, lambda ref: ref == other)
         self.assertEqual(unchanged_result, result)
 
-    @given(task_ids())
-    def test_divergence_names_remaining_candidates_not_dropped_ones(self, task_id):
-        def contains(a, b):
-            return a == b or (a in ("1", "2") and b == "0")
-
+    @given(st.data(), graphs().filter(lambda graph: bool(graph.arms)), task_ids())
+    def test_rule_5_divergence_names_generated_remaining_candidates(self, data, graph, task_id):
         branch = str(task_id).lower()
+        main_tip = data.draw(st.none() | st.sampled_from(graph.chain))
+        arm_tips = tuple(data.draw(st.sampled_from(arm)) for arm in graph.arms)
+        local_tips = {branch: arm_tips[0]}
+        remote_tips = {f"origin/{branch}": arm_tips[1]}
+        dropped_name = f"backup/{branch}"
+        if main_tip is not None and data.draw(st.booleans()):
+            remote_tips[dropped_name] = main_tip
+
         with self.assertRaises(ChittyError) as raised:
-            ticket_source(
+            call(
                 task_id,
                 False,
                 None,
                 "main",
-                "1",
-                {branch: "1"},
-                {"origin/" + branch: "2", "backup/" + branch: "3"},
-                contains,
-                lambda ref: False,
+                main_tip,
+                (local_tips, remote_tips),
+                graph.contains,
+                False,
             )
         message = str(raised.exception)
+        self.assertIn(f"`{branch}`", message)
         self.assertIn(f"`origin/{branch}`", message)
-        self.assertIn(f"`backup/{branch}`", message)
-        self.assertNotIn(f"`{branch}`", message)
+        if dropped_name in remote_tips:
+            self.assertNotIn(f"`{dropped_name}`", message)
 
-    @given(legacy_graphs(), task_ids())
-    def test_decoys_and_unrelated_refs_do_not_change_result(self, graph, task_id):
-        _, contains = graph
-        branch = str(task_id).lower()
-        base = ticket_source(
-            task_id,
-            False,
-            None,
-            "main",
-            "0",
-            {branch: "2"},
-            {},
-            contains,
-            lambda ref: False,
+    @given(st.data(), graphs(), task_ids(), st.sampled_from(MAIN_BRANCHES))
+    def test_decoys_and_unrelated_refs_do_not_change_generated_result(
+        self, data, graph, task_id, main_branch
+    ):
+        candidate_maps = data.draw(
+            ref_maps(task_id, graph.commits, graph.commits, data.draw(st.booleans()))
         )
-        expanded = ticket_source(
-            task_id,
-            False,
-            None,
-            "main",
-            "0",
-            {
-                branch: "2",
-                branch.upper(): "3",
-                branch + "0": "3",
-                "feature/" + branch: "3",
-                "other": "3",
-            },
-            {"origin/" + branch + "0": "3", "origin/x/" + branch: "3"},
-            contains,
-            lambda ref: False,
+        extra_maps = data.draw(ref_maps(task_id, graph.commits, graph.commits, False))
+        local_tips = dict(candidate_maps[0])
+        remote_tips = dict(candidate_maps[1])
+        expanded_local = local_tips | extra_maps[0]
+        expanded_remote = remote_tips | extra_maps[1]
+        current = data.draw(current_branches(task_id, main_branch))
+        main_tip = data.draw(st.none() | st.sampled_from(graph.commits))
+        refs = tuple(local_tips) + tuple(remote_tips)
+        changed = frozenset(data.draw(st.sets(st.sampled_from(refs)))) if refs else frozenset()
+        provisional = data.draw(st.booleans())
+
+        def outcome(maps):
+            try:
+                return (
+                    "value",
+                    call(
+                        task_id,
+                        provisional,
+                        current,
+                        main_branch,
+                        main_tip,
+                        maps,
+                        graph.contains,
+                        lambda ref: ref in changed,
+                    ),
+                )
+            except ChittyError as error:
+                return ("error", str(error))
+
+        self.assertEqual(
+            outcome((expanded_local, expanded_remote)), outcome((local_tips, remote_tips))
         )
-        self.assertEqual(expanded, base)
