@@ -1,6 +1,6 @@
 ---
 title: Test that review-mode `setup` and landing failures are recorded on the ticket branch
-status: planning
+status: cold-read
 priority: high
 depends_on:
   - TASK-382
@@ -33,3 +33,4 @@ No property: two fixed failure phases, both listed and tested; the behaviour dri
 - 2026-11-19T13:29:50Z quick-ginger-lapwing → backlog
 - 2026-11-19T13:34:19Z quick-ginger-lapwing: changed priority, description, acceptance criteria
 - 2026-11-19T13:34:19Z quick-ginger-lapwing backlog → planning
+- 2026-11-19T13:34:24Z quick-ginger-lapwing planning → cold-read
