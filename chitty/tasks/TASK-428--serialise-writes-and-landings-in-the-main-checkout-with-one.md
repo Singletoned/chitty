@@ -1,6 +1,6 @@
 ---
 title: Serialise writes and landings in the main checkout with one short lock
-status: todo
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -43,3 +43,4 @@ Second cold read 2026-11-19 outcomes: the setup-upgrade paths are accepted untes
 - 2026-11-19T17:51:06Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:52:42Z quick-ginger-lapwing: changed owner, description, notes
 - 2026-11-19T17:52:42Z quick-ginger-lapwing planning → todo
+- 2026-11-19T17:59:10Z daring-lilac-vole todo → doing
