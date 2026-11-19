@@ -1,6 +1,7 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: review
+status: blocked
+owner: human
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -284,6 +285,13 @@ make: *** [check] Error 1
 
 Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext.test_run_cases`, fixed on `main` in `fe1ef0cd`; back to `review`.
 
+Review failed (tests): Generate a sole local candidate as well as sole remote candidates. This remains unresolved from the review beginning “Complete the generated cases”.
+1: fail - `.venv/bin/python -m unittest tests.test_property_ticket_source` printed `Ran 6 tests` and `OK`, but `has_local = count == 4 or (count > 1 and ...)` makes a sole local candidate impossible. The required one-to-four-candidate layouts therefore remain incomplete; allow a local-only layout and exercise it on both graph shapes.
+2: fail - The same passing property uses the same generator, so rule 6 is also never exercised for the required sole-local layout. Include it in both changed-ref assertions. The notes record that the ignored-changed_on_both mutant failed this property.
+3: pass - `make check` printed `Ran 752 tests` and `OK`; the mutation note identifies the generated property and failure for remotes winning ties, reversed remote ordering, and ignored changed_on_both.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
 ## Summary
 
 Completed generated rule 4 and 6 property coverage; removed three fixed examples. Mutant checks each failed the generated property tests as recorded in Notes, and all mutations were reverted. Focused property suite, formatting, Ruff and pyright pass. make check remains non-zero only for tests.test_next.TestNext.test_run_cases (expected 3, got 0), unrelated to this change. Implementation committed as d82b0f05 and c8a6f0da; ticket is ready for review with the suite failure disclosed.
@@ -317,3 +325,5 @@ Completed generated rule 4 and 6 property coverage; removed three fixed examples
 - 2026-11-19T15:47:57Z golden-teal-zander review → error
 - 2026-11-19T16:02:03Z quick-ginger-lapwing: changed notes
 - 2026-11-19T16:02:03Z quick-ginger-lapwing error → review
+- 2026-11-19T16:21:29Z witty-navy-urchin: changed owner, acceptance criteria, notes
+- 2026-11-19T16:21:29Z witty-navy-urchin review → blocked
