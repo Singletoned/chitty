@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: doing
+status: blocked
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -33,6 +33,10 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 
 Add a pre-write autocommit prerequisite check in Repo._prepare_write, with focused grid and integration tests plus adaptations for existing autocommit tests. Verify refusal behavior before/after and run make check.
 
+## Notes
+
+Blocked: TASK-410, a declared dependency, is not present on this branch/main, so no-git command behavior outside add cannot be verified as specified. The current implementation and two focused tests are present, and make check passed, but the required 24-case grid, additional move/fix/read/stale-setup tests, and main-baseline evidence remain incomplete. The dependency owner must land TASK-410; then resume and complete these criteria.
+
 ## History
 
 - 2026-11-19T09:06:20Z lively-quartz-crane → planning
@@ -45,3 +49,5 @@ Add a pre-write autocommit prerequisite check in Repo._prepare_write, with focus
 - 2026-11-19T09:21:32Z lively-quartz-crane cold-read → todo
 - 2026-11-19T11:42:06Z sunny-ochre-raven todo → doing
 - 2026-11-19T11:42:57Z sunny-ochre-raven: wrote the plan
+- 2026-11-19T11:45:27Z sunny-ochre-raven: changed notes
+- 2026-11-19T11:45:27Z sunny-ochre-raven doing → blocked
