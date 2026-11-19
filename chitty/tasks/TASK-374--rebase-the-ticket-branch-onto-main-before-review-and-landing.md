@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: todo
+status: doing
 labels:
   - bug
   - needs-minor
@@ -61,3 +61,4 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:02:09Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:02:11Z lively-quartz-crane planning → todo
 - 2026-11-18T18:17:15Z lively-quartz-crane: changed description
+- 2026-11-19T14:20:48Z sunny-bronze-ibis todo → doing

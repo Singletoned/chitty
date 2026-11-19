@@ -10,10 +10,10 @@ created: 2026-11-18
 
 ## Description
 
-`TASK-377` builds `ticket_source` in `src/chitty/ticket_source.py` and property-tests rules 1 to 3; the rules and the decoy names are in its description. `TASK-403` covers rules 4 and 6 and edits the same file first. This ticket replaces the fixed-example tests for rule 5 and for decoys in `tests/test_property_ticket_source.py` with properties, reusing that file's `graphs()`, `task_ids()` and `ref_maps()` generators. Split from `TASK-377` on 2026-11-18, after two reviews rejected fixed examples. Change `src/chitty/ticket_source.py` only if a property finds a bug; then fix it and say so in the notes.
+`TASK-377` builds `ticket_source` in `src/chitty/ticket_source.py` and property-tests rules 1 to 3; the rules and the decoy names are in its description. `TASK-403` covers rules 4 and 6 and edits the same file first. This ticket replaces the fixed-example tests for rule 5 and for decoys in `tests/test_property_ticket_source.py` with properties, reusing that file's `graphs()` (a `Graph` with `ancestors`), `task_ids()`, `ref_maps(task_id, candidate_commits, decoy_commits, with_candidates)`, `decoy_names()`, `current_branches()` and `call()` helpers. Split from `TASK-377` on 2026-11-18, after two reviews rejected fixed examples. Change `src/chitty/ticket_source.py` only if a property finds a bug; then fix it and say so in the notes.
 
 - Rule 5: on the fork shape, place one or more candidates on each arm, so at least two are incomparable, and `main_tip` on the shared chain or `None`; when `main_tip` is not `None`, sometimes add a third candidate on a commit `main_tip` contains, which is dropped. Expected: `ChittyError` whose message contains each remaining candidate's name quoted in backticks, and not the dropped one's.
-- Decoys: for any inputs (maps with candidate names over all commits of either shape, any `current_branch`, `main_tip` drawn or `None`, any `changed_on_both` set, `provisional` drawn), adding the decoy and unrelated refs of a second `ref_maps(commits, False)` call (which never equal a candidate, and include a remote key without `/`) to the maps gives the same return value, or `ChittyError` with the same message. No expected value is computed; the property compares the two calls.
+- Decoys: for any inputs (maps with candidate names over all commits of either shape, any `current_branch`, `main_tip` drawn or `None`, any `changed_on_both` set, `provisional` drawn), adding the decoy and unrelated refs of a second `ref_maps(task_id, commits, commits, False)` call (which never equal a candidate, and include a remote key without `/`) to the maps gives the same return value, or `ChittyError` with the same message. No expected value is computed; the property compares the two calls.
 
 Each property asserts a returned value or `ChittyError` specifically, and tests match quoted names.
 
@@ -41,3 +41,5 @@ Second cold read 2026-11-18 outcome: named the call that supplies the extra refs
 - 2026-11-18T21:35:23Z lively-quartz-crane cold-read → planning
 - 2026-11-18T21:37:52Z lively-quartz-crane: changed description, notes
 - 2026-11-18T21:38:00Z lively-quartz-crane planning → todo
+- 2026-11-19T14:20:36Z quick-ginger-lapwing: changed description
+- 2026-11-19T14:20:39Z quick-ginger-lapwing: changed description

@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from unittest.mock import patch
 
+from chitty.store import Repo, next_action
 from tests.test_cli import CliTestCase
 
 
@@ -66,12 +67,20 @@ class TestRunClaimsOnMain(CliTestCase):
             check=True,
         ).stdout
 
-    def test_todo_claim_is_committed_on_main_and_inherited_by_new_branch(self):
+    def test_todo_claim_is_committed_on_main_and_error_is_recorded_on_branch(self):
         result = self.run_cli("run")
 
         self.assertIn("doing → error", result.stdout)
-        claim = self.git("rev-parse", "task-1").strip()
-        self.assertEqual(self.git("merge-base", "--is-ancestor", claim, "main", cwd=self.root), "")
+        claim = self.git("rev-parse", "main").strip()
+        self.assertEqual(self.git("merge-base", "--is-ancestor", claim, "task-1"), "")
+        branch_ticket = next((self.root / ".worktrees/task-1/chitty/tasks").glob("TASK-1--*.md"))
+        self.assertIn("status: error", branch_ticket.read_text())
+        main_ticket = self.git(
+            "show", f"main:{branch_ticket.relative_to(self.root / '.worktrees/task-1')}"
+        )
+        self.assertIn("status: doing", main_ticket)
+        self.assertEqual(self.json("show", "TASK-1")["status"], "error")
+        self.assertEqual(str(next_action(Repo.open(self.root), modes=("errors",)).id), "TASK-1")
         self.assertIn("status: doing", (self.logs / "agent").read_text())
 
     def test_claim_succeeds_when_main_has_a_newer_ticket_commit(self):
@@ -108,7 +117,7 @@ class TestRunClaimsOnMain(CliTestCase):
 
         result = self.run_cli("run")
 
-        self.assertIn("doing → error", result.stdout)
+        self.assertIn("todo → error", result.stdout)
         self.assertTrue((self.logs / "agent").exists())
         self.assertIn("Branch edit.", (self.logs / "agent").read_text())
         main_ticket = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))

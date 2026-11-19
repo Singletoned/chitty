@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -61,3 +61,4 @@ Tests: real-Git tests in a new `tests/test_ticket_reads.py`, inheriting `CliTest
 - 2026-11-18T17:55:29Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:55:31Z lively-quartz-crane planning → todo
 - 2026-11-18T17:58:22Z lively-quartz-crane: changed description
+- 2026-11-19T14:43:37Z tidy-yellow-lapwing todo → doing

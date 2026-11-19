@@ -199,6 +199,8 @@ Reviewed:
 1: pass - The eight real-Git regressions in tests.test_failed_writes_restore report 8 failures against ebea2856^ store.py and 8 OK with the change, covering all seven requested operations and checking status and file bytes.
 2: pass - The delete-mode regression is among those 8 baseline failures and 8 passes; each test reruns without the hook successfully. make check passed: 726 tests OK, ruff and pyright clean.
 
+Landed by hand 2026-11-19: the runner's landing at 13:42 failed because `main` moved (before `TASK-418` added the retry), and the error was recorded on `main` while this branch already said `done`. Merged `main`, kept the passing review, ran `make check`, fast-forwarded `main`.
+
 ## Summary
 
 Implemented all-or-nothing rollback for add, edit, archive, archive_done, restore, move and renumber; added real-Git regression coverage for each listed failure path and updated the existing autocommit expectation. Verification: the eight regression tests failed on baseline and pass with the fix; make check passes (725 tests). Follow-up: none.
