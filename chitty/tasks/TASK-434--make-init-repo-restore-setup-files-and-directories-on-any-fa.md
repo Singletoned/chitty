@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -63,3 +63,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:17:52Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:19:12Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:19:12Z sunny-white-dormouse cold-read → todo
+- 2026-11-19T23:16:08Z brisk-khaki-urchin todo → doing
