@@ -1,6 +1,6 @@
 ---
 title: Test that a `check` failure on a claimed `todo` ticket is recorded on the ticket branch
-status: cold-read
+status: planning
 priority: high
 depends_on:
   - TASK-382
@@ -37,3 +37,4 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 - 2026-11-19T13:39:57Z quick-ginger-lapwing: changed priority, description, acceptance criteria
 - 2026-11-19T13:39:57Z quick-ginger-lapwing backlog → planning
 - 2026-11-19T13:40:02Z quick-ginger-lapwing planning → cold-read
+- 2026-11-19T13:41:38Z quick-ginger-lapwing cold-read → planning
