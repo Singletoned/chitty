@@ -1,6 +1,6 @@
 ---
 title: Test that review-mode `setup` and landing failures are recorded on the ticket branch
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-382
@@ -40,3 +40,4 @@ No property: two fixed failure phases, both listed and tested; the behaviour dri
 - 2026-11-19T13:39:22Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T13:39:26Z quick-ginger-lapwing: changed description
 - 2026-11-19T13:39:26Z quick-ginger-lapwing planning → todo
+- 2026-11-19T14:34:27Z friendly-fawn-urchin todo → doing
