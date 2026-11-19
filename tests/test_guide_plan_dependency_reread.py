@@ -8,10 +8,10 @@ class TestPlanGuideDependencyReread(unittest.TestCase):
     def test_ticket_built_on_unfinished_work_is_read_again_after_it_lands(self):
         planning = " ".join(guide("plan", directory=Path.cwd()).split())
         for phrase in (
-            "builds on what an unfinished ticket adds or changes",
-            "stays in `planning`",
-            "check this one against what landed, cold-read it again",
-            "can go to `todo` with `depends_on`",
+            "relies on something an unfinished ticket is building",
+            "keep it in `planning`",
+            "compare this one with what actually landed, cold-read it again",
+            "`depends_on` is enough",
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, planning)
