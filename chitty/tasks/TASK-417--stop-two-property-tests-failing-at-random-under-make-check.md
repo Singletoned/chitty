@@ -1,6 +1,6 @@
 ---
 title: Stop two property tests failing at random under `make check`
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -38,3 +38,4 @@ No property is added: both changes fix existing property tests, and `plain_note`
 - 2026-11-19T12:05:09Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T12:05:12Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T12:05:12Z quick-ginger-lapwing planning → todo
+- 2026-11-19T12:05:55Z honest-coral-gannet todo → doing
