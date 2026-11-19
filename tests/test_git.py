@@ -1,5 +1,7 @@
+import os
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path, PurePosixPath
 from unittest import mock
 
@@ -9,6 +11,72 @@ from hypothesis import strategies as st
 from chitty import git
 from chitty.errors import ChittyError
 from tests.support import RepoTestCase
+
+
+class TestIsRepository(RepoTestCase):
+    @settings(max_examples=30, deadline=None)
+    @given(
+        depth=st.integers(min_value=1, max_value=4),
+        marker=st.one_of(st.none(), st.integers(min_value=0, max_value=4)),
+        kind=st.sampled_from(("directory", "file", "symlink")),
+    )
+    def test_missing_git_distinguishes_repository_markers(
+        self, depth: int, marker: int | None, kind: str
+    ):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary).resolve()
+            self.assertFalse(any((parent / ".git").exists() for parent in base.parents))
+            directories = [base]
+            for _ in range(depth):
+                child = directories[-1] / "nested"
+                child.mkdir()
+                directories.append(child)
+            if marker is not None:
+                level = min(marker, depth)
+                marker_path = directories[level] / ".git"
+                if kind == "directory":
+                    marker_path.mkdir()
+                elif kind == "file":
+                    marker_path.touch()
+                else:
+                    marker_path.symlink_to(base / "missing-target")
+            empty_path = base / "empty-path"
+            empty_path.mkdir()
+            with mock.patch.dict(os.environ, {"PATH": str(empty_path)}):
+                if marker is None:
+                    self.assertFalse(git.is_repository(directories[-1]))
+                else:
+                    with self.assertRaises(ChittyError) as raised:
+                        git.is_repository(directories[-1])
+                    message = str(raised.exception)
+                    self.assertIn("`git`", message)
+                    self.assertIn("PATH", message)
+                    self.assertIn(str(directories[min(int(marker), depth)] / ".git"), message)
+
+    def test_invalid_directories_raise_with_or_without_git(self):
+        path = self.tmp / "missing"
+        regular_file = self.tmp / "file"
+        regular_file.touch()
+        empty_path = self.tmp / "empty-path"
+        empty_path.mkdir()
+        for git_path in (os.environ["PATH"], str(empty_path)):
+            with mock.patch.dict(os.environ, {"PATH": git_path}):
+                for invalid in (path, regular_file):
+                    with self.assertRaisesRegex(ChittyError, str(invalid.resolve())):
+                        git.is_repository(invalid)
+
+    def test_repository_detection_without_missing_git(self):
+        self.git_init()
+        nested = self.root / "nested"
+        nested.mkdir()
+        self.assertTrue(git.is_repository(self.root))
+        self.assertTrue(git.is_repository(nested))
+        self.assertFalse(git.is_repository(self.root / ".git"))
+        with tempfile.TemporaryDirectory() as temporary:
+            self.assertFalse(git.is_repository(Path(temporary)))
+
+    def git_init(self):
+        subprocess.run(["git", "init", "--quiet"], cwd=self.root, check=True)
 
 
 class TestBranchTipFiles(RepoTestCase):
