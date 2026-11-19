@@ -54,12 +54,40 @@ class ReviewMergeTestCase(CliTestCase):
         os.environ["PATH"] = f"{agent.parent}:{previous_path}"
         self.addCleanup(os.environ.__setitem__, "PATH", previous_path)
         check_script = self.tmp / "landing_check.py"
+        holder_code = (
+            "import fcntl, subprocess, sys, time\n"
+            "from pathlib import Path\n"
+            "root, held = map(Path, sys.argv[1:])\n"
+            "with (root / '.git/chitty/run/main-checkout.lock').open('w') as lock:\n"
+            "    fcntl.flock(lock, fcntl.LOCK_EX)\n"
+            "    (root / 'shared.txt').write_text('dirty\\n')\n"
+            "    held.write_text('held')\n"
+            "    time.sleep(2)\n"
+            "    subprocess.run(\n"
+            "        ['git', '-C', str(root), 'checkout', '--', 'shared.txt'], check=True\n"
+            "    )\n"
+        )
         check_script.write_text(
-            "import sys\nfrom pathlib import Path\n"
+            "import subprocess, sys, time\nfrom pathlib import Path\n"
             "if Path('main-late.txt').exists() or Path('review-marker').exists():\n"
             "    Path(sys.argv[1]).write_text('checked merged main')\n"
             "    if Path(sys.argv[2]).exists():\n"
             "        raise SystemExit(7)\n"
+            "    if Path(sys.argv[3]).exists():\n"
+            "        held = Path(sys.argv[3]).with_name('hold_main_held')\n"
+            "        held.unlink(missing_ok=True)\n"
+            f"        holder = {holder_code!r}\n"
+            "        subprocess.Popen(\n"
+            "            [sys.executable, '-c', holder,\n"
+            "             Path(sys.argv[3]).read_text(), str(held)],\n"
+            "            start_new_session=True, stdout=subprocess.DEVNULL,\n"
+            "            stderr=subprocess.DEVNULL,\n"
+            "        )\n"
+            "        deadline = time.monotonic() + 30\n"
+            "        while not held.exists() and time.monotonic() < deadline:\n"
+            "            time.sleep(0.05)\n"
+            "        if not held.exists():\n"
+            "            raise SystemExit('main-checkout lock holder did not start')\n"
         )
         config = self.root / "chitty.toml"
         config.write_text(
@@ -77,7 +105,8 @@ class ReviewMergeTestCase(CliTestCase):
             .replace(
                 'check = "true"',
                 f'check = "{sys.executable} {check_script} '
-                f'{self.logs / "landing_check"} {self.logs / "fail_landing_check"}"',
+                f"{self.logs / 'landing_check'} {self.logs / 'fail_landing_check'} "
+                f'{self.logs / "hold_main"}"',
             )
         )
         self.git("init", "--quiet", "-b", "main")
@@ -275,6 +304,19 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertIn(
             "status: done", next((self.root / "chitty/tasks").glob("TASK-1--*.md")).read_text()
         )
+        self.assertFalse(self.worktree.exists())
+        self.assertFalse(self.git("branch", "--list", "task-1").strip())
+
+    def test_landing_waits_for_main_checkout_write(self):
+        self.branch_for_review(shared="branch\n")
+        (self.logs / "advance_main").write_text(str(self.root))
+        (self.logs / "hold_main").write_text(str(self.root))
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertEqual(result.stdout, "TASK-1: review → done\n")
+        self.assertEqual(self.git("show", "main:shared.txt"), "branch\n")
+        self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertFalse(self.worktree.exists())
         self.assertFalse(self.git("branch", "--list", "task-1").strip())
 
