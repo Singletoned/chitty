@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: review
+status: doing
 depends_on:
   - TASK-377
   - TASK-403
@@ -22,7 +22,7 @@ The code already exists, so evidence that the tests catch a wrong implementation
 ## Acceptance Criteria
 
 - [x] A rule 5 property passes on generated forks: `ChittyError` names each remaining candidate, quoted, and never a candidate that `main_tip` dropped
-- [x] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
+- [ ] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
 - [x] The notes name at least three mutants of `ticket_source`, among them treating `task-50` or local `feature/task-5` as a candidate and naming dropped candidates, each failing a property of this ticket; `make check` passes
 
 ## Plan
@@ -38,6 +38,11 @@ Second cold read 2026-11-18 outcome: named the call that supplies the extra refs
 Verification: `make check` passed (766 tests; the suite emitted its existing Hypothesis subTest warning and a fixture diagnostic about incomplete `chitty run` configuration, but exited 0). Mutant analysis: (1) treating local `<task-id>0` as a candidate is exposed by the decoy invariance property; (2) treating local `feature/<task-id>` as a candidate is exposed by the same property; (3) reporting candidates before the `main_tip` containment filter, including a dropped `task-50`, is exposed by the rule 5 property, which asserts dropped names are absent. These are analysis of the property assertions, not mutants executed against the implementation.
 
 Executed three temporary, uncommitted mutants in `src/chitty/ticket_source.py`; each targeted property failed, and the source was restored after each run. (1) Admitting local `<task-id>0` as a candidate failed the decoy property (generated case `A-1`, `a-10` decoy, `main_tip=None`: expanded call returned `a-10` while baseline raised the no-main-tip error). (2) Admitting local `feature/<task-id>` failed the decoy property similarly (expanded call returned `feature/a-1` while baseline raised the error). (3) Including a candidate filtered by `main_tip` in divergence names failed the rule 5 property (`backup/a-1` was named though dropped). No mutant was committed.
+
+Review failed (tests): The decoy property must generate changed sets that can include refs introduced by the second map, not just baseline refs. This is a newly discovered finding; there are no earlier review failure notes.
+1: pass - `make check` reported 765 tests OK; the worker notes record the dropped-candidate mutant failing the rule 5 property.
+2: fail - `test_decoys_and_unrelated_refs_do_not_change_generated_result` draws `changed` only from baseline `local_tips` and `remote_tips`, so newly added refs can never be changed, contrary to the required arbitrary `changed_on_both` set. Draw from the union of baseline and added ref names. `make check` reported 765 tests OK, but does not exercise this case.
+3: pass - Worker notes record three executed mutants and their failing properties, including both requested decoy forms and a dropped name; `make check` exited 0 with 765 tests OK.
 
 ## Summary
 
@@ -60,3 +65,5 @@ Implemented generated rule 5 and decoy properties; no production-code fix was ne
 - 2026-11-19T17:56:22Z upbeat-ochre-adder: changed notes
 - 2026-11-19T17:57:56Z upbeat-ochre-adder: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T17:57:56Z upbeat-ochre-adder doing → review
+- 2026-11-19T18:01:40Z honest-zinc-wren: changed acceptance criteria, notes
+- 2026-11-19T18:01:40Z honest-zinc-wren review → doing
