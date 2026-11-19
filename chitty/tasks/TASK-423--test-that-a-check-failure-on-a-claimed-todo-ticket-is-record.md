@@ -17,12 +17,12 @@ In `tests/test_next.py`, class `TestNext`, rename `test_run_check_failure_record
 Add:
 
 - Before `chitty run`, record `main_before = git rev-parse main`.
-- After it: `git log --format=%s <main_before>..main` prints exactly one line, `chitty: edit TASK-1 Todo` (the claim).
+- After it: `git log --format=%s <main_before>..main -- <path>` prints exactly one line, `chitty: edit TASK-1 Todo` (the claim), so no other commit on `main` touched the ticket. Limit it to the ticket path: `main` also gains a `chitty: upgrade repository setup` commit during the run, because the fixture's config is older than `chitty init` writes.
 - `git show task-1:<path>`, where `<path>` is the ticket path the test already computes, contains `status: error`, `Runner error (check)`, `check exited with status 1` and `check line 6`.
 
 The existing assertions already check that `git show main:<path>` contains `status: doing`, that `task-1` is one commit ahead of `main`, that this commit changes only the ticket file, and that `check-args` is untracked in the worktree.
 
-Evidence. The code exists, so show the test fails against a wrong version of `src/chitty/run.py`, made by hand and not committed: in `_handle_check_failure`, replace the last line with `return _record_ticket_error(Repo(git.main_checkout(branch_repo.root), branch_repo.config), action, "check", ChittyError(detail))`, which records the error through the main checkout. Run the test, record in a note which assertion fails first, then restore the file.
+Evidence. The code exists, so show the test fails against a wrong version of `src/chitty/run.py`, made by hand and not committed: in `_handle_check_failure`, replace the last line with `return _record_ticket_error(Repo(git.main_checkout(branch_repo.root), branch_repo.config), action, "check", ChittyError(detail))`, which records the error through the main checkout. Run the test, record in a note which assertion fails first (expected: the existing `status: doing` check on `main`), then restore the file.
 
 No property: one fixed scenario; the behaviour drives real Git and runner processes. The `check` failure on a `doing` ticket (`test_run_check_failure_on_doing_ticket_starts_agent`) wrote its note through the worktree before `TASK-382` too, so it is unchanged and out of scope.
 
@@ -38,3 +38,4 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 - 2026-11-19T13:39:57Z quick-ginger-lapwing backlog → planning
 - 2026-11-19T13:40:02Z quick-ginger-lapwing planning → cold-read
 - 2026-11-19T13:41:38Z quick-ginger-lapwing cold-read → planning
+- 2026-11-19T13:41:43Z quick-ginger-lapwing: changed description
