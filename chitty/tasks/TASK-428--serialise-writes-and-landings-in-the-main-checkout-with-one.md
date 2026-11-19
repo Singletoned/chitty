@@ -1,6 +1,6 @@
 ---
 title: Serialise writes and landings in the main checkout with one short lock
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -27,7 +27,7 @@ Tests, new file `tests/test_main_checkout_lock.py`. Both use a holder: a Python 
 
 ## Acceptance Criteria
 
-- [ ] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
+- [x] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
 - [ ] The existing landing tests in `tests/test_review_merge.py` and `tests/test_landing.py` still pass; `make check` passes
 
 ## Plan
@@ -40,6 +40,12 @@ Cold read 2026-11-19 (first use of the `cold-reader` agent) outcomes: the check 
 
 Second cold read 2026-11-19 outcomes: the setup-upgrade paths are accepted untested (same lock, rare path); the `refresh_setup` dirty check is inside the lock; exact edit to the `check` string and the `held` path; the old code fails at the `landed TASK-1` assertion, since a failed landing exits 0.
 
+Regression evidence: the main-write test failed when _all_or_nothing stopped acquiring the new lock (edit exited while holder owned it). The landing/write race test failed when the final landing lock window was removed (review moved to error). Both pass with the implementation. make check passes format, Ruff and Pyright but unittest-parallel repeatedly stalls around the same point and timed out after 3600 seconds; focused lock, review-merge and landing suites pass (43 tests).
+
+## Summary
+
+Implemented the main-checkout lock and process-level tests for serialized main writes, landing/write coordination, and the linked-worktree guard. Verification: focused suites pass (43 tests); format, Ruff, Pyright pass. Follow-up: full make check remains unverified because unittest-parallel stalls and exceeded 3600 seconds.
+
 ## History
 
 - 2026-11-19T17:48:46Z quick-ginger-lapwing → planning
@@ -49,3 +55,5 @@ Second cold read 2026-11-19 outcomes: the setup-upgrade paths are accepted untes
 - 2026-11-19T17:52:42Z quick-ginger-lapwing planning → todo
 - 2026-11-19T17:59:10Z daring-lilac-vole todo → doing
 - 2026-11-19T18:01:02Z daring-lilac-vole: wrote the plan
+- 2026-11-19T20:04:12Z daring-lilac-vole: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T20:04:12Z daring-lilac-vole doing → review
