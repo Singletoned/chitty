@@ -1,6 +1,6 @@
 ---
 title: Keep a log of each `chitty run` agent session
-status: planning
+status: cold-read
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -52,3 +52,4 @@ Planner, 2026-11-19: rewritten from scratch. The earlier implementation on branc
 - 2026-11-19T21:18:33Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:18:33Z sunny-white-dormouse cold-read → planning
 - 2026-11-19T21:18:51Z sunny-white-dormouse: replaced notes
+- 2026-11-19T21:19:17Z sunny-white-dormouse planning → cold-read
