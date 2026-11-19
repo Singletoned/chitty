@@ -34,6 +34,10 @@ Tests, in `tests/test_config_workflow.py`, with Hypothesis, the repository's pro
 - [ ] In `TestWorkflowConfig`, a config with `chitty_version = "0.5.0"` and no `workflow` or `review` line loads with `workflow` `runner` and `review` true; with `0.5.1` it loads with `tickets` and `review` false
 - [ ] A note gives one line for each of the three wrong versions in Tests: the wrong version, a version it gets wrong, and the test that fails; `docs/plan/config.md` describes the new boundary; `make check` passes
 
+## Plan
+
+Update resolve_workflow to use LAST_RUNNER_DEFAULT_VERSION = "0.5.0", treating missing/unparsable versions and normalized numeric versions <= the boundary as runner. Keep explicit workflow and shared version parsing unchanged. Rewrite the Hypothesis oracle independently, add the specified boundary examples and config assertions, update docs/plan/config.md, demonstrate the three incorrect implementations fail the tests, then run make format and make check and commit implementation changes with a Task: TASK-415 trailer.
+
 ## History
 
 - 2026-11-19T10:39:34Z quick-ginger-lapwing → planning
@@ -45,3 +49,4 @@ Tests, in `tests/test_config_workflow.py`, with Hypothesis, the repository's pro
 - 2026-11-19T10:48:58Z quick-ginger-lapwing: changed description
 - 2026-11-19T10:48:58Z quick-ginger-lapwing planning → todo
 - 2026-11-19T10:51:03Z upbeat-khaki-kestrel todo → doing
+- 2026-11-19T10:51:58Z upbeat-khaki-kestrel: wrote the plan
