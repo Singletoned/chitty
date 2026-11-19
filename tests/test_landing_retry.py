@@ -35,6 +35,9 @@ class TestLandingRetry(LandingTestCase):
             "    subprocess.run(['git', '-C', str(main), 'add', str(path)], check=True)\n"
             "    subprocess.run(['git', '-C', str(main), 'commit', '--quiet',\n"
             "                    '-m', 'check move'], check=True)\n"
+            "    (count.parent / 'check-commit').write_text(\n"
+            "        subprocess.check_output(['git', '-C', str(main), 'rev-parse',\n"
+            "                                 'HEAD'], text=True))\n"
         )
         return count
 
@@ -56,7 +59,8 @@ class TestLandingRetry(LandingTestCase):
         count = self.land_with_script("once")
         landed = set(self.git("rev-list", "main").splitlines())
         self.assertTrue(branch_commits <= landed)
-        self.assertIn(self.git("rev-parse", "main").strip(), landed)
+        check_commit = (self.tmp / "check-commit").read_text().strip()
+        self.assertIn(check_commit, landed)
         self.assertEqual(len(count.read_text().splitlines()), 2)
         self.assertFalse(self.worktree.exists())
         self.assertEqual(self.git("branch", "--list", self.branch), "")
@@ -101,6 +105,10 @@ class TestLandingRetry(LandingTestCase):
         self.git("add", "added.txt", cwd=self.worktree)
         self.git("commit", "--quiet", "-m", "branch added file", cwd=self.worktree)
         main_head = self.git("rev-parse", "main").strip()
+        worktree_head = self.git("rev-parse", self.branch, cwd=self.worktree).strip()
+        worktree_status = self.git(
+            "status", "--porcelain", "--untracked-files=all", cwd=self.worktree
+        )
         count = self.run_script("untracked")
         command = shlex.join(
             [sys.executable, str(self.tmp / "check.py"), str(self.root), str(count), "untracked"]
@@ -111,4 +119,11 @@ class TestLandingRetry(LandingTestCase):
         self.assertNotIn("main moved", str(raised.exception))
         self.assertEqual(len(count.read_text().splitlines()), 1)
         self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
+        self.assertEqual(
+            self.git("rev-parse", self.branch, cwd=self.worktree).strip(), worktree_head
+        )
+        self.assertEqual(
+            self.git("status", "--porcelain", "--untracked-files=all", cwd=self.worktree),
+            worktree_status,
+        )
         self.assertTrue(self.worktree.exists())
