@@ -1,6 +1,6 @@
 ---
 title: Make Chitty work outside Git when `git` is not installed
-status: planning
+status: cold-read
 created: 2026-11-19
 ---
 
@@ -31,3 +31,4 @@ Tests go in a new `tests/test_no_git_installed.py`, classes inheriting `RepoTest
 - 2026-11-19T09:14:33Z lively-quartz-crane planning → cold-read
 - 2026-11-19T09:18:08Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-19T09:18:08Z lively-quartz-crane cold-read → planning
+- 2026-11-19T09:18:12Z lively-quartz-crane planning → cold-read
