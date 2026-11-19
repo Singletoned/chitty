@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: review
+status: doing
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -41,6 +41,11 @@ Second cold read 2026-11-18 outcomes: remote-ahead and tie cases forced by drawn
 
 Verification: focused property module passes; make check passes (746 tests). Mutant evidence not completed: the required hand-run mutants for remote tie preference, remote ordering, and changed_on_both remain a follow-up, so acceptance criterion 3 is not met.
 
+Review failed (tests): Expand the generated cases and complete the required mutation evidence. These findings are new; there are no earlier review notes.
+1: fail - `make check` printed `Ran 746 tests` and `OK`, but inspection of `tests/test_property_ticket_source.py` shows the new selection property always uses `main_tip=None`, places all candidates at the same tip, and uses only the local branch or `None` as current; the separate remote-ahead test also uses `main_tip=None`. Generate chain and fork cases with the specified main tips, dropped and surviving candidates on varied commits, decoys, and all specified current branches; replace the legacy fixed examples. No mutation evidence establishes the new properties fail without correct behavior.
+2: fail - `make check` printed `OK`, but the rule 6 properties use only a shared-chain tip with `main_tip=None`, rather than the same generated chain and fork selection inputs required by the ticket. Exercise expected and other changed refs across those inputs, including checkout and remote-ahead cases. No mutation evidence establishes the properties fail without correct behavior.
+3: fail - `make check` printed `Ran 746 tests` and `OK`, but the existing verification note explicitly says the three required mutant runs remain outstanding. Run and record the remote-tie, remote-order and ignored-changed-on-both mutants and identify the property each fails.
+
 ## Summary
 
 Added generated rule 4 selection and checkout coverage, remote-ahead scenario, and rule 6 expected-ref / other-ref coverage in tests/test_property_ticket_source.py. Focused tests and make check pass. Required temporary mutant runs and their failure evidence remain outstanding.
@@ -60,3 +65,5 @@ Added generated rule 4 selection and checkout coverage, remote-ahead scenario, a
 - 2026-11-19T15:23:24Z friendly-russet-urchin: wrote the plan
 - 2026-11-19T15:26:25Z friendly-russet-urchin: changed notes, summary
 - 2026-11-19T15:30:11Z friendly-russet-urchin doing → review
+- 2026-11-19T15:33:00Z sunny-silver-ibis: changed acceptance criteria, notes
+- 2026-11-19T15:33:00Z sunny-silver-ibis review → doing
