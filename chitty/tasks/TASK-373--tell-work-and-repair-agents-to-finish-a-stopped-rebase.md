@@ -31,7 +31,7 @@ Tests: in a new `tests/test_guide_rebase.py`, calling `guide()` and the CLI, wit
 
 ## Plan
 
-Add a general rebase role and inject it into work/repair guide output only when the supplied checkout is inside an active rebase. Thread the current directory through CLI/MCP and the ticket worktree through runner prompts. Add real-repository tests covering both rebase backends and location variants plus unchanged-output cases and runner prompt behavior. Run regression tests before implementation to verify failure, then make check and commit implementation.
+Complete the remaining guide coverage: verify forbidden rebase commands and help/docs role listings; test missing-directory and outside-repository behavior (including failed git rev-parse); assert unrelated roles are unchanged during a stopped rebase. Then format, run focused tests and make check, inspect diff, and commit implementation with Task trailer.
 
 ## Notes
 
@@ -140,3 +140,4 @@ Implemented stopped-rebase guidance for work and repair agents, with runner prom
 - 2026-11-18T22:05:14Z youthful-bronze-gannet doing → blocked
 - 2026-11-19T09:32:24Z quick-ginger-lapwing: changed notes
 - 2026-11-19T09:32:24Z quick-ginger-lapwing blocked → doing
+- 2026-11-19T10:31:42Z rosy-khaki-puffin: wrote the plan
