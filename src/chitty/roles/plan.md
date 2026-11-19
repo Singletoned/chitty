@@ -45,9 +45,10 @@ read. Describe the change and why it is needed; criteria are optional.
   it reports before starting a reader.
 - Plan one ticket at a time: write, read and settle it before starting the
   next. Fixes written for several tickets at once drift from the code.
-- After a fix that changes what a worker builds, cold-read the ticket again. If
-  a third read still finds serious problems, split the ticket rather than
-  patching it.
+- After a fix that changes what a worker builds, cold-read the ticket again,
+  even when the reader suggested the fix and tried it itself. Move a ticket to
+  `todo` only after a read that finds nothing serious. If a third read still
+  finds serious problems, split the ticket rather than patching it.
 - Ask of each criterion: could it pass with nothing built? If so, name the case
   that fails today, and say which test must fail without the fix.
 - In the original planning session, perform a sufficiency read on the current
