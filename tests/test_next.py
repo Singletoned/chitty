@@ -5,6 +5,7 @@ import os
 import stat
 import subprocess
 import sys
+import tomllib
 from contextlib import redirect_stderr
 from pathlib import Path
 from unittest.mock import patch
@@ -1335,7 +1336,9 @@ class TestNext(CliTestCase):
         task = repo.find(repo.resolve("TASK-1")).task
         self.assertEqual(task.frontmatter.status, "error")
         self.assertEqual(str(next_action(repo, modes=("errors",)).id), "TASK-1")
-        self.assertIn("check line 6", task.section("Notes") or "")
+        detail = "check exited with status 1; output in `.chitty/check.log`"
+        self.assertNotIn("check line", task.section("Notes") or "")
+        self.assertIn(detail, task.section("Notes") or "")
         worktree = self.root / ".worktrees/task-1"
         ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
         relative_ticket_path = str(ticket_path.relative_to(worktree))
@@ -1349,9 +1352,23 @@ class TestNext(CliTestCase):
         branch_ticket = self.git("show", f"task-1:{relative_ticket_path}")
         self.assertIn("status: error", branch_ticket)
         self.assertIn("Runner error (check)", branch_ticket)
-        self.assertIn("check exited with status 1", branch_ticket)
-        self.assertIn("check line 6", branch_ticket)
-        self.assertIn("?? check-args", self.git("-C", str(worktree), "status", "--short"))
+        self.assertIn(detail, branch_ticket)
+        self.assertNotIn("check line", branch_ticket)
+        log_path = worktree / ".chitty/check.log"
+        log = log_path.read_text()
+        self.assertTrue(log.startswith("# chitty check: "))
+        self.assertIn("check line 6\n", log)
+        self.assertTrue(log.endswith("# exit 1\n"))
+        status = self.git("-C", str(worktree), "status", "--short", "--untracked-files=all")
+        self.assertEqual(status, "?? check-args\n")
+        self.git("-C", str(worktree), "check-ignore", "-q", ".chitty/check.log")
+        log_path.write_text("old\n")
+        from chitty.run import _run_logged
+
+        command = tomllib.loads((self.root / "chitty.toml").read_text())["check"]
+        self.assertEqual(_run_logged("check", command, worktree), 1)
+        self.assertFalse(log_path.read_text().startswith("old\n"))
+        self.assertIn("check line 6\n", log_path.read_text())
         self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "2")
         changed_paths = self.git("show", "--pretty=format:", "--name-only", "task-1").splitlines()
         self.assertEqual(changed_paths, [relative_ticket_path])
@@ -1360,10 +1377,12 @@ class TestNext(CliTestCase):
         config = self.root / "chitty.toml"
         checker = self.root / "check.py"
         checker.write_text(
+            "import sys\n"
             "print('FAIL: test_something')\n"
             "print('-' * 70)\n"
             "print('```')\n"
             "print('# not a heading')\n"
+            "sys.stdout.write('tail without newline')\n"
             "raise SystemExit(1)\n"
         )
         config.write_text(
@@ -1387,8 +1406,13 @@ class TestNext(CliTestCase):
         task = repo.find(repo.resolve("TASK-1")).task
         self.assertEqual(task.frontmatter.status, "error")
         notes = task.section("Notes") or ""
-        self.assertIn("FAIL: test_something", notes)
-        self.assertIn("# not a heading", notes)
+        self.assertNotIn("FAIL: test_something", notes)
+        self.assertNotIn("# not a heading", notes)
+        log = (self.root / ".worktrees/task-1/.chitty/check.log").read_text()
+        self.assertIn("FAIL: test_something\n", log)
+        self.assertIn("```\n", log)
+        self.assertIn("# not a heading\n", log)
+        self.assertTrue(log.endswith("tail without newline\n# exit 1\n"))
 
     def check_project(self, check: str) -> None:
         """Set up a git repository whose configured check runs `check`."""
@@ -1456,6 +1480,75 @@ class TestNext(CliTestCase):
         self.assertEqual(self.json("show", "TASK-1")["status"], "error")
         self.assertFalse(marker.exists())
 
+    def test_passing_check_writes_the_log_and_ignores_it_once(self):
+        self.check_project("true")
+        self.commit_ticket("Doing", "doing")
+        self.git("branch", "task-1")
+        self.install_fake_pi(
+            "from pathlib import Path\n"
+            "import subprocess\n"
+            "path = next(Path('chitty/tasks').glob('*.md'))\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: review'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'review'], check=True)\n"
+        )
+        result = self.run_cli("run")
+        self.assertEqual(result.stdout, "TASK-1: doing → review\n", result.stderr)
+        worktree = self.root / ".worktrees/task-1"
+        log = worktree / ".chitty/check.log"
+        self.assertEqual(log.read_text(), "# chitty check: true\n# exit 0\n")
+        exclude_path = Path(
+            self.git("-C", str(worktree), "rev-parse", "--git-path", "info/exclude").strip()
+        )
+        if not exclude_path.is_absolute():
+            exclude_path = worktree / exclude_path
+        self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
+        from chitty.run import _ignore_run_log
+
+        _ignore_run_log(worktree)
+        self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
+            "path.write_text(path.read_text().replace('status: doing', 'status: review'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'review'], check=True)\n"
+        )
+        result = self.run_cli("run")
+        self.assertEqual(result.stdout, "TASK-1: doing → review\n", result.stderr)
+<<<<<<< HEAD
+        self.assertIn("Check failed before this session", seen.read_text())
+
+    def test_run_check_failure_on_todo_ticket_with_only_ticket_commits_errors(self):
+        self.write_failing_checker()
+        self.commit_ticket("Todo", "todo")
+        self.git("switch", "-c", "task-1")
+        ticket = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
+        ticket.write_text(
+            ticket.read_text().replace("## History", "## Notes\n\nPrior planning.\n\n## History")
+        )
+        self.git("add", str(ticket))
+        self.git("commit", "--quiet", "-m", "planning")
+        self.git("switch", "main")
+        marker = self.tmp / "agent-started"
+        self.install_fake_pi(f"from pathlib import Path\nPath({str(marker)!r}).write_text('yes')\n")
+        result = self.run_cli("run")
+        self.assertIn("todo → error", result.stdout)
+        self.assertEqual(self.json("show", "TASK-1")["status"], "error")
+        self.assertFalse(marker.exists())
+=======
+        worktree = self.root / ".worktrees/task-1"
+        log = worktree / ".chitty/check.log"
+        self.assertEqual(log.read_text(), "# chitty check: true\n# exit 0\n")
+        exclude_path = Path(
+            self.git("-C", str(worktree), "rev-parse", "--git-path", "info/exclude").strip()
+        )
+        if not exclude_path.is_absolute():
+            exclude_path = worktree / exclude_path
+        self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
+        from chitty.run import _ignore_run_log
+
+        _ignore_run_log(worktree)
+        self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
+>>>>>>> c933ab9c (Log runner checks in the worktree)
+
     def test_run_check_failure_on_doing_ticket_starts_agent(self):
         self.write_failing_checker()
         self.commit_ticket("Doing", "doing")
@@ -1477,8 +1570,11 @@ class TestNext(CliTestCase):
         recorded = seen.read_text()
         self.assertIn("status: doing", recorded)
         self.assertIn("Check failed before this session", recorded)
+        self.assertIn("check exited with status 1; output in `.chitty/check.log`", recorded)
+        self.assertNotIn("check line", recorded)
+        log = (self.root / ".worktrees/task-1/.chitty/check.log").read_text()
         for number in range(1, 26):
-            self.assertIn(f"check line {number}\n", recorded)
+            self.assertIn(f"check line {number}\n", log)
         self.assertEqual(self.json("show", "TASK-1")["status"], "review")
 
     def test_run_check_failure_on_error_ticket_starts_repair_agent(self):
@@ -1504,8 +1600,11 @@ class TestNext(CliTestCase):
         recorded = seen.read_text()
         self.assertIn("status: error", recorded)
         self.assertIn("Check failed before this session", recorded)
+        self.assertIn("check exited with status 1; output in `.chitty/check.log`", recorded)
+        self.assertNotIn("check line", recorded)
+        log = (self.root / ".worktrees/task-1/.chitty/check.log").read_text()
         for number in range(1, 26):
-            self.assertIn(f"check line {number}\n", recorded)
+            self.assertIn(f"check line {number}\n", log)
         self.assertEqual(self.json("show", "TASK-1")["status"], "review")
 
     def test_run_check_command_not_found_on_doing_ticket_errors_without_agent(self):

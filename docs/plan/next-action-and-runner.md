@@ -133,11 +133,13 @@ rebase like any other file; conflicts go to an agent, not a ticket merge.
 - Work mode makes or reuses the worktree and claims a `todo` ticket on its
   branch, then runs `setup` and `check`. A non-zero `check` exit
   on a `doing` or `error` ticket appends a `Check failed before this session`
-  note with the full output, leaves the status unchanged, and starts the agent;
-  an `error` ticket's agent is the repair agent. A `todo` ticket whose branch
-  changes files outside `chitty/` is treated the same way. On a `todo` ticket
-  without work outside `chitty/`, or when the `check` command is not found, the
-  ticket moves to `error` with the output in Notes and no agent starts.
+  note pointing to the full output in `.chitty/check.log`, leaves the status
+  unchanged, and starts the agent; an `error` ticket's agent is the repair agent.
+  A `todo` ticket whose branch changes files outside `chitty/` is treated the
+  same way. On a `todo` ticket without work outside `chitty/`, or when the
+  `check` command is not found, the ticket moves to `error` with a note (for a
+  failed check, pointing to `.chitty/check.log`; for a missing command, naming
+  it) and no agent starts.
 - Entering `review`, or `review → done`, needs a clean worktree; `blocked` does
   not. `chitty check` reports dirty files on a branch in review.
 - Reviewers record a verdict only; they never merge or remove branches or

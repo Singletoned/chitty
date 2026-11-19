@@ -54,6 +54,8 @@ AGENT_KILL_GRACE_SECONDS = 2
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
+RUN_LOG = Path(".chitty/check.log")
+RUN_LOG_EXCLUDE = f"/{RUN_LOG.parent}/"
 
 
 def _has_work(paths: Sequence[PurePosixPath]) -> bool:
@@ -1353,6 +1355,61 @@ def _record_ticket_error(
     return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
+def _with_exclude_line(text: str | None) -> str:
+    """Return exclude-file text with exactly one run-log exclusion."""
+    lines = [] if text is None or text == "" else text.split("\n")
+    if lines and lines[-1] == "":
+        lines.pop()
+    if RUN_LOG_EXCLUDE not in lines:
+        lines.append(RUN_LOG_EXCLUDE)
+    else:
+        first = lines.index(RUN_LOG_EXCLUDE)
+        lines = [
+            line for index, line in enumerate(lines) if line != RUN_LOG_EXCLUDE or index == first
+        ]
+    return "\n".join(lines) + "\n"
+
+
+def _ignore_run_log(worktree: Path) -> None:
+    """Ignore the run log using Git's shared exclude file."""
+    exclude = Path(_git(worktree, "rev-parse", "--git-path", "info/exclude").strip())
+    if not exclude.is_absolute():
+        exclude = worktree / exclude
+    existing = exclude.read_text() if exclude.exists() else None
+    updated = _with_exclude_line(existing)
+    if updated != existing:
+        exclude.parent.mkdir(parents=True, exist_ok=True)
+        exclude.write_text(updated)
+
+
+def _run_logged(phase: str, command: str, worktree: Path) -> int:
+    """Run a command with combined output in the worktree's last-run log."""
+    argv = shlex.split(command)
+    _ignore_run_log(worktree)
+    log_path = worktree / RUN_LOG
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with log_path.open("w+") as log:
+        log.write(f"# chitty {phase}: {command}\n")
+        log.flush()
+        completed = subprocess.run(
+            argv,
+            cwd=worktree,
+            stdin=subprocess.DEVNULL,
+            env=_command_environment(),
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+        log.seek(0, os.SEEK_END)
+        end = log.tell()
+        log.seek(end - 1 if end else 0)
+        if log.read(1) != "\n":
+            log.seek(0, os.SEEK_END)
+            log.write("\n")
+        log.write(f"# exit {completed.returncode}\n")
+    return completed.returncode
+
+
 def _run_check(
     branch_repo: Repo,
     action: NextAction,
@@ -1362,16 +1419,7 @@ def _run_check(
     """Validate the prepared worktree before spending an agent or review session."""
     print(f"Running check in {branch_repo.root}...", file=sys.stderr)
     try:
-        completed = subprocess.run(
-            shlex.split(command),
-            cwd=branch_repo.root,
-            stdin=subprocess.DEVNULL,
-            env=_command_environment(),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            check=False,
-        )
+        returncode = _run_logged("check", command, branch_repo.root)
     except FileNotFoundError:
         output = f"check command not found: {command}"
         return _handle_check_failure(
@@ -1379,10 +1427,9 @@ def _run_check(
         )
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
-    if completed.returncode == 0:
+    if returncode == 0:
         return None
-    output = completed.stdout or "(no output)"
-    detail = f"check exited with status {completed.returncode}:\n{_code_block(output)}"
+    detail = f"check exited with status {returncode}; output in `.chitty/check.log`"
     return _handle_check_failure(
         branch_repo, action, detail, exited=True, selected_status=selected_status
     )
