@@ -32,6 +32,10 @@ No property is added: both changes fix existing property tests, and `plain_note`
 
 Register and load a Hypothesis settings profile with deadline=None in tests/__init__.py, add an isolated profile assertion test, and remove the redundant deadline setting from test_suffix_round_trips. Replace the NOTES lambda with module-level plain_note implementing the specified whitespace, heading, fence, and setext-boundary checks; add fixed-case unit tests. Record the ticket’s specified main reproduction evidence in a note, then run focused regression checks and make check.
 
+## Notes
+
+The ticket records the main reproduction: Repo.edit(Edit(note="0\n=", depends_on=["TASK-1"])) raises the section-boundary error instead of the expected finalize-write error. The specified plain_note cases prevent that class of invalid generated note.
+
 ## History
 
 - 2026-11-19T11:34:07Z quick-ginger-lapwing → planning
@@ -44,3 +48,4 @@ Register and load a Hypothesis settings profile with deadline=None in tests/__in
 - 2026-11-19T12:05:12Z quick-ginger-lapwing planning → todo
 - 2026-11-19T12:05:55Z honest-coral-gannet todo → doing
 - 2026-11-19T12:06:49Z honest-coral-gannet: wrote the plan
+- 2026-11-19T12:06:57Z honest-coral-gannet: changed notes
