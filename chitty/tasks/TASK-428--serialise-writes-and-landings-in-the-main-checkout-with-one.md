@@ -1,6 +1,6 @@
 ---
 title: Serialise writes and landings in the main checkout with one short lock
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -28,7 +28,7 @@ Tests, new file `tests/test_main_checkout_lock.py`. Both use a holder: a Python 
 ## Acceptance Criteria
 
 - [x] The two lock tests pass; each fails against `main` before this change, the first because the edit finishes while the lock is held, the second because the ticket goes to `error` (recorded in the notes); the worktree guard passes before and after
-- [ ] The existing landing tests in `tests/test_review_merge.py` and `tests/test_landing.py` still pass; `make check` passes
+- [x] The existing landing tests in `tests/test_review_merge.py` and `tests/test_landing.py` still pass; `make check` passes
 
 ## Plan
 
@@ -326,7 +326,7 @@ Fixed by hand 2026-11-19 (human-approved), because the runner's pre-agent `make 
 
 ## Summary
 
-Implemented the main-checkout lock and process-level tests for serialized main writes, landing/write coordination, and the linked-worktree guard. Verification: focused suites pass (43 tests); format, Ruff, Pyright pass. Follow-up: full make check remains unverified because unittest-parallel stalls and exceeded 3600 seconds.
+Implemented main-checkout write/landing serialization, including process-reentrant locking to prevent nested flock deadlocks. Verification: timeout 600 make check passed (769 tests, 43.9s); Ruff format/check and Pyright passed. No known follow-ups.
 
 ## History
 
@@ -345,3 +345,5 @@ Implemented the main-checkout lock and process-level tests for serialized main w
 - 2026-11-19T20:59:27Z daring-amber-kestrel error → doing
 - 2026-11-19T23:00:21Z sunny-ginger-falcon: changed notes
 - 2026-11-19T23:03:03Z daring-amber-kestrel: changed notes
+- 2026-11-19T23:15:01Z nimble-pearl-newt: changed summary; ticked acceptance criteria
+- 2026-11-19T23:15:01Z nimble-pearl-newt doing → review
