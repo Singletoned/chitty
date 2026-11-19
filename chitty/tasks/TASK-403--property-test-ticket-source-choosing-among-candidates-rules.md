@@ -29,6 +29,10 @@ The code already exists, so evidence that the tests catch a wrong implementation
 - [ ] Properties for rule 6 pass: with `changed_on_both` true for the expected name, `ChittyError` names the ticket, that ref and `main_branch`, each quoted; with it true only for other names, the result is the rule 4 result
 - [ ] The notes name at least three mutants of `ticket_source`, among them remotes winning ties, the wrong remote order, and ignoring `changed_on_both`, each failing a property of this ticket; `make check` passes
 
+## Plan
+
+Replace fixed examples for rules 4 and 6 with generated chain/fork cases built from the existing Graph helpers. Assert expected candidate selection, checkout behavior, and changed-on-both errors; force remote-ahead and tie scenarios. Run focused properties before and after, then make check. Exercise temporary hand-written mutants and record which properties reject them in ticket notes.
+
 ## Notes
 
 Cold read 2026-11-18 outcomes: forced ties so tie mutants die; defined the range of m and the `None` case.
@@ -47,3 +51,4 @@ Second cold read 2026-11-18 outcomes: remote-ahead and tie cases forced by drawn
 - 2026-11-18T21:37:56Z lively-quartz-crane planning → todo
 - 2026-11-19T14:20:34Z quick-ginger-lapwing: changed description
 - 2026-11-19T15:22:31Z friendly-russet-urchin todo → doing
+- 2026-11-19T15:23:24Z friendly-russet-urchin: wrote the plan
