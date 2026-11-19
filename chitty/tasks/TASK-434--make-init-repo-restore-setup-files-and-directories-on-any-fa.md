@@ -38,6 +38,10 @@ Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_rest
 - [ ] With no failure, after the stale `chitty add` autocommits, `git status --porcelain` is empty and `chitty_version` is upgraded; `chitty init --autocommit` on a fresh repository commits `chitty: initialize and enable autocommit`; existing tests in `tests/test_init_workflow.py` and `tests/test_autocommit.py` pass unchanged.
 - [ ] Plausible wrong versions, each run against the property, with the failing case and command recorded in a note: today's restore, around the commit only; restoring files but not removing created directories; removing only the leaf backlog directory, not parents created with it (caught by the fresh hook case, where `chitty/` is created with `chitty/tasks`). `make check` passes.
 
+## Plan
+
+Keep the second pre-write originals snapshot only. Track every previously absent directory created during init_repo, including parents, and wrap all disk writes through the own autocommit commit in BaseException rollback: restore original file states, remove recorded directories deepest-first only if empty, then re-raise. Add the specified real-Git Hypothesis property matrix and successful-path checks; run regression against unfixed behavior, wrong-version checks, and make check.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -64,3 +68,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:19:12Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:19:12Z sunny-white-dormouse cold-read → todo
 - 2026-11-19T23:16:08Z brisk-khaki-urchin todo → doing
+- 2026-11-19T23:17:41Z brisk-khaki-urchin: wrote the plan
