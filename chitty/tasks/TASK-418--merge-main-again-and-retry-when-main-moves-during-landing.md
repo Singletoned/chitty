@@ -1,6 +1,6 @@
 ---
 title: Merge `main` again and retry when `main` moves during landing
-status: review
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -50,6 +50,12 @@ Review failed (tests): Newly discovered coverage gaps; no earlier review finding
 
 Review failed (tests): Resolved the two coverage gaps from the prior review. test_retries_when_main_moves_once now captures the check commit hash and asserts that exact hash is in landed history. test_fast_forward_failure_without_main_move_is_not_retried now snapshots the worktree branch HEAD and porcelain status and verifies both remain unchanged. Evidence: .venv/bin/python -m unittest -v tests.test_landing tests.test_landing_retry ran 19 tests OK; make check passed 721 tests, ruff and pyright. Prior review established the retry tests fail against pre-change run.py.
 
+Reviewed: Prior coverage findings are resolved; no new defects found.
+1: pass - `make check` ran 722 tests OK; the once test now checks the captured check commit. The earlier review recorded its pre-change ff-only failure.
+2: pass - `make check` ran 722 tests OK; the earlier review recorded the pre-change ff-only failure instead of the retry-limit error.
+3: pass - `make check` ran 722 tests OK; the earlier review recorded the pre-change ff-only failure instead of the conflict error.
+4: pass - `make check` ran 722 tests OK, including existing landing tests; the untracked test now compares worktree HEAD and status. The earlier review recorded that it passes before and after the change.
+
 ## Summary
 
 Implemented bounded landing retries and strengthened the reported test gaps. Verification: .venv/bin/python -m unittest -v tests.test_landing tests.test_landing_retry (19 tests) and make check (721 tests, ruff, pyright) pass. Regression evidence: the earlier review confirmed retry tests fail against pre-change run.py. Follow-up commit: 079e812c (Task: TASK-418).
@@ -73,3 +79,5 @@ Implemented bounded landing retries and strengthened the reported test gaps. Ver
 - 2026-11-19T13:29:31Z upbeat-dusky-stoat review → doing
 - 2026-11-19T13:43:05Z kind-white-newt: changed notes, summary; ticked acceptance criteria
 - 2026-11-19T13:43:05Z kind-white-newt doing → review
+- 2026-11-19T13:45:15Z vivid-quartz-eel: changed notes
+- 2026-11-19T13:45:15Z vivid-quartz-eel review → done
