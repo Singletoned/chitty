@@ -1,6 +1,6 @@
 ---
 title: Resolve review rebase conflicts in a separate agent session
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-374
@@ -30,10 +30,10 @@ Tests: real-Git runner tests with a fake agent command in a new `tests/test_revi
 
 ## Acceptance Criteria
 
-- [ ] A review run whose rebase stops on a code conflict starts one fake agent with `{mode}` `rebase` and the `chitty guide rebase` prompt; when it resolves and finishes the rebase, a separate reviewer session starts on the rebased branch; the fake agent writes no ticket file, and the fixture puts its ticket commit before the conflicting commit, so the ticket file's bytes at session start (after the rebase stops) equal those at session end; the test fails before the change
-- [ ] Every other row of the outcome table ends with no rebase in progress, the ticket `doing` with the failure note naming the paths `rebase_onto` returned and the session's error text, and no reviewer started; none moves the ticket to `error`
-- [ ] With `rebase_model` set, the rebase session command gets `--model <value>` and the reviewer gets `review_model`'s; with `_run_session` patched to raise `RunInterrupted("agent")` for the rebase session, no rebase is in progress afterwards, the run exits 130 with `interrupted during rebase`, and no reviewer starts; an `agent_command` without `{prompt}` fails the review with `the rebase session needs {prompt}`
-- [ ] The usage log has a separate line with mode `rebase` for the session; `docs/plan/config.md` lists `rebase_model` and its unset behaviour, and `## Before a review` names the session, its mode and its failure note; `make check` passes
+- [x] A review run whose rebase stops on a code conflict starts one fake agent with `{mode}` `rebase` and the `chitty guide rebase` prompt; when it resolves and finishes the rebase, a separate reviewer session starts on the rebased branch; the fake agent writes no ticket file, and the fixture puts its ticket commit before the conflicting commit, so the ticket file's bytes at session start (after the rebase stops) equal those at session end; the test fails before the change
+- [x] Every other row of the outcome table ends with no rebase in progress, the ticket `doing` with the failure note naming the paths `rebase_onto` returned and the session's error text, and no reviewer started; none moves the ticket to `error`
+- [x] With `rebase_model` set, the rebase session command gets `--model <value>` and the reviewer gets `review_model`'s; with `_run_session` patched to raise `RunInterrupted("agent")` for the rebase session, no rebase is in progress afterwards, the run exits 130 with `interrupted during rebase`, and no reviewer starts; an `agent_command` without `{prompt}` fails the review with `the rebase session needs {prompt}`
+- [x] The usage log has a separate line with mode `rebase` for the session; `docs/plan/config.md` lists `rebase_model` and its unset behaviour, and `## Before a review` names the session, its mode and its failure note; `make check` passes
 
 ## Plan
 
@@ -42,6 +42,12 @@ Implement the dedicated rebase session inside `_prepare_review`, using the exist
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
+
+Regression evidence: the successful-conflict test fails against the prior abort-on-conflict preparation behavior because no rebase-resolution or reviewer agent starts. The real-Git suite covers all 12 exit/rebase/worktree combinations, mode/model selection, interrupted sessions, prompt validation, usage records, and unchanged ticket bytes across rebase-session execution.
+
+## Summary
+
+Implemented the dedicated `rebase` session when review rebasing conflicts. It uses the rebase guide and configured model, runs once without continuations, verifies the rebase finished and worktree is clean, aborts stopped rebases on failure/interruption, records its own usage line, and returns failed reviews to `doing` with a one-line integration note. Updated runner design docs. Verification: the new real-Git suite passes (14 tests); `make check` passes (768 tests), `make format` and `chitty fix` completed. The success regression was shown failing with the prior abort-on-conflict behavior. Follow-up: none.
 
 ## History
 
@@ -62,3 +68,5 @@ On hold 2026-11-18: the ticket state model is being redesigned (the ticket branc
 - 2026-11-18T18:19:59Z lively-quartz-crane planning → todo
 - 2026-11-19T16:18:42Z zesty-dusky-zander todo → doing
 - 2026-11-19T16:20:04Z zesty-dusky-zander: wrote the plan
+- 2026-11-19T17:10:49Z zesty-dusky-zander: changed notes, summary; ticked acceptance criteria
+- 2026-11-19T17:10:49Z zesty-dusky-zander doing → review
