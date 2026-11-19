@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: error
+status: review
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -282,6 +282,8 @@ make: *** [check] Error 1
 ```
 ````
 
+Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext.test_run_cases`, fixed on `main` in `fe1ef0cd`; back to `review`.
+
 ## Summary
 
 Completed generated rule 4 and 6 property coverage; removed three fixed examples. Mutant checks each failed the generated property tests as recorded in Notes, and all mutations were reverted. Focused property suite, formatting, Ruff and pyright pass. make check remains non-zero only for tests.test_next.TestNext.test_run_cases (expected 3, got 0), unrelated to this change. Implementation committed as d82b0f05 and c8a6f0da; ticket is ready for review with the suite failure disclosed.
@@ -313,3 +315,5 @@ Completed generated rule 4 and 6 property coverage; removed three fixed examples
 - 2026-11-19T15:46:08Z friendly-coral-dormouse doing → review
 - 2026-11-19T15:47:57Z golden-teal-zander: changed notes
 - 2026-11-19T15:47:57Z golden-teal-zander review → error
+- 2026-11-19T16:02:03Z quick-ginger-lapwing: changed notes
+- 2026-11-19T16:02:03Z quick-ginger-lapwing error → review
