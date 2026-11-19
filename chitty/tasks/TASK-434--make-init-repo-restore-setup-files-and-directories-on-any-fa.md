@@ -36,7 +36,7 @@ Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_rest
 
 - [ ] Property: for every drawn kind and failure, the write exits non-zero with output containing the original message (`is registered to`, or `HOOKSTDERR`), and the snapshot after equals the snapshot before. It fails on `main`: the stale registration case leaves ` M chitty.toml`, and the fresh hook case leaves a `chitty/` directory.
 - [ ] With no failure, the stale write leaves `git status --porcelain` empty with `chitty_version` upgraded, and `chitty init --autocommit` on a fresh repository commits `chitty: initialize and enable autocommit`; existing tests in `tests/test_init_workflow.py` and `tests/test_autocommit.py` pass unchanged.
-- [ ] Plausible wrong versions, each run against the property, with the failing case and command recorded in a note: restoring only on `ChittyError`; restoring files but not removing created directories; a `try` that starts after `register_project`. `make check` passes.
+- [ ] Plausible wrong versions, each run against the property, with the failing case and command recorded in a note: today's restore, around the commit only; restoring files but not removing created directories; removing only the leaf backlog directory, not parents created with it. `make check` passes.
 
 ## Notes
 
@@ -59,3 +59,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:11:54Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:17:05Z sunny-white-dormouse: changed title, dependencies, description, acceptance criteria
 - 2026-11-19T21:17:05Z sunny-white-dormouse cold-read → planning
+- 2026-11-19T21:17:27Z sunny-white-dormouse: changed acceptance criteria
