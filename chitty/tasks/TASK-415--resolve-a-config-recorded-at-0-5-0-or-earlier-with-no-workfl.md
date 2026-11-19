@@ -1,6 +1,6 @@
 ---
 title: Resolve a config recorded at `0.5.0` or earlier with no `workflow` to the runner
-status: doing
+status: review
 labels:
   - blocks-release
 priority: high
@@ -30,9 +30,9 @@ Tests, in `tests/test_config_workflow.py`, with Hypothesis, the repository's pro
 
 ## Acceptance Criteria
 
-- [ ] Property (Hypothesis): for any version drawn from `VERSIONS` and every listed `@example`, `resolve_workflow(None, version)` equals the independent oracle described in Tests; run against today's code, the updated test fails on `0.5.0`
-- [ ] In `TestWorkflowConfig`, a config with `chitty_version = "0.5.0"` and no `workflow` or `review` line loads with `workflow` `runner` and `review` true; with `0.5.1` it loads with `tickets` and `review` false
-- [ ] A note gives one line for each of the three wrong versions in Tests: the wrong version, a version it gets wrong, and the test that fails; `docs/plan/config.md` describes the new boundary; `make check` passes
+- [x] Property (Hypothesis): for any version drawn from `VERSIONS` and every listed `@example`, `resolve_workflow(None, version)` equals the independent oracle described in Tests; run against today's code, the updated test fails on `0.5.0`
+- [x] In `TestWorkflowConfig`, a config with `chitty_version = "0.5.0"` and no `workflow` or `review` line loads with `workflow` `runner` and `review` true; with `0.5.1` it loads with `tickets` and `review` false
+- [x] A note gives one line for each of the three wrong versions in Tests: the wrong version, a version it gets wrong, and the test that fails; `docs/plan/config.md` describes the new boundary; `make check` passes
 
 ## Plan
 
@@ -41,6 +41,10 @@ Update resolve_workflow to use LAST_RUNNER_DEFAULT_VERSION = "0.5.0", treating m
 ## Notes
 
 Wrong implementation evidence (test cases are in tests/test_config_workflow.py): current `< 0.5.0` boundary — `0.5.0` — `TestResolveWorkflow.test_missing_workflow_follows_setup_version` fails; numeric `<= (0, 5, 0)` without stripping trailing zeros — `0.5.0.0` — `TestResolveWorkflow.test_missing_workflow_follows_setup_version` fails; text comparison against `"0.5.0"` — `0.10` — `TestResolveWorkflow.test_missing_workflow_follows_setup_version` fails.
+
+## Summary
+
+Implemented the runner-default compatibility boundary through 0.5.0, trailing-zero normalization, independent property oracle, config default assertions, and updated config guidance. Verification: updated regression tests failed against the old behavior on 0.5.0; make format and make check pass (696 tests). The check emitted expected fixture output during unittest but exited successfully. No follow-up.
 
 ## History
 
@@ -55,3 +59,5 @@ Wrong implementation evidence (test cases are in tests/test_config_workflow.py):
 - 2026-11-19T10:51:03Z upbeat-khaki-kestrel todo → doing
 - 2026-11-19T10:51:58Z upbeat-khaki-kestrel: wrote the plan
 - 2026-11-19T10:53:50Z upbeat-khaki-kestrel: changed notes
+- 2026-11-19T10:54:10Z upbeat-khaki-kestrel: changed summary; ticked acceptance criteria
+- 2026-11-19T10:54:10Z upbeat-khaki-kestrel doing → review
