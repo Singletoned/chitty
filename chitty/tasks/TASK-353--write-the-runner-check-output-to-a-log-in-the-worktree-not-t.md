@@ -26,8 +26,14 @@ Tests: change the existing tests in `tests/test_next.py` as below, and add one. 
 - `test_run_check_failure_on_doing_ticket_starts_agent` and `test_run_check_failure_on_error_ticket_starts_repair_agent`: `recorded` still contains `Check failed before this session` and now contains `.chitty/check.log`; the loop over `check line {number}\n` checks `log` instead of `recorded`, and `recorded` does not contain `check line 1\n`.
 - New `test_passing_check_writes_the_log_and_ignores_it_once`, set up like `test_run_check_failure_on_todo_ticket_records_error_on_branch` but with `check = "true"` and a fake agent that only exits 0: after `self.run_cli("run")`, `log` equals `# chitty check: true\n# exit 0\n`; the exclude file (path from `git rev-parse --git-path info/exclude` in the worktree, resolved against the worktree) has exactly one line `/.chitty/`; calling `chitty.run._ignore_run_log(worktree)` again leaves exactly one.
 
+## Acceptance Criteria
+
+- [ ] The changed and new tests pass, and each changed or new assertion fails against the `run.py` of `main` before this change (recorded in the notes)
+- [ ] `make check` passes
+
 ## History
 
 - 2026-11-16T10:00:06Z intrepid-coral-raven → backlog
 - 2026-11-16T10:38:51Z intrepid-coral-raven backlog → planning
 - 2026-11-19T17:28:38Z quick-ginger-lapwing: changed title, priority, description
+- 2026-11-19T17:28:57Z quick-ginger-lapwing: changed acceptance criteria
