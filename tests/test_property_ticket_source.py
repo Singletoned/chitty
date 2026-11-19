@@ -334,7 +334,7 @@ class TestTicketSource(unittest.TestCase):
         expanded_remote = remote_tips | extra_maps[1]
         current = data.draw(current_branches(task_id, main_branch))
         main_tip = data.draw(st.none() | st.sampled_from(graph.commits))
-        refs = tuple(local_tips) + tuple(remote_tips)
+        refs = tuple(expanded_local) + tuple(expanded_remote)
         changed = frozenset(data.draw(st.sets(st.sampled_from(refs)))) if refs else frozenset()
         provisional = data.draw(st.booleans())
 
