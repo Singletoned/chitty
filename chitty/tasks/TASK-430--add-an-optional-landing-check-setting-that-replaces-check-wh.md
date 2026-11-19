@@ -32,6 +32,10 @@ Out of scope: setting `landing_check` in this repository's `chitty.toml` (a late
 - [ ] The loading test passes: with a blank `landing_check`, `chitty list` exits 1 with `landing_check: must not be empty`; with `landing_check = "true"` it prints no `unknown configuration key` warning; a note records that the blank case fails against `src/chitty/config.py` without the change
 - [ ] `docs/plan/config.md` and `README.md` describe `landing_check` as the Description says; `make check` passes
 
+## Plan
+
+Add landing_check configuration validation and landing_command selection, route both landing paths through it while preserving check for preflight/worktree checks, and add focused regression tests for selection, review/pending landing, and config loading. Update config and README documentation, run required red/green tests and make check, then commit implementation with Task: TASK-430.
+
 ## History
 
 - 2026-11-19T18:41:20Z daring-amber-kestrel → planning
@@ -43,3 +47,4 @@ Out of scope: setting `landing_check` in this repository's `chitty.toml` (a late
 - 2026-11-19T18:43:51Z daring-amber-kestrel cold-read → planning
 - 2026-11-19T18:43:56Z daring-amber-kestrel planning → todo
 - 2026-11-19T20:35:29Z witty-lilac-falcon todo → doing
+- 2026-11-19T20:41:56Z brisk-white-otter: wrote the plan
