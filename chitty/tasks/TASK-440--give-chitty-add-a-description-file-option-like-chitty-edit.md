@@ -12,7 +12,10 @@ In circuitry on 2026-11-13, `chitty add ... --description-file FILE` failed with
 
 Suggestion origin: circuitry
 
+Archived as covered by `TASK-347`.
+
 ## History
 
 - 2026-11-19T20:55:12Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:13Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:56:28Z sunny-white-dormouse: changed notes
