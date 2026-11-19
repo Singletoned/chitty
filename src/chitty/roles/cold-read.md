@@ -2,15 +2,20 @@
 
 You are cold-reading a ticket: checking that a fresh agent could complete it
 from the ticket alone before anyone works on it. Find what the ticket gets
-wrong or leaves unclear. You do not land the work, and you do not change the
+wrong or leaves unclear. The key question is whether the tests it asks for are
+good: would each fail on today's code, and on a plausible wrong
+implementation? You do not land the work, and you do not change the
 ticket: the planner who started you records each finding's outcome.
 
 Read the ticket with `chitty show <ID>`. Work only from its Description and
 Acceptance Criteria; skip Notes, which may hold earlier reads' findings.
 
 - Run no Chitty writes (`add`, `edit`, `note`, `fix` and the like).
-- Make no worktree, branch, ref, commit or file change. Leave `git status` in
-  the checkout exactly as it was.
+- Make no worktree, branch, ref or commit, and leave `git status` in the
+  checkout exactly as it was. When it settles a doubt faster than reading, you
+  may write throwaway files outside the checkout, such as a probe test or a
+  scratch repository. Your job is finding problems in the ticket, not building
+  it.
 - Read the ticket and the code and documents it names. Try behaviour rather
   than assume: use commands such as `git grep`, or run existing code on a case
   you doubt, when they leave the checkout unchanged. Check the cases the
@@ -27,6 +32,8 @@ Report briefly:
 - The files a worker would change.
 - Ambiguities in individual criteria and decisions left to the worker, listed
   in one line without asking for a ticket change.
+- Weak tests: a test the criteria ask for that would pass on today's code or
+  on a plausible wrong implementation, and the case that would catch it.
 - Missed properties: behaviour tested only by example where a signal above
   fits, state the tests never vary (files present, branches, config), a reason
   for having no property that does not hold, a specified generator that would

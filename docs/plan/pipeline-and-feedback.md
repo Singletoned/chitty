@@ -81,10 +81,27 @@ asking the first.
 
 - The planner's part is `chitty guide plan`; the reader's is
   `chitty guide cold-read <ID>`, which the planner passes to the reader.
-- Every ticket gets one read-only cold read. A fresh, cheap-model agent reads
-  the ticket and the code and documents it names, reports ambiguities and
-  decisions, and makes no branch, ref, commit or file change. It may
-  try existing behaviour with commands that leave `git status` unchanged.
+- Every ticket gets a cold read. A fresh, cheap-model agent reads the ticket
+  and the code and documents it names, and reports ambiguities and decisions.
+  Its key question: are the tests the ticket asks for good, failing on today's
+  code and on a plausible wrong implementation? It makes no branch, ref or
+  commit and leaves `git status` unchanged, but may write throwaway files
+  outside the checkout, such as a probe test, when that settles a doubt
+  (decided 2026-11-18, loosening the read-only rule of 2026-11-16). Finding
+  problems, not building, is its purpose.
+- The planner checks each claim about code, commands and tests against the
+  source as it writes it, runs `chitty check` before starting a reader, and
+  plans one ticket at a time (2026-11-18). When the tested code already
+  exists, the ticket lists wrong versions for the worker to run against the
+  tests, the planner runs each generator recipe against the real code before
+  the read, and distractor values are built from the drawn value.
+- These habits worked on their first use (2026-11-19, `TASK-370`, `TASK-373`,
+  `TASK-377`, `TASK-403`, `TASK-404`): checking a claim at the source showed a
+  revert was safe; the third-read split caught a claim written without
+  checking; asking whether the tests are good found unforced tie cases,
+  distractors equal to the ticket branch, and a criterion failing on `main`
+  for the wrong reason; a probe of about 20,000 cases per recipe agreed with
+  the implementation.
 - The original planning session then performs the sufficiency read on the
   ticket text, named code and documents, and reader report. For each criterion
   and the ticket as a whole, ask whether a plausible minimal implementation
@@ -102,6 +119,18 @@ asking the first.
 - Workers and reviewers never cold-read.
 - A ticket reaches `todo` only after its findings have outcomes, because
   `chitty run` takes anything in `todo` (`TASK-147` was claimed mid-read).
+- Rounds: the ticket-state migration (2026-11-18, 29 tickets) took about 2.5
+  reads per ticket, two to four on most strong fixes and 13 across `TASK-378`
+  and its splits. Later rounds mostly found errors the fixes had introduced (a
+  command that does not exist, a wrong test base class, a spy on a function
+  the code calls legitimately), not misses by earlier readers. So check every
+  new claim about code, commands or tests against the source before rereading,
+  and split a ticket whose third read still finds problems rather than patching
+  it again.
+- Read-only reads (from 2026-11-16) cost about a third less each than the
+  earlier reads that wrote probe tests (Haiku, 79 reads against 78: about 12
+  turns each against 26), and still found design flaws. More rounds per ticket
+  used up the saving: cost per ticket stayed about the same.
 - In this repository readers run on Haiku, to show what a weak model struggles
   with. While a planner's own subagent works on a ticket, the ticket keeps an
   owner, so `chitty run` leaves it alone.

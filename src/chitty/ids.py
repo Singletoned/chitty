@@ -1,13 +1,16 @@
 """Task IDs, filenames and slugs."""
 
 import re
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from functools import total_ordering
 
 from chitty.errors import ChittyError
 
 SLUG_MAX_LENGTH = 60
+PROVISIONAL_LETTERS = "ABCDEFGHJKMNPQRSTVWXYZ"
+PROVISIONAL_DIGITS = "23456789"
+PROVISIONAL_LENGTH = 6
 
 ID_RE = re.compile(
     r"(?P<prefix>[A-Z]+)-(?P<suffix>[1-9][0-9]*|(?=[0-9A-Z]*[A-Z])[0-9A-Z]+)",
@@ -52,6 +55,14 @@ class TaskId:
         suffix = match["suffix"].upper()
         number: int | str = int(suffix) if suffix.isdigit() else suffix
         return cls(match["prefix"].upper(), number)
+
+
+def provisional_suffix(draw: Callable[[int], int]) -> str:
+    """Draw a six-character suffix containing a letter, without retrying."""
+    alphabet = PROVISIONAL_LETTERS + PROVISIONAL_DIGITS
+    return PROVISIONAL_LETTERS[draw(len(PROVISIONAL_LETTERS))] + "".join(
+        alphabet[draw(len(alphabet))] for _ in range(PROVISIONAL_LENGTH - 1)
+    )
 
 
 def resolve(text: str, default_prefix: str) -> TaskId:

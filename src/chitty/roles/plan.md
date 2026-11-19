@@ -23,14 +23,31 @@ read. Describe the change and why it is needed; criteria are optional.
   a problem. `chitty check` warns above five criteria; split larger work. Split a ticket
   when one criterion collects more than about five separate checks.
 - Keep a new ticket in `backlog` until you start writing it. Move it to
-  `-s planning` while you write it, to `-s cold-read` for its one read-only
-  cold read, back to `-s planning` to record outcomes, then to `-s todo`. Use
+  `-s planning` while you write it, to `-s cold-read` for its cold read, back to `-s planning` to record outcomes, then to `-s todo`. Use
   its optional `parent` field to group flat IDs.
 - Cold-read every ticket, even a small one. A fresh agent on a cheap model
   close to the worker reads the ticket and the named code and documents, then
   reports without changing the checkout. If a ticket adds a module, tell its
   worker to first create it with the names the tests import, each raising
   `NotImplementedError`, so tests fail independently rather than at import.
+- When the code a ticket tests already exists, a stub cannot show the tests
+  fail without the change. List plausible wrong versions of the code instead,
+  such as a dropped condition or a swapped choice, and ask the worker to run
+  each against the tests and record in a note which test failed.
+- When the code already exists, run each specified generator recipe against
+  it before the cold read, with many cases, and check the expected answers
+  agree. A disagreement is a wrong recipe or a bug; settle which.
+- Build distractor values, such as similar names a lookup must ignore, from the
+  drawn value itself, so they can never equal it by chance.
+- Check every claim about code, commands, tests or other tickets against the
+  source as you write it, not from memory or a summary; otherwise readers spend
+  their rounds on your fixes. Run `chitty check` on the ticket file and fix what
+  it reports before starting a reader.
+- Plan one ticket at a time: write, read and settle it before starting the
+  next. Fixes written for several tickets at once drift from the code.
+- After a fix that changes what a worker builds, cold-read the ticket again. If
+  a third read still finds serious problems, split the ticket rather than
+  patching it.
 - Ask of each criterion: could it pass with nothing built? If so, name the case
   that fails today, and say which test must fail without the fix.
 - In the original planning session, perform a sufficiency read on the current
@@ -81,6 +98,8 @@ read. Describe the change and why it is needed; criteria are optional.
   `-c human` ticket that depends on this one.
 - Re-check claims about other tickets just before promoting, because they can
   land during the read.
+- Change a ticket's status in the same edit command as the text it depends
+  on, so a rejected edit cannot move the ticket on.
 - Do not cold-read a ticket you were given to work on or review; it is not your
   planning step.
 - Before preparing a merge request, run `chitty archive` with no ID to process

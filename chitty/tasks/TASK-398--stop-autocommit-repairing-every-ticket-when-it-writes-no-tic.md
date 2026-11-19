@@ -1,6 +1,6 @@
 ---
 title: Stop autocommit repairing every ticket when it writes no ticket file
-status: todo
+status: done
 labels:
   - bug
 parent: TASK-376
@@ -20,8 +20,22 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 
 ## Acceptance Criteria
 
-- [ ] With `archive = "delete"`, archiving a `done` ticket that no other ticket references, while another ticket holds `depends_on: [task-1]` in lower case, succeeds, leaves that other file byte-identical and `git status --porcelain` clean; this fails before the change
-- [ ] Regression guard: `chitty fix` with no arguments still repairs that lower-case reference; `tests/test_check.py` passes unchanged; `make check` passes
+- [x] With `archive = "delete"`, archiving a `done` ticket that no other ticket references, while another ticket holds `depends_on: [task-1]` in lower case, succeeds, leaves that other file byte-identical and `git status --porcelain` clean; this fails before the change
+- [x] Regression guard: `chitty fix` with no arguments still repairs that lower-case reference; `tests/test_check.py` passes unchanged; `make check` passes
+
+## Plan
+
+Add a real-Git regression test in tests/test_commit_empty_paths.py using CliTestCase: configure delete archiving/autocommit, create and commit a done ticket plus a lower-case dependency in another ticket, then verify archive succeeds, preserves the other file byte-for-byte, and leaves Git clean. Run that test first to demonstrate the failure. In Repo._commit, run fix/validation only when task_paths is non-empty; preserve formatting and commit behavior. Add/verify the no-argument chitty fix regression guard, then run focused tests and make check.
+
+## Notes
+
+Reviewed: The implementation preserves empty-means-all for direct fix calls and skips validation only for an empty changed-task set.
+1: pass - The archive regression failed against main store.py with unrelated bytes changed from [task-1] to TASK-1; the focused suite passes with the fix and verifies a clean Git status.
+2: pass - The no-argument fix guard fails when empty path filtering is mutated to select no files, reporting the lower-case dependency unresolved. The focused commit and check suites passed 16 tests; make check passed 676 tests, Ruff and Pyright.
+
+## Summary
+
+Skipped fix and validation when a change has no existing task paths; formatting and autocommit remain unchanged. Added regression coverage for delete-mode archiving with an unrelated lower-case dependency and for no-argument `chitty fix`. Verified the regression failed before the fix because it rewrote the unrelated ticket. `make check` passed (671 tests); focused `tests.test_commit_empty_paths` and `tests.test_check` passed. No follow-ups.
 
 ## History
 
@@ -32,3 +46,10 @@ Tests: real-Git tests in a new `tests/test_commit_empty_paths.py`, inheriting `C
 - 2026-11-18T17:58:15Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:58:15Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:58:17Z lively-quartz-crane planning → todo
+- 2026-11-18T23:09:38Z open-quartz-jay todo → doing
+- 2026-11-18T23:10:47Z open-quartz-jay: wrote the plan
+- 2026-11-18T23:12:42Z open-quartz-jay: ticked acceptance criteria
+- 2026-11-18T23:12:49Z open-quartz-jay: changed summary
+- 2026-11-18T23:12:49Z open-quartz-jay doing → review
+- 2026-11-18T23:15:20Z zesty-amber-eel: changed notes
+- 2026-11-18T23:15:20Z zesty-amber-eel review → done

@@ -1,6 +1,6 @@
 ---
 title: Add the `provisional` ticket field and a provisional ID suffix
-status: todo
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -27,6 +27,28 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 - [ ] Parser property: for any generated text other than `true`, a ticket file with `provisional: <json.dumps(text)>` fails with `TaskError` naming `provisional` and never with `unknown frontmatter key` or another exception; the examples `yes`, `on`, `True`, `false` and `1` are among those tested; `provisional: true` parses
 - [ ] `tests/test_formatters.py` round trips a `sample()` ticket with `"provisional": True` through prettier and mdformat (today `sample()` raises `TaskError` for it); `docs/plan/task-file.md` has a `provisional` row giving type `true`, not required, and that it marks a provisional ID for renumbering; `make check` passes
 
+## Plan
+
+Close review findings: enforce provisional values by identity, add property coverage for generated ticket round-trips/removal/serialization/show output, and tighten parser rejection cases. Run tests before fixes to capture regression failures, then make check and commit.
+
+## Notes
+
+Review failed (tests): Add the missing specified coverage and fix the newly discovered strict-value defect. No earlier review findings exist.
+1: pass - make check printed OK for 634 tests; monkeypatching provisional_suffix to raise NotImplementedError made test_suffix_round_trips print FAILED (errors=1), and boundary draws are asserted.
+2: fail - Newly discovered: running new_task(...).with_field("provisional", 1) and with 1.0 printed True for both, although only True or None are allowed; use identity checks and test other values. The property does not exercise text chitty show, assert removal of the rendered line, or build generated tickets with st.builds as requested. Its True-case failure against the specified Frontmatter validator stub is not demonstrated: replacing with_field with a stub produced FAILED on the absent case instead. Add the specified regression evidence and exercise both show outputs.
+3: fail - test_only_true_is_accepted uses arbitrary text but does not explicitly include yes, on, True, false and 1, and only checks that the error contains provisional, so an unknown frontmatter key error naming provisional would incorrectly pass. Add explicit examples and reject that error; make check otherwise printed OK.
+4: pass - make check printed OK for 634 tests including formatter round trips; tests/test_formatters.py includes provisional True and docs/plan/task-file.md documents the optional true marker for renumbering.
+
+Reviewed: Previous findings are resolved; make check printed OK for 635 tests, with ruff and pyright passing.
+1: pass - test_suffix_round_trips and test_suffix_uses_boundary_draws passed in make check; the previous review recorded FAILED (errors=1) with the suffix stub.
+2: pass - test_field_round_trips passed in make check, covering generated marker states, removal, dictionary and text output, and strict mutation. Replacing the Frontmatter validator in memory with a NotImplementedError stub printed FAILED (errors=1), with the falsifying example provisional=True.
+3: pass - test_only_true_is_accepted, test_yaml_boolean_lookalikes_are_rejected and test_true_parses passed in make check; the property checks the error names provisional and excludes unknown-key errors.
+4: pass - make check printed OK for 635 tests including formatter round trips; tests/test_formatters.py supplies provisional True and docs/plan/task-file.md documents the optional renumbering marker.
+
+## Summary
+
+Closed review findings: provisional mutation now accepts only exact True or None, and property coverage checks generated ticket round-trips, rendered line removal, text show formatting, and invalid values including false-like inputs. Parser properties reject arbitrary non-true text and explicitly cover yes/on/True/false/1 without unknown-key errors. Verification: make check passes (635 tests; ruff and pyright clean). Commit 807c67a8 (Task: TASK-380). Prior review note records suffix stub failure evidence and boundary draws; formatter/docs coverage remains passing.
+
 ## History
 
 - 2026-11-18T16:20:07Z lively-quartz-crane → backlog
@@ -43,3 +65,14 @@ Tests: Hypothesis properties in a new `tests/test_property_provisional.py`: for 
 - 2026-11-18T16:33:05Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:33:05Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:33:07Z lively-quartz-crane planning → todo
+- 2026-11-18T20:06:44Z honest-pearl-wren todo → doing
+- 2026-11-18T20:07:41Z honest-pearl-wren: wrote the plan
+- 2026-11-18T20:09:42Z honest-pearl-wren: changed summary
+- 2026-11-18T20:09:42Z honest-pearl-wren doing → review
+- 2026-11-18T20:12:29Z jolly-jade-eel: changed acceptance criteria, notes
+- 2026-11-18T20:12:29Z jolly-jade-eel review → doing
+- 2026-11-18T20:17:09Z nimble-violet-yellowhammer: wrote the plan
+- 2026-11-18T20:20:52Z nimble-violet-yellowhammer: changed summary
+- 2026-11-18T20:20:55Z nimble-violet-yellowhammer doing → review
+- 2026-11-18T20:24:13Z daring-violet-adder: changed notes
+- 2026-11-18T20:24:13Z daring-violet-adder review → done
