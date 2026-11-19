@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before review and landing
-status: doing
+status: review
 labels:
   - bug
   - needs-minor
@@ -34,9 +34,9 @@ Tests: real-Git, fake-agent runner tests in `tests/test_review_merge.py` and `te
 
 ## Acceptance Criteria
 
-- [ ] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
-- [ ] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
-- [ ] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with a note containing `Review failed (integration): rebasing onto `main` conflicts in` and the path in backticks, and no reviewer starts; this fails before the change (today's note says `merging`)
+- [x] `git.rebase_onto` returns `[]` and leaves no rebase in progress for a clean rebase, and returns the unmerged paths with the rebase stopped for a conflict, in `tests/test_git.py`
+- [x] A review run where `main` has a new commit to a file the branch does not touch: `git rev-list --merges main..task-<n>` is empty, `main` is an ancestor of the branch, and the fake reviewer starts once; this fails before the change
+- [x] A review run whose rebase conflicts on a code file: no rebase is in progress afterwards, the ticket is `doing` with a note containing `Review failed (integration): rebasing onto `main` conflicts in` and the path in backticks, and no reviewer starts; this fails before the change (today's note says `merging`)
 - [x] A landing after a non-conflicting commit on `main` fast-forwards `main` to the rebased branch with no merge commit (`git rev-list --merges` is empty for the landed range); this fails before the change
 - [x] `git.merge` and `git.merge_main` are gone, the retargeted interrupt tests and the flipped merge-count assertions pass, and `docs/plan/next-action-and-runner.md` has the principle and the rebase under both headings; `make check` passes
 
@@ -286,7 +286,7 @@ Review follow-up: confirmed the whitespace regression before fixing it: the real
 
 ## Summary
 
-Replaced runner merge integration with rebasing in review and landing; removed obsolete merge helpers. Updated runner guide and real-Git regression tests. Verification: focused tests (72), `make check` (736 tests), `git diff --check`, and `chitty fix`. Implementation commit: 706614ca (Task: TASK-374). No follow-ups.
+Fixed whitespace-containing conflict path parsing with NUL-delimited Git output. Strengthened review regressions to verify one reviewer start with zero merge commits and no rebase remains after conflict. Verification: demonstrated the whitespace-path test failed before the fix; focused rebase/review tests passed; make check passed all 744 tests; git diff --check passed. Follow-up implementation commit: 6cd6ec24 (Task: TASK-374). Ready for review.
 
 ## History
 
@@ -317,3 +317,5 @@ Replaced runner merge integration with rebasing in review and landing; removed o
 - 2026-11-19T16:05:37Z vivid-zinc-heron review → doing
 - 2026-11-19T16:08:32Z brisk-yellow-toad: wrote the plan
 - 2026-11-19T16:12:55Z brisk-yellow-toad: changed notes
+- 2026-11-19T16:14:23Z brisk-yellow-toad: changed summary; ticked acceptance criteria
+- 2026-11-19T16:14:23Z brisk-yellow-toad doing → review
