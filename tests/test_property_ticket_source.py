@@ -240,23 +240,27 @@ class TestTicketSource(unittest.TestCase):
             eligible = candidate_line
         # One to four ticket refs are distributed on the candidate line.
         count = data.draw(st.integers(min_value=1, max_value=4))
-        refs = [branch] if data.draw(st.booleans()) else []
-        refs.extend(f"{name}/{branch}" for name in ("zeta", "alpha", "beta")[: count - len(refs)])
-        if not refs:
-            refs = ["alpha/" + branch]
+        has_local = count == 4 or (count > 1 and data.draw(st.booleans()))
+        refs = [branch] if has_local else []
+        remote_names = data.draw(
+            st.lists(
+                st.sampled_from(("zeta", "alpha", "beta")),
+                min_size=count - int(has_local),
+                max_size=count - int(has_local),
+                unique=True,
+            )
+        )
+        refs.extend(f"{name}/{branch}" for name in remote_names)
         tips = {ref: data.draw(st.sampled_from(eligible)) for ref in refs}
         local_tips = {ref: tip for ref, tip in tips.items() if "/" not in ref}
         remote_tips = {ref: tip for ref, tip in tips.items() if "/" in ref}
         highest = next(commit for commit in reversed(candidate_line) if commit in tips.values())
-        # Force both kinds of ties: local beats remotes, and remote names sort.
-        tie_mode = data.draw(st.integers(min_value=0, max_value=1))
-        if tie_mode == 0:
-            tips[branch] = highest
-            tips["zeta/" + branch] = highest
-        else:
-            tips.pop(branch, None)
-            tips["zeta/" + branch] = highest
-            tips["alpha/" + branch] = highest
+        # Tie examples are drawn, while untied layouts remain possible.
+        if len(refs) >= 2 and data.draw(st.booleans()):
+            tied = data.draw(st.sampled_from(tuple(tips)))
+            tips[tied] = highest
+            other = next(ref for ref in tips if ref != tied)
+            tips[other] = highest
         local_tips = {ref: tip for ref, tip in tips.items() if "/" not in ref}
         remote_tips = {ref: tip for ref, tip in tips.items() if "/" in ref}
         # Add dropped candidates at/below main and decoys without affecting selection.
