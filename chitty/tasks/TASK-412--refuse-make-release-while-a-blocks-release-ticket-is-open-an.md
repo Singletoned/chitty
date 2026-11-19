@@ -1,6 +1,6 @@
 ---
 title: Refuse `make release` while a `blocks-release` ticket is open, and bump minor only for `done` tickets
-status: planning
+status: todo
 priority: high
 created: 2026-11-19
 ---
@@ -26,7 +26,7 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 ## Acceptance Criteria
 
 - [ ] Property (Hypothesis), using the generator in Tests: for any ticket list, `release_blockers` returns exactly the pairs labelled `blocks-release`, not `done`, and with no `archive` path part, in input order; `minor_tickets` returns exactly the pairs labelled `needs-minor` and `done`, archived or not, in input order; near-miss labels never match
-- [ ] Subprocess tests in the existing style, with the blocker unchanged since the tag as Tests describes: an open `blocks-release` ticket under `chitty/tasks/`, and one under `chitty/human/`, each make the script exit non-zero, print nothing on standard output, and name that ticket ID on standard error; once the ticket is `done`, it prints the version as before. A `needs-minor` ticket with status `todo` changed since the tag gives a patch bump and is not listed. Each fails before the change
+- [ ] Subprocess tests in the existing style, with the blocker unchanged since the tag as Tests describes: an open `blocks-release` ticket `TASK-1` under `chitty/tasks/`, and one `HUMAN-12` under `chitty/human/`, each make the script exit non-zero, print nothing on standard output, and print `<ID>: <title>` with that full ID on standard error; with the tag at `v0.1.10` and the ticket `done`, it prints `0.1.11`. A `needs-minor` ticket with status `todo` changed since the tag gives a patch bump and is not listed. The open-blocker and `needs-minor` `todo` tests fail before the change; the `done` test passes before and after
 - [ ] The `Releases` paragraph of `AGENTS.md` names the `blocks-release` label and says `make release` refuses while such a ticket is open; the `needs-minor` paragraph says only `done` tickets count. `make check` passes
 
 ## History
@@ -39,3 +39,5 @@ Tests in `tests/test_release_version.py`, with Hypothesis, the repository's prop
 - 2026-11-19T11:08:18Z quick-ginger-lapwing planning → cold-read
 - 2026-11-19T11:10:12Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T11:10:15Z quick-ginger-lapwing: changed description
+- 2026-11-19T11:10:17Z quick-ginger-lapwing: changed acceptance criteria
+- 2026-11-19T11:10:17Z quick-ginger-lapwing planning → todo
