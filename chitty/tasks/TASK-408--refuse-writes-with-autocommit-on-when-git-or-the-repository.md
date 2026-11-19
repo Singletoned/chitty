@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: cold-read
+status: planning
 created: 2026-11-19
 ---
 
@@ -8,22 +8,23 @@ created: 2026-11-19
 
 With `autocommit = true`, every write commits, so Git is required. Today Chitty only finds out after writing: outside a Git work tree, `chitty add` writes the ticket file and then fails with `` `git ls-files -- ...` failed ``; with `git` missing from `PATH` and no `.git`, it writes the file and then dies with a `FileNotFoundError` traceback. Both leave an uncommitted ticket behind. (With `git` missing and a `.git` present, `git.is_repository` already raises before the write, since `TASK-405`.)
 
-Check before writing. In `Repo._prepare_write` (`src/chitty/store.py:413`), which every write calls before changing anything, first, before the `chitty_version` early return and the linked-worktree return:
+Check before writing, in `Repo._prepare_write` (`src/chitty/store.py`), which every `Repo` write method calls before changing a file, as do `chitty fix` (`src/chitty/check.py`) and `chitty import` (`src/chitty/import_backlog.py`). Put the check immediately after `self._check_setup_version()`, before the `chitty_version` early return, the linked-worktree return and the setup upgrade:
 
 - `autocommit` is `false`: do nothing new. Chitty without Git is supported and behaves like `autocommit = false`.
-- `autocommit` is `true` and `shutil.which("git")` is `None`: raise `ChittyError` saying `autocommit` is on, `git` was not found on `PATH`, and to install Git or set `autocommit = false`.
-- `autocommit` is `true` and `git.is_repository(self.root)` is `False`: raise `ChittyError` saying `autocommit` is on, naming `self.root` as not in a Git work tree, and to run `git init` or set `autocommit = false`.
+- `autocommit` is `true` and `shutil.which("git")` is `None`: raise `ChittyError` naming `autocommit`, saying `git` was not found on `PATH`, and to install Git or set `autocommit = false`. This is checked first, so it wins when a `.git` exists.
+- `autocommit` is `true` and `git.is_repository(self.root)` is `False`: raise `ChittyError` naming `autocommit`, naming `self.root` as not in a Git work tree, and to run `git init` or set `autocommit = false`.
 
-Reads are unchanged. Tests go in a new `tests/test_autocommit_requires_git.py`, classes inheriting `RepoTestCase`; make `git` missing with `unittest.mock.patch.dict(os.environ, {"PATH": <empty directory>})`, which patches the environment, not our code. `RepoTestCase` repositories are not Git repositories until a test runs `git init`.
+Reads are unchanged. Out of scope: `chitty init --autocommit` (it changes no files when it fails, and has its own ticket) and `chitty run`'s `refresh_setup`, since `chitty run` needs Git for its worktrees.
 
-Several test files set `autocommit = true` (`git grep -l "autocommit = true" tests`); any that write without running `git init` first now fail and must create the repository.
+Tests go in a new `tests/test_autocommit_requires_git.py`, classes inheriting `RepoTestCase`. Make `git` missing with `unittest.mock.patch.dict(os.environ, {"PATH": <empty directory>})` or `CliRunner().invoke(..., env=...)`, which patch the environment, not our code (as `tests/test_git.py` does). Several test files set `autocommit = true` (`git grep -l "autocommit = true" tests`); any that write without `git init` now fail and must create the repository.
 
 No property: the behaviour is a small fixed set of states, every one listed in criterion 1 and tested.
 
 ## Acceptance Criteria
 
-- [ ] A test in `tests/test_autocommit_requires_git.py` runs each of `chitty add`, `chitty edit <ID> -s planning` and `chitty note <ID> x` (the ticket made beforehand with `autocommit = false` and `git` on `PATH`) in every combination of `autocommit` on or off, `git` on `PATH` or not, and `git init` run or not, as a `subTest` each (24 cases). Succeeds: `autocommit` off without `git init`, whether or not `git` is on `PATH`; `autocommit` off with `git init` and `git` on `PATH`; `autocommit` on with `git init` and `git` on `PATH`, which also commits. `autocommit` off with `git init` but no `git`: exits non-zero with the existing `TASK-405` error naming `PATH`. Every other case: exits non-zero with a `ChittyError` message, no traceback, naming `autocommit` and either `PATH` or `git init`. In every failing case every file under the root has the same content as before.
-- [ ] On `main` this test fails: the not-a-repository and missing-`git` cases with `autocommit` on change the files (or show a `FileNotFoundError` traceback). Record that run in a note.
+- [ ] Grid test in `tests/test_autocommit_requires_git.py`: each of `chitty add`, `chitty edit <ID> -s planning` and `chitty note <ID> x` in every combination of `autocommit` on or off, `git` on `PATH` or not, and `git init` run or not (24 cases), each as a `subTest` building a fresh root in its own temporary directory; `git init` sets repository-local `user.email` and `user.name` as `tests/test_autocommit.py` does, and the `<ID>` ticket is made first with `autocommit = false` and `git` on `PATH`. Rows without `git init` first assert `git.is_repository(root)` is `False`, so an enclosing checkout fails loudly. Succeeds: `autocommit` off without `git init`; off with `git init` and `git`; on with `git init` and `git`, where `git log -1 --format=%s` starts `chitty:` and the commit holds the ticket file. Off with `git init` but no `git`: the existing `TASK-405` error naming `PATH`. On without `git`: a message naming `autocommit` and `PATH`. On with `git` but no `git init`: a message naming `autocommit` and `git init`. Every failing case exits non-zero without a traceback and leaves every file under the root unchanged.
+- [ ] Further tests, `autocommit` on and no `git init`, `git` on `PATH`: `chitty move <ID> <context>` and `chitty fix` refuse with the `git init` message and change no file; `chitty show <ID>` and `chitty list` succeed; with `chitty_version` in `chitty.toml` set to an older version, `chitty add` refuses with the `git init` message and no setup file changes.
+- [ ] Evidence, recorded in a note: on `main`, the refusing rows of criteria 1 and 2 fail (files change or a `FileNotFoundError` traceback shows).
 - [ ] `make check` passes, with any existing test that enabled `autocommit` without a repository fixed to create one.
 
 ## History
@@ -31,3 +32,5 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 - 2026-11-19T09:06:20Z lively-quartz-crane → planning
 - 2026-11-19T09:06:59Z lively-quartz-crane: changed acceptance criteria
 - 2026-11-19T09:06:59Z lively-quartz-crane planning → cold-read
+- 2026-11-19T09:10:33Z lively-quartz-crane: changed description, acceptance criteria
+- 2026-11-19T09:10:33Z lively-quartz-crane cold-read → planning
