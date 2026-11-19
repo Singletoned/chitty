@@ -29,14 +29,38 @@ class TestRepositoryAnswer(RepoTestCase):
     def test_success_other_output_is_false(self, stdout, stderr):
         self.assertFalse(git.repository_answer(self.command, self.root, 0, stdout, stderr))
 
+    def assert_error_context(self, directory, stderr, code, stdout):
+        with self.assertRaises(ChittyError) as raised:
+            git.repository_answer(self.command, directory, code, stdout, stderr)
+        message = str(raised.exception)
+        self.assertIn("`git rev-parse --is-inside-work-tree`", message)
+        self.assertIn(str(directory), message)
+        self.assertIn(stderr.strip(), message)
+
+    @settings(max_examples=50, deadline=None)
+    @given(
+        st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
+        st.text(),
+        st.text(),
+        st.sampled_from(("true", " \ttrue ", "arbitrary output")),
+        st.text(),
+    )
+    def test_phrase_only_classifies_status_128(self, code, before, after, stdout, directory_name):
+        stderr = before + self.not_repository + after
+        directory = self.root / directory_name
+        if code == 128:
+            self.assertFalse(git.repository_answer(self.command, directory, code, stdout, stderr))
+        else:
+            self.assert_error_context(directory, stderr, code, stdout)
+
     @settings(max_examples=30, deadline=None)
-    @given(st.text(), st.text())
-    def test_not_repository_diagnostic_is_false(self, before, after):
-        self.assertFalse(
-            git.repository_answer(
-                self.command, self.root, 128, "true", before + self.not_repository + after
-            )
-        )
+    @given(
+        st.sampled_from(("Not a git repository", "NOT A GIT REPOSITORY")),
+        st.sampled_from(("true", " \ttrue ", "arbitrary output")),
+        st.text(),
+    )
+    def test_repository_phrase_is_case_sensitive(self, stderr, stdout, directory_name):
+        self.assert_error_context(self.root / directory_name, stderr, 128, stdout)
 
     @settings(max_examples=100, deadline=None)
     @given(
@@ -46,32 +70,10 @@ class TestRepositoryAnswer(RepoTestCase):
         st.text(),
     )
     def test_other_failures_raise_with_context(self, code, stderr, stdout, directory_name):
-        directory = self.root / directory_name
-        with self.assertRaises(ChittyError) as raised:
-            git.repository_answer(self.command, directory, code, stdout, stderr)
-        message = str(raised.exception)
-        self.assertIn("`git rev-parse --is-inside-work-tree`", message)
-        self.assertIn(str(directory), message)
-        self.assertIn(stderr.strip(), message)
-
-    @settings(max_examples=30, deadline=None)
-    @given(st.sampled_from((1, 128, 255)), st.text())
-    def test_phrase_only_classifies_status_128(self, code, surrounding):
-        stderr = surrounding + self.not_repository
-        if code == 128:
-            self.assertFalse(git.repository_answer(self.command, self.root, code, "true", stderr))
-        else:
-            with self.assertRaises(ChittyError):
-                git.repository_answer(self.command, self.root, code, "true", stderr)
-
-    def test_repository_phrase_is_case_sensitive(self):
-        for stderr in ("Not a git repository", "NOT A GIT REPOSITORY"):
-            with self.assertRaises(ChittyError):
-                git.repository_answer(self.command, self.root, 128, "true", stderr)
+        self.assert_error_context(self.root / directory_name, stderr, code, stdout)
 
     def test_status_128_without_repository_phrase_raises(self):
-        with self.assertRaises(ChittyError):
-            git.repository_answer(self.command, self.root, 128, "true", "")
+        self.assert_error_context(self.root, "", 128, "true")
 
     @settings(max_examples=100, deadline=None)
     @given(st.integers(), st.text(), st.text())
