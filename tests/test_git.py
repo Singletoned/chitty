@@ -56,6 +56,17 @@ class TestRepositoryAnswer(RepoTestCase):
         else:
             self.assert_error_context(directory, stderr, code, stdout)
 
+    @settings(max_examples=50, deadline=None)
+    @given(st.text(), st.text(), STDOUTS, st.text())
+    def test_status_128_phrase_always_means_not_a_repository(
+        self, before, after, stdout, directory_name
+    ):
+        stderr = before + self.not_repository + after
+        answer = git.repository_answer(
+            self.command, self.root / directory_name, 128, stdout, stderr
+        )
+        self.assertFalse(answer)
+
     @settings(max_examples=30, deadline=None)
     @given(
         st.sampled_from(("Not a git repository", "NOT A GIT REPOSITORY")),
