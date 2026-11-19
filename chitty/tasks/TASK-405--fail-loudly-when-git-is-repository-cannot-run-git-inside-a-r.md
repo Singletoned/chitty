@@ -1,6 +1,6 @@
 ---
 title: Fail loudly when `git.is_repository` cannot run `git` inside a repository
-status: doing
+status: review
 created: 2026-11-19
 ---
 
@@ -40,9 +40,11 @@ Review failed (tests): The parent-marker precondition does not count dangling sy
 2: pass - Running the new tests with `main:src/chitty/git.py` loaded in memory printed `ChittyError not raised`; a separate baseline exercise printed `False` for missing paths with and without Git and `NotADirectoryError` for files in both cases. `make check` passes the new test.
 3: pass - The guard passed against the main implementation loaded in memory and `make check` passed all 682 tests on this branch.
 
+Review follow-up: changed the Hypothesis parent-marker precondition to os.path.lexists so dangling .git symlinks are counted. make check passes all 682 tests; Ruff format/check and pyright passed. chitty fix reported pre-existing warnings in unrelated task files.
+
 ## Summary
 
-Implemented validation of resolved directories and loud handling of missing Git when an ancestor has a .git marker. Added Hypothesis marker tests and invalid-path and behavior guards in tests/test_git.py. Verification: make check passes (682 tests); committed as d2231ad1. No follow-ups.
+Addressed review finding by checking parent .git entries with os.path.lexists, including dangling symlinks. Verification: make check passed all 682 tests (Ruff format/check, pyright, unittest). Committed as 789af53a. No follow-ups.
 
 ## History
 
@@ -62,3 +64,5 @@ Implemented validation of resolved directories and loud handling of missing Git 
 - 2026-11-19T08:50:16Z nimble-pearl-eel doing → review
 - 2026-11-19T08:53:20Z daring-ochre-dormouse: changed acceptance criteria, notes
 - 2026-11-19T08:53:20Z daring-ochre-dormouse review → doing
+- 2026-11-19T08:55:25Z vivid-teal-yellowhammer: changed notes, summary
+- 2026-11-19T08:55:25Z vivid-teal-yellowhammer doing → review
