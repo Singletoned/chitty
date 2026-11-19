@@ -1,7 +1,6 @@
 ---
 title: Record runner errors in the ticket worktree, not on `main`
-status: blocked
-owner: human
+status: planning
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -64,6 +63,8 @@ Review failed (tests): The previous review findings remain unresolved; complete 
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Planning 2026-11-19, with the owner: the three failed reviews were the ticket's fault, not the worker's: criterion 1 listed four failure cases and about twelve checks without describing the tests. Split: this ticket keeps the code and the two work-mode tests (now written by the planner); `TASK-422` and `TASK-423` take the other cases.
+
 ## Summary
 
 Runner errors are recorded on ticket branches. Completed branch-only regression coverage; landing check now fails from the reviewer-created marker as specified. Verification: focused landing test and make check (644 tests) pass. No follow-up.
@@ -107,3 +108,5 @@ Runner errors are recorded on ticket branches. Completed branch-only regression 
 - 2026-11-18T21:57:42Z mellow-ebony-toad doing → review
 - 2026-11-18T22:00:21Z witty-ebony-quail: changed owner, acceptance criteria, notes
 - 2026-11-18T22:00:21Z witty-ebony-quail review → blocked
+- 2026-11-19T13:29:41Z quick-ginger-lapwing: changed owner, notes
+- 2026-11-19T13:29:41Z quick-ginger-lapwing blocked → planning
