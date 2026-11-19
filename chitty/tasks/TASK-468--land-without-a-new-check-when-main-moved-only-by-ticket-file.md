@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-19
 ---
@@ -36,3 +36,4 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 
 - 2026-11-19T21:23:51Z daring-amber-kestrel → planning
 - 2026-11-19T21:24:10Z daring-amber-kestrel: changed description
+- 2026-11-19T21:24:14Z daring-amber-kestrel planning → cold-read
