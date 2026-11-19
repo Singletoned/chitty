@@ -35,6 +35,10 @@ No property: one fixed scenario; the behaviour drives real Git and runner proces
 
 Strengthen the existing TestNext regression test only: rename it, capture main before chitty run, assert main has only the ticket claim commit, and inspect the branch ticket error contents. First run the requested wrong-run.py experiment and record which assertion fails first; restore run.py immediately. Then run the focused test and make check, commit test changes with Task: TASK-423, record verification and summary, and move the ticket to review.
 
+## Notes
+
+Wrong-version experiment: temporarily changed _handle_check_failure to record via the main checkout. The focused existing test failed first at tests/test_next.py:1303, asserting status: doing in main; wrong version left status: error on main. Restored src/chitty/run.py immediately.
+
 ## History
 
 - 2026-11-19T13:29:53Z quick-ginger-lapwing → backlog
@@ -49,3 +53,4 @@ Strengthen the existing TestNext regression test only: rename it, capture main b
 - 2026-11-19T13:43:06Z quick-ginger-lapwing planning → todo
 - 2026-11-19T14:36:29Z able-jade-urchin todo → doing
 - 2026-11-19T14:37:24Z able-jade-urchin: wrote the plan
+- 2026-11-19T14:37:43Z able-jade-urchin: changed notes
