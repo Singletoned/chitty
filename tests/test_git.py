@@ -12,6 +12,9 @@ from chitty import git
 from chitty.errors import ChittyError
 from tests.support import RepoTestCase
 
+# Standard output for non-zero statuses: `true`, padded `true`, or any text.
+STDOUTS = st.one_of(st.sampled_from(("true", " \ttrue ")), st.text())
+
 
 class TestRepositoryAnswer(RepoTestCase):
     command = ("git", "rev-parse", "--is-inside-work-tree")
@@ -42,7 +45,7 @@ class TestRepositoryAnswer(RepoTestCase):
         st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
         st.text(),
         st.text(),
-        st.sampled_from(("true", " \ttrue ", "arbitrary output")),
+        STDOUTS,
         st.text(),
     )
     def test_phrase_only_classifies_status_128(self, code, before, after, stdout, directory_name):
@@ -56,7 +59,7 @@ class TestRepositoryAnswer(RepoTestCase):
     @settings(max_examples=30, deadline=None)
     @given(
         st.sampled_from(("Not a git repository", "NOT A GIT REPOSITORY")),
-        st.sampled_from(("true", " \ttrue ", "arbitrary output")),
+        STDOUTS,
         st.text(),
     )
     def test_repository_phrase_is_case_sensitive(self, stderr, stdout, directory_name):
@@ -66,7 +69,7 @@ class TestRepositoryAnswer(RepoTestCase):
     @given(
         st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
         st.text().filter(lambda text: "not a git repository" not in text),
-        st.text(),
+        STDOUTS,
         st.text(),
     )
     def test_other_failures_raise_with_context(self, code, stderr, stdout, directory_name):
