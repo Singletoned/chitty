@@ -1,5 +1,6 @@
 """Optional autocommit: commit exactly the paths a write touched."""
 
+import os
 import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -370,6 +371,9 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
 
 def is_repository(directory: Path) -> bool:
     """Whether ``directory`` is inside a Git worktree."""
+    directory = directory.resolve()
+    if not directory.is_dir():
+        raise ChittyError(f"Not a directory: {directory}")
     try:
         result = subprocess.run(
             ["git", "rev-parse", "--is-inside-work-tree"],
@@ -378,7 +382,13 @@ def is_repository(directory: Path) -> bool:
             capture_output=True,
             text=True,
         )
-    except FileNotFoundError:
+    except FileNotFoundError as error:
+        for parent in (directory, *directory.parents):
+            marker = parent / ".git"
+            if os.path.lexists(marker):
+                raise ChittyError(
+                    f"`git` is unavailable on PATH, but repository marker exists: {marker}"
+                ) from error
         return False
     return result.returncode == 0 and result.stdout.strip() == "true"
 

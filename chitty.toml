@@ -11,11 +11,12 @@ agent_command = "env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT uv run --no-sync p
 
 project = "chitty"
 archive = "move"
+workflow = "runner"
 review = true
 
 list_width = 80
 
-chitty_version = "0.4.2"
+chitty_version = "0.5.0"
 # work_model = "provider/model" # default for work sessions
 # review_model = "provider/model" # default for review sessions
 
