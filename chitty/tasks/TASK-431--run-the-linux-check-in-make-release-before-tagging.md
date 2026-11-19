@@ -1,6 +1,6 @@
 ---
 title: Run the Linux check in `make release` before tagging
-status: planning
+status: cold-read
 priority: medium
 depends_on:
   - TASK-429
@@ -35,3 +35,4 @@ Out of scope: the landing check (`HUMAN-13`), retrying, and the GitHub workflows
 ## History
 
 - 2026-11-19T18:45:25Z daring-amber-kestrel → planning
+- 2026-11-19T18:46:31Z daring-amber-kestrel planning → cold-read
