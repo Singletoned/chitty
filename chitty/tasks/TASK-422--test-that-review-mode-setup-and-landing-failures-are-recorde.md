@@ -1,6 +1,6 @@
 ---
 title: Test that review-mode `setup` and landing failures are recorded on the ticket branch
-status: doing
+status: blocked
 priority: high
 depends_on:
   - TASK-382
@@ -255,6 +255,8 @@ make: *** [check] Error 1
 
 Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext.test_run_cases`, fixed on `main` in `fe1ef0cd`; back to `todo`.
 
+Blocked by Chitty branch validation: TASK-422’s latest committed ticket file is on main, so edits from its task-422 worktree are rejected. Chitty requires the command to run from the main checkout. Resolving this requires the ticket owner to authorize the required checkout or arrange for the ticket file to be committed on the task-422 branch.
+
 ## History
 
 - 2026-11-19T13:29:50Z quick-ginger-lapwing → backlog
@@ -273,3 +275,5 @@ Reset 2026-11-19: the runner error came from the flaky `tests.test_next.TestNext
 - 2026-11-19T16:01:52Z quick-ginger-lapwing: changed notes
 - 2026-11-19T16:01:52Z quick-ginger-lapwing error → todo
 - 2026-11-19T16:02:17Z vivid-dusky-urchin todo → doing
+- 2026-11-19T16:05:46Z vivid-dusky-urchin: changed notes
+- 2026-11-19T16:05:46Z vivid-dusky-urchin doing → blocked
