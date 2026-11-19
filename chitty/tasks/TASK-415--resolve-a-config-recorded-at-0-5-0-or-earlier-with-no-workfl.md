@@ -1,6 +1,6 @@
 ---
 title: Resolve a config recorded at `0.5.0` or earlier with no `workflow` to the runner
-status: cold-read
+status: todo
 labels:
   - blocks-release
 priority: high
@@ -23,9 +23,9 @@ Out of scope: writing `workflow` during `chitty init` (`TASK-331` and its split 
 
 Tests, in `tests/test_config_workflow.py`, with Hypothesis, the repository's property-testing tool:
 
-- Rewrite the oracle `expected_workflow` independently of the code under test: split on `.`, convert each part with `int` (any `ValueError` means unparsable, `runner`), drop trailing zero parts itself, and compare the tuple with `(0, 5)`. It must not call `resolve_workflow`, `version_key` or a new helper from `src/chitty/config.py`.
+- Rewrite the oracle `expected_workflow` independently of the code under test: split on `.`, convert each part with `int` (any `ValueError` means unparsable, `runner`), drop trailing zero parts itself, and give `runner` when the tuple is at most `(0, 5)` (`<=`), else `tickets`. It must not call `resolve_workflow`, `version_key` or a new helper from `src/chitty/config.py`.
 - `test_missing_workflow_follows_setup_version` keeps its `VERSIONS` strategy and gains `@example`s for the boundary, because unbounded integers almost never draw it: `0.4.9`, `0.5`, `0.5.0`, `0.5.00`, `0.5.0.0`, `0.5.0.1`, `0.5.1`, `0.10`, `0`, `0.0`.
-- In `TestWorkflowConfig.test_missing_workflow_resolves_from_setup_version` (around line 75), the `0.5.0` case now expects `runner`; add a `0.5.1` case expecting `tickets`. Build each config with the existing `config_text` helper, which removes the fixture's `workflow = "runner"` line; the fixture has no `review` line.
+- In `TestWorkflowConfig.test_missing_workflow_resolves_from_setup_version` (around line 75), the `0.5.0` case now expects `runner`; add a `0.5.1` case expecting `tickets`. Assert `review` as well as `workflow` for both (true for `0.5.0`, false for `0.5.1`), and load with `load_repo_config(self.root)` as the existing loop does: `Repo` refuses a recorded version above the installed `0.5.0` (`check_setup_version`). `TestFixtureConfig` keeps an explicit `workflow` line, so it does not cover the boundary. Build each config with the existing `config_text` helper, which removes the fixture's `workflow = "runner"` line; the fixture has no `review` line.
 - The code exists, so evidence of failing without the change comes from wrong versions of `resolve_workflow`, run by hand against the updated tests: today's code (`<` against `0.5.0`); `<=` against `(0, 5, 0)` without dropping trailing zeros; and comparing the version string with `"0.5.0"` as text.
 
 ## Acceptance Criteria
@@ -41,3 +41,6 @@ Tests, in `tests/test_config_workflow.py`, with Hypothesis, the repository's pro
 - 2026-11-19T10:42:05Z quick-ginger-lapwing: changed description, acceptance criteria
 - 2026-11-19T10:42:05Z quick-ginger-lapwing cold-read → planning
 - 2026-11-19T10:42:27Z quick-ginger-lapwing planning → cold-read
+- 2026-11-19T10:48:54Z quick-ginger-lapwing cold-read → planning
+- 2026-11-19T10:48:58Z quick-ginger-lapwing: changed description
+- 2026-11-19T10:48:58Z quick-ginger-lapwing planning → todo
