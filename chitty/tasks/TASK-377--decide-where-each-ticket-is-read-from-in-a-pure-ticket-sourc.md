@@ -1,6 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: error
+status: done
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -33,9 +33,9 @@ Out of scope: any caller, reading files, computing `changed_on_both`, and the wr
 
 Tests: Hypothesis properties in `tests/test_property_ticket_source.py`. `TASK-403` (rules 4 and 6) and `TASK-404` (rule 5 and decoys) extend the file after this ticket (split out 2026-11-18, after two reviews rejected fixed examples), so put these generators at module level for them to reuse:
 
-- `graphs()` draws one of two shapes, so no property filters most inputs away. A chain `c0` to `cn` (n from 1 to 6), where `contains(a, b)` is true when `a`'s index is at least `b`'s. Or a fork: a shared chain `c0` to `ck` (k from 0 to 3), then two arms `a1` to `ai` and `b1` to `bj` (each 1 to 3 commits), where an arm commit contains the earlier commits of its arm and the whole shared chain, and nothing on the other arm. Both shapes add up to three unrelated commits `u0`, `u1`, `u2` that contain only themselves. It returns the commits, `contains`, and the structure the recipes need: for a chain, the commits in index order; for a fork, the shared chain and each arm, in order.
+- `graphs()` draws one of two shapes, so no property filters most inputs away. A chain `c0` to `cn` (n from 1 to 6), where `contains(a, b)` is true when `a`'s index is at least `b`'s. Or a fork: a shared chain `c0` to `ck` (k from 0 to 3), then two arms `a1` to `ai` and `b1` to `bj` (each 1 to 3 commits), where an arm commit contains the earlier commits of its arm and the whole shared chain, and nothing on the other arm. Both shapes add up to three unrelated commits `u0`, `u1`, `u2` that contain only themselves. It returns a `Graph` with the commits, `ancestors` (each commit to the set it contains), `contains`, and the structure the recipes need: for a chain, the commits in index order; for a fork, the shared chain and each arm, in order.
 - `task_ids()` draws a prefix of 1 to 5 letters `A` to `Z` and a number from 1 to 99.
-- `ref_maps(commits, with_candidates)` draws `local_tips` and `remote_tips` with values from `commits`. Candidate names, only when `with_candidates` is true: the local branch name and remote names such as `origin/<branch>`, with remote names of lowercase letters. Decoy names, derived from the drawn ID so they never equal a candidate (`<branch>` is the ticket branch name): local `<branch>0`, `feature/<branch>` and the upper-case ID; remote `origin/<branch>0`, `origin/x/<branch>`, and the key `<branch>` without a `/`, which is ignored. Unrelated names match no candidate and no decoy, such as `other` and `origin/other`. Decoy and unrelated names are drawn whatever `with_candidates` is.
+- `ref_maps(task_id, candidate_commits, decoy_commits, with_candidates)` draws `(local_tips, remote_tips)`: candidates at commits from `candidate_commits`, decoy and unrelated names at commits from `decoy_commits`. Candidate names, only when `with_candidates` is true: the local branch name and remote names such as `origin/<branch>`, with remote names of lowercase letters. Decoy names, derived from the drawn ID so they never equal a candidate (`<branch>` is the ticket branch name): local `<branch>0`, `feature/<branch>` and the upper-case ID; remote `origin/<branch>0`, `origin/x/<branch>`, and the key `<branch>` without a `/`, which is ignored. Unrelated names match no candidate and no decoy, such as `other` and `origin/other`. Decoy and unrelated names are drawn whatever `with_candidates` is.
 
 Properties for this ticket, each building inputs whose answer is known by construction:
 
@@ -47,8 +47,8 @@ Each property asserts a returned value or `ChittyError` specifically. Every name
 
 ## Acceptance Criteria
 
-- [ ] Properties pass for rules 1 to 3 on both graph shapes, built as the Tests paragraph says: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch` (even when `main_tip` is `None`, an unborn `main`), else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
-- [ ] The notes name at least three mutants of `ticket_source`, run by hand and not committed, among them ignoring `provisional`, keeping a candidate equal to `main_tip`, and returning `main_branch` for an unborn `main` checked out; each fails a property of this ticket; `make check` passes
+- [x] Properties pass for rules 1 to 3 on both graph shapes, built as the Tests paragraph says: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch` (even when `main_tip` is `None`, an unborn `main`), else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
+- [x] The notes name at least three mutants of `ticket_source`, run by hand and not committed, among them ignoring `provisional`, keeping a candidate equal to `main_tip`, and returning `main_branch` for an unborn `main` checked out; each fails a property of this ticket; `make check` passes
 
 ## Notes
 
@@ -86,6 +86,23 @@ Error output:
 ```text
 TASK-377 was unchanged; only committed changes are visible to `chitty run`
 ```
+
+Planning session 2026-11-19: held back from automatic runs (owner `human`). The last session ended without changing anything, and two earlier workers could not build the input generators. Next planning step: split rules 2 and 3 into their own tickets, so that this ticket keeps the implementation, the shared generators and the rule 1 property, then cold-read each piece.
+
+Planning 2026-11-19: the planner wrote the tests, as the owner decided after two workers could not build the generators; not split, because with the tests written nothing is left to divide. Commit `Property-test ticket_source rules 1 to 3 with shared graph and ref generators` adds `Graph`, `graphs()`, `task_ids()`, `decoy_names()`, `ref_maps()`, `current_branches()` and `call()`, and three properties: `test_rule_1_provisional_reads_the_working_tree`, `test_rules_2_and_3_candidates_main_contains_are_dropped` and `test_rule_3_no_candidates_reads_main`. The fixed examples for rules 4 to 6 stay, on `legacy_graphs()`, until `TASK-403` and `TASK-404` replace them. `ref_maps` takes separate candidate and decoy commits, so rule 2 can place candidates only on commits `main_tip` contains; the description, `TASK-403` and `TASK-404` now say so.
+
+Evidence, each with `.venv/bin/python -m unittest` on the three properties, mutants by hand and not committed:
+- stub raising `NotImplementedError`: all three error (`FAILED (errors=3)`).
+- ignoring `provisional` (`if False:`): `test_rule_1_provisional_reads_the_working_tree` fails.
+- keeping a candidate equal to `main_tip` (`contains(main_tip, tip) and tip != main_tip`): `test_rules_2_and_3_candidates_main_contains_are_dropped` fails.
+- returning `main_branch` for an unborn `main` checked out: `test_rule_3_no_candidates_reads_main` fails.
+- reversed ancestry (`contains(tip, main_tip)`): the rules 2 and 3 property fails, plus three fixed examples.
+
+After merging `main`, `make check` passed (`Ran 733 tests`, `OK`).
+
+Reviewed: The earlier generated-input gaps are addressed by the three case-directed properties; rules 4 to 6 and decoy invariance were split into TASK-403 and TASK-404.
+1: pass - `make check` printed `Ran 742 tests` and `OK`; the three properties exercise generated chains and forks, provisional selection, dropped candidates and missing main. The planning note records all three properties erroring against the NotImplementedError stub.
+2: pass - The planning note records the three required uncommitted mutants and the property each failed; `make check` printed `Ran 742 tests` and `OK`.
 
 ## Summary
 
@@ -136,3 +153,10 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-18T22:06:24Z intrepid-bronze-marten todo → doing
 - 2026-11-18T22:11:20Z intrepid-bronze-marten: changed notes
 - 2026-11-18T22:11:20Z intrepid-bronze-marten doing → error
+- 2026-11-19T09:38:09Z quick-ginger-lapwing: changed owner, notes
+- 2026-11-19T09:38:09Z quick-ginger-lapwing error → planning
+- 2026-11-19T14:20:31Z quick-ginger-lapwing: changed description
+- 2026-11-19T14:21:34Z quick-ginger-lapwing: changed owner, notes; ticked acceptance criteria
+- 2026-11-19T14:21:34Z quick-ginger-lapwing planning → review
+- 2026-11-19T14:23:24Z youthful-teal-lapwing: changed notes
+- 2026-11-19T14:23:24Z youthful-teal-lapwing review → done
