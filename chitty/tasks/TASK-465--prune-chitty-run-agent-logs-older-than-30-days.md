@@ -1,6 +1,8 @@
 ---
 title: Prune `chitty run` agent logs older than 30 days
 status: backlog
+depends_on:
+  - TASK-467
 created: 2026-11-19
 ---
 
@@ -11,3 +13,4 @@ Follows `TASK-276`, which writes one log per ticket run to `<git common dir>/chi
 ## History
 
 - 2026-11-19T21:18:54Z sunny-white-dormouse → backlog
+- 2026-11-19T21:23:46Z sunny-white-dormouse: changed dependencies
