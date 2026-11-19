@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: cold-read
+status: todo
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -38,3 +38,4 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 - 2026-11-19T09:10:33Z lively-quartz-crane cold-read → planning
 - 2026-11-19T09:10:53Z lively-quartz-crane planning → cold-read
 - 2026-11-19T09:14:28Z lively-quartz-crane: changed dependencies, description, acceptance criteria
+- 2026-11-19T09:21:32Z lively-quartz-crane cold-read → todo
