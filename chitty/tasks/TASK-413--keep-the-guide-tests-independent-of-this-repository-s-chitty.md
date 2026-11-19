@@ -1,6 +1,6 @@
 ---
 title: Keep the guide tests independent of this repository's `chitty.toml`
-status: planning
+status: todo
 labels:
   - blocks-release
 priority: high
@@ -16,8 +16,8 @@ Two guide tests run `chitty guide` with no role in the current directory, which 
 
 Decisions:
 
-- Remove the no-role case `()` from the loop in `test_warning_is_in_every_generated_guide`; keep the `work`, `review` and `plan` cases. The no-role guide is already checked in a temporary repository, for both workflows, by `test_guide_command_prints_the_repository_workflow` in `tests/test_guide_workflow_block.py`, whose expected text (`tests/fixtures/guide-before-workflow.md`) contains the backtick warning.
-- `TestGuidePiWarning` inherits `RepoTestCase` (`tests/support.py`) and runs `chitty guide` after `os.chdir(self.root)`, restoring the old directory with `addCleanup`, as `CliTestCase.setUp` in `tests/test_cli.py` does. Its `env=` arguments stay.
+- Remove the no-role case `()` from the loop in `test_warning_is_in_every_generated_guide`; keep the `work`, `review` and `plan` cases, change the expected line to `expected = guide(*args)`, and drop `managed_guide` from the import. The no-role guide is already checked in a temporary repository, for both workflows, by `test_guide_command_prints_the_repository_workflow` in `tests/test_guide_workflow_block.py`, whose expected text (`tests/fixtures/guide-before-workflow.md`) contains the backtick warning.
+- `TestGuidePiWarning` inherits `RepoTestCase` (`tests/support.py`) and runs `chitty guide` after `os.chdir(self.root)`, restoring the old directory with `addCleanup`, as `CliTestCase.setUp` in `tests/test_cli.py` does, but without setting `CHITTY_ACTOR` (the test needs no identity) and without inheriting `CliTestCase`. Its `env=` arguments stay.
 - The planner ran the whole suite in a throwaway copy of `main` with its `chitty.toml` changed (no `workflow` line, `chitty_version = "0.6.0"`): apart from prettier tests (no `node_modules` there), only the backticks test failed.
 - Do not edit this checkout's `chitty.toml` (`AGENTS.md` forbids it on a ticket branch). Show independence in a throwaway copy outside the checkout instead.
 
@@ -25,8 +25,8 @@ No property: the change only removes one case and moves one test class into a te
 
 ## Acceptance Criteria
 
-- [ ] Recorded in a note: in a throwaway copy of the worktree outside the checkout, with `workflow = "bogus"` in the copy's `chitty.toml`, `tests.test_guide_backticks` and `tests.test_guide_pi_warning` both pass after the change; before it, with `workflow = "tickets"` the backticks test fails, and with `workflow = "bogus"` the Pi warning test fails
-- [ ] `test_guide_command_prints_the_repository_workflow` still passes unchanged; `make check` passes
+- [ ] Recorded in a note with the commands and the test names that fail or pass: copies made with `git archive <ref> | tar -x -C <dir>` under `/private/tmp/claude-501/` (`main` for before, the ticket branch for after), each with its `chitty.toml` edited, run from `<dir>` with the checkout's `.venv/bin/python -m unittest tests.test_guide_backticks tests.test_guide_pi_warning` and `PYTHONPATH=<dir>/src`. Before, `workflow = "tickets"` fails the backticks test and `workflow = "bogus"` fails the Pi warning test; after, both pass with `workflow = "bogus"`
+- [ ] `test_guide_command_prints_the_repository_workflow` still passes unchanged; `make check` passes in the real worktree after `make install` (a copy has no `node_modules`, so prettier tests fail there)
 
 ## History
 
@@ -38,3 +38,5 @@ No property: the change only removes one case and moves one test class into a te
 - 2026-11-19T11:24:37Z quick-ginger-lapwing: changed title, description, acceptance criteria
 - 2026-11-19T11:24:37Z quick-ginger-lapwing planning → cold-read
 - 2026-11-19T11:26:06Z quick-ginger-lapwing cold-read → planning
+- 2026-11-19T11:26:09Z quick-ginger-lapwing: changed description, acceptance criteria
+- 2026-11-19T11:26:09Z quick-ginger-lapwing planning → todo
