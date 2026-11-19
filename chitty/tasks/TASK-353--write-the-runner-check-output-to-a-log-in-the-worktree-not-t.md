@@ -1,6 +1,6 @@
 ---
 title: Write the runner check output to a log in the worktree, not the ticket
-status: todo
+status: doing
 priority: high
 created: 2026-11-16
 ---
@@ -51,3 +51,4 @@ Second cold read 2026-11-19 outcomes: a newline before `# exit` when output lack
 - 2026-11-19T17:32:10Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:34:13Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:34:19Z quick-ginger-lapwing planning → todo
+- 2026-11-19T17:35:05Z upbeat-violet-dormouse todo → doing
