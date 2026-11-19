@@ -49,7 +49,9 @@ class TestReleaseScript(unittest.TestCase):
         self.watched = self.tmp / "watched"
         self.check_script = self.tmp / "check.sh"
         self.check_script.write_text("true\n")
-        subprocess.run(["git", "init", "--quiet", "--bare", str(self.origin)], check=True)
+        subprocess.run(
+            ["git", "init", "--quiet", "--bare", "-b", "main", str(self.origin)], check=True
+        )
         self.root.mkdir()
         self.git("init", "--quiet", "-b", "main")
         self.git("config", "user.email", "test@example.com")
