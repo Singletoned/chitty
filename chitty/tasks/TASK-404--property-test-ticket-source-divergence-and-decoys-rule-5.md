@@ -1,6 +1,7 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: error
+status: blocked
+owner: human
 depends_on:
   - TASK-377
   - TASK-403
@@ -78,6 +79,8 @@ main moved during each of the 3 landing attempts
 Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-404 or the main checkout before retrying.
 ```
 
+Blocked for the human 2026-11-19 21:2x: the work has landed. `main` contains `test: property-test ticket source divergence` and `test: include added refs in decoy change sets`, fast-forwarded after a rebase and a passing `make check` (777 tests). The error above is from a runner (`tidy-white-jay`) that tried to land the same `done` branch while this hand landing was running and lost the race with `main` three times; it was then carried to `main` by the fast-forward. Branch and worktree `task-404` are removed. Only the status needs fixing: `done`, through `review` with the passing review carried over.
+
 ## Summary
 
 Fixed the decoy property to generate changed refs from both baseline and expanded maps, including newly added decoys/unrelated refs. Verification: focused suite (6 tests) and make check (format, lint, pyright, 765 tests) pass. No production changes or follow-ups.
@@ -113,3 +116,5 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T21:18:40Z tidy-white-jay review → done
 - 2026-11-19T21:21:11Z tidy-white-jay: changed notes
 - 2026-11-19T21:21:11Z tidy-white-jay done → error
+- 2026-11-19T21:22:42Z daring-amber-kestrel: changed owner, notes
+- 2026-11-19T21:22:42Z daring-amber-kestrel error → blocked
