@@ -1258,7 +1258,7 @@ class TestNext(CliTestCase):
             "error",
         )
 
-    def test_run_check_failure_records_output_and_does_not_claim_or_start_agent(self):
+    def test_run_check_failure_on_todo_ticket_records_error_on_branch(self):
         config = self.root / "chitty.toml"
         checker = self.root / "check.py"
         checker.write_text(
@@ -1283,6 +1283,7 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "setup")
 
         self.install_fake_pi("from pathlib import Path\nPath('started').write_text('yes')\n")
+        main_before = self.git("rev-parse", "main").strip()
         result = self.run_cli("run")
 
         self.assertIn("todo → error", result.stdout)
@@ -1299,12 +1300,22 @@ class TestNext(CliTestCase):
         self.assertIn("check line 6", task.section("Notes") or "")
         worktree = self.root / ".worktrees/task-1"
         ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
-        main_ticket = self.git("show", f"main:{ticket_path.relative_to(worktree)}")
+        relative_ticket_path = str(ticket_path.relative_to(worktree))
+        main_ticket = self.git("show", f"main:{relative_ticket_path}")
         self.assertIn("status: doing", main_ticket)
+        main_ticket_commits = self.git(
+            "log", "--format=%s", f"{main_before}..main", "--", relative_ticket_path
+        ).splitlines()
+        self.assertEqual(main_ticket_commits, ["chitty: edit TASK-1 Todo"])
+        branch_ticket = self.git("show", f"task-1:{relative_ticket_path}")
+        self.assertIn("status: error", branch_ticket)
+        self.assertIn("Runner error (check)", branch_ticket)
+        self.assertIn("check exited with status 1", branch_ticket)
+        self.assertIn("check line 6", branch_ticket)
         self.assertIn("?? check-args", self.git("-C", str(worktree), "status", "--short"))
         self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
         changed_paths = self.git("show", "--pretty=format:", "--name-only", "task-1").splitlines()
-        self.assertEqual(changed_paths, [str(ticket_path.relative_to(worktree))])
+        self.assertEqual(changed_paths, [relative_ticket_path])
 
     def test_run_check_failure_records_markdown_like_output(self):
         config = self.root / "chitty.toml"
