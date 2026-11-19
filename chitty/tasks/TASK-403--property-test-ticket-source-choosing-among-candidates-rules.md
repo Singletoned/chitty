@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: doing
+status: review
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -74,3 +74,4 @@ Replaced the narrow rule 4/6 examples with generated chain/fork cases varying ma
 - 2026-11-19T15:34:22Z lively-teal-yellowhammer: wrote the plan
 - 2026-11-19T15:36:31Z lively-teal-yellowhammer: changed notes
 - 2026-11-19T15:38:22Z lively-teal-yellowhammer: changed notes, summary
+- 2026-11-19T15:38:25Z lively-teal-yellowhammer doing → review
