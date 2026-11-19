@@ -368,6 +368,17 @@ def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
     return files
 
 
+def repository_answer(
+    command: Sequence[str], directory: Path, returncode: int, stdout: str, stderr: str
+) -> bool:
+    if returncode == 0:
+        return stdout.strip() == "true"
+    if returncode == 128 and "not a git repository" in stderr:
+        return False
+    shown = " ".join(command)
+    raise ChittyError(f"`{shown}` failed in {directory}:\n{stderr.strip()}")
+
+
 def is_repository(directory: Path) -> bool:
     """Whether ``directory`` is inside a Git worktree."""
     try:
