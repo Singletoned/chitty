@@ -1,7 +1,6 @@
 ---
 title: Decide where each ticket is read from in a pure `ticket_source` function
-status: planning
-owner: human
+status: review
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -48,8 +47,8 @@ Each property asserts a returned value or `ChittyError` specifically. Every name
 
 ## Acceptance Criteria
 
-- [ ] Properties pass for rules 1 to 3 on both graph shapes, built as the Tests paragraph says: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch` (even when `main_tip` is `None`, an unborn `main`), else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
-- [ ] The notes name at least three mutants of `ticket_source`, run by hand and not committed, among them ignoring `provisional`, keeping a candidate equal to `main_tip`, and returning `main_branch` for an unborn `main` checked out; each fails a property of this ticket; `make check` passes
+- [x] Properties pass for rules 1 to 3 on both graph shapes, built as the Tests paragraph says: a provisional ticket gives `WORKING_TREE` whatever the other inputs; when every candidate is contained by `main_tip`, or there are none, the result is `WORKING_TREE` exactly when `current_branch == main_branch` (even when `main_tip` is `None`, an unborn `main`), else `main_branch`, or `ChittyError` naming `main_branch` when `main_tip` is `None`
+- [x] The notes name at least three mutants of `ticket_source`, run by hand and not committed, among them ignoring `provisional`, keeping a candidate equal to `main_tip`, and returning `main_branch` for an unborn `main` checked out; each fails a property of this ticket; `make check` passes
 
 ## Notes
 
@@ -89,6 +88,17 @@ TASK-377 was unchanged; only committed changes are visible to `chitty run`
 ```
 
 Planning session 2026-11-19: held back from automatic runs (owner `human`). The last session ended without changing anything, and two earlier workers could not build the input generators. Next planning step: split rules 2 and 3 into their own tickets, so that this ticket keeps the implementation, the shared generators and the rule 1 property, then cold-read each piece.
+
+Planning 2026-11-19: the planner wrote the tests, as the owner decided after two workers could not build the generators; not split, because with the tests written nothing is left to divide. Commit `Property-test ticket_source rules 1 to 3 with shared graph and ref generators` adds `Graph`, `graphs()`, `task_ids()`, `decoy_names()`, `ref_maps()`, `current_branches()` and `call()`, and three properties: `test_rule_1_provisional_reads_the_working_tree`, `test_rules_2_and_3_candidates_main_contains_are_dropped` and `test_rule_3_no_candidates_reads_main`. The fixed examples for rules 4 to 6 stay, on `legacy_graphs()`, until `TASK-403` and `TASK-404` replace them. `ref_maps` takes separate candidate and decoy commits, so rule 2 can place candidates only on commits `main_tip` contains; the description, `TASK-403` and `TASK-404` now say so.
+
+Evidence, each with `.venv/bin/python -m unittest` on the three properties, mutants by hand and not committed:
+- stub raising `NotImplementedError`: all three error (`FAILED (errors=3)`).
+- ignoring `provisional` (`if False:`): `test_rule_1_provisional_reads_the_working_tree` fails.
+- keeping a candidate equal to `main_tip` (`contains(main_tip, tip) and tip != main_tip`): `test_rules_2_and_3_candidates_main_contains_are_dropped` fails.
+- returning `main_branch` for an unborn `main` checked out: `test_rule_3_no_candidates_reads_main` fails.
+- reversed ancestry (`contains(tip, main_tip)`): the rules 2 and 3 property fails, plus three fixed examples.
+
+After merging `main`, `make check` passed (`Ran 733 tests`, `OK`).
 
 ## Summary
 
@@ -142,3 +152,5 @@ Expanded Hypothesis coverage for ticket-source selection, conflicts, fallback, a
 - 2026-11-19T09:38:09Z quick-ginger-lapwing: changed owner, notes
 - 2026-11-19T09:38:09Z quick-ginger-lapwing error → planning
 - 2026-11-19T14:20:31Z quick-ginger-lapwing: changed description
+- 2026-11-19T14:21:34Z quick-ginger-lapwing: changed owner, notes; ticked acceptance criteria
+- 2026-11-19T14:21:34Z quick-ginger-lapwing planning → review
