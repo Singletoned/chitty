@@ -19,3 +19,4 @@ Archived: fixed in `c22e3a6`; superseded by the version-tie suggestion, itself c
 - 2026-11-19T20:55:09Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:11Z sunny-white-dormouse: changed notes
 - 2026-11-19T20:56:35Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:56:38Z sunny-white-dormouse backlog → archived
