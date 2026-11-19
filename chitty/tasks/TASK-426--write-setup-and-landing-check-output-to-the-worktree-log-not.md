@@ -1,6 +1,6 @@
 ---
 title: Write `setup` and landing-check output to the worktree log, not the ticket
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-353
@@ -40,3 +40,4 @@ Second cold read 2026-11-19 outcomes: the fails-before evidence names the first 
 - 2026-11-19T17:28:48Z quick-ginger-lapwing → planning
 - 2026-11-19T17:31:27Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:33:19Z quick-ginger-lapwing: changed description, acceptance criteria, notes
+- 2026-11-19T17:34:21Z quick-ginger-lapwing planning → todo
