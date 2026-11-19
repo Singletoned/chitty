@@ -18,7 +18,7 @@ Test: in `tests/test_next.py`, next to `test_todo_dependency_must_be_done_on_mai
 
 ## Acceptance Criteria
 
-- [ ] The test returns `True` and counts exactly one `parse` call; against the old `_dependency_is_done` it counts at least eleven (recorded in the notes)
+- [ ] The test returns `True` and counts exactly one `parse` call; against the old `_dependency_is_done` it counts one per ticket file on `main` (recorded in the notes)
 - [ ] A test with a malformed body in a ticket other than the dependency on `main` still reports the dependency done; against the old code it raises `ChittyError` (recorded in the notes)
 - [ ] `chitty list` in this repository is timed before and after in the notes; `make check` passes
 
@@ -88,3 +88,4 @@ make: *** [check] Error 1
 - 2026-11-19T14:29:04Z quick-ginger-lapwing → doing
 - 2026-11-19T14:31:01Z plucky-umber-wren: changed notes
 - 2026-11-19T14:31:14Z plucky-umber-wren: wrote the plan
+- 2026-11-19T14:32:56Z quick-ginger-lapwing: changed acceptance criteria
