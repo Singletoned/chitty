@@ -12,7 +12,10 @@ In the ticket-state migration planning session (2026-11-18, 29 tickets, recorded
 
 Suggestion origin: chitty
 
+Archived: `src/chitty/roles/plan.md` already says to check every claim against the source before a read, and to split a ticket whose third read still finds serious problems.
+
 ## History
 
 - 2026-11-19T20:55:03Z sunny-white-dormouse → backlog
 - 2026-11-19T20:55:04Z sunny-white-dormouse: changed notes
+- 2026-11-19T20:58:37Z sunny-white-dormouse: changed notes
