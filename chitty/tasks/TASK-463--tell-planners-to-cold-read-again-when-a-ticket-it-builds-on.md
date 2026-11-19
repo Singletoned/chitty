@@ -1,6 +1,6 @@
 ---
 title: Tell planners to cold-read again when a ticket it builds on lands
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -27,3 +27,4 @@ Suggestion origin: injustice-league
 - 2026-11-19T20:55:41Z sunny-white-dormouse: changed notes
 - 2026-11-19T21:21:14Z sunny-white-dormouse: changed title, labels, owner, description
 - 2026-11-19T21:21:14Z sunny-white-dormouse backlog → todo
+- 2026-11-19T21:42:20Z daring-amber-kestrel todo → doing
