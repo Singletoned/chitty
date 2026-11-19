@@ -433,10 +433,9 @@ def main_checkout(root: Path) -> Path:
 
 def current_branch(root: Path) -> str | None:
     """Return the checked-out branch, or ``None`` outside Git or when detached."""
-    try:
-        branch = _git(root, "branch", "--show-current").strip()
-    except ChittyError:
+    if not is_repository(root):
         return None
+    branch = _git(root, "branch", "--show-current").strip()
     return branch or None
 
 
@@ -485,12 +484,11 @@ def has_branch_ref(root: Path, branch: str) -> bool:
 
 def dirty_paths(root: Path, directory: Path) -> set[Path]:
     """Return changed or untracked paths below ``directory`` in this worktree."""
-    try:
-        lines = _git(
-            root, "status", "--porcelain", "--untracked-files=all", "--", str(directory)
-        ).splitlines()
-    except ChittyError:
+    if not is_repository(root):
         return set()
+    lines = _git(
+        root, "status", "--porcelain", "--untracked-files=all", "--", str(directory)
+    ).splitlines()
     return {Path(line[3:]) for line in lines if len(line) > 3}
 
 

@@ -12,7 +12,7 @@ from typing import Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
-from chitty import __version__
+from chitty import __version__, git
 from chitty.errors import ChittyError
 from chitty.ids import PREFIX_RE
 
@@ -409,6 +409,8 @@ def _same_git_repository(owner: Path, root: Path | None) -> bool:
 
 @cache
 def git_common_dir(root: Path) -> Path | None:
+    if not git.is_repository(root):
+        return None
     result = subprocess.run(
         ["git", "rev-parse", "--git-common-dir"],
         cwd=root,
@@ -417,7 +419,8 @@ def git_common_dir(root: Path) -> Path | None:
         check=False,
     )
     if result.returncode:
-        return None
+        command = "git rev-parse --git-common-dir"
+        raise ChittyError(f"`{command}` failed in {root}:\n{result.stderr.strip()}")
     common_dir = Path(result.stdout.strip())
     return (root / common_dir).resolve() if not common_dir.is_absolute() else common_dir.resolve()
 
