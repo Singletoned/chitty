@@ -34,9 +34,9 @@ Tests, in a new `tests/test_init_workflow.py`, with Hypothesis, the repository's
 
 ## Acceptance Criteria
 
-- [ ] Property (Hypothesis), using the generator in Tests, for both file forms: when the section has no `workflow` key and the recorded version resolves to `runner`, the result passes the position check in Tests and `tomllib` reads `workflow` as `runner` in the Chitty section; otherwise the result equals the input. Applying the function twice equals applying it once. The direct no-`chitty_version` cases raise or return unchanged as Tests says
-- [ ] With the installed version patched to `0.5.1`, in the integration repository: `chitty init` leaves the exact line `workflow = "runner"` in the Chitty section; a second `chitty init` leaves `chitty.toml` and `AGENTS.md` byte for byte the same, and `AGENTS.md` still contains `chitty guide work`. In a second such repository, `chitty add` makes a `chitty: upgrade repository setup` commit (the commit before the add) whose `chitty.toml` has that line. Before the change, the line checks and the `AGENTS.md` check fail
-- [ ] `make check` passes
+- [x] Property (Hypothesis), using the generator in Tests, for both file forms: when the section has no `workflow` key and the recorded version resolves to `runner`, the result passes the position check in Tests and `tomllib` reads `workflow` as `runner` in the Chitty section; otherwise the result equals the input. Applying the function twice equals applying it once. The direct no-`chitty_version` cases raise or return unchanged as Tests says
+- [x] With the installed version patched to `0.5.1`, in the integration repository: `chitty init` leaves the exact line `workflow = "runner"` in the Chitty section; a second `chitty init` leaves `chitty.toml` and `AGENTS.md` byte for byte the same, and `AGENTS.md` still contains `chitty guide work`. In a second such repository, `chitty add` makes a `chitty: upgrade repository setup` commit (the commit before the add) whose `chitty.toml` has that line. Before the change, the line checks and the `AGENTS.md` check fail
+- [x] `make check` passes
 
 ## Plan
 
@@ -63,3 +63,4 @@ Implemented section-scoped runner workflow migration during stale setup upgrades
 - 2026-11-19T11:06:03Z youthful-ochre-vole todo → doing
 - 2026-11-19T11:06:53Z youthful-ochre-vole: wrote the plan
 - 2026-11-19T11:10:35Z youthful-ochre-vole: changed summary
+- 2026-11-19T11:10:37Z youthful-ochre-vole: ticked acceptance criteria
