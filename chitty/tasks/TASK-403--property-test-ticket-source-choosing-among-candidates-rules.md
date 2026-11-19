@@ -1,7 +1,6 @@
 ---
 title: Property-test `ticket_source` choosing among candidates (rules 4 and 6)
-status: blocked
-owner: human
+status: review
 depends_on:
   - TASK-377
 parent: TASK-376
@@ -292,6 +291,8 @@ Review failed (tests): Generate a sole local candidate as well as sole remote ca
 
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
+Human unblock 2026-11-19: fixed the one remaining review finding. `has_local = count == 4 or data.draw(st.booleans())`, so one ticket ref can be the local branch alone. Evidence: a temporary `assert not (count == 1 and has_local)` in the generator failed under `.venv/bin/python -m unittest tests.test_property_ticket_source` (sole local generated), and again with `and graph.arms` added (sole local on the fork shape); both reverted. Ignored-`changed_on_both` mutant (`if False and changed_on_both(chosen):` in `src/chitty/ticket_source.py`) fails `test_rules_4_and_6_choose_among_generated_candidates` with `ChittyError not raised`; reverted. Branch rebased onto `main`; `make check` passes (766 tests).
+
 ## Summary
 
 Completed generated rule 4 and 6 property coverage; removed three fixed examples. Mutant checks each failed the generated property tests as recorded in Notes, and all mutations were reverted. Focused property suite, formatting, Ruff and pyright pass. make check remains non-zero only for tests.test_next.TestNext.test_run_cases (expected 3, got 0), unrelated to this change. Implementation committed as d82b0f05 and c8a6f0da; ticket is ready for review with the suite failure disclosed.
@@ -327,3 +328,5 @@ Completed generated rule 4 and 6 property coverage; removed three fixed examples
 - 2026-11-19T16:02:03Z quick-ginger-lapwing error → review
 - 2026-11-19T16:21:29Z witty-navy-urchin: changed owner, acceptance criteria, notes
 - 2026-11-19T16:21:29Z witty-navy-urchin review → blocked
+- 2026-11-19T17:38:58Z daring-amber-kestrel: changed owner, notes
+- 2026-11-19T17:38:58Z daring-amber-kestrel blocked → review
