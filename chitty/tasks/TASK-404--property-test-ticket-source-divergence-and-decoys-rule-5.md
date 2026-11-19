@@ -25,6 +25,10 @@ The code already exists, so evidence that the tests catch a wrong implementation
 - [ ] A decoy property passes over generated inputs on both shapes: adding decoy and unrelated refs gives the same return value, or `ChittyError` with the same message
 - [ ] The notes name at least three mutants of `ticket_source`, among them treating `task-50` or local `feature/task-5` as a candidate and naming dropped candidates, each failing a property of this ticket; `make check` passes
 
+## Plan
+
+Replace the two fixed-example tests with Hypothesis properties using the existing graph/ref-map helpers. For rule 5, generate forks with at least one candidate tip on each arm, optionally add a candidate at a commit contained by main_tip, and assert the divergence error lists precisely the surviving candidate names in backticks. For decoys, generate either graph shape and arbitrary candidate/decoy maps, current branch, main tip, changed set, and provisional flag; add names from a second ref_maps draw and compare return values or ChittyError messages. Run focused tests before and after, and use temporary uncommitted mutations of ticket_source to verify at least three specified failure modes; record mutant evidence in ticket notes.
+
 ## Notes
 
 Cold read 2026-11-18 outcomes: dropped candidate only with a `main_tip`; decoys from `ref_maps`.
@@ -44,3 +48,4 @@ Second cold read 2026-11-18 outcome: named the call that supplies the extra refs
 - 2026-11-19T14:20:36Z quick-ginger-lapwing: changed description
 - 2026-11-19T14:20:39Z quick-ginger-lapwing: changed description
 - 2026-11-19T17:51:25Z upbeat-ochre-adder todo → doing
+- 2026-11-19T17:53:36Z upbeat-ochre-adder: wrote the plan
