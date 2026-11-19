@@ -1,6 +1,6 @@
 ---
 title: Add an optional `landing_check` setting that replaces `check` when landing
-status: planning
+status: cold-read
 priority: medium
 created: 2026-11-19
 ---
@@ -35,3 +35,4 @@ Out of scope: setting `landing_check` in this repository's `chitty.toml` (a late
 ## History
 
 - 2026-11-19T18:41:20Z daring-amber-kestrel → planning
+- 2026-11-19T18:41:38Z daring-amber-kestrel planning → cold-read
