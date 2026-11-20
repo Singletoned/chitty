@@ -8,6 +8,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 import tomllib
 from collections.abc import Iterable, Sequence
@@ -15,7 +16,7 @@ from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path, PurePosixPath
-from typing import Any, Literal
+from typing import Any, BinaryIO, Literal
 from uuid import uuid4
 
 from chitty import git, locks
@@ -247,15 +248,23 @@ def run_loop(arguments: tuple[str, ...]) -> int:
 
 
 def _run_agent(
-    command: list[str], *, cwd: Path, env: dict[str, str], timeout: int
+    command: list[str],
+    *,
+    cwd: Path,
+    env: dict[str, str],
+    timeout: int,
+    log: BinaryIO,
 ) -> subprocess.CompletedProcess[bytes]:
-    """Wait for an agent, terminating its process tree when its deadline expires."""
-    process = subprocess.Popen(
-        command, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-    )
+    """Write merged agent output to log, terminating timed-out process trees."""
+    log.flush()
+    log.seek(0, os.SEEK_END)
+    offset = log.tell()
+    process = subprocess.Popen(command, cwd=cwd, env=env, stdout=log, stderr=subprocess.STDOUT)
+    timed_out = False
     try:
-        output, _ = process.communicate(timeout=timeout or None)
+        process.wait(timeout=timeout or None)
     except subprocess.TimeoutExpired:
+        timed_out = True
         descendants = _process_descendants(process.pid)
         for pid in [*descendants, process.pid]:
             _signal_process(pid, signal.SIGTERM)
@@ -267,11 +276,15 @@ def _run_agent(
             time.sleep(min(0.05, grace_deadline - time.monotonic()))
         for pid in _running_processes([*descendants, process.pid]):
             _signal_process(pid, signal.SIGKILL)
-        output, _ = process.communicate()
-        return subprocess.CompletedProcess(
-            command, process.returncode, stdout=output, stderr=b"timed out"
-        )
-    return subprocess.CompletedProcess(command, process.returncode, stdout=output)
+        process.wait()
+
+    end = os.fstat(log.fileno()).st_size
+    log.seek(offset)
+    output = log.read(end - offset)
+    result = subprocess.CompletedProcess(command, process.returncode, stdout=output)
+    if timed_out:
+        result.stderr = b"timed out"
+    return result
 
 
 def _process_descendants(parent: int) -> list[int]:
@@ -625,9 +638,14 @@ def _run_session(
     if continuing:
         session.append(CONTINUE_ARGUMENT)
     try:
-        completed = _run_agent(
-            session, cwd=worktree, env=environment, timeout=repo.config.agent_timeout
-        )
+        with tempfile.TemporaryFile() as log:
+            completed = _run_agent(
+                session,
+                cwd=worktree,
+                env=environment,
+                timeout=repo.config.agent_timeout,
+                log=log,
+            )
     except FileNotFoundError:
         raise ChittyError(f"agent command not found: {command[0]}") from None
     except KeyboardInterrupt:

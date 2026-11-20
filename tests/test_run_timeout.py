@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from unittest.mock import patch
 
@@ -82,9 +83,14 @@ class TestDirectAgentTimeout(RepoTestCase):
             "time.sleep(60)\n"
         )
         started_group = os.getpgid(0)
-        result = _run_agent(
-            [sys.executable, "-c", script], cwd=self.root, env=os.environ.copy(), timeout=1
-        )
+        with tempfile.TemporaryFile() as log:
+            result = _run_agent(
+                [sys.executable, "-c", script],
+                cwd=self.root,
+                env=os.environ.copy(),
+                timeout=1,
+                log=log,
+            )
         self.assertEqual(result.stderr, b"timed out")
 
         agent, child, group = map(int, record.read_text().split())
@@ -114,33 +120,39 @@ class TestDirectAgentTimeout(RepoTestCase):
             f"subprocess.Popen([sys.executable, '-c', {child_script!r}])\n"
             "time.sleep(60)\n"
         )
-        result = _run_agent(
-            [sys.executable, "-c", agent_script],
-            cwd=self.root,
-            env=os.environ.copy(),
-            timeout=1,
-        )
+        with tempfile.TemporaryFile() as log:
+            result = _run_agent(
+                [sys.executable, "-c", agent_script],
+                cwd=self.root,
+                env=os.environ.copy(),
+                timeout=1,
+                log=log,
+            )
         self.assertEqual(result.stderr, b"timed out")
         self.assertTrue(marker.exists(), "descendant cleanup was cut short by SIGKILL")
 
     def test_patched_default_enforces_two_second_deadline(self):
         with patch.object(config_module, "DEFAULT_AGENT_TIMEOUT", 2):
             timeout = load_repo_config(self.root).agent_timeout
-        result = _run_agent(
-            [sys.executable, "-c", "import time; time.sleep(60)"],
-            cwd=self.root,
-            env=os.environ.copy(),
-            timeout=timeout,
-        )
+        with tempfile.TemporaryFile() as log:
+            result = _run_agent(
+                [sys.executable, "-c", "import time; time.sleep(60)"],
+                cwd=self.root,
+                env=os.environ.copy(),
+                timeout=timeout,
+                log=log,
+            )
         self.assertEqual(result.stderr, b"timed out")
 
     def test_zero_timeout_waits_for_normal_completion(self):
         started = time.monotonic()
-        result = _run_agent(
-            [sys.executable, "-c", "import time; time.sleep(3)"],
-            cwd=self.root,
-            env=os.environ.copy(),
-            timeout=0,
-        )
+        with tempfile.TemporaryFile() as log:
+            result = _run_agent(
+                [sys.executable, "-c", "import time; time.sleep(3)"],
+                cwd=self.root,
+                env=os.environ.copy(),
+                timeout=0,
+                log=log,
+            )
         self.assertEqual(result.returncode, 0)
         self.assertGreaterEqual(time.monotonic() - started, 3)
