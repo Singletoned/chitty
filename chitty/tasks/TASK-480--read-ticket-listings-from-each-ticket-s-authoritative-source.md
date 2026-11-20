@@ -19,7 +19,10 @@ Open decision for this ticket: `chitty show` lists a ticket's children through `
 
 Also: `_collect_ticket_ids` reads the content of every ticket file on `main` and on each ticket branch (`git.files_at`); check `tests/test_list_performance.py` against that.
 
+Regression tests to include, from superseded `TASK-367`: with `autocommit = true`, add `TASK-1`, add `TASK-2 --parent TASK-1`, set `TASK-1` done, then `chitty archive TASK-1` succeeds, commits and leaves `git status` clean; and in a worktree made before `main` archived `TASK-2`, `chitty edit TASK-1 --depends-on TASK-2` succeeds and `chitty show TASK-2 --json` reports it archived.
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
 - 2026-11-20T22:59:58Z quick-pearl-lapwing: changed notes
+- 2026-11-20T23:21:39Z quick-pearl-lapwing: changed notes
