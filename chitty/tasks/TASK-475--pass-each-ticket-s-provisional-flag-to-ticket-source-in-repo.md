@@ -1,0 +1,30 @@
+---
+title: Pass each ticket's `provisional` flag to `ticket_source` in `Repo.source_copy`
+status: planning
+depends_on:
+  - TASK-474
+parent: TASK-376
+created: 2026-11-20
+---
+
+## Description
+
+`TASK-474` adds `Repo.source_copy(task_id)` in `src/chitty/store.py`, which calls `ticket_source` (`src/chitty/ticket_source.py`) with `provisional=False` for every ID. A provisional ticket (`provisional: true` in its frontmatter, `Frontmatter.provisional` in `src/chitty/model.py`, given a provisional ID by `Repo.new_id`) is created on the branch where it is written and is read from that checkout's working tree (`docs/plan/ticket-state.md`, "Planning decisions": "or when X is provisional (created on this branch)"; on branch `plan/ticket-state` until it lands). This ticket passes the real flag. Split out of `TASK-474`; `TASK-378` wires `source_copy` into reads after both land.
+
+Decisions:
+
+- `provisional` is true when the first copy found, in this order: this checkout's working tree, `main`'s tip, the ticket branch's tip (the same copies `TASK-474` reads, no extra Git call), has `provisional: true`. Only that copy is parsed to decide it; its parse error propagates as `TASK-474` formats parse errors.
+- `ticket_source` then returns `WORKING_TREE`, so `source_copy` reads this checkout's file, or gives `None` when this checkout has none. A provisional ticket found only at `main`'s tip therefore gives `None` in a checkout without the file: intended, because a provisional ticket belongs to the checkout that made it.
+- A provisional ticket on another branch is not in `ticket_ids` from this checkout unless the branch is named after its ID (`TASK-474`'s rule), so no other case arises.
+
+Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Git as that file does; make a provisional ticket with `chitty add` where `chitty.toml` makes new IDs provisional, as the existing provisional-ID tests do (`git grep -n provisional tests`), or by writing `provisional: true` in a committed file. No property: three fixed cases, each in the criteria.
+
+## Acceptance Criteria
+
+- [ ] In the linked worktree of `task-5`, a provisional ticket created there gives `ref` `None` and its working-tree content both before and after it is committed on `task-5`; the same test with `provisional=False` passed (as `TASK-474` left it) gives `ref` `main` or fails, so it fails before the change
+- [ ] A ticket whose `main` tip copy has `provisional: true`, read from a checkout on branch `feature` whose working tree has deleted the file, gives `None`; the same ticket without `provisional` gives `ref` `main`
+- [ ] With a malformed copy in this checkout's working tree for an ID that also exists at `main`'s tip, `source_copy` raises the working-tree parse error (`<absolute path>: <error>`); `make check` passes
+
+## History
+
+- 2026-11-20T12:41:32Z jolly-dusky-badger → planning
