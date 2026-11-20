@@ -49,6 +49,8 @@ Review failed (design): Criterion 4 requires `git diff --stat main` to contain o
 3: fail - The landing retry tests passed in `make check`; forcing the predicate true made the mixed test print `1 != 2`. However, `moving_fast_forward` has no 21st-call guard, so the specified unbounded-mutant test is missing and could hang. Add the guard and run the no-limit mutant; raising the limit to 12 printed a mismatched 12-attempt error, not the required guard failure.
 4: fail - `make check` passed, and the documentation names both exceptions. `git diff --stat main` printed seven paths, including this ticket and TASK-470, contrary to the literal criterion. Clarify the intended comparison and exemptions before assessing it.
 
+Added the missing 21st-call guard. With QUICK_LANDING_ATTEMPTS patched to 1000, test_quick_path_stops_after_ten_ticket_moves fails at its own guard with `AssertionError: fast-forward called more than 20 times`; the focused landing and property tests pass with the real limit. The earlier review note records the other required pre-fix and mutant failures.
+
 ## Summary
 
 Implemented ticket-only quick landing retries, bounded to ten, with merge-base support, property/boundary coverage, landing retry tests, and documentation. Verified using make check and focused mutant probes; see Notes. No follow-up.
@@ -80,3 +82,4 @@ Implemented ticket-only quick landing retries, bounded to ten, with merge-base s
 - 2026-11-20T22:34:37Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:34:43Z youthful-hazel-marten todo → doing
 - 2026-11-20T22:36:03Z youthful-hazel-marten: wrote the plan
+- 2026-11-20T22:36:27Z youthful-hazel-marten: changed notes
