@@ -1,6 +1,6 @@
 ---
 title: Send agent output straight to a log file in `_run_agent`
-status: blocked
+status: doing
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -65,6 +65,8 @@ Planner 2026-11-20: the block above was caused by the planner, not the ticket. C
 Planner 2026-11-20 (owner direction: move checks from agents to automation where safe): the wrong versions in all three criteria are now committed tests, not hand runs recorded in notes.
 
 Blocked: Chitty considers the latest committed TASK-276 to be on main and refuses to update its status from this ticket worktree. A maintainer must reconcile the ticket authority/branch metadata or authorize editing from main.
+
+Planner 2026-11-20: blocked again for the same reason (claim on `main` while branch `task-276` already existed). Merged `main` into `task-276` again and set `doing` from this worktree, so the next run continues here without a new claim on `main`. No code work had started.
 
 ## History
 
@@ -143,3 +145,5 @@ Blocked: Chitty considers the latest committed TASK-276 to be on main and refuse
 - 2026-11-20T09:53:50Z upbeat-indigo-urchin todo → doing
 - 2026-11-20T09:55:57Z human: changed notes
 - 2026-11-20T09:55:57Z human doing → blocked
+- 2026-11-20T10:06:41Z lively-bronze-crane: changed owner, notes
+- 2026-11-20T10:06:41Z lively-bronze-crane blocked → doing
