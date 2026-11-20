@@ -1,6 +1,6 @@
 ---
 title: Choose each ticket's source copy in new `Repo` methods, not yet used by reads
-status: planning
+status: cold-read
 depends_on:
   - TASK-377
   - TASK-380
@@ -56,3 +56,4 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - 2026-11-20T12:39:15Z jolly-dusky-badger planning → cold-read
 - 2026-11-20T12:41:08Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T12:41:08Z jolly-dusky-badger cold-read → planning
+- 2026-11-20T12:42:03Z jolly-dusky-badger planning → cold-read
