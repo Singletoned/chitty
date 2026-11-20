@@ -29,12 +29,13 @@ class TestListPerformance(RepoTestCase):
         )
         tasks = root / "chitty" / "tasks"
         tasks.mkdir(parents=True)
-        (tasks / "TASK-1--done.md").write_text(self._task("Done", "done"))
+        (tasks / "TASK-1--done.md").write_text(self._task("Done", "done", []))
         for number in range(2, task_count + 2):
             status = "planning" if number % 2 == 0 else "todo"
             (tasks / f"TASK-{number}--{status}.md").write_text(
-                self._task(f"Dependent {number}", status, "TASK-1")
+                self._task(f"Dependent {number}", status, ["TASK-1", "TASK-1000"])
             )
+        (tasks / "TASK-1000--planning.md").write_text(self._task("Blocker", "planning", []))
         self._git(root, "init", "-b", "main")
         self._git(root, "add", ".")
         self._git(
@@ -59,6 +60,9 @@ class TestListPerformance(RepoTestCase):
             check=True,
         )
         self.assertEqual(result.stderr, "")
+        self.assertIn(
+            "🚧", next(line for line in result.stdout.splitlines() if "TASK-1000" in line)
+        )
         return sum("trace: built-in: git" in line for line in trace.read_text().splitlines())
 
     @staticmethod
@@ -66,8 +70,8 @@ class TestListPerformance(RepoTestCase):
         subprocess.run(["git", *args], cwd=root, check=True, capture_output=True, text=True)
 
     @staticmethod
-    def _task(title: str, status: str, dependency: str | None = None) -> str:
-        depends = f"depends_on: [{dependency}]\n" if dependency else ""
+    def _task(title: str, status: str, dependencies: list[str]) -> str:
+        depends = f"depends_on: [{', '.join(dependencies)}]\n" if dependencies else ""
         return (
             f"---\ntitle: {title}\nstatus: {status}\n{depends}created: 2026-11-08\n---\n"
             "\n## Description\n\nDescription.\n"

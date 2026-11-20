@@ -1194,7 +1194,7 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             lines,
             [
-                "TASK-1   💤 bklog      Backlog",
+                "TASK-1   💤 bklog  🚧  Backlog",
                 "TASK-8   📝 plan   🔗  Planning",
                 "TASK-12  📝 plan   ⚠️  Planning broken",
                 "TASK-9   🔎 cold   🔗  Cold read",

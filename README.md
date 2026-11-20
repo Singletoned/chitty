@@ -95,7 +95,9 @@ as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so 
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
 `chitty next` carry a glyph in a column before the title: `👤` owned or human, `✍️` untestable,
 `🔗` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
-message goes to stderr. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
+message goes to stderr, or `🚧` for an active ticket with waiting dependents
+and no unfinished or broken dependencies of its own. Existing skip and
+ dependency markers take precedence. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`
 contexts do this so people can close their own tasks directly. A context with
 `random_ids = true` numbers new tickets at random from 10000000 to 99999999

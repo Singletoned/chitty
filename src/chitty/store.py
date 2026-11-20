@@ -48,6 +48,8 @@ from chitty.selection import (
     STATUSES,
     DependencyFact,
     TicketFacts,
+    blocker_marker,
+    blocking_ids,
     choose,
     dependency_marker,
     mode_statuses,
@@ -1591,13 +1593,25 @@ def _selection_facts(
     )
 
 
-def list_marker(repo: Repo, stored: StoredTask) -> str | None:
-    """Return the list marker, retaining selection reasons before dependencies."""
+def blocking_ids_for(repo: Repo) -> set[str]:
+    """Find active tickets named by a waiting dependent in any context."""
+    facts = (
+        _selection_facts(repo, stored, locked=False, dependencies=True)
+        for context in repo.discovered_contexts()
+        for stored in repo.tasks(context, "active")
+    )
+    return blocking_ids(facts)
+
+
+def list_marker(repo: Repo, stored: StoredTask, blocking: set[str]) -> str | None:
+    """Return the list marker, retaining selection reasons before blockers."""
     reason = skip_reason(repo, stored)
     if reason is not None:
         return reason
-    locked = locks.is_locked(repo.root, str(stored.id))
-    return dependency_marker(_selection_facts(repo, stored, locked=locked, dependencies=True))
+    fact = _selection_facts(
+        repo, stored, locked=locks.is_locked(repo.root, str(stored.id)), dependencies=True
+    )
+    return dependency_marker(fact) or blocker_marker(fact, blocking)
 
 
 def skip_reason(repo: Repo, stored: StoredTask) -> str | None:

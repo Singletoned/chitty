@@ -52,6 +52,7 @@ from chitty.store import (
     Edit,
     Repo,
     StoredTask,
+    blocking_ids_for,
     guide,
     init_repo,
     list_marker,
@@ -435,7 +436,8 @@ def list_(
         return
     width = max((len(str(t.id)) for t in tasks), default=0)
     show_priority = any(t.task.frontmatter.priority is not None for t in tasks)
-    reasons = [list_marker(repo, stored) for stored in tasks]
+    blocking = blocking_ids_for(repo)
+    reasons = [list_marker(repo, stored, blocking) for stored in tasks]
     show_markers = any(reasons)
     for stored, reason in zip(tasks, reasons, strict=True):
         fm = stored.task.frontmatter

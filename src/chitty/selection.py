@@ -1,5 +1,6 @@
 """Pure ticket eligibility and ordering rules for next-ticket selection."""
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Literal
 
@@ -44,6 +45,30 @@ def mode_statuses(modes: tuple[str, ...]) -> set[str] | None:
 PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
 UNTESTABLE_OWNER = "untestable"
 DEPENDENCY_GLYPH = "🔗"
+BLOCKER_GLYPH = "🚧"
+
+
+def blocking_ids(facts: Iterable[TicketFacts]) -> set[str]:
+    """Return IDs named by active tickets waiting on unfinished dependencies."""
+    result: set[str] = set()
+    for fact in facts:
+        if fact.archived or fact.status == "done":
+            continue
+        result.update(
+            str(TaskId.parse(dependency.reference))
+            for dependency in fact.dependencies
+            if dependency.state == "unfinished"
+        )
+    return result
+
+
+def blocker_marker(fact: TicketFacts, blocking: set[str]) -> str | None:
+    """Mark active chain endpoints that have waiting dependents."""
+    if fact.archived or fact.status == "done":
+        return None
+    if any(dependency.state in {"unfinished", "broken"} for dependency in fact.dependencies):
+        return None
+    return BLOCKER_GLYPH if str(TaskId.parse(fact.id)) in blocking else None
 
 
 def _id_key(value: str) -> TaskId:

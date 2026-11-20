@@ -13,7 +13,9 @@
   - `todo` tickets with an unmet dependency (`doing` and `review` ignore
     dependencies).
 - `chitty list` marks skips: `👤` human or owned, `✍️` untestable,
-  `🔗` waiting on a dependency, `⚠️` a broken dependency.
+  `🔗` waiting on a dependency, `⚠️` a broken dependency. It marks `🚧` on
+  active chain endpoints that have waiting dependents and no unfinished or
+  broken dependency of their own; skip and dependency markers take precedence.
 - Prints `work ID` or `review ID`. `--json` and the read-only MCP `next` tool
   give `{mode, id}`.
 - `--mode review` allows `review`; `--mode work` allows `doing` and `todo`.
