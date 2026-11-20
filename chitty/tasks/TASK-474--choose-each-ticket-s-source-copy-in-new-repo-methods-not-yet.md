@@ -60,3 +60,8 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - 2026-11-20T12:43:40Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T12:43:40Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T13:07:50Z eager-maroon-stoat todo → doing
+- 2026-11-20T13:08:45Z eager-maroon-stoat: changed notes
+- 2026-11-20T13:08:45Z eager-maroon-stoat doing → error
+- 2026-11-20T17:23:10Z jolly-dusky-badger: replaced notes
+- 2026-11-20T17:23:10Z jolly-dusky-badger error → todo
+- 2026-11-20T17:25:12Z honest-quartz-jay todo → doing
