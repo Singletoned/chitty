@@ -3,7 +3,6 @@ title: Read each ticket from its authoritative ref, not every ref's history
 status: todo
 labels:
   - needs-minor
-owner: human
 depends_on:
   - TASK-377
   - TASK-382
@@ -26,7 +25,7 @@ On `main` today, `Repo._tasks_in_location` and `Repo.discovered_contexts` in `sr
 
 Starts after `TASK-474`, `TASK-476`, `TASK-477`, `TASK-478`, `TASK-475` and `TASK-384` land. `TASK-384` makes the runner claim a ticket on its branch instead of on `main`; with the runner still claiming on `main`, the new reads see a ticket with a branch as changed on both sides, which blocked this ticket on 2026-11-20.
 
-Run by hand (owner `human`, so `chitty run` skips it): start the worker with `chitty guide work`. This ticket changes how Chitty reads its own ticket state.
+The runner may take it: it was held for a person after runner claims on `main` conflicted with the new reads, which `TASK-384` has since fixed.
 
 The earlier attempt (commits `27456731` to `bed36801`, reverted by `0ac2ee94`) is kept as tag `task-378-attempt`; `TASK-474` and `TASK-476` supersede it. Branch `task-378` was rebuilt on 2026-11-20 as `main` plus this ticket's text, so its code is `main`'s.
 
@@ -54,6 +53,8 @@ Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `Cli
 ## Notes
 
 Planner, 2026-11-20: ticket rewritten as the read switch only. The lookup it builds on is `TASK-474`, `TASK-476`, `TASK-477`, `TASK-478` and `TASK-475`, and the runner claim change is `TASK-384`, all landing first. Earlier notes, including about 90 KB of pasted check output, are in Git history. Stays in `planning` until those are done; then compare this text with what landed, cold-read it, and move it to `todo`. Owner `human` keeps `chitty run` off it; start its worker by hand.
+
+Owner `human` cleared 2026-11-20 at the owner's request: `TASK-384` removed the reason it was held back from `chitty run`. Earlier notes saying to start its worker by hand no longer apply. If a runner session cannot finish it, return it to `planning` to be split further.
 
 ## History
 
@@ -129,3 +130,4 @@ Planner, 2026-11-20: ticket rewritten as the read switch only. The lookup it bui
 - 2026-11-20T22:08:36Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T22:09:37Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T22:09:37Z quick-pearl-lapwing cold-read → todo
+- 2026-11-20T22:18:48Z quick-pearl-lapwing: changed owner, description, notes
