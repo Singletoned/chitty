@@ -1,6 +1,6 @@
 ---
 title: Send agent output straight to a log file in `_run_agent`
-status: doing
+status: blocked
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -63,6 +63,8 @@ Blocked by a worktree/ticket ownership mismatch: this task worktree rejects edit
 Planner 2026-11-20: the block above was caused by the planner, not the ticket. Copying the rewritten ticket to `main` (`58041b1a`) made `main` hold the newest commit, so Chitty treated `main` as authoritative and refused edits in this worktree. Fixed by merging `main` into `task-276` (`de0790b9`, taking the ticket text from `main`); the ticket is back in `todo` and its edits belong in this worktree again. The old threaded code is still on the branch, to be reverted as the Description says.
 
 Planner 2026-11-20 (owner direction: move checks from agents to automation where safe): the wrong versions in all three criteria are now committed tests, not hand runs recorded in notes.
+
+Blocked: Chitty considers the latest committed TASK-276 to be on main and refuses to update its status from this ticket worktree. A maintainer must reconcile the ticket authority/branch metadata or authorize editing from main.
 
 ## History
 
@@ -139,3 +141,5 @@ Planner 2026-11-20 (owner direction: move checks from agents to automation where
 - 2026-11-20T09:44:03Z lively-bronze-crane: changed acceptance criteria, notes
 - 2026-11-20T09:44:08Z lively-bronze-crane planning → todo
 - 2026-11-20T09:53:50Z upbeat-indigo-urchin todo → doing
+- 2026-11-20T09:55:57Z human: changed notes
+- 2026-11-20T09:55:57Z human doing → blocked
