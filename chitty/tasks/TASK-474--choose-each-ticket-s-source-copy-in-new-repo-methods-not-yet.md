@@ -1,6 +1,6 @@
 ---
 title: Choose each ticket's source copy in new `Repo` methods, not yet used by reads
-status: cold-read
+status: todo
 depends_on:
   - TASK-377
   - TASK-380
@@ -18,7 +18,7 @@ This ticket adds the lookup that applies that rule, as new `Repo` methods, and t
 New in `src/chitty/store.py`:
 
 - `SourceCopy`, a frozen dataclass: `ref: str | None`, the short name of the ref the copy was read from (`main`, `task-5`, `origin/task-5`; never `refs/heads/...`), or `None` for this checkout's working tree; `path: Path`, the copy's path relative to the repository root; `task: Task`, the parsed copy.
-- `Repo.ticket_ids() -> set[TaskId]`: every ticket ID that exists, by the rule below. It parses no ticket content, and so never raises a parse or source error.
+- `Repo.ticket_ids() -> set[TaskId]`: every ticket ID that exists, by the rule below. It raises only the `scan` problems described below; it parses no ticket content, so it never raises a parse or source error.
 - `Repo.source_copy(task_id: TaskId) -> SourceCopy | None`: the copy to read for that ID, or `None` when its source has no file for it.
 
 Decisions:
@@ -30,11 +30,11 @@ Decisions:
 - Mapping `ticket_source`'s short result to a full ref: `WORKING_TREE` is this checkout; the configured main branch is `refs/heads/<main>`; the ID lower-cased (`task-5`) is `refs/heads/task-5`; anything else is `refs/remotes/<result>`. This is unambiguous because `ticket_source` takes a local candidate only under the exact key `task-5`.
 - Reading the source: `WORKING_TREE` reads this checkout's file, committed or not; a file deleted there but not committed is absent. A ref reads the file at that ref's tip. If the source has no file for the ID, `source_copy` returns `None`. More than one file for the ID in the source raises the existing `<ID> is used by more than one file: <paths>` error.
 - Errors: `ticket_source`'s errors (diverged refs, changed on both, no `main` tip) and `git.changed_since_split`'s `unrelated histories` error propagate from `source_copy` for that ID only. A copy that fails to parse raises `ChittyError` as `<short ref>:<relative path>: <error>` for a ref, and `<absolute path>: <error>` for the working tree, as `Repo._load` does.
-- Caching: the ID list and each ref's files are read once per `Repo`, with one `git.files_at(root, <full ref>, (Path("chitty"),))` call per ref; each ID's chosen copy is cached once chosen. `_invalidate` clears all of it. Never one Git file read per ticket.
+- Caching: the ID list and each ref's files are read once per `Repo`, with one `git.files_at(root, <full ref>, (Path("chitty"),))` call per ref; each ID's chosen copy is cached once chosen. `_invalidate` clears all of it, working-tree listing included. Caching is per `Repo` instance; tests open a fresh `Repo` after changing files. Never one Git file read per ticket.
 - Outside a Git repository (`git.is_repository` is false), make no Git calls and do not call `ticket_source`: `ticket_ids` is every ticket in the working tree, and `source_copy` reads the working tree (`ref` is `None`).
 - Commit `27456731` on branch `task-378` has a first version of this logic (`_build_ticket_index`, `_source_ref`, `_changed_on_both`), wired into reads and choosing every source up front. Reuse its code where it fits; do not wire anything into existing reads.
 
-Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `CliTestCase` from `tests/test_cli.py`, set up as `tests/test_check_cross_branch_references.py` does (`git init`, `git branch -M main`, `autocommit = true`). Tests call `Repo.open(<checkout>).ticket_ids()` and `.source_copy(...)` directly. Make remote-tracking refs with `git update-ref refs/remotes/origin/task-<n> <commit>`; commit `main`'s copy directly with Git where `chitty edit` on `main` would be refused; set `GIT_COMMITTER_DATE` where commit order matters. Before implementing, write `SourceCopy`, `ticket_ids` and `source_copy` raising `NotImplementedError` and run the new tests, so each fails on its own; commit only the finished work. No property: a fixed set of placements, each listed in the criteria and tested; the generated property over placements is `TASK-393`.
+Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `CliTestCase` from `tests/test_cli.py`, set up as `tests/test_check_cross_branch_references.py` does (`git init`, `git branch -M main`, `autocommit = true`). One test per placement in the criteria. Detached `HEAD` and remotes whose name contains `/` are deliberately untested. Tests call `Repo.open(<checkout>).ticket_ids()` and `.source_copy(...)` directly. Make remote-tracking refs with `git update-ref refs/remotes/origin/task-<n> <commit>`; commit `main`'s copy directly with Git where `chitty edit` on `main` would be refused; set `GIT_COMMITTER_DATE` where commit order matters. Before implementing, write `SourceCopy`, `ticket_ids` and `source_copy` raising `NotImplementedError` and run the new tests, so each fails on its own; commit only the finished work. No property: a fixed set of placements, each listed in the criteria and tested; the generated property over placements is `TASK-393`.
 
 ## Acceptance Criteria
 
@@ -42,7 +42,7 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - [ ] In the main checkout on `main`: a ticket only on branch `feature` is not in `ticket_ids`; a file for `TASK-9` committed only on `task-5` is not in `ticket_ids`; a ticket archived on its branch but active on `main` gives the branch archive path; a ticket whose branch deletes its file is still in `ticket_ids` and gives `None`; a ticket branch fast-forward merged into `main`, followed by a `main` commit changing that ticket, gives `ref` `None` (this checkout is on `main`) and the content committed on `main`
 - [ ] In the linked worktree of `task-5`, after a commit there changing `TASK-5`: `TASK-5` gives `ref` `None` and a further uncommitted edit made there; `TASK-7` (no branch) gives `ref` `main` and `main`'s tip copy despite an uncommitted edit to it in that worktree. In a checkout on branch `feature`, an existing ticket gives `ref` `main` despite an uncommitted edit there
 - [ ] With local `task-1` and `origin/task-1` both ahead of `main` and diverged from each other, `source_copy(TASK-1)` raises `ChittyError` naming `origin/task-1` and `task-1`; with `TASK-1` edited on both `task-1` and `main` since they split, it names `task-1` and `main`; with `task-1` an orphan branch, it raises the `unrelated histories` error; with a malformed `TASK-1` file committed on `task-1`, it raises `task-1:<relative path>: <error>`. In each case, on the same `Repo`, `ticket_ids()` succeeds and `source_copy(TASK-2)` for a ticket only on `main` succeeds
-- [ ] Outside a Git repository, `ticket_ids` lists the working tree tickets and `source_copy` gives `ref` `None`. The new tests of criteria 1 to 3 also pass with `git.historical_files` patched (`unittest.mock.patch.object`) to raise. With every function in `chitty.git` wrapped to record its calls, in a repository with `main` and two ticket branches, `ticket_ids()` followed by `source_copy` for every ID calls `git.files_at` exactly once per ref (three) and never calls `git.file_at`. `make check` passes with no existing test changed (`git diff main --stat -- tests` lists only the new file)
+- [ ] Outside a Git repository, `ticket_ids` lists the working tree tickets, `source_copy` gives `ref` `None`, and, with every function in `chitty.git` wrapped to record calls, neither makes any. A test with `git.historical_files` patched (`unittest.mock.patch.object`) to raise gets criterion 1's results from the same fixtures. In a repository with `main` and ticket branches `task-1` and `task-2`, with every `chitty.git` function wrapped, `ticket_ids()` followed by `source_copy` for every ID calls `git.files_at` exactly once each for `refs/heads/main`, `refs/heads/task-1` and `refs/heads/task-2`, and never calls `git.file_at`. `make check` passes with no existing test changed (`git diff main --stat -- tests` lists only the new file)
 
 ## History
 
@@ -57,3 +57,5 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - 2026-11-20T12:41:08Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T12:41:08Z jolly-dusky-badger cold-read → planning
 - 2026-11-20T12:42:03Z jolly-dusky-badger planning → cold-read
+- 2026-11-20T12:43:40Z jolly-dusky-badger: changed description, acceptance criteria
+- 2026-11-20T12:43:40Z jolly-dusky-badger cold-read → todo
