@@ -23,7 +23,7 @@ Decisions:
 - Reading: `WORKING_TREE` reads this checkout's file, committed or not; a file deleted there but not committed is absent. A ref reads the file from `TASK-474`'s cached files for that ref; no further `git.files_at` or `git.file_at` call. No file for the ID in the source gives `None`. More than one file for the ID in the source raises the existing `<ID> is used by more than one file: <paths>` error.
 - Errors from `ticket_source` and `git.changed_since_split` propagate unchanged. A copy that fails to parse raises `ChittyError` as `<short ref>:<relative path>: <error>` for a ref, and `<absolute path>: <error>` for the working tree, as `Repo._load` does.
 - Outside a Git repository (`git.is_repository(root)` is false), do not call `ticket_source` or any other `chitty.git` function: read the working tree (`ref` is `None`).
-- Commit `27456731` (on branch `task-378`, reverted there) has a first version in `_build_ticket_index`, `_source_ref` and `_changed_on_both`, choosing every source up front; reuse its code where it fits, but choose per ID on demand.
+- Commit `bed36801` on branch `task-378` (originally `27456731`, reverted there by `0ac2ee94`) has a first version in `_build_ticket_index`, `_source_ref` and `_changed_on_both`, choosing every source up front; reuse its code where it fits, but choose per ID on demand.
 
 Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`'s `tests/test_ticket_ids.py` is, one test per placement in the criteria, all from the main checkout on `main`, calling `Repo.open(root).source_copy(...)` directly. Set `GIT_COMMITTER_DATE` where commit order matters. Before implementing, write `SourceCopy` and `source_copy` raising `NotImplementedError` and run the new tests, so each fails on its own. No property: a fixed set of placements; the generated property is `TASK-393`.
 
@@ -36,3 +36,4 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 ## History
 
 - 2026-11-20T17:43:29Z jolly-dusky-badger → planning
+- 2026-11-20T17:45:24Z jolly-dusky-badger: changed description
