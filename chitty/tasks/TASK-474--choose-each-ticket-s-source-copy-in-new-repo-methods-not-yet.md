@@ -1,6 +1,6 @@
 ---
 title: Choose each ticket's source copy in new `Repo` methods, not yet used by reads
-status: error
+status: todo
 depends_on:
   - TASK-377
   - TASK-380
@@ -44,21 +44,6 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - [ ] With local `task-1` and `origin/task-1` both ahead of `main` and diverged from each other, `source_copy(TASK-1)` raises `ChittyError` naming `origin/task-1` and `task-1`; with `TASK-1` edited on both `task-1` and `main` since they split, it names `task-1` and `main`; with `task-1` an orphan branch, it raises the `unrelated histories` error; with a malformed `TASK-1` file committed on `task-1`, it raises `task-1:<relative path>: <error>`. In each case, on the same `Repo`, `ticket_ids()` succeeds and `source_copy(TASK-2)` for a ticket only on `main` succeeds
 - [ ] Outside a Git repository, `ticket_ids` lists the working tree tickets, `source_copy` gives `ref` `None`, and, with every function in `chitty.git` wrapped to record calls, neither makes any. A test with `git.historical_files` patched (`unittest.mock.patch.object`) to raise gets criterion 1's results from the same fixtures. In a repository with `main` and ticket branches `task-1` and `task-2`, with every `chitty.git` function wrapped, `ticket_ids()` followed by `source_copy` for every ID calls `git.files_at` exactly once each for `refs/heads/main`, `refs/heads/task-1` and `refs/heads/task-2`, and never calls `git.file_at`. `make check` passes with no existing test changed (`git diff main --stat -- tests` lists only the new file)
 
-## Notes
-
-Runner error (agent): agent exited with status 1:
-Error: Model "gpt-6.2-terra" not found. Use --list-models to see available models.
-
-
-Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-474`
-
-Error output:
-```text
-agent exited with status 1:
-Error: Model "gpt-6.2-terra" not found. Use --list-models to see available models.
-
-```
-
 ## History
 
 - 2026-11-20T12:35:43Z jolly-dusky-badger → planning
@@ -77,3 +62,5 @@ Error: Model "gpt-6.2-terra" not found. Use --list-models to see available model
 - 2026-11-20T13:07:50Z eager-maroon-stoat todo → doing
 - 2026-11-20T13:08:45Z eager-maroon-stoat: changed notes
 - 2026-11-20T13:08:45Z eager-maroon-stoat doing → error
+- 2026-11-20T17:23:10Z jolly-dusky-badger: replaced notes
+- 2026-11-20T17:23:10Z jolly-dusky-badger error → todo
