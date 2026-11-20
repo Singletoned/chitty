@@ -39,7 +39,7 @@ Tests: real-Git tests in a new `tests/test_ticket_ids.py`, inheriting `CliTestCa
 
 ## Plan
 
-Add a cached ID and ref-file index using filesystem scans and one Git tree read per eligible ref; validate main and working-tree entries while filtering ticket branches to their own ID. Add real-Git tests first against a NotImplementedError stub, then implement and run formatting and checks.
+Retain the existing implementation and regression tests; update Git call recording to count only outermost calls, verify the ticket criteria, then run fix, formatting and checks before handoff.
 
 ## Notes
 
@@ -215,3 +215,4 @@ make: *** [check] Error 1
 - 2026-11-20T19:10:36Z jolly-dusky-badger: replaced notes
 - 2026-11-20T19:10:36Z jolly-dusky-badger error → doing
 - 2026-11-20T19:37:22Z nimble-russet-vole: changed notes
+- 2026-11-20T19:37:36Z nimble-russet-vole: wrote the plan
