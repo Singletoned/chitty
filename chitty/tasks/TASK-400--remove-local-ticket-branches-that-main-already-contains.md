@@ -1,6 +1,6 @@
 ---
 title: Remove local ticket branches that `main` already contains
-status: cold-read
+status: doing
 depends_on:
   - TASK-396
 parent: TASK-376
@@ -24,10 +24,12 @@ Decisions:
 
 Tests: real-Git runner tests in a new `tests/test_run_removes_merged_branches.py`, in the style of `tests/test_landing.py` (configured `setup` and `check`, fake agent), with `git init -b main`. No property: a fixed set of branch states, each in the criteria.
 
+Fixtures for criterion 2, each its own test: run lock held: hold `locks.run_lock(root, "TASK-<n>")` (`src/chitty/locks.py`) in the test process across the `chitty run` call; uncommitted file: write an untracked `x.txt` in the branch's worktree; rebase in progress: in the worktree, commit a change to `a.txt` that conflicts with a commit on `main`, then `git rebase main` and leave it stopped; merge in progress: the same conflict with `git merge main` stopped; deleted worktree: `shutil.rmtree` the worktree directory before `chitty run`. For the rebase and merge fixtures the branch is not merged while stopped, so assert only that the run completes and the branch still exists. Also add to `tests/test_run_repair_on_branch.py`, in the test that creates an `error` ticket's branch at `main`'s tip, an assertion that the branch's tip SHA after the run's clean-up step equals the SHA before it (the branch survived, not deleted and recreated).
+
 ## Acceptance Criteria
 
-- [ ] `chitty run` removes a local `task-<n>` equal to `main` and one behind `main`, each for a `done` ticket, and a merged branch for an ID no ticket has, with their clean worktrees, and prints `removed merged branch` for each; this fails before the change
-- [ ] It keeps, with a `kept merged branch` line, a merged branch whose ticket is `review` and one whose ticket is `doing` (each printing `<ID> is <status>`), a merged branch whose run lock is held, one whose worktree has an uncommitted file, one with a rebase in progress, and one with a merge in progress; it never removes a branch ahead of `main`, a non-ticket branch such as `feature`, or a remote-tracking `origin/task-<n>`; a worktree whose directory was deleted by hand does not stop the run
+- [ ] `chitty run` removes, for `done` tickets, a local `task-<n>` equal to `main` with a clean linked worktree (both removed) and one behind `main` with no worktree, and a merged branch for an ID no ticket has, and prints `removed merged branch` for each; this fails before the change
+- [ ] It keeps, with a `kept merged branch` line, a merged branch for each non-`done` status (`todo`, `doing`, `review`, `error`, `blocked`), each printing `<ID> is <status>`, a merged branch whose run lock is held, one whose worktree has an uncommitted file, one with a rebase in progress, and one with a merge in progress; it never removes a branch ahead of `main`, a non-ticket branch such as `feature`, or a remote-tracking `origin/task-<n>`; a worktree whose directory was deleted by hand does not stop the run
 - [ ] `docs/plan/next-action-and-runner.md` says the clean-up runs at the start of `chitty run`, before pending landings, under the landing lock, lists the reasons a merged branch is kept, and gives the `removed merged branch` and `kept merged branch` lines; `make check` passes
 
 ## Plan
@@ -37,6 +39,8 @@ At startup after setup refresh, under the landing lock, prune stale worktree reg
 ## Notes
 
 Planning issue discovered: the required startup cleanup deletes every local ticket branch whose tip is contained by main, including branches for tickets already in review. The existing runner requires a branch/worktree to review and changes such tickets to error when missing; therefore a routine chitty run can delete the branch and then fail the same ticket during selection. The ticket does not specify whether such tickets should be exempt, returned to a workable status/recreated from main, or treated as an expected runner error. Existing runner tests also assume newly created equal-to-main ticket branches survive startup, so the required cleanup changes their expected behavior. Please decide the selection/review behavior after cleanup and update acceptance/tests accordingly.
+
+Planning 2026-11-20: the review-state question in the earlier notes is resolved in the Description (keep merged branches of tickets that are not `done`). The branch's partial code predates it: it skips unknown IDs and has no status rule; fix both. Branch rebased onto `main` (old tip tagged `task-400-before-rebase`). Resumed as `doing` because the branch holds partial work.
 
 ## History
 
@@ -52,3 +56,5 @@ Planning issue discovered: the required startup cleanup deletes every local tick
 - 2026-11-18T23:18:59Z golden-quartz-heron doing → planning
 - 2026-11-20T23:19:59Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T23:19:59Z quick-pearl-lapwing planning → cold-read
+- 2026-11-20T23:24:27Z quick-pearl-lapwing: changed description, acceptance criteria, notes
+- 2026-11-20T23:24:27Z quick-pearl-lapwing cold-read → doing
