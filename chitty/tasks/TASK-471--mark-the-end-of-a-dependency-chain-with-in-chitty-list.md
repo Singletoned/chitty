@@ -1,6 +1,6 @@
 ---
 title: Mark the end of a dependency chain with 🚧 in `chitty list`
-status: review
+status: done
 priority: high
 parent: TASK-70
 created: 2026-11-20
@@ -24,9 +24,9 @@ Dependency reads are memoised (`_dependency_is_done` in `src/chitty/store.py` re
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_property_blockers.py` (already on this branch): move the body of `test_blocker_markers_follow_rule` into a helper that takes the facts plus the `blocking_ids` and `blocker_marker` functions to check, so the property calls it with the real ones. Add module-level wrong versions of those functions, one per mistake: one that also marks a ticket with an `unfinished` dependency; one that counts `done` or archived dependents; one that counts dependency facts in state `done`; one that skips owned or locked dependents; one that compares raw references, so `task-1` does not name `TASK-1`. A committed test runs the same Hypothesis property (same `ticket_facts()` strategy) against each wrong version, one `subTest` each, and asserts that it fails. The property passes with the real functions. No hand-run mutants or notes are needed: `make check` is the evidence.
-- [ ] New file `tests/test_list_blockers.py` commits these tickets to `main` before listing (so `_dependency_is_done` reads `main`, not the working tree): `TASK-1` `planning` titled `Blocker one` with no dependencies; `TASK-2` `todo` depending on `TASK-1`; `TASK-3` `planning` depending on `TASK-1` and `TASK-2`; `TASK-4` `done` depending on `TASK-5`; `TASK-5` `planning` with no dependencies; `TASK-6` `doing` with owner `agent`; `TASK-7` `todo` depending on `TASK-6`; `TASK-8` `backlog` depending on `TASK-9`; `TASK-9` `blocked` with no dependencies. It asserts every `chitty list --all` line in full as literal strings, like the full-line list tests in `tests/test_cli.py`: `🚧` for `TASK-1` and `TASK-9`, `🔗` for `TASK-2`, `TASK-3`, `TASK-7` and `TASK-8`, `👤` for `TASK-6`, and an empty marker for `TASK-4` and `TASK-5`. `chitty list -s planning` and `chitty list --search "Blocker one"` still show `🚧` for `TASK-1`, and `chitty list --json` gives `skipped` `None` for `TASK-1`. It fails on `main`.
-- [ ] `tests/test_list_performance.py` changes `_task` to take a list of dependencies, gives each dependent `depends_on` `[TASK-1, TASK-1000]`, adds a `planning` ticket `TASK-1000` with no dependencies, asserts its `chitty list` line shows `🚧`, and still asserts the same Git call count for both ticket counts (no wrong-version run: the count is measured in a subprocess, where patching is not practical). `README.md`, `docs/plan/cli.md` and `docs/plan/next-action-and-runner.md` describe `🚧` and its precedence (already on this branch; the reviewer reads them). `make check` passes.
+- [x] In `tests/test_property_blockers.py` (already on this branch): move the body of `test_blocker_markers_follow_rule` into a helper that takes the facts plus the `blocking_ids` and `blocker_marker` functions to check, so the property calls it with the real ones. Add module-level wrong versions of those functions, one per mistake: one that also marks a ticket with an `unfinished` dependency; one that counts `done` or archived dependents; one that counts dependency facts in state `done`; one that skips owned or locked dependents; one that compares raw references, so `task-1` does not name `TASK-1`. A committed test runs the same Hypothesis property (same `ticket_facts()` strategy) against each wrong version, one `subTest` each, and asserts that it fails. The property passes with the real functions. No hand-run mutants or notes are needed: `make check` is the evidence.
+- [x] New file `tests/test_list_blockers.py` commits these tickets to `main` before listing (so `_dependency_is_done` reads `main`, not the working tree): `TASK-1` `planning` titled `Blocker one` with no dependencies; `TASK-2` `todo` depending on `TASK-1`; `TASK-3` `planning` depending on `TASK-1` and `TASK-2`; `TASK-4` `done` depending on `TASK-5`; `TASK-5` `planning` with no dependencies; `TASK-6` `doing` with owner `agent`; `TASK-7` `todo` depending on `TASK-6`; `TASK-8` `backlog` depending on `TASK-9`; `TASK-9` `blocked` with no dependencies. It asserts every `chitty list --all` line in full as literal strings, like the full-line list tests in `tests/test_cli.py`: `🚧` for `TASK-1` and `TASK-9`, `🔗` for `TASK-2`, `TASK-3`, `TASK-7` and `TASK-8`, `👤` for `TASK-6`, and an empty marker for `TASK-4` and `TASK-5`. `chitty list -s planning` and `chitty list --search "Blocker one"` still show `🚧` for `TASK-1`, and `chitty list --json` gives `skipped` `None` for `TASK-1`. It fails on `main`.
+- [x] `tests/test_list_performance.py` changes `_task` to take a list of dependencies, gives each dependent `depends_on` `[TASK-1, TASK-1000]`, adds a `planning` ticket `TASK-1000` with no dependencies, asserts its `chitty list` line shows `🚧`, and still asserts the same Git call count for both ticket counts (no wrong-version run: the count is measured in a subprocess, where patching is not practical). `README.md`, `docs/plan/cli.md` and `docs/plan/next-action-and-runner.md` describe `🚧` and its precedence (already on this branch; the reviewer reads them). `make check` passes.
 
 ## Plan
 
@@ -53,6 +53,11 @@ Planner 2026-11-20 (owner agreed): wrong versions are now committed tests that r
 Completed the five specified property mutants as committed subtests. Focused test passed; make check passed (791 tests). Implementation and required list/performance/docs coverage are committed in the ticket worktree.
 
 Planner 2026-11-20: a review run stopped on a rebase conflict in this ticket file, because the claim and the worker ticket writes had landed on `main`. Branch `task-471` was rebuilt as `main` plus its four code commits (old tip kept as `refs/backup/task-471-before-rebuild`); `make check` passed (792 tests). No code changed.
+
+Reviewed:
+1: pass - make check ran 792 tests and printed OK; the committed Hypothesis subtests reject all five wrong implementations while the real property passes. This resolves the earlier mutation-evidence failure under the revised criterion.
+2: pass - make check ran the committed-main full-line, filter and JSON fixture successfully. The earlier review ran this test against a Git archive of main and reported FAILED (failures=1), with TASK-1 and TASK-9 missing the blocker glyphs.
+3: pass - make check ran 792 tests and printed OK, including the Git-call-count performance test with the blocker fixture; all three requested documentation changes describe the marker and precedence. The revised criterion explicitly does not require a cache-clearing mutant.
 
 ## Summary
 
@@ -90,3 +95,5 @@ Implemented blocker markers and the required integration, property, and performa
 - 2026-11-20T09:52:38Z human: changed notes, summary
 - 2026-11-20T09:52:38Z human doing → review
 - 2026-11-20T09:57:18Z lively-bronze-crane: changed notes
+- 2026-11-20T11:53:38Z brisk-lilac-falcon: changed notes; ticked acceptance criteria
+- 2026-11-20T11:53:38Z brisk-lilac-falcon review → done
