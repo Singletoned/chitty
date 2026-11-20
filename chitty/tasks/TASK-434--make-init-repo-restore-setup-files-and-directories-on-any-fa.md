@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -48,6 +48,8 @@ Suggestion origin: chitty
 
 Implementation has not started. The initial edit attempt changed indentation incorrectly and was discarded; ticket requirements and existing init_repo/test patterns were inspected. No code or tests have been changed.
 
+Back to planning review 2026-11-20: the previous worker returned it without starting, and named no ticket defect. Branch rebased onto `main`; claims rechecked against the code.
+
 ## History
 
 - 2026-11-19T20:55:05Z sunny-white-dormouse → backlog
@@ -73,3 +75,5 @@ Implementation has not started. The initial edit attempt changed indentation inc
 - 2026-11-19T23:17:41Z brisk-khaki-urchin: wrote the plan
 - 2026-11-19T23:18:27Z brisk-khaki-urchin: changed owner, notes
 - 2026-11-19T23:18:27Z brisk-khaki-urchin doing → planning
+- 2026-11-20T22:34:18Z quick-pearl-lapwing: changed notes
+- 2026-11-20T22:34:18Z quick-pearl-lapwing planning → cold-read
