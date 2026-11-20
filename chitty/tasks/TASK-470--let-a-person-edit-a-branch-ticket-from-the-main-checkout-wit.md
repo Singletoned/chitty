@@ -1,6 +1,6 @@
 ---
 title: Let a person edit a branch ticket from the main checkout with `chitty edit --human`
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -64,3 +64,5 @@ Implemented explicit chitty edit --human with target-worktree selection and scop
 - 2026-11-20T00:06:05Z witty-ochre-kestrel todo → doing
 - 2026-11-20T00:09:02Z witty-ochre-kestrel: wrote the plan
 - 2026-11-20T00:12:43Z witty-ochre-kestrel: changed notes, summary; ticked acceptance criteria
+- 2026-11-20T00:12:55Z witty-ochre-kestrel: changed summary
+- 2026-11-20T00:12:55Z witty-ochre-kestrel doing → review
