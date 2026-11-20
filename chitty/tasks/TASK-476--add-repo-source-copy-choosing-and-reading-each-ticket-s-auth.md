@@ -1,6 +1,6 @@
 ---
 title: Add `Repo.source_copy`, choosing and reading each ticket's authoritative copy
-status: review
+status: done
 depends_on:
   - TASK-474
 parent: TASK-376
@@ -52,6 +52,12 @@ Review failed (tests): The criterion 3 fixture creates both tickets only on thei
 
 Corrected criterion 3 fixture: both original tickets are committed on main before their branches edit them. The corrected test fails with NotImplementedError when source_copy is patched to the requested stub and passes with the implementation.
 
+Reviewed: Complete diff inspected; the earlier criterion 3 fixture failure is resolved. Fixed placements are appropriate here; generated coverage is assigned to TASK-393.
+1: pass - make check printed OK for 825 tests, including four placement tests; replacing source_copy with a NotImplementedError stub produced errors for all 11 new tests.
+2: pass - make check printed OK for the four placements; the stub run produced NotImplementedError for each.
+3: pass - test_no_further_ref_reads now commits both original files on main before branch edits and checks both returned copies and recorded calls; make check printed OK and the stub run produced NotImplementedError.
+4: pass - make check printed OK for invalidation and uncommitted deletion; both error against the stub. git diff main --stat -- tests lists only tests/test_source_copy.py.
+
 ## Summary
 
 Implemented lazy per-ticket source selection and reading with cached ref files and invalidation. Corrected the criterion 3 fixture after review so both branch edits start from tickets committed on main. The corrected test fails against the stub and passes with the implementation; make check passes 825 tests, and only the new test file differs from main. TASK-477 and TASK-478 cover other checkouts and errors; TASK-378 integrates reads.
@@ -76,3 +82,5 @@ Implemented lazy per-ticket source selection and reading with cached ref files a
 - 2026-11-20T19:59:22Z rosy-white-quail: changed notes
 - 2026-11-20T20:00:24Z rosy-white-quail: changed summary
 - 2026-11-20T20:00:27Z rosy-white-quail doing → review
+- 2026-11-20T20:02:57Z able-white-marten: changed notes
+- 2026-11-20T20:02:57Z able-white-marten review → done
