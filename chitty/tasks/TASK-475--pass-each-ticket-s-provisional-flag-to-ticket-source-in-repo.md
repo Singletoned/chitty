@@ -1,6 +1,6 @@
 ---
 title: Pass each ticket's `provisional` flag to `ticket_source` in `Repo.source_copy`
-status: planning
+status: cold-read
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -9,7 +9,7 @@ created: 2026-11-20
 
 ## Description
 
-`TASK-476` adds `Repo.source_copy(task_id)` in `src/chitty/store.py`, which calls `ticket_source` (`src/chitty/ticket_source.py`) with `provisional=False` for every ID. A provisional ticket (`provisional: true` in its frontmatter, `Frontmatter.provisional` in `src/chitty/model.py`, given a provisional ID by `Repo.new_id`) is created on the branch where it is written and is read from that checkout's working tree (`docs/plan/ticket-state.md`, "Planning decisions": "or when X is provisional (created on this branch)"; on branch `plan/ticket-state` until it lands). This ticket passes the real flag. Split out of `TASK-474` and `TASK-476`; `TASK-378` wires `source_copy` into reads after both land.
+`TASK-476` adds `Repo.source_copy(task_id)` in `src/chitty/store.py`, which calls `ticket_source` (`src/chitty/ticket_source.py`) from `Repo._choose_source` with `False` as its second (`provisional`) argument for every ID. A provisional ticket (`provisional: true` in its frontmatter, `Frontmatter.provisional` in `src/chitty/model.py`, given a provisional ID by `Repo.new_id`) is created on the branch where it is written and is read from that checkout's working tree (`docs/plan/ticket-state.md`, "Planning decisions": "or when X is provisional (created on this branch)"; on branch `plan/ticket-state` until it lands). This ticket passes the real flag. Split out of `TASK-474` and `TASK-476`; `TASK-378` wires `source_copy` into reads after both land.
 
 Decisions:
 
@@ -38,3 +38,5 @@ Planner, 2026-11-20: cold-read once; stays in `planning` because it builds on `R
 - 2026-11-20T12:44:31Z jolly-dusky-badger: changed acceptance criteria, notes
 - 2026-11-20T12:44:31Z jolly-dusky-badger cold-read → planning
 - 2026-11-20T17:44:33Z jolly-dusky-badger: replaced notes; changed dependencies, description, acceptance criteria
+- 2026-11-20T20:05:30Z jolly-dusky-badger: changed description
+- 2026-11-20T20:05:30Z jolly-dusky-badger planning → cold-read
