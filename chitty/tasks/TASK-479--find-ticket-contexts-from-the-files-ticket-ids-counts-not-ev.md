@@ -37,6 +37,10 @@ No property: a fixed set of placements, each listed; `TASK-393` adds the generat
 
 Add real-Git discovery regression tests and migrate the history-only fixture; verify failures before replacing history discovery with cached counted ticket paths, then run fixes, formatting and checks.
 
+## Notes
+
+Before the fix, the discovery tests fail on the historical_files patch and the two unrelated placements; both positive guards pass. The migrated CLI test also fails because show succeeds.
+
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
@@ -46,3 +50,4 @@ Add real-Git discovery regression tests and migrate the history-only fixture; ve
 - 2026-11-20T22:58:02Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:58:16Z sunny-silver-yellowhammer todo → doing
 - 2026-11-20T22:59:38Z sunny-silver-yellowhammer: wrote the plan
+- 2026-11-20T23:00:22Z sunny-silver-yellowhammer: changed notes
