@@ -7,9 +7,25 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from chitty.selection import STATUSES as PICK_ORDER
-from chitty.selection import DependencyFact, TicketFacts, choose, skip_reason
+from chitty.selection import (
+    DependencyFact,
+    TicketFacts,
+    choose,
+    dependency_marker,
+    skip_reason,
+)
 
-STATUSES = ("review", "doing", "todo", "done", "backlog", "blocked")
+STATUSES = (
+    "review",
+    "doing",
+    "todo",
+    "done",
+    "backlog",
+    "blocked",
+    "planning",
+    "cold-read",
+    "error",
+)
 PRIORITIES = ("high", "medium", None, "low")
 TEST_STATUS_RANK = {status: i for i, status in enumerate(("review", "doing", "todo"))}
 TEST_PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
@@ -113,6 +129,20 @@ class TestPropertyNext(unittest.TestCase):
             self.assertTrue(independently_choosable(selected, mode, owner))
 
     @settings(max_examples=300)
+    @given(facts_strategy())
+    def test_dependency_marker_matches_independent_expectation(self, facts):
+        for fact in facts:
+            expected = None
+            if not fact.archived and fact.status != "done":
+                broken = next((d for d in fact.dependencies if d.state == "broken"), None)
+                unfinished = [d.reference for d in fact.dependencies if d.state == "unfinished"]
+                if broken:
+                    expected = f"⚠️ {fact.id} depends on {broken.reference}: {broken.error}"
+                elif unfinished:
+                    expected = f"🔗 waits on {', '.join(unfinished)}"
+            self.assertEqual(dependency_marker(fact), expected)
+
+    @settings(max_examples=300)
     @given(facts_strategy(), st.booleans())
     def test_untestable_marker_only_replaces_owned_skip_reason(self, facts, include_owner):
         for fact in facts:
@@ -130,7 +160,7 @@ class TestPropertyNext(unittest.TestCase):
                     if broken:
                         expected = f"⚠️ {fact.id} depends on {broken.reference}: {broken.error}"
                     elif unfinished:
-                        expected = f"🔒 waits on {', '.join(unfinished)}"
+                        expected = f"🔗 waits on {', '.join(unfinished)}"
             actual = skip_reason(fact, include_owner=include_owner)
             if expected == "👤 untestable":
                 self.assertEqual(actual, "✍️ untestable")

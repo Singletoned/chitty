@@ -54,6 +54,7 @@ from chitty.store import (
     StoredTask,
     guide,
     init_repo,
+    list_marker,
     matches,
     next_action,
     ordered,
@@ -434,7 +435,7 @@ def list_(
         return
     width = max((len(str(t.id)) for t in tasks), default=0)
     show_priority = any(t.task.frontmatter.priority is not None for t in tasks)
-    reasons = [skip_reason(repo, stored) for stored in tasks]
+    reasons = [list_marker(repo, stored) for stored in tasks]
     show_markers = any(reasons)
     for stored, reason in zip(tasks, reasons, strict=True):
         fm = stored.task.frontmatter

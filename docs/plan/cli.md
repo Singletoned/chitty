@@ -43,11 +43,13 @@ file holds the decisions behind them.
   - Priority column only when a listed ticket has one: `⬆️` high, `⏺️`
     medium, `⬇️` low, blank unset.
   - Skip column, only when needed: `👤` human or owned, `✍️` untestable,
-    `🔒` waiting, `▶` running, `⚠️` broken (message on stderr).
+    `🔗` waiting, `▶` running, `⚠️` broken (message on stderr). Every unfinished
+    ticket that is not running, human or owned shows `🔗` or `⚠️` for its
+    dependencies, whatever its status; running, human and owner markers come first.
   - Titles are cut with `…` to fit `list_width`, counting emoji as two
     columns; labels stay whole. No branch.
 - JSON keeps status words and adds `skipped`: `👤 human` or owned,
-  `✍️ untestable`, `🔒 waits on ID[, ID...]`, or `⚠️ <message>`.
+  `✍️ untestable`, `🔗 waits on ID[, ID...]`, or `⚠️ <message>`.
 - An empty result reports its filters on stderr; stdout (JSON too) stays empty.
 
 ## `check` and `fix`

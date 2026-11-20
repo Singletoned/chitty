@@ -31,8 +31,9 @@ class TestListPerformance(RepoTestCase):
         tasks.mkdir(parents=True)
         (tasks / "TASK-1--done.md").write_text(self._task("Done", "done"))
         for number in range(2, task_count + 2):
-            (tasks / f"TASK-{number}--todo.md").write_text(
-                self._task(f"Todo {number}", "todo", "TASK-1")
+            status = "planning" if number % 2 == 0 else "todo"
+            (tasks / f"TASK-{number}--{status}.md").write_text(
+                self._task(f"Dependent {number}", status, "TASK-1")
             )
         self._git(root, "init", "-b", "main")
         self._git(root, "add", ".")

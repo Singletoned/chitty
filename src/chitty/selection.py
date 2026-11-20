@@ -43,6 +43,7 @@ def mode_statuses(modes: tuple[str, ...]) -> set[str] | None:
 
 PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
 UNTESTABLE_OWNER = "untestable"
+DEPENDENCY_GLYPH = "🔗"
 
 
 def _id_key(value: str) -> TaskId:
@@ -63,6 +64,13 @@ def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
         return f"{glyph} {fact.owner}"
     if fact.status != "todo":
         return None
+    return dependency_marker(fact)
+
+
+def dependency_marker(fact: TicketFacts) -> str | None:
+    """Describe unfinished dependencies, independently of selection status."""
+    if fact.archived or fact.status == "done":
+        return None
     unfinished: list[str] = []
     for dependency in fact.dependencies:
         if dependency.state == "broken":
@@ -70,7 +78,7 @@ def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
         if dependency.state == "unfinished":
             unfinished.append(dependency.reference)
     if unfinished:
-        return f"🔒 waits on {', '.join(unfinished)}"
+        return f"{DEPENDENCY_GLYPH} waits on {', '.join(unfinished)}"
     return None
 
 

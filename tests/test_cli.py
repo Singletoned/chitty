@@ -1172,33 +1172,50 @@ class TestAddShowList(CliTestCase):
         self.run_cli("add", "Doing", "-d", "x")
         doing_path = self.root / "chitty/tasks/TASK-6--doing.md"
         doing_path.write_text(
-            doing_path.read_text().replace("created:", "depends_on:\n  - TASK-99\ncreated:")
+            doing_path.read_text().replace("created:", "depends_on:\n  - TASK-1\ncreated:")
         )
         self.run_cli("edit", "6", "-s", "doing")
         self.run_cli("add", "Review", "-d", "x")
-        review_path = self.root / "chitty/tasks/TASK-7--review.md"
-        review_path.write_text(
-            review_path.read_text().replace("created:", "depends_on:\n  - TASK-99\ncreated:")
-        )
         self.run_cli("edit", "7", "-s", "review")
+        self.run_cli("add", "Planning", "-d", "x", "-s", "planning", "--depends-on", "1")
+        self.run_cli("add", "Cold read", "-d", "x", "-s", "cold-read", "--depends-on", "1")
+        self.run_cli("add", "Doing waiting", "-d", "x", "--depends-on", "1")
+        self.run_cli("edit", "10", "-s", "doing")
+        self.run_cli("add", "Owned doing", "-d", "x", "--owner", "agent", "--depends-on", "1")
+        self.run_cli("edit", "11", "-s", "doing")
+        self.run_cli("add", "Planning broken", "-d", "x", "-s", "planning")
+        broken_planning = self.root / "chitty/tasks/TASK-12--planning-broken.md"
+        broken_planning.write_text(
+            broken_planning.read_text().replace("created:", "depends_on: [TASK-99]\ncreated:")
+        )
 
         listed = self.run_cli("list", "--all")
         lines = listed.stdout.splitlines()
         self.assertEqual(
             lines,
             [
-                "TASK-1  💤 bklog      Backlog",
-                "TASK-3  📋 todo   🔒  Waiting",
-                "TASK-4  📋 todo   ⚠️  Broken",
-                "TASK-5  📋 todo   👤  Human",
-                "TASK-6  🔨 doing      Doing",
-                "TASK-7  👀 revw       Review",
-                "TASK-2  ✅ done       Done",
+                "TASK-1   💤 bklog      Backlog",
+                "TASK-8   📝 plan   🔗  Planning",
+                "TASK-12  📝 plan   ⚠️  Planning broken",
+                "TASK-9   🔎 cold   🔗  Cold read",
+                "TASK-3   📋 todo   🔗  Waiting",
+                "TASK-4   📋 todo   ⚠️  Broken",
+                "TASK-5   📋 todo   👤  Human",
+                "TASK-6   🔨 doing  🔗  Doing",
+                "TASK-10  🔨 doing  🔗  Doing waiting",
+                "TASK-11  🔨 doing  👤  Owned doing",
+                "TASK-7   👀 revw       Review",
+                "TASK-2   ✅ done       Done",
             ],
         )
         self.assertIn("warning: TASK-4 depends on TASK-99", listed.stderr)
-        self.assertEqual(self.json("list", "--all")[1]["skipped"], "🔒 waits on TASK-1")
-        self.assertIsNone(self.json("list", "--all")[4]["skipped"])
+        self.assertIn("warning: TASK-12 depends on TASK-99", listed.stderr)
+        entries = {entry["id"]: entry for entry in self.json("list", "--all")}
+        self.assertEqual(entries["TASK-3"]["skipped"], "🔗 waits on TASK-1")
+        self.assertTrue(entries["TASK-4"]["skipped"].startswith("⚠️ TASK-4 depends on TASK-99"))
+        self.assertEqual(entries["TASK-11"]["skipped"], "👤 agent")
+        for task_id in ("TASK-8", "TASK-9", "TASK-10", "TASK-12"):
+            self.assertIsNone(entries[task_id]["skipped"])
 
     def test_list_marks_nonhuman_owned_work_as_skipped(self):
         self.run_cli("add", "Agent todo", "-d", "x", "--owner", "agent")

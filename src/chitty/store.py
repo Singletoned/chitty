@@ -44,7 +44,14 @@ from chitty.model import (
     new_task,
     parse,
 )
-from chitty.selection import STATUSES, DependencyFact, TicketFacts, choose, mode_statuses
+from chitty.selection import (
+    STATUSES,
+    DependencyFact,
+    TicketFacts,
+    choose,
+    dependency_marker,
+    mode_statuses,
+)
 from chitty.selection import skip_reason as pure_skip_reason
 
 ARCHIVE_DIR = "archive"
@@ -1562,7 +1569,7 @@ def _selection_facts(
 ) -> TicketFacts:
     fm = stored.task.frontmatter
     dependency_facts: list[DependencyFact] = []
-    if dependencies and fm.status == "todo" and not stored.archived:
+    if dependencies and not stored.archived:
         for reference in fm.depends_on:
             dependency_id = TaskId.parse(reference)
             try:
@@ -1582,6 +1589,15 @@ def _selection_facts(
         locked,
         tuple(dependency_facts),
     )
+
+
+def list_marker(repo: Repo, stored: StoredTask) -> str | None:
+    """Return the list marker, retaining selection reasons before dependencies."""
+    reason = skip_reason(repo, stored)
+    if reason is not None:
+        return reason
+    locked = locks.is_locked(repo.root, str(stored.id))
+    return dependency_marker(_selection_facts(repo, stored, locked=locked, dependencies=True))
 
 
 def skip_reason(repo: Repo, stored: StoredTask) -> str | None:
