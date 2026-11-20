@@ -1,6 +1,6 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: cold-read
+status: todo
 created: 2026-11-16
 ---
 
@@ -27,8 +27,8 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 ## Acceptance Criteria
 
 - [ ] The Hypothesis property in `tests/test_property_text_files.py` shows each listed text option and its `-file` form, from a file and from `-`, write the same ticket, one arm per option; the `add -d` and `edit --summary` arms fail before the change and the others pass
-- [ ] `suggest --description-file -` sends the same suggestion as `-d`, and giving `-` to two `-file` options exits with a usage error naming both; the tests fail before the change
-- [ ] The four guides carry the one-line file advice in place of the quoting advice, every `-file` option help of `add`, `edit` and `suggest` contains `('-' for stdin)`, `docs/plan/cli.md` lists the new options, and `make check` passes
+- [ ] `suggest --description-file -` leaves the same inbox description as `-d`; `add --description-file -` with no `-d` creates the ticket; giving `-` to two `-file` options of `add` or of `edit` exits with a usage error naming both; the tests fail before the change
+- [ ] The four guides carry the one-line file advice in place of the quoting advice; every `-file` option of `add`, `edit` and `suggest` is `click.File(encoding="utf-8")` and its help contains `('-' for stdin)`; `docs/plan/cli.md` lists the new options; `make check` passes
 
 ## Notes
 
@@ -54,3 +54,5 @@ The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (comm
 - 2026-11-20T21:57:03Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T21:58:02Z quick-pearl-lapwing: changed description
 - 2026-11-20T21:58:14Z quick-pearl-lapwing: changed description
+- 2026-11-20T21:58:59Z quick-pearl-lapwing: changed acceptance criteria
+- 2026-11-20T21:58:59Z quick-pearl-lapwing cold-read → todo
