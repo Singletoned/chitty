@@ -43,6 +43,8 @@ Add a cached ID and ref-file index using filesystem scans and one Git tree read 
 
 Planner, 2026-11-20: split after the worker found it too large for one session. This ticket now only lists ticket IDs; choosing and reading copies moved to `TASK-476`, with tests in `TASK-477` and `TASK-478`.
 
+All seven new real-Git tests were run against the NotImplementedError stub; each failed at ticket_ids as intended. Merged main into the ticket branch to resolve the earlier stale-ticket edit refusal.
+
 ## History
 
 - 2026-11-20T12:35:43Z jolly-dusky-badger → planning
@@ -79,3 +81,4 @@ Planner, 2026-11-20: split after the worker found it too large for one session. 
 - 2026-11-20T17:45:19Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T18:59:34Z open-ochre-badger todo → doing
 - 2026-11-20T19:02:17Z open-ochre-badger: wrote the plan
+- 2026-11-20T19:03:04Z open-ochre-badger: changed notes
