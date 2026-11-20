@@ -1,6 +1,6 @@
 ---
 title: Run the Linux check in `make release` before tagging
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-429
@@ -57,3 +57,4 @@ Implemented Linux check after release commit and before tag/push; failure aborts
 - 2026-11-20T00:27:18Z intrepid-lilac-ibis: wrote the plan
 - 2026-11-20T00:27:47Z intrepid-lilac-ibis: changed notes
 - 2026-11-20T00:30:22Z intrepid-lilac-ibis: changed notes, summary
+- 2026-11-20T00:30:35Z intrepid-lilac-ibis doing → review
