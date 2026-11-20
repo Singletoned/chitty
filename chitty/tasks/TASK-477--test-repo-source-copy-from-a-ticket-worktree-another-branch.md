@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` from a ticket worktree, another branch and outside Git
-status: todo
+status: doing
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -33,3 +33,4 @@ Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source
 - 2026-11-20T20:05:25Z jolly-dusky-badger planning → cold-read
 - 2026-11-20T20:07:06Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T20:07:06Z jolly-dusky-badger cold-read → todo
+- 2026-11-20T20:11:50Z friendly-zinc-gannet todo → doing
