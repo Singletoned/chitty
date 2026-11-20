@@ -49,6 +49,8 @@ Review failed (design): Criterion 3 requires every refusing row to fail on main,
 
 Planning 2026-11-20: criterion 3 reworded for the review's design finding (the `TASK-405` rows cannot fail on `main`). The review's other findings are implementation gaps against clear criteria: the grid must assert that refusals name `autocommit` and that the commit holds the ticket file (criterion 1), and the criterion 2 cases need separate baseline runs. Branch rebased onto `main` (old tip tagged `task-408-before-rebase`).
 
+Regression evidence: copied src and tests into tmp/task-408-baseline, replaced store.py with git show main:src/chitty/store.py, and ran each of the 24 grid cases separately using a scratch-only subtest selector. All nine autocommit-on refusal rows failed; all other rows passed, including the three autocommit-off initialized/no-git TASK-405 guards. Separate move, fix and stale-setup refusal tests failed; show and list passed. The fixed branch passes all six focused tests.
+
 ## Summary
 
 Implemented pre-write Git and repository checks for autocommit writes. Added the 24-case command/state grid and additional write/read/stale-setup coverage. Verified with make check (712 tests). Follow-up: verify criterion 3 against main baseline during review.
@@ -79,3 +81,4 @@ Implemented pre-write Git and repository checks for autocommit writes. Added the
 - 2026-11-20T22:37:15Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:43:06Z mellow-ochre-stoat todo → doing
 - 2026-11-20T22:44:25Z mellow-ochre-stoat: wrote the plan
+- 2026-11-20T22:46:06Z mellow-ochre-stoat: changed notes
