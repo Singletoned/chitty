@@ -1,6 +1,6 @@
 ---
 title: Do not error a `todo` ticket whose branch already has work when the pre-session check fails
-status: doing
+status: review
 created: 2026-11-20
 ---
 
@@ -57,3 +57,4 @@ Runner now starts the work agent after a failing check on a todo branch with com
 - 2026-11-20T23:15:34Z nimble-fawn-vole: wrote the plan
 - 2026-11-20T23:16:31Z nimble-fawn-vole: changed notes
 - 2026-11-20T23:18:42Z nimble-fawn-vole: changed summary
+- 2026-11-20T23:18:50Z nimble-fawn-vole doing → review
