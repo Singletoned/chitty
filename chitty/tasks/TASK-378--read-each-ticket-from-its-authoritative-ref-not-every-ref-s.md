@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -131,3 +131,4 @@ Owner `human` cleared 2026-11-20 at the owner's request: `TASK-384` removed the 
 - 2026-11-20T22:09:37Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T22:09:37Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:18:48Z quick-pearl-lapwing: changed owner, description, notes
+- 2026-11-20T22:18:52Z calm-fawn-raven todo → doing
