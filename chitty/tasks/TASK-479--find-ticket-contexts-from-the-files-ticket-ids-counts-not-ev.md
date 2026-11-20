@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from the files `ticket_ids()` counts, not every ref's history
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -11,8 +11,8 @@ created: 2026-11-20
 
 Decisions:
 
-- `_collect_ticket_ids` also records the path, relative to `Repo.root`, of every file it counts: working-tree ticket files, `main`'s ticket files, and each ticket branch's own ticket file (the ones it adds to `result`). Store them in a new `self._ticket_paths: set[Path] | None`, set alongside `self._ticket_ids` and cleared with it in `_invalidate`. A new `Repo.ticket_paths() -> set[Path]` calls `ticket_ids()` when needed and returns a copy.
-- `discovered_contexts` returns the configured contexts, then each working-tree `chitty/<dir>` directory as today, then `Context(name, "", self.root / BACKLOG_DIR / name)` for each `path.parts[1]` of `ticket_paths()` not already present, in sorted order. It no longer calls `_history()`. It parses no ticket content and chooses no source, so a conflicted ticket or a malformed ticket body cannot make it fail. Filename problems keep raising as today: `_files` already raises on them in every read (checked 2026-11-20: a stray `chitty/tasks/notes.txt` makes `chitty list`, `add` and `edit` fail).
+- Move the part of `_collect_ticket_ids` that chooses the refs (`main`'s tip and each ticket branch whose prefix is configured) and reads their files with `git.files_at` into a helper `_ref_files() -> dict[str, list[tuple[Path, str]]]`, cached in `self._ticket_ref_files` as today and cleared in `_invalidate`. It validates nothing. `_collect_ticket_ids` calls it and keeps its checks and errors unchanged.
+- `discovered_contexts` returns the configured contexts, then each working-tree `chitty/<dir>` directory as today, then `Context(name, "", self.root / BACKLOG_DIR / name)` for each further `<dir>` from `_ref_files()`: from `main`'s tip, every path `chitty/<dir>/<file>` or `chitty/<dir>/archive/<file>`; from a ticket branch, only such paths whose file name parses (`ids.parse_filename`) to that branch's own ID. Names that do not parse are skipped, never raised: discovery validates no file name and parses no ticket content, and does not call `ticket_ids()` or `_files`. It no longer calls `_history()`. So a conflicted ticket, a malformed ticket body or a stray file cannot make it fail, and `chitty check` keeps reporting a stray file with every other problem (`test_reports_every_problem` in `tests/test_check.py`, decided 2026-11-20 after a worker found that routing discovery through `ticket_ids()` made it raise). Reads that call `_files` keep raising on stray files as today.
 - Visible change: a directory that exists only on a branch that is neither `main` nor the ticket branch of the file's own ID is no longer discovered. That includes a branch named for a ticket whose prefix no configured context has (for example `other-1`): `_collect_ticket_ids` counts only branches whose prefix is configured, and that is intended. Archived paths (`chitty/<dir>/archive/...`) are included, since `_collect_ticket_ids` counts them.
 - Migrate, without deleting it: `test_finds_directory_that_exists_only_in_branch_history` in `tests/test_unconfigured_directories.py` becomes `test_ignores_directory_that_exists_only_on_an_unrelated_branch`, keeping its fixture (branch `ticket` is not a ticket branch), and asserts that `chitty show OTHER-1` exits 1 with `no context` in its output (through `context_of`, which no longer finds a context for prefix `OTHER` and raises `OTHER-1: no context in ... has prefix 'OTHER'`). Migrate any other test that `make check` shows relying on a history-only directory the same way, without weakening it, and name it in the review note.
 - Unchanged: `_tasks_in_location`, `lookup` and `context_of`, which `TASK-378` switches, and `_history()`, which they still use.
@@ -43,6 +43,8 @@ Before the fix, the discovery tests fail on the historical_files patch and the t
 
 The prescribed implementation makes `tests.test_check.TestCheck.test_reports_every_problem` error: `check.check` calls `discovered_contexts`, which now calls `ticket_paths` and `_files`, so `stray.txt` raises before the check can report that filename alongside the other four problems. This existing check-level behavior contradicts the proposed unconditional filename exception and the requirement that `make check` pass; the failing test is not a history-only directory test and changing it would weaken its aggregation assertion. Planning must decide whether check should retain aggregated diagnostics and specify how discovery handles invalid filenames in that path, or explicitly change the check contract and its test. The implementation and regression tests are preserved in commit `a60c5c9d`; focused tests pass, but `make check` fails on this test. `chitty fix` and formatting ran; other reported ticket warnings were pre-existing.
 
+Planning 2026-11-20: discovery no longer goes through `ticket_ids()`; see the `_ref_files` decision. Keep the implementation in `a60c5c9d` and adapt it: drop `ticket_paths()` if nothing else needs it.
+
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
@@ -55,3 +57,5 @@ The prescribed implementation makes `tests.test_check.TestCheck.test_reports_eve
 - 2026-11-20T23:00:22Z sunny-silver-yellowhammer: changed notes
 - 2026-11-20T23:02:13Z sunny-silver-yellowhammer: changed owner, notes
 - 2026-11-20T23:02:13Z sunny-silver-yellowhammer doing → planning
+- 2026-11-20T23:03:23Z quick-pearl-lapwing: changed description, notes
+- 2026-11-20T23:03:23Z quick-pearl-lapwing planning → cold-read
