@@ -54,3 +54,8 @@ Tests: real-Git, fake-agent runner tests. Replace `tests/test_run_claims_on_main
 - 2026-11-20T17:23:07Z jolly-dusky-badger: replaced notes
 - 2026-11-20T17:23:07Z jolly-dusky-badger error → todo
 - 2026-11-20T17:23:18Z sunny-fawn-dormouse todo → doing
+- 2026-11-20T17:24:09Z sunny-fawn-dormouse: changed notes
+- 2026-11-20T17:24:09Z sunny-fawn-dormouse doing → error
+- 2026-11-20T17:30:48Z jolly-dusky-badger: replaced notes
+- 2026-11-20T17:30:48Z jolly-dusky-badger error → todo
+- 2026-11-20T17:31:09Z intrepid-indigo-falcon todo → doing
