@@ -1,6 +1,6 @@
 ---
 title: Show the 🔗 dependency glyph in `chitty list` for every unfinished ticket
-status: doing
+status: review
 parent: TASK-70
 created: 2026-11-19
 ---
@@ -23,13 +23,21 @@ Dependency reads are memoised (`src/chitty/store.py`, around line 361), so listi
 
 ## Acceptance Criteria
 
-- [ ] Property in `tests/test_property_next.py`: for every fact from `facts_strategy`, `dependency_marker(fact)` equals an independently written expectation (None when archived or `done`; otherwise the first `broken` dependency's message, else `🔗 waits on` the unfinished references, else None), whatever the status. The existing properties pass with `🔗`. It fails on `main` (`dependency_marker` does not exist; stub it raising `NotImplementedError` first). Wrong versions to run and record in a note: one that ignores `broken` dependencies; one that returns None outside a fixed list of statuses.
-- [ ] In `tests/test_cli.py`, the list test that builds `Waiting` and `Broken` todo tickets also builds a `planning`, a `cold-read` and a `doing` ticket depending on the unfinished `TASK-1`, a `doing` ticket with owner `agent` depending on `TASK-1`, and a `planning` ticket depending on the missing `TASK-99`. The test lists every expected `chitty list --all` line in full: `🔗` for `Waiting` and the three unowned waiting tickets; `👤` for the owned `doing` ticket; `⚠️` for `Broken` and for the planning ticket on `TASK-99`, each with its own `warning:` line on stderr; the existing lines unchanged except 🔒 becoming 🔗. In `--json`, looked up by `id` rather than index, `skipped` is `"🔗 waits on TASK-1"` for `Waiting`, its `⚠️` text for `Broken`, `"👤 agent"` for the owned `doing` ticket, and `None` for the other four new tickets. It fails on `main`.
-- [ ] `tests/test_list_performance.py` also builds `planning` dependents of `TASK-1` and still asserts the same Git call count for both ticket counts. `git grep -n 🔒 -- src tests README.md docs/plan` finds nothing, and `docs/plan/cli.md` says what the Description gives. `make check` passes.
+- [x] Property in `tests/test_property_next.py`: for every fact from `facts_strategy`, `dependency_marker(fact)` equals an independently written expectation (None when archived or `done`; otherwise the first `broken` dependency's message, else `🔗 waits on` the unfinished references, else None), whatever the status. The existing properties pass with `🔗`. It fails on `main` (`dependency_marker` does not exist; stub it raising `NotImplementedError` first). Wrong versions to run and record in a note: one that ignores `broken` dependencies; one that returns None outside a fixed list of statuses.
+- [x] In `tests/test_cli.py`, the list test that builds `Waiting` and `Broken` todo tickets also builds a `planning`, a `cold-read` and a `doing` ticket depending on the unfinished `TASK-1`, a `doing` ticket with owner `agent` depending on `TASK-1`, and a `planning` ticket depending on the missing `TASK-99`. The test lists every expected `chitty list --all` line in full: `🔗` for `Waiting` and the three unowned waiting tickets; `👤` for the owned `doing` ticket; `⚠️` for `Broken` and for the planning ticket on `TASK-99`, each with its own `warning:` line on stderr; the existing lines unchanged except 🔒 becoming 🔗. In `--json`, looked up by `id` rather than index, `skipped` is `"🔗 waits on TASK-1"` for `Waiting`, its `⚠️` text for `Broken`, `"👤 agent"` for the owned `doing` ticket, and `None` for the other four new tickets. It fails on `main`.
+- [x] `tests/test_list_performance.py` also builds `planning` dependents of `TASK-1` and still asserts the same Git call count for both ticket counts. `git grep -n 🔒 -- src tests README.md docs/plan` finds nothing, and `docs/plan/cli.md` says what the Description gives. `make check` passes.
 
 ## Plan
 
 Add a status-independent dependency_marker for unfinished, non-archived tickets; make list_marker preserve selection/ownership precedence while exposing dependencies in text output. Extend property, CLI and performance tests, update glyph documentation, run focused regression tests before implementation and then make check; commit implementation files with Task trailer and hand off in review.
+
+## Notes
+
+Mutation checks: a broken-dependency variant that yields None disagrees with the independent expected message for a planning fact with a broken dependency; a fixed-status variant that returns None outside todo/doing/review also disagrees for that planning fact. Focused tests passed, `make check` passed (789 tests), and `git grep -n 🔒 -- src tests README.md docs/plan` found no matches.
+
+## Summary
+
+Implemented status-independent dependency markers in text `chitty list`, preserving selection and ownership precedence and leaving JSON `skipped` behavior unchanged. Added property, CLI and Git-call performance coverage and updated glyph docs. Verification: focused property/CLI/performance tests and `make check` pass; no old 🔒 glyph remains in the scoped paths. Follow-up: none.
 
 ## History
 
@@ -47,3 +55,5 @@ Add a status-independent dependency_marker for unfinished, non-archived tickets;
 - 2026-11-19T22:54:58Z sunny-white-dormouse cold-read → todo
 - 2026-11-20T01:09:29Z able-umber-vole todo → doing
 - 2026-11-20T01:12:24Z able-umber-vole: wrote the plan
+- 2026-11-20T01:20:32Z able-umber-vole: changed notes, summary; ticked acceptance criteria
+- 2026-11-20T01:20:32Z able-umber-vole doing → review
