@@ -21,9 +21,9 @@ Tests: add to `tests/test_source_copy.py` (from `TASK-476`), with real Git as th
 
 ## Acceptance Criteria
 
-- [ ] In a test repository, in a linked worktree the test makes on a new branch `task-5` (`git worktree add`, so not on `main`), a ticket created there with `chitty add` gets a provisional ID and `provisional: true`; it gives `ref` `None` and its working-tree content, both before and after it is committed on `task-5` (fails before the change: with `provisional=False` it gives `None`, as `main` has no file for it)
-- [ ] In a checkout on branch `feature`, made from `main` after committing the fixture there: a ticket whose `main` copy has `provisional: true`, with the file deleted in the working tree, gives `None`, and the same ticket without `provisional` gives `ref` `main`; a ticket whose working-tree copy has no `provisional` while its `main` copy has `provisional: true` gives `ref` `main` (only the first copy found decides)
-- [ ] In a checkout on branch `feature`, with the working-tree copy of a ticket broken by removing its closing `---` while `main`'s copy is well formed, `source_copy` raises `ChittyError` whose message starts with the absolute working-tree path and contains `frontmatter is not closed` (fails before the change, which reads `main`'s copy). `make check` passes
+- [x] In a test repository, in a linked worktree the test makes on a new branch `task-5` (`git worktree add`, so not on `main`), a ticket created there with `chitty add` gets a provisional ID and `provisional: true`; it gives `ref` `None` and its working-tree content, both before and after it is committed on `task-5` (fails before the change: with `provisional=False` it gives `None`, as `main` has no file for it)
+- [x] In a checkout on branch `feature`, made from `main` after committing the fixture there: a ticket whose `main` copy has `provisional: true`, with the file deleted in the working tree, gives `None`, and the same ticket without `provisional` gives `ref` `main`; a ticket whose working-tree copy has no `provisional` while its `main` copy has `provisional: true` gives `ref` `main` (only the first copy found decides)
+- [x] In a checkout on branch `feature`, with the working-tree copy of a ticket broken by removing its closing `---` while `main`'s copy is well formed, `source_copy` raises `ChittyError` whose message starts with the absolute working-tree path and contains `frontmatter is not closed` (fails before the change, which reads `main`'s copy). `make check` passes
 
 ## Plan
 
@@ -34,6 +34,10 @@ Add real-Git regression cases for provisional working-tree and main copies and m
 Planner, 2026-11-20: cold-read once; stays in `planning` because it builds on `Repo.source_copy` from `TASK-476`, not yet landed. When `TASK-476` is done, compare this text with what landed, cold-read again, then move to `todo`.
 
 Regression tests fail before the fix: provisional worktree copies return None before and after commit, provisional main-only copy returns main, and malformed worktree frontmatter raises no error.
+
+## Summary
+
+Source selection parses the working copy first or cached main copy if absent, and passes its provisional flag to ticket_source. Added real Git regression coverage; all three cases failed before the fix and pass after it. Ran chitty fix, make format, and make check (828 tests). No follow-ups.
 
 ## History
 
@@ -51,3 +55,4 @@ Regression tests fail before the fix: provisional worktree copies return None be
 - 2026-11-20T20:07:02Z golden-umber-toad todo → doing
 - 2026-11-20T20:08:15Z golden-umber-toad: wrote the plan
 - 2026-11-20T20:08:46Z golden-umber-toad: changed notes
+- 2026-11-20T20:10:19Z golden-umber-toad: changed summary; ticked acceptance criteria
