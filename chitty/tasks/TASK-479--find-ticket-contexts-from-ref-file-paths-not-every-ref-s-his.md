@@ -35,7 +35,7 @@ No property: a fixed set of placements, each listed; `TASK-393` adds the generat
 
 ## Plan
 
-Add real-Git discovery regression tests and migrate the history-only fixture; verify failures before replacing history discovery with cached counted ticket paths, then run fixes, formatting and checks.
+Extract cached ref file selection, use it directly for non-validating context discovery, preserve ticket ID validation, and run the existing regression tests and full checks.
 
 ## Notes
 
@@ -464,3 +464,4 @@ make: *** [check] Error 1
 - 2026-11-20T23:08:18Z quick-pearl-lapwing: changed notes
 - 2026-11-20T23:08:18Z quick-pearl-lapwing error → doing
 - 2026-11-20T23:09:54Z vivid-yellow-adder: changed notes
+- 2026-11-20T23:10:14Z vivid-yellow-adder: wrote the plan
