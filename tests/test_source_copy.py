@@ -128,6 +128,9 @@ class TestSourceCopy(CliTestCase):
     def test_no_further_ref_reads(self):
         self.init_git()
         for number in (1, 2):
+            self.file(number)
+        self.commit()
+        for number in (1, 2):
             self.git("checkout", "-b", f"task-{number}", "main")
             self.file(number, f"branch{number}")
             self.commit()
