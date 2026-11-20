@@ -40,6 +40,10 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 
 Add the source-copy API and focused real-Git placement tests, first running all tests against the requested stub. Select sources lazily per ID using cached ref files and ticket_source, invalidate the cache with Repo state, then run fix, format and checks.
 
+## Notes
+
+Ran all 11 new placement tests against the requested source_copy stub: each failed with NotImplementedError before implementation.
+
 ## History
 
 - 2026-11-20T17:43:29Z jolly-dusky-badger → planning
@@ -51,3 +55,4 @@ Add the source-copy API and focused real-Git placement tests, first running all 
 - 2026-11-20T19:49:07Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T19:49:15Z daring-coral-adder todo → doing
 - 2026-11-20T19:50:34Z daring-coral-adder: wrote the plan
+- 2026-11-20T19:51:40Z daring-coral-adder: changed notes
