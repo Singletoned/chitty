@@ -210,6 +210,8 @@ make: *** [check] Error 4
 
 ```
 
+Criterion 1 still has a contradictory property. For the permitted message `Task: TASK-1 ` (one nonblank line with a trailing space), the specified algorithm must use `body = message.rstrip()` and return `Task: TASK-1\n\nTask: TASK-1\n`. Its split lines contain two exact `Task: TASK-1` lines, whereas the original contains zero; the criterion requires exactly one more. Please decide whether to count against the trimmed source, restrict the generated messages, or change the specified algorithm/property. This cannot be implemented and tested as written. The existing implementation and tests remain committed unchanged. The previous full check is recorded above; it failed on the now-outdated empty-message test, merge fixture, retry HEAD expectation, and inadvertent removal of the review cleanliness gate. Those failures and the requested wrong-implementation regression checks remain to be addressed after planning.
+
 ## History
 
 - 2026-11-19T20:55:28Z sunny-white-dormouse → backlog
@@ -232,3 +234,4 @@ make: *** [check] Error 4
 - 2026-11-20T23:16:10Z quick-pearl-lapwing: changed description, acceptance criteria, notes
 - 2026-11-20T23:16:10Z quick-pearl-lapwing cold-read → doing
 - 2026-11-20T23:22:10Z sunny-yellow-crane: changed notes
+- 2026-11-20T23:22:49Z sunny-yellow-crane: changed notes
