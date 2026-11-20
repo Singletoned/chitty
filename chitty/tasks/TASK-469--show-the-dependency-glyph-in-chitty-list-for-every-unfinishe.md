@@ -1,6 +1,6 @@
 ---
 title: Show the 🔗 dependency glyph in `chitty list` for every unfinished ticket
-status: review
+status: done
 parent: TASK-70
 created: 2026-11-19
 ---
@@ -35,6 +35,11 @@ Add a status-independent dependency_marker for unfinished, non-archived tickets;
 
 Mutation checks: a broken-dependency variant that yields None disagrees with the independent expected message for a planning fact with a broken dependency; a fixed-status variant that returns None outside todo/doing/review also disagrees for that planning fact. Focused tests passed, `make check` passed (789 tests), and `git grep -n 🔒 -- src tests README.md docs/plan` found no matches.
 
+Reviewed: implementation and complete diff checked; no earlier review findings.
+1: pass - `make check` passed 789 tests; the property against main with a NotImplementedError stub printed FAILED (errors=1). Worker notes record both requested mutations disagreeing with the expectation.
+2: pass - `make check` passed; the list test against main printed FAILED (failures=1), first differing at TASK-8 with a blank marker rather than 🔗.
+3: pass - `make check` passed including the constant Git-call test with planning dependents; scoped `git grep -n 🔒 -- src tests README.md docs/plan` printed no matches, whereas main contains the old glyph. Reviewed the CLI documentation.
+
 ## Summary
 
 Implemented status-independent dependency markers in text `chitty list`, preserving selection and ownership precedence and leaving JSON `skipped` behavior unchanged. Added property, CLI and Git-call performance coverage and updated glyph docs. Verification: focused property/CLI/performance tests and `make check` pass; no old 🔒 glyph remains in the scoped paths. Follow-up: none.
@@ -57,3 +62,5 @@ Implemented status-independent dependency markers in text `chitty list`, preserv
 - 2026-11-20T01:12:24Z able-umber-vole: wrote the plan
 - 2026-11-20T01:20:32Z able-umber-vole: changed notes, summary; ticked acceptance criteria
 - 2026-11-20T01:20:32Z able-umber-vole doing → review
+- 2026-11-20T01:26:33Z mellow-violet-jay: changed notes
+- 2026-11-20T01:26:33Z mellow-violet-jay review → done
