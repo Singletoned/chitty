@@ -52,6 +52,8 @@ Planner 2026-11-20 (owner agreed): wrong versions are now committed tests that r
 
 Completed the five specified property mutants as committed subtests. Focused test passed; make check passed (791 tests). Implementation and required list/performance/docs coverage are committed in the ticket worktree.
 
+Planner 2026-11-20: a review run stopped on a rebase conflict in this ticket file, because the claim and the worker ticket writes had landed on `main`. Branch `task-471` was rebuilt as `main` plus its four code commits (old tip kept as `refs/backup/task-471-before-rebuild`); `make check` passed (792 tests). No code changed.
+
 ## Summary
 
 Implemented blocker markers and the required integration, property, and performance coverage; updated the three docs. Added five committed Hypothesis mutation checks. Verified with focused property tests and make check (791 tests). Ready for independent review.
@@ -87,3 +89,4 @@ Implemented blocker markers and the required integration, property, and performa
 - 2026-11-20T09:46:10Z intrepid-teal-quail todo → doing
 - 2026-11-20T09:52:38Z human: changed notes, summary
 - 2026-11-20T09:52:38Z human doing → review
+- 2026-11-20T09:57:18Z lively-bronze-crane: changed notes
