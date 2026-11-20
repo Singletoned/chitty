@@ -1,6 +1,6 @@
 ---
 title: List which ticket IDs exist across the working tree, `main` and ticket branches
-status: doing
+status: planning
 depends_on:
   - TASK-377
   - TASK-380
@@ -45,6 +45,8 @@ Planner, 2026-11-20: split after the worker found it too large for one session. 
 
 All seven new real-Git tests were run against the NotImplementedError stub; each failed at ticket_ids as intended. Merged main into the ticket branch to resolve the earlier stale-ticket edit refusal.
 
+Criterion 3 requires wrapping every chitty.git function and observing only git.is_repository outside Git, but git.is_repository itself calls git.repository_answer. The requested test therefore fails even when ticket_ids directly calls no other Git function. Decide whether to count only direct calls from ticket_ids, or change the existing Git helper despite the scope limiting this ticket to new Repo methods. Partial implementation and tests are committed; all seven tests failed against the required stub, and make check now fails only on this call-count assertion. Further verification and review remain unfinished.
+
 ## History
 
 - 2026-11-20T12:35:43Z jolly-dusky-badger → planning
@@ -82,3 +84,5 @@ All seven new real-Git tests were run against the NotImplementedError stub; each
 - 2026-11-20T18:59:34Z open-ochre-badger todo → doing
 - 2026-11-20T19:02:17Z open-ochre-badger: wrote the plan
 - 2026-11-20T19:03:04Z open-ochre-badger: changed notes
+- 2026-11-20T19:04:45Z open-ochre-badger: changed owner, notes
+- 2026-11-20T19:04:45Z open-ochre-badger doing → planning
