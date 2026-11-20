@@ -3,6 +3,7 @@ title: Check ticket reads against every branch placement with a property
 status: todo
 depends_on:
   - TASK-378
+  - TASK-480
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -32,6 +33,10 @@ No production code changes unless a test finds a bug; then fix it here, with the
 - [ ] `test_every_placement_and_checkout` and `test_generated_placements` pass, comparing `Repo.find` and `Repo.tasks` against the expected results in the Description
 - [ ] Mutation evidence, recorded in the ticket's notes with the failing test: in `TASK-378`'s call to `ticket_source` in `src/chitty/store.py`, (1) swapping the arguments inside the `contains` callback, (2) passing `Repo._main_branch()` as `current_branch`, and (3) passing `main_tip=None` each make `.venv/bin/python -m unittest tests.test_property_ticket_reads` fail; all reverted afterwards; `make check` passes
 
+## Notes
+
+Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the last `_history()` caller) is now `TASK-480`, so this also waits for it.
+
 ## History
 
 - 2026-11-18T16:38:03Z lively-quartz-crane → backlog
@@ -48,3 +53,4 @@ No production code changes unless a test finds a bug; then fix it here, with the
 - 2026-11-18T17:54:01Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:54:03Z lively-quartz-crane planning → todo
 - 2026-11-18T18:01:39Z lively-quartz-crane: changed description
+- 2026-11-20T23:04:49Z quick-pearl-lapwing: changed dependencies, notes
