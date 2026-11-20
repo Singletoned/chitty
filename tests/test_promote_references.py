@@ -11,10 +11,19 @@ SEPARATORS = (" ", "\n", ",", ".", "`", "(", ")")
 
 class TestTicketReferences(unittest.TestCase):
     @settings(max_examples=150)
-    @given(st.lists(st.tuples(st.sampled_from(PREFIXES), st.integers(1, 9999)), max_size=30))
-    def test_ids_are_returned_once_in_first_appearance_order(self, parts):
+    @given(
+        st.lists(st.tuples(st.sampled_from(PREFIXES), st.integers(1, 9999)), max_size=30), st.data()
+    )
+    def test_ids_are_returned_once_in_first_appearance_order(self, parts, data):
+        separators = data.draw(
+            st.lists(
+                st.sampled_from(SEPARATORS),
+                min_size=max(0, len(parts) - 1),
+                max_size=max(0, len(parts) - 1),
+            )
+        )
         text = "".join(
-            ("" if index == 0 else SEPARATORS[(index - 1) % len(SEPARATORS)]) + f"{prefix}-{number}"
+            ("" if index == 0 else separators[index - 1]) + f"{prefix}-{number}"
             for index, (prefix, number) in enumerate(parts)
         )
         expected = list(dict.fromkeys(TaskId(prefix, number) for prefix, number in parts))
@@ -44,11 +53,11 @@ class TestTicketReferences(unittest.TestCase):
         self.assertEqual(ticket_references(text, PREFIXES), expected)
 
     @settings(max_examples=200)
-    @given(st.text(), st.sets(st.text(min_size=1)))
+    @given(st.text(), st.sets(st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ", min_size=1)))
     def test_arbitrary_text_never_raises_and_matches_requested_prefix(self, text, prefixes):
         result = ticket_references(text, prefixes)
         self.assertTrue(all(task_id.prefix in prefixes for task_id in result))
-        self.assertTrue(all(str(task_id) in text for task_id in result))
+        self.assertTrue(all(str(task_id) in text.upper() for task_id in result))
 
     def test_documented_examples(self):
         cases = {

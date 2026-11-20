@@ -612,6 +612,15 @@ class Repo:
 
     def lookup(self, task_id: TaskId) -> StoredTask | None:
         context = self.context_of(task_id)
+        local_paths = [
+            path
+            for archived in (False, True)
+            for path in self._files(context, archived)
+            if ids.parse_filename(path.name)[0] == task_id
+        ]
+        if len(local_paths) > 1:
+            paths = ", ".join(str(path) for path in local_paths)
+            raise ChittyError(f"{task_id} is used by more than one file: {paths}")
         matches = [
             task
             for archived in (False, True)

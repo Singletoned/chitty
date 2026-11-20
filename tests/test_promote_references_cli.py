@@ -27,19 +27,27 @@ class TestPromoteReferencesCli(CliTestCase):
     def test_references_are_silent_except_for_first_textual_promotion(self):
         self.run_cli("edit", "TASK-1", "-s", "todo")
         self.assertEqual(self.run_cli("edit", "TASK-1", "-s", "todo").stdout, "unchanged TASK-1\n")
-        self.assertTrue(
-            self.run_cli("edit", "TASK-1", "--title", "Renamed").stdout.startswith(
-                "updated TASK-1 "
-            )
+        output = self.run_cli("edit", "TASK-1", "--title", "Renamed").stdout
+        self.assertEqual(
+            output, f"updated TASK-1 {self.root}/chitty/tasks/TASK-1--renamed.md actor test-agent\n"
         )
 
         # A fresh task in planning exercises transitions that do not promote to todo.
         self.run_cli("add", "Third task", "-s", "planning", "-d", "See TASK-2.")
-        self.assertTrue(
-            self.run_cli("edit", "TASK-3", "-s", "doing").stdout.startswith("updated TASK-3 ")
+        output = self.run_cli("edit", "TASK-3", "-s", "doing").stdout
+        self.assertEqual(
+            output,
+            f"updated TASK-3 {self.root}/chitty/tasks/TASK-3--third-task.md actor test-agent\n",
         )
         self.run_cli("add", "Fourth task", "-s", "planning", "-d", "See TASK-2.")
         output = self.run_cli("edit", "TASK-4", "-s", "todo", "--json").stdout
         self.assertEqual(json.loads(output)["status"], "todo")
         self.assertNotIn("TASK-2 doing", output)
         self.assertNotIn("TASK-9 no such task", output)
+
+    def test_duplicate_reference_reports_error_after_status_change(self):
+        original = self.root / "chitty/tasks/TASK-2--second-task.md"
+        (self.root / "chitty/tasks/TASK-2--duplicate.md").write_text(original.read_text())
+        result = self.run_cli("edit", "TASK-1", "-s", "todo", exit_code=1)
+        self.assertIn("TASK-2 is used by more than one file", result.output)
+        self.assertIn("status: todo", self.run_cli("show", "TASK-1").stdout)
