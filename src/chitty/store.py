@@ -400,6 +400,14 @@ class Repo:
             raise ChittyError(f"no task {task_id} in {context.directory}")
         return task
 
+    def for_human_edit(self, task_id: TaskId) -> "Repo":
+        """Select the worktree containing the latest task version, if any."""
+        branch = self.find(task_id).branch
+        if branch is None or branch == self._current_branch():
+            return self
+        worktree = git.worktree_for_branch(self.root, branch)
+        return Repo.open(worktree) if worktree is not None else self
+
     def check_dependencies(self, references: Sequence[str]) -> None:
         for reference in references:
             self.find(TaskId.parse(reference))

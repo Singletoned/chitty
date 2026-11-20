@@ -662,6 +662,12 @@ def _format(stored: StoredTask) -> str:
     is_flag=True,
     help="Allow an actor who worked on a task to review it; records the override in History.",
 )
+@click.option(
+    "--human",
+    "human_edit",
+    is_flag=True,
+    help="For people editing from the main checkout, for example to approve a review.",
+)
 @json_option
 def edit(
     task_id: str,
@@ -690,10 +696,14 @@ def edit(
     set_notes_file: TextIO | None,
     summary: str | None,
     override_review_independence: bool,
+    human_edit: bool,
     as_json: bool,
 ) -> None:
     """Change a task. Criterion numbers refer to the list before this edit."""
     repo = _repo()
+    resolved_id = repo.resolve(task_id)
+    if human_edit:
+        repo = repo.for_human_edit(resolved_id)
     changes = Edit(
         title=title,
         status=status,
@@ -717,7 +727,17 @@ def edit(
         summary=summary,
         override_review_independence=override_review_independence,
     )
-    change = repo.edit(repo.resolve(task_id), changes)
+    previous_actor = os.environ.get("CHITTY_ACTOR")
+    if human_edit:
+        os.environ["CHITTY_ACTOR"] = "human"
+    try:
+        change = repo.edit(resolved_id, changes)
+    finally:
+        if human_edit:
+            if previous_actor is None:
+                os.environ.pop("CHITTY_ACTOR", None)
+            else:
+                os.environ["CHITTY_ACTOR"] = previous_actor
     escalated = status == "doing" and change.task.task.frontmatter.status == "blocked"
     _report(change, as_json, "escalated to human review" if escalated else "updated")
 
