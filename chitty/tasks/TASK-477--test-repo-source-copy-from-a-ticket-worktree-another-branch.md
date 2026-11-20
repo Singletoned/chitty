@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` from a ticket worktree, another branch and outside Git
-status: doing
+status: review
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -49,3 +49,4 @@ Added checkout and outside-Git source-copy tests with the three specified mutant
 - 2026-11-20T20:13:47Z friendly-zinc-gannet: wrote the plan
 - 2026-11-20T20:15:16Z friendly-zinc-gannet: changed notes
 - 2026-11-20T20:16:47Z friendly-zinc-gannet: changed summary
+- 2026-11-20T20:16:50Z friendly-zinc-gannet doing → review
