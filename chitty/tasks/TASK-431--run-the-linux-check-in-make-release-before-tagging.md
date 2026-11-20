@@ -32,6 +32,10 @@ Out of scope: the landing check (`HUMAN-13`), retrying, and the GitHub workflows
 - [ ] The two existing tests named in the Description pass with their added `linux-ran` assertions; a note records that the success-path assertion fails without the change
 - [ ] The comment in `scripts/release.sh` and the release bullet in `AGENTS.md` mention the Linux check; `make check` passes
 
+## Plan
+
+Add a fixture Linux-check script and assertions proving it runs on the committed release commit and prevents tag/push on failure. Run regression tests before changing release.sh, then implement the check and update release documentation. Verify with focused tests and make check, then commit implementation files.
+
 ## History
 
 - 2026-11-19T18:45:25Z daring-amber-kestrel → planning
@@ -40,3 +44,4 @@ Out of scope: the landing check (`HUMAN-13`), retrying, and the GitHub workflows
 - 2026-11-19T20:34:52Z daring-amber-kestrel cold-read → planning
 - 2026-11-19T20:34:57Z daring-amber-kestrel planning → todo
 - 2026-11-20T00:24:32Z intrepid-lilac-ibis todo → doing
+- 2026-11-20T00:27:18Z intrepid-lilac-ibis: wrote the plan
