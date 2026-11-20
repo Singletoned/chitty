@@ -33,6 +33,10 @@ No property: a fixed set of placements, each listed; `TASK-393` adds the generat
 - [ ] With `TASK-1` edited on both `task-1` and `main` since they split, a file whose body does not start with `---` committed as `TASK-2` on `main`, and `git.historical_files` patched with `unittest.mock.patch.object` to raise, `Repo.open(root).discovered_contexts()` returns the configured contexts and `other` without raising (fails before the change, by the patched error; the conflicted and malformed tickets are guards that discovery reads no ticket content)
 - [ ] The migrated test in `tests/test_unconfigured_directories.py` passes and asserts the new behaviour, and `make check` passes
 
+## Plan
+
+Add real-Git discovery regression tests and migrate the history-only fixture; verify failures before replacing history discovery with cached counted ticket paths, then run fixes, formatting and checks.
+
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
@@ -41,3 +45,4 @@ No property: a fixed set of placements, each listed; `TASK-393` adds the generat
 - 2026-11-20T22:58:02Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T22:58:02Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:58:16Z sunny-silver-yellowhammer todo → doing
+- 2026-11-20T22:59:38Z sunny-silver-yellowhammer: wrote the plan
