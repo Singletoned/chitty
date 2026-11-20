@@ -2,7 +2,6 @@
 title: Claim a `todo` ticket on its new branch instead of on `main`
 status: todo
 depends_on:
-  - TASK-378
   - TASK-382
 parent: TASK-376
 created: 2026-11-18
@@ -12,7 +11,7 @@ created: 2026-11-18
 
 Today `_run_ticket` in `src/chitty/run.py` claims a `todo` ticket on `main` (`main_repo.edit(action.id, Edit(status="doing", skip_verdicts=True, skip_current_version=True))`, from `TASK-372`) and only then makes or reuses its worktree. Under the new ticket state model (`docs/plan/ticket-state.md`, "Planning decisions"; on branch `plan/ticket-state` until it lands on `main`) the ticket branch is the ticket while it exists, and the runner writes nothing on `main` for it. "Queued" means `todo` on `main` with no ticket branch, so making the branch is the claim. This reverses `TASK-372`'s claim on `main`.
 
-Starts after `TASK-378` (reads by rule, so the main checkout sees the branch's `doing`) and `TASK-382` (`branch_repo`) land.
+Starts after `TASK-382` (`branch_repo`) lands. It lands before `TASK-378` switches reads to the decided rule: today's reads already show the branch's newer claim as `doing` in the main checkout (the newest copy across refs wins), and under the rule the branch copy is authoritative, so criterion 1 holds either way. Claiming on `main` while a ticket branch exists is what made `TASK-378`'s new reads see that ticket as changed on both sides.
 
 Decisions:
 
@@ -48,3 +47,4 @@ Tests: real-Git, fake-agent runner tests. Replace `tests/test_run_claims_on_main
 - 2026-11-18T17:47:26Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:47:26Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:47:28Z lively-quartz-crane planning → todo
+- 2026-11-20T12:42:17Z jolly-dusky-badger: changed dependencies, description
