@@ -12,6 +12,10 @@ class TestPlannerEvidence(unittest.TestCase):
         self.assertIn("a stub cannot show the tests fail", self.planning)
         self.assertIn("plausible wrong versions of the code", self.planning)
 
+    def test_wrong_versions_are_committed_tests(self):
+        self.assertIn("commit each wrong version as a test", self.planning)
+        self.assertNotIn("record in a note which test failed", self.planning)
+
     def test_recipes_are_probed_against_existing_code(self):
         self.assertIn("run each specified generator recipe against it", self.planning)
 

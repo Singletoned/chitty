@@ -92,8 +92,10 @@ asking the first.
 - The planner checks each claim about code, commands and tests against the
   source as it writes it, runs `chitty check` before starting a reader, and
   plans one ticket at a time (2026-11-18). When the tested code already
-  exists, the ticket lists wrong versions for the worker to run against the
-  tests, the planner runs each generator recipe against the real code before
+  exists, the ticket lists wrong versions for the worker to commit as tests
+  that assert each one fails (2026-11-20: hand runs recorded in notes were
+  skipped by workers twice on `TASK-471`; move checks from agents to
+  automation where safe), the planner runs each generator recipe against the real code before
   the read, and distractor values are built from the drawn value.
 - These habits worked on their first use (2026-11-19, `TASK-370`, `TASK-373`,
   `TASK-377`, `TASK-403`, `TASK-404`): checking a claim at the source showed a
