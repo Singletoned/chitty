@@ -30,6 +30,10 @@ Property in a new `tests/test_property_branch_work.py` with Hypothesis: generate
 - [ ] `docs/plan/next-action-and-runner.md` states the new rule where it describes check failures, and `make check` passes
 - [ ] The `_has_work` property in `tests/test_property_branch_work.py` passes; a note records that it fails while `_has_work` raises `NotImplementedError` and against a mutant using `str(path).startswith("chitty")`
 
+## Plan
+
+Add integration and property regressions, demonstrate failures against the stub and prefix mutant, then implement merge-base path detection and update runner documentation. Run formatting and checks before handoff.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -44,3 +48,4 @@ Suggestion origin: chitty
 - 2026-11-20T23:13:05Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T23:13:23Z quick-pearl-lapwing: changed description
 - 2026-11-20T23:13:38Z nimble-fawn-vole todo → doing
+- 2026-11-20T23:15:34Z nimble-fawn-vole: wrote the plan
