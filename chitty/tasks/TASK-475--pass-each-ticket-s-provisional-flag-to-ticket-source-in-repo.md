@@ -1,6 +1,6 @@
 ---
 title: Pass each ticket's `provisional` flag to `ticket_source` in `Repo.source_copy`
-status: doing
+status: review
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -56,3 +56,4 @@ Source selection parses the working copy first or cached main copy if absent, an
 - 2026-11-20T20:08:15Z golden-umber-toad: wrote the plan
 - 2026-11-20T20:08:46Z golden-umber-toad: changed notes
 - 2026-11-20T20:10:19Z golden-umber-toad: changed summary; ticked acceptance criteria
+- 2026-11-20T20:10:22Z golden-umber-toad doing → review
