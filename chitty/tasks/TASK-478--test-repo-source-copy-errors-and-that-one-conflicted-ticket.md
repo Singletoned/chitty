@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` errors, and that one conflicted ticket does not break others
-status: planning
+status: cold-read
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -20,7 +20,7 @@ Expected errors (all `ChittyError`):
 - Two working-tree files for `TASK-2`: `TASK-2 is used by more than one file: <paths>`.
 - A malformed working-tree `TASK-3` on `main`: `<absolute path>: <error>`.
 
-Because the code exists, each test must be shown to catch a wrong version. Commit these mutants as tests, in the style of `tests/test_property_blockers.py` (`TestBlockerPropertyMutants`): each patches the wrong version in with `unittest.mock.patch`, runs the same check, and asserts it fails. The wrong versions: (1) choose every ID's source when the first ID is read, so one conflict fails every read; (2) catch the parse error and return `None`; (3) take the first of several duplicate files instead of raising.
+Because the code exists, each test must be shown to catch a wrong version. Commit these mutants as tests, in the style of `tests/test_property_blockers.py` (`TestBlockerPropertyMutants`): each applies the wrong version with `unittest.mock.patch.object`, runs the same check, and asserts it fails (`assertRaises(AssertionError)`). The wrong versions: (1) `Repo.source_copy` wrapped so that it first calls `self._choose_source` for every ID in `self.ticket_ids()`, so one conflict fails every read, against the `TASK-2` check of criterion 1; (2) `Repo.source_copy` wrapped to return `None` instead of raising `ChittyError`, against the malformed-file checks; (3) `chitty.store.ticket_source` wrapped to pass a `changed_on_both` that always returns `False`, against the changed-on-both check.
 
 Tests: a new `tests/test_source_copy_errors.py`, set up as `tests/test_source_copy.py` from `TASK-476` is, calling `Repo.open(root)` directly, one test per error. Make remote-tracking refs with `git update-ref refs/remotes/origin/task-1 <commit>`; make the orphan with `git checkout --orphan task-1`. No property: a fixed set of error cases.
 
@@ -33,3 +33,5 @@ Tests: a new `tests/test_source_copy_errors.py`, set up as `tests/test_source_co
 ## History
 
 - 2026-11-20T17:43:44Z jolly-dusky-badger → planning
+- 2026-11-20T20:05:28Z jolly-dusky-badger: changed description
+- 2026-11-20T20:05:28Z jolly-dusky-badger planning → cold-read
