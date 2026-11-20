@@ -1,6 +1,6 @@
 ---
 title: Escape a lone literal asterisk when Chitty writes ticket text
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -52,3 +52,4 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: the rule as first written (Com
 - 2026-11-17T20:01:19Z kind-umber-toad: changed dependencies
 - 2026-11-17T20:22:21Z kind-umber-toad: changed owner
 - 2026-11-17T20:22:21Z kind-umber-toad planning → todo
+- 2026-11-20T22:13:39Z nimble-ginger-kestrel todo → doing
