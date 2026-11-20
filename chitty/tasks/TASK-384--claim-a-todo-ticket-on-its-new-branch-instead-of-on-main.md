@@ -49,3 +49,8 @@ Tests: real-Git, fake-agent runner tests. Replace `tests/test_run_claims_on_main
 - 2026-11-18T17:47:28Z lively-quartz-crane planning → todo
 - 2026-11-20T12:42:17Z jolly-dusky-badger: changed dependencies, description
 - 2026-11-20T13:05:49Z eager-hazel-dormouse todo → doing
+- 2026-11-20T13:06:46Z eager-hazel-dormouse: changed notes
+- 2026-11-20T13:06:46Z eager-hazel-dormouse doing → error
+- 2026-11-20T17:23:07Z jolly-dusky-badger: replaced notes
+- 2026-11-20T17:23:07Z jolly-dusky-badger error → todo
+- 2026-11-20T17:23:18Z sunny-fawn-dormouse todo → doing
