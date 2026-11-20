@@ -1,6 +1,6 @@
 ---
 title: Mark the end of a dependency chain with 🚧 in `chitty list`
-status: doing
+status: review
 priority: high
 parent: TASK-70
 created: 2026-11-20
@@ -50,9 +50,11 @@ Review failed (design): The prior tests review already required the same mutatio
 
 Planner 2026-11-20 (owner agreed): wrong versions are now committed tests that run the property against each one, instead of hand-run mutants recorded in notes, which two workers did not run. Criteria 1 and 3 changed accordingly; criterion 2 passed review and is unchanged. Keep the implementation.
 
+Completed the five specified property mutants as committed subtests. Focused test passed; make check passed (791 tests). Implementation and required list/performance/docs coverage are committed in the ticket worktree.
+
 ## Summary
 
-Added independent blocker property expectations and comprehensive committed-main list/filter/JSON coverage. `make check` passes (790 tests). Mutation evidence requested by acceptance criteria is still unverified and should be checked during review.
+Implemented blocker markers and the required integration, property, and performance coverage; updated the three docs. Added five committed Hypothesis mutation checks. Verified with focused property tests and make check (791 tests). Ready for independent review.
 
 ## History
 
@@ -83,3 +85,5 @@ Added independent blocker property expectations and comprehensive committed-main
 - 2026-11-20T09:43:34Z lively-bronze-crane: changed owner
 - 2026-11-20T09:43:34Z lively-bronze-crane planning → todo
 - 2026-11-20T09:46:10Z intrepid-teal-quail todo → doing
+- 2026-11-20T09:52:38Z human: changed notes, summary
+- 2026-11-20T09:52:38Z human doing → review
