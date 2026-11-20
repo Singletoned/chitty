@@ -40,6 +40,10 @@ Suggestion origin: chitty
 
 Before the fix, the work-branch integration test failed with todo to error; both ticket-only and fresh-todo guards passed. The property failed with NotImplementedError and rejected the startswith prefix mutant with chitty.toml.
 
+## Summary
+
+Runner now starts the work agent after a failing check on a todo branch with committed changes outside chitty; ticket-only branches still error. Added integration and property regressions and updated runner documentation. Verified make check (866 tests) and the pre-fix failures noted above. No follow-ups.
+
 ## History
 
 - 2026-11-20T23:09:59Z quick-pearl-lapwing → backlog
@@ -52,3 +56,4 @@ Before the fix, the work-branch integration test failed with todo to error; both
 - 2026-11-20T23:13:38Z nimble-fawn-vole todo → doing
 - 2026-11-20T23:15:34Z nimble-fawn-vole: wrote the plan
 - 2026-11-20T23:16:31Z nimble-fawn-vole: changed notes
+- 2026-11-20T23:18:42Z nimble-fawn-vole: changed summary
