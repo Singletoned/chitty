@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -65,3 +65,4 @@ Implemented ticket-only quick landing retries, bounded to ten, with merge-base s
 - 2026-11-19T23:52:32Z youthful-zinc-wren todo → doing
 - 2026-11-19T23:54:08Z youthful-zinc-wren: wrote the plan
 - 2026-11-20T00:04:12Z youthful-zinc-wren: changed notes, summary
+- 2026-11-20T00:04:54Z youthful-zinc-wren doing → review
