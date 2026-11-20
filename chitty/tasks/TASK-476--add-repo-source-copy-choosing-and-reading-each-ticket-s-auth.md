@@ -38,7 +38,7 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 
 ## Plan
 
-Add the source-copy API and focused real-Git placement tests, first running all tests against the requested stub. Select sources lazily per ID using cached ref files and ticket_source, invalidate the cache with Repo state, then run fix, format and checks.
+Correct the criterion 3 fixture by committing both initial tickets on main before editing each on its branch. Verify the corrected test against the stub and implementation, then run fix, format and checks before handoff.
 
 ## Notes
 
@@ -70,3 +70,4 @@ Implemented lazy per-ticket source selection and authoritative copy reading, wit
 - 2026-11-20T19:54:48Z daring-coral-adder doing → review
 - 2026-11-20T19:57:35Z mellow-quartz-newt: changed acceptance criteria, notes
 - 2026-11-20T19:57:35Z mellow-quartz-newt review → doing
+- 2026-11-20T19:59:01Z rosy-white-quail: wrote the plan
