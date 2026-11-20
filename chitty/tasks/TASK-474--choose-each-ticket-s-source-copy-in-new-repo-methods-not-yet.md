@@ -1,6 +1,6 @@
 ---
 title: Choose each ticket's source copy in new `Repo` methods, not yet used by reads
-status: todo
+status: doing
 depends_on:
   - TASK-377
   - TASK-380
@@ -59,3 +59,4 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - 2026-11-20T12:42:03Z jolly-dusky-badger planning → cold-read
 - 2026-11-20T12:43:40Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T12:43:40Z jolly-dusky-badger cold-read → todo
+- 2026-11-20T13:07:50Z eager-maroon-stoat todo → doing
