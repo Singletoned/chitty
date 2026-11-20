@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -79,3 +79,4 @@ Back to planning review 2026-11-20: the previous worker returned it without star
 - 2026-11-20T22:34:18Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T22:35:13Z quick-pearl-lapwing: changed description
 - 2026-11-20T22:35:13Z quick-pearl-lapwing cold-read → todo
+- 2026-11-20T22:38:52Z brisk-coral-eel todo → doing
