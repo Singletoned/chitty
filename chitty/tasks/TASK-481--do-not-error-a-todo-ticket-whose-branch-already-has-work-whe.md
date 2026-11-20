@@ -1,6 +1,6 @@
 ---
 title: Do not error a `todo` ticket whose branch already has work when the pre-session check fails
-status: review
+status: done
 created: 2026-11-20
 ---
 
@@ -25,10 +25,10 @@ Property in a new `tests/test_property_branch_work.py` with Hypothesis: generate
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_next.py`, a `todo` ticket whose branch `task-1` has a commit adding `work.py` gets an agent despite a failing check: `chitty run` prints `TASK-1: doing → review`, and the ticket the agent sees contains `Check failed before this session`; fails before the change (the ticket goes to `error` and no agent starts)
-- [ ] A `todo` ticket whose branch has only a commit changing its own ticket file still goes to `error` with no agent started (the fake agent's marker file is absent), and `test_run_check_failure_on_todo_ticket_records_error_on_branch` passes unchanged; both are guards that pass before the change
-- [ ] `docs/plan/next-action-and-runner.md` states the new rule where it describes check failures, and `make check` passes
-- [ ] The `_has_work` property in `tests/test_property_branch_work.py` passes; a note records that it fails while `_has_work` raises `NotImplementedError` and against a mutant using `str(path).startswith("chitty")`
+- [x] In `tests/test_next.py`, a `todo` ticket whose branch `task-1` has a commit adding `work.py` gets an agent despite a failing check: `chitty run` prints `TASK-1: doing → review`, and the ticket the agent sees contains `Check failed before this session`; fails before the change (the ticket goes to `error` and no agent starts)
+- [x] A `todo` ticket whose branch has only a commit changing its own ticket file still goes to `error` with no agent started (the fake agent's marker file is absent), and `test_run_check_failure_on_todo_ticket_records_error_on_branch` passes unchanged; both are guards that pass before the change
+- [x] `docs/plan/next-action-and-runner.md` states the new rule where it describes check failures, and `make check` passes
+- [x] The `_has_work` property in `tests/test_property_branch_work.py` passes; a note records that it fails while `_has_work` raises `NotImplementedError` and against a mutant using `str(path).startswith("chitty")`
 
 ## Plan
 
@@ -39,6 +39,12 @@ Add integration and property regressions, demonstrate failures against the stub 
 Suggestion origin: chitty
 
 Before the fix, the work-branch integration test failed with todo to error; both ticket-only and fresh-todo guards passed. The property failed with NotImplementedError and rejected the startswith prefix mutant with chitty.toml.
+
+Reviewed: All criteria verified; no prior review findings.
+1: pass - `make check` passed the work-branch integration test; patching `_branch_has_work` to return false reproduced the old behavior and the test failed with `TASK-1: todo → error` instead of `TASK-1: doing → review`.
+2: pass - `make check` passed both guards; with `_branch_has_work` patched false both guards also printed `ok`.
+3: pass - inspected `docs/plan/next-action-and-runner.md`; `make check` reported 871 tests OK, ruff clean and pyright 0 errors.
+4: pass - `make check` passed the property; the existing note records both regressions. Running the property with a patched `NotImplementedError` stub printed `NotImplementedError`, and with the prefix mutant printed `False != True` for `chitty.toml`.
 
 ## Summary
 
@@ -58,3 +64,5 @@ Runner now starts the work agent after a failing check on a todo branch with com
 - 2026-11-20T23:16:31Z nimble-fawn-vole: changed notes
 - 2026-11-20T23:18:42Z nimble-fawn-vole: changed summary
 - 2026-11-20T23:18:50Z nimble-fawn-vole doing → review
+- 2026-11-20T23:24:12Z friendly-ebony-urchin: changed notes; ticked acceptance criteria
+- 2026-11-20T23:24:12Z friendly-ebony-urchin review → done
