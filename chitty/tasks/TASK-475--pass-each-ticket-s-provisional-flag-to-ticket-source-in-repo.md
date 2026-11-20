@@ -21,10 +21,11 @@ Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Gi
 
 ## Acceptance Criteria
 
-- [ ] In the linked worktree of `task-5`, a provisional ticket created there gives `ref` `None` and its working-tree content both before and after it is committed on `task-5`; the same test with `provisional=False` passed (as `TASK-474` left it) gives `ref` `main` or fails, so it fails before the change
+- [ ] In the linked worktree of `task-5`, a provisional ticket created there gives `ref` `None` and its working-tree content, both before and after it is committed on `task-5` (fails before the change: with `provisional=False` it gives `None`, as `main` has no file for it)
 - [ ] A ticket whose `main` tip copy has `provisional: true`, read from a checkout on branch `feature` whose working tree has deleted the file, gives `None`; the same ticket without `provisional` gives `ref` `main`
-- [ ] With a malformed copy in this checkout's working tree for an ID that also exists at `main`'s tip, `source_copy` raises the working-tree parse error (`<absolute path>: <error>`); `make check` passes
+- [ ] In a checkout on branch `feature`, with a malformed working-tree copy of a ticket that also exists, well formed, at `main`'s tip, `source_copy` raises the working-tree parse error (`<absolute path>: <error>`), because that copy is parsed first (fails before the change, which reads `main`'s copy); `make check` passes
 
 ## History
 
 - 2026-11-20T12:41:32Z jolly-dusky-badger → planning
+- 2026-11-20T12:41:44Z jolly-dusky-badger: changed acceptance criteria
