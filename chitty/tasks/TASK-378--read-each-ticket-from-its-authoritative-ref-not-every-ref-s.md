@@ -1,63 +1,59 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: blocked
+status: planning
 labels:
   - needs-minor
+owner: human
 depends_on:
   - TASK-377
   - TASK-382
   - TASK-383
   - TASK-396
   - TASK-380
+  - TASK-474
+  - TASK-475
+  - TASK-384
+  - TASK-476
+  - TASK-477
+  - TASK-478
 parent: TASK-376
 created: 2026-11-18
 ---
 
 ## Description
 
-Today `Repo._tasks_in_location` and `Repo.discovered_contexts` in `src/chitty/store.py` read every local and remote-tracking ref's history (`self._history()`, from `git.historical_files`) and take each ticket's copy with the newest commit time, overlaid with this checkout's files. Commit time is not causal order, so this picks wrong copies (`TASK-366`). The decided rule (`docs/plan/ticket-state.md`, "Planning decisions"; on branch `plan/ticket-state` until it lands on `main`: read it with `git show plan/ticket-state:docs/plan/ticket-state.md`) reads each ticket from one authoritative place, chosen by `ticket_source` (`TASK-377`), using the Git helpers of `TASK-396`.
+On `main` today, `Repo._tasks_in_location` and `Repo.discovered_contexts` in `src/chitty/store.py` read every ref's history (`self._history()`, from `git.historical_files`) and take each ticket's copy with the newest commit time, which picks wrong copies (`TASK-366`). `TASK-474` adds `Repo.ticket_ids()` and `TASK-476` adds `Repo.source_copy(task_id)` (tested further by `TASK-477` and `TASK-478`), which apply the decided rule (`docs/plan/ticket-state.md`, "Planning decisions"; on branch `plan/ticket-state` until it lands: `git show plan/ticket-state:docs/plan/ticket-state.md`) but are not used by any read. This ticket switches every ticket read to them, adds the write rule a fresh ticket worktree needs, and migrates the tests that assert the old choice.
 
-Starts after `TASK-377`, `TASK-396`, `TASK-382` and `TASK-383` land. The last two stop the runner writing on `main` for tickets with a branch; without them, an error the runner records on `main` would be hidden behind the branch copy.
+Starts after `TASK-474`, `TASK-476`, `TASK-477`, `TASK-478`, `TASK-475` and `TASK-384` land. `TASK-384` makes the runner claim a ticket on its branch instead of on `main`; with the runner still claiming on `main`, the new reads see a ticket with a branch as changed on both sides, which blocked this ticket on 2026-11-20.
+
+Run by hand (owner `human`, so `chitty run` skips it): start the worker with `chitty guide work`. This ticket changes how Chitty reads its own ticket state.
+
+The earlier attempt on branch `task-378` (commit `bed36801`, first `27456731`) is reverted there (`0ac2ee94`); `TASK-474` and `TASK-476` supersede it. Start from `main`'s code after rebasing.
 
 Decisions:
 
-- `TASK-396`'s helpers take and return full ref names (`refs/heads/task-5`, `refs/remotes/origin/task-5`); strip the prefixes into `ticket_source`'s `local_tips` and `remote_tips`, and map its short result back to a full ref by this rule: `WORKING_TREE` is this checkout; the configured main branch is `refs/heads/<main>`; the ticket's own lower-cased ID (`task-5`) is `refs/heads/task-5`; anything else is `refs/remotes/<result>`. This is unambiguous because `ticket_source` takes a local candidate only under the exact key `task-5`: a local branch literally named `origin/task-5` is never a candidate (checked 2026-11-20 by calling `ticket_source` with it), so a result `origin/task-5` always means the remote-tracking ref. Resolves the worker finding of 2026-11-19.
-- Ticket branches: from `git.branch_tips`, a local branch named a configured context prefix plus `-<suffix>`, lower-cased (`task-5`), or a remote-tracking branch whose name after its first `/` is one (`origin/task-5`); not `task-5-fix` or `plan/ticket-state`. Pass full refs (`refs/heads/<main>`, the chosen full ref) to `git.ref_commit`, `git.is_ancestor` and `git.changed_since_split`.
-- Which ticket IDs exist: every ticket file in this checkout's working tree, in `main`'s tip tree, and, for each ticket branch, that branch's own ticket at its tip (`git.files_at`): the file whose ID, lower-cased, equals the branch name (`human-12` holds `HUMAN-12`). Ticket files are recognised as `scan` and `ids.parse_filename` do; a file that fails to parse in the copy that is read raises `ChittyError` as `<ref>:<path>: <error>`, as today. Contexts are discovered from the same places. A ticket only on some other branch is not listed.
-- Once per `Repo` (cached, cleared by `_invalidate`), build a map from each ID to its source and the list of its files in that source (active and archive directories of any context). Call `ticket_source` for each ID with: `provisional` (`TASK-380` has landed: the `provisional` field of the first copy that exists, in this order: this checkout, `main`'s tip, the ticket branch; only that copy is parsed for it, and its parse error propagates as `<ref>:<path>: <error>`. A provisional ticket that exists only on a ticket branch is read from this checkout, as `ticket_source` returns `WORKING_TREE`, so it is not listed here); `git.current_branch`; `Repo._main_branch()`; `main_tip` from `git.ref_commit`; the branch tips; `contains(a, b)` as `git.is_ancestor(root, b, a)` (`b` in `a`'s history), called for every ID that has a candidate (rule 2 needs it even for one), and returning `False` when `a` is `None`; and `changed_on_both(ref)`, true when both `git.changed_since_split(root, ref, main, paths)` and `git.changed_since_split(root, main, ref, paths)` are true, where `paths` is the union of this ID's file paths at `main`'s tip and at `ref`'s tip (so an archive on one side and an edit on the other counts). With no `main` commit, `changed_on_both` returns `False` without calling Git, and the read raises `ChittyError` naming `main_branch` only where `TASK-377` says. An ID listed with more than one file in its source stays the existing `used by more than one file` error. `_tasks_in_location` and `lookup` read from the map, so an ID is listed once, in whichever directory holds its source copy; `context_of` takes the context of that copy, falling back to the prefix only when there is none.
-- `WORKING_TREE`: read this checkout's file, committed or not; a file deleted there but not committed is not listed. A ref: read the file at that ref's tip. If the source has no file for the ID (deleted there), the ticket is not listed.
-- `StoredTask.branch` is the source ref's short name (`task-5`, `origin/task-5`, `main`; never `refs/heads/...`), or `None` for `WORKING_TREE`; `show` prints `branch: <ref>`. `StoredTask.path` is this checkout's root joined with the source copy's relative path, whether or not that file exists here.
-- Visible behaviour changes (label `needs-minor`): on a branch that is neither `main` nor the ticket's own branch, an existing ticket is read from `main`'s tip (an uncommitted edit to it there is not shown), and `_require_current_version` then refuses to write it until `TASK-385` replaces the message; a ticket branch merged into `main` no longer hides `main`'s copy; a repository whose configured main branch has no commit (for example one on `master` with the default `main_branch`) now fails reads off `main` with `TASK-377`'s error. `ticket_source`'s errors (diverged branches, a ticket changed on both sides) propagate from every read that reaches that ticket. Identical edits on both sides still count as changed on both and fail: intended, and rare. A ticket branch with no history in common with `main` fails through `git.changed_since_split`'s existing `unrelated histories` error, even in that branch's own worktree (`ticket_source` checks `changed_on_both` first): intended. A remote whose name contains `/` is not supported: `my/remote/task-5` is never a candidate. The map needs no staleness handling beyond `_invalidate`: `src/chitty/mcp.py` opens a fresh `Repo` for every call.
-- Outside a Git repository every ticket is read from the working tree, as today.
-- Unchanged here: `next_number` already reads `main`'s files (`TASK-379`); `check.py`'s `check` and `fix` scan this checkout's files (`TASK-394` limits `fix`); `_dependency_is_done` keeps reading dependencies from `main`'s files, because done means landed on `main`; `TASK-386` deletes the history code. Cost: one `is_ancestor` call per ticket that has a ticket branch, and one diff per ticket read from a branch; accepted for now.
-- Migrate every existing test that asserts the old choice or visibility to the new behaviour, without deleting or weakening any: in `tests/test_check_cross_branch_references.py`, the "other branch" row of `test_reference_existence_matches_show` (`missing` becomes `True`), `test_malformed_task_on_another_branch_reports_parse_error` (now `no task`), and `test_edit_can_depend_on_task_only_on_main` (now refused on a non-ticket branch); `tests/test_unconfigured_directories.py` `test_finds_directory_that_exists_only_in_branch_history` (now not found); in `tests/test_next.py`, `test_todo_dependency_must_be_done_on_main` (branches `worker` and `rename`) and `test_unmerged_archive_does_not_complete_dependency` (writes now refused; reads from `main`); in `tests/test_cli.py`, `test_refuses_all_single_ticket_writes_from_another_worktree`, `test_refuses_a_branch_without_a_worktree`, `test_refuses_a_remote_tracking_branch`, `test_allows_writes_in_the_branch_with_the_latest_version` and `test_allows_writes_from_a_new_worktree_with_no_commits_of_its_own` (their `worker` branches are not ticket branches: rename them to ticket branches where the test is about in-flight tickets, or assert the new refusal); and any others `make check` shows. Keep `tests/test_list_performance.py` passing.
-- One ticket, not split: the migrations cannot land apart from the read change without `make check` failing in between.
+- Wiring: `_tasks_in_location` lists, for its context and archived flag, the IDs from `ticket_ids()` whose `source_copy` is in that directory, as `StoredTask`s built from the copy; `lookup` reads `source_copy` for its ID; `discovered_contexts` takes configured contexts plus every context directory holding a source copy or a working-tree ticket; `context_of` takes the context of the source copy, falling back to the prefix only when there is none. An ID is listed once, in whichever directory holds its source copy.
+- `StoredTask.branch` is `SourceCopy.ref` (`task-5`, `origin/task-5`, `main`, or `None` for the working tree); `show` prints `branch: <ref>`. `StoredTask.path` is this checkout's root joined with the copy's relative path, whether or not that file exists here.
+- Errors from `source_copy` propagate only from reads of that ticket: `chitty show`, `edit` and the runner keep working for other tickets while one is conflicted; `chitty list` reads every ticket and fails naming the conflicted one (later tickets make it mark them instead).
+- Writes in the ticket's own worktree (owner, 2026-11-20): `_require_current_version` also allows a write when the current branch is the ticket's own branch (`task-5` for `TASK-5`), the ticket's source is `main`, and `git.changed_since_split(root, "refs/heads/<main>", "refs/heads/task-5", paths)` is false, with `paths` the union of the ID's file paths at both tips. The write commits on the branch, which puts it ahead of `main`, so every checkout then reads the ticket from there. A merged branch that `main` has since changed is still refused. Every other case is refused as today; `TASK-385` replaces the guard later.
+- Visible behaviour changes (label `needs-minor`): on a branch that is neither `main` nor the ticket's own branch, an existing ticket is read from `main`'s tip (an uncommitted edit there is not shown) and `_require_current_version` refuses to write it; a ticket branch merged into `main` no longer hides `main`'s copy; with the configured main branch absent, reading a ticket that has no ticket branch from a checkout not on that branch fails with `configured main branch ... has no tip`; a ticket only on an unrelated branch is no longer listed.
+- Unchanged: `next_number` (`TASK-379`), `check.py`'s `check` and `fix`, and `_dependency_is_done`, which keeps reading dependencies from `main`'s files. `TASK-386` deletes the history code; this ticket only stops calling it.
+- Migrate, without deleting or weakening any: in `tests/test_check_cross_branch_references.py`, the "other branch" row of `test_reference_existence_matches_show` (`missing` becomes `True`), `test_malformed_task_on_another_branch_reports_parse_error` (now `no task`) and `test_edit_can_depend_on_task_only_on_main` (now refused on a non-ticket branch); `tests/test_unconfigured_directories.py` `test_finds_directory_that_exists_only_in_branch_history` (now not found); in `tests/test_next.py`, `test_todo_dependency_must_be_done_on_main` and `test_unmerged_archive_does_not_complete_dependency` (writes from branches `worker` and `rename` now refused; reads from `main`); in `tests/test_cli.py`, rename branch `worker` to `task-1` in `test_allows_writes_in_the_branch_with_the_latest_version` and `test_allows_writes_from_a_new_worktree_with_no_commits_of_its_own`, keeping their assertions, and keep `test_refuses_all_single_ticket_writes_from_another_worktree`, `test_refuses_a_branch_without_a_worktree` and `test_refuses_a_remote_tracking_branch` asserting a refusal, with whatever message the guard now gives; `test_ticket_worktree_write_does_not_wait` in `tests/test_main_checkout_lock.py` must pass through the own-worktree rule. Migrate any other test `make check` shows asserting the old choice the same way, and name it in the review note. Keep `tests/test_list_performance.py` passing.
+- One ticket: the migrations cannot land apart from the switch without `make check` failing in between. `TASK-474` to `TASK-478` already test each placement directly, so this ticket's new tests check the CLI wiring only.
 
-Tests: real-Git tests in a new `tests/test_ticket_reads.py`, inheriting `CliTestCase` from `tests/test_cli.py`, with `git init -b main`, one test per placement in the criteria, `GIT_COMMITTER_DATE` set on commits where order matters, and `main`'s copy committed directly with Git where `chitty edit` on `main` would be refused. The generated property over placements is `TASK-393`. No property here: a fixed set of placements, each listed and tested.
+Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `CliTestCase` from `tests/test_cli.py`, set up as `tests/test_check_cross_branch_references.py` does. No property: a fixed set of cases, each in the criteria; the generated property over placements is `TASK-393`.
 
 ## Acceptance Criteria
 
-- [ ] From the main checkout, with an uncommitted edit to each ticket's file there: a ticket only on `main` shows the uncommitted edit (guard); a ticket edited on `task-<n>` (ahead of `main`) shows the branch copy and `chitty show` prints `branch: task-<n>`, even when a later `main` commit by `GIT_COMMITTER_DATE` touches another ticket (guard); a ticket retitled on `task-<n>` (its file renamed there, `main` keeping the old name) is listed once, with the branch title, and `chitty show` prints the branch path (guard); a ticket only on `origin/task-<n>` ahead of `main` shows that copy (guard); local `task-<n>` behind `origin/task-<n>` shows the remote copy (fails before the change); a ticket only on an unrelated branch is not listed (fails before the change). Guards may pass before the change; the review note marks them as guards.
-- [ ] A ticket archived on its branch but active on `main` is listed once, as archived, by `chitty list --all` in the main checkout; a `todo` ticket whose branch says `doing` lists as `doing` when `main`'s last commit touching it is dated after the branch's by `GIT_COMMITTER_DATE` (fails before the change); a ticket whose branch deletes its file is not listed; a ticket branch fast-forward merged into `main` and then left behind by a later `main` commit shows `main`'s copy
-- [ ] In the linked worktree of `task-5`, after a commit there changing `TASK-5`, `TASK-5` shows a further uncommitted edit made there, and `TASK-7` (no branch) shows `main`'s tip copy despite an uncommitted edit to it in that worktree; on branch `feature`, an existing ticket shows `main`'s tip copy despite an uncommitted edit there
-- [ ] With local `task-<n>` and `origin/task-<n>` diverged, `chitty show` and `chitty list` in the main checkout fail naming both short refs (`origin/task-<n>`, `task-<n>`); with the ticket edited on both `task-<n>` and `main` since they split, they fail naming `task-<n>` and `main`; with `task-<n>` an orphan branch they fail with the `unrelated histories` error; with a malformed ticket file committed on `task-<n>`, `chitty show` fails with `<ref>:<path>: <error>`, where `<ref>` is the short name `StoredTask.branch` would hold (`task-<n>`)
-- [ ] With `git.historical_files` patched to raise, `chitty show` and `chitty list` still give the values criteria 1 to 3 expect; outside a Git repository, tickets are read from the working tree; each test named in the migration decision asserts its new behaviour, and the review note lists each by name with its result; `make check` passes
-
-## Plan
-
-Replace history-based ticket discovery with a cached authoritative-source index. Gather ticket IDs and context directories from the working tree, main tip, and configured ticket-branch tips; select each ID source with ticket_source and Git ancestry/change helpers; load only that source copy and preserve existing parsing and duplicate-file errors. Update callers and all affected tests, add real-Git placement coverage, then format, run make check, and commit implementation changes with Task: TASK-378.
+- [ ] From the main checkout, through the CLI: a ticket edited on `task-<n>` ahead of `main` shows the branch copy in `chitty show`, which prints `branch: task-<n>`; a ticket retitled on `task-<n>` is listed once by `chitty list` with the branch title, and `chitty show` prints the branch path; a ticket archived on its branch is listed once, as archived, by `chitty list --all`; a ticket only on branch `feature` is not listed and `chitty show` fails with `no task` (fails before the change)
+- [ ] In the linked worktree of a fresh `task-6` made at `main`'s tip, `chitty edit TASK-6 --note x` succeeds and commits on `task-6`, after which `chitty show TASK-6` in the main checkout prints `branch: task-6`; after `task-6` is fast-forward merged into `main` and a further `main` commit changes `TASK-6`, the same edit in that worktree exits 1 with the `_require_current_version` message naming `main`
+- [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`: `chitty show TASK-2` and `chitty edit TASK-2 --note x` succeed; `chitty show TASK-1` fails naming `task-1` and `main`; `chitty list` fails naming `TASK-1`. With a malformed `TASK-1` file committed on `task-1`, `chitty show TASK-1` fails with `task-1:<path>: <error>`
+- [ ] With `git.historical_files` patched (`unittest.mock.patch.object`) to raise, `chitty list` and `chitty show` give criterion 1's results; outside a Git repository, `chitty list` reads the working tree
+- [ ] Each test named in the migration decision asserts its new behaviour, and the review note lists each by name with its result; `tests/test_list_performance.py` passes; `make check` passes
 
 ## Notes
 
-Implementation review found a ref-identity ambiguity in the specified integration. TASK-396 deliberately uses full refs because local `refs/heads/origin/task-5` and remote `refs/remotes/origin/task-5` can coexist at different commits. TASK-378 instructs stripping both to `origin/task-5` for `ticket_source`, then mapping its short result back to a full ref; when the remote candidate wins, that result is indistinguishable from the local branch name, so the mandated mapping can read the wrong tip. `StoredTask.branch` may remain short for display, but source selection needs an unambiguous identity. Decide whether `ticket_source` should return a full ref/typed source identity, or whether colliding local and remote short names are unsupported and must be rejected/documented. I reverted the incomplete implementation; `make check` had exposed this conflict along with expected legacy-test migrations, so no implementation changes are committed.
-
-Planner 2026-11-20: the ref-identity question in the note above is resolved in the Description (mapping rule for `ticket_source` results).
-
-External obstacle: TASK-378 has independently changed copies on `task-378` and `main`; Chitty refuses writes because both sides changed after their split, and rebasing conflicts in the ticket file. The rebase was aborted without resolving it. Planner/owner must reconcile the two ticket copies and decide which notes and status to preserve before implementation can resume.
-
-## Summary
-
-Handoff: implementation was explored but reverted; no code changes remain. Verification found an unresolved ref identity collision: local `origin/task-5` and remote `origin/task-5` both become the same `ticket_source` result after prefix stripping, so the required mapping back to a full ref is not deterministic. Planner decision needed: preserve full ref identity through selection, or explicitly rule out/reject colliding short names. Focused progress verification: make check was run; it exposed legacy expectations requiring migration and the unresolved source identity issue.
+Planner, 2026-11-20: ticket rewritten as the read switch only. The lookup it builds on is `TASK-474`, `TASK-476`, `TASK-477`, `TASK-478` and `TASK-475`, and the runner claim change is `TASK-384`, all landing first. Earlier notes, including about 90 KB of pasted check output, are in Git history. Stays in `planning` until those are done; then compare this text with what landed, cold-read it, and move it to `todo`. Owner `human` keeps `chitty run` off it; start its worker by hand.
 
 ## History
 
@@ -99,3 +95,33 @@ Handoff: implementation was explored but reverted; no code changes remain. Verif
 - 2026-11-20T09:31:03Z plucky-bronze-gannet todo → doing
 - 2026-11-20T09:44:51Z human: changed notes
 - 2026-11-20T09:44:51Z human doing → blocked
+- 2026-11-20T10:05:47Z lively-bronze-crane: changed owner, notes
+- 2026-11-20T10:05:47Z lively-bronze-crane blocked → doing
+- 2026-11-20T10:16:03Z plucky-white-dormouse: changed owner, notes, summary
+- 2026-11-20T10:16:03Z plucky-white-dormouse doing → planning
+- 2026-11-20T11:09:47Z lively-bronze-crane: changed description, acceptance criteria, notes
+- 2026-11-20T11:10:00Z lively-bronze-crane: changed acceptance criteria
+- 2026-11-20T11:15:04Z lively-bronze-crane: changed description, acceptance criteria
+- 2026-11-20T11:15:27Z lively-bronze-crane planning → cold-read
+- 2026-11-20T11:17:33Z lively-bronze-crane cold-read → planning
+- 2026-11-20T11:17:35Z lively-bronze-crane: changed description, acceptance criteria
+- 2026-11-20T11:17:40Z lively-bronze-crane planning → cold-read
+- 2026-11-20T11:19:27Z lively-bronze-crane cold-read → planning
+- 2026-11-20T11:19:29Z lively-bronze-crane: changed description, acceptance criteria
+- 2026-11-20T11:19:34Z lively-bronze-crane planning → cold-read
+- 2026-11-20T11:20:47Z lively-bronze-crane cold-read → planning
+- 2026-11-20T11:20:50Z lively-bronze-crane: changed description, acceptance criteria, notes
+- 2026-11-20T11:20:56Z lively-bronze-crane: changed owner
+- 2026-11-20T11:20:56Z lively-bronze-crane planning → doing
+- 2026-11-20T11:59:01Z lively-pearl-zander: changed notes
+- 2026-11-20T12:00:02Z lively-pearl-zander: changed owner, notes
+- 2026-11-20T12:00:02Z lively-pearl-zander doing → planning
+- 2026-11-20T12:01:52Z lively-bronze-crane: replaced notes
+- 2026-11-20T12:01:55Z lively-bronze-crane: changed owner
+- 2026-11-20T12:01:55Z lively-bronze-crane planning → doing
+- 2026-11-20T12:03:20Z nimble-violet-gannet: changed notes
+- 2026-11-20T12:13:58Z nimble-violet-gannet: changed owner, notes
+- 2026-11-20T12:13:58Z nimble-violet-gannet doing → planning
+- 2026-11-20T12:45:22Z jolly-dusky-badger: replaced notes; changed owner, dependencies, description, acceptance criteria, summary; wrote the plan
+- 2026-11-20T17:44:55Z jolly-dusky-badger: replaced notes; changed dependencies, description
+- 2026-11-20T17:45:05Z jolly-dusky-badger: changed description
