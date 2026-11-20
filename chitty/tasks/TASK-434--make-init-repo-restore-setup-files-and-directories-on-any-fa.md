@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -15,10 +15,10 @@ The upgrade commit that `_prepare_write` makes after `init_repo` returns is out 
 
 Decisions:
 
-- Wrap everything in `init_repo` from the first write to disk through its own commit in one `try`, with `except BaseException:` that restores and re-raises the original exception (replacing today's `except ChittyError` around the commit).
-- Restore means: each path in `originals` (`chitty.toml`, `pyproject.toml`, `AGENTS.md`, `CLAUDE.md`, `.gitignore`) goes back to its `_file_state` with `_restore_file`; and every directory this call created is removed. `init_repo` creates backlog context directories with `mkdir(parents=True)`, so record each directory, parents included, that did not exist before, and remove them deepest first, only when empty.
+- Wrap everything in `init_repo` from the first write to disk to the end of the function, including `register_project` and, when `enable_autocommit` is true, its own commit, in one `try` (the stale case reaches `init_repo` through `_prepare_write` with autocommit off and fails at `register_project`), with `except BaseException:` that restores and re-raises the original exception (replacing today's `except ChittyError` around the commit).
+- Restore means: each path in `originals` (`chitty.toml`, `pyproject.toml`, `AGENTS.md`, `CLAUDE.md`, `.gitignore`) goes back to its `_file_state` with `_restore_file`; and every directory this call created is removed. `init_repo` creates backlog context directories with `mkdir(parents=True)`, so record each directory, parents included, that did not exist just before its `mkdir`, and remove them deepest first, only when empty.
 - `init_repo` computes `originals` twice; keep only the second (both precede any write).
-- Out of scope: the inbox registration under `XDG_DATA_HOME` (outside the repository) is not undone; `pyproject.toml` (`[tool.chitty]`) setups are not drawn by the test.
+- Out of scope: the inbox registration under `XDG_DATA_HOME` (outside the repository, so outside the snapshot on purpose) is not undone; a `chitty/` path that is a file rather than a directory; `pyproject.toml` (`[tool.chitty]`) setups are not drawn by the test.
 
 Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_restore.py`, in a class inheriting `RepoTestCase` (`tests/support.py`), with real Git and real failures, no mocking of files.
 
@@ -77,3 +77,5 @@ Back to planning review 2026-11-20: the previous worker returned it without star
 - 2026-11-19T23:18:27Z brisk-khaki-urchin doing → planning
 - 2026-11-20T22:34:18Z quick-pearl-lapwing: changed notes
 - 2026-11-20T22:34:18Z quick-pearl-lapwing planning → cold-read
+- 2026-11-20T22:35:13Z quick-pearl-lapwing: changed description
+- 2026-11-20T22:35:13Z quick-pearl-lapwing cold-read → todo
