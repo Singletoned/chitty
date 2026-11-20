@@ -40,6 +40,8 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: `add` checks the required desc
 
 The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (commit `8180e62d`). It was 1324 commits behind `main` and no longer applies, so the stale worktree and branch were removed: start fresh from `main`, using that tag only as a reference.
 
+Before the fix, the property arms for add description and edit summary failed on missing file options; the other five arms passed. The stdin examples also failed on missing options or the missing conflict check.
+
 ## History
 
 - 2026-11-16T09:59:58Z intrepid-coral-raven → backlog
@@ -62,3 +64,4 @@ The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (comm
 - 2026-11-20T21:58:59Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T21:59:51Z calm-white-ibis todo → doing
 - 2026-11-20T22:01:08Z calm-white-ibis: wrote the plan
+- 2026-11-20T22:02:56Z calm-white-ibis: changed notes
