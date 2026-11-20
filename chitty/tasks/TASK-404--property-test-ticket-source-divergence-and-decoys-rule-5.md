@@ -1,6 +1,6 @@
 ---
 title: Property-test `ticket_source` divergence and decoys (rule 5)
-status: review
+status: done
 owner: human
 depends_on:
   - TASK-377
@@ -81,6 +81,11 @@ Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktr
 
 Blocked for the human 2026-11-19 21:2x: the work has landed. `main` contains `test: property-test ticket source divergence` and `test: include added refs in decoy change sets`, fast-forwarded after a rebase and a passing `make check` (777 tests). The error above is from a runner (`tidy-white-jay`) that tried to land the same `done` branch while this hand landing was running and lost the race with `main` three times; it was then carried to `main` by the fast-forward. Branch and worktree `task-404` are removed. Only the status needs fixing: `done`, through `review` with the passing review carried over.
 
+Reviewed: status correction only. The work and its passing review landed on 2026-11-19 (`0b2ec41c`, `64261457` on `main`); the human confirmed it on 2026-11-20.
+1: pass - earlier passing review: `make check` printed 777 tests OK; the worker recorded the dropped-name mutant failing the rule 5 property.
+2: pass - earlier passing review: both decoy candidate mutants failed the invariance property, and the changed set includes added refs.
+3: pass - earlier passing review: the notes name three executed mutants and their failing properties; `make check` exited 0.
+
 ## Summary
 
 Fixed the decoy property to generate changed refs from both baseline and expanded maps, including newly added decoys/unrelated refs. Verification: focused suite (6 tests) and make check (format, lint, pyright, 765 tests) pass. No production changes or follow-ups.
@@ -119,3 +124,5 @@ Fixed the decoy property to generate changed refs from both baseline and expande
 - 2026-11-19T21:22:42Z daring-amber-kestrel: changed owner, notes
 - 2026-11-19T21:22:42Z daring-amber-kestrel error → blocked
 - 2026-11-19T21:33:58Z human blocked → review
+- 2026-11-20T08:23:01Z lively-bronze-crane: changed notes
+- 2026-11-20T08:23:01Z lively-bronze-crane review → done
