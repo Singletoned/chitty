@@ -1,6 +1,6 @@
 ---
 title: Escape a lone literal asterisk when Chitty writes ticket text
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -40,6 +40,14 @@ Out of scope: `_`, titles, escaping on read and rewriting existing tickets.
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: the rule as first written (CommonMark HTML unchanged) never escaped `files/*.jpg and c/*.png`, because CommonMark itself pairs those as emphasis; it now compares HTML with `<em>` tags folded to `*`, which gives up single-`*` emphasis (decision recorded, `needs-minor`). Also fixed: which text the comparison uses, a redundant property, the generator alphabet, and the exact CLI input and stored text. Not adopted: testing every `Edit` field through the CLI; `Edit.apply` covers them in one place.
 
+Returned to planning: two requirements conflict with the code or each other, and need decisions before implementation.
+
+1. The specified one-pass, left-to-right shape comparison is not idempotent, contrary to criterion 1. Using CommonMark and the specified algorithm, `**_*_` becomes `**_\*_` on the first pass and `\*\*_\*_` on the second. The first two insertions change the original shape when first visited, but become shape-preserving after the later insertion; folding underscore emphasis into `*` causes this. Decide whether to change the algorithm or the idempotence requirement, and specify expected behavior for this case.
+
+2. The claim that changing `new_task` covers `chitty suggest` is wrong: `src/chitty/inbox.py:suggest` compares the candidate description with the unescaped normalized input and raises if they differ, then writes the original description directly to the suggestion file. Escaping in `new_task` alone therefore rejects descriptions needing escaping rather than storing escaped suggestions. Decide how suggestion validation and storage should change, and specify a regression test including fixture, action and assertions for that path.
+
+No implementation changes were made; the prototype was run in memory against the checkout environment. Full checks and regression verification remain unfinished.
+
 ## History
 
 - 2026-11-16T09:59:59Z intrepid-coral-raven → backlog
@@ -53,3 +61,5 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: the rule as first written (Com
 - 2026-11-17T20:22:21Z kind-umber-toad: changed owner
 - 2026-11-17T20:22:21Z kind-umber-toad planning → todo
 - 2026-11-20T22:13:39Z nimble-ginger-kestrel todo → doing
+- 2026-11-20T22:15:39Z nimble-ginger-kestrel: changed owner, notes
+- 2026-11-20T22:15:39Z nimble-ginger-kestrel doing → planning
