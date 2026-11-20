@@ -35,6 +35,10 @@ Tests: real-Git tests in a new `tests/test_ticket_ids.py`, inheriting `CliTestCa
 - [ ] A file named `notes.md` committed in `chitty/tasks/` on `main` makes `ticket_ids()` raise `main:chitty/tasks/notes.md: <problem>`; the same file in the working tree raises `<absolute path>: <problem>`; the same file committed only on `task-5` is ignored; with the configured main branch having no commit, `ticket_ids()` lists the working tree and ticket branch tickets without failing
 - [ ] Outside a Git repository, `ticket_ids()` lists the working-tree tickets and, with every `chitty.git` function wrapped to record calls from after `Repo.open` returns, calls none except `git.is_repository`. In a repository with `main` and ticket branches `task-1` and `task-2`, with every `chitty.git` function wrapped, `ticket_ids()` calls `git.files_at` exactly once each for `refs/heads/main`, `refs/heads/task-1` and `refs/heads/task-2`, and never calls `git.historical_files` or `git.file_at`. `make check` passes with no existing test changed (`git diff main --stat -- tests` lists only the new file)
 
+## Plan
+
+Add a cached ID and ref-file index using filesystem scans and one Git tree read per eligible ref; validate main and working-tree entries while filtering ticket branches to their own ID. Add real-Git tests first against a NotImplementedError stub, then implement and run formatting and checks.
+
 ## Notes
 
 Planner, 2026-11-20: split after the worker found it too large for one session. This ticket now only lists ticket IDs; choosing and reading copies moved to `TASK-476`, with tests in `TASK-477` and `TASK-478`.
@@ -74,3 +78,4 @@ Planner, 2026-11-20: split after the worker found it too large for one session. 
 - 2026-11-20T17:45:19Z jolly-dusky-badger: changed description
 - 2026-11-20T17:45:19Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T18:59:34Z open-ochre-badger todo → doing
+- 2026-11-20T19:02:17Z open-ochre-badger: wrote the plan
