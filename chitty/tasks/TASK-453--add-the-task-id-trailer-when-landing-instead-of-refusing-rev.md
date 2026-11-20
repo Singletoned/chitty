@@ -216,6 +216,176 @@ Returning to planning: criterion 1 conflicts with the required `message.rstrip()
 
 Planning 2026-11-20: criterion 1 now counts `Task: TASK-1` lines after `rstrip()` on both sides, which resolves the `Task: TASK-1 ` case. The other failures in the last check note (the outdated empty-message test, the merge fixture, the retry `HEAD` expectation, and the removed review cleanliness gate, which must stay) are implementation work against clear criteria. Resumed as `doing`.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+682 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 867 test suites (867 total tests) across 16 workers
+...................................................................................................................................................................................................................................................................................................................................................................................E.......................F...........................................................................updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplpktln2g/repo/chitty/tasks/TASK-1--one.md actor test-agent
+.......━━━━ chitty run · 23:24:28 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+................................................../Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+..........................F........................................................................................F..................................................kill: 41129: No such process
+...............kill: 47511: No such process
+..............Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+........../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/repo/CLAUDE.md
+....Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7y5gm7fc/repo/.worktrees/task-1...
+Check passed; work agent is working on TASK-1...
+...TASK-1: doing → review
+......no next ticket for --mode work
+.../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjorqljog/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprunafd5_/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpjqvba5wz/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpa432iylu/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp5t_94g2l/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuepcl6yd/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpw_r2zxlx/repo/CLAUDE.md
+......................................................................................chitty 0.1.31 is out: run uv tool upgrade chitty
+............................landed TASK-1
+landed TASK-1
+landed TASK-2
+landed TASK-1
+
+======================================================================
+test_add_task_trailers_noop_and_merge_rejection (tests.test_landing.TestLanding.test_add_task_trailers_noop_and_merge_rejection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/tests/test_landing.py", line 112, in test_add_task_trailers_noop_and_merge_rejection
+    self.git("switch", "--quiet", "main", cwd=self.worktree)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/tests/test_landing.py", line 40, in git
+    result = subprocess.run(
+        ["git", *args], cwd=cwd or self.root, capture_output=True, text=True, check=True
+    )
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['git', 'switch', '--quiet', 'main']' returned non-zero exit status 128.
+
+======================================================================
+test_fast_forward_failure_without_main_move_is_not_retried (tests.test_landing_retry.TestLandingRetry.test_fast_forward_failure_without_main_move_is_not_retried)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/tests/test_landing_retry.py", line 199, in test_fast_forward_failure_without_main_move_is_not_retried
+    self.assertEqual(
+    ~~~~~~~~~~~~~~~~^
+        self.git("rev-parse", self.branch, cwd=self.worktree).strip(), worktree_head
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+AssertionError: 'ad699280d4a90fe38fa56ec3fe2cf34f125dd4ee' != 'c9d29dc7ef66fe859c45be6d1398f429f83438fd'
+- ad699280d4a90fe38fa56ec3fe2cf34f125dd4ee
++ c9d29dc7ef66fe859c45be6d1398f429f83438fd
+
+
+======================================================================
+test_trailer_is_added_once_and_is_detected (tests.test_property_task_trailer.TestTaskTrailer.test_trailer_is_added_once_and_is_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/tests/test_property_task_trailer.py", line 22, in test_trailer_is_added_once_and_is_detected
+    def test_trailer_is_added_once_and_is_detected(self, source):
+               ^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/.venv/lib/python3.13/site-packages/hypothesis/core.py", line 2334, in wrapped_test
+    raise the_error_hypothesis_found
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/tests/test_property_task_trailer.py", line 25, in test_trailer_is_added_once_and_is_detected
+    self.assertEqual(commits_missing_trailer([Commit("", result)], TASK_ID), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [Commit(sha='', message='Task: TASK-1\n')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+Commit(sha='', message='Task: TASK-1\n')
+
+- [Commit(sha='', message='Task: TASK-1\n')]
++ []
+Failing test case: test_trailer_is_added_once_and_is_detected(
+    self=<tests.test_property_task_trailer.TestTaskTrailer testMethod=test_trailer_is_added_once_and_is_detected>,
+    source='',
+)
+
+======================================================================
+test_dirty_branch_cannot_enter_review_until_committed (tests.test_review_merge.TestReviewMerge.test_dirty_branch_cannot_enter_review_until_committed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/tests/test_review_merge.py", line 567, in test_dirty_branch_cannot_enter_review_until_committed
+    rejected = self.run_cli("edit", "1", "-s", "review", exit_code=1)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-453/tests/test_cli.py", line 89, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpy34zog5k/repo/chitty/tasks/TASK-1--review-me.md actor test-agent
+
+
+----------------------------------------------------------------------
+Ran 867 tests in 85.442s
+
+FAILED (failures=3, errors=1)
+make: *** [check] Error 4
+
+```
+
 ## History
 
 - 2026-11-19T20:55:28Z sunny-white-dormouse → backlog
@@ -243,3 +413,4 @@ Planning 2026-11-20: criterion 1 now counts `Task: TASK-1` lines after `rstrip()
 - 2026-11-20T23:22:59Z sunny-yellow-crane doing → planning
 - 2026-11-20T23:24:02Z quick-pearl-lapwing: changed acceptance criteria, notes
 - 2026-11-20T23:24:02Z quick-pearl-lapwing planning → doing
+- 2026-11-20T23:25:44Z tidy-silver-zander: changed notes
