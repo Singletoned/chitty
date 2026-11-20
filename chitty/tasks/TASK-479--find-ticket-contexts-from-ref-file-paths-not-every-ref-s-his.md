@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from ref file paths, not every ref's history
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -442,6 +442,11 @@ make: *** [check] Error 1
 
 ```
 
+Reviewed:
+1: pass - `python -m unittest tests.test_discovered_contexts` passed on this branch; on an exported `main` with the new tests, the other-file and unrelated-branch cases failed with unexpected `sixth` and `feat`, while the two positive guards passed.
+2: pass - the same test run passed the patched-history conflict and malformed-body case; on exported `main` it failed with `AssertionError: history read`.
+3: pass - the migrated CLI test passed here and failed on exported `main` with exit 0 rather than 1; `make check` printed `Ran 868 tests` and `OK`. No other history-only tests needed migration.
+
 ## Summary
 
 Context discovery now uses cached selected ref files without validating ticket content or working-tree filenames. The earlier regression tests failed before the original fix as recorded in the notes; focused tests and make check now pass, including the stray-file aggregation test. No additional history-only tests needed migration. Follow-up ticket TASK-378 covers remaining historical reads.
@@ -471,3 +476,5 @@ Context discovery now uses cached selected ref files without validating ticket c
 - 2026-11-20T23:10:14Z vivid-yellow-adder: wrote the plan
 - 2026-11-20T23:12:24Z vivid-yellow-adder: changed summary
 - 2026-11-20T23:12:27Z vivid-yellow-adder doing → review
+- 2026-11-20T23:16:18Z quick-maroon-jay: changed notes
+- 2026-11-20T23:16:18Z quick-maroon-jay review → done
