@@ -1415,6 +1415,47 @@ class TestNext(CliTestCase):
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
+    def test_run_check_failure_on_todo_ticket_with_work_starts_agent(self):
+        self.write_failing_checker()
+        self.commit_ticket("Todo", "todo")
+        self.git("switch", "-c", "task-1")
+        (self.root / "work.py").write_text("unfinished = True\n")
+        self.git("add", "work.py")
+        self.git("commit", "--quiet", "-m", "unfinished work")
+        self.git("switch", "main")
+        seen = self.root / "seen"
+        self.install_fake_pi(
+            "from pathlib import Path\n"
+            "import subprocess\n"
+            f"seen = Path({str(seen)!r})\n"
+            "path = next(Path('chitty/tasks').glob('*.md'))\n"
+            "seen.write_text(path.read_text())\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: review'))\n"
+            "subprocess.run(['git', 'add', str(path)], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'review'], check=True)\n"
+        )
+        result = self.run_cli("run")
+        self.assertEqual(result.stdout, "TASK-1: doing → review\n", result.stderr)
+        self.assertIn("Check failed before this session", seen.read_text())
+
+    def test_run_check_failure_on_todo_ticket_with_only_ticket_commits_errors(self):
+        self.write_failing_checker()
+        self.commit_ticket("Todo", "todo")
+        self.git("switch", "-c", "task-1")
+        ticket = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
+        ticket.write_text(
+            ticket.read_text().replace("## History", "## Notes\n\nPrior planning.\n\n## History")
+        )
+        self.git("add", str(ticket))
+        self.git("commit", "--quiet", "-m", "planning")
+        self.git("switch", "main")
+        marker = self.tmp / "agent-started"
+        self.install_fake_pi(f"from pathlib import Path\nPath({str(marker)!r}).write_text('yes')\n")
+        result = self.run_cli("run")
+        self.assertIn("todo → error", result.stdout)
+        self.assertEqual(self.json("show", "TASK-1")["status"], "error")
+        self.assertFalse(marker.exists())
+
     def test_run_check_failure_on_doing_ticket_starts_agent(self):
         self.write_failing_checker()
         self.commit_ticket("Doing", "doing")

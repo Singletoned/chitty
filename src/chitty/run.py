@@ -22,6 +22,7 @@ from uuid import uuid4
 from chitty import git, locks
 from chitty.actor import actor, run_actor
 from chitty.config import (
+    BACKLOG_DIR,
     CHITTY_VERSION,
     CONFIG_NAME,
     PYPROJECT_NAME,
@@ -52,6 +53,14 @@ AGENT_KILL_GRACE_SECONDS = 2
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
+
+
+def _has_work(paths: Sequence[PurePosixPath]) -> bool:
+    return any(len(path.parts) < 2 or path.parts[0] != BACKLOG_DIR for path in paths)
+
+
+def _branch_has_work(worktree: Path, main_branch: str) -> bool:
+    return _has_work(git.changed_paths(worktree, main_branch, "HEAD"))
 
 
 def _only_ticket_paths(paths: Sequence[str], contexts: Sequence[str]) -> bool:
@@ -1349,7 +1358,17 @@ def _handle_check_failure(
     selected_status: str,
 ) -> RunResult | None:
     """Start the agent on an unfinished work ticket whose check exited non-zero."""
-    if action.mode == "work" and exited and selected_status in {"doing", "error"}:
+    if (
+        action.mode == "work"
+        and exited
+        and (
+            selected_status in {"doing", "error"}
+            or (
+                selected_status == "todo"
+                and _branch_has_work(branch_repo.root, branch_repo.config.main_branch)
+            )
+        )
+    ):
         branch_repo.edit(
             action.id,
             Edit(note=f"Check failed before this session: {detail}", skip_verdicts=True),
