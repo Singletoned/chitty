@@ -1,6 +1,6 @@
 ---
 title: Send agent output straight to a log file in `_run_agent`
-status: blocked
+status: doing
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -24,9 +24,9 @@ Tests: no property; this is real process and file handling. New tests go in a ne
 
 ## Acceptance Criteria
 
-- [ ] The test writes `earlier\n` to one log without flushing and seeks it back to its start, then makes three calls on it: an agent that prints `out-1`, `err-1`, `out-2`, `err-2`, `out-3`, `err-3` in that order (the `out` lines on stdout, the `err` lines on stderr, each with `flush=True`) and then writes raw `b"\xff\n"` and `tail` (no newline) through `sys.stdout.buffer`; an agent that prints nothing; and an agent that writes raw `b"\xe2\x82"` with no newline. Each exits 0 and each returned `stdout` equals exactly its own agent bytes (empty for the second); reading the whole log from the start gives `earlier\n` followed by the three outputs in order. Evidence that the test detects a wrong implementation: run a wrong version that returns the whole log, and one that does not seek to the end before starting the agent, and record in a note which assertion failed for each.
-- [ ] The test writes `earlier\n` to its log, then runs an agent that starts a descendant (which sleeps 4 seconds, prints `LATE` with `flush=True`, and exits), writes the descendant PID to a file in a temporary directory the test creates, and exits 0 at once. The call returns in under 3 seconds, and the returned `stdout` contains neither `LATE` nor `earlier`. The test then polls for at most 10 seconds until `ps -o stat= -p <pid>` prints nothing or a state starting with `Z` (as `tests/test_run_timeout.py` does), kills the descendant in a `finally` if it is still running, and asserts the log now contains `LATE`. Run a wrong version that also waits for every descendant of the agent to exit before returning, and record in a note which assertion failed.
-- [ ] With `timeout=2`, an agent that prints `TIMEOUT_MARKER` with `flush=True` and sleeps 60 seconds returns the `timed out` sentinel with `TIMEOUT_MARKER` in `stdout` and in the log. Run a wrong version that returns empty `stdout` on the timeout path, and record in a note which assertion failed. `tests/test_run_timeout.py` changes only by passing `log=` a `tempfile.TemporaryFile()` to its four `_run_agent` calls, and passes, including `test_run_timeout_records_usage_and_exits_one`, which reaches `_run_agent` through `_run_session`. `git grep -n "communicate" -- src/chitty/run.py` finds nothing. `make check` passes.
+- [ ] The test writes `earlier\n` to one log without flushing and seeks it back to its start, then makes three calls on it: an agent that prints `out-1`, `err-1`, `out-2`, `err-2`, `out-3`, `err-3` in that order (the `out` lines on stdout, the `err` lines on stderr, each with `flush=True`) and then writes raw `b"\xff\n"` and `tail` (no newline) through `sys.stdout.buffer`; an agent that prints nothing; and an agent that writes raw `b"\xe2\x82"` with no newline. Each exits 0 and each returned `stdout` equals exactly its own agent bytes (empty for the second); reading the whole log from the start gives `earlier\n` followed by the three outputs in order. Write the checks as a helper that takes the function under test. Commit two wrong versions of `_run_agent` in the test file, one that returns the whole log and one that does not seek to the end before starting the agent, and a test asserting the helper fails for each (`assertRaises(AssertionError)`, one `subTest` each).
+- [ ] The test writes `earlier\n` to its log, then runs an agent that starts a descendant (which sleeps 4 seconds, prints `LATE` with `flush=True`, and exits), writes the descendant PID to a file in a temporary directory the test creates, and exits 0 at once. The call returns in under 3 seconds, and the returned `stdout` contains neither `LATE` nor `earlier`. The test then polls for at most 10 seconds until `ps -o stat= -p <pid>` prints nothing or a state starting with `Z` (as `tests/test_run_timeout.py` does), kills the descendant in a `finally` if it is still running, and asserts the log now contains `LATE`. As in criterion 1, commit a wrong version that also waits for every descendant of the agent to exit before returning, and a test asserting the checks fail for it.
+- [ ] With `timeout=2`, an agent that prints `TIMEOUT_MARKER` with `flush=True` and sleeps 60 seconds returns the `timed out` sentinel with `TIMEOUT_MARKER` in `stdout` and in the log. As in criterion 1, commit a wrong version that returns empty `stdout` on the timeout path, and a test asserting the checks fail for it. `tests/test_run_timeout.py` changes only by passing `log=` a `tempfile.TemporaryFile()` to its four `_run_agent` calls, and passes, including `test_run_timeout_records_usage_and_exits_one`, which reaches `_run_agent` through `_run_session`. `git grep -n "communicate" -- src/chitty/run.py` finds nothing. `make check` passes.
 
 ## Notes
 
@@ -59,6 +59,10 @@ Escalated to human review: failed review 3 times. A human should decide how to p
 Owner decision 2026-11-20: do not echo agent output to the terminal; that was a mistake. Agent output goes to the log only. Planner proposal (not yet agreed): drop the reader thread, lock and `AGENT_OUTPUT_GRACE_SECONDS`; `_run_agent` passes an open binary log file as the agent stdout (stderr merged) and waits with `process.wait`, so a descendant holding the output open no longer delays the run, and returns as `stdout` the bytes the file gained during the call. This removes the three races found in review (lost unterminated output, lost partial UTF-8 character, log detached during a slow stderr write). The earlier implementation on this branch follows the old design.
 
 Blocked by a worktree/ticket ownership mismatch: this task worktree rejects edits because the authoritative latest committed TASK-276 version is on main and instructs Chitty edits to run from the main checkout. The user restricted work to this ticket worktree, so I cannot write the required plan or safely proceed with implementation here. A maintainer should reconcile the authoritative ticket state with the task-276 worktree (or authorize task metadata edits from main); then retry.
+
+Planner 2026-11-20: the block above was caused by the planner, not the ticket. Copying the rewritten ticket to `main` (`58041b1a`) made `main` hold the newest commit, so Chitty treated `main` as authoritative and refused edits in this worktree. Fixed by merging `main` into `task-276` (`de0790b9`, taking the ticket text from `main`); the ticket is back in `todo` and its edits belong in this worktree again. The old threaded code is still on the branch, to be reverted as the Description says.
+
+Planner 2026-11-20 (owner direction: move checks from agents to automation where safe): the wrong versions in all three criteria are now committed tests, not hand runs recorded in notes.
 
 ## History
 
@@ -128,3 +132,10 @@ Blocked by a worktree/ticket ownership mismatch: this task worktree rejects edit
 - 2026-11-20T09:13:42Z intrepid-violet-otter todo → doing
 - 2026-11-20T09:15:39Z intrepid-violet-otter: changed notes
 - 2026-11-20T09:15:39Z intrepid-violet-otter doing → blocked
+- 2026-11-20T09:31:53Z lively-bronze-crane: changed owner
+- 2026-11-20T09:31:53Z lively-bronze-crane blocked → todo
+- 2026-11-20T09:32:15Z lively-bronze-crane: changed notes
+- 2026-11-20T09:44:01Z lively-bronze-crane todo → planning
+- 2026-11-20T09:44:03Z lively-bronze-crane: changed acceptance criteria, notes
+- 2026-11-20T09:44:08Z lively-bronze-crane planning → todo
+- 2026-11-20T09:53:50Z upbeat-indigo-urchin todo → doing
