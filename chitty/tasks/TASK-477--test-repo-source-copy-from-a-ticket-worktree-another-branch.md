@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` from a ticket worktree, another branch and outside Git
-status: review
+status: done
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -21,9 +21,9 @@ Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source
 
 ## Acceptance Criteria
 
-- [ ] With `TASK-5` and `TASK-7` committed on `main` with title `main`: in the linked worktree of `task-5`, after a commit there retitling `TASK-5` to `branch`, `TASK-5` gives `ref` `None` and a further uncommitted retitle made there; `TASK-7` (no branch) gives `ref` `main` and title `main` despite an uncommitted retitle in that worktree. In a checkout on branch `feature`, `TASK-7` gives `ref` `main` and title `main` despite an uncommitted retitle there. Compare `copy.ref` and `copy.task.frontmatter.title`
-- [ ] Outside a Git repository, `source_copy` gives `ref` `None` and the working-tree copy, and, with every `chitty.git` function wrapped to record calls from after `Repo.open` returns, calls none except `git.is_repository`
-- [ ] Each of the three mutants in the Description is committed as a test that asserts the matching check fails against it; `make check` passes
+- [x] With `TASK-5` and `TASK-7` committed on `main` with title `main`: in the linked worktree of `task-5`, after a commit there retitling `TASK-5` to `branch`, `TASK-5` gives `ref` `None` and a further uncommitted retitle made there; `TASK-7` (no branch) gives `ref` `main` and title `main` despite an uncommitted retitle in that worktree. In a checkout on branch `feature`, `TASK-7` gives `ref` `main` and title `main` despite an uncommitted retitle there. Compare `copy.ref` and `copy.task.frontmatter.title`
+- [x] Outside a Git repository, `source_copy` gives `ref` `None` and the working-tree copy, and, with every `chitty.git` function wrapped to record calls from after `Repo.open` returns, calls none except `git.is_repository`
+- [x] Each of the three mutants in the Description is committed as a test that asserts the matching check fails against it; `make check` passes
 
 ## Plan
 
@@ -32,6 +32,11 @@ Create checkout fixtures and shared source-copy checks for the linked worktree, 
 ## Notes
 
 The checkout checks reject the two wrong ticket_source implementations and the outside-Git check raises the specified Git error under the is_repository mutant; the committed mutant tests exercise these failures directly.
+
+Reviewed:
+1: pass - `make check` ran the linked-worktree and feature checks successfully; the committed working-tree and current-branch mutants make the corresponding shared checks raise AssertionError.
+2: pass - `make check` ran the outside-Git check successfully, including the outermost call assertion; the is_repository mutant makes the shared check raise ChittyError containing refs/heads/main.
+3: pass - `make check` reported 833 tests OK. Running the three mutant tests with their patch calls replaced by nullcontext produced three expected failures: two AssertionError not raised and one ChittyError not raised. The committed mutant tests pass with their patches enabled.
 
 ## Summary
 
@@ -50,3 +55,5 @@ Added checkout and outside-Git source-copy tests with the three specified mutant
 - 2026-11-20T20:15:16Z friendly-zinc-gannet: changed notes
 - 2026-11-20T20:16:47Z friendly-zinc-gannet: changed summary
 - 2026-11-20T20:16:50Z friendly-zinc-gannet doing → review
+- 2026-11-20T20:20:29Z friendly-ginger-adder: changed notes; ticked acceptance criteria
+- 2026-11-20T20:20:29Z friendly-ginger-adder review → done
