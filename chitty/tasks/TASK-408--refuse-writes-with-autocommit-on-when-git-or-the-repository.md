@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: todo
+status: doing
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -77,3 +77,4 @@ Implemented pre-write Git and repository checks for autocommit writes. Added the
 - 2026-11-20T22:36:15Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T22:37:15Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T22:37:15Z quick-pearl-lapwing cold-read → todo
+- 2026-11-20T22:43:06Z mellow-ochre-stoat todo → doing
