@@ -1,6 +1,6 @@
 ---
 title: List which ticket IDs exist across the working tree, `main` and ticket branches
-status: doing
+status: review
 depends_on:
   - TASK-377
   - TASK-380
@@ -223,3 +223,4 @@ Implemented cached ticket ID discovery across the working tree, main and eligibl
 - 2026-11-20T19:37:22Z nimble-russet-vole: changed notes
 - 2026-11-20T19:37:36Z nimble-russet-vole: wrote the plan
 - 2026-11-20T19:40:10Z nimble-russet-vole: changed notes, summary
+- 2026-11-20T19:40:13Z nimble-russet-vole doing → review
