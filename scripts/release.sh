@@ -4,7 +4,8 @@
 # the release. Run by `make release`; takes no arguments.
 #
 # Steps: fetch; make a detached worktree at `main`; install, choose the version,
-# bump `src/chitty/__init__.py`, run `make check`, commit and tag there; push the
+# bump `src/chitty/__init__.py`, run `make check`, commit, run the Linux check,
+# and tag there; push the
 # commit to `origin/main` and the tag atomically; merge the tag into the local
 # `main`; remove the worktree; wait for the publish workflow.
 set -eu
@@ -44,6 +45,10 @@ if ! make check; then
 fi
 git add src/chitty/__init__.py
 git commit --quiet -m "Release $version"
+if ! sh scripts/check_linux.sh; then
+	echo "release: Linux check failed at $version; nothing was pushed" >&2
+	exit 1
+fi
 git tag "v$version"
 if ! git push --atomic origin "HEAD:refs/heads/main" "v$version"; then
 	echo "release: push failed; delete the local tag with git tag -d v$version" >&2

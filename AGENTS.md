@@ -32,7 +32,8 @@ rules, and parts are old: update it when a decision changes.
 - Releases: `make release` refuses while any ticket labelled `blocks-release`
   is not `done`. It works in a temporary worktree at `main` (`scripts/release.sh`),
   so the main checkout may be dirty and runners may keep landing: it bumps and
-  checks the version there, pushes the release commit and tag, then merges the
+  checks the version there, runs the Linux check, pushes the release commit and
+  tag, then merges the
   tag into the local `main`.
   `.github/workflows/release.yml` checks, builds and publishes to PyPI by
   trusted publishing (environment `pypi`). `make release` then waits for that

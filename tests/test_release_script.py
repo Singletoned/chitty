@@ -49,6 +49,8 @@ class TestReleaseScript(unittest.TestCase):
         self.watched = self.tmp / "watched"
         self.check_script = self.tmp / "check.sh"
         self.check_script.write_text("true\n")
+        self.linux_script = self.tmp / "linux.sh"
+        self.linux_script.write_text("true\n")
         subprocess.run(
             ["git", "init", "--quiet", "--bare", "-b", "main", str(self.origin)], check=True
         )
@@ -60,6 +62,9 @@ class TestReleaseScript(unittest.TestCase):
         (self.root / "scripts").mkdir()
         for name in ("release.sh", "release_version.py"):
             shutil.copy(CHECKOUT / "scripts" / name, self.root / "scripts" / name)
+        (self.root / "scripts" / "check_linux.sh").write_text(
+            f'git log -1 --format=%s >> "{self.tmp}/linux-ran"\nsh "{self.linux_script}"\n'
+        )
         (self.root / "scripts" / "watch_release.py").write_text(WATCH)
         (self.root / "src" / "chitty").mkdir(parents=True)
         (self.root / "src" / "chitty" / "__init__.py").write_text('__version__ = "0.1.0"\n')
@@ -138,8 +143,25 @@ class TestReleaseScript(unittest.TestCase):
         self.assertTrue((self.root / "untracked.txt").exists())
         self.assertFalse((self.root / ".worktrees" / "release").exists())
         self.assertEqual(self.watched.read_text(), "0.1.1")
+        self.assertEqual((self.tmp / "linux-ran").read_text(), "Release 0.1.1\n")
         pending = self.tmp / "data" / "chitty" / "pending-release"
         self.assertEqual(pending.read_text().strip(), "0.1.1")
+
+    def test_failed_linux_check_pushes_nothing_and_removes_the_worktree(self):
+        self.linux_script.write_text("exit 1\n")
+        main_before = self.git("rev-parse", "main")
+        origin_before = self.origin_git("rev-parse", "main")
+
+        result = self.release()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Linux check failed at 0.1.1", result.stderr)
+        self.assertEqual(self.origin_git("rev-parse", "main"), origin_before)
+        self.assertEqual(self.git("rev-parse", "main"), main_before)
+        self.assertEqual(self.git("tag", "--list", "v0.1.1"), "")
+        self.assertEqual(self.origin_git("tag", "--list", "v0.1.1"), "")
+        self.assertFalse((self.root / ".worktrees" / "release").exists())
+        self.assertFalse(self.watched.exists())
 
     def test_failed_check_publishes_nothing_and_removes_the_worktree(self):
         self.check_script.write_text("exit 1\n")
@@ -155,6 +177,7 @@ class TestReleaseScript(unittest.TestCase):
         self.assertEqual(self.git("tag", "--list", "v0.1.1"), "")
         self.assertFalse((self.root / ".worktrees" / "release").exists())
         self.assertFalse(self.watched.exists())
+        self.assertFalse((self.tmp / "linux-ran").exists())
 
     def test_main_behind_origin_is_refused(self):
         other = self.tmp / "other"
