@@ -44,6 +44,10 @@ Add the source-copy API and focused real-Git placement tests, first running all 
 
 Ran all 11 new placement tests against the requested source_copy stub: each failed with NotImplementedError before implementation.
 
+## Summary
+
+Implemented lazy per-ticket source selection and authoritative copy reading, with cached ref files and invalidation. Added 11 real-Git placement tests; each failed against the requested stub before implementation. `make check` passed (825 tests); only the new test file differs from main. Follow-ups TASK-477 and TASK-478 cover other checkouts and errors, and TASK-378 integrates reads.
+
 ## History
 
 - 2026-11-20T17:43:29Z jolly-dusky-badger → planning
@@ -56,3 +60,4 @@ Ran all 11 new placement tests against the requested source_copy stub: each fail
 - 2026-11-20T19:49:15Z daring-coral-adder todo → doing
 - 2026-11-20T19:50:34Z daring-coral-adder: wrote the plan
 - 2026-11-20T19:51:40Z daring-coral-adder: changed notes
+- 2026-11-20T19:54:45Z daring-coral-adder: changed summary
