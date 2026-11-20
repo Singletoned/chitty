@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: doing
+status: planning
 labels:
   - bug
   - needs-minor
@@ -54,6 +54,8 @@ Planning 2026-11-18: took over giving `_agent_command` a `directory` from `TASK-
 
 Cold read 2026-11-18 (the `directory` bullet) outcomes: accepted a `doing` case alongside the `error` case in criterion 2, so both render paths are checked; the exact rebase text and its position; the fails-before clause; keyword-only `directory`.
 
+Planning needed: the prescribed stash identification is not safe under the concurrency it explicitly allows. If another worktree pushes a stash between the before and after lists, their set difference contains multiple IDs, not one; if an entry is dropped or shifted between finding its stash@{n} and dropping it, the wrong stash can be removed. The per-ticket run lock in src/chitty/run.py does not serialize different tickets. The ticket needs a decision on a concurrency-safe identification and drop protocol, including interaction with other Git stash users, plus a deterministic real-Git test fixture, action and assertions that exercise the interleaving and prove the correct stash is preserved or dropped. The existing fixed-case tests do not specify that test. No implementation or verification was started.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -93,3 +95,5 @@ Cold read 2026-11-18 (the `directory` bullet) outcomes: accepted a `doing` case 
 - 2026-11-18T20:46:32Z lively-quartz-crane cold-read → planning
 - 2026-11-18T20:46:37Z lively-quartz-crane planning → todo
 - 2026-11-20T19:05:55Z daring-ebony-heron todo → doing
+- 2026-11-20T19:07:26Z daring-ebony-heron: changed owner, notes
+- 2026-11-20T19:07:26Z daring-ebony-heron doing → planning
