@@ -83,11 +83,7 @@ class TestDirectAgentTimeout(RepoTestCase):
         )
         started_group = os.getpgid(0)
         result = _run_agent(
-            [sys.executable, "-c", script],
-            cwd=self.root,
-            env=os.environ.copy(),
-            timeout=1,
-            log=None,
+            [sys.executable, "-c", script], cwd=self.root, env=os.environ.copy(), timeout=1
         )
         self.assertEqual(result.stderr, b"timed out")
 
@@ -123,7 +119,6 @@ class TestDirectAgentTimeout(RepoTestCase):
             cwd=self.root,
             env=os.environ.copy(),
             timeout=1,
-            log=None,
         )
         self.assertEqual(result.stderr, b"timed out")
         self.assertTrue(marker.exists(), "descendant cleanup was cut short by SIGKILL")
@@ -136,7 +131,6 @@ class TestDirectAgentTimeout(RepoTestCase):
             cwd=self.root,
             env=os.environ.copy(),
             timeout=timeout,
-            log=None,
         )
         self.assertEqual(result.stderr, b"timed out")
 
@@ -147,7 +141,6 @@ class TestDirectAgentTimeout(RepoTestCase):
             cwd=self.root,
             env=os.environ.copy(),
             timeout=0,
-            log=None,
         )
         self.assertEqual(result.returncode, 0)
         self.assertGreaterEqual(time.monotonic() - started, 3)

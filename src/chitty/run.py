@@ -1,6 +1,5 @@
 """Prepare a Chitty ticket worktree and run its configured agent."""
 
-import codecs
 import json
 import os
 import re
@@ -9,7 +8,6 @@ import shutil
 import signal
 import subprocess
 import sys
-import threading
 import time
 import tomllib
 from collections.abc import Iterable, Sequence
@@ -17,7 +15,7 @@ from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path, PurePosixPath
-from typing import Any, BinaryIO, Literal, TextIO, cast
+from typing import Any, Literal
 from uuid import uuid4
 
 from chitty import git, locks
@@ -49,7 +47,6 @@ RUN_LOCK_ATTEMPTS = 10
 LANDING_ATTEMPTS = 3
 RUN_LOOP_PAUSE_SECONDS = 60
 AGENT_KILL_GRACE_SECONDS = 2
-AGENT_OUTPUT_GRACE_SECONDS = 2
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
@@ -250,107 +247,31 @@ def run_loop(arguments: tuple[str, ...]) -> int:
 
 
 def _run_agent(
-    command: list[str],
-    *,
-    cwd: Path,
-    env: dict[str, str],
-    timeout: int,
-    log: TextIO | None,
+    command: list[str], *, cwd: Path, env: dict[str, str], timeout: int
 ) -> subprocess.CompletedProcess[bytes]:
-    """Echo agent output while retaining bytes and terminating timed-out trees."""
+    """Wait for an agent, terminating its process tree when its deadline expires."""
     process = subprocess.Popen(
         command, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
     )
-    output_stream = cast(BinaryIO, process.stdout)
-    chunks: list[bytes] = []
-    lock = threading.Lock()
-    attached_log = [log]
-    retain_output = [True]
-    errors: list[BaseException] = []
-    stderr_active = [True]
-    log_active = [True]
-    decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
-
-    def write_text(text: str) -> None:
-        if stderr_active[0]:
-            try:
-                sys.stderr.write(text)
-                sys.stderr.flush()
-            except (OSError, ValueError) as error:
-                errors.append(error)
-                stderr_active[0] = False
-        with lock:
-            stream = attached_log[0]
-            if stream is not None and log_active[0]:
-                try:
-                    stream.write(text)
-                    stream.flush()
-                except (OSError, ValueError) as error:
-                    errors.append(error)
-                    log_active[0] = False
-
-    def read_output() -> None:
-        try:
-            while data := os.read(output_stream.fileno(), 4096):
-                with lock:
-                    if retain_output[0]:
-                        chunks.append(data)
-                    text = decoder.decode(data)
-                write_text(text)
-            with lock:
-                text = decoder.decode(b"", final=True)
-            write_text(text)
-            output_stream.close()
-        except Exception as error:  # noqa: BLE001 - the reader must never raise
-            errors.append(error)
-
-    reader = threading.Thread(target=read_output, daemon=True)
-    reader.start()
-    timed_out = False
     try:
-        try:
-            process.wait(timeout=timeout or None)
-        except subprocess.TimeoutExpired:
-            timed_out = True
-            descendants = _process_descendants(process.pid)
-            for pid in [*descendants, process.pid]:
-                _signal_process(pid, signal.SIGTERM)
-            grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
-            while time.monotonic() < grace_deadline:
-                remaining = _running_processes([*descendants, process.pid])
-                if not remaining:
-                    break
-                time.sleep(min(0.05, grace_deadline - time.monotonic()))
-            for pid in _running_processes([*descendants, process.pid]):
-                _signal_process(pid, signal.SIGKILL)
-            process.wait()
-        reader.join(timeout=AGENT_OUTPUT_GRACE_SECONDS)
-    finally:
-        with lock:
-            pending = decoder.decode(b"", final=True)
-            stream = attached_log[0]
-            if pending and stream is not None and log_active[0]:
-                try:
-                    stream.write(pending)
-                    stream.flush()
-                except (OSError, ValueError) as error:
-                    errors.append(error)
-                    log_active[0] = False
-            attached_log[0] = None
-            retain_output[0] = False
-            if pending and stderr_active[0]:
-                try:
-                    sys.stderr.write(pending)
-                    sys.stderr.flush()
-                except (OSError, ValueError) as error:
-                    errors.append(error)
-                    stderr_active[0] = False
-    if errors:
-        raise ChittyError(f"cannot write agent output: {errors[0]}") from errors[0]
-    result = subprocess.CompletedProcess(command, process.returncode, stdout=b"".join(chunks))
-    if timed_out:
-        result.stderr = b"timed out"
-    return result
+        output, _ = process.communicate(timeout=timeout or None)
+    except subprocess.TimeoutExpired:
+        descendants = _process_descendants(process.pid)
+        for pid in [*descendants, process.pid]:
+            _signal_process(pid, signal.SIGTERM)
+        grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
+        while time.monotonic() < grace_deadline:
+            remaining = _running_processes([*descendants, process.pid])
+            if not remaining:
+                break
+            time.sleep(min(0.05, grace_deadline - time.monotonic()))
+        for pid in _running_processes([*descendants, process.pid]):
+            _signal_process(pid, signal.SIGKILL)
+        output, _ = process.communicate()
+        return subprocess.CompletedProcess(
+            command, process.returncode, stdout=output, stderr=b"timed out"
+        )
+    return subprocess.CompletedProcess(command, process.returncode, stdout=output)
 
 
 def _process_descendants(parent: int) -> list[int]:
@@ -705,11 +626,7 @@ def _run_session(
         session.append(CONTINUE_ARGUMENT)
     try:
         completed = _run_agent(
-            session,
-            cwd=worktree,
-            env=environment,
-            timeout=repo.config.agent_timeout,
-            log=None,
+            session, cwd=worktree, env=environment, timeout=repo.config.agent_timeout
         )
     except FileNotFoundError:
         raise ChittyError(f"agent command not found: {command[0]}") from None
