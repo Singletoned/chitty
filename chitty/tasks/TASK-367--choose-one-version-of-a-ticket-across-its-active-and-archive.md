@@ -1,6 +1,6 @@
 ---
 title: Choose one version of a ticket across its active and archive directories
-status: planning
+status: backlog
 labels:
   - bug
   - escape
@@ -51,6 +51,8 @@ Planning return: the selector rule and older-version property conflict when the 
 
 Same-checkout case still exists: Reproduced 2026-11-18 in `.worktrees/task-359` (branch `task-359`, clean worktree, ticket committed there and also present on `main`): `chitty edit TASK-359 --note ...` succeeded, then `chitty archive TASK-359` failed with `TASK-359 is used by more than one file: .../chitty/tasks/TASK-359--....md, .../chitty/tasks/archive/TASK-359--....md`, leaving the active file deleted and the archive file untracked, uncommitted. The same command on `main` for `TASK-366` (also on branch `task-366`) succeeded. Undone by hand with `git restore` and `rm`.
 
+Planning 2026-11-20: superseded by `TASK-378` (single-ticket reads from one authoritative source) and `TASK-480` (listings), which replace the history-based version choice this ticket would change. Its two real-Git scenarios (archiving `TASK-1` while `TASK-2` has `parent: TASK-1` with autocommit; editing in a worktree made before `main` archived a ticket) are recorded on `TASK-480` as regression tests. Archive this once `TASK-480` lands.
+
 ## History
 
 - 2026-11-17T19:53:05Z kind-umber-toad → todo
@@ -68,3 +70,5 @@ Same-checkout case still exists: Reproduced 2026-11-18 in `.worktrees/task-359` 
 - 2026-11-17T22:10:39Z witty-ochre-yellowhammer: changed owner, notes
 - 2026-11-17T22:10:39Z witty-ochre-yellowhammer doing → planning
 - 2026-11-18T16:25:59Z lively-quartz-crane: changed notes
+- 2026-11-20T23:20:45Z quick-pearl-lapwing: changed notes
+- 2026-11-20T23:20:45Z quick-pearl-lapwing planning → backlog
