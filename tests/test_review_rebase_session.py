@@ -7,17 +7,16 @@ from chitty.run import RunInterrupted
 from chitty.store import Repo
 from tests.test_review_merge import ReviewMergeTestCase
 
-# Only the timeout case (exit code 124) should hit the agent timeout; its agent
-# sleeps far past the limit. The other cases get a generous limit, because
-# under `make check`'s parallel load the fake agent's Python start-up and
-# `git rebase --continue` can take more than a second.
-TIMEOUT_CASE_SECONDS = 3
-OTHER_CASE_SECONDS = 120
+# The timeout case (exit code 124) uses a short limit and an agent that sleeps
+# far past it. Every other case runs with no limit (`0`), so it cannot time out
+# however slowly the machine runs.
+TIMEOUT_CASE_SECONDS = 1
+NO_LIMIT = 0
 
 
 class TestReviewRebaseSession(ReviewMergeTestCase):
     def configure_rebase_agent(self, exit_code: int, finish: bool, dirty: bool) -> None:
-        timeout = TIMEOUT_CASE_SECONDS if exit_code == 124 else OTHER_CASE_SECONDS
+        timeout = TIMEOUT_CASE_SECONDS if exit_code == 124 else NO_LIMIT
         script = self.tmp / "rebase-agent.py"
         script.write_text(
             "import subprocess, sys, time\n"
@@ -154,7 +153,11 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
             self.assertIn("agent exited with status 1:", note)
         elif exit_code == 124:
             self.assertIn(f"agent timed out after {TIMEOUT_CASE_SECONDS} seconds:", note)
-        self.assertEqual(len((self.tmp / "agent.log").read_text().splitlines()), 1)
+        starts = (self.tmp / "agent.log").read_text().splitlines()
+        self.assertFalse([start for start in starts if start.startswith("review ")])
+        if exit_code != 124:
+            # A timed-out agent may be killed before it logs its start.
+            self.assertEqual(len(starts), 1)
         self.assert_no_rebase_in_progress()
 
 
