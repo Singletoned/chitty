@@ -33,7 +33,7 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 
 ## Plan
 
-Implement ASCII-boundary ticket reference parsing in ids.py with property and example tests. Track the prior status in Change, resolve description and criterion references after qualifying CLI status promotion, and update the plan guide plus its restored-guide test. Verify regression failures first, then run formatting and make check.
+Update the existing property and CLI regression tests to address review feedback and cover duplicate lookup failures. Verify the new regressions against the baseline or deliberately reverted behavior, then format, check, and hand off.
 
 ## Notes
 
@@ -70,3 +70,4 @@ Implemented ticket reference parsing, promotion output, and plan-guide update. A
 - 2026-11-20T23:16:45Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T23:19:01Z quick-pearl-lapwing: changed description, acceptance criteria, notes
 - 2026-11-20T23:19:01Z quick-pearl-lapwing cold-read → doing
+- 2026-11-20T23:52:15Z lively-ochre-kestrel: wrote the plan
