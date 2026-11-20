@@ -1,6 +1,7 @@
 import inspect
 import subprocess
 from contextlib import ExitStack
+from functools import wraps
 from unittest.mock import patch
 
 from chitty import git
@@ -117,11 +118,27 @@ class TestTicketIds(CliTestCase):
         self.assertEqual(self.ids(), self.expected(2, 5))
 
     def wrapped_git(self, stack):
-        return {
-            name: stack.enter_context(patch.object(git, name, wraps=value))
-            for name, value in inspect.getmembers(git, inspect.isfunction)
-            if value.__module__ == git.__name__
-        }
+        calls = []
+        depth = 0
+
+        def wrap(name, function):
+            @wraps(function)
+            def record(*args, **kwargs):
+                nonlocal depth
+                if depth == 0:
+                    calls.append((name, args, kwargs))
+                depth += 1
+                try:
+                    return function(*args, **kwargs)
+                finally:
+                    depth -= 1
+
+            return record
+
+        for name, value in inspect.getmembers(git, inspect.isfunction):
+            if value.__module__ == git.__name__:
+                stack.enter_context(patch.object(git, name, wrap(name, value)))
+        return calls
 
     def test_no_git_repository(self):
         self.file(1)
@@ -129,7 +146,7 @@ class TestTicketIds(CliTestCase):
         with ExitStack() as stack:
             calls = self.wrapped_git(stack)
             self.assertEqual(repo.ticket_ids(), self.expected(1))
-        self.assertEqual([name for name, call in calls.items() if call.called], ["is_repository"])
+        self.assertEqual([name for name, _, _ in calls], ["is_repository"])
 
     def test_ref_reads_once_and_cached(self):
         self.init_git()
@@ -144,8 +161,7 @@ class TestTicketIds(CliTestCase):
             self.assertEqual(repo.ticket_ids(), self.expected(1, 2))
             self.assertEqual(repo.ticket_ids(), self.expected(1, 2))
             self.assertCountEqual(
-                [call.args[1] for call in calls["files_at"].call_args_list],
+                [args[1] for name, args, _ in calls if name == "files_at"],
                 ["refs/heads/main", "refs/heads/task-1", "refs/heads/task-2"],
             )
-            calls["historical_files"].assert_not_called()
-            calls["file_at"].assert_not_called()
+            self.assertFalse(any(name in {"historical_files", "file_at"} for name, _, _ in calls))
