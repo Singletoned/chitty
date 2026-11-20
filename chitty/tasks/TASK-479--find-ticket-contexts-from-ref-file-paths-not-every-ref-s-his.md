@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from ref file paths, not every ref's history
-status: doing
+status: error
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -45,6 +45,271 @@ The prescribed implementation makes `tests.test_check.TestCheck.test_reports_eve
 
 Planning 2026-11-20: discovery no longer goes through `ticket_ids()`; see the `_ref_files` decision. Keep the implementation in `a60c5c9d` and adapt it: drop `ticket_paths()` if nothing else needs it.
 
+Runner error (check): check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+680 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 868 test suites (868 total tests) across 16 workers
+..............................................E.........................................................................................................................................................................................................................................................................................................................................................................................................................................updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprcwv_v9z/repo/chitty/tasks/TASK-1--one.md actor test-agent
+.........━━━━ chitty run · 23:05:46 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+................................................../Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+......................................................................................................................................................................kill: 65347: No such process
+..........................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+..kill: 71121: No such process
+........./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/CLAUDE.md
+....Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/.worktrees/task-1...
+Check passed; work agent is working on TASK-1...
+...TASK-1: doing → review
+......no next ticket for --mode work
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/CLAUDE.md
+..................................................................................chitty 0.1.31 is out: run uv tool upgrade chitty
+................................landed TASK-1
+landed TASK-2
+landed TASK-1
+landed TASK-1
+
+======================================================================
+test_reports_every_problem (tests.test_check.TestCheck.test_reports_every_problem)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/tests/test_check.py", line 37, in test_reports_every_problem
+    problems = "\n".join(self.problems())
+                         ~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/tests/test_check.py", line 11, in problems
+    return [str(p) for p in check(self.repo, contexts, list(paths))]
+                            ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/check.py", line 161, in check
+    for context in repo.discovered_contexts():
+                   ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 301, in discovered_contexts
+    for name in sorted({path.parts[1] for path in self.ticket_paths()}):
+                                                  ~~~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 533, in ticket_paths
+    self.ticket_ids()
+    ~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 529, in ticket_ids
+    self._ticket_ids = self._collect_ticket_ids()
+                       ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 545, in _collect_ticket_ids
+    for path in self._files(context, archived):
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 1190, in _files
+    raise ChittyError(f"{path}: {problem}")
+chitty.errors.ChittyError: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp609n3sxq/repo/chitty/tasks/stray.txt: task filename 'stray.txt' must end with .md
+
+----------------------------------------------------------------------
+Ran 868 tests in 65.308s
+
+FAILED (errors=1)
+make: *** [check] Error 1
+
+```
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-479`
+
+Error output:
+````text
+check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+680 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 868 test suites (868 total tests) across 16 workers
+..............................................E.........................................................................................................................................................................................................................................................................................................................................................................................................................................updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmprcwv_v9z/repo/chitty/tasks/TASK-1--one.md actor test-agent
+.........━━━━ chitty run · 23:05:46 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+................................................../Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+......................................................................................................................................................................kill: 65347: No such process
+..........................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+..kill: 71121: No such process
+........./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/CLAUDE.md
+....Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpr0ehh0on/repo/.worktrees/task-1...
+Check passed; work agent is working on TASK-1...
+...TASK-1: doing → review
+......no next ticket for --mode work
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8_dpx2b9/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8o7nfwhj/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpz3f7bmsx/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmplz1cy2o3/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp7634yymz/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8tkcczdt/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpmopwfmap/repo/CLAUDE.md
+..................................................................................chitty 0.1.31 is out: run uv tool upgrade chitty
+................................landed TASK-1
+landed TASK-2
+landed TASK-1
+landed TASK-1
+
+======================================================================
+test_reports_every_problem (tests.test_check.TestCheck.test_reports_every_problem)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/tests/test_check.py", line 37, in test_reports_every_problem
+    problems = "\n".join(self.problems())
+                         ~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/tests/test_check.py", line 11, in problems
+    return [str(p) for p in check(self.repo, contexts, list(paths))]
+                            ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/check.py", line 161, in check
+    for context in repo.discovered_contexts():
+                   ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 301, in discovered_contexts
+    for name in sorted({path.parts[1] for path in self.ticket_paths()}):
+                                                  ~~~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 533, in ticket_paths
+    self.ticket_ids()
+    ~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 529, in ticket_ids
+    self._ticket_ids = self._collect_ticket_ids()
+                       ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 545, in _collect_ticket_ids
+    for path in self._files(context, archived):
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-479/src/chitty/store.py", line 1190, in _files
+    raise ChittyError(f"{path}: {problem}")
+chitty.errors.ChittyError: /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp609n3sxq/repo/chitty/tasks/stray.txt: task filename 'stray.txt' must end with .md
+
+----------------------------------------------------------------------
+Ran 868 tests in 65.308s
+
+FAILED (errors=1)
+make: *** [check] Error 1
+
+```
+````
+
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
@@ -62,3 +327,5 @@ Planning 2026-11-20: discovery no longer goes through `ticket_ids()`; see the `_
 - 2026-11-20T23:04:35Z quick-pearl-lapwing: changed title, description, acceptance criteria
 - 2026-11-20T23:04:35Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T23:05:26Z quick-jade-stoat todo → doing
+- 2026-11-20T23:06:39Z quick-jade-stoat: changed notes
+- 2026-11-20T23:06:39Z quick-jade-stoat doing → error
