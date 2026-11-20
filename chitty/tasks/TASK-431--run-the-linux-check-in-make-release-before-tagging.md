@@ -40,6 +40,12 @@ Add a fixture Linux-check script and assertions proving it runs on the committed
 
 Regression evidence: before changing scripts/release.sh, the new Linux-failure test failed because release returned 0 and pushed; the success-path test also errored because linux-ran was absent.
 
+The success-path linux-ran assertion also failed before implementation (linux-ran did not exist); it now proves the check ran once against Release 0.1.1. Focused release tests and make check pass.
+
+## Summary
+
+Implemented Linux check after release commit and before tag/push; failure aborts with required diagnostic and leaves no tag/push/worktree. Updated fixture regression coverage and release docs. Verified focused release tests and make check (788 tests). Follow-up: none.
+
 ## History
 
 - 2026-11-19T18:45:25Z daring-amber-kestrel → planning
@@ -50,3 +56,4 @@ Regression evidence: before changing scripts/release.sh, the new Linux-failure t
 - 2026-11-20T00:24:32Z intrepid-lilac-ibis todo → doing
 - 2026-11-20T00:27:18Z intrepid-lilac-ibis: wrote the plan
 - 2026-11-20T00:27:47Z intrepid-lilac-ibis: changed notes
+- 2026-11-20T00:30:22Z intrepid-lilac-ibis: changed notes, summary
