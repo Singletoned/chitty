@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: review
+status: done
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -51,6 +51,12 @@ Planning 2026-11-20: criterion 3 reworded for the review's design finding (the `
 
 Regression evidence: copied src and tests into tmp/task-408-baseline, replaced store.py with git show main:src/chitty/store.py, and ran each of the 24 grid cases separately using a scratch-only subtest selector. All nine autocommit-on refusal rows failed; all other rows passed, including the three autocommit-off initialized/no-git TASK-405 guards. Separate move, fix and stale-setup refusal tests failed; show and list passed. The fixed branch passes all six focused tests.
 
+Reviewed: The earlier review findings are resolved; no new defects found.
+1: pass - `make check` ran the 24-case grid successfully; replacing `store.py` with main produced nine expected failing autocommit-on subtests and left the other 15 passing.
+2: pass - `make check` passed the separate move, fix, stale-setup, show and list tests. With main `store.py`, move, fix and stale-setup failed while show and list passed.
+3: pass - The regression evidence note records individual baseline runs; my scratch baseline `python -m unittest -v tests.test_autocommit_requires_git` printed 12 failures: the nine expected grid rows and three refusal tests; read and TASK-405 guards passed.
+4: pass - `make check` printed 863 tests OK, with ruff and pyright passing.
+
 ## Summary
 
 Autocommit writes now check Git availability and repository membership before changing files. The 24-case grid verifies errors, unchanged files and committed ticket paths; independent move, fix, stale-setup and read tests cover the remaining cases. Each regression was checked against main store.py in a scratch copy; make check passed (858 tests). No follow-ups.
@@ -84,3 +90,5 @@ Autocommit writes now check Git availability and repository membership before ch
 - 2026-11-20T22:46:06Z mellow-ochre-stoat: changed notes
 - 2026-11-20T22:47:22Z mellow-ochre-stoat: changed summary
 - 2026-11-20T22:47:25Z mellow-ochre-stoat doing → review
+- 2026-11-20T22:51:01Z nimble-dusky-dormouse: changed notes
+- 2026-11-20T22:51:01Z nimble-dusky-dormouse review → done
