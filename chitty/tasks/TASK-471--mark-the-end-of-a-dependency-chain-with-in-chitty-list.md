@@ -1,6 +1,6 @@
 ---
 title: Mark the end of a dependency chain with 🚧 in `chitty list`
-status: planning
+status: cold-read
 priority: high
 parent: TASK-70
 created: 2026-11-20
@@ -36,3 +36,4 @@ Dependency reads are memoised (`_dependency_is_done` in `src/chitty/store.py` re
 - 2026-11-20T08:04:35Z lively-bronze-crane cold-read → planning
 - 2026-11-20T08:04:38Z lively-bronze-crane: changed description, acceptance criteria
 - 2026-11-20T08:04:47Z lively-bronze-crane: changed acceptance criteria
+- 2026-11-20T08:04:51Z lively-bronze-crane planning → cold-read
