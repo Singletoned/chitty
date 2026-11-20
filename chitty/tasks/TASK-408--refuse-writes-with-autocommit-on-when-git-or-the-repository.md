@@ -31,7 +31,7 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 
 ## Plan
 
-Add a pre-write autocommit prerequisite check in Repo._prepare_write, with focused grid and integration tests plus adaptations for existing autocommit tests. Verify refusal behavior before/after and run make check.
+Strengthen the existing grid assertions and isolate additional cases, then run each against a scratch main-store baseline and the fixed branch. Run fix, format and checks, commit and hand off.
 
 ## Notes
 
@@ -78,3 +78,4 @@ Implemented pre-write Git and repository checks for autocommit writes. Added the
 - 2026-11-20T22:37:15Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T22:37:15Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:43:06Z mellow-ochre-stoat todo → doing
+- 2026-11-20T22:44:25Z mellow-ochre-stoat: wrote the plan
