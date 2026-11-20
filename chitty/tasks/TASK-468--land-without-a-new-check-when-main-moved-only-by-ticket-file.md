@@ -53,7 +53,7 @@ Added the missing 21st-call guard. With QUICK_LANDING_ATTEMPTS patched to 1000, 
 
 ## Summary
 
-Implemented ticket-only quick landing retries, bounded to ten, with merge-base support, property/boundary coverage, landing retry tests, and documentation. Verified using make check and focused mutant probes; see Notes. No follow-up.
+Ticket-only quick landing retries are implemented and capped at ten; the retry test now guards against an unbounded loop on its 21st fast-forward call. `make check` passed all 857 tests, focused tests passed, and the prior and current notes record the required regression and mutant evidence. The merge-base diff contains exactly the five requested paths. No follow-up.
 
 ## History
 
@@ -83,3 +83,4 @@ Implemented ticket-only quick landing retries, bounded to ten, with merge-base s
 - 2026-11-20T22:34:43Z youthful-hazel-marten todo → doing
 - 2026-11-20T22:36:03Z youthful-hazel-marten: wrote the plan
 - 2026-11-20T22:36:27Z youthful-hazel-marten: changed notes
+- 2026-11-20T22:37:39Z youthful-hazel-marten: changed summary
