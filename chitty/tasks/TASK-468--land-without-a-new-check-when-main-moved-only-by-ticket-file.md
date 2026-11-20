@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: todo
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -78,3 +78,4 @@ Implemented ticket-only quick landing retries, bounded to ten, with merge-base s
 - 2026-11-20T22:33:54Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T22:34:37Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T22:34:37Z quick-pearl-lapwing cold-read → todo
+- 2026-11-20T22:34:43Z youthful-hazel-marten todo → doing
