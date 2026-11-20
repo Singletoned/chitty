@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -59,6 +59,8 @@ Wire reads to authoritative source copies and restrict the fresh ticket-worktree
 Planner, 2026-11-20: ticket rewritten as the read switch only. The lookup it builds on is `TASK-474`, `TASK-476`, `TASK-477`, `TASK-478` and `TASK-475`, and the runner claim change is `TASK-384`, all landing first. Earlier notes, including about 90 KB of pasted check output, are in Git history. Stays in `planning` until those are done; then compare this text with what landed, cold-read it, and move it to `todo`. Owner `human` keeps `chitty run` off it; start its worker by hand.
 
 Owner `human` cleared 2026-11-20 at the owner's request: `TASK-384` removed the reason it was held back from `chitty run`. Earlier notes saying to start its worker by hand no longer apply. If a runner session cannot finish it, return it to `planning` to be split further.
+
+The required conflict isolation and context-discovery wiring do not specify a workable interaction with autocommitted edits. `Repo._commit` calls `check.fix`, and `check.check` calls `repo.discovered_contexts()` even for a single changed path. The prescribed discovery reads every ticket via `source_copy`, which raises for the conflicting TASK-1; therefore editing unrelated TASK-2 cannot succeed as criterion 3 requires, even if `lookup` is isolated. The ticket also says `check.py` check and fix remain unchanged. A planner needs to decide how discovery avoids propagating unrelated source errors during this validation, including what it should do when the conflicted ticket may be the only source in an unconfigured context, and specify a regression fixture and assertions for that case. No implementation or tests were changed; the planned regressions and full verification remain outstanding.
 
 ## History
 
@@ -137,3 +139,5 @@ Owner `human` cleared 2026-11-20 at the owner's request: `TASK-384` removed the 
 - 2026-11-20T22:18:48Z quick-pearl-lapwing: changed owner, description, notes
 - 2026-11-20T22:18:52Z calm-fawn-raven todo → doing
 - 2026-11-20T22:20:23Z calm-fawn-raven: wrote the plan
+- 2026-11-20T22:21:18Z calm-fawn-raven: changed owner, notes
+- 2026-11-20T22:21:18Z calm-fawn-raven doing → planning
