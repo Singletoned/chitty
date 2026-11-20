@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from the files `ticket_ids()` counts, not every ref's history
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -19,7 +19,7 @@ Decisions:
 
 Tests: real Git, in a new `tests/test_discovered_contexts.py` with a class inheriting `CliTestCase` from `tests/test_cli.py` (which inherits `RepoTestCase`, so the inbox is isolated), set up with `git init -b main` and a first commit of `chitty.toml` as `tests/test_unconfigured_directories.py` does. The configured context is `tasks` with prefix `TASK`. Each case calls `Repo.open(self.root).discovered_contexts()` from the main checkout on `main` and compares the set of context names:
 
-- `main` only: commit `chitty/other/TASK-3--x.md` on `main`, then delete it from the working tree without committing; `other` is discovered.
+- `main` only: commit `chitty/other/TASK-3--x.md` on `main`, then remove the whole `chitty/other` directory from the working tree with `shutil.rmtree`, without committing, so only `main's tip has it; `other` is discovered.
 - Ticket branch, own file: on branch `task-5` from `main`, commit `chitty/fifth/TASK-5--x.md`, switch back to `main`; `fifth` is discovered.
 - Ticket branch, another ticket's file: on branch `task-6`, commit `chitty/sixth/TASK-9--y.md`, switch back; `sixth` is not discovered.
 - Unrelated branch: on branch `feature`, commit `chitty/feat/TASK-7--z.md`, switch back; `feat` is not discovered.
@@ -36,3 +36,5 @@ No property: a fixed set of placements, each listed; `TASK-393` adds the generat
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
+- 2026-11-20T22:57:07Z quick-pearl-lapwing: changed description
+- 2026-11-20T22:57:07Z quick-pearl-lapwing planning → cold-read
