@@ -37,7 +37,7 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 
 ## Plan
 
-Add merge-base support and a precise ticket-path predicate, then retry fast-forward after rebasing over only ticket-file commits without rerunning setup/check, capped at ten quick tries. Add property coverage and landing retry scenarios, document the assumption and exceptions, run regression/mutant checks where feasible, then make check and commit.
+Preserve the existing implementation; add the missing 21st-call guard to the quick retry regression test, verify it catches an effectively unbounded retry mutant, and rerun the required checks before handoff.
 
 ## Notes
 
@@ -79,3 +79,4 @@ Implemented ticket-only quick landing retries, bounded to ten, with merge-base s
 - 2026-11-20T22:34:37Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T22:34:37Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:34:43Z youthful-hazel-marten todo → doing
+- 2026-11-20T22:36:03Z youthful-hazel-marten: wrote the plan
