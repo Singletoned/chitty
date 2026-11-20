@@ -388,6 +388,10 @@ make: *** [check] Error 4
 
 Regression verification: the property suite fails for an always-append mutant (including idempotence) and the fixed signed-off example fails for a mutant that never joins a trailer paragraph. Earlier check output records failures of the original empty-message and merge fixtures and the review cleanliness gate.
 
+## Summary
+
+Implemented automatic task trailers during landing, preserving trees and authors, and retained review cleanliness checks. Property, real-Git landing, merge, retry and review tests pass; make check passed (867 tests). Both requested faulty trailer variants failed the regression suite. chitty fix emitted existing warnings and did not finish before the 300-second timeout; no files were changed by it.
+
 ## History
 
 - 2026-11-19T20:55:28Z sunny-white-dormouse → backlog
@@ -418,3 +422,4 @@ Regression verification: the property suite fails for an always-append mutant (i
 - 2026-11-20T23:25:44Z tidy-silver-zander: changed notes
 - 2026-11-20T23:26:19Z tidy-silver-zander: wrote the plan
 - 2026-11-20T23:32:46Z tidy-silver-zander: changed notes
+- 2026-11-20T23:46:44Z tidy-silver-zander: changed summary
