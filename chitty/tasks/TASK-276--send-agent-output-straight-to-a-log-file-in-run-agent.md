@@ -1,6 +1,6 @@
 ---
 title: Send agent output straight to a log file in `_run_agent`
-status: doing
+status: blocked
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -57,6 +57,8 @@ Review failed (work): A newly discovered race loses output already read before t
 Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
 
 Owner decision 2026-11-20: do not echo agent output to the terminal; that was a mistake. Agent output goes to the log only. Planner proposal (not yet agreed): drop the reader thread, lock and `AGENT_OUTPUT_GRACE_SECONDS`; `_run_agent` passes an open binary log file as the agent stdout (stderr merged) and waits with `process.wait`, so a descendant holding the output open no longer delays the run, and returns as `stdout` the bytes the file gained during the call. This removes the three races found in review (lost unterminated output, lost partial UTF-8 character, log detached during a slow stderr write). The earlier implementation on this branch follows the old design.
+
+Blocked by a worktree/ticket ownership mismatch: this task worktree rejects edits because the authoritative latest committed TASK-276 version is on main and instructs Chitty edits to run from the main checkout. The user restricted work to this ticket worktree, so I cannot write the required plan or safely proceed with implementation here. A maintainer should reconcile the authoritative ticket state with the task-276 worktree (or authorize task metadata edits from main); then retry.
 
 ## History
 
@@ -124,3 +126,5 @@ Owner decision 2026-11-20: do not echo agent output to the terminal; that was a 
 - 2026-11-20T08:47:26Z lively-bronze-crane: changed acceptance criteria
 - 2026-11-20T08:47:30Z lively-bronze-crane planning → todo
 - 2026-11-20T09:13:42Z intrepid-violet-otter todo → doing
+- 2026-11-20T09:15:39Z intrepid-violet-otter: changed notes
+- 2026-11-20T09:15:39Z intrepid-violet-otter doing → blocked
