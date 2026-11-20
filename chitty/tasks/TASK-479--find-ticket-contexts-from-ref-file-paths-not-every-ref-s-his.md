@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from ref file paths, not every ref's history
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -61,3 +61,4 @@ Planning 2026-11-20: discovery no longer goes through `ticket_ids()`; see the `_
 - 2026-11-20T23:03:23Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T23:04:35Z quick-pearl-lapwing: changed title, description, acceptance criteria
 - 2026-11-20T23:04:35Z quick-pearl-lapwing cold-read → todo
+- 2026-11-20T23:05:26Z quick-jade-stoat todo → doing
