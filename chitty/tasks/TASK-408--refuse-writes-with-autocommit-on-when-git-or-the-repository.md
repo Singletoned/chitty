@@ -53,7 +53,7 @@ Regression evidence: copied src and tests into tmp/task-408-baseline, replaced s
 
 ## Summary
 
-Implemented pre-write Git and repository checks for autocommit writes. Added the 24-case command/state grid and additional write/read/stale-setup coverage. Verified with make check (712 tests). Follow-up: verify criterion 3 against main baseline during review.
+Autocommit writes now check Git availability and repository membership before changing files. The 24-case grid verifies errors, unchanged files and committed ticket paths; independent move, fix, stale-setup and read tests cover the remaining cases. Each regression was checked against main store.py in a scratch copy; make check passed (858 tests). No follow-ups.
 
 ## History
 
@@ -82,3 +82,4 @@ Implemented pre-write Git and repository checks for autocommit writes. Added the
 - 2026-11-20T22:43:06Z mellow-ochre-stoat todo → doing
 - 2026-11-20T22:44:25Z mellow-ochre-stoat: wrote the plan
 - 2026-11-20T22:46:06Z mellow-ochre-stoat: changed notes
+- 2026-11-20T22:47:22Z mellow-ochre-stoat: changed summary
