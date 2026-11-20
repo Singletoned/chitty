@@ -15,6 +15,8 @@ The rule (`docs/plan/ticket-state.md`, "Planning decisions", on branch `plan/tic
 
 Because the code exists, each test must be shown to catch a wrong version. Commit these mutants as tests, in the style of `tests/test_property_blockers.py` (`TestBlockerPropertyMutants`): each patches `Repo.source_copy`'s behaviour with `unittest.mock.patch` to the wrong version, runs the same check, and asserts it fails. The wrong versions: (1) always read the working tree when the checkout is not on `main` (`ref` `None`); (2) pass `current_branch=None` to `ticket_source`; (3) outside Git, call `ticket_source` anyway.
 
+Recording `chitty.git` calls, wherever a criterion asks for it: wrap each public function in `chitty.git` and record only outermost calls; a call made while another wrapped `chitty.git` function is running (such as the helper `git.is_repository` calls itself) is not recorded.
+
 Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source_copy.py` from `TASK-476` is. Make the linked worktree with `git worktree add .worktrees/task-5 -b task-5`. No property: a fixed set of checkouts; the generated property is `TASK-393`.
 
 ## Acceptance Criteria
@@ -26,3 +28,4 @@ Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source
 ## History
 
 - 2026-11-20T17:43:41Z jolly-dusky-badger → planning
+- 2026-11-20T19:05:57Z jolly-dusky-badger: changed description
