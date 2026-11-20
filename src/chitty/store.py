@@ -55,6 +55,7 @@ from chitty.selection import (
     mode_statuses,
 )
 from chitty.selection import skip_reason as pure_skip_reason
+from chitty.ticket_source import WORKING_TREE, ticket_source
 
 ARCHIVE_DIR = "archive"
 AGENTS_FILE = "AGENTS.md"
@@ -86,6 +87,13 @@ class Context:
     @property
     def archive_directory(self) -> Path:
         return self.directory / ARCHIVE_DIR
+
+
+@dataclass(frozen=True)
+class SourceCopy:
+    ref: str | None
+    path: Path
+    task: Task
 
 
 @dataclass(frozen=True)
@@ -234,6 +242,7 @@ class Repo:
         self._historical_files: list[git.HistoricalFile] | None = None
         self._ticket_ids: set[TaskId] | None = None
         self._ticket_ref_files: dict[str, list[tuple[Path, str]]] = {}
+        self._source_refs: dict[TaskId, str] = {}
         self._task_locations: dict[tuple[str, bool], list[StoredTask]] = {}
         self._dirty_paths: dict[Path, set[Path]] = {}
         self._current_branch_cached = False
@@ -381,12 +390,123 @@ class Repo:
         self._historical_files = None
         self._ticket_ids = None
         self._ticket_ref_files.clear()
+        self._source_refs.clear()
         self._task_locations.clear()
         self._dirty_paths.clear()
         self._current_branch_cached = False
         self._current_branch_value = None
         self._main_branch_value = None
         self._main_files.clear()
+
+    def source_copy(self, task_id: TaskId) -> SourceCopy | None:
+        if task_id not in self._source_refs:
+            if not git.is_repository(self.root):
+                self._source_refs[task_id] = WORKING_TREE
+            else:
+                self.ticket_ids()
+                self._source_refs[task_id] = self._choose_source(task_id)
+        ref = self._source_refs[task_id]
+        if ref == WORKING_TREE:
+            root = self.root / BACKLOG_DIR
+            paths: list[Path] = []
+            if root.is_dir():
+                for directory in sorted(path for path in root.iterdir() if path.is_dir()):
+                    context = Context(directory.name, "", directory)
+                    for archived in (False, True):
+                        paths.extend(
+                            path
+                            for path in self._files(context, archived)
+                            if ids.parse_filename(path.name)[0] == task_id
+                        )
+            copies = [(path.relative_to(self.root), path.read_text()) for path in paths]
+        else:
+            copies = self._ref_ticket_files(ref, task_id)
+        if len(copies) > 1:
+            paths_text = ", ".join(str(self.root / path) for path, _ in copies)
+            raise ChittyError(f"{task_id} is used by more than one file: {paths_text}")
+        if not copies:
+            return None
+        path, content = copies[0]
+        short = ref.removeprefix("refs/heads/").removeprefix("refs/remotes/") if ref else None
+        try:
+            task = parse(content)
+        except TaskError as error:
+            location = f"{short}:{path}" if short is not None else str(self.root / path)
+            raise ChittyError(f"{location}: {error}") from None
+        return SourceCopy(short, path, task)
+
+    def _ref_ticket_files(self, ref: str, task_id: TaskId) -> list[tuple[Path, str]]:
+        matches: list[tuple[Path, str]] = []
+        for path, content in self._ticket_ref_files.get(ref, []):
+            parts = path.parts
+            if not (len(parts) == 3 or (len(parts) == 4 and parts[2] == ARCHIVE_DIR)):
+                continue
+            if parts[0] != BACKLOG_DIR:
+                continue
+            try:
+                found, _ = ids.parse_filename(path.name)
+            except ids.IdError:
+                continue
+            if found == task_id:
+                matches.append((path, content))
+        return matches
+
+    def _choose_source(self, task_id: TaskId) -> str:
+        main = self._main_branch()
+        main_ref = f"refs/heads/{main}"
+        main_tip = git.ref_commit(self.root, main_ref)
+        tips = git.branch_tips(self.root)
+        ticket_tips = {
+            ref: tip
+            for ref, tip in tips.items()
+            if ref in self._ticket_ref_files and ref != main_ref
+        }
+        local = {
+            ref.removeprefix("refs/heads/"): tip
+            for ref, tip in ticket_tips.items()
+            if ref.startswith("refs/heads/")
+        }
+        remote = {
+            ref.removeprefix("refs/remotes/"): tip
+            for ref, tip in ticket_tips.items()
+            if ref.startswith("refs/remotes/")
+        }
+
+        def full_ref(name: str) -> str:
+            if name == main or name == str(task_id).lower():
+                return f"refs/heads/{name}"
+            return f"refs/remotes/{name}"
+
+        def changed_on_both(name: str) -> bool:
+            if main_tip is None:
+                return False
+            ref = full_ref(name)
+            paths = sorted(
+                {
+                    path
+                    for source in (main_ref, ref)
+                    for path, _ in self._ref_ticket_files(source, task_id)
+                }
+            )
+            return git.changed_since_split(
+                self.root, ref, main_ref, paths
+            ) and git.changed_since_split(self.root, main_ref, ref, paths)
+
+        def contains(a: str | None, b: str) -> bool:
+            return a is not None and git.is_ancestor(self.root, b, a)
+
+        source = ticket_source(
+            task_id,
+            False,
+            git.current_branch(self.root),
+            main,
+            main_tip,
+            local,
+            remote,
+            contains,
+            changed_on_both,
+        )
+        return full_ref(source) if source != WORKING_TREE else WORKING_TREE
 
     def ticket_ids(self) -> set[TaskId]:
         if self._ticket_ids is None:

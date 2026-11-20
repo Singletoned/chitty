@@ -1,0 +1,165 @@
+import os
+import subprocess
+from contextlib import ExitStack
+from pathlib import Path
+
+from chitty.ids import TaskId
+from chitty.store import Repo
+from tests import test_ticket_ids
+from tests.test_cli import CliTestCase
+
+
+class TestSourceCopy(CliTestCase):
+    git = test_ticket_ids.TestTicketIds.git
+    init_git = test_ticket_ids.TestTicketIds.init_git
+    commit = test_ticket_ids.TestTicketIds.commit
+    wrapped_git = test_ticket_ids.TestTicketIds.wrapped_git
+
+    def file(self, number, title="original"):
+        path = self.root / f"chitty/tasks/TASK-{number}--example.md"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            f"---\ntitle: {title}\nstatus: todo\ncreated: 2026-01-01\n---\n"
+            "\n## Description\n\nFixture.\n"
+        )
+        return path
+
+    def commit_at(self, date):
+        self.git("add", "--all")
+        subprocess.run(
+            ["git", "commit", "--quiet", "--allow-empty", "-m", "fixture"],
+            cwd=self.root,
+            env={**os.environ, "GIT_COMMITTER_DATE": date},
+            check=True,
+            capture_output=True,
+        )
+
+    def source(self, number, repo=None):
+        return (repo or Repo.open(self.root)).source_copy(TaskId.parse(f"TASK-{number}"))
+
+    def assert_copy(self, copy, ref, path, title):
+        self.assertIsNotNone(copy)
+        self.assertEqual(
+            (copy.ref, copy.path, copy.task.frontmatter.title), (ref, Path(path), title)
+        )
+
+    def base(self):
+        self.init_git()
+        self.file(1)
+        self.commit()
+
+    def branch_edit(self):
+        self.git("checkout", "-b", "task-1")
+        self.file(1, "branch")
+        self.commit_at("2020-01-01T00:00:00Z")
+
+    def test_branch_ahead_despite_later_main_date(self):
+        self.base()
+        self.branch_edit()
+        self.git("checkout", "main")
+        self.file(2)
+        self.commit_at("2030-01-01T00:00:00Z")
+        self.assert_copy(self.source(1), "task-1", "chitty/tasks/TASK-1--example.md", "branch")
+
+    def test_renamed(self):
+        self.base()
+        self.git("checkout", "-b", "task-1")
+        self.file(1, "renamed").rename(self.root / "chitty/tasks/TASK-1--renamed.md")
+        self.commit()
+        self.git("checkout", "main")
+        self.assert_copy(self.source(1), "task-1", "chitty/tasks/TASK-1--renamed.md", "renamed")
+
+    def test_remote_only(self):
+        self.base()
+        self.branch_edit()
+        self.git("update-ref", "refs/remotes/origin/task-1", self.git("rev-parse", "HEAD"))
+        self.git("checkout", "main")
+        self.git("branch", "-D", "task-1")
+        self.assert_copy(
+            self.source(1), "origin/task-1", "chitty/tasks/TASK-1--example.md", "branch"
+        )
+
+    def test_remote_ahead_of_local(self):
+        self.base()
+        self.branch_edit()
+        self.file(1, "remote")
+        self.commit()
+        self.git("update-ref", "refs/remotes/origin/task-1", self.git("rev-parse", "HEAD"))
+        self.git("reset", "--hard", "HEAD~1")
+        self.git("checkout", "main")
+        self.assert_copy(
+            self.source(1), "origin/task-1", "chitty/tasks/TASK-1--example.md", "remote"
+        )
+
+    def test_uncommitted_edit(self):
+        self.base()
+        self.file(1, "dirty")
+        self.assert_copy(self.source(1), None, "chitty/tasks/TASK-1--example.md", "dirty")
+
+    def test_archived(self):
+        self.base()
+        self.git("checkout", "-b", "task-1")
+        archive = self.root / "chitty/tasks/archive/TASK-1--example.md"
+        archive.parent.mkdir()
+        self.file(1, "archived").rename(archive)
+        self.commit()
+        self.git("checkout", "main")
+        self.assert_copy(
+            self.source(1), "task-1", "chitty/tasks/archive/TASK-1--example.md", "archived"
+        )
+
+    def test_branch_deletes(self):
+        self.base()
+        self.git("checkout", "-b", "task-1")
+        self.file(1).unlink()
+        self.commit()
+        self.git("checkout", "main")
+        self.assertIsNone(self.source(1))
+
+    def test_merged_then_main_changed(self):
+        self.base()
+        self.branch_edit()
+        self.git("checkout", "main")
+        self.git("merge", "--ff-only", "task-1")
+        self.file(1, "main")
+        self.commit()
+        self.assert_copy(self.source(1), None, "chitty/tasks/TASK-1--example.md", "main")
+
+    def test_no_further_ref_reads(self):
+        self.init_git()
+        for number in (1, 2):
+            self.git("checkout", "-b", f"task-{number}", "main")
+            self.file(number, f"branch{number}")
+            self.commit()
+        self.git("checkout", "main")
+        repo = Repo.open(self.root)
+        repo.ticket_ids()
+        with ExitStack() as stack:
+            calls = self.wrapped_git(stack)
+            for number in (1, 2):
+                self.assert_copy(
+                    self.source(number, repo),
+                    f"task-{number}",
+                    f"chitty/tasks/TASK-{number}--example.md",
+                    f"branch{number}",
+                )
+        self.assertFalse(any(name in {"files_at", "file_at"} for name, _, _ in calls))
+
+    def test_invalidation(self):
+        self.base()
+        self.branch_edit()
+        self.git("checkout", "main")
+        repo = Repo.open(self.root)
+        first = self.source(1, repo)
+        self.assertEqual(first, self.source(1, repo))
+        self.git("checkout", "task-1")
+        self.file(1, "new")
+        self.commit()
+        self.git("checkout", "main")
+        repo._invalidate()
+        self.assert_copy(self.source(1, repo), "task-1", "chitty/tasks/TASK-1--example.md", "new")
+
+    def test_uncommitted_deletion(self):
+        self.base()
+        self.file(1).unlink()
+        self.assertIsNone(self.source(1))
