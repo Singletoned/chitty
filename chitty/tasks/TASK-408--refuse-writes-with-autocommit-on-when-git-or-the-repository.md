@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: doing
+status: review
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -83,3 +83,4 @@ Autocommit writes now check Git availability and repository membership before ch
 - 2026-11-20T22:44:25Z mellow-ochre-stoat: wrote the plan
 - 2026-11-20T22:46:06Z mellow-ochre-stoat: changed notes
 - 2026-11-20T22:47:22Z mellow-ochre-stoat: changed summary
+- 2026-11-20T22:47:25Z mellow-ochre-stoat doing → review
