@@ -442,6 +442,10 @@ make: *** [check] Error 1
 
 ```
 
+## Summary
+
+Context discovery now uses cached selected ref files without validating ticket content or working-tree filenames. The earlier regression tests failed before the original fix as recorded in the notes; focused tests and make check now pass, including the stray-file aggregation test. No additional history-only tests needed migration. Follow-up ticket TASK-378 covers remaining historical reads.
+
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
@@ -465,3 +469,4 @@ make: *** [check] Error 1
 - 2026-11-20T23:08:18Z quick-pearl-lapwing error → doing
 - 2026-11-20T23:09:54Z vivid-yellow-adder: changed notes
 - 2026-11-20T23:10:14Z vivid-yellow-adder: wrote the plan
+- 2026-11-20T23:12:24Z vivid-yellow-adder: changed summary
