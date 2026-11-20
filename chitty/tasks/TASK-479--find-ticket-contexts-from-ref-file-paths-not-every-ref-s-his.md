@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from ref file paths, not every ref's history
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -470,3 +470,4 @@ Context discovery now uses cached selected ref files without validating ticket c
 - 2026-11-20T23:09:54Z vivid-yellow-adder: changed notes
 - 2026-11-20T23:10:14Z vivid-yellow-adder: wrote the plan
 - 2026-11-20T23:12:24Z vivid-yellow-adder: changed summary
+- 2026-11-20T23:12:27Z vivid-yellow-adder doing → review
