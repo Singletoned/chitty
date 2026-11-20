@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -36,7 +36,7 @@ Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_rest
 
 - [ ] Property: for every drawn kind and failure, the write exits non-zero with output containing the original message (`is registered to`, or `HOOKSTDERR`), and the snapshot after equals the snapshot before. It fails on `main`: the stale registration case leaves ` M chitty.toml`, and the fresh hook case leaves a `chitty/` directory.
 - [ ] With no failure, after the stale `chitty add` autocommits, `git status --porcelain` is empty and `chitty_version` is upgraded; `chitty init --autocommit` on a fresh repository commits `chitty: initialize and enable autocommit`; existing tests in `tests/test_init_workflow.py` and `tests/test_autocommit.py` pass unchanged.
-- [ ] Plausible wrong versions, each run against the property, with the failing case and command recorded in a note: today's restore, around the commit only; restoring files but not removing created directories; removing only the leaf backlog directory, not parents created with it (caught by the fresh hook case, where `chitty/` is created with `chitty/tasks`). `make check` passes.
+- [ ] Plausible wrong versions, each run against the property, with the failing case and command recorded in a note: today's restore, around the commit only; restoring only `chitty.toml` and created directories, not `AGENTS.md`, `.gitignore` or `CLAUDE.md` (caught only by the fresh hook case, since the stale registration failure happens before those three are written); restoring files but not removing created directories; removing only the leaf backlog directory, not parents created with it (caught by the fresh hook case, where `chitty/` is created with `chitty/tasks`). `make check` passes.
 
 ## Plan
 
@@ -90,3 +90,5 @@ The stale registration fixture is impossible as specified: initial `chitty init 
 - 2026-11-20T22:41:56Z brisk-coral-eel doing → planning
 - 2026-11-20T23:14:11Z quick-pearl-lapwing: changed description
 - 2026-11-20T23:14:11Z quick-pearl-lapwing planning → cold-read
+- 2026-11-20T23:16:22Z quick-pearl-lapwing: changed acceptance criteria
+- 2026-11-20T23:16:22Z quick-pearl-lapwing cold-read → todo
