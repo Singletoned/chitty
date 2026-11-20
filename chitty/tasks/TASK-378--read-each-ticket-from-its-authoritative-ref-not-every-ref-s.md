@@ -72,6 +72,8 @@ Planning, 2026-11-20 (third read with serious findings since the latest rewrite,
 
 Suggested split: (a) tolerant ID and context collection: no raise on filename problems, and discovery from paths; (b) `context_of` and `lookup` through `source_copy` alone; (c) the listing switch, with a decision on conflicted tickets during multi-ticket writes; (d) test migrations. Check (d) against the one-ticket argument in Decisions.
 
+Decided with the owner 2026-11-20, for the split: an operation fails only if it needs the conflicted ticket's content, and carries on if it needs only IDs or paths. Isolated: `add` (free IDs only), `move <ID>` and `archive <ID>` (fail only when `<ID>` is the conflicted ticket), and `show` and `edit` as already decided. Fail naming the conflicted ticket: `list`, `archive` with no ID (it needs every ticket's status) and `renumber` (it rewrites mentions in other tickets' text). Code that needs only IDs or paths uses `ticket_ids()` and paths; code that needs content uses `source_copy` one ID at a time. Bulk writes that check every ticket before writing come from `TASK-397`.
+
 ## History
 
 - 2026-11-18T16:20:04Z lively-quartz-crane → backlog
@@ -156,3 +158,4 @@ Suggested split: (a) tolerant ID and context collection: no raise on filename pr
 - 2026-11-20T22:38:32Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T22:40:23Z quick-pearl-lapwing: changed notes
 - 2026-11-20T22:40:23Z quick-pearl-lapwing cold-read → planning
+- 2026-11-20T22:55:43Z quick-pearl-lapwing: changed notes
