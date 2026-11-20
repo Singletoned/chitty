@@ -1,6 +1,6 @@
 ---
 title: Run the Linux check in `make release` before tagging
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-429
@@ -28,9 +28,9 @@ Out of scope: the landing check (`HUMAN-13`), retrying, and the GitHub workflows
 
 ## Acceptance Criteria
 
-- [ ] The new `test_failed_linux_check_pushes_nothing_and_removes_the_worktree` passes with every assertion in the Description; a note records that it fails against `scripts/release.sh` without the change
-- [ ] The two existing tests named in the Description pass with their added `linux-ran` assertions; a note records that the success-path assertion fails without the change
-- [ ] The comment in `scripts/release.sh` and the release bullet in `AGENTS.md` mention the Linux check; `make check` passes
+- [x] The new `test_failed_linux_check_pushes_nothing_and_removes_the_worktree` passes with every assertion in the Description; a note records that it fails against `scripts/release.sh` without the change
+- [x] The two existing tests named in the Description pass with their added `linux-ran` assertions; a note records that the success-path assertion fails without the change
+- [x] The comment in `scripts/release.sh` and the release bullet in `AGENTS.md` mention the Linux check; `make check` passes
 
 ## Plan
 
@@ -41,6 +41,11 @@ Add a fixture Linux-check script and assertions proving it runs on the committed
 Regression evidence: before changing scripts/release.sh, the new Linux-failure test failed because release returned 0 and pushed; the success-path test also errored because linux-ran was absent.
 
 The success-path linux-ran assertion also failed before implementation (linux-ran did not exist); it now proves the check ran once against Release 0.1.1. Focused release tests and make check pass.
+
+Reviewed: complete diff and all criteria inspected; no property test needed for this fixed sequence.
+1: pass - `make check` ran 788 tests and printed OK; rerunning the new test with fixture `release.sh` copied from `main` printed FAIL, `AssertionError: 0 == 0`, as recorded in the implementation note.
+2: pass - `make check` printed OK; rerunning the success test with fixture `release.sh` from `main` printed ERROR, `FileNotFoundError` for `linux-ran`, as recorded in the implementation note. The failing make check test also passed with its ordering assertion.
+3: pass - inspected `scripts/release.sh` and `AGENTS.md`; both mention the Linux check. `make check` printed OK, 788 tests, and pyright reported 0 errors.
 
 ## Summary
 
@@ -58,3 +63,5 @@ Implemented Linux check after release commit and before tag/push; failure aborts
 - 2026-11-20T00:27:47Z intrepid-lilac-ibis: changed notes
 - 2026-11-20T00:30:22Z intrepid-lilac-ibis: changed notes, summary
 - 2026-11-20T00:30:35Z intrepid-lilac-ibis doing → review
+- 2026-11-20T00:36:08Z nimble-jade-adder: changed notes; ticked acceptance criteria
+- 2026-11-20T00:36:08Z nimble-jade-adder review → done
