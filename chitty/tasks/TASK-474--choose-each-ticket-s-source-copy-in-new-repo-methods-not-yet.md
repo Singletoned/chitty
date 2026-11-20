@@ -1,6 +1,6 @@
 ---
 title: Choose each ticket's source copy in new `Repo` methods, not yet used by reads
-status: doing
+status: planning
 depends_on:
   - TASK-377
   - TASK-380
@@ -44,6 +44,10 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - [ ] With local `task-1` and `origin/task-1` both ahead of `main` and diverged from each other, `source_copy(TASK-1)` raises `ChittyError` naming `origin/task-1` and `task-1`; with `TASK-1` edited on both `task-1` and `main` since they split, it names `task-1` and `main`; with `task-1` an orphan branch, it raises the `unrelated histories` error; with a malformed `TASK-1` file committed on `task-1`, it raises `task-1:<relative path>: <error>`. In each case, on the same `Repo`, `ticket_ids()` succeeds and `source_copy(TASK-2)` for a ticket only on `main` succeeds
 - [ ] Outside a Git repository, `ticket_ids` lists the working tree tickets, `source_copy` gives `ref` `None`, and, with every function in `chitty.git` wrapped to record calls, neither makes any. A test with `git.historical_files` patched (`unittest.mock.patch.object`) to raise gets criterion 1's results from the same fixtures. In a repository with `main` and ticket branches `task-1` and `task-2`, with every `chitty.git` function wrapped, `ticket_ids()` followed by `source_copy` for every ID calls `git.files_at` exactly once each for `refs/heads/main`, `refs/heads/task-1` and `refs/heads/task-2`, and never calls `git.file_at`. `make check` passes with no existing test changed (`git diff main --stat -- tests` lists only the new file)
 
+## Notes
+
+Criterion 5 requires wrapping every function in `chitty.git` and observing no calls from `ticket_ids` or `source_copy` outside Git, but the description specifies detecting that case when `git.is_repository` is false. `Repo.open` and `Repo.__init__` do not currently determine repository membership, and `git.is_repository` itself invokes Git. Please decide whether the test should allow the repository check, measure only calls after `Repo.open`, or require another detection design; otherwise the criterion cannot guide a valid regression test. No implementation or verification was started.
+
 ## History
 
 - 2026-11-20T12:35:43Z jolly-dusky-badger → planning
@@ -65,3 +69,5 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 - 2026-11-20T17:23:10Z jolly-dusky-badger: replaced notes
 - 2026-11-20T17:23:10Z jolly-dusky-badger error → todo
 - 2026-11-20T17:25:12Z honest-quartz-jay todo → doing
+- 2026-11-20T17:26:54Z human: changed owner, notes
+- 2026-11-20T17:26:54Z human doing → planning
