@@ -30,6 +30,10 @@ Tests: a new `tests/test_source_copy_errors.py`, set up as `tests/test_source_co
 - [ ] The two working-tree cases in the Description raise the stated errors for `TASK-2` and `TASK-3`
 - [ ] Mutant 1 is caught by the `TASK-2` check of criterion 1, mutant 2 by the malformed-file checks, and mutant 3 by the changed-on-both check: each mutant test asserts the matching check fails against it; `make check` passes
 
+## Plan
+
+Add isolated Git fixtures and shared checks for each error and unaffected ticket; exercise the shared checks against the three specified patched mutants, then format and run the full checks.
+
 ## History
 
 - 2026-11-20T17:43:44Z jolly-dusky-badger → planning
@@ -39,3 +43,4 @@ Tests: a new `tests/test_source_copy_errors.py`, set up as `tests/test_source_co
 - 2026-11-20T20:06:46Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T20:07:09Z jolly-dusky-badger: changed description
 - 2026-11-20T20:17:59Z jolly-maroon-puffin todo → doing
+- 2026-11-20T20:19:54Z jolly-maroon-puffin: wrote the plan
