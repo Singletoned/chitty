@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: cold-read
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -61,6 +61,16 @@ Planner, 2026-11-20: ticket rewritten as the read switch only. The lookup it bui
 Owner `human` cleared 2026-11-20 at the owner's request: `TASK-384` removed the reason it was held back from `chitty run`. Earlier notes saying to start its worker by hand no longer apply. If a runner session cannot finish it, return it to `planning` to be split further.
 
 The required conflict isolation and context-discovery wiring do not specify a workable interaction with autocommitted edits. `Repo._commit` calls `check.fix`, and `check.check` calls `repo.discovered_contexts()` even for a single changed path. The prescribed discovery reads every ticket via `source_copy`, which raises for the conflicting TASK-1; therefore editing unrelated TASK-2 cannot succeed as criterion 3 requires, even if `lookup` is isolated. The ticket also says `check.py` check and fix remain unchanged. A planner needs to decide how discovery avoids propagating unrelated source errors during this validation, including what it should do when the conflicted ticket may be the only source in an unconfigured context, and specify a regression fixture and assertions for that case. No implementation or tests were changed; the planned regressions and full verification remain outstanding.
+
+Planning, 2026-11-20 (third read with serious findings since the latest rewrite, so split rather than patch). The `discovered_contexts` decision above stops source errors reaching discovery, but a cold read found it is not enough. Findings, each checked against `src/chitty/store.py` on this branch:
+
+1. Discovery must call `ticket_ids()` itself, because `_invalidate` clears `_ticket_ids` and `_ticket_ref_files`.
+2. `_collect_ticket_ids` raises on filename problems: `_files` raises on any `scan` problem, and a bad filename on `main` raises too. Reproduced: `chitty/backlog/notes.txt` makes `ticket_ids()` raise `task filename 'notes.txt' must end with .md`. Today `check` only reports this. Once discovery calls `ticket_ids()`, every autocommitted write would fail. Decide whether discovery reports filename problems or skips them.
+3. `context_of` today loops over `tasks(context, "all")`, which would call `source_copy` on a conflicted ticket. It must call `source_copy(task_id)` directly.
+4. `_tasks_in_location` calls `source_copy` for every ID, and so does every `tasks()` or `all_tasks()` caller on the write path: `new_id` on a ticket branch, `_delete_done`, `move` and `renumber`. While any ticket is conflicted, those writes (`add`, `archive`, `move`, `renumber`) raise. Decide whether they should fail or be isolated like `show` and `edit`.
+5. Criterion 3's "(it fails before the discovery decision, through `check.fix`)" should become a mutant: it fails if `discovered_contexts` calls `source_copy`.
+
+Suggested split: (a) tolerant ID and context collection: no raise on filename problems, and discovery from paths; (b) `context_of` and `lookup` through `source_copy` alone; (c) the listing switch, with a decision on conflicted tickets during multi-ticket writes; (d) test migrations. Check (d) against the one-ticket argument in Decisions.
 
 ## History
 
@@ -144,3 +154,5 @@ The required conflict isolation and context-discovery wiring do not specify a wo
 - 2026-11-20T22:38:13Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T22:38:32Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T22:38:32Z quick-pearl-lapwing planning → cold-read
+- 2026-11-20T22:40:23Z quick-pearl-lapwing: changed notes
+- 2026-11-20T22:40:23Z quick-pearl-lapwing cold-read → planning
