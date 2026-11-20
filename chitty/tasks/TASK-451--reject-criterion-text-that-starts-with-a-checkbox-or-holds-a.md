@@ -1,6 +1,6 @@
 ---
 title: Reject criterion text that starts with a checkbox or holds a line break
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -46,3 +46,4 @@ Suggestion origin: chitty
 - 2026-11-19T21:05:29Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:05:29Z sunny-white-dormouse cold-read → planning
 - 2026-11-19T21:05:47Z sunny-white-dormouse planning → todo
+- 2026-11-20T00:41:45Z nimble-fawn-eel todo → doing
