@@ -386,6 +386,8 @@ make: *** [check] Error 4
 
 ```
 
+Regression verification: the property suite fails for an always-append mutant (including idempotence) and the fixed signed-off example fails for a mutant that never joins a trailer paragraph. Earlier check output records failures of the original empty-message and merge fixtures and the review cleanliness gate.
+
 ## History
 
 - 2026-11-19T20:55:28Z sunny-white-dormouse → backlog
@@ -415,3 +417,4 @@ make: *** [check] Error 4
 - 2026-11-20T23:24:02Z quick-pearl-lapwing planning → doing
 - 2026-11-20T23:25:44Z tidy-silver-zander: changed notes
 - 2026-11-20T23:26:19Z tidy-silver-zander: wrote the plan
+- 2026-11-20T23:32:46Z tidy-silver-zander: changed notes
