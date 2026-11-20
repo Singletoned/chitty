@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: doing
+status: planning
 priority: high
 created: 2026-11-19
 ---
@@ -212,6 +212,8 @@ make: *** [check] Error 4
 
 Criterion 1 still has a contradictory property. For the permitted message `Task: TASK-1 ` (one nonblank line with a trailing space), the specified algorithm must use `body = message.rstrip()` and return `Task: TASK-1\n\nTask: TASK-1\n`. Its split lines contain two exact `Task: TASK-1` lines, whereas the original contains zero; the criterion requires exactly one more. Please decide whether to count against the trimmed source, restrict the generated messages, or change the specified algorithm/property. This cannot be implemented and tested as written. The existing implementation and tests remain committed unchanged. The previous full check is recorded above; it failed on the now-outdated empty-message test, merge fixture, retry HEAD expectation, and inadvertent removal of the review cleanliness gate. Those failures and the requested wrong-implementation regression checks remain to be addressed after planning.
 
+Returning to planning: criterion 1 conflicts with the required `message.rstrip()` algorithm for `Task: TASK-1 `, as detailed in the preceding note. Please resolve the property before implementation resumes; existing committed work is preserved and verification remains unfinished.
+
 ## History
 
 - 2026-11-19T20:55:28Z sunny-white-dormouse → backlog
@@ -235,3 +237,5 @@ Criterion 1 still has a contradictory property. For the permitted message `Task:
 - 2026-11-20T23:16:10Z quick-pearl-lapwing cold-read → doing
 - 2026-11-20T23:22:10Z sunny-yellow-crane: changed notes
 - 2026-11-20T23:22:49Z sunny-yellow-crane: changed notes
+- 2026-11-20T23:22:59Z sunny-yellow-crane: changed owner, notes
+- 2026-11-20T23:22:59Z sunny-yellow-crane doing → planning
