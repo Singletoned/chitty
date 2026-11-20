@@ -1,6 +1,6 @@
 ---
 title: Pass each ticket's `provisional` flag to `ticket_source` in `Repo.source_copy`
-status: planning
+status: cold-read
 depends_on:
   - TASK-474
 parent: TASK-376
@@ -30,3 +30,4 @@ Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Gi
 - 2026-11-20T12:41:32Z jolly-dusky-badger → planning
 - 2026-11-20T12:41:44Z jolly-dusky-badger: changed acceptance criteria
 - 2026-11-20T12:41:59Z jolly-dusky-badger: changed description
+- 2026-11-20T12:43:53Z jolly-dusky-badger planning → cold-read
