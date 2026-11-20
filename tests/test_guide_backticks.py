@@ -7,8 +7,8 @@ from chitty.cli import cli
 from chitty.store import guide
 
 WARNING = (
-    "Backticks run commands inside double-quoted shell arguments, so pass such text "
-    "in single quotes. Avoid an apostrophe in the text, or write it as `'\\''`."
+    "Pass text containing backticks or apostrophes through a `-file` option, "
+    "using `-` and a quoted heredoc (`<<'EOF'`) for stdin."
 )
 
 

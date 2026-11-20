@@ -130,6 +130,7 @@ A patch over the original text, never parse-then-dump:
   key changes.
 - Unchanged content is not written.
 - `--note TEXT` appends a paragraph to `## Notes`, creating it if needed.
-  `--note-file F` reads it from a file (`-` for stdin). No date prefix.
+  `--note-file F` reads it from a UTF-8 file. All long-text file options on
+  `add`, `edit` and `suggest` accept `-` for stdin, one per command. No date prefix.
 - Criterion numbers in one `edit` refer to the list before it. `show` prints
   them.

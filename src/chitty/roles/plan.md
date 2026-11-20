@@ -13,9 +13,7 @@ read. Describe the change and why it is needed; criteria are optional.
   descriptions, criteria, and notes. When you write a literal single `*` in
   Markdown, escape it or enclose the pattern in backticks, for example
   `files/*.jpg`.
-- Backticks run commands inside double-quoted shell arguments, so pass such
-  text in single quotes. Avoid an apostrophe in the text, or write it as
-  `'\''`.
+- Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,
   point to relevant files and callers, and keep one outcome to one to three

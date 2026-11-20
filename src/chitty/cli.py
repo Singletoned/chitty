@@ -231,6 +231,16 @@ def _text(value: str | None, file: TextIO | None, name: str) -> str | None:
     return file.read() if file is not None else value
 
 
+def _check_stdin_files(**files: TextIO | None) -> None:
+    names = [
+        f"--{name.replace('_', '-')}"
+        for name, file in files.items()
+        if file is not None and file.name == "<stdin>"
+    ]
+    if len(names) > 1:
+        raise click.UsageError(f"only one file option can read stdin: {', '.join(names)}")
+
+
 @cli.command()
 @click.option(
     "--autocommit",
@@ -285,16 +295,28 @@ def inbox(import_suggestions: bool, as_json: bool) -> None:
 @click.argument("project", shell_complete=_complete_project)
 @click.argument("title")
 @click.option("-d", "--description")
+@click.option(
+    "--description-file",
+    type=click.File(encoding="utf-8"),
+    help="Read description from a file ('-' for stdin).",
+)
 @click.option("--task", help="Task ID being worked on.")
 @click.option("--create", is_flag=True, help="Create an inbox for a non-Chitty project.")
 def suggest(
-    project: str, title: str, description: str | None, task: str | None, create: bool
+    project: str,
+    title: str,
+    description: str | None,
+    description_file: TextIO | None,
+    task: str | None,
+    create: bool,
 ) -> None:
     """Send a suggestion to a registered project or an explicit local path.
 
     PROJECT is a registered name unless it contains `/`, is `.`, or starts with
     `~` or `.`; paths resolve their Chitty configuration before sending.
     """
+    _check_stdin_files(description_file=description_file)
+    description = _text(description, description_file, "description")
     click.echo(send_suggestion(project, title, description, create, Path.cwd(), task))
 
 
@@ -327,6 +349,11 @@ def import_backlog_md(context: str | None, keep_source: bool) -> None:
 @click.argument("title")
 @context_option
 @click.option("-d", "--description", help="The Description section (required except for backlog).")
+@click.option(
+    "--description-file",
+    type=click.File(encoding="utf-8"),
+    help="Read description from a file ('-' for stdin).",
+)
 @click.option("-s", "--status", type=click.Choice(STATUSES), default="todo", show_default=True)
 @click.option("--ac", "criteria", multiple=True, help="Acceptance criterion (repeatable).")
 @click.option("-l", "--label", "labels", multiple=True, help="Label (repeatable).")
@@ -335,12 +362,17 @@ def import_backlog_md(context: str | None, keep_source: bool) -> None:
 @click.option("--depends-on", multiple=True, help="Task ID this is blocked on (repeatable).")
 @click.option("--parent", help="Parent task ID in this repository.")
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
-@click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
+@click.option(
+    "--note-file",
+    type=click.File(encoding="utf-8"),
+    help="Read a note from a file ('-' for stdin).",
+)
 @json_option
 def add(
     title: str,
     context: str | None,
     description: str | None,
+    description_file: TextIO | None,
     status: str,
     criteria: tuple[str, ...],
     labels: tuple[str, ...],
@@ -357,6 +389,8 @@ def add(
     -c names a context in this repository. Use `chitty suggest` to send work
     to another repository.
     """
+    _check_stdin_files(description_file=description_file, note_file=note_file)
+    description = _text(description, description_file, "description")
     root = search_root(Path.cwd())
     target = resolve_add_target(Repo.open(root) if root else None, context)
     random_ids = target.repo.config.contexts[target.context.name].random_ids
@@ -638,7 +672,11 @@ def _format(stored: StoredTask) -> str:
 @click.option("--rm-depends-on", multiple=True, help="Remove a dependency (repeatable).")
 @click.option("--parent", help="Parent task ID; '' unsets.")
 @click.option("-d", "--description", help="Replace the Description section.")
-@click.option("--description-file", type=click.File(), help="Read --description from a file.")
+@click.option(
+    "--description-file",
+    type=click.File(encoding="utf-8"),
+    help="Read --description from a file ('-' for stdin).",
+)
 @click.option(
     "--replace-in-description",
     nargs=2,
@@ -654,12 +692,29 @@ def _format(stored: StoredTask) -> str:
 @click.option("--check", type=int, multiple=True, help="Tick criterion N (repeatable).")
 @click.option("--uncheck", type=int, multiple=True, help="Untick criterion N (repeatable).")
 @click.option("--plan", help="Replace the Plan section; '' removes it.")
-@click.option("--plan-file", type=click.File(), help="Read --plan from a file.")
+@click.option(
+    "--plan-file",
+    type=click.File(encoding="utf-8"),
+    help="Read --plan from a file ('-' for stdin).",
+)
 @click.option("--note", "notes", multiple=True, help="Append a paragraph to Notes (repeatable).")
-@click.option("--note-file", type=click.File(), help="Read a note from a file ('-' for stdin).")
+@click.option(
+    "--note-file",
+    type=click.File(encoding="utf-8"),
+    help="Read a note from a file ('-' for stdin).",
+)
 @click.option("--set-notes", help="Replace the Notes section; '' removes it.")
-@click.option("--set-notes-file", type=click.File(), help="Read replacement Notes from a file.")
+@click.option(
+    "--set-notes-file",
+    type=click.File(encoding="utf-8"),
+    help="Read replacement Notes from a file ('-' for stdin).",
+)
 @click.option("--summary", help="Replace the Summary section; '' removes it.")
+@click.option(
+    "--summary-file",
+    type=click.File(encoding="utf-8"),
+    help="Read --summary from a file ('-' for stdin).",
+)
 @click.option(
     "--override-review-independence",
     is_flag=True,
@@ -698,11 +753,19 @@ def edit(
     set_notes: str | None,
     set_notes_file: TextIO | None,
     summary: str | None,
+    summary_file: TextIO | None,
     override_review_independence: bool,
     human_edit: bool,
     as_json: bool,
 ) -> None:
     """Change a task. Criterion numbers refer to the list before this edit."""
+    _check_stdin_files(
+        description_file=description_file,
+        plan_file=plan_file,
+        note_file=note_file,
+        set_notes_file=set_notes_file,
+        summary_file=summary_file,
+    )
     repo = _repo()
     resolved_id = repo.resolve(task_id)
     if human_edit:
@@ -727,7 +790,7 @@ def edit(
         plan=_text(plan, plan_file, "plan"),
         notes=(*notes, note_file.read()) if note_file is not None else notes,
         set_notes=_text(set_notes, set_notes_file, "set-notes"),
-        summary=summary,
+        summary=_text(summary, summary_file, "summary"),
         override_review_independence=override_review_independence,
     )
     previous_actor = os.environ.get("CHITTY_ACTOR")

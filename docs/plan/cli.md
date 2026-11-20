@@ -24,7 +24,10 @@ file holds the decisions behind them.
 - Notes: append with `--note`/`--note-file`, or replace with
   `--set-notes`/`--set-notes-file` (empty removes the section). Replacing
   cannot be combined with appending and is refused in review.
-- `--summary` writes the optional final handoff section, after Notes.
+- Description: `--description-file` is available on `add`, `edit` and `suggest`.
+- `--plan-file` and `--summary-file` are available on `edit`; `--summary`
+  writes the optional final handoff section, after Notes.
+- File options read UTF-8 and accept `-` for stdin; only one may use stdin.
 - `parent` is a full ticket ID for grouping; shorthand IDs are expanded. It must
   exist and cannot form a cycle. `list --parent ID` shows direct children;
   `show` lists them.

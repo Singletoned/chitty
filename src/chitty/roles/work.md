@@ -8,8 +8,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - When you write a literal single `*` in Markdown, escape it or enclose the
   pattern in backticks, for example `files/*.jpg`.
 
-- Backticks run commands inside double-quoted shell arguments, so pass such text
-  in single quotes. Avoid an apostrophe in the text, or write it as `'\''`.
+- Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.
 - Work on one ticket per session. Start with `chitty show <ID>`.
 - Read and change only files inside the ticket's worktree, and create your
   own files, including scratch files, only there; do not touch the main
