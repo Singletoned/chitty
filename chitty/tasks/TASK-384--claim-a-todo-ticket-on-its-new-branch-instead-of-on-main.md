@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket on its new branch instead of on `main`
-status: doing
+status: review
 depends_on:
   - TASK-382
 parent: TASK-376
@@ -34,9 +34,23 @@ Tests: real-Git, fake-agent runner tests. Replace `tests/test_run_claims_on_main
 - [ ] A `todo` ticket whose existing worktree has a rebase stopped on a conflict (a commit on `main` and one on the branch changing the same line of a code file, then `git rebase main` in the worktree): the run fails, and the ticket is `todo` on both `main` and the branch (fails before the change). A `todo` ticket whose worktree has an uncommitted edit to its ticket file, with `main`'s file clean: the run fails naming the worktree file and creates or commits nothing (fails before the change, which checks only `main`'s file and claims)
 - [ ] Regression guard: `test_run_check_failure_on_doing_ticket_starts_agent` in `tests/test_next.py` still passes unchanged; `test_run_check_failure_on_todo_ticket_records_error_on_branch` in `tests/test_next.py` asserts no commit on `main` and the claim as the first commit on `task-1`; `docs/plan/next-action-and-runner.md` has the two replacement sentences (lines 56 to 57 and 126 to 127 today); `make check` passes
 
+## Plan
+
+Move the dirty-ticket guard to an existing ticket worktree and claim todo only after worktree creation using its Repo. Replace the real-Git runner regressions, update the existing check-failure test and runner plan, verify the regressions fail before the fix, then run fix, format and checks.
+
 ## Notes
 
 Planner, 2026-11-20: both questions in the earlier return are settled in the Description: `docs/plan/ticket-state.md` is not edited here, and the test to change is `test_run_check_failure_on_todo_ticket_records_error_on_branch` in `tests/test_next.py`.
+
+Before the fix, the new real-Git tests failed for the new branch, existing branch, setup failure, unfinished rebase and dirty ticket because main gained the claim commit. The combined check-failure subcase inherited the first failure; it is being isolated before verifying that regression separately.
+
+The isolated check-failure regression also fails before the fix because main gains the claim commit.
+
+Existing runner tests also assumed a main claim; updated them to assert branch-only behaviour. The check-failure fixture needed init before its baseline because automatic setup refresh otherwise creates a separate main commit.
+
+## Summary
+
+The runner checks an existing worktree for a dirty ticket and claims todo on its branch before setup. Real-Git regressions cover new and existing branches, setup and check failures, rebase conflicts and dirty tickets; they failed before the change. Updated existing runner tests and the runner plan. Verification: chitty fix, make format and make check (807 tests) passed. No follow-ups.
 
 ## History
 
@@ -70,3 +84,9 @@ Planner, 2026-11-20: both questions in the earlier return are settled in the Des
 - 2026-11-20T17:37:55Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T17:37:55Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T17:39:42Z able-violet-lapwing todo → doing
+- 2026-11-20T17:42:24Z able-violet-lapwing: wrote the plan
+- 2026-11-20T17:43:33Z able-violet-lapwing: changed notes
+- 2026-11-20T17:43:53Z able-violet-lapwing: changed notes
+- 2026-11-20T17:46:45Z able-violet-lapwing: changed notes
+- 2026-11-20T17:47:45Z able-violet-lapwing: changed summary
+- 2026-11-20T17:47:48Z able-violet-lapwing doing → review
