@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket on its new branch instead of on `main`
-status: review
+status: done
 depends_on:
   - TASK-382
 parent: TASK-376
@@ -48,6 +48,13 @@ The isolated check-failure regression also fails before the fix because main gai
 
 Existing runner tests also assumed a main claim; updated them to assert branch-only behaviour. The check-failure fixture needed init before its baseline because automatic setup refresh otherwise creates a separate main commit.
 
+Reviewed: Complete diff inspected; no additional property test needed for the specified real-Git ordering cases.
+1: pass - make check printed OK; test_new_branch_claims_before_agent passed. With main version of run.py restored temporarily, it failed because main changed.
+2: pass - make check printed OK; test_existing_branch_keeps_note_and_claims_before_agent passed, and failed against main run.py because main changed.
+3: pass - make check printed OK; setup and check failure tests passed, and each failed against main run.py because main changed.
+4: pass - make check printed OK; unfinished rebase and dirty worktree tests passed, and both failed against main run.py because main changed.
+5: pass - make check printed OK for 807 tests, including both test_next regression guards; inspected the updated assertions and both documentation sentences.
+
 ## Summary
 
 The runner checks an existing worktree for a dirty ticket and claims todo on its branch before setup. Real-Git regressions cover new and existing branches, setup and check failures, rebase conflicts and dirty tickets; they failed before the change. Updated existing runner tests and the runner plan. Verification: chitty fix, make format and make check (807 tests) passed. No follow-ups.
@@ -90,3 +97,5 @@ The runner checks an existing worktree for a dirty ticket and claims todo on its
 - 2026-11-20T17:46:45Z able-violet-lapwing: changed notes
 - 2026-11-20T17:47:45Z able-violet-lapwing: changed summary
 - 2026-11-20T17:47:48Z able-violet-lapwing doing → review
+- 2026-11-20T19:02:41Z youthful-jade-wren: changed notes
+- 2026-11-20T19:02:41Z youthful-jade-wren review → done
