@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: planning
+status: cold-read
 labels:
   - needs-minor
 owner: human
@@ -125,3 +125,4 @@ Planner, 2026-11-20: ticket rewritten as the read switch only. The lookup it bui
 - 2026-11-20T12:45:22Z jolly-dusky-badger: replaced notes; changed owner, dependencies, description, acceptance criteria, summary; wrote the plan
 - 2026-11-20T17:44:55Z jolly-dusky-badger: replaced notes; changed dependencies, description
 - 2026-11-20T17:45:05Z jolly-dusky-badger: changed description
+- 2026-11-20T22:07:36Z quick-pearl-lapwing planning → cold-read
