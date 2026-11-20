@@ -30,7 +30,7 @@ Tests use Hypothesis (the repository tool) for the pure function, in a new `test
 
 ## Plan
 
-Implement trailer generation in chitty.git, preserving each commit tree and author identity while safely replaying linear ticket commits. Invoke it after landing rebase and before landing checks; remove the review-entry gate. Add property and real-Git landing tests, invert the review gate test, update work guide and README, then run focused tests and make check.
+Update the existing implementation and tests for the clarified requirements, restore the review cleanliness gate, verify regression failures and landing behavior, then format and run the full check.
 
 ## Notes
 
@@ -414,3 +414,4 @@ make: *** [check] Error 4
 - 2026-11-20T23:24:02Z quick-pearl-lapwing: changed acceptance criteria, notes
 - 2026-11-20T23:24:02Z quick-pearl-lapwing planning → doing
 - 2026-11-20T23:25:44Z tidy-silver-zander: changed notes
+- 2026-11-20T23:26:19Z tidy-silver-zander: wrote the plan
