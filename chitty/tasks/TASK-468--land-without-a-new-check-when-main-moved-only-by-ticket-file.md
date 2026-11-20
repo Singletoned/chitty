@@ -39,6 +39,14 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 
 Add merge-base support and a precise ticket-path predicate, then retry fast-forward after rebasing over only ticket-file commits without rerunning setup/check, capped at ten quick tries. Add property coverage and landing retry scenarios, document the assumption and exceptions, run regression/mutant checks where feasible, then make check and commit.
 
+## Notes
+
+Verification: `make check` passed (ruff, pyright, all 787 tests). Focused landing/property tests passed. The ticket-only landing test fails when `_only_ticket_paths` is forced false (the no-quick-path behavior); boundary tests kill both the missing-slash context-prefix mutant and the broad `chitty/` mutant. The mixed-move test fails when the predicate is forced true, and the ten-move guard test fails with the limit raised to 1000. These are executable mutant checks; the original NotImplementedError-stub run was not captured.
+
+## Summary
+
+Implemented ticket-only quick landing retries, bounded to ten, with merge-base support, property/boundary coverage, landing retry tests, and documentation. Verified using make check and focused mutant probes; see Notes. No follow-up.
+
 ## History
 
 - 2026-11-19T21:23:51Z daring-amber-kestrel → planning
@@ -56,3 +64,4 @@ Add merge-base support and a precise ticket-path predicate, then retry fast-forw
 - 2026-11-19T21:29:17Z daring-amber-kestrel planning → todo
 - 2026-11-19T23:52:32Z youthful-zinc-wren todo → doing
 - 2026-11-19T23:54:08Z youthful-zinc-wren: wrote the plan
+- 2026-11-20T00:04:12Z youthful-zinc-wren: changed notes, summary
