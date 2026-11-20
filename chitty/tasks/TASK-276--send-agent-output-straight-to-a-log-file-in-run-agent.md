@@ -1,6 +1,6 @@
 ---
 title: Send agent output straight to a log file in `_run_agent`
-status: doing
+status: review
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -71,6 +71,10 @@ Planner 2026-11-20 (owner direction: move checks from agents to automation where
 Blocked: Chitty considers the latest committed TASK-276 to be on main and refuses to update its status from this ticket worktree. A maintainer must reconcile the ticket authority/branch metadata or authorize editing from main.
 
 Planner 2026-11-20: blocked again for the same reason (claim on `main` while branch `task-276` already existed). Merged `main` into `task-276` again and set `doing` from this worktree, so the next run continues here without a new claim on `main`. No code work had started.
+
+## Summary
+
+Implemented direct binary log output in _run_agent, bounded returned bytes to the file range written during the call, retained timeout process-tree handling, and supplied a temporary binary log from _run_session. Added byte-exact append, lingering-descendant, and timeout regressions, including committed faulty implementations. Verification: make check passed (793 tests); focused output and timeout tests passed. Follow-up: none.
 
 ## History
 
@@ -152,3 +156,5 @@ Planner 2026-11-20: blocked again for the same reason (claim on `main` while bra
 - 2026-11-20T10:06:41Z lively-bronze-crane: changed owner, notes
 - 2026-11-20T10:06:41Z lively-bronze-crane blocked → doing
 - 2026-11-20T11:52:33Z vivid-hazel-stoat: wrote the plan
+- 2026-11-20T11:57:01Z vivid-hazel-stoat: changed summary
+- 2026-11-20T11:57:01Z vivid-hazel-stoat doing → review
