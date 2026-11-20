@@ -24,7 +24,7 @@ Decisions:
 
 Tests: real-Git runner tests in a new `tests/test_run_removes_merged_branches.py`, in the style of `tests/test_landing.py` (configured `setup` and `check`, fake agent), with `git init -b main`. No property: a fixed set of branch states, each in the criteria.
 
-Fixtures for criterion 2, each its own test: run lock held: hold `locks.run_lock(root, "TASK-<n>")` (`src/chitty/locks.py`) in the test process across the `chitty run` call; uncommitted file: write an untracked `x.txt` in the branch's worktree; rebase in progress: in the worktree, commit a change to `a.txt` that conflicts with a commit on `main`, then `git rebase main` and leave it stopped; merge in progress: the same conflict with `git merge main` stopped; deleted worktree: `shutil.rmtree` the worktree directory before `chitty run`. For the rebase and merge fixtures the branch is not merged while stopped, so assert only that the run completes and the branch still exists. Also add to `tests/test_run_repair_on_branch.py`, in the test that creates an `error` ticket's branch at `main`'s tip, an assertion that the branch's tip SHA after the run's clean-up step equals the SHA before it (the branch survived, not deleted and recreated).
+Fixtures for criterion 2, each its own test: run lock held: hold `locks.run_lock(root, "TASK-<n>")` (`src/chitty/locks.py`) in the test process across the `chitty run` call; uncommitted file: write an untracked `x.txt` in the branch's worktree; rebase in progress: in the worktree, commit a change to `a.txt` that conflicts with a commit on `main`, then `git rebase main` and leave it stopped; merge in progress: the same conflict with `git merge main` stopped; deleted worktree: `shutil.rmtree` the worktree directory before `chitty run`. For the rebase and merge fixtures the branch is not merged while stopped, so assert only that the run completes and the branch still exists. Also add to `tests/test_run_repair_on_branch.py`, in the test that creates an `error` ticket's branch at `main`'s tip, an assertion that stderr contains `kept merged branch task-<n>: TASK-<n> is error` and not `removed merged branch` (comparing tip SHAs would not show it: a branch recreated from `main` has the same tip).
 
 ## Acceptance Criteria
 
@@ -58,3 +58,4 @@ Planning 2026-11-20: the review-state question in the earlier notes is resolved 
 - 2026-11-20T23:19:59Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T23:24:27Z quick-pearl-lapwing: changed description, acceptance criteria, notes
 - 2026-11-20T23:24:27Z quick-pearl-lapwing cold-read → doing
+- 2026-11-20T23:25:08Z quick-pearl-lapwing: changed description
