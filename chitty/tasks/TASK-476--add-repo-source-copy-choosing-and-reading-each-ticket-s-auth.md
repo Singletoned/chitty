@@ -50,6 +50,8 @@ Review failed (tests): The criterion 3 fixture creates both tickets only on thei
 3: fail - tests/test_source_copy.py test_no_further_ref_reads calls init_git and immediately creates each branch before writing its ticket, so it does not exercise the specified two edits of tickets present on main. The test passes in make check and fails with NotImplementedError under the stub, but the required fixture is missing.
 4: pass - make check reports 825 tests OK; invalidation and deletion tests fail with NotImplementedError under the stub. git diff main --stat -- tests lists only tests/test_source_copy.py.
 
+Corrected criterion 3 fixture: both original tickets are committed on main before their branches edit them. The corrected test fails with NotImplementedError when source_copy is patched to the requested stub and passes with the implementation.
+
 ## Summary
 
 Implemented lazy per-ticket source selection and authoritative copy reading, with cached ref files and invalidation. Added 11 real-Git placement tests; each failed against the requested stub before implementation. `make check` passed (825 tests); only the new test file differs from main. Follow-ups TASK-477 and TASK-478 cover other checkouts and errors, and TASK-378 integrates reads.
@@ -71,3 +73,4 @@ Implemented lazy per-ticket source selection and authoritative copy reading, wit
 - 2026-11-20T19:57:35Z mellow-quartz-newt: changed acceptance criteria, notes
 - 2026-11-20T19:57:35Z mellow-quartz-newt review → doing
 - 2026-11-20T19:59:01Z rosy-white-quail: wrote the plan
+- 2026-11-20T19:59:22Z rosy-white-quail: changed notes
