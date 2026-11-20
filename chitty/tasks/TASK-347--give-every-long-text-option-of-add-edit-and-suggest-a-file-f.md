@@ -1,6 +1,6 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: todo
+status: cold-read
 created: 2026-11-16
 ---
 
@@ -34,6 +34,8 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: `add` checks the required description before reading a file; the property generator could produce text the store refuses whatever the option; History timestamps made "same ticket file" unverifiable; per-example repositories and `RepoTestCase`; UTF-8 file encoding; where the two-stdin check lives; the docs to update. Not adopted: none.
 
+The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (commit `8180e62d`). It was 1324 commits behind `main` and no longer applies, so the stale worktree and branch were removed: start fresh from `main`, using that tag only as a reference.
+
 ## History
 
 - 2026-11-16T09:59:58Z intrepid-coral-raven → backlog
@@ -47,3 +49,5 @@ Cold read by a Haiku subagent, 2026-11-17. Fixed: `add` checks the required desc
 - 2026-11-17T20:01:10Z kind-umber-toad cold-read → planning
 - 2026-11-17T22:01:56Z kind-umber-toad: changed owner
 - 2026-11-17T22:01:56Z kind-umber-toad planning → todo
+- 2026-11-20T21:55:54Z quick-pearl-lapwing: changed notes
+- 2026-11-20T21:55:54Z quick-pearl-lapwing todo → cold-read
