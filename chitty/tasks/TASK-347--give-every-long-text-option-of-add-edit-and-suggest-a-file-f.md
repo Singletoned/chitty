@@ -1,6 +1,6 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -42,6 +42,11 @@ The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (comm
 
 Before the fix, the property arms for add description and edit summary failed on missing file options; the other five arms passed. The stdin examples also failed on missing options or the missing conflict check.
 
+Reviewed: verified the complete diff and pre-change CLI against the new tests.
+1: pass - make check: 852 tests OK; running tests.test_property_text_files against main cli.py produced failures for add description and edit summary (missing options), while the other five property arms passed.
+2: pass - make check: stdin example tests pass; against main cli.py suggest and add description reported missing options, and both double-stdin subtests failed.
+3: pass - inspected guide, CLI and plan diffs for the specified advice, UTF-8 types, stdin help and option lists; make check printed 852 tests OK, ruff passed and pyright reported 0 errors.
+
 ## Summary
 
 Implemented UTF-8 long-text file options, stdin conflict validation, guide and plan documentation, and property and example coverage. Before the fix, the two new-option property arms and stdin examples failed; the other property arms passed. `make check` passes all 852 tests. The guide fixture required updating after the workflow guide tests failed. Planning should archive superseded TASK-306 and refresh the hand-written guide after landing.
@@ -71,3 +76,5 @@ Implemented UTF-8 long-text file options, stdin conflict validation, guide and p
 - 2026-11-20T22:02:56Z calm-white-ibis: changed notes
 - 2026-11-20T22:07:12Z calm-white-ibis: changed summary
 - 2026-11-20T22:07:15Z calm-white-ibis doing → review
+- 2026-11-20T22:11:30Z jolly-ochre-wren: changed notes
+- 2026-11-20T22:11:30Z jolly-ochre-wren review → done
