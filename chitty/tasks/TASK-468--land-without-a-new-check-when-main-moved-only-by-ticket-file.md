@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: cold-read
+status: todo
 priority: high
 created: 2026-11-19
 ---
@@ -33,7 +33,7 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 - [ ] The `_only_ticket_paths` property in `tests/test_property_landing_paths.py` passes, generating every path shape in the Description; a note records that it fails while the function raises `NotImplementedError`, against a mutant testing `startswith(f"chitty/{name}")` without the trailing `/`, and against a mutant testing only `startswith("chitty/")`
 - [ ] `test_ticket_only_move_lands_without_a_second_check` passes; a note records that it fails against `src/chitty/run.py` without the change (count 2)
 - [ ] `test_mixed_move_reruns_the_check`, `test_quick_path_stops_after_ten_ticket_moves` and the existing `TestLandingRetry` tests pass; a note records that the mixed test fails against a mutant that skips the check after any move, and that the ten-moves test fails, by its own call guard, against a mutant with no quick-path limit
-- [ ] Outside `chitty/`, the branch changes only `src/chitty/run.py`, `src/chitty/git.py`, the two test files and `docs/plan/next-action-and-runner.md`: `git diff --stat $(git merge-base main HEAD) -- . ':!chitty'` lists exactly those five paths (comparing with the merge base leaves out commits `main` gained since, and `chitty/` holds this ticket's own file); the docs bullet describes the quick path and names the cases where its assumption fails; `make check` passes
+- [ ] Outside `chitty/`, the branch commits change only `src/chitty/run.py`, `src/chitty/git.py`, the two test files and `docs/plan/next-action-and-runner.md`: `git diff --stat $(git merge-base main HEAD) HEAD -- . ':!chitty'` lists exactly those five paths (comparing with the merge base leaves out commits `main` gained since, and `chitty/` holds this ticket's own file); the docs bullet describes the quick path and names the cases where its assumption fails; `make check` passes
 
 ## Plan
 
@@ -76,3 +76,5 @@ Implemented ticket-only quick landing retries, bounded to ten, with merge-base s
 - 2026-11-20T00:10:29Z able-dusky-toad review → planning
 - 2026-11-20T22:33:54Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T22:33:54Z quick-pearl-lapwing planning → cold-read
+- 2026-11-20T22:34:37Z quick-pearl-lapwing: changed acceptance criteria
+- 2026-11-20T22:34:37Z quick-pearl-lapwing cold-read → todo
