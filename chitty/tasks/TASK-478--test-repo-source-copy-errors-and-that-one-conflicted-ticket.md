@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` errors, and that one conflicted ticket does not break others
-status: review
+status: done
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -38,6 +38,11 @@ Add isolated Git fixtures and shared checks for each error and unaffected ticket
 
 The mutant tests confirm the shared checks fail against eager selection, swallowed malformed-file errors in both locations, and ignored changed-on-both detection.
 
+Reviewed:
+1: pass - `.venv/bin/python -m unittest -v tests.test_source_copy_errors` printed OK for all four branch error and isolation tests; the eager-selection and swallowed-error mutants confirm the shared checks fail against those wrong versions.
+2: pass - the same command printed OK for duplicate and malformed working-tree tests; the swallowed-error mutant confirms the malformed-file check fails against that wrong version.
+3: pass - the same command printed OK for all three mutant tests, which assert the shared checks fail under the specified patches; `make check` printed OK for 842 tests, with ruff and pyright passing.
+
 ## Summary
 
 Added source-copy error and isolation tests with three mutation checks; no production changes needed. Verified targeted tests and make check (837 tests). No follow-ups.
@@ -55,3 +60,5 @@ Added source-copy error and isolation tests with three mutation checks; no produ
 - 2026-11-20T20:20:53Z jolly-maroon-puffin: changed notes
 - 2026-11-20T20:22:21Z jolly-maroon-puffin: changed summary
 - 2026-11-20T20:22:24Z jolly-maroon-puffin doing → review
+- 2026-11-20T20:24:53Z plucky-silver-badger: changed notes
+- 2026-11-20T20:24:53Z plucky-silver-badger review → done
