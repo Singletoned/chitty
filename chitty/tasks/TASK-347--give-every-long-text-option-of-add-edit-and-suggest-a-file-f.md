@@ -1,6 +1,6 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -70,3 +70,4 @@ Implemented UTF-8 long-text file options, stdin conflict validation, guide and p
 - 2026-11-20T22:01:08Z calm-white-ibis: wrote the plan
 - 2026-11-20T22:02:56Z calm-white-ibis: changed notes
 - 2026-11-20T22:07:12Z calm-white-ibis: changed summary
+- 2026-11-20T22:07:15Z calm-white-ibis doing → review
