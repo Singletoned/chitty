@@ -1,6 +1,6 @@
 ---
 title: Send agent output straight to a log file in `_run_agent`
-status: review
+status: done
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -71,6 +71,11 @@ Planner 2026-11-20 (owner direction: move checks from agents to automation where
 Blocked: Chitty considers the latest committed TASK-276 to be on main and refuses to update its status from this ticket worktree. A maintainer must reconcile the ticket authority/branch metadata or authorize editing from main.
 
 Planner 2026-11-20: blocked again for the same reason (claim on `main` while branch `task-276` already existed). Merged `main` into `task-276` again and set `doing` from this worktree, so the next run continues here without a new claim on `main`. No code work had started.
+
+Reviewed: The previous thread and decoder findings concern the superseded design; direct file output removes that machinery.
+1: pass - `make check` printed OK for 795 tests, including the byte-exact append test and assertions that both committed wrong implementations fail its helper.
+2: pass - `make check` printed OK, including the descendant test and the assertion that the waiting implementation fails its timing check.
+3: pass - `make check` printed OK, including timeout output and existing timeout tests; the committed empty-output implementation fails its helper. `git grep -n communicate -- src/chitty/run.py` printed nothing. Code inspection confirms the file size bounds the read after wait.
 
 ## Summary
 
@@ -158,3 +163,5 @@ Implemented direct binary log output in _run_agent, bounded returned bytes to th
 - 2026-11-20T11:52:33Z vivid-hazel-stoat: wrote the plan
 - 2026-11-20T11:57:01Z vivid-hazel-stoat: changed summary
 - 2026-11-20T11:57:01Z vivid-hazel-stoat doing → review
+- 2026-11-20T12:04:00Z open-ebony-yellowhammer: changed notes
+- 2026-11-20T12:04:00Z open-ebony-yellowhammer review → done
