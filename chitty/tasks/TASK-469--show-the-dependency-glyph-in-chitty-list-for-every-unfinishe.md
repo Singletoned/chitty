@@ -27,6 +27,10 @@ Dependency reads are memoised (`src/chitty/store.py`, around line 361), so listi
 - [ ] In `tests/test_cli.py`, the list test that builds `Waiting` and `Broken` todo tickets also builds a `planning`, a `cold-read` and a `doing` ticket depending on the unfinished `TASK-1`, a `doing` ticket with owner `agent` depending on `TASK-1`, and a `planning` ticket depending on the missing `TASK-99`. The test lists every expected `chitty list --all` line in full: `🔗` for `Waiting` and the three unowned waiting tickets; `👤` for the owned `doing` ticket; `⚠️` for `Broken` and for the planning ticket on `TASK-99`, each with its own `warning:` line on stderr; the existing lines unchanged except 🔒 becoming 🔗. In `--json`, looked up by `id` rather than index, `skipped` is `"🔗 waits on TASK-1"` for `Waiting`, its `⚠️` text for `Broken`, `"👤 agent"` for the owned `doing` ticket, and `None` for the other four new tickets. It fails on `main`.
 - [ ] `tests/test_list_performance.py` also builds `planning` dependents of `TASK-1` and still asserts the same Git call count for both ticket counts. `git grep -n 🔒 -- src tests README.md docs/plan` finds nothing, and `docs/plan/cli.md` says what the Description gives. `make check` passes.
 
+## Plan
+
+Add a status-independent dependency_marker for unfinished, non-archived tickets; make list_marker preserve selection/ownership precedence while exposing dependencies in text output. Extend property, CLI and performance tests, update glyph documentation, run focused regression tests before implementation and then make check; commit implementation files with Task trailer and hand off in review.
+
 ## History
 
 - 2026-11-19T21:45:57Z sunny-white-dormouse → backlog
@@ -42,3 +46,4 @@ Dependency reads are memoised (`src/chitty/store.py`, around line 361), so listi
 - 2026-11-19T22:54:58Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T22:54:58Z sunny-white-dormouse cold-read → todo
 - 2026-11-20T01:09:29Z able-umber-vole todo → doing
+- 2026-11-20T01:12:24Z able-umber-vole: wrote the plan
