@@ -232,6 +232,8 @@ class Repo:
         self.root = root
         self.config = config
         self._historical_files: list[git.HistoricalFile] | None = None
+        self._ticket_ids: set[TaskId] | None = None
+        self._ticket_ref_files: dict[str, list[tuple[Path, str]]] = {}
         self._task_locations: dict[tuple[str, bool], list[StoredTask]] = {}
         self._dirty_paths: dict[Path, set[Path]] = {}
         self._current_branch_cached = False
@@ -377,12 +379,72 @@ class Repo:
 
     def _invalidate(self) -> None:
         self._historical_files = None
+        self._ticket_ids = None
+        self._ticket_ref_files.clear()
         self._task_locations.clear()
         self._dirty_paths.clear()
         self._current_branch_cached = False
         self._current_branch_value = None
         self._main_branch_value = None
         self._main_files.clear()
+
+    def ticket_ids(self) -> set[TaskId]:
+        if self._ticket_ids is None:
+            self._ticket_ids = self._collect_ticket_ids()
+        return set(self._ticket_ids)
+
+    def _collect_ticket_ids(self) -> set[TaskId]:
+        result: set[TaskId] = set()
+        root = self.root / BACKLOG_DIR
+        if root.is_dir():
+            for directory in sorted(path for path in root.iterdir() if path.is_dir()):
+                context = Context(directory.name, "", directory)
+                for archived in (False, True):
+                    result.update(
+                        ids.parse_filename(path.name)[0] for path in self._files(context, archived)
+                    )
+        if not git.is_repository(self.root):
+            return result
+
+        main = self._main_branch()
+        main_ref = f"refs/heads/{main}"
+        refs: dict[str, TaskId | None] = {}
+        if git.ref_commit(self.root, main_ref) is not None:
+            refs[main_ref] = None
+        prefixes = {context.prefix for context in self.contexts()}
+        for ref in git.branch_tips(self.root):
+            if ref.startswith("refs/heads/"):
+                name = ref.removeprefix("refs/heads/")
+            elif ref.startswith("refs/remotes/"):
+                name = ref.removeprefix("refs/remotes/").partition("/")[2]
+            else:
+                continue
+            try:
+                task_id = TaskId.parse(name.upper())
+            except ids.IdError:
+                continue
+            if name == str(task_id).lower() and task_id.prefix in prefixes and ref != main_ref:
+                refs[ref] = task_id
+
+        files_by_ref = {ref: git.files_at(self.root, ref, (Path(BACKLOG_DIR),)) for ref in refs}
+        for ref, ref_files in files_by_ref.items():
+            own_id = refs[ref]
+            for path, _content in ref_files:
+                parts = path.parts
+                if not (len(parts) == 3 or (len(parts) == 4 and parts[2] == ARCHIVE_DIR)):
+                    continue
+                if parts[0] != BACKLOG_DIR:
+                    continue
+                try:
+                    task_id, _ = ids.parse_filename(path.name)
+                except ids.IdError as error:
+                    if own_id is None:
+                        raise ChittyError(f"{main}:{path}: {error}") from None
+                    continue
+                if own_id is None or task_id == own_id:
+                    result.add(task_id)
+        self._ticket_ref_files = files_by_ref
+        return result
 
     def all_tasks(self) -> list[StoredTask]:
         return [t for context in self.contexts() for t in self.tasks(context, "all")]
