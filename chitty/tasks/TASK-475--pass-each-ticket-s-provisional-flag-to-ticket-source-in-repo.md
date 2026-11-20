@@ -1,6 +1,6 @@
 ---
 title: Pass each ticket's `provisional` flag to `ticket_source` in `Repo.source_copy`
-status: todo
+status: doing
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -42,3 +42,4 @@ Planner, 2026-11-20: cold-read once; stays in `planning` because it builds on `R
 - 2026-11-20T20:05:30Z jolly-dusky-badger planning → cold-read
 - 2026-11-20T20:06:35Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T20:06:35Z jolly-dusky-badger cold-read → todo
+- 2026-11-20T20:07:02Z golden-umber-toad todo → doing
