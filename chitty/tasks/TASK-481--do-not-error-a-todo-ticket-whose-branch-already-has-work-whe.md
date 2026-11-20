@@ -38,6 +38,8 @@ Add integration and property regressions, demonstrate failures against the stub 
 
 Suggestion origin: chitty
 
+Before the fix, the work-branch integration test failed with todo to error; both ticket-only and fresh-todo guards passed. The property failed with NotImplementedError and rejected the startswith prefix mutant with chitty.toml.
+
 ## History
 
 - 2026-11-20T23:09:59Z quick-pearl-lapwing → backlog
@@ -49,3 +51,4 @@ Suggestion origin: chitty
 - 2026-11-20T23:13:23Z quick-pearl-lapwing: changed description
 - 2026-11-20T23:13:38Z nimble-fawn-vole todo → doing
 - 2026-11-20T23:15:34Z nimble-fawn-vole: wrote the plan
+- 2026-11-20T23:16:31Z nimble-fawn-vole: changed notes
