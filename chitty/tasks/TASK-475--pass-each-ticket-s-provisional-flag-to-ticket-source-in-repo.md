@@ -1,6 +1,6 @@
 ---
 title: Pass each ticket's `provisional` flag to `ticket_source` in `Repo.source_copy`
-status: review
+status: done
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -35,6 +35,11 @@ Planner, 2026-11-20: cold-read once; stays in `planning` because it builds on `R
 
 Regression tests fail before the fix: provisional worktree copies return None before and after commit, provisional main-only copy returns main, and malformed worktree frontmatter raises no error.
 
+Reviewed:
+1: pass - make check passed 828 tests; test_provisional_in_linked_worktree failed both subtests with pre-fix store: copy was None.
+2: pass - make check passed; test_provisional_main_and_working_tree_precedence failed with pre-fix store: main copy returned instead of None.
+3: pass - make check passed; test_malformed_working_tree_precedes_main failed with pre-fix store: ChittyError not raised.
+
 ## Summary
 
 Source selection parses the working copy first or cached main copy if absent, and passes its provisional flag to ticket_source. Added real Git regression coverage; all three cases failed before the fix and pass after it. Ran chitty fix, make format, and make check (828 tests). No follow-ups.
@@ -57,3 +62,5 @@ Source selection parses the working copy first or cached main copy if absent, an
 - 2026-11-20T20:08:46Z golden-umber-toad: changed notes
 - 2026-11-20T20:10:19Z golden-umber-toad: changed summary; ticked acceptance criteria
 - 2026-11-20T20:10:22Z golden-umber-toad doing → review
+- 2026-11-20T20:14:30Z friendly-bronze-dormouse: changed notes
+- 2026-11-20T20:14:30Z friendly-bronze-dormouse review → done
