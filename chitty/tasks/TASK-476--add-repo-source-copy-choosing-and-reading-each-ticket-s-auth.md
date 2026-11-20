@@ -54,7 +54,7 @@ Corrected criterion 3 fixture: both original tickets are committed on main befor
 
 ## Summary
 
-Implemented lazy per-ticket source selection and authoritative copy reading, with cached ref files and invalidation. Added 11 real-Git placement tests; each failed against the requested stub before implementation. `make check` passed (825 tests); only the new test file differs from main. Follow-ups TASK-477 and TASK-478 cover other checkouts and errors, and TASK-378 integrates reads.
+Implemented lazy per-ticket source selection and reading with cached ref files and invalidation. Corrected the criterion 3 fixture after review so both branch edits start from tickets committed on main. The corrected test fails against the stub and passes with the implementation; make check passes 825 tests, and only the new test file differs from main. TASK-477 and TASK-478 cover other checkouts and errors; TASK-378 integrates reads.
 
 ## History
 
@@ -74,3 +74,4 @@ Implemented lazy per-ticket source selection and authoritative copy reading, wit
 - 2026-11-20T19:57:35Z mellow-quartz-newt review → doing
 - 2026-11-20T19:59:01Z rosy-white-quail: wrote the plan
 - 2026-11-20T19:59:22Z rosy-white-quail: changed notes
+- 2026-11-20T20:00:24Z rosy-white-quail: changed summary
