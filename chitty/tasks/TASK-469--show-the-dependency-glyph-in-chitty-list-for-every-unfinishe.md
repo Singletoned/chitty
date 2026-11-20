@@ -1,6 +1,6 @@
 ---
 title: Show the 🔗 dependency glyph in `chitty list` for every unfinished ticket
-status: todo
+status: doing
 parent: TASK-70
 created: 2026-11-19
 ---
@@ -41,3 +41,4 @@ Dependency reads are memoised (`src/chitty/store.py`, around line 361), so listi
 - 2026-11-19T22:53:43Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T22:54:58Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T22:54:58Z sunny-white-dormouse cold-read → todo
+- 2026-11-20T01:09:29Z able-umber-vole todo → doing
