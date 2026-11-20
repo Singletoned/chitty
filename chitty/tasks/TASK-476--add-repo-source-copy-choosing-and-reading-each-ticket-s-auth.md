@@ -1,6 +1,6 @@
 ---
 title: Add `Repo.source_copy`, choosing and reading each ticket's authoritative copy
-status: doing
+status: review
 depends_on:
   - TASK-474
 parent: TASK-376
@@ -61,3 +61,4 @@ Implemented lazy per-ticket source selection and authoritative copy reading, wit
 - 2026-11-20T19:50:34Z daring-coral-adder: wrote the plan
 - 2026-11-20T19:51:40Z daring-coral-adder: changed notes
 - 2026-11-20T19:54:45Z daring-coral-adder: changed summary
+- 2026-11-20T19:54:48Z daring-coral-adder doing → review
