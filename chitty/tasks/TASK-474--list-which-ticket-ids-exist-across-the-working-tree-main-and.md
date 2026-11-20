@@ -1,6 +1,6 @@
 ---
 title: List which ticket IDs exist across the working tree, `main` and ticket branches
-status: todo
+status: doing
 depends_on:
   - TASK-377
   - TASK-380
@@ -73,3 +73,4 @@ Planner, 2026-11-20: split after the worker found it too large for one session. 
 - 2026-11-20T17:43:58Z jolly-dusky-badger planning → cold-read
 - 2026-11-20T17:45:19Z jolly-dusky-badger: changed description
 - 2026-11-20T17:45:19Z jolly-dusky-badger cold-read → todo
+- 2026-11-20T18:59:34Z open-ochre-badger todo → doing
