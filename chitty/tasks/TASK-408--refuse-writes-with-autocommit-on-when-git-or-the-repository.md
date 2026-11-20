@@ -1,6 +1,6 @@
 ---
 title: Refuse writes with `autocommit` on when `git` or the repository is missing
-status: cold-read
+status: todo
 depends_on:
   - TASK-410
 created: 2026-11-19
@@ -24,9 +24,9 @@ No property: the behaviour is a small fixed set of states, every one listed in c
 
 ## Acceptance Criteria
 
-- [ ] Grid test in `tests/test_autocommit_requires_git.py`: each of `chitty add`, `chitty edit <ID> -s planning` and `chitty note <ID> x` in every combination of `autocommit` on or off, `git` on `PATH` or not, and `git init` run or not (24 cases), each as a `subTest` building a fresh root in its own temporary directory. The `<ID>` ticket is made first, with `autocommit = false`, `git` on `PATH` and before any `git init`; `git init` then sets repository-local `user.email` and `user.name` as `tests/test_autocommit.py` does. Rows without `git init` first assert `git.is_repository(root)` is `False`, so an enclosing checkout fails loudly. Succeeds: `autocommit` off without `git init`, with or without `git`; off with `git init` and `git`; on with `git init` and `git`, where `git log -1 --format=%s` starts `chitty:` and the commit holds the ticket file. Off with `git init` but no `git`: the existing `TASK-405` error naming `PATH`. On without `git`: a message naming `autocommit` and `PATH`. On with `git` but no `git init`: a message naming `autocommit` and `git init`. Every failing case exits non-zero without a traceback and leaves every file under the root outside `.git` unchanged.
-- [ ] Further tests, `autocommit` on, no `git init`, `git` on `PATH`: `chitty move <ID> human` and `chitty fix` (with nothing to fix) refuse with the `git init` message and change no file; `chitty show <ID>` and `chitty list` succeed; with `chitty_version = "0.0.1"` in `chitty.toml`, `chitty add` refuses with the `git init` message and no setup file (`.gitignore`, `AGENTS.md`, `CLAUDE.md`, `chitty.toml`) changes.
-- [ ] Evidence, recorded in a note, with each case run on its own against `main's `src/chitty/store.py`: every row of criteria 1 and 2 whose expected message names `autocommit` fails on `main` (it exits 0 without refusing, changes files, shows a traceback, or gives a message not naming `autocommit`). The `autocommit`-off, no-`git`, `git init` rows keep the `TASK-405` error and are guards that pass on `main` too; the note says so
+- [ ] Grid test in `tests/test_autocommit_requires_git.py`: each of `chitty add`, `chitty edit <ID> -s planning` and `chitty note <ID> x` in every combination of `autocommit` on or off, `git` on `PATH` or not, and `git init` run or not (24 cases), each as a `subTest` building a fresh root in its own temporary directory. The `<ID>` ticket is made first, with `autocommit = false`, `git` on `PATH` and before any `git init`; `git init` then sets repository-local `user.email` and `user.name` as `tests/test_autocommit.py` does. Rows without `git init` first assert `git.is_repository(root)` is `False`, so an enclosing checkout fails loudly. Succeeds: `autocommit` off without `git init`, with or without `git`; off with `git init` and `git`; on with `git init` and `git`, where `git log -1 --format=%s` starts `chitty:` and the paths that latest commit changes include the `<ID>` ticket file (the new file for `add`). Off with `git init` but no `git`: the existing `TASK-405` error, containing `` `git` is unavailable on PATH `` (`src/chitty/git.py`). On without `git`: a message naming `autocommit` and `PATH`. On with `git` but no `git init`: a message naming `autocommit` and `git init`. Every failing case exits non-zero without a traceback and leaves every file under the root outside `.git` unchanged.
+- [ ] Further tests, `autocommit` on, no `git init`, `git` on `PATH`: `chitty move <ID> human` and `chitty fix` (with nothing to fix) refuse with the criterion 1 message naming `autocommit` and `git init` and change no file; `chitty show <ID>` and `chitty list` succeed; with `chitty_version = "0.0.1"` in `chitty.toml`, `chitty add` refuses with the `git init` message and no setup file (`.gitignore`, `AGENTS.md`, `CLAUDE.md`, `chitty.toml`) changes.
+- [ ] Evidence, recorded in a note. In a scratch copy of the branch, write `git show main:src/chitty/store.py` over `src/chitty/store.py` and run each case of criteria 1 and 2 on its own: every row whose expected message names `autocommit` (including the criterion 2 refusals) fails there (it exits 0 without refusing, changes files, shows a traceback, or gives a message not naming `autocommit`). The `autocommit`-off, no-`git`, `git init` rows (the `TASK-405` error) and the criterion 2 `chitty show` and `chitty list` rows are guards that pass there too; the note says so.
 - [ ] `make check` passes, with any existing test that enabled `autocommit` without a repository fixed to create one.
 
 ## Plan
@@ -75,3 +75,5 @@ Implemented pre-write Git and repository checks for autocommit writes. Added the
 - 2026-11-19T13:36:58Z nimble-ebony-zander review → planning
 - 2026-11-20T22:36:15Z quick-pearl-lapwing: changed acceptance criteria, notes
 - 2026-11-20T22:36:15Z quick-pearl-lapwing planning → cold-read
+- 2026-11-20T22:37:15Z quick-pearl-lapwing: changed acceptance criteria
+- 2026-11-20T22:37:15Z quick-pearl-lapwing cold-read → todo
