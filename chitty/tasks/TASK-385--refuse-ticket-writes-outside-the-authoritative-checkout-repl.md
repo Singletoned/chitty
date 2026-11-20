@@ -1,6 +1,6 @@
 ---
 title: Refuse ticket writes outside the authoritative checkout, replacing the stale-copy guard
-status: todo
+status: planning
 depends_on:
   - TASK-378
   - TASK-382
@@ -13,7 +13,7 @@ created: 2026-11-18
 
 ## Description
 
-Today every ticket write runs `Repo._require_current_version` in `src/chitty/store.py`, which refuses when the newest committed copy of the ticket (by commit time, across every ref) is on another branch: `<ID>'s latest committed version is on branch <b>`. Runner handoffs bypass it with `Edit.skip_current_version`. That guard stopped `chitty run --loop` repeatedly on 2026-11-17 (`TASK-343`, `TASK-364`). Under the new ticket state model (`docs/plan/ticket-state.md`, "Planning decisions"; on branch `plan/ticket-state` until it lands on `main`), each ticket is read from one place (`TASK-378`), and writes go only there.
+Today every ticket write runs `Repo._require_current_version` in `src/chitty/store.py`, which refuses when the newest committed copy of the ticket (by commit time, across every ref) is on another branch: `<ID>'s latest committed version is on branch <b>`. Runner handoffs bypass it with `Edit.skip_current_version`. That guard stopped `chitty run --loop` repeatedly on 2026-11-17 (`TASK-343`, `TASK-364`). Under the new ticket state model (`docs/plan/ticket-state.md`, "Planning decisions"; on branch `plan/ticket-state` until it lands on `main`), each ticket is read from one place (`TASK-378`). Owner decision 2026-11-20: a write is refused only when it would lose or hide a newer copy, not merely because the ticket is read from elsewhere; skipping a branch already in `main` is a reading shortcut, not a rule about writes. `TASK-378` adds the first case of this: in the ticket's own worktree, a write is allowed when `main` has not changed the ticket since the branch split. Replan this ticket around that principle: the property below must expect success in that case too, and each refusal message must say which newer copy the write would lose or hide.
 
 Starts after `TASK-378`, `TASK-382`, `TASK-383`, `TASK-384` and `TASK-393` (whose placement builders the test reuses) land: by then no runner write needs the bypass.
 
@@ -38,6 +38,10 @@ Tests: a property with real Git in a new `tests/test_property_ticket_writes.py`,
 - [ ] A review run on a ticket with only `origin/task-<n>` (no local branch) fails with `<ID> is in flight on origin/task-<n>; run git switch --track origin/task-<n> first`, starts no agent and writes nothing on `main`; with no branch anywhere it records `error` on `main` as before
 - [ ] With a stale `chitty_version` and autocommit on, a refused `chitty edit` of a ticket in flight leaves `HEAD` and `chitty.toml` unchanged (fails before the change); `make check` passes
 
+## Notes
+
+Returned to planning 2026-11-20: the write rule changed (see the Description). Criterion 1 still says writes succeed exactly where the ticket is read from the working tree; that is now wrong for a ticket edited in its own fresh branch worktree.
+
 ## History
 
 - 2026-11-18T16:20:16Z lively-quartz-crane → backlog
@@ -54,3 +58,5 @@ Tests: a property with real Git in a new `tests/test_property_ticket_writes.py`,
 - 2026-11-18T18:01:35Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T18:01:35Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:01:37Z lively-quartz-crane planning → todo
+- 2026-11-20T11:15:18Z lively-bronze-crane: changed description, notes
+- 2026-11-20T11:15:18Z lively-bronze-crane todo → planning
