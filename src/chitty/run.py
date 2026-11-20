@@ -423,17 +423,18 @@ def _run_ticket(
                 ),
             )
             return RunResult(action, "review", change.task.task.frontmatter.status)
-    if git.dirty_paths(main_root, stored.path.relative_to(main_root)):
-        raise ChittyError(f"{stored.path} has uncommitted changes in the main checkout")
-    if action.mode == "work" and selected_status == "todo":
-        # Claim on main so a new branch inherits its latest ticket version.
-        main_repo.edit(
-            action.id,
-            Edit(status="doing", skip_verdicts=True, skip_current_version=True),
-        )
+    existing_worktree = git.worktree_for_branch(main_root, str(action.id).lower())
+    relative_ticket = stored.path.relative_to(main_root)
+    if existing_worktree is not None and git.dirty_paths(existing_worktree, relative_ticket):
+        raise ChittyError(f"{existing_worktree / relative_ticket} has uncommitted changes")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
     context["worktree"] = str(worktree)
     branch_repo = Repo(worktree, main_repo.config)
+    if action.mode == "work" and selected_status == "todo":
+        branch_repo.edit(
+            action.id,
+            Edit(status="doing", skip_verdicts=True, skip_current_version=True),
+        )
     agent_command = _agent_command(
         Repo(worktree, main_repo.config), action, agent, worktree=worktree, mode=action.mode
     )

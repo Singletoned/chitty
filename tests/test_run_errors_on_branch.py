@@ -3,10 +3,10 @@
 import stat
 import sys
 
-from tests.test_run_claims_on_main import TestRunClaimsOnMain
+from tests.test_run_claims_on_branch import TestRunClaimsOnBranch
 
 
-class TestRunErrorsOnBranch(TestRunClaimsOnMain):
+class TestRunErrorsOnBranch(TestRunClaimsOnBranch):
     def make_doing_branch(self) -> None:
         self.run_cli("edit", "TASK-1", "-s", "doing")
         self.git("branch", "task-1", "main")

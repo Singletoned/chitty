@@ -683,7 +683,7 @@ class TestNext(CliTestCase):
             "import os, pathlib, subprocess, time\n"
             "assert pathlib.Path.cwd() == pathlib.Path(os.environ['WORKER'])\n"
             "path = pathlib.Path(os.environ['WORKER']) / 'chitty/tasks/TASK-1--todo.md'\n"
-            "path.write_text(path.read_text().replace('status: todo', 'status: blocked'))\n"
+            "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
             "time.sleep(1)\n"
             "subprocess.run(['git', 'add', str(path)], cwd=os.environ['WORKER'], check=True)\n"
             "subprocess.run(\n"
@@ -703,7 +703,7 @@ class TestNext(CliTestCase):
         self.assertEqual(result.stdout, "TASK-1: doing → blocked\n")
         self.assertEqual(self.git("-C", str(worker), "branch", "--show-current").strip(), "task-1")
         self.assertIn(
-            "status: doing",
+            "status: todo",
             (self.root / "chitty/tasks/TASK-1--todo.md").read_text(),
         )
         self.assertIn(
@@ -1084,7 +1084,7 @@ class TestNext(CliTestCase):
         try:
             before = self.git("rev-parse", "HEAD")
             current = self.run_cli("run")
-            self.assertNotEqual(self.git("rev-parse", "HEAD"), before)
+            self.assertEqual(self.git("rev-parse", "HEAD"), before)
             self.assertNotIn("setup", current.stderr)
             worktree = self.tmp / "worktree"
             self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
@@ -1095,7 +1095,7 @@ class TestNext(CliTestCase):
                 linked = self.run_cli("run", exit_code=3)
             finally:
                 os.chdir(previous)
-            self.assertNotEqual(self.git("rev-parse", "HEAD"), before)
+            self.assertEqual(self.git("rev-parse", "HEAD"), before)
             self.assertNotIn("setup", linked.stderr)
         finally:
             os.environ["PATH"] = old_path
@@ -1316,6 +1316,7 @@ class TestNext(CliTestCase):
         self.git("config", "user.email", "test@example.com")
         self.git("config", "user.name", "Test")
         self.add("Todo")
+        self.run_cli("init")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
 
@@ -1339,18 +1340,19 @@ class TestNext(CliTestCase):
         ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
         relative_ticket_path = str(ticket_path.relative_to(worktree))
         main_ticket = self.git("show", f"main:{relative_ticket_path}")
-        self.assertIn("status: doing", main_ticket)
-        main_ticket_commits = self.git(
-            "log", "--format=%s", f"{main_before}..main", "--", relative_ticket_path
-        ).splitlines()
-        self.assertEqual(main_ticket_commits, ["chitty: edit TASK-1 Todo"])
+        self.assertIn("status: todo", main_ticket)
+        self.assertEqual(self.git("rev-parse", "main").strip(), main_before)
+        branch_commits = self.git("rev-list", "--reverse", "main..task-1").splitlines()
+        self.assertIn(
+            "status: doing", self.git("show", f"{branch_commits[0]}:{relative_ticket_path}")
+        )
         branch_ticket = self.git("show", f"task-1:{relative_ticket_path}")
         self.assertIn("status: error", branch_ticket)
         self.assertIn("Runner error (check)", branch_ticket)
         self.assertIn("check exited with status 1", branch_ticket)
         self.assertIn("check line 6", branch_ticket)
         self.assertIn("?? check-args", self.git("-C", str(worktree), "status", "--short"))
-        self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+        self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "2")
         changed_paths = self.git("show", "--pretty=format:", "--name-only", "task-1").splitlines()
         self.assertEqual(changed_paths, [relative_ticket_path])
 
@@ -1846,9 +1848,9 @@ class TestNext(CliTestCase):
                 "error",
             )
             main_after_claim = self.git("rev-parse", "main").strip()
-            self.assertEqual(self.git("rev-list", "--count", f"{main_head}..main").strip(), "1")
+            self.assertEqual(self.git("rev-list", "--count", f"{main_head}..main").strip(), "0")
             self.assertEqual(self.git("status", "--porcelain"), main_status)
-            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "1")
+            self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "2")
             invalid = self.run_cli("run", "--errors", exit_code=1)
             self.assertIn("repair agent left TASK-1 in invalid status error", invalid.stderr)
             os.environ["PI_EXIT"] = "3"
@@ -2394,7 +2396,7 @@ class TestNext(CliTestCase):
         self.assertNotIn("latest committed version is on branch main", result.stderr)
         self.assertEqual(self.git("-C", str(target), "branch", "--show-current").strip(), "task-1")
 
-    def test_run_refuses_an_uncommitted_ticket_in_main(self):
+    def test_run_leaves_an_uncommitted_ticket_in_main_alone(self):
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text().replace("autocommit = false", 'autocommit = true\nsetup = "true"')
@@ -2415,11 +2417,12 @@ class TestNext(CliTestCase):
         previous = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous}"
         try:
-            result = self.run_cli("run", exit_code=1)
+            self.run_cli("run")
         finally:
             os.environ["PATH"] = previous
-        self.assertIn("has uncommitted changes in the main checkout", result.stderr)
-        self.assertFalse((self.root / ".worktrees").exists())
+        self.assertIn("Description changed.", ticket.read_text())
+        self.assertIn("status: todo", ticket.read_text())
+        self.assertTrue((self.root / ".worktrees/task-1").exists())
 
     def test_error_tickets_need_explicit_repair_and_repair_updates_main_state(self):
         config = self.root / "chitty.toml"
