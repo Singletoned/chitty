@@ -1,6 +1,6 @@
 ---
 title: Add `Repo.source_copy`, choosing and reading each ticket's authoritative copy
-status: review
+status: doing
 depends_on:
   - TASK-474
 parent: TASK-376
@@ -44,6 +44,12 @@ Add the source-copy API and focused real-Git placement tests, first running all 
 
 Ran all 11 new placement tests against the requested source_copy stub: each failed with NotImplementedError before implementation.
 
+Review failed (tests): The criterion 3 fixture creates both tickets only on their branches rather than editing tickets already on main. Commit both original files on main before creating the branches, then edit each on its branch and retain the call and result assertions. This is a newly found issue; there are no earlier review failures.
+1: pass - make check reports OK; the four placement tests pass. Running all 11 tests with source_copy replaced by a NotImplementedError stub reports 11 errors, including all four placements.
+2: pass - make check reports OK for the four placement tests; the stub run reports NotImplementedError for each.
+3: fail - tests/test_source_copy.py test_no_further_ref_reads calls init_git and immediately creates each branch before writing its ticket, so it does not exercise the specified two edits of tickets present on main. The test passes in make check and fails with NotImplementedError under the stub, but the required fixture is missing.
+4: pass - make check reports 825 tests OK; invalidation and deletion tests fail with NotImplementedError under the stub. git diff main --stat -- tests lists only tests/test_source_copy.py.
+
 ## Summary
 
 Implemented lazy per-ticket source selection and authoritative copy reading, with cached ref files and invalidation. Added 11 real-Git placement tests; each failed against the requested stub before implementation. `make check` passed (825 tests); only the new test file differs from main. Follow-ups TASK-477 and TASK-478 cover other checkouts and errors, and TASK-378 integrates reads.
@@ -62,3 +68,5 @@ Implemented lazy per-ticket source selection and authoritative copy reading, wit
 - 2026-11-20T19:51:40Z daring-coral-adder: changed notes
 - 2026-11-20T19:54:45Z daring-coral-adder: changed summary
 - 2026-11-20T19:54:48Z daring-coral-adder doing → review
+- 2026-11-20T19:57:35Z mellow-quartz-newt: changed acceptance criteria, notes
+- 2026-11-20T19:57:35Z mellow-quartz-newt review → doing
