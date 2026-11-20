@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from ref file paths, not every ref's history
-status: error
+status: doing
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -310,6 +310,8 @@ make: *** [check] Error 1
 ```
 ````
 
+Moved `error` to `doing` 2026-11-20: the failing pre-session check is the earlier implementation in `a60c5c9d` (discovery through `ticket_ids()` raises on `stray.txt` in `test_reports_every_problem`). The ticket was re-planned for exactly that; adapt the code to the `_ref_files` decision.
+
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
@@ -329,3 +331,5 @@ make: *** [check] Error 1
 - 2026-11-20T23:05:26Z quick-jade-stoat todo → doing
 - 2026-11-20T23:06:39Z quick-jade-stoat: changed notes
 - 2026-11-20T23:06:39Z quick-jade-stoat doing → error
+- 2026-11-20T23:08:18Z quick-pearl-lapwing: changed notes
+- 2026-11-20T23:08:18Z quick-pearl-lapwing error → doing
