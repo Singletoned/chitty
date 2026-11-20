@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` errors, and that one conflicted ticket does not break others
-status: doing
+status: review
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -54,3 +54,4 @@ Added source-copy error and isolation tests with three mutation checks; no produ
 - 2026-11-20T20:19:54Z jolly-maroon-puffin: wrote the plan
 - 2026-11-20T20:20:53Z jolly-maroon-puffin: changed notes
 - 2026-11-20T20:22:21Z jolly-maroon-puffin: changed summary
+- 2026-11-20T20:22:24Z jolly-maroon-puffin doing → review
