@@ -1,6 +1,6 @@
 ---
 title: Let a person edit a branch ticket from the main checkout with `chitty edit --human`
-status: review
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -44,6 +44,11 @@ Add Repo.for_human_edit using the existing branch/worktree lookup, and add an ex
 
 Focused evidence: tests.test_edit_human passed all four tests. Mutation check ran test_human_edit_writes_in_the_worktree with Repo.for_human_edit replaced by self and with store.actor forced to test-agent; each mutant produced one failure. The clean baseline was not run before implementation; the ticket predicts the new option fails as unknown.
 
+Reviewed: The complete diff and all criteria were inspected.
+1: pass - `python -m unittest tests.test_edit_human` printed `Ran 4 tests ... OK`. Runtime mutants of `Repo.for_human_edit` returning self and `store.actor` returning test-agent each failed the primary test: respectively the branch worktree refusal and `moved the task to review`. The existing Notes record both mutants.
+2: pass - The same four-test run printed `OK`; removing the `--human` Click option in memory made the two human tests fail with `No such option` while the no-flag refusal test passed.
+3: pass - `chitty edit --help` prints the human option and purpose; `README.md` contains the example; `git grep -n -- --human src/chitty/guide.md src/chitty/roles/` printed nothing; `make check` printed `Ran 787 tests ... OK` with Ruff and Pyright clean.
+
 ## Summary
 
 Implemented explicit chitty edit --human with target-worktree selection and scoped actor restoration. Added four regression tests and README/help documentation. Verified by make check (787 tests), focused tests, CLI help, and no --human mentions in agent guides. Both required mutants fail the primary regression test. Follow-up: none.
@@ -66,3 +71,5 @@ Implemented explicit chitty edit --human with target-worktree selection and scop
 - 2026-11-20T00:12:43Z witty-ochre-kestrel: changed notes, summary; ticked acceptance criteria
 - 2026-11-20T00:12:55Z witty-ochre-kestrel: changed summary
 - 2026-11-20T00:12:55Z witty-ochre-kestrel doing → review
+- 2026-11-20T00:18:12Z zesty-bronze-lapwing: changed notes
+- 2026-11-20T00:18:12Z zesty-bronze-lapwing review → done
