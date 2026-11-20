@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` from a ticket worktree, another branch and outside Git
-status: planning
+status: cold-read
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -13,7 +13,7 @@ created: 2026-11-20
 
 The rule (`docs/plan/ticket-state.md`, "Planning decisions", on branch `plan/ticket-state`; implemented by `ticket_source` in `src/chitty/ticket_source.py`): a checkout on a ticket's own branch reads that ticket from its working tree; a checkout on any other non-`main` branch reads tickets without a ticket branch from `main`'s tip; outside Git, everything is read from the working tree.
 
-Because the code exists, each test must be shown to catch a wrong version. Commit these mutants as tests, in the style of `tests/test_property_blockers.py` (`TestBlockerPropertyMutants`): each patches `Repo.source_copy`'s behaviour with `unittest.mock.patch` to the wrong version, runs the same check, and asserts it fails. The wrong versions: (1) always read the working tree when the checkout is not on `main` (`ref` `None`); (2) pass `current_branch=None` to `ticket_source`; (3) outside Git, call `ticket_source` anyway.
+Because the code exists, each test must be shown to catch a wrong version. Commit these mutants as tests, in the style of `tests/test_property_blockers.py` (`TestBlockerPropertyMutants`): each applies the wrong version with `unittest.mock.patch`, runs the same check, and asserts it fails (`assertRaises(AssertionError)`). The landed code calls `ticket_source` from `Repo._choose_source` through the name `chitty.store.ticket_source`, so patch that name. The wrong versions: (1) `chitty.store.ticket_source` replaced by a wrapper that returns `WORKING_TREE` whenever the real one returns anything else, against the `TASK-7` and `feature` checks of criterion 1; (2) a wrapper that passes `None` as the third argument (`current_branch`) to the real one, against the `TASK-5` check; (3) `chitty.store.git.is_repository` patched to return `True`, against the outside-Git check of criterion 2.
 
 Recording `chitty.git` calls, wherever a criterion asks for it: wrap each public function in `chitty.git` and record only outermost calls; a call made while another wrapped `chitty.git` function is running (such as the helper `git.is_repository` calls itself) is not recorded.
 
@@ -29,3 +29,5 @@ Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source
 
 - 2026-11-20T17:43:41Z jolly-dusky-badger → planning
 - 2026-11-20T19:05:57Z jolly-dusky-badger: changed description
+- 2026-11-20T20:05:25Z jolly-dusky-badger: changed description
+- 2026-11-20T20:05:25Z jolly-dusky-badger planning → cold-read
