@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` errors, and that one conflicted ticket does not break others
-status: cold-read
+status: todo
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -20,18 +20,20 @@ Expected errors (all `ChittyError`):
 - Two working-tree files for `TASK-2`: `TASK-2 is used by more than one file: <paths>`.
 - A malformed working-tree `TASK-3` on `main`: `<absolute path>: <error>`.
 
-Because the code exists, each test must be shown to catch a wrong version. Commit these mutants as tests, in the style of `tests/test_property_blockers.py` (`TestBlockerPropertyMutants`): each applies the wrong version with `unittest.mock.patch.object`, runs the same check, and asserts it fails (`assertRaises(AssertionError)`). The wrong versions: (1) `Repo.source_copy` wrapped so that it first calls `self._choose_source` for every ID in `self.ticket_ids()`, so one conflict fails every read, against the `TASK-2` check of criterion 1; (2) `Repo.source_copy` wrapped to return `None` instead of raising `ChittyError`, against the malformed-file checks; (3) `chitty.store.ticket_source` wrapped to pass a `changed_on_both` that always returns `False`, against the changed-on-both check.
+Because the code exists, each test must be shown to catch a wrong version. Commit these mutants as tests, in the style of `tests/test_property_blockers.py` (`TestBlockerPropertyMutants`): each applies the wrong version with `unittest.mock.patch.object`, runs the same check, and asserts it fails (`assertRaises(AssertionError)`). The wrong versions: (1) `Repo.source_copy` wrapped so that it first calls `self._choose_source` for every ID in `self.ticket_ids()`, so one conflict fails every read, against the `TASK-2` check of criterion 1; (2) `Repo.source_copy` wrapped to call the original and return `None` if it raises `ChittyError`, against the malformed-file checks; (3) `chitty.store.ticket_source` wrapped to pass a `changed_on_both` that always returns `False`, against the changed-on-both check.
 
-Tests: a new `tests/test_source_copy_errors.py`, set up as `tests/test_source_copy.py` from `TASK-476` is, calling `Repo.open(root)` directly, one test per error. Make remote-tracking refs with `git update-ref refs/remotes/origin/task-1 <commit>`; make the orphan with `git checkout --orphan task-1`. No property: a fixed set of error cases.
+Tests: a new `tests/test_source_copy_errors.py`, set up as `tests/test_source_copy.py` from `TASK-476` is, calling `Repo.open(root)` directly, one test per error. Make remote-tracking refs with `git update-ref refs/remotes/origin/task-1 <commit>`; make the orphan with `git checkout --orphan task-1`, commit, then `git checkout main` before reading. Put the mutant tests in the same file, as one `TestSourceCopyErrorMutants` class. Build expected paths from `repo.root`, not the raw temporary directory, and check each duplicate path is contained in the message rather than their order. No property: a fixed set of error cases.
 
 ## Acceptance Criteria
 
-- [ ] Each Git conflict case in the Description (diverged refs, changed on both, orphan branch, malformed file on `task-1`) makes `source_copy(TASK-1)` raise the stated error, while on the same `Repo` `ticket_ids()` and `source_copy(TASK-2)` for a ticket only on `main` succeed
+- [ ] Each conflict case in the Description (diverged refs, changed on both, orphan branch) makes `source_copy(TASK-1)` raise the stated error, and a `TASK-1` file committed on `task-1` with its closing `---` removed raises `ChittyError` starting with `task-1:chitty/tasks/TASK-1--`; in each case, on the same `Repo`, `ticket_ids()` and `source_copy(TASK-2)` for a ticket only on `main` succeed
 - [ ] The two working-tree cases in the Description raise the stated errors for `TASK-2` and `TASK-3`
-- [ ] Each of the three mutants in the Description is committed as a test that asserts the matching check fails against it; `make check` passes
+- [ ] Mutant 1 is caught by the `TASK-2` check of criterion 1, mutant 2 by the malformed-file checks, and mutant 3 by the changed-on-both check: each mutant test asserts the matching check fails against it; `make check` passes
 
 ## History
 
 - 2026-11-20T17:43:44Z jolly-dusky-badger → planning
 - 2026-11-20T20:05:28Z jolly-dusky-badger: changed description
 - 2026-11-20T20:05:28Z jolly-dusky-badger planning → cold-read
+- 2026-11-20T20:06:46Z jolly-dusky-badger: changed description, acceptance criteria
+- 2026-11-20T20:06:46Z jolly-dusky-badger cold-read → todo
