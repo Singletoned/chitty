@@ -36,6 +36,10 @@ Out of scope: the landing check (`HUMAN-13`), retrying, and the GitHub workflows
 
 Add a fixture Linux-check script and assertions proving it runs on the committed release commit and prevents tag/push on failure. Run regression tests before changing release.sh, then implement the check and update release documentation. Verify with focused tests and make check, then commit implementation files.
 
+## Notes
+
+Regression evidence: before changing scripts/release.sh, the new Linux-failure test failed because release returned 0 and pushed; the success-path test also errored because linux-ran was absent.
+
 ## History
 
 - 2026-11-19T18:45:25Z daring-amber-kestrel → planning
@@ -45,3 +49,4 @@ Add a fixture Linux-check script and assertions proving it runs on the committed
 - 2026-11-19T20:34:57Z daring-amber-kestrel planning → todo
 - 2026-11-20T00:24:32Z intrepid-lilac-ibis todo → doing
 - 2026-11-20T00:27:18Z intrepid-lilac-ibis: wrote the plan
+- 2026-11-20T00:27:47Z intrepid-lilac-ibis: changed notes
