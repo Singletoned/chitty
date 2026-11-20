@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: planning
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -24,7 +24,7 @@ Tests use Hypothesis (the repository tool) for the pure function, in a new `test
 
 ## Acceptance Criteria
 
-- [ ] Property: messages are built from lines over the alphabet `st.characters(min_codepoint=32, max_codepoint=126)` plus `\t`, mixed with trailer-like lines (`Key: value`, unindented), blank lines, a `chitty: ` subject and a `Task: <ID>` line for `TASK-1` or `TASK-10`, joined with `\n` at drawn positions, with a first line that is not blank (filtered: `message.strip()` is not empty); the ID passed is `TASK-1`. For all of them: `commits_missing_trailer` of the result is empty; applying `with_task_trailer` twice equals once; the result equals `message` when nothing was missing, else starts with `message.rstrip()` and has exactly one more `Task: TASK-1` line. Fixed examples: `""` and `"  \n"` raise `ValueError`; `Fix\n\nSigned-off-by: A <a@example.com>` gives that plus `\nTask: TASK-1\n`; `Fix` gives `Fix\n\nTask: TASK-1\n`; `Key: value` gives `Key: value\n\nTask: TASK-1\n`. Wrong versions run against these tests, failing test recorded in a note: always appending `\n\nTask: <ID>`; never joining an existing trailer paragraph.
+- [ ] Property: messages are built from lines over the alphabet `st.characters(min_codepoint=32, max_codepoint=126)` plus `\t`, mixed with trailer-like lines (`Key: value`, unindented), blank lines, a `chitty: ` subject and a `Task: <ID>` line for `TASK-1` or `TASK-10`, joined with `\n` at drawn positions, with a first line that is not blank (filtered: `message.strip()` is not empty); the ID passed is `TASK-1`. For all of them: `commits_missing_trailer` of the result is empty; applying `with_task_trailer` twice equals once; the result equals `message` when nothing was missing, else starts with `message.rstrip()` and has exactly one more line whose `rstrip()` equals `Task: TASK-1` (count lines the same way in `message` and in the result, so `Task: TASK-1 ` with a trailing space counts as one before and two after; decided 2026-11-20). Fixed examples: `""` and `"  \n"` raise `ValueError`; `Fix\n\nSigned-off-by: A <a@example.com>` gives that plus `\nTask: TASK-1\n`; `Fix` gives `Fix\n\nTask: TASK-1\n`; `Key: value` gives `Key: value\n\nTask: TASK-1\n`. Wrong versions run against these tests, failing test recorded in a note: always appending `\n\nTask: <ID>`; never joining an existing trailer paragraph.
 - [ ] A landing test with real Git: a ticket branch with three commits with distinct subjects (one with no trailer, one whose last paragraph is `Signed-off-by: A <a@example.com>`, one already ending `Task: TASK-1`) lands through `chitty run`; afterwards each commit on `main`, matched by subject, has `Task: TASK-1` exactly once among the `splitlines()` of its last paragraph, the same author and raw author date (`%ad` with `--date=raw`), and the same `^{tree}` as before landing. Direct `add_task_trailers` tests: on a branch whose commits all have the trailer it returns 0 and `HEAD` is unchanged; on a branch with a merge commit (made with `git commit-tree` on two parents and `git update-ref`, since `main` is checked out in the main checkout) it raises `ChittyError`. It fails today.
 - [ ] `chitty edit TASK-1 -s review` on a branch whose commits have no trailer exits 0 and the ticket is in `review`: invert `TestReviewTrailerGate.test_review_entry_requires_trailer` in `tests/test_review_trailers.py` to assert this, dropping its stderr assertions. `make check` passes.
 
@@ -214,6 +214,8 @@ Criterion 1 still has a contradictory property. For the permitted message `Task:
 
 Returning to planning: criterion 1 conflicts with the required `message.rstrip()` algorithm for `Task: TASK-1 `, as detailed in the preceding note. Please resolve the property before implementation resumes; existing committed work is preserved and verification remains unfinished.
 
+Planning 2026-11-20: criterion 1 now counts `Task: TASK-1` lines after `rstrip()` on both sides, which resolves the `Task: TASK-1 ` case. The other failures in the last check note (the outdated empty-message test, the merge fixture, the retry `HEAD` expectation, and the removed review cleanliness gate, which must stay) are implementation work against clear criteria. Resumed as `doing`.
+
 ## History
 
 - 2026-11-19T20:55:28Z sunny-white-dormouse → backlog
@@ -239,3 +241,5 @@ Returning to planning: criterion 1 conflicts with the required `message.rstrip()
 - 2026-11-20T23:22:49Z sunny-yellow-crane: changed notes
 - 2026-11-20T23:22:59Z sunny-yellow-crane: changed owner, notes
 - 2026-11-20T23:22:59Z sunny-yellow-crane doing → planning
+- 2026-11-20T23:24:02Z quick-pearl-lapwing: changed acceptance criteria, notes
+- 2026-11-20T23:24:02Z quick-pearl-lapwing planning → doing
