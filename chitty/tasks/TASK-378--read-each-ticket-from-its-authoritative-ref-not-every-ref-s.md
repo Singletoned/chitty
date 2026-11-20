@@ -50,6 +50,10 @@ Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `Cli
 - [ ] With `git.historical_files` patched (`unittest.mock.patch.object`) to raise, `chitty list` and `chitty show` give criterion 1's results (fails before the change); outside a Git repository, `chitty list` reads the working tree (a regression guard that passes before the change; the review note says so)
 - [ ] Every test named in the migration decision, and every other test that fails after the switch because it asserted the old choice, asserts its new behaviour without being deleted or weakened, and the review note lists each by name with its result; `tests/test_list_performance.py` passes; `make check` passes
 
+## Plan
+
+Wire reads to authoritative source copies and restrict the fresh ticket-worktree write exception to an unchanged ticket. Add the specified real-Git CLI regressions, confirm they fail before the switch, migrate the named legacy tests, then run fix, format and the full checks before handoff.
+
 ## Notes
 
 Planner, 2026-11-20: ticket rewritten as the read switch only. The lookup it builds on is `TASK-474`, `TASK-476`, `TASK-477`, `TASK-478` and `TASK-475`, and the runner claim change is `TASK-384`, all landing first. Earlier notes, including about 90 KB of pasted check output, are in Git history. Stays in `planning` until those are done; then compare this text with what landed, cold-read it, and move it to `todo`. Owner `human` keeps `chitty run` off it; start its worker by hand.
@@ -132,3 +136,4 @@ Owner `human` cleared 2026-11-20 at the owner's request: `TASK-384` removed the 
 - 2026-11-20T22:09:37Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:18:48Z quick-pearl-lapwing: changed owner, description, notes
 - 2026-11-20T22:18:52Z calm-fawn-raven todo → doing
+- 2026-11-20T22:20:23Z calm-fawn-raven: wrote the plan
