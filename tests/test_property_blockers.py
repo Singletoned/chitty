@@ -1,6 +1,6 @@
 import unittest
 
-from hypothesis import given
+from hypothesis import example, given
 from hypothesis import strategies as st
 
 from chitty.model import STATUSES
@@ -123,8 +123,36 @@ def raw_reference_mutant(facts):
     }
 
 
+# A chain TASK-1 -> TASK-2 -> TASK-3: TASK-2 blocks TASK-1 but waits on TASK-3,
+# so it gets no marker. Random draws reach this only sometimes, which let the
+# unfinished-dependency mutant survive about one run in ten.
+CHAIN = [
+    TicketFacts(
+        "TASK-1",
+        "work",
+        "todo",
+        None,
+        None,
+        False,
+        False,
+        (DependencyFact("TASK-2", "unfinished"),),
+    ),
+    TicketFacts(
+        "TASK-2",
+        "work",
+        "todo",
+        None,
+        None,
+        False,
+        False,
+        (DependencyFact("TASK-3", "unfinished"),),
+    ),
+]
+
+
 def run_property(get_blocking_ids, get_blocker_marker):
     @given(ticket_facts())
+    @example(CHAIN)
     def property_test(facts):
         check_blocker_rule(facts, get_blocking_ids, get_blocker_marker)
 
