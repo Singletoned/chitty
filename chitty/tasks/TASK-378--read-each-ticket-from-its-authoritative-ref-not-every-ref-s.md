@@ -1,6 +1,6 @@
 ---
 title: Read each ticket from its authoritative ref, not every ref's history
-status: doing
+status: blocked
 labels:
   - needs-minor
 depends_on:
@@ -53,6 +53,8 @@ Implementation review found a ref-identity ambiguity in the specified integratio
 
 Planner 2026-11-20: the ref-identity question in the note above is resolved in the Description (mapping rule for `ticket_source` results).
 
+External obstacle: TASK-378 has independently changed copies on `task-378` and `main`; Chitty refuses writes because both sides changed after their split, and rebasing conflicts in the ticket file. The rebase was aborted without resolving it. Planner/owner must reconcile the two ticket copies and decide which notes and status to preserve before implementation can resume.
+
 ## Summary
 
 Handoff: implementation was explored but reverted; no code changes remain. Verification found an unresolved ref identity collision: local `origin/task-5` and remote `origin/task-5` both become the same `ticket_source` result after prefix stripping, so the required mapping back to a full ref is not deterministic. Planner decision needed: preserve full ref identity through selection, or explicitly rule out/reject colliding short names. Focused progress verification: make check was run; it exposed legacy expectations requiring migration and the unresolved source identity issue.
@@ -95,3 +97,5 @@ Handoff: implementation was explored but reverted; no code changes remain. Verif
 - 2026-11-20T09:30:45Z lively-bronze-crane: changed description, acceptance criteria, notes
 - 2026-11-20T09:30:50Z lively-bronze-crane planning → todo
 - 2026-11-20T09:31:03Z plucky-bronze-gannet todo → doing
+- 2026-11-20T09:44:51Z human: changed notes
+- 2026-11-20T09:44:51Z human doing → blocked
