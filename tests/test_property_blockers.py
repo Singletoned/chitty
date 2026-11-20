@@ -1,3 +1,5 @@
+import unittest
+
 from hypothesis import given
 from hypothesis import strategies as st
 
@@ -43,8 +45,7 @@ def ticket_facts(draw):
     return facts
 
 
-@given(ticket_facts())
-def test_blocker_markers_follow_rule(facts):
+def check_blocker_rule(facts, get_blocking_ids, get_blocker_marker):
     expected_blocking = {
         dependency.reference.upper()
         for dependent in facts
@@ -52,10 +53,10 @@ def test_blocker_markers_follow_rule(facts):
         for dependency in dependent.dependencies
         if dependency.state == "unfinished"
     }
-    blocking = blocking_ids(facts)
+    blocking = get_blocking_ids(facts)
     shuffled = list(reversed(facts))
     assert blocking == expected_blocking
-    assert blocking_ids(shuffled) == expected_blocking
+    assert get_blocking_ids(shuffled) == expected_blocking
     for fact in facts:
         expected = None
         if (
@@ -67,4 +68,78 @@ def test_blocker_markers_follow_rule(facts):
             and fact.id in blocking
         ):
             expected = "🚧"
-        assert blocker_marker(fact, blocking) == expected
+        assert get_blocker_marker(fact, blocking) == expected
+
+
+@given(ticket_facts())
+def test_blocker_markers_follow_rule(facts):
+    check_blocker_rule(facts, blocking_ids, blocker_marker)
+
+
+def unfinished_marker_mutant(fact, blocking):
+    if fact.archived or fact.status == "done":
+        return None
+    if any(dependency.state == "broken" for dependency in fact.dependencies):
+        return None
+    return "🚧" if fact.id in blocking else None
+
+
+def inactive_dependents_mutant(facts):
+    return {
+        dependency.reference.upper()
+        for fact in facts
+        for dependency in fact.dependencies
+        if dependency.state == "unfinished"
+    }
+
+
+def done_dependency_mutant(facts):
+    return {
+        dependency.reference.upper()
+        for fact in facts
+        if not fact.archived and fact.status != "done"
+        for dependency in fact.dependencies
+        if dependency.state == "done"
+    }
+
+
+def owner_lock_mutant(facts):
+    return {
+        dependency.reference.upper()
+        for fact in facts
+        if not fact.archived and fact.status != "done" and fact.owner is None and not fact.locked
+        for dependency in fact.dependencies
+        if dependency.state == "unfinished"
+    }
+
+
+def raw_reference_mutant(facts):
+    return {
+        dependency.reference
+        for fact in facts
+        if not fact.archived and fact.status != "done"
+        for dependency in fact.dependencies
+        if dependency.state == "unfinished"
+    }
+
+
+def run_property(get_blocking_ids, get_blocker_marker):
+    @given(ticket_facts())
+    def property_test(facts):
+        check_blocker_rule(facts, get_blocking_ids, get_blocker_marker)
+
+    property_test()
+
+
+class TestBlockerPropertyMutants(unittest.TestCase):
+    def test_rule_rejects_each_wrong_implementation(self):
+        mutants = (
+            (blocking_ids, unfinished_marker_mutant),
+            (inactive_dependents_mutant, blocker_marker),
+            (done_dependency_mutant, blocker_marker),
+            (owner_lock_mutant, blocker_marker),
+            (raw_reference_mutant, blocker_marker),
+        )
+        for index, mutant in enumerate(mutants, start=1):
+            with self.subTest(mutant=index), self.assertRaises(AssertionError):
+                run_property(*mutant)
