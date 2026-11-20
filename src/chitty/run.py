@@ -269,6 +269,7 @@ def _run_agent(
     errors: list[BaseException] = []
     stderr_active = [True]
     log_active = [True]
+    decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
 
     def write_text(text: str) -> None:
         if stderr_active[0]:
@@ -289,14 +290,16 @@ def _run_agent(
                     log_active[0] = False
 
     def read_output() -> None:
-        decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
         try:
             while data := os.read(output_stream.fileno(), 4096):
                 with lock:
                     if retain_output[0]:
                         chunks.append(data)
-                write_text(decoder.decode(data))
-            write_text(decoder.decode(b"", final=True))
+                    text = decoder.decode(data)
+                write_text(text)
+            with lock:
+                text = decoder.decode(b"", final=True)
+            write_text(text)
             output_stream.close()
         except Exception as error:  # noqa: BLE001 - the reader must never raise
             errors.append(error)
@@ -324,8 +327,24 @@ def _run_agent(
         reader.join(timeout=AGENT_OUTPUT_GRACE_SECONDS)
     finally:
         with lock:
+            pending = decoder.decode(b"", final=True)
+            stream = attached_log[0]
+            if pending and stream is not None and log_active[0]:
+                try:
+                    stream.write(pending)
+                    stream.flush()
+                except (OSError, ValueError) as error:
+                    errors.append(error)
+                    log_active[0] = False
             attached_log[0] = None
             retain_output[0] = False
+            if pending and stderr_active[0]:
+                try:
+                    sys.stderr.write(pending)
+                    sys.stderr.flush()
+                except (OSError, ValueError) as error:
+                    errors.append(error)
+                    stderr_active[0] = False
     if errors:
         raise ChittyError(f"cannot write agent output: {errors[0]}") from errors[0]
     result = subprocess.CompletedProcess(command, process.returncode, stdout=b"".join(chunks))

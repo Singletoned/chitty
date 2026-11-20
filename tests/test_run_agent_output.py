@@ -96,6 +96,35 @@ class TestAgentOutput(RepoTestCase):
             if pid_file.exists():
                 subprocess.run(["kill", "-9", pid_file.read_text()], check=False)
 
+    def test_incomplete_utf8_is_flushed_at_grace_deadline(self):
+        log_path = self.root / "incomplete.log"
+        pid_file = self.root / "incomplete-child.pid"
+        script = (
+            "import subprocess, sys\n"
+            "child = subprocess.Popen([sys.executable, '-c', "
+            "'import sys, time; sys.stdout.buffer.write(bytes([226, 130])); "
+            "sys.stdout.flush(); time.sleep(4)'])\n"
+            "open(" + repr(str(pid_file)) + ", 'w').write(str(child.pid))\n"
+        )
+        calls = []
+        previous = threading.excepthook
+        threading.excepthook = calls.append
+        try:
+            with log_path.open("w") as log:
+                stderr = io.StringIO()
+                with contextlib.redirect_stderr(stderr):
+                    result = self.run_agent(script, log)
+            self.assertEqual(result.returncode, 0)
+            self.assertIn(bytes([226, 130]), result.stdout)
+            self.assertTrue(log_path.read_text().endswith("�"))
+            self.assertTrue(stderr.getvalue().endswith("�"))
+            time.sleep(2.2)
+            self.assertEqual(calls, [])
+        finally:
+            threading.excepthook = previous
+            if pid_file.exists():
+                subprocess.run(["kill", "-9", pid_file.read_text()], check=False)
+
     def test_timeout_preserves_output_and_sentinel(self):
         stderr = io.StringIO()
         with (
