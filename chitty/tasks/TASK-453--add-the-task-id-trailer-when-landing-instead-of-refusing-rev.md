@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: review
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -388,6 +388,11 @@ make: *** [check] Error 4
 
 Regression verification: the property suite fails for an always-append mutant (including idempotence) and the fixed signed-off example fails for a mutant that never joins a trailer paragraph. Earlier check output records failures of the original empty-message and merge fixtures and the review cleanliness gate.
 
+Review failed (tests): Newly discovered: criterion 2 explicitly requires the real-Git scenario to land through `chitty run`, but `test_landing_adds_trailers_and_preserves_commit_data` calls `self.land()`, which directly invokes the private `_land` function. Exercise the actual runner entry point with this scenario and its existing assertions, so the integration path is verified. No earlier review failure reported this.
+1: pass - `make check` passed 875 tests; the worker recorded that both requested wrong implementations fail the property suite and signed-off fixed example.
+2: fail - `make check` passed the real-Git tests, and disabling `add_task_trailers` in the landing test produced `AssertionError: 0 != 1`, but the test bypasses `chitty run` as described above.
+3: pass - `make check` printed `Ran 875 tests` and `OK`; running `test_review_entry_does_not_require_trailer` with `Repo.edit` loaded from `main` failed with exit 1 and `cannot move TASK-1 to review`, instead of the expected exit 0.
+
 ## Summary
 
 Implemented automatic task trailers during landing, preserving trees and authors, and retained review cleanliness checks. Property, real-Git landing, merge, retry and review tests pass; make check passed (867 tests). Both requested faulty trailer variants failed the regression suite. chitty fix emitted existing warnings and did not finish before the 300-second timeout; no files were changed by it.
@@ -424,3 +429,5 @@ Implemented automatic task trailers during landing, preserving trees and authors
 - 2026-11-20T23:32:46Z tidy-silver-zander: changed notes
 - 2026-11-20T23:46:44Z tidy-silver-zander: changed summary
 - 2026-11-20T23:46:47Z tidy-silver-zander doing → review
+- 2026-11-20T23:54:41Z tidy-jade-ibis: changed acceptance criteria, notes
+- 2026-11-20T23:54:41Z tidy-jade-ibis review → doing
