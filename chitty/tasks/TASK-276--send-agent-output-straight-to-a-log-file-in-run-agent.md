@@ -28,6 +28,10 @@ Tests: no property; this is real process and file handling. New tests go in a ne
 - [ ] The test writes `earlier\n` to its log, then runs an agent that starts a descendant (which sleeps 4 seconds, prints `LATE` with `flush=True`, and exits), writes the descendant PID to a file in a temporary directory the test creates, and exits 0 at once. The call returns in under 3 seconds, and the returned `stdout` contains neither `LATE` nor `earlier`. The test then polls for at most 10 seconds until `ps -o stat= -p <pid>` prints nothing or a state starting with `Z` (as `tests/test_run_timeout.py` does), kills the descendant in a `finally` if it is still running, and asserts the log now contains `LATE`. As in criterion 1, commit a wrong version that also waits for every descendant of the agent to exit before returning, and a test asserting the checks fail for it.
 - [ ] With `timeout=2`, an agent that prints `TIMEOUT_MARKER` with `flush=True` and sleeps 60 seconds returns the `timed out` sentinel with `TIMEOUT_MARKER` in `stdout` and in the log. As in criterion 1, commit a wrong version that returns empty `stdout` on the timeout path, and a test asserting the checks fail for it. `tests/test_run_timeout.py` changes only by passing `log=` a `tempfile.TemporaryFile()` to its four `_run_agent` calls, and passes, including `test_run_timeout_records_usage_and_exits_one`, which reaches `_run_agent` through `_run_session`. `git grep -n "communicate" -- src/chitty/run.py` finds nothing. `make check` passes.
 
+## Plan
+
+Restore src/chitty/run.py and tests/test_run_timeout.py to main, and delete the stale tests/test_run_agent_output.py in one commit. Then implement direct binary-file output in _run_agent: flush and seek the caller-owned log to EOF, pass it as stdout with stderr merged, wait with the existing timeout/process-tree termination behavior, and return only the bytes written between the starting offset and the size observed after wait. Open a TemporaryFile around _run_agent in _run_session. Update timeout tests to supply binary temporary logs. Add fresh direct-call tests for byte-exact append behavior, prompt return despite a lingering descendant, and timeout output preservation, including the specified wrong-implementation checks. Run focused tests and make check, then commit implementation and tests with Task: TASK-276.
+
 ## Notes
 
 Planner, 2026-11-19: rewritten from scratch and split twice after cold reads. The earlier implementation on branch `task-276` (tip `e26f0cd5`) was deleted at the owner's request because it had gone stale and conflicted with `main`; ignore any `refs/cold-read/TASK-276/*` refs. Split out: the per-run log in `chitty run` (`TASK-467`), pruning (`TASK-465`), log paths in error notes (`TASK-466`).
@@ -147,3 +151,4 @@ Planner 2026-11-20: blocked again for the same reason (claim on `main` while bra
 - 2026-11-20T09:55:57Z human doing → blocked
 - 2026-11-20T10:06:41Z lively-bronze-crane: changed owner, notes
 - 2026-11-20T10:06:41Z lively-bronze-crane blocked → doing
+- 2026-11-20T11:52:33Z vivid-hazel-stoat: wrote the plan
