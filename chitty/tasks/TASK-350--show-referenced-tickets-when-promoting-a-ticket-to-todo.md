@@ -1,6 +1,6 @@
 ---
 title: Show referenced tickets when promoting a ticket to todo
-status: doing
+status: review
 depends_on:
   - TASK-356
 created: 2026-11-16
@@ -75,3 +75,4 @@ Updated property and CLI coverage after review, and fixed duplicate working-tree
 - 2026-11-20T23:52:15Z lively-ochre-kestrel: wrote the plan
 - 2026-11-20T23:53:22Z lively-ochre-kestrel: changed notes
 - 2026-11-20T23:57:55Z lively-ochre-kestrel: changed summary; ticked acceptance criteria
+- 2026-11-20T23:58:02Z lively-ochre-kestrel doing → review
