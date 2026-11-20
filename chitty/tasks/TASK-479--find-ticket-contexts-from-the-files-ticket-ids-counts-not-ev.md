@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from the files `ticket_ids()` counts, not every ref's history
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -40,3 +40,4 @@ No property: a fixed set of placements, each listed; `TASK-393` adds the generat
 - 2026-11-20T22:57:07Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T22:58:02Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T22:58:02Z quick-pearl-lapwing cold-read → todo
+- 2026-11-20T22:58:16Z sunny-silver-yellowhammer todo → doing
