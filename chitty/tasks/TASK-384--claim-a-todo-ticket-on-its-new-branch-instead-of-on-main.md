@@ -1,6 +1,6 @@
 ---
 title: Claim a `todo` ticket on its new branch instead of on `main`
-status: todo
+status: doing
 depends_on:
   - TASK-382
 parent: TASK-376
@@ -48,3 +48,4 @@ Tests: real-Git, fake-agent runner tests. Replace `tests/test_run_claims_on_main
 - 2026-11-18T17:47:26Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:47:28Z lively-quartz-crane planning → todo
 - 2026-11-20T12:42:17Z jolly-dusky-badger: changed dependencies, description
+- 2026-11-20T13:05:49Z eager-hazel-dormouse todo → doing
