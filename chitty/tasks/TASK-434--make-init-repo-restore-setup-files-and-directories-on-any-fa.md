@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -27,7 +27,7 @@ Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_rest
   - stale: `chitty init --autocommit`, then set `chitty_version` in `chitty.toml` to `"0.1.0"` and commit; drawn variations: `AGENTS.md` removed, or with its managed block removed; `.gitignore` removed, or without `.worktrees/`; `CLAUDE.md` removed; an extra `[contexts.extra]` with `prefix = "EXTRA"` whose backlog directory is absent or present (each change committed). The write is `chitty add T -d x`.
   - fresh: no `chitty.toml`. The write is `chitty init --autocommit`.
 - Drawn failure:
-  - registration: before the write, `register_project(name, other)` (`src/chitty/config.py`) where `other` is another fresh directory and `name` is the `project` read from `chitty.toml` (stale) or `_default_project(root.name)` from `src/chitty/store.py` (fresh).
+  - registration: before the write, make the project name belong to `other`, another fresh directory. Fresh kind: call `register_project(name, other)` (`src/chitty/config.py`) with `name = _default_project(root.name)` from `src/chitty/store.py`. Stale kind: `chitty init --autocommit` has already registered `name` (the `project` read from `chitty.toml`) to the test repository, so `register_project(name, other)` would raise in the fixture; instead overwrite the owner file `config.inbox_path(name) / "repo"` with `str(other.resolve()) + "\n"`, which is the state a second clone of the same project meets (decided 2026-11-20 after a worker found the fixture raised before the write).
   - hook (fresh kind only, since the stale kind's failing commit is `TASK-464`'s): `.git/hooks/pre-commit` is an executable script that prints `HOOKSTDERR` to stderr and exits 1, installed before the write.
 - Add an `@example` for each kind and failure pair, so every case runs every time.
 - Snapshot before and after the write: `git rev-parse HEAD`; `git status --porcelain --untracked-files=all`; for each of `chitty.toml`, `AGENTS.md`, `CLAUDE.md`, `.gitignore`: absent, `os.readlink` when a symlink, else bytes; and the set of directories at or under `chitty/` (an explicit walk, because Git does not show empty directories).
@@ -88,3 +88,5 @@ The stale registration fixture is impossible as specified: initial `chitty init 
 - 2026-11-20T22:41:46Z brisk-coral-eel: changed notes
 - 2026-11-20T22:41:56Z brisk-coral-eel: changed owner, notes
 - 2026-11-20T22:41:56Z brisk-coral-eel doing → planning
+- 2026-11-20T23:14:11Z quick-pearl-lapwing: changed description
+- 2026-11-20T23:14:11Z quick-pearl-lapwing planning → cold-read
