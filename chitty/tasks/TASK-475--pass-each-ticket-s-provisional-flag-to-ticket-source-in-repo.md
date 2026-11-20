@@ -1,6 +1,6 @@
 ---
 title: Pass each ticket's `provisional` flag to `ticket_source` in `Repo.source_copy`
-status: cold-read
+status: planning
 depends_on:
   - TASK-474
 parent: TASK-376
@@ -21,9 +21,13 @@ Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Gi
 
 ## Acceptance Criteria
 
-- [ ] In the linked worktree of `task-5`, a provisional ticket created there gives `ref` `None` and its working-tree content, both before and after it is committed on `task-5` (fails before the change: with `provisional=False` it gives `None`, as `main` has no file for it)
+- [ ] In a test repository, in a linked worktree the test makes on a new branch `task-5` (`git worktree add`, so not on `main`), a ticket created there with `chitty add` gets a provisional ID and `provisional: true`; it gives `ref` `None` and its working-tree content, both before and after it is committed on `task-5` (fails before the change: with `provisional=False` it gives `None`, as `main` has no file for it)
 - [ ] A ticket whose `main` tip copy has `provisional: true`, read from a checkout on branch `feature` whose working tree has deleted the file, gives `None`; the same ticket without `provisional` gives `ref` `main`
 - [ ] In a checkout on branch `feature`, with a malformed working-tree copy of a ticket that also exists, well formed, at `main`'s tip, `source_copy` raises the working-tree parse error (`<absolute path>: <error>`), because that copy is parsed first (fails before the change, which reads `main`'s copy); `make check` passes
+
+## Notes
+
+Planner, 2026-11-20: cold-read once; stays in `planning` because it builds on `Repo.source_copy` from `TASK-474`, not yet landed. When `TASK-474` is done, compare this text with what landed, cold-read again, then move to `todo`.
 
 ## History
 
@@ -31,3 +35,5 @@ Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Gi
 - 2026-11-20T12:41:44Z jolly-dusky-badger: changed acceptance criteria
 - 2026-11-20T12:41:59Z jolly-dusky-badger: changed description
 - 2026-11-20T12:43:53Z jolly-dusky-badger planning → cold-read
+- 2026-11-20T12:44:31Z jolly-dusky-badger: changed acceptance criteria, notes
+- 2026-11-20T12:44:31Z jolly-dusky-badger cold-read → planning
