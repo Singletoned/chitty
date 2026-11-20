@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: review
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -30,10 +30,10 @@ Out of scope: planning on branches, `TASK-428`'s lock, and the landing check its
 
 ## Acceptance Criteria
 
-- [ ] The `_only_ticket_paths` property in `tests/test_property_landing_paths.py` passes, generating every path shape in the Description; a note records that it fails while the function raises `NotImplementedError`, against a mutant testing `startswith(f"chitty/{name}")` without the trailing `/`, and against a mutant testing only `startswith("chitty/")`
-- [ ] `test_ticket_only_move_lands_without_a_second_check` passes; a note records that it fails against `src/chitty/run.py` without the change (count 2)
-- [ ] `test_mixed_move_reruns_the_check`, `test_quick_path_stops_after_ten_ticket_moves` and the existing `TestLandingRetry` tests pass; a note records that the mixed test fails against a mutant that skips the check after any move, and that the ten-moves test fails, by its own call guard, against a mutant with no quick-path limit
-- [ ] Outside `chitty/`, the branch commits change only `src/chitty/run.py`, `src/chitty/git.py`, the two test files and `docs/plan/next-action-and-runner.md`: `git diff --stat $(git merge-base main HEAD) HEAD -- . ':!chitty'` lists exactly those five paths (comparing with the merge base leaves out commits `main` gained since, and `chitty/` holds this ticket's own file); the docs bullet describes the quick path and names the cases where its assumption fails; `make check` passes
+- [x] The `_only_ticket_paths` property in `tests/test_property_landing_paths.py` passes, generating every path shape in the Description; a note records that it fails while the function raises `NotImplementedError`, against a mutant testing `startswith(f"chitty/{name}")` without the trailing `/`, and against a mutant testing only `startswith("chitty/")`
+- [x] `test_ticket_only_move_lands_without_a_second_check` passes; a note records that it fails against `src/chitty/run.py` without the change (count 2)
+- [x] `test_mixed_move_reruns_the_check`, `test_quick_path_stops_after_ten_ticket_moves` and the existing `TestLandingRetry` tests pass; a note records that the mixed test fails against a mutant that skips the check after any move, and that the ten-moves test fails, by its own call guard, against a mutant with no quick-path limit
+- [x] Outside `chitty/`, the branch commits change only `src/chitty/run.py`, `src/chitty/git.py`, the two test files and `docs/plan/next-action-and-runner.md`: `git diff --stat $(git merge-base main HEAD) HEAD -- . ':!chitty'` lists exactly those five paths (comparing with the merge base leaves out commits `main` gained since, and `chitty/` holds this ticket's own file); the docs bullet describes the quick path and names the cases where its assumption fails; `make check` passes
 
 ## Plan
 
@@ -50,6 +50,12 @@ Review failed (design): Criterion 4 requires `git diff --stat main` to contain o
 4: fail - `make check` passed, and the documentation names both exceptions. `git diff --stat main` printed seven paths, including this ticket and TASK-470, contrary to the literal criterion. Clarify the intended comparison and exemptions before assessing it.
 
 Added the missing 21st-call guard. With QUICK_LANDING_ATTEMPTS patched to 1000, test_quick_path_stops_after_ten_ticket_moves fails at its own guard with `AssertionError: fast-forward called more than 20 times`; the focused landing and property tests pass with the real limit. The earlier review note records the other required pre-fix and mutant failures.
+
+Reviewed: Previous review findings resolved: the retry test now has its 21st-call guard, and criterion 4 compares against the merge base excluding ticket files.
+1: pass - `make check` passed all 857 tests, including the property; the earlier review note records `FAILED (errors=1)` for the stub and `AssertionError: True != False` for each prefix mutant.
+2: pass - `make check` passed the ticket-only test; the earlier review note records `AssertionError: 2 != 1` against the original landing implementation.
+3: pass - `make check` passed the landing retry tests; the earlier review note records the mixed mutant printing `1 != 2`, and the worker note records the unlimited-retry mutant failing with `AssertionError: fast-forward called more than 20 times`.
+4: pass - `git diff --stat $(git merge-base main HEAD) HEAD -- . ':!chitty'` listed exactly the five specified files; the documentation names both check assumptions, and `make check` printed `Ran 857 tests` and `OK` with lint and type checks passing.
 
 ## Summary
 
@@ -85,3 +91,5 @@ Ticket-only quick landing retries are implemented and capped at ten; the retry t
 - 2026-11-20T22:36:27Z youthful-hazel-marten: changed notes
 - 2026-11-20T22:37:39Z youthful-hazel-marten: changed summary
 - 2026-11-20T22:37:42Z youthful-hazel-marten doing → review
+- 2026-11-20T22:41:11Z golden-pearl-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-20T22:41:11Z golden-pearl-kestrel review → done
