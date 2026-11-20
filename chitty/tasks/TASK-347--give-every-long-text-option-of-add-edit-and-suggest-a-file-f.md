@@ -1,6 +1,6 @@
 ---
 title: Give every long text option of add, edit and suggest a file form
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -56,3 +56,4 @@ The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (comm
 - 2026-11-20T21:58:14Z quick-pearl-lapwing: changed description
 - 2026-11-20T21:58:59Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T21:58:59Z quick-pearl-lapwing cold-read → todo
+- 2026-11-20T21:59:51Z calm-white-ibis todo → doing
