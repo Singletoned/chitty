@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -84,3 +84,4 @@ Ticket-only quick landing retries are implemented and capped at ten; the retry t
 - 2026-11-20T22:36:03Z youthful-hazel-marten: wrote the plan
 - 2026-11-20T22:36:27Z youthful-hazel-marten: changed notes
 - 2026-11-20T22:37:39Z youthful-hazel-marten: changed summary
+- 2026-11-20T22:37:42Z youthful-hazel-marten doing → review
