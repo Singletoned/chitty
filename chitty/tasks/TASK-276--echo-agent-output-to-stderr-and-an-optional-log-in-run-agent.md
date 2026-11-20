@@ -1,6 +1,6 @@
 ---
 title: Echo agent output to stderr and an optional log in `_run_agent`
-status: todo
+status: doing
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -62,3 +62,4 @@ Planner, 2026-11-19: rewritten from scratch and split twice after cold reads. Th
 - 2026-11-19T21:24:55Z sunny-white-dormouse: changed description, acceptance criteria
 - 2026-11-19T21:24:55Z sunny-white-dormouse cold-read → todo
 - 2026-11-19T21:25:08Z sunny-white-dormouse: changed acceptance criteria
+- 2026-11-20T00:14:05Z vivid-amber-toad todo → doing
