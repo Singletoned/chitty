@@ -40,7 +40,7 @@ Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_rest
 
 ## Plan
 
-Keep the second pre-write originals snapshot only. Track every previously absent directory created during init_repo, including parents, and wrap all disk writes through the own autocommit commit in BaseException rollback: restore original file states, remove recorded directories deepest-first only if empty, then re-raise. Add the specified real-Git Hypothesis property matrix and successful-path checks; run regression against unfixed behavior, wrong-version checks, and make check.
+Add the specified isolated real-Git property tests and confirm failures before implementing a rollback around setup writes, tracking all newly created directories. Exercise the specified wrong implementations, successful paths, and full checks before handoff.
 
 ## Notes
 
@@ -80,3 +80,4 @@ Back to planning review 2026-11-20: the previous worker returned it without star
 - 2026-11-20T22:35:13Z quick-pearl-lapwing: changed description
 - 2026-11-20T22:35:13Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:38:52Z brisk-coral-eel todo → doing
+- 2026-11-20T22:40:57Z brisk-coral-eel: wrote the plan
