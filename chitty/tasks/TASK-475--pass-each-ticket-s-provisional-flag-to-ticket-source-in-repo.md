@@ -17,7 +17,7 @@ Decisions:
 - `ticket_source` then returns `WORKING_TREE`, so `source_copy` reads this checkout's file, or gives `None` when this checkout has none. A provisional ticket found only at `main`'s tip therefore gives `None` in a checkout without the file: intended, because a provisional ticket belongs to the checkout that made it.
 - A provisional ticket on another branch is not in `ticket_ids` from this checkout unless the branch is named after its ID (`TASK-474`'s rule), so no other case arises.
 
-Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Git as that file does; make a provisional ticket with `chitty add` where `chitty.toml` makes new IDs provisional, as the existing provisional-ID tests do (`git grep -n provisional tests`), or by writing `provisional: true` in a committed file. No property: three fixed cases, each in the criteria.
+Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Git as that file does; make a provisional ticket with `chitty add` in a checkout that is not on `main` (`Repo.new_id` then gives a provisional ID and sets `provisional: true`), or by committing a file with `provisional: true`. No property: three fixed cases, each in the criteria.
 
 ## Acceptance Criteria
 
@@ -29,3 +29,4 @@ Tests: add to `tests/test_ticket_source_copy.py` (from `TASK-474`), with real Gi
 
 - 2026-11-20T12:41:32Z jolly-dusky-badger → planning
 - 2026-11-20T12:41:44Z jolly-dusky-badger: changed acceptance criteria
+- 2026-11-20T12:41:59Z jolly-dusky-badger: changed description
