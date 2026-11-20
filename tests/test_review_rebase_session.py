@@ -7,9 +7,17 @@ from chitty.run import RunInterrupted
 from chitty.store import Repo
 from tests.test_review_merge import ReviewMergeTestCase
 
+# Only the timeout case (exit code 124) should hit the agent timeout; its agent
+# sleeps far past the limit. The other cases get a generous limit, because
+# under `make check`'s parallel load the fake agent's Python start-up and
+# `git rebase --continue` can take more than a second.
+TIMEOUT_CASE_SECONDS = 3
+OTHER_CASE_SECONDS = 120
+
 
 class TestReviewRebaseSession(ReviewMergeTestCase):
     def configure_rebase_agent(self, exit_code: int, finish: bool, dirty: bool) -> None:
+        timeout = TIMEOUT_CASE_SECONDS if exit_code == 124 else OTHER_CASE_SECONDS
         script = self.tmp / "rebase-agent.py"
         script.write_text(
             "import subprocess, sys, time\n"
@@ -32,7 +40,7 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
             "    if dirty:\n"
             "        Path('leftover.txt').write_text('uncommitted')\n"
             "    if exit_code == 124:\n"
-            "        time.sleep(3)\n"
+            "        time.sleep(60)\n"
             "    if finish:\n"
             f"        Path({str(self.tmp / 'ticket-end')!r}).write_bytes(task.read_bytes())\n"
             "    raise SystemExit(0 if exit_code == 124 else exit_code)\n"
@@ -56,7 +64,7 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
         text = text.replace(
             "[contexts.tasks]",
             'rebase_model = "cheap/model"\nreview_model = "review-model"\n'
-            "agent_timeout = 1\n\n[contexts.tasks]",
+            f"agent_timeout = {timeout}\n\n[contexts.tasks]",
         )
         config.write_text(text)
 
@@ -145,7 +153,7 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
         elif exit_code == 1:
             self.assertIn("agent exited with status 1:", note)
         elif exit_code == 124:
-            self.assertIn("agent timed out after 1 seconds:", note)
+            self.assertIn(f"agent timed out after {TIMEOUT_CASE_SECONDS} seconds:", note)
         self.assertEqual(len((self.tmp / "agent.log").read_text().splitlines()), 1)
         self.assert_no_rebase_in_progress()
 
