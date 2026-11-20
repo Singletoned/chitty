@@ -1,6 +1,6 @@
 ---
 title: Send agent output straight to a log file in `_run_agent`
-status: todo
+status: doing
 parent: TASK-275
 created: 2026-11-11
 ---
@@ -123,3 +123,4 @@ Owner decision 2026-11-20: do not echo agent output to the terminal; that was a 
 - 2026-11-20T08:47:15Z lively-bronze-crane: changed description, summary
 - 2026-11-20T08:47:26Z lively-bronze-crane: changed acceptance criteria
 - 2026-11-20T08:47:30Z lively-bronze-crane planning → todo
+- 2026-11-20T09:13:42Z intrepid-violet-otter todo → doing
