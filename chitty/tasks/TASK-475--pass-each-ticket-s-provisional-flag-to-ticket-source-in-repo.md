@@ -25,6 +25,10 @@ Tests: add to `tests/test_source_copy.py` (from `TASK-476`), with real Git as th
 - [ ] In a checkout on branch `feature`, made from `main` after committing the fixture there: a ticket whose `main` copy has `provisional: true`, with the file deleted in the working tree, gives `None`, and the same ticket without `provisional` gives `ref` `main`; a ticket whose working-tree copy has no `provisional` while its `main` copy has `provisional: true` gives `ref` `main` (only the first copy found decides)
 - [ ] In a checkout on branch `feature`, with the working-tree copy of a ticket broken by removing its closing `---` while `main`'s copy is well formed, `source_copy` raises `ChittyError` whose message starts with the absolute working-tree path and contains `frontmatter is not closed` (fails before the change, which reads `main`'s copy). `make check` passes
 
+## Plan
+
+Add real-Git regression cases for provisional working-tree and main copies and malformed working-tree frontmatter; confirm failures first. Reuse working-tree discovery and parsing in source selection, prefer the working copy over cached main, then run fix, format and checks.
+
 ## Notes
 
 Planner, 2026-11-20: cold-read once; stays in `planning` because it builds on `Repo.source_copy` from `TASK-476`, not yet landed. When `TASK-476` is done, compare this text with what landed, cold-read again, then move to `todo`.
@@ -43,3 +47,4 @@ Planner, 2026-11-20: cold-read once; stays in `planning` because it builds on `R
 - 2026-11-20T20:06:35Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T20:06:35Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T20:07:02Z golden-umber-toad todo → doing
+- 2026-11-20T20:08:15Z golden-umber-toad: wrote the plan
