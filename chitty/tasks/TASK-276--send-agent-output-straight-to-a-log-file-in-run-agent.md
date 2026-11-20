@@ -1,35 +1,62 @@
 ---
-title: Echo agent output to stderr and an optional log in `_run_agent`
-status: doing
+title: Send agent output straight to a log file in `_run_agent`
+status: todo
 parent: TASK-275
 created: 2026-11-11
 ---
 
 ## Description
 
-In print mode an agent prints only its final message, and `chitty run` captures agent output only to put it into an error, so when a session goes wrong nobody can see what it did (circuitry 2026-11-14 and echonomicon 2026-11-19: tickets went to `error` as `was unchanged` after agents that exited 0 in about two seconds). This ticket changes only how `_run_agent` (`src/chitty/run.py`) reads agent output: it echoes it live to stderr and can copy it to a log. Creating a log per ticket run and printing its path is `TASK-467`; pruning is `TASK-465`; naming the log in error notes is `TASK-466`.
+When a `chitty run` agent session goes wrong nobody can see what it did: `_run_agent` (`src/chitty/run.py`) reads agent output through a pipe only to put it into an error note (circuitry 2026-11-14 and echonomicon 2026-11-19: tickets went to `error` as `was unchanged` after agents that exited 0 in about two seconds). A descendant that keeps the pipe open also holds the run until it exits, because `process.communicate` waits for end of file. This ticket makes `_run_agent` write agent output to a file it is given. Creating a log per ticket run and printing its path is `TASK-467`; pruning is `TASK-465`; naming the log in error notes is `TASK-466`.
 
-Decisions (2026-11-19; an earlier implementation on branch `task-276` was deleted, start from `main`):
+Decisions (owner, 2026-11-20):
 
-- `_run_agent(command, *, cwd, env, timeout, log)` gains a required keyword argument `log: TextIO | None` (no default value). Every caller in this ticket passes `log=None`: `_run_session` and the four direct calls in `tests/test_run_timeout.py` (that is the only change to that file).
-- Agent stdout and stderr stay merged into one pipe (`stderr=subprocess.STDOUT`), so arrival order needs no extra work.
-- One daemon reader thread is the only reader of `process.stdout`; remove both `process.communicate()` calls (normal path and after a timeout kill). The reader reads bytes line by line, keeps every byte for the returned `CompletedProcess.stdout` exactly as today, and for each line, decoded with `errors="replace"`, writes it to `sys.stderr` and, when `log` is not `None`, to `log`, flushing both. An unterminated final fragment at EOF is handled the same way. Decoding cannot fail with `errors="replace"`, and writes to `log` happen only under a lock while it is attached. If a write to `sys.stderr` or `log` raises (`OSError` or `ValueError`), the reader stores the first such exception, stops writing to that stream, and keeps reading so the pipe drains and the agent never blocks; after waiting, `_run_agent` raises `ChittyError("cannot write agent output: <error>")` from it, so the failure is plain and not mistaken for a timeout. The reader itself never raises.
-- Waiting for exit is `process.wait(timeout=timeout or None)` (so `0` still means no limit); `subprocess.TimeoutExpired` leads to today's process-tree kill. After the agent exits, or after the timeout kill, `_run_agent` waits for the reader until one deadline, the module constant `AGENT_OUTPUT_GRACE_SECONDS = 2` beside `AGENT_KILL_GRACE_SECONDS`, so a descendant that keeps the pipe open cannot keep the run alive. The returned `stdout` holds the bytes read by then. In a `finally` (so also on timeout and `KeyboardInterrupt`), it detaches `log` under the lock, so the reader never writes to it again; later output goes to stderr only. `_run_agent` never closes `log`; its caller owns it.
-- Keep the timeout handling, the process-tree kill and the `stderr=b"timed out"` sentinel. Keep the agent in the runner's process group and session; no `start_new_session` (`docs/plan/next-action-and-runner.md`).
-- So `chitty run`'s stdout keeps only its status lines, and notes keep the agent output read within `AGENT_OUTPUT_GRACE_SECONDS` (today they wait for every descendant to close the pipe).
+- Agent output never goes to the terminal. (An earlier version of this ticket echoed it to stderr through a reader thread; three reviews each found a race between that thread and an output deadline. Both are dropped.)
+- `_run_agent(command, *, cwd, env, timeout, log)` gains a required keyword argument `log: BinaryIO` (no default): an open file the caller owns, readable and writable, with a real file descriptor. `_run_agent` never closes it. An in-memory object such as `io.BytesIO` is not supported: its `fileno()` raises `io.UnsupportedOperation`, which surfaces as is; add no check for it.
+- No pipe: `subprocess.Popen(..., stdout=log, stderr=subprocess.STDOUT)`, so the operating system writes the agent output, merged in arrival order, straight to the file. Before starting the agent, flush `log`, seek to its end (`log.seek(0, os.SEEK_END)`, so the agent appends rather than overwriting) and record that offset. When `process.wait` returns, take the file size then (`os.fstat(log.fileno()).st_size`) and read from the offset up to that size, so bytes a descendant writes during the read are not included (no test can provoke that race reliably; the reviewer checks the code). On the timeout path, do the same after the post-kill `process.wait()` returns. Those bytes are the returned `CompletedProcess.stdout`, so error notes still hold the output of this call only, as today.
+- Waiting is `process.wait(timeout=timeout or None)` (`0` still means no limit). `subprocess.TimeoutExpired` leads to the existing process-tree kill, then `process.wait()` replaces the second `process.communicate()`. Keep the `stderr=b"timed out"` sentinel and the kill grace. Do not change the process group or session (`_run_agent` sets neither today; `docs/plan/next-action-and-runner.md`). `KeyboardInterrupt` handling is unchanged: it propagates to `_run_session` as today.
+- A descendant that outlives the agent no longer delays the return. Whatever it writes later lands in the file after the call returns and is not in the returned `stdout`.
+- Until `TASK-467` lands, `_run_session` opens a `tempfile.TemporaryFile()` (binary, read and write) in a `with` block around its `_run_agent` call and passes it as `log`.
+- The implementation on branch `task-276` follows the dropped design. In one commit, return `src/chitty/run.py` and `tests/test_run_timeout.py` to their `main` versions and delete `tests/test_run_agent_output.py`, then build this design.
+- Out of scope: where logs live, their names, pruning and naming them in notes (`TASK-465` to `TASK-467`), and any change to what `chitty run` prints.
 
-Tests: no property. This is real process and pipe handling, and its parts (an agent, its descendants, a deadline) cannot be pulled into a pure function. New tests go in a new `tests/test_run_agent_output.py`, calling `_run_agent` directly with `sys.executable -c ...` agents as `tests/test_run_timeout.py` does, a log file the test opens itself, and `sys.stderr` captured with `contextlib.redirect_stderr` to an `io.StringIO`.
+Tests: no property; this is real process and file handling. New tests go in a new `tests/test_run_agent_output.py`, calling `_run_agent` directly with `sys.executable -c ...` agents as `tests/test_run_timeout.py` does, and a log the test opens itself with `tempfile.TemporaryFile()`.
 
 ## Acceptance Criteria
 
-- [ ] An agent printing `out-1` to `out-5` on stdout and `err-1` to `err-5` on stderr, each with `flush=True`, alternating, then writing `tail` with `sys.stdout.write` and no newline, exits 0: the log and the captured stderr each hold each of those eleven pieces exactly once and in that order, the returned `stdout` holds them all as bytes, and the returncode is 0. It fails today (nothing is echoed or logged).
-- [ ] An agent that writes `b"\xff bad\n"`, then `é\n`, then ends with `b"\xe2\x82"` and no newline (raw bytes via `sys.stdout.buffer`, flushed) gives a log containing ` bad`, `é` and a final line, and no thread exception (`threading.excepthook` replaced to record calls records none). A log opened on a closed file object gives `ChittyError` starting `cannot write agent output`. It fails today.
-- [ ] An agent that starts a descendant printing `LATE` after 4 seconds and then exits at once: the call returns in under 3.5 seconds; the test sleeps until 5 seconds have passed, then `LATE` is not in the log and no thread raised; the test kills the descendant in a `finally`. It fails today (the call waits about 4 seconds).
-- [ ] With `timeout=2`, an agent that prints `TIMEOUT_MARKER` with `flush=True` and sleeps 60 seconds returns the `timed out` sentinel with `TIMEOUT_MARKER` in `stdout`, and the log contains `TIMEOUT_MARKER`. Today it fails because `_run_agent` takes no `log` argument. `tests/test_run_timeout.py` passes with only `log=None` added. `make check` passes.
+- [ ] The test writes `earlier\n` to one log without flushing and seeks it back to its start, then makes three calls on it: an agent that prints `out-1`, `err-1`, `out-2`, `err-2`, `out-3`, `err-3` in that order (the `out` lines on stdout, the `err` lines on stderr, each with `flush=True`) and then writes raw `b"\xff\n"` and `tail` (no newline) through `sys.stdout.buffer`; an agent that prints nothing; and an agent that writes raw `b"\xe2\x82"` with no newline. Each exits 0 and each returned `stdout` equals exactly its own agent bytes (empty for the second); reading the whole log from the start gives `earlier\n` followed by the three outputs in order. Evidence that the test detects a wrong implementation: run a wrong version that returns the whole log, and one that does not seek to the end before starting the agent, and record in a note which assertion failed for each.
+- [ ] The test writes `earlier\n` to its log, then runs an agent that starts a descendant (which sleeps 4 seconds, prints `LATE` with `flush=True`, and exits), writes the descendant PID to a file in a temporary directory the test creates, and exits 0 at once. The call returns in under 3 seconds, and the returned `stdout` contains neither `LATE` nor `earlier`. The test then polls for at most 10 seconds until `ps -o stat= -p <pid>` prints nothing or a state starting with `Z` (as `tests/test_run_timeout.py` does), kills the descendant in a `finally` if it is still running, and asserts the log now contains `LATE`. Run a wrong version that also waits for every descendant of the agent to exit before returning, and record in a note which assertion failed.
+- [ ] With `timeout=2`, an agent that prints `TIMEOUT_MARKER` with `flush=True` and sleeps 60 seconds returns the `timed out` sentinel with `TIMEOUT_MARKER` in `stdout` and in the log. Run a wrong version that returns empty `stdout` on the timeout path, and record in a note which assertion failed. `tests/test_run_timeout.py` changes only by passing `log=` a `tempfile.TemporaryFile()` to its four `_run_agent` calls, and passes, including `test_run_timeout_records_usage_and_exits_one`, which reaches `_run_agent` through `_run_session`. `git grep -n "communicate" -- src/chitty/run.py` finds nothing. `make check` passes.
 
 ## Notes
 
 Planner, 2026-11-19: rewritten from scratch and split twice after cold reads. The earlier implementation on branch `task-276` (tip `e26f0cd5`) was deleted at the owner's request because it had gone stale and conflicted with `main`; ignore any `refs/cold-read/TASK-276/*` refs. Split out: the per-run log in `chitty run` (`TASK-467`), pruning (`TASK-465`), log paths in error notes (`TASK-466`).
+
+Review failed (tests): Add coverage for the lingering-pipe fragment and thread exceptions, and preserve bytes available before the grace deadline. These findings are new; there are no earlier review notes.
+1: pass - `make check` ran 791 tests and printed OK; the ordering test passes. Running the new tests with the `main` implementation substituted produced TypeError for the missing `log` argument.
+2: pass - `make check` printed OK for the invalid-byte and closed-log test; substitution of the `main` implementation produced TypeError for the missing `log` argument.
+3: fail - The descendant test does not replace `threading.excepthook` or assert that no thread raised, and its cleanup does not cover the earlier return-code and duration assertions. Put cleanup around the entire run and check the hook after the late output. Also, a direct `_run_agent` invocation with an agent that flushes `partial` without a newline and spawns a descendant holding stdout open for 4 seconds printed `elapsed: 2.0 stdout: b'\` and only echoed `partial` later: `readline` withholds bytes until EOF, so output already in the pipe is lost from the result and log at the deadline. Retain those bytes within the deadline and add a regression test.
+4: pass - `make check` printed OK, including the timeout marker test and existing timeout tests; substituting the `main` implementation made the new timeout test error with the missing `log` argument.
+
+Addressed the lingering-pipe finding with chunked reads and an incremental UTF-8 decoder: bytes are retained immediately, including unterminated fragments, while decoding remains correct across chunk boundaries. Expanded the descendant regression to assert retained/logged partial output and no reader thread exception, with cleanup around all assertions. make check passes (791 tests); focused tests pass. Implementation commit: 75e101cc.
+
+Review failed (tests): Preserve and log incomplete UTF-8 output at the grace deadline, and add a regression test. The prior review reported lost unterminated output; its ASCII example is fixed, but this newly discovered multibyte variant remains unresolved.
+1: pass - make check printed OK (792 tests); the prior review recorded that the new test errors against main without the log argument.
+2: pass - make check printed OK for invalid bytes and closed log; the prior review recorded failure against main without the log argument.
+3: fail - A direct _run_agent invocation started a descendant sleeping 3 seconds and flushed raw bytes b"\xe2\x82" without a newline. It printed stdout: b"\xe2\x82" and an empty log, which remained empty after EOF: the incremental decoder retains the fragment until EOF, after the log has detached. Flush pending decoder bytes with replacement at the deadline without losing later stderr output. The existing descendant regression does not cover this case. The previous review recorded that the test fails against main.
+4: pass - make check printed OK, including timeout tests; the previous review recorded failure against main without the log argument.
+
+Regression test first failed against the unfixed code: the incomplete UTF-8 fragment was absent from the log at the grace deadline. After the fix, focused output tests and make check pass. Decoder access is serialized with the reader, and its pending fragment is finalized and written before the log detaches; later reader output continues to stderr.
+
+Review failed (work): A newly discovered race loses output already read before the grace deadline when stderr writes are slow. Synchronize delivery and detachment so retained output is not silently omitted from the log; add a regression. The previously reported incomplete UTF-8 case now passes.
+1: pass - make check printed OK for 793 tests, including ordering; the first review recorded that the test fails against main.
+2: pass - make check printed OK for invalid bytes and closed log; the first review recorded that the test fails against main.
+3: fail - A direct _run_agent invocation with a StringIO stderr whose write sleeps 3 seconds, an in-memory log, and an agent printing BEFORE showed `returned: b'BEFORE\n' log: ''` after the 2-second grace; after the reader finished it printed `after reader: '' stderr: 'BEFORE\n'`. The reader decodes before acquiring the log lock, so the deadline detaches the log while an earlier stderr write is in progress. Output read within the deadline is lost from the log. The earlier ASCII and incomplete UTF-8 regressions pass in make check; their original failures are documented in the prior review notes.
+4: pass - make check printed OK, including timeout and existing timeout tests; the first review recorded failure against main.
+
+Escalated to human review: failed review 3 times. A human should decide how to proceed, then unblock it.
+
+Owner decision 2026-11-20: do not echo agent output to the terminal; that was a mistake. Agent output goes to the log only. Planner proposal (not yet agreed): drop the reader thread, lock and `AGENT_OUTPUT_GRACE_SECONDS`; `_run_agent` passes an open binary log file as the agent stdout (stderr merged) and waits with `process.wait`, so a descendant holding the output open no longer delays the run, and returns as `stdout` the bytes the file gained during the call. This removes the three races found in review (lost unterminated output, lost partial UTF-8 character, log detached during a slow stderr write). The earlier implementation on this branch follows the old design.
 
 ## History
 
@@ -63,3 +90,36 @@ Planner, 2026-11-19: rewritten from scratch and split twice after cold reads. Th
 - 2026-11-19T21:24:55Z sunny-white-dormouse cold-read → todo
 - 2026-11-19T21:25:08Z sunny-white-dormouse: changed acceptance criteria
 - 2026-11-20T00:14:05Z vivid-amber-toad todo → doing
+- 2026-11-20T00:16:53Z vivid-amber-toad: wrote the plan
+- 2026-11-20T00:23:21Z vivid-amber-toad: changed summary
+- 2026-11-20T00:23:21Z vivid-amber-toad doing → review
+- 2026-11-20T00:28:24Z golden-indigo-gannet: changed acceptance criteria, notes
+- 2026-11-20T00:28:24Z golden-indigo-gannet review → doing
+- 2026-11-20T00:40:34Z able-zinc-falcon: changed notes, summary; ticked acceptance criteria
+- 2026-11-20T00:40:34Z able-zinc-falcon doing → review
+- 2026-11-20T00:46:51Z honest-amber-stoat: changed acceptance criteria, notes
+- 2026-11-20T00:46:51Z honest-amber-stoat review → doing
+- 2026-11-20T00:55:50Z zesty-ebony-gannet: wrote the plan
+- 2026-11-20T00:59:41Z zesty-ebony-gannet: changed notes, summary; ticked acceptance criteria
+- 2026-11-20T00:59:41Z zesty-ebony-gannet doing → review
+- 2026-11-20T01:05:09Z able-navy-quail: changed owner, acceptance criteria, notes
+- 2026-11-20T01:05:09Z able-navy-quail review → blocked
+- 2026-11-20T08:39:11Z lively-bronze-crane: changed owner, notes
+- 2026-11-20T08:39:11Z lively-bronze-crane blocked → planning
+- 2026-11-20T08:41:43Z lively-bronze-crane: changed title, description; wrote the plan
+- 2026-11-20T08:41:58Z lively-bronze-crane: changed acceptance criteria
+- 2026-11-20T08:42:30Z lively-bronze-crane: changed acceptance criteria
+- 2026-11-20T08:42:33Z lively-bronze-crane planning → cold-read
+- 2026-11-20T08:43:30Z lively-bronze-crane cold-read → planning
+- 2026-11-20T08:43:32Z lively-bronze-crane: changed description, acceptance criteria
+- 2026-11-20T08:43:35Z lively-bronze-crane planning → cold-read
+- 2026-11-20T08:44:58Z lively-bronze-crane cold-read → planning
+- 2026-11-20T08:45:01Z lively-bronze-crane: changed acceptance criteria
+- 2026-11-20T08:45:05Z lively-bronze-crane planning → cold-read
+- 2026-11-20T08:45:25Z lively-bronze-crane cold-read → planning
+- 2026-11-20T08:45:28Z lively-bronze-crane: changed description, acceptance criteria
+- 2026-11-20T08:45:33Z lively-bronze-crane planning → cold-read
+- 2026-11-20T08:47:12Z lively-bronze-crane cold-read → planning
+- 2026-11-20T08:47:15Z lively-bronze-crane: changed description, summary
+- 2026-11-20T08:47:26Z lively-bronze-crane: changed acceptance criteria
+- 2026-11-20T08:47:30Z lively-bronze-crane planning → todo
