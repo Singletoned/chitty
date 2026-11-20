@@ -3,6 +3,7 @@ import subprocess
 from contextlib import ExitStack
 from pathlib import Path
 
+from chitty.errors import ChittyError
 from chitty.ids import TaskId
 from chitty.store import Repo
 from tests import test_ticket_ids
@@ -52,6 +53,59 @@ class TestSourceCopy(CliTestCase):
         self.git("checkout", "-b", "task-1")
         self.file(1, "branch")
         self.commit_at("2020-01-01T00:00:00Z")
+
+    def test_provisional_in_linked_worktree(self):
+        self.init_git()
+        worktree = self.root / "linked"
+        self.git("worktree", "add", "-b", "task-5", str(worktree))
+        previous = Path.cwd()
+        try:
+            os.chdir(worktree)
+            self.run_cli("add", "provisional fixture", "-d", "Fixture.")
+        finally:
+            os.chdir(previous)
+        path = next((worktree / "chitty/tasks").glob("TASK-*--*.md"))
+        task_id = TaskId.parse(path.name.split("--")[0])
+        repo = Repo.open(worktree)
+        for committed in (False, True):
+            with self.subTest(committed=committed):
+                copy = repo.source_copy(task_id)
+                assert copy is not None
+                self.assertIsNone(copy.ref)
+                self.assertEqual(copy.path, path.relative_to(worktree))
+                self.assertEqual(copy.task.frontmatter.title, "provisional fixture")
+                self.assertIs(copy.task.frontmatter.provisional, True)
+            if not committed:
+                subprocess.run(["git", "add", "--all"], cwd=worktree, check=True)
+                subprocess.run(["git", "commit", "-qm", "fixture"], cwd=worktree, check=True)
+                repo = Repo.open(worktree)
+
+    def test_provisional_main_and_working_tree_precedence(self):
+        self.init_git()
+        for number in (1, 3):
+            path = self.file(number)
+            path.write_text(
+                path.read_text().replace("status: todo", "provisional: true\nstatus: todo")
+            )
+        self.file(2)
+        self.commit()
+        self.git("checkout", "-b", "feature")
+        (self.root / "chitty/tasks/TASK-1--example.md").unlink()
+        (self.root / "chitty/tasks/TASK-2--example.md").unlink()
+        self.file(3, "working")
+        self.assertIsNone(self.source(1))
+        self.assert_copy(self.source(2), "main", "chitty/tasks/TASK-2--example.md", "original")
+        self.assert_copy(self.source(3), "main", "chitty/tasks/TASK-3--example.md", "original")
+
+    def test_malformed_working_tree_precedes_main(self):
+        self.base()
+        self.git("checkout", "-b", "feature")
+        path = self.root / "chitty/tasks/TASK-1--example.md"
+        path.write_text(path.read_text().replace("\n---\n", "\n", 1))
+        with self.assertRaises(ChittyError) as raised:
+            self.source(1)
+        self.assertTrue(str(raised.exception).startswith(f"{path}: "))
+        self.assertIn("frontmatter is not closed", str(raised.exception))
 
     def test_branch_ahead_despite_later_main_date(self):
         self.base()

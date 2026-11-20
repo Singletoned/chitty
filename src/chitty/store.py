@@ -406,21 +406,30 @@ class Repo:
                 self.ticket_ids()
                 self._source_refs[task_id] = self._choose_source(task_id)
         ref = self._source_refs[task_id]
-        if ref == WORKING_TREE:
-            root = self.root / BACKLOG_DIR
-            paths: list[Path] = []
-            if root.is_dir():
-                for directory in sorted(path for path in root.iterdir() if path.is_dir()):
-                    context = Context(directory.name, "", directory)
-                    for archived in (False, True):
-                        paths.extend(
-                            path
-                            for path in self._files(context, archived)
-                            if ids.parse_filename(path.name)[0] == task_id
-                        )
-            copies = [(path.relative_to(self.root), path.read_text()) for path in paths]
-        else:
-            copies = self._ref_ticket_files(ref, task_id)
+        copies = (
+            self._working_ticket_files(task_id)
+            if ref == WORKING_TREE
+            else self._ref_ticket_files(ref, task_id)
+        )
+        return self._parse_source_copy(task_id, ref, copies)
+
+    def _working_ticket_files(self, task_id: TaskId) -> list[tuple[Path, str]]:
+        root = self.root / BACKLOG_DIR
+        paths: list[Path] = []
+        if root.is_dir():
+            for directory in sorted(path for path in root.iterdir() if path.is_dir()):
+                context = Context(directory.name, "", directory)
+                for archived in (False, True):
+                    paths.extend(
+                        path
+                        for path in self._files(context, archived)
+                        if ids.parse_filename(path.name)[0] == task_id
+                    )
+        return [(path.relative_to(self.root), path.read_text()) for path in paths]
+
+    def _parse_source_copy(
+        self, task_id: TaskId, ref: str, copies: list[tuple[Path, str]]
+    ) -> SourceCopy | None:
         if len(copies) > 1:
             paths_text = ", ".join(str(self.root / path) for path, _ in copies)
             raise ChittyError(f"{task_id} is used by more than one file: {paths_text}")
@@ -495,9 +504,16 @@ class Repo:
         def contains(a: str | None, b: str) -> bool:
             return a is not None and git.is_ancestor(self.root, b, a)
 
+        copies = self._working_ticket_files(task_id)
+        ref = WORKING_TREE
+        if not copies:
+            ref = main_ref
+            copies = self._ref_ticket_files(main_ref, task_id)
+        first = self._parse_source_copy(task_id, ref, copies)
+        provisional = first is not None and first.task.frontmatter.provisional is True
         source = ticket_source(
             task_id,
-            False,
+            provisional,
             git.current_branch(self.root),
             main,
             main_tip,
