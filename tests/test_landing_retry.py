@@ -140,6 +140,8 @@ class TestLandingRetry(LandingTestCase):
         def moving_fast_forward(root, branch):
             nonlocal calls
             calls += 1
+            if calls > 20:
+                raise AssertionError("fast-forward called more than 20 times")
             task = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
             moved = self.root / f"chitty/tasks/TASK-{20 + calls}--moved.md"
             moved.write_text(task.read_text())
