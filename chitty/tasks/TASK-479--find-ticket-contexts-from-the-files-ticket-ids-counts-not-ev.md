@@ -1,6 +1,6 @@
 ---
 title: Find ticket contexts from the files `ticket_ids()` counts, not every ref's history
-status: doing
+status: planning
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -41,6 +41,8 @@ Add real-Git discovery regression tests and migrate the history-only fixture; ve
 
 Before the fix, the discovery tests fail on the historical_files patch and the two unrelated placements; both positive guards pass. The migrated CLI test also fails because show succeeds.
 
+The prescribed implementation makes `tests.test_check.TestCheck.test_reports_every_problem` error: `check.check` calls `discovered_contexts`, which now calls `ticket_paths` and `_files`, so `stray.txt` raises before the check can report that filename alongside the other four problems. This existing check-level behavior contradicts the proposed unconditional filename exception and the requirement that `make check` pass; the failing test is not a history-only directory test and changing it would weaken its aggregation assertion. Planning must decide whether check should retain aggregated diagnostics and specify how discovery handles invalid filenames in that path, or explicitly change the check contract and its test. The implementation and regression tests are preserved in commit `a60c5c9d`; focused tests pass, but `make check` fails on this test. `chitty fix` and formatting ran; other reported ticket warnings were pre-existing.
+
 ## History
 
 - 2026-11-20T22:56:54Z quick-pearl-lapwing → planning
@@ -51,3 +53,5 @@ Before the fix, the discovery tests fail on the historical_files patch and the t
 - 2026-11-20T22:58:16Z sunny-silver-yellowhammer todo → doing
 - 2026-11-20T22:59:38Z sunny-silver-yellowhammer: wrote the plan
 - 2026-11-20T23:00:22Z sunny-silver-yellowhammer: changed notes
+- 2026-11-20T23:02:13Z sunny-silver-yellowhammer: changed owner, notes
+- 2026-11-20T23:02:13Z sunny-silver-yellowhammer doing → planning
