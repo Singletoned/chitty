@@ -46,11 +46,18 @@ from chitty.store import (
 # Each lost race removes a candidate, so a few attempts are plenty.
 RUN_LOCK_ATTEMPTS = 10
 LANDING_ATTEMPTS = 3
+QUICK_LANDING_ATTEMPTS = 10
 RUN_LOOP_PAUSE_SECONDS = 60
 AGENT_KILL_GRACE_SECONDS = 2
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
+
+
+def _only_ticket_paths(paths: Sequence[str], contexts: Sequence[str]) -> bool:
+    """Whether paths are all beneath a configured context's ticket directory."""
+    directories = tuple(f"chitty/{name}/" for name in contexts)
+    return all(path.startswith(directories) for path in paths)
 
 
 def has_work_beyond_tickets(
@@ -1122,6 +1129,7 @@ def _land_locked(
         raise ChittyError(
             f"cannot land {action.id}; the branch changes Chitty's managed block in AGENTS.md"
         )
+    quick_attempts = 0
     for attempt in range(LANDING_ATTEMPTS):
         try:
             conflicts = git.rebase_onto(worktree, main_branch)
@@ -1153,6 +1161,56 @@ def _land_locked(
                 git.fast_forward(main_root, branch)
         except ChittyError:
             if not git.is_ancestor(main_root, main_branch, branch):
+                while quick_attempts < QUICK_LANDING_ATTEMPTS:
+                    base = git.merge_base(main_root, branch, main_branch)
+                    paths = [str(path) for path in git.changed_paths(main_root, base, main_branch)]
+                    if not _only_ticket_paths(paths, list(main_repo.config.contexts)):
+                        break
+                    quick_attempts += 1
+                    try:
+                        conflicts = git.rebase_onto(worktree, main_branch)
+                    except KeyboardInterrupt:
+                        if git.rebase_in_progress(worktree):
+                            git.abort_rebase(worktree)
+                        raise RunInterrupted("rebase") from None
+                    if conflicts:
+                        git.abort_rebase(worktree)
+                        listed = ", ".join(f"`{path}`" for path in conflicts)
+                        raise ChittyError(
+                            f"cannot land {action.id}; rebasing onto `{main_branch}` "
+                            f"conflicts in {listed}"
+                        )
+                    try:
+                        with locks.main_checkout_lock(main_root):
+                            git.require_clean(main_root)
+                            git.fast_forward(main_root, branch)
+                    except ChittyError:
+                        if not git.is_ancestor(main_root, main_branch, branch):
+                            continue
+                        raise
+                    break
+                else:
+                    base = git.merge_base(main_root, branch, main_branch)
+                    paths = [str(path) for path in git.changed_paths(main_root, base, main_branch)]
+                    if not _only_ticket_paths(paths, list(main_repo.config.contexts)):
+                        if attempt + 1 < LANDING_ATTEMPTS:
+                            continue
+                        raise ChittyError(
+                            f"main moved during each of the {LANDING_ATTEMPTS} landing attempts"
+                        ) from None
+                    raise ChittyError(
+                        f"main moved during each of the {QUICK_LANDING_ATTEMPTS} "
+                        "quick landing attempts"
+                    ) from None
+                if git.is_ancestor(main_root, main_branch, branch):
+                    break
+                if quick_attempts < QUICK_LANDING_ATTEMPTS and attempt + 1 < LANDING_ATTEMPTS:
+                    continue
+                if quick_attempts == QUICK_LANDING_ATTEMPTS:
+                    raise ChittyError(
+                        f"main moved during each of the {QUICK_LANDING_ATTEMPTS} "
+                        "quick landing attempts"
+                    ) from None
                 if attempt + 1 < LANDING_ATTEMPTS:
                     continue
                 raise ChittyError(

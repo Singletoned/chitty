@@ -147,7 +147,12 @@ On a pass, under the landing lock:
 - Refused: uncommitted files in the worktree, a changed Chitty config, or a
   changed managed block in `AGENTS.md`, before or after merging.
 - Rebase the branch onto `main_branch`, run `setup` and `check`, fast-forward
-  `main_branch`, then remove the worktree and branch.
+  `main_branch`, then remove the worktree and branch. If fast-forward loses a
+  race and the new commits touch only configured context ticket directories,
+  Chitty rebases and retries without rerunning the check, assuming checks do not
+  depend on ticket files. Repositories whose check validates tickets (for
+  example `chitty check`) or scans `chitty/` for conflict markers (this
+  repository's `make check`) do not satisfy that assumption.
 - A ticket-scoped setup, check, agent, or landing failure moves the ticket to
   `error`, records the phase, output, and worktree in Notes, and preserves its
   branch and worktree. The exception is the work-mode non-zero `check` exit on

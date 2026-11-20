@@ -191,6 +191,11 @@ def branch_tips(root: Path) -> dict[str, str]:
     }
 
 
+def merge_base(root: Path, first: str, second: str) -> str:
+    """Return the merge base of two commits."""
+    return _git(root, "merge-base", first, second).strip()
+
+
 def is_ancestor(root: Path, ancestor: str, descendant: str) -> bool:
     """Whether ancestor is reachable from descendant."""
     result = subprocess.run(
