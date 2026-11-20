@@ -168,6 +168,12 @@ make: *** [check] Error 1
 
 ```
 
+The Git call recorder now excludes nested helper calls as specified. Merged advancing main to verify the required tests diff; only tests/test_ticket_ids.py differs from main.
+
+## Summary
+
+Implemented cached ticket ID discovery across the working tree, main and eligible ticket branches, with ref files cached for follow-up work. Seven real-Git tests passed; the prior worker recorded all seven failing against the NotImplementedError stub. make check passed (814 tests), and the tests diff against main contains only the new file. TASK-476 will use the cached ref files to select copies.
+
 ## History
 
 - 2026-11-20T12:35:43Z jolly-dusky-badger → planning
@@ -216,3 +222,4 @@ make: *** [check] Error 1
 - 2026-11-20T19:10:36Z jolly-dusky-badger error → doing
 - 2026-11-20T19:37:22Z nimble-russet-vole: changed notes
 - 2026-11-20T19:37:36Z nimble-russet-vole: wrote the plan
+- 2026-11-20T19:40:10Z nimble-russet-vole: changed notes, summary
