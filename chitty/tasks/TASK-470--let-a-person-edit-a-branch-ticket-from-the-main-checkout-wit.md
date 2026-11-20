@@ -36,6 +36,10 @@ Out of scope: the remote-only refusal (`run \`git switch --track ...\` first`), 
 - [ ] `test_edit_without_human_still_refuses`, `test_human_edit_without_a_worktree_keeps_the_refusal` and `test_human_edit_of_a_ticket_on_main_uses_main` pass
 - [ ] `chitty edit --help` and `README.md` describe `--human`; `git grep -n -- --human src/chitty/guide.md src/chitty/roles/` finds nothing; `make check` passes
 
+## Plan
+
+Add Repo.for_human_edit using the existing branch/worktree lookup, and add an explicit --human option to chitty edit. Resolve the task before selecting the target repo; scope CHITTY_ACTOR=human to the write and restore it in finally. Add the requested fixture-based regression tests in tests/test_edit_human.py, documenting the baseline and both mutants. Update README and option help, run focused tests and make check, record criterion evidence, then commit implementation changes with Task: TASK-470.
+
 ## History
 
 - 2026-11-19T22:04:44Z daring-amber-kestrel → planning
@@ -50,3 +54,4 @@ Out of scope: the remote-only refusal (`run \`git switch --track ...\` first`), 
 - 2026-11-19T22:08:26Z daring-amber-kestrel cold-read → planning
 - 2026-11-19T22:08:30Z daring-amber-kestrel planning → todo
 - 2026-11-20T00:06:05Z witty-ochre-kestrel todo → doing
+- 2026-11-20T00:09:02Z witty-ochre-kestrel: wrote the plan
