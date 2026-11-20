@@ -36,6 +36,10 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 - [ ] With every `chitty.git` function wrapped to record outermost calls, starting after `ticket_ids()` returns, in a repository with `main` and ticket branches `task-1` and `task-2` (each with an edit ahead of `main`): `source_copy` for every ID returns the expected `ref` and path for each and makes no `git.files_at` or `git.file_at` call
 - [ ] Calling `source_copy(TASK-1)` twice on one `Repo` gives the same result; after a further commit on `task-1` and `_invalidate()`, it gives the new content; a ticket only on `main` whose file is deleted in the working tree, uncommitted, gives `None`. `make check` passes with no existing test changed (`git diff main --stat -- tests` lists only the new file)
 
+## Plan
+
+Add the source-copy API and focused real-Git placement tests, first running all tests against the requested stub. Select sources lazily per ID using cached ref files and ticket_source, invalidate the cache with Repo state, then run fix, format and checks.
+
 ## History
 
 - 2026-11-20T17:43:29Z jolly-dusky-badger → planning
@@ -46,3 +50,4 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 - 2026-11-20T19:49:07Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T19:49:07Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T19:49:15Z daring-coral-adder todo → doing
+- 2026-11-20T19:50:34Z daring-coral-adder: wrote the plan
