@@ -45,9 +45,17 @@ def ticket_facts(draw):
 
 @given(ticket_facts())
 def test_blocker_markers_follow_rule(facts):
+    expected_blocking = {
+        dependency.reference.upper()
+        for dependent in facts
+        if not dependent.archived and dependent.status != "done"
+        for dependency in dependent.dependencies
+        if dependency.state == "unfinished"
+    }
     blocking = blocking_ids(facts)
     shuffled = list(reversed(facts))
-    assert blocking_ids(shuffled) == blocking
+    assert blocking == expected_blocking
+    assert blocking_ids(shuffled) == expected_blocking
     for fact in facts:
         expected = None
         if (
