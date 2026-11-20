@@ -4,6 +4,7 @@ status: todo
 depends_on:
   - TASK-378
   - TASK-379
+  - TASK-480
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -29,6 +30,10 @@ No property: a change that only removes code; the existing tests cover what rema
 - [ ] `git grep -nE 'historical_files|_latest_changes|HistoricalFile|_tree_blobs|_display_ref|_history\(\)' -- src tests` prints nothing
 - [ ] `.venv/bin/python -m unittest tests.test_ticket_reads tests.test_next_number_main` runs a non-zero number of tests and passes, and `make check` passes
 
+## Notes
+
+Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the last `_history()` caller) is now `TASK-480`, so this also waits for it.
+
 ## History
 
 - 2026-11-18T16:20:18Z lively-quartz-crane → backlog
@@ -39,3 +44,4 @@ No property: a change that only removes code; the existing tests cover what rema
 - 2026-11-18T16:42:13Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T16:42:13Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:42:15Z lively-quartz-crane planning → todo
+- 2026-11-20T23:04:47Z quick-pearl-lapwing: changed dependencies, notes
