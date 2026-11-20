@@ -1,6 +1,6 @@
 ---
 title: Let a person edit a branch ticket from the main checkout with `chitty edit --human`
-status: todo
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -49,3 +49,4 @@ Out of scope: the remote-only refusal (`run \`git switch --track ...\` first`), 
 - 2026-11-19T22:08:26Z daring-amber-kestrel: changed description, acceptance criteria
 - 2026-11-19T22:08:26Z daring-amber-kestrel cold-read → planning
 - 2026-11-19T22:08:30Z daring-amber-kestrel planning → todo
+- 2026-11-20T00:06:05Z witty-ochre-kestrel todo → doing
