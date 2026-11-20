@@ -1,6 +1,6 @@
 ---
 title: Do not error a `todo` ticket whose branch already has work when the pre-session check fails
-status: planning
+status: cold-read
 created: 2026-11-20
 ---
 
@@ -38,3 +38,4 @@ Suggestion origin: chitty
 - 2026-11-20T23:09:59Z quick-pearl-lapwing → backlog
 - 2026-11-20T23:11:52Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T23:11:52Z quick-pearl-lapwing backlog → planning
+- 2026-11-20T23:11:58Z quick-pearl-lapwing planning → cold-read
