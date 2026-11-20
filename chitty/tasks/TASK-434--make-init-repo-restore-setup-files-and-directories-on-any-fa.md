@@ -50,6 +50,8 @@ Implementation has not started. The initial edit attempt changed indentation inc
 
 Back to planning review 2026-11-20: the previous worker returned it without starting, and named no ticket defect. Branch rebased onto `main`; claims rechecked against the code.
 
+Planning needed: the specified stale registration fixture cannot be constructed as written. Its initial `chitty init --autocommit` registers the project to the test repository in the example's fresh `XDG_DATA_HOME`; the subsequent required `register_project(name, other)` raises `ChittyError` immediately because that name already belongs to the first repository. Thus the test never reaches the write being tested. Decide how the fixture should replace or isolate that initial registration before registering `other`, including the intended action and assertions. A trial property confirmed this setup error; its fresh hook example did reach the write and failed on the original code because the `chitty/` directories remained. The incomplete trial test was discarded; no implementation changes were made and wrong-version, success-path and full-check verification remain unfinished.
+
 ## History
 
 - 2026-11-19T20:55:05Z sunny-white-dormouse → backlog
@@ -81,3 +83,4 @@ Back to planning review 2026-11-20: the previous worker returned it without star
 - 2026-11-20T22:35:13Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T22:38:52Z brisk-coral-eel todo → doing
 - 2026-11-20T22:40:57Z brisk-coral-eel: wrote the plan
+- 2026-11-20T22:41:46Z brisk-coral-eel: changed notes
