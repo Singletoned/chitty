@@ -1,6 +1,6 @@
 ---
 title: List which ticket IDs exist across the working tree, `main` and ticket branches
-status: review
+status: done
 depends_on:
   - TASK-377
   - TASK-380
@@ -170,6 +170,11 @@ make: *** [check] Error 1
 
 The Git call recorder now excludes nested helper calls as specified. Merged advancing main to verify the required tests diff; only tests/test_ticket_ids.py differs from main.
 
+Reviewed: Complete diff inspected. The seven new tests were rerun with an in-memory NotImplementedError stub: 7 tests, 7 errors at ticket_ids; no files were changed for that run.
+1: pass - make check reported 814 tests OK, including test_locations covering all listed placements.
+2: pass - make check reported 814 tests OK, including the four invalid-file and missing-main tests.
+3: pass - make check reported 814 tests OK, including test_no_git_repository and test_ref_reads_once_and_cached; git diff main --stat -- tests listed only tests/test_ticket_ids.py.
+
 ## Summary
 
 Implemented cached ticket ID discovery across the working tree, main and eligible ticket branches, with ref files cached for follow-up work. Seven real-Git tests passed; the prior worker recorded all seven failing against the NotImplementedError stub. make check passed (814 tests), and the tests diff against main contains only the new file. TASK-476 will use the cached ref files to select copies.
@@ -224,3 +229,5 @@ Implemented cached ticket ID discovery across the working tree, main and eligibl
 - 2026-11-20T19:37:36Z nimble-russet-vole: wrote the plan
 - 2026-11-20T19:40:10Z nimble-russet-vole: changed notes, summary
 - 2026-11-20T19:40:13Z nimble-russet-vole doing → review
+- 2026-11-20T19:45:07Z tidy-maroon-wren: changed notes
+- 2026-11-20T19:45:07Z tidy-maroon-wren review → done
