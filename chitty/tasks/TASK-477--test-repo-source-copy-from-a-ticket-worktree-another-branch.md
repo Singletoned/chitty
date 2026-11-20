@@ -25,6 +25,10 @@ Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source
 - [ ] Outside a Git repository, `source_copy` gives `ref` `None` and the working-tree copy, and, with every `chitty.git` function wrapped to record calls from after `Repo.open` returns, calls none except `git.is_repository`
 - [ ] Each of the three mutants in the Description is committed as a test that asserts the matching check fails against it; `make check` passes
 
+## Plan
+
+Create checkout fixtures and shared source-copy checks for the linked worktree, feature branch, and non-Git directory. Exercise each check against the specified patched mutants, including outermost Git-call recording, then run formatting and checks and hand off.
+
 ## History
 
 - 2026-11-20T17:43:41Z jolly-dusky-badger → planning
@@ -34,3 +38,4 @@ Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source
 - 2026-11-20T20:07:06Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T20:07:06Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T20:11:50Z friendly-zinc-gannet todo → doing
+- 2026-11-20T20:13:47Z friendly-zinc-gannet: wrote the plan
