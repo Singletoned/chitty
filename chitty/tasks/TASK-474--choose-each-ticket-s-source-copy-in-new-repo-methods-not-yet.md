@@ -1,6 +1,6 @@
 ---
 title: Choose each ticket's source copy in new `Repo` methods, not yet used by reads
-status: todo
+status: planning
 depends_on:
   - TASK-377
   - TASK-380
@@ -48,6 +48,8 @@ Tests: real-Git tests in a new `tests/test_ticket_source_copy.py`, inheriting `C
 
 Planner, 2026-11-20: the worker question about detecting a non-Git directory is settled in the Description and criterion 5: `git.is_repository` is the one allowed call, and calls are recorded only after `Repo.open` returns.
 
+Returned to planning: this ticket is too large for one session. It combines a cached per-ref index and source selection with more than 20 distinct real-Git placements, including linked worktrees, remote divergence, orphan histories, scan and parse errors, and instrumentation of Git calls. Please decide how to split the indexing, source selection and placement tests into independently reviewable tickets while keeping existing reads unchanged until TASK-378. No implementation was started; regression verification remains outstanding. Baseline make check passes.
+
 ## History
 
 - 2026-11-20T12:35:43Z jolly-dusky-badger → planning
@@ -75,3 +77,6 @@ Planner, 2026-11-20: the worker question about detecting a non-Git directory is 
 - 2026-11-20T17:31:16Z jolly-dusky-badger planning → cold-read
 - 2026-11-20T17:32:47Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T17:32:47Z jolly-dusky-badger cold-read → todo
+- 2026-11-20T17:35:15Z vivid-amber-lapwing todo → doing
+- 2026-11-20T17:38:34Z vivid-amber-lapwing: changed owner, notes
+- 2026-11-20T17:38:34Z vivid-amber-lapwing doing → planning
