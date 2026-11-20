@@ -16,6 +16,13 @@
 - **Plain Markdown.** Every ticket file survives the supported formatters
   unchanged in meaning ([Task file](task-file.md)). No HTML comments, sentinel
   markers or numbers in checklist text.
+- **External parsers, fixed data.** (Owner direction 2026-11-20, not yet
+  built; `TASK-451` is to be replanned on it.) Read ticket files with
+  external, well-tested parsers (`markdown-it-py` for Markdown, PyYAML for
+  frontmatter) rather than hand-written line splitting and regexes, and cover
+  the reader and writer with broad property tests. Fix the data before the
+  calculations: once a file has been fixed (normalised), writing it back saves
+  it byte for byte. Line-by-line editing is in doubt as the way to get there.
 - **Loud errors.** A malformed file is rejected with a path and a reason, never
   silently repaired. `chitty check` is the compile step.
 - **Chitty does the bookkeeping.** Whatever the tool can work out or keep
