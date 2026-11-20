@@ -242,6 +242,7 @@ class Repo:
         self.config = config
         self._historical_files: list[git.HistoricalFile] | None = None
         self._ticket_ids: set[TaskId] | None = None
+        self._ticket_paths: set[Path] | None = None
         self._ticket_ref_files: dict[str, list[tuple[Path, str]]] = {}
         self._source_refs: dict[TaskId, str] = {}
         self._task_locations: dict[tuple[str, bool], list[StoredTask]] = {}
@@ -297,11 +298,8 @@ class Repo:
         if root.is_dir():
             for directory in sorted(path for path in root.iterdir() if path.is_dir()):
                 contexts.setdefault(directory.name, Context(directory.name, "", directory))
-        # Historical-only directories still contain readable ticket versions.
-        for file in self._history():
-            if len(file.path.parts) >= 3 and file.path.parts[0] == BACKLOG_DIR:
-                name = file.path.parts[1]
-                contexts.setdefault(name, Context(name, "", root / name))
+        for name in sorted({path.parts[1] for path in self.ticket_paths()}):
+            contexts.setdefault(name, Context(name, "", root / name))
         return list(contexts.values())
 
     def resolve(self, text: str) -> TaskId:
@@ -390,6 +388,7 @@ class Repo:
     def _invalidate(self) -> None:
         self._historical_files = None
         self._ticket_ids = None
+        self._ticket_paths = None
         self._ticket_ref_files.clear()
         self._source_refs.clear()
         self._task_locations.clear()
@@ -530,17 +529,24 @@ class Repo:
             self._ticket_ids = self._collect_ticket_ids()
         return set(self._ticket_ids)
 
+    def ticket_paths(self) -> set[Path]:
+        self.ticket_ids()
+        assert self._ticket_paths is not None
+        return set(self._ticket_paths)
+
     def _collect_ticket_ids(self) -> set[TaskId]:
         result: set[TaskId] = set()
+        paths: set[Path] = set()
         root = self.root / BACKLOG_DIR
         if root.is_dir():
             for directory in sorted(path for path in root.iterdir() if path.is_dir()):
                 context = Context(directory.name, "", directory)
                 for archived in (False, True):
-                    result.update(
-                        ids.parse_filename(path.name)[0] for path in self._files(context, archived)
-                    )
+                    for path in self._files(context, archived):
+                        result.add(ids.parse_filename(path.name)[0])
+                        paths.add(path.relative_to(self.root))
         if not git.is_repository(self.root):
+            self._ticket_paths = paths
             return result
 
         main = self._main_branch()
@@ -580,6 +586,8 @@ class Repo:
                     continue
                 if own_id is None or task_id == own_id:
                     result.add(task_id)
+                    paths.add(path)
+        self._ticket_paths = paths
         self._ticket_ref_files = files_by_ref
         return result
 
