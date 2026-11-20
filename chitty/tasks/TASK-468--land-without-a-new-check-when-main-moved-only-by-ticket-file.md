@@ -1,6 +1,6 @@
 ---
 title: Land without a new check when `main` moved only by ticket-file commits
-status: review
+status: planning
 priority: high
 created: 2026-11-19
 ---
@@ -43,6 +43,12 @@ Add merge-base support and a precise ticket-path predicate, then retry fast-forw
 
 Verification: `make check` passed (ruff, pyright, all 787 tests). Focused landing/property tests passed. The ticket-only landing test fails when `_only_ticket_paths` is forced false (the no-quick-path behavior); boundary tests kill both the missing-slash context-prefix mutant and the broad `chitty/` mutant. The mixed-move test fails when the predicate is forced true, and the ten-move guard test fails with the limit raised to 1000. These are executable mutant checks; the original NotImplementedError-stub run was not captured.
 
+Review failed (design): Criterion 4 requires `git diff --stat main` to contain only five implementation paths, but this ticket necessarily records its own plan, notes and review status in a committed ticket file. The current command also includes unrelated changes on advancing main (currently TASK-470). Decide whether to exclude ticket metadata and compare the branch against its merge base; the literal criterion cannot guide completion as written. Preserve the implementation while planning.
+1: pass - `make check` passed all 788 tests. Running the property with an injected `NotImplementedError` printed `FAILED (errors=1)`; separate injected missing-slash and broad-prefix mutants each printed `AssertionError: True != False`. This note records the previously uncaptured stub result.
+2: pass - The test passed in `make check`; running it with `_land_locked` loaded from `main:src/chitty/run.py` printed `AssertionError: 2 != 1`.
+3: fail - The landing retry tests passed in `make check`; forcing the predicate true made the mixed test print `1 != 2`. However, `moving_fast_forward` has no 21st-call guard, so the specified unbounded-mutant test is missing and could hang. Add the guard and run the no-limit mutant; raising the limit to 12 printed a mismatched 12-attempt error, not the required guard failure.
+4: fail - `make check` passed, and the documentation names both exceptions. `git diff --stat main` printed seven paths, including this ticket and TASK-470, contrary to the literal criterion. Clarify the intended comparison and exemptions before assessing it.
+
 ## Summary
 
 Implemented ticket-only quick landing retries, bounded to ten, with merge-base support, property/boundary coverage, landing retry tests, and documentation. Verified using make check and focused mutant probes; see Notes. No follow-up.
@@ -66,3 +72,5 @@ Implemented ticket-only quick landing retries, bounded to ten, with merge-base s
 - 2026-11-19T23:54:08Z youthful-zinc-wren: wrote the plan
 - 2026-11-20T00:04:12Z youthful-zinc-wren: changed notes, summary
 - 2026-11-20T00:04:54Z youthful-zinc-wren doing → review
+- 2026-11-20T00:10:29Z able-dusky-toad: changed owner, acceptance criteria, notes
+- 2026-11-20T00:10:29Z able-dusky-toad review → planning
