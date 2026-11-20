@@ -109,17 +109,12 @@ class TestLanding(LandingTestCase):
             add_task_trailers(self.worktree, "main", self.branch, TaskId.parse("TASK-1")), 0
         )
         self.assertEqual(self.git("rev-parse", "HEAD", cwd=self.worktree), head)
-        self.git("switch", "--quiet", "main", cwd=self.worktree)
-        self.git("switch", "--quiet", "-c", "side", cwd=self.worktree)
-        (self.worktree / "side").write_text("side\n")
-        self.git("add", "side", cwd=self.worktree)
-        self.git("commit", "--quiet", "-m", "side", cwd=self.worktree)
-        self.git("switch", "--quiet", "main", cwd=self.worktree)
-        (self.worktree / "main-side").write_text("main\n")
-        self.git("add", "main-side", cwd=self.worktree)
-        self.git("commit", "--quiet", "-m", "main side", cwd=self.worktree)
-        self.git("switch", "--quiet", self.branch, cwd=self.worktree)
-        self.git("merge", "--quiet", "--no-ff", "side", cwd=self.worktree)
+        tree = self.git("rev-parse", "HEAD^{tree}", cwd=self.worktree).strip()
+        base = self.git("rev-parse", "main", cwd=self.worktree).strip()
+        merge = self.git(
+            "commit-tree", tree, "-p", head.strip(), "-p", base, "-m", "merge", cwd=self.worktree
+        ).strip()
+        self.git("update-ref", f"refs/heads/{self.branch}", merge, head.strip(), cwd=self.worktree)
         with self.assertRaisesRegex(ChittyError, "merge commits"):
             add_task_trailers(self.worktree, "main", self.branch, TaskId.parse("TASK-1"))
 

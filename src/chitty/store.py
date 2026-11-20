@@ -830,8 +830,13 @@ class Repo:
             and previous_status != "review"
         ):
             raise ChittyError("setting status done requires -s review first")
+        entering_review = edit.status == "review" and previous_status != "review"
         passing_review = previous_status == "review" and edit.status == "done"
-        if passing_review and (self.root / ".git").exists() and not edit.skip_current_version:
+        if (
+            (entering_review or passing_review)
+            and (self.root / ".git").exists()
+            and not edit.skip_current_version
+        ):
             self._require_current_version(stored)
             if uncommitted := git.uncommitted_paths(self.root):
                 listed = ", ".join(f"`{path}`" for path in uncommitted)

@@ -53,18 +53,20 @@ def commits_missing_trailer(commits: Sequence[Commit], task_id: TaskId) -> list[
 
 def with_task_trailer(message: str, task_id: TaskId) -> str:
     """Add this task's trailer, joining a final paragraph of trailers when possible."""
+    if not message.strip():
+        raise ValueError("commit message must not be empty")
     if not commits_missing_trailer([Commit("", message)], task_id):
         return message
     body = message.rstrip()
-    if not body:
-        return f"Task: {task_id}\n"
     lines = body.splitlines()
     last_paragraph = lines
     for index in range(len(lines) - 1, -1, -1):
         if not lines[index].strip():
             last_paragraph = lines[index + 1 :]
             break
-    if last_paragraph and all(re.fullmatch(r"[A-Za-z0-9-]+: .+", line) for line in last_paragraph):
+    if last_paragraph is not lines and all(
+        re.fullmatch(r"[A-Za-z0-9-]+: .+", line) for line in last_paragraph
+    ):
         return f"{body}\nTask: {task_id}\n"
     return f"{body}\n\nTask: {task_id}\n"
 

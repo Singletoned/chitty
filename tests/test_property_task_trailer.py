@@ -14,7 +14,11 @@ line = st.one_of(
     st.sampled_from(("\t", "Key: value", "Signed-off-by: A <a@example.com>")),
     st.sampled_from(("chitty: generated", "Task: TASK-1", "Task: TASK-10", "")),
 )
-message = st.lists(line, max_size=15).map(lambda lines: "\n".join(lines))
+message = (
+    st.lists(line, min_size=1, max_size=15)
+    .filter(lambda lines: bool(lines[0].strip()))
+    .map(lambda lines: "\n".join(lines))
+)
 
 
 class TestTaskTrailer(unittest.TestCase):
@@ -29,19 +33,22 @@ class TestTaskTrailer(unittest.TestCase):
         else:
             self.assertTrue(result.startswith(source.rstrip()))
             self.assertEqual(
-                result.splitlines().count("Task: TASK-1"),
-                source.splitlines().count("Task: TASK-1") + 1,
+                sum(line.rstrip() == "Task: TASK-1" for line in result.splitlines()),
+                sum(line.rstrip() == "Task: TASK-1" for line in source.splitlines()) + 1,
             )
 
     def test_fixed_examples(self):
         examples = (
-            ("", "Task: TASK-1\n"),
             (
                 "Fix\n\nSigned-off-by: A <a@example.com>",
                 "Fix\n\nSigned-off-by: A <a@example.com>\nTask: TASK-1\n",
             ),
             ("Fix", "Fix\n\nTask: TASK-1\n"),
+            ("Key: value", "Key: value\n\nTask: TASK-1\n"),
         )
+        for source in ("", "  \n"):
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                with_task_trailer(source, TASK_ID)
         for source, expected in examples:
             with self.subTest(source=source):
                 self.assertEqual(with_task_trailer(source, TASK_ID), expected)

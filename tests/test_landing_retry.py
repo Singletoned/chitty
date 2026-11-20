@@ -197,7 +197,8 @@ class TestLandingRetry(LandingTestCase):
         self.assertEqual(len(count.read_text().splitlines()), 1)
         self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
         self.assertEqual(
-            self.git("rev-parse", self.branch, cwd=self.worktree).strip(), worktree_head
+            self.git("rev-parse", f"{self.branch}^{{tree}}", cwd=self.worktree),
+            self.git("rev-parse", f"{worktree_head}^{{tree}}", cwd=self.worktree),
         )
         self.assertEqual(
             self.git("status", "--porcelain", "--untracked-files=all", cwd=self.worktree),
