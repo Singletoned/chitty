@@ -46,6 +46,8 @@ Review failed (design): Criterion 1(c) contradicts the required normalization in
 
 Planning 2026-11-20: property (c) now checks against `text.upper()` over upper-case prefix sets; criterion 4 compares whole stdout; a new criterion covers the lookup-error path. Branch rebased onto `main` (conflicts in `src/chitty/ids.py` and `src/chitty/roles/plan.md` resolved by keeping both sides; old tip tagged `task-350-before-rebase`). Resumed as `doing` because the branch holds the implementation.
 
+The duplicate-reference regression failed before the fix: lookup collapses working-tree files with the same ID in its location cache, so promotion succeeded instead of reporting the duplicate.
+
 ## Summary
 
 Implemented ticket reference parsing, promotion output, and plan-guide update. Added Hypothesis, example, and CLI coverage. Verified with make format, make check (623 suites), focused tests, and chitty fix. Follow-up: none.
@@ -71,3 +73,4 @@ Implemented ticket reference parsing, promotion output, and plan-guide update. A
 - 2026-11-20T23:19:01Z quick-pearl-lapwing: changed description, acceptance criteria, notes
 - 2026-11-20T23:19:01Z quick-pearl-lapwing cold-read → doing
 - 2026-11-20T23:52:15Z lively-ochre-kestrel: wrote the plan
+- 2026-11-20T23:53:22Z lively-ochre-kestrel: changed notes
