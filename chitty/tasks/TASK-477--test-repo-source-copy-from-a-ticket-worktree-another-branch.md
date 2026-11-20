@@ -33,6 +33,10 @@ Create checkout fixtures and shared source-copy checks for the linked worktree, 
 
 The checkout checks reject the two wrong ticket_source implementations and the outside-Git check raises the specified Git error under the is_repository mutant; the committed mutant tests exercise these failures directly.
 
+## Summary
+
+Added checkout and outside-Git source-copy tests with the three specified mutants. The mutant checks demonstrate failure of the shared positive checks against each wrong implementation. Verified with make check (830 tests); no production changes or follow-ups.
+
 ## History
 
 - 2026-11-20T17:43:41Z jolly-dusky-badger → planning
@@ -44,3 +48,4 @@ The checkout checks reject the two wrong ticket_source implementations and the o
 - 2026-11-20T20:11:50Z friendly-zinc-gannet todo → doing
 - 2026-11-20T20:13:47Z friendly-zinc-gannet: wrote the plan
 - 2026-11-20T20:15:16Z friendly-zinc-gannet: changed notes
+- 2026-11-20T20:16:47Z friendly-zinc-gannet: changed summary
