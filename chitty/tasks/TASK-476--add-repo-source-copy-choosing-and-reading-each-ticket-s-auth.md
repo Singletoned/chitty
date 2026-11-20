@@ -1,6 +1,6 @@
 ---
 title: Add `Repo.source_copy`, choosing and reading each ticket's authoritative copy
-status: todo
+status: doing
 depends_on:
   - TASK-474
 parent: TASK-376
@@ -45,3 +45,4 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 - 2026-11-20T19:47:08Z jolly-dusky-badger planning → cold-read
 - 2026-11-20T19:49:07Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T19:49:07Z jolly-dusky-badger cold-read → todo
+- 2026-11-20T19:49:15Z daring-coral-adder todo → doing
