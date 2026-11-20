@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to planning when it leaves a test for the worker to design
-status: review
+status: done
 labels:
   - untestable
 owner: untestable
@@ -17,6 +17,10 @@ Change the guides, keeping the advice general because they reach every repositor
 - `src/chitty/roles/review.md`: when a failing finding is about a test the ticket did not describe (a missing case, fixture or assertion the worker had to choose), the cause is `design` and the ticket goes to `planning`, not `doing`. Before failing a ticket for `tests` again, check whether the earlier failure had the same cause; if so, the ticket is the problem.
 - Add the same reason to the return-to-planning paragraph in `src/chitty/guide-runner.md`.
 
+## Notes
+
+Reviewed: the human read the changed paragraphs in `src/chitty/roles/work.md`, `src/chitty/roles/review.md` and `src/chitty/guide-runner.md` on 2026-11-20 and approved them; they match the three bullets in the Description.
+
 ## Summary
 
 Added the reason to the return-to-planning list in `work.md` (with "Do not design such a test yourself"), `review.md` (plus: such findings are `design` and go to `planning`; before a second `tests` failure, check whether the earlier failure had the same cause) and `guide-runner.md`. Added the phrase to `DEFECT_PHRASES` in `tests/test_guide_return_scope.py`, which fails 3 subtests against the old guides, and regenerated `tests/fixtures/guide-before-workflow.md` for the runner paragraph. `make check` passes (777 tests). Untestable beyond that phrase check: a person should read the three paragraphs. After landing, the main checkout must refresh `AGENTS.md`'s managed block.
@@ -28,3 +32,5 @@ Added the reason to the return-to-planning list in `work.md` (with "Do not desig
 - 2026-11-19T21:37:42Z daring-amber-kestrel todo → doing
 - 2026-11-19T21:40:56Z daring-amber-kestrel: changed summary
 - 2026-11-19T21:40:56Z daring-amber-kestrel doing → review
+- 2026-11-20T08:23:13Z lively-bronze-crane: changed notes
+- 2026-11-20T08:23:13Z lively-bronze-crane review → done
