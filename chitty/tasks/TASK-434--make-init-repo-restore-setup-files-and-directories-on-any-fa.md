@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: doing
+status: planning
 labels:
   - bug
 priority: high
@@ -52,6 +52,8 @@ Back to planning review 2026-11-20: the previous worker returned it without star
 
 Planning needed: the specified stale registration fixture cannot be constructed as written. Its initial `chitty init --autocommit` registers the project to the test repository in the example's fresh `XDG_DATA_HOME`; the subsequent required `register_project(name, other)` raises `ChittyError` immediately because that name already belongs to the first repository. Thus the test never reaches the write being tested. Decide how the fixture should replace or isolate that initial registration before registering `other`, including the intended action and assertions. A trial property confirmed this setup error; its fresh hook example did reach the write and failed on the original code because the `chitty/` directories remained. The incomplete trial test was discarded; no implementation changes were made and wrong-version, success-path and full-check verification remain unfinished.
 
+The stale registration fixture is impossible as specified: initial `chitty init --autocommit` registers the project to the test repository, so `register_project(name, other)` raises before the tested write. The planner must decide how to replace or isolate the initial registration and specify the fixture action and assertions. A trial confirmed this error and also confirmed the fresh hook example fails on the original code due to leftover directories. The incomplete trial test was discarded; no implementation changes were made. Wrong-version, success-path and full-check verification remain unfinished.
+
 ## History
 
 - 2026-11-19T20:55:05Z sunny-white-dormouse → backlog
@@ -84,3 +86,5 @@ Planning needed: the specified stale registration fixture cannot be constructed 
 - 2026-11-20T22:38:52Z brisk-coral-eel todo → doing
 - 2026-11-20T22:40:57Z brisk-coral-eel: wrote the plan
 - 2026-11-20T22:41:46Z brisk-coral-eel: changed notes
+- 2026-11-20T22:41:56Z brisk-coral-eel: changed owner, notes
+- 2026-11-20T22:41:56Z brisk-coral-eel doing → planning
