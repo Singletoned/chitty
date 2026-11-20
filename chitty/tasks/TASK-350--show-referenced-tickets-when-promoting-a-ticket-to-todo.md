@@ -1,6 +1,6 @@
 ---
 title: Show referenced tickets when promoting a ticket to todo
-status: planning
+status: cold-read
 depends_on:
   - TASK-356
 created: 2026-11-16
@@ -24,7 +24,7 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 
 ## Acceptance Criteria
 
-- [ ] Property tests with Hypothesis on `ticket_references`, comparing `TaskId` values: (a) for any list of IDs (prefix from a fixed set, number 1 to 9999) joined by separators drawn from space, newline, comma, full stop, backtick, `(` and `)`, the result is that list with repeats removed, first appearance kept; (b) prefixing any one of those IDs with an ASCII letter, digit or `-` drops it from the result and keeps the rest; (c) for any text (`st.text()`) and prefix set, the call never raises, and every returned ID has a prefix in the set and its text appears in the input. Fail on `main`, where the function does not exist.
+- [ ] Property tests with Hypothesis on `ticket_references`, comparing `TaskId` values: (a) for any list of IDs (prefix from a fixed set, number 1 to 9999) joined by separators drawn from space, newline, comma, full stop, backtick, `(` and `)`, the result is that list with repeats removed, first appearance kept; (b) prefixing any one of those IDs with an ASCII letter, digit or `-` drops it from the result and keeps the rest; (c) for any text (`st.text()`) and prefix set, the call never raises, and every returned ID has a prefix in the set and its text appears in `text.upper()` (the suffix is normalised to upper case, so `TASK-12a` gives `TASK-12A`, as the Description decides; decided 2026-11-20). In (a), each separator is drawn by Hypothesis for each gap, not taken from a fixed cycle. Fail on `main`, where the function does not exist.
 - [x] Example tests on `ticket_references` with prefixes `TASK`, `TASKS` and `HUMAN` give exactly the results listed in the Description for each of `see TASK-12.`, `` `TASK-12` ``, `TASK-1-2`, `TASK-12a`, `TASKS-3`, `XTASK-12`, `task-12`, `a-TASK-1`, `TASK-012` and `UTF-8`.
 - [x] CLI test: `TASK-1` in `planning` mentions `TASK-2` (a `doing` ticket) in its Description, and `TASK-1` itself, `TASK-9` (no such ticket) and `TASK-2` again in a criterion. `chitty edit TASK-1 -s todo` prints its `updated` line followed by exactly `TASK-2 doing <title of TASK-2>` and `TASK-9 no such task`, and nothing else. Fails on `main`.
 - [ ] CLI test: no reference lines are printed by a second `chitty edit TASK-1 -s todo` (which prints `unchanged TASK-1`), by `chitty edit TASK-1 --title x` on a `todo` ticket, by `-s doing` from `planning`, or by `-s todo --json` from `planning` (whose output stays valid JSON).
@@ -63,3 +63,5 @@ Implemented ticket reference parsing, promotion output, and plan-guide update. A
 - 2026-11-17T22:33:33Z youthful-hazel-newt doing → review
 - 2026-11-17T22:35:50Z intrepid-yellow-adder: changed owner, acceptance criteria, notes
 - 2026-11-17T22:35:50Z intrepid-yellow-adder review → planning
+- 2026-11-20T23:16:45Z quick-pearl-lapwing: changed acceptance criteria
+- 2026-11-20T23:16:45Z quick-pearl-lapwing planning → cold-read
