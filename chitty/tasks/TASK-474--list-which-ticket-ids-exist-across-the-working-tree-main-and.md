@@ -1,6 +1,6 @@
 ---
 title: List which ticket IDs exist across the working tree, `main` and ticket branches
-status: todo
+status: doing
 depends_on:
   - TASK-377
   - TASK-380
@@ -92,3 +92,4 @@ Planner, 2026-11-20: the call-count question is settled in the Description: only
 - 2026-11-20T19:04:45Z open-ochre-badger doing → planning
 - 2026-11-20T19:05:52Z jolly-dusky-badger: changed description, notes
 - 2026-11-20T19:05:52Z jolly-dusky-badger planning → todo
+- 2026-11-20T19:08:35Z friendly-zinc-urchin todo → doing
