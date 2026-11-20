@@ -29,6 +29,10 @@ Tests: a new `tests/test_source_copy_checkouts.py`, set up as `tests/test_source
 
 Create checkout fixtures and shared source-copy checks for the linked worktree, feature branch, and non-Git directory. Exercise each check against the specified patched mutants, including outermost Git-call recording, then run formatting and checks and hand off.
 
+## Notes
+
+The checkout checks reject the two wrong ticket_source implementations and the outside-Git check raises the specified Git error under the is_repository mutant; the committed mutant tests exercise these failures directly.
+
 ## History
 
 - 2026-11-20T17:43:41Z jolly-dusky-badger → planning
@@ -39,3 +43,4 @@ Create checkout fixtures and shared source-copy checks for the linked worktree, 
 - 2026-11-20T20:07:06Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T20:11:50Z friendly-zinc-gannet todo → doing
 - 2026-11-20T20:13:47Z friendly-zinc-gannet: wrote the plan
+- 2026-11-20T20:15:16Z friendly-zinc-gannet: changed notes
