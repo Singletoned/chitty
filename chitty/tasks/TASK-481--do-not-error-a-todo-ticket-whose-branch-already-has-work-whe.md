@@ -1,6 +1,6 @@
 ---
 title: Do not error a `todo` ticket whose branch already has work when the pre-session check fails
-status: todo
+status: doing
 created: 2026-11-20
 ---
 
@@ -43,3 +43,4 @@ Suggestion origin: chitty
 - 2026-11-20T23:13:05Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T23:13:05Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T23:13:23Z quick-pearl-lapwing: changed description
+- 2026-11-20T23:13:38Z nimble-fawn-vole todo → doing
