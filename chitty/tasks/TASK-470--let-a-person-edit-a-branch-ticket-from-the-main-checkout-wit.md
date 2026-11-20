@@ -32,13 +32,21 @@ Out of scope: the remote-only refusal (`run \`git switch --track ...\` first`), 
 
 ## Acceptance Criteria
 
-- [ ] `test_human_edit_writes_in_the_worktree` passes with every assertion in the Description; a note records its failure against two mutants of the change: the worktree redirect disabled (`for_human_edit` returns `self`), and the actor override disabled (the edit is then refused by review independence, `moved the task to review`)
-- [ ] `test_edit_without_human_still_refuses`, `test_human_edit_without_a_worktree_keeps_the_refusal` and `test_human_edit_of_a_ticket_on_main_uses_main` pass
-- [ ] `chitty edit --help` and `README.md` describe `--human`; `git grep -n -- --human src/chitty/guide.md src/chitty/roles/` finds nothing; `make check` passes
+- [x] `test_human_edit_writes_in_the_worktree` passes with every assertion in the Description; a note records its failure against two mutants of the change: the worktree redirect disabled (`for_human_edit` returns `self`), and the actor override disabled (the edit is then refused by review independence, `moved the task to review`)
+- [x] `test_edit_without_human_still_refuses`, `test_human_edit_without_a_worktree_keeps_the_refusal` and `test_human_edit_of_a_ticket_on_main_uses_main` pass
+- [x] `chitty edit --help` and `README.md` describe `--human`; `git grep -n -- --human src/chitty/guide.md src/chitty/roles/` finds nothing; `make check` passes
 
 ## Plan
 
 Add Repo.for_human_edit using the existing branch/worktree lookup, and add an explicit --human option to chitty edit. Resolve the task before selecting the target repo; scope CHITTY_ACTOR=human to the write and restore it in finally. Add the requested fixture-based regression tests in tests/test_edit_human.py, documenting the baseline and both mutants. Update README and option help, run focused tests and make check, record criterion evidence, then commit implementation changes with Task: TASK-470.
+
+## Notes
+
+Focused evidence: tests.test_edit_human passed all four tests. Mutation check ran test_human_edit_writes_in_the_worktree with Repo.for_human_edit replaced by self and with store.actor forced to test-agent; each mutant produced one failure. The clean baseline was not run before implementation; the ticket predicts the new option fails as unknown.
+
+## Summary
+
+Implemented explicit chitty edit --human with target-worktree selection and scoped actor restoration. Added four regression tests and README/help documentation. Verified by make check (787 tests), focused tests, CLI help, and no --human mentions in agent guides. Both required mutants fail the primary regression test. Follow-up: none.
 
 ## History
 
@@ -55,3 +63,4 @@ Add Repo.for_human_edit using the existing branch/worktree lookup, and add an ex
 - 2026-11-19T22:08:30Z daring-amber-kestrel planning → todo
 - 2026-11-20T00:06:05Z witty-ochre-kestrel todo → doing
 - 2026-11-20T00:09:02Z witty-ochre-kestrel: wrote the plan
+- 2026-11-20T00:12:43Z witty-ochre-kestrel: changed notes, summary; ticked acceptance criteria
