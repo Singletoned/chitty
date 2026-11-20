@@ -1,6 +1,6 @@
 ---
 title: Run the Linux check in `make release` before tagging
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-429
@@ -39,3 +39,4 @@ Out of scope: the landing check (`HUMAN-13`), retrying, and the GitHub workflows
 - 2026-11-19T20:34:52Z daring-amber-kestrel: changed description
 - 2026-11-19T20:34:52Z daring-amber-kestrel cold-read → planning
 - 2026-11-19T20:34:57Z daring-amber-kestrel planning → todo
+- 2026-11-20T00:24:32Z intrepid-lilac-ibis todo → doing
