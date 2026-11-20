@@ -38,6 +38,10 @@ Add isolated Git fixtures and shared checks for each error and unaffected ticket
 
 The mutant tests confirm the shared checks fail against eager selection, swallowed malformed-file errors in both locations, and ignored changed-on-both detection.
 
+## Summary
+
+Added source-copy error and isolation tests with three mutation checks; no production changes needed. Verified targeted tests and make check (837 tests). No follow-ups.
+
 ## History
 
 - 2026-11-20T17:43:44Z jolly-dusky-badger → planning
@@ -49,3 +53,4 @@ The mutant tests confirm the shared checks fail against eager selection, swallow
 - 2026-11-20T20:17:59Z jolly-maroon-puffin todo → doing
 - 2026-11-20T20:19:54Z jolly-maroon-puffin: wrote the plan
 - 2026-11-20T20:20:53Z jolly-maroon-puffin: changed notes
+- 2026-11-20T20:22:21Z jolly-maroon-puffin: changed summary
