@@ -25,6 +25,8 @@ Decisions:
 - Outside a Git repository (`git.is_repository(root)` is false), do not call `ticket_source` or any other `chitty.git` function: read the working tree (`ref` is `None`).
 - Commit `bed36801` on branch `task-378` (originally `27456731`, reverted there by `0ac2ee94`) has a first version in `_build_ticket_index`, `_source_ref` and `_changed_on_both`, choosing every source up front; reuse its code where it fits, but choose per ID on demand.
 
+Recording `chitty.git` calls, wherever a criterion asks for it: wrap each public function in `chitty.git` and record only outermost calls; a call made while another wrapped `chitty.git` function is running (such as the helper `git.is_repository` calls itself) is not recorded.
+
 Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`'s `tests/test_ticket_ids.py` is, one test per placement in the criteria, all from the main checkout on `main`, calling `Repo.open(root).source_copy(...)` directly. Set `GIT_COMMITTER_DATE` where commit order matters. Before implementing, write `SourceCopy` and `source_copy` raising `NotImplementedError` and run the new tests, so each fails on its own. No property: a fixed set of placements; the generated property is `TASK-393`.
 
 ## Acceptance Criteria
@@ -37,3 +39,4 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 
 - 2026-11-20T17:43:29Z jolly-dusky-badger → planning
 - 2026-11-20T17:45:24Z jolly-dusky-badger: changed description
+- 2026-11-20T19:05:55Z jolly-dusky-badger: changed description
