@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -423,3 +423,4 @@ Implemented automatic task trailers during landing, preserving trees and authors
 - 2026-11-20T23:26:19Z tidy-silver-zander: wrote the plan
 - 2026-11-20T23:32:46Z tidy-silver-zander: changed notes
 - 2026-11-20T23:46:44Z tidy-silver-zander: changed summary
+- 2026-11-20T23:46:47Z tidy-silver-zander doing → review
