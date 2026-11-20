@@ -24,12 +24,12 @@ Out of scope: the MCP edit tool, references in Plan or Notes, and lower-case pre
 
 ## Acceptance Criteria
 
-- [ ] Property tests with Hypothesis on `ticket_references`, comparing `TaskId` values: (a) for any list of IDs (prefix from a fixed set, number 1 to 9999) joined by separators drawn from space, newline, comma, full stop, backtick, `(` and `)`, the result is that list with repeats removed, first appearance kept; (b) prefixing any one of those IDs with an ASCII letter, digit or `-` drops it from the result and keeps the rest; (c) for any text (`st.text()`) and prefix set (a set of non-empty runs of upper-case ASCII letters, the only prefixes config accepts), the call never raises, and every returned ID has a prefix in the set and its text appears in `text.upper()` (the suffix is normalised to upper case, so `TASK-12a` gives `TASK-12A`, as the Description decides; decided 2026-11-20). In (a), each separator is drawn by Hypothesis for each gap, not taken from a fixed cycle. Fail on `main`, where the function does not exist.
+- [x] Property tests with Hypothesis on `ticket_references`, comparing `TaskId` values: (a) for any list of IDs (prefix from a fixed set, number 1 to 9999) joined by separators drawn from space, newline, comma, full stop, backtick, `(` and `)`, the result is that list with repeats removed, first appearance kept; (b) prefixing any one of those IDs with an ASCII letter, digit or `-` drops it from the result and keeps the rest; (c) for any text (`st.text()`) and prefix set (a set of non-empty runs of upper-case ASCII letters, the only prefixes config accepts), the call never raises, and every returned ID has a prefix in the set and its text appears in `text.upper()` (the suffix is normalised to upper case, so `TASK-12a` gives `TASK-12A`, as the Description decides; decided 2026-11-20). In (a), each separator is drawn by Hypothesis for each gap, not taken from a fixed cycle. Fail on `main`, where the function does not exist.
 - [x] Example tests on `ticket_references` with prefixes `TASK`, `TASKS` and `HUMAN` give exactly the results listed in the Description for each of `see TASK-12.`, `` `TASK-12` ``, `TASK-1-2`, `TASK-12a`, `TASKS-3`, `XTASK-12`, `task-12`, `a-TASK-1`, `TASK-012` and `UTF-8`.
 - [x] CLI test: `TASK-1` in `planning` mentions `TASK-2` (a `doing` ticket) in its Description, and `TASK-1` itself, `TASK-9` (no such ticket) and `TASK-2` again in a criterion. `chitty edit TASK-1 -s todo` prints its `updated` line followed by exactly `TASK-2 doing <title of TASK-2>` and `TASK-9 no such task`, and nothing else. Fails on `main`.
-- [ ] CLI test: the whole stdout is only the `updated` or `unchanged` line (compared exactly, not by prefix) for a second `chitty edit TASK-1 -s todo` (which prints `unchanged TASK-1`), by `chitty edit TASK-1 --title x` on a `todo` ticket, by `-s doing` from `planning`, or by `-s todo --json` from `planning` (whose output stays valid JSON).
+- [x] CLI test: the whole stdout is only the `updated` or `unchanged` line (compared exactly, not by prefix) for a second `chitty edit TASK-1 -s todo` (which prints `unchanged TASK-1`), by `chitty edit TASK-1 --title x` on a `todo` ticket, by `-s doing` from `planning`, or by `-s todo --json` from `planning` (whose output stays valid JSON).
 - [x] The plan guide bullet is replaced with the exact sentence in the Description, and `tests/test_guide_plan_restored.py` asserts that sentence (after `_flat`) instead of `because they can land during the read`. `make check` passes.
-- [ ] CLI test: with `TASK-1` in `planning` mentioning `TASK-2`, and two working-tree files for `TASK-2` (a second copy written by hand under `chitty/tasks/`), `chitty edit TASK-1 -s todo` exits 1 with `TASK-2 is used by more than one file` in its output, and `chitty show TASK-1` afterwards prints `status: todo`
+- [x] CLI test: with `TASK-1` in `planning` mentioning `TASK-2`, and two working-tree files for `TASK-2` (a second copy written by hand under `chitty/tasks/`), `chitty edit TASK-1 -s todo` exits 1 with `TASK-2 is used by more than one file` in its output, and `chitty show TASK-1` afterwards prints `status: todo`
 
 ## Plan
 
@@ -50,7 +50,7 @@ The duplicate-reference regression failed before the fix: lookup collapses worki
 
 ## Summary
 
-Implemented ticket reference parsing, promotion output, and plan-guide update. Added Hypothesis, example, and CLI coverage. Verified with make format, make check (623 suites), focused tests, and chitty fix. Follow-up: none.
+Updated property and CLI coverage after review, and fixed duplicate working-tree reference detection while retaining check diagnostics. The duplicate regression failed before the fix; the previous review recorded baseline failures for the reference parser and promotion. Verified focused tests, chitty fix, make format, and make check (870 tests). No follow-ups.
 
 ## History
 
@@ -74,3 +74,4 @@ Implemented ticket reference parsing, promotion output, and plan-guide update. A
 - 2026-11-20T23:19:01Z quick-pearl-lapwing cold-read → doing
 - 2026-11-20T23:52:15Z lively-ochre-kestrel: wrote the plan
 - 2026-11-20T23:53:22Z lively-ochre-kestrel: changed notes
+- 2026-11-20T23:57:55Z lively-ochre-kestrel: changed summary; ticked acceptance criteria
