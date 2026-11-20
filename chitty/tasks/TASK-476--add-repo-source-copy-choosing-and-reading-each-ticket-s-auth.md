@@ -1,6 +1,6 @@
 ---
 title: Add `Repo.source_copy`, choosing and reading each ticket's authoritative copy
-status: planning
+status: cold-read
 depends_on:
   - TASK-474
 parent: TASK-376
@@ -20,7 +20,7 @@ Decisions:
 
 - Choosing the source, on the first call for an ID only (cached per ID, cleared by `_invalidate`), so a conflicted ticket fails only calls for itself: call `ticket_source` with `provisional=False` (`TASK-475` passes the real flag); `git.current_branch`; `Repo._main_branch()`; `main_tip` from `git.ref_commit(root, "refs/heads/<main>")`; `local_tips` and `remote_tips`, the ticket branches' tips (as `TASK-474` finds them) with `refs/heads/` and `refs/remotes/` stripped; `contains(a, b)` as `git.is_ancestor(root, b, a)`, `False` when `a` is `None`; and `changed_on_both(name)`, true when both `git.changed_since_split(root, ref, main, paths)` and `git.changed_since_split(root, main, ref, paths)` are true, with `ref` and `main` full refs and `paths` the union of this ID's file paths at `main`'s tip and at `ref`'s tip. With no `main` commit, `changed_on_both` returns `False` without calling Git.
 - Mapping `ticket_source`'s result to a full ref: `WORKING_TREE` is this checkout; the main branch name is `refs/heads/<main>`; the ID lower-cased (`task-5`) is `refs/heads/task-5`; anything else is `refs/remotes/<result>`.
-- Reading: `WORKING_TREE` reads this checkout's file, committed or not; a file deleted there but not committed is absent. A ref reads the file from `TASK-474`'s cached files for that ref; no further `git.files_at` or `git.file_at` call. No file for the ID in the source gives `None`. More than one file for the ID in the source raises the existing `<ID> is used by more than one file: <paths>` error.
+- Reading: `WORKING_TREE` reads this checkout's file, committed or not; a file deleted there but not committed is absent. A ref reads the file from `Repo._ticket_ref_files` (landed by `TASK-474`: full ref name to that ref's `(path, content)` pairs, filled by `ticket_ids()`; call `ticket_ids()` first if it has not run on this `Repo`); no further `git.files_at` or `git.file_at` call. The ticket branches and their tips come from `git.branch_tips`, filtered as `Repo._collect_ticket_ids` does. No file for the ID in the source gives `None`. More than one file for the ID in the source raises the existing `<ID> is used by more than one file: <paths>` error.
 - Errors from `ticket_source` and `git.changed_since_split` propagate unchanged. A copy that fails to parse raises `ChittyError` as `<short ref>:<relative path>: <error>` for a ref, and `<absolute path>: <error>` for the working tree, as `Repo._load` does.
 - Outside a Git repository (`git.is_repository(root)` is false), do not call `ticket_source` or any other `chitty.git` function: read the working tree (`ref` is `None`).
 - Commit `bed36801` on branch `task-378` (originally `27456731`, reverted there by `0ac2ee94`) has a first version in `_build_ticket_index`, `_source_ref` and `_changed_on_both`, choosing every source up front; reuse its code where it fits, but choose per ID on demand.
@@ -40,3 +40,5 @@ Tests: real-Git tests in a new `tests/test_source_copy.py`, set up as `TASK-474`
 - 2026-11-20T17:43:29Z jolly-dusky-badger → planning
 - 2026-11-20T17:45:24Z jolly-dusky-badger: changed description
 - 2026-11-20T19:05:55Z jolly-dusky-badger: changed description
+- 2026-11-20T19:47:08Z jolly-dusky-badger: changed description
+- 2026-11-20T19:47:08Z jolly-dusky-badger planning → cold-read
