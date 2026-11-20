@@ -42,6 +42,10 @@ The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (comm
 
 Before the fix, the property arms for add description and edit summary failed on missing file options; the other five arms passed. The stdin examples also failed on missing options or the missing conflict check.
 
+## Summary
+
+Implemented UTF-8 long-text file options, stdin conflict validation, guide and plan documentation, and property and example coverage. Before the fix, the two new-option property arms and stdin examples failed; the other property arms passed. `make check` passes all 852 tests. The guide fixture required updating after the workflow guide tests failed. Planning should archive superseded TASK-306 and refresh the hand-written guide after landing.
+
 ## History
 
 - 2026-11-16T09:59:58Z intrepid-coral-raven → backlog
@@ -65,3 +69,4 @@ Before the fix, the property arms for add description and edit summary failed on
 - 2026-11-20T21:59:51Z calm-white-ibis todo → doing
 - 2026-11-20T22:01:08Z calm-white-ibis: wrote the plan
 - 2026-11-20T22:02:56Z calm-white-ibis: changed notes
+- 2026-11-20T22:07:12Z calm-white-ibis: changed summary
