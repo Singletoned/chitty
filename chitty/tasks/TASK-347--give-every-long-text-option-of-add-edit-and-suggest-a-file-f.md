@@ -30,6 +30,10 @@ Out of scope: MCP, file forms for criteria or titles, and reading files relative
 - [ ] `suggest --description-file -` leaves the same inbox description as `-d`; `add --description-file -` with no `-d` creates the ticket; giving `-` to two `-file` options of `add` or of `edit` exits with a usage error naming both; the tests fail before the change
 - [ ] The four guides carry the one-line file advice in place of the quoting advice; every `-file` option of `add`, `edit` and `suggest` is `click.File(encoding="utf-8")` and its help contains `('-' for stdin)`; `docs/plan/cli.md` lists the new options; `make check` passes
 
+## Plan
+
+Add the specified per-option property and example tests, verify their pre-fix failures, then implement UTF-8 file options and stdin conflict validation in the CLI. Update guide and plan documentation, run fix, format and checks, and commit the implementation.
+
 ## Notes
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: `add` checks the required description before reading a file; the property generator could produce text the store refuses whatever the option; History timestamps made "same ticket file" unverifiable; per-example repositories and `RepoTestCase`; UTF-8 file encoding; where the two-stdin check lives; the docs to update. Not adopted: none.
@@ -57,3 +61,4 @@ The unfinished CLI work from 2026-11-17 is saved as tag `task-347-partial` (comm
 - 2026-11-20T21:58:59Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T21:58:59Z quick-pearl-lapwing cold-read → todo
 - 2026-11-20T21:59:51Z calm-white-ibis todo → doing
+- 2026-11-20T22:01:08Z calm-white-ibis: wrote the plan
