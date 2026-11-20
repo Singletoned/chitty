@@ -69,22 +69,30 @@ class TestAgentOutput(RepoTestCase):
 
     def test_descendant_output_after_grace_is_not_logged(self):
         log_path = self.root / "late.log"
+        pid_file = self.root / "child.pid"
         script = (
-            "import subprocess, sys, time\n"
+            "import subprocess, sys\n"
             "child = subprocess.Popen([sys.executable, '-c', "
-            "'import time; time.sleep(4); print(\\\"LATE\\\", flush=True)'])\n"
-            "open(" + repr(str(self.root / "child.pid")) + ", 'w').write(str(child.pid))\n"
+            '\'import sys, time; print(\\"partial\\", end=\\"\\", flush=True); '
+            'time.sleep(4); print(\\"LATE\\", flush=True)\'])\n'
+            "open(" + repr(str(pid_file)) + ", 'w').write(str(child.pid))\n"
         )
+        calls = []
+        previous = threading.excepthook
+        threading.excepthook = calls.append
         started = time.monotonic()
-        with log_path.open("w") as log:
-            result = self.run_agent(script, log)
-        self.assertEqual(result.returncode, 0)
-        self.assertLess(time.monotonic() - started, 3.5)
         try:
+            with log_path.open("w") as log:
+                result = self.run_agent(script, log)
+            self.assertEqual(result.returncode, 0)
+            self.assertLess(time.monotonic() - started, 3.5)
+            self.assertIn(b"partial", result.stdout)
+            self.assertIn("partial", log_path.read_text())
             time.sleep(max(0, 5 - (time.monotonic() - started)))
             self.assertNotIn("LATE", log_path.read_text())
+            self.assertEqual(calls, [])
         finally:
-            pid_file = self.root / "child.pid"
+            threading.excepthook = previous
             if pid_file.exists():
                 subprocess.run(["kill", "-9", pid_file.read_text()], check=False)
 

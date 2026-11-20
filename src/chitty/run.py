@@ -1,5 +1,6 @@
 """Prepare a Chitty ticket worktree and run its configured agent."""
 
+import codecs
 import json
 import os
 import re
@@ -16,7 +17,7 @@ from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path, PurePosixPath
-from typing import Any, Literal, TextIO
+from typing import Any, BinaryIO, Literal, TextIO, cast
 from uuid import uuid4
 
 from chitty import git, locks
@@ -260,8 +261,7 @@ def _run_agent(
     process = subprocess.Popen(
         command, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
     )
-    output_stream = process.stdout
-    assert output_stream is not None
+    output_stream = cast(BinaryIO, process.stdout)
     chunks: list[bytes] = []
     lock = threading.Lock()
     attached_log = [log]
@@ -270,29 +270,33 @@ def _run_agent(
     stderr_active = [True]
     log_active = [True]
 
+    def write_text(text: str) -> None:
+        if stderr_active[0]:
+            try:
+                sys.stderr.write(text)
+                sys.stderr.flush()
+            except (OSError, ValueError) as error:
+                errors.append(error)
+                stderr_active[0] = False
+        with lock:
+            stream = attached_log[0]
+            if stream is not None and log_active[0]:
+                try:
+                    stream.write(text)
+                    stream.flush()
+                except (OSError, ValueError) as error:
+                    errors.append(error)
+                    log_active[0] = False
+
     def read_output() -> None:
+        decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
         try:
-            for line in iter(output_stream.readline, b""):
+            while data := os.read(output_stream.fileno(), 4096):
                 with lock:
                     if retain_output[0]:
-                        chunks.append(line)
-                text = line.decode(errors="replace")
-                if stderr_active[0]:
-                    try:
-                        sys.stderr.write(text)
-                        sys.stderr.flush()
-                    except (OSError, ValueError) as error:
-                        errors.append(error)
-                        stderr_active[0] = False
-                with lock:
-                    stream = attached_log[0]
-                    if stream is not None and log_active[0]:
-                        try:
-                            stream.write(text)
-                            stream.flush()
-                        except (OSError, ValueError) as error:
-                            errors.append(error)
-                            log_active[0] = False
+                        chunks.append(data)
+                write_text(decoder.decode(data))
+            write_text(decoder.decode(b"", final=True))
             output_stream.close()
         except Exception as error:  # noqa: BLE001 - the reader must never raise
             errors.append(error)
