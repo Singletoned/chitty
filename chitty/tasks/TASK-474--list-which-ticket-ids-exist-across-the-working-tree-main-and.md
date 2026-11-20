@@ -1,6 +1,6 @@
 ---
 title: List which ticket IDs exist across the working tree, `main` and ticket branches
-status: planning
+status: todo
 depends_on:
   - TASK-377
   - TASK-380
@@ -27,6 +27,8 @@ Decisions:
 - Outside a Git repository (`git.is_repository(root)` is false), call no other `chitty.git` function: `ticket_ids` is every ticket in the working tree.
 - Commit `bed36801` on branch `task-378` (originally `27456731`, reverted there by `0ac2ee94`) has a first version of this logic in `_build_ticket_index`; reuse its code where it fits.
 
+Recording `chitty.git` calls, wherever a criterion asks for it: wrap each public function in `chitty.git` and record only outermost calls; a call made while another wrapped `chitty.git` function is running (such as the helper `git.is_repository` calls itself) is not recorded.
+
 Tests: real-Git tests in a new `tests/test_ticket_ids.py`, inheriting `CliTestCase` from `tests/test_cli.py`, set up as `tests/test_check_cross_branch_references.py` does (`git init`, `git branch -M main`, `autocommit = true`), one test per case in the criteria, calling `Repo.open(<checkout>).ticket_ids()` directly. For the no-commit case, set `main_branch = "trunk"` in `chitty.toml` with no `refs/heads/trunk`. Make remote-tracking refs with `git update-ref refs/remotes/origin/task-<n> <commit>`; commit with Git directly where `chitty` would refuse. Before implementing, write `ticket_ids` raising `NotImplementedError` and run the new tests, so each fails on its own. No property: a fixed set of cases, each listed; the generated property over placements is `TASK-393`.
 
 ## Acceptance Criteria
@@ -46,6 +48,8 @@ Planner, 2026-11-20: split after the worker found it too large for one session. 
 All seven new real-Git tests were run against the NotImplementedError stub; each failed at ticket_ids as intended. Merged main into the ticket branch to resolve the earlier stale-ticket edit refusal.
 
 Criterion 3 requires wrapping every chitty.git function and observing only git.is_repository outside Git, but git.is_repository itself calls git.repository_answer. The requested test therefore fails even when ticket_ids directly calls no other Git function. Decide whether to count only direct calls from ticket_ids, or change the existing Git helper despite the scope limiting this ticket to new Repo methods. Partial implementation and tests are committed; all seven tests failed against the required stub, and make check now fails only on this call-count assertion. Further verification and review remain unfinished.
+
+Planner, 2026-11-20: the call-count question is settled in the Description: only outermost `chitty.git` calls are recorded, so the helper `git.is_repository` calls itself does not count. Keep the committed work and continue.
 
 ## History
 
@@ -86,3 +90,5 @@ Criterion 3 requires wrapping every chitty.git function and observing only git.i
 - 2026-11-20T19:03:04Z open-ochre-badger: changed notes
 - 2026-11-20T19:04:45Z open-ochre-badger: changed owner, notes
 - 2026-11-20T19:04:45Z open-ochre-badger doing → planning
+- 2026-11-20T19:05:52Z jolly-dusky-badger: changed description, notes
+- 2026-11-20T19:05:52Z jolly-dusky-badger planning → todo
