@@ -1,6 +1,6 @@
 ---
 title: Test `Repo.source_copy` errors, and that one conflicted ticket does not break others
-status: todo
+status: doing
 depends_on:
   - TASK-476
 parent: TASK-376
@@ -38,3 +38,4 @@ Tests: a new `tests/test_source_copy_errors.py`, set up as `tests/test_source_co
 - 2026-11-20T20:06:46Z jolly-dusky-badger: changed description, acceptance criteria
 - 2026-11-20T20:06:46Z jolly-dusky-badger cold-read → todo
 - 2026-11-20T20:07:09Z jolly-dusky-badger: changed description
+- 2026-11-20T20:17:59Z jolly-maroon-puffin todo → doing
