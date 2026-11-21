@@ -26,6 +26,10 @@ Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, u
 
 Add the requested stub and independent property and error tests, record their failures, then replace the selected criterion span while preserving its marker and surrounding bytes. Switch renumbering to the new method, run the prescribed checks, and commit the implementation.
 
+## Notes
+
+Against the `NotImplementedError` stub, `.venv/bin/python -m unittest tests.test_property_criterion_text` failed each property: `test_text_and_checked`: `NotImplementedError`; `test_marker`: `NotImplementedError`; `test_other_items_and_sections`: `NotImplementedError`; `test_count`: `NotImplementedError`; `test_idempotent`: `NotImplementedError`. The invalid-argument fixture initially lacked the required Description; after correcting it, running `test_invalid_arguments` separately failed all four subtests with `NotImplementedError`.
+
 ## History
 
 - 2026-11-21T14:32:56Z sunny-ebony-kestrel → planning
@@ -35,3 +39,4 @@ Add the requested stub and independent property and error tests, record their fa
 - 2026-11-21T14:34:38Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T15:13:53Z upbeat-ochre-zander todo → doing
 - 2026-11-21T15:15:29Z upbeat-ochre-zander: wrote the plan
+- 2026-11-21T15:16:17Z upbeat-ochre-zander: changed notes
