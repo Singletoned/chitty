@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: planning
+status: cold-read
 depends_on:
   - TASK-508
 parent: TASK-376
@@ -68,3 +68,4 @@ Planner 2026-11-21: the worker found this too large; split the valid-ticket gene
 - 2026-11-21T13:42:42Z vivid-ochre-badger: changed owner, notes
 - 2026-11-21T13:42:42Z vivid-ochre-badger doing → planning
 - 2026-11-21T13:44:31Z sunny-ebony-kestrel: changed dependencies, description, notes
+- 2026-11-21T13:47:11Z sunny-ebony-kestrel planning → cold-read
