@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: doing
+status: planning
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -24,6 +24,15 @@ Tests: Hypothesis properties in `tests/test_property_renumbering.py` (`TASK-381`
 - [ ] The five `rewrite_task` properties pass; a note gives the command run (`.venv/bin/python -m unittest tests.test_property_renumbering`) and records each property failing against the `NotImplementedError` stub, with the failing test name and traceback line; the two wrong-version tests pass (each wrong version fails a property)
 - [ ] `make check` passes
 
+## Notes
+
+Two requirements need decisions before implementation:
+
+1. An injective mapping does not ensure rewritten dependencies remain unique. A parsed task with `depends_on: [TASK-1, TASK-2]` and mapping `{TASK-1: TASK-2}` is valid input under the stated signature, but the required output has duplicate dependencies and `with_field` raises `TaskError: depends_on: contains duplicates`. Decide whether mappings must additionally avoid collisions with unmapped dependencies, or specify another outcome and test fixture.
+2. The required equality for every non-History section conflicts with the prescribed criteria edits for valid parsed multiline or uppercase-checked criteria. For `- [X] TASK-1` followed by `  continuation`, changing the ID with the two prescribed `with_criteria` calls produces `- [x] TASK-2 continuation`, not the required `- [X] TASK-2\n  continuation`. The proposed generator only uses single-line criteria, so it would not catch this for valid inputs. Decide whether to preserve criterion formatting with a different model operation, or explicitly restrict the function contract; describe the regression fixture and assertions.
+
+No implementation was started; verification remains unfinished.
+
 ## History
 
 - 2026-11-21T13:10:17Z sunny-ebony-kestrel → planning
@@ -33,3 +42,5 @@ Tests: Hypothesis properties in `tests/test_property_renumbering.py` (`TASK-381`
 - 2026-11-21T13:16:12Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T13:16:12Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:32:45Z daring-violet-puffin todo → doing
+- 2026-11-21T13:35:46Z daring-violet-puffin: changed owner, notes
+- 2026-11-21T13:35:46Z daring-violet-puffin doing → planning
