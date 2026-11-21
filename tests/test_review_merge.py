@@ -392,6 +392,37 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertTrue(self.worktree.exists())
         self.assertTrue(self.git("branch", "--list", "task-1").strip())
 
+    def test_landing_check_timeout_records_error_without_advancing_main(self):
+        slow = self.tmp / "slow-landing"
+        slow.write_text(
+            f"#!{sys.executable}\nimport time\nprint('landing', flush=True)\ntime.sleep(5)\n"
+        )
+        slow.chmod(slow.stat().st_mode | stat.S_IXUSR)
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                "autocommit = true",
+                f'autocommit = true\ncommand_timeout = 1\nlanding_check = "{slow}"',
+            )
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure landing timeout")
+        self.branch_for_review()
+        main_head = self.git("rev-parse", "main").strip()
+
+        result = self.run_cli("run", "--mode", "review")
+
+        self.assertIn("done → error", result.stdout)
+        self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
+        branch_ticket = self.git("show", "task-1:chitty/tasks/TASK-1--review-me.md")
+        self.assertIn("Runner error (landing)", branch_ticket)
+        self.assertIn("landing check timed out after 1 seconds", branch_ticket)
+        log = (self.worktree / ".chitty/check.log").read_text()
+        self.assertTrue(log.startswith("# chitty landing check: "))
+        self.assertTrue(log.endswith("# timed out after 1 seconds\n"))
+        self.assertTrue(self.worktree.exists())
+        self.assertTrue(self.git("branch", "--list", "task-1").strip())
+
     def test_landing_failure_records_error_on_branch_without_advancing_main(self):
         self.branch_for_review()
         fake = self.tmp / "bin" / "fake"

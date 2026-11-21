@@ -287,18 +287,7 @@ def _run_agent(
         process.wait(timeout=timeout or None)
     except subprocess.TimeoutExpired:
         timed_out = True
-        descendants = _process_descendants(process.pid)
-        for pid in [*descendants, process.pid]:
-            _signal_process(pid, signal.SIGTERM)
-        grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
-        while time.monotonic() < grace_deadline:
-            remaining = _running_processes([*descendants, process.pid])
-            if not remaining:
-                break
-            time.sleep(min(0.05, grace_deadline - time.monotonic()))
-        for pid in _running_processes([*descendants, process.pid]):
-            _signal_process(pid, signal.SIGKILL)
-        process.wait()
+        _terminate_process_tree(process)
 
     end = os.fstat(log.fileno()).st_size
     log.seek(offset)
@@ -307,6 +296,20 @@ def _run_agent(
     if timed_out:
         result.stderr = b"timed out"
     return result
+
+
+def _terminate_process_tree(process: subprocess.Popen[bytes]) -> None:
+    descendants = _process_descendants(process.pid)
+    for pid in [*descendants, process.pid]:
+        _signal_process(pid, signal.SIGTERM)
+    grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
+    while time.monotonic() < grace_deadline:
+        if not _running_processes([*descendants, process.pid]):
+            break
+        time.sleep(min(0.05, grace_deadline - time.monotonic()))
+    for pid in _running_processes([*descendants, process.pid]):
+        _signal_process(pid, signal.SIGKILL)
+    process.wait()
 
 
 def _process_descendants(parent: int) -> list[int]:
@@ -513,7 +516,7 @@ def _run_ticket(
     if action.mode == "work":
         context["phase"] = "setup"
         try:
-            _setup(setup, worktree)
+            _setup(setup, worktree, main_repo.config.command_timeout)
         except ChittyError as error:
             failed = _record_ticket_error(branch_repo, action, "setup", error)
             return RunResult(action, selected_status, failed.new_status)
@@ -550,13 +553,15 @@ def _run_ticket(
         # After the merge, because the merge can change dependencies.
         context["phase"] = "setup"
         try:
-            _setup(setup, worktree)
+            _setup(setup, worktree, main_repo.config.command_timeout)
         except ChittyError as error:
             return _record_ticket_error(branch_repo, action, "setup", error)
     else:
         work_repo = Repo.open(worktree)
     context["phase"] = "check"
-    if failed := _run_check(branch_repo, action, check, selected_status):
+    if failed := _run_check(
+        branch_repo, action, check, selected_status, main_repo.config.command_timeout
+    ):
         if action.mode == "work" and selected_status == "todo":
             return RunResult(action, selected_status, failed.new_status)
         return failed
@@ -1215,8 +1220,8 @@ def _land_locked(
             raise ChittyError(
                 f"cannot land {action.id}; the branch changes protected files: {listed}"
             )
-        _setup(setup, worktree)
-        _landing_check(check, worktree)
+        _setup(setup, worktree, main_repo.config.command_timeout)
+        _landing_check(check, worktree, main_repo.config.command_timeout)
         try:
             with locks.main_checkout_lock(main_root):
                 git.require_clean(main_root)
@@ -1284,10 +1289,10 @@ def _land_locked(
     git.delete_branch(main_root, branch)
 
 
-def _landing_check(command: str, worktree: Path) -> None:
+def _landing_check(command: str, worktree: Path, timeout: int) -> None:
     """Run landing validation without changing the ticket on failure."""
     try:
-        returncode = _run_logged("landing check", command, worktree)
+        returncode = _run_logged("landing check", command, worktree, timeout)
     except FileNotFoundError:
         raise ChittyError(f"landing check command not found: {command}") from None
     except KeyboardInterrupt:
@@ -1298,9 +1303,9 @@ def _landing_check(command: str, worktree: Path) -> None:
         )
 
 
-def _setup(command: str, worktree: Path) -> None:
+def _setup(command: str, worktree: Path, timeout: int) -> None:
     try:
-        returncode = _run_logged("setup", command, worktree)
+        returncode = _run_logged("setup", command, worktree, timeout)
     except FileNotFoundError:
         raise ChittyError(f"setup command not found: {command}") from None
     except KeyboardInterrupt:
@@ -1374,7 +1379,11 @@ def _ignore_run_log(worktree: Path) -> None:
         exclude.write_text(updated)
 
 
-def _run_logged(phase: str, command: str, worktree: Path) -> int:
+class CommandTimedOut(ChittyError):
+    """A runner command exceeded its deadline."""
+
+
+def _run_logged(phase: str, command: str, worktree: Path, timeout: int) -> int:
     """Run a command with combined output in the worktree's last-run log."""
     argv = shlex.split(command)
     _ignore_run_log(worktree)
@@ -1385,23 +1394,37 @@ def _run_logged(phase: str, command: str, worktree: Path) -> int:
     with log_path.open("w+b") as log:
         log.write(f"# chitty {phase}: {command}\n".encode())
         log.flush()
-        completed = subprocess.run(
+        timed_out = False
+        with subprocess.Popen(
             argv,
             cwd=worktree,
             stdin=subprocess.DEVNULL,
             env=_command_environment(),
             stdout=log,
             stderr=subprocess.STDOUT,
-            check=False,
-        )
+        ) as process:
+            try:
+                try:
+                    process.wait(timeout=timeout or None)
+                except subprocess.TimeoutExpired:
+                    timed_out = True
+                    _terminate_process_tree(process)
+            except BaseException:
+                process.kill()
+                raise
         log.seek(0, os.SEEK_END)
         end = log.tell()
         log.seek(end - 1 if end else 0)
         if log.read(1) != b"\n":
             log.seek(0, os.SEEK_END)
             log.write(b"\n")
-        log.write(f"# exit {completed.returncode}\n".encode())
-    return completed.returncode
+        if timed_out:
+            log.write(f"# timed out after {timeout} seconds\n".encode())
+            raise CommandTimedOut(
+                f"{phase} timed out after {timeout} seconds; output in `{RUN_LOG}`"
+            )
+        log.write(f"# exit {process.returncode}\n".encode())
+    return process.returncode
 
 
 def _run_check(
@@ -1409,11 +1432,16 @@ def _run_check(
     action: NextAction,
     command: str,
     selected_status: str,
+    timeout: int,
 ) -> RunResult | None:
     """Validate the prepared worktree before spending an agent or review session."""
     print(f"Running check in {branch_repo.root}...", file=sys.stderr)
     try:
-        returncode = _run_logged("check", command, branch_repo.root)
+        returncode = _run_logged("check", command, branch_repo.root, timeout)
+    except CommandTimedOut as error:
+        return _handle_check_failure(
+            branch_repo, action, str(error), exited=True, selected_status=selected_status
+        )
     except FileNotFoundError:
         output = f"check command not found: {command}"
         return _handle_check_failure(

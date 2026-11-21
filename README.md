@@ -236,6 +236,11 @@ each ticket worktree before the agent starts; it is parsed without a shell. Set
 The optional `agent_timeout` is a non-negative integer number of seconds and
 defaults to 7200; set it to `0` for no limit. On timeout, `chitty run` stops the
 agent and its child processes and exits with an error.
+The optional `command_timeout` is a non-negative integer in seconds, defaulting
+to 3600; `0` disables it. It applies separately to each setup, pre-agent check,
+and landing validation invocation. Setup and landing timeouts follow their
+existing error handling; check timeouts follow check failure routing, including
+continuing work on an unfinished ticket when appropriate.
 Optional `error_reporter` is a command, parsed without a shell like `agent_command`,
 that runs when `chitty run` exits with a Chitty error. `{message}` is the error
 text and `{context}` is JSON containing `actor` and, where known, `project`,

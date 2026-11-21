@@ -86,6 +86,10 @@
 - `agent_timeout` (default 7200 seconds, `0` no limit) applies per session. On
   expiry: `SIGTERM` the agent and its descendants, `SIGKILL` after
   `AGENT_KILL_GRACE_SECONDS`, print `agent timed out after N seconds`, exit 1.
+- `command_timeout` (default 3600 seconds, `0` no limit) applies separately to
+  each setup, pre-agent check and landing validation command. Setup and landing
+  timeouts use their existing error paths; check timeouts use the usual check
+  failure routing, including continuing an unfinished work session.
 - The agent stays in the runner's process group and session, so the terminal
   and Ctrl-C work. Never `start_new_session`.
 

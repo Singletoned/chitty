@@ -1366,7 +1366,7 @@ class TestNext(CliTestCase):
         from chitty.run import _run_logged
 
         command = tomllib.loads((self.root / "chitty.toml").read_text())["check"]
-        self.assertEqual(_run_logged("check", command, worktree), 1)
+        self.assertEqual(_run_logged("check", command, worktree, 0), 1)
         self.assertFalse(log_path.read_text().startswith("old\n"))
         self.assertIn("check line 6\n", log_path.read_text())
         self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "2")
@@ -1514,7 +1514,7 @@ class TestNext(CliTestCase):
         worktree = self.root / "plain"
         worktree.mkdir()
         self.git("-C", str(worktree), "init", "--quiet")
-        self.assertEqual(_run_logged("check", "printf é", worktree), 0)
+        self.assertEqual(_run_logged("check", "printf é", worktree, 0), 0)
         log = (worktree / ".chitty/check.log").read_text(encoding="utf-8")
         self.assertEqual(log, "# chitty check: printf é\né\n# exit 0\n")
 

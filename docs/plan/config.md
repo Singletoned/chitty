@@ -30,6 +30,7 @@ review = true # done only through review → done; default follows workflow
 # agent_command = "pi -p {prompt}" # pass the role guide as one argument
 # error_reporter = "sump capture chitty --message {message} --context-json {context}"
 # agent_timeout = 7200 # seconds; 0 is no limit
+# command_timeout = 3600 # seconds per setup or check invocation; 0 is no limit
 # work_model = "provider/model" # when the agent command names no model
 # review_model = "provider/model"
 # rebase_model = "provider/model" # default for rebase sessions when the command has no model
@@ -56,6 +57,9 @@ random_ids = true # eight-digit random IDs, so branches cannot collide
 Commands are split like a shell (no shell runs them) and placeholders are
 substituted per word. `rebase_model` optionally supplies `--model` for rebase
 sessions; when unset, the agent command's model is left unchanged.
+`command_timeout` applies separately to setup, pre-agent check and landing
+validation commands. Timeouts follow the existing setup, check and landing
+failure routing; a check failure may still allow an unfinished work session.
 
 ## Contexts
 
