@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -180,3 +180,4 @@ Cold read 2026-11-21 outcomes: stale notes replaced by this summary; criterion 2
 - 2026-11-21T09:08:18Z nimble-umber-gannet: changed acceptance criteria
 - 2026-11-21T09:10:42Z nimble-umber-gannet: replaced notes; changed description, acceptance criteria
 - 2026-11-21T09:10:42Z nimble-umber-gannet cold-read → todo
+- 2026-11-21T09:11:04Z nimble-umber-gannet todo → cold-read
