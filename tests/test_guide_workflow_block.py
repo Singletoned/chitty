@@ -15,9 +15,8 @@ from chitty.mcp import create_server
 from chitty.store import GUIDE_BEGIN, GUIDE_END, managed_guide, repository_guide
 from tests.test_cli import CliTestCase
 
-# guide.md before the workflow split: the runner block must
-# stay byte for byte the same as the text agents already have.
-RUNNER_TEXT = (Path(__file__).parent / "fixtures/guide-before-workflow.md").read_text()
+# Keep a literal snapshot of the expected installed runner guide.
+RUNNER_TEXT = (Path(__file__).parent / "fixtures/guide-runner-expected.md").read_text()
 
 RUNNER_ONLY_SENTENCE = "When starting an agent by hand, run the matching focused guide:"
 FIRST_PARAGRAPH_END = "Run `chitty --help` for the command reference.\n"
@@ -49,7 +48,7 @@ class WorkflowCase(CliTestCase):
 
 
 class TestManagedGuide(WorkflowCase):
-    def test_runner_block_is_the_previous_guide(self):
+    def test_runner_block_matches_the_expected_guide(self):
         self.assertEqual(managed_guide("runner"), RUNNER_TEXT)
 
     def test_tickets_block_is_the_first_paragraph(self):

@@ -20,23 +20,31 @@
 - The third `review → doing` failure since the ticket was last `blocked` blocks
   it for the human (`REVIEW_FAILURE_LIMIT`), to investigate the repeated failures.
 - A failed review of implementation against clear requirements returns to
-  `doing` for a fresh worker session. Missing or contradictory requirements, an
-  unresolved design decision, a wrong claim about the code, files or other
-  tickets, a criterion that cannot be verified as written or would pass with
-  nothing built, or a ticket too large to finish in one session returns to
-  `planning`, from either `doing` or `review`; external obstacles requiring help
-  use `blocked` instead.
-- A return to planning for missing or contradictory requirements, an unresolved
-  design decision, a wrong claim about the code, files or other tickets, a
-  criterion that cannot be verified as written or would pass with nothing built,
-  or a ticket too large to finish in one session requires a nonblank note
-  explaining the discovery, why the ticket cannot guide the work, and the
-  decision needed. Reviewers retain independence and one verdict per criterion,
-  with at least one fail when criteria exist. Ownership is cleared; existing
-  implementation, branch and worktree are preserved. The run ends without
-  landing or starting another worker. Workers keep cheap reversible
-  implementation choices rather than escalating those to planning. Neither role
-  weakens tests to fit the work.
+  `doing` for a fresh worker session. Apart from the small-omission exception
+  below, missing or contradictory requirements, an unresolved design decision,
+  a wrong claim about the code, files or other tickets, a criterion that cannot
+  be verified as written or would pass with nothing built, an unspecified test
+  needed to verify a stated criterion, or a ticket too large to finish in one
+  session returns to `planning`, from either `doing` or `review`. External
+  obstacles requiring help use `blocked` instead.
+- A return to planning requires one nonblank note explaining the discoveries,
+  why the ticket cannot guide the work, and the
+  decisions or corrections needed, with evidence for each. The first blocker
+  stops implementation, not investigation: before returning to `planning`,
+  finish reading the ticket and inspecting relevant code and tests. Report what
+  could not be checked and why; continue checking independent requirements
+  without speculating or expanding scope. Reviewers retain independence and
+  one verdict per criterion, with at least one fail when criteria exist.
+  Ownership is cleared; existing implementation, branch and worktree are
+  preserved. The run ends without landing or starting another worker.
+- A worker can resolve a small omission when the ticket and existing code or
+  tests point to one clear, cheap-to-reverse default. The choice must preserve
+  stated requirements and acceptance criteria and introduce no new user-visible
+  policy, command, or setting. Note `Decided: <case> -> <choice>, because <reason>`,
+  cite the precedent, and add a focused edge-case test where testable. Reviewers
+  check the choice, precedent, and test against that same boundary rather than
+  returning the ticket to planning just because it omitted the case. Neither
+  role invents or weakens a test needed to verify a stated criterion.
 - Returned tickets appear in planning lists, not automatic work/review
   selection. The planner resumes in the existing ticket worktree, revises or
   splits the requirements, and follows the normal planning and cold-read

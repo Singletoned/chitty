@@ -10,13 +10,26 @@ When starting an agent by hand, run the matching focused guide:
 - `chitty guide review` for review.
 - `chitty guide plan` for writing or refining tickets.
 
-Workers and reviewers return a ticket to `planning` for missing or contradictory
-requirements, an unresolved design decision, a wrong claim about the code, files
-or other tickets, a criterion that cannot be verified as written or would pass
-with nothing built, a test a criterion needs that the ticket does not describe
-(its fixture, action and assertions), or a ticket too large to finish in one
-session. The note explains the discovery, why the ticket cannot guide the work,
-and the decision needed. Preserve existing implementation work and follow normal
+Workers may resolve a small omission when the ticket and existing code or tests
+point to one clear, cheap-to-reverse default. It must preserve requirements
+and acceptance criteria and introduce no new user-visible policy, command, or
+setting. Record `Decided: <case> -> <choice>, because <reason>`, cite the
+precedent, and add a focused test where testable. Reviewers check the choice,
+precedent, and test against the same boundary. Do not invent or weaken a test
+needed to verify a stated criterion.
+
+Apart from that exception, workers and reviewers return a ticket to `planning`
+for missing or contradictory requirements, an unresolved design decision, a
+wrong claim about the code, files or other tickets, a criterion that cannot be
+verified as written or would pass with nothing built, a test a criterion needs
+that the ticket does not describe (its fixture, action and assertions), or a
+ticket too large to finish in one session. Stop implementation, not
+investigation, at the first planning blocker. Before changing status, finish
+reading the ticket and checking relevant code and tests for the remaining
+requirements. Report all actionable planning issues in one note with evidence
+and the decision or correction needed. Say what could not be checked and why,
+and continue with independent checks without speculating or expanding scope.
+Preserve existing implementation work and follow normal
 planning and cold-read readiness before resuming. Implementation defects against
 clear requirements return to `doing`; external obstacles requiring help go to
 `blocked`.
