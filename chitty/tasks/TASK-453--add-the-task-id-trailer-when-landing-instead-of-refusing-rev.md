@@ -393,6 +393,8 @@ Review failed (tests): Newly discovered: criterion 2 explicitly requires the rea
 2: fail - `make check` passed the real-Git tests, and disabling `add_task_trailers` in the landing test produced `AssertionError: 0 != 1`, but the test bypasses `chitty run` as described above.
 3: pass - `make check` printed `Ran 875 tests` and `OK`; running `test_review_entry_does_not_require_trailer` with `Repo.edit` loaded from `main` failed with exit 1 and `cannot move TASK-1 to review`, instead of the expected exit 0.
 
+The runner-entry landing regression passes normally and fails with 0 != 1 when add_task_trailers is patched out, confirming it detects missing trailers.
+
 ## Summary
 
 Implemented automatic task trailers during landing, preserving trees and authors, and retained review cleanliness checks. Property, real-Git landing, merge, retry and review tests pass; make check passed (867 tests). Both requested faulty trailer variants failed the regression suite. chitty fix emitted existing warnings and did not finish before the 300-second timeout; no files were changed by it.
@@ -432,3 +434,4 @@ Implemented automatic task trailers during landing, preserving trees and authors
 - 2026-11-20T23:54:41Z tidy-jade-ibis: changed acceptance criteria, notes
 - 2026-11-20T23:54:41Z tidy-jade-ibis review → doing
 - 2026-11-21T00:03:24Z friendly-silver-toad: wrote the plan
+- 2026-11-21T00:04:05Z friendly-silver-toad: changed notes
