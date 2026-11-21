@@ -46,6 +46,10 @@ Before implementing, run the refusal tests against the unguarded planner and con
 - [ ] For each prose variant, and for control (d), the planner returns the mapping `{TASK-AAAAAA: TASK-1, TASK-BAAAAA: TASK-2}` in (a) and (d) and `{TASK-AAAAAA: TASK-4}` in (b) and (c), and a writable set that excludes the linking ticket, with HEAD, index and bytes unchanged
 - [ ] `blocking_link`'s property test passes, and the committed mutant tests show it fails against the case-sensitive mutant and the mutant that ignores `parent`
 
+## Plan
+
+Add real-Git refusal and nonblocking fixtures and verify refusals fail before implementation; add the pure link detector and its property and mutant tests; guard untouched disk and selected ref copies in the specified order; run formatting and checks.
+
 ## History
 
 - 2026-11-21T18:44:38Z eager-ginger-adder → backlog
@@ -63,3 +67,4 @@ Before implementing, run the refusal tests against the unguarded planner and con
 - 2026-11-21T23:02:43Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:02:43Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:04:21Z able-hazel-newt todo → doing
+- 2026-11-21T23:05:50Z able-hazel-newt: wrote the plan
