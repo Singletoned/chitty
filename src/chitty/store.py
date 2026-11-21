@@ -282,6 +282,13 @@ class Repo:
         return self.config.review if override is None else override
 
     def context_of(self, task_id: TaskId) -> Context:
+        """Resolve a context from the first selected path, without parsing the ticket.
+
+        Use the same discovery and selection as `source_copy`, but do not reject
+        duplicate copies. Fall back to a configured prefix match if the path
+        gives no context, even for an absent ticket. Discovery and selection
+        errors propagate; no matching context raises `<id>: no context`.
+        """
         _, copies = self._source_files(task_id)
         if copies:
             name = copies[0][0].parts[1]
@@ -337,6 +344,17 @@ class Repo:
         return sorted(found, key=lambda t: t.id)
 
     def _tasks_in_location(self, context: Context, archived: bool) -> list[StoredTask]:
+        """List tickets in one active or archive directory, or return an empty list.
+
+        On a cache miss, parse local files and all matching `git.historical_files`
+        records before choosing the latest committed record per ID. Prefer a
+        local copy if dirty, if the ID has no historical record, or if the
+        selected record is from the current branch. Cache the result and return
+        a list copy without reparsing on cache hits. Local scan and parse errors
+        use `<path>: <error>`; historical filename and parse errors use
+        `<ref>:<path>: <error>`.
+        Git errors propagate.
+        """
         key = (context.name, archived)
         cached = self._task_locations.get(key)
         if cached is not None:
@@ -449,6 +467,15 @@ class Repo:
         return ref.removeprefix("refs/heads/").removeprefix("refs/remotes/") if ref else None
 
     def source_copy(self, task_id: TaskId) -> SourceCopy | None:
+        """Parse the unique file at the selected source, or return `None` if absent.
+
+        Use the working tree outside Git and `_choose_source` otherwise.
+        Discovery can fail on an invalid entry even for another ticket, with
+        `<path>: <error>` locally or `<main>:<path>: <error>` on the main ref.
+        Selection errors propagate. Multiple matches raise `<id> is used by
+        more than one file`; parse failures use `<path>: <error>` for the working
+        tree or `<ref>:<path>: <error>` for a ref (using its short name).
+        """
         ref, copies = self._source_files(task_id)
         return self._parse_source_copy(task_id, ref, copies)
 
@@ -516,6 +543,15 @@ class Repo:
         return matches
 
     def _choose_source(self, task_id: TaskId) -> str:
+        """Return a full Git ref or `WORKING_TREE` as chosen by `ticket_source`.
+
+        Candidates are configured main, the ticket branch, and its remote-tracking
+        refs. Selection does not parse ticket bodies or guarantee a file exists.
+        Policy failures report a missing tip (`configured main branch`),
+        divergence (`ticket <id> has diverged refs`), or conflicting changes
+        (`ticket <id> changed on both`), with the ID quoted in backticks.
+        Git and configuration errors propagate.
+        """
         main = self._main_branch()
         main_ref = f"refs/heads/{main}"
         main_tip = self._main_tip()
@@ -645,9 +681,18 @@ class Repo:
         return self._ticket_ref_files
 
     def all_tasks(self) -> list[StoredTask]:
+        """List active and archived tickets in configured contexts, or `[]` if none.
+
+        `_tasks_in_location` supplies the cached or parsed working-tree and
+        history results; its listing errors propagate.
+        """
         return [t for context in self.contexts() for t in self.tasks(context, "all")]
 
     def lookup(self, task_id: TaskId) -> StoredTask | None:
+        """Wrap the parsed `source_copy` as a stored task, or return `None` if absent.
+
+        `source_copy` handles source selection and parsing; its errors propagate.
+        """
         copy = self.source_copy(task_id)
         if copy is None:
             return None
@@ -682,6 +727,11 @@ class Repo:
         return references
 
     def find(self, task_id: TaskId) -> StoredTask:
+        """Return the parsed ticket from `lookup`, or raise if absent.
+
+        On a miss, use `context_of` to report `no task <id> in <directory>`.
+        Errors from either helper propagate, including a missing context.
+        """
         task = self.lookup(task_id)
         if task is None:
             context = self.context_of(task_id)
