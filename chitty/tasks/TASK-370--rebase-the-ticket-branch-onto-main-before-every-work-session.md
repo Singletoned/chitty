@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: cold-read
+status: planning
 labels:
   - bug
   - needs-minor
@@ -10,6 +10,7 @@ depends_on:
   - TASK-374
   - TASK-384
   - TASK-382
+  - TASK-524
 created: 2026-11-18
 ---
 
@@ -19,20 +20,20 @@ Principle (decided 2026-11-18, `docs/plan/ticket-state.md`, on branch `plan/tick
 
 A work session today runs on whatever the ticket branch last had: `_run_ticket` in `src/chitty/run.py` never brings in `main` in work mode, so workers build on code behind `main`, and `setup` and `check` test code that is not what would land.
 
-Starts after `TASK-374` (`git.rebase_onto`), `TASK-373` (rebase instructions in the work and repair guides), `TASK-382` (`branch_repo`) and `TASK-384` (claim on the branch) land.
+Starts after `TASK-524` (`git.save_work`, `git.restore_work`) lands; `TASK-374`, `TASK-373`, `TASK-382` and `TASK-384` have landed. Out of scope: saved work that cannot be restored, an existing saved-work ref, and the prompt sentence naming it (`TASK-525`).
 
 Decisions:
 
 - In work mode, after `_worktree` and the claim (`TASK-384`) and before `setup`, rebase the worktree onto `main` for every ticket status.
-- Uncommitted work is cheap to redo (decided with the owner 2026-11-18), so save it explicitly rather than with `--autostash`, which a cold read showed can report success with conflict markers left behind, hide edits during a stopped rebase, and break the next run. Decided 2026-11-21: never use the shared stash list (`refs/stash`, `git stash push`/`drop`), which every worktree shares, so concurrent runs and people cannot be confused with each other. Keep the saved work under a per-ticket ref `refs/chitty/stash/<ID>` (for example `refs/chitty/stash/TASK-5`); the per-ticket run lock in `src/chitty/run.py` already stops two runs of one ticket. Planner probe 2026-11-21: this sequence restores an unstaged edit, a staged edit and an untracked file, and leaves `git stash list` empty.
-  1. If the worktree has uncommitted or untracked (not ignored) files: `git add -A`, then `git stash create "chitty <ID> before rebase"` (prints the stash commit; it does not touch the stash list), then `git update-ref refs/chitty/stash/<ID> <commit>`, then `git reset --hard` and `git clean -fd` (keeps ignored files). If `refs/chitty/stash/<ID>` already exists from an earlier run, refuse before saving with `ChittyError` `<ID> has saved uncommitted work in refs/chitty/stash/<ID>; apply it with git stash apply refs/chitty/stash/<ID> and delete it with git update-ref -d refs/chitty/stash/<ID>`, recorded as a ticket error like a non-conflict rebase failure below.
+- Uncommitted work is cheap to redo (decided with the owner 2026-11-18), so save it explicitly rather than with `--autostash`, which a cold read showed can report success with conflict markers left behind, hide edits during a stopped rebase, and break the next run. Decided 2026-11-21: never use the shared stash list; saved work goes under the per-ticket ref `refs/chitty/stash/<ID>` through `git.save_work` and `git.restore_work` (`TASK-524`). The per-ticket run lock in `src/chitty/run.py` already stops two runs of one ticket.
+  1. `git.save_work(worktree, f"refs/chitty/stash/{id}", f"chitty {id} before rebase")`.
   2. Rebase with `git.rebase_onto` (`TASK-374`), which never uses `--autostash`.
-  3. If the rebase completed: `git stash apply refs/chitty/stash/<ID>` (without `--index`: staged edits come back unstaged and new files come back added, accepted). On success, `git update-ref -d refs/chitty/stash/<ID>`. On any non-zero exit (a conflict, or `already exists, no checkout` when `main` added a path the saved work holds), reset the worktree to `HEAD` (`git reset --hard` and `git clean -fd`), keep the ref, and add a note on the ticket through `branch_repo`: `Uncommitted changes from before the rebase did not apply cleanly; they are in refs/chitty/stash/<ID>.` Then carry on.
-  4. If the rebase stopped on a conflict (any file): leave it stopped and the ref in place, skip `setup` and `check`, and start the agent (the work agent, or the repair agent for an `error` ticket). Write nothing to the ticket while the rebase is stopped. When work was saved, the agent's prompt also says `Uncommitted changes from before the rebase are in refs/chitty/stash/<ID>; re-apply them with git stash apply after the rebase if they are still useful, then delete the ref.`
-- Prompt rendering (rechecked 2026-11-21 against `main`): `_agent_command` already takes `worktree` and passes it to `guide()` when that directory exists, and `guide()` already puts the body of `src/chitty/roles/rebase.md` after the `Work only on Chitty ticket <ID>.` line when a rebase is in progress there. `_run_ticket` renders the command twice: once before `_worktree` (keep it, so a bad `agent_command` still fails before anything is written) and once after the claim. Move that second rendering to after the rebase, so the prompt reflects a stopped rebase, and add the saved-work sentence from step 4 to it. No change to `_agent_command`'s signature.
+  3. If the rebase completed and work was saved: `git.restore_work(worktree, ref)`, then carry on. Its `False` result, and `save_work`'s refusal when the ref already exists, are handled by `TASK-525`; in this ticket let `save_work`'s `ChittyError` propagate and ignore `restore_work`'s result.
+  4. If the rebase stopped on a conflict (any file): leave it stopped and the ref in place, skip `setup` and `check`, and start the agent (the work agent, or the repair agent for an `error` ticket). Write nothing to the ticket while the rebase is stopped. The prompt sentence naming the ref is `TASK-525`.
+- Prompt rendering (rechecked 2026-11-21 against `main`): `_agent_command` already takes `worktree` and passes it to `guide()` when that directory exists, and `guide()` already puts the body of `src/chitty/roles/rebase.md` after the `Work only on Chitty ticket <ID>.` line when a rebase is in progress there. `_run_ticket_with_log` renders the command twice: once before `_worktree` (keep it, so a bad `agent_command` still fails before anything is written) and once after the claim. Move that second rendering to after the rebase, so the prompt reflects a stopped rebase. No change to `_agent_command`'s signature.
 - A `rebase_onto` error that is not a conflict is recorded as a ticket error on the branch (`_record_ticket_error(branch_repo, ...)`, phase `rebase`), whose note also says `Uncommitted changes from before the rebase are in refs/chitty/stash/<ID>.` when work was saved; no agent starts.
 - A rebase still in progress at the start of a later run is refused by `_worktree`, as today, for a human.
-- Ctrl-C during the rebase runs `git rebase --abort` and raises `RunInterrupted("rebase")` (exit 130); the ref stays and the interrupt message names it. No test: it needs a signal mid-rebase (accepted).
+- Ctrl-C during the rebase runs `git rebase --abort` and raises `RunInterrupted("rebase")` (exit 130); the ref stays; naming it in the interrupt message is `TASK-525`. No test: it needs a signal mid-rebase (accepted).
 - Accepted edge case: a nested untracked Git repository in the worktree is added as a gitlink by `git add -A`, survives the reset, and may come back staged.
 - Update the work-mode bullet under `## Before a review` in `docs/plan/next-action-and-runner.md`.
 
@@ -43,7 +44,6 @@ Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.p
 - [ ] A work run on a `doing` ticket whose branch exists, with a new non-conflicting commit on `main`: afterwards `main` is an ancestor of the branch and `git rev-list main..task-<n>` lists only the branch's own commits, and a fake `check` command records `main`'s new commit in `git log` before the agent starts; this fails before the change
 - [ ] A work run whose rebase stops on a code conflict, once on a `doing` ticket and once on an `error` ticket, starts the work agent or the repair agent respectively with a rebase in progress and a prompt in which the body of `src/chitty/roles/rebase.md` directly follows the `Work only on Chitty ticket TASK-<n>.` line (both recorded by a fake agent whose command has `{prompt}`); a fake `setup` and `check` record that they did not run; this fails before the change
 - [ ] After `main` gains a commit touching another file, an unstaged edit to a tracked file, a staged edit and an untracked file are all present with the same content when the agent starts, and the branch has been rebased. `refs/chitty/stash/TASK-<n>` no longer exists, and `git stash list` is the same as before the run, including one entry the test pushed beforehand from the main checkout; this fails before the change
-- [ ] When applying the saved work conflicts (`main` changed the same lines as an uncommitted edit), the worktree matches `HEAD` when the agent starts, `refs/chitty/stash/TASK-<n>` exists and is named in a note on the branch's ticket, and the agent starts. When the rebase stops on a conflict with work saved, the prompt names the ref. A run that finds `refs/chitty/stash/TASK-<n>` already present records the refusal as a ticket error naming the ref and starts no agent
 - [ ] A `rebase_onto` failure that is not a conflict, with an uncommitted file present, records `Runner error (rebase)` on the branch naming `refs/chitty/stash/TASK-<n>`, and starts no agent; `make check` passes
 
 ## Notes
@@ -57,6 +57,8 @@ Cold read 2026-11-18 (the `directory` bullet) outcomes: accepted a `doing` case 
 Planning needed: the prescribed stash identification is not safe under the concurrency it explicitly allows. If another worktree pushes a stash between the before and after lists, their set difference contains multiple IDs, not one; if an entry is dropped or shifted between finding its stash@{n} and dropping it, the wrong stash can be removed. The per-ticket run lock in src/chitty/run.py does not serialize different tickets. The ticket needs a decision on a concurrency-safe identification and drop protocol, including interaction with other Git stash users, plus a deterministic real-Git test fixture, action and assertions that exercise the interleaving and prove the correct stash is preserved or dropped. The existing fixed-case tests do not specify that test. No implementation or verification was started.
 
 Replanned 2026-11-21: the stash concurrency blocker is settled by not using the shared stash list at all. Saved work goes to the per-ticket ref `refs/chitty/stash/<ID>` (see the Description).
+
+Split 2026-11-21 after a cold read found it too large: `TASK-524` (save and restore helpers, no runner change) and `TASK-525` (saved work that cannot be restored). Keep this ticket in planning until `TASK-524` lands; then compare with the landed helpers, cold-read and move to `todo`.
 
 ## History
 
@@ -102,3 +104,5 @@ Replanned 2026-11-21: the stash concurrency blocker is settled by not using the 
 - 2026-11-21T23:08:26Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:08:55Z lively-zinc-newt: changed description
 - 2026-11-21T23:08:55Z lively-zinc-newt planning → cold-read
+- 2026-11-21T23:11:38Z lively-zinc-newt: changed dependencies, description, acceptance criteria, notes
+- 2026-11-21T23:11:38Z lively-zinc-newt cold-read → planning
