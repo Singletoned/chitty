@@ -26,6 +26,10 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 - [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`, referencing no other ticket: `chitty show TASK-2` and `chitty edit TASK-2 --note x` succeed; `chitty show TASK-1` fails with the error containing `changed on both` and naming `task-1` and `main` (fails on the commit before the switch). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`, and `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` without raising (it raises on the commit before the switch). With `TASK-1` committed valid on `main` and edited (title `branch`) on `task-1`, and the main checkout's `TASK-1` file then overwritten, uncommitted, with `not frontmatter`: from the main checkout `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` and `chitty show TASK-1` prints title `branch` (both raise the working-tree parse error on the commit before the switch). In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
 - [ ] `make check` passes, `git diff main...HEAD --stat` touches only `tests/test_ticket_reads.py` and this ticket, and a note records each case's failure on the commit before the switch
 
+## Plan
+
+Add isolated real-Git CLI fixtures for each specified source-read case, verify the regression cases against the pre-switch store, then restore it and run fix, format and the full check.
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -34,3 +38,4 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 - 2026-11-21T11:43:51Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T11:49:04Z sunny-ebony-kestrel: changed description
 - 2026-11-21T12:37:29Z calm-quartz-stoat todo → doing
+- 2026-11-21T12:39:24Z calm-quartz-stoat: wrote the plan
