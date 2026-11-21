@@ -26,6 +26,10 @@ Planner 2026-11-21: the last two characters are U+2028 and U+2029, written here 
 
 Before the fix, the new regression test failed for nine separators with the wrong error; LF passed. CR reported unsupported line endings, and the other eight reported an invalid acceptance-criteria item.
 
+## Summary
+
+Criterion validation now rejects every splitlines separator before trimming. The regression test failed for nine separators before the fix and passes afterward. make check passed (972 tests). Related single-line validators remain out of scope.
+
 ## History
 
 - 2026-11-21T14:34:08Z sunny-ebony-kestrel → cold-read
@@ -35,3 +39,4 @@ Before the fix, the new regression test failed for nine separators with the wron
 - 2026-11-21T15:24:28Z upbeat-fawn-lapwing todo → doing
 - 2026-11-21T15:26:51Z upbeat-fawn-lapwing: wrote the plan
 - 2026-11-21T15:27:03Z upbeat-fawn-lapwing: changed notes
+- 2026-11-21T15:29:12Z upbeat-fawn-lapwing: changed summary
