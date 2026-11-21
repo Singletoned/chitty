@@ -1,6 +1,6 @@
 ---
 title: Use the ticket branch `task-1` in the cross-branch write tests
-status: doing
+status: planning
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -26,6 +26,10 @@ To check "after", use this one method: `git worktree add --detach <dir> spike/ta
 - [ ] `git diff main...HEAD -- tests` changes only `tests/test_cli.py` (`TestCrossBranchWrites`) and `tests/test_mcp.py` (`test_cross_branch_write_error_matches_the_cli`), and every changed line differs only by `worker` becoming `task-1`; no `"worker"` string literal is left in those five `test_cli.py` tests or that MCP test (the helper name `claim_on_worker` stays)
 - [ ] `make check` passes, and a note records the changed tests passing on `spike/task-378` with `TASK-504`'s change, checked by the one method in the Description
 
+## Notes
+
+The required after-switch verification mandates creating and modifying a separate detached worktree, including its `src/chitty/store.py` and test files. The session instruction permits changes only inside the ticket worktree and explicitly forbids touching other worktrees, so even nesting the detached worktree inside this one would violate that restriction. The ticket requires this exact method and does not permit an alternative. Please decide whether to authorize that worktree for verification or amend the required method. No implementation was started; after-switch verification and `make check` remain unfinished.
+
 ## History
 
 - 2026-11-21T11:38:15Z sunny-ebony-kestrel → planning
@@ -34,3 +38,5 @@ To check "after", use this one method: `git worktree add --detach <dir> spike/ta
 - 2026-11-21T11:39:35Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T11:39:35Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T11:43:51Z tidy-silver-wren todo → doing
+- 2026-11-21T11:47:18Z tidy-silver-wren: changed owner, notes
+- 2026-11-21T11:47:18Z tidy-silver-wren doing → planning
