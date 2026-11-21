@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: review
+status: done
 depends_on:
   - TASK-508
 parent: TASK-376
@@ -52,6 +52,10 @@ Review failed (tests): The prescribed preservation property does not verify mult
 
 Regression test test_rendered_mutation_fails_preserved_multiline_labels failed before the preservation fix: AssertionError not raised at tests/test_property_renumbering.py:271. It passes after comparing complete multiline fields; the History mutation fixture now tests History independently.
 
+Reviewed: Previous multiline-label preservation finding is resolved; independent label and History mutation tests now exercise it.
+1: pass - `.venv/bin/python -m unittest tests.test_property_renumbering` printed `Ran 15 tests` and `OK`, including six properties and wrong-version tests. The stub regression note records all six failing test names and `NotImplementedError` at `src/chitty/renumbering.py:35`; the multiline-label regression note records its prior assertion failure.
+2: pass - `make check` printed `Ran 961 tests` and `OK`; formatting, lint and pyright passed.
+
 ## Summary
 
 Implemented selective ID rewriting and six properties. Preservation checks compare complete multiline frontmatter fields; separate rendered-text mutation tests detect changes to labels and History. The multiline-label regression failed before the property fix as recorded in Notes. `.venv/bin/python -m unittest tests.test_property_renumbering` and `make check` pass. No follow-ups.
@@ -100,3 +104,5 @@ Implemented selective ID rewriting and six properties. Preservation checks compa
 - 2026-11-21T14:19:33Z eager-teal-puffin: changed notes
 - 2026-11-21T14:21:21Z eager-teal-puffin: changed summary
 - 2026-11-21T14:21:23Z eager-teal-puffin doing → review
+- 2026-11-21T14:24:46Z kind-fawn-stoat: changed notes
+- 2026-11-21T14:24:46Z kind-fawn-stoat review → done
