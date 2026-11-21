@@ -1,6 +1,6 @@
 ---
 title: Record a runner error once in its note, not twice
-status: review
+status: done
 priority: medium
 depends_on:
   - TASK-426
@@ -26,7 +26,7 @@ Tests. No change to the earlier tickets' tests.
 
 ## Acceptance Criteria
 
-- [ ] The property and the changed assertions pass; the `AGENT_LINE` counts and the setup count fail against the parent commit of this change, named by hash in the notes; `make check` passes
+- [x] The property and the changed assertions pass; the `AGENT_LINE` counts and the setup count fail against the parent commit of this change, named by hash in the notes; `make check` passes
 
 ## Plan
 
@@ -39,6 +39,9 @@ Cold read 2026-11-19 outcomes: lines split with `splitlines()`; a pure `_runner_
 Second cold read 2026-11-19 outcomes: whole-string comparison in the property; lone `\r`, `\x85` and `\u2028` generated; the `review preparation` phase; no block when the remaining lines are blank; first line stays unfenced; fails-before names the parent hash.
 
 Before the fix, on parent f034cf6518a68f540c96e20517a711bfaa4233b3, both AGENT_LINE counts and the setup count failed with 2 instead of 1; the output ordering assertion also failed.
+
+Reviewed:
+1: pass - `make check` printed 903 tests OK, with ruff and pyright passing. Running the changed branch tests with `run.py` from parent `f034cf6518a68f540c96e20517a711bfaa4233b3` produced `2 != 1` for both agent lines and the setup count, and the expected ordering failure; the property passed in `make check`.
 
 ## Summary
 
@@ -55,3 +58,5 @@ Extracted runner error note formatting and added property and branch regression 
 - 2026-11-21T10:54:41Z quick-maroon-falcon: changed notes
 - 2026-11-21T10:57:15Z quick-maroon-falcon: changed summary
 - 2026-11-21T10:57:24Z quick-maroon-falcon doing → review
+- 2026-11-21T11:01:51Z open-russet-yellowhammer: changed notes; ticked acceptance criteria
+- 2026-11-21T11:01:51Z open-russet-yellowhammer review → done
