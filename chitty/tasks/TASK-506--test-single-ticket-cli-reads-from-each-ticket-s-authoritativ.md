@@ -28,7 +28,7 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 
 ## Plan
 
-Add isolated real-Git CLI fixtures for each specified source-read case, verify the regression cases against the pre-switch store, then restore it and run fix, format and the full check.
+Split combined assertions into independent regression tests, replace the malformed working-tree show assertion with Repo.find, verify every case against the pre-switch store and current code, then format, check and hand off.
 
 ## Notes
 
@@ -55,3 +55,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T12:43:15Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:48:19Z daring-ochre-newt todo → doing
 - 2026-11-21T12:50:43Z daring-ochre-newt: changed notes
+- 2026-11-21T12:51:17Z daring-ochre-newt: wrote the plan
