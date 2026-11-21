@@ -1,6 +1,6 @@
 ---
 title: Keep one agent log per `chitty run` ticket run and print its path
-status: error
+status: review
 priority: high
 depends_on:
   - TASK-276
@@ -39,6 +39,12 @@ Runner error (agent): TASK-467 was unchanged; only committed changes are visible
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
 
+## Summary
+
+Persist one exclusively created agent log per locked ticket run, including rebase and continuation sessions. The runner prints the absolute log path once to stderr and preserves its stdout. Setup and check output remain separate.
+
+The path property and small-year case failed on the signature stub. The CLI regressions failed without persistent logging (missing announcements or reaching the agent despite the obstructed path) and pass with it. Tests cover collision, obstructed parent, continuations, rebase plus review, timeout output and setup failure. `make check` passed all 991 tests, Ruff and Pyright.
+
 ## History
 
 - 2026-11-19T21:23:41Z sunny-white-dormouse → backlog
@@ -55,3 +61,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
 - 2026-11-21T21:09:12Z eager-ginger-adder error → doing
 - 2026-11-21T21:11:48Z quick-ochre-vole: changed notes
 - 2026-11-21T21:11:48Z quick-ochre-vole doing → error
+- 2026-11-21T21:18:10Z eager-ginger-adder: changed summary
+- 2026-11-21T21:18:10Z eager-ginger-adder error → review
