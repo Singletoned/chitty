@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -72,6 +72,8 @@ Planner, 2026-11-21: all dependencies are `done`; branch rebased onto `main`. A 
 Cold read 2026-11-21 outcomes: stale notes replaced by this summary; criterion 2 stays in this ticket and now also covers `edit TASK-2` and `context_of`; error text matched by the prefix `no task TASK-<n>`; each criterion 1 and 2 case records its pre-change failure in a note.
 
 Second cold read 2026-11-21 outcomes: `TASK-2` references no ticket in the conflict case; the changed-on-both text quoted; `path:` lines named; the 15-test count clarified; `make check` timeout advice; merged-branch coverage pointed to; the untested `has no tip` error moved to its own backlog ticket. Nothing serious in the switch.
+
+The stated design says `context_of` never parses and that splitting `_source_files` out of `source_copy` achieves this, but `_choose_source` calls `_parse_source_copy` on the working-tree or main copy to determine whether the ticket is provisional before choosing a source. Thus the proposed split (including spike `ab2ac7bf`) still parses and can raise on a malformed working-tree or main copy. The specified malformed branch fixture does not expose this when the main copy is valid. Source selection needs the provisional value, so this is not just an omitted parse call: planning must decide how the no-parsing requirement interacts with provisional source selection and malformed copies, and specify a fixture, action and assertions for that decision. The existing dependency parse-count test alone cannot establish that `context_of` never parses. No implementation or verification was performed; the proposed spike was inspected only.
 
 ## History
 
@@ -186,3 +188,5 @@ Second cold read 2026-11-21 outcomes: `TASK-2` references no ticket in the confl
 - 2026-11-21T09:12:19Z nimble-umber-gannet: changed description, acceptance criteria, notes
 - 2026-11-21T09:12:19Z nimble-umber-gannet cold-read → todo
 - 2026-11-21T10:45:47Z witty-ochre-vole todo → doing
+- 2026-11-21T10:49:29Z witty-ochre-vole: changed owner, notes
+- 2026-11-21T10:49:29Z witty-ochre-vole doing → planning
