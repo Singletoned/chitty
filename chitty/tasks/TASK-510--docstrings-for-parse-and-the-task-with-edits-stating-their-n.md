@@ -1,9 +1,9 @@
 ---
 title: Docstrings for `parse` and the `Task.with_*` edits, stating their normalisations
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: nimble-umber-adder
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -37,3 +37,5 @@ The helper descriptions also need precise limits: `section` uses `strip("\n")`, 
 - 2026-11-21T15:47:19Z nimble-umber-adder doing → planning
 - 2026-11-21T15:50:50Z nimble-umber-adder: changed owner, description
 - 2026-11-21T15:50:50Z nimble-umber-adder planning → todo
+- 2026-11-21T15:50:54Z nimble-umber-adder: changed owner
+- 2026-11-21T15:50:54Z nimble-umber-adder todo → doing
