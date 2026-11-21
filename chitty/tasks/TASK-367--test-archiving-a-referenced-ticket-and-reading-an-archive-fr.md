@@ -63,6 +63,8 @@ The prescribed historical regression run cannot reach the archive failure becaus
 
 Planner 2026-11-21: the old evidence command found the oldest `Task: TASK-378` commit, a ticket edit from the reverted first attempt, so its parent `cae058f9` lacked `--human`. The right commit is `7e7b5ae4^`. Ran the committed `tests/test_archive_referenced_tickets.py` from `task-367` there, in a scratch worktree: all four tests fail with `is used by more than one file` (`TASK-1` for the three archive tests, `TASK-2` for the older-worktree test). Criterion 1 now names that commit, and the worker does not need to repeat the run.
 
+The planner ran all four committed tests against `7e7b5ae4^` and observed the expected duplicate-file failure in each. The test file remains unchanged since its sole commit, `464fb150`.
+
 ## History
 
 - 2026-11-17T19:53:05Z kind-umber-toad → todo
@@ -96,3 +98,4 @@ Planner 2026-11-21: the old evidence command found the oldest `Task: TASK-378` c
 - 2026-11-21T12:38:11Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:43:17Z intrepid-ochre-puffin todo → doing
 - 2026-11-21T12:44:55Z intrepid-ochre-puffin: wrote the plan
+- 2026-11-21T12:46:40Z intrepid-ochre-puffin: changed notes
