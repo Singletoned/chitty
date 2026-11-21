@@ -60,6 +60,8 @@ Partial implementation and two tests are committed. Before the fix both new test
 
 Planning blocker: the authoritative listing cutover breaks existing show and move tests, while both repairs are out of scope and make check must pass. See the preceding note for failures and decisions needed.
 
+Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
@@ -87,3 +89,4 @@ Planning blocker: the authoritative listing cutover breaks existing show and mov
 - 2026-11-21T18:53:00Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:53:03Z eager-ginger-adder planning → todo
 - 2026-11-21T20:14:21Z calm-ginger-adder todo → doing
+- 2026-11-21T20:15:30Z calm-ginger-adder: changed notes
