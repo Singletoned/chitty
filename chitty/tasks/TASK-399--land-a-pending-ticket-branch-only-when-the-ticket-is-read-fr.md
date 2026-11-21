@@ -34,6 +34,10 @@ Add real-Git pending-landing source tests for remote-ahead, local-ahead, equal, 
 
 Before the fix, .venv/bin/python -m unittest tests.test_land_pending_source failed the remote-ahead and skip-then-land tests: it landed TASK-5 in both cases; the other three tests passed.
 
+## Summary
+
+Pending landing skips completed tickets read from a different ref and reports the source while continuing to later branches. Real-Git coverage exercises remote-ahead, local-ahead, equal, absent remote and skip-then-land cases. The remote-ahead and skip-then-land tests failed before the fix; make check passes (926 tests). No follow-ups.
+
 ## History
 
 - 2026-11-18T17:54:14Z lively-quartz-crane → backlog
@@ -46,3 +50,4 @@ Before the fix, .venv/bin/python -m unittest tests.test_land_pending_source fail
 - 2026-11-21T13:08:36Z nimble-ebony-marten todo → doing
 - 2026-11-21T13:10:31Z nimble-ebony-marten: wrote the plan
 - 2026-11-21T13:11:18Z nimble-ebony-marten: changed notes
+- 2026-11-21T13:13:23Z nimble-ebony-marten: changed summary
