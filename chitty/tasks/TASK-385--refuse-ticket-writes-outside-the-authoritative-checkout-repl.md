@@ -7,6 +7,7 @@ depends_on:
   - TASK-383
   - TASK-384
   - TASK-393
+  - TASK-522
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -60,3 +61,4 @@ Returned to planning 2026-11-20: the write rule changed (see the Description). C
 - 2026-11-18T18:01:37Z lively-quartz-crane planning → todo
 - 2026-11-20T11:15:18Z lively-bronze-crane: changed description, notes
 - 2026-11-20T11:15:18Z lively-bronze-crane todo → planning
+- 2026-11-21T23:06:25Z lively-zinc-newt: changed dependencies
