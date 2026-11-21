@@ -5,6 +5,7 @@ from collections.abc import Mapping, Sequence
 
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
+from chitty.model import ACCEPTANCE_CRITERIA, HISTORY, SECTION_ORDER, Task
 
 
 def plan_renumbering(
@@ -27,6 +28,39 @@ def plan_renumbering(
         for task_id in sorted(task_ids):
             number += 1
             result[task_id] = TaskId(prefix, number)
+    return result
+
+
+def rewrite_task(task: Task, mapping: Mapping[TaskId, TaskId]) -> Task:
+    result = task
+    title = replace_ids(task.frontmatter.title, mapping)
+    if title != task.frontmatter.title:
+        result = result.with_field("title", title)
+    parent = task.frontmatter.parent
+    if parent is not None:
+        rewritten_parent = replace_ids(parent, mapping)
+        if rewritten_parent != parent:
+            result = result.with_field("parent", rewritten_parent)
+    dependencies = [replace_ids(value, mapping) for value in task.frontmatter.depends_on]
+    if dependencies != task.frontmatter.depends_on:
+        result = result.with_field("depends_on", dependencies)
+    for name in SECTION_ORDER:
+        if name in (HISTORY, ACCEPTANCE_CRITERIA):
+            continue
+        text = task.section(name)
+        if text is not None:
+            rewritten = replace_ids(text, mapping)
+            if rewritten != text:
+                result = result.with_section(name, rewritten)
+    changed = [
+        (index, rewritten)
+        for index, criterion in enumerate(task.criteria, 1)
+        if (rewritten := replace_ids(criterion.text, mapping)) != criterion.text
+    ]
+    if changed:
+        result = result.with_criteria((), (), changed, (), ())
+        checked = [index for index, _ in changed if task.criteria[index - 1].checked]
+        result = result.with_criteria((), (), (), checked, ())
     return result
 
 
