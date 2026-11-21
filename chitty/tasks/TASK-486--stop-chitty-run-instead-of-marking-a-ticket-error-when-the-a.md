@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -55,6 +55,8 @@ Implementation stopped: two requirements contradict current code. `src/chitty/cl
 
 Return to planning: the prescribed repair invocation is rejected by the CLI, and missing agent commands are rejected by `_agent_command` before `_run_session`. See the preceding note for the required decisions and verification evidence.
 
+Replanned 2026-11-21: both blockers in the notes above are settled in the Description. The repair test runs plain `--errors`; the missing-command test is dropped because `_agent_command` already refuses a command not on `PATH`.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -73,3 +75,5 @@ Return to planning: the prescribed repair invocation is rejected by the CLI, and
 - 2026-11-21T08:53:40Z jolly-hazel-kestrel doing → planning
 - 2026-11-21T22:55:00Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T22:55:10Z lively-zinc-newt planning → cold-read
+- 2026-11-21T22:55:49Z lively-zinc-newt: changed notes
+- 2026-11-21T22:55:49Z lively-zinc-newt cold-read → todo
