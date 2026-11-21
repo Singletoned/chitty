@@ -1,6 +1,6 @@
 ---
 title: Show the ticket-read matrix catches swapped `contains` and a missing `main_tip`
-status: todo
+status: planning
 depends_on:
   - TASK-527
 parent: TASK-393
@@ -19,6 +19,12 @@ A planner probe on `main` (2026-11-21) showed swapped `contains` changes most pl
 
 - [ ] Both mutant tests pass, each recording at least one mismatch under its mutant, and `test_main_checkout_placements` still passes unchanged in what it asserts; `make check` passes
 
+## Notes
+
+Keep in planning until its dependency lands; then compare with the landed code, cold-read and move to `todo`.
+
 ## History
 
 - 2026-11-21T23:18:39Z lively-zinc-newt → todo
+- 2026-11-21T23:18:57Z lively-zinc-newt: changed notes
+- 2026-11-21T23:18:57Z lively-zinc-newt todo → planning
