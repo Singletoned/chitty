@@ -1,6 +1,6 @@
 ---
 title: Let workers resolve small edge cases without returning to planning
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -22,3 +22,4 @@ This is a wording-only change. Keep the guidance general across repositories and
 - 2026-11-21T15:27:59Z friendly-ochre-wren → backlog
 - 2026-11-21T15:28:14Z friendly-ochre-wren: changed description
 - 2026-11-21T15:28:14Z friendly-ochre-wren backlog → planning
+- 2026-11-21T15:28:27Z friendly-ochre-wren planning → todo
