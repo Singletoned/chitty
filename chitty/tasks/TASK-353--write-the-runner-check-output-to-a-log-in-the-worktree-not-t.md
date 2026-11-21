@@ -1,6 +1,6 @@
 ---
 title: Write the runner check output to a log in the worktree, not the ticket
-status: review
+status: done
 priority: high
 created: 2026-11-16
 ---
@@ -64,6 +64,10 @@ Fails-before evidence, each test run against `src/chitty/run.py` at the merge ba
 
 `make check` in the worktree: 845 tests OK, Ruff and pyright clean.
 
+Reviewed: The earlier design and Unicode findings are resolved; the criterion now distinguishes old-note failures from missing new functionality, and the log uses binary mode.
+1: pass - `make check` reported 901 tests OK, including the property and targeted tests. The planner's fails-before note records the four old-note failures, missing log and function failures, and UnicodeDecodeError against the earlier text-mode implementation.
+2: pass - `make check` exited 0; Ruff and pyright passed and 901 tests reported OK.
+
 ## Summary
 
 Worktree check logging in binary mode, shared Git exclude handling, regression and property coverage, and runner documentation. Commits `1a4ec95a` (rebased) and `e3604765`.
@@ -86,3 +90,5 @@ Worktree check logging in binary mode, shared Git exclude handling, regression a
 - 2026-11-21T07:56:08Z nimble-umber-gannet: changed description, acceptance criteria, notes, summary
 - 2026-11-21T07:56:15Z nimble-umber-gannet: ticked acceptance criteria
 - 2026-11-21T07:56:15Z nimble-umber-gannet planning → review
+- 2026-11-21T08:40:52Z youthful-lilac-marten: changed notes
+- 2026-11-21T08:40:52Z youthful-lilac-marten review → done
