@@ -1,6 +1,6 @@
 ---
 title: Write `setup` and landing-check output to the worktree log, not the ticket
-status: error
+status: review
 priority: high
 depends_on:
   - TASK-353
@@ -79,3 +79,4 @@ Setup and landing checks now write combined output to the shared worktree log an
 - 2026-11-21T08:54:11Z intrepid-jade-wren: changed notes
 - 2026-11-21T08:54:11Z intrepid-jade-wren done → error
 - 2026-11-21T10:44:23Z brisk-navy-stoat: changed notes
+- 2026-11-21T10:44:32Z brisk-navy-stoat error → review
