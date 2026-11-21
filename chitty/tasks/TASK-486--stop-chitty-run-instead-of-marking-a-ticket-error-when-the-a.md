@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: planning
+status: todo
 labels:
   - bug
 priority: high
@@ -33,11 +33,17 @@ Tests. No property: the behaviour needs a real agent process and Git, and the de
 - `test_repair_start_failure_stops_and_leaves_error`: first run the existing scenario of `test_agent_failure_keeps_error_and_message_on_branch` (`make_doing_branch()`, a fake that commits `work.txt` and exits 7), so `TASK-1` is `error` on `task-1` with a `Runner error (agent)` note. Then replace the fake with one that exits 7 without committing, record `git rev-parse task-1`, and run `run_cli("run", "--errors", exit_code=1)` (the CLI rejects `--errors` with `--ticket`; `TASK-1` is the only `error` ticket, so `--errors` selects it). stderr contains `agent failed before committing anything; TASK-1 left at error:`, and `task-1` still points at the recorded commit.
 - `test_agent_failure_keeps_error_and_message_on_branch` (existing): change its fake so it first writes `work.txt`, runs `git add work.txt` and `git commit --quiet -m work`, then exits 7. Its assertions stay unchanged, so a failure after a commit is still recorded as `Runner error (agent)`. Adjust `assert_branch_error` only if the extra commit breaks its `task-1~1` parent check, and say how in the notes.
 
+Existing tests (decided 2026-11-21, after the first implementation found six failing):
+
+- A start failure is a runner or environment problem, so `error_reporter` runs for it, as it does for interrupts and argument errors: `AgentStartFailed` reaches the CLI's error path like any other `ChittyError`. Add `test_agent_start_failure_calls_reporter` to `tests/test_run_error_reporter.py`: a reporter configured as in its other tests, a fake agent that exits 7 without committing; the run exits 1 and the reporter is called once with a message containing `agent failed before committing anything`.
+- The six tests that fail today keep their purpose, which is a failure after the agent has done work: `tests.test_next.TestNext.test_run_cases`, `tests.test_next.TestNext.test_run_write_failure_warns_and_keeps_agent_exit_code`, `tests.test_review_merge.TestReviewMerge.test_missing_review_branch_errors_and_is_selected_for_repair`, the two failure cases in `tests/test_run_error_reporter.py` (including `test_recoverable_ticket_failure_does_not_call_reporter`), and `tests.test_run_lock.TestRunLock.test_a_run_holds_the_lock_and_frees_it_however_it_ends`. In each, make the failing fake agent commit before it exits non-zero (`git commit --allow-empty --quiet -m agent` is enough: it moves `HEAD`), and keep the test's assertions. Where the fake agent is shared, an opt-in environment variable on it is fine. A repair agent that failed with `nothing to commit` uses `--allow-empty` too. List each changed fixture in a note.
+
 ## Acceptance Criteria
 
 - [ ] The three new tests pass; a note records that each fails against `src/chitty/run.py` of `main` before this change on a status, stderr or commit-count assertion (today the ticket goes to `error` and the run exits 0)
 - [ ] The changed `test_agent_failure_keeps_error_and_message_on_branch` and every test in `tests/test_review_rebase_session.py` and `tests/test_run_timeout.py` pass; a note records that the changed test fails against a version that treats every non-zero agent exit as a start failure, ignoring `HEAD`
 - [ ] `docs/plan/next-action-and-runner.md` has the start-failure bullet next to the `agent_timeout` bullet; `make check` passes
+- [ ] `test_agent_start_failure_calls_reporter` passes and fails against `main`'s `src/chitty/run.py`; the six existing tests named in the Description pass with only their fake agents changed
 
 ## Plan
 
@@ -67,6 +73,8 @@ Implementation and specified focused tests pass (36 tests). make check fails six
 
 Return to planning: the required full check exposes six existing tests that assume the old failure behavior, including an unspecified error-reporter decision. See the preceding note for evidence and decisions needed.
 
+Replanned 2026-11-21 (overnight planner): reporter and existing-test decisions are in the Description, under "Existing tests". Implementation on the branch is kept.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -95,3 +103,5 @@ Return to planning: the required full check exposes six existing tests that assu
 - 2026-11-21T23:02:42Z honest-dusky-stoat: changed notes
 - 2026-11-21T23:02:54Z honest-dusky-stoat: changed owner, notes
 - 2026-11-21T23:02:54Z honest-dusky-stoat doing → planning
+- 2026-11-21T23:14:11Z lively-zinc-newt: changed description, acceptance criteria, notes
+- 2026-11-21T23:14:11Z lively-zinc-newt planning → todo
