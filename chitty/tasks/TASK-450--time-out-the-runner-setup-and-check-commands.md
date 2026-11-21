@@ -33,6 +33,10 @@ Regression evidence: run the new timeout cases once with the deadline ignored in
 - [ ] Run `chitty run --mode work` through `CliTestCase` on a fresh `todo` ticket with a real slow setup or check and `command_timeout = 1`. Each case returns `TASK-1: todo → error`, with the matching phase in the branch ticket note and the timeout footer in the worktree log; a fake agent must not run. Also exercise the existing continue-on-check-failure path for a `doing` ticket: a fake agent runs and the ticket records `Check failed before this session: check timed out`.
 - [ ] In `tests/test_review_merge.py`, use a passing fake reviewer and a dedicated slow `landing_check`, with normal setup and check. `chitty run --mode review` reports `done → error`, leaves the pre-run `main` HEAD unchanged, and retains the branch and worktree; the branch note reports `Runner error (landing)` with the timeout detail and the worktree log shows the `landing check` timeout, not the pre-review `check`.
 
+## Plan
+
+Add strict timeout configuration and propagate it through runner command paths; share process-tree cleanup, add real-process and routing regression coverage, verify with the deadline disabled, then format and run checks.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -59,3 +63,4 @@ Cold read 2026-11-21 outcomes: named the phase strings `setup`, `check` and `lan
 - 2026-11-21T16:06:58Z honest-coral-heron cold-read → planning
 - 2026-11-21T16:07:01Z honest-coral-heron planning → todo
 - 2026-11-21T16:09:52Z golden-bronze-marten todo → doing
+- 2026-11-21T16:12:23Z golden-bronze-marten: wrote the plan
