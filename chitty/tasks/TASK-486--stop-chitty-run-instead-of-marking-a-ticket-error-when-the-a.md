@@ -87,6 +87,8 @@ Review failed (tests): newly discovered verification gap; the three regressions 
 3: pass - docs/plan/next-action-and-runner.md places the start-failure bullet next to agent_timeout; make check printed OK for 1026 tests.
 4: pass - make check printed OK for 1026 tests, including the reporter and existing fixture tests; the implementation note records the reporter regression expected exit 1 but got 0 against the pre-implementation runner, and lists the changed fixtures.
 
+Against pre-fix runner 5a056a2e parent, temporarily accepting its exit 0 exposed the todo and repair regressions failing their expected stderr assertions. For doing, temporarily accepting exit 0 and deferring the branch-tip equality assertion exposed the status assertion: expected doing, got error. Original tests and runner were restored unchanged.
+
 ## Summary
 
 Agent failures before any commit stop the runner and restore the selected ticket status without discarding worktree files; failures after commits retain existing error handling. Regression tests, reporter coverage, existing fixtures, documentation and make check pass.
@@ -131,3 +133,4 @@ Agent failures before any commit stop the runner and restore the selected ticket
 - 2026-11-21T23:33:21Z kind-yellow-heron: changed acceptance criteria, notes
 - 2026-11-21T23:33:21Z kind-yellow-heron review → doing
 - 2026-11-21T23:36:18Z able-ebony-badger: wrote the plan
+- 2026-11-21T23:36:44Z able-ebony-badger: changed notes
