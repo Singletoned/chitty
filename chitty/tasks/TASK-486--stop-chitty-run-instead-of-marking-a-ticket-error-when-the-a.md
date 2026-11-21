@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -50,3 +50,4 @@ Cold read 2026-11-21 outcomes: repair start failures leave the ticket at `error`
 - 2026-11-21T08:00:33Z nimble-umber-gannet backlog → cold-read
 - 2026-11-21T08:01:52Z nimble-umber-gannet: changed description, acceptance criteria, notes
 - 2026-11-21T08:01:52Z nimble-umber-gannet cold-read → planning
+- 2026-11-21T08:02:12Z nimble-umber-gannet planning → cold-read
