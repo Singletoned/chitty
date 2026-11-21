@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -84,6 +84,8 @@ Planning 2026-11-21: split again after the worker found it too large. Moved out:
 Planning 2026-11-21: the trimmed scope (read switch plus the named migrations) stays one ticket because the migrations cannot land apart from the switch. It runs only after `TASK-482`. If a session still cannot finish it, return it with the list of migrations done and left, and the owner will decide how to stage it.
 
 Initial CLI regressions fail before the switch for conflict isolation, branch archive and dirty feature worktree. The branch-edit, retitle, unrelated-branch and malformed-copy cases currently pass before the switch and need stronger fixtures before they can prove their criteria.
+
+Returning to planning: I could not finish the read switch and the coupled migrations in this session. The exploratory CLI tests showed pre-switch failures for archive path, conflict isolation and dirty feature worktree, but the other fixtures need strengthening to demonstrate failures; they were discarded rather than committed as incomplete regressions. No migrations were completed: all named migrations in tests/test_check_cross_branch_references.py, tests/test_next.py, tests/test_cli.py and tests/test_main_checkout_lock.py remain, along with any additional failures found by make check. No implementation changed. Full regression verification, fix, formatting and make check remain outstanding. The owner needs to decide how to stage the switch and migrations, as requested in the planning note.
 
 ## History
 
@@ -187,3 +189,5 @@ Initial CLI regressions fail before the switch for conflict isolation, branch ar
 - 2026-11-21T01:50:03Z eager-violet-puffin todo → doing
 - 2026-11-21T01:54:02Z eager-violet-puffin: wrote the plan
 - 2026-11-21T01:54:48Z eager-violet-puffin: changed notes
+- 2026-11-21T01:55:12Z eager-violet-puffin: changed owner, notes
+- 2026-11-21T01:55:12Z eager-violet-puffin doing → planning
