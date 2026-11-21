@@ -53,6 +53,14 @@ class TestRunErrorReporter(CliTestCase):
     def run_failing_agent(self) -> None:
         bindir = self.tmp / "agentbin"
         bindir.mkdir(exist_ok=True)
+        agent = bindir / "false"
+        agent.write_text(
+            "#!" + sys.executable + "\nimport subprocess, sys\n"
+            "subprocess.run(['git', 'commit', '--allow-empty', '--quiet', '-m', 'agent'], "
+            "check=True)\n"
+            "sys.exit(7)\n"
+        )
+        agent.chmod(agent.stat().st_mode | stat.S_IXUSR)
         env = os.environ.copy()
         env["PATH"] = f"{bindir}:{env['PATH']}"
         with patch.dict(os.environ, env):
@@ -103,16 +111,24 @@ class TestRunErrorReporter(CliTestCase):
         reporter, record = self.write_reporter(exit_code=7)
         self.setup_repo(reporter)
         self.add_ticket()
-        self.run_cli("run", "--mode", "work")
+        self.run_failing_agent()
         self.assertFalse(record.exists())
 
     def test_agent_start_failure_calls_reporter(self):
         reporter, record = self.write_reporter()
+        script = self.tmp / "bin" / "report"
+        count = self.tmp / "calls"
+        script.write_text(
+            script.read_text().replace(
+                "import json, sys\n", f"import json, sys\nopen({str(count)!r}, 'a').write('x')\n"
+            )
+        )
         self.setup_repo(reporter)
         self.add_ticket()
         self.run_cli("run", "--mode", "work", exit_code=1)
         message, _ = json.loads(record.read_text())
         self.assertIn("agent failed before committing anything", message)
+        self.assertEqual(count.read_text(), "x")
 
     def test_interrupted_agent_calls_reporter(self):
         reporter, record = self.write_reporter()

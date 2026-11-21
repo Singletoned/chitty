@@ -41,6 +41,7 @@ if (logs / "wait").exists():
             sys.exit("timed out waiting for go")
         time.sleep(0.05)
 if (logs / "fail").exists():
+    subprocess.run(["git", "commit", "--allow-empty", "--quiet", "-m", "agent"], check=True)
     sys.exit(1)
 path = next(Path("chitty/tasks").glob(ticket + "--*.md"))
 before, after = ("review", "done") if mode == "review" else ("doing", "review")

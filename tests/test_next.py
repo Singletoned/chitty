@@ -451,7 +451,8 @@ class TestNext(CliTestCase):
             "path = next(Path('chitty/tasks').glob(sys.argv[2] + '--*.md'))\n"
             "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
-            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], "
+            "check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         old_path = os.environ.get("PATH", "")
@@ -911,7 +912,8 @@ class TestNext(CliTestCase):
             "task = next(pathlib.Path('chitty/tasks').glob('TASK-1--*.md'))\n"
             "task.write_text(task.read_text().replace('status: doing', 'status: done'))\n"
             "subprocess.run(['git', 'add', str(task)], check=True)\n"
-            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], "
+            "check=True)\n"
         )
         agent.chmod(agent.stat().st_mode | stat.S_IXUSR)
         previous = {key: os.environ.get(key) for key in ("PATH", "CHITTY_USAGE_FILE")}
@@ -1871,7 +1873,8 @@ class TestNext(CliTestCase):
             "path = next(Path('chitty/tasks').glob('*.md'))\n"
             "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
-            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], "
+            "check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         old_path = os.environ.get("PATH", "")
@@ -1936,6 +1939,9 @@ class TestNext(CliTestCase):
             "if os.environ.get('PI_SIGNAL'):\n"
             "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
             "    os.kill(os.getpid(), signal.SIGINT)\n"
+            "if os.environ.get('PI_EXIT'):\n"
+            "    subprocess.run(['git', 'commit', '--allow-empty', '--quiet', '-m', 'agent'], "
+            "check=True)\n"
             "sys.exit(int(os.environ.get('PI_EXIT', '0')))\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
@@ -2126,7 +2132,12 @@ class TestNext(CliTestCase):
         self.git("commit", "--quiet", "-m", "setup")
         fake = self.root / "bin" / "pi"
         fake.parent.mkdir()
-        fake.write_text("#!" + sys.executable + "\nimport sys\nsys.exit(7)\n")
+        fake.write_text(
+            "#!" + sys.executable + "\nimport subprocess, sys\n"
+            "subprocess.run(['git', 'commit', '--allow-empty', '--quiet', '-m', 'agent'], "
+            "check=True)\n"
+            "sys.exit(7)\n"
+        )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         previous = os.environ.get("PATH", "")
         os.environ["PATH"] = f"{fake.parent}:{previous}"

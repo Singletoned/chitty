@@ -41,7 +41,10 @@ class ReviewMergeTestCase(CliTestCase):
             "    Path(sys.argv[4]).write_text(Path('main.txt').read_text())\n"
             "path = next(Path('chitty/tasks').glob('TASK-1--*.md'))\n"
             "path.write_text(path.read_text().replace('status: review', 'status: done'))\n"
-            "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--allow-empty', '--quiet', '-am', 'reviewed'], "
+            "check=True)\n"
+            "if 'status: error' in path.read_text():\n"
+            "    sys.exit(1)\n"
             "if Path(sys.argv[5]).exists():\n"
             "    root = Path(sys.argv[5]).read_text().strip()\n"
             "    Path(root, 'main-late.txt').write_text('main advanced during review\\n')\n"
@@ -435,7 +438,8 @@ class TestReviewMerge(ReviewMergeTestCase):
             "ticket.write_text(ticket.read_text().replace('status: review', 'status: done'))\n"
             "Path('review-marker').write_text('fail landing check')\n"
             "subprocess.run(['git', 'add', 'review-marker'], check=True)\n"
-            "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], check=True)\n"
+            "subprocess.run(['git', 'commit', '--quiet', '-am', 'reviewed'], "
+            "check=True)\n"
         )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         check_script = self.tmp / "landing_check.py"
