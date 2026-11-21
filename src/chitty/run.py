@@ -32,6 +32,7 @@ from chitty.config import (
     version_key,
 )
 from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError, NoNextTicket
+from chitty.ids import ID_RE, TaskId
 from chitty.store import (
     AGENTS_FILE,
     Edit,
@@ -349,18 +350,20 @@ def _remove_merged_branches(main_repo: Repo) -> None:
     root = main_repo.root
     # A missing worktree directory leaves stale metadata; prune before looking up branches.
     git.prune_worktrees(root)
-    tasks = {str(task.id).lower(): task.id for task in main_repo.all_tasks()}
     prefixes = tuple(f"{context.prefix.lower()}-" for context in main_repo.config.contexts.values())
     main_tip = main_repo.config.main_branch
     for branch in git.local_branches(root):
         if not branch.startswith(prefixes):
             continue
-        task_id = tasks.get(branch)
-        if task_id is None or not git.is_ancestor(root, branch, main_tip):
+        if not git.is_ancestor(root, branch, main_tip):
             continue
+        task_id = branch.upper()
+        stored = main_repo.lookup(TaskId.parse(task_id)) if ID_RE.fullmatch(task_id) else None
         worktree = git.worktree_for_branch(root, branch)
         reason = None
-        if locks.is_locked(root, str(task_id)):
+        if stored is not None and stored.task.frontmatter.status != "done":
+            reason = f"{task_id} is {stored.task.frontmatter.status}"
+        elif locks.is_locked(root, task_id):
             reason = "run lock is held"
         elif worktree is not None and worktree.resolve() == root.resolve():
             reason = "is the main checkout"

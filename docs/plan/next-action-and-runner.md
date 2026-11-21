@@ -46,8 +46,9 @@
 - At the start of every run, under the landing lock and after pruning stale
   worktree registrations, remove local ticket branches whose tips are contained
   by `main_branch`; this precedes pending landings. A merged branch is kept if
-  its run lock is held, its worktree is dirty or has a merge/rebase in progress,
-  it is the main checkout, or worktree/branch removal fails. Emit
+  its ticket exists and is not `done`, its run lock is held, its worktree is dirty
+  or has a merge/rebase in progress, it is the main checkout, or worktree/branch
+  removal fails. Ignored files do not make the worktree dirty. Emit
   `removed merged branch <b>` or `kept merged branch <b>: <reason>` to stderr.
 - A plain run first lands any non-archived `done` ticket that still has a
   branch named for its ID, in ID order. It lands one, then exits 0; the next

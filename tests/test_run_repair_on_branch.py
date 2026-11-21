@@ -89,6 +89,8 @@ class TestRunRepairOnBranch(TestRunContinue):
 
         result = self.run_cli("run", "--errors")
 
+        self.assertIn(f"kept merged branch {ticket.lower()}: {ticket} is error", result.stderr)
+        self.assertNotIn("removed merged branch", result.stderr)
         self.assertEqual(result.stdout, f"{ticket}: error → review\n", result.stderr)
         self.assertEqual(self.main_head(), main_head, result.stdout + result.stderr)
         self.assertEqual(self.json("show", ticket)["status"], "review")
