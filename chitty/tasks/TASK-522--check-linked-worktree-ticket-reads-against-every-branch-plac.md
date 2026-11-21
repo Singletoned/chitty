@@ -26,7 +26,7 @@ Expected results, by hand in the module (never by calling `ticket_source`):
 
 The planner must confirm each expected result against `main` with a probe before the cold read, as was done for `TASK-393`.
 
-Tests in `tests/test_property_ticket_reads.py`:
+Tests in `tests/test_ticket_placement_reads.py`:
 
 - `test_linked_worktree_placements`: for every compatible (placement, kind) pair, read with `Repo.open(<checkout>)`: `find(TASK-5)` and `tasks(context("tasks"), "all")`, as `TASK-393` does. Where the ticket's file exists in that checkout's working tree, repeat in a fresh repository with `edit_uncommitted` applied there. Use `subTest`.
 - A mutant test that passes `Repo._main_branch()` as `current_branch` (patch `chitty.store.ticket_source` as in `tests/test_source_copy_checkouts.py`) and asserts that at least one check fails.
@@ -46,3 +46,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; th
 
 - 2026-11-21T23:05:23Z lively-zinc-newt → planning
 - 2026-11-21T23:06:00Z lively-zinc-newt: changed notes
+- 2026-11-21T23:07:54Z lively-zinc-newt: changed description
