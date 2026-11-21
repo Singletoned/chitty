@@ -36,6 +36,10 @@ The required after-switch verification mandates creating and modifying a separat
 
 Planner 2026-11-21: the worker could not create the second worktree the after-switch check needed. The planner had already run it, so it is now recorded in the Description, and criterion 2 is just `make check`.
 
+## Summary
+
+Renamed the specified cross-branch test literals to `task-1`, preserving the helper and unrelated tests. `chitty fix` and `make format` completed; `make check` passed all 903 tests. The planner recorded the after-switch check in the description; it was not repeated.
+
 ## History
 
 - 2026-11-21T11:38:15Z sunny-ebony-kestrel → planning
@@ -50,3 +54,4 @@ Planner 2026-11-21: the worker could not create the second worktree the after-sw
 - 2026-11-21T11:48:35Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T11:50:57Z tidy-russet-gannet todo → doing
 - 2026-11-21T11:52:50Z tidy-russet-gannet: wrote the plan
+- 2026-11-21T11:54:49Z tidy-russet-gannet: changed summary
