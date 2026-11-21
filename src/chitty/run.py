@@ -1388,8 +1388,10 @@ def _run_logged(phase: str, command: str, worktree: Path) -> int:
     _ignore_run_log(worktree)
     log_path = worktree / RUN_LOG
     log_path.parent.mkdir(parents=True, exist_ok=True)
-    with log_path.open("w+") as log:
-        log.write(f"# chitty {phase}: {command}\n")
+    # Binary mode: the command's output may be any bytes, and checking its last
+    # byte must not decode it.
+    with log_path.open("w+b") as log:
+        log.write(f"# chitty {phase}: {command}\n".encode())
         log.flush()
         completed = subprocess.run(
             argv,
@@ -1403,10 +1405,10 @@ def _run_logged(phase: str, command: str, worktree: Path) -> int:
         log.seek(0, os.SEEK_END)
         end = log.tell()
         log.seek(end - 1 if end else 0)
-        if log.read(1) != "\n":
+        if log.read(1) != b"\n":
             log.seek(0, os.SEEK_END)
-            log.write("\n")
-        log.write(f"# exit {completed.returncode}\n")
+            log.write(b"\n")
+        log.write(f"# exit {completed.returncode}\n".encode())
     return completed.returncode
 
 

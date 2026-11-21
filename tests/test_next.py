@@ -1549,6 +1549,16 @@ class TestNext(CliTestCase):
         self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
 >>>>>>> c933ab9c (Log runner checks in the worktree)
 
+    def test_run_logged_keeps_output_ending_in_a_multibyte_character(self):
+        from chitty.run import _run_logged
+
+        worktree = self.root / "plain"
+        worktree.mkdir()
+        self.git("-C", str(worktree), "init", "--quiet")
+        self.assertEqual(_run_logged("check", "printf é", worktree), 0)
+        log = (worktree / ".chitty/check.log").read_text(encoding="utf-8")
+        self.assertEqual(log, "# chitty check: printf é\né\n# exit 0\n")
+
     def test_run_check_failure_on_doing_ticket_starts_agent(self):
         self.write_failing_checker()
         self.commit_ticket("Doing", "doing")
