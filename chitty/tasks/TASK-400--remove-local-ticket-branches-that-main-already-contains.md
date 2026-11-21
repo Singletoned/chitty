@@ -292,6 +292,8 @@ Review failed (work): Newly discovered: cleanup deletes non-ticket branches whos
 2: fail - A throwaway invocation of the existing `TestRunRemovesMergedBranches` fixture created merged branch `task-feature-extra` and called `run_cleanup()`. It printed `branch exists: False` and `removed merged branch task-feature-extra`; this is not a valid ticket ID and must be retained. The existing tests cover the specified status, lock, dirty, conflict, ahead, remote and deleted-worktree cases.
 3: pass - `docs/plan/next-action-and-runner.md` documents the required ordering, lock, retention reasons and messages; `make check` printed `Ran 886 tests ... OK`.
 
+The invalid branch regression failed before the fix because task-feature-extra was deleted; it passes after validating the full ID.
+
 ## Summary
 
 Startup cleanup keeps non-done ticket branches and removes eligible done or unknown branches, with real-Git coverage and updated runner documentation. Verified make check: 876 tests passed. Regression failure evidence is in the notes. No follow-ups.
@@ -321,3 +323,4 @@ Startup cleanup keeps non-done ticket branches and removes eligible done or unkn
 - 2026-11-21T00:35:27Z jolly-umber-falcon: changed acceptance criteria, notes
 - 2026-11-21T00:35:27Z jolly-umber-falcon review → doing
 - 2026-11-21T00:46:12Z lively-coral-toad: wrote the plan
+- 2026-11-21T00:47:13Z lively-coral-toad: changed notes
