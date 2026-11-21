@@ -1,8 +1,8 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: todo
+status: planning
 depends_on:
-  - TASK-391
+  - TASK-517
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -31,6 +31,10 @@ Tests: CLI tests in `tests/test_renumber_provisional.py` (`TASK-391`'s file). Se
 - [ ] `chitty renumber --json` with two provisional tickets lists both, each with its new ID and `moved_from` the old one; it prints `[]` when nothing changes and off `main`
 - [ ] Regression guards: `tests/test_renumber.py` (with `test_help` expecting the new first line) and `tests/test_mcp.py` `test_tools_mirror_the_cli` pass; `docs/plan/cli.md` lists, for `renumber` with no `PATH`, the stdout line, both stderr messages, exit 0 and the `--json` list; `make check` passes
 
+## Notes
+
+The store method moved to `TASK-517`, which depends on the preflight `TASK-391`. Update this ticket against the landed store behavior and cold-read it before moving it back to `todo`.
+
 ## History
 
 - 2026-11-18T16:37:33Z lively-quartz-crane → backlog
@@ -46,3 +50,5 @@ Tests: CLI tests in `tests/test_renumber_provisional.py` (`TASK-391`'s file). Se
 - 2026-11-18T17:49:45Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:49:45Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:49:47Z lively-quartz-crane planning → todo
+- 2026-11-21T18:37:19Z eager-ginger-adder: changed dependencies, notes
+- 2026-11-21T18:37:19Z eager-ginger-adder todo → planning
