@@ -38,6 +38,8 @@ Cold read 2026-11-19 outcomes: lines split with `splitlines()`; a pure `_runner_
 
 Second cold read 2026-11-19 outcomes: whole-string comparison in the property; lone `\r`, `\x85` and `\u2028` generated; the `review preparation` phase; no block when the remaining lines are blank; first line stays unfenced; fails-before names the parent hash.
 
+Before the fix, on parent f034cf6518a68f540c96e20517a711bfaa4233b3, both AGENT_LINE counts and the setup count failed with 2 instead of 1; the output ordering assertion also failed.
+
 ## History
 
 - 2026-11-19T17:28:50Z quick-ginger-lapwing → planning
@@ -46,3 +48,4 @@ Second cold read 2026-11-19 outcomes: whole-string comparison in the property; l
 - 2026-11-19T17:34:24Z quick-ginger-lapwing planning → todo
 - 2026-11-21T10:51:58Z quick-maroon-falcon todo → doing
 - 2026-11-21T10:54:02Z quick-maroon-falcon: wrote the plan
+- 2026-11-21T10:54:41Z quick-maroon-falcon: changed notes
