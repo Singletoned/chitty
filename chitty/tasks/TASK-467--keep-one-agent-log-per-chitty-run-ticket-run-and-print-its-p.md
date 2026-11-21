@@ -1,6 +1,6 @@
 ---
 title: Keep one agent log per `chitty run` ticket run and print its path
-status: error
+status: doing
 priority: high
 depends_on:
   - TASK-276
@@ -48,3 +48,4 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
 - 2026-11-21T20:06:15Z eager-lilac-ibis: wrote the plan
 - 2026-11-21T20:07:41Z eager-lilac-ibis: changed notes
 - 2026-11-21T20:07:41Z eager-lilac-ibis doing → error
+- 2026-11-21T21:09:12Z eager-ginger-adder error → doing
