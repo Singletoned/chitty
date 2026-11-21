@@ -1,6 +1,6 @@
 ---
 title: Allow ticket writes in the ticket's own fresh worktree when `main` holds its copy
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -26,3 +26,4 @@ Tests: real Git, in a new `tests/test_own_worktree_writes.py` with a class inher
 - 2026-11-21T01:24:40Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-21T01:24:40Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T01:25:07Z quick-pearl-lapwing: changed acceptance criteria
+- 2026-11-21T01:25:34Z intrepid-yellow-heron todo → doing
