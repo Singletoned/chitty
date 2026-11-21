@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when untouched tickets link to an old ID
-status: todo
+status: doing
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -62,3 +62,4 @@ Before implementing, run the refusal tests against the unguarded planner and con
 - 2026-11-21T23:00:47Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:02:43Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:02:43Z lively-zinc-newt cold-read → todo
+- 2026-11-21T23:04:21Z able-hazel-newt todo → doing
