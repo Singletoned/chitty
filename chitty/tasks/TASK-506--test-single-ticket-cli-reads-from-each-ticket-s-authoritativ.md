@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-378
@@ -69,3 +69,4 @@ Planner 2026-11-21: the worker's evidence is right. Before the switch, `context_
 - 2026-11-21T12:54:41Z daring-ochre-newt doing → planning
 - 2026-11-21T12:55:25Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T12:55:25Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T12:56:00Z upbeat-hazel-ibis todo → doing
