@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: review
+status: done
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -49,6 +49,12 @@ Planner 2026-11-21, after the third read: decided that a numbered ticket existin
 
 Regression tests fail against the unfixed code: it repairs both duplicate files and the stale main copy, omits source warnings and does not stop for diverged refs. The worktree repair and provisional repair were observed passing before the fix.
 
+Reviewed: Full diff inspected; no additional property warranted for the specified source cases. `make check` printed `Ran 936 tests` and `OK`. Running `tests.test_fix_sources` with the pre-implementation source from `5c85a3ed^` printed `FAILED (failures=5)`; the same tests pass in `make check`.
+1: pass - `test_main_copy_with_branch_ahead_on_other_file` and `test_main_branch_and_renamed_file` pass; both failed against the pre-implementation source, which printed that it rewrote TASK-5.
+2: pass - `test_worktree_sources_and_malformed` passes; against the pre-implementation source it failed for missing `skipped: read from main`, while printing the own and provisional repairs and malformed-file error.
+3: pass - `test_diverged_refs_fail` passes and `make check` printed `OK`; against the pre-implementation source it failed because fix exited 0 rather than 1.
+4: pass - `test_duplicate_files_and_filter` passes; against the pre-implementation source it failed for missing warnings and printed that both duplicate files were rewritten, consistent with the worker note.
+
 ## Summary
 
 Implemented source-aware repairs and duplicate safeguards. Real-Git regression tests failed before the fix and pass after it; make check passes (926 tests). No follow-ups.
@@ -88,3 +94,5 @@ Implemented source-aware repairs and duplicate safeguards. Real-Git regression t
 - 2026-11-21T13:28:47Z lively-teal-eel: changed notes
 - 2026-11-21T13:31:30Z lively-teal-eel: changed summary; ticked acceptance criteria
 - 2026-11-21T13:31:31Z lively-teal-eel doing → review
+- 2026-11-21T13:36:29Z tidy-navy-stoat: changed notes
+- 2026-11-21T13:36:29Z tidy-navy-stoat review → done
