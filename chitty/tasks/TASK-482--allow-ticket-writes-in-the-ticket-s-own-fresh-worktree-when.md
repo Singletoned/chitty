@@ -1,6 +1,6 @@
 ---
 title: Allow ticket writes in the ticket's own fresh worktree when `main` holds its copy
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -22,3 +22,4 @@ Tests: real Git, in a new `tests/test_own_worktree_writes.py` with a class inher
 ## History
 
 - 2026-11-21T01:20:56Z quick-pearl-lapwing → planning
+- 2026-11-21T01:23:37Z quick-pearl-lapwing planning → cold-read
