@@ -1,6 +1,6 @@
 ---
 title: Edit existing tickets in planning worktrees
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -35,6 +35,12 @@ Prove planning worktree isolation, conflicts and lock warnings with real Git; ad
 
 Blocked: the execution harness is repeatedly limiting this session to an analysis budget insufficient to implement and verify the requested integration work. The person operating the harness needs to start a session with sufficient budget; no implementation or verification has been completed.
 
+## Summary
+
+Implemented planning-worktree edits and draft display without changing source selection for the runner or other checkouts. Competing local and remote changes to the same ticket refuse the edit before mutations. A real runner lock warns without blocking; an idle ticket branch does not warn.
+
+The six initial regressions failed on the unchanged CLI (latest-version refusal or missing conflict diagnostic). The committed negative control confirms the conflict assertions fail when the guard is bypassed. The seven new tests and `make check` pass (1,008 tests, Ruff and Pyright). Implementation commit: `914c45c9`.
+
 ## History
 
 - 2026-11-21T22:26:20Z eager-ginger-adder → backlog
@@ -50,3 +56,5 @@ Blocked: the execution harness is repeatedly limiting this session to an analysi
 - 2026-11-21T22:33:20Z honest-umber-falcon doing → blocked
 - 2026-11-21T22:45:22Z eager-ginger-adder: changed owner; wrote the plan
 - 2026-11-21T22:45:22Z eager-ginger-adder blocked → doing
+- 2026-11-21T22:50:16Z eager-ginger-adder: changed summary
+- 2026-11-21T22:50:16Z eager-ginger-adder doing → review
