@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads against every branch placement with a property
-status: doing
+status: planning
 depends_on:
   - TASK-378
   - TASK-480
@@ -39,6 +39,8 @@ Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the la
 
 Planning blocker: the deterministic test requires every compatible placement in checkout kind (1) both with and without an uncommitted edit to the ticket's file, but placement (f) has that file only on unrelated branch `other`: there is no file in the main checkout to edit. Creating it makes an uncommitted main-checkout ticket, like placement (i), while the stated expected result for (f) is not listed. `Repo._collect_ticket_ids` includes working-tree ticket files and `ticket_source` selects the main working tree when there is no matching ticket branch. Please specify whether (f) is excluded from the edit variant or define its fixture and expected result when a file is created. The same feasibility issue applies to random edits in other checkouts without the file; specify the eligibility rule. The remaining requirements were inspected against `src/chitty/store.py`, `src/chitty/ticket_source.py`, and the existing authoritative listing and source-error tests; implementation, mutation evidence and `make check` could not be verified without a consistent test fixture.
 
+Planning blocker: this is too large for one session. The requested real-Git fixture must compose 13 placements for up to four tickets with five checkout kinds, two contexts, archive states, random dates, decoys and working-tree edits; it also requires an exhaustive deterministic matrix and three separately verified mutations. The existing pure source-selector property alone is 361 lines in `tests/test_property_ticket_source.py`, while this ticket additionally constructs and checks real repositories and multi-ticket interactions. Please split the fixture and deterministic placement coverage from generated multi-ticket coverage and mutation evidence into independently reviewable tickets, defining dependencies and allocating the existing acceptance criteria. I inspected the selector call and listing in `src/chitty/store.py` and the selector in `src/chitty/ticket_source.py`; no implementation, mutation runs, or `make check` were performed, so their outcomes remain unverified. No code changes were made.
+
 ## History
 
 - 2026-11-18T16:38:03Z lively-quartz-crane → backlog
@@ -64,3 +66,5 @@ Planning blocker: the deterministic test requires every compatible placement in 
 - 2026-11-21T22:19:01Z witty-pearl-otter cold-read → planning
 - 2026-11-21T22:19:03Z witty-pearl-otter planning → todo
 - 2026-11-21T22:19:33Z zesty-violet-eel todo → doing
+- 2026-11-21T22:21:59Z zesty-violet-eel: changed owner, notes
+- 2026-11-21T22:21:59Z zesty-violet-eel doing → planning
