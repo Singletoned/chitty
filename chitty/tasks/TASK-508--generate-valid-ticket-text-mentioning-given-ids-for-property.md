@@ -1,6 +1,6 @@
 ---
 title: Generate valid ticket text mentioning given IDs, for property tests
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -19,10 +19,18 @@ What it draws:
 
 A draw that `parse` rejects is a bug in the strategy: never use `assume` to discard it.
 
-Tests in a new `tests/test_ticket_strategies.py`, with `hypothesis` as the other property tests use it: every draw parses; `parse(text).render()` parses again and renders to the same text (rendering is stable); and, over many draws, each of these occurs at least once: an `[X]` criterion, a multi-line criterion, `Plan` present, `Plan` absent, an ID mention in each frontmatter field listed above, and each of the four near-miss forms. Check the "occurs at least once" part with one `@given` test that collects the draws (for example with `hypothesis.event`, or by asserting over a fixed `settings(max_examples=...)` run of a helper), not with a separate hand-picked example.
+Tests in a new `tests/test_ticket_strategies.py`, with `hypothesis` as the other property tests use it: every draw parses; `parse(text).render()` parses again and renders to the same text (rendering is stable); and, over many draws, each of these occurs at least once: an `[X]` criterion, a multi-line criterion, `Plan` present, `Plan` absent, an ID mention in each frontmatter field listed above, and each of the four near-miss forms. Check each "occurs at least once" feature with `hypothesis.find(ticket_texts(ids), <predicate on the text>)`, which raises if no example is found; one test method per feature.
 
 Out of scope: `rewrite_task` and its properties (`TASK-507`).
+
+## Acceptance Criteria
+
+- [ ] Every draw of `ticket_texts` parses, and `parse(text).render()` re-parses and renders to the same text (a `@given` test in `tests/test_ticket_strategies.py`)
+- [ ] `hypothesis.find` finds an example of each listed feature (one test method per feature): an `[X]` criterion, a multi-line criterion, `Plan` present and absent, an ID mention in each listed frontmatter field, and each near-miss form
+- [ ] `make check` passes
 
 ## History
 
 - 2026-11-21T13:44:08Z sunny-ebony-kestrel → planning
+- 2026-11-21T13:44:19Z sunny-ebony-kestrel: changed description, acceptance criteria
+- 2026-11-21T13:44:19Z sunny-ebony-kestrel planning → cold-read
