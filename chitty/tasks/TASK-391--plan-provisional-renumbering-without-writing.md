@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: review
+status: done
 depends_on:
   - TASK-381
   - TASK-389
@@ -26,9 +26,9 @@ Conflict fixture: keep one eligible configured provisional ticket and commit a s
 
 ## Acceptance Criteria
 
-- [ ] For the base real-Git fixture and each reservation variant, the read-only plan returns the exact mapping in suffix order and the exact writable set, without changing HEAD, index or file bytes.
-- [ ] Outside Git, a single `TASK-AAAAAA` gives `TASK-1` and its writable path; with no candidates the result is `({}, ())`.
-- [ ] The main-checkout conflict fixture refuses a nonempty plan with `TASK-3` and `changed on both` and preserves HEAD, index and file bytes.
+- [x] For the base real-Git fixture and each reservation variant, the read-only plan returns the exact mapping in suffix order and the exact writable set, without changing HEAD, index or file bytes.
+- [x] Outside Git, a single `TASK-AAAAAA` gives `TASK-1` and its writable path; with no candidates the result is `({}, ())`.
+- [x] The main-checkout conflict fixture refuses a nonempty plan with `TASK-3` and `changed on both` and preserves HEAD, index and file bytes.
 
 ## Plan
 
@@ -94,6 +94,11 @@ I read the complete current ticket and inspected discovery, selection, used-numb
 Runner error (agent): TASK-391 was unchanged; only committed changes are visible to `chitty run`
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-391`
+
+Reviewed: complete diff inspected; no Decided note was needed. `make check` passed 994 tests. Running the preflight suite with a signature stub printed `FAILED (errors=10)` and `stub failures: 10 errors, 0 failures`.
+1: pass - `tests/test_provisional_preflight.py` exercises the base and all reservation variants, exact writable paths, snapshots and branch selection; `make check` passed.
+2: pass - `test_standalone` checks the empty and one-candidate plans and unchanged bytes; `make check` passed.
+3: pass - `test_conflict` checks source selection and planner errors and unchanged snapshot; `make check` passed.
 
 ## Summary
 
@@ -195,3 +200,5 @@ Implemented read-only provisional allocation and writable-source selection. All 
 - 2026-11-21T21:09:10Z eager-ginger-adder error → doing
 - 2026-11-21T21:11:53Z eager-ginger-adder: changed summary
 - 2026-11-21T21:11:53Z eager-ginger-adder doing → review
+- 2026-11-21T21:16:18Z jolly-indigo-raven: changed notes; ticked acceptance criteria
+- 2026-11-21T21:16:18Z jolly-indigo-raven review → done
