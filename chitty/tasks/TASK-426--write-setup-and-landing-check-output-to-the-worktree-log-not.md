@@ -1,6 +1,6 @@
 ---
 title: Write `setup` and landing-check output to the worktree log, not the ticket
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-353
@@ -59,6 +59,9 @@ Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktr
 
 Repair: the landing error reported an untracked `tmp-spike378.txt` in the main checkout. `git -C /Users/singletoned/src/singletoned/chitty status --short` now reports a clean main worktree, so the reported obstacle has cleared. The preserved implementation and passing review remain on branch `task-426`; no code changes were needed. Returning for a fresh review and landing.
 
+Reviewed:
+1: pass - `make check` printed `Ran 902 tests` and `OK`, including both changed tests and the missing-command guard. The earlier review ran the changed tests against `cda4e9f9:src/chitty/run.py` and printed `FF.`: the first failures were the setup status 9 and landing status 7 log-path note assertions, while the guard passed; these agree with the recorded pre-fix assertions.
+
 ## Summary
 
 Setup and landing checks now write combined output to the shared worktree log and record concise errors instead of command output. The specified regressions failed before the fix and pass afterward; the missing-command guard and `make check` pass. The existing `Error output:` block remains out of scope for TASK-427.
@@ -80,3 +83,5 @@ Setup and landing checks now write combined output to the shared worktree log an
 - 2026-11-21T08:54:11Z intrepid-jade-wren done → error
 - 2026-11-21T10:44:23Z brisk-navy-stoat: changed notes
 - 2026-11-21T10:44:32Z brisk-navy-stoat error → review
+- 2026-11-21T10:49:48Z youthful-ebony-puffin: changed notes
+- 2026-11-21T10:49:48Z youthful-ebony-puffin review → done
