@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -59,3 +59,4 @@ Second cold read 2026-11-21 outcomes: the claim commit stays and the branch coun
 - 2026-11-21T08:02:12Z nimble-umber-gannet planning → cold-read
 - 2026-11-21T08:03:48Z nimble-umber-gannet: changed description, notes
 - 2026-11-21T08:03:48Z nimble-umber-gannet cold-read → todo
+- 2026-11-21T08:49:33Z jolly-hazel-kestrel todo → doing
