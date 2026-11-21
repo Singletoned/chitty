@@ -9,9 +9,22 @@ created: 2026-11-21
 
 ## Description
 
-Add explicit rejection paths to the read-only preflight from `TASK-391`. Verify the landed interface before cold-reading this ticket. Before discovery use fresh `git.is_repository` and `git.current_branch`; in Git only `Repo._main_branch()` may proceed. Detached HEAD is off main. Raise new `ProvisionalOffMain(ChittyError)` in `src/chitty/errors.py` saying provisional tickets are renumbered on main. Outside Git retain preflight behavior. Do not call `_prepare_write` or change allocation. Reject any duplicate on-disk ID involving a candidate before the allocator, naming both paths. Keep path-bearing parse errors.
+Add rejection paths to the read-only planner `Repo._plan_provisional_renumbering` in `src/chitty/store.py` (landed by `TASK-391`). `TASK-517` is the writer that will use it. No CLI command, no writes.
 
-Test using `RepoTestCase` and real Git in `tests/test_provisional_preflight_errors.py`: `git init -b main`, set local author, commit valid `TASK-AAAAAA` and remove and commit `chitty_version` to create stale setup. Test a branch off main and detached HEAD; return to main and separately plant a malformed validly named path and two distinct valid paths carrying the same candidate ID. Snapshot HEAD, index and file bytes after each setup, before the call. These fixed integration cases verify Git state and diagnostic paths. Show that branch/detached and duplicate diagnostics fail on the unguarded preflight; the malformed fixture is a regression guard if it already passes. Run the new tests and `make check`.
+Decisions:
+
+- Branch guard, first thing in the planner, before any discovery: if `git.is_repository(self.root)` (call `git` directly, not the cached `Repo` helpers) and `git.current_branch(self.root) != self._main_branch()`, raise new `ProvisionalOffMain(ChittyError)`, defined in `src/chitty/errors.py`, with the message `provisional tickets are renumbered on <main>; current branch is <branch>`, where `<branch>` is the branch name or `detached HEAD`. `git.current_branch` returns `None` when detached, so detached HEAD is off main. Outside Git the planner behaves as today.
+- Do not call `_prepare_write` and do not change allocation (`plan_renumbering`, `_used_numbers`).
+- Duplicate guard: after the disk scan and before `plan_renumbering`, if any candidate ID has two or more scanned disk paths, raise `ChittyError(f"{id} is used by more than one file: {first}, {second}")` with the first two such paths in scan order. Today `plan_renumbering` raises `duplicate provisional task ID <id>` with no paths.
+- A malformed file with a valid ticket filename already raises `<path>: <error>` from `_load`; keep that.
+
+Tests: new `tests/test_provisional_preflight_errors.py`, a `RepoTestCase` with real Git, reusing the `file` and `snapshot` helpers style of `tests/test_provisional_preflight.py`. Setup: `git init -b main`, local author, commit a valid provisional `chitty/tasks/TASK-AAAAAA--example.md`, then delete the `chitty_version` line from `chitty.toml` and commit, so setup is stale (a call to `_prepare_write` would act on it). Take the snapshot (HEAD, `.git/index` bytes, bytes of every `chitty/**/*.md` and `chitty.toml`) after each setup and before the call.
+
+- Off main: `git switch -c feature`; and separately `git checkout --detach`. Each raises `ProvisionalOffMain` whose message contains `feature` or `detached HEAD` respectively.
+- On main, malformed: also commit `chitty/tasks/TASK-BAAAAA--bad.md` holding `not a ticket`; the planner raises `ChittyError` whose message starts with that file's path.
+- On main, duplicate: also commit `chitty/tasks/archive/TASK-AAAAAA--copy.md`, a valid provisional ticket; the planner raises `ChittyError` whose message contains both paths.
+
+No property: a small fixed set of Git states and files, each listed here. Before implementing, run the off-main and duplicate tests against the unguarded planner and confirm they fail; the malformed test is a regression guard and may already pass. Then implement, run the new tests and `make check`.
 
 ## Acceptance Criteria
 
@@ -23,3 +36,4 @@ Test using `RepoTestCase` and real Git in `tests/test_provisional_preflight_erro
 - 2026-11-21T18:44:40Z eager-ginger-adder → backlog
 - 2026-11-21T18:45:14Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T18:45:14Z eager-ginger-adder backlog → planning
+- 2026-11-21T23:00:01Z lively-zinc-newt: changed description
