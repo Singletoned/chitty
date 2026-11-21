@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: cold-read
+status: todo
 depends_on:
   - TASK-381
   - TASK-389
@@ -31,11 +31,11 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 
 ## Acceptance Criteria
 
-- [ ] On `main`, with `TASK-3` the highest number, an active and an archived provisional ticket (the second depending on the first), and `TASK-3` itself listing one in `depends_on` and mentioning both in its Description: the provisional tickets get `TASK-4` and `TASK-5` in ascending order of their provisional suffixes; both files are moved in their own directories, lose `provisional`, and have `moved_from` set to their provisional IDs; the second's `depends_on` names the first's new ID; `TASK-3`'s `depends_on` and Description are rewritten and its History is not; one commit names all three in `Task:` trailers; a variant with `TASK-3` archived (so the highest number is only in the archive) still gives `TASK-4` and `TASK-5`
+- [ ] On `main`, with `TASK-3` the highest number, an active and an archived provisional ticket (the second depending on the first), and `TASK-3` itself listing one in `depends_on` and mentioning both in its Description: the provisional tickets get `TASK-4` and `TASK-5` in ascending order of their provisional suffixes; both files are moved in their own directories, lose `provisional`, and have `moved_from` set to their provisional IDs; the second's `depends_on` names the first's new ID; `TASK-3`'s `depends_on` and Description are rewritten and its History is not; one commit names all three in `Task:` trailers; a variant with `TASK-3` archived (so the highest number is only in the archive) still gives `TASK-4` and `TASK-5`; and a variant creating them in reverse order (`side_effect=[1] + [0] * 5 + [0] * 6`, so `TASK-BAAAAA` is made first) gives the same result, because the order comes from the IDs, not from file listing
 - [ ] A second call returns no changes and makes no commit; off `main` and on a detached `HEAD` it raises `ChittyError` and changes nothing
-- [ ] With a `.git/hooks/pre-commit` that exits 1, the call raises `ChittyError` containing `autocommit failed`, and `git status --porcelain` and every ticket file's bytes equal what they were before; with a ticket file planted in `chitty/tasks/` under a valid name but unparseable content, it raises `ChittyError` naming that file before writing anything; with two files sharing one provisional ID, it raises naming both paths and writes nothing
+- [ ] With a `.git/hooks/pre-commit` that exits 1, the call raises `ChittyError` containing `autocommit failed`, and `git status --porcelain` and every ticket file's bytes equal what they were before; with a ticket file planted in `chitty/tasks/` under a valid name but unparseable content, it raises `ChittyError` naming that file, and every ticket file's bytes and `git status --porcelain` equal their values before the call; with two files sharing one provisional ID, it raises naming both paths, and every ticket file's bytes and `git status --porcelain` equal their values before the call
 - [ ] Outside a Git repository (a temporary directory with `chitty.toml` and `autocommit = true`, and a file `chitty/tasks/TASK-AAAAAA--x.md` with `provisional: true`), the call renumbers it to `TASK-1` without error and no `.git` directory is created; `make check` passes
-- [ ] `TASK-3`, in flight on branch `task-3` (one commit ahead of `main`) while its `main` copy mentions a provisional ID, is left byte-identical on `main`, and the rest of the run succeeds
+- [ ] `TASK-3`, the highest-numbered ticket, is in flight on branch `task-3` (one commit ahead of `main`) while its `main` copy mentions a provisional ID: its `main` file is left byte-identical, the two provisional tickets on `main` still become `TASK-4` and `TASK-5` (the skipped ticket's number counts as used), and the commit's `Task:` trailers name those tickets and not `TASK-3`
 
 ## Notes
 
@@ -44,6 +44,8 @@ The requested rewrite and property cannot be implemented as written against the 
 Planner 2026-11-21: dropped the pre-section text from the rewrite, since the parser rejects any content before the first `##` section. The property now names exactly where mentions are generated: `title`, `depends_on`, `parent` and the sections. No other frontmatter field is rewritten.
 
 Planner 2026-11-21, after two cold reads: split the pure `rewrite_task` and its property into `TASK-507` (lands first). Here: the archived provisional ticket is named and an archived-highest variant added; the planned set and used numbers are defined; duplicate paths are reported by this method; no commit outside Git, with a criterion. The branch-only clause in criterion 2 is dropped, because criterion 5 tests skipping.
+
+Planner 2026-11-21, after the cold read: criterion 5 now shows a skipped ticket's number is never reused; a reverse-creation variant; unchanged-bytes checks for the parse and duplicate errors. The `TASK-507` dependency is gated by `depends_on`.
 
 ## History
 
@@ -75,3 +77,5 @@ Planner 2026-11-21, after two cold reads: split the pure `rewrite_task` and its 
 - 2026-11-21T13:10:46Z sunny-ebony-kestrel: changed dependencies, description, acceptance criteria, notes
 - 2026-11-21T13:10:46Z sunny-ebony-kestrel cold-read → planning
 - 2026-11-21T13:17:52Z sunny-ebony-kestrel planning → cold-read
+- 2026-11-21T13:19:05Z sunny-ebony-kestrel: changed acceptance criteria, notes
+- 2026-11-21T13:19:05Z sunny-ebony-kestrel cold-read → todo
