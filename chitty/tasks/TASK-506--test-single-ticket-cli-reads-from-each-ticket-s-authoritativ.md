@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: cold-read
+status: todo
 priority: high
 depends_on:
   - TASK-378
@@ -14,7 +14,9 @@ Split from `TASK-378` on 2026-11-21, because three workers found that ticket too
 
 Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `CliTestCase` from `tests/test_cli.py`, set up as `tests/test_check_cross_branch_references.py` does. `make check` takes about a minute here; run it with a shell timeout of at least five minutes. The merged-branch rule is already tested by `tests/test_source_copy.py` (`test_merged_then_main_changed`); the `has no tip` error is tested by a separate ticket, not here. Record in a note, for each case of criteria 1 and 2, how it fails on the commit before the switch (see below). Each criterion 1 fixture commits `main`'s tickets with `GIT_COMMITTER_DATE=2030-01-01T00:00:00Z` before the ticket branch is made, so today's newest-commit rule prefers `main`'s copy; without that date the branch-edit and retitle cases pass before the change. Checked 2026-11-21 against `main` and the spike: on `main` the branch edit shows `main`'s title, the retitle shows `main`'s path, the branch archive fails with `used by more than one file`, the `feature`-only ticket is shown, and the malformed branch copy shows `main`'s copy; with the spike each gives the criterion's result. No property: a fixed set of cases, each in the criteria; the generated property over placements is `TASK-393`.
 
-The commit before the switch: the parent of the oldest commit on `main` that has the trailer `Task: TASK-378` and changes `src/chitty/store.py`, that is `git log --format=%H --grep='Task: TASK-378' main -- src/chitty/store.py | tail -1` followed by `^`. To show a case fails there, check that commit out in a scratch worktree (`git worktree add --detach <dir> <commit>`), copy `tests/test_ticket_reads.py` in, run it with `PYTHONPATH=src`, then remove the worktree.
+The commit before the switch: the parent of the oldest commit on `main` that has the trailer `Task: TASK-378` and changes `src/chitty/store.py`, that is `git log --format=%H --grep='^Task: TASK-378$' main -- src/chitty/store.py | tail -1` followed by `^`. It returns nothing until `TASK-378` lands; landed work commits carry the trailer (for example `git log --format=%h --grep='^Task: TASK-426$' main -- src/chitty/run.py` prints `5bae8473`).
+
+Error cases: every "fails" means the CLI exits 1 with the error text in `result.stderr`, as `tests/test_check_cross_branch_references.py` checks. The `task-1:<path>: <error>` prefix already exists: `Repo._parse_source_copy` formats it. To show a case fails there, check that commit out in a scratch worktree (`git worktree add --detach <dir> <commit>`), copy `tests/test_ticket_reads.py` in, run it with `PYTHONPATH=src`, then remove the worktree.
 
 Out of scope: any change to `src/`. If a case fails after the switch, the switch is wrong: return this ticket to `planning` naming the case.
 
@@ -28,3 +30,5 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
 - 2026-11-21T11:42:58Z sunny-ebony-kestrel planning → cold-read
+- 2026-11-21T11:43:51Z sunny-ebony-kestrel: changed description
+- 2026-11-21T11:43:51Z sunny-ebony-kestrel cold-read → todo
