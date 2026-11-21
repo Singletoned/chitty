@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-378
@@ -48,6 +48,11 @@ The specified malformed-branch context regression passes before the switch, cont
 
 Planner 2026-11-21: the worker's evidence is right. Before the switch, `context_of` already returns `tasks` for a malformed copy committed on `task-1`. That assertion is now a guard that passes before and after; it shows the switch did not start parsing that copy. Every other case keeps its recorded pre-switch failure.
 
+Reviewed: verified the complete diff and independently reran the pre-switch and current tests. No prior review failures.
+1: pass - The 2030-dated real-Git fixtures cover edit, retitle, archive, unrelated branch and provisional guard. Substituting store.py from the parent of 7e7b5ae4 and running `.venv/bin/python -m unittest tests.test_ticket_reads` printed main title, main path, duplicate-file error and feature title for the four regressions; the provisional guard passed. Current `make check` passed.
+2: pass - The same pre-switch run printed changed main instead of conflict, main instead of malformed-branch error, frontmatter errors for both working-tree context and find, and uncommitted instead of second in the linked worktree; both guards passed. Current `make check` passed all cases.
+3: pass - `make check` printed 921 tests OK; `git diff main...HEAD --stat` names only the ticket and `tests/test_ticket_reads.py`. The pre-switch note records each case and the guards; the independent run printed 7 failures and 2 errors, as expected.
+
 ## Summary
 
 Added independent real-Git tests in `tests/test_ticket_reads.py` for authoritative ticket reads, conflict isolation, malformed copies and linked worktrees. The notes record each pre-switch regression failure and the passing guards. `chitty fix`, `make format` and `make check` passed; the latter ran 917 tests. The malformed working-tree `show` behavior is tracked separately in TASK-480.
@@ -76,3 +81,5 @@ Added independent real-Git tests in `tests/test_ticket_reads.py` for authoritati
 - 2026-11-21T12:56:00Z upbeat-hazel-ibis todo → doing
 - 2026-11-21T12:59:05Z upbeat-hazel-ibis: changed summary
 - 2026-11-21T12:59:14Z upbeat-hazel-ibis doing → review
+- 2026-11-21T13:03:34Z able-teal-kestrel: changed notes
+- 2026-11-21T13:03:34Z able-teal-kestrel review → done
