@@ -1123,6 +1123,8 @@ class Repo:
             changes: list[Change] = []
             for other in self.all_tasks():
                 task = other.task
+                if old not in task.frontmatter.depends_on and task.frontmatter.parent != old:
+                    continue
                 if old in task.frontmatter.depends_on:
                     task = task.with_field(
                         "depends_on", _replace(task.frontmatter.depends_on, old, new)
