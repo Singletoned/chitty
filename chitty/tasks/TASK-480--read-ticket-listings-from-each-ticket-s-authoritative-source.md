@@ -1,20 +1,21 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-515
+  - TASK-518
 parent: TASK-376
 created: 2026-11-20
 ---
 
 ## Description
 
-Use authoritative ticket sources for listings. `TASK-378` landed source selection and `TASK-515` landed shared Git metadata. Keep changes in `src/chitty/store.py`. Child discovery in `show` is separate (`TASK-518`); changing write paths that really need other ticket bodies (e.g. `move` reference rewrites or `archive ID` in delete mode) is out of scope.
+Use authoritative ticket sources for listings. `TASK-378` landed source selection and `TASK-515` landed shared Git metadata. Keep changes in `src/chitty/store.py`. Land after `TASK-518` so `show` is no longer coupled to strict listings. Keep behavior of actual reference rewrites unchanged; the only move adjustment allowed here is skipping saves for tickets with no matching reference.
 
 Replace the history merge in `_tasks_in_location` with `ticket_ids()` and the same source resolver and parser as `lookup`. Resolve source before deciding active/archive and context, and use the selected file's directory, not the prefix or a stale working-tree path. Keep existing sorting, context discovery and `_invalidate` semantics. Use `_source_files` to resolve, skip empty results, and parse only when a selected path belongs to the requested location; call `_parse_source_copy` with the full match set so duplicate IDs spanning locations are not masked. Source selection errors propagate: it takes selection to know the authoritative location. A malformed body at an unselected or superseded location must not itself fail a listing. `all_tasks()` continues to use configured contexts; default CLI `list` also includes discovered contexts. Remove the now-unused Repo history/dirty-path listing helpers and associated caches; do not remove the Git APIs themselves here.
 
-`new_id` on a sequential context off main must take used provisional IDs from `ticket_ids()`, not `all_tasks()`, so creation does not depend on other bodies. No change to `move`, single-ticket `archive`, or the existing bulk `archive` algorithm; bulk archive needs the active tickets and therefore propagates their conflicts.
+`new_id` on a sequential context off main must take used provisional IDs from `ticket_ids()`, not `all_tasks()`, so creation does not depend on other bodies. In `move`, skip `_save` for each unrelated ticket when neither `depends_on` nor `parent` names the old ID: there is nothing to write, and `_save` checks write authority before its no-change check. Keep `_save` and its authority check for actual rewrites. This keeps `tests/test_provisional_ids.py::test_move_provisional_off_main_then_promote_on_main` passing on the authoritative listings. No change to single-ticket `archive` or the existing bulk `archive` algorithm; bulk archive needs the active tickets and therefore propagates their conflicts.
 
 Tests: new `tests/test_authoritative_listing.py`, real files and real Git, use `CliTestCase` and the Git fixture helpers used in `tests/test_source_copy_errors.py`. Fixed Git integration states exercise the wiring; the pure rules are already generated in `tests/test_property_ticket_source.py`. Confirm the changed listing and isolated allocation assertions fail before the fix, then run the new suite and `make check`. Use a test-local `git.historical_files` patch only in the placement/standalone cases; the conflict test must distinguish conflict detection from an arbitrary failure.
 
@@ -26,7 +27,7 @@ Conflict: use the changed-on-both fixture pattern from `tests/test_source_copy_e
 
 - [ ] The real-Git placement fixture separately asserts `lookup`, `Repo.tasks` for active and archived, `all_tasks`, and default `chitty list --json` agree with the specified results for all three tickets, including the branch-only and moved tickets. Repeat with `git.historical_files` patched to raise; standalone listing under the patch returns the on-disk ticket.
 - [ ] With a ticket changed on both its own branch and main, `chitty list --json` and bulk `archive` fail with `TASK-1` and `changed on both`; bulk archive leaves files, HEAD and index unchanged. Off-main `add` from the conflict fixture also tolerates another ticket with a malformed body, retries the occupied provisional ID and returns the next one.
-- [ ] Keep `tests/test_list_performance.py` passing, including constant Git invocation count with no ticket branches and invalidation after an edit on the same `Repo`; `make check` passes.
+- [ ] Keep `tests/test_list_performance.py` passing, including constant Git count with no ticket branches and cache invalidation, and keep `test_move_provisional_off_main_then_promote_on_main` passing without relaxing write authority for actual rewrites. Show the move regression by running that test on the cutover with only the no-op skip removed. `make check` passes after the prerequisite lands.
 - [ ] In a standalone repo put valid `TASK-1` copies in both active and archive directories. Default listing fails with the duplicate-ID error and both paths, rather than hiding the archived duplicate.
 
 ## Plan
@@ -81,3 +82,5 @@ Planning blocker: the authoritative listing cutover breaks existing show and mov
 - 2026-11-21T18:47:35Z calm-pearl-yellowhammer: changed notes
 - 2026-11-21T18:47:42Z calm-pearl-yellowhammer: changed owner, notes
 - 2026-11-21T18:47:42Z calm-pearl-yellowhammer doing → planning
+- 2026-11-21T18:50:23Z eager-ginger-adder: changed dependencies, description, acceptance criteria
+- 2026-11-21T18:50:23Z eager-ginger-adder planning → cold-read
