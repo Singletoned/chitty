@@ -1,6 +1,6 @@
 ---
 title: "Choose a ticket's source without parsing it: `provisional` from the ID"
-status: cold-read
+status: todo
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -20,19 +20,19 @@ provisional = isinstance(task_id.number, str) and bool(
 )
 ```
 
-A suffix ID (`TASK-K7Q2MX`) with a file in this working tree or on `main` is provisional. A suffix ID with no file in either place, such as a provisional ticket that exists only on its runner branch `task-k7q2mx`, follows the ticket-branch rules like any other ticket, as it does today. The `provisional: true` field stays as the visible marker. If the field disagrees with the ID, the ID decides. `ticket_source` (`src/chitty/ticket_source.py`), `source_copy`'s own parse of the chosen copy, and every caller are unchanged. No read uses `source_copy` yet (that is `TASK-378`), so `chitty show` does not change.
+A suffix ID (`TASK-K7Q2MX`) with a file in this working tree or on `main` is provisional. A suffix ID with no file in either place, such as a provisional ticket that exists only on its runner branch `task-k7q2mx`, follows the ticket-branch rules like any other ticket, as it does today. The `provisional: true` field stays as the visible marker. If the field disagrees with the ID, the ID decides: a suffix ID with a file here or on `main` is read from the working tree even when its `provisional` field is false or absent, and its `task-<id>` branch copy is then ignored. Real provisional tickets always carry the field, so for them nothing changes. `ticket_source` (`src/chitty/ticket_source.py`), `source_copy`'s own parse of the chosen copy, and every caller are unchanged. No read uses `source_copy` yet (that is `TASK-378`), so `chitty show` does not change.
 
 Measured 2026-11-21 on spike `ab2ac7bf` (branch `spike/task-378`) plus this change: it makes exactly the two tests below fail, and nothing else.
 
 Migrations in `tests/test_source_copy.py`, without weakening any other assertion:
 
 - `test_malformed_working_tree_precedes_main` (line 100): on branch `feature`, numeric `TASK-1` is now read from `main`, so the malformed working-tree copy is not read. Rename it `test_malformed_working_tree_on_another_branch_is_not_read`, and replace the `assertRaises` block with `self.assert_copy(self.source(1), "main", "chitty/tasks/TASK-1--example.md", "original")`. Remove the import `from chitty.errors import ChittyError` (line 6), which nothing else in the file uses, or ruff fails.
-- `test_provisional_main_and_working_tree_precedence` (line 83): its fixtures mark numeric IDs `provisional: true`. Rename it `test_provisional_is_read_from_the_id`. In the fixture loop, use `for number in ("K7Q2MA", "K7Q2MC", 4):` in place of `(1, 3)`, so all three are committed on `main` with `provisional: true` (`file` formats the number into the path). On `feature`, unlink `TASK-K7Q2MA--example.md`, `TASK-2--example.md` and `TASK-4--example.md`, and rewrite `TASK-K7Q2MC` with `self.file("K7Q2MC", "working")`, which drops the field. Then: `self.source("K7Q2MA")` is `None`, because the suffix ID with a file on `main` is read from the working tree, where it is gone; `TASK-2` stays `main`'s `original`; `TASK-K7Q2MC` is the working-tree copy (`ref` `None`, path `chitty/tasks/TASK-K7Q2MC--example.md`, title `working`); and numeric `TASK-4` is `main`'s copy (`main`, `chitty/tasks/TASK-4--example.md`, `original`), because the ID decides.
+- `test_provisional_main_and_working_tree_precedence` (line 83): its fixtures mark numeric IDs `provisional: true`. Rename it `test_provisional_is_read_from_the_id`. In the fixture loop, use `for number in ("K7Q2MA", "K7Q2MC", 4):` in place of `(1, 3)`, so all three are committed on `main` with `provisional: true` (`file` formats the number into the path). Keep `self.file(2)`, committed on `main` without the field. On `feature`, unlink `TASK-K7Q2MA--example.md`, `TASK-2--example.md` and `TASK-4--example.md`, and rewrite `TASK-K7Q2MC` with `self.file("K7Q2MC", "working")`, which drops the field. Then: `self.source("K7Q2MA")` is `None`, because the suffix ID with a file on `main` is read from the working tree, where it is gone; `TASK-2` stays `main`'s `original`; `TASK-K7Q2MC` is the working-tree copy (`ref` `None`, path `chitty/tasks/TASK-K7Q2MC--example.md`, title `working`); and numeric `TASK-4` is `main`'s copy (`main`, `chitty/tasks/TASK-4--example.md`, `original`), because the ID decides.
 
 New tests in the same file, using its helpers (`base`, `file`, `commit_at`, `source`, `assert_copy`):
 
 - `test_malformed_working_tree_does_not_stop_a_branch_copy`: `base()`, then on new branch `task-1` `self.file(1, "branch")` committed, `git checkout main`, then overwrite the working-tree `chitty/tasks/TASK-1--example.md` with `not frontmatter\n` (uncommitted). `self.source(1)` is the `task-1` copy titled `branch`, with no error. On `main` today this raises the working-tree parse error.
-- `test_provisional_only_on_its_branch_is_read_from_it` (a guard that passes before and after): `init_git()` and commit nothing else. On new branch `task-k7q2mx`, commit `chitty/tasks/TASK-K7Q2MX--example.md` written by `self.file("K7Q2MX")` with `provisional: true` added as in the migration, then `git checkout main`. `self.source("K7Q2MX")` is the `task-k7q2mx` copy titled `original`. It fails for the plausible wrong version `provisional = isinstance(task_id.number, str)` (no file check), which reads the working tree and returns `None`.
+- `test_provisional_only_on_its_branch_is_read_from_it` (a guard that passes before and after): `init_git()` and commit nothing else. On new branch `task-k7q2mx`, commit `chitty/tasks/TASK-K7Q2MX--example.md` written by `self.file("K7Q2MX")` and then given the field by replacing `status: todo` with `provisional: true\nstatus: todo`, as the precedence test does (lines 86-89), then `git checkout main`. `self.source("K7Q2MX")` is the `task-k7q2mx` copy titled `original`. It fails for the plausible wrong version `provisional = isinstance(task_id.number, str)` (no file check), which reads the working tree and returns `None`.
 
 Record in a note how each migrated test and the first new test fail on `main` before the change, and that the guard fails against the wrong version above. No property test: these are fixed placements, and the generated property over placements is `TASK-393`.
 
@@ -48,3 +48,5 @@ Record in a note how each migrated test and the first new test fail on `main` be
 - 2026-11-21T11:34:26Z sunny-ebony-kestrel: changed acceptance criteria
 - 2026-11-21T11:34:42Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T11:35:50Z sunny-ebony-kestrel: changed description
+- 2026-11-21T11:37:07Z sunny-ebony-kestrel: changed description
+- 2026-11-21T11:37:07Z sunny-ebony-kestrel cold-read → todo
