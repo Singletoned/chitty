@@ -26,6 +26,10 @@ Tests: real-Git runner tests in a new `tests/test_land_pending_source.py`, in th
 - [ ] With local `task-5` saying `done` ahead of `origin/task-5`, `_land_pending` lands it: `main`'s tip equals the branch tip afterwards
 - [ ] Regression guards: equal local and remote tips, and no remote at all, still land; with two pending branches where the first is skipped, the second lands; `make check` passes
 
+## Plan
+
+Add real-Git pending-landing source tests for remote-ahead, local-ahead, equal, absent remote, and skip-then-land cases; confirm the remote-ahead regression fails first. Filter completed candidates by their source branch, reporting mismatches, then run formatting and checks.
+
 ## History
 
 - 2026-11-18T17:54:14Z lively-quartz-crane → backlog
@@ -36,3 +40,4 @@ Tests: real-Git runner tests in a new `tests/test_land_pending_source.py`, in th
 - 2026-11-18T17:58:24Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:58:26Z lively-quartz-crane planning → todo
 - 2026-11-21T13:08:36Z nimble-ebony-marten todo → doing
+- 2026-11-21T13:10:31Z nimble-ebony-marten: wrote the plan
