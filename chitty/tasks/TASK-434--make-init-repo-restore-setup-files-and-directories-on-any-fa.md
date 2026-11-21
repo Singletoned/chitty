@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -105,3 +105,4 @@ Setup writes now restore all snapshotted files and newly created empty directori
 - 2026-11-21T01:03:29Z able-bronze-marten: changed notes
 - 2026-11-21T01:04:42Z able-bronze-marten: changed notes
 - 2026-11-21T01:10:46Z able-bronze-marten: changed summary
+- 2026-11-21T01:10:54Z able-bronze-marten doing → review
