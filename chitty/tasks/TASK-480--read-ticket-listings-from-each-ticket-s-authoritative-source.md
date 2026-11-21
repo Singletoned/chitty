@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: backlog
+status: planning
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -25,6 +25,10 @@ Planner, 2026-11-21: the two regression tests from `TASK-367` listed above now l
 
 Found 2026-11-21 by `TASK-506`'s worker: after `TASK-378`, `chitty show TASK-1` still fails when another working-tree ticket file is malformed. In the fixture, `TASK-1` is committed valid on `main` and edited (title `branch`) on `task-1`, then the main checkout's `TASK-1` file is overwritten, uncommitted, with `not frontmatter`. `show` lists the ticket's children through `repo.all_tasks()` (`src/chitty/cli.py:604`), which parses every working-tree copy. Once listings read from each ticket's source, `chitty show TASK-1` there should print title `branch`. Make that a criterion of this ticket.
 
+Split out the source-lookup performance prerequisite before switching listings. A real-Git probe on `main` did `Repo.lookup` for every ID from `Repo.ticket_ids()` and counted 16 Git invocations for two tickets and 56 for ten, even with no ticket branches. The existing constant-count check in `tests/test_list_performance.py` must still pass after listings switch.
+
+Keep the listing cutover separate from write-path repair. Before the cutover, audit write callers of `all_tasks()` against the existing rule that a conflict fails only operations needing its content: `move` actually reads other tickets to rewrite references, and single-ticket `archive` in delete mode does too. Do not promise conflict isolation for those paths until reference discovery can provide it. For `show --json`, do not scan for children (they are not in the JSON response). For plain `show`, keep the child list and warn about unreadable candidates rather than hiding the selected readable ticket; a failure to read the selected ticket itself still fails the command. Specify those as separately verifiable changes if necessary.
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
@@ -32,3 +36,5 @@ Found 2026-11-21 by `TASK-506`'s worker: after `TASK-378`, `chitty show TASK-1` 
 - 2026-11-20T23:21:39Z quick-pearl-lapwing: changed notes
 - 2026-11-21T08:05:17Z nimble-umber-gannet: changed notes
 - 2026-11-21T12:43:40Z sunny-ebony-kestrel: changed notes
+- 2026-11-21T15:51:34Z honest-coral-heron: changed notes
+- 2026-11-21T15:51:34Z honest-coral-heron backlog → planning
