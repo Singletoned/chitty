@@ -1,6 +1,6 @@
 ---
 title: Save and restore uncommitted worktree work under a named ref
-status: todo
+status: doing
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -42,3 +42,4 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 - 2026-11-21T23:11:07Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:12:35Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:12:35Z lively-zinc-newt cold-read → todo
+- 2026-11-21T23:46:16Z zesty-bronze-gannet todo → doing
