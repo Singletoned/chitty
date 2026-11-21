@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: doing
+status: review
 depends_on:
   - TASK-378
   - TASK-515
@@ -98,3 +98,4 @@ Authoritative listings, provisional allocation and move no-op handling are imple
 - 2026-11-21T20:15:30Z calm-ginger-adder: changed notes
 - 2026-11-21T20:17:17Z calm-ginger-adder: changed notes
 - 2026-11-21T20:19:28Z calm-ginger-adder: changed summary
+- 2026-11-21T20:19:30Z calm-ginger-adder doing → review
