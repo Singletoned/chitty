@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-378
@@ -23,7 +23,7 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 ## Acceptance Criteria
 
 - [ ] From the main checkout, through the CLI, with `main`'s tickets committed dated `2030-01-01T00:00:00Z` before each branch is made (see Tests): `chitty show` of a ticket edited on `task-<n>` prints the branch copy and `branch: task-<n>`; of a ticket retitled on `task-<n>`, prints a `path:` line ending in the branch file name; of a ticket archived on its branch, prints a `path:` line ending in `chitty/tasks/archive/<its file name>`; of a ticket only on branch `feature`, fails with an error starting `no task TASK-<n>` (each fails on the commit before the switch). Guard, passing before and after: of a provisional `TASK-K7Q2MX` committed only on branch `task-k7q2mx`, prints that copy and `branch: task-k7q2mx`
-- [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`, referencing no other ticket: `chitty show TASK-2` and `chitty edit TASK-2 --note x` succeed; `chitty show TASK-1` fails with the error containing `changed on both` and naming `task-1` and `main` (fails on the commit before the switch). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`, and `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` without raising (it raises on the commit before the switch). With `TASK-1` committed valid on `main` and edited (title `branch`) on `task-1`, and the main checkout's `TASK-1` file then overwritten, uncommitted, with `not frontmatter`: from the main checkout `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` and `Repo.open(root).find(TaskId.parse("TASK-1")).task.frontmatter.title` is `branch` (not `chitty show`, whose child listing goes through `all_tasks()` and is `TASK-480`) (both raise the working-tree parse error on the commit before the switch). In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
+- [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`, referencing no other ticket: `chitty show TASK-2` and `chitty edit TASK-2 --note x` succeed; `chitty show TASK-1` fails with the error containing `changed on both` and naming `task-1` and `main` (fails on the commit before the switch). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`, and `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` without raising (a guard: it passes before and after the switch, checked 2026-11-21). With `TASK-1` committed valid on `main` and edited (title `branch`) on `task-1`, and the main checkout's `TASK-1` file then overwritten, uncommitted, with `not frontmatter`: from the main checkout `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` and `Repo.open(root).find(TaskId.parse("TASK-1")).task.frontmatter.title` is `branch` (not `chitty show`, whose child listing goes through `all_tasks()` and is `TASK-480`) (both raise the working-tree parse error on the commit before the switch). In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
 - [ ] `make check` passes, `git diff main...HEAD --stat` touches only `tests/test_ticket_reads.py` and this ticket, and a note records each case's failure on the commit before the switch
 
 ## Plan
@@ -46,6 +46,8 @@ Pre-switch run used the parent of 7e7b5ae4ea6f01a4b6f6750442618bf3f6bfc28f; `git
 
 The specified malformed-branch context regression passes before the switch, contrary to criterion 2; the preceding note records evidence and the planning decision needed.
 
+Planner 2026-11-21: the worker's evidence is right. Before the switch, `context_of` already returns `tasks` for a malformed copy committed on `task-1`. That assertion is now a guard that passes before and after; it shows the switch did not start parsing that copy. Every other case keeps its recorded pre-switch failure.
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -65,3 +67,5 @@ The specified malformed-branch context regression passes before the switch, cont
 - 2026-11-21T12:54:27Z daring-ochre-newt: changed notes
 - 2026-11-21T12:54:41Z daring-ochre-newt: changed owner, notes
 - 2026-11-21T12:54:41Z daring-ochre-newt doing → planning
+- 2026-11-21T12:55:25Z sunny-ebony-kestrel: changed acceptance criteria, notes
+- 2026-11-21T12:55:25Z sunny-ebony-kestrel planning → todo
