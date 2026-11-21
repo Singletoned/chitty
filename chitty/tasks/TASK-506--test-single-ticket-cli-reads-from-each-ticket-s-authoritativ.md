@@ -40,6 +40,10 @@ Planner 2026-11-21: `chitty show` also lists the ticket's children through `repo
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
 
+Planning needed: criterion 2 and the planner note claim malformed branch `context_of` raises before the switch, but the independently run `test_malformed_branch_context` passes against the specified pre-switch store, returning `tasks`. The fixture has valid main TASK-1 and a malformed committed task-1 copy, as specified. This contradicts the required pre-switch failure; decide whether this assertion is a before-and-after guard or specify a different fixture and expected regression. The test cannot provide the requested regression evidence as written.
+
+Pre-switch run used the parent of 7e7b5ae4ea6f01a4b6f6750442618bf3f6bfc28f; `git diff <parent> main -- src` names only `src/chitty/store.py`. Branch edit showed main title; retitle showed main path; archive failed with duplicate files; feature-only ticket was shown; conflict showed main rather than failing; malformed branch show showed main rather than failing; malformed branch context passed; malformed main working-tree context and find independently raised the working-tree frontmatter error; linked feature worktree showed the uncommitted title. Provisional and unrelated-conflict guard tests passed. Restored the store. Current focused tests and `make check` pass (917 tests); partial test changes committed. Review handoff remains unfinished pending the planning decision.
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -56,3 +60,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T12:48:19Z daring-ochre-newt todo → doing
 - 2026-11-21T12:50:43Z daring-ochre-newt: changed notes
 - 2026-11-21T12:51:17Z daring-ochre-newt: wrote the plan
+- 2026-11-21T12:54:27Z daring-ochre-newt: changed notes
