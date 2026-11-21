@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: todo
+status: doing
 depends_on:
   - TASK-378
   - TASK-515
@@ -64,3 +64,4 @@ Keep the listing cutover separate from write-path repair. Before the cutover, au
 - 2026-11-21T18:40:09Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:42:26Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:42:29Z eager-ginger-adder planning → todo
+- 2026-11-21T18:43:08Z calm-pearl-yellowhammer todo → doing
