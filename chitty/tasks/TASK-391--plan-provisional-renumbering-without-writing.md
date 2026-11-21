@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: error
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -32,7 +32,7 @@ Conflict fixture: keep one eligible configured provisional ticket and commit a s
 
 ## Plan
 
-Add behavioral preflight fixtures and verify failure against a signature stub; implement read-only scanning, source selection and reservations via the existing allocator; run fix, format and checks, then commit and hand off.
+Prove real-file allocation, reservations, and source conflicts with tests; implement the read-only planner, then verify the suite.
 
 ## Notes
 
@@ -187,3 +187,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-391`
 - 2026-11-21T20:12:41Z golden-indigo-quail: wrote the plan
 - 2026-11-21T20:13:15Z golden-indigo-quail: changed notes
 - 2026-11-21T20:13:15Z golden-indigo-quail doing → error
+- 2026-11-21T21:09:10Z eager-ginger-adder: wrote the plan
+- 2026-11-21T21:09:10Z eager-ginger-adder error → doing
