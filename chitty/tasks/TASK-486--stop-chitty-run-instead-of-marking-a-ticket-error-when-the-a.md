@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: doing
+status: planning
 labels:
   - bug
 priority: high
@@ -54,6 +54,8 @@ Second cold read 2026-11-21 outcomes: the claim commit stays and the branch coun
 
 Implementation stopped: two requirements contradict current code. `src/chitty/cli.py` rejects `--errors` combined with `--ticket`, so the prescribed repair test exits 2 before reaching the agent. Decide whether to allow that combination or change the test invocation. Also, although `_preflight` only checks that the command is set, `_agent_command` checks `shutil.which` before creating the worktree and raises `agent_command executable is not on PATH: ...`; a nonexistent command cannot reach `_run_session` as claimed. Decide whether to remove or change that validation and how to preserve its existing behavior and tests. Both decisions affect scope and the prescribed regression assertions, so the ticket cannot guide implementation as written. Experimental tests were removed; no implementation changes remain. Before discovering these issues, the todo and doing start-failure tests failed against the existing runner because it exited 0 and recorded an error; the repair and missing-command tests instead exposed the contradictions above. Required implementation verification remains unfinished.
 
+Return to planning: the prescribed repair invocation is rejected by the CLI, and missing agent commands are rejected by `_agent_command` before `_run_session`. See the preceding note for the required decisions and verification evidence.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -68,3 +70,5 @@ Implementation stopped: two requirements contradict current code. `src/chitty/cl
 - 2026-11-21T08:49:33Z jolly-hazel-kestrel todo → doing
 - 2026-11-21T08:52:23Z jolly-hazel-kestrel: wrote the plan
 - 2026-11-21T08:53:27Z jolly-hazel-kestrel: changed notes
+- 2026-11-21T08:53:40Z jolly-hazel-kestrel: changed owner, notes
+- 2026-11-21T08:53:40Z jolly-hazel-kestrel doing → planning
