@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: review
+status: doing
 labels:
   - bug
 priority: high
@@ -81,6 +81,12 @@ Added reporter start-failure regression; it passes on the branch. Attempting it 
 
 Reporter regression fails against the pre-implementation runner from afedf3c2 parent (exit 0 instead of 1) and passes on this branch, including exactly one reporter invocation. Updated failing fake agents in test_run_cases, test_run_write_failure_warns_and_keeps_agent_exit_code, the shared review repair agent, both reporter failure cases, and the lock test to commit before failure; the repair fake exits nonzero after its empty commit. make check passes all 905 tests.
 
+Review failed (tests): newly discovered verification gap; the three regressions stop at the exit-code assertion on the old runner, before checking the specified status, stderr or commit-count assertions.
+1: fail - The implementation note records each expected exit 1 but got 0, not a failure on the required status, stderr or commit-count assertion. Demonstrate and record each required failure against the pre-change runner without weakening the tests.
+2: pass - make check passed all 1026 tests, including the post-commit, review rebase and timeout tests; the implementation note records the post-commit test expected exit 0 but got 1 when the HEAD comparison was disabled.
+3: pass - docs/plan/next-action-and-runner.md places the start-failure bullet next to agent_timeout; make check printed OK for 1026 tests.
+4: pass - make check printed OK for 1026 tests, including the reporter and existing fixture tests; the implementation note records the reporter regression expected exit 1 but got 0 against the pre-implementation runner, and lists the changed fixtures.
+
 ## Summary
 
 Agent failures before any commit stop the runner and restore the selected ticket status without discarding worktree files; failures after commits retain existing error handling. Regression tests, reporter coverage, existing fixtures, documentation and make check pass.
@@ -122,3 +128,5 @@ Agent failures before any commit stop the runner and restore the selected ticket
 - 2026-11-21T23:25:19Z vivid-pearl-urchin: changed notes
 - 2026-11-21T23:25:27Z vivid-pearl-urchin: changed summary
 - 2026-11-21T23:25:35Z vivid-pearl-urchin doing → review
+- 2026-11-21T23:33:21Z kind-yellow-heron: changed acceptance criteria, notes
+- 2026-11-21T23:33:21Z kind-yellow-heron review → doing
