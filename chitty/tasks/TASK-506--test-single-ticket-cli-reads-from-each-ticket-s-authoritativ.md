@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-378
@@ -51,3 +51,4 @@ Planner 2026-11-21: `chitty show` also lists the ticket's children through `repo
 - 2026-11-21T12:41:58Z calm-quartz-stoat doing → planning
 - 2026-11-21T12:43:15Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T12:43:15Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T12:48:19Z daring-ochre-newt todo → doing
