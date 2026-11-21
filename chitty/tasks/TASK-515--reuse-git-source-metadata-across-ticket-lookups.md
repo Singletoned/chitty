@@ -22,6 +22,10 @@ Use real Git in temporary repositories. No new source-selection property: the se
 
 Add real-Git subprocess scaling and same-Repo invalidation tests, verify the scaling regression fails, then cache repository presence and source-selection ref metadata until invalidation. Run formatting and the full checks before handoff.
 
+## Notes
+
+Before the fix, the lookup regression fails with 16 versus 56 Git calls; the real-Git invalidation scenario passes without caching.
+
 ## History
 
 - 2026-11-21T15:51:38Z honest-coral-heron → backlog
@@ -32,3 +36,4 @@ Add real-Git subprocess scaling and same-Repo invalidation tests, verify the sca
 - 2026-11-21T15:54:57Z honest-coral-heron planning → todo
 - 2026-11-21T15:57:30Z upbeat-ebony-raven todo → doing
 - 2026-11-21T15:59:54Z upbeat-ebony-raven: wrote the plan
+- 2026-11-21T16:00:26Z upbeat-ebony-raven: changed notes
