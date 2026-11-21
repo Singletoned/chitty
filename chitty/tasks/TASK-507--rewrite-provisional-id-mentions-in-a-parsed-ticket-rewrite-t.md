@@ -30,7 +30,7 @@ Tests: Hypothesis properties in `tests/test_property_renumbering.py` (`TASK-381`
 
 ## Plan
 
-Implement the pure field and section rewrite, with criterion edits preserving unchecked items. Add generated properties and deliberately wrong implementations, verify failures against the stub, then run formatting and checks.
+Generate property cases and mutation checks, confirm each property fails against a stub, then implement selective immutable rewriting and run the full checks.
 
 ## Notes
 
@@ -62,3 +62,4 @@ Earlier notes (the worker's two contract questions and the split) are in Git his
 - 2026-11-21T13:49:09Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:49:24Z sunny-ebony-kestrel: changed description
 - 2026-11-21T13:59:37Z youthful-coral-heron todo → doing
+- 2026-11-21T14:01:22Z youthful-coral-heron: wrote the plan
