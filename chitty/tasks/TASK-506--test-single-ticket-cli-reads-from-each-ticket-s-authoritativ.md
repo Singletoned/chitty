@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-378
@@ -23,7 +23,7 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 ## Acceptance Criteria
 
 - [ ] From the main checkout, through the CLI, with `main`'s tickets committed dated `2030-01-01T00:00:00Z` before each branch is made (see Tests): `chitty show` of a ticket edited on `task-<n>` prints the branch copy and `branch: task-<n>`; of a ticket retitled on `task-<n>`, prints a `path:` line ending in the branch file name; of a ticket archived on its branch, prints a `path:` line ending in `chitty/tasks/archive/<its file name>`; of a ticket only on branch `feature`, fails with an error starting `no task TASK-<n>` (each fails on the commit before the switch). Guard, passing before and after: of a provisional `TASK-K7Q2MX` committed only on branch `task-k7q2mx`, prints that copy and `branch: task-k7q2mx`
-- [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`, referencing no other ticket: `chitty show TASK-2` and `chitty edit TASK-2 --note x` succeed; `chitty show TASK-1` fails with the error containing `changed on both` and naming `task-1` and `main` (fails on the commit before the switch). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`, and `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` without raising (it raises on the commit before the switch). With `TASK-1` committed valid on `main` and edited (title `branch`) on `task-1`, and the main checkout's `TASK-1` file then overwritten, uncommitted, with `not frontmatter`: from the main checkout `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` and `chitty show TASK-1` prints title `branch` (both raise the working-tree parse error on the commit before the switch). In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
+- [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`, referencing no other ticket: `chitty show TASK-2` and `chitty edit TASK-2 --note x` succeed; `chitty show TASK-1` fails with the error containing `changed on both` and naming `task-1` and `main` (fails on the commit before the switch). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`, and `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` without raising (it raises on the commit before the switch). With `TASK-1` committed valid on `main` and edited (title `branch`) on `task-1`, and the main checkout's `TASK-1` file then overwritten, uncommitted, with `not frontmatter`: from the main checkout `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` and `Repo.open(root).find(TaskId.parse("TASK-1")).task.frontmatter.title` is `branch` (not `chitty show`, whose child listing goes through `all_tasks()` and is `TASK-480`) (both raise the working-tree parse error on the commit before the switch). In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
 - [ ] `make check` passes, `git diff main...HEAD --stat` touches only `tests/test_ticket_reads.py` and this ticket, and a note records each case's failure on the commit before the switch
 
 ## Plan
@@ -36,6 +36,8 @@ The post-switch malformed main working-tree case fails: `Repo.context_of` return
 
 Partial tests are committed. `make check` ran 914 tests: the malformed working-tree show case was the only failure; ruff and pyright passed. With the parent of the oldest TASK-378 store commit substituted (the src diff to main names only store.py), the pre-switch tests failed as follows: branch edit showed main title; retitle showed main path; archive reported duplicate files; feature-only ticket was shown; conflicted ticket showed main instead of error; malformed branch showed main instead of error; malformed main working tree raised during context lookup; linked feature worktree showed the uncommitted title. Provisional guard passed. The malformed branch context assertion and malformed main show assertion were not independently reached in that run; their separate pre-switch evidence remains to be collected. Restored store.py. Full passing verification and review handoff remain unfinished.
 
+Planner 2026-11-21: `chitty show` also lists the ticket's children through `repo.all_tasks()` (`src/chitty/cli.py:604`), which parses every working-tree copy. That is a listing, so it belongs to `TASK-480`, not here. Criterion 2's malformed main working-tree case now asserts `Repo.find` instead of `chitty show`, and the `chitty show` case is recorded on `TASK-480`. Put each case of criteria 1 and 2 in its own test method, so the pre-switch run reaches every assertion independently. The malformed-branch `context_of` assertion and the malformed main working-tree `find` assertion each need their own pre-switch failure in the note.
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -47,3 +49,5 @@ Partial tests are committed. `make check` ran 914 tests: the malformed working-t
 - 2026-11-21T12:39:24Z calm-quartz-stoat: wrote the plan
 - 2026-11-21T12:41:58Z calm-quartz-stoat: changed owner, notes
 - 2026-11-21T12:41:58Z calm-quartz-stoat doing → planning
+- 2026-11-21T12:43:15Z sunny-ebony-kestrel: changed acceptance criteria, notes
+- 2026-11-21T12:43:15Z sunny-ebony-kestrel planning → todo
