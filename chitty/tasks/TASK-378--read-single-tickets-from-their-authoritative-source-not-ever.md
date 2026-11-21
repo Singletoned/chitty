@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -59,8 +59,8 @@ Tests: no new test file here (`TASK-506` adds them). The migrated tests assert t
 
 ## Acceptance Criteria
 
-- [ ] The two spike commits are applied (or the same change written), and the 9 migrated tests are as the Decisions describe. The five that assert new behaviour (the three in `tests/test_check_cross_branch_references.py`, the repair `uncommitted` case and the provisional migration) each fail on `main` before the switch, recorded in a note. To get that evidence, commit your work first, then run `git show main:src/chitty/store.py > src/chitty/store.py`, run those tests, and restore with `git checkout -- src/chitty/store.py`.
-- [ ] `make check` passes, with every test in `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency` and `test_ticket_worktree_write_does_not_wait` passing unchanged; the review note lists every existing test the branch changed, each with its old and new assertion
+- [x] The two spike commits are applied (or the same change written), and the 9 migrated tests are as the Decisions describe. The five that assert new behaviour (the three in `tests/test_check_cross_branch_references.py`, the repair `uncommitted` case and the provisional migration) each fail on `main` before the switch, recorded in a note. To get that evidence, commit your work first, then run `git show main:src/chitty/store.py > src/chitty/store.py`, run those tests, and restore with `git checkout -- src/chitty/store.py`.
+- [x] `make check` passes, with every test in `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency` and `test_ticket_worktree_write_does_not_wait` passing unchanged; the review note lists every existing test the branch changed, each with its old and new assertion
 
 ## Plan
 
@@ -77,6 +77,10 @@ Applied the two specified spikes as partial work. `make check` fails beyond the 
 Planner 2026-11-21: the six `TestCrossBranchWrites` and MCP failures came from a stale branch. `task-378` did not contain `TASK-505` (`6c8bf06d`) or `TASK-504`. Rebased `task-378` onto `main`, keeping the worker's spike commit (now `e0675f4a`); `make check` then passed (905 tests, OK). Remaining: the fails-before evidence in criterion 1, then review.
 
 With main store.py restored temporarily, all five migrated regression tests failed as expected: reference existence on other branch (both parent and dependency), malformed other-branch task, refused edit, repair uncommitted case, and provisional move. Restored the committed implementation afterward.
+
+Reviewed: full diff inspected; `make check` passed (905 tests, OK; ruff and pyright clean). Placement property coverage is deferred to TASK-393 as specified.
+1: pass - Applied equivalent spike changes and nine migrations. With `main:src/chitty/store.py` temporarily substituted, `python -m unittest -v` ran the five named regressions and printed `FAILED (failures=6)`: `test_reference_existence_matches_show` failed both other-branch subtests (show exited 0 not 1); `test_malformed_task_on_another_branch_is_not_read` lacked the missing-reference output; `test_edit_on_another_branch_is_refused` exited 0 not 1; `test_repair_requires_committed_work_outside_ticket_directories` uncommitted case printed the old no-work error rather than invalid status; `test_move_provisional_off_main_then_promote_on_main` exited 0 not 1. Restored the implementation; all pass in `make check`.
+2: pass - `make check` printed `Ran 905 tests` and `OK`, including unchanged `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency`, and `test_ticket_worktree_write_does_not_wait`. Changed tests, old to new: `test_reference_existence_matches_show`: other branch present/show succeeds to missing/show fails; `test_malformed_task_on_another_branch_reports_parse_error` renamed `test_malformed_task_on_another_branch_is_not_read`: parse error to missing dependency; `test_edit_can_depend_on_task_only_on_main` renamed `test_edit_on_another_branch_is_refused`: dependency added to edit refused and file unchanged; `test_todo_dependency_must_be_done_on_main`: worker/rename branches to task-1, same dependency assertions; `test_unmerged_archive_does_not_complete_dependency`: worker branch to task-1, same assertions; `test_run_from_another_worktree_uses_the_branch_not_main`: newer note on main to task-1, runner assertions unchanged; `test_numbers_ignore_committed_tasks_on_another_branch`: create branch files directly rather than through Repo, numbering assertions unchanged; `test_repair_requires_committed_work_outside_ticket_directories`: uncommitted case changes from no-work error to invalid-status error and unchanged main status; `test_move_provisional_off_main_then_promote_on_main`: moving main ticket on feature succeeds to refusal, create and move provisional ticket instead, promotion TASK-1 to TASK-2.
 
 ## Summary
 
@@ -228,3 +232,5 @@ Single-ticket reads now use the authoritative source; the nine specified tests w
 - 2026-11-21T12:24:00Z daring-yellow-dormouse: changed notes
 - 2026-11-21T12:25:37Z daring-yellow-dormouse: changed summary
 - 2026-11-21T12:25:46Z daring-yellow-dormouse doing → review
+- 2026-11-21T12:30:07Z open-amber-falcon: changed notes; ticked acceptance criteria
+- 2026-11-21T12:30:07Z open-amber-falcon review → done
