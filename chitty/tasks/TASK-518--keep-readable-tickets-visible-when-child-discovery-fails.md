@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: cold-read
+status: planning
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -26,3 +26,4 @@ Fixture: on main commit a readable parent `TASK-2`, a readable `TASK-3` with `pa
 - 2026-11-21T18:38:33Z eager-ginger-adder → backlog
 - 2026-11-21T18:42:31Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T18:42:31Z eager-ginger-adder backlog → cold-read
+- 2026-11-21T18:43:17Z eager-ginger-adder cold-read → planning
