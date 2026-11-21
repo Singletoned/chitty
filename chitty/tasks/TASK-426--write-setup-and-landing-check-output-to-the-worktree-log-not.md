@@ -1,6 +1,6 @@
 ---
 title: Write `setup` and landing-check output to the worktree log, not the ticket
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-353
@@ -27,7 +27,7 @@ Against the `run.py` of `TASK-353`, each changed test fails; record in the notes
 
 ## Acceptance Criteria
 
-- [ ] The changed assertions pass, and each changed test fails against the `run.py` of `TASK-353`, with the first failing assertion recorded in the notes; the command-not-found guard passes; `make check` passes
+- [x] The changed assertions pass, and each changed test fails against the `run.py` of `TASK-353`, with the first failing assertion recorded in the notes; the command-not-found guard passes; `make check` passes
 
 ## Plan
 
@@ -40,6 +40,9 @@ Cold read 2026-11-19 outcomes: restated `_run_logged`; dropped the wrong `refres
 Second cold read 2026-11-19 outcomes: the fails-before evidence names the first failing assertion instead of assuming `FileNotFoundError`; exact edits for the landing marker and the guard setup; `Error output:` left to `TASK-427`.
 
 Before the fix, the setup regression first failed its assertion that the note contains `setup exited with status 9; output in `.chitty/check.log``; the landing regression first failed the equivalent assertion for status 7. Both notes contained their command output instead. The missing setup command guard passed before the fix.
+
+Reviewed:
+1: pass - `make check` printed `Ran 902 tests` and `OK`. Running the two changed tests and the missing-command guard with a scratch copy of `cda4e9f9:src/chitty/run.py` printed `FF.`: the first failures were the setup status 9 and landing status 7 log-path note assertions respectively, and the guard passed. The recorded pre-fix evidence agrees.
 
 ## Summary
 
@@ -56,3 +59,5 @@ Setup and landing checks now write combined output to the shared worktree log an
 - 2026-11-21T08:46:12Z upbeat-white-adder: changed notes
 - 2026-11-21T08:48:10Z upbeat-white-adder: changed summary
 - 2026-11-21T08:48:17Z upbeat-white-adder doing → review
+- 2026-11-21T08:53:58Z intrepid-jade-wren: changed notes; ticked acceptance criteria
+- 2026-11-21T08:53:58Z intrepid-jade-wren review → done
