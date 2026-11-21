@@ -1,6 +1,6 @@
 ---
 title: Use the ticket branch `task-1` in the cross-branch write tests
-status: planning
+status: cold-read
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -21,6 +21,13 @@ Out of scope: every other migration listed in `TASK-378`. This ticket is not a r
 
 To check "after": `git worktree add --detach <dir> spike/task-378`, apply `TASK-504`'s change to `_choose_source` there (or, once `TASK-504` has landed, rebase the spike onto `main`), copy the two changed test files in, and run `python -m unittest tests.test_cli.TestCrossBranchWrites tests.test_mcp.TestMcp.test_cross_branch_write_error_matches_the_cli` with `PYTHONPATH=src`.
 
+## Acceptance Criteria
+
+- [ ] `git diff main -- tests` changes only `tests/test_cli.py` (`TestCrossBranchWrites`) and `tests/test_mcp.py` (`test_cross_branch_write_error_matches_the_cli`), and every changed line differs only by `worker` becoming `task-1`; no `"worker"` literal is left in those five `test_cli.py` tests or that MCP test
+- [ ] `make check` passes, and a note records the changed tests passing on `spike/task-378` with `TASK-504`'s change, run as the Description says
+
 ## History
 
 - 2026-11-21T11:38:15Z sunny-ebony-kestrel → planning
+- 2026-11-21T11:38:35Z sunny-ebony-kestrel: changed acceptance criteria
+- 2026-11-21T11:38:35Z sunny-ebony-kestrel planning → cold-read
