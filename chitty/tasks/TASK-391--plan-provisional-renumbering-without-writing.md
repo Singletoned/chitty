@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: doing
+status: review
 depends_on:
   - TASK-381
   - TASK-389
@@ -94,6 +94,10 @@ I read the complete current ticket and inspected discovery, selection, used-numb
 Runner error (agent): TASK-391 was unchanged; only committed changes are visible to `chitty run`
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-391`
+
+## Summary
+
+Implemented read-only provisional allocation and writable-source selection. All ten real-file tests failed on the signature stub and pass with the implementation, including source conflicts, branch-only and deleted IDs, and mentions in excluded on-disk files. `make check` passed all 994 tests. Branch/error diagnostics and untouched structural links remain separate tickets.
 
 ## History
 
@@ -189,3 +193,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-391`
 - 2026-11-21T20:13:15Z golden-indigo-quail doing → error
 - 2026-11-21T21:09:10Z eager-ginger-adder: wrote the plan
 - 2026-11-21T21:09:10Z eager-ginger-adder error → doing
+- 2026-11-21T21:11:53Z eager-ginger-adder: changed summary
+- 2026-11-21T21:11:53Z eager-ginger-adder doing → review
