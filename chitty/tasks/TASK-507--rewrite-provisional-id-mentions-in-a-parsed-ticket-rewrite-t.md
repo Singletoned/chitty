@@ -30,7 +30,7 @@ Tests: Hypothesis properties in `tests/test_property_renumbering.py` (`TASK-381`
 
 ## Plan
 
-Generate property cases and mutation checks, confirm each property fails against a stub, then implement selective immutable rewriting and run the full checks.
+Complete the existing property suite and mutation checks, apply the agreed changed-section normalization, then run formatting and checks and hand off for review.
 
 ## Notes
 
@@ -81,3 +81,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T14:06:24Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T14:07:00Z quick-lilac-heron todo → doing
 - 2026-11-21T14:08:24Z quick-lilac-heron: changed notes
+- 2026-11-21T14:08:41Z quick-lilac-heron: wrote the plan
