@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: review
+status: done
 depends_on:
   - TASK-378
   - TASK-480
@@ -35,8 +35,8 @@ No property here: one ticket, a fixed set of 13 placements, each listed and each
 
 ## Acceptance Criteria
 
-- [ ] `test_main_checkout_placements` passes, covering placements (a) to (f) and (i) read from the main checkout and the uncommitted-edit variants for (a) to (e), comparing `Repo.find` and `Repo.tasks` against the expected results in the Description; it fails against `NotImplementedError` stubs of `place` and `edit_uncommitted`
-- [ ] `make check` passes
+- [x] `test_main_checkout_placements` passes, covering placements (a) to (f) and (i) read from the main checkout and the uncommitted-edit variants for (a) to (e), comparing `Repo.find` and `Repo.tasks` against the expected results in the Description; it fails against `NotImplementedError` stubs of `place` and `edit_uncommitted`
+- [x] `make check` passes
 
 ## Plan
 
@@ -59,6 +59,10 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-393`
 Split again 2026-11-21: the worker returned six sessions saying it could not finish in one turn. Later placements are `TASK-527`, mutants `TASK-528`.
 
 Work started: inspected the ticket and existing ticket-read fixtures and updated the plan. Implementation and verification remain unfinished; no code was changed.
+
+Reviewed: scoped fixture and main-checkout reads verified; no Decided note was needed.
+1: pass - `make check` ran the placement test successfully; runtime stubs of `place` and `edit_uncommitted` produced 12 and 5 errors respectively.
+2: pass - `make check` printed `Ran 1031 tests` and `OK`.
 
 ## Summary
 
@@ -111,3 +115,5 @@ Added deterministic placement fixtures and main checkout find and listing covera
 - 2026-11-21T23:41:37Z intrepid-umber-jay: changed notes
 - 2026-11-21T23:44:52Z intrepid-umber-jay: changed summary
 - 2026-11-21T23:44:52Z intrepid-umber-jay doing → review
+- 2026-11-21T23:50:13Z mellow-navy-crane: changed notes; ticked acceptance criteria
+- 2026-11-21T23:50:13Z mellow-navy-crane review → done
