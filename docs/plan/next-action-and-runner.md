@@ -90,6 +90,8 @@
   each setup, pre-agent check and landing validation command. Setup and landing
   timeouts use their existing error paths; check timeouts use the usual check
   failure routing, including continuing an unfinished work session.
+- If an agent session fails before any commit, restore the selected ticket status,
+  leave uncommitted files untouched, and stop the loop with an error.
 - The agent stays in the runner's process group and session, so the terminal
   and Ctrl-C work. Never `start_new_session`.
 

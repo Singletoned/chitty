@@ -124,6 +124,14 @@ class RunInterrupted(Exception):
         self.phase = phase
 
 
+class AgentSessionFailed(ChittyError):
+    """An agent session exited unsuccessfully."""
+
+
+class AgentStartFailed(ChittyError):
+    """An agent failed without committing work."""
+
+
 class RepairError(ChittyError):
     """A repair agent finished without reaching an accepted final status."""
 
@@ -617,17 +625,32 @@ def _run_ticket_with_log(
             agent_environment["PATH"] = os.pathsep.join(
                 (str(runner_chitty.parent), agent_environment.get("PATH", ""))
             )
-        new_status = _agent_sessions(
-            main_repo,
-            action,
-            agent,
-            agent_command,
-            arguments,
-            worktree,
-            agent_environment,
-            "error" if repairing else old_status,
-            log,
-        )
+        head = _git(worktree, "rev-parse", "HEAD").strip()
+        try:
+            new_status = _agent_sessions(
+                main_repo,
+                action,
+                agent,
+                agent_command,
+                arguments,
+                worktree,
+                agent_environment,
+                "error" if repairing else old_status,
+                log,
+            )
+        except AgentSessionFailed as error:
+            if _git(worktree, "rev-parse", "HEAD").strip() != head:
+                raise
+            repo = Repo(worktree, main_repo.config)
+            if repo.find(action.id).task.frontmatter.status != selected_status:
+                repo.edit(
+                    action.id,
+                    Edit(status=selected_status, skip_verdicts=True, skip_current_version=True),
+                )
+            raise AgentStartFailed(
+                f"agent failed before committing anything; {action.id} left at "
+                f"{selected_status}: {error}"
+            ) from error
         if repairing and new_status not in {"review", "blocked"}:
             raise RepairError(
                 f"repair agent left {action.id} in invalid status {new_status}; "
@@ -670,7 +693,7 @@ def _run_ticket_with_log(
             )
     except RunInterrupted:
         raise
-    except RepairError:
+    except (RepairError, AgentStartFailed):
         raise
     except ChittyError as error:
         handoff = _record_ticket_error(branch_repo, action, context["phase"], error)
@@ -765,7 +788,7 @@ def _run_session(
             log=log,
         )
     except FileNotFoundError:
-        raise ChittyError(f"agent command not found: {command[0]}") from None
+        raise AgentSessionFailed(f"agent command not found: {command[0]}") from None
     except KeyboardInterrupt:
         raise RunInterrupted("agent") from None
     timed_out = completed.stderr == b"timed out"
@@ -777,7 +800,7 @@ def _run_session(
         raise ChittyError(f"agent timed out after {repo.config.agent_timeout} seconds:\n{output}")
     if outcome == "failed":
         output = completed.stdout.decode(errors="replace") if completed.stdout else "(no output)"
-        raise ChittyError(f"agent exited with status {completed.returncode}:\n{output}")
+        raise AgentSessionFailed(f"agent exited with status {completed.returncode}:\n{output}")
 
 
 def continuation_prompt(mode: Literal["work", "review"], ticket_id: str) -> str:
