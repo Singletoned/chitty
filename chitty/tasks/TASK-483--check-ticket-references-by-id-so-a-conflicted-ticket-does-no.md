@@ -1,6 +1,6 @@
 ---
 title: Check ticket references by ID, so a conflicted ticket does not block edits of others
-status: review
+status: done
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -37,6 +37,11 @@ Add ID-only reference validation, isolate unreadable mentions in todo output, an
 
 Both the TASK-3 note and TASK-2 dependency regression tests failed with the conflict error when exists temporarily returned self.lookup(task_id) is not None; the unreadable mention test also failed before the fix.
 
+Reviewed: complete diff inspected; no earlier review findings.
+1: pass - `make check` passed 931 tests, including `test_existing_references_do_not_read_conflict` and `test_add_conflicted_dependency`. Replacing `Repo.exists` in memory with `self.lookup(task_id) is not None` made both tests fail with `Error: ticket `TASK-1` changed on both `task-1` and `main``.
+2: pass - `make check` passed `test_missing_reference`; the worker's note records both requested regression failures, independently reproduced as described in criterion 1.
+3: pass - `make check` passed 931 tests including `test_unreadable_mention` and `test_unconfigured_context_reference`. Restoring main's `referenced_tasks` in memory made `test_unreadable_mention` fail with `Error: ticket `TASK-1` changed on both `task-1` and `main`` after the update.
+
 ## Summary
 
 Reference validation now uses ticket IDs, and promotion reports unreadable mentions without failing. Real-Git regression tests cover conflicts and guards; make check passes all 926 tests. No follow-ups.
@@ -52,3 +57,5 @@ Reference validation now uses ticket IDs, and promotion reports unreadable menti
 - 2026-11-21T13:19:27Z sunny-coral-badger: changed notes
 - 2026-11-21T13:23:27Z sunny-coral-badger: changed summary; ticked acceptance criteria
 - 2026-11-21T13:23:36Z sunny-coral-badger doing → review
+- 2026-11-21T13:28:27Z youthful-ginger-raven: changed notes
+- 2026-11-21T13:28:27Z youthful-ginger-raven review → done
