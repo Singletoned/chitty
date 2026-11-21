@@ -38,6 +38,8 @@ Earlier notes (the worker's two contract questions and the split) are in Git his
 
 Stub regression: `.venv/bin/python -m unittest tests.test_property_renumbering` failed for `test_boundaries`, `test_checks`, `test_empty`, `test_fields`, `test_formatting`, and `test_preserved`, each with `NotImplementedError` at `src/chitty/renumbering.py:35` in `rewrite_task`.
 
+Returned to planning: the requirement that every changed section equals `replace_ids` of its original parsed text conflicts with the prescribed `with_section` implementation. `tests/ticket_strategies.py` generates trailing spaces; for Description `Text  TASK-1 `, mapping `TASK-1` to `TASK-100` requires `Text  TASK-100 `, but `Task.with_section` calls `_text_lines`, which strips trailing whitespace from every line, producing `Text  TASK-100`. The generated `test_fields` fails on this case. Decide whether changed sections must preserve trailing whitespace (and how to implement that without changing the prescribed API), or whether the contract should explicitly permit this normalization and update its property. The partial implementation and six initial property helpers are committed; the two required wrong-version tests and full property coverage remain unfinished. `make check` passed formatting, lint and pyright but failed `test_fields`; verification is incomplete.
+
 ## History
 
 - 2026-11-21T13:10:17Z sunny-ebony-kestrel → planning
@@ -66,3 +68,4 @@ Stub regression: `.venv/bin/python -m unittest tests.test_property_renumbering` 
 - 2026-11-21T13:59:37Z youthful-coral-heron todo → doing
 - 2026-11-21T14:01:22Z youthful-coral-heron: wrote the plan
 - 2026-11-21T14:02:12Z youthful-coral-heron: changed notes
+- 2026-11-21T14:04:40Z youthful-coral-heron: changed notes
