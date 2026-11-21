@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: planning
+status: todo
 depends_on:
   - TASK-381
   - TASK-389
@@ -174,3 +174,4 @@ I read the complete current ticket and inspected discovery, selection, used-numb
 - 2026-11-21T20:02:09Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T20:02:09Z eager-ginger-adder planning → cold-read
 - 2026-11-21T20:02:58Z eager-ginger-adder cold-read → planning
+- 2026-11-21T20:04:19Z eager-ginger-adder planning → todo
