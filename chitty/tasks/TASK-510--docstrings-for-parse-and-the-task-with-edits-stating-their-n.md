@@ -1,9 +1,8 @@
 ---
 title: Docstrings for `parse` and the `Task.with_*` edits, stating their normalisations
-status: doing
+status: planning
 labels:
   - untestable
-owner: nimble-umber-adder
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -24,8 +23,16 @@ Do not change behaviour. `make check` passes.
 
 Trace `parse` and its validation helpers, then document their rejection rules and error prefixes. Read each edit helper and document its normalization, ordering, and errors without changing behavior. Run `chitty fix`, `make format`, and `make check` before handing off for review.
 
+## Notes
+
+The requested `parse` rejection for sections out of `SECTION_ORDER` does not exist. In `src/chitty/model.py`, `_split_sections` uses `SECTION_ORDER` to recognize names but preserves input order, while `_parse_history` alone requires `History` to be last. Verified in the worktree: `Notes` before `Description` parses and round-trips unchanged; putting `History` before `Description` raises `'## History' must be the last section`. The planner should replace the general order requirement with the History-only rule to keep this docs-only, or split any intended order enforcement into a separate behavior change.
+
+The helper descriptions also need precise limits: `section` uses `strip("\n")`, so space- or tab-only edge lines are not stripped. `with_field` checks `provisional` before the removal branch, so it accepts `True` or `None` but rejects `[]`; removing a required key also fails on reparse. `with_section` uses `rstrip()` (not just spaces and tabs), trims input edge newlines and adds section separators, and treats whitespace-only input as a removal request, but `Description` cannot be removed. For `with_criteria`, distinguish validation from output order: it validates replacements before additions, then walks the original items (skip removed, replace text, update checkbox as applicable), then appends additions; conflicting operations on one original index raise. These should be documented as implemented. No docstrings were changed and `make check` was not run.
+
 ## History
 
 - 2026-11-21T14:32:03Z sunny-ebony-kestrel → todo
 - 2026-11-21T15:46:49Z nimble-umber-adder: changed owner; wrote the plan
 - 2026-11-21T15:46:49Z nimble-umber-adder todo → doing
+- 2026-11-21T15:47:19Z nimble-umber-adder: changed owner, notes
+- 2026-11-21T15:47:19Z nimble-umber-adder doing → planning
