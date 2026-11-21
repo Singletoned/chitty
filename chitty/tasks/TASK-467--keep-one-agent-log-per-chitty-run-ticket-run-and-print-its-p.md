@@ -1,6 +1,6 @@
 ---
 title: Keep one agent log per `chitty run` ticket run and print its path
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-276
@@ -33,3 +33,4 @@ For success copy the fixture pattern of `tests/test_run_continue.py`: first fake
 - 2026-11-21T20:02:04Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T20:02:04Z eager-ginger-adder backlog → cold-read
 - 2026-11-21T20:02:56Z eager-ginger-adder cold-read → planning
+- 2026-11-21T20:04:17Z eager-ginger-adder planning → todo
