@@ -1,6 +1,6 @@
 ---
 title: Type section names as a `Literal`, so pyright rejects a wrong one
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -30,3 +30,4 @@ Tests: a new `tests/test_section_name_types.py`. One test writes a small Python 
 - 2026-11-21T14:32:31Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T14:34:36Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T14:34:36Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T14:37:03Z open-teal-badger todo → doing
