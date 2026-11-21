@@ -39,6 +39,8 @@ Cold read 2026-11-19 outcomes: restated `_run_logged`; dropped the wrong `refres
 
 Second cold read 2026-11-19 outcomes: the fails-before evidence names the first failing assertion instead of assuming `FileNotFoundError`; exact edits for the landing marker and the guard setup; `Error output:` left to `TASK-427`.
 
+Before the fix, the setup regression first failed its assertion that the note contains `setup exited with status 9; output in `.chitty/check.log``; the landing regression first failed the equivalent assertion for status 7. Both notes contained their command output instead. The missing setup command guard passed before the fix.
+
 ## History
 
 - 2026-11-19T17:28:48Z quick-ginger-lapwing → planning
@@ -47,3 +49,4 @@ Second cold read 2026-11-19 outcomes: the fails-before evidence names the first 
 - 2026-11-19T17:34:21Z quick-ginger-lapwing planning → todo
 - 2026-11-21T08:43:43Z upbeat-white-adder todo → doing
 - 2026-11-21T08:45:31Z upbeat-white-adder: wrote the plan
+- 2026-11-21T08:46:12Z upbeat-white-adder: changed notes
