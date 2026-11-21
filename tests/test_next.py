@@ -1507,47 +1507,6 @@ class TestNext(CliTestCase):
 
         _ignore_run_log(worktree)
         self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
-            "path.write_text(path.read_text().replace('status: doing', 'status: review'))\n"
-            "subprocess.run(['git', 'add', str(path)], check=True)\n"
-            "subprocess.run(['git', 'commit', '--quiet', '-m', 'review'], check=True)\n"
-        )
-        result = self.run_cli("run")
-        self.assertEqual(result.stdout, "TASK-1: doing → review\n", result.stderr)
-<<<<<<< HEAD
-        self.assertIn("Check failed before this session", seen.read_text())
-
-    def test_run_check_failure_on_todo_ticket_with_only_ticket_commits_errors(self):
-        self.write_failing_checker()
-        self.commit_ticket("Todo", "todo")
-        self.git("switch", "-c", "task-1")
-        ticket = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
-        ticket.write_text(
-            ticket.read_text().replace("## History", "## Notes\n\nPrior planning.\n\n## History")
-        )
-        self.git("add", str(ticket))
-        self.git("commit", "--quiet", "-m", "planning")
-        self.git("switch", "main")
-        marker = self.tmp / "agent-started"
-        self.install_fake_pi(f"from pathlib import Path\nPath({str(marker)!r}).write_text('yes')\n")
-        result = self.run_cli("run")
-        self.assertIn("todo → error", result.stdout)
-        self.assertEqual(self.json("show", "TASK-1")["status"], "error")
-        self.assertFalse(marker.exists())
-=======
-        worktree = self.root / ".worktrees/task-1"
-        log = worktree / ".chitty/check.log"
-        self.assertEqual(log.read_text(), "# chitty check: true\n# exit 0\n")
-        exclude_path = Path(
-            self.git("-C", str(worktree), "rev-parse", "--git-path", "info/exclude").strip()
-        )
-        if not exclude_path.is_absolute():
-            exclude_path = worktree / exclude_path
-        self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
-        from chitty.run import _ignore_run_log
-
-        _ignore_run_log(worktree)
-        self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
->>>>>>> c933ab9c (Log runner checks in the worktree)
 
     def test_run_logged_keeps_output_ending_in_a_multibyte_character(self):
         from chitty.run import _run_logged
