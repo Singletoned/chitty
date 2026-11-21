@@ -1,12 +1,11 @@
 ---
 title: Describe provisional IDs in the guides, README and docs
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: nimble-umber-adder
 depends_on:
   - TASK-389
-  - TASK-392
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -25,6 +24,10 @@ Change:
 
 Starts after `TASK-389`; the `renumber` wording after `TASK-392` if that has landed, otherwise leave `renumber` with no argument out.
 
+## Plan
+
+Update the guides, CLI help, README, and plan docs for the ID allocation already shipped by `TASK-389`. Update the existing guide wording test. Omit pathless renumbering until `TASK-392` ships, as the description allows. Verify the shipped allocation modes, guide budgets, and full checks.
+
 ## History
 
 - 2026-11-18T16:28:12Z lively-quartz-crane → backlog
@@ -32,3 +35,5 @@ Starts after `TASK-389`; the `renumber` wording after `TASK-392` if that has lan
 - 2026-11-18T16:28:55Z lively-quartz-crane backlog → todo
 - 2026-11-18T16:34:52Z lively-quartz-crane: changed dependencies, description
 - 2026-11-18T16:37:42Z lively-quartz-crane: changed dependencies, description
+- 2026-11-21T18:46:49Z nimble-umber-adder: changed owner, dependencies; wrote the plan
+- 2026-11-21T18:46:49Z nimble-umber-adder todo → doing
