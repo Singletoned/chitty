@@ -49,6 +49,10 @@ Partial implementation: added and tested command_timeout configuration; make che
 
 Deadline-disabled regression run: all five new timeout cases failed as expected. The direct case did not raise CommandTimedOut; setup and check cases ran the agent instead of returning todo to error; doing lacked the timeout note; landing returned review to done instead of done to error. Restored wait timeout afterward.
 
+## Summary
+
+Implemented per-command setup and check deadlines with shared process-tree cleanup and existing failure routing. Added configuration property coverage, real-process cleanup and routing tests, and documented the one-hour default. All five timeout regression cases failed with the deadline disabled and passed after restoration; make check passed (983 tests). No follow-ups.
+
 ## History
 
 - 2026-11-19T20:55:24Z sunny-white-dormouse → backlog
@@ -70,3 +74,4 @@ Deadline-disabled regression run: all five new timeout cases failed as expected.
 - 2026-11-21T16:12:23Z golden-bronze-marten: wrote the plan
 - 2026-11-21T16:15:58Z golden-bronze-marten: changed notes
 - 2026-11-21T16:19:34Z golden-bronze-marten: changed notes
+- 2026-11-21T16:22:59Z golden-bronze-marten: changed summary
