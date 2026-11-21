@@ -1,23 +1,22 @@
 ---
 title: Docstrings for `parse` and the `Task.with_*` edits, stating their normalisations
-status: planning
+status: todo
 labels:
   - untestable
+owner: untestable
 parent: TASK-376
 created: 2026-11-21
 ---
 
 ## Description
 
-On 2026-11-21 `TASK-507` went through many planning rounds because these functions' normalisations and errors were not written down. In `src/chitty/model.py`, give `parse` a docstring, and extend those of `Task.section`, `Task.with_field`, `Task.with_section` and `Task.with_criteria`. Check each statement against the code as it is when you write it (do not copy this list):
+Document the existing behavior of `parse`, `Task.section`, `Task.with_field`, `Task.with_section`, and `Task.with_criteria` in `src/chitty/model.py`. These contracts were difficult to establish when planning `TASK-507`. Change only docstrings; do not change behavior or add tests for wording. Run `make check` to verify the repository still passes.
 
-- `parse`: what it rejects, with the error's start. At least: text with `\r`, text not ending in `\n`, content before the first `##` section, a `#` heading, an unknown section name, sections out of `SECTION_ORDER`, a missing or empty `Description`, and a malformed `History` line.
-- `section`: it strips leading and trailing blank lines.
-- `with_field`: which keys it accepts, that `None` or `[]` removes, and that a list with duplicates raises.
-- `with_section`: it refuses Acceptance Criteria, strips trailing spaces and tabs from every line, normalises blank lines around the section, and removes the section when given empty text.
-- `with_criteria`: the order it applies `add`, `remove`, `set_criteria`, `check` and `uncheck`; that a re-set item is written as one `- [ ]` line, so its checked state and any `[X]` or continuation lines are lost; and that multi-line text raises.
-
-Do not change behaviour. `make check` passes.
+- `parse`: document validation failures and their `TaskError` message prefixes, including line-number prefixes where present. Cover line endings, frontmatter, section structure, acceptance criteria, History, and required Description. `SECTION_ORDER` supplies known section names and guides insertion, not validation of their relative order: parsing preserves input order, except that `History`, if present, must be last. Distinguish malformed History entries from invalid dates or timestamps.
+- `Task.section`: returns content without the heading, stripping edge newline characters but not spaces or tabs, or `None` if absent.
+- `Task.with_field`: accepts keys in `FIELD_ORDER` and revalidates the result. `None` or `[]` requests removal, except `provisional` accepts only `True` or `None`; required keys cannot be removed. Duplicate entries in `labels` and `depends_on` raise.
+- `Task.with_section`: refuses Acceptance Criteria; trims input edge newlines and trailing whitespace on each line, and inserts blank separators when writing. Empty or whitespace-only text requests removal, but Description must remain nonempty. Document rejection of carriage returns and edits that would change section boundaries.
+- `Task.with_criteria`: takes 1-based indices into the original list and rejects conflicting operations for an index. It validates replacements and additions before editing; in original order it skips removals, replaces text, and applies checkbox updates on their respective items, then appends additions. A replacement becomes a single unchecked `- [ ]` line, discarding the old marker (including `[X]`) and continuation lines. Added and replacement text is stripped and must be nonempty and single-line.
 
 ## Plan
 
@@ -36,3 +35,5 @@ The helper descriptions also need precise limits: `section` uses `strip("\n")`, 
 - 2026-11-21T15:46:49Z nimble-umber-adder todo → doing
 - 2026-11-21T15:47:19Z nimble-umber-adder: changed owner, notes
 - 2026-11-21T15:47:19Z nimble-umber-adder doing → planning
+- 2026-11-21T15:50:50Z nimble-umber-adder: changed owner, description
+- 2026-11-21T15:50:50Z nimble-umber-adder planning → todo
