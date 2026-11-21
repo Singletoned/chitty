@@ -398,6 +398,11 @@ def _land_pending(main_repo: Repo) -> RunResult | None:
             continue
         stored = main_repo.find(task_id)
         if not stored.archived and stored.task.frontmatter.status == "done":
+            if stored.branch != branch:
+                print(
+                    f"not landing {branch}: {task_id} is read from {stored.branch}", file=sys.stderr
+                )
+                continue
             pending.append(stored)
     pending.sort(key=lambda stored: stored.id)
     if not pending:
