@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -20,13 +20,17 @@ Decisions:
 - Agent output goes to stderr through the error message only, never into the ticket.
 - The worktree is left as it is: files the agent wrote but did not commit stay, and the next session in that worktree sees them. Nothing is reset or cleaned.
 - Repair mode: `selected_status` is `error`, which is already the status, so a repair agent that fails before committing leaves the ticket at `error` with no edit, and the loop stops as for any start failure.
+- `HEAD` is compared with the commit recorded before the first session, so a first session that exits 0 without committing, followed by a continuation that exits non-zero, is also a start failure.
+- For a `todo` ticket the claim commit (`doing`, made by `claim_edit()` before the agent) stays on the branch, and the reset to `todo` is one more commit: `main..task-1` has exactly two commits afterwards.
+- Usage is still recorded by the `finally` block in `_run_ticket`, as for any run.
+- `_preflight` only checks that `agent_command` is set, so a command that does not exist reaches `_run_session` and its `FileNotFoundError`.
 - Docs: in `docs/plan/next-action-and-runner.md`, add one bullet next to the `agent_timeout` bullet describing the start failure rule and that the loop stops.
 
 Tests. No property: the behaviour needs a real agent process and Git, and the decision has a small fixed set of cases, each listed below. Put the new tests in `tests/test_run_errors_on_branch.py` (`TestRunErrorsOnBranch`), using its fake agent at `self.root / "bin" / "fake"`.
 
-- `test_agent_start_failure_on_todo_stops_and_leaves_todo`: the fake writes `scratch.txt` (without adding or committing it), prints `Error: Model "x" not found` and exits 7; `TASK-1` is `todo`. `run_cli("run", "--ticket", "TASK-1", exit_code=1)`. stderr contains `agent failed before committing anything; TASK-1 left at todo: agent exited with status 7:` and `Error: Model "x" not found`. The ticket on `task-1`'s tip says `status: todo` and contains no `Runner error`; `main` is unchanged; `chitty show TASK-1 --json` reports `todo`; `.worktrees/task-1/scratch.txt` still exists.
+- `test_agent_start_failure_on_todo_stops_and_leaves_todo`: the fake writes `scratch.txt` (without adding or committing it), prints `Error: Model "x" not found` and exits 7; `TASK-1` is `todo`. `run_cli("run", "--ticket", "TASK-1", exit_code=1)`. stderr contains `agent failed before committing anything; TASK-1 left at todo: agent exited with status 7:` and `Error: Model "x" not found`. The ticket on `task-1`'s tip says `status: todo` and contains no `Runner error`; `main` is unchanged; `chitty show TASK-1 --json` reports `todo`; `.worktrees/task-1/scratch.txt` still exists; `git rev-list --count main..task-1` is `2`.
 - `test_agent_start_failure_on_doing_leaves_doing`: the same with `make_doing_branch()`. The ticket stays `doing`, the branch tip ticket has no `Runner error`, and no new commit is made on `task-1`.
-- `test_repair_start_failure_stops_and_leaves_error`: put `TASK-1` in `error` on its branch the way `tests/test_run_repair_on_branch.py` sets up a repair, then run with the fake exiting 7 without committing and `--errors`, `exit_code=1`. stderr contains `agent failed before committing anything; TASK-1 left at error:`; no commit is added to `task-1`.
+- `test_repair_start_failure_stops_and_leaves_error`: first run the existing scenario of `test_agent_failure_keeps_error_and_message_on_branch` (`make_doing_branch()`, a fake that commits `work.txt` and exits 7), so `TASK-1` is `error` on `task-1` with a `Runner error (agent)` note. Then replace the fake with one that exits 7 without committing, record `git rev-parse task-1`, and run `run_cli("run", "--errors", "--ticket", "TASK-1", exit_code=1)`. stderr contains `agent failed before committing anything; TASK-1 left at error:`, and `task-1` still points at the recorded commit.
 - `test_missing_agent_command_stops_and_leaves_todo`: `agent_command` set to `no-such-chitty-agent {mode} {id}` and committed on `main`; exit 1, stderr contains `agent command not found: no-such-chitty-agent`, the ticket is `todo`.
 - `test_agent_failure_keeps_error_and_message_on_branch` (existing): change its fake so it first writes `work.txt`, runs `git add work.txt` and `git commit --quiet -m work`, then exits 7. Its assertions stay unchanged, so a failure after a commit is still recorded as `Runner error (agent)`. Adjust `assert_branch_error` only if the extra commit breaks its `task-1~1` parent check, and say how in the notes.
 
@@ -42,6 +46,8 @@ Suggestion origin: chitty
 
 Cold read 2026-11-21 outcomes: repair start failures leave the ticket at `error` and stop the loop, with a test; the worktree is left as it is after a start failure, and the todo test checks an uncommitted file survives.
 
+Second cold read 2026-11-21 outcomes: the claim commit stays and the branch count is pinned; the repair fixture is built from the existing agent-failure scenario; an empty first session followed by a failing continuation is a start failure; usage is still recorded; `_preflight` does not check that the command exists (verified). Today the run exits 0 (`run_cli` defaults to `exit_code=0` in the existing test). Not adopted: a test for the continuation case, which uses the same `HEAD` comparison as the tested cases.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -51,3 +57,5 @@ Cold read 2026-11-21 outcomes: repair start failures leave the ticket at `error`
 - 2026-11-21T08:01:52Z nimble-umber-gannet: changed description, acceptance criteria, notes
 - 2026-11-21T08:01:52Z nimble-umber-gannet cold-read → planning
 - 2026-11-21T08:02:12Z nimble-umber-gannet planning → cold-read
+- 2026-11-21T08:03:48Z nimble-umber-gannet: changed description, notes
+- 2026-11-21T08:03:48Z nimble-umber-gannet cold-read → todo
