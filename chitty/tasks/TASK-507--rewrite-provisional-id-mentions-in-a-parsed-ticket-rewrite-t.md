@@ -46,6 +46,10 @@ Planner 2026-11-21: accepted `with_section`'s trailing-whitespace stripping for 
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
 
+## Summary
+
+Implemented selective ID rewriting and completed six properties, including chain and rendered-text mutation checks. Changed sections accept the agreed trailing-whitespace normalization; unchanged sections and criteria retain their formatting. `.venv/bin/python -m unittest tests.test_property_renumbering` and `make check` pass. Stub failure evidence is recorded in Notes. No follow-ups.
+
 ## History
 
 - 2026-11-21T13:10:17Z sunny-ebony-kestrel → planning
@@ -82,3 +86,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T14:07:00Z quick-lilac-heron todo → doing
 - 2026-11-21T14:08:24Z quick-lilac-heron: changed notes
 - 2026-11-21T14:08:41Z quick-lilac-heron: wrote the plan
+- 2026-11-21T14:13:01Z quick-lilac-heron: changed summary
