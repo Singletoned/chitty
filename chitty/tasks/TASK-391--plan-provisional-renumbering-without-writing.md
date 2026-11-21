@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: planning
+status: todo
 depends_on:
   - TASK-381
   - TASK-389
@@ -159,3 +159,4 @@ The read-only preflight is still too large to implement and verify confidently i
 - 2026-11-21T18:46:36Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:47:18Z eager-ginger-adder: changed description
 - 2026-11-21T18:47:18Z eager-ginger-adder cold-read → planning
+- 2026-11-21T18:48:56Z eager-ginger-adder planning → todo
