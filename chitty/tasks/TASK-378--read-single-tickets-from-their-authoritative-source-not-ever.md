@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -185,3 +185,4 @@ Second cold read 2026-11-21 outcomes: `TASK-2` references no ticket in the confl
 - 2026-11-21T09:11:04Z nimble-umber-gannet todo → cold-read
 - 2026-11-21T09:12:19Z nimble-umber-gannet: changed description, acceptance criteria, notes
 - 2026-11-21T09:12:19Z nimble-umber-gannet cold-read → todo
+- 2026-11-21T10:45:47Z witty-ochre-vole todo → doing
