@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: todo
+status: doing
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -73,3 +73,4 @@ Planner 2026-11-21, after the third read: decided that a numbered ticket existin
 - 2026-11-21T13:14:10Z sunny-ebony-kestrel todo → cold-read
 - 2026-11-21T13:17:30Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T13:17:30Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T13:24:58Z lively-teal-eel todo → doing
