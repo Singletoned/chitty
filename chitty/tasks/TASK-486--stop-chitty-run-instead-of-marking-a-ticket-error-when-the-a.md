@@ -47,7 +47,7 @@ Existing tests (decided 2026-11-21, after the first implementation found six fai
 
 ## Plan
 
-Add the specified regression tests and verify failures before implementing HEAD-aware session failure handling; document and run all required checks.
+Update the specified existing agent fixtures and add the reporter regression, verify it fails against main, then run formatting and full checks.
 
 ## Notes
 
@@ -109,3 +109,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T23:14:11Z lively-zinc-newt planning → todo
 - 2026-11-21T23:17:46Z vivid-pearl-urchin todo → doing
 - 2026-11-21T23:19:04Z vivid-pearl-urchin: changed notes
+- 2026-11-21T23:19:18Z vivid-pearl-urchin: wrote the plan
