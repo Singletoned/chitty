@@ -51,7 +51,7 @@ Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `Cli
 
 ## Plan
 
-Wire reads to authoritative source copies and restrict the fresh ticket-worktree write exception to an unchanged ticket. Add the specified real-Git CLI regressions, confirm they fail before the switch, migrate the named legacy tests, then run fix, format and the full checks before handoff.
+Add the specified CLI regressions and verify their failures, switch lookup and context discovery to source copies, migrate existing tests, and run fix, formatting and checks before handoff.
 
 ## Notes
 
@@ -183,3 +183,4 @@ Planning 2026-11-21: the trimmed scope (read switch plus the named migrations) s
 - 2026-11-21T01:25:15Z quick-pearl-lapwing: changed description, acceptance criteria, notes
 - 2026-11-21T01:25:15Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T01:50:03Z eager-violet-puffin todo → doing
+- 2026-11-21T01:54:02Z eager-violet-puffin: wrote the plan
