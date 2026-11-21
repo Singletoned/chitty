@@ -28,6 +28,10 @@ Tests. No change to the earlier tickets' tests.
 
 - [ ] The property and the changed assertions pass; the `AGENT_LINE` counts and the setup count fail against the parent commit of this change, named by hash in the notes; `make check` passes
 
+## Plan
+
+Add the specified property and branch regression assertions, confirm the branch tests fail on the parent, then extract the note formatter and run formatting and checks.
+
 ## Notes
 
 Cold read 2026-11-19 outcomes: lines split with `splitlines()`; a pure `_runner_error_note` with a property; `assert_branch_error` returns `tip`; exact count and order assertions; the setup count guards against repeating the line under another heading.
@@ -41,3 +45,4 @@ Second cold read 2026-11-19 outcomes: whole-string comparison in the property; l
 - 2026-11-19T17:34:16Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:34:24Z quick-ginger-lapwing planning → todo
 - 2026-11-21T10:51:58Z quick-maroon-falcon todo → doing
+- 2026-11-21T10:54:02Z quick-maroon-falcon: wrote the plan
