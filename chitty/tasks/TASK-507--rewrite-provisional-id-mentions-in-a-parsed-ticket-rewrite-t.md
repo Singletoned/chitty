@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: doing
+status: review
 depends_on:
   - TASK-508
 parent: TASK-376
@@ -99,3 +99,4 @@ Implemented selective ID rewriting and six properties. Preservation checks compa
 - 2026-11-21T14:19:09Z eager-teal-puffin: wrote the plan
 - 2026-11-21T14:19:33Z eager-teal-puffin: changed notes
 - 2026-11-21T14:21:21Z eager-teal-puffin: changed summary
+- 2026-11-21T14:21:23Z eager-teal-puffin doing → review
