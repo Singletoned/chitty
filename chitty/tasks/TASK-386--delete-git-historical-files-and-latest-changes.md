@@ -1,6 +1,6 @@
 ---
 title: Delete `git.historical_files` and `_latest_changes`
-status: review
+status: done
 depends_on:
   - TASK-378
   - TASK-379
@@ -27,8 +27,8 @@ No property: a change that only removes code; the existing tests cover what rema
 
 ## Acceptance Criteria
 
-- [ ] `git grep -nE 'historical_files|_latest_changes|HistoricalFile|_tree_blobs|_display_ref|_history\(\)' -- src tests` prints nothing
-- [ ] `.venv/bin/python -m unittest tests.test_ticket_reads tests.test_next_number_main` runs a non-zero number of tests and passes, and `make check` passes
+- [x] `git grep -nE 'historical_files|_latest_changes|HistoricalFile|_tree_blobs|_display_ref|_history\(\)' -- src tests` prints nothing
+- [x] `.venv/bin/python -m unittest tests.test_ticket_reads tests.test_next_number_main` runs a non-zero number of tests and passes, and `make check` passes
 
 ## Plan
 
@@ -37,6 +37,10 @@ Remove the obsolete history scan and its dedicated tests, update remaining asser
 ## Notes
 
 Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the last `_history()` caller) is now `TASK-480`, so this also waits for it.
+
+Reviewed:
+1: pass - `git grep -nE 'historical_files|_latest_changes|HistoricalFile|_tree_blobs|_display_ref|_history\(\)' -- src tests` printed nothing.
+2: pass - `.venv/bin/python -m unittest tests.test_ticket_reads tests.test_next_number_main` printed `Ran 17 tests` and `OK`; `make check` printed `Ran 984 tests` and `OK`, with ruff and pyright passing.
 
 ## Summary
 
@@ -57,3 +61,5 @@ Removed the historical scan and obsolete references. Focused tests and make chec
 - 2026-11-21T20:25:19Z jolly-fawn-vole: wrote the plan
 - 2026-11-21T20:26:59Z jolly-fawn-vole: changed summary
 - 2026-11-21T20:27:01Z jolly-fawn-vole doing → review
+- 2026-11-21T20:31:07Z daring-yellow-quail: changed notes; ticked acceptance criteria
+- 2026-11-21T20:31:07Z daring-yellow-quail review → done
