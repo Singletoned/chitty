@@ -1,6 +1,6 @@
 ---
 title: Require Python function annotations in production source
-status: planning
+status: cold-read
 created: 2026-11-21
 ---
 
@@ -14,7 +14,7 @@ Use temporary probe files in the worker's isolated worktree and remove them befo
 
 ## Acceptance Criteria
 
-- [ ] With a temporary file at `src/chitty/_annotation_probe.py` containing `def echo(value: str):` and `return value`, `make check` fails with Ruff `ANN201`; the same probe does not produce that diagnostic before this change. Re-run the focused Ruff command with the same file contents under `tests/` and `scripts/`: neither emits an annotation diagnostic.
+- [ ] With a temporary file at `src/chitty/_annotation_probe.py` defining `echo(value: str)` without a return annotation and returning `value`, `make check` fails with Ruff `ANN202` (the underscore-prefixed module is private); the same probe emits no annotation diagnostic before this change. Run `uv run ruff check --no-fix` on copies under `tests/` and `scripts/`: neither emits an annotation diagnostic.
 - [ ] With the source probe annotated as `def echo(value: str) -> int:` while still returning `value`, `make check` gets past Ruff and fails in Pyright with a return-type diagnostic for the probe. Remove all probes; `make check` passes on the unchanged production source.
 
 ## Plan
@@ -39,3 +39,5 @@ Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff re
 - 2026-11-21T16:30:04Z daring-hazel-eel: changed notes
 - 2026-11-21T16:30:11Z daring-hazel-eel: changed owner, notes
 - 2026-11-21T16:30:11Z daring-hazel-eel doing → planning
+- 2026-11-21T16:40:52Z honest-coral-heron: changed acceptance criteria
+- 2026-11-21T16:40:52Z honest-coral-heron planning → cold-read
