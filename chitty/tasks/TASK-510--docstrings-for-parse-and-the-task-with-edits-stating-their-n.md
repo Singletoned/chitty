@@ -1,6 +1,6 @@
 ---
 title: Docstrings for `parse` and the `Task.with_*` edits, stating their normalisations
-status: doing
+status: review
 labels:
   - untestable
 owner: nimble-umber-adder
@@ -28,6 +28,10 @@ The requested `parse` rejection for sections out of `SECTION_ORDER` does not exi
 
 The helper descriptions also need precise limits: `section` uses `strip("\n")`, so space- or tab-only edge lines are not stripped. `with_field` checks `provisional` before the removal branch, so it accepts `True` or `None` but rejects `[]`; removing a required key also fails on reparse. `with_section` uses `rstrip()` (not just spaces and tabs), trims input edge newlines and adds section separators, and treats whitespace-only input as a removal request, but `Description` cannot be removed. For `with_criteria`, distinguish validation from output order: it validates replacements before additions, then walks the original items (skip removed, replace text, update checkbox as applicable), then appends additions; conflicting operations on one original index raise. These should be documented as implemented. No docstrings were changed and `make check` was not run.
 
+## Summary
+
+Added docstrings for `parse`, `Task.section`, `Task.with_field`, `Task.with_section`, and `Task.with_criteria` in `src/chitty/model.py`. The parser docs spell out the error prefixes and clarify that `History` must be last but other sections need not follow `SECTION_ORDER`. The edit docs state normalization, removal exceptions, and criterion operation order. No behavior changed: the module AST is identical after removing docstrings. `make format`, `git diff --check`, and `make check` passed (972 tests). No follow-ups needed.
+
 ## History
 
 - 2026-11-21T14:32:03Z sunny-ebony-kestrel → todo
@@ -39,3 +43,5 @@ The helper descriptions also need precise limits: `section` uses `strip("\n")`, 
 - 2026-11-21T15:50:50Z nimble-umber-adder planning → todo
 - 2026-11-21T15:50:54Z nimble-umber-adder: changed owner
 - 2026-11-21T15:50:54Z nimble-umber-adder todo → doing
+- 2026-11-21T15:54:35Z nimble-umber-adder: changed summary
+- 2026-11-21T15:54:35Z nimble-umber-adder doing → review
