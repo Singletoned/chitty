@@ -1,6 +1,6 @@
 ---
 title: Guard provisional renumbering preflight and report bad paths
-status: doing
+status: review
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -58,3 +58,4 @@ Added branch and duplicate guards with read-only Git regression tests. Feature, 
 - 2026-11-21T23:09:40Z sunny-ginger-falcon: wrote the plan
 - 2026-11-21T23:10:01Z sunny-ginger-falcon: changed notes
 - 2026-11-21T23:11:29Z sunny-ginger-falcon: changed summary
+- 2026-11-21T23:11:31Z sunny-ginger-falcon doing → review
