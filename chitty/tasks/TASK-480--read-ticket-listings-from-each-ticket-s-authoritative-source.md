@@ -23,9 +23,12 @@ Regression tests to include, from superseded `TASK-367`: with `autocommit = true
 
 Planner, 2026-11-21: the two regression tests from `TASK-367` listed above now live on `TASK-367` itself (depends on `TASK-378`); do not add them here.
 
+Found 2026-11-21 by `TASK-506`'s worker: after `TASK-378`, `chitty show TASK-1` still fails when another working-tree ticket file is malformed. In the fixture, `TASK-1` is committed valid on `main` and edited (title `branch`) on `task-1`, then the main checkout's `TASK-1` file is overwritten, uncommitted, with `not frontmatter`. `show` lists the ticket's children through `repo.all_tasks()` (`src/chitty/cli.py:604`), which parses every working-tree copy. Once listings read from each ticket's source, `chitty show TASK-1` there should print title `branch`. Make that a criterion of this ticket.
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
 - 2026-11-20T22:59:58Z quick-pearl-lapwing: changed notes
 - 2026-11-20T23:21:39Z quick-pearl-lapwing: changed notes
 - 2026-11-21T08:05:17Z nimble-umber-gannet: changed notes
+- 2026-11-21T12:43:40Z sunny-ebony-kestrel: changed notes
