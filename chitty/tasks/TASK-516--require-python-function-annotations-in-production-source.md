@@ -1,6 +1,6 @@
 ---
 title: Require Python function annotations in production source
-status: cold-read
+status: planning
 created: 2026-11-21
 ---
 
@@ -41,3 +41,4 @@ Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff re
 - 2026-11-21T16:30:11Z daring-hazel-eel doing → planning
 - 2026-11-21T16:40:52Z honest-coral-heron: changed acceptance criteria
 - 2026-11-21T16:40:52Z honest-coral-heron planning → cold-read
+- 2026-11-21T16:43:43Z honest-coral-heron cold-read → planning
