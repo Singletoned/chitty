@@ -63,6 +63,8 @@ All three new regression tests failed against the original runner: each expected
 
 The changed post-commit test fails when the HEAD comparison is deliberately disabled: expected exit 0, got 1. Restored the comparison afterward.
 
+Implementation and specified focused tests pass (36 tests). make check fails six existing tests: tests.test_next.TestNext.test_run_cases and test_run_write_failure_warns_and_keeps_agent_exit_code, tests.test_review_merge.TestReviewMerge.test_missing_review_branch_errors_and_is_selected_for_repair, both tests.test_run_error_reporter failure cases, and tests.test_run_lock.TestRunLock.test_a_run_holds_the_lock_and_frees_it_however_it_ends. These fixtures assume an uncommitted failing agent is a recoverable ticket error. In particular the error-reporter test expects no reporter call, but the new propagated CLI error invokes it; the ticket does not specify whether start failures should invoke the reporter. Decide reporter behavior and specify the necessary updated existing-test fixtures and assertions, including the repair agent that currently fails because its git commit has nothing to commit. Until then make check cannot pass and full verification is unfinished. Implementation is preserved in the branch.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -88,3 +90,4 @@ The changed post-commit test fails when the HEAD comparison is deliberately disa
 - 2026-11-21T22:57:59Z honest-dusky-stoat: changed notes
 - 2026-11-21T22:58:45Z honest-dusky-stoat: changed notes
 - 2026-11-21T23:00:39Z honest-dusky-stoat: changed notes
+- 2026-11-21T23:02:42Z honest-dusky-stoat: changed notes
