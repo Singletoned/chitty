@@ -68,6 +68,12 @@ class TestRunRemovesMergedBranches(LandingTestCase):
         self.run_cleanup()
         self.assertTrue(self.exists(self.branch))
 
+    def test_keeps_invalid_ticket_branch(self):
+        self.git("branch", "task-feature-extra")
+        result = self.run_cleanup()
+        self.assertTrue(self.exists("task-feature-extra"))
+        self.assertNotIn("removed merged branch task-feature-extra", result.stderr)
+
     def test_keeps_ahead_non_ticket_and_remote(self):
         self.git("branch", "feature")
         self.git("update-ref", "refs/remotes/origin/task-999", "main")

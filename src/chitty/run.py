@@ -353,12 +353,12 @@ def _remove_merged_branches(main_repo: Repo) -> None:
     prefixes = tuple(f"{context.prefix.lower()}-" for context in main_repo.config.contexts.values())
     main_tip = main_repo.config.main_branch
     for branch in git.local_branches(root):
-        if not branch.startswith(prefixes):
+        if not branch.startswith(prefixes) or not ID_RE.fullmatch(branch):
             continue
         if not git.is_ancestor(root, branch, main_tip):
             continue
         task_id = branch.upper()
-        stored = main_repo.lookup(TaskId.parse(task_id)) if ID_RE.fullmatch(task_id) else None
+        stored = main_repo.lookup(TaskId.parse(task_id))
         worktree = git.worktree_for_branch(root, branch)
         reason = None
         if stored is not None and stored.task.frontmatter.status != "done":
