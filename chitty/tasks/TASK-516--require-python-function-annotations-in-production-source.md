@@ -29,6 +29,10 @@ Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff re
 
 Rechecked the corrected fixture: the previous Ruff configuration reported no diagnostic; the configured make check failed with ANN202. Ruff passed on copies in tests and scripts. With return annotation int, Ruff passed and Pyright reported reportReturnType for str. Removed all probes.
 
+## Summary
+
+Configured the requested Ruff annotation rules for `src/` only in `pyproject.toml` (commit `fe2b1dc9`). Probe evidence is in the notes: baseline Ruff passed, the unannotated source failed with `ANN202`, tests and scripts passed Ruff, and the incorrect annotated return failed Pyright. Removed the probes. `chitty fix` and `make format` completed; `make check` passed all 976 tests. No follow-ups.
+
 ## History
 
 - 2026-11-21T16:17:29Z honest-coral-heron → planning
@@ -48,3 +52,4 @@ Rechecked the corrected fixture: the previous Ruff configuration reported no dia
 - 2026-11-21T16:44:02Z jolly-umber-toad todo → doing
 - 2026-11-21T16:46:21Z jolly-umber-toad: wrote the plan
 - 2026-11-21T16:46:49Z jolly-umber-toad: changed notes
+- 2026-11-21T16:49:07Z jolly-umber-toad: changed summary
