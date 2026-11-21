@@ -404,7 +404,7 @@ With the expanded alphabet, the always-append mutant fails test_trailer_is_added
 
 ## Summary
 
-Automatic task trailers are added at landing. The real-Git regression now exercises chitty run and preserves its author, date, tree and trailer assertions. The test fails when trailer rewriting is disabled. make check passed all 875 tests; chitty fix completed with existing warnings.
+Automatic task trailers are added at landing. The property generator includes tabs within arbitrary lines; both requested mutants fail as recorded in the notes. The real-Git regression exercises chitty run. make check passed 882 tests, and chitty fix completed with existing warnings.
 
 ## History
 
@@ -448,3 +448,4 @@ Automatic task trailers are added at landing. The real-Git regression now exerci
 - 2026-11-21T00:20:31Z vivid-coral-lapwing review → doing
 - 2026-11-21T00:30:36Z kind-coral-toad: wrote the plan
 - 2026-11-21T00:32:12Z kind-coral-toad: changed notes
+- 2026-11-21T00:38:34Z kind-coral-toad: changed summary
