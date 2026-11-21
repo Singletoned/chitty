@@ -1,6 +1,6 @@
 ---
 title: Save and restore uncommitted worktree work under a named ref
-status: planning
+status: cold-read
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -24,7 +24,7 @@ Decisions, in `src/chitty/git.py`, using `_git` for commands that must succeed:
 
 Tests: new `tests/test_git_saved_work.py`, real Git in temporary directories (`git init -b main`, local `user.name` and `user.email`), Hypothesis (the repository's property tool) with `@settings(max_examples=25, deadline=None)`, as in `tests/test_git.py`.
 
-- Property `test_save_then_restore_round_trips`: draw 1 to 6 files committed on `main`, and a mix of changes: a tracked file edited and left unstaged, a tracked file edited and staged, a tracked file deleted, new untracked files, and ignored files (listed in a committed `.gitignore`), with random printable contents. Before saving, push one unrelated entry with `git stash push` so `git stash list` is not empty; record it. Record every non-ignored file's bytes (or absence) and every ignored file's bytes. After `save_work(root, "refs/chitty/stash/TASK-1", "m")`: it returns `True`, `git status --porcelain` is empty, `ref` exists, ignored files are unchanged. Then, at random, commit a change to a file that none of the changes touch. After `restore_work`: it returns `True`, every recorded file has its recorded bytes or is absent as recorded, ignored files are unchanged, `ref` no longer exists, and `git stash list` is exactly the recorded list.
+- Property `test_save_then_restore_round_trips`: draw 1 to 6 files committed on `main`, and a mix of changes: a tracked file edited and left unstaged, a tracked file edited and staged, a tracked file deleted, new untracked files, and ignored files (listed in a committed `.gitignore`), with random printable contents. Before saving, push one unrelated entry with `git stash push` so `git stash list` is not empty; record it. Record every non-ignored file's bytes (or absence) and every ignored file's bytes. After `save_work(root, "refs/chitty/stash/TASK-1", "m")`: it returns `True`, `git status --porcelain` is empty, `ref` exists, ignored files are unchanged. Then, at random, commit a new file `main-only.txt` on `HEAD` (drawn file names never use that name), as a rebase onto a newer `main` would bring in. After `restore_work`: it returns `True`, every recorded file has its recorded bytes or is absent as recorded, ignored files are unchanged, `ref` no longer exists, and `git stash list` is exactly the recorded list.
 - Examples, each with its own repository: a clean worktree (only ignored files changed) returns `False` and creates no ref; an existing ref raises the message above and leaves the worktree bytes and the ref's commit unchanged; a conflict (save an edit to line 1 of `a.txt`, commit a different line 1 on `HEAD`, then restore) returns `False`, leaves `git status --porcelain` empty and the ref pointing at the same commit; a missing ref raises `ChittyError` naming it.
 
 Before implementing, add both functions raising `NotImplementedError`, run the tests and confirm each fails; then implement and run `make check`.
@@ -37,3 +37,5 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
+- 2026-11-21T23:11:07Z lively-zinc-newt: changed description
+- 2026-11-21T23:11:07Z lively-zinc-newt planning → cold-read
