@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when untouched tickets link to an old ID
-status: planning
+status: cold-read
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -28,7 +28,7 @@ Tests: new `tests/test_provisional_link_guard.py`, a `RepoTestCase` with real Gi
 - (a) two eligible candidates, `TASK-AAAAAA` and `TASK-BAAAAA`, and an unconfigured context directory `chitty/other/` holding `OTHER-1--x.md` with `depends_on: [TASK-BAAAAA]`, all committed on `main`. Expected message: `cannot renumber TASK-BAAAAA: OTHER-1 links to it in depends_on`.
 - (b) a configured `TASK-3` committed on `main` with `parent: task-aaaaaa`, then a branch `task-3` whose commit removes the `parent` line, so the main-checkout file is stale. Assert `source_of(TASK-3) == "task-3"` before planning. Expected message: `cannot renumber TASK-AAAAAA: TASK-3 links to it in parent`.
 - (c) a `TASK-3` that exists only on branch `task-3` (committed there, absent from `main` and the working tree), with `depends_on: [TASK-AAAAAA]`. Assert `source_of(TASK-3) == "task-3"`. Expected message: `cannot renumber TASK-AAAAAA: TASK-3 links to it in depends_on`.
-- (d) control: as (a), but `OTHER-1` has `depends_on: [TASK-7]`, an ID the mapping does not change. The plan succeeds.
+- (d) control: as (a), but `OTHER-1` has `depends_on: [TASK-CAAAAA]`, an ID with no ticket that the mapping does not change (a numeric ID would reserve its number and shift the mapping). The plan succeeds.
 
 For each, a prose variant replaces the structured link with the text `See TASK-AAAAAA.` in the Description. Snapshot HEAD, the index (`git ls-files -s`) and the bytes of every file under `chitty/` after setup, before calling the planner, and compare afterwards. No property: three fixed real-Git placements, each listed here, check which copies are read. The source-selection policy has its own property tests.
 
@@ -50,3 +50,5 @@ Before implementing, run the refusal tests against the unguarded planner and con
 - 2026-11-21T22:58:15Z lively-zinc-newt planning → cold-read
 - 2026-11-21T22:59:31Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T22:59:31Z lively-zinc-newt cold-read → planning
+- 2026-11-21T22:59:40Z lively-zinc-newt: changed description
+- 2026-11-21T22:59:40Z lively-zinc-newt planning → cold-read
