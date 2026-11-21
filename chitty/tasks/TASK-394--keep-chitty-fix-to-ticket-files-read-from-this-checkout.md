@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: doing
+status: review
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -87,3 +87,4 @@ Implemented source-aware repairs and duplicate safeguards. Real-Git regression t
 - 2026-11-21T13:27:41Z lively-teal-eel: wrote the plan
 - 2026-11-21T13:28:47Z lively-teal-eel: changed notes
 - 2026-11-21T13:31:30Z lively-teal-eel: changed summary; ticked acceptance criteria
+- 2026-11-21T13:31:31Z lively-teal-eel doing → review
