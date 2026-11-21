@@ -1,6 +1,6 @@
 ---
 title: Test archiving a referenced ticket and reading an archive from an older worktree
-status: cold-read
+status: todo
 labels:
   - bug
   - escape
@@ -23,16 +23,17 @@ Decisions:
 
 - New `tests/test_archive_referenced_tickets.py`, a class inheriting `CliTestCase` from `tests/test_cli.py`. `setUp` follows `tests/test_run_claims_on_branch.py`: replace `autocommit = false` with `autocommit = true` in `chitty.toml`, `git init --quiet -b main`, set `user.email` and `user.name`, then `run_cli("init")` and commit it. A helper sets a ticket to `done` with `run_cli("edit", <ID>, "-s", "review")` then `run_cli("edit", <ID>, "-s", "done", "--human", "--override-review-independence", "--note", "Reviewed: ok")`.
 - `test_archive_ticket_named_as_parent`: add `One`, add `Two` with `--parent TASK-1`, set `TASK-1` done, `run_cli("archive", "TASK-1")` exits 0. Then `git status --short` is empty, `git ls-files chitty/tasks` lists `chitty/tasks/archive/TASK-1--one.md` and not `chitty/tasks/TASK-1--one.md`, the last commit subject starts with `chitty: archive TASK-1`, and `json("show", "TASK-1")["archived"]` is `True`.
-- `test_archive_all_done_when_one_is_a_parent`: the same tickets, then `run_cli("archive")` with no ID exits 0, `git status --short` is empty and `TASK-1` is archived.
-- `test_older_worktree_sees_ticket_archived_on_main`: add `One` and `Two`, set `TASK-2` done, `git worktree add --quiet .worktrees/task-1 -b task-1`, then `run_cli("archive", "TASK-2")` in the main checkout. In the worktree (run the CLI with the worktree as current directory, as other worktree tests in `tests/test_cli.py` do), `edit TASK-1 --depends-on TASK-2` exits 0 and `show TASK-2 --json` reports `archived` `True`.
+- `test_archive_ticket_named_in_depends_on`: the same as `test_archive_ticket_named_as_parent`, but `Two` is added with `--depends-on TASK-1` instead of `--parent`.
+- `test_archive_all_done_when_one_is_a_parent`: the same tickets, then `run_cli("archive")` with no ID exits 0, `git status --short` is empty, `TASK-1` is archived and `TASK-2` (not done) is still active.
+- `test_older_worktree_sees_ticket_archived_on_main`: add `One` and `Two`, set `TASK-2` done, `git worktree add --quiet .worktrees/task-1 -b task-1`, then `run_cli("archive", "TASK-2")` in the main checkout. In the worktree (`os.chdir(worktree)` with `self.addCleanup(os.chdir, self.root)`, as `tests/test_cli.py` near line 384 does; `run_cli` runs in-process and uses the current directory), `edit TASK-1 --depends-on TASK-2` exits 0 and `show TASK-2 --json` reports `archived` `True`.
 - No property: three fixed placements with real Git; `TASK-393` owns the generated property over placements.
 - If, once `TASK-378` has landed, any of these tests still fails, return this ticket to `planning` naming the read that fails, rather than changing store code here.
 - Out of scope: archiving a ticket from inside its own ticket worktree, and listings (`TASK-480`).
 
 ## Acceptance Criteria
 
-- [ ] The three tests in `tests/test_archive_referenced_tickets.py` pass with `TASK-378` landed; a note records that each fails, with `is used by more than one file`, when run in a temporary worktree at the parent of the first commit `TASK-378` landed
-- [ ] `make check` passes, and the branch changes no file outside `tests/` and `chitty/`
+- [ ] The four tests in `tests/test_archive_referenced_tickets.py` pass with `TASK-378` landed; a note records that each fails, with `is used by more than one file`, when run in a temporary worktree at the parent of `TASK-378`'s first landed commit, `$(git log --reverse --format=%H --grep "Task: TASK-378" main | head -1)^`
+- [ ] `make check` passes, and `git diff --name-only main...HEAD` lists only paths under `tests/` and `chitty/` (the revert of `0c9354ac` cancels its `src/` changes)
 
 ## Notes
 
@@ -47,6 +48,8 @@ Same-checkout case still exists: Reproduced 2026-11-18 in `.worktrees/task-359` 
 Planning 2026-11-20: superseded by `TASK-378` (single-ticket reads from one authoritative source) and `TASK-480` (listings), which replace the history-based version choice this ticket would change. Its two real-Git scenarios (archiving `TASK-1` while `TASK-2` has `parent: TASK-1` with autocommit; editing in a worktree made before `main` archived a ticket) are recorded on `TASK-480` as regression tests. Archive this once `TASK-480` lands.
 
 Planner, 2026-11-21: re-planned as regression tests only, depending on `TASK-378`. Both cases reproduced on `main` today. Branch `task-367` holds a partial implementation of the superseded design (`0c9354ac`): revert it first (`git revert --no-edit 0c9354ac`, with a `Task: TASK-367` trailer) so the branch changes no store code. The scenarios previously recorded on `TASK-480` live here now.
+
+Cold read 2026-11-21 outcomes: net diff against `main` for the path check; `os.chdir` pattern named; a `depends_on` variant; archive-all keeps the non-done ticket active; the command that finds the commit before `TASK-378`. Stays behind `TASK-378` through `depends_on`; the runner will not start it before then.
 
 ## History
 
@@ -69,3 +72,5 @@ Planner, 2026-11-21: re-planned as regression tests only, depending on `TASK-378
 - 2026-11-20T23:20:45Z quick-pearl-lapwing planning → backlog
 - 2026-11-21T08:04:54Z nimble-umber-gannet: changed title, dependencies, description, acceptance criteria, notes; wrote the plan
 - 2026-11-21T08:04:54Z nimble-umber-gannet backlog → cold-read
+- 2026-11-21T08:08:45Z nimble-umber-gannet: changed description, acceptance criteria, notes
+- 2026-11-21T08:08:45Z nimble-umber-gannet cold-read → todo
