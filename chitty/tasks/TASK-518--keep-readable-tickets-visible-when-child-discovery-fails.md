@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: planning
+status: cold-read
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -13,11 +13,11 @@ Resolve the requested ticket normally with `find`; any error for it remains fata
 
 In a new `tests/test_show_authoritative_children.py` use `CliTestCase` and the Git helpers from `tests/test_source_copy_errors.py`. Real Git is needed to exercise divergent copies and bindings to CLI surfaces; the source policy has property tests in `tests/test_property_ticket_source.py`. Use fresh repos or subtests with reset state. Assert regression failures on unchanged code before implementing, then pass the new tests and `make check`.
 
-Fixture: on main commit a readable parent `TASK-2`, a readable `TASK-3` with `parent: TASK-2`, and valid `TASK-1`. Change the parent title to `branch parent` on `task-2`, commit, return to main and spoil only the main working-tree copy of `TASK-2` with `not frontmatter`. Run all criteria against two fresh variants. In variant A independently change `TASK-1` on main and `task-1` (do this before spoiling `TASK-2`). In variant B leave the committed main `TASK-1` valid and commit a malformed `TASK-1` body on `task-1` only. In both variants the unreadable candidate is `TASK-1`. Validate the fixture by asserting `Repo.find(TASK-2)` selects `task-2` and `Repo.find(TASK-1)` raises the expected conflict or parse error. The `children` line must be exactly `children: TASK-3`; the warning names `TASK-1` and reflects the corresponding error, and must not report the non-authoritative malformed `TASK-2` body.
+Fixture: on main commit a readable parent `TASK-2`, valid `TASK-1`, and three readable children: `TASK-10` and `TASK-3` in `tasks` and `HUMAN-1` in `human`. Create `TASK-10` before `TASK-3`; give `TASK-3` lowercase `parent: task-2` and the other two `parent: TASK-2`. Use the default `RepoTestCase` config: `tasks` precedes `human`, opposite to prefix sort. Change the parent title to `branch parent` on `task-2`, commit, return to main and spoil only the main working-tree copy of `TASK-2` with `not frontmatter`. Run all criteria against two fresh variants. In variant A independently change `TASK-1` on main and `task-1` (do this before spoiling `TASK-2`). In variant B leave the committed main `TASK-1` valid and commit a malformed `TASK-1` body on `task-1` only. In both variants the unreadable candidate is `TASK-1`. Validate the fixture by asserting `Repo.find(TASK-2)` selects `task-2` and `Repo.find(TASK-1)` raises the expected conflict or parse error. In both variants add a validly named `chitty/unconfigured/MISC-1--bad.md` on disk with `not frontmatter`. Plain show must neither warn about nor parse `MISC-1` (spy on `_parse_source_copy` and fail if invoked for it). The `children` line must be exactly `children: TASK-3, TASK-10, HUMAN-1`; the warning names `TASK-1` and reflects the corresponding error, and must not report the non-authoritative malformed `TASK-2` body.
 
 ## Acceptance Criteria
 
-- [ ] In each of the two fixture variants, plain `show` exits 0, prints the selected authoritative title and the valid child ID, and warns on stderr with `TASK-1` and the variant-specific error.
+- [ ] In each variant plain `show` exits 0, prints the selected branch title and the exact children line in configured-context then numeric ID order, warns with `TASK-1` and the variant-specific error, and does not parse or warn about the unconfigured candidate.
 - [ ] In the same fixtures `show --json` exits 0 with the selected authoritative title, no `children` key and no warning. Assert no source resolution or body parsing for any other ticket, using a test-local probe on the Repo source resolver that raises if it receives any other ID.
 - [ ] Selecting the unreadable candidate itself fails with its own error in both plain and JSON mode; the selected ticket failure must not be downgraded to a child warning.
 
@@ -41,3 +41,5 @@ Return to planning: required regression fixtures are missing; see the preceding 
 - 2026-11-21T18:51:22Z plucky-ginger-urchin: changed notes
 - 2026-11-21T18:51:26Z plucky-ginger-urchin: changed owner, notes
 - 2026-11-21T18:51:26Z plucky-ginger-urchin doing → planning
+- 2026-11-21T18:52:05Z eager-ginger-adder: changed description, acceptance criteria
+- 2026-11-21T18:52:05Z eager-ginger-adder planning → cold-read
