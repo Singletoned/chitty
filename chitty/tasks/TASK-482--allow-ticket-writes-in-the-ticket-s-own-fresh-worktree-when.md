@@ -1,6 +1,6 @@
 ---
 title: Allow ticket writes in the ticket's own fresh worktree when `main` holds its copy
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -169,3 +169,4 @@ Implemented the own-worktree guard allowance in `src/chitty/store.py`, comparing
 - 2026-11-21T01:36:25Z youthful-violet-wren: wrote the plan
 - 2026-11-21T01:36:39Z youthful-violet-wren: changed notes
 - 2026-11-21T01:39:38Z youthful-violet-wren: changed summary
+- 2026-11-21T01:39:45Z youthful-violet-wren doing → review
