@@ -39,6 +39,10 @@ Add real-Git read-only regression tests, verify failures, then implement branch 
 
 Before the fix, feature and detached tests failed because no error was raised; duplicate failed because its error omitted both paths. Malformed passed.
 
+## Summary
+
+Added branch and duplicate guards with read-only Git regression tests. Feature, detached and duplicate tests failed before the fix; all pass after. make check passed.
+
 ## History
 
 - 2026-11-21T18:44:40Z eager-ginger-adder → backlog
@@ -53,3 +57,4 @@ Before the fix, feature and detached tests failed because no error was raised; d
 - 2026-11-21T23:08:11Z sunny-ginger-falcon todo → doing
 - 2026-11-21T23:09:40Z sunny-ginger-falcon: wrote the plan
 - 2026-11-21T23:10:01Z sunny-ginger-falcon: changed notes
+- 2026-11-21T23:11:29Z sunny-ginger-falcon: changed summary
