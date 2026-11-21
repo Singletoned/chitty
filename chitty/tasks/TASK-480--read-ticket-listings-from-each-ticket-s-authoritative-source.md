@@ -51,6 +51,12 @@ Split out the source-lookup performance prerequisite before switching listings. 
 
 Keep the listing cutover separate from write-path repair. Before the cutover, audit write callers of `all_tasks()` against the existing rule that a conflict fails only operations needing its content: `move` actually reads other tickets to rewrite references, and single-ticket `archive` in delete mode does too. Do not promise conflict isolation for those paths until reference discovery can provide it. For `show --json`, do not scan for children (they are not in the JSON response). For plain `show`, keep the child list and warn about unreadable candidates rather than hiding the selected readable ticket; a failure to read the selected ticket itself still fails the command. Specify those as separately verifiable changes if necessary.
 
+Planning blocker: the specified cutover conflicts with the requirement that `make check` pass while child discovery in `show` is explicitly out of scope. After the cutover, `make check` fails in `tests.test_promote_references_cli.TestPromoteReferencesCli.test_duplicate_reference_is_reported_without_failing_promotion`, two `tests.test_reference_isolation` tests, and `tests.test_ticket_reads.TestTicketReads.test_conflict_does_not_prevent_other_reads_or_edit`: `show` calls `all_tasks()` and now fails on an unrelated duplicate or conflict. TASK-518 covers this but is still in planning, not a dependency. Decide whether to land TASK-518 first and add it as a dependency, or include its changes here.
+
+A fifth failure is `tests.test_provisional_ids.TestProvisionalIds.test_move_provisional_off_main_then_promote_on_main`: the cutover makes `move` fail because a reference rewrite attempts to write TASK-1 on main from another branch. The ticket excludes move changes yet requires the full suite to pass. Decide the intended move behavior and whether its repair is a prerequisite or in scope; do not weaken the existing assertion without that decision.
+
+Partial implementation and two tests are committed. Before the fix both new tests failed: placement parsed the corrupted stale TASK-2, and standalone listing invoked patched `historical_files`; both pass after it. Remaining specified conflict, allocation, duplicate and CLI coverage is not yet implemented, so full acceptance could not be verified. `make check` passes formatting, Ruff and Pyright but fails the five tests above.
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
@@ -70,3 +76,4 @@ Keep the listing cutover separate from write-path repair. Before the cutover, au
 - 2026-11-21T18:42:29Z eager-ginger-adder planning → todo
 - 2026-11-21T18:43:08Z calm-pearl-yellowhammer todo → doing
 - 2026-11-21T18:44:33Z calm-pearl-yellowhammer: wrote the plan
+- 2026-11-21T18:47:35Z calm-pearl-yellowhammer: changed notes
