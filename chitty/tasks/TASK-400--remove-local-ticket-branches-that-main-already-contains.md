@@ -34,7 +34,7 @@ Fixtures for criterion 2, each its own test: run lock held: hold `locks.run_lock
 
 ## Plan
 
-Retain merged branches for existing non-done tickets, remove eligible unknown and done ticket branches, and verify the specified real-Git cases before documenting and checking the change.
+Add a regression for the reviewed invalid branch name, require valid ticket IDs before cleanup, then run the prescribed checks and hand off.
 
 ## Notes
 
@@ -320,3 +320,4 @@ Startup cleanup keeps non-done ticket branches and removes eligible done or unkn
 - 2026-11-21T00:24:58Z jolly-ochre-lapwing doing → review
 - 2026-11-21T00:35:27Z jolly-umber-falcon: changed acceptance criteria, notes
 - 2026-11-21T00:35:27Z jolly-umber-falcon review → doing
+- 2026-11-21T00:46:12Z lively-coral-toad: wrote the plan
