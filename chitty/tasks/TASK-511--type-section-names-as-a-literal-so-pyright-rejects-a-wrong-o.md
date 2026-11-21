@@ -20,8 +20,8 @@ Tests: a new `tests/test_section_name_types.py`. One test writes a small Python 
 
 ## Acceptance Criteria
 
-- [ ] The `"Bogus"` pyright test fails before the change and passes after (recorded in a note); the `"Notes"` test and the `section_name` test pass
-- [ ] `.venv/bin/pyright` reports 0 errors; `Task.section` and `Task.with_section` take `name: SectionName`; no `cast` is added; the `get_args` sync test passes; `make check` passes
+- [x] The `"Bogus"` pyright test fails before the change and passes after (recorded in a note); the `"Notes"` test and the `section_name` test pass
+- [x] `.venv/bin/pyright` reports 0 errors; `Task.section` and `Task.with_section` take `name: SectionName`; no `cast` is added; the `get_args` sync test passes; `make check` passes
 
 ## Plan
 
@@ -30,6 +30,10 @@ Add the specified pyright regression tests and demonstrate the invalid literal i
 ## Notes
 
 Before implementation, `.venv/bin/python -m unittest tests.test_section_name_types.SectionNameTypesTest.test_bogus_literal_is_rejected` failed as expected: pyright returned 0 errors for `"Bogus"`.
+
+## Summary
+
+Added typed section names, exact external-name validation and typed parser/import paths without changing parsing diagnostics. Added pyright literal, validation and type/order synchronization tests; the invalid literal test failed before the implementation as recorded in Notes. `make check` passed (965 tests, pyright 0 errors). No follow-ups.
 
 ## History
 
@@ -41,3 +45,4 @@ Before implementation, `.venv/bin/python -m unittest tests.test_section_name_typ
 - 2026-11-21T14:37:03Z open-teal-badger todo → doing
 - 2026-11-21T14:38:38Z open-teal-badger: wrote the plan
 - 2026-11-21T14:38:53Z open-teal-badger: changed notes
+- 2026-11-21T14:41:20Z open-teal-badger: changed summary; ticked acceptance criteria
