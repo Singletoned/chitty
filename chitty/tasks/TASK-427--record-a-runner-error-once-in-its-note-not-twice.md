@@ -1,6 +1,6 @@
 ---
 title: Record a runner error once in its note, not twice
-status: todo
+status: doing
 priority: medium
 depends_on:
   - TASK-426
@@ -40,3 +40,4 @@ Second cold read 2026-11-19 outcomes: whole-string comparison in the property; l
 - 2026-11-19T17:31:30Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:34:16Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:34:24Z quick-ginger-lapwing planning → todo
+- 2026-11-21T10:51:58Z quick-maroon-falcon todo → doing
