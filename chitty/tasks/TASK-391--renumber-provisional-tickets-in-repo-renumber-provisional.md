@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -97,3 +97,4 @@ Planner 2026-11-21, after the cold read: every non-skipped on-disk file is rewri
 - 2026-11-21T14:29:29Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T14:33:28Z sunny-ebony-kestrel: changed description, notes
 - 2026-11-21T14:33:28Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T14:33:43Z witty-maroon-newt todo → doing
