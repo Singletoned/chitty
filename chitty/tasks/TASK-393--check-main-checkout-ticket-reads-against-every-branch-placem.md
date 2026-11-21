@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: doing
+status: error
 depends_on:
   - TASK-378
   - TASK-480
@@ -51,6 +51,10 @@ Planning blocker: this is too large for one session. The requested real-Git fixt
 
 Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), `TASK-522` (linked worktrees) and `TASK-523` (generated draws), settling the size blocker above. The (f) edit question is settled: (f) and (i) get no uncommitted-edit variant, since the main checkout has no committed file for them.
 
+Runner error (agent): TASK-393 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-393`
+
 ## History
 
 - 2026-11-18T16:38:03Z lively-quartz-crane → backlog
@@ -89,3 +93,5 @@ Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), 
 - 2026-11-21T23:09:46Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:13:04Z quick-amber-eel todo → doing
 - 2026-11-21T23:15:13Z quick-amber-eel: wrote the plan
+- 2026-11-21T23:16:27Z quick-amber-eel: changed notes
+- 2026-11-21T23:16:27Z quick-amber-eel doing → error
