@@ -1,6 +1,6 @@
 ---
 title: Delete `git.historical_files` and `_latest_changes`
-status: todo
+status: doing
 depends_on:
   - TASK-378
   - TASK-379
@@ -45,3 +45,4 @@ Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the la
 - 2026-11-18T16:42:13Z lively-quartz-crane cold-read → planning
 - 2026-11-18T16:42:15Z lively-quartz-crane planning → todo
 - 2026-11-20T23:04:47Z quick-pearl-lapwing: changed dependencies, notes
+- 2026-11-21T20:23:42Z jolly-fawn-vole todo → doing
