@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: todo
+status: doing
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -61,3 +61,4 @@ Requeued after the agent exited without implementation changes or a status hando
 - 2026-11-21T18:58:24Z mellow-umber-wren doing → error
 - 2026-11-21T19:49:18Z eager-ginger-adder: changed owner, notes
 - 2026-11-21T19:49:18Z eager-ginger-adder error → todo
+- 2026-11-21T19:50:17Z sunny-amber-newt todo → doing
