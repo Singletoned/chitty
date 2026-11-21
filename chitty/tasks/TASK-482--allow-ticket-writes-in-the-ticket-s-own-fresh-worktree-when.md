@@ -145,6 +145,8 @@ make: *** [check] Error 1
 
 ```
 
+Confirmed before the fix: python -m unittest tests.test_own_worktree_writes fails only test_guard_allows_unchanged_main with the branch main guard error; the four other tests pass.
+
 ## History
 
 - 2026-11-21T01:20:56Z quick-pearl-lapwing → planning
@@ -161,3 +163,4 @@ make: *** [check] Error 1
 - 2026-11-21T01:33:32Z quick-pearl-lapwing planning → doing
 - 2026-11-21T01:36:01Z youthful-violet-wren: changed notes
 - 2026-11-21T01:36:25Z youthful-violet-wren: wrote the plan
+- 2026-11-21T01:36:39Z youthful-violet-wren: changed notes
