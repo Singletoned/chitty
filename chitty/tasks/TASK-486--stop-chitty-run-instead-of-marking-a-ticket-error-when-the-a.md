@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -135,3 +135,4 @@ Start failures stop the runner and preserve worktree files; pre-fix stderr and s
 - 2026-11-21T23:36:18Z able-ebony-badger: wrote the plan
 - 2026-11-21T23:36:44Z able-ebony-badger: changed notes
 - 2026-11-21T23:38:40Z able-ebony-badger: changed summary
+- 2026-11-21T23:38:42Z able-ebony-badger doing → review
