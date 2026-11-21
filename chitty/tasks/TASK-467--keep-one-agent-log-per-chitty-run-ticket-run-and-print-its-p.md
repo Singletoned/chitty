@@ -25,6 +25,10 @@ For success copy the fixture pattern of `tests/test_run_continue.py`: first fake
 - [ ] A real-Git fake-agent continuation and a rebase-conflict session followed by review each produce one persistent file containing both streams of each session in order. A successful run keeps the exact original status line on stdout and prints exactly one absolute `log:` path on stderr.
 - [ ] Timeout and pre-agent setup failure each leave a readable persistent log and print its path exactly once. Document the location and stderr line in `README.md` and `docs/plan/next-action-and-runner.md`. Keep existing timeout, review and continuation tests passing.
 
+## Plan
+
+Add regression coverage for log naming, exclusive creation, continuation, review rebase, timeout and setup failure; demonstrate failures first. Then own one exclusive persistent log per ticket attempt, thread it through agent sessions, document its location, and run focused and full checks.
+
 ## History
 
 - 2026-11-19T21:23:41Z sunny-white-dormouse → backlog
@@ -35,3 +39,4 @@ For success copy the fixture pattern of `tests/test_run_continue.py`: first fake
 - 2026-11-21T20:02:56Z eager-ginger-adder cold-read → planning
 - 2026-11-21T20:04:17Z eager-ginger-adder planning → todo
 - 2026-11-21T20:04:38Z eager-lilac-ibis todo → doing
+- 2026-11-21T20:06:15Z eager-lilac-ibis: wrote the plan
