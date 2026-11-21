@@ -705,6 +705,25 @@ class Repo:
             copy.ref,
         )
 
+    def children_of(self, parent: TaskId) -> tuple[list[TaskId], list[tuple[TaskId, ChittyError]]]:
+        """Return readable children in configured contexts and per-candidate errors."""
+        by_context: dict[str, list[TaskId]] = {context.name: [] for context in self.contexts()}
+        errors: list[tuple[TaskId, ChittyError]] = []
+        for task_id in sorted(self.ticket_ids() - {parent}):
+            try:
+                ref, files = self._source_files(task_id)
+                if not any(path.parts[1] in by_context for path, _ in files):
+                    continue
+                copy = self._parse_source_copy(task_id, ref, files)
+            except ChittyError as error:
+                errors.append((task_id, error))
+                continue
+            assert copy is not None  # The source has at least one configured file.
+            reference = copy.task.frontmatter.parent
+            if reference is not None and TaskId.parse(reference) == parent:
+                by_context[copy.path.parts[1]].append(task_id)
+        return [task_id for children in by_context.values() for task_id in children], errors
+
     def referenced_tasks(
         self, stored: StoredTask
     ) -> list[tuple[TaskId, StoredTask | ChittyError | None]]:

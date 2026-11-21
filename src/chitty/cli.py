@@ -600,9 +600,6 @@ def show(task_id: str, as_json: bool) -> None:
     """Show a task, with acceptance criteria numbered."""
     repo = _repo()
     stored = repo.find(repo.resolve(task_id))
-    children = [
-        task.id for task in repo.all_tasks() if task.task.frontmatter.parent == str(stored.id)
-    ]
     try:
         worked_on = stored.task.review_work(actor())
     except ChittyError:
@@ -611,6 +608,9 @@ def show(task_id: str, as_json: bool) -> None:
     if as_json:
         _print_json({**stored.as_dict(), "running": running})
     else:
+        children, errors = repo.children_of(stored.id)
+        for child_id, error in errors:
+            click.echo(f"warning: children list may be incomplete; {child_id}: {error}", err=True)
         output = _format(stored)
         if worked_on:
             output += "\nworked on: " + ", ".join(worked_on)
