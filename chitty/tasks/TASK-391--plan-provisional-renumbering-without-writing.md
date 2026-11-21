@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -81,6 +81,8 @@ Planner 2026-11-21: the main-branch check and parse-and-plan now run before `_pr
 
 This ticket is too large to implement and verify confidently in one session: its five criteria combine the new allocation and rewrite operation with more than a dozen distinct real-Git scenarios, including archive/delete allocation, source-ref selection, unconfigured and random contexts, stale setup, standalone operation, and transactional rollback. Please split it into smaller dependent tickets with independently verifiable fixtures and assertions, deciding which slice owns the initial store method and how later slices extend it. I inspected the ticket, `src/chitty/store.py`, `src/chitty/renumbering.py`, `src/chitty/ids.py`, and `src/chitty/check.py`; no implementation or tests were written, so regression evidence and verification remain outstanding.
 
+The read-only preflight is still too large to implement and verify confidently in one session. Its allocation work alone requires reversed creation order, six independently configured higher-number sources, random and unconfigured contexts, and outside-Git operation; it also requires stale-setup branch checks, malformed and duplicate files, and six structural/prose source-selection cases with real Git and unchanged-state assertions. `src/chitty/store.py` implements source discovery and selection separately from `next_number`, and `src/chitty/renumbering.py` only implements the pure allocator; these fixtures exercise distinct integration paths rather than one allocator property. Please split this into independently verifiable dependent slices, deciding which slice introduces the method and how later slices extend its contract (in particular, allocation/reservations versus untouched-source guards). Preserve all specified fixtures and ensure the transaction ticket depends on the completed preflight. I inspected the ticket, these source-selection and allocation methods, ID parsing, and existing test names; I did not implement or run the requested fixtures, so their behavior and regression evidence remain unchecked. No implementation files were changed.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -152,3 +154,5 @@ This ticket is too large to implement and verify confidently in one session: its
 - 2026-11-21T18:35:41Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:37:14Z eager-ginger-adder planning → todo
 - 2026-11-21T18:37:36Z open-quartz-urchin todo → doing
+- 2026-11-21T18:39:55Z open-quartz-urchin: changed owner, notes
+- 2026-11-21T18:39:55Z open-quartz-urchin doing → planning
