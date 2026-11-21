@@ -1,6 +1,6 @@
 ---
 title: "Choose a ticket's source without parsing it: `provisional` from the ID"
-status: todo
+status: doing
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -50,3 +50,4 @@ Record in a note how each migrated test and the first new test fail on `main` be
 - 2026-11-21T11:35:50Z sunny-ebony-kestrel: changed description
 - 2026-11-21T11:37:07Z sunny-ebony-kestrel: changed description
 - 2026-11-21T11:37:07Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T11:37:36Z vivid-quartz-badger todo → doing
