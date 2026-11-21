@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: cold-read
+status: todo
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -15,8 +15,8 @@ Starts after `TASK-378` lands.
 
 Decisions:
 
-- New `Repo.source_of(task_id) -> str | None` (in `src/chitty/store.py`, beside `TASK-378`'s map): the `ticket_source` result for that ID, as a short ref name (`refs/heads/task-5` gives `task-5`, `refs/remotes/origin/task-7` gives `origin/task-7`, as `SourceCopy.ref` does), or `None` for the working tree. It parses nothing: it uses `_choose_source` (`provisional` from the ID and file names, `TASK-504`), so a malformed file never stops it. Errors from `ticket_source` (diverged branches, a ticket changed on both sides) propagate.
-- `fix` (which scans files with `scan`, not `Repo`) asks `source_of` for each scanned file's ID (from its filename), only for files inside the `paths` filter and after `scan` accepts the name, before parsing its content. It repairs the file only when `source_of` is `None` and the file is the only scanned working-tree file with that ID (count, by filename, every scanned working-tree ticket name in every context's active and archive directories, regardless of the `paths` filter and of whether the content parses; do not call `Repo.find`, which raises on duplicates). Decided 2026-11-21: when two or more working-tree files share an ID, `fix` cannot tell which is authoritative, so it repairs none of them and adds `Problem(path, "skipped: <ID> is used by more than one file", "warning")` for each one within the `paths` filter; `check` keeps reporting the duplicate as an error. Files that fail to scan or parse are left to the existing repair loop and to `check`, exactly as today (`tests/test_check.py` `test_fix_reports_unresolved_problems_without_writing` must still pass). Any other file (read from another ref, or absent from the map, for example `main`'s copy of a ticket whose slug changed on its branch) is not repaired and is reported as a warning `Problem(path, "skipped: read from <ref>", "warning")` in `fix`'s problems list (the second element it returns), only for files within the `paths` filter; `errors()` ignores warnings and the CLI already prints problems. In a ticket worktree this also skips tickets read from `main`: intended.
+- New `Repo.source_of(task_id) -> str | None` (in `src/chitty/store.py`, beside `TASK-378`'s map): the `ticket_source` result for that ID, as a short ref name (`refs/heads/task-5` gives `task-5`, `refs/remotes/origin/task-7` gives `origin/task-7`, as `SourceCopy.ref` does), or `None` for the working tree. It parses nothing: it uses `_choose_source` (`provisional` from the ID and file names, `TASK-504`). If the root is not a Git repository, `source_of` returns `None` without calling Git, as `source_copy` does (`tests/test_check.py` `test_fix_reports_unresolved_problems_without_writing` runs without Git and must still pass). Errors from `ticket_source` (diverged branches, a ticket changed on both sides) propagate.
+- `fix` (which scans files with `scan`, not `Repo`) asks `source_of` for each scanned file's ID (from its filename), only for files inside the `paths` filter whose name `scan` accepts and whose content parses. A file that fails to scan or parse gets no `skipped` warning: it goes to the existing repair loop and `check`, as today. It repairs the file only when `source_of` is `None` and the file is the only scanned working-tree file with that ID (count, by filename, every scanned working-tree ticket name in every context's active and archive directories, regardless of the `paths` filter and of whether the content parses; do not call `Repo.find`, which raises on duplicates). Decided 2026-11-21: when two or more working-tree files share an ID, `fix` cannot tell which is authoritative, so it repairs none of them and adds `Problem(path, "skipped: <ID> is used by more than one file", "warning")` for each one within the `paths` filter (the duplicate warning applies only when `source_of` is `None`; when the ticket is read from a ref, each of its files gets the `skipped: read from <ref>` warning instead); `check` keeps reporting the duplicate as an error. Files that fail to scan or parse are left to the existing repair loop and to `check`, exactly as today (`tests/test_check.py` `test_fix_reports_unresolved_problems_without_writing` must still pass). Any other file (read from another ref, or absent from the map, for example `main`'s copy of a ticket whose slug changed on its branch) is not repaired and is reported as a warning `Problem(path, "skipped: read from <ref>", "warning")` in `fix`'s problems list (the second element it returns), only for files within the `paths` filter; `errors()` ignores warnings and the CLI already prints problems. In a ticket worktree this also skips tickets read from `main`: intended.
 - Errors from `source_of` propagate; never catch them in the existing `except ChittyError: continue`. A diverged ticket therefore stops `fix`, loudly, as decided. Relies on `TASK-378`'s contract that a working-tree read has `branch is None`, including on the ticket's own branch.
 - `chitty check` keeps checking every file in this checkout, as a file-format check.
 
@@ -36,6 +36,8 @@ The duplicate-file requirement cannot be implemented as written: `Repo.find(id)`
 Planner 2026-11-21: decided duplicates are all skipped with a warning; `fix` no longer uses `Repo.find`. Added tests for the stale `main` filename, the path filter and duplicates (criteria 1 and 4).
 
 Planner 2026-11-21, after the cold read: `source_of` parses nothing and gives short ref names; the duplicate count covers every scanned name regardless of `paths` or parsing; concrete worktree fixture for criterion 2; a filtered duplicate case.
+
+Planner 2026-11-21, after the second read: `source_of` is `None` without Git; only files that scan and parse get a `skipped` warning; the duplicate warning applies only to working-tree sources. Not taken: a property over branch states. The per-file decision is a handful of cases, each in the criteria. Undecodable (non-UTF-8) ticket files are out of scope.
 
 ## History
 
@@ -62,3 +64,5 @@ Planner 2026-11-21, after the cold read: `source_of` parses nothing and gives sh
 - 2026-11-21T13:09:22Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T13:09:22Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T13:11:27Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
+- 2026-11-21T13:13:52Z sunny-ebony-kestrel: changed description, notes
+- 2026-11-21T13:13:52Z sunny-ebony-kestrel cold-read → todo
