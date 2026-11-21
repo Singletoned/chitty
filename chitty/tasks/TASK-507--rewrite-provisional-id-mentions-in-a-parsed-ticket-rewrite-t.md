@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -53,3 +53,4 @@ Planner 2026-11-21, after the worker's return: targets are fresh by contract, so
 - 2026-11-21T13:38:40Z sunny-ebony-kestrel: changed description
 - 2026-11-21T13:39:52Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T13:39:52Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T13:40:09Z vivid-ochre-badger todo → doing
