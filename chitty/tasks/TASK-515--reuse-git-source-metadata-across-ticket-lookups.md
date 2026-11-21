@@ -1,6 +1,6 @@
 ---
 title: Reuse Git source metadata across ticket lookups
-status: backlog
+status: planning
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -16,3 +16,4 @@ Use real Git in temporary repositories. No new source-selection property: the se
 ## History
 
 - 2026-11-21T15:51:38Z honest-coral-heron → backlog
+- 2026-11-21T15:51:50Z honest-coral-heron backlog → planning
