@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: planning
+status: cold-read
 depends_on:
   - TASK-381
   - TASK-389
@@ -19,7 +19,7 @@ Extract `_used_numbers(context) -> set[int]` without changing `next_number` beha
 
 Tests in `tests/test_provisional_preflight.py`: `RepoTestCase`, deterministic valid provisional files written directly, real Git with `git init -b main`, local author and committed fixtures. Use a signature stub raising `NotImplementedError` to show tests fail behaviorally before implementation, then pass the new tests and `make check`. Fixed integration cases verify each data source; the pure allocator already has generated tests (`TASK-381`).
 
-Base: `TASK-3` is the only numeric ticket, `TASK-AAAAAA` is archived and `TASK-BAAAAA` active (create B first); expect `AAAAAA -> TASK-4` and `BAAAAA -> TASK-5`. In this base assert the two candidates and `TASK-3` are writable, as is a flag-bearing provisional in a separate configured random context, but an unconfigured provisional is not. Neither of those extra provisional files is mapped. In table-driven variants, start from this base and add only one higher-number reservation at a time: `TASK-4` in the configured archive, in an unconfigured directory, on disk but read from its own branch, present only on its own branch, mentioned only in a Description, or committed and then removed in delete mode. Each yields `TASK-5` and `TASK-6`; for the two branch variants assert `lookup` selects that branch and the writable set omits it. Assert unchanged bytes and Git state from a snapshot taken after arranging each variant. The standalone case uses a fresh no-Git repo with just `TASK-AAAAAA` and tests the empty result before planting it.
+Base: `TASK-3` is the only numeric ticket, `TASK-AAAAAA` is archived and `TASK-BAAAAA` active (create B first); expect `AAAAAA -> TASK-4` and `BAAAAA -> TASK-5`. In this base assert the two candidates and `TASK-3` are writable, as is a flag-bearing provisional in a separate configured random context, but an unconfigured provisional is not. Neither of those extra provisional files is mapped. In table-driven variants, start from this base and add only one higher-number reservation at a time: `TASK-4` in the configured archive, in an unconfigured directory, on disk but read from its own branch, present only on its own branch, mentioned only in a Description (see below), or committed and then removed in delete mode. Each yields `TASK-5` and `TASK-6`; for the two branch variants assert `lookup` selects that branch and the writable set omits it. For the Description-only reservation use two subtests: add the mention to the unconfigured provisional file under its archive directory, and add it to the stale main file for `TASK-3` after committing a different body on `task-3` whose authoritative file lacks the mention. In both cases the only evidence of `TASK-4` is in an excluded on-disk body, so neither scanning writable files nor scanning ref versions can pass. Assert unchanged bytes and Git state from a snapshot taken after arranging each variant. The standalone case uses a fresh no-Git repo with just `TASK-AAAAAA` and tests the empty result before planting it.
 
 ## Acceptance Criteria
 
@@ -155,3 +155,5 @@ The read-only preflight is still too large to implement and verify confidently i
 - 2026-11-21T18:45:37Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T18:45:37Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:46:33Z eager-ginger-adder cold-read → planning
+- 2026-11-21T18:46:36Z eager-ginger-adder: changed description
+- 2026-11-21T18:46:36Z eager-ginger-adder planning → cold-read
