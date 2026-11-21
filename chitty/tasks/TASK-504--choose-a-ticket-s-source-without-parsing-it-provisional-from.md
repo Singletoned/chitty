@@ -42,6 +42,10 @@ Record in a note how each migrated test and the first new test fail on `main` be
 - [ ] `test_provisional_only_on_its_branch_is_read_from_it` passes before and after the change, and fails against `provisional = isinstance(task_id.number, str)` without the file check (recorded in a note)
 - [ ] `make check` passes, and `git diff main -- src` changes only `_choose_source` in `src/chitty/store.py`
 
+## Plan
+
+Migrate and add the specified source-copy tests, verify their baseline failures and guard behavior, then replace provisional detection with the specified ID and file-presence check. Run formatting and checks, verify the source diff, and hand off.
+
 ## History
 
 - 2026-11-21T11:34:10Z sunny-ebony-kestrel → planning
@@ -51,3 +55,4 @@ Record in a note how each migrated test and the first new test fail on `main` be
 - 2026-11-21T11:37:07Z sunny-ebony-kestrel: changed description
 - 2026-11-21T11:37:07Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T11:37:36Z vivid-quartz-badger todo → doing
+- 2026-11-21T11:39:36Z vivid-quartz-badger: wrote the plan
