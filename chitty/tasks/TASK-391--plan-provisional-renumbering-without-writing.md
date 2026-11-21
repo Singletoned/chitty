@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: planning
+status: cold-read
 depends_on:
   - TASK-381
   - TASK-389
@@ -21,10 +21,14 @@ Tests in `tests/test_provisional_preflight.py`: `RepoTestCase`, deterministic va
 
 Base: `TASK-3` is the only numeric ticket, `TASK-AAAAAA` is archived and `TASK-BAAAAA` active (create B first); expect `AAAAAA -> TASK-4` and `BAAAAA -> TASK-5`. In this base assert the two candidates and `TASK-3` are writable, as is a flag-bearing provisional in a separate configured random context, but an unconfigured provisional is not. Neither of those extra provisional files is mapped. In table-driven variants, start from this base and add only one higher-number reservation at a time: `TASK-4` in the configured archive, in an unconfigured directory, on disk but read from its own branch, present only on its own branch, mentioned only in a Description (see below), or committed and then removed in delete mode. Each yields `TASK-5` and `TASK-6`; for the two branch variants assert `lookup` selects that branch and the writable set omits it. For the Description-only reservation use two subtests: add the mention to the unconfigured provisional file under its archive directory, and add it to the stale main file for `TASK-3` after committing a different body on `task-3` whose authoritative file lacks the mention. In both cases the only evidence of `TASK-4` is in an excluded on-disk body, so neither scanning writable files nor scanning ref versions can pass. Assert unchanged bytes and Git state from a snapshot taken after arranging each variant. The standalone case uses a fresh no-Git repo with just `TASK-AAAAAA` and tests the empty result before planting it.
 
+
+Conflict fixture: keep one eligible configured provisional ticket and commit a separate configured `TASK-3`. Independently edit `TASK-3` on main and `task-3` as in `tests/test_source_copy_errors.py`. On main first verify `source_of(TASK-3)` reports `changed on both`; then call the planner and assert the `ChittyError` contains `TASK-3` and `changed on both`. Snapshot HEAD, index and disk bytes before the planner call and assert no changes.
+
 ## Acceptance Criteria
 
 - [ ] For the base real-Git fixture and each reservation variant, the read-only plan returns the exact mapping in suffix order and the exact writable set, without changing HEAD, index or file bytes.
 - [ ] Outside Git, a single `TASK-AAAAAA` gives `TASK-1` and its writable path; with no candidates the result is `({}, ())`.
+- [ ] The main-checkout conflict fixture refuses a nonempty plan with `TASK-3` and `changed on both` and preserves HEAD, index and file bytes.
 
 ## Notes
 
@@ -167,3 +171,5 @@ I read the complete current ticket and inspected discovery, selection, used-numb
 - 2026-11-21T18:52:35Z brisk-jade-gannet todo → doing
 - 2026-11-21T18:54:33Z brisk-jade-gannet: changed owner, notes
 - 2026-11-21T18:54:33Z brisk-jade-gannet doing → planning
+- 2026-11-21T20:02:09Z eager-ginger-adder: changed description, acceptance criteria
+- 2026-11-21T20:02:09Z eager-ginger-adder planning → cold-read
