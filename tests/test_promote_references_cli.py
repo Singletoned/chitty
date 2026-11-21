@@ -45,9 +45,10 @@ class TestPromoteReferencesCli(CliTestCase):
         self.assertNotIn("TASK-2 doing", output)
         self.assertNotIn("TASK-9 no such task", output)
 
-    def test_duplicate_reference_reports_error_after_status_change(self):
+    def test_duplicate_reference_is_reported_without_failing_promotion(self):
         original = self.root / "chitty/tasks/TASK-2--second-task.md"
         (self.root / "chitty/tasks/TASK-2--duplicate.md").write_text(original.read_text())
-        result = self.run_cli("edit", "TASK-1", "-s", "todo", exit_code=1)
-        self.assertIn("TASK-2 is used by more than one file", result.output)
+        result = self.run_cli("edit", "TASK-1", "-s", "todo")
+        self.assertIn("TASK-2 unreadable: TASK-2 is used by more than one file", result.output)
+        self.assertIn("TASK-9 no such task", result.output)
         self.assertIn("status: todo", self.run_cli("show", "TASK-1").stdout)

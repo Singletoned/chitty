@@ -233,7 +233,7 @@ def check(
                 problems.append(Problem(path, "depends_on lists the task itself"))
             elif len(by_id.get(dependency, [])) > 1:
                 continue  # The duplicate files are already reported above.
-            elif repo.lookup(dependency) is None:
+            elif not repo.exists(dependency):
                 problems.append(Problem(path, f"depends_on {reference}: no such task"))
             elif own_id in graph and dependency in graph:
                 graph[own_id].add(dependency)
@@ -250,7 +250,7 @@ def check(
             problems.append(Problem(path, "parent lists the task itself"))
         elif len(by_id.get(parent, [])) > 1:
             continue  # The duplicate files are already reported above.
-        elif repo.lookup(parent) is None:
+        elif not repo.exists(parent):
             problems.append(Problem(path, f"parent {reference}: no such task"))
         elif own_id in parent_graph and parent in parent_graph:
             parent_graph[own_id].add(parent)

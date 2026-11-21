@@ -814,6 +814,8 @@ def edit(
         for reference, stored in repo.referenced_tasks(change.task):
             if stored is None:
                 click.echo(f"{reference} no such task")
+            elif isinstance(stored, ChittyError):
+                click.echo(f"{reference} unreadable: {stored}")
             else:
                 click.echo(
                     f"{reference} {stored.task.frontmatter.status} {stored.task.frontmatter.title}"

@@ -549,6 +549,9 @@ class Repo:
             self._ticket_ids = self._collect_ticket_ids()
         return set(self._ticket_ids)
 
+    def exists(self, task_id: TaskId) -> bool:
+        return task_id in self.ticket_ids()
+
     def _collect_ticket_ids(self) -> set[TaskId]:
         result: set[TaskId] = set()
         root = self.root / BACKLOG_DIR
@@ -628,7 +631,9 @@ class Repo:
             copy.ref,
         )
 
-    def referenced_tasks(self, stored: StoredTask) -> list[tuple[TaskId, StoredTask | None]]:
+    def referenced_tasks(
+        self, stored: StoredTask
+    ) -> list[tuple[TaskId, StoredTask | ChittyError | None]]:
         prefixes = [context.prefix for context in self.contexts()]
         text = "\n".join(
             [
@@ -636,11 +641,16 @@ class Repo:
                 *(criterion.text for criterion in stored.task.criteria),
             ]
         )
-        return [
-            (task_id, self.lookup(task_id))
-            for task_id in ids.ticket_references(text, prefixes)
-            if task_id != stored.id
-        ]
+        references: list[tuple[TaskId, StoredTask | ChittyError | None]] = []
+        for task_id in ids.ticket_references(text, prefixes):
+            if task_id != stored.id:
+                try:
+                    result = self.lookup(task_id)
+                except ChittyError as error:
+                    references.append((task_id, error))
+                else:
+                    references.append((task_id, result))
+        return references
 
     def find(self, task_id: TaskId) -> StoredTask:
         task = self.lookup(task_id)
@@ -659,7 +669,9 @@ class Repo:
 
     def check_dependencies(self, references: Sequence[str]) -> None:
         for reference in references:
-            self.find(TaskId.parse(reference))
+            task_id = TaskId.parse(reference)
+            if not self.exists(task_id):
+                raise ChittyError(f"no task {task_id} in {self.context_of(task_id).directory}")
 
     # -- writing ---------------------------------------------------------
     #
@@ -776,7 +788,7 @@ class Repo:
         parent = fields.get("parent")
         if isinstance(parent, str):
             fields["parent"] = str(self.resolve(parent))
-            self.find(TaskId.parse(fields["parent"]))
+            self.check_dependencies([fields["parent"]])
         status = fields.get("status", "todo")
         if status == "done" and self.review_required(context):
             raise ChittyError("setting status done requires -s review first")
@@ -878,7 +890,7 @@ class Repo:
         if task.frontmatter.depends_on != stored.task.frontmatter.depends_on:
             self.check_dependencies(task.frontmatter.depends_on)
         if task.frontmatter.parent and task.frontmatter.parent != stored.task.frontmatter.parent:
-            self.find(TaskId.parse(task.frontmatter.parent))
+            self.check_dependencies([task.frontmatter.parent])
         path = stored.path
         if task.frontmatter.title != stored.task.frontmatter.title:
             target = path.with_name(ids.filename(stored.id, ids.slugify(task.frontmatter.title)))
