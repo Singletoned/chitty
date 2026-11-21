@@ -38,6 +38,10 @@ Remove the obsolete history scan and its dedicated tests, update remaining asser
 
 Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the last `_history()` caller) is now `TASK-480`, so this also waits for it.
 
+## Summary
+
+Removed the historical scan and obsolete references. Focused tests and make check pass.
+
 ## History
 
 - 2026-11-18T16:20:18Z lively-quartz-crane → backlog
@@ -51,3 +55,4 @@ Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the la
 - 2026-11-20T23:04:47Z quick-pearl-lapwing: changed dependencies, notes
 - 2026-11-21T20:23:42Z jolly-fawn-vole todo → doing
 - 2026-11-21T20:25:19Z jolly-fawn-vole: wrote the plan
+- 2026-11-21T20:26:59Z jolly-fawn-vole: changed summary
