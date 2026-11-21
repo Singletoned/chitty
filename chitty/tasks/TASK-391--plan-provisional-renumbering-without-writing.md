@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: cold-read
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -13,7 +13,7 @@ created: 2026-11-18
 
 Implement only the allocation and selection core of the read-only planner in `src/chitty/store.py`. It has no production callers until `TASK-517`; branch and diagnostic guards are `TASK-520`, and blocking links in untouched sources are `TASK-519`. Do not add a CLI command or write files.
 
-Add `Repo._plan_provisional_renumbering() -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]`: old-to-new ID mapping and writable on-disk tickets, including unchanged IDs. Enumerate active and archived on-disk files in `discovered_contexts()`. Only configured files with `source_of(id)` equal to `None` are writable. Use `_load` to parse configured writable files. A writable file with `provisional: true` in a sequential context is a candidate; a random context file is writable but never mapped. Return `({}, ())` without allocating when there are no candidates. Propagate source-selection errors.
+Add `Repo._plan_provisional_renumbering() -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]`: old-to-new ID mapping and writable on-disk tickets, including unchanged IDs. The disk scan is the union of `_files(context, False)` and `_files(context, True)` for every context in `discovered_contexts()`, before source filtering. Always scan stale working-tree files if they exist. A file present only on a ref has no disk text to scan; only its ID can reserve a number via `ticket_ids()`. Only configured files with `source_of(id)` equal to `None` are writable. Use `_load` to parse configured writable files. A writable file with `provisional: true` in a sequential context is a candidate; a random context file is writable but never mapped. Return `({}, ())` without allocating when there are no candidates. Propagate source-selection errors.
 
 Extract `_used_numbers(context) -> set[int]` without changing `next_number` behavior: active/archive plus `_deleted_numbers` in delete mode. For each sequential prefix reserve those numbers, numeric IDs from `ticket_ids()` (including unconfigured, skipped and branch-only filenames), and numeric references from `ids.ticket_references` over the text of every scanned disk file, whether writable or not. Pass the sets and candidate IDs to `plan_renumbering` in `src/chitty/renumbering.py`; it owns order and allocation. No branch guard, duplicate-path diagnostic or structured-link guard in this ticket.
 
@@ -157,3 +157,5 @@ The read-only preflight is still too large to implement and verify confidently i
 - 2026-11-21T18:46:33Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:46:36Z eager-ginger-adder: changed description
 - 2026-11-21T18:46:36Z eager-ginger-adder planning → cold-read
+- 2026-11-21T18:47:18Z eager-ginger-adder: changed description
+- 2026-11-21T18:47:18Z eager-ginger-adder cold-read → planning
