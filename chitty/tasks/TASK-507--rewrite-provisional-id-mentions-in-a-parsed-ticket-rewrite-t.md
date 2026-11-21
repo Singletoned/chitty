@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: doing
+status: planning
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -41,6 +41,8 @@ No implementation was started; verification remains unfinished.
 
 Planner 2026-11-21, after the worker's return: targets are fresh by contract, so no duplicate `depends_on`. Criteria are compared by parsed text and checked state; only changed criteria are re-set, so unchanged ones keep `[X]` and continuation lines, and the empty-mapping property still holds.
 
+The remaining work exceeds this session: it combines a generated valid-ticket strategy covering six independent properties and formatting invariants, two deliberately incorrect rewrite implementations, stub-failure evidence for each property, and the production rewrite. No implementation or tests were started, and no verification was run. Please decide how to split the test infrastructure and rewrite into independently reviewable tickets while retaining the regression evidence and the fresh-target contract.
+
 ## History
 
 - 2026-11-21T13:10:17Z sunny-ebony-kestrel → planning
@@ -59,3 +61,5 @@ Planner 2026-11-21, after the worker's return: targets are fresh by contract, so
 - 2026-11-21T13:39:52Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:40:09Z vivid-ochre-badger todo → doing
 - 2026-11-21T13:42:17Z vivid-ochre-badger: wrote the plan
+- 2026-11-21T13:42:42Z vivid-ochre-badger: changed owner, notes
+- 2026-11-21T13:42:42Z vivid-ochre-badger doing → planning
