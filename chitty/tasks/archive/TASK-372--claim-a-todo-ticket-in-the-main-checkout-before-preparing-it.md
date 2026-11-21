@@ -82,3 +82,4 @@ Strengthened the stale-history regression with deterministic author and committe
 - 2026-11-18T15:47:44Z witty-ginger-falcon: changed notes
 - 2026-11-18T15:47:44Z witty-ginger-falcon done → planning
 - 2026-11-18T16:26:06Z lively-quartz-crane: changed notes
+- 2026-11-21T22:55:40Z lively-zinc-newt planning → archived
