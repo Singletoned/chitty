@@ -1,6 +1,6 @@
 ---
 title: Guard provisional renumbering preflight and report bad paths
-status: review
+status: done
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -39,6 +39,10 @@ Add real-Git read-only regression tests, verify failures, then implement branch 
 
 Before the fix, feature and detached tests failed because no error was raised; duplicate failed because its error omitted both paths. Malformed passed.
 
+Reviewed: Full diff inspected; no property test warranted for the specified fixed states.
+1: pass - make check printed OK (1022 tests); running tests.test_provisional_preflight_errors with main's unguarded store printed ProvisionalOffMain not raised for feature and detached.
+2: pass - make check printed OK; the same unguarded run printed duplicate provisional task ID TASK-AAAAAA without the paths, while malformed passed. Snapshots are asserted by the tests.
+
 ## Summary
 
 Added branch and duplicate guards with read-only Git regression tests. Feature, detached and duplicate tests failed before the fix; all pass after. make check passed.
@@ -59,3 +63,5 @@ Added branch and duplicate guards with read-only Git regression tests. Feature, 
 - 2026-11-21T23:10:01Z sunny-ginger-falcon: changed notes
 - 2026-11-21T23:11:29Z sunny-ginger-falcon: changed summary
 - 2026-11-21T23:11:31Z sunny-ginger-falcon doing → review
+- 2026-11-21T23:15:13Z calm-umber-quail: changed notes
+- 2026-11-21T23:15:13Z calm-umber-quail review → done
