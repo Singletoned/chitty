@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in Markdown text with a pure function
-status: todo
+status: doing
 depends_on:
   - TASK-347
 created: 2026-11-16
@@ -61,3 +61,4 @@ Replanned 2026-11-21: both blockers above settled in the Description (repeat the
 - 2026-11-21T23:21:57Z lively-zinc-newt: changed title, labels, description, acceptance criteria
 - 2026-11-21T23:23:33Z lively-zinc-newt: changed description
 - 2026-11-21T23:23:33Z lively-zinc-newt cold-read → todo
+- 2026-11-21T23:27:03Z brisk-indigo-eel todo → doing
