@@ -1,6 +1,6 @@
 ---
 title: Check ticket references by ID, so a conflicted ticket does not block edits of others
-status: doing
+status: review
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -51,3 +51,4 @@ Reference validation now uses ticket IDs, and promotion reports unreadable menti
 - 2026-11-21T13:17:33Z sunny-coral-badger: wrote the plan
 - 2026-11-21T13:19:27Z sunny-coral-badger: changed notes
 - 2026-11-21T13:23:27Z sunny-coral-badger: changed summary; ticked acceptance criteria
+- 2026-11-21T13:23:36Z sunny-coral-badger doing → review
