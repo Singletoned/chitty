@@ -65,6 +65,12 @@ Planner 2026-11-21: the old evidence command found the oldest `Task: TASK-378` c
 
 The planner ran all four committed tests against `7e7b5ae4^` and observed the expected duplicate-file failure in each. The test file remains unchanged since its sole commit, `464fb150`.
 
+## Summary
+
+The committed regression tests cover referenced-ticket archives, archive-all, and reading an archive from an older worktree. The superseded selector implementation was reverted; the net diff contains only ticket and test files.
+
+Verification: `chitty fix`, `make format`, and `make check` passed (909 tests). The planner confirmed all four tests fail with the duplicate-file error at `7e7b5ae4^`; the test file is unchanged since that run. No follow-ups.
+
 ## History
 
 - 2026-11-17T19:53:05Z kind-umber-toad → todo
@@ -99,3 +105,4 @@ The planner ran all four committed tests against `7e7b5ae4^` and observed the ex
 - 2026-11-21T12:43:17Z intrepid-ochre-puffin todo → doing
 - 2026-11-21T12:44:55Z intrepid-ochre-puffin: wrote the plan
 - 2026-11-21T12:46:40Z intrepid-ochre-puffin: changed notes
+- 2026-11-21T12:46:49Z intrepid-ochre-puffin: changed summary
