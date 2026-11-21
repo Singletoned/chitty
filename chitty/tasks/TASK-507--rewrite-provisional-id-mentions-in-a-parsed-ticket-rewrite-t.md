@@ -36,6 +36,8 @@ Generate property cases and mutation checks, confirm each property fails against
 
 Earlier notes (the worker's two contract questions and the split) are in Git history; the Description is authoritative. Both questions are settled there: fresh targets, and criteria compared by parsed text and checked state. The generator is `TASK-508`. Decided 2026-11-21: properties (2), (3), (4) and (6) state exact expected values, so they need no wrong-version tests beyond (a) and (b).
 
+Stub regression: `.venv/bin/python -m unittest tests.test_property_renumbering` failed for `test_boundaries`, `test_checks`, `test_empty`, `test_fields`, `test_formatting`, and `test_preserved`, each with `NotImplementedError` at `src/chitty/renumbering.py:35` in `rewrite_task`.
+
 ## History
 
 - 2026-11-21T13:10:17Z sunny-ebony-kestrel → planning
@@ -63,3 +65,4 @@ Earlier notes (the worker's two contract questions and the split) are in Git his
 - 2026-11-21T13:49:24Z sunny-ebony-kestrel: changed description
 - 2026-11-21T13:59:37Z youthful-coral-heron todo → doing
 - 2026-11-21T14:01:22Z youthful-coral-heron: wrote the plan
+- 2026-11-21T14:02:12Z youthful-coral-heron: changed notes
