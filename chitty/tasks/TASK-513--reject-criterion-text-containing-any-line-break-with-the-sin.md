@@ -1,6 +1,6 @@
 ---
 title: Reject criterion text containing any line break, with the single-line error
-status: todo
+status: doing
 labels:
   - bug
 parent: TASK-376
@@ -26,3 +26,4 @@ Planner 2026-11-21: the last two characters are U+2028 and U+2029, written here 
 - 2026-11-21T14:34:11Z sunny-ebony-kestrel: changed acceptance criteria
 - 2026-11-21T14:36:10Z sunny-ebony-kestrel: changed description, notes
 - 2026-11-21T14:36:10Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T15:24:28Z upbeat-fawn-lapwing todo → doing
