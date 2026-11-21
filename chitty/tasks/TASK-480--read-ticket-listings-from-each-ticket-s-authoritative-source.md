@@ -64,6 +64,10 @@ Check failed before this session: check exited with status 2; output in `.chitty
 
 Move regression confirmed: test_move_provisional_off_main_then_promote_on_main fails on the listing cutover without the no-op save skip and passes with it. Rebased onto main after TASK-518 landed; make check passes. Remaining acceptance tests for placement, conflict, allocation and duplicates still need implementation.
 
+## Summary
+
+Authoritative listings, provisional allocation and move no-op handling are implemented. Real-Git tests cover placement, conflicts, allocation and duplicate paths. The original placement and standalone tests failed before the cutover; reverting allocation to all_tasks made the allocation test fail, and removing the move no-op skip made the existing move regression fail. The new suite and make check pass (989 tests).
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
@@ -93,3 +97,4 @@ Move regression confirmed: test_move_provisional_off_main_then_promote_on_main f
 - 2026-11-21T20:14:21Z calm-ginger-adder todo → doing
 - 2026-11-21T20:15:30Z calm-ginger-adder: changed notes
 - 2026-11-21T20:17:17Z calm-ginger-adder: changed notes
+- 2026-11-21T20:19:28Z calm-ginger-adder: changed summary
