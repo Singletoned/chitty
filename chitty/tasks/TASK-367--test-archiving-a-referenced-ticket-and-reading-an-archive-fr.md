@@ -37,7 +37,7 @@ Decisions:
 
 ## Plan
 
-Revert the superseded selector work, merge the landed dependency, add the four specified real-Git regression tests, verify each against the pre-TASK-378 revision, and run the required checks.
+Verify the committed regression tests and their historical evidence, run the required fix, formatting and checks, then hand off for review.
 
 ## Notes
 
@@ -95,3 +95,4 @@ Planner 2026-11-21: the old evidence command found the oldest `Task: TASK-378` c
 - 2026-11-21T12:38:11Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T12:38:11Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:43:17Z intrepid-ochre-puffin todo → doing
+- 2026-11-21T12:44:55Z intrepid-ochre-puffin: wrote the plan
