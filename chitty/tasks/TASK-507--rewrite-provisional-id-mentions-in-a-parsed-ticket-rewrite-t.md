@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -32,3 +32,4 @@ Tests: Hypothesis properties in `tests/test_property_renumbering.py` (`TASK-381`
 - 2026-11-21T13:14:38Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T13:16:12Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T13:16:12Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T13:32:45Z daring-violet-puffin todo → doing
