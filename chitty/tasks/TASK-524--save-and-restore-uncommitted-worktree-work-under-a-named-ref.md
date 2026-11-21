@@ -1,6 +1,6 @@
 ---
 title: Save and restore uncommitted worktree work under a named ref
-status: doing
+status: planning
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -50,6 +50,10 @@ Replanned 2026-11-21: the ref namespace blocker is settled in the Description (r
 
 Work started: reviewed the ticket and existing Git helpers and tests, and recorded the approach. No implementation or regression tests have been written or verified yet.
 
+Planning blocker: the round-trip property requires drawing 1 to 6 committed files and then a mix including a tracked file edited and left unstaged, a tracked file edited and staged, and a tracked file deleted. For a draw of one committed file, those three final states cannot all be represented: a deleted file cannot simultaneously retain an unstaged edit, and the property also requires at least one separately staged edit. Please specify whether every example must contain all three kinds of tracked change (and raise the minimum committed file count accordingly), or how the mix is to vary for small draws, including the intended assertions. Choosing either would change the requested test rather than resolve a clear omission.
+
+I inspected the remaining examples and the existing helpers and tests; their fixtures and assertions are described. No helpers or tests were implemented, so neither the stub failures nor the passing behavior or make check were verified.
+
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
@@ -67,3 +71,5 @@ Work started: reviewed the ticket and existing Git helpers and tests, and record
 - 2026-11-21T23:52:30Z quick-hazel-newt: wrote the plan
 - 2026-11-21T23:52:54Z quick-hazel-newt: changed notes
 - 2026-11-21T23:53:33Z quick-hazel-newt: wrote the plan
+- 2026-11-21T23:53:43Z quick-hazel-newt: changed owner, notes
+- 2026-11-21T23:53:43Z quick-hazel-newt doing → planning
