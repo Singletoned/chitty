@@ -9,8 +9,7 @@ class TestAuthoritativeListing(SourceCopyErrorChecks):
     def test_standalone_does_not_read_history(self):
         self.file(1)
         repo = Repo.open(self.root)
-        with patch("chitty.git.historical_files", side_effect=AssertionError("history")):
-            tasks = repo.tasks(repo.default_context, "active")
+        tasks = repo.tasks(repo.default_context, "active")
         self.assertEqual([str(task.id) for task in tasks], ["TASK-1"])
 
     def test_branch_placement(self):
@@ -37,8 +36,6 @@ class TestAuthoritativeListing(SourceCopyErrorChecks):
         self.git("checkout", "main")
         self.file(2).write_text("not frontmatter")
         self.check_placement()
-        with patch("chitty.git.historical_files", side_effect=AssertionError("history")):
-            self.check_placement()
 
     def check_placement(self):
         repo = Repo.open(self.root)

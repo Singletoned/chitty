@@ -19,16 +19,6 @@ class Commit:
     message: str
 
 
-@dataclass(frozen=True)
-class HistoricalFile:
-    """A file from the newest committed version visible on a Git ref."""
-
-    path: Path
-    content: str
-    ref: str
-    committed_at: int
-
-
 def commits_missing_trailer(commits: Sequence[Commit], task_id: TaskId) -> list[Commit]:
     """Return non-Chitty commits without this task's trailer in their last paragraph."""
     missing: list[Commit] = []
@@ -395,53 +385,6 @@ def main_files(
     return entries
 
 
-def historical_files(root: Path, directory: Path) -> list[HistoricalFile]:
-    """Read the latest committed version of every file below ``directory``.
-
-    Refs are enumerated once, tree entries are read once per ref, and every
-    selected blob is fetched through one ``git cat-file --batch`` process.
-    The caller overlays uncommitted worktree files separately.
-    """
-    if not is_repository(root):
-        return []
-    refs = [
-        ref
-        for ref, symref in (
-            line.partition("\t")[::2]
-            for line in _git(
-                root,
-                "for-each-ref",
-                "--format=%(refname)%09%(symref)",
-                "refs/heads",
-                "refs/remotes",
-            ).splitlines()
-        )
-        if not symref
-    ]
-    if not refs:
-        return []
-    changed = _latest_changes(root, refs, directory)
-    blobs = _tree_blobs(root, refs, directory)
-
-    selected = [(path, commit, committed_at) for path, (commit, committed_at) in changed.items()]
-    contents = _read_blobs(root, [(f"{commit}:{path}", path) for path, commit, _ in selected])
-    current = f"refs/heads/{current_branch(root)}"
-    files: list[HistoricalFile] = []
-    for path, commit, committed_at in selected:
-        result = contents.get((f"{commit}:{path}", path))
-        if result is None:
-            continue
-        blob, content = result
-        candidates = blobs.get(path, ())
-        matching = [ref for ref, object_id in candidates if object_id == blob]
-        if matching:
-            # Several refs can hold the latest version; the current branch must
-            # win so a checkout that already has it is not told to go elsewhere.
-            ref = current if current in matching else matching[0]
-            files.append(HistoricalFile(path, content, _display_ref(ref), committed_at))
-    return files
-
-
 def repository_answer(
     command: Sequence[str], directory: Path, returncode: int, stdout: str, stderr: str
 ) -> bool:
@@ -588,49 +531,6 @@ def dirty_paths(root: Path, directory: Path) -> set[Path]:
     return {Path(line[3:]) for line in lines if len(line) > 3}
 
 
-def _latest_changes(
-    root: Path, refs: Sequence[str], directory: Path
-) -> dict[Path, tuple[str, int]]:
-    output = _git(
-        root,
-        "log",
-        "--topo-order",
-        "--no-renames",
-        "--format=%H%x09%ct",
-        "--name-only",
-        *refs,
-        "--",
-        str(directory),
-    )
-    result: dict[Path, tuple[str, int]] = {}
-    commit = ""
-    timestamp = 0
-    for line in output.splitlines():
-        if "\t" in line:
-            commit, _, value = line.partition("\t")
-            timestamp = int(value)
-        elif line:
-            path = Path(line)
-            previous = result.get(path)
-            if previous is None or timestamp > previous[1]:
-                result[path] = (commit, timestamp)
-    return result
-
-
-def _tree_blobs(
-    root: Path, refs: Sequence[str], directory: Path
-) -> dict[Path, list[tuple[str, str]]]:
-    result: dict[Path, list[tuple[str, str]]] = {}
-    for ref in refs:
-        output = _git(root, "ls-tree", "-r", "--full-tree", ref, "--", str(directory))
-        for line in output.splitlines():
-            metadata, _, filename = line.partition("\t")
-            _, kind, object_id = metadata.split()
-            if kind == "blob":
-                result.setdefault(Path(filename), []).append((ref, object_id))
-    return result
-
-
 def _read_blobs(
     root: Path, objects: Sequence[tuple[str, Path]]
 ) -> dict[tuple[str, Path], tuple[str, str]]:
@@ -670,13 +570,6 @@ def _read_blobs(
     if process.returncode != 0:
         raise ChittyError(f"cannot read historical task files: {stderr.decode().strip()}")
     return result
-
-
-def _display_ref(ref: str) -> str:
-    for prefix in ("refs/heads/", "refs/remotes/"):
-        if ref.startswith(prefix):
-            return ref.removeprefix(prefix)
-    return ref
 
 
 def deleted_paths(root: Path) -> list[Path]:

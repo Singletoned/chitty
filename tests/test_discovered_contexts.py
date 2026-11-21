@@ -1,8 +1,6 @@
 import shutil
 import subprocess
-from unittest.mock import patch
 
-from chitty import git
 from chitty.store import Repo
 from tests.test_cli import CliTestCase
 
@@ -70,5 +68,4 @@ class TestDiscoveredContexts(CliTestCase):
         self.commit_file("chitty/tasks/TASK-1--x.md", "main edit")
         self.commit_file("chitty/tasks/TASK-2--x.md", "malformed")
         self.commit_file("chitty/other/TASK-3--x.md")
-        with patch.object(git, "historical_files", side_effect=AssertionError("history read")):
-            self.assertEqual(self.names(), {"tasks", "other"})
+        self.assertEqual(self.names(), {"tasks", "other"})

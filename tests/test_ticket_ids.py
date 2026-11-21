@@ -164,4 +164,4 @@ class TestTicketIds(CliTestCase):
                 [args[1] for name, args, _ in calls if name == "files_at"],
                 ["refs/heads/main", "refs/heads/task-1", "refs/heads/task-2"],
             )
-            self.assertFalse(any(name in {"historical_files", "file_at"} for name, _, _ in calls))
+            self.assertFalse(any(name == "file_at" for name, _, _ in calls))
