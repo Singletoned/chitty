@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: planning
+status: cold-read
 depends_on:
   - TASK-381
   - TASK-389
@@ -11,24 +11,20 @@ created: 2026-11-18
 
 ## Description
 
-Prepare read-only inputs to the store transaction in `TASK-517`. Do not add a command or write files. Relevant code: `src/chitty/store.py`, `src/chitty/renumbering.py`, `src/chitty/errors.py`.
+Implement only the allocation and selection core of the read-only planner in `src/chitty/store.py`. It has no production callers until `TASK-517`; branch and diagnostic guards are `TASK-520`, and blocking links in untouched sources are `TASK-519`. Do not add a CLI command or write files.
 
-- Add `Repo._plan_provisional_renumbering() -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]`: the old-to-new ID mapping and writable disk tickets, including unchanged IDs. Use fresh `git.is_repository` and `git.current_branch` before discovery; in Git require the configured `Repo._main_branch()` (not detached HEAD). Otherwise raise new `ProvisionalOffMain(ChittyError)` saying provisional tickets are renumbered on main. Outside Git proceed. Never call `_prepare_write`.
-- Scan and parse active and archived disk files in all `discovered_contexts()`; errors name the path. Only configured files with `source_of(id)` equal to `None` are writable. A writable file with `provisional: true` in a sequential context is a candidate; random contexts may be rewritten, not renumbered. Reject any duplicate on-disk ID involving a candidate before invoking `plan_renumbering`, naming both paths. Return `({}, ())` if there are no candidates after discovery.
-- Extract `_used_numbers(context) -> set[int]` without changing `next_number` behavior (active/archive plus `_deleted_numbers` in delete mode). For each sequential prefix reserve those numbers, integer IDs from `ticket_ids()` (including unconfigured, skipped and branch-only filenames), and integer references from `ids.ticket_references` over the scanned disk files. Pass the sets and candidates to `plan_renumbering`; it owns order and allocation. Let source-selection errors propagate.
-- If there is a plan, reject a `parent` or `depends_on` pointing to any old ID in an untouched disk file or visible authoritative ref-backed ticket. Use `ticket_ids()` and `lookup` for ref-backed results, including IDs without a disk file. A read error for a source needed by preflight propagates. Compare structured links via `TaskId.parse`; name the blocking ticket and old ID. Ignore prose and History in this guard, and do not inspect non-authoritative historical refs or unseen branches.
+Add `Repo._plan_provisional_renumbering() -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]`: old-to-new ID mapping and writable on-disk tickets, including unchanged IDs. Enumerate active and archived on-disk files in `discovered_contexts()`. Only configured files with `source_of(id)` equal to `None` are writable. Use `_load` to parse configured writable files. A writable file with `provisional: true` in a sequential context is a candidate; a random context file is writable but never mapped. Return `({}, ())` without allocating when there are no candidates. Propagate source-selection errors.
 
-Tests in `tests/test_provisional_preflight.py`: `RepoTestCase`, valid rendered provisional files written directly for deterministic IDs, real Git with `git init -b main`, local author and committed fixture. Fixed integration states: the pure allocator already has generated ordering/allocation tests (`TASK-381`). Demonstrate behavioral failures on a signature stub raising `NotImplementedError`, then pass the new tests and `make check`.
+Extract `_used_numbers(context) -> set[int]` without changing `next_number` behavior: active/archive plus `_deleted_numbers` in delete mode. For each sequential prefix reserve those numbers, numeric IDs from `ticket_ids()` (including unconfigured, skipped and branch-only filenames), and numeric references from `ids.ticket_references` over the text of every scanned disk file, whether writable or not. Pass the sets and candidate IDs to `plan_renumbering` in `src/chitty/renumbering.py`; it owns order and allocation. No branch guard, duplicate-path diagnostic or structured-link guard in this ticket.
 
-Allocation: archive `TASK-AAAAAA`, leave `TASK-BAAAAA` active, with highest number `TASK-3`; reverse creation order and expect `TASK-4` and `TASK-5` in both orders. With the same base, separately make the sole higher number `TASK-4` archived, unconfigured, read from its own ticket branch, present only on its ticket branch, mentioned in a Description, or deleted after committing in delete mode. Each variant must yield `TASK-5` and `TASK-6`. Assert reference selection in branch fixtures; assert both candidates and a flag-bearing provisional file in a separate configured random context are writable but only the sequential candidates are mapped. Add an unconfigured provisional file and assert it is neither mapped nor writable. An empty fixture returns an empty plan. Use a slug-matching malformed file and two distinct paths for the same provisional ID for the error tests; stale setup means removing and committing `chitty_version`.
+Tests in `tests/test_provisional_preflight.py`: `RepoTestCase`, deterministic valid provisional files written directly, real Git with `git init -b main`, local author and committed fixtures. Use a signature stub raising `NotImplementedError` to show tests fail behaviorally before implementation, then pass the new tests and `make check`. Fixed integration cases verify each data source; the pure allocator already has generated tests (`TASK-381`).
 
-Untouched-source fixtures: separately link to `TASK-AAAAAA` from (a) an unconfigured disk file, (b) a stale main file whose authoritative ticket branch removes the link, and (c) an authoritative branch-only ticket. Use `depends_on` for (a) and (c), lowercase `parent` for (b), and assert the selected refs for (b) and (c). In the prose variants put the old ID in Description instead of the structured link.
+Base: `TASK-3` is the only numeric ticket, `TASK-AAAAAA` is archived and `TASK-BAAAAA` active (create B first); expect `AAAAAA -> TASK-4` and `BAAAAA -> TASK-5`. In this base assert the two candidates and `TASK-3` are writable, as is a flag-bearing provisional in a separate configured random context, but an unconfigured provisional is not. Neither of those extra provisional files is mapped. In table-driven variants, start from this base and add only one higher-number reservation at a time: `TASK-4` in the configured archive, in an unconfigured directory, on disk but read from its own branch, present only on its own branch, mentioned only in a Description, or committed and then removed in delete mode. Each yields `TASK-5` and `TASK-6`; for the two branch variants assert `lookup` selects that branch and the writable set omits it. Assert unchanged bytes and Git state from a snapshot taken after arranging each variant. The standalone case uses a fresh no-Git repo with just `TASK-AAAAAA` and tests the empty result before planting it.
 
 ## Acceptance Criteria
 
-- [ ] The real-file allocation fixtures return the exact mapping and writable paths without changing HEAD, index or file bytes; a fixture outside Git maps the sole `TASK-AAAAAA` to `TASK-1`.
-- [ ] With stale setup, an off-main branch and detached HEAD each raise `ProvisionalOffMain`; on main, an unparseable file or duplicate candidate raises `ChittyError` naming the bad path or both duplicate paths respectively. In each case compare HEAD, index and file bytes before and after.
-- [ ] Each untouched-source structural link fixture refuses the batch, names both IDs and leaves HEAD, index and file bytes unchanged; replacing that link with a Description mention allows the plan and keeps the same files excluded from the writable set.
+- [ ] For the base real-Git fixture and each reservation variant, the read-only plan returns the exact mapping in suffix order and the exact writable set, without changing HEAD, index or file bytes.
+- [ ] Outside Git, a single `TASK-AAAAAA` gives `TASK-1` and its writable path; with no candidates the result is `({}, ())`.
 
 ## Notes
 
@@ -156,3 +152,5 @@ The read-only preflight is still too large to implement and verify confidently i
 - 2026-11-21T18:37:36Z open-quartz-urchin todo → doing
 - 2026-11-21T18:39:55Z open-quartz-urchin: changed owner, notes
 - 2026-11-21T18:39:55Z open-quartz-urchin doing → planning
+- 2026-11-21T18:45:37Z eager-ginger-adder: changed description, acceptance criteria
+- 2026-11-21T18:45:37Z eager-ginger-adder planning → cold-read
