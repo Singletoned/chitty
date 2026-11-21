@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: cold-read
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -38,13 +38,14 @@ Decisions:
 - Visible behaviour changes (label `needs-minor`): on a branch that is neither `main` nor the ticket's own branch, `show` reads an existing ticket from `main`'s tip (an uncommitted edit there is not shown) and `_require_current_version` refuses to write it; a ticket branch merged into `main` no longer hides `main`'s copy; with the configured main branch absent, reading a ticket that has no ticket branch from a checkout not on that branch fails with `configured main branch ... has no tip`; `show` of a ticket only on an unrelated branch fails with `no task`.
 - Unchanged here and left to `TASK-480`: the multi-ticket writes (`new_id` on a ticket branch, `archive_done`, `_delete_done`, `move`, `renumber`), which still act on the copies `all_tasks()` picks from history, and `_set_archived`, which renames `StoredTask.path` as today. Also unchanged: `_tasks_in_location`, `tasks`, `all_tasks` and `chitty list` (`TASK-480`), `next_number` (`TASK-379`), `check.py`, and `_dependency_is_done`, which keeps reading dependencies from `main`'s files. `_history()` stays, still used by `_tasks_in_location`.
 - Migrate, without deleting or weakening any: in `tests/test_check_cross_branch_references.py`, the "other branch" row of `test_reference_existence_matches_show` (`missing` becomes `True`), `test_malformed_task_on_another_branch_reports_parse_error` (now `no task`) and `test_edit_can_depend_on_task_only_on_main` (now refused on a non-ticket branch); in `tests/test_next.py`, `test_todo_dependency_must_be_done_on_main` and `test_unmerged_archive_does_not_complete_dependency` (writes from branches `worker` and `rename` now refused; reads from `main`); in `tests/test_cli.py`, rename branch `worker` to `task-1` in `test_allows_writes_in_the_branch_with_the_latest_version` and `test_allows_writes_from_a_new_worktree_with_no_commits_of_its_own`, keeping their assertions, and keep `test_refuses_all_single_ticket_writes_from_another_worktree`, `test_refuses_a_branch_without_a_worktree` and `test_refuses_a_remote_tracking_branch` asserting exit 1 with the `_require_current_version` message (`latest committed version is on branch <ref>`, naming the ref the ticket is now read from), and no commit made; `test_ticket_worktree_write_does_not_wait` in `tests/test_main_checkout_lock.py` must pass through the own-worktree rule. Migrate any other test `make check` shows asserting the old choice the same way, and name it in the review note. A test that fails only because `show` and `list` now disagree about a branch-only ticket asserts the `show` behaviour and leaves `list` to `TASK-480`; name it in the note.
+- The `show` error texts in criterion 3 already exist: `_choose_source` raises the changed-on-both error and `_parse_source_copy` formats `<ref>:<path>: <error>`.
 - One ticket: the migrations cannot land apart from the switch without `make check` failing in between. `TASK-474` to `TASK-478` already test each placement directly, so this ticket's new tests check the CLI wiring only.
 
 Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `CliTestCase` from `tests/test_cli.py`, set up as `tests/test_check_cross_branch_references.py` does. No property: a fixed set of cases, each in the criteria; the generated property over placements is `TASK-393`.
 
 ## Acceptance Criteria
 
-- [ ] From the main checkout, through the CLI: `chitty show` of a ticket edited on `task-<n>` ahead of `main` prints the branch copy and `branch: task-<n>`; of a ticket retitled on `task-<n>`, prints the branch path; of a ticket archived on its branch, prints its archive path; of a ticket only on branch `feature`, fails with `no task` (each fails before the change)
+- [ ] From the main checkout, through the CLI: `chitty show` of a ticket edited on `task-<n>` ahead of `main`, with an unrelated commit on `main` made after the branch edit (so today's newest-commit rule picks `main`'s copy), prints the branch copy and `branch: task-<n>`; of a ticket retitled on `task-<n>`, prints the branch path; of a ticket archived on its branch, prints its archive path; of a ticket only on branch `feature`, fails with `no task` (each fails before the change)
 - [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`: `chitty show TASK-2` succeeds; `chitty show TASK-1` fails naming `task-1` and `main` (fails before the change). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`. In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
 - [ ] `make check` passes, including `tests/test_list_performance.py`; every test named in the migration decision asserts its new behaviour; and the review note lists every existing test the branch changed, each with its old and new assertion, none deleted or weakened
 
@@ -79,6 +80,8 @@ This implementation is too large to finish in this session: it combines the sing
 Too large to finish in this session: the read switch, write guard, reference validation, CLI regression and mutation matrix, and migrations must land together. A planner needs to split or stage these without breaking checks. No implementation or tests changed; all verification remains outstanding.
 
 Planning 2026-11-21: split again after the worker found it too large. Moved out: the own-worktree write rule and former criterion 2 (`TASK-482`, lands first), and `Repo.exists` with the reference-isolation cases of criterion 3 (`TASK-483`, lands after). What remains: the single-ticket read switch, `StoredTask.branch` and `path`, criterion 1, the `show` cases of criterion 3, and the test migrations, which must land with the switch.
+
+Planning 2026-11-21: the trimmed scope (read switch plus the named migrations) stays one ticket because the migrations cannot land apart from the switch. It runs only after `TASK-482`. If a session still cannot finish it, return it with the list of migrations done and left, and the owner will decide how to stage it.
 
 ## History
 
@@ -177,3 +180,5 @@ Planning 2026-11-21: split again after the worker found it too large. Moved out:
 - 2026-11-21T01:18:34Z rosy-russet-adder doing → planning
 - 2026-11-21T01:22:55Z quick-pearl-lapwing: changed dependencies, description, acceptance criteria, notes
 - 2026-11-21T01:23:50Z quick-pearl-lapwing planning → cold-read
+- 2026-11-21T01:25:15Z quick-pearl-lapwing: changed description, acceptance criteria, notes
+- 2026-11-21T01:25:15Z quick-pearl-lapwing cold-read → todo
