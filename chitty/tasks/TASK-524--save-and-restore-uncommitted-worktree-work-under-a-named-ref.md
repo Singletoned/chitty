@@ -38,7 +38,7 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 
 ## Plan
 
-Add stub helpers and real-Git property and example tests, verify failures, implement named-ref save and restore, then run fix, format and checks.
+Add stub helpers and real-Git property and example tests; verify failures, implement named-ref save and restore, then run fix, format and checks.
 
 ## Notes
 
@@ -66,3 +66,4 @@ Work started: reviewed the ticket and existing Git helpers and tests, and record
 - 2026-11-21T23:50:08Z quick-hazel-newt todo → doing
 - 2026-11-21T23:52:30Z quick-hazel-newt: wrote the plan
 - 2026-11-21T23:52:54Z quick-hazel-newt: changed notes
+- 2026-11-21T23:53:33Z quick-hazel-newt: wrote the plan
