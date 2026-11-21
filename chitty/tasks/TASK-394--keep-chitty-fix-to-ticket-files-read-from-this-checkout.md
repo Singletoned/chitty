@@ -31,6 +31,10 @@ Tests: real-Git tests in a new `tests/test_fix_sources.py`, inheriting `CliTestC
 - [ ] In the main checkout, with local `task-7` and `origin/task-7` (made by `git update-ref`) at sibling commits, both ahead of `main` and each changing `TASK-7`, `chitty fix` exits 1 naming both; `make check` passes
 - [ ] In the main checkout, with `chitty/tasks/TASK-6--a.md` and `chitty/tasks/TASK-6--b.md` (both `depends_on: [task-3]`, no `task-6` branch): `chitty fix` leaves both byte-identical and lists `skipped: TASK-6 is used by more than one file` for each, and `chitty check` still exits 1 reporting the duplicate. Record in a note what `fix` does there on `main` before the change; if it already leaves both files unchanged, the byte-identical part is a guard, and the warnings must fail before; `chitty fix chitty/tasks/TASK-6--a.md` lists only `TASK-6--a.md`'s warning and leaves both files byte-identical
 
+## Plan
+
+Add real-Git regression coverage for source selection, duplicates and filtered diagnostics; expose unparsed source selection in Repo, then gate repairs by source and duplicate counts while preserving parse errors and check behavior. Run fix, format and full checks before handoff.
+
 ## Notes
 
 The duplicate-file requirement cannot be implemented as written: `Repo.find(id)` calls `lookup`, `source_copy`, and `_parse_source_copy`, which raises `ChittyError` whenever the selected source has more than one file. It does not resolve one working-tree file, so there is no first file to repair and second file to skip. Please decide whether duplicates should all be skipped or how an authoritative file is selected, and specify a regression fixture, action, and assertions for that choice (including the warning and `check` diagnostics). The ticket also requires path-filtered warnings and skipping a stale main filename absent from the selected branch, but describes no regression fixture, action, and assertions for either behavior; please specify those tests. No implementation was started and verification remains unfinished.
@@ -74,3 +78,4 @@ Planner 2026-11-21, after the third read: decided that a numbered ticket existin
 - 2026-11-21T13:17:30Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T13:17:30Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:24:58Z lively-teal-eel todo → doing
+- 2026-11-21T13:27:41Z lively-teal-eel: wrote the plan
