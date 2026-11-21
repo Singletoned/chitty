@@ -13,7 +13,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime
 from itertools import combinations
-from typing import Any, Literal
+from typing import Any, Final, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
@@ -78,15 +78,23 @@ FIELD_ORDER = (
     "moved_from",
     "provisional",
 )
-DESCRIPTION = "Description"
-ACCEPTANCE_CRITERIA = "Acceptance Criteria"
-PLAN = "Plan"
-NOTES = "Notes"
-SUMMARY = "Summary"
-HISTORY = "History"
+SectionName = Literal["Description", "Acceptance Criteria", "Plan", "Notes", "Summary", "History"]
+DESCRIPTION: Final[SectionName] = "Description"
+ACCEPTANCE_CRITERIA: Final[SectionName] = "Acceptance Criteria"
+PLAN: Final[SectionName] = "Plan"
+NOTES: Final[SectionName] = "Notes"
+SUMMARY: Final[SectionName] = "Summary"
+HISTORY: Final[SectionName] = "History"
 # Joins the parts of one edit's History event, e.g. "changed notes; wrote the plan".
 HISTORY_ACTION_SEPARATOR = "; "
-SECTION_ORDER = (DESCRIPTION, ACCEPTANCE_CRITERIA, PLAN, NOTES, SUMMARY, HISTORY)
+SECTION_ORDER: tuple[SectionName, ...] = (
+    DESCRIPTION,
+    ACCEPTANCE_CRITERIA,
+    PLAN,
+    NOTES,
+    SUMMARY,
+    HISTORY,
+)
 
 DELIMITER = "---\n"
 KEY_LINE_RE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)[ \t]*:(?:[ \t]|$)")
@@ -125,6 +133,14 @@ YAML_TYPED_RE = re.compile(
 
 class TaskError(ChittyError):
     """A task file, or an edit to one, is invalid."""
+
+
+def section_name(text: str) -> SectionName:
+    """Validate an exact section name from external text."""
+    for name in SECTION_ORDER:
+        if name == text:
+            return name
+    raise TaskError(f"unknown section: {text}")
 
 
 class _StringLoader(yaml.SafeLoader):
@@ -230,7 +246,7 @@ class _FieldSpan:
 
 @dataclass(frozen=True)
 class _Section:
-    name: str
+    name: SectionName
     lines: tuple[str, ...]  # heading first
 
 
@@ -255,7 +271,7 @@ class Task:
         parts += [line for section in self._sections for line in section.lines]
         return "".join(parts)
 
-    def section(self, name: str) -> str | None:
+    def section(self, name: SectionName) -> str | None:
         """The section's content without its heading, or None if absent."""
         for section in self._sections:
             if section.name == name:
@@ -296,7 +312,7 @@ class Task:
                 fields.insert(_insert_position(fields, key), _FieldSpan(key, (), lines))
         return self._rebuild(fields=fields)
 
-    def with_section(self, name: str, text: str) -> "Task":
+    def with_section(self, name: SectionName, text: str) -> "Task":
         """Replace a section's content; empty text removes the section."""
         if name == ACCEPTANCE_CRITERIA:
             raise TaskError("acceptance criteria are edited per item")
@@ -461,11 +477,11 @@ class Task:
 
     # -- helpers ---------------------------------------------------------
 
-    def _section_index(self, name: str) -> int | None:
+    def _section_index(self, name: SectionName) -> int | None:
         return next((i for i, s in enumerate(self._sections) if s.name == name), None)
 
     def _insert_section(
-        self, name: str, content: list[str], replace_existing: bool = False
+        self, name: SectionName, content: list[str], replace_existing: bool = False
     ) -> "Task":
         sections = list(self._sections)
         preamble = list(self._preamble)
@@ -609,7 +625,7 @@ def _describe(error: ValidationError) -> str:
 
 def _split_sections(body: list[str], first_line: int) -> tuple[list[str], list[_Section]]:
     preamble: list[str] = []
-    sections: list[tuple[str, list[str]]] = []
+    sections: list[tuple[SectionName, list[str]]] = []
     fence: str | None = None
     previous_line_is_paragraph = False
     for number, line in enumerate(body, start=first_line):
@@ -642,7 +658,7 @@ def _split_sections(body: list[str], first_line: int) -> tuple[list[str], list[_
                     )
                 if any(existing == name for existing, _ in sections):
                     raise TaskError(f"line {number}: duplicate section {name!r}")
-                sections.append((name, [line]))
+                sections.append((section_name(name), [line]))
                 previous_line_is_paragraph = False
                 continue
             target.append(line)
@@ -760,7 +776,7 @@ def _section_text_error(name: str) -> TaskError:
 
 
 def _verify_section_edit(
-    original: Task, candidate: Task, name: str, text: str, append: bool = False
+    original: Task, candidate: Task, name: SectionName, text: str, append: bool = False
 ) -> Task:
     expected = "".join(_text_lines(text)).strip("\n")
     actual = candidate.section(name) or ""

@@ -14,11 +14,20 @@ import yaml
 
 from chitty import git, ids
 from chitty.actor import actor
-from chitty.model import DESCRIPTION, NOTES, PLAN, SECTION_ORDER, SUMMARY, Task, new_task
+from chitty.model import (
+    DESCRIPTION,
+    NOTES,
+    PLAN,
+    SECTION_ORDER,
+    SUMMARY,
+    SectionName,
+    Task,
+    new_task,
+)
 from chitty.store import Change, Context, Repo, StoredTask, managed_guide
 
 STATUS = {"To Do": "todo", "In Progress": "doing", "Done": "done"}
-SECTIONS = {
+SECTIONS: dict[str, SectionName] = {
     "Description": DESCRIPTION,
     "Implementation Plan": PLAN,
     "Implementation Notes": NOTES,
@@ -393,11 +402,11 @@ def _cycles(graph: dict[ids.TaskId, set[ids.TaskId]]) -> list[tuple[ids.TaskId, 
     return sorted(cycles, key=lambda cycle: tuple(map(str, cycle)))
 
 
-def _sections(body: str, old_id: str, reports: list[str]) -> dict[str, str]:
+def _sections(body: str, old_id: str, reports: list[str]) -> dict[SectionName, str]:
     cleaned = MARKER.sub("", body).strip()
     matches = list(HEADING.finditer(cleaned))
-    result: dict[str, str] = {}
-    current = DESCRIPTION
+    result: dict[SectionName, str] = {}
+    current: SectionName = DESCRIPTION
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(cleaned)
         content = cleaned[match.end() : end].strip()

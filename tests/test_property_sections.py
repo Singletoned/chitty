@@ -10,6 +10,7 @@ from chitty.model import (
     NOTES,
     PLAN,
     SUMMARY,
+    SectionName,
     Task,
     TaskError,
     _text_lines,
@@ -62,7 +63,7 @@ def snapshot(task: Task, skip: str) -> dict[str, object]:
 
 class TestSectionProperty(unittest.TestCase):
     @given(section=st.sampled_from((DESCRIPTION, PLAN, NOTES, SUMMARY)), text=BODY)
-    def test_with_section_keeps_text_in_its_section(self, section: str, text: str):
+    def test_with_section_keeps_text_in_its_section(self, section: SectionName, text: str):
         task = base_task()
         try:
             edited = task.with_section(section, text)

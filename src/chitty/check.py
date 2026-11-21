@@ -11,7 +11,7 @@ from markdown_it import MarkdownIt
 from chitty import git, ids
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
-from chitty.model import Task, parse
+from chitty.model import SectionName, Task, parse
 from chitty.store import Context, Repo, scan
 
 
@@ -27,7 +27,7 @@ class Problem:
 
 
 MARKDOWN = MarkdownIt("commonmark")
-MARKDOWN_FIELDS = ("Description", "Plan", "Notes", "Summary")
+MARKDOWN_FIELDS: tuple[SectionName, ...] = ("Description", "Plan", "Notes", "Summary")
 DELIMITERS = "*_"
 MAX_CRITERIA = 5
 
@@ -48,7 +48,7 @@ def _formatter_escapes(character: str, text: str, index: int) -> bool:
 
 def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
     """Report Markdown that formatters will rewrite unexpectedly."""
-    fields = [(name, task.section(name)) for name in MARKDOWN_FIELDS]
+    fields: list[tuple[str, str | None]] = [(name, task.section(name)) for name in MARKDOWN_FIELDS]
     fields += [
         (f"Acceptance Criteria #{index}", criterion.text)
         for index, criterion in enumerate(task.criteria, start=1)
