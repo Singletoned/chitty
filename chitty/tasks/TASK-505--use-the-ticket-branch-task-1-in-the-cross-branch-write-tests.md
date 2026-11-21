@@ -1,6 +1,6 @@
 ---
 title: Use the ticket branch `task-1` in the cross-branch write tests
-status: todo
+status: doing
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -33,3 +33,4 @@ To check "after", use this one method: `git worktree add --detach <dir> spike/ta
 - 2026-11-21T11:38:35Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T11:39:35Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T11:39:35Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T11:43:51Z tidy-silver-wren todo → doing
