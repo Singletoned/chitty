@@ -100,8 +100,12 @@ class TestProvisionalIds(CliTestCase):
         previous = Path.cwd()
         try:
             os.chdir(worktree)
+            refused = self.run_cli("move", "TASK-1", "human", exit_code=1)
+            self.assertIn("latest committed version is on branch main", refused.stderr)
             with mock.patch("chitty.store._provisional_draw", return_value=0):
-                moved = self.json("move", "TASK-1", "human")
+                created = self.json("add", "Branch", "-d", "Description.")
+                self.assertEqual(created["id"], "TASK-AAAAAA")
+                moved = self.json("move", "TASK-AAAAAA", "human")
             self.assertEqual(moved["id"], "HUMAN-AAAAAA")
             self.assertTrue(moved["provisional"])
             self.git("add", "--all", cwd=worktree)
@@ -110,7 +114,7 @@ class TestProvisionalIds(CliTestCase):
             os.chdir(previous)
         self.git("merge", "--quiet", "feature")
         promoted = self.json("move", "HUMAN-AAAAAA", "tasks")
-        self.assertEqual(promoted["id"], "TASK-1")
+        self.assertEqual(promoted["id"], "TASK-2")
         self.assertIsNone(promoted["provisional"])
 
     def test_renumber_provisional_duplicate_on_main_clears_marker(self):

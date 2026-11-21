@@ -178,8 +178,8 @@ class TestNext(CliTestCase):
         self.git("config", "user.name", "test")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
-        self.git("branch", "worker")
-        self.git("checkout", "--quiet", "worker")
+        self.git("branch", "task-1")
+        self.git("checkout", "--quiet", "task-1")
         self.run_cli("edit", dependency, "-s", "done")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "finish dependency")
@@ -188,17 +188,17 @@ class TestNext(CliTestCase):
         with self.assertRaisesRegex(ChittyError, "no next ticket"):
             next_action(Repo.open(self.root))
 
-        self.git("merge", "--quiet", "worker")
-        self.git("branch", "-D", "worker")
+        self.git("merge", "--quiet", "task-1")
+        self.git("branch", "-D", "task-1")
         self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
 
-        self.git("checkout", "--quiet", "-b", "rename")
+        self.git("checkout", "--quiet", "-b", "task-1")
         self.run_cli("edit", dependency, "--title", "Renamed dependency")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "rename dependency")
         self.git("checkout", "--quiet", "main")
-        self.git("merge", "--quiet", "rename")
-        self.git("branch", "-D", "rename")
+        self.git("merge", "--quiet", "task-1")
+        self.git("branch", "-D", "task-1")
         self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
 
     def commit_done_tickets_on_main(self, count: int) -> list[str]:
@@ -249,8 +249,8 @@ class TestNext(CliTestCase):
         self.git("config", "user.name", "test")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
-        self.git("branch", "worker")
-        self.git("checkout", "--quiet", "worker")
+        self.git("branch", "task-1")
+        self.git("checkout", "--quiet", "task-1")
         self.run_cli("edit", dependency, "-s", "done")
         self.run_cli("archive", dependency)
         self.git("add", "--all")
@@ -258,8 +258,8 @@ class TestNext(CliTestCase):
         self.git("checkout", "--quiet", "main")
         with self.assertRaisesRegex(ChittyError, "no next ticket"):
             next_action(Repo.open(self.root))
-        self.git("merge", "--quiet", "worker")
-        self.git("branch", "-D", "worker")
+        self.git("merge", "--quiet", "task-1")
+        self.git("branch", "-D", "task-1")
         self.assertEqual(str(next_action(Repo.open(self.root)).id), waiting)
 
     def test_no_main_keeps_dependency_behavior_and_human_context_works(self):
@@ -2468,8 +2468,9 @@ class TestNext(CliTestCase):
         self.add("Todo")
         self.git("add", "--all")
         self.git("commit", "--quiet", "-m", "setup")
-        self.git("branch", "task-1")
-        self.run_cli("edit", "TASK-1", "--note", "newer copy on main")
+        self.git("checkout", "--quiet", "-b", "task-1")
+        self.run_cli("edit", "TASK-1", "--note", "newer copy on task-1")
+        self.git("checkout", "--quiet", "main")
         other = self.tmp / "other"
         self.git("worktree", "add", "--quiet", "-b", "other", str(other))
         self.addCleanup(self.git, "worktree", "remove", "--force", str(other))

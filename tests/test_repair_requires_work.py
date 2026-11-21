@@ -48,7 +48,15 @@ class TestRepairRequiresWork(TestRunContinue):
         fake = self.bindir / "fake-agent"
         fake.write_text(f"#!{__import__('sys').executable}\n" + script)
         fake.chmod(fake.stat().st_mode | __import__("stat").S_IXUSR)
-        if case_name in {"edit", "uncommitted"}:
+        if case_name == "uncommitted":
+            result = self.run_cli("run", "--errors", exit_code=1)
+            self.assertIn(
+                f"repair agent left {ticket} in invalid status error; expected review or blocked",
+                result.stderr,
+            )
+            ticket_file = next((self.root / "chitty" / "tasks").glob(f"{ticket}--*.md"))
+            self.assertIn("\nstatus: error\n", ticket_file.read_text())
+        elif case_name == "edit":
             result = self.run_cli("run", "--errors", exit_code=1)
             self.assertIn(
                 f"repair agent returned {ticket} to review with no change beyond its ticket files",

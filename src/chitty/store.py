@@ -278,14 +278,12 @@ class Repo:
         return self.config.review if override is None else override
 
     def context_of(self, task_id: TaskId) -> Context:
-        matches = [
-            (context, task)
-            for context in self.discovered_contexts()
-            for task in self.tasks(context, "all")
-            if task.id == task_id
-        ]
-        if matches:
-            return matches[0][0]
+        _, copies = self._source_files(task_id)
+        if copies:
+            name = copies[0][0].parts[1]
+            for context in self.discovered_contexts():
+                if context.name == name:
+                    return context
         for context in self.contexts():
             if context.prefix == task_id.prefix:
                 return context
@@ -422,13 +420,24 @@ class Repo:
             else:
                 self.ticket_ids()
                 self._source_refs[task_id] = self._choose_source(task_id)
+        ref, copies = self._source_files(task_id)
+        return self._parse_source_copy(task_id, ref, copies)
+
+    def _source_files(self, task_id: TaskId) -> tuple[str, list[tuple[Path, str]]]:
+        """The ticket's source ref and its files there, unparsed."""
+        if task_id not in self._source_refs:
+            if not git.is_repository(self.root):
+                self._source_refs[task_id] = WORKING_TREE
+            else:
+                self.ticket_ids()
+                self._source_refs[task_id] = self._choose_source(task_id)
         ref = self._source_refs[task_id]
         copies = (
             self._working_ticket_files(task_id)
             if ref == WORKING_TREE
             else self._ref_ticket_files(ref, task_id)
         )
-        return self._parse_source_copy(task_id, ref, copies)
+        return ref, copies
 
     def _working_ticket_files(self, task_id: TaskId) -> list[tuple[Path, str]]:
         root = self.root / BACKLOG_DIR
@@ -607,28 +616,17 @@ class Repo:
         return [t for context in self.contexts() for t in self.tasks(context, "all")]
 
     def lookup(self, task_id: TaskId) -> StoredTask | None:
-        context = self.context_of(task_id)
-        local_paths = [
-            path
-            for archived in (False, True)
-            for path in self._files(context, archived)
-            if ids.parse_filename(path.name)[0] == task_id
-        ]
-        if len(local_paths) > 1:
-            paths = ", ".join(str(path) for path in local_paths)
-            raise ChittyError(f"{task_id} is used by more than one file: {paths}")
-        matches = [
-            task
-            for archived in (False, True)
-            for task in self._tasks_in_location(context, archived)
-            if task.id == task_id
-        ]
-        if not matches:
+        copy = self.source_copy(task_id)
+        if copy is None:
             return None
-        if len(matches) > 1:
-            paths = ", ".join(str(task.path) for task in matches)
-            raise ChittyError(f"{task_id} is used by more than one file: {paths}")
-        return matches[0]
+        return StoredTask(
+            task_id,
+            copy.path.parts[1],
+            self.root / copy.path,
+            copy.path.parts[2] == ARCHIVE_DIR,
+            copy.task,
+            copy.ref,
+        )
 
     def referenced_tasks(self, stored: StoredTask) -> list[tuple[TaskId, StoredTask | None]]:
         prefixes = [context.prefix for context in self.contexts()]

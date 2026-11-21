@@ -85,21 +85,17 @@ class TestStore(StoreTestCase):
         worktree = self.tmp / "other-branch"
         self.git("worktree", "add", "--quiet", "-b", "other", str(worktree))
         self.addCleanup(self.remove_worktree, worktree)
-        branch_repo = Repo.open(worktree)
-        branch_tasks = branch_repo.context("tasks")
-        first = branch_repo.add(
-            branch_tasks, "Archived branch task", "Describe.", [], {}, TODAY
-        ).task
-        first_path = branch_tasks.directory / "TASK-1--archived-branch-task.md"
-        first_path.write_text(first.task.with_field("provisional", None).render())
-        first.path.unlink()
-        branch_repo.archive(TaskId("TASK", 1))
-        second = branch_repo.add(
-            branch_tasks, "Active branch task", "Describe.", [], {}, TODAY
-        ).task
-        second_path = branch_tasks.directory / "TASK-2--active-branch-task.md"
-        second_path.write_text(second.task.with_field("provisional", None).render())
-        second.path.unlink()
+        branch_tasks = worktree / "chitty/tasks"
+        (branch_tasks / "archive").mkdir(parents=True, exist_ok=True)
+        ticket = (
+            "---\ntitle: {}\nstatus: {}\ncreated: 2026-10-23\n---\n\n## Description\n\nDescribe.\n"
+        )
+        (branch_tasks / "archive/TASK-1--archived-branch-task.md").write_text(
+            ticket.format("Archived branch task", "done")
+        )
+        (branch_tasks / "TASK-2--active-branch-task.md").write_text(
+            ticket.format("Active branch task", "todo")
+        )
         self.commit("branch tasks", "2026-10-23T00:00:01+00:00", cwd=worktree)
         self.git("worktree", "remove", "--force", str(worktree))
 

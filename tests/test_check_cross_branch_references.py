@@ -60,7 +60,9 @@ class TestCrossBranchReferences(CliTestCase):
             text = text.replace("status: todo\n", f"status: todo\n{reference}\n")
             path.write_text(text)
             self.commit("add reference")
-            show = self.run_cli("show", "2", exit_code=1 if location == "nowhere" else 0)
+            show = self.run_cli(
+                "show", "2", exit_code=1 if location in {"nowhere", "other branch"} else 0
+            )
             check = self.run_cli("check", exit_code=1 if missing else 0)
             self.assertEqual("no such task" in check.stdout, show.exit_code != 0)
             if missing:
@@ -71,12 +73,12 @@ class TestCrossBranchReferences(CliTestCase):
             for location, missing in (
                 ("active", False),
                 ("archived", False),
-                ("other branch", False),
+                ("other branch", True),
                 ("nowhere", True),
             ):
                 self.check_reference(field, location, missing)
 
-    def test_malformed_task_on_another_branch_reports_parse_error(self):
+    def test_malformed_task_on_another_branch_is_not_read(self):
         self.git("checkout", "-b", "broken")
         malformed = self.root / "chitty/tasks/TASK-3--broken.md"
         malformed.write_text("not task frontmatter\n")
@@ -90,16 +92,17 @@ class TestCrossBranchReferences(CliTestCase):
 
         result = self.run_cli("check", exit_code=1)
 
-        self.assertIn("file must start with '---' frontmatter", result.stderr)
-        self.assertNotIn("no such task", result.stderr)
+        self.assertIn("depends_on TASK-3: no such task", result.stdout)
+        self.assertNotIn("file must start with '---' frontmatter", result.stderr)
 
-    def test_edit_can_depend_on_task_only_on_main(self):
+    def test_edit_on_another_branch_is_refused(self):
         self.git("checkout", "-B", "b", "main")
         self.git("checkout", "main")
         self.add_second()
         self.git("checkout", "b")
 
-        self.run_cli("edit", "1", "--depends-on", "2")
+        result = self.run_cli("edit", "1", "--depends-on", "2", exit_code=1)
 
+        self.assertIn("latest committed version is on branch main", result.stderr)
         self.assertEqual(self.git("status", "--porcelain"), "")
-        self.assertIn("TASK-2", (self.root / "chitty/tasks/TASK-1--one.md").read_text())
+        self.assertNotIn("TASK-2", (self.root / "chitty/tasks/TASK-1--one.md").read_text())
