@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads against every branch placement with a property
-status: todo
+status: doing
 depends_on:
   - TASK-378
   - TASK-480
@@ -63,3 +63,4 @@ Planning blocker: the deterministic test requires every compatible placement in 
 - 2026-11-21T22:17:23Z witty-pearl-otter planning → cold-read
 - 2026-11-21T22:19:01Z witty-pearl-otter cold-read → planning
 - 2026-11-21T22:19:03Z witty-pearl-otter planning → todo
+- 2026-11-21T22:19:33Z zesty-violet-eel todo → doing
