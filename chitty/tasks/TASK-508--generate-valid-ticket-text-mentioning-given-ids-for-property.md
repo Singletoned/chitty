@@ -9,17 +9,22 @@ created: 2026-11-21
 
 Split from `TASK-507` on 2026-11-21, after its worker found the whole ticket too large for one session. This ticket builds only the test generator; `TASK-507` uses it for the `rewrite_task` properties.
 
-Add a Hypothesis strategy `ticket_texts(ids: list[TaskId])` to a new module `tests/ticket_strategies.py`. It draws ticket Markdown that `chitty.model.parse` accepts and that mentions IDs drawn from `ids` in every place a ticket can mention one. The `tasks` strategy in `tests/test_check_edit.py` builds tickets through the model; this one builds text, because it must reach formatting the model does not produce on its own.
+Add a Hypothesis strategy `ticket_texts(ids: list[TaskId])` to a new module `tests/ticket_strategies.py`. `ids` is non-empty. It draws ticket Markdown that `chitty.model.parse` accepts and that mentions IDs drawn from `ids` wherever a ticket can mention one. (The `tasks` strategy in `tests/test_check_edit.py` builds tickets through the model; this one builds text, because it must reach formatting the model does not produce itself, such as `[X]` and continuation lines.)
 
-What it draws:
+Rules from `src/chitty/model.py` the text must follow; check each against the source:
 
-- Frontmatter: `title` (single-line), `status` (a valid status), `created` (a date), optional `labels`, `owner`, `parent`, `depends_on` (no duplicates) and `moved_from`, each in the format `parse` accepts. The values of `title`, `labels`, `owner`, `parent`, `depends_on` and `moved_from` may mention drawn IDs.
-- Sections, in `SECTION_ORDER` (`src/chitty/model.py`): `Description`, `Acceptance Criteria` (`- [ ]`, `- [x]` and `- [X]` items, some with indented continuation lines), optionally `Plan` and `Summary`, `Notes`, and `History`. Section text and criterion text mention drawn IDs, sometimes inside code spans or URLs, and sometimes as the forms `<ID>-x`, `<ID>A`, `X<ID>` and `X-<ID>`.
-- Text constraints that keep the result valid: no text before the first section; no line of section text starts with `#`; no setext underline (`---` or `===` directly after a paragraph line); no line that would itself parse as a section heading or criterion where it is not meant to be one.
+- The text uses `\n` line endings only (no `\r`) and ends with `\n`.
+- Frontmatter: `title` (single-line), `status` (a valid status), `created` (a `YYYY-MM-DD` date), and optionally `priority` (`low`, `medium` or `high`), `labels` and `depends_on` (YAML lists; `depends_on` without duplicates), `owner`, `parent` and `moved_from` (strings), and `provisional: true`. `title`, `labels`, `owner`, `parent`, `depends_on` and `moved_from` may mention drawn IDs.
+- Sections in `SECTION_ORDER`: a non-empty `Description`; `Acceptance Criteria` (items `- [ ]`, `- [x]` or `- [X]`, some followed by an indented continuation line); optional `Plan` and `Summary`; `Notes`; and `History` last, non-empty, each line matching `HISTORY_LINE_RE` or `HISTORY_EVENT_RE` (an event's action text may mention IDs).
+- No text before the first section. Outside fenced code, no line of section text matches `HEADING_RE` or (outside Acceptance Criteria) `CRITERION_RE`, and no line matching `SETEXT_UNDERLINE_RE` follows a paragraph line. Fenced code is not needed; leave it out.
+- Section and criterion text mentions drawn IDs, sometimes inside code spans or URLs, and sometimes in the forms `<ID>-x`, `<ID>A`, `X<ID>` and `X-<ID>`.
 
-A draw that `parse` rejects is a bug in the strategy: never use `assume` to discard it.
+A draw that `parse` rejects is a bug in the strategy: never use `assume` to discard it. The drawn text need not be canonical; what matters is that `parse` accepts it and that rendering is stable.
 
-Tests in a new `tests/test_ticket_strategies.py`, with `hypothesis` as the other property tests use it: every draw parses; `parse(text).render()` parses again and renders to the same text (rendering is stable); and, over many draws, each of these occurs at least once: an `[X]` criterion, a multi-line criterion, `Plan` present, `Plan` absent, an ID mention in each frontmatter field listed above, and each of the four near-miss forms. Check each "occurs at least once" feature with `hypothesis.find(ticket_texts(ids), <predicate on the text>)`, which raises if no example is found; one test method per feature.
+Tests in a new `tests/test_ticket_strategies.py`, passing a fixed list such as `[TaskId.parse("TASK-1"), TaskId.parse("TASK-22")]`:
+
+- A `@given` test: every draw parses, and `parse(text).render()` parses again and renders to the same text (`parse(r).render() == r` for `r = parse(text).render()`).
+- One test method per feature, using `hypothesis.find(ticket_texts(ids), predicate)`, which raises if nothing matches. Predicates check parsed values where they can: a `[X]` criterion (raw text has a line starting `- [X]`); a criterion followed by an indented continuation line; `Plan` present; `Plan` absent; for each of `title`, `labels`, `owner`, `parent`, `depends_on` and `moved_from`, a drawn ID in that parsed frontmatter value; and each near-miss form, checked as an exact string (for example `"TASK-1A" in text` and `"TASK-12" not in text` for the `<ID>A` case, so a longer ID does not count).
 
 Out of scope: `rewrite_task` and its properties (`TASK-507`).
 
@@ -34,3 +39,4 @@ Out of scope: `rewrite_task` and its properties (`TASK-507`).
 - 2026-11-21T13:44:08Z sunny-ebony-kestrel → planning
 - 2026-11-21T13:44:19Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T13:44:19Z sunny-ebony-kestrel planning → cold-read
+- 2026-11-21T13:45:51Z sunny-ebony-kestrel: changed description
