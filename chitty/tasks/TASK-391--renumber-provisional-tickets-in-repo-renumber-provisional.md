@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: planning
+status: cold-read
 depends_on:
   - TASK-381
   - TASK-389
@@ -74,3 +74,4 @@ Planner 2026-11-21, after two cold reads: split the pure `rewrite_task` and its 
 - 2026-11-21T13:07:46Z sunny-ebony-kestrel: changed description
 - 2026-11-21T13:10:46Z sunny-ebony-kestrel: changed dependencies, description, acceptance criteria, notes
 - 2026-11-21T13:10:46Z sunny-ebony-kestrel cold-read → planning
+- 2026-11-21T13:17:52Z sunny-ebony-kestrel planning → cold-read
