@@ -35,6 +35,10 @@ No property: a small fixed set of Git states and files, each listed here. Before
 
 Add real-Git read-only regression tests, verify failures, then implement branch and duplicate guards and run checks.
 
+## Notes
+
+Before the fix, feature and detached tests failed because no error was raised; duplicate failed because its error omitted both paths. Malformed passed.
+
 ## History
 
 - 2026-11-21T18:44:40Z eager-ginger-adder → backlog
@@ -48,3 +52,4 @@ Add real-Git read-only regression tests, verify failures, then implement branch 
 - 2026-11-21T23:01:47Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:08:11Z sunny-ginger-falcon todo → doing
 - 2026-11-21T23:09:40Z sunny-ginger-falcon: wrote the plan
+- 2026-11-21T23:10:01Z sunny-ginger-falcon: changed notes
