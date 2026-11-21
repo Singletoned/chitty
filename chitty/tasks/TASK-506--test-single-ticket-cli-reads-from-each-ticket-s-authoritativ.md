@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: planning
+status: cold-read
 priority: high
 depends_on:
   - TASK-378
@@ -27,3 +27,4 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
+- 2026-11-21T11:42:58Z sunny-ebony-kestrel planning → cold-read
