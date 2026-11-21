@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -198,3 +198,4 @@ Split 2026-11-21 after the third worker found the ticket too large: the ID rule 
 - 2026-11-21T11:41:04Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T11:42:40Z sunny-ebony-kestrel: changed acceptance criteria
 - 2026-11-21T11:42:40Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T12:01:59Z daring-russet-raven todo → doing
