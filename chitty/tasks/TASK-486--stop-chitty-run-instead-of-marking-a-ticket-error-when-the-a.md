@@ -52,6 +52,8 @@ Cold read 2026-11-21 outcomes: repair start failures leave the ticket at `error`
 
 Second cold read 2026-11-21 outcomes: the claim commit stays and the branch count is pinned; the repair fixture is built from the existing agent-failure scenario; an empty first session followed by a failing continuation is a start failure; usage is still recorded; `_preflight` does not check that the command exists (verified). Today the run exits 0 (`run_cli` defaults to `exit_code=0` in the existing test). Not adopted: a test for the continuation case, which uses the same `HEAD` comparison as the tested cases.
 
+Implementation stopped: two requirements contradict current code. `src/chitty/cli.py` rejects `--errors` combined with `--ticket`, so the prescribed repair test exits 2 before reaching the agent. Decide whether to allow that combination or change the test invocation. Also, although `_preflight` only checks that the command is set, `_agent_command` checks `shutil.which` before creating the worktree and raises `agent_command executable is not on PATH: ...`; a nonexistent command cannot reach `_run_session` as claimed. Decide whether to remove or change that validation and how to preserve its existing behavior and tests. Both decisions affect scope and the prescribed regression assertions, so the ticket cannot guide implementation as written. Experimental tests were removed; no implementation changes remain. Before discovering these issues, the todo and doing start-failure tests failed against the existing runner because it exited 0 and recorded an error; the repair and missing-command tests instead exposed the contradictions above. Required implementation verification remains unfinished.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -65,3 +67,4 @@ Second cold read 2026-11-21 outcomes: the claim commit stays and the branch coun
 - 2026-11-21T08:03:48Z nimble-umber-gannet cold-read → todo
 - 2026-11-21T08:49:33Z jolly-hazel-kestrel todo → doing
 - 2026-11-21T08:52:23Z jolly-hazel-kestrel: wrote the plan
+- 2026-11-21T08:53:27Z jolly-hazel-kestrel: changed notes
