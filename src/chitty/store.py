@@ -122,40 +122,6 @@ class StoredTask:
 
 
 @dataclass(frozen=True)
-class Version:
-    stored: StoredTask
-    local: bool
-    dirty: bool
-    branch: str | None
-    committed_at: int | None
-
-
-def choose_version(versions: Sequence[Version], current_branch: str | None) -> Version:
-    local = [version for version in versions if version.local]
-    if len(local) > 1:
-        paths = ", ".join(str(version.stored.path) for version in local)
-        raise ChittyError(f"{local[0].stored.id} is used by more than one file: {paths}")
-    if not versions:
-        raise ValueError("choose_version requires at least one version")
-    if dirty := [version for version in local if version.dirty]:
-        return dirty[0]
-    histories = [version for version in versions if not version.local]
-
-    def rank(version: Version) -> tuple[int, bool, tuple[int, ...], str]:
-        return (
-            version.committed_at if version.committed_at is not None else -1,
-            version.branch == current_branch,
-            tuple(-ord(char) for char in (version.branch or "")),
-            str(version.stored.path),
-        )
-
-    newest = max(histories, key=rank, default=None)
-    if newest is not None and newest.branch != current_branch:
-        return newest
-    return local[0] if local else max(versions, key=rank)
-
-
-@dataclass(frozen=True)
 class Change:
     """The result of a write: its representative task, affected tasks, and paths."""
 
@@ -359,12 +325,11 @@ class Repo:
     # -- reading ---------------------------------------------------------
 
     def tasks(self, context: Context, which: Which) -> list[StoredTask]:
-        found = [
-            task
-            for archived in (False, True)
-            for task in self._tasks_in_location(context, archived)
-            if which == "all" or task.archived == (which == "archived")
-        ]
+        found: list[StoredTask] = []
+        if which in ("active", "all"):
+            found += self._tasks_in_location(context, False)
+        if which in ("archived", "all"):
+            found += self._tasks_in_location(context, True)
         return sorted(found, key=lambda t: t.id)
 
     def _tasks_in_location(self, context: Context, archived: bool) -> list[StoredTask]:
@@ -372,54 +337,37 @@ class Repo:
         cached = self._task_locations.get(key)
         if cached is not None:
             return list(cached)
-        by_id: dict[TaskId, list[Version]] = {}
-        local_paths: set[Path] = set()
-        for location in (False, True):
-            directory = context.archive_directory if location else context.directory
-            relative = directory.relative_to(self.root)
-            dirty = self._dirty_paths_for(relative)
-            for path in self._files(context, location):
-                stored = self._load(context, path, location)
-                local_paths.add(path.relative_to(self.root))
-                by_id.setdefault(stored.id, []).append(
-                    Version(stored, True, path.relative_to(self.root) in dirty, None, None)
-                )
-        newest: dict[tuple[TaskId, Path], git.HistoricalFile] = {}
+        local = [self._load(context, path, archived) for path in self._files(context, archived)]
+        directory = context.archive_directory if archived else context.directory
+        relative_directory = directory.relative_to(self.root)
+        historical: dict[TaskId, tuple[StoredTask, int]] = {}
         for file in self._history():
-            if len(file.path.parts) < 3 or file.path.parts[:2] != (BACKLOG_DIR, context.name):
+            if file.path.parent != relative_directory:
                 continue
             try:
                 task_id, _ = ids.parse_filename(file.path.name)
-                parse(file.content)
+                task = parse(file.content)
             except (ids.IdError, TaskError) as error:
                 raise ChittyError(f"{file.ref}:{file.path}: {error}") from None
-            if file.path in local_paths and file.ref == self._current_branch():
-                continue
-            key_path = (task_id, file.path)
-            previous = newest.get(key_path)
-            if previous is None or file.committed_at > previous.committed_at:
-                newest[key_path] = file
-        for file in newest.values():
-            task_id, _ = ids.parse_filename(file.path.name)
-            location = len(file.path.parts) > 2 and file.path.parts[2] == ARCHIVE_DIR
-            stored = StoredTask(
-                task_id,
-                context.name,
-                self.root / file.path,
-                location,
-                parse(file.content),
-                file.ref,
-            )
-            by_id.setdefault(task_id, []).append(
-                Version(stored, False, False, file.ref, file.committed_at)
-            )
-        current = self._current_branch()
-        chosen = [choose_version(versions, current).stored for versions in by_id.values()]
-        for location in (False, True):
-            self._task_locations[(context.name, location)] = [
-                task for task in chosen if task.archived == location
-            ]
-        return [task for task in chosen if task.archived == archived]
+            previous = historical.get(task_id)
+            if previous is None or file.committed_at > previous[1]:
+                historical[task_id] = (
+                    StoredTask(
+                        task_id, context.name, self.root / file.path, archived, task, file.ref
+                    ),
+                    file.committed_at,
+                )
+        tasks = {task_id: stored for task_id, (stored, _) in historical.items()}
+        dirty = self._dirty_paths_for(relative_directory)
+        current_branch = self._current_branch()
+        for stored in local:
+            relative_path = stored.path.relative_to(self.root)
+            previous = tasks.get(stored.id)
+            if relative_path in dirty or previous is None or previous.branch == current_branch:
+                tasks[stored.id] = stored
+        result = list(tasks.values())
+        self._task_locations[key] = result
+        return list(result)
 
     def _history(self) -> list[git.HistoricalFile]:
         if self._historical_files is None:
