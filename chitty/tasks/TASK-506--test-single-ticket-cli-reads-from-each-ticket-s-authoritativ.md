@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: doing
+status: planning
 priority: high
 depends_on:
   - TASK-378
@@ -30,6 +30,12 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 
 Add isolated real-Git CLI fixtures for each specified source-read case, verify the regression cases against the pre-switch store, then restore it and run fix, format and the full check.
 
+## Notes
+
+The post-switch malformed main working-tree case fails: `Repo.context_of` returns `tasks`, but `chitty show TASK-1` exits 1 with the working-tree frontmatter error instead of showing the branch title. `show` calls `repo.all_tasks()` to find children after `find`, which parses the malformed working copy. The ticket explicitly puts `src/` changes out of scope and requires return to planning if a post-switch case fails. Decide how to fix or separate that behavior before this test can pass. The CLI wraps errors in `Error: `, so the unrelated-branch assertion checks that prefix followed by `no task TASK-3`.
+
+Partial tests are committed. `make check` ran 914 tests: the malformed working-tree show case was the only failure; ruff and pyright passed. With the parent of the oldest TASK-378 store commit substituted (the src diff to main names only store.py), the pre-switch tests failed as follows: branch edit showed main title; retitle showed main path; archive reported duplicate files; feature-only ticket was shown; conflicted ticket showed main instead of error; malformed branch showed main instead of error; malformed main working tree raised during context lookup; linked feature worktree showed the uncommitted title. Provisional guard passed. The malformed branch context assertion and malformed main show assertion were not independently reached in that run; their separate pre-switch evidence remains to be collected. Restored store.py. Full passing verification and review handoff remain unfinished.
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -39,3 +45,5 @@ Add isolated real-Git CLI fixtures for each specified source-read case, verify t
 - 2026-11-21T11:49:04Z sunny-ebony-kestrel: changed description
 - 2026-11-21T12:37:29Z calm-quartz-stoat todo → doing
 - 2026-11-21T12:39:24Z calm-quartz-stoat: wrote the plan
+- 2026-11-21T12:41:58Z calm-quartz-stoat: changed owner, notes
+- 2026-11-21T12:41:58Z calm-quartz-stoat doing → planning
