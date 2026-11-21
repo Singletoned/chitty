@@ -1,6 +1,6 @@
 ---
 title: Require Python function annotations in production source
-status: doing
+status: planning
 created: 2026-11-21
 ---
 
@@ -25,6 +25,8 @@ Probe the existing Ruff behavior, configure the requested source-only annotation
 
 Criterion 1 conflicts with Ruff behavior: the specified `src/chitty/_annotation_probe.py` containing `def echo(value: str):` and `return value` produced no diagnostic before the change, but after the requested configuration `make check` reports `ANN202 Missing return type annotation for private function`, not `ANN201`. Ruff treats the underscore-prefixed module as private. The planner must decide whether to expect `ANN202` for this fixture or specify a public module fixture for `ANN201`; the criterion cannot pass as written with the requested policy. The same probe under `tests/` and `scripts/` passed focused Ruff checks. With the source probe changed to return `int`, `make check` passed Ruff and Pyright reported `reportReturnType` for returning `str`. All probes were removed and `make check` passed 976 tests. The requested configuration is preserved in a commit; criterion 1 remains unverified as written.
 
+Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff reports `ANN202` because the module is private. Planning must choose the intended diagnostic or a public module fixture before the criterion can be verified. Full probe evidence and the preserved implementation are recorded in the preceding note.
+
 ## History
 
 - 2026-11-21T16:17:29Z honest-coral-heron → planning
@@ -35,3 +37,5 @@ Criterion 1 conflicts with Ruff behavior: the specified `src/chitty/_annotation_
 - 2026-11-21T16:24:19Z daring-hazel-eel todo → doing
 - 2026-11-21T16:27:58Z daring-hazel-eel: wrote the plan
 - 2026-11-21T16:30:04Z daring-hazel-eel: changed notes
+- 2026-11-21T16:30:11Z daring-hazel-eel: changed owner, notes
+- 2026-11-21T16:30:11Z daring-hazel-eel doing → planning
