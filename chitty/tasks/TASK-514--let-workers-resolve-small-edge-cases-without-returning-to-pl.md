@@ -1,6 +1,6 @@
 ---
 title: Let workers resolve small edge cases without returning to planning
-status: doing
+status: review
 labels:
   - untestable
 owner: nimble-umber-adder
@@ -27,6 +27,10 @@ Update the worker, reviewer, managed runner source, and pipeline docs together. 
 
 Decided: the literal installed-guide snapshot -> update it to the new runner wording, because the existing workflow tests compare the full rendered guide byte for byte. `tests/test_guide_workflow_block.py` keeps those exact comparisons. The return-route assertions are unchanged.
 
+## Summary
+
+The work, review, and runner guides and pipeline docs now allow small, reversible omissions to be resolved using clear repository precedent, with a decision note and focused test where testable. They also explain how to finish investigating and report all actionable blockers before returning a ticket to planning. The role guides stay within their existing word budgets. Refreshed the literal runner guide fixture without changing assertions or the managed block in `AGENTS.md`. No runner behavior or status rules changed. `make format`, the 83 guide tests, and `make check` (976 tests) passed.
+
 ## History
 
 - 2026-11-21T15:27:59Z friendly-ochre-wren → backlog
@@ -37,3 +41,5 @@ Decided: the literal installed-guide snapshot -> update it to the new runner wor
 - 2026-11-21T16:16:15Z nimble-umber-adder: changed owner; wrote the plan
 - 2026-11-21T16:16:15Z nimble-umber-adder todo → doing
 - 2026-11-21T16:18:05Z nimble-umber-adder: changed notes
+- 2026-11-21T16:25:22Z nimble-umber-adder: changed summary
+- 2026-11-21T16:25:22Z nimble-umber-adder doing → review
