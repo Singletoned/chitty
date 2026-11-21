@@ -1,14 +1,28 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: backlog
+status: cold-read
 parent: TASK-480
 created: 2026-11-21
 ---
 
 ## Description
 
-This ticket needs refining.
+Change only `chitty show` and its child discovery (`src/chitty/cli.py`, narrow store helper in `src/chitty/store.py`). Do not change listing semantics (`TASK-480`) or write paths. Use the source selection already landed in `TASK-378`, not `all_tasks()` or `git.historical_files`.
+
+Resolve the requested ticket normally with `find`; any error for it remains fatal. JSON never looks for children and keeps exactly the existing shape (no `children` key). Plain show keeps the children line: enumerate IDs with `ticket_ids()`, resolve each other ticket independently, and include the authoritative tickets in configured contexts whose structured parent equals the selected ID, preserving configured-context order and then ID order. For a candidate whose source selection or body parsing raises `ChittyError`, continue with other candidates and warn on stderr that the children list may be incomplete. Include that candidate ID and the original error. If its source is known to be in an unconfigured directory, skip it without parsing. Do not catch arbitrary exceptions, and do not weaken errors in the initial selected-ticket lookup. Keep other show output unchanged.
+
+In a new `tests/test_show_authoritative_children.py` use `CliTestCase` and the Git helpers from `tests/test_source_copy_errors.py`. Real Git is needed to exercise divergent copies and bindings to CLI surfaces; the source policy has property tests in `tests/test_property_ticket_source.py`. Use fresh repos or subtests with reset state. Assert regression failures on unchanged code before implementing, then pass the new tests and `make check`.
+
+Fixture: on main commit a readable parent `TASK-2`, a readable `TASK-3` with `parent: TASK-2`, and valid `TASK-1`. Change the parent title to `branch parent` on `task-2`, commit, return to main and spoil only the main working-tree copy of `TASK-2` with `not frontmatter`. Separately make `TASK-1` changed on both main and `task-1` (do this before spoiling `TASK-2`), or make the authoritative `task-1` body malformed. Validate the fixture by asserting `Repo.find(TASK-2)` selects `task-2` and `Repo.find(TASK-1)` raises the expected conflict or parse error. The `children` line must be exactly `children: TASK-3`; the warning names `TASK-1` and reflects the corresponding error, and must not report the non-authoritative malformed `TASK-2` body.
+
+## Acceptance Criteria
+
+- [ ] With one valid child and one unreadable child candidate, plain `show` exits 0, prints the selected authoritative title and the valid child ID, and warns on stderr with the unreadable ID and the error. Run this with a changed-on-both candidate and a malformed authoritative candidate.
+- [ ] In the same fixtures `show --json` exits 0 with the selected authoritative title, no `children` key and no warning. Assert no source resolution or body parsing for any other ticket, using a test-local probe on the Repo source resolver that raises if it receives any other ID.
+- [ ] Selecting the unreadable candidate itself fails with its own error in both plain and JSON mode; the selected ticket failure must not be downgraded to a child warning.
 
 ## History
 
 - 2026-11-21T18:38:33Z eager-ginger-adder → backlog
+- 2026-11-21T18:42:31Z eager-ginger-adder: changed description, acceptance criteria
+- 2026-11-21T18:42:31Z eager-ginger-adder backlog → cold-read
