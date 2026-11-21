@@ -1,6 +1,6 @@
 ---
 title: Type section names as a `Literal`, so pyright rejects a wrong one
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -31,6 +31,10 @@ Add the specified pyright regression tests and demonstrate the invalid literal i
 
 Before implementation, `.venv/bin/python -m unittest tests.test_section_name_types.SectionNameTypesTest.test_bogus_literal_is_rejected` failed as expected: pyright returned 0 errors for `"Bogus"`.
 
+Reviewed:
+1: pass - The earlier Notes record the bogus literal test failing before implementation because pyright returned 0 errors; `.venv/bin/python -m unittest tests.test_section_name_types -v` now reports all four tests OK, including Bogus, Notes and exact validation.
+2: pass - `.venv/bin/pyright` reports 0 errors; the type sync test reports OK; `make check` reports 965 tests OK and 0 pyright errors. Diff inspection confirms both signatures use `SectionName` and no cast was added.
+
 ## Summary
 
 Added typed section names, exact external-name validation and typed parser/import paths without changing parsing diagnostics. Added pyright literal, validation and type/order synchronization tests; the invalid literal test failed before the implementation as recorded in Notes. `make check` passed (965 tests, pyright 0 errors). No follow-ups.
@@ -47,3 +51,5 @@ Added typed section names, exact external-name validation and typed parser/impor
 - 2026-11-21T14:38:53Z open-teal-badger: changed notes
 - 2026-11-21T14:41:20Z open-teal-badger: changed summary; ticked acceptance criteria
 - 2026-11-21T14:41:22Z open-teal-badger doing → review
+- 2026-11-21T14:45:25Z rosy-maroon-quail: changed notes
+- 2026-11-21T14:45:25Z rosy-maroon-quail review → done
