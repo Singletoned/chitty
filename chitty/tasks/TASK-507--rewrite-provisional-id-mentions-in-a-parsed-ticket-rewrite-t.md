@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: todo
+status: doing
 depends_on:
   - TASK-508
 parent: TASK-376
@@ -61,3 +61,4 @@ Earlier notes (the worker's two contract questions and the split) are in Git his
 - 2026-11-21T13:49:09Z sunny-ebony-kestrel: replaced notes; changed description
 - 2026-11-21T13:49:09Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:49:24Z sunny-ebony-kestrel: changed description
+- 2026-11-21T13:59:37Z youthful-coral-heron todo → doing
