@@ -29,6 +29,10 @@ Conflict: use the changed-on-both fixture pattern from `tests/test_source_copy_e
 - [ ] Keep `tests/test_list_performance.py` passing, including constant Git invocation count with no ticket branches and invalidation after an edit on the same `Repo`; `make check` passes.
 - [ ] In a standalone repo put valid `TASK-1` copies in both active and archive directories. Default listing fails with the duplicate-ID error and both paths, rather than hiding the archived duplicate.
 
+## Plan
+
+Replace location history merging with authoritative source selection, switch provisional allocation to ticket IDs, and cover placement, conflicts, duplicate IDs, and standalone listing with real Git regression tests. Run the new tests before and after the change, then format and check.
+
 ## Notes
 
 Placeholder from the 2026-11-20 split of `TASK-378`; plan it after `TASK-378` lands. Scope: switch `_tasks_in_location` (so `tasks`, `all_tasks` and `chitty list`) to `ticket_ids()` plus `source_copy`, and apply the rule decided with the owner on 2026-11-20: an operation fails only if it needs the conflicted ticket's content. Isolated: `add` (free IDs only; `new_id` on a ticket branch uses `ticket_ids()`), `move <ID>` and `archive <ID>` (fail only when `<ID>` is the conflicted ticket). Fail naming the conflicted ticket: `list`, `archive` with no ID, and `renumber`. Also take over the former `TASK-378` criterion 4: with `git.historical_files` patched to raise, `chitty list` and `chitty show` still work, and outside Git `chitty list` reads the working tree.
@@ -65,3 +69,4 @@ Keep the listing cutover separate from write-path repair. Before the cutover, au
 - 2026-11-21T18:42:26Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:42:29Z eager-ginger-adder planning → todo
 - 2026-11-21T18:43:08Z calm-pearl-yellowhammer todo → doing
+- 2026-11-21T18:44:33Z calm-pearl-yellowhammer: wrote the plan
