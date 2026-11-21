@@ -1,6 +1,6 @@
 ---
 title: "Choose a ticket's source without parsing it: `provisional` from the ID"
-status: planning
+status: cold-read
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -46,3 +46,4 @@ Record in a note how each migrated test and the first new test fail on `main` be
 
 - 2026-11-21T11:34:10Z sunny-ebony-kestrel → planning
 - 2026-11-21T11:34:26Z sunny-ebony-kestrel: changed acceptance criteria
+- 2026-11-21T11:34:42Z sunny-ebony-kestrel planning → cold-read
