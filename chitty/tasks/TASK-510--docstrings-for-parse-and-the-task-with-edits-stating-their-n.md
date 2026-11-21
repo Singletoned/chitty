@@ -1,6 +1,6 @@
 ---
 title: Docstrings for `parse` and the `Task.with_*` edits, stating their normalisations
-status: review
+status: done
 labels:
   - untestable
 owner: nimble-umber-adder
@@ -28,6 +28,13 @@ The requested `parse` rejection for sections out of `SECTION_ORDER` does not exi
 
 The helper descriptions also need precise limits: `section` uses `strip("\n")`, so space- or tab-only edge lines are not stripped. `with_field` checks `provisional` before the removal branch, so it accepts `True` or `None` but rejects `[]`; removing a required key also fails on reparse. `with_section` uses `rstrip()` (not just spaces and tabs), trims input edge newlines and adds section separators, and treats whitespace-only input as a removal request, but `Description` cannot be removed. For `with_criteria`, distinguish validation from output order: it validates replacements before additions, then walks the original items (skip removed, replace text, update checkbox as applicable), then appends additions; conflicting operations on one original index raise. These should be documented as implemented. No docstrings were changed and `make check` was not run.
 
+Reviewed: No formal acceptance-criteria list; the five description bullets were reviewed against `src/chitty/model.py` and the complete diff. The change is docstrings only; no wording tests were requested. `make check` printed `All checks passed!`, `0 errors, 0 warnings`, and `Ran 976 tests ... OK`.
+1: pass - Compared `parse` documentation with `_split_fields`, `_load_frontmatter`, `_split_sections`, `_parse_criteria`, and `_parse_history`, including prefixes and History ordering.
+2: pass - Compared `Task.section` with its `strip("\n")` implementation.
+3: pass - Compared `Task.with_field` with its input checks and `_rebuild` validation.
+4: pass - Compared `Task.with_section` with `_text_lines`, `_insert_section`, and `_verify_section_edit`.
+5: pass - Compared `Task.with_criteria` with its validation and original-item edit loop; wording tests are explicitly excluded.
+
 ## Summary
 
 Added docstrings for `parse`, `Task.section`, `Task.with_field`, `Task.with_section`, and `Task.with_criteria` in `src/chitty/model.py`. The parser docs spell out the error prefixes and clarify that `History` must be last but other sections need not follow `SECTION_ORDER`. The edit docs state normalization, removal exceptions, and criterion operation order. No behavior changed: the module AST is identical after removing docstrings. `make format`, `git diff --check`, and `make check` passed (972 tests). No follow-ups needed.
@@ -45,3 +52,5 @@ Added docstrings for `parse`, `Task.section`, `Task.with_field`, `Task.with_sect
 - 2026-11-21T15:50:54Z nimble-umber-adder todo → doing
 - 2026-11-21T15:54:35Z nimble-umber-adder: changed summary
 - 2026-11-21T15:54:35Z nimble-umber-adder doing → review
+- 2026-11-21T16:15:11Z nimble-yellow-badger: changed notes
+- 2026-11-21T16:15:11Z nimble-yellow-badger review → done
