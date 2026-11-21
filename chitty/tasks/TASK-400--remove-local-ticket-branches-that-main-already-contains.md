@@ -34,7 +34,7 @@ Fixtures for criterion 2, each its own test: run lock held: hold `locks.run_lock
 
 ## Plan
 
-At startup after setup refresh, under the landing lock, prune stale worktree registrations and remove merged local ticket branches before pending landings. Add focused real-Git runner tests covering deletion and every keep condition, update the runner plan, then format/check and commit implementation with Task trailer.
+Retain merged branches for existing non-done tickets, remove eligible unknown and done ticket branches, and verify the specified real-Git cases before documenting and checking the change.
 
 ## Notes
 
@@ -303,3 +303,4 @@ make: *** [check] Error 10
 - 2026-11-20T23:24:27Z quick-pearl-lapwing cold-read → doing
 - 2026-11-20T23:25:08Z quick-pearl-lapwing: changed description
 - 2026-11-21T00:17:20Z jolly-ochre-lapwing: changed notes
+- 2026-11-21T00:18:09Z jolly-ochre-lapwing: wrote the plan
