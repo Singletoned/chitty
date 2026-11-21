@@ -1,6 +1,6 @@
 ---
 title: Remove local ticket branches that `main` already contains
-status: review
+status: doing
 depends_on:
   - TASK-396
 parent: TASK-376
@@ -287,6 +287,11 @@ make: *** [check] Error 10
 
 Regression evidence: the repair test failed against the existing cleanup because it removed the error branch; it passes with the status rule. The removal test failed with the previous unknown-ID skip restored and passes with that skip removed.
 
+Review failed (work): Newly discovered: cleanup deletes non-ticket branches whose names merely start with a configured prefix. Restrict cleanup to valid ticket IDs before treating an unknown ID as removable. No earlier review failure reported this issue.
+1: pass - `make check` passed 886 tests, including `test_removes_done_and_unknown_branches`; the worker recorded that this test failed with the old unknown-ID skip restored.
+2: fail - A throwaway invocation of the existing `TestRunRemovesMergedBranches` fixture created merged branch `task-feature-extra` and called `run_cleanup()`. It printed `branch exists: False` and `removed merged branch task-feature-extra`; this is not a valid ticket ID and must be retained. The existing tests cover the specified status, lock, dirty, conflict, ahead, remote and deleted-worktree cases.
+3: pass - `docs/plan/next-action-and-runner.md` documents the required ordering, lock, retention reasons and messages; `make check` printed `Ran 886 tests ... OK`.
+
 ## Summary
 
 Startup cleanup keeps non-done ticket branches and removes eligible done or unknown branches, with real-Git coverage and updated runner documentation. Verified make check: 876 tests passed. Regression failure evidence is in the notes. No follow-ups.
@@ -313,3 +318,5 @@ Startup cleanup keeps non-done ticket branches and removes eligible done or unkn
 - 2026-11-21T00:21:33Z jolly-ochre-lapwing: changed notes
 - 2026-11-21T00:24:50Z jolly-ochre-lapwing: changed summary
 - 2026-11-21T00:24:58Z jolly-ochre-lapwing doing → review
+- 2026-11-21T00:35:27Z jolly-umber-falcon: changed acceptance criteria, notes
+- 2026-11-21T00:35:27Z jolly-umber-falcon review → doing
