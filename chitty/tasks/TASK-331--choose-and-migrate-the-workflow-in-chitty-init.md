@@ -3,6 +3,7 @@ title: Choose and migrate the workflow in chitty init
 status: planning
 labels:
   - needs-minor
+  - question
 priority: high
 depends_on:
   - TASK-330
@@ -46,6 +47,8 @@ Planning 2026-11-19: raised to high. `0.5.0` was released without this (see `HUM
 
 Planning 2026-11-19: split. The upgrade migration (old criteria 1 and 2) is `TASK-416`, needed for `0.5.1`; the boundary is `TASK-415` (done). What is left here (new-repository config, `--workflow`, the printed line) is not needed for `0.5.1`.
 
+Question for the owner (2026-11-21, overnight planner): when an existing tickets-only repository switches with `chitty init --workflow runner`, the normal upgrade steps (`_add_missing_settings`, `_add_missing_agent_commands_table` in `src/chitty/store.py`) would add `review = true`, the six commented runner lines and `[agent_commands]`, either during the switch or on the next plain `chitty init`. The ticket says the switch changes no other line and prints `reviews stay off until review = true is set`. Which do you want? (A) The switch changes only `workflow`, and later `init` runs never add `review` to a config recorded after `0.5.0` (they may add the comments and table). (B) The switch also adds the commented runner lines and `[agent_commands]`, but never `review`. (C) Something else. Everything else in the ticket is settled; one cold read done, its other findings applied.
+
 ## History
 
 - 2026-11-14T18:21:54Z friendly-ginger-adder → planning
@@ -60,3 +63,4 @@ Planning 2026-11-19: split. The upgrade migration (old criteria 1 and 2) is `TAS
 - 2026-11-21T23:12:15Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:16:09Z lively-zinc-newt: changed description
 - 2026-11-21T23:16:09Z lively-zinc-newt cold-read → planning
+- 2026-11-21T23:16:27Z lively-zinc-newt: changed labels, notes
