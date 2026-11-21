@@ -51,6 +51,8 @@ Planner, 2026-11-21: re-planned as regression tests only, depending on `TASK-378
 
 Cold read 2026-11-21 outcomes: net diff against `main` for the path check; `os.chdir` pattern named; a `depends_on` variant; archive-all keeps the non-done ticket active; the command that finds the commit before `TASK-378`. Stays behind `TASK-378` through `depends_on`; the runner will not start it before then.
 
+Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
 ## History
 
 - 2026-11-17T19:53:05Z kind-umber-toad → todo
@@ -75,3 +77,4 @@ Cold read 2026-11-21 outcomes: net diff against `main` for the path check; `os.c
 - 2026-11-21T08:08:45Z nimble-umber-gannet: changed description, acceptance criteria, notes
 - 2026-11-21T08:08:45Z nimble-umber-gannet cold-read → todo
 - 2026-11-21T12:31:41Z quick-ginger-jay todo → doing
+- 2026-11-21T12:32:19Z quick-ginger-jay: changed notes
