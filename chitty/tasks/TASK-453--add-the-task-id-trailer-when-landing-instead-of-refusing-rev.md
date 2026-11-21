@@ -397,7 +397,7 @@ The runner-entry landing regression passes normally and fails with 0 != 1 when a
 
 ## Summary
 
-Implemented automatic task trailers during landing, preserving trees and authors, and retained review cleanliness checks. Property, real-Git landing, merge, retry and review tests pass; make check passed (867 tests). Both requested faulty trailer variants failed the regression suite. chitty fix emitted existing warnings and did not finish before the 300-second timeout; no files were changed by it.
+Automatic task trailers are added at landing. The real-Git regression now exercises chitty run and preserves its author, date, tree and trailer assertions. The test fails when trailer rewriting is disabled. make check passed all 875 tests; chitty fix completed with existing warnings.
 
 ## History
 
@@ -435,3 +435,4 @@ Implemented automatic task trailers during landing, preserving trees and authors
 - 2026-11-20T23:54:41Z tidy-jade-ibis review → doing
 - 2026-11-21T00:03:24Z friendly-silver-toad: wrote the plan
 - 2026-11-21T00:04:05Z friendly-silver-toad: changed notes
+- 2026-11-21T00:08:55Z friendly-silver-toad: changed summary
