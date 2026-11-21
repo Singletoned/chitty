@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in Markdown text with a pure function
-status: cold-read
+status: todo
 depends_on:
   - TASK-347
 created: 2026-11-16
@@ -20,7 +20,7 @@ Add `escape_literal_asterisks(text: str) -> str` in a new module `src/chitty/mar
 
 So it escapes literal asterisks and single-`*` emphasis (single-`*` emphasis is given up; `_word_` and `**word**` still work), and leaves code spans, fenced and indented code, autolinks, HTML, `**strong**` and an already escaped `\*` alone, because escaping there changes `shape`. Planner probes 2026-11-21: `files/*.jpg and c/*.png` gives `files/\*.jpg and c/\*.png`; ``x `a*b` <http://x/*>`` is unchanged; `**bold** and *em*` gives `**bold** and \*em\*`; `**_*_` gives `\*\*_\*_`; `a\*b` is unchanged. A cold reader's fuzz of 3000 strings found at most two passes, no change of `shape` and no non-idempotent result.
 
-Tests: Hypothesis properties in a new `tests/test_property_markdown_escape.py`, over text built from `*`, `_`, `\`, a backtick, `/`, `.`, `<`, `>`, `[`, `]`, `(`, `)`, `!`, `#`, `-`, a space, a tab, a newline, `1`, `a`, `b` and `é`: `shape` of the result equals `shape` of the input; escaping twice equals escaping once; and for input with no `_`, the result's CommonMark HTML contains no `<em>`. Example tests in the same file: each probe example above gives the stated result, and the three prettier cases above, escaped, are formatted by the pinned prettier (run as `tests/test_formatters.py` runs it) to the escaped text unchanged. Before implementing, add the function raising `NotImplementedError` and confirm the tests fail.
+Tests: Hypothesis properties in a new `tests/test_property_markdown_escape.py`, over text built from `*`, `_`, `\`, a backtick, `/`, `.`, `<`, `>`, `[`, `]`, `(`, `)`, `!`, `#`, `-`, a space, a tab, a newline, `1`, `a`, `b` and `é`: `shape` of the result equals `shape` of the input; escaping twice equals escaping once; and for input with no `_`, the result's CommonMark HTML contains no `<em>`. Example tests in the same file: each probe example above gives the stated result, and the three prettier cases above, escaped, are formatted by the pinned prettier (through the `run_formatter` helper in `tests/test_formatters.py`, imported from there) to the escaped text unchanged. Before implementing, add the function raising `NotImplementedError` and confirm the tests fail.
 
 ## Acceptance Criteria
 
@@ -59,3 +59,5 @@ Replanned 2026-11-21: both blockers above settled in the Description (repeat the
 - 2026-11-21T23:20:33Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:20:33Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:21:57Z lively-zinc-newt: changed title, labels, description, acceptance criteria
+- 2026-11-21T23:23:33Z lively-zinc-newt: changed description
+- 2026-11-21T23:23:33Z lively-zinc-newt cold-read → todo
