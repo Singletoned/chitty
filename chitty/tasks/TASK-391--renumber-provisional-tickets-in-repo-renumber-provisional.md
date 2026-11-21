@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -78,6 +78,13 @@ The requirement to rewrite on-disk ticket files in every context conflicts with 
 
 Planner 2026-11-21: only configured contexts are renumbered or rewritten; unconfigured directories are left alone (guard in criterion 2).
 
+Two issues need decisions before the specified allocation and finalization can be implemented:
+
+1. Unconfigured directories are excluded from allocation, but `check.fix` checks duplicate IDs across `discovered_contexts()`, including unconfigured directories. For example, an unconfigured `chitty/other/TASK-1--x.md` and a configured provisional `TASK-AAAAAA` with no used configured numbers make the specified allocator choose `TASK-1`; finalization then rejects the duplicate and rolls back. The ticket requires unconfigured files to remain unchanged but does not decide whether their numeric IDs must be reserved, a collision should be rejected, or this case is otherwise handled. Please specify the desired behavior and a real-file fixture, action and assertions, including unchanged unconfigured bytes and commit or rollback as appropriate.
+2. The description asks to union used numbers where configured contexts share a prefix, but `RepoConfig._consistent` in `src/chitty/config.py` rejects duplicate context prefixes. Please reconcile that requirement with the configuration model and specify whether shared prefixes should be supported or the unreachable instruction removed; supporting them also needs allocation tests.
+
+No implementation or tests were written. Regression evidence and verification remain outstanding.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -132,3 +139,5 @@ Planner 2026-11-21: only configured contexts are renumbered or rewritten; unconf
 - 2026-11-21T14:45:40Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T14:45:40Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T14:46:43Z jolly-quartz-wren todo → doing
+- 2026-11-21T14:49:10Z jolly-quartz-wren: changed owner, notes
+- 2026-11-21T14:49:10Z jolly-quartz-wren doing → planning
