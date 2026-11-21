@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: todo
+status: doing
 depends_on:
   - TASK-378
   - TASK-515
@@ -86,3 +86,4 @@ Planning blocker: the authoritative listing cutover breaks existing show and mov
 - 2026-11-21T18:50:23Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:53:00Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:53:03Z eager-ginger-adder planning → todo
+- 2026-11-21T20:14:21Z calm-ginger-adder todo → doing
