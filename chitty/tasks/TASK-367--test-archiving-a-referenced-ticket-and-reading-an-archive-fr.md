@@ -1,6 +1,6 @@
 ---
 title: Test archiving a referenced ticket and reading an archive from an older worktree
-status: review
+status: done
 labels:
   - bug
   - escape
@@ -32,8 +32,8 @@ Decisions:
 
 ## Acceptance Criteria
 
-- [ ] The four tests in `tests/test_archive_referenced_tickets.py` pass with `TASK-378` landed, and each fails with `is used by more than one file` at `7e7b5ae4^`, the commit before `TASK-378`'s switch (`7e7b5ae4` is the only `Task: TASK-378` commit that changes `src/chitty/store.py`). The planner ran that check on 2026-11-21 (all four failed so); the reviewer confirms the test file is unchanged since then, or reruns it the same way
-- [ ] `make check` passes, and `git diff --name-only main...HEAD` lists only paths under `tests/` and `chitty/` (the revert of `0c9354ac` cancels its `src/` changes)
+- [x] The four tests in `tests/test_archive_referenced_tickets.py` pass with `TASK-378` landed, and each fails with `is used by more than one file` at `7e7b5ae4^`, the commit before `TASK-378`'s switch (`7e7b5ae4` is the only `Task: TASK-378` commit that changes `src/chitty/store.py`). The planner ran that check on 2026-11-21 (all four failed so); the reviewer confirms the test file is unchanged since then, or reruns it the same way
+- [x] `make check` passes, and `git diff --name-only main...HEAD` lists only paths under `tests/` and `chitty/` (the revert of `0c9354ac` cancels its `src/` changes)
 
 ## Plan
 
@@ -64,6 +64,10 @@ The prescribed historical regression run cannot reach the archive failure becaus
 Planner 2026-11-21: the old evidence command found the oldest `Task: TASK-378` commit, a ticket edit from the reverted first attempt, so its parent `cae058f9` lacked `--human`. The right commit is `7e7b5ae4^`. Ran the committed `tests/test_archive_referenced_tickets.py` from `task-367` there, in a scratch worktree: all four tests fail with `is used by more than one file` (`TASK-1` for the three archive tests, `TASK-2` for the older-worktree test). Criterion 1 now names that commit, and the worker does not need to repeat the run.
 
 The planner ran all four committed tests against `7e7b5ae4^` and observed the expected duplicate-file failure in each. The test file remains unchanged since its sole commit, `464fb150`.
+
+Reviewed: All four real-Git scenarios match the specified fixtures and assertions.
+1: pass - `.venv/bin/python -m unittest tests.test_archive_referenced_tickets -v` printed four ok and OK; `git diff --exit-code 464fb150 HEAD -- tests/test_archive_referenced_tickets.py` printed nothing, confirming the file is unchanged since the planner's recorded four duplicate-file failures at `7e7b5ae4^`.
+2: pass - `make check` printed 909 tests and OK, with ruff and pyright passing; `git diff --name-only main...HEAD` listed only two `chitty/` paths and `tests/test_archive_referenced_tickets.py`.
 
 ## Summary
 
@@ -107,3 +111,5 @@ Verification: `chitty fix`, `make format`, and `make check` passed (909 tests). 
 - 2026-11-21T12:46:40Z intrepid-ochre-puffin: changed notes
 - 2026-11-21T12:46:49Z intrepid-ochre-puffin: changed summary
 - 2026-11-21T12:46:58Z intrepid-ochre-puffin doing → review
+- 2026-11-21T12:51:29Z mellow-bronze-badger: changed notes; ticked acceptance criteria
+- 2026-11-21T12:51:29Z mellow-bronze-badger review → done
