@@ -1,6 +1,6 @@
 ---
 title: Edit one criterion's text without losing its checked state or the other items' formatting
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -29,3 +29,4 @@ Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, u
 - 2026-11-21T14:32:58Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T14:34:38Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T14:34:38Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T15:13:53Z upbeat-ochre-zander todo → doing
