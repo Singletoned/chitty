@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: cold-read
+status: todo
 depends_on:
   - TASK-378
   - TASK-480
@@ -19,6 +19,7 @@ Builder: new module `tests/ticket_placements.py`, importable by later tickets.
 - `make_repo(parent: Path) -> Path`: a fresh directory under `parent` (`tempfile.mkdtemp(dir=parent)`), `git init -b main`, local `user.name` and `user.email` (`RepoTestCase` empties `HOME`), and `chitty.toml` holding `CONFIG` from `tests/support.py` (contexts `tasks` and `human`, current `chitty_version`). Commit no placeholder file such as `.gitkeep` in a context directory: it makes every read fail with `task filename '.gitkeep' must end with .md`. Commits pin `GIT_AUTHOR_DATE` and `GIT_COMMITTER_DATE` to fixed increasing dates.
 - `PLACEMENTS`: the 13 names `a` to `m` below. `place(root, placement, number)` builds one ticket `TASK-<number>` in context `tasks`, active on `main` wherever it is on `main`, and returns an `Expected` value: either the title the read must show and whether it is archived, `None` for not listed, or the substrings the `ChittyError` must contain. Each copy has a distinct title (`main`, `branch`, `remote`, `uncommitted`, plus `main-2` for a later `main` edit), so the expected source is identified by its title. The expected results are written out by hand in the module, never computed by calling `ticket_source`.
 - Base: every placement except (f) and (i) first commits `TASK-<n>` with title `main` on `main`, and every branch or remote ref below starts from that commit (or from a later `main` commit where stated). (f) and (i) never commit the ticket on `main`, so they are the only placements with no file in the main checkout.
+- Remote-tracking refs are made with `git update-ref refs/remotes/origin/task-<n> <commit>` (commit on a temporary branch, then delete it); no remote is configured. Archiving moves the file to `chitty/tasks/archive/`. A fast-forward merge is `git merge --ff-only task-<n>` on `main` in the main checkout.
 - Placements: (a) only on `main`; (b) edited on local branch `task-<n>`; (c) edited only on `origin/task-<n>` (made with `git update-ref`, no local branch); (d) local branch, with `origin/task-<n>` ahead of it; (e) local and remote diverged; (f) only on an unrelated branch `other`, not on `main`; (g) archived on its local branch; (h) deleted on its local branch; (i) a new uncommitted file in the main checkout only; (j) local branch edited, fast-forward merged into `main`, then `main` edited again (branch behind `main`); (k) edited on its local branch and also on `main` after the split (changed on both); (l) local branch fast-forward merged into `main`, with `origin/task-<n>` ahead of it; (m) edited only on `origin/task-<n>` and also on `main` after the split.
 - `edit_uncommitted(root, number)`: sets the title of the ticket's file in that checkout's working tree to `uncommitted`, without committing. Only call it when that file exists there.
 
@@ -80,3 +81,5 @@ Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), 
 - 2026-11-21T23:07:52Z lively-zinc-newt: changed description
 - 2026-11-21T23:07:52Z lively-zinc-newt cold-read → planning
 - 2026-11-21T23:08:03Z lively-zinc-newt planning → cold-read
+- 2026-11-21T23:09:46Z lively-zinc-newt: changed description
+- 2026-11-21T23:09:46Z lively-zinc-newt cold-read → todo
