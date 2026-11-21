@@ -1,6 +1,6 @@
 ---
 title: Time out the runner `setup` and `check` commands
-status: doing
+status: review
 labels:
   - needs-minor
 priority: high
@@ -75,3 +75,4 @@ Implemented per-command setup and check deadlines with shared process-tree clean
 - 2026-11-21T16:15:58Z golden-bronze-marten: changed notes
 - 2026-11-21T16:19:34Z golden-bronze-marten: changed notes
 - 2026-11-21T16:22:59Z golden-bronze-marten: changed summary
+- 2026-11-21T16:23:02Z golden-bronze-marten doing → review
