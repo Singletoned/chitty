@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: cold-read
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -149,3 +149,4 @@ This ticket is too large to implement and verify confidently in one session: its
 - 2026-11-21T15:23:00Z youthful-dusky-raven doing → planning
 - 2026-11-21T18:34:34Z eager-ginger-adder: changed title, dependencies, description, acceptance criteria; wrote the plan
 - 2026-11-21T18:34:34Z eager-ginger-adder planning → cold-read
+- 2026-11-21T18:35:41Z eager-ginger-adder cold-read → planning
