@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: todo
+status: doing
 depends_on:
   - TASK-378
   - TASK-480
@@ -100,3 +100,4 @@ Split again 2026-11-21: the worker returned six sessions saying it could not fin
 - 2026-11-21T23:16:27Z quick-amber-eel doing → error
 - 2026-11-21T23:19:03Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:19:03Z lively-zinc-newt error → todo
+- 2026-11-21T23:40:04Z intrepid-umber-jay todo → doing
