@@ -1,6 +1,6 @@
 ---
 title: Use the ticket branch `task-1` in the cross-branch write tests
-status: review
+status: done
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -23,8 +23,8 @@ The "after" check is done: the planner ran these renamed tests on spike `ab2ac7b
 
 ## Acceptance Criteria
 
-- [ ] `git diff main...HEAD -- tests` changes only `tests/test_cli.py` (`TestCrossBranchWrites`) and `tests/test_mcp.py` (`test_cross_branch_write_error_matches_the_cli`), and every changed line differs only by `worker` becoming `task-1`; no `"worker"` string literal is left in those five `test_cli.py` tests or that MCP test (the helper name `claim_on_worker` stays)
-- [ ] `make check` passes
+- [x] `git diff main...HEAD -- tests` changes only `tests/test_cli.py` (`TestCrossBranchWrites`) and `tests/test_mcp.py` (`test_cross_branch_write_error_matches_the_cli`), and every changed line differs only by `worker` becoming `task-1`; no `"worker"` string literal is left in those five `test_cli.py` tests or that MCP test (the helper name `claim_on_worker` stays)
+- [x] `make check` passes
 
 ## Plan
 
@@ -35,6 +35,10 @@ Replace only the specified branch string literals in the cross-branch tests, ver
 The required after-switch verification mandates creating and modifying a separate detached worktree, including its `src/chitty/store.py` and test files. The session instruction permits changes only inside the ticket worktree and explicitly forbids touching other worktrees, so even nesting the detached worktree inside this one would violate that restriction. The ticket requires this exact method and does not permit an alternative. Please decide whether to authorize that worktree for verification or amend the required method. No implementation was started; after-switch verification and `make check` remain unfinished.
 
 Planner 2026-11-21: the worker could not create the second worktree the after-switch check needed. The planner had already run it, so it is now recorded in the Description, and criterion 2 is just `make check`.
+
+Reviewed:
+1: pass - Inspected `git diff main...HEAD -- tests` and the specified tests: only the requested string substitutions occur, with the helper and other tests unchanged.
+2: pass - `make check` printed `All checks passed!`, `0 errors, 0 warnings, 0 informations`, and `Ran 905 tests ... OK`.
 
 ## Summary
 
@@ -56,3 +60,5 @@ Renamed the specified cross-branch test literals to `task-1`, preserving the hel
 - 2026-11-21T11:52:50Z tidy-russet-gannet: wrote the plan
 - 2026-11-21T11:54:49Z tidy-russet-gannet: changed summary
 - 2026-11-21T11:54:58Z tidy-russet-gannet doing → review
+- 2026-11-21T11:59:16Z witty-khaki-crane: changed notes; ticked acceptance criteria
+- 2026-11-21T11:59:16Z witty-khaki-crane review → done
