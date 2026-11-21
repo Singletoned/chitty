@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: doing
+status: error
 depends_on:
   - TASK-381
   - TASK-389
@@ -90,6 +90,10 @@ The read-only preflight is still too large to implement and verify confidently i
 The description requires source-selection errors to propagate, but specifies no planner-level test fixture, action, or assertions for that requirement. The two branch variants only assert successful `lookup` selection; they cannot detect a planner that catches selection errors and continues. `Repo.source_of` calls `_choose_source` (`src/chitty/store.py`), and `tests/test_source_copy_errors.py` already demonstrates diverged and changed-both selection failures, but those tests do not exercise the new planner. Please specify which real-Git error fixture to arrange, whether a candidate must be present, the planner call and exception assertions, and the unchanged-state assertions. This is a required test missing from the ticket, not a choice of implementation.
 
 I read the complete current ticket and inspected discovery, selection, used-number allocation, ID references, the allocator and existing source/provisional tests. The other described cases can be checked independently, but were not run: the planner does not yet exist. No implementation was started; regression-failure evidence and `make check` remain outstanding.
+
+Runner error (agent): TASK-391 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-391`
 
 ## History
 
@@ -181,3 +185,5 @@ I read the complete current ticket and inspected discovery, selection, used-numb
 - 2026-11-21T20:04:19Z eager-ginger-adder planning → todo
 - 2026-11-21T20:08:49Z golden-indigo-quail todo → doing
 - 2026-11-21T20:12:41Z golden-indigo-quail: wrote the plan
+- 2026-11-21T20:13:15Z golden-indigo-quail: changed notes
+- 2026-11-21T20:13:15Z golden-indigo-quail doing → error
