@@ -1,6 +1,6 @@
 ---
 title: Require Python function annotations in production source
-status: cold-read
+status: planning
 created: 2026-11-21
 ---
 
@@ -22,3 +22,4 @@ Use temporary probe files in the worker's isolated worktree and remove them befo
 - 2026-11-21T16:17:29Z honest-coral-heron → planning
 - 2026-11-21T16:17:36Z honest-coral-heron: changed acceptance criteria
 - 2026-11-21T16:17:36Z honest-coral-heron planning → cold-read
+- 2026-11-21T16:20:32Z honest-coral-heron cold-read → planning
