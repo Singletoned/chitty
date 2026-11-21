@@ -12,7 +12,7 @@ created: 2026-11-21
 
 Draft, to be replanned against the builder that `TASK-393` and `TASK-522` land in `tests/ticket_placements.py`. Do not move to `todo` before that.
 
-- `test_generated_placements` in `tests/test_property_ticket_reads.py`, Hypothesis with `deadline=None`, `max_examples=40`, `derandomize=True`, `database=None`. Each example builds one repository with `make_repo`.
+- `test_generated_placements` in `tests/test_ticket_placement_reads.py`, Hypothesis with `deadline=None`, `max_examples=40`, `derandomize=True`, `database=None`. Each example builds one repository with `make_repo`.
 - Draw 1 to 4 tickets. Each has a distinct number, never equal to a decoy's number, a context (`tasks` or `human`), whether it is archived on `main` (for placements on `main`), and a placement from `st.sampled_from(PLACEMENTS)`. Draw one checkout kind for the read, compatible with every drawn placement or redrawn. Draw commit dates at random, so commit order differs from causal order. Add decoy branches at random: for `TASK-5`, `task-50`, `TASK-5` and `feature/task-5`.
 - Where a ticket's file exists in the reading checkout, draw whether to make an uncommitted edit there.
 - Expected per ticket: the same table as `TASK-393` and `TASK-522`, by placement and kind. Compare `Repo.find` per ID. `Repo.tasks` for each context raises when any drawn ticket in it has an error result; otherwise it lists exactly the expected tickets.
@@ -31,3 +31,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-522` lands; th
 ## History
 
 - 2026-11-21T23:05:47Z lively-zinc-newt → planning
+- 2026-11-21T23:07:56Z lively-zinc-newt: changed description
