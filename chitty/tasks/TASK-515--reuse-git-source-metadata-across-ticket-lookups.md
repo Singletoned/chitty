@@ -1,6 +1,6 @@
 ---
 title: Reuse Git source metadata across ticket lookups
-status: planning
+status: cold-read
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -13,7 +13,14 @@ In `src/chitty/store.py`, cache the per-checkout Git repository presence, curren
 
 Use real Git in temporary repositories. No new source-selection property: the selection logic is unchanged and already covered by `tests/test_property_ticket_source.py` and the source-copy suites. The new checks exercise process count and invalidation across real Git state changes.
 
+## Acceptance Criteria
+
+- [ ] Extend `tests/test_list_performance.py` with the real-Git lookup probe: for committed `main` repos with 2 and 10 distinct valid tickets and no ticket branches, a fresh subprocess opens one `Repo`, enumerates all `ticket_ids()` and successfully looks each up. Assert the expected number of IDs and lookups and equal built-in Git invocation counts from `GIT_TRACE`, as in the existing list trace test. This new equality assertion fails on the old code; keep the existing list test passing.
+- [ ] In one `Repo` opened at the real `main` checkout, first look up a committed `TASK-1` with no ticket branch and check that its title is the baseline and its branch is unset. Create `task-1`, commit a title change on it, return to `main`, call `Repo._invalidate()`, and check that lookup returns the branch title and `task-1`. Fast-forward `main` to `task-1` without deleting the branch, invalidate again, and check that lookup returns the new title from the working tree with no branch. Existing source-copy and source-selection tests still pass.
+
 ## History
 
 - 2026-11-21T15:51:38Z honest-coral-heron → backlog
 - 2026-11-21T15:51:50Z honest-coral-heron backlog → planning
+- 2026-11-21T15:51:52Z honest-coral-heron: changed acceptance criteria
+- 2026-11-21T15:51:52Z honest-coral-heron planning → cold-read
