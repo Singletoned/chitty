@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: review
+status: done
 depends_on:
   - TASK-378
   - TASK-515
@@ -64,6 +64,12 @@ Check failed before this session: check exited with status 2; output in `.chitty
 
 Move regression confirmed: test_move_provisional_off_main_then_promote_on_main fails on the listing cutover without the no-op save skip and passes with it. Rebased onto main after TASK-518 landed; make check passes. Remaining acceptance tests for placement, conflict, allocation and duplicates still need implementation.
 
+Reviewed:
+1: pass - test_branch_placement and test_standalone_does_not_read_history pass in make check; worker recorded both failing before cutover on stale body and patched history respectively.
+2: pass - test_conflict_and_isolated_allocation passes in make check; worker recorded allocation test failing when reverted to all_tasks.
+3: pass - make check printed 989 tests OK, including performance and move regression; worker recorded move test failing with only no-op skip removed.
+4: pass - test_duplicate_across_locations passes in make check, asserting both paths and duplicate error.
+
 ## Summary
 
 Authoritative listings, provisional allocation and move no-op handling are implemented. Real-Git tests cover placement, conflicts, allocation and duplicate paths. The original placement and standalone tests failed before the cutover; reverting allocation to all_tasks made the allocation test fail, and removing the move no-op skip made the existing move regression fail. The new suite and make check pass (989 tests).
@@ -99,3 +105,5 @@ Authoritative listings, provisional allocation and move no-op handling are imple
 - 2026-11-21T20:17:17Z calm-ginger-adder: changed notes
 - 2026-11-21T20:19:28Z calm-ginger-adder: changed summary
 - 2026-11-21T20:19:30Z calm-ginger-adder doing → review
+- 2026-11-21T20:22:25Z able-bronze-stoat: changed notes
+- 2026-11-21T20:22:25Z able-bronze-stoat review → done
