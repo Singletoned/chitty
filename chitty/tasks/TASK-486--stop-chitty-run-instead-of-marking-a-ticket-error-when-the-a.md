@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -105,3 +105,4 @@ Replanned 2026-11-21 (overnight planner): reporter and existing-test decisions a
 - 2026-11-21T23:02:54Z honest-dusky-stoat doing → planning
 - 2026-11-21T23:14:11Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:14:11Z lively-zinc-newt planning → todo
+- 2026-11-21T23:17:46Z vivid-pearl-urchin todo → doing
