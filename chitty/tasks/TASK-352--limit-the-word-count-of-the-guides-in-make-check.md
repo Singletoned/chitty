@@ -1,6 +1,6 @@
 ---
 title: Limit the word count of the guides in make check
-status: cold-read
+status: planning
 created: 2026-11-16
 ---
 
@@ -23,3 +23,4 @@ Check the real tree rooted at the repository containing the test module, indepen
 - 2026-11-16T10:38:49Z intrepid-coral-raven backlog → planning
 - 2026-11-21T15:49:40Z honest-coral-heron: changed description, acceptance criteria
 - 2026-11-21T15:49:40Z honest-coral-heron planning → cold-read
+- 2026-11-21T15:50:18Z honest-coral-heron cold-read → planning
