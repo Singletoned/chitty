@@ -109,6 +109,14 @@ class TestTicketReads(CliTestCase):
         self.commit()
         self.run_cli("show", "TASK-2")
         self.run_cli("edit", "TASK-2", "--note", "x")
+
+    def test_conflicted_ticket_fails(self):
+        self.branch()
+        self.file("1", "branch")
+        self.commit()
+        self.main()
+        self.file("1", "changed main")
+        self.commit()
         result = self.run_cli("show", "TASK-1", exit_code=1)
         for text in ("changed on both", "task-1", "main"):
             self.assertIn(text, result.stderr)
@@ -124,16 +132,31 @@ class TestTicketReads(CliTestCase):
             "task-1:chitty/tasks/TASK-1--example.md: file must start with '---' frontmatter",
             result.stderr,
         )
+
+    def test_malformed_branch_context(self):
+        self.branch()
+        path = self.root / "chitty/tasks/TASK-1--example.md"
+        path.write_text("not frontmatter\n")
+        self.commit()
+        self.main()
         self.assertEqual(Repo.open(self.root).context_of(TaskId.parse("TASK-1")).name, "tasks")
 
-    def test_malformed_main_working_tree(self):
+    def test_malformed_main_working_tree_context(self):
         self.branch()
         self.file("1", "branch")
         self.commit()
         self.main()
         (self.root / "chitty/tasks/TASK-1--example.md").write_text("not frontmatter\n")
         self.assertEqual(Repo.open(self.root).context_of(TaskId.parse("TASK-1")).name, "tasks")
-        self.assertIn("title: branch", self.run_cli("show", "TASK-1").stdout)
+
+    def test_malformed_main_working_tree_find(self):
+        self.branch()
+        self.file("1", "branch")
+        self.commit()
+        self.main()
+        (self.root / "chitty/tasks/TASK-1--example.md").write_text("not frontmatter\n")
+        task = Repo.open(self.root).find(TaskId.parse("TASK-1")).task
+        self.assertEqual(task.frontmatter.title, "branch")
 
     def test_unrelated_linked_worktree_ignores_uncommitted_title(self):
         linked = self.root / "linked"
