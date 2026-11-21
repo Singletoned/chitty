@@ -26,6 +26,10 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 - [ ] Against the `NotImplementedError` stub, `test_blocking_link` errors with `NotImplementedError` (reviewer checks the output); after implementation it passes
 - [ ] Both committed mutant tests pass, showing the property fails for the case-sensitive mutant and for the mutant that ignores `parent`; `make check` passes
 
+## Plan
+
+Add the pure link comparison and property-based cases with explicit examples and mutant checks; verify the stub fails first, then format and run the full checks.
+
 ## History
 
 - 2026-11-21T23:15:28Z lively-zinc-newt → todo
@@ -35,3 +39,4 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 - 2026-11-21T23:19:14Z lively-zinc-newt: changed description
 - 2026-11-21T23:19:14Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:56:27Z plucky-khaki-crane todo → doing
+- 2026-11-21T23:58:08Z plucky-khaki-crane: wrote the plan
