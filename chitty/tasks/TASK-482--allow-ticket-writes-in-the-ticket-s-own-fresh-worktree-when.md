@@ -147,6 +147,10 @@ make: *** [check] Error 1
 
 Confirmed before the fix: python -m unittest tests.test_own_worktree_writes fails only test_guard_allows_unchanged_main with the branch main guard error; the four other tests pass.
 
+## Summary
+
+Implemented the own-worktree guard allowance in `src/chitty/store.py`, comparing the union of ticket paths against the main-side split. Existing real-Git tests cover the requested CLI and direct guard cases. The unchanged-main direct test failed before the fix and passes afterwards; `make check` passes all 898 tests. The CLI guards also pass before the fix, as documented in the ticket; TASK-378 changes the read path later.
+
 ## History
 
 - 2026-11-21T01:20:56Z quick-pearl-lapwing → planning
@@ -164,3 +168,4 @@ Confirmed before the fix: python -m unittest tests.test_own_worktree_writes fail
 - 2026-11-21T01:36:01Z youthful-violet-wren: changed notes
 - 2026-11-21T01:36:25Z youthful-violet-wren: wrote the plan
 - 2026-11-21T01:36:39Z youthful-violet-wren: changed notes
+- 2026-11-21T01:39:38Z youthful-violet-wren: changed summary
