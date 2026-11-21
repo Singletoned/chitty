@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: todo
+status: doing
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -45,3 +45,4 @@ Return to planning: required regression fixtures are missing; see the preceding 
 - 2026-11-21T18:52:05Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:53:08Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:53:11Z eager-ginger-adder planning → todo
+- 2026-11-21T18:55:42Z mellow-umber-wren todo → doing
