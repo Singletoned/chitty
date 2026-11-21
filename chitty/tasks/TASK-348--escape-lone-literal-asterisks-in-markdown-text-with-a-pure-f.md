@@ -27,6 +27,10 @@ Tests: Hypothesis properties in a new `tests/test_property_markdown_escape.py`, 
 - [ ] The Hypothesis properties in `tests/test_property_markdown_escape.py` show `escape_literal_asterisks` keeps `shape`, is idempotent, and leaves no `<em>` for input without `_`; the probe examples give their stated results; the three prettier examples, escaped, format to themselves; the tests fail with the function raising `NotImplementedError`
 - [ ] `make check` passes
 
+## Plan
+
+Add property and formatter regression tests against a stub, verify failure, then implement fixed-point CommonMark shape comparison and run project checks.
+
 ## Notes
 
 Cold read by a Haiku subagent, 2026-11-17. Fixed: the rule as first written (CommonMark HTML unchanged) never escaped `files/*.jpg and c/*.png`, because CommonMark itself pairs those as emphasis; it now compares HTML with `<em>` tags folded to `*`, which gives up single-`*` emphasis (decision recorded, `needs-minor`). Also fixed: which text the comparison uses, a redundant property, the generator alphabet, and the exact CLI input and stored text. Not adopted: testing every `Edit` field through the CLI; `Edit.apply` covers them in one place.
@@ -62,3 +66,4 @@ Replanned 2026-11-21: both blockers above settled in the Description (repeat the
 - 2026-11-21T23:23:33Z lively-zinc-newt: changed description
 - 2026-11-21T23:23:33Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:27:03Z brisk-indigo-eel todo → doing
+- 2026-11-21T23:28:45Z brisk-indigo-eel: wrote the plan
