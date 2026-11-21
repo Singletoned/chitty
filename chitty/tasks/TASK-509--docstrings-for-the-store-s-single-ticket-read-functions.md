@@ -1,24 +1,20 @@
 ---
 title: Docstrings for the store's single-ticket read functions
-status: planning
+status: todo
 labels:
   - untestable
+owner: untestable
 parent: TASK-376
 created: 2026-11-21
 ---
 
 ## Description
 
-On 2026-11-21 several tickets were returned because their planners misdescribed these functions. None of them has a docstring. Add one to each in `src/chitty/store.py`: `source_copy`, `_choose_source`, `lookup`, `find`, `context_of`, `all_tasks` and `_tasks_in_location`.
+Add short docstrings to `source_copy`, `_choose_source`, `lookup`, `find`, `context_of`, `all_tasks`, and `_tasks_in_location` in `src/chitty/store.py`. Previous planning misdescribed these helpers. Document the code as it stands; change no runtime behavior and add no tests for wording. Run `make check`.
 
-Each docstring states, from the code as it is when you write it (check it; do not copy this list):
+For single-ticket reads, point to `ticket_source` (directly or through the helper that calls it) for authoritative source selection. State which helper picks a source without checking whether a copy exists, which parses the selected copy, how missing tickets are reported, and how `context_of` uses the selected path or the configured prefix without parsing. For bulk reads, describe the separate history and working-tree overlay, cache, scope (configured contexts for `all_tasks`), which inputs are parsed, and empty results.
 
-- which copy it reads (working tree, `main`, a ticket branch or a remote-tracking ref) and by what rule, pointing to `ticket_source` and `docs/plan/ticket-state.md` rather than restating the rule;
-- whether it parses ticket content, and which content (for example, `_choose_source` parses nothing; `source_copy` parses only the chosen copy; `all_tasks` and `_tasks_in_location` parse every file they list);
-- what it returns when there is no ticket (`None`, or which error);
-- every `ChittyError` it can raise, with the message's start, for example `is used by more than one file`, `changed on both`, a diverged-refs error, `configured main branch ... has no tip`, and a parse error formatted `<ref>:<path>: <error>`.
-
-Keep each docstring short: a summary line, then the points above as plain sentences. Do not change behaviour. `make check` passes.
+Document store-level and source-policy `ChittyError` cases with their message prefixes or templates where raised, using cross-references for callers that propagate them. Distinguish discovery/scan failures, duplicate files at the selected source, local and ref parse errors, source-policy failures, and the no-context and no-task cases. Summarize propagated Git and configuration failures without enumerating lower-level messages. Do not link to `docs/plan/ticket-state.md` until it exists in the checkout.
 
 ## Plan
 
@@ -39,3 +35,5 @@ Please also clarify whether “every `ChittyError`” means ticket-specific erro
 - 2026-11-21T16:07:03Z nimble-umber-adder todo → doing
 - 2026-11-21T16:07:39Z nimble-umber-adder: changed owner, notes
 - 2026-11-21T16:07:39Z nimble-umber-adder doing → planning
+- 2026-11-21T16:09:12Z nimble-umber-adder: changed owner, description
+- 2026-11-21T16:09:12Z nimble-umber-adder planning → todo
