@@ -1,6 +1,6 @@
 ---
 title: Check ticket references by ID, so a conflicted ticket does not block edits of others
-status: todo
+status: doing
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -35,3 +35,4 @@ Tests: real Git, in a new `tests/test_reference_isolation.py` with a class inher
 - 2026-11-21T01:26:38Z quick-pearl-lapwing planning → cold-read
 - 2026-11-21T01:28:25Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-21T01:28:25Z quick-pearl-lapwing cold-read → todo
+- 2026-11-21T13:15:00Z sunny-coral-badger todo → doing
