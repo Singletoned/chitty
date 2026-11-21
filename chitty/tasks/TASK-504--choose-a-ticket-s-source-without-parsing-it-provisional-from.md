@@ -50,6 +50,10 @@ Migrate and add the specified source-copy tests, verify their baseline failures 
 
 Baseline against unchanged source: test_provisional_is_read_from_the_id failed because the fieldless working copy resolved to main; test_malformed_working_tree_on_another_branch_is_not_read errored on unclosed frontmatter; test_malformed_working_tree_does_not_stop_a_branch_copy errored on missing frontmatter. The branch-only provisional guard passed on baseline and failed with an unexpectedly None copy when provisional was determined solely by isinstance(task_id.number, str).
 
+## Summary
+
+Source selection now determines provisional status from the ID and file presence without parsing unchosen copies. Migrated and added source-copy tests; baseline and wrong-implementation failures are recorded in the note. Verified make check (905 tests), focused tests, and source diff limited to source selection. No follow-ups.
+
 ## History
 
 - 2026-11-21T11:34:10Z sunny-ebony-kestrel → planning
@@ -61,3 +65,4 @@ Baseline against unchanged source: test_provisional_is_read_from_the_id failed b
 - 2026-11-21T11:37:36Z vivid-quartz-badger todo → doing
 - 2026-11-21T11:39:36Z vivid-quartz-badger: wrote the plan
 - 2026-11-21T11:40:19Z vivid-quartz-badger: changed notes
+- 2026-11-21T11:42:21Z vivid-quartz-badger: changed summary
