@@ -56,6 +56,8 @@ The stale registration fixture is impossible as specified: initial `chitty init 
 
 Before the fix, .venv/bin/python -m unittest tests.test_property_init_restore fails on all three explicit failure examples; the fresh hook leaves setup directories. The success test passes.
 
+Mutation checks: .venv/bin/python -m unittest tests.test_property_init_restore.TestInitRestore.test_failure_restores_setup failed for each of commit-only rollback, config-only rollback, no directory removal, and leaf-only removal; each reports the fresh hook explicit example. Commit-only also fails the stale registration example. Restored the correct implementation after each run.
+
 ## History
 
 - 2026-11-19T20:55:05Z sunny-white-dormouse → backlog
@@ -97,3 +99,4 @@ Before the fix, .venv/bin/python -m unittest tests.test_property_init_restore fa
 - 2026-11-21T00:56:45Z able-bronze-marten todo → doing
 - 2026-11-21T01:01:52Z able-bronze-marten: wrote the plan
 - 2026-11-21T01:03:29Z able-bronze-marten: changed notes
+- 2026-11-21T01:04:42Z able-bronze-marten: changed notes
