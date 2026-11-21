@@ -1,6 +1,6 @@
 ---
 title: Reuse Git source metadata across ticket lookups
-status: cold-read
+status: planning
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -24,3 +24,4 @@ Use real Git in temporary repositories. No new source-selection property: the se
 - 2026-11-21T15:51:50Z honest-coral-heron backlog → planning
 - 2026-11-21T15:51:52Z honest-coral-heron: changed acceptance criteria
 - 2026-11-21T15:51:52Z honest-coral-heron planning → cold-read
+- 2026-11-21T15:54:55Z honest-coral-heron cold-read → planning
