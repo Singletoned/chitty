@@ -37,6 +37,10 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - [ ] Outside a Git repository (a temporary directory with `chitty.toml` and `autocommit = false`, and a file `chitty/tasks/TASK-AAAAAA--x.md` with `provisional: true`), the call renumbers it to `TASK-1` without error, and no `.git` directory is created. On `main`, with `TASK-3` depending on both a dangling `TASK-4` (no such file) and the provisional `TASK-AAAAAA`, the provisional ticket becomes `TASK-5`, and `TASK-3`'s `depends_on` becomes `[TASK-4, TASK-5]`. `make check` passes
 - [ ] `TASK-3`, the highest-numbered ticket, is in flight on branch `task-3` (one commit ahead of `main`) while its `main` copy mentions a provisional ID: its `main` file is left byte-identical, the two provisional tickets on `main` still become `TASK-4` and `TASK-5` (the skipped ticket's number counts as used), and the commit's `Task:` trailers name those tickets and not `TASK-3`
 
+## Plan
+
+Extract used-number collection, parse and select on-disk tickets, reserve mentioned numbers, then plan and atomically write renames and rewrites in one commit. Cover the specified Git, archive, rollback, source-selection and standalone cases with real-file tests.
+
 ## Notes
 
 The requested rewrite and property cannot be implemented as written against the current model: `src/chitty/model.py` `_split_sections` rejects any non-whitespace content before the first `##` section, so a parsed `Task` cannot contain an ID in the preamble. The description nevertheless requires rewriting that text and generating tickets with mentions in every field and section; frontmatter fields such as `status`, `created` and `provisional` also cannot contain such mentions, while `moved_from` and History are explicitly excluded from rewriting. Please specify whether to change the parser to allow preamble content or remove that requirement, and clarify the property fixture to identify the eligible fields and sections. No implementation was started; regression evidence and verification remain outstanding.
@@ -98,3 +102,4 @@ Planner 2026-11-21, after the cold read: every non-skipped on-disk file is rewri
 - 2026-11-21T14:33:28Z sunny-ebony-kestrel: changed description, notes
 - 2026-11-21T14:33:28Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T14:33:43Z witty-maroon-newt todo → doing
+- 2026-11-21T14:35:24Z witty-maroon-newt: wrote the plan
