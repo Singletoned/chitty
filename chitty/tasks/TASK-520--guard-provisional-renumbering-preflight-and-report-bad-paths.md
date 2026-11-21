@@ -28,8 +28,8 @@ No property: a small fixed set of Git states and files, each listed here. Before
 
 ## Acceptance Criteria
 
-- [ ] With stale setup and eligible work, a branch off configured main and detached HEAD each raise `ProvisionalOffMain`, before any writes; compare HEAD, index and file bytes.
-- [ ] On main, an unparseable ticket or duplicate provisional candidate each refuses the whole plan with the bad path or both duplicate paths respectively, with HEAD, index and files unchanged.
+- [ ] On a branch `feature` and on a detached HEAD, with stale setup and an eligible candidate, the planner raises `ProvisionalOffMain` naming `feature` or `detached HEAD`, and the snapshot is unchanged; both tests fail on the unguarded planner
+- [ ] On main, the malformed fixture raises an error starting with the bad path, and the duplicate fixture raises an error containing both duplicate paths; the snapshot is unchanged in each; the duplicate test fails on the unguarded planner
 
 ## History
 
@@ -37,3 +37,4 @@ No property: a small fixed set of Git states and files, each listed here. Before
 - 2026-11-21T18:45:14Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T18:45:14Z eager-ginger-adder backlog → planning
 - 2026-11-21T23:00:01Z lively-zinc-newt: changed description
+- 2026-11-21T23:00:03Z lively-zinc-newt: changed acceptance criteria
