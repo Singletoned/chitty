@@ -1,6 +1,6 @@
 ---
 title: Remove local ticket branches that `main` already contains
-status: doing
+status: review
 depends_on:
   - TASK-396
 parent: TASK-376
@@ -312,3 +312,4 @@ Startup cleanup keeps non-done ticket branches and removes eligible done or unkn
 - 2026-11-21T00:18:09Z jolly-ochre-lapwing: wrote the plan
 - 2026-11-21T00:21:33Z jolly-ochre-lapwing: changed notes
 - 2026-11-21T00:24:50Z jolly-ochre-lapwing: changed summary
+- 2026-11-21T00:24:58Z jolly-ochre-lapwing doing → review
