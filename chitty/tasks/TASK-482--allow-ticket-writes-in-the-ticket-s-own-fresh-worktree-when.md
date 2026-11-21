@@ -31,6 +31,120 @@ Criterion 1 requires a pre-fix CLI failure that cannot occur until dependent TAS
 
 Planning 2026-11-21: criterion 1 restored as guards (an earlier planning edit wrongly said the CLI case fails today); criterion 2's direct unchanged-`main` test is the fails-before evidence, as this worker found. Resumed as `doing` with the partial tests in `cf35be2f`.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+691 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 898 test suites (898 total tests) across 16 workers
+................................................................................................................................................................................................................................................................................................................................................................................................................................................................................updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxqccl0n0/repo/chitty/tasks/TASK-1--one.md actor test-agent
+.....................━━━━ chitty run · 01:34:15 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+................................................................./Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+.............E.................................................................................................................................................kill: 68620: No such process
+...........kill: 71746: No such process
+....................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+............./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/repo/CLAUDE.md
+.........Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpb0mjpild/repo/.worktrees/task-1...
+.Check passed; work agent is working on TASK-1...
+......TASK-1: doing → review
+..no next ticket for --mode work
+......../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpbqrnbe27/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp69ivbi6r/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp0tvcpu9w/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp8m4bxz1m/repo/CLAUDE.md
+.../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpif33ymgp/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgqtijzjt/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpv00u4hpp/repo/CLAUDE.md
+....................................................................................chitty 0.1.31 is out: run uv tool upgrade chitty
+..............................landed TASK-1
+landed TASK-1
+landed TASK-2
+landed TASK-1
+
+======================================================================
+test_guard_allows_unchanged_main (tests.test_own_worktree_writes.TestOwnWorktreeWrites.test_guard_allows_unchanged_main)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-482/tests/test_own_worktree_writes.py", line 57, in test_guard_allows_unchanged_main
+    Repo.open(self.worktree)._require_current_version(self.stored(self.worktree, "main"))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-482/src/chitty/store.py", line 1209, in _require_current_version
+    raise ChittyError(
+        f"{stored.id}'s latest committed version is on branch {branch}; {instruction}"
+    )
+chitty.errors.ChittyError: TASK-6's latest committed version is on branch main; run Chitty in worktree /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpgj78fn7a/repo
+
+----------------------------------------------------------------------
+Ran 898 tests in 130.455s
+
+FAILED (errors=1)
+make: *** [check] Error 1
+
+```
+
 ## History
 
 - 2026-11-21T01:20:56Z quick-pearl-lapwing → planning
@@ -45,3 +159,4 @@ Planning 2026-11-21: criterion 1 restored as guards (an earlier planning edit wr
 - 2026-11-21T01:32:30Z intrepid-yellow-heron doing → planning
 - 2026-11-21T01:33:32Z quick-pearl-lapwing: changed acceptance criteria, notes
 - 2026-11-21T01:33:32Z quick-pearl-lapwing planning → doing
+- 2026-11-21T01:36:01Z youthful-violet-wren: changed notes
