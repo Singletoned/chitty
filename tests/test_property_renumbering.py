@@ -206,7 +206,7 @@ def property_preserved(rewrite, task, mapping):
     before = task.render().split("---\n", 2)[1]
     after = result.render().split("---\n", 2)[1]
     for field in ("labels", "owner", "moved_from", "priority", "status", "created", "provisional"):
-        pattern = rf"(?m)^{field}:.*(?:\n|$)"
+        pattern = rf"(?m)^{field}:[^\n]*(?:\n[ \t]+[^\n]*)*(?:\n|$)"
         assert re.findall(pattern, before) == re.findall(pattern, after)
 
 
@@ -257,8 +257,16 @@ class TestRewriteProperties(unittest.TestCase):
     def test_rendered_mutation_fails_preserved(self):
         task = parse(
             "---\ntitle: TASK-1\nstatus: todo\ncreated: 2024-01-01\n"
-            "labels: [TASK-1]\n---\n\n## Description\n\nTASK-1\n\n"
+            "labels: [example]\n---\n\n## Description\n\nTASK-1\n\n"
             "## History\n\n- 2024-01-01T00:00:00Z actor: TASK-1\n"
+        )
+        with self.assertRaises(AssertionError):
+            property_preserved(rendered_rewrite, task, {TaskId("TASK", 1): TaskId("TASK", 100)})
+
+    def test_rendered_mutation_fails_preserved_multiline_labels(self):
+        task = parse(
+            "---\ntitle: Example\nstatus: todo\ncreated: 2024-01-01\n"
+            "labels:\n  - TASK-1\n---\n\n## Description\n\nExample\n"
         )
         with self.assertRaises(AssertionError):
             property_preserved(rendered_rewrite, task, {TaskId("TASK", 1): TaskId("TASK", 100)})
