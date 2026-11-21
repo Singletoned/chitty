@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-378
@@ -33,3 +33,4 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 - 2026-11-21T11:43:51Z sunny-ebony-kestrel: changed description
 - 2026-11-21T11:43:51Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T11:49:04Z sunny-ebony-kestrel: changed description
+- 2026-11-21T12:37:29Z calm-quartz-stoat todo → doing
