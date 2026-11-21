@@ -1,6 +1,6 @@
 ---
 title: Edit existing tickets in planning worktrees
-status: cold-read
+status: planning
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -13,7 +13,7 @@ Before the planning edit can prepare or write files, examine locally visible bra
 
 Independently, if `locks.holder` reports a live runner lock for the target ID, an otherwise allowed edit warns on stderr that work or review is in progress and to coordinate. Do not warn merely because a branch exists. Use a narrow store/CLI boundary so warning output stays in the CLI. No new options, commands or locks.
 
-Use `tests/test_planning_worktrees.py` with `CliTestCase`, real Git/worktrees, current committed setup with autocommit on and a local Git author. The following are fixed integration cases because each checks a distinct Git placement or real lock lifecycle, not a new pure policy. Run new tests before the change: draft editing and the warning must fail for the stated behavior, not setup errors. For conflict regressions, a targeted test variant bypassing the new conflict guard must make the conflict assertions fail (commit that negative control using a test-local patch); the old code already rejects these edits for a different reason. Then run `make check`.
+Create `tests/test_planning_worktrees.py` with `CliTestCase`, real Git/worktrees, current committed setup with autocommit on and a local Git author. The following are fixed integration cases because each checks a distinct Git placement or real lock lifecycle, not a new pure policy. Run new tests before the change: draft editing and the warning must fail for the stated behavior, not setup errors. For conflict regressions, a targeted test variant bypassing the new conflict guard must make the conflict assertions fail (commit the negative control with the other new tests, using a test-local patch in that file; do not add a production bypass); the old code already rejects these edits for a different reason. Then run `make check`.
 
 Isolation: commit `TASK-1` and `TASK-2` on main, create `plan/one` in a linked worktree and edit `TASK-1`'s title there. Run plain and JSON `show` in that worktree (the cold reader uses plain show). Assert the title and new path match the draft, the planning HEAD advanced by one commit, and main HEAD, bytes and JSON title are unchanged. Confirm main `Repo.lookup` reads the main copy. In a separate ordinary `feature` worktree confirm `edit` does not gain the exception.
 
@@ -34,3 +34,5 @@ Lock: in the positive control perform three distinct notes on `TASK-1`, first wi
 - 2026-11-21T22:26:38Z eager-ginger-adder backlog → planning
 - 2026-11-21T22:28:54Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T22:28:54Z eager-ginger-adder planning → cold-read
+- 2026-11-21T22:29:54Z eager-ginger-adder: changed description
+- 2026-11-21T22:29:54Z eager-ginger-adder cold-read → planning
