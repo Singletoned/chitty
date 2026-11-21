@@ -1,6 +1,6 @@
 ---
 title: Require Python function annotations in production source
-status: todo
+status: doing
 created: 2026-11-21
 ---
 
@@ -24,3 +24,4 @@ Use temporary probe files in the worker's isolated worktree and remove them befo
 - 2026-11-21T16:17:36Z honest-coral-heron planning → cold-read
 - 2026-11-21T16:20:32Z honest-coral-heron cold-read → planning
 - 2026-11-21T16:20:45Z honest-coral-heron planning → todo
+- 2026-11-21T16:24:19Z daring-hazel-eel todo → doing
