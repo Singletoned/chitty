@@ -1,6 +1,6 @@
 ---
 title: Reuse Git source metadata across ticket lookups
-status: doing
+status: review
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -42,3 +42,4 @@ Cached repository presence, current branch, main tip and branch tips for source 
 - 2026-11-21T15:59:54Z upbeat-ebony-raven: wrote the plan
 - 2026-11-21T16:00:26Z upbeat-ebony-raven: changed notes
 - 2026-11-21T16:03:04Z upbeat-ebony-raven: changed summary
+- 2026-11-21T16:03:06Z upbeat-ebony-raven doing → review
