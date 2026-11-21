@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: doing
+status: error
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -31,6 +31,10 @@ Planning: The specified fixture has only one configured context and one child, s
 
 Return to planning: required regression fixtures are missing; see the preceding planning note for evidence and requested decisions.
 
+Runner error (agent): TASK-518 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-518`
+
 ## History
 
 - 2026-11-21T18:38:33Z eager-ginger-adder → backlog
@@ -51,3 +55,5 @@ Return to planning: required regression fixtures are missing; see the preceding 
 - 2026-11-21T18:53:11Z eager-ginger-adder planning → todo
 - 2026-11-21T18:55:42Z mellow-umber-wren todo → doing
 - 2026-11-21T18:57:08Z mellow-umber-wren: wrote the plan
+- 2026-11-21T18:58:24Z mellow-umber-wren: changed notes
+- 2026-11-21T18:58:24Z mellow-umber-wren doing → error
