@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: doing
+status: review
 depends_on:
   - TASK-378
   - TASK-480
@@ -60,6 +60,10 @@ Split again 2026-11-21: the worker returned six sessions saying it could not fin
 
 Work started: inspected the ticket and existing ticket-read fixtures and updated the plan. Implementation and verification remain unfinished; no code was changed.
 
+## Summary
+
+Added deterministic placement fixtures and main checkout find and listing coverage. Both builder stubs produce test errors; make check passed (990 tests).
+
 ## History
 
 - 2026-11-18T16:38:03Z lively-quartz-crane → backlog
@@ -105,3 +109,5 @@ Work started: inspected the ticket and existing ticket-read fixtures and updated
 - 2026-11-21T23:40:04Z intrepid-umber-jay todo → doing
 - 2026-11-21T23:41:31Z intrepid-umber-jay: wrote the plan
 - 2026-11-21T23:41:37Z intrepid-umber-jay: changed notes
+- 2026-11-21T23:44:52Z intrepid-umber-jay: changed summary
+- 2026-11-21T23:44:52Z intrepid-umber-jay doing → review
