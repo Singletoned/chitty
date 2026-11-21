@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -208,3 +208,4 @@ Split 2026-11-21: the ID rule (`TASK-504`) and six renames (`TASK-505`) have lan
 - 2026-11-21T12:12:41Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T12:14:09Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T12:14:09Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T12:14:54Z quick-amber-jay todo → doing
