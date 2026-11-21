@@ -1,6 +1,6 @@
 ---
 title: Require Python function annotations in production source
-status: doing
+status: review
 created: 2026-11-21
 ---
 
@@ -53,3 +53,4 @@ Configured the requested Ruff annotation rules for `src/` only in `pyproject.tom
 - 2026-11-21T16:46:21Z jolly-umber-toad: wrote the plan
 - 2026-11-21T16:46:49Z jolly-umber-toad: changed notes
 - 2026-11-21T16:49:07Z jolly-umber-toad: changed summary
+- 2026-11-21T16:49:09Z jolly-umber-toad doing → review
