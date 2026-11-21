@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in Markdown text with a pure function
-status: review
+status: done
 depends_on:
   - TASK-347
 created: 2026-11-16
@@ -24,8 +24,8 @@ Tests: Hypothesis properties in a new `tests/test_property_markdown_escape.py`, 
 
 ## Acceptance Criteria
 
-- [ ] The Hypothesis properties in `tests/test_property_markdown_escape.py` show `escape_literal_asterisks` keeps `shape`, is idempotent, and leaves no `<em>` for input without `_`; the probe examples give their stated results; the three prettier examples, escaped, format to themselves; the tests fail with the function raising `NotImplementedError`
-- [ ] `make check` passes
+- [x] The Hypothesis properties in `tests/test_property_markdown_escape.py` show `escape_literal_asterisks` keeps `shape`, is idempotent, and leaves no `<em>` for input without `_`; the probe examples give their stated results; the three prettier examples, escaped, format to themselves; the tests fail with the function raising `NotImplementedError`
+- [x] `make check` passes
 
 ## Plan
 
@@ -46,6 +46,10 @@ No implementation changes were made; the prototype was run in memory against the
 Replanned 2026-11-21: both blockers above settled in the Description (repeat the pass to a fixed point; `suggest` escapes before validating and stores the escaped text).
 
 The new regression suite failed against the NotImplementedError stub as required.
+
+Reviewed: The fixed-point implementation and regression suite match the specified algorithm.
+1: pass - `make check` ran the Hypothesis, probe and prettier tests successfully; replacing the imported function in memory with a `NotImplementedError` stub ran 4 tests and printed `FAILED (errors=10)`.
+2: pass - `make check` printed `Ran 1026 tests` and `OK`; ruff and pyright passed.
 
 ## Summary
 
@@ -76,3 +80,5 @@ Implemented fixed-point escaping and property, example and prettier tests. The s
 - 2026-11-21T23:29:04Z brisk-indigo-eel: changed notes
 - 2026-11-21T23:33:04Z brisk-indigo-eel: changed summary
 - 2026-11-21T23:33:04Z brisk-indigo-eel doing → review
+- 2026-11-21T23:38:34Z able-maroon-crane: changed notes; ticked acceptance criteria
+- 2026-11-21T23:38:34Z able-maroon-crane review → done
