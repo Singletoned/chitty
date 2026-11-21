@@ -30,6 +30,10 @@ Conflict fixture: keep one eligible configured provisional ticket and commit a s
 - [ ] Outside Git, a single `TASK-AAAAAA` gives `TASK-1` and its writable path; with no candidates the result is `({}, ())`.
 - [ ] The main-checkout conflict fixture refuses a nonempty plan with `TASK-3` and `changed on both` and preserves HEAD, index and file bytes.
 
+## Plan
+
+Add behavioral preflight fixtures and verify failure against a signature stub; implement read-only scanning, source selection and reservations via the existing allocator; run fix, format and checks, then commit and hand off.
+
 ## Notes
 
 The requested rewrite and property cannot be implemented as written against the current model: `src/chitty/model.py` `_split_sections` rejects any non-whitespace content before the first `##` section, so a parsed `Task` cannot contain an ID in the preamble. The description nevertheless requires rewriting that text and generating tickets with mentions in every field and section; frontmatter fields such as `status`, `created` and `provisional` also cannot contain such mentions, while `moved_from` and History are explicitly excluded from rewriting. Please specify whether to change the parser to allow preamble content or remove that requirement, and clarify the property fixture to identify the eligible fields and sections. No implementation was started; regression evidence and verification remain outstanding.
@@ -176,3 +180,4 @@ I read the complete current ticket and inspected discovery, selection, used-numb
 - 2026-11-21T20:02:58Z eager-ginger-adder cold-read → planning
 - 2026-11-21T20:04:19Z eager-ginger-adder planning → todo
 - 2026-11-21T20:08:49Z golden-indigo-quail todo → doing
+- 2026-11-21T20:12:41Z golden-indigo-quail: wrote the plan
