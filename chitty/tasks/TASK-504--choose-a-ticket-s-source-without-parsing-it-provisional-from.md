@@ -46,6 +46,10 @@ Record in a note how each migrated test and the first new test fail on `main` be
 
 Migrate and add the specified source-copy tests, verify their baseline failures and guard behavior, then replace provisional detection with the specified ID and file-presence check. Run formatting and checks, verify the source diff, and hand off.
 
+## Notes
+
+Baseline against unchanged source: test_provisional_is_read_from_the_id failed because the fieldless working copy resolved to main; test_malformed_working_tree_on_another_branch_is_not_read errored on unclosed frontmatter; test_malformed_working_tree_does_not_stop_a_branch_copy errored on missing frontmatter. The branch-only provisional guard passed on baseline and failed with an unexpectedly None copy when provisional was determined solely by isinstance(task_id.number, str).
+
 ## History
 
 - 2026-11-21T11:34:10Z sunny-ebony-kestrel → planning
@@ -56,3 +60,4 @@ Migrate and add the specified source-copy tests, verify their baseline failures 
 - 2026-11-21T11:37:07Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T11:37:36Z vivid-quartz-badger todo → doing
 - 2026-11-21T11:39:36Z vivid-quartz-badger: wrote the plan
+- 2026-11-21T11:40:19Z vivid-quartz-badger: changed notes
