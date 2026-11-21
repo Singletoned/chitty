@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -218,3 +218,4 @@ Planner 2026-11-21: the six `TestCrossBranchWrites` and MCP failures came from a
 - 2026-11-21T12:18:33Z quick-amber-jay doing → planning
 - 2026-11-21T12:21:12Z sunny-ebony-kestrel: changed notes
 - 2026-11-21T12:21:12Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T12:22:00Z daring-yellow-dormouse todo → doing
