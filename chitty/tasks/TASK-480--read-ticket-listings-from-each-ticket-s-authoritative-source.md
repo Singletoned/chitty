@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: cold-read
+status: planning
 depends_on:
   - TASK-378
   - TASK-515
@@ -84,3 +84,4 @@ Planning blocker: the authoritative listing cutover breaks existing show and mov
 - 2026-11-21T18:47:42Z calm-pearl-yellowhammer doing → planning
 - 2026-11-21T18:50:23Z eager-ginger-adder: changed dependencies, description, acceptance criteria
 - 2026-11-21T18:50:23Z eager-ginger-adder planning → cold-read
+- 2026-11-21T18:53:00Z eager-ginger-adder cold-read → planning
