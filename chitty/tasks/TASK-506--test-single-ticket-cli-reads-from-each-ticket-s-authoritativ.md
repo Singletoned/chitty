@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-378
@@ -75,3 +75,4 @@ Added independent real-Git tests in `tests/test_ticket_reads.py` for authoritati
 - 2026-11-21T12:55:25Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:56:00Z upbeat-hazel-ibis todo → doing
 - 2026-11-21T12:59:05Z upbeat-hazel-ibis: changed summary
+- 2026-11-21T12:59:14Z upbeat-hazel-ibis doing → review
