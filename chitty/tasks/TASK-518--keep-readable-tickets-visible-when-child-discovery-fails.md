@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: error
+status: todo
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -35,6 +35,8 @@ Runner error (agent): TASK-518 was unchanged; only committed changes are visible
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-518`
 
+Requeued after the agent exited without implementation changes or a status handoff. The worktree was clean, the only commits from that attempt were ticket metadata, and `.chitty/check.log` showed the baseline passing. The revised fixtures and acceptance criteria remain unchanged.
+
 ## History
 
 - 2026-11-21T18:38:33Z eager-ginger-adder → backlog
@@ -57,3 +59,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-518`
 - 2026-11-21T18:57:08Z mellow-umber-wren: wrote the plan
 - 2026-11-21T18:58:24Z mellow-umber-wren: changed notes
 - 2026-11-21T18:58:24Z mellow-umber-wren doing → error
+- 2026-11-21T19:49:18Z eager-ginger-adder: changed owner, notes
+- 2026-11-21T19:49:18Z eager-ginger-adder error → todo
