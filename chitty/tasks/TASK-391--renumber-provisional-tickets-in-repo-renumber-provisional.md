@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -74,6 +74,8 @@ Planner 2026-11-21, after the worker's return: the dangling `TASK-4` is now a De
 
 Planner 2026-11-21, after the cold read: the outside-Git fixture uses `chitty init`; delete mode and `random_ids` contexts are now covered in criteria 1 and 2; criterion 5 asserts the branch source first; either duplicate-path error is accepted. Not taken: a property over reserved numbers (a set union over `ticket_references`; allocation is covered by `TASK-381`'s property).
 
+The requirement to rewrite on-disk ticket files in every context conflicts with the required rollback mechanism for unconfigured on-disk contexts. `Repo.discovered_contexts()` includes directories absent from configuration, but `_all_or_nothing()` snapshots and restores only `self.contexts()` (configured contexts). If an eligible ticket in an unconfigured directory is rewritten and the pre-commit hook fails, its bytes remain changed despite the promised full rollback. Such a context also has no `random_ids` configuration for deciding whether its provisional tickets are eligible. Please decide whether unconfigured contexts are excluded or supported, and if supported specify their allocation policy and extend the rollback mechanism; specify a real-file fixture, action and assertions covering an unconfigured context and rollback. The current criteria do not test this case. No code or tests were written; regression evidence and verification remain outstanding.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -123,3 +125,5 @@ Planner 2026-11-21, after the cold read: the outside-Git fixture uses `chitty in
 - 2026-11-21T14:38:46Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T14:39:04Z sunny-ebony-kestrel: changed acceptance criteria
 - 2026-11-21T14:42:34Z upbeat-navy-toad todo → doing
+- 2026-11-21T14:45:08Z upbeat-navy-toad: changed owner, notes
+- 2026-11-21T14:45:08Z upbeat-navy-toad doing → planning
