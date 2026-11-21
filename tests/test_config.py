@@ -3,6 +3,9 @@ import io
 import os
 from unittest.mock import patch
 
+from hypothesis import HealthCheck, given, settings
+from hypothesis import strategies as st
+
 from chitty import config as config_module
 from chitty.config import CHITTY_VERSION, find_root, load_repo_config, load_user_contexts
 from chitty.errors import ChittyError
@@ -68,6 +71,32 @@ class TestRepoConfig(RepoTestCase):
                 with self.assertRaises(ChittyError) as raised:
                     load_repo_config(self.root)
                 self.assertIn(repr(entry), str(raised.exception))
+
+    @settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @given(st.integers(min_value=-(2**63), max_value=2**63 - 1))
+    def test_command_timeout_signed_integer(self, value):
+        config_path = self.root / "chitty.toml"
+        config_path.write_text(
+            CONFIG.replace("autocommit = false", f"command_timeout = {value}\nautocommit = false")
+        )
+        if value < 0:
+            with self.assertRaisesRegex(ChittyError, "command_timeout"):
+                load_repo_config(self.root)
+        else:
+            self.assertEqual(load_repo_config(self.root).command_timeout, value)
+
+    def test_command_timeout_default_and_invalid_types(self):
+        config_path = self.root / "chitty.toml"
+        self.assertEqual(load_repo_config(self.root).command_timeout, 3600)
+        for value in ("true", "1.0", '"1"'):
+            with self.subTest(value=value):
+                config_path.write_text(
+                    CONFIG.replace(
+                        "autocommit = false", f"command_timeout = {value}\nautocommit = false"
+                    )
+                )
+                with self.assertRaisesRegex(ChittyError, "command_timeout"):
+                    load_repo_config(self.root)
 
     def test_agent_timeout_can_be_disabled_and_uses_patchable_default(self):
         config_path = self.root / "chitty.toml"
