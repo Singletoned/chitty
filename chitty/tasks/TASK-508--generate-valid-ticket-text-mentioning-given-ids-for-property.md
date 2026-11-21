@@ -1,6 +1,6 @@
 ---
 title: Generate valid ticket text mentioning given IDs, for property tests
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -38,6 +38,13 @@ Out of scope: `rewrite_task` and its properties (`TASK-507`).
 
 Build a bounded composite strategy using safely encoded YAML and structurally safe Markdown lines, then add round-trip and targeted find coverage and run the full checks.
 
+## Notes
+
+Reviewed: Complete branch diff and all criteria reviewed; no earlier review failures.
+1: pass - `make check` ran 952 tests and printed OK, including the Hypothesis round-trip property. With the new strategy import blocked to simulate its absence on main, unittest printed `ModuleNotFoundError: No module named 'tests.ticket_strategies'` and FAILED; `git cat-file -e main:tests/ticket_strategies.py` confirms it is absent on main.
+2: pass - `make check` printed OK for the individual find tests covering all listed features; the same simulated absence makes their test module fail to import.
+3: pass - `make check` printed 725 files formatted, all lint checks passed, 0 pyright errors, and 952 tests OK.
+
 ## Summary
 
 Added a bounded ticket Markdown strategy and feature and round-trip tests. Verified with chitty fix, make format, and make check (952 tests). TASK-507 can use the strategy for rewrite properties.
@@ -54,3 +61,5 @@ Added a bounded ticket Markdown strategy and feature and round-trip tests. Verif
 - 2026-11-21T13:50:00Z zesty-pearl-urchin: wrote the plan
 - 2026-11-21T13:54:41Z zesty-pearl-urchin: changed summary
 - 2026-11-21T13:54:43Z zesty-pearl-urchin doing → review
+- 2026-11-21T13:58:06Z sunny-violet-lapwing: changed notes
+- 2026-11-21T13:58:06Z sunny-violet-lapwing review → done
