@@ -16,6 +16,10 @@ Found 2026-11-21 in a cold read. `_criterion_text` in `src/chitty/model.py` reje
 - [ ] Each of the ten line-break characters in a new criterion raises `TaskError("acceptance criterion must be a single line")`; every case but `\n` fails before the change (recorded in a note)
 - [ ] `make check` passes
 
+## Plan
+
+Add a regression test for all ten splitlines separators in new criteria, verify the nine previously incorrect errors, then validate line breaks before trimming criterion text and run the required checks.
+
 ## Notes
 
 Planner 2026-11-21: the last two characters are U+2028 and U+2029, written here as the escapes `\u2028` and `\u2029` (an earlier version held the raw characters by mistake). Fails-before check, probed: `\n` already gives the single-line error; the other nine, including `\r`, give a different message today. Out of scope, same bug class: `_check_single_line` and `render_scalar` in `src/chitty/model.py` also check only `\n`.
@@ -27,3 +31,4 @@ Planner 2026-11-21: the last two characters are U+2028 and U+2029, written here 
 - 2026-11-21T14:36:10Z sunny-ebony-kestrel: changed description, notes
 - 2026-11-21T14:36:10Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T15:24:28Z upbeat-fawn-lapwing todo → doing
+- 2026-11-21T15:26:51Z upbeat-fawn-lapwing: wrote the plan
