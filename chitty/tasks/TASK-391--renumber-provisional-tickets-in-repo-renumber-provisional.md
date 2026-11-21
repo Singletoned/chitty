@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -122,3 +122,4 @@ Planner 2026-11-21, after the cold read: the outside-Git fixture uses `chitty in
 - 2026-11-21T14:38:46Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T14:38:46Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T14:39:04Z sunny-ebony-kestrel: changed acceptance criteria
+- 2026-11-21T14:42:34Z upbeat-navy-toad todo → doing
