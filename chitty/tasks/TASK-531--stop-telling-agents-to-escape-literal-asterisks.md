@@ -1,6 +1,6 @@
 ---
 title: Stop telling agents to escape literal asterisks
-status: todo
+status: cold-read
 depends_on:
   - TASK-530
 parent: TASK-348
@@ -20,3 +20,4 @@ Remove the instruction: the sentence in `src/chitty/guide.md` and the bullets in
 ## History
 
 - 2026-11-21T23:22:21Z lively-zinc-newt → todo
+- 2026-11-21T23:22:30Z lively-zinc-newt todo → cold-read
