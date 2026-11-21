@@ -29,6 +29,10 @@ Tests: real Git, in a new `tests/test_reference_isolation.py` with a class inher
 - [ ] `chitty edit TASK-2 --depends-on TASK-99` fails with `no task TASK-99` (a guard that passes before and after); a note records that the `TASK-3` and `--depends-on TASK-1` tests of criterion 1 fail with `exists` temporarily written as `return self.lookup(task_id) is not None`
 - [ ] With `TASK-1` conflicted as in criterion 1, `TASK-4` in `planning` mentioning `TASK-1` and `TASK-2` in its Description, `chitty edit TASK-4 -s todo` exits 0, prints `TASK-1 unreadable: ` followed by the conflict error and the normal line for `TASK-2`, and `TASK-4` is `todo` (fails before the change); and `OTHER-1` committed on `main` as the only ticket in an unconfigured `chitty/other/` directory can be referenced: `chitty edit TASK-2 --depends-on OTHER-1` succeeds (a guard); `make check` passes
 
+## Plan
+
+Add ID-only reference validation, isolate unreadable mentions in todo output, and cover the specified real-Git conflict and missing-reference cases before running the full checks.
+
 ## History
 
 - 2026-11-21T01:21:49Z quick-pearl-lapwing → planning
@@ -36,3 +40,4 @@ Tests: real Git, in a new `tests/test_reference_isolation.py` with a class inher
 - 2026-11-21T01:28:25Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-21T01:28:25Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T13:15:00Z sunny-coral-badger todo → doing
+- 2026-11-21T13:17:33Z sunny-coral-badger: wrote the plan
