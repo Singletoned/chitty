@@ -30,6 +30,10 @@ Tests: real-Git runner tests in a new `tests/test_land_pending_source.py`, in th
 
 Add real-Git pending-landing source tests for remote-ahead, local-ahead, equal, absent remote, and skip-then-land cases; confirm the remote-ahead regression fails first. Filter completed candidates by their source branch, reporting mismatches, then run formatting and checks.
 
+## Notes
+
+Before the fix, .venv/bin/python -m unittest tests.test_land_pending_source failed the remote-ahead and skip-then-land tests: it landed TASK-5 in both cases; the other three tests passed.
+
 ## History
 
 - 2026-11-18T17:54:14Z lively-quartz-crane → backlog
@@ -41,3 +45,4 @@ Add real-Git pending-landing source tests for remote-ahead, local-ahead, equal, 
 - 2026-11-18T17:58:26Z lively-quartz-crane planning → todo
 - 2026-11-21T13:08:36Z nimble-ebony-marten todo → doing
 - 2026-11-21T13:10:31Z nimble-ebony-marten: wrote the plan
+- 2026-11-21T13:11:18Z nimble-ebony-marten: changed notes
