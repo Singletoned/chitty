@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -176,3 +176,4 @@ Planning 2026-11-21: split again after the worker found it too large. Moved out:
 - 2026-11-21T01:18:34Z rosy-russet-adder: changed owner, notes
 - 2026-11-21T01:18:34Z rosy-russet-adder doing → planning
 - 2026-11-21T01:22:55Z quick-pearl-lapwing: changed dependencies, description, acceptance criteria, notes
+- 2026-11-21T01:23:50Z quick-pearl-lapwing planning → cold-read
