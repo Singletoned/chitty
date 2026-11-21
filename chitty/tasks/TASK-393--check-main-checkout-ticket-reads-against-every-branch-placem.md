@@ -58,6 +58,8 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-393`
 
 Split again 2026-11-21: the worker returned six sessions saying it could not finish in one turn. Later placements are `TASK-527`, mutants `TASK-528`.
 
+Work started: inspected the ticket and existing ticket-read fixtures and updated the plan. Implementation and verification remain unfinished; no code was changed.
+
 ## History
 
 - 2026-11-18T16:38:03Z lively-quartz-crane → backlog
@@ -102,3 +104,4 @@ Split again 2026-11-21: the worker returned six sessions saying it could not fin
 - 2026-11-21T23:19:03Z lively-zinc-newt error → todo
 - 2026-11-21T23:40:04Z intrepid-umber-jay todo → doing
 - 2026-11-21T23:41:31Z intrepid-umber-jay: wrote the plan
+- 2026-11-21T23:41:37Z intrepid-umber-jay: changed notes
