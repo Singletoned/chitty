@@ -1,6 +1,6 @@
 ---
 title: Time out the runner `setup` and `check` commands
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -58,3 +58,4 @@ Cold read 2026-11-21 outcomes: named the phase strings `setup`, `check` and `lan
 - 2026-11-21T16:02:43Z honest-coral-heron planning → cold-read
 - 2026-11-21T16:06:58Z honest-coral-heron cold-read → planning
 - 2026-11-21T16:07:01Z honest-coral-heron planning → todo
+- 2026-11-21T16:09:52Z golden-bronze-marten todo → doing
