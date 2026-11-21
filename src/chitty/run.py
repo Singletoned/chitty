@@ -1304,6 +1304,15 @@ def _setup(command: str, worktree: Path) -> None:
         raise ChittyError(f"setup exited with status {returncode}; output in `.chitty/check.log`")
 
 
+def _runner_error_note(phase: str, error: str, worktree: Path) -> str:
+    """Put the first error line in the heading and any remaining output in a fence."""
+    lines = error.splitlines() or [""]
+    note = f"Runner error ({phase}): {lines[0]}\n\nWorktree: `{worktree}`"
+    if any(line.strip() for line in lines[1:]):
+        note += "\n\nError output:\n" + _code_block("\n".join(lines[1:]))
+    return note
+
+
 def _record_ticket_error(
     branch_repo: Repo, action: NextAction, phase: str, error: ChittyError
 ) -> RunResult:
@@ -1315,11 +1324,7 @@ def _record_ticket_error(
             f"original error: {error}"
         )
     old_status = branch_repo.find(action.id).task.frontmatter.status
-    note = (
-        f"Runner error ({phase}): {error}\n\n"
-        f"Worktree: `{worktree}`\n\n"
-        f"Error output:\n{_code_block(str(error))}"
-    )
+    note = _runner_error_note(phase, str(error), worktree)
     try:
         change = branch_repo.edit(
             action.id,

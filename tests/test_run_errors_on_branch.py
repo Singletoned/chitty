@@ -26,7 +26,9 @@ class TestRunErrorsOnBranch(TestRunClaimsOnBranch):
         self.run_cli("run", "--ticket", "TASK-1")
 
         self.assertEqual(self.git("rev-parse", "main").strip(), before)
-        self.assert_branch_error("setup", "setup exited with status 1")
+        tip = self.assert_branch_error("setup", "setup exited with status 1")
+        self.assertEqual(tip.count("setup exited with status 1"), 1)
+        self.assertNotIn("Error output:", tip)
         self.assert_main_error_visible()
         self.assertIn("status: doing", self.main_ticket())
 
@@ -51,19 +53,30 @@ class TestRunErrorsOnBranch(TestRunClaimsOnBranch):
     def test_agent_failure_keeps_error_and_message_on_branch(self):
         self.make_doing_branch()
         fake = self.root / "bin" / "fake"
-        fake.write_text("#!" + sys.executable + "\nraise SystemExit(7)\n")
+        fake.write_text(
+            "#!" + sys.executable + "\nprint('AGENT_LINE_1')\nprint('AGENT_LINE_2')\n"
+            "raise SystemExit(7)\n"
+        )
         fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
         before = self.git("rev-parse", "main").strip()
 
         result = self.run_cli("run", "--ticket", "TASK-1")
 
         self.assertEqual(self.git("rev-parse", "main").strip(), before)
-        self.assert_branch_error("agent", "agent exited with status 7")
+        tip = self.assert_branch_error("agent", "agent exited with status 7")
+        for text in (
+            "Runner error (agent): agent exited with status 7:",
+            "AGENT_LINE_1",
+            "AGENT_LINE_2",
+        ):
+            with self.subTest(text=text):
+                self.assertEqual(tip.count(text), 1)
+        self.assertLess(tip.index("Error output:"), tip.index("AGENT_LINE_1"))
         self.assert_main_error_visible()
         self.assertIn("status: doing", self.main_ticket())
         self.assertIn("doing → error", result.stdout)
 
-    def assert_branch_error(self, phase: str, message: str) -> None:
+    def assert_branch_error(self, phase: str, message: str) -> str:
         """The newest commit on `task-1` is the one that records the error."""
         path = "chitty/tasks/TASK-1--claim-me.md"
         tip = self.git("show", f"task-1:{path}")
@@ -73,6 +86,7 @@ class TestRunErrorsOnBranch(TestRunClaimsOnBranch):
         parent = self.git("show", f"task-1~1:{path}")
         self.assertNotIn("status: error", parent)
         self.assertNotIn(f"Runner error ({phase})", parent)
+        return tip
 
     def main_ticket(self) -> str:
         return self.git("show", "main:chitty/tasks/TASK-1--claim-me.md")
