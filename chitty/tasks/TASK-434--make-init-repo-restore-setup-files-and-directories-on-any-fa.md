@@ -58,6 +58,10 @@ Before the fix, .venv/bin/python -m unittest tests.test_property_init_restore fa
 
 Mutation checks: .venv/bin/python -m unittest tests.test_property_init_restore.TestInitRestore.test_failure_restores_setup failed for each of commit-only rollback, config-only rollback, no directory removal, and leaf-only removal; each reports the fresh hook explicit example. Commit-only also fails the stale registration example. Restored the correct implementation after each run.
 
+## Summary
+
+Setup writes now restore all snapshotted files and newly created empty directories on failure. Real Git property tests cover registration and hook failures plus successful fresh and stale setup. The property failed before the fix and against all four specified mutations. make check passed (854 tests). Inbox registration and the later upgrade commit remain outside this change.
+
 ## History
 
 - 2026-11-19T20:55:05Z sunny-white-dormouse → backlog
@@ -100,3 +104,4 @@ Mutation checks: .venv/bin/python -m unittest tests.test_property_init_restore.T
 - 2026-11-21T01:01:52Z able-bronze-marten: wrote the plan
 - 2026-11-21T01:03:29Z able-bronze-marten: changed notes
 - 2026-11-21T01:04:42Z able-bronze-marten: changed notes
+- 2026-11-21T01:10:46Z able-bronze-marten: changed summary
