@@ -1,6 +1,6 @@
 ---
 title: Reuse Git source metadata across ticket lookups
-status: review
+status: done
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -26,6 +26,10 @@ Add real-Git subprocess scaling and same-Repo invalidation tests, verify the sca
 
 Before the fix, the lookup regression fails with 16 versus 56 Git calls; the real-Git invalidation scenario passes without caching.
 
+Reviewed: Full diff inspected; `make check` passed 976 tests, formatting, lint and type checks.
+1: pass - The lookup trace test passed in `make check`; running it with the pre-fix `store.py` failed with `16 != 56`. The existing list trace test also passed.
+2: pass - The real-Git invalidation test and source-selection suites passed in `make check`. The invalidation test passed with pre-fix code, as expected for previously uncached metadata; removing the new metadata cache resets from `_invalidate` made it fail with `('Baseline', None) != ('Branch title', 'task-1')`.
+
 ## Summary
 
 Cached repository presence, current branch, main tip and branch tips for source discovery until invalidation. Added real-Git scaling and invalidation coverage. The scaling test failed before the fix at 16 versus 56 Git calls. Verification: make check passed all 974 tests, formatting, lint and type checks. No follow-ups.
@@ -43,3 +47,5 @@ Cached repository presence, current branch, main tip and branch tips for source 
 - 2026-11-21T16:00:26Z upbeat-ebony-raven: changed notes
 - 2026-11-21T16:03:04Z upbeat-ebony-raven: changed summary
 - 2026-11-21T16:03:06Z upbeat-ebony-raven doing → review
+- 2026-11-21T16:07:41Z eager-fawn-stoat: changed notes
+- 2026-11-21T16:07:41Z eager-fawn-stoat review → done
