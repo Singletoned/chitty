@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: error
+status: todo
 depends_on:
   - TASK-378
   - TASK-480
@@ -11,6 +11,8 @@ created: 2026-11-18
 ## Description
 
 `TASK-378` and `TASK-480` make `Repo` read each ticket from the place `ticket_source` (`src/chitty/ticket_source.py`) names. `tests/test_ticket_reads.py` and `tests/test_source_copy_checkouts.py` test a few fixed placements. Wiring bugs in `Repo._choose_source` (`src/chitty/store.py`), such as swapped `contains` arguments or a wrong `main_tip`, can hide between them. This ticket adds a placement builder and checks every placement read from the main checkout. Reads from linked worktrees are `TASK-522` and generated multi-ticket draws are `TASK-523` (both split from this ticket); they reuse the builder.
+
+Scope, after a second split on 2026-11-21 (the worker model gave up on the whole matrix in one session): this ticket builds placements (a) to (f) and (i) only, with their expected results and the uncommitted-edit variants for (a) to (e). `TASK-527` adds (g), (h) and (j) to (m); `TASK-528` adds the mutant tests. All 13 definitions and results stay below so the module is designed for them; `PLACEMENTS` here holds only `a` to `f` and `i`.
 
 Out of scope: a missing `main` commit (covered by `tests/test_property_ticket_source.py`), provisional tickets, linked worktrees, more than one ticket, random dates and decoy branches. No production code changes unless a test finds a bug; then fix it here and keep the failing case as an explicit test.
 
@@ -28,14 +30,13 @@ Expected results read from the main checkout (checkout kind (1)): (a) `main`; (b
 Tests: new `tests/test_ticket_placement_reads.py`, a `RepoTestCase`.
 
 - `test_main_checkout_placements`: for each placement, build it with `TASK-5` and check `Repo.open(root).find(TASK-5)` (or `ChittyError` for error results, and `no task` for not listed) and `repo.tasks(repo.context("tasks"), "all")` (raises on error results; else lists exactly the expected ticket or none). Then, for every placement except (f) and (i), where the main checkout has no committed file to edit, repeat in a fresh repository with `edit_uncommitted` applied in the main checkout. Use `subTest(placement=..., edit=...)`.
-- Mutant tests, in the style of `test_mutant_ignores_current_branch` in `tests/test_source_copy_checkouts.py`: patch `chitty.store.ticket_source` with a wrapper around the real function, which `Repo._choose_source` calls with nine positional arguments. (1) Swapped `contains`: replace the 8th argument `contains` with `lambda a, b: contains(b, a)`. (2) `main_tip=None`: replace the 5th argument with `None`. Each runs the same checks over all placements and collects mismatches: a wrong title or archived flag, a wrong listing, a missing or unexpected `ChittyError`, or a `ChittyError` lacking an expected substring. It asserts at least one mismatch; any other exception propagates and fails the test.
 
 No property here: one ticket, a fixed set of 13 placements, each listed and each tested; generated draws are `TASK-523`.
 
 ## Acceptance Criteria
 
-- [ ] `test_main_checkout_placements` passes, covering all 13 placements read from the main checkout and the 11 uncommitted-edit variants, comparing `Repo.find` and `Repo.tasks` against the expected results in the Description
-- [ ] The two mutant tests (swapped `contains` arguments; `main_tip=None`) pass, each showing at least one placement check fails under its mutant; `make check` passes
+- [ ] `test_main_checkout_placements` passes, covering placements (a) to (f) and (i) read from the main checkout and the uncommitted-edit variants for (a) to (e), comparing `Repo.find` and `Repo.tasks` against the expected results in the Description; it fails against `NotImplementedError` stubs of `place` and `edit_uncommitted`
+- [ ] `make check` passes
 
 ## Plan
 
@@ -54,6 +55,8 @@ Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), 
 Runner error (agent): TASK-393 was unchanged; only committed changes are visible to `chitty run`
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-393`
+
+Split again 2026-11-21: the worker returned six sessions saying it could not finish in one turn. Later placements are `TASK-527`, mutants `TASK-528`.
 
 ## History
 
@@ -95,3 +98,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-393`
 - 2026-11-21T23:15:13Z quick-amber-eel: wrote the plan
 - 2026-11-21T23:16:27Z quick-amber-eel: changed notes
 - 2026-11-21T23:16:27Z quick-amber-eel doing → error
+- 2026-11-21T23:19:03Z lively-zinc-newt: changed description, acceptance criteria, notes
+- 2026-11-21T23:19:03Z lively-zinc-newt error → todo
