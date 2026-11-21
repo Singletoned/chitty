@@ -36,6 +36,13 @@ New tests in the same file, using its helpers (`base`, `file`, `commit_at`, `sou
 
 Record in a note how each migrated test and the first new test fail on `main` before the change, and that the guard fails against the wrong version above. No property test: these are fixed placements, and the generated property over placements is `TASK-393`.
 
+## Acceptance Criteria
+
+- [ ] The two migrated tests and `test_malformed_working_tree_does_not_stop_a_branch_copy` in `tests/test_source_copy.py` pass, and each fails on `main` before the change (recorded in a note)
+- [ ] `test_provisional_only_on_its_branch_is_read_from_it` passes before and after the change, and fails against `provisional = isinstance(task_id.number, str)` without the file check (recorded in a note)
+- [ ] `make check` passes, and `git diff main -- src` changes only `_choose_source` in `src/chitty/store.py`
+
 ## History
 
 - 2026-11-21T11:34:10Z sunny-ebony-kestrel → planning
+- 2026-11-21T11:34:26Z sunny-ebony-kestrel: changed acceptance criteria
