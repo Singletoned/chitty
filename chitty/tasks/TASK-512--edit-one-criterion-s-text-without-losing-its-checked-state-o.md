@@ -30,6 +30,10 @@ Add the requested stub and independent property and error tests, record their fa
 
 Against the `NotImplementedError` stub, `.venv/bin/python -m unittest tests.test_property_criterion_text` failed each property: `test_text_and_checked`: `NotImplementedError`; `test_marker`: `NotImplementedError`; `test_other_items_and_sections`: `NotImplementedError`; `test_count`: `NotImplementedError`; `test_idempotent`: `NotImplementedError`. The invalid-argument fixture initially lacked the required Description; after correcting it, running `test_invalid_arguments` separately failed all four subtests with `NotImplementedError`.
 
+## Summary
+
+Added `Task.with_criterion_text` to replace one item while preserving its marker and surrounding content; `rewrite_task` now uses it. The new property and invalid-input tests failed against the stub as recorded in Notes, then passed; the existing renumbering properties and `make check` also passed. `chitty edit --set-ac` remains unchanged, as scoped. `TASK-513` covers broader line-break validation.
+
 ## History
 
 - 2026-11-21T14:32:56Z sunny-ebony-kestrel → planning
@@ -40,3 +44,4 @@ Against the `NotImplementedError` stub, `.venv/bin/python -m unittest tests.test
 - 2026-11-21T15:13:53Z upbeat-ochre-zander todo → doing
 - 2026-11-21T15:15:29Z upbeat-ochre-zander: wrote the plan
 - 2026-11-21T15:16:17Z upbeat-ochre-zander: changed notes
+- 2026-11-21T15:18:23Z upbeat-ochre-zander: changed summary
