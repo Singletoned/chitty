@@ -40,7 +40,7 @@ No property here: one ticket, a fixed set of 13 placements, each listed and each
 
 ## Plan
 
-Build deterministic Git placement fixtures with hand-written expectations, exercise find and listing for each clean and eligible edited checkout, and verify both source-selection mutants are detected. Run formatting and checks before committing.
+Build the scoped deterministic Git fixtures and hand-written expectations, then test find and listing for clean and eligible edited checkouts. Verify the tests fail with builder stubs, run chitty fix, format and make check, and commit the implementation.
 
 ## Notes
 
@@ -101,3 +101,4 @@ Split again 2026-11-21: the worker returned six sessions saying it could not fin
 - 2026-11-21T23:19:03Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:19:03Z lively-zinc-newt error → todo
 - 2026-11-21T23:40:04Z intrepid-umber-jay todo → doing
+- 2026-11-21T23:41:31Z intrepid-umber-jay: wrote the plan
