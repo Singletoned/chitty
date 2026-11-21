@@ -1,6 +1,6 @@
 ---
 title: Write the runner check output to a log in the worktree, not the ticket
-status: planning
+status: review
 priority: high
 created: 2026-11-16
 ---
@@ -34,8 +34,8 @@ Tests. `worktree` is `self.root / ".worktrees/task-1"`; `log` is `(worktree / ".
 
 ## Acceptance Criteria
 
-- [ ] The property, the changed and the new tests pass. Against the `run.py` of `main` before this change, each changed failure test in `tests/test_next.py` (todo, markdown-like, doing, error) fails on the old note text (`check line` or `FAIL: test_something` found in a note, or `detail` missing). The passing-check and multibyte tests fail there because the log or `_run_logged` does not exist, and the multibyte test fails with `UnicodeDecodeError` against a text-mode `_run_logged`. Recorded in the notes
-- [ ] `make check` passes
+- [x] The property, the changed and the new tests pass. Against the `run.py` of `main` before this change, each changed failure test in `tests/test_next.py` (todo, markdown-like, doing, error) fails on the old note text (`check line` or `FAIL: test_something` found in a note, or `detail` missing). The passing-check and multibyte tests fail there because the log or `_run_logged` does not exist, and the multibyte test fails with `UnicodeDecodeError` against a text-mode `_run_logged`. Recorded in the notes
+- [x] `make check` passes
 
 ## Plan
 
@@ -84,3 +84,5 @@ Worktree check logging in binary mode, shared Git exclude handling, regression a
 - 2026-11-19T17:47:02Z eager-hazel-crane: changed owner, acceptance criteria, notes
 - 2026-11-19T17:47:02Z eager-hazel-crane review → planning
 - 2026-11-21T07:56:08Z nimble-umber-gannet: changed description, acceptance criteria, notes, summary
+- 2026-11-21T07:56:15Z nimble-umber-gannet: ticked acceptance criteria
+- 2026-11-21T07:56:15Z nimble-umber-gannet planning → review
