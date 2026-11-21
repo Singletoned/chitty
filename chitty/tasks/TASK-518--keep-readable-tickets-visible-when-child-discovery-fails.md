@@ -21,6 +21,10 @@ Fixture: on main commit a readable parent `TASK-2`, a readable `TASK-3` with `pa
 - [ ] In the same fixtures `show --json` exits 0 with the selected authoritative title, no `children` key and no warning. Assert no source resolution or body parsing for any other ticket, using a test-local probe on the Repo source resolver that raises if it receives any other ID.
 - [ ] Selecting the unreadable candidate itself fails with its own error in both plain and JSON mode; the selected ticket failure must not be downgraded to a child warning.
 
+## Notes
+
+Planning: The specified fixture has only one configured context and one child, so it cannot verify configured-context then ID ordering. It also has no unconfigured-directory source, so it cannot verify skipping that source before body parsing, and uses only the canonical parent spelling, so it cannot distinguish structured `TaskId.parse` comparison from the existing string comparison in `src/chitty/cli.py`. Please specify fixtures, actions and assertions for these required behaviors, including an unconfigured malformed source and a parent spelling that parses to the selected ID. The existing two variants and JSON resolver probe cover the remaining stated criteria; source selection and parsing are exposed by `Repo._source_files` and `Repo._parse_source_copy`. Implementation and regression verification were not started because the required tests are unspecified.
+
 ## History
 
 - 2026-11-21T18:38:33Z eager-ginger-adder → backlog
@@ -32,3 +36,4 @@ Fixture: on main commit a readable parent `TASK-2`, a readable `TASK-3` with `pa
 - 2026-11-21T18:45:09Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:45:10Z eager-ginger-adder planning → todo
 - 2026-11-21T18:48:55Z plucky-ginger-urchin todo → doing
+- 2026-11-21T18:51:22Z plucky-ginger-urchin: changed notes
