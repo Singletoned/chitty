@@ -45,6 +45,8 @@ Planner, 2026-11-19: written against `_run_logged` from `TASK-353` and `TASK-426
 
 Cold read 2026-11-21 outcomes: named the phase strings `setup`, `check` and `landing check`; said where the timeout value comes from (`main_repo.config`, passed through `_setup`, `_landing_check` and `_run_check`); criterion 5 accepts a failed `assertRaises`, since the old code returns normally; the hanging command records its own and its child PID as `tests/test_run_timeout.py` does; Docker containers left running by a killed `docker run` are out of scope. Still waits for `TASK-426` (which waits for `TASK-353`, in review): once `TASK-426` is `done`, compare with what landed, cold-read again, then move to `todo`.
 
+Partial implementation: added and tested command_timeout configuration; make check passes. Runner enforcement, documentation, real-process tests and deadline-disabled regression evidence remain unfinished. Do not treat the configuration alone as implementing the timeout.
+
 ## History
 
 - 2026-11-19T20:55:24Z sunny-white-dormouse → backlog
@@ -64,3 +66,4 @@ Cold read 2026-11-21 outcomes: named the phase strings `setup`, `check` and `lan
 - 2026-11-21T16:07:01Z honest-coral-heron planning → todo
 - 2026-11-21T16:09:52Z golden-bronze-marten todo → doing
 - 2026-11-21T16:12:23Z golden-bronze-marten: wrote the plan
+- 2026-11-21T16:15:58Z golden-bronze-marten: changed notes
