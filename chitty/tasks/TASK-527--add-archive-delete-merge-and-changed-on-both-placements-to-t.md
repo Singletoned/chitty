@@ -1,6 +1,6 @@
 ---
 title: Add archive, delete, merge and changed-on-both placements to the ticket-read matrix
-status: todo
+status: planning
 depends_on:
   - TASK-393
 parent: TASK-393
@@ -20,6 +20,12 @@ Add the six names to `PLACEMENTS` and their cases to `place`; `test_main_checkou
 - [ ] `test_main_checkout_placements` covers all 13 placements and the 11 uncommitted-edit variants and passes; each new placement's check fails if its expected result is changed to the result of a neighbouring placement (for example (j) expecting `branch`), shown once in a note
 - [ ] `make check` passes
 
+## Notes
+
+Keep in planning until its dependency lands; then compare with the landed code, cold-read and move to `todo`.
+
 ## History
 
 - 2026-11-21T23:18:35Z lively-zinc-newt → todo
+- 2026-11-21T23:18:53Z lively-zinc-newt: changed notes
+- 2026-11-21T23:18:53Z lively-zinc-newt todo → planning
