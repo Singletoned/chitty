@@ -41,7 +41,7 @@ Tests. No property: the behaviour needs a real agent process and Git, and the de
 
 ## Plan
 
-Add specified real-process regression cases and verify they fail before the fix; distinguish session failures and compare worktree HEAD before recording errors, preserving status and files on start failure. Verify the post-commit case against an intentionally broken comparison, update the runner plan, and run the required checks.
+Add the specified regression tests and verify failures before implementing HEAD-aware session failure handling; document and run all required checks.
 
 ## Notes
 
@@ -78,3 +78,4 @@ Replanned 2026-11-21: both blockers in the notes above are settled in the Descri
 - 2026-11-21T22:55:49Z lively-zinc-newt: changed notes
 - 2026-11-21T22:55:49Z lively-zinc-newt cold-read → todo
 - 2026-11-21T22:56:08Z honest-dusky-stoat todo → doing
+- 2026-11-21T22:57:46Z honest-dusky-stoat: wrote the plan
