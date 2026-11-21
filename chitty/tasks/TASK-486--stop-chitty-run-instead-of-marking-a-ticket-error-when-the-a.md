@@ -81,6 +81,10 @@ Added reporter start-failure regression; it passes on the branch. Attempting it 
 
 Reporter regression fails against the pre-implementation runner from afedf3c2 parent (exit 0 instead of 1) and passes on this branch, including exactly one reporter invocation. Updated failing fake agents in test_run_cases, test_run_write_failure_warns_and_keeps_agent_exit_code, the shared review repair agent, both reporter failure cases, and the lock test to commit before failure; the repair fake exits nonzero after its empty commit. make check passes all 905 tests.
 
+## Summary
+
+Agent failures before any commit stop the runner and restore the selected ticket status without discarding worktree files; failures after commits retain existing error handling. Regression tests, reporter coverage, existing fixtures, documentation and make check pass.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -116,3 +120,4 @@ Reporter regression fails against the pre-implementation runner from afedf3c2 pa
 - 2026-11-21T23:19:18Z vivid-pearl-urchin: wrote the plan
 - 2026-11-21T23:21:19Z vivid-pearl-urchin: changed notes
 - 2026-11-21T23:25:19Z vivid-pearl-urchin: changed notes
+- 2026-11-21T23:25:27Z vivid-pearl-urchin: changed summary
