@@ -1,6 +1,6 @@
 ---
 title: Edit one criterion's text without losing its checked state or the other items' formatting
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -30,6 +30,10 @@ Add the requested stub and independent property and error tests, record their fa
 
 Against the `NotImplementedError` stub, `.venv/bin/python -m unittest tests.test_property_criterion_text` failed each property: `test_text_and_checked`: `NotImplementedError`; `test_marker`: `NotImplementedError`; `test_other_items_and_sections`: `NotImplementedError`; `test_count`: `NotImplementedError`; `test_idempotent`: `NotImplementedError`. The invalid-argument fixture initially lacked the required Description; after correcting it, running `test_invalid_arguments` separately failed all four subtests with `NotImplementedError`.
 
+Reviewed: implementation and complete branch diff inspected; no earlier review failures.
+1: pass - `.venv/bin/python -m unittest tests.test_property_criterion_text tests.test_property_renumbering` printed `Ran 21 tests` and `OK`; the Notes record all five properties and four invalid-argument subtests failing with `NotImplementedError` against the stub.
+2: pass - `git diff main...HEAD` shows `rewrite_task` uses `with_criterion_text` instead of `with_criteria` and the renumbering property file is unchanged; the focused unittest command printed `OK`, and `make check` printed `Ran 971 tests` and `OK` with ruff and pyright passing.
+
 ## Summary
 
 Added `Task.with_criterion_text` to replace one item while preserving its marker and surrounding content; `rewrite_task` now uses it. The new property and invalid-input tests failed against the stub as recorded in Notes, then passed; the existing renumbering properties and `make check` also passed. `chitty edit --set-ac` remains unchanged, as scoped. `TASK-513` covers broader line-break validation.
@@ -46,3 +50,5 @@ Added `Task.with_criterion_text` to replace one item while preserving its marker
 - 2026-11-21T15:16:17Z upbeat-ochre-zander: changed notes
 - 2026-11-21T15:18:23Z upbeat-ochre-zander: changed summary
 - 2026-11-21T15:18:25Z upbeat-ochre-zander doing → review
+- 2026-11-21T15:23:04Z nimble-ebony-dormouse: changed notes
+- 2026-11-21T15:23:04Z nimble-ebony-dormouse review → done
