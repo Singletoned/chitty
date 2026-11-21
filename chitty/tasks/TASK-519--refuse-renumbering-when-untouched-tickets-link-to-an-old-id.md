@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when untouched tickets link to an old ID
-status: doing
+status: error
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -50,6 +50,12 @@ Before implementing, run the refusal tests against the unguarded planner and con
 
 Add real-Git refusal and nonblocking fixtures and verify refusals fail before implementation; add the pure link detector and its property and mutant tests; guard untouched disk and selected ref copies in the specified order; run formatting and checks.
 
+## Notes
+
+Runner error (agent): TASK-519 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-519`
+
 ## History
 
 - 2026-11-21T18:44:38Z eager-ginger-adder → backlog
@@ -68,3 +74,5 @@ Add real-Git refusal and nonblocking fixtures and verify refusals fail before im
 - 2026-11-21T23:02:43Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:04:21Z able-hazel-newt todo → doing
 - 2026-11-21T23:05:50Z able-hazel-newt: wrote the plan
+- 2026-11-21T23:06:53Z able-hazel-newt: changed notes
+- 2026-11-21T23:06:53Z able-hazel-newt doing → error
