@@ -28,6 +28,10 @@ Starts after `TASK-389`; the `renumber` wording after `TASK-392` if that has lan
 
 Update the guides, CLI help, README, and plan docs for the ID allocation already shipped by `TASK-389`. Update the existing guide wording test. Omit pathless renumbering until `TASK-392` ships, as the description allows. Verify the shipped allocation modes, guide budgets, and full checks.
 
+## Notes
+
+Decided: pathless renumbering -> omit it, because the ticket explicitly says to leave it out until TASK-392 ships. Removed that dependency so the shipped behavior can be documented now.
+
 ## History
 
 - 2026-11-18T16:28:12Z lively-quartz-crane → backlog
@@ -37,3 +41,4 @@ Update the guides, CLI help, README, and plan docs for the ID allocation already
 - 2026-11-18T16:37:42Z lively-quartz-crane: changed dependencies, description
 - 2026-11-21T18:46:49Z nimble-umber-adder: changed owner, dependencies; wrote the plan
 - 2026-11-21T18:46:49Z nimble-umber-adder todo → doing
+- 2026-11-21T18:46:52Z nimble-umber-adder: changed notes
