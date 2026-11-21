@@ -55,6 +55,10 @@ class LandingTestCase(CliTestCase):
 
 class TestLanding(LandingTestCase):
     def test_landing_adds_trailers_and_preserves_commit_data(self):
+        self.run_cli("init")
+        self.git("add", "chitty.toml", "AGENTS.md", "CLAUDE.md")
+        self.git("commit", "--quiet", "-m", "setup")
+        self.git("merge", "--quiet", "main", cwd=self.worktree)
         messages = (
             "first subject",
             "second subject\n\nSigned-off-by: A <a@example.com>",
@@ -84,7 +88,8 @@ class TestLanding(LandingTestCase):
                 self.git("rev-parse", f"{sha}^{{tree}}", cwd=self.worktree).strip(),
             )
         self.finish_ticket()
-        self.land()
+        result = self.run_cli("run")
+        self.assertIn("landed TASK-1", result.stdout)
         for subject, (author, tree) in before.items():
             sha = self.git("log", "--format=%H", "--grep", subject, "main").splitlines()[0]
             body = self.git("show", "-s", "--format=%B", sha).rstrip().splitlines()
