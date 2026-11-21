@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -145,3 +145,4 @@ Planner 2026-11-21: filenames in unconfigured directories reserve their numbers 
 - 2026-11-21T14:49:10Z jolly-quartz-wren doing → planning
 - 2026-11-21T14:49:49Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T14:49:49Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T14:50:20Z youthful-yellow-newt todo → doing
