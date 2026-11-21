@@ -1,6 +1,6 @@
 ---
 title: Keep one agent log per `chitty run` ticket run and print its path
-status: doing
+status: error
 priority: high
 depends_on:
   - TASK-276
@@ -35,6 +35,10 @@ Runner error (agent): TASK-467 was unchanged; only committed changes are visible
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
 
+Runner error (agent): TASK-467 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
+
 ## History
 
 - 2026-11-19T21:23:41Z sunny-white-dormouse → backlog
@@ -49,3 +53,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
 - 2026-11-21T20:07:41Z eager-lilac-ibis: changed notes
 - 2026-11-21T20:07:41Z eager-lilac-ibis doing → error
 - 2026-11-21T21:09:12Z eager-ginger-adder error → doing
+- 2026-11-21T21:11:48Z quick-ochre-vole: changed notes
+- 2026-11-21T21:11:48Z quick-ochre-vole doing → error
