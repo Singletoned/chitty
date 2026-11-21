@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: planning
+status: cold-read
 labels:
   - bug
   - needs-minor
@@ -29,7 +29,7 @@ Decisions:
   2. Rebase with `git.rebase_onto` (`TASK-374`), which never uses `--autostash`.
   3. If the rebase completed: `git stash apply refs/chitty/stash/<ID>` (without `--index`: staged edits come back unstaged and new files come back added, accepted). On success, `git update-ref -d refs/chitty/stash/<ID>`. On any non-zero exit (a conflict, or `already exists, no checkout` when `main` added a path the saved work holds), reset the worktree to `HEAD` (`git reset --hard` and `git clean -fd`), keep the ref, and add a note on the ticket through `branch_repo`: `Uncommitted changes from before the rebase did not apply cleanly; they are in refs/chitty/stash/<ID>.` Then carry on.
   4. If the rebase stopped on a conflict (any file): leave it stopped and the ref in place, skip `setup` and `check`, and start the agent (the work agent, or the repair agent for an `error` ticket). Write nothing to the ticket while the rebase is stopped. When work was saved, the agent's prompt also says `Uncommitted changes from before the rebase are in refs/chitty/stash/<ID>; re-apply them with git stash apply after the rebase if they are still useful, then delete the ref.`
-- `_agent_command` gains a keyword-only argument (`*, directory: Path`), with no default, which it passes to `guide()` (`TASK-373` gives `guide()` its `directory` argument and has `_agent_command` pass `repo.root`; moved here from `TASK-373` 2026-11-18). Keep today's call before the claim, passing `repo.root`, so a bad `agent_command` still fails before anything is written; render it again after `_worktree` and the rebase, passing the worktree, and use that second rendering, so the prompt reflects the stopped rebase. `_agent_sessions` passes the worktree for continuations. Criterion 2 is the check that the worktree, not the main checkout, reaches `guide()`.
+- Prompt rendering (rechecked 2026-11-21 against `main`): `_agent_command` already takes `worktree` and passes it to `guide()` when that directory exists, and `guide()` already puts the body of `src/chitty/roles/rebase.md` after the `Work only on Chitty ticket <ID>.` line when a rebase is in progress there. `_run_ticket` renders the command twice: once before `_worktree` (keep it, so a bad `agent_command` still fails before anything is written) and once after the claim. Move that second rendering to after the rebase, so the prompt reflects a stopped rebase, and add the saved-work sentence from step 4 to it. No change to `_agent_command`'s signature.
 - A `rebase_onto` error that is not a conflict is recorded as a ticket error on the branch (`_record_ticket_error(branch_repo, ...)`, phase `rebase`), whose note also says `Uncommitted changes from before the rebase are in refs/chitty/stash/<ID>.` when work was saved; no agent starts.
 - A rebase still in progress at the start of a later run is refused by `_worktree`, as today, for a human.
 - Ctrl-C during the rebase runs `git rebase --abort` and raises `RunInterrupted("rebase")` (exit 130); the ref stays and the interrupt message names it. No test: it needs a signal mid-rebase (accepted).
@@ -100,3 +100,5 @@ Replanned 2026-11-21: the stash concurrency blocker is settled by not using the 
 - 2026-11-20T19:07:26Z daring-ebony-heron: changed owner, notes
 - 2026-11-20T19:07:26Z daring-ebony-heron doing → planning
 - 2026-11-21T23:08:26Z lively-zinc-newt: changed description, acceptance criteria, notes
+- 2026-11-21T23:08:55Z lively-zinc-newt: changed description
+- 2026-11-21T23:08:55Z lively-zinc-newt planning → cold-read
