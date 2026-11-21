@@ -23,6 +23,10 @@ This is a wording-only change. Keep the guidance general across repositories and
 
 Update the worker, reviewer, managed runner source, and pipeline docs together. Spell out the narrow precedent-based exception, how to record and review it, and how to finish investigating before returning a ticket to planning. Keep the existing return routes and their tested wording, and leave the generated block and runtime code alone. Run the existing checks.
 
+## Notes
+
+Decided: the literal installed-guide snapshot -> update it to the new runner wording, because the existing workflow tests compare the full rendered guide byte for byte. `tests/test_guide_workflow_block.py` keeps those exact comparisons. The return-route assertions are unchanged.
+
 ## History
 
 - 2026-11-21T15:27:59Z friendly-ochre-wren → backlog
@@ -32,3 +36,4 @@ Update the worker, reviewer, managed runner source, and pipeline docs together. 
 - 2026-11-21T15:43:39Z friendly-ochre-wren: changed description
 - 2026-11-21T16:16:15Z nimble-umber-adder: changed owner; wrote the plan
 - 2026-11-21T16:16:15Z nimble-umber-adder todo → doing
+- 2026-11-21T16:18:05Z nimble-umber-adder: changed notes
