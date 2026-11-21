@@ -27,6 +27,8 @@ Criterion 1 conflicts with Ruff behavior: the specified `src/chitty/_annotation_
 
 Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff reports `ANN202` because the module is private. Planning must choose the intended diagnostic or a public module fixture before the criterion can be verified. Full probe evidence and the preserved implementation are recorded in the preceding note.
 
+Rechecked the corrected fixture: the previous Ruff configuration reported no diagnostic; the configured make check failed with ANN202. Ruff passed on copies in tests and scripts. With return annotation int, Ruff passed and Pyright reported reportReturnType for str. Removed all probes.
+
 ## History
 
 - 2026-11-21T16:17:29Z honest-coral-heron → planning
@@ -45,3 +47,4 @@ Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff re
 - 2026-11-21T16:43:46Z honest-coral-heron planning → todo
 - 2026-11-21T16:44:02Z jolly-umber-toad todo → doing
 - 2026-11-21T16:46:21Z jolly-umber-toad: wrote the plan
+- 2026-11-21T16:46:49Z jolly-umber-toad: changed notes
