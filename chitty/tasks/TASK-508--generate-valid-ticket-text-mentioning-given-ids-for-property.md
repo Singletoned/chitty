@@ -1,6 +1,6 @@
 ---
 title: Generate valid ticket text mentioning given IDs, for property tests
-status: todo
+status: doing
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -42,3 +42,4 @@ Out of scope: `rewrite_task` and its properties (`TASK-507`).
 - 2026-11-21T13:45:51Z sunny-ebony-kestrel: changed description
 - 2026-11-21T13:47:01Z sunny-ebony-kestrel: changed description
 - 2026-11-21T13:47:01Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T13:48:06Z zesty-pearl-urchin todo → doing
