@@ -1,6 +1,6 @@
 ---
 title: Keep one agent log per `chitty run` ticket run and print its path
-status: doing
+status: error
 priority: high
 depends_on:
   - TASK-276
@@ -29,6 +29,12 @@ For success copy the fixture pattern of `tests/test_run_continue.py`: first fake
 
 Add regression coverage for log naming, exclusive creation, continuation, review rebase, timeout and setup failure; demonstrate failures first. Then own one exclusive persistent log per ticket attempt, thread it through agent sessions, document its location, and run focused and full checks.
 
+## Notes
+
+Runner error (agent): TASK-467 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
+
 ## History
 
 - 2026-11-19T21:23:41Z sunny-white-dormouse → backlog
@@ -40,3 +46,5 @@ Add regression coverage for log naming, exclusive creation, continuation, review
 - 2026-11-21T20:04:17Z eager-ginger-adder planning → todo
 - 2026-11-21T20:04:38Z eager-lilac-ibis todo → doing
 - 2026-11-21T20:06:15Z eager-lilac-ibis: wrote the plan
+- 2026-11-21T20:07:41Z eager-lilac-ibis: changed notes
+- 2026-11-21T20:07:41Z eager-lilac-ibis doing → error
