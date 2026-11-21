@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: todo
+status: doing
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -31,3 +31,4 @@ Fixture: on main commit a readable parent `TASK-2`, a readable `TASK-3` with `pa
 - 2026-11-21T18:43:19Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:45:09Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:45:10Z eager-ginger-adder planning → todo
+- 2026-11-21T18:48:55Z plucky-ginger-urchin todo → doing
