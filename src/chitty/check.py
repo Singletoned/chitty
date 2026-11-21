@@ -110,6 +110,13 @@ def fix(
     repo.prepare_write()
     wanted = {path.resolve() for path in paths}
     fixed: list[Problem] = []
+    skipped: list[Problem] = []
+    counts: dict[TaskId, int] = defaultdict(int)
+    for context in repo.discovered_contexts():
+        for archived in (False, True):
+            for path, problem in scan(context, archived, allow_any_prefix=True):
+                if not problem:
+                    counts[ids.parse_filename(path.name)[0]] += 1
     for context in contexts:
         for archived in (False, True):
             for path, problem in scan(context, archived, allow_any_prefix=True):
@@ -118,6 +125,20 @@ def fix(
                 try:
                     task = parse(path.read_text())
                     task_id, _slug = ids.parse_filename(path.name)
+                except ChittyError:
+                    continue
+                source = repo.source_of(task_id)
+                if source is not None:
+                    skipped.append(Problem(path, f"skipped: read from {source}", "warning"))
+                    continue
+                if counts[task_id] > 1:
+                    skipped.append(
+                        Problem(
+                            path, f"skipped: {task_id} is used by more than one file", "warning"
+                        )
+                    )
+                    continue
+                try:
                     target = path.with_name(
                         ids.filename(task_id, ids.slugify(task.frontmatter.title))
                     )
@@ -140,7 +161,9 @@ def fix(
                     fixed.append(Problem(path, f"rewrote {field} as upper-case"))
                 except ChittyError:
                     continue
-    return fixed, check(repo, contexts, paths, include_worktree_state=include_worktree_state)
+    return fixed, skipped + check(
+        repo, contexts, paths, include_worktree_state=include_worktree_state
+    )
 
 
 def check(

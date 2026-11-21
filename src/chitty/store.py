@@ -413,13 +413,18 @@ class Repo:
         self._main_branch_value = None
         self._main_files.clear()
 
-    def source_copy(self, task_id: TaskId) -> SourceCopy | None:
+    def source_of(self, task_id: TaskId) -> str | None:
+        """Return the short ref selected for a ticket, or None for the working tree."""
         if task_id not in self._source_refs:
             if not git.is_repository(self.root):
                 self._source_refs[task_id] = WORKING_TREE
             else:
                 self.ticket_ids()
                 self._source_refs[task_id] = self._choose_source(task_id)
+        ref = self._source_refs[task_id]
+        return ref.removeprefix("refs/heads/").removeprefix("refs/remotes/") if ref else None
+
+    def source_copy(self, task_id: TaskId) -> SourceCopy | None:
         ref, copies = self._source_files(task_id)
         return self._parse_source_copy(task_id, ref, copies)
 
