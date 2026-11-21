@@ -38,6 +38,8 @@ Partial tests are committed. `make check` ran 914 tests: the malformed working-t
 
 Planner 2026-11-21: `chitty show` also lists the ticket's children through `repo.all_tasks()` (`src/chitty/cli.py:604`), which parses every working-tree copy. That is a listing, so it belongs to `TASK-480`, not here. Criterion 2's malformed main working-tree case now asserts `Repo.find` instead of `chitty show`, and the `chitty show` case is recorded on `TASK-480`. Put each case of criteria 1 and 2 in its own test method, so the pre-switch run reaches every assertion independently. The malformed-branch `context_of` assertion and the malformed main working-tree `find` assertion each need their own pre-switch failure in the note.
 
+Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -52,3 +54,4 @@ Planner 2026-11-21: `chitty show` also lists the ticket's children through `repo
 - 2026-11-21T12:43:15Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T12:43:15Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:48:19Z daring-ochre-newt todo → doing
+- 2026-11-21T12:50:43Z daring-ochre-newt: changed notes
