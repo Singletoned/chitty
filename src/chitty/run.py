@@ -8,7 +8,6 @@ import shutil
 import signal
 import subprocess
 import sys
-import tempfile
 import time
 import tomllib
 from collections.abc import Iterable, Sequence
@@ -27,6 +26,7 @@ from chitty.config import (
     CONFIG_NAME,
     PYPROJECT_NAME,
     config_source,
+    git_common_dir,
     landing_command,
     usage_path,
     version_key,
@@ -461,6 +461,13 @@ def _lock_ticket(
     return action
 
 
+def log_path(git_common_dir: Path, ticket_id: TaskId, now: datetime) -> Path:
+    """Return the persistent agent log path for a UTC run timestamp."""
+    utc = now.astimezone(UTC)
+    stamp = f"{utc.year:04d}{utc:%m%d%H%M%S%f}Z"
+    return git_common_dir / "chitty" / "run" / f"{ticket_id}-{stamp}.log"
+
+
 def _run_ticket(
     main_repo: Repo,
     project: str,
@@ -468,6 +475,32 @@ def _run_ticket(
     arguments: tuple[str, ...],
     agent: str | None,
     context: dict[str, Any],
+) -> RunResult:
+    """Own the persistent agent log for one locked ticket attempt."""
+    common_dir = git_common_dir(main_repo.root)
+    if common_dir is None:
+        raise ChittyError(f"{main_repo.root} is not in a Git repository")
+    path = log_path(common_dir, action.id, datetime.now(UTC))
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        log = path.open("x+b")
+    except OSError as error:
+        raise ChittyError(f"cannot create agent log {path}: {error}") from error
+    try:
+        with log:
+            return _run_ticket_with_log(main_repo, project, action, arguments, agent, context, log)
+    finally:
+        print(f"log: {path}", file=sys.stderr)
+
+
+def _run_ticket_with_log(
+    main_repo: Repo,
+    project: str,
+    action: NextAction,
+    arguments: tuple[str, ...],
+    agent: str | None,
+    context: dict[str, Any],
+    log: BinaryIO,
 ) -> RunResult:
     """Prepare the locked ticket's worktree and run its agent."""
     main_root = main_repo.root
@@ -546,6 +579,7 @@ def _run_ticket(
             agent,
             project,
             agent_environment,
+            log,
         )
         if failed is not None:
             return failed
@@ -592,6 +626,7 @@ def _run_ticket(
             worktree,
             agent_environment,
             "error" if repairing else old_status,
+            log,
         )
         if repairing and new_status not in {"review", "blocked"}:
             raise RepairError(
@@ -672,6 +707,7 @@ def _agent_sessions(
     worktree: Path,
     environment: dict[str, str],
     old_status: str,
+    log: BinaryIO,
 ) -> str:
     """Run the agent, continuing it while its ticket stays unchanged; return the new status."""
     continuations = 0
@@ -679,7 +715,15 @@ def _agent_sessions(
     while True:
         continuing = continuations > 0
         _run_session(
-            main_repo, action, command, arguments, worktree, environment, continuing, action.mode
+            main_repo,
+            action,
+            command,
+            arguments,
+            worktree,
+            environment,
+            continuing,
+            action.mode,
+            log,
         )
         # Pi commonly commits from this worktree. Reopen so history is re-read.
         new_status = _status_after_agent(main_repo.root, worktree, action)
@@ -706,20 +750,20 @@ def _run_session(
     environment: dict[str, str],
     continuing: bool,
     mode: str,
+    log: BinaryIO,
 ) -> None:
     """Run one agent session; raise unless it exits 0 within `agent_timeout`."""
     session = [*command, *arguments, *_model_arguments(repo, mode, command, arguments)]
     if continuing:
         session.append(CONTINUE_ARGUMENT)
     try:
-        with tempfile.TemporaryFile() as log:
-            completed = _run_agent(
-                session,
-                cwd=worktree,
-                env=environment,
-                timeout=repo.config.agent_timeout,
-                log=log,
-            )
+        completed = _run_agent(
+            session,
+            cwd=worktree,
+            env=environment,
+            timeout=repo.config.agent_timeout,
+            log=log,
+        )
     except FileNotFoundError:
         raise ChittyError(f"agent command not found: {command[0]}") from None
     except KeyboardInterrupt:
@@ -927,6 +971,7 @@ def _prepare_review(
     agent: str | None,
     project: str,
     environment: dict[str, str],
+    log: BinaryIO,
 ) -> RunResult | None:
     """Rebase a review ticket onto main, or fail it back to its worker.
 
@@ -949,7 +994,9 @@ def _prepare_review(
         failure: str | None = None
         try:
             command = _agent_command(work_repo, action, agent, worktree=worktree, mode="rebase")
-            _run_session(work_repo, action, command, (), worktree, environment, False, "rebase")
+            _run_session(
+                work_repo, action, command, (), worktree, environment, False, "rebase", log
+            )
             if git.rebase_in_progress(worktree):
                 raise ChittyError("rebase still in progress")
             if uncommitted := git.uncommitted_paths(worktree):

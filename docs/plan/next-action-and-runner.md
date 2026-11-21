@@ -176,6 +176,15 @@ On a pass, under the landing lock:
 - Without `chitty run`: rebase the branch onto `main` in its worktree, run the
   checks, then only fast-forward `main`.
 
+## Agent output log
+
+One file per selected ticket attempt lives in `chitty/run/` under Git's common
+directory. Its name includes the ticket ID and UTC timestamp with microseconds.
+It contains merged agent stdout and stderr from every session in that attempt,
+including rebase and continuation sessions. Setup and check logs are separate.
+Once the file is created, the runner closes it and prints `log: <absolute path>`
+to stderr when the attempt ends, even on failure.
+
 ## Usage log
 
 - One JSON line per run in `$XDG_DATA_HOME/chitty/usage/<project>.jsonl` (or

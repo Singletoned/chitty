@@ -1,5 +1,6 @@
 import json
 import sys
+from pathlib import Path
 from unittest import mock
 
 from chitty.git import rebase_in_progress
@@ -22,6 +23,8 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
             "import subprocess, sys, time\n"
             "from pathlib import Path\n"
             "mode = sys.argv[1]\n"
+            "print(mode + '-stdout', flush=True)\n"
+            "print(mode + '-stderr', file=sys.stderr, flush=True)\n"
             f"exit_code = {exit_code}\n"
             f"finish = {finish!r}\n"
             f"dirty = {dirty!r}\n"
@@ -88,7 +91,20 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
         return result, repo.find(repo.resolve("1")).task
 
     def test_successful_rebase_session_precedes_reviewer_and_logs_mode(self):
-        self.run_conflicted_review(0, True, False)
+        result, _ = self.run_conflicted_review(0, True, False)
+        logs = [
+            line.removeprefix("log: ")
+            for line in result.stderr.splitlines()
+            if line.startswith("log: ")
+        ]
+        self.assertEqual(len(logs), 1, result.stderr)
+        path = Path(logs[0])
+        self.assertEqual(list((self.root / ".git/chitty/run").glob("*.log")), [path])
+        markers = {"rebase-stdout", "rebase-stderr", "review-stdout", "review-stderr"}
+        self.assertEqual(
+            [line for line in path.read_text().splitlines() if line in markers],
+            ["rebase-stdout", "rebase-stderr", "review-stdout", "review-stderr"],
+        )
         starts = (self.tmp / "agent.log").read_text().splitlines()
         self.assertEqual(len(starts), 2)
         self.assertTrue(starts[0].startswith("rebase "))

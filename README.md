@@ -236,6 +236,9 @@ each ticket worktree before the agent starts; it is parsed without a shell. Set
 The optional `agent_timeout` is a non-negative integer number of seconds and
 defaults to 7200; set it to `0` for no limit. On timeout, `chitty run` stops the
 agent and its child processes and exits with an error.
+Each selected ticket attempt saves merged agent stdout and stderr to one log
+under `chitty/run/` in Git's common directory (usually `.git`). The runner
+prints `log: <absolute path>` to stderr when the attempt ends.
 The optional `command_timeout` is a non-negative integer in seconds, defaulting
 to 3600; `0` disables it. It applies separately to each setup, pre-agent check,
 and landing validation invocation. Setup and landing timeouts follow their
