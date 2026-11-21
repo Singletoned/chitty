@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads against every branch placement with a property
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-480
@@ -60,3 +60,4 @@ Planning blocker: the deterministic test requires every compatible placement in 
 - 2026-11-21T20:31:41Z eager-silver-gannet: changed owner, notes
 - 2026-11-21T20:31:41Z eager-silver-gannet doing → planning
 - 2026-11-21T22:17:13Z witty-pearl-otter: changed description
+- 2026-11-21T22:17:23Z witty-pearl-otter planning → cold-read
