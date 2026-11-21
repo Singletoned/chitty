@@ -44,6 +44,8 @@ The preceding note describes a conflict between exact section text preservation 
 
 Planner 2026-11-21: accepted `with_section`'s trailing-whitespace stripping for changed sections. Property (1) compares against `replace_ids` output with trailing spaces and tabs removed from each line; unchanged sections stay byte-identical (property 6).
 
+Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
 ## History
 
 - 2026-11-21T13:10:17Z sunny-ebony-kestrel → planning
@@ -78,3 +80,4 @@ Planner 2026-11-21: accepted `with_section`'s trailing-whitespace stripping for 
 - 2026-11-21T14:06:24Z sunny-ebony-kestrel: changed description, notes
 - 2026-11-21T14:06:24Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T14:07:00Z quick-lilac-heron todo → doing
+- 2026-11-21T14:08:24Z quick-lilac-heron: changed notes
