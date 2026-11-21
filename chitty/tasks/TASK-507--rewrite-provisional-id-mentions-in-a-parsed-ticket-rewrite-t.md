@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: todo
+status: doing
 depends_on:
   - TASK-508
 parent: TASK-376
@@ -77,3 +77,4 @@ Planner 2026-11-21: accepted `with_section`'s trailing-whitespace stripping for 
 - 2026-11-21T14:04:45Z youthful-coral-heron doing → planning
 - 2026-11-21T14:06:24Z sunny-ebony-kestrel: changed description, notes
 - 2026-11-21T14:06:24Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T14:07:00Z quick-lilac-heron todo → doing
