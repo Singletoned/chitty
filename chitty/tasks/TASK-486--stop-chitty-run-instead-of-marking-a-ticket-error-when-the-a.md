@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: planning
+status: cold-read
 labels:
   - bug
 priority: high
@@ -72,3 +72,4 @@ Return to planning: the prescribed repair invocation is rejected by the CLI, and
 - 2026-11-21T08:53:40Z jolly-hazel-kestrel: changed owner, notes
 - 2026-11-21T08:53:40Z jolly-hazel-kestrel doing → planning
 - 2026-11-21T22:55:00Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-21T22:55:10Z lively-zinc-newt planning → cold-read
