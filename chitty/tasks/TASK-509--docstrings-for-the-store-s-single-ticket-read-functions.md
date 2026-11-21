@@ -1,9 +1,9 @@
 ---
 title: Docstrings for the store's single-ticket read functions
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: nimble-umber-adder
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -18,7 +18,7 @@ Document store-level and source-policy `ChittyError` cases with their message pr
 
 ## Plan
 
-Trace all seven store helpers and their dependencies. Compare single-ticket source selection with bulk listing, then document their parsing, absence and errors without changing behavior. Verify the selection rules against the design docs and run formatting and checks if implementation proceeds.
+Document the seven helpers in place. Use `ticket_source` for single-ticket selection and `_tasks_in_location` for the bulk listing contract. Put error prefixes at the helper that raises or first exposes them, and cross-reference them in wrappers. Run formatting and the full check; verify the diff only changes docstrings.
 
 ## Notes
 
@@ -37,3 +37,5 @@ Please also clarify whether “every `ChittyError`” means ticket-specific erro
 - 2026-11-21T16:07:39Z nimble-umber-adder doing → planning
 - 2026-11-21T16:09:12Z nimble-umber-adder: changed owner, description
 - 2026-11-21T16:09:12Z nimble-umber-adder planning → todo
+- 2026-11-21T16:09:16Z nimble-umber-adder: changed owner; wrote the plan
+- 2026-11-21T16:09:16Z nimble-umber-adder todo → doing
