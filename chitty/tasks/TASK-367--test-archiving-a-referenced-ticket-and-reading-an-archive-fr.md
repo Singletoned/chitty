@@ -1,6 +1,6 @@
 ---
 title: Test archiving a referenced ticket and reading an archive from an older worktree
-status: doing
+status: review
 labels:
   - bug
   - escape
@@ -106,3 +106,4 @@ Verification: `chitty fix`, `make format`, and `make check` passed (909 tests). 
 - 2026-11-21T12:44:55Z intrepid-ochre-puffin: wrote the plan
 - 2026-11-21T12:46:40Z intrepid-ochre-puffin: changed notes
 - 2026-11-21T12:46:49Z intrepid-ochre-puffin: changed summary
+- 2026-11-21T12:46:58Z intrepid-ochre-puffin doing → review
