@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in text given to `chitty add` and `chitty edit`
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -11,7 +11,7 @@ created: 2026-11-21
 
 ## Description
 
-Split from `TASK-348` on 2026-11-21. `TASK-348` adds `escape_literal_asterisks` in `src/chitty/markdown.py`. This ticket applies it to the Markdown text a caller supplies, so Chitty stores lone literal asterisks escaped and prettier cannot turn them into emphasis. Draft: keep in planning until `TASK-348` lands, then check the landed function and cold-read.
+Split from `TASK-348` on 2026-11-21. `TASK-348` adds `escape_literal_asterisks` in `src/chitty/markdown.py`. This ticket applies it to the Markdown text a caller supplies, so Chitty stores lone literal asterisks escaped and prettier cannot turn them into emphasis. `TASK-348` landed `escape_literal_asterisks(text: str) -> str` (rechecked on `main` 2026-11-21). Escaping applies to the whole resulting section, so a `replace_in_description` or `set_notes` edit also escapes lone asterisks already in that section; that is accepted. Runner notes go through `Edit.note` too; their fenced output is left alone because escaping inside code changes `shape`.
 
 - Apply it in `Edit.apply` in `src/chitty/store.py` to `description`, the result of `replace_in_description`, `add_criteria`, the text of `set_criteria`, `plan`, `note`, `notes`, `set_notes` and `summary`; and in `new_task` in `src/chitty/model.py` to the description and criteria (covers `chitty add` and `src/chitty/import_backlog.py`). Not to the title or other frontmatter. Do not rewrite existing files, and do not add it to `chitty fix`. `chitty suggest` is `TASK-530`.
 - Single-`*` emphasis is given up (`needs-minor`): an author who writes `*word*` gets literal asterisks.
@@ -27,3 +27,5 @@ Test: ``files/*.jpg and `x*y` `` given to `chitty add -d`, `chitty edit --note`,
 ## History
 
 - 2026-11-21T23:22:17Z lively-zinc-newt → planning
+- 2026-11-21T23:40:10Z lively-zinc-newt: changed description
+- 2026-11-21T23:40:10Z lively-zinc-newt planning → cold-read
