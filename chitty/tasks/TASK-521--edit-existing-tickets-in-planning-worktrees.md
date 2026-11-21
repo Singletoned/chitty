@@ -1,6 +1,6 @@
 ---
 title: Edit existing tickets in planning worktrees
-status: planning
+status: todo
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -36,3 +36,4 @@ Lock: in the positive control perform three distinct notes on `TASK-1`, first wi
 - 2026-11-21T22:28:54Z eager-ginger-adder planning → cold-read
 - 2026-11-21T22:29:54Z eager-ginger-adder: changed description
 - 2026-11-21T22:29:54Z eager-ginger-adder cold-read → planning
+- 2026-11-21T22:29:57Z eager-ginger-adder planning → todo
