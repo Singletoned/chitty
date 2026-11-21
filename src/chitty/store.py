@@ -1199,6 +1199,19 @@ class Repo:
         branch = stored.branch
         if branch is None or branch == self._current_branch():
             return
+        own = str(stored.id).lower()
+        if self._current_branch() == own and branch == self._main_branch():
+            main_ref = f"refs/heads/{branch}"
+            own_ref = f"refs/heads/{own}"
+            paths = sorted(
+                {
+                    path
+                    for ref in (main_ref, own_ref)
+                    for path, _ in self._ref_ticket_files(ref, stored.id)
+                }
+            )
+            if not git.changed_since_split(self.root, main_ref, own_ref, paths):
+                return
         worktree = git.worktree_for_branch(self.root, branch)
         if worktree is not None:
             instruction = f"run Chitty in worktree {worktree}"
