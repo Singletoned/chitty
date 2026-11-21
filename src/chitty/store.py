@@ -661,7 +661,13 @@ class Repo:
 
         `source_copy` handles source selection and parsing; its errors propagate.
         """
-        copy = self.source_copy(task_id)
+        return self._stored_task(task_id, self.source_copy(task_id))
+
+    def _working_task(self, task_id: TaskId) -> StoredTask | None:
+        copy = self._parse_source_copy(task_id, WORKING_TREE, self._working_ticket_files(task_id))
+        return self._stored_task(task_id, copy)
+
+    def _stored_task(self, task_id: TaskId, copy: SourceCopy | None) -> StoredTask | None:
         if copy is None:
             return None
         return StoredTask(
@@ -877,12 +883,65 @@ class Repo:
             stored = StoredTask(task_id, context.name, path, False, task)
             return self._commit(Change(stored, (path,), (stored,)), "add")
 
+    def planning_branch(self) -> str | None:
+        if shutil.which("git") is None:
+            return None  # Preserve the usual command-specific Git prerequisite errors.
+        branch = self._current_branch()
+        if branch is not None and branch.startswith("plan/") and branch != self._main_branch():
+            return branch
+        return None
+
+    def find_for_show(self, task_id: TaskId) -> StoredTask:
+        if self.planning_branch() and (draft := self._working_task(task_id)) is not None:
+            return draft
+        return self.find(task_id)
+
+    def _reject_planning_conflicts(self, task_id: TaskId, branch: str) -> None:
+        tips = git.branch_tips(self.root)
+        local_ref = f"refs/heads/{branch}"
+        current = tips.get(local_ref)
+        if current is None:
+            raise ChittyError(f"planning branch {branch} has no committed tip")
+        for ref, tip in sorted(tips.items()):
+            remote_branch = ref.removeprefix("refs/remotes/").partition("/")[2]
+            if ref == local_ref or (ref.startswith("refs/remotes/") and remote_branch == branch):
+                continue
+            base = git.common_ancestor(self.root, current, tip)
+            if base is None or base == tip:
+                continue
+            for path in git.changed_paths(self.root, base, tip):
+                parts = path.parts
+                if not parts or parts[0] != BACKLOG_DIR:
+                    continue
+                if not (len(parts) == 3 or (len(parts) == 4 and parts[2] == ARCHIVE_DIR)):
+                    continue
+                try:
+                    changed_id, _ = ids.parse_filename(path.name)
+                except ids.IdError:
+                    continue
+                if changed_id == task_id:
+                    raise ChittyError(f"planning edit for {task_id} conflicts with {ref}")
+
+    def edit_planning(self, task_id: TaskId, edit: Edit, branch: str) -> tuple[Change, bool]:
+        draft = self._working_task(task_id)
+        if draft is None:
+            raise ChittyError(f"no local draft for {task_id} in {self.root / BACKLOG_DIR}")
+        self._reject_planning_conflicts(task_id, branch)
+        active = locks.holder(self.root, str(task_id)) is not None
+        self._prepare_write()
+        if edit.is_empty():
+            raise ChittyError("nothing to change")
+        return self._edit_stored(draft, edit), active
+
     def edit(self, task_id: TaskId, edit: Edit) -> Change:
         """Apply an edit. References in depends_on may be shorthand."""
         self._prepare_write()
         if edit.is_empty():
             raise ChittyError("nothing to change")
-        stored = self.find(task_id)
+        return self._edit_stored(self.find(task_id), edit)
+
+    def _edit_stored(self, stored: StoredTask, edit: Edit) -> Change:
+        task_id = stored.id
         if stored.context not in self.config.contexts:
             raise ChittyError(f"cannot write ticket in unconfigured context {stored.context!r}")
         previous_status = stored.task.frontmatter.status

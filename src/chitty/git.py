@@ -254,6 +254,17 @@ def merge_base(root: Path, first: str, second: str) -> str:
     return _git(root, "merge-base", first, second).strip()
 
 
+def common_ancestor(root: Path, first: str, second: str) -> str | None:
+    """Return the merge base, or None for unrelated histories."""
+    args = ("merge-base", first, second)
+    result = subprocess.run(["git", *args], check=False, cwd=root, capture_output=True, text=True)
+    if result.returncode == 1:
+        return None
+    if result.returncode:
+        raise ChittyError(f"`git {' '.join(args)}` failed in {root}:\n{result.stderr.strip()}")
+    return result.stdout.strip()
+
+
 def is_ancestor(root: Path, ancestor: str, descendant: str) -> bool:
     """Whether ancestor is reachable from descendant."""
     result = subprocess.run(

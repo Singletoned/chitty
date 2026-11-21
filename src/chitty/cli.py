@@ -599,7 +599,7 @@ def run(
 def show(task_id: str, as_json: bool) -> None:
     """Show a task, with acceptance criteria numbered."""
     repo = _repo()
-    stored = repo.find(repo.resolve(task_id))
+    stored = repo.find_for_show(repo.resolve(task_id))
     try:
         worked_on = stored.task.review_work(actor())
     except ChittyError:
@@ -797,7 +797,16 @@ def edit(
     if human_edit:
         os.environ["CHITTY_ACTOR"] = "human"
     try:
-        change = repo.edit(resolved_id, changes)
+        if not human_edit and (branch := repo.planning_branch()):
+            change, active = repo.edit_planning(resolved_id, changes, branch)
+            if active:
+                click.echo(
+                    f"warning: runner work or review is in progress for {resolved_id}; "
+                    "coordinate with the other agent before continuing",
+                    err=True,
+                )
+        else:
+            change = repo.edit(resolved_id, changes)
     finally:
         if human_edit:
             if previous_actor is None:
