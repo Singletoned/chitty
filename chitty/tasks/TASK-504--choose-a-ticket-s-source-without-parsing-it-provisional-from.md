@@ -1,6 +1,6 @@
 ---
 title: "Choose a ticket's source without parsing it: `provisional` from the ID"
-status: review
+status: done
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -38,9 +38,9 @@ Record in a note how each migrated test and the first new test fail on `main` be
 
 ## Acceptance Criteria
 
-- [ ] The two migrated tests and `test_malformed_working_tree_does_not_stop_a_branch_copy` in `tests/test_source_copy.py` pass, and each fails on `main` before the change (recorded in a note)
-- [ ] `test_provisional_only_on_its_branch_is_read_from_it` passes before and after the change, and fails against `provisional = isinstance(task_id.number, str)` without the file check (recorded in a note)
-- [ ] `make check` passes, and `git diff main -- src` changes only `_choose_source` in `src/chitty/store.py`
+- [x] The two migrated tests and `test_malformed_working_tree_does_not_stop_a_branch_copy` in `tests/test_source_copy.py` pass, and each fails on `main` before the change (recorded in a note)
+- [x] `test_provisional_only_on_its_branch_is_read_from_it` passes before and after the change, and fails against `provisional = isinstance(task_id.number, str)` without the file check (recorded in a note)
+- [x] `make check` passes, and `git diff main -- src` changes only `_choose_source` in `src/chitty/store.py`
 
 ## Plan
 
@@ -49,6 +49,11 @@ Migrate and add the specified source-copy tests, verify their baseline failures 
 ## Notes
 
 Baseline against unchanged source: test_provisional_is_read_from_the_id failed because the fieldless working copy resolved to main; test_malformed_working_tree_on_another_branch_is_not_read errored on unclosed frontmatter; test_malformed_working_tree_does_not_stop_a_branch_copy errored on missing frontmatter. The branch-only provisional guard passed on baseline and failed with an unexpectedly None copy when provisional was determined solely by isinstance(task_id.number, str).
+
+Reviewed:
+1: pass - `python -m unittest tests.test_source_copy` ran 16 tests OK; running the four specified tests with main's store.py produced one failure (main/original instead of working) and two errors (unclosed and missing frontmatter), as recorded in the worker note.
+2: pass - The branch-only guard passed with main and current source; with the file check removed it failed with `unexpectedly None`.
+3: pass - `make check` passed 905 tests, ruff and pyright; `git diff main -- src` shows only `_choose_source` changed.
 
 ## Summary
 
@@ -67,3 +72,5 @@ Source selection now determines provisional status from the ID and file presence
 - 2026-11-21T11:40:19Z vivid-quartz-badger: changed notes
 - 2026-11-21T11:42:21Z vivid-quartz-badger: changed summary
 - 2026-11-21T11:42:30Z vivid-quartz-badger doing → review
+- 2026-11-21T11:49:09Z intrepid-pearl-quail: changed notes; ticked acceptance criteria
+- 2026-11-21T11:49:09Z intrepid-pearl-quail review → done
