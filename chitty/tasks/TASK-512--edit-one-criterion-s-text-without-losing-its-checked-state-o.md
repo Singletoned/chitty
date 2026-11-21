@@ -22,6 +22,10 @@ Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, u
 - [ ] The five properties and the `TaskError` unit test pass; a note records each failing against the `NotImplementedError` stub, quoting the `NotImplementedError` in each failure
 - [ ] `rewrite_task` calls `with_criterion_text` and no longer calls `with_criteria`; the existing properties in `tests/test_property_renumbering.py` pass unchanged; `make check` passes
 
+## Plan
+
+Add the requested stub and independent property and error tests, record their failures, then replace the selected criterion span while preserving its marker and surrounding bytes. Switch renumbering to the new method, run the prescribed checks, and commit the implementation.
+
 ## History
 
 - 2026-11-21T14:32:56Z sunny-ebony-kestrel → planning
@@ -30,3 +34,4 @@ Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, u
 - 2026-11-21T14:34:38Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T14:34:38Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T15:13:53Z upbeat-ochre-zander todo → doing
+- 2026-11-21T15:15:29Z upbeat-ochre-zander: wrote the plan
