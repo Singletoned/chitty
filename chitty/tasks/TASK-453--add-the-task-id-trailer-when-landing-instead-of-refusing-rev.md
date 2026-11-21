@@ -30,7 +30,7 @@ Tests use Hypothesis (the repository tool) for the pure function, in a new `test
 
 ## Plan
 
-Update the existing implementation and tests for the clarified requirements, restore the review cleanliness gate, verify regression failures and landing behavior, then format and run the full check.
+Update the real-Git landing regression to exercise the chitty run entry point, verify it fails without trailer rewriting, then run formatting and checks and hand off for review.
 
 ## Notes
 
@@ -431,3 +431,4 @@ Implemented automatic task trailers during landing, preserving trees and authors
 - 2026-11-20T23:46:47Z tidy-silver-zander doing → review
 - 2026-11-20T23:54:41Z tidy-jade-ibis: changed acceptance criteria, notes
 - 2026-11-20T23:54:41Z tidy-jade-ibis review → doing
+- 2026-11-21T00:03:24Z friendly-silver-toad: wrote the plan
