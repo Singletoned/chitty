@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -69,6 +69,10 @@ Add real-Git regression coverage and confirm failures before the switch; route s
 Earlier notes (attempts, splits, cold reads, three workers' returns) are in Git history; the Description is authoritative.
 
 Split 2026-11-21 after the third worker found the ticket too large: the ID rule is `TASK-504`, six renames that pass before and after are `TASK-505`, and the CLI read tests are `TASK-506` (after this). This ticket is now the switch and 9 migrations.
+
+The prescribed provisional-ID migration contradicts the existing assertion that promotion yields `TASK-1`: the refused move leaves the original `TASK-1` on main, and adding a separate provisional ticket in `human` and merging it does not remove that original. `Repo.next_number` therefore allocates `TASK-2`. Criterion 1 forbids weakening or deleting assertions while requiring this fixture and promotion as today. Please decide the intended fixture and expected ID.
+
+The migrations of `test_todo_dependency_must_be_done_on_main` and `test_unmerged_archive_does_not_complete_dependency` specify that the branch writes are refused and reads come from main, but do not specify how the dependency is subsequently made done, renamed, or archived for the existing merge and readiness assertions. Those writes currently create the commits that make the assertions meaningful. Please specify the fixture actions and assertions preserving the dependency-on-main coverage. No implementation was changed and verification remains unfinished.
 
 ## History
 
@@ -199,3 +203,5 @@ Split 2026-11-21 after the third worker found the ticket too large: the ID rule 
 - 2026-11-21T11:42:40Z sunny-ebony-kestrel: changed acceptance criteria
 - 2026-11-21T11:42:40Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T12:01:59Z daring-russet-raven todo → doing
+- 2026-11-21T12:04:13Z daring-russet-raven: changed owner, notes
+- 2026-11-21T12:04:13Z daring-russet-raven doing → planning
