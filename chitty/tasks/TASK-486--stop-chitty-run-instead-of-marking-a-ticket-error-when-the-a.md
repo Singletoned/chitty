@@ -1,12 +1,37 @@
 ---
-title: Stop `chitty run` instead of marking a ticket `error` when the agent cannot start
-status: backlog
+title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
+status: cold-read
+labels:
+  - bug
+priority: high
 created: 2026-11-21
 ---
 
 ## Description
 
-On 2026-11-20 a work loop was started as `chitty run --loop --mode work -- --model gpt-6.2-terra`, a model Pi does not have (`pi --list-models` lists `gpt-6.1-terra` and `gpt-6.2-sol`). Pi exited at once with `Error: Model "gpt-6.2-terra" not found`, and the runner recorded that as a ticket failure: TASK-384 and TASK-474, both freshly `todo`, went `doing` → `error` within a minute, each with a "Runner error (agent)" note on its branch. Nothing was wrong with either ticket, and the loop kept running, so every `todo` ticket it reaches will be marked the same way. A misconfigured agent command is a runner problem, not a ticket problem. Options: check the model before the loop starts (for Pi, against `--list-models`), or treat an agent exit within a few seconds with no commits as a start failure that stops the loop and leaves the ticket `todo`.
+On 2026-11-20 a work loop was started as `chitty run --loop --mode work -- --model gpt-6.2-terra`, a model Pi does not have. Pi exited at once with `Error: Model "gpt-6.2-terra" not found`, and the runner recorded that as a ticket failure: `TASK-384` and `TASK-474`, both freshly `todo`, went `doing` → `error`, each with a `Runner error (agent)` note on its branch. Nothing was wrong with either ticket, and the loop kept running, so every `todo` ticket it reached would be marked the same way. An agent that fails before committing anything has told us about the runner or its environment, not the ticket.
+
+Decisions:
+
+- A start failure is: the agent sessions run by `_agent_sessions` (`src/chitty/run.py`) raise because a session exited non-zero or its command was not found, and the ticket worktree `HEAD` (`git rev-parse HEAD` in the worktree) is the same commit it was just before `_agent_sessions` was called. No time limit is used. A session that ran for an hour and then crashed without committing is also treated as a start failure: it produced nothing to record against the ticket, and stopping the loop is the right response to an agent that keeps failing.
+- Not start failures, unchanged: an agent timeout (`agent timed out after ...`), an interrupt (`RunInterrupted`), the "was unchanged" error after continuations, `RepairError`, and any failure after the agent committed. The review rebase session (`_run_session(..., "rebase")`, called directly near line 940) keeps its current handling; `tests/test_review_rebase_session.py` must pass unchanged.
+- New `AgentSessionFailed(ChittyError)` in `src/chitty/run.py`, raised by `_run_session` in place of the plain `ChittyError` for `agent exited with status <N>:\n<output>` and `agent command not found: <command>`, with the same messages. New `AgentStartFailed(ChittyError)`, re-raised past the `except ChittyError` in `_run_ticket` exactly as `RepairError` is, so the CLI prints it and exits 1. `loop_step` already stops `chitty run --loop` on exit 1; no loop change is needed.
+- In `_run_ticket`, record the worktree `HEAD` just before `_agent_sessions`, and catch `AgentSessionFailed` around that call. If `HEAD` is unchanged, set the ticket back to `selected_status` on its branch when it differs from the current status (`Repo(worktree, main_repo.config).edit(action.id, Edit(status=selected_status, skip_verdicts=True, skip_current_version=True))`, no note), then raise `AgentStartFailed`. Its message is exactly `agent failed before committing anything; <ID> left at <status>: <detail>`, where `<detail>` is the `AgentSessionFailed` message. If `HEAD` moved, re-raise it, so it is recorded as `Runner error (agent)` as today.
+- Agent output goes to stderr through the error message only, never into the ticket.
+- Docs: in `docs/plan/next-action-and-runner.md`, add one bullet next to the `agent_timeout` bullet describing the start failure rule and that the loop stops.
+
+Tests. No property: the behaviour needs a real agent process and Git, and the decision has a small fixed set of cases, each listed below. Put the new tests in `tests/test_run_errors_on_branch.py` (`TestRunErrorsOnBranch`), using its fake agent at `self.root / "bin" / "fake"`.
+
+- `test_agent_start_failure_on_todo_stops_and_leaves_todo`: the fake prints `Error: Model "x" not found` and exits 7 without committing; `TASK-1` is `todo`. `run_cli("run", "--ticket", "TASK-1", exit_code=1)`. stderr contains `agent failed before committing anything; TASK-1 left at todo: agent exited with status 7:` and `Error: Model "x" not found`. The ticket on `task-1`'s tip says `status: todo` and contains no `Runner error`; `main` is unchanged; `chitty show TASK-1 --json` reports `todo`.
+- `test_agent_start_failure_on_doing_leaves_doing`: the same with `make_doing_branch()`. The ticket stays `doing`, the branch tip ticket has no `Runner error`, and no new commit is made on `task-1`.
+- `test_missing_agent_command_stops_and_leaves_todo`: `agent_command` set to `no-such-chitty-agent {mode} {id}` and committed on `main`; exit 1, stderr contains `agent command not found: no-such-chitty-agent`, the ticket is `todo`.
+- `test_agent_failure_keeps_error_and_message_on_branch` (existing): change its fake so it first writes `work.txt`, runs `git add work.txt` and `git commit --quiet -m work`, then exits 7. Its assertions stay unchanged, so a failure after a commit is still recorded as `Runner error (agent)`. Adjust `assert_branch_error` only if the extra commit breaks its `task-1~1` parent check, and say how in the notes.
+
+## Acceptance Criteria
+
+- [ ] The three new tests pass; a note records that each fails against `src/chitty/run.py` of `main` before this change on a status or stderr assertion (today the ticket goes to `error`)
+- [ ] The changed `test_agent_failure_keeps_error_and_message_on_branch` and every test in `tests/test_review_rebase_session.py` and `tests/test_run_timeout.py` pass; a note records that the changed test fails against a version that treats every non-zero agent exit as a start failure, ignoring `HEAD`
+- [ ] `docs/plan/next-action-and-runner.md` has the start-failure bullet next to the `agent_timeout` bullet; `make check` passes
 
 ## Notes
 
@@ -16,3 +41,5 @@ Suggestion origin: chitty
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
 - 2026-11-21T07:57:48Z nimble-umber-gannet: changed notes
+- 2026-11-21T08:00:33Z nimble-umber-gannet: changed title, labels, priority, description, acceptance criteria
+- 2026-11-21T08:00:33Z nimble-umber-gannet backlog → cold-read
