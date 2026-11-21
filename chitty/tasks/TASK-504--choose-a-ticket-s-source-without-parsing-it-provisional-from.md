@@ -1,6 +1,6 @@
 ---
 title: "Choose a ticket's source without parsing it: `provisional` from the ID"
-status: doing
+status: review
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -66,3 +66,4 @@ Source selection now determines provisional status from the ID and file presence
 - 2026-11-21T11:39:36Z vivid-quartz-badger: wrote the plan
 - 2026-11-21T11:40:19Z vivid-quartz-badger: changed notes
 - 2026-11-21T11:42:21Z vivid-quartz-badger: changed summary
+- 2026-11-21T11:42:30Z vivid-quartz-badger doing → review
