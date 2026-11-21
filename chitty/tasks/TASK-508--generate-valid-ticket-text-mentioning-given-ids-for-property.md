@@ -38,6 +38,10 @@ Out of scope: `rewrite_task` and its properties (`TASK-507`).
 
 Build a bounded composite strategy using safely encoded YAML and structurally safe Markdown lines, then add round-trip and targeted find coverage and run the full checks.
 
+## Summary
+
+Added a bounded ticket Markdown strategy and feature and round-trip tests. Verified with chitty fix, make format, and make check (952 tests). TASK-507 can use the strategy for rewrite properties.
+
 ## History
 
 - 2026-11-21T13:44:08Z sunny-ebony-kestrel → planning
@@ -48,3 +52,4 @@ Build a bounded composite strategy using safely encoded YAML and structurally sa
 - 2026-11-21T13:47:01Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:48:06Z zesty-pearl-urchin todo → doing
 - 2026-11-21T13:50:00Z zesty-pearl-urchin: wrote the plan
+- 2026-11-21T13:54:41Z zesty-pearl-urchin: changed summary
