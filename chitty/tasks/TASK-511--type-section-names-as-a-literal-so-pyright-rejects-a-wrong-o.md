@@ -1,6 +1,6 @@
 ---
 title: Type section names as a `Literal`, so pyright rejects a wrong one
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -18,6 +18,13 @@ Decisions:
 
 Tests: a new `tests/test_section_name_types.py`. One test writes a small Python file in a temporary directory that imports `chitty.model` and calls `parse(...).with_section("Bogus", "x")`, runs `.venv/bin/pyright` on it (`subprocess.run`, `cwd` the repository root, so the project configuration applies), and asserts a non-zero exit with `"Bogus"` in the output. A second test does the same with `"Notes"` and asserts exit 0. A third checks that `section_name` returns each name in `SECTION_ORDER` unchanged and raises `TaskError` for `"Bogus"`. Before the change, the first test fails, because pyright accepts any `str` (record this in a note).
 
+## Acceptance Criteria
+
+- [ ] The `"Bogus"` pyright test fails before the change and passes after (recorded in a note); the `"Notes"` test and the `section_name` test pass
+- [ ] `grep -n "def section\|def with_section" src/chitty/model.py` shows `name: SectionName` for both; no `cast` is added; `make check` passes
+
 ## History
 
 - 2026-11-21T14:32:29Z sunny-ebony-kestrel → planning
+- 2026-11-21T14:32:31Z sunny-ebony-kestrel: changed acceptance criteria
+- 2026-11-21T14:32:31Z sunny-ebony-kestrel planning → cold-read
