@@ -4,6 +4,8 @@ status: planning
 depends_on:
   - TASK-391
   - TASK-507
+  - TASK-519
+  - TASK-520
 parent: TASK-391
 created: 2026-11-21
 ---
@@ -24,8 +26,13 @@ Use `tests/test_renumber_provisional.py`, `RepoTestCase`, real files and real Gi
 - [ ] Reject the same valid batch with an executable pre-commit hook that exits 1: the exception contains `autocommit failed`, and ticket bytes and paths, HEAD, index and porcelain status match the snapshot before the call.
 - [ ] Outside Git an up-to-date initialized repo with `autocommit = false` renumbers its sole `TASK-AAAAAA` to `TASK-1` without creating `.git`; with `autocommit = true` it raises the usual write-policy error and leaves bytes and paths unchanged.
 
+## Notes
+
+The preflight is split across `TASK-391`, `TASK-519` (blocking structured references in untouched sources) and `TASK-520` (branch and invalid-input guards). Keep the writer waiting for the full contract.
+
 ## History
 
 - 2026-11-21T18:33:02Z eager-ginger-adder → backlog
 - 2026-11-21T18:37:17Z eager-ginger-adder: changed dependencies, description, acceptance criteria
 - 2026-11-21T18:37:17Z eager-ginger-adder backlog → planning
+- 2026-11-21T18:45:16Z eager-ginger-adder: changed dependencies, notes
