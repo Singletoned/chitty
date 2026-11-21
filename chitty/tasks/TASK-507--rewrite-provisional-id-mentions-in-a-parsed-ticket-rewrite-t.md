@@ -30,7 +30,7 @@ Tests: Hypothesis properties in `tests/test_property_renumbering.py` (`TASK-381`
 
 ## Plan
 
-Complete the existing property suite and mutation checks, apply the agreed changed-section normalization, then run formatting and checks and hand off for review.
+Strengthen preservation checks to compare complete frontmatter fields, including multiline labels; independently test rendered-text mutation against labels and History, then run checks and hand off.
 
 ## Notes
 
@@ -94,3 +94,4 @@ Implemented selective ID rewriting and completed six properties, including chain
 - 2026-11-21T14:13:03Z quick-lilac-heron doing → review
 - 2026-11-21T14:16:32Z quick-silver-falcon: changed acceptance criteria, notes
 - 2026-11-21T14:16:32Z quick-silver-falcon review → doing
+- 2026-11-21T14:19:09Z eager-teal-puffin: wrote the plan
