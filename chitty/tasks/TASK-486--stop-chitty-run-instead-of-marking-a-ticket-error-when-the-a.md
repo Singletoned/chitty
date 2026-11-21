@@ -59,6 +59,8 @@ Replanned 2026-11-21: both blockers in the notes above are settled in the Descri
 
 Reviewed the runner and refreshed the implementation plan; no code or tests have been changed, and required regression and verification work remains.
 
+All three new regression tests failed against the original runner: each expected exit 1 but received exit 0. The post-commit fixture leaves the parent ticket unchanged, so assert_branch_error needed no adjustment.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -82,3 +84,4 @@ Reviewed the runner and refreshed the implementation plan; no code or tests have
 - 2026-11-21T22:56:08Z honest-dusky-stoat todo → doing
 - 2026-11-21T22:57:46Z honest-dusky-stoat: wrote the plan
 - 2026-11-21T22:57:59Z honest-dusky-stoat: changed notes
+- 2026-11-21T22:58:45Z honest-dusky-stoat: changed notes
