@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when untouched tickets link to an old ID
-status: planning
+status: cold-read
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -36,7 +36,7 @@ Before implementing, run the refusal tests against the unguarded planner and con
 ## Acceptance Criteria
 
 - [ ] For each of fixtures (a), (b) and (c), the planner raises `ChittyError` whose message contains `TASK-AAAAAA` and the linking ticket ID (`OTHER-1` or `TASK-3`), and HEAD, index and the snapshotted bytes are unchanged; each refusal test fails on the unguarded planner
-- [ ] For each prose variant the planner returns the mapping `{TASK-AAAAAA: TASK-4}` (with `TASK-3` reserving 3 in (b) and (c), or `TASK-1` in (a)) and a writable set that excludes the linking ticket, with HEAD, index and bytes unchanged
+- [ ] For each prose variant the planner returns the mapping `{TASK-AAAAAA: TASK-1}` in (a) and `{TASK-AAAAAA: TASK-4}` in (b) and (c), and a writable set that excludes the linking ticket, with HEAD, index and bytes unchanged
 
 ## History
 
@@ -45,3 +45,5 @@ Before implementing, run the refusal tests against the unguarded planner and con
 - 2026-11-21T18:45:12Z eager-ginger-adder backlog → planning
 - 2026-11-21T22:58:02Z lively-zinc-newt: changed description
 - 2026-11-21T22:58:03Z lively-zinc-newt: changed acceptance criteria
+- 2026-11-21T22:58:15Z lively-zinc-newt: changed acceptance criteria
+- 2026-11-21T22:58:15Z lively-zinc-newt planning → cold-read
