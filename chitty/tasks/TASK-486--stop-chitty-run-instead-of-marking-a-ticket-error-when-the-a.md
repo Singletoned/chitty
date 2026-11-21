@@ -47,7 +47,7 @@ Existing tests (decided 2026-11-21, after the first implementation found six fai
 
 ## Plan
 
-Update the specified existing agent fixtures and add the reporter regression, verify it fails against main, then run formatting and full checks.
+Verify the three regression assertions against the pre-fix runner by temporarily allowing its old exit code, restore the unchanged tests and runner, then run required checks and hand off.
 
 ## Notes
 
@@ -130,3 +130,4 @@ Agent failures before any commit stop the runner and restore the selected ticket
 - 2026-11-21T23:25:35Z vivid-pearl-urchin doing → review
 - 2026-11-21T23:33:21Z kind-yellow-heron: changed acceptance criteria, notes
 - 2026-11-21T23:33:21Z kind-yellow-heron review → doing
+- 2026-11-21T23:36:18Z able-ebony-badger: wrote the plan
