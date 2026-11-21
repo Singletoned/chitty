@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -189,3 +189,4 @@ The worker's last return found that `_choose_source` parsed a copy to learn `pro
 - 2026-11-21T11:25:55Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T11:29:13Z sunny-ebony-kestrel: replaced notes; changed description, acceptance criteria
 - 2026-11-21T11:29:13Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T11:29:45Z golden-khaki-vole todo → doing
