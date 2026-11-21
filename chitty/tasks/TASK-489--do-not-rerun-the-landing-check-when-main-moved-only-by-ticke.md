@@ -12,7 +12,10 @@ On 2026-11-19 at 21:05:50, `TASK-404` passed review and then failed to land: `Ru
 
 Suggestion origin: chitty
 
+Planner, 2026-11-21: duplicate of `TASK-468`, which landed and is `done`. Archive or delete this suggestion.
+
 ## History
 
 - 2026-11-21T07:57:51Z nimble-umber-gannet → backlog
 - 2026-11-21T07:57:52Z nimble-umber-gannet: changed notes
+- 2026-11-21T08:05:24Z nimble-umber-gannet: changed notes
