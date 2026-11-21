@@ -1,6 +1,6 @@
 ---
 title: Require Python function annotations in production source
-status: review
+status: done
 created: 2026-11-21
 ---
 
@@ -14,8 +14,8 @@ Use temporary probe files in the worker's isolated worktree and remove them befo
 
 ## Acceptance Criteria
 
-- [ ] With a temporary file at `src/chitty/_annotation_probe.py` defining `echo(value: str)` without a return annotation and returning `value`, `make check` fails with Ruff `ANN202` (the underscore-prefixed module is private); the same probe emits no annotation diagnostic before this change. Run `uv run ruff check --no-fix` on copies under `tests/` and `scripts/`: neither emits an annotation diagnostic.
-- [ ] With the source probe annotated as `def echo(value: str) -> int:` while still returning `value`, `make check` gets past Ruff and fails in Pyright with a return-type diagnostic for the probe. Remove all probes; `make check` passes on the unchanged production source.
+- [x] With a temporary file at `src/chitty/_annotation_probe.py` defining `echo(value: str)` without a return annotation and returning `value`, `make check` fails with Ruff `ANN202` (the underscore-prefixed module is private); the same probe emits no annotation diagnostic before this change. Run `uv run ruff check --no-fix` on copies under `tests/` and `scripts/`: neither emits an annotation diagnostic.
+- [x] With the source probe annotated as `def echo(value: str) -> int:` while still returning `value`, `make check` gets past Ruff and fails in Pyright with a return-type diagnostic for the probe. Remove all probes; `make check` passes on the unchanged production source.
 
 ## Plan
 
@@ -28,6 +28,10 @@ Criterion 1 conflicts with Ruff behavior: the specified `src/chitty/_annotation_
 Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff reports `ANN202` because the module is private. Planning must choose the intended diagnostic or a public module fixture before the criterion can be verified. Full probe evidence and the preserved implementation are recorded in the preceding note.
 
 Rechecked the corrected fixture: the previous Ruff configuration reported no diagnostic; the configured make check failed with ANN202. Ruff passed on copies in tests and scripts. With return annotation int, Ruff passed and Pyright reported reportReturnType for str. Removed all probes.
+
+Reviewed: Configuration matches the requested source-only Ruff policy; no new property test is warranted for the fixed third-party rule set.
+1: pass - The unannotated source probe made `make check` print ANN202; Ruff with the pre-change `pyproject.toml` printed `All checks passed!` for the same probe. `uv run ruff check --no-fix` on copies under tests and scripts printed `All checks passed!`.
+2: pass - The `-> int` probe made Ruff print `All checks passed!` and Pyright print `Type "str" is not assignable to return type "int" (reportReturnType)`. After removing probes, `make check` printed `0 errors` and `Ran 983 tests ... OK`.
 
 ## Summary
 
@@ -54,3 +58,5 @@ Configured the requested Ruff annotation rules for `src/` only in `pyproject.tom
 - 2026-11-21T16:46:49Z jolly-umber-toad: changed notes
 - 2026-11-21T16:49:07Z jolly-umber-toad: changed summary
 - 2026-11-21T16:49:09Z jolly-umber-toad doing → review
+- 2026-11-21T16:52:55Z calm-yellow-crane: changed notes; ticked acceptance criteria
+- 2026-11-21T16:52:55Z calm-yellow-crane review → done
