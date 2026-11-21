@@ -404,6 +404,22 @@ class Task:
         history = self.section(HISTORY)
         return self.with_section(HISTORY, f"{history}\n{entry}" if history else entry)
 
+    def with_criterion_text(self, index: int, text: str) -> "Task":
+        """Replace one criterion's text without changing its marker or surroundings."""
+        count = len(self.criteria)
+        if not 1 <= index <= count:
+            raise TaskError(f"criterion {index}: there are {count} acceptance criteria")
+        text = _criterion_text(text)
+        section_index = self._section_index(ACCEPTANCE_CRITERIA)
+        assert section_index is not None
+        sections = list(self._sections)
+        lines = list(sections[section_index].lines)
+        item = self.criteria[index - 1]
+        marker = lines[item.start][BRACKET_COLUMN]
+        lines[item.start : item.end] = [f"- [{marker}] {text}\n"]
+        sections[section_index] = _Section(ACCEPTANCE_CRITERIA, tuple(lines))
+        return self._rebuild(sections=sections)
+
     def with_criteria(
         self,
         add: Sequence[str],

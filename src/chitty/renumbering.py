@@ -52,15 +52,10 @@ def rewrite_task(task: Task, mapping: Mapping[TaskId, TaskId]) -> Task:
             rewritten = replace_ids(text, mapping)
             if rewritten != text:
                 result = result.with_section(name, rewritten)
-    changed = [
-        (index, rewritten)
-        for index, criterion in enumerate(task.criteria, 1)
-        if (rewritten := replace_ids(criterion.text, mapping)) != criterion.text
-    ]
-    if changed:
-        result = result.with_criteria((), (), changed, (), ())
-        checked = [index for index, _ in changed if task.criteria[index - 1].checked]
-        result = result.with_criteria((), (), (), checked, ())
+    for index, criterion in enumerate(task.criteria, 1):
+        rewritten = replace_ids(criterion.text, mapping)
+        if rewritten != criterion.text:
+            result = result.with_criterion_text(index, rewritten)
     return result
 
 
