@@ -21,7 +21,7 @@ Tests: real Git, in a new `tests/test_own_worktree_writes.py` with a class inher
 
 ## Plan
 
-Add real-Git linked-worktree regression tests for CLI writes and direct guard branch relationships, confirm the new allowances fail before the fix, then implement the specified main-side path comparison and run the full checks.
+Confirm the existing direct regression fails, implement the specified own-branch main-side comparison, then run the targeted tests and full checks before handoff.
 
 ## Notes
 
@@ -160,3 +160,4 @@ make: *** [check] Error 1
 - 2026-11-21T01:33:32Z quick-pearl-lapwing: changed acceptance criteria, notes
 - 2026-11-21T01:33:32Z quick-pearl-lapwing planning → doing
 - 2026-11-21T01:36:01Z youthful-violet-wren: changed notes
+- 2026-11-21T01:36:25Z youthful-violet-wren: wrote the plan
