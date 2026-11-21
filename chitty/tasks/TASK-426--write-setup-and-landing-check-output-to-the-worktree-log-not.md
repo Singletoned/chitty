@@ -1,6 +1,6 @@
 ---
 title: Write `setup` and landing-check output to the worktree log, not the ticket
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-353
@@ -55,3 +55,4 @@ Setup and landing checks now write combined output to the shared worktree log an
 - 2026-11-21T08:45:31Z upbeat-white-adder: wrote the plan
 - 2026-11-21T08:46:12Z upbeat-white-adder: changed notes
 - 2026-11-21T08:48:10Z upbeat-white-adder: changed summary
+- 2026-11-21T08:48:17Z upbeat-white-adder doing → review
