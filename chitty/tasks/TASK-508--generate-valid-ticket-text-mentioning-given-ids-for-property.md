@@ -34,6 +34,10 @@ Out of scope: `rewrite_task` and its properties (`TASK-507`).
 - [ ] `hypothesis.find` finds an example of each listed feature (one test method per feature): an `[X]` criterion, a multi-line criterion, `Plan` present and absent, an ID mention in each listed frontmatter field, and each near-miss form
 - [ ] `make check` passes
 
+## Plan
+
+Build a bounded composite strategy using safely encoded YAML and structurally safe Markdown lines, then add round-trip and targeted find coverage and run the full checks.
+
 ## History
 
 - 2026-11-21T13:44:08Z sunny-ebony-kestrel → planning
@@ -43,3 +47,4 @@ Out of scope: `rewrite_task` and its properties (`TASK-507`).
 - 2026-11-21T13:47:01Z sunny-ebony-kestrel: changed description
 - 2026-11-21T13:47:01Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:48:06Z zesty-pearl-urchin todo → doing
+- 2026-11-21T13:50:00Z zesty-pearl-urchin: wrote the plan
