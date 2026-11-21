@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads against every branch placement with a property
-status: doing
+status: planning
 depends_on:
   - TASK-378
   - TASK-480
@@ -37,6 +37,8 @@ No production code changes unless a test finds a bug; then fix it here, with the
 
 Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the last `_history()` caller) is now `TASK-480`, so this also waits for it.
 
+Planning blocker: the deterministic test requires every compatible placement in checkout kind (1) both with and without an uncommitted edit to the ticket's file, but placement (f) has that file only on unrelated branch `other`: there is no file in the main checkout to edit. Creating it makes an uncommitted main-checkout ticket, like placement (i), while the stated expected result for (f) is not listed. `Repo._collect_ticket_ids` includes working-tree ticket files and `ticket_source` selects the main working tree when there is no matching ticket branch. Please specify whether (f) is excluded from the edit variant or define its fixture and expected result when a file is created. The same feasibility issue applies to random edits in other checkouts without the file; specify the eligibility rule. The remaining requirements were inspected against `src/chitty/store.py`, `src/chitty/ticket_source.py`, and the existing authoritative listing and source-error tests; implementation, mutation evidence and `make check` could not be verified without a consistent test fixture.
+
 ## History
 
 - 2026-11-18T16:38:03Z lively-quartz-crane → backlog
@@ -55,3 +57,5 @@ Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the la
 - 2026-11-18T18:01:39Z lively-quartz-crane: changed description
 - 2026-11-20T23:04:49Z quick-pearl-lapwing: changed dependencies, notes
 - 2026-11-21T20:28:33Z eager-silver-gannet todo → doing
+- 2026-11-21T20:31:41Z eager-silver-gannet: changed owner, notes
+- 2026-11-21T20:31:41Z eager-silver-gannet doing → planning
