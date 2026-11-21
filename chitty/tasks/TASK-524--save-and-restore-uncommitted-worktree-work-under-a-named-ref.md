@@ -38,7 +38,7 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 
 ## Plan
 
-Add stub helpers and real-Git property and example tests; verify each fails against the stubs, implement named-ref save and restore, then run fix, format, and checks.
+Add stub helpers and real-Git property and example tests, verify failures, implement named-ref save and restore, then run fix, format and checks.
 
 ## Notes
 
@@ -62,3 +62,4 @@ Replanned 2026-11-21: the ref namespace blocker is settled in the Description (r
 - 2026-11-21T23:49:45Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:49:45Z lively-zinc-newt planning → todo
 - 2026-11-21T23:50:08Z quick-hazel-newt todo → doing
+- 2026-11-21T23:52:30Z quick-hazel-newt: wrote the plan
