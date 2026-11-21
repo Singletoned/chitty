@@ -1,6 +1,6 @@
 ---
 title: Save and restore uncommitted worktree work under a named ref
-status: todo
+status: doing
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -61,3 +61,4 @@ Replanned 2026-11-21: the ref namespace blocker is settled in the Description (r
 - 2026-11-21T23:48:45Z zesty-bronze-gannet doing → planning
 - 2026-11-21T23:49:45Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:49:45Z lively-zinc-newt planning → todo
+- 2026-11-21T23:50:08Z quick-hazel-newt todo → doing
