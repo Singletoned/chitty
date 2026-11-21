@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -121,3 +121,4 @@ Agent failures before any commit stop the runner and restore the selected ticket
 - 2026-11-21T23:21:19Z vivid-pearl-urchin: changed notes
 - 2026-11-21T23:25:19Z vivid-pearl-urchin: changed notes
 - 2026-11-21T23:25:27Z vivid-pearl-urchin: changed summary
+- 2026-11-21T23:25:35Z vivid-pearl-urchin doing → review
