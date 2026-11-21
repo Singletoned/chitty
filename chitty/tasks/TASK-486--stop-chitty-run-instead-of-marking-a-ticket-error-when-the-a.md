@@ -77,6 +77,8 @@ Replanned 2026-11-21 (overnight planner): reporter and existing-test decisions a
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
 
+Added reporter start-failure regression; it passes on the branch. Attempting it with current main run.py failed before the assertion because main expects RepoConfig.command_timeout, absent on this branch; a compatible main baseline is still needed. make check remains failing on the existing fixtures; updating those and verifying reporter invocation count remain unfinished.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -110,3 +112,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T23:17:46Z vivid-pearl-urchin todo → doing
 - 2026-11-21T23:19:04Z vivid-pearl-urchin: changed notes
 - 2026-11-21T23:19:18Z vivid-pearl-urchin: wrote the plan
+- 2026-11-21T23:21:19Z vivid-pearl-urchin: changed notes
