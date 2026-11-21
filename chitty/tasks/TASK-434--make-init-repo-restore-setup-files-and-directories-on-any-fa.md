@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -92,3 +92,4 @@ The stale registration fixture is impossible as specified: initial `chitty init 
 - 2026-11-20T23:14:11Z quick-pearl-lapwing planning → cold-read
 - 2026-11-20T23:16:22Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T23:16:22Z quick-pearl-lapwing cold-read → todo
+- 2026-11-21T00:56:45Z able-bronze-marten todo → doing
