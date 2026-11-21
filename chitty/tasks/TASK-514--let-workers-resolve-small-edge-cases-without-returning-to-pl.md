@@ -1,9 +1,9 @@
 ---
 title: Let workers resolve small edge cases without returning to planning
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: nimble-umber-adder
 created: 2026-11-21
 ---
 
@@ -19,6 +19,10 @@ Align `src/chitty/roles/review.md` so reviewers check the recorded choice, its p
 
 This is a wording-only change. Keep the guidance general across repositories and preserve the existing tested return routes. No changes to runner behaviour, status rules, or `TASK-391` itself.
 
+## Plan
+
+Update the worker, reviewer, managed runner source, and pipeline docs together. Spell out the narrow precedent-based exception, how to record and review it, and how to finish investigating before returning a ticket to planning. Keep the existing return routes and their tested wording, and leave the generated block and runtime code alone. Run the existing checks.
+
 ## History
 
 - 2026-11-21T15:27:59Z friendly-ochre-wren → backlog
@@ -26,3 +30,5 @@ This is a wording-only change. Keep the guidance general across repositories and
 - 2026-11-21T15:28:14Z friendly-ochre-wren backlog → planning
 - 2026-11-21T15:28:27Z friendly-ochre-wren planning → todo
 - 2026-11-21T15:43:39Z friendly-ochre-wren: changed description
+- 2026-11-21T16:16:15Z nimble-umber-adder: changed owner; wrote the plan
+- 2026-11-21T16:16:15Z nimble-umber-adder todo → doing
