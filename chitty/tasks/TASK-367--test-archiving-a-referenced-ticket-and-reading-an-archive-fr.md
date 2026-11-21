@@ -57,6 +57,8 @@ Cold read 2026-11-21 outcomes: net diff against `main` for the path check; `os.c
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
 
+Planning return: the specified regression evidence contradicts the prescribed fixture. All four tests pass on the merged main with TASK-378, but running the exact tests at the parent of the first TASK-378 commit (cae058f9) fails during the done helper: the historical CLI does not have --human, so each reports "No such option --human" before reaching archive or the older-worktree read, not "is used by more than one file". Decide how to adapt the historical fixture or revise the evidence requirement without changing what is tested. The four tests and the revert of the superseded selector are committed; make check passes (909 tests). Regression evidence and the acceptance criteria remain unfinished.
+
 ## History
 
 - 2026-11-17T19:53:05Z kind-umber-toad → todo
@@ -83,3 +85,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T12:31:41Z quick-ginger-jay todo → doing
 - 2026-11-21T12:32:19Z quick-ginger-jay: changed notes
 - 2026-11-21T12:32:51Z quick-ginger-jay: wrote the plan
+- 2026-11-21T12:35:56Z quick-ginger-jay: changed notes
