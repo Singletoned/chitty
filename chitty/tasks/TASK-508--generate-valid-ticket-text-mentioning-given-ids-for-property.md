@@ -1,6 +1,6 @@
 ---
 title: Generate valid ticket text mentioning given IDs, for property tests
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -53,3 +53,4 @@ Added a bounded ticket Markdown strategy and feature and round-trip tests. Verif
 - 2026-11-21T13:48:06Z zesty-pearl-urchin todo → doing
 - 2026-11-21T13:50:00Z zesty-pearl-urchin: wrote the plan
 - 2026-11-21T13:54:41Z zesty-pearl-urchin: changed summary
+- 2026-11-21T13:54:43Z zesty-pearl-urchin doing → review
