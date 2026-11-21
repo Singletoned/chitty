@@ -1,6 +1,6 @@
 ---
 title: Make `init_repo` restore setup files and directories on any failure
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -58,6 +58,11 @@ Before the fix, .venv/bin/python -m unittest tests.test_property_init_restore fa
 
 Mutation checks: .venv/bin/python -m unittest tests.test_property_init_restore.TestInitRestore.test_failure_restores_setup failed for each of commit-only rollback, config-only rollback, no directory removal, and leaf-only removal; each reports the fresh hook explicit example. Commit-only also fails the stale registration example. Restored the correct implementation after each run.
 
+Reviewed:
+1: pass - make check passed the property; running it with main's store.py in an isolated copy printed FAILED for the fresh hook example, with leftover chitty directories, and reported two other explicit failures.
+2: pass - make check printed OK for 893 tests, including the fresh and stale success test and unchanged init workflow and autocommit suites.
+3: pass - the worker's mutation note records the property command and fresh hook failures for all four wrong versions, also stale registration for commit-only; make check printed OK for 893 tests.
+
 ## Summary
 
 Setup writes now restore all snapshotted files and newly created empty directories on failure. Real Git property tests cover registration and hook failures plus successful fresh and stale setup. The property failed before the fix and against all four specified mutations. make check passed (854 tests). Inbox registration and the later upgrade commit remain outside this change.
@@ -106,3 +111,5 @@ Setup writes now restore all snapshotted files and newly created empty directori
 - 2026-11-21T01:04:42Z able-bronze-marten: changed notes
 - 2026-11-21T01:10:46Z able-bronze-marten: changed summary
 - 2026-11-21T01:10:54Z able-bronze-marten doing → review
+- 2026-11-21T01:20:05Z brisk-bronze-jay: changed notes
+- 2026-11-21T01:20:05Z brisk-bronze-jay review → done
