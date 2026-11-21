@@ -1,6 +1,6 @@
 ---
 title: Reject criterion text containing any line break, with the single-line error
-status: doing
+status: review
 labels:
   - bug
 parent: TASK-376
@@ -40,3 +40,4 @@ Criterion validation now rejects every splitlines separator before trimming. The
 - 2026-11-21T15:26:51Z upbeat-fawn-lapwing: wrote the plan
 - 2026-11-21T15:27:03Z upbeat-fawn-lapwing: changed notes
 - 2026-11-21T15:29:12Z upbeat-fawn-lapwing: changed summary
+- 2026-11-21T15:29:13Z upbeat-fawn-lapwing doing → review
