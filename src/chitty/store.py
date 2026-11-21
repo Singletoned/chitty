@@ -249,6 +249,10 @@ class Repo:
         self._dirty_paths: dict[Path, set[Path]] = {}
         self._current_branch_cached = False
         self._current_branch_value: str | None = None
+        self._repository_value: bool | None = None
+        self._main_tip_cached = False
+        self._main_tip_value: str | None = None
+        self._branch_tips_value: dict[str, str] | None = None
         self._main_branch_value: str | None = None
         self._main_files: dict[tuple[str, tuple[Path, ...]], list[tuple[Path, str]] | None] = {}
 
@@ -385,6 +389,22 @@ class Repo:
             self._current_branch_cached = True
         return self._current_branch_value
 
+    def _is_repository(self) -> bool:
+        if self._repository_value is None:
+            self._repository_value = git.is_repository(self.root)
+        return self._repository_value
+
+    def _main_tip(self) -> str | None:
+        if not self._main_tip_cached:
+            self._main_tip_value = git.ref_commit(self.root, f"refs/heads/{self._main_branch()}")
+            self._main_tip_cached = True
+        return self._main_tip_value
+
+    def _branch_tips(self) -> dict[str, str]:
+        if self._branch_tips_value is None:
+            self._branch_tips_value = git.branch_tips(self.root)
+        return self._branch_tips_value
+
     def _main_branch(self) -> str:
         if self._main_branch_value is None:
             if git.is_linked_worktree(self.root):
@@ -410,13 +430,17 @@ class Repo:
         self._dirty_paths.clear()
         self._current_branch_cached = False
         self._current_branch_value = None
+        self._repository_value = None
+        self._main_tip_cached = False
+        self._main_tip_value = None
+        self._branch_tips_value = None
         self._main_branch_value = None
         self._main_files.clear()
 
     def source_of(self, task_id: TaskId) -> str | None:
         """Return the short ref selected for a ticket, or None for the working tree."""
         if task_id not in self._source_refs:
-            if not git.is_repository(self.root):
+            if not self._is_repository():
                 self._source_refs[task_id] = WORKING_TREE
             else:
                 self.ticket_ids()
@@ -431,7 +455,7 @@ class Repo:
     def _source_files(self, task_id: TaskId) -> tuple[str, list[tuple[Path, str]]]:
         """The ticket's source ref and its files there, unparsed."""
         if task_id not in self._source_refs:
-            if not git.is_repository(self.root):
+            if not self._is_repository():
                 self._source_refs[task_id] = WORKING_TREE
             else:
                 self.ticket_ids()
@@ -494,8 +518,8 @@ class Repo:
     def _choose_source(self, task_id: TaskId) -> str:
         main = self._main_branch()
         main_ref = f"refs/heads/{main}"
-        main_tip = git.ref_commit(self.root, main_ref)
-        tips = git.branch_tips(self.root)
+        main_tip = self._main_tip()
+        tips = self._branch_tips()
         ticket_tips = {
             ref: tip for ref, tip in tips.items() if ref in self._ref_files() and ref != main_ref
         }
@@ -539,7 +563,7 @@ class Repo:
         source = ticket_source(
             task_id,
             provisional,
-            git.current_branch(self.root),
+            self._current_branch(),
             main,
             main_tip,
             local,
@@ -593,15 +617,15 @@ class Repo:
     def _ref_files(self) -> dict[str, list[tuple[Path, str]]]:
         if self._ticket_ref_files is not None:
             return self._ticket_ref_files
-        if not git.is_repository(self.root):
+        if not self._is_repository():
             self._ticket_ref_files = {}
             return self._ticket_ref_files
         main_ref = f"refs/heads/{self._main_branch()}"
         refs: dict[str, TaskId | None] = {}
-        if git.ref_commit(self.root, main_ref) is not None:
+        if self._main_tip() is not None:
             refs[main_ref] = None
         prefixes = {context.prefix for context in self.contexts()}
-        for ref in git.branch_tips(self.root):
+        for ref in self._branch_tips():
             if ref.startswith("refs/heads/"):
                 name = ref.removeprefix("refs/heads/")
             elif ref.startswith("refs/remotes/"):
