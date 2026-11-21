@@ -1,6 +1,6 @@
 ---
 title: Edit one criterion's text without losing its checked state or the other items' formatting
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -17,6 +17,13 @@ Decisions:
 
 Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, using `ticket_texts` from `tests/ticket_strategies.py` (filtered to tickets with at least one criterion) to get a parsed `task`, a drawn valid index, and drawn single-line non-empty text. Properties: (1) `parse(result.render())` has the new text at `index`, and the same `checked` value as before; (2) the item's marker character is unchanged; (3) every other criterion's rendered lines, and every other section's rendered lines, are byte-identical to `task.render()`'s; (4) the criteria count is unchanged. A unit test asserts that `TaskError` is raised for index 0, for an index past the end, for empty text and for text containing `\n`. First add the method raising `NotImplementedError` and record the properties failing. Existing `rewrite_task` properties in `tests/test_property_renumbering.py` must still pass unchanged.
 
+## Acceptance Criteria
+
+- [ ] The four properties and the `TaskError` unit test pass; a note records each property failing against the `NotImplementedError` stub
+- [ ] `rewrite_task` calls `with_criterion_text` and no longer calls `with_criteria`; the existing properties in `tests/test_property_renumbering.py` pass unchanged; `make check` passes
+
 ## History
 
 - 2026-11-21T14:32:56Z sunny-ebony-kestrel → planning
+- 2026-11-21T14:32:58Z sunny-ebony-kestrel: changed acceptance criteria
+- 2026-11-21T14:32:58Z sunny-ebony-kestrel planning → cold-read
