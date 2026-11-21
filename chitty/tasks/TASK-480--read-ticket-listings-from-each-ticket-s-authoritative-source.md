@@ -3,6 +3,7 @@ title: Read ticket listings from each ticket's authoritative source, not every r
 status: planning
 depends_on:
   - TASK-378
+  - TASK-515
 parent: TASK-376
 created: 2026-11-20
 ---
@@ -38,3 +39,4 @@ Keep the listing cutover separate from write-path repair. Before the cutover, au
 - 2026-11-21T12:43:40Z sunny-ebony-kestrel: changed notes
 - 2026-11-21T15:51:34Z honest-coral-heron: changed notes
 - 2026-11-21T15:51:34Z honest-coral-heron backlog → planning
+- 2026-11-21T15:51:58Z honest-coral-heron: changed dependencies
