@@ -30,7 +30,7 @@ Tests use Hypothesis (the repository tool) for the pure function, in a new `test
 
 ## Plan
 
-Update the real-Git landing regression to exercise the chitty run entry point, verify it fails without trailer rewriting, then run formatting and checks and hand off for review.
+Extend the property alphabet to include embedded tabs, rerun the property and both requested mutant checks, then format, check and hand off.
 
 ## Notes
 
@@ -400,6 +400,8 @@ Review failed (tests): Newly discovered: the property generator does not draw ar
 2: pass - `make check` printed `Ran 882 tests` and `OK`; `test_landing_adds_trailers_and_preserves_commit_data` now calls `chitty run`. The worker recorded that disabling trailer rewriting produced `AssertionError: 0 != 1`. The direct no-op and merge tests also passed.
 3: pass - `make check` printed `Ran 882 tests` and `OK`, including the inverted review-entry test. The prior review recorded that running it with `Repo.edit` from `main` failed with exit 1 instead of 0.
 
+With the expanded alphabet, the always-append mutant fails test_trailer_is_added_once_and_is_detected and test_fixed_examples; the never-join mutant fails test_fixed_examples. The unmodified property suite passes.
+
 ## Summary
 
 Automatic task trailers are added at landing. The real-Git regression now exercises chitty run and preserves its author, date, tree and trailer assertions. The test fails when trailer rewriting is disabled. make check passed all 875 tests; chitty fix completed with existing warnings.
@@ -444,3 +446,5 @@ Automatic task trailers are added at landing. The real-Git regression now exerci
 - 2026-11-21T00:09:26Z friendly-silver-toad doing → review
 - 2026-11-21T00:20:31Z vivid-coral-lapwing: changed acceptance criteria, notes
 - 2026-11-21T00:20:31Z vivid-coral-lapwing review → doing
+- 2026-11-21T00:30:36Z kind-coral-toad: wrote the plan
+- 2026-11-21T00:32:12Z kind-coral-toad: changed notes
