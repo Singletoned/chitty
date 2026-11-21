@@ -1,6 +1,6 @@
 ---
 title: Land a pending ticket branch only when the ticket is read from it
-status: doing
+status: review
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -51,3 +51,4 @@ Pending landing skips completed tickets read from a different ref and reports th
 - 2026-11-21T13:10:31Z nimble-ebony-marten: wrote the plan
 - 2026-11-21T13:11:18Z nimble-ebony-marten: changed notes
 - 2026-11-21T13:13:23Z nimble-ebony-marten: changed summary
+- 2026-11-21T13:13:32Z nimble-ebony-marten doing → review
