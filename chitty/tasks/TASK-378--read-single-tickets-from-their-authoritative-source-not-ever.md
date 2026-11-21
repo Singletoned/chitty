@@ -17,6 +17,7 @@ depends_on:
   - TASK-478
   - TASK-479
   - TASK-482
+  - TASK-504
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -199,3 +200,4 @@ After reading the source-selection and lookup implementation and the existing Gi
 - 2026-11-21T11:31:46Z golden-khaki-vole: wrote the plan
 - 2026-11-21T11:32:08Z golden-khaki-vole: changed owner, notes
 - 2026-11-21T11:32:08Z golden-khaki-vole doing → planning
+- 2026-11-21T11:34:58Z sunny-ebony-kestrel: changed dependencies
