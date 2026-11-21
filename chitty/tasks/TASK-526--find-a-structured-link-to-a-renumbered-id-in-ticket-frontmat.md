@@ -30,6 +30,10 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 
 Add the pure link comparison and property-based cases with explicit examples and mutant checks; verify the stub fails first, then format and run the full checks.
 
+## Notes
+
+Stub verification: the focused test errored with NotImplementedError in blocking_link, as required.
+
 ## History
 
 - 2026-11-21T23:15:28Z lively-zinc-newt → todo
@@ -40,3 +44,4 @@ Add the pure link comparison and property-based cases with explicit examples and
 - 2026-11-21T23:19:14Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:56:27Z plucky-khaki-crane todo → doing
 - 2026-11-21T23:58:08Z plucky-khaki-crane: wrote the plan
+- 2026-11-21T23:59:00Z plucky-khaki-crane: changed notes
