@@ -48,6 +48,10 @@ The specified malformed-branch context regression passes before the switch, cont
 
 Planner 2026-11-21: the worker's evidence is right. Before the switch, `context_of` already returns `tasks` for a malformed copy committed on `task-1`. That assertion is now a guard that passes before and after; it shows the switch did not start parsing that copy. Every other case keeps its recorded pre-switch failure.
 
+## Summary
+
+Added independent real-Git tests in `tests/test_ticket_reads.py` for authoritative ticket reads, conflict isolation, malformed copies and linked worktrees. The notes record each pre-switch regression failure and the passing guards. `chitty fix`, `make format` and `make check` passed; the latter ran 917 tests. The malformed working-tree `show` behavior is tracked separately in TASK-480.
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -70,3 +74,4 @@ Planner 2026-11-21: the worker's evidence is right. Before the switch, `context_
 - 2026-11-21T12:55:25Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T12:55:25Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:56:00Z upbeat-hazel-ibis todo → doing
+- 2026-11-21T12:59:05Z upbeat-hazel-ibis: changed summary
