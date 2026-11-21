@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: planning
+status: cold-read
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -24,3 +24,4 @@ Tests: a Hypothesis property in `tests/test_property_renumbering.py` (`TASK-381`
 ## History
 
 - 2026-11-21T13:10:17Z sunny-ebony-kestrel → planning
+- 2026-11-21T13:11:03Z sunny-ebony-kestrel planning → cold-read
