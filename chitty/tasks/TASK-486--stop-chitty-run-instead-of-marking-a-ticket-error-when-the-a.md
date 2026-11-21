@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -89,6 +89,12 @@ Review failed (tests): newly discovered verification gap; the three regressions 
 
 Against pre-fix runner 5a056a2e parent, temporarily accepting its exit 0 exposed the todo and repair regressions failing their expected stderr assertions. For doing, temporarily accepting exit 0 and deferring the branch-tip equality assertion exposed the status assertion: expected doing, got error. Original tests and runner were restored unchanged.
 
+Reviewed: complete diff inspected; prior verification gap resolved.
+1: pass - make check printed OK for 1030 tests; the latest implementation note records old-runner stderr failures for todo and repair and a doing status failure after allowing the old exit code.
+2: pass - make check printed OK for 1030 tests, including the post-commit, rebase and timeout tests; the implementation note records expected exit 0 but got 1 with the HEAD comparison disabled.
+3: pass - docs/plan/next-action-and-runner.md places the start-failure bullet beside agent_timeout; make check printed OK.
+4: pass - make check printed OK for 1030 tests, including reporter and existing fixtures; the implementation note records the reporter test expected exit 1 but got 0 against the pre-implementation runner and lists changed fixtures.
+
 ## Summary
 
 Start failures stop the runner and preserve worktree files; pre-fix stderr and status regressions are documented. make check passes 1026 tests.
@@ -136,3 +142,5 @@ Start failures stop the runner and preserve worktree files; pre-fix stderr and s
 - 2026-11-21T23:36:44Z able-ebony-badger: changed notes
 - 2026-11-21T23:38:40Z able-ebony-badger: changed summary
 - 2026-11-21T23:38:42Z able-ebony-badger doing → review
+- 2026-11-21T23:44:01Z zesty-ginger-badger: changed notes
+- 2026-11-21T23:44:01Z zesty-ginger-badger review → done
