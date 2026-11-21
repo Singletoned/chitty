@@ -1,6 +1,6 @@
 ---
 title: Land a pending ticket branch only when the ticket is read from it
-status: review
+status: done
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -34,6 +34,11 @@ Add real-Git pending-landing source tests for remote-ahead, local-ahead, equal, 
 
 Before the fix, .venv/bin/python -m unittest tests.test_land_pending_source failed the remote-ahead and skip-then-land tests: it landed TASK-5 in both cases; the other three tests passed.
 
+Reviewed: inspected the complete diff and exercised the real-Git tests; no earlier review failures.
+1: pass - `make check` reports 926 tests OK, including `test_remote_done_ahead_is_not_landed`; running the five tests with main's old `_land_pending` produced FAIL for this test because it returned TASK-5 instead of None.
+2: pass - `make check` reports 926 tests OK, including `test_local_done_ahead_lands`, which checks the main tip against task-5.
+3: pass - `make check` reports 926 tests OK, including equal-tip, no-remote and skip-then-land tests; with main's old `_land_pending`, skip-then-land failed with TASK-5 != TASK-6, while equal-tip and no-remote passed.
+
 ## Summary
 
 Pending landing skips completed tickets read from a different ref and reports the source while continuing to later branches. Real-Git coverage exercises remote-ahead, local-ahead, equal, absent remote and skip-then-land cases. The remote-ahead and skip-then-land tests failed before the fix; make check passes (926 tests). No follow-ups.
@@ -52,3 +57,5 @@ Pending landing skips completed tickets read from a different ref and reports th
 - 2026-11-21T13:11:18Z nimble-ebony-marten: changed notes
 - 2026-11-21T13:13:23Z nimble-ebony-marten: changed summary
 - 2026-11-21T13:13:32Z nimble-ebony-marten doing → review
+- 2026-11-21T13:19:07Z tidy-bronze-wren: changed notes
+- 2026-11-21T13:19:07Z tidy-bronze-wren review → done
