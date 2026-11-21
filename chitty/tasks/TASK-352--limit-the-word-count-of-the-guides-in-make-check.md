@@ -1,6 +1,6 @@
 ---
 title: Limit the word count of the guides in make check
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -14,12 +14,18 @@ Check the real tree rooted at the repository containing the test module, indepen
 
 ## Acceptance Criteria
 
-- [ ] The discovered unittest passes on the current guides. In a temporary guide tree, a configured guide at exactly its limit passes, and adding one whitespace-separated word fails with its relative path, actual word count and limit.
-- [ ] In the same temporary tree, removing a budgeted role file or adding an unbudgeted role Markdown file fails and names the missing or unbudgeted path. The real-tree check runs under `make check`.
+- [x] The discovered unittest passes on the current guides. In a temporary guide tree, a configured guide at exactly its limit passes, and adding one whitespace-separated word fails with its relative path, actual word count and limit.
+- [x] In the same temporary tree, removing a budgeted role file or adding an unbudgeted role Markdown file fails and names the missing or unbudgeted path. The real-tree check runs under `make check`.
 
 ## Plan
 
 Add a unittest module with a shared tree and word-budget assertion, exercise exact limits and file-set failures using real temporary files, and verify the repository guides through normal test discovery. Run formatting and the full checks before committing.
+
+## Notes
+
+Reviewed: The budgets, discovery scope and shared helper match the ticket; no property test is needed for standard word splitting.
+1: pass - `make check` printed `Ran 974 tests` and `OK`. Running the temporary-tree test with `assertLessEqual` disabled printed `FAILED (failures=1)`, with `AssertionError not raised` at the over-limit assertion.
+2: pass - `make check` discovered and passed the real-tree test. Running the temporary-tree test with set equality disabled printed `FAILED (errors=1)` on the missing role; ignoring extra files in set equality printed `FAILED (failures=1)` at the unbudgeted-file assertion.
 
 ## Summary
 
@@ -37,3 +43,5 @@ Added guide word budgets and shared assertions for real and temporary trees, inc
 - 2026-11-21T15:53:58Z witty-amber-jay: wrote the plan
 - 2026-11-21T15:56:16Z witty-amber-jay: changed summary
 - 2026-11-21T15:56:17Z witty-amber-jay doing → review
+- 2026-11-21T16:00:28Z able-ochre-toad: changed notes; ticked acceptance criteria
+- 2026-11-21T16:00:28Z able-ochre-toad review → done
