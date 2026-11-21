@@ -1,6 +1,6 @@
 ---
 title: Guard provisional renumbering preflight and report bad paths
-status: planning
+status: cold-read
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -21,7 +21,7 @@ Decisions:
 Tests: new `tests/test_provisional_preflight_errors.py`, a `RepoTestCase` with real Git, reusing the `file` and `snapshot` helpers style of `tests/test_provisional_preflight.py`. Setup: `git init -b main`, local author, commit a valid provisional `chitty/tasks/TASK-AAAAAA--example.md`, then delete the `chitty_version` line from `chitty.toml` and commit, so setup is stale (a call to `_prepare_write` would act on it). Take the snapshot (HEAD, `.git/index` bytes, bytes of every `chitty/**/*.md` and `chitty.toml`) after each setup and before the call.
 
 - Off main: `git switch -c feature`; and separately `git checkout --detach`. Each raises `ProvisionalOffMain` whose message contains `feature` or `detached HEAD` respectively.
-- On main, malformed: also commit `chitty/tasks/TASK-BAAAAA--bad.md` holding `not a ticket`; the planner raises `ChittyError` whose message starts with that file's path.
+- On main, malformed: also commit `chitty/tasks/TASK-BAAAAA--bad.md` holding `not a ticket`; the planner raises `ChittyError` whose message starts with that file's absolute path under `Repo.open(self.root).root` (verified on `main`: `<path>: file must start with '---' frontmatter`).
 - On main, duplicate: also commit `chitty/tasks/archive/TASK-AAAAAA--copy.md`, a valid provisional ticket; the planner raises `ChittyError` whose message contains both paths.
 
 No property: a small fixed set of Git states and files, each listed here. Before implementing, run the off-main and duplicate tests against the unguarded planner and confirm they fail; the malformed test is a regression guard and may already pass. Then implement, run the new tests and `make check`.
@@ -38,3 +38,5 @@ No property: a small fixed set of Git states and files, each listed here. Before
 - 2026-11-21T18:45:14Z eager-ginger-adder backlog → planning
 - 2026-11-21T23:00:01Z lively-zinc-newt: changed description
 - 2026-11-21T23:00:03Z lively-zinc-newt: changed acceptance criteria
+- 2026-11-21T23:00:18Z lively-zinc-newt: changed description
+- 2026-11-21T23:00:18Z lively-zinc-newt planning → cold-read
