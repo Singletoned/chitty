@@ -17,6 +17,10 @@ Use temporary probe files in the worker's isolated worktree and remove them befo
 - [ ] With a temporary file at `src/chitty/_annotation_probe.py` containing `def echo(value: str):` and `return value`, `make check` fails with Ruff `ANN201`; the same probe does not produce that diagnostic before this change. Re-run the focused Ruff command with the same file contents under `tests/` and `scripts/`: neither emits an annotation diagnostic.
 - [ ] With the source probe annotated as `def echo(value: str) -> int:` while still returning `value`, `make check` gets past Ruff and fails in Pyright with a return-type diagnostic for the probe. Remove all probes; `make check` passes on the unchanged production source.
 
+## Plan
+
+Probe the existing Ruff behavior, configure the requested source-only annotation rules, then verify Ruff and Pyright with temporary probes and run formatting and checks before committing.
+
 ## History
 
 - 2026-11-21T16:17:29Z honest-coral-heron → planning
@@ -25,3 +29,4 @@ Use temporary probe files in the worker's isolated worktree and remove them befo
 - 2026-11-21T16:20:32Z honest-coral-heron cold-read → planning
 - 2026-11-21T16:20:45Z honest-coral-heron planning → todo
 - 2026-11-21T16:24:19Z daring-hazel-eel todo → doing
+- 2026-11-21T16:27:58Z daring-hazel-eel: wrote the plan
