@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -79,3 +79,4 @@ Planner 2026-11-21, after the cold read: criterion 5 now shows a skipped ticket'
 - 2026-11-21T13:17:52Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T13:19:05Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T13:19:05Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T14:26:11Z daring-yellow-gannet todo → doing
