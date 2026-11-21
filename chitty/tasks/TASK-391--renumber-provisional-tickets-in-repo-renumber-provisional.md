@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -87,6 +87,8 @@ No implementation or tests were written. Regression evidence and verification re
 
 Planner 2026-11-21: filenames in unconfigured directories reserve their numbers (case added to criterion 2); removed the unreachable shared-prefix union.
 
+The required ordering conflicts with the no-change and preflight guarantees for a stale setup. `Repo._prepare_write()` can run `init_repo` and make a `chitty: upgrade repository setup` commit before returning when autocommit is enabled in a non-linked Git checkout; `tests/test_init_workflow.py::test_autocommit_upgrade_precedes_add` documents that behavior. Because the ticket requires calling it first, an off-main call can modify and commit setup before raising, contrary to criterion 2, and a call with an unparseable file can modify and commit setup before parsing, contrary to the requirement to fail before any write. The setup upgrade is outside `_all_or_nothing`, so rollback does not undo it either. Please decide whether setup upgrades are an explicit exception to these guarantees or whether branch/preflight checks must precede setup preparation, and specify real-file stale-setup fixtures, actions and assertions for off-main and parse-failure cases. No implementation or tests were written; regression evidence and verification remain outstanding.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -146,3 +148,5 @@ Planner 2026-11-21: filenames in unconfigured directories reserve their numbers 
 - 2026-11-21T14:49:49Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T14:49:49Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T14:50:20Z youthful-yellow-newt todo → doing
+- 2026-11-21T15:12:45Z youthful-yellow-newt: changed owner, notes
+- 2026-11-21T15:12:45Z youthful-yellow-newt doing → planning
