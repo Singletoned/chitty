@@ -3,6 +3,7 @@ title: Check linked-worktree ticket reads against every branch placement
 status: planning
 depends_on:
   - TASK-393
+  - TASK-527
 created: 2026-11-21
 ---
 
@@ -47,3 +48,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; th
 - 2026-11-21T23:05:23Z lively-zinc-newt → planning
 - 2026-11-21T23:06:00Z lively-zinc-newt: changed notes
 - 2026-11-21T23:07:54Z lively-zinc-newt: changed description
+- 2026-11-21T23:18:59Z lively-zinc-newt: changed dependencies
