@@ -1,6 +1,6 @@
 ---
 title: Remove local ticket branches that `main` already contains
-status: review
+status: done
 depends_on:
   - TASK-396
 parent: TASK-376
@@ -28,9 +28,9 @@ Fixtures for criterion 2, each its own test: run lock held: hold `locks.run_lock
 
 ## Acceptance Criteria
 
-- [ ] `chitty run` removes, for `done` tickets, a local `task-<n>` equal to `main` with a clean linked worktree (both removed) and one behind `main` with no worktree, and a merged branch for an ID no ticket has, and prints `removed merged branch` for each; this fails before the change
-- [ ] It keeps, with a `kept merged branch` line, a merged branch for each non-`done` status (`todo`, `doing`, `review`, `error`, `blocked`), each printing `<ID> is <status>`, a merged branch whose run lock is held, one whose worktree has an uncommitted file, one with a rebase in progress, and one with a merge in progress; it never removes a branch ahead of `main`, a non-ticket branch such as `feature`, or a remote-tracking `origin/task-<n>`; a worktree whose directory was deleted by hand does not stop the run
-- [ ] `docs/plan/next-action-and-runner.md` says the clean-up runs at the start of `chitty run`, before pending landings, under the landing lock, lists the reasons a merged branch is kept, and gives the `removed merged branch` and `kept merged branch` lines; `make check` passes
+- [x] `chitty run` removes, for `done` tickets, a local `task-<n>` equal to `main` with a clean linked worktree (both removed) and one behind `main` with no worktree, and a merged branch for an ID no ticket has, and prints `removed merged branch` for each; this fails before the change
+- [x] It keeps, with a `kept merged branch` line, a merged branch for each non-`done` status (`todo`, `doing`, `review`, `error`, `blocked`), each printing `<ID> is <status>`, a merged branch whose run lock is held, one whose worktree has an uncommitted file, one with a rebase in progress, and one with a merge in progress; it never removes a branch ahead of `main`, a non-ticket branch such as `feature`, or a remote-tracking `origin/task-<n>`; a worktree whose directory was deleted by hand does not stop the run
+- [x] `docs/plan/next-action-and-runner.md` says the clean-up runs at the start of `chitty run`, before pending landings, under the landing lock, lists the reasons a merged branch is kept, and gives the `removed merged branch` and `kept merged branch` lines; `make check` passes
 
 ## Plan
 
@@ -294,6 +294,11 @@ Review failed (work): Newly discovered: cleanup deletes non-ticket branches whos
 
 The invalid branch regression failed before the fix because task-feature-extra was deleted; it passes after validating the full ID.
 
+Reviewed: The previously reported invalid-branch deletion is resolved; no new defects found.
+1: pass - `make check` printed `Ran 891 tests ... OK`, including `test_removes_done_and_unknown_branches`. The worker recorded that the removal regression failed with the prior unknown-ID skip restored.
+2: pass - `make check` passed the status, lock, untracked, conflict, deleted-worktree, ahead, remote and non-ticket tests. The worker recorded that the invalid-branch regression failed before the fix; the repair regression failed before the status rule.
+3: pass - `docs/plan/next-action-and-runner.md` specifies ordering, locking, retention reasons and messages; `make check` printed `Ran 891 tests ... OK`.
+
 ## Summary
 
 Startup cleanup preserves non-ticket branch names by validating full ticket IDs. The new regression failed before the fix and passes after it; make check passed all 887 tests. No follow-ups.
@@ -326,3 +331,5 @@ Startup cleanup preserves non-ticket branch names by validating full ticket IDs.
 - 2026-11-21T00:47:13Z lively-coral-toad: changed notes
 - 2026-11-21T00:54:04Z lively-coral-toad: changed summary
 - 2026-11-21T00:55:15Z lively-coral-toad doing → review
+- 2026-11-21T01:04:30Z friendly-violet-adder: changed notes; ticked acceptance criteria
+- 2026-11-21T01:04:30Z friendly-violet-adder review → done
