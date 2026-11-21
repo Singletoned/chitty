@@ -1,6 +1,7 @@
 import re
 import unittest
 from collections.abc import Callable, Mapping
+from unittest.mock import patch
 
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
@@ -137,13 +138,18 @@ IDS = [TaskId("TASK", 1), TaskId("TASK", 2)]
 @st.composite
 def rewrite_cases(draw):
     text = draw(ticket_texts(IDS))
-    targets = [TaskId("TASK", 100), TaskId("TASK", 101)]
+    numbers = draw(
+        st.lists(st.integers(min_value=100, max_value=100000), min_size=2, max_size=2, unique=True)
+    )
+    targets = [TaskId("TASK", number) for number in numbers]
     for target in targets:
         assume(str(target) not in text)
     chain = draw(st.booleans())
     mapping = {IDS[0]: targets[0]}
     if chain:
         mapping[targets[0]] = targets[1]
+    elif draw(st.booleans()):
+        mapping[IDS[1]] = targets[1]
     return parse(text), mapping
 
 
@@ -171,7 +177,10 @@ def property_fields(rewrite, task, mapping):
         if name in ("History", "Acceptance Criteria"):
             continue
         text = task.section(name)
-        assert result.section(name) == (replace_ids(text, mapping) if text is not None else None)
+        expected = replace_ids(text, mapping) if text is not None else None
+        if expected is not None and expected != text:
+            expected = "\n".join(line.rstrip(" \t") for line in expected.split("\n"))
+        assert result.section(name) == expected
     assert len(result.criteria) == len(task.criteria)
     for before, after in zip(task.criteria, result.criteria, strict=True):
         assert after.text == replace_ids(before.text, mapping)
@@ -181,12 +190,13 @@ def property_fields(rewrite, task, mapping):
 def property_boundaries(rewrite, task, mapping):
     key = next(iter(mapping))
     new = mapping[key]
-    text = f"{key}A X{key} X-{key} {key}-x TASK-2 `{key}` https://a/{key}"
+    unmapped = TaskId("OTHER", 9999)
+    text = f"{key}A X{key} X-{key} {key}-x {unmapped} `{key}` https://a/{key}"
     task = task.with_section("Description", text)
     result = rewrite(task, mapping)
     assert (
         result.section("Description")
-        == f"{key}A X{key} X-{key} {new}-x TASK-2 `{new}` https://a/{new}"
+        == f"{key}A X{key} X-{key} {new}-x {unmapped} `{new}` https://a/{new}"
     )
 
 
@@ -220,7 +230,39 @@ def property_formatting(rewrite, task, mapping):
             assert criterion_bytes(result, index) == criterion_bytes(task, index)
 
 
+def sequential_rewrite(task: Task, mapping: Mapping[TaskId, TaskId]) -> Task:
+    def sequential(text: str, replacements: Mapping[TaskId, TaskId]) -> str:
+        for old, new in replacements.items():
+            text = text.replace(str(old), str(new))
+        return text
+
+    with patch("chitty.renumbering.replace_ids", sequential):
+        return rewrite_task(task, mapping)
+
+
+def rendered_rewrite(task: Task, mapping: Mapping[TaskId, TaskId]) -> Task:
+    return parse(replace_ids(task.render(), mapping))
+
+
 class TestRewriteProperties(unittest.TestCase):
+    def test_sequential_mutation_fails_fields(self):
+        task = parse(
+            "---\ntitle: TASK-1\nstatus: todo\ncreated: 2024-01-01\n"
+            "---\n\n## Description\n\nTASK-1\n"
+        )
+        mapping = {TaskId("TASK", 1): TaskId("TASK", 100), TaskId("TASK", 100): TaskId("TASK", 101)}
+        with self.assertRaises(AssertionError):
+            property_fields(sequential_rewrite, task, mapping)
+
+    def test_rendered_mutation_fails_preserved(self):
+        task = parse(
+            "---\ntitle: TASK-1\nstatus: todo\ncreated: 2024-01-01\n"
+            "labels: [TASK-1]\n---\n\n## Description\n\nTASK-1\n\n"
+            "## History\n\n- 2024-01-01T00:00:00Z actor: TASK-1\n"
+        )
+        with self.assertRaises(AssertionError):
+            property_preserved(rendered_rewrite, task, {TaskId("TASK", 1): TaskId("TASK", 100)})
+
     @given(rewrite_cases())
     @settings(deadline=None)
     def test_fields(self, case):
