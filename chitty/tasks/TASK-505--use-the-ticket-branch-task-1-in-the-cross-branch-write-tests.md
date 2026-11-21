@@ -26,6 +26,10 @@ The "after" check is done: the planner ran these renamed tests on spike `ab2ac7b
 - [ ] `git diff main...HEAD -- tests` changes only `tests/test_cli.py` (`TestCrossBranchWrites`) and `tests/test_mcp.py` (`test_cross_branch_write_error_matches_the_cli`), and every changed line differs only by `worker` becoming `task-1`; no `"worker"` string literal is left in those five `test_cli.py` tests or that MCP test (the helper name `claim_on_worker` stays)
 - [ ] `make check` passes
 
+## Plan
+
+Replace only the specified branch string literals in the cross-branch tests, verify the diff, run chitty fix, format and make check, and hand off for review.
+
 ## Notes
 
 The required after-switch verification mandates creating and modifying a separate detached worktree, including its `src/chitty/store.py` and test files. The session instruction permits changes only inside the ticket worktree and explicitly forbids touching other worktrees, so even nesting the detached worktree inside this one would violate that restriction. The ticket requires this exact method and does not permit an alternative. Please decide whether to authorize that worktree for verification or amend the required method. No implementation was started; after-switch verification and `make check` remain unfinished.
@@ -45,3 +49,4 @@ Planner 2026-11-21: the worker could not create the second worktree the after-sw
 - 2026-11-21T11:48:35Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T11:48:35Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T11:50:57Z tidy-russet-gannet todo → doing
+- 2026-11-21T11:52:50Z tidy-russet-gannet: wrote the plan
