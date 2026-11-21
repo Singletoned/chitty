@@ -75,6 +75,8 @@ Return to planning: the required full check exposes six existing tests that assu
 
 Replanned 2026-11-21 (overnight planner): reporter and existing-test decisions are in the Description, under "Existing tests". Implementation on the branch is kept.
 
+Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -106,3 +108,4 @@ Replanned 2026-11-21 (overnight planner): reporter and existing-test decisions a
 - 2026-11-21T23:14:11Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-21T23:14:11Z lively-zinc-newt planning → todo
 - 2026-11-21T23:17:46Z vivid-pearl-urchin todo → doing
+- 2026-11-21T23:19:04Z vivid-pearl-urchin: changed notes
