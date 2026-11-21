@@ -241,12 +241,10 @@ class Repo:
     def __init__(self, root: Path, config: RepoConfig) -> None:
         self.root = root
         self.config = config
-        self._historical_files: list[git.HistoricalFile] | None = None
         self._ticket_ids: set[TaskId] | None = None
         self._ticket_ref_files: dict[str, list[tuple[Path, str]]] | None = None
         self._source_refs: dict[TaskId, str] = {}
         self._task_locations: dict[tuple[str, bool], list[StoredTask]] = {}
-        self._dirty_paths: dict[Path, set[Path]] = {}
         self._current_branch_cached = False
         self._current_branch_value: str | None = None
         self._repository_value: bool | None = None
@@ -344,62 +342,33 @@ class Repo:
         return sorted(found, key=lambda t: t.id)
 
     def _tasks_in_location(self, context: Context, archived: bool) -> list[StoredTask]:
-        """List tickets in one active or archive directory, or return an empty list.
-
-        On a cache miss, parse local files and all matching `git.historical_files`
-        records before choosing the latest committed record per ID. Prefer a
-        local copy if dirty, if the ID has no historical record, or if the
-        selected record is from the current branch. Cache the result and return
-        a list copy without reparsing on cache hits. Local scan and parse errors
-        use `<path>: <error>`; historical filename and parse errors use
-        `<ref>:<path>: <error>`.
-        Git errors propagate.
-        """
+        """List authoritative tickets in one active or archive directory."""
         key = (context.name, archived)
         cached = self._task_locations.get(key)
         if cached is not None:
             return list(cached)
-        local = [self._load(context, path, archived) for path in self._files(context, archived)]
-        directory = context.archive_directory if archived else context.directory
-        relative_directory = directory.relative_to(self.root)
-        historical: dict[TaskId, tuple[StoredTask, int]] = {}
-        for file in self._history():
-            if file.path.parent != relative_directory:
+        directory = (context.archive_directory if archived else context.directory).relative_to(
+            self.root
+        )
+        result: list[StoredTask] = []
+        for task_id in self.ticket_ids():
+            ref, copies = self._source_files(task_id)
+            if not any(path.parent == directory for path, _ in copies):
                 continue
-            try:
-                task_id, _ = ids.parse_filename(file.path.name)
-                task = parse(file.content)
-            except (ids.IdError, TaskError) as error:
-                raise ChittyError(f"{file.ref}:{file.path}: {error}") from None
-            previous = historical.get(task_id)
-            if previous is None or file.committed_at > previous[1]:
-                historical[task_id] = (
+            source = self._parse_source_copy(task_id, ref, copies)
+            if source is not None:
+                result.append(
                     StoredTask(
-                        task_id, context.name, self.root / file.path, archived, task, file.ref
-                    ),
-                    file.committed_at,
+                        task_id,
+                        context.name,
+                        self.root / source.path,
+                        archived,
+                        source.task,
+                        source.ref,
+                    )
                 )
-        tasks = {task_id: stored for task_id, (stored, _) in historical.items()}
-        dirty = self._dirty_paths_for(relative_directory)
-        current_branch = self._current_branch()
-        for stored in local:
-            relative_path = stored.path.relative_to(self.root)
-            previous = tasks.get(stored.id)
-            if relative_path in dirty or previous is None or previous.branch == current_branch:
-                tasks[stored.id] = stored
-        result = list(tasks.values())
         self._task_locations[key] = result
         return list(result)
-
-    def _history(self) -> list[git.HistoricalFile]:
-        if self._historical_files is None:
-            self._historical_files = git.historical_files(self.root, Path(BACKLOG_DIR))
-        return self._historical_files
-
-    def _dirty_paths_for(self, directory: Path) -> set[Path]:
-        if directory not in self._dirty_paths:
-            self._dirty_paths[directory] = git.dirty_paths(self.root, directory)
-        return self._dirty_paths[directory]
 
     def _current_branch(self) -> str | None:
         if not self._current_branch_cached:
@@ -440,12 +409,10 @@ class Repo:
         return self._main_files[key]
 
     def _invalidate(self) -> None:
-        self._historical_files = None
         self._ticket_ids = None
         self._ticket_ref_files = None
         self._source_refs.clear()
         self._task_locations.clear()
-        self._dirty_paths.clear()
         self._current_branch_cached = False
         self._current_branch_value = None
         self._repository_value = None
@@ -1018,9 +985,9 @@ class Repo:
                         "configure main_branch in chitty.toml"
                     )
                 used = {
-                    task.id.number
-                    for task in self.all_tasks()
-                    if task.id.prefix == context.prefix and isinstance(task.id.number, str)
+                    task_id.number
+                    for task_id in self.ticket_ids()
+                    if task_id.prefix == context.prefix and isinstance(task_id.number, str)
                 }
                 for _ in range(RANDOM_ID_ATTEMPTS):
                     task_id = TaskId(context.prefix, ids.provisional_suffix(_provisional_draw))
