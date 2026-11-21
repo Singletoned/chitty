@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -77,3 +77,4 @@ Replanned 2026-11-21: both blockers in the notes above are settled in the Descri
 - 2026-11-21T22:55:10Z lively-zinc-newt planning → cold-read
 - 2026-11-21T22:55:49Z lively-zinc-newt: changed notes
 - 2026-11-21T22:55:49Z lively-zinc-newt cold-read → todo
+- 2026-11-21T22:56:08Z honest-dusky-stoat todo → doing
