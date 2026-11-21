@@ -296,7 +296,7 @@ The invalid branch regression failed before the fix because task-feature-extra w
 
 ## Summary
 
-Startup cleanup keeps non-done ticket branches and removes eligible done or unknown branches, with real-Git coverage and updated runner documentation. Verified make check: 876 tests passed. Regression failure evidence is in the notes. No follow-ups.
+Startup cleanup preserves non-ticket branch names by validating full ticket IDs. The new regression failed before the fix and passes after it; make check passed all 887 tests. No follow-ups.
 
 ## History
 
@@ -324,3 +324,4 @@ Startup cleanup keeps non-done ticket branches and removes eligible done or unkn
 - 2026-11-21T00:35:27Z jolly-umber-falcon review → doing
 - 2026-11-21T00:46:12Z lively-coral-toad: wrote the plan
 - 2026-11-21T00:47:13Z lively-coral-toad: changed notes
+- 2026-11-21T00:54:04Z lively-coral-toad: changed summary
