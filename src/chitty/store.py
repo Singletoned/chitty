@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import sys
 import tomllib
-from collections.abc import Generator, Mapping, Sequence
+from collections.abc import Generator, Iterable, Mapping, Sequence
 from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime
@@ -45,6 +45,7 @@ from chitty.model import (
     new_task,
     parse,
 )
+from chitty.renumbering import plan_renumbering
 from chitty.selection import (
     STATUSES,
     DependencyFact,
@@ -999,17 +1000,58 @@ class Repo:
                 )
         return TaskId(context.prefix, self.next_number(context)), False
 
-    def next_number(self, context: Context) -> int:
-        numbers = [
+    def _plan_provisional_renumbering(self) -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]:
+        """Select writable disk tickets and allocate fresh sequential IDs without writing."""
+        sequential = {
+            context.name: context
+            for context in self.contexts()
+            if not self.config.contexts[context.name].random_ids
+        }
+        disk_paths: list[Path] = []
+        writable: list[StoredTask] = []
+        candidates: list[TaskId] = []
+        for context in self.discovered_contexts():
+            for archived in (False, True):
+                for path in self._files(context, archived):
+                    disk_paths.append(path)
+                    if context.name not in self.config.contexts:
+                        continue
+                    task_id, _ = ids.parse_filename(path.name)
+                    if self.source_of(task_id) is not None:
+                        continue
+                    stored = self._load(context, path, archived)
+                    writable.append(stored)
+                    if context.name in sequential and stored.task.frontmatter.provisional:
+                        candidates.append(task_id)
+        if not candidates:
+            return {}, ()
+
+        used = {context.prefix: self._used_numbers(context) for context in sequential.values()}
+        self._reserve_numbers(used, self.ticket_ids())
+        for path in disk_paths:
+            self._reserve_numbers(used, ids.ticket_references(path.read_text(), used.keys()))
+        return plan_renumbering(used, candidates), tuple(writable)
+
+    @staticmethod
+    def _reserve_numbers(used: dict[str, set[int]], references: Iterable[TaskId]) -> None:
+        for task_id in references:
+            if task_id.prefix in used and isinstance(task_id.number, int):
+                used[task_id.prefix].add(task_id.number)
+
+    def _used_numbers(self, context: Context) -> set[int]:
+        numbers = {
             number
             for archived in (False, True)
             for p in self._files(context, archived)
             if isinstance(number := ids.parse_filename(p.name)[0].number, int)
-        ]
+        }
         if self.config.archive == "delete":
-            numbers += self._deleted_numbers(context)
+            numbers.update(self._deleted_numbers(context))
+        return numbers
+
+    def next_number(self, context: Context) -> int:
+        used = self._used_numbers(context)
         if self.config.contexts[context.name].random_ids:
-            used = set(numbers)
             for _ in range(RANDOM_ID_ATTEMPTS):
                 if (number := _random_number()) not in used:
                     return number
@@ -1019,7 +1061,7 @@ class Repo:
             )
         if git.is_repository(self.root) and self._current_branch() != self._main_branch():
             raise ChittyError("sequential ticket numbers can only be allocated on main")
-        return ids.next_number(numbers)
+        return ids.next_number(used)
 
     def archive(self, task_id: TaskId) -> Change:
         self._prepare_write()
