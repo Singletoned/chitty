@@ -285,6 +285,8 @@ make: *** [check] Error 10
 
 ```
 
+Regression evidence: the repair test failed against the existing cleanup because it removed the error branch; it passes with the status rule. The removal test failed with the previous unknown-ID skip restored and passes with that skip removed.
+
 ## History
 
 - 2026-11-18T18:00:02Z lively-quartz-crane → backlog
@@ -304,3 +306,4 @@ make: *** [check] Error 10
 - 2026-11-20T23:25:08Z quick-pearl-lapwing: changed description
 - 2026-11-21T00:17:20Z jolly-ochre-lapwing: changed notes
 - 2026-11-21T00:18:09Z jolly-ochre-lapwing: wrote the plan
+- 2026-11-21T00:21:33Z jolly-ochre-lapwing: changed notes
