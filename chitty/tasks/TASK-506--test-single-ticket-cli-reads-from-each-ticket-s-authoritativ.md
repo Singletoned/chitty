@@ -1,6 +1,6 @@
 ---
 title: Test single-ticket CLI reads from each ticket's authoritative source
-status: doing
+status: planning
 priority: high
 depends_on:
   - TASK-378
@@ -44,6 +44,8 @@ Planning needed: criterion 2 and the planner note claim malformed branch `contex
 
 Pre-switch run used the parent of 7e7b5ae4ea6f01a4b6f6750442618bf3f6bfc28f; `git diff <parent> main -- src` names only `src/chitty/store.py`. Branch edit showed main title; retitle showed main path; archive failed with duplicate files; feature-only ticket was shown; conflict showed main rather than failing; malformed branch show showed main rather than failing; malformed branch context passed; malformed main working-tree context and find independently raised the working-tree frontmatter error; linked feature worktree showed the uncommitted title. Provisional and unrelated-conflict guard tests passed. Restored the store. Current focused tests and `make check` pass (917 tests); partial test changes committed. Review handoff remains unfinished pending the planning decision.
 
+The specified malformed-branch context regression passes before the switch, contrary to criterion 2; the preceding note records evidence and the planning decision needed.
+
 ## History
 
 - 2026-11-21T11:40:32Z sunny-ebony-kestrel → planning
@@ -61,3 +63,5 @@ Pre-switch run used the parent of 7e7b5ae4ea6f01a4b6f6750442618bf3f6bfc28f; `git
 - 2026-11-21T12:50:43Z daring-ochre-newt: changed notes
 - 2026-11-21T12:51:17Z daring-ochre-newt: wrote the plan
 - 2026-11-21T12:54:27Z daring-ochre-newt: changed notes
+- 2026-11-21T12:54:41Z daring-ochre-newt: changed owner, notes
+- 2026-11-21T12:54:41Z daring-ochre-newt doing → planning
