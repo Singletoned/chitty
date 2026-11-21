@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -73,6 +73,8 @@ Add real-Git regression coverage and confirm failures before the switch; route s
 Earlier notes (attempts, splits, cold reads, the worker's 2026-11-21 return) are in Git history; the Description is authoritative and this summary replaces them.
 
 The worker's last return found that `_choose_source` parsed a copy to learn `provisional`, so `context_of` could still parse and raise. Decided with the owner 2026-11-21: `provisional` comes from the ID and file names (see Decisions). Measured on spike `ab2ac7bf` plus that change, with `unittest-parallel` in a scratch worktree: exactly two more tests fail, both in `tests/test_source_copy.py`, and they are the last two migrations listed. Probed the new criterion 2 case: on `main`, `context_of` and the branch read both raise the working-tree parse error; with the change, `context_of` is `tasks` and the title `branch` is read. Scratch-run formatter and `init` guide failures also fail without the change and come from that environment.
+
+After reading the source-selection and lookup implementation and the existing Git fixtures, I cannot complete the specified switch, all 17 migrations, and the independently verified CLI regression cases in this session. The required pre-fix failure evidence and full check remain unfinished; no implementation was changed. The ticket requires these migrations to land together, so planning needs to decide how to partition or otherwise resource this work without landing a failing intermediate state.
 
 ## History
 
@@ -195,3 +197,5 @@ The worker's last return found that `_choose_source` parsed a copy to learn `pro
 - 2026-11-21T11:29:13Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T11:29:45Z golden-khaki-vole todo → doing
 - 2026-11-21T11:31:46Z golden-khaki-vole: wrote the plan
+- 2026-11-21T11:32:08Z golden-khaki-vole: changed owner, notes
+- 2026-11-21T11:32:08Z golden-khaki-vole doing → planning
