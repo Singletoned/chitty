@@ -29,6 +29,10 @@ Against the `run.py` of `TASK-353`, each changed test fails; record in the notes
 
 - [ ] The changed assertions pass, and each changed test fails against the `run.py` of `TASK-353`, with the first failing assertion recorded in the notes; the command-not-found guard passes; `make check` passes
 
+## Plan
+
+Add the specified regression tests and command-not-found guard, run them against the existing runner and record first failures, then route setup and landing checks through the shared log and run formatting and checks.
+
 ## Notes
 
 Cold read 2026-11-19 outcomes: restated `_run_logged`; dropped the wrong `refresh_setup` claim (it runs no setup command); the landing script prints a marker and setup writes to stderr, so dropping output or stderr fails; full error strings; a command-not-found guard; rename of the setup test; listed existing tests that need no change.
@@ -42,3 +46,4 @@ Second cold read 2026-11-19 outcomes: the fails-before evidence names the first 
 - 2026-11-19T17:33:19Z quick-ginger-lapwing: changed description, acceptance criteria, notes
 - 2026-11-19T17:34:21Z quick-ginger-lapwing planning → todo
 - 2026-11-21T08:43:43Z upbeat-white-adder todo → doing
+- 2026-11-21T08:45:31Z upbeat-white-adder: wrote the plan
