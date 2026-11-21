@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-480
@@ -25,7 +25,7 @@ Expected results read from the main checkout (checkout kind (1)): (a) `main`; (b
 
 Tests: new `tests/test_property_ticket_reads.py`, a `RepoTestCase`.
 
-- `test_main_checkout_placements`: for each placement, build it with `TASK-5` and check `Repo.open(root).find(TASK-5)` (or `ChittyError` for error results, and `no task` for not listed) and `Repo.open(root).tasks()` (raises on error results; else lists exactly the expected ticket or none). Then, for every placement except (f) and (i), where the main checkout has no committed file to edit, repeat in a fresh repository with `edit_uncommitted` applied in the main checkout. Use `subTest(placement=..., edit=...)`.
+- `test_main_checkout_placements`: for each placement, build it with `TASK-5` and check `Repo.open(root).find(TASK-5)` (or `ChittyError` for error results, and `no task` for not listed) and `repo.tasks(repo.context("tasks"), "all")` (raises on error results; else lists exactly the expected ticket or none). Then, for every placement except (f) and (i), where the main checkout has no committed file to edit, repeat in a fresh repository with `edit_uncommitted` applied in the main checkout. Use `subTest(placement=..., edit=...)`.
 - Mutant tests, in the style of `test_mutant_ignores_current_branch` in `tests/test_source_copy_checkouts.py` (patch `chitty.store.ticket_source` with a wrapper that changes one argument): (1) a `contains` callback with its two arguments swapped, and (2) `main_tip=None`. Each runs the same checks over all placements and asserts that at least one `subTest` check fails (collect failures instead of relying on `subTest` output).
 
 No property here: one ticket, a fixed set of 13 placements, each listed and each tested; generated draws are `TASK-523`.
@@ -42,6 +42,8 @@ Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the la
 Planning blocker: the deterministic test requires every compatible placement in checkout kind (1) both with and without an uncommitted edit to the ticket's file, but placement (f) has that file only on unrelated branch `other`: there is no file in the main checkout to edit. Creating it makes an uncommitted main-checkout ticket, like placement (i), while the stated expected result for (f) is not listed. `Repo._collect_ticket_ids` includes working-tree ticket files and `ticket_source` selects the main working tree when there is no matching ticket branch. Please specify whether (f) is excluded from the edit variant or define its fixture and expected result when a file is created. The same feasibility issue applies to random edits in other checkouts without the file; specify the eligibility rule. The remaining requirements were inspected against `src/chitty/store.py`, `src/chitty/ticket_source.py`, and the existing authoritative listing and source-error tests; implementation, mutation evidence and `make check` could not be verified without a consistent test fixture.
 
 Planning blocker: this is too large for one session. The requested real-Git fixture must compose 13 placements for up to four tickets with five checkout kinds, two contexts, archive states, random dates, decoys and working-tree edits; it also requires an exhaustive deterministic matrix and three separately verified mutations. The existing pure source-selector property alone is 361 lines in `tests/test_property_ticket_source.py`, while this ticket additionally constructs and checks real repositories and multi-ticket interactions. Please split the fixture and deterministic placement coverage from generated multi-ticket coverage and mutation evidence into independently reviewable tickets, defining dependencies and allocating the existing acceptance criteria. I inspected the selector call and listing in `src/chitty/store.py` and the selector in `src/chitty/ticket_source.py`; no implementation, mutation runs, or `make check` were performed, so their outcomes remain unverified. No code changes were made.
+
+Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), `TASK-522` (linked worktrees) and `TASK-523` (generated draws), settling the size blocker above. The (f) edit question is settled: (f) and (i) get no uncommitted-edit variant, since the main checkout has no committed file for them.
 
 ## History
 
@@ -72,3 +74,5 @@ Planning blocker: this is too large for one session. The requested real-Git fixt
 - 2026-11-21T22:21:59Z zesty-violet-eel doing → planning
 - 2026-11-21T23:03:33Z lively-zinc-newt: changed title, description
 - 2026-11-21T23:06:14Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-21T23:06:23Z lively-zinc-newt: changed description, notes
+- 2026-11-21T23:06:23Z lively-zinc-newt planning → cold-read
