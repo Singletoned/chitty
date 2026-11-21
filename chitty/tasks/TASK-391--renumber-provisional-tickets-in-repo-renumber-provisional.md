@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -36,6 +36,10 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - [ ] The `rewrite_task` property passes and fails against a `NotImplementedError` stub; `make check` passes
 - [ ] A ticket in flight on `task-<n>` whose `main` copy mentions a provisional ID is left byte-identical on `main`, and the rest of the run succeeds
 
+## Notes
+
+The requested rewrite and property cannot be implemented as written against the current model: `src/chitty/model.py` `_split_sections` rejects any non-whitespace content before the first `##` section, so a parsed `Task` cannot contain an ID in the preamble. The description nevertheless requires rewriting that text and generating tickets with mentions in every field and section; frontmatter fields such as `status`, `created` and `provisional` also cannot contain such mentions, while `moved_from` and History are explicitly excluded from rewriting. Please specify whether to change the parser to allow preamble content or remove that requirement, and clarify the property fixture to identify the eligible fields and sections. No implementation was started; regression evidence and verification remain outstanding.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -57,3 +61,5 @@ Tests: real-file tests calling `Repo.renumber_provisional()` in a new `tests/tes
 - 2026-11-18T17:53:03Z lively-quartz-crane todo → planning
 - 2026-11-18T17:53:05Z lively-quartz-crane planning → todo
 - 2026-11-21T13:00:34Z mellow-teal-urchin todo → doing
+- 2026-11-21T13:03:53Z mellow-teal-urchin: changed owner, notes
+- 2026-11-21T13:03:53Z mellow-teal-urchin doing → planning
