@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: review
+status: doing
 priority: high
 created: 2026-11-19
 ---
@@ -395,6 +395,11 @@ Review failed (tests): Newly discovered: criterion 2 explicitly requires the rea
 
 The runner-entry landing regression passes normally and fails with 0 != 1 when add_task_trailers is patched out, confirming it detects missing trailers.
 
+Review failed (tests): Newly discovered: the property generator does not draw arbitrary lines containing tabs alongside printable characters. The earlier tests review concerned the runner entry point, which is now exercised; it did not report this generator defect.
+1: fail - `tests/test_property_task_trailer.py` draws `st.text` from codepoints 32–126 only and draws `\t` only as a whole line; it cannot generate e.g. `a\tb`. Include tab in the text alphabet as explicitly required and rerun the property and both specified wrong-version checks, recording the failing test names.
+2: pass - `make check` printed `Ran 882 tests` and `OK`; `test_landing_adds_trailers_and_preserves_commit_data` now calls `chitty run`. The worker recorded that disabling trailer rewriting produced `AssertionError: 0 != 1`. The direct no-op and merge tests also passed.
+3: pass - `make check` printed `Ran 882 tests` and `OK`, including the inverted review-entry test. The prior review recorded that running it with `Repo.edit` from `main` failed with exit 1 instead of 0.
+
 ## Summary
 
 Automatic task trailers are added at landing. The real-Git regression now exercises chitty run and preserves its author, date, tree and trailer assertions. The test fails when trailer rewriting is disabled. make check passed all 875 tests; chitty fix completed with existing warnings.
@@ -437,3 +442,5 @@ Automatic task trailers are added at landing. The real-Git regression now exerci
 - 2026-11-21T00:04:05Z friendly-silver-toad: changed notes
 - 2026-11-21T00:08:55Z friendly-silver-toad: changed summary
 - 2026-11-21T00:09:26Z friendly-silver-toad doing → review
+- 2026-11-21T00:20:31Z vivid-coral-lapwing: changed acceptance criteria, notes
+- 2026-11-21T00:20:31Z vivid-coral-lapwing review → doing
