@@ -61,6 +61,8 @@ Reviewed the runner and refreshed the implementation plan; no code or tests have
 
 All three new regression tests failed against the original runner: each expected exit 1 but received exit 0. The post-commit fixture leaves the parent ticket unchanged, so assert_branch_error needed no adjustment.
 
+The changed post-commit test fails when the HEAD comparison is deliberately disabled: expected exit 0, got 1. Restored the comparison afterward.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -85,3 +87,4 @@ All three new regression tests failed against the original runner: each expected
 - 2026-11-21T22:57:46Z honest-dusky-stoat: wrote the plan
 - 2026-11-21T22:57:59Z honest-dusky-stoat: changed notes
 - 2026-11-21T22:58:45Z honest-dusky-stoat: changed notes
+- 2026-11-21T23:00:39Z honest-dusky-stoat: changed notes
