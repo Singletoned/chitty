@@ -1,6 +1,6 @@
 ---
 title: Keep one agent log per `chitty run` ticket run and print its path
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-276
@@ -21,9 +21,9 @@ For success copy the fixture pattern of `tests/test_run_continue.py`: first fake
 
 ## Acceptance Criteria
 
-- [ ] Hypothesis checks the pure log path for generated aware datetimes, IDs and common dirs against the UTC filename recipe. A deterministic collision and a blocked parent path each fail loudly before ticket or ticket branch/worktree changes; neither overwrites existing bytes.
-- [ ] A real-Git fake-agent continuation and a rebase-conflict session followed by review each produce one persistent file containing both streams of each session in order. A successful run keeps the exact original status line on stdout and prints exactly one absolute `log:` path on stderr.
-- [ ] Timeout and pre-agent setup failure each leave a readable persistent log and print its path exactly once. Document the location and stderr line in `README.md` and `docs/plan/next-action-and-runner.md`. Keep existing timeout, review and continuation tests passing.
+- [x] Hypothesis checks the pure log path for generated aware datetimes, IDs and common dirs against the UTC filename recipe. A deterministic collision and a blocked parent path each fail loudly before ticket or ticket branch/worktree changes; neither overwrites existing bytes.
+- [x] A real-Git fake-agent continuation and a rebase-conflict session followed by review each produce one persistent file containing both streams of each session in order. A successful run keeps the exact original status line on stdout and prints exactly one absolute `log:` path on stderr.
+- [x] Timeout and pre-agent setup failure each leave a readable persistent log and print its path exactly once. Document the location and stderr line in `README.md` and `docs/plan/next-action-and-runner.md`. Keep existing timeout, review and continuation tests passing.
 
 ## Plan
 
@@ -38,6 +38,11 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
 Runner error (agent): TASK-467 was unchanged; only committed changes are visible to `chitty run`
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-467`
+
+Reviewed: Full diff inspected; `make check` passed 1001 tests, Ruff and Pyright. Re-ran the eight new or changed tests with the main-branch runner loaded in memory and a stub path helper: all eight failed, as expected.
+1: pass - `tests.test_run_log.TestLogPath` and collision/blocked-parent tests pass in `make check`; baseline produced four failures, including exit 0 instead of 1 for both creation errors.
+2: pass - continuation and successful rebase-review tests pass in `make check`; baseline both failed with zero log announcements instead of one.
+3: pass - timeout and setup-failure tests pass in `make check`; baseline both failed with zero log announcements. README and runner plan document location and stderr output; existing tests pass in the full suite.
 
 ## Summary
 
@@ -63,3 +68,5 @@ The path property and small-year case failed on the signature stub. The CLI regr
 - 2026-11-21T21:11:48Z quick-ochre-vole doing → error
 - 2026-11-21T21:18:10Z eager-ginger-adder: changed summary
 - 2026-11-21T21:18:10Z eager-ginger-adder error → review
+- 2026-11-21T21:22:39Z kind-white-kestrel: changed notes; ticked acceptance criteria
+- 2026-11-21T21:22:39Z kind-white-kestrel review → done
