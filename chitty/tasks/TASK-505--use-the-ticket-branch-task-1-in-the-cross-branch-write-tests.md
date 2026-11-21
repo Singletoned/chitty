@@ -1,6 +1,6 @@
 ---
 title: Use the ticket branch `task-1` in the cross-branch write tests
-status: doing
+status: review
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -55,3 +55,4 @@ Renamed the specified cross-branch test literals to `task-1`, preserving the hel
 - 2026-11-21T11:50:57Z tidy-russet-gannet todo → doing
 - 2026-11-21T11:52:50Z tidy-russet-gannet: wrote the plan
 - 2026-11-21T11:54:49Z tidy-russet-gannet: changed summary
+- 2026-11-21T11:54:58Z tidy-russet-gannet doing → review
