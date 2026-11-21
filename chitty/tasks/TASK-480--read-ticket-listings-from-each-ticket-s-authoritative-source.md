@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-515
@@ -18,15 +18,16 @@ Replace the history merge in `_tasks_in_location` with `ticket_ids()` and the sa
 
 Tests: new `tests/test_authoritative_listing.py`, real files and real Git, use `CliTestCase` and the Git fixture helpers used in `tests/test_source_copy_errors.py`. Fixed Git integration states exercise the wiring; the pure rules are already generated in `tests/test_property_ticket_source.py`. Confirm the changed listing and isolated allocation assertions fail before the fix, then run the new suite and `make check`. Use a test-local `git.historical_files` patch only in the placement/standalone cases; the conflict test must distinguish conflict detection from an arbitrary failure.
 
-Placement: commit an active `TASK-1` and active `TASK-2` on main. On `task-1`, move its file into `archive/`, change its title, and commit. On `task-2`, change its title and commit, then return to main and corrupt only the stale working-tree `TASK-2` body. Assert `lookup` selects those branches. `tasks(active)` and CLI list have only the branch title for `TASK-2`; `tasks(archived)` has only the branch title for `TASK-1`; `all_tasks` includes both exactly once. Also make a valid branch-only `TASK-3` on `task-3` and expect it in active results (still absent from disk on main). For the no-Git case create a valid active ticket on disk and list it with `git.historical_files` patched to raise. Preserve context behavior using the existing CLI suite.
+Placement: commit an active `TASK-1` and active `TASK-2` on main. On `task-1`, move its file into `archive/`, change its title, and commit. On `task-2`, change its title and commit, then return to main and corrupt only the stale working-tree `TASK-2` body. Assert `lookup` selects those branches. `tasks(active)` and CLI list show the branch title for `TASK-2`, plus the branch-only `TASK-3` described below; `tasks(archived)` has only the branch title for `TASK-1`; `all_tasks` includes every fixture ticket exactly once. Assert the branch-only ticket also resolves with `lookup`. Run the Git placement assertions once unpatched as well so a regression cannot fail merely because the legacy history API is patched. Also make a valid branch-only `TASK-3` on `task-3` and expect it in active results (still absent from disk on main). For the no-Git case create a valid active ticket on disk and list it with `git.historical_files` patched to raise. Preserve context behavior using the existing CLI suite.
 
-Conflict: use the changed-on-both fixture pattern from `tests/test_source_copy_errors.py` (`TASK-1` changed separately on main and `task-1`), with `autocommit = false` and current setup. On main assert `list --json` and `archive` without an ID fail with `TASK-1` and `changed on both`. On a separate branch from main, patch the draw to produce an existing committed `TASK-AAAAAA` first and `TASK-BAAAAA` next; `add` succeeds with `TASK-BAAAAA` and the existing file is unchanged. Use `mock.patch` on `chitty.store._provisional_draw` as in the provisional allocation tests.
+Conflict: use the changed-on-both fixture pattern from `tests/test_source_copy_errors.py` (`TASK-1` changed separately on main and `task-1`), with `autocommit = false` and current setup. On main assert `list --json` and `archive` without an ID fail with `TASK-1` and `changed on both`. Snapshot ticket files, HEAD and index around bulk archive and assert no changes. On a separate branch from main, also plant a different malformed active ticket under a valid ticket filename (so the old allocator that parses every ticket fails); patch the draw to produce an existing committed `TASK-AAAAAA` first and `TASK-BAAAAA` next; `add` succeeds with `TASK-BAAAAA` and the existing file is unchanged. Use `mock.patch` on `chitty.store._provisional_draw` as in the provisional allocation tests.
 
 ## Acceptance Criteria
 
-- [ ] In the real-Git placement fixture, `Repo.tasks` and `all_tasks` agree with authoritative `lookup` on each selected ticket and list it once in its authoritative location; `chitty list --json` shows only the active authoritative results. Patch `git.historical_files` to raise throughout, and cover standalone working-tree listing the same way.
-- [ ] In the real-Git conflict fixture `chitty list --json` and bulk `archive` fail naming `TASK-1` without reading a non-authoritative copy; off-main `add` succeeds with an unused provisional ID despite that conflict.
+- [ ] The real-Git placement fixture separately asserts `lookup`, `Repo.tasks` for active and archived, `all_tasks`, and default `chitty list --json` agree with the specified results for all three tickets, including the branch-only and moved tickets. Repeat with `git.historical_files` patched to raise; standalone listing under the patch returns the on-disk ticket.
+- [ ] With a ticket changed on both its own branch and main, `chitty list --json` and bulk `archive` fail with `TASK-1` and `changed on both`; bulk archive leaves files, HEAD and index unchanged. Off-main `add` from the conflict fixture also tolerates another ticket with a malformed body, retries the occupied provisional ID and returns the next one.
 - [ ] Keep `tests/test_list_performance.py` passing, including constant Git invocation count with no ticket branches and invalidation after an edit on the same `Repo`; `make check` passes.
+- [ ] In a standalone repo put valid `TASK-1` copies in both active and archive directories. Default listing fails with the duplicate-ID error and both paths, rather than hiding the archived duplicate.
 
 ## Notes
 
@@ -59,3 +60,5 @@ Keep the listing cutover separate from write-path repair. Before the cutover, au
 - 2026-11-21T18:38:35Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T18:38:35Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:39:43Z eager-ginger-adder cold-read → planning
+- 2026-11-21T18:40:09Z eager-ginger-adder: changed description, acceptance criteria
+- 2026-11-21T18:40:09Z eager-ginger-adder planning → cold-read
