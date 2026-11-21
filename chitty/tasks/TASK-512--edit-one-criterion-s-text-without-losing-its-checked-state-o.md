@@ -1,6 +1,6 @@
 ---
 title: Edit one criterion's text without losing its checked state or the other items' formatting
-status: cold-read
+status: todo
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -11,15 +11,15 @@ created: 2026-11-21
 
 Decisions:
 
-- New `Task.with_criterion_text(index: int, text: str) -> Task` in `src/chitty/model.py`. `index` is 1-based, as in `with_criteria`. It replaces item `index`'s text, keeps its checked state and marker character (`[ ]`, `[x]` or `[X]` as written), and writes the item as one line, so its continuation lines are replaced. Every other item, and everything else in the section, keeps its exact bytes. Text is validated as `with_criteria` validates set text: multi-line or empty text raises `TaskError`, and so does an index out of range.
+- New `Task.with_criterion_text(index: int, text: str) -> Task` in `src/chitty/model.py`. `index` is 1-based, as in `with_criteria`. It replaces item `index`'s text, keeps its checked state and marker character (`[ ]`, `[x]` or `[X]` as written), and writes the item as one line, so its continuation lines are replaced. Every other item, and everything else in the section, keeps its exact bytes. Text is validated by `_criterion_text`, as `with_criteria` does: it is stripped; empty or whitespace-only text raises `TaskError`, as does multi-line text (`TASK-513` extends that to every `str.splitlines` line break); so does an index out of range. A criterion that is also checked needs no second call: the checked state is kept.
 - `rewrite_task` uses it, one call per changed criterion, in place of its two `with_criteria` calls.
 - Out of scope: `chitty edit --set-ac` (`TaskEdit` in `src/chitty/store.py` passes `set_criteria` to `with_criteria`), which still unticks the item it sets. Whether it should keep the checked state is a separate decision.
 
-Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, using `ticket_texts` from `tests/ticket_strategies.py` (filtered to tickets with at least one criterion) to get a parsed `task`, a drawn valid index, and drawn single-line non-empty text. Properties: (1) `parse(result.render())` has the new text at `index`, and the same `checked` value as before; (2) the item's marker character is unchanged; (3) every other criterion's rendered lines, and every other section's rendered lines, are byte-identical to `task.render()`'s; (4) the criteria count is unchanged. A unit test asserts that `TaskError` is raised for index 0, for an index past the end, for empty text and for text containing `\n`. First add the method raising `NotImplementedError` and record the properties failing. Existing `rewrite_task` properties in `tests/test_property_renumbering.py` must still pass unchanged.
+Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, using `ticket_texts` from `tests/ticket_strategies.py` (filtered to tickets with at least one criterion) to get a parsed `task`, a drawn valid index, and drawn text from `st.text` over printable characters without line breaks, with at least one non-whitespace character. Properties: (1) `parse(result.render())` has `text.strip()` at `index`, and the same `checked` value as before; (2) the item's marker character, read from the raw bytes of its first rendered line, is unchanged (so `x` and `X` are told apart); (3) every other criterion's rendered lines, and every other section's rendered lines, are byte-identical to `task.render()`'s; (4) the criteria count is unchanged; (5) applying it twice with the same arguments renders the same as applying it once. A unit test asserts that `TaskError` is raised for index 0, for an index past the end, for empty text and for text containing `\n`. First add the method raising `NotImplementedError` and record the properties failing. Existing `rewrite_task` properties in `tests/test_property_renumbering.py` must still pass unchanged.
 
 ## Acceptance Criteria
 
-- [ ] The four properties and the `TaskError` unit test pass; a note records each property failing against the `NotImplementedError` stub
+- [ ] The five properties and the `TaskError` unit test pass; a note records each failing against the `NotImplementedError` stub, quoting the `NotImplementedError` in each failure
 - [ ] `rewrite_task` calls `with_criterion_text` and no longer calls `with_criteria`; the existing properties in `tests/test_property_renumbering.py` pass unchanged; `make check` passes
 
 ## History
@@ -27,3 +27,5 @@ Tests: Hypothesis properties in a new `tests/test_property_criterion_text.py`, u
 - 2026-11-21T14:32:56Z sunny-ebony-kestrel → planning
 - 2026-11-21T14:32:58Z sunny-ebony-kestrel: changed acceptance criteria
 - 2026-11-21T14:32:58Z sunny-ebony-kestrel planning → cold-read
+- 2026-11-21T14:34:38Z sunny-ebony-kestrel: changed description, acceptance criteria
+- 2026-11-21T14:34:38Z sunny-ebony-kestrel cold-read → todo
