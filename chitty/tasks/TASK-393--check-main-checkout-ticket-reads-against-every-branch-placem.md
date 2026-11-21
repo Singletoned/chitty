@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: cold-read
+status: planning
 depends_on:
   - TASK-378
   - TASK-480
@@ -18,15 +18,16 @@ Builder: new module `tests/ticket_placements.py`, importable by later tickets.
 
 - `make_repo(parent: Path) -> Path`: a fresh directory under `parent` (`tempfile.mkdtemp(dir=parent)`), `git init -b main`, local `user.name` and `user.email` (`RepoTestCase` empties `HOME`), and `chitty.toml` holding `CONFIG` from `tests/support.py` (contexts `tasks` and `human`, current `chitty_version`). Commit no placeholder file such as `.gitkeep` in a context directory: it makes every read fail with `task filename '.gitkeep' must end with .md`. Commits pin `GIT_AUTHOR_DATE` and `GIT_COMMITTER_DATE` to fixed increasing dates.
 - `PLACEMENTS`: the 13 names `a` to `m` below. `place(root, placement, number)` builds one ticket `TASK-<number>` in context `tasks`, active on `main` wherever it is on `main`, and returns an `Expected` value: either the title the read must show and whether it is archived, `None` for not listed, or the substrings the `ChittyError` must contain. Each copy has a distinct title (`main`, `branch`, `remote`, `uncommitted`, plus `main-2` for a later `main` edit), so the expected source is identified by its title. The expected results are written out by hand in the module, never computed by calling `ticket_source`.
+- Base: every placement except (f) and (i) first commits `TASK-<n>` with title `main` on `main`, and every branch or remote ref below starts from that commit (or from a later `main` commit where stated). (f) and (i) never commit the ticket on `main`, so they are the only placements with no file in the main checkout.
 - Placements: (a) only on `main`; (b) edited on local branch `task-<n>`; (c) edited only on `origin/task-<n>` (made with `git update-ref`, no local branch); (d) local branch, with `origin/task-<n>` ahead of it; (e) local and remote diverged; (f) only on an unrelated branch `other`, not on `main`; (g) archived on its local branch; (h) deleted on its local branch; (i) a new uncommitted file in the main checkout only; (j) local branch edited, fast-forward merged into `main`, then `main` edited again (branch behind `main`); (k) edited on its local branch and also on `main` after the split (changed on both); (l) local branch fast-forward merged into `main`, with `origin/task-<n>` ahead of it; (m) edited only on `origin/task-<n>` and also on `main` after the split.
 - `edit_uncommitted(root, number)`: sets the title of the ticket's file in that checkout's working tree to `uncommitted`, without committing. Only call it when that file exists there.
 
 Expected results read from the main checkout (checkout kind (1)): (a) `main`; (b) `branch`; (c), (d) `remote`; (e) `ChittyError` naming `task-<n>` and `origin/task-<n>`; (f), (h) not listed; (g) `branch`, archived; (i) `uncommitted`; (j) `main-2`; (k) `ChittyError` naming `TASK-<n>`, `task-<n>` and `main`; (l) `remote`; (m) `ChittyError` naming `TASK-<n>`, `origin/task-<n>` and `main`. With an uncommitted edit in the main checkout, (a) shows `uncommitted` and (j) shows `uncommitted`; every other result is unchanged. A planner probe on 2026-11-21 built every placement on `main` and confirmed each result, including the uncommitted-edit variants. The error messages are ``ticket `TASK-5` has diverged refs: `origin/task-5`, `task-5` `` for (e), and ``ticket `TASK-5` changed on both `<ref>` and `main` `` for (k) and (m). The same probe showed both mutants below change results: swapped `contains` breaks most placements, and `main_tip=None` breaks (j). If a result disagrees, report it rather than change an expectation to fit the code.
 
-Tests: new `tests/test_property_ticket_reads.py`, a `RepoTestCase`.
+Tests: new `tests/test_ticket_placement_reads.py`, a `RepoTestCase`.
 
 - `test_main_checkout_placements`: for each placement, build it with `TASK-5` and check `Repo.open(root).find(TASK-5)` (or `ChittyError` for error results, and `no task` for not listed) and `repo.tasks(repo.context("tasks"), "all")` (raises on error results; else lists exactly the expected ticket or none). Then, for every placement except (f) and (i), where the main checkout has no committed file to edit, repeat in a fresh repository with `edit_uncommitted` applied in the main checkout. Use `subTest(placement=..., edit=...)`.
-- Mutant tests, in the style of `test_mutant_ignores_current_branch` in `tests/test_source_copy_checkouts.py` (patch `chitty.store.ticket_source` with a wrapper that changes one argument): (1) a `contains` callback with its two arguments swapped, and (2) `main_tip=None`. Each runs the same checks over all placements and asserts that at least one `subTest` check fails (collect failures instead of relying on `subTest` output).
+- Mutant tests, in the style of `test_mutant_ignores_current_branch` in `tests/test_source_copy_checkouts.py`: patch `chitty.store.ticket_source` with a wrapper around the real function, which `Repo._choose_source` calls with nine positional arguments. (1) Swapped `contains`: replace the 8th argument `contains` with `lambda a, b: contains(b, a)`. (2) `main_tip=None`: replace the 5th argument with `None`. Each runs the same checks over all placements and collects mismatches: a wrong title or archived flag, a wrong listing, a missing or unexpected `ChittyError`, or a `ChittyError` lacking an expected substring. It asserts at least one mismatch; any other exception propagates and fails the test.
 
 No property here: one ticket, a fixed set of 13 placements, each listed and each tested; generated draws are `TASK-523`.
 
@@ -76,3 +77,5 @@ Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), 
 - 2026-11-21T23:06:14Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:06:23Z lively-zinc-newt: changed description, notes
 - 2026-11-21T23:06:23Z lively-zinc-newt planning → cold-read
+- 2026-11-21T23:07:52Z lively-zinc-newt: changed description
+- 2026-11-21T23:07:52Z lively-zinc-newt cold-read → planning
