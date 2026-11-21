@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -47,6 +47,13 @@ Planner 2026-11-21, after two cold reads: split the pure `rewrite_task` and its 
 
 Planner 2026-11-21, after the cold read: criterion 5 now shows a skipped ticket's number is never reused; a reverse-creation variant; unchanged-bytes checks for the parse and duplicate errors. The `TASK-507` dependency is gated by `depends_on`.
 
+Two unresolved conflicts prevent implementing the specified method safely:
+
+1. The required first call to `Repo._prepare_write()` rejects any non-Git directory when `autocommit = true` (and also rejects a missing Git executable), whereas criterion 4 requires that exact configuration to succeed outside Git. This is an existing, tested policy in `tests/test_autocommit_requires_git.py`. Decide how this operation is exempted while other writes retain their policy, including what happens with a stale setup and without the Git executable; specify the corresponding tests. Calling `_prepare_write()` unchanged cannot satisfy criterion 4.
+2. `rewrite_task` from `TASK-507` requires callers to guarantee that mapping targets are not mentioned in the input ticket. This ticket allocates using filenames and deleted numbers only, so it cannot guarantee that: an on-disk ticket may already mention dangling `TASK-4`, or depend on both `TASK-4` and `TASK-AAAAAA`, when the latter is allocated `TASK-4`. Rewriting the dependencies then produces duplicate values rejected by the model. Decide whether to reserve mentioned numbers, reject such cases before writing, or change the rewrite contract, and specify fixture, action and assertions for the chosen behavior.
+
+Rebased this worktree onto `main` to obtain the landed `TASK-507` dependency. No implementation or tests were written; regression evidence and verification remain outstanding.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -80,3 +87,5 @@ Planner 2026-11-21, after the cold read: criterion 5 now shows a skipped ticket'
 - 2026-11-21T13:19:05Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T13:19:05Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T14:26:11Z daring-yellow-gannet todo → doing
+- 2026-11-21T14:28:21Z daring-yellow-gannet: changed owner, notes
+- 2026-11-21T14:28:21Z daring-yellow-gannet doing → planning
