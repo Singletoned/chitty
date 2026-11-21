@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -227,3 +227,4 @@ Single-ticket reads now use the authoritative source; the nine specified tests w
 - 2026-11-21T12:22:00Z daring-yellow-dormouse todo → doing
 - 2026-11-21T12:24:00Z daring-yellow-dormouse: changed notes
 - 2026-11-21T12:25:37Z daring-yellow-dormouse: changed summary
+- 2026-11-21T12:25:46Z daring-yellow-dormouse doing → review
