@@ -14,16 +14,16 @@ Add `blocking_link(frontmatter: Frontmatter, mapping: Mapping[TaskId, TaskId]) -
 Tests in `tests/test_property_renumbering.py`, Hypothesis (the repository's property tool):
 
 - Write the check as a plain helper `check_blocking_link(fn, case)` that builds the `Frontmatter`, calls `fn(frontmatter, mapping)` and asserts the result. The property `test_blocking_link` is `@given(cases())` calling `check_blocking_link(blocking_link, case)`. No Git repository.
-- `cases()` draws a mapping of 1 to 4 distinct provisional IDs (`TASK-` plus six capital letters) to distinct numeric IDs. Each link is drawn with a label: `("key", k, spelling)`, where `k` is a mapping key and `spelling` is `str(k)` with each letter's case drawn at random; `("other", spelling)`, an ID not in the mapping (another provisional ID or a numeric `TASK-<n>`); or absent. `parent` is one such link; `depends_on` is a list of 0 to 4 such links, whose spellings must be distinct strings (two spellings of one key are allowed). `Frontmatter` gets fixed valid `title`, `status` and `created`.
+- `cases()` draws a mapping of 1 to 4 distinct provisional IDs (`TASK-` plus a suffix drawn as `provisional_suffix` in `src/chitty/ids.py` draws it: letters from `PROVISIONAL_LETTERS` and digits from `PROVISIONAL_DIGITS`) to distinct numeric IDs. Each link is drawn with a label: `("key", k, spelling)`, where `k` is a mapping key and `spelling` is `str(k)` with each letter's case drawn at random; `("other", spelling)`, another provisional ID or a numeric `TASK-<n>`, rejected with `assume()` when `TaskId.parse(spelling)` is a mapping key (IDs ignore case, and Hypothesis often draws equal suffixes); or absent. Draw the label first with `st.sampled_from(("key", "other", None))`, so each is equally likely. `parent` is one such link; `depends_on` is a list of 0 to 4 such links, whose spellings must be distinct strings (two spellings of one key are allowed). `Frontmatter` gets fixed valid `title`, `status` and `created`.
 - Expected result, from the labels only (never by calling `TaskId.parse`): if `parent` is labelled `key`, `(k, "parent")`; else the first `depends_on` entry labelled `key`, `(k, "depends_on")`; else `None`. This covers a parent that is not a key followed by a matching `depends_on` entry.
 - Add `@example`s so these always run: a parent key spelled in lower case, one in mixed case, a parent key together with a different `depends_on` key, and an `other` parent followed by a `depends_on` key.
-- Mutant tests: `mutant_case_sensitive` compares the raw `str` values against `str(key)`; `mutant_ignores_parent` checks only `depends_on`. Each mutant test runs `@given(cases())` with the same examples, calling `check_blocking_link(mutant, case)`, wrapped as `with self.assertRaises(AssertionError): ...` around a call of the inner Hypothesis test (or `find` the failing case with `hypothesis.find` and assert it exists); either way the test passes only when the mutant is caught.
+- Mutant tests: `mutant_case_sensitive` compares the raw `str` values against `str(key)`; `mutant_ignores_parent` checks only `depends_on`. Each mutant test runs `@given(cases())` with the same examples, calling `check_blocking_link(mutant, case)`, and the mutant test wraps the call of that `@given` function in `with self.assertRaises(AssertionError):`. The `@example`s guarantee each mutant is caught; any other exception propagates and fails the test.
 
 Before implementing, add the function raising `NotImplementedError` and confirm the property fails; then implement and run `make check`.
 
 ## Acceptance Criteria
 
-- [ ] The `blocking_link` property passes, and errors with `NotImplementedError` against the stub (reviewer checks that message in the output)
+- [ ] Against the `NotImplementedError` stub, `test_blocking_link` errors with `NotImplementedError` (reviewer checks the output); after implementation it passes
 - [ ] Both committed mutant tests pass, showing the property fails for the case-sensitive mutant and for the mutant that ignores `parent`; `make check` passes
 
 ## History
@@ -31,3 +31,4 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 - 2026-11-21T23:15:28Z lively-zinc-newt → todo
 - 2026-11-21T23:15:36Z lively-zinc-newt todo → cold-read
 - 2026-11-21T23:16:47Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-21T23:18:08Z lively-zinc-newt: changed description, acceptance criteria
