@@ -40,6 +40,10 @@ Second cold read 2026-11-19 outcomes: whole-string comparison in the property; l
 
 Before the fix, on parent f034cf6518a68f540c96e20517a711bfaa4233b3, both AGENT_LINE counts and the setup count failed with 2 instead of 1; the output ordering assertion also failed.
 
+## Summary
+
+Extracted runner error note formatting and added property and branch regression coverage. Both agent output counts and the setup count failed before the fix at f034cf6518a68f540c96e20517a711bfaa4233b3. Focused tests and make check pass; no follow-ups.
+
 ## History
 
 - 2026-11-19T17:28:50Z quick-ginger-lapwing → planning
@@ -49,3 +53,4 @@ Before the fix, on parent f034cf6518a68f540c96e20517a711bfaa4233b3, both AGENT_L
 - 2026-11-21T10:51:58Z quick-maroon-falcon todo → doing
 - 2026-11-21T10:54:02Z quick-maroon-falcon: wrote the plan
 - 2026-11-21T10:54:41Z quick-maroon-falcon: changed notes
+- 2026-11-21T10:57:15Z quick-maroon-falcon: changed summary
