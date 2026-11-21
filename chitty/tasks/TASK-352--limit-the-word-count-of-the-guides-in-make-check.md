@@ -1,6 +1,6 @@
 ---
 title: Limit the word count of the guides in make check
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -36,3 +36,4 @@ Added guide word budgets and shared assertions for real and temporary trees, inc
 - 2026-11-21T15:51:26Z witty-amber-jay todo → doing
 - 2026-11-21T15:53:58Z witty-amber-jay: wrote the plan
 - 2026-11-21T15:56:16Z witty-amber-jay: changed summary
+- 2026-11-21T15:56:17Z witty-amber-jay doing → review
