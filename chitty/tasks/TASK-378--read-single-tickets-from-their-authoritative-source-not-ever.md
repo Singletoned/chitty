@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -165,3 +165,4 @@ Planning 2026-11-20: rewritten as the single-ticket switch (piece B of the split
 - 2026-11-20T23:01:44Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T23:02:43Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T23:02:43Z quick-pearl-lapwing cold-read → todo
+- 2026-11-21T01:12:21Z rosy-russet-adder todo → doing
