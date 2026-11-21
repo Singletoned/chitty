@@ -19,7 +19,7 @@ Use temporary probe files in the worker's isolated worktree and remove them befo
 
 ## Plan
 
-Probe the existing Ruff behavior, configure the requested source-only annotation rules, then verify Ruff and Pyright with temporary probes and run formatting and checks before committing.
+Verify the preserved Ruff configuration against the corrected criteria with temporary probes, then run the required cleanup, formatting and checks before handoff.
 
 ## Notes
 
@@ -44,3 +44,4 @@ Criterion 1 requires `ANN201` for `src/chitty/_annotation_probe.py`, but Ruff re
 - 2026-11-21T16:43:43Z honest-coral-heron cold-read → planning
 - 2026-11-21T16:43:46Z honest-coral-heron planning → todo
 - 2026-11-21T16:44:02Z jolly-umber-toad todo → doing
+- 2026-11-21T16:46:21Z jolly-umber-toad: wrote the plan
