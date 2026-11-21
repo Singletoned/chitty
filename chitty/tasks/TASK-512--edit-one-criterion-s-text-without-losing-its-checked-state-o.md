@@ -1,6 +1,6 @@
 ---
 title: Edit one criterion's text without losing its checked state or the other items' formatting
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -45,3 +45,4 @@ Added `Task.with_criterion_text` to replace one item while preserving its marker
 - 2026-11-21T15:15:29Z upbeat-ochre-zander: wrote the plan
 - 2026-11-21T15:16:17Z upbeat-ochre-zander: changed notes
 - 2026-11-21T15:18:23Z upbeat-ochre-zander: changed summary
+- 2026-11-21T15:18:25Z upbeat-ochre-zander doing → review
