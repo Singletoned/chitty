@@ -57,6 +57,8 @@ Return to planning: the prescribed repair invocation is rejected by the CLI, and
 
 Replanned 2026-11-21: both blockers in the notes above are settled in the Description. The repair test runs plain `--errors`; the missing-command test is dropped because `_agent_command` already refuses a command not on `PATH`.
 
+Reviewed the runner and refreshed the implementation plan; no code or tests have been changed, and required regression and verification work remains.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -79,3 +81,4 @@ Replanned 2026-11-21: both blockers in the notes above are settled in the Descri
 - 2026-11-21T22:55:49Z lively-zinc-newt cold-read → todo
 - 2026-11-21T22:56:08Z honest-dusky-stoat todo → doing
 - 2026-11-21T22:57:46Z honest-dusky-stoat: wrote the plan
+- 2026-11-21T22:57:59Z honest-dusky-stoat: changed notes
