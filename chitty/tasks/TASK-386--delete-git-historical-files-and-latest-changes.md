@@ -1,6 +1,6 @@
 ---
 title: Delete `git.historical_files` and `_latest_changes`
-status: doing
+status: review
 depends_on:
   - TASK-378
   - TASK-379
@@ -56,3 +56,4 @@ Removed the historical scan and obsolete references. Focused tests and make chec
 - 2026-11-21T20:23:42Z jolly-fawn-vole todo → doing
 - 2026-11-21T20:25:19Z jolly-fawn-vole: wrote the plan
 - 2026-11-21T20:26:59Z jolly-fawn-vole: changed summary
+- 2026-11-21T20:27:01Z jolly-fawn-vole doing → review
