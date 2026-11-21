@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -62,6 +62,13 @@ Planner 2026-11-21: outside Git the existing autocommit policy stands, and crite
 
 Planner 2026-11-21, after the cold read: every non-skipped on-disk file is rewritten; writes go through `_all_or_nothing`, which already restores files and the index and takes the lock; the main-branch check uses a fresh `git.current_branch`; reserved numbers are the integer numbers of matching-prefix references.
 
+Two conflicts with the required existing finalization prevent implementation:
+
+1. Criterion 4 requires an autocommitted rewrite of `TASK-3` retaining a dangling `TASK-4` dependency. `_commit` calls `check.fix`, whose `check` reports `depends_on TASK-4: no such task` as an error; `_commit` then raises and `_all_or_nothing` rolls back. Decide whether this case should allow dangling dependencies during finalization, change the fixture, or change the required finalization, and specify the corresponding test.
+2. The description requires keeping the same filename slug while rewriting mentions in every eligible title. When a rewritten title contains an old ID and `autocommit` or `autoformat` is enabled, `_commit` calls `check.fix`, which renames the file to the slug of the rewritten title. This conflicts with the same-slug requirement and can also leave the planned commit paths stale. Decide which filename rule applies and specify a title-reference fixture, action and assertions covering finalization.
+
+No implementation or tests were written. Regression evidence and verification remain outstanding.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -103,3 +110,5 @@ Planner 2026-11-21, after the cold read: every non-skipped on-disk file is rewri
 - 2026-11-21T14:33:28Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T14:33:43Z witty-maroon-newt todo → doing
 - 2026-11-21T14:35:24Z witty-maroon-newt: wrote the plan
+- 2026-11-21T14:35:54Z witty-maroon-newt: changed owner, notes
+- 2026-11-21T14:35:54Z witty-maroon-newt doing → planning
