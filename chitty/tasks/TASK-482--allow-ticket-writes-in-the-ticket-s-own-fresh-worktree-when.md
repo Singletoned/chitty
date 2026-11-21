@@ -16,7 +16,7 @@ Tests: real Git, in a new `tests/test_own_worktree_writes.py` with a class inher
 ## Acceptance Criteria
 
 - [ ] In the linked worktree of a fresh `task-6` made at `main`'s tip, `chitty edit TASK-6 --note x` succeeds and commits on `task-6`; after `task-6` is fast-forward merged into `main` and a further `main` commit changes `TASK-6`, the same edit in that worktree exits 1 with the `_require_current_version` message naming `main` and makes no commit (the first edit fails before the change, refused by `_require_current_version`; the refusal after the merge passes before too)
-- [ ] Direct tests of `Repo._require_current_version` with a `StoredTask` whose `branch` is `main`, from a checkout on branch `task-6`: it returns when `task-6` has not changed `TASK-6`'s files since it split from `main` and `main` has not either; it raises when `main` changed them since the split; it raises with `stored.branch` set to `feature` from `task-6` while `TASK-6` is unchanged; it raises from a checkout on branch `feature` (each against a real Git repository; the first fails before the change)
+- [ ] Direct tests of `Repo._require_current_version` with a `StoredTask` whose `branch` is `main`, from a checkout on branch `task-6`: it returns when `main` has not changed `TASK-6`'s files since `task-6` split from it (only `main`'s side matters: had the branch changed them, the ticket would be read from `task-6`, which is allowed today); it raises when `main` changed them since the split; it raises with `stored.branch` set to `feature` from `task-6` while `TASK-6` is unchanged; it raises from a checkout on branch `feature` (each against a real Git repository; the first fails before the change)
 - [ ] `make check` passes
 
 ## History
@@ -25,3 +25,4 @@ Tests: real Git, in a new `tests/test_own_worktree_writes.py` with a class inher
 - 2026-11-21T01:23:37Z quick-pearl-lapwing planning → cold-read
 - 2026-11-21T01:24:40Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-21T01:24:40Z quick-pearl-lapwing cold-read → todo
+- 2026-11-21T01:25:07Z quick-pearl-lapwing: changed acceptance criteria
