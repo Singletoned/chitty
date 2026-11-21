@@ -41,6 +41,10 @@ Second cold read 2026-11-19 outcomes: the fails-before evidence names the first 
 
 Before the fix, the setup regression first failed its assertion that the note contains `setup exited with status 9; output in `.chitty/check.log``; the landing regression first failed the equivalent assertion for status 7. Both notes contained their command output instead. The missing setup command guard passed before the fix.
 
+## Summary
+
+Setup and landing checks now write combined output to the shared worktree log and record concise errors instead of command output. The specified regressions failed before the fix and pass afterward; the missing-command guard and `make check` pass. The existing `Error output:` block remains out of scope for TASK-427.
+
 ## History
 
 - 2026-11-19T17:28:48Z quick-ginger-lapwing → planning
@@ -50,3 +54,4 @@ Before the fix, the setup regression first failed its assertion that the note co
 - 2026-11-21T08:43:43Z upbeat-white-adder todo → doing
 - 2026-11-21T08:45:31Z upbeat-white-adder: wrote the plan
 - 2026-11-21T08:46:12Z upbeat-white-adder: changed notes
+- 2026-11-21T08:48:10Z upbeat-white-adder: changed summary
