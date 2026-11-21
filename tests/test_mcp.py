@@ -220,13 +220,13 @@ class TestMcp(CliTestCase):
         git("branch", "-M", "main")
         call("add", title="Task", description="x")
         commit("main task")
-        git("checkout", "--quiet", "-b", "worker")
+        git("checkout", "--quiet", "-b", "task-1")
         path = self.root / "chitty/tasks/TASK-1--task.md"
         path.write_text(path.read_text().replace("status: todo", "status: doing"))
         commit("claim task")
         git("checkout", "--quiet", "main")
 
-        with self.assertRaisesRegex(ToolError, "worker"):
+        with self.assertRaisesRegex(ToolError, "task-1"):
             call("note", id="1", text="Blocked.")
 
     def test_guide_resource(self):

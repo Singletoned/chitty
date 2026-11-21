@@ -1805,8 +1805,8 @@ class TestCrossBranchWrites(CliTestCase):
         self.commit("claim task", cwd=worktree)
 
     def test_refuses_all_single_ticket_writes_from_another_worktree(self):
-        worktree = self.tmp / "worker"
-        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        worktree = self.tmp / "task-1"
+        self.git("worktree", "add", "--quiet", "-b", "task-1", str(worktree))
         self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
         self.claim_on_worker(worktree)
         before = self.path.read_text()
@@ -1819,40 +1819,40 @@ class TestCrossBranchWrites(CliTestCase):
         ):
             with self.subTest(args=args):
                 result = self.run_cli(*args, exit_code=1)
-                self.assertIn("worker", result.stderr)
+                self.assertIn("task-1", result.stderr)
                 self.assertIn(str(worktree), result.stderr)
                 self.assertEqual(self.path.read_text(), before)
                 self.git("reset", "--hard", "HEAD")
                 self.git("clean", "-fd")
 
     def test_refuses_a_branch_without_a_worktree(self):
-        self.git("checkout", "--quiet", "-b", "worker")
+        self.git("checkout", "--quiet", "-b", "task-1")
         self.claim_on_worker()
         self.git("checkout", "--quiet", "main")
 
         result = self.run_cli("note", "1", "Blocked.", exit_code=1)
 
-        self.assertIn("worker", result.stderr)
-        self.assertIn("git switch worker", result.stderr)
+        self.assertIn("task-1", result.stderr)
+        self.assertIn("git switch task-1", result.stderr)
 
     def test_refuses_a_remote_tracking_branch(self):
         remote = self.tmp / "remote.git"
         self.git("init", "--bare", "--quiet", str(remote))
         self.git("remote", "add", "origin", str(remote))
-        self.git("checkout", "--quiet", "-b", "worker")
+        self.git("checkout", "--quiet", "-b", "task-1")
         self.claim_on_worker()
-        self.git("push", "--quiet", "origin", "worker")
+        self.git("push", "--quiet", "origin", "task-1")
         self.git("checkout", "--quiet", "main")
-        self.git("branch", "-D", "worker")
+        self.git("branch", "-D", "task-1")
 
         result = self.run_cli("note", "1", "Blocked.", exit_code=1)
 
-        self.assertIn("origin/worker", result.stderr)
-        self.assertIn("git switch --track origin/worker", result.stderr)
+        self.assertIn("origin/task-1", result.stderr)
+        self.assertIn("git switch --track origin/task-1", result.stderr)
 
     def test_allows_writes_in_the_branch_with_the_latest_version(self):
-        worktree = self.tmp / "worker"
-        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        worktree = self.tmp / "task-1"
+        self.git("worktree", "add", "--quiet", "-b", "task-1", str(worktree))
         self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
         self.claim_on_worker(worktree)
         previous = Path.cwd()
@@ -1863,8 +1863,8 @@ class TestCrossBranchWrites(CliTestCase):
             os.chdir(previous)
 
     def test_allows_writes_from_a_new_worktree_with_no_commits_of_its_own(self):
-        worktree = self.tmp / "worker"
-        self.git("worktree", "add", "--quiet", "-b", "worker", str(worktree))
+        worktree = self.tmp / "task-1"
+        self.git("worktree", "add", "--quiet", "-b", "task-1", str(worktree))
         self.addCleanup(self.git, "worktree", "remove", "--force", str(worktree))
         previous = Path.cwd()
         os.chdir(worktree)
