@@ -62,6 +62,8 @@ Planning blocker: the authoritative listing cutover breaks existing show and mov
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
 
+Move regression confirmed: test_move_provisional_off_main_then_promote_on_main fails on the listing cutover without the no-op save skip and passes with it. Rebased onto main after TASK-518 landed; make check passes. Remaining acceptance tests for placement, conflict, allocation and duplicates still need implementation.
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
@@ -90,3 +92,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T18:53:03Z eager-ginger-adder planning → todo
 - 2026-11-21T20:14:21Z calm-ginger-adder todo → doing
 - 2026-11-21T20:15:30Z calm-ginger-adder: changed notes
+- 2026-11-21T20:17:17Z calm-ginger-adder: changed notes
