@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: error
+status: doing
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -23,7 +23,7 @@ Fixture: on main commit a readable parent `TASK-2`, valid `TASK-1`, and three re
 
 ## Plan
 
-Add real-Git regression fixtures for both candidate failures and probe child parsing and JSON resolution. Confirm the tests fail on existing code, then implement isolated authoritative child discovery, run the requested checks and record results.
+Add reproductions for plain and JSON `show` using authoritative Git sources. Move child resolution into a narrow store helper that handles candidate errors individually. Verify the regressions before and after the change, then hand off for review.
 
 ## Notes
 
@@ -68,3 +68,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-518`
 - 2026-11-21T19:50:17Z sunny-amber-newt todo → doing
 - 2026-11-21T19:53:07Z sunny-amber-newt: changed notes
 - 2026-11-21T19:53:07Z sunny-amber-newt doing → error
+- 2026-11-21T20:06:06Z eager-ginger-adder: wrote the plan
+- 2026-11-21T20:06:06Z eager-ginger-adder error → doing
