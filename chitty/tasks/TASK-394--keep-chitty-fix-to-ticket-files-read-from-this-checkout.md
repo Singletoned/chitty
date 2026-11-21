@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: doing
+status: planning
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -28,6 +28,10 @@ Tests: real-Git tests in a new `tests/test_fix_sources.py`, inheriting `CliTestC
 - [ ] In the linked worktree of `task-5`, where `task-5` has a commit ahead of `main` changing `TASK-5` and the worktree's `TASK-5` file holds the lower-case defect, `chitty fix` repairs that file and lists `skipped: read from main` warnings for `main`'s tickets; with a malformed ticket file present, `chitty fix` still repairs the others and reports it as today
 - [ ] In the main checkout, with local `task-7` and `origin/task-7` (made by `git update-ref`) at sibling commits, both ahead of `main` and each changing `TASK-7`, `chitty fix` exits 1 naming both; `make check` passes
 
+## Notes
+
+The duplicate-file requirement cannot be implemented as written: `Repo.find(id)` calls `lookup`, `source_copy`, and `_parse_source_copy`, which raises `ChittyError` whenever the selected source has more than one file. It does not resolve one working-tree file, so there is no first file to repair and second file to skip. Please decide whether duplicates should all be skipped or how an authoritative file is selected, and specify a regression fixture, action, and assertions for that choice (including the warning and `check` diagnostics). The ticket also requires path-filtered warnings and skipping a stale main filename absent from the selected branch, but describes no regression fixture, action, and assertions for either behavior; please specify those tests. No implementation was started and verification remains unfinished.
+
 ## History
 
 - 2026-11-18T16:38:05Z lively-quartz-crane → backlog
@@ -48,3 +52,5 @@ Tests: real-Git tests in a new `tests/test_fix_sources.py`, inheriting `CliTestC
 - 2026-11-18T18:00:54Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:00:56Z lively-quartz-crane planning → todo
 - 2026-11-21T13:05:19Z brisk-hazel-crane todo → doing
+- 2026-11-21T13:07:18Z brisk-hazel-crane: changed owner, notes
+- 2026-11-21T13:07:18Z brisk-hazel-crane doing → planning
