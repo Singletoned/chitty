@@ -12,7 +12,7 @@ Decision: scan with a second parser, `MarkdownIt("commonmark").disable("text_joi
 
 Out of scope: `check` also scans text that is inside indented code blocks, because it uses `parseInline` over block text (a planner fuzz found lone `*` in indented code still warns). That is existing behaviour and stays.
 
-Tests in `tests/test_check.py`, writing ticket files directly as its other Markdown-warning tests do (near line 117): a Description `static/photos/\*.jpg` gives no `literal '*'` warning; `static/photos/\_x\_.jpg` gives no `literal '_'` warning; `static/photos/*.jpg and c/*.png` still gives the `literal '*'` warning; `a\* and b*c*` still warns once for `*`. No property: a fixed parser setting, with each case listed. The two escaped cases must fail before the change.
+Tests in `tests/test_check.py`, writing ticket files directly as its other Markdown-warning tests do (near line 117): a Description `static/photos/\*.jpg` gives no `literal '*'` warning; `static/photos/\_x\_.jpg` gives no `literal '_'` warning; `static/photos/*.jpg` still gives the `literal '*'` warning; `a\* and files/*.jpg` still gives it (once). All four results were checked by a planner probe on 2026-11-21 with the decided parser. (Two lone asterisks such as `a/*.jpg and c/*.png` pair as emphasis and never warn; do not use them.) No property: a fixed parser setting, with each case listed. The two escaped cases must fail before the change.
 
 ## Acceptance Criteria
 
@@ -21,3 +21,4 @@ Tests in `tests/test_check.py`, writing ticket files directly as its other Markd
 ## History
 
 - 2026-11-21T23:59:28Z lively-zinc-newt → cold-read
+- 2026-11-21T23:59:45Z lively-zinc-newt: changed description
