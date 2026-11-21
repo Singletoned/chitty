@@ -74,6 +74,8 @@ Decided with the owner 2026-11-20, for the split: an operation fails only if it 
 
 Planning 2026-11-20: rewritten as the single-ticket switch (piece B of the split); listing moved to `TASK-480`, context discovery to `TASK-479`. Former criterion 4 (history patched to raise) moved to `TASK-480`: `chitty show` lists children through `all_tasks()`, which still reads history until then.
 
+This implementation is too large to finish in this session: it combines the single-ticket read switch, a new write-ownership rule, reference validation changes, a substantial real-Git CLI regression matrix with mutation checks, and migrations across multiple existing test suites. The ticket explicitly requires those migrations to land together with the switch, so committing a partial implementation would leave checks failing. The planner needs to split the work into independently verifiable stages or decide how to stage the migrations without breaking the suite. The branch was rebased onto main to obtain the landed dependencies; no implementation or tests were changed. Regression verification, mutation checks, formatting, and make check remain outstanding.
+
 ## History
 
 - 2026-11-18T16:20:04Z lively-quartz-crane → backlog
@@ -166,3 +168,4 @@ Planning 2026-11-20: rewritten as the single-ticket switch (piece B of the split
 - 2026-11-20T23:02:43Z quick-pearl-lapwing: changed description, acceptance criteria
 - 2026-11-20T23:02:43Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T01:12:21Z rosy-russet-adder todo → doing
+- 2026-11-21T01:18:00Z rosy-russet-adder: changed notes
