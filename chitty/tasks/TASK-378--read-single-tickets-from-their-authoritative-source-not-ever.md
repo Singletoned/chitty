@@ -83,6 +83,8 @@ Planning 2026-11-21: split again after the worker found it too large. Moved out:
 
 Planning 2026-11-21: the trimmed scope (read switch plus the named migrations) stays one ticket because the migrations cannot land apart from the switch. It runs only after `TASK-482`. If a session still cannot finish it, return it with the list of migrations done and left, and the owner will decide how to stage it.
 
+Initial CLI regressions fail before the switch for conflict isolation, branch archive and dirty feature worktree. The branch-edit, retitle, unrelated-branch and malformed-copy cases currently pass before the switch and need stronger fixtures before they can prove their criteria.
+
 ## History
 
 - 2026-11-18T16:20:04Z lively-quartz-crane → backlog
@@ -184,3 +186,4 @@ Planning 2026-11-21: the trimmed scope (read switch plus the named migrations) s
 - 2026-11-21T01:25:15Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T01:50:03Z eager-violet-puffin todo → doing
 - 2026-11-21T01:54:02Z eager-violet-puffin: wrote the plan
+- 2026-11-21T01:54:48Z eager-violet-puffin: changed notes
