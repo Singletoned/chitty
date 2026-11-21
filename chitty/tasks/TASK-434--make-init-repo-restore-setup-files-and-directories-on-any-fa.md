@@ -40,7 +40,7 @@ Tests. Hypothesis (the repository tool), in a new `tests/test_property_init_rest
 
 ## Plan
 
-Add the specified isolated real-Git property tests and confirm failures before implementing a rollback around setup writes, tracking all newly created directories. Exercise the specified wrong implementations, successful paths, and full checks before handoff.
+Build the isolated Git property and successful-path tests, verify the property fails before the fix, then make setup writes transactional and test the specified mutations before full verification.
 
 ## Notes
 
@@ -53,6 +53,8 @@ Back to planning review 2026-11-20: the previous worker returned it without star
 Planning needed: the specified stale registration fixture cannot be constructed as written. Its initial `chitty init --autocommit` registers the project to the test repository in the example's fresh `XDG_DATA_HOME`; the subsequent required `register_project(name, other)` raises `ChittyError` immediately because that name already belongs to the first repository. Thus the test never reaches the write being tested. Decide how the fixture should replace or isolate that initial registration before registering `other`, including the intended action and assertions. A trial property confirmed this setup error; its fresh hook example did reach the write and failed on the original code because the `chitty/` directories remained. The incomplete trial test was discarded; no implementation changes were made and wrong-version, success-path and full-check verification remain unfinished.
 
 The stale registration fixture is impossible as specified: initial `chitty init --autocommit` registers the project to the test repository, so `register_project(name, other)` raises before the tested write. The planner must decide how to replace or isolate the initial registration and specify the fixture action and assertions. A trial confirmed this error and also confirmed the fresh hook example fails on the original code due to leftover directories. The incomplete trial test was discarded; no implementation changes were made. Wrong-version, success-path and full-check verification remain unfinished.
+
+Before the fix, .venv/bin/python -m unittest tests.test_property_init_restore fails on all three explicit failure examples; the fresh hook leaves setup directories. The success test passes.
 
 ## History
 
@@ -93,3 +95,5 @@ The stale registration fixture is impossible as specified: initial `chitty init 
 - 2026-11-20T23:16:22Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-20T23:16:22Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T00:56:45Z able-bronze-marten todo → doing
+- 2026-11-21T01:01:52Z able-bronze-marten: wrote the plan
+- 2026-11-21T01:03:29Z able-bronze-marten: changed notes
