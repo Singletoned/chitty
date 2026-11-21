@@ -1,6 +1,6 @@
 ---
 title: Test archiving a referenced ticket and reading an archive from an older worktree
-status: planning
+status: todo
 labels:
   - bug
   - escape
@@ -32,7 +32,7 @@ Decisions:
 
 ## Acceptance Criteria
 
-- [ ] The four tests in `tests/test_archive_referenced_tickets.py` pass with `TASK-378` landed; a note records that each fails, with `is used by more than one file`, when run in a temporary worktree at the parent of `TASK-378`'s first landed commit, `$(git log --reverse --format=%H --grep "Task: TASK-378" main | head -1)^`
+- [ ] The four tests in `tests/test_archive_referenced_tickets.py` pass with `TASK-378` landed, and each fails with `is used by more than one file` at `7e7b5ae4^`, the commit before `TASK-378`'s switch (`7e7b5ae4` is the only `Task: TASK-378` commit that changes `src/chitty/store.py`). The planner ran that check on 2026-11-21 (all four failed so); the reviewer confirms the test file is unchanged since then, or reruns it the same way
 - [ ] `make check` passes, and `git diff --name-only main...HEAD` lists only paths under `tests/` and `chitty/` (the revert of `0c9354ac` cancels its `src/` changes)
 
 ## Plan
@@ -60,6 +60,8 @@ Check failed before this session: check exited with status 2; output in `.chitty
 Planning return: the specified regression evidence contradicts the prescribed fixture. All four tests pass on the merged main with TASK-378, but running the exact tests at the parent of the first TASK-378 commit (cae058f9) fails during the done helper: the historical CLI does not have --human, so each reports "No such option --human" before reaching archive or the older-worktree read, not "is used by more than one file". Decide how to adapt the historical fixture or revise the evidence requirement without changing what is tested. The four tests and the revert of the superseded selector are committed; make check passes (909 tests). Regression evidence and the acceptance criteria remain unfinished.
 
 The prescribed historical regression run cannot reach the archive failure because its CLI does not support the required done helper option; the planner must resolve the conflicting evidence requirement and fixture.
+
+Planner 2026-11-21: the old evidence command found the oldest `Task: TASK-378` commit, a ticket edit from the reverted first attempt, so its parent `cae058f9` lacked `--human`. The right commit is `7e7b5ae4^`. Ran the committed `tests/test_archive_referenced_tickets.py` from `task-367` there, in a scratch worktree: all four tests fail with `is used by more than one file` (`TASK-1` for the three archive tests, `TASK-2` for the older-worktree test). Criterion 1 now names that commit, and the worker does not need to repeat the run.
 
 ## History
 
@@ -90,3 +92,5 @@ The prescribed historical regression run cannot reach the archive failure becaus
 - 2026-11-21T12:35:56Z quick-ginger-jay: changed notes
 - 2026-11-21T12:36:10Z quick-ginger-jay: changed owner, notes
 - 2026-11-21T12:36:10Z quick-ginger-jay doing → planning
+- 2026-11-21T12:38:11Z sunny-ebony-kestrel: changed acceptance criteria, notes
+- 2026-11-21T12:38:11Z sunny-ebony-kestrel planning → todo
