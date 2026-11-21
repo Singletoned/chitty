@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in Markdown text with a pure function
-status: doing
+status: review
 depends_on:
   - TASK-347
 created: 2026-11-16
@@ -47,6 +47,10 @@ Replanned 2026-11-21: both blockers above settled in the Description (repeat the
 
 The new regression suite failed against the NotImplementedError stub as required.
 
+## Summary
+
+Implemented fixed-point escaping and property, example and prettier tests. The stub failed the regression suite; make check passes (856 tests).
+
 ## History
 
 - 2026-11-16T09:59:59Z intrepid-coral-raven → backlog
@@ -70,3 +74,5 @@ The new regression suite failed against the NotImplementedError stub as required
 - 2026-11-21T23:27:03Z brisk-indigo-eel todo → doing
 - 2026-11-21T23:28:45Z brisk-indigo-eel: wrote the plan
 - 2026-11-21T23:29:04Z brisk-indigo-eel: changed notes
+- 2026-11-21T23:33:04Z brisk-indigo-eel: changed summary
+- 2026-11-21T23:33:04Z brisk-indigo-eel doing → review
