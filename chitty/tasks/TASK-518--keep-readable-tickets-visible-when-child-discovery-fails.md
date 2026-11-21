@@ -21,6 +21,10 @@ Fixture: on main commit a readable parent `TASK-2`, valid `TASK-1`, and three re
 - [ ] In the same fixtures `show --json` exits 0 with the selected authoritative title, no `children` key and no warning. Assert no source resolution or body parsing for any other ticket, using a test-local probe on the Repo source resolver that raises if it receives any other ID.
 - [ ] Selecting the unreadable candidate itself fails with its own error in both plain and JSON mode; the selected ticket failure must not be downgraded to a child warning.
 
+## Plan
+
+Add real-Git regression fixtures for both candidate failures and probe child parsing and JSON resolution. Confirm the tests fail on existing code, then implement isolated authoritative child discovery, run the requested checks and record results.
+
 ## Notes
 
 Planning: The specified fixture has only one configured context and one child, so it cannot verify configured-context then ID ordering. It also has no unconfigured-directory source, so it cannot verify skipping that source before body parsing, and uses only the canonical parent spelling, so it cannot distinguish structured `TaskId.parse` comparison from the existing string comparison in `src/chitty/cli.py`. Please specify fixtures, actions and assertions for these required behaviors, including an unconfigured malformed source and a parent spelling that parses to the selected ID. The existing two variants and JSON resolver probe cover the remaining stated criteria; source selection and parsing are exposed by `Repo._source_files` and `Repo._parse_source_copy`. Implementation and regression verification were not started because the required tests are unspecified.
@@ -46,3 +50,4 @@ Return to planning: required regression fixtures are missing; see the preceding 
 - 2026-11-21T18:53:08Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:53:11Z eager-ginger-adder planning → todo
 - 2026-11-21T18:55:42Z mellow-umber-wren todo → doing
+- 2026-11-21T18:57:08Z mellow-umber-wren: wrote the plan
