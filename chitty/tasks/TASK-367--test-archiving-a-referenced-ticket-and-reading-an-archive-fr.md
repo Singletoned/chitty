@@ -1,6 +1,6 @@
 ---
 title: Test archiving a referenced ticket and reading an archive from an older worktree
-status: todo
+status: doing
 labels:
   - bug
   - escape
@@ -94,3 +94,4 @@ Planner 2026-11-21: the old evidence command found the oldest `Task: TASK-378` c
 - 2026-11-21T12:36:10Z quick-ginger-jay doing → planning
 - 2026-11-21T12:38:11Z sunny-ebony-kestrel: changed acceptance criteria, notes
 - 2026-11-21T12:38:11Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T12:43:17Z intrepid-ochre-puffin todo → doing
