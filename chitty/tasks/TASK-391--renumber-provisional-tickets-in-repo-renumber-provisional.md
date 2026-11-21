@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: doing
+status: planning
 depends_on:
   - TASK-381
   - TASK-389
@@ -91,6 +91,8 @@ The required ordering conflicts with the no-change and preflight guarantees for 
 
 Planner 2026-11-21: the main-branch check and parse-and-plan now run before `_prepare_write()`, so off-`main` calls and parse failures never upgrade setup (stale-setup case added to criterion 2). A setup upgrade on a real write is outside the rollback, as for every write.
 
+This ticket is too large to implement and verify confidently in one session: its five criteria combine the new allocation and rewrite operation with more than a dozen distinct real-Git scenarios, including archive/delete allocation, source-ref selection, unconfigured and random contexts, stale setup, standalone operation, and transactional rollback. Please split it into smaller dependent tickets with independently verifiable fixtures and assertions, deciding which slice owns the initial store method and how later slices extend it. I inspected the ticket, `src/chitty/store.py`, `src/chitty/renumbering.py`, `src/chitty/ids.py`, and `src/chitty/check.py`; no implementation or tests were written, so regression evidence and verification remain outstanding.
+
 ## History
 
 - 2026-11-18T16:34:15Z lively-quartz-crane → backlog
@@ -155,3 +157,5 @@ Planner 2026-11-21: the main-branch check and parse-and-plan now run before `_pr
 - 2026-11-21T15:14:23Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T15:14:23Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T15:19:37Z youthful-dusky-raven todo → doing
+- 2026-11-21T15:23:00Z youthful-dusky-raven: changed owner, notes
+- 2026-11-21T15:23:00Z youthful-dusky-raven doing → planning
