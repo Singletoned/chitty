@@ -1,6 +1,6 @@
 ---
 title: Use the ticket branch `task-1` in the cross-branch write tests
-status: todo
+status: doing
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -44,3 +44,4 @@ Planner 2026-11-21: the worker could not create the second worktree the after-sw
 - 2026-11-21T11:47:18Z tidy-silver-wren doing → planning
 - 2026-11-21T11:48:35Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T11:48:35Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T11:50:57Z tidy-russet-gannet todo → doing
