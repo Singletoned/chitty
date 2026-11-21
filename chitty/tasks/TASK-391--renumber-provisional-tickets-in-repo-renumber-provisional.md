@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -131,3 +131,4 @@ Planner 2026-11-21: only configured contexts are renumbered or rewritten; unconf
 - 2026-11-21T14:45:08Z upbeat-navy-toad doing → planning
 - 2026-11-21T14:45:40Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T14:45:40Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T14:46:43Z jolly-quartz-wren todo → doing
