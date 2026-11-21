@@ -1,6 +1,6 @@
 ---
 title: Find a structured link to a renumbered ID in ticket frontmatter
-status: todo
+status: doing
 parent: TASK-391
 created: 2026-11-21
 ---
@@ -34,3 +34,4 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 - 2026-11-21T23:18:08Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:19:14Z lively-zinc-newt: changed description
 - 2026-11-21T23:19:14Z lively-zinc-newt cold-read → todo
+- 2026-11-21T23:56:27Z plucky-khaki-crane todo → doing
