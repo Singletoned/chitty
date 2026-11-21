@@ -10,7 +10,10 @@ TASK_ID = TaskId.parse("TASK-1")
 
 
 line = st.one_of(
-    st.text(alphabet=st.characters(min_codepoint=32, max_codepoint=126), max_size=30),
+    st.text(
+        alphabet=st.characters(min_codepoint=32, max_codepoint=126) | st.just("\t"),
+        max_size=30,
+    ),
     st.sampled_from(("\t", "Key: value", "Signed-off-by: A <a@example.com>")),
     st.sampled_from(("chitty: generated", "Task: TASK-1", "Task: TASK-10", "")),
 )
