@@ -74,8 +74,9 @@ file holds the decisions behind them.
     `… → archived`.
   - `archive = "delete"`: delete the file and its History, remove exact
     `depends_on` entries elsewhere; numbers stay used, read from Git.
-- `move ID CTX`: within this repository; next number in the target, same
-  slug, sets `moved_from`. No cross-repository move: `suggest` there, then
+- `move ID CTX`: within this repository; allocates a new ID in the target
+  context, keeps the slug, sets `moved_from`, and rewrites `depends_on` and
+  `parent` references. No cross-repository move: `suggest` there, then
   `archive` here.
 - `renumber` without a path renumbers provisional tickets on main. It prints
   `renumbered <old ID> -> <new ID> <path>` on stdout for each ticket. If there
@@ -87,7 +88,11 @@ file holds the decisions behind them.
   can leave. Such files collapse into one ticket for `show`, `edit` and
   `list`, so it takes a path. It refuses a path that is not a ticket in a
   context, or whose ID no other file uses (`move` covers that).
-  - The file keeps its slug, gets the next number, and records `moved_from`.
+  - The file keeps its slug, gets a new ID by the context's allocation rules,
+    and records `moved_from`.
   - References are never rewritten: a `depends_on` or `parent` naming a shared
     ID cannot say which file it meant. It lists every ticket naming the old ID
     for a person to check.
+- Both commands allocate IDs like `add`: random numeric IDs in `random_ids`
+  contexts, sequential numbers on the configured main branch or outside
+  Git, and provisional IDs marked `provisional: true` otherwise.

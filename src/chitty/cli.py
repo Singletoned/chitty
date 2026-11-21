@@ -919,8 +919,10 @@ def path(task_id: str, as_json: bool) -> None:
 def move(task_id: str, context: str, as_json: bool) -> None:
     """Move a task to another context in this repo.
 
-    It gets the next ID there (keeping its slug), records moved_from, and
-    every depends_on reference to the old ID is rewritten.
+    It gets a new ID using the target context's allocation rules: random
+    numeric IDs in random_ids contexts, sequential numbers on the configured
+    main branch (or outside Git), and provisional IDs otherwise. It keeps its
+    slug, records moved_from, and rewrites depends_on and parent references.
     """
     repo = _repo()
     change = repo.move(repo.resolve(task_id), repo.context(context))
@@ -936,7 +938,10 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 def renumber(path: Path | None, as_json: bool) -> None:
     """Renumber provisional tickets on main, or one of several files sharing an ID.
 
-    PATH is the task file to change. It keeps its slug and records moved_from.
+    PATH is the task file to change. Its new ID follows the context's allocation
+    rules: random numeric IDs in random_ids contexts, sequential numbers on the
+    configured main branch (or outside Git), and provisional IDs otherwise.
+    It keeps its slug and records moved_from.
     References are not rewritten, because a reference to a shared ID cannot say
     which file it meant: each ticket naming the old ID is listed to check.
     """

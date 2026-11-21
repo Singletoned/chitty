@@ -48,6 +48,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - For external obstacles requiring help, note the problem, who can resolve it,
   and what is needed; then set `-s blocked`. Do not work blocked tickets. Leave
   `human` tickets in `todo`; never pick them up or block them.
-- For unrelated work, plain `chitty add` files `BACKLOG`; planners use the main
-  checkout for normal numbers. Use `-c human` for human work or
+- For unrelated work, use plain `chitty add` in the default context. Off the
+  configured main branch, sequential contexts use a provisional ID marked
+  `provisional: true`. Reference it like any other ID until renumbered on main. Use `-c human` for human work or
   `chitty suggest PROJECT` for another project. Do not do unrelated work here.

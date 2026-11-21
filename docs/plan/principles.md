@@ -10,8 +10,9 @@
   - A write refuses when the latest version is on another branch, and names
     that branch's worktree. Writes never cross branches.
   - So worktrees need `autocommit = true` (or commit every Chitty write).
-  - IDs are sequential and tickets are created centrally, so branches rarely
-    collide; `check` reports it when they do.
+  - Sequential contexts allocate numbers on the configured main branch (or
+    outside Git) and provisional IDs off it. `random_ids` contexts use random
+    numbers on any branch. `check` reports duplicate IDs.
 - **Simple first.** Add complexity when use shows the need.
 - **Plain Markdown.** Every ticket file survives the supported formatters
   unchanged in meaning ([Task file](task-file.md)). No HTML comments, sentinel

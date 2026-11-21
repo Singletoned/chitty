@@ -99,12 +99,20 @@ message goes to stderr, or `🚧` for an active ticket with waiting dependents
 and no unfinished or broken dependencies of its own. Existing skip and
 dependency markers take precedence. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
 A context can set `review = false` to override that setting; generated `human`
-contexts do this so people can close their own tasks directly. A context with
-`random_ids = true` numbers new tickets at random from 10000000 to 99999999
-instead of sequentially, so tickets raised on different branches do not
-collide; `chitty init` adds such a `backlog` context (prefix `BACKLOG`) to new
-and existing repositories, unless one or a `BACKLOG` prefix already exists. The third failed review (`review → doing`) since a task was last blocked sets it
-`blocked` with owner `human` instead, so agents stop bouncing it.
+contexts do this so people can close their own tasks directly. Plain
+`chitty add` uses the default context. In Git, sequential contexts allocate
+numbers on the configured main branch and use provisional IDs (such as
+`TASK-K7Q2M4`) off it. The file has `provisional: true`; use the ID in
+commands and ticket references like any other ID. Outside Git, sequential
+contexts use numbers.
+
+A context with `random_ids = true` uses random numbers from 10000000 to
+99999999 on any branch, rather than sequential numbers or provisional IDs.
+`chitty init` adds such a `backlog` context (prefix `BACKLOG`) unless one or a
+`BACKLOG` prefix already exists.
+
+The third failed review (`review → doing`) since a task was last blocked sets
+it `blocked` with owner `human` instead, so agents stop bouncing it.
 Workers and reviewers can return a ticket for missing or contradictory
 requirements, an unresolved design decision, a wrong claim about the code, files
 or other tickets, a criterion that cannot be verified as written or would pass
@@ -122,9 +130,9 @@ clear requirements return to `doing`; external obstacles requiring help use
 Use `--parent TASK-1` to show a parent's direct children.
 `--all` includes every status but never archive folders.
 When a merge leaves two files sharing an ID, which `chitty check` reports,
-`chitty renumber PATH` gives that one file the next number in its context,
-keeping its slug and recording `moved_from`. It refuses a file whose ID is
-unique (use `chitty move`). It does not rewrite references, because a
+`chitty renumber PATH` gives that one file a new ID using its context's
+allocation rules, keeping its slug and recording `moved_from`. It refuses a
+file whose ID is unique (use `chitty move`). It does not rewrite references, because a
 `depends_on` or `parent` naming the shared ID cannot say which file it meant;
 it lists each ticket naming the old ID for you to check.
 `chitty next` chooses tickets in the configured `job_order` (default

@@ -2105,13 +2105,14 @@ class TestGuide(CliTestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, work_guide)
 
-    def test_branch_discoveries_are_filed_in_backlog(self):
+    def test_branch_discoveries_use_provisional_ids_in_sequential_contexts(self):
         for role in ("work", "review"):
             with self.subTest(role=role):
                 output = " ".join(guide(role, directory=Path.cwd()).split())
                 self.assertIn("plain `chitty add`", output)
-                self.assertIn("`BACKLOG`", output)
-                self.assertIn("main checkout", output)
+                self.assertIn("in the default context", output)
+                self.assertIn("sequential contexts use a provisional ID", output)
+                self.assertIn("`provisional: true`", output)
 
     def test_worker_guides_start_with_show_without_pulling_inbox(self):
         self.assertNotIn("chitty inbox --pull", managed_guide("runner"))
