@@ -1696,9 +1696,6 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     agents = directory / AGENTS_FILE
     gitignore = directory / ".gitignore"
     existing_agents = agents.read_text() if agents.exists() else ""
-    originals = {
-        path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
-    }
     has_pyproject_config = False
     if not config_path.exists() and pyproject_path.exists():
         pyproject_data = tomllib.loads(pyproject_path.read_text())
@@ -1715,88 +1712,100 @@ def init_repo(directory: Path, enable_autocommit: bool) -> list[Path]:
     originals = {
         path: _file_state(path) for path in (config_path, pyproject_path, agents, claude, gitignore)
     }
-    written: list[Path] = []
-    if not config_path.exists() and not has_pyproject_config:
-        project = _default_project(directory.name)
-        text = INITIAL_CONFIG.format(project=json.dumps(project), version=CHITTY_VERSION)
-        branch = git.current_branch(directory)
-        if branch is not None and branch != "main":
-            # New repositories preserve a non-main integration branch; existing
-            # configs are upgrades and deliberately remain unchanged.
-            project_line = f"project = {json.dumps(project)}\n"
-            text = text.replace(
-                project_line,
-                f"{project_line}main_branch = {json.dumps(branch)}\n",
-                1,
-            )
-        if enable_autocommit:
-            text = _set_autocommit(text, False)
-        config = validate_repo_config(text, config_path)
-        config_path.write_text(text)
-        written.append(config_path)
-    else:
-        config = load_repo_config(directory)
-        check_setup_version(config)
-        source = config_path if config_path.exists() else pyproject_path
-        text = source.read_text()
-        data = tomllib.loads(text)
-        settings = data if source == config_path else data["tool"]["chitty"]
-        updated = _add_missing_settings(
-            text, settings, source == pyproject_path, _default_project(directory.name)
-        )
-        recorded_version = settings.get("chitty_version")
-        if recorded_version != CHITTY_VERSION:
-            updated = add_runner_workflow(
-                updated,
-                recorded_version if isinstance(recorded_version, str) else None,
-                source == pyproject_path,
-            )
-        updated = _add_missing_agent_commands_table(updated, settings, source == pyproject_path)
-        updated = _add_missing_human_review(updated, config, source == pyproject_path)
-        updated = _add_missing_backlog_context(updated, config, source == pyproject_path)
-        updated = re.sub(
-            r'(?m)^(chitty_version\s*=\s*)["\'][^"\']*["\']\s*$',
-            rf'\g<1>"{CHITTY_VERSION}"',
-            updated,
-        )
-        if enable_autocommit:
-            updated = _set_autocommit(updated, source == pyproject_path)
-        if updated != text:
-            tomllib.loads(updated)
-            source.write_text(updated)
-            written.append(source)
+    created_directories: set[Path] = set()
+    try:
+        written: list[Path] = []
+        if not config_path.exists() and not has_pyproject_config:
+            project = _default_project(directory.name)
+            text = INITIAL_CONFIG.format(project=json.dumps(project), version=CHITTY_VERSION)
+            branch = git.current_branch(directory)
+            if branch is not None and branch != "main":
+                # New repositories preserve a non-main integration branch; existing
+                # configs are upgrades and deliberately remain unchanged.
+                project_line = f"project = {json.dumps(project)}\n"
+                text = text.replace(
+                    project_line,
+                    f"{project_line}main_branch = {json.dumps(branch)}\n",
+                    1,
+                )
+            if enable_autocommit:
+                text = _set_autocommit(text, False)
+            config = validate_repo_config(text, config_path)
+            config_path.write_text(text)
+            written.append(config_path)
+        else:
             config = load_repo_config(directory)
-    for name in config.contexts:
-        path = directory / BACKLOG_DIR / name
-        if not path.exists():
-            path.mkdir(parents=True)
-            written.append(path)
-    if config.project:
-        inbox = inbox_path(config.project)
-        owner = inbox / "repo"
-        changed = not owner.exists() or owner.read_text().strip() != str(directory.resolve())
-        register_project(config.project, directory)
-        if changed:
-            written.append(inbox)
-    if _add_worktrees_to_gitignore(gitignore):
-        written.append(gitignore)
-    if updated_agents != existing_agents:
-        agents.write_text(updated_agents)
-        written.append(agents)
-    if claude.is_symlink() and claude.readlink() != Path(AGENTS_FILE):
-        claude.unlink()
-    if not claude.exists():
-        claude.symlink_to(AGENTS_FILE)
-        written.append(claude)
-    committed = [path for path in written if path.is_relative_to(directory) and not path.is_dir()]
-    if enable_autocommit and committed:
-        try:
+            check_setup_version(config)
+            source = config_path if config_path.exists() else pyproject_path
+            text = source.read_text()
+            data = tomllib.loads(text)
+            settings = data if source == config_path else data["tool"]["chitty"]
+            updated = _add_missing_settings(
+                text, settings, source == pyproject_path, _default_project(directory.name)
+            )
+            recorded_version = settings.get("chitty_version")
+            if recorded_version != CHITTY_VERSION:
+                updated = add_runner_workflow(
+                    updated,
+                    recorded_version if isinstance(recorded_version, str) else None,
+                    source == pyproject_path,
+                )
+            updated = _add_missing_agent_commands_table(updated, settings, source == pyproject_path)
+            updated = _add_missing_human_review(updated, config, source == pyproject_path)
+            updated = _add_missing_backlog_context(updated, config, source == pyproject_path)
+            updated = re.sub(
+                r'(?m)^(chitty_version\s*=\s*)["\'][^"\']*["\']\s*$',
+                rf'\g<1>"{CHITTY_VERSION}"',
+                updated,
+            )
+            if enable_autocommit:
+                updated = _set_autocommit(updated, source == pyproject_path)
+            if updated != text:
+                tomllib.loads(updated)
+                source.write_text(updated)
+                written.append(source)
+                config = load_repo_config(directory)
+        for name in config.contexts:
+            path = directory / BACKLOG_DIR / name
+            if not path.exists():
+                missing: list[Path] = []
+                parent = path
+                while not parent.exists():
+                    missing.append(parent)
+                    parent = parent.parent
+                created_directories.update(missing)
+                path.mkdir(parents=True)
+                written.append(path)
+        if config.project:
+            inbox = inbox_path(config.project)
+            owner = inbox / "repo"
+            changed = not owner.exists() or owner.read_text().strip() != str(directory.resolve())
+            register_project(config.project, directory)
+            if changed:
+                written.append(inbox)
+        if _add_worktrees_to_gitignore(gitignore):
+            written.append(gitignore)
+        if updated_agents != existing_agents:
+            agents.write_text(updated_agents)
+            written.append(agents)
+        if claude.is_symlink() and claude.readlink() != Path(AGENTS_FILE):
+            claude.unlink()
+        if not claude.exists():
+            claude.symlink_to(AGENTS_FILE)
+            written.append(claude)
+        committed = [
+            path for path in written if path.is_relative_to(directory) and not path.is_dir()
+        ]
+        if enable_autocommit and committed:
             git.commit(directory, committed, "chitty: initialize and enable autocommit")
-        except ChittyError:
-            for path, state in originals.items():
-                _restore_file(path, state)
-            raise
-    return written
+        return written
+    except BaseException:
+        for path, state in originals.items():
+            _restore_file(path, state)
+        for path in sorted(created_directories, key=lambda item: len(item.parts), reverse=True):
+            if path.is_dir() and not any(path.iterdir()):
+                path.rmdir()
+        raise
 
 
 def ordered(tasks: Sequence[StoredTask], statuses: Sequence[str]) -> list[StoredTask]:
