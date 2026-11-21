@@ -1,6 +1,6 @@
 ---
 title: Time out the runner `setup` and `check` commands
-status: review
+status: done
 labels:
   - needs-minor
 priority: high
@@ -49,6 +49,12 @@ Partial implementation: added and tested command_timeout configuration; make che
 
 Deadline-disabled regression run: all five new timeout cases failed as expected. The direct case did not raise CommandTimedOut; setup and check cases ran the agent instead of returning todo to error; doing lacked the timeout note; landing returned review to done instead of done to error. Restored wait timeout afterward.
 
+Reviewed: `make check` passed (983 tests; ruff and pyright clean). The worker recorded the deadline-disabled regression run in the preceding note; all five timeout cases failed and passed after restoration.
+1: pass - `tests.test_config.TestRepoConfig` property and type/default tests passed in `make check`; executing them with `main`'s `RepoConfig` produced two errors, including missing `command_timeout` and failure to reject -1.
+2: pass - `tests.test_command_timeout.TestCommandTimeout.test_logged_timeout_and_disabled_timeout` passed in `make check`; the recorded deadline-disabled run failed because `CommandTimedOut` was not raised.
+3: pass - `tests.test_command_timeout.TestCommandTimeoutRouting` passed in `make check`; the recorded deadline-disabled run ran the agent for both todo cases and omitted the doing timeout note.
+4: pass - `tests.test_review_merge.TestReviewMerge.test_landing_check_timeout_records_error_without_advancing_main` passed in `make check`; the recorded deadline-disabled run returned review to done rather than done to error.
+
 ## Summary
 
 Implemented per-command setup and check deadlines with shared process-tree cleanup and existing failure routing. Added configuration property coverage, real-process cleanup and routing tests, and documented the one-hour default. All five timeout regression cases failed with the deadline disabled and passed after restoration; make check passed (983 tests). No follow-ups.
@@ -76,3 +82,5 @@ Implemented per-command setup and check deadlines with shared process-tree clean
 - 2026-11-21T16:19:34Z golden-bronze-marten: changed notes
 - 2026-11-21T16:22:59Z golden-bronze-marten: changed summary
 - 2026-11-21T16:23:02Z golden-bronze-marten doing → review
+- 2026-11-21T16:29:30Z plucky-white-eel: changed notes
+- 2026-11-21T16:29:30Z plucky-white-eel review → done
