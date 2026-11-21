@@ -78,6 +78,10 @@ Planner 2026-11-21: the six `TestCrossBranchWrites` and MCP failures came from a
 
 With main store.py restored temporarily, all five migrated regression tests failed as expected: reference existence on other branch (both parent and dependency), malformed other-branch task, refused edit, repair uncommitted case, and provisional move. Restored the committed implementation afterward.
 
+## Summary
+
+Single-ticket reads now use the authoritative source; the nine specified tests were migrated in the existing implementation commit. The five changed-behaviour tests fail against main's store and pass with the implementation. `chitty fix`, `make format`, and `make check` passed; all 905 tests passed, including the unchanged performance, parse-count and worktree-lock tests. Reviewer: criterion 2 requires listing each changed test with its old and new assertion; the ticket Decisions enumerate these migrations. Follow-ups remain TASK-480, TASK-483 and TASK-506.
+
 ## History
 
 - 2026-11-18T16:20:04Z lively-quartz-crane → backlog
@@ -222,3 +226,4 @@ With main store.py restored temporarily, all five migrated regression tests fail
 - 2026-11-21T12:21:12Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:22:00Z daring-yellow-dormouse todo → doing
 - 2026-11-21T12:24:00Z daring-yellow-dormouse: changed notes
+- 2026-11-21T12:25:37Z daring-yellow-dormouse: changed summary
