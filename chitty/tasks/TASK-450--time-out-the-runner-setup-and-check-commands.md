@@ -1,6 +1,6 @@
 ---
 title: Time out the runner `setup` and `check` commands
-status: planning
+status: cold-read
 labels:
   - needs-minor
 priority: high
@@ -19,11 +19,12 @@ Starts after `TASK-426` and `TASK-430`, which change the same functions. After `
 Decisions:
 
 - New repository setting `command_timeout`: a non-negative integer number of seconds, `0` for no limit, default `DEFAULT_COMMAND_TIMEOUT = 3600` (a module constant in `src/chitty/config.py`, next to `DEFAULT_AGENT_TIMEOUT`), declared like `agent_timeout` on the config model. One setting covers all three phases.
-- `_run_logged` gains a required `timeout: int` parameter (no default value); every caller passes `repo.config.command_timeout` from the repository it already uses for that phase. It starts the command with `subprocess.Popen` (same `cwd`, `stdin`, `env` and log redirection as now) and waits with `timeout or None`.
+- `_run_logged` gains a required `timeout: int` parameter (no default value); `_setup(command, worktree, timeout)`, `_landing_check(command, worktree, timeout)` and `_run_check(..., timeout)` each gain the same required parameter and pass it on. Their callers, in `_run_ticket` and `_land_locked` in `src/chitty/run.py`, already read `setup` and `check` from `main_repo.config`, and pass `main_repo.config.command_timeout` the same way. It starts the command with `subprocess.Popen` (same `cwd`, `stdin`, `env` and log redirection as now) and waits with `timeout or None`.
 - On expiry it stops the command and its descendants exactly as `_run_agent` stops an agent: `SIGTERM` to the process and its descendants, `SIGKILL` to any left after `AGENT_KILL_GRACE_SECONDS`. Move that logic out of `_run_agent` into one helper both call, so there is one copy. Never use `start_new_session` (see `docs/plan/next-action-and-runner.md`).
 - After stopping it, `_run_logged` ends the log with a newline if needed and `# timed out after <N> seconds`, then raises `CommandTimedOut`, a new `ChittyError` subclass in `src/chitty/run.py`, whose message is exactly `` <phase> timed out after <N> seconds; output in `.chitty/check.log` ``.
 - `_setup` and `_landing_check` let it propagate, so it is recorded as their existing failures are (`Runner error (setup)` and so on). `_run_check` catches it and passes its message to `_handle_check_failure` as `detail` with `exited=True`, so it is handled exactly like a check that exited non-zero.
 - Document `command_timeout` next to `agent_timeout` in `README.md`, `docs/plan/config.md` (the commented example block) and `docs/plan/next-action-and-runner.md`.
+- Out of scope: stopping work a command started outside its process tree. A landing check that runs `docker run` (as `scripts/check_linux.sh` does) loses its client, but the container may keep running.
 - Label `needs-minor`: a `setup` or `check` that runs longer than an hour now fails.
 
 Tests. The setting is a validator, so it gets a Hypothesis property (the repository tool). The rest has no property: it is stopping real processes, and its only pure part, the message, is fixed text. Each hanging command prints a marker, starts a child that sleeps 30 seconds, then sleeps 30 seconds itself, and every test sets a timeout of 1 second and asserts the call returns in under 15 seconds. That bound is what makes the tests fail, rather than hang, on the code before the change. Follow `tests/test_run_timeout.py` (`TestDirectAgentTimeout` for the direct call, `TestAgentTimeout` for a `chitty run` with a fake command on `PATH`), checking each recorded PID with `ps` as it does.
@@ -51,3 +52,5 @@ Planner, 2026-11-19: written against `_run_logged` from `TASK-353` and `TASK-426
 - 2026-11-19T21:04:02Z sunny-white-dormouse planning → cold-read
 - 2026-11-19T21:04:59Z sunny-white-dormouse: changed description, acceptance criteria, notes
 - 2026-11-19T21:04:59Z sunny-white-dormouse cold-read → planning
+- 2026-11-21T07:57:26Z nimble-umber-gannet: changed description
+- 2026-11-21T07:57:26Z nimble-umber-gannet planning → cold-read
