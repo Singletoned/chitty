@@ -1,6 +1,6 @@
 ---
 title: Guard provisional renumbering preflight and report bad paths
-status: todo
+status: doing
 depends_on:
   - TASK-391
 parent: TASK-391
@@ -42,3 +42,4 @@ No property: a small fixed set of Git states and files, each listed here. Before
 - 2026-11-21T23:00:18Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:01:47Z lively-zinc-newt: changed description
 - 2026-11-21T23:01:47Z lively-zinc-newt cold-read → todo
+- 2026-11-21T23:08:11Z sunny-ginger-falcon todo → doing
