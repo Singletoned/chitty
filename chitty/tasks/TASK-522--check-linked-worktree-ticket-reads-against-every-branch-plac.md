@@ -38,6 +38,11 @@ No property: one ticket, fixed placements and checkout kinds, each listed and te
 - [ ] `test_linked_worktree_placements` passes, covering every compatible (placement, checkout kind) pair, with and without an uncommitted edit where the file exists
 - [ ] The `current_branch` mutant test passes, showing at least one check fails under the mutant; `make check` passes
 
+## Notes
+
+Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; then compare with the landed builder, probe the expected results, cold-read and move to `todo`.
+
 ## History
 
 - 2026-11-21T23:05:23Z lively-zinc-newt → planning
+- 2026-11-21T23:06:00Z lively-zinc-newt: changed notes
