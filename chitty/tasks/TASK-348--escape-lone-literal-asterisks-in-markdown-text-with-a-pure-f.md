@@ -45,6 +45,8 @@ No implementation changes were made; the prototype was run in memory against the
 
 Replanned 2026-11-21: both blockers above settled in the Description (repeat the pass to a fixed point; `suggest` escapes before validating and stores the escaped text).
 
+The new regression suite failed against the NotImplementedError stub as required.
+
 ## History
 
 - 2026-11-16T09:59:59Z intrepid-coral-raven → backlog
@@ -67,3 +69,4 @@ Replanned 2026-11-21: both blockers above settled in the Description (repeat the
 - 2026-11-21T23:23:33Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:27:03Z brisk-indigo-eel todo → doing
 - 2026-11-21T23:28:45Z brisk-indigo-eel: wrote the plan
+- 2026-11-21T23:29:04Z brisk-indigo-eel: changed notes
