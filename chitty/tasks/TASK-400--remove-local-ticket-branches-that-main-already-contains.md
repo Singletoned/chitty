@@ -1,6 +1,6 @@
 ---
 title: Remove local ticket branches that `main` already contains
-status: doing
+status: review
 depends_on:
   - TASK-396
 parent: TASK-376
@@ -325,3 +325,4 @@ Startup cleanup preserves non-ticket branch names by validating full ticket IDs.
 - 2026-11-21T00:46:12Z lively-coral-toad: wrote the plan
 - 2026-11-21T00:47:13Z lively-coral-toad: changed notes
 - 2026-11-21T00:54:04Z lively-coral-toad: changed summary
+- 2026-11-21T00:55:15Z lively-coral-toad doing → review
