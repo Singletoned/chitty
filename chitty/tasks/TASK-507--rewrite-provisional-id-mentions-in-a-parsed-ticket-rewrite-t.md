@@ -1,6 +1,6 @@
 ---
 title: Rewrite provisional ID mentions in a parsed ticket (`rewrite_task`)
-status: review
+status: doing
 depends_on:
   - TASK-508
 parent: TASK-376
@@ -46,6 +46,10 @@ Planner 2026-11-21: accepted `with_section`'s trailing-whitespace stripping for 
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
 
+Review failed (tests): The prescribed preservation property does not verify multiline labels. Compare the complete rendered field, including list entries, so changing a label fails the property; ensure the rendered-text wrong version is detected for labels as well as History. This is newly discovered; there are no earlier review failures.
+1: fail - `.venv/bin/python -m unittest tests.test_property_renumbering` printed `Ran 14 tests` and `OK`, and the stub note records all six failures, but a throwaway invocation of `property_preserved` with a rewrite changing `labels:\n  - TASK-1` to `labels:\n  - TASK-100` printed `property_preserved passed despite labels changing: ['TASK-100']`. Its regex compares only the `labels:` line, not the list. Property (3) requires byte-identical labels, so this criterion is not exercised adequately.
+2: pass - `make check` printed `Ran 960 tests` and `OK`; formatting, lint and pyright also passed.
+
 ## Summary
 
 Implemented selective ID rewriting and completed six properties, including chain and rendered-text mutation checks. Changed sections accept the agreed trailing-whitespace normalization; unchanged sections and criteria retain their formatting. `.venv/bin/python -m unittest tests.test_property_renumbering` and `make check` pass. Stub failure evidence is recorded in Notes. No follow-ups.
@@ -88,3 +92,5 @@ Implemented selective ID rewriting and completed six properties, including chain
 - 2026-11-21T14:08:41Z quick-lilac-heron: wrote the plan
 - 2026-11-21T14:13:01Z quick-lilac-heron: changed summary
 - 2026-11-21T14:13:03Z quick-lilac-heron doing → review
+- 2026-11-21T14:16:32Z quick-silver-falcon: changed acceptance criteria, notes
+- 2026-11-21T14:16:32Z quick-silver-falcon review → doing
