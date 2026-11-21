@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -16,7 +16,7 @@ Starts after `TASK-378` lands.
 Decisions:
 
 - New `Repo.source_of(task_id) -> str | None` (in `src/chitty/store.py`, beside `TASK-378`'s map): the `ticket_source` result for that ID, as a short ref name, or `None` for the working tree, computed from filenames and refs; a copy that fails to parse is treated as not provisional, so a malformed file never stops it. Errors from `ticket_source` (diverged branches, a ticket changed on both sides) propagate.
-- `fix` (which scans files with `scan`, not `Repo`) asks `source_of` for each scanned file's ID (from its filename), only for files inside the `paths` filter and after `scan` accepts the name, before parsing its content. It repairs the file only when `source_of` is `None` and the file is the one `Repo.find(id).path` resolves to; a second working-tree file with the same ID is skipped with the warning, and `check` keeps reporting the duplicate. Files that fail to scan or parse are left to the existing repair loop and to `check`, exactly as today (`tests/test_check.py` `test_fix_reports_unresolved_problems_without_writing` must still pass). Any other file (read from another ref, or absent from the map, for example `main`'s copy of a ticket whose slug changed on its branch) is not repaired and is reported as a warning `Problem(path, "skipped: read from <ref>", "warning")` in `fix`'s problems list (the second element it returns), only for files within the `paths` filter; `errors()` ignores warnings and the CLI already prints problems. In a ticket worktree this also skips tickets read from `main`: intended.
+- `fix` (which scans files with `scan`, not `Repo`) asks `source_of` for each scanned file's ID (from its filename), only for files inside the `paths` filter and after `scan` accepts the name, before parsing its content. It repairs the file only when `source_of` is `None` and the file is the only scanned working-tree file with that ID (count the scanned names; do not call `Repo.find`, which raises on duplicates). Decided 2026-11-21: when two or more working-tree files share an ID, `fix` cannot tell which is authoritative, so it repairs none of them and adds `Problem(path, "skipped: <ID> is used by more than one file", "warning")` for each one within the `paths` filter; `check` keeps reporting the duplicate as an error. Files that fail to scan or parse are left to the existing repair loop and to `check`, exactly as today (`tests/test_check.py` `test_fix_reports_unresolved_problems_without_writing` must still pass). Any other file (read from another ref, or absent from the map, for example `main`'s copy of a ticket whose slug changed on its branch) is not repaired and is reported as a warning `Problem(path, "skipped: read from <ref>", "warning")` in `fix`'s problems list (the second element it returns), only for files within the `paths` filter; `errors()` ignores warnings and the CLI already prints problems. In a ticket worktree this also skips tickets read from `main`: intended.
 - Errors from `source_of` propagate; never catch them in the existing `except ChittyError: continue`. A diverged ticket therefore stops `fix`, loudly, as decided. Relies on `TASK-378`'s contract that a working-tree read has `branch is None`, including on the ticket's own branch.
 - `chitty check` keeps checking every file in this checkout, as a file-format check.
 
@@ -24,13 +24,16 @@ Tests: real-Git tests in a new `tests/test_fix_sources.py`, inheriting `CliTestC
 
 ## Acceptance Criteria
 
-- [ ] In the main checkout, with `main`'s copy of `TASK-5` holding `depends_on: [task-3]` committed before `task-5` is created, and `task-5` then getting its own commit changing only another file (so `main`'s copy is unchanged since the split and the branch is ahead), `chitty fix` leaves `main`'s file byte-identical, lists a `skipped: read from task-5` warning and leaves `HEAD` unchanged (fails before the change); the same defect in a ticket with no branch is rewritten to `TASK-3` (passes before and after)
+- [ ] In the main checkout, with `main`'s copy of `TASK-5` holding `depends_on: [task-3]` committed before `task-5` is created, and `task-5` then getting its own commit changing only another file (so `main`'s copy is unchanged since the split and the branch is ahead), `chitty fix` leaves `main`'s file byte-identical, lists a `skipped: read from task-5` warning and leaves `HEAD` unchanged (fails before the change); the same defect in a ticket with no branch is rewritten to `TASK-3` (passes before and after); with `main`'s copy named `TASK-5--old.md` and `task-5` renaming it to `TASK-5--new.md` (committed on the branch), `chitty fix` leaves `TASK-5--old.md` byte-identical with the same `skipped: read from task-5` warning; `chitty fix chitty/tasks/<the no-branch ticket's file>` (a path filter that excludes `TASK-5`) lists no `TASK-5` warning
 - [ ] In the linked worktree of `task-5`, where `task-5` has a commit ahead of `main` changing `TASK-5` and the worktree's `TASK-5` file holds the lower-case defect, `chitty fix` repairs that file and lists `skipped: read from main` warnings for `main`'s tickets; with a malformed ticket file present, `chitty fix` still repairs the others and reports it as today
 - [ ] In the main checkout, with local `task-7` and `origin/task-7` (made by `git update-ref`) at sibling commits, both ahead of `main` and each changing `TASK-7`, `chitty fix` exits 1 naming both; `make check` passes
+- [ ] In the main checkout, with `chitty/tasks/TASK-6--a.md` and `chitty/tasks/TASK-6--b.md` (both `depends_on: [task-3]`, no `task-6` branch): `chitty fix` leaves both byte-identical and lists `skipped: TASK-6 is used by more than one file` for each, and `chitty check` still exits 1 reporting the duplicate. Record in a note what `fix` does there on `main` before the change; if it already leaves both files unchanged, the byte-identical part is a guard, and the warnings must fail before
 
 ## Notes
 
 The duplicate-file requirement cannot be implemented as written: `Repo.find(id)` calls `lookup`, `source_copy`, and `_parse_source_copy`, which raises `ChittyError` whenever the selected source has more than one file. It does not resolve one working-tree file, so there is no first file to repair and second file to skip. Please decide whether duplicates should all be skipped or how an authoritative file is selected, and specify a regression fixture, action, and assertions for that choice (including the warning and `check` diagnostics). The ticket also requires path-filtered warnings and skipping a stale main filename absent from the selected branch, but describes no regression fixture, action, and assertions for either behavior; please specify those tests. No implementation was started and verification remains unfinished.
+
+Planner 2026-11-21: decided duplicates are all skipped with a warning; `fix` no longer uses `Repo.find`. Added tests for the stale `main` filename, the path filter and duplicates (criteria 1 and 4).
 
 ## History
 
@@ -54,3 +57,5 @@ The duplicate-file requirement cannot be implemented as written: `Repo.find(id)`
 - 2026-11-21T13:05:19Z brisk-hazel-crane todo → doing
 - 2026-11-21T13:07:18Z brisk-hazel-crane: changed owner, notes
 - 2026-11-21T13:07:18Z brisk-hazel-crane doing → planning
+- 2026-11-21T13:09:22Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
+- 2026-11-21T13:09:22Z sunny-ebony-kestrel planning → cold-read
