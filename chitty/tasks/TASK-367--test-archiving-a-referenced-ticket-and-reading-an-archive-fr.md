@@ -35,6 +35,10 @@ Decisions:
 - [ ] The four tests in `tests/test_archive_referenced_tickets.py` pass with `TASK-378` landed; a note records that each fails, with `is used by more than one file`, when run in a temporary worktree at the parent of `TASK-378`'s first landed commit, `$(git log --reverse --format=%H --grep "Task: TASK-378" main | head -1)^`
 - [ ] `make check` passes, and `git diff --name-only main...HEAD` lists only paths under `tests/` and `chitty/` (the revert of `0c9354ac` cancels its `src/` changes)
 
+## Plan
+
+Revert the superseded selector work, merge the landed dependency, add the four specified real-Git regression tests, verify each against the pre-TASK-378 revision, and run the required checks.
+
 ## Notes
 
 Also seen 2026-11-17: in the `task-364` worktree, which branched before `TASK-356` was archived on `main`, `chitty edit TASK-364 --note ...` failed with `TASK-356 is used by more than one file` (the local active file and `main`'s archived one), after writing the note to the ticket file and without committing it, despite `TASK-355`. So every worktree created before an archive on `main` cannot edit any ticket until it merges `main`.
@@ -78,3 +82,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-21T08:08:45Z nimble-umber-gannet cold-read → todo
 - 2026-11-21T12:31:41Z quick-ginger-jay todo → doing
 - 2026-11-21T12:32:19Z quick-ginger-jay: changed notes
+- 2026-11-21T12:32:51Z quick-ginger-jay: wrote the plan
