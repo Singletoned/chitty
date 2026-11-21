@@ -1,6 +1,6 @@
 ---
 title: Check main-checkout ticket reads against every branch placement
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-480
@@ -79,3 +79,4 @@ Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), 
 - 2026-11-21T23:06:23Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:07:52Z lively-zinc-newt: changed description
 - 2026-11-21T23:07:52Z lively-zinc-newt cold-read → planning
+- 2026-11-21T23:08:03Z lively-zinc-newt planning → cold-read
