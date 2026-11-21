@@ -1,6 +1,6 @@
 ---
 title: Plan provisional renumbering without writing
-status: todo
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -151,3 +151,4 @@ This ticket is too large to implement and verify confidently in one session: its
 - 2026-11-21T18:34:34Z eager-ginger-adder planning → cold-read
 - 2026-11-21T18:35:41Z eager-ginger-adder cold-read → planning
 - 2026-11-21T18:37:14Z eager-ginger-adder planning → todo
+- 2026-11-21T18:37:36Z open-quartz-urchin todo → doing
