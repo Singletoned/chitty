@@ -64,6 +64,10 @@ Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `Cli
 - [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`, referencing no other ticket: `chitty show TASK-2` and `chitty edit TASK-2 --note x` succeed; `chitty show TASK-1` fails with the error containing `changed on both` and naming `task-1` and `main` (fails before the change). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`, and `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` without raising (it raises before the change). With `TASK-1` committed valid on `main` and edited (title `branch`) on `task-1`, and the main checkout's `TASK-1` file then overwritten, uncommitted, with `not frontmatter`: from the main checkout `Repo.context_of(TaskId.parse("TASK-1")).name` is `tasks` and `chitty show TASK-1` prints title `branch` (both raise the working-tree parse error before the change). In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
 - [ ] `make check` passes, including `tests/test_list_performance.py` and `test_dependency_check_parses_only_the_dependency` unchanged; each of the 17 tests in the migration decision asserts its new behaviour as described there; and the review note lists every existing test the branch changed, each with its old and new assertion, none deleted or weakened
 
+## Plan
+
+Add real-Git regression coverage and confirm failures before the switch; route single-ticket reads through unparsed source selection, migrate the specified tests, then format, check and hand off.
+
 ## Notes
 
 Earlier notes (attempts, splits, cold reads, the worker's 2026-11-21 return) are in Git history; the Description is authoritative and this summary replaces them.
@@ -190,3 +194,4 @@ The worker's last return found that `_choose_source` parsed a copy to learn `pro
 - 2026-11-21T11:29:13Z sunny-ebony-kestrel: replaced notes; changed description, acceptance criteria
 - 2026-11-21T11:29:13Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T11:29:45Z golden-khaki-vole todo → doing
+- 2026-11-21T11:31:46Z golden-khaki-vole: wrote the plan
