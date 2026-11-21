@@ -37,6 +37,10 @@ No property here: one ticket, a fixed set of 13 placements, each listed and each
 - [ ] `test_main_checkout_placements` passes, covering all 13 placements read from the main checkout and the 11 uncommitted-edit variants, comparing `Repo.find` and `Repo.tasks` against the expected results in the Description
 - [ ] The two mutant tests (swapped `contains` arguments; `main_tip=None`) pass, each showing at least one placement check fails under its mutant; `make check` passes
 
+## Plan
+
+Build deterministic Git placement fixtures with hand-written expectations, exercise find and listing for each clean and eligible edited checkout, and verify both source-selection mutants are detected. Run formatting and checks before committing.
+
 ## Notes
 
 Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the last `_history()` caller) is now `TASK-480`, so this also waits for it.
@@ -84,3 +88,4 @@ Replanned 2026-11-21: split into this ticket (builder and main-checkout reads), 
 - 2026-11-21T23:09:46Z lively-zinc-newt: changed description
 - 2026-11-21T23:09:46Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:13:04Z quick-amber-eel todo → doing
+- 2026-11-21T23:15:13Z quick-amber-eel: wrote the plan
