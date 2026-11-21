@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets in `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-381
   - TASK-389
@@ -154,3 +154,4 @@ Planner 2026-11-21: the main-branch check and parse-and-plan now run before `_pr
 - 2026-11-21T15:12:45Z youthful-yellow-newt doing → planning
 - 2026-11-21T15:14:23Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T15:14:23Z sunny-ebony-kestrel planning → todo
+- 2026-11-21T15:19:37Z youthful-dusky-raven todo → doing
