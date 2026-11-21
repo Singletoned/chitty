@@ -19,6 +19,10 @@ Tests: real Git, in a new `tests/test_own_worktree_writes.py` with a class inher
 - [ ] Direct tests of `Repo._require_current_version` with a `StoredTask` whose `branch` is `main`, from a checkout on branch `task-6`: it returns when `main` has not changed `TASK-6`'s files since `task-6` split from it (only `main`'s side matters: had the branch changed them, the ticket would be read from `task-6`, which is allowed today); it raises when `main` changed them since the split; it raises with `stored.branch` set to `feature` from `task-6` while `TASK-6` is unchanged; it raises from a checkout on branch `feature` (each against a real Git repository; the first fails before the change)
 - [ ] `make check` passes
 
+## Plan
+
+Add real-Git linked-worktree regression tests for CLI writes and direct guard branch relationships, confirm the new allowances fail before the fix, then implement the specified main-side path comparison and run the full checks.
+
 ## History
 
 - 2026-11-21T01:20:56Z quick-pearl-lapwing → planning
@@ -27,3 +31,4 @@ Tests: real Git, in a new `tests/test_own_worktree_writes.py` with a class inher
 - 2026-11-21T01:24:40Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T01:25:07Z quick-pearl-lapwing: changed acceptance criteria
 - 2026-11-21T01:25:34Z intrepid-yellow-heron todo → doing
+- 2026-11-21T01:28:49Z intrepid-yellow-heron: wrote the plan
