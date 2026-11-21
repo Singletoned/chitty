@@ -36,6 +36,11 @@ class TestAuthoritativeListing(SourceCopyErrorChecks):
         self.commit()
         self.git("checkout", "main")
         self.file(2).write_text("not frontmatter")
+        self.check_placement()
+        with patch("chitty.git.historical_files", side_effect=AssertionError("history")):
+            self.check_placement()
+
+    def check_placement(self):
         repo = Repo.open(self.root)
         for number, title in [(1, "archived branch"), (2, "branch two"), (3, "branch three")]:
             found = repo.lookup(TaskId.parse(f"TASK-{number}"))
@@ -49,3 +54,43 @@ class TestAuthoritativeListing(SourceCopyErrorChecks):
             [t.task.frontmatter.title for t in repo.tasks(repo.default_context, "archived")],
             ["archived branch"],
         )
+
+        expected = {"archived branch", "branch two", "branch three"}
+        self.assertEqual(len(repo.all_tasks()), 3)
+        self.assertEqual({t.task.frontmatter.title for t in repo.all_tasks()}, expected)
+        self.assertEqual({t["title"] for t in self.json("list")}, {"branch two", "branch three"})
+
+    def test_duplicate_across_locations(self):
+        first = self.file(1)
+        archive = first.parent / "archive"
+        archive.mkdir()
+        other = archive / first.name
+        other.write_text(first.read_text())
+        result = self.run_cli("list", "--json", exit_code=1)
+        self.assertIn("more than one file", result.output)
+        self.assertIn(str(first), result.output)
+        self.assertIn(str(other), result.output)
+
+    def test_conflict_and_isolated_allocation(self):
+        self.setup_changed_both()
+        for args in [("list", "--json"), ("archive",)]:
+            before = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*.md")}
+            head = self.git("rev-parse", "HEAD")
+            index = self.git("ls-files", "--stage")
+            result = self.run_cli(*args, exit_code=1)
+            self.assertIn("TASK-1", result.output)
+            self.assertIn("changed on both", result.output)
+            self.assertEqual(
+                before, {p: p.read_bytes() for p in (self.root / "chitty").rglob("*.md")}
+            )
+            self.assertEqual(head, self.git("rev-parse", "HEAD"))
+            self.assertEqual(index, self.git("ls-files", "--stage"))
+        occupied = self.file("AAAAAA")
+        self.commit()
+        original = occupied.read_bytes()
+        self.git("checkout", "-b", "feature")
+        self.file(4).write_text("not frontmatter")
+        with patch("chitty.store._provisional_draw", side_effect=[0] * 6 + [1] + [0] * 5):
+            added = self.json("add", "new ticket", "-d", "description")
+        self.assertEqual(added["id"], "TASK-BAAAAA")
+        self.assertEqual(occupied.read_bytes(), original)
