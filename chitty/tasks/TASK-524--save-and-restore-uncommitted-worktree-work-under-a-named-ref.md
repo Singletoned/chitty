@@ -48,6 +48,8 @@ I inspected the specified save and restore sequences, `src/chitty/git.py` and `t
 
 Replanned 2026-11-21: the ref namespace blocker is settled in the Description (refs outside `refs/chitty/stash/` are refused, with a test).
 
+Work started: reviewed the ticket and existing Git helpers and tests, and recorded the approach. No implementation or regression tests have been written or verified yet.
+
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
@@ -63,3 +65,4 @@ Replanned 2026-11-21: the ref namespace blocker is settled in the Description (r
 - 2026-11-21T23:49:45Z lively-zinc-newt planning → todo
 - 2026-11-21T23:50:08Z quick-hazel-newt todo → doing
 - 2026-11-21T23:52:30Z quick-hazel-newt: wrote the plan
+- 2026-11-21T23:52:54Z quick-hazel-newt: changed notes
