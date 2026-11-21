@@ -1,6 +1,6 @@
 ---
 title: Land a pending ticket branch only when the ticket is read from it
-status: todo
+status: doing
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -35,3 +35,4 @@ Tests: real-Git runner tests in a new `tests/test_land_pending_source.py`, in th
 - 2026-11-18T17:58:24Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T17:58:24Z lively-quartz-crane cold-read → planning
 - 2026-11-18T17:58:26Z lively-quartz-crane planning → todo
+- 2026-11-21T13:08:36Z nimble-ebony-marten todo → doing
