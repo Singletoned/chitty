@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: cold-read
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -57,8 +57,8 @@ Tests: no new test file here (`TASK-506` adds them). The migrated tests assert t
 
 ## Acceptance Criteria
 
-- [ ] Each of the 9 tests in the migration decision asserts its new behaviour as described there, none deleted or weakened; the migrated tests in `tests/test_check_cross_branch_references.py`, `tests/test_next.py` (`test_todo_dependency_must_be_done_on_main`, `test_unmerged_archive_does_not_complete_dependency`), `tests/test_repair_requires_work.py` and `tests/test_provisional_ids.py` each fail on `main` before the switch (recorded in a note)
-- [ ] `make check` passes, including `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency` and `test_ticket_worktree_write_does_not_wait` unchanged; the review note lists every existing test the branch changed, each with its old and new assertion
+- [ ] Each of the 9 tests in the migration decision asserts its new behaviour as described there, none deleted or weakened: in `tests/test_check_cross_branch_references.py`, `test_reference_existence_matches_show`, `test_malformed_task_on_another_branch_reports_parse_error` and `test_edit_can_depend_on_task_only_on_main`; in `tests/test_next.py`, `test_todo_dependency_must_be_done_on_main`, `test_unmerged_archive_does_not_complete_dependency` and `test_run_from_another_worktree_uses_the_branch_not_main`; `tests/test_store.py` `test_numbers_ignore_committed_tasks_on_another_branch`; `tests/test_repair_requires_work.py` `test_repair_requires_committed_work_outside_ticket_directories`; `tests/test_provisional_ids.py` `test_move_provisional_off_main_then_promote_on_main`. The first five and the last two assert new behaviour and each fails on `main` before the switch (recorded in a note); the `test_run_from_another_worktree...` and `test_numbers_ignore...` migrations only change their fixtures and may pass on `main` too
+- [ ] `make check` passes, with `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency` and `test_ticket_worktree_write_does_not_wait` passing unchanged; the review note lists every existing test the branch changed, each with its old and new assertion
 
 ## Plan
 
@@ -196,3 +196,5 @@ Split 2026-11-21 after the third worker found the ticket too large: the ID rule 
 - 2026-11-21T11:34:58Z sunny-ebony-kestrel: changed dependencies
 - 2026-11-21T11:41:04Z sunny-ebony-kestrel: replaced notes; changed dependencies, description, acceptance criteria
 - 2026-11-21T11:41:04Z sunny-ebony-kestrel planning → cold-read
+- 2026-11-21T11:42:40Z sunny-ebony-kestrel: changed acceptance criteria
+- 2026-11-21T11:42:40Z sunny-ebony-kestrel cold-read → todo
