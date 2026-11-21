@@ -1,9 +1,9 @@
 ---
 title: Docstrings for `parse` and the `Task.with_*` edits, stating their normalisations
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: nimble-umber-adder
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -20,6 +20,12 @@ On 2026-11-21 `TASK-507` went through many planning rounds because these functio
 
 Do not change behaviour. `make check` passes.
 
+## Plan
+
+Trace `parse` and its validation helpers, then document their rejection rules and error prefixes. Read each edit helper and document its normalization, ordering, and errors without changing behavior. Run `chitty fix`, `make format`, and `make check` before handing off for review.
+
 ## History
 
 - 2026-11-21T14:32:03Z sunny-ebony-kestrel → todo
+- 2026-11-21T15:46:49Z nimble-umber-adder: changed owner; wrote the plan
+- 2026-11-21T15:46:49Z nimble-umber-adder todo → doing
