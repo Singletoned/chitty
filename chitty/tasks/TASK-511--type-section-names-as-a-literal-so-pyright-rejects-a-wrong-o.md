@@ -23,6 +23,10 @@ Tests: a new `tests/test_section_name_types.py`. One test writes a small Python 
 - [ ] The `"Bogus"` pyright test fails before the change and passes after (recorded in a note); the `"Notes"` test and the `section_name` test pass
 - [ ] `.venv/bin/pyright` reports 0 errors; `Task.section` and `Task.with_section` take `name: SectionName`; no `cast` is added; the `get_args` sync test passes; `make check` passes
 
+## Plan
+
+Add the specified pyright regression tests and demonstrate the invalid literal is accepted before the change. Introduce the section literal type and strict conversion at the parser boundary while preserving existing parse diagnostics, propagate typed names through helpers and callers, then run formatting, Chitty repair and the full checks before handoff.
+
 ## History
 
 - 2026-11-21T14:32:29Z sunny-ebony-kestrel → planning
@@ -31,3 +35,4 @@ Tests: a new `tests/test_section_name_types.py`. One test writes a small Python 
 - 2026-11-21T14:34:36Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T14:34:36Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T14:37:03Z open-teal-badger todo → doing
+- 2026-11-21T14:38:38Z open-teal-badger: wrote the plan
