@@ -1,6 +1,6 @@
 ---
 title: Write `setup` and landing-check output to the worktree log, not the ticket
-status: done
+status: error
 priority: high
 depends_on:
   - TASK-353
@@ -44,6 +44,19 @@ Before the fix, the setup regression first failed its assertion that the note co
 Reviewed:
 1: pass - `make check` printed `Ran 902 tests` and `OK`. Running the two changed tests and the missing-command guard with a scratch copy of `cda4e9f9:src/chitty/run.py` printed `FF.`: the first failures were the setup status 9 and landing status 7 log-path note assertions respectively, and the guard passed. The recorded pre-fix evidence agrees.
 
+Runner error (landing): working tree is dirty in /Users/singletoned/src/singletoned/chitty; commit or stash these first:
+?? tmp-spike378.txt
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-426 or the main checkout before retrying.
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-426`
+
+Error output:
+```text
+working tree is dirty in /Users/singletoned/src/singletoned/chitty; commit or stash these first:
+?? tmp-spike378.txt
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-426 or the main checkout before retrying.
+```
+
 ## Summary
 
 Setup and landing checks now write combined output to the shared worktree log and record concise errors instead of command output. The specified regressions failed before the fix and pass afterward; the missing-command guard and `make check` pass. The existing `Error output:` block remains out of scope for TASK-427.
@@ -61,3 +74,5 @@ Setup and landing checks now write combined output to the shared worktree log an
 - 2026-11-21T08:48:17Z upbeat-white-adder doing → review
 - 2026-11-21T08:53:58Z intrepid-jade-wren: changed notes; ticked acceptance criteria
 - 2026-11-21T08:53:58Z intrepid-jade-wren review → done
+- 2026-11-21T08:54:11Z intrepid-jade-wren: changed notes
+- 2026-11-21T08:54:11Z intrepid-jade-wren done → error
