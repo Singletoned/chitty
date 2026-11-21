@@ -1,9 +1,9 @@
 ---
 title: Docstrings for the store's single-ticket read functions
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: nimble-umber-adder
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -21,6 +21,12 @@ Each docstring states, from the code as it is when you write it (check it; do no
 
 Keep each docstring short: a summary line, then the points above as plain sentences. Do not change behaviour. `make check` passes.
 
+## Plan
+
+Trace all seven store helpers and their dependencies. Compare single-ticket source selection with bulk listing, then document their parsing, absence and errors without changing behavior. Verify the selection rules against the design docs and run formatting and checks if implementation proceeds.
+
 ## History
 
 - 2026-11-21T14:32:02Z sunny-ebony-kestrel → todo
+- 2026-11-21T16:07:03Z nimble-umber-adder: changed owner; wrote the plan
+- 2026-11-21T16:07:03Z nimble-umber-adder todo → doing
