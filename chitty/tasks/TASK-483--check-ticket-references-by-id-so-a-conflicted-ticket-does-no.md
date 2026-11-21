@@ -33,6 +33,10 @@ Tests: real Git, in a new `tests/test_reference_isolation.py` with a class inher
 
 Add ID-only reference validation, isolate unreadable mentions in todo output, and cover the specified real-Git conflict and missing-reference cases before running the full checks.
 
+## Notes
+
+Both the TASK-3 note and TASK-2 dependency regression tests failed with the conflict error when exists temporarily returned self.lookup(task_id) is not None; the unreadable mention test also failed before the fix.
+
 ## History
 
 - 2026-11-21T01:21:49Z quick-pearl-lapwing → planning
@@ -41,3 +45,4 @@ Add ID-only reference validation, isolate unreadable mentions in todo output, an
 - 2026-11-21T01:28:25Z quick-pearl-lapwing cold-read → todo
 - 2026-11-21T13:15:00Z sunny-coral-badger todo → doing
 - 2026-11-21T13:17:33Z sunny-coral-badger: wrote the plan
+- 2026-11-21T13:19:27Z sunny-coral-badger: changed notes
