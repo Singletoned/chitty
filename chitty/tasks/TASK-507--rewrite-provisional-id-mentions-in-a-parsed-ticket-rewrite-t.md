@@ -26,6 +26,10 @@ Tests: Hypothesis properties in `tests/test_property_renumbering.py` (`TASK-381`
 - [ ] The six `rewrite_task` properties pass; a note gives the command run (`.venv/bin/python -m unittest tests.test_property_renumbering`) and records each property failing against the `NotImplementedError` stub, with the failing test name and traceback line; the two wrong-version tests pass (each wrong version fails a property)
 - [ ] `make check` passes
 
+## Plan
+
+Implement the pure field and section rewrite, with criterion edits preserving unchecked items. Add generated properties and deliberately wrong implementations, verify failures against the stub, then run formatting and checks.
+
 ## Notes
 
 Two requirements need decisions before implementation:
@@ -54,3 +58,4 @@ Planner 2026-11-21, after the worker's return: targets are fresh by contract, so
 - 2026-11-21T13:39:52Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T13:39:52Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:40:09Z vivid-ochre-badger todo → doing
+- 2026-11-21T13:42:17Z vivid-ochre-badger: wrote the plan
