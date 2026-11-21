@@ -1,6 +1,6 @@
 ---
 title: Test archiving a referenced ticket and reading an archive from an older worktree
-status: todo
+status: doing
 labels:
   - bug
   - escape
@@ -74,3 +74,4 @@ Cold read 2026-11-21 outcomes: net diff against `main` for the path check; `os.c
 - 2026-11-21T08:04:54Z nimble-umber-gannet backlog → cold-read
 - 2026-11-21T08:08:45Z nimble-umber-gannet: changed description, acceptance criteria, notes
 - 2026-11-21T08:08:45Z nimble-umber-gannet cold-read → todo
+- 2026-11-21T12:31:41Z quick-ginger-jay todo → doing
