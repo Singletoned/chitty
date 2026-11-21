@@ -25,9 +25,9 @@ Tests: real Git, in a new `tests/test_reference_isolation.py` with a class inher
 
 ## Acceptance Criteria
 
-- [ ] With `autocommit = true`, `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`: `chitty show TASK-2` succeeds, and `chitty edit TASK-2 --note x` and `chitty note TASK-2 y` succeed and commit; with `TASK-3` committed on `main` with `depends_on: [TASK-1]` and `parent: TASK-1`, `chitty edit TASK-3 --note x` succeeds and commits, and `chitty edit TASK-2 --depends-on TASK-1` succeeds (the `TASK-3` and `--depends-on` cases fail before the change, by the conflict error)
-- [ ] `chitty edit TASK-2 --depends-on TASK-99` fails with `no task TASK-99` (a guard that passes before and after); a note records that the `TASK-3` and `--depends-on TASK-1` tests of criterion 1 fail with `exists` temporarily written as `return self.lookup(task_id) is not None`
-- [ ] With `TASK-1` conflicted as in criterion 1, `TASK-4` in `planning` mentioning `TASK-1` and `TASK-2` in its Description, `chitty edit TASK-4 -s todo` exits 0, prints `TASK-1 unreadable: ` followed by the conflict error and the normal line for `TASK-2`, and `TASK-4` is `todo` (fails before the change); and `OTHER-1` committed on `main` as the only ticket in an unconfigured `chitty/other/` directory can be referenced: `chitty edit TASK-2 --depends-on OTHER-1` succeeds (a guard); `make check` passes
+- [x] With `autocommit = true`, `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`: `chitty show TASK-2` succeeds, and `chitty edit TASK-2 --note x` and `chitty note TASK-2 y` succeed and commit; with `TASK-3` committed on `main` with `depends_on: [TASK-1]` and `parent: TASK-1`, `chitty edit TASK-3 --note x` succeeds and commits, and `chitty edit TASK-2 --depends-on TASK-1` succeeds (the `TASK-3` and `--depends-on` cases fail before the change, by the conflict error)
+- [x] `chitty edit TASK-2 --depends-on TASK-99` fails with `no task TASK-99` (a guard that passes before and after); a note records that the `TASK-3` and `--depends-on TASK-1` tests of criterion 1 fail with `exists` temporarily written as `return self.lookup(task_id) is not None`
+- [x] With `TASK-1` conflicted as in criterion 1, `TASK-4` in `planning` mentioning `TASK-1` and `TASK-2` in its Description, `chitty edit TASK-4 -s todo` exits 0, prints `TASK-1 unreadable: ` followed by the conflict error and the normal line for `TASK-2`, and `TASK-4` is `todo` (fails before the change); and `OTHER-1` committed on `main` as the only ticket in an unconfigured `chitty/other/` directory can be referenced: `chitty edit TASK-2 --depends-on OTHER-1` succeeds (a guard); `make check` passes
 
 ## Plan
 
@@ -36,6 +36,10 @@ Add ID-only reference validation, isolate unreadable mentions in todo output, an
 ## Notes
 
 Both the TASK-3 note and TASK-2 dependency regression tests failed with the conflict error when exists temporarily returned self.lookup(task_id) is not None; the unreadable mention test also failed before the fix.
+
+## Summary
+
+Reference validation now uses ticket IDs, and promotion reports unreadable mentions without failing. Real-Git regression tests cover conflicts and guards; make check passes all 926 tests. No follow-ups.
 
 ## History
 
@@ -46,3 +50,4 @@ Both the TASK-3 note and TASK-2 dependency regression tests failed with the conf
 - 2026-11-21T13:15:00Z sunny-coral-badger todo → doing
 - 2026-11-21T13:17:33Z sunny-coral-badger: wrote the plan
 - 2026-11-21T13:19:27Z sunny-coral-badger: changed notes
+- 2026-11-21T13:23:27Z sunny-coral-badger: changed summary; ticked acceptance criteria
