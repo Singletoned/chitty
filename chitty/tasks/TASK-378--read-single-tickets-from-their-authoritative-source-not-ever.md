@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: cold-read
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -35,7 +35,7 @@ Measured 2026-11-21 with a spike, commit `ab2ac7bf` on branch `spike/task-378` (
 
 Decisions:
 
-- `lookup(task_id)` returns `None` when `source_copy(task_id)` is `None`, and otherwise a `StoredTask` built from the copy: context from `path.parts[1]` (the `Context` of that name from `discovered_contexts()`), archived exactly when `path.parts[2] == "archive"`. It no longer calls `_tasks_in_location`. `context_of(task_id)` returns the context of the source copy, falling back to the prefix as today only when there is none; it never lists tasks and never parses: split the source choice and file listing out of `source_copy` into a private `_source_files(task_id) -> tuple[str, list[tuple[Path, str]]]` (the ref and its unparsed files), which `source_copy` then parses and `context_of` reads only the first path of. Without this, `tests/test_next.py` `test_dependency_check_parses_only_the_dependency` counts two parses instead of one; it must pass unchanged. `find` is unchanged apart from using them.
+- `lookup(task_id)` returns `None` when `source_copy(task_id)` is `None`, and otherwise a `StoredTask` built from the copy: context from `path.parts[1]` (the `Context` of that name from `discovered_contexts()`), archived exactly when `path.parts[2] == "archive"`. It no longer calls `_tasks_in_location`. `context_of(task_id)` returns the context of the source copy, falling back, only when there is no copy, to the configured context whose prefix matches, and otherwise raising today's `no context in <root> has prefix` `ChittyError` (as `7b12d835` does); it never lists tasks and never parses: split the source choice and file listing out of `source_copy` into a private `_source_files(task_id) -> tuple[str, list[tuple[Path, str]]]` (the ref and its unparsed files), which `source_copy` then parses and `context_of` reads only the first path of. Without this, `tests/test_next.py` `test_dependency_check_parses_only_the_dependency` counts two parses instead of one; it must pass unchanged. `find` is unchanged apart from using them.
 - `TASK-504` (lands first) makes `_choose_source` parse nothing, so the `_source_files` split above is enough for `context_of` never to parse.
 - `StoredTask.branch` is `SourceCopy.ref` (`task-5`, `origin/task-5`, `main`, or `None` for the working tree); `show` keeps printing `branch:` (`src/chitty/cli.py`), now with the source copy's ref. `StoredTask.path` is this checkout's root joined with the copy's relative path, whether or not that file exists here.
 - Rule decided with the owner 2026-11-20: an operation fails only if it needs the conflicted ticket's content. Here that means errors from `source_copy` propagate only from reads of that ticket: `chitty show`, `edit` and `note` keep working for other tickets while one is conflicted. Reference checks (`check.check`, `check_dependencies`, the `parent` checks) still go through `lookup` here, so a ticket that references a conflicted ticket cannot be edited until `TASK-483` (which starts after this) checks references by ID.
@@ -59,8 +59,8 @@ Tests: no new test file here (`TASK-506` adds them). The migrated tests assert t
 
 ## Acceptance Criteria
 
-- [ ] The two spike commits are applied (or the same change written), and the 9 migrated tests are as the Decisions describe. The four that assert new behaviour (the three in `tests/test_check_cross_branch_references.py` and the repair `uncommitted` case), plus the provisional migration, each fail on `main` before the switch, recorded in a note. To get that evidence, commit your work first, then run `git show main:src/chitty/store.py > src/chitty/store.py`, run those tests, and restore with `git checkout -- src/chitty/store.py`.
-- [ ] `make check` passes, with `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency` and `test_ticket_worktree_write_does_not_wait` passing unchanged; the review note lists every existing test the branch changed, each with its old and new assertion
+- [ ] The two spike commits are applied (or the same change written), and the 9 migrated tests are as the Decisions describe. The five that assert new behaviour (the three in `tests/test_check_cross_branch_references.py`, the repair `uncommitted` case and the provisional migration) each fail on `main` before the switch, recorded in a note. To get that evidence, commit your work first, then run `git show main:src/chitty/store.py > src/chitty/store.py`, run those tests, and restore with `git checkout -- src/chitty/store.py`.
+- [ ] `make check` passes, with every test in `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency` and `test_ticket_worktree_write_does_not_wait` passing unchanged; the review note lists every existing test the branch changed, each with its old and new assertion
 
 ## Plan
 
@@ -206,3 +206,5 @@ Split 2026-11-21: the ID rule (`TASK-504`) and six renames (`TASK-505`) have lan
 - 2026-11-21T12:06:08Z sunny-ebony-kestrel: replaced notes; changed description, acceptance criteria
 - 2026-11-21T12:06:08Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T12:12:41Z sunny-ebony-kestrel: changed description, acceptance criteria
+- 2026-11-21T12:14:09Z sunny-ebony-kestrel: changed description, acceptance criteria
+- 2026-11-21T12:14:09Z sunny-ebony-kestrel cold-read → todo
