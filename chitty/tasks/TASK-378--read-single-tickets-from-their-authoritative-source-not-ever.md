@@ -57,7 +57,7 @@ Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `Cli
 
 ## Acceptance Criteria
 
-- [ ] From the main checkout, through the CLI: `chitty show` of a ticket edited on `task-<n>` ahead of `main`, with an unrelated commit on `main` made after the branch edit (so today's newest-commit rule picks `main`'s copy), prints the branch copy and `branch: task-<n>`; of a ticket retitled on `task-<n>`, prints the branch path; of a ticket archived on its branch, prints its archive path; of a ticket only on branch `feature`, fails with `no task` (each fails before the change)
+- [ ] From the main checkout, through the CLI, with `main`'s tickets committed dated `2030-01-01T00:00:00Z` before each branch is made (see Tests): `chitty show` of a ticket edited on `task-<n>` prints the branch copy and `branch: task-<n>`; of a ticket retitled on `task-<n>`, prints the branch path; of a ticket archived on its branch, prints its archive path; of a ticket only on branch `feature`, fails with `no task` (each fails before the change)
 - [ ] With `TASK-1` edited on both `task-1` and `main` since they split, and `TASK-2` only on `main`: `chitty show TASK-2` succeeds; `chitty show TASK-1` fails naming `task-1` and `main` (fails before the change). With a file not starting with `---` committed as `TASK-1` on `task-1`, `chitty show TASK-1` fails with `task-1:<its relative path>: file must start with '---' frontmatter`. In a linked worktree on branch `feature`, an uncommitted retitle of `TASK-2` there is not shown: `chitty show TASK-2` prints the title committed on `main`
 - [ ] `make check` passes, including `tests/test_list_performance.py` and `test_dependency_check_parses_only_the_dependency` unchanged; each of the 15 tests in the migration decision asserts its new behaviour as described there; and the review note lists every existing test the branch changed, each with its old and new assertion, none deleted or weakened
 
@@ -203,3 +203,4 @@ Planner, 2026-11-21: all dependencies are `done`. Measured the switch with a spi
 - 2026-11-21T01:55:12Z eager-violet-puffin doing → planning
 - 2026-11-21T09:07:56Z nimble-umber-gannet: changed description, acceptance criteria, notes; wrote the plan
 - 2026-11-21T09:07:56Z nimble-umber-gannet planning → cold-read
+- 2026-11-21T09:08:18Z nimble-umber-gannet: changed acceptance criteria
