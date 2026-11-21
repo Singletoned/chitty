@@ -76,6 +76,8 @@ Applied the two specified spikes as partial work. `make check` fails beyond the 
 
 Planner 2026-11-21: the six `TestCrossBranchWrites` and MCP failures came from a stale branch. `task-378` did not contain `TASK-505` (`6c8bf06d`) or `TASK-504`. Rebased `task-378` onto `main`, keeping the worker's spike commit (now `e0675f4a`); `make check` then passed (905 tests, OK). Remaining: the fails-before evidence in criterion 1, then review.
 
+With main store.py restored temporarily, all five migrated regression tests failed as expected: reference existence on other branch (both parent and dependency), malformed other-branch task, refused edit, repair uncommitted case, and provisional move. Restored the committed implementation afterward.
+
 ## History
 
 - 2026-11-18T16:20:04Z lively-quartz-crane → backlog
@@ -219,3 +221,4 @@ Planner 2026-11-21: the six `TestCrossBranchWrites` and MCP failures came from a
 - 2026-11-21T12:21:12Z sunny-ebony-kestrel: changed notes
 - 2026-11-21T12:21:12Z sunny-ebony-kestrel planning → todo
 - 2026-11-21T12:22:00Z daring-yellow-dormouse todo → doing
+- 2026-11-21T12:24:00Z daring-yellow-dormouse: changed notes
