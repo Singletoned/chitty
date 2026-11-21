@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: doing
+status: error
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -37,6 +37,10 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-518`
 
 Requeued after the agent exited without implementation changes or a status handoff. The worktree was clean, the only commits from that attempt were ticket metadata, and `.chitty/check.log` showed the baseline passing. The revised fixtures and acceptance criteria remain unchanged.
 
+Runner error (agent): TASK-518 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-518`
+
 ## History
 
 - 2026-11-21T18:38:33Z eager-ginger-adder → backlog
@@ -62,3 +66,5 @@ Requeued after the agent exited without implementation changes or a status hando
 - 2026-11-21T19:49:18Z eager-ginger-adder: changed owner, notes
 - 2026-11-21T19:49:18Z eager-ginger-adder error → todo
 - 2026-11-21T19:50:17Z sunny-amber-newt todo → doing
+- 2026-11-21T19:53:07Z sunny-amber-newt: changed notes
+- 2026-11-21T19:53:07Z sunny-amber-newt doing → error
