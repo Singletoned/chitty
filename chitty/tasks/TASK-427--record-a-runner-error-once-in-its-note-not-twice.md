@@ -1,6 +1,6 @@
 ---
 title: Record a runner error once in its note, not twice
-status: doing
+status: review
 priority: medium
 depends_on:
   - TASK-426
@@ -54,3 +54,4 @@ Extracted runner error note formatting and added property and branch regression 
 - 2026-11-21T10:54:02Z quick-maroon-falcon: wrote the plan
 - 2026-11-21T10:54:41Z quick-maroon-falcon: changed notes
 - 2026-11-21T10:57:15Z quick-maroon-falcon: changed summary
+- 2026-11-21T10:57:24Z quick-maroon-falcon doing → review
