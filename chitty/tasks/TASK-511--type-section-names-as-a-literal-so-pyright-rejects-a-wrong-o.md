@@ -1,6 +1,6 @@
 ---
 title: Type section names as a `Literal`, so pyright rejects a wrong one
-status: doing
+status: review
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -46,3 +46,4 @@ Added typed section names, exact external-name validation and typed parser/impor
 - 2026-11-21T14:38:38Z open-teal-badger: wrote the plan
 - 2026-11-21T14:38:53Z open-teal-badger: changed notes
 - 2026-11-21T14:41:20Z open-teal-badger: changed summary; ticked acceptance criteria
+- 2026-11-21T14:41:22Z open-teal-badger doing → review
