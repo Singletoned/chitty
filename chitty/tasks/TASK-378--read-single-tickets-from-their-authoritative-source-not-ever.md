@@ -64,7 +64,7 @@ Tests: no new test file here (`TASK-506` adds them). The migrated tests assert t
 
 ## Plan
 
-Add real-Git regression coverage and confirm failures before the switch; route single-ticket reads through unparsed source selection, migrate the specified tests, then format, check and hand off.
+Apply the two specified spikes together, verify the five migrated regressions against main without the switch, then restore, fix, format, check and hand off.
 
 ## Notes
 
@@ -209,3 +209,4 @@ Split 2026-11-21: the ID rule (`TASK-504`) and six renames (`TASK-505`) have lan
 - 2026-11-21T12:14:09Z sunny-ebony-kestrel: changed description, acceptance criteria
 - 2026-11-21T12:14:09Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T12:14:54Z quick-amber-jay todo → doing
+- 2026-11-21T12:16:45Z quick-amber-jay: wrote the plan
