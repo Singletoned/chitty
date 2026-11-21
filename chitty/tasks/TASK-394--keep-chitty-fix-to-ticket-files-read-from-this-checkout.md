@@ -47,6 +47,8 @@ Planner 2026-11-21, after the second read: `source_of` is `None` without Git; on
 
 Planner 2026-11-21, after the third read: decided that a numbered ticket existing only in a ticket worktree is skipped as `read from main`, and a provisional one there is repaired (guard added). Error exit, undecodable files and the guard labels clarified. These are decisions and labels, not a design change, so no split.
 
+Regression tests fail against the unfixed code: it repairs both duplicate files and the stale main copy, omits source warnings and does not stop for diverged refs. The worktree repair and provisional repair were observed passing before the fix.
+
 ## History
 
 - 2026-11-18T16:38:05Z lively-quartz-crane → backlog
@@ -79,3 +81,4 @@ Planner 2026-11-21, after the third read: decided that a numbered ticket existin
 - 2026-11-21T13:17:30Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T13:24:58Z lively-teal-eel todo → doing
 - 2026-11-21T13:27:41Z lively-teal-eel: wrote the plan
+- 2026-11-21T13:28:47Z lively-teal-eel: changed notes
