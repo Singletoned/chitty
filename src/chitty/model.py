@@ -272,7 +272,11 @@ class Task:
         return "".join(parts)
 
     def section(self, name: SectionName) -> str | None:
-        """The section's content without its heading, or None if absent."""
+        """Return the section body without its heading, or `None` if absent.
+
+        Strip leading and trailing newline characters only; blank lines that
+        contain spaces or tabs are not stripped.
+        """
         for section in self._sections:
             if section.name == name:
                 return "".join(section.lines[1:]).strip("\n")
@@ -294,7 +298,12 @@ class Task:
     # -- editing ---------------------------------------------------------
 
     def with_field(self, key: str, value: FieldValue) -> "Task":
-        """Set a frontmatter key; None or [] removes it."""
+        """Set a key from `FIELD_ORDER` and revalidate the frontmatter.
+
+        `None` or `[]` removes the key, except that `provisional` accepts only
+        `True` or `None`. Removing a required key or giving `labels` or
+        `depends_on` a list with duplicates raises `TaskError`.
+        """
         if key not in FIELD_ORDER:
             raise TaskError(f"unknown frontmatter key {key!r}")
         if key == "provisional" and value is not True and value is not None:
@@ -313,7 +322,16 @@ class Task:
         return self._rebuild(fields=fields)
 
     def with_section(self, name: SectionName, text: str) -> "Task":
-        """Replace a section's content; empty text removes the section."""
+        """Replace a section body, or remove it if `text` is whitespace-only or empty.
+
+        Strip leading and trailing newlines from the input and trailing
+        whitespace from each line. Write a blank line after the heading and
+        another before the next section, if there is one.
+
+        Raise `TaskError` for Acceptance Criteria (edit those per item),
+        carriage returns, or a result that fails validation or changes section
+        boundaries. In particular, Description cannot be removed.
+        """
         if name == ACCEPTANCE_CRITERIA:
             raise TaskError("acceptance criteria are edited per item")
         lines = _text_lines(text)
@@ -428,7 +446,20 @@ class Task:
         check: Sequence[int],
         uncheck: Sequence[int],
     ) -> "Task":
-        """Edit acceptance criteria. Indices are 1-based, against the current list."""
+        """Edit acceptance criteria by 1-based indices into the original list.
+
+        Reject out-of-range indices, conflicting operations on the same item,
+        and repeated replacement indices. Validate replacement text before
+        validating additions: both are trimmed and must be nonempty and contain
+        no line breaks, even at the ends, or `TaskError` is raised.
+
+        Walk the original items in order: skip removals, apply replacements,
+        and check or uncheck the flagged items. A replacement is one unchecked
+        `- [ ]` line, discarding the old marker (including `[X]`) and any
+        continuation lines. Append additions as unchecked items after the
+        retained items. Remove the section if all items are removed and none
+        are added.
+        """
         count = len(self.criteria)
         named = {
             "--set-ac": [index for index, _ in set_criteria],
@@ -539,6 +570,35 @@ class Task:
 
 
 def parse(text: str) -> Task:
+    """Parse task text, preserving its layout and section order.
+
+    Raise `TaskError` for the following (message prefixes in backticks):
+
+    - Carriage returns (`CR line endings`) or nonempty text without a final LF
+      (`file must end with a newline`).
+    - Missing opening or closing `---` delimiters (`file must start with`,
+      `frontmatter is not closed`), unsupported key layout (`line N: frontmatter
+      keys must be plain`, `frontmatter layout not understood`), duplicate keys
+      (`duplicate frontmatter key`), invalid YAML (`frontmatter is not valid YAML`),
+      or a YAML value that is not a mapping (`frontmatter must be a YAML mapping`).
+      Schema errors start with `unknown frontmatter key`, `frontmatter key`
+      for missing keys, or the invalid field's path followed by `:`.
+    - Nonblank content before the first section (`content before the first
+      '##' section is not allowed`). Outside fenced code blocks, `#` and setext
+      headings, indented `##` headings, and unknown or duplicate section names
+      raise messages starting with `line N:`, followed by `'#' headings`,
+      `setext headings`, `'##' headings`, `unknown section`, or `duplicate section`.
+    - Acceptance criteria without text or with nested lists (`acceptance
+      criterion N`), or nonblank content other than checkbox items and their
+      indented continuations (`'## Acceptance Criteria' may only contain`).
+    - History that is not last, is empty, or contains a malformed entry
+      (`'## History' must be the last section`, `'## History' must contain`,
+      `'## History' may only contain`, respectively). A syntactically valid entry
+      with an invalid date or timestamp raises `history date` instead. Other
+      sections need not follow `SECTION_ORDER`.
+    - A missing or whitespace-only Description (`'## Description' section is
+      required`, `'## Description' must not be empty`).
+    """
     if "\r" in text:
         raise TaskError("CR line endings are not supported; use LF")
     if text and not text.endswith("\n"):
