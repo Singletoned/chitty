@@ -42,6 +42,249 @@ Planning issue discovered: the required startup cleanup deletes every local tick
 
 Planning 2026-11-20: the review-state question in the earlier notes is resolved in the Description (keep merged branches of tickets that are not `done`). The branch's partial code predates it: it skips unknown IDs and has no status rule; fix both. Branch rebased onto `main` (old tip tagged `task-400-before-rebase`). Resumed as `doing` because the branch holds partial work.
 
+Check failed before this session: check exited with status 2:
+```text
+! git grep -nE '^(<<<<<<< |>>>>>>> |=======$)'
+uv run ruff format --check .
+682 files already formatted
+uv run ruff check --no-fix .
+All checks passed!
+uv run pyright
+0 errors, 0 warnings, 0 informations
+uv run unittest-parallel -s tests -t . --level test
+Running 868 test suites (868 total tests) across 16 workers
+..................................................................................................................................................................................................................................................................................................................................................................................................................................updated TASK-1 /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpi1u33s9f/repo/chitty/tasks/TASK-1--one.md actor test-agent
+...............................................................━━━━ chitty run · 00:13:27 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━ stopped · exit 1 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+.................F.......F..F....F................/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/contextlib.py:141: HypothesisWarning: subTest per-test-case reporting interacts badly with Hypothesis trying hundreds of test cases, so we disable it for the duration of any test that uses `@given`.
+  return next(self.gen)
+.................FE...........................E.....................................................................................................kill: 18199: No such process
+..............kill: 21177: No such process
+...............................Error: `chitty run` configuration is incomplete in chitty.toml:
+- `chitty run` requires `autocommit = true` in chitty.toml, so ticket changes reach every branch; `chitty init --autocommit` sets it
+............/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/repo/CLAUDE.md
+...Running check in /private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpof1wtdpz/repo/.worktrees/task-1...
+Check passed; work agent is working on TASK-1...
+....TASK-1: doing → review
+E...E./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpfxnc9moi/repo/CLAUDE.md
+no next ticket for --mode work
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3yewooys/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmppmqxjl53/repo/CLAUDE.md
+../private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpya8nxsb7/repo/CLAUDE.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp3xrij584/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp1o60fpw0/repo/CLAUDE.md
+./private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/repo/chitty.toml
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/repo/chitty/tasks
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/repo/chitty/human
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/repo/chitty/backlog
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/data/chitty/inbox/repo
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/repo/.gitignore
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/repo/AGENTS.md
+/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpee26k9ru/repo/CLAUDE.md
+....................................................................................chitty 0.1.31 is out: run uv tool upgrade chitty
+.............................Flanded TASK-1
+landed TASK-2
+landed TASK-1
+landed TASK-1
+
+======================================================================
+test_run_runs_setup_before_claim_and_leaves_review_unchanged (tests.test_next.TestNext.test_run_runs_setup_before_claim_and_leaves_review_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_next.py", line 2297, in test_run_runs_setup_before_claim_and_leaves_review_unchanged
+    review_prompt = (worktree / "agent-arguments-review").read_text()
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_local.py", line 546, in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_abc.py", line 632, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmp4e8_6g5y/repo/.worktrees/task-1/agent-arguments-review'
+
+======================================================================
+test_run_uses_committed_change_from_ticket_worktree (tests.test_next.TestNext.test_run_uses_committed_change_from_ticket_worktree)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_next.py", line 1104, in git
+    return subprocess.run(
+           ~~~~~~~~~~~~~~^
+        ["git", *args], cwd=self.root, capture_output=True, text=True, check=True
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).stdout
+    ^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['git', 'worktree', 'remove', '--force', '/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpoxw0tvpz/ticket-worktree']' returned non-zero exit status 128.
+
+======================================================================
+test_unqualified_work_and_review_select_independent_models (tests.test_run_model_defaults.TestRunModelDefaults.test_unqualified_work_and_review_select_independent_models)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_run_model_defaults.py", line 88, in test_unqualified_work_and_review_select_independent_models
+    self.run_ticket(status="review", agent="chosen", unqualified=True),
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_run_model_defaults.py", line 81, in run_ticket
+    return (self.root / f".worktrees/task-{ticket.split('-')[1]}/invocation").read_text()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_local.py", line 546, in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_abc.py", line 632, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/pathlib/_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpuuajlvmn/repo/.worktrees/task-2/invocation'
+
+======================================================================
+test_review_ticket_gets_review_mode (tests.test_run_repair_mode.TestRunRepairMode.test_review_ticket_gets_review_mode)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_run_repair_mode.py", line 39, in test_review_ticket_gets_review_mode
+    self.assertEqual(self.invocations_seen()[0], ["review", ticket])
+                     ~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded (tests.test_next.TestNext.test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_next.py", line 517, in test_run_mode_selects_only_its_own_tickets_and_is_not_forwarded
+    self.assertEqual(reviewed.stdout, f"{review}: review → blocked\n")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'TASK-2: review → error\n' != 'TASK-2: review → blocked\n'
+- TASK-2: review → error
+?                   ^^^^
++ TASK-2: review → blocked
+?                  +++++ ^
+
+
+======================================================================
+test_run_overlaps_one_worker_and_one_reviewer (tests.test_next.TestNext.test_run_overlaps_one_worker_and_one_reviewer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_next.py", line 642, in test_run_overlaps_one_worker_and_one_reviewer
+    self.assertEqual(review_task.frontmatter.status, "done")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' != 'done'
+- error
++ done
+
+
+======================================================================
+test_run_rejects_lost_ticket_when_worktree_and_branch_are_removed (tests.test_next.TestNext.test_run_rejects_lost_ticket_when_worktree_and_branch_are_removed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_next.py", line 862, in test_run_rejects_lost_ticket_when_worktree_and_branch_are_removed
+    result = self.run_cli("run", exit_code=1)
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_cli.py", line 89, in run_cli
+    self.assertEqual(result.exit_code, exit_code, result.output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1 : TASK-2: review → error
+removed merged branch task-2
+
+
+======================================================================
+test_run_reports_status_when_agent_removes_worktree_but_keeps_branch (tests.test_next.TestNext.test_run_reports_status_when_agent_removes_worktree_but_keeps_branch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_next.py", line 814, in test_run_reports_status_when_agent_removes_worktree_but_keeps_branch
+    self.assertEqual(result.stdout, "TASK-2: review → done\n")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'TASK-2: review → error\n' != 'TASK-2: review → done\n'
+- TASK-2: review → error
+?                   ----
++ TASK-2: review → done
+?                  +++
+
+
+======================================================================
+test_run_uses_committed_change_from_ticket_worktree (tests.test_next.TestNext.test_run_uses_committed_change_from_ticket_worktree)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_next.py", line 703, in test_run_uses_committed_change_from_ticket_worktree
+    self.assertEqual(result.stdout, "TASK-1: doing → blocked\n")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'TASK-1: doing → error\n' != 'TASK-1: doing → blocked\n'
+- TASK-1: doing → error
+?                  ^^^^
++ TASK-1: doing → blocked
+?                 +++++ ^
+
+
+======================================================================
+test_concurrent_reviewers_take_different_tickets (tests.test_run_lock.TestRunLock.test_concurrent_reviewers_take_different_tickets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_run_lock.py", line 240, in test_concurrent_reviewers_take_different_tickets
+    self.wait_for(*(self.logs / f"{ticket}.started" for ticket in tickets))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/singletoned/src/singletoned/chitty/.worktrees/task-400/tests/test_run_lock.py", line 107, in wait_for
+    self.assertLess(time.monotonic(), deadline, f"timed out waiting for {paths}")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 302314.136709083 not less than 302314.132140916 : timed out waiting for (PosixPath('/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxf9ry_lh/logs/TASK-1.started'), PosixPath('/private/var/folders/k6/f9sc719s7796fqb92smsvq0r0000gn/T/tmpxf9ry_lh/logs/TASK-2.started'))
+
+----------------------------------------------------------------------
+Ran 868 tests in 291.624s
+
+FAILED (failures=6, errors=4)
+make: *** [check] Error 10
+
+```
+
 ## History
 
 - 2026-11-18T18:00:02Z lively-quartz-crane → backlog
@@ -59,3 +302,4 @@ Planning 2026-11-20: the review-state question in the earlier notes is resolved 
 - 2026-11-20T23:24:27Z quick-pearl-lapwing: changed description, acceptance criteria, notes
 - 2026-11-20T23:24:27Z quick-pearl-lapwing cold-read → doing
 - 2026-11-20T23:25:08Z quick-pearl-lapwing: changed description
+- 2026-11-21T00:17:20Z jolly-ochre-lapwing: changed notes
