@@ -1,6 +1,6 @@
 ---
 title: Save and restore uncommitted worktree work under a named ref
-status: doing
+status: planning
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -39,6 +39,12 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 
 Add stub helpers and real-Git property and example tests; verify each fails against the stubs, implement named-ref save and restore, then run fix, format, and checks.
 
+## Notes
+
+Planning blocker: the API accepts a caller-named ref without restriction, but the specified save sequence updates that ref while also promising never to touch `refs/stash`. If the caller supplies `refs/stash` in a repository with no stash, the existence check succeeds in finding no ref and `git update-ref refs/stash <commit>` creates the shared stash ref. Likewise, restore would delete an existing `refs/stash` after applying it. Decide and specify the allowed ref namespace and error behaviour, including a test for forbidden refs, or explicitly narrow the promise and caller contract. This affects the central isolation guarantee, so it is not a small implementation default.
+
+I inspected the specified save and restore sequences, `src/chitty/git.py` and `tests/test_git.py`; the remaining examples and property describe their fixtures and assertions. I could not verify their passing or failing behaviour because no helpers or tests have been implemented. The existing plan is recorded; no implementation changes were made.
+
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
@@ -48,3 +54,5 @@ Add stub helpers and real-Git property and example tests; verify each fails agai
 - 2026-11-21T23:12:35Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:46:16Z zesty-bronze-gannet todo → doing
 - 2026-11-21T23:48:13Z zesty-bronze-gannet: wrote the plan
+- 2026-11-21T23:48:45Z zesty-bronze-gannet: changed owner, notes
+- 2026-11-21T23:48:45Z zesty-bronze-gannet doing → planning
