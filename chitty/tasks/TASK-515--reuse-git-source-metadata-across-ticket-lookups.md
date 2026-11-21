@@ -26,6 +26,10 @@ Add real-Git subprocess scaling and same-Repo invalidation tests, verify the sca
 
 Before the fix, the lookup regression fails with 16 versus 56 Git calls; the real-Git invalidation scenario passes without caching.
 
+## Summary
+
+Cached repository presence, current branch, main tip and branch tips for source discovery until invalidation. Added real-Git scaling and invalidation coverage. The scaling test failed before the fix at 16 versus 56 Git calls. Verification: make check passed all 974 tests, formatting, lint and type checks. No follow-ups.
+
 ## History
 
 - 2026-11-21T15:51:38Z honest-coral-heron → backlog
@@ -37,3 +41,4 @@ Before the fix, the lookup regression fails with 16 versus 56 Git calls; the rea
 - 2026-11-21T15:57:30Z upbeat-ebony-raven todo → doing
 - 2026-11-21T15:59:54Z upbeat-ebony-raven: wrote the plan
 - 2026-11-21T16:00:26Z upbeat-ebony-raven: changed notes
+- 2026-11-21T16:03:04Z upbeat-ebony-raven: changed summary
