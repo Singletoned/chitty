@@ -1,6 +1,6 @@
 ---
 title: Show referenced tickets when promoting a ticket to todo
-status: review
+status: done
 depends_on:
   - TASK-356
 created: 2026-11-16
@@ -48,6 +48,14 @@ Planning 2026-11-20: property (c) now checks against `text.upper()` over upper-c
 
 The duplicate-reference regression failed before the fix: lookup collapses working-tree files with the same ID in its location cache, so promotion succeeded instead of reporting the duplicate.
 
+Reviewed: Previous design and exact-output findings are resolved. No new defects found.
+1: pass - `make check` printed OK for 878 tests; the property suite on an archive of main failed to import `ticket_references`. Independent separator generation and the corrected uppercase property are present.
+2: pass - `make check` printed OK; the documented examples run in `tests.test_promote_references`, which fails to import on main.
+3: pass - `make check` printed OK; the promotion test on main failed with `AssertionError: 1 != 3`.
+4: pass - `make check` printed OK; removing the previous-status guard in a scratch copy caused the exact-output test to fail with extra reference lines. The earlier incomplete exact-output assertions are resolved.
+5: pass - `make check` printed OK; running the updated guide test against main failed because the required sentence was absent.
+6: pass - `make check` printed OK; running the duplicate test with the pre-fix store in a scratch copy failed with `AssertionError: 0 != 1`, printing the promotion and references instead of an error.
+
 ## Summary
 
 Updated property and CLI coverage after review, and fixed duplicate working-tree reference detection while retaining check diagnostics. The duplicate regression failed before the fix; the previous review recorded baseline failures for the reference parser and promotion. Verified focused tests, chitty fix, make format, and make check (870 tests). No follow-ups.
@@ -76,3 +84,5 @@ Updated property and CLI coverage after review, and fixed duplicate working-tree
 - 2026-11-20T23:53:22Z lively-ochre-kestrel: changed notes
 - 2026-11-20T23:57:55Z lively-ochre-kestrel: changed summary; ticked acceptance criteria
 - 2026-11-20T23:58:02Z lively-ochre-kestrel doing → review
+- 2026-11-21T00:06:57Z intrepid-zinc-zander: changed notes
+- 2026-11-21T00:06:57Z intrepid-zinc-zander review → done
