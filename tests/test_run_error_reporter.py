@@ -106,6 +106,14 @@ class TestRunErrorReporter(CliTestCase):
         self.run_cli("run", "--mode", "work")
         self.assertFalse(record.exists())
 
+    def test_agent_start_failure_calls_reporter(self):
+        reporter, record = self.write_reporter()
+        self.setup_repo(reporter)
+        self.add_ticket()
+        self.run_cli("run", "--mode", "work", exit_code=1)
+        message, _ = json.loads(record.read_text())
+        self.assertIn("agent failed before committing anything", message)
+
     def test_interrupted_agent_calls_reporter(self):
         reporter, record = self.write_reporter()
         self.setup_repo(reporter)
