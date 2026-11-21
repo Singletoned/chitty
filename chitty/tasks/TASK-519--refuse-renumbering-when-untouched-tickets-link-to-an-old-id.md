@@ -35,7 +35,8 @@ Before implementing, run the refusal tests against the unguarded planner and con
 
 ## Acceptance Criteria
 
-- [ ] Each of the three fixture variants refuses a nonempty plan with an error naming both IDs, and leaves HEAD, index and bytes unchanged. Swap the structured link for a Description mention and the plan succeeds while leaving the same files outside its writable set.
+- [ ] For each of fixtures (a), (b) and (c), the planner raises `ChittyError` whose message contains `TASK-AAAAAA` and the linking ticket ID (`OTHER-1` or `TASK-3`), and HEAD, index and the snapshotted bytes are unchanged; each refusal test fails on the unguarded planner
+- [ ] For each prose variant the planner returns the mapping `{TASK-AAAAAA: TASK-4}` (with `TASK-3` reserving 3 in (b) and (c), or `TASK-1` in (a)) and a writable set that excludes the linking ticket, with HEAD, index and bytes unchanged
 
 ## History
 
@@ -43,3 +44,4 @@ Before implementing, run the refusal tests against the unguarded planner and con
 - 2026-11-21T18:45:12Z eager-ginger-adder: changed description, acceptance criteria
 - 2026-11-21T18:45:12Z eager-ginger-adder backlog → planning
 - 2026-11-21T22:58:02Z lively-zinc-newt: changed description
+- 2026-11-21T22:58:03Z lively-zinc-newt: changed acceptance criteria
