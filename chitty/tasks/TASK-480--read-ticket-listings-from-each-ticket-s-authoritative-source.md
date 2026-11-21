@@ -1,6 +1,6 @@
 ---
 title: Read ticket listings from each ticket's authoritative source, not every ref's history
-status: doing
+status: planning
 depends_on:
   - TASK-378
   - TASK-515
@@ -57,6 +57,8 @@ A fifth failure is `tests.test_provisional_ids.TestProvisionalIds.test_move_prov
 
 Partial implementation and two tests are committed. Before the fix both new tests failed: placement parsed the corrupted stale TASK-2, and standalone listing invoked patched `historical_files`; both pass after it. Remaining specified conflict, allocation, duplicate and CLI coverage is not yet implemented, so full acceptance could not be verified. `make check` passes formatting, Ruff and Pyright but fails the five tests above.
 
+Planning blocker: the authoritative listing cutover breaks existing show and move tests, while both repairs are out of scope and make check must pass. See the preceding note for failures and decisions needed.
+
 ## History
 
 - 2026-11-20T22:59:14Z quick-pearl-lapwing → backlog
@@ -77,3 +79,5 @@ Partial implementation and two tests are committed. Before the fix both new test
 - 2026-11-21T18:43:08Z calm-pearl-yellowhammer todo → doing
 - 2026-11-21T18:44:33Z calm-pearl-yellowhammer: wrote the plan
 - 2026-11-21T18:47:35Z calm-pearl-yellowhammer: changed notes
+- 2026-11-21T18:47:42Z calm-pearl-yellowhammer: changed owner, notes
+- 2026-11-21T18:47:42Z calm-pearl-yellowhammer doing → planning
