@@ -31,7 +31,7 @@ from chitty.config import (
     search_root,
     validate_repo_config,
 )
-from chitty.errors import ChittyError, ManagedGuideError, NoNextTicket
+from chitty.errors import ChittyError, ManagedGuideError, NoNextTicket, ProvisionalOffMain
 from chitty.ids import TaskId
 from chitty.model import (
     DESCRIPTION,
@@ -1061,6 +1061,14 @@ class Repo:
 
     def _plan_provisional_renumbering(self) -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]:
         """Select writable disk tickets and allocate fresh sequential IDs without writing."""
+        if git.is_repository(self.root):
+            branch = git.current_branch(self.root)
+            main = self._main_branch()
+            if branch != main:
+                raise ProvisionalOffMain(
+                    f"provisional tickets are renumbered on {main}; "
+                    f"current branch is {branch or 'detached HEAD'}"
+                )
         sequential = {
             context.name: context
             for context in self.contexts()
@@ -1084,6 +1092,17 @@ class Repo:
                         candidates.append(task_id)
         if not candidates:
             return {}, ()
+
+        seen: dict[TaskId, Path] = {}
+        candidate_ids = set(candidates)
+        for path in disk_paths:
+            task_id, _ = ids.parse_filename(path.name)
+            if task_id in candidate_ids:
+                if task_id in seen:
+                    raise ChittyError(
+                        f"{task_id} is used by more than one file: {seen[task_id]}, {path}"
+                    )
+                seen[task_id] = path
 
         used = {context.prefix: self._used_numbers(context) for context in sequential.values()}
         self._reserve_numbers(used, self.ticket_ids())

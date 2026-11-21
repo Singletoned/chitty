@@ -2,6 +2,10 @@ class ChittyError(Exception):
     """A user-facing error: the message says what is wrong and where."""
 
 
+class ProvisionalOffMain(ChittyError):
+    """Provisional renumbering requires the main branch."""
+
+
 # An idle queue gets its own status so a loop can wait it out while still
 # stopping on real failures: Click uses 1 and 2, and `chitty run` 130.
 NO_NEXT_TICKET_EXIT = 3
