@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty run` instead of marking a ticket `error` when the agent fails before committing
-status: doing
+status: planning
 labels:
   - bug
 priority: high
@@ -65,6 +65,8 @@ The changed post-commit test fails when the HEAD comparison is deliberately disa
 
 Implementation and specified focused tests pass (36 tests). make check fails six existing tests: tests.test_next.TestNext.test_run_cases and test_run_write_failure_warns_and_keeps_agent_exit_code, tests.test_review_merge.TestReviewMerge.test_missing_review_branch_errors_and_is_selected_for_repair, both tests.test_run_error_reporter failure cases, and tests.test_run_lock.TestRunLock.test_a_run_holds_the_lock_and_frees_it_however_it_ends. These fixtures assume an uncommitted failing agent is a recoverable ticket error. In particular the error-reporter test expects no reporter call, but the new propagated CLI error invokes it; the ticket does not specify whether start failures should invoke the reporter. Decide reporter behavior and specify the necessary updated existing-test fixtures and assertions, including the repair agent that currently fails because its git commit has nothing to commit. Until then make check cannot pass and full verification is unfinished. Implementation is preserved in the branch.
 
+Return to planning: the required full check exposes six existing tests that assume the old failure behavior, including an unspecified error-reporter decision. See the preceding note for evidence and decisions needed.
+
 ## History
 
 - 2026-11-21T07:57:47Z nimble-umber-gannet → backlog
@@ -91,3 +93,5 @@ Implementation and specified focused tests pass (36 tests). make check fails six
 - 2026-11-21T22:58:45Z honest-dusky-stoat: changed notes
 - 2026-11-21T23:00:39Z honest-dusky-stoat: changed notes
 - 2026-11-21T23:02:42Z honest-dusky-stoat: changed notes
+- 2026-11-21T23:02:54Z honest-dusky-stoat: changed owner, notes
+- 2026-11-21T23:02:54Z honest-dusky-stoat doing → planning
