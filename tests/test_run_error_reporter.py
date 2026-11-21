@@ -66,12 +66,13 @@ class TestRunErrorReporter(CliTestCase):
         self.assertFalse(record.exists())
         self.assertEqual(self.json("show", "TASK-1")["status"], "error")
 
-    def test_setup_failure_handoff_preserves_full_output(self):
+    def test_setup_failure_output_goes_to_the_log(self):
         self.setup_repo(None)
         config = self.root / "chitty.toml"
         config.write_text(
             config.read_text().replace(
-                'setup = "true"', "setup = \"sh -c 'echo SETUP_MARKER; exit 9'\""
+                'setup = "true"',
+                "setup = \"sh -c 'echo SETUP_MARKER; echo SETUP_ERR >&2; exit 9'\"",
             )
         )
         self.git("add", "chitty.toml")
@@ -90,8 +91,13 @@ class TestRunErrorReporter(CliTestCase):
         ).stdout
         self.assertIn("status: doing", main_ticket)
         note = self.json("show", "TASK-1")["notes"]
-        self.assertIn("setup exited with status 9", note)
-        self.assertIn("SETUP_MARKER", note)
+        self.assertIn("setup exited with status 9; output in `.chitty/check.log`", note)
+        self.assertNotIn("SETUP_MARKER", note)
+        log = (self.root / ".worktrees/task-1/.chitty/check.log").read_text()
+        self.assertTrue(log.startswith("# chitty setup: "))
+        self.assertIn("SETUP_MARKER", log)
+        self.assertIn("SETUP_ERR", log)
+        self.assertTrue(log.endswith("# exit 9\n"))
 
     def test_recoverable_ticket_failure_does_not_call_reporter(self):
         reporter, record = self.write_reporter(exit_code=7)

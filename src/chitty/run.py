@@ -1282,44 +1282,26 @@ def _land_locked(
 def _landing_check(command: str, worktree: Path) -> None:
     """Run landing validation without changing the ticket on failure."""
     try:
-        completed = subprocess.run(
-            shlex.split(command),
-            cwd=worktree,
-            stdin=subprocess.DEVNULL,
-            env=_command_environment(),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            check=False,
-        )
+        returncode = _run_logged("landing check", command, worktree)
     except FileNotFoundError:
         raise ChittyError(f"landing check command not found: {command}") from None
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
-    if completed.returncode:
-        output = completed.stdout or "(no output)"
-        raise ChittyError(f"landing check exited with status {completed.returncode}:\n{output}")
+    if returncode:
+        raise ChittyError(
+            f"landing check exited with status {returncode}; output in `.chitty/check.log`"
+        )
 
 
 def _setup(command: str, worktree: Path) -> None:
     try:
-        completed = subprocess.run(
-            shlex.split(command),
-            cwd=worktree,
-            stdin=subprocess.DEVNULL,
-            env=_command_environment(),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            check=False,
-        )
+        returncode = _run_logged("setup", command, worktree)
     except FileNotFoundError:
         raise ChittyError(f"setup command not found: {command}") from None
     except KeyboardInterrupt:
         raise RunInterrupted("setup") from None
-    if completed.returncode:
-        output = completed.stdout or "(no output)"
-        raise ChittyError(f"setup exited with status {completed.returncode}:\n{output}")
+    if returncode:
+        raise ChittyError(f"setup exited with status {returncode}; output in `.chitty/check.log`")
 
 
 def _record_ticket_error(

@@ -1,5 +1,6 @@
 """Runner failures are recorded on their ticket branch, not on main."""
 
+import re
 import stat
 import sys
 
@@ -28,6 +29,24 @@ class TestRunErrorsOnBranch(TestRunClaimsOnBranch):
         self.assert_branch_error("setup", "setup exited with status 1")
         self.assert_main_error_visible()
         self.assertIn("status: doing", self.main_ticket())
+
+    def test_missing_setup_command_is_recorded_on_branch(self):
+        self.make_doing_branch()
+        config = self.root / "chitty.toml"
+        config.write_text(
+            re.sub(
+                r"^setup = .*$",
+                'setup = "no-such-chitty-setup-command"',
+                config.read_text(),
+                flags=re.MULTILINE,
+            )
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure missing setup")
+
+        self.run_cli("run", "--ticket", "TASK-1")
+
+        self.assert_branch_error("setup", "setup command not found: no-such-chitty-setup-command")
 
     def test_agent_failure_keeps_error_and_message_on_branch(self):
         self.make_doing_branch()

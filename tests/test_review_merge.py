@@ -72,6 +72,7 @@ class ReviewMergeTestCase(CliTestCase):
             "if Path('main-late.txt').exists() or Path('review-marker').exists():\n"
             "    Path(sys.argv[1]).write_text('checked merged main')\n"
             "    if Path(sys.argv[2]).exists():\n"
+            "        print('LANDING_MARKER')\n"
             "        raise SystemExit(7)\n"
             "    if Path(sys.argv[3]).exists():\n"
             "        held = Path(sys.argv[3]).with_name('hold_main_held')\n"
@@ -374,6 +375,12 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertIn("done → error", result.stdout)
         notes = self.ticket().section("Notes") or ""
         self.assertIn("landing check exited with status 7", notes)
+        self.assertIn("landing check exited with status 7; output in `.chitty/check.log`", notes)
+        self.assertNotIn("LANDING_MARKER", notes)
+        log = (self.worktree / ".chitty/check.log").read_text()
+        self.assertTrue(log.startswith("# chitty landing check: "))
+        self.assertIn("LANDING_MARKER", log)
+        self.assertTrue(log.endswith("# exit 7\n"))
         self.assertIn(str(self.worktree), notes)
         self.assertEqual((self.logs / "landing_check").read_text(), "checked merged main")
         self.assertIn(
