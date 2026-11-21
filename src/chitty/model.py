@@ -812,11 +812,12 @@ def _verify_section_edit(
 
 
 def _criterion_text(text: str) -> str:
+    # Sentinels make splitlines detect breaks at either end as well.
+    if len(("a" + text + "a").splitlines()) > 1:
+        raise TaskError("acceptance criterion must be a single line")
     text = text.strip()
     if not text:
         raise TaskError("acceptance criterion must not be empty")
-    if "\n" in text:
-        raise TaskError("acceptance criterion must be a single line")
     return text
 
 

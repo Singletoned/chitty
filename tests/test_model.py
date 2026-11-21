@@ -276,6 +276,14 @@ class TestCriteriaEdits(unittest.TestCase):
         self.assertNotIn("Acceptance", task.render())
         self.assertIn("```\n\n## Notes", task.render())
 
+    def test_new_criterion_rejects_all_line_breaks(self):
+        for separator in "\n\r\x0b\x0c\x1c\x1d\x1e\x85\u2028\u2029":
+            with (
+                self.subTest(separator=repr(separator)),
+                self.assertRaisesRegex(TaskError, r"^acceptance criterion must be a single line$"),
+            ):
+                self.edit(SAMPLE, add=[f"a{separator}b"])
+
     def test_errors(self):
         with self.assertRaisesRegex(TaskError, "there are 3"):
             self.edit(SAMPLE, check=[4])
