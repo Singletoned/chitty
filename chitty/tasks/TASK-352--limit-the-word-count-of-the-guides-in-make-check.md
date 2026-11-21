@@ -21,6 +21,10 @@ Check the real tree rooted at the repository containing the test module, indepen
 
 Add a unittest module with a shared tree and word-budget assertion, exercise exact limits and file-set failures using real temporary files, and verify the repository guides through normal test discovery. Run formatting and the full checks before committing.
 
+## Summary
+
+Added guide word budgets and shared assertions for real and temporary trees, including boundary and file-set failure checks. Verified with `make check` (974 tests), and ran `chitty fix` and `make format`. No follow-ups.
+
 ## History
 
 - 2026-11-16T10:00:05Z intrepid-coral-raven → backlog
@@ -31,3 +35,4 @@ Add a unittest module with a shared tree and word-budget assertion, exercise exa
 - 2026-11-21T15:50:20Z honest-coral-heron planning → todo
 - 2026-11-21T15:51:26Z witty-amber-jay todo → doing
 - 2026-11-21T15:53:58Z witty-amber-jay: wrote the plan
+- 2026-11-21T15:56:16Z witty-amber-jay: changed summary
