@@ -1,6 +1,6 @@
 ---
 title: Allow ticket writes in the ticket's own fresh worktree when `main` holds its copy
-status: review
+status: done
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -147,6 +147,11 @@ make: *** [check] Error 1
 
 Confirmed before the fix: python -m unittest tests.test_own_worktree_writes fails only test_guard_allows_unchanged_main with the branch main guard error; the four other tests pass.
 
+Reviewed: inspected the complete branch diff and the real-Git tests; no property test is needed for the specified fixed branch relations.
+1: pass - `.venv/bin/python -m unittest tests.test_own_worktree_writes` printed `Ran 5 tests ... OK`, including the CLI commit, merge, refusal and unchanged HEAD assertions. This guard is explicitly specified to pass before the change; it protects the later read switch.
+2: pass - the same command passed all four direct guard tests. Running `test_guard_allows_unchanged_main` with `store.py` from pre-fix commit `cf35be2f` printed `FAILED (errors=1)` and `ChittyError: TASK-6's latest committed version is on branch main`; it passes with the current implementation.
+3: pass - `make check` printed `Ran 898 tests ... OK`, with ruff and pyright passing.
+
 ## Summary
 
 Implemented the own-worktree guard allowance in `src/chitty/store.py`, comparing the union of ticket paths against the main-side split. Existing real-Git tests cover the requested CLI and direct guard cases. The unchanged-main direct test failed before the fix and passes afterwards; `make check` passes all 898 tests. The CLI guards also pass before the fix, as documented in the ticket; TASK-378 changes the read path later.
@@ -170,3 +175,5 @@ Implemented the own-worktree guard allowance in `src/chitty/store.py`, comparing
 - 2026-11-21T01:36:39Z youthful-violet-wren: changed notes
 - 2026-11-21T01:39:38Z youthful-violet-wren: changed summary
 - 2026-11-21T01:39:45Z youthful-violet-wren doing → review
+- 2026-11-21T01:46:32Z youthful-pearl-falcon: changed notes
+- 2026-11-21T01:46:32Z youthful-pearl-falcon review → done
