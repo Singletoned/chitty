@@ -1,6 +1,6 @@
 ---
 title: Docstrings for the store's single-ticket read functions
-status: review
+status: done
 labels:
   - untestable
 owner: nimble-umber-adder
@@ -28,6 +28,11 @@ The requested common source-selection description does not fit all seven functio
 
 Please also clarify whether “every `ChittyError`” means ticket-specific errors with prefixes plus a short statement that operational errors propagate, or an exhaustive inventory including transitive Git, configuration and discovery failures. The latter conflicts with short docstrings and repeats lower-level contracts. Selection, scanning and parsing errors differ: for example, local failures use `<path>: <error>`, ref parse failures use `<ref>:<path>: <error>`, and single-ticket discovery can fail on a bad filename unrelated to the requested ID before selection. No source files changed and `make check` was not run.
 
+Reviewed: The complete branch diff changes only the ticket and the seven requested docstrings; no wording tests were added.
+1: pass - Inspected `src/chitty/store.py` against the implementations: single-ticket selection, parsing, missing results and context fallback are documented; bulk reads describe scope, history, overlay, cache and empty results.
+2: pass - Inspected discovery, parsing and source-policy error paths and their cross-references; the missing design document is not linked.
+3: pass - `make check` printed `Ran 976 tests` and `OK`, with Ruff and Pyright passing. The code diff contains only docstrings, so no property test is needed for this documentation-only change.
+
 ## Summary
 
 Documented all seven store read helpers in `src/chitty/store.py`. Single-ticket reads reference `ticket_source`; bulk reads describe the history and working-tree overlay. The docstrings distinguish missing results, parse and discovery errors, and source-policy failures. The missing design doc is not linked. The AST is unchanged with docstrings removed, and `make check` passed (974 tests).
@@ -45,3 +50,5 @@ Documented all seven store read helpers in `src/chitty/store.py`. Single-ticket 
 - 2026-11-21T16:09:16Z nimble-umber-adder todo → doing
 - 2026-11-21T16:12:30Z nimble-umber-adder: changed summary
 - 2026-11-21T16:12:30Z nimble-umber-adder doing → review
+- 2026-11-21T16:24:26Z lively-indigo-zander: changed notes
+- 2026-11-21T16:24:26Z lively-indigo-zander review → done
