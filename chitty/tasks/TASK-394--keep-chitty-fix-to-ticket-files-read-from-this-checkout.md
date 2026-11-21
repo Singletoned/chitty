@@ -1,6 +1,6 @@
 ---
 title: Keep `chitty fix` to ticket files read from this checkout
-status: todo
+status: cold-read
 depends_on:
   - TASK-378
 parent: TASK-376
@@ -66,3 +66,4 @@ Planner 2026-11-21, after the second read: `source_of` is `None` without Git; on
 - 2026-11-21T13:11:27Z sunny-ebony-kestrel: changed description, acceptance criteria, notes
 - 2026-11-21T13:13:52Z sunny-ebony-kestrel: changed description, notes
 - 2026-11-21T13:13:52Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T13:14:10Z sunny-ebony-kestrel todo → cold-read
