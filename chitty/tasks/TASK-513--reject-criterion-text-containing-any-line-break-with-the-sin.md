@@ -24,6 +24,8 @@ Add a regression test for all ten splitlines separators in new criteria, verify 
 
 Planner 2026-11-21: the last two characters are U+2028 and U+2029, written here as the escapes `\u2028` and `\u2029` (an earlier version held the raw characters by mistake). Fails-before check, probed: `\n` already gives the single-line error; the other nine, including `\r`, give a different message today. Out of scope, same bug class: `_check_single_line` and `render_scalar` in `src/chitty/model.py` also check only `\n`.
 
+Before the fix, the new regression test failed for nine separators with the wrong error; LF passed. CR reported unsupported line endings, and the other eight reported an invalid acceptance-criteria item.
+
 ## History
 
 - 2026-11-21T14:34:08Z sunny-ebony-kestrel → cold-read
@@ -32,3 +34,4 @@ Planner 2026-11-21: the last two characters are U+2028 and U+2029, written here 
 - 2026-11-21T14:36:10Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T15:24:28Z upbeat-fawn-lapwing todo → doing
 - 2026-11-21T15:26:51Z upbeat-fawn-lapwing: wrote the plan
+- 2026-11-21T15:27:03Z upbeat-fawn-lapwing: changed notes
