@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads against every branch placement with a property
-status: todo
+status: doing
 depends_on:
   - TASK-378
   - TASK-480
@@ -54,3 +54,4 @@ Planning 2026-11-20: `TASK-378` was split; listing (`_tasks_in_location`, the la
 - 2026-11-18T17:54:03Z lively-quartz-crane planning → todo
 - 2026-11-18T18:01:39Z lively-quartz-crane: changed description
 - 2026-11-20T23:04:49Z quick-pearl-lapwing: changed dependencies, notes
+- 2026-11-21T20:28:33Z eager-silver-gannet todo → doing
