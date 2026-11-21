@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: doing
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -71,6 +71,8 @@ Apply the two specified spikes together, verify the five migrated regressions ag
 Earlier notes (attempts, splits, cold reads, workers' returns) are in Git history; the Description is authoritative.
 
 Split 2026-11-21: the ID rule (`TASK-504`) and six renames (`TASK-505`) have landed; the CLI read tests are `TASK-506`, after this. A worker then found the provisional and two `test_next.py` migrations underspecified; the planner measured exact replacements on `main` plus spike `ab2ac7bf` and wrote them into the Description.
+
+Applied the two specified spikes as partial work. `make check` fails beyond the nine planned migrations: `tests.test_cli.TestCrossBranchWrites.test_allows_writes_from_a_new_worktree_with_no_commits_of_its_own`, `test_allows_writes_in_the_branch_with_the_latest_version`, `test_refuses_a_branch_without_a_worktree`, `test_refuses_a_remote_tracking_branch`, and `test_refuses_all_single_ticket_writes_from_another_worktree` (four failing subtests), plus `tests.test_mcp.TestMcp.test_cross_branch_write_error_matches_the_cli`. These expect the old unrelated-branch selection and conflict with the new source rule. The ticket explicitly requires planning for any other check failure and permits exactly nine test migrations, so it cannot guide the required changes. Decide how to migrate or replace these tests and describe their fixtures and assertions. Ruff and pyright passed; regression failure evidence against main and a passing full check remain unfinished. `chitty fix` and `make format` ran; formatter changed no files.
 
 ## History
 
@@ -210,3 +212,5 @@ Split 2026-11-21: the ID rule (`TASK-504`) and six renames (`TASK-505`) have lan
 - 2026-11-21T12:14:09Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T12:14:54Z quick-amber-jay todo → doing
 - 2026-11-21T12:16:45Z quick-amber-jay: wrote the plan
+- 2026-11-21T12:18:33Z quick-amber-jay: changed owner, notes
+- 2026-11-21T12:18:33Z quick-amber-jay doing → planning
