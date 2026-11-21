@@ -1,6 +1,6 @@
 ---
 title: Allow ticket writes in the ticket's own fresh worktree when `main` holds its copy
-status: doing
+status: planning
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -27,6 +27,8 @@ Add real-Git linked-worktree regression tests for CLI writes and direct guard br
 
 Criterion 1 says the first fresh-worktree CLI edit fails before this change, but the specified real-Git test passes both before and after the main-side change without any implementation fix. Current single-ticket reads still use the old history-based lookup; TASK-378, which depends on this ticket, switches them to source_copy. Therefore the CLI regression cannot prove this guard change before TASK-378, and the criterion's required pre-fix failure is currently impossible. Planning needs to decide how to split or revise the CLI regression and its evidence without introducing a dependency cycle. The direct unchanged-main guard test does fail before the fix with the expected branch-main error; the other direct guard cases pass. Partial tests are committed in cf35be2f, with the direct regression intentionally failing. make check passed formatting, lint and pyright but timed out after 120 seconds during unittest; the targeted unittest run confirms one error and four passes. No implementation fix was made.
 
+Criterion 1 requires a pre-fix CLI failure that cannot occur until dependent TASK-378 changes the read path; see the preceding note for evidence and the planning decision needed.
+
 ## History
 
 - 2026-11-21T01:20:56Z quick-pearl-lapwing → planning
@@ -37,3 +39,5 @@ Criterion 1 says the first fresh-worktree CLI edit fails before this change, but
 - 2026-11-21T01:25:34Z intrepid-yellow-heron todo → doing
 - 2026-11-21T01:28:49Z intrepid-yellow-heron: wrote the plan
 - 2026-11-21T01:32:17Z intrepid-yellow-heron: changed notes
+- 2026-11-21T01:32:30Z intrepid-yellow-heron: changed owner, notes
+- 2026-11-21T01:32:30Z intrepid-yellow-heron doing → planning
