@@ -47,6 +47,8 @@ Cold read 2026-11-21 outcomes: named the phase strings `setup`, `check` and `lan
 
 Partial implementation: added and tested command_timeout configuration; make check passes. Runner enforcement, documentation, real-process tests and deadline-disabled regression evidence remain unfinished. Do not treat the configuration alone as implementing the timeout.
 
+Deadline-disabled regression run: all five new timeout cases failed as expected. The direct case did not raise CommandTimedOut; setup and check cases ran the agent instead of returning todo to error; doing lacked the timeout note; landing returned review to done instead of done to error. Restored wait timeout afterward.
+
 ## History
 
 - 2026-11-19T20:55:24Z sunny-white-dormouse → backlog
@@ -67,3 +69,4 @@ Partial implementation: added and tested command_timeout configuration; make che
 - 2026-11-21T16:09:52Z golden-bronze-marten todo → doing
 - 2026-11-21T16:12:23Z golden-bronze-marten: wrote the plan
 - 2026-11-21T16:15:58Z golden-bronze-marten: changed notes
+- 2026-11-21T16:19:34Z golden-bronze-marten: changed notes
