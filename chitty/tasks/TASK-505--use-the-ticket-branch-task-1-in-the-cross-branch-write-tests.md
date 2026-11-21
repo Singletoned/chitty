@@ -1,6 +1,6 @@
 ---
 title: Use the ticket branch `task-1` in the cross-branch write tests
-status: cold-read
+status: todo
 priority: high
 parent: TASK-376
 created: 2026-11-21
@@ -19,15 +19,17 @@ Change only string literals, as a pure substitution, in these places:
 
 Out of scope: every other migration listed in `TASK-378`. This ticket is not a regression fix, so no fails-before evidence is needed. The tests must pass before and after the switch.
 
-To check "after": `git worktree add --detach <dir> spike/task-378`, apply `TASK-504`'s change to `_choose_source` there (or, once `TASK-504` has landed, rebase the spike onto `main`), copy the two changed test files in, and run `python -m unittest tests.test_cli.TestCrossBranchWrites tests.test_mcp.TestMcp.test_cross_branch_write_error_matches_the_cli` with `PYTHONPATH=src`.
+To check "after", use this one method: `git worktree add --detach <dir> spike/task-378`; in `<dir>/src/chitty/store.py`, replace the lines in `_choose_source` from `copies = self._working_ticket_files(task_id)` to `provisional = first is not None and first.task.frontmatter.provisional is True` with `provisional = isinstance(task_id.number, str) and bool(self._working_ticket_files(task_id) or self._ref_ticket_files(main_ref, task_id))` (`TASK-504`'s change); copy the two changed test files in; run `PYTHONPATH=src python -m unittest tests.test_cli.TestCrossBranchWrites tests.test_mcp.TestMcp.test_cross_branch_write_error_matches_the_cli` there; then `git worktree remove --force <dir>`.
 
 ## Acceptance Criteria
 
-- [ ] `git diff main -- tests` changes only `tests/test_cli.py` (`TestCrossBranchWrites`) and `tests/test_mcp.py` (`test_cross_branch_write_error_matches_the_cli`), and every changed line differs only by `worker` becoming `task-1`; no `"worker"` literal is left in those five `test_cli.py` tests or that MCP test
-- [ ] `make check` passes, and a note records the changed tests passing on `spike/task-378` with `TASK-504`'s change, run as the Description says
+- [ ] `git diff main...HEAD -- tests` changes only `tests/test_cli.py` (`TestCrossBranchWrites`) and `tests/test_mcp.py` (`test_cross_branch_write_error_matches_the_cli`), and every changed line differs only by `worker` becoming `task-1`; no `"worker"` string literal is left in those five `test_cli.py` tests or that MCP test (the helper name `claim_on_worker` stays)
+- [ ] `make check` passes, and a note records the changed tests passing on `spike/task-378` with `TASK-504`'s change, checked by the one method in the Description
 
 ## History
 
 - 2026-11-21T11:38:15Z sunny-ebony-kestrel → planning
 - 2026-11-21T11:38:35Z sunny-ebony-kestrel: changed acceptance criteria
 - 2026-11-21T11:38:35Z sunny-ebony-kestrel planning → cold-read
+- 2026-11-21T11:39:35Z sunny-ebony-kestrel: changed description, acceptance criteria
+- 2026-11-21T11:39:35Z sunny-ebony-kestrel cold-read → todo
