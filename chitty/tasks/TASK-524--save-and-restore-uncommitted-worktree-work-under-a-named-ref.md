@@ -35,6 +35,10 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 - [ ] The round-trip property passes, and fails against the `NotImplementedError` stubs
 - [ ] The six example tests pass (clean worktree, existing ref, conflict on restore, missing ref, `status.showUntrackedFiles no`, `AA` collision), and each fails against the stubs; `make check` passes
 
+## Plan
+
+Add stub helpers and real-Git property and example tests; verify each fails against the stubs, implement named-ref save and restore, then run fix, format, and checks.
+
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
@@ -43,3 +47,4 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 - 2026-11-21T23:12:35Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:12:35Z lively-zinc-newt cold-read → todo
 - 2026-11-21T23:46:16Z zesty-bronze-gannet todo → doing
+- 2026-11-21T23:48:13Z zesty-bronze-gannet: wrote the plan
