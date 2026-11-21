@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: doing
+status: review
 priority: high
 created: 2026-11-19
 ---
@@ -436,3 +436,4 @@ Automatic task trailers are added at landing. The real-Git regression now exerci
 - 2026-11-21T00:03:24Z friendly-silver-toad: wrote the plan
 - 2026-11-21T00:04:05Z friendly-silver-toad: changed notes
 - 2026-11-21T00:08:55Z friendly-silver-toad: changed summary
+- 2026-11-21T00:09:26Z friendly-silver-toad doing → review
