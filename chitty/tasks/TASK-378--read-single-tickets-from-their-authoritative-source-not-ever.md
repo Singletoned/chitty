@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -44,11 +44,11 @@ Decisions:
 - Unchanged here and left to `TASK-480`: the multi-ticket writes (`new_id` on a ticket branch, `archive_done`, `_delete_done`, `move`, `renumber`), which still act on the copies `all_tasks()` picks from history, and `_set_archived`, which renames `StoredTask.path` as today. Also unchanged: `_tasks_in_location`, `tasks`, `all_tasks` and `chitty list` (`TASK-480`), `next_number` (`TASK-379`), `check.py`, and `_dependency_is_done`, which keeps reading dependencies from `main`'s files. `_history()` stays, still used by `_tasks_in_location`.
 - Migrate exactly these 9 tests (the list below, not counting `test_ticket_worktree_write_does_not_wait`, which must pass unchanged), without deleting or weakening any assertion (the spike shows they are the only ones the switch breaks):
   - `tests/test_check_cross_branch_references.py`: the "other branch" row of `test_reference_existence_matches_show` (`missing` becomes `True`); `test_malformed_task_on_another_branch_reports_parse_error` (now `no task`); `test_edit_can_depend_on_task_only_on_main` (now refused on a non-ticket branch).
-  - `tests/test_next.py` `test_todo_dependency_must_be_done_on_main` and `test_unmerged_archive_does_not_complete_dependency`: writes from branches `worker` and `rename` are now refused; reads come from `main`.
+  - `tests/test_next.py` `test_todo_dependency_must_be_done_on_main` and `test_unmerged_archive_does_not_complete_dependency`: a branch named `worker` or `rename` is not the dependency's (`TASK-1`) own branch, so its writes are now refused. In both tests, replace the string literals `"worker"` and `"rename"` with `"task-1"` and change nothing else: the dependency is then written on its own branch, and every existing assertion stays. Measured 2026-11-21: after this substitution both pass on `main` and with the switch.
   - `tests/test_next.py` `test_run_from_another_worktree_uses_the_branch_not_main`: it edits `TASK-1` on `main` after `task-1` exists, which is now the changed-on-both error. Make the newer copy on `task-1` instead (commit the note on `task-1`, not `main`); the runner assertions stay.
   - `tests/test_store.py` `test_numbers_ignore_committed_tasks_on_another_branch`: on branch `other` it makes a non-provisional `TASK-1` and archives it through `Repo`, which is now refused. Write and `git mv` the branch's ticket files directly and commit them with Git; the numbering assertions stay.
   - `tests/test_repair_requires_work.py`, the `uncommitted` case: a fresh `task-1` level with `main` reads its ticket from `main`, so the agent's uncommitted `review` is not seen. It now expects `repair agent left TASK-1 in invalid status error; expected review or blocked`; the main checkout file still says `status: error`. The other cases stay.
-  - `tests/test_provisional_ids.py` `test_move_provisional_off_main_then_promote_on_main`: moving `main`'s `TASK-1` on branch `feature` is now refused. Assert that refusal (`move TASK-1 human` exits 1 with `latest committed version is on branch main`), then make the provisional ticket with `add` in context `human` on `feature` instead, merge and promote it as today.
+  - `tests/test_provisional_ids.py` `test_move_provisional_off_main_then_promote_on_main`: moving `main`'s `TASK-1` on branch `feature` is now refused. Keep the `Source` ticket on `main` and the worktree setup. Inside the `try:` block, in the `feature` worktree, replace the `mock.patch` block that moves `TASK-1` with: `refused = self.run_cli("move", "TASK-1", "human", exit_code=1)` and `self.assertIn("latest committed version is on branch main", refused.stderr)`; then, under `mock.patch("chitty.store._provisional_draw", return_value=0)`, `created = self.json("add", "Branch", "-d", "Description.")`, `self.assertEqual(created["id"], "TASK-AAAAAA")` and `moved = self.json("move", "TASK-AAAAAA", "human")`. The existing `HUMAN-AAAAAA` and `provisional` assertions, the commit, the merge and the promotion stay. Because `main` still holds `TASK-1` (`Source`), promotion now gives the next number: change `self.assertEqual(promoted["id"], "TASK-1")` to `"TASK-2"` (a changed expected value, not a weakened one). Measured 2026-11-21: this passes with the switch and fails on `main` at the refusal assertion (exit 0 instead of 1).
   - `test_ticket_worktree_write_does_not_wait` in `tests/test_main_checkout_lock.py` must still pass unchanged.
   If `make check` shows any other failure, it is not a planned migration: return the ticket to `planning` naming it.
 - One ticket: these migrations cannot land apart from the switch without `make check` failing in between. The renames that pass before and after are `TASK-505`; the ID rule is `TASK-504`; the CLI wiring tests are `TASK-506`, which starts after this lands. `TASK-474` to `TASK-478` already test each placement directly.
@@ -57,7 +57,7 @@ Tests: no new test file here (`TASK-506` adds them). The migrated tests assert t
 
 ## Acceptance Criteria
 
-- [ ] Each of the 9 tests in the migration decision asserts its new behaviour as described there, none deleted or weakened: in `tests/test_check_cross_branch_references.py`, `test_reference_existence_matches_show`, `test_malformed_task_on_another_branch_reports_parse_error` and `test_edit_can_depend_on_task_only_on_main`; in `tests/test_next.py`, `test_todo_dependency_must_be_done_on_main`, `test_unmerged_archive_does_not_complete_dependency` and `test_run_from_another_worktree_uses_the_branch_not_main`; `tests/test_store.py` `test_numbers_ignore_committed_tasks_on_another_branch`; `tests/test_repair_requires_work.py` `test_repair_requires_committed_work_outside_ticket_directories`; `tests/test_provisional_ids.py` `test_move_provisional_off_main_then_promote_on_main`. The first five and the last two assert new behaviour and each fails on `main` before the switch (recorded in a note); the `test_run_from_another_worktree...` and `test_numbers_ignore...` migrations only change their fixtures and may pass on `main` too
+- [ ] Each of the 9 tests in the migration decision asserts its new behaviour as described there, none deleted or weakened: in `tests/test_check_cross_branch_references.py`, `test_reference_existence_matches_show`, `test_malformed_task_on_another_branch_reports_parse_error` and `test_edit_can_depend_on_task_only_on_main`; in `tests/test_next.py`, `test_todo_dependency_must_be_done_on_main`, `test_unmerged_archive_does_not_complete_dependency` and `test_run_from_another_worktree_uses_the_branch_not_main`; `tests/test_store.py` `test_numbers_ignore_committed_tasks_on_another_branch`; `tests/test_repair_requires_work.py` `test_repair_requires_committed_work_outside_ticket_directories`; `tests/test_provisional_ids.py` `test_move_provisional_off_main_then_promote_on_main`. The three `test_check_cross_branch_references.py` migrations, the repair migration and the provisional migration assert new behaviour, and each fails on `main` before the switch (recorded in a note; to run them against `main`, use `git show main:src/chitty/store.py > src/chitty/store.py` in this worktree, then `git checkout -- src/chitty/store.py`). The four `test_next.py` and `test_store.py` migrations only change fixtures and may pass on `main` too
 - [ ] `make check` passes, with `tests/test_list_performance.py`, `test_dependency_check_parses_only_the_dependency` and `test_ticket_worktree_write_does_not_wait` passing unchanged; the review note lists every existing test the branch changed, each with its old and new assertion
 
 ## Plan
@@ -66,13 +66,9 @@ Add real-Git regression coverage and confirm failures before the switch; route s
 
 ## Notes
 
-Earlier notes (attempts, splits, cold reads, three workers' returns) are in Git history; the Description is authoritative.
+Earlier notes (attempts, splits, cold reads, workers' returns) are in Git history; the Description is authoritative.
 
-Split 2026-11-21 after the third worker found the ticket too large: the ID rule is `TASK-504`, six renames that pass before and after are `TASK-505`, and the CLI read tests are `TASK-506` (after this). This ticket is now the switch and 9 migrations.
-
-The prescribed provisional-ID migration contradicts the existing assertion that promotion yields `TASK-1`: the refused move leaves the original `TASK-1` on main, and adding a separate provisional ticket in `human` and merging it does not remove that original. `Repo.next_number` therefore allocates `TASK-2`. Criterion 1 forbids weakening or deleting assertions while requiring this fixture and promotion as today. Please decide the intended fixture and expected ID.
-
-The migrations of `test_todo_dependency_must_be_done_on_main` and `test_unmerged_archive_does_not_complete_dependency` specify that the branch writes are refused and reads come from main, but do not specify how the dependency is subsequently made done, renamed, or archived for the existing merge and readiness assertions. Those writes currently create the commits that make the assertions meaningful. Please specify the fixture actions and assertions preserving the dependency-on-main coverage. No implementation was changed and verification remains unfinished.
+Split 2026-11-21: the ID rule (`TASK-504`) and six renames (`TASK-505`) have landed; the CLI read tests are `TASK-506`, after this. A worker then found the provisional and two `test_next.py` migrations underspecified; the planner measured exact replacements on `main` plus spike `ab2ac7bf` and wrote them into the Description.
 
 ## History
 
@@ -205,3 +201,5 @@ The migrations of `test_todo_dependency_must_be_done_on_main` and `test_unmerged
 - 2026-11-21T12:01:59Z daring-russet-raven todo → doing
 - 2026-11-21T12:04:13Z daring-russet-raven: changed owner, notes
 - 2026-11-21T12:04:13Z daring-russet-raven doing → planning
+- 2026-11-21T12:06:08Z sunny-ebony-kestrel: replaced notes; changed description, acceptance criteria
+- 2026-11-21T12:06:08Z sunny-ebony-kestrel planning → cold-read
