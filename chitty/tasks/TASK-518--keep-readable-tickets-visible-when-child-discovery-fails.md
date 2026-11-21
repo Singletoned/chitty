@@ -1,6 +1,6 @@
 ---
 title: Keep readable tickets visible when child discovery fails
-status: review
+status: done
 parent: TASK-480
 created: 2026-11-21
 ---
@@ -41,6 +41,11 @@ Runner error (agent): TASK-518 was unchanged; only committed changes are visible
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-518`
 
+Reviewed: make check passed (985 tests, Ruff, formatting and Pyright). On the pre-fix sources, `python -m unittest tests.test_show_authoritative_children` printed two failures: plain show exited 1 on the malformed non-authoritative TASK-2 copy; the tests pass with the fix.
+1: pass - Both variant tests exercise the selected title, exact ordered children, warnings and unconfigured parse probe.
+2: pass - Both variant tests check JSON title, absent children and warnings, with a resolver probe excluding other IDs.
+3: pass - Both variant tests check selected TASK-1 errors in plain and JSON modes without an incomplete-children warning.
+
 ## Summary
 
 Implemented authoritative child discovery for plain `show`. Readable children are listed in configured-context and ID order; candidate read errors produce warnings without hiding the selected ticket. `show --json` never resolves child candidates, and selecting an unreadable ticket remains fatal.
@@ -78,3 +83,5 @@ Both tests in `tests/test_show_authoritative_children.py` failed on unchanged co
 - 2026-11-21T20:06:06Z eager-ginger-adder error → doing
 - 2026-11-21T20:08:15Z eager-ginger-adder: changed summary
 - 2026-11-21T20:08:15Z eager-ginger-adder doing → review
+- 2026-11-21T20:12:18Z tidy-ebony-stoat: changed notes
+- 2026-11-21T20:12:18Z tidy-ebony-stoat review → done
