@@ -91,7 +91,7 @@ Against pre-fix runner 5a056a2e parent, temporarily accepting its exit 0 exposed
 
 ## Summary
 
-Agent failures before any commit stop the runner and restore the selected ticket status without discarding worktree files; failures after commits retain existing error handling. Regression tests, reporter coverage, existing fixtures, documentation and make check pass.
+Start failures stop the runner and preserve worktree files; pre-fix stderr and status regressions are documented. make check passes 1026 tests.
 
 ## History
 
@@ -134,3 +134,4 @@ Agent failures before any commit stop the runner and restore the selected ticket
 - 2026-11-21T23:33:21Z kind-yellow-heron review → doing
 - 2026-11-21T23:36:18Z able-ebony-badger: wrote the plan
 - 2026-11-21T23:36:44Z able-ebony-badger: changed notes
+- 2026-11-21T23:38:40Z able-ebony-badger: changed summary
