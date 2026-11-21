@@ -1,6 +1,6 @@
 ---
 title: Read single tickets from their authoritative source, not every ref's history
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -182,3 +182,4 @@ Planning 2026-11-21: the trimmed scope (read switch plus the named migrations) s
 - 2026-11-21T01:23:50Z quick-pearl-lapwing planning → cold-read
 - 2026-11-21T01:25:15Z quick-pearl-lapwing: changed description, acceptance criteria, notes
 - 2026-11-21T01:25:15Z quick-pearl-lapwing cold-read → todo
+- 2026-11-21T01:50:03Z eager-violet-puffin todo → doing
