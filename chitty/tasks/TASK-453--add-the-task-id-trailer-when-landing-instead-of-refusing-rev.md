@@ -1,6 +1,6 @@
 ---
 title: "Add the `Task: <ID>` trailer when landing, instead of refusing review without it"
-status: review
+status: done
 priority: high
 created: 2026-11-19
 ---
@@ -24,9 +24,9 @@ Tests use Hypothesis (the repository tool) for the pure function, in a new `test
 
 ## Acceptance Criteria
 
-- [ ] Property: messages are built from lines over the alphabet `st.characters(min_codepoint=32, max_codepoint=126)` plus `\t`, mixed with trailer-like lines (`Key: value`, unindented), blank lines, a `chitty: ` subject and a `Task: <ID>` line for `TASK-1` or `TASK-10`, joined with `\n` at drawn positions, with a first line that is not blank (filtered: `message.strip()` is not empty); the ID passed is `TASK-1`. For all of them: `commits_missing_trailer` of the result is empty; applying `with_task_trailer` twice equals once; the result equals `message` when nothing was missing, else starts with `message.rstrip()` and has exactly one more line whose `rstrip()` equals `Task: TASK-1` (count lines the same way in `message` and in the result, so `Task: TASK-1 ` with a trailing space counts as one before and two after; decided 2026-11-20). Fixed examples: `""` and `"  \n"` raise `ValueError`; `Fix\n\nSigned-off-by: A <a@example.com>` gives that plus `\nTask: TASK-1\n`; `Fix` gives `Fix\n\nTask: TASK-1\n`; `Key: value` gives `Key: value\n\nTask: TASK-1\n`. Wrong versions run against these tests, failing test recorded in a note: always appending `\n\nTask: <ID>`; never joining an existing trailer paragraph.
-- [ ] A landing test with real Git: a ticket branch with three commits with distinct subjects (one with no trailer, one whose last paragraph is `Signed-off-by: A <a@example.com>`, one already ending `Task: TASK-1`) lands through `chitty run`; afterwards each commit on `main`, matched by subject, has `Task: TASK-1` exactly once among the `splitlines()` of its last paragraph, the same author and raw author date (`%ad` with `--date=raw`), and the same `^{tree}` as before landing. Direct `add_task_trailers` tests: on a branch whose commits all have the trailer it returns 0 and `HEAD` is unchanged; on a branch with a merge commit (made with `git commit-tree` on two parents and `git update-ref`, since `main` is checked out in the main checkout) it raises `ChittyError`. It fails today.
-- [ ] `chitty edit TASK-1 -s review` on a branch whose commits have no trailer exits 0 and the ticket is in `review`: invert `TestReviewTrailerGate.test_review_entry_requires_trailer` in `tests/test_review_trailers.py` to assert this, dropping its stderr assertions. `make check` passes.
+- [x] Property: messages are built from lines over the alphabet `st.characters(min_codepoint=32, max_codepoint=126)` plus `\t`, mixed with trailer-like lines (`Key: value`, unindented), blank lines, a `chitty: ` subject and a `Task: <ID>` line for `TASK-1` or `TASK-10`, joined with `\n` at drawn positions, with a first line that is not blank (filtered: `message.strip()` is not empty); the ID passed is `TASK-1`. For all of them: `commits_missing_trailer` of the result is empty; applying `with_task_trailer` twice equals once; the result equals `message` when nothing was missing, else starts with `message.rstrip()` and has exactly one more line whose `rstrip()` equals `Task: TASK-1` (count lines the same way in `message` and in the result, so `Task: TASK-1 ` with a trailing space counts as one before and two after; decided 2026-11-20). Fixed examples: `""` and `"  \n"` raise `ValueError`; `Fix\n\nSigned-off-by: A <a@example.com>` gives that plus `\nTask: TASK-1\n`; `Fix` gives `Fix\n\nTask: TASK-1\n`; `Key: value` gives `Key: value\n\nTask: TASK-1\n`. Wrong versions run against these tests, failing test recorded in a note: always appending `\n\nTask: <ID>`; never joining an existing trailer paragraph.
+- [x] A landing test with real Git: a ticket branch with three commits with distinct subjects (one with no trailer, one whose last paragraph is `Signed-off-by: A <a@example.com>`, one already ending `Task: TASK-1`) lands through `chitty run`; afterwards each commit on `main`, matched by subject, has `Task: TASK-1` exactly once among the `splitlines()` of its last paragraph, the same author and raw author date (`%ad` with `--date=raw`), and the same `^{tree}` as before landing. Direct `add_task_trailers` tests: on a branch whose commits all have the trailer it returns 0 and `HEAD` is unchanged; on a branch with a merge commit (made with `git commit-tree` on two parents and `git update-ref`, since `main` is checked out in the main checkout) it raises `ChittyError`. It fails today.
+- [x] `chitty edit TASK-1 -s review` on a branch whose commits have no trailer exits 0 and the ticket is in `review`: invert `TestReviewTrailerGate.test_review_entry_requires_trailer` in `tests/test_review_trailers.py` to assert this, dropping its stderr assertions. `make check` passes.
 
 ## Plan
 
@@ -402,6 +402,11 @@ Review failed (tests): Newly discovered: the property generator does not draw ar
 
 With the expanded alphabet, the always-append mutant fails test_trailer_is_added_once_and_is_detected and test_fixed_examples; the never-join mutant fails test_fixed_examples. The unmodified property suite passes.
 
+Reviewed: The previously reported runner-entry and tab-alphabet findings are resolved.
+1: pass - `make check` printed `Ran 882 tests` and `OK`, including the property and fixed examples. The worker recorded that the always-append mutant failed `test_trailer_is_added_once_and_is_detected` and `test_fixed_examples`, and the never-join mutant failed `test_fixed_examples`.
+2: pass - `make check` printed `OK` for the real-Git runner, no-op and merge tests. The worker recorded that disabling trailer rewriting in the runner test failed with `AssertionError: 0 != 1`.
+3: pass - `make check` printed `OK`, including the inverted review-entry test. The earlier review recorded that running it with `Repo.edit` from `main` failed with exit 1 instead of 0.
+
 ## Summary
 
 Automatic task trailers are added at landing. The property generator includes tabs within arbitrary lines; both requested mutants fail as recorded in the notes. The real-Git regression exercises chitty run. make check passed 882 tests, and chitty fix completed with existing warnings.
@@ -450,3 +455,5 @@ Automatic task trailers are added at landing. The property generator includes ta
 - 2026-11-21T00:32:12Z kind-coral-toad: changed notes
 - 2026-11-21T00:38:34Z kind-coral-toad: changed summary
 - 2026-11-21T00:38:42Z kind-coral-toad doing → review
+- 2026-11-21T00:49:02Z vivid-jade-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-21T00:49:02Z vivid-jade-dormouse review → done
