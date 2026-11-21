@@ -1,6 +1,6 @@
 ---
 title: Edit existing tickets in planning worktrees
-status: blocked
+status: doing
 parent: TASK-376
 created: 2026-11-21
 ---
@@ -27,6 +27,10 @@ Lock: in the positive control perform three distinct notes on `TASK-1`, first wi
 - [ ] In each conflict fixture, `edit` exits 1 naming the competing ref and ticket ID and preserves planning HEAD, index, and ticket bytes; an unchanged sibling and a sibling changing another ID allow the edit.
 - [ ] The runner-lock fixture permits each edit. Only the edit while the real lock is held produces a coordinate-before-editing warning on stderr; an existing idle ticket branch and a released lock do not warn.
 
+## Plan
+
+Prove planning worktree isolation, conflicts and lock warnings with real Git; add narrow planning-only CLI and store paths; verify the tests and hand off for review.
+
 ## Notes
 
 Blocked: the execution harness is repeatedly limiting this session to an analysis budget insufficient to implement and verify the requested integration work. The person operating the harness needs to start a session with sufficient budget; no implementation or verification has been completed.
@@ -44,3 +48,5 @@ Blocked: the execution harness is repeatedly limiting this session to an analysi
 - 2026-11-21T22:30:50Z honest-umber-falcon todo → doing
 - 2026-11-21T22:33:20Z honest-umber-falcon: changed notes
 - 2026-11-21T22:33:20Z honest-umber-falcon doing → blocked
+- 2026-11-21T22:45:22Z eager-ginger-adder: changed owner; wrote the plan
+- 2026-11-21T22:45:22Z eager-ginger-adder blocked → doing
