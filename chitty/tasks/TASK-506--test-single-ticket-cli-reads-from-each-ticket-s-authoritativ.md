@@ -16,7 +16,7 @@ Tests: real-Git CLI tests in a new `tests/test_ticket_reads.py`, inheriting `Cli
 
 The commit before the switch: the parent of the oldest commit on `main` that has the trailer `Task: TASK-378` and changes `src/chitty/store.py`, that is `git log --format=%H --grep='^Task: TASK-378$' main -- src/chitty/store.py | tail -1` followed by `^`. It returns nothing until `TASK-378` lands; landed work commits carry the trailer (for example `git log --format=%h --grep='^Task: TASK-426$' main -- src/chitty/run.py` prints `5bae8473`).
 
-Error cases: every "fails" means the CLI exits 1 with the error text in `result.stderr`, as `tests/test_check_cross_branch_references.py` checks. The `task-1:<path>: <error>` prefix already exists: `Repo._parse_source_copy` formats it. To show a case fails there, check that commit out in a scratch worktree (`git worktree add --detach <dir> <commit>`), copy `tests/test_ticket_reads.py` in, run it with `PYTHONPATH=src`, then remove the worktree.
+Error cases: every "fails" means the CLI exits 1 with the error text in `result.stderr`, as `tests/test_check_cross_branch_references.py` checks. The `task-1:<path>: <error>` prefix already exists: `Repo._parse_source_copy` formats it. To show a case fails there, stay in this ticket's own worktree (do not create another): `git show <commit>:src/chitty/store.py > src/chitty/store.py`, run `python -m unittest tests.test_ticket_reads`, record the failures, then `git checkout -- src/chitty/store.py`. The switch is confined to `src/chitty/store.py`, so restoring that one file is enough; check `git diff <commit> main -- src` names only that file before relying on it.
 
 Out of scope: any change to `src/`. If a case fails after the switch, the switch is wrong: return this ticket to `planning` naming the case.
 
@@ -32,3 +32,4 @@ Out of scope: any change to `src/`. If a case fails after the switch, the switch
 - 2026-11-21T11:42:58Z sunny-ebony-kestrel planning → cold-read
 - 2026-11-21T11:43:51Z sunny-ebony-kestrel: changed description
 - 2026-11-21T11:43:51Z sunny-ebony-kestrel cold-read → todo
+- 2026-11-21T11:49:04Z sunny-ebony-kestrel: changed description
