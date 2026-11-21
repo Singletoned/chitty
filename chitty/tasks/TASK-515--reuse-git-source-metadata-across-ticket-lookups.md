@@ -18,6 +18,10 @@ Use real Git in temporary repositories. No new source-selection property: the se
 - [ ] Extend `tests/test_list_performance.py` with the real-Git lookup probe: for committed `main` repos with 2 and 10 distinct valid tickets and no ticket branches, a fresh subprocess opens one `Repo`, enumerates all `ticket_ids()` and successfully looks each up. Assert the expected number of IDs and lookups and equal built-in Git invocation counts from `GIT_TRACE`, as in the existing list trace test. This new equality assertion fails on the old code; keep the existing list test passing.
 - [ ] In one `Repo` opened at the real `main` checkout, first look up a committed `TASK-1` with no ticket branch and check that its title is the baseline and its branch is unset. Create `task-1`, commit a title change on it, return to `main`, call `Repo._invalidate()`, and check that lookup returns the branch title and `task-1`. Fast-forward `main` to `task-1` without deleting the branch, invalidate again, and check that lookup returns the new title from the working tree with no branch. Existing source-copy and source-selection tests still pass.
 
+## Plan
+
+Add real-Git subprocess scaling and same-Repo invalidation tests, verify the scaling regression fails, then cache repository presence and source-selection ref metadata until invalidation. Run formatting and the full checks before handoff.
+
 ## History
 
 - 2026-11-21T15:51:38Z honest-coral-heron → backlog
@@ -27,3 +31,4 @@ Use real Git in temporary repositories. No new source-selection property: the se
 - 2026-11-21T15:54:55Z honest-coral-heron cold-read → planning
 - 2026-11-21T15:54:57Z honest-coral-heron planning → todo
 - 2026-11-21T15:57:30Z upbeat-ebony-raven todo → doing
+- 2026-11-21T15:59:54Z upbeat-ebony-raven: wrote the plan
