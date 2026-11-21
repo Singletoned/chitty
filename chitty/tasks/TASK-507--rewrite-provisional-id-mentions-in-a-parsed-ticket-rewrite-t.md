@@ -54,7 +54,7 @@ Regression test test_rendered_mutation_fails_preserved_multiline_labels failed b
 
 ## Summary
 
-Implemented selective ID rewriting and completed six properties, including chain and rendered-text mutation checks. Changed sections accept the agreed trailing-whitespace normalization; unchanged sections and criteria retain their formatting. `.venv/bin/python -m unittest tests.test_property_renumbering` and `make check` pass. Stub failure evidence is recorded in Notes. No follow-ups.
+Implemented selective ID rewriting and six properties. Preservation checks compare complete multiline frontmatter fields; separate rendered-text mutation tests detect changes to labels and History. The multiline-label regression failed before the property fix as recorded in Notes. `.venv/bin/python -m unittest tests.test_property_renumbering` and `make check` pass. No follow-ups.
 
 ## History
 
@@ -98,3 +98,4 @@ Implemented selective ID rewriting and completed six properties, including chain
 - 2026-11-21T14:16:32Z quick-silver-falcon review → doing
 - 2026-11-21T14:19:09Z eager-teal-puffin: wrote the plan
 - 2026-11-21T14:19:33Z eager-teal-puffin: changed notes
+- 2026-11-21T14:21:21Z eager-teal-puffin: changed summary
