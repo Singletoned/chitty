@@ -57,6 +57,8 @@ working tree is dirty in /Users/singletoned/src/singletoned/chitty; commit or st
 Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-426 or the main checkout before retrying.
 ```
 
+Repair: the landing error reported an untracked `tmp-spike378.txt` in the main checkout. `git -C /Users/singletoned/src/singletoned/chitty status --short` now reports a clean main worktree, so the reported obstacle has cleared. The preserved implementation and passing review remain on branch `task-426`; no code changes were needed. Returning for a fresh review and landing.
+
 ## Summary
 
 Setup and landing checks now write combined output to the shared worktree log and record concise errors instead of command output. The specified regressions failed before the fix and pass afterward; the missing-command guard and `make check` pass. The existing `Error output:` block remains out of scope for TASK-427.
@@ -76,3 +78,4 @@ Setup and landing checks now write combined output to the shared worktree log an
 - 2026-11-21T08:53:58Z intrepid-jade-wren review → done
 - 2026-11-21T08:54:11Z intrepid-jade-wren: changed notes
 - 2026-11-21T08:54:11Z intrepid-jade-wren done → error
+- 2026-11-21T10:44:23Z brisk-navy-stoat: changed notes
