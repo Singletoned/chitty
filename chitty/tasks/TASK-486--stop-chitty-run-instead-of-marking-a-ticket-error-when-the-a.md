@@ -40,6 +40,10 @@ Tests. No property: the behaviour needs a real agent process and Git, and the de
 - [ ] The changed `test_agent_failure_keeps_error_and_message_on_branch` and every test in `tests/test_review_rebase_session.py` and `tests/test_run_timeout.py` pass; a note records that the changed test fails against a version that treats every non-zero agent exit as a start failure, ignoring `HEAD`
 - [ ] `docs/plan/next-action-and-runner.md` has the start-failure bullet next to the `agent_timeout` bullet; `make check` passes
 
+## Plan
+
+Add specified real-process regression cases and verify they fail before the fix; distinguish session failures and compare worktree HEAD before recording errors, preserving status and files on start failure. Verify the post-commit case against an intentionally broken comparison, update the runner plan, and run the required checks.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -60,3 +64,4 @@ Second cold read 2026-11-21 outcomes: the claim commit stays and the branch coun
 - 2026-11-21T08:03:48Z nimble-umber-gannet: changed description, notes
 - 2026-11-21T08:03:48Z nimble-umber-gannet cold-read → todo
 - 2026-11-21T08:49:33Z jolly-hazel-kestrel todo → doing
+- 2026-11-21T08:52:23Z jolly-hazel-kestrel: wrote the plan
