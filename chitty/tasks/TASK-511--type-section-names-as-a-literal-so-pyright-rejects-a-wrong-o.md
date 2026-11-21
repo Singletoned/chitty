@@ -27,6 +27,10 @@ Tests: a new `tests/test_section_name_types.py`. One test writes a small Python 
 
 Add the specified pyright regression tests and demonstrate the invalid literal is accepted before the change. Introduce the section literal type and strict conversion at the parser boundary while preserving existing parse diagnostics, propagate typed names through helpers and callers, then run formatting, Chitty repair and the full checks before handoff.
 
+## Notes
+
+Before implementation, `.venv/bin/python -m unittest tests.test_section_name_types.SectionNameTypesTest.test_bogus_literal_is_rejected` failed as expected: pyright returned 0 errors for `"Bogus"`.
+
 ## History
 
 - 2026-11-21T14:32:29Z sunny-ebony-kestrel → planning
@@ -36,3 +40,4 @@ Add the specified pyright regression tests and demonstrate the invalid literal i
 - 2026-11-21T14:34:36Z sunny-ebony-kestrel cold-read → todo
 - 2026-11-21T14:37:03Z open-teal-badger todo → doing
 - 2026-11-21T14:38:38Z open-teal-badger: wrote the plan
+- 2026-11-21T14:38:53Z open-teal-badger: changed notes
