@@ -3,7 +3,6 @@ import subprocess
 from contextlib import ExitStack
 from pathlib import Path
 
-from chitty.errors import ChittyError
 from chitty.ids import TaskId
 from chitty.store import Repo
 from tests import test_ticket_ids
@@ -80,9 +79,9 @@ class TestSourceCopy(CliTestCase):
                 subprocess.run(["git", "commit", "-qm", "fixture"], cwd=worktree, check=True)
                 repo = Repo.open(worktree)
 
-    def test_provisional_main_and_working_tree_precedence(self):
+    def test_provisional_is_read_from_the_id(self):
         self.init_git()
-        for number in (1, 3):
+        for number in ("K7Q2MA", "K7Q2MC", 4):
             path = self.file(number)
             path.write_text(
                 path.read_text().replace("status: todo", "provisional: true\nstatus: todo")
@@ -90,22 +89,43 @@ class TestSourceCopy(CliTestCase):
         self.file(2)
         self.commit()
         self.git("checkout", "-b", "feature")
-        (self.root / "chitty/tasks/TASK-1--example.md").unlink()
+        (self.root / "chitty/tasks/TASK-K7Q2MA--example.md").unlink()
         (self.root / "chitty/tasks/TASK-2--example.md").unlink()
-        self.file(3, "working")
-        self.assertIsNone(self.source(1))
+        (self.root / "chitty/tasks/TASK-4--example.md").unlink()
+        self.file("K7Q2MC", "working")
+        self.assertIsNone(self.source("K7Q2MA"))
         self.assert_copy(self.source(2), "main", "chitty/tasks/TASK-2--example.md", "original")
-        self.assert_copy(self.source(3), "main", "chitty/tasks/TASK-3--example.md", "original")
+        self.assert_copy(
+            self.source("K7Q2MC"), None, "chitty/tasks/TASK-K7Q2MC--example.md", "working"
+        )
+        self.assert_copy(self.source(4), "main", "chitty/tasks/TASK-4--example.md", "original")
 
-    def test_malformed_working_tree_precedes_main(self):
+    def test_malformed_working_tree_on_another_branch_is_not_read(self):
         self.base()
         self.git("checkout", "-b", "feature")
         path = self.root / "chitty/tasks/TASK-1--example.md"
         path.write_text(path.read_text().replace("\n---\n", "\n", 1))
-        with self.assertRaises(ChittyError) as raised:
-            self.source(1)
-        self.assertTrue(str(raised.exception).startswith(f"{path}: "))
-        self.assertIn("frontmatter is not closed", str(raised.exception))
+        self.assert_copy(self.source(1), "main", "chitty/tasks/TASK-1--example.md", "original")
+
+    def test_malformed_working_tree_does_not_stop_a_branch_copy(self):
+        self.base()
+        self.git("checkout", "-b", "task-1")
+        self.file(1, "branch")
+        self.commit()
+        self.git("checkout", "main")
+        (self.root / "chitty/tasks/TASK-1--example.md").write_text("not frontmatter\n")
+        self.assert_copy(self.source(1), "task-1", "chitty/tasks/TASK-1--example.md", "branch")
+
+    def test_provisional_only_on_its_branch_is_read_from_it(self):
+        self.init_git()
+        self.git("checkout", "-b", "task-k7q2mx")
+        path = self.file("K7Q2MX")
+        path.write_text(path.read_text().replace("status: todo", "provisional: true\nstatus: todo"))
+        self.commit()
+        self.git("checkout", "main")
+        self.assert_copy(
+            self.source("K7Q2MX"), "task-k7q2mx", "chitty/tasks/TASK-K7Q2MX--example.md", "original"
+        )
 
     def test_branch_ahead_despite_later_main_date(self):
         self.base()

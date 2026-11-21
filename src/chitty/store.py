@@ -519,13 +519,9 @@ class Repo:
         def contains(a: str | None, b: str) -> bool:
             return a is not None and git.is_ancestor(self.root, b, a)
 
-        copies = self._working_ticket_files(task_id)
-        ref = WORKING_TREE
-        if not copies:
-            ref = main_ref
-            copies = self._ref_ticket_files(main_ref, task_id)
-        first = self._parse_source_copy(task_id, ref, copies)
-        provisional = first is not None and first.task.frontmatter.provisional is True
+        provisional = isinstance(task_id.number, str) and bool(
+            self._working_ticket_files(task_id) or self._ref_ticket_files(main_ref, task_id)
+        )
         source = ticket_source(
             task_id,
             provisional,
