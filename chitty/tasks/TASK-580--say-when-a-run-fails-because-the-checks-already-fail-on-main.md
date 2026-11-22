@@ -1,6 +1,6 @@
 ---
 title: Say when a run fails because the checks already fail on `main`
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -52,3 +52,4 @@ Cold read: limited to the non-zero exit path (not timeout or missing command); t
 - 2026-11-22T13:19:32Z friendly-jade-stoat backlog → planning
 - 2026-11-22T13:21:10Z friendly-jade-stoat: changed description, notes
 - 2026-11-22T13:21:10Z friendly-jade-stoat planning → todo
+- 2026-11-22T15:45:35Z quick-ebony-lapwing todo → doing
