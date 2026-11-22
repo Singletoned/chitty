@@ -23,6 +23,10 @@ Test in `tests/test_renumber_provisional.py`, using that class's `fixture()`: `t
 
 Add a CLI regression test for JSON results, empty results and off-main behavior; confirm it fails, implement JSON output, and run checks.
 
+## Notes
+
+Regression test fails before the fix with JSONDecodeError because stdout contains text.
+
 ## History
 
 - 2026-11-22T03:23:01Z lively-zinc-newt → planning
@@ -32,3 +36,4 @@ Add a CLI regression test for JSON results, empty results and off-main behavior;
 - 2026-11-22T04:31:53Z lively-zinc-newt cold-read → todo
 - 2026-11-22T04:38:43Z tidy-fawn-otter todo → doing
 - 2026-11-22T04:41:07Z tidy-fawn-otter: wrote the plan
+- 2026-11-22T04:41:23Z tidy-fawn-otter: changed notes
