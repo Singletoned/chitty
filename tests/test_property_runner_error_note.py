@@ -9,6 +9,13 @@ from chitty.run import _runner_error_note
 
 
 class TestRunnerErrorNoteProperties(unittest.TestCase):
+    def test_extra_output_has_blank_line_before_fence(self):
+        self.assertEqual(
+            _runner_error_note("check", "first\nsecond", Path("/w")),
+            "Runner error (check): first\n\nWorktree: `/w`\n\n"
+            "Error output:\n\n```text\nsecond\n```",
+        )
+
     @given(
         phase=st.sampled_from(("setup", "review preparation", "check", "agent", "landing")),
         parts=st.lists(
@@ -27,5 +34,5 @@ class TestRunnerErrorNoteProperties(unittest.TestCase):
         head = f"Runner error ({phase}): {lines[0]}\n\nWorktree: `{worktree}`"
         expected = head
         if any(line.strip() for line in lines[1:]):
-            expected += "\n\nError output:\n" + code_block("\n".join(lines[1:]))
+            expected += "\n\nError output:\n\n" + code_block("\n".join(lines[1:]))
         self.assertEqual(_runner_error_note(phase, error, worktree), expected)

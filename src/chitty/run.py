@@ -1404,7 +1404,7 @@ def _runner_error_note(phase: str, error: str, worktree: Path) -> str:
     lines = error.splitlines() or [""]
     note = f"Runner error ({phase}): {lines[0]}\n\nWorktree: `{worktree}`"
     if any(line.strip() for line in lines[1:]):
-        note += "\n\nError output:\n" + code_block("\n".join(lines[1:]))
+        note += "\n\nError output:\n\n" + code_block("\n".join(lines[1:]))
     return note
 
 
