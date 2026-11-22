@@ -1,6 +1,6 @@
 ---
 title: Describe `chitty renumber` without a path in its help and the CLI docs
-status: todo
+status: doing
 depends_on:
   - TASK-392
   - TASK-548
@@ -22,3 +22,4 @@ Split from `TASK-392` on 2026-11-22. After `TASK-392`, `chitty renumber` with no
 ## History
 
 - 2026-11-22T03:23:03Z lively-zinc-newt → todo
+- 2026-11-22T04:55:57Z jolly-maroon-adder todo → doing
