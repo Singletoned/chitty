@@ -1,6 +1,6 @@
 ---
 title: Freeze the clock in the flaky provisional-renumbering transaction test
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -37,3 +37,4 @@ Froze the store clock across both transaction preparations. Verified the advanci
 - 2026-11-22T04:08:05Z witty-jade-quail todo → doing
 - 2026-11-22T04:09:52Z witty-jade-quail: wrote the plan
 - 2026-11-22T04:11:43Z witty-jade-quail: changed notes, summary
+- 2026-11-22T04:13:14Z witty-jade-quail doing → review
