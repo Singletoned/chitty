@@ -1,6 +1,6 @@
 ---
 title: Apply provisional renumbering as one store transaction
-status: planning
+status: cold-read
 depends_on:
   - TASK-391
   - TASK-507
@@ -15,7 +15,7 @@ created: 2026-11-21
 
 Apply the read-only plan from `TASK-391` through `Repo.renumber_provisional() -> tuple[Change, ...]` in `src/chitty/store.py`. This is store only; `TASK-392` wires up the CLI. The preflight `Repo._plan_provisional_renumbering() -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]` has landed with its guards (`TASK-391`, `TASK-519`, `TASK-520`, `TASK-536`); `rewrite_task` (`src/chitty/renumbering.py`), `Task.with_history_event`, `ids.filename`, `ids.slugify`, `_all_or_nothing`, `_prepare_write` and `_commit(change, verb)` exist (rechecked 2026-11-22). Split 2026-11-22: a failed commit is `TASK-542`, outside Git is `TASK-543`.
 
-Call the preflight first; an empty plan returns `()` without `_prepare_write()`. Otherwise use `_prepare_write()` normally. Its own repository upgrade commit, if any, is outside the ticket transaction. Use `Repo._prepare_renumbering` (`TASK-544`) for the final tasks and paths. (Its rules, for reference: for every writable ticket apply `rewrite_task` (`TASK-507`); preserve History and existing `moved_from` except that a renumbered ticket loses `provisional`, sets `moved_from` to its old ID, and appends a History event `renumbered from <old ID>` via `with_history_event`. Rewrite titles before computing paths. Keep each ticket in its original directory and derive every changed ticket's final path from `ids.filename` and `ids.slugify` of its final title, even when just the slug changes. Do not touch unchanged files, `_relocate` or `_save`.) This ticket writes them: `Task:` trailers go on every changed ticket, including reference-only ones such as `TASK-3`, as `archive_done` puts all changed tasks in its `Change`. The repeat check runs on `main` (off `main` the preflight raises `ProvisionalOffMain` first). The fixture is `TASK-544`'s (with `TASK-BAAAAA` provisional and an untouched `HUMAN-1` whose bytes must not change); reuse it.
+Call the preflight first; an empty plan returns `()` without `_prepare_write()`. Otherwise use `_prepare_write()` normally. Its own repository upgrade commit, if any, is outside the ticket transaction. Use `Repo._prepare_renumbering(mapping, writable) -> list[tuple[StoredTask, Task, Path]]` (`TASK-544`, landed 2026-11-22) for the final tasks and paths, and its test fixture in `tests/test_renumber_provisional.py`. (Its rules, for reference: for every writable ticket apply `rewrite_task` (`TASK-507`); preserve History and existing `moved_from` except that a renumbered ticket loses `provisional`, sets `moved_from` to its old ID, and appends a History event `renumbered from <old ID>` via `with_history_event`. Rewrite titles before computing paths. Keep each ticket in its original directory and derive every changed ticket's final path from `ids.filename` and `ids.slugify` of its final title, even when just the slug changes. Do not touch unchanged files, `_relocate` or `_save`.) This ticket writes them: `Task:` trailers go on every changed ticket, including reference-only ones such as `TASK-3`, as `archive_done` puts all changed tasks in its `Change`. The repeat check runs on `main` (off `main` the preflight raises `ProvisionalOffMain` first). The fixture is `TASK-544`'s (with `TASK-BAAAAA` provisional and an untouched `HUMAN-1` whose bytes must not change); reuse it.
 
 Prepare the final tasks and paths in memory. In `_all_or_nothing`, `_write` each changed file once at the final path, remove superseded paths, and invalidate the store's caches before `_commit` so finalization can resolve newly written IDs. Use one `_commit` with all changed paths (including removals), `Task:` trailers for all changed tickets, and verb `renumber provisional tickets`, following the batch pattern in `archive_done`. Return one `Change` per renumbered ticket, not per reference-only rewrite; propagate errors, relying on existing rollback for files and index.
 
@@ -42,3 +42,5 @@ Split again 2026-11-22 after a cold read: the in-memory prepare step is `TASK-54
 - 2026-11-22T01:35:32Z lively-zinc-newt planning → cold-read
 - 2026-11-22T01:38:03Z lively-zinc-newt: changed dependencies, description, notes
 - 2026-11-22T01:38:03Z lively-zinc-newt cold-read → planning
+- 2026-11-22T03:02:07Z lively-zinc-newt: changed description
+- 2026-11-22T03:02:07Z lively-zinc-newt planning → cold-read
