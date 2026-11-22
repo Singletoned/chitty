@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: todo
+status: doing
 labels:
   - needs-minor
 created: 2026-11-22
@@ -83,3 +83,4 @@ Cold read 2: constant placement fixed to `selection.py`, alignment test added; n
 - 2026-11-22T12:57:13Z friendly-jade-stoat: changed description
 - 2026-11-22T12:58:27Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T12:58:27Z friendly-jade-stoat planning → todo
+- 2026-11-22T15:12:53Z golden-zinc-eel todo → doing
