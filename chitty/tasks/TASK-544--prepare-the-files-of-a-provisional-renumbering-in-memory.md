@@ -1,6 +1,6 @@
 ---
 title: Prepare the files of a provisional renumbering in memory
-status: doing
+status: review
 parent: TASK-391
 created: 2026-11-22
 ---
@@ -46,3 +46,4 @@ Implemented in-memory preparation and real Git regression coverage. The test fai
 - 2026-11-22T02:33:57Z nimble-hazel-raven: wrote the plan
 - 2026-11-22T02:35:18Z nimble-hazel-raven: changed notes
 - 2026-11-22T02:37:37Z nimble-hazel-raven: changed summary
+- 2026-11-22T02:39:07Z nimble-hazel-raven doing → review
