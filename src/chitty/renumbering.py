@@ -5,7 +5,21 @@ from collections.abc import Mapping, Sequence
 
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
-from chitty.model import ACCEPTANCE_CRITERIA, HISTORY, SECTION_ORDER, Task
+from chitty.model import ACCEPTANCE_CRITERIA, HISTORY, SECTION_ORDER, Frontmatter, Task
+
+
+def blocking_link(
+    frontmatter: Frontmatter, mapping: Mapping[TaskId, TaskId]
+) -> tuple[TaskId, str] | None:
+    if frontmatter.parent is not None:
+        parent = TaskId.parse(frontmatter.parent)
+        if parent in mapping:
+            return parent, "parent"
+    for link in frontmatter.depends_on:
+        task_id = TaskId.parse(link)
+        if task_id in mapping:
+            return task_id, "depends_on"
+    return None
 
 
 def plan_renumbering(

@@ -1,15 +1,16 @@
 import re
 import unittest
 from collections.abc import Callable, Mapping
+from datetime import date
 from unittest.mock import patch
 
-from hypothesis import assume, given, settings
+from hypothesis import assume, example, given, settings
 from hypothesis import strategies as st
 
 from chitty.errors import ChittyError
 from chitty.ids import TaskId, provisional_suffix
-from chitty.model import SECTION_ORDER, Task, parse
-from chitty.renumbering import plan_renumbering, replace_ids, rewrite_task
+from chitty.model import SECTION_ORDER, Frontmatter, Task, parse
+from chitty.renumbering import blocking_link, plan_renumbering, replace_ids, rewrite_task
 from tests.ticket_strategies import ticket_texts
 
 PREFIX = st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ", min_size=1, max_size=4)
@@ -23,7 +24,128 @@ def provisional_ids(prefix, seed, count):
     return sorted(values)
 
 
+A, B = TaskId("TASK", "ABCDEF"), TaskId("TASK", "BCDEFG")
+EXAMPLES = [
+    ({A: TaskId("TASK", 1)}, ("key", A, "task-abcdef"), []),
+    ({A: TaskId("TASK", 1)}, ("key", A, "TaSk-AbCdEf"), []),
+    ({A: TaskId("TASK", 1), B: TaskId("TASK", 2)}, ("key", A, str(A)), [("key", B, str(B))]),
+    ({A: TaskId("TASK", 1)}, ("other", "TASK-9"), [("key", A, str(A))]),
+    ({A: TaskId("TASK", 1), B: TaskId("TASK", 2)}, None, [("key", A, str(A)), ("key", B, str(B))]),
+]
+
+
+@st.composite
+def cases(draw):
+    count = draw(st.integers(1, 4))
+    keys = set()
+    while len(keys) < count:
+        keys.add(TaskId("TASK", provisional_suffix(lambda n: draw(st.integers(0, n - 1)))))
+    keys = sorted(keys)
+    numbers = draw(st.lists(st.integers(1, 10000), min_size=count, max_size=count, unique=True))
+    mapping = dict(zip(keys, (TaskId("TASK", n) for n in numbers)))
+
+    def link():
+        label = draw(st.sampled_from(("key", "other", None)))
+        if label is None:
+            return None
+        if label == "key":
+            key = draw(st.sampled_from(keys))
+            spelling = "".join(
+                draw(st.sampled_from((c.lower(), c.upper()))) if c.isalpha() else c
+                for c in str(key)
+            )
+            return (label, key, spelling)
+        spelling = draw(
+            st.one_of(
+                st.integers(1, 10000).map(lambda n: f"TASK-{n}"),
+                st.just(0).map(
+                    lambda _: "TASK-" + provisional_suffix(lambda n: draw(st.integers(0, n - 1)))
+                ),
+            )
+        )
+        assume(TaskId.parse(spelling) not in mapping)
+        return (label, spelling)
+
+    parent = link()
+    deps = []
+    for _ in range(draw(st.integers(0, 4))):
+        item = link()
+        if item is not None:
+            assume(item[-1] not in [d[-1] for d in deps])
+            deps.append(item)
+    return mapping, parent, deps
+
+
+def check_blocking_link(fn, case):
+    mapping, parent, deps = case
+    frontmatter = Frontmatter(
+        title="Example",
+        status="todo",
+        created=date(2025, 1, 1),
+        parent=parent[-1] if parent else None,
+        depends_on=[d[-1] for d in deps],
+    )
+    expected = (
+        (parent[1], "parent")
+        if parent and parent[0] == "key"
+        else next(((d[1], "depends_on") for d in deps if d[0] == "key"), None)
+    )
+    assert fn(frontmatter, mapping) == expected
+
+
+def mutant_case_sensitive(frontmatter, mapping):
+    for field, links in (
+        ("parent", [frontmatter.parent] if frontmatter.parent else []),
+        ("depends_on", frontmatter.depends_on),
+    ):
+        for link in links:
+            for key in mapping:
+                if link == str(key):
+                    return key, field
+    return None
+
+
+def mutant_ignores_parent(frontmatter, mapping):
+    for link in frontmatter.depends_on:
+        key = TaskId.parse(link)
+        if key in mapping:
+            return key, "depends_on"
+    return None
+
+
+def examples(fn):
+    for case in EXAMPLES:
+        fn = example(case)(fn)
+    return fn
+
+
 class TestRenumberingProperties(unittest.TestCase):
+    @settings(deadline=None)
+    @examples
+    @given(cases())
+    def test_blocking_link(self, case):
+        check_blocking_link(blocking_link, case)
+
+    def test_mutant_case_sensitive(self):
+        @settings(deadline=None)
+        @examples
+        @given(cases())
+        def check(case):
+            check_blocking_link(mutant_case_sensitive, case)
+
+        with self.assertRaises(AssertionError):
+            check()
+
+    def test_mutant_ignores_parent(self):
+        @settings(deadline=None)
+        @examples
+        @given(cases())
+        def check(case):
+            check_blocking_link(mutant_ignores_parent, case)
+
+        with self.assertRaises(AssertionError):
+            check()
+
     @given(
         prefix=PREFIX,
         used_numbers=st.sets(st.integers(1, 100), min_size=2).filter(
