@@ -1,6 +1,6 @@
 ---
 title: Check linked-worktree ticket reads against every branch placement
-status: todo
+status: doing
 depends_on:
   - TASK-527
 created: 2026-11-21
@@ -41,3 +41,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; th
 - 2026-11-22T00:19:30Z lively-zinc-newt planning → cold-read
 - 2026-11-22T00:21:23Z lively-zinc-newt: changed description
 - 2026-11-22T00:21:23Z lively-zinc-newt cold-read → todo
+- 2026-11-22T00:27:34Z rosy-russet-puffin todo → doing
