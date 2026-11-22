@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -62,3 +62,4 @@ Planner, 2026-11-22: blocker resolved by taking archiving of dropped tickets out
 - 2026-11-22T22:50:07Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T22:50:07Z plucky-umber-wren cold-read → todo
 - 2026-11-22T22:50:17Z plucky-umber-wren: changed description
+- 2026-11-22T22:51:01Z lively-indigo-raven todo → doing
