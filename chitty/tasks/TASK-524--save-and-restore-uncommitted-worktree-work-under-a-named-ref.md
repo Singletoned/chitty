@@ -1,6 +1,6 @@
 ---
 title: Save and restore uncommitted worktree work under a named ref
-status: todo
+status: doing
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -77,3 +77,4 @@ Replanned 2026-11-21: the change mix is drawn per committed file; see the Descri
 - 2026-11-21T23:53:43Z quick-hazel-newt doing → planning
 - 2026-11-21T23:58:13Z lively-zinc-newt: changed description, notes
 - 2026-11-21T23:58:13Z lively-zinc-newt planning → todo
+- 2026-11-22T00:01:51Z daring-lilac-urchin todo → doing
