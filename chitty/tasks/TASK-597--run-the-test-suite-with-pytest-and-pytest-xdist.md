@@ -31,6 +31,10 @@ No new test: build configuration, checked by the commands in the criteria.
 - [ ] After `make install`, a temporary `tests/test_probe_worker.py` (deleted afterwards, not committed) asserting `import tests; tests._is_worker is True` passes under `.venv/bin/pytest -n 2 tests/test_probe_worker.py` and fails under `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py`; record both outputs in a note. The `faulthandler.dump_traceback_later` call in `tests/__init__.py` is unchanged (`git diff main -- tests/__init__.py` touches only `_is_worker` and the comment), so the controller still gets `PARENT_GRACE_SECONDS`
 - [ ] `uv lock --check` passes; `uv.lock` has `name = "pytest"` and `name = "pytest-xdist"` package entries and no `unittest-parallel`; `grep -n unittest AGENTS.md README.md docs/plan/stack.md` prints only lines that say tests are `unittest.TestCase` classes run by `pytest`
 
+## Plan
+
+Run the fixture probe on the unchanged main-equivalent tree, switch the runner and worker detection, update documentation and lockfile, then run the specified checks and probes.
+
 ## History
 
 - 2026-11-22T20:15:42Z plucky-umber-wren → planning
@@ -41,3 +45,4 @@ No new test: build configuration, checked by the commands in the criteria.
 - 2026-11-22T20:18:16Z plucky-umber-wren: changed acceptance criteria
 - 2026-11-22T20:18:16Z plucky-umber-wren cold-read → todo
 - 2026-11-22T20:18:39Z vivid-fawn-wren todo → doing
+- 2026-11-22T20:20:46Z vivid-fawn-wren: wrote the plan
