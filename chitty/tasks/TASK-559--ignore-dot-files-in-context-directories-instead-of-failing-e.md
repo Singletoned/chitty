@@ -26,6 +26,10 @@ Tests: Hypothesis (the repository's property tool) in a new `tests/test_property
 - [ ] Property: for every drawn case, after adding the hidden entries, `chitty list --all --json` and `chitty show <ID>` for each ticket print what they printed before, `chitty check` exits 0, and `chitty add Two -d x` succeeds with the next free number; it fails on `main` (a `.gitkeep` makes `chitty list` raise `must end with .md`)
 - [ ] Example: a file `chitty/tasks/notes.txt` still makes `chitty list` exit 1 with `must end with .md`, and `chitty check` reports it; `make check` passes
 
+## Plan
+
+Add a shared hidden-name predicate to the scan and ref enumeration paths; exercise real Git repositories with property and non-hidden regression tests, verify failure before the fix, then run checks.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -42,3 +46,4 @@ Suggestion origin: chitty
 - 2026-11-22T09:51:38Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T09:51:40Z friendly-jade-stoat planning → todo
 - 2026-11-22T09:52:51Z rosy-fawn-falcon todo → doing
+- 2026-11-22T09:54:59Z rosy-fawn-falcon: wrote the plan
