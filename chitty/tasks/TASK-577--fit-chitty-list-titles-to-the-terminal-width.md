@@ -1,6 +1,6 @@
 ---
 title: Fit chitty list titles to the terminal width
-status: planning
+status: todo
 created: 2026-11-22
 ---
 
@@ -40,18 +40,22 @@ Tests, in a new file `tests/test_list_terminal_width.py`:
   90 characters and no labels or priority, patching
   `chitty.cli._terminal_columns` to return `60`: the ticket's line in
   `chitty list` stdout measures at most 60 columns by `chitty.cli._columns`
-  and ends with `…`. Record that it fails before the change (patch with
-  `create=True`, or note the failure as an `AttributeError` before the
-  helper exists).
-- Same ticket, unpatched (CliRunner output is not a terminal): the line
-  measures exactly 100 columns and ends with `…`.
+  and ends with `…`. Patch with `create=True`; record that before the
+  change it fails on the at-most-60 assertion (the line measures 100).
+- The unpatched 100-column cut is already covered by
+  `test_list_width_defaults_to_one_hundred_columns` (`tests/test_cli.py`
+  line 1143); it must still pass. Add no duplicate.
 
 ## Acceptance Criteria
 
 - [ ] With a terminal narrower than `list_width`, `chitty list` lines fit the terminal and long titles end in `…`; shown by the patched `_terminal_columns` test, which fails before the change.
-- [ ] `_list_width` returns the setting with no terminal and the smaller width otherwise, and unpatched CLI output is cut at exactly 100 columns; shown by the helper tests and the unpatched test.
-- [ ] `docs/plan/cli.md` and `docs/plan/config.md` describe the terminal cap.
+- [ ] `_list_width` returns the setting with no terminal and the smaller width otherwise; shown by the helper tests. `test_list_width_defaults_to_one_hundred_columns` still passes.
+- [ ] `docs/plan/cli.md` (around line 55) and `docs/plan/config.md` (line 39) each say titles fit the smaller of `list_width` and the terminal width when stdout is a terminal.
 - [ ] `make check` passes.
+
+## Notes
+
+Cold read 3: wording only (fail-first assertion, reuse of the existing 100-column test, exact doc content).
 
 ## History
 
@@ -59,3 +63,5 @@ Tests, in a new file `tests/test_list_terminal_width.py`:
 - 2026-11-22T12:56:17Z friendly-jade-stoat: changed acceptance criteria
 - 2026-11-22T12:56:17Z friendly-jade-stoat todo → planning
 - 2026-11-22T12:57:28Z friendly-jade-stoat: changed description, acceptance criteria
+- 2026-11-22T12:58:17Z friendly-jade-stoat: changed description, acceptance criteria, notes
+- 2026-11-22T12:58:17Z friendly-jade-stoat planning → todo
