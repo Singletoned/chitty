@@ -1,6 +1,6 @@
 ---
 title: Print `chitty renumber` results as JSON when no path is given
-status: review
+status: done
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -27,6 +27,9 @@ Add a CLI regression test for JSON results, empty results and off-main behavior;
 
 Regression test fails before the fix with JSONDecodeError because stdout contains text.
 
+Reviewed: JSON output matches the requested no-path behavior; path behavior is unchanged.
+1: pass - test_json passes; executing main:src/chitty/cli.py in the CLI module before running it produced JSONDecodeError: Expecting value: line 1 column 1 (char 0). make check passed: 1109 tests, OK; ruff and pyright passed.
+
 ## Summary
 
 Implemented JSON output for provisional renumbering, including empty and off-main results. Regression test failed before the fix with JSONDecodeError and passes afterward; make check passed.
@@ -43,3 +46,5 @@ Implemented JSON output for provisional renumbering, including empty and off-mai
 - 2026-11-22T04:41:23Z tidy-fawn-otter: changed notes
 - 2026-11-22T04:45:28Z tidy-fawn-otter: changed summary
 - 2026-11-22T04:45:28Z tidy-fawn-otter doing → review
+- 2026-11-22T04:51:39Z witty-violet-raven: changed notes
+- 2026-11-22T04:51:39Z witty-violet-raven review → done
