@@ -1,7 +1,6 @@
 ---
 title: Add a test result class that records each test's duration and outcome
-status: planning
-owner: plucky-umber-wren
+status: todo
 created: 2026-11-22
 ---
 
@@ -50,3 +49,5 @@ No property for outcomes: they are a fixed set, each case listed in the criteria
 - 2026-11-22T17:15:31Z plucky-umber-wren planning → cold-read
 - 2026-11-22T17:16:16Z plucky-umber-wren: changed acceptance criteria
 - 2026-11-22T17:16:16Z plucky-umber-wren cold-read → planning
+- 2026-11-22T17:16:18Z plucky-umber-wren: changed owner
+- 2026-11-22T17:16:18Z plucky-umber-wren planning → todo
