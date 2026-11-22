@@ -32,6 +32,10 @@ Add six restore regression tests against a stub, then implement validation, clea
 
 All six restore tests fail with NotImplementedError against the stub (unittest discover, -k test_restore).
 
+## Summary
+
+Implemented restore with clean-worktree protection and conflict cleanup. Six tests failed against the stub and pass with the implementation; make check passes.
+
 ## History
 
 - 2026-11-22T00:06:29Z lively-zinc-newt → planning
@@ -42,3 +46,4 @@ All six restore tests fail with NotImplementedError against the stub (unittest d
 - 2026-11-22T01:11:29Z nimble-pearl-adder todo → doing
 - 2026-11-22T01:14:04Z nimble-pearl-adder: wrote the plan
 - 2026-11-22T01:14:27Z nimble-pearl-adder: changed notes
+- 2026-11-22T01:16:59Z nimble-pearl-adder: changed summary
