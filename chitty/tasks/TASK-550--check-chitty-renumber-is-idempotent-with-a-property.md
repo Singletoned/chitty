@@ -1,6 +1,6 @@
 ---
 title: Check `chitty renumber` is idempotent with a property
-status: blocked
+status: doing
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -39,6 +39,8 @@ The configured check failed because the unrelated staged file `tmpt1qelkfu/examp
 
 Blocked: the owner of the unrelated staged `tmpt1qelkfu/example.py` must resolve or remove it. Its Ruff formatting failure prevents `make check`, and its staged presence prevents the clean-worktree review transition. I left the unrecognized file untouched. See `.chitty/check.log` for the failure; verification remains unfinished.
 
+Unblocked 2026-11-22 (planner): `tmpt1qelkfu/example.py` was a leaked test artefact from `tests/test_section_name_types.py` (it makes a temporary directory inside the repository root, which a `git add -A` during a test run stages). I unstaged and removed it; a separate ticket fixes the test.
+
 ## History
 
 - 2026-11-22T03:23:05Z lively-zinc-newt → planning
@@ -58,3 +60,5 @@ Blocked: the owner of the unrelated staged `tmpt1qelkfu/example.py` must resolve
 - 2026-11-22T05:13:58Z upbeat-khaki-otter: changed notes
 - 2026-11-22T05:14:03Z upbeat-khaki-otter: changed notes
 - 2026-11-22T05:14:03Z upbeat-khaki-otter doing → blocked
+- 2026-11-22T05:15:58Z lively-zinc-newt: changed notes
+- 2026-11-22T05:15:58Z lively-zinc-newt blocked → doing
