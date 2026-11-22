@@ -1,6 +1,8 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: review
+status: blocked
+labels:
+  - question
 depends_on:
   - TASK-370
   - TASK-546
@@ -44,6 +46,8 @@ Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktr
 
 Planner, 2026-11-22: restoring the passed review. The review passed at 04:03 (verdicts above) and the code is on `main` (commit `9027093c`); the landing check that set `error` at 04:05 failed on the flaky `test_transaction`, fixed by `TASK-553`. Moving `error → review → done` so dependants can run; nothing was re-reviewed.
 
+Needs a person (2026-11-22, overnight planner): the review passed at 04:03 and the code is on `main` (commit `9027093c`), but the landing check then failed on the flaky `test_transaction` (fixed by `TASK-553`) and set `error`; the branch and worktree are gone. I moved it to `review` to restore `done`, but marking it `done` needs a `Reviewed:` note, which a planner should not write. Please check commit `9027093c` and mark this `done` (for example `chitty edit TASK-540 -s review` then `-s done --note "Reviewed: ..."` with `--human`).
+
 ## Summary
 
 Implemented stopped conflict handling and regression coverage. Old helper failed cases 3b and 3c on behavior assertions; make check passed (1099 tests).
@@ -70,3 +74,5 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T04:05:03Z friendly-russet-quail done → error
 - 2026-11-22T04:23:13Z lively-zinc-newt: changed notes
 - 2026-11-22T04:23:13Z lively-zinc-newt error → review
+- 2026-11-22T04:23:44Z lively-zinc-newt: changed labels, notes
+- 2026-11-22T04:23:44Z lively-zinc-newt review → blocked
