@@ -1,6 +1,6 @@
 ---
 title: Add archive, delete, merge and changed-on-both placements to the ticket-read matrix
-status: doing
+status: review
 depends_on:
   - TASK-393
 parent: TASK-393
@@ -49,3 +49,4 @@ Added six placement fixtures and main-checkout coverage. Both wrong-expectation 
 - 2026-11-22T00:07:58Z zesty-bronze-stoat: wrote the plan
 - 2026-11-22T00:09:03Z zesty-bronze-stoat: changed notes
 - 2026-11-22T00:10:19Z zesty-bronze-stoat: changed summary
+- 2026-11-22T00:10:21Z zesty-bronze-stoat doing → review
