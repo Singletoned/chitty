@@ -1,13 +1,37 @@
 import json
 import os
+import subprocess
+import tempfile
 from datetime import UTC, datetime
+from pathlib import Path
 from unittest import mock
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from chitty.errors import ChittyError
 from chitty.store import Repo
-from tests.support import RepoTestCase
+from tests.support import CONFIG, RepoTestCase
 from tests.test_cli import CliTestCase
 from tests.test_source_copy_errors import SourceCopyErrorChecks
+
+
+def build_provisional_repo(root: Path, provisional: int) -> None:
+    (root / "chitty.toml").write_text(CONFIG.replace("autocommit = false", "autocommit = true"))
+
+    def git(*args):
+        subprocess.run(["git", *args], cwd=root, check=True, capture_output=True, text=True)
+
+    git("init", "-b", "main")
+    git("config", "user.name", "Tester")
+    git("config", "user.email", "tester@example.com")
+    run_cli = CliTestCase().run_cli
+    run_cli("add", "Numbered", "-d", "Fixture.")
+    git("switch", "-c", "feature")
+    for i in range(provisional):
+        run_cli("add", f"P{i}", "-d", "Fixture.")
+    git("switch", "main")
+    git("merge", "feature")
 
 
 class TestRenumberOutsideGit(RepoTestCase):
@@ -195,6 +219,29 @@ class TestCliProvisionalRenumbering(CliTestCase):
         self.run_cli("add", "Two", "-d", "Fixture.")
         self.git("switch", "main")
         self.git("merge", "feature")
+
+    @settings(max_examples=5, deadline=None)
+    @given(provisional=st.integers(min_value=0, max_value=3))
+    def test_renumber_is_idempotent(self, provisional):
+        root = Path(tempfile.mkdtemp(dir=self.tmp))
+        previous = Path.cwd()
+        try:
+            os.chdir(root)
+            build_provisional_repo(root, provisional)
+            first = self.run_cli("renumber")
+            lines = first.stdout.splitlines()
+            self.assertEqual(len(lines), provisional)
+            self.assertTrue(all(line.startswith("renumbered ") for line in lines))
+            head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True)
+            before = {p: p.read_bytes() for p in (root / "chitty").rglob("*") if p.is_file()}
+            second = self.run_cli("renumber")
+            self.assertEqual(second.stderr.strip(), "nothing to renumber")
+            self.assertEqual(subprocess.check_output(["git", "rev-parse", "HEAD"], text=True), head)
+            self.assertEqual(
+                before, {p: p.read_bytes() for p in (root / "chitty").rglob("*") if p.is_file()}
+            )
+        finally:
+            os.chdir(previous)
 
     def test_main(self):
         self.fixture()
