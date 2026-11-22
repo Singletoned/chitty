@@ -1,6 +1,6 @@
 ---
 title: Record a work-mode rebase failure that is not a conflict as a ticket error
-status: todo
+status: doing
 depends_on:
   - TASK-370
   - TASK-546
@@ -30,3 +30,4 @@ Test `test_rebase_failure_is_recorded` in `tests/test_run_work_rebases.py`, usin
 - 2026-11-22T03:13:44Z lively-zinc-newt planning → cold-read
 - 2026-11-22T03:14:54Z lively-zinc-newt: changed description
 - 2026-11-22T03:14:54Z lively-zinc-newt cold-read → todo
+- 2026-11-22T03:23:18Z brisk-hazel-gannet todo → doing
