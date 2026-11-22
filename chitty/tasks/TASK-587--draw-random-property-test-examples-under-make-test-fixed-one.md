@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: cold-read
+status: planning
 priority: high
 owner: plucky-umber-wren
 created: 2026-11-22
@@ -20,7 +20,7 @@ Change the `Makefile` `test` target to run `HYPOTHESIS_PROFILE=thorough uv run u
 
 In `AGENTS.md`, replace the bullet starting `Hypothesis runs with fixed examples` with one saying `make check` uses fixed examples (profile `check`) so it repeats, and `make test` draws new random examples (profile `thorough`) to find new edge cases. Keep its sentence `A property test that fails is a real failure: fix it, do not rerun.`
 
-Probe for criterion 1, run with `cwd` at the repository root and the profile variable set as the case needs (removed for the unset case):
+Probe for criterion 1, run as `python -c <probe>` with `cwd` at the repository root (so `import tests` resolves) and the profile variable set as the case needs (removed for the unset case):
 
 ```python
 import tests
@@ -56,3 +56,5 @@ Out of scope: how many examples each profile draws (a later ticket scales per-te
 - 2026-11-22T16:29:32Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T16:29:32Z plucky-umber-wren cold-read → planning
 - 2026-11-22T16:29:33Z plucky-umber-wren planning → cold-read
+- 2026-11-22T16:30:21Z plucky-umber-wren: changed description
+- 2026-11-22T16:30:21Z plucky-umber-wren cold-read → planning
