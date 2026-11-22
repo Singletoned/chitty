@@ -2,7 +2,14 @@ from chitty.errors import ChittyError
 from chitty.ids import TaskId
 from chitty.store import Repo
 from tests.support import RepoTestCase
-from tests.ticket_placements import PLACEMENTS, edit_uncommitted, make_repo, place
+from tests.ticket_placements import (
+    PLACEMENTS,
+    Expected,
+    checkout,
+    edit_uncommitted,
+    make_repo,
+    place,
+)
 
 
 class TestTicketPlacementReads(RepoTestCase):
@@ -41,3 +48,59 @@ class TestTicketPlacementReads(RepoTestCase):
                             [(t.task.frontmatter.title, t.archived) for t in listed],
                             [(title, expected.archived)],
                         )
+
+    def test_linked_worktree_placements(self):
+        for kind in (3, 4, 5):
+            for placement in PLACEMENTS:
+                for edit in ("none", "linked", "main"):
+                    if edit == "main" and placement != "a":
+                        continue
+                    with self.subTest(kind=kind, placement=placement, edit=edit):
+                        root = make_repo(self.tmp)
+                        expected = place(root, placement, 5)
+                        linked = checkout(root, kind, 5)
+                        if placement == "i":
+                            expected = Expected(None)
+                        if edit == "linked":
+                            if not (linked / "chitty/tasks/TASK-5--example.md").exists():
+                                continue
+                            edit_uncommitted(linked, 5)
+                        elif edit == "main":
+                            edit_uncommitted(root, 5)
+                        repo = Repo.open(linked)
+                        task_id = TaskId("TASK", 5)
+                        if expected.errors:
+                            for action in (
+                                lambda repo=repo, task_id=task_id: repo.find(task_id),
+                                lambda repo=repo: repo.tasks(repo.context("tasks"), "all"),
+                            ):
+                                with self.assertRaises(ChittyError) as caught:
+                                    action()
+                                for text in expected.errors:
+                                    self.assertIn(text, str(caught.exception))
+                        elif expected.title is None:
+                            with self.assertRaisesRegex(ChittyError, "no task"):
+                                repo.find(task_id)
+                            self.assertEqual(
+                                [
+                                    t
+                                    for t in repo.tasks(repo.context("tasks"), "all")
+                                    if t.id == task_id
+                                ],
+                                [],
+                            )
+                        else:
+                            found = repo.find(task_id)
+                            listed = [
+                                t
+                                for t in repo.tasks(repo.context("tasks"), "all")
+                                if t.id == task_id
+                            ]
+                            self.assertEqual(
+                                (found.task.frontmatter.title, found.archived),
+                                (expected.title, expected.archived),
+                            )
+                            self.assertEqual(
+                                [(t.task.frontmatter.title, t.archived) for t in listed],
+                                [(expected.title, expected.archived)],
+                            )

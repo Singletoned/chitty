@@ -114,3 +114,24 @@ def place(root: Path, placement: str, number: int) -> Expected:
     if placement == "e":
         return Expected(None, errors=(name, f"origin/{name}"))
     return Expected("remote" if placement in ("c", "d", "l") else "branch")
+
+
+def checkout(root: Path, kind: int, number: int) -> Path:
+    if kind == 3:
+        name = f"task-{number + 1}"
+        git(root, "checkout", "-b", name, "main")
+        write_ticket(root, number + 1, "other")
+        git(root, "add", f"chitty/tasks/TASK-{number + 1}--example.md")
+        git(root, "commit", "-m", "other ticket")
+        git(root, "checkout", "main")
+        path = root / ".worktrees" / name
+        git(root, "worktree", "add", str(path), name)
+    elif kind == 4:
+        path = root / ".worktrees/feature"
+        git(root, "worktree", "add", "-b", "feature", str(path), "main")
+    elif kind == 5:
+        path = root / ".worktrees/detached"
+        git(root, "worktree", "add", "--detach", str(path), "main")
+    else:
+        raise ValueError(kind)
+    return path
