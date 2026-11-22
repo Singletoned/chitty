@@ -1,6 +1,6 @@
 ---
 title: Rebase `todo` and `error` tickets before setup in work runs
-status: doing
+status: review
 depends_on:
   - TASK-370
   - TASK-546
@@ -48,3 +48,4 @@ Rebase all work-mode branches before setup and claim. Both new regression tests 
 - 2026-11-22T03:17:14Z friendly-violet-urchin: wrote the plan
 - 2026-11-22T03:17:31Z friendly-violet-urchin: changed notes
 - 2026-11-22T03:20:12Z friendly-violet-urchin: changed summary
+- 2026-11-22T03:21:45Z friendly-violet-urchin doing → review
