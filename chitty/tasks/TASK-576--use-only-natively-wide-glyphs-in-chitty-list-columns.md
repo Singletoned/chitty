@@ -71,6 +71,10 @@ stay aligned.
 - [ ] `make check` passes.
 - [ ] A row with no priority and a row with `⏫` start their titles at the same column; shown by the alignment test.
 
+## Plan
+
+Add glyph and column-alignment regression tests, verify failure on existing behavior, replace glyphs and centralize skip constants, update expectations and documentation, then format and run checks.
+
 ## Notes
 
 Cold read 2: constant placement fixed to `selection.py`, alignment test added; nothing else serious.
@@ -84,3 +88,4 @@ Cold read 2: constant placement fixed to `selection.py`, alignment test added; n
 - 2026-11-22T12:58:27Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T12:58:27Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:12:53Z golden-zinc-eel todo → doing
+- 2026-11-22T15:15:45Z golden-zinc-eel: wrote the plan
