@@ -31,6 +31,8 @@ Add focused conflicting and clean restore tests, confirm regression, then report
 
 Keep in planning until `TASK-370` lands; then replan, cold-read and move to `todo`.
 
+Regression confirmed: TestSavedWork control passed and unrestorable test failed for the missing note before the fix.
+
 ## History
 
 - 2026-11-21T23:11:21Z lively-zinc-newt → planning
@@ -42,3 +44,4 @@ Keep in planning until `TASK-370` lands; then replan, cold-read and move to `tod
 - 2026-11-22T04:45:39Z lively-zinc-newt cold-read → todo
 - 2026-11-22T04:46:53Z upbeat-navy-marten todo → doing
 - 2026-11-22T04:49:36Z upbeat-navy-marten: wrote the plan
+- 2026-11-22T04:50:01Z upbeat-navy-marten: changed notes
