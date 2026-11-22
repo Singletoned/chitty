@@ -5,6 +5,7 @@ depends_on:
   - TASK-370
   - TASK-540
   - TASK-541
+  - TASK-552
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -33,3 +34,4 @@ Keep in planning until `TASK-370` lands; then replan, cold-read and move to `tod
 
 - 2026-11-21T23:11:21Z lively-zinc-newt → planning
 - 2026-11-22T01:29:49Z lively-zinc-newt: changed dependencies
+- 2026-11-22T03:43:04Z lively-zinc-newt: changed dependencies
