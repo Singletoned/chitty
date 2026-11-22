@@ -25,6 +25,10 @@ Test, in `tests/test_cli.py`, reading the raw ticket file (found with `next((sel
 - [ ] The CLI test stores ``files/\*.jpg and `x*y` `` for each of `add -d`, `edit --note`, `--ac` and `--summary`, and fails before the change
 - [ ] `test_warning_does_not_fail_check` writes its file directly and keeps its assertions; `make check` passes
 
+## Plan
+
+Add CLI regression coverage, verify it fails, then escape supplied section text in model and store, update warning fixture, and run checks.
+
 ## Notes
 
 Cold read 2026-11-21: applied its findings (set_criteria pairs, fixture lookup); the stale-warning finding became `TASK-533`. A cold reader ran the change on all 1026 tests: none broke. Move to `todo` once `TASK-533` is in `todo` (its text does not depend on 533's code beyond the dependency).
@@ -38,3 +42,4 @@ Cold read 2026-11-21: applied its findings (set_criteria pairs, fixture lookup);
 - 2026-11-21T23:59:58Z lively-zinc-newt cold-read → planning
 - 2026-11-22T00:00:37Z lively-zinc-newt planning → todo
 - 2026-11-22T01:03:00Z intrepid-ginger-lapwing todo → doing
+- 2026-11-22T01:05:20Z intrepid-ginger-lapwing: wrote the plan
