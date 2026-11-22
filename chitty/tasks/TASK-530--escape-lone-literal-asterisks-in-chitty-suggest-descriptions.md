@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in `chitty suggest` descriptions
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -46,3 +46,4 @@ Escaped normalized suggestion descriptions before validation and storage. Regres
 - 2026-11-22T01:28:15Z zesty-ebony-falcon: wrote the plan
 - 2026-11-22T01:28:27Z zesty-ebony-falcon: changed notes
 - 2026-11-22T01:30:15Z zesty-ebony-falcon: changed summary
+- 2026-11-22T01:30:17Z zesty-ebony-falcon doing → review
