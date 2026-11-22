@@ -45,7 +45,7 @@ from chitty.model import (
     new_task,
     parse,
 )
-from chitty.renumbering import plan_renumbering
+from chitty.renumbering import blocking_link, plan_renumbering
 from chitty.selection import (
     STATUSES,
     DependencyFact,
@@ -1075,12 +1075,14 @@ class Repo:
             if not self.config.contexts[context.name].random_ids
         }
         disk_paths: list[Path] = []
+        disk_entries: list[tuple[Context, Path, bool]] = []
         writable: list[StoredTask] = []
         candidates: list[TaskId] = []
         for context in self.discovered_contexts():
             for archived in (False, True):
                 for path in self._files(context, archived):
                     disk_paths.append(path)
+                    disk_entries.append((context, path, archived))
                     if context.name not in self.config.contexts:
                         continue
                     task_id, _ = ids.parse_filename(path.name)
@@ -1108,7 +1110,24 @@ class Repo:
         self._reserve_numbers(used, self.ticket_ids())
         for path in disk_paths:
             self._reserve_numbers(used, ids.ticket_references(path.read_text(), used.keys()))
-        return plan_renumbering(used, candidates), tuple(writable)
+        mapping = plan_renumbering(used, candidates)
+        self._guard_untouched_disk_links(disk_entries, {item.path for item in writable}, mapping)
+        return mapping, tuple(writable)
+
+    def _guard_untouched_disk_links(
+        self,
+        entries: list[tuple[Context, Path, bool]],
+        writable: set[Path],
+        mapping: dict[TaskId, TaskId],
+    ) -> None:
+        for context, path, archived in entries:
+            if path in writable:
+                continue
+            stored = self._load(context, path, archived)
+            link = blocking_link(stored.task.frontmatter, mapping)
+            if link is not None:
+                old, field = link
+                raise ChittyError(f"cannot renumber {old}: {stored.id} links to it in {field}")
 
     @staticmethod
     def _reserve_numbers(used: dict[str, set[int]], references: Iterable[TaskId]) -> None:
