@@ -10,6 +10,7 @@ from hypothesis import strategies as st
 
 from chitty import git
 from chitty.errors import ChittyError
+from tests import examples
 from tests.support import RepoTestCase
 
 # Standard output for non-zero statuses: `true`, padded `true`, or any text.
@@ -20,14 +21,14 @@ class TestRepositoryAnswer(RepoTestCase):
     command = ("git", "rev-parse", "--is-inside-work-tree")
     not_repository = "not a git repository"
 
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=examples(30), deadline=None)
     @given(st.text())
     def test_success_requires_exact_true_output(self, stderr):
         self.assertTrue(git.repository_answer(self.command, self.root, 0, " \ttrue\n", stderr))
         for stdout in ("false", "True", "TRUE", "truex", "xtrue", "true false", ""):
             self.assertFalse(git.repository_answer(self.command, self.root, 0, stdout, stderr))
 
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=examples(30), deadline=None)
     @given(st.text().filter(lambda text: text.strip() != "true"), st.text())
     def test_success_other_output_is_false(self, stdout, stderr):
         self.assertFalse(git.repository_answer(self.command, self.root, 0, stdout, stderr))
@@ -40,7 +41,7 @@ class TestRepositoryAnswer(RepoTestCase):
         self.assertIn(str(directory), message)
         self.assertIn(stderr.strip(), message)
 
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=examples(50), deadline=None)
     @given(
         st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
         st.text(),
@@ -56,7 +57,7 @@ class TestRepositoryAnswer(RepoTestCase):
         else:
             self.assert_error_context(directory, stderr, code, stdout)
 
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=examples(50), deadline=None)
     @given(st.text(), st.text(), STDOUTS, st.text())
     def test_status_128_phrase_always_means_not_a_repository(
         self, before, after, stdout, directory_name
@@ -67,7 +68,7 @@ class TestRepositoryAnswer(RepoTestCase):
         )
         self.assertFalse(answer)
 
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=examples(30), deadline=None)
     @given(
         st.sampled_from(("Not a git repository", "NOT A GIT REPOSITORY")),
         STDOUTS,
@@ -76,7 +77,7 @@ class TestRepositoryAnswer(RepoTestCase):
     def test_repository_phrase_is_case_sensitive(self, stderr, stdout, directory_name):
         self.assert_error_context(self.root / directory_name, stderr, 128, stdout)
 
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=examples(100), deadline=None)
     @given(
         st.integers(min_value=-64, max_value=255).filter(lambda code: code != 0),
         st.text().filter(lambda text: "not a git repository" not in text),
@@ -89,7 +90,7 @@ class TestRepositoryAnswer(RepoTestCase):
     def test_status_128_without_repository_phrase_raises(self):
         self.assert_error_context(self.root, "", 128, "true")
 
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=examples(100), deadline=None)
     @given(st.integers(), st.text(), st.text())
     def test_arbitrary_results_return_bool_or_raise_chitty_error(self, code, stdout, stderr):
         try:
@@ -100,7 +101,7 @@ class TestRepositoryAnswer(RepoTestCase):
 
 
 class TestIsRepository(RepoTestCase):
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=examples(30), deadline=None)
     @given(
         depth=st.integers(min_value=1, max_value=4),
         marker=st.one_of(st.none(), st.integers(min_value=0, max_value=4)),
@@ -301,7 +302,7 @@ class TestBranchTipFiles(RepoTestCase):
         with self.assertRaises(ChittyError):
             git.is_ancestor(self.root, "unknown", second)
 
-    @settings(max_examples=8, deadline=None)
+    @settings(max_examples=examples(8), deadline=None)
     @given(
         st.dictionaries(
             st.tuples(

@@ -11,6 +11,7 @@ from hypothesis import strategies as st
 
 from chitty.errors import ChittyError
 from chitty.store import Repo
+from tests import examples
 from tests.support import CONFIG, RepoTestCase
 from tests.test_cli import CliTestCase
 from tests.test_source_copy_errors import SourceCopyErrorChecks
@@ -220,7 +221,7 @@ class TestCliProvisionalRenumbering(CliTestCase):
         self.git("switch", "main")
         self.git("merge", "feature")
 
-    @settings(max_examples=5, deadline=None)
+    @settings(max_examples=examples(5), deadline=None)
     @given(provisional=st.integers(min_value=0, max_value=3))
     def test_renumber_is_idempotent(self, provisional):
         root = Path(tempfile.mkdtemp(dir=self.tmp))

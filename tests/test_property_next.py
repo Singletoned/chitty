@@ -14,6 +14,7 @@ from chitty.selection import (
     dependency_marker,
     skip_reason,
 )
+from tests import examples
 
 STATUSES = (
     "review",
@@ -105,7 +106,7 @@ class TestPropertyNext(unittest.TestCase):
         ready = TicketFacts("TASK-3", "work", "todo", "low", None, False, False)
         self.assertEqual(choose((ready, blocked, broken), order=PICK_ORDER), ready)
 
-    @settings(max_examples=300)
+    @settings(max_examples=examples(300))
     @given(
         facts_strategy(),
         st.sampled_from((None, "work", "review")),
@@ -128,7 +129,7 @@ class TestPropertyNext(unittest.TestCase):
         if selected is not None:
             self.assertTrue(independently_choosable(selected, mode, owner))
 
-    @settings(max_examples=300)
+    @settings(max_examples=examples(300))
     @given(facts_strategy())
     def test_dependency_marker_matches_independent_expectation(self, facts):
         for fact in facts:
@@ -142,7 +143,7 @@ class TestPropertyNext(unittest.TestCase):
                     expected = f"🔗 waits on {', '.join(unfinished)}"
             self.assertEqual(dependency_marker(fact), expected)
 
-    @settings(max_examples=300)
+    @settings(max_examples=examples(300))
     @given(facts_strategy(), st.booleans())
     def test_untestable_marker_only_replaces_owned_skip_reason(self, facts, include_owner):
         for fact in facts:
@@ -167,7 +168,7 @@ class TestPropertyNext(unittest.TestCase):
             else:
                 self.assertEqual(actual, expected)
 
-    @settings(max_examples=200)
+    @settings(max_examples=examples(200))
     @given(facts_strategy())
     def test_skip_reason_agrees_with_single_ticket_choice(self, facts):
         for fact in facts:

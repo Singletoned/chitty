@@ -4,13 +4,14 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from chitty.ids import TaskId, ticket_references
+from tests import examples
 
 PREFIXES = ("TASK", "TASKS", "HUMAN")
 SEPARATORS = (" ", "\n", ",", ".", "`", "(", ")")
 
 
 class TestTicketReferences(unittest.TestCase):
-    @settings(max_examples=150)
+    @settings(max_examples=examples(150))
     @given(
         st.lists(st.tuples(st.sampled_from(PREFIXES), st.integers(1, 9999)), max_size=30), st.data()
     )
@@ -29,7 +30,7 @@ class TestTicketReferences(unittest.TestCase):
         expected = list(dict.fromkeys(TaskId(prefix, number) for prefix, number in parts))
         self.assertEqual(ticket_references(text, PREFIXES), expected)
 
-    @settings(max_examples=100)
+    @settings(max_examples=examples(100))
     @given(
         st.lists(
             st.tuples(st.sampled_from(PREFIXES), st.integers(1, 9999)),
@@ -52,7 +53,7 @@ class TestTicketReferences(unittest.TestCase):
         ]
         self.assertEqual(ticket_references(text, PREFIXES), expected)
 
-    @settings(max_examples=200)
+    @settings(max_examples=examples(200))
     @given(st.text(), st.sets(st.text(alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ", min_size=1)))
     def test_arbitrary_text_never_raises_and_matches_requested_prefix(self, text, prefixes):
         result = ticket_references(text, prefixes)

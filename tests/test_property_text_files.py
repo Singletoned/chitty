@@ -10,6 +10,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from chitty.cli import cli
+from tests import examples
 from tests.support import CONFIG, RepoTestCase
 
 TEXT = st.text(alphabet="ab1 \n`'\"$\\*é", min_size=1, max_size=60).filter(
@@ -87,7 +88,7 @@ class TestTextFiles(RepoTestCase):
 
 
 def option_test(command, option):
-    @settings(max_examples=25, deadline=None)
+    @settings(max_examples=examples(25), deadline=None)
     @given(text=TEXT)
     def test(self, text):
         self.compare_option(command, option, text)

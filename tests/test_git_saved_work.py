@@ -8,6 +8,7 @@ from hypothesis import strategies as st
 
 from chitty.errors import ChittyError
 from chitty.git import restore_work, save_work
+from tests import examples
 
 
 class SavedWorkTests(unittest.TestCase):
@@ -169,7 +170,7 @@ def scenario(draw):
 
 
 class SavedWorkPropertyTests(unittest.TestCase):
-    @settings(max_examples=25, deadline=None)
+    @settings(max_examples=examples(25), deadline=None)
     @given(scenario())
     def test_save_then_restore_round_trips(self, case):
         changes, untracked, ignored, contents, advance = case

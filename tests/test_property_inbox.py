@@ -8,6 +8,7 @@ from chitty.config import inbox_path, load_repo_config, register_project
 from chitty.errors import ChittyError
 from chitty.inbox import pull, suggest
 from chitty.store import BACKLOG_DESCRIPTION, Repo
+from tests import examples
 from tests.support import RepoTestCase
 
 EXAMPLES = 50
@@ -50,7 +51,7 @@ class TestInboxProperties(RepoTestCase):
     def _suggestion_files(self):
         return sorted(inbox_path("target").glob("suggestion-*.md"))
 
-    @settings(max_examples=EXAMPLES, deadline=None)
+    @settings(max_examples=examples(EXAMPLES), deadline=None)
     @example(title="valid", description="## Notes")
     @example(title="valid", description="```")
     @example(title="valid", description="~~~")

@@ -8,11 +8,12 @@ from hypothesis import strategies as st
 from chitty.check import MAX_CRITERIA, check
 from chitty.model import STATUSES
 from chitty.store import Repo
+from tests import examples
 from tests.support import RepoTestCase
 
 
 class TestCriteriaLimit(RepoTestCase):
-    @settings(max_examples=40, deadline=None)
+    @settings(max_examples=examples(40), deadline=None)
     @given(
         st.lists(
             st.tuples(

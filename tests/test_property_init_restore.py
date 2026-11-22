@@ -13,6 +13,7 @@ from hypothesis import strategies as st
 from chitty import config
 from chitty.cli import cli
 from chitty.store import _default_project, managed_block
+from tests import examples
 from tests.support import RepoTestCase
 
 
@@ -78,7 +79,7 @@ class TestInitRestore(RepoTestCase):
         git(root, "commit", "-m", "stale setup")
         return tomllib.loads(path.read_text())["project"]
 
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=examples(30), deadline=None)
     @example(
         case=("stale", "registration"),
         agents_removed=True,

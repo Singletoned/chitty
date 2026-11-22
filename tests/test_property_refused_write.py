@@ -11,6 +11,7 @@ from chitty.config import load_repo_config
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
 from chitty.store import Edit, Repo
+from tests import examples
 from tests.support import RepoTestCase
 
 
@@ -109,7 +110,7 @@ class TestRefusedEditProperty(RepoTestCase):
         ).stdout
         return files, status
 
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=examples(30), deadline=None)
     @given(
         invalid=st.sampled_from(("self-dependency", "cycle", "parent")),
         note=st.one_of(st.none(), NOTES),

@@ -9,12 +9,24 @@ THOROUGH_EXAMPLE_FACTOR = 5
 
 
 def example_count(profile: str, base: int) -> int:
-    raise NotImplementedError
+    if profile == "check":
+        return max(1, base // CHECK_EXAMPLE_DIVISOR)
+    if profile == "thorough":
+        return base * THOROUGH_EXAMPLE_FACTOR
+    raise ValueError(f"no example count for Hypothesis profile {profile!r}")
+
+
+def examples(base: int) -> int:
+    return example_count(settings.get_current_profile_name(), base)
 
 
 # Fixed examples make checks repeatable; thorough runs explore and replay failures.
-settings.register_profile("check", deadline=None, derandomize=True)
-settings.register_profile("thorough", deadline=None, derandomize=False)
+settings.register_profile(
+    "check", deadline=None, derandomize=True, max_examples=example_count("check", 100)
+)
+settings.register_profile(
+    "thorough", deadline=None, derandomize=False, max_examples=example_count("thorough", 100)
+)
 settings.load_profile(os.environ.get("TEST_TIER", "check"))
 
 AGENT_PREFIXES = ("PI_", "CLAUDE_", "CODEX_", "CHITTY_")

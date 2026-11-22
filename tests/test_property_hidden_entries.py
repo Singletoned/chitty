@@ -7,6 +7,7 @@ from pathlib import Path
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
+from tests import examples
 from tests.test_cli import CliTestCase
 
 
@@ -41,7 +42,7 @@ class TestHiddenEntries(CliTestCase):
         self.assertIn("must end with .md", self.run_cli("list", exit_code=1).output)
         self.assertIn("must end with .md", self.run_cli("check", exit_code=1).output)
 
-    @settings(max_examples=25, deadline=None)
+    @settings(max_examples=examples(25), deadline=None)
     @given(
         entries=st.lists(
             st.tuples(
