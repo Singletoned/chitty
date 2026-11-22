@@ -400,16 +400,16 @@ def _land_pending(main_repo: Repo) -> RunResult | None:
         task_id = stored.id
         action = NextAction("review", task_id)
         worktree = _worktree(main_repo.root, action, main_repo.config.main_branch)
-        _land(
+        if _land(
             main_repo,
             worktree,
             action,
             setup,
             landing_command(main_repo.config.check, main_repo.config.landing_check),
-        )
-        print(f"landed {task_id}")
-        return RunResult(action, "done", "done")
-    raise AssertionError("unreachable")
+        ):
+            print(f"landed {task_id}")
+            return RunResult(action, "done", "done")
+    return None
 
 
 def _lock_ticket(
@@ -1232,11 +1232,11 @@ def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
     return destination
 
 
-def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str) -> None:
+def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str) -> bool:
     """Serialize landing operations that mutate the shared main branch."""
     with locks.landing_lock(main_repo.root):
         try:
-            _land_locked(main_repo, worktree, action, setup, check)
+            return _land_locked(main_repo, worktree, action, setup, check)
         except ChittyError as exc:
             raise ChittyError(
                 f"{exc}\nResolve the landing problem in {worktree} "
@@ -1246,13 +1246,17 @@ def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check
 
 def _land_locked(
     main_repo: Repo, worktree: Path, action: NextAction, setup: str, check: str
-) -> None:
+) -> bool:
     """Land a completed ticket and remove its linked worktree."""
     main_root = main_repo.root
     branch = str(action.id).lower()
     # A prior run or a reviewer may already have removed this ticket entirely.
     if not git.has_local_branch(main_root, branch) and not worktree.exists():
-        return
+        return True
+    status = Repo.open(main_root).find(action.id).task.frontmatter.status
+    if status != "done":
+        print(f"not landing {action.id}: it is {status}", file=sys.stderr)
+        return False
     main_branch = main_repo.config.main_branch
     if git.current_branch(main_root) != main_branch:
         raise ChittyError(f"the main checkout must be on branch {main_branch} to land a ticket")
@@ -1260,7 +1264,7 @@ def _land_locked(
         git.require_clean(main_root)
     # A session may have landed its own ticket before returning.
     if not worktree.exists():
-        return
+        return True
     if uncommitted := git.uncommitted_paths(worktree):
         listed = ", ".join(f"`{path}`" for path in uncommitted)
         raise ChittyError(
@@ -1367,6 +1371,7 @@ def _land_locked(
         break
     git.remove_worktree(main_root, worktree)
     git.delete_branch(main_root, branch)
+    return True
 
 
 def _landing_check(command: str, worktree: Path, timeout: int) -> None:

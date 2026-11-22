@@ -50,7 +50,7 @@ class LandingTestCase(CliTestCase):
 
     def land(self):
         action = NextAction("review", self.main_repo.resolve(self.ticket))
-        _land(self.main_repo, self.worktree, action, "true", "true")
+        return _land(self.main_repo, self.worktree, action, "true", "true")
 
 
 class TestLanding(LandingTestCase):
