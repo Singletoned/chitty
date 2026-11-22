@@ -1,6 +1,6 @@
 ---
 title: Run the test suite with `pytest` and `pytest-xdist`
-status: doing
+status: review
 created: 2026-11-22
 ---
 
@@ -43,6 +43,10 @@ Fixture probe: previous worker recorded baseline `make check` on main: `Ran 1142
 
 After `make install`, `.venv/bin/pytest -n 2 tests/test_probe_worker.py` reported `1 passed in 0.29s`; `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py` reported `1 failed in 0.07s` with `assert False is True`. Both temporary probes were deleted.
 
+## Summary
+
+Switched the test runner to pytest and xdist, updated worker timeout detection and documentation. Verified make check, make test (93% coverage), lockfile and both temporary probes; working tree clean.
+
 ## History
 
 - 2026-11-22T20:15:42Z plucky-umber-wren → planning
@@ -62,3 +66,5 @@ After `make install`, `.venv/bin/pytest -n 2 tests/test_probe_worker.py` reporte
 - 2026-11-22T20:33:42Z friendly-yellow-quail todo → doing
 - 2026-11-22T20:35:45Z friendly-yellow-quail: wrote the plan
 - 2026-11-22T20:44:24Z friendly-yellow-quail: changed notes
+- 2026-11-22T20:50:56Z friendly-yellow-quail: changed summary
+- 2026-11-22T20:50:56Z friendly-yellow-quail doing → review
