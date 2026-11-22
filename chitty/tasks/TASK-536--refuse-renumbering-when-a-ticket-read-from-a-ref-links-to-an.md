@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when a ticket read from a ref links to an old ID
-status: review
+status: done
 depends_on:
   - TASK-519
 parent: TASK-391
@@ -29,8 +29,8 @@ A cold reader's probe (2026-11-21) on the unguarded planner: (c) and (e) give `s
 
 ## Acceptance Criteria
 
-- [ ] `test_branch_only_link` and `test_branch_adds_link` pass, and each fails before this change (record the failing run in a note)
-- [ ] `test_branch_only_prose` passes, and the existing tests in `tests/test_provisional_link_guard.py` still pass; `make check` passes
+- [x] `test_branch_only_link` and `test_branch_adds_link` pass, and each fails before this change (record the failing run in a note)
+- [x] `test_branch_only_prose` passes, and the existing tests in `tests/test_provisional_link_guard.py` still pass; `make check` passes
 
 ## Plan
 
@@ -39,6 +39,10 @@ Add ref-backed fixtures and demonstrate both refusal regressions, then scan sele
 ## Notes
 
 Before the fix, both test_branch_only_link and test_branch_adds_link failed: ChittyError not raised (unittest, 2 failures).
+
+Reviewed: selected ref guard and complete diff checked.
+1: pass - make check passed; disabling _guard_ref_links and running both named unittest cases produced two failures, ChittyError not raised. The worker recorded the pre-fix failing run.
+2: pass - make check printed Ran 1078 tests and OK, including the prose and existing link guard tests.
 
 ## Summary
 
@@ -56,3 +60,5 @@ Added selected ref link guard and regression fixtures. Both refusal tests failed
 - 2026-11-22T01:22:00Z eager-jade-heron: changed notes
 - 2026-11-22T01:24:26Z eager-jade-heron: changed summary
 - 2026-11-22T01:24:28Z eager-jade-heron doing → review
+- 2026-11-22T01:34:11Z kind-ginger-raven: changed notes; ticked acceptance criteria
+- 2026-11-22T01:34:11Z kind-ginger-raven review → done
