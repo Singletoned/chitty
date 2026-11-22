@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: cold-read
+status: planning
 priority: high
 owner: plucky-umber-wren
 created: 2026-11-22
@@ -16,7 +16,7 @@ Change `tests/__init__.py`:
 - Load `os.environ.get("HYPOTHESIS_PROFILE", "check")`. The default is deliberate: plain `python -m unittest` and editor runs set no variable and should get the repeatable profile. An unknown name must fail the import loudly; `settings.load_profile` already raises `hypothesis.errors.InvalidArgument: Profile 'nope' is not registered` (Hypothesis 6.170), so do not catch it.
 - The variable must not start with `CHITTY_`: the same file deletes every `CHITTY_*`, `PI_`, `CLAUDE_` and `CODEX_` variable. Read it before that loop anyway.
 
-Change the `Makefile` `test` target to run `HYPOTHESIS_PROFILE=thorough uv run unittest-parallel -s tests -t . --level test`, with the description `## run every test, drawing new random property-test examples`. Leave `check` as it is.
+Change the `Makefile` `test` target to run `HYPOTHESIS_PROFILE=thorough uv run unittest-parallel -s tests -t . --level test`, with the description `## run every test, drawing new random property-test examples`. In `check`, change only its `unittest-parallel` line to start `HYPOTHESIS_PROFILE=check`, so a variable exported in the shell or `.envrc` cannot make `make check` random.
 
 In `AGENTS.md`, replace the bullet starting `Hypothesis runs with fixed examples` with one saying `make check` uses fixed examples (profile `check`) so it repeats, and `make test` draws new random examples (profile `thorough`) to find new edge cases. Keep its sentence `A property test that fails is a real failure: fix it, do not rerun.`
 
@@ -42,9 +42,9 @@ Out of scope: how many examples each profile draws (a later ticket scales per-te
 
 ## Acceptance Criteria
 
-- [ ] New tests in the existing `tests/test_hypothesis_profile.py` (keep its `test_deadline_is_disabled`, which still holds) run a probe (below) twice in subprocesses for each setting of `HYPOTHESIS_PROFILE`: unset and `check` print identical example lists across the two runs; `thorough` prints different lists; and for `thorough`, `settings.default.database` is not `None` while for unset and `check` it is `None`. The `thorough` cases fail against current `main` (today the variable is ignored, so its runs repeat); the unset and `check` cases pass there and guard against regression
+- [ ] New tests in the existing `tests/test_hypothesis_profile.py` (keep its `test_deadline_is_disabled`, which still holds) run a probe (below) twice in subprocesses for each setting of `HYPOTHESIS_PROFILE`, removing it from the child environment for the unset case and setting it explicitly otherwise (so the tests hold when `make test` exports `thorough`): unset and `check` print identical example lists across the two runs; `thorough` prints different lists; and for `thorough`, `settings.default.database` is not `None` while for unset and `check` it is `None`. The `thorough` cases fail against current `main` (today the variable is ignored, so its runs repeat); the unset and `check` cases pass there and guard against regression
 - [ ] With `HYPOTHESIS_PROFILE=nope`, `python -c "import tests"` exits non-zero with `InvalidArgument` and `nope` in stderr (tested in the same file; on `main` it exits 0)
-- [ ] `make -n test` shows `HYPOTHESIS_PROFILE=thorough` on the `unittest-parallel` line, `make -n check` does not set `HYPOTHESIS_PROFILE`, `mate --list` (`mate` is on `PATH`) lists `test` with its new description, and `make check` passes
+- [ ] `make -n test` shows `HYPOTHESIS_PROFILE=thorough` and `make -n check` shows `HYPOTHESIS_PROFILE=check`, each on its `unittest-parallel` line; `mate --list` (`mate` is on `PATH`) lists `test` with its new description; and `make check` passes
 
 ## History
 
@@ -53,3 +53,5 @@ Out of scope: how many examples each profile draws (a later ticket scales per-te
 - 2026-11-22T16:28:34Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T16:28:34Z plucky-umber-wren cold-read → planning
 - 2026-11-22T16:28:36Z plucky-umber-wren planning → cold-read
+- 2026-11-22T16:29:32Z plucky-umber-wren: changed description, acceptance criteria
+- 2026-11-22T16:29:32Z plucky-umber-wren cold-read → planning
