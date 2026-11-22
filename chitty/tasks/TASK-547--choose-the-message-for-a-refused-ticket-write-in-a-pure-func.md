@@ -1,6 +1,6 @@
 ---
 title: Choose the message for a refused ticket write in a pure function
-status: planning
+status: todo
 parent: TASK-385
 created: 2026-11-22
 ---
@@ -47,3 +47,4 @@ Owner decision, 2026-11-22: (A) refuse, naming the newer copy. Rewritten to matc
 - 2026-11-22T11:24:44Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T11:25:44Z friendly-jade-stoat: changed description
 - 2026-11-22T11:25:44Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T11:25:45Z friendly-jade-stoat planning → todo
