@@ -1,6 +1,6 @@
 ---
 title: Ignore dot-files in context directories instead of failing every read
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-22
@@ -41,3 +41,4 @@ Suggestion origin: chitty
 - 2026-11-22T09:51:38Z friendly-jade-stoat: changed description
 - 2026-11-22T09:51:38Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T09:51:40Z friendly-jade-stoat planning → todo
+- 2026-11-22T09:52:51Z rosy-fawn-falcon todo → doing
