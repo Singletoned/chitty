@@ -23,8 +23,13 @@ Split from `TASK-392` on 2026-11-22. After `TASK-392`, `chitty renumber` with no
 
 Update the pinned help assertion and command docstring, document no-path output and JSON behavior, then run formatting and checks.
 
+## Notes
+
+The updated help assertion failed against the original docstring as expected.
+
 ## History
 
 - 2026-11-22T03:23:03Z lively-zinc-newt → todo
 - 2026-11-22T04:55:57Z jolly-maroon-adder todo → doing
 - 2026-11-22T04:58:23Z jolly-maroon-adder: wrote the plan
+- 2026-11-22T04:58:41Z jolly-maroon-adder: changed notes
