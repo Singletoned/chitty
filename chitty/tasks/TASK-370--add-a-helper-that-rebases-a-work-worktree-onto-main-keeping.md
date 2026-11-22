@@ -1,9 +1,8 @@
 ---
-title: Rebase the ticket branch onto `main` before every work session
-status: error
+title: Add a helper that rebases a work worktree onto `main`, keeping uncommitted work
+status: todo
 labels:
   - bug
-  - needs-minor
 priority: high
 depends_on:
   - TASK-373
@@ -16,36 +15,31 @@ created: 2026-11-18
 
 ## Description
 
-Principle (decided 2026-11-18, `docs/plan/ticket-state.md`): `main` is the base every ticket branch builds on, and the runner rebases the branch onto `main` whenever it touches it. Ticket files change only on their branch and rebase like any other file.
+Principle (decided 2026-11-18, `docs/plan/ticket-state.md`): `main` is the base every ticket branch builds on, and the runner rebases the branch onto `main` whenever it touches it. Work mode never does today, so workers build on code behind `main` (seen 2026-11-21: `task-519` was 120 commits behind and missed a function its ticket relied on).
 
-A work session today runs on whatever the ticket branch last had: work mode in `src/chitty/run.py` never brings in `main`, so workers build on code behind `main`, and `setup` and `check` test code that is not what would land. (Seen overnight 2026-11-21: `task-519` was 120 commits behind and missed a function its ticket relied on; a planner rebased it by hand.)
+Split 2026-11-22, after the worker model gave up on larger versions three times. This ticket adds only the helper and tests it directly; `TASK-546` calls it from the runner for `doing` tickets; `TASK-545` extends that to `todo` and `error`; `TASK-540` hands a conflict to the agent; `TASK-541` records a non-conflict failure; `TASK-525` reports saved work that cannot be restored.
 
-Split 2026-11-22 so each part fits one worker session, ordered so every landing leaves the runner safe: this ticket rebases on the normal path, tested on `doing` tickets; `TASK-545` adds `todo` and `error` tickets; `TASK-540` makes a conflict start the agent on the stopped rebase; `TASK-541` records a rebase failure that is not a conflict; `TASK-525` reports saved work that cannot be restored. `git.save_work`, `git.restore_work` (`TASK-524`, `TASK-534`) and `git.rebase_onto` have landed in `src/chitty/git.py` (rechecked 2026-11-22).
+Add `_rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) -> None` in `src/chitty/run.py`, with `ref = f"refs/chitty/stash/{task_id}"`. Nothing calls it yet.
 
-Decisions:
+1. `saved = git.save_work(worktree, ref, f"chitty {task_id} before rebase")`; its `ChittyError` propagates.
+2. `unresolved = git.rebase_onto(worktree, main_branch)`. If that raises `ChittyError`, call `git.restore_work(worktree, ref)` when `saved`, then re-raise.
+3. If `unresolved` is non-empty (stopped on a conflict), call `git.abort_rebase(worktree)`, so the branch stays as it was.
+4. If `saved`, call `git.restore_work(worktree, ref)` and ignore its result.
 
-- Add `_rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) -> None` in `src/chitty/run.py`, with `ref = f"refs/chitty/stash/{task_id}"`:
-  1. `saved = git.save_work(worktree, ref, f"chitty {task_id} before rebase")` (its `ChittyError` propagates).
-  2. `unresolved = git.rebase_onto(worktree, main_branch)`. If it raises `ChittyError`, call `git.restore_work(worktree, ref)` when `saved`, then re-raise (`TASK-541` records it as a ticket error instead).
-  3. If `unresolved` is non-empty (the rebase stopped on a conflict), call `git.abort_rebase(worktree)` (as review mode does), so the branch stays as it was (`TASK-540` replaces this with starting the agent).
-  4. If `saved`, call `git.restore_work(worktree, ref)` and ignore its result (`TASK-525` handles `False`).
-- In `_run_ticket_with_log` (already over 100 lines; add only the call, keep the logic in the helper), in work mode only, call it after the worktree is made and before `setup`, only when the ticket was selected as `doing` (decided 2026-11-22: `TASK-545` extends the call to `todo` and `error` tickets, with their tests). Review mode is unchanged.
-- Update the work-mode bullet under `## Before a review` in `docs/plan/next-action-and-runner.md` to say work mode rebases the branch onto `main` before `setup`, saving uncommitted work under `refs/chitty/stash/<ID>`.
+`git.save_work`, `git.restore_work`, `git.rebase_onto` and `git.abort_rebase` exist in `src/chitty/git.py` (rechecked 2026-11-22).
 
-Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_review_merge.py` (its `ReviewMergeTestCase` gives a fake agent and Git helpers). The fake agent records, when it starts, `git log --format=%s`, `git status --porcelain`, `git stash list` and `git for-each-ref refs/chitty/stash` of its worktree into a marker file.
+Tests in a new `tests/test_rebase_work_worktree.py`, a `unittest.TestCase` like `SavedWorkTests` in `tests/test_git_saved_work.py`, with no runner: a temporary repository (`git init -b main`, local author, committed `a.txt` and `b.txt`), a branch `task-1` with one commit changing `b.txt`, checked out in a linked worktree via `git worktree add`, and then a commit on `main` changing `a.txt`. Call `_rebase_work_worktree(worktree, TaskId("TASK", 1), "main")` directly.
 
-1. Clean rebase: a `doing` ticket whose branch exists, then a new commit on `main` touching another file, with `setup` set to a fake command that records `git log --format=%s` of its worktree to a file. After a work run, setup's recorded log includes `main`'s new commit (so the rebase ran before setup), `git merge-base --is-ancestor main task-<n>` succeeds, `git rev-list main..task-<n>` lists only the branch's own commits, and the agent's recorded `git log` includes `main`'s new commit.
-2. Saved work: as 1, plus, in the worktree before the run, an unstaged edit to a tracked file, a staged edit and an untracked file, and one `git stash push` made beforehand in the main checkout. When the agent starts, all three files have their pre-run contents (content only; the staged edit comes back unstaged, as `restore_work` does), `refs/chitty/stash/TASK-<n>` does not exist, and `git stash list` equals the list from before the run.
-3. Conflict (interim behaviour until `TASK-540`): `main` and the branch change the same line of one file. The run starts the agent with no rebase in progress, the branch tip is unchanged, and the saved-work ref does not exist.
+1. Clean: afterwards `git merge-base --is-ancestor main task-1` succeeds and `git rev-list main..task-1` has one commit.
+2. Saved work: before the call, the worktree has an unstaged edit to `b.txt`, a staged new file `s.txt` and an untracked `u.txt`. Afterwards the branch is rebased as in 1, all three files have their pre-call contents, and `refs/chitty/stash/TASK-1` does not exist.
+3. Conflict: `task-1`'s commit and `main`'s commit both change line 1 of `a.txt`. Afterwards no rebase is in progress (`git.rebase_in_progress`), the `task-1` tip is unchanged, and the ref does not exist.
+4. Failure: with `chitty.run.git.rebase_onto` patched to raise `ChittyError("boom")` and an untracked `u.txt` present, the call raises `boom`, `u.txt` has its contents, and the ref does not exist.
 
-5. Non-conflict failure (interim until `TASK-541`): as 2 but with `chitty.git.rebase_onto` patched to raise `ChittyError("boom")`. The run exits 1 with `boom` on stderr, no agent starts, the uncommitted files have their pre-run contents, and `refs/chitty/stash/TASK-<n>` does not exist.
-
-No property: real Git and runner processes over fixed cases. Cases 1 and 2 fail before the change on their rebase assertions (ancestor and `git log`), and case 5 fails because no error is raised; case 2's saved-work assertions, and case 3, are guards that already pass today and must still pass. Record in the fake agent's marker file the same way `ReviewMergeTestCase`'s fake agent writes its report (its `REPORT` script in `tests/test_review_merge.py`).
+Before implementing, add the function raising `NotImplementedError` and confirm the four tests fail; then implement and run `make check`.
 
 ## Acceptance Criteria
 
-- [ ] Cases 1, 2 and 5 in the Description pass, and each fails before the change (case 1 also shows setup saw `main`'s commit)
-- [ ] Case 3 passes; the `docs/plan/next-action-and-runner.md` bullet is updated
+- [ ] The four helper tests pass and each fails against a `NotImplementedError` stub
 - [ ] `make check` passes
 
 ## Plan
@@ -91,6 +85,8 @@ Replanned 2026-11-22: this ticket now rebases `doing` tickets only, matching its
 Runner error (agent): TASK-370 was unchanged; only committed changes are visible to `chitty run`
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-370`
+
+Split again 2026-11-22: the worker model gave up a third time (five sessions, no code). Runner wiring is `TASK-546`.
 
 ## History
 
@@ -164,3 +160,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-370`
 - 2026-11-22T01:57:19Z able-umber-dormouse todo → doing
 - 2026-11-22T02:00:32Z able-umber-dormouse: changed notes
 - 2026-11-22T02:00:32Z able-umber-dormouse doing → error
+- 2026-11-22T02:01:58Z lively-zinc-newt: changed title, labels, description, acceptance criteria, notes
+- 2026-11-22T02:01:58Z lively-zinc-newt error → todo
