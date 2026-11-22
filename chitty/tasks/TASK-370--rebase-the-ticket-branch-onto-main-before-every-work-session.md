@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: doing
+status: planning
 labels:
   - bug
   - needs-minor
@@ -67,6 +67,12 @@ Split 2026-11-21 after a cold read found it too large: `TASK-524` (save and rest
 
 Also waits for `TASK-534` (`restore_work`), split from `TASK-524` on 2026-11-21.
 
+Planning needed: the specified runner tests exercise only a `doing` ticket, but the description also requires rebasing after a `todo` claim with `autocommit = false`. `tests/test_run_claims_on_branch.py` enables autocommit and does not cover saving an uncommitted claim across a rebase. The existing cases would pass if the runner skipped rebasing `todo` tickets or lost their claim. Specify the real-Git fixture, action and assertions for that case, including what setup and the agent must observe.
+
+The prescribed non-conflict `ChittyError` path also requires restoring saved work before propagating the error, but no test describes how to trigger that failure or verify restoration and propagation. Specify a deterministic fixture, action and assertions for this path. The three existing cases cover successful rebase and conflict only; `src/chitty/git.py` shows that `rebase_onto` can raise for other failures.
+
+I inspected the runner call site, Git helpers, and review and claim test fixtures. No implementation or regression verification was started; consequently `make check` and the requested fail-before evidence remain unchecked.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -120,3 +126,5 @@ Also waits for `TASK-534` (`restore_work`), split from `TASK-524` on 2026-11-21.
 - 2026-11-22T01:33:50Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:38:30Z youthful-zinc-jay todo → doing
 - 2026-11-22T01:41:23Z youthful-zinc-jay: wrote the plan
+- 2026-11-22T01:42:15Z youthful-zinc-jay: changed owner, notes
+- 2026-11-22T01:42:15Z youthful-zinc-jay doing → planning
