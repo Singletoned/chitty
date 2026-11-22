@@ -1,6 +1,6 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: doing
+status: planning
 created: 2026-11-22
 ---
 
@@ -50,6 +50,10 @@ Suggestion origin: chitty
 
 Cold read: failing-check test, ordering, rounding and line number added.
 
+The specified first line is `running check `<command>` before review ...`, but the passing-test instructions require the command text before `running check`, and acceptance criterion 1 also says the command comes before `running check`. These orders conflict, so the requested test cannot verify the specified output. Please decide the intended order and correct the line, test instructions, and criterion consistently.
+
+`src/chitty/store.py` calls `commands.run_logged` inside the review transition and already uses `print(..., file=sys.stderr)`; `tests/test_review_check.py` provides `prepare()` and the requested passing and failing scripts. The existing check skips when HEAD is already on main, and `prepare()` makes an empty work commit. No implementation or regression tests were written or run because the output requirement is contradictory; timing and pass/fail behavior remain unverified.
+
 ## History
 
 - 2026-11-22T13:16:27Z friendly-jade-stoat → backlog
@@ -59,3 +63,5 @@ Cold read: failing-check test, ordering, rounding and line number added.
 - 2026-11-22T13:21:11Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T13:21:11Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:59:02Z sunny-amber-dormouse todo → doing
+- 2026-11-22T16:02:09Z sunny-amber-dormouse: changed owner, notes
+- 2026-11-22T16:02:09Z sunny-amber-dormouse doing → planning
