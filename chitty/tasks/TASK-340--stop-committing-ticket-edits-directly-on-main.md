@@ -1,6 +1,8 @@
 ---
 title: Stop committing ticket edits directly on main
 status: planning
+depends_on:
+  - TASK-602
 created: 2026-11-16
 ---
 
@@ -27,3 +29,4 @@ Open questions:
 - 2026-11-16T09:50:22Z intrepid-coral-raven → backlog
 - 2026-11-22T22:09:51Z plucky-umber-wren: changed description
 - 2026-11-22T22:09:51Z plucky-umber-wren backlog → planning
+- 2026-11-22T22:51:30Z plucky-umber-wren: changed dependencies
