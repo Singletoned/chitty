@@ -46,7 +46,7 @@ from chitty.model import (
     new_task,
     parse,
 )
-from chitty.renumbering import blocking_link, plan_renumbering
+from chitty.renumbering import blocking_link, plan_renumbering, rewrite_task
 from chitty.selection import (
     STATUSES,
     DependencyFact,
@@ -1085,6 +1085,27 @@ class Repo:
                     f"after {RANDOM_ID_ATTEMPTS} attempts"
                 )
         return TaskId(context.prefix, self.next_number(context)), False
+
+    def _prepare_renumbering(
+        self, mapping: dict[TaskId, TaskId], writable: tuple[StoredTask, ...]
+    ) -> list[tuple[StoredTask, Task, Path]]:
+        result: list[tuple[StoredTask, Task, Path]] = []
+        for stored in writable:
+            final = rewrite_task(stored.task, mapping)
+            if stored.id in mapping:
+                final = final.with_field("provisional", None).with_field(
+                    "moved_from", str(stored.id)
+                )
+                final = final.with_history_event(
+                    datetime.now(UTC), actor(), f"renumbered from {stored.id}"
+                )
+            final_id = mapping.get(stored.id, stored.id)
+            path = stored.path
+            if final_id != stored.id or final.frontmatter.title != stored.task.frontmatter.title:
+                path = path.with_name(ids.filename(final_id, ids.slugify(final.frontmatter.title)))
+            if final.render() != stored.task.render() or path != stored.path:
+                result.append((stored, final, path))
+        return result
 
     def _plan_provisional_renumbering(self) -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]:
         """Select writable disk tickets and allocate fresh sequential IDs without writing."""
