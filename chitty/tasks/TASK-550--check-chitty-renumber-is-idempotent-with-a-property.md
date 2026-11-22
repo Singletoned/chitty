@@ -1,6 +1,6 @@
 ---
 title: Check `chitty renumber` is idempotent with a property
-status: todo
+status: doing
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -47,3 +47,4 @@ Replanned 2026-11-22: failing on the first run's count under the mutant is accep
 - 2026-11-22T05:10:55Z kind-ochre-newt doing → planning
 - 2026-11-22T05:12:04Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T05:12:04Z lively-zinc-newt planning → todo
+- 2026-11-22T05:13:38Z upbeat-khaki-otter todo → doing
