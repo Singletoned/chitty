@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -46,6 +46,12 @@ Independent inspection: model validation currently rejects dropped, list choices
 
 Planner, 2026-11-22: blocker resolved by taking archiving of dropped tickets out of scope (the person wants dropped tickets kept visible; `TASK-600` decides archiving by age), by refusing `chitty add -s dropped`, and by specifying the same-status and `list --all` cases.
 
+Planning blocker: the revised ticket says archiving is unchanged and dropped tickets must stay visible, but explicit `chitty archive TASK-1` in the default move mode calls `Repo._set_archived`, which accepts any status and moves the file into the archive. `_dependency_is_done` then treats it as satisfied. Delete mode instead refuses non-done tickets. Please decide whether explicit archiving of dropped tickets remains allowed (and qualify the visibility and dependency claims) or is refused, and specify the fixture, action and assertions for the intended behavior. Bulk archive alone does not test this conflict.
+
+The requirement that after an edit to dropped the Summary must be non-empty also conflicts with saying a same-status edit behaves as today: `Edit.apply` permits removing Summary with `--summary ""`. The specified same-status test covers only an existing nonempty Summary without an edit. Please specify whether removing or omitting an absent Summary on an already-dropped ticket is refused, and the corresponding fixture, action and assertions.
+
+Independent inspection: `STATUSES` drives CLI choices and list rendering; model frontmatter validates status separately; selection only uses review, doing and todo; dependency checks accept only done or archived; bulk archive filters done. The add and edit summary cases and model round-trip have described fixtures and assertions. No code or tests were changed or run; the conflicting explicit archive and same-status cases cannot be verified until resolved.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -63,3 +69,5 @@ Planner, 2026-11-22: blocker resolved by taking archiving of dropped tickets out
 - 2026-11-22T22:50:07Z plucky-umber-wren cold-read → todo
 - 2026-11-22T22:50:17Z plucky-umber-wren: changed description
 - 2026-11-22T22:51:01Z lively-indigo-raven todo → doing
+- 2026-11-22T22:53:14Z lively-indigo-raven: changed owner, notes
+- 2026-11-22T22:53:14Z lively-indigo-raven doing → planning
