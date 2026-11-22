@@ -983,7 +983,15 @@ class Repo:
                     )
 
             require_clean()
-            if entering_review and self.config.check:
+            skip_check = (
+                entering_review
+                and self.config.check
+                and self.config.workflow == "runner"
+                and git.is_ancestor(self.root, "HEAD", self._main_branch())
+            )
+            if skip_check:
+                print(f"skipped check: HEAD is already on {self._main_branch()}", file=sys.stderr)
+            if entering_review and self.config.check and not skip_check:
                 command = self.config.check
                 try:
                     status = commands.run_logged(
