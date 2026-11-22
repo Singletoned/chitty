@@ -1,6 +1,6 @@
 ---
 title: Run the test suite with `pytest` and `pytest-xdist`
-status: doing
+status: planning
 created: 2026-11-22
 ---
 
@@ -35,6 +35,12 @@ No new test: build configuration, checked by the commands in the criteria.
 
 Run the fixture probe on the unchanged main-equivalent tree, switch the runner and worker detection, update documentation and lockfile, then run the specified checks and probes.
 
+## Notes
+
+Planning blocker: criterion 4 says the diff of `tests/__init__.py` touches only `_is_worker` and the comment, but the specified replacement makes `import multiprocessing` unused. `make check` runs Ruff, which reports F401 for that import, so criteria 1 and 4 conflict. Please allow removing the unused import in criterion 4, or specify another intended resolution.
+
+Baseline: on the main-equivalent implementation (`git diff main -- Makefile tests/__init__.py` was empty), a temporary `tests/test_fx_probe.py` with a raising `setUpClass` and one passing test was run with `make check`; it exited zero with `Ran 1142 tests in 97.130s` and `OK`. The first probe attempt failed formatting before running tests; the formatted probe was then used. The probe was deleted. I inspected the remaining runner, coverage, documentation and worker requirements; post-change checks and probes cannot be verified until the conflict is resolved. No implementation changes were made.
+
 ## History
 
 - 2026-11-22T20:15:42Z plucky-umber-wren → planning
@@ -46,3 +52,5 @@ Run the fixture probe on the unchanged main-equivalent tree, switch the runner a
 - 2026-11-22T20:18:16Z plucky-umber-wren cold-read → todo
 - 2026-11-22T20:18:39Z vivid-fawn-wren todo → doing
 - 2026-11-22T20:20:46Z vivid-fawn-wren: wrote the plan
+- 2026-11-22T20:22:52Z vivid-fawn-wren: changed owner, notes
+- 2026-11-22T20:22:52Z vivid-fawn-wren doing → planning
