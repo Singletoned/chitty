@@ -88,6 +88,8 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-370`
 
 Split again 2026-11-22: the worker model gave up a third time (five sessions, no code). Runner wiring is `TASK-546`.
 
+All four prescribed tests errored with NotImplementedError against the stub before implementation.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -167,3 +169,4 @@ Split again 2026-11-22: the worker model gave up a third time (five sessions, no
 - 2026-11-22T02:04:16Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:07:48Z tidy-quartz-yellowhammer todo → doing
 - 2026-11-22T02:10:07Z tidy-quartz-yellowhammer: wrote the plan
+- 2026-11-22T02:10:44Z tidy-quartz-yellowhammer: changed notes
