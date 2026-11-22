@@ -38,6 +38,10 @@ passing, since the old text is a prefix.
 - [ ] A runner check failure on a `todo` ticket whose branch has no work says the branch has no work yet, so `main` fails the check; shown by the new assertions in `test_run_check_failure_on_todo_ticket_records_error_on_branch`, which fail before the change.
 - [ ] `make check` passes.
 
+## Plan
+
+Extend the existing regression test, verify it fails, then annotate the specified nonzero check failure and run the full checks.
+
 ## Notes
 
 Suggestion origin: taidy
@@ -53,3 +57,4 @@ Cold read: limited to the non-zero exit path (not timeout or missing command); t
 - 2026-11-22T13:21:10Z friendly-jade-stoat: changed description, notes
 - 2026-11-22T13:21:10Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:45:35Z quick-ebony-lapwing todo → doing
+- 2026-11-22T15:49:26Z quick-ebony-lapwing: wrote the plan
