@@ -1,6 +1,6 @@
 ---
 title: Restore saved worktree work from a `refs/chitty/stash` ref
-status: planning
+status: cold-read
 depends_on:
   - TASK-524
 parent: TASK-370
@@ -9,7 +9,7 @@ created: 2026-11-22
 
 ## Description
 
-Split from `TASK-524` on 2026-11-21. `TASK-524` adds `git.save_work(root, ref, message)` and `_check_saved_work_ref(ref)` in `src/chitty/git.py`, which save uncommitted work under a ref in `refs/chitty/stash/`. This ticket adds the matching `restore_work`. Draft: keep in planning until `TASK-524` lands, then check its landed names and cold-read.
+Split from `TASK-524` on 2026-11-21. `TASK-524` adds `git.save_work(root, ref, message)` and `_check_saved_work_ref(ref)` in `src/chitty/git.py`, which save uncommitted work under a ref in `refs/chitty/stash/`. This ticket adds the matching `restore_work`. `TASK-524` landed both names on `main` (rechecked 2026-11-22); its tests are `SavedWorkTests` in `tests/test_git_saved_work.py` (a `unittest.TestCase` with a `git` helper and a `setUp` that makes a repository with committed `a.txt`): add the restore tests to that class.
 
 - `restore_work(root: Path, ref: str) -> bool`, in `src/chitty/git.py`.
 - Call `_check_saved_work_ref(ref)` first. A `ref` that does not exist raises `ChittyError` naming it, before running `stash apply`.
@@ -27,3 +27,5 @@ Tests in `tests/test_git_saved_work.py`, each in its own repository, saving with
 ## History
 
 - 2026-11-22T00:06:29Z lively-zinc-newt → planning
+- 2026-11-22T00:27:06Z lively-zinc-newt: changed description
+- 2026-11-22T00:27:06Z lively-zinc-newt planning → cold-read
