@@ -34,6 +34,10 @@ Add the pure link comparison and property-based cases with explicit examples and
 
 Stub verification: the focused test errored with NotImplementedError in blocking_link, as required.
 
+## Summary
+
+Implemented structured link comparison and property tests with explicit examples and mutant checks. The focused test errored with NotImplementedError against the stub; make check passes after implementation.
+
 ## History
 
 - 2026-11-21T23:15:28Z lively-zinc-newt → todo
@@ -45,3 +49,4 @@ Stub verification: the focused test errored with NotImplementedError in blocking
 - 2026-11-21T23:56:27Z plucky-khaki-crane todo → doing
 - 2026-11-21T23:58:08Z plucky-khaki-crane: wrote the plan
 - 2026-11-21T23:59:00Z plucky-khaki-crane: changed notes
+- 2026-11-22T00:00:24Z plucky-khaki-crane: changed summary
