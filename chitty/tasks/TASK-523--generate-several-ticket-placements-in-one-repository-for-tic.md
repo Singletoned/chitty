@@ -25,6 +25,10 @@ Decisions:
 - [ ] `test_generated_placements` passes, comparing `Repo.find` per ticket and `Repo.tasks` against each `place` call's `Expected`, as the Description defines
 - [ ] `test_generated_mutant_swapped_contains` passes (the property finds a mismatch under the mutant); `tests/ticket_placements.py` is unchanged; `make check` passes
 
+## Plan
+
+Add a shared generated case strategy and mismatch helper, exercise normal reads and the swapped-contains mutant, then format and run checks.
+
 ## Notes
 
 Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-522` lands; then replan against the landed builder and cold-read.
@@ -39,3 +43,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-522` lands; th
 - 2026-11-22T10:02:11Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T10:02:12Z friendly-jade-stoat planning → todo
 - 2026-11-22T14:46:28Z zesty-umber-raven todo → doing
+- 2026-11-22T14:48:24Z zesty-umber-raven: wrote the plan
