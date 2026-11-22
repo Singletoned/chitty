@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in text given to `chitty add` and `chitty edit`
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -22,8 +22,8 @@ Test, in `tests/test_cli.py`, reading the raw ticket file (found with `next((sel
 
 ## Acceptance Criteria
 
-- [ ] The CLI test stores ``files/\*.jpg and `x*y` `` for each of `add -d`, `edit --note`, `--ac` and `--summary`, and fails before the change
-- [ ] `test_warning_does_not_fail_check` writes its file directly and keeps its assertions; `make check` passes
+- [x] The CLI test stores ``files/\*.jpg and `x*y` `` for each of `add -d`, `edit --note`, `--ac` and `--summary`, and fails before the change
+- [x] `test_warning_does_not_fail_check` writes its file directly and keeps its assertions; `make check` passes
 
 ## Plan
 
@@ -34,6 +34,10 @@ Add CLI regression coverage, verify it fails, then escape supplied section text 
 Cold read 2026-11-21: applied its findings (set_criteria pairs, fixture lookup); the stale-warning finding became `TASK-533`. A cold reader ran the change on all 1026 tests: none broke. Move to `todo` once `TASK-533` is in `todo` (its text does not depend on 533's code beyond the dependency).
 
 Regression test failed before implementation: add stored the unescaped glob.
+
+Reviewed: implementation and complete diff inspected.
+1: pass - `make check` passed, including `test_literal_asterisks_in_supplied_text`; the worker's regression note records that it failed before implementation because add stored the unescaped glob.
+2: pass - `test_warning_does_not_fail_check` writes the unescaped glob into the ticket file directly and retains its assertions; `make check` exited 0.
 
 ## Summary
 
@@ -52,3 +56,5 @@ Escaped supplied task text and updated CLI regression coverage. Regression faile
 - 2026-11-22T01:05:36Z intrepid-ginger-lapwing: changed notes
 - 2026-11-22T01:10:03Z intrepid-ginger-lapwing: changed summary
 - 2026-11-22T01:10:04Z intrepid-ginger-lapwing doing → review
+- 2026-11-22T01:17:54Z jolly-dusky-adder: changed notes; ticked acceptance criteria
+- 2026-11-22T01:17:54Z jolly-dusky-adder review → done
