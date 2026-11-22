@@ -1,6 +1,6 @@
 ---
 title: Rewrite a ticket branch so its bookkeeping commits become one
-status: todo
+status: doing
 depends_on:
   - TASK-339
 created: 2026-11-22
@@ -41,3 +41,4 @@ Planner, 2026-11-22: third cold read checked. Its claim that `git restore --sour
 - 2026-11-22T21:30:59Z plucky-umber-wren: replaced notes; changed description, acceptance criteria
 - 2026-11-22T21:31:59Z plucky-umber-wren: changed description, notes
 - 2026-11-22T21:31:59Z plucky-umber-wren cold-read → todo
+- 2026-11-22T21:32:24Z tidy-zinc-stoat todo → doing
