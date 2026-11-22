@@ -1,12 +1,42 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: backlog
+status: planning
 created: 2026-11-22
 ---
 
 ## Description
 
-Seen 2026-11-22: the owner ran `chitty edit TASK-540 -s review --human` in the main checkout and reported it "just hangs forever". `Repo.edit` (`src/chitty/store.py` around line 986) runs the configured `check` (`make check`, about 3 minutes here) on entering `review`, with all output going to `.chitty/check.log` and nothing on the terminal. A planner session hit the same thing moving `TASK-569` to `review` (the shell tool timed out at 120 s). Suggest printing one line to stderr before the check starts, for example `running check `make check` before review (output in .chitty/check.log)...`, and the elapsed time when it ends. Also worth deciding: whether moving to `review` should run the check at all when the ticket has no branch and its work is already on `main` (as for `TASK-540`), since it then checks unrelated code in the main checkout.
+`chitty edit <ID> -s review` runs the configured `check` on entering review
+(`Repo.edit`, `src/chitty/store.py` around line 986) with all output in
+`.chitty/check.log` and nothing on the terminal, so a 3-minute check looks
+hung (the owner, 2026-11-22, on `TASK-540`). TASK-575 skips the check when
+there is nothing to check; this ticket covers the cases where it still runs.
+
+Change: in that block, just before `commands.run_logged("check", ...)`,
+print to stderr
+
+    running check `<command>` before review (output in .chitty/check.log)...
+
+and after it returns (pass or fail, not on exceptions) print
+
+    check finished in <N>s
+
+where `<N>` is whole seconds from `time.monotonic()`. Use `click.echo(...,
+err=True)` or `print(..., file=sys.stderr)`, whichever `store.py` already
+uses for stderr messages (`grep -n "file=sys.stderr\|err=True"
+src/chitty/store.py`).
+
+Test, in `tests/test_review_check.py`, reusing `prepare()` with a passing
+check script (`self.script("")`): run `chitty edit 1 -s review` through
+`run_cli` and assert `result.stderr` contains
+"running check" and "check finished in". If TASK-575 has landed, `prepare()`
+already makes a commit on `task-1`; if not, the check runs anyway. Record
+that the test fails before the change.
+
+## Acceptance Criteria
+
+- [ ] Entering review with a configured check prints `running check` before it and `check finished in <N>s` after it on stderr; shown by the new test, which fails before the change.
+- [ ] `make check` passes.
 
 ## Notes
 
@@ -16,3 +46,5 @@ Suggestion origin: chitty
 
 - 2026-11-22T13:16:27Z friendly-jade-stoat → backlog
 - 2026-11-22T13:16:27Z friendly-jade-stoat: changed notes
+- 2026-11-22T13:18:38Z friendly-jade-stoat: changed description, acceptance criteria
+- 2026-11-22T13:18:38Z friendly-jade-stoat backlog → planning
