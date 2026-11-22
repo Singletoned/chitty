@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: cold-read
+status: planning
 labels:
   - needs-minor
 depends_on:
@@ -24,13 +24,13 @@ Decisions:
 - Help: give `guide_` a `click.Command` subclass (`cls=`) that overrides `format_help_text(ctx, formatter)`. When the existing `_tickets_workflow()` in `cli.py` is true it writes a module constant `TICKETS_GUIDE_HELP`: the first docstring line, a blank line, and a `\b` block with only the `chitty guide  General agent instructions` example line; otherwise it calls the parent (today's docstring, unchanged). So under `tickets` neither the role example lines nor the line `Work, review, cold-read and rebase accept an optional ticket ID...` appear. `_tickets_workflow()` treats a missing or broken config as runner, so help still works while diagnosing a broken config, the rule `RUNNER_COMMANDS` follows.
 - The old branch `task-334` (commit `c7ed80f`) predates the seventh role and the `directory` parameter. Use it as a reference, but the result must match current `main`.
 
-Tests in `tests/test_guide_workflow.py` (it exists on the branch; create it if the rebase drops it), with `CliRunner` in temporary repositories as `RepoTestCase` sets up, using `os.chdir` (restored in cleanup) to choose the directory. "Outside a repository" is a fresh `tempfile.mkdtemp()` directory with no `chitty.toml` and no Git repository in it. No property: a fixed set of seven roles, two workflows and outside a repository, each case tested. The runner cases do not compare against a captured baseline (a snapshot of guide text breaks whenever a guide changes, and the branch's merge with `main` made the baseline ambiguous, 2026-11-21 review); criterion 3 is the compatibility check. Name matching in criterion 2 is case-sensitive on whole words, and the `Usage:` line is part of the help it checks.
+Tests in `tests/test_guide_workflow.py` (it exists on the branch; create it if the rebase drops it), with `CliRunner` in temporary repositories as `RepoTestCase` sets up, using `os.chdir` (restored in cleanup) to choose the directory. "Outside a repository" means `configured_workflow` returns `None`: a fresh `tempfile.mkdtemp()` directory with no Chitty config in it or any parent, and `CHITTY_ROOT` unset. The test classes inherit `RepoTestCase`, which clears `CHITTY_ROOT` and the Pi session variables (`tests/support.py`), so the general guide carries no Pi warning. No property: a fixed set of seven roles, two workflows and outside a repository, each case tested. The runner cases do not compare against a captured baseline (a snapshot of guide text breaks whenever a guide changes, and the branch's merge with `main` made the baseline ambiguous, 2026-11-21 review); criterion 3 is the compatibility check. Name matching in criterion 2 uses `re.search(rf"\b{re.escape(role)}\b", help_text, re.IGNORECASE)`, not a split on whitespace, so `review,` and `Work,` count; the `Usage:` line is part of the help it checks.
 
 ## Acceptance Criteria
 
-- [ ] In a temporary repository with `workflow = "tickets"`, for each role in `ROLE_NAMES`, `chitty guide <role>` and (for roles other than `plan` and `setup`) `chitty guide <role> TASK-1` exit 1, print nothing on stdout, and print `chitty guide <role> needs workflow = "runner" in the Chitty config` on stderr; this fails before the change
+- [ ] In a temporary repository with `workflow = "tickets"`, for each role in `ROLE_NAMES`, `chitty guide <role>` and `chitty guide <role> TASK-1` (including `plan` and `setup`, which get the workflow message, not `does not take a ticket ID`) exit 1, print nothing on stdout, and have stderr containing `chitty guide <role> needs workflow = "runner" in the Chitty config`; and calling `guide("work", directory=<root>, workflow=w)` directly raises `ChittyError` for each `w` in `"tickets"`, `"bogus"`, `""` and `"Runner"`; this fails before the change
 - [ ] Under `tickets`, `chitty guide` exits 0 and prints `managed_guide("tickets")`, and `chitty guide --help` exits 0, contains `chitty guide` and contains no role name from `ROLE_NAMES`; this fails before the change
-- [ ] With `workflow = "runner"`, and outside a repository, for each role with and without `TASK-1` (where accepted), `chitty guide` exits 0 with empty stderr and stdout equal to `src/chitty/roles/<role>.md` with `<!-- property-signals -->` replaced by the stripped `property-signals.md`, prefixed by `Work only on Chitty ticket TASK-1.` and a blank line when the ID is given; `chitty guide --help` contains every example line of the current help; with `workflow = "bogus"`, `chitty guide work` exits 1 with `workflow:` in stderr and `chitty guide --help` exits 0 with the runner examples; `make check` passes
+- [ ] With `workflow = "runner"`, and outside a repository, for each role with and without `TASK-1` (where accepted), `chitty guide <role>` exits 0 with empty stderr and stdout equal to `src/chitty/roles/<role>.md` with `<!-- property-signals -->` replaced by `property-signals.md` after `rstrip()`, prefixed by `Work only on Chitty ticket TASK-1.` and a blank line when the ID is given; `chitty guide --help` contains every example line of the current help; with `workflow = "bogus"`, `chitty guide work` exits 1 with `workflow:` in stderr and `chitty guide --help` exits 0 with the runner examples; `make check` passes
 
 ## Notes
 
@@ -78,3 +78,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-22T09:49:14Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T09:49:22Z friendly-jade-stoat: changed notes
 - 2026-11-22T09:49:22Z friendly-jade-stoat planning → cold-read
+- 2026-11-22T09:52:09Z friendly-jade-stoat: changed description, acceptance criteria
+- 2026-11-22T09:52:09Z friendly-jade-stoat cold-read → planning
