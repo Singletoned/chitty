@@ -27,6 +27,10 @@ Both new tests fail before the change (setup's log lacks `main`'s commit).
 
 Add and verify failing todo and error rebase regression tests, broaden the work-mode guard, update the runner plan, and run checks.
 
+## Notes
+
+Both new regression tests failed before the fix: setup logs did not contain main moved.
+
 ## History
 
 - 2026-11-22T01:47:36Z lively-zinc-newt → planning
@@ -38,3 +42,4 @@ Add and verify failing todo and error rebase regression tests, broaden the work-
 - 2026-11-22T03:13:18Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:14:50Z friendly-violet-urchin todo → doing
 - 2026-11-22T03:17:14Z friendly-violet-urchin: wrote the plan
+- 2026-11-22T03:17:31Z friendly-violet-urchin: changed notes
