@@ -1,6 +1,6 @@
 ---
 title: Generate several ticket placements in one repository for ticket reads
-status: review
+status: done
 depends_on:
   - TASK-522
 created: 2026-11-21
@@ -22,8 +22,8 @@ Decisions:
 
 ## Acceptance Criteria
 
-- [ ] `test_generated_placements` passes, comparing `Repo.find` per ticket and `Repo.tasks` against each `place` call's `Expected`, as the Description defines
-- [ ] `test_generated_mutant_swapped_contains` passes (the property finds a mismatch under the mutant); `tests/ticket_placements.py` is unchanged; `make check` passes
+- [x] `test_generated_placements` passes, comparing `Repo.find` per ticket and `Repo.tasks` against each `place` call's `Expected`, as the Description defines
+- [x] `test_generated_mutant_swapped_contains` passes (the property finds a mismatch under the mutant); `tests/ticket_placements.py` is unchanged; `make check` passes
 
 ## Plan
 
@@ -32,6 +32,10 @@ Add a shared generated case strategy and mismatch helper, exercise normal reads 
 ## Notes
 
 Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-522` lands; then replan against the landed builder and cold-read.
+
+Reviewed: Generated comparisons and mutant detection match the specified strategy and expectations.
+1: pass - make check ran 1121 tests OK; running test_generated_placements with swapped contains failed on [(1, a), (2, b)], demonstrating detection.
+2: pass - make check passed, including test_generated_mutant_swapped_contains; disabling its mutant produced NoSuchExample after 100 examples. git diff main...HEAD confirms tests/ticket_placements.py unchanged.
 
 ## Summary
 
@@ -50,3 +54,5 @@ Added generated multi-ticket read comparisons and swapped-contains mutant detect
 - 2026-11-22T14:48:24Z zesty-umber-raven: wrote the plan
 - 2026-11-22T14:50:28Z zesty-umber-raven: changed summary
 - 2026-11-22T14:52:09Z zesty-umber-raven doing → review
+- 2026-11-22T14:59:01Z zesty-pearl-falcon: changed notes; ticked acceptance criteria
+- 2026-11-22T14:59:01Z zesty-pearl-falcon review → done
