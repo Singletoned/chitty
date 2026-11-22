@@ -1,6 +1,6 @@
 ---
 title: Report saved work that cannot be restored after the work-mode rebase
-status: doing
+status: review
 depends_on:
   - TASK-370
   - TASK-541
@@ -50,3 +50,4 @@ Reports retained saved-work refs after rebase; regression failed before the fix 
 - 2026-11-22T04:49:36Z upbeat-navy-marten: wrote the plan
 - 2026-11-22T04:50:01Z upbeat-navy-marten: changed notes
 - 2026-11-22T04:52:27Z upbeat-navy-marten: changed summary
+- 2026-11-22T04:54:26Z upbeat-navy-marten doing → review
