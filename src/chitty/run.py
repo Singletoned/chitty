@@ -64,9 +64,7 @@ CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest sessio
 
 
 # Used by the work runner when its rebase integration lands.
-def _rebase_work_worktree(  # pyright: ignore[reportUnusedFunction]
-    worktree: Path, task_id: TaskId, main_branch: str
-) -> None:
+def _rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) -> None:
     ref = f"refs/chitty/stash/{task_id}"
     saved = git.save_work(worktree, ref, f"chitty {task_id} before rebase")
     try:
@@ -503,6 +501,8 @@ def _run_ticket_with_log(
     if existing_worktree is not None and git.dirty_paths(existing_worktree, relative_ticket):
         raise ChittyError(f"{existing_worktree / relative_ticket} has uncommitted changes")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
+    if action.mode == "work" and selected_status == "doing":
+        _rebase_work_worktree(worktree, action.id, main_repo.config.main_branch)
     context["worktree"] = str(worktree)
     branch_repo = Repo(worktree, main_repo.config)
     if action.mode == "work" and selected_status == "todo":
