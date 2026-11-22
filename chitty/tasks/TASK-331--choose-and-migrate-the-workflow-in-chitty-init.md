@@ -1,6 +1,6 @@
 ---
 title: Choose and migrate the workflow in chitty init
-status: planning
+status: cold-read
 labels:
   - needs-minor
 priority: high
@@ -69,3 +69,4 @@ Owner answer, 2026-11-22: option B, plus a commented-out review line. Planner: t
 - 2026-11-22T11:14:48Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T11:15:57Z friendly-jade-stoat: changed description
 - 2026-11-22T11:15:57Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T11:15:59Z friendly-jade-stoat planning → cold-read
