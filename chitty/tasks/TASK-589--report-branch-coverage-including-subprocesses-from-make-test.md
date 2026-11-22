@@ -1,6 +1,6 @@
 ---
 title: Report branch coverage, including subprocesses, from `make test`
-status: review
+status: done
 depends_on:
   - TASK-587
 created: 2026-11-22
@@ -38,10 +38,10 @@ No property or unit test: this is build configuration, checked by the commands i
 
 ## Acceptance Criteria
 
-- [ ] `make test` exits 0 (`Exception ignored in atexit callback` coverage tracebacks from child processes are known noise and do not count against it), prints a coverage table whose rows include `src/chitty/run.py` and a `TOTAL` row with a percentage, and writes `tmp/coverage/index.html`; afterwards `git status --short` in the checkout is empty
-- [ ] Subprocesses are measured: from the checkout root, `COVERAGE_ROOT=$PWD .venv/bin/unittest-parallel -s tests -t . -p test_run_loop.py --level test --coverage` reports `src/chitty/run.py` at 40% or more (42% when planning), and the same command with `patch` removed from `[tool.coverage.run]` reports it under 20% (13% when planning). Do the `patch`-removed run on a temporary edit and restore `pyproject.toml` afterwards; record both lines in a note
-- [ ] `test_interrupted_agent_calls_reporter` still asserts exit 130 and passes under both `make check` and `make test`; with the coverage configuration and `Makefile` change in place but before the shebang change, it fails under `make test` (record the failing line in a note)
-- [ ] `pyproject.toml` pins `coverage==7.17.2` in the `dev` group and `uv.lock` is updated; `.gitignore` lists `.coverage` and `.coverage.*`; `AGENTS.md` names `tmp/coverage/index.html`; `make -n test` shows `--coverage` and `make -n check` does not (a guard that `check` stays quick); and `make check` passes
+- [x] `make test` exits 0 (`Exception ignored in atexit callback` coverage tracebacks from child processes are known noise and do not count against it), prints a coverage table whose rows include `src/chitty/run.py` and a `TOTAL` row with a percentage, and writes `tmp/coverage/index.html`; afterwards `git status --short` in the checkout is empty
+- [x] Subprocesses are measured: from the checkout root, `COVERAGE_ROOT=$PWD .venv/bin/unittest-parallel -s tests -t . -p test_run_loop.py --level test --coverage` reports `src/chitty/run.py` at 40% or more (42% when planning), and the same command with `patch` removed from `[tool.coverage.run]` reports it under 20% (13% when planning). Do the `patch`-removed run on a temporary edit and restore `pyproject.toml` afterwards; record both lines in a note
+- [x] `test_interrupted_agent_calls_reporter` still asserts exit 130 and passes under both `make check` and `make test`; with the coverage configuration and `Makefile` change in place but before the shebang change, it fails under `make test` (record the failing line in a note)
+- [x] `pyproject.toml` pins `coverage==7.17.2` in the `dev` group and `uv.lock` is updated; `.gitignore` lists `.coverage` and `.coverage.*`; `AGENTS.md` names `tmp/coverage/index.html`; `make -n test` shows `--coverage` and `make -n check` does not (a guard that `check` stays quick); and `make check` passes
 
 ## Plan
 
@@ -54,6 +54,12 @@ Planner, 2026-11-22: relies on what `TASK-587` lands (the `test` line in `Makefi
 Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` line `TEST_TIER=thorough uv run unittest-parallel -s tests -t . --level test`; `AGENTS.md` bullet at lines 19-21); this text still holds.
 
 Before the shebang fix, make test failed: AssertionError: 1 != 130 in test_interrupted_agent_calls_reporter. Subprocess comparison: patched src/chitty/run.py 852 492 42%; unpatched src/chitty/run.py 852 744 13%.
+
+Reviewed: Coverage configuration and full diff verified.
+1: pass - make test exited 0, ran 1141 tests OK, printed run.py 90% and TOTAL 94%, created tmp/coverage/index.html, and git status --short was empty; known atexit traceback appeared.
+2: pass - specified run_loop command exited OK: patched run.py 852 492 42%; with patch temporarily removed, 852 744 13%; restored pyproject.toml.
+3: pass - test_interrupted_agent_calls_reporter asserts exit_code=130; make check and make test both passed. Worker recorded pre-fix make test failure: AssertionError: 1 != 130.
+4: pass - inspected pyproject.toml, uv.lock, .gitignore and AGENTS.md; uv lock --check passed; make -n test includes --coverage, make -n check does not; make check ran 1141 tests OK.
 
 ## Summary
 
@@ -80,3 +86,5 @@ Enabled branch and subprocess coverage for make test; HTML is at tmp/coverage/in
 - 2026-11-22T17:29:30Z golden-amber-adder: changed notes
 - 2026-11-22T17:34:35Z golden-amber-adder: changed summary
 - 2026-11-22T17:34:35Z golden-amber-adder doing → review
+- 2026-11-22T17:42:01Z vivid-yellow-ibis: changed notes; ticked acceptance criteria
+- 2026-11-22T17:42:01Z vivid-yellow-ibis review → done
