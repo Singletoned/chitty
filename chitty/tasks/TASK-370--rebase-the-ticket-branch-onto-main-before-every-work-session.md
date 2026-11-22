@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: todo
+status: doing
 labels:
   - bug
   - needs-minor
@@ -114,3 +114,4 @@ Also waits for `TASK-534` (`restore_work`), split from `TASK-524` on 2026-11-21.
 - 2026-11-22T01:29:17Z lively-zinc-newt planning → cold-read
 - 2026-11-22T01:33:50Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:33:50Z lively-zinc-newt cold-read → todo
+- 2026-11-22T01:38:30Z youthful-zinc-jay todo → doing
