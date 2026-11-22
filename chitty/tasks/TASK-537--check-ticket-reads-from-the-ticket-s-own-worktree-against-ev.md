@@ -48,6 +48,10 @@ Replanned 2026-11-22: the (h) edit variant is dropped, as the worker found it re
 
 The own-worktree placement test fails under the specified current-branch mutant; the mutant detection test passes.
 
+## Summary
+
+Added table-driven own-worktree placement coverage and current-branch mutant detection. The placement test fails under the mutant; make check passes.
+
 ## History
 
 - 2026-11-22T00:19:27Z lively-zinc-newt → planning
@@ -64,3 +68,4 @@ The own-worktree placement test fails under the specified current-branch mutant;
 - 2026-11-22T02:14:35Z daring-quartz-newt todo → doing
 - 2026-11-22T02:16:52Z daring-quartz-newt: wrote the plan
 - 2026-11-22T02:17:33Z daring-quartz-newt: changed notes
+- 2026-11-22T02:19:46Z daring-quartz-newt: changed summary
