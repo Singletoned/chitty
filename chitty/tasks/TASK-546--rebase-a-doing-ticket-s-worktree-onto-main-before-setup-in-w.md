@@ -1,6 +1,6 @@
 ---
 title: Rebase a `doing` ticket's worktree onto `main` before setup in work runs
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -21,7 +21,7 @@ Test in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_revi
 
 ## Acceptance Criteria
 
-- [ ] The `doing` runner test passes and fails before the change, and the `todo` guard passes; the doc bullet is updated; `make check` passes
+- [x] The `doing` runner test passes and fails before the change, and the `todo` guard passes; the doc bullet is updated; `make check` passes
 
 ## Plan
 
@@ -30,6 +30,9 @@ Add runner integration regression tests for doing and todo, verify the doing tes
 ## Notes
 
 Regression verified before the fix: doing test fails because setup log lacks main moved; todo guard passes.
+
+Reviewed: Runner integration and complete diff checked.
+1: pass - `python -m unittest tests.test_run_work_rebases` ran 2 tests OK; disabling the helper call with unittest.mock made the doing test fail with `main moved` not found in setup log, reproducing the pre-change behavior. The doc bullet is updated; `make check` passed 1092 tests and lint/type checks.
 
 ## Summary
 
@@ -47,3 +50,5 @@ Rebase doing worktrees before setup; todo remains unchanged. Regression failed b
 - 2026-11-22T02:58:58Z eager-russet-vole: changed notes
 - 2026-11-22T03:01:34Z eager-russet-vole: changed summary
 - 2026-11-22T03:03:06Z eager-russet-vole doing → review
+- 2026-11-22T03:08:43Z vivid-coral-stoat: changed notes; ticked acceptance criteria
+- 2026-11-22T03:08:43Z vivid-coral-stoat review → done
