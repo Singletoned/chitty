@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: doing
+status: planning
 priority: high
 created: 2026-11-22
 ---
@@ -46,6 +46,12 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 - [ ] Before and after the change, in the main checkout at the same `main` commit with ticket branches unchanged between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output, where "before" is the main checkout's `.venv/bin/chitty` and "after" is the ticket worktree's `.venv/bin/chitty` (run `make install` in the worktree first) run with `cwd` at the main checkout. Record the `diff` result and three `time` runs of `chitty list` for each in a note
 - [ ] `make check` passes
 
+## Notes
+
+Acceptance criterion 2 requires running both executables with cwd in the main checkout, reading its ticket files and refs and writing comparison evidence. The session instruction restricts all reads and changes to this ticket worktree, so that verification is not authorized. Please decide whether to authorize the main-checkout benchmark or revise the criterion to use an isolated fixture in this worktree. Until then the required byte-identical outputs and timing runs cannot be checked.
+
+Inspected the remaining requirements: the working-tree and ref scans, discovered-context cache, existing performance tests, and invalidation are present in the stated locations. The requested regression, error/order, ref and property tests and make check can be performed in the worktree, but implementation has not begun because criterion 2 is blocked. No other actionable ticket defects were found in this inspection.
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -56,3 +62,5 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 - 2026-11-22T21:33:00Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T21:33:00Z plucky-umber-wren cold-read → todo
 - 2026-11-22T21:36:27Z witty-khaki-falcon todo → doing
+- 2026-11-22T21:38:29Z witty-khaki-falcon: changed owner, notes
+- 2026-11-22T21:38:29Z witty-khaki-falcon doing → planning
