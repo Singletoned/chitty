@@ -1,6 +1,6 @@
 ---
 title: Scale property-test example counts by Hypothesis profile
-status: todo
+status: doing
 depends_on:
   - TASK-587
 created: 2026-11-22
@@ -53,3 +53,4 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`tests/__init__.py` r
 - 2026-11-22T17:08:07Z plucky-umber-wren cold-read → planning
 - 2026-11-22T17:08:09Z plucky-umber-wren: changed owner
 - 2026-11-22T17:08:09Z plucky-umber-wren planning → todo
+- 2026-11-22T17:08:29Z eager-bronze-vole todo → doing
