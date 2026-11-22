@@ -1,6 +1,6 @@
 ---
 title: Restore saved worktree work from a `refs/chitty/stash` ref
-status: doing
+status: review
 depends_on:
   - TASK-524
 parent: TASK-370
@@ -47,3 +47,4 @@ Implemented restore with clean-worktree protection and conflict cleanup. Six tes
 - 2026-11-22T01:14:04Z nimble-pearl-adder: wrote the plan
 - 2026-11-22T01:14:27Z nimble-pearl-adder: changed notes
 - 2026-11-22T01:16:59Z nimble-pearl-adder: changed summary
+- 2026-11-22T01:17:02Z nimble-pearl-adder doing → review
