@@ -1,6 +1,6 @@
 ---
 title: Runner error notes need a blank line before their code fences
-status: doing
+status: review
 created: 2026-11-22
 ---
 
@@ -57,3 +57,4 @@ Added blank line before error output fences and an exact-string regression test.
 - 2026-11-22T15:36:52Z mellow-amber-marten: wrote the plan
 - 2026-11-22T15:37:05Z mellow-amber-marten: changed notes
 - 2026-11-22T15:40:41Z mellow-amber-marten: changed summary
+- 2026-11-22T15:44:05Z mellow-amber-marten doing → review
