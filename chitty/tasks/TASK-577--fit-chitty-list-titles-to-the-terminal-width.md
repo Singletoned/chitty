@@ -1,6 +1,6 @@
 ---
 title: Fit chitty list titles to the terminal width
-status: review
+status: done
 created: 2026-11-22
 ---
 
@@ -48,10 +48,10 @@ Tests, in a new file `tests/test_list_terminal_width.py`:
 
 ## Acceptance Criteria
 
-- [ ] With a terminal narrower than `list_width`, `chitty list` lines fit the terminal and long titles end in `…`; shown by the patched `_terminal_columns` test, which fails before the change.
-- [ ] `_list_width` returns the setting with no terminal and the smaller width otherwise; shown by the helper tests. `test_list_width_defaults_to_one_hundred_columns` still passes.
-- [ ] `docs/plan/cli.md` (around line 55) and `docs/plan/config.md` (line 39) each say titles fit the smaller of `list_width` and the terminal width when stdout is a terminal.
-- [ ] `make check` passes.
+- [x] With a terminal narrower than `list_width`, `chitty list` lines fit the terminal and long titles end in `…`; shown by the patched `_terminal_columns` test, which fails before the change.
+- [x] `_list_width` returns the setting with no terminal and the smaller width otherwise; shown by the helper tests. `test_list_width_defaults_to_one_hundred_columns` still passes.
+- [x] `docs/plan/cli.md` (around line 55) and `docs/plan/config.md` (line 39) each say titles fit the smaller of `list_width` and the terminal width when stdout is a terminal.
+- [x] `make check` passes.
 
 ## Plan
 
@@ -62,6 +62,12 @@ Add a fail-first CLI width regression, implement terminal-aware width helpers, u
 Cold read 3: wording only (fail-first assertion, reuse of the existing 100-column test, exact doc content).
 
 Fail-first regression: python -m unittest tests.test_list_terminal_width fails the width assertion with 100 columns versus 60.
+
+Reviewed:
+1: pass - tests.test_list_terminal_width passes; replacing the list callback with main's version produces AssertionError: 100 not less than or equal to 60.
+2: pass - tests.test_list_terminal_width helper test passes; tests.test_cli.TestAddShowList.test_list_width_defaults_to_one_hundred_columns prints OK.
+3: pass - inspected both plan documents; each describes the smaller terminal and configured width for terminal stdout.
+4: pass - make check prints 1128 tests OK, with ruff and pyright passing.
 
 ## Summary
 
@@ -80,3 +86,5 @@ Implemented terminal-aware list width and documentation. Regression failed befor
 - 2026-11-22T15:27:42Z jolly-pearl-puffin: changed notes
 - 2026-11-22T15:32:22Z jolly-pearl-puffin: changed summary
 - 2026-11-22T15:32:22Z jolly-pearl-puffin doing → review
+- 2026-11-22T15:38:07Z friendly-maroon-newt: changed notes; ticked acceptance criteria
+- 2026-11-22T15:38:07Z friendly-maroon-newt review → done
