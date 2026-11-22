@@ -77,6 +77,8 @@ I inspected the runner call site, Git helpers, and review and claim test fixture
 
 Replanned 2026-11-22: added case 4 (`todo` ticket with an existing branch) and case 5 (non-conflict failure), and dropped the untested `autocommit = false` sentence.
 
+Work paused after inspecting the runner call site, Git helpers and review test fixture. The plan is recorded; no implementation or regression tests have been written, and fail-before evidence and make check remain outstanding.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -136,3 +138,4 @@ Replanned 2026-11-22: added case 4 (`todo` ticket with an existing branch) and c
 - 2026-11-22T01:42:49Z lively-zinc-newt planning → todo
 - 2026-11-22T01:43:39Z witty-violet-badger todo → doing
 - 2026-11-22T01:45:27Z witty-violet-badger: wrote the plan
+- 2026-11-22T01:45:43Z witty-violet-badger: changed notes
