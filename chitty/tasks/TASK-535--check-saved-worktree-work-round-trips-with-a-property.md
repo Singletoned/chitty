@@ -1,6 +1,6 @@
 ---
 title: Check saved worktree work round-trips with a property
-status: review
+status: done
 depends_on:
   - TASK-534
 parent: TASK-370
@@ -17,7 +17,7 @@ Suggested structure (from a cold reader whose probe of this property passed at 3
 
 ## Acceptance Criteria
 
-- [ ] The round-trip property passes, and fails (with any assertion or error) against a `restore_work` that skips `git update-ref -d` and against a `save_work` that omits `git add -A`; a note records each run and its actual failure; `make check` passes
+- [x] The round-trip property passes, and fails (with any assertion or error) against a `restore_work` that skips `git update-ref -d` and against a `save_work` that omits `git add -A`; a note records each run and its actual failure; `make check` passes
 
 ## Plan
 
@@ -26,6 +26,9 @@ Add a generated isolated Git repository round-trip test, verify both specified m
 ## Notes
 
 Mutation runs: removing `update-ref -d` failed with `assertNotIn` because the saved ref remained; omitting `git add -A` failed with `ChittyError: git stash create produced no commit` for an untracked-only example. Both mutations were reverted.
+
+Reviewed: Property and complete diff inspected; no additional defects found.
+1: pass - `make check` printed 1079 tests OK; the worker's mutation runs recorded `assertNotIn` for the retained ref and `ChittyError: git stash create produced no commit` without `git add -A`.
 
 ## Summary
 
@@ -43,3 +46,5 @@ Added generated saved-work round-trip coverage. Both requested mutations failed 
 - 2026-11-22T02:04:45Z brisk-ebony-marten: changed notes
 - 2026-11-22T02:06:19Z brisk-ebony-marten: changed summary
 - 2026-11-22T02:06:21Z brisk-ebony-marten doing → review
+- 2026-11-22T02:11:45Z zesty-amber-falcon: changed notes; ticked acceptance criteria
+- 2026-11-22T02:11:45Z zesty-amber-falcon review → done
