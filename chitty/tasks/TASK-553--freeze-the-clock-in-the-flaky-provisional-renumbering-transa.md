@@ -23,8 +23,17 @@ To show the fix: temporarily make the clock advance one second between the two c
 
 Freeze the store clock across both transaction preparations; reproduce the failure with an advancing clock, verify the fixed test under the same clock, then run make check.
 
+## Notes
+
+An outer mocked store clock advancing one second per now call made the original transaction test fail on the rendered history timestamps (00:00:00 versus 00:00:02); the same invocation passed with the inner fixed clock. make check passed.
+
+## Summary
+
+Froze the store clock across both transaction preparations. Verified the advancing-clock reproduction and ran make check.
+
 ## History
 
 - 2026-11-22T04:03:27Z lively-zinc-newt → todo
 - 2026-11-22T04:08:05Z witty-jade-quail todo → doing
 - 2026-11-22T04:09:52Z witty-jade-quail: wrote the plan
+- 2026-11-22T04:11:43Z witty-jade-quail: changed notes, summary
