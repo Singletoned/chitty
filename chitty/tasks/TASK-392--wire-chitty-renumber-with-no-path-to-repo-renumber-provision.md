@@ -37,6 +37,10 @@ All four fail on today's code (a cold reader's probe: `Error: Missing argument '
 - [ ] Tests 3 and 4 pass, and each fails on today's code
 - [ ] `tests/test_renumber.py` (except `test_help`, which `TASK-549` changes) and `tests/test_mcp.py` `test_tools_mirror_the_cli` pass; `make check` passes
 
+## Plan
+
+Add CLI dispatch for provisional renumbering and focused integration tests, verify regressions before implementation, then run checks.
+
 ## Notes
 
 The store method moved to `TASK-517`, which depends on the preflight `TASK-391`. Update this ticket against the landed store behavior and cold-read it before moving it back to `todo`.
@@ -75,3 +79,4 @@ Back to `todo` 2026-11-22: the pre-agent check failed on the flaky `test_transac
 - 2026-11-22T04:03:28Z lively-zinc-newt: changed notes
 - 2026-11-22T04:03:28Z lively-zinc-newt error → todo
 - 2026-11-22T04:14:45Z honest-navy-wren todo → doing
+- 2026-11-22T04:17:14Z honest-navy-wren: wrote the plan
