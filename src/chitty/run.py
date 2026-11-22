@@ -514,16 +514,21 @@ def _run_ticket_with_log(
     if existing_worktree is not None and git.dirty_paths(existing_worktree, relative_ticket):
         raise ChittyError(f"{existing_worktree / relative_ticket} has uncommitted changes")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
+    stopped = False
     if action.mode == "work":
         try:
-            _rebase_work_worktree(
-                worktree, action.id, main_repo.config.main_branch, stop_on_conflict=False
+            stopped = _rebase_work_worktree(
+                worktree,
+                action.id,
+                main_repo.config.main_branch,
+                stop_on_conflict=selected_status in ("doing", "error")
+                and not git.uncommitted_paths(worktree),
             )
         except ChittyError as error:
             return _record_ticket_error(Repo(worktree, main_repo.config), action, "rebase", error)
     context["worktree"] = str(worktree)
     branch_repo = Repo(worktree, main_repo.config)
-    if action.mode == "work" and selected_status == "todo":
+    if action.mode == "work" and selected_status == "todo" and not stopped:
         branch_repo.edit(
             action.id,
             Edit(status="doing", skip_verdicts=True, skip_current_version=True),
@@ -535,7 +540,7 @@ def _run_ticket_with_log(
     check = main_repo.config.check
     assert setup is not None  # `_preflight` rejects an unset setup command.
     assert check is not None  # `_preflight` rejects an unset check command.
-    if action.mode == "work":
+    if action.mode == "work" and not stopped:
         context["phase"] = "setup"
         try:
             _setup(setup, worktree, main_repo.config.command_timeout)
@@ -582,8 +587,10 @@ def _run_ticket_with_log(
     else:
         work_repo = Repo.open(worktree)
     context["phase"] = "check"
-    if failed := _run_check(
-        branch_repo, action, check, selected_status, main_repo.config.command_timeout
+    if not stopped and (
+        failed := _run_check(
+            branch_repo, action, check, selected_status, main_repo.config.command_timeout
+        )
     ):
         if action.mode == "work" and selected_status == "todo":
             return RunResult(action, selected_status, failed.new_status)
