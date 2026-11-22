@@ -18,6 +18,10 @@ Tests in `tests/test_check.py`, writing ticket files directly as `test_warns_onl
 
 - [ ] Each Description example gives the stated warning result under the new scan (the two escaped ones no warning, the two unescaped ones the `*` warning, the guard case no `_` warning); the two escaped examples fail on today's code; `make check` passes
 
+## Plan
+
+Add the five specified direct-file warning tests, confirm escaped cases fail, then use a separate inline parser with text_join disabled and run formatting and checks.
+
 ## History
 
 - 2026-11-21T23:59:28Z lively-zinc-newt → cold-read
@@ -25,3 +29,4 @@ Tests in `tests/test_check.py`, writing ticket files directly as `test_warns_onl
 - 2026-11-22T00:00:35Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:00:35Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:51:37Z nimble-bronze-marten todo → doing
+- 2026-11-22T00:53:54Z nimble-bronze-marten: wrote the plan
