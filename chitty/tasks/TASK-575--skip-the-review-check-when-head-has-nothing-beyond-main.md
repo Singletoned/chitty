@@ -8,36 +8,48 @@ created: 2026-11-22
 
 `chitty edit <ID> -s review` runs the configured `check` (here `make check`,
 about 3 minutes) before every move into review, with no output meanwhile. The
-check exists to gate a worker's ticket branch. When the checkout has no
-commits that are not already on the main branch, it only re-checks `main`:
-the human's `chitty edit TASK-540 -s review --human` from the main checkout
-spent 3 minutes checking code that had landed in `9027093c`, and looked hung.
-Under `chitty run` every branch is checked again by the landing check before
-it reaches `main`, so skipping the review check there loses nothing.
+check exists to gate a worker's ticket branch. When HEAD is already contained
+in the main branch, it only re-checks `main`: the human's
+`chitty edit TASK-540 -s review --human` from the main checkout spent 3
+minutes checking code that had landed in `9027093c`, and looked hung. Under
+`chitty run` every branch is checked again by the landing check before it
+reaches `main`, so skipping the review check there loses nothing.
 
 Change: in `Repo.edit` (`src/chitty/store.py`, the `if entering_review and
-self.config.check:` block, around line 986), run the check only when
-`self.config.workflow == "runner"` is false, or when
-`git.branch_commits(self.root, self._main_branch())` is non-empty. Otherwise
-skip it and print one line to stderr:
-`skipped check: HEAD has no commits beyond <main>` (with the branch name).
+self.config.check:` block, around line 986), skip the check when
+`self.config.workflow == "runner"` and
+`git.is_ancestor(self.root, "HEAD", self._main_branch())` is true. Use
+`is_ancestor`, not `git.branch_commits`: `branch_commits` ignores merge
+commits, and a branch whose only new commit is a merge must still be checked.
+When skipping, print exactly this line to stderr, with `<main>` replaced by
+the value of `self._main_branch()` (for example `main`):
+
+    skipped check: HEAD is already on <main>
+
 The clean-worktree and current-version checks still run. The `tickets`
 workflow is unchanged: work there is committed on `main`, so the check stays
-its only gate.
+its only gate. Linked worktrees need no special case: `_main_branch()`
+already reads the main checkout's configuration.
 
 Tests, in `tests/test_review_check.py`:
 
 - `prepare()` switches to `task-1` with no commits beyond `main`, so the
-  existing tests would start skipping. Add an empty commit on `task-1` in
-  `prepare()` (`git commit --allow-empty -m work`) so they still exercise the
-  check.
-- New test: runner workflow (the fixture's default; confirm), check is a
-  script that writes a marker file and exits 3, the main checkout on `main`
-  with no extra commits. `chitty edit 1 -s review` from `main` succeeds, the
-  ticket is in `review`, the marker does not exist, and stderr contains
-  `skipped check`.
-- New test: same script, `workflow = "tickets"` in `chitty.toml`, on `main`.
-  The edit fails with `check failed with status 3`.
+  existing tests would start skipping. Add an empty commit on `task-1` at the
+  end of `prepare()` (`git commit --allow-empty --quiet -m work`) so they
+  still run the check.
+- New test, runner workflow (the fixture default, `tests/support.py` line
+  15): configure the check as a script that writes a marker file and exits 3,
+  stay on `main` (do not call `prepare()`'s switch), set the ticket to
+  `doing`, then run `chitty edit 1 -s review`. Assert exit code 0, the ticket
+  file says `status: review`, the marker does not exist, and `result.stderr`
+  contains `skipped check: HEAD is already on main`.
+- New test, merge-only branch: on `task-1`, create a side branch with one
+  commit, return to `task-1`, merge it with `--no-ff`, then fast-forward
+  nothing else. HEAD is a merge not on `main`. With the failing check script,
+  `-s review` fails with `check failed with status 3`.
+- New test, tickets workflow: set `workflow = "tickets"` and `review = true`
+  in `chitty.toml` (so `-s review` is allowed), same failing script, on
+  `main`. The edit fails with `check failed with status 3`.
 
 ## Acceptance Criteria
 
@@ -51,3 +63,4 @@ Tests, in `tests/test_review_check.py`:
 - 2026-11-22T12:50:12Z friendly-jade-stoat → todo
 - 2026-11-22T12:50:24Z friendly-jade-stoat: changed acceptance criteria
 - 2026-11-22T12:50:24Z friendly-jade-stoat todo → planning
+- 2026-11-22T12:51:35Z friendly-jade-stoat: changed description
