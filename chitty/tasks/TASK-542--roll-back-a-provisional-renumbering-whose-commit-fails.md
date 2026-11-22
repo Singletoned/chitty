@@ -17,6 +17,10 @@ Test in `tests/test_renumber_provisional.py`: build `TASK-517`'s batch fixture, 
 
 - [ ] The failing-hook test passes; a note records it failing with `_restore_task_files` disabled; `make check` passes
 
+## Plan
+
+Add a failing pre-commit hook regression test using the existing batch fixture, verify it detects disabled restoration, then run the full checks and commit.
+
 ## History
 
 - 2026-11-22T01:35:20Z lively-zinc-newt → planning
@@ -26,3 +30,4 @@ Test in `tests/test_renumber_provisional.py`: build `TASK-517`'s batch fixture, 
 - 2026-11-22T03:22:02Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:22:13Z lively-zinc-newt: changed description
 - 2026-11-22T03:31:35Z vivid-jade-eel todo → doing
+- 2026-11-22T03:33:59Z vivid-jade-eel: wrote the plan
