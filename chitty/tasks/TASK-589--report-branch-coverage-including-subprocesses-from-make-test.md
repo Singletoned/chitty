@@ -1,6 +1,6 @@
 ---
 title: Report branch coverage, including subprocesses, from `make test`
-status: cold-read
+status: planning
 owner: plucky-umber-wren
 depends_on:
   - TASK-587
@@ -11,9 +11,9 @@ created: 2026-11-22
 
 Decided with the person, 2026-11-22: measure coverage. It goes in the thorough tier, `make test`; `make check` stays quick. Report only: no minimum percentage for now.
 
-`unittest-parallel` 1.8.6 (the test runner) has `--coverage`, `--coverage-branch` and `--coverage-html DIR` built in, and `coverage` 7.17.2 is installed only because `unittest-parallel` depends on it (`uv tree --invert --package coverage`). Many tests start Chitty as a subprocess (for example `tests/test_run_loop.py`, `tests/test_next.py`), and those are not measured unless coverage patches subprocesses. Measured while planning, on `-p test_run_loop.py` alone: without the patch `src/chitty/run.py` showed 13% and `TOTAL` 34%; with it, 42% and 47%.
+`unittest-parallel` 1.8.6 (the test runner) has `--coverage` and `--coverage-html DIR` built in, and `coverage` 7.17.2 is installed only because `unittest-parallel` depends on it (`uv tree --invert --package coverage`). Many tests start Chitty or other Python scripts as subprocesses (for example `tests/test_run_loop.py`, `tests/test_next.py`); those are measured only when coverage patches subprocesses. Measured while planning on `-p test_run_loop.py` alone: without the patch `src/chitty/run.py` showed 13%; with it, 42%.
 
-Changes:
+Recipe, tried on the full suite while planning (2026-11-22, a worktree at `main` after `make install`): 1135 tests OK, `TOTAL` 94%, `git status` showing only the intended edits and the ignored `.coverage`.
 
 - `pyproject.toml`: add `"coverage==7.17.2"` to the `dev` dependency group (the `patch` setting needs a recent coverage, so do not rely on the transitive version), and add
 
@@ -22,27 +22,32 @@ Changes:
   branch = true
   source = ["src/chitty"]
   patch = ["subprocess"]
+  data_file = "${COVERAGE_ROOT-.}/.coverage"
   ```
 
-  `unittest-parallel` passes no rcfile, so coverage reads `pyproject.toml` itself.
-- `Makefile` `test` target: run with `COVERAGE_FILE=$(CURDIR)/.coverage` in its environment and add `--coverage --coverage-html tmp/coverage` to its `unittest-parallel` line. The absolute data file matters: tests change into temporary directories, and subprocess data written relative to them would be lost. Keep the rest of the line as `TASK-587` leaves it.
+  The data file must be absolute: tests run subprocesses in temporary directories, and a relative data file there loses their data. Coverage expands `${COVERAGE_ROOT-.}` from the environment, defaulting to the current directory for a run outside `make`.
+- `Makefile` `test` target: set `COVERAGE_ROOT=$(CURDIR)` and add `--coverage --coverage-html tmp/coverage` on its `unittest-parallel` line. Read the rest of that line from the `Makefile` when you start (`TASK-587` changes it first) and keep it.
+- `tests/test_run_error_reporter.py`, `test_interrupted_agent_calls_reporter`: its fake agent kills itself with `SIGINT` and the test asserts exit 130. With coverage loaded in the agent, Python turns the signal into `KeyboardInterrupt` and exits 1, so the test fails under `make test`. Change the agent's shebang from `"#!" + sys.executable + "\n"` to `"#!" + sys.executable + " -S\n"`: `-S` skips the `site` module and so the `.pth` file that starts coverage, and the agent needs neither. Keep the exit-130 assertion. Tried while planning: passes with and without coverage. (A `signal.SIG_DFL` reset was also tried; it was not settled, so do not use it.)
 - `.gitignore`: add `.coverage` and `.coverage.*`. `tmp/` is already ignored (`/tmp/`).
-- `README.md` or `AGENTS.md`, wherever `make test` is described: one line saying it reports coverage, with the HTML at `tmp/coverage/index.html`.
+- `AGENTS.md`: add to the bullet about `make test` that it reports coverage, with the HTML at `tmp/coverage/index.html`.
 
-Known obstacle, found while planning (full suite with this configuration, 2026-11-22: 1135 tests, `TOTAL` 94%, one failure): `tests/test_run_error_reporter.py` `test_interrupted_agent_calls_reporter` expects exit 130, but its fake agent (`os.kill(os.getpid(), signal.SIGINT)`) now runs with coverage loaded, turns the signal into `KeyboardInterrupt` and exits 1. Two fixture changes were tried on that module alone: `signal.signal(signal.SIGINT, signal.SIG_DFL)` before the kill, and a `-S` shebang (skips the `.pth` file that starts coverage). Each run ended with `coverage.exceptions.DataError: ... unable to open database file`, and the second reported `TOTAL` 0%, so the cause is not settled: possibly a data file left by a process killed by a signal, or the trial passing `COVERAGE_FILE` beside `--coverage-rcfile`. Find the cause and fix the fixture or configuration so the test passes with and without coverage; this is a fixture whose behaviour coverage changes, not a runner bug, but do not drop or loosen the test. Record what you found in a note.
+Known noise, out of scope: the planning run printed three `coverage` warnings or `DataError` tracebacks (`Exception ignored in atexit callback`) from child processes that exit after `unittest-parallel` has removed its temporary data directory. They do not change the exit status or the result.
 
-Out of scope: a minimum percentage (`--coverage-fail-under`), coverage in `make check` or CI, and per-test timing (a separate ticket).
+Also out of scope: a minimum percentage (`--coverage-fail-under`), coverage in `make check` or CI, and per-test timing (a separate ticket).
 
 No property or unit test: this is build configuration, checked by the commands in the criteria.
 
 ## Acceptance Criteria
 
-- [ ] `make test` exits 0, prints a coverage table whose rows include `src/chitty/run.py` and `TOTAL`, and writes `tmp/coverage/index.html`; afterwards `git status --short` in the checkout is empty (no stray `.coverage*` files there or in `tests/`). On `main`, `make test` prints no coverage table
-- [ ] Subprocesses are measured: `.venv/bin/unittest-parallel -s tests -t . -p test_run_loop.py --level test --coverage` with the new configuration reports `src/chitty/run.py` at 40% or more (it was 42% when planning), while the same command with `patch` removed from `[tool.coverage.run]` reports it under 20% (13% when planning). Record both lines in a note
-- [ ] `make -n check` shows no `--coverage` option, and `make check` passes
+- [ ] `make test` exits 0, prints a coverage table whose rows include `src/chitty/run.py` and `TOTAL`, and writes `tmp/coverage/index.html`; afterwards `git status --short` in the checkout is empty. Before this change, `make test` output has no line starting `TOTAL`
+- [ ] Subprocesses are measured: `.venv/bin/unittest-parallel -s tests -t . -p test_run_loop.py --level test --coverage`, run with `COVERAGE_ROOT` set to the checkout, reports `src/chitty/run.py` at 40% or more (42% when planning), and the same run with `patch` removed from `[tool.coverage.run]` reports it under 20% (13% when planning). Do the `patch`-removed run on a temporary edit and restore `pyproject.toml` afterwards; record both lines in a note
+- [ ] `test_interrupted_agent_calls_reporter` still asserts exit 130 and passes under both `make check` and `make test`; before the shebang change it fails under `make test` (record the failing line in a note)
+- [ ] `pyproject.toml` pins `coverage==7.17.2` in the `dev` group; `.gitignore` lists `.coverage` and `.coverage.*`; `AGENTS.md` names `tmp/coverage/index.html`; `make -n check` shows no `--coverage` (a guard that `check` stays quick); and `make check` passes
 
 ## History
 
 - 2026-11-22T16:48:38Z plucky-umber-wren → planning
 - 2026-11-22T16:53:09Z plucky-umber-wren: changed description
 - 2026-11-22T16:53:12Z plucky-umber-wren planning → cold-read
+- 2026-11-22T17:05:11Z plucky-umber-wren: changed description, acceptance criteria
+- 2026-11-22T17:05:11Z plucky-umber-wren cold-read → planning
