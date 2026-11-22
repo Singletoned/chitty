@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -63,9 +63,11 @@ Error output:
 
 Planner, 2026-11-22: the 10:05 agent session timed out after 7200 s on its first tool call (`.venv/bin/chitty show TASK-334`); the Pi session has no result for that call, and the command returns in under a second when run by hand, so the stall was in the agent harness, not in this ticket. No work was lost (no commits or edits since the replan). Back to `doing` for another attempt. Note: this branch's own `chitty` (older than `main`) fails on branch `task-a6vmgm` with "unknown frontmatter key 'provisional'"; the runner's merge of `main` fixes that.
 
+Regression: direct workflow test failed before the fix with unexpected workflow keyword, and passes after implementation. Earlier rebase verification showed tickets help test failing before the help fix. make check passes with 1119 tests.
+
 ## Summary
 
-Implemented workflow-gated role guides. CLI loads repository config for role requests (broken config errors propagate), defaults to runner outside repositories, runner help remains available when config is broken, and run.py passes repo.config.workflow. Added six-role workflow tests and updated direct callers. Verified with make format and make check; regression tests were observed failing before the fix. Commit: c7ed80f. No known follow-ups.
+Workflow-gated role guides and tickets-only help implemented; fixed-case runner, outside-repository and tickets coverage added. make check passes.
 
 ## History
 
@@ -106,3 +108,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-22T13:57:28Z friendly-jade-stoat: changed notes
 - 2026-11-22T13:57:28Z friendly-jade-stoat error → doing
 - 2026-11-22T14:04:50Z open-dusky-vole: wrote the plan
+- 2026-11-22T14:10:52Z open-dusky-vole: changed notes, summary
+- 2026-11-22T14:10:52Z open-dusky-vole doing → review
