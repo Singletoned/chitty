@@ -15,10 +15,10 @@ check: ## lint, type-check and run the tests
 	uv run ruff format --check .
 	uv run ruff check --no-fix .
 	uv run pyright
-	uv run unittest-parallel -s tests -t . --level test
+	TEST_TIER=check uv run unittest-parallel -s tests -t . --level test
 
-test: ## run the Python tests
-	uv run unittest-parallel -s tests -t . --level test
+test: ## run every test, drawing new random property-test examples
+	TEST_TIER=thorough uv run unittest-parallel -s tests -t . --level test
 
 format: ## format and auto-fix Python code
 	uv run ruff check --exit-zero .

@@ -4,13 +4,10 @@ import os
 
 from hypothesis import settings
 
-# `make check` must give the same answer on every run: random examples have
-# sent runner tickets to `error` on failures unrelated to their change. So the
-# examples are fixed (derived from each test's source), and there is no example
-# database, which would replay one machine's old failures. Per-example timing
-# is noise under `unittest-parallel`, so there is no deadline.
-settings.register_profile("tests", deadline=None, derandomize=True)
-settings.load_profile("tests")
+# Fixed examples make checks repeatable; thorough runs explore and replay failures.
+settings.register_profile("check", deadline=None, derandomize=True)
+settings.register_profile("thorough", deadline=None, derandomize=False)
+settings.load_profile(os.environ.get("TEST_TIER", "check"))
 
 AGENT_PREFIXES = ("PI_", "CLAUDE_", "CODEX_", "CHITTY_")
 

@@ -16,8 +16,8 @@ rules, and parts are old: update it when a decision changes.
   mocking. Tests that use the inbox must inherit `RepoTestCase`, which assigns
   a temporary `XDG_DATA_HOME` so they never touch the real inbox. The formatter
   tests fail, never skip, if prettier or mdformat is missing.
-- Hypothesis runs with fixed examples (`derandomize=True`, in
-  `tests/__init__.py`), so `make check` gives the same result every run. A
+- `make check` uses fixed examples (profile `check`) so it repeats; `make test`
+  draws new random examples (profile `thorough`) to find new edge cases. A
   property test that fails is a real failure: fix it, do not rerun.
 - Put a ticket's new guide tests in their own file, `tests/test_guide_<topic>.py`,
   not at the end of `TestGuide` in `tests/test_cli.py`, where every guide
