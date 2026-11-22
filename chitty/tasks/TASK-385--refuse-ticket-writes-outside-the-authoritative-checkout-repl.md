@@ -51,6 +51,10 @@ Split plan 2026-11-22 (overnight planner), since every dependency is now done bu
 
 Parked with `TASK-547`: see the question in `TASK-547`'s last note.
 
+Owner answer, 2026-11-22: "a write is allowed only when the ticket is read from this checkout's own files" is a misinterpretation; where the ticket is read from does not matter, particularly when all branches hold the same text. Settled rule (as on 2026-11-20): a write is refused only when another copy of the ticket differs from the one this checkout would write over and is newer, so the write would be lost or hidden. When every copy is identical, the write is allowed anywhere. The five refusal messages in the Decisions above, and `TASK-547`'s rules 1 and 2, are superseded.
+
+Open question for the owner: when a newer, different copy exists elsewhere (typically the ticket is in flight on `task-<n>`), should Chitty (A) refuse, saying where the newer copy is and where to edit it (for example `TASK-5 has a newer copy on task-5 (abc1234); edit it in worktree .worktrees/task-5`), or (B) apply the edit to that copy itself: write the file in the branch's worktree and commit there (and refuse only when the branch has no worktree, or that worktree has uncommitted changes to the ticket)?
+
 ## History
 
 - 2026-11-18T16:20:16Z lively-quartz-crane → backlog
@@ -73,3 +77,4 @@ Parked with `TASK-547`: see the question in `TASK-547`'s last note.
 - 2026-11-22T00:19:39Z lively-zinc-newt: changed dependencies
 - 2026-11-22T02:28:48Z lively-zinc-newt: changed dependencies, notes
 - 2026-11-22T02:30:04Z lively-zinc-newt: changed labels, notes
+- 2026-11-22T11:15:41Z friendly-jade-stoat: changed notes
