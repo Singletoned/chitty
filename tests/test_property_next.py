@@ -138,7 +138,7 @@ class TestPropertyNext(unittest.TestCase):
                 broken = next((d for d in fact.dependencies if d.state == "broken"), None)
                 unfinished = [d.reference for d in fact.dependencies if d.state == "unfinished"]
                 if broken:
-                    expected = f"⚠️ {fact.id} depends on {broken.reference}: {broken.error}"
+                    expected = f"💔 {fact.id} depends on {broken.reference}: {broken.error}"
                 elif unfinished:
                     expected = f"🔗 waits on {', '.join(unfinished)}"
             self.assertEqual(dependency_marker(fact), expected)
@@ -150,7 +150,7 @@ class TestPropertyNext(unittest.TestCase):
             expected = None
             if not fact.archived and fact.status in TEST_STATUS_RANK:
                 if fact.locked:
-                    expected = "▶ running"
+                    expected = "🏃 running"
                 elif fact.context == "human" or fact.owner == "human":
                     expected = "👤 human"
                 elif include_owner and fact.owner is not None:
@@ -159,12 +159,12 @@ class TestPropertyNext(unittest.TestCase):
                     unfinished = [d.reference for d in fact.dependencies if d.state == "unfinished"]
                     broken = next((d for d in fact.dependencies if d.state == "broken"), None)
                     if broken:
-                        expected = f"⚠️ {fact.id} depends on {broken.reference}: {broken.error}"
+                        expected = f"💔 {fact.id} depends on {broken.reference}: {broken.error}"
                     elif unfinished:
                         expected = f"🔗 waits on {', '.join(unfinished)}"
             actual = skip_reason(fact, include_owner=include_owner)
             if expected == "👤 untestable":
-                self.assertEqual(actual, "✍️ untestable")
+                self.assertEqual(actual, "🙋 untestable")
             else:
                 self.assertEqual(actual, expected)
 

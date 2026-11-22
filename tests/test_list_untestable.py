@@ -9,7 +9,7 @@ class TestListUntestable(CliTestCase):
 
         lines = self.run_cli("list").stdout.splitlines()
 
-        self.assertIn("✍️", lines[0])
+        self.assertIn("🙋", lines[0])
         self.assertIn("👤", lines[1])
         self.assertEqual(
             _columns(lines[0][: lines[0].index("Untestable ticket")]),

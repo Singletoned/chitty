@@ -40,22 +40,22 @@ file holds the decisions behind them.
   status, still without archives.
 - Order: selected statuses, then `high`, `medium` or unset, `low`. `--json`
   uses the same order.
-- Rows: `TASK-12  🔨 doing  ⬆️  Add search to the task list  [cli,search]`.
+- Rows: `TASK-12  🔨 doing  ⏫  Add search to the task list  [cli,search]`.
   - Status glyphs: `💤 bklog`, `📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`,
     `⛔ blckd`, `💥 error`, `👀 revw`, `✅ done`.
-  - Priority column only when a listed ticket has one: `⬆️` high, `⏺️`
-    medium, `⬇️` low, blank unset.
-  - Skip column, only when needed: `👤` human or owned, `✍️` untestable,
-    `🔗` waiting, `▶` running, `⚠️` broken (message on stderr), or `🚧` for an
+  - Priority column only when a listed ticket has one: `⏫` high, `➖`
+    medium, `⏬` low, blank unset.
+  - Skip column, only when needed: `👤` human or owned, `🙋` untestable,
+    `🔗` waiting, `🏃` running, `💔` broken (message on stderr), or `🚧` for an
     active ticket with waiting dependents and no unfinished or broken dependency
     of its own. Every unfinished ticket that is not running, human or owned shows
-    `🔗` or `⚠️` for its dependencies, whatever its status; running, human,
+    `🔗` or `💔` for its dependencies, whatever its status; running, human,
     owner and dependency markers come before `🚧`. `🚧` considers dependents across
     all active tickets, even when the list is filtered.
   - Titles are cut with `…` to fit the smaller of `list_width` and the terminal width when stdout is a terminal, counting emoji as two
     columns; labels stay whole. No branch.
 - JSON keeps status words and adds `skipped`: `👤 human` or owned,
-  `✍️ untestable`, `🔗 waits on ID[, ID...]`, or `⚠️ <message>`.
+  `🙋 untestable`, `🔗 waits on ID[, ID...]`, or `💔 <message>`.
 - An empty result reports its filters on stderr; stdout (JSON too) stays empty.
 
 ## `check` and `fix`

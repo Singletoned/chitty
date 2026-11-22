@@ -1078,11 +1078,11 @@ class TestAddShowList(CliTestCase):
         self.assertEqual(
             listed.stdout.splitlines(),
             [
-                "TASK-3  📋 todo   ⬆️  High",
+                "TASK-3  📋 todo   ⏫  High",
                 "TASK-1  📋 todo       Unset",
-                "TASK-4  📋 todo   ⏺️  Medium",
-                "TASK-2  📋 todo   ⬇️  Low",
-                "TASK-5  🔨 doing  ⬆️  Doing high",
+                "TASK-4  📋 todo   ➖  Medium",
+                "TASK-2  📋 todo   ⏬  Low",
+                "TASK-5  🔨 doing  ⏫  Doing high",
             ],
         )
         tasks = self.json("list")
@@ -1196,10 +1196,10 @@ class TestAddShowList(CliTestCase):
             [
                 "TASK-1   💤 bklog  🚧  Backlog",
                 "TASK-8   📝 plan   🔗  Planning",
-                "TASK-12  📝 plan   ⚠️  Planning broken",
+                "TASK-12  📝 plan   💔  Planning broken",
                 "TASK-9   🔎 cold   🔗  Cold read",
                 "TASK-3   📋 todo   🔗  Waiting",
-                "TASK-4   📋 todo   ⚠️  Broken",
+                "TASK-4   📋 todo   💔  Broken",
                 "TASK-5   📋 todo   👤  Human",
                 "TASK-6   🔨 doing  🔗  Doing",
                 "TASK-10  🔨 doing  🔗  Doing waiting",
@@ -1212,7 +1212,7 @@ class TestAddShowList(CliTestCase):
         self.assertIn("warning: TASK-12 depends on TASK-99", listed.stderr)
         entries = {entry["id"]: entry for entry in self.json("list", "--all")}
         self.assertEqual(entries["TASK-3"]["skipped"], "🔗 waits on TASK-1")
-        self.assertTrue(entries["TASK-4"]["skipped"].startswith("⚠️ TASK-4 depends on TASK-99"))
+        self.assertTrue(entries["TASK-4"]["skipped"].startswith("💔 TASK-4 depends on TASK-99"))
         self.assertEqual(entries["TASK-11"]["skipped"], "👤 agent")
         for task_id in ("TASK-8", "TASK-9", "TASK-10", "TASK-12"):
             self.assertIsNone(entries[task_id]["skipped"])

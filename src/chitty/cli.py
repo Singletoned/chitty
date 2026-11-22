@@ -47,9 +47,9 @@ from chitty.model import (
 )
 from chitty.run import RunInterrupted, run_loop
 from chitty.run import run as run_next
+from chitty.selection import BROKEN_DEPENDENCY_GLYPH
 from chitty.store import (
     summary_sections,
-    BROKEN_DEPENDENCY_GLYPH,
     Change,
     Edit,
     Repo,

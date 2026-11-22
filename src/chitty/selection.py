@@ -46,6 +46,10 @@ PRIORITY_RANK = {"high": 0, "medium": 1, None: 1, "low": 2}
 UNTESTABLE_OWNER = "untestable"
 DEPENDENCY_GLYPH = "🔗"
 BLOCKER_GLYPH = "🚧"
+BROKEN_DEPENDENCY_GLYPH = "💔"
+HUMAN_GLYPH = "👤"
+UNTESTABLE_GLYPH = "🙋"
+RUNNING_GLYPH = "🏃"
 
 
 def blocking_ids(facts: Iterable[TicketFacts]) -> set[str]:
@@ -80,12 +84,12 @@ def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
     if fact.archived or fact.status not in STATUS_RANK:
         return None
     if fact.locked:
-        return "▶ running"
+        return f"{RUNNING_GLYPH} running"
     if fact.context == "human" or fact.owner == "human":
         return "👤 human"
     if include_owner and fact.owner is not None:
         # Give planners' untestable tickets a distinct list marker.
-        glyph = "✍️" if fact.owner == UNTESTABLE_OWNER else "👤"
+        glyph = UNTESTABLE_GLYPH if fact.owner == UNTESTABLE_OWNER else HUMAN_GLYPH
         return f"{glyph} {fact.owner}"
     if fact.status != "todo":
         return None
@@ -99,7 +103,10 @@ def dependency_marker(fact: TicketFacts) -> str | None:
     unfinished: list[str] = []
     for dependency in fact.dependencies:
         if dependency.state == "broken":
-            return f"⚠️ {fact.id} depends on {dependency.reference}: {dependency.error}"
+            return (
+                f"{BROKEN_DEPENDENCY_GLYPH} {fact.id} depends on "
+                f"{dependency.reference}: {dependency.error}"
+            )
         if dependency.state == "unfinished":
             unfinished.append(dependency.reference)
     if unfinished:

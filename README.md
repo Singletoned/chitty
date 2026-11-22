@@ -93,10 +93,10 @@ Plain `chitty list` shows non-archived `planning`, `cold-read`, `todo`, `doing`,
 done tickets. Each row shows the status as a glyph and at most five letters: `💤 bklog`,
 `📝 plan`, `🔎 cold`, `📋 todo`, `🔨 doing`, `⛔ blckd`, `👀 revw`, or `✅ done`, then
 the priority
-as `⬆️` high, `⏺️` medium or `⬇️` low. Titles are cut with `…` so rows fit in
+as `⏫` high, `➖` medium or `⏬` low. Titles are cut with `…` so rows fit in
 `list_width` columns (100 unless `chitty.toml` sets it). Rows skipped by
-`chitty next` carry a glyph in a column before the title: `👤` owned or human, `✍️` untestable,
-`🔗` waiting on a dependency, `▶` running, or `⚠️` a broken dependency, whose
+`chitty next` carry a glyph in a column before the title: `👤` owned or human, `🙋` untestable,
+`🔗` waiting on a dependency, `🏃` running, or `💔` a broken dependency, whose
 message goes to stderr, or `🚧` for an active ticket with waiting dependents
 and no unfinished or broken dependencies of its own. Existing skip and
 dependency markers take precedence. `--json` gives the full reason as `skipped`. Review is required before `done` by default.
@@ -160,7 +160,7 @@ UTC start time. `chitty show` reports a held ticket as `running: <mode> by
 <actor>, process <pid>, since <HH:MM>` (local time), or `running: you (<actor>,
 <mode>, process <pid>, since <HH:MM>)` when the actor is this session's
 `CHITTY_ACTOR`; `--json` and MCP show give the same answer as `"you"`. `chitty
-list` marks it `▶`; `chitty next` and other runs skip it and `--ticket` refuses it
+list` marks it `🏃`; `chitty next` and other runs skip it and `--ticket` refuses it
 with the holder's process ID. Locks are machine-local. The sessions all update
 main checkout during setup and review merges, so a Git lock or
 dirty file collision fails loudly; rerun the affected session. `--mode` cannot be
