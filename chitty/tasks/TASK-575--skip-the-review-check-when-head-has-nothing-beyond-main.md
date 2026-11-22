@@ -1,6 +1,6 @@
 ---
 title: Skip the review check when HEAD has nothing beyond main
-status: doing
+status: review
 created: 2026-11-22
 ---
 
@@ -94,3 +94,4 @@ Implemented runner ancestry check and workflow and merge guards. Regression fail
 - 2026-11-22T15:06:06Z quick-fawn-falcon: wrote the plan
 - 2026-11-22T15:06:40Z quick-fawn-falcon: changed notes
 - 2026-11-22T15:09:48Z quick-fawn-falcon: changed summary
+- 2026-11-22T15:11:26Z quick-fawn-falcon doing → review
