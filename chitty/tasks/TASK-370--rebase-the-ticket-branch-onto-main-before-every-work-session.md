@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: planning
+status: todo
 labels:
   - bug
   - needs-minor
@@ -20,7 +20,7 @@ Principle (decided 2026-11-18, `docs/plan/ticket-state.md`): `main` is the base 
 
 A work session today runs on whatever the ticket branch last had: work mode in `src/chitty/run.py` never brings in `main`, so workers build on code behind `main`, and `setup` and `check` test code that is not what would land. (Seen overnight 2026-11-21: `task-519` was 120 commits behind and missed a function its ticket relied on; a planner rebased it by hand.)
 
-Split 2026-11-22 so each part fits one worker session, ordered so every landing leaves the runner safe: this ticket rebases on the normal path; `TASK-540` makes a conflict start the agent on the stopped rebase; `TASK-541` records a rebase failure that is not a conflict; `TASK-525` reports saved work that cannot be restored. `git.save_work`, `git.restore_work` (`TASK-524`, `TASK-534`) and `git.rebase_onto` have landed in `src/chitty/git.py` (rechecked 2026-11-22).
+Split 2026-11-22 so each part fits one worker session, ordered so every landing leaves the runner safe: this ticket rebases on the normal path, tested on `doing` tickets; `TASK-545` adds `todo` and `error` tickets; `TASK-540` makes a conflict start the agent on the stopped rebase; `TASK-541` records a rebase failure that is not a conflict; `TASK-525` reports saved work that cannot be restored. `git.save_work`, `git.restore_work` (`TASK-524`, `TASK-534`) and `git.rebase_onto` have landed in `src/chitty/git.py` (rechecked 2026-11-22).
 
 Decisions:
 
@@ -34,18 +34,17 @@ Decisions:
 
 Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_review_merge.py` (its `ReviewMergeTestCase` gives a fake agent and Git helpers). The fake agent records, when it starts, `git log --format=%s`, `git status --porcelain`, `git stash list` and `git for-each-ref refs/chitty/stash` of its worktree into a marker file.
 
-1. Clean rebase: a `doing` ticket whose branch exists, then a new commit on `main` touching another file. After a work run, `git merge-base --is-ancestor main task-<n>` succeeds, `git rev-list main..task-<n>` lists only the branch's own commits, and the agent's recorded `git log` includes `main`'s new commit.
+1. Clean rebase: a `doing` ticket whose branch exists, then a new commit on `main` touching another file, with `setup` set to a fake command that records `git log --format=%s` of its worktree to a file. After a work run, setup's recorded log includes `main`'s new commit (so the rebase ran before setup), `git merge-base --is-ancestor main task-<n>` succeeds, `git rev-list main..task-<n>` lists only the branch's own commits, and the agent's recorded `git log` includes `main`'s new commit.
 2. Saved work: as 1, plus, in the worktree before the run, an unstaged edit to a tracked file, a staged edit and an untracked file, and one `git stash push` made beforehand in the main checkout. When the agent starts, all three files have their pre-run contents (content only; the staged edit comes back unstaged, as `restore_work` does), `refs/chitty/stash/TASK-<n>` does not exist, and `git stash list` equals the list from before the run.
 3. Conflict (interim behaviour until `TASK-540`): `main` and the branch change the same line of one file. The run starts the agent with no rebase in progress, the branch tip is unchanged, and the saved-work ref does not exist.
 
-4. `todo` with an existing branch: `TASK-<n>` is `todo` on `main` and has a branch `task-<n>` with one code commit, then `main` gains a commit touching another file. After a work run, the branch contains `main`'s new commit, the claim commit (`doing`) is on the branch, and the agent records the ticket as `doing` in its worktree.
 5. Non-conflict failure (interim until `TASK-541`): as 2 but with `chitty.git.rebase_onto` patched to raise `ChittyError("boom")`. The run exits 1 with `boom` on stderr, no agent starts, the uncommitted files have their pre-run contents, and `refs/chitty/stash/TASK-<n>` does not exist.
 
-No property: real Git and runner processes over fixed cases. Cases 1, 2 and 4 fail before the change on their rebase assertions (ancestor and `git log`), and case 5 fails because no error is raised; case 2's saved-work assertions, and case 3, are guards that already pass today and must still pass. Record in the fake agent's marker file the same way `ReviewMergeTestCase`'s fake agent writes its report (its `REPORT` script in `tests/test_review_merge.py`).
+No property: real Git and runner processes over fixed cases. Cases 1 and 2 fail before the change on their rebase assertions (ancestor and `git log`), and case 5 fails because no error is raised; case 2's saved-work assertions, and case 3, are guards that already pass today and must still pass. Record in the fake agent's marker file the same way `ReviewMergeTestCase`'s fake agent writes its report (its `REPORT` script in `tests/test_review_merge.py`).
 
 ## Acceptance Criteria
 
-- [ ] Cases 1, 2, 4 and 5 in the Description pass, and each fails before the change
+- [ ] Cases 1, 2 and 5 in the Description pass, and each fails before the change (case 1 also shows setup saw `main`'s commit)
 - [ ] Case 3 passes; the `docs/plan/next-action-and-runner.md` bullet is updated
 - [ ] `make check` passes
 
@@ -80,6 +79,8 @@ Replanned 2026-11-22: added case 4 (`todo` ticket with an existing branch) and c
 Work paused after inspecting the runner call site, Git helpers and review test fixture. The plan is recorded; no implementation or regression tests have been written, and fail-before evidence and make check remain outstanding.
 
 Planning needed: the description requires the rebase before setup for every work-mode status, but cases 1, 2 and 4 only observe the branch after the run or at agent start; none observes setup. An implementation that rebases after setup would pass them while violating the requirement. Specify a real-Git setup fixture, action and assertions proving setup sees the rebased branch. The prescribed cases cover doing and todo but not error repair: an implementation that skips rebasing error tickets would also pass. Specify a fixture, action and assertions for an error ticket proving its work session rebases before setup. The existing claim tests cover todo/doing and failure, not error-mode rebase (tests/test_run_claims_on_branch.py); src/chitty/run.py selects error for repair and runs the same work setup path. The five described cases otherwise identify the relevant success, conflict, saved-work and non-conflict failure checks; git.rebase_onto, save_work and restore_work exist. No implementation or tests were written, so fail-before evidence, runtime behavior and make check could not be verified. Decide and specify the missing tests before implementation; the prescribed tests alone do not verify the stated scope and ordering.
+
+Replanned 2026-11-22: setup now records its `git log` in case 1; the `todo` and `error` status cases moved to `TASK-545`.
 
 ## History
 
@@ -143,3 +144,5 @@ Planning needed: the description requires the rebase before setup for every work
 - 2026-11-22T01:45:43Z witty-violet-badger: changed notes
 - 2026-11-22T01:46:04Z witty-violet-badger: changed owner, notes
 - 2026-11-22T01:46:04Z witty-violet-badger doing → planning
+- 2026-11-22T01:47:40Z lively-zinc-newt: changed description, acceptance criteria, notes
+- 2026-11-22T01:47:40Z lively-zinc-newt planning → todo
