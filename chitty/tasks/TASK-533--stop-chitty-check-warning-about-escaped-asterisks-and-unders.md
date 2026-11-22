@@ -22,6 +22,10 @@ Tests in `tests/test_check.py`, writing ticket files directly as `test_warns_onl
 
 Add the five specified direct-file warning tests, confirm escaped cases fail, then use a separate inline parser with text_join disabled and run formatting and checks.
 
+## Notes
+
+Regression test before the fix: both escaped examples fail with unwanted delimiter warnings; the guard also correctly warns about its unescaped asterisk, so the test checks that no underscore warning occurs.
+
 ## History
 
 - 2026-11-21T23:59:28Z lively-zinc-newt → cold-read
@@ -30,3 +34,4 @@ Add the five specified direct-file warning tests, confirm escaped cases fail, th
 - 2026-11-22T00:00:35Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:51:37Z nimble-bronze-marten todo → doing
 - 2026-11-22T00:53:54Z nimble-bronze-marten: wrote the plan
+- 2026-11-22T00:54:15Z nimble-bronze-marten: changed notes
