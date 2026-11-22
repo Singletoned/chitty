@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: error
+status: review
 labels:
   - question
 depends_on:
@@ -81,3 +81,4 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T12:56:15Z human blocked → review
 - 2026-11-22T14:23:45Z zesty-yellow-otter: changed notes
 - 2026-11-22T14:23:45Z zesty-yellow-otter review → error
+- 2026-11-22T15:32:59Z human error → review
