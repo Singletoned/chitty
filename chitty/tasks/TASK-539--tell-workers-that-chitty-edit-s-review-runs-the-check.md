@@ -1,6 +1,6 @@
 ---
 title: Tell workers that `chitty edit -s review` runs the check
-status: review
+status: done
 depends_on:
   - TASK-538
 created: 2026-11-22
@@ -24,6 +24,9 @@ Update the work guide and its focused assertion, verify the test fails before th
 
 The updated guide assertion failed against the old guide before the wording change, as expected.
 
+Reviewed: Guide and focused assertion match the requested wording.
+1: pass - `make check` reported 1089 tests OK, ruff and pyright passed. Running `.venv/bin/python -m unittest tests.test_guide_work_commits` with the main-branch guide restored temporarily printed FAILED (failures=1), missing the new phrase; the updated guide passes in `make check`. The old assertions and sentence are absent from the diff.
+
 ## Summary
 
 Updated the work guide and its assertion. The focused test failed before the wording change; make check passed afterward.
@@ -37,3 +40,5 @@ Updated the work guide and its assertion. The focused test failed before the wor
 - 2026-11-22T02:43:21Z quick-umber-eel: changed notes
 - 2026-11-22T02:44:58Z quick-umber-eel: changed summary
 - 2026-11-22T02:46:28Z quick-umber-eel doing → review
+- 2026-11-22T02:52:05Z friendly-yellow-adder: changed notes
+- 2026-11-22T02:52:05Z friendly-yellow-adder review → done
