@@ -1,6 +1,6 @@
 ---
 title: Apply provisional renumbering as one store transaction
-status: doing
+status: review
 depends_on:
   - TASK-391
   - TASK-507
@@ -46,6 +46,10 @@ Split again 2026-11-22 after a cold read: the in-memory prepare step is `TASK-54
 
 The transaction regression fails against the requested signature stub with NotImplementedError.
 
+## Summary
+
+Implemented the single-commit renumbering transaction and real-Git regression. The regression failed against the signature stub; make check passes.
+
 ## History
 
 - 2026-11-21T18:33:02Z eager-ginger-adder → backlog
@@ -63,3 +67,5 @@ The transaction regression fails against the requested signature stub with NotIm
 - 2026-11-22T03:04:32Z upbeat-bronze-newt todo → doing
 - 2026-11-22T03:07:07Z upbeat-bronze-newt: wrote the plan
 - 2026-11-22T03:07:43Z upbeat-bronze-newt: changed notes
+- 2026-11-22T03:13:19Z upbeat-bronze-newt: changed summary
+- 2026-11-22T03:13:19Z upbeat-bronze-newt doing → review
