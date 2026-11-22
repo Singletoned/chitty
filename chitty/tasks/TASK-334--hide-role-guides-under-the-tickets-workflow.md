@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -13,20 +13,23 @@ created: 2026-11-14
 
 ## Description
 
-Under `workflow = "tickets"` (the resolved `config.workflow` from TASK-330), hide the role guides.
+Under `workflow = "tickets"` (the resolved `RepoConfig.workflow`), hide the role guides. Replanned 2026-11-22 against `main`: `ROLE_NAMES` in `src/chitty/store.py` now has seven roles (`work`, `review`, `repair`, `plan`, `cold-read`, `setup`, `rebase`) and `guide` takes a keyword-only `directory`.
 
-- `chitty guide` with no role still prints the managed block (TASK-332 decides its text).
-- Every role in `ROLE_NAMES` (`work`, `review`, `repair`, `plan`, `cold-read`, `setup`) is unavailable: `chitty guide <role> [ID]` exits 1 with `chitty guide <role> needs workflow = "runner" in the Chitty config`, and `chitty guide --help` shows only the plain `chitty guide` example, with no role examples or the line about which roles take an ID.
-- Put the refusal in `guide(role, workflow, ticket_id)` in `src/chitty/store.py`. `workflow` is a required parameter with no default, so every caller decides; update the existing callers and tests (about 20 test files pass `"runner"`). `src/chitty/run.py` passes `repo.config.workflow`; under `tickets` TASK-333 already refuses `run` before it reaches this.
-- When no config is found, behave as `runner`, as today. When the config fails to load, `chitty guide` and `chitty guide <role>` report the config error and exit 1, like other commands; only `chitty guide --help` falls back to the runner help, so help still works while diagnosing a broken config (the same rule as TASK-333).
-- TASK-335 adds `workflow = "runner"` to `tests/support.py`; do not add it again.
-- No property test: a small fixed set (six roles, two workflows, no repository), each case tested. Tests go in `tests/test_guide_workflow.py`.
+Decisions:
+
+- `chitty guide` with no role is unchanged (`repository_guide`).
+- Add a keyword-only parameter `workflow: str` with no default to `guide(role, ticket_id=None, *, directory)` in `src/chitty/store.py`. When `workflow != "runner"`, it raises `ChittyError(f'chitty guide {role} needs workflow = "runner" in the Chitty config')` after the unknown-role check and before anything else. Update every caller: the three in `src/chitty/run.py` (around line 978) pass `repo.config.workflow`; tests that call `guide(` pass `workflow="runner"`.
+- `guide_` in `src/chitty/cli.py` passes `configured_workflow(Path.cwd())`, or `"runner"` when that returns `None` (outside a repository). A config that fails to load raises from `configured_workflow`, so `chitty guide` with a role exits 1 with the config error. `chitty guide` with no role already does the same through `repository_guide`.
+- `chitty guide --help` under `tickets` shows only the plain `chitty guide` example line: no role example lines and no line about which roles take an ID. Do this with a `click.Command` subclass for `guide_` that uses the existing `_tickets_workflow()` in `cli.py`, which already treats a broken or missing config as runner, so help still works while diagnosing a broken config (the rule `RUNNER_COMMANDS` follows).
+- The old branch `task-334` (commit `c7ed80f`) predates the seventh role and the `directory` parameter. Use it as a reference, but the result must match current `main`.
+
+Tests in `tests/test_guide_workflow.py` (it exists on the branch; create it if the rebase drops it), with `CliRunner` in temporary repositories as `RepoTestCase` sets up. No property: a fixed set of seven roles, two workflows and outside a repository, each case tested. The runner cases do not compare against a captured baseline: a snapshot of guide text would break whenever a guide changes, and the branch's merge with `main` made the baseline ambiguous (2026-11-21 review).
 
 ## Acceptance Criteria
 
-- [x] In a temp repository with `workflow = "tickets"`, for each of the six roles, `chitty guide <role>` exits 1, prints nothing on stdout, and prints the message naming the role and `workflow = "runner"` on stderr. Fails today.
-- [x] Under `tickets`, `chitty guide` exits 0 and prints the managed block, and `chitty guide --help` mentions no role name.
-- [ ] Under `runner`, and outside a repository, `chitty guide`, each role with and without `TASK-1`, and `chitty guide --help` give the same stdout, stderr and exit code as at the commit before this change (capture them there first). With a config that fails to load, `chitty guide work` exits 1 with the config error and `chitty guide --help` shows the runner help. `make check` passes.
+- [ ] In a temporary repository with `workflow = "tickets"`, for each role in `ROLE_NAMES`, `chitty guide <role>` and (for roles other than `plan` and `setup`) `chitty guide <role> TASK-1` exit 1, print nothing on stdout, and print `chitty guide <role> needs workflow = "runner" in the Chitty config` on stderr; this fails before the change
+- [ ] Under `tickets`, `chitty guide` exits 0 and prints `managed_guide("tickets")`, and `chitty guide --help` exits 0, contains `chitty guide` and contains no role name from `ROLE_NAMES`; this fails before the change
+- [ ] With `workflow = "runner"`, and in a directory outside any repository, each role with and without `TASK-1` (where accepted) exits 0 with empty stderr and stdout containing the first line of `src/chitty/roles/<role>.md`, and `chitty guide --help` contains every example line of the current help; with an invalid `workflow` value, `chitty guide work` exits 1 naming `workflow` and `chitty guide --help` still shows the runner examples; `make check` passes
 
 ## Plan
 
@@ -70,3 +73,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-16T11:13:52Z honest-hazel-yellowhammer: wrote the plan
 - 2026-11-16T11:14:42Z honest-hazel-yellowhammer: changed owner, notes
 - 2026-11-16T11:14:42Z honest-hazel-yellowhammer doing → planning
+- 2026-11-22T09:47:18Z friendly-jade-stoat: changed description, acceptance criteria
+- 2026-11-22T09:47:18Z friendly-jade-stoat planning → cold-read
