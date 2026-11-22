@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty check` warning about escaped asterisks and underscores
-status: review
+status: done
 created: 2026-11-21
 ---
 
@@ -26,6 +26,9 @@ Add the five specified direct-file warning tests, confirm escaped cases fail, th
 
 Regression test before the fix: both escaped examples fail with unwanted delimiter warnings; the guard also correctly warns about its unescaped asterisk, so the test checks that no underscore warning occurs.
 
+Reviewed:
+1: pass - `make check` printed OK for 1068 tests; `test_escaped_and_unescaped_delimiters` exercises all five examples. Running that test with `MARKDOWN_DELIMITERS` replaced by the original `MARKDOWN` parser printed FAILED (failures=2), for the two escaped examples.
+
 ## Summary
 
 Added a separate delimiter parser and regression coverage for escaped, unescaped and intraword delimiters. Both escaped cases failed before the fix. make check passes (1068 tests).
@@ -41,3 +44,5 @@ Added a separate delimiter parser and regression coverage for escaped, unescaped
 - 2026-11-22T00:54:15Z nimble-bronze-marten: changed notes
 - 2026-11-22T00:55:59Z nimble-bronze-marten: changed summary
 - 2026-11-22T00:56:01Z nimble-bronze-marten doing → review
+- 2026-11-22T01:00:48Z friendly-navy-gannet: changed notes
+- 2026-11-22T01:00:48Z friendly-navy-gannet review → done
