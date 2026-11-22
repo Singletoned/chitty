@@ -5,8 +5,6 @@ task files. `chitty --help` is the full command reference.
 
 On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, or run `chitty init`.
 
-- When you write a literal single `*` in Markdown, escape it or enclose the
-  pattern in backticks, for example `files/*.jpg`.
 
 - Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.
 - Work on one ticket per session. Start with `chitty show <ID>`.

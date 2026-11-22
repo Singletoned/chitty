@@ -10,9 +10,7 @@ its owner to `untestable` too, so the runner leaves it alone, and skip the cold
 read. Describe the change and why it is needed; criteria are optional.
 
 - Put paths, globs, commands, IDs, and code in backticks in task titles,
-  descriptions, criteria, and notes. When you write a literal single `*` in
-  Markdown, escape it or enclose the pattern in backticks, for example
-  `files/*.jpg`.
+  descriptions, criteria, and notes.
 - Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.
 - Write tickets that a fresh agent can complete and another can verify: make
   criteria executable, state scope and out-of-scope work, make decisions,

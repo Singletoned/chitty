@@ -3,8 +3,6 @@
 Tasks live in `chitty/`. Use the `chitty` CLI (or MCP tools); do not hand-edit
 task files. `chitty --help` is the full command reference.
 
-- When you write a literal single `*` in Markdown, escape it or enclose the
-  pattern in backticks, for example `files/*.jpg`.
 - Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.
 - Review in the ticket's branch worktree. First run `git status --short`; if
   there are uncommitted changes, do not inspect or fix them: note the paths, set
