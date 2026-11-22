@@ -1,6 +1,6 @@
 ---
 title: Keep the section-name type test's probe file out of the Git work tree
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-22
@@ -19,3 +19,4 @@ Fix: create the temporary directory under the repository's ignored `tmp/` direct
 ## History
 
 - 2026-11-22T05:15:59Z lively-zinc-newt → todo
+- 2026-11-22T05:23:03Z golden-teal-marten todo → doing
