@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -85,3 +85,4 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-22T09:54:34Z friendly-jade-stoat: changed description, acceptance criteria
 - 2026-11-22T09:54:34Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T09:54:35Z friendly-jade-stoat planning → todo
+- 2026-11-22T10:04:01Z eager-coral-wren todo → doing
