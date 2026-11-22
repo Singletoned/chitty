@@ -26,7 +26,7 @@ No property and no new test: a move that changes no behaviour; the existing test
 
 ## Plan
 
-Move the specified helpers and their dependencies into commands.py, update imports and callers without changing behavior, then run the specified tests and checks.
+Correct the remaining test import to use commands, then run fix, formatting and checks before returning for review.
 
 ## Notes
 
@@ -58,3 +58,4 @@ Moved logged command helpers into commands.py and updated callers. make check pa
 - 2026-11-22T00:50:07Z golden-bronze-gannet doing → review
 - 2026-11-22T00:55:19Z upbeat-coral-jay: changed acceptance criteria, notes
 - 2026-11-22T00:55:19Z upbeat-coral-jay review → doing
+- 2026-11-22T00:59:34Z jolly-fawn-stoat: wrote the plan
