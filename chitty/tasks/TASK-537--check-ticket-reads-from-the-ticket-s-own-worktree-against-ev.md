@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads from the ticket's own worktree against every placement
-status: doing
+status: review
 labels:
   - question
 depends_on:
@@ -69,3 +69,4 @@ Added table-driven own-worktree placement coverage and current-branch mutant det
 - 2026-11-22T02:16:52Z daring-quartz-newt: wrote the plan
 - 2026-11-22T02:17:33Z daring-quartz-newt: changed notes
 - 2026-11-22T02:19:46Z daring-quartz-newt: changed summary
+- 2026-11-22T02:19:49Z daring-quartz-newt doing → review
