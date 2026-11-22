@@ -42,6 +42,10 @@ Owner decision, 2026-11-22: (A) refuse, naming the newer copy. Rewritten to matc
 
 The property and six examples failed against the NotImplementedError stub as required.
 
+## Summary
+
+Implemented pure refusal message selection with property coverage and six literal examples. Tests failed against the stub; make check passed.
+
 ## History
 
 - 2026-11-22T02:28:29Z lively-zinc-newt → cold-read
@@ -57,3 +61,4 @@ The property and six examples failed against the NotImplementedError stub as req
 - 2026-11-22T14:53:46Z golden-bronze-dormouse todo → doing
 - 2026-11-22T14:56:34Z golden-bronze-dormouse: wrote the plan
 - 2026-11-22T14:57:13Z golden-bronze-dormouse: changed notes
+- 2026-11-22T14:59:08Z golden-bronze-dormouse: changed summary
