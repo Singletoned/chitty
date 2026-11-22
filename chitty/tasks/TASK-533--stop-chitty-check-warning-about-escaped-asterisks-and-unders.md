@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty check` warning about escaped asterisks and underscores
-status: todo
+status: doing
 created: 2026-11-21
 ---
 
@@ -24,3 +24,4 @@ Tests in `tests/test_check.py`, writing ticket files directly as `test_warns_onl
 - 2026-11-21T23:59:45Z lively-zinc-newt: changed description
 - 2026-11-22T00:00:35Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:00:35Z lively-zinc-newt cold-read → todo
+- 2026-11-22T00:51:37Z nimble-bronze-marten todo → doing
