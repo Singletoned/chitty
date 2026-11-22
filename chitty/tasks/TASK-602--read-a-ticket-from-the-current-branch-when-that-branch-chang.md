@@ -13,13 +13,20 @@ Today `ticket_source` (`src/chitty/ticket_source.py`) looks only at `main` and t
 
 Decisions, for a checkout on a branch `B` that is neither the configured main branch nor the ticket's own branch (`str(task_id).lower()`), and only when `main` has a tip:
 
-- Work out, for this ticket's paths (as `changed_on_both` in `Repo._choose_source` already gathers them), whether `B` changed them since it split from `main` and whether `main` changed them since the split, with `git.changed_since_split` (`src/chitty/git.py`).
-- Pass both answers to `ticket_source` as two new boolean arguments, `current_changed` and `main_changed`, and apply, before today's candidate logic:
-  - `B` changed it and `main` did not: `WORKING_TREE`.
-  - Neither changed it: `WORKING_TREE` (the copies are the same, and edits then go to `B`).
-  - `main` changed it and `B` did not: fall through to today's logic (which gives `main`, or a ticket branch ahead of it).
-  - Both changed it: raise `ChittyError` `ticket <id> changed on both <B> and <main>; rebase <B> onto <main>` (backticks around the id and branch names, as the existing `changed on both` message has).
-  - If a ticket-branch candidate ahead of `main` exists and `B` changed the ticket, raise `ChittyError` `ticket <id> changed on both <B> and <ticket branch>`; if `B` did not change it, today's logic applies (the ticket branch wins).
+- Paths: the ticket's files in `B`'s working tree (`Repo._working_ticket_files`) together with its files on `main` (`Repo._ref_ticket_files(main_ref, task_id)`), so a ticket `B` added or renamed is included.
+- `current_changed`: `git.changed_since_split(root, "HEAD", main_ref, paths)` (`B` changed the ticket since it split from `main`). `main_changed`: `git.changed_since_split(root, main_ref, "HEAD", paths)`. Both are computed only in this case; elsewhere they are `False`.
+- `ticket_source` gains two keyword-only parameters after `changed_on_both`, `current_changed: bool` and `main_changed: bool`; `changed_on_both` stays as it is (it compares a ticket branch with `main`). With `K` meaning "a ticket-branch candidate not contained in `main` exists" (today's `candidates` after filtering), the result for such a `B` is:
+
+  | `current_changed` | `main_changed` | `K` | result |
+  |---|---|---|---|
+  | yes | no | no | `WORKING_TREE` |
+  | yes | yes | no | raise `ticket <id> changed on both <B> and <main>; rebase <B> onto <main>` |
+  | yes | either | yes | raise `ticket <id> changed on both <B> and <K's ref>` |
+  | no | no | no | `WORKING_TREE` (the copies are the same; edits then go to `B`) |
+  | no | yes | no | today's logic: `main` |
+  | no | either | yes | today's logic: the ticket branch wins |
+
+  Ids and branch names in the messages are in backticks, as the existing `changed on both` message has them. A fresh `B` with no commits since the split, or one behind `main` that has not touched the ticket, falls in the `no` rows.
 - On `main` itself, and on the ticket's own branch, nothing changes.
 - Writes follow the chosen source, as today: when the source is `WORKING_TREE`, `chitty edit` on `B` writes and commits there.
 
@@ -27,14 +34,15 @@ Out of scope: landing a planning branch (`TASK-340`), and the cold-read guide's 
 
 Tests:
 
-- Pure, in `tests/test_property_ticket_source.py`: extend the existing property strategies with the two booleans and a current branch that is neither main nor the ticket branch, and assert the table above (including that the old behaviour holds whenever `current_branch` is main or the ticket branch, whatever the booleans).
-- Real Git, in a new `tests/test_source_current_branch.py` with `RepoTestCase`: a repository with `TASK-1` and `TASK-2` committed on `main`; a branch `plan-a` in a linked worktree. (a) On `plan-a`, `chitty edit TASK-1 --title "Branch title"`; then `chitty show TASK-1` in that worktree prints `Branch title`, and in the main checkout prints the old title. (b) Commit a change to `TASK-2` on `main`; `chitty show TASK-2` in the `plan-a` worktree prints `main`'s new copy. (c) Then change `TASK-2` on `plan-a` too (commit with `git` directly): `chitty show TASK-2` there fails with the both-changed message. (d) `TASK-3` with a `task-3` branch ahead of `main`: on `plan-a`, `chitty show TASK-3` gives the `task-3` copy.
+- Pure, in `tests/test_property_ticket_source.py`: extend the existing strategies so a drawn case can have a current branch that is neither main nor the ticket branch, both booleans drawn, and with and without a ticket-branch candidate ahead of `main` (all eight combinations reachable; use `hypothesis.example` for each so every row is exercised). Assert the table above, and that the result equals today's whenever `current_branch` is main or the ticket branch, whatever the booleans.
+- Real Git, in a new `tests/test_source_current_branch.py` with `RepoTestCase`: a repository with `TASK-1` and `TASK-2` committed on `main`; a branch `plan-a` in a linked worktree. (a) On `plan-a`, `chitty edit TASK-1 --title "Branch title"`; then `chitty show TASK-1` in that worktree prints `Branch title`, and in the main checkout prints the old title. (b) Commit a change to `TASK-2` on `main`; `chitty show TASK-2` in the `plan-a` worktree prints `main`'s new copy. (c) Then change `TASK-2` on `plan-a` too (commit with `git` directly; `TASK-2` has no ticket branch): `chitty show TASK-2` there fails with the `main` both-changed message. (e) A fresh branch `plan-b` from `main` with no commits: `chitty show TASK-1` there prints `main`'s copy and `chitty edit TASK-1 --title X` there commits on `plan-b`. (d) `TASK-3` with a `task-3` branch ahead of `main`: on `plan-a`, `chitty show TASK-3` gives the `task-3` copy.
 
 ## Acceptance Criteria
 
-- [ ] The extended property and the four real-Git cases pass; the property and cases (a) and (c) fail before the change; record both runs in a note
+- [ ] The extended property (every table row exercised) and the five real-Git cases pass; the property and cases (a), (c) and (e) fail before the change; record both runs in a note
 - [ ] All existing `ticket_source` and source-copy tests pass unchanged; `make check` passes
 
 ## History
 
 - 2026-11-22T22:51:27Z plucky-umber-wren → cold-read
+- 2026-11-22T22:53:28Z plucky-umber-wren: changed description, acceptance criteria
