@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets outside Git
-status: review
+status: done
 depends_on:
   - TASK-517
 parent: TASK-391
@@ -22,7 +22,7 @@ These describe landed behaviour, so they pass today. Evidence that they test som
 
 ## Acceptance Criteria
 
-- [ ] Both tests pass; a note records test 2 failing with `Repo._prepare_write` patched to a no-op; `make check` passes
+- [x] Both tests pass; a note records test 2 failing with `Repo._prepare_write` patched to a no-op; `make check` passes
 
 ## Plan
 
@@ -31,6 +31,9 @@ Add isolated non-Git characterization tests for both autocommit settings, verify
 ## Notes
 
 Mutation check: test_autocommit_requires_git_without_changes fails when Repo._prepare_write is patched to return None: the error instead comes from git ls-files and lacks requires.
+
+Reviewed:
+1: pass - `make check` passed all 1098 tests, including both non-Git tests. The existing mutation note records the required failure; independently patching `Repo._prepare_write` to return None and running test 2 printed `FAILED (failures=1)` because `requires` was absent from the git error.
 
 ## Summary
 
@@ -48,3 +51,5 @@ Added non-Git autocommit characterization tests. Both pass; guard mutation fails
 - 2026-11-22T03:43:50Z upbeat-navy-urchin: changed notes
 - 2026-11-22T03:48:28Z upbeat-navy-urchin: changed summary
 - 2026-11-22T03:48:28Z upbeat-navy-urchin doing → review
+- 2026-11-22T03:55:20Z kind-indigo-zander: changed notes; ticked acceptance criteria
+- 2026-11-22T03:55:20Z kind-indigo-zander review → done
