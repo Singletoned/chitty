@@ -1924,8 +1924,20 @@ class TestCheck(CliTestCase):
         self.assertIn("warning:", result.stdout)
         self.assertIn("chitty/tasks/TASK-1--many.md", result.stdout)
 
+    def test_literal_asterisks_in_supplied_text(self):
+        text = "files/*.jpg and `x*y`"
+        expected = r"files/\*.jpg and `x*y`"
+        self.run_cli("add", "Glob", "-d", text)
+        path = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
+        self.assertIn(expected, path.read_text())
+        for count, option in enumerate(("--note", "--ac", "--summary"), start=2):
+            self.run_cli("edit", "1", option, text)
+            self.assertEqual(path.read_text().count(expected), count)
+
     def test_warning_does_not_fail_check(self):
-        self.run_cli("add", "Glob", "-d", "static/photos/*.jpg")
+        self.run_cli("add", "Glob", "-d", "placeholder")
+        path = next((self.root / "chitty/tasks").glob("TASK-1--*.md"))
+        path.write_text(path.read_text().replace("placeholder", "static/photos/*.jpg"))
 
         result = self.run_cli("check")
 

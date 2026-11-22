@@ -33,6 +33,7 @@ from chitty.config import (
 )
 from chitty.errors import ChittyError, ManagedGuideError, NoNextTicket, ProvisionalOffMain
 from chitty.ids import TaskId
+from chitty.markdown import escape_literal_asterisks
 from chitty.model import (
     DESCRIPTION,
     HISTORY,
@@ -204,29 +205,31 @@ class Edit:
         if self.parent is not None:
             task = task.with_field("parent", self.parent or None)
         if self.description is not None:
-            task = task.with_section(DESCRIPTION, self.description)
+            task = task.with_section(DESCRIPTION, escape_literal_asterisks(self.description))
         if self.replace_in_description:
             task = task.with_section(
                 DESCRIPTION,
-                replace_pairs(task.section(DESCRIPTION) or "", self.replace_in_description),
+                escape_literal_asterisks(
+                    replace_pairs(task.section(DESCRIPTION) or "", self.replace_in_description)
+                ),
             )
         task = task.with_criteria(
-            add=self.add_criteria,
+            add=[escape_literal_asterisks(text) for text in self.add_criteria],
             remove=self.rm_criteria,
-            set_criteria=self.set_criteria,
+            set_criteria=[(i, escape_literal_asterisks(text)) for i, text in self.set_criteria],
             check=self.check,
             uncheck=self.uncheck,
         )
         if self.plan is not None:
-            task = task.with_section(PLAN, self.plan)
+            task = task.with_section(PLAN, escape_literal_asterisks(self.plan))
         if self.note is not None:
-            task = task.with_note(self.note)
+            task = task.with_note(escape_literal_asterisks(self.note))
         for note in self.notes:
-            task = task.with_note(note)
+            task = task.with_note(escape_literal_asterisks(note))
         if self.set_notes is not None:
-            task = task.with_section("Notes", self.set_notes)
+            task = task.with_section("Notes", escape_literal_asterisks(self.set_notes))
         if self.summary is not None:
-            task = task.with_section(SUMMARY, self.summary)
+            task = task.with_section(SUMMARY, escape_literal_asterisks(self.summary))
         return task
 
 
@@ -874,7 +877,7 @@ class Repo:
             datetime.now(UTC), actor_name, None, task.frontmatter.status
         )
         for note in notes:
-            task = task.with_note(note)
+            task = task.with_note(escape_literal_asterisks(note))
         task_id, provisional = self.new_id(context)
         task = task.with_field("provisional", True if provisional else None)
         path = context.directory / ids.filename(task_id, ids.slugify(title))

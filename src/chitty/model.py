@@ -20,6 +20,7 @@ from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
 
 from chitty.errors import ChittyError
 from chitty.ids import ID_RE
+from chitty.markdown import escape_literal_asterisks
 
 STATUSES = (
     "backlog",
@@ -634,10 +635,20 @@ def new_task(
     """Build a new task. `fields` holds the optional frontmatter keys."""
     text = f"{DELIMITER}title: x\nstatus: todo\ncreated: {created.isoformat()}\n{DELIMITER}"
     text += f"\n## {DESCRIPTION}\n\n.\n"
-    task = parse(text).with_field("title", title).with_section(DESCRIPTION, description)
+    task = (
+        parse(text)
+        .with_field("title", title)
+        .with_section(DESCRIPTION, escape_literal_asterisks(description))
+    )
     for key, value in fields.items():
         task = task.with_field(key, value)
-    task = task.with_criteria(add=criteria, remove=(), set_criteria=(), check=(), uncheck=())
+    task = task.with_criteria(
+        add=[escape_literal_asterisks(c) for c in criteria],
+        remove=(),
+        set_criteria=(),
+        check=(),
+        uncheck=(),
+    )
     return task.with_legacy_history(created, None, task.frontmatter.status)
 
 
