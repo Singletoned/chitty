@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: planning
+status: todo
 priority: high
 created: 2026-11-22
 ---
@@ -82,3 +82,4 @@ Planner, 2026-11-22: the runner's `error` above came from this ticket's own prob
 - 2026-11-22T16:46:40Z plucky-umber-wren planning → cold-read
 - 2026-11-22T16:47:37Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T16:47:37Z plucky-umber-wren cold-read → planning
+- 2026-11-22T16:47:39Z plucky-umber-wren planning → todo
