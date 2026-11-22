@@ -23,6 +23,10 @@ Both new tests fail before the change (setup's log lacks `main`'s commit).
 
 - [ ] `test_todo_rebases_before_setup` and `test_error_rebases_before_setup` pass and each fails before the change; the doc bullet is updated; `make check` passes
 
+## Plan
+
+Add and verify failing todo and error rebase regression tests, broaden the work-mode guard, update the runner plan, and run checks.
+
 ## History
 
 - 2026-11-22T01:47:36Z lively-zinc-newt → planning
@@ -33,3 +37,4 @@ Both new tests fail before the change (setup's log lacks `main`'s commit).
 - 2026-11-22T03:13:18Z lively-zinc-newt: changed description
 - 2026-11-22T03:13:18Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:14:50Z friendly-violet-urchin todo → doing
+- 2026-11-22T03:17:14Z friendly-violet-urchin: wrote the plan
