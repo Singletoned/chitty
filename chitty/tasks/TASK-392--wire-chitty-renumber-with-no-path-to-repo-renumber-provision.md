@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-517
   - TASK-542
@@ -74,3 +74,4 @@ Back to `todo` 2026-11-22: the pre-agent check failed on the flaky `test_transac
 - 2026-11-22T04:01:24Z rosy-russet-lapwing doing → error
 - 2026-11-22T04:03:28Z lively-zinc-newt: changed notes
 - 2026-11-22T04:03:28Z lively-zinc-newt error → todo
+- 2026-11-22T04:14:45Z honest-navy-wren todo → doing
