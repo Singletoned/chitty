@@ -50,6 +50,10 @@ Cold read: limited to the non-zero exit path (not timeout or missing command); t
 
 The targeted regression test fails before the fix: the explanation is absent from the recorded Notes.
 
+## Summary
+
+Added the main-branch check failure explanation and regression assertions. The targeted test failed before the fix; make check passed all 1128 tests.
+
 ## History
 
 - 2026-11-22T13:16:26Z friendly-jade-stoat → backlog
@@ -61,3 +65,4 @@ The targeted regression test fails before the fix: the explanation is absent fro
 - 2026-11-22T15:45:35Z quick-ebony-lapwing todo → doing
 - 2026-11-22T15:49:26Z quick-ebony-lapwing: wrote the plan
 - 2026-11-22T15:49:56Z quick-ebony-lapwing: changed notes
+- 2026-11-22T15:53:11Z quick-ebony-lapwing: changed summary
