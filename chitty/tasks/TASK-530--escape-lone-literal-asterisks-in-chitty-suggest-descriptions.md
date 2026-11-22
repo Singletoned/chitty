@@ -31,6 +31,10 @@ Add a regression test covering suggestion storage and pull, verify it fails, the
 
 Before the fix, .venv/bin/python -m unittest tests.test_inbox.TestInbox.test_suggestion_description_escapes_literal_asterisks failed with ChittyError: suggestion Description does not round-trip through task storage.
 
+## Summary
+
+Escaped normalized suggestion descriptions before validation and storage. Regression test failed before the fix as recorded; inbox and property tests and make check pass.
+
 ## History
 
 - 2026-11-21T23:22:19Z lively-zinc-newt → planning
@@ -41,3 +45,4 @@ Before the fix, .venv/bin/python -m unittest tests.test_inbox.TestInbox.test_sug
 - 2026-11-22T01:25:56Z zesty-ebony-falcon todo → doing
 - 2026-11-22T01:28:15Z zesty-ebony-falcon: wrote the plan
 - 2026-11-22T01:28:27Z zesty-ebony-falcon: changed notes
+- 2026-11-22T01:30:15Z zesty-ebony-falcon: changed summary
