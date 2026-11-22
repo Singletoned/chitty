@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: cold-read
+status: planning
 priority: high
 created: 2026-11-22
 ---
@@ -19,7 +19,7 @@ Change the `Makefile` `test` target to run `TEST_TIER=thorough uv run unittest-p
 
 In `AGENTS.md`, replace the bullet starting `Hypothesis runs with fixed examples` with one saying `make check` uses fixed examples (profile `check`) so it repeats, and `make test` draws new random examples (profile `thorough`) to find new edge cases. Keep its sentence `A property test that fails is a real failure: fix it, do not rerun.`
 
-Probe for criterion 1, run as `python -c <probe>` with `cwd` at the repository root (so `import tests` resolves) and the profile variable set as the case needs (removed for the unset case):
+Probe for criterion 1, run as `[sys.executable, "-c", PROBE]` with `cwd=Path(__file__).resolve().parents[1]` (the repository root, so `import tests` resolves; do not pass `-I`, which drops it from `sys.path`) and the profile variable set as the case needs (removed for the unset case):
 
 ```python
 import tests
@@ -49,6 +49,7 @@ Out of scope: how many examples each profile draws (a later ticket scales per-te
 - [ ] New tests in the existing `tests/test_hypothesis_profile.py` (keep its `test_deadline_is_disabled`, which still holds) run a probe (below) twice in subprocesses for each setting of `TEST_TIER`, removing it from the child environment for the unset case and setting it explicitly otherwise (so the tests hold when `make test` exports `thorough`): unset and `check` print identical example lists across the two runs; `thorough` prints different lists; and for `thorough`, `settings.default.database` is not `None` while for unset and `check` it is `None`. The `thorough` cases fail against current `main` (today the variable is ignored, so its runs repeat); the unset and `check` cases pass there and guard against regression
 - [ ] With `TEST_TIER=nope`, `python -c "import tests"` exits non-zero with `InvalidArgument` and `nope` in stderr (tested in the same file; on `main` it exits 0)
 - [ ] `make -n test` shows `TEST_TIER=thorough` and `make -n check` shows `TEST_TIER=check`, each on its `unittest-parallel` line; `mate --list` (`mate` is on `PATH`) lists `test` with its new description; and `make check` passes
+- [ ] `AGENTS.md` no longer contains `Hypothesis runs with fixed examples`; its replacement bullet names `make check` with profile `check` and `make test` with profile `thorough`, and keeps the sentence `A property test that fails is a real failure: fix it, do not rerun.`
 
 ## Notes
 
@@ -79,3 +80,5 @@ Planner, 2026-11-22: the runner's `error` above came from this ticket's own prob
 - 2026-11-22T16:43:12Z plucky-umber-wren error → planning
 - 2026-11-22T16:46:40Z plucky-umber-wren: changed notes
 - 2026-11-22T16:46:40Z plucky-umber-wren planning → cold-read
+- 2026-11-22T16:47:37Z plucky-umber-wren: changed description, acceptance criteria
+- 2026-11-22T16:47:37Z plucky-umber-wren cold-read → planning
