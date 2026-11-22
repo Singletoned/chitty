@@ -1,6 +1,6 @@
 ---
 title: Skip the review check when HEAD has nothing beyond main
-status: review
+status: done
 created: 2026-11-22
 ---
 
@@ -77,6 +77,13 @@ Cold read 2: setup wording, guard tests and missing-main behaviour clarified; no
 
 The runner regression failed before the fix: review ran the check and exited with status 3.
 
+Reviewed:
+1: pass - make check passed; test_runner_main_skips_check verifies status, marker and stderr. Worker recorded the regression failed before the fix with check status 3.
+2: pass - make check passed test_failure with the empty work commit.
+3: pass - make check passed test_merge_only_runs_check.
+4: pass - make check passed test_tickets_workflow_runs_check.
+5: pass - make check printed OK, 1126 tests; ruff and pyright passed.
+
 ## Summary
 
 Implemented runner ancestry check and workflow and merge guards. Regression failed before fix; make check passed (1124 tests).
@@ -95,3 +102,5 @@ Implemented runner ancestry check and workflow and merge guards. Regression fail
 - 2026-11-22T15:06:40Z quick-fawn-falcon: changed notes
 - 2026-11-22T15:09:48Z quick-fawn-falcon: changed summary
 - 2026-11-22T15:11:26Z quick-fawn-falcon doing → review
+- 2026-11-22T15:17:46Z witty-zinc-dormouse: changed notes
+- 2026-11-22T15:17:46Z witty-zinc-dormouse review → done
