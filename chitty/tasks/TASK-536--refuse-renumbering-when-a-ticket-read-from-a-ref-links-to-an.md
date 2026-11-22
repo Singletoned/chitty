@@ -40,6 +40,10 @@ Add ref-backed fixtures and demonstrate both refusal regressions, then scan sele
 
 Before the fix, both test_branch_only_link and test_branch_adds_link failed: ChittyError not raised (unittest, 2 failures).
 
+## Summary
+
+Added selected ref link guard and regression fixtures. Both refusal tests failed before the fix; make check passes (1072 tests).
+
 ## History
 
 - 2026-11-22T00:16:22Z lively-zinc-newt → planning
@@ -50,3 +54,4 @@ Before the fix, both test_branch_only_link and test_branch_adds_link failed: Chi
 - 2026-11-22T01:19:40Z eager-jade-heron todo → doing
 - 2026-11-22T01:21:41Z eager-jade-heron: wrote the plan
 - 2026-11-22T01:22:00Z eager-jade-heron: changed notes
+- 2026-11-22T01:24:26Z eager-jade-heron: changed summary
