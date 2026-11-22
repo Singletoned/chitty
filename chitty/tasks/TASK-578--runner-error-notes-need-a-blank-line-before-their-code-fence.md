@@ -39,6 +39,8 @@ Suggestion origin: taidy
 
 Cold read: test made exact-string; nothing else serious.
 
+The exact-string regression test failed before the fix: the actual note lacks the blank line before the fence.
+
 ## History
 
 - 2026-11-22T13:16:25Z friendly-jade-stoat → backlog
@@ -49,3 +51,4 @@ Cold read: test made exact-string; nothing else serious.
 - 2026-11-22T13:20:23Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:34:00Z mellow-amber-marten todo → doing
 - 2026-11-22T15:36:52Z mellow-amber-marten: wrote the plan
+- 2026-11-22T15:37:05Z mellow-amber-marten: changed notes
