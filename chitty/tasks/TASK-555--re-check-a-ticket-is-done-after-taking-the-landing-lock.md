@@ -26,6 +26,10 @@ Tests in a new `tests/test_landing_status_recheck.py`, inheriting `LandingTestCa
 - [ ] For every status other than `done`, `self.land()` leaves `main`'s tip, the branch tip and the worktree unchanged, prints `not landing TASK-1: it is <status>` to stderr, and returns `False`; this fails before the change (the ticket lands)
 - [ ] With `done` the ticket lands as before and `_land` returns `True`; the existing tests in `tests/test_landing.py` and `tests/test_run_*.py` pass; `make check` passes
 
+## Plan
+
+Add fixed-status regression tests, verify failure, then recheck status under the landing lock and adjust landing return values. Run checks and commit.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -47,3 +51,4 @@ Owner, 2026-11-22: may have been a Pi session, not remembered. Planner checked: 
 - 2026-11-22T10:29:04Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T10:29:05Z friendly-jade-stoat planning → todo
 - 2026-11-22T14:16:04Z rosy-silver-quail todo → doing
+- 2026-11-22T14:18:36Z rosy-silver-quail: wrote the plan
