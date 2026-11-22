@@ -4,7 +4,12 @@ import os
 
 from hypothesis import settings
 
-settings.register_profile("tests", deadline=None)
+# `make check` must give the same answer on every run: random examples have
+# sent runner tickets to `error` on failures unrelated to their change. So the
+# examples are fixed (derived from each test's source), and there is no example
+# database, which would replay one machine's old failures. Per-example timing
+# is noise under `unittest-parallel`, so there is no deadline.
+settings.register_profile("tests", deadline=None, derandomize=True)
 settings.load_profile("tests")
 
 AGENT_PREFIXES = ("PI_", "CLAUDE_", "CODEX_", "CHITTY_")
