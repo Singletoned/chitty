@@ -1,6 +1,6 @@
 ---
 title: Show the ticket-read matrix catches swapped `contains` and a missing `main_tip`
-status: review
+status: done
 depends_on:
   - TASK-527
 parent: TASK-393
@@ -33,6 +33,9 @@ Keep in planning until its dependency lands; then compare with the landed code, 
 
 `TASK-527` landed 2026-11-22: `PLACEMENTS = tuple("abcdefghijklm")` on `main`.
 
+Reviewed:
+1: pass - make check: 1067 tests OK; both mutant tests fail with collector forced to return [] (2 expected failures).
+
 ## Summary
 
 Extracted placement mismatch collection and added both source-selection mutants. make check passes (1066 tests).
@@ -50,3 +53,5 @@ Extracted placement mismatch collection and added both source-selection mutants.
 - 2026-11-22T00:37:14Z upbeat-khaki-quail: wrote the plan
 - 2026-11-22T00:39:39Z upbeat-khaki-quail: changed summary
 - 2026-11-22T00:39:42Z upbeat-khaki-quail doing → review
+- 2026-11-22T00:47:34Z youthful-ebony-zander: changed notes
+- 2026-11-22T00:47:34Z youthful-ebony-zander review → done
