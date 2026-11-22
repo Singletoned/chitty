@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when an untouched disk ticket links to an old ID
-status: doing
+status: review
 depends_on:
   - TASK-391
   - TASK-526
@@ -105,3 +105,4 @@ Added disk link guard and real Git regression fixtures. Both refusal tests faile
 - 2026-11-22T00:23:34Z eager-bronze-raven: wrote the plan
 - 2026-11-22T00:24:26Z eager-bronze-raven: changed notes
 - 2026-11-22T00:26:08Z eager-bronze-raven: changed summary
+- 2026-11-22T00:26:11Z eager-bronze-raven doing → review
