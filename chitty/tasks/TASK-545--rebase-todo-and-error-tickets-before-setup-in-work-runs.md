@@ -9,7 +9,7 @@ created: 2026-11-22
 
 ## Description
 
-Split from `TASK-370` on 2026-11-22. After `TASK-370`, work mode rebases the ticket worktree onto `main` before `setup` (`_rebase_work_worktree` in `src/chitty/run.py`), tested on a `doing` ticket. This ticket shows the same holds for a `todo` ticket with an existing branch and for an `error` ticket in a repair run. Draft: keep in planning until `TASK-370` lands, then reuse its fixtures and cold-read.
+Split from `TASK-370` on 2026-11-22. After `TASK-370`, work mode rebases the ticket worktree onto `main` before `setup` (`_rebase_work_worktree` in `src/chitty/run.py`), tested on a `doing` ticket. tested on a `doing` ticket and called only for tickets selected as `doing`. This ticket extends the call to tickets selected as `todo` (after the claim is written) and `error` (repair runs), and tests both. Draft: keep in planning until `TASK-370` lands, then reuse its fixtures and cold-read.
 
 Tests, extending `tests/test_run_work_rebases.py`, each with a fake `setup` command that records `git log --format=%s` of its worktree to a file:
 
@@ -25,3 +25,4 @@ Each fails before `TASK-370`'s change only if run against `main` from before it;
 ## History
 
 - 2026-11-22T01:47:36Z lively-zinc-newt → planning
+- 2026-11-22T01:56:10Z lively-zinc-newt: changed description
