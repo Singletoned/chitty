@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when a ticket read from a ref links to an old ID
-status: todo
+status: doing
 depends_on:
   - TASK-519
 parent: TASK-391
@@ -39,3 +39,4 @@ A cold reader's probe (2026-11-21) on the unguarded planner: (c) and (e) give `s
 - 2026-11-22T00:33:44Z lively-zinc-newt planning → cold-read
 - 2026-11-22T00:34:56Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:34:56Z lively-zinc-newt cold-read → todo
+- 2026-11-22T01:19:40Z eager-jade-heron todo → doing
