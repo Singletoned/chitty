@@ -53,6 +53,10 @@ Tests, in a new file `tests/test_list_terminal_width.py`:
 - [ ] `docs/plan/cli.md` (around line 55) and `docs/plan/config.md` (line 39) each say titles fit the smaller of `list_width` and the terminal width when stdout is a terminal.
 - [ ] `make check` passes.
 
+## Plan
+
+Add a fail-first CLI width regression, implement terminal-aware width helpers, update plan documentation, and run the full checks.
+
 ## Notes
 
 Cold read 3: wording only (fail-first assertion, reuse of the existing 100-column test, exact doc content).
@@ -66,3 +70,4 @@ Cold read 3: wording only (fail-first assertion, reuse of the existing 100-colum
 - 2026-11-22T12:58:17Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T12:58:17Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:24:42Z jolly-pearl-puffin todo → doing
+- 2026-11-22T15:27:32Z jolly-pearl-puffin: wrote the plan
