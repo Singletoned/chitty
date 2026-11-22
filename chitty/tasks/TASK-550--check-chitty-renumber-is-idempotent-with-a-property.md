@@ -1,6 +1,6 @@
 ---
 title: Check `chitty renumber` is idempotent with a property
-status: doing
+status: review
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -67,3 +67,4 @@ The generated renumber idempotence property and repository fixture are committed
 - 2026-11-22T05:15:58Z lively-zinc-newt: changed notes
 - 2026-11-22T05:15:58Z lively-zinc-newt blocked → doing
 - 2026-11-22T05:20:06Z calm-indigo-yellowhammer: changed summary; ticked acceptance criteria
+- 2026-11-22T05:21:39Z calm-indigo-yellowhammer doing → review
