@@ -23,8 +23,8 @@ Tests: Hypothesis (the repository's property tool) in a new `tests/test_property
 
 ## Acceptance Criteria
 
-- [ ] Property: for every drawn case, after adding the hidden entries, `chitty list --all --json` and `chitty show <ID>` for each ticket print what they printed before, `chitty check` exits 0, and `chitty add Two -d x` succeeds with the next free number; it fails on `main` (a `.gitkeep` makes `chitty list` raise `must end with .md`)
-- [ ] Example: a file `chitty/tasks/notes.txt` still makes `chitty list` exit 1 with `must end with .md`, and `chitty check` reports it; `make check` passes
+- [x] Property: for every drawn case, after adding the hidden entries, `chitty list --all --json` and `chitty show <ID>` for each ticket print what they printed before, `chitty check` exits 0, and `chitty add Two -d x` succeeds with the next free number; it fails on `main` (a `.gitkeep` makes `chitty list` raise `must end with .md`)
+- [x] Example: a file `chitty/tasks/notes.txt` still makes `chitty list` exit 1 with `must end with .md`, and `chitty check` reports it; `make check` passes
 
 ## Plan
 
@@ -35,6 +35,10 @@ Add a shared hidden-name predicate to the scan and ref enumeration paths; exerci
 Suggestion origin: chitty
 
 Regression test failed before the fix: .gitkeep in tasks makes list exit 1 with must end with .md.
+
+## Summary
+
+Skip hidden entries in context scans and Git ref enumeration. Property regression failed before the fix; make check passes (1114 tests).
 
 ## History
 
@@ -50,3 +54,4 @@ Regression test failed before the fix: .gitkeep in tasks makes list exit 1 with 
 - 2026-11-22T09:52:51Z rosy-fawn-falcon todo → doing
 - 2026-11-22T09:54:59Z rosy-fawn-falcon: wrote the plan
 - 2026-11-22T09:56:00Z rosy-fawn-falcon: changed notes
+- 2026-11-22T10:00:45Z rosy-fawn-falcon: changed summary; ticked acceptance criteria
