@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: doing
+status: error
 labels:
   - needs-minor
 depends_on:
@@ -48,6 +48,15 @@ Review follow-up cannot be completed safely from the current criterion: “same 
 
 Planner, 2026-11-22: replanned against `main` (seven roles, `directory` parameter). The baseline question in the previous note is settled: no captured baseline; criterion 3, rewritten, is the compatibility check. Earlier review notes about baseline capture no longer apply.
 
+Runner error (agent): agent timed out after 7200 seconds:
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-334`
+
+Error output:
+```text
+(no output)
+```
+
 ## Summary
 
 Implemented workflow-gated role guides. CLI loads repository config for role requests (broken config errors propagate), defaults to runner outside repositories, runner help remains available when config is broken, and run.py passes repo.config.workflow. Added six-role workflow tests and updated direct callers. Verified with make format and make check; regression tests were observed failing before the fix. Commit: c7ed80f. No known follow-ups.
@@ -86,3 +95,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-22T09:54:34Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T09:54:35Z friendly-jade-stoat planning → todo
 - 2026-11-22T10:04:01Z eager-coral-wren todo → doing
+- 2026-11-22T12:05:00Z eager-coral-wren: changed notes
+- 2026-11-22T12:05:00Z eager-coral-wren doing → error
