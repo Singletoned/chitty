@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: error
+status: todo
 depends_on:
   - TASK-517
   - TASK-542
@@ -45,6 +45,8 @@ Runner error (check): check exited with status 2; output in `.chitty/check.log`
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-392`
 
+Back to `todo` 2026-11-22: the pre-agent check failed on the flaky `test_transaction` (see the new high-priority bug ticket), not on this ticket.
+
 ## History
 
 - 2026-11-18T16:37:33Z lively-quartz-crane → backlog
@@ -70,3 +72,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-392`
 - 2026-11-22T03:58:54Z rosy-russet-lapwing todo → doing
 - 2026-11-22T04:01:24Z rosy-russet-lapwing: changed notes
 - 2026-11-22T04:01:24Z rosy-russet-lapwing doing → error
+- 2026-11-22T04:03:28Z lively-zinc-newt: changed notes
+- 2026-11-22T04:03:28Z lively-zinc-newt error → todo
