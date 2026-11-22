@@ -1,6 +1,8 @@
 ---
 title: Run cold reads from `chitty run --mode cold-read`
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-22
 ---
 
@@ -18,7 +20,10 @@ Open questions for planning: how a planner learns a report is ready (`chitty nex
 
 Suggestion origin: chitty
 
+Planner, 2026-11-22: overlaps `TASK-259`, `TASK-272` and `TASK-274` (cold reads through `chitty run`). This one adds the report file and the read-only dependency (`TASK-558`); fold those into the earliest of them when it is planned.
+
 ## History
 
 - 2026-11-22T09:47:33Z friendly-jade-stoat → backlog
 - 2026-11-22T09:47:34Z friendly-jade-stoat: changed notes
+- 2026-11-22T09:51:01Z friendly-jade-stoat: changed labels, notes
