@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when untouched tickets link to an old ID
-status: doing
+status: error
 depends_on:
   - TASK-391
   - TASK-526
@@ -60,6 +60,10 @@ Split 2026-11-21: the worker model returned five sessions saying it could not fi
 
 Rebased onto `main` 2026-11-21 after `TASK-526` landed `blocking_link` (signature as specified) and `TASK-520` landed the branch guard.
 
+Runner error (agent): TASK-519 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-519`
+
 ## History
 
 - 2026-11-21T18:44:38Z eager-ginger-adder → backlog
@@ -88,3 +92,5 @@ Rebased onto `main` 2026-11-21 after `TASK-526` landed `blocking_link` (signatur
 - 2026-11-22T00:09:08Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:11:51Z friendly-white-toad todo → doing
 - 2026-11-22T00:14:04Z friendly-white-toad: wrote the plan
+- 2026-11-22T00:15:32Z friendly-white-toad: changed notes
+- 2026-11-22T00:15:32Z friendly-white-toad doing → error
