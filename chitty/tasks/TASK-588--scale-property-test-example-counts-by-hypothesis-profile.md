@@ -1,6 +1,6 @@
 ---
 title: Scale property-test example counts by Hypothesis profile
-status: doing
+status: review
 depends_on:
   - TASK-587
 created: 2026-11-22
@@ -69,3 +69,4 @@ Implemented tier-scaled example counts and decorator audit; regression tests fai
 - 2026-11-22T17:10:25Z eager-bronze-vole: wrote the plan
 - 2026-11-22T17:15:48Z eager-bronze-vole: changed notes
 - 2026-11-22T17:20:34Z eager-bronze-vole: changed notes, summary
+- 2026-11-22T17:22:05Z eager-bronze-vole doing → review
