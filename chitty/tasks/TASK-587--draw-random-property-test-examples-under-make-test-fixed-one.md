@@ -65,6 +65,10 @@ Planner, 2026-11-22: the runner's `error` above came from this ticket's own prob
 
 Regression tests before the fix: thorough produced identical lists and unknown tier exited zero; unset and check passed.
 
+## Summary
+
+Implemented tier-specific Hypothesis profiles and Make targets. Regression tests failed before the fix and pass after it; make check, make dry runs and mate list passed.
+
 ## History
 
 - 2026-11-22T16:27:11Z plucky-umber-wren → planning
@@ -92,3 +96,4 @@ Regression tests before the fix: thorough produced identical lists and unknown t
 - 2026-11-22T16:48:14Z vivid-yellow-kestrel todo → doing
 - 2026-11-22T16:51:24Z vivid-yellow-kestrel: wrote the plan
 - 2026-11-22T16:51:42Z vivid-yellow-kestrel: changed notes
+- 2026-11-22T16:53:52Z vivid-yellow-kestrel: changed summary
