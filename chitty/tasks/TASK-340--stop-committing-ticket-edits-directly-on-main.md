@@ -22,7 +22,7 @@ Open questions:
 
 - How cold readers read the branch's copy: they run `chitty show` from the main checkout today, and `ticket_source` would not find a planning branch (it looks at `main` and `task-<n>` branches).
 - What happens when someone else edits the same ticket on `main` meanwhile: the rebase conflicts on the ticket file (`TASK-359` merges two edits of a ticket file).
-- Whether this needs a command, and its name; the person prefers few commands.
+- The command. The person, 2026-11-22: a command for landing a planning branch is fine, and expected one command for landing any branch, perhaps taking a type. Today no such command exists: the runner lands tickets internally (`_land_locked` in `src/chitty/run.py`), and people land by hand with `git rebase` and `git merge --ff-only`. Planner's suggestion: one `chitty land [BRANCH]` (default the current branch) that works out the kind from the branch, a `task-<n>` branch being landed as the runner does today (rebase, setup, checks, review must have passed) and any other branch being a planning or fix branch (squash bookkeeping commits, rebase, run the checks, fast-forward `main`), so no type option is needed unless a case appears that the name cannot decide.
 
 ## History
 
@@ -30,3 +30,4 @@ Open questions:
 - 2026-11-22T22:09:51Z plucky-umber-wren: changed description
 - 2026-11-22T22:09:51Z plucky-umber-wren backlog → planning
 - 2026-11-22T22:51:30Z plucky-umber-wren: changed dependencies
+- 2026-11-22T22:52:42Z plucky-umber-wren: changed description
