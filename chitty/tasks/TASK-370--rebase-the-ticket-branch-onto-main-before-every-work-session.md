@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: cold-read
+status: todo
 labels:
   - bug
   - needs-minor
@@ -27,22 +27,23 @@ Decisions:
 - Add `_rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) -> None` in `src/chitty/run.py`, with `ref = f"refs/chitty/stash/{task_id}"`:
   1. `saved = git.save_work(worktree, ref, f"chitty {task_id} before rebase")` (its `ChittyError` propagates).
   2. `unresolved = git.rebase_onto(worktree, main_branch)`. If it raises `ChittyError`, call `git.restore_work(worktree, ref)` when `saved`, then re-raise (`TASK-541` records it as a ticket error instead).
-  3. If `unresolved` is non-empty (the rebase stopped on a conflict), run `git rebase --abort` in the worktree (`commands.run_git`), so the branch stays as it was (`TASK-540` replaces this with starting the agent).
+  3. If `unresolved` is non-empty (the rebase stopped on a conflict), call `git.abort_rebase(worktree)` (as review mode does), so the branch stays as it was (`TASK-540` replaces this with starting the agent).
   4. If `saved`, call `git.restore_work(worktree, ref)` and ignore its result (`TASK-525` handles `False`).
-- In `_run_ticket_with_log`, in work mode only, call it after the worktree is made and the `todo` claim is written, and before `setup`, for every ticket status. Review mode is unchanged.
+- With `autocommit = false` the `todo` claim may be uncommitted; it is saved and restored like any other uncommitted edit.
+- In `_run_ticket_with_log` (already over 100 lines; add only the call, keep the logic in the helper), in work mode only, call it after the worktree is made and the `todo` claim is written, and before `setup`, for every ticket status. Review mode is unchanged.
 - Update the work-mode bullet under `## Before a review` in `docs/plan/next-action-and-runner.md` to say work mode rebases the branch onto `main` before `setup`, saving uncommitted work under `refs/chitty/stash/<ID>`.
 
 Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_review_merge.py` (its `ReviewMergeTestCase` gives a fake agent and Git helpers). The fake agent records, when it starts, `git log --format=%s`, `git status --porcelain`, `git stash list` and `git for-each-ref refs/chitty/stash` of its worktree into a marker file.
 
 1. Clean rebase: a `doing` ticket whose branch exists, then a new commit on `main` touching another file. After a work run, `git merge-base --is-ancestor main task-<n>` succeeds, `git rev-list main..task-<n>` lists only the branch's own commits, and the agent's recorded `git log` includes `main`'s new commit.
-2. Saved work: as 1, plus, in the worktree before the run, an unstaged edit to a tracked file, a staged edit and an untracked file, and one `git stash push` made beforehand in the main checkout. When the agent starts, all three files have their pre-run contents, `refs/chitty/stash/TASK-<n>` does not exist, and `git stash list` equals the list from before the run.
+2. Saved work: as 1, plus, in the worktree before the run, an unstaged edit to a tracked file, a staged edit and an untracked file, and one `git stash push` made beforehand in the main checkout. When the agent starts, all three files have their pre-run contents (content only; the staged edit comes back unstaged, as `restore_work` does), `refs/chitty/stash/TASK-<n>` does not exist, and `git stash list` equals the list from before the run.
 3. Conflict (interim behaviour until `TASK-540`): `main` and the branch change the same line of one file. The run starts the agent with no rebase in progress, the branch tip is unchanged, and the saved-work ref does not exist.
 
-No property: real Git and runner processes over fixed cases. Each test must fail before the change (cases 1 and 2 because no rebase happens; case 3 is a guard and may pass before).
+No property: real Git and runner processes over fixed cases. Cases 1 and 2 fail before the change on their rebase assertions (ancestor and `git log`); case 2's saved-work assertions, and case 3, are guards that already pass today and must still pass. Record in the fake agent's marker file the same way `ReviewMergeTestCase`'s fake agent writes its report (its `REPORT` script in `tests/test_review_merge.py`).
 
 ## Acceptance Criteria
 
-- [ ] Cases 1 and 2 in the Description pass and each fails before the change
+- [ ] Cases 1 and 2 in the Description pass, and each fails before the change on its rebase assertion
 - [ ] Case 3 passes; the `docs/plan/next-action-and-runner.md` bullet is updated
 - [ ] `make check` passes
 
@@ -111,3 +112,5 @@ Also waits for `TASK-534` (`restore_work`), split from `TASK-524` on 2026-11-21.
 - 2026-11-22T00:06:48Z lively-zinc-newt: changed dependencies, notes
 - 2026-11-22T01:29:17Z lively-zinc-newt: changed dependencies, description, acceptance criteria
 - 2026-11-22T01:29:17Z lively-zinc-newt planning → cold-read
+- 2026-11-22T01:33:50Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-22T01:33:50Z lively-zinc-newt cold-read → todo
