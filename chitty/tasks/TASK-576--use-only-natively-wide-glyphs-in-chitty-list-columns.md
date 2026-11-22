@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: review
+status: planning
 labels:
   - needs-minor
 created: 2026-11-22
@@ -81,6 +81,12 @@ Cold read 2: constant placement fixed to `selection.py`, alignment test added; n
 
 Before the fix, test_list_glyphs fails for all three priority glyphs because each contains two characters; the alignment test passes under the existing _columns calculation.
 
+Review failed (design): The alignment regression uses the unchanged `_columns` calculation, which already reports the old priority glyph as two columns. The worker's before-fix note confirms the alignment test passes before the change, so it cannot detect the reported terminal-rendering defect. Specify a verifiable regression fixture and assertions that distinguish the original behavior without relying on the unchanged calculation. Newly discovered: the human skip path also retains an inline glyph, contrary to the requirement to centralize every skip glyph; replace it with `HUMAN_GLYPH` so the glyph test covers the actual value.
+1: fail - `selection.py` returns an inline human glyph for human context or owner, bypassing `HUMAN_GLYPH` and the constants test. Use the constant in that branch.
+2: pass - old-glyph grep printed nothing; README and both plan documents show the replacements.
+3: pass - `make check` exited 0.
+4: fail - `python -m unittest tests.test_list_glyphs -v` printed OK for both tests, but the worker's before-fix note records that the alignment test also passed before the fix; its `_columns` oracle cannot demonstrate the terminal width defect. Planning must specify a discriminating test.
+
 ## Summary
 
 Replaced list and skip glyphs with wide characters, centralized skip constants, and updated documentation and expectations. Glyph regression failed before the fix; make check passes (1125 tests), and the old-glyph grep is empty.
@@ -98,3 +104,5 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-22T15:16:06Z golden-zinc-eel: changed notes
 - 2026-11-22T15:21:20Z golden-zinc-eel: changed summary
 - 2026-11-22T15:23:05Z golden-zinc-eel doing → review
+- 2026-11-22T15:31:22Z upbeat-silver-marten: changed owner, acceptance criteria, notes
+- 2026-11-22T15:31:22Z upbeat-silver-marten review → planning
