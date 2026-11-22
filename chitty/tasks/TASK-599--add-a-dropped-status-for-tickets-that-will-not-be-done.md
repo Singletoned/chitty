@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -46,3 +46,4 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 - 2026-11-22T22:12:51Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T22:12:51Z plucky-umber-wren cold-read → todo
 - 2026-11-22T22:13:06Z plucky-umber-wren: changed acceptance criteria
+- 2026-11-22T22:13:34Z zesty-ochre-heron todo → doing
