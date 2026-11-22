@@ -1,6 +1,8 @@
 ---
 title: Refuse ticket writes outside the authoritative checkout, replacing the stale-copy guard
 status: planning
+labels:
+  - question
 depends_on:
   - TASK-378
   - TASK-382
@@ -47,6 +49,8 @@ Returned to planning 2026-11-20: the write rule changed (see the Description). C
 
 Split plan 2026-11-22 (overnight planner), since every dependency is now done but the ticket is too large for the worker model: (1) `TASK-547`, the pure message function; (2) this ticket, narrowed to wiring `_require_writable` into the write paths using `write_refusal`, tested over the landed placement matrix (`tests/ticket_placements.py`, kinds 1 to 5) with a mismatch collector as in `tests/test_ticket_placement_reads.py`; (3) a new ticket removing `skip_current_version`/`allow_stale` and the remote-only review handoff (old criteria 2 and 3); (4) a new ticket moving `_prepare_write` after the guard (old criterion 4). Replan (2) after `TASK-547` lands.
 
+Parked with `TASK-547`: see the question in `TASK-547`'s last note.
+
 ## History
 
 - 2026-11-18T16:20:16Z lively-quartz-crane → backlog
@@ -68,3 +72,4 @@ Split plan 2026-11-22 (overnight planner), since every dependency is now done bu
 - 2026-11-21T23:06:25Z lively-zinc-newt: changed dependencies
 - 2026-11-22T00:19:39Z lively-zinc-newt: changed dependencies
 - 2026-11-22T02:28:48Z lively-zinc-newt: changed dependencies, notes
+- 2026-11-22T02:30:04Z lively-zinc-newt: changed labels, notes
