@@ -3,7 +3,7 @@ import shlex
 import subprocess
 import sys
 
-from chitty.run import CommandTimedOut, run_logged
+from chitty.commands import CommandTimedOut, run_logged
 from tests import test_next
 from tests.test_cli import CliTestCase
 
