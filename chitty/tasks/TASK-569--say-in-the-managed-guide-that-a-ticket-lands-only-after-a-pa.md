@@ -1,6 +1,6 @@
 ---
 title: Say in the managed guide that a ticket lands only after a passing review
-status: todo
+status: doing
 labels:
   - untestable
 owner: untestable
@@ -14,3 +14,5 @@ Seen 2026-11-16: `TASK-318` code reached `main` before its review failed it. The
 ## History
 
 - 2026-11-22T09:55:42Z friendly-jade-stoat → todo
+- 2026-11-22T10:03:46Z friendly-jade-stoat: changed owner
+- 2026-11-22T10:03:46Z friendly-jade-stoat todo → doing
