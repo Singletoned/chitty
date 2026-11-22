@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: planning
+status: todo
 labels:
   - bug
   - needs-minor
@@ -29,7 +29,7 @@ Decisions:
   2. `unresolved = git.rebase_onto(worktree, main_branch)`. If it raises `ChittyError`, call `git.restore_work(worktree, ref)` when `saved`, then re-raise (`TASK-541` records it as a ticket error instead).
   3. If `unresolved` is non-empty (the rebase stopped on a conflict), call `git.abort_rebase(worktree)` (as review mode does), so the branch stays as it was (`TASK-540` replaces this with starting the agent).
   4. If `saved`, call `git.restore_work(worktree, ref)` and ignore its result (`TASK-525` handles `False`).
-- In `_run_ticket_with_log` (already over 100 lines; add only the call, keep the logic in the helper), in work mode only, call it after the worktree is made and the `todo` claim is written, and before `setup`, for every ticket status. Review mode is unchanged.
+- In `_run_ticket_with_log` (already over 100 lines; add only the call, keep the logic in the helper), in work mode only, call it after the worktree is made and before `setup`, only when the ticket was selected as `doing` (decided 2026-11-22: `TASK-545` extends the call to `todo` and `error` tickets, with their tests). Review mode is unchanged.
 - Update the work-mode bullet under `## Before a review` in `docs/plan/next-action-and-runner.md` to say work mode rebases the branch onto `main` before `setup`, saving uncommitted work under `refs/chitty/stash/<ID>`.
 
 Tests: real-Git, fake-agent runner tests in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_review_merge.py` (its `ReviewMergeTestCase` gives a fake agent and Git helpers). The fake agent records, when it starts, `git log --format=%s`, `git status --porcelain`, `git stash list` and `git for-each-ref refs/chitty/stash` of its worktree into a marker file.
@@ -85,6 +85,8 @@ Replanned 2026-11-22: setup now records its `git log` in case 1; the `todo` and 
 Planning needed: the description requires rebasing every work-mode status, but also says this ticket is tested on doing tickets and moves the todo and error cases to TASK-545. The specified tests cannot detect skipping the rebase for todo or error, despite that being required here. src/chitty/run.py claims todo before setup and selects error for repair; tests/test_run_claims_on_branch.py does not verify rebase for either status. Decide whether to restrict this ticket's implementation requirement to doing or specify the fixtures, actions and assertions for todo and error here, including setup ordering. This is the same unresolved coverage issue identified in the previous planning note, notwithstanding the split.
 
 I inspected the runner call site, git save/restore/rebase helpers, review fake-agent fixture, claim tests and runner plan. The described doing cases cover the other stated paths, including setup ordering and the patched non-conflict failure. No implementation or tests were written; fail-before evidence, runtime behavior and make check remain unverified.
+
+Replanned 2026-11-22: this ticket now rebases `doing` tickets only, matching its tests; `TASK-545` extends it to `todo` and `error`.
 
 ## History
 
@@ -153,3 +155,5 @@ I inspected the runner call site, git save/restore/rebase helpers, review fake-a
 - 2026-11-22T01:52:30Z lively-violet-quail todo → doing
 - 2026-11-22T01:54:53Z lively-violet-quail: changed owner, notes
 - 2026-11-22T01:54:53Z lively-violet-quail doing → planning
+- 2026-11-22T01:56:07Z lively-zinc-newt: changed description, notes
+- 2026-11-22T01:56:07Z lively-zinc-newt planning → todo
