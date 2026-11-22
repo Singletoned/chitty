@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: doing
+status: blocked
 labels:
   - needs-minor
 depends_on:
@@ -70,9 +70,11 @@ Review failed (tests): Newly discovered gaps in the specified assertions; the ea
 2: fail - tests/test_guide_workflow.py checks stdout but not the required exit code for either general guide or help. Assert both exit codes are zero. Earlier review recorded role-bearing help failing before the fix.
 3: fail - tests/test_guide_workflow.py checks selected help phrases, omitting the repair example and other docstring text; broken-config help also lacks an exit-code assertion and complete runner-docstring comparison. Assert the specified complete help text and exit code. make check printed Ran 1119 tests and OK; runner role output cases passed. The previous baseline-capture finding no longer applies to the rewritten criterion.
 
+Added the missing exit-code and complete docstring assertions; focused tests pass. make check fails in unrelated tests.test_property_hidden_entries: Hypothesis generates tracked chitty/tasks/.GIT and git add exits 128 on this filesystem. A maintainer must correct the unrelated property-test fixture or provide a suitable environment before the required check and review handoff can pass.
+
 ## Summary
 
-Workflow-gated role guides and tickets-only help implemented; fixed-case runner, outside-repository and tickets coverage added. make check passes.
+Review follow-up assertions committed; focused tests pass, but make check is blocked by an unrelated hidden-entry property test.
 
 ## History
 
@@ -118,3 +120,5 @@ Workflow-gated role guides and tickets-only help implemented; fixed-case runner,
 - 2026-11-22T14:22:14Z brisk-silver-jay: changed acceptance criteria, notes
 - 2026-11-22T14:22:14Z brisk-silver-jay review → doing
 - 2026-11-22T14:28:10Z able-coral-adder: wrote the plan
+- 2026-11-22T14:32:41Z able-coral-adder: changed notes, summary
+- 2026-11-22T14:32:41Z able-coral-adder doing → blocked
