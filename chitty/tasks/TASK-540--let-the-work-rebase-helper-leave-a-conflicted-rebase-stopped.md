@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: todo
+status: doing
 depends_on:
   - TASK-370
   - TASK-546
@@ -33,3 +33,4 @@ Tests in `tests/test_rebase_work_worktree.py`: change its `rebase()` helper (nea
 - 2026-11-22T03:43:12Z lively-zinc-newt todo → cold-read
 - 2026-11-22T03:45:00Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T03:45:00Z lively-zinc-newt cold-read → todo
+- 2026-11-22T03:49:54Z witty-lilac-raven todo → doing
