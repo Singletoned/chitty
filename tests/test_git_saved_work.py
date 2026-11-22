@@ -3,6 +3,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from hypothesis import assume, given, settings
+from hypothesis import strategies as st
+
 from chitty.errors import ChittyError
 from chitty.git import restore_work, save_work
 
@@ -134,3 +137,94 @@ class SavedWorkTests(unittest.TestCase):
             ChittyError, "saved work must use a ref under refs/chitty/stash/"
         ):
             restore_work(self.root, "refs/stash")
+
+
+REF = "refs/chitty/stash/TASK-1"
+TRACKED_POOL = tuple(f"f{i}.txt" for i in range(6))
+UNTRACKED_POOL = tuple(f"n{i}.txt" for i in range(3))
+IGNORED_POOL = tuple(f"i{i}.log" for i in range(2))
+
+
+@st.composite
+def scenario(draw):
+    count = draw(st.integers(1, 6))
+    changes = draw(
+        st.lists(
+            st.sampled_from(("keep", "unstaged", "staged", "restaged", "delete")),
+            min_size=count,
+            max_size=count,
+        )
+    )
+    untracked = draw(st.integers(0, 3))
+    ignored = draw(st.integers(0, 2))
+    assume(untracked or any(change != "keep" for change in changes))
+    contents = draw(
+        st.lists(
+            st.text(alphabet=st.characters(min_codepoint=32, max_codepoint=126), max_size=30),
+            min_size=count + untracked + ignored,
+            max_size=count + untracked + ignored,
+        )
+    )
+    return changes, untracked, ignored, contents, draw(st.booleans())
+
+
+class SavedWorkPropertyTests(unittest.TestCase):
+    @settings(max_examples=25, deadline=None)
+    @given(scenario())
+    def test_save_then_restore_round_trips(self, case):
+        changes, untracked, ignored, contents, advance = case
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+
+            def git(*args):
+                return subprocess.run(
+                    ["git", *args], cwd=root, check=True, capture_output=True, text=True
+                ).stdout
+
+            git("init", "-b", "main")
+            git("config", "user.name", "Test")
+            git("config", "user.email", "test@example.com")
+            (root / ".gitignore").write_text("*.log\n")
+            (root / "base.txt").write_text("base")
+            for name in TRACKED_POOL[: len(changes)]:
+                (root / name).write_text("original")
+            git("add", "-A")
+            git("commit", "-m", "initial")
+            (root / "base.txt").write_text("stashed")
+            git("stash", "push")
+            stash = git("stash", "list")
+            for name, change, content in zip(TRACKED_POOL, changes, contents):
+                path = root / name
+                if change == "delete":
+                    path.unlink()
+                elif change != "keep":
+                    path.write_text("edited:" + content)
+                    if change in ("staged", "restaged"):
+                        git("add", name)
+                    if change == "restaged":
+                        path.write_text("again:" + content)
+            names = UNTRACKED_POOL[:untracked] + IGNORED_POOL[:ignored]
+            for name, content in zip(names, contents[len(changes) :]):
+                (root / name).write_text(content)
+
+            def snapshot(names):
+                return {
+                    name: (root / name).read_bytes() if (root / name).exists() else None
+                    for name in names
+                }
+
+            expected = snapshot(TRACKED_POOL + UNTRACKED_POOL + IGNORED_POOL)
+            self.assertTrue(save_work(root, REF, "m"))
+            self.assertEqual(git("status", "--porcelain"), "")
+            self.assertIn(REF, git("for-each-ref"))
+            self.assertEqual(
+                snapshot(IGNORED_POOL), {name: expected[name] for name in IGNORED_POOL}
+            )
+            if advance:
+                (root / "main-only.txt").write_text("main")
+                git("add", "main-only.txt")
+                git("commit", "-m", "advance")
+            self.assertTrue(restore_work(root, REF))
+            self.assertEqual(snapshot(TRACKED_POOL + UNTRACKED_POOL + IGNORED_POOL), expected)
+            self.assertNotIn(REF, git("for-each-ref"))
+            self.assertEqual(git("stash", "list"), stash)
