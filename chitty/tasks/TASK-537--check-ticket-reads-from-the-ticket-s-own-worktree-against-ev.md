@@ -38,7 +38,7 @@ Test mechanism: add a module-level function `own_worktree_mismatches(parent: Pat
 
 ## Plan
 
-Add kind 2 checkout and table-driven own-worktree read collector, then verify it detects the current-branch mutant and run checks.
+Add the specified own-worktree table and mismatch collector, verify its current-branch mutant, and run formatting and checks.
 
 ## Notes
 
@@ -60,3 +60,4 @@ Replanned 2026-11-22: the (h) edit variant is dropped, as the worker found it re
 - 2026-11-22T01:37:23Z lively-zinc-newt: changed description, notes
 - 2026-11-22T01:37:23Z lively-zinc-newt planning → todo
 - 2026-11-22T02:14:35Z daring-quartz-newt todo → doing
+- 2026-11-22T02:16:52Z daring-quartz-newt: wrote the plan
