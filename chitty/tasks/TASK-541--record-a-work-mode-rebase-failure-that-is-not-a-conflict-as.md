@@ -1,6 +1,6 @@
 ---
 title: Record a work-mode rebase failure that is not a conflict as a ticket error
-status: review
+status: done
 depends_on:
   - TASK-370
   - TASK-546
@@ -20,7 +20,7 @@ Test `test_rebase_failure_is_recorded` in `tests/test_run_work_rebases.py`, usin
 
 ## Acceptance Criteria
 
-- [ ] `test_rebase_failure_is_recorded` passes and fails before the change; `make check` passes
+- [x] `test_rebase_failure_is_recorded` passes and fails before the change; `make check` passes
 
 ## Plan
 
@@ -29,6 +29,9 @@ Add the specified failing regression test, record its pre-fix result, then handl
 ## Notes
 
 Regression test failed before the fix: run exited 1 rather than 0 with Error: boom.
+
+Reviewed: implementation matches the specified error handling and preserves saved work.
+1: pass - make check ran 1095 tests and reported OK; running test_rebase_failure_is_recorded against main's run.py failed with exit 1 instead of 0 and Error: boom.
 
 ## Summary
 
@@ -47,3 +50,5 @@ Records work-mode rebase errors on the branch ticket without starting the agent.
 - 2026-11-22T03:26:03Z brisk-hazel-gannet: changed notes
 - 2026-11-22T03:28:17Z brisk-hazel-gannet: changed summary
 - 2026-11-22T03:30:03Z brisk-hazel-gannet doing → review
+- 2026-11-22T03:37:16Z intrepid-zinc-adder: changed notes; ticked acceptance criteria
+- 2026-11-22T03:37:16Z intrepid-zinc-adder review → done
