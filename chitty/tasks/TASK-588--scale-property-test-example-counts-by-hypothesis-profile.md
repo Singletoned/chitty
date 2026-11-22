@@ -1,6 +1,6 @@
 ---
 title: Scale property-test example counts by Hypothesis profile
-status: planning
+status: cold-read
 owner: plucky-umber-wren
 depends_on:
   - TASK-587
@@ -36,8 +36,12 @@ Planner, 2026-11-22: written against `TASK-587`'s planned profile names (`check`
 
 Planner, 2026-11-22: `TASK-587` now names the variable `TEST_TIER` (was `HYPOTHESIS_PROFILE`).
 
+Planner, 2026-11-22: compared with what `TASK-587` landed (`tests/__init__.py` registers `check` and `thorough`, loads `TEST_TIER`); this text still holds.
+
 ## History
 
 - 2026-11-22T16:41:56Z plucky-umber-wren → planning
 - 2026-11-22T16:42:04Z plucky-umber-wren: changed notes
 - 2026-11-22T16:46:31Z plucky-umber-wren: changed description, acceptance criteria, notes
+- 2026-11-22T17:06:23Z plucky-umber-wren: changed notes
+- 2026-11-22T17:06:23Z plucky-umber-wren planning → cold-read
