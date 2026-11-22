@@ -28,6 +28,10 @@ Test in a new `tests/test_renumber_provisional.py`, `RepoTestCase`, real files a
 
 Add an in-memory preparation helper and a real Git fixture test; verify the test fails with a stub, then implement and run the full checks.
 
+## Notes
+
+The preparation regression test failed against a NotImplementedError stub before implementation.
+
 ## History
 
 - 2026-11-22T01:37:46Z lively-zinc-newt → cold-read
@@ -36,3 +40,4 @@ Add an in-memory preparation helper and a real Git fixture test; verify the test
 - 2026-11-22T01:39:13Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:31:37Z nimble-hazel-raven todo → doing
 - 2026-11-22T02:33:57Z nimble-hazel-raven: wrote the plan
+- 2026-11-22T02:35:18Z nimble-hazel-raven: changed notes
