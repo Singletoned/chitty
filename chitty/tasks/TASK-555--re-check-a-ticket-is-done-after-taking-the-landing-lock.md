@@ -1,8 +1,9 @@
 ---
 title: Re-check a ticket is `done` after taking the landing lock
-status: cold-read
+status: planning
 labels:
   - bug
+priority: high
 created: 2026-11-22
 ---
 
@@ -18,7 +19,7 @@ Decisions:
 - `_land` and `_land_locked` return `bool`: `False` only for that skip, `True` otherwise (including the existing early returns). `_land_pending` prints `landed <ID>` and returns its `RunResult` only when `_land` returns `True`; otherwise it goes on to the next pending ticket, and returns `None` if none landed. The review-mode caller in `_run_ticket` ignores the result.
 - Out of scope: run logs for `_land_pending` landings.
 
-Tests in a new `tests/test_landing_status_recheck.py`, inheriting `LandingTestCase` from `tests/test_landing.py`. No property: a small fixed set, every member tested: for each status in `STATUSES` (`src/chitty/model.py`) other than `done`, set it on the branch's ticket file and commit in the worktree (as `finish_ticket` does for `done`), then call `self.land()`.
+Tests in a new `tests/test_landing_status_recheck.py`, inheriting `LandingTestCase` from `tests/test_landing.py`. No property: a small fixed set, every member tested: for each status in `STATUSES` (`src/chitty/model.py`) other than `done`, set it on the branch's ticket file and commit in the worktree (as `finish_ticket` does for `done`), then call `self.land()`, capturing stderr with `contextlib.redirect_stderr`. Rewrite the status line with a regular expression (`finish_ticket` only replaces `status: todo`).
 
 ## Acceptance Criteria
 
@@ -42,3 +43,5 @@ Owner, 2026-11-22: may have been a Pi session, not remembered. Planner checked: 
 - 2026-11-22T09:53:26Z friendly-jade-stoat: changed labels, notes
 - 2026-11-22T10:28:11Z friendly-jade-stoat: changed title, labels, description, acceptance criteria, notes
 - 2026-11-22T10:28:11Z friendly-jade-stoat backlog → cold-read
+- 2026-11-22T10:29:04Z friendly-jade-stoat: changed labels, priority, description
+- 2026-11-22T10:29:04Z friendly-jade-stoat cold-read → planning
