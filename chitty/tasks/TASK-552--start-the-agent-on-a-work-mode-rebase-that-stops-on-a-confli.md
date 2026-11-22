@@ -1,6 +1,6 @@
 ---
 title: Start the agent on a work-mode rebase that stops on a conflict
-status: planning
+status: cold-read
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -23,3 +23,4 @@ Tests in `tests/test_run_work_rebases.py`: `test_conflict_doing_starts_agent_wit
 
 - 2026-11-22T03:43:02Z lively-zinc-newt → planning
 - 2026-11-22T04:28:11Z lively-zinc-newt: changed dependencies, description
+- 2026-11-22T04:28:54Z lively-zinc-newt planning → cold-read
