@@ -1,6 +1,6 @@
 ---
 title: Generate several ticket placements in one repository for ticket reads
-status: doing
+status: review
 depends_on:
   - TASK-522
 created: 2026-11-21
@@ -49,3 +49,4 @@ Added generated multi-ticket read comparisons and swapped-contains mutant detect
 - 2026-11-22T14:46:28Z zesty-umber-raven todo → doing
 - 2026-11-22T14:48:24Z zesty-umber-raven: wrote the plan
 - 2026-11-22T14:50:28Z zesty-umber-raven: changed summary
+- 2026-11-22T14:52:09Z zesty-umber-raven doing → review
