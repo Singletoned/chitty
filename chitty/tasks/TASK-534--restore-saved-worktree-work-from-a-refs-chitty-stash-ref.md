@@ -1,6 +1,6 @@
 ---
 title: Restore saved worktree work from a `refs/chitty/stash` ref
-status: todo
+status: doing
 depends_on:
   - TASK-524
 parent: TASK-370
@@ -31,3 +31,4 @@ Tests in `tests/test_git_saved_work.py`, each in its own repository (`setUp` com
 - 2026-11-22T00:27:06Z lively-zinc-newt planning → cold-read
 - 2026-11-22T00:28:36Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:28:36Z lively-zinc-newt cold-read → todo
+- 2026-11-22T01:11:29Z nimble-pearl-adder todo → doing
