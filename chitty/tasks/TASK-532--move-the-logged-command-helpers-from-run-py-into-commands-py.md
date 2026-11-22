@@ -1,6 +1,6 @@
 ---
 title: Move the logged-command helpers from `run.py` into `commands.py`
-status: todo
+status: doing
 parent: TASK-343
 created: 2026-11-21
 ---
@@ -40,3 +40,4 @@ Replanned 2026-11-22: tests rename their calls as well as imports; see the Descr
 - 2026-11-22T00:43:25Z rosy-jade-crane doing → planning
 - 2026-11-22T00:43:55Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T00:43:55Z lively-zinc-newt planning → todo
+- 2026-11-22T00:44:58Z golden-bronze-gannet todo → doing
