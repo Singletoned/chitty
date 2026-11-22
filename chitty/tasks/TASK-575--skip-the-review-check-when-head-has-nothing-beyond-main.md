@@ -1,6 +1,6 @@
 ---
 title: Skip the review check when HEAD has nothing beyond main
-status: planning
+status: todo
 created: 2026-11-22
 ---
 
@@ -29,7 +29,10 @@ the value of `self._main_branch()` (for example `main`):
 The clean-worktree and current-version checks still run. The `tickets`
 workflow is unchanged: work there is committed on `main`, so the check stays
 its only gate. Linked worktrees need no special case: `_main_branch()`
-already reads the main checkout's configuration.
+already reads the main checkout's configuration (not tested here; out of
+scope). If the configured main branch does not exist, `git.is_ancestor`
+raises its `ChittyError` naming the failed Git command; let it surface, do
+not fall back to running or skipping the check.
 
 Tests, in `tests/test_review_check.py`:
 
@@ -37,17 +40,22 @@ Tests, in `tests/test_review_check.py`:
   existing tests would start skipping. Add an empty commit on `task-1` at the
   end of `prepare()` (`git commit --allow-empty --quiet -m work`) so they
   still run the check.
-- New test, runner workflow (the fixture default, `tests/support.py` line
-  15): configure the check as a script that writes a marker file and exits 3,
-  stay on `main` (do not call `prepare()`'s switch), set the ticket to
-  `doing`, then run `chitty edit 1 -s review`. Assert exit code 0, the ticket
+- Split `prepare()` so its config write and commit can run alone. New test,
+  runner workflow (the fixture default, `tests/support.py` line 15): write a
+  check script that writes a marker file and exits 3 into `chitty.toml` and
+  commit it on `main` as `prepare()` does, without the `task-1` switch; run
+  `chitty edit 1 -s doing` (autocommit keeps the tree clean), then
+  `chitty edit 1 -s review`. Assert exit code 0, the ticket
   file says `status: review`, the marker does not exist, and `result.stderr`
   contains `skipped check: HEAD is already on main`.
-- New test, merge-only branch: on `task-1`, create a side branch with one
-  commit, return to `task-1`, merge it with `--no-ff`, then fast-forward
-  nothing else. HEAD is a merge not on `main`. With the failing check script,
-  `-s review` fails with `check failed with status 3`.
-- New test, tickets workflow: set `workflow = "tickets"` and `review = true`
+- New test, merge-only branch (a guard: it passes today, and fails for an
+  implementation built on `git.branch_commits`): with the failing check
+  committed on `main`, create branch `side` from `main` and commit
+  `side.txt` on it; create `task-1` from `main`, set the ticket to `doing`
+  from `main` first, then `git switch task-1`, `git merge --no-ff side`, and
+  make no other commits. `-s review` fails with `check failed with status 3`.
+- New test, tickets workflow (a guard: it passes today, and fails for an
+  implementation that skips in every workflow): set `workflow = "tickets"` and `review = true`
   in `chitty.toml` (so `-s review` is allowed), same failing script, on
   `main`. The edit fails with `check failed with status 3`.
 
@@ -59,6 +67,10 @@ Tests, in `tests/test_review_check.py`:
 - [ ] In the tickets workflow the check still runs on `main`; shown by the new tickets test.
 - [ ] `make check` passes.
 
+## Notes
+
+Cold read 2: setup wording, guard tests and missing-main behaviour clarified; no change to what is built.
+
 ## History
 
 - 2026-11-22T12:50:12Z friendly-jade-stoat → todo
@@ -66,3 +78,5 @@ Tests, in `tests/test_review_check.py`:
 - 2026-11-22T12:50:24Z friendly-jade-stoat todo → planning
 - 2026-11-22T12:51:35Z friendly-jade-stoat: changed description
 - 2026-11-22T12:51:51Z friendly-jade-stoat: changed acceptance criteria
+- 2026-11-22T12:52:51Z friendly-jade-stoat: changed description, notes
+- 2026-11-22T12:52:51Z friendly-jade-stoat planning → todo
