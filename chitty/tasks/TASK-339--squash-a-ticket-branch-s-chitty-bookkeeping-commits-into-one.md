@@ -1,6 +1,6 @@
 ---
 title: Squash a ticket branch's Chitty bookkeeping commits into one
-status: planning
+status: cold-read
 created: 2026-11-16
 ---
 
@@ -37,3 +37,4 @@ Tests in a new `tests/test_squash_bookkeeping.py`, with Hypothesis (the reposito
 - 2026-11-22T10:11:12Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T10:12:38Z friendly-jade-stoat: changed description, acceptance criteria
 - 2026-11-22T10:12:38Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T10:12:40Z friendly-jade-stoat planning → cold-read
