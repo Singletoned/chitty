@@ -65,6 +65,10 @@ Split again 2026-11-22: the worker model gave up a second time (six sessions, no
 
 Both refusal tests failed against the unguarded planner with ChittyError not raised.
 
+## Summary
+
+Added disk link guard and real Git regression fixtures. Both refusal tests failed before the fix; make check passed.
+
 ## History
 
 - 2026-11-21T18:44:38Z eager-ginger-adder → backlog
@@ -100,3 +104,4 @@ Both refusal tests failed against the unguarded planner with ChittyError not rai
 - 2026-11-22T00:21:28Z eager-bronze-raven todo → doing
 - 2026-11-22T00:23:34Z eager-bronze-raven: wrote the plan
 - 2026-11-22T00:24:26Z eager-bronze-raven: changed notes
+- 2026-11-22T00:26:08Z eager-bronze-raven: changed summary
