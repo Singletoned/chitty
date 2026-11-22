@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets outside Git
-status: doing
+status: review
 depends_on:
   - TASK-517
 parent: TASK-391
@@ -32,6 +32,10 @@ Add isolated non-Git characterization tests for both autocommit settings, verify
 
 Mutation check: test_autocommit_requires_git_without_changes fails when Repo._prepare_write is patched to return None: the error instead comes from git ls-files and lacks requires.
 
+## Summary
+
+Added non-Git autocommit characterization tests. Both pass; guard mutation fails as recorded; make check passes.
+
 ## History
 
 - 2026-11-22T01:35:29Z lively-zinc-newt → planning
@@ -42,3 +46,5 @@ Mutation check: test_autocommit_requires_git_without_changes fails when Repo._pr
 - 2026-11-22T03:40:47Z upbeat-navy-urchin todo → doing
 - 2026-11-22T03:43:30Z upbeat-navy-urchin: wrote the plan
 - 2026-11-22T03:43:50Z upbeat-navy-urchin: changed notes
+- 2026-11-22T03:48:28Z upbeat-navy-urchin: changed summary
+- 2026-11-22T03:48:28Z upbeat-navy-urchin doing → review
