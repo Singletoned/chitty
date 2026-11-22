@@ -945,9 +945,14 @@ def renumber(path: Path | None, as_json: bool) -> None:
             changes = _repo().renumber_provisional()
         except ProvisionalOffMain:
             click.echo("provisional tickets are renumbered on main; nothing changed", err=True)
+            if as_json:
+                _print_json([])
             return
         if not changes:
             click.echo("nothing to renumber", err=True)
+        if as_json:
+            _print_json([change.task.as_dict() for change in changes])
+            return
         for change in changes:
             click.echo(
                 f"renumbered {change.task.task.frontmatter.moved_from} -> "

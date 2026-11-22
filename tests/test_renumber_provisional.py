@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import UTC, datetime
 from unittest import mock
@@ -206,6 +207,24 @@ class TestCliProvisionalRenumbering(CliTestCase):
                 lines[i - 1], rf"^renumbered {old_id} -> TASK-{i} /.*TASK-{i}--.*\.md$"
             )
         self.assertEqual(self.run_cli("renumber").stderr.strip(), "nothing to renumber")
+
+    def test_json(self):
+        self.fixture()
+        old = sorted(p.name.split("--")[0] for p in (self.root / "chitty/tasks").glob("TASK-*.md"))
+        result = self.run_cli("renumber", "--json")
+        items = json.loads(result.stdout)
+        self.assertEqual(len(items), 2)
+        self.assertEqual([item["id"] for item in items], ["TASK-1", "TASK-2"])
+        self.assertEqual([item["moved_from"] for item in items], old)
+        result = self.run_cli("renumber", "--json")
+        self.assertEqual(json.loads(result.stdout), [])
+        self.assertEqual(result.stderr.strip(), "nothing to renumber")
+        self.git("switch", "feature")
+        result = self.run_cli("renumber", "--json")
+        self.assertEqual(json.loads(result.stdout), [])
+        self.assertEqual(
+            result.stderr.strip(), "provisional tickets are renumbered on main; nothing changed"
+        )
 
     def test_outside_git(self):
         for ident, title in [("AAAAAA", "Alpha"), ("BAAAAA", "Beta")]:
