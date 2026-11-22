@@ -1,6 +1,6 @@
 ---
 title: Choose the message for a refused ticket write in a pure function
-status: review
+status: done
 parent: TASK-385
 created: 2026-11-22
 ---
@@ -42,6 +42,9 @@ Owner decision, 2026-11-22: (A) refuse, naming the newer copy. Rewritten to matc
 
 The property and six examples failed against the NotImplementedError stub as required.
 
+Reviewed: The refusal rules and complete diff match the ticket.
+1: pass - `make check` reported 1123 tests OK, ruff and pyright passed. Running the property and six literal subtests with `write_refusal` replaced by a `NotImplementedError` stub reported FAILED (errors=7), one for each example and the property.
+
 ## Summary
 
 Implemented pure refusal message selection with property coverage and six literal examples. Tests failed against the stub; make check passed.
@@ -63,3 +66,5 @@ Implemented pure refusal message selection with property coverage and six litera
 - 2026-11-22T14:57:13Z golden-bronze-dormouse: changed notes
 - 2026-11-22T14:59:08Z golden-bronze-dormouse: changed summary
 - 2026-11-22T15:01:49Z golden-bronze-dormouse doing → review
+- 2026-11-22T15:07:30Z intrepid-lilac-wren: changed notes
+- 2026-11-22T15:07:30Z intrepid-lilac-wren review → done
