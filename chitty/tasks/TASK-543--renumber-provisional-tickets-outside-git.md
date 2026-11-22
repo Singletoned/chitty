@@ -28,6 +28,10 @@ These describe landed behaviour, so they pass today. Evidence that they test som
 
 Add isolated non-Git characterization tests for both autocommit settings, verify the guard mutation fails, then run checks and commit.
 
+## Notes
+
+Mutation check: test_autocommit_requires_git_without_changes fails when Repo._prepare_write is patched to return None: the error instead comes from git ls-files and lacks requires.
+
 ## History
 
 - 2026-11-22T01:35:29Z lively-zinc-newt → planning
@@ -37,3 +41,4 @@ Add isolated non-Git characterization tests for both autocommit settings, verify
 - 2026-11-22T03:21:40Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:40:47Z upbeat-navy-urchin todo → doing
 - 2026-11-22T03:43:30Z upbeat-navy-urchin: wrote the plan
+- 2026-11-22T03:43:50Z upbeat-navy-urchin: changed notes
