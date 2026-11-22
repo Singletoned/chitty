@@ -32,6 +32,10 @@ A cold reader's probe (2026-11-21) on the unguarded planner: (c) and (e) give `s
 - [ ] `test_branch_only_link` and `test_branch_adds_link` pass, and each fails before this change (record the failing run in a note)
 - [ ] `test_branch_only_prose` passes, and the existing tests in `tests/test_provisional_link_guard.py` still pass; `make check` passes
 
+## Plan
+
+Add ref-backed fixtures and demonstrate both refusal regressions, then scan selected ref tickets after the disk guard and run the full checks.
+
 ## History
 
 - 2026-11-22T00:16:22Z lively-zinc-newt → planning
@@ -40,3 +44,4 @@ A cold reader's probe (2026-11-21) on the unguarded planner: (c) and (e) give `s
 - 2026-11-22T00:34:56Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:34:56Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:19:40Z eager-jade-heron todo → doing
+- 2026-11-22T01:21:41Z eager-jade-heron: wrote the plan
