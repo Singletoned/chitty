@@ -22,6 +22,10 @@ Tests in `tests/test_run_work_rebases.py`: `test_conflict_doing_starts_agent_wit
 - [ ] Both conflict runner tests pass and fail before the change; `make check` passes
 - [ ] A third test shows a conflicting `doing` ticket with an uncommitted file in its worktree is still aborted: setup runs and no rebase is in progress when the agent starts
 
+## Plan
+
+Add conflict runner tests with a prompt-recording agent, verify regression, then gate rebase preparation and run checks.
+
 ## Notes
 
 Planner correction 2026-11-22 04:3x: a planner tooling slip replaced this Description with an older draft at 04:30 (it named a nonexistent `_prepare_work_session`). The Description is now the intended text: gate the three blocks with a `stopped` flag, stop only for `doing`/`error` tickets with a clean worktree, and the fake-agent contract. Please work from this version.
@@ -35,3 +39,4 @@ Planner correction 2026-11-22 04:3x: a planner tooling slip replaced this Descri
 - 2026-11-22T04:30:35Z lively-zinc-newt cold-read → todo
 - 2026-11-22T04:30:59Z intrepid-ginger-gannet todo → doing
 - 2026-11-22T04:31:20Z lively-zinc-newt: changed description, notes
+- 2026-11-22T04:32:54Z intrepid-ginger-gannet: wrote the plan
