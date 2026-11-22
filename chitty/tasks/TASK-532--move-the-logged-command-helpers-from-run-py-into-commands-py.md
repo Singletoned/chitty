@@ -1,6 +1,6 @@
 ---
 title: Move the logged-command helpers from `run.py` into `commands.py`
-status: doing
+status: review
 parent: TASK-343
 created: 2026-11-21
 ---
@@ -34,6 +34,10 @@ The test requirements contradict each other: criterion 2 and the description req
 
 Replanned 2026-11-22: tests rename their calls as well as imports; see the Description.
 
+## Summary
+
+Moved logged command helpers into commands.py and updated callers. make check passed: 1065 tests; old-name grep returned no matches.
+
 ## History
 
 - 2026-11-21T23:24:34Z lively-zinc-newt → cold-read
@@ -46,3 +50,5 @@ Replanned 2026-11-22: tests rename their calls as well as imports; see the Descr
 - 2026-11-22T00:43:55Z lively-zinc-newt planning → todo
 - 2026-11-22T00:44:58Z golden-bronze-gannet todo → doing
 - 2026-11-22T00:47:11Z golden-bronze-gannet: wrote the plan
+- 2026-11-22T00:50:07Z golden-bronze-gannet: changed summary
+- 2026-11-22T00:50:07Z golden-bronze-gannet doing → review
