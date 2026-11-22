@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: doing
+status: planning
 labels:
   - bug
   - needs-minor
@@ -82,6 +82,10 @@ Planning needed: the description requires the rebase before setup for every work
 
 Replanned 2026-11-22: setup now records its `git log` in case 1; the `todo` and `error` status cases moved to `TASK-545`.
 
+Planning needed: the description requires rebasing every work-mode status, but also says this ticket is tested on doing tickets and moves the todo and error cases to TASK-545. The specified tests cannot detect skipping the rebase for todo or error, despite that being required here. src/chitty/run.py claims todo before setup and selects error for repair; tests/test_run_claims_on_branch.py does not verify rebase for either status. Decide whether to restrict this ticket's implementation requirement to doing or specify the fixtures, actions and assertions for todo and error here, including setup ordering. This is the same unresolved coverage issue identified in the previous planning note, notwithstanding the split.
+
+I inspected the runner call site, git save/restore/rebase helpers, review fake-agent fixture, claim tests and runner plan. The described doing cases cover the other stated paths, including setup ordering and the patched non-conflict failure. No implementation or tests were written; fail-before evidence, runtime behavior and make check remain unverified.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -147,3 +151,5 @@ Replanned 2026-11-22: setup now records its `git log` in case 1; the `todo` and 
 - 2026-11-22T01:47:40Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T01:47:40Z lively-zinc-newt planning → todo
 - 2026-11-22T01:52:30Z lively-violet-quail todo → doing
+- 2026-11-22T01:54:53Z lively-violet-quail: changed owner, notes
+- 2026-11-22T01:54:53Z lively-violet-quail doing → planning
