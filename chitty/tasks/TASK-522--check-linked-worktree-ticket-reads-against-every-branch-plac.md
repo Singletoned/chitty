@@ -35,6 +35,8 @@ Add linked worktree fixture and placement matrix tests, verify the specified mut
 
 Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; then compare with the landed builder, probe the expected results, cold-read and move to `todo`.
 
+Mutation check: changing placement i kind 4 expected title to uncommitted makes test_linked_worktree_placements fail: Repo.find reports no task. Kind 3 lists TASK-6 as well, so assertions select TASK-5 from the listing.
+
 ## History
 
 - 2026-11-21T23:05:23Z lively-zinc-newt → planning
@@ -47,3 +49,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; th
 - 2026-11-22T00:21:23Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:27:34Z rosy-russet-puffin todo → doing
 - 2026-11-22T00:29:24Z rosy-russet-puffin: wrote the plan
+- 2026-11-22T00:31:32Z rosy-russet-puffin: changed notes
