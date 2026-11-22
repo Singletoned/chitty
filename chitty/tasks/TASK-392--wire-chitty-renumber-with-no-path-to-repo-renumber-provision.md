@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: doing
+status: review
 depends_on:
   - TASK-517
   - TASK-542
@@ -88,3 +88,4 @@ Implemented no-path provisional renumbering. Four regression tests failed before
 - 2026-11-22T04:17:14Z honest-navy-wren: wrote the plan
 - 2026-11-22T04:18:16Z honest-navy-wren: changed notes
 - 2026-11-22T04:20:36Z honest-navy-wren: changed summary; ticked acceptance criteria
+- 2026-11-22T04:22:48Z honest-navy-wren doing → review
