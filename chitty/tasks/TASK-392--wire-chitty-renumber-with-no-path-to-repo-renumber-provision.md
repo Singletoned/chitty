@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: planning
+status: cold-read
 depends_on:
   - TASK-517
   - TASK-542
@@ -13,7 +13,7 @@ created: 2026-11-18
 
 `Repo.renumber_provisional()` (`TASK-391`) gives provisional tickets sequential numbers on `main`. Expose it as `chitty renumber` with no path, an idempotent command a person or script can run at any time (decided with the owner: renumbering is cosmetic). Context: `docs/plan/ticket-state.md`, "Planning decisions" (on branch `plan/ticket-state` until it lands on `main`).
 
-Starts after `TASK-391` lands.
+`Repo.renumber_provisional()` and `ProvisionalOffMain` (`src/chitty/errors.py`) have landed (rechecked 2026-11-22). Split 2026-11-22 for the worker model: this ticket is the command without `PATH` and its text output; `--json` is `TASK-548`, help text and docs are `TASK-549`, the idempotence property is `TASK-550`. The decisions below cover all four, for reference.
 
 Decisions:
 
@@ -24,14 +24,18 @@ Decisions:
 - The MCP `renumber(path)` tool in `src/chitty/mcp.py` is unchanged; no new MCP tool (`tests/test_mcp.py` pins the tool list).
 - The first line of `chitty renumber --help` becomes `Renumber provisional tickets on main, or one of several files sharing an ID.`; update `tests/test_renumber.py` `test_help`, which pins the first line. In `docs/plan/cli.md`, describe `renumber` with no `PATH`: the stdout line, the two stderr messages, exit 0, and the `--json` list.
 
-Tests: CLI tests in `tests/test_renumber_provisional.py` (`TASK-391`'s file). Set `autocommit = true` in the test's `chitty.toml`, run `git init -b main`, set `user.name` and `user.email`, and make an initial commit on `main`; make provisional tickets with `chitty add` on branch `feature`, then `git switch main` and `git merge feature`. The file's CLI tests inherit `CliTestCase` from `tests/test_cli.py` (for `run_cli`; `TASK-391`'s `RepoTestCase` tests may live beside them in another class). The property builds a fresh repository inside each example (in its own `tempfile.mkdtemp(dir=self.tmp)`), `os.chdir`s into it and back afterwards, since `CliTestCase.setUp` changes into `self.root` once per test. It draws 0 to 3 provisional tickets, each active or archived, optionally one mentioning another. A Hypothesis property for idempotence: for 0 to 3 provisional tickets (small `max_examples`, `deadline=None`), the first run prints exactly that many `renumbered` lines to stdout and the second prints `nothing to renumber` to stderr and leaves every file byte-identical.
+Tests, in `tests/test_renumber_provisional.py`, as a new class inheriting `CliTestCase` from `tests/test_cli.py` (for `run_cli`), with `CHITTY_ACTOR` set as `TestPrepareRenumbering` does. Fixture: set `autocommit = true` in `chitty.toml`, `git init -b main`, set `user.name` and `user.email`, commit; make two provisional tickets with `chitty add` on branch `feature`, then `git switch main` and `git merge feature`. Example tests only (the property is `TASK-550`):
+
+1. On `main`, `chitty renumber` exits 0 and prints one `renumbered <old ID> -> <new ID> <absolute new path>` line per ticket to stdout; a second run prints `nothing to renumber` to stderr.
+2. The same outside a Git repository (a temporary directory with no `.git`, `autocommit = false`, provisional files written directly).
+3. On `feature`, and on a detached `HEAD`, it prints `provisional tickets are renumbered on main; nothing changed` to stderr, exits 0, and leaves ticket bytes and `git status` unchanged.
+4. With an invalid `chitty.toml` on `main`, it exits 1 with the config error.
 
 ## Acceptance Criteria
 
-- [ ] Idempotence property passes (it fails on the unchanged code, where `PATH` is required); with two provisional tickets on `main`, the first `chitty renumber` prints one `renumbered <old ID> -> <new ID> <absolute new path>` line each to stdout and exits 0; outside a Git repository it does the same
-- [ ] On `feature`, and on a detached `HEAD`, `chitty renumber` prints `provisional tickets are renumbered on main; nothing changed` to stderr, exits 0, and leaves ticket file bytes and `git status` unchanged; with an invalid `chitty.toml`, on `main` or on `feature`, it exits 1 with the config error
-- [ ] `chitty renumber --json` with two provisional tickets lists both, each with its new ID and `moved_from` the old one; it prints `[]` when nothing changes and off `main`
-- [ ] Regression guards: `tests/test_renumber.py` (with `test_help` expecting the new first line) and `tests/test_mcp.py` `test_tools_mirror_the_cli` pass; `docs/plan/cli.md` lists, for `renumber` with no `PATH`, the stdout line, both stderr messages, exit 0 and the `--json` list; `make check` passes
+- [ ] Tests 1 and 2 pass and fail on the unchanged code (where `PATH` is required)
+- [ ] Tests 3 and 4 pass
+- [ ] `tests/test_renumber.py` (except `test_help`, which `TASK-549` changes) and `tests/test_mcp.py` `test_tools_mirror_the_cli` pass; `make check` passes
 
 ## Notes
 
@@ -55,3 +59,5 @@ The store method moved to `TASK-517`, which depends on the preflight `TASK-391`.
 - 2026-11-21T18:37:19Z eager-ginger-adder: changed dependencies, notes
 - 2026-11-21T18:37:19Z eager-ginger-adder todo → planning
 - 2026-11-22T01:35:37Z lively-zinc-newt: changed dependencies
+- 2026-11-22T03:22:42Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-22T03:22:42Z lively-zinc-newt planning → cold-read
