@@ -33,6 +33,10 @@ Keep in planning until its dependency lands; then compare with the landed code, 
 
 `TASK-527` landed 2026-11-22: `PLACEMENTS = tuple("abcdefghijklm")` on `main`.
 
+## Summary
+
+Extracted placement mismatch collection and added both source-selection mutants. make check passes (1066 tests).
+
 ## History
 
 - 2026-11-21T23:18:39Z lively-zinc-newt → todo
@@ -44,3 +48,4 @@ Keep in planning until its dependency lands; then compare with the landed code, 
 - 2026-11-22T00:18:12Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:35:24Z upbeat-khaki-quail todo → doing
 - 2026-11-22T00:37:14Z upbeat-khaki-quail: wrote the plan
+- 2026-11-22T00:39:39Z upbeat-khaki-quail: changed summary
