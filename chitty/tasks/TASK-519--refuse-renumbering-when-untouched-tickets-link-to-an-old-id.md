@@ -48,7 +48,7 @@ Before implementing, run the refusal tests against the unguarded planner and con
 
 ## Plan
 
-Add the guard in `Repo._plan_provisional_renumbering` (`src/chitty/store.py`), reusing `blocking_link` from `TASK-526`, then the real-Git refusal, prose and control fixtures in `tests/test_provisional_link_guard.py`. Confirm the refusal tests fail on the unguarded planner first; then run them and `make check`.
+Add real Git regression fixtures first, verify refusals fail without the guard, then scan untouched disk and selected ref copies using blocking_link. Run formatting and checks before handoff.
 
 ## Notes
 
@@ -87,3 +87,4 @@ Rebased onto `main` 2026-11-21 after `TASK-526` landed `blocking_link` (signatur
 - 2026-11-22T00:09:08Z lively-zinc-newt: changed description, acceptance criteria; wrote the plan
 - 2026-11-22T00:09:08Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:11:51Z friendly-white-toad todo → doing
+- 2026-11-22T00:14:04Z friendly-white-toad: wrote the plan
