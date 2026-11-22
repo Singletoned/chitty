@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads from the ticket's own worktree against every placement
-status: todo
+status: doing
 labels:
   - question
 depends_on:
@@ -59,3 +59,4 @@ Replanned 2026-11-22: the (h) edit variant is dropped, as the worker found it re
 - 2026-11-22T01:36:55Z tidy-lilac-crane doing → planning
 - 2026-11-22T01:37:23Z lively-zinc-newt: changed description, notes
 - 2026-11-22T01:37:23Z lively-zinc-newt planning → todo
+- 2026-11-22T02:14:35Z daring-quartz-newt todo → doing
