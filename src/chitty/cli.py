@@ -27,7 +27,7 @@ from chitty.config import (
     user_contexts_path,
     version_key,
 )
-from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, NoNextTicket
+from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, NoNextTicket, ProvisionalOffMain
 from chitty.import_backlog import import_directory
 from chitty.inbox import list_waiting, waiting
 from chitty.inbox import pull as pull_suggestions
@@ -931,15 +931,29 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 
 
 @cli.command()
-@click.argument("path", type=click.Path(path_type=Path))
+@click.argument("path", type=click.Path(path_type=Path), required=False)
 @json_option
-def renumber(path: Path, as_json: bool) -> None:
+def renumber(path: Path | None, as_json: bool) -> None:
     """Give one of several files sharing an ID the next number in its context.
 
     PATH is the task file to change. It keeps its slug and records moved_from.
     References are not rewritten, because a reference to a shared ID cannot say
     which file it meant: each ticket naming the old ID is listed to check.
     """
+    if path is None:
+        try:
+            changes = _repo().renumber_provisional()
+        except ProvisionalOffMain:
+            click.echo("provisional tickets are renumbered on main; nothing changed", err=True)
+            return
+        if not changes:
+            click.echo("nothing to renumber", err=True)
+        for change in changes:
+            click.echo(
+                f"renumbered {change.task.task.frontmatter.moved_from} -> "
+                f"{change.task.id} {change.task.path}"
+            )
+        return
     change, references = _repo().renumber(path)
     if as_json:
         _print_json(renumbered_dict(change, references))

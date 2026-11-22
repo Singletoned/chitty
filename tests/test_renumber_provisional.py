@@ -5,6 +5,7 @@ from unittest import mock
 from chitty.errors import ChittyError
 from chitty.store import Repo
 from tests.support import RepoTestCase
+from tests.test_cli import CliTestCase
 from tests.test_source_copy_errors import SourceCopyErrorChecks
 
 
@@ -170,3 +171,70 @@ class TestPrepareRenumbering(RepoTestCase):
         self.assertEqual(repo.renumber_provisional(), ())
         self.assertEqual(self.git("rev-parse", "HEAD"), head)
         self.assertEqual(before, {p: p.read_bytes() for p in before})
+
+
+class TestCliProvisionalRenumbering(CliTestCase):
+    def git(self, *args):
+        import subprocess
+
+        return subprocess.run(
+            ["git", *args], cwd=self.root, check=True, capture_output=True, text=True
+        ).stdout
+
+    def fixture(self):
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
+        self.git("init", "-b", "main")
+        self.git("config", "user.name", "Tester")
+        self.git("config", "user.email", "tester@example.com")
+        self.git("add", ".")
+        self.git("commit", "-m", "fixture")
+        self.git("switch", "-c", "feature")
+        self.run_cli("add", "One", "-d", "Fixture.")
+        self.run_cli("add", "Two", "-d", "Fixture.")
+        self.git("switch", "main")
+        self.git("merge", "feature")
+
+    def test_main(self):
+        self.fixture()
+        old = sorted(p.name.split("--")[0] for p in (self.root / "chitty/tasks").glob("TASK-*.md"))
+        result = self.run_cli("renumber")
+        lines = result.stdout.splitlines()
+        self.assertEqual(len(lines), 2)
+        for i, old_id in enumerate(old, 1):
+            self.assertRegex(
+                lines[i - 1], rf"^renumbered {old_id} -> TASK-{i} /.*TASK-{i}--.*\.md$"
+            )
+        self.assertEqual(self.run_cli("renumber").stderr.strip(), "nothing to renumber")
+
+    def test_outside_git(self):
+        for ident, title in [("AAAAAA", "Alpha"), ("BAAAAA", "Beta")]:
+            path = self.root / f"chitty/tasks/TASK-{ident}--{title.lower()}.md"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(
+                f"---\ntitle: {title}\nstatus: todo\ncreated: 2026-01-01\n"
+                "provisional: true\n---\n\n## Description\n\nFixture.\n"
+            )
+        result = self.run_cli("renumber")
+        self.assertEqual(len(result.stdout.splitlines()), 2)
+        self.assertTrue(all(line.startswith("renumbered ") for line in result.stdout.splitlines()))
+
+    def test_off_main(self):
+        self.fixture()
+        for args in [("switch", "feature"), ("switch", "--detach")]:
+            self.git(*args)
+            before = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*.md")}
+            status = self.git("status", "--porcelain")
+            result = self.run_cli("renumber")
+            self.assertEqual(
+                result.stderr.strip(), "provisional tickets are renumbered on main; nothing changed"
+            )
+            self.assertEqual(
+                before, {p: p.read_bytes() for p in (self.root / "chitty").rglob("*.md")}
+            )
+            self.assertEqual(status, self.git("status", "--porcelain"))
+
+    def test_invalid_config(self):
+        self.fixture()
+        (self.root / "chitty.toml").write_text("bad = [\n")
+        self.assertIn("invalid TOML", self.run_cli("renumber", exit_code=1).stderr)
