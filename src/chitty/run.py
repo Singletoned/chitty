@@ -63,6 +63,24 @@ MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
 
 
+# Used by the work runner when its rebase integration lands.
+def _rebase_work_worktree(  # pyright: ignore[reportUnusedFunction]
+    worktree: Path, task_id: TaskId, main_branch: str
+) -> None:
+    ref = f"refs/chitty/stash/{task_id}"
+    saved = git.save_work(worktree, ref, f"chitty {task_id} before rebase")
+    try:
+        unresolved = git.rebase_onto(worktree, main_branch)
+    except ChittyError:
+        if saved:
+            git.restore_work(worktree, ref)
+        raise
+    if unresolved:
+        git.abort_rebase(worktree)
+    if saved:
+        git.restore_work(worktree, ref)
+
+
 def _has_work(paths: Sequence[PurePosixPath]) -> bool:
     return any(len(path.parts) < 2 or path.parts[0] != BACKLOG_DIR for path in paths)
 
