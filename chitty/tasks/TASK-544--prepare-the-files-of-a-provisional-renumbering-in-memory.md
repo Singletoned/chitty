@@ -24,6 +24,10 @@ Test in a new `tests/test_renumber_provisional.py`, `RepoTestCase`, real files a
 
 - [ ] The prepare test passes and fails against a `NotImplementedError` stub; `make check` passes
 
+## Plan
+
+Add an in-memory preparation helper and a real Git fixture test; verify the test fails with a stub, then implement and run the full checks.
+
 ## History
 
 - 2026-11-22T01:37:46Z lively-zinc-newt → cold-read
@@ -31,3 +35,4 @@ Test in a new `tests/test_renumber_provisional.py`, `RepoTestCase`, real files a
 - 2026-11-22T01:39:13Z lively-zinc-newt: changed description
 - 2026-11-22T01:39:13Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:31:37Z nimble-hazel-raven todo → doing
+- 2026-11-22T02:33:57Z nimble-hazel-raven: wrote the plan
