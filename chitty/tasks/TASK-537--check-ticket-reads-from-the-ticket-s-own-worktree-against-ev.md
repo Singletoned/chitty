@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads from the ticket's own worktree against every placement
-status: doing
+status: planning
 labels:
   - question
 depends_on:
@@ -40,6 +40,10 @@ Test mechanism: add a module-level function `own_worktree_mismatches(parent: Pat
 
 Add kind 2 checkout and table-driven own-worktree read collector, then verify it detects the current-branch mutant and run checks.
 
+## Notes
+
+The specified (h) edit expectation contradicts the fixture and actual reads: `place` deletes the active file, but `edit_uncommitted` calls `write_ticket` and recreates it. A table-driven probe using the specified sequence returned `uncommitted` from both reads, not a missing task; all other rows matched and the mutant test passed. Decide whether to omit this variant or change its expected result, or specify a different fixture/action and intended behavior. The acceptance criterion cannot pass as written without changing behavior outside the ticket. The kind-2 checkout helper is committed; the exploratory failing test was removed. Full verification of the final test awaits that decision; `make check` passes with the helper alone.
+
 ## History
 
 - 2026-11-22T00:19:27Z lively-zinc-newt → planning
@@ -49,3 +53,5 @@ Add kind 2 checkout and table-driven own-worktree read collector, then verify it
 - 2026-11-22T00:42:23Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:31:44Z tidy-lilac-crane todo → doing
 - 2026-11-22T01:34:23Z tidy-lilac-crane: wrote the plan
+- 2026-11-22T01:36:55Z tidy-lilac-crane: changed owner, notes
+- 2026-11-22T01:36:55Z tidy-lilac-crane doing → planning
