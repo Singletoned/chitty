@@ -1,6 +1,6 @@
 ---
 title: Show the ticket-read matrix catches swapped `contains` and a missing `main_tip`
-status: todo
+status: doing
 depends_on:
   - TASK-527
 parent: TASK-393
@@ -38,3 +38,4 @@ Keep in planning until its dependency lands; then compare with the landed code, 
 - 2026-11-22T00:16:50Z lively-zinc-newt planning → cold-read
 - 2026-11-22T00:18:12Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:18:12Z lively-zinc-newt cold-read → todo
+- 2026-11-22T00:35:24Z upbeat-khaki-quail todo → doing
