@@ -3,6 +3,7 @@ title: Start the agent on a work-mode rebase that stops on a conflict
 status: planning
 depends_on:
   - TASK-370
+  - TASK-546
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -24,3 +25,4 @@ Test, extending `tests/test_run_work_rebases.py`: a rebase that stops on a code 
 ## History
 
 - 2026-11-22T01:29:45Z lively-zinc-newt → planning
+- 2026-11-22T02:02:17Z lively-zinc-newt: changed dependencies
