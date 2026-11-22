@@ -1,6 +1,6 @@
 ---
 title: Add `chitty summary` to show what changed in recent hours
-status: doing
+status: planning
 priority: high
 created: 2026-11-22
 ---
@@ -37,6 +37,10 @@ To show the tests fail first, commit a stub first (`timed_transitions` returning
 
 Suggestion origin: chitty
 
+The property requirement contradicts the specified window: it says every ticket with a transition at or after `now - hours` appears and uses the latest such transition, but the decisions and the future-transition example explicitly exclude transitions after `now`. The generator deliberately includes future timestamps, so the stated property fails for a ticket with only a future transition and can select a future transition over a valid one. Please correct the property to state the intended upper bound and latest eligible transition, or decide otherwise and reconcile the other requirements.
+
+Checked the remaining ticket against `HISTORY_LINE_RE`, `Task.transitions`, `Repo.all_tasks`, and the existing CLI test conventions; no implementation was started. Stub and regression runs, command output, and `make check` remain unverified because the contradictory acceptance test needs correction first.
+
 ## History
 
 - 2026-11-22T09:47:32Z friendly-jade-stoat → backlog
@@ -48,3 +52,5 @@ Suggestion origin: chitty
 - 2026-11-22T22:54:25Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T22:54:25Z plucky-umber-wren cold-read → todo
 - 2026-11-22T22:56:02Z honest-bronze-puffin todo → doing
+- 2026-11-22T22:58:15Z honest-bronze-puffin: changed owner, notes
+- 2026-11-22T22:58:15Z honest-bronze-puffin doing → planning
