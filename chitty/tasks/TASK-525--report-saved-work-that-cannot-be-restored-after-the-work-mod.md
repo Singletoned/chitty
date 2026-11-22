@@ -1,6 +1,6 @@
 ---
 title: Report saved work that cannot be restored after the work-mode rebase
-status: todo
+status: doing
 depends_on:
   - TASK-370
   - TASK-541
@@ -36,3 +36,4 @@ Keep in planning until `TASK-370` lands; then replan, cold-read and move to `tod
 - 2026-11-22T04:43:57Z lively-zinc-newt planning → cold-read
 - 2026-11-22T04:45:39Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T04:45:39Z lively-zinc-newt cold-read → todo
+- 2026-11-22T04:46:53Z upbeat-navy-marten todo → doing
