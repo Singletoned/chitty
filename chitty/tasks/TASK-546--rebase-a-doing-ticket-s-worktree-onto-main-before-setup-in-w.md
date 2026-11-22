@@ -27,6 +27,10 @@ Test in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_revi
 
 Add runner integration regression tests for doing and todo, verify the doing test fails first, then call the existing helper and update the runner plan documentation. Run formatting and checks.
 
+## Notes
+
+Regression verified before the fix: doing test fails because setup log lacks main moved; todo guard passes.
+
 ## History
 
 - 2026-11-22T02:02:11Z lively-zinc-newt → planning
@@ -36,3 +40,4 @@ Add runner integration regression tests for doing and todo, verify the doing tes
 - 2026-11-22T02:23:29Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:56:18Z eager-russet-vole todo → doing
 - 2026-11-22T02:58:39Z eager-russet-vole: wrote the plan
+- 2026-11-22T02:58:58Z eager-russet-vole: changed notes
