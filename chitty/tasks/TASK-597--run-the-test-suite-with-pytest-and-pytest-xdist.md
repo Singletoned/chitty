@@ -1,6 +1,6 @@
 ---
 title: Run the test suite with `pytest` and `pytest-xdist`
-status: planning
+status: todo
 created: 2026-11-22
 ---
 
@@ -28,18 +28,12 @@ No new test: build configuration, checked by the commands in the criteria.
 - [ ] `make check` passes and its output ends with a `pytest` summary line reporting at least 1142 passed and no failures or errors; `grep -rn unittest-parallel Makefile pyproject.toml uv.lock AGENTS.md README.md docs tests` prints nothing
 - [ ] `make test` passes, prints a `coverage report` `TOTAL` line of at least 90%, and leaves `tmp/coverage/index.html`; afterwards `git status --short` is empty
 - [ ] A temporary `tests/test_fx_probe.py` (deleted afterwards, not committed) with class `Cases` whose `setUpClass` raises `RuntimeError` and one passing `test_ok` makes `make check` exit non-zero with a `pytest` summary containing `1 error`. Run the same probe on `main` before the change first and record that `make check` passed there (the error is dropped); record both commands and summary lines in a note
-- [ ] After `make install`, a temporary `tests/test_probe_worker.py` (deleted afterwards, not committed) asserting `import tests; tests._is_worker is True` passes under `.venv/bin/pytest -n 2 tests/test_probe_worker.py` and fails under `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py`; record both outputs in a note. The `faulthandler.dump_traceback_later` call in `tests/__init__.py` is unchanged (`git diff main -- tests/__init__.py` touches only `_is_worker` and the comment), so the controller still gets `PARENT_GRACE_SECONDS`
+- [ ] After `make install`, a temporary `tests/test_probe_worker.py` (deleted afterwards, not committed) asserting `import tests; tests._is_worker is True` passes under `.venv/bin/pytest -n 2 tests/test_probe_worker.py` and fails under `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py`; record both outputs in a note. The `faulthandler.dump_traceback_later` call in `tests/__init__.py` is unchanged (`git diff main -- tests/__init__.py` touches only `_is_worker`, the comment, and the `import multiprocessing` line, removed because it is no longer used), so the controller still gets `PARENT_GRACE_SECONDS`
 - [ ] `uv lock --check` passes; `uv.lock` has `name = "pytest"` and `name = "pytest-xdist"` package entries and no `unittest-parallel`; `grep -n unittest AGENTS.md README.md docs/plan/stack.md` prints only lines that say tests are `unittest.TestCase` classes run by `pytest`
 
 ## Plan
 
 Run the fixture probe on the unchanged main-equivalent tree, switch the runner and worker detection, update documentation and lockfile, then run the specified checks and probes.
-
-## Notes
-
-Planning blocker: criterion 4 says the diff of `tests/__init__.py` touches only `_is_worker` and the comment, but the specified replacement makes `import multiprocessing` unused. `make check` runs Ruff, which reports F401 for that import, so criteria 1 and 4 conflict. Please allow removing the unused import in criterion 4, or specify another intended resolution.
-
-Baseline: on the main-equivalent implementation (`git diff main -- Makefile tests/__init__.py` was empty), a temporary `tests/test_fx_probe.py` with a raising `setUpClass` and one passing test was run with `make check`; it exited zero with `Ran 1142 tests in 97.130s` and `OK`. The first probe attempt failed formatting before running tests; the formatted probe was then used. The probe was deleted. I inspected the remaining runner, coverage, documentation and worker requirements; post-change checks and probes cannot be verified until the conflict is resolved. No implementation changes were made.
 
 ## History
 
@@ -54,3 +48,5 @@ Baseline: on the main-equivalent implementation (`git diff main -- Makefile test
 - 2026-11-22T20:20:46Z vivid-fawn-wren: wrote the plan
 - 2026-11-22T20:22:52Z vivid-fawn-wren: changed owner, notes
 - 2026-11-22T20:22:52Z vivid-fawn-wren doing → planning
+- 2026-11-22T20:33:11Z plucky-umber-wren: replaced notes; changed acceptance criteria
+- 2026-11-22T20:33:11Z plucky-umber-wren planning → todo
