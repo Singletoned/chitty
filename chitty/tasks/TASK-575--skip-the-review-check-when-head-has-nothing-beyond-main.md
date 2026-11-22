@@ -1,6 +1,6 @@
 ---
 title: Skip the review check when HEAD has nothing beyond main
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -80,3 +80,4 @@ Cold read 2: setup wording, guard tests and missing-main behaviour clarified; no
 - 2026-11-22T12:51:51Z friendly-jade-stoat: changed acceptance criteria
 - 2026-11-22T12:52:51Z friendly-jade-stoat: changed description, notes
 - 2026-11-22T12:52:51Z friendly-jade-stoat planning → todo
+- 2026-11-22T15:03:19Z quick-fawn-falcon todo → doing
