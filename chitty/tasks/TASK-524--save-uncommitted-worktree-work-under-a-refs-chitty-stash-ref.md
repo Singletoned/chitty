@@ -1,6 +1,6 @@
 ---
 title: Save uncommitted worktree work under a `refs/chitty/stash` ref
-status: todo
+status: doing
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -88,3 +88,4 @@ Split again 2026-11-21: the worker model returned five sessions saying it could 
 - 2026-11-22T00:06:41Z lively-zinc-newt error → cold-read
 - 2026-11-22T00:07:49Z lively-zinc-newt: changed description
 - 2026-11-22T00:07:49Z lively-zinc-newt cold-read → todo
+- 2026-11-22T00:16:51Z tidy-khaki-raven todo → doing
