@@ -16,7 +16,12 @@ The suite has no `setUpClass`, `tearDownClass`, `setUpModule` or `tearDownModule
 
 Options to decide while planning: run at `--level class` (tests in a class then run serially, so check the effect on wall time with the timing history from `TASK-591`), or keep `--level test` and add a test that fails if any test module defines a class or module fixture. Once decided, the timing recorder (`TASK-590`, which leaves fixtures out of scope) may need to record fixture failures.
 
+## Notes
+
+Planner, 2026-11-22: TASK-597 switches the runner to `pytest`, which reports a failing `setUpClass` as an error (checked with `pytest -n 2`). When TASK-597 lands with its criterion 3 passing, mark this done.
+
 ## History
 
 - 2026-11-22T18:44:25Z plucky-umber-wren → backlog
 - 2026-11-22T20:16:13Z plucky-umber-wren: changed dependencies
+- 2026-11-22T20:16:15Z plucky-umber-wren: changed notes
