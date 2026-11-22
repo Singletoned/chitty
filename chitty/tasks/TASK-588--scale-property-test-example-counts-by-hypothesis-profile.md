@@ -1,6 +1,6 @@
 ---
 title: Scale property-test example counts by Hypothesis profile
-status: cold-read
+status: planning
 owner: plucky-umber-wren
 depends_on:
   - TASK-587
@@ -18,9 +18,11 @@ Add to `tests/__init__.py`, above the `settings.register_profile` calls (they us
 - `examples(base: int) -> int`, returning `example_count(settings.get_current_profile_name(), base)`. `settings.get_current_profile_name()` is public in Hypothesis 6.170.
 - Give the profiles `max_examples=example_count(<name>, 100)` (100 is Hypothesis's default), so tests without their own count also scale: 20 under `check`, 500 under `thorough`.
 
-Replace every `max_examples=<value>` in a `@settings(...)` decorator under `tests/` with `max_examples=examples(<value>)`, keeping the value (today's count becomes the base). In `tests/test_property_inbox.py`, use `examples(EXAMPLES)`. `tests/test_property_renumbering.py` defines its own module-level `examples(fn)`; it sets no `max_examples`, so leave it, and do not import `tests.examples` into it. Leave other keywords on those decorators as they are.
+Replace every `max_examples=<value>` in a `@settings(...)` decorator under `tests/` (the new `tests/test_example_counts.py` included: its own property tests use `examples(...)` too) with `max_examples=examples(<value>)`, keeping the value (today's count becomes the base). In `tests/test_property_inbox.py`, use `examples(EXAMPLES)`. `tests/test_property_renumbering.py` defines its own module-level `examples(fn)`; it sets no `max_examples`, so leave it, and do not import `tests.examples` into it. Leave other keywords on those decorators as they are.
 
 Out of scope, unchanged: `settings=settings(max_examples=...)` passed to `hypothesis.find` (in `tests/test_squash_bookkeeping.py`, `tests/test_ticket_strategies.py` and `tests/test_ticket_placement_reads.py`). Those search for a counterexample to a mutant and fail if they stop too early, so fewer examples would break them; they are not decorators, so criterion 2 ignores them. Also out of scope: `EXAMPLES` in `tests/test_property_renumbering.py`, which is a list of cases, not a count.
+
+Record the wall time of `make check` and of `make test`, before and after the change, in a note: `thorough` now draws up to 1500 examples for the base-300 tests in `tests/test_property_next.py`, and the person wants to watch the split.
 
 Property for criterion 1 over generated `base`; the profile names are a fixed set of two plus generated other text.
 
@@ -48,3 +50,5 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`tests/__init__.py` r
 - 2026-11-22T17:07:21Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T17:07:21Z plucky-umber-wren cold-read → planning
 - 2026-11-22T17:07:23Z plucky-umber-wren planning → cold-read
+- 2026-11-22T17:08:07Z plucky-umber-wren: changed description
+- 2026-11-22T17:08:07Z plucky-umber-wren cold-read → planning
