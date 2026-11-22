@@ -1,6 +1,6 @@
 ---
 title: Report branch coverage, including subprocesses, from `make test`
-status: planning
+status: cold-read
 owner: plucky-umber-wren
 depends_on:
   - TASK-587
@@ -48,6 +48,8 @@ No property or unit test: this is build configuration, checked by the commands i
 
 Planner, 2026-11-22: relies on what `TASK-587` lands (the `test` line in `Makefile` and its `AGENTS.md` bullet). Keep in `planning` until `TASK-587` is `done`; then compare and cold-read again before `todo`.
 
+Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` line `TEST_TIER=thorough uv run unittest-parallel -s tests -t . --level test`; `AGENTS.md` bullet at lines 19-21); this text still holds.
+
 ## History
 
 - 2026-11-22T16:48:38Z plucky-umber-wren → planning
@@ -58,3 +60,5 @@ Planner, 2026-11-22: relies on what `TASK-587` lands (the `test` line in `Makefi
 - 2026-11-22T17:05:13Z plucky-umber-wren planning → cold-read
 - 2026-11-22T17:06:02Z plucky-umber-wren: changed description, acceptance criteria, notes
 - 2026-11-22T17:06:02Z plucky-umber-wren cold-read → planning
+- 2026-11-22T17:06:25Z plucky-umber-wren: changed notes
+- 2026-11-22T17:06:25Z plucky-umber-wren planning → cold-read
