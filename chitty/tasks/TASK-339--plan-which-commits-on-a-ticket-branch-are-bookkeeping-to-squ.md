@@ -1,6 +1,6 @@
 ---
 title: Plan which commits on a ticket branch are bookkeeping to squash
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -25,12 +25,18 @@ Tests in a new `tests/test_squash_bookkeeping.py`, with Hypothesis (the reposito
 
 ## Acceptance Criteria
 
-- [ ] The `squash_plan` property and the fixed example pass, and all three mutant tests find a mismatch
-- [ ] `make check` passes
+- [x] The `squash_plan` property and the fixed example pass, and all three mutant tests find a mismatch
+- [x] `make check` passes
 
 ## Plan
 
 Implement pure classification and refusal rules, then verify against an independent property oracle, fixed empty example, and three find-based mutants; run formatting and checks.
+
+## Notes
+
+Reviewed: Implementation and complete diff checked; no prior review findings or Decided note.
+1: pass - `.venv/bin/python -m unittest tests.test_squash_bookkeeping` printed OK (3 tests), including all three find-based mutants. Removing squash_plan from the imported module before running the same tests produced FAILED (errors=1), ImportError, demonstrating failure without the new function.
+2: pass - `make check` printed 0 errors, 0 warnings and OK (1119 tests).
 
 ## Summary
 
@@ -51,3 +57,5 @@ Implemented the pure squash plan with property, empty-commit and three mutant ch
 - 2026-11-22T14:35:59Z rosy-jade-badger: wrote the plan
 - 2026-11-22T14:38:10Z rosy-jade-badger: changed summary
 - 2026-11-22T14:39:45Z rosy-jade-badger doing → review
+- 2026-11-22T14:44:29Z friendly-khaki-newt: changed notes; ticked acceptance criteria
+- 2026-11-22T14:44:29Z friendly-khaki-newt review → done
