@@ -36,7 +36,7 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 
 - [ ] Edit and add rules: the `tests/test_status_dropped.py` cases for every allowed starting status, the summary refusals (none, `""`, whitespace) and `add -s dropped` pass, and fail before the change
 - [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` names `dropped` and what it is for; `make check` passes
-- [ ] List, archive, revive and dependency: the `tests/test_status_dropped.py` cases for `chitty list` and `-s dropped`, `chitty archive` with no ID, `-s todo` from `dropped`, the dependent `TASK-2` and the round-trip pass; all but the dependent case fail before the change. Record both runs in a note
+- [ ] List, archive, revive and dependency: the `tests/test_status_dropped.py` cases for `chitty list` and `-s dropped`, `chitty archive` with no ID, `-s todo` from `dropped`, the dependent `TASK-2` and the round-trip pass, and fail before the change (the dependent case only because `dropped` cannot be parsed yet). Record both runs in a note
 
 ## History
 
@@ -45,3 +45,4 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 - 2026-11-22T22:11:29Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T22:12:51Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T22:12:51Z plucky-umber-wren cold-read → todo
+- 2026-11-22T22:13:06Z plucky-umber-wren: changed acceptance criteria
