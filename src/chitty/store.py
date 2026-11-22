@@ -609,7 +609,7 @@ class Repo:
                 parts = path.parts
                 if not (len(parts) == 3 or (len(parts) == 4 and parts[2] == ARCHIVE_DIR)):
                     continue
-                if parts[0] != BACKLOG_DIR:
+                if parts[0] != BACKLOG_DIR or ids.is_hidden_entry(path.name):
                     continue
                 try:
                     task_id, _ = ids.parse_filename(path.name)
@@ -2401,6 +2401,8 @@ def scan(
         return []
     entries: list[tuple[Path, str | None]] = []
     for path in sorted(directory.iterdir()):
+        if ids.is_hidden_entry(path.name):
+            continue
         if path.is_dir():
             if not archived and path.name == ARCHIVE_DIR:
                 continue

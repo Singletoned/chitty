@@ -101,6 +101,10 @@ def filename(task_id: TaskId, slug: str) -> str:
     return f"{task_id}{FILENAME_SEPARATOR}{slug}{SUFFIX}"
 
 
+def is_hidden_entry(name: str) -> bool:
+    return name.startswith(".")
+
+
 def parse_filename(name: str) -> tuple[TaskId, str]:
     """Split `TASK-13--add-search.md` into its ID and slug."""
     if not name.endswith(SUFFIX):
