@@ -23,6 +23,10 @@ Test in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_revi
 
 - [ ] The `doing` runner test passes and fails before the change, and the `todo` guard passes; the doc bullet is updated; `make check` passes
 
+## Plan
+
+Add runner integration regression tests for doing and todo, verify the doing test fails first, then call the existing helper and update the runner plan documentation. Run formatting and checks.
+
 ## History
 
 - 2026-11-22T02:02:11Z lively-zinc-newt → planning
@@ -31,3 +35,4 @@ Test in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_revi
 - 2026-11-22T02:23:29Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T02:23:29Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:56:18Z eager-russet-vole todo → doing
+- 2026-11-22T02:58:39Z eager-russet-vole: wrote the plan
