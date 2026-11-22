@@ -1,6 +1,6 @@
 ---
 title: Runner error notes need a blank line before their code fences
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -43,3 +43,4 @@ Cold read: test made exact-string; nothing else serious.
 - 2026-11-22T13:18:36Z friendly-jade-stoat backlog → planning
 - 2026-11-22T13:20:23Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T13:20:23Z friendly-jade-stoat planning → todo
+- 2026-11-22T15:34:00Z mellow-amber-marten todo → doing
