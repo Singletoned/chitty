@@ -1,5 +1,7 @@
 import subprocess
+from unittest import mock
 
+from chitty.model import ChittyError
 from tests.test_review_merge import ReviewMergeTestCase
 
 
@@ -29,6 +31,27 @@ class TestWorkRebases(ReviewMergeTestCase):
             cwd=self.root,
             check=True,
         )
+
+    def test_rebase_failure_is_recorded(self):
+        self.prepare_branch("doing")
+        self.git("worktree", "add", ".worktrees/task-1", "task-1")
+        untracked = self.root / ".worktrees/task-1/u.txt"
+        untracked.write_text("saved contents\n")
+        with mock.patch("chitty.run.git.rebase_onto", side_effect=ChittyError("boom")):
+            self.run_cli("run", "--mode", "work")
+        ticket_path = self.git("ls-tree", "-r", "--name-only", "task-1", "chitty/tasks").strip()
+        ticket = self.git("show", f"task-1:{ticket_path}")
+        self.assertIn("status: error", ticket)
+        self.assertIn("Runner error (rebase)", ticket)
+        self.assertIn("boom", ticket)
+        self.assertFalse((self.logs / "agent").exists())
+        self.assertEqual(untracked.read_text(), "saved contents\n")
+        result = subprocess.run(
+            ["git", "show-ref", "--verify", "--quiet", "refs/chitty/stash/TASK-1"],
+            cwd=self.root,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 1)
 
     def test_todo_rebases_before_setup(self):
         self.prepare_branch("todo")

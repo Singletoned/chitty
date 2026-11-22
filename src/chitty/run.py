@@ -502,7 +502,10 @@ def _run_ticket_with_log(
         raise ChittyError(f"{existing_worktree / relative_ticket} has uncommitted changes")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
     if action.mode == "work":
-        _rebase_work_worktree(worktree, action.id, main_repo.config.main_branch)
+        try:
+            _rebase_work_worktree(worktree, action.id, main_repo.config.main_branch)
+        except ChittyError as error:
+            return _record_ticket_error(Repo(worktree, main_repo.config), action, "rebase", error)
     context["worktree"] = str(worktree)
     branch_repo = Repo(worktree, main_repo.config)
     if action.mode == "work" and selected_status == "todo":
