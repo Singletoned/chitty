@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: review
+status: done
 depends_on:
   - TASK-370
   - TASK-546
@@ -20,7 +20,7 @@ Tests in `tests/test_rebase_work_worktree.py`: change its `rebase()` helper (nea
 
 ## Acceptance Criteria
 
-- [ ] Cases 3, 3b, 3c and 3d pass; 3b and 3c fail on their behaviour assertions against the old helper; the runner tests in `tests/test_run_work_rebases.py` pass unchanged; `make check` passes
+- [x] Cases 3, 3b, 3c and 3d pass; 3b and 3c fail on their behaviour assertions against the old helper; the runner tests in `tests/test_run_work_rebases.py` pass unchanged; `make check` passes
 
 ## Plan
 
@@ -29,6 +29,9 @@ Add conflict and clean-rebase regression cases, verify old behavior fails, then 
 ## Notes
 
 Regression cases 3b and 3c fail against the old helper with the keyword accepted and ignored: respectively None is not true and ChittyError is not raised.
+
+Reviewed:
+1: pass - Current helper tests: 7 passed; unchanged runner tests: 4 passed. Old helper with keyword accepted and ignored: test_stop_on_conflict failed with None is not true and test_stop_ticket_conflict failed with ChittyError not raised. make check passed (1101 tests, including two temporary copied tests); ruff and pyright passed.
 
 ## Summary
 
@@ -50,3 +53,5 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T03:52:35Z witty-lilac-raven: changed notes
 - 2026-11-22T03:55:10Z witty-lilac-raven: changed summary
 - 2026-11-22T03:57:30Z witty-lilac-raven doing → review
+- 2026-11-22T04:03:31Z friendly-russet-quail: changed notes; ticked acceptance criteria
+- 2026-11-22T04:03:31Z friendly-russet-quail review → done
