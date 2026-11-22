@@ -1016,7 +1016,23 @@ def archive(task_id: str | None, as_json: bool) -> None:
         click.echo(f"no done tasks to {verb[:-1]}")
 
 
-@cli.command("guide")
+TICKETS_GUIDE_HELP = """Print general or role-specific instructions for coding agents.
+
+\b
+chitty guide  General agent instructions
+"""
+
+
+class GuideCommand(click.Command):
+    def format_help_text(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
+        if _tickets_workflow():
+            with formatter.indentation():
+                formatter.write_text(TICKETS_GUIDE_HELP)
+        else:
+            super().format_help_text(ctx, formatter)
+
+
+@cli.command("guide", cls=GuideCommand)
 @click.argument("role", required=False)
 @click.argument("task_id", metavar="[ID]", required=False)
 def guide_(role: str | None, task_id: str | None) -> None:

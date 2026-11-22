@@ -53,18 +53,20 @@ class TestRoleGuidesRunnerCompatibility(GuideWorkflowTestCase):
     def test_runner_guides(self):
         for role in ROLE_NAMES:
             with self.subTest(role=role):
-                self.assertEqual(self.invoke("guide", role).stdout, guide(role, "runner"))
+                self.assertEqual(
+                    self.invoke("guide", role).stdout, guide(role, directory=self.root)
+                )
                 if role not in {"plan", "setup"}:
                     self.assertEqual(
                         self.invoke("guide", role, "TASK-1").stdout,
-                        guide(role, "runner", "TASK-1"),
+                        guide(role, "TASK-1", directory=self.root),
                     )
 
     def test_outside_repository_and_broken_config(self):
         previous = os.getcwd()
         os.chdir(self.tmp)
         self.addCleanup(os.chdir, previous)
-        self.assertEqual(self.invoke("guide", "work").stdout, guide("work", "runner"))
+        self.assertEqual(self.invoke("guide", "work").stdout, guide("work", directory=self.tmp))
         self.assertIn("chitty guide work TASK-12", self.invoke("guide", "--help").stdout)
         os.chdir(self.root)
         self.write_workflow("bogus")
