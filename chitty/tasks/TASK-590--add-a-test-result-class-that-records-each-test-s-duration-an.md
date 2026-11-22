@@ -1,6 +1,6 @@
 ---
 title: Add a test result class that records each test's duration and outcome
-status: planning
+status: cold-read
 owner: plucky-umber-wren
 created: 2026-11-22
 ---
@@ -47,3 +47,4 @@ No property for outcomes: they are a fixed set, each case listed in the criteria
 - 2026-11-22T17:13:41Z plucky-umber-wren planning → cold-read
 - 2026-11-22T17:15:11Z plucky-umber-wren: changed title, dependencies, description, acceptance criteria
 - 2026-11-22T17:15:11Z plucky-umber-wren cold-read → planning
+- 2026-11-22T17:15:31Z plucky-umber-wren planning → cold-read
