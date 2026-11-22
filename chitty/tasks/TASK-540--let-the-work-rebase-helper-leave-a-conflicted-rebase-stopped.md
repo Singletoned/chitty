@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: review
+status: done
 labels:
   - question
 depends_on:
@@ -50,6 +50,9 @@ Needs a person (2026-11-22, overnight planner): the review passed at 04:03 and t
 
 Runner error (review): TASK-540 has no branch `task-540` and no worktree.
 
+Reviewed: 2026-11-22, at the person's request. The 04:03 review passed; the code is on `main` in commit `9027093c`, and the `error` came from landing (flaky `test_transaction`, fixed by `TASK-553`) and a re-review with no branch.
+1: pass - `.venv/bin/python -m unittest tests.test_rebase_work_worktree tests.test_run_work_rebases` on `main`: Ran 16 tests, OK. The 04:03 review showed 3b and 3c failing against the old helper.
+
 ## Summary
 
 Implemented stopped conflict handling and regression coverage. Old helper failed cases 3b and 3c on behavior assertions; make check passed (1099 tests).
@@ -82,3 +85,5 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T14:23:45Z zesty-yellow-otter: changed notes
 - 2026-11-22T14:23:45Z zesty-yellow-otter review → error
 - 2026-11-22T15:32:59Z human error → review
+- 2026-11-22T15:33:36Z plucky-umber-wren: changed notes
+- 2026-11-22T15:33:36Z plucky-umber-wren review → done
