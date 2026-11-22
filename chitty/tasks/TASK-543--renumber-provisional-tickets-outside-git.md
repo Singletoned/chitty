@@ -1,6 +1,6 @@
 ---
 title: Renumber provisional tickets outside Git
-status: todo
+status: doing
 depends_on:
   - TASK-517
 parent: TASK-391
@@ -31,3 +31,4 @@ These describe landed behaviour, so they pass today. Evidence that they test som
 - 2026-11-22T03:20:44Z lively-zinc-newt planning → cold-read
 - 2026-11-22T03:21:40Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T03:21:40Z lively-zinc-newt cold-read → todo
+- 2026-11-22T03:40:47Z upbeat-navy-urchin todo → doing
