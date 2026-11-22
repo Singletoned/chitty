@@ -44,7 +44,7 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 
 ## Plan
 
-Build the five prescribed real-Git runner cases, verify the four regressions fail before the change, then add the work-mode rebase helper, update the design bullet, format and run checks.
+Add the prescribed stub and four real-Git tests, verify all fail against the stub, implement the helper, then fix, format and check.
 
 ## Notes
 
@@ -166,3 +166,4 @@ Split again 2026-11-22: the worker model gave up a third time (five sessions, no
 - 2026-11-22T02:04:16Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T02:04:16Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:07:48Z tidy-quartz-yellowhammer todo → doing
+- 2026-11-22T02:10:07Z tidy-quartz-yellowhammer: wrote the plan
