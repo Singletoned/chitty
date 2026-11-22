@@ -1,6 +1,6 @@
 ---
 title: Generate several ticket placements in one repository for ticket reads
-status: todo
+status: doing
 depends_on:
   - TASK-522
 created: 2026-11-21
@@ -38,3 +38,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-522` lands; th
 - 2026-11-22T10:02:11Z friendly-jade-stoat: changed description
 - 2026-11-22T10:02:11Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T10:02:12Z friendly-jade-stoat planning → todo
+- 2026-11-22T14:46:28Z zesty-umber-raven todo → doing
