@@ -1,6 +1,6 @@
 ---
 title: Fit chitty list titles to the terminal width
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -65,3 +65,4 @@ Cold read 3: wording only (fail-first assertion, reuse of the existing 100-colum
 - 2026-11-22T12:57:28Z friendly-jade-stoat: changed description, acceptance criteria
 - 2026-11-22T12:58:17Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T12:58:17Z friendly-jade-stoat planning → todo
+- 2026-11-22T15:24:42Z jolly-pearl-puffin todo → doing
