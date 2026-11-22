@@ -33,6 +33,10 @@ Add a shared generated case strategy and mismatch helper, exercise normal reads 
 
 Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-522` lands; then replan against the landed builder and cold-read.
 
+## Summary
+
+Added generated multi-ticket read comparisons and swapped-contains mutant detection. make check passed; placement builder unchanged.
+
 ## History
 
 - 2026-11-21T23:05:47Z lively-zinc-newt → planning
@@ -44,3 +48,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-522` lands; th
 - 2026-11-22T10:02:12Z friendly-jade-stoat planning → todo
 - 2026-11-22T14:46:28Z zesty-umber-raven todo → doing
 - 2026-11-22T14:48:24Z zesty-umber-raven: wrote the plan
+- 2026-11-22T14:50:28Z zesty-umber-raven: changed summary
