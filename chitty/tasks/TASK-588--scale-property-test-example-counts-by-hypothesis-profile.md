@@ -30,6 +30,11 @@ Property for criterion 1 over generated `base`; the profile names are a fixed se
 - [ ] A test in the same file parses every `tests/**/*.py` with `ast` and finds no `settings(...)` call used as a decorator whose `max_examples` keyword is anything but a call to `examples(...)`; on `main` it fails, listing the decorators that still use a literal or a name such as `EXAMPLES`
 - [ ] In subprocesses with `HYPOTHESIS_PROFILE` set to `check` and to `thorough`, `import tests; from hypothesis import settings; print(settings.default.max_examples, tests.examples(25))` prints `20 5` and `500 125`; and `make check` passes
 
+## Notes
+
+Planner, 2026-11-22: written against `TASK-587`'s planned profile names (`check`, `thorough`) and `HYPOTHESIS_PROFILE`. Keep in `planning` until `TASK-587` is `done`; then compare with what landed in `tests/__init__.py` and cold-read before `todo`.
+
 ## History
 
 - 2026-11-22T16:41:56Z plucky-umber-wren → planning
+- 2026-11-22T16:42:04Z plucky-umber-wren: changed notes
