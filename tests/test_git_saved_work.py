@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from chitty.errors import ChittyError
-from chitty.git import save_work
+from chitty.git import restore_work, save_work
 
 
 class SavedWorkTests(unittest.TestCase):
@@ -76,3 +76,61 @@ class SavedWorkTests(unittest.TestCase):
             save_work(self.root, ref, "message")
         self.assertEqual(self.git("rev-parse", ref), commit)
         self.assertEqual((self.root / "a.txt").read_text(), "edited")
+
+    def test_restore_round_trip(self):
+        ref = "refs/chitty/stash/TASK-1"
+        (self.root / "a.txt").write_bytes(b"edited")
+        (self.root / "u.txt").write_bytes(b"new")
+        save_work(self.root, ref, "message")
+        self.assertTrue(restore_work(self.root, ref))
+        self.assertEqual((self.root / "a.txt").read_bytes(), b"edited")
+        self.assertEqual((self.root / "u.txt").read_bytes(), b"new")
+        self.assertNotIn(ref, self.git("for-each-ref"))
+
+    def test_restore_conflict(self):
+        ref = "refs/chitty/stash/TASK-1"
+        (self.root / "a.txt").write_text("saved\n")
+        save_work(self.root, ref, "message")
+        commit = self.git("rev-parse", ref)
+        (self.root / "a.txt").write_text("head\n")
+        self.git("add", "a.txt")
+        self.git("commit", "-m", "head")
+        self.assertFalse(restore_work(self.root, ref))
+        self.assertEqual(self.git("status", "--porcelain"), "")
+        self.assertEqual(self.git("rev-parse", ref), commit)
+
+    def test_restore_add_collision(self):
+        ref = "refs/chitty/stash/TASK-1"
+        (self.root / "n.txt").write_text("saved")
+        save_work(self.root, ref, "message")
+        commit = self.git("rev-parse", ref)
+        (self.root / "n.txt").write_text("head")
+        self.git("add", "n.txt")
+        self.git("commit", "-m", "head")
+        self.assertFalse(restore_work(self.root, ref))
+        self.assertEqual(self.git("status", "--porcelain"), "")
+        self.assertEqual((self.root / "n.txt").read_text(), "head")
+        self.assertEqual(self.git("rev-parse", ref), commit)
+
+    def test_restore_missing(self):
+        with self.assertRaisesRegex(ChittyError, "refs/chitty/stash/TASK-1 does not exist"):
+            restore_work(self.root, "refs/chitty/stash/TASK-1")
+
+    def test_restore_dirty(self):
+        ref = "refs/chitty/stash/TASK-1"
+        (self.root / "a.txt").write_text("saved")
+        save_work(self.root, ref, "message")
+        commit = self.git("rev-parse", ref)
+        (self.root / "precious.txt").write_text("precious")
+        with self.assertRaisesRegex(
+            ChittyError, f"cannot restore {ref}: the worktree has uncommitted changes"
+        ):
+            restore_work(self.root, ref)
+        self.assertEqual((self.root / "precious.txt").read_text(), "precious")
+        self.assertEqual(self.git("rev-parse", ref), commit)
+
+    def test_restore_invalid_ref(self):
+        with self.assertRaisesRegex(
+            ChittyError, "saved work must use a ref under refs/chitty/stash/"
+        ):
+            restore_work(self.root, "refs/stash")

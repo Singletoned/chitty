@@ -762,3 +762,32 @@ def save_work(root: Path, ref: str, message: str) -> bool:
     _git(root, "reset", "--hard")
     _git(root, "clean", "-fd")
     return True
+
+
+def restore_work(root: Path, ref: str) -> bool:
+    """Restore saved work into a clean worktree, retaining the ref on failure."""
+    _check_saved_work_ref(ref)
+    exists = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", ref],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if exists.returncode:
+        raise ChittyError(f"{ref} does not exist")
+    if _git(root, "status", "--porcelain", "--untracked-files=all").strip():
+        raise ChittyError(f"cannot restore {ref}: the worktree has uncommitted changes")
+    result = subprocess.run(
+        ["git", "-c", "rerere.enabled=false", "stash", "apply", ref],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode:
+        _git(root, "reset", "--hard")
+        _git(root, "clean", "-fd")
+        return False
+    _git(root, "update-ref", "-d", ref)
+    return True
