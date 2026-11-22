@@ -1,6 +1,6 @@
 ---
 title: Check saved worktree work round-trips with a property
-status: doing
+status: review
 depends_on:
   - TASK-534
 parent: TASK-370
@@ -42,3 +42,4 @@ Added generated saved-work round-trip coverage. Both requested mutations failed 
 - 2026-11-22T02:03:38Z brisk-ebony-marten: wrote the plan
 - 2026-11-22T02:04:45Z brisk-ebony-marten: changed notes
 - 2026-11-22T02:06:19Z brisk-ebony-marten: changed summary
+- 2026-11-22T02:06:21Z brisk-ebony-marten doing → review
