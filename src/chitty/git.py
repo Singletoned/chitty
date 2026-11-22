@@ -728,3 +728,37 @@ def remove_worktree(root: Path, worktree: Path) -> None:
 def delete_branch(root: Path, branch: str) -> None:
     """Delete a fully merged local branch without forcing deletion."""
     _git(root, "branch", "-d", branch)
+
+
+def _check_saved_work_ref(ref: str) -> None:
+    prefix = "refs/chitty/stash/"
+    if not ref.startswith(prefix) or not ref[len(prefix) :]:
+        raise ChittyError(f"saved work must use a ref under refs/chitty/stash/: {ref}")
+
+
+def save_work(root: Path, ref: str, message: str) -> bool:
+    _check_saved_work_ref(ref)
+    if not _git(root, "status", "--porcelain", "--untracked-files=all").strip():
+        return False
+    exists = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", ref],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if exists.returncode == 0:
+        raise ChittyError(
+            f"{ref} already exists; apply it with git stash apply {ref} "
+            f"and delete it with git update-ref -d {ref}"
+        )
+    if exists.returncode != 1:
+        exists.check_returncode()
+    _git(root, "add", "-A")
+    commit = _git(root, "stash", "create", message).strip()
+    if not commit:
+        raise ChittyError(f"git stash create produced no commit in {root}")
+    _git(root, "update-ref", ref, commit)
+    _git(root, "reset", "--hard")
+    _git(root, "clean", "-fd")
+    return True
