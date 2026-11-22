@@ -1,6 +1,6 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -58,3 +58,4 @@ Cold read: failing-check test, ordering, rounding and line number added.
 - 2026-11-22T13:18:38Z friendly-jade-stoat backlog → planning
 - 2026-11-22T13:21:11Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T13:21:11Z friendly-jade-stoat planning → todo
+- 2026-11-22T15:59:02Z sunny-amber-dormouse todo → doing
