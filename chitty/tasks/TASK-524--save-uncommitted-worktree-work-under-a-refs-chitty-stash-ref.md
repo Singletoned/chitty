@@ -1,6 +1,6 @@
 ---
 title: Save uncommitted worktree work under a `refs/chitty/stash` ref
-status: cold-read
+status: todo
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -20,9 +20,9 @@ In `src/chitty/git.py`, using `_git` for commands that must succeed:
 
 Tests: new `tests/test_git_saved_work.py`, real Git in temporary directories (`git init -b main`, local `user.name` and `user.email`, one committed file `a.txt`), one repository per test:
 
-- `refs/stash` (in a repository with no stash) and `refs/heads/x` each raise the namespace message, and leave `git for-each-ref` output, `git stash list` and the worktree bytes unchanged.
+- `refs/stash` (in a repository with no stash), `refs/heads/x`, `refs/chitty/stash/` and `refs/chitty/stashX/TASK-1` each raise the namespace message, and leave `git for-each-ref` output, `git stash list` and the worktree bytes unchanged.
 - A clean worktree, with only an ignored file (listed in a committed `.gitignore`) changed, returns `False` and creates no ref.
-- With an edit to `a.txt`, a staged new file `s.txt` and an untracked file `u.txt`: returns `True`; `git status --porcelain` is empty afterwards; `git show refs/chitty/stash/TASK-1:a.txt`, `:s.txt` and `:u.txt` give the edited bytes; `git stash list` is unchanged.
+- With an edit to `a.txt`, a staged new file `s.txt` an untracked file `u.txt` and an ignored file `ign.log` (listed in the committed `.gitignore`): returns `True`; `ign.log`'s bytes are unchanged; `git status --porcelain` is empty afterwards; `git show refs/chitty/stash/TASK-1:a.txt`, `:s.txt` and `:u.txt` give the edited bytes; `git stash list` is unchanged.
 - With `git config status.showUntrackedFiles no` and only an untracked file `n.txt`: returns `True`, and `git show refs/chitty/stash/TASK-1:n.txt` gives its bytes.
 - An existing `refs/chitty/stash/TASK-1` raises the message above and leaves the worktree bytes and the ref's commit unchanged.
 
@@ -86,3 +86,5 @@ Split again 2026-11-21: the worker model returned five sessions saying it could 
 - 2026-11-22T00:05:10Z daring-lilac-urchin doing → error
 - 2026-11-22T00:06:41Z lively-zinc-newt: changed title, description, acceptance criteria, notes
 - 2026-11-22T00:06:41Z lively-zinc-newt error → cold-read
+- 2026-11-22T00:07:49Z lively-zinc-newt: changed description
+- 2026-11-22T00:07:49Z lively-zinc-newt cold-read → todo
