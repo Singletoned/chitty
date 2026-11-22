@@ -59,6 +59,8 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-524`
 
 Split again 2026-11-21: the worker model returned five sessions saying it could not finish in one turn, with no code. Restore is `TASK-534`; the property is `TASK-535`.
 
+All five regression tests failed against the NotImplementedError stub (unittest exit 1).
+
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
@@ -90,3 +92,4 @@ Split again 2026-11-21: the worker model returned five sessions saying it could 
 - 2026-11-22T00:07:49Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:16:51Z tidy-khaki-raven todo → doing
 - 2026-11-22T00:18:07Z tidy-khaki-raven: wrote the plan
+- 2026-11-22T00:18:36Z tidy-khaki-raven: changed notes
