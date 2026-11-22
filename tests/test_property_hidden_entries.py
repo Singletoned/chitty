@@ -10,7 +10,31 @@ from hypothesis import strategies as st
 from tests.test_cli import CliTestCase
 
 
+def git_refuses(name: str) -> bool:
+    """Whether `git add` refuses a path component named `name`.
+
+    Git's `core.protectNTFS` and `core.protectHFS` treat `.GIT`, `.Git` and
+    `.git.` as `.git`, so `git add` fails with `invalid path`.
+    """
+    return name.rstrip(".").lower() == ".git"
+
+
+# Names a hidden-entry strategy can draw, some of which git refuses.
+GIT_NAME_CASES = [".GIT", ".Git", ".git.", ".gIt..", ".gitx", ".git~1", ".github"]
+
+
 class TestHiddenEntries(CliTestCase):
+    def test_git_refuses_matches_git(self):
+        for name in GIT_NAME_CASES:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp:
+                subprocess.run(["git", "init", "-q", temp], check=True)
+                (Path(temp) / name).mkdir()
+                (Path(temp) / name / "file").write_text("x")
+                added = subprocess.run(
+                    ["git", "add", f"{name}/file"], cwd=temp, capture_output=True
+                )
+                self.assertEqual(added.returncode != 0, git_refuses(name))
+
     def test_non_hidden_file_remains_an_error(self):
         self.run_cli("add", "One", "-d", "x")
         (self.root / "chitty/tasks/notes.txt").write_text("x")
@@ -29,7 +53,7 @@ class TestHiddenEntries(CliTestCase):
                         max_size=200,
                     )
                     .map(lambda x: "." + x)
-                    .filter(lambda x: x != ".."),
+                    .filter(lambda x: x != ".." and not git_refuses(x)),
                 ),
                 st.sampled_from(["tasks", "human", "tasks/archive", "human/archive"]),
                 st.booleans(),
