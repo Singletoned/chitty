@@ -1,8 +1,6 @@
 ---
 title: Extract the work-mode claim, setup and check from `_run_ticket_with_log`
 status: todo
-depends_on:
-  - TASK-540
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -19,6 +17,11 @@ No new tests: the existing runner tests (`tests/test_next.py`, `tests/test_run_*
 
 - [ ] The helper exists and `_run_ticket_with_log` calls it; every existing runner test passes unchanged; `make check` passes
 
+## Notes
+
+Dependency on `TASK-540` removed 2026-11-22: its code is on `main` (commit `9027093c`); only its ticket status awaits a person.
+
 ## History
 
 - 2026-11-22T03:43:00Z lively-zinc-newt → todo
+- 2026-11-22T04:23:46Z lively-zinc-newt: changed dependencies, notes
