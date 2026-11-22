@@ -24,6 +24,10 @@ Update the work guide and its focused assertion, verify the test fails before th
 
 The updated guide assertion failed against the old guide before the wording change, as expected.
 
+## Summary
+
+Updated the work guide and its assertion. The focused test failed before the wording change; make check passed afterward.
+
 ## History
 
 - 2026-11-22T01:11:08Z lively-zinc-newt → todo
@@ -31,3 +35,4 @@ The updated guide assertion failed against the old guide before the wording chan
 - 2026-11-22T02:40:38Z quick-umber-eel todo → doing
 - 2026-11-22T02:43:01Z quick-umber-eel: wrote the plan
 - 2026-11-22T02:43:21Z quick-umber-eel: changed notes
+- 2026-11-22T02:44:58Z quick-umber-eel: changed summary
