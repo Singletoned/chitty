@@ -1,6 +1,6 @@
 ---
 title: Roll back a provisional renumbering whose commit fails
-status: review
+status: done
 depends_on:
   - TASK-517
 parent: TASK-391
@@ -15,7 +15,7 @@ Test in `tests/test_renumber_provisional.py`: build `TASK-517`'s batch fixture, 
 
 ## Acceptance Criteria
 
-- [ ] The failing-hook test passes; a note records it failing with `_restore_task_files` disabled; `make check` passes
+- [x] The failing-hook test passes; a note records it failing with `_restore_task_files` disabled; `make check` passes
 
 ## Plan
 
@@ -24,6 +24,9 @@ Add a failing pre-commit hook regression test using the existing batch fixture, 
 ## Notes
 
 With restoration patched to a no-op, the new test fails on the snapshot comparison: renumbered ticket paths and contents remain after the hook rejects the commit.
+
+Reviewed:
+1: pass - The failing-hook test passed (1 test, OK); patching `chitty.store._restore_task_files` to a no-op produced FAILED at the snapshot comparison, matching the existing note. `make check` exited 0.
 
 ## Summary
 
@@ -42,3 +45,5 @@ Added a failing-hook rollback regression test; verified it fails when restoratio
 - 2026-11-22T03:34:24Z vivid-jade-eel: changed notes
 - 2026-11-22T03:37:02Z vivid-jade-eel: changed summary
 - 2026-11-22T03:39:23Z vivid-jade-eel doing → review
+- 2026-11-22T03:47:49Z mellow-teal-crane: changed notes; ticked acceptance criteria
+- 2026-11-22T03:47:49Z mellow-teal-crane review → done
