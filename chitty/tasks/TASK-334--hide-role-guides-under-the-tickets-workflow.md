@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -45,6 +45,8 @@ Review failed (tests): Newly discovered coverage gap: add the required baseline-
 
 Review follow-up cannot be completed safely from the current criterion: “same output as at the commit before this change” does not identify whether the baseline is the pre-implementation parent c7ed80f^ (which includes an upstream merge and has unrelated setup-guide output differences) or the earlier implementation base before that merge. The review explicitly observed different setup output when comparing against c7ed80f^ and says baseline selection must account for the merge. Please decide which behavior is the compatibility contract (the exact pre-change tree, or behavior with unrelated merged-main changes excluded) and identify the baseline revision. Until then, snapshots risk locking in unrelated changes or testing the wrong output.
 
+Planner, 2026-11-22: replanned against `main` (seven roles, `directory` parameter). The baseline question in the previous note is settled: no captured baseline; criterion 3, rewritten, is the compatibility check. Earlier review notes about baseline capture no longer apply.
+
 ## Summary
 
 Implemented workflow-gated role guides. CLI loads repository config for role requests (broken config errors propagate), defaults to runner outside repositories, runner help remains available when config is broken, and run.py passes repo.config.workflow. Added six-role workflow tests and updated direct callers. Verified with make format and make check; regression tests were observed failing before the fix. Commit: c7ed80f. No known follow-ups.
@@ -74,3 +76,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-22T09:47:18Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T09:49:14Z friendly-jade-stoat: changed description, acceptance criteria; wrote the plan
 - 2026-11-22T09:49:14Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T09:49:22Z friendly-jade-stoat: changed notes
+- 2026-11-22T09:49:22Z friendly-jade-stoat planning → cold-read
