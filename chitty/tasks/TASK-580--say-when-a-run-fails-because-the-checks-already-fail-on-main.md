@@ -1,6 +1,6 @@
 ---
 title: Say when a run fails because the checks already fail on `main`
-status: review
+status: done
 created: 2026-11-22
 ---
 
@@ -35,8 +35,8 @@ passing, since the old text is a prefix.
 
 ## Acceptance Criteria
 
-- [ ] A runner check failure on a `todo` ticket whose branch has no work says the branch has no work yet, so `main` fails the check; shown by the new assertions in `test_run_check_failure_on_todo_ticket_records_error_on_branch`, which fail before the change.
-- [ ] `make check` passes.
+- [x] A runner check failure on a `todo` ticket whose branch has no work says the branch has no work yet, so `main` fails the check; shown by the new assertions in `test_run_check_failure_on_todo_ticket_records_error_on_branch`, which fail before the change.
+- [x] `make check` passes.
 
 ## Plan
 
@@ -49,6 +49,10 @@ Suggestion origin: taidy
 Cold read: limited to the non-zero exit path (not timeout or missing command); test targets named.
 
 The targeted regression test fails before the fix: the explanation is absent from the recorded Notes.
+
+Reviewed: implementation matches the specified nonzero check path.
+1: pass - The targeted test passes in make check. Running the new test against 28527a4e^ failed with AssertionError because the explanation was absent from Notes; the worker also recorded the pre-fix failure.
+2: pass - make check reported 1130 tests OK, ruff passed, and pyright reported 0 errors.
 
 ## Summary
 
@@ -67,3 +71,5 @@ Added the main-branch check failure explanation and regression assertions. The t
 - 2026-11-22T15:49:56Z quick-ebony-lapwing: changed notes
 - 2026-11-22T15:53:11Z quick-ebony-lapwing: changed summary
 - 2026-11-22T15:57:05Z quick-ebony-lapwing doing → review
+- 2026-11-22T16:05:07Z able-zinc-zander: changed notes; ticked acceptance criteria
+- 2026-11-22T16:05:07Z able-zinc-zander review → done
