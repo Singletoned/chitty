@@ -36,6 +36,55 @@ class TestProvisionalLinkGuard(TestProvisionalPreflight):
             self.assertEqual(Repo.open(self.root).source_of(TaskId.parse("TASK-3")), "task-3")
         return path
 
+    def ref_fixture(self, case: str) -> None:
+        self.init_git()
+        self.file("tasks", "TASK-AAAAAA", provisional=True)
+        self.commit()
+        if case == "branch-adds":
+            path = self.file("tasks", "TASK-3")
+            self.commit()
+            self.git("switch", "-c", "task-3")
+            path.write_text(
+                path.read_text().replace("status: todo\n", "status: todo\nparent: task-aaaaaa\n")
+            )
+        else:
+            self.git("switch", "-c", "task-3")
+            path = self.file("tasks", "TASK-3")
+            if case == "branch-only":
+                path.write_text(
+                    path.read_text().replace(
+                        "status: todo\n", "status: todo\ndepends_on: [TASK-AAAAAA]\n"
+                    )
+                )
+            else:
+                path.write_text(path.read_text() + "See TASK-AAAAAA.\n")
+        self.commit()
+        self.git("switch", "main")
+        self.assertEqual(Repo.open(self.root).source_of(TaskId.parse("TASK-3")), "task-3")
+
+    def check_ref_link(self, case, field):
+        self.ref_fixture(case)
+        before = self.state()
+        with self.assertRaises(ChittyError) as error:
+            Repo.open(self.root)._plan_provisional_renumbering()
+        self.assertEqual(
+            str(error.exception), f"cannot renumber TASK-AAAAAA: TASK-3 links to it in {field}"
+        )
+        self.assertEqual(self.state(), before)
+
+    def test_branch_only_link(self):
+        self.check_ref_link("branch-only", "depends_on")
+
+    def test_branch_adds_link(self):
+        self.check_ref_link("branch-adds", "parent")
+
+    def test_branch_only_prose(self):
+        self.ref_fixture("branch-only-prose")
+        before = self.state()
+        mapping, _ = Repo.open(self.root)._plan_provisional_renumbering()
+        self.assertEqual(mapping, {TaskId.parse("TASK-AAAAAA"): TaskId.parse("TASK-4")})
+        self.assertEqual(self.state(), before)
+
     def state(self):
         return (
             self.git("rev-parse", "HEAD"),

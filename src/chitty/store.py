@@ -1115,6 +1115,7 @@ class Repo:
             self._reserve_numbers(used, ids.ticket_references(path.read_text(), used.keys()))
         mapping = plan_renumbering(used, candidates)
         self._guard_untouched_disk_links(disk_entries, {item.path for item in writable}, mapping)
+        self._guard_ref_links(mapping)
         return mapping, tuple(writable)
 
     def _guard_untouched_disk_links(
@@ -1127,6 +1128,18 @@ class Repo:
             if path in writable:
                 continue
             stored = self._load(context, path, archived)
+            link = blocking_link(stored.task.frontmatter, mapping)
+            if link is not None:
+                old, field = link
+                raise ChittyError(f"cannot renumber {old}: {stored.id} links to it in {field}")
+
+    def _guard_ref_links(self, mapping: dict[TaskId, TaskId]) -> None:
+        for task_id in sorted(self.ticket_ids()):
+            if self.source_of(task_id) is None:
+                continue
+            stored = self.lookup(task_id)
+            if stored is None:
+                continue
             link = blocking_link(stored.task.frontmatter, mapping)
             if link is not None:
                 old, field = link
