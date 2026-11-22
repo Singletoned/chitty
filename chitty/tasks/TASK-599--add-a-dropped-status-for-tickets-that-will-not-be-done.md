@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -38,6 +38,12 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 - [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` names `dropped` and what it is for; `make check` passes
 - [ ] List, archive, revive and dependency: the `tests/test_status_dropped.py` cases for `chitty list` and `-s dropped`, `chitty archive` with no ID, `-s todo` from `dropped`, the dependent `TASK-2` and the round-trip pass, and fail before the change (the dependent case only because `dropped` cannot be parsed yet). Record both runs in a note
 
+## Notes
+
+Planning blocker: the archive requirements cover both archive commands without restricting the archive configuration, but the specified tests use only the default move mode. In `src/chitty/store.py`, `_archive` calls `_delete_done` for `archive = "delete"`, and `_delete_done` rejects every status other than `done` and removes dependency references on deletion. Please specify the intended dropped-ticket behavior in delete mode and the fixture, action and assertions for both explicit-ID and bulk archive, including dependent tickets. This matters because the ticket also says a dependency on a dropped ticket stays blocked and nothing else changes. The explicit-ID archive and `list --all` requirements also lack described test cases; please specify their fixture, action and assertions. The same-status dropped edit requirement has no described test for its behavior, including whether a missing or removed summary is allowed; please specify that test and resolve the interaction with the summary rule.
+
+Independent inspection: model validation currently rejects dropped, list choices come from `STATUSES`, bulk archive filters done, and dependency satisfaction checks done or archived. The CLI add command currently has no summary option, so it must gain one to satisfy the stated add case. No implementation or regression run was attempted: the archive and same-status expectations are not sufficiently specified to verify all requirements. Runner and review execution beyond source inspection was not checked.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -47,3 +53,5 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 - 2026-11-22T22:12:51Z plucky-umber-wren cold-read → todo
 - 2026-11-22T22:13:06Z plucky-umber-wren: changed acceptance criteria
 - 2026-11-22T22:13:34Z zesty-ochre-heron todo → doing
+- 2026-11-22T22:16:03Z zesty-ochre-heron: changed owner, notes
+- 2026-11-22T22:16:03Z zesty-ochre-heron doing → planning
