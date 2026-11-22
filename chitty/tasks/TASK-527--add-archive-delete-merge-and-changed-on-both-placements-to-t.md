@@ -20,6 +20,10 @@ Landed code (rechecked on `main` 2026-11-21): `tests/ticket_placements.py` has `
 - [ ] `test_main_checkout_placements` covers all 13 placements and the 11 uncommitted-edit variants and passes. A note records two wrong-expectation runs, each made by temporarily editing `place` and then reverted: (j) expecting `branch` makes the (j) subTests fail, and (m) expecting (k)'s errors makes the (m) subTest fail
 - [ ] `make check` passes
 
+## Plan
+
+Extend the Git placement builder and edited-checkout expectations, verify both requested wrong expectations fail, then run formatting and checks.
+
 ## Notes
 
 Keep in planning until its dependency lands; then compare with the landed code, cold-read and move to `todo`.
@@ -36,3 +40,4 @@ Replanned 2026-11-21 after `TASK-393` landed.
 - 2026-11-21T23:54:54Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:54:54Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:06:29Z zesty-bronze-stoat todo → doing
+- 2026-11-22T00:07:58Z zesty-bronze-stoat: wrote the plan
