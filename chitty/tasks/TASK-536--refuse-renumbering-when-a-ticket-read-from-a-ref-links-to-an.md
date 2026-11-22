@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when a ticket read from a ref links to an old ID
-status: doing
+status: review
 depends_on:
   - TASK-519
 parent: TASK-391
@@ -55,3 +55,4 @@ Added selected ref link guard and regression fixtures. Both refusal tests failed
 - 2026-11-22T01:21:41Z eager-jade-heron: wrote the plan
 - 2026-11-22T01:22:00Z eager-jade-heron: changed notes
 - 2026-11-22T01:24:26Z eager-jade-heron: changed summary
+- 2026-11-22T01:24:28Z eager-jade-heron doing → review
