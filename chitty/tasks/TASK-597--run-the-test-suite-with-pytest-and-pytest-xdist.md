@@ -39,6 +39,10 @@ Switch the pinned runner and timeout detection, update documentation, then run t
 
 Baseline for criterion 3, recorded by the previous worker (vivid-fawn-wren) before any change: on `main`, a temporary `tests/test_fx_probe.py` with a raising `setUpClass` and one passing test made `make check` exit zero with `Ran 1142 tests in 97.130s` and `OK` (the error was dropped). Planner, 2026-11-22: criterion 4 now allows removing the unused `import multiprocessing`, which resolves the planning blocker.
 
+Fixture probe: previous worker recorded baseline `make check` on main: `Ran 1142 tests in 97.130s`, `OK` (exit zero). With the change, `make check` with the same raising fixture exited nonzero: `1142 passed, 1 warning, 1 error, 788 subtests passed in 104.38s`. An initial probe failed formatting before reaching pytest; corrected its formatting and reran.
+
+After `make install`, `.venv/bin/pytest -n 2 tests/test_probe_worker.py` reported `1 passed in 0.29s`; `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py` reported `1 failed in 0.07s` with `assert False is True`. Both temporary probes were deleted.
+
 ## History
 
 - 2026-11-22T20:15:42Z plucky-umber-wren → planning
@@ -57,3 +61,4 @@ Baseline for criterion 3, recorded by the previous worker (vivid-fawn-wren) befo
 - 2026-11-22T20:33:21Z plucky-umber-wren: changed notes
 - 2026-11-22T20:33:42Z friendly-yellow-quail todo → doing
 - 2026-11-22T20:35:45Z friendly-yellow-quail: wrote the plan
+- 2026-11-22T20:44:24Z friendly-yellow-quail: changed notes
