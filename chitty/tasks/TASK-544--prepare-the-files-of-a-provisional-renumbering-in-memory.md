@@ -39,7 +39,7 @@ The strengthened preparation test fails against a NotImplementedError stub and p
 
 ## Summary
 
-Implemented in-memory preparation and real Git regression coverage. The test failed with a NotImplementedError stub and passes with the implementation; make check passes.
+Strengthened the final History event assertion after review. The test fails with a NotImplementedError stub and passes normally; make check passes.
 
 ## History
 
@@ -56,3 +56,4 @@ Implemented in-memory preparation and real Git regression coverage. The test fai
 - 2026-11-22T02:43:29Z calm-lilac-lapwing review → doing
 - 2026-11-22T02:50:17Z nimble-silver-toad: wrote the plan
 - 2026-11-22T02:50:29Z nimble-silver-toad: changed notes
+- 2026-11-22T02:52:38Z nimble-silver-toad: changed summary
