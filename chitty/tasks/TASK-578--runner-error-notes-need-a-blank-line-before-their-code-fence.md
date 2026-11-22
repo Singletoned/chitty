@@ -29,6 +29,10 @@ mirrors the implementation, so it is not evidence on its own.
 - [ ] A runner error note with extra output has a blank line between `Error output:` and the fence; shown by the new exact-string test, which fails before the change.
 - [ ] `make check` passes.
 
+## Plan
+
+Add the exact-string regression test and verify it fails, then fix the separator and property expectation, run make check, and commit.
+
 ## Notes
 
 Suggestion origin: taidy
@@ -44,3 +48,4 @@ Cold read: test made exact-string; nothing else serious.
 - 2026-11-22T13:20:23Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T13:20:23Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:34:00Z mellow-amber-marten todo → doing
+- 2026-11-22T15:36:52Z mellow-amber-marten: wrote the plan
