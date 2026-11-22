@@ -1,6 +1,6 @@
 ---
 title: Rebase `todo` and `error` tickets before setup in work runs
-status: todo
+status: doing
 depends_on:
   - TASK-370
   - TASK-546
@@ -32,3 +32,4 @@ Both new tests fail before the change (setup's log lacks `main`'s commit).
 - 2026-11-22T03:11:34Z lively-zinc-newt planning → cold-read
 - 2026-11-22T03:13:18Z lively-zinc-newt: changed description
 - 2026-11-22T03:13:18Z lively-zinc-newt cold-read → todo
+- 2026-11-22T03:14:50Z friendly-violet-urchin todo → doing
