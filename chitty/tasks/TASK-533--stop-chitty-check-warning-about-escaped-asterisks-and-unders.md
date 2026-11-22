@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty check` warning about escaped asterisks and underscores
-status: cold-read
+status: todo
 created: 2026-11-21
 ---
 
@@ -12,13 +12,15 @@ Decision: scan with a second parser, `MarkdownIt("commonmark").disable("text_joi
 
 Out of scope: `check` also scans text that is inside indented code blocks, because it uses `parseInline` over block text (a planner fuzz found lone `*` in indented code still warns). That is existing behaviour and stays.
 
-Tests in `tests/test_check.py`, writing ticket files directly as its other Markdown-warning tests do (near line 117): a Description `static/photos/\*.jpg` gives no `literal '*'` warning; `static/photos/\_x\_.jpg` gives no `literal '_'` warning; `static/photos/*.jpg` still gives the `literal '*'` warning; `a\* and files/*.jpg` still gives it (once). All four results were checked by a planner probe on 2026-11-21 with the decided parser. (Two lone asterisks such as `a/*.jpg and c/*.png` pair as emphasis and never warn; do not use them.) No property: a fixed parser setting, with each case listed. The two escaped cases must fail before the change.
+Tests in `tests/test_check.py`, writing ticket files directly as `test_warns_only_for_literal_delimiters_formatters_escape` (near line 112) does: a Description `static/photos/\*.jpg` gives no `literal '*'` warning; `static/photos/\_x\_.jpg` gives no `literal '_'` warning; `static/photos/*.jpg` still gives the `literal '*'` warning; `a\* and files/*.jpg` still gives it (once). A guard case, `snake_case *a and b_c`, gives no `literal '_'` warning (intraword `_` next to a token split; a cold reader found no change between parsers on 20 such inputs). All results were checked by a planner probe on 2026-11-21 with the decided parser. (Two lone asterisks such as `a/*.jpg and c/*.png` pair as emphasis and never warn; do not use them.) No property: a fixed parser setting, with each case listed. The two escaped cases must fail before the change.
 
 ## Acceptance Criteria
 
-- [ ] The two escaped examples give no delimiter warning and fail before the change; the two unescaped examples still warn; `make check` passes
+- [ ] Each Description example gives the stated warning result under the new scan (the two escaped ones no warning, the two unescaped ones the `*` warning, the guard case no `_` warning); the two escaped examples fail on today's code; `make check` passes
 
 ## History
 
 - 2026-11-21T23:59:28Z lively-zinc-newt → cold-read
 - 2026-11-21T23:59:45Z lively-zinc-newt: changed description
+- 2026-11-22T00:00:35Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-22T00:00:35Z lively-zinc-newt cold-read → todo
