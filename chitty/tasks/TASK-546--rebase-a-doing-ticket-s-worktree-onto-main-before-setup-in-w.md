@@ -31,6 +31,10 @@ Add runner integration regression tests for doing and todo, verify the doing tes
 
 Regression verified before the fix: doing test fails because setup log lacks main moved; todo guard passes.
 
+## Summary
+
+Rebase doing worktrees before setup; todo remains unchanged. Regression failed before the fix and both tests pass afterwards; make check passes.
+
 ## History
 
 - 2026-11-22T02:02:11Z lively-zinc-newt → planning
@@ -41,3 +45,4 @@ Regression verified before the fix: doing test fails because setup log lacks mai
 - 2026-11-22T02:56:18Z eager-russet-vole todo → doing
 - 2026-11-22T02:58:39Z eager-russet-vole: wrote the plan
 - 2026-11-22T02:58:58Z eager-russet-vole: changed notes
+- 2026-11-22T03:01:34Z eager-russet-vole: changed summary
