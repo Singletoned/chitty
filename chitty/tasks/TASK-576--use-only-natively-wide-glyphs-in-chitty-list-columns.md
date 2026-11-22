@@ -26,22 +26,32 @@ Change: use only characters with East Asian Width `W` and no U+FE0F in
 - priority (`PRIORITY_GLYPHS`, `src/chitty/model.py` line 69): `⬆️` → `⏫`,
   `⏺️` → `➖`, `⬇️` → `⏬`
 - untestable (`src/chitty/selection.py`, around line 88): `✍️` → `🙋`
-- broken dependency (`BROKEN_DEPENDENCY_GLYPH`, `src/chitty/selection.py`):
-  `⚠️` → `💔`
+- broken dependency (`BROKEN_DEPENDENCY_GLYPH`, `src/chitty/store.py` line
+  73, plus the literal in `src/chitty/selection.py` line 102, which should
+  use the constant): `⚠️` → `💔`
 - running (`src/chitty/selection.py` line 83): `▶` → `🏃`
 
 The JSON `skipped` strings change with them (`🙋 untestable`, `💔 <message>`,
 `🏃 running`). Update every use in `src/`, `tests/`, `README.md`,
 `docs/plan/cli.md` and `docs/plan/next-action-and-runner.md` (find them with
-`grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md`). Leave
-`_columns` as it is.
+`grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md`; known
+inline uses include `tests/test_property_next.py` lines 140, 152, 161 and
+166 and `tests/test_list_untestable.py` line 12). Leave `_columns` as it is.
+
+Every glyph in a skip string in `src/chitty/selection.py` must come from a
+module constant (no inline glyph literals), so the test below sees them all:
+lift the human, untestable and running glyphs to constants, and make line
+102 use `BROKEN_DEPENDENCY_GLYPH` (import it from `chitty.store` if that
+creates no import cycle; otherwise move the constant to `selection.py` and
+import it in `store.py` and `cli.py`).
 
 Test, in a new file `tests/test_list_glyphs.py`: collect every glyph
 `chitty list` can print in its status, priority and skip columns
 (`STATUS_GLYPHS` and `PRIORITY_GLYPHS` values from `chitty.model`;
-`DEPENDENCY_GLYPH`, `BLOCKER_GLYPH`, `BROKEN_DEPENDENCY_GLYPH` and the
-human, untestable and running glyphs from `chitty.selection`; lift the
-last three to module constants if they are inline). For each non-empty
+`DEPENDENCY_GLYPH`, `BLOCKER_GLYPH` and the human, untestable and running
+constants from `chitty.selection`; `BROKEN_DEPENDENCY_GLYPH` from wherever it
+ends up). Write the test without the old glyphs as literals, so the grep
+criterion stays clean. For each non-empty
 glyph, assert it is one character, has no U+FE0F, and has
 `unicodedata.east_asian_width` `W`. Run it before the change and record that
 it fails.
@@ -57,3 +67,4 @@ it fails.
 - 2026-11-22T12:56:07Z friendly-jade-stoat → todo
 - 2026-11-22T12:56:23Z friendly-jade-stoat: changed labels, acceptance criteria
 - 2026-11-22T12:56:23Z friendly-jade-stoat todo → planning
+- 2026-11-22T12:57:13Z friendly-jade-stoat: changed description
