@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: todo
+status: doing
 labels:
   - bug
   - needs-minor
@@ -134,3 +134,4 @@ Replanned 2026-11-22: added case 4 (`todo` ticket with an existing branch) and c
 - 2026-11-22T01:42:15Z youthful-zinc-jay doing → planning
 - 2026-11-22T01:42:49Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T01:42:49Z lively-zinc-newt planning → todo
+- 2026-11-22T01:43:39Z witty-violet-badger todo → doing
