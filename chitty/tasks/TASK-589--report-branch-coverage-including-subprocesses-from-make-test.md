@@ -43,6 +43,10 @@ No property or unit test: this is build configuration, checked by the commands i
 - [ ] `test_interrupted_agent_calls_reporter` still asserts exit 130 and passes under both `make check` and `make test`; with the coverage configuration and `Makefile` change in place but before the shebang change, it fails under `make test` (record the failing line in a note)
 - [ ] `pyproject.toml` pins `coverage==7.17.2` in the `dev` group and `uv.lock` is updated; `.gitignore` lists `.coverage` and `.coverage.*`; `AGENTS.md` names `tmp/coverage/index.html`; `make -n test` shows `--coverage` and `make -n check` does not (a guard that `check` stays quick); and `make check` passes
 
+## Plan
+
+Pin and configure branch coverage with subprocess support, enable it only for the thorough test target, verify the signal regression before correcting its shebang, then run the specified coverage comparisons and checks.
+
 ## Notes
 
 Planner, 2026-11-22: relies on what `TASK-587` lands (the `test` line in `Makefile` and its `AGENTS.md` bullet). Keep in `planning` until `TASK-587` is `done`; then compare and cold-read again before `todo`.
@@ -66,3 +70,4 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` lin
 - 2026-11-22T17:07:07Z plucky-umber-wren: changed owner
 - 2026-11-22T17:07:07Z plucky-umber-wren planning → todo
 - 2026-11-22T17:23:41Z golden-amber-adder todo → doing
+- 2026-11-22T17:26:13Z golden-amber-adder: wrote the plan
