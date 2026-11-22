@@ -1,6 +1,6 @@
 ---
 title: Record each test's duration and outcome from `make check` and `make test`
-status: planning
+status: cold-read
 owner: plucky-umber-wren
 depends_on:
   - TASK-589
@@ -38,3 +38,4 @@ No property for outcomes: they are a fixed set of six, and the criteria test the
 - 2026-11-22T17:11:14Z plucky-umber-wren planning → cold-read
 - 2026-11-22T17:12:24Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T17:12:24Z plucky-umber-wren cold-read → planning
+- 2026-11-22T17:12:27Z plucky-umber-wren planning → cold-read
