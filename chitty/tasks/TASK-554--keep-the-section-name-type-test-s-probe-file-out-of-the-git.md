@@ -16,7 +16,12 @@ Fix: create the temporary directory under the repository's ignored `tmp/` direct
 
 - [ ] The probe directory is created under `tmp/`, which is ignored; the existing tests in `tests/test_section_name_types.py` pass; `make check` passes
 
+## Plan
+
+Create the probe under ignored tmp/, verify the ignore rule and existing type tests, then run make check and commit.
+
 ## History
 
 - 2026-11-22T05:15:59Z lively-zinc-newt → todo
 - 2026-11-22T05:23:03Z golden-teal-marten todo → doing
+- 2026-11-22T05:25:48Z golden-teal-marten: wrote the plan
