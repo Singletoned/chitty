@@ -30,9 +30,10 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 ## Acceptance Criteria
 
 - [ ] The two new tests in `tests/test_list_performance.py` (scan calls for `chitty list`, and for `lookup` of every ticket, equal for 2 and 20 tickets) pass, and fail before the change; record both runs in a note
-- [ ] Run in the main checkout before and after the change, `chitty list`, `chitty list -s backlog` and `chitty list -a` (with `.venv/bin/chitty` of each version, the same `main` commit, ticket branches unchanged between runs) print byte-identical output; record the `diff` result and the `time` of `chitty list` before and after in a note
+- [ ] Run in the main checkout before and after the change, `chitty list`, `chitty list -s backlog` and `chitty list --all` (with `.venv/bin/chitty` of each version, the same `main` commit, ticket branches unchanged between runs) print byte-identical output; record the `diff` result and the `time` of `chitty list` before and after in a note
 - [ ] `make check` passes
 
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
+- 2026-11-22T21:26:19Z plucky-umber-wren: changed acceptance criteria
