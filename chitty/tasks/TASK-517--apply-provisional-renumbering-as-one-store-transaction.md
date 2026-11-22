@@ -44,6 +44,8 @@ The preflight is split across `TASK-391`, `TASK-519` (blocking structured refere
 
 Split again 2026-11-22 after a cold read: the in-memory prepare step is `TASK-544`. Keep in planning until it lands, then cold-read.
 
+The transaction regression fails against the requested signature stub with NotImplementedError.
+
 ## History
 
 - 2026-11-21T18:33:02Z eager-ginger-adder → backlog
@@ -60,3 +62,4 @@ Split again 2026-11-22 after a cold read: the in-memory prepare step is `TASK-54
 - 2026-11-22T03:04:02Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:04:32Z upbeat-bronze-newt todo → doing
 - 2026-11-22T03:07:07Z upbeat-bronze-newt: wrote the plan
+- 2026-11-22T03:07:43Z upbeat-bronze-newt: changed notes
