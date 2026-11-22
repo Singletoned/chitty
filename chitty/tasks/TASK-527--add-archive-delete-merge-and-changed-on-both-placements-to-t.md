@@ -30,6 +30,8 @@ Keep in planning until its dependency lands; then compare with the landed code, 
 
 Replanned 2026-11-21 after `TASK-393` landed.
 
+Wrong-expectation runs: expecting branch for j failed j without edit (the edited variant deliberately expects uncommitted); expecting k errors for m failed both m variants. Both changes were reverted.
+
 ## History
 
 - 2026-11-21T23:18:35Z lively-zinc-newt → todo
@@ -41,3 +43,4 @@ Replanned 2026-11-21 after `TASK-393` landed.
 - 2026-11-21T23:54:54Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:06:29Z zesty-bronze-stoat todo → doing
 - 2026-11-22T00:07:58Z zesty-bronze-stoat: wrote the plan
+- 2026-11-22T00:09:03Z zesty-bronze-stoat: changed notes
