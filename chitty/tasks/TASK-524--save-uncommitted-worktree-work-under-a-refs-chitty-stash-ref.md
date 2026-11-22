@@ -1,6 +1,6 @@
 ---
 title: Save uncommitted worktree work under a `refs/chitty/stash` ref
-status: doing
+status: review
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -98,3 +98,4 @@ Implemented private-ref work saving and five real Git tests. All five failed aga
 - 2026-11-22T00:18:07Z tidy-khaki-raven: wrote the plan
 - 2026-11-22T00:18:36Z tidy-khaki-raven: changed notes
 - 2026-11-22T00:20:03Z tidy-khaki-raven: changed summary
+- 2026-11-22T00:20:04Z tidy-khaki-raven doing → review
