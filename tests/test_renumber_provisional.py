@@ -7,6 +7,43 @@ from tests.support import RepoTestCase
 from tests.test_source_copy_errors import SourceCopyErrorChecks
 
 
+class TestRenumberOutsideGit(RepoTestCase):
+    def setUp(self):
+        super().setUp()
+        self.old = self.root / "chitty/tasks/TASK-AAAAAA--alpha.md"
+        self.old.parent.mkdir(parents=True)
+        self.old.write_text(
+            "---\ntitle: Alpha\nstatus: todo\ncreated: 2026-01-01\n"
+            "provisional: true\n---\n\n## Description\n\nFixture.\n"
+        )
+        patcher = mock.patch.dict(os.environ, {"CHITTY_ACTOR": "tester"})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_without_autocommit(self):
+        changes = Repo.open(self.root).renumber_provisional()
+        self.assertEqual([str(change.task.id) for change in changes], ["TASK-1"])
+        self.assertTrue((self.old.parent / "TASK-1--alpha.md").is_file())
+        self.assertFalse(self.old.exists())
+        self.assertFalse((self.root / ".git").exists())
+
+    def test_autocommit_requires_git_without_changes(self):
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
+        before = {
+            p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()
+        }
+        with self.assertRaises(ChittyError) as caught:
+            Repo.open(self.root).renumber_provisional()
+        self.assertIn("requires", str(caught.exception))
+        self.assertIn("to be in a Git work tree", str(caught.exception))
+        self.assertEqual(
+            before,
+            {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()},
+        )
+        self.assertFalse((self.root / ".git").exists())
+
+
 class TestPrepareRenumbering(RepoTestCase):
     git = SourceCopyErrorChecks.git
     init_git = SourceCopyErrorChecks.init_git
