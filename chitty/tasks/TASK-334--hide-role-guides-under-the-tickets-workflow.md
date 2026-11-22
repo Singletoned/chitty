@@ -33,6 +33,10 @@ Tests in `tests/test_guide_workflow.py` (it exists on the branch; create it if t
 - [ ] Under `tickets`, `chitty guide` exits 0 and prints `managed_guide("tickets")`, and `chitty guide --help` exits 0, contains `chitty guide` and contains no role name from `ROLE_NAMES`; this fails before the change
 - [ ] With `workflow = "runner"`, and outside a repository, for each role, without an ID and (for every role except `plan` and `setup`) with `TASK-1`, `chitty guide <role>` exits 0 with empty stderr and stdout equal to `src/chitty/roles/<role>.md` with `<!-- property-signals -->` replaced by the text of `property-signals.md` with `rstrip()` applied to it (the placeholder occurs only in `plan.md` and `cold-read.md`, which must show the substitution), prefixed by `Work only on Chitty ticket TASK-1.` and a blank line when the ID is given; `chitty guide --help` contains every line of the current docstring, including the paragraph starting `Work, review, cold-read and rebase accept`; with `workflow = "bogus"`, `chitty guide work` exits 1 with `workflow:` in stderr and `chitty guide --help` exits 0 with the runner docstring; `make check` passes
 
+## Plan
+
+Implement the replanned workflow parameter, shared error message, and fixed-case compatibility tests; verify regression and run checks.
+
 ## Notes
 
 Cold read starting point: `refs/cold-read/TASK-334/1` (on top of TASK-332's read; mutants M1 to M4 killed). Its main files: `src/chitty/store.py`, `src/chitty/cli.py` (`_GuideCommand`), `src/chitty/run.py`, `tests/test_guide_workflow.py`; see them with `git show refs/cold-read/TASK-334/1:<path>`. It differs from the current text: its `role_workflow` falls back to runner on a broken config for role guides, which the ticket now forbids, and it also edits `tests/support.py`, which TASK-335 owns. Check it against the current criteria rather than trusting it.
@@ -101,3 +105,4 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-22T12:05:00Z eager-coral-wren doing → error
 - 2026-11-22T13:57:28Z friendly-jade-stoat: changed notes
 - 2026-11-22T13:57:28Z friendly-jade-stoat error → doing
+- 2026-11-22T14:04:50Z open-dusky-vole: wrote the plan
