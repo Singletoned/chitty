@@ -26,6 +26,10 @@ Add the five specified direct-file warning tests, confirm escaped cases fail, th
 
 Regression test before the fix: both escaped examples fail with unwanted delimiter warnings; the guard also correctly warns about its unescaped asterisk, so the test checks that no underscore warning occurs.
 
+## Summary
+
+Added a separate delimiter parser and regression coverage for escaped, unescaped and intraword delimiters. Both escaped cases failed before the fix. make check passes (1068 tests).
+
 ## History
 
 - 2026-11-21T23:59:28Z lively-zinc-newt → cold-read
@@ -35,3 +39,4 @@ Regression test before the fix: both escaped examples fail with unwanted delimit
 - 2026-11-22T00:51:37Z nimble-bronze-marten todo → doing
 - 2026-11-22T00:53:54Z nimble-bronze-marten: wrote the plan
 - 2026-11-22T00:54:15Z nimble-bronze-marten: changed notes
+- 2026-11-22T00:55:59Z nimble-bronze-marten: changed summary
