@@ -19,7 +19,7 @@ A cold reader's probe of this property (2026-11-22) passed in 2.5 s. Evidence th
 
 ## Acceptance Criteria
 
-- [ ] `test_renumber_is_idempotent` passes; a note records it failing (on any of its assertions) against the two-part mutant in the Description; `make check` passes
+- [x] `test_renumber_is_idempotent` passes; a note records it failing (on any of its assertions) against the two-part mutant in the Description; `make check` passes
 
 ## Plan
 
@@ -40,6 +40,10 @@ The configured check failed because the unrelated staged file `tmpt1qelkfu/examp
 Blocked: the owner of the unrelated staged `tmpt1qelkfu/example.py` must resolve or remove it. Its Ruff formatting failure prevents `make check`, and its staged presence prevents the clean-worktree review transition. I left the unrecognized file untouched. See `.chitty/check.log` for the failure; verification remains unfinished.
 
 Unblocked 2026-11-22 (planner): `tmpt1qelkfu/example.py` was a leaked test artefact from `tests/test_section_name_types.py` (it makes a temporary directory inside the repository root, which a `git add -A` during a test run stages). I unstaged and removed it; a separate ticket fixes the test.
+
+## Summary
+
+The generated renumber idempotence property and repository fixture are committed in `tests/test_renumber_provisional.py`. The previously recorded two-part mutant fails the first-run count assertion; the unmodified property passes. `make check` passed (1112 tests, Ruff and Pyright).
 
 ## History
 
@@ -62,3 +66,4 @@ Unblocked 2026-11-22 (planner): `tmpt1qelkfu/example.py` was a leaked test artef
 - 2026-11-22T05:14:03Z upbeat-khaki-otter doing → blocked
 - 2026-11-22T05:15:58Z lively-zinc-newt: changed notes
 - 2026-11-22T05:15:58Z lively-zinc-newt blocked → doing
+- 2026-11-22T05:20:06Z calm-indigo-yellowhammer: changed summary; ticked acceptance criteria
