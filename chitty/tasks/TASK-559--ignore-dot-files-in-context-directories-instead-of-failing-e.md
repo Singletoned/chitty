@@ -1,6 +1,6 @@
 ---
 title: Ignore dot-files in context directories instead of failing every read
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-22
@@ -36,6 +36,10 @@ Suggestion origin: chitty
 
 Regression test failed before the fix: .gitkeep in tasks makes list exit 1 with must end with .md.
 
+Reviewed: implementation and complete diff checked; no defects found.
+1: pass - `make check` passed, including the 25-example property test; worker recorded its pre-fix failure with `.gitkeep` and `must end with .md`.
+2: pass - `make check` passed (1114 tests); `test_non_hidden_file_remains_an_error` checks both list and check errors.
+
 ## Summary
 
 Skip hidden entries in context scans and Git ref enumeration. Property regression failed before the fix; make check passes (1114 tests).
@@ -56,3 +60,5 @@ Skip hidden entries in context scans and Git ref enumeration. Property regressio
 - 2026-11-22T09:56:00Z rosy-fawn-falcon: changed notes
 - 2026-11-22T10:00:45Z rosy-fawn-falcon: changed summary; ticked acceptance criteria
 - 2026-11-22T10:02:32Z rosy-fawn-falcon doing → review
+- 2026-11-22T10:09:42Z brisk-amber-quail: changed notes
+- 2026-11-22T10:09:42Z brisk-amber-quail review → done
