@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in text given to `chitty add` and `chitty edit`
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -51,3 +51,4 @@ Escaped supplied task text and updated CLI regression coverage. Regression faile
 - 2026-11-22T01:05:20Z intrepid-ginger-lapwing: wrote the plan
 - 2026-11-22T01:05:36Z intrepid-ginger-lapwing: changed notes
 - 2026-11-22T01:10:03Z intrepid-ginger-lapwing: changed summary
+- 2026-11-22T01:10:04Z intrepid-ginger-lapwing doing → review
