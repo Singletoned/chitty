@@ -16,8 +16,13 @@ In `src/chitty/roles/work.md`, replace the sentence that tells workers to run `c
 
 - [ ] `tests/test_guide_work_commits.py` asserts `runs the configured check and refuses if it fails` and no longer asserts `then commit your changes` or `refuses while the worktree has uncommitted files`, reading the guide the way it does today; the old sentence is gone from `src/chitty/roles/work.md`; `make check` passes
 
+## Plan
+
+Update the work guide and its focused assertion, verify the test fails before the guide change, then format and run checks.
+
 ## History
 
 - 2026-11-22T01:11:08Z lively-zinc-newt → todo
 - 2026-11-22T01:11:21Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T02:40:38Z quick-umber-eel todo → doing
+- 2026-11-22T02:43:01Z quick-umber-eel: wrote the plan
