@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when a ticket read from a ref links to an old ID
-status: planning
+status: cold-read
 depends_on:
   - TASK-519
 parent: TASK-391
@@ -9,7 +9,7 @@ created: 2026-11-22
 
 ## Description
 
-Split from `TASK-519` on 2026-11-22 (the worker model gave up twice on the combined ticket). After `TASK-519`, `Repo._plan_provisional_renumbering` (`src/chitty/store.py`) refuses a plan when an untouched on-disk ticket links to a renumbered ID. This ticket extends the same guard to ticket copies read from refs. Draft: keep in planning until `TASK-519` lands, then check its landed helper and cold-read.
+Split from `TASK-519` on 2026-11-22 (the worker model gave up twice on the combined ticket). After `TASK-519`, `Repo._plan_provisional_renumbering` (`src/chitty/store.py`) refuses a plan when an untouched on-disk ticket links to a renumbered ID. This ticket extends the same guard to ticket copies read from refs. `TASK-519` landed `Repo._guard_untouched_disk_links(entries, writable, mapping)` in `src/chitty/store.py`, called right after `plan_renumbering` in `_plan_provisional_renumbering` (rechecked on `main` 2026-11-22). Add a sibling method `_guard_ref_links(mapping: dict[TaskId, TaskId]) -> None` and call it on the next line. Its tests go in `TestProvisionalLinkGuard` in `tests/test_provisional_link_guard.py` (which inherits `TestProvisionalPreflight` and has `fixture`, `state`, `check_refusal` and `check_success` helpers); reuse or extend those helpers.
 
 - After the disk scan, check every ID in `ticket_ids()` whose `source_of(id)` is not `None`: read it with `self.lookup(id)`, skipping a `None` result, and apply `blocking_link(frontmatter, mapping)` (`src/chitty/renumbering.py`). This covers IDs with no disk file and stale disk copies whose branch copy adds the link. Visit them in `sorted(...)` `TaskId` order, after every disk file; raise the same message as `TASK-519` on the first block (`cannot renumber {old}: {blocking} links to it in {field}`). Source-selection and read errors propagate.
 - Read ref-backed tickets only through `lookup`, which applies the source policy (`_choose_source`); this ticket adds no tests for refs it does not select.
@@ -29,3 +29,5 @@ A cold reader's probe (2026-11-21) on the unguarded planner: (c) and (e) give `s
 ## History
 
 - 2026-11-22T00:16:22Z lively-zinc-newt → planning
+- 2026-11-22T00:33:44Z lively-zinc-newt: changed description
+- 2026-11-22T00:33:44Z lively-zinc-newt planning → cold-read
