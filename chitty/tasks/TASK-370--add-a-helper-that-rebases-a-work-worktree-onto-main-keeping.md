@@ -1,6 +1,6 @@
 ---
 title: Add a helper that rebases a work worktree onto `main`, keeping uncommitted work
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -165,3 +165,4 @@ Split again 2026-11-22: the worker model gave up a third time (five sessions, no
 - 2026-11-22T02:02:30Z lively-zinc-newt todo → cold-read
 - 2026-11-22T02:04:16Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T02:04:16Z lively-zinc-newt cold-read → todo
+- 2026-11-22T02:07:48Z tidy-quartz-yellowhammer todo → doing
