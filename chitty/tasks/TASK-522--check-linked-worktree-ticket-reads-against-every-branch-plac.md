@@ -1,43 +1,31 @@
 ---
 title: Check linked-worktree ticket reads against every branch placement
-status: planning
+status: cold-read
 depends_on:
-  - TASK-393
   - TASK-527
 created: 2026-11-21
 ---
 
 ## Description
 
-`TASK-393` adds the placement builder `tests/ticket_placements.py` (`make_repo`, `PLACEMENTS`, `place`, `edit_uncommitted`) and checks every placement read from the main checkout. This ticket checks the same placements read from linked worktrees, which is where `current_branch` matters in `Repo._choose_source` (`src/chitty/store.py`).
+`TASK-393` and `TASK-527` landed `tests/ticket_placements.py` (`PLACEMENTS` = `a` to `m`, `Expected`, `git`, `make_repo`, `write_ticket`, `edit_uncommitted`, `commit`, `place`) and `test_main_checkout_placements` in `tests/test_ticket_placement_reads.py`, which reads every placement from the main checkout. This ticket reads the same placements from three kinds of linked worktree that are not the ticket's own; the ticket's own worktree is `TASK-537`. Rechecked on `main` 2026-11-22.
 
-Starts after `TASK-393` lands; it extends that module and test file, so compare with what landed before working. Out of scope: more than one ticket, random dates, decoy branches (`TASK-<generated>`), provisional tickets.
+Builder addition in `tests/ticket_placements.py`: `checkout(root: Path, kind: int, number: int) -> Path`, returning the directory to read from:
 
-Builder addition in `tests/ticket_placements.py`: `checkout(root, kind, number) -> Path` returns the directory to read from, adding linked worktrees under `<root>/.worktrees/` with `git worktree add`:
+- kind 3, another ticket's worktree: on a new branch `task-<number+1>` from `main`, `write_ticket(root, number + 1, "other")` and `commit(root, 20)`, switch back to `main`, then `git worktree add .worktrees/task-<number+1> task-<number+1>`;
+- kind 4: `git worktree add -b feature .worktrees/feature main`;
+- kind 5: `git worktree add --detach .worktrees/detached main`.
 
-- (2) the ticket's own worktree on `task-<n>`, only for placements with a local branch: (b), (d), (e), (g), (h), (j), (k), (l);
-- (3) another ticket's worktree: commit `TASK-<n+1>` (title `other`) on its own branch `task-<n+1>` and add its worktree;
-- (4) a worktree on new branch `feature`, made from `main`'s tip after every `main` commit;
-- (5) a worktree with a detached `HEAD` at `main`.
+Expected results, read with `Repo.open(<checkout>)`: in all three kinds, the same as the main checkout for that placement (`place`'s `Expected`), except that (i) is not listed, because its uncommitted file is only in the main checkout, and an uncommitted edit made in the linked worktree never shows. A planner probe on `main` (2026-11-22) built every placement in each kind, with and without `edit_uncommitted` applied in the linked worktree where the ticket file exists there, and confirmed these results.
 
-Expected results, by hand in the module (never by calling `ticket_source`):
+Test `test_linked_worktree_placements` in `tests/test_ticket_placement_reads.py`: for each kind in (3, 4, 5) and each placement, build a fresh repository with `make_repo(self.tmp)` and `place(root, placement, 5)`, then `checkout(root, kind, 5)`, and compare `Repo.find(TASK-5)` and `Repo.tasks(context("tasks"), "all")` with the expected result the way `test_main_checkout_placements` does (or through `placement_mismatches` if `TASK-528` has landed by then; either is fine). Where `chitty/tasks/TASK-5--example.md` exists in the linked worktree, repeat with `edit_uncommitted(<checkout>, 5)` and the same expected result. Use `subTest(kind=..., placement=..., edit=...)`.
 
-- kinds (3), (4), (5): the same as the main checkout in `TASK-393`, except (i), which is not listed (the uncommitted file is only in the main checkout), and except that an uncommitted edit never shows.
-- kind (2): (b), (g) the worktree's working tree, which is the branch content plus any uncommitted edit; (h) not listed; (d), (l) `remote`; (e) and (k) raise as in `TASK-393`; (j) `main-2`, and an uncommitted edit in the worktree does not show.
-
-The planner must confirm each expected result against `main` with a probe before the cold read, as was done for `TASK-393`.
-
-Tests in `tests/test_ticket_placement_reads.py`:
-
-- `test_linked_worktree_placements`: for every compatible (placement, kind) pair, read with `Repo.open(<checkout>)`: `find(TASK-5)` and `tasks(context("tasks"), "all")`, as `TASK-393` does. Where the ticket's file exists in that checkout's working tree, repeat in a fresh repository with `edit_uncommitted` applied there. Use `subTest`.
-- A mutant test that passes `Repo._main_branch()` as `current_branch` (patch `chitty.store.ticket_source` as in `tests/test_source_copy_checkouts.py`) and asserts that at least one check fails.
-
-No property: one ticket, fixed placements and checkout kinds, each listed and tested.
+No property: fixed placements and kinds, each listed and tested; generated draws are `TASK-523`. No production code changes unless a test finds a bug.
 
 ## Acceptance Criteria
 
-- [ ] `test_linked_worktree_placements` passes, covering every compatible (placement, checkout kind) pair, with and without an uncommitted edit where the file exists
-- [ ] The `current_branch` mutant test passes, showing at least one check fails under the mutant; `make check` passes
+- [ ] `test_linked_worktree_placements` passes for kinds 3, 4 and 5 over every placement, with and without an uncommitted edit where the file exists in that worktree; changing (i)'s expected result in kind 4 to `uncommitted` makes it fail (shown once in a note)
+- [ ] `make check` passes
 
 ## Notes
 
@@ -49,3 +37,5 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; th
 - 2026-11-21T23:06:00Z lively-zinc-newt: changed notes
 - 2026-11-21T23:07:54Z lively-zinc-newt: changed description
 - 2026-11-21T23:18:59Z lively-zinc-newt: changed dependencies
+- 2026-11-22T00:19:30Z lively-zinc-newt: changed dependencies, description, acceptance criteria
+- 2026-11-22T00:19:30Z lively-zinc-newt planning → cold-read
