@@ -81,6 +81,10 @@ Cold read 2: constant placement fixed to `selection.py`, alignment test added; n
 
 Before the fix, test_list_glyphs fails for all three priority glyphs because each contains two characters; the alignment test passes under the existing _columns calculation.
 
+## Summary
+
+Replaced list and skip glyphs with wide characters, centralized skip constants, and updated documentation and expectations. Glyph regression failed before the fix; make check passes (1125 tests), and the old-glyph grep is empty.
+
 ## History
 
 - 2026-11-22T12:56:07Z friendly-jade-stoat → todo
@@ -92,3 +96,4 @@ Before the fix, test_list_glyphs fails for all three priority glyphs because eac
 - 2026-11-22T15:12:53Z golden-zinc-eel todo → doing
 - 2026-11-22T15:15:45Z golden-zinc-eel: wrote the plan
 - 2026-11-22T15:16:06Z golden-zinc-eel: changed notes
+- 2026-11-22T15:21:20Z golden-zinc-eel: changed summary
