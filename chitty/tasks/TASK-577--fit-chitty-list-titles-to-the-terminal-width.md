@@ -1,6 +1,6 @@
 ---
 title: Fit chitty list titles to the terminal width
-status: todo
+status: planning
 created: 2026-11-22
 ---
 
@@ -33,6 +33,15 @@ characters:
 - Without patching `isatty` (CliRunner output is not a terminal) and
   `COLUMNS=60`: the line is cut at 100 columns, not 60.
 
+## Acceptance Criteria
+
+- [ ] With stdout a terminal narrower than `list_width`, `chitty list` lines fit the terminal and long titles end in `…`; shown by the `COLUMNS=60` test, which fails before the change.
+- [ ] `list_width` still caps a wider terminal, and non-terminal output still uses `list_width`; shown by the other two tests.
+- [ ] `docs/plan/cli.md` and `docs/plan/config.md` describe the terminal cap.
+- [ ] `make check` passes.
+
 ## History
 
 - 2026-11-22T12:56:08Z friendly-jade-stoat → todo
+- 2026-11-22T12:56:17Z friendly-jade-stoat: changed acceptance criteria
+- 2026-11-22T12:56:17Z friendly-jade-stoat todo → planning
