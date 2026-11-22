@@ -55,7 +55,10 @@ class TestPrepareRenumbering(RepoTestCase):
             if old_id != "TASK-3":
                 self.assertIsNone(task.frontmatter.provisional)
                 self.assertEqual(task.frontmatter.moved_from, old_id)
-                self.assertIn(f"renumbered from {old_id}", task.section("History") or "")
+                history = task.section("History") or ""
+                self.assertTrue(
+                    history.rstrip().splitlines()[-1].endswith(f"renumbered from {old_id}")
+                )
         self.assertEqual(entries["TASK-BAAAAA"][1].frontmatter.depends_on, ["TASK-5"])
         old, task, _ = entries["TASK-3"]
         self.assertEqual(task.frontmatter.depends_on, ["TASK-6"])
