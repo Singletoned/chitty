@@ -34,6 +34,8 @@ Decided: pathless renumbering -> omit it, because the ticket explicitly says to 
 
 Reviewed: wording checked against the ticket.
 
+Planner, 2026-11-22: resolved the landing conflict with TASK-392's pathless `renumber` (kept main's docs and help, applied this ticket's allocation-rules wording); `make check` passed (1114 tests) before landing.
+
 ## Summary
 
 Updated the work/review guides, README, CLI help, and plan docs to explain provisional IDs and distinguish them from sequential and random numeric IDs. Updated the existing guide wording test. No runtime behavior changed. Documented `renumber PATH` only; pathless renumbering is still unshipped (`TASK-392`) and excluded as the ticket allows. `make check` passed all 983 tests; also checked the rendered `move` and `renumber` help.
@@ -52,3 +54,4 @@ Updated the work/review guides, README, CLI help, and plan docs to explain provi
 - 2026-11-21T18:50:09Z nimble-umber-adder doing → review
 - 2026-11-22T11:31:15Z human: changed notes
 - 2026-11-22T11:31:15Z human review → done
+- 2026-11-22T13:56:18Z friendly-jade-stoat: changed notes
