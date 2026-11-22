@@ -34,6 +34,10 @@ Test, in `tests/test_renumber_provisional.py`, reusing `TestPrepareRenumbering`'
 - [ ] The real-Git batch fixture returns one `Change` per renumbered ticket, updates both directories and all three tickets exactly as described, and lands one commit including every old and final path and a `Task:` trailer for each final ticket. Repeating returns `()` and changes neither HEAD nor bytes.
 - [ ] `make check` passes
 
+## Plan
+
+Reuse the prepared fixture to test a real Git batch and repeat, then implement the transactional writer and run the full checks.
+
 ## Notes
 
 The preflight is split across `TASK-391`, `TASK-519` (blocking structured references in untouched sources) and `TASK-520` (branch and invalid-input guards). Keep the writer waiting for the full contract.
@@ -55,3 +59,4 @@ Split again 2026-11-22 after a cold read: the in-memory prepare step is `TASK-54
 - 2026-11-22T03:04:02Z lively-zinc-newt: changed description
 - 2026-11-22T03:04:02Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:04:32Z upbeat-bronze-newt todo → doing
+- 2026-11-22T03:07:07Z upbeat-bronze-newt: wrote the plan
