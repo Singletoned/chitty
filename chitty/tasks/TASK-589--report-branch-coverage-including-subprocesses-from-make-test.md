@@ -1,6 +1,6 @@
 ---
 title: Report branch coverage, including subprocesses, from `make test`
-status: cold-read
+status: planning
 owner: plucky-umber-wren
 depends_on:
   - TASK-587
@@ -39,7 +39,7 @@ No property or unit test: this is build configuration, checked by the commands i
 
 ## Acceptance Criteria
 
-- [ ] `make test` exits 0, prints a coverage table whose rows include `src/chitty/run.py` and a `TOTAL` row with a percentage, and writes `tmp/coverage/index.html`; afterwards `git status --short` in the checkout is empty
+- [ ] `make test` exits 0 (`Exception ignored in atexit callback` coverage tracebacks from child processes are known noise and do not count against it), prints a coverage table whose rows include `src/chitty/run.py` and a `TOTAL` row with a percentage, and writes `tmp/coverage/index.html`; afterwards `git status --short` in the checkout is empty
 - [ ] Subprocesses are measured: from the checkout root, `COVERAGE_ROOT=$PWD .venv/bin/unittest-parallel -s tests -t . -p test_run_loop.py --level test --coverage` reports `src/chitty/run.py` at 40% or more (42% when planning), and the same command with `patch` removed from `[tool.coverage.run]` reports it under 20% (13% when planning). Do the `patch`-removed run on a temporary edit and restore `pyproject.toml` afterwards; record both lines in a note
 - [ ] `test_interrupted_agent_calls_reporter` still asserts exit 130 and passes under both `make check` and `make test`; with the coverage configuration and `Makefile` change in place but before the shebang change, it fails under `make test` (record the failing line in a note)
 - [ ] `pyproject.toml` pins `coverage==7.17.2` in the `dev` group and `uv.lock` is updated; `.gitignore` lists `.coverage` and `.coverage.*`; `AGENTS.md` names `tmp/coverage/index.html`; `make -n test` shows `--coverage` and `make -n check` does not (a guard that `check` stays quick); and `make check` passes
@@ -62,3 +62,5 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` lin
 - 2026-11-22T17:06:02Z plucky-umber-wren cold-read → planning
 - 2026-11-22T17:06:25Z plucky-umber-wren: changed notes
 - 2026-11-22T17:06:25Z plucky-umber-wren planning → cold-read
+- 2026-11-22T17:07:06Z plucky-umber-wren: changed acceptance criteria
+- 2026-11-22T17:07:06Z plucky-umber-wren cold-read → planning
