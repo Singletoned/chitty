@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads from the ticket's own worktree against every placement
-status: review
+status: done
 labels:
   - question
 depends_on:
@@ -34,7 +34,7 @@ Test mechanism: add a module-level function `own_worktree_mismatches(parent: Pat
 
 ## Acceptance Criteria
 
-- [ ] `test_own_worktree_placements` passes (the collector returns `[]` for every row and variant in the table) and `test_own_worktree_mutant_main_branch` passes (non-empty list under the mutant); `make check` passes
+- [x] `test_own_worktree_placements` passes (the collector returns `[]` for every row and variant in the table) and `test_own_worktree_mutant_main_branch` passes (non-empty list under the mutant); `make check` passes
 
 ## Plan
 
@@ -47,6 +47,9 @@ The specified (h) edit expectation contradicts the fixture and actual reads: `pl
 Replanned 2026-11-22: the (h) edit variant is dropped, as the worker found it recreates the deleted file.
 
 The own-worktree placement test fails under the specified current-branch mutant; the mutant detection test passes.
+
+Reviewed:
+1: pass - `make check` reported 1085 tests OK, including both placement tests. Running the mutant detection test with its patch replaced by the real `ticket_source` failed with `AssertionError: [] is not true`, confirming it detects the mutation.
 
 ## Summary
 
@@ -70,3 +73,5 @@ Added table-driven own-worktree placement coverage and current-branch mutant det
 - 2026-11-22T02:17:33Z daring-quartz-newt: changed notes
 - 2026-11-22T02:19:46Z daring-quartz-newt: changed summary
 - 2026-11-22T02:19:49Z daring-quartz-newt doing → review
+- 2026-11-22T02:25:55Z lively-silver-quail: changed notes; ticked acceptance criteria
+- 2026-11-22T02:25:55Z lively-silver-quail review → done
