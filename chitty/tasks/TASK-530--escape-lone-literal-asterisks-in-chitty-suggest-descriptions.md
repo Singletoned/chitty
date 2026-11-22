@@ -23,6 +23,10 @@ Test `test_suggestion_description_escapes_literal_asterisks` in `tests/test_inbo
 - [ ] `test_suggestion_description_escapes_literal_asterisks` passes, and fails before the change with `suggestion Description does not round-trip through task storage` (record the failing run in a note)
 - [ ] The existing `tests/test_inbox.py` and `tests/test_property_inbox.py` tests pass, including suggestions with no description; `make check` passes
 
+## Plan
+
+Add a regression test covering suggestion storage and pull, verify it fails, then escape the normalized description before validation and storage; run the requested checks.
+
 ## History
 
 - 2026-11-21T23:22:19Z lively-zinc-newt → planning
@@ -31,3 +35,4 @@ Test `test_suggestion_description_escapes_literal_asterisks` in `tests/test_inbo
 - 2026-11-22T01:20:22Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:20:22Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:25:56Z zesty-ebony-falcon todo → doing
+- 2026-11-22T01:28:15Z zesty-ebony-falcon: wrote the plan
