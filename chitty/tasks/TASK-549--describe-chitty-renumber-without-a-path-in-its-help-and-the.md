@@ -1,6 +1,6 @@
 ---
 title: Describe `chitty renumber` without a path in its help and the CLI docs
-status: review
+status: done
 depends_on:
   - TASK-392
   - TASK-548
@@ -27,6 +27,9 @@ Update the pinned help assertion and command docstring, document no-path output 
 
 The updated help assertion failed against the original docstring as expected.
 
+Reviewed: Help and documentation match the requested no-path behavior.
+1: pass - `.venv/bin/chitty renumber --help` prints the requested line; `test_help` fails with the old command help restored (1 failure), and `make check` passes (1111 tests, OK). `docs/plan/cli.md` documents stdout, stderr, exit status and JSON list.
+
 ## Summary
 
 Updated renumber help and no-path CLI documentation. The revised help test failed before the change; make check passed afterward.
@@ -39,3 +42,5 @@ Updated renumber help and no-path CLI documentation. The revised help test faile
 - 2026-11-22T04:58:41Z jolly-maroon-adder: changed notes
 - 2026-11-22T05:02:33Z jolly-maroon-adder: changed summary
 - 2026-11-22T05:04:05Z jolly-maroon-adder doing → review
+- 2026-11-22T05:08:37Z quick-navy-dormouse: changed notes
+- 2026-11-22T05:08:37Z quick-navy-dormouse review → done
