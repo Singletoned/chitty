@@ -36,6 +36,10 @@ Test mechanism: add a module-level function `own_worktree_mismatches(parent: Pat
 
 - [ ] `test_own_worktree_placements` passes (the collector returns `[]` for every row and variant in the table) and `test_own_worktree_mutant_main_branch` passes (non-empty list under the mutant); `make check` passes
 
+## Plan
+
+Add kind 2 checkout and table-driven own-worktree read collector, then verify it detects the current-branch mutant and run checks.
+
 ## History
 
 - 2026-11-22T00:19:27Z lively-zinc-newt → planning
@@ -44,3 +48,4 @@ Test mechanism: add a module-level function `own_worktree_mismatches(parent: Pat
 - 2026-11-22T00:42:23Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:42:23Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:31:44Z tidy-lilac-crane todo → doing
+- 2026-11-22T01:34:23Z tidy-lilac-crane: wrote the plan
