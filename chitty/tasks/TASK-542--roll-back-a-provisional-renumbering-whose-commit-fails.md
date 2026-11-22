@@ -1,6 +1,6 @@
 ---
 title: Roll back a provisional renumbering whose commit fails
-status: todo
+status: doing
 depends_on:
   - TASK-517
 parent: TASK-391
@@ -25,3 +25,4 @@ Test in `tests/test_renumber_provisional.py`: build `TASK-517`'s batch fixture, 
 - 2026-11-22T03:22:02Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T03:22:02Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:22:13Z lively-zinc-newt: changed description
+- 2026-11-22T03:31:35Z vivid-jade-eel todo → doing
