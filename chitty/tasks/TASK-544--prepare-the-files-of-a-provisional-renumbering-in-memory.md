@@ -1,6 +1,6 @@
 ---
 title: Prepare the files of a provisional renumbering in memory
-status: todo
+status: doing
 parent: TASK-391
 created: 2026-11-22
 ---
@@ -30,3 +30,4 @@ Test in a new `tests/test_renumber_provisional.py`, `RepoTestCase`, real files a
 - 2026-11-22T01:38:01Z lively-zinc-newt: changed description
 - 2026-11-22T01:39:13Z lively-zinc-newt: changed description
 - 2026-11-22T01:39:13Z lively-zinc-newt cold-read → todo
+- 2026-11-22T02:31:37Z nimble-hazel-raven todo → doing
