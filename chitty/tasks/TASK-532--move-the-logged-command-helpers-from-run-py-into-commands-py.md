@@ -1,6 +1,6 @@
 ---
 title: Move the logged-command helpers from `run.py` into `commands.py`
-status: review
+status: doing
 parent: TASK-343
 created: 2026-11-21
 ---
@@ -34,6 +34,10 @@ The test requirements contradict each other: criterion 2 and the description req
 
 Replanned 2026-11-22: tests rename their calls as well as imports; see the Description.
 
+Review failed (work): A moved helper test still imports through the old module.
+1: pass - Both specified git grep commands printed no matches; diff shows all moved definitions in commands.py and no run.py _git definition.
+2: fail - Newly discovered: tests/test_command_timeout.py imports CommandTimedOut and run_logged from chitty.run, contrary to the description requiring moved names in all four files to be imported from chitty.commands. Change that import to chitty.commands. make check printed 1067 tests and OK, including these four files; the other test changes are limited to imports and renamed uses.
+
 ## Summary
 
 Moved logged command helpers into commands.py and updated callers. make check passed: 1065 tests; old-name grep returned no matches.
@@ -52,3 +56,5 @@ Moved logged command helpers into commands.py and updated callers. make check pa
 - 2026-11-22T00:47:11Z golden-bronze-gannet: wrote the plan
 - 2026-11-22T00:50:07Z golden-bronze-gannet: changed summary
 - 2026-11-22T00:50:07Z golden-bronze-gannet doing → review
+- 2026-11-22T00:55:19Z upbeat-coral-jay: changed acceptance criteria, notes
+- 2026-11-22T00:55:19Z upbeat-coral-jay review → doing
