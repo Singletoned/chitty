@@ -34,6 +34,8 @@ Add a shared hidden-name predicate to the scan and ref enumeration paths; exerci
 
 Suggestion origin: chitty
 
+Regression test failed before the fix: .gitkeep in tasks makes list exit 1 with must end with .md.
+
 ## History
 
 - 2026-11-22T09:47:33Z friendly-jade-stoat → backlog
@@ -47,3 +49,4 @@ Suggestion origin: chitty
 - 2026-11-22T09:51:40Z friendly-jade-stoat planning → todo
 - 2026-11-22T09:52:51Z rosy-fawn-falcon todo → doing
 - 2026-11-22T09:54:59Z rosy-fawn-falcon: wrote the plan
+- 2026-11-22T09:56:00Z rosy-fawn-falcon: changed notes
