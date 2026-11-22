@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: review
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -65,6 +65,11 @@ Planner, 2026-11-22: the 10:05 agent session timed out after 7200 s on its first
 
 Regression: direct workflow test failed before the fix with unexpected workflow keyword, and passes after implementation. Earlier rebase verification showed tickets help test failing before the help fix. make check passes with 1119 tests.
 
+Review failed (tests): Newly discovered gaps in the specified assertions; the earlier baseline-capture finding was superseded by the replan.
+1: pass - make check printed Ran 1119 tests and OK; the worker recorded direct-workflow regression failure before the fix, and the earlier review recorded tickets-role tests failing before the change.
+2: fail - tests/test_guide_workflow.py checks stdout but not the required exit code for either general guide or help. Assert both exit codes are zero. Earlier review recorded role-bearing help failing before the fix.
+3: fail - tests/test_guide_workflow.py checks selected help phrases, omitting the repair example and other docstring text; broken-config help also lacks an exit-code assertion and complete runner-docstring comparison. Assert the specified complete help text and exit code. make check printed Ran 1119 tests and OK; runner role output cases passed. The previous baseline-capture finding no longer applies to the rewritten criterion.
+
 ## Summary
 
 Workflow-gated role guides and tickets-only help implemented; fixed-case runner, outside-repository and tickets coverage added. make check passes.
@@ -110,3 +115,5 @@ Workflow-gated role guides and tickets-only help implemented; fixed-case runner,
 - 2026-11-22T14:04:50Z open-dusky-vole: wrote the plan
 - 2026-11-22T14:10:52Z open-dusky-vole: changed notes, summary
 - 2026-11-22T14:10:52Z open-dusky-vole doing → review
+- 2026-11-22T14:22:14Z brisk-silver-jay: changed acceptance criteria, notes
+- 2026-11-22T14:22:14Z brisk-silver-jay review → doing
