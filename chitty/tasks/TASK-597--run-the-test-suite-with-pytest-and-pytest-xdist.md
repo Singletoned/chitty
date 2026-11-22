@@ -1,6 +1,6 @@
 ---
 title: Run the test suite with `pytest` and `pytest-xdist`
-status: planning
+status: cold-read
 created: 2026-11-22
 ---
 
@@ -27,9 +27,11 @@ No new test: build configuration, checked by the commands in the criteria.
 
 - [ ] `make check` passes and its output ends with a `pytest` summary line reporting at least 1140 passed and no failures or errors; `grep -rn unittest-parallel Makefile pyproject.toml uv.lock AGENTS.md README.md docs tests` prints nothing
 - [ ] `make test` passes, prints a `coverage report` `TOTAL` line of at least 90%, and leaves `tmp/coverage/index.html`; afterwards `git status --short` is empty
-- [ ] In a scratch directory outside the repository, a `test_fx.py` with class `Cases` whose `setUpClass` raises `RuntimeError` and one passing `test_ok`, run with this checkout`s `.venv/bin/pytest -n 2`, exits non-zero and reports `1 error`; record the command and output in a note
-- [ ] `tests/__init__.py` sets `_is_worker` from `PYTEST_XDIST_WORKER`: a note records `.venv/bin/pytest -n 2 -s` on a scratch test that prints `tests._is_worker`, showing `True` in the workers
+- [ ] In a scratch directory outside the repository, a `test_fx.py` with class `Cases` whose `setUpClass` raises `RuntimeError` and one passing `test_ok`, run with this checkout's `.venv/bin/pytest -n 2`, exits non-zero and reports `1 error`; record the command and output in a note
+- [ ] A temporary `tests/test_probe_worker.py` (deleted afterwards, not committed) asserting `import tests; tests._is_worker is True` passes under `.venv/bin/pytest -n 2 tests/test_probe_worker.py` and fails under `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py`; record both outputs in a note
 
 ## History
 
 - 2026-11-22T20:15:42Z plucky-umber-wren → planning
+- 2026-11-22T20:15:51Z plucky-umber-wren: changed acceptance criteria
+- 2026-11-22T20:15:51Z plucky-umber-wren planning → cold-read
