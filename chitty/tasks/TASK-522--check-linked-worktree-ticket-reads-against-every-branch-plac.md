@@ -1,6 +1,6 @@
 ---
 title: Check linked-worktree ticket reads against every branch placement
-status: review
+status: done
 depends_on:
   - TASK-527
 created: 2026-11-21
@@ -24,8 +24,8 @@ No property: fixed placements and kinds, each listed and tested; generated draws
 
 ## Acceptance Criteria
 
-- [ ] `test_linked_worktree_placements` passes for kinds 3, 4 and 5 over every placement, with and without an uncommitted edit where the file exists in that worktree; changing (i)'s expected result in kind 4 to `uncommitted` makes it fail (shown once in a note)
-- [ ] `make check` passes
+- [x] `test_linked_worktree_placements` passes for kinds 3, 4 and 5 over every placement, with and without an uncommitted edit where the file exists in that worktree; changing (i)'s expected result in kind 4 to `uncommitted` makes it fail (shown once in a note)
+- [x] `make check` passes
 
 ## Plan
 
@@ -36,6 +36,10 @@ Add linked worktree fixture and placement matrix tests, verify the specified mut
 Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; then compare with the landed builder, probe the expected results, cold-read and move to `todo`.
 
 Mutation check: changing placement i kind 4 expected title to uncommitted makes test_linked_worktree_placements fail: Repo.find reports no task. Kind 3 lists TASK-6 as well, so assertions select TASK-5 from the listing.
+
+Reviewed:
+1: pass - `make check` ran the linked-worktree matrix successfully; the worker's mutation note records that kind 4 placement i fails with `Repo.find` reporting no task when expected as uncommitted.
+2: pass - `make check` reported 1065 tests OK, ruff passed and pyright reported 0 errors.
 
 ## Summary
 
@@ -56,3 +60,5 @@ Added linked worktree placement tests; make check passes. Mutation of kind 4 pla
 - 2026-11-22T00:31:32Z rosy-russet-puffin: changed notes
 - 2026-11-22T00:33:52Z rosy-russet-puffin: changed summary
 - 2026-11-22T00:33:53Z rosy-russet-puffin doing → review
+- 2026-11-22T00:38:15Z quick-fawn-badger: changed notes; ticked acceptance criteria
+- 2026-11-22T00:38:15Z quick-fawn-badger review → done
