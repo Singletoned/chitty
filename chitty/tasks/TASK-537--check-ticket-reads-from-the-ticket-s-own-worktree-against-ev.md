@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads from the ticket's own worktree against every placement
-status: planning
+status: cold-read
 labels:
   - question
 depends_on:
@@ -11,9 +11,9 @@ created: 2026-11-22
 
 ## Description
 
-Split from `TASK-522` on 2026-11-22. `TASK-522` reads every placement from linked worktrees that are not the ticket's own. This ticket reads from the ticket's own worktree (kind 2), where `current_branch` matters in `Repo._choose_source` (`src/chitty/store.py`), and adds a mutant test for it. Draft: keep in planning until `TASK-522` lands (it adds `checkout`), then add kind 2 to it, check, cold-read.
+Split from `TASK-522` on 2026-11-22. `TASK-522` reads every placement from linked worktrees that are not the ticket's own. This ticket reads from the ticket's own worktree (kind 2), where `current_branch` matters in `Repo._choose_source` (`src/chitty/store.py`), and adds a mutant test for it. `TASK-522` landed `checkout(root, kind, number)` in `tests/ticket_placements.py` for kinds 3 to 5 (raising `ValueError` otherwise) and `test_linked_worktree_placements` in `tests/test_ticket_placement_reads.py` (rechecked on `main` 2026-11-22). Add a `kind == 2` branch to `checkout`, and a `test_own_worktree_placements` that follows `test_linked_worktree_placements`'s pattern, with the kind-2 expectations below written in the test rather than taken from `place`.
 
-Kind 2: `git worktree add .worktrees/task-<n> task-<n>`, only for placements with a local branch: (b), (d), (e), (g), (h), (j), (k), (l).
+Kind 2: `git worktree add <root>/.worktrees/task-<n> task-<n>`, returning that path, only for placements with a local branch: (b), (d), (e), (g), (h), (j), (k), (l).
 
 Expected, confirmed by a planner probe on `main` 2026-11-22: (b) `branch`, or `uncommitted` with an uncommitted edit in that worktree; (g) `branch`, archived (the active file is gone there, so no edit variant); (h) not listed; (d) `remote`; (e) `diverged refs`; (k) `changed on both` `task-<n>` and `main`; (j) `main-2`, and an edit does not show; (l) `remote`, and an edit does not show.
 
@@ -28,3 +28,5 @@ Mutant test: patch `chitty.store.ticket_source` with a wrapper that passes `Repo
 ## History
 
 - 2026-11-22T00:19:27Z lively-zinc-newt → planning
+- 2026-11-22T00:40:44Z lively-zinc-newt: changed description
+- 2026-11-22T00:40:44Z lively-zinc-newt planning → cold-read
