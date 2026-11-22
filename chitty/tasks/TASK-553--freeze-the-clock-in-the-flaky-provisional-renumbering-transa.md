@@ -1,6 +1,6 @@
 ---
 title: Freeze the clock in the flaky provisional-renumbering transaction test
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -22,3 +22,4 @@ To show the fix: temporarily make the clock advance one second between the two c
 ## History
 
 - 2026-11-22T04:03:27Z lively-zinc-newt → todo
+- 2026-11-22T04:08:05Z witty-jade-quail todo → doing
