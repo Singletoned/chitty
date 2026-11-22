@@ -1365,10 +1365,10 @@ class TestNext(CliTestCase):
         self.assertEqual(status, "?? check-args\n")
         self.git("-C", str(worktree), "check-ignore", "-q", ".chitty/check.log")
         log_path.write_text("old\n")
-        from chitty.run import _run_logged
+        from chitty.commands import run_logged
 
         command = tomllib.loads((self.root / "chitty.toml").read_text())["check"]
-        self.assertEqual(_run_logged("check", command, worktree, 0), 1)
+        self.assertEqual(run_logged("check", command, worktree, 0), 1)
         self.assertFalse(log_path.read_text().startswith("old\n"))
         self.assertIn("check line 6\n", log_path.read_text())
         self.assertEqual(self.git("rev-list", "--count", "main..task-1").strip(), "2")
@@ -1505,18 +1505,18 @@ class TestNext(CliTestCase):
         if not exclude_path.is_absolute():
             exclude_path = worktree / exclude_path
         self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
-        from chitty.run import _ignore_run_log
+        from chitty.commands import ignore_run_log
 
-        _ignore_run_log(worktree)
+        ignore_run_log(worktree)
         self.assertEqual(exclude_path.read_text().splitlines().count("/.chitty/"), 1)
 
     def test_run_logged_keeps_output_ending_in_a_multibyte_character(self):
-        from chitty.run import _run_logged
+        from chitty.commands import run_logged
 
         worktree = self.root / "plain"
         worktree.mkdir()
         self.git("-C", str(worktree), "init", "--quiet")
-        self.assertEqual(_run_logged("check", "printf é", worktree, 0), 0)
+        self.assertEqual(run_logged("check", "printf é", worktree, 0), 0)
         log = (worktree / ".chitty/check.log").read_text(encoding="utf-8")
         self.assertEqual(log, "# chitty check: printf é\né\n# exit 0\n")
 

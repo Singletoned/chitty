@@ -3,7 +3,7 @@ import shlex
 import subprocess
 import sys
 
-from chitty.run import CommandTimedOut, _run_logged
+from chitty.run import CommandTimedOut, run_logged
 from tests import test_next
 from tests.test_cli import CliTestCase
 
@@ -26,7 +26,7 @@ class TestCommandTimeout(CliTestCase):
         )
         command = shlex.join([sys.executable, str(script), str(pids)])
         with self.assertRaises(CommandTimedOut) as raised:
-            _run_logged("setup", command, self.root, 1)
+            run_logged("setup", command, self.root, 1)
         self.assertEqual(
             str(raised.exception),
             "setup timed out after 1 seconds; output in `.chitty/check.log`",
@@ -40,7 +40,7 @@ class TestCommandTimeout(CliTestCase):
                 ["ps", "-p", pid, "-o", "stat="], capture_output=True, text=True, check=False
             )
             self.assertTrue(not result.stdout.strip() or result.stdout.strip().startswith("Z"))
-        self.assertEqual(_run_logged("setup", command, self.root, 0), 7)
+        self.assertEqual(run_logged("setup", command, self.root, 0), 7)
         self.assertTrue(
             (self.root / ".chitty/check.log").read_bytes().endswith(b"marker\n# exit 7\n")
         )

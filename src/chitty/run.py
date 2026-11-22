@@ -20,6 +20,14 @@ from uuid import uuid4
 
 from chitty import git, locks
 from chitty.actor import actor, run_actor
+from chitty.commands import (
+    CommandTimedOut,
+    code_block,
+    command_environment,
+    run_git,
+    run_logged,
+    terminate_process_tree,
+)
 from chitty.config import (
     BACKLOG_DIR,
     CHITTY_VERSION,
@@ -50,12 +58,9 @@ RUN_LOCK_ATTEMPTS = 10
 LANDING_ATTEMPTS = 3
 QUICK_LANDING_ATTEMPTS = 10
 RUN_LOOP_PAUSE_SECONDS = 60
-AGENT_KILL_GRACE_SECONDS = 2
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
-RUN_LOG = Path(".chitty/check.log")
-RUN_LOG_EXCLUDE = f"/{RUN_LOG.parent}/"
 
 
 def _has_work(paths: Sequence[PurePosixPath]) -> bool:
@@ -107,14 +112,6 @@ def loop_step(returncode: int) -> tuple[bool, int]:
     if returncode in (0, NO_NEXT_TICKET_EXIT):
         return True, 0
     return False, returncode if returncode > 0 else 128 - returncode
-
-
-def _command_environment() -> dict[str, str]:
-    """Copy the environment without an inherited usage file."""
-    environment = os.environ.copy()
-    # An inherited value would make an agent write a file `chitty run` no longer reads.
-    environment.pop("CHITTY_USAGE_FILE", None)
-    return environment
 
 
 class RunInterrupted(Exception):
@@ -238,7 +235,7 @@ def report_error(repo: Repo, error: ChittyError, context: dict[str, Any]) -> Non
             _PLACEHOLDER.sub(lambda match: values[match.group(1)], word)
             for word in shlex.split(command)
         ]
-        completed = subprocess.run(argv, check=False, env=_command_environment())
+        completed = subprocess.run(argv, check=False, env=command_environment())
     except (OSError, ValueError) as reporter_error:
         print(f"warning: error_reporter did not run: {reporter_error}", file=sys.stderr)
         return
@@ -295,7 +292,7 @@ def _run_agent(
         process.wait(timeout=timeout or None)
     except subprocess.TimeoutExpired:
         timed_out = True
-        _terminate_process_tree(process)
+        terminate_process_tree(process)
 
     end = os.fstat(log.fileno()).st_size
     log.seek(offset)
@@ -304,58 +301,6 @@ def _run_agent(
     if timed_out:
         result.stderr = b"timed out"
     return result
-
-
-def _terminate_process_tree(process: subprocess.Popen[bytes]) -> None:
-    descendants = _process_descendants(process.pid)
-    for pid in [*descendants, process.pid]:
-        _signal_process(pid, signal.SIGTERM)
-    grace_deadline = time.monotonic() + AGENT_KILL_GRACE_SECONDS
-    while time.monotonic() < grace_deadline:
-        if not _running_processes([*descendants, process.pid]):
-            break
-        time.sleep(min(0.05, grace_deadline - time.monotonic()))
-    for pid in _running_processes([*descendants, process.pid]):
-        _signal_process(pid, signal.SIGKILL)
-    process.wait()
-
-
-def _process_descendants(parent: int) -> list[int]:
-    """Return descendants from the system process table in parent-first order."""
-    result = subprocess.run(
-        ["ps", "-A", "-o", "pid=", "-o", "ppid="], capture_output=True, text=True, check=True
-    )
-    parents: dict[int, list[int]] = {}
-    for line in result.stdout.splitlines():
-        pid, ppid = (int(value) for value in line.split())
-        parents.setdefault(ppid, []).append(pid)
-    found: list[int] = []
-    pending = list(parents.get(parent, []))
-    while pending:
-        pid = pending.pop(0)
-        found.append(pid)
-        pending.extend(parents.get(pid, []))
-    return found
-
-
-def _running_processes(pids: list[int]) -> list[int]:
-    """Return requested PIDs that still have a live process-table entry."""
-    result = subprocess.run(
-        ["ps", "-A", "-o", "pid=", "-o", "stat="], capture_output=True, text=True, check=True
-    )
-    states = {
-        int(pid): state
-        for line in result.stdout.splitlines()
-        for pid, state in [line.split(maxsplit=1)]
-    }
-    return [pid for pid in pids if pid in states and not states[pid].startswith("Z")]
-
-
-def _signal_process(pid: int, sig: signal.Signals) -> None:
-    try:
-        os.kill(pid, sig)
-    except ProcessLookupError:
-        pass
 
 
 def _remove_merged_branches(main_repo: Repo) -> None:
@@ -515,7 +460,7 @@ def _run_ticket_with_log(
     stored = main_repo.find(action.id)
     selected_status = stored.task.frontmatter.status
     repairing = selected_status == "error"
-    agent_environment = _command_environment()
+    agent_environment = command_environment()
     planned_worktree = main_root / ".worktrees" / str(action.id).lower()
     agent_command = _agent_command(
         main_repo, action, agent, worktree=planned_worktree, mode=action.mode
@@ -621,11 +566,11 @@ def _run_ticket_with_log(
             runner_chitty = Path(sys.executable).parent / "chitty"
             if not runner_chitty.is_file():
                 raise ChittyError(f"runner chitty executable not found: {runner_chitty}")
-            agent_environment = _command_environment()
+            agent_environment = command_environment()
             agent_environment["PATH"] = os.pathsep.join(
                 (str(runner_chitty.parent), agent_environment.get("PATH", ""))
             )
-        head = _git(worktree, "rev-parse", "HEAD").strip()
+        head = run_git(worktree, "rev-parse", "HEAD").strip()
         try:
             new_status = _agent_sessions(
                 main_repo,
@@ -639,7 +584,7 @@ def _run_ticket_with_log(
                 log,
             )
         except AgentSessionFailed as error:
-            if _git(worktree, "rev-parse", "HEAD").strip() != head:
+            if run_git(worktree, "rev-parse", "HEAD").strip() != head:
                 raise
             repo = Repo(worktree, main_repo.config)
             if repo.find(action.id).task.frontmatter.status != selected_status:
@@ -1144,7 +1089,7 @@ def _changed_config(worktree: Path, main_branch: str) -> str | None:
 
     current = tomllib.loads(source.read_text()).get("tool", {}).get("chitty")
     try:
-        main_text = _git(worktree, "show", f"{main_branch}:{relative}")
+        main_text = run_git(worktree, "show", f"{main_branch}:{relative}")
     except ChittyError:
         return str(relative)
     main = tomllib.loads(main_text).get("tool", {}).get("chitty")
@@ -1154,14 +1099,14 @@ def _changed_config(worktree: Path, main_branch: str) -> str | None:
 def _main_config_path(worktree: Path, main_branch: str) -> str | None:
     """Return the Chitty config path recorded in the integration tree."""
     try:
-        _git(worktree, "show", f"{main_branch}:{CONFIG_NAME}")
+        run_git(worktree, "show", f"{main_branch}:{CONFIG_NAME}")
     except ChittyError:
         pass
     else:
         return CONFIG_NAME
 
     try:
-        text = _git(worktree, "show", f"{main_branch}:{PYPROJECT_NAME}")
+        text = run_git(worktree, "show", f"{main_branch}:{PYPROJECT_NAME}")
         data = tomllib.loads(text)
     except (ChittyError, tomllib.TOMLDecodeError):
         return None
@@ -1214,11 +1159,11 @@ def _worktree(main_root: Path, action: NextAction, main_branch: str) -> Path:
             )
         return existing.resolve()
     if git.has_local_branch(main_root, branch):
-        _git(main_root, "worktree", "add", str(destination), branch)
+        run_git(main_root, "worktree", "add", str(destination), branch)
     elif action.mode == "review":
         raise ChittyError(f"review ticket {action.id} has no branch {branch}")
     else:
-        _git(main_root, "worktree", "add", "-b", branch, str(destination), main_branch)
+        run_git(main_root, "worktree", "add", "-b", branch, str(destination), main_branch)
     return destination
 
 
@@ -1362,7 +1307,7 @@ def _land_locked(
 def _landing_check(command: str, worktree: Path, timeout: int) -> None:
     """Run landing validation without changing the ticket on failure."""
     try:
-        returncode = _run_logged("landing check", command, worktree, timeout)
+        returncode = run_logged("landing check", command, worktree, timeout)
     except FileNotFoundError:
         raise ChittyError(f"landing check command not found: {command}") from None
     except KeyboardInterrupt:
@@ -1375,7 +1320,7 @@ def _landing_check(command: str, worktree: Path, timeout: int) -> None:
 
 def _setup(command: str, worktree: Path, timeout: int) -> None:
     try:
-        returncode = _run_logged("setup", command, worktree, timeout)
+        returncode = run_logged("setup", command, worktree, timeout)
     except FileNotFoundError:
         raise ChittyError(f"setup command not found: {command}") from None
     except KeyboardInterrupt:
@@ -1389,7 +1334,7 @@ def _runner_error_note(phase: str, error: str, worktree: Path) -> str:
     lines = error.splitlines() or [""]
     note = f"Runner error ({phase}): {lines[0]}\n\nWorktree: `{worktree}`"
     if any(line.strip() for line in lines[1:]):
-        note += "\n\nError output:\n" + _code_block("\n".join(lines[1:]))
+        note += "\n\nError output:\n" + code_block("\n".join(lines[1:]))
     return note
 
 
@@ -1422,81 +1367,6 @@ def _record_ticket_error(
     return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
-def _with_exclude_line(text: str | None) -> str:
-    """Return exclude-file text with exactly one run-log exclusion."""
-    lines = [] if text is None or text == "" else text.split("\n")
-    if lines and lines[-1] == "":
-        lines.pop()
-    if RUN_LOG_EXCLUDE not in lines:
-        lines.append(RUN_LOG_EXCLUDE)
-    else:
-        first = lines.index(RUN_LOG_EXCLUDE)
-        lines = [
-            line for index, line in enumerate(lines) if line != RUN_LOG_EXCLUDE or index == first
-        ]
-    return "\n".join(lines) + "\n"
-
-
-def _ignore_run_log(worktree: Path) -> None:
-    """Ignore the run log using Git's shared exclude file."""
-    exclude = Path(_git(worktree, "rev-parse", "--git-path", "info/exclude").strip())
-    if not exclude.is_absolute():
-        exclude = worktree / exclude
-    existing = exclude.read_text() if exclude.exists() else None
-    updated = _with_exclude_line(existing)
-    if updated != existing:
-        exclude.parent.mkdir(parents=True, exist_ok=True)
-        exclude.write_text(updated)
-
-
-class CommandTimedOut(ChittyError):
-    """A runner command exceeded its deadline."""
-
-
-def _run_logged(phase: str, command: str, worktree: Path, timeout: int) -> int:
-    """Run a command with combined output in the worktree's last-run log."""
-    argv = shlex.split(command)
-    _ignore_run_log(worktree)
-    log_path = worktree / RUN_LOG
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    # Binary mode: the command's output may be any bytes, and checking its last
-    # byte must not decode it.
-    with log_path.open("w+b") as log:
-        log.write(f"# chitty {phase}: {command}\n".encode())
-        log.flush()
-        timed_out = False
-        with subprocess.Popen(
-            argv,
-            cwd=worktree,
-            stdin=subprocess.DEVNULL,
-            env=_command_environment(),
-            stdout=log,
-            stderr=subprocess.STDOUT,
-        ) as process:
-            try:
-                try:
-                    process.wait(timeout=timeout or None)
-                except subprocess.TimeoutExpired:
-                    timed_out = True
-                    _terminate_process_tree(process)
-            except BaseException:
-                process.kill()
-                raise
-        log.seek(0, os.SEEK_END)
-        end = log.tell()
-        log.seek(end - 1 if end else 0)
-        if log.read(1) != b"\n":
-            log.seek(0, os.SEEK_END)
-            log.write(b"\n")
-        if timed_out:
-            log.write(f"# timed out after {timeout} seconds\n".encode())
-            raise CommandTimedOut(
-                f"{phase} timed out after {timeout} seconds; output in `{RUN_LOG}`"
-            )
-        log.write(f"# exit {process.returncode}\n".encode())
-    return process.returncode
-
-
 def _run_check(
     branch_repo: Repo,
     action: NextAction,
@@ -1507,7 +1377,7 @@ def _run_check(
     """Validate the prepared worktree before spending an agent or review session."""
     print(f"Running check in {branch_repo.root}...", file=sys.stderr)
     try:
-        returncode = _run_logged("check", command, branch_repo.root, timeout)
+        returncode = run_logged("check", command, branch_repo.root, timeout)
     except CommandTimedOut as error:
         return _handle_check_failure(
             branch_repo, action, str(error), exited=True, selected_status=selected_status
@@ -1525,13 +1395,6 @@ def _run_check(
     return _handle_check_failure(
         branch_repo, action, detail, exited=True, selected_status=selected_status
     )
-
-
-def _code_block(text: str) -> str:
-    """Fence command output so a note cannot read it as Markdown structure."""
-    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
-    fence = "`" * max(3, longest + 1)
-    return f"{fence}text\n{text}\n{fence}"
 
 
 def _handle_check_failure(
@@ -1560,12 +1423,3 @@ def _handle_check_failure(
         )
         return None
     return _record_ticket_error(branch_repo, action, "check", ChittyError(detail))
-
-
-def _git(root: Path, *arguments: str) -> str:
-    completed = subprocess.run(
-        ["git", *arguments], cwd=root, capture_output=True, text=True, check=False
-    )
-    if completed.returncode:
-        raise ChittyError(completed.stderr.strip() or f"git {' '.join(arguments)} failed")
-    return completed.stdout

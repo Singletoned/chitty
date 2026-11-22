@@ -4,7 +4,8 @@ from pathlib import Path
 from hypothesis import given
 from hypothesis import strategies as st
 
-from chitty.run import _code_block, _runner_error_note
+from chitty.commands import code_block
+from chitty.run import _runner_error_note
 
 
 class TestRunnerErrorNoteProperties(unittest.TestCase):
@@ -26,5 +27,5 @@ class TestRunnerErrorNoteProperties(unittest.TestCase):
         head = f"Runner error ({phase}): {lines[0]}\n\nWorktree: `{worktree}`"
         expected = head
         if any(line.strip() for line in lines[1:]):
-            expected += "\n\nError output:\n" + _code_block("\n".join(lines[1:]))
+            expected += "\n\nError output:\n" + code_block("\n".join(lines[1:]))
         self.assertEqual(_runner_error_note(phase, error, worktree), expected)
