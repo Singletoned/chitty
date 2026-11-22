@@ -1,6 +1,6 @@
 ---
 title: Move the logged-command helpers from `run.py` into `commands.py`
-status: review
+status: done
 parent: TASK-343
 created: 2026-11-21
 ---
@@ -21,8 +21,8 @@ No property and no new test: a move that changes no behaviour; the existing test
 
 ## Acceptance Criteria
 
-- [ ] `src/chitty/commands.py` defines every moved name and imports neither `chitty.run` nor `chitty.store` (`git grep -n -e "chitty\.run" -e "chitty\.store" -- src/chitty/commands.py` finds nothing); the `git grep` in the Description finds no old name in `src` or `tests`, and `run.py` defines no `_git`
-- [ ] The four updated test files pass with only their imports and the uses of moved names changed, and `make check` passes
+- [x] `src/chitty/commands.py` defines every moved name and imports neither `chitty.run` nor `chitty.store` (`git grep -n -e "chitty\.run" -e "chitty\.store" -- src/chitty/commands.py` finds nothing); the `git grep` in the Description finds no old name in `src` or `tests`, and `run.py` defines no `_git`
+- [x] The four updated test files pass with only their imports and the uses of moved names changed, and `make check` passes
 
 ## Plan
 
@@ -37,6 +37,10 @@ Replanned 2026-11-22: tests rename their calls as well as imports; see the Descr
 Review failed (work): A moved helper test still imports through the old module.
 1: pass - Both specified git grep commands printed no matches; diff shows all moved definitions in commands.py and no run.py _git definition.
 2: fail - Newly discovered: tests/test_command_timeout.py imports CommandTimedOut and run_logged from chitty.run, contrary to the description requiring moved names in all four files to be imported from chitty.commands. Change that import to chitty.commands. make check printed 1067 tests and OK, including these four files; the other test changes are limited to imports and renamed uses.
+
+Reviewed: The helper move preserves the existing bodies and the previous import finding is resolved.
+1: pass - Both specified git grep commands printed no matches; the diff shows the moved definitions and no run.py _git definition.
+2: pass - The four test diffs change only imports and moved-name uses; make check printed 1068 tests and OK, with ruff and pyright passing. No new test was required for this move.
 
 ## Summary
 
@@ -61,3 +65,5 @@ Corrected the remaining test import after review. make check passed all 1067 tes
 - 2026-11-22T00:59:34Z jolly-fawn-stoat: wrote the plan
 - 2026-11-22T01:01:38Z jolly-fawn-stoat: changed summary
 - 2026-11-22T01:01:38Z jolly-fawn-stoat doing → review
+- 2026-11-22T01:08:14Z brisk-amber-stoat: changed notes; ticked acceptance criteria
+- 2026-11-22T01:08:14Z brisk-amber-stoat review → done
