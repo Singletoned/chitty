@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: doing
+status: review
 depends_on:
   - TASK-370
   - TASK-546
@@ -49,3 +49,4 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T03:52:03Z witty-lilac-raven: wrote the plan
 - 2026-11-22T03:52:35Z witty-lilac-raven: changed notes
 - 2026-11-22T03:55:10Z witty-lilac-raven: changed summary
+- 2026-11-22T03:57:30Z witty-lilac-raven doing → review
