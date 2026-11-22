@@ -1,6 +1,6 @@
 ---
 title: Stop telling agents to escape literal asterisks
-status: doing
+status: review
 depends_on:
   - TASK-530
 parent: TASK-348
@@ -42,3 +42,4 @@ Removed obsolete literal asterisk guidance and its test. Verified grep finds no 
 - 2026-11-22T01:47:26Z zesty-yellow-jay todo → doing
 - 2026-11-22T01:49:09Z zesty-yellow-jay: wrote the plan
 - 2026-11-22T01:50:50Z zesty-yellow-jay: changed summary
+- 2026-11-22T01:50:52Z zesty-yellow-jay doing → review
