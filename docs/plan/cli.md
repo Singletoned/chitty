@@ -52,7 +52,7 @@ file holds the decisions behind them.
     `🔗` or `⚠️` for its dependencies, whatever its status; running, human,
     owner and dependency markers come before `🚧`. `🚧` considers dependents across
     all active tickets, even when the list is filtered.
-  - Titles are cut with `…` to fit `list_width`, counting emoji as two
+  - Titles are cut with `…` to fit the smaller of `list_width` and the terminal width when stdout is a terminal, counting emoji as two
     columns; labels stay whole. No branch.
 - JSON keeps status words and adds `skipped`: `👤 human` or owned,
   `✍️ untestable`, `🔗 waits on ID[, ID...]`, or `⚠️ <message>`.

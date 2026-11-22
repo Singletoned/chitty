@@ -2,6 +2,7 @@
 
 import json
 import os
+import shutil
 import sys
 import unicodedata
 from datetime import date, datetime
@@ -481,10 +482,23 @@ def list_(
         if show_markers:
             line += f"  {_two_columns(reason.split()[0] if reason else '')}"
         label_text = f"  [{','.join(sorted(fm.labels))}]" if fm.labels else ""
-        room = repo.config.list_width - _columns(line) - 2 - _columns(label_text)
+        room = (
+            _list_width(repo.config.list_width, _terminal_columns())
+            - _columns(line)
+            - 2
+            - _columns(label_text)
+        )
         click.echo(f"{line}  {_shorten(fm.title, room)}{label_text}")
         if reason and reason.startswith(BROKEN_DEPENDENCY_GLYPH):
             click.echo(f"warning: {reason.removeprefix(BROKEN_DEPENDENCY_GLYPH).strip()}", err=True)
+
+
+def _terminal_columns() -> int | None:
+    return shutil.get_terminal_size().columns if sys.stdout.isatty() else None
+
+
+def _list_width(setting: int, terminal: int | None) -> int:
+    return setting if terminal is None else min(setting, terminal)
 
 
 def _columns(text: str) -> int:

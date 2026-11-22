@@ -36,7 +36,7 @@ review = true # done only through review → done; default follows workflow
 # rebase_model = "provider/model" # default for rebase sessions when the command has no model
 # job_order = ["review", "doing", "todo"] # statuses `next`/`run` pick, in order
 archive = "move" # or "delete"
-# list_width = 100 # columns for `chitty list`
+# list_width = 100 # titles fit the smaller of this and terminal width when stdout is a terminal
 # protected_paths = ["src/chitty/__init__.py"] # files only main may change
 
 [contexts.tasks]
