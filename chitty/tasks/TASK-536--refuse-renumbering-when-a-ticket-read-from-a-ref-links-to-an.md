@@ -36,6 +36,10 @@ A cold reader's probe (2026-11-21) on the unguarded planner: (c) and (e) give `s
 
 Add ref-backed fixtures and demonstrate both refusal regressions, then scan selected ref tickets after the disk guard and run the full checks.
 
+## Notes
+
+Before the fix, both test_branch_only_link and test_branch_adds_link failed: ChittyError not raised (unittest, 2 failures).
+
 ## History
 
 - 2026-11-22T00:16:22Z lively-zinc-newt → planning
@@ -45,3 +49,4 @@ Add ref-backed fixtures and demonstrate both refusal regressions, then scan sele
 - 2026-11-22T00:34:56Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:19:40Z eager-jade-heron todo → doing
 - 2026-11-22T01:21:41Z eager-jade-heron: wrote the plan
+- 2026-11-22T01:22:00Z eager-jade-heron: changed notes
