@@ -1,6 +1,6 @@
 ---
 title: Tell workers that `chitty edit -s review` runs the check
-status: todo
+status: doing
 depends_on:
   - TASK-538
 created: 2026-11-22
@@ -20,3 +20,4 @@ In `src/chitty/roles/work.md`, replace the sentence that tells workers to run `c
 
 - 2026-11-22T01:11:08Z lively-zinc-newt → todo
 - 2026-11-22T01:11:21Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-22T02:40:38Z quick-umber-eel todo → doing
