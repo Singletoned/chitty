@@ -45,7 +45,7 @@ Before implementing, run the refusal tests against the unguarded planner and con
 
 ## Plan
 
-Add real Git regression fixtures first, verify refusals fail without the guard, then scan untouched disk and selected ref copies using blocking_link. Run formatting and checks before handoff.
+Add disk-only Git fixtures and confirm refusal tests fail; implement a path-based untouched disk scan with blocking_link, then format and check.
 
 ## Notes
 
@@ -96,3 +96,4 @@ Split again 2026-11-22: the worker model gave up a second time (six sessions, no
 - 2026-11-22T00:16:37Z lively-zinc-newt: changed title, description, acceptance criteria, notes
 - 2026-11-22T00:16:37Z lively-zinc-newt error → todo
 - 2026-11-22T00:21:28Z eager-bronze-raven todo → doing
+- 2026-11-22T00:23:34Z eager-bronze-raven: wrote the plan
