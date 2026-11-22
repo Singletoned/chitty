@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when untouched tickets link to an old ID
-status: todo
+status: doing
 depends_on:
   - TASK-391
   - TASK-526
@@ -86,3 +86,4 @@ Rebased onto `main` 2026-11-21 after `TASK-526` landed `blocking_link` (signatur
 - 2026-11-22T00:07:19Z lively-zinc-newt planning → cold-read
 - 2026-11-22T00:09:08Z lively-zinc-newt: changed description, acceptance criteria; wrote the plan
 - 2026-11-22T00:09:08Z lively-zinc-newt cold-read → todo
+- 2026-11-22T00:11:51Z friendly-white-toad todo → doing
