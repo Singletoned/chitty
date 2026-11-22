@@ -1,6 +1,6 @@
 ---
 title: Stop chitty run when main fails its own check
-status: todo
+status: backlog
 created: 2026-11-22
 ---
 
@@ -11,3 +11,4 @@ Split from TASK-580 (taidy, 2026-11-22). When the pre-work check fails for a tod
 ## History
 
 - 2026-11-22T13:19:33Z friendly-jade-stoat → todo
+- 2026-11-22T13:19:39Z friendly-jade-stoat todo → backlog
