@@ -1,6 +1,6 @@
 ---
 title: Describe provisional IDs in the guides, README and docs
-status: review
+status: done
 labels:
   - untestable
 owner: nimble-umber-adder
@@ -32,6 +32,8 @@ Update the guides, CLI help, README, and plan docs for the ID allocation already
 
 Decided: pathless renumbering -> omit it, because the ticket explicitly says to leave it out until TASK-392 ships. Removed that dependency so the shipped behavior can be documented now.
 
+Reviewed: wording checked against the ticket.
+
 ## Summary
 
 Updated the work/review guides, README, CLI help, and plan docs to explain provisional IDs and distinguish them from sequential and random numeric IDs. Updated the existing guide wording test. No runtime behavior changed. Documented `renumber PATH` only; pathless renumbering is still unshipped (`TASK-392`) and excluded as the ticket allows. `make check` passed all 983 tests; also checked the rendered `move` and `renumber` help.
@@ -48,3 +50,5 @@ Updated the work/review guides, README, CLI help, and plan docs to explain provi
 - 2026-11-21T18:46:52Z nimble-umber-adder: changed notes
 - 2026-11-21T18:50:09Z nimble-umber-adder: changed summary
 - 2026-11-21T18:50:09Z nimble-umber-adder doing → review
+- 2026-11-22T11:31:15Z human: changed notes
+- 2026-11-22T11:31:15Z human review → done
