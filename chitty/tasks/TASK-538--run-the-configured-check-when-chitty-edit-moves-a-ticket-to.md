@@ -1,6 +1,6 @@
 ---
 title: Run the configured check when `chitty edit` moves a ticket to review
-status: review
+status: done
 labels:
   - needs-minor
 created: 2026-11-22
@@ -37,8 +37,8 @@ No property: fixed outcomes, each needing a real subprocess and Git repository.
 
 ## Acceptance Criteria
 
-- [ ] Cases 1, 2 and 3 in the Description pass, and each fails before the change
-- [ ] Guard case 4 passes, every test in `tests/test_review_merge.py` passes unchanged, and `make check` passes
+- [x] Cases 1, 2 and 3 in the Description pass, and each fails before the change
+- [x] Guard case 4 passes, every test in `tests/test_review_merge.py` passes unchanged, and `make check` passes
 
 ## Plan
 
@@ -49,6 +49,10 @@ Add focused real-Git regression tests for review checks, confirm failures before
 Approach recorded; implementation and regression tests have not yet been started or verified.
 
 Before the fix, the three regression cases each failed: edit succeeded instead of refusing.
+
+Reviewed: configured review checks behave as specified; no additional property test warranted for these fixed subprocess outcomes.
+1: pass - make check reports 1089 tests OK; running the three new tests with main's store.py loaded reports three failures, each because edit returned 0 instead of 1.
+2: pass - make check reports 1089 tests OK, including the skip guard and unchanged tests/test_review_merge.py.
 
 ## Summary
 
@@ -65,3 +69,5 @@ Implemented configured review checks and refusal handling. The three regression 
 - 2026-11-22T02:24:22Z quick-dusky-eel: changed notes
 - 2026-11-22T02:30:02Z quick-dusky-eel: changed summary
 - 2026-11-22T02:30:03Z quick-dusky-eel doing → review
+- 2026-11-22T02:34:58Z honest-dusky-urchin: changed notes; ticked acceptance criteria
+- 2026-11-22T02:34:58Z honest-dusky-urchin review → done
