@@ -63,6 +63,8 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-587`
 
 Planner, 2026-11-22: the runner's `error` above came from this ticket's own probe snippet, which `ruff format --check` rejected; `main` now excludes `chitty/` from ruff (`9e6ba05c`) and the snippet is formatted. The variable is renamed `TEST_TIER`. Back through cold read; no work was done on the branch.
 
+Regression tests before the fix: thorough produced identical lists and unknown tier exited zero; unset and check passed.
+
 ## History
 
 - 2026-11-22T16:27:11Z plucky-umber-wren → planning
@@ -89,3 +91,4 @@ Planner, 2026-11-22: the runner's `error` above came from this ticket's own prob
 - 2026-11-22T16:47:39Z plucky-umber-wren planning → todo
 - 2026-11-22T16:48:14Z vivid-yellow-kestrel todo → doing
 - 2026-11-22T16:51:24Z vivid-yellow-kestrel: wrote the plan
+- 2026-11-22T16:51:42Z vivid-yellow-kestrel: changed notes
