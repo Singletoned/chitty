@@ -40,6 +40,8 @@ Planner, 2026-11-22: superseded by the owner answer on `TASK-385` (the rule is a
 
 Owner decision, 2026-11-22: (A) refuse, naming the newer copy. Rewritten to match.
 
+The property and six examples failed against the NotImplementedError stub as required.
+
 ## History
 
 - 2026-11-22T02:28:29Z lively-zinc-newt → cold-read
@@ -54,3 +56,4 @@ Owner decision, 2026-11-22: (A) refuse, naming the newer copy. Rewritten to matc
 - 2026-11-22T11:25:45Z friendly-jade-stoat planning → todo
 - 2026-11-22T14:53:46Z golden-bronze-dormouse todo → doing
 - 2026-11-22T14:56:34Z golden-bronze-dormouse: wrote the plan
+- 2026-11-22T14:57:13Z golden-bronze-dormouse: changed notes
