@@ -1,6 +1,6 @@
 ---
 title: Run the configured check when `chitty edit` moves a ticket to review
-status: doing
+status: review
 labels:
   - needs-minor
 created: 2026-11-22
@@ -64,3 +64,4 @@ Implemented configured review checks and refusal handling. The three regression 
 - 2026-11-22T02:23:37Z quick-dusky-eel: changed notes
 - 2026-11-22T02:24:22Z quick-dusky-eel: changed notes
 - 2026-11-22T02:30:02Z quick-dusky-eel: changed summary
+- 2026-11-22T02:30:03Z quick-dusky-eel doing → review
