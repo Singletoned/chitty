@@ -20,8 +20,13 @@ Fix: create the temporary directory under the repository's ignored `tmp/` direct
 
 Create the probe under ignored tmp/, verify the ignore rule and existing type tests, then run make check and commit.
 
+## Summary
+
+Moved type test probes under ignored tmp/. Verified git check-ignore, all four section-name tests, and make check.
+
 ## History
 
 - 2026-11-22T05:15:59Z lively-zinc-newt → todo
 - 2026-11-22T05:23:03Z golden-teal-marten todo → doing
 - 2026-11-22T05:25:48Z golden-teal-marten: wrote the plan
+- 2026-11-22T05:28:29Z golden-teal-marten: changed summary
