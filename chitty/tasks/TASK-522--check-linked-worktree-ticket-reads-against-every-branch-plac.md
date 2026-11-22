@@ -27,6 +27,10 @@ No property: fixed placements and kinds, each listed and tested; generated draws
 - [ ] `test_linked_worktree_placements` passes for kinds 3, 4 and 5 over every placement, with and without an uncommitted edit where the file exists in that worktree; changing (i)'s expected result in kind 4 to `uncommitted` makes it fail (shown once in a note)
 - [ ] `make check` passes
 
+## Plan
+
+Add linked worktree fixture and placement matrix tests, verify the specified mutation fails, then format and run checks.
+
 ## Notes
 
 Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; then compare with the landed builder, probe the expected results, cold-read and move to `todo`.
@@ -42,3 +46,4 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; th
 - 2026-11-22T00:21:23Z lively-zinc-newt: changed description
 - 2026-11-22T00:21:23Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:27:34Z rosy-russet-puffin todo → doing
+- 2026-11-22T00:29:24Z rosy-russet-puffin: wrote the plan
