@@ -1,6 +1,8 @@
 ---
 title: Stop cold readers writing to the checkout they read
 status: backlog
+depends_on:
+  - TASK-558
 created: 2026-11-22
 ---
 
@@ -12,7 +14,10 @@ On 2026-11-21 a cold-reader subagent (`.claude/agents/cold-reader`, Haiku), read
 
 Suggestion origin: chitty
 
+Planner, 2026-11-22: the enforcement idea is `TASK-558` (read-only mode). The separate observation, that a killed `chitty archive` leaves the checkout half-moved, belongs with `TASK-133` (keep a failed ticket write from leaving files changed).
+
 ## History
 
 - 2026-11-22T09:47:34Z friendly-jade-stoat → backlog
 - 2026-11-22T09:47:34Z friendly-jade-stoat: changed notes
+- 2026-11-22T09:51:03Z friendly-jade-stoat: changed dependencies, notes
