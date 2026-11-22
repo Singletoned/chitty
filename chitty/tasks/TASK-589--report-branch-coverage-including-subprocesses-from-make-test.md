@@ -1,6 +1,6 @@
 ---
 title: Report branch coverage, including subprocesses, from `make test`
-status: todo
+status: doing
 depends_on:
   - TASK-587
 created: 2026-11-22
@@ -65,3 +65,4 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` lin
 - 2026-11-22T17:07:06Z plucky-umber-wren cold-read → planning
 - 2026-11-22T17:07:07Z plucky-umber-wren: changed owner
 - 2026-11-22T17:07:07Z plucky-umber-wren planning → todo
+- 2026-11-22T17:23:41Z golden-amber-adder todo → doing
