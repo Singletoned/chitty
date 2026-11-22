@@ -64,7 +64,9 @@ CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest sessio
 
 
 # Used by the work runner when its rebase integration lands.
-def _rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) -> None:
+def _rebase_work_worktree(
+    worktree: Path, task_id: TaskId, main_branch: str, *, stop_on_conflict: bool
+) -> bool:
     ref = f"refs/chitty/stash/{task_id}"
     saved = git.save_work(worktree, ref, f"chitty {task_id} before rebase")
     try:
@@ -74,9 +76,20 @@ def _rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) -> 
             git.restore_work(worktree, ref)
         raise
     if unresolved:
+        ticket_paths = [path for path in unresolved if str(path).startswith(f"{BACKLOG_DIR}/")]
+        if stop_on_conflict and not ticket_paths:
+            return True
         git.abort_rebase(worktree)
+        if saved:
+            git.restore_work(worktree, ref)
+        if stop_on_conflict and ticket_paths:
+            raise ChittyError(
+                f"rebase onto {main_branch} conflicts in ticket files: {ticket_paths}"
+            )
+        return False
     if saved:
         git.restore_work(worktree, ref)
+    return False
 
 
 def _has_work(paths: Sequence[PurePosixPath]) -> bool:
@@ -503,7 +516,9 @@ def _run_ticket_with_log(
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
     if action.mode == "work":
         try:
-            _rebase_work_worktree(worktree, action.id, main_repo.config.main_branch)
+            _rebase_work_worktree(
+                worktree, action.id, main_repo.config.main_branch, stop_on_conflict=False
+            )
         except ChittyError as error:
             return _record_ticket_error(Repo(worktree, main_repo.config), action, "rebase", error)
     context["worktree"] = str(worktree)

@@ -31,18 +31,30 @@ class RebaseWorkWorktreeTests(unittest.TestCase):
             ["git", *args], cwd=self.repo, check=True, capture_output=True, text=True
         ).stdout
 
-    def fixture(self, conflict=False):
+    def fixture(self, conflict=False, ticket_conflict=False):
+        if ticket_conflict:
+            path = self.repo / "chitty/tasks/T.md"
+            path.parent.mkdir(parents=True)
+            path.write_text("original\n")
+            self.git("add", ".")
+            self.git("commit", "--amend", "--no-edit")
         self.git("branch", "task-1")
         self.git("worktree", "add", str(self.worktree), "task-1")
         (self.worktree / ("a.txt" if conflict else "b.txt")).write_text("branch\n")
+        if ticket_conflict:
+            (self.worktree / "chitty/tasks/T.md").write_text("branch\n")
         subprocess.run(
             ["git", "commit", "-am", "branch"], cwd=self.worktree, check=True, capture_output=True
         )
         (self.repo / "a.txt").write_text("main\n")
+        if ticket_conflict:
+            (self.repo / "chitty/tasks/T.md").write_text("main\n")
         self.git("commit", "-am", "main")
 
     def rebase(self):
-        _rebase_work_worktree(self.worktree, TaskId("TASK", 1), "main")
+        return _rebase_work_worktree(
+            self.worktree, TaskId("TASK", 1), "main", stop_on_conflict=False
+        )
 
     def assert_rebased(self):
         self.git("merge-base", "--is-ancestor", "main", "task-1")
@@ -71,11 +83,38 @@ class RebaseWorkWorktreeTests(unittest.TestCase):
         self.fixture(conflict=True)
         tip = self.git("rev-parse", "task-1")
         (self.worktree / "u.txt").write_text("untracked")
-        self.rebase()
+        self.assertFalse(self.rebase())
         self.assertFalse(git.rebase_in_progress(self.worktree))
         self.assertEqual(self.git("rev-parse", "task-1"), tip)
         self.assertEqual((self.worktree / "u.txt").read_text(), "untracked")
         self.assert_no_ref()
+
+    def test_stop_on_conflict(self):
+        self.fixture(conflict=True)
+        (self.worktree / "u.txt").write_text("untracked")
+        self.assertTrue(
+            _rebase_work_worktree(self.worktree, TaskId("TASK", 1), "main", stop_on_conflict=True)
+        )
+        self.assertTrue(git.rebase_in_progress(self.worktree))
+        self.assertTrue(self.git("for-each-ref", "refs/chitty/stash/TASK-1"))
+        self.assertFalse((self.worktree / "u.txt").exists())
+
+    def test_stop_ticket_conflict(self):
+        self.fixture(conflict=True, ticket_conflict=True)
+        (self.worktree / "u.txt").write_text("untracked")
+        with self.assertRaisesRegex(ChittyError, "conflicts in ticket files"):
+            _rebase_work_worktree(self.worktree, TaskId("TASK", 1), "main", stop_on_conflict=True)
+        self.assertFalse(git.rebase_in_progress(self.worktree))
+        self.assertEqual((self.worktree / "u.txt").read_text(), "untracked")
+
+    def test_stop_clean(self):
+        self.fixture()
+        (self.worktree / "u.txt").write_text("untracked")
+        self.assertFalse(
+            _rebase_work_worktree(self.worktree, TaskId("TASK", 1), "main", stop_on_conflict=True)
+        )
+        self.assertFalse(git.rebase_in_progress(self.worktree))
+        self.assertEqual((self.worktree / "u.txt").read_text(), "untracked")
 
     def test_failure(self):
         self.fixture()
