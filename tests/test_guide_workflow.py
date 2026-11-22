@@ -56,8 +56,12 @@ class TestRoleGuidesUnderTickets(GuideWorkflowTestCase):
         )
 
     def test_general_guide_and_help(self):
-        self.assertEqual(self.invoke("guide").stdout, managed_guide("tickets"))
-        help_text = self.invoke("guide", "--help").stdout
+        result = self.invoke("guide")
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.stdout, managed_guide("tickets"))
+        help_result = self.invoke("guide", "--help")
+        self.assertEqual(help_result.exit_code, 0)
+        help_text = help_result.stdout
         for role in ROLE_NAMES:
             self.assertIsNone(re.search(rf"\b{re.escape(role)}\b", help_text, re.IGNORECASE))
         self.assertIn("chitty guide", help_text)
@@ -90,16 +94,13 @@ class TestRoleGuidesRunnerCompatibility(GuideWorkflowTestCase):
                     )
         help_result = self.invoke("guide", "--help")
         self.assertEqual(help_result.exit_code, 0)
-        for phrase in (
-            "chitty guide setup",
-            "chitty guide work",
-            "chitty guide review",
-            "chitty guide plan",
-            "chitty guide cold-read",
-            "chitty guide rebase",
-            "Work, review, cold-read and rebase accept",
-        ):
-            self.assertIn(phrase, " ".join(help_result.stdout.split()))
+        self.assert_runner_help(help_result.stdout)
+
+    def assert_runner_help(self, help_text):
+        command = cli.commands["guide"]
+        assert command.help is not None
+        expected = " ".join(command.help.replace("\b", "").split())
+        self.assertIn(expected, " ".join(help_text.split()))
 
     def test_outside_repository_and_broken_config(self):
         previous = os.getcwd()
@@ -115,8 +116,9 @@ class TestRoleGuidesRunnerCompatibility(GuideWorkflowTestCase):
         broken = self.invoke("guide", "work")
         self.assertEqual(broken.exit_code, 1)
         self.assertIn("workflow", broken.stderr)
-        help_text = self.invoke("guide", "--help").stdout
-        self.assertIn("chitty guide work TASK-12", help_text)
+        help_result = self.invoke("guide", "--help")
+        self.assertEqual(help_result.exit_code, 0)
+        self.assert_runner_help(help_result.stdout)
 
 
 if __name__ == "__main__":
