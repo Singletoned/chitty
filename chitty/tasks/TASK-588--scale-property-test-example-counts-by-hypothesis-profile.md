@@ -9,7 +9,7 @@ created: 2026-11-22
 
 ## Description
 
-`TASK-587` adds two Hypothesis profiles in `tests/__init__.py`: `check` (fixed examples, for the quick `make check`) and `thorough` (random examples, for `make test`). Both still draw the same number of examples, because 25 property tests set `max_examples` themselves, which overrides any profile (counts from 5 to 300, listed by `grep -rn "max_examples" tests`). Decided with the person, 2026-11-22: `make check` should be fast and `make test` thorough; any split is arbitrary, so pick a reasonable one and watch it (a later ticket records per-test timings).
+`TASK-587` adds two Hypothesis profiles in `tests/__init__.py`: `check` (fixed examples, for the quick `make check`) and `thorough` (random examples, for `make test`), chosen by the `TEST_TIER` variable. Both still draw the same number of examples, because 25 property tests set `max_examples` themselves, which overrides any profile (counts from 5 to 300, listed by `grep -rn "max_examples" tests`). Decided with the person, 2026-11-22: `make check` should be fast and `make test` thorough; any split is arbitrary, so pick a reasonable one and watch it (a later ticket records per-test timings).
 
 Add to `tests/__init__.py`, beside the profiles:
 
@@ -28,13 +28,16 @@ Property for criterion 1 over generated `base`; the profile names are a fixed se
 
 - [ ] Property tests in `tests/test_example_counts.py`, with Hypothesis, of the pure `example_count(profile, base)` in `tests/__init__.py`: for any `base` from 1 to 100000, `example_count("check", base) == max(1, base // CHECK_EXAMPLE_DIVISOR)` and `example_count("thorough", base) == base * THOROUGH_EXAMPLE_FACTOR`; and for any text other than `check` and `thorough` it raises `ValueError` naming the text. They fail before the change (the function does not exist; create it raising `NotImplementedError` first so they fail on behaviour, not import)
 - [ ] A test in the same file parses every `tests/**/*.py` with `ast` and finds no `settings(...)` call used as a decorator whose `max_examples` keyword is anything but a call to `examples(...)`; on `main` it fails, listing the decorators that still use a literal or a name such as `EXAMPLES`
-- [ ] In subprocesses with `HYPOTHESIS_PROFILE` set to `check` and to `thorough`, `import tests; from hypothesis import settings; print(settings.default.max_examples, tests.examples(25))` prints `20 5` and `500 125`; and `make check` passes
+- [ ] In subprocesses with `TEST_TIER` set to `check` and to `thorough`, `import tests; from hypothesis import settings; print(settings.default.max_examples, tests.examples(25))` prints `20 5` and `500 125`; and `make check` passes
 
 ## Notes
 
 Planner, 2026-11-22: written against `TASK-587`'s planned profile names (`check`, `thorough`) and `HYPOTHESIS_PROFILE`. Keep in `planning` until `TASK-587` is `done`; then compare with what landed in `tests/__init__.py` and cold-read before `todo`.
 
+Planner, 2026-11-22: `TASK-587` now names the variable `TEST_TIER` (was `HYPOTHESIS_PROFILE`).
+
 ## History
 
 - 2026-11-22T16:41:56Z plucky-umber-wren → planning
 - 2026-11-22T16:42:04Z plucky-umber-wren: changed notes
+- 2026-11-22T16:46:31Z plucky-umber-wren: changed description, acceptance criteria, notes
