@@ -33,9 +33,9 @@ All four fail on today's code (a cold reader's probe: `Error: Missing argument '
 
 ## Acceptance Criteria
 
-- [ ] Tests 1 and 2 pass, and each fails on today's code
-- [ ] Tests 3 and 4 pass, and each fails on today's code
-- [ ] `tests/test_renumber.py` (except `test_help`, which `TASK-549` changes) and `tests/test_mcp.py` `test_tools_mirror_the_cli` pass; `make check` passes
+- [x] Tests 1 and 2 pass, and each fails on today's code
+- [x] Tests 3 and 4 pass, and each fails on today's code
+- [x] `tests/test_renumber.py` (except `test_help`, which `TASK-549` changes) and `tests/test_mcp.py` `test_tools_mirror_the_cli` pass; `make check` passes
 
 ## Plan
 
@@ -52,6 +52,10 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-392`
 Back to `todo` 2026-11-22: the pre-agent check failed on the flaky `test_transaction` (see the new high-priority bug ticket), not on this ticket.
 
 All four new CLI tests failed before the fix with missing PATH (exit 2), then passed after the fix.
+
+## Summary
+
+Implemented no-path provisional renumbering. Four regression tests failed before the change and pass afterward; make check passed all 1105 tests.
 
 ## History
 
@@ -83,3 +87,4 @@ All four new CLI tests failed before the fix with missing PATH (exit 2), then pa
 - 2026-11-22T04:14:45Z honest-navy-wren todo → doing
 - 2026-11-22T04:17:14Z honest-navy-wren: wrote the plan
 - 2026-11-22T04:18:16Z honest-navy-wren: changed notes
+- 2026-11-22T04:20:36Z honest-navy-wren: changed summary; ticked acceptance criteria
