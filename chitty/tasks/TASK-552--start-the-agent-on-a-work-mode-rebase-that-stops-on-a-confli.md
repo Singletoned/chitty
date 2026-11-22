@@ -32,6 +32,10 @@ Planner correction 2026-11-22 04:3x: a planner tooling slip replaced this Descri
 
 Before the fix, both stopped-rebase tests fail on the prompt/rebase assertion; the dirty-worktree test passes.
 
+## Summary
+
+Start agents on stopped clean work rebases; preserve abort for dirty worktrees. Both conflict tests failed before the fix and pass after it; make check passes.
+
 ## History
 
 - 2026-11-22T03:43:02Z lively-zinc-newt → planning
@@ -43,3 +47,4 @@ Before the fix, both stopped-rebase tests fail on the prompt/rebase assertion; t
 - 2026-11-22T04:31:20Z lively-zinc-newt: changed description, notes
 - 2026-11-22T04:32:54Z intrepid-ginger-gannet: wrote the plan
 - 2026-11-22T04:33:40Z intrepid-ginger-gannet: changed notes
+- 2026-11-22T04:35:37Z intrepid-ginger-gannet: changed summary
