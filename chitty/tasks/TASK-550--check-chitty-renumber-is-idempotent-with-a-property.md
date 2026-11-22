@@ -25,6 +25,10 @@ A cold reader's probe of this property (2026-11-22) passed in 2.5 s. Evidence th
 
 Add generated repository fixture and idempotence property, verify the specified mutant fails, then run checks and commit.
 
+## Notes
+
+The specified two-part mutant fails the first-run line-count assertion, not the required second-run `nothing to renumber` assertion: `PYTHONPATH=tmp/mutant .venv/bin/python -m unittest tests.test_renumber_provisional.TestCliProvisionalRenumbering.test_renumber_is_idempotent` falsifies with provisional=0, 1 != 0. The required numeric ticket is already selected by the mutant on the first run. Please decide how to change the mutant or fixture/assertions while retaining meaningful evidence. The unmodified property passes. The second-run mutant assertion cannot be verified as written because the first assertion stops it; full checks and final formatting remain unfinished.
+
 ## History
 
 - 2026-11-22T03:23:05Z lively-zinc-newt → planning
@@ -34,3 +38,4 @@ Add generated repository fixture and idempotence property, verify the specified 
 - 2026-11-22T04:31:55Z lively-zinc-newt cold-read → todo
 - 2026-11-22T05:05:38Z kind-ochre-newt todo → doing
 - 2026-11-22T05:08:04Z kind-ochre-newt: wrote the plan
+- 2026-11-22T05:08:44Z kind-ochre-newt: changed notes
