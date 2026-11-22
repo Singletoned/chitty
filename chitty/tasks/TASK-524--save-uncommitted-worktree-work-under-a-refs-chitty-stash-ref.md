@@ -1,6 +1,6 @@
 ---
 title: Save uncommitted worktree work under a `refs/chitty/stash` ref
-status: review
+status: done
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -61,6 +61,10 @@ Split again 2026-11-21: the worker model returned five sessions saying it could 
 
 All five regression tests failed against the NotImplementedError stub (unittest exit 1).
 
+Reviewed:
+1: pass - `make check` ran all five tests successfully; substituting a `NotImplementedError` stub at runtime ran five tests and reported eight errors, covering all five tests and four invalid-ref subtests.
+2: pass - `make check` completed successfully: ruff, pyright and 1039 tests OK.
+
 ## Summary
 
 Implemented private-ref work saving and five real Git tests. All five failed against the stub; make check passed (1039 tests).
@@ -99,3 +103,5 @@ Implemented private-ref work saving and five real Git tests. All five failed aga
 - 2026-11-22T00:18:36Z tidy-khaki-raven: changed notes
 - 2026-11-22T00:20:03Z tidy-khaki-raven: changed summary
 - 2026-11-22T00:20:04Z tidy-khaki-raven doing → review
+- 2026-11-22T00:25:14Z witty-fawn-gannet: changed notes
+- 2026-11-22T00:25:14Z witty-fawn-gannet review → done
