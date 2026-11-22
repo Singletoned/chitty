@@ -1,6 +1,6 @@
 ---
 title: Choose the message for a refused ticket write in a pure function
-status: doing
+status: review
 parent: TASK-385
 created: 2026-11-22
 ---
@@ -62,3 +62,4 @@ Implemented pure refusal message selection with property coverage and six litera
 - 2026-11-22T14:56:34Z golden-bronze-dormouse: wrote the plan
 - 2026-11-22T14:57:13Z golden-bronze-dormouse: changed notes
 - 2026-11-22T14:59:08Z golden-bronze-dormouse: changed summary
+- 2026-11-22T15:01:49Z golden-bronze-dormouse doing → review
