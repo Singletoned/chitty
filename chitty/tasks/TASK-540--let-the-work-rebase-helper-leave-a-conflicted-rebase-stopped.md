@@ -26,6 +26,10 @@ Tests in `tests/test_rebase_work_worktree.py`: change its `rebase()` helper (nea
 
 Add conflict and clean-rebase regression cases, verify old behavior fails, then implement the keyword-only switch and run checks.
 
+## Notes
+
+Regression cases 3b and 3c fail against the old helper with the keyword accepted and ignored: respectively None is not true and ChittyError is not raised.
+
 ## History
 
 - 2026-11-22T01:29:45Z lively-zinc-newt → planning
@@ -39,3 +43,4 @@ Add conflict and clean-rebase regression cases, verify old behavior fails, then 
 - 2026-11-22T03:45:00Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:49:54Z witty-lilac-raven todo → doing
 - 2026-11-22T03:52:03Z witty-lilac-raven: wrote the plan
+- 2026-11-22T03:52:35Z witty-lilac-raven: changed notes
