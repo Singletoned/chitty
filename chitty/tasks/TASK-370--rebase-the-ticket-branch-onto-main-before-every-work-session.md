@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: doing
+status: error
 labels:
   - bug
   - needs-minor
@@ -88,6 +88,10 @@ I inspected the runner call site, git save/restore/rebase helpers, review fake-a
 
 Replanned 2026-11-22: this ticket now rebases `doing` tickets only, matching its tests; `TASK-545` extends it to `todo` and `error`.
 
+Runner error (agent): TASK-370 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-370`
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -158,3 +162,5 @@ Replanned 2026-11-22: this ticket now rebases `doing` tickets only, matching its
 - 2026-11-22T01:56:07Z lively-zinc-newt: changed description, notes
 - 2026-11-22T01:56:07Z lively-zinc-newt planning → todo
 - 2026-11-22T01:57:19Z able-umber-dormouse todo → doing
+- 2026-11-22T02:00:32Z able-umber-dormouse: changed notes
+- 2026-11-22T02:00:32Z able-umber-dormouse doing → error
