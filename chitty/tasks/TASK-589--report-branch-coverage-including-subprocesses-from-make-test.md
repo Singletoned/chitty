@@ -1,6 +1,6 @@
 ---
 title: Report branch coverage, including subprocesses, from `make test`
-status: planning
+status: cold-read
 owner: plucky-umber-wren
 depends_on:
   - TASK-587
@@ -45,3 +45,4 @@ No property or unit test: this is build configuration, checked by the commands i
 
 - 2026-11-22T16:48:38Z plucky-umber-wren → planning
 - 2026-11-22T16:53:09Z plucky-umber-wren: changed description
+- 2026-11-22T16:53:12Z plucky-umber-wren planning → cold-read
