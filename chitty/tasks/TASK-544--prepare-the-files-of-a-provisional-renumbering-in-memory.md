@@ -1,6 +1,6 @@
 ---
 title: Prepare the files of a provisional renumbering in memory
-status: review
+status: doing
 parent: TASK-391
 created: 2026-11-22
 ---
@@ -32,6 +32,9 @@ Add an in-memory preparation helper and a real Git fixture test; verify the test
 
 The preparation regression test failed against a NotImplementedError stub before implementation.
 
+Review failed (tests): The new test does not verify the specified last History event. This is a newly discovered finding.
+1: fail - The test uses assertIn for the renumbering text, so an earlier event or a last event with extra trailing text would pass; assert that the last History event ends with the specified action for each renumbered ticket. `.venv/bin/python -m unittest tests.test_renumber_provisional` printed OK; replacing the helper at runtime with a NotImplementedError stub printed FAILED (errors=1); `make check` printed OK for 1090 tests.
+
 ## Summary
 
 Implemented in-memory preparation and real Git regression coverage. The test failed with a NotImplementedError stub and passes with the implementation; make check passes.
@@ -47,3 +50,5 @@ Implemented in-memory preparation and real Git regression coverage. The test fai
 - 2026-11-22T02:35:18Z nimble-hazel-raven: changed notes
 - 2026-11-22T02:37:37Z nimble-hazel-raven: changed summary
 - 2026-11-22T02:39:07Z nimble-hazel-raven doing → review
+- 2026-11-22T02:43:29Z calm-lilac-lapwing: changed acceptance criteria, notes
+- 2026-11-22T02:43:29Z calm-lilac-lapwing review → doing
