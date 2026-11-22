@@ -38,7 +38,7 @@ Before implementing, add both functions raising `NotImplementedError`, run the t
 
 ## Plan
 
-Add stub helpers and real-Git property and example tests; verify failures, implement named-ref save and restore, then run fix, format and checks.
+Add Git helper stubs and real Git tests, verify failures, implement the helpers, and run formatting and checks.
 
 ## Notes
 
@@ -78,3 +78,4 @@ Replanned 2026-11-21: the change mix is drawn per committed file; see the Descri
 - 2026-11-21T23:58:13Z lively-zinc-newt: changed description, notes
 - 2026-11-21T23:58:13Z lively-zinc-newt planning → todo
 - 2026-11-22T00:01:51Z daring-lilac-urchin todo → doing
+- 2026-11-22T00:04:12Z daring-lilac-urchin: wrote the plan
