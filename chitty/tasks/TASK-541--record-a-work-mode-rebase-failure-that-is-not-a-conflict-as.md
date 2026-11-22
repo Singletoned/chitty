@@ -26,6 +26,10 @@ Test `test_rebase_failure_is_recorded` in `tests/test_run_work_rebases.py`, usin
 
 Add the specified failing regression test, record its pre-fix result, then handle rebase errors through the existing ticket error recorder and run formatting and checks.
 
+## Notes
+
+Regression test failed before the fix: run exited 1 rather than 0 with Error: boom.
+
 ## History
 
 - 2026-11-22T01:29:47Z lively-zinc-newt → planning
@@ -36,3 +40,4 @@ Add the specified failing regression test, record its pre-fix result, then handl
 - 2026-11-22T03:14:54Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:23:18Z brisk-hazel-gannet todo → doing
 - 2026-11-22T03:25:46Z brisk-hazel-gannet: wrote the plan
+- 2026-11-22T03:26:03Z brisk-hazel-gannet: changed notes
