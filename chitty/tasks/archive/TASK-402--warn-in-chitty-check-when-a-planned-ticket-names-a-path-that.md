@@ -48,3 +48,4 @@ Owner decision, 2026-11-22: not built. Neither check is easily automated well en
 - 2026-11-22T11:17:14Z friendly-jade-stoat: changed labels, notes
 - 2026-11-22T11:17:14Z friendly-jade-stoat cold-read → backlog
 - 2026-11-22T11:23:44Z friendly-jade-stoat: changed labels, notes
+- 2026-11-22T11:23:45Z friendly-jade-stoat backlog → archived
