@@ -1,6 +1,6 @@
 ---
 title: Check linked-worktree ticket reads against every branch placement
-status: doing
+status: review
 depends_on:
   - TASK-527
 created: 2026-11-21
@@ -55,3 +55,4 @@ Added linked worktree placement tests; make check passes. Mutation of kind 4 pla
 - 2026-11-22T00:29:24Z rosy-russet-puffin: wrote the plan
 - 2026-11-22T00:31:32Z rosy-russet-puffin: changed notes
 - 2026-11-22T00:33:52Z rosy-russet-puffin: changed summary
+- 2026-11-22T00:33:53Z rosy-russet-puffin doing → review
