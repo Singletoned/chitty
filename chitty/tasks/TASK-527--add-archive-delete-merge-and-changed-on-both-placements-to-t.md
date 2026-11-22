@@ -1,6 +1,6 @@
 ---
 title: Add archive, delete, merge and changed-on-both placements to the ticket-read matrix
-status: review
+status: done
 depends_on:
   - TASK-393
 parent: TASK-393
@@ -17,8 +17,8 @@ Landed code (rechecked on `main` 2026-11-21): `tests/ticket_placements.py` has `
 
 ## Acceptance Criteria
 
-- [ ] `test_main_checkout_placements` covers all 13 placements and the 11 uncommitted-edit variants and passes. A note records two wrong-expectation runs, each made by temporarily editing `place` and then reverted: (j) expecting `branch` makes the (j) subTests fail, and (m) expecting (k)'s errors makes the (m) subTest fail
-- [ ] `make check` passes
+- [x] `test_main_checkout_placements` covers all 13 placements and the 11 uncommitted-edit variants and passes. A note records two wrong-expectation runs, each made by temporarily editing `place` and then reverted: (j) expecting `branch` makes the (j) subTests fail, and (m) expecting (k)'s errors makes the (m) subTest fail
+- [x] `make check` passes
 
 ## Plan
 
@@ -31,6 +31,10 @@ Keep in planning until its dependency lands; then compare with the landed code, 
 Replanned 2026-11-21 after `TASK-393` landed.
 
 Wrong-expectation runs: expecting branch for j failed j without edit (the edited variant deliberately expects uncommitted); expecting k errors for m failed both m variants. Both changes were reverted.
+
+Reviewed: fixture definitions and complete diff checked; no Decided note needed. Generated draws are covered by TASK-523.
+1: pass - `make check` passed the placement matrix. The worker recorded both reverted wrong-expectation runs; independent runtime mutations of `place` produced one failure for j (main-2 versus branch) and two for m (`task-5` absent from the origin error).
+2: pass - `make check` printed `Ran 1034 tests` and `OK`; ruff and pyright passed.
 
 ## Summary
 
@@ -50,3 +54,5 @@ Added six placement fixtures and main-checkout coverage. Both wrong-expectation 
 - 2026-11-22T00:09:03Z zesty-bronze-stoat: changed notes
 - 2026-11-22T00:10:19Z zesty-bronze-stoat: changed summary
 - 2026-11-22T00:10:21Z zesty-bronze-stoat doing → review
+- 2026-11-22T00:15:05Z lively-russet-jay: changed notes; ticked acceptance criteria
+- 2026-11-22T00:15:05Z lively-russet-jay review → done
