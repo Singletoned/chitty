@@ -1,6 +1,6 @@
 ---
 title: Prepare the files of a provisional renumbering in memory
-status: review
+status: done
 parent: TASK-391
 created: 2026-11-22
 ---
@@ -22,7 +22,7 @@ Test in a new `tests/test_renumber_provisional.py`, `RepoTestCase`, real files a
 
 ## Acceptance Criteria
 
-- [ ] The prepare test passes and fails against a `NotImplementedError` stub; `make check` passes
+- [x] The prepare test passes and fails against a `NotImplementedError` stub; `make check` passes
 
 ## Plan
 
@@ -36,6 +36,9 @@ Review failed (tests): The new test does not verify the specified last History e
 1: fail - The test uses assertIn for the renumbering text, so an earlier event or a last event with extra trailing text would pass; assert that the last History event ends with the specified action for each renumbered ticket. `.venv/bin/python -m unittest tests.test_renumber_provisional` printed OK; replacing the helper at runtime with a NotImplementedError stub printed FAILED (errors=1); `make check` printed OK for 1090 tests.
 
 The strengthened preparation test fails against a NotImplementedError stub and passes with the implementation.
+
+Reviewed: The previous History assertion finding is resolved; the test checks the last line ends with the required action.
+1: pass - `make check` printed OK for 1090 tests; running `tests.test_renumber_provisional` with `_prepare_renumbering` patched to raise `NotImplementedError` printed FAILED (errors=1).
 
 ## Summary
 
@@ -58,3 +61,5 @@ Strengthened the final History event assertion after review. The test fails with
 - 2026-11-22T02:50:29Z nimble-silver-toad: changed notes
 - 2026-11-22T02:52:38Z nimble-silver-toad: changed summary
 - 2026-11-22T02:54:45Z nimble-silver-toad doing → review
+- 2026-11-22T02:59:26Z golden-maroon-falcon: changed notes; ticked acceptance criteria
+- 2026-11-22T02:59:26Z golden-maroon-falcon review → done
