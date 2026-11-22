@@ -1,6 +1,8 @@
 ---
 title: "Work guide: let workers settle small edge cases and record them"
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-22
 ---
 
@@ -21,7 +23,10 @@ Suggest: the work guide lets a worker settle a small edge case itself when the t
 
 Suggestion origin: chitty
 
+Planner, 2026-11-22: already built. `src/chitty/roles/work.md` line 44 and `src/chitty/guide-runner.md` line 16 let workers settle a small omission and record `Decided: <case> -> <choice>, because <reason>`. Nothing left to do; close or delete.
+
 ## History
 
 - 2026-11-22T09:47:32Z friendly-jade-stoat → backlog
 - 2026-11-22T09:47:32Z friendly-jade-stoat: changed notes
+- 2026-11-22T09:50:58Z friendly-jade-stoat: changed labels, notes
