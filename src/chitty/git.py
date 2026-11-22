@@ -12,6 +12,38 @@ from chitty.ids import TaskId
 
 
 @dataclass(frozen=True)
+class BranchCommit:
+    sha: str
+    subject: str
+    paths: tuple[PurePosixPath, ...]
+
+
+@dataclass(frozen=True)
+class SquashPlan:
+    keep: tuple[str, ...]
+    squashed: tuple[str, ...]
+
+
+def squash_plan(
+    commits: Sequence[BranchCommit], ticket_directories: Sequence[PurePosixPath]
+) -> SquashPlan | None:
+    """Plan a safe separation of bookkeeping from implementation commits."""
+    keep: list[str] = []
+    squashed: list[str] = []
+    for commit in commits:
+        if not commit.paths:
+            return None
+        inside = [any(path.is_relative_to(d) for d in ticket_directories) for path in commit.paths]
+        if commit.subject.startswith("chitty: ") and all(inside):
+            squashed.append(commit.sha)
+        else:
+            if any(inside):
+                return None
+            keep.append(commit.sha)
+    return SquashPlan(tuple(keep), tuple(squashed)) if len(squashed) >= 2 else None
+
+
+@dataclass(frozen=True)
 class Commit:
     """A Git commit's object ID and full message."""
 
