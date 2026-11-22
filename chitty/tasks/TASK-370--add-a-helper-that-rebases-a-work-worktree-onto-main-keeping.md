@@ -1,6 +1,6 @@
 ---
 title: Add a helper that rebases a work worktree onto `main`, keeping uncommitted work
-status: cold-read
+status: todo
 labels:
   - bug
 priority: high
@@ -31,15 +31,15 @@ Add `_rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) ->
 Tests in a new `tests/test_rebase_work_worktree.py`, a `unittest.TestCase` like `SavedWorkTests` in `tests/test_git_saved_work.py`, with no runner: a temporary repository (`git init -b main`, local author, committed `a.txt` and `b.txt`), a branch `task-1` with one commit changing `b.txt`, checked out in a linked worktree via `git worktree add`, and then a commit on `main` changing `a.txt`. Call `_rebase_work_worktree(worktree, TaskId("TASK", 1), "main")` directly.
 
 1. Clean: afterwards `git merge-base --is-ancestor main task-1` succeeds and `git rev-list main..task-1` has one commit.
-2. Saved work: before the call, the worktree has an unstaged edit to `b.txt`, a staged new file `s.txt` and an untracked `u.txt`. Afterwards the branch is rebased as in 1, all three files have their pre-call contents, and `refs/chitty/stash/TASK-1` does not exist.
-3. Conflict: `task-1`'s commit and `main`'s commit both change line 1 of `a.txt`. Afterwards no rebase is in progress (`git.rebase_in_progress`), the `task-1` tip is unchanged, and the ref does not exist.
+2. Saved work: before the call, the worktree has an unstaged edit to `b.txt`, a staged new file `s.txt` and an untracked `u.txt`. Afterwards the branch is rebased as in 1, all three files have their pre-call contents (contents only; `s.txt` may come back unstaged), and `refs/chitty/stash/TASK-1` does not exist.
+3. Conflict: build the fixture with `task-1`'s commit changing line 1 of `a.txt` instead of `b.txt` (so it conflicts with `main`'s commit), and put an untracked `u.txt` in the worktree before the call. Afterwards no rebase is in progress (`git.rebase_in_progress`), the `task-1` tip is unchanged, `u.txt` has its contents, and the ref does not exist.
 4. Failure: with `chitty.run.git.rebase_onto` patched to raise `ChittyError("boom")` and an untracked `u.txt` present, the call raises `boom`, `u.txt` has its contents, and the ref does not exist.
 
 Before implementing, add the function raising `NotImplementedError` and confirm the four tests fail; then implement and run `make check`.
 
 ## Acceptance Criteria
 
-- [ ] The four helper tests pass and each fails against a `NotImplementedError` stub
+- [ ] The four helper tests pass, and each errors with `NotImplementedError` against a stub
 - [ ] `make check` passes
 
 ## Plan
@@ -163,3 +163,5 @@ Split again 2026-11-22: the worker model gave up a third time (five sessions, no
 - 2026-11-22T02:01:58Z lively-zinc-newt: changed title, labels, description, acceptance criteria, notes
 - 2026-11-22T02:01:58Z lively-zinc-newt error → todo
 - 2026-11-22T02:02:30Z lively-zinc-newt todo → cold-read
+- 2026-11-22T02:04:16Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-22T02:04:16Z lively-zinc-newt cold-read → todo
