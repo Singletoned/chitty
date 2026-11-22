@@ -1,6 +1,6 @@
 ---
 title: Rebase a `doing` ticket's worktree onto `main` before setup in work runs
-status: todo
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -30,3 +30,4 @@ Test in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_revi
 - 2026-11-22T02:21:20Z lively-zinc-newt planning → cold-read
 - 2026-11-22T02:23:29Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T02:23:29Z lively-zinc-newt cold-read → todo
+- 2026-11-22T02:56:18Z eager-russet-vole todo → doing
