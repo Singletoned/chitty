@@ -1,6 +1,6 @@
 ---
 title: Run the test suite with `pytest` and `pytest-xdist`
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -55,3 +55,4 @@ Baseline for criterion 3, recorded by the previous worker (vivid-fawn-wren) befo
 - 2026-11-22T20:33:11Z plucky-umber-wren: replaced notes; changed acceptance criteria
 - 2026-11-22T20:33:11Z plucky-umber-wren planning → todo
 - 2026-11-22T20:33:21Z plucky-umber-wren: changed notes
+- 2026-11-22T20:33:42Z friendly-yellow-quail todo → doing
