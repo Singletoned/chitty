@@ -24,6 +24,10 @@ No property and no new test: a move that changes no behaviour; the existing test
 - [ ] `src/chitty/commands.py` defines every moved name and imports neither `chitty.run` nor `chitty.store` (`git grep -n -e "chitty\.run" -e "chitty\.store" -- src/chitty/commands.py` finds nothing); the `git grep` in the Description finds no old name in `src` or `tests`, and `run.py` defines no `_git`
 - [ ] The four updated test files pass with only their imports and the uses of moved names changed, and `make check` passes
 
+## Plan
+
+Move the specified helpers and their dependencies into commands.py, update imports and callers without changing behavior, then run the specified tests and checks.
+
 ## Notes
 
 The test requirements contradict each other: criterion 2 and the description require only import changes in the four test files, but criterion 1 requires no old names anywhere in `src` or `tests`. For example, `tests/test_command_timeout.py:29,43` calls `_run_logged`, and the other listed files likewise call `_run_logged`, `_ignore_run_log`, `_code_block`, or `_with_exclude_line`. Aliasing the imports would preserve those calls but fail the required grep; renaming the calls would violate the imports-only requirement. Please decide which requirement to change. I inspected the specified helper definitions and callers, including `_git` and the remaining listed tests; implementation and its verification cannot proceed until this is resolved.
@@ -41,3 +45,4 @@ Replanned 2026-11-22: tests rename their calls as well as imports; see the Descr
 - 2026-11-22T00:43:55Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T00:43:55Z lively-zinc-newt planning → todo
 - 2026-11-22T00:44:58Z golden-bronze-gannet todo → doing
+- 2026-11-22T00:47:11Z golden-bronze-gannet: wrote the plan
