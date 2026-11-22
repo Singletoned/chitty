@@ -53,6 +53,8 @@ Planner, 2026-11-22: relies on what `TASK-587` lands (the `test` line in `Makefi
 
 Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` line `TEST_TIER=thorough uv run unittest-parallel -s tests -t . --level test`; `AGENTS.md` bullet at lines 19-21); this text still holds.
 
+Before the shebang fix, make test failed: AssertionError: 1 != 130 in test_interrupted_agent_calls_reporter. Subprocess comparison: patched src/chitty/run.py 852 492 42%; unpatched src/chitty/run.py 852 744 13%.
+
 ## History
 
 - 2026-11-22T16:48:38Z plucky-umber-wren → planning
@@ -71,3 +73,4 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` lin
 - 2026-11-22T17:07:07Z plucky-umber-wren planning → todo
 - 2026-11-22T17:23:41Z golden-amber-adder todo → doing
 - 2026-11-22T17:26:13Z golden-amber-adder: wrote the plan
+- 2026-11-22T17:29:30Z golden-amber-adder: changed notes
