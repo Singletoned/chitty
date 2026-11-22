@@ -1,6 +1,6 @@
 ---
 title: Save and restore uncommitted worktree work under a named ref
-status: doing
+status: error
 parent: TASK-370
 created: 2026-11-21
 ---
@@ -56,6 +56,10 @@ I inspected the remaining examples and the existing helpers and tests; their fix
 
 Replanned 2026-11-21: the change mix is drawn per committed file; see the Description.
 
+Runner error (agent): TASK-524 was unchanged; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-524`
+
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
@@ -79,3 +83,5 @@ Replanned 2026-11-21: the change mix is drawn per committed file; see the Descri
 - 2026-11-21T23:58:13Z lively-zinc-newt planning → todo
 - 2026-11-22T00:01:51Z daring-lilac-urchin todo → doing
 - 2026-11-22T00:04:12Z daring-lilac-urchin: wrote the plan
+- 2026-11-22T00:05:10Z daring-lilac-urchin: changed notes
+- 2026-11-22T00:05:10Z daring-lilac-urchin doing → error
