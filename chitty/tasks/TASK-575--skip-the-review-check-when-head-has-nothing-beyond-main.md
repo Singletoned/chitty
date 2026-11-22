@@ -75,6 +75,8 @@ Split the fixture, add the requested workflow and merge guards, verify the runne
 
 Cold read 2: setup wording, guard tests and missing-main behaviour clarified; no change to what is built.
 
+The runner regression failed before the fix: review ran the check and exited with status 3.
+
 ## History
 
 - 2026-11-22T12:50:12Z friendly-jade-stoat → todo
@@ -86,3 +88,4 @@ Cold read 2: setup wording, guard tests and missing-main behaviour clarified; no
 - 2026-11-22T12:52:51Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:03:19Z quick-fawn-falcon todo → doing
 - 2026-11-22T15:06:06Z quick-fawn-falcon: wrote the plan
+- 2026-11-22T15:06:40Z quick-fawn-falcon: changed notes
