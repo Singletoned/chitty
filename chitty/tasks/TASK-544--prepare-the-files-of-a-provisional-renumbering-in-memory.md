@@ -1,6 +1,6 @@
 ---
 title: Prepare the files of a provisional renumbering in memory
-status: doing
+status: review
 parent: TASK-391
 created: 2026-11-22
 ---
@@ -57,3 +57,4 @@ Strengthened the final History event assertion after review. The test fails with
 - 2026-11-22T02:50:17Z nimble-silver-toad: wrote the plan
 - 2026-11-22T02:50:29Z nimble-silver-toad: changed notes
 - 2026-11-22T02:52:38Z nimble-silver-toad: changed summary
+- 2026-11-22T02:54:45Z nimble-silver-toad doing → review
