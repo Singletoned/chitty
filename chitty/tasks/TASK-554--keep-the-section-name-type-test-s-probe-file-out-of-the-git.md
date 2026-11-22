@@ -1,6 +1,6 @@
 ---
 title: Keep the section-name type test's probe file out of the Git work tree
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-22
@@ -14,11 +14,16 @@ Fix: create the temporary directory under the repository's ignored `tmp/` direct
 
 ## Acceptance Criteria
 
-- [ ] The probe directory is created under `tmp/`, which is ignored; the existing tests in `tests/test_section_name_types.py` pass; `make check` passes
+- [x] The probe directory is created under `tmp/`, which is ignored; the existing tests in `tests/test_section_name_types.py` pass; `make check` passes
 
 ## Plan
 
 Create the probe under ignored tmp/, verify the ignore rule and existing type tests, then run make check and commit.
+
+## Notes
+
+Reviewed: The change meets the criterion.
+1: pass - Inspection confirms the probe is created under tmp/; git check-ignore -v tmp/probe/example.py reports .gitignore:4:/tmp/. make check passed, including all 1112 tests and the existing section-name type tests.
 
 ## Summary
 
@@ -31,3 +36,5 @@ Moved type test probes under ignored tmp/. Verified git check-ignore, all four s
 - 2026-11-22T05:25:48Z golden-teal-marten: wrote the plan
 - 2026-11-22T05:28:29Z golden-teal-marten: changed summary
 - 2026-11-22T05:30:58Z golden-teal-marten doing → review
+- 2026-11-22T05:35:41Z brisk-russet-falcon: changed notes; ticked acceptance criteria
+- 2026-11-22T05:35:41Z brisk-russet-falcon review → done
