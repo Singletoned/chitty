@@ -1,6 +1,6 @@
 ---
 title: Choose and migrate the workflow in chitty init
-status: planning
+status: todo
 labels:
   - needs-minor
 priority: high
@@ -72,3 +72,4 @@ Owner answer, 2026-11-22: option B, plus a commented-out review line. Planner: t
 - 2026-11-22T11:15:59Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T11:17:04Z friendly-jade-stoat: changed description
 - 2026-11-22T11:17:04Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T11:17:05Z friendly-jade-stoat planning → todo
