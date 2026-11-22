@@ -1870,7 +1870,10 @@ class TestNext(CliTestCase):
             "import subprocess, sys\n"
             "from pathlib import Path\n"
             "Path('invocation').write_text(' '.join(sys.argv[1:]))\n"
-            "path = next(Path('chitty/tasks').glob('*.md'))\n"
+            # `glob` order depends on the filesystem, so pick the ticket being
+            # worked rather than the first file.
+            "path, = [p for p in Path('chitty/tasks').glob('*.md') "
+            "if 'status: doing' in p.read_text()]\n"
             "path.write_text(path.read_text().replace('status: doing', 'status: blocked'))\n"
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
             "subprocess.run(['git', 'commit', '--quiet', '-m', 'agent'], "
