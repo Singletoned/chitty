@@ -1,6 +1,6 @@
 ---
 title: Plan which commits on a ticket branch are bookkeeping to squash
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -50,3 +50,4 @@ Implemented the pure squash plan with property, empty-commit and three mutant ch
 - 2026-11-22T14:34:07Z rosy-jade-badger todo → doing
 - 2026-11-22T14:35:59Z rosy-jade-badger: wrote the plan
 - 2026-11-22T14:38:10Z rosy-jade-badger: changed summary
+- 2026-11-22T14:39:45Z rosy-jade-badger doing → review
