@@ -79,6 +79,8 @@ Add glyph and column-alignment regression tests, verify failure on existing beha
 
 Cold read 2: constant placement fixed to `selection.py`, alignment test added; nothing else serious.
 
+Before the fix, test_list_glyphs fails for all three priority glyphs because each contains two characters; the alignment test passes under the existing _columns calculation.
+
 ## History
 
 - 2026-11-22T12:56:07Z friendly-jade-stoat → todo
@@ -89,3 +91,4 @@ Cold read 2: constant placement fixed to `selection.py`, alignment test added; n
 - 2026-11-22T12:58:27Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:12:53Z golden-zinc-eel todo → doing
 - 2026-11-22T15:15:45Z golden-zinc-eel: wrote the plan
+- 2026-11-22T15:16:06Z golden-zinc-eel: changed notes
