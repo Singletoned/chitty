@@ -15,8 +15,8 @@ class TestWorkRebases(ReviewMergeTestCase):
 
     def prepare_branch(self, status):
         self.git("switch", "--quiet", "-c", "task-1")
-        if status == "doing":
-            self.run_cli("edit", "1", "-s", "doing")
+        if status in ("doing", "error"):
+            self.run_cli("edit", "1", "-s", status)
         self.git("switch", "--quiet", "main")
         self.move_main()
 
@@ -30,7 +30,17 @@ class TestWorkRebases(ReviewMergeTestCase):
             check=True,
         )
 
-    def test_todo_does_not_rebase_before_setup(self):
+    def test_todo_rebases_before_setup(self):
         self.prepare_branch("todo")
         self.run_cli("run", "--mode", "work")
-        self.assertNotIn("main moved", (self.logs / "setup").read_text())
+        self.assertIn("main moved", (self.logs / "setup").read_text())
+        log = subprocess.check_output(
+            ["git", "log", "-p", "task-1", "--", "chitty/tasks"], cwd=self.root, text=True
+        )
+        self.assertIn("+status: doing", log)
+
+    def test_error_rebases_before_setup(self):
+        self.prepare_branch("error")
+        self.run_cli("run", "--errors")
+        self.assertIn("main moved", (self.logs / "setup").read_text())
+        self.assertTrue((self.logs / "agent").exists())

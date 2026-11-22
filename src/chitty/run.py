@@ -501,7 +501,7 @@ def _run_ticket_with_log(
     if existing_worktree is not None and git.dirty_paths(existing_worktree, relative_ticket):
         raise ChittyError(f"{existing_worktree / relative_ticket} has uncommitted changes")
     worktree = _worktree(main_root, action, main_repo.config.main_branch)
-    if action.mode == "work" and selected_status == "doing":
+    if action.mode == "work":
         _rebase_work_worktree(worktree, action.id, main_repo.config.main_branch)
     context["worktree"] = str(worktree)
     branch_repo = Repo(worktree, main_repo.config)

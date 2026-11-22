@@ -136,7 +136,7 @@ rebase like any other file; conflicts go to an agent, not a ticket merge.
 
 - These moves use the run's own actor, so they count towards
   `REVIEW_FAILURE_LIMIT`. Ctrl-C during the rebase aborts it, exit 130.
-- Work mode makes or reuses the worktree, rebases a `doing` ticket's branch
+- Work mode makes or reuses the worktree, rebases every work-mode ticket's branch
   onto `main` before `setup` (saving uncommitted work under
   `refs/chitty/stash/<ID>`), and claims a `todo` ticket on its branch, then
   runs `setup` and `check`. A non-zero `check` exit
