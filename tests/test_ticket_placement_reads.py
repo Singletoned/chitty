@@ -64,7 +64,67 @@ def placement_mismatches(parent: Path) -> list[str]:
     return mismatches
 
 
+def own_worktree_mismatches(parent: Path) -> list[str]:
+    rows = {
+        "b": (Expected("branch"), Expected("uncommitted")),
+        "d": (Expected("remote"),),
+        "e": (Expected(None, errors=("`origin/task-5`", "`task-5`")),) * 2,
+        "g": (Expected("branch", archived=True),),
+        "h": (Expected(None),),
+        "j": (Expected("main-2"), Expected("main-2")),
+        "k": (Expected(None, errors=("`task-5`", "`main`", "changed on both")),) * 2,
+        "l": (Expected("remote"), Expected("remote")),
+    }
+    mismatches: list[str] = []
+    for placement, variants in rows.items():
+        for edit, expected in enumerate(variants):
+            root = make_repo(parent)
+            place(root, placement, 5)
+            worktree = checkout(root, 2, 5)
+            if edit:
+                edit_uncommitted(worktree, 5)
+            repo = Repo.open(worktree)
+            task_id = TaskId("TASK", 5)
+            prefix = f"{placement} edit={bool(edit)}"
+            for name, action in (
+                ("find", lambda repo=repo, task_id=task_id: repo.find(task_id)),
+                ("tasks", lambda repo=repo: repo.tasks(repo.context("tasks"), "all")),
+            ):
+                errors = expected.errors or (
+                    ("no task",) if expected.title is None and name == "find" else ()
+                )
+                try:
+                    result = action()
+                except ChittyError as exc:
+                    if not errors or any(text not in str(exc) for text in errors):
+                        mismatches.append(f"{prefix}: {name} unexpected error: {exc}")
+                    continue
+                if errors:
+                    mismatches.append(f"{prefix}: {name} did not raise {errors!r}")
+                    continue
+                tasks = [result] if isinstance(result, StoredTask) else result
+                actual = [(task.task.frontmatter.title, task.archived) for task in tasks]
+                wanted = [] if expected.title is None else [(expected.title, expected.archived)]
+                if actual != wanted:
+                    mismatches.append(f"{prefix}: {name} {actual!r} != {wanted!r}")
+    return mismatches
+
+
 class TestTicketPlacementReads(RepoTestCase):
+    def test_own_worktree_placements(self):
+        self.assertEqual(own_worktree_mismatches(self.tmp), [])
+
+    def test_own_worktree_mutant_main_branch(self):
+        real = store.ticket_source
+
+        def mutant(*args):
+            args = list(args)
+            args[2] = "main"
+            return real(*args)
+
+        with patch("chitty.store.ticket_source", mutant):
+            self.assertTrue(own_worktree_mismatches(self.tmp))
+
     def test_main_checkout_placements(self):
         self.assertEqual(placement_mismatches(self.tmp), [])
 
