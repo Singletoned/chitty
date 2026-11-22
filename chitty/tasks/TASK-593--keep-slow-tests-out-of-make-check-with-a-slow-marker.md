@@ -13,8 +13,13 @@ Planner, 2026-11-22: the person wants `make check` fast; any split is arbitrary,
 
 Decided with the person, 2026-11-22: landing runs the full set of tests. Landing uses `check = "make check"` in `chitty.toml`, so once slow tests leave `make check` landing must run something that includes them. Planner's choice, to confirm while planning: fixed examples (profile `check`) with slow tests in, so landing is a repeatable regression gate and a newly drawn random example cannot block an unrelated ticket; random examples stay in `make test`, which work and review run. Keep the human-facing surface small: prefer an environment setting on the existing target over a new `Makefile` target. `chitty.toml` must not be edited on a ticket branch (`AGENTS.md`), so the landing command change is made in the main checkout after the ticket lands; say so in the ticket.
 
+## Notes
+
+Planner, 2026-11-22: after TASK-597, use a `pytest` marker (`-m 'not slow'`) rather than a custom one.
+
 ## History
 
 - 2026-11-22T17:16:36Z plucky-umber-wren → backlog
 - 2026-11-22T18:39:14Z plucky-umber-wren: changed description
 - 2026-11-22T20:16:10Z plucky-umber-wren: changed dependencies
+- 2026-11-22T20:16:18Z plucky-umber-wren: changed notes
