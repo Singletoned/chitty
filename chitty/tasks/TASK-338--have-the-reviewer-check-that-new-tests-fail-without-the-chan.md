@@ -1,16 +1,19 @@
 ---
-title: Have the runner prove new tests fail without the change
+title: Have the reviewer check that new tests fail without the change
 status: planning
 labels:
-  - question
-depends_on:
-  - TASK-353
+  - untestable
+owner: untestable
 created: 2026-11-16
 ---
 
 ## Description
 
-Replaces the cold read implementing pass and the guide rule, repeated in every role guide, that a worker must show a regression test fails without the fix. Missing or weak tests are the main review failure cause (31 `Review failed (tests)` here, 69 in echonomicon). Before review, the runner runs the tests added or changed on the branch against the branch merge base with non-test changes removed, and requires at least one to fail. Design decisions for planning: how to identify the new tests per repository language, and what to do for tickets with no code change.
+Missing or weak tests are the main review failure cause (31 `Review failed (tests)` here, 69 in echonomicon). Owner decision 2026-11-22: the runner cannot reliably prove this for a repository in any language, so an agent checks it instead.
+
+Today `src/chitty/roles/work.md` (around line 23) tells the worker to see a regression test fail without the fix and note the result, and `src/chitty/roles/review.md` (around line 56) and `src/chitty/guide-runner.md` (around line 40) say a test criterion passes only with evidence that it fails without the change. Nothing says the reviewer must produce that evidence; a reviewer can accept the worker's note.
+
+Change `src/chitty/roles/review.md`: for each test a criterion needs, the reviewer runs it themselves against the code without the change (for example the branch's new test files on top of the merge base, in a temporary worktree of the reviewer's own, removed afterwards), and records the command and the failure in that criterion's line. A worker's note is not enough. When a test passes without the change, the criterion fails with cause `tests`. Keep it general: the guides reach every repository in any language. Keep `tests/test_guide_word_budget.py` passing (trim elsewhere in the file if needed).
 
 ## Notes
 
@@ -33,3 +36,4 @@ Is this the shape you want (whole-check failure at the merge base, one setting),
 - 2026-11-16T10:38:27Z intrepid-coral-raven backlog → planning
 - 2026-11-18T20:36:36Z lively-quartz-crane: changed notes
 - 2026-11-22T10:12:06Z friendly-jade-stoat: changed labels, notes
+- 2026-11-22T11:13:58Z friendly-jade-stoat: changed title, labels, owner, dependencies, description
