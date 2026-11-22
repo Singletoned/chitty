@@ -32,6 +32,10 @@ Replanned 2026-11-21 after `TASK-393` landed.
 
 Wrong-expectation runs: expecting branch for j failed j without edit (the edited variant deliberately expects uncommitted); expecting k errors for m failed both m variants. Both changes were reverted.
 
+## Summary
+
+Added six placement fixtures and main-checkout coverage. Both wrong-expectation runs failed as recorded; make check passed 1034 tests.
+
 ## History
 
 - 2026-11-21T23:18:35Z lively-zinc-newt → todo
@@ -44,3 +48,4 @@ Wrong-expectation runs: expecting branch for j failed j without edit (the edited
 - 2026-11-22T00:06:29Z zesty-bronze-stoat todo → doing
 - 2026-11-22T00:07:58Z zesty-bronze-stoat: wrote the plan
 - 2026-11-22T00:09:03Z zesty-bronze-stoat: changed notes
+- 2026-11-22T00:10:19Z zesty-bronze-stoat: changed summary
