@@ -1,6 +1,6 @@
 ---
 title: Extend generated ticket placements to contexts, archiving, dates, decoys and linked checkouts
-status: todo
+status: backlog
 depends_on:
   - TASK-523
 created: 2026-11-22
@@ -13,3 +13,4 @@ Split from `TASK-523` on 2026-11-22. `TASK-523` generates several tickets in one
 ## History
 
 - 2026-11-22T10:00:30Z friendly-jade-stoat → todo
+- 2026-11-22T10:02:09Z friendly-jade-stoat todo → backlog
