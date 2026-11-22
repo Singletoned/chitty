@@ -40,9 +40,14 @@ No property: fixed outcomes, each needing a real subprocess and Git repository.
 - [ ] Cases 1, 2 and 3 in the Description pass, and each fails before the change
 - [ ] Guard case 4 passes, every test in `tests/test_review_merge.py` passes unchanged, and `make check` passes
 
+## Plan
+
+Add focused real-Git regression tests for review checks, confirm failures before implementation, then run configured checks within the existing review gate and verify the full suite.
+
 ## History
 
 - 2026-11-22T01:11:06Z lively-zinc-newt → cold-read
 - 2026-11-22T01:13:21Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:13:21Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:21:22Z quick-dusky-eel todo → doing
+- 2026-11-22T02:23:25Z quick-dusky-eel: wrote the plan
