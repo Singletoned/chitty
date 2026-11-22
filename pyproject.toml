@@ -54,6 +54,8 @@ dev = [
 ]
 
 [tool.ruff]
+# Ticket files are prose; a Python snippet in one must not fail `make check`.
+extend-exclude = ["chitty"]
 fix = true
 unsafe-fixes = true
 line-length = 100
