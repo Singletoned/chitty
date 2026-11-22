@@ -35,7 +35,7 @@ Tests in `tests/test_guide_workflow.py` (it exists on the branch; create it if t
 
 ## Plan
 
-Implement the replanned workflow parameter, shared error message, and fixed-case compatibility tests; verify regression and run checks.
+Add missing exit-code and complete runner help assertions, verify tests and checks, then hand off for review.
 
 ## Notes
 
@@ -117,3 +117,4 @@ Workflow-gated role guides and tickets-only help implemented; fixed-case runner,
 - 2026-11-22T14:10:52Z open-dusky-vole doing → review
 - 2026-11-22T14:22:14Z brisk-silver-jay: changed acceptance criteria, notes
 - 2026-11-22T14:22:14Z brisk-silver-jay review → doing
+- 2026-11-22T14:28:10Z able-coral-adder: wrote the plan
