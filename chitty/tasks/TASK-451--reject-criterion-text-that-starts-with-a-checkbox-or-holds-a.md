@@ -1,6 +1,6 @@
 ---
 title: Reject criterion text that starts with a checkbox or holds a line break
-status: doing
+status: planning
 labels:
   - bug
 priority: medium
@@ -32,6 +32,14 @@ Tests use Hypothesis, the repository's property-testing tool, in a new file `tes
 
 Suggestion origin: chitty
 
+Planning issues found while inspecting the ticket and implementation:
+
+- The description says `_criterion_text` rejects only newline and stores `a\x1d\tb`, but `src/chitty/model.py` already checks all `splitlines()` breaks using sentinels before stripping. Thus that example already raises `TaskError`, and criterion 1's stated main-branch failure example is wrong. Correct the root cause and choose an actual failing example (such as the required accepted `a\x1d`, currently rejected).
+- Criterion 2 requires the specified message for any text with a checkbox prefix or an internal break, but an input such as `[x] a\nb` satisfies both conditions and the two required messages differ. Specify which error takes precedence and how the property asserts it.
+- `_criterion_text` is also called by `Task.with_criterion_text`, not only `with_criteria`; existing `tests/test_property_criterion_text.py` exercises that method. Clarify whether the changed validation is intended there too, including its effect on existing callers.
+
+Inspected `with_criteria`, `_criterion_text`, parser locations, existing property tests and the CLI fixture. The remaining implementation and regression verification were not run because the conflicting message requirement needs a planning decision first; the CLI criterion is independently specified.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -47,3 +55,5 @@ Suggestion origin: chitty
 - 2026-11-19T21:05:29Z sunny-white-dormouse cold-read → planning
 - 2026-11-19T21:05:47Z sunny-white-dormouse planning → todo
 - 2026-11-20T00:41:45Z nimble-fawn-eel todo → doing
+- 2026-11-22T21:26:06Z rosy-pearl-falcon: changed owner, notes
+- 2026-11-22T21:26:06Z rosy-pearl-falcon doing → planning
