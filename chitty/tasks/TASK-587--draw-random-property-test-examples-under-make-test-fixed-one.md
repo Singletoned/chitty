@@ -51,6 +51,10 @@ Out of scope: how many examples each profile draws (a later ticket scales per-te
 - [ ] `make -n test` shows `TEST_TIER=thorough` and `make -n check` shows `TEST_TIER=check`, each on its `unittest-parallel` line; `mate --list` (`mate` is on `PATH`) lists `test` with its new description; and `make check` passes
 - [ ] `AGENTS.md` no longer contains `Hypothesis runs with fixed examples`; its replacement bullet names `make check` with profile `check` and `make test` with profile `thorough`, and keeps the sentence `A property test that fails is a real failure: fix it, do not rerun.`
 
+## Plan
+
+Add subprocess regression tests for tier selection, verify failures before implementation, then configure profiles, Make targets and agent guidance; run formatting and checks.
+
 ## Notes
 
 Runner error (check): check exited with status 2; output in `.chitty/check.log`; the branch has no work yet, so `main` fails this check
@@ -84,3 +88,4 @@ Planner, 2026-11-22: the runner's `error` above came from this ticket's own prob
 - 2026-11-22T16:47:37Z plucky-umber-wren cold-read → planning
 - 2026-11-22T16:47:39Z plucky-umber-wren planning → todo
 - 2026-11-22T16:48:14Z vivid-yellow-kestrel todo → doing
+- 2026-11-22T16:51:24Z vivid-yellow-kestrel: wrote the plan
