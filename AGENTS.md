@@ -30,6 +30,11 @@ rules, and parts are old: update it when a decision changes.
   `model.py` so the two front ends cannot diverge.
 - Other agents commit in this checkout at the same time. Stage only the paths
   you changed; never `git add -A` or all of `chitty/`.
+- Clean up branches and worktrees now and then (decided with the person,
+  2026-11-22): delete any branch fully merged into `main`, and any branch or
+  worktree with no commits for 7 days whose purpose nobody knows. Check a
+  worktree has no uncommitted changes before removing it, and never touch a
+  ticket that is `doing` or `review`.
 - Writing tickets with the human? Cold-read them, as
   `docs/plan/pipeline-and-feedback.md` describes. If you were given a ticket to
   work on or review, skip this: it is not your step.
