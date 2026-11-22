@@ -1,6 +1,6 @@
 ---
 title: Record a work-mode rebase failure that is not a conflict as a ticket error
-status: doing
+status: review
 depends_on:
   - TASK-370
   - TASK-546
@@ -46,3 +46,4 @@ Records work-mode rebase errors on the branch ticket without starting the agent.
 - 2026-11-22T03:25:46Z brisk-hazel-gannet: wrote the plan
 - 2026-11-22T03:26:03Z brisk-hazel-gannet: changed notes
 - 2026-11-22T03:28:17Z brisk-hazel-gannet: changed summary
+- 2026-11-22T03:30:03Z brisk-hazel-gannet doing → review
