@@ -1,6 +1,6 @@
 ---
 title: Report saved work that cannot be restored after the work-mode rebase
-status: review
+status: done
 depends_on:
   - TASK-370
   - TASK-541
@@ -20,8 +20,8 @@ Tests in `tests/test_run_work_rebases.py`, in a new class like `TestWorkRebases`
 
 ## Acceptance Criteria
 
-- [ ] `test_unrestorable_work_is_noted` passes and fails before the change; `test_restorable_work_is_not_noted` passes
-- [ ] `make check` passes
+- [x] `test_unrestorable_work_is_noted` passes and fails before the change; `test_restorable_work_is_not_noted` passes
+- [x] `make check` passes
 
 ## Plan
 
@@ -32,6 +32,10 @@ Add focused conflicting and clean restore tests, confirm regression, then report
 Keep in planning until `TASK-370` lands; then replan, cold-read and move to `todo`.
 
 Regression confirmed: TestSavedWork control passed and unrestorable test failed for the missing note before the fix.
+
+Reviewed: Changes match the requested restore reporting and control.
+1: pass - make check passed both TestSavedWork tests; running them against the pre-fix run.py printed .F, with the unrestorable test failing on the missing note and the control passing.
+2: pass - make check printed 1111 tests OK, with ruff and pyright passing.
 
 ## Summary
 
@@ -51,3 +55,5 @@ Reports retained saved-work refs after rebase; regression failed before the fix 
 - 2026-11-22T04:50:01Z upbeat-navy-marten: changed notes
 - 2026-11-22T04:52:27Z upbeat-navy-marten: changed summary
 - 2026-11-22T04:54:26Z upbeat-navy-marten doing → review
+- 2026-11-22T04:59:31Z youthful-quartz-otter: changed notes; ticked acceptance criteria
+- 2026-11-22T04:59:31Z youthful-quartz-otter review → done
