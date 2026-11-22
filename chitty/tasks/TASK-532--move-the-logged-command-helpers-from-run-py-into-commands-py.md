@@ -1,6 +1,6 @@
 ---
 title: Move the logged-command helpers from `run.py` into `commands.py`
-status: doing
+status: planning
 parent: TASK-343
 created: 2026-11-21
 ---
@@ -24,9 +24,15 @@ No property and no new test: a move that changes no behaviour; the existing test
 - [ ] `src/chitty/commands.py` defines every moved name and imports neither `chitty.run` nor `chitty.store` (`git grep -n -e "chitty\.run" -e "chitty\.store" -- src/chitty/commands.py` finds nothing); the `git grep` in the Description finds no old name in `src` or `tests`, and `run.py` defines no `_git`
 - [ ] The four updated test files pass with only their imports changed, and `make check` passes
 
+## Notes
+
+The test requirements contradict each other: criterion 2 and the description require only import changes in the four test files, but criterion 1 requires no old names anywhere in `src` or `tests`. For example, `tests/test_command_timeout.py:29,43` calls `_run_logged`, and the other listed files likewise call `_run_logged`, `_ignore_run_log`, `_code_block`, or `_with_exclude_line`. Aliasing the imports would preserve those calls but fail the required grep; renaming the calls would violate the imports-only requirement. Please decide which requirement to change. I inspected the specified helper definitions and callers, including `_git` and the remaining listed tests; implementation and its verification cannot proceed until this is resolved.
+
 ## History
 
 - 2026-11-21T23:24:34Z lively-zinc-newt → cold-read
 - 2026-11-21T23:26:03Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:26:03Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:41:06Z rosy-jade-crane todo → doing
+- 2026-11-22T00:43:25Z rosy-jade-crane: changed owner, notes
+- 2026-11-22T00:43:25Z rosy-jade-crane doing → planning
