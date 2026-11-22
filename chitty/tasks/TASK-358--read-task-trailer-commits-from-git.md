@@ -1,6 +1,6 @@
 ---
 title: Read `Task:` trailer commits from Git
-status: planning
+status: cold-read
 created: 2026-11-16
 ---
 
@@ -42,3 +42,4 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 - 2026-11-22T10:01:28Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T10:03:33Z friendly-jade-stoat: changed title, description, acceptance criteria
 - 2026-11-22T10:03:33Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T10:03:37Z friendly-jade-stoat planning → cold-read
