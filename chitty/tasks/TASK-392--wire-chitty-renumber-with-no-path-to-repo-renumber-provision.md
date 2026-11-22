@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: todo
+status: doing
 depends_on:
   - TASK-517
   - TASK-542
@@ -63,3 +63,4 @@ The store method moved to `TASK-517`, which depends on the preflight `TASK-391`.
 - 2026-11-22T03:22:42Z lively-zinc-newt planning → cold-read
 - 2026-11-22T03:25:13Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T03:25:13Z lively-zinc-newt cold-read → todo
+- 2026-11-22T03:58:54Z rosy-russet-lapwing todo → doing
