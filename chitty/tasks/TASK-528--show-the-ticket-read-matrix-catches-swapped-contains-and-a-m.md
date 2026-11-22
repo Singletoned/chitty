@@ -1,6 +1,6 @@
 ---
 title: Show the ticket-read matrix catches swapped `contains` and a missing `main_tip`
-status: doing
+status: review
 depends_on:
   - TASK-527
 parent: TASK-393
@@ -49,3 +49,4 @@ Extracted placement mismatch collection and added both source-selection mutants.
 - 2026-11-22T00:35:24Z upbeat-khaki-quail todo → doing
 - 2026-11-22T00:37:14Z upbeat-khaki-quail: wrote the plan
 - 2026-11-22T00:39:39Z upbeat-khaki-quail: changed summary
+- 2026-11-22T00:39:42Z upbeat-khaki-quail doing → review
