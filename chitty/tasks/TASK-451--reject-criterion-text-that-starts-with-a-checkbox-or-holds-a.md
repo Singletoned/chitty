@@ -1,6 +1,6 @@
 ---
 title: Reject criterion text that starts with a checkbox or holds a line break
-status: review
+status: planning
 labels:
   - bug
 priority: medium
@@ -40,6 +40,11 @@ Planning issues found while inspecting the ticket and implementation:
 
 Inspected `with_criteria`, `_criterion_text`, parser locations, existing property tests and the CLI fixture. The remaining implementation and regression verification were not run because the conflicting message requirement needs a planning decision first; the CLI criterion is independently specified.
 
+Review failed (design): The previous planning note remains unresolved; this branch contains only ticket edits and no implementation or test file. Correct the existing validation claim and regression example, and decide error precedence for inputs matching both rejection rules before work resumes. The previous note also identifies the shared `with_criterion_text` caller; clarify its intended coverage and effects. No Decided note or focused test exists.
+1: fail - The prior planning note remains unresolved: `_criterion_text` checks splitlines before stripping, contrary to the description and claimed `a\x1d\tb` baseline failure. The required property test and implementation are absent, so regression and round-trip verification were not possible. Specify a genuine baseline failure.
+2: fail - The prior planning note remains unresolved: `[x] a\nb` requires two different messages under the current wording. Specify precedence and the property assertion; the required test is absent.
+3: fail - The independently specified CLI test is absent from `tests/test_property_criteria_text.py`; no change exists to verify against main. Add the specified regression test and implementation after planning.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -58,3 +63,5 @@ Inspected `with_criteria`, `_criterion_text`, parser locations, existing propert
 - 2026-11-22T21:26:06Z rosy-pearl-falcon: changed owner, notes
 - 2026-11-22T21:26:06Z rosy-pearl-falcon doing → planning
 - 2026-11-22T22:01:15Z human planning → review
+- 2026-11-22T22:04:08Z witty-ebony-puffin: changed owner, acceptance criteria, notes
+- 2026-11-22T22:04:08Z witty-ebony-puffin review → planning
