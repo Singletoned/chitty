@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: planning
+status: todo
 labels:
   - needs-minor
 created: 2026-11-22
@@ -41,9 +41,10 @@ inline uses include `tests/test_property_next.py` lines 140, 152, 161 and
 Every glyph in a skip string in `src/chitty/selection.py` must come from a
 module constant (no inline glyph literals), so the test below sees them all:
 lift the human, untestable and running glyphs to constants, and make line
-102 use `BROKEN_DEPENDENCY_GLYPH` (import it from `chitty.store` if that
-creates no import cycle; otherwise move the constant to `selection.py` and
-import it in `store.py` and `cli.py`).
+102 use `BROKEN_DEPENDENCY_GLYPH`. `store.py` already imports from
+`chitty.selection`, so move the constant to `selection.py` and import it in
+`store.py` and `cli.py`. The grep criterion is what catches an inline glyph
+left behind; the test below covers the constants.
 
 Test, in a new file `tests/test_list_glyphs.py`: collect every glyph
 `chitty list` can print in its status, priority and skip columns
@@ -56,11 +57,23 @@ glyph, assert it is one character, has no U+FE0F, and has
 `unicodedata.east_asian_width` `W`. Run it before the change and record that
 it fails.
 
+Also add, in the same file, a `CliTestCase` test listing two `todo` tickets,
+one with `priority: high` and one with no priority: the title starts at the
+same `_columns` offset on both lines. Existing expected strings in
+`tests/test_cli.py` (around lines 1199-1215) and `tests/test_run_lock.py`
+(around line 143) change padding with the new glyphs; update them so columns
+stay aligned.
+
 ## Acceptance Criteria
 
 - [ ] No glyph in the `chitty list` status, priority or skip columns is a narrow character or uses U+FE0F; shown by `tests/test_list_glyphs.py`, which fails before the change.
 - [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing.
 - [ ] `make check` passes.
+- [ ] A row with no priority and a row with `⏫` start their titles at the same column; shown by the alignment test.
+
+## Notes
+
+Cold read 2: constant placement fixed to `selection.py`, alignment test added; nothing else serious.
 
 ## History
 
@@ -68,3 +81,5 @@ it fails.
 - 2026-11-22T12:56:23Z friendly-jade-stoat: changed labels, acceptance criteria
 - 2026-11-22T12:56:23Z friendly-jade-stoat todo → planning
 - 2026-11-22T12:57:13Z friendly-jade-stoat: changed description
+- 2026-11-22T12:58:27Z friendly-jade-stoat: changed description, acceptance criteria, notes
+- 2026-11-22T12:58:27Z friendly-jade-stoat planning → todo
