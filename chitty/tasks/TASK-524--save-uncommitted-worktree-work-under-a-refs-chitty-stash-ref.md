@@ -61,6 +61,10 @@ Split again 2026-11-21: the worker model returned five sessions saying it could 
 
 All five regression tests failed against the NotImplementedError stub (unittest exit 1).
 
+## Summary
+
+Implemented private-ref work saving and five real Git tests. All five failed against the stub; make check passed (1039 tests).
+
 ## History
 
 - 2026-11-21T23:10:55Z lively-zinc-newt → planning
@@ -93,3 +97,4 @@ All five regression tests failed against the NotImplementedError stub (unittest 
 - 2026-11-22T00:16:51Z tidy-khaki-raven todo → doing
 - 2026-11-22T00:18:07Z tidy-khaki-raven: wrote the plan
 - 2026-11-22T00:18:36Z tidy-khaki-raven: changed notes
+- 2026-11-22T00:20:03Z tidy-khaki-raven: changed summary
