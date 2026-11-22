@@ -3,6 +3,8 @@ title: Class and module fixture errors are silently ignored by `make check` and 
 status: backlog
 labels:
   - bug
+depends_on:
+  - TASK-597
 created: 2026-11-22
 ---
 
@@ -17,3 +19,4 @@ Options to decide while planning: run at `--level class` (tests in a class then 
 ## History
 
 - 2026-11-22T18:44:25Z plucky-umber-wren → backlog
+- 2026-11-22T20:16:13Z plucky-umber-wren: changed dependencies
