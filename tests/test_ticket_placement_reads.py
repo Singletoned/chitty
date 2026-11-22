@@ -1,6 +1,9 @@
 from pathlib import Path
 from unittest.mock import patch
 
+from hypothesis import find, given, settings
+from hypothesis import strategies as st
+
 from chitty import store
 from chitty.errors import ChittyError
 from chitty.ids import TaskId
@@ -14,6 +17,51 @@ from tests.ticket_placements import (
     make_repo,
     place,
 )
+
+
+@st.composite
+def generated_cases(draw):
+    with_errors = draw(st.booleans())
+    numbers = draw(st.lists(st.integers(1, 59), min_size=2, max_size=4, unique=True))
+    placements = draw(
+        st.lists(
+            st.sampled_from("abcdeghkm" if with_errors else "abcdgh"),
+            min_size=len(numbers),
+            max_size=len(numbers),
+        )
+    )
+    return list(zip(numbers, placements))
+
+
+def generated_mismatches(parent: Path, case) -> list[str]:
+    root = make_repo(parent)
+    expected = [(number, place(root, placement, number)) for number, placement in case]
+    repo = Repo.open(root)
+    mismatches = []
+    for number, item in expected:
+        errors = item.errors or (("no task",) if item.title is None else ())
+        try:
+            found = repo.find(TaskId("TASK", number))
+        except ChittyError as exc:
+            if not errors or any(text not in str(exc) for text in errors):
+                mismatches.append(f"{number}: unexpected find error {exc}")
+        else:
+            if errors or (found.task.frontmatter.title, found.archived) != (
+                item.title,
+                item.archived,
+            ):
+                mismatches.append(f"{number}: unexpected find result {found}")
+    try:
+        listed = repo.tasks(repo.context("tasks"), "all")
+    except ChittyError as exc:
+        if not any(item.errors for _, item in expected):
+            mismatches.append(f"unexpected tasks error {exc}")
+    else:
+        actual = {(t.id.number, t.task.frontmatter.title, t.archived) for t in listed}
+        wanted = {(n, item.title, item.archived) for n, item in expected if item.title is not None}
+        if any(item.errors for _, item in expected) or actual != wanted:
+            mismatches.append(f"tasks {actual!r} != {wanted!r}")
+    return mismatches
 
 
 def placement_mismatches(parent: Path) -> list[str]:
@@ -111,6 +159,27 @@ def own_worktree_mismatches(parent: Path) -> list[str]:
 
 
 class TestTicketPlacementReads(RepoTestCase):
+    @settings(max_examples=30, deadline=None)
+    @given(case=generated_cases())
+    def test_generated_placements(self, case):
+        self.assertEqual(generated_mismatches(self.tmp, case), [])
+
+    def test_generated_mutant_swapped_contains(self):
+        real = store.ticket_source
+
+        def mutant(*args):
+            args = list(args)
+            contains = args[7]
+            args[7] = lambda a, b: contains(b, a)
+            return real(*args)
+
+        with patch("chitty.store.ticket_source", mutant):
+            find(
+                generated_cases(),
+                lambda case: bool(generated_mismatches(self.tmp, case)),
+                settings=settings(max_examples=100, deadline=None, database=None),
+            )
+
     def test_own_worktree_placements(self):
         self.assertEqual(own_worktree_mismatches(self.tmp), [])
 
