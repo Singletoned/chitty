@@ -27,6 +27,7 @@ class Problem:
 
 
 MARKDOWN = MarkdownIt("commonmark")
+MARKDOWN_DELIMITERS = MarkdownIt("commonmark").disable("text_join")
 MARKDOWN_FIELDS: tuple[SectionName, ...] = ("Description", "Plan", "Notes", "Summary")
 DELIMITERS = "*_"
 MAX_CRITERIA = 5
@@ -77,7 +78,7 @@ def _markdown_warnings(path: Path, task: Task) -> list[Problem]:
                 )
             )
         seen: set[str] = set()
-        for token in MARKDOWN.parseInline(text):
+        for token in MARKDOWN_DELIMITERS.parseInline(text):
             for child in token.children or []:
                 if child.type != "text":
                     continue

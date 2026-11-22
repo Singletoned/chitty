@@ -126,6 +126,29 @@ class TestCheck(StoreTestCase):
             ["Description contains literal '*' Markdown delimiter; use backticks for code"],
         )
 
+    def test_escaped_and_unescaped_delimiters(self):
+        cases = [
+            (r"static/photos/\*.jpg", []),
+            (r"static/photos/\_x\_.jpg", []),
+            ("static/photos/*.jpg", ["*"]),
+            (r"a\* and files/*.jpg", ["*"]),
+            ("snake_case *a and b_c", ["*"]),
+        ]
+        stored = self.add("Delimiter cases")
+        original = stored.path.read_text()
+        for description, expected in cases:
+            with self.subTest(description=description):
+                stored.path.write_text(original.replace("Describe.", description))
+                problems = check(self.repo, self.repo.contexts(), [])
+                self.assertEqual(
+                    [problem.message for problem in problems],
+                    [
+                        f"Description contains literal '{delimiter}' Markdown delimiter; "
+                        "use backticks for code"
+                        for delimiter in expected
+                    ],
+                )
+
     def test_does_not_warn_for_markdown_constructs(self):
         stored = self.add("Markdown constructs")
         stored.path.write_text(
