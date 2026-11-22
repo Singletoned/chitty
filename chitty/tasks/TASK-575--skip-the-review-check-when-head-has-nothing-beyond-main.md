@@ -53,8 +53,9 @@ Tests, in `tests/test_review_check.py`:
 
 ## Acceptance Criteria
 
-- [ ] In the runner workflow, `-s review` from a checkout whose HEAD has no commits beyond the main branch does not run the check and prints `skipped check`; shown by the new runner test, which fails without the change.
-- [ ] With commits beyond the main branch, the check still runs and a failing check still refuses; shown by `test_failure` with the empty commit added to `prepare()`.
+- [ ] In the runner workflow, `-s review` with HEAD already on the main branch does not run the check and prints `skipped check: HEAD is already on main` to stderr; shown by the new runner test, which fails without the change.
+- [ ] Regression guard: with a commit beyond the main branch, a failing check still refuses; `test_failure` must still pass after the empty commit is added to `prepare()` (without that commit it would skip).
+- [ ] A branch whose only new commit is a merge still runs the check; shown by the new merge-only test.
 - [ ] In the tickets workflow the check still runs on `main`; shown by the new tickets test.
 - [ ] `make check` passes.
 
@@ -64,3 +65,4 @@ Tests, in `tests/test_review_check.py`:
 - 2026-11-22T12:50:24Z friendly-jade-stoat: changed acceptance criteria
 - 2026-11-22T12:50:24Z friendly-jade-stoat todo → planning
 - 2026-11-22T12:51:35Z friendly-jade-stoat: changed description
+- 2026-11-22T12:51:51Z friendly-jade-stoat: changed acceptance criteria
