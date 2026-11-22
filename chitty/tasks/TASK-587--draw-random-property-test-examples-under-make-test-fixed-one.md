@@ -1,8 +1,7 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: planning
+status: todo
 priority: high
-owner: plucky-umber-wren
 created: 2026-11-22
 ---
 
@@ -58,3 +57,5 @@ Out of scope: how many examples each profile draws (a later ticket scales per-te
 - 2026-11-22T16:29:33Z plucky-umber-wren planning → cold-read
 - 2026-11-22T16:30:21Z plucky-umber-wren: changed description
 - 2026-11-22T16:30:21Z plucky-umber-wren cold-read → planning
+- 2026-11-22T16:30:23Z plucky-umber-wren: changed owner
+- 2026-11-22T16:30:23Z plucky-umber-wren planning → todo
