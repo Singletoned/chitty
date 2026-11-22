@@ -1,6 +1,6 @@
 ---
 title: Plan which commits on a ticket branch are bookkeeping to squash
-status: cold-read
+status: todo
 created: 2026-11-16
 ---
 
@@ -38,3 +38,4 @@ Tests in a new `tests/test_squash_bookkeeping.py`, with Hypothesis (the reposito
 - 2026-11-22T10:12:38Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T10:12:40Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T10:14:06Z friendly-jade-stoat: changed title, description, acceptance criteria
+- 2026-11-22T10:14:08Z friendly-jade-stoat cold-read → todo
