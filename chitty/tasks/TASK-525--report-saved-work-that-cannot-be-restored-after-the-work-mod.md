@@ -23,6 +23,10 @@ Tests in `tests/test_run_work_rebases.py`, in a new class like `TestWorkRebases`
 - [ ] `test_unrestorable_work_is_noted` passes and fails before the change; `test_restorable_work_is_not_noted` passes
 - [ ] `make check` passes
 
+## Plan
+
+Add focused conflicting and clean restore tests, confirm regression, then report surviving saved-work refs after rebase and run checks.
+
 ## Notes
 
 Keep in planning until `TASK-370` lands; then replan, cold-read and move to `todo`.
@@ -37,3 +41,4 @@ Keep in planning until `TASK-370` lands; then replan, cold-read and move to `tod
 - 2026-11-22T04:45:39Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T04:45:39Z lively-zinc-newt cold-read → todo
 - 2026-11-22T04:46:53Z upbeat-navy-marten todo → doing
+- 2026-11-22T04:49:36Z upbeat-navy-marten: wrote the plan
