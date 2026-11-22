@@ -1,6 +1,6 @@
 ---
 title: Check `chitty renumber` is idempotent with a property
-status: doing
+status: blocked
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -37,6 +37,8 @@ Check failed before this session: check exited with status 2; output in `.chitty
 
 The configured check failed because the unrelated staged file `tmpt1qelkfu/example.py` is not Ruff-formatted (`.chitty/check.log`). Its origin is unknown, so I left it untouched. The owner of that staged file needs to resolve or remove it from this worktree before `make check` and the clean-worktree review transition can be verified. The specified mutant failure is already recorded above; the existing property and fixture are committed.
 
+Blocked: the owner of the unrelated staged `tmpt1qelkfu/example.py` must resolve or remove it. Its Ruff formatting failure prevents `make check`, and its staged presence prevents the clean-worktree review transition. I left the unrecognized file untouched. See `.chitty/check.log` for the failure; verification remains unfinished.
+
 ## History
 
 - 2026-11-22T03:23:05Z lively-zinc-newt → planning
@@ -54,3 +56,5 @@ The configured check failed because the unrelated staged file `tmpt1qelkfu/examp
 - 2026-11-22T05:13:38Z upbeat-khaki-otter todo → doing
 - 2026-11-22T05:13:41Z upbeat-khaki-otter: changed notes
 - 2026-11-22T05:13:58Z upbeat-khaki-otter: changed notes
+- 2026-11-22T05:14:03Z upbeat-khaki-otter: changed notes
+- 2026-11-22T05:14:03Z upbeat-khaki-otter doing → blocked
