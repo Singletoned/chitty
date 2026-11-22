@@ -19,6 +19,10 @@ Suggested structure (from a cold reader whose probe of this property passed at 3
 
 - [ ] The round-trip property passes, and fails (with any assertion or error) against a `restore_work` that skips `git update-ref -d` and against a `save_work` that omits `git add -A`; a note records each run and its actual failure; `make check` passes
 
+## Plan
+
+Add a generated isolated Git repository round-trip test, verify both specified mutations fail, then run formatting and checks.
+
 ## History
 
 - 2026-11-22T00:06:31Z lively-zinc-newt → planning
@@ -27,3 +31,4 @@ Suggested structure (from a cold reader whose probe of this property passed at 3
 - 2026-11-22T01:34:09Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:34:09Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:01:50Z brisk-ebony-marten todo → doing
+- 2026-11-22T02:03:38Z brisk-ebony-marten: wrote the plan
