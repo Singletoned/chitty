@@ -1,6 +1,6 @@
 ---
 title: Move the logged-command helpers from `run.py` into `commands.py`
-status: doing
+status: review
 parent: TASK-343
 created: 2026-11-21
 ---
@@ -40,7 +40,7 @@ Review failed (work): A moved helper test still imports through the old module.
 
 ## Summary
 
-Moved logged command helpers into commands.py and updated callers. make check passed: 1065 tests; old-name grep returned no matches.
+Corrected the remaining test import after review. make check passed all 1067 tests; formatting and chitty fix ran.
 
 ## History
 
@@ -59,3 +59,5 @@ Moved logged command helpers into commands.py and updated callers. make check pa
 - 2026-11-22T00:55:19Z upbeat-coral-jay: changed acceptance criteria, notes
 - 2026-11-22T00:55:19Z upbeat-coral-jay review → doing
 - 2026-11-22T00:59:34Z jolly-fawn-stoat: wrote the plan
+- 2026-11-22T01:01:38Z jolly-fawn-stoat: changed summary
+- 2026-11-22T01:01:38Z jolly-fawn-stoat doing → review
