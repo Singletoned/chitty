@@ -35,6 +35,8 @@ Replanned 2026-11-22: failing on the first run's count under the mutant is accep
 
 Check failed before this session: check exited with status 2; output in `.chitty/check.log`
 
+The configured check failed because the unrelated staged file `tmpt1qelkfu/example.py` is not Ruff-formatted (`.chitty/check.log`). Its origin is unknown, so I left it untouched. The owner of that staged file needs to resolve or remove it from this worktree before `make check` and the clean-worktree review transition can be verified. The specified mutant failure is already recorded above; the existing property and fixture are committed.
+
 ## History
 
 - 2026-11-22T03:23:05Z lively-zinc-newt → planning
@@ -51,3 +53,4 @@ Check failed before this session: check exited with status 2; output in `.chitty
 - 2026-11-22T05:12:04Z lively-zinc-newt planning → todo
 - 2026-11-22T05:13:38Z upbeat-khaki-otter todo → doing
 - 2026-11-22T05:13:41Z upbeat-khaki-otter: changed notes
+- 2026-11-22T05:13:58Z upbeat-khaki-otter: changed notes
