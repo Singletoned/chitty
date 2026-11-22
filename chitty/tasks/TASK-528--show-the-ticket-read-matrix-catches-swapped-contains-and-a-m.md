@@ -1,6 +1,6 @@
 ---
 title: Show the ticket-read matrix catches swapped `contains` and a missing `main_tip`
-status: planning
+status: cold-read
 depends_on:
   - TASK-527
 parent: TASK-393
@@ -23,8 +23,12 @@ A planner probe on `main` (2026-11-21) showed swapped `contains` changes most pl
 
 Keep in planning until its dependency lands; then compare with the landed code, cold-read and move to `todo`.
 
+`TASK-527` landed 2026-11-22: `PLACEMENTS = tuple("abcdefghijklm")` on `main`.
+
 ## History
 
 - 2026-11-21T23:18:39Z lively-zinc-newt → todo
 - 2026-11-21T23:18:57Z lively-zinc-newt: changed notes
 - 2026-11-21T23:18:57Z lively-zinc-newt todo → planning
+- 2026-11-22T00:16:50Z lively-zinc-newt: changed notes
+- 2026-11-22T00:16:50Z lively-zinc-newt planning → cold-read
