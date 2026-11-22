@@ -528,6 +528,28 @@ def _run_ticket_with_log(
             return _record_ticket_error(Repo(worktree, main_repo.config), action, "rebase", error)
     context["worktree"] = str(worktree)
     branch_repo = Repo(worktree, main_repo.config)
+    if action.mode == "work" and not stopped:
+        ref = f"refs/chitty/stash/{action.id}"
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", "--quiet", ref],
+            cwd=worktree,
+            stdout=subprocess.DEVNULL,
+            check=False,
+        )
+        if result.returncode == 0:
+            branch_repo.edit(
+                action.id,
+                Edit(
+                    note=(
+                        "Uncommitted changes from before the rebase did not apply cleanly; "
+                        f"they are in {ref}."
+                    ),
+                    skip_verdicts=True,
+                    skip_current_version=True,
+                ),
+            )
+        elif result.returncode != 1:
+            raise subprocess.CalledProcessError(result.returncode, result.args)
     if action.mode == "work" and selected_status == "todo" and not stopped:
         branch_repo.edit(
             action.id,

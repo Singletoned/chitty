@@ -71,6 +71,51 @@ class TestWorkRebases(ReviewMergeTestCase):
         self.assertTrue((self.logs / "agent").exists())
 
 
+class TestSavedWork(ReviewMergeTestCase):
+    def setUp(self):
+        super().setUp()
+        (self.tmp / "setup.py").write_text(
+            "import subprocess, sys\n"
+            "from pathlib import Path\n"
+            "Path(sys.argv[1]).write_text(\n"
+            "    subprocess.check_output(['git', 'status', '--porcelain'], text=True))\n"
+        )
+
+    def run_with_saved_work(self, filename):
+        self.git("switch", "--quiet", "-c", "task-1")
+        self.run_cli("edit", "1", "-s", "doing")
+        self.git("switch", "--quiet", "main")
+        self.move_main(shared="main\n")
+        self.git("worktree", "add", ".worktrees/task-1", "task-1")
+        (self.worktree / filename).write_text("uncommitted\n")
+        self.run_cli("run", "--mode", "work")
+        ticket_path = self.git("ls-tree", "-r", "--name-only", "task-1", "chitty/tasks").strip()
+        ticket = self.git("show", f"task-1:{ticket_path}")
+        ref = subprocess.run(
+            ["git", "rev-parse", "--verify", "--quiet", "refs/chitty/stash/TASK-1"],
+            cwd=self.worktree,
+            capture_output=True,
+            check=False,
+        )
+        return ticket, ref.returncode
+
+    def test_unrestorable_work_is_noted(self):
+        ticket, ref_status = self.run_with_saved_work("shared.txt")
+        self.assertIn(
+            "Uncommitted changes from before the rebase did not apply cleanly; "
+            "they are in refs/chitty/stash/TASK-1.",
+            ticket,
+        )
+        self.assertEqual(ref_status, 0)
+        self.assertEqual((self.logs / "setup").read_text(), "")
+        self.assertTrue((self.logs / "agent").exists())
+
+    def test_restorable_work_is_not_noted(self):
+        ticket, ref_status = self.run_with_saved_work("other.txt")
+        self.assertNotIn("Uncommitted changes from before the rebase", ticket)
+        self.assertNotEqual(ref_status, 0)
+
+
 class TestConflictAgent(ReviewMergeTestCase):
     def setUp(self):
         super().setUp()
