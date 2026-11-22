@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in text given to `chitty add` and `chitty edit`
-status: planning
+status: todo
 labels:
   - needs-minor
 depends_on:
@@ -36,3 +36,4 @@ Cold read 2026-11-21: applied its findings (set_criteria pairs, fixture lookup);
 - 2026-11-21T23:40:10Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:59:58Z lively-zinc-newt: changed dependencies, description, notes
 - 2026-11-21T23:59:58Z lively-zinc-newt cold-read → planning
+- 2026-11-22T00:00:37Z lively-zinc-newt planning → todo
