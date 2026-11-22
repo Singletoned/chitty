@@ -1,6 +1,6 @@
 ---
 title: Stop telling agents to escape literal asterisks
-status: todo
+status: doing
 depends_on:
   - TASK-530
 parent: TASK-348
@@ -31,3 +31,4 @@ Out of scope: `AGENTS.md` (its hand-written `## Chitty` section also has the sen
 - 2026-11-21T23:22:30Z lively-zinc-newt todo → cold-read
 - 2026-11-21T23:23:20Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:23:20Z lively-zinc-newt cold-read → todo
+- 2026-11-22T01:47:26Z zesty-yellow-jay todo → doing
