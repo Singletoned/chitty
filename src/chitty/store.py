@@ -17,7 +17,7 @@ from typing import Any, Literal
 
 from pydantic import ValidationError
 
-from chitty import formatter, git, ids, locks
+from chitty import commands, formatter, git, ids, locks
 from chitty.actor import actor
 from chitty.config import (
     BACKLOG_DIR,
@@ -972,12 +972,36 @@ class Repo:
             and not edit.skip_current_version
         ):
             self._require_current_version(stored)
-            if uncommitted := git.uncommitted_paths(self.root):
-                listed = ", ".join(f"`{path}`" for path in uncommitted)
-                raise ChittyError(
-                    f"cannot move {task_id} to {edit.status}; the worktree has "
-                    f"uncommitted changes: {listed}. Commit or resolve them before changing status"
-                )
+
+            def require_clean() -> None:
+                if uncommitted := git.uncommitted_paths(self.root):
+                    listed = ", ".join(f"`{path}`" for path in uncommitted)
+                    raise ChittyError(
+                        f"cannot move {task_id} to {edit.status}; the worktree has "
+                        f"uncommitted changes: {listed}. Commit or resolve them "
+                        "before changing status"
+                    )
+
+            require_clean()
+            if entering_review and self.config.check:
+                command = self.config.check
+                try:
+                    status = commands.run_logged(
+                        "check", command, self.root, self.config.command_timeout
+                    )
+                except commands.CommandTimedOut as error:
+                    raise ChittyError(f"cannot move {task_id} to review; {error}") from error
+                except FileNotFoundError as error:
+                    raise ChittyError(
+                        f"cannot move {task_id} to review; check command not found: {command}"
+                    ) from error
+                if status:
+                    raise ChittyError(
+                        f"cannot move {task_id} to review; check failed with status {status}; "
+                        "output in `.chitty/check.log`"
+                    )
+                require_clean()
+                self._require_current_version(stored)
         if edit.replace_in_description:
             if edit.description is not None:
                 raise ChittyError("--replace-in-description cannot be combined with --description")

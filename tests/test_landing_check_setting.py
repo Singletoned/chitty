@@ -56,7 +56,7 @@ class TestLandingCheckReview(ReviewMergeTestCase):
         result = self.run_cli("run", "--mode", "review")
 
         self.assertEqual(result.stdout.splitlines()[-1], "TASK-1: review → done")
-        self.assertEqual((self.logs / "calls").read_text(), "check\nlanding\n")
+        self.assertEqual((self.logs / "calls").read_text(), "check\ncheck\nlanding\n")
 
     def test_review_falls_back_to_check_when_unset(self):
         self._configure_checks(landing=False)
@@ -66,7 +66,7 @@ class TestLandingCheckReview(ReviewMergeTestCase):
 
         self.run_cli("run", "--mode", "review")
 
-        self.assertEqual((self.logs / "calls").read_text(), "check\ncheck\n")
+        self.assertEqual((self.logs / "calls").read_text(), "check\ncheck\ncheck\n")
 
     def _configure_checks(self, landing: bool):
         script = self.tmp / "record.py"
