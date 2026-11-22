@@ -14,7 +14,7 @@ class TestTicketPlacementReads(RepoTestCase):
                     expected = place(root, placement, 5)
                     if edit:
                         edit_uncommitted(root, 5)
-                    title = "uncommitted" if edit and placement == "a" else expected.title
+                    title = "uncommitted" if edit and placement in ("a", "j") else expected.title
                     repo = Repo.open(root)
                     task_id = TaskId("TASK", 5)
                     if expected.errors:

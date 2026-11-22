@@ -8,7 +8,7 @@ from pathlib import Path
 
 from tests.support import CONFIG
 
-PLACEMENTS = ("a", "b", "c", "d", "e", "f", "i")
+PLACEMENTS = tuple("abcdefghijklm")
 
 
 @dataclass(frozen=True)
@@ -69,22 +69,48 @@ def place(root: Path, placement: str, number: int) -> Expected:
         return Expected("main")
     name = f"task-{number}"
     git(root, "checkout", "-b", "other" if placement == "f" else name)
-    write_ticket(root, number, "branch")
+    if placement != "h":
+        write_ticket(root, number, "branch")
+    path = f"chitty/tasks/TASK-{number}--example.md"
+    if placement == "g":
+        (root / "chitty/tasks/archive").mkdir(parents=True, exist_ok=True)
+        git(root, "add", path)
+        git(root, "mv", path, "chitty/tasks/archive/")
+    if placement == "h":
+        git(root, "rm", path)
     commit(root, 2)
-    if placement in ("c", "d", "e"):
-        if placement == "e":
+    if placement in ("c", "d", "e", "l", "m"):
+        if placement in ("e", "m"):
             git(root, "checkout", "main")
             git(root, "checkout", "-b", "remote-fixture")
         write_ticket(root, number, "remote")
         commit(root, 3)
         git(root, "update-ref", f"refs/remotes/origin/{name}", "HEAD")
+        if placement == "l":
+            git(root, "reset", "--hard", "HEAD^")
     git(root, "checkout", "main")
     if placement == "c":
         git(root, "branch", "-D", name)
-    if placement == "e":
+    if placement in ("e", "m"):
         git(root, "branch", "-D", "remote-fixture")
+    if placement == "m":
+        git(root, "branch", "-D", name)
+    if placement in ("j", "l"):
+        git(root, "merge", "--ff-only", name)
+    if placement in ("j", "k", "m"):
+        write_ticket(root, number, "main-2")
+        commit(root, 4)
+    if placement in ("k", "m"):
+        ref = name if placement == "k" else f"origin/{name}"
+        return Expected(None, errors=(f"`TASK-{number}`", f"`{ref}`", "`main`"))
+    if placement == "j":
+        return Expected("main-2")
+    if placement == "g":
+        return Expected("branch", archived=True)
+    if placement == "h":
+        return Expected(None)
     if placement == "f":
         return Expected(None)
     if placement == "e":
         return Expected(None, errors=(name, f"origin/{name}"))
-    return Expected("remote" if placement in ("c", "d") else "branch")
+    return Expected("remote" if placement in ("c", "d", "l") else "branch")
