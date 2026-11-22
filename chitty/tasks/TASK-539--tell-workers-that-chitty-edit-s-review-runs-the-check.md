@@ -20,9 +20,14 @@ In `src/chitty/roles/work.md`, replace the sentence that tells workers to run `c
 
 Update the work guide and its focused assertion, verify the test fails before the guide change, then format and run checks.
 
+## Notes
+
+The updated guide assertion failed against the old guide before the wording change, as expected.
+
 ## History
 
 - 2026-11-22T01:11:08Z lively-zinc-newt → todo
 - 2026-11-22T01:11:21Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T02:40:38Z quick-umber-eel todo → doing
 - 2026-11-22T02:43:01Z quick-umber-eel: wrote the plan
+- 2026-11-22T02:43:21Z quick-umber-eel: changed notes
