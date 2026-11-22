@@ -30,6 +30,8 @@ Add conflict runner tests with a prompt-recording agent, verify regression, then
 
 Planner correction 2026-11-22 04:3x: a planner tooling slip replaced this Description with an older draft at 04:30 (it named a nonexistent `_prepare_work_session`). The Description is now the intended text: gate the three blocks with a `stopped` flag, stop only for `doing`/`error` tickets with a clean worktree, and the fake-agent contract. Please work from this version.
 
+Before the fix, both stopped-rebase tests fail on the prompt/rebase assertion; the dirty-worktree test passes.
+
 ## History
 
 - 2026-11-22T03:43:02Z lively-zinc-newt → planning
@@ -40,3 +42,4 @@ Planner correction 2026-11-22 04:3x: a planner tooling slip replaced this Descri
 - 2026-11-22T04:30:59Z intrepid-ginger-gannet todo → doing
 - 2026-11-22T04:31:20Z lively-zinc-newt: changed description, notes
 - 2026-11-22T04:32:54Z intrepid-ginger-gannet: wrote the plan
+- 2026-11-22T04:33:40Z intrepid-ginger-gannet: changed notes
