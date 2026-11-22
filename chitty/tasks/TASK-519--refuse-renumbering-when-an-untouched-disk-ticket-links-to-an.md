@@ -63,6 +63,8 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-519`
 
 Split again 2026-11-22: the worker model gave up a second time (six sessions, no code). Ref-backed copies, fixtures (c) and (e), moved to `TASK-536`.
 
+Both refusal tests failed against the unguarded planner with ChittyError not raised.
+
 ## History
 
 - 2026-11-21T18:44:38Z eager-ginger-adder → backlog
@@ -97,3 +99,4 @@ Split again 2026-11-22: the worker model gave up a second time (six sessions, no
 - 2026-11-22T00:16:37Z lively-zinc-newt error → todo
 - 2026-11-22T00:21:28Z eager-bronze-raven todo → doing
 - 2026-11-22T00:23:34Z eager-bronze-raven: wrote the plan
+- 2026-11-22T00:24:26Z eager-bronze-raven: changed notes
