@@ -24,6 +24,10 @@ Tests in a new `tests/test_squash_bookkeeping_git.py`, with Hypothesis (the repo
 - [ ] The real-Git property passes: the final tree equals the old tip's, and the branch is the implementation commits in order (subjects, author names, author dates, `src/` trees) followed by one `chitty: land TASK-1` commit with the stated body and `Task: TASK-1` trailer, changing only `chitty/tasks/`, with the return value equal to the bookkeeping count; or is unchanged with return value 0 when fewer than two bookkeeping commits were drawn
 - [ ] The ticket-file example leaves `HEAD` unchanged and returns 0; the not-rebased example raises `ChittyError` and leaves `HEAD` unchanged; the restore-failure example sees a `restore` call, raises `ChittyError` naming the step, and ends with `HEAD` at the old tip and a clean worktree; `make check` passes
 
+## Plan
+
+Build the branch plan from Git metadata after checking ancestry and merges; rewrite with rollback on failure, then cover the specified real-Git property and failure cases before running make check.
+
 ## Notes
 
 Planner, 2026-11-22: split from `TASK-339`, which has landed; this text was compared with what landed (`BranchCommit`, `SquashPlan`, `squash_plan` in `src/chitty/git.py`) and cold-read again.
@@ -42,3 +46,4 @@ Planner, 2026-11-22: third cold read checked. Its claim that `git restore --sour
 - 2026-11-22T21:31:59Z plucky-umber-wren: changed description, notes
 - 2026-11-22T21:31:59Z plucky-umber-wren cold-read → todo
 - 2026-11-22T21:32:24Z tidy-zinc-stoat todo → doing
+- 2026-11-22T21:34:27Z tidy-zinc-stoat: wrote the plan
