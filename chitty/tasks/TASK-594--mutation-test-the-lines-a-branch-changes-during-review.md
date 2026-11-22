@@ -1,6 +1,8 @@
 ---
 title: Mutation-test the lines a branch changes during review
 status: backlog
+depends_on:
+  - TASK-597
 created: 2026-11-22
 ---
 
@@ -11,3 +13,4 @@ Planner, 2026-11-22, agreed with the person: a tool limited to the lines a branc
 ## History
 
 - 2026-11-22T17:16:38Z plucky-umber-wren → backlog
+- 2026-11-22T20:16:12Z plucky-umber-wren: changed dependencies
