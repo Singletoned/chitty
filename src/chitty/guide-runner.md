@@ -1,8 +1,10 @@
-A passing review lands through `chitty run`: it fast-forwards `main` only after
-rebasing the ticket branch onto `main` and running the configured setup and
-checks. Agents started without `chitty run` should first rebase the branch
-onto `main` in its worktree and run the configured checks; after they pass, only
-fast-forward `main`. Do not merge or remove branches or worktrees as a reviewer.
+A ticket lands on `main` only after its review passes; a worker never lands
+its own ticket. Under `chitty run`, the runner lands a passing review: it
+fast-forwards `main` only after rebasing the ticket branch onto `main` and
+running the configured setup and checks, so do not merge or remove branches or
+worktrees as a reviewer. A reviewer started without `chitty run` whose review
+passed should first rebase the branch onto `main` in its worktree and run the
+configured checks; after they pass, only fast-forward `main`.
 
 When starting an agent by hand, run the matching focused guide:
 
