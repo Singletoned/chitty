@@ -67,6 +67,10 @@ Tests, in `tests/test_review_check.py`:
 - [ ] In the tickets workflow the check still runs on `main`; shown by the new tickets test.
 - [ ] `make check` passes.
 
+## Plan
+
+Split the fixture, add the requested workflow and merge guards, verify the runner regression fails, then gate the check with ancestry and run the suite.
+
 ## Notes
 
 Cold read 2: setup wording, guard tests and missing-main behaviour clarified; no change to what is built.
@@ -81,3 +85,4 @@ Cold read 2: setup wording, guard tests and missing-main behaviour clarified; no
 - 2026-11-22T12:52:51Z friendly-jade-stoat: changed description, notes
 - 2026-11-22T12:52:51Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:03:19Z quick-fawn-falcon todo → doing
+- 2026-11-22T15:06:06Z quick-fawn-falcon: wrote the plan
