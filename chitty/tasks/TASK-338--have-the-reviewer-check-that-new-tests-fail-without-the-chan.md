@@ -1,6 +1,6 @@
 ---
 title: Have the reviewer check that new tests fail without the change
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -37,3 +37,4 @@ Is this the shape you want (whole-check failure at the merge base, one setting),
 - 2026-11-18T20:36:36Z lively-quartz-crane: changed notes
 - 2026-11-22T10:12:06Z friendly-jade-stoat: changed labels, notes
 - 2026-11-22T11:13:58Z friendly-jade-stoat: changed title, labels, owner, dependencies, description
+- 2026-11-22T11:14:07Z friendly-jade-stoat planning → todo
