@@ -1,6 +1,6 @@
 ---
 title: Find a structured link to a renumbered ID in ticket frontmatter
-status: review
+status: done
 parent: TASK-391
 created: 2026-11-21
 ---
@@ -23,8 +23,8 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 
 ## Acceptance Criteria
 
-- [ ] Against the `NotImplementedError` stub, `test_blocking_link` errors with `NotImplementedError` (reviewer checks the output); after implementation it passes
-- [ ] Both committed mutant tests pass, showing the property fails for the case-sensitive mutant and for the mutant that ignores `parent`; `make check` passes
+- [x] Against the `NotImplementedError` stub, `test_blocking_link` errors with `NotImplementedError` (reviewer checks the output); after implementation it passes
+- [x] Both committed mutant tests pass, showing the property fails for the case-sensitive mutant and for the mutant that ignores `parent`; `make check` passes
 
 ## Plan
 
@@ -33,6 +33,10 @@ Add the pure link comparison and property-based cases with explicit examples and
 ## Notes
 
 Stub verification: the focused test errored with NotImplementedError in blocking_link, as required.
+
+Reviewed:
+1: pass - Replaced the function at runtime with a NotImplementedError stub and ran test_blocking_link: FAILED (errors=1), NotImplementedError; make check then passed with the implementation.
+2: pass - make check printed Ran 1034 tests and OK, including both mutant tests; each wraps the property in assertRaises(AssertionError), with explicit examples detecting the mutations.
 
 ## Summary
 
@@ -51,3 +55,5 @@ Implemented structured link comparison and property tests with explicit examples
 - 2026-11-21T23:59:00Z plucky-khaki-crane: changed notes
 - 2026-11-22T00:00:24Z plucky-khaki-crane: changed summary
 - 2026-11-22T00:00:26Z plucky-khaki-crane doing → review
+- 2026-11-22T00:05:03Z golden-russet-jay: changed notes; ticked acceptance criteria
+- 2026-11-22T00:05:03Z golden-russet-jay review → done
