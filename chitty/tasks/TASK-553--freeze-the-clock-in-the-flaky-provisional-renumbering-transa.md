@@ -19,7 +19,12 @@ To show the fix: temporarily make the clock advance one second between the two c
 
 - [ ] `test_transaction` uses one fixed time for both calls and passes; a note records the unfixed test failing with a clock that advances between the calls; `make check` passes
 
+## Plan
+
+Freeze the store clock across both transaction preparations; reproduce the failure with an advancing clock, verify the fixed test under the same clock, then run make check.
+
 ## History
 
 - 2026-11-22T04:03:27Z lively-zinc-newt → todo
 - 2026-11-22T04:08:05Z witty-jade-quail todo → doing
+- 2026-11-22T04:09:52Z witty-jade-quail: wrote the plan
