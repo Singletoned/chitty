@@ -23,6 +23,10 @@ Suggested structure (from a cold reader whose probe of this property passed at 3
 
 Add a generated isolated Git repository round-trip test, verify both specified mutations fail, then run formatting and checks.
 
+## Notes
+
+Mutation runs: removing `update-ref -d` failed with `assertNotIn` because the saved ref remained; omitting `git add -A` failed with `ChittyError: git stash create produced no commit` for an untracked-only example. Both mutations were reverted.
+
 ## History
 
 - 2026-11-22T00:06:31Z lively-zinc-newt → planning
@@ -32,3 +36,4 @@ Add a generated isolated Git repository round-trip test, verify both specified m
 - 2026-11-22T01:34:09Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:01:50Z brisk-ebony-marten todo → doing
 - 2026-11-22T02:03:38Z brisk-ebony-marten: wrote the plan
+- 2026-11-22T02:04:45Z brisk-ebony-marten: changed notes
