@@ -1,6 +1,6 @@
 ---
 title: Skip the review check when HEAD has nothing beyond main
-status: todo
+status: planning
 created: 2026-11-22
 ---
 
@@ -39,6 +39,15 @@ Tests, in `tests/test_review_check.py`:
 - New test: same script, `workflow = "tickets"` in `chitty.toml`, on `main`.
   The edit fails with `check failed with status 3`.
 
+## Acceptance Criteria
+
+- [ ] In the runner workflow, `-s review` from a checkout whose HEAD has no commits beyond the main branch does not run the check and prints `skipped check`; shown by the new runner test, which fails without the change.
+- [ ] With commits beyond the main branch, the check still runs and a failing check still refuses; shown by `test_failure` with the empty commit added to `prepare()`.
+- [ ] In the tickets workflow the check still runs on `main`; shown by the new tickets test.
+- [ ] `make check` passes.
+
 ## History
 
 - 2026-11-22T12:50:12Z friendly-jade-stoat → todo
+- 2026-11-22T12:50:24Z friendly-jade-stoat: changed acceptance criteria
+- 2026-11-22T12:50:24Z friendly-jade-stoat todo → planning
