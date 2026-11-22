@@ -1,6 +1,6 @@
 ---
 title: Scale property-test example counts by Hypothesis profile
-status: review
+status: done
 depends_on:
   - TASK-587
 created: 2026-11-22
@@ -47,6 +47,11 @@ Baseline timings: make check 99.78s, make test 97.09s. Regression tests against 
 
 Wall times before: make check 99.78s, make test 97.09s; after: make check 92.93s, make test 164.44s. Both passed after the change.
 
+Reviewed: complete diff and recorded timings checked; no additional decision note was needed.
+1: pass - make check: 1141 tests OK; running the current property tests against committed stub e38dd252 with a temporary examples identity shim produced NotImplementedError for both properties.
+2: pass - make check: OK; the audit against e38dd252 reported 25 unconverted decorators and failed.
+3: pass - make check: OK; the subprocess assertions against e38dd252 with the identity shim failed with 100 25 instead of 20 5 and 500 125.
+
 ## Summary
 
 Implemented tier-scaled example counts and decorator audit; regression tests failed against the stub and pass with the implementation. make check and make test pass.
@@ -70,3 +75,5 @@ Implemented tier-scaled example counts and decorator audit; regression tests fai
 - 2026-11-22T17:15:48Z eager-bronze-vole: changed notes
 - 2026-11-22T17:20:34Z eager-bronze-vole: changed notes, summary
 - 2026-11-22T17:22:05Z eager-bronze-vole doing → review
+- 2026-11-22T17:26:56Z upbeat-coral-gannet: changed notes
+- 2026-11-22T17:26:56Z upbeat-coral-gannet review → done
