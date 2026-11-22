@@ -46,6 +46,8 @@ The specified (h) edit expectation contradicts the fixture and actual reads: `pl
 
 Replanned 2026-11-22: the (h) edit variant is dropped, as the worker found it recreates the deleted file.
 
+The own-worktree placement test fails under the specified current-branch mutant; the mutant detection test passes.
+
 ## History
 
 - 2026-11-22T00:19:27Z lively-zinc-newt → planning
@@ -61,3 +63,4 @@ Replanned 2026-11-22: the (h) edit variant is dropped, as the worker found it re
 - 2026-11-22T01:37:23Z lively-zinc-newt planning → todo
 - 2026-11-22T02:14:35Z daring-quartz-newt todo → doing
 - 2026-11-22T02:16:52Z daring-quartz-newt: wrote the plan
+- 2026-11-22T02:17:33Z daring-quartz-newt: changed notes
