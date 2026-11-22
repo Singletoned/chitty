@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: review
+status: done
 labels:
   - needs-minor
 depends_on:
@@ -29,9 +29,9 @@ Tests in `tests/test_guide_workflow.py` (it exists on the branch; create it if t
 
 ## Acceptance Criteria
 
-- [ ] In a temporary repository with `workflow = "tickets"`, for each role in `ROLE_NAMES`, `chitty guide <role>` and `chitty guide <role> TASK-1` (including `plan` and `setup`, which get the workflow message, not `does not take a ticket ID`) exit 1, print nothing on stdout, and have stderr containing `chitty guide <role> needs workflow = "runner" in the Chitty config`; and calling `guide("work", directory=<root>, workflow=w)` directly raises `ChittyError` for each `w` in `"tickets"`, `"bogus"`, `""` and `"Runner"`; this fails before the change
-- [ ] Under `tickets`, `chitty guide` exits 0 and prints `managed_guide("tickets")`, and `chitty guide --help` exits 0, contains `chitty guide` and contains no role name from `ROLE_NAMES`; this fails before the change
-- [ ] With `workflow = "runner"`, and outside a repository, for each role, without an ID and (for every role except `plan` and `setup`) with `TASK-1`, `chitty guide <role>` exits 0 with empty stderr and stdout equal to `src/chitty/roles/<role>.md` with `<!-- property-signals -->` replaced by the text of `property-signals.md` with `rstrip()` applied to it (the placeholder occurs only in `plan.md` and `cold-read.md`, which must show the substitution), prefixed by `Work only on Chitty ticket TASK-1.` and a blank line when the ID is given; `chitty guide --help` contains every line of the current docstring, including the paragraph starting `Work, review, cold-read and rebase accept`; with `workflow = "bogus"`, `chitty guide work` exits 1 with `workflow:` in stderr and `chitty guide --help` exits 0 with the runner docstring; `make check` passes
+- [x] In a temporary repository with `workflow = "tickets"`, for each role in `ROLE_NAMES`, `chitty guide <role>` and `chitty guide <role> TASK-1` (including `plan` and `setup`, which get the workflow message, not `does not take a ticket ID`) exit 1, print nothing on stdout, and have stderr containing `chitty guide <role> needs workflow = "runner" in the Chitty config`; and calling `guide("work", directory=<root>, workflow=w)` directly raises `ChittyError` for each `w` in `"tickets"`, `"bogus"`, `""` and `"Runner"`; this fails before the change
+- [x] Under `tickets`, `chitty guide` exits 0 and prints `managed_guide("tickets")`, and `chitty guide --help` exits 0, contains `chitty guide` and contains no role name from `ROLE_NAMES`; this fails before the change
+- [x] With `workflow = "runner"`, and outside a repository, for each role, without an ID and (for every role except `plan` and `setup`) with `TASK-1`, `chitty guide <role>` exits 0 with empty stderr and stdout equal to `src/chitty/roles/<role>.md` with `<!-- property-signals -->` replaced by the text of `property-signals.md` with `rstrip()` applied to it (the placeholder occurs only in `plan.md` and `cold-read.md`, which must show the substitution), prefixed by `Work only on Chitty ticket TASK-1.` and a blank line when the ID is given; `chitty guide --help` contains every line of the current docstring, including the paragraph starting `Work, review, cold-read and rebase accept`; with `workflow = "bogus"`, `chitty guide work` exits 1 with `workflow:` in stderr and `chitty guide --help` exits 0 with the runner docstring; `make check` passes
 
 ## Plan
 
@@ -73,6 +73,11 @@ Review failed (tests): Newly discovered gaps in the specified assertions; the ea
 Added the missing exit-code and complete docstring assertions; focused tests pass. make check fails in unrelated tests.test_property_hidden_entries: Hypothesis generates tracked chitty/tasks/.GIT and git add exits 128 on this filesystem. A maintainer must correct the unrelated property-test fixture or provide a suitable environment before the required check and review handoff can pass.
 
 Unblocked 2026-11-22. The `make check` blocker was a test bug: `tests/test_property_hidden_entries.py` could draw `.GIT`, which `git add` refuses. Fixed on `main` (45be3318), and Hypothesis now uses fixed examples (`derandomize=True`, 11bc91db), so `make check` gives the same result every run. Rebased `task-334` onto `main`; `make check` passed (Ran 1134 tests, OK). The review follow-up assertions from the 14:28 session are unchanged and still need review.
+
+Reviewed: The previously reported exit-code and help-coverage gaps are resolved; no new defects found.
+1: pass - TestRoleGuidesUnderTickets passes in make check; prior regression notes record failure before the fix for role refusals and direct workflow arguments.
+2: pass - TestRoleGuidesUnderTickets passes in make check, including both exit codes; prior review recorded help failing before the fix.
+3: pass - TestRoleGuidesRunnerCompatibility passes in make check, including runner and outside role output, complete help and invalid configuration; prior review independently compared 14 runner and 14 outside cases with no differences. make check printed Ran 1135 tests and OK.
 
 ## Summary
 
@@ -126,3 +131,5 @@ Review follow-up assertions committed; focused tests pass, but make check is blo
 - 2026-11-22T14:32:41Z able-coral-adder doing → blocked
 - 2026-11-22T16:01:22Z plucky-umber-wren: changed notes
 - 2026-11-22T16:01:22Z plucky-umber-wren blocked → review
+- 2026-11-22T16:12:06Z eager-umber-otter: changed notes; ticked acceptance criteria
+- 2026-11-22T16:12:06Z eager-umber-otter review → done
