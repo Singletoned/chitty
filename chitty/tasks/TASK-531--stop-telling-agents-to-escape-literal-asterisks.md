@@ -1,6 +1,6 @@
 ---
 title: Stop telling agents to escape literal asterisks
-status: review
+status: done
 depends_on:
   - TASK-530
 parent: TASK-348
@@ -23,11 +23,16 @@ Out of scope: `AGENTS.md` (its hand-written `## Chitty` section also has the sen
 
 ## Acceptance Criteria
 
-- [ ] `git grep -n -e "literal single" -e "escape it or enclose" -- src/chitty tests` finds nothing, the first half of the `plan.md` bullet and the backticks sentence in `guide.md` remain, and `tests/test_guide_literal_star.py` is gone; `make check` passes
+- [x] `git grep -n -e "literal single" -e "escape it or enclose" -- src/chitty tests` finds nothing, the first half of the `plan.md` bullet and the backticks sentence in `guide.md` remain, and `tests/test_guide_literal_star.py` is gone; `make check` passes
 
 ## Plan
 
 Remove the obsolete instruction from the specified guides and fixture, delete its obsolete test, then run fix, format, and checks.
+
+## Notes
+
+Reviewed: Complete diff inspected; changes match the specified scope.
+1: pass - `git grep -n -e "literal single" -e "escape it or enclose" -- src/chitty tests` printed nothing (exit 1); the required backtick guidance remains in both guides and the obsolete test is absent. `make check` printed `Ran 1078 tests` and `OK`, with ruff and pyright passing.
 
 ## Summary
 
@@ -43,3 +48,5 @@ Removed obsolete literal asterisk guidance and its test. Verified grep finds no 
 - 2026-11-22T01:49:09Z zesty-yellow-jay: wrote the plan
 - 2026-11-22T01:50:50Z zesty-yellow-jay: changed summary
 - 2026-11-22T01:50:52Z zesty-yellow-jay doing → review
+- 2026-11-22T01:55:32Z youthful-teal-marten: changed notes; ticked acceptance criteria
+- 2026-11-22T01:55:32Z youthful-teal-marten review → done
