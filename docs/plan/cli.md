@@ -77,6 +77,12 @@ file holds the decisions behind them.
 - `move ID CTX`: within this repository; next number in the target, same
   slug, sets `moved_from`. No cross-repository move: `suggest` there, then
   `archive` here.
+- `renumber` without a path renumbers provisional tickets on main. It prints
+  `renumbered <old ID> -> <new ID> <path>` on stdout for each ticket. If there
+  is nothing to renumber, it prints `nothing to renumber` on stderr; off main,
+  it prints `provisional tickets are renumbered on main; nothing changed` on
+  stderr. Both cases exit 0. With `--json`, stdout is a list of renumbered
+  tickets, empty when nothing changes.
 - `renumber PATH` repairs two files sharing an ID, as a merge of two branches
   can leave. Such files collapse into one ticket for `show`, `edit` and
   `list`, so it takes a path. It refuses a path that is not a ticket in a

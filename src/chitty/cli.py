@@ -934,7 +934,7 @@ def move(task_id: str, context: str, as_json: bool) -> None:
 @click.argument("path", type=click.Path(path_type=Path), required=False)
 @json_option
 def renumber(path: Path | None, as_json: bool) -> None:
-    """Give one of several files sharing an ID the next number in its context.
+    """Renumber provisional tickets on main, or one of several files sharing an ID.
 
     PATH is the task file to change. It keeps its slug and records moved_from.
     References are not rewritten, because a reference to a shared ID cannot say

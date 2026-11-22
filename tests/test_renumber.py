@@ -109,7 +109,8 @@ class TestRenumber(CliTestCase):
 
     def test_help(self):
         self.assertIn(
-            "Give one of several files sharing an ID", self.run_cli("renumber", "--help").stdout
+            "Renumber provisional tickets on main, or one of several files sharing an ID.",
+            self.run_cli("renumber", "--help").stdout,
         )
 
 
