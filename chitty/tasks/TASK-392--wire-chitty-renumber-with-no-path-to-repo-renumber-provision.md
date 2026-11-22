@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: review
+status: done
 depends_on:
   - TASK-517
   - TASK-542
@@ -53,6 +53,11 @@ Back to `todo` 2026-11-22: the pre-agent check failed on the flaky `test_transac
 
 All four new CLI tests failed before the fix with missing PATH (exit 2), then passed after the fix.
 
+Reviewed: CLI dispatch and complete diff checked; no additional Decided note was needed.
+1: pass - make check: 1105 tests OK, including main and outside-Git tests; restoring required PATH in the Click command made both fail with Missing argument PATH, exit 2.
+2: pass - make check: 1105 tests OK, including off-main and invalid-config tests; restoring required PATH in the Click command made both fail with Missing argument PATH, exit 2.
+3: pass - make check: 1105 tests OK, including renumber and MCP tests.
+
 ## Summary
 
 Implemented no-path provisional renumbering. Four regression tests failed before the change and pass afterward; make check passed all 1105 tests.
@@ -89,3 +94,5 @@ Implemented no-path provisional renumbering. Four regression tests failed before
 - 2026-11-22T04:18:16Z honest-navy-wren: changed notes
 - 2026-11-22T04:20:36Z honest-navy-wren: changed summary; ticked acceptance criteria
 - 2026-11-22T04:22:48Z honest-navy-wren doing → review
+- 2026-11-22T04:27:49Z able-fawn-wren: changed notes
+- 2026-11-22T04:27:49Z able-fawn-wren review → done
