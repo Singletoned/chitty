@@ -1,6 +1,6 @@
 ---
 title: Start the agent on a work-mode rebase that stops on a conflict
-status: doing
+status: review
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -48,3 +48,4 @@ Start agents on stopped clean work rebases; preserve abort for dirty worktrees. 
 - 2026-11-22T04:32:54Z intrepid-ginger-gannet: wrote the plan
 - 2026-11-22T04:33:40Z intrepid-ginger-gannet: changed notes
 - 2026-11-22T04:35:37Z intrepid-ginger-gannet: changed summary
+- 2026-11-22T04:37:10Z intrepid-ginger-gannet doing → review
