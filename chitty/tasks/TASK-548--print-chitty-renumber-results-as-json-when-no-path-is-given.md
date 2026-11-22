@@ -19,6 +19,10 @@ Test in `tests/test_renumber_provisional.py`, using that class's `fixture()`: `t
 
 - [ ] `TestCliProvisionalRenumbering.test_json` passes, and fails before the change because stdout is not JSON; `make check` passes
 
+## Plan
+
+Add a CLI regression test for JSON results, empty results and off-main behavior; confirm it fails, implement JSON output, and run checks.
+
 ## History
 
 - 2026-11-22T03:23:01Z lively-zinc-newt → planning
@@ -27,3 +31,4 @@ Test in `tests/test_renumber_provisional.py`, using that class's `fixture()`: `t
 - 2026-11-22T04:31:53Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T04:31:53Z lively-zinc-newt cold-read → todo
 - 2026-11-22T04:38:43Z tidy-fawn-otter todo → doing
+- 2026-11-22T04:41:07Z tidy-fawn-otter: wrote the plan
