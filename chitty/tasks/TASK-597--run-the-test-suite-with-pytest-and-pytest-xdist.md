@@ -25,9 +25,9 @@ No new test: build configuration, checked by the commands in the criteria.
 
 ## Acceptance Criteria
 
-- [ ] `make check` passes and its output ends with a `pytest` summary line reporting at least 1140 passed and no failures or errors; `grep -rn unittest-parallel Makefile pyproject.toml uv.lock AGENTS.md README.md docs tests` prints nothing
+- [ ] `make check` passes and its output ends with a `pytest` summary line reporting at least 1142 passed and no failures or errors; `grep -rn unittest-parallel Makefile pyproject.toml uv.lock AGENTS.md README.md docs tests` prints nothing
 - [ ] `make test` passes, prints a `coverage report` `TOTAL` line of at least 90%, and leaves `tmp/coverage/index.html`; afterwards `git status --short` is empty
-- [ ] In a scratch directory outside the repository, a `test_fx.py` with class `Cases` whose `setUpClass` raises `RuntimeError` and one passing `test_ok`, run with this checkout's `.venv/bin/pytest -n 2`, exits non-zero and reports `1 error`; record the command and output in a note
+- [ ] A temporary `tests/test_fx_probe.py` (deleted afterwards, not committed) with class `Cases` whose `setUpClass` raises `RuntimeError` and one passing `test_ok` makes `make check` exit non-zero with a `pytest` summary containing `1 error`; record the command and the summary line in a note
 - [ ] A temporary `tests/test_probe_worker.py` (deleted afterwards, not committed) asserting `import tests; tests._is_worker is True` passes under `.venv/bin/pytest -n 2 tests/test_probe_worker.py` and fails under `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py`; record both outputs in a note
 
 ## History
@@ -35,3 +35,4 @@ No new test: build configuration, checked by the commands in the criteria.
 - 2026-11-22T20:15:42Z plucky-umber-wren → planning
 - 2026-11-22T20:15:51Z plucky-umber-wren: changed acceptance criteria
 - 2026-11-22T20:15:51Z plucky-umber-wren planning → cold-read
+- 2026-11-22T20:16:43Z plucky-umber-wren: changed acceptance criteria
