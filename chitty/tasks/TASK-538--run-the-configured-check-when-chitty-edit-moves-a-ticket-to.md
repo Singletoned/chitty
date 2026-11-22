@@ -48,6 +48,8 @@ Add focused real-Git regression tests for review checks, confirm failures before
 
 Approach recorded; implementation and regression tests have not yet been started or verified.
 
+Before the fix, the three regression cases each failed: edit succeeded instead of refusing.
+
 ## History
 
 - 2026-11-22T01:11:06Z lively-zinc-newt → cold-read
@@ -56,3 +58,4 @@ Approach recorded; implementation and regression tests have not yet been started
 - 2026-11-22T02:21:22Z quick-dusky-eel todo → doing
 - 2026-11-22T02:23:25Z quick-dusky-eel: wrote the plan
 - 2026-11-22T02:23:37Z quick-dusky-eel: changed notes
+- 2026-11-22T02:24:22Z quick-dusky-eel: changed notes
