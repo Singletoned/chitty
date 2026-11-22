@@ -1,6 +1,6 @@
 ---
 title: Freeze the clock in the flaky provisional-renumbering transaction test
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -27,6 +27,9 @@ Freeze the store clock across both transaction preparations; reproduce the failu
 
 An outer mocked store clock advancing one second per now call made the original transaction test fail on the rendered history timestamps (00:00:00 versus 00:00:02); the same invocation passed with the inner fixed clock. make check passed.
 
+Reviewed:
+1: pass - `make check` ran 1101 tests and printed OK; an advancing mocked clock made the original test fail with 00:00:02 versus 00:00:00, and the fixed test printed OK under the same outer clock. The fixed test freezes both preparations, and the work note records the reproduction.
+
 ## Summary
 
 Froze the store clock across both transaction preparations. Verified the advancing-clock reproduction and ran make check.
@@ -38,3 +41,5 @@ Froze the store clock across both transaction preparations. Verified the advanci
 - 2026-11-22T04:09:52Z witty-jade-quail: wrote the plan
 - 2026-11-22T04:11:43Z witty-jade-quail: changed notes, summary
 - 2026-11-22T04:13:14Z witty-jade-quail doing → review
+- 2026-11-22T04:17:53Z quick-navy-zander: changed notes
+- 2026-11-22T04:17:53Z quick-navy-zander review → done
