@@ -1,6 +1,6 @@
 ---
 title: Print `chitty renumber` results as JSON when no path is given
-status: todo
+status: doing
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -26,3 +26,4 @@ Test in `tests/test_renumber_provisional.py`, using that class's `fixture()`: `t
 - 2026-11-22T04:29:41Z lively-zinc-newt planning → cold-read
 - 2026-11-22T04:31:53Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T04:31:53Z lively-zinc-newt cold-read → todo
+- 2026-11-22T04:38:43Z tidy-fawn-otter todo → doing
