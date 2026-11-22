@@ -24,6 +24,10 @@ These describe landed behaviour, so they pass today. Evidence that they test som
 
 - [ ] Both tests pass; a note records test 2 failing with `Repo._prepare_write` patched to a no-op; `make check` passes
 
+## Plan
+
+Add isolated non-Git characterization tests for both autocommit settings, verify the guard mutation fails, then run checks and commit.
+
 ## History
 
 - 2026-11-22T01:35:29Z lively-zinc-newt → planning
@@ -32,3 +36,4 @@ These describe landed behaviour, so they pass today. Evidence that they test som
 - 2026-11-22T03:21:40Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T03:21:40Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:40:47Z upbeat-navy-urchin todo → doing
+- 2026-11-22T03:43:30Z upbeat-navy-urchin: wrote the plan
