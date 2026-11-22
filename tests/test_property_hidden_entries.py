@@ -31,7 +31,7 @@ class TestHiddenEntries(CliTestCase):
                 (Path(temp) / name).mkdir()
                 (Path(temp) / name / "file").write_text("x")
                 added = subprocess.run(
-                    ["git", "add", f"{name}/file"], cwd=temp, capture_output=True
+                    ["git", "add", f"{name}/file"], check=False, cwd=temp, capture_output=True
                 )
                 self.assertEqual(added.returncode != 0, git_refuses(name))
 
