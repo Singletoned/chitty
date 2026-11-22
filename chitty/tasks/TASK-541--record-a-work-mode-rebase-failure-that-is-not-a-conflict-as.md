@@ -22,6 +22,10 @@ Test `test_rebase_failure_is_recorded` in `tests/test_run_work_rebases.py`, usin
 
 - [ ] `test_rebase_failure_is_recorded` passes and fails before the change; `make check` passes
 
+## Plan
+
+Add the specified failing regression test, record its pre-fix result, then handle rebase errors through the existing ticket error recorder and run formatting and checks.
+
 ## History
 
 - 2026-11-22T01:29:47Z lively-zinc-newt → planning
@@ -31,3 +35,4 @@ Test `test_rebase_failure_is_recorded` in `tests/test_run_work_rebases.py`, usin
 - 2026-11-22T03:14:54Z lively-zinc-newt: changed description
 - 2026-11-22T03:14:54Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:23:18Z brisk-hazel-gannet todo → doing
+- 2026-11-22T03:25:46Z brisk-hazel-gannet: wrote the plan
