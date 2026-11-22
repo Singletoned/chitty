@@ -1,5 +1,4 @@
 import faulthandler
-import multiprocessing
 import os
 
 from hypothesis import settings
@@ -41,11 +40,11 @@ for _name in list(os.environ):
 # passed. The slowest `make check` seen took about 320 seconds on a heavily
 # loaded machine.
 SUITE_TIMEOUT_SECONDS = 1200
-# The `unittest-parallel` parent only waits on its workers, so its dump names no
+# The `pytest` controller only waits on its workers, so its dump names no
 # test. It fires later, letting a hung worker's dump, which names the test, come
 # first.
 PARENT_GRACE_SECONDS = 30
-_is_worker = multiprocessing.parent_process() is not None
+_is_worker = os.environ.get("PYTEST_XDIST_WORKER") is not None
 faulthandler.dump_traceback_later(
     SUITE_TIMEOUT_SECONDS + (0 if _is_worker else PARENT_GRACE_SECONDS), exit=True
 )

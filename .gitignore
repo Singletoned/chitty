@@ -1,4 +1,5 @@
 .envrc
+.pytest_cache/
 .coverage
 .coverage.*
 __pycache__/

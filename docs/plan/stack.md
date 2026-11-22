@@ -6,7 +6,7 @@
   `mcp`.
 - Frontmatter is split on `---` by our own code. YAML loads every scalar as a
   string.
-- Dev: `ruff`, `pyright` (strict for `src/`, standard for tests), `unittest`
+- Dev: `ruff`, `pyright` (strict for `src/`, standard for tests), `unittest.TestCase` classes run by `pytest`
   (real files in temp dirs, CLI through `click.testing.CliRunner`, no
   filesystem mocking), pinned `prettier` and `mdformat` for the round-trip
   tests.

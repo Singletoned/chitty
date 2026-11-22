@@ -9,10 +9,10 @@ rules, and parts are old: update it when a decision changes.
   prettier used by the round-trip tests).
 - In this repository run `main`'s Chitty, `.venv/bin/chitty` in the main
   checkout, not the global PyPI `chitty`: `main` is usually ahead of PyPI.
-- `make check` (ruff, pyright and unittest; formatter tests use pinned prettier)
+- `make check` (ruff, pyright and pytest; formatter tests use pinned prettier)
   before every commit. `sh scripts/check_linux.sh` checks committed `HEAD` in a
   Linux container. `make format` to fix formatting.
-- Tests use `unittest` and write real files in temp dirs; no filesystem
+- Tests are `unittest.TestCase` classes run by `pytest` and write real files in temp dirs; no filesystem
   mocking. Tests that use the inbox must inherit `RepoTestCase`, which assigns
   a temporary `XDG_DATA_HOME` so they never touch the real inbox. The formatter
   tests fail, never skip, if prettier or mdformat is missing.

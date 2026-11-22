@@ -51,7 +51,8 @@ dev = [
     "pyright",
     "ruff",
     "types-PyYAML",
-    "unittest-parallel==1.8.6",
+    "pytest==9.2.0",
+    "pytest-xdist==3.8.0",
 ]
 
 [tool.coverage.run]

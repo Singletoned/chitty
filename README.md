@@ -321,7 +321,7 @@ non-task files or folders when accepted.
 
 ```sh
 make install    # uv sync --all-extras; npm ci (pinned prettier)
-make check      # ruff, pyright, unittest
+make check      # ruff, pyright, pytest (`unittest.TestCase` classes)
 make format
 ```
 

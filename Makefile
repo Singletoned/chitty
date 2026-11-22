@@ -15,10 +15,13 @@ check: ## lint, type-check and run the tests
 	uv run ruff format --check .
 	uv run ruff check --no-fix .
 	uv run pyright
-	TEST_TIER=check uv run unittest-parallel -s tests -t . --level test
+	TEST_TIER=check uv run pytest -q -n auto tests
 
 test: ## run every test, drawing new random property-test examples
-	COVERAGE_ROOT=$(CURDIR) TEST_TIER=thorough uv run unittest-parallel -s tests -t . --level test --coverage --coverage-html tmp/coverage
+	COVERAGE_ROOT=$(CURDIR) TEST_TIER=thorough uv run coverage run -m pytest -q -n auto tests
+	uv run coverage combine -q
+	uv run coverage report
+	uv run coverage html -q -d tmp/coverage
 
 format: ## format and auto-fix Python code
 	uv run ruff check --exit-zero .
