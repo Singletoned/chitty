@@ -35,6 +35,10 @@ Cold read 2026-11-21: applied its findings (set_criteria pairs, fixture lookup);
 
 Regression test failed before implementation: add stored the unescaped glob.
 
+## Summary
+
+Escaped supplied task text and updated CLI regression coverage. Regression failed before the change; make check passed.
+
 ## History
 
 - 2026-11-21T23:22:17Z lively-zinc-newt → planning
@@ -46,3 +50,4 @@ Regression test failed before implementation: add stored the unescaped glob.
 - 2026-11-22T01:03:00Z intrepid-ginger-lapwing todo → doing
 - 2026-11-22T01:05:20Z intrepid-ginger-lapwing: wrote the plan
 - 2026-11-22T01:05:36Z intrepid-ginger-lapwing: changed notes
+- 2026-11-22T01:10:03Z intrepid-ginger-lapwing: changed summary
