@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: done
+status: error
 depends_on:
   - TASK-370
   - TASK-546
@@ -33,6 +33,15 @@ Regression cases 3b and 3c fail against the old helper with the keyword accepted
 Reviewed:
 1: pass - Current helper tests: 7 passed; unchanged runner tests: 4 passed. Old helper with keyword accepted and ignored: test_stop_on_conflict failed with None is not true and test_stop_ticket_conflict failed with ChittyError not raised. make check passed (1101 tests, including two temporary copied tests); ruff and pyright passed.
 
+Runner error (landing): landing check exited with status 2; output in `.chitty/check.log`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-540`
+
+Error output:
+```text
+Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-540 or the main checkout before retrying.
+```
+
 ## Summary
 
 Implemented stopped conflict handling and regression coverage. Old helper failed cases 3b and 3c on behavior assertions; make check passed (1099 tests).
@@ -55,3 +64,5 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T03:57:30Z witty-lilac-raven doing → review
 - 2026-11-22T04:03:31Z friendly-russet-quail: changed notes; ticked acceptance criteria
 - 2026-11-22T04:03:31Z friendly-russet-quail review → done
+- 2026-11-22T04:05:03Z friendly-russet-quail: changed notes
+- 2026-11-22T04:05:03Z friendly-russet-quail done → error
