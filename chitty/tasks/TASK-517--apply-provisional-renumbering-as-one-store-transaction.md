@@ -1,6 +1,6 @@
 ---
 title: Apply provisional renumbering as one store transaction
-status: review
+status: done
 depends_on:
   - TASK-391
   - TASK-507
@@ -46,6 +46,10 @@ Split again 2026-11-22 after a cold read: the in-memory prepare step is `TASK-54
 
 The transaction regression fails against the requested signature stub with NotImplementedError.
 
+Reviewed: Transaction and complete diff checked; no Decided note was needed.
+1: pass - .venv/bin/python -m unittest tests.test_renumber_provisional -v printed 2 tests OK; test_transaction with Repo.renumber_provisional patched to raise NotImplementedError printed FAILED (errors=1). The fixture checks prepared content, paths, trailers, one commit and repeat.
+2: pass - make check printed 1093 tests OK, ruff and pyright passed.
+
 ## Summary
 
 Implemented the single-commit renumbering transaction and real-Git regression. The regression failed against the signature stub; make check passes.
@@ -69,3 +73,5 @@ Implemented the single-commit renumbering transaction and real-Git regression. T
 - 2026-11-22T03:07:43Z upbeat-bronze-newt: changed notes
 - 2026-11-22T03:13:19Z upbeat-bronze-newt: changed summary
 - 2026-11-22T03:13:19Z upbeat-bronze-newt doing → review
+- 2026-11-22T03:17:47Z intrepid-yellow-dormouse: changed notes
+- 2026-11-22T03:17:47Z intrepid-yellow-dormouse review → done
