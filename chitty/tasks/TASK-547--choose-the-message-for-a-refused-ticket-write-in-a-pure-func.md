@@ -35,9 +35,12 @@ Tests: Hypothesis (the repository's property tool) in a new `tests/test_property
 
 Question for the owner (2026-11-22, overnight planner): `TASK-385` contradicts itself, so `TASK-547` (its pure message function) is parked. Its Decisions allow a write exactly when the ticket is read from this checkout's working tree (`stored.branch is None`), but its Description (your 2026-11-20 decision) also allows a write in the ticket's own fresh worktree when `main` has not changed the ticket since the split (`TASK-482`, done, implements that in today's guard), and says every refusal message must say which newer copy the write would lose or hide; the specified messages only say where to edit. Please confirm: (1) keep the own-fresh-worktree allowance (the caller computes it and the pure function gets an `own_fresh` flag)? (2) keep the five messages exactly as written, or add the newer copy (for example the ref and commit) to each? A cold reader also listed generator constraints for `TASK-547`, to apply once this is settled.
 
+Planner, 2026-11-22: superseded by the owner answer on `TASK-385` (the rule is about a newer, different copy, not where the ticket is read from). Rewrite after the open question there is answered.
+
 ## History
 
 - 2026-11-22T02:28:29Z lively-zinc-newt → cold-read
 - 2026-11-22T02:28:39Z lively-zinc-newt: changed description
 - 2026-11-22T02:30:03Z lively-zinc-newt: changed labels, notes
 - 2026-11-22T02:30:03Z lively-zinc-newt cold-read → planning
+- 2026-11-22T11:15:42Z friendly-jade-stoat: changed notes
