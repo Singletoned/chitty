@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: review
+status: error
 labels:
   - question
 depends_on:
@@ -48,6 +48,8 @@ Planner, 2026-11-22: restoring the passed review. The review passed at 04:03 (ve
 
 Needs a person (2026-11-22, overnight planner): the review passed at 04:03 and the code is on `main` (commit `9027093c`), but the landing check then failed on the flaky `test_transaction` (fixed by `TASK-553`) and set `error`; the branch and worktree are gone. I moved it to `review` to restore `done`, but marking it `done` needs a `Reviewed:` note, which a planner should not write. Please check commit `9027093c` and mark this `done` (for example `chitty edit TASK-540 -s review` then `-s done --note "Reviewed: ..."` with `--human`).
 
+Runner error (review): TASK-540 has no branch `task-540` and no worktree.
+
 ## Summary
 
 Implemented stopped conflict handling and regression coverage. Old helper failed cases 3b and 3c on behavior assertions; make check passed (1099 tests).
@@ -77,3 +79,5 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T04:23:44Z lively-zinc-newt: changed labels, notes
 - 2026-11-22T04:23:44Z lively-zinc-newt review → blocked
 - 2026-11-22T12:56:15Z human blocked → review
+- 2026-11-22T14:23:45Z zesty-yellow-otter: changed notes
+- 2026-11-22T14:23:45Z zesty-yellow-otter review → error
