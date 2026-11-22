@@ -1,6 +1,6 @@
 ---
 title: Record each test's duration and outcome from `make check` and `make test`
-status: cold-read
+status: planning
 owner: plucky-umber-wren
 depends_on:
   - TASK-589
@@ -27,10 +27,11 @@ No property for outcomes: they are a fixed set of six, and the criteria test the
 
 ## Acceptance Criteria
 
-- [ ] Tests in `tests/test_timing_records.py` write a test module into a temporary directory `D` with one passing, one failing, one erroring and one skipped test, run `[sys.executable, "-m", "unittest_parallel", "-s", D, "-t", D, "--level", "test", "--result", "tests.timing.TimingResult"]` (`PYTHONPATH` at the repository root, `TEST_TIMINGS_FILE` in a temporary directory whose parent does not yet exist, `TEST_TIER=check`, `TEST_COMMIT=abc`), and assert exactly four JSON lines, one per test id, with `outcome` `pass`, `fail`, `error` and `skip` respectively, a `seconds` float at least 0, `tier` `check`, `commit` `abc` and a `time` that parses with `datetime.fromisoformat`. A fifth case adds a class whose `setUpClass` raises and asserts one more line with `outcome` `error`. They fail before the change on behaviour: first commit `tests/timing.py` with `TimingResult` subclassing `unittest.TextTestResult` and writing nothing
-- [ ] With `TEST_TIMINGS_FILE` unset the same run writes no file and its exit status is unchanged; with `TEST_TIMINGS_FILE` set but `TEST_TIER` or `TEST_COMMIT` unset, the run exits non-zero and its output names the missing variable (tested in the same file)
+- [ ] Tests in `tests/test_timing_records.py` write a test module into a temporary directory `D` with one class `Cases` holding `test_pass`, `test_fail`, `test_error` and a skipped `test_skip`, run `[sys.executable, "-m", "unittest_parallel", "-s", D, "-t", D, "--level", "test", "--result", "tests.timing.TimingResult"]` (`PYTHONPATH` at the repository root, `TEST_TIMINGS_FILE` in a temporary directory whose parent does not yet exist, `TEST_TIER=check`, `TEST_COMMIT=abc`), and assert exactly four JSON lines, one per test id, with `outcome` `pass`, `fail`, `error` and `skip` respectively, a `seconds` float at least 0, `tier` `check`, `commit` `abc` and a `time` that parses with `datetime.fromisoformat`. They fail before the change on behaviour: first commit `tests/timing.py` with `TimingResult` subclassing `unittest.TextTestResult` and writing nothing
+- [ ] With `TEST_TIMINGS_FILE` unset the same run writes no file and its exit status is unchanged; with `TEST_TIMINGS_FILE` set but `TEST_TIER` or `TEST_COMMIT` unset, the run exits non-zero and its output names the missing variable. Check the variables when `tests.timing` is imported, not per test, so the run fails before any test starts (tested in the same file)
 - [ ] `make -n check` and `make -n test` each show `--result tests.timing.TimingResult` on the `unittest-parallel` line with `TEST_TIMINGS_FILE` set under the git common directory at `chitty/test-timings.jsonl`; after `make check` in a worktree, that file in the main checkout's `.git` has gained exactly as many lines as the `Ran N tests` count, plus one for each class or module fixture error (none expected) (compare `wc -l` before and after); `git status --short` is empty; `make check` passes
-- [ ] A stress test in the same file runs a generated module of 200 trivial tests with `-j 4` and asserts the file has exactly 200 lines, every one parses as JSON, and the 200 test ids are distinct; it fails if records are written with buffered `open(...).write` in several pieces rather than one `os.write` (show this by a committed variant or a note)
+- [ ] A stress test in the same file runs a generated module of 200 trivial tests with `-j 4` and asserts the file has exactly 200 lines, every one parses as JSON, and the 200 test ids are distinct. It checks counts and parseability only; it is not expected to catch interleaving, which is guarded by the one-`os.write` rule in the description
+- [ ] In the same file, the same harness on separate modules: a test whose `self.subTest` loop fails its first iteration and passes its second gives one line with `outcome` `fail` (a later passing subtest must not overwrite it); an `@unittest.expectedFailure` test that fails gives `expected-fail`; and a class whose `setUpClass` raises gives one line with `outcome` `error` and `seconds` 0.0
 
 ## History
 
@@ -39,3 +40,5 @@ No property for outcomes: they are a fixed set of six, and the criteria test the
 - 2026-11-22T17:12:24Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T17:12:24Z plucky-umber-wren cold-read → planning
 - 2026-11-22T17:12:27Z plucky-umber-wren planning → cold-read
+- 2026-11-22T17:13:39Z plucky-umber-wren: changed acceptance criteria
+- 2026-11-22T17:13:39Z plucky-umber-wren cold-read → planning
