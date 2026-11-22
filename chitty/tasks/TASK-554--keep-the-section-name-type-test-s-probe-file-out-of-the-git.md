@@ -1,6 +1,6 @@
 ---
 title: Keep the section-name type test's probe file out of the Git work tree
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-22
@@ -30,3 +30,4 @@ Moved type test probes under ignored tmp/. Verified git check-ignore, all four s
 - 2026-11-22T05:23:03Z golden-teal-marten todo → doing
 - 2026-11-22T05:25:48Z golden-teal-marten: wrote the plan
 - 2026-11-22T05:28:29Z golden-teal-marten: changed summary
+- 2026-11-22T05:30:58Z golden-teal-marten doing → review
