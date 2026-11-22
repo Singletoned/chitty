@@ -23,6 +23,10 @@ A planner probe on `main` (2026-11-21) showed swapped `contains` changes most pl
 
 - [ ] With no mutant, `placement_mismatches` returns `[]` and the rewritten `test_main_checkout_placements` passes; both mutant tests pass, each getting a non-empty list; `make check` passes
 
+## Plan
+
+Extract the placement comparison into a mismatch collector, then exercise it with two ticket_source wiring mutants and run the project checks.
+
 ## Notes
 
 Keep in planning until its dependency lands; then compare with the landed code, cold-read and move to `todo`.
@@ -39,3 +43,4 @@ Keep in planning until its dependency lands; then compare with the landed code, 
 - 2026-11-22T00:18:12Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:18:12Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:35:24Z upbeat-khaki-quail todo → doing
+- 2026-11-22T00:37:14Z upbeat-khaki-quail: wrote the plan
