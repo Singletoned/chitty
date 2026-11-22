@@ -11,7 +11,7 @@ class TestPrepareRenumbering(RepoTestCase):
     init_git = SourceCopyErrorChecks.init_git
     commit = SourceCopyErrorChecks.commit
 
-    def test_prepare(self):
+    def fixture(self):
         self.init_git()
 
         def put(name, title, extra="", body="Fixture."):
@@ -33,6 +33,9 @@ class TestPrepareRenumbering(RepoTestCase):
         )
         put("human/HUMAN-1--old-name.md", "Human one")
         self.commit()
+
+    def test_prepare(self):
+        self.fixture()
         before = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*") if p.is_file()}
         repo = Repo.open(self.root)
         mapping, writable = repo._plan_provisional_renumbering()
@@ -67,3 +70,34 @@ class TestPrepareRenumbering(RepoTestCase):
         self.assertEqual(
             before, {p: p.read_bytes() for p in (self.root / "chitty").rglob("*") if p.is_file()}
         )
+
+    def test_transaction(self):
+        self.fixture()
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
+        self.commit()
+        repo = Repo.open(self.root)
+        human = self.root / "chitty/human/HUMAN-1--old-name.md"
+        human_before = human.read_bytes()
+        mapping, writable = repo._plan_provisional_renumbering()
+        with mock.patch.dict(os.environ, {"CHITTY_ACTOR": "tester"}):
+            prepared = repo._prepare_renumbering(mapping, writable)
+            count = int(self.git("rev-list", "--count", "HEAD"))
+            changes = repo.renumber_provisional()
+        self.assertEqual({str(c.task.id) for c in changes}, {"TASK-5", "TASK-6"})
+        self.assertEqual(int(self.git("rev-list", "--count", "HEAD")), count + 1)
+        message = self.git("show", "-s", "--format=%B", "HEAD")
+        for task_id in ("TASK-3", "TASK-5", "TASK-6"):
+            self.assertIn(f"Task: {task_id}", message)
+        names = self.git("show", "--name-status", "--format=", "--no-renames", "HEAD")
+        for old, task, path in prepared:
+            self.assertFalse(old.path.exists())
+            self.assertEqual(path.read_text(), task.render())
+            self.assertIn(f"D\t{old.path.relative_to(self.root)}", names)
+            self.assertIn(f"A\t{path.relative_to(self.root)}", names)
+        self.assertEqual(human.read_bytes(), human_before)
+        head = self.git("rev-parse", "HEAD")
+        before = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*") if p.is_file()}
+        self.assertEqual(repo.renumber_provisional(), ())
+        self.assertEqual(self.git("rev-parse", "HEAD"), head)
+        self.assertEqual(before, {p: p.read_bytes() for p in before})

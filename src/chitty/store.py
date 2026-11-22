@@ -1227,6 +1227,36 @@ class Repo:
             change = self._archive(task_id)
             return self._commit(change, "delete" if self.config.archive == "delete" else "archive")
 
+    def renumber_provisional(self) -> tuple[Change, ...]:
+        mapping, writable = self._plan_provisional_renumbering()
+        if not mapping:
+            return ()
+        self._prepare_write()
+        prepared = self._prepare_renumbering(mapping, writable)
+        with self._all_or_nothing():
+            for _, task, path in prepared:
+                self._write(path, task.render())
+            for old, _, path in prepared:
+                if old.path != path:
+                    old.path.unlink()
+            self._invalidate()
+            final = tuple(
+                StoredTask(mapping.get(old.id, old.id), old.context, path, old.archived, task)
+                for old, task, path in prepared
+            )
+            changes = tuple(
+                Change(task, (old.path, path) if old.path != path else (path,), (task,))
+                for (old, _, path), task in zip(prepared, final, strict=True)
+                if old.id in mapping
+            )
+            paths = tuple(
+                p
+                for old, _, path in prepared
+                for p in ((old.path, path) if old.path != path else (path,))
+            )
+            self._commit(Change(changes[0].task, paths, final), "renumber provisional tickets")
+            return changes
+
     def archive_done(self) -> tuple[Change, ...]:
         """Archive every non-archived done task in one finalization."""
         self._prepare_write()
