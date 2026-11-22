@@ -35,6 +35,8 @@ The preparation regression test failed against a NotImplementedError stub before
 Review failed (tests): The new test does not verify the specified last History event. This is a newly discovered finding.
 1: fail - The test uses assertIn for the renumbering text, so an earlier event or a last event with extra trailing text would pass; assert that the last History event ends with the specified action for each renumbered ticket. `.venv/bin/python -m unittest tests.test_renumber_provisional` printed OK; replacing the helper at runtime with a NotImplementedError stub printed FAILED (errors=1); `make check` printed OK for 1090 tests.
 
+The strengthened preparation test fails against a NotImplementedError stub and passes with the implementation.
+
 ## Summary
 
 Implemented in-memory preparation and real Git regression coverage. The test failed with a NotImplementedError stub and passes with the implementation; make check passes.
@@ -53,3 +55,4 @@ Implemented in-memory preparation and real Git regression coverage. The test fai
 - 2026-11-22T02:43:29Z calm-lilac-lapwing: changed acceptance criteria, notes
 - 2026-11-22T02:43:29Z calm-lilac-lapwing review → doing
 - 2026-11-22T02:50:17Z nimble-silver-toad: wrote the plan
+- 2026-11-22T02:50:29Z nimble-silver-toad: changed notes
