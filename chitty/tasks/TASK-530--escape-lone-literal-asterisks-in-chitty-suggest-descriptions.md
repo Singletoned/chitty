@@ -27,6 +27,10 @@ Test `test_suggestion_description_escapes_literal_asterisks` in `tests/test_inbo
 
 Add a regression test covering suggestion storage and pull, verify it fails, then escape the normalized description before validation and storage; run the requested checks.
 
+## Notes
+
+Before the fix, .venv/bin/python -m unittest tests.test_inbox.TestInbox.test_suggestion_description_escapes_literal_asterisks failed with ChittyError: suggestion Description does not round-trip through task storage.
+
 ## History
 
 - 2026-11-21T23:22:19Z lively-zinc-newt → planning
@@ -36,3 +40,4 @@ Add a regression test covering suggestion storage and pull, verify it fails, the
 - 2026-11-22T01:20:22Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:25:56Z zesty-ebony-falcon todo → doing
 - 2026-11-22T01:28:15Z zesty-ebony-falcon: wrote the plan
+- 2026-11-22T01:28:27Z zesty-ebony-falcon: changed notes
