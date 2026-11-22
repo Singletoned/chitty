@@ -55,6 +55,8 @@ Open question for the owner: when a newer, different copy exists elsewhere (typi
 
 Owner decision, 2026-11-22: (A) refuse when a newer, different copy exists elsewhere, naming that copy and where to edit (`TASK-547` words the message). Replan this ticket after `TASK-547` lands: the condition is "the authoritative copy (`stored.branch is not None`) differs from this checkout's working-tree copy", not "read from elsewhere".
 
+Planner, 2026-11-22 (from `TASK-547`'s cold read): the replan must supply `newer_sha`. `StoredTask` (`src/chitty/store.py` around line 103) and `SourceCopy` carry no commit; `_choose_source` has the tips from `_branch_tips()` but drops them. Decide between adding a `sha` field filled from that tip map, or calling `git.ref_commit` on the ref at the guard. Take `local_branch` from `git.has_local_branch`, since a local branch name may contain `/`.
+
 ## History
 
 - 2026-11-18T16:20:16Z lively-quartz-crane → backlog
@@ -79,3 +81,4 @@ Owner decision, 2026-11-22: (A) refuse when a newer, different copy exists elsew
 - 2026-11-22T02:30:04Z lively-zinc-newt: changed labels, notes
 - 2026-11-22T11:15:41Z friendly-jade-stoat: changed notes
 - 2026-11-22T11:24:46Z friendly-jade-stoat: changed labels, notes
+- 2026-11-22T11:25:47Z friendly-jade-stoat: changed notes
