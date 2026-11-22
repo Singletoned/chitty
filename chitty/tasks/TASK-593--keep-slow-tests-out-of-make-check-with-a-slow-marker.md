@@ -3,6 +3,7 @@ title: Keep slow tests out of `make check` with a `slow` marker
 status: backlog
 depends_on:
   - TASK-588
+  - TASK-597
 created: 2026-11-22
 ---
 
@@ -16,3 +17,4 @@ Decided with the person, 2026-11-22: landing runs the full set of tests. Landing
 
 - 2026-11-22T17:16:36Z plucky-umber-wren → backlog
 - 2026-11-22T18:39:14Z plucky-umber-wren: changed description
+- 2026-11-22T20:16:10Z plucky-umber-wren: changed dependencies
