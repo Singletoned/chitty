@@ -22,6 +22,10 @@ Tests in `tests/test_rebase_work_worktree.py`: change its `rebase()` helper (nea
 
 - [ ] Cases 3, 3b, 3c and 3d pass; 3b and 3c fail on their behaviour assertions against the old helper; the runner tests in `tests/test_run_work_rebases.py` pass unchanged; `make check` passes
 
+## Plan
+
+Add conflict and clean-rebase regression cases, verify old behavior fails, then implement the keyword-only switch and run checks.
+
 ## History
 
 - 2026-11-22T01:29:45Z lively-zinc-newt → planning
@@ -34,3 +38,4 @@ Tests in `tests/test_rebase_work_worktree.py`: change its `rebase()` helper (nea
 - 2026-11-22T03:45:00Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T03:45:00Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:49:54Z witty-lilac-raven todo → doing
+- 2026-11-22T03:52:03Z witty-lilac-raven: wrote the plan
