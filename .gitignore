@@ -1,4 +1,6 @@
 .envrc
+.coverage
+.coverage.*
 __pycache__/
 node_modules/
 /tmp/

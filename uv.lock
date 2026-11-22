@@ -139,6 +139,7 @@ mcp = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "coverage" },
     { name = "hypothesis" },
     { name = "mdformat" },
     { name = "mdformat-frontmatter" },
@@ -161,6 +162,7 @@ provides-extras = ["mcp"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "coverage", specifier = "==7.17.2" },
     { name = "hypothesis" },
     { name = "mdformat", specifier = "==0.7.22" },
     { name = "mdformat-frontmatter", specifier = "==2.0.8" },

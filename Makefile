@@ -18,7 +18,7 @@ check: ## lint, type-check and run the tests
 	TEST_TIER=check uv run unittest-parallel -s tests -t . --level test
 
 test: ## run every test, drawing new random property-test examples
-	TEST_TIER=thorough uv run unittest-parallel -s tests -t . --level test
+	COVERAGE_ROOT=$(CURDIR) TEST_TIER=thorough uv run unittest-parallel -s tests -t . --level test --coverage --coverage-html tmp/coverage
 
 format: ## format and auto-fix Python code
 	uv run ruff check --exit-zero .

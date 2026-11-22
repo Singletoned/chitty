@@ -43,6 +43,7 @@ chitty = "chitty.cli:main"
 
 [dependency-groups]
 dev = [
+    "coverage==7.17.2",
     "mdformat==0.7.22",
     "mdformat-frontmatter==2.0.8",
     "mdformat-gfm==0.4.1",
@@ -52,6 +53,12 @@ dev = [
     "types-PyYAML",
     "unittest-parallel==1.8.6",
 ]
+
+[tool.coverage.run]
+branch = true
+source = ["src/chitty"]
+patch = ["subprocess"]
+data_file = "${COVERAGE_ROOT-.}/.coverage"
 
 [tool.ruff]
 # Ticket files are prose; a Python snippet in one must not fail `make check`.

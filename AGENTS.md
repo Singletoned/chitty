@@ -17,8 +17,9 @@ rules, and parts are old: update it when a decision changes.
   a temporary `XDG_DATA_HOME` so they never touch the real inbox. The formatter
   tests fail, never skip, if prettier or mdformat is missing.
 - `make check` uses fixed examples (profile `check`) so it repeats; `make test`
-  draws new random examples (profile `thorough`) to find new edge cases. A
-  property test that fails is a real failure: fix it, do not rerun.
+  draws new random examples (profile `thorough`) to find new edge cases and
+  reports coverage, with HTML at `tmp/coverage/index.html`. A property test that
+  fails is a real failure: fix it, do not rerun.
 - Put a ticket's new guide tests in their own file, `tests/test_guide_<topic>.py`,
   not at the end of `TestGuide` in `tests/test_cli.py`, where every guide
   ticket's tests collide.
