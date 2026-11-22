@@ -1,6 +1,6 @@
 ---
 title: Move the logged-command helpers from `run.py` into `commands.py`
-status: todo
+status: doing
 parent: TASK-343
 created: 2026-11-21
 ---
@@ -29,3 +29,4 @@ No property and no new test: a move that changes no behaviour; the existing test
 - 2026-11-21T23:24:34Z lively-zinc-newt → cold-read
 - 2026-11-21T23:26:03Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:26:03Z lively-zinc-newt cold-read → todo
+- 2026-11-22T00:41:06Z rosy-jade-crane todo → doing
