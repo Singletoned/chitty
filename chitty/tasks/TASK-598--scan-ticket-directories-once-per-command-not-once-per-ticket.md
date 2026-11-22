@@ -21,19 +21,22 @@ Change, all in `Repo` in `src/chitty/store.py`; caches are per `Repo` object and
 - Index each ref's ticket files by `TaskId` once, and use it in `_ref_ticket_files`.
 - Cache the result of `discovered_contexts()`.
 
-Behaviour is unchanged; only the number of directory scans changes.
+Behaviour is unchanged; only the number of directory scans changes. Clear the new caches in `Repo._invalidate`.
 
-Tests, in `tests/test_list_performance.py` next to the existing constant-Git-calls tests: the same shape, counting calls to `chitty.store.scan` instead of Git calls. Build a repository like `_list_git_calls` does with 2 and then 20 tickets, run `Repo.open(root)` and the same listing the `list` command does (`chitty.cli.main` with `["list"]` through `click.testing.CliRunner`, run in the repository), with `unittest.mock.patch("chitty.store.scan", wraps=chitty.store.scan)` to count calls; assert the two counts are equal. Do the same for `repo.lookup(task_id)` over every ticket, as `_lookup_git_calls` does. This is a spy on a pure function, not filesystem mocking.
+Tests, in `tests/test_list_performance.py` next to the existing constant-Git-calls tests, which they mirror: build a repository the way `_list_git_calls` does (one `tasks` context, one archived ticket in `chitty/tasks/archive/`, and a ticket branch `task-2` in a linked worktree whose copy of `TASK-2` differs from `main`'s), with 2 and then 20 active tickets. Run the listing in a subprocess with `cwd` at that repository, as the existing tests do, so nothing in-process needs `os.chdir`: a short `python -c` script that wraps `chitty.store.scan` with a counting function (`chitty.store.scan = counted(chitty.store.scan)`), then calls `chitty.cli.cli(["list"], standalone_mode=False)` and prints the count. A second script does the same around `repo.lookup(task_id)` for every id in `repo.ticket_ids()`. Assert, for each script, that the counts for 2 and 20 tickets are equal and are at most 2 per context directory (active and archive; `tasks` and any other directory under `chitty/`), so "once per command" is shown, not only "constant". The lookup script also prints `TASK-2`'s title and source ref; assert they are the branch copy's.
+
+Error and order cases, same file, run once each through `Repo.open(root)` in-process (no counting): with a file `chitty/tasks/not-a-ticket.md` present, `repo.lookup` of an unrelated ticket raises `ChittyError` whose message starts with that file's path, as on `main`; with `TASK-3` both in `chitty/tasks/` and `chitty/tasks/archive/`, `repo.lookup(TASK-3)` raises `TASK-3 is used by more than one file: ` followed by the two paths in the same order `main` gives (active first, as `_working_ticket_files` lists them today). Run both against `main` first and record the messages in a note; assert those exact messages.
 
 Out of scope: other commands' speed, and Git calls (already constant in the ticket count).
 
 ## Acceptance Criteria
 
-- [ ] The two new tests in `tests/test_list_performance.py` (scan calls for `chitty list`, and for `lookup` of every ticket, equal for 2 and 20 tickets) pass, and fail before the change; record both runs in a note
-- [ ] Run in the main checkout before and after the change, `chitty list`, `chitty list -s backlog` and `chitty list --all` (with `.venv/bin/chitty` of each version, the same `main` commit, ticket branches unchanged between runs) print byte-identical output; record the `diff` result and the `time` of `chitty list` before and after in a note
+- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, at most 2 scans per context directory, `TASK-2` read from its branch) and the error and order tests pass; the scan-count tests fail before the change. Record both runs in a note
+- [ ] Before and after the change, in the main checkout at the same `main` commit with ticket branches unchanged between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` print byte-identical output, where "before" is the main checkout's `.venv/bin/chitty` and "after" is the ticket worktree's `.venv/bin/chitty` run with `cwd` at the main checkout. Record the `diff` result and three `time` runs of `chitty list` for each in a note
 - [ ] `make check` passes
 
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
 - 2026-11-22T21:26:19Z plucky-umber-wren: changed acceptance criteria
+- 2026-11-22T21:29:16Z plucky-umber-wren: changed description, acceptance criteria
