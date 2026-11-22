@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads from the ticket's own worktree against every placement
-status: todo
+status: doing
 labels:
   - question
 depends_on:
@@ -43,3 +43,4 @@ Test mechanism: add a module-level function `own_worktree_mismatches(parent: Pat
 - 2026-11-22T00:40:44Z lively-zinc-newt planning → cold-read
 - 2026-11-22T00:42:23Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:42:23Z lively-zinc-newt cold-read → todo
+- 2026-11-22T01:31:44Z tidy-lilac-crane todo → doing
