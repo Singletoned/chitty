@@ -1,6 +1,6 @@
 ---
 title: Re-check a ticket is `done` after taking the landing lock
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -23,8 +23,8 @@ Tests in a new `tests/test_landing_status_recheck.py`, inheriting `LandingTestCa
 
 ## Acceptance Criteria
 
-- [ ] For every status other than `done`, `self.land()` leaves `main`'s tip, the branch tip and the worktree unchanged, prints `not landing TASK-1: it is <status>` to stderr, and returns `False`; this fails before the change (the ticket lands)
-- [ ] With `done` the ticket lands as before and `_land` returns `True`; the existing tests in `tests/test_landing.py` and `tests/test_run_*.py` pass; `make check` passes
+- [x] For every status other than `done`, `self.land()` leaves `main`'s tip, the branch tip and the worktree unchanged, prints `not landing TASK-1: it is <status>` to stderr, and returns `False`; this fails before the change (the ticket lands)
+- [x] With `done` the ticket lands as before and `_land` returns `True`; the existing tests in `tests/test_landing.py` and `tests/test_run_*.py` pass; `make check` passes
 
 ## Plan
 
@@ -41,6 +41,10 @@ Question for the owner: did you (or a session you started by hand) run `git merg
 Owner, 2026-11-22: may have been a Pi session, not remembered. Planner checked: the `TASK-540` Pi review session ended at 04:03:34 with no merge, and no Pi session ran a merge of `task-540`; the race above explains the 04:06:48 fast-forward.
 
 Regression test failed before the fix (unittest exit 1).
+
+Reviewed: complete diff and acceptance criteria checked; no prior review findings.
+1: pass - make check passed all 1116 tests, including every non-done status; running the new tests with main's original run.py produced FAILED (failures=2, errors=7), including a changed main tip for backlog.
+2: pass - make check reported OK for 1116 tests, including landing and run tests; the done regression passed and fails against original run.py with None is not true.
 
 ## Summary
 
@@ -61,3 +65,5 @@ Recheck status under the landing lock and skip stale pending landings. Regressio
 - 2026-11-22T14:19:06Z rosy-silver-quail: changed notes
 - 2026-11-22T14:22:19Z rosy-silver-quail: changed summary
 - 2026-11-22T14:23:59Z rosy-silver-quail doing → review
+- 2026-11-22T14:30:03Z jolly-quartz-otter: changed notes; ticked acceptance criteria
+- 2026-11-22T14:30:03Z jolly-quartz-otter review → done
