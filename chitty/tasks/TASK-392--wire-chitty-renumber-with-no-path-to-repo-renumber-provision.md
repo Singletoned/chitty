@@ -1,6 +1,6 @@
 ---
 title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
-status: doing
+status: error
 depends_on:
   - TASK-517
   - TASK-542
@@ -41,6 +41,10 @@ All four fail on today's code (a cold reader's probe: `Error: Missing argument '
 
 The store method moved to `TASK-517`, which depends on the preflight `TASK-391`. Update this ticket against the landed store behavior and cold-read it before moving it back to `todo`.
 
+Runner error (check): check exited with status 2; output in `.chitty/check.log`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-392`
+
 ## History
 
 - 2026-11-18T16:37:33Z lively-quartz-crane → backlog
@@ -64,3 +68,5 @@ The store method moved to `TASK-517`, which depends on the preflight `TASK-391`.
 - 2026-11-22T03:25:13Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T03:25:13Z lively-zinc-newt cold-read → todo
 - 2026-11-22T03:58:54Z rosy-russet-lapwing todo → doing
+- 2026-11-22T04:01:24Z rosy-russet-lapwing: changed notes
+- 2026-11-22T04:01:24Z rosy-russet-lapwing doing → error
