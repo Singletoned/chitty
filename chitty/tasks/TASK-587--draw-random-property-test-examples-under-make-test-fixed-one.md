@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: doing
+status: review
 priority: high
 created: 2026-11-22
 ---
@@ -97,3 +97,4 @@ Implemented tier-specific Hypothesis profiles and Make targets. Regression tests
 - 2026-11-22T16:51:24Z vivid-yellow-kestrel: wrote the plan
 - 2026-11-22T16:51:42Z vivid-yellow-kestrel: changed notes
 - 2026-11-22T16:53:52Z vivid-yellow-kestrel: changed summary
+- 2026-11-22T16:56:38Z vivid-yellow-kestrel doing → review
