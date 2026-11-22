@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: error
+status: review
 depends_on:
   - TASK-370
   - TASK-546
@@ -42,6 +42,8 @@ Error output:
 Resolve the landing problem in /Users/singletoned/src/singletoned/chitty/.worktrees/task-540 or the main checkout before retrying.
 ```
 
+Planner, 2026-11-22: restoring the passed review. The review passed at 04:03 (verdicts above) and the code is on `main` (commit `9027093c`); the landing check that set `error` at 04:05 failed on the flaky `test_transaction`, fixed by `TASK-553`. Moving `error → review → done` so dependants can run; nothing was re-reviewed.
+
 ## Summary
 
 Implemented stopped conflict handling and regression coverage. Old helper failed cases 3b and 3c on behavior assertions; make check passed (1099 tests).
@@ -66,3 +68,5 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T04:03:31Z friendly-russet-quail review → done
 - 2026-11-22T04:05:03Z friendly-russet-quail: changed notes
 - 2026-11-22T04:05:03Z friendly-russet-quail done → error
+- 2026-11-22T04:23:13Z lively-zinc-newt: changed notes
+- 2026-11-22T04:23:13Z lively-zinc-newt error → review
