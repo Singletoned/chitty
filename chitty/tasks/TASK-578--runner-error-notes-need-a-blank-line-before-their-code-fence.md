@@ -1,6 +1,6 @@
 ---
 title: Runner error notes need a blank line before their code fences
-status: review
+status: done
 created: 2026-11-22
 ---
 
@@ -26,8 +26,8 @@ mirrors the implementation, so it is not evidence on its own.
 
 ## Acceptance Criteria
 
-- [ ] A runner error note with extra output has a blank line between `Error output:` and the fence; shown by the new exact-string test, which fails before the change.
-- [ ] `make check` passes.
+- [x] A runner error note with extra output has a blank line between `Error output:` and the fence; shown by the new exact-string test, which fails before the change.
+- [x] `make check` passes.
 
 ## Plan
 
@@ -40,6 +40,10 @@ Suggestion origin: taidy
 Cold read: test made exact-string; nothing else serious.
 
 The exact-string regression test failed before the fix: the actual note lacks the blank line before the fence.
+
+Reviewed: The change and complete diff meet the criteria.
+1: pass - The exact-string test passes in make check; restoring the previous separator in memory makes it fail with the missing blank line shown in the assertion diff.
+2: pass - make check reported 1129 tests OK, ruff passed, and pyright reported 0 errors.
 
 ## Summary
 
@@ -58,3 +62,5 @@ Added blank line before error output fences and an exact-string regression test.
 - 2026-11-22T15:37:05Z mellow-amber-marten: changed notes
 - 2026-11-22T15:40:41Z mellow-amber-marten: changed summary
 - 2026-11-22T15:44:05Z mellow-amber-marten doing → review
+- 2026-11-22T15:52:21Z sunny-silver-wren: changed notes; ticked acceptance criteria
+- 2026-11-22T15:52:21Z sunny-silver-wren review → done
