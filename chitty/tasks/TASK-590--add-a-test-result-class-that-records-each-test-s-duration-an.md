@@ -1,6 +1,6 @@
 ---
 title: Add a test result class that records each test's duration and outcome
-status: cold-read
+status: planning
 owner: plucky-umber-wren
 created: 2026-11-22
 ---
@@ -30,10 +30,10 @@ No property for outcomes: they are a fixed set, each case listed in the criteria
 
 ## Acceptance Criteria
 
-- [ ] A module with class `Cases` holding `test_pass`, `test_fail`, `test_error`, a skipped `test_skip` and an `@unittest.expectedFailure` `test_expected` that fails gives exactly five lines, one per test id, with `outcome` `pass`, `fail`, `error`, `skip` and `expected-fail`; each has a `seconds` float at least 0, `tier` `check`, `commit` `abc` and a `time` that `datetime.fromisoformat` parses
-- [ ] Subtests and fixtures, each in its own module: a `self.subTest` loop that fails, then passes gives one line with `outcome` `fail`; one that errors, then fails gives `error`; a class whose `setUpClass` raises `RuntimeError` gives one line with `outcome` `error` and `seconds` 0.0; and a class whose `setUpClass` raises `unittest.SkipTest` gives one line with `outcome` `skip` and `seconds` 0.0
-- [ ] With `TEST_TIMINGS_FILE` removed, the module from criterion 1 writes no file and exits with the same status as the same command without `--result`; with `TEST_TIMINGS_FILE` set and `TEST_TIER` removed, and again with `TEST_COMMIT` removed, the run exits non-zero, its output names the missing variable, and no test runs
-- [ ] A stress test runs a generated module of 200 trivial tests with the harness plus `-j 4` and asserts the file has exactly 200 lines, every one parses as JSON, and the 200 test ids are distinct. It checks counts and parseability only; `make check` passes
+- [ ] A module with class `Cases` holding `test_pass`, `test_fail`, `test_error`, a skipped `test_skip` and an `@unittest.expectedFailure` `test_expected` that fails gives exactly five lines, one per test id, with `outcome` `pass`, `fail`, `error`, `skip` and `expected-fail`; each has a `seconds` float at least 0, `tier` `check`, `commit` `abc` and a `time` that `datetime.fromisoformat` parses with a zero `utcoffset()`
+- [ ] Subtests and fixtures, each in its own module: a `self.subTest` loop that fails, then passes gives one line with `outcome` `fail`; one that errors, then fails gives `error`; a class whose `setUpClass` raises `RuntimeError` gives one line with `outcome` `error`, `seconds` 0.0 and `test` equal to the placeholder's `id()` (`setUpClass (<module>.<Class>)`); and a class whose `setUpClass` raises `unittest.SkipTest` gives the same with `outcome` `skip`
+- [ ] With `TEST_TIMINGS_FILE` removed, the module from criterion 1 writes no file and exits with the same status as the same command run without `--result tests.timing.TimingResult` (both non-zero, since it has failing tests; compare the two). With `TEST_TIMINGS_FILE` set and `TEST_TIER` removed, and again with `TEST_COMMIT` removed, the run exits non-zero and its output names the missing variable; a module whose single test creates a marker file shows no test ran (the marker does not exist afterwards)
+- [ ] A stress test runs a generated module of 200 tests, each with a name of at least 300 characters so each record is longer than a small write buffer, with the harness plus `-j 4`, and asserts the file has exactly 200 lines, every one parses as JSON, and the 200 test ids are distinct; `make check` passes
 
 ## History
 
@@ -48,3 +48,5 @@ No property for outcomes: they are a fixed set, each case listed in the criteria
 - 2026-11-22T17:15:11Z plucky-umber-wren: changed title, dependencies, description, acceptance criteria
 - 2026-11-22T17:15:11Z plucky-umber-wren cold-read → planning
 - 2026-11-22T17:15:31Z plucky-umber-wren planning → cold-read
+- 2026-11-22T17:16:16Z plucky-umber-wren: changed acceptance criteria
+- 2026-11-22T17:16:16Z plucky-umber-wren cold-read → planning
