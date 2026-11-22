@@ -117,7 +117,11 @@ def place(root: Path, placement: str, number: int) -> Expected:
 
 
 def checkout(root: Path, kind: int, number: int) -> Path:
-    if kind == 3:
+    if kind == 2:
+        name = f"task-{number}"
+        path = root / ".worktrees" / name
+        git(root, "worktree", "add", str(path), name)
+    elif kind == 3:
         name = f"task-{number + 1}"
         git(root, "checkout", "-b", name, "main")
         write_ticket(root, number + 1, "other")
