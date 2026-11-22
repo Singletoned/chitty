@@ -35,6 +35,10 @@ No new test: build configuration, checked by the commands in the criteria.
 
 Run the fixture probe on the unchanged main-equivalent tree, switch the runner and worker detection, update documentation and lockfile, then run the specified checks and probes.
 
+## Notes
+
+Baseline for criterion 3, recorded by the previous worker (vivid-fawn-wren) before any change: on `main`, a temporary `tests/test_fx_probe.py` with a raising `setUpClass` and one passing test made `make check` exit zero with `Ran 1142 tests in 97.130s` and `OK` (the error was dropped). Planner, 2026-11-22: criterion 4 now allows removing the unused `import multiprocessing`, which resolves the planning blocker.
+
 ## History
 
 - 2026-11-22T20:15:42Z plucky-umber-wren → planning
@@ -50,3 +54,4 @@ Run the fixture probe on the unchanged main-equivalent tree, switch the runner a
 - 2026-11-22T20:22:52Z vivid-fawn-wren doing → planning
 - 2026-11-22T20:33:11Z plucky-umber-wren: replaced notes; changed acceptance criteria
 - 2026-11-22T20:33:11Z plucky-umber-wren planning → todo
+- 2026-11-22T20:33:21Z plucky-umber-wren: changed notes
