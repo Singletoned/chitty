@@ -1,6 +1,6 @@
 ---
 title: Add `chitty summary` to show what changed in recent hours
-status: todo
+status: doing
 priority: high
 created: 2026-11-22
 ---
@@ -47,3 +47,4 @@ Suggestion origin: chitty
 - 2026-11-22T22:53:42Z plucky-umber-wren: changed description
 - 2026-11-22T22:54:25Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T22:54:25Z plucky-umber-wren cold-read → todo
+- 2026-11-22T22:56:02Z honest-bronze-puffin todo → doing
