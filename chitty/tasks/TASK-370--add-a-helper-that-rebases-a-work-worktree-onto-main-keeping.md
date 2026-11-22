@@ -1,6 +1,6 @@
 ---
 title: Add a helper that rebases a work worktree onto `main`, keeping uncommitted work
-status: review
+status: done
 labels:
   - bug
 priority: high
@@ -39,8 +39,8 @@ Before implementing, add the function raising `NotImplementedError` and confirm 
 
 ## Acceptance Criteria
 
-- [ ] The four helper tests pass, and each errors with `NotImplementedError` against a stub
-- [ ] `make check` passes
+- [x] The four helper tests pass, and each errors with `NotImplementedError` against a stub
+- [x] `make check` passes
 
 ## Plan
 
@@ -89,6 +89,10 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-370`
 Split again 2026-11-22: the worker model gave up a third time (five sessions, no code). Runner wiring is `TASK-546`.
 
 All four prescribed tests errored with NotImplementedError against the stub before implementation.
+
+Reviewed: helper matches the prescribed sequence; fixed real-Git cases are appropriate here.
+1: pass - make check ran all four helper tests successfully; replacing the helper in memory with a NotImplementedError stub ran four tests and printed FAILED (errors=4), each NotImplementedError. The worker also recorded the pre-implementation stub run.
+2: pass - make check printed 0 errors, 0 warnings and Ran 1083 tests, OK.
 
 ## Summary
 
@@ -176,3 +180,5 @@ Added the standalone rebase helper and four real-Git tests. All four errored aga
 - 2026-11-22T02:10:44Z tidy-quartz-yellowhammer: changed notes
 - 2026-11-22T02:13:10Z tidy-quartz-yellowhammer: changed summary
 - 2026-11-22T02:13:12Z tidy-quartz-yellowhammer doing → review
+- 2026-11-22T02:19:31Z quick-ebony-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-22T02:19:31Z quick-ebony-dormouse review → done
