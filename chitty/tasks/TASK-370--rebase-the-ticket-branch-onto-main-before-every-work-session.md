@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: todo
+status: doing
 labels:
   - bug
   - needs-minor
@@ -146,3 +146,4 @@ Replanned 2026-11-22: setup now records its `git log` in case 1; the `todo` and 
 - 2026-11-22T01:46:04Z witty-violet-badger doing → planning
 - 2026-11-22T01:47:40Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T01:47:40Z lively-zinc-newt planning → todo
+- 2026-11-22T01:52:30Z lively-violet-quail todo → doing
