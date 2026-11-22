@@ -1341,6 +1341,8 @@ class TestNext(CliTestCase):
         detail = "check exited with status 1; output in `.chitty/check.log`"
         self.assertNotIn("check line", task.section("Notes") or "")
         self.assertIn(detail, task.section("Notes") or "")
+        explanation = "the branch has no work yet, so `main` fails this check"
+        self.assertIn(explanation, task.section("Notes") or "")
         worktree = self.root / ".worktrees/task-1"
         ticket_path = next((worktree / "chitty/tasks").glob("TASK-1--*.md"))
         relative_ticket_path = str(ticket_path.relative_to(worktree))
@@ -1355,6 +1357,7 @@ class TestNext(CliTestCase):
         self.assertIn("status: error", branch_ticket)
         self.assertIn("Runner error (check)", branch_ticket)
         self.assertIn(detail, branch_ticket)
+        self.assertIn(explanation, branch_ticket)
         self.assertNotIn("check line", branch_ticket)
         log_path = worktree / ".chitty/check.log"
         log = log_path.read_text()

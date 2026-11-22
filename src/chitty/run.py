@@ -1462,6 +1462,12 @@ def _run_check(
     if returncode == 0:
         return None
     detail = f"check exited with status {returncode}; output in `.chitty/check.log`"
+    if (
+        action.mode == "work"
+        and selected_status == "todo"
+        and not _branch_has_work(branch_repo.root, branch_repo.config.main_branch)
+    ):
+        detail += "; the branch has no work yet, so `main` fails this check"
     return _handle_check_failure(
         branch_repo, action, detail, exited=True, selected_status=selected_status
     )
