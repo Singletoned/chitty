@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: review
+status: done
 priority: high
 created: 2026-11-22
 ---
@@ -65,6 +65,12 @@ Planner, 2026-11-22: the runner's `error` above came from this ticket's own prob
 
 Regression tests before the fix: thorough produced identical lists and unknown tier exited zero; unset and check passed.
 
+Reviewed: complete diff and criteria; no defects found.
+1: pass - make check ran the subprocess profile tests successfully; running them against main's tests/__init__.py produced identical thorough lists and failed the thorough assertion, while unset and check passed.
+2: pass - make check passed test_unknown_tier_fails; against main it failed because import exited 0.
+3: pass - make -n test and make -n check printed the specified TEST_TIER commands; mate --list printed the new test description; make check reported 1137 tests OK.
+4: pass - AGENTS.md diff has the requested profile descriptions and retains the failure sentence.
+
 ## Summary
 
 Implemented tier-specific Hypothesis profiles and Make targets. Regression tests failed before the fix and pass after it; make check, make dry runs and mate list passed.
@@ -98,3 +104,5 @@ Implemented tier-specific Hypothesis profiles and Make targets. Regression tests
 - 2026-11-22T16:51:42Z vivid-yellow-kestrel: changed notes
 - 2026-11-22T16:53:52Z vivid-yellow-kestrel: changed summary
 - 2026-11-22T16:56:38Z vivid-yellow-kestrel doing → review
+- 2026-11-22T17:03:25Z eager-pearl-vole: changed notes
+- 2026-11-22T17:03:25Z eager-pearl-vole review → done
