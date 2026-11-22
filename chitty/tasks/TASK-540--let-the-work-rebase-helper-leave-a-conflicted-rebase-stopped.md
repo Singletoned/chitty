@@ -1,6 +1,6 @@
 ---
 title: Let the work rebase helper leave a conflicted rebase stopped
-status: blocked
+status: review
 labels:
   - question
 depends_on:
@@ -76,3 +76,4 @@ Implemented stopped conflict handling and regression coverage. Old helper failed
 - 2026-11-22T04:23:13Z lively-zinc-newt error → review
 - 2026-11-22T04:23:44Z lively-zinc-newt: changed labels, notes
 - 2026-11-22T04:23:44Z lively-zinc-newt review → blocked
+- 2026-11-22T12:56:15Z human blocked → review
