@@ -42,6 +42,10 @@ Owner, 2026-11-22: may have been a Pi session, not remembered. Planner checked: 
 
 Regression test failed before the fix (unittest exit 1).
 
+## Summary
+
+Recheck status under the landing lock and skip stale pending landings. Regression test failed before the fix and passes afterward; make check passes (1116 tests).
+
 ## History
 
 - 2026-11-22T09:47:31Z friendly-jade-stoat → backlog
@@ -55,3 +59,4 @@ Regression test failed before the fix (unittest exit 1).
 - 2026-11-22T14:16:04Z rosy-silver-quail todo → doing
 - 2026-11-22T14:18:36Z rosy-silver-quail: wrote the plan
 - 2026-11-22T14:19:06Z rosy-silver-quail: changed notes
+- 2026-11-22T14:22:19Z rosy-silver-quail: changed summary
