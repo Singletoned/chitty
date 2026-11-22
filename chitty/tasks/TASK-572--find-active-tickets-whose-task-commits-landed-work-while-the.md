@@ -1,6 +1,6 @@
 ---
 title: Find active tickets whose `Task:` commits landed work while they are not done
-status: planning
+status: cold-read
 depends_on:
   - TASK-358
 created: 2026-11-22
@@ -29,3 +29,4 @@ Tests in a new `tests/test_unfinished_landed.py`, Hypothesis (the repository's p
 - 2026-11-22T10:03:13Z friendly-jade-stoat → todo
 - 2026-11-22T10:03:32Z friendly-jade-stoat: changed description, acceptance criteria
 - 2026-11-22T10:03:32Z friendly-jade-stoat todo → planning
+- 2026-11-22T10:09:52Z friendly-jade-stoat planning → cold-read
