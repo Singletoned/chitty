@@ -1,6 +1,6 @@
 ---
 title: Say when a run fails because the checks already fail on `main`
-status: doing
+status: review
 created: 2026-11-22
 ---
 
@@ -66,3 +66,4 @@ Added the main-branch check failure explanation and regression assertions. The t
 - 2026-11-22T15:49:26Z quick-ebony-lapwing: wrote the plan
 - 2026-11-22T15:49:56Z quick-ebony-lapwing: changed notes
 - 2026-11-22T15:53:11Z quick-ebony-lapwing: changed summary
+- 2026-11-22T15:57:05Z quick-ebony-lapwing doing → review
