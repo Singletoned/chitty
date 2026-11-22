@@ -6,7 +6,7 @@ from chitty.store import guide
 
 class TestColdReadReportGuide(unittest.TestCase):
     def test_report_instructions_name_the_fixed_report(self):
-        cold_read = " ".join(guide("cold-read", directory=Path.cwd()).split())
+        cold_read = " ".join(guide("cold-read", directory=Path.cwd(), workflow="runner").split())
         for phrase in (
             "What done means",
             "Ambiguities",

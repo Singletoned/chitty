@@ -31,11 +31,12 @@ class TestColdReadGuide(unittest.TestCase):
     def test_names_the_ticket_first(self):
         self.assertEqual(
             self.run_cli("guide", "cold-read", "TASK-1"),
-            f"Work only on Chitty ticket TASK-1.\n\n{guide('cold-read', directory=Path.cwd())}",
+            "Work only on Chitty ticket TASK-1.\n\n"
+            + guide("cold-read", directory=Path.cwd(), workflow="runner"),
         )
 
     def test_plan_guide_points_at_the_reader_guide(self):
-        planning = _flat(guide("plan", directory=Path.cwd()))
+        planning = _flat(guide("plan", directory=Path.cwd(), workflow="runner"))
         self.assertIn("chitty guide cold-read <ID>", planning)
         self.assertIn("for its cold read", planning)
 

@@ -7,7 +7,7 @@ from chitty.store import guide
 
 class TestReadOnlyColdReadGuide(unittest.TestCase):
     def test_cold_read_is_one_read_only_scan(self):
-        text = " ".join(guide("cold-read", directory=Path.cwd()).split())
+        text = " ".join(guide("cold-read", directory=Path.cwd(), workflow="runner").split())
         required = (
             "Run no Chitty writes",
             "no worktree, branch, ref or commit",
@@ -44,7 +44,7 @@ class TestReadOnlyColdReadGuide(unittest.TestCase):
                 self.assertNotIn(phrase, text)
 
     def test_plan_guide_describes_read_only_cold_reads(self):
-        text = " ".join(guide("plan", directory=Path.cwd()).split())
+        text = " ".join(guide("plan", directory=Path.cwd(), workflow="runner").split())
         required = (
             "for its cold read",
             "cheap model",

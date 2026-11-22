@@ -22,7 +22,7 @@ class TestBacktickGuideWarning(unittest.TestCase):
                 result = runner.invoke(cli, ["guide", *args], env=env, catch_exceptions=False)
                 self.assertEqual(result.exit_code, 0, result.output)
                 self.assertIn(" ".join(WARNING.split()), " ".join(result.stdout.split()))
-                expected = guide(*args, directory=Path.cwd())
+                expected = guide(*args, directory=Path.cwd(), workflow="runner")
                 self.assertEqual(result.stdout, expected)
 
 

@@ -8,7 +8,9 @@ class TestWorktreeBoundaryGuide(unittest.TestCase):
     def test_work_and_review_guides_define_worktree_boundary(self):
         for role in ("work", "review"):
             with self.subTest(role=role):
-                text = " ".join(guide(role, "TASK-254", directory=Path.cwd()).split()).lower()
+                text = " ".join(
+                    guide(role, "TASK-254", directory=Path.cwd(), workflow="runner").split()
+                ).lower()
                 self.assertIn("read and change only files inside the ticket", text)
                 self.assertIn("including scratch files", text)
                 self.assertIn(

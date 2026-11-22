@@ -2403,7 +2403,7 @@ class TestNext(CliTestCase):
         self.assertTrue((worktree / "pi-ran").exists())
         self.assertEqual(
             (worktree / "agent-arguments-work").read_text(),
-            repr([guide("work", "TASK-1", directory=Path.cwd())]),
+            repr([guide("work", "TASK-1", directory=Path.cwd(), workflow="runner")]),
         )
         self.assertEqual((worktree / "setup-ran").read_text(), "1")
         self.assertFalse((worktree / "interpreted").exists())
@@ -2421,7 +2421,10 @@ class TestNext(CliTestCase):
             os.environ.pop("EXPECTED_ROOT", None)
         self.assertEqual(review.stdout, "TASK-1: review → error\n")
         review_prompt = (worktree / "agent-arguments-review").read_text()
-        self.assertEqual(review_prompt, repr([guide("review", "TASK-1", directory=Path.cwd())]))
+        self.assertEqual(
+            review_prompt,
+            repr([guide("review", "TASK-1", directory=Path.cwd(), workflow="runner")]),
+        )
         self.assertIn('"', review_prompt)
         self.assertEqual(
             Repo.open(worktree).find(Repo.open(worktree).resolve("TASK-1")).task.frontmatter.status,

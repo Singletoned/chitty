@@ -8,7 +8,7 @@ from chitty.store import guide
 class TestGuideReturnToPlanning(unittest.TestCase):
     def test_both_roles_route_requirement_problems_to_planning(self):
         for role in ("work", "review"):
-            text = " ".join(guide(role, directory=Path.cwd()).split())
+            text = " ".join(guide(role, directory=Path.cwd(), workflow="runner").split())
             for phrase in (
                 "missing or contradictory requirements",
                 "an unresolved design decision",
@@ -27,13 +27,13 @@ class TestGuideReturnToPlanning(unittest.TestCase):
                     self.assertIn(phrase, text)
 
     def test_worker_keeps_cheap_reversible_choices(self):
-        text = " ".join(guide("work", directory=Path.cwd()).split())
+        text = " ".join(guide("work", directory=Path.cwd(), workflow="runner").split())
         self.assertIn("For a cheap-to-reverse default, choose it", text)
         self.assertIn("This applies only to choices the ticket leaves open", text)
         self.assertNotIn("what you found and set `-s blocked`", text)
 
     def test_review_keeps_verdicts_and_work_fix_route(self):
-        text = " ".join(guide("review", directory=Path.cwd()).split())
+        text = " ".join(guide("review", directory=Path.cwd(), workflow="runner").split())
         self.assertIn("implementation defects against clear requirements", text)
         self.assertIn("Set `-s doing`", text)
         self.assertIn("one line for every criterion", text)

@@ -14,7 +14,7 @@ class TestReviewGuideEvidence(unittest.TestCase):
         self.assertNotIn('"Reviewed: ready to merge.\\n1: pass', example)
 
     def test_review_guide_requires_evidence_for_failures(self):
-        text = " ".join(guide("review", directory=Path.cwd()).split())
+        text = " ".join(guide("review", directory=Path.cwd(), workflow="runner").split())
         for phrase in (
             "A criterion is unmet if nothing exercises it",
             "A ticket that is itself wrong also fails",

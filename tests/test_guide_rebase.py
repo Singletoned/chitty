@@ -53,11 +53,13 @@ class TestGuideRebase(unittest.TestCase):
                 for directory in (root, root / "nested"):
                     directory.mkdir(exist_ok=True)
                     for role in ("work", "repair"):
-                        output = guide(role, "TASK-1", directory=directory)
+                        output = guide(role, "TASK-1", directory=directory, workflow="runner")
                         self.assertIn(
                             f"Work only on Chitty ticket TASK-1.\n\n{insertion}\n\n", output
                         )
-                        expected = guide(role, "TASK-1", directory=Path(tempfile.mkdtemp()))
+                        expected = guide(
+                            role, "TASK-1", directory=Path(tempfile.mkdtemp()), workflow="runner"
+                        )
                         self.assertEqual(output.replace(insertion + "\n\n", "", 1), expected)
                         previous = Path.cwd()
                         try:
@@ -74,14 +76,14 @@ class TestGuideRebase(unittest.TestCase):
                 for role in ("review", "plan", "cold-read"):
                     ticket_id = "TASK-1" if role == "review" else None
                     self.assertEqual(
-                        guide(role, ticket_id, directory=root),
-                        guide(role, ticket_id, directory=unrelated),
+                        guide(role, ticket_id, directory=root, workflow="runner"),
+                        guide(role, ticket_id, directory=unrelated, workflow="runner"),
                     )
                 self.git(root, "rebase", "--abort")
                 for role in ("work", "repair"):
                     self.assertEqual(
-                        guide(role, "TASK-1", directory=root),
-                        guide(role, "TASK-1", directory=unrelated),
+                        guide(role, "TASK-1", directory=root, workflow="runner"),
+                        guide(role, "TASK-1", directory=unrelated, workflow="runner"),
                     )
 
     def test_outside_repository_and_missing_directory(self):
@@ -95,10 +97,10 @@ class TestGuideRebase(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         for role in ("work", "repair"):
             with self.assertRaises(ChittyError):
-                guide(role, "TASK-1", directory=outside / "missing")
+                guide(role, "TASK-1", directory=outside / "missing", workflow="runner")
             self.assertEqual(
-                guide(role, "TASK-1", directory=outside),
-                guide(role, "TASK-1", directory=Path(tempfile.mkdtemp())),
+                guide(role, "TASK-1", directory=outside, workflow="runner"),
+                guide(role, "TASK-1", directory=Path(tempfile.mkdtemp()), workflow="runner"),
             )
 
     def test_linked_worktree_detects_its_stopped_rebase(self):
@@ -117,9 +119,9 @@ class TestGuideRebase(unittest.TestCase):
         insertion = (Path(__file__).parents[1] / "src/chitty/roles/rebase.md").read_text().rstrip()
         outside = Path(tempfile.mkdtemp())
         for role in ("work", "repair"):
-            output = guide(role, "TASK-1", directory=linked)
+            output = guide(role, "TASK-1", directory=linked, workflow="runner")
             self.assertIn(f"Work only on Chitty ticket TASK-1.\n\n{insertion}\n\n", output)
             self.assertEqual(
                 output.replace(insertion + "\n\n", "", 1),
-                guide(role, "TASK-1", directory=outside),
+                guide(role, "TASK-1", directory=outside, workflow="runner"),
             )

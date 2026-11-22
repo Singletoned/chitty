@@ -6,7 +6,7 @@ from chitty.cli import guide
 
 class TestReviewGuideCompleteness(unittest.TestCase):
     def test_complete_inspection_before_verdict(self):
-        text = " ".join(guide("review", directory=Path.cwd()).split())
+        text = " ".join(guide("review", directory=Path.cwd(), workflow="runner").split())
         for phrase in (
             (
                 "Before writing the review note, inspect every acceptance criterion "
@@ -23,7 +23,7 @@ class TestReviewGuideCompleteness(unittest.TestCase):
                 self.assertIn(phrase, text)
 
     def test_all_findings_in_one_note(self):
-        text = " ".join(guide("review", directory=Path.cwd()).split())
+        text = " ".join(guide("review", directory=Path.cwd(), workflow="runner").split())
         for phrase in (
             "Report all findings from this pass together in that one note",
             "Group actionable findings under the relevant criterion",
@@ -33,7 +33,7 @@ class TestReviewGuideCompleteness(unittest.TestCase):
                 self.assertIn(phrase, text)
 
     def test_new_discoveries_are_not_prior_process_failures(self):
-        text = " ".join(guide("review", directory=Path.cwd()).split())
+        text = " ".join(guide("review", directory=Path.cwd(), workflow="runner").split())
         for phrase in (
             "Compare findings with earlier review notes",
             (

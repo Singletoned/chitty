@@ -58,7 +58,9 @@ class TestRunRepairMode(TestRunContinue):
             "import subprocess, sys\n"
             "from pathlib import Path\n"
             f"Path({str(self.invocations)!r}).open('a').write(repr(sys.argv[1:]) + '\\n')\n"
-            f"assert sys.argv[1] == {guide('repair', ticket, directory=Path.cwd())!r}\n"
+            "assert sys.argv[1] == "
+            + repr(guide("repair", ticket, directory=Path.cwd(), workflow="runner"))
+            + "\n"
             f"path = next(Path('chitty/tasks').glob('{ticket}--*.md'))\n"
             "path.write_text(path.read_text().replace('status: error', 'status: review'))\n"
             "subprocess.run(['git', 'add', str(path)], check=True)\n"
@@ -69,5 +71,8 @@ class TestRunRepairMode(TestRunContinue):
         )
         fake.chmod(fake.stat().st_mode | __import__("stat").S_IXUSR)
         self.run_cli("run", "--errors")
-        self.assertEqual(self.invocations_seen(), [[guide("repair", ticket, directory=Path.cwd())]])
+        self.assertEqual(
+            self.invocations_seen(),
+            [[guide("repair", ticket, directory=Path.cwd(), workflow="runner")]],
+        )
         self.assertEqual(self.json("show", ticket)["status"], "review")

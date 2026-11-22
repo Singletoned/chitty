@@ -28,6 +28,7 @@ from chitty.config import (
     check_setup_version,
     load_repo_config,
     resolve_workflow,
+    runner_required_message,
     search_root,
     validate_repo_config,
 )
@@ -1714,14 +1715,12 @@ def repository_guide(start_dir: Path) -> str:
     return managed_guide(workflow)
 
 
-def guide(role: str, ticket_id: str | None = None, *, directory: Path) -> str:
+def guide(role: str, ticket_id: str | None = None, *, directory: Path, workflow: str) -> str:
     """Return prefix-independent role-specific agent guidance."""
     if role not in ROLE_NAMES:
         raise ChittyError(f"unknown role {role!r}; choose from {', '.join(ROLE_NAMES)}")
-    root = search_root(directory)
-    workflow = "runner" if root is None else load_repo_config(root).workflow
     if workflow != "runner":
-        raise ChittyError(f'chitty guide {role} needs workflow = "runner" in the Chitty config')
+        raise ChittyError(runner_required_message(f"guide {role}"))
     if ticket_id is not None and role in {"plan", "setup"}:
         raise ChittyError(f"the {role} role does not take a ticket ID")
 

@@ -306,10 +306,14 @@ def configured_workflow(start: Path) -> str | None:
     return None if root is None else load_repo_config(root).workflow
 
 
+def runner_required_message(command: str) -> str:
+    return f'chitty {command} needs workflow = "runner" in the Chitty config'
+
+
 def require_runner(config: RepoConfig, command: str) -> None:
     """Reject runner-only commands for repositories using the tickets workflow."""
     if config.workflow != "runner":
-        raise ChittyError(f'chitty {command} needs workflow = "runner" in the Chitty config')
+        raise ChittyError(runner_required_message(command))
 
 
 def resolve_workflow(workflow: str | None, chitty_version: str | None) -> str:

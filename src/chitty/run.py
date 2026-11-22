@@ -975,11 +975,26 @@ def _agent_command(
         if continuation:
             prompt = continuation_prompt(action.mode, ticket)
         elif mode == "rebase":
-            prompt = guide("rebase", ticket, directory=worktree if worktree.is_dir() else repo.root)
+            prompt = guide(
+                "rebase",
+                ticket,
+                directory=worktree if worktree.is_dir() else repo.root,
+                workflow=repo.config.workflow,
+            )
         elif repo.find(action.id).task.frontmatter.status == "error":
-            prompt = guide("repair", ticket, directory=worktree if worktree.is_dir() else repo.root)
+            prompt = guide(
+                "repair",
+                ticket,
+                directory=worktree if worktree.is_dir() else repo.root,
+                workflow=repo.config.workflow,
+            )
         else:
-            prompt = guide(mode, ticket, directory=worktree if worktree.is_dir() else repo.root)
+            prompt = guide(
+                mode,
+                ticket,
+                directory=worktree if worktree.is_dir() else repo.root,
+                workflow=repo.config.workflow,
+            )
     is_repair = repo.find(action.id).task.frontmatter.status == "error"
     command_mode = mode if mode == "rebase" else "repair" if is_repair else mode
     rendered = render_command(words, command_mode, str(action.id), prompt)

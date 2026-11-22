@@ -82,7 +82,7 @@ class TestPlanningStatuses(CliTestCase):
         self.assertIn("no next ticket", result.stderr)
 
     def test_plan_guide_names_both_statuses(self):
-        text = " ".join(guide("plan", directory=Path.cwd()).split())
+        text = " ".join(guide("plan", directory=Path.cwd(), workflow="runner").split())
         self.assertIn("-s planning", text)
         self.assertIn("-s cold-read", text)
 

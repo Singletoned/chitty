@@ -20,7 +20,7 @@ DEFECT_PHRASES = (
 class TestGuideReturnScope(unittest.TestCase):
     def test_work_and_review_route_each_ticket_defect_to_planning(self):
         for role in ("work", "review"):
-            text = " ".join(guide(role, directory=Path.cwd()).split())
+            text = " ".join(guide(role, directory=Path.cwd(), workflow="runner").split())
             for phrase in DEFECT_PHRASES:
                 with self.subTest(role=role, phrase=phrase):
                     self.assertIn(phrase, text)

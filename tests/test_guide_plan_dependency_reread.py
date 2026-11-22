@@ -6,7 +6,7 @@ from chitty.store import guide
 
 class TestPlanGuideDependencyReread(unittest.TestCase):
     def test_ticket_built_on_unfinished_work_is_read_again_after_it_lands(self):
-        planning = " ".join(guide("plan", directory=Path.cwd()).split())
+        planning = " ".join(guide("plan", directory=Path.cwd(), workflow="runner").split())
         for phrase in (
             "relies on something an unfinished ticket is building",
             "keep it in `planning`",

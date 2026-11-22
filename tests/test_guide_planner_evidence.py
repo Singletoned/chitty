@@ -6,7 +6,7 @@ from chitty.store import guide
 
 class TestPlannerEvidence(unittest.TestCase):
     def setUp(self):
-        self.planning = " ".join(guide("plan", directory=Path.cwd()).split())
+        self.planning = " ".join(guide("plan", directory=Path.cwd(), workflow="runner").split())
 
     def test_existing_code_uses_wrong_versions_not_a_stub(self):
         self.assertIn("a stub cannot show the tests fail", self.planning)

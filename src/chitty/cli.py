@@ -1051,7 +1051,14 @@ def guide_(role: str | None, task_id: str | None) -> None:
     Work, review, cold-read and rebase accept an optional ticket ID. Setup and plan do not.
     """
     text = (
-        repository_guide(Path.cwd()) if role is None else guide(role, task_id, directory=Path.cwd())
+        repository_guide(Path.cwd())
+        if role is None
+        else guide(
+            role,
+            task_id,
+            directory=Path.cwd(),
+            workflow=configured_workflow(Path.cwd()) or "runner",
+        )
     )
     click.echo(text, nl=False)
     if role is None and pi_session_environment_missing():
