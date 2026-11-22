@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty check` when `main` has work from a ticket that is not done
-status: planning
+status: cold-read
 created: 2026-11-16
 ---
 
@@ -37,3 +37,4 @@ Tests in a new `tests/test_check_unfinished_landed.py`.
 - 2026-11-22T09:55:33Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T09:58:39Z friendly-jade-stoat: changed description, acceptance criteria
 - 2026-11-22T09:58:39Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T09:58:40Z friendly-jade-stoat planning → cold-read
