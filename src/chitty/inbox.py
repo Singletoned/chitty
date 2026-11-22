@@ -14,6 +14,7 @@ import yaml
 
 from chitty.config import inbox_path, load_repo_config, register_project, registered_projects
 from chitty.errors import ChittyError
+from chitty.markdown import escape_literal_asterisks
 from chitty.model import new_task
 from chitty.store import BACKLOG_DESCRIPTION, Change, Edit, Repo
 
@@ -36,6 +37,7 @@ def suggest(
     normalized = "\n".join(line.rstrip() for line in normalized.split("\n"))
     if not normalized:
         normalized = BACKLOG_DESCRIPTION
+    normalized = escape_literal_asterisks(normalized)
     # Validate against the same model pull uses before persisting an unimportable suggestion.
     candidate = new_task(title, date.today(), normalized, (), {})
     if candidate.frontmatter.title != title:
@@ -69,7 +71,7 @@ def suggest(
     text = "---\n" + yaml.safe_dump(frontmatter, sort_keys=False, allow_unicode=True)
     text += "---\n\n"
     if description:
-        text += f"## Description\n\n{description}\n"
+        text += f"## Description\n\n{normalized}\n"
     fd, temporary = tempfile.mkstemp(prefix=".suggest-", dir=directory, text=True)
     with os.fdopen(fd, "w") as output:
         output.write(text)

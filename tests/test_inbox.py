@@ -23,6 +23,20 @@ class TestInbox(RepoTestCase):
         self.assertTrue(path.exists())
         self.assertFalse(path.is_relative_to(real_inbox))
 
+    def test_suggestion_description_escapes_literal_asterisks(self):
+        path = suggest("target", "Inbox task", "files/*.jpg and `x*y`", True, self.root)
+        expected = r"files/\*.jpg and `x*y`"
+        self.assertIn(f"## Description\n\n{expected}\n", path.read_text())
+        config = (
+            (self.root / "chitty.toml")
+            .read_text()
+            .replace('default_context = "tasks"', 'default_context = "tasks"\nproject = "target"')
+        )
+        (self.root / "chitty.toml").write_text(config)
+        repo = Repo(self.root, load_repo_config(self.root))
+        self.assertEqual(pull(repo), ["TASK-1"])
+        self.assertEqual(repo.find(repo.resolve("TASK-1")).task.section("Description"), expected)
+
     def test_create_writes_atomic_suggestion_with_origin(self):
         path = suggest("open-source", "Improve docs", "Explain setup.", True, self.root)
 
