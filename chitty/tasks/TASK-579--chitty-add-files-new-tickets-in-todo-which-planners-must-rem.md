@@ -1,6 +1,8 @@
 ---
 title: "`chitty add` files new tickets in `todo`, which planners must remember to undo"
 status: backlog
+labels:
+  - question
 created: 2026-11-22
 ---
 
@@ -12,7 +14,10 @@ Seen 2026-11-22: a planner split a follow-up with `chitty add ... -d ...` (no cr
 
 Suggestion origin: chitty
 
+Question for the owner (2026-11-22, planner): `chitty add` creates tickets in `todo`, where `chitty run` can pick them up before anyone has planned them. Which fix do you want? (A) Recommended: `add` creates tickets in `backlog` unless they have acceptance criteria (`--ac`), with no new option; a human's quick `chitty add "..."` then waits in backlog. (B) `add` always creates in `backlog`, and `-s todo` (new option) puts it straight in todo. (C) Leave `add` as it is and refuse `todo` without criteria, unless labelled `untestable`. A, B and C all change default behaviour, so the ticket gets `needs-minor`.
+
 ## History
 
 - 2026-11-22T13:16:26Z friendly-jade-stoat → backlog
 - 2026-11-22T13:16:26Z friendly-jade-stoat: changed notes
+- 2026-11-22T13:19:01Z friendly-jade-stoat: changed labels, notes
