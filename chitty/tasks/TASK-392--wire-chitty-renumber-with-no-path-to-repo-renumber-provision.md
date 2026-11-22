@@ -51,6 +51,8 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-392`
 
 Back to `todo` 2026-11-22: the pre-agent check failed on the flaky `test_transaction` (see the new high-priority bug ticket), not on this ticket.
 
+All four new CLI tests failed before the fix with missing PATH (exit 2), then passed after the fix.
+
 ## History
 
 - 2026-11-18T16:37:33Z lively-quartz-crane → backlog
@@ -80,3 +82,4 @@ Back to `todo` 2026-11-22: the pre-agent check failed on the flaky `test_transac
 - 2026-11-22T04:03:28Z lively-zinc-newt error → todo
 - 2026-11-22T04:14:45Z honest-navy-wren todo → doing
 - 2026-11-22T04:17:14Z honest-navy-wren: wrote the plan
+- 2026-11-22T04:18:16Z honest-navy-wren: changed notes
