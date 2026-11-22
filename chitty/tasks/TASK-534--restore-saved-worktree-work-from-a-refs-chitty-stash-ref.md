@@ -24,6 +24,10 @@ Tests in `tests/test_git_saved_work.py`, each in its own repository (`setUp` com
 
 - [ ] The six restore tests pass (round trip, conflict, `AA`, missing ref, dirty worktree, `refs/stash`) and fail against a `NotImplementedError` stub; `make check` passes
 
+## Plan
+
+Add six restore regression tests against a stub, then implement validation, clean-worktree guard, stash application and cleanup; format and run checks.
+
 ## History
 
 - 2026-11-22T00:06:29Z lively-zinc-newt → planning
@@ -32,3 +36,4 @@ Tests in `tests/test_git_saved_work.py`, each in its own repository (`setUp` com
 - 2026-11-22T00:28:36Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T00:28:36Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:11:29Z nimble-pearl-adder todo → doing
+- 2026-11-22T01:14:04Z nimble-pearl-adder: wrote the plan
