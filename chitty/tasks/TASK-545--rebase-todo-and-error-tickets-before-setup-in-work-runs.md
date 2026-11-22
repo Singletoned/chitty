@@ -31,6 +31,10 @@ Add and verify failing todo and error rebase regression tests, broaden the work-
 
 Both new regression tests failed before the fix: setup logs did not contain main moved.
 
+## Summary
+
+Rebase all work-mode branches before setup and claim. Both new regression tests failed before the fix and pass afterward; make check passed.
+
 ## History
 
 - 2026-11-22T01:47:36Z lively-zinc-newt → planning
@@ -43,3 +47,4 @@ Both new regression tests failed before the fix: setup logs did not contain main
 - 2026-11-22T03:14:50Z friendly-violet-urchin todo → doing
 - 2026-11-22T03:17:14Z friendly-violet-urchin: wrote the plan
 - 2026-11-22T03:17:31Z friendly-violet-urchin: changed notes
+- 2026-11-22T03:20:12Z friendly-violet-urchin: changed summary
