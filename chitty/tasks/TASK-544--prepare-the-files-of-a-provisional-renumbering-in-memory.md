@@ -32,6 +32,10 @@ Add an in-memory preparation helper and a real Git fixture test; verify the test
 
 The preparation regression test failed against a NotImplementedError stub before implementation.
 
+## Summary
+
+Implemented in-memory preparation and real Git regression coverage. The test failed with a NotImplementedError stub and passes with the implementation; make check passes.
+
 ## History
 
 - 2026-11-22T01:37:46Z lively-zinc-newt → cold-read
@@ -41,3 +45,4 @@ The preparation regression test failed against a NotImplementedError stub before
 - 2026-11-22T02:31:37Z nimble-hazel-raven todo → doing
 - 2026-11-22T02:33:57Z nimble-hazel-raven: wrote the plan
 - 2026-11-22T02:35:18Z nimble-hazel-raven: changed notes
+- 2026-11-22T02:37:37Z nimble-hazel-raven: changed summary
