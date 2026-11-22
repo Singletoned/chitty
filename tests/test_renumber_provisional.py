@@ -1,6 +1,7 @@
 import os
 from unittest import mock
 
+from chitty.errors import ChittyError
 from chitty.store import Repo
 from tests.support import RepoTestCase
 from tests.test_source_copy_errors import SourceCopyErrorChecks
@@ -70,6 +71,32 @@ class TestPrepareRenumbering(RepoTestCase):
         self.assertEqual(
             before, {p: p.read_bytes() for p in (self.root / "chitty").rglob("*") if p.is_file()}
         )
+
+    def test_failed_commit_restores_transaction(self):
+        self.fixture()
+        config = self.root / "chitty.toml"
+        config.write_text(config.read_text().replace("autocommit = false", "autocommit = true"))
+        self.commit()
+        hook = self.root / ".git/hooks/pre-commit"
+        hook.write_text("#!/bin/sh\nexit 1\n")
+        hook.chmod(0o755)
+
+        def snapshot():
+            files = {p: p.read_bytes() for p in (self.root / "chitty").rglob("*") if p.is_file()}
+            return (
+                files,
+                self.git("rev-parse", "HEAD"),
+                self.git("ls-files", "-s"),
+                self.git("status", "--porcelain"),
+            )
+
+        before = snapshot()
+        with (
+            mock.patch.dict(os.environ, {"CHITTY_ACTOR": "tester"}),
+            self.assertRaisesRegex(ChittyError, "autocommit failed"),
+        ):
+            Repo.open(self.root).renumber_provisional()
+        self.assertEqual(snapshot(), before)
 
     def test_transaction(self):
         self.fixture()
