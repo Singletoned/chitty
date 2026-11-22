@@ -1,6 +1,6 @@
 ---
 title: Rebase a `doing` ticket's worktree onto `main` before setup in work runs
-status: planning
+status: cold-read
 labels:
   - needs-minor
 depends_on:
@@ -11,7 +11,7 @@ created: 2026-11-22
 
 ## Description
 
-Split from `TASK-370` on 2026-11-22. `TASK-370` adds `_rebase_work_worktree(worktree, task_id, main_branch)` in `src/chitty/run.py`, tested directly. This ticket calls it from the runner. Draft: keep in planning until `TASK-370` lands, then check its landed signature and cold-read.
+Split from `TASK-370` on 2026-11-22. `TASK-370` adds `_rebase_work_worktree(worktree, task_id, main_branch)` in `src/chitty/run.py`, tested directly. This ticket calls it from the runner. `TASK-370` landed `_rebase_work_worktree(worktree: Path, task_id: TaskId, main_branch: str) -> None` on `main` (rechecked 2026-11-22).
 
 - In `_run_ticket_with_log` (already over 100 lines; add only the call), in work mode only, call it after the worktree is made and before `setup`, only when the ticket was selected as `doing`. Review mode is unchanged. `TASK-545` extends it to `todo` and `error`.
 - Update the work-mode bullet under `## Before a review` in `docs/plan/next-action-and-runner.md` to say work mode rebases a `doing` ticket's branch onto `main` before `setup`, saving uncommitted work under `refs/chitty/stash/<ID>`.
@@ -25,3 +25,5 @@ Test in a new `tests/test_run_work_rebases.py`, in the style of `tests/test_revi
 ## History
 
 - 2026-11-22T02:02:11Z lively-zinc-newt → planning
+- 2026-11-22T02:21:20Z lively-zinc-newt: changed description
+- 2026-11-22T02:21:20Z lively-zinc-newt planning → cold-read
