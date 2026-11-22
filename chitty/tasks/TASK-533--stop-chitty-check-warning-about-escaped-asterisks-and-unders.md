@@ -1,6 +1,6 @@
 ---
 title: Stop `chitty check` warning about escaped asterisks and underscores
-status: doing
+status: review
 created: 2026-11-21
 ---
 
@@ -40,3 +40,4 @@ Added a separate delimiter parser and regression coverage for escaped, unescaped
 - 2026-11-22T00:53:54Z nimble-bronze-marten: wrote the plan
 - 2026-11-22T00:54:15Z nimble-bronze-marten: changed notes
 - 2026-11-22T00:55:59Z nimble-bronze-marten: changed summary
+- 2026-11-22T00:56:01Z nimble-bronze-marten doing → review
