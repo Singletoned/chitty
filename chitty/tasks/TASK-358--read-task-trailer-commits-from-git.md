@@ -28,6 +28,10 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 - [ ] The real-Git example passes: the exact `git log` bytes match the layout, `trailer_commits` returns the three commits, and the same command without `-z` makes `parse_trailer_log` raise `ChittyError`
 - [ ] `make check` passes
 
+## Plan
+
+Implement the Git log parser and reader, add property and real-Git tests, and run the project checks.
+
 ## History
 
 - 2026-11-16T10:29:29Z intrepid-coral-raven → backlog
@@ -47,3 +51,4 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 - 2026-11-22T10:09:43Z friendly-jade-stoat cold-read → planning
 - 2026-11-22T10:09:44Z friendly-jade-stoat planning → todo
 - 2026-11-22T14:41:19Z kind-indigo-dormouse todo → doing
+- 2026-11-22T14:44:31Z kind-indigo-dormouse: wrote the plan
