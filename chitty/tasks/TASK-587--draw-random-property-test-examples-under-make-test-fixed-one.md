@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: cold-read
+status: planning
 priority: high
 owner: plucky-umber-wren
 created: 2026-11-22
@@ -12,13 +12,13 @@ Today `tests/__init__.py` registers one Hypothesis profile, `tests` (`deadline=N
 
 Change `tests/__init__.py`:
 
-- Register two profiles. `check`: `deadline=None, derandomize=True` (today's `tests` profile, renamed; `derandomize=True` already means no example database). `thorough`: `deadline=None, derandomize=False`, with Hypothesis's default example database, so a failure found once replays on the next run in that checkout.
-- Load `os.environ.get("HYPOTHESIS_PROFILE", "check")`. An unknown name must fail the import loudly; `settings.load_profile` already raises `hypothesis.errors.InvalidArgument: Profile 'nope' is not registered` (Hypothesis 6.170), so do not catch it.
+- Register two profiles. `check`: `deadline=None, derandomize=True` (today's `tests` profile, renamed; `derandomize=True` already means no example database). `thorough`: `deadline=None, derandomize=False`, with Hypothesis's default example database, so a failure found once replays on the next run in that checkout. No `.gitignore` change: Hypothesis writes `.hypothesis/.gitignore` (`*`) itself, and `git status --ignored` already shows `.hypothesis/` as ignored.
+- Load `os.environ.get("HYPOTHESIS_PROFILE", "check")`. The default is deliberate: plain `python -m unittest` and editor runs set no variable and should get the repeatable profile. An unknown name must fail the import loudly; `settings.load_profile` already raises `hypothesis.errors.InvalidArgument: Profile 'nope' is not registered` (Hypothesis 6.170), so do not catch it.
 - The variable must not start with `CHITTY_`: the same file deletes every `CHITTY_*`, `PI_`, `CLAUDE_` and `CODEX_` variable. Read it before that loop anyway.
 
 Change the `Makefile` `test` target to run `HYPOTHESIS_PROFILE=thorough uv run unittest-parallel -s tests -t . --level test`, with the description `## run every test, drawing new random property-test examples`. Leave `check` as it is.
 
-In `AGENTS.md`, replace the bullet starting `Hypothesis runs with fixed examples` with one saying `make check` uses fixed examples (profile `check`) so it repeats, and `make test` draws new random examples (profile `thorough`) to find new edge cases.
+In `AGENTS.md`, replace the bullet starting `Hypothesis runs with fixed examples` with one saying `make check` uses fixed examples (profile `check`) so it repeats, and `make test` draws new random examples (profile `thorough`) to find new edge cases. Keep its sentence `A property test that fails is a real failure: fix it, do not rerun.`
 
 Probe for criterion 1, run with `cwd` at the repository root and the profile variable set as the case needs (removed for the unset case):
 
@@ -42,11 +42,13 @@ Out of scope: how many examples each profile draws (a later ticket scales per-te
 
 ## Acceptance Criteria
 
-- [ ] A new test in `tests/test_hypothesis_profiles.py` runs a probe (below) twice in subprocesses for each setting of `HYPOTHESIS_PROFILE`: unset and `check` print identical example lists across the two runs; `thorough` prints different lists; and for `thorough`, `settings.default.database` is not `None` while for unset and `check` it is `None`. Each case fails against current `main` (today the variable is ignored, so `thorough` runs repeat)
-- [ ] With `HYPOTHESIS_PROFILE=nope`, `python -c "import tests"` exits non-zero with `InvalidArgument` and `nope` in stderr (tested in the same file)
-- [ ] `make -n test` shows `HYPOTHESIS_PROFILE=thorough` on the `unittest-parallel` line, `make -n check` does not set `HYPOTHESIS_PROFILE`, `mate --list` lists `test` with its new description, and `make check` passes
+- [ ] New tests in the existing `tests/test_hypothesis_profile.py` (keep its `test_deadline_is_disabled`, which still holds) run a probe (below) twice in subprocesses for each setting of `HYPOTHESIS_PROFILE`: unset and `check` print identical example lists across the two runs; `thorough` prints different lists; and for `thorough`, `settings.default.database` is not `None` while for unset and `check` it is `None`. The `thorough` cases fail against current `main` (today the variable is ignored, so its runs repeat); the unset and `check` cases pass there and guard against regression
+- [ ] With `HYPOTHESIS_PROFILE=nope`, `python -c "import tests"` exits non-zero with `InvalidArgument` and `nope` in stderr (tested in the same file; on `main` it exits 0)
+- [ ] `make -n test` shows `HYPOTHESIS_PROFILE=thorough` on the `unittest-parallel` line, `make -n check` does not set `HYPOTHESIS_PROFILE`, `mate --list` (`mate` is on `PATH`) lists `test` with its new description, and `make check` passes
 
 ## History
 
 - 2026-11-22T16:27:11Z plucky-umber-wren → planning
 - 2026-11-22T16:27:29Z plucky-umber-wren planning → cold-read
+- 2026-11-22T16:28:34Z plucky-umber-wren: changed description, acceptance criteria
+- 2026-11-22T16:28:34Z plucky-umber-wren cold-read → planning
