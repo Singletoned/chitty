@@ -1,6 +1,6 @@
 ---
 title: Find a structured link to a renumbered ID in ticket frontmatter
-status: doing
+status: review
 parent: TASK-391
 created: 2026-11-21
 ---
@@ -50,3 +50,4 @@ Implemented structured link comparison and property tests with explicit examples
 - 2026-11-21T23:58:08Z plucky-khaki-crane: wrote the plan
 - 2026-11-21T23:59:00Z plucky-khaki-crane: changed notes
 - 2026-11-22T00:00:24Z plucky-khaki-crane: changed summary
+- 2026-11-22T00:00:26Z plucky-khaki-crane doing → review
