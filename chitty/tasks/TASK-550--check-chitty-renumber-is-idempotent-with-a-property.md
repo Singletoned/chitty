@@ -1,6 +1,6 @@
 ---
 title: Check `chitty renumber` is idempotent with a property
-status: review
+status: done
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -41,6 +41,9 @@ Blocked: the owner of the unrelated staged `tmpt1qelkfu/example.py` must resolve
 
 Unblocked 2026-11-22 (planner): `tmpt1qelkfu/example.py` was a leaked test artefact from `tests/test_section_name_types.py` (it makes a temporary directory inside the repository root, which a `git add -A` during a test run stages). I unstaged and removed it; a separate ticket fixes the test.
 
+Reviewed:
+1: pass - `make check` passed Ruff, Pyright and 1112 tests including the property; the earlier mutant note records the specified two-part mutant failing with provisional=0, 1 != 0.
+
 ## Summary
 
 The generated renumber idempotence property and repository fixture are committed in `tests/test_renumber_provisional.py`. The previously recorded two-part mutant fails the first-run count assertion; the unmodified property passes. `make check` passed (1112 tests, Ruff and Pyright).
@@ -68,3 +71,5 @@ The generated renumber idempotence property and repository fixture are committed
 - 2026-11-22T05:15:58Z lively-zinc-newt blocked → doing
 - 2026-11-22T05:20:06Z calm-indigo-yellowhammer: changed summary; ticked acceptance criteria
 - 2026-11-22T05:21:39Z calm-indigo-yellowhammer doing → review
+- 2026-11-22T05:28:31Z nimble-ochre-otter: changed notes
+- 2026-11-22T05:28:31Z nimble-ochre-otter review → done
