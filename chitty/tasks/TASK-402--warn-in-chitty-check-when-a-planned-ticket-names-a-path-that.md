@@ -1,8 +1,6 @@
 ---
 title: Warn in `chitty check` when a planned ticket names a path that does not exist
 status: backlog
-labels:
-  - question
 created: 2026-11-18
 ---
 
@@ -36,6 +34,8 @@ Owner answer, 2026-11-22: build whatever can easily be automated. Planner: paths
 
 Planner, 2026-11-22: measured before building. The path rule in the Description, run over every `planning` and `todo` ticket on `main`, gave 10 warnings, 8 of them false alarms (example paths such as `src/a.py` in test fixtures, and files a ticket creates without the word `new` on the line). The narrower check of `file.py:symbol` and `file.py:12` references found 1 such reference in all open tickets. Neither is easily automated well enough to beat not having it, so this is parked. Owner to decide: close it, or keep the path check with a different exclusion rule.
 
+Owner decision, 2026-11-22: not built. Neither check is easily automated well enough to beat not having it (see the measurement above); archived.
+
 ## History
 
 - 2026-11-18T20:24:11Z lively-quartz-crane → todo
@@ -47,3 +47,4 @@ Planner, 2026-11-22: measured before building. The path rule in the Description,
 - 2026-11-22T11:15:26Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T11:17:14Z friendly-jade-stoat: changed labels, notes
 - 2026-11-22T11:17:14Z friendly-jade-stoat cold-read → backlog
+- 2026-11-22T11:23:44Z friendly-jade-stoat: changed labels, notes
