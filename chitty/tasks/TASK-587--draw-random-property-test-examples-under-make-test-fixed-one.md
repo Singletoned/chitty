@@ -1,6 +1,6 @@
 ---
 title: Draw random property-test examples under `make test`, fixed ones under `make check`
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-22
 ---
@@ -56,6 +56,8 @@ Runner error (check): check exited with status 2; output in `.chitty/check.log`;
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-587`
 
+Planner, 2026-11-22: the runner's `error` above came from this ticket's own probe snippet, which `ruff format --check` rejected; `main` now excludes `chitty/` from ruff (`9e6ba05c`) and the snippet is formatted. The variable is renamed `TEST_TIER`. Back through cold read; no work was done on the branch.
+
 ## History
 
 - 2026-11-22T16:27:11Z plucky-umber-wren → planning
@@ -75,3 +77,5 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-587`
 - 2026-11-22T16:31:43Z youthful-white-dormouse doing → error
 - 2026-11-22T16:43:12Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T16:43:12Z plucky-umber-wren error → planning
+- 2026-11-22T16:46:40Z plucky-umber-wren: changed notes
+- 2026-11-22T16:46:40Z plucky-umber-wren planning → cold-read
