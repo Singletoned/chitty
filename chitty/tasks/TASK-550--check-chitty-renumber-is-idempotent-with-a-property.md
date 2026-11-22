@@ -33,6 +33,8 @@ The specified two-part mutant fails the first-run line-count assertion, not the 
 
 Replanned 2026-11-22: failing on the first run's count under the mutant is accepted evidence.
 
+Check failed before this session: check exited with status 2; output in `.chitty/check.log`
+
 ## History
 
 - 2026-11-22T03:23:05Z lively-zinc-newt → planning
@@ -48,3 +50,4 @@ Replanned 2026-11-22: failing on the first run's count under the mutant is accep
 - 2026-11-22T05:12:04Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T05:12:04Z lively-zinc-newt planning → todo
 - 2026-11-22T05:13:38Z upbeat-khaki-otter todo → doing
+- 2026-11-22T05:13:41Z upbeat-khaki-otter: changed notes
