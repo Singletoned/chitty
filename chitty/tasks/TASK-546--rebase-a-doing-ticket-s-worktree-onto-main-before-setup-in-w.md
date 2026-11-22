@@ -1,6 +1,6 @@
 ---
 title: Rebase a `doing` ticket's worktree onto `main` before setup in work runs
-status: doing
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -46,3 +46,4 @@ Rebase doing worktrees before setup; todo remains unchanged. Regression failed b
 - 2026-11-22T02:58:39Z eager-russet-vole: wrote the plan
 - 2026-11-22T02:58:58Z eager-russet-vole: changed notes
 - 2026-11-22T03:01:34Z eager-russet-vole: changed summary
+- 2026-11-22T03:03:06Z eager-russet-vole doing → review
