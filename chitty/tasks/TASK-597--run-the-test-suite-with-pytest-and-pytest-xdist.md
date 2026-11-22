@@ -1,6 +1,6 @@
 ---
 title: Run the test suite with `pytest` and `pytest-xdist`
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -40,3 +40,4 @@ No new test: build configuration, checked by the commands in the criteria.
 - 2026-11-22T20:17:32Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T20:18:16Z plucky-umber-wren: changed acceptance criteria
 - 2026-11-22T20:18:16Z plucky-umber-wren cold-read → todo
+- 2026-11-22T20:18:39Z vivid-fawn-wren todo → doing
