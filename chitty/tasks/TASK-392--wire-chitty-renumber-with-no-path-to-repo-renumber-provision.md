@@ -3,6 +3,8 @@ title: Wire `chitty renumber` with no path to `Repo.renumber_provisional`
 status: planning
 depends_on:
   - TASK-517
+  - TASK-542
+  - TASK-543
 parent: TASK-376
 created: 2026-11-18
 ---
@@ -52,3 +54,4 @@ The store method moved to `TASK-517`, which depends on the preflight `TASK-391`.
 - 2026-11-18T17:49:47Z lively-quartz-crane planning → todo
 - 2026-11-21T18:37:19Z eager-ginger-adder: changed dependencies, notes
 - 2026-11-21T18:37:19Z eager-ginger-adder todo → planning
+- 2026-11-22T01:35:37Z lively-zinc-newt: changed dependencies
