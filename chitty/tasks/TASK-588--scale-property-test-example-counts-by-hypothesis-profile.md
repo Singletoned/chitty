@@ -31,6 +31,10 @@ Property for criterion 1 over generated `base`; the profile names are a fixed se
 - [ ] A test in the same file parses every `tests/**/*.py` with `ast` and finds no `settings(...)` call used as a decorator whose `max_examples` keyword is anything but a call to `examples(...)`; on `main` it fails, listing the decorators that still use a literal or a name such as `EXAMPLES`
 - [ ] A test in `tests/test_example_counts.py` runs `[sys.executable, "-c", "import tests; from hypothesis import settings; print(settings.default.max_examples, tests.examples(25))"]` with `cwd` at the repository root and `TEST_TIER` set explicitly to `check`, then to `thorough`, and asserts the output `20 5` and `500 125`; on `main` it fails (the profiles draw 100 and `examples` does not exist); and `make check` passes
 
+## Plan
+
+Measure baseline test timings, add and verify failing regression tests against a committed stub, implement profile scaling and decorator migration, then run checks and record timings.
+
 ## Notes
 
 Planner, 2026-11-22: written against `TASK-587`'s planned profile names (`check`, `thorough`) and `HYPOTHESIS_PROFILE`. Keep in `planning` until `TASK-587` is `done`; then compare with what landed in `tests/__init__.py` and cold-read before `todo`.
@@ -54,3 +58,4 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`tests/__init__.py` r
 - 2026-11-22T17:08:09Z plucky-umber-wren: changed owner
 - 2026-11-22T17:08:09Z plucky-umber-wren planning → todo
 - 2026-11-22T17:08:29Z eager-bronze-vole todo → doing
+- 2026-11-22T17:10:25Z eager-bronze-vole: wrote the plan
