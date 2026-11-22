@@ -1,6 +1,6 @@
 ---
 title: Describe `chitty renumber` without a path in its help and the CLI docs
-status: doing
+status: review
 depends_on:
   - TASK-392
   - TASK-548
@@ -38,3 +38,4 @@ Updated renumber help and no-path CLI documentation. The revised help test faile
 - 2026-11-22T04:58:23Z jolly-maroon-adder: wrote the plan
 - 2026-11-22T04:58:41Z jolly-maroon-adder: changed notes
 - 2026-11-22T05:02:33Z jolly-maroon-adder: changed summary
+- 2026-11-22T05:04:05Z jolly-maroon-adder doing → review
