@@ -4,6 +4,14 @@ import os
 
 from hypothesis import settings
 
+CHECK_EXAMPLE_DIVISOR = 5
+THOROUGH_EXAMPLE_FACTOR = 5
+
+
+def example_count(profile: str, base: int) -> int:
+    raise NotImplementedError
+
+
 # Fixed examples make checks repeatable; thorough runs explore and replay failures.
 settings.register_profile("check", deadline=None, derandomize=True)
 settings.register_profile("thorough", deadline=None, derandomize=False)
