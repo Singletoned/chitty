@@ -1,8 +1,6 @@
 ---
 title: Refuse ticket writes outside the authoritative checkout, replacing the stale-copy guard
 status: planning
-labels:
-  - question
 depends_on:
   - TASK-378
   - TASK-382
@@ -55,6 +53,8 @@ Owner answer, 2026-11-22: "a write is allowed only when the ticket is read from 
 
 Open question for the owner: when a newer, different copy exists elsewhere (typically the ticket is in flight on `task-<n>`), should Chitty (A) refuse, saying where the newer copy is and where to edit it (for example `TASK-5 has a newer copy on task-5 (abc1234); edit it in worktree .worktrees/task-5`), or (B) apply the edit to that copy itself: write the file in the branch's worktree and commit there (and refuse only when the branch has no worktree, or that worktree has uncommitted changes to the ticket)?
 
+Owner decision, 2026-11-22: (A) refuse when a newer, different copy exists elsewhere, naming that copy and where to edit (`TASK-547` words the message). Replan this ticket after `TASK-547` lands: the condition is "the authoritative copy (`stored.branch is not None`) differs from this checkout's working-tree copy", not "read from elsewhere".
+
 ## History
 
 - 2026-11-18T16:20:16Z lively-quartz-crane → backlog
@@ -78,3 +78,4 @@ Open question for the owner: when a newer, different copy exists elsewhere (typi
 - 2026-11-22T02:28:48Z lively-zinc-newt: changed dependencies, notes
 - 2026-11-22T02:30:04Z lively-zinc-newt: changed labels, notes
 - 2026-11-22T11:15:41Z friendly-jade-stoat: changed notes
+- 2026-11-22T11:24:46Z friendly-jade-stoat: changed labels, notes
