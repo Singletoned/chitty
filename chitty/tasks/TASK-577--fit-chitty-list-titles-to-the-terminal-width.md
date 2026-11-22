@@ -61,6 +61,8 @@ Add a fail-first CLI width regression, implement terminal-aware width helpers, u
 
 Cold read 3: wording only (fail-first assertion, reuse of the existing 100-column test, exact doc content).
 
+Fail-first regression: python -m unittest tests.test_list_terminal_width fails the width assertion with 100 columns versus 60.
+
 ## History
 
 - 2026-11-22T12:56:08Z friendly-jade-stoat → todo
@@ -71,3 +73,4 @@ Cold read 3: wording only (fail-first assertion, reuse of the existing 100-colum
 - 2026-11-22T12:58:17Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:24:42Z jolly-pearl-puffin todo → doing
 - 2026-11-22T15:27:32Z jolly-pearl-puffin: wrote the plan
+- 2026-11-22T15:27:42Z jolly-pearl-puffin: changed notes
