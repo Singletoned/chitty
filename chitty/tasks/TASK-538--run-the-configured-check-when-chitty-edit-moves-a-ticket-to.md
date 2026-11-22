@@ -1,6 +1,6 @@
 ---
 title: Run the configured check when `chitty edit` moves a ticket to review
-status: todo
+status: doing
 labels:
   - needs-minor
 created: 2026-11-22
@@ -45,3 +45,4 @@ No property: fixed outcomes, each needing a real subprocess and Git repository.
 - 2026-11-22T01:11:06Z lively-zinc-newt → cold-read
 - 2026-11-22T01:13:21Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:13:21Z lively-zinc-newt cold-read → todo
+- 2026-11-22T02:21:22Z quick-dusky-eel todo → doing
