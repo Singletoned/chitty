@@ -1,6 +1,6 @@
 ---
 title: Read `Task:` trailer commits from Git
-status: doing
+status: planning
 created: 2026-11-16
 ---
 
@@ -32,6 +32,10 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 
 Implement the Git log parser and reader, add property and real-Git tests, and run the project checks.
 
+## Notes
+
+Planning blocker: the parsing procedure conflicts with its stated failure guarantee. For a valid record with a path `a\x1fb`, splitting the header on `\x1f` and the remaining paths on NUL accepts that path, but the ticket requires real history containing `\x1f` in a path to fail loudly. Decide whether such paths must be rejected and specify the validation; add a focused fixture, action and assertion for that case. The malformed-input tests currently cover `\x1f` in a subject and `\x1e` in a path, not `\x1f` in a path. I inspected `src/chitty/git.py`, `src/chitty/ids.py`, existing test inventory and actual Git log framing; the specified real-Git and round-trip tests cannot verify this missing case. No implementation was started; full checks and regression verification remain unfinished.
+
 ## History
 
 - 2026-11-16T10:29:29Z intrepid-coral-raven → backlog
@@ -52,3 +56,5 @@ Implement the Git log parser and reader, add property and real-Git tests, and ru
 - 2026-11-22T10:09:44Z friendly-jade-stoat planning → todo
 - 2026-11-22T14:41:19Z kind-indigo-dormouse todo → doing
 - 2026-11-22T14:44:31Z kind-indigo-dormouse: wrote the plan
+- 2026-11-22T14:44:41Z kind-indigo-dormouse: changed owner, notes
+- 2026-11-22T14:44:41Z kind-indigo-dormouse doing → planning
