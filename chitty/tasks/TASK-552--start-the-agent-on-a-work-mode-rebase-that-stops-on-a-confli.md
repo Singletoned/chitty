@@ -1,6 +1,6 @@
 ---
 title: Start the agent on a work-mode rebase that stops on a conflict
-status: review
+status: done
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -19,8 +19,8 @@ Tests in `tests/test_run_work_rebases.py`: `test_conflict_doing_starts_agent_wit
 
 ## Acceptance Criteria
 
-- [ ] Both conflict runner tests pass and fail before the change; `make check` passes
-- [ ] A third test shows a conflicting `doing` ticket with an uncommitted file in its worktree is still aborted: setup runs and no rebase is in progress when the agent starts
+- [x] Both conflict runner tests pass and fail before the change; `make check` passes
+- [x] A third test shows a conflicting `doing` ticket with an uncommitted file in its worktree is still aborted: setup runs and no rebase is in progress when the agent starts
 
 ## Plan
 
@@ -31,6 +31,10 @@ Add conflict runner tests with a prompt-recording agent, verify regression, then
 Planner correction 2026-11-22 04:3x: a planner tooling slip replaced this Description with an older draft at 04:30 (it named a nonexistent `_prepare_work_session`). The Description is now the intended text: gate the three blocks with a `stopped` flag, stop only for `doing`/`error` tickets with a clean worktree, and the fake-agent contract. Please work from this version.
 
 Before the fix, both stopped-rebase tests fail on the prompt/rebase assertion; the dirty-worktree test passes.
+
+Reviewed: Implementation and complete diff checked; no additional findings.
+1: pass - `make check` reported 1108 tests OK. Running `TestConflictAgent` with the pre-change `run.py` reported two failures at the prompt/rebase assertion; both pass in `make check`.
+2: pass - `test_dirty_conflict_aborts_rebase` passed in `make check` and with the pre-change implementation, asserting setup ran and the agent saw no rebase.
 
 ## Summary
 
@@ -49,3 +53,5 @@ Start agents on stopped clean work rebases; preserve abort for dirty worktrees. 
 - 2026-11-22T04:33:40Z intrepid-ginger-gannet: changed notes
 - 2026-11-22T04:35:37Z intrepid-ginger-gannet: changed summary
 - 2026-11-22T04:37:10Z intrepid-ginger-gannet doing → review
+- 2026-11-22T04:41:46Z open-quartz-vole: changed notes; ticked acceptance criteria
+- 2026-11-22T04:41:46Z open-quartz-vole review → done
