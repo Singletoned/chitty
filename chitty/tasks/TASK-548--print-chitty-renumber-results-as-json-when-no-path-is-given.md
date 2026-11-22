@@ -1,6 +1,6 @@
 ---
 title: Print `chitty renumber` results as JSON when no path is given
-status: doing
+status: review
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -27,6 +27,10 @@ Add a CLI regression test for JSON results, empty results and off-main behavior;
 
 Regression test fails before the fix with JSONDecodeError because stdout contains text.
 
+## Summary
+
+Implemented JSON output for provisional renumbering, including empty and off-main results. Regression test failed before the fix with JSONDecodeError and passes afterward; make check passed.
+
 ## History
 
 - 2026-11-22T03:23:01Z lively-zinc-newt → planning
@@ -37,3 +41,5 @@ Regression test fails before the fix with JSONDecodeError because stdout contain
 - 2026-11-22T04:38:43Z tidy-fawn-otter todo → doing
 - 2026-11-22T04:41:07Z tidy-fawn-otter: wrote the plan
 - 2026-11-22T04:41:23Z tidy-fawn-otter: changed notes
+- 2026-11-22T04:45:28Z tidy-fawn-otter: changed summary
+- 2026-11-22T04:45:28Z tidy-fawn-otter doing → review
