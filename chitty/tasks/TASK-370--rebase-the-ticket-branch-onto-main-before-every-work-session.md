@@ -51,7 +51,7 @@ No property: real Git and runner processes over fixed cases. Cases 1, 2 and 4 fa
 
 ## Plan
 
-Add real-Git runner regression tests for clean, dirty and conflicting worktrees; confirm the first two fail before implementing the work-mode rebase helper, update the runner design, and run formatting and checks.
+Build the five prescribed real-Git runner cases, verify the four regressions fail before the change, then add the work-mode rebase helper, update the design bullet, format and run checks.
 
 ## Notes
 
@@ -135,3 +135,4 @@ Replanned 2026-11-22: added case 4 (`todo` ticket with an existing branch) and c
 - 2026-11-22T01:42:49Z lively-zinc-newt: changed description, acceptance criteria, notes
 - 2026-11-22T01:42:49Z lively-zinc-newt planning → todo
 - 2026-11-22T01:43:39Z witty-violet-badger todo → doing
+- 2026-11-22T01:45:27Z witty-violet-badger: wrote the plan
