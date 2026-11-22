@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when untouched tickets link to an old ID
-status: planning
+status: cold-read
 depends_on:
   - TASK-391
   - TASK-526
@@ -58,6 +58,8 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-519`
 
 Split 2026-11-21: the worker model returned five sessions saying it could not finish in one response, with no code. `blocking_link` and its property moved to `TASK-526`. Keep this in planning until `TASK-526` lands; then check the landed signature, cold-read and move to `todo`.
 
+Rebased onto `main` 2026-11-21 after `TASK-526` landed `blocking_link` (signature as specified) and `TASK-520` landed the branch guard.
+
 ## History
 
 - 2026-11-21T18:44:38Z eager-ginger-adder → backlog
@@ -80,3 +82,5 @@ Split 2026-11-21: the worker model returned five sessions saying it could not fi
 - 2026-11-21T23:06:53Z able-hazel-newt doing → error
 - 2026-11-21T23:15:49Z lively-zinc-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-21T23:15:49Z lively-zinc-newt error → planning
+- 2026-11-22T00:07:19Z lively-zinc-newt: changed notes
+- 2026-11-22T00:07:19Z lively-zinc-newt planning → cold-read
