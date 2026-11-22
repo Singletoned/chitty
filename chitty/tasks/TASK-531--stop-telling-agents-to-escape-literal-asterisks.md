@@ -25,6 +25,10 @@ Out of scope: `AGENTS.md` (its hand-written `## Chitty` section also has the sen
 
 - [ ] `git grep -n -e "literal single" -e "escape it or enclose" -- src/chitty tests` finds nothing, the first half of the `plan.md` bullet and the backticks sentence in `guide.md` remain, and `tests/test_guide_literal_star.py` is gone; `make check` passes
 
+## Plan
+
+Remove the obsolete instruction from the specified guides and fixture, delete its obsolete test, then run fix, format, and checks.
+
 ## History
 
 - 2026-11-21T23:22:21Z lively-zinc-newt → todo
@@ -32,3 +36,4 @@ Out of scope: `AGENTS.md` (its hand-written `## Chitty` section also has the sen
 - 2026-11-21T23:23:20Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:23:20Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:47:26Z zesty-yellow-jay todo → doing
+- 2026-11-22T01:49:09Z zesty-yellow-jay: wrote the plan
