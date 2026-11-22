@@ -1,6 +1,6 @@
 ---
 title: Reject criterion text that starts with a checkbox or holds a line break
-status: planning
+status: review
 labels:
   - bug
 priority: medium
@@ -57,3 +57,4 @@ Inspected `with_criteria`, `_criterion_text`, parser locations, existing propert
 - 2026-11-20T00:41:45Z nimble-fawn-eel todo → doing
 - 2026-11-22T21:26:06Z rosy-pearl-falcon: changed owner, notes
 - 2026-11-22T21:26:06Z rosy-pearl-falcon doing → planning
+- 2026-11-22T22:01:15Z human planning → review
