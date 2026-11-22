@@ -1,6 +1,6 @@
 ---
 title: Rebase `todo` and `error` tickets before setup in work runs
-status: review
+status: done
 depends_on:
   - TASK-370
   - TASK-546
@@ -21,7 +21,7 @@ Both new tests fail before the change (setup's log lacks `main`'s commit).
 
 ## Acceptance Criteria
 
-- [ ] `test_todo_rebases_before_setup` and `test_error_rebases_before_setup` pass and each fails before the change; the doc bullet is updated; `make check` passes
+- [x] `test_todo_rebases_before_setup` and `test_error_rebases_before_setup` pass and each fails before the change; the doc bullet is updated; `make check` passes
 
 ## Plan
 
@@ -30,6 +30,9 @@ Add and verify failing todo and error rebase regression tests, broaden the work-
 ## Notes
 
 Both new regression tests failed before the fix: setup logs did not contain main moved.
+
+Reviewed: work-mode rebase and documentation match the ticket.
+1: pass - `make check` passed all 1094 tests, ruff and pyright. Running both new tests against `main`'s original `src/chitty/run.py` produced two failures: `main moved` was absent from each setup log. The updated documentation describes every work-mode ticket.
 
 ## Summary
 
@@ -49,3 +52,5 @@ Rebase all work-mode branches before setup and claim. Both new regression tests 
 - 2026-11-22T03:17:31Z friendly-violet-urchin: changed notes
 - 2026-11-22T03:20:12Z friendly-violet-urchin: changed summary
 - 2026-11-22T03:21:45Z friendly-violet-urchin doing → review
+- 2026-11-22T03:27:09Z mellow-coral-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-22T03:27:09Z mellow-coral-lapwing review → done
