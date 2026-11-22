@@ -12,7 +12,10 @@ Taidy planned the command as TASK-15 (parent TASK-14) in the taidy repository. `
 
 Suggestion origin: taidy
 
+Merged into TASK-291 as a note; archived.
+
 ## History
 
 - 2026-11-22T13:16:26Z friendly-jade-stoat → backlog
 - 2026-11-22T13:16:27Z friendly-jade-stoat: changed notes
+- 2026-11-22T13:18:52Z friendly-jade-stoat: changed notes
