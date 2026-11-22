@@ -47,6 +47,10 @@ No property: real Git and runner processes over fixed cases. Cases 1 and 2 fail 
 - [ ] Case 3 passes; the `docs/plan/next-action-and-runner.md` bullet is updated
 - [ ] `make check` passes
 
+## Plan
+
+Add real-Git runner regression tests for clean, dirty and conflicting worktrees; confirm the first two fail before implementing the work-mode rebase helper, update the runner design, and run formatting and checks.
+
 ## Notes
 
 On hold 2026-11-18: the ticket state model is being redesigned (the ticket branch is authoritative for its ticket while it exists; no runner writes on `main` for in-flight tickets). See `docs/plan/ticket-state.md` on branch `plan/ticket-state`. Re-plan against that before working.
@@ -115,3 +119,4 @@ Also waits for `TASK-534` (`restore_work`), split from `TASK-524` on 2026-11-21.
 - 2026-11-22T01:33:50Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:33:50Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:38:30Z youthful-zinc-jay todo → doing
+- 2026-11-22T01:41:23Z youthful-zinc-jay: wrote the plan
