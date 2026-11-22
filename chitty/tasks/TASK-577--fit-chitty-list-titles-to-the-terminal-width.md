@@ -1,6 +1,6 @@
 ---
 title: Fit chitty list titles to the terminal width
-status: doing
+status: review
 created: 2026-11-22
 ---
 
@@ -63,6 +63,10 @@ Cold read 3: wording only (fail-first assertion, reuse of the existing 100-colum
 
 Fail-first regression: python -m unittest tests.test_list_terminal_width fails the width assertion with 100 columns versus 60.
 
+## Summary
+
+Implemented terminal-aware list width and documentation. Regression failed before the fix at 100 versus 60 columns; make check passes.
+
 ## History
 
 - 2026-11-22T12:56:08Z friendly-jade-stoat → todo
@@ -74,3 +78,5 @@ Fail-first regression: python -m unittest tests.test_list_terminal_width fails t
 - 2026-11-22T15:24:42Z jolly-pearl-puffin todo → doing
 - 2026-11-22T15:27:32Z jolly-pearl-puffin: wrote the plan
 - 2026-11-22T15:27:42Z jolly-pearl-puffin: changed notes
+- 2026-11-22T15:32:22Z jolly-pearl-puffin: changed summary
+- 2026-11-22T15:32:22Z jolly-pearl-puffin doing → review
