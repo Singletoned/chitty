@@ -1,6 +1,6 @@
 ---
 title: Escape lone literal asterisks in `chitty suggest` descriptions
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -30,3 +30,4 @@ Test `test_suggestion_description_escapes_literal_asterisks` in `tests/test_inbo
 - 2026-11-22T01:19:41Z lively-zinc-newt planning → cold-read
 - 2026-11-22T01:20:22Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:20:22Z lively-zinc-newt cold-read → todo
+- 2026-11-22T01:25:56Z zesty-ebony-falcon todo → doing
