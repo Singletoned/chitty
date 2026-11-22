@@ -3,6 +3,7 @@ title: Rebase `todo` and `error` tickets before setup in work runs
 status: planning
 depends_on:
   - TASK-370
+  - TASK-546
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -26,3 +27,4 @@ Each fails before `TASK-370`'s change only if run against `main` from before it;
 
 - 2026-11-22T01:47:36Z lively-zinc-newt → planning
 - 2026-11-22T01:56:10Z lively-zinc-newt: changed description
+- 2026-11-22T02:02:13Z lively-zinc-newt: changed dependencies
