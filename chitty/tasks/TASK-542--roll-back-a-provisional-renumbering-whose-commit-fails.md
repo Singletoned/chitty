@@ -25,6 +25,10 @@ Add a failing pre-commit hook regression test using the existing batch fixture, 
 
 With restoration patched to a no-op, the new test fails on the snapshot comparison: renumbered ticket paths and contents remain after the hook rejects the commit.
 
+## Summary
+
+Added a failing-hook rollback regression test; verified it fails when restoration is disabled and passes normally. make check passes.
+
 ## History
 
 - 2026-11-22T01:35:20Z lively-zinc-newt → planning
@@ -36,3 +40,4 @@ With restoration patched to a no-op, the new test fails on the snapshot comparis
 - 2026-11-22T03:31:35Z vivid-jade-eel todo → doing
 - 2026-11-22T03:33:59Z vivid-jade-eel: wrote the plan
 - 2026-11-22T03:34:24Z vivid-jade-eel: changed notes
+- 2026-11-22T03:37:02Z vivid-jade-eel: changed summary
