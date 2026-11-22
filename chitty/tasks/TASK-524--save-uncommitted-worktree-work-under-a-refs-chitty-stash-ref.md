@@ -35,7 +35,7 @@ No property here: the round trip is `TASK-535`. Before implementing, add `save_w
 
 ## Plan
 
-Add Git helper stubs and real Git tests, verify failures, implement the helpers, and run formatting and checks.
+Add five real-Git regression tests and a stub, verify each fails, implement save_work, then format and run checks.
 
 ## Notes
 
@@ -89,3 +89,4 @@ Split again 2026-11-21: the worker model returned five sessions saying it could 
 - 2026-11-22T00:07:49Z lively-zinc-newt: changed description
 - 2026-11-22T00:07:49Z lively-zinc-newt cold-read → todo
 - 2026-11-22T00:16:51Z tidy-khaki-raven todo → doing
+- 2026-11-22T00:18:07Z tidy-khaki-raven: wrote the plan
