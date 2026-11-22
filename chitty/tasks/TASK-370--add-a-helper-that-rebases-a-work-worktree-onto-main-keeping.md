@@ -90,6 +90,10 @@ Split again 2026-11-22: the worker model gave up a third time (five sessions, no
 
 All four prescribed tests errored with NotImplementedError against the stub before implementation.
 
+## Summary
+
+Added the standalone rebase helper and four real-Git tests. All four errored against the stub; make check passes. Runner integration remains for TASK-546.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -170,3 +174,4 @@ All four prescribed tests errored with NotImplementedError against the stub befo
 - 2026-11-22T02:07:48Z tidy-quartz-yellowhammer todo → doing
 - 2026-11-22T02:10:07Z tidy-quartz-yellowhammer: wrote the plan
 - 2026-11-22T02:10:44Z tidy-quartz-yellowhammer: changed notes
+- 2026-11-22T02:13:10Z tidy-quartz-yellowhammer: changed summary
