@@ -43,6 +43,8 @@ Planner, 2026-11-22: `TASK-587` now names the variable `TEST_TIER` (was `HYPOTHE
 
 Planner, 2026-11-22: compared with what `TASK-587` landed (`tests/__init__.py` registers `check` and `thorough`, loads `TEST_TIER`); this text still holds.
 
+Baseline timings: make check 99.78s, make test 97.09s. Regression tests against committed stub fail with NotImplementedError; decorator audit lists unconverted decorators and subprocess tests fail because examples is absent.
+
 ## History
 
 - 2026-11-22T16:41:56Z plucky-umber-wren → planning
@@ -59,3 +61,4 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`tests/__init__.py` r
 - 2026-11-22T17:08:09Z plucky-umber-wren planning → todo
 - 2026-11-22T17:08:29Z eager-bronze-vole todo → doing
 - 2026-11-22T17:10:25Z eager-bronze-vole: wrote the plan
+- 2026-11-22T17:15:48Z eager-bronze-vole: changed notes
