@@ -1,6 +1,6 @@
 ---
 title: Run the test suite with `pytest` and `pytest-xdist`
-status: review
+status: done
 created: 2026-11-22
 ---
 
@@ -43,6 +43,13 @@ Fixture probe: previous worker recorded baseline `make check` on main: `Ran 1142
 
 After `make install`, `.venv/bin/pytest -n 2 tests/test_probe_worker.py` reported `1 passed in 0.29s`; `.venv/bin/pytest -p no:xdist tests/test_probe_worker.py` reported `1 failed in 0.07s` with `assert False is True`. Both temporary probes were deleted.
 
+Reviewed: Complete diff inspected; configuration and timeout changes fit together.
+1: pass - make check: 1142 passed, 1 warning, 788 subtests passed; specified grep printed nothing.
+2: pass - make test exited zero, TOTAL 93%, tmp/coverage/index.html exists, git status --short empty.
+3: pass - recorded baseline make check printed Ran 1142 tests and OK; changed runner printed 1142 passed, 1 warning, 1 error, 788 subtests passed and exited nonzero with the fixture probe.
+4: pass - recorded worker probes printed 1 passed and 1 failed (assert False is True), respectively; diff confirms unchanged faulthandler call and only permitted changes.
+5: pass - uv lock --check resolved 56 packages; lock diff contains pytest and pytest-xdist without unittest-parallel; documentation grep shows only unittest.TestCase references to pytest.
+
 ## Summary
 
 Switched the test runner to pytest and xdist, updated worker timeout detection and documentation. Verified make check, make test (93% coverage), lockfile and both temporary probes; working tree clean.
@@ -68,3 +75,5 @@ Switched the test runner to pytest and xdist, updated worker timeout detection a
 - 2026-11-22T20:44:24Z friendly-yellow-quail: changed notes
 - 2026-11-22T20:50:56Z friendly-yellow-quail: changed summary
 - 2026-11-22T20:50:56Z friendly-yellow-quail doing → review
+- 2026-11-22T21:00:23Z mellow-lilac-otter: changed notes
+- 2026-11-22T21:00:23Z mellow-lilac-otter review → done
