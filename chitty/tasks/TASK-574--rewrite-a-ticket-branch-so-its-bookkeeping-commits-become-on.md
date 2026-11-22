@@ -1,6 +1,6 @@
 ---
 title: Rewrite a ticket branch so its bookkeeping commits become one
-status: planning
+status: cold-read
 depends_on:
   - TASK-339
 created: 2026-11-22
@@ -33,3 +33,4 @@ Planner, 2026-11-22: split from `TASK-339` after its second cold read, whose fin
 - 2026-11-22T10:13:55Z friendly-jade-stoat → todo
 - 2026-11-22T10:14:10Z friendly-jade-stoat: changed description, acceptance criteria, notes
 - 2026-11-22T10:14:10Z friendly-jade-stoat todo → planning
+- 2026-11-22T21:26:37Z plucky-umber-wren planning → cold-read
