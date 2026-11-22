@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: blocked
+status: review
 labels:
   - needs-minor
 depends_on:
@@ -72,6 +72,8 @@ Review failed (tests): Newly discovered gaps in the specified assertions; the ea
 
 Added the missing exit-code and complete docstring assertions; focused tests pass. make check fails in unrelated tests.test_property_hidden_entries: Hypothesis generates tracked chitty/tasks/.GIT and git add exits 128 on this filesystem. A maintainer must correct the unrelated property-test fixture or provide a suitable environment before the required check and review handoff can pass.
 
+Unblocked 2026-11-22. The `make check` blocker was a test bug: `tests/test_property_hidden_entries.py` could draw `.GIT`, which `git add` refuses. Fixed on `main` (45be3318), and Hypothesis now uses fixed examples (`derandomize=True`, 11bc91db), so `make check` gives the same result every run. Rebased `task-334` onto `main`; `make check` passed (Ran 1134 tests, OK). The review follow-up assertions from the 14:28 session are unchanged and still need review.
+
 ## Summary
 
 Review follow-up assertions committed; focused tests pass, but make check is blocked by an unrelated hidden-entry property test.
@@ -122,3 +124,5 @@ Review follow-up assertions committed; focused tests pass, but make check is blo
 - 2026-11-22T14:28:10Z able-coral-adder: wrote the plan
 - 2026-11-22T14:32:41Z able-coral-adder: changed notes, summary
 - 2026-11-22T14:32:41Z able-coral-adder doing → blocked
+- 2026-11-22T16:01:22Z plucky-umber-wren: changed notes
+- 2026-11-22T16:01:22Z plucky-umber-wren blocked → review
