@@ -1,6 +1,6 @@
 ---
 title: Rewrite a ticket branch so its bookkeeping commits become one
-status: doing
+status: planning
 depends_on:
   - TASK-339
 created: 2026-11-22
@@ -34,6 +34,8 @@ Planner, 2026-11-22: split from `TASK-339`, which has landed; this text was comp
 
 Planner, 2026-11-22: third cold read checked. Its claim that `git restore --source=<old_tip> --staged --worktree -- chitty/tasks` leaves a renamed-away file behind is wrong: with Git 2.56.0, after `git reset --hard main`, that command staged `R chitty/tasks/TASK-1.md -> chitty/tasks/TASK-1--x.md` and removed the old name (restore runs in no-overlay mode). Its other points are applied.
 
+The required real-Git property does not specify the strategy for the ticket-file text: it says “drawn text” without an alphabet or size, then says the rename slug is drawn “from the same alphabet”. There is therefore no defined alphabet for the slug either. This matters for a filesystem fixture: unrestricted text can include NUL or path separators, while a restricted alphabet changes the examples the property covers. Please specify the text strategy and a valid filename slug alphabet (and any size bounds) so the required test can be implemented without inventing its fixture. The existing property in `tests/test_squash_bookkeeping.py` tests the pure planner with unrelated synthetic paths and does not establish this Git fixture. I checked the remaining requirements against `src/chitty/git.py`: the planner and Git helpers exist, and the separate ancestry, mixed-commit and restore-failure examples are described. No implementation or regression test was written; the property and `make check` remain unverified pending that decision.
+
 ## History
 
 - 2026-11-22T10:13:55Z friendly-jade-stoat → todo
@@ -47,3 +49,5 @@ Planner, 2026-11-22: third cold read checked. Its claim that `git restore --sour
 - 2026-11-22T21:31:59Z plucky-umber-wren cold-read → todo
 - 2026-11-22T21:32:24Z tidy-zinc-stoat todo → doing
 - 2026-11-22T21:34:27Z tidy-zinc-stoat: wrote the plan
+- 2026-11-22T21:34:59Z tidy-zinc-stoat: changed owner, notes
+- 2026-11-22T21:34:59Z tidy-zinc-stoat doing → planning
