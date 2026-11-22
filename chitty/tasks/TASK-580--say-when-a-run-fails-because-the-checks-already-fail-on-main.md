@@ -48,6 +48,8 @@ Suggestion origin: taidy
 
 Cold read: limited to the non-zero exit path (not timeout or missing command); test targets named.
 
+The targeted regression test fails before the fix: the explanation is absent from the recorded Notes.
+
 ## History
 
 - 2026-11-22T13:16:26Z friendly-jade-stoat → backlog
@@ -58,3 +60,4 @@ Cold read: limited to the non-zero exit path (not timeout or missing command); t
 - 2026-11-22T13:21:10Z friendly-jade-stoat planning → todo
 - 2026-11-22T15:45:35Z quick-ebony-lapwing todo → doing
 - 2026-11-22T15:49:26Z quick-ebony-lapwing: wrote the plan
+- 2026-11-22T15:49:56Z quick-ebony-lapwing: changed notes
