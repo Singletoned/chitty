@@ -1,6 +1,6 @@
 ---
 title: Roll back a provisional renumbering whose commit fails
-status: doing
+status: review
 depends_on:
   - TASK-517
 parent: TASK-391
@@ -41,3 +41,4 @@ Added a failing-hook rollback regression test; verified it fails when restoratio
 - 2026-11-22T03:33:59Z vivid-jade-eel: wrote the plan
 - 2026-11-22T03:34:24Z vivid-jade-eel: changed notes
 - 2026-11-22T03:37:02Z vivid-jade-eel: changed summary
+- 2026-11-22T03:39:23Z vivid-jade-eel doing → review
