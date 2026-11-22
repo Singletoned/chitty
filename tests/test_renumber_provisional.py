@@ -1,4 +1,5 @@
 import os
+from datetime import UTC, datetime
 from unittest import mock
 
 from chitty.errors import ChittyError
@@ -144,7 +145,11 @@ class TestPrepareRenumbering(RepoTestCase):
         human = self.root / "chitty/human/HUMAN-1--old-name.md"
         human_before = human.read_bytes()
         mapping, writable = repo._plan_provisional_renumbering()
-        with mock.patch.dict(os.environ, {"CHITTY_ACTOR": "tester"}):
+        with (
+            mock.patch.dict(os.environ, {"CHITTY_ACTOR": "tester"}),
+            mock.patch("chitty.store.datetime") as clock,
+        ):
+            clock.now.return_value = datetime(2026, 1, 1, tzinfo=UTC)
             prepared = repo._prepare_renumbering(mapping, writable)
             count = int(self.git("rev-list", "--count", "HEAD"))
             changes = repo.renumber_provisional()
