@@ -37,6 +37,10 @@ Split from `TASK-393` on 2026-11-21. Keep in planning until `TASK-393` lands; th
 
 Mutation check: changing placement i kind 4 expected title to uncommitted makes test_linked_worktree_placements fail: Repo.find reports no task. Kind 3 lists TASK-6 as well, so assertions select TASK-5 from the listing.
 
+## Summary
+
+Added linked worktree placement tests; make check passes. Mutation of kind 4 placement i fails as recorded in notes.
+
 ## History
 
 - 2026-11-21T23:05:23Z lively-zinc-newt → planning
@@ -50,3 +54,4 @@ Mutation check: changing placement i kind 4 expected title to uncommitted makes 
 - 2026-11-22T00:27:34Z rosy-russet-puffin todo → doing
 - 2026-11-22T00:29:24Z rosy-russet-puffin: wrote the plan
 - 2026-11-22T00:31:32Z rosy-russet-puffin: changed notes
+- 2026-11-22T00:33:52Z rosy-russet-puffin: changed summary
