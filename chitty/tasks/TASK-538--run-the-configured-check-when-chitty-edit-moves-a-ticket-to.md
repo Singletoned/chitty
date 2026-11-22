@@ -50,6 +50,10 @@ Approach recorded; implementation and regression tests have not yet been started
 
 Before the fix, the three regression cases each failed: edit succeeded instead of refusing.
 
+## Summary
+
+Implemented configured review checks and refusal handling. The three regression cases failed before the fix; all four new cases, unchanged review-merge tests, and make check pass. Updated landing-check call counts for the additional check.
+
 ## History
 
 - 2026-11-22T01:11:06Z lively-zinc-newt → cold-read
@@ -59,3 +63,4 @@ Before the fix, the three regression cases each failed: edit succeeded instead o
 - 2026-11-22T02:23:25Z quick-dusky-eel: wrote the plan
 - 2026-11-22T02:23:37Z quick-dusky-eel: changed notes
 - 2026-11-22T02:24:22Z quick-dusky-eel: changed notes
+- 2026-11-22T02:30:02Z quick-dusky-eel: changed summary
