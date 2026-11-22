@@ -11,6 +11,7 @@ depends_on:
   - TASK-384
   - TASK-382
   - TASK-524
+  - TASK-534
 created: 2026-11-18
 ---
 
@@ -60,6 +61,8 @@ Replanned 2026-11-21: the stash concurrency blocker is settled by not using the 
 
 Split 2026-11-21 after a cold read found it too large: `TASK-524` (save and restore helpers, no runner change) and `TASK-525` (saved work that cannot be restored). Keep this ticket in planning until `TASK-524` lands; then compare with the landed helpers, cold-read and move to `todo`.
 
+Also waits for `TASK-534` (`restore_work`), split from `TASK-524` on 2026-11-21.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -106,3 +109,4 @@ Split 2026-11-21 after a cold read found it too large: `TASK-524` (save and rest
 - 2026-11-21T23:08:55Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:11:38Z lively-zinc-newt: changed dependencies, description, acceptance criteria, notes
 - 2026-11-21T23:11:38Z lively-zinc-newt cold-read → planning
+- 2026-11-22T00:06:48Z lively-zinc-newt: changed dependencies, notes
