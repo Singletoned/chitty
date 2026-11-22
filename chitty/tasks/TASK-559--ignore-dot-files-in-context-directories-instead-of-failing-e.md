@@ -1,6 +1,6 @@
 ---
 title: Ignore dot-files in context directories instead of failing every read
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-22
@@ -55,3 +55,4 @@ Skip hidden entries in context scans and Git ref enumeration. Property regressio
 - 2026-11-22T09:54:59Z rosy-fawn-falcon: wrote the plan
 - 2026-11-22T09:56:00Z rosy-fawn-falcon: changed notes
 - 2026-11-22T10:00:45Z rosy-fawn-falcon: changed summary; ticked acceptance criteria
+- 2026-11-22T10:02:32Z rosy-fawn-falcon doing → review
