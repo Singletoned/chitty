@@ -1,6 +1,6 @@
 ---
 title: Re-check a ticket is `done` after taking the landing lock
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -60,3 +60,4 @@ Recheck status under the landing lock and skip stale pending landings. Regressio
 - 2026-11-22T14:18:36Z rosy-silver-quail: wrote the plan
 - 2026-11-22T14:19:06Z rosy-silver-quail: changed notes
 - 2026-11-22T14:22:19Z rosy-silver-quail: changed summary
+- 2026-11-22T14:23:59Z rosy-silver-quail doing → review
