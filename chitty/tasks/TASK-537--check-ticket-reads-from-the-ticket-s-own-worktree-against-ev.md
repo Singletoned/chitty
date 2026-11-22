@@ -1,6 +1,6 @@
 ---
 title: Check ticket reads from the ticket's own worktree against every placement
-status: planning
+status: todo
 labels:
   - question
 depends_on:
@@ -23,7 +23,7 @@ Expected results, read with `Repo.open(<worktree>)` (`find(TASK-5)` and `tasks(c
 | d | `remote` | not run (open question below) |
 | e | error containing `` `origin/task-5` `` and `` `task-5` `` | same error |
 | g | `branch`, archived | not run (the active file is gone there) |
-| h | not listed (`find` raises containing `no task`; `tasks` gives `[]`) | same |
+| h | not listed (`find` raises containing `no task`; `tasks` gives `[]`) | not run (the file is deleted there; `edit_uncommitted` would create it) |
 | j | `main-2` | `main-2` |
 | k | error containing `` `task-5` `` and `` `main` `` (`changed on both`) | same error |
 | l | `remote` | `remote` |
@@ -44,6 +44,8 @@ Add kind 2 checkout and table-driven own-worktree read collector, then verify it
 
 The specified (h) edit expectation contradicts the fixture and actual reads: `place` deletes the active file, but `edit_uncommitted` calls `write_ticket` and recreates it. A table-driven probe using the specified sequence returned `uncommitted` from both reads, not a missing task; all other rows matched and the mutant test passed. Decide whether to omit this variant or change its expected result, or specify a different fixture/action and intended behavior. The acceptance criterion cannot pass as written without changing behavior outside the ticket. The kind-2 checkout helper is committed; the exploratory failing test was removed. Full verification of the final test awaits that decision; `make check` passes with the helper alone.
 
+Replanned 2026-11-22: the (h) edit variant is dropped, as the worker found it recreates the deleted file.
+
 ## History
 
 - 2026-11-22T00:19:27Z lively-zinc-newt → planning
@@ -55,3 +57,5 @@ The specified (h) edit expectation contradicts the fixture and actual reads: `pl
 - 2026-11-22T01:34:23Z tidy-lilac-crane: wrote the plan
 - 2026-11-22T01:36:55Z tidy-lilac-crane: changed owner, notes
 - 2026-11-22T01:36:55Z tidy-lilac-crane doing → planning
+- 2026-11-22T01:37:23Z lively-zinc-newt: changed description, notes
+- 2026-11-22T01:37:23Z lively-zinc-newt planning → todo
