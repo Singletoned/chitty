@@ -44,6 +44,10 @@ No property: fixed outcomes, each needing a real subprocess and Git repository.
 
 Add focused real-Git regression tests for review checks, confirm failures before implementation, then run configured checks within the existing review gate and verify the full suite.
 
+## Notes
+
+Approach recorded; implementation and regression tests have not yet been started or verified.
+
 ## History
 
 - 2026-11-22T01:11:06Z lively-zinc-newt → cold-read
@@ -51,3 +55,4 @@ Add focused real-Git regression tests for review checks, confirm failures before
 - 2026-11-22T01:13:21Z lively-zinc-newt cold-read → todo
 - 2026-11-22T02:21:22Z quick-dusky-eel todo → doing
 - 2026-11-22T02:23:25Z quick-dusky-eel: wrote the plan
+- 2026-11-22T02:23:37Z quick-dusky-eel: changed notes
