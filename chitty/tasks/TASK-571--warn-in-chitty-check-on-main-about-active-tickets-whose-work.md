@@ -23,7 +23,7 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheri
 ## Acceptance Criteria
 
 - [ ] On `main`, with `TASK-1` `todo` and a commit of `src/x.py` whose message ends `Task: TASK-1`, `chitty check` exits 0 and prints the warning naming `TASK-1` and `todo`; this fails before the change
-- [ ] No warning when the only trailer commits are a commit of `chitty/tasks/` files (including one named `chitty/tasks/TASK-1 ü "q".md` is not needed: use the ticket file itself), a `chitty: ` commit of `src/x.py`, or the `src/x.py` commit after `TASK-1` is archived; nor after `TASK-1` is moved to `done` (through `review`, with `--override-review-independence` as other CLI tests do); nor in a linked worktree on branch `task-1`
+- [ ] No warning when the only trailer commits are a commit of `TASK-1`'s own ticket file, or a `chitty: ` commit of `src/x.py`; nor for the `src/x.py` commit after `chitty archive TASK-1`; nor after `TASK-1` is moved to `done` (through `review`, with `--override-review-independence` as other CLI tests do); nor in a linked worktree on branch `task-1`
 - [ ] `make check` passes
 
 ## History
@@ -31,3 +31,4 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheri
 - 2026-11-22T10:00:56Z friendly-jade-stoat → todo
 - 2026-11-22T10:01:15Z friendly-jade-stoat: changed description, acceptance criteria
 - 2026-11-22T10:01:15Z friendly-jade-stoat todo → planning
+- 2026-11-22T10:01:26Z friendly-jade-stoat: changed acceptance criteria
