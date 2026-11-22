@@ -1,6 +1,6 @@
 ---
 title: Add archive, delete, merge and changed-on-both placements to the ticket-read matrix
-status: todo
+status: doing
 depends_on:
   - TASK-393
 parent: TASK-393
@@ -35,3 +35,4 @@ Replanned 2026-11-21 after `TASK-393` landed.
 - 2026-11-21T23:53:00Z lively-zinc-newt planning → cold-read
 - 2026-11-21T23:54:54Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-21T23:54:54Z lively-zinc-newt cold-read → todo
+- 2026-11-22T00:06:29Z zesty-bronze-stoat todo → doing
