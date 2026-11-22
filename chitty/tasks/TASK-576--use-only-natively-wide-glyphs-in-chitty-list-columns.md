@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: doing
+status: review
 labels:
   - needs-minor
 created: 2026-11-22
@@ -97,3 +97,4 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-22T15:15:45Z golden-zinc-eel: wrote the plan
 - 2026-11-22T15:16:06Z golden-zinc-eel: changed notes
 - 2026-11-22T15:21:20Z golden-zinc-eel: changed summary
+- 2026-11-22T15:23:05Z golden-zinc-eel doing → review
