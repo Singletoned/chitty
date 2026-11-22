@@ -28,6 +28,10 @@ Tests in a new `tests/test_squash_bookkeeping.py`, with Hypothesis (the reposito
 - [ ] The `squash_plan` property and the fixed example pass, and all three mutant tests find a mismatch
 - [ ] `make check` passes
 
+## Plan
+
+Implement pure classification and refusal rules, then verify against an independent property oracle, fixed empty example, and three find-based mutants; run formatting and checks.
+
 ## History
 
 - 2026-11-16T09:50:21Z intrepid-coral-raven → backlog
@@ -40,3 +44,4 @@ Tests in a new `tests/test_squash_bookkeeping.py`, with Hypothesis (the reposito
 - 2026-11-22T10:14:06Z friendly-jade-stoat: changed title, description, acceptance criteria
 - 2026-11-22T10:14:08Z friendly-jade-stoat cold-read → todo
 - 2026-11-22T14:34:07Z rosy-jade-badger todo → doing
+- 2026-11-22T14:35:59Z rosy-jade-badger: wrote the plan
