@@ -20,11 +20,23 @@ def examples(base: int) -> int:
 
 
 # Fixed examples make checks repeatable; thorough runs explore and replay failures.
+# Start from Hypothesis's plain defaults: when `CI` is set, Hypothesis loads its
+# own `ci` profile (no example database), and a profile registered without a
+# parent would inherit that, so `make check` would behave differently on CI.
+DEFAULTS = settings.get_profile("default")
 settings.register_profile(
-    "check", deadline=None, derandomize=True, max_examples=example_count("check", 100)
+    "check",
+    parent=DEFAULTS,
+    deadline=None,
+    derandomize=True,
+    max_examples=example_count("check", 100),
 )
 settings.register_profile(
-    "thorough", deadline=None, derandomize=False, max_examples=example_count("thorough", 100)
+    "thorough",
+    parent=DEFAULTS,
+    deadline=None,
+    derandomize=False,
+    max_examples=example_count("thorough", 100),
 )
 settings.load_profile(os.environ.get("TEST_TIER", "check"))
 
