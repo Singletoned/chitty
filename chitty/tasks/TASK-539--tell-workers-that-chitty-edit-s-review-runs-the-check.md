@@ -1,6 +1,6 @@
 ---
 title: Tell workers that `chitty edit -s review` runs the check
-status: doing
+status: review
 depends_on:
   - TASK-538
 created: 2026-11-22
@@ -36,3 +36,4 @@ Updated the work guide and its assertion. The focused test failed before the wor
 - 2026-11-22T02:43:01Z quick-umber-eel: wrote the plan
 - 2026-11-22T02:43:21Z quick-umber-eel: changed notes
 - 2026-11-22T02:44:58Z quick-umber-eel: changed summary
+- 2026-11-22T02:46:28Z quick-umber-eel doing → review
