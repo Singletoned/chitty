@@ -40,6 +40,8 @@ Question for the owner: did you (or a session you started by hand) run `git merg
 
 Owner, 2026-11-22: may have been a Pi session, not remembered. Planner checked: the `TASK-540` Pi review session ended at 04:03:34 with no merge, and no Pi session ran a merge of `task-540`; the race above explains the 04:06:48 fast-forward.
 
+Regression test failed before the fix (unittest exit 1).
+
 ## History
 
 - 2026-11-22T09:47:31Z friendly-jade-stoat → backlog
@@ -52,3 +54,4 @@ Owner, 2026-11-22: may have been a Pi session, not remembered. Planner checked: 
 - 2026-11-22T10:29:05Z friendly-jade-stoat planning → todo
 - 2026-11-22T14:16:04Z rosy-silver-quail todo → doing
 - 2026-11-22T14:18:36Z rosy-silver-quail: wrote the plan
+- 2026-11-22T14:19:06Z rosy-silver-quail: changed notes
