@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when an untouched disk ticket links to an old ID
-status: review
+status: done
 depends_on:
   - TASK-391
   - TASK-526
@@ -65,6 +65,10 @@ Split again 2026-11-22: the worker model gave up a second time (six sessions, no
 
 Both refusal tests failed against the unguarded planner with ChittyError not raised.
 
+Reviewed:
+1: pass - make check: 1064 tests OK; disabling the disk guard and running both refusal tests produced two failures, each ChittyError not raised. The tests assert exact messages and unchanged snapshots.
+2: pass - make check: 1064 tests OK, including both prose fixtures and control, with mapping, writable-path and snapshot assertions.
+
 ## Summary
 
 Added disk link guard and real Git regression fixtures. Both refusal tests failed before the fix; make check passed.
@@ -106,3 +110,5 @@ Added disk link guard and real Git regression fixtures. Both refusal tests faile
 - 2026-11-22T00:24:26Z eager-bronze-raven: changed notes
 - 2026-11-22T00:26:08Z eager-bronze-raven: changed summary
 - 2026-11-22T00:26:11Z eager-bronze-raven doing → review
+- 2026-11-22T00:31:20Z tidy-lilac-adder: changed notes
+- 2026-11-22T00:31:20Z tidy-lilac-adder review → done
