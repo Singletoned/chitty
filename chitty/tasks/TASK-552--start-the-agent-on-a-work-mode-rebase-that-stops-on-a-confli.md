@@ -1,6 +1,6 @@
 ---
 title: Start the agent on a work-mode rebase that stops on a conflict
-status: todo
+status: doing
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -27,3 +27,4 @@ Tests in `tests/test_run_work_rebases.py`: `test_conflict_doing_starts_agent_wit
 - 2026-11-22T04:28:54Z lively-zinc-newt planning → cold-read
 - 2026-11-22T04:30:35Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T04:30:35Z lively-zinc-newt cold-read → todo
+- 2026-11-22T04:30:59Z intrepid-ginger-gannet todo → doing
