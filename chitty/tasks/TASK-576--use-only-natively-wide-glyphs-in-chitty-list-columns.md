@@ -1,6 +1,8 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: todo
+status: planning
+labels:
+  - needs-minor
 created: 2026-11-22
 ---
 
@@ -44,6 +46,14 @@ glyph, assert it is one character, has no U+FE0F, and has
 `unicodedata.east_asian_width` `W`. Run it before the change and record that
 it fails.
 
+## Acceptance Criteria
+
+- [ ] No glyph in the `chitty list` status, priority or skip columns is a narrow character or uses U+FE0F; shown by `tests/test_list_glyphs.py`, which fails before the change.
+- [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing.
+- [ ] `make check` passes.
+
 ## History
 
 - 2026-11-22T12:56:07Z friendly-jade-stoat → todo
+- 2026-11-22T12:56:23Z friendly-jade-stoat: changed labels, acceptance criteria
+- 2026-11-22T12:56:23Z friendly-jade-stoat todo → planning
