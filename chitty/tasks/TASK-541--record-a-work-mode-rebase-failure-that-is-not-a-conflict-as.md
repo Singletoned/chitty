@@ -30,6 +30,10 @@ Add the specified failing regression test, record its pre-fix result, then handl
 
 Regression test failed before the fix: run exited 1 rather than 0 with Error: boom.
 
+## Summary
+
+Records work-mode rebase errors on the branch ticket without starting the agent. Regression test failed before the fix on exit code 1 and passes afterward; make check passed.
+
 ## History
 
 - 2026-11-22T01:29:47Z lively-zinc-newt → planning
@@ -41,3 +45,4 @@ Regression test failed before the fix: run exited 1 rather than 0 with Error: bo
 - 2026-11-22T03:23:18Z brisk-hazel-gannet todo → doing
 - 2026-11-22T03:25:46Z brisk-hazel-gannet: wrote the plan
 - 2026-11-22T03:26:03Z brisk-hazel-gannet: changed notes
+- 2026-11-22T03:28:17Z brisk-hazel-gannet: changed summary
