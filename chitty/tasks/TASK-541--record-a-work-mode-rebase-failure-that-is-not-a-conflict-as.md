@@ -3,6 +3,7 @@ title: Record a work-mode rebase failure that is not a conflict as a ticket erro
 status: planning
 depends_on:
   - TASK-370
+  - TASK-546
 parent: TASK-370
 created: 2026-11-22
 ---
@@ -23,3 +24,4 @@ Test, extending `tests/test_run_work_rebases.py`: patch `chitty.git.rebase_onto`
 ## History
 
 - 2026-11-22T01:29:47Z lively-zinc-newt → planning
+- 2026-11-22T02:02:20Z lively-zinc-newt: changed dependencies
