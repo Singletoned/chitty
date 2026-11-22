@@ -1,0 +1,24 @@
+---
+title: Describe `chitty renumber` without a path in its help and the CLI docs
+status: todo
+depends_on:
+  - TASK-392
+  - TASK-548
+parent: TASK-391
+created: 2026-11-22
+---
+
+## Description
+
+Split from `TASK-392` on 2026-11-22. After `TASK-392`, `chitty renumber` with no `PATH` renumbers provisional tickets on `main`. This ticket updates its help and the CLI docs.
+
+- The first line of the `renumber` docstring in `src/chitty/cli.py` (the first line of `chitty renumber --help`) becomes `Renumber provisional tickets on main, or one of several files sharing an ID.`; update `test_help` in `tests/test_renumber.py`, which pins that line.
+- In `docs/plan/cli.md`, describe `renumber` with no `PATH`: one `renumbered <old ID> -> <new ID> <path>` line per ticket on stdout, `nothing to renumber` and `provisional tickets are renumbered on main; nothing changed` on stderr, exit 0, and the `--json` list (`TASK-548`).
+
+## Acceptance Criteria
+
+- [ ] `chitty renumber --help` starts with the new line and `test_help` asserts it; `docs/plan/cli.md` describes the no-`PATH` form as listed; `make check` passes
+
+## History
+
+- 2026-11-22T03:23:03Z lively-zinc-newt → todo
