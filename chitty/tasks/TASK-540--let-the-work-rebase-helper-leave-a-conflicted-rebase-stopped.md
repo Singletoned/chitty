@@ -30,6 +30,10 @@ Add conflict and clean-rebase regression cases, verify old behavior fails, then 
 
 Regression cases 3b and 3c fail against the old helper with the keyword accepted and ignored: respectively None is not true and ChittyError is not raised.
 
+## Summary
+
+Implemented stopped conflict handling and regression coverage. Old helper failed cases 3b and 3c on behavior assertions; make check passed (1099 tests).
+
 ## History
 
 - 2026-11-22T01:29:45Z lively-zinc-newt → planning
@@ -44,3 +48,4 @@ Regression cases 3b and 3c fail against the old helper with the keyword accepted
 - 2026-11-22T03:49:54Z witty-lilac-raven todo → doing
 - 2026-11-22T03:52:03Z witty-lilac-raven: wrote the plan
 - 2026-11-22T03:52:35Z witty-lilac-raven: changed notes
+- 2026-11-22T03:55:10Z witty-lilac-raven: changed summary
