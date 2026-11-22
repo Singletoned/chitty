@@ -1,6 +1,6 @@
 ---
 title: Check saved worktree work round-trips with a property
-status: todo
+status: doing
 depends_on:
   - TASK-534
 parent: TASK-370
@@ -26,3 +26,4 @@ Suggested structure (from a cold reader whose probe of this property passed at 3
 - 2026-11-22T01:29:59Z lively-zinc-newt planning → cold-read
 - 2026-11-22T01:34:09Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T01:34:09Z lively-zinc-newt cold-read → todo
+- 2026-11-22T02:01:50Z brisk-ebony-marten todo → doing
