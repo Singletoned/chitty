@@ -1,6 +1,6 @@
 ---
 title: Apply provisional renumbering as one store transaction
-status: todo
+status: doing
 depends_on:
   - TASK-391
   - TASK-507
@@ -54,3 +54,4 @@ Split again 2026-11-22 after a cold read: the in-memory prepare step is `TASK-54
 - 2026-11-22T03:02:07Z lively-zinc-newt planning → cold-read
 - 2026-11-22T03:04:02Z lively-zinc-newt: changed description
 - 2026-11-22T03:04:02Z lively-zinc-newt cold-read → todo
+- 2026-11-22T03:04:32Z upbeat-bronze-newt todo → doing
