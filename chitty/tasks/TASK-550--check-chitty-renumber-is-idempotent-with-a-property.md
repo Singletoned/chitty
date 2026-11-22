@@ -1,6 +1,6 @@
 ---
 title: Check `chitty renumber` is idempotent with a property
-status: todo
+status: doing
 depends_on:
   - TASK-392
 parent: TASK-391
@@ -28,3 +28,4 @@ A cold reader's probe of this property (2026-11-22) passed in 2.5 s. Evidence th
 - 2026-11-22T04:29:43Z lively-zinc-newt planning → cold-read
 - 2026-11-22T04:31:55Z lively-zinc-newt: changed description, acceptance criteria
 - 2026-11-22T04:31:55Z lively-zinc-newt cold-read → todo
+- 2026-11-22T05:05:38Z kind-ochre-newt todo → doing
