@@ -1,6 +1,6 @@
 ---
 title: Add a helper that rebases a work worktree onto `main`, keeping uncommitted work
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -175,3 +175,4 @@ Added the standalone rebase helper and four real-Git tests. All four errored aga
 - 2026-11-22T02:10:07Z tidy-quartz-yellowhammer: wrote the plan
 - 2026-11-22T02:10:44Z tidy-quartz-yellowhammer: changed notes
 - 2026-11-22T02:13:10Z tidy-quartz-yellowhammer: changed summary
+- 2026-11-22T02:13:12Z tidy-quartz-yellowhammer doing → review
