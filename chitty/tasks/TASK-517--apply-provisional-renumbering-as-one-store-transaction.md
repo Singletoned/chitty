@@ -1,6 +1,6 @@
 ---
 title: Apply provisional renumbering as one store transaction
-status: planning
+status: cold-read
 depends_on:
   - TASK-391
   - TASK-507
@@ -12,7 +12,7 @@ created: 2026-11-21
 
 ## Description
 
-Apply the read-only plan from `TASK-391` through `Repo.renumber_provisional() -> tuple[Change, ...]` in `src/chitty/store.py`. This is store only; `TASK-392` wires up the CLI. Verify the actual preflight interface after `TASK-391` lands before cold-reading this ticket.
+Apply the read-only plan from `TASK-391` through `Repo.renumber_provisional() -> tuple[Change, ...]` in `src/chitty/store.py`. This is store only; `TASK-392` wires up the CLI. The preflight `Repo._plan_provisional_renumbering() -> tuple[dict[TaskId, TaskId], tuple[StoredTask, ...]]` has landed with its guards (`TASK-391`, `TASK-519`, `TASK-520`, `TASK-536`); `rewrite_task` (`src/chitty/renumbering.py`), `Task.with_history_event`, `ids.filename`, `ids.slugify`, `_all_or_nothing`, `_prepare_write` and `_commit(change, verb)` exist (rechecked 2026-11-22). Split 2026-11-22: a failed commit is `TASK-542`, outside Git is `TASK-543`.
 
 Call the preflight first; an empty plan returns `()` without `_prepare_write()`. Otherwise use `_prepare_write()` normally. Its own repository upgrade commit, if any, is outside the ticket transaction. For every writable ticket apply `rewrite_task` (`TASK-507`); preserve History and existing `moved_from` except that a renumbered ticket loses `provisional`, sets `moved_from` to its old ID, and appends a History event `renumbered from <old ID>` via `with_history_event`. Rewrite titles before computing paths. Keep each ticket in its original directory and derive every changed ticket's final path from `ids.filename` and `ids.slugify` of its final title, even when just the slug changes. Do not touch unchanged files, `_relocate` or `_save`.
 
@@ -23,8 +23,7 @@ Use `tests/test_renumber_provisional.py`, `RepoTestCase`, real files and real Gi
 ## Acceptance Criteria
 
 - [ ] The real-Git batch fixture returns one `Change` per renumbered ticket, updates both directories and all three tickets exactly as described, and lands one commit including every old and final path and a `Task:` trailer for each final ticket. Repeating returns `()` and changes neither HEAD nor bytes.
-- [ ] Reject the same valid batch with an executable pre-commit hook that exits 1: the exception contains `autocommit failed`, and ticket bytes and paths, HEAD, index and porcelain status match the snapshot before the call.
-- [ ] Outside Git an up-to-date initialized repo with `autocommit = false` renumbers its sole `TASK-AAAAAA` to `TASK-1` without creating `.git`; with `autocommit = true` it raises the usual write-policy error and leaves bytes and paths unchanged.
+- [ ] `make check` passes
 
 ## Notes
 
@@ -36,3 +35,5 @@ The preflight is split across `TASK-391`, `TASK-519` (blocking structured refere
 - 2026-11-21T18:37:17Z eager-ginger-adder: changed dependencies, description, acceptance criteria
 - 2026-11-21T18:37:17Z eager-ginger-adder backlog → planning
 - 2026-11-21T18:45:16Z eager-ginger-adder: changed dependencies, notes
+- 2026-11-22T01:35:32Z lively-zinc-newt: changed description, acceptance criteria
+- 2026-11-22T01:35:32Z lively-zinc-newt planning → cold-read
