@@ -29,6 +29,10 @@ Out of scope: `AGENTS.md` (its hand-written `## Chitty` section also has the sen
 
 Remove the obsolete instruction from the specified guides and fixture, delete its obsolete test, then run fix, format, and checks.
 
+## Summary
+
+Removed obsolete literal asterisk guidance and its test. Verified grep finds no remaining instruction and make check passes (1078 tests).
+
 ## History
 
 - 2026-11-21T23:22:21Z lively-zinc-newt → todo
@@ -37,3 +41,4 @@ Remove the obsolete instruction from the specified guides and fixture, delete it
 - 2026-11-21T23:23:20Z lively-zinc-newt cold-read → todo
 - 2026-11-22T01:47:26Z zesty-yellow-jay todo → doing
 - 2026-11-22T01:49:09Z zesty-yellow-jay: wrote the plan
+- 2026-11-22T01:50:50Z zesty-yellow-jay: changed summary
