@@ -1,6 +1,6 @@
 ---
 title: Report branch coverage, including subprocesses, from `make test`
-status: doing
+status: review
 depends_on:
   - TASK-587
 created: 2026-11-22
@@ -55,6 +55,10 @@ Planner, 2026-11-22: compared with what `TASK-587` landed (`Makefile` `test` lin
 
 Before the shebang fix, make test failed: AssertionError: 1 != 130 in test_interrupted_agent_calls_reporter. Subprocess comparison: patched src/chitty/run.py 852 492 42%; unpatched src/chitty/run.py 852 744 13%.
 
+## Summary
+
+Enabled branch and subprocess coverage for make test; HTML is at tmp/coverage/index.html. make check and make test passed (1137 tests; total coverage 94%); the known child-process coverage traceback appeared. Verified patched/unpatched run.py coverage and the signal regression before its fix; details are in the note.
+
 ## History
 
 - 2026-11-22T16:48:38Z plucky-umber-wren → planning
@@ -74,3 +78,5 @@ Before the shebang fix, make test failed: AssertionError: 1 != 130 in test_inter
 - 2026-11-22T17:23:41Z golden-amber-adder todo → doing
 - 2026-11-22T17:26:13Z golden-amber-adder: wrote the plan
 - 2026-11-22T17:29:30Z golden-amber-adder: changed notes
+- 2026-11-22T17:34:35Z golden-amber-adder: changed summary
+- 2026-11-22T17:34:35Z golden-amber-adder doing → review
