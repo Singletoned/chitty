@@ -33,7 +33,7 @@ No new test: build configuration, checked by the commands in the criteria.
 
 ## Plan
 
-Run the fixture probe on the unchanged main-equivalent tree, switch the runner and worker detection, update documentation and lockfile, then run the specified checks and probes.
+Switch the pinned runner and timeout detection, update documentation, then run the specified probes and verification commands.
 
 ## Notes
 
@@ -56,3 +56,4 @@ Baseline for criterion 3, recorded by the previous worker (vivid-fawn-wren) befo
 - 2026-11-22T20:33:11Z plucky-umber-wren planning → todo
 - 2026-11-22T20:33:21Z plucky-umber-wren: changed notes
 - 2026-11-22T20:33:42Z friendly-yellow-quail todo → doing
+- 2026-11-22T20:35:45Z friendly-yellow-quail: wrote the plan
