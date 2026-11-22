@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class SectionNameTypesTest(unittest.TestCase):
     def check_literal(self, name: str) -> subprocess.CompletedProcess[str]:
-        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+        tmp = ROOT / "tmp"
+        tmp.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=tmp) as directory:
             source = Path(directory) / "example.py"
             source.write_text(
                 f'from chitty.model import parse\nparse("example").with_section({name!r}, "x")\n'
