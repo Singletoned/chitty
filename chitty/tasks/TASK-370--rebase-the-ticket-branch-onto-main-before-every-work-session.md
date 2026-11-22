@@ -1,6 +1,6 @@
 ---
 title: Rebase the ticket branch onto `main` before every work session
-status: doing
+status: planning
 labels:
   - bug
   - needs-minor
@@ -79,6 +79,8 @@ Replanned 2026-11-22: added case 4 (`todo` ticket with an existing branch) and c
 
 Work paused after inspecting the runner call site, Git helpers and review test fixture. The plan is recorded; no implementation or regression tests have been written, and fail-before evidence and make check remain outstanding.
 
+Planning needed: the description requires the rebase before setup for every work-mode status, but cases 1, 2 and 4 only observe the branch after the run or at agent start; none observes setup. An implementation that rebases after setup would pass them while violating the requirement. Specify a real-Git setup fixture, action and assertions proving setup sees the rebased branch. The prescribed cases cover doing and todo but not error repair: an implementation that skips rebasing error tickets would also pass. Specify a fixture, action and assertions for an error ticket proving its work session rebases before setup. The existing claim tests cover todo/doing and failure, not error-mode rebase (tests/test_run_claims_on_branch.py); src/chitty/run.py selects error for repair and runs the same work setup path. The five described cases otherwise identify the relevant success, conflict, saved-work and non-conflict failure checks; git.rebase_onto, save_work and restore_work exist. No implementation or tests were written, so fail-before evidence, runtime behavior and make check could not be verified. Decide and specify the missing tests before implementation; the prescribed tests alone do not verify the stated scope and ordering.
+
 ## History
 
 - 2026-11-18T09:13:39Z witty-ginger-falcon → planning
@@ -139,3 +141,5 @@ Work paused after inspecting the runner call site, Git helpers and review test f
 - 2026-11-22T01:43:39Z witty-violet-badger todo → doing
 - 2026-11-22T01:45:27Z witty-violet-badger: wrote the plan
 - 2026-11-22T01:45:43Z witty-violet-badger: changed notes
+- 2026-11-22T01:46:04Z witty-violet-badger: changed owner, notes
+- 2026-11-22T01:46:04Z witty-violet-badger doing → planning
