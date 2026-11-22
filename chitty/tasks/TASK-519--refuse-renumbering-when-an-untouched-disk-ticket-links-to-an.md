@@ -1,6 +1,6 @@
 ---
 title: Refuse renumbering when an untouched disk ticket links to an old ID
-status: todo
+status: doing
 depends_on:
   - TASK-391
   - TASK-526
@@ -95,3 +95,4 @@ Split again 2026-11-22: the worker model gave up a second time (six sessions, no
 - 2026-11-22T00:15:32Z friendly-white-toad doing → error
 - 2026-11-22T00:16:37Z lively-zinc-newt: changed title, description, acceptance criteria, notes
 - 2026-11-22T00:16:37Z lively-zinc-newt error → todo
+- 2026-11-22T00:21:28Z eager-bronze-raven todo → doing
