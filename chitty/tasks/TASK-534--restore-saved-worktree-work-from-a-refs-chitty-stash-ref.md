@@ -1,6 +1,6 @@
 ---
 title: Restore saved worktree work from a `refs/chitty/stash` ref
-status: review
+status: done
 depends_on:
   - TASK-524
 parent: TASK-370
@@ -22,7 +22,7 @@ Tests in `tests/test_git_saved_work.py`, each in its own repository (`setUp` com
 
 ## Acceptance Criteria
 
-- [ ] The six restore tests pass (round trip, conflict, `AA`, missing ref, dirty worktree, `refs/stash`) and fail against a `NotImplementedError` stub; `make check` passes
+- [x] The six restore tests pass (round trip, conflict, `AA`, missing ref, dirty worktree, `refs/stash`) and fail against a `NotImplementedError` stub; `make check` passes
 
 ## Plan
 
@@ -31,6 +31,9 @@ Add six restore regression tests against a stub, then implement validation, clea
 ## Notes
 
 All six restore tests fail with NotImplementedError against the stub (unittest discover, -k test_restore).
+
+Reviewed: Implementation and complete diff reviewed; no additional decision note was required.
+1: pass - `make check` printed `Ran 1075 tests` and `OK`, including the six restore tests. Replacing `restore_work` in memory with a `NotImplementedError` stub and running those six tests printed `FAILED (errors=6)`, each from the stub.
 
 ## Summary
 
@@ -48,3 +51,5 @@ Implemented restore with clean-worktree protection and conflict cleanup. Six tes
 - 2026-11-22T01:14:27Z nimble-pearl-adder: changed notes
 - 2026-11-22T01:16:59Z nimble-pearl-adder: changed summary
 - 2026-11-22T01:17:02Z nimble-pearl-adder doing → review
+- 2026-11-22T01:26:28Z honest-jade-dormouse: changed notes; ticked acceptance criteria
+- 2026-11-22T01:26:28Z honest-jade-dormouse review → done
