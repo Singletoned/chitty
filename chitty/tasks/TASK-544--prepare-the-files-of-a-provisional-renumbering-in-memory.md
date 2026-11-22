@@ -26,7 +26,7 @@ Test in a new `tests/test_renumber_provisional.py`, `RepoTestCase`, real files a
 
 ## Plan
 
-Add an in-memory preparation helper and a real Git fixture test; verify the test fails with a stub, then implement and run the full checks.
+Strengthen the History assertion to check the final event ends with the required action; verify against a stub and run the required checks.
 
 ## Notes
 
@@ -52,3 +52,4 @@ Implemented in-memory preparation and real Git regression coverage. The test fai
 - 2026-11-22T02:39:07Z nimble-hazel-raven doing → review
 - 2026-11-22T02:43:29Z calm-lilac-lapwing: changed acceptance criteria, notes
 - 2026-11-22T02:43:29Z calm-lilac-lapwing review → doing
+- 2026-11-22T02:50:17Z nimble-silver-toad: wrote the plan
