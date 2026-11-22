@@ -4,7 +4,9 @@ set -eu
 
 docker build --quiet -t chitty-linux-check \
     -f scripts/linux-check.Dockerfile scripts
-git archive --format=tar HEAD | docker run --rm -i \
+# `CI=true` matches GitHub Actions, where some tools (Hypothesis) change their
+# defaults; without it this check passed while the 0.7.0 release check failed.
+git archive --format=tar HEAD | docker run --rm -i -e CI=true \
     -v chitty-linux-uv:/home/node/.cache/uv \
     -v chitty-linux-npm:/home/node/.npm \
     chitty-linux-check sh -c '
