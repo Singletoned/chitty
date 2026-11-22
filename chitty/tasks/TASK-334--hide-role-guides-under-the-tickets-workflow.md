@@ -1,6 +1,6 @@
 ---
 title: Hide role guides under the tickets workflow
-status: error
+status: doing
 labels:
   - needs-minor
 depends_on:
@@ -57,6 +57,8 @@ Error output:
 (no output)
 ```
 
+Planner, 2026-11-22: the 10:05 agent session timed out after 7200 s on its first tool call (`.venv/bin/chitty show TASK-334`); the Pi session has no result for that call, and the command returns in under a second when run by hand, so the stall was in the agent harness, not in this ticket. No work was lost (no commits or edits since the replan). Back to `doing` for another attempt. Note: this branch's own `chitty` (older than `main`) fails on branch `task-a6vmgm` with "unknown frontmatter key 'provisional'"; the runner's merge of `main` fixes that.
+
 ## Summary
 
 Implemented workflow-gated role guides. CLI loads repository config for role requests (broken config errors propagate), defaults to runner outside repositories, runner help remains available when config is broken, and run.py passes repo.config.workflow. Added six-role workflow tests and updated direct callers. Verified with make format and make check; regression tests were observed failing before the fix. Commit: c7ed80f. No known follow-ups.
@@ -97,3 +99,5 @@ Implemented workflow-gated role guides. CLI loads repository config for role req
 - 2026-11-22T10:04:01Z eager-coral-wren todo → doing
 - 2026-11-22T12:05:00Z eager-coral-wren: changed notes
 - 2026-11-22T12:05:00Z eager-coral-wren doing → error
+- 2026-11-22T13:57:28Z friendly-jade-stoat: changed notes
+- 2026-11-22T13:57:28Z friendly-jade-stoat error → doing
