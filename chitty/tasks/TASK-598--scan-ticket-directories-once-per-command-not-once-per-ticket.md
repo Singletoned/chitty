@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: todo
+status: doing
 priority: high
 created: 2026-11-22
 ---
@@ -55,3 +55,4 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 - 2026-11-22T21:31:26Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T21:33:00Z plucky-umber-wren: changed description, acceptance criteria
 - 2026-11-22T21:33:00Z plucky-umber-wren cold-read → todo
+- 2026-11-22T21:36:27Z witty-khaki-falcon todo → doing
