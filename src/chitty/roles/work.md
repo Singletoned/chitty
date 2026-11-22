@@ -17,9 +17,9 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - With `autocommit = true`, Chitty commits ticket-file edits only. Commit
   code, tests, or other implementation files in small logical commits. Chitty
   adds a `Task: <ID>` trailer to each commit when it lands the ticket.
-- Record surprises with `--note`. Run `chitty fix`, format and check, then commit
-  your changes. `chitty edit -s review` refuses while the worktree has uncommitted
-  files. Use `--summary` for handoff, verification, and follow-ups.
+- Record surprises with `--note`. Format and commit your changes:
+  `chitty edit -s review` runs the configured check and refuses if it fails or
+  the worktree has uncommitted files. Use `--summary` for handoff, verification, and follow-ups.
 - For a requested regression test, see it fail without the fix and note the
   result. If it passes, change the test until it fails without the fix.
 - For missing or contradictory requirements, an unresolved design decision, a

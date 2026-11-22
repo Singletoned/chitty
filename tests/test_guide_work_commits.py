@@ -10,8 +10,7 @@ class TestWorkCommitsGuide(unittest.TestCase):
         for phrase in (
             "Chitty commits ticket-file edits only",
             "code, tests, or other implementation files",
-            "then commit your changes",
-            "refuses while the worktree has uncommitted files",
+            "runs the configured check and refuses if it fails",
             "Chitty adds a `Task: <ID>` trailer to each commit when it lands the ticket",
         ):
             with self.subTest(phrase=phrase):
