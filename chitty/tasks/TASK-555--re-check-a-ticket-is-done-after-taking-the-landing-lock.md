@@ -1,6 +1,6 @@
 ---
 title: Re-check a ticket is `done` after taking the landing lock
-status: planning
+status: todo
 labels:
   - bug
 priority: high
@@ -45,3 +45,4 @@ Owner, 2026-11-22: may have been a Pi session, not remembered. Planner checked: 
 - 2026-11-22T10:28:11Z friendly-jade-stoat backlog → cold-read
 - 2026-11-22T10:29:04Z friendly-jade-stoat: changed labels, priority, description
 - 2026-11-22T10:29:04Z friendly-jade-stoat cold-read → planning
+- 2026-11-22T10:29:05Z friendly-jade-stoat planning → todo
