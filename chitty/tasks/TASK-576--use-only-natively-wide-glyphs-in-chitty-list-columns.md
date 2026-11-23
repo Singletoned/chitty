@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: review
+status: doing
 labels:
   - needs-minor
 created: 2026-11-22
@@ -96,6 +96,12 @@ Review failed (design): The alignment regression uses the unchanged `_columns` c
 3: pass - `make check` exited 0.
 4: fail - `python -m unittest tests.test_list_glyphs -v` printed OK for both tests, but the worker's before-fix note records that the alignment test also passed before the fix; its `_columns` oracle cannot demonstrate the terminal width defect. Planning must specify a discriminating test.
 
+Review failed (work): The human skip glyph remains inline despite the explicit requirement and previous review. Replace it with `HUMAN_GLYPH`.
+1: fail - The earlier review's criterion 1 finding remains unresolved: `src/chitty/selection.py:89` returns an inline human glyph, bypassing the constant covered by the glyph test. The glyph regression with the main-branch model restored failed for all three old priorities (length 2 != 1).
+2: fail - The old-glyph grep printed nothing, but `grep -n '"👤 human' src/chitty/selection.py` printed line 89. README and plan documents contain the new glyphs.
+3: pass - `make check` printed 1167 passed, 620 subtests passed.
+4: pass - The alignment test passed in `make check`; with the main-branch model restored in a scratch copy, `python -m unittest tests.test_list_glyphs -v` failed with `21 != 22`, resolving the earlier review's criterion 4 finding.
+
 ## Summary
 
 Replaced the alignment-test oracle with the specified terminal width calculation in tests/test_list_glyphs.py. make check passes (1128 tests); focused glyph tests pass. Commit: c37bd797.
@@ -126,3 +132,5 @@ Replaced the alignment-test oracle with the specified terminal width calculation
 - 2026-11-23T23:31:31Z honest-indigo-toad: wrote the plan
 - 2026-11-23T23:35:36Z honest-indigo-toad: changed summary
 - 2026-11-23T23:35:36Z honest-indigo-toad doing → review
+- 2026-11-23T23:43:13Z vivid-coral-urchin: changed acceptance criteria, notes
+- 2026-11-23T23:43:13Z vivid-coral-urchin review → doing
