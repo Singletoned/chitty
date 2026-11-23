@@ -12,11 +12,10 @@ task files. `chitty --help` is the full command reference.
   the machine. Tests may create temp directories. Reading other branches
   through Git or `chitty` is fine.
 - Before writing the review note, inspect every acceptance criterion and the
-  complete diff. Do not stop at the first defect. Check whether the changes fit
-  together, cover useful property-test opportunities, and whether the result
-  makes sense to users. The dirty-worktree stop above still applies. If resources
-  are missing, report the verification limits and continue the checks you can
-  safely perform without claiming success for unverified parts.
+  complete diff; do not stop at the first defect. Check whether the changes fit
+  together, cover useful property-test opportunities, and make sense to users.
+  If resources are missing, report the verification limits and continue the
+  checks you can safely perform without claiming success for unverified parts.
 - With `autocommit = true`, Chitty commits ticket edits, not code or tests.
 - Fail only for an unmet criterion or demonstrated defect. A criterion is unmet
   if nothing exercises it, it needs a missing file, or verification was prevented.
@@ -32,44 +31,47 @@ task files. `chitty --help` is the full command reference.
   one clear, cheap-to-reverse default that preserves requirements and criteria
   and adds no user-visible policy, command, or setting. Do not invent or weaken
   tests needed to verify stated criteria.
-- Apart from that exception, for missing or contradictory requirements, an
-  unresolved design decision, a wrong claim about the code, files or other
-  tickets, a criterion that cannot be verified as written or would pass with
-  nothing built, a test a criterion needs that the ticket does not describe
-  (its fixture, action and assertions), or a ticket too large to finish in one
-  session, set `-s planning` (`design`), not `doing`. Use `design` also for
-  repeat `tests` failures with the same cause. Before changing status, finish
-  reading the ticket and inspect relevant code and tests for remaining
-  requirements. Explain what blockers prevented verifying and why; continue
-  independent checks without speculating or expanding scope. Gather all
-  actionable planning issues in the `Review failed (design):` note with the
-  verdicts below. Include evidence of what was discovered, why the current ticket
-  cannot guide the work, and what decision is needed or what must be corrected.
-  Preserve the existing branch and worktree; ownership is cleared and the run
-  stops. Resume there after planning and cold-read readiness. Use `blocked`
-  for external obstacles requiring help. For oversized tickets, suggest a split.
-- Except for dirty worktrees, write `Review failed (<cause>): ...`, using the
-  earliest stage that should have caught it: `design`, `tests`, `work`,
-  `integration` (branch, merge, environment), or `review`. `--uncheck` every
-  failed criterion. Set `-s doing` for implementation defects against clear
-  requirements. Include one line for every criterion below the first line:
-  `<number>: pass - <evidence>` or `<number>: fail - <reason>`.
-  Report all findings from this pass together in that one note. Group actionable
-  findings under the relevant criterion; a criterion may have multiple findings.
-  State what must change. If you ran code, the note gives what was run and what
-  it printed. Otherwise it says what is missing or wrong, or what stopped you
-  (`integration` for environment failures).
+- Apart from that exception, set `-s planning` with cause `design`, not
+  `doing`, when the ticket cannot guide the work:
+  - missing or contradictory requirements, or an unresolved design decision;
+  - a wrong claim about the code, files or other tickets;
+  - a criterion that cannot be verified as written or would pass with nothing
+    built;
+  - a test a criterion needs that the ticket does not describe (its fixture,
+    action and assertions);
+  - a ticket too large to finish in one session (suggest a split);
+  - repeat `tests` failures with the same cause.
+- Before returning a ticket to `planning`:
+  - Finish reading the ticket and inspect the relevant code and tests for the
+    remaining requirements; continue independent checks without speculating or
+    expanding scope.
+  - In the note, give for each actionable issue the evidence, why the ticket
+    cannot guide the work, and the decision or correction needed. Say what the
+    blockers prevented you verifying and why.
+  - Keep the branch and worktree. Ownership is cleared and the run stops;
+    resume there after planning and cold-read readiness.
+  - Use `blocked` instead for external obstacles requiring help.
+- Except for dirty worktrees, every failure gets one note:
+  - First line `Review failed (<cause>): ...`, with the earliest stage that
+    should have caught it: `design`, `tests`, `work`, `integration` (branch,
+    merge, environment), or `review`.
+  - Then one line per criterion: `<number>: pass - <evidence>` or
+    `<number>: fail - <reason>`. Group all findings from this pass under the
+    relevant criterion; a criterion may have several.
+  - State what must change. If you ran code, give what was run and what it
+    printed; otherwise say what is missing or wrong, or what stopped you
+    (`integration` for environment failures).
+  - `--uncheck` every failed criterion. Set `-s doing` for implementation
+    defects against clear requirements.
 - For each test a criterion needs, show yourself that it fails without the
   change; a worker's note is not enough. For example, check out the merge base
   in a temporary worktree of your own (the one exception to the worktree rule
   above), add the branch's new or changed test files, run the test, then remove
   that worktree. Record the command and the failure in the criterion's line. If
   the test passes without the change, the criterion fails with cause `tests`.
-- Compare findings with earlier review notes. Distinguish newly discovered
-  findings from previously reported findings that remain unresolved; cite the
-  earlier note for unresolved findings. Later passes are expected to discover
-  additional bugs: a newly discovered bug is not evidence of an earlier process
-  failure.
+- Compare findings with earlier review notes: cite the earlier note for each
+  finding still unresolved. A newly found bug is expected in a later pass and is
+  not evidence of an earlier process failure.
 - Do not edit spec tests. On a pass, set `-s done --note "Reviewed: ..."`.
   Do not merge or remove branches or worktrees; `chitty run` lands passes.
 - For unrelated work, use plain `chitty add` in the default context. Off the
