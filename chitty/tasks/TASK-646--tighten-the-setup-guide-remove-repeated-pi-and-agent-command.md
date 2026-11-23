@@ -1,6 +1,6 @@
 ---
 title: "Tighten the setup guide: remove repeated Pi and agent-command advice"
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -32,3 +32,4 @@ Rules for this tightening:
 - 2026-11-23T12:40:53Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:41:16Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:43Z friendly-zinc-dormouse cold-read → planning
+- 2026-11-23T12:45:20Z friendly-zinc-dormouse planning → todo
