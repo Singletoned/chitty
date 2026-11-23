@@ -1,6 +1,6 @@
 ---
 title: Show the last session's exit, duration and output when the runner stops an agent that made no progress
-status: cold-read
+status: planning
 depends_on:
   - TASK-617
 created: 2026-11-23
@@ -52,3 +52,4 @@ Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When
 - 2026-11-23T13:45:02Z youthful-quartz-zander: changed description
 - 2026-11-23T13:45:15Z youthful-quartz-zander: changed acceptance criteria
 - 2026-11-23T13:45:30Z youthful-quartz-zander planning → cold-read
+- 2026-11-23T13:46:55Z youthful-quartz-zander cold-read → planning
