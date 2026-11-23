@@ -24,6 +24,10 @@ Tests in a new `tests/test_unfinished_landed.py`, Hypothesis (the repository's p
 - [ ] The `unfinished_landed` property passes, and all three mutant tests find a mismatching case
 - [ ] `run.py` and `tests/test_property_repair_work.py` import `has_work_beyond_tickets` from `chitty.git`, `chitty.run` no longer defines it, and `tests/test_property_repair_work.py` passes; `make check` passes
 
+## Plan
+
+Move the existing path helper, add the specified property and mutants with a red-first stub, then implement the pure rule and run checks.
+
 ## Notes
 
 Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; cold-read against what landed.
@@ -46,3 +50,4 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; c
 - 2026-11-23T19:40:20Z witty-yellow-vole todo → planning
 - 2026-11-23T19:40:23Z witty-yellow-vole planning → todo
 - 2026-11-23T19:44:41Z brisk-jade-dormouse todo → doing
+- 2026-11-23T19:47:15Z brisk-jade-dormouse: wrote the plan
