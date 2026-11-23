@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -90,3 +90,4 @@ Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context r
 - 2026-11-23T18:44:08Z witty-yellow-vole: changed description
 - 2026-11-23T18:44:08Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:44:11Z witty-yellow-vole planning → todo
+- 2026-11-23T18:56:06Z intrepid-dusky-gannet todo → doing
