@@ -37,6 +37,8 @@ Folded in from TASK-622 and TASK-623: four worker runs and a reviewer run in cir
 
 Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When TASK-617 is done, compare this ticket with what landed, cold-read it again, then move it to `todo`.
 
+Regression tests fail before the fix: both stalled runner paths omit the last session details; the continued path has no Error output section.
+
 ## History
 
 - 2026-11-23T10:24:02Z witty-russet-gannet → backlog
@@ -67,3 +69,4 @@ Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When
 - 2026-11-23T13:49:35Z youthful-quartz-zander planning → todo
 - 2026-11-23T13:53:58Z kind-hazel-crane todo → doing
 - 2026-11-23T13:57:03Z kind-hazel-crane: wrote the plan
+- 2026-11-23T13:57:28Z kind-hazel-crane: changed notes
