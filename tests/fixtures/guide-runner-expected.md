@@ -5,6 +5,9 @@ Put paths, commands, IDs, and code in backticks.
 Pass text containing backticks or apostrophes through a `-file` option, using `-` and a quoted heredoc (`<<'EOF'`) for stdin.
 Run `chitty --help` for the command reference.
 
+Never commit your changes on `main`: branch from it in a worktree as `task-<n>`,
+`plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward `main`.
+
 A ticket lands on `main` only after its review passes; a worker never lands
 its own ticket. Under `chitty run`, the runner lands a passing review: it
 fast-forwards `main` only after rebasing the ticket branch onto `main` and

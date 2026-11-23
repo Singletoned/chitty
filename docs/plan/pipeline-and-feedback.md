@@ -67,6 +67,15 @@
 - Locks are machine-local: Chitty runs on one machine.
 - Sessions write the main checkout during setup and merges. A Git lock or
   dirty-file collision fails loudly; rerun that session.
+- Agents stop committing their own changes on `main` whenever a branch is
+  easy (decided 2026-11-23, after a fix to a release script was committed
+  straight to `main`). Each branch that starts from `main` and merges back is
+  named by its kind: `task-<n>` for ticket work (made by the runner),
+  `plan/<name>` for planning (recognised by `planning_branch`), and
+  `hotfix/<name>` for a fix outside any ticket. The work happens in its own
+  worktree, passes the configured checks, and then fast-forwards `main`. The
+  managed guide block says so. Nothing treats `hotfix/` specially yet;
+  Chitty's own ticket writes on `main` are `TASK-340`'s concern.
 
 ## Ready ticket
 
