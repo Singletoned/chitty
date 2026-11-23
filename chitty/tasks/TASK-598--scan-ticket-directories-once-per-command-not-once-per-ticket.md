@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: error
+status: review
 priority: high
 depends_on:
   - TASK-639
@@ -102,6 +102,8 @@ last session: exit 0 after 9s
 Confirmed: TASK-598 is in `review`, and the worktree is clean.
 ```
 
+Moved `error` -> `review` by hand (2026-11-23, at the person's request): the work was finished and recorded above; the error came from a runner worker started on the ticket while a hand session finished it.
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -147,3 +149,5 @@ Confirmed: TASK-598 is in `review`, and the worktree is clean.
 - 2026-11-23T16:50:23Z youthful-quartz-zander doing → review
 - 2026-11-23T16:52:28Z calm-bronze-marten: changed notes
 - 2026-11-23T16:52:28Z calm-bronze-marten review → error
+- 2026-11-23T21:06:09Z friendly-coral-badger: changed notes
+- 2026-11-23T21:06:09Z friendly-coral-badger error → review
