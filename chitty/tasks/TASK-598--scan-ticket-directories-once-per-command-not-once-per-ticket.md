@@ -43,7 +43,7 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 
 The branch `task-598` was rebased onto `main` on 2026-11-23, so TASK-639's cache is in the baseline. Rebase again before starting if `main` has moved; criterion 2's "before" is the rebased branch's merge-base with `main`.
 
-Invalidation example, same file, in a non-Git directory with the config above and `TASK-1` active: on one `Repo` object, `lookup(TASK-1)` (fills the caches), then `repo.archive(TASK-1)`, then `lookup(TASK-1)` returns it with `archived` true; then `repo.add(...)` of a new ticket, then `lookup` of its id returns it. Without clearing the new caches in `_invalidate`, the second lookups return stale results.
+Invalidation example, same file, in a non-Git directory with the config above (`archive = "move"`, the default) and `TASK-1` active with status `done`: on one `Repo` object, `lookup(TASK-1)` (fills the caches), then `repo.archive(TASK-1)`, then `lookup(TASK-1)` returns it with `archived` true; then `repo.add(...)` of a new ticket, then `lookup` of its id returns it. Without clearing the new caches in `_invalidate`, the second lookups return stale results.
 
 ## Acceptance Criteria
 
@@ -92,3 +92,4 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T14:36:03Z youthful-quartz-zander: changed acceptance criteria
 - 2026-11-23T14:36:07Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:36:24Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:36:27Z youthful-quartz-zander: changed description
