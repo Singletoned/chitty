@@ -1,6 +1,6 @@
 ---
 title: Accept an optional `due` date in ticket frontmatter
-status: doing
+status: review
 parent: TASK-619
 created: 2026-11-23
 ---
@@ -62,3 +62,4 @@ Added optional due frontmatter, validation, round-trip and formatter coverage. m
 - 2026-11-23T12:49:40Z mellow-hazel-lapwing todo → doing
 - 2026-11-23T12:52:46Z mellow-hazel-lapwing: wrote the plan
 - 2026-11-23T12:58:22Z mellow-hazel-lapwing: changed notes, summary
+- 2026-11-23T13:00:16Z mellow-hazel-lapwing doing → review
