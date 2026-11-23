@@ -9,12 +9,11 @@ created: 2026-11-22
 
 ## Description
 
-Decided with the person, 2026-11-22: making `chitty list` quicker is a top priority. On this repository (415 active and 182 archived files in `chitty/tasks`, about a dozen ticket branches) `chitty list` takes about 22 s.
+Decided with the person, 2026-11-22: making `chitty list` quicker is a top priority. On this repository (415 active and 182 archived files in `chitty/tasks`, about a dozen ticket branches) `chitty list` takes about 19 s (measured 2026-11-23, after TASK-639 cached `discovered_contexts`).
 
-Profiled on 2026-11-22 (`cProfile` over `chitty.cli.main` with `list`): Git is not the cost (71 `subprocess.run` calls, about 1 s). The cost is re-listing ticket directories per ticket:
+Profiled on 2026-11-22 and again on 2026-11-23 after TASK-639 (`cProfile` over `chitty.cli.main` with `list`): Git is not the cost (71 `subprocess.run` calls, about 1 s). The cost is re-listing ticket directories per ticket:
 
-- `Repo._working_ticket_files(task_id)` (`src/chitty/store.py`, about line 470) walks every context directory, active and archive, through `_files` and `scan`, and keeps the files whose name parses to `task_id`. It is called once per ticket id looked up, across refs (2299 calls in the profile), so one `chitty list` makes 13,800 `scan` calls and 4.3 million `ids.parse_filename` calls (39 s of 49 s under the profiler).
-- `Repo.discovered_contexts()` (about line 306) walks every ref's file list on each call; `context_of` calls it per dependency (251 calls, 6.9 s).
+- `Repo._working_ticket_files(task_id)` (`src/chitty/store.py`, about line 470) walks every context directory, active and archive, through `_files` and `scan`, and keeps the files whose name parses to `task_id`. It is called once per ticket id looked up, across refs so one `chitty list` makes 14,802 `scan` calls (2026-11-23 count); under the profiler `_working_ticket_files` took 156 s of 166 s and `ids.parse_filename` 42 s.
 - `Repo._ref_ticket_files(ref, task_id)` walks the whole file list of `ref` per ticket (3.7 s).
 
 Change, all in `Repo` in `src/chitty/store.py`; caches are per `Repo` object and cleared in `Repo._invalidate`, like the existing `_ticket_ids` and `_task_locations`:
@@ -27,7 +26,7 @@ Behaviour is unchanged; only the number of directory scans changes. One accepted
 
 Tests, in `tests/test_list_performance.py` next to the existing constant-Git-calls tests, which they mirror.
 
-Scan-count fixture, built by a helper taking the active ticket count `n`: a Git repository (`git init -b main`, an identity, as `_list_git_calls` does) whose `chitty.toml` is `_list_git_calls`'s plus a second context `[contexts.backlog]` with `prefix = "BACK"`; `n` active tickets `TASK-1` to `TASK-n` in `chitty/tasks/`, one archived `TASK-1000` in `chitty/tasks/archive/`, one `BACK-1` in `chitty/backlog/`; all committed on `main`. Then `git worktree add -b task-2 <tmp>/wt-task-2 main`, change `TASK-2`'s title there to `Branch copy` and commit it on `task-2`. So 4 context directories exist (`tasks`, `tasks/archive`, `backlog`, `backlog/archive`, the last empty).
+Scan-count fixture, built by a helper taking the active ticket count `n`: a Git repository (`git init -b main`, an identity, as `_list_git_calls` does) whose `chitty.toml` is `_list_git_calls`'s plus a second context `[contexts.backlog]` with `prefix = "BACK"`; `n` active tickets `TASK-1` to `TASK-n` in `chitty/tasks/`, one archived `TASK-1000` in `chitty/tasks/archive/`, one `BACK-1` in `chitty/backlog/`; all committed on `main`. Then `git worktree add -b task-2 <tmp>/wt-task-2 main`, change `TASK-2`'s title there to `Branch copy` and commit it on `task-2`. So 4 context directories exist (`tasks`, `tasks/archive`, `backlog`, `backlog/archive`). `backlog/archive` does not exist on disk, since Git keeps no empty directory; `scan` is still called for it and returns `[]`, so it counts as one scan. Use the same fixture helper and test file for the run against the committed state before the change and the run after it.
 
 Run each count in a subprocess with `cwd` at the repository, as the existing tests do: a short `python -c` script that replaces `chitty.store.scan` with a counting wrapper of the original, then either calls `chitty.cli.cli(["list"], standalone_mode=False)`, or opens `Repo.open(Path.cwd())` and calls `repo.lookup(task_id)` for every id in `repo.ticket_ids()`; it prints the count (and, for the lookup script, `TASK-2`'s title, `repo.lookup(TASK-2).task.frontmatter.title`). For `n` = 2 and 20, assert the counts are equal, and between 4 and 8 inclusive (one or two scans of each of the 4 directories; `scan` is called per directory, active or archive), and that `TASK-2`'s title is `Branch copy`.
 
@@ -38,7 +37,7 @@ Error and order cases, in-process through `Repo.open(root)`, in a directory that
 - `TASK-3` present in both `chitty/tasks/` and `chitty/tasks/archive/`: `repo.lookup(TASK-3)` raises `TASK-3 is used by more than one file: ` followed by the two absolute paths, active first, joined by `, `.
 - A ref case, in a Git repository with the scan-count fixture plus a committed file `chitty/tasks/not-a-ticket.md` on `task-2` only: `lookup` of `TASK-1` returns the ticket, with its committed title.
 
-Property, same file, with Hypothesis: draw a set of ticket file names (ids from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, slugs from `string.ascii_lowercase`, `min_size=1`), each placed in one of the four directories, duplicates of one id allowed; write them in a non-Git directory with the config above. Duplicate draws with the same path count once; a `BACK-` id may be placed in `tasks/` (`_files` accepts any prefix). For every id from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, `repo.lookup(id)` returns `None` when no file was drawn for it, or else returns the ticket from the one path, or raises the "used by more than one file" message listing that id's paths in the order the reference gives: active before archive, and within a directory sorted by name, with `backlog` before `tasks` (context directories sorted by name, as `_working_ticket_files` walks them today). Use `examples(20)` from `tests/__init__.py` for `max_examples`.
+Property, same file, with Hypothesis: draw a set of ticket file names (ids from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, slugs from `string.ascii_lowercase`, `min_size=1`), each placed in one of the four directories, duplicates of one id allowed; write them in a non-Git directory with the config above. Duplicate draws with the same path count once; a `BACK-` id may be placed in `tasks/` (`_files` accepts any prefix). For every id from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, `repo.lookup(id)` returns `None` when no file was drawn for it, or else returns the ticket from the one path, or raises the "used by more than one file" message listing that id's paths in the order `_working_ticket_files` gives today: context directories in sorted name order, each active then archive (`backlog`, `backlog/archive`, `tasks`, `tasks/archive`), and within a directory sorted by name. Use `examples(20)` from `tests/__init__.py` for `max_examples`.
 
 Out of scope: other commands' speed, and Git calls (already constant in the ticket count).
 
@@ -79,3 +78,4 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T13:46:00Z youthful-quartz-zander: changed notes
 - 2026-11-23T14:30:11Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:31:14Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:31:17Z youthful-quartz-zander: changed description
