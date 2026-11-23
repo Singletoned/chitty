@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: doing
+status: planning
 labels:
   - needs-minor
 parent: TASK-607
@@ -63,6 +63,8 @@ Out of scope: `src/chitty/import_backlog.py` passes the source priority through 
 
 Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priority: ""`, a line break in a name, and `chitty list` with custom names; criteria split by area. Earlier: named the tests that pin the old order and error text; the leading-emoji idea is `TASK-633`.
 
+Planning blocker: the list-display requirement contradicts its prescribed test. `src/chitty/model.py` defines `PRIORITY_GLYPHS["high"]` as `⬆️`; the description explicitly requires `PRIORITY_GLYPHS.get(priority, "")`, which displays that glyph for the hand-written `high` ticket even when `high` is not configured. The specified test instead requires neither the `now` nor the `high` line to contain any built-in glyph. These cannot both pass. Decide whether built-in but unconfigured names retain their glyph, and correct the implementation instruction or test accordingly. The other areas were inspected in the config/model, store/selection, CLI, MCP, existing tests and plan docs; no implementation or regression tests were written, so baseline failures and final verification remain unchecked pending that decision.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -87,3 +89,5 @@ Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priori
 - 2026-11-23T18:44:21Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:44:23Z witty-yellow-vole planning → todo
 - 2026-11-23T19:07:57Z lively-pearl-eel todo → doing
+- 2026-11-23T19:10:32Z lively-pearl-eel: changed owner, notes
+- 2026-11-23T19:10:32Z lively-pearl-eel doing → planning
