@@ -1,6 +1,6 @@
 ---
 title: Add `chitty summary` to show what changed in recent hours
-status: doing
+status: error
 priority: high
 created: 2026-11-22
 ---
@@ -51,6 +51,10 @@ Planner, 2026-11-23: a cold read found nothing serious. Clarified the `TaskId` t
 
 Stub commit 5b4c93a3 adds the requested empty APIs and command; make check passed (1170 tests). Regression tests have not yet been written or run against the stub, and the feature is not implemented. Write the specified tests next, record their assertion failures against this commit, then implement and verify.
 
+Runner error (agent): TASK-557 is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-557`
+
 ## History
 
 - 2026-11-22T09:47:32Z friendly-jade-stoat → backlog
@@ -71,3 +75,5 @@ Stub commit 5b4c93a3 adds the requested empty APIs and command; make check passe
 - 2026-11-23T12:07:37Z sunny-jade-quail todo → doing
 - 2026-11-23T12:12:06Z sunny-jade-quail: wrote the plan
 - 2026-11-23T12:16:44Z sunny-jade-quail: changed notes
+- 2026-11-23T12:17:43Z sunny-jade-quail: changed notes
+- 2026-11-23T12:17:43Z sunny-jade-quail doing → error
