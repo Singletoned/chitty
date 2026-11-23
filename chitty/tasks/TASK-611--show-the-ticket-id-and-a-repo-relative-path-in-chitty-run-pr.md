@@ -32,6 +32,8 @@ Add display_path and use it for check and log progress; add property and integra
 
 Suggestion origin: taidy
 
+Regression: pytest tests/test_run_progress.py -q fails all three tests before the fix, including the exact check line and relative log assertions.
+
 ## History
 
 - 2026-11-23T10:24:04Z witty-russet-gannet → backlog
@@ -53,3 +55,4 @@ Suggestion origin: taidy
 - 2026-11-23T10:37:12Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T11:04:24Z able-coral-marten todo → doing
 - 2026-11-23T11:07:24Z able-coral-marten: wrote the plan
+- 2026-11-23T11:07:48Z able-coral-marten: changed notes
