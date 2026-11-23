@@ -1,6 +1,6 @@
 ---
 title: "Tighten the review guide: nested bullets for the long rules"
-status: review
+status: done
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -20,6 +20,10 @@ Rules for this tightening:
 - Keep the advice general: the guides reach every repository that uses Chitty, in any language.
 - Do not move rules to other files unless this ticket says to.
 - In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
+
+## Notes
+
+Reviewed: `src/chitty/roles/review.md` keeps the dirty-worktree stop, the five causes in order, `--uncheck`, the per-criterion line format and the fail-without-the-change bullet (unchanged). The `design` triggers, including oversized tickets (suggest a split) and repeat `tests` failures, are nested under one lead line. The earlier-notes bullet is two sentences. Each removed sentence in the Summary still has its point in the new text: "every failure gets one note" covers both "all findings in one note" sentences and the design-note verdicts. No acceptance criteria (`untestable`). `make check` passed (1156 tests) on the combined merge, which includes `TASK-641`'s change to the same file.
 
 ## Summary
 
@@ -50,3 +54,5 @@ Verification: `make check`, run by `chitty edit -s review`.
 - 2026-11-23T14:35:42Z plucky-indigo-eel todo → doing
 - 2026-11-23T14:43:47Z plucky-indigo-eel: changed summary
 - 2026-11-23T14:43:47Z plucky-indigo-eel doing → review
+- 2026-11-23T16:04:10Z kind-zinc-newt: changed notes
+- 2026-11-23T16:04:10Z kind-zinc-newt review → done
