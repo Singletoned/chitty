@@ -1,6 +1,6 @@
 ---
 title: Remove guide tests that only check for phrases, and the guide word budgets
-status: review
+status: done
 depends_on:
   - TASK-615
 created: 2026-11-23
@@ -39,8 +39,8 @@ No property: this change only removes tests. What remains is covered by the kept
 
 ## Acceptance Criteria
 
-- [ ] The tests `pytest --collect-only -q tests/` collects on the branch are exactly those it collects on `main`, minus the deleted files and the named tests, with `test_role_and_cli_expose_rebase_instructions` renamed; record both commands and the difference in a note.
-- [ ] `make check` passes.
+- [x] The tests `pytest --collect-only -q tests/` collects on the branch are exactly those it collects on `main`, minus the deleted files and the named tests, with `test_role_and_cli_expose_rebase_instructions` renamed; record both commands and the difference in a note.
+- [x] `make check` passes.
 
 ## Plan
 
@@ -49,6 +49,10 @@ Remove the specified phrase-only tests and budgets, retain behavioral coverage, 
 ## Notes
 
 Collected main with `(cd tmp/main640 && ../../.venv/bin/pytest --collect-only -q tests/)` after `git archive main | tar -x -C tmp/main640`, and the branch with `.venv/bin/pytest --collect-only -q tests/`. Main collected 1202, branch 1148: the 55 removed node IDs are exactly the specified deleted-file and named tests including the old rebase name, and the sole added ID is its renamed help test. A kept property test appears on both sides of the textual diff solely due to ordering. `make check` passed (1148 tests).
+
+Reviewed: removal and retained coverage match the ticket; no new tests are required for this removal-only change.
+1: pass - Archived main into tmp/review640 and ran (cd tmp/review640 && ../../.venv/bin/pytest --collect-only -q tests/) and .venv/bin/pytest --collect-only -q tests/; set comparison printed main 1210, branch 1156, 55 specified removals and the renamed rebase help test as the sole addition. Counts differ from the worker note because main advanced.
+2: pass - make check printed 1156 passed, 599 subtests passed; ruff and pyright passed.
 
 ## Summary
 
@@ -68,3 +72,5 @@ Removed the specified phrase-only guide tests and word budgets, retained behavio
 - 2026-11-23T14:10:30Z friendly-hazel-dormouse: changed notes
 - 2026-11-23T14:10:33Z friendly-hazel-dormouse: changed summary
 - 2026-11-23T14:14:07Z friendly-hazel-dormouse doing → review
+- 2026-11-23T14:19:21Z honest-yellow-marten: changed notes; ticked acceptance criteria
+- 2026-11-23T14:19:21Z honest-yellow-marten review → done
