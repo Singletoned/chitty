@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -20,9 +20,9 @@ Out of scope: detecting other aliases of fd 0 (process substitution, other `/dev
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test in `tests/test_property_text_files.py` (a `RepoTestCase` with one ticket, `Path.cwd` patched as in `test_two_stdin_options`, fd 0 pointed at a temp file as described) draws, for each of the five `chitty edit` file options, one of: absent, `-`, `/dev/stdin`, `/dev/fd/0`, or a regular temp file. When two or more drawn values read stdin, it asserts exit code 2, an error naming every stdin-reading option, and the ticket file's bytes unchanged; otherwise it asserts exit code 0. It fails on `main` for a draw such as `--note-file -` with `--summary-file /dev/stdin`.
+- [ ] A Hypothesis property test in `tests/test_property_text_files.py` (a `RepoTestCase` with one ticket, `Path.cwd` patched as in `test_two_stdin_options`; inside each example, fd 0 is pointed at a temp file with `os.dup2` and restored in `finally`) draws, for each `chitty edit` file option except `--set-notes-file` (which `check_edit` refuses alongside `--note-file`), one of: absent, `-`, `/dev/stdin`, `/dev/fd/0`, or a regular temp file holding `text`. When two or more drawn values read stdin, it asserts exit code 2, an error naming every stdin-reading option, and the ticket file's bytes unchanged; otherwise exit code 0. It fails on `main` for a draw such as `--note-file -` with `--summary-file /dev/stdin`.
 - [ ] `chitty add T --description-file /dev/stdin --note-file -` (fd 0 pointed at a temp file) exits 2, and the set of files under `chitty/tasks/` is unchanged. Example test next to `test_two_stdin_options`; it fails on `main`, where the ticket is created.
-- [ ] A Hypothesis test of `reads_stdin` asserts True for each of the four names and False for any other drawn text, including near misses such as `/dev/stdin/`, `/dev/fd/00` and `-`.
+- [ ] A Hypothesis test of `reads_stdin` asserts True for each of the four names, and False for `st.text()` filtered to exclude them and for each of these near misses: `/dev/stdin/`, `/dev/fd/00`, `/dev/fd/0/`, `-`, `<stdin>x`, the empty string.
 
 ## Notes
 
@@ -39,3 +39,5 @@ Suggestion origin: chitty
 - 2026-11-23T10:32:40Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:32:40Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:32:42Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:33:47Z witty-russet-gannet: changed acceptance criteria
+- 2026-11-23T10:33:47Z witty-russet-gannet cold-read → planning
