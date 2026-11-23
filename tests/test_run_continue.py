@@ -110,6 +110,19 @@ class TestRunContinue(CliTestCase):
             str(self.json("show", ticket)["notes"]),
         )
 
+    def test_stalled_note_contains_only_last_session_output(self):
+        ticket = self.ticket()
+        self.write_fake('print("STALL_MARKER" if continued else "OLD_MARKER")')
+        self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(self.json("show", ticket)["status"], "error")
+        notes = str(self.json("show", ticket)["notes"])
+        note = notes[notes.rindex("Runner error (agent): ") :]
+        self.assertIn("continuations with no new work committed", note.splitlines()[0])
+        output = note.split("Error output:", 1)[1]
+        self.assertIn("last session: exit 0", output)
+        self.assertIn("STALL_MARKER", output)
+        self.assertNotIn("OLD_MARKER", output)
+
     def test_productive_sessions_continue(self):
         ticket = self.ticket()
         self.write_fake(f"""
@@ -165,6 +178,8 @@ else:
         result = self.run_cli("run", "--ticket", ticket)
         self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 1)
+        notes = str(self.json("show", ticket)["notes"])
+        self.assertIn("last session: exit 0 after", notes[notes.rindex("Runner error (agent): ") :])
         self.assertIn(
             "after 0 continuations with no new work committed",
             str(self.json("show", ticket)["notes"]),

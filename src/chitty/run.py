@@ -61,6 +61,7 @@ QUICK_LANDING_ATTEMPTS = 10
 RUN_LOOP_PAUSE_SECONDS = 60
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
+AGENT_OUTPUT_TAIL_LINES = 40
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
 
 
@@ -748,6 +749,12 @@ def continuation_step(progress: Sequence[bool], cap: int) -> Literal["continue",
     return "stop" if len(progress) > cap and not any(progress[-(cap + 1):]) else "continue"
 
 
+def stalled_agent_message(first_line: str, seconds: int, returncode: int, output: str) -> str:
+    """Describe the last session of a stalled agent."""
+    tail = output.splitlines()[-AGENT_OUTPUT_TAIL_LINES:] if output else ["(no output)"]
+    return "\n".join([first_line, f"last session: exit {returncode} after {seconds}s", *tail])
+
+
 def _agent_sessions(
     main_repo: Repo,
     action: NextAction,
@@ -768,7 +775,7 @@ def _agent_sessions(
     while True:
         continuing = continuations > 0
         before = git.ref_commit(worktree, "HEAD")
-        _run_session(
+        completed, seconds = _run_session(
             main_repo,
             action,
             command,
@@ -795,10 +802,12 @@ def _agent_sessions(
                 if made_progress:
                     break
                 idle += 1
-            raise ChittyError(
+            first_line = (
                 f"{action.id} is still `{new_status}` after {idle} continuations with no new work committed; "
                 "only committed changes are visible to `chitty run`"
             )
+            output = completed.stdout.decode(errors="replace") if completed.stdout else ""
+            raise ChittyError(stalled_agent_message(first_line, seconds, completed.returncode, output))
         continuations += 1
         command = _agent_command(
             main_repo, action, agent, worktree=worktree, mode=action.mode, continuation=True
@@ -815,12 +824,13 @@ def _run_session(
     continuing: bool,
     mode: str,
     log: BinaryIO,
-) -> None:
+) -> tuple[subprocess.CompletedProcess[bytes], int]:
     """Run one agent session; raise unless it exits 0 within `agent_timeout`."""
     session = [*command, *arguments, *_model_arguments(repo, mode, command, arguments)]
     if continuing:
         session.append(CONTINUE_ARGUMENT)
     try:
+        started = time.monotonic()
         completed = _run_agent(
             session,
             cwd=worktree,
@@ -832,6 +842,7 @@ def _run_session(
         raise AgentSessionFailed(f"agent command not found: {command[0]}") from None
     except KeyboardInterrupt:
         raise RunInterrupted("agent") from None
+    seconds = round(time.monotonic() - started)
     timed_out = completed.stderr == b"timed out"
     outcome = agent_exit(completed.returncode, timed_out)
     if outcome == "interrupted":
@@ -842,6 +853,7 @@ def _run_session(
     if outcome == "failed":
         output = completed.stdout.decode(errors="replace") if completed.stdout else "(no output)"
         raise AgentSessionFailed(f"agent exited with status {completed.returncode}:\n{output}")
+    return completed, seconds
 
 
 def continuation_prompt(mode: Literal["work", "review"], ticket_id: str) -> str:
