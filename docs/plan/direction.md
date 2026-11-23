@@ -21,3 +21,13 @@ Stated by the human on 2026-11-16:
 - Containers also replace guide rules about where agents may read and write
   (for example "keep scratch files inside the worktree"): the sandbox
   enforces it, and the rule can be removed from the guides.
+
+Stated by the human on 2026-11-23:
+
+- Chitty avoids refusing to do things, because refusals make it annoying to
+  use. Warn instead, and warn generously; make a rule stricter only once a
+  real need shows. This supersedes earlier "refuse the write" decisions, such
+  as the write guard planned in `TASK-385` (see `TASK-602`).
+- Rules are the same on every branch, with at most small exceptions. If a
+  rule does not work on some branch, fix the rule rather than add a special
+  case.
