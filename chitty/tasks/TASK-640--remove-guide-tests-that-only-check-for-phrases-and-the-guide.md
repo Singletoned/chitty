@@ -1,6 +1,6 @@
 ---
 title: Remove guide tests that only check for phrases, and the guide word budgets
-status: doing
+status: review
 depends_on:
   - TASK-615
 created: 2026-11-23
@@ -67,3 +67,4 @@ Removed the specified phrase-only guide tests and word budgets, retained behavio
 - 2026-11-23T14:07:10Z friendly-hazel-dormouse: wrote the plan
 - 2026-11-23T14:10:30Z friendly-hazel-dormouse: changed notes
 - 2026-11-23T14:10:33Z friendly-hazel-dormouse: changed summary
+- 2026-11-23T14:14:07Z friendly-hazel-dormouse doing → review
