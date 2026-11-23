@@ -31,7 +31,7 @@ Out of scope: leaving the ticket in `doing` instead of `error` when the cap is h
 
 ## Plan
 
-Compare committed trees around each session, count consecutive idle sessions, and add property and integration regressions before implementing.
+Strengthen both criterion 3 assertions to check the complete error note, verify against the original implementation, and run the project checks.
 
 ## Notes
 
@@ -79,3 +79,4 @@ Implemented two-commit progress detection and consecutive idle continuation limi
 - 2026-11-23T11:34:09Z friendly-teal-crane doing → review
 - 2026-11-23T11:40:19Z eager-violet-dormouse: changed acceptance criteria, notes
 - 2026-11-23T11:40:19Z eager-violet-dormouse review → doing
+- 2026-11-23T11:46:19Z honest-ebony-gannet: wrote the plan
