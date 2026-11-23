@@ -1,6 +1,6 @@
 ---
 title: Refuse a ticket write only when a newer, different copy exists elsewhere
-status: cold-read
+status: planning
 depends_on:
   - TASK-378
   - TASK-382
@@ -102,3 +102,4 @@ Planner, 2026-11-23: replanned as part (2). The checkout kinds are the main chec
 - 2026-11-23T14:40:32Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T14:40:40Z youthful-quartz-zander: changed description, acceptance criteria, notes
 - 2026-11-23T14:40:53Z youthful-quartz-zander planning → cold-read
+- 2026-11-23T14:42:40Z youthful-quartz-zander cold-read → planning
