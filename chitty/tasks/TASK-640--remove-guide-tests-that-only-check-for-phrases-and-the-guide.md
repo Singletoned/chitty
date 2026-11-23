@@ -1,7 +1,6 @@
 ---
 title: Remove guide tests that only check for phrases, and the guide word budgets
-status: cold-read
-owner: friendly-zinc-dormouse
+status: planning
 depends_on:
   - TASK-615
 created: 2026-11-23
@@ -16,7 +15,7 @@ Rule: remove a test whose assertions are only phrase checks (`assertIn`, `assert
 Delete these files under `tests/`, all `test_guide_*.py`:
 `backticks`, `cold_read_mutants`, `cold_read_notes`, `cold_read_reports`, `cold_read_sufficiency`, `plan`, `plan_convergence`, `plan_dependency_reread`, `planner_evidence`, `read_only_cold_read`, `repair_missing_branch`, `return_scope`, `return_to_planning`, `review_cleanliness`, `review_completeness`, `setup_validation`, `work_commits`, `worktree_boundary`, `word_budget`.
 
-These lists are the complete set: if you find another test that seems to match the rule, note it instead of removing it.
+The comparison of CLI output with `guide()` in `tests/test_guide_backticks.py` is also made by `test_prints_role_guides_without_a_repository` in `tests/test_cli.py`, so deleting the file loses nothing. These lists are the complete set: if you find another test that seems to match the rule, note it instead of removing it.
 
 In files that are kept, remove only these tests:
 - `tests/test_guide_cold_read.py`: `test_prints_the_reader_procedure`, `test_plan_guide_points_at_the_reader_guide`.
@@ -49,3 +48,5 @@ No property: this change only removes tests. What remains is covered by the kept
 - 2026-11-23T12:37:37Z friendly-zinc-dormouse: changed owner
 - 2026-11-23T12:37:37Z friendly-zinc-dormouse planning → cold-read
 - 2026-11-23T12:41:31Z friendly-zinc-dormouse: changed description, acceptance criteria
+- 2026-11-23T12:44:21Z friendly-zinc-dormouse: changed owner, description
+- 2026-11-23T12:44:21Z friendly-zinc-dormouse cold-read → planning
