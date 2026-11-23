@@ -52,6 +52,10 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 - [ ] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
 - [ ] `make check` passes
 
+## Plan
+
+Build regression tests for scan counts, ordering, errors, refs and invalidation; record baseline, index working and ref files per Repo, then compare output and run checks.
+
 ## Notes
 
 Acceptance criterion 2 requires running both executables with cwd in the main checkout, reading its ticket files and refs and writing comparison evidence. The session instruction restricts all reads and changes to this ticket worktree, so that verification is not authorized. Please decide whether to authorize the main-checkout benchmark or revise the criterion to use an isolated fixture in this worktree. Until then the required byte-identical outputs and timing runs cannot be checked.
@@ -101,3 +105,4 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T14:38:19Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T14:38:22Z youthful-quartz-zander planning → todo
 - 2026-11-23T14:39:51Z jolly-white-urchin todo → doing
+- 2026-11-23T14:44:11Z jolly-white-urchin: wrote the plan
