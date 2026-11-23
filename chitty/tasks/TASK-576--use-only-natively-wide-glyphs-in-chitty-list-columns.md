@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: review
+status: done
 labels:
   - needs-minor
 created: 2026-11-22
@@ -75,10 +75,10 @@ stay aligned.
 
 ## Acceptance Criteria
 
-- [ ] No glyph in the `chitty list` status, priority or skip columns is a narrow character or uses U+FE0F; shown by `tests/test_list_glyphs.py`, which fails before the change.
-- [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing, and `grep -n "\"👤 human" src/chitty/selection.py` prints nothing.
-- [ ] `make check` passes.
-- [ ] A row with no priority and a row with `⏫` start their titles at the same column, measured with the width rule in the Description (East Asian Width `W` or `F` counts 2, U+FE0F and combining characters 0, anything else 1), not `_columns`; shown by the alignment test, which fails before the change (titles at columns 21 and 22 on `main`).
+- [x] No glyph in the `chitty list` status, priority or skip columns is a narrow character or uses U+FE0F; shown by `tests/test_list_glyphs.py`, which fails before the change.
+- [x] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing, and `grep -n "\"👤 human" src/chitty/selection.py` prints nothing.
+- [x] `make check` passes.
+- [x] A row with no priority and a row with `⏫` start their titles at the same column, measured with the width rule in the Description (East Asian Width `W` or `F` counts 2, U+FE0F and combining characters 0, anything else 1), not `_columns`; shown by the alignment test, which fails before the change (titles at columns 21 and 22 on `main`).
 
 ## Plan
 
@@ -101,6 +101,12 @@ Review failed (work): The human skip glyph remains inline despite the explicit r
 2: fail - The old-glyph grep printed nothing, but `grep -n '"👤 human' src/chitty/selection.py` printed line 89. README and plan documents contain the new glyphs.
 3: pass - `make check` printed 1167 passed, 620 subtests passed.
 4: pass - The alignment test passed in `make check`; with the main-branch model restored in a scratch copy, `python -m unittest tests.test_list_glyphs -v` failed with `21 != 22`, resolving the earlier review's criterion 4 finding.
+
+Reviewed: The earlier inline human glyph finding is resolved by the shared constant.
+1: pass - make check passed; running tests.test_list_glyphs with main's model in a scratch source copy failed on all three old priority glyphs (length 2 != 1).
+2: pass - both specified greps printed nothing; README and plan documents show the replacement glyphs.
+3: pass - make check printed 1167 passed, 620 subtests passed.
+4: pass - make check passed the alignment test; the same test with main's model in a scratch source copy failed with 21 != 22.
 
 ## Summary
 
@@ -136,3 +142,5 @@ Centralized the human skip glyph via HUMAN_GLYPH. `make check` passes (1167 test
 - 2026-11-23T23:43:13Z vivid-coral-urchin review → doing
 - 2026-11-23T23:50:39Z friendly-fawn-otter: changed summary
 - 2026-11-23T23:50:39Z friendly-fawn-otter doing → review
+- 2026-11-23T23:56:27Z tidy-fawn-puffin: changed notes; ticked acceptance criteria
+- 2026-11-23T23:56:27Z tidy-fawn-puffin review → done
