@@ -1,6 +1,6 @@
 ---
 title: Find active tickets whose `Task:` commits landed work while they are not done
-status: planning
+status: cold-read
 depends_on:
   - TASK-358
 created: 2026-11-22
@@ -26,7 +26,7 @@ Tests in a new `tests/test_unfinished_landed.py`, Hypothesis (the repository's p
 
 ## Notes
 
-Planner, 2026-11-22: cold-read once, nothing serious; two generator clarifications applied. Kept in `planning` because it uses `TrailerCommit` from `TASK-358`, not yet built. When `TASK-358` is `done`, compare this text with what landed, cold-read again, then move to `todo`.
+Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; cold-read against what landed.
 
 ## History
 
@@ -39,3 +39,5 @@ Planner, 2026-11-22: cold-read once, nothing serious; two generator clarificatio
 - 2026-11-23T19:28:34Z witty-yellow-vole planning → cold-read
 - 2026-11-23T19:37:43Z witty-yellow-vole: changed description
 - 2026-11-23T19:37:43Z witty-yellow-vole cold-read → planning
+- 2026-11-23T19:38:57Z witty-yellow-vole: replaced notes
+- 2026-11-23T19:38:57Z witty-yellow-vole planning → cold-read
