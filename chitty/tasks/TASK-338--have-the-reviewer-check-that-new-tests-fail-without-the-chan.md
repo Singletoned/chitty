@@ -1,6 +1,6 @@
 ---
 title: Have the reviewer check that new tests fail without the change
-status: review
+status: done
 labels:
   - untestable
 owner: vivid-ginger-heron
@@ -32,6 +32,14 @@ Question for the owner (2026-11-22, planner). Two design decisions block plannin
 
 Is this the shape you want (whole-check failure at the merge base, one setting), or do you want per-test granularity (which needs per-language support)?
 
+Reviewed: the ticket has no numbered criteria, so each line below is one requirement from the Description.
+1: pass - `src/chitty/roles/review.md:59-64` adds a bullet: for each test a criterion needs, the reviewer shows it fails without the change themselves, with the merge base plus the branch's new or changed test files in a temporary worktree of their own, removed afterwards.
+2: pass - the same bullet says to record the command and the failure in the criterion's line, and that a worker's note is not enough.
+3: pass - the same bullet says a test that passes without the change fails the criterion with cause `tests`.
+4: pass - the temporary worktree is named as the one exception to the worktree rule at `review.md:10-11`. The wording is general: it names no language, test runner or path.
+5: pass - `make check` in the worktree: `1142 passed, 791 subtests passed`, including `tests/test_guide_word_budget.py`. The worker reports 839 of 900 words.
+Untestable ticket: no test criterion, so the fail-without-change check does not apply. Nit, not a defect: `review.md:71` ("Do not merge or remove branches or worktrees") sits next to the new "remove that worktree". "Of your own" makes the meaning clear enough. The 2026-11-22 owner question in Notes is stale, as the Summary says.
+
 ## Summary
 
 src/chitty/roles/review.md now tells the reviewer to show, themselves, that each test a criterion needs fails without the change (merge base plus the branch's test files, in a temporary worktree of their own, removed afterwards), to record the command and failure in the criterion line, not to accept a worker's note, and to fail the criterion with cause tests when the test passes. The temporary worktree is named as the one exception to the stay-in-this-worktree rule. 839 of 900 words; make check passes (1142 tests). The 2026-11-22 owner question in Notes predates the rescoped description and no longer applies.
@@ -51,3 +59,5 @@ src/chitty/roles/review.md now tells the reviewer to show, themselves, that each
 - 2026-11-23T08:28:22Z vivid-ginger-heron: wrote the plan
 - 2026-11-23T08:31:40Z vivid-ginger-heron: changed summary
 - 2026-11-23T08:31:40Z vivid-ginger-heron doing → review
+- 2026-11-23T10:19:13Z youthful-bronze-puffin: changed notes
+- 2026-11-23T10:19:13Z youthful-bronze-puffin review → done
