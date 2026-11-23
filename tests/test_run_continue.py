@@ -105,7 +105,8 @@ class TestRunContinue(CliTestCase):
         self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 6)
         self.assertIn(
-            "after 5 continuations with no new work committed",
+            f"{ticket} is still `doing` after 5 continuations with no new work "
+            "committed; only committed changes are visible to `chitty run`",
             str(self.json("show", ticket)["notes"]),
         )
 
@@ -131,7 +132,8 @@ else:
         self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 6)
         self.assertIn(
-            "after 5 continuations with no new work committed",
+            f"{ticket} is still `doing` after 5 continuations with no new work "
+            "committed; only committed changes are visible to `chitty run`",
             str(self.json("show", ticket)["notes"]),
         )
 
