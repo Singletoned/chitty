@@ -1,6 +1,6 @@
 ---
 title: Show the last session's exit, duration and output when the runner stops an agent that made no progress
-status: doing
+status: review
 depends_on:
   - TASK-617
 created: 2026-11-23
@@ -75,3 +75,4 @@ Captured the latest session exit, duration and output in stalled runner errors. 
 - 2026-11-23T13:57:03Z kind-hazel-crane: wrote the plan
 - 2026-11-23T13:57:28Z kind-hazel-crane: changed notes
 - 2026-11-23T14:00:58Z kind-hazel-crane: changed summary
+- 2026-11-23T14:02:49Z kind-hazel-crane doing → review
