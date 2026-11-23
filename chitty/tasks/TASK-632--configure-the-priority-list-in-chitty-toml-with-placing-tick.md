@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: doing
+status: planning
 labels:
   - needs-minor
 parent: TASK-607
@@ -60,6 +60,8 @@ Planner, 2026-11-23: a cold read found nothing serious. Named the existing tests
 
 Planner, 2026-11-23: the person proposed leading emoji in `priorities` entries (default `["⬆️high", "⏺️medium", "", "⬇️low"]`). That is TASK-633, which builds on this ticket; nothing changes here.
 
+Planning blocker: the required regression coverage does not specify fixtures, actions and assertions for several stated behaviours. `src/chitty/model.py` currently restricts priority to a literal, and the ticket requires hand-written `priority: ""` to be a parse error reported by `check` and refused by other commands, but describes no test for that behaviour. It also requires rejecting names with line breaks, but the config cases cover only surrounding whitespace. `src/chitty/cli.py` indexes `PRIORITY_GLYPHS` directly, but the specified custom-priority tests do not exercise `list` display or establish that an unknown name does not crash it. Please specify regression fixtures, commands and assertions for these requirements, including which other command should refuse invalid frontmatter. I inspected the remaining named implementation and test locations; the listed ordering, writes, check and MCP cases have concrete test descriptions. I have not implemented or run the proposed tests, so their failures against main and the full check remain unverified.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -69,3 +71,5 @@ Planner, 2026-11-23: the person proposed leading emoji in `priorities` entries (
 - 2026-11-23T12:38:52Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:55:16Z witty-russet-gannet: changed notes
 - 2026-11-23T13:09:00Z calm-teal-yellowhammer todo → doing
+- 2026-11-23T13:11:32Z calm-teal-yellowhammer: changed owner, notes
+- 2026-11-23T13:11:32Z calm-teal-yellowhammer doing → planning
