@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: planning
+status: cold-read
 labels:
   - needs-minor
 priority: high
@@ -83,3 +83,4 @@ Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context r
 - 2026-11-23T18:39:54Z witty-yellow-vole: changed description
 - 2026-11-23T18:39:54Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:40:13Z witty-yellow-vole: changed acceptance criteria; wrote the plan
+- 2026-11-23T18:40:17Z witty-yellow-vole planning → cold-read
