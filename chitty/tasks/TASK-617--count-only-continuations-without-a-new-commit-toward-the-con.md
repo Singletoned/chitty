@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: planning
+status: cold-read
 created: 2026-11-23
 ---
 
@@ -12,7 +12,7 @@ Change:
 
 - A session made progress when it committed a change outside the ticket directories. Record HEAD (`git.ref_commit(worktree, "HEAD")`) before and after each session, and pass the paths changed between them (`git.changed_paths(worktree, before, after)`) to the existing `has_work_beyond_tickets` (`run.py:109`) with the configured ticket directories. A session that only adds notes (each `chitty` write autocommits) or makes an empty commit is not progress, so an idle agent that keeps noting still reaches the cap. If HEAD is unborn or unchanged, the session made no progress.
 - Decide whether to continue in a pure function in `run.py`, `continuation_step(progress: Sequence[bool], cap: int) -> Literal["continue", "stop"]`, with one entry per session so far (never empty): stop only when the last `cap + 1` entries are all `False`. Progress resets the count. The status check stays as today: any status change ends the loop first. This is shared by work and review sessions (`_agent_sessions` runs for every mode).
-- Reword the stop error to `<ID> is still `<status>` after <N> continuations with no new commit; only committed changes are visible to `chitty run``.
+- Reword the stop error to `<ID> is still `<status>` after <N> continuations with no new work committed; only committed changes are visible to `chitty run``.
 - Keep the `_accepts_prompt` case (an agent that cannot be continued) stopping after its first session, with the new wording (`after 0 continuations`).
 
 Existing test: `test_unchanged_ticket_is_continued_five_times_then_fails` (`tests/test_run_continue.py:101`) uses a fake agent that commits with `--allow-empty` each session; that is not progress, so the test must keep passing unchanged apart from the message.
@@ -43,3 +43,5 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 - 2026-11-23T10:33:33Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:35:50Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:35:50Z witty-russet-gannet cold-read → planning
+- 2026-11-23T10:35:52Z witty-russet-gannet: changed description
+- 2026-11-23T10:35:52Z witty-russet-gannet planning → cold-read
