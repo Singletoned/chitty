@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: cold-read
+status: planning
 labels:
   - bug
 priority: medium
@@ -21,7 +21,7 @@ Decisions:
 - Make the parser accept these characters, rather than refusing them in the criterion text. In `parse`, split lines only at `\n`, keeping the line endings, and leave the rest of `parse` unchanged. Other sections already round-trip byte for byte, because `render` joins the lines back together.
 - In `_criterion_text`, strip the text first, then refuse it only if the stripped text still contains `\n` or `\r` (`parse` refuses any `\r` in a file, so a stored `\r` would make the ticket unreadable). The message stays `acceptance criterion must be a single line`. Update the `with_criteria` docstring, which says replacement text must contain no line breaks even at the ends. As a result, `a\u2028b` and `a\x1db` are stored as given, and `a\n` and `a\u2028` are stored as `a`, because `str.strip` removes surrounding whitespace, and Python counts these characters as whitespace.
 - Decided 2026-11-23, following the person's standing rule (make tools robust to unusual input, such as a criterion that looks like a checkbox): text that starts with `[x]` or `[ ]` is stored as text, as it is today. Nothing in this ticket refuses it. That reverses the checkbox rejection in this ticket's earlier version.
-- Out of scope: the History parsing in `transitions` and `timed_transitions`, which uses `str.splitlines` on History text that Chitty writes itself; frontmatter (YAML); and `src/chitty/check.py`, which already splits on `\n`. A frontmatter value holding one of these characters is also out of scope, and no test covers it.
+- Out of scope: the History parsing in `transitions` and `timed_transitions`, which uses `str.splitlines` on History text that Chitty writes itself; frontmatter (YAML); and `src/chitty/check.py`, which already splits on `\n`. A frontmatter value holding one of these characters is still refused, though its error may change from the `key: value` message to `frontmatter is not valid YAML`; no test pins it.
 
 Tests go in a new file, `tests/test_criteria_line_breaks.py`:
 
@@ -95,3 +95,5 @@ Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterio
 - 2026-11-23T12:38:43Z plucky-jade-dormouse doing → planning
 - 2026-11-23T23:05:38Z mellow-amber-toad: changed acceptance criteria
 - 2026-11-23T23:05:38Z mellow-amber-toad planning → cold-read
+- 2026-11-23T23:07:50Z mellow-amber-toad: changed description
+- 2026-11-23T23:07:50Z mellow-amber-toad cold-read → planning
