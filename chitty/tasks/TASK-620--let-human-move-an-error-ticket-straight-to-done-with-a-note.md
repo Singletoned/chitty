@@ -1,6 +1,6 @@
 ---
 title: Let `--human` move an `error` ticket straight to `done`, with a note
-status: todo
+status: doing
 created: 2026-11-23
 ---
 
@@ -43,3 +43,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:36:58Z witty-russet-gannet: changed acceptance criteria
 - 2026-11-23T10:36:58Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:37:00Z witty-russet-gannet planning → todo
+- 2026-11-23T11:52:50Z jolly-teal-stoat todo → doing
