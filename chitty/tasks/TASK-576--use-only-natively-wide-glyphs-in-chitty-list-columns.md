@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: planning
+status: cold-read
 labels:
   - needs-minor
 created: 2026-11-22
@@ -40,7 +40,7 @@ inline uses include `tests/test_property_next.py` lines 140, 152, 161 and
 
 Every glyph in a skip string in `src/chitty/selection.py` must come from a
 module constant (no inline glyph literals), so the test below sees them all:
-lift the human, untestable and running glyphs to constants, and make line
+lift the human glyph (both returns, including `👤 human` for human context or owner), the untestable and the running glyphs to constants, and make line
 102 use `BROKEN_DEPENDENCY_GLYPH`. `store.py` already imports from
 `chitty.selection`, so move the constant to `selection.py` and import it in
 `store.py` and `cli.py`. The grep criterion is what catches an inline glyph
@@ -59,7 +59,14 @@ it fails.
 
 Also add, in the same file, a `CliTestCase` test listing two `todo` tickets,
 one with `priority: high` and one with no priority: the title starts at the
-same `_columns` offset on both lines. Existing expected strings in
+same column on both lines, measured as the failing terminals draw text. Do
+not measure with `_columns`, which already counts `⬆️` as two columns and so
+passes before the change. The test defines its own width function:
+`unicodedata.east_asian_width` `W` or `F` counts 2, U+FE0F and combining
+characters count 0, anything else counts 1. Under it the old `high` glyph is
+one column narrower than its padding, so the titles differ by one column
+before the change and match after it. Run it before the change and record
+that it fails. Existing expected strings in
 `tests/test_cli.py` (around lines 1199-1215) and `tests/test_run_lock.py`
 (around line 143) change padding with the new glyphs; update them so columns
 stay aligned.
@@ -69,7 +76,7 @@ stay aligned.
 - [ ] No glyph in the `chitty list` status, priority or skip columns is a narrow character or uses U+FE0F; shown by `tests/test_list_glyphs.py`, which fails before the change.
 - [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing.
 - [ ] `make check` passes.
-- [ ] A row with no priority and a row with `⏫` start their titles at the same column; shown by the alignment test.
+- [ ] A row with no priority and a row with `⏫` start their titles at the same column under the test's own terminal width function, not `_columns`; shown by the alignment test, which fails before the change
 
 ## Plan
 
@@ -106,3 +113,5 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-22T15:23:05Z golden-zinc-eel doing → review
 - 2026-11-22T15:31:22Z upbeat-silver-marten: changed owner, acceptance criteria, notes
 - 2026-11-22T15:31:22Z upbeat-silver-marten review → planning
+- 2026-11-23T23:06:32Z mellow-amber-toad: changed description, acceptance criteria
+- 2026-11-23T23:06:32Z mellow-amber-toad planning → cold-read
