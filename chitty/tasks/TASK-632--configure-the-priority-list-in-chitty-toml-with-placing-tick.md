@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: todo
+status: doing
 labels:
   - needs-minor
 parent: TASK-607
@@ -68,3 +68,4 @@ Planner, 2026-11-23: the person proposed leading emoji in `priorities` entries (
 - 2026-11-23T12:38:52Z witty-russet-gannet: changed description, notes
 - 2026-11-23T12:38:52Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:55:16Z witty-russet-gannet: changed notes
+- 2026-11-23T13:09:00Z calm-teal-yellowhammer todo → doing
