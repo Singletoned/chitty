@@ -41,7 +41,7 @@ Tests, in a new `tests/test_questions_section.py`:
 - Refusals: `- [ ]` with no text, a second indented answer paragraph, an indented `- x` under an item, and an unindented non-item line each raise `TaskError` with the exact message given under Code.
 - Unknown section: a ticket with a `## Questionz` heading still raises the unknown-section error, and its list of allowed names now includes `Questions` (so it fails before the change).
 - Formatters: in `tests/test_formatters.py`, give `sample()` the example section (through `with_section`), so the prettier and mdformat no-op tests cover it.
-- Renumbering, in `tests/test_questions_section.py` (not next to the other renumbering tests, so all of this ticket's tests are in one file): `parse` a minimal valid ticket text, `"---\ntitle: T\nstatus: todo\ncreated: 2026-11-23\n---\n\n## Description\n\nD.\n\n## Acceptance Criteria\n\n- [ ] A\n"` (which round-trips on `main`) followed by `"\n## Questions\n\n"` and the body, whose Questions section is `- [ ] Does TASK-7 block TASK-70?` then a blank line then `  Yes, see TASK-7.`; call `chitty.renumbering.rewrite_task(task, {TaskId("TASK", 7): TaskId("TASK", 12)})`. Assert the result's `questions` is `(Question(False, "Does TASK-12 block TASK-70?", "Yes, see TASK-12."),)` (so `TASK-70` is untouched) and its `section(QUESTIONS)` is the original body with both `TASK-7` replaced by `TASK-12`. Before the change it fails because `parse` refuses `## Questions`.
+- Renumbering, in `tests/test_questions_section.py` (not next to the other renumbering tests, so all of this ticket's tests are in one file): `parse` a minimal valid ticket text, `"---\ntitle: T\nstatus: todo\ncreated: 2026-11-23\n---\n\n## Description\n\nD.\n\n## Acceptance Criteria\n\n- [ ] A\n"` (which round-trips on `main`) followed by `"\n## Questions\n\n"` and the body, whose Questions section is `- [ ] Does TASK-7 block TASK-70?` then a blank line then `  Yes, see TASK-7.`; call `chitty.renumbering.rewrite_task(task, {TaskId("TASK", 7): TaskId("TASK", 12)})`. Assert the result's `questions` is `(Question(False, "Does TASK-12 block TASK-70?", "Yes, see TASK-12."),)` (so `TASK-70` is untouched) and its `section(QUESTIONS)` is `"- [ ] Does TASK-12 block TASK-70?\n\n  Yes, see TASK-12."`. Before the change it fails because `parse` refuses `## Questions`.
 
 Out of scope: `as_dict` and the property test (TASK-649), `chitty show` (TASK-650), CLI and MCP options (TASK-630), list markers (TASK-631), and Markdown warnings in `chitty check` for question text.
 
@@ -66,6 +66,8 @@ I have not completed TASK-629 or changed its status. No implementation files wer
 ```
 
 Split 2026-11-23 at the person's request, after two worker runs stalled without code: `as_dict` and the property test moved to TASK-649, `chitty show` to TASK-650. This ticket keeps the format, the parser in `model.py`, and the parse, refusal, formatter and renumbering tests.
+
+Cold read after the split (2026-11-23): nothing serious. Added the tick/answer independence examples, an exact two-line answer fixture with a tab indent and a whitespace-only blank, the literal renumbered body, and a note that `import_backlog.py` and `cli.py` loop over `SECTION_ORDER`.
 
 ## History
 
@@ -100,3 +102,4 @@ Split 2026-11-23 at the person's request, after two worker runs stalled without 
 - 2026-11-23T19:43:50Z friendly-coral-badger planning → cold-read
 - 2026-11-23T19:45:36Z friendly-coral-badger: changed description
 - 2026-11-23T19:45:36Z friendly-coral-badger cold-read → planning
+- 2026-11-23T19:45:48Z friendly-coral-badger: changed description, notes
