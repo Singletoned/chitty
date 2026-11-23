@@ -29,7 +29,7 @@ Tests, in a new `tests/test_priority_glyphs.py`:
 
 - `split_priority`: each example above, and `⬆️` is refused through config validation with the message above.
 - Property, with Hypothesis and `examples(50)`: for a glyph that is `""` or a concatenation of one to three values from `["⬆️", "🔥", "👍🏽", "🏳️‍🌈", "⏺️"]`, a name of one or more characters from `string.ascii_lowercase + "^`-"`, and a separator of `""` or one space (only when the glyph is non-empty), `split_priority(glyph + space + name) == (glyph, name)`.
-- `chitty list`: in a `RepoTestCase` repository whose config has the `priorities = ["🔥now", "⬆️soon", "", "later"]` instead, tickets with `-p now`, `-p soon`, `-p later`, no priority, and one written by hand with `priority: high` (unconfigured) are listed. The `now` line contains `🔥`, the `soon` line contains `⬆️`, and the other three lines contain no glyph in the priority column. With the default config, the existing list tests in `tests/test_cli.py` pass unchanged, which shows the default reproduces today's glyphs.
+- `chitty list`: in a `RepoTestCase` repository whose config is `CONFIG` with `priorities = ["🔥now", "⬆️soon", "", "later"]` inserted before its first table line, tickets with `-p now`, `-p soon`, `-p later`, no priority, and one written by hand with `priority: high` (unconfigured) are listed. The `now` line contains `🔥`, the `soon` line contains `⬆️`, and the other three lines contain no glyph in the priority column. With the default config, the existing list tests in `tests/test_cli.py` pass unchanged, which shows the default reproduces today's glyphs.
 
 TASK-632 must be done first. Run the tests against `main` after TASK-632 has landed, and record each failure's cause in a note: it must be an assertion about behaviour, not an `ImportError` or `AttributeError`, so add an empty stub of `split_priority` first if needed.
 
@@ -53,3 +53,4 @@ Planner, 2026-11-23, after a cold read: glyphs are non-ASCII only (`^` and `` ` 
 - 2026-11-23T12:54:58Z witty-russet-gannet: changed title, description, acceptance criteria
 - 2026-11-23T12:54:58Z witty-russet-gannet backlog → planning
 - 2026-11-23T12:57:12Z witty-russet-gannet: changed description, notes
+- 2026-11-23T12:57:21Z witty-russet-gannet: changed description
