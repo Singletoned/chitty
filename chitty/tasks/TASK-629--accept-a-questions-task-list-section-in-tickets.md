@@ -1,6 +1,6 @@
 ---
 title: Accept a `## Questions` task-list section in tickets
-status: doing
+status: error
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -61,6 +61,17 @@ Add focused parsing, rendering, CLI, formatter, and renumbering tests; record th
 
 Planner, 2026-11-23: the test placement contradiction is resolved: every test, renumbering included, is in `tests/test_questions_section.py`, and the renumbering test now has its fixture, call and assertions. Earlier cold reads (two) found nothing else outstanding.
 
+Runner error (agent): TASK-629 is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-629`
+
+Error output:
+
+```text
+last session: exit 0 after 9s
+I have not completed TASK-629 or changed its status. No implementation files were changed. I cannot substantiate a ticket defect or external blocker, so I have not moved it to `planning` or `blocked`.
+```
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -87,3 +98,5 @@ Planner, 2026-11-23: the test placement contradiction is resolved: every test, r
 - 2026-11-23T18:48:23Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:48:27Z witty-yellow-vole planning → todo
 - 2026-11-23T19:01:30Z tidy-teal-adder todo → doing
+- 2026-11-23T19:06:15Z tidy-teal-adder: changed notes
+- 2026-11-23T19:06:15Z tidy-teal-adder doing → error
