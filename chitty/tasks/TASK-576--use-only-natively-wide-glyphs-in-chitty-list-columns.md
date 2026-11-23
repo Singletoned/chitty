@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: todo
+status: doing
 labels:
   - needs-minor
 created: 2026-11-22
@@ -122,3 +122,4 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-23T23:09:34Z mellow-amber-toad: changed acceptance criteria
 - 2026-11-23T23:10:44Z mellow-amber-toad: changed description
 - 2026-11-23T23:10:44Z mellow-amber-toad planning → todo
+- 2026-11-23T23:29:30Z honest-indigo-toad todo → doing
