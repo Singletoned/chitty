@@ -4,12 +4,13 @@ status: planning
 depends_on:
   - TASK-358
   - TASK-572
+  - TASK-YJ6VBS
 created: 2026-11-22
 ---
 
 ## Description
 
-After `TASK-358` (`git.trailer_commits`) and `TASK-572` (`check.unfinished_landed`) land, make `chitty check` warn on `main` about each active ticket whose work is on `main` but which is not `done`. Seen 2026-11-16 (`TASK-318`) and 2026-11-22 (`TASK-540`, `TASK-555`). Split from `TASK-358` on 2026-11-22.
+After `TASK-YJ6VBS` (`git.trailer_commits`, split from `TASK-358` on 2026-11-23) and `TASK-572` (`check.unfinished_landed`) land, make `chitty check` warn on `main` about each active ticket whose work is on `main` but which is not `done`. Seen 2026-11-16 (`TASK-318`) and 2026-11-22 (`TASK-540`, `TASK-555`). Split from `TASK-358` on 2026-11-22.
 
 Decisions:
 
@@ -34,3 +35,4 @@ Tests: CLI examples in a new `tests/test_check_unfinished_landed_cli.py`, inheri
 - 2026-11-22T10:01:15Z friendly-jade-stoat todo → planning
 - 2026-11-22T10:01:26Z friendly-jade-stoat: changed acceptance criteria
 - 2026-11-22T10:03:35Z friendly-jade-stoat: changed dependencies, description
+- 2026-11-23T18:41:31Z witty-yellow-vole: changed dependencies, description
