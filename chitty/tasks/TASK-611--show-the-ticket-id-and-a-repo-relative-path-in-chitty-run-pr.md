@@ -34,6 +34,8 @@ Suggestion origin: taidy
 
 Regression: pytest tests/test_run_progress.py -q fails all three tests before the fix, including the exact check line and relative log assertions.
 
+Property regression: pytest tests/test_property_display_path.py -q fails with display_path replaced by str(path), and passes with the implementation. Integration regressions also failed before the fix.
+
 ## History
 
 - 2026-11-23T10:24:04Z witty-russet-gannet → backlog
@@ -56,3 +58,4 @@ Regression: pytest tests/test_run_progress.py -q fails all three tests before th
 - 2026-11-23T11:04:24Z able-coral-marten todo → doing
 - 2026-11-23T11:07:24Z able-coral-marten: wrote the plan
 - 2026-11-23T11:07:48Z able-coral-marten: changed notes
+- 2026-11-23T11:10:31Z able-coral-marten: changed notes
