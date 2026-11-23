@@ -17,7 +17,10 @@ Suggested fixes:
 
 Suggestion origin: taidy
 
+Folded in from TASK-613: when a work run ends with the ticket still `doing`, prefer requeueing it over `error`, since nothing is broken.
+
 ## History
 
 - 2026-11-23T10:24:13Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:14Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:32Z witty-russet-gannet: changed notes
