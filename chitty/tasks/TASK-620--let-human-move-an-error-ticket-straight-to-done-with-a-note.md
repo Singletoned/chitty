@@ -23,6 +23,10 @@ Out of scope: inferring that a passed review exists from Notes or `Task:` commit
 - [ ] A test in `tests/test_edit_human.py` takes a ticket in `error` in a context that requires review and runs `chitty edit <ID> -s done --human --note <reason>`; it succeeds, the ticket is `done`, the note is in Notes, and History records actor `human`. This test fails on `main` today.
 - [ ] In the `tasks` context (which requires review), tests cover every previous status other than `review` and `done` (`backlog`, `planning`, `cold-read`, `todo`, `doing`, `blocked`, `error`), each reached from a new `todo` ticket with `chitty edit <ID> -s <status>` (adding `--note` for `blocked`), and each tried with and without `--human` and with and without a note. Only `error` + `--human` + a note moves to `done`. `error` + `--human` without a note (including a whitespace-only `--note`) fails with `moving error → done requires --note with the reason`. Every other case fails with `setting status done requires -s review first`.
 
+## Plan
+
+Add exhaustive CLI regression coverage, verify failure before the fix, then pass the human flag into the store and narrowly exempt noted error-to-done transitions; run formatting and checks.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -44,3 +48,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:36:58Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:37:00Z witty-russet-gannet planning → todo
 - 2026-11-23T11:52:50Z jolly-teal-stoat todo → doing
+- 2026-11-23T11:55:34Z jolly-teal-stoat: wrote the plan
