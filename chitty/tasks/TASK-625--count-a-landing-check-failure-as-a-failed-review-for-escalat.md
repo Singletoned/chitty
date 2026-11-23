@@ -1,6 +1,6 @@
 ---
 title: Count a landing check failure as a failed review for escalation
-status: doing
+status: review
 depends_on:
   - TASK-609
 created: 2026-11-23
@@ -64,3 +64,4 @@ Count done-to-doing failures alongside review failures; property, integration an
 - 2026-11-23T13:46:21Z sunny-violet-heron: wrote the plan
 - 2026-11-23T13:47:20Z sunny-violet-heron: changed notes
 - 2026-11-23T13:49:40Z sunny-violet-heron: changed summary
+- 2026-11-23T13:52:04Z sunny-violet-heron doing → review
