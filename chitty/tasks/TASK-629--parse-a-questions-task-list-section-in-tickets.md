@@ -50,6 +50,10 @@ Out of scope: `as_dict` and the property test (TASK-649), `chitty show` (TASK-65
 - [ ] The parse, tick, continuation, refusal, unknown-section and renumbering tests in `tests/test_questions_section.py` pass, and each fails before the change. Record each test's failure message in a note, so a reviewer can see which failed on its own assertion and which only because `## Questions` was refused
 - [ ] The prettier and mdformat tests in `tests/test_formatters.py` pass with the Questions section in `sample()`; `make check` passes
 
+## Plan
+
+Add focused parser and renumbering regression tests, record their failures before implementation, implement Questions parsing, extend formatter coverage, then run formatting and checks.
+
 ## Notes
 
 Planner, 2026-11-23: the test placement contradiction is resolved: every test, renumbering included, is in `tests/test_questions_section.py`, and the renumbering test now has its fixture, call and assertions. Earlier cold reads (two) found nothing else outstanding.
@@ -105,3 +109,4 @@ Cold read after the split (2026-11-23): nothing serious. Added the tick/answer i
 - 2026-11-23T19:45:48Z friendly-coral-badger: changed description, notes
 - 2026-11-23T19:45:55Z friendly-coral-badger planning → todo
 - 2026-11-23T20:00:46Z honest-bronze-dormouse todo → doing
+- 2026-11-23T20:03:27Z honest-bronze-dormouse: wrote the plan
