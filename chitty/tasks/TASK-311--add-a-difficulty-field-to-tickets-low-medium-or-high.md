@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: planning
+status: cold-read
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -43,3 +43,4 @@ Out of scope: mapping difficulty to agents (`TASK-312`), guide wording (`TASK-31
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
 - 2026-11-23T19:41:24Z witty-yellow-vole: changed description, acceptance criteria
 - 2026-11-23T19:41:24Z witty-yellow-vole backlog → planning
+- 2026-11-23T19:41:37Z witty-yellow-vole planning → cold-read
