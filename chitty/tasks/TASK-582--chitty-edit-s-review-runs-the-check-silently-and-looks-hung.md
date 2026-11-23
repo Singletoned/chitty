@@ -1,13 +1,13 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: cold-read
+status: todo
 created: 2026-11-22
 ---
 
 ## Description
 
 `chitty edit <ID> -s review` runs the configured `check` on entering review
-(`Repo.edit`, `src/chitty/store.py` around line 989) with all output in
+(`Repo._edit_stored`, `src/chitty/store.py` around lines 993-997) with all output in
 `.chitty/check.log` and nothing on the terminal, so a 3-minute check looks
 hung (the owner, 2026-11-22, on `TASK-540`). TASK-575 skips the check when
 there is nothing to check; this ticket covers the cases where it still runs.
@@ -15,7 +15,9 @@ there is nothing to check; this ticket covers the cases where it still runs.
 Change: in that block, just before `commands.run_logged("check", ...)`,
 print to stderr
 
-    running check `<command>` before review (output in .chitty/check.log)...
+    running check <command> before review (output in .chitty/check.log)
+
+(exactly this text, with the configured command substituted and no backticks)
 
 and after it returns (pass or fail, not on exceptions) print
 
@@ -24,22 +26,21 @@ and after it returns (pass or fail, not on exceptions) print
 where `<N>` is whole seconds rounded down (`int(...)`) from
 `time.monotonic()` (add `import time` to `store.py`). Use `click.echo(...,
 err=True)` or `print(..., file=sys.stderr)`, whichever `store.py` already
-uses for stderr messages (`grep -n "file=sys.stderr\|err=True"
-src/chitty/store.py`).
+uses for stderr messages (`grep -n "file=sys.stderr\|err=True" src/chitty/store.py`). When the check is skipped (`skipped check: HEAD is already on main`), neither new line is printed.
 
 Tests, in `tests/test_review_check.py`, reusing `prepare()`:
 
 - Passing check (`self.script("")`): `chitty edit 1 -s review` through
-  `run_cli`; `result.stderr` contains "running check", then the check command text after it, and "check finished in" after the command text (compare `str.index`).
+  `run_cli`; `result.stderr` contains "running check", then the check command text after it, and "check finished in" after the command text (compare `str.index`), and `re.search(r"check finished in \d+s\n", result.stderr)` matches.
 - Failing check (`self.script("raise SystemExit(3)\n")`, `exit_code=1`):
-  `result.stderr` still contains "check finished in".
+  the same `re.search` matches.
 
 If TASK-575 has landed, `prepare()` already makes a commit on `task-1`; if
 not, the check runs anyway. Record that both tests fail before the change.
 
 ## Acceptance Criteria
 
-- [ ] Entering review with a configured check prints `running check` followed by the command before the check runs, and `check finished in <N>s` after it, on stderr, for passing and failing checks; shown by the two new tests, which fail before the change.
+- [ ] Entering review with a configured check prints `running check <command> before review (output in .chitty/check.log)` and then `check finished in <N>s` with whole seconds, on stderr, for passing and failing checks; shown by the two new tests, which fail before the change.
 - [ ] `make check` passes.
 
 ## Notes
@@ -54,6 +55,8 @@ The specified first line is `running check `<command>` before review ...`, but t
 
 Planner, 2026-11-23: the order now matches the specified line: `running check`, then the command, then `check finished in`.
 
+Planner, 2026-11-23, after a cold read: the line is now exact text with no backticks; the tests check the whole-seconds format with a regex; the code location is corrected; and nothing is printed when the check is skipped. The criterion no longer claims timing that stderr cannot show.
+
 ## History
 
 - 2026-11-22T13:16:27Z friendly-jade-stoat → backlog
@@ -67,3 +70,5 @@ Planner, 2026-11-23: the order now matches the specified line: `running check`, 
 - 2026-11-22T16:02:09Z sunny-amber-dormouse doing → planning
 - 2026-11-23T12:25:13Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:25:13Z witty-russet-gannet planning → cold-read
+- 2026-11-23T12:26:19Z witty-russet-gannet: changed description, acceptance criteria, notes
+- 2026-11-23T12:26:19Z witty-russet-gannet cold-read → todo
