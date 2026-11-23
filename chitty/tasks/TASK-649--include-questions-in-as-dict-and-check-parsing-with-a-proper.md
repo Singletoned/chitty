@@ -1,6 +1,6 @@
 ---
 title: Include `## Questions` in `as_dict` and check parsing with a property test
-status: planning
+status: cold-read
 depends_on:
   - TASK-629
 parent: TASK-621
@@ -31,3 +31,4 @@ Out of scope: `chitty show` text output (TASK-C) and CLI and MCP options (TASK-6
 ## History
 
 - 2026-11-23T19:43:19Z friendly-coral-badger → planning
+- 2026-11-23T19:43:54Z friendly-coral-badger planning → cold-read
