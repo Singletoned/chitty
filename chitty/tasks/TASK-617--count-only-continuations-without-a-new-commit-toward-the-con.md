@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: review
+status: done
 created: 2026-11-23
 ---
 
@@ -51,6 +51,14 @@ Baseline integration run: 5 failed, 2 passed. No Decided note was present.
 
 Both strengthened criterion 3 tests fail against the original run.py with the old error wording; make check passes with the implementation.
 
+Reviewed: make check passed (1170 passed); no Decided note. The prior criterion 3 assertion finding is resolved.
+1: pass - make check passed; baseline pytest tests/test_continuation_step.py failed collection: cannot import continuation_step.
+2: pass - make check passed; baseline pytest tests/test_run_continue.py failed test_productive_sessions_continue.
+3: pass - make check passed; baseline pytest tests/test_run_continue.py failed test_notes_are_not_progress and test_unchanged_ticket_is_continued_five_times_then_fails; both now assert the complete wording.
+4: pass - make check passed; baseline pytest tests/test_run_continue.py failed test_amended_commit_is_not_progress.
+5: pass - make check passed; baseline pytest tests/test_run_continue.py failed test_command_without_prompt_is_not_continued.
+Baseline tests ran with PYTHONPATH=src in a temporary merge-base worktree: 5 failed, 2 passed for test_run_continue.py.
+
 ## Summary
 
 Strengthened both error-note assertions after review. Both fail against the original implementation; make check passes.
@@ -84,3 +92,5 @@ Strengthened both error-note assertions after review. Both fail against the orig
 - 2026-11-23T11:46:19Z honest-ebony-gannet: wrote the plan
 - 2026-11-23T11:49:04Z honest-ebony-gannet: changed notes, summary
 - 2026-11-23T11:51:11Z honest-ebony-gannet doing → review
+- 2026-11-23T11:56:43Z youthful-lilac-marten: changed notes
+- 2026-11-23T11:56:43Z youthful-lilac-marten review → done
