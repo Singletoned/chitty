@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-639
@@ -109,6 +109,11 @@ Review failed (tests): the required property does not assert the returned contex
 2: pass - Before/after output sizes were 1737, 11534 and 39014 bytes; `diff -q` was silent for each. Three list times: before 4.598, 4.528, 4.446 s; after 2.179, 2.560, 2.361 s.
 3: pass - `make check` reported 1169 passed, 602 subtests passed.
 
+Review failed (tests): Required behavioural tests pass without the implementation; demonstrate each required test fails without the change, as the review instructions require. The earlier review noted this same limitation.
+1: fail - `PYTHONPATH="$PWD/tmp/before/src" .venv/bin/python -m pytest tests/test_list_performance.py -q` printed 2 failed (scan counts 28 != 172 and 16 != 88), 10 passed; current code printed 12 passed. The error, order, ref, invalidation and property tests pass on the baseline, so their required failure without the change is not demonstrated. The previously missing context assertion is now present.
+2: pass - Before/after output sizes 1737, 11534 and 39014 bytes; `diff -q` silent for each. List real times before 5.122, 5.085, 4.719 s; after 2.396, 2.604, 2.321 s.
+3: pass - `make check` printed 1169 passed, 602 subtests passed.
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -159,3 +164,5 @@ Review failed (tests): the required property does not assert the returned contex
 - 2026-11-23T21:14:18Z zesty-indigo-badger: changed acceptance criteria, notes
 - 2026-11-23T21:14:18Z zesty-indigo-badger review → doing
 - 2026-11-23T21:28:11Z daring-zinc-heron doing → review
+- 2026-11-23T21:36:19Z friendly-yellow-lapwing: changed acceptance criteria, notes
+- 2026-11-23T21:36:19Z friendly-yellow-lapwing review → doing
