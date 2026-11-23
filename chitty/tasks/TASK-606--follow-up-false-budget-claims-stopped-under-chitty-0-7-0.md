@@ -12,7 +12,10 @@ Follow-up to "Workers falsely claim insufficient budget and block tickets" (taid
 
 Suggestion origin: taidy
 
+Folded into TASK-624; 0.7.1 is now on PyPI.
+
 ## History
 
 - 2026-11-23T10:23:56Z witty-russet-gannet → backlog
 - 2026-11-23T10:23:57Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:36Z witty-russet-gannet: changed notes
