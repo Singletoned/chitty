@@ -63,6 +63,10 @@ Planner, 2026-11-23, after a cold read: the line is now exact text with no backt
 
 Both new progress tests fail before the fix: passing check lacks the start line and failing check lacks the elapsed line.
 
+## Summary
+
+Added stderr progress and elapsed time for review checks; both regression tests failed before the fix. make check passes.
+
 ## History
 
 - 2026-11-22T13:16:27Z friendly-jade-stoat → backlog
@@ -81,3 +85,4 @@ Both new progress tests fail before the fix: passing check lacks the start line 
 - 2026-11-23T12:40:28Z daring-indigo-toad todo → doing
 - 2026-11-23T12:43:34Z daring-indigo-toad: wrote the plan
 - 2026-11-23T12:43:51Z daring-indigo-toad: changed notes
+- 2026-11-23T12:46:01Z daring-indigo-toad: changed summary
