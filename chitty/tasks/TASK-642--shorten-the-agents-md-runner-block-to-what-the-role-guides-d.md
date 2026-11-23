@@ -1,6 +1,6 @@
 ---
 title: Shorten the `AGENTS.md` runner block to what the role guides do not say
-status: cold-read
+status: planning
 labels:
   - untestable
 owner: untestable
@@ -23,7 +23,7 @@ Change `src/chitty/guide-runner.md`:
 - Tighten the landing paragraph and the review-note paragraph. Keep their rules: a worker never lands its own ticket; under `chitty run` the runner rebases, checks and fast-forwards `main`; a reviewer started by hand rebases, runs the checks, then only fast-forwards `main`; one line per criterion in the stated format; a test criterion passes only with evidence that the test fails without the change.
 - Keep the list of `chitty guide` roles as it is.
 
-"A worker never lands its own ticket" is in no role guide, so it stays here. `TestSplitGuide` in `tests/test_guide_workflow_block.py` (no sentence of the first block repeated in this file) must still pass. Before removing a point, confirm that `work.md` or `review.md` states it, and name where in the summary. Update the snapshot `tests/fixtures/guide-runner-expected.md` to match. This repository's own `AGENTS.md` updates when the main checkout's `chitty` upgrades it after landing; do not edit it on the branch.
+"A worker never lands its own ticket" is in no role guide, so it stays here. `TestSplitGuide` in `tests/test_guide_workflow_block.py` (no sentence of the first block repeated in this file) must still pass. Before removing a point, confirm that `work.md` or `review.md` states it, and name where in the summary. Update the snapshot `tests/fixtures/guide-runner-expected.md` to the full output of `managed_guide("runner")`: the tickets block first, then the new runner text. This repository's own `AGENTS.md` updates when the main checkout's `chitty` upgrades it after landing; do not edit it on the branch.
 
 Rules for this tightening:
 - Keep every instruction and its meaning. Remove repeats within the file, filler and roundabout phrasing. Turn a long bullet that bundles a list into a short lead line with nested bullets.
@@ -36,3 +36,5 @@ Rules for this tightening:
 - 2026-11-23T12:34:57Z friendly-zinc-dormouse → planning
 - 2026-11-23T12:37:49Z friendly-zinc-dormouse planning → cold-read
 - 2026-11-23T12:40:57Z friendly-zinc-dormouse: changed description
+- 2026-11-23T12:44:28Z friendly-zinc-dormouse: changed description
+- 2026-11-23T12:44:28Z friendly-zinc-dormouse cold-read → planning
