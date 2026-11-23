@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: review
+status: error
 priority: high
 depends_on:
   - TASK-639
@@ -91,6 +91,17 @@ Criterion 2, in this worktree, before = `git archive` of the merge base into `tm
 
 Criterion 3: `make check` passed (1164 passed).
 
+Runner error (agent): TASK-598 is still `review` after 5 continuations with no new work committed; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-598`
+
+Error output:
+
+```text
+last session: exit 0 after 9s
+Confirmed: TASK-598 is in `review`, and the worktree is clean.
+```
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -134,3 +145,5 @@ Criterion 3: `make check` passed (1164 passed).
 - 2026-11-23T16:47:41Z youthful-quartz-zander error → doing
 - 2026-11-23T16:50:23Z youthful-quartz-zander: changed notes
 - 2026-11-23T16:50:23Z youthful-quartz-zander doing → review
+- 2026-11-23T16:52:28Z calm-bronze-marten: changed notes
+- 2026-11-23T16:52:28Z calm-bronze-marten review → error
