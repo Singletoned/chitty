@@ -38,6 +38,10 @@ Out of scope: mapping difficulty to agents (`TASK-312`), guide wording (`TASK-31
 - [ ] MCP: the add, unset and refusal cases pass and fail before the change
 - [ ] Property and strategy: the `Edit.apply` property passes, and the new `tests/test_ticket_strategies.py` case finds a text with `difficulty`; `docs/plan/task-file.md` has the `difficulty` row; `make check` passes
 
+## Plan
+
+Add regression tests first and record their failures, then implement the field across model, store, CLI, MCP, strategies and documentation; run formatting and checks before review.
+
 ## History
 
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
@@ -50,3 +54,4 @@ Out of scope: mapping difficulty to agents (`TASK-312`), guide wording (`TASK-31
 - 2026-11-23T19:44:08Z witty-yellow-vole cold-read → planning
 - 2026-11-23T19:44:10Z witty-yellow-vole planning → todo
 - 2026-11-23T19:53:57Z friendly-khaki-vole todo → doing
+- 2026-11-23T19:57:15Z friendly-khaki-vole: wrote the plan
