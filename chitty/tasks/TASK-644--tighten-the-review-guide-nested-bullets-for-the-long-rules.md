@@ -1,6 +1,6 @@
 ---
 title: "Tighten the review guide: nested bullets for the long rules"
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -28,3 +28,4 @@ Rules for this tightening:
 - 2026-11-23T12:40:45Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:41:08Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:39Z friendly-zinc-dormouse cold-read → planning
+- 2026-11-23T12:45:10Z friendly-zinc-dormouse planning → todo
