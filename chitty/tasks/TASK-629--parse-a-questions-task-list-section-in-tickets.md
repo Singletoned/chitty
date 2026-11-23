@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: todo
+status: doing
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -104,3 +104,4 @@ Cold read after the split (2026-11-23): nothing serious. Added the tick/answer i
 - 2026-11-23T19:45:36Z friendly-coral-badger cold-read → planning
 - 2026-11-23T19:45:48Z friendly-coral-badger: changed description, notes
 - 2026-11-23T19:45:55Z friendly-coral-badger planning → todo
+- 2026-11-23T20:00:46Z honest-bronze-dormouse todo → doing
