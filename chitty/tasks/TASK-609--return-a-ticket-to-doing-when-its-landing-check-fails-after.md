@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to `doing` when its landing check fails after a clean rebase
-status: doing
+status: review
 created: 2026-11-23
 ---
 
@@ -67,3 +67,4 @@ Nonzero landing checks return the rebased ticket to doing with the log tail; mis
 - 2026-11-23T10:58:45Z golden-dusky-puffin: changed notes
 - 2026-11-23T11:01:03Z golden-dusky-puffin: changed notes
 - 2026-11-23T11:01:05Z golden-dusky-puffin: changed summary
+- 2026-11-23T11:02:44Z golden-dusky-puffin doing → review
