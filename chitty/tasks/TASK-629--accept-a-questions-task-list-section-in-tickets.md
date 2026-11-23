@@ -1,6 +1,6 @@
 ---
 title: Accept a `## Questions` task-list section in tickets
-status: planning
+status: cold-read
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -76,3 +76,4 @@ Planner, 2026-11-23: the test placement contradiction is resolved: every test, r
 - 2026-11-23T13:06:28Z friendly-yellow-ibis: changed owner, notes
 - 2026-11-23T13:06:28Z friendly-yellow-ibis doing → planning
 - 2026-11-23T18:45:57Z witty-yellow-vole: replaced notes; changed owner, description
+- 2026-11-23T18:46:04Z witty-yellow-vole planning → cold-read
