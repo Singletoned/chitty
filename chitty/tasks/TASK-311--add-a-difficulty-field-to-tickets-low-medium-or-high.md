@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: doing
+status: error
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -46,6 +46,17 @@ Add regression tests first and record their failures, then implement the field a
 
 Before implementation, a Hypothesis find over ticket_texts([TaskId("TASK", 1)]) for a difficulty line failed with NoSuchExample after 2000 examples, as expected. The requested test suite and implementation remain to be written.
 
+Runner error (agent): TASK-311 is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-311`
+
+Error output:
+
+```text
+last session: exit 0 after 25s
+I verified and recorded one pre-fix failure: the ticket strategy cannot generate a `difficulty` line. The requested tests and implementation remain unfinished, so TASK-311 is still in `doing`.
+```
+
 ## History
 
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
@@ -60,3 +71,5 @@ Before implementation, a Hypothesis find over ticket_texts([TaskId("TASK", 1)]) 
 - 2026-11-23T19:53:57Z friendly-khaki-vole todo → doing
 - 2026-11-23T19:57:15Z friendly-khaki-vole: wrote the plan
 - 2026-11-23T19:58:58Z friendly-khaki-vole: changed notes
+- 2026-11-23T19:59:07Z friendly-khaki-vole: changed notes
+- 2026-11-23T19:59:07Z friendly-khaki-vole doing → error
