@@ -1,6 +1,6 @@
 ---
 title: Accept a `## Questions` task-list section in tickets
-status: planning
+status: todo
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -85,3 +85,4 @@ Planner, 2026-11-23: the test placement contradiction is resolved: every test, r
 - 2026-11-23T18:47:53Z witty-yellow-vole: changed description
 - 2026-11-23T18:47:58Z witty-yellow-vole planning → cold-read
 - 2026-11-23T18:48:23Z witty-yellow-vole cold-read → planning
+- 2026-11-23T18:48:27Z witty-yellow-vole planning → todo
