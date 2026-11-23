@@ -37,6 +37,10 @@ Both changed integration regression tests failed before the fix: expected done t
 
 On unfixed code both integration regressions fail as expected; the LandingCheckFailed test fails at import, while the missing-command guard passes. Timeout guard passes with the fix.
 
+## Summary
+
+Nonzero landing checks return the rebased ticket to doing with the log tail; missing commands and timeouts remain errors. Regression tests fail on the original implementation, missing-command guard passes there, and make check passes.
+
 ## History
 
 - 2026-11-23T10:24:01Z witty-russet-gannet → backlog
@@ -62,3 +66,4 @@ On unfixed code both integration regressions fail as expected; the LandingCheckF
 - 2026-11-23T10:57:55Z golden-dusky-puffin: wrote the plan
 - 2026-11-23T10:58:45Z golden-dusky-puffin: changed notes
 - 2026-11-23T11:01:03Z golden-dusky-puffin: changed notes
+- 2026-11-23T11:01:05Z golden-dusky-puffin: changed summary
