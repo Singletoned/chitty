@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: review
+status: doing
 priority: high
 depends_on:
   - TASK-639
@@ -104,6 +104,11 @@ Confirmed: TASK-598 is in `review`, and the worktree is clean.
 
 Moved `error` -> `review` by hand (2026-11-23, at the person's request): the work was finished and recorded above; the error came from a runner worker started on the ticket while a hand session finished it.
 
+Review failed (tests): the required property does not assert the returned context. Add an assertion that the single matching path determines `stored.context`, including `BACK-` in `tasks/`.
+1: fail - `test_lookup_matches_the_files_on_disk` checks only title, not the specified context. With absolute `PYTHONPATH` pointing to the merge-base src, pytest reported 2 failed (scan counts 28 != 172 and 16 != 88), 10 passed; current code reported 12 passed. The unchanged-behaviour tests also pass before the change, so they do not individually demonstrate a regression; the missing context assertion is the actionable gap.
+2: pass - Before/after output sizes were 1737, 11534 and 39014 bytes; `diff -q` was silent for each. Three list times: before 4.598, 4.528, 4.446 s; after 2.179, 2.560, 2.361 s.
+3: pass - `make check` reported 1169 passed, 602 subtests passed.
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -151,3 +156,5 @@ Moved `error` -> `review` by hand (2026-11-23, at the person's request): the wor
 - 2026-11-23T16:52:28Z calm-bronze-marten review → error
 - 2026-11-23T21:06:09Z friendly-coral-badger: changed notes
 - 2026-11-23T21:06:09Z friendly-coral-badger error → review
+- 2026-11-23T21:14:18Z zesty-indigo-badger: changed acceptance criteria, notes
+- 2026-11-23T21:14:18Z zesty-indigo-badger review → doing
