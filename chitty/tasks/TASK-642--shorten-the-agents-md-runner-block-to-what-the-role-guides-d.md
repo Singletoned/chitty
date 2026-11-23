@@ -1,6 +1,6 @@
 ---
 title: Shorten the `AGENTS.md` runner block to what the role guides do not say
-status: planning
+status: cold-read
 labels:
   - untestable
 owner: untestable
@@ -34,3 +34,4 @@ Rules for this tightening:
 ## History
 
 - 2026-11-23T12:34:57Z friendly-zinc-dormouse → planning
+- 2026-11-23T12:37:49Z friendly-zinc-dormouse planning → cold-read
