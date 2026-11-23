@@ -1,6 +1,6 @@
 ---
 title: Run `git log` for `Task:` trailer commits
-status: review
+status: done
 depends_on:
   - TASK-358
 created: 2026-11-23
@@ -22,9 +22,9 @@ Tests: add real-Git examples to `tests/test_trailer_commits.py` (which `TASK-358
 
 ## Acceptance Criteria
 
-- [ ] The three-commit example passes: the exact `git log` bytes match the layout and `trailer_commits` returns the three commits field by field
-- [ ] `make check` passes
-- [ ] The config, non-UTF-8 and unknown-ref tests pass; each fails when the matching handling is removed (drop `--root` or `--encoding=UTF-8` from `TRAILER_LOG_OPTIONS`, decode with `errors="replace"`, use `check=True`). Record those four runs in a note
+- [x] The three-commit example passes: the exact `git log` bytes match the layout and `trailer_commits` returns the three commits field by field
+- [x] `make check` passes
+- [x] The config, non-UTF-8 and unknown-ref tests pass; each fails when the matching handling is removed (drop `--root` or `--encoding=UTF-8` from `TRAILER_LOG_OPTIONS`, decode with `errors="replace"`, use `check=True`). Record those four runs in a note
 
 ## Plan
 
@@ -35,6 +35,11 @@ Add real Git wiring tests and verify mutations, then implement byte-preserving l
 Planner, 2026-11-23: `TASK-358` landed `TrailerCommit`, `TRAILER_LOG_OPTIONS` and `parse_trailer_log` as this ticket assumes; cold-read against what landed.
 
 Regression verification: before implementation pytest failed to import trailer_commits. With implementation, removing --root or --encoding=UTF-8 each failed test_config; replacing invalid UTF-8 failed test_invalid_utf8; changing to check=True failed test_unknown_ref. Restored code passes make check.
+
+Reviewed: `trailer_commits` in `src/chitty/git.py` matches the ticket (one `git log <ref>` with `TRAILER_LOG_OPTIONS`, bytes stdout, `ChittyError` with command, root and stderr on failure, `ChittyError` naming the ref on bad UTF-8); reviewed by hand from the main session because the runner reads this provisional ticket from `main` and never saw it in `review`.
+1: pass - `pytest tests/test_trailer_commits.py`: 7 passed; `test_log` checks the exact bytes against `render` and the three commits field by field. With the branch's test file at the merge base (temporary worktree), collection fails: `ImportError: cannot import name 'trailer_commits' from 'chitty.git'`.
+2: pass - after rebasing onto `main` (`0ce50010`), `make check`: 1165 passed.
+3: pass - each mutation run by hand and restored: dropping `--root` failed `test_config` (AssertionError); dropping `--encoding=UTF-8` failed `test_config` (ChittyError); `errors="replace"` failed `test_invalid_utf8`; `check=True` failed `test_unknown_ref` (CalledProcessError).
 
 ## Summary
 
@@ -54,3 +59,5 @@ Implemented byte-preserving Git log execution with real Git tests. make check pa
 - 2026-11-23T20:13:06Z golden-zinc-falcon: wrote the plan
 - 2026-11-23T20:16:10Z golden-zinc-falcon: changed notes, summary
 - 2026-11-23T20:18:10Z golden-zinc-falcon doing → review
+- 2026-11-23T23:05:51Z friendly-coral-badger: changed notes; ticked acceptance criteria
+- 2026-11-23T23:05:51Z friendly-coral-badger review → done
