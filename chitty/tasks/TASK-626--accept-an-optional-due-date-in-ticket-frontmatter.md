@@ -1,6 +1,6 @@
 ---
 title: Accept an optional `due` date in ticket frontmatter
-status: todo
+status: doing
 parent: TASK-619
 created: 2026-11-23
 ---
@@ -49,3 +49,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Tightened the tests: an 
 - 2026-11-23T12:28:38Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:28:38Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:28:47Z witty-russet-gannet: changed description
+- 2026-11-23T12:49:40Z mellow-hazel-lapwing todo → doing
