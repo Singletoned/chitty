@@ -1,6 +1,6 @@
 ---
 title: Find active tickets whose `Task:` commits landed work while they are not done
-status: doing
+status: review
 depends_on:
   - TASK-358
 created: 2026-11-22
@@ -59,3 +59,4 @@ Implemented the pure landed-work rule and moved the path helper. The property fa
 - 2026-11-23T19:47:15Z brisk-jade-dormouse: wrote the plan
 - 2026-11-23T19:47:54Z brisk-jade-dormouse: changed notes
 - 2026-11-23T19:50:10Z brisk-jade-dormouse: changed summary
+- 2026-11-23T19:52:06Z brisk-jade-dormouse doing → review
