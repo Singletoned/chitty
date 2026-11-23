@@ -25,7 +25,7 @@ Owner decisions, 2026-11-22: a write is refused only when another copy of the ti
 Change, in `src/chitty/store.py`:
 
 - Rename `_require_current_version` to `_require_writable` and keep every call site and the `skip_current_version` / `allow_stale` bypasses as they are.
-- Its rule: when `stored.branch is None` (the working tree is the source), allow. Otherwise read the ticket's raw files at the source (`self._source_files(stored.id)`, the `(path, text)` list already used for reading) and in this checkout's working tree (`self._working_ticket_files(stored.id)`); allow when the two lists are equal (same relative paths, same text), else refuse. "Newer" needs no separate test: the chosen source is by construction the copy Chitty reads, so a differing working-tree copy is the one that would be lost or would hide it.
+- Its rule: when `stored.branch is None` (the working tree is the source), allow. Otherwise take the second element of `self._source_files(stored.id)` (the `(path, text)` list at the source, already used for reading) and in this checkout's working tree (`self._working_ticket_files(stored.id)`); allow when the two lists are equal (same relative paths, same text), else refuse. "Newer" needs no separate test: the chosen source is by construction the copy Chitty reads, so a differing working-tree copy is the one that would be lost or would hide it.
 - This replaces the own-worktree exception (`changed_since_split`): a fresh ticket worktree whose copy still equals `main`'s is allowed by equality, and one where `main` changed the ticket since the split is refused, as today.
 - Refuse with `ChittyError(write_refusal(...))`, with arguments: `task_id=str(stored.id)`; `newer_ref=stored.branch`; `newer_sha` from `git.ref_commit(self.root, <full ref>)`, the full ref being `refs/heads/<branch>` when `git.has_local_branch(self.root, branch)` (this includes `main`) and `refs/remotes/<branch>` otherwise; `main_branch=self._main_branch()`; `local_branch=git.has_local_branch(self.root, branch)`; `worktree=git.worktree_for_branch(self.root, branch)` when local, else `None`; `main_checkout=git.main_checkout(self.root)`; `checkout_is_main` true when `self.root.resolve() == main_checkout.resolve()`; `local_behind` true when the branch is remote-tracking and `git.has_local_branch(self.root, <part after the first />)`. Take `local_branch` from `git.has_local_branch`, not from the name, since a local branch name may contain `/`.
 - Read errors before the guard keep their own messages (`diverged refs`, `changed on both`, `no task`).
@@ -42,10 +42,13 @@ Tests, in a new `tests/test_ticket_placement_writes.py`, reusing `make_repo`, `p
 
 Examples with the full message, in the same file: in the main checkout, placement `b` gives `TASK-5 has a newer copy on task-5 (<sha10>); run git switch task-5 first`, placement `c` gives `...; run git switch --track origin/task-5 first`, placement `l` gives `TASK-5 has a newer copy on origin/task-5 (<sha10>); fast-forward task-5 to origin/task-5 first`; from a kind 4 worktree, placement `b` with a worktree added for `task-5` gives `...; edit it in worktree <path>`; in the main checkout switched by `git checkout -b feature main^` after placement `j` (so `main` holds `main-2` and the checkout holds `branch`), `...; switch this checkout to main first`; from a kind 4 worktree reset with `git reset --hard main^` after placement `j`, `...; edit it in the main checkout <main checkout path>`. `<sha10>` is the first 10 characters of `git rev-parse <full ref>`.
 
+Two more examples, because the fixture's copies differ only in title: from a kind 4 worktree after placement `a`, (1) replace only the `Fixture.` body line of the working-tree file with `Changed.` (title unchanged), and (2) move the working-tree file into `chitty/tasks/archive/` without changing its text; each edit is refused with a message starting `TASK-5 has a newer copy on main (` and leaves the file as it was. Both fail for an implementation that compares only titles or only paths.
+
 ## Acceptance Criteria
 
-- [ ] The placement matrix in `tests/test_ticket_placement_writes.py` passes: every writable edit succeeds and adds the note, every refused edit raises with `TASK-5 has a newer copy on <ref> (` for the stated `<ref>` and changes no file under `chitty/` or `HEAD`, and every read error is unchanged. Before the change it fails (for example placement `a` from a kind 4 worktree is refused today); record that run in a note
-- [ ] The six full-message examples in the same file pass
+- [ ] In the placement matrix in `tests/test_ticket_placement_writes.py`, every edit the oracle calls writable succeeds and adds the note, and every expected read error is raised unchanged. Before the change it fails (placement `a` from a kind 4 worktree is refused today); record that run in a note
+- [ ] In the same matrix, every refused edit raises with `TASK-5 has a newer copy on <ref> (` for the stated `<ref>`, and changes no file under `chitty/` in that checkout and not `HEAD`
+- [ ] The six full-message examples and the two body-only and path-only examples in the same file pass
 - [ ] `git grep -n _require_current_version -- src tests` prints nothing; `make check` passes
 
 ## Notes
@@ -63,6 +66,8 @@ Open question for the owner: when a newer, different copy exists elsewhere (typi
 Owner decision, 2026-11-22: (A) refuse when a newer, different copy exists elsewhere, naming that copy and where to edit (`TASK-547` words the message). Replan this ticket after `TASK-547` lands: the condition is "the authoritative copy (`stored.branch is not None`) differs from this checkout's working-tree copy", not "read from elsewhere".
 
 Planner, 2026-11-22 (from `TASK-547`'s cold read): the replan must supply `newer_sha`. `StoredTask` (`src/chitty/store.py` around line 103) and `SourceCopy` carry no commit; `_choose_source` has the tips from `_branch_tips()` but drops them. Decide between adding a `sha` field filled from that tip map, or calling `git.ref_commit` on the ref at the guard. Take `local_branch` from `git.has_local_branch`, since a local branch name may contain `/`.
+
+Planner, 2026-11-23: replanned as part (2). The checkout kinds are the main checkout and kinds 2 to 5 of `tests/ticket_placements.py` (there is no kind 1 there; the split plan above says 1 to 5 loosely). Split-off parts are TASK-647 (remove the bypass, remote-only review handoff) and TASK-648 (`_prepare_write` after the guard). A prototype of the rule (equality of `_source_files` and `_working_ticket_files` lists) run over placements `a`–`m` in kinds 3 to 5 agreed with the oracle; today, placements `a` and `j` from a kind 4 worktree are refused with `latest committed version is on branch main`.
 
 ## History
 
@@ -95,3 +100,4 @@ Planner, 2026-11-22 (from `TASK-547`'s cold read): the replan must supply `newer
 - 2026-11-23T14:38:45Z youthful-quartz-zander: changed description
 - 2026-11-23T14:38:49Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:40:32Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:40:40Z youthful-quartz-zander: changed description, acceptance criteria, notes
