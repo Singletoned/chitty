@@ -104,7 +104,12 @@ asking the first.
   that assert each one fails (2026-11-20: hand runs recorded in notes were
   skipped by workers twice on `TASK-471`; move checks from agents to
   automation where safe), the planner runs each generator recipe against the real code before
-  the read, and distractor values are built from the drawn value.
+  the read, and distractor values are built from the drawn value. Property
+  tests are the exception (2026-11-23, from echonomicon, where 5 of 11 planned
+  wrong versions passed naive generators): the planner runs the generators
+  against each wrong version while planning and fixes any that let one pass,
+  and the worker re-runs them once against each wrong version and records the
+  result in a note. Committed hand-written wrong versions add clutter and drift.
 - These habits worked on their first use (2026-11-19, `TASK-370`, `TASK-373`,
   `TASK-377`, `TASK-403`, `TASK-404`): checking a claim at the source showed a
   revert was safe; the third-read split caught a claim written without

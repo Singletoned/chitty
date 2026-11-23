@@ -28,11 +28,12 @@ read. Describe the change and why it is needed; criteria are optional.
   `NotImplementedError`, so tests fail independently rather than at import.
 - When the code a ticket tests already exists, a stub cannot show the tests
   fail without the change. List plausible wrong versions of the code instead,
-  such as a dropped condition or a swapped choice, and ask the worker to
-  commit each wrong version as a test: it runs the same test against that
-  version and asserts that it fails, so the check runs on every build rather
-  than once by hand. Ask for a run recorded in a note only where a committed
-  check is impractical, and say why.
+  such as a dropped condition or a swapped choice. For example-based tests, ask
+  the worker to commit each wrong version as a test asserting it fails; where
+  that is impractical, ask for a run recorded in a note, and say why. For
+  property tests, run the generators against each wrong version while planning
+  and fix any that let one pass; the worker re-runs them once against each and
+  notes the result. These wrong versions are not committed.
 - When the code already exists, run each specified generator recipe against
   it before the cold read, with many cases, and check the expected answers
   agree. A disagreement is a wrong recipe or a bug; settle which.

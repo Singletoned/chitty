@@ -16,6 +16,10 @@ class TestPlannerEvidence(unittest.TestCase):
         self.assertIn("commit each wrong version as a test", self.planning)
         self.assertNotIn("record in a note which test failed", self.planning)
 
+    def test_property_test_wrong_versions_are_run_not_committed(self):
+        self.assertIn("run the generators against each wrong version", self.planning)
+        self.assertIn("These wrong versions are not committed", self.planning)
+
     def test_recipes_are_probed_against_existing_code(self):
         self.assertIn("run each specified generator recipe against it", self.planning)
 
