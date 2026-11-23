@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -51,6 +51,14 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 
 Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context rule unchanged (decided with the person; see the Description); added criterion 5. Earlier blockers were resolved on 2026-11-22 and 2026-11-23.
 
+Planning blockers found before implementation:
+
+1. The per-status round-trip test is required to iterate `chitty.model.STATUSES` and fail before the change because `dropped` cannot be parsed. But `src/chitty/model.py` does not include `dropped` in `STATUSES` before the change, so that test never attempts to parse it and cannot fail for the stated reason. Criterion 2 requires that failure. Specify an additional explicit `dropped` case or correct the before-change requirement while preserving future-status coverage.
+
+2. The description requires `chitty add -s dropped` to produce the specified store error in every context, with the refusal located in `Repo.add` and nothing else changed. `src/chitty/cli.py:424` rejects a sequential-context add without a description before calling `Repo.add`; even after adding the status choice, the specified command cannot reach that refusal. Decide whether the CLI validation must change or the command/test must include a description, and reconcile the every-add requirement.
+
+Inspected the status definitions, add and edit validation, selection and CLI list/summary paths, archive and dependency locations, and existing test fixture locations. No implementation or regression tests were written; before/after test runs and full verification remain outstanding pending clarification.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -91,3 +99,5 @@ Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context r
 - 2026-11-23T18:44:08Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:44:11Z witty-yellow-vole planning → todo
 - 2026-11-23T18:56:06Z intrepid-dusky-gannet todo → doing
+- 2026-11-23T18:59:50Z intrepid-dusky-gannet: changed owner, notes
+- 2026-11-23T18:59:50Z intrepid-dusky-gannet doing → planning
