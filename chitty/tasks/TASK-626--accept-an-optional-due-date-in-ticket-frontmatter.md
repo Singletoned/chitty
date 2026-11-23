@@ -1,6 +1,6 @@
 ---
 title: Accept an optional `due` date in ticket frontmatter
-status: review
+status: done
 parent: TASK-619
 created: 2026-11-23
 ---
@@ -47,6 +47,10 @@ Planner, 2026-11-23: a cold read found nothing serious. Tightened the tests: an 
 
 Regression run before the fix failed; after the fix tests/test_due_date.py and tests/test_formatters.py passed (11 tests). String values needed normalization after validation because scalar rendering otherwise quotes dates. make check passed: 1182 tests.
 
+Reviewed: implementation and complete diff checked.
+1: pass - make check passed all 1184 tests including due tests; on merge base, PYTHONPATH=src ../../.venv/bin/python -m pytest tests/test_due_date.py -q reported 7 failed, including unknown frontmatter key and expected due validation errors.
+2: pass - make check passed formatter tests; on merge base PYTHONPATH=src ../../.venv/bin/python -m pytest tests/test_formatters.py -q reported 4 failed with unknown frontmatter key due.
+
 ## Summary
 
 Added optional due frontmatter, validation, round-trip and formatter coverage. make check passed.
@@ -63,3 +67,5 @@ Added optional due frontmatter, validation, round-trip and formatter coverage. m
 - 2026-11-23T12:52:46Z mellow-hazel-lapwing: wrote the plan
 - 2026-11-23T12:58:22Z mellow-hazel-lapwing: changed notes, summary
 - 2026-11-23T13:00:16Z mellow-hazel-lapwing doing → review
+- 2026-11-23T13:06:39Z witty-navy-jay: changed notes
+- 2026-11-23T13:06:39Z witty-navy-jay review → done
