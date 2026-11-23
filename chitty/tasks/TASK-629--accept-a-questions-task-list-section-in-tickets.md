@@ -1,6 +1,6 @@
 ---
 title: Accept a `## Questions` task-list section in tickets
-status: cold-read
+status: planning
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -44,7 +44,7 @@ Tests, in a new `tests/test_questions_section.py`:
 - Property, with Hypothesis and `examples(50)` from `tests/__init__.py`: build Questions bodies from one to five items, each with a drawn tick (` `, `x`, `X`), text of one to three words of `string.ascii_letters` joined by single spaces (so no leading or trailing space), an optional continuation line, and an optional answer of one or two lines, separated by one or two blank lines. Then `parse` succeeds, `render()` is byte-identical, and `as_dict()["questions"]` has one entry per item, with the drawn tick, text and answer (text and answer as their lines joined with single spaces). A `## Questionz` heading still raises the unknown-section error, whose list of allowed names now includes `Questions`.
 - Formatters: in `tests/test_formatters.py`, give `sample()` the example section (through `with_section`), so the prettier and mdformat no-op tests cover it.
 - `chitty show`: in a `RepoTestCase` repository, write a ticket file with the example section. `chitty show TASK-1` prints `## Questions`, `1. [x] Which database?`, `   Postgres, because we already run it.` and `2. [ ] Who owns the migration?` in that order. `show --json` has the two `questions` entries.
-- Renumbering, in `tests/test_questions_section.py` (not next to the other renumbering tests, so all of this ticket's tests are in one file): `parse` the example ticket text with its Questions section replaced by `- [ ] Does TASK-7 block TASK-70?` then a blank line then `  Yes, see TASK-7.`; call `chitty.renumbering.rewrite_task(task, {TaskId("TASK", 7): TaskId("TASK", 12)})`. Assert the result's `questions` is `(Question(False, "Does TASK-12 block TASK-70?", "Yes, see TASK-12."),)` (so `TASK-70` is untouched) and its `section(QUESTIONS)` is the original body with both `TASK-7` replaced by `TASK-12`. Before the change it fails because `parse` refuses `## Questions`.
+- Renumbering, in `tests/test_questions_section.py` (not next to the other renumbering tests, so all of this ticket's tests are in one file): `parse` a minimal valid ticket text (frontmatter, a Description and an Acceptance Criteria item, as the other tests in this file build) whose Questions section is `- [ ] Does TASK-7 block TASK-70?` then a blank line then `  Yes, see TASK-7.`; call `chitty.renumbering.rewrite_task(task, {TaskId("TASK", 7): TaskId("TASK", 12)})`. Assert the result's `questions` is `(Question(False, "Does TASK-12 block TASK-70?", "Yes, see TASK-12."),)` (so `TASK-70` is untouched) and its `section(QUESTIONS)` is the original body with both `TASK-7` replaced by `TASK-12`. Before the change it fails because `parse` refuses `## Questions`.
 
 Out of scope: CLI and MCP options (TASK-630), list markers (TASK-631), and Markdown warnings in `chitty check` for question text.
 
@@ -77,3 +77,5 @@ Planner, 2026-11-23: the test placement contradiction is resolved: every test, r
 - 2026-11-23T13:06:28Z friendly-yellow-ibis doing → planning
 - 2026-11-23T18:45:57Z witty-yellow-vole: replaced notes; changed owner, description
 - 2026-11-23T18:46:04Z witty-yellow-vole planning → cold-read
+- 2026-11-23T18:46:16Z witty-yellow-vole: changed description
+- 2026-11-23T18:46:16Z witty-yellow-vole cold-read → planning
