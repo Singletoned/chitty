@@ -1,9 +1,9 @@
 ---
 title: "Planning and review guides: weigh guide length when wording changes"
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: plucky-indigo-eel
 depends_on:
   - TASK-640
 created: 2026-11-23
@@ -27,3 +27,5 @@ One or two sentences each. Keep the wording general: the guides reach every repo
 - 2026-11-23T12:44:24Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:24Z friendly-zinc-dormouse cold-read → planning
 - 2026-11-23T12:44:56Z friendly-zinc-dormouse planning → todo
+- 2026-11-23T14:37:02Z plucky-indigo-eel: changed owner
+- 2026-11-23T14:37:02Z plucky-indigo-eel todo → doing
