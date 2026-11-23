@@ -1332,7 +1332,7 @@ class TestNext(CliTestCase):
         checked = (self.root / ".worktrees/task-1/check-args").read_text()
         self.assertIn("['quoted argument']", checked)
         self.assertIn("status: doing", checked)
-        self.assertIn("Running check", result.stderr)
+        self.assertIn("running check in", result.stderr)
         self.assertFalse((self.root / ".worktrees/task-1/started").exists())
         repo = Repo.open(self.root)
         task = repo.find(repo.resolve("TASK-1")).task

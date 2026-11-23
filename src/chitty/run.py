@@ -477,7 +477,7 @@ def _run_ticket(
         with log:
             return _run_ticket_with_log(main_repo, project, action, arguments, agent, context, log)
     finally:
-        print(f"log: {path}", file=sys.stderr)
+        print(f"log: {display_path(path, main_repo.root)}", file=sys.stderr)
 
 
 def _run_ticket_with_log(
@@ -616,7 +616,7 @@ def _run_ticket_with_log(
     context["phase"] = "check"
     if not stopped and (
         failed := _run_check(
-            branch_repo, action, check, selected_status, main_repo.config.command_timeout
+            branch_repo, main_root, action, check, selected_status, main_repo.config.command_timeout
         )
     ):
         if action.mode == "work" and selected_status == "todo":
@@ -1466,15 +1466,20 @@ def _record_ticket_error(
     return RunResult(action, old_status, change.task.task.frontmatter.status)
 
 
+def display_path(path: Path, main_root: Path) -> str:
+    return str(path.relative_to(main_root)) if path.is_relative_to(main_root) else str(path)
+
+
 def _run_check(
     branch_repo: Repo,
+    main_root: Path,
     action: NextAction,
     command: str,
     selected_status: str,
     timeout: int,
 ) -> RunResult | None:
     """Validate the prepared worktree before spending an agent or review session."""
-    print(f"Running check in {branch_repo.root}...", file=sys.stderr)
+    print(f"{action.id}: running check in {display_path(branch_repo.root, main_root)}...", file=sys.stderr)
     try:
         returncode = run_logged("check", command, branch_repo.root, timeout)
     except CommandTimedOut as error:

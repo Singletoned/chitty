@@ -98,7 +98,7 @@ class TestReviewRebaseSession(ReviewMergeTestCase):
             if line.startswith("log: ")
         ]
         self.assertEqual(len(logs), 1, result.stderr)
-        path = Path(logs[0])
+        path = self.root / Path(logs[0])
         self.assertEqual(list((self.root / ".git/chitty/run").glob("*.log")), [path])
         markers = {"rebase-stdout", "rebase-stderr", "review-stdout", "review-stderr"}
         self.assertEqual(

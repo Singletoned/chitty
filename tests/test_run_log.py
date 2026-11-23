@@ -75,7 +75,7 @@ class TestRunLog(CliTestCase):
             if line.startswith("log: ")
         ]
         self.assertEqual(len(lines), 1, result.stderr)
-        path = Path(lines[0])
+        path = self.root / Path(lines[0])
         directory = self.root / ".git/chitty/run"
         self.assertEqual(list(directory.glob("*.log")), [path])
         self.assertEqual(path.parent, directory)
