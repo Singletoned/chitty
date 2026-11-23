@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: doing
+status: error
 priority: high
 depends_on:
   - TASK-639
@@ -68,6 +68,17 @@ Planner, 2026-11-23, after a cold read: on 2026-11-23 a counting wrapper gave 36
 
 Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on this repository. A counting wrapper gave 14,802 `scan` calls (the earlier count of 36 was wrong), and under cProfile `Repo._working_ticket_files` took 156 s of 166 s, `ids.parse_filename` 42 s. Scans are still the cost, so the ticket stands as written.
 
+Runner error (agent): TASK-598 is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-598`
+
+Error output:
+
+```text
+last session: exit 0 after 23s
+TASK-598 remains unfinished in `doing`. I captured the two invalid-entry baseline errors in `tmp/before-errors.txt`; implementation and the required tests remain outstanding.
+```
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -106,3 +117,5 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T14:38:22Z youthful-quartz-zander planning → todo
 - 2026-11-23T14:39:51Z jolly-white-urchin todo → doing
 - 2026-11-23T14:44:11Z jolly-white-urchin: wrote the plan
+- 2026-11-23T14:46:55Z jolly-white-urchin: changed notes
+- 2026-11-23T14:46:55Z jolly-white-urchin doing → error
