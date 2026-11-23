@@ -1,6 +1,6 @@
 ---
 title: Refuse a ticket write only when a newer, different copy exists elsewhere
-status: planning
+status: cold-read
 depends_on:
   - TASK-378
   - TASK-382
@@ -90,3 +90,4 @@ Planner, 2026-11-22 (from `TASK-547`'s cold read): the replan must supply `newer
 - 2026-11-22T11:24:46Z friendly-jade-stoat: changed labels, notes
 - 2026-11-22T11:25:47Z friendly-jade-stoat: changed notes
 - 2026-11-23T14:37:10Z youthful-quartz-zander: changed title, description, acceptance criteria
+- 2026-11-23T14:37:16Z youthful-quartz-zander planning → cold-read
