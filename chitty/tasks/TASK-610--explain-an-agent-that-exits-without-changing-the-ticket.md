@@ -12,7 +12,10 @@ In taidy (2026-11-22), `agent_command` was `pi --no-extensions -e ~/.pi/agent/ex
 
 Suggestion origin: taidy
 
+Folded in from TASK-622 and TASK-623: four worker runs and a reviewer run in circuitry (2026-11-14) ended `was unchanged` with no cause; in echonomicon (2026-11-22) the agent never started because `uv run` failed to parse a conflicted `pyproject.toml`, and the log began with `uv` output. Report "agent could not start" apart from "agent failed".
+
 ## History
 
 - 2026-11-23T10:24:02Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:04Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:34Z witty-russet-gannet: changed notes
