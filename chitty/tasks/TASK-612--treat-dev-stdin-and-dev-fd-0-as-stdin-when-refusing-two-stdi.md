@@ -34,6 +34,8 @@ Add regression properties and add-command example, verify they fail, then recogn
 
 Suggestion origin: chitty
 
+Both regression tests failed before the fix: add created a ticket and edit accepted note stdin plus summary /dev/stdin.
+
 ## History
 
 - 2026-11-23T10:24:06Z witty-russet-gannet → backlog
@@ -53,3 +55,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:35:02Z witty-russet-gannet planning → todo
 - 2026-11-23T11:14:38Z lively-navy-ibis todo → doing
 - 2026-11-23T11:17:10Z lively-navy-ibis: wrote the plan
+- 2026-11-23T11:17:36Z lively-navy-ibis: changed notes
