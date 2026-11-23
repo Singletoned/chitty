@@ -1,6 +1,6 @@
 ---
 title: Count a landing check failure as a failed review for escalation
-status: todo
+status: doing
 depends_on:
   - TASK-609
 created: 2026-11-23
@@ -50,3 +50,4 @@ Precedent for criterion 2: `test_automatic_and_reviewer_failures_count_together`
 - 2026-11-23T13:41:47Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T13:41:50Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T13:41:52Z youthful-quartz-zander planning → todo
+- 2026-11-23T13:42:54Z sunny-violet-heron todo → doing
