@@ -63,6 +63,8 @@ Planner, 2026-11-23, after the first cold read: `_parse_questions` is now separa
 
 Planner, 2026-11-23, after the second cold read: nothing serious. Property text has no surrounding spaces; the `Questionz` case checks that `Questions` is in the allowed list, so it fails before the change; whitespace-only lines and `LIST_MARKER_RE` are named; and `_format` needs its own Questions branch.
 
+Work started: plan recorded, but implementation and requested pre-fix test evidence remain outstanding. No code or tests changed.
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -73,3 +75,4 @@ Planner, 2026-11-23, after the second cold read: nothing serious. Property text 
 - 2026-11-23T12:31:36Z witty-russet-gannet cold-read → todo
 - 2026-11-23T13:02:02Z friendly-yellow-ibis todo → doing
 - 2026-11-23T13:05:23Z friendly-yellow-ibis: wrote the plan
+- 2026-11-23T13:05:35Z friendly-yellow-ibis: changed notes
