@@ -76,7 +76,7 @@ stay aligned.
 ## Acceptance Criteria
 
 - [ ] No glyph in the `chitty list` status, priority or skip columns is a narrow character or uses U+FE0F; shown by `tests/test_list_glyphs.py`, which fails before the change.
-- [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing, and `grep -n "\"👤" src/chitty/selection.py` prints nothing.
+- [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing, and `grep -n "\"👤 human" src/chitty/selection.py` prints nothing.
 - [ ] `make check` passes.
 - [ ] A row with no priority and a row with `⏫` start their titles at the same column, measured with the width rule in the Description (East Asian Width `W` or `F` counts 2, U+FE0F and combining characters 0, anything else 1), not `_columns`; shown by the alignment test, which fails before the change (titles at columns 21 and 22 on `main`).
 
@@ -119,3 +119,4 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-23T23:06:32Z mellow-amber-toad planning → cold-read
 - 2026-11-23T23:09:13Z mellow-amber-toad: changed description, acceptance criteria
 - 2026-11-23T23:09:13Z mellow-amber-toad cold-read → planning
+- 2026-11-23T23:09:34Z mellow-amber-toad: changed acceptance criteria
