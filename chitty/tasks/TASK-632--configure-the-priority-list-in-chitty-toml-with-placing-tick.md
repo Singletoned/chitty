@@ -59,6 +59,10 @@ Out of scope: `src/chitty/import_backlog.py` passes the source priority through 
 - [ ] MCP: the add tool accepts `priority="now"` and refuses `"high"` with the configured-name message; record the `main` failure in a note
 - [ ] `docs/plan/config.md` has the `priorities` line and the decision sentence; `make check` passes
 
+## Plan
+
+Add the specified regression tests and run them against the current baseline; implement configuration validation, shared priority validation and ranking, CLI and MCP changes; update existing tests and plan docs; run formatting and make check, then commit and hand off.
+
 ## Notes
 
 Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priority: ""`, a line break in a name, and `chitty list` with custom names; criteria split by area. Earlier: named the tests that pin the old order and error text; the leading-emoji idea is `TASK-633`.
@@ -100,3 +104,4 @@ Planning blocker: the list-display requirement contradicts its prescribed test. 
 - 2026-11-23T19:37:59Z witty-yellow-vole cold-read → planning
 - 2026-11-23T19:38:01Z witty-yellow-vole planning → todo
 - 2026-11-23T20:06:07Z eager-ebony-quail todo → doing
+- 2026-11-23T20:08:38Z eager-ebony-quail: wrote the plan
