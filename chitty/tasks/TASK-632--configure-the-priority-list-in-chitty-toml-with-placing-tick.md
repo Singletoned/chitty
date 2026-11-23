@@ -38,7 +38,9 @@ Existing tests that pin the old order or the old CLI error must be updated: `tes
 
 Tests, in a new `tests/test_priorities_config.py`, using `RepoTestCase`. The custom config is `tests/support.py`'s `CONFIG` with the line `priorities = ["now", "soon", "", "later"]` inserted before its first `[` table line. Messages that pass through pydantic are asserted as substrings.
 
-- Config: the default is `["high", "medium", "", "low"]`. Each of these is refused with the message above: no `""`, two `""`, `["a", "a", ""]`, `[" a", ""]`.
+- Config: the default is `["high", "medium", "", "low"]`. Each of these is refused with the message above: no `""`, two `""`, `["a", "a", ""]`, `[" a", ""]`, `["a\nb", ""]`.
+- Model: a ticket file written by hand with `priority: ""` makes `chitty.model.parse` raise with `priority must not be empty; remove the key instead`; `chitty check` exits non-zero and its output contains that message; `chitty edit TASK-1 --note x` exits non-zero and the file is byte-identical.
+- List display, with the custom config: tickets written with `priority: now` and `priority: high` (the second by hand, as `chitty check` would report it). `chitty list` exits 0 and prints both IDs, and neither line contains any of the `PRIORITY_GLYPHS` values `⬆️`, `⏺️`, `⬇️` (on `main` it crashes with `KeyError`, since `cli.py` indexes `PRIORITY_GLYPHS[fm.priority]`).
 - Writes, with the custom config: `chitty add T -d x -p now` exits 0 and writes `priority: now`. `chitty add T -d x -p high` exits non-zero, its output contains `priority 'high' is not configured; choose from now, soon, later`, and no file is created. On an existing ticket, `chitty edit TASK-1 -p later` exits 0, `-p high` is refused with the same message and the file is byte-identical, and `-p ""` removes the key.
 - `chitty check`: with the custom config, a ticket file written with `priority: high` is reported with the message above.
 - Ordering examples: with the default list, `ordered` puts the tickets `high`, `medium`, no priority, `low` in that order whatever the input order. With the custom list, `now`, `soon`, no priority, `later`, and a ticket with `priority: high` last. `choose` picks the `now` ticket over an older `soon` one.
@@ -51,16 +53,15 @@ Out of scope: how custom priorities are displayed (TASK-633), named sets, config
 
 ## Acceptance Criteria
 
-- [ ] The config, write, `chitty check`, ordering, property and MCP tests in `tests/test_priorities_config.py` pass; each fails against `main`. Record both runs in a note
+- [ ] Config and model: the config cases (default, the five refusals) and the `priority: ""` model cases in `tests/test_priorities_config.py` pass, each asserting its message, and fail against `main`
+- [ ] Writes, check and list: the `chitty add`/`chitty edit` write cases, the `chitty check` case and the `chitty list` display case pass and fail against `main`
+- [ ] Ordering: the `ordered`/`choose` examples and the Hypothesis property pass, and the examples fail against `main`; the existing tests named above are updated and listed in a note
+- [ ] MCP: the add tool accepts `priority="now"` and refuses `"high"` with the configured-name message; record the `main` failure in a note
 - [ ] `docs/plan/config.md` has the `priorities` line and the decision sentence; `make check` passes
 
 ## Notes
 
-Planner, 2026-11-23: a cold read found nothing serious. Named the existing tests that pin the old order and error text, said what a hand-written `priority: ""` does, and fixed the property's types and unconfigured-name generator, the config placement in `CONFIG`, the MCP assertion and substring matching.
-
-Planner, 2026-11-23: the person proposed leading emoji in `priorities` entries (default `["⬆️high", "⏺️medium", "", "⬇️low"]`). That is TASK-633, which builds on this ticket; nothing changes here.
-
-Planning blocker: the required regression coverage does not specify fixtures, actions and assertions for several stated behaviours. `src/chitty/model.py` currently restricts priority to a literal, and the ticket requires hand-written `priority: ""` to be a parse error reported by `check` and refused by other commands, but describes no test for that behaviour. It also requires rejecting names with line breaks, but the config cases cover only surrounding whitespace. `src/chitty/cli.py` indexes `PRIORITY_GLYPHS` directly, but the specified custom-priority tests do not exercise `list` display or establish that an unknown name does not crash it. Please specify regression fixtures, commands and assertions for these requirements, including which other command should refuse invalid frontmatter. I inspected the remaining named implementation and test locations; the listed ordering, writes, check and MCP cases have concrete test descriptions. I have not implemented or run the proposed tests, so their failures against main and the full check remain unverified.
+Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priority: ""`, a line break in a name, and `chitty list` with custom names; criteria split by area. Earlier: named the tests that pin the old order and error text; the leading-emoji idea is `TASK-633`.
 
 ## History
 
@@ -73,3 +74,4 @@ Planning blocker: the required regression coverage does not specify fixtures, ac
 - 2026-11-23T13:09:00Z calm-teal-yellowhammer todo → doing
 - 2026-11-23T13:11:32Z calm-teal-yellowhammer: changed owner, notes
 - 2026-11-23T13:11:32Z calm-teal-yellowhammer doing → planning
+- 2026-11-23T18:37:59Z witty-yellow-vole: replaced notes; changed owner, description, acceptance criteria
