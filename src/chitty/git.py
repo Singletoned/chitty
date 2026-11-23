@@ -51,6 +51,19 @@ def parse_trailer_log(text: str) -> list[TrailerCommit]:
     return commits
 
 
+def trailer_commits(root: Path, ref: str) -> list[TrailerCommit]:
+    """Read non-merge commits and their task trailers, newest first."""
+    command = ["git", "log", ref, *TRAILER_LOG_OPTIONS]
+    result = subprocess.run(command, check=False, cwd=root, capture_output=True)
+    if result.returncode:
+        raise ChittyError(f"`{' '.join(command)}` failed in {root}:\n{result.stderr.decode().strip()}")
+    try:
+        text = result.stdout.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ChittyError(f"Git log for {ref} is not UTF-8") from error
+    return parse_trailer_log(text)
+
+
 @dataclass(frozen=True)
 class BranchCommit:
     sha: str
