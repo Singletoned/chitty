@@ -1,6 +1,6 @@
 ---
 title: "Planning guide: check property-test generators against wrong versions instead of committing them"
-status: review
+status: done
 labels:
   - untestable
 owner: friendly-zinc-dormouse
@@ -22,6 +22,8 @@ Keep the advice general (no Python or Hypothesis names): the guides reach every 
 
 Suggestion origin: echonomicon
 
+Reviewed: the `plan.md` bullet now separates example-based tests (commit each wrong version as a test, or record a run in a note and say why) from property tests (the planner runs the generators against each wrong version and fixes any that let one pass, the worker re-runs once and notes the result, nothing is committed). The wording stays general. `docs/plan/pipeline-and-feedback.md` records the exception. `make check` passed (1171 tests). `test_property_test_wrong_versions_are_run_not_committed` failed with `main`'s `plan.md` swapped in and passed with the branch version.
+
 ## Summary
 
 Rewrote the wrong-versions bullet in `src/chitty/roles/plan.md`. Example-based tests: commit each wrong version as a test, or record a run in a note where that is impractical, saying why. Property tests: the planner runs the generators against each wrong version while planning and fixes any that let one pass; the worker re-runs them once against each and notes the result; the wrong versions are not committed. The text is compressed to fit the 1340-word budget for `plan.md` (now 1324).
@@ -40,3 +42,5 @@ Verification: `make check` passed (1171 tests).
 - 2026-11-23T12:01:31Z friendly-zinc-dormouse todo → doing
 - 2026-11-23T12:21:03Z friendly-zinc-dormouse: changed summary
 - 2026-11-23T12:21:03Z friendly-zinc-dormouse doing → review
+- 2026-11-23T13:32:46Z able-amber-falcon: changed notes
+- 2026-11-23T13:32:46Z able-amber-falcon review → done
