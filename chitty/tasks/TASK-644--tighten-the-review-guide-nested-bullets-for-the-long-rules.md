@@ -1,9 +1,9 @@
 ---
 title: "Tighten the review guide: nested bullets for the long rules"
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: plucky-indigo-eel
 depends_on:
   - TASK-640
 created: 2026-11-23
@@ -29,3 +29,5 @@ Rules for this tightening:
 - 2026-11-23T12:41:08Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:39Z friendly-zinc-dormouse cold-read → planning
 - 2026-11-23T12:45:10Z friendly-zinc-dormouse planning → todo
+- 2026-11-23T14:35:42Z plucky-indigo-eel: changed owner
+- 2026-11-23T14:35:42Z plucky-indigo-eel todo → doing
