@@ -34,6 +34,10 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; c
 
 Red first: the unfinished landed property failed with NotImplementedError against the stub.
 
+## Summary
+
+Implemented the pure landed-work rule and moved the path helper. The property failed against the stub before implementation; all three mutants and make check pass.
+
 ## History
 
 - 2026-11-22T10:03:13Z friendly-jade-stoat → todo
@@ -54,3 +58,4 @@ Red first: the unfinished landed property failed with NotImplementedError agains
 - 2026-11-23T19:44:41Z brisk-jade-dormouse todo → doing
 - 2026-11-23T19:47:15Z brisk-jade-dormouse: wrote the plan
 - 2026-11-23T19:47:54Z brisk-jade-dormouse: changed notes
+- 2026-11-23T19:50:10Z brisk-jade-dormouse: changed summary
