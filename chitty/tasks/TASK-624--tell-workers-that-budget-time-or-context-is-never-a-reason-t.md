@@ -1,6 +1,6 @@
 ---
 title: Tell workers that budget, time or context is never a reason to block
-status: doing
+status: review
 labels:
   - untestable
 owner: friendly-zinc-dormouse
@@ -26,6 +26,14 @@ Suggestion origin: taidy
 
 Folded in from TASK-606 (follow-up) and TASK-613: under Chitty 0.7.0 the same TASK-24 ran in one session, but the model still invented a budget limit when it stalled, so the guide and prompt wording is still needed. The runner requeue half of TASK-613 is covered by TASK-617.
 
+## Summary
+
+In `src/chitty/roles/work.md`, the `-s blocked` bullet now says the session has no token, time or context budget to manage, and that budget, capacity, time or context is never a reason for `blocked`. Rather than adding a separate bullet, which would exceed the 620-word budget for `work.md` (now 615), the existing too-large-ticket route to `planning` gains "(propose a split)".
+
+The work-mode `continuation_prompt` in `src/chitty/run.py` adds one sentence: there is no token, time or context budget, so none is an obstacle, and a ticket too large for one session goes to `planning` with a note proposing a split.
+
+Verification: `make check` passed (1170 tests), including `tests/test_guide_return_to_planning.py`. No test pins the prompt wording.
+
 ## History
 
 - 2026-11-23T10:24:24Z witty-russet-gannet → backlog
@@ -36,3 +44,5 @@ Folded in from TASK-606 (follow-up) and TASK-613: under Chitty 0.7.0 the same TA
 - 2026-11-23T10:30:02Z witty-russet-gannet: changed description
 - 2026-11-23T12:01:34Z friendly-zinc-dormouse: changed owner
 - 2026-11-23T12:01:34Z friendly-zinc-dormouse todo → doing
+- 2026-11-23T12:23:16Z friendly-zinc-dormouse: changed summary
+- 2026-11-23T12:23:16Z friendly-zinc-dormouse doing → review
