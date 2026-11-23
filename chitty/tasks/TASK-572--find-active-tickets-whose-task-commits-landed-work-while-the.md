@@ -1,6 +1,6 @@
 ---
 title: Find active tickets whose `Task:` commits landed work while they are not done
-status: todo
+status: doing
 depends_on:
   - TASK-358
 created: 2026-11-22
@@ -45,3 +45,4 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; c
 - 2026-11-23T19:40:20Z witty-yellow-vole: changed description, acceptance criteria
 - 2026-11-23T19:40:20Z witty-yellow-vole todo → planning
 - 2026-11-23T19:40:23Z witty-yellow-vole planning → todo
+- 2026-11-23T19:44:41Z brisk-jade-dormouse todo → doing
