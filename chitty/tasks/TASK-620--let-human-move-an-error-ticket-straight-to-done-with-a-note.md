@@ -1,6 +1,6 @@
 ---
 title: Let `--human` move an `error` ticket straight to `done`, with a note
-status: review
+status: done
 created: 2026-11-23
 ---
 
@@ -33,6 +33,10 @@ Suggestion origin: chitty
 
 Regression tests failed before the fix: the human error-to-done case was refused and the missing-note error was incorrect.
 
+Reviewed: Complete diff and criteria reviewed; no prior review failures or Decided notes.
+1: pass - make check: 1172 passed; merge-base test_error_to_done_matrix fails for error/human/reason with setting status done requires -s review first.
+2: pass - make check: 819 subtests passed; merge-base pytest tests/test_edit_human.py -k error_to_done: 3 failures, including missing-note and whitespace error message and the permitted transition; 26 subtests passed.
+
 ## Summary
 
 Implemented the human-only error-to-done transition with a required note. Regression matrix failed before the fix; make check passed.
@@ -58,3 +62,5 @@ Implemented the human-only error-to-done transition with a required note. Regres
 - 2026-11-23T11:56:13Z jolly-teal-stoat: changed notes
 - 2026-11-23T11:59:07Z jolly-teal-stoat: changed summary
 - 2026-11-23T12:01:02Z jolly-teal-stoat doing → review
+- 2026-11-23T12:10:33Z mellow-quartz-dormouse: changed notes
+- 2026-11-23T12:10:33Z mellow-quartz-dormouse review → done
