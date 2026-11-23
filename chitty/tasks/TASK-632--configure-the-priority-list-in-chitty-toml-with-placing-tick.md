@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: cold-read
+status: planning
 labels:
   - needs-minor
 parent: TASK-607
@@ -38,7 +38,7 @@ Existing tests that pin the old order or the old CLI error must be updated: `tes
 
 Tests, in a new `tests/test_priorities_config.py`, using `RepoTestCase`. The custom config is `tests/support.py`'s `CONFIG` with the line `priorities = ["now", "soon", "", "later"]` inserted before its first `[` table line. Messages that pass through pydantic are asserted as substrings.
 
-- Config: the default is `["high", "medium", "", "low"]`. Each of these is refused with the message above: no `""`, two `""`, `["a", "a", ""]`, `[" a", ""]`, `["a\nb", ""]`, `["a\u000bb", ""]`, `["a\rb", ""]` (written in TOML with the `\u000b` escape: TOML refuses a raw vertical tab and has no `\x` escape).
+- Config: the default is `["high", "medium", "", "low"]`. Each of these is refused with the message above: no `""`, two `""`, `["a", "a", ""]`, `[" a", ""]`, `["a\nb", ""]`, `["a\u000bb", ""]`, `["a\rb", ""]` (written with TOML escapes: TOML refuses a raw vertical tab and has no `\x` escape). Property, through the same config validation as these examples: for a name of one to five `string.ascii_letters` with one character from `"\n\r\x0b\x0c\x1c\x1d\x1e\x85  "` (every `str.splitlines` boundary) inserted at a drawn position, `[name, ""]` is refused with the line-break message.
 - Model: a ticket file written by hand with `priority: ""` makes `chitty.model.parse` raise with `priority must not be empty; remove the key instead`; `chitty check` exits non-zero and its output contains that message; `chitty edit TASK-1 --note x` exits non-zero, its output contains `priority must not be empty; remove the key instead`, and the file is byte-identical.
 - List display, with the custom config: tickets written with `priority: now` and `priority: high` (the second by hand, as `chitty check` would report it). `chitty list` exits 0 and prints both IDs; the `now` line contains none of the three glyphs `⬆️`, `⏺️`, `⬇️` (listed literally: `PRIORITY_GLYPHS.values()` includes `""`, which every line contains), and the `high` line still shows `⬆️` (built-in names keep their glyph even when not configured, from `PRIORITY_GLYPHS.get(priority, "")`; `TASK-633` may revisit that). On `main` the `now` ticket fails to parse, since `priority` is a literal, so this fails; after the change, indexing `PRIORITY_GLYPHS[fm.priority]` in `cli.py` would raise `KeyError` for `now`).
 - Writes, with the custom config: `chitty add T -d x -p now` exits 0 and writes `priority: now`. `chitty add T -d x -p high` exits non-zero, its output contains `priority 'high' is not configured; choose from now, soon, later`, and no file is created. On an existing ticket, `chitty edit TASK-1 -p later` exits 0, `-p high` is refused with the same message and the file is byte-identical, and `-p ""` removes the key.
@@ -96,3 +96,5 @@ Planning blocker: the list-display requirement contradicts its prescribed test. 
 - 2026-11-23T19:37:19Z witty-yellow-vole: changed description, acceptance criteria
 - 2026-11-23T19:37:19Z witty-yellow-vole cold-read → planning
 - 2026-11-23T19:37:29Z witty-yellow-vole planning → cold-read
+- 2026-11-23T19:37:59Z witty-yellow-vole: changed description
+- 2026-11-23T19:37:59Z witty-yellow-vole cold-read → planning
