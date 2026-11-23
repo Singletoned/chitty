@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: planning
+status: cold-read
 created: 2026-11-23
 ---
 
@@ -38,3 +38,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:29:05Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:32:40Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:32:40Z witty-russet-gannet cold-read → planning
+- 2026-11-23T10:32:42Z witty-russet-gannet planning → cold-read
