@@ -9,7 +9,7 @@ from click.testing import CliRunner
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from chitty.cli import cli
+from chitty.cli import cli, reads_stdin
 from tests import examples
 from tests.support import CONFIG, RepoTestCase
 
@@ -74,6 +74,64 @@ class TestTextFiles(RepoTestCase):
                     self.assertIn("--description-file", result.output)
                     self.assertIn("--note-file", result.output)
 
+    @settings(max_examples=examples(100), deadline=None)
+    @given(
+        values=st.lists(
+            st.sampled_from([None, "-", "/dev/stdin", "/dev/fd/0", "file"]), min_size=4, max_size=4
+        ).filter(lambda v: any(x is not None for x in v))
+    )
+    def test_edit_stdin_aliases(self, values):
+        options = ("--description-file", "--plan-file", "--note-file", "--summary-file")
+        with mock.patch("pathlib.Path.cwd", return_value=self.root):
+            task_id = (
+                self.run_cli("add", "T", "-d", "x", "--json")["id"]
+                if not list((self.root / "chitty/tasks").glob("*.md"))
+                else "TASK-1"
+            )
+            task = next((self.root / "chitty/tasks").glob("*.md"))
+            before = task.read_bytes()
+            file = self.root / "text.txt"
+            file.write_text("text")
+            args = ["edit", task_id]
+            for option, value in zip(options, values):
+                if value is not None:
+                    args.extend([option, str(file) if value == "file" else value])
+            saved = os.dup(0)
+            try:
+                with file.open("rb") as stream:
+                    os.dup2(stream.fileno(), 0)
+                    result = CliRunner().invoke(cli, args, input="text")
+            finally:
+                os.dup2(saved, 0)
+                os.close(saved)
+            stdin_options = [
+                o for o, v in zip(options, values) if v in ("-", "/dev/stdin", "/dev/fd/0")
+            ]
+            self.assertEqual(result.exit_code, 2 if len(stdin_options) > 1 else 0, result.output)
+            if len(stdin_options) > 1:
+                for option in stdin_options:
+                    self.assertIn(option, result.output)
+                self.assertEqual(task.read_bytes(), before)
+
+    def test_add_stdin_alias(self):
+        with mock.patch("pathlib.Path.cwd", return_value=self.root):
+            tasks = self.root / "chitty/tasks"
+            before = set(tasks.glob("*"))
+            with tempfile.TemporaryFile() as stream:
+                saved = os.dup(0)
+                try:
+                    os.dup2(stream.fileno(), 0)
+                    result = CliRunner().invoke(
+                        cli,
+                        ["add", "T", "--description-file", "/dev/stdin", "--note-file", "-"],
+                        input="text",
+                    )
+                finally:
+                    os.dup2(saved, 0)
+                    os.close(saved)
+            self.assertEqual(result.exit_code, 2, result.output)
+            self.assertEqual(set(tasks.glob("*")), before)
+
     def test_add_stdin_description_and_required_check(self):
         with mock.patch("pathlib.Path.cwd", return_value=self.root):
             result = CliRunner().invoke(cli, ["add", "T", "--note-file", "-"], input="note")
@@ -85,6 +143,18 @@ class TestTextFiles(RepoTestCase):
             self.assertEqual(
                 self.run_cli("show", created["id"], "--json")["description"], "description"
             )
+
+
+@given(
+    name=st.text().filter(
+        lambda s: s not in {"<stdin>", "/dev/stdin", "/dev/fd/0", "/proc/self/fd/0"}
+    )
+)
+def test_reads_stdin(name):
+    for value in ("<stdin>", "/dev/stdin", "/dev/fd/0", "/proc/self/fd/0"):
+        assert reads_stdin(value)
+    for value in (name, "/dev/stdin/", "/dev/fd/00", "/dev/fd/0/", "-", "<stdin>x", ""):
+        assert not reads_stdin(value)
 
 
 def option_test(command, option):

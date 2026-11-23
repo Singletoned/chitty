@@ -232,11 +232,15 @@ def _text(value: str | None, file: TextIO | None, name: str) -> str | None:
     return file.read() if file is not None else value
 
 
+def reads_stdin(name: str) -> bool:
+    return name in {"<stdin>", "/dev/stdin", "/dev/fd/0", "/proc/self/fd/0"}
+
+
 def _check_stdin_files(**files: TextIO | None) -> None:
     names = [
         f"--{name.replace('_', '-')}"
         for name, file in files.items()
-        if file is not None and file.name == "<stdin>"
+        if file is not None and reads_stdin(file.name)
     ]
     if len(names) > 1:
         raise click.UsageError(f"only one file option can read stdin: {', '.join(names)}")
