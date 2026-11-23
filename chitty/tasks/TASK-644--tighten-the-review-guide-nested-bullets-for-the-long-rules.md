@@ -1,6 +1,6 @@
 ---
 title: "Tighten the review guide: nested bullets for the long rules"
-status: doing
+status: review
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -21,6 +21,23 @@ Rules for this tightening:
 - Do not move rules to other files unless this ticket says to.
 - In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
 
+## Summary
+
+Restructured `src/chitty/roles/review.md` (839 to 816 words):
+
+- The `design` bullet is split in two. A lead line ("set `-s planning` with cause `design`, not `doing`, when the ticket cannot guide the work:") has one nested bullet per trigger, including oversized tickets (suggest a split) and repeat `tests` failures. A "Before returning a ticket to `planning`:" bullet has nested points: keep checking; what the note contains; the branch and worktree are kept and the run stops; `blocked` for external obstacles.
+- The failure-note bullet is a lead line ("every failure gets one note:") with nested points: the first line and the causes in their order; one line per criterion, with findings grouped under it; what must change and what was run; `--uncheck` and `-s doing`.
+- The earlier-notes bullet is down to two sentences.
+- Unchanged: the dirty-worktree stop (bullet 2), the bullet on showing each test fails without the change, and every other bullet.
+
+Sentences removed outright, and where their point lives:
+- "The dirty-worktree stop above still applies." (inspection bullet) -> the dirty-worktree stop itself, bullet 2, which applies unconditionally.
+- "Gather all actionable planning issues in the `Review failed (design):` note with the verdicts below." -> the failure-note bullet: every failure, `design` included, gets one note with all of the pass's findings.
+- "Report all findings from this pass together in that one note." -> "every failure gets one note" plus "Group all findings from this pass under the relevant criterion".
+- "Distinguish newly discovered findings from previously reported findings that remain unresolved" -> "cite the earlier note for each finding still unresolved".
+
+Verification: `make check`, run by `chitty edit -s review`.
+
 ## History
 
 - 2026-11-23T12:35:02Z friendly-zinc-dormouse → planning
@@ -31,3 +48,5 @@ Rules for this tightening:
 - 2026-11-23T12:45:10Z friendly-zinc-dormouse planning → todo
 - 2026-11-23T14:35:42Z plucky-indigo-eel: changed owner
 - 2026-11-23T14:35:42Z plucky-indigo-eel todo → doing
+- 2026-11-23T14:43:47Z plucky-indigo-eel: changed summary
+- 2026-11-23T14:43:47Z plucky-indigo-eel doing → review
