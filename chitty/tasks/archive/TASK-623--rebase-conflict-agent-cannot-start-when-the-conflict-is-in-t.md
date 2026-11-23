@@ -33,3 +33,4 @@ Review-path abort now exists (run.py rebase session failure aborts the rebase); 
 - 2026-11-23T10:24:23Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:24Z witty-russet-gannet: changed notes
 - 2026-11-23T10:27:57Z witty-russet-gannet: changed notes
+- 2026-11-23T10:28:00Z witty-russet-gannet backlog → archived
