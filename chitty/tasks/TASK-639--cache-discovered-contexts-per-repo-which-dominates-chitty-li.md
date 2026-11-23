@@ -1,6 +1,6 @@
 ---
 title: Cache `discovered_contexts` per `Repo`, which dominates `chitty list` time
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-23
 ---
@@ -14,7 +14,7 @@ Change, in `Repo` in `src/chitty/store.py`: cache the result of `discovered_cont
 Tests, in a new `tests/test_discovered_contexts_cache.py`. Use a `RepoTestCase` repository made into a Git repository: `git init -b main`, an identity, and one committed ticket from `chitty add`. Use `Repo.open(self.root)`.
 
 - Two calls to `discovered_contexts()` return equal lists. Before the second call, replace the instance's `_ref_files` with a wrapper that counts its calls; the count is 0 after the second call.
-- After `mkdir chitty/extra`, then a ticket file written by hand into it (copy the committed ticket file to `chitty/extra/EXTRA-1--x.md`), then `repo._invalidate()`, `discovered_contexts()` includes a context named `extra`. Without the `_invalidate`, it does not.
+- Call `discovered_contexts()` once. Then, after `mkdir chitty/extra`, then a ticket file written by hand into it (copy the committed ticket file to `chitty/extra/EXTRA-1--x.md`), then `repo._invalidate()`, `discovered_contexts()` includes a context named `extra`. In the same sequence without the `_invalidate`, the second call does not include `extra`.
 - Changing the returned list (`.clear()`) does not change the next call's result.
 
 Run them against `main` first and record the failure of the first test in a note.
@@ -28,3 +28,5 @@ Run them against `main` first and record the failure of the first test in a note
 ## History
 
 - 2026-11-23T12:07:54Z witty-russet-gannet → planning
+- 2026-11-23T12:08:25Z witty-russet-gannet: changed description
+- 2026-11-23T12:08:25Z witty-russet-gannet planning → cold-read
