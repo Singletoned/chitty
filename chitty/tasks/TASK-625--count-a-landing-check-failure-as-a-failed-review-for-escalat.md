@@ -39,6 +39,10 @@ Precedent for criterion 2: `test_automatic_and_reviewer_failures_count_together`
 
 Regression evidence: property failed on done with two review failures (doing instead of blocked); integration failed doing instead of blocked. Temporarily adding done to is_review_transition made the independence example fail: ChittyError: fresh-reviewer cannot review this task: moved the task to review; leave the review to another agent. Reverted that experiment.
 
+## Summary
+
+Count done-to-doing failures alongside review failures; property, integration and independence regressions added. make check passed; regression failures confirmed before fix.
+
 ## History
 
 - 2026-11-23T10:37:53Z witty-russet-gannet → backlog
@@ -59,3 +63,4 @@ Regression evidence: property failed on done with two review failures (doing ins
 - 2026-11-23T13:42:54Z sunny-violet-heron todo → doing
 - 2026-11-23T13:46:21Z sunny-violet-heron: wrote the plan
 - 2026-11-23T13:47:20Z sunny-violet-heron: changed notes
+- 2026-11-23T13:49:40Z sunny-violet-heron: changed summary
