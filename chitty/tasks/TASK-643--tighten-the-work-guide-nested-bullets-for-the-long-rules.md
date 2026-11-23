@@ -1,9 +1,9 @@
 ---
 title: "Tighten the work guide: nested bullets for the long rules"
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: plucky-indigo-eel
 depends_on:
   - TASK-640
   - TASK-624
@@ -30,3 +30,5 @@ Rules for this tightening:
 - 2026-11-23T12:41:03Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:35Z friendly-zinc-dormouse cold-read → planning
 - 2026-11-23T12:45:05Z friendly-zinc-dormouse planning → todo
+- 2026-11-23T14:34:58Z plucky-indigo-eel: changed owner
+- 2026-11-23T14:34:58Z plucky-indigo-eel todo → doing
