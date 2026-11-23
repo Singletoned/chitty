@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -135,3 +135,4 @@ Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before 
 - 2026-11-23T19:43:01Z daring-hazel-eel doing → error
 - 2026-11-23T23:08:17Z friendly-coral-badger: changed notes
 - 2026-11-23T23:08:17Z friendly-coral-badger error → todo
+- 2026-11-23T23:13:28Z friendly-khaki-lapwing todo → doing
