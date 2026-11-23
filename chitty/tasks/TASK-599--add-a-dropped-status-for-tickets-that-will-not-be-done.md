@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -80,3 +80,4 @@ Planner, 2026-11-23: a cold read found nothing blocking. Added a case for a whit
 - 2026-11-23T12:03:58Z witty-russet-gannet: changed description, notes
 - 2026-11-23T12:06:14Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:06:14Z witty-russet-gannet planning → todo
+- 2026-11-23T12:19:34Z jolly-teal-quail todo → doing
