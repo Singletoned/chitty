@@ -44,7 +44,7 @@ Tests, in a new `tests/test_questions_section.py`:
 - Property, with Hypothesis and `examples(50)` from `tests/__init__.py`: build Questions bodies from one to five items, each with a drawn tick (` `, `x`, `X`), text of one to three words of `string.ascii_letters` joined by single spaces (so no leading or trailing space), an optional continuation line, and an optional answer of one or two lines, separated by one or two blank lines. Then `parse` succeeds, `render()` is byte-identical, and `as_dict()["questions"]` has one entry per item, with the drawn tick, text and answer (text and answer as their lines joined with single spaces). A `## Questionz` heading still raises the unknown-section error, whose list of allowed names now includes `Questions`.
 - Formatters: in `tests/test_formatters.py`, give `sample()` the example section (through `with_section`), so the prettier and mdformat no-op tests cover it.
 - `chitty show`: in a `RepoTestCase` repository, write a ticket file with the example section. `chitty show TASK-1` prints `## Questions`, `1. [x] Which database?`, `   Postgres, because we already run it.` and `2. [ ] Who owns the migration?` in that order. `show --json` has the two `questions` entries.
-- Renumbering: a test next to the existing renumbering tests shows a ticket ID in a question rewritten.
+- Renumbering, in `tests/test_questions_section.py` (not next to the other renumbering tests, so all of this ticket's tests are in one file): `parse` the example ticket text with its Questions section replaced by `- [ ] Does TASK-7 block TASK-70?` then a blank line then `  Yes, see TASK-7.`; call `chitty.renumbering.rewrite_task(task, {TaskId("TASK", 7): TaskId("TASK", 12)})`. Assert the result's `questions` is `(Question(False, "Does TASK-12 block TASK-70?", "Yes, see TASK-12."),)` (so `TASK-70` is untouched) and its `section(QUESTIONS)` is the original body with both `TASK-7` replaced by `TASK-12`. Before the change it fails because `parse` refuses `## Questions`.
 
 Out of scope: CLI and MCP options (TASK-630), list markers (TASK-631), and Markdown warnings in `chitty check` for question text.
 
@@ -59,15 +59,7 @@ Add focused parsing, rendering, CLI, formatter, and renumbering tests; record th
 
 ## Notes
 
-Planner, 2026-11-23, after the first cold read: `_parse_questions` is now separate from the criteria parser, and its exact errors are given; the empty-item and blank-line cases are specified; `[X]` and a generated-body property are added; and the failure-before evidence must show each failure message.
-
-Planner, 2026-11-23, after the second cold read: nothing serious. Property text has no surrounding spaces; the `Questionz` case checks that `Questions` is in the allowed list, so it fails before the change; whitespace-only lines and `LIST_MARKER_RE` are named; and `_format` needs its own Questions branch.
-
-Work started: plan recorded, but implementation and requested pre-fix test evidence remain outstanding. No code or tests changed.
-
-Planning blocker: the test placement requirements contradict each other. The description requires the renumbering test next to the existing renumbering tests, which are in `tests/test_property_renumbering.py` and `tests/test_renumber_provisional.py`; acceptance criterion 1 requires the renumbering tests in `tests/test_questions_section.py`. Please choose the required location and update the criterion or description. The renumbering test also needs a concrete fixture, action and assertions: specify the ticket and ID mapping, whether to exercise `rewrite_task` or repository renumbering, and what unchanged content to assert. `src/chitty/renumbering.py` does iterate free sections via `with_section`; the parser, CLI formatter and formatter sample match the ticket's other code references. No implementation or tests were changed; failure-before evidence and formatter/check verification could not be run without the specified tests and implementation.
-
-Returned for the test placement contradiction and missing renumbering test specification detailed in the preceding note.
+Planner, 2026-11-23: the test placement contradiction is resolved: every test, renumbering included, is in `tests/test_questions_section.py`, and the renumbering test now has its fixture, call and assertions. Earlier cold reads (two) found nothing else outstanding.
 
 ## History
 
@@ -83,3 +75,4 @@ Returned for the test placement contradiction and missing renumbering test speci
 - 2026-11-23T13:06:22Z friendly-yellow-ibis: changed notes
 - 2026-11-23T13:06:28Z friendly-yellow-ibis: changed owner, notes
 - 2026-11-23T13:06:28Z friendly-yellow-ibis doing → planning
+- 2026-11-23T18:45:57Z witty-yellow-vole: replaced notes; changed owner, description
