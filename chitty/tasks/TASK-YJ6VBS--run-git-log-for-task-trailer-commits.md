@@ -1,6 +1,6 @@
 ---
 title: Run `git log` for `Task:` trailer commits
-status: planning
+status: cold-read
 depends_on:
   - TASK-358
 created: 2026-11-23
@@ -33,3 +33,4 @@ Planner, 2026-11-23: kept in `planning` because it uses `TrailerCommit`, `TRAILE
 ## History
 
 - 2026-11-23T18:39:16Z witty-yellow-vole → planning
+- 2026-11-23T19:28:36Z witty-yellow-vole planning → cold-read
