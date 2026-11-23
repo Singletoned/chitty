@@ -39,6 +39,10 @@ Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When
 
 Regression tests fail before the fix: both stalled runner paths omit the last session details; the continued path has no Error output section.
 
+## Summary
+
+Captured the latest session exit, duration and output in stalled runner errors. Regression tests failed before the fix; focused tests and make check pass.
+
 ## History
 
 - 2026-11-23T10:24:02Z witty-russet-gannet → backlog
@@ -70,3 +74,4 @@ Regression tests fail before the fix: both stalled runner paths omit the last se
 - 2026-11-23T13:53:58Z kind-hazel-crane todo → doing
 - 2026-11-23T13:57:03Z kind-hazel-crane: wrote the plan
 - 2026-11-23T13:57:28Z kind-hazel-crane: changed notes
+- 2026-11-23T14:00:58Z kind-hazel-crane: changed summary
