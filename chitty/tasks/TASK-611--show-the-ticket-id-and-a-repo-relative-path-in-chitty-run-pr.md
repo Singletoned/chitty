@@ -1,6 +1,6 @@
 ---
 title: Show the ticket ID and a repo-relative path in `chitty run` progress lines
-status: planning
+status: cold-read
 created: 2026-11-23
 ---
 
@@ -10,7 +10,7 @@ created: 2026-11-23
 
 Change:
 
-- Add a pure function `display_path(path: Path, main_root: Path) -> str` to `run.py`: the path relative to `main_root` when it is inside it, otherwise `str(path)` unchanged.
+- Add a pure function `display_path(path: Path, main_root: Path) -> str` to `run.py`: the path relative to `main_root` when it is inside it, otherwise `str(path)` unchanged. Compare the paths as given, without resolving symlinks; callers already pass resolved paths.
 - The check line becomes `<ID>: running check in <display_path(worktree)>...`, for example `TASK-4: running check in .worktrees/task-4...`.
 - The log line becomes `log: <display_path(log path)>`. Logs live under the Git common directory (`log_path`, `run.py:446`), which is `.git` inside the main checkout in the usual layout.
 
@@ -34,3 +34,5 @@ Suggestion origin: taidy
 - 2026-11-23T10:24:05Z witty-russet-gannet: changed notes
 - 2026-11-23T10:30:28Z witty-russet-gannet: changed title, description, acceptance criteria
 - 2026-11-23T10:30:28Z witty-russet-gannet backlog → planning
+- 2026-11-23T10:30:36Z witty-russet-gannet: changed description
+- 2026-11-23T10:30:36Z witty-russet-gannet planning → cold-read
