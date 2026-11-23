@@ -49,9 +49,11 @@ Review failed (tests): Newly discovered incomplete assertion for criterion 3; no
 5: pass - make check passed; baseline pytest tests/test_run_continue.py fails test_command_without_prompt_is_not_continued.
 Baseline integration run: 5 failed, 2 passed. No Decided note was present.
 
+Both strengthened criterion 3 tests fail against the original run.py with the old error wording; make check passes with the implementation.
+
 ## Summary
 
-Implemented two-commit progress detection and consecutive idle continuation limit. Regression tests failed before the fix; make check passes.
+Strengthened both error-note assertions after review. Both fail against the original implementation; make check passes.
 
 ## History
 
@@ -80,3 +82,4 @@ Implemented two-commit progress detection and consecutive idle continuation limi
 - 2026-11-23T11:40:19Z eager-violet-dormouse: changed acceptance criteria, notes
 - 2026-11-23T11:40:19Z eager-violet-dormouse review → doing
 - 2026-11-23T11:46:19Z honest-ebony-gannet: wrote the plan
+- 2026-11-23T11:49:04Z honest-ebony-gannet: changed notes, summary
