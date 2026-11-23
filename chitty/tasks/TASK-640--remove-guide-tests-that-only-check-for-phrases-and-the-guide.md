@@ -20,14 +20,15 @@ These lists are the complete set: if you find another test that seems to match t
 
 In files that are kept, remove only these tests:
 - `tests/test_guide_cold_read.py`: `test_prints_the_reader_procedure`, `test_plan_guide_points_at_the_reader_guide`.
-- `tests/test_guide_plan_restored.py`: class `TestPlanGuideRestored`, and `test_cold_read_guide_addresses_only_the_reader`.
+- `tests/test_guide_plan_restored.py`: class `TestPlanGuideRestored`, and `test_cold_read_guide_addresses_only_the_reader` from class `TestGuidesStayGeneral`. Keep that class and its `test_no_guide_names_a_ticket`.
+- `tests/test_guide_rebase.py`, `test_role_and_cli_expose_rebase_instructions`: remove the assertions on `rebase.md` text and on `guide rebase TASK-1` output; keep the `guide --help` assertions, which check CLI help, and rename the test to `test_help_names_the_rebase_guide`.
 - `tests/test_guide_property_tests.py`: `test_planning_guide_specifies_properties`, `test_cold_read_guide_reports_missed_properties`. The marker replacement they also check is covered by `assert_compatibility` in `tests/test_guide_workflow.py`.
 - `tests/test_guide_review_evidence.py`: `test_review_guide_requires_evidence_for_failures`.
 - `tests/test_guide_setup.py`: in `test_setup_guide_works_without_a_repository`, remove the phrase loop and keep the exit-code check.
 - `tests/test_cli.py`, class `TestGuide`: `test_plan_guide_describes_read_only_cold_reads`, `test_plan_guide_requires_decision_tests_and_expected_route`, `test_work_guide_requires_regression_test_failure_and_wrong_ticket_stop`, `test_branch_discoveries_use_provisional_ids_in_sequential_contexts`, `test_worker_guides_start_with_show_without_pulling_inbox`, `test_guide_points_agents_at_ticket_planning_instructions`.
 - `tests/test_statuses_planning.py`: `test_plan_guide_names_both_statuses`.
 
-Remove imports and helpers left unused. Keep everything else, including `tests/test_guide_workflow_block.py` and its snapshot `tests/fixtures/guide-runner-expected.md`, which test how the block is built and upgraded.
+Remove imports and helpers left unused. Keep everything else, including `tests/test_guide_workflow_block.py` (with `TestSplitGuide`, a rule over all text of both block halves) and its snapshot `tests/fixtures/guide-runner-expected.md`, which test how the block is built and upgraded.
 
 Also:
 - `AGENTS.md` (outside the managed block): replace the bullet starting "Put a ticket's new guide tests in their own file" with: do not add tests that only check that a guide or prompt contains a phrase; test the code that builds or serves guides instead.
@@ -39,7 +40,7 @@ No property: this change only removes tests. What remains is covered by the kept
 
 ## Acceptance Criteria
 
-- [ ] The tests `pytest --collect-only -q tests/` collects on the branch are exactly those it collects on `main` minus the files and tests this ticket lists; record both commands and the difference in a note.
+- [ ] The tests `pytest --collect-only -q tests/` collects on the branch are exactly those it collects on `main`, minus the deleted files and the named tests, with `test_role_and_cli_expose_rebase_instructions` renamed; record both commands and the difference in a note.
 - [ ] `make check` passes.
 
 ## History
@@ -47,3 +48,4 @@ No property: this change only removes tests. What remains is covered by the kept
 - 2026-11-23T12:34:45Z friendly-zinc-dormouse → planning
 - 2026-11-23T12:37:37Z friendly-zinc-dormouse: changed owner
 - 2026-11-23T12:37:37Z friendly-zinc-dormouse planning → cold-read
+- 2026-11-23T12:41:31Z friendly-zinc-dormouse: changed description, acceptance criteria
