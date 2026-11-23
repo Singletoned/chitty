@@ -47,7 +47,7 @@ Invalidation example, same file, in a non-Git directory with the config above an
 
 ## Acceptance Criteria
 
-- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case and the property pass; the scan-count tests fail before the change. Record both runs in a note
+- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. Record both runs in a note
 - [ ] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
 - [ ] `make check` passes
 
@@ -89,3 +89,4 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T14:34:25Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:35:57Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T14:36:00Z youthful-quartz-zander: changed description
+- 2026-11-23T14:36:03Z youthful-quartz-zander: changed acceptance criteria
