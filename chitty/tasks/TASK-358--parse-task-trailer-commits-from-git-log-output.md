@@ -1,6 +1,6 @@
 ---
 title: Parse `Task:` trailer commits from `git log` output
-status: cold-read
+status: planning
 created: 2026-11-16
 ---
 
@@ -68,3 +68,4 @@ Implement the Git log parser and reader, add property and real-Git tests, and ru
 - 2026-11-23T18:41:56Z witty-yellow-vole: changed description
 - 2026-11-23T18:41:56Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:42:00Z witty-yellow-vole planning → cold-read
+- 2026-11-23T18:43:18Z witty-yellow-vole cold-read → planning
