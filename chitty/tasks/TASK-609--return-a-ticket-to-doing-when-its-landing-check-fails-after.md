@@ -26,6 +26,8 @@ Out of scope: the pending-landing caller (`_land_pending`, `run.py:403`), which 
 
 Suggestion origin: taidy
 
+Escalation split out to TASK-625: until it lands, a ticket whose landing check keeps failing cycles doing → review → done without escalating.
+
 ## History
 
 - 2026-11-23T10:24:01Z witty-russet-gannet → backlog
@@ -36,3 +38,4 @@ Suggestion origin: taidy
 - 2026-11-23T10:36:05Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:37:51Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:37:51Z witty-russet-gannet cold-read → planning
+- 2026-11-23T10:37:55Z witty-russet-gannet: changed notes
