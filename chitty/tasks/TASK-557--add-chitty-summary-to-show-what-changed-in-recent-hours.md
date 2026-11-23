@@ -1,6 +1,6 @@
 ---
 title: Add `chitty summary` to show what changed in recent hours
-status: todo
+status: doing
 priority: high
 created: 2026-11-22
 ---
@@ -62,3 +62,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Clarified the `TaskId` t
 - 2026-11-23T12:02:37Z witty-russet-gannet planning → cold-read
 - 2026-11-23T12:04:24Z witty-russet-gannet: changed description, notes
 - 2026-11-23T12:04:24Z witty-russet-gannet cold-read → todo
+- 2026-11-23T12:07:37Z sunny-jade-quail todo → doing
