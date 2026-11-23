@@ -32,6 +32,8 @@ Move the existing path helper, add the specified property and mutants with a red
 
 Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; cold-read against what landed.
 
+Red first: the unfinished landed property failed with NotImplementedError against the stub.
+
 ## History
 
 - 2026-11-22T10:03:13Z friendly-jade-stoat → todo
@@ -51,3 +53,4 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; c
 - 2026-11-23T19:40:23Z witty-yellow-vole planning → todo
 - 2026-11-23T19:44:41Z brisk-jade-dormouse todo → doing
 - 2026-11-23T19:47:15Z brisk-jade-dormouse: wrote the plan
+- 2026-11-23T19:47:54Z brisk-jade-dormouse: changed notes
