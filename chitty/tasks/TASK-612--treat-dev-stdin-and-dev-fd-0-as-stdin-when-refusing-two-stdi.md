@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -9,6 +9,8 @@ created: 2026-11-23
 `_check_stdin_files` (`src/chitty/cli.py:235`) refuses two `-file` options that both read stdin, but it only recognises `-` (click names that stream `<stdin>`). A path that also reads stdin slips through. Seen 2026-11-23: `chitty edit TASK-568 --note-file - --summary-file /dev/stdin -s review <<'EOF'` stored the whole heredoc as the note, left Summary empty, and gave no warning.
 
 Change: decide in a small pure function, `reads_stdin(name: str) -> bool`, in `cli.py`, called by `_check_stdin_files` with each opened file's `name`. It receives click's `file.name`: `<stdin>` for `-`, the raw path otherwise (checked with click 8.5.0). It returns True for exactly `<stdin>`, `/dev/stdin`, `/dev/fd/0` and `/proc/self/fd/0`.
+
+Test setup: `RepoTestCase` clears `CHITTY_ACTOR`, so set it (as `TestTextFiles.setUp` does) before `add`. A property draw with every option absent is excluded (`edit` refuses it with `nothing to change`): draw at least one present option.
 
 Test hazard: click opens path options when it parses them (`File.convert`), so under `CliRunner` a `/dev/stdin` or `/dev/fd/0` option reads the test process's real fd 0, not the runner `input`; with `pytest -s` it can hang. Tests that pass these paths must point fd 0 at a temp file first (`os.dup2`) and restore it afterwards, and must not assert what such an option read. The error message is unchanged: `only one file option can read stdin: <options>`.
 
@@ -42,3 +44,5 @@ Suggestion origin: chitty
 - 2026-11-23T10:33:47Z witty-russet-gannet: changed acceptance criteria
 - 2026-11-23T10:33:47Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:33:50Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:35:00Z witty-russet-gannet: changed description
+- 2026-11-23T10:35:00Z witty-russet-gannet cold-read → planning
