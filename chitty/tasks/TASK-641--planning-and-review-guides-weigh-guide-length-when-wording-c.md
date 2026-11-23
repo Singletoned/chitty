@@ -1,6 +1,6 @@
 ---
 title: "Planning and review guides: weigh guide length when wording changes"
-status: doing
+status: review
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -19,6 +19,16 @@ Change:
 
 One or two sentences each. Keep the wording general: the guides reach every repository, which may call them something else, so say "agent guides or prompts", not file paths from this repository. Record the decision in `docs/plan/agent-instructions.md`, at the end of its list, after the bullet `TASK-640` adds. The Change list is the whole definition of done; the reviewer judges the sentences against it.
 
+## Summary
+
+- `src/chitty/roles/plan.md`, at the end of the `untestable` paragraph: "Agents read the guides and prompts in every session, so a ticket that adds text to agent guides or prompts says what it cuts to make room, or why they should grow."
+- `src/chitty/roles/review.md`, at the end of the bullet starting "Fail only for an unmet criterion": "For an `untestable` ticket that changes guide or prompt text, if you can give a shorter wording that keeps every requirement, fail it with cause `work`, set `-s doing`, and put that wording in the note."
+- `docs/plan/agent-instructions.md`: a new last bullet, after the one `TASK-640` added, records the decision.
+
+Both new sentences say "agent guides or prompts" / "guide or prompt text" and name no file paths. This ticket adds text to the guides: it is what replaces the removed word-budget test, so the guides grow by about 60 words.
+
+Verification: `make check`, run by `chitty edit -s review`.
+
 ## History
 
 - 2026-11-23T12:34:55Z friendly-zinc-dormouse → planning
@@ -29,3 +39,5 @@ One or two sentences each. Keep the wording general: the guides reach every repo
 - 2026-11-23T12:44:56Z friendly-zinc-dormouse planning → todo
 - 2026-11-23T14:37:02Z plucky-indigo-eel: changed owner
 - 2026-11-23T14:37:02Z plucky-indigo-eel todo → doing
+- 2026-11-23T14:50:47Z plucky-indigo-eel: changed summary
+- 2026-11-23T14:50:47Z plucky-indigo-eel doing → review
