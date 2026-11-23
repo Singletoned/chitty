@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: planning
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -34,7 +34,7 @@ Run every test against `main` before the change and record the failures in a not
 
 ## Acceptance Criteria
 
-- [ ] The property, the break-character examples, the parse example and the CLI test in `tests/test_criteria_line_breaks.py` pass; against `main`, all but the `\n` and `\r` refusals fail. Record both runs in a note
+- [ ] The property, the break-character examples, the parse example and the CLI test in `tests/test_criteria_line_breaks.py` pass. Against `main`, each fails except three that already pass there: the `a\nb` and `a\rb` refusals and the `[x] a` example. Record both runs in a note
 - [ ] `tests/test_property_criterion_text.py` and the other existing tests still pass; `make check` passes
 - [ ] `with_criterion_text`, used by `src/chitty/renumbering.py`, follows the same rule; `tests/test_property_renumbering.py` passes
 
@@ -93,3 +93,5 @@ Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterio
 - 2026-11-23T12:34:57Z plucky-jade-dormouse todo → doing
 - 2026-11-23T12:38:43Z plucky-jade-dormouse: changed owner, notes
 - 2026-11-23T12:38:43Z plucky-jade-dormouse doing → planning
+- 2026-11-23T23:05:38Z mellow-amber-toad: changed acceptance criteria
+- 2026-11-23T23:05:38Z mellow-amber-toad planning → cold-read
