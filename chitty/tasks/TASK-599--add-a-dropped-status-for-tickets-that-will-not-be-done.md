@@ -47,6 +47,10 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 - [ ] Summary rules: the `tests/test_status_dropped.py` cases for the summary refusals (none, `""`, whitespace, a whitespace-only Summary in the file), `-s dropped` and `--summary ""` on a dropped ticket, `--note` on a dropped ticket with no Summary, and the `chitty add T -d x -s dropped` refusal pass, each asserting its message, and fail before the change. Record both runs in a note
 - [ ] Random-ID contexts: the `tests/test_status_dropped.py` cases for `chitty add -c backlog -s dropped` and `-s dropped` on a `backlog`-context ticket pass, each asserting its message and that nothing is written, and fail before the change
 
+## Plan
+
+Add focused CLI and model regression tests and confirm failures before implementing the status, store validation, archive protections, and documentation; then run formatting and checks and record results.
+
 ## Notes
 
 Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context rule unchanged (decided with the person; see the Description); added criterion 5. Earlier blockers were resolved on 2026-11-22 and 2026-11-23.
@@ -107,3 +111,4 @@ Inspected the status definitions, add and edit validation, selection and CLI lis
 - 2026-11-23T19:36:59Z witty-yellow-vole cold-read → planning
 - 2026-11-23T19:37:01Z witty-yellow-vole planning → todo
 - 2026-11-23T19:38:33Z daring-hazel-eel todo → doing
+- 2026-11-23T19:41:06Z daring-hazel-eel: wrote the plan
