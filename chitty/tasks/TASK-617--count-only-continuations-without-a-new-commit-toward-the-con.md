@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: review
+status: doing
 created: 2026-11-23
 ---
 
@@ -41,6 +41,14 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 
 Regression tests for productive sessions, amendments, notes and stop wording fail against the original implementation (5 failures).
 
+Review failed (tests): Newly discovered incomplete assertion for criterion 3; no earlier review findings.
+1: pass - make check: 1167 passed; baseline pytest tests/test_continuation_step.py fails collection because continuation_step is absent.
+2: pass - make check passed; baseline pytest tests/test_run_continue.py fails test_productive_sessions_continue.
+3: fail - Both tests assert only the substring after 5 continuations, not the required complete note including ticket ID, status and committed-changes explanation. Assert the complete required text in both tests. make check passed; baseline pytest tests/test_run_continue.py reports both tests failed on the old wording, but does not verify the rest of the required wording.
+4: pass - make check passed; baseline pytest tests/test_run_continue.py fails test_amended_commit_is_not_progress.
+5: pass - make check passed; baseline pytest tests/test_run_continue.py fails test_command_without_prompt_is_not_continued.
+Baseline integration run: 5 failed, 2 passed. No Decided note was present.
+
 ## Summary
 
 Implemented two-commit progress detection and consecutive idle continuation limit. Regression tests failed before the fix; make check passes.
@@ -69,3 +77,5 @@ Implemented two-commit progress detection and consecutive idle continuation limi
 - 2026-11-23T11:30:11Z friendly-teal-crane: changed notes
 - 2026-11-23T11:32:28Z friendly-teal-crane: changed summary
 - 2026-11-23T11:34:09Z friendly-teal-crane doing → review
+- 2026-11-23T11:40:19Z eager-violet-dormouse: changed acceptance criteria, notes
+- 2026-11-23T11:40:19Z eager-violet-dormouse review → doing
