@@ -21,9 +21,9 @@ Run them against `main` first and record the failure of the first test in a note
 
 ## Acceptance Criteria
 
-- [ ] The three tests in `tests/test_discovered_contexts_cache.py` pass; the first fails against `main`. Record both runs in a note
-- [ ] In the ticket worktree, with `cwd` at the worktree root for both runs and no ticket commits between them: `chitty list` prints byte-identical output before the change (code from `git archive "$(git merge-base main HEAD)" src`, extracted into `tmp/before` after `mkdir -p tmp/before`, and run as `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()" list`) and after it (`.venv/bin/chitty list`). Record the `diff` result and three `time` runs of each in a note
-- [ ] `make check` passes
+- [x] The three tests in `tests/test_discovered_contexts_cache.py` pass; the first fails against `main`. Record both runs in a note
+- [x] In the ticket worktree, with `cwd` at the worktree root for both runs and no ticket commits between them: `chitty list` prints byte-identical output before the change (code from `git archive "$(git merge-base main HEAD)" src`, extracted into `tmp/before` after `mkdir -p tmp/before`, and run as `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()" list`) and after it (`.venv/bin/chitty list`). Record the `diff` result and three `time` runs of each in a note
+- [x] `make check` passes
 
 ## Plan
 
@@ -37,6 +37,10 @@ Baseline tests on unchanged main code: `pytest -q tests/test_discovered_contexts
 
 Comparison: three baseline real times 9.086, 8.744, 8.868 seconds; three changed real times 4.793, 4.922, 4.964 seconds. Initial diff reflected concurrent TASK-626 status change; rerunning both commands without intervening ticket commits gave empty diff. `make check` passed (1175 tests, 819 subtests).
 
+## Summary
+
+Cached discovered contexts per Repo with defensive copies and invalidation; regression tests, output comparison, timings and make check passed.
+
 ## History
 
 - 2026-11-23T12:07:54Z witty-russet-gannet → planning
@@ -47,3 +51,4 @@ Comparison: three baseline real times 9.086, 8.744, 8.868 seconds; three changed
 - 2026-11-23T12:25:07Z golden-ochre-yellowhammer todo → doing
 - 2026-11-23T12:27:22Z golden-ochre-yellowhammer: wrote the plan
 - 2026-11-23T12:31:17Z golden-ochre-yellowhammer: changed notes
+- 2026-11-23T12:31:31Z golden-ochre-yellowhammer: changed summary; ticked acceptance criteria
