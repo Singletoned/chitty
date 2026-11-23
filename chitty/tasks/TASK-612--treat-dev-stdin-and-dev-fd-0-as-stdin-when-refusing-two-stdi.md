@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: review
+status: doing
 created: 2026-11-23
 ---
 
@@ -36,6 +36,12 @@ Suggestion origin: chitty
 
 Both regression tests failed before the fix: add created a ticket and edit accepted note stdin plus summary /dev/stdin.
 
+Review failed (tests): Newly discovered: the add regression uses an empty fd 0, so it does not demonstrate the specified pre-fix ticket creation. Put valid description text in the temporary file and verify the baseline creates a ticket.
+1: pass - make check: 1148 passed; baseline test_edit_stdin_aliases: 0 != 2 for [None, None, '-', '/dev/stdin'].
+2: fail - Baseline test_add_stdin_alias printed exit 1, not 2: Description text changed section boundaries; use ### for headings and close code fences. The required pre-fix creation is not exercised.
+3: pass - make check passed; baseline test_reads_stdin with an old-behaviour shim failed on /dev/stdin. The shim is necessary because main has no reads_stdin function.
+Baseline tests ran with the branch test file in a temporary merge-base worktree, PYTHONPATH pointing at its src, and the old-behaviour shim; the worktree was removed.
+
 ## Summary
 
 Implemented exact stdin alias detection and regression tests. Both command regressions failed before the fix; make check passed.
@@ -62,3 +68,5 @@ Implemented exact stdin alias detection and regression tests. Both command regre
 - 2026-11-23T11:17:36Z lively-navy-ibis: changed notes
 - 2026-11-23T11:24:50Z lively-navy-ibis: changed summary
 - 2026-11-23T11:24:50Z lively-navy-ibis doing → review
+- 2026-11-23T11:30:29Z friendly-hazel-wren: changed acceptance criteria, notes
+- 2026-11-23T11:30:29Z friendly-hazel-wren review → doing
