@@ -1,6 +1,6 @@
 ---
 title: Tell agents to branch from `main` as `plan/` or `hotfix/` instead of committing on it
-status: review
+status: done
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -32,6 +32,8 @@ Suggestion origin: chitty
 Review failed (work): the new managed-block sentence in `src/chitty/guide.md` lists `task-<n>` among the branches whose author should "run the checks, then fast-forward `main`". In the runner block printed straight after it (`tests/fixtures/guide-runner-expected.md`), "a worker never lands its own ticket" and the runner or a passing reviewer lands it. A worker reading both gets two contradictory landing rules for ticket branches. The ticket says `task-<n>` is "unchanged". Fix: make the fast-forward apply only to `plan/` and `hotfix/` branches. For example: "Never commit your changes on `main`. Outside ticket work, branch from it in a worktree as `plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward `main`." This keeps within the 75-word budget. Update the fixture, the `TICKETS_TEXT_END` marker and the `docs/plan/pipeline-and-feedback.md` entry to match.
 The ticket has no acceptance criteria (`untestable`). `make check` passed in the worktree (1170 tests).
 
+Reviewed: the earlier `work` failure is fixed. The managed-block sentence now applies the branch-and-fast-forward rule only "outside ticket work" (`plan/<name>`, `hotfix/<name>`), so it no longer contradicts "a worker never lands its own ticket". The plan entry in `docs/plan/pipeline-and-feedback.md` matches, and its `planning_branch` claim holds (`src/chitty/store.py:939`). The fixture and `TICKETS_TEXT_END` match the guide. No acceptance criteria (`untestable`). `make check` passed (1156 tests) on `main` merged with all six branches 608, 641, 643, 644, 645 and 646.
+
 ## Summary
 
 Added one paragraph to `src/chitty/guide.md`, the managed block: "Never commit your changes on `main`. Outside ticket work, branch from it in a worktree as `plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward `main`." It says "your changes", so Chitty's own ticket writes on `main` are left to `TASK-340`.
@@ -57,3 +59,5 @@ Verification: `make check` passed (1156 tests). Follow-up: this repository's own
 - 2026-11-23T14:27:22Z plucky-indigo-eel: changed owner
 - 2026-11-23T14:34:49Z plucky-indigo-eel: changed summary
 - 2026-11-23T14:34:49Z plucky-indigo-eel doing → review
+- 2026-11-23T16:04:01Z kind-zinc-newt: changed notes
+- 2026-11-23T16:04:01Z kind-zinc-newt review → done
