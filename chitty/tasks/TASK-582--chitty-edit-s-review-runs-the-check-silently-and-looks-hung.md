@@ -1,6 +1,6 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: review
+status: done
 created: 2026-11-22
 ---
 
@@ -63,6 +63,10 @@ Planner, 2026-11-23, after a cold read: the line is now exact text with no backt
 
 Both new progress tests fail before the fix: passing check lacks the start line and failing check lacks the elapsed line.
 
+Reviewed:
+1: pass - make check passes both progress tests; at the merge base, PYTHONPATH=src ../../.venv/bin/python -m pytest tests/test_review_check.py -k test_check_progress -q produced 2 failures: missing running check and missing elapsed line. The skip test checks neither line appears.
+2: pass - make check: 1177 passed, 819 subtests passed; ruff and pyright passed.
+
 ## Summary
 
 Added stderr progress and elapsed time for review checks; both regression tests failed before the fix. make check passes.
@@ -87,3 +91,5 @@ Added stderr progress and elapsed time for review checks; both regression tests 
 - 2026-11-23T12:43:51Z daring-indigo-toad: changed notes
 - 2026-11-23T12:46:01Z daring-indigo-toad: changed summary
 - 2026-11-23T12:47:55Z daring-indigo-toad doing → review
+- 2026-11-23T12:53:43Z vivid-silver-vole: changed notes
+- 2026-11-23T12:53:43Z vivid-silver-vole review → done
