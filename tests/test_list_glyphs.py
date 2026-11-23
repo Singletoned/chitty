@@ -1,7 +1,6 @@
 import unicodedata
 import unittest
 
-from chitty.cli import _columns
 from chitty.model import PRIORITY_GLYPHS, STATUS_GLYPHS
 from chitty.selection import (
     BLOCKER_GLYPH,
@@ -34,12 +33,21 @@ class TestListGlyphs(unittest.TestCase):
 
 
 class TestListAlignment(CliTestCase):
+    @staticmethod
+    def terminal_width(text):
+        width = 0
+        for char in text:
+            if char == "\ufe0f" or unicodedata.combining(char):
+                continue
+            width += 2 if unicodedata.east_asian_width(char) in ("W", "F") else 1
+        return width
+
     def test_priority_and_unset_titles_align(self):
         self.run_cli("add", "High title", "-d", "x", "-p", "high")
         self.run_cli("add", "Unset title", "-d", "x")
         lines = self.run_cli("list").stdout.splitlines()
         offsets = [
-            _columns(line[: line.index(title)])
+            self.terminal_width(line[: line.index(title)])
             for line, title in zip(lines, ("High title", "Unset title"))
         ]
         self.assertEqual(offsets[0], offsets[1])
