@@ -1,6 +1,6 @@
 ---
 title: Add `chitty summary` to show what changed in recent hours
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-22
 ---
@@ -23,7 +23,7 @@ Out of scope: MCP, commits and `Task:` trailers, notes, a `--since` time, and an
 Tests, in a new `tests/test_summary.py`. Build `StoredTask`s directly (`StoredTask(id, "tasks", Path("chitty/tasks/x.md"), False, chitty.model.parse(text))`) from ticket text with a `## History` section, and use a fixed `now = datetime(2026, 11, 22, 12, 0, tzinfo=UTC)`.
 
 - Examples for `summary_sections`: a ticket moved `todo → doing → review → done` inside the window appears only under `done`; a ticket whose only transition is 25 hours old is absent with `hours=24` and present with `hours=48`; a ticket created inside the window has `new` true, one created before it false; two tickets in one section are ordered newest first, and two with the same `when` by id; a date-only History line dated `2026-11-22` (which midnight coercion would put inside the window) contributes nothing; a transition to an unknown status `zzz` gets its own section after the `STATUSES` ones; a transition one minute after `now` is left out; a History event line (`- <timestamp> tester: changed notes`) between two transitions is ignored; nothing in the window gives `[]`. One direct example for `Task.timed_transitions`: a History with a date-only line, an event line and two timed transitions returns just the two, in file order, as UTC datetimes.
-- Property, with Hypothesis (`max_examples=examples(50)` from `tests/__init__.py`): draw one to six tickets, each with one to five transitions whose new statuses are drawn from `STATUSES`; each transition's old status is the previous one's new status, and the first one's old status is drawn as either `None` or a status from `STATUSES`, so both cases occur and whose times are drawn as whole seconds, sorted ascending (ties allowed), from 72 hours before `now` to 1 hour after it (so some fall after `now` and must be left out), with `now - hours` itself drawn sometimes (`st.one_of` with that exact value), and a drawn `hours` from 1 to 72. Every ticket with a transition at or after `now - hours` appears exactly once, in the section of its latest such transition; no other ticket appears; within each section `when` is non-increasing; `new` is true exactly when the ticket's earliest transition has no old status and is in the window. "Latest" and "earliest" break ties by line order, as above.
+- Property, with Hypothesis (`max_examples=examples(50)` from `tests/__init__.py`): draw one to six tickets, each with one to five transitions whose new statuses are drawn from `STATUSES`; each transition's old status is the previous one's new status, and the first one's old status is drawn as either `None` or a status from `STATUSES`, so both cases occur and whose times are drawn as whole seconds, sorted ascending (ties allowed), from 72 hours before `now` to 1 hour after it (so some fall after `now` and must be left out), with `now - hours` itself drawn sometimes (`st.one_of` with that exact value), and a drawn `hours` from 1 to 72. Call a transition eligible when `now - hours <= when <= now`. Every ticket with an eligible transition appears exactly once, in the section of its latest eligible transition, with that transition's `when` and actor; no other ticket appears (so a ticket whose transitions all fall after `now` or before the window is absent); within each section `when` is non-increasing; `new` is true exactly when the ticket's earliest transition has no old status and is in the window. "Latest" and "earliest" break ties by line order, as above.
 - CLI: in a `RepoTestCase` repository (context `tasks`), write `chitty/tasks/TASK-1--one.md` (title `One`, History: created `todo` 2 hours ago, then `todo → done` 1 hour ago), `TASK-2--two.md` (title `Two`, created `todo` 10 hours ago) and `TASK-3--three.md` (title `Three`, created `todo` 30 hours ago), all by actor `tester`, with timestamps computed from `datetime.now(UTC)` and rounded to the second. Run `chitty summary` and `chitty summary --hours 48` through `click.testing.CliRunner` with `chitty.cli.cli`, and assert the exact output, computing the `HH:MM` parts from the same timestamps. Also `--hours 0` and `--hours x` exit 2.
 
 To show the tests fail first, commit a stub first (`timed_transitions` returning `[]`, `summary_sections` returning `[]`, and a `summary` command printing nothing), run the tests against it, and record the assertion failures in a note; an import error does not count.
@@ -41,6 +41,8 @@ The property requirement contradicts the specified window: it says every ticket 
 
 Checked the remaining ticket against `HISTORY_LINE_RE`, `Task.transitions`, `Repo.all_tasks`, and the existing CLI test conventions; no implementation was started. Stub and regression runs, command output, and `make check` remain unverified because the contradictory acceptance test needs correction first.
 
+Planner, 2026-11-23: the property now uses the same window as the Decisions, with `now` as an inclusive upper bound, so a transition after `now` is never chosen.
+
 ## History
 
 - 2026-11-22T09:47:32Z friendly-jade-stoat → backlog
@@ -54,3 +56,5 @@ Checked the remaining ticket against `HISTORY_LINE_RE`, `Task.transitions`, `Rep
 - 2026-11-22T22:56:02Z honest-bronze-puffin todo → doing
 - 2026-11-22T22:58:15Z honest-bronze-puffin: changed owner, notes
 - 2026-11-22T22:58:15Z honest-bronze-puffin doing → planning
+- 2026-11-23T12:02:37Z witty-russet-gannet: changed description, notes
+- 2026-11-23T12:02:37Z witty-russet-gannet planning → cold-read
