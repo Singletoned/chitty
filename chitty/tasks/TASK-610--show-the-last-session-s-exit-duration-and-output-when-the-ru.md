@@ -1,6 +1,6 @@
 ---
 title: Show the last session's exit, duration and output when the runner stops an agent that made no progress
-status: cold-read
+status: planning
 depends_on:
   - TASK-617
 created: 2026-11-23
@@ -12,8 +12,8 @@ When an agent exits 0 without changing its ticket and the runner gives up (`_age
 
 Change:
 
-- `_run_session` returns what the last session did: its exit status, duration in seconds (rounded to whole seconds) and output (`completed.stdout`, already captured from the log by `_run_agent`, `run.py:306`).
-- When `_agent_sessions` stops (the cap in TASK-617, or an agent that cannot be continued), build the error with a pure function `stalled_agent_message(first_line: str, seconds: int, returncode: int, output: str) -> str`: the first line is the stop message, then `last session: exit <returncode> after <seconds>s`, then the last `AGENT_OUTPUT_TAIL_LINES` (a new module constant, 40) lines of the output, or `(no output)`. `_runner_error_note` (`run.py:1417`) already puts lines after the first in a fenced block.
+- `_run_session` returns what the session did: its exit status, duration (measured with `time.monotonic()` around the `_run_agent` call, rounded to whole seconds) and output (`completed.stdout`, which `_run_agent`, `run.py:306-328`, reads from the log offset where that session began, so it holds that session only). `_agent_sessions` keeps the latest result, including from the first call before the loop, and uses it at the stop.
+- When `_agent_sessions` stops (the cap in TASK-617, or an agent that cannot be continued), build the error with a pure function `stalled_agent_message(first_line: str, seconds: int, returncode: int, output: str) -> str`: the first line is the stop message, then `last session: exit <returncode> after <seconds>s`, then the last `AGENT_OUTPUT_TAIL_LINES` (a new module constant, 40) lines of the output, or `(no output)`. `_runner_error_note` (`run.py:1417`) already puts lines after the first in a fenced block, under the heading `Runner error (<phase>): <first line>`. Lines are counted with `str.splitlines()`, as `_runner_error_note` does; whitespace-only output counts as output. The stop stays a plain `ChittyError`: an `AgentSessionFailed` would be turned into `AgentStartFailed` (`run.py:651`).
 
 Property tool: Hypothesis.
 
@@ -21,8 +21,9 @@ Out of scope: detecting why an agent could not start, and warning in `chitty ini
 
 ## Acceptance Criteria
 
-- [ ] A pure function `stalled_agent_message(first_line, seconds, returncode, output)` in `src/chitty/run.py` is tested with Hypothesis in a new file `tests/test_stalled_agent_message.py`: for any output text (including empty, no trailing newline, and more than 40 lines), the result's first line is `first_line`, it contains `last session: exit <returncode> after <seconds>s`, and it ends with exactly the last `min(40, line count)` lines of the output; empty output gives `(no output)`.
-- [ ] In `tests/test_run_continue.py`, an agent that prints `STALL_MARKER` and exits 0 without changing the ticket ends in `error`, and the ticket's newest note has the stop message as its heading and a fenced block containing `last session: exit 0` and `STALL_MARKER`. This fails on `main`, whose note has no agent output.
+- [ ] A pure function `stalled_agent_message(first_line, seconds, returncode, output)` in `src/chitty/run.py` is tested with Hypothesis in a new file `tests/test_property_stalled_agent_message.py`: for any output text (including empty, whitespace-only, carriage-return, form-feed and Unicode line-separator characters, no trailing newline, and more than 40 lines) and any integer return code, the result starts with the line `first_line`, contains `last session: exit <returncode> after <seconds>s`, and ends with exactly the last `min(40, len(output.splitlines()))` lines of `output.splitlines()`; empty output gives `(no output)`.
+- [ ] In `tests/test_run_continue.py`, using a new fake-agent `edit` variant that prints to stdout, an agent that prints `OLD_MARKER` in its first session and `STALL_MARKER` in its last, and never changes the ticket, ends in `error`; the newest note has the stop message in its heading and a fenced block containing `last session: exit 0` and `STALL_MARKER`, and not `OLD_MARKER`. This fails on `main`, whose note has no agent output.
+- [ ] `test_command_without_prompt_is_not_continued` (`tests/test_run_continue.py`) also asserts the note contains `last session: exit 0 after`.
 
 ## Notes
 
@@ -41,3 +42,5 @@ Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When
 - 2026-11-23T10:36:30Z witty-russet-gannet backlog → planning
 - 2026-11-23T10:36:40Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:38:13Z witty-russet-gannet: changed notes
+- 2026-11-23T10:38:29Z witty-russet-gannet: changed description, acceptance criteria
+- 2026-11-23T10:38:29Z witty-russet-gannet cold-read → planning
