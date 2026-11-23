@@ -63,6 +63,8 @@ Planning blockers found before implementation:
 
 Inspected the status definitions, add and edit validation, selection and CLI list/summary paths, archive and dependency locations, and existing test fixture locations. No implementation or regression tests were written; before/after test runs and full verification remain outstanding pending clarification.
 
+Started investigation and recorded an approach. No implementation or regression tests written; before/after verification and make check remain outstanding.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -112,3 +114,4 @@ Inspected the status definitions, add and edit validation, selection and CLI lis
 - 2026-11-23T19:37:01Z witty-yellow-vole planning → todo
 - 2026-11-23T19:38:33Z daring-hazel-eel todo → doing
 - 2026-11-23T19:41:06Z daring-hazel-eel: wrote the plan
+- 2026-11-23T19:41:18Z daring-hazel-eel: changed notes
