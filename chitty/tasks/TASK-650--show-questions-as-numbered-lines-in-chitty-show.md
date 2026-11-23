@@ -1,6 +1,6 @@
 ---
 title: Show `## Questions` as numbered lines in `chitty show`
-status: planning
+status: todo
 depends_on:
   - TASK-649
   - TASK-629
@@ -41,3 +41,4 @@ Second cold read (2026-11-23): nothing serious. Its baseline and `SECTION_ORDER`
 - 2026-11-23T19:46:09Z friendly-coral-badger planning → cold-read
 - 2026-11-23T19:47:23Z friendly-coral-badger: changed description, notes
 - 2026-11-23T19:47:23Z friendly-coral-badger cold-read → planning
+- 2026-11-23T19:47:26Z friendly-coral-badger planning → todo
