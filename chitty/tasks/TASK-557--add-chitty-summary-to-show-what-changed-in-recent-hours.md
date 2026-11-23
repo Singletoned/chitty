@@ -1,6 +1,6 @@
 ---
 title: Add `chitty summary` to show what changed in recent hours
-status: error
+status: review
 priority: high
 created: 2026-11-22
 ---
@@ -77,3 +77,4 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-557`
 - 2026-11-23T12:16:44Z sunny-jade-quail: changed notes
 - 2026-11-23T12:17:43Z sunny-jade-quail: changed notes
 - 2026-11-23T12:17:43Z sunny-jade-quail doing → error
+- 2026-11-23T13:34:16Z youthful-quartz-zander error → review
