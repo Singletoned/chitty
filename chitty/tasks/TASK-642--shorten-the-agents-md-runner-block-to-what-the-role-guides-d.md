@@ -1,6 +1,6 @@
 ---
 title: Shorten the `AGENTS.md` runner block to what the role guides do not say
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -38,3 +38,4 @@ Rules for this tightening:
 - 2026-11-23T12:40:57Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:28Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:28Z friendly-zinc-dormouse cold-read → planning
+- 2026-11-23T12:45:01Z friendly-zinc-dormouse planning → todo
