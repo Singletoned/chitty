@@ -24,8 +24,13 @@ Property tool: Hypothesis, as in `tests/test_check_edit.py`.
 - [ ] A Hypothesis property test in `tests/test_check_edit.py`, next to `test_failed_reviews_escalate_at_the_limit`, draws a history of transitions from `(review, doing)`, `(done, doing)`, `(doing, review)`, `(review, done)`, `(doing, blocked)` and `(blocked, doing)`, and a current status of `review` or `done`. Applying `fail_review_edit(...)` through `check_edit` gives `blocked` with owner `human` exactly when 1 + the number of `(review, doing)` and `(done, doing)` transitions after the last move to `blocked` reaches `REVIEW_FAILURE_LIMIT`; otherwise `doing`. Draws with current status `done` fail on `main`.
 - [ ] A `tests/test_review_merge.py` test, using TASK-609's landing check failure fixture on a ticket whose history already has two `review → doing` failures, ends with the ticket `blocked`, owner `human`, and the `Escalated to human review` note.
 
+## Notes
+
+Planning: relies on TASK-609 (its landing-failure handler and test fixture). When TASK-609 is done, compare, cold-read, then move to `todo`.
+
 ## History
 
 - 2026-11-23T10:37:53Z witty-russet-gannet → backlog
 - 2026-11-23T10:39:08Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:39:08Z witty-russet-gannet backlog → planning
+- 2026-11-23T10:39:10Z witty-russet-gannet: changed notes
