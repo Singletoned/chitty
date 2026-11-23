@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: doing
+status: review
 created: 2026-11-23
 ---
 
@@ -42,9 +42,11 @@ Review failed (tests): Newly discovered: the add regression uses an empty fd 0, 
 3: pass - make check passed; baseline test_reads_stdin with an old-behaviour shim failed on /dev/stdin. The shim is necessary because main has no reads_stdin function.
 Baseline tests ran with the branch test file in a temporary merge-base worktree, PYTHONPATH pointing at its src, and the old-behaviour shim; the worktree was removed.
 
+With valid description in fd 0, the add regression fails against the old stdin predicate with exit 0 and output confirming TASK-1 was added. With the fix, make check passes: 1148 tests.
+
 ## Summary
 
-Implemented exact stdin alias detection and regression tests. Both command regressions failed before the fix; make check passed.
+Corrected the add regression fixture and confirmed baseline ticket creation; make check passes.
 
 ## History
 
@@ -71,3 +73,5 @@ Implemented exact stdin alias detection and regression tests. Both command regre
 - 2026-11-23T11:30:29Z friendly-hazel-wren: changed acceptance criteria, notes
 - 2026-11-23T11:30:29Z friendly-hazel-wren review → doing
 - 2026-11-23T11:38:14Z jolly-fawn-raven: wrote the plan
+- 2026-11-23T11:42:01Z jolly-fawn-raven: changed notes, summary
+- 2026-11-23T11:42:01Z jolly-fawn-raven doing → review
