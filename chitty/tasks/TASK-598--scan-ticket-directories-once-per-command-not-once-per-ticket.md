@@ -35,11 +35,13 @@ Error and order cases, in-process through `Repo.open(root)`, in a directory that
 - `chitty/tasks/not-a-ticket.md` present: `repo.lookup` of an unrelated ticket raises `ChittyError` whose message starts with the file's absolute path followed by `: `.
 - The same with the bad file in `chitty/backlog/archive/` instead.
 - `TASK-3` present in both `chitty/tasks/` and `chitty/tasks/archive/`: `repo.lookup(TASK-3)` raises `TASK-3 is used by more than one file: ` followed by the two absolute paths, active first, joined by `, `.
-- A ref case, in a Git repository with the scan-count fixture plus a committed file `chitty/tasks/not-a-ticket.md` on `task-2` only: `lookup` of `TASK-1` returns the ticket, with its committed title.
+- A ref case, in a Git repository with the scan-count fixture plus a committed file `chitty/tasks/not-a-ticket.md` on `task-2` only: `lookup` of `TASK-1` returns the ticket, with its committed title, and `lookup` of `TASK-2` returns title `Branch copy` (this one reads `task-2`'s files, so it reaches the unparseable name and must skip it).
 
-Property, same file, with Hypothesis: draw a set of ticket file names (ids from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, slugs from `string.ascii_lowercase`, `min_size=1`), each placed in one of the four directories, duplicates of one id allowed; write them in a non-Git directory with the config above. Duplicate draws with the same path count once; a `BACK-` id may be placed in `tasks/` (`_files` accepts any prefix). For every id from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, `repo.lookup(id)` returns `None` when no file was drawn for it, or else returns the ticket from the one path, or raises the "used by more than one file" message listing that id's paths in the order `_working_ticket_files` gives today: context directories in sorted name order, each active then archive (`backlog`, `backlog/archive`, `tasks`, `tasks/archive`), and within a directory sorted by name. Use `examples(20)` from `tests/__init__.py` for `max_examples`.
+Property, same file, with Hypothesis: draw a set of ticket file names of the form `<ID>--<slug>.md` (ids from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, slugs drawn with `st.text(string.ascii_lowercase, min_size=1)`), each placed in one of the four directories, duplicates of one id allowed; write them in a non-Git directory with the config above, each a valid ticket (frontmatter `title`, `status: todo`, `priority: medium`, `created`, and a `## Description` section) whose title is its file name without `.md`, so the returned ticket's title identifies the path. Duplicate draws with the same path count once; a `BACK-` id may be placed in `tasks/` (`_files` accepts any prefix). For every id from `TASK-1` to `TASK-5` and `BACK-1` to `BACK-3`, `repo.lookup(id)` returns `None` when no file was drawn for it, or else returns the ticket from the one path, or raises the "used by more than one file" message listing that id's paths in the order `_working_ticket_files` gives today: context directories in sorted name order, each active then archive (`backlog`, `backlog/archive`, `tasks`, `tasks/archive`), and within a directory sorted by name. Use `examples(100)` from `tests/__init__.py` for `max_examples`.
 
 Out of scope: other commands' speed, and Git calls (already constant in the ticket count).
+
+The branch `task-598` was rebased onto `main` on 2026-11-23, so TASK-639's cache is in the baseline. Rebase again before starting if `main` has moved; criterion 2's "before" is the rebased branch's merge-base with `main`.
 
 ## Acceptance Criteria
 
@@ -81,3 +83,4 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T14:31:17Z youthful-quartz-zander: changed description
 - 2026-11-23T14:31:21Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:34:15Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:34:20Z youthful-quartz-zander: changed description
