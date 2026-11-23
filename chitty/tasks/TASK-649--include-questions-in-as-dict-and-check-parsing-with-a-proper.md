@@ -1,6 +1,6 @@
 ---
 title: Include `## Questions` in `as_dict` and check parsing with a property test
-status: planning
+status: todo
 depends_on:
   - TASK-629
 parent: TASK-621
@@ -41,3 +41,4 @@ Second cold read (2026-11-23): nothing serious. Its baseline point repeats one a
 - 2026-11-23T19:46:05Z friendly-coral-badger planning → cold-read
 - 2026-11-23T19:47:03Z friendly-coral-badger: changed description, notes
 - 2026-11-23T19:47:03Z friendly-coral-badger cold-read → planning
+- 2026-11-23T19:47:07Z friendly-coral-badger planning → todo
