@@ -1,6 +1,6 @@
 ---
 title: Find active tickets whose `Task:` commits landed work while they are not done
-status: review
+status: done
 depends_on:
   - TASK-358
 created: 2026-11-22
@@ -34,6 +34,10 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit` as this ticket assumes; c
 
 Red first: the unfinished landed property failed with NotImplementedError against the stub.
 
+Reviewed: implementation and complete diff checked; no prior review findings.
+1: pass - `make check` passed including the property and three mutant subtests; on merge base, `PYTHONPATH=src ../../.venv/bin/python -m pytest tests/test_unfinished_landed.py -q` failed collection with ImportError for `unfinished_landed`.
+2: pass - imports and removal verified in diff; `make check` printed 1161 passed, 602 subtests passed. On merge base, the changed `tests/test_property_repair_work.py` failed collection with ImportError for `has_work_beyond_tickets` from `chitty.git`.
+
 ## Summary
 
 Implemented the pure landed-work rule and moved the path helper. The property failed against the stub before implementation; all three mutants and make check pass.
@@ -60,3 +64,5 @@ Implemented the pure landed-work rule and moved the path helper. The property fa
 - 2026-11-23T19:47:54Z brisk-jade-dormouse: changed notes
 - 2026-11-23T19:50:10Z brisk-jade-dormouse: changed summary
 - 2026-11-23T19:52:06Z brisk-jade-dormouse doing → review
+- 2026-11-23T19:58:10Z open-jade-yellowhammer: changed notes
+- 2026-11-23T19:58:10Z open-jade-yellowhammer review → done
