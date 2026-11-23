@@ -19,3 +19,4 @@ Folded into TASK-624 (guide wording) and TASK-617 (requeue).
 - 2026-11-23T10:24:07Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:08Z witty-russet-gannet: changed notes
 - 2026-11-23T10:27:40Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:42Z witty-russet-gannet backlog → archived
