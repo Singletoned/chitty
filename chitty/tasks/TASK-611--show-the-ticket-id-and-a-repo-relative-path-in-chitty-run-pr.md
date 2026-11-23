@@ -1,6 +1,6 @@
 ---
 title: Show the ticket ID and a repo-relative path in `chitty run` progress lines
-status: todo
+status: doing
 created: 2026-11-23
 ---
 
@@ -47,3 +47,4 @@ Suggestion origin: taidy
 - 2026-11-23T10:35:27Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:36:56Z witty-russet-gannet cold-read → todo
 - 2026-11-23T10:37:12Z witty-russet-gannet: changed description, acceptance criteria
+- 2026-11-23T11:04:24Z able-coral-marten todo → doing
