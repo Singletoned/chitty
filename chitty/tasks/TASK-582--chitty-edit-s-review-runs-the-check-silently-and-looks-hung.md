@@ -1,6 +1,6 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: todo
+status: doing
 created: 2026-11-22
 ---
 
@@ -72,3 +72,4 @@ Planner, 2026-11-23, after a cold read: the line is now exact text with no backt
 - 2026-11-23T12:25:13Z witty-russet-gannet planning → cold-read
 - 2026-11-23T12:26:19Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:26:19Z witty-russet-gannet cold-read → todo
+- 2026-11-23T12:40:28Z daring-indigo-toad todo → doing
