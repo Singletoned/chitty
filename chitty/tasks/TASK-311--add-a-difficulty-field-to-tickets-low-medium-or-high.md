@@ -42,6 +42,10 @@ Out of scope: mapping difficulty to agents (`TASK-312`), guide wording (`TASK-31
 
 Add regression tests first and record their failures, then implement the field across model, store, CLI, MCP, strategies and documentation; run formatting and checks before review.
 
+## Notes
+
+Before implementation, a Hypothesis find over ticket_texts([TaskId("TASK", 1)]) for a difficulty line failed with NoSuchExample after 2000 examples, as expected. The requested test suite and implementation remain to be written.
+
 ## History
 
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
@@ -55,3 +59,4 @@ Add regression tests first and record their failures, then implement the field a
 - 2026-11-23T19:44:10Z witty-yellow-vole planning → todo
 - 2026-11-23T19:53:57Z friendly-khaki-vole todo → doing
 - 2026-11-23T19:57:15Z friendly-khaki-vole: wrote the plan
+- 2026-11-23T19:58:58Z friendly-khaki-vole: changed notes
