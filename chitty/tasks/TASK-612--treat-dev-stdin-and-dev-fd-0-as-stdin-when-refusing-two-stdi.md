@@ -26,6 +26,10 @@ Out of scope: detecting other aliases of fd 0 (process substitution, other `/dev
 - [ ] `chitty add T --description-file /dev/stdin --note-file -` (fd 0 pointed at a temp file) exits 2, and the set of files under `chitty/tasks/` is unchanged. Example test next to `test_two_stdin_options`; it fails on `main`, where the ticket is created.
 - [ ] A Hypothesis test of `reads_stdin` asserts True for each of the four names, and False for `st.text()` filtered to exclude them and for each of these near misses: `/dev/stdin/`, `/dev/fd/00`, `/dev/fd/0/`, `-`, `<stdin>x`, the empty string.
 
+## Plan
+
+Add regression properties and add-command example, verify they fail, then recognize the exact stdin names and run checks.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -48,3 +52,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:35:00Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:35:02Z witty-russet-gannet planning → todo
 - 2026-11-23T11:14:38Z lively-navy-ibis todo → doing
+- 2026-11-23T11:17:10Z lively-navy-ibis: wrote the plan
