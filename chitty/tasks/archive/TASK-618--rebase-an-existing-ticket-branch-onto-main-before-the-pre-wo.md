@@ -19,3 +19,4 @@ Duplicate: already done in TASK-545 (rebase `todo` and `error` tickets before se
 - 2026-11-23T10:24:15Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:16Z witty-russet-gannet: changed notes
 - 2026-11-23T10:27:14Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:16Z witty-russet-gannet backlog → archived
