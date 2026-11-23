@@ -1,6 +1,6 @@
 ---
 title: Count a landing check failure as a failed review for escalation
-status: planning
+status: cold-read
 depends_on:
   - TASK-609
 created: 2026-11-23
@@ -47,3 +47,4 @@ Precedent for criterion 2: `test_automatic_and_reviewer_failures_count_together`
 - 2026-11-23T13:40:09Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T13:41:41Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T13:41:43Z youthful-quartz-zander: changed acceptance criteria
+- 2026-11-23T13:41:47Z youthful-quartz-zander planning → cold-read
