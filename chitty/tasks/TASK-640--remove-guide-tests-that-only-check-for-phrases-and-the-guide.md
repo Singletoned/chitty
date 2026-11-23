@@ -42,6 +42,10 @@ No property: this change only removes tests. What remains is covered by the kept
 - [ ] The tests `pytest --collect-only -q tests/` collects on the branch are exactly those it collects on `main`, minus the deleted files and the named tests, with `test_role_and_cli_expose_rebase_instructions` renamed; record both commands and the difference in a note.
 - [ ] `make check` passes.
 
+## Plan
+
+Remove the specified phrase-only tests and budgets, retain behavioral coverage, update guidance, and compare collected tests against main before running checks.
+
 ## History
 
 - 2026-11-23T12:34:45Z friendly-zinc-dormouse → planning
@@ -52,3 +56,4 @@ No property: this change only removes tests. What remains is covered by the kept
 - 2026-11-23T12:44:21Z friendly-zinc-dormouse cold-read → planning
 - 2026-11-23T12:44:51Z friendly-zinc-dormouse planning → todo
 - 2026-11-23T14:04:31Z friendly-hazel-dormouse todo → doing
+- 2026-11-23T14:07:10Z friendly-hazel-dormouse: wrote the plan
