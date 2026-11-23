@@ -1,6 +1,6 @@
 ---
 title: Cache `discovered_contexts` per `Repo`, which dominates `chitty list` time
-status: doing
+status: review
 priority: high
 created: 2026-11-23
 ---
@@ -52,3 +52,4 @@ Cached discovered contexts per Repo with defensive copies and invalidation; regr
 - 2026-11-23T12:27:22Z golden-ochre-yellowhammer: wrote the plan
 - 2026-11-23T12:31:17Z golden-ochre-yellowhammer: changed notes
 - 2026-11-23T12:31:31Z golden-ochre-yellowhammer: changed summary; ticked acceptance criteria
+- 2026-11-23T12:33:24Z golden-ochre-yellowhammer doing → review
