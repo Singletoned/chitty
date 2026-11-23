@@ -15,6 +15,11 @@ created: 2026-11-11
 - The read fails if its branch changes anything under `chitty/`.
 - `chitty run` moves the ticket to `planning` on `main`. The planner polls for that.
 
+## Notes
+
+Decided with the person, 2026-11-23: drop `TASK-272` and its dependents `TASK-271`, `TASK-273` and `TASK-274` once the `dropped` status (`TASK-599`) lands. Cold reads run as planner subagents instead, and this design is stale.
+
 ## History
 
 - 2026-11-11T13:21:08Z vivid-yellowhammer → backlog
+- 2026-11-23T19:39:20Z witty-yellow-vole: changed notes
