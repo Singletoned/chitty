@@ -1,6 +1,6 @@
 ---
 title: Let `--human` move an `error` ticket straight to `done`, with a note
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -21,7 +21,7 @@ Out of scope: inferring that a passed review exists from Notes or `Task:` commit
 ## Acceptance Criteria
 
 - [ ] A test in `tests/test_edit_human.py` takes a ticket in `error` in a context that requires review and runs `chitty edit <ID> -s done --human --note <reason>`; it succeeds, the ticket is `done`, the note is in Notes, and History records actor `human`. This test fails on `main` today.
-- [ ] In the `tasks` context (which requires review), tests cover every previous status other than `review` and `done` (`backlog`, `planning`, `cold-read`, `todo`, `doing`, `blocked`, `error`), each with and without `--human` and with and without a note. Only `error` + `--human` + a note moves to `done`. `error` + `--human` without a note (including a whitespace-only `--note`) fails with `moving error → done requires --note with the reason`. Every other case fails with `setting status done requires -s review first`.
+- [ ] In the `tasks` context (which requires review), tests cover every previous status other than `review` and `done` (`backlog`, `planning`, `cold-read`, `todo`, `doing`, `blocked`, `error`), each reached from a new `todo` ticket with `chitty edit <ID> -s <status>` (adding `--note` for `blocked`), and each tried with and without `--human` and with and without a note. Only `error` + `--human` + a note moves to `done`. `error` + `--human` without a note (including a whitespace-only `--note`) fails with `moving error → done requires --note with the reason`. Every other case fails with `setting status done requires -s review first`.
 
 ## Notes
 
@@ -40,3 +40,5 @@ Suggestion origin: chitty
 - 2026-11-23T10:35:05Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:35:05Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:35:07Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:36:58Z witty-russet-gannet: changed acceptance criteria
+- 2026-11-23T10:36:58Z witty-russet-gannet cold-read → planning
