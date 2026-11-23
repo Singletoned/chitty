@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: error
+status: doing
 priority: high
 depends_on:
   - TASK-639
@@ -119,3 +119,4 @@ TASK-598 remains unfinished in `doing`. I captured the two invalid-entry baselin
 - 2026-11-23T14:44:11Z jolly-white-urchin: wrote the plan
 - 2026-11-23T14:46:55Z jolly-white-urchin: changed notes
 - 2026-11-23T14:46:55Z jolly-white-urchin doing → error
+- 2026-11-23T16:47:41Z youthful-quartz-zander error → doing
