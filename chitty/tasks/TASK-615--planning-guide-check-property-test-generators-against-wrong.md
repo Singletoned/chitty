@@ -1,9 +1,9 @@
 ---
 title: "Planning guide: check property-test generators against wrong versions instead of committing them"
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: friendly-zinc-dormouse
 created: 2026-11-23
 ---
 
@@ -28,3 +28,5 @@ Suggestion origin: echonomicon
 - 2026-11-23T10:24:11Z witty-russet-gannet: changed notes
 - 2026-11-23T10:29:52Z witty-russet-gannet: changed title, labels, owner, description
 - 2026-11-23T10:29:52Z witty-russet-gannet backlog → todo
+- 2026-11-23T12:01:31Z friendly-zinc-dormouse: changed owner
+- 2026-11-23T12:01:31Z friendly-zinc-dormouse todo → doing
