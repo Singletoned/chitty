@@ -35,6 +35,8 @@ Escalation split out to TASK-625: until it lands, a ticket whose landing check k
 
 Both changed integration regression tests failed before the fix: expected done to doing, observed done to error.
 
+On unfixed code both integration regressions fail as expected; the LandingCheckFailed test fails at import, while the missing-command guard passes. Timeout guard passes with the fix.
+
 ## History
 
 - 2026-11-23T10:24:01Z witty-russet-gannet → backlog
@@ -59,3 +61,4 @@ Both changed integration regression tests failed before the fix: expected done t
 - 2026-11-23T10:55:41Z golden-dusky-puffin todo → doing
 - 2026-11-23T10:57:55Z golden-dusky-puffin: wrote the plan
 - 2026-11-23T10:58:45Z golden-dusky-puffin: changed notes
+- 2026-11-23T11:01:03Z golden-dusky-puffin: changed notes
