@@ -1,6 +1,6 @@
 ---
 title: Run `git log` for `Task:` trailer commits
-status: planning
+status: cold-read
 depends_on:
   - TASK-358
 created: 2026-11-23
@@ -28,7 +28,7 @@ Tests: add real-Git examples to `tests/test_trailer_commits.py` (which `TASK-358
 
 ## Notes
 
-Planner, 2026-11-23: kept in `planning` because it uses `TrailerCommit`, `TRAILER_LOG_OPTIONS` and `parse_trailer_log` from `TASK-358`, not yet built. When `TASK-358` is `done`, compare with what landed, cold-read, then move to `todo`.
+Planner, 2026-11-23: `TASK-358` landed `TrailerCommit`, `TRAILER_LOG_OPTIONS` and `parse_trailer_log` as this ticket assumes; cold-read against what landed.
 
 ## History
 
@@ -36,3 +36,5 @@ Planner, 2026-11-23: kept in `planning` because it uses `TrailerCommit`, `TRAILE
 - 2026-11-23T19:28:36Z witty-yellow-vole planning → cold-read
 - 2026-11-23T19:38:32Z witty-yellow-vole: changed description, acceptance criteria
 - 2026-11-23T19:38:32Z witty-yellow-vole cold-read → planning
+- 2026-11-23T19:38:47Z witty-yellow-vole: replaced notes
+- 2026-11-23T19:38:47Z witty-yellow-vole planning → cold-read
