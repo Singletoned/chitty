@@ -28,7 +28,7 @@ Out of scope: detecting other aliases of fd 0 (process substitution, other `/dev
 
 ## Plan
 
-Add regression properties and add-command example, verify they fail, then recognize the exact stdin names and run checks.
+Correct the add regression fixture, demonstrate baseline ticket creation, then run checks and return for review.
 
 ## Notes
 
@@ -70,3 +70,4 @@ Implemented exact stdin alias detection and regression tests. Both command regre
 - 2026-11-23T11:24:50Z lively-navy-ibis doing → review
 - 2026-11-23T11:30:29Z friendly-hazel-wren: changed acceptance criteria, notes
 - 2026-11-23T11:30:29Z friendly-hazel-wren review → doing
+- 2026-11-23T11:38:14Z jolly-fawn-raven: wrote the plan
