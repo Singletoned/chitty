@@ -24,3 +24,4 @@ Superseded, 2026-11-23: built on `TASK-385`'s write refusal, which the person dr
 
 - 2026-11-23T14:35:34Z youthful-quartz-zander → backlog
 - 2026-11-23T16:07:42Z youthful-quartz-zander: changed notes
+- 2026-11-23T16:41:30Z youthful-quartz-zander backlog → archived
