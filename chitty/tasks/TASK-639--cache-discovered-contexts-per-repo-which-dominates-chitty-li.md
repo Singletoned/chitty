@@ -1,6 +1,6 @@
 ---
 title: Cache `discovered_contexts` per `Repo`, which dominates `chitty list` time
-status: review
+status: done
 priority: high
 created: 2026-11-23
 ---
@@ -37,6 +37,11 @@ Baseline tests on unchanged main code: `pytest -q tests/test_discovered_contexts
 
 Comparison: three baseline real times 9.086, 8.744, 8.868 seconds; three changed real times 4.793, 4.922, 4.964 seconds. Initial diff reflected concurrent TASK-626 status change; rerunning both commands without intervening ticket commits gave empty diff. `make check` passed (1175 tests, 819 subtests).
 
+Reviewed: Cache implementation and complete diff inspected; no defects found.
+1: pass - Baseline PYTHONPATH=tmp/reviewbase/src .venv/bin/python -m pytest -q tests/test_discovered_contexts_cache.py: 2 failed (call count 1 and stale instance sees extra), 1 passed; current run: 3 passed. Copy guard intentionally passes baseline.
+2: pass - Baseline archive and current list outputs compared with diff -q: no output, identical. Worker recorded three timings each and empty diff without intervening ticket commits.
+3: pass - make check: formatting and ruff passed, pyright 0 errors, 1175 passed and 819 subtests passed.
+
 ## Summary
 
 Cached discovered contexts per Repo with defensive copies and invalidation; regression tests, output comparison, timings and make check passed.
@@ -53,3 +58,5 @@ Cached discovered contexts per Repo with defensive copies and invalidation; regr
 - 2026-11-23T12:31:17Z golden-ochre-yellowhammer: changed notes
 - 2026-11-23T12:31:31Z golden-ochre-yellowhammer: changed summary; ticked acceptance criteria
 - 2026-11-23T12:33:24Z golden-ochre-yellowhammer doing → review
+- 2026-11-23T12:41:25Z golden-fawn-ibis: changed notes
+- 2026-11-23T12:41:25Z golden-fawn-ibis review → done
