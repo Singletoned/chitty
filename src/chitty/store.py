@@ -288,6 +288,8 @@ class Repo:
         self._discovered_contexts: list[Context] | None = None
         self._ticket_ids: set[TaskId] | None = None
         self._ticket_ref_files: dict[str, list[tuple[Path, str]]] | None = None
+        self._working_index: dict[TaskId, list[Path]] | None = None
+        self._ref_index: dict[str, dict[TaskId, list[tuple[Path, str]]]] = {}
         self._source_refs: dict[TaskId, str] = {}
         self._task_locations: dict[tuple[str, bool], list[StoredTask]] = {}
         self._current_branch_cached = False
@@ -460,6 +462,8 @@ class Repo:
         self._discovered_contexts = None
         self._ticket_ids = None
         self._ticket_ref_files = None
+        self._working_index = None
+        self._ref_index.clear()
         self._source_refs.clear()
         self._task_locations.clear()
         self._current_branch_cached = False
@@ -512,18 +516,27 @@ class Repo:
         return ref, copies
 
     def _working_ticket_files(self, task_id: TaskId) -> list[tuple[Path, str]]:
-        root = self.root / BACKLOG_DIR
-        paths: list[Path] = []
-        if root.is_dir():
-            for directory in sorted(path for path in root.iterdir() if path.is_dir()):
-                context = Context(directory.name, "", directory)
-                for archived in (False, True):
-                    paths.extend(
-                        path
-                        for path in self._files(context, archived)
-                        if ids.parse_filename(path.name)[0] == task_id
-                    )
+        paths = self._working_ticket_index().get(task_id, [])
         return [(path.relative_to(self.root), path.read_text()) for path in paths]
+
+    def _working_ticket_index(self) -> dict[TaskId, list[Path]]:
+        """Every working-tree ticket path by id, from one walk of `chitty/`.
+
+        Paths keep the walk order: context directories by name, each active
+        then archive, and by name within a directory. An invalid entry anywhere
+        raises `_files`'s error, whichever ticket is later asked for.
+        """
+        if self._working_index is None:
+            index: dict[TaskId, list[Path]] = {}
+            root = self.root / BACKLOG_DIR
+            if root.is_dir():
+                for directory in sorted(path for path in root.iterdir() if path.is_dir()):
+                    context = Context(directory.name, "", directory)
+                    for archived in (False, True):
+                        for path in self._files(context, archived):
+                            index.setdefault(ids.parse_filename(path.name)[0], []).append(path)
+            self._working_index = index
+        return self._working_index
 
     def _parse_source_copy(
         self, task_id: TaskId, ref: str, copies: list[tuple[Path, str]]
@@ -543,20 +556,25 @@ class Repo:
         return SourceCopy(short, path, task)
 
     def _ref_ticket_files(self, ref: str, task_id: TaskId) -> list[tuple[Path, str]]:
-        matches: list[tuple[Path, str]] = []
-        for path, content in self._ref_files().get(ref, []):
-            parts = path.parts
-            if not (len(parts) == 3 or (len(parts) == 4 and parts[2] == ARCHIVE_DIR)):
-                continue
-            if parts[0] != BACKLOG_DIR:
-                continue
-            try:
-                found, _ = ids.parse_filename(path.name)
-            except ids.IdError:
-                continue
-            if found == task_id:
-                matches.append((path, content))
-        return matches
+        return list(self._ref_ticket_index(ref).get(task_id, []))
+
+    def _ref_ticket_index(self, ref: str) -> dict[TaskId, list[tuple[Path, str]]]:
+        """`ref`'s ticket files (from `_ref_files`) by id; unparseable names are skipped."""
+        if ref not in self._ref_index:
+            index: dict[TaskId, list[tuple[Path, str]]] = {}
+            for path, content in self._ref_files().get(ref, []):
+                parts = path.parts
+                if not (len(parts) == 3 or (len(parts) == 4 and parts[2] == ARCHIVE_DIR)):
+                    continue
+                if parts[0] != BACKLOG_DIR:
+                    continue
+                try:
+                    found, _ = ids.parse_filename(path.name)
+                except ids.IdError:
+                    continue
+                index.setdefault(found, []).append((path, content))
+            self._ref_index[ref] = index
+        return self._ref_index[ref]
 
     def _choose_source(self, task_id: TaskId) -> str:
         """Return a full Git ref or `WORKING_TREE` as chosen by `ticket_source`.
@@ -634,15 +652,7 @@ class Repo:
         return task_id in self.ticket_ids()
 
     def _collect_ticket_ids(self) -> set[TaskId]:
-        result: set[TaskId] = set()
-        root = self.root / BACKLOG_DIR
-        if root.is_dir():
-            for directory in sorted(path for path in root.iterdir() if path.is_dir()):
-                context = Context(directory.name, "", directory)
-                for archived in (False, True):
-                    for path in self._files(context, archived):
-                        result.add(ids.parse_filename(path.name)[0])
-
+        result = set(self._working_ticket_index())
         files_by_ref = self._ref_files()
         if not files_by_ref:
             return result
