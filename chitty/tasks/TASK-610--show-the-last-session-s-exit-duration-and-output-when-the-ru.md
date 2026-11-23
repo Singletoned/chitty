@@ -1,6 +1,6 @@
 ---
 title: Show the last session's exit, duration and output when the runner stops an agent that made no progress
-status: review
+status: done
 depends_on:
   - TASK-617
 created: 2026-11-23
@@ -21,9 +21,9 @@ Out of scope: detecting why an agent could not start, and warning in `chitty ini
 
 ## Acceptance Criteria
 
-- [ ] A pure function `stalled_agent_message(first_line, seconds, returncode, output)` in `src/chitty/run.py` is tested with Hypothesis in a new file `tests/test_property_stalled_agent_message.py`: for `first_line` drawn from `st.text().filter(lambda s: s.splitlines() in ([], [s]))`, any non-negative `seconds`, any integer return code and any output text (including empty, whitespace-only, carriage-return, form-feed and Unicode line-separator characters, trailing blank lines, no trailing newline, and more than 40 lines), with `tail = output.splitlines()[-40:]`: `result.split("\n")[0] == first_line`, `result.split("\n")[1] == f"last session: exit {returncode} after {seconds}s"`, and `result.split("\n")[2:] == tail` when `output` is not empty, or `== ["(no output)"]` when it is.
-- [ ] In `tests/test_run_continue.py`, a new fake-agent `edit` snippet (passed to `write_fake`, like `NO_CHANGE`) prints `OLD_MARKER` to stdout when not continued and `STALL_MARKER` when continued (`continued` in `FAKE_AGENT`), and never changes the ticket. `run --ticket` ends with the ticket in `error`. Take the Notes text (`self.json("show", ticket)["notes"]`, one string) from its last `Runner error (agent): ` onwards: that line continues with the stop message from `_agent_sessions` (it contains `continuations with no new work committed`), and the text after it, under `Error output:`, contains `last session: exit 0` and `STALL_MARKER`, and not `OLD_MARKER`. This fails on `main`, whose note has no agent output.
-- [ ] `test_command_without_prompt_is_not_continued` (`tests/test_run_continue.py`) keeps its `after 0 continuations with no new work committed` assertion and also asserts that the Notes text from its last `Runner error (agent): ` onwards contains `last session: exit 0 after`.
+- [x] A pure function `stalled_agent_message(first_line, seconds, returncode, output)` in `src/chitty/run.py` is tested with Hypothesis in a new file `tests/test_property_stalled_agent_message.py`: for `first_line` drawn from `st.text().filter(lambda s: s.splitlines() in ([], [s]))`, any non-negative `seconds`, any integer return code and any output text (including empty, whitespace-only, carriage-return, form-feed and Unicode line-separator characters, trailing blank lines, no trailing newline, and more than 40 lines), with `tail = output.splitlines()[-40:]`: `result.split("\n")[0] == first_line`, `result.split("\n")[1] == f"last session: exit {returncode} after {seconds}s"`, and `result.split("\n")[2:] == tail` when `output` is not empty, or `== ["(no output)"]` when it is.
+- [x] In `tests/test_run_continue.py`, a new fake-agent `edit` snippet (passed to `write_fake`, like `NO_CHANGE`) prints `OLD_MARKER` to stdout when not continued and `STALL_MARKER` when continued (`continued` in `FAKE_AGENT`), and never changes the ticket. `run --ticket` ends with the ticket in `error`. Take the Notes text (`self.json("show", ticket)["notes"]`, one string) from its last `Runner error (agent): ` onwards: that line continues with the stop message from `_agent_sessions` (it contains `continuations with no new work committed`), and the text after it, under `Error output:`, contains `last session: exit 0` and `STALL_MARKER`, and not `OLD_MARKER`. This fails on `main`, whose note has no agent output.
+- [x] `test_command_without_prompt_is_not_continued` (`tests/test_run_continue.py`) keeps its `after 0 continuations with no new work committed` assertion and also asserts that the Notes text from its last `Runner error (agent): ` onwards contains `last session: exit 0 after`.
 
 ## Plan
 
@@ -38,6 +38,11 @@ Folded in from TASK-622 and TASK-623: four worker runs and a reviewer run in cir
 Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When TASK-617 is done, compare this ticket with what landed, cold-read it again, then move it to `todo`.
 
 Regression tests fail before the fix: both stalled runner paths omit the last session details; the continued path has no Error output section.
+
+Reviewed: make check passed (1210 tests); no prior review findings.
+1: pass - Hypothesis property passes in make check; on merge base PYTHONPATH=src pytest collection fails with ImportError for stalled_agent_message.
+2: pass - make check passes the fake-agent test; on merge base PYTHONPATH=src pytest reports IndexError because Error output is absent.
+3: pass - make check passes the no-prompt test; on merge base PYTHONPATH=src pytest reports AssertionError: last session: exit 0 after not found.
 
 ## Summary
 
@@ -76,3 +81,5 @@ Captured the latest session exit, duration and output in stalled runner errors. 
 - 2026-11-23T13:57:28Z kind-hazel-crane: changed notes
 - 2026-11-23T14:00:58Z kind-hazel-crane: changed summary
 - 2026-11-23T14:02:49Z kind-hazel-crane doing → review
+- 2026-11-23T14:08:11Z kind-zinc-marten: changed notes; ticked acceptance criteria
+- 2026-11-23T14:08:11Z kind-zinc-marten review → done
