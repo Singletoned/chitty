@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -27,6 +27,7 @@ Out of scope: leaving the ticket in `doing` instead of `error` when the cap is h
 - [ ] A work-mode test in `tests/test_run_continue.py` (its fake-agent fixture, which logs invocations) uses an agent that, in each of its first 7 sessions, writes and `git add`s a new non-ticket file named from its invocation count (so each commit differs) and commits it without changing the ticket, then sets `review` on the 8th. `chitty run --ticket` prints `doing → review` and the fixture saw 8 invocations. This fails on `main`, where the 6th unchanged session sets `error`.
 - [ ] In `tests/test_run_continue.py`, an agent that only appends a note through `chitty note` each session (moving HEAD but changing only the ticket file) ends `doing → error` after 6 invocations, and the ticket's note reads `<ID> is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run``; `test_unchanged_ticket_is_continued_five_times_then_fails` asserts the same new wording.
 - [ ] In `tests/test_run_continue.py`, an agent that commits one non-ticket file in its first session and then runs `git commit --amend --no-edit --allow-empty` in every later session ends `doing → error` after 7 invocations (1 productive + 6 idle); a three-dot diff would never stop it.
+- [ ] A fake agent whose `agent_command` lacks `{prompt}` (as in `test_command_without_prompt_is_not_continued`) and makes no change ends `doing → error` after 1 invocation, with a note containing `after 0 continuations with no new work committed`.
 
 ## Notes
 
@@ -50,3 +51,5 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 - 2026-11-23T10:37:30Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:37:30Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:37:32Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:38:31Z witty-russet-gannet: changed acceptance criteria
+- 2026-11-23T10:38:31Z witty-russet-gannet cold-read → planning
