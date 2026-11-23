@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: doing
+status: error
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -73,6 +73,17 @@ Split 2026-11-23 at the person's request, after two worker runs stalled without 
 
 Cold read after the split (2026-11-23): nothing serious. Added the tick/answer independence examples, an exact two-line answer fixture with a tab indent and a whitespace-only blank, the literal renumbered body, and a note that `import_backlog.py` and `cli.py` loop over `SECTION_ORDER`.
 
+Runner error (agent): TASK-629 is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-629`
+
+Error output:
+
+```text
+last session: exit 0 after 11s
+TASK-629 remains unfinished and `doing`. I have not found a substantiated reason to return it to `planning` or mark it `blocked`.
+```
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -110,3 +121,5 @@ Cold read after the split (2026-11-23): nothing serious. Added the tick/answer i
 - 2026-11-23T19:45:55Z friendly-coral-badger planning → todo
 - 2026-11-23T20:00:46Z honest-bronze-dormouse todo → doing
 - 2026-11-23T20:03:27Z honest-bronze-dormouse: wrote the plan
+- 2026-11-23T20:04:34Z honest-bronze-dormouse: changed notes
+- 2026-11-23T20:04:34Z honest-bronze-dormouse doing → error
