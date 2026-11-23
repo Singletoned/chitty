@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: cold-read
+status: planning
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -30,13 +30,14 @@ Code, in `src/chitty/model.py`:
 
 - Add `"Questions"` to `SectionName` and a `QUESTIONS` constant. Put it in `SECTION_ORDER` straight after `ACCEPTANCE_CRITERIA`. The unknown-section error in `_split_sections` lists allowed names from that order, so it will include `Questions`, and any other `##` name stays refused.
 - A frozen dataclass `Question(checked: bool, text: str, answer: str | None)` and `Task.questions: tuple[Question, ...]`, parsed in `parse` by a new `_parse_questions`, next to `_parse_criteria`, which it does not share code with. The rules differ: criteria skip blank lines and join any later indented line, while Questions treat indented lines after a blank line as the answer. Its errors name the section: an empty item `- [ ]` raises `question <n> has no text`; a nested list marker raises `question <n>: nested lists are not allowed`; a second answer paragraph raises `question <n>: an answer must be one paragraph`; any other line raises `'## Questions' may only contain '- [ ] ...' items; found <line repr>`. A whitespace-only line counts as blank everywhere in the section. A nested list marker is a stripped line matching `LIST_MARKER_RE`, as for criteria. Blank lines between items and at the end of the section are allowed, and an unanswered question may be followed by a blank line and then the next item.
+- `src/chitty/import_backlog.py` and `_format` in `src/chitty/cli.py` loop over `SECTION_ORDER`; Questions passes through both without changes here (`chitty show` prints the raw section until TASK-650).
 - `with_section(QUESTIONS, text)` works as for other free sections. The result goes through `parse`, so an invalid Questions body is refused. Renumbering (`src/chitty/renumbering.py`) then rewrites ticket IDs in Questions with no change, because it already calls `with_section` for every section except History and Acceptance Criteria.
 
 Tests, in a new `tests/test_questions_section.py`:
 
 - Parse: the example above gives two questions, `(True, "Which database?", "Postgres, because we already run it.")` and `(False, "Who owns the migration?", None)`. `render()` returns the text byte for byte.
-- Ticks: `- [X] Q` parses as checked.
-- Continuation and wrapping: a question line followed directly by an indented line joins into the question text. An answer spread over two indented lines joins into one answer.
+- Ticks: `- [X] Q` parses as checked; `- [x] Q` with no answer parses as `(True, "Q", None)`; `- [ ] Q`, a blank line, then `  A.` parses as `(False, "Q", "A.")`.
+- Continuation and wrapping: a question line followed directly by an indented line joins into the question text. An answer spread over two indented lines joins into one answer: `- [ ] Q\n\n  Part one\n\tpart two\n` gives `answer == "Part one part two"` (a tab indent counts). A whitespace-only line (`"   "`) between an item and its answer counts as blank.
 - Refusals: `- [ ]` with no text, a second indented answer paragraph, an indented `- x` under an item, and an unindented non-item line each raise `TaskError` with the exact message given under Code.
 - Unknown section: a ticket with a `## Questionz` heading still raises the unknown-section error, and its list of allowed names now includes `Questions` (so it fails before the change).
 - Formatters: in `tests/test_formatters.py`, give `sample()` the example section (through `with_section`), so the prettier and mdformat no-op tests cover it.
@@ -97,3 +98,5 @@ Split 2026-11-23 at the person's request, after two worker runs stalled without 
 - 2026-11-23T19:43:38Z friendly-coral-badger: changed title, description, acceptance criteria, notes; wrote the plan
 - 2026-11-23T19:43:38Z friendly-coral-badger error → planning
 - 2026-11-23T19:43:50Z friendly-coral-badger planning → cold-read
+- 2026-11-23T19:45:36Z friendly-coral-badger: changed description
+- 2026-11-23T19:45:36Z friendly-coral-badger cold-read → planning
