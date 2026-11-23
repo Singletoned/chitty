@@ -1,6 +1,6 @@
 ---
 title: Refuse a ticket write only when a newer, different copy exists elsewhere
-status: doing
+status: planning
 depends_on:
   - TASK-378
   - TASK-382
@@ -84,6 +84,8 @@ Planner, 2026-11-22 (from `TASK-547`'s cold read): the replan must supply `newer
 
 Planner, 2026-11-23: replanned as part (2). The checkout kinds are the main checkout and kinds 2 to 5 of `tests/ticket_placements.py` (there is no kind 1 there; the split plan above says 1 to 5 loosely). Split-off parts are TASK-647 (remove the bypass, remote-only review handoff) and TASK-648 (`_prepare_write` after the guard). A prototype of the rule (equality of `_source_files` and `_working_ticket_files` lists) run over placements `a`–`m` in kinds 3 to 5 agreed with the oracle; today, placements `a` and `j` from a kind 4 worktree are refused with `latest committed version is on branch main`.
 
+Planning blocker: the specified comparison cannot meet the stated byte-for-byte rule as written. `Repo._working_ticket_files` uses `Path.read_text()` (`src/chitty/store.py:527`), which translates CRLF and CR to LF, whereas Git blob contents are decoded without newline translation (`src/chitty/git.py:618`). Therefore the prescribed comparison can allow a working-tree file differing only by line endings from an LF ref, or refuse identical CRLF bytes. The requested trailing-newline example does not test this. Decide whether to preserve raw newlines in the shared working-tree reader (and address effects on reads), or change the comparison contract; specify a line-ending regression fixture, action, and assertions for the byte-for-byte requirement. I inspected the placement read oracle and the listed existing test names; the remaining matrix and message requirements appear independently specified, but have not been run or implemented because of this blocker. No implementation changes were made; full verification remains outstanding.
+
 ## History
 
 - 2026-11-18T16:20:16Z lively-quartz-crane → backlog
@@ -129,3 +131,5 @@ Planner, 2026-11-23: replanned as part (2). The checkout kinds are the main chec
 - 2026-11-23T14:46:46Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T14:46:50Z youthful-quartz-zander planning → todo
 - 2026-11-23T14:48:50Z plucky-russet-otter todo → doing
+- 2026-11-23T14:52:13Z plucky-russet-otter: changed owner, notes
+- 2026-11-23T14:52:13Z plucky-russet-otter doing → planning
