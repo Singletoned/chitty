@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: doing
+status: planning
 labels:
   - bug
 priority: medium
@@ -65,6 +65,8 @@ Planning blocker: criterion 1 requires all new tests except the newline and carr
 
 Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterion and renumbering property tests, and the CLI fixture. The remaining requested tests and `make check` were not run: the new test file does not exist and implementation is stopped pending correction. The newline/carriage-return validation and shared caller can be independently located, but the complete baseline and post-change verification cannot be established until the contradiction is resolved.
 
+Planning blocker: Acceptance criterion 1 still says every new test except three specified cases fails against `main`. However, the required `[x] a` test is explicitly expected to pass on main and the ticket says that behavior remains unchanged. The test must pass after the fix but cannot satisfy the stated baseline-failure requirement. Please amend criterion 1 to explicitly exclude `[x] a` (and any other unchanged behavior) from the required baseline failures. No implementation or tests were started because this conflicts with the requested regression verification.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -99,3 +101,5 @@ Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterio
 - 2026-11-23T23:07:50Z mellow-amber-toad cold-read → planning
 - 2026-11-23T23:07:56Z mellow-amber-toad planning → todo
 - 2026-11-23T23:25:25Z mellow-amber-urchin todo → doing
+- 2026-11-23T23:27:54Z mellow-amber-urchin: changed owner, notes
+- 2026-11-23T23:27:54Z mellow-amber-urchin doing → planning
