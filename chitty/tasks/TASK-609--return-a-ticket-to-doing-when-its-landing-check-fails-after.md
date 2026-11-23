@@ -23,6 +23,10 @@ Out of scope: the pending-landing caller (`_land_pending`, defined at `run.py:37
 - [ ] In `tests/test_review_merge.py`, `test_failing_check_after_main_advances_preserves_main_and_worktree` (about line 371) and `test_landing_failure_records_error_on_branch_without_advancing_main` (about line 429) are changed to expect `done → doing` in stdout (today `done → error`, about lines 378 and 466): the ticket on the `task-1` branch is `doing`; its newest note starts `Review failed (integration):`, contains `landing check exited with status 7; output in `.chitty/check.log`` and the absolute worktree path, and does not contain `Resolve the landing problem`; in the first test the note also contains `LANDING_MARKER` from the fenced log tail (flip its `assertNotIn`); `main` is unchanged, and `main` is an ancestor of `task-1`. Both changed tests fail on `main` today.
 - [ ] The `tests/test_landing.py` test that expects `landing check exited` from `_land` (about line 336) uses `assertRaises(LandingCheckFailed)` (fails on `main`, where the class does not exist). A new guard test in `tests/test_review_merge.py` (fixture config at about line 110, with a top-level `landing_check` set to a missing path) ends `done → error` with a `Runner error (landing)` note; it passes on `main` as a guard and must fail if a missing command were routed to `LandingCheckFailed`. `test_landing_check_timeout_records_error_without_advancing_main` (about line 398) still passes unchanged.
 
+## Plan
+
+Add regression coverage for failed landing checks and missing commands, then distinguish nonzero landing checks and return the rebased ticket to doing with the log tail. Run formatting and checks, commit, and hand off for review.
+
 ## Notes
 
 Suggestion origin: taidy
@@ -51,3 +55,4 @@ Escalation split out to TASK-625: until it lands, a ticket whose landing check k
 - 2026-11-23T10:44:04Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:44:06Z witty-russet-gannet planning → todo
 - 2026-11-23T10:55:41Z golden-dusky-puffin todo → doing
+- 2026-11-23T10:57:55Z golden-dusky-puffin: wrote the plan
