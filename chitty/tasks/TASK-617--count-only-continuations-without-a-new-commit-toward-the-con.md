@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: planning
+status: todo
 created: 2026-11-23
 ---
 
@@ -53,3 +53,4 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 - 2026-11-23T10:37:32Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:38:31Z witty-russet-gannet: changed acceptance criteria
 - 2026-11-23T10:38:31Z witty-russet-gannet cold-read → planning
+- 2026-11-23T10:38:33Z witty-russet-gannet planning → todo
