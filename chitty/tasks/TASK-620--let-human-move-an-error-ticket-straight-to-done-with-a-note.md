@@ -1,6 +1,6 @@
 ---
 title: Let `--human` move an `error` ticket straight to `done`, with a note
-status: doing
+status: review
 created: 2026-11-23
 ---
 
@@ -57,3 +57,4 @@ Implemented the human-only error-to-done transition with a required note. Regres
 - 2026-11-23T11:55:34Z jolly-teal-stoat: wrote the plan
 - 2026-11-23T11:56:13Z jolly-teal-stoat: changed notes
 - 2026-11-23T11:59:07Z jolly-teal-stoat: changed summary
+- 2026-11-23T12:01:02Z jolly-teal-stoat doing → review
