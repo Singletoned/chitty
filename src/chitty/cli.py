@@ -67,6 +67,8 @@ from chitty.store import (
 )
 from chitty.upgrade import check_for_upgrade
 
+SUMMARY_HOURS = 24
+SUMMARY_MAX_HOURS = 8784
 RUNNER_COMMANDS = ("run", "next")
 
 
@@ -120,6 +122,12 @@ def cli() -> None:
 
     Coding agents: run `chitty guide` for how to work with chitty.
     """
+
+
+@cli.command()
+@click.option("--hours", type=click.IntRange(1, SUMMARY_MAX_HOURS), default=SUMMARY_HOURS)
+def summary(hours: int) -> None:
+    """Show recent ticket transitions."""
 
 
 def main() -> None:

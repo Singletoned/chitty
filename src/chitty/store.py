@@ -95,6 +95,22 @@ class Context:
 
 
 @dataclass(frozen=True)
+class SummaryLine:
+    id: TaskId
+    title: str
+    when: datetime
+    actor: str
+    new: bool
+
+
+def summary_sections(
+    tasks: Sequence["StoredTask"], now: datetime, hours: int
+) -> list[tuple[str, list[SummaryLine]]]:
+    """Group recent task transitions by their latest status."""
+    return []
+
+
+@dataclass(frozen=True)
 class SourceCopy:
     ref: str | None
     path: Path

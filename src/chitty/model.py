@@ -380,6 +380,10 @@ class Task:
             raise _section_text_error(NOTES) from error
         return _verify_section_edit(self, candidate, NOTES, text, append=True)
 
+    def timed_transitions(self) -> list[tuple[datetime, str | None, str]]:
+        """History transitions with UTC timestamps, in file order."""
+        return []
+
     def transitions(self) -> list[tuple[str | None, str]]:
         """History entries as (old, new) status pairs, oldest first."""
         history = self.section(HISTORY) or ""
