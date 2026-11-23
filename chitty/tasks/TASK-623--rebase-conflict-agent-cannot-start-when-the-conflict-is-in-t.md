@@ -26,7 +26,10 @@ Suggestions:
 
 Suggestion origin: echonomicon
 
+Review-path abort now exists (run.py rebase session failure aborts the rebase); the rest is TASK-497, and the could-not-start half is folded into TASK-610.
+
 ## History
 
 - 2026-11-23T10:24:23Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:24Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:57Z witty-russet-gannet: changed notes
