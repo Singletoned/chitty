@@ -1,6 +1,6 @@
 ---
 title: "Tighten the work guide: nested bullets for the long rules"
-status: cold-read
+status: planning
 labels:
   - untestable
 owner: untestable
@@ -28,3 +28,4 @@ Rules for this tightening:
 - 2026-11-23T12:37:53Z friendly-zinc-dormouse planning → cold-read
 - 2026-11-23T12:40:40Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:41:03Z friendly-zinc-dormouse: changed description
+- 2026-11-23T12:44:35Z friendly-zinc-dormouse cold-read → planning
