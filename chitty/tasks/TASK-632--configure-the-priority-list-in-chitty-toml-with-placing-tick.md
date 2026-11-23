@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: doing
+status: planning
 labels:
   - needs-minor
 parent: TASK-607
@@ -69,6 +69,10 @@ Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priori
 
 Planning blocker: the list-display requirement contradicts its prescribed test. `src/chitty/model.py` defines `PRIORITY_GLYPHS["high"]` as `⬆️`; the description explicitly requires `PRIORITY_GLYPHS.get(priority, "")`, which displays that glyph for the hand-written `high` ticket even when `high` is not configured. The specified test instead requires neither the `now` nor the `high` line to contain any built-in glyph. These cannot both pass. Decide whether built-in but unconfigured names retain their glyph, and correct the implementation instruction or test accordingly. The other areas were inspected in the config/model, store/selection, CLI, MCP, existing tests and plan docs; no implementation or regression tests were written, so baseline failures and final verification remain unchecked pending that decision.
 
+Planning: this ticket is too large for one session: it combines a new configuration and model contract, shared write and check validation, two ordering paths, CLI display, MCP schema, three plan documents, updates to existing suites, and a new suite with two independent Hypothesis properties and CLI/MCP integration fixtures. The changes span `config.py`, `model.py`, `store.py`, `selection.py`, `cli.py`, `check.py`, and `mcp.py`; the existing ordering and glyph behavior is independently pinned in `tests/test_next.py`, `tests/test_property_next.py`, and `tests/test_cli.py`.
+
+Please split into reviewable dependent tickets: (1) configuration and model validation, including malformed frontmatter and line-break property; (2) shared write/check validation and CLI/MCP integration; (3) configured ordering and display, including the ranking property, existing-order updates, and plan docs. Specify the intermediate behavior and dependency ordering so each can pass `make check` and land independently; in particular decide how unconfigured names behave between the model and write/check tickets. Preserve the baseline-failure requirements for each ticket. No implementation or regression tests were written; baseline and final checks have not been run. The existing plan is only an outline, not completed work.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -105,3 +109,5 @@ Planning blocker: the list-display requirement contradicts its prescribed test. 
 - 2026-11-23T19:38:01Z witty-yellow-vole planning → todo
 - 2026-11-23T20:06:07Z eager-ebony-quail todo → doing
 - 2026-11-23T20:08:38Z eager-ebony-quail: wrote the plan
+- 2026-11-23T20:09:16Z eager-ebony-quail: changed owner, notes
+- 2026-11-23T20:09:16Z eager-ebony-quail doing → planning
