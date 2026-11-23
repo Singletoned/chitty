@@ -46,6 +46,10 @@ No property: this change only removes tests. What remains is covered by the kept
 
 Remove the specified phrase-only tests and budgets, retain behavioral coverage, update guidance, and compare collected tests against main before running checks.
 
+## Notes
+
+Collected main with `(cd tmp/main640 && ../../.venv/bin/pytest --collect-only -q tests/)` after `git archive main | tar -x -C tmp/main640`, and the branch with `.venv/bin/pytest --collect-only -q tests/`. Main collected 1202, branch 1148: the 55 removed node IDs are exactly the specified deleted-file and named tests including the old rebase name, and the sole added ID is its renamed help test. A kept property test appears on both sides of the textual diff solely due to ordering. `make check` passed (1148 tests).
+
 ## History
 
 - 2026-11-23T12:34:45Z friendly-zinc-dormouse → planning
@@ -57,3 +61,4 @@ Remove the specified phrase-only tests and budgets, retain behavioral coverage, 
 - 2026-11-23T12:44:51Z friendly-zinc-dormouse planning → todo
 - 2026-11-23T14:04:31Z friendly-hazel-dormouse todo → doing
 - 2026-11-23T14:07:10Z friendly-hazel-dormouse: wrote the plan
+- 2026-11-23T14:10:30Z friendly-hazel-dormouse: changed notes
