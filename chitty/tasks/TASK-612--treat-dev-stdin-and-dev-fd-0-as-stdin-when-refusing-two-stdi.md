@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: todo
+status: doing
 created: 2026-11-23
 ---
 
@@ -47,3 +47,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:35:00Z witty-russet-gannet: changed description
 - 2026-11-23T10:35:00Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:35:02Z witty-russet-gannet planning → todo
+- 2026-11-23T11:14:38Z lively-navy-ibis todo → doing
