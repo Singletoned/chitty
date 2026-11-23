@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: planning
+status: cold-read
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -96,3 +96,4 @@ Split 2026-11-23 at the person's request, after two worker runs stalled without 
 - 2026-11-23T19:06:15Z tidy-teal-adder doing → error
 - 2026-11-23T19:43:38Z friendly-coral-badger: changed title, description, acceptance criteria, notes; wrote the plan
 - 2026-11-23T19:43:38Z friendly-coral-badger error → planning
+- 2026-11-23T19:43:50Z friendly-coral-badger planning → cold-read
