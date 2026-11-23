@@ -1,6 +1,6 @@
 ---
 title: Accept a `## Questions` task-list section in tickets
-status: doing
+status: planning
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -67,6 +67,8 @@ Work started: plan recorded, but implementation and requested pre-fix test evide
 
 Planning blocker: the test placement requirements contradict each other. The description requires the renumbering test next to the existing renumbering tests, which are in `tests/test_property_renumbering.py` and `tests/test_renumber_provisional.py`; acceptance criterion 1 requires the renumbering tests in `tests/test_questions_section.py`. Please choose the required location and update the criterion or description. The renumbering test also needs a concrete fixture, action and assertions: specify the ticket and ID mapping, whether to exercise `rewrite_task` or repository renumbering, and what unchanged content to assert. `src/chitty/renumbering.py` does iterate free sections via `with_section`; the parser, CLI formatter and formatter sample match the ticket's other code references. No implementation or tests were changed; failure-before evidence and formatter/check verification could not be run without the specified tests and implementation.
 
+Returned for the test placement contradiction and missing renumbering test specification detailed in the preceding note.
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -79,3 +81,5 @@ Planning blocker: the test placement requirements contradict each other. The des
 - 2026-11-23T13:05:23Z friendly-yellow-ibis: wrote the plan
 - 2026-11-23T13:05:35Z friendly-yellow-ibis: changed notes
 - 2026-11-23T13:06:22Z friendly-yellow-ibis: changed notes
+- 2026-11-23T13:06:28Z friendly-yellow-ibis: changed owner, notes
+- 2026-11-23T13:06:28Z friendly-yellow-ibis doing → planning
