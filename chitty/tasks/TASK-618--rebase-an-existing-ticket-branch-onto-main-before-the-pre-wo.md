@@ -12,7 +12,10 @@ In taidy (2026-11-22), TASK-4 went `todo` → `doing` → `error` in 2 seconds a
 
 Suggestion origin: taidy
 
+Duplicate: already done in TASK-545 (rebase `todo` and `error` tickets before setup in work runs).
+
 ## History
 
 - 2026-11-23T10:24:15Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:16Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:14Z witty-russet-gannet: changed notes
