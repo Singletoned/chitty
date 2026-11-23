@@ -64,6 +64,51 @@ class TestCheckEdit(unittest.TestCase):
         else:
             self.assertTrue(accepted)
 
+    @given(
+        st.lists(
+            st.sampled_from(
+                (
+                    ("review", "doing"),
+                    ("done", "doing"),
+                    ("doing", "review"),
+                    ("review", "done"),
+                    ("doing", "blocked"),
+                    ("blocked", "doing"),
+                )
+            ),
+            max_size=8,
+        ),
+        st.sampled_from(("review", "done")),
+    )
+    def test_landing_and_review_failures_escalate(self, transitions, status):
+        task = make_task(status, [], None, [])
+        when = datetime(2026, 1, 1, tzinfo=UTC)
+        failures = 1
+        for old, new in transitions:
+            task = task.with_history(when, "other-reviewer", old, new)
+            if new == "blocked":
+                failures = 1
+            elif (old, new) in (("review", "doing"), ("done", "doing")):
+                failures += 1
+        result = check_edit(
+            task, fail_review_edit("Review failed: generated failure."), "fresh-reviewer"
+        )
+        self.assertEqual(result.status, "blocked" if failures >= REVIEW_FAILURE_LIMIT else "doing")
+        if failures >= REVIEW_FAILURE_LIMIT:
+            self.assertEqual(result.owner, "human")
+
+    def test_landing_failure_is_not_a_review_transition(self):
+        task = make_task("done", [], None, []).with_history(
+            datetime(2026, 1, 1, tzinfo=UTC), "fresh-reviewer", "doing", "review"
+        )
+        edit = Edit(
+            status="doing",
+            note="Review failed (integration): x",
+            skip_verdicts=True,
+            skip_current_version=True,
+        )
+        self.assertEqual(check_edit(task, edit, "fresh-reviewer").status, "doing")
+
     @given(st.integers(min_value=0, max_value=5))
     def test_failed_reviews_escalate_at_the_limit(self, failures):
         task = make_task("review", [], None, [])

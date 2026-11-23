@@ -368,6 +368,18 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertIn("status: review", prior_ticket)
         self.assertNotIn("Runner error", prior_ticket)
 
+    def test_landing_failure_escalates_after_two_failures(self):
+        self.branch_for_review(failures=2)
+        (self.logs / "advance_main").write_text(str(self.root))
+        (self.logs / "fail_landing_check").write_text("fail")
+        self.run_cli("run", "--mode", "review")
+        ticket = self.ticket()
+        self.assertEqual(ticket.frontmatter.status, "blocked")
+        self.assertEqual(ticket.frontmatter.owner, "human")
+        notes = ticket.section("Notes") or ""
+        self.assertIn("Escalated to human review: failed review 3 times", notes)
+        self.assertIn("Review failed (integration):", notes)
+
     def test_failing_check_after_main_advances_preserves_main_and_worktree(self):
         self.branch_for_review()
         (self.logs / "advance_main").write_text(str(self.root))

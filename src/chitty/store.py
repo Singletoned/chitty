@@ -1657,7 +1657,7 @@ def check_edit(task: Task, edit: Edit, reviewer: str) -> Edit:
                 f"{reviewer} cannot review this task: {', '.join(work)}; "
                 "leave the review to another agent"
             )
-    if edit.status == "doing" and is_review_transition:
+    if edit.status == "doing" and previous_status in {"review", "done"}:
         return _escalate_repeated_failure(task, edit)
     # Planning is a handoff, not another assignment to the current worker.
     return replace(edit, owner="") if returning_to_planning else edit
@@ -1710,7 +1710,7 @@ def _escalate_repeated_failure(task: Task, edit: Edit) -> Edit:
     for old, new in reversed(task.transitions()):
         if new == "blocked":
             break
-        failures += (old, new) == ("review", "doing")
+        failures += (old, new) in {("review", "doing"), ("done", "doing")}
     if failures < REVIEW_FAILURE_LIMIT:
         return edit
     reason = (
