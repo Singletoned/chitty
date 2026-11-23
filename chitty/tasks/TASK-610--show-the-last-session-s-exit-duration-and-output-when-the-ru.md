@@ -1,6 +1,6 @@
 ---
 title: Show the last session's exit, duration and output when the runner stops an agent that made no progress
-status: planning
+status: cold-read
 depends_on:
   - TASK-617
 created: 2026-11-23
@@ -37,3 +37,4 @@ Folded in from TASK-622 and TASK-623: four worker runs and a reviewer run in cir
 - 2026-11-23T10:27:34Z witty-russet-gannet: changed notes
 - 2026-11-23T10:36:30Z witty-russet-gannet: changed title, dependencies, description, acceptance criteria
 - 2026-11-23T10:36:30Z witty-russet-gannet backlog → planning
+- 2026-11-23T10:36:40Z witty-russet-gannet planning → cold-read
