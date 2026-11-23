@@ -8,7 +8,47 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
 from chitty.errors import ChittyError
-from chitty.ids import TaskId
+from chitty.ids import IdError, TaskId
+
+TRAILER_LOG_FORMAT = "%x1e%H%x1f%s%x1f%(trailers:key=Task,valueonly,separator=%x2C)%x1f"
+TRAILER_LOG_OPTIONS = (
+    "--root", "--no-show-signature", "--encoding=UTF-8", "--no-merges",
+    "--no-renames", "--name-only", "-z", f"--format={TRAILER_LOG_FORMAT}",
+)
+
+
+@dataclass(frozen=True)
+class TrailerCommit:
+    sha: str
+    subject: str
+    task_ids: tuple[TaskId, ...]
+    paths: tuple[PurePosixPath, ...]
+
+
+def parse_trailer_log(text: str) -> list[TrailerCommit]:
+    """Parse NUL-delimited Git trailer records without losing path characters."""
+    records = text.split("\x1e")
+    if records[0]:
+        raise ChittyError(f"unexpected trailer log prefix: {records[0][:40]!r}")
+    commits: list[TrailerCommit] = []
+    for record in records[1:]:
+        label = record[:40]
+        header, separator, rest = record.partition("\0")
+        fields = header.split("\x1f")
+        if not separator or len(fields) != 4 or fields[3]:
+            raise ChittyError(f"invalid trailer log record: {label!r}")
+        sha, subject, trailers, _ = fields
+        paths = rest.removeprefix("\n").split("\0")
+        if not re.fullmatch(r"[0-9a-f]{40}", sha) or paths[-1] or any(not p for p in paths[:-1]):
+            raise ChittyError(f"invalid trailer log record: {label!r}")
+        task_ids: list[TaskId] = []
+        for value in trailers.split(","):
+            try:
+                task_ids.append(TaskId.parse(value.strip()))
+            except IdError:
+                continue
+        commits.append(TrailerCommit(sha, subject, tuple(task_ids), tuple(map(PurePosixPath, paths[:-1]))))
+    return commits
 
 
 @dataclass(frozen=True)
