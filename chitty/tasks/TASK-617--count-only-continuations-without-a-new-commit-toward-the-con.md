@@ -29,6 +29,10 @@ Out of scope: leaving the ticket in `doing` instead of `error` when the cap is h
 - [ ] In `tests/test_run_continue.py`, an agent that commits one non-ticket file in its first session and then runs `git commit --amend --no-edit --allow-empty` in every later session ends `doing → error` after 7 invocations (1 productive + 6 idle); a three-dot diff would never stop it.
 - [ ] A fake agent whose `agent_command` lacks `{prompt}` (as in `test_command_without_prompt_is_not_continued`) and makes no change ends `doing → error` after 1 invocation, with a note containing `after 0 continuations with no new work committed`.
 
+## Plan
+
+Compare committed trees around each session, count consecutive idle sessions, and add property and integration regressions before implementing.
+
 ## Notes
 
 Suggestion origin: taidy
@@ -55,3 +59,4 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 - 2026-11-23T10:38:31Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:38:33Z witty-russet-gannet planning → todo
 - 2026-11-23T11:26:27Z friendly-teal-crane todo → doing
+- 2026-11-23T11:29:16Z friendly-teal-crane: wrote the plan
