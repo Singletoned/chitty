@@ -30,7 +30,7 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 
 ## Plan
 
-Implement the Git log parser and reader, add property and real-Git tests, and run the project checks.
+Add the pure trailer log parser and property tests, verify malformed-input mutations, then run the project checks.
 
 ## History
 
@@ -71,3 +71,4 @@ Implement the Git log parser and reader, add property and real-Git tests, and ru
 - 2026-11-23T18:43:18Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:43:21Z witty-yellow-vole planning → todo
 - 2026-11-23T18:44:34Z daring-teal-lapwing todo → doing
+- 2026-11-23T18:47:04Z daring-teal-lapwing: wrote the plan
