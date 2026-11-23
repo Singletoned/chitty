@@ -37,6 +37,8 @@ Planning: relies on TASK-609 (its landing-failure handler and test fixture). Whe
 
 Precedent for criterion 2: `test_automatic_and_reviewer_failures_count_together` in `tests/test_review_merge.py` covers the `review → doing` path.
 
+Regression evidence: property failed on done with two review failures (doing instead of blocked); integration failed doing instead of blocked. Temporarily adding done to is_review_transition made the independence example fail: ChittyError: fresh-reviewer cannot review this task: moved the task to review; leave the review to another agent. Reverted that experiment.
+
 ## History
 
 - 2026-11-23T10:37:53Z witty-russet-gannet → backlog
@@ -56,3 +58,4 @@ Precedent for criterion 2: `test_automatic_and_reviewer_failures_count_together`
 - 2026-11-23T13:41:52Z youthful-quartz-zander planning → todo
 - 2026-11-23T13:42:54Z sunny-violet-heron todo → doing
 - 2026-11-23T13:46:21Z sunny-violet-heron: wrote the plan
+- 2026-11-23T13:47:20Z sunny-violet-heron: changed notes
