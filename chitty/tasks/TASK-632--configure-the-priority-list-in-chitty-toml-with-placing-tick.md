@@ -58,6 +58,8 @@ Out of scope: how custom priorities are displayed (TASK-633), named sets, config
 
 Planner, 2026-11-23: a cold read found nothing serious. Named the existing tests that pin the old order and error text, said what a hand-written `priority: ""` does, and fixed the property's types and unconfigured-name generator, the config placement in `CONFIG`, the MCP assertion and substring matching.
 
+Planner, 2026-11-23: the person proposed leading emoji in `priorities` entries (default `["⬆️high", "⏺️medium", "", "⬇️low"]`). That is TASK-633, which builds on this ticket; nothing changes here.
+
 ## History
 
 - 2026-11-23T10:40:39Z witty-russet-gannet → backlog
@@ -65,3 +67,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Named the existing tests
 - 2026-11-23T12:37:51Z witty-russet-gannet backlog → cold-read
 - 2026-11-23T12:38:52Z witty-russet-gannet: changed description, notes
 - 2026-11-23T12:38:52Z witty-russet-gannet cold-read → todo
+- 2026-11-23T12:55:16Z witty-russet-gannet: changed notes
