@@ -1,6 +1,6 @@
 ---
 title: Parse `Task:` trailer commits from `git log` output
-status: review
+status: done
 created: 2026-11-16
 ---
 
@@ -24,9 +24,9 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 
 ## Acceptance Criteria
 
-- [ ] The `parse_trailer_log` round-trip property passes
-- [ ] The malformed-input and without-`-z` cases pass, each raising `ChittyError`; each fails when its rule is removed from the parser (no SHA check, empty paths kept, non-empty final entry dropped, field count unchecked). Record those runs in a note
-- [ ] `make check` passes
+- [x] The `parse_trailer_log` round-trip property passes
+- [x] The malformed-input and without-`-z` cases pass, each raising `ChittyError`; each fails when its rule is removed from the parser (no SHA check, empty paths kept, non-empty final entry dropped, field count unchecked). Record those runs in a note
+- [x] `make check` passes
 
 ## Plan
 
@@ -35,6 +35,11 @@ Add the pure trailer log parser and property tests, verify malformed-input mutat
 ## Notes
 
 Mutation runs: removing the SHA, empty-path, final-entry, and field-count checks each made tests/test_trailer_commits.py fail; the field-count mutation raised ValueError, the others failed the expected exception assertion. Restored the checks and make check passed.
+
+Reviewed: parser and full diff checked.
+1: pass - make check passed; replacing the parser result with an empty list made pytest test_round_trip fail (1 failed).
+2: pass - make check passed; independently removed the SHA, empty-path, final-entry and field-count checks in a temporary package copy and ran pytest tests/test_trailer_commits.py: each produced 1 failed, 2 passed, with AssertionError for the first three and ValueError for the last.
+3: pass - make check: 1159 passed, 599 subtests passed, 1 warning.
 
 ## Summary
 
@@ -82,3 +87,5 @@ Implemented the pure trailer log parser and property tests. make check passed; m
 - 2026-11-23T18:47:04Z daring-teal-lapwing: wrote the plan
 - 2026-11-23T18:52:25Z daring-teal-lapwing: changed notes, summary
 - 2026-11-23T18:54:33Z daring-teal-lapwing doing → review
+- 2026-11-23T19:05:25Z eager-pearl-heron: changed notes; ticked acceptance criteria
+- 2026-11-23T19:05:25Z eager-pearl-heron review → done
