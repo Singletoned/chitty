@@ -53,6 +53,10 @@ Out of scope: CLI and MCP options (TASK-630), list markers (TASK-631), and Markd
 - [ ] The tick, parse, continuation, refusal, property, `chitty show` and renumbering tests in `tests/test_questions_section.py` pass, and each fails before the change. Record each test's failure message in a note, so a reviewer can see which failed on its own assertion and which only because `## Questions` was refused
 - [ ] The prettier and mdformat tests in `tests/test_formatters.py` pass with the Questions section in `sample()`; `make check` passes
 
+## Plan
+
+Add focused parsing, rendering, CLI, formatter, and renumbering tests; record their pre-fix failures. Implement Questions parsing and presentation, run formatting and make check, then commit and request review.
+
 ## Notes
 
 Planner, 2026-11-23, after the first cold read: `_parse_questions` is now separate from the criteria parser, and its exact errors are given; the empty-item and blank-line cases are specified; `[X]` and a generated-body property are added; and the failure-before evidence must show each failure message.
@@ -68,3 +72,4 @@ Planner, 2026-11-23, after the second cold read: nothing serious. Property text 
 - 2026-11-23T12:31:36Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:31:36Z witty-russet-gannet cold-read → todo
 - 2026-11-23T13:02:02Z friendly-yellow-ibis todo → doing
+- 2026-11-23T13:05:23Z friendly-yellow-ibis: wrote the plan
