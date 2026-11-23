@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -98,3 +98,4 @@ Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterio
 - 2026-11-23T23:07:50Z mellow-amber-toad: changed description
 - 2026-11-23T23:07:50Z mellow-amber-toad cold-read → planning
 - 2026-11-23T23:07:56Z mellow-amber-toad planning → todo
+- 2026-11-23T23:25:25Z mellow-amber-urchin todo → doing
