@@ -33,6 +33,10 @@ To show the tests fail first, commit a stub first (`timed_transitions` returning
 - [ ] The `summary_sections` examples, the property and the CLI test in `tests/test_summary.py` pass; against the committed stub, the examples, the property and the CLI output assertions fail (the `--hours 0` and `--hours x` checks may pass there); record both runs in a note
 - [ ] `chitty --help` lists `summary`; `make check` passes
 
+## Plan
+
+Add the specified model and store APIs and thin CLI, first committing the requested stub. Add the example, property and CLI tests, record their failures against the stub, then implement the behavior and run the full checks.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -63,3 +67,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Clarified the `TaskId` t
 - 2026-11-23T12:04:24Z witty-russet-gannet: changed description, notes
 - 2026-11-23T12:04:24Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:07:37Z sunny-jade-quail todo → doing
+- 2026-11-23T12:12:06Z sunny-jade-quail: wrote the plan
