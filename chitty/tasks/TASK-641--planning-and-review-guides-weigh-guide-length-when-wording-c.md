@@ -1,6 +1,6 @@
 ---
 title: "Planning and review guides: weigh guide length when wording changes"
-status: planning
+status: cold-read
 labels:
   - untestable
 owner: untestable
@@ -22,3 +22,4 @@ One or two sentences each. Keep the wording general: the guides reach every repo
 ## History
 
 - 2026-11-23T12:34:55Z friendly-zinc-dormouse → planning
+- 2026-11-23T12:37:43Z friendly-zinc-dormouse planning → cold-read
