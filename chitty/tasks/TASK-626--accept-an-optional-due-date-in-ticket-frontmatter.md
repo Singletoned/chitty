@@ -45,6 +45,12 @@ Add focused regression and property tests, confirm failures before implementatio
 
 Planner, 2026-11-23: a cold read found nothing serious. Tightened the tests: an exact pydantic message, `due` inserted between `created` and `moved_from`, string input accepted, and a round-trip and no-crash property. Said that no whole-JSON test is expected to change.
 
+Regression run before the fix failed; after the fix tests/test_due_date.py and tests/test_formatters.py passed (11 tests). String values needed normalization after validation because scalar rendering otherwise quotes dates. make check passed: 1182 tests.
+
+## Summary
+
+Added optional due frontmatter, validation, round-trip and formatter coverage. make check passed.
+
 ## History
 
 - 2026-11-23T10:39:46Z witty-russet-gannet → backlog
@@ -55,3 +61,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Tightened the tests: an 
 - 2026-11-23T12:28:47Z witty-russet-gannet: changed description
 - 2026-11-23T12:49:40Z mellow-hazel-lapwing todo → doing
 - 2026-11-23T12:52:46Z mellow-hazel-lapwing: wrote the plan
+- 2026-11-23T12:58:22Z mellow-hazel-lapwing: changed notes, summary
