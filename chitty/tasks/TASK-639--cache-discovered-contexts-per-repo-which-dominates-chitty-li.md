@@ -1,6 +1,6 @@
 ---
 title: Cache `discovered_contexts` per `Repo`, which dominates `chitty list` time
-status: todo
+status: doing
 priority: high
 created: 2026-11-23
 ---
@@ -36,3 +36,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Clarified the test setup
 - 2026-11-23T12:08:25Z witty-russet-gannet planning → cold-read
 - 2026-11-23T12:10:21Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:10:21Z witty-russet-gannet cold-read → todo
+- 2026-11-23T12:25:07Z golden-ochre-yellowhammer todo → doing
