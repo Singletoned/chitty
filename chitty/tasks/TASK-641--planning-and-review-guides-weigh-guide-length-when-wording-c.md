@@ -1,6 +1,6 @@
 ---
 title: "Planning and review guides: weigh guide length when wording changes"
-status: review
+status: done
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -18,6 +18,10 @@ Change:
 - `src/chitty/roles/review.md`, as one sentence in the bullet starting "Fail only for an unmet criterion": for an `untestable` ticket that changes guide or prompt text, fail it with cause `work` and set `-s doing` when you can give a shorter wording that keeps every requirement; put that wording in the note.
 
 One or two sentences each. Keep the wording general: the guides reach every repository, which may call them something else, so say "agent guides or prompts", not file paths from this repository. Record the decision in `docs/plan/agent-instructions.md`, at the end of its list, after the bullet `TASK-640` adds. The Change list is the whole definition of done; the reviewer judges the sentences against it.
+
+## Notes
+
+Reviewed: each sentence matches the Change list. The `plan.md` sentence ends the `untestable` paragraph. The `review.md` sentence ends the bullet starting "Fail only for an unmet criterion", says fail with cause `work`, set `-s doing`, and give the shorter wording. Both say "agent guides or prompts" / "guide or prompt text" and give no paths. The decision is the last bullet of `docs/plan/agent-instructions.md`, after the one `TASK-640` added. The Summary says why the guides grow. No acceptance criteria (`untestable`). `make check` passed (1156 tests) on `main` merged with 608, 641 and 643 to 646; 641 and 644 both change `review.md` and merge cleanly.
 
 ## Summary
 
@@ -41,3 +45,5 @@ Verification: `make check`, run by `chitty edit -s review`.
 - 2026-11-23T14:37:02Z plucky-indigo-eel todo → doing
 - 2026-11-23T14:50:47Z plucky-indigo-eel: changed summary
 - 2026-11-23T14:50:47Z plucky-indigo-eel doing → review
+- 2026-11-23T16:04:04Z kind-zinc-newt: changed notes
+- 2026-11-23T16:04:04Z kind-zinc-newt review → done
