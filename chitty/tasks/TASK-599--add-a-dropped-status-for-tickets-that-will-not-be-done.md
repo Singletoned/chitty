@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: planning
+status: cold-read
 labels:
   - needs-minor
 priority: high
@@ -30,7 +30,7 @@ Tests in a new `tests/test_status_dropped.py`, using `RepoTestCase` and `chitty.
 - `chitty archive TASK-1` on a dropped ticket exits non-zero, the output contains `TASK-1 is dropped; dropped tickets are kept visible and cannot be archived`, and the file is byte-identical and still in `chitty/tasks/`. Run it once with the default config and once in a repository whose `chitty.toml` sets `archive = "delete"` (the `CONFIG` from `tests/support.py` with that line added).
 - `chitty edit TASK-1 -s todo` from `dropped` exits 0.
 - A `todo` ticket `TASK-2` with `depends_on: [TASK-1]`, where `TASK-1` is `dropped`: `chitty next --mode work` does not print `TASK-2` (guards the unchanged dependency rule).
-- Random-ID context, in a repository whose `chitty.toml` adds the `BACKLOG` table from `tests/test_backlog_context.py` (`prefix = "BACKLOG"`, `random_ids = true`), with `chitty.store._random_number` patched as that file does: `chitty add Idea -c backlog -s dropped` exits non-zero, its output contains `create the ticket, then drop it with chitty edit -s dropped --summary`, and no file is created in `chitty/backlog/` (fails before the change: today it creates a `backlog` ticket). For a `backlog` ticket there, `chitty edit <id> -s dropped --summary "x"` exits non-zero, its output contains `chitty move <id> tasks`, and the file is byte-identical (a guard: this already holds today).
+- Random-ID context, in a repository whose `chitty.toml` adds the `BACKLOG` table from `tests/test_backlog_context.py` (`prefix = "BACKLOG"`, `random_ids = true`), with `chitty.store._random_number` patched as that file does: `chitty add Idea -c backlog -s dropped` exits non-zero, its output contains `create the ticket, then drop it with chitty edit -s dropped --summary`, and no file is created in `chitty/backlog/` (fails before the change: `dropped` is not yet a valid `-s` choice, so the message is missing; after it, a check placed after the coercion would create a `backlog` ticket). For a `backlog` ticket there, `chitty edit <id> -s dropped --summary "x"` exits non-zero, its output contains `chitty move <id> tasks`, and the file is byte-identical (fails before the change on the missing message; it guards against adding `dropped` as an exception to the random-ID rule).
 - The model round-trips: `chitty.model.parse(text).render()` keeps `status: dropped`. It fails before the change: `parse` validates the status through `Frontmatter.model_validate`, which rejects `dropped`.
 
 Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontmatter` table) and the `chitty --help` text for `-s`, if it lists statuses, name `dropped` and say what it is for. The role guides are a later ticket.
@@ -41,7 +41,7 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 - [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` lists `dropped` and says in one clause it is for tickets that will not be done, with a Summary saying why; `make check` passes
 - [ ] List, archive, revive and dependency: the `tests/test_status_dropped.py` cases for `chitty list`, `-s dropped` and `--all`, `chitty archive` leaving the dropped ticket, `-s todo` from `dropped`, the dependent `TASK-2` and the round-trip pass, and fail before the change (some only because `dropped` cannot be parsed yet). Record both runs in a note
 - [ ] Summary rules: the `tests/test_status_dropped.py` cases for the summary refusals (none, `""`, whitespace, a whitespace-only Summary in the file), `-s dropped` and `--summary ""` on a dropped ticket, `--note` on a dropped ticket with no Summary, and the `add -s dropped` refusal pass, each asserting its message, and fail before the change. Record both runs in a note
-- [ ] Random-ID contexts: the `tests/test_status_dropped.py` cases for `chitty add -c backlog -s dropped` (refused, fails before the change) and `-s dropped` on a `backlog`-context ticket (refused with the `chitty move` message) pass
+- [ ] Random-ID contexts: the `tests/test_status_dropped.py` cases for `chitty add -c backlog -s dropped` and `-s dropped` on a `backlog`-context ticket pass, each asserting its message and that nothing is written, and fail before the change
 
 ## Plan
 
@@ -78,3 +78,5 @@ Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context r
 - 2026-11-23T12:23:32Z jolly-teal-quail: changed owner, notes
 - 2026-11-23T12:23:32Z jolly-teal-quail doing → planning
 - 2026-11-23T18:37:13Z witty-yellow-vole: replaced notes; changed owner, description, acceptance criteria
+- 2026-11-23T18:37:29Z witty-yellow-vole: changed description, acceptance criteria
+- 2026-11-23T18:37:29Z witty-yellow-vole planning → cold-read
