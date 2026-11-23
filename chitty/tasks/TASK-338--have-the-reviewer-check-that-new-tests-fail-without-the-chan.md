@@ -15,6 +15,10 @@ Today `src/chitty/roles/work.md` (around line 23) tells the worker to see a regr
 
 Change `src/chitty/roles/review.md`: for each test a criterion needs, the reviewer runs it themselves against the code without the change (for example the branch's new test files on top of the merge base, in a temporary worktree of the reviewer's own, removed afterwards), and records the command and the failure in that criterion's line. A worker's note is not enough. When a test passes without the change, the criterion fails with cause `tests`. Keep it general: the guides reach every repository in any language. Keep `tests/test_guide_word_budget.py` passing (trim elsewhere in the file if needed).
 
+## Plan
+
+Replace the one-sentence test rule in src/chitty/roles/review.md with a bullet: the reviewer runs each needed test without the change themselves (merge base plus the branch's test files, in a temporary worktree of their own, removed afterwards), records command and failure in the criterion line, does not accept the worker's note, and fails the criterion with cause tests when it passes. Note the temporary worktree as the exception to the only-this-worktree rule. Stay under the word budget.
+
 ## Notes
 
 From the retro discussion: the worker should see which tests passed without the change. Store that run output in the log from the gitignored check log ticket.
@@ -40,3 +44,4 @@ Is this the shape you want (whole-check failure at the merge base, one setting),
 - 2026-11-22T11:14:07Z friendly-jade-stoat planning → todo
 - 2026-11-23T08:28:05Z vivid-ginger-heron: changed owner
 - 2026-11-23T08:28:05Z vivid-ginger-heron todo → doing
+- 2026-11-23T08:28:22Z vivid-ginger-heron: wrote the plan
