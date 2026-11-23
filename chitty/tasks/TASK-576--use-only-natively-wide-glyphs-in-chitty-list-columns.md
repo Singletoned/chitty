@@ -82,7 +82,7 @@ stay aligned.
 
 ## Plan
 
-Add glyph and column-alignment regression tests, verify failure on existing behavior, replace glyphs and centralize skip constants, update expectations and documentation, then format and run checks.
+Replace the alignment test's _columns oracle with the specified terminal-width function and fixture; verify both regression tests fail on the old glyphs, retain the existing centralized constants, then run make check and commit implementation changes.
 
 ## Notes
 
@@ -123,3 +123,4 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-23T23:10:44Z mellow-amber-toad: changed description
 - 2026-11-23T23:10:44Z mellow-amber-toad planning → todo
 - 2026-11-23T23:29:30Z honest-indigo-toad todo → doing
+- 2026-11-23T23:31:31Z honest-indigo-toad: wrote the plan
