@@ -30,16 +30,18 @@ grow.
   worker to first create it with the names the tests import, each raising
   `NotImplementedError`, so tests fail independently rather than at import.
 - When the code a ticket tests already exists, a stub cannot show the tests
-  fail without the change. List plausible wrong versions of the code instead,
-  such as a dropped condition or a swapped choice. For example-based tests, ask
-  the worker to commit each wrong version as a test asserting it fails; where
-  that is impractical, ask for a run recorded in a note, and say why. For
-  property tests, run the generators against each wrong version while planning
-  and fix any that let one pass; the worker re-runs them once against each and
-  notes the result. These wrong versions are not committed.
-- When the code already exists, run each specified generator recipe against
-  it before the cold read, with many cases, and check the expected answers
-  agree. A disagreement is a wrong recipe or a bug; settle which.
+  fail without the change:
+  - List plausible wrong versions of the code instead, such as a dropped
+    condition or a swapped choice. These are not committed as code.
+  - For example-based tests, ask the worker to commit each wrong version as a
+    test asserting it fails; where that is impractical, ask for a run recorded
+    in a note, and say why.
+  - For property tests, run the generators against each wrong version while
+    planning and fix any that let one pass; the worker re-runs them once
+    against each and notes the result.
+  - Before the cold read, run each specified generator recipe against the
+    existing code with many cases and check the expected answers agree. A
+    disagreement is a wrong recipe or a bug; settle which.
 - Build distractor values, such as similar names a lookup must ignore, from the
   drawn value itself, so they can never equal it by chance.
 - Check every claim about code, commands, tests or other tickets against the
@@ -53,24 +55,24 @@ grow.
   `todo` only after a read that finds nothing serious. If a third read still
   finds serious problems, split the ticket rather than patching it.
 - Ask of each criterion: could it pass with nothing built? If so, name the case
-  that fails today, and say which test must fail without the fix.
-- In the original planning session, perform a sufficiency read on the current
-  ticket text, the named code and documents, and the reader report. Inspect
-  each criterion individually and the ticket as a whole: could a plausible
-  minimal implementation satisfy the criteria yet reasonably fail a good
-  review? For each gap, give a concrete counterexample, relevant inputs or
-  state, a distinguishing test and observable result, and proposed criterion
-  wording. Prefer a general property over accumulating examples. Do not invent
-  speculative features; relate the gap to the problem and agreed scope. Ask
-  whether odd existing behaviour is a bug before writing around it.
+  that fails today, and say which test must fail without the fix, because a
+  nearby test may already pass.
+- In the original planning session, do a sufficiency read of the ticket, the
+  named code and documents, and the reader report. Ask of each criterion and
+  of the whole ticket: could a plausible minimal implementation meet the
+  criteria yet reasonably fail a good review? For each gap, give a concrete
+  counterexample (inputs or state), a test that tells them apart with its
+  observable result, and proposed criterion wording. Prefer a general property
+  over more examples. Do not invent speculative features; tie each gap to the
+  problem and agreed scope. Ask whether odd existing behaviour is a bug before
+  writing around it.
 - Before moving to `todo`, resolve every reader finding and sufficiency gap:
   strengthen the ticket, split it, or explicitly reject the finding as out of
   scope. Write requirements needed to reject the implementation into the ticket,
   not just the planning conversation. Give the outcomes in your reply, not in a
-  ticket note. Split rather than exceed about five criteria. The expected route
-  for a problem the read missed is a return to planning by its worker or
-  reviewer. A stronger reader remains optional for uncertainty or repeated
-  work–review failures, not mandatory.
+  ticket note. The expected route for a problem the read missed is a return to
+  planning by its worker or reviewer. A stronger reader remains optional for
+  uncertainty or repeated work–review failures, not mandatory.
 - Specify property tests by default. Compare each decision in the description
   with the criteria, because workers test what criteria name. For each
   behaviour, write the property and what the test generates: the inputs and
@@ -87,8 +89,6 @@ grow.
   that needs real external processes, with why no pure core can be taken out
   of it and given properties; or a change that only removes code, with the
   existing tests that cover what remains.
-- Say which test must fail without the fix, because a nearby test may already
-  pass.
 <!-- property-signals -->
 - Where behaviour can be a pure function, taking values and returning values
   with no file, network or clock access inside it, have the ticket name that
