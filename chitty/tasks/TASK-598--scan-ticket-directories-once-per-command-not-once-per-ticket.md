@@ -58,6 +58,8 @@ Planner, 2026-11-23: the blocker is resolved by rewriting criterion 2 so that it
 
 Planner, 2026-11-23, after a cold read: on 2026-11-23 a counting wrapper gave 36 `scan` calls for `chitty list` on this repository (15.6 s), not the 13,800 the Description reports, while `discovered_contexts` took 67 s of 90 s under cProfile. That cache is split out as TASK-639, which this ticket now depends on. Before planning resumes, profile again after TASK-639 lands, and narrow or drop this ticket if scans are no longer a real cost. Also fixed: the context order claim (`backlog` before `tasks`), the property's `None` outcome, path de-duplication and cross-prefix placement, the `mkdir` for `tmp/before`, and the title assertion in the ref case.
 
+Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on this repository. A counting wrapper gave 14,802 `scan` calls (the earlier count of 36 was wrong), and under cProfile `Repo._working_ticket_files` took 156 s of 166 s, `ids.parse_filename` 42 s. Scans are still the cost, so the ticket stands as written.
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -74,3 +76,4 @@ Planner, 2026-11-23, after a cold read: on 2026-11-23 a counting wrapper gave 36
 - 2026-11-23T12:03:08Z witty-russet-gannet planning → cold-read
 - 2026-11-23T12:08:50Z witty-russet-gannet: changed dependencies, description, acceptance criteria, notes
 - 2026-11-23T12:08:50Z witty-russet-gannet cold-read → planning
+- 2026-11-23T13:46:00Z youthful-quartz-zander: changed notes
