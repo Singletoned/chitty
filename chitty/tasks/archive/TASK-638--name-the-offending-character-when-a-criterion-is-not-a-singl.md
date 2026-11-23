@@ -19,3 +19,4 @@ Folded into TASK-451 (2026-11-23): once ticket files are split only at `\n`, the
 - 2026-11-23T11:57:37Z witty-russet-gannet → backlog
 - 2026-11-23T11:57:41Z witty-russet-gannet: changed notes
 - 2026-11-23T12:02:15Z witty-russet-gannet: changed notes
+- 2026-11-23T12:02:20Z witty-russet-gannet backlog → archived
