@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -86,3 +86,4 @@ Planner, 2026-11-23, after the second cold read: corrected what `parse` does tod
 - 2026-11-23T12:04:56Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:06:43Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:06:43Z witty-russet-gannet cold-read → todo
+- 2026-11-23T12:34:57Z plucky-jade-dormouse todo → doing
