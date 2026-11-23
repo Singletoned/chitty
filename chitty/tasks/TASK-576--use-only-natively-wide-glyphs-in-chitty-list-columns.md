@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: planning
+status: todo
 labels:
   - needs-minor
 created: 2026-11-22
@@ -38,14 +38,14 @@ The JSON `skipped` strings change with them (`🙋 untestable`, `💔 <message>`
 inline uses include `tests/test_property_next.py` lines 140, 152, 161 and
 166 and `tests/test_list_untestable.py` line 12). Leave `_columns` as it is. (Line numbers are from `main` before this branch; find code by name.)
 
-Status on 2026-11-23: the branch already swaps the glyphs and updates docs and expectations. Two pieces remain: `skip_reason` in `src/chitty/selection.py` still returns the literal `"👤 human"` for human context or owner, which must use `HUMAN_GLYPH`; and the alignment test in `tests/test_list_glyphs.py` still measures with `_columns`, which must be replaced as described below.
+Status on 2026-11-23: the branch already swaps the glyphs and updates docs and expectations. Two pieces remain: `skip_reason` in `src/chitty/selection.py` still returns the literal `"👤 human"` for human context or owner, which must become `return f"{HUMAN_GLYPH} human"` (criterion 2's grep is the check for it); and the alignment test in `tests/test_list_glyphs.py` still measures with `_columns`, which must be replaced as described below.
 
 Every glyph in a skip string in `src/chitty/selection.py` must come from a
 module constant (no inline glyph literals), so the test below sees them all:
 lift the human glyph (both returns, including `👤 human` for human context or owner), the untestable and the running glyphs to constants, and make line
 102 use `BROKEN_DEPENDENCY_GLYPH`. `store.py` already imports from
 `chitty.selection`, so move the constant to `selection.py` and import it in
-`store.py` and `cli.py`. The grep criterion is what catches an inline glyph
+`cli.py` (on this branch `store.py` no longer uses it, so it needs no import). The grep criterion is what catches an inline glyph
 left behind; the test below covers the constants.
 
 Test, in a new file `tests/test_list_glyphs.py`: collect every glyph
@@ -120,3 +120,5 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-23T23:09:13Z mellow-amber-toad: changed description, acceptance criteria
 - 2026-11-23T23:09:13Z mellow-amber-toad cold-read → planning
 - 2026-11-23T23:09:34Z mellow-amber-toad: changed acceptance criteria
+- 2026-11-23T23:10:44Z mellow-amber-toad: changed description
+- 2026-11-23T23:10:44Z mellow-amber-toad planning → todo
