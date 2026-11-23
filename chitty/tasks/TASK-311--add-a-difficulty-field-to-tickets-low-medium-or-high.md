@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: error
+status: todo
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -57,6 +57,8 @@ last session: exit 0 after 25s
 I verified and recorded one pre-fix failure: the ticket strategy cannot generate a `difficulty` line. The requested tests and implementation remain unfinished, so TASK-311 is still in `doing`.
 ```
 
+Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before `work_model = "openai-codex/gpt-6-luna"` landed in `chitty.toml` (`0ce50010`). The branch has no code yet.
+
 ## History
 
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
@@ -73,3 +75,5 @@ I verified and recorded one pre-fix failure: the ticket strategy cannot generate
 - 2026-11-23T19:58:58Z friendly-khaki-vole: changed notes
 - 2026-11-23T19:59:07Z friendly-khaki-vole: changed notes
 - 2026-11-23T19:59:07Z friendly-khaki-vole doing → error
+- 2026-11-23T23:08:22Z friendly-coral-badger: changed notes
+- 2026-11-23T23:08:22Z friendly-coral-badger error → todo
