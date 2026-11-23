@@ -40,7 +40,7 @@ Out of scope: mapping difficulty to agents (`TASK-312`), guide wording (`TASK-31
 
 ## Plan
 
-Add regression tests first and record their failures, then implement the field across model, store, CLI, MCP, strategies and documentation; run formatting and checks before review.
+Add the specified difficulty field end-to-end. First add focused regression tests and verify they fail against current behavior, then implement model/store/CLI/MCP and strategy support, update task-file documentation, format, run make check, and commit logical changes.
 
 ## Notes
 
@@ -78,3 +78,4 @@ Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before 
 - 2026-11-23T23:08:22Z friendly-coral-badger: changed notes
 - 2026-11-23T23:08:22Z friendly-coral-badger error → todo
 - 2026-11-23T23:18:41Z plucky-khaki-wren todo → doing
+- 2026-11-23T23:21:06Z plucky-khaki-wren: wrote the plan
