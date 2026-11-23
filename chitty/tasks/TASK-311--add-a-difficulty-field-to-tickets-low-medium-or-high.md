@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: cold-read
+status: planning
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -22,11 +22,11 @@ A field rather than a label: the set is closed and validated. It follows how `pr
 
 Tests in a new `tests/test_difficulty.py`, with classes inheriting `CliTestCase` from `tests/test_cli.py`, plus Hypothesis (the repository's property tool) with `examples(50)` from `tests/__init__.py`:
 
-- CLI writes: `chitty add T -d x --difficulty high` exits 0 and the file has `difficulty: high` straight after where `priority` would go (assert the frontmatter line order with `-p low` also given: `priority: low` then `difficulty: high`). `chitty edit TASK-1 --difficulty low` exits 0 and writes `difficulty: low`, and the History line names `difficulty`. `chitty edit TASK-1 --difficulty ""` removes the key. `chitty add T -d x --difficulty hard` and `chitty edit TASK-1 --difficulty hard` exit 2 with Click's usage error naming `--difficulty`, and write nothing (no new file; the edited file byte-identical).
-- Reads: `chitty show TASK-1` prints `difficulty: high`; `chitty show TASK-1 --json` has `"difficulty": "high"`, and `null` for a ticket without one. A ticket file written by hand with `difficulty: hard` makes `chitty check` exit non-zero naming `difficulty`.
-- MCP: in `tests/test_mcp.py`'s style, the add tool with `difficulty="medium"` writes it, the edit tool with `difficulty=""` removes it, and the edit tool with `difficulty="hard"` fails, asserted the way that file asserts other tool errors, leaving the file byte-identical.
+- CLI writes: `chitty add T -d x --difficulty high` exits 0 and the file has `difficulty: high` straight after where `priority` would go (assert the frontmatter line order with `-p low` also given: `priority: low` then `difficulty: high`). `chitty edit TASK-1 --difficulty low` exits 0 and writes `difficulty: low`, and the History line names `difficulty`. `chitty edit TASK-1 --difficulty ""` removes the key. `chitty add T -d x --difficulty hard` and `chitty edit TASK-1 --difficulty hard` exit 2 and write nothing; `add` prints Click's choice error containing `'hard' is not one of 'low', 'medium', 'high'`, and `edit` prints the callback's `must be one of low, medium, high, or '' to unset` (on `main` both fail only with `No such option '--difficulty'`, which these messages tell apart) (no new file; the edited file byte-identical).
+- Reads: `chitty show TASK-1` prints `difficulty: high`; `chitty show TASK-1 --json` has `"difficulty": "high"`, and `null` for a ticket without one. A ticket file written by hand with `difficulty: hard` makes `chitty check` exit non-zero with output containing `difficulty: Input should be 'low', 'medium' or 'high'` (on `main` it fails differently, with `unknown frontmatter key 'difficulty'`, since `Frontmatter` forbids extra keys).
+- MCP: in `tests/test_mcp.py`'s style, the add tool with `difficulty="medium"` writes it, the edit tool with `difficulty=""` removes it, and the edit tool with `difficulty="hard"` fails with a `ToolError` whose message matches `difficulty`, leaving the file byte-identical (on `main` the unknown argument is dropped and the error is `nothing to change`, which that regex does not match).
 - Property (`Edit.apply`, pure): for any ticket text drawn from `ticket_texts([TaskId("TASK", 1)])` in `tests/ticket_strategies.py` and any `d` from `("low", "medium", "high", "")`, `Edit(difficulty=d).apply(parse(text))` has `frontmatter.difficulty == (d or None)`, every other frontmatter field equal to the original's, and every section equal to the original's.
-- Strategy: `_ticket_texts` in `tests/ticket_strategies.py` sometimes adds `difficulty: <one of DIFFICULTIES>` (after the `priority` line when there is one), so the existing parse and render properties that use it cover the new field.
+- Strategy: `_ticket_texts` in `tests/ticket_strategies.py` sometimes adds `difficulty: <one of DIFFICULTIES>`, drawn independently of `priority` and placed in `FIELD_ORDER` position (straight after the `priority` line when there is one), so the existing parse and render properties that use it cover the new field. Add a case to `tests/test_ticket_strategies.py` in the `check_find` style of `test_plan_present`, finding a drawn text containing `"\ndifficulty: "`.
 
 All of these fail before the change: the options, the field, `Edit.difficulty` and `DIFFICULTIES` do not exist. Record each test's failure message in a note.
 
@@ -36,7 +36,7 @@ Out of scope: mapping difficulty to agents (`TASK-312`), guide wording (`TASK-31
 
 - [ ] CLI and reads: the `tests/test_difficulty.py` add, edit, unset, refusal, `show`, `--json` and `chitty check` cases pass and fail before the change; record the failures in a note
 - [ ] MCP: the add, unset and refusal cases pass and fail before the change
-- [ ] Property: the `Edit.apply` property passes, and `_ticket_texts` draws `difficulty`; `docs/plan/task-file.md` has the `difficulty` row; `make check` passes
+- [ ] Property and strategy: the `Edit.apply` property passes, and the new `tests/test_ticket_strategies.py` case finds a text with `difficulty`; `docs/plan/task-file.md` has the `difficulty` row; `make check` passes
 
 ## History
 
@@ -44,3 +44,5 @@ Out of scope: mapping difficulty to agents (`TASK-312`), guide wording (`TASK-31
 - 2026-11-23T19:41:24Z witty-yellow-vole: changed description, acceptance criteria
 - 2026-11-23T19:41:24Z witty-yellow-vole backlog → planning
 - 2026-11-23T19:41:37Z witty-yellow-vole planning → cold-read
+- 2026-11-23T19:43:25Z witty-yellow-vole: changed description, acceptance criteria
+- 2026-11-23T19:43:25Z witty-yellow-vole cold-read → planning
