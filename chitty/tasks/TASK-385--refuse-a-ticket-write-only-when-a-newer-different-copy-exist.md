@@ -25,9 +25,11 @@ Owner decisions, 2026-11-22: a write is refused only when another copy of the ti
 Change, in `src/chitty/store.py`:
 
 - Rename `_require_current_version` to `_require_writable` and keep every call site and the `skip_current_version` / `allow_stale` bypasses as they are.
-- Its rule: when `stored.branch is None` (the working tree is the source), allow. Otherwise take the second element of `self._source_files(stored.id)` (the `(path, text)` list at the source, already used for reading) and in this checkout's working tree (`self._working_ticket_files(stored.id)`); allow when the two lists are equal (same relative paths, same text), else refuse. "Newer" needs no separate test: the chosen source is by construction the copy Chitty reads, so a differing working-tree copy is the one that would be lost or would hide it.
+- Its rule: when `stored.branch is None` (the working tree is the source), allow. Otherwise read the ticket's files on `stored.branch` (`self._ref_ticket_files(<full ref>, stored.id)`, the full ref as defined below; use `stored.branch`, not a fresh source choice, so a `StoredTask` built by a test is honoured) and in this checkout's working tree (`self._working_ticket_files(stored.id)`); allow when the two lists are equal (same relative paths, same text), else refuse. "Newer" needs no separate test: the chosen source is by construction the copy Chitty reads, so a differing working-tree copy is the one that would be lost or would hide it.
 - This replaces the own-worktree exception (`changed_since_split`): a fresh ticket worktree whose copy still equals `main`'s is allowed by equality, and one where `main` changed the ticket since the split is refused, as today.
 - Refuse with `ChittyError(write_refusal(...))`, with arguments: `task_id=str(stored.id)`; `newer_ref=stored.branch`; `newer_sha` from `git.ref_commit(self.root, <full ref>)`, the full ref being `refs/heads/<branch>` when `git.has_local_branch(self.root, branch)` (this includes `main`) and `refs/remotes/<branch>` otherwise; `main_branch=self._main_branch()`; `local_branch=git.has_local_branch(self.root, branch)`; `worktree=git.worktree_for_branch(self.root, branch)` when local, else `None`; `main_checkout=git.main_checkout(self.root)`; `checkout_is_main` true when `self.root.resolve() == main_checkout.resolve()`; `local_behind` true when the branch is remote-tracking and `git.has_local_branch(self.root, <part after the first />)`. Take `local_branch` from `git.has_local_branch`, not from the name, since a local branch name may contain `/`.
+- If `git.ref_commit` returns `None` for the full ref, raise `ChittyError(f"{stored.id}: ref {full_ref} has no commit")`; do not pass `None` on.
+- Decided: an uncommitted edit in this checkout to a ticket read from another ref makes the lists differ, so the write is refused with the same message. Writing would replace that uncommitted text with the other ref's copy plus the change, so the refusal is right even though the other copy is not newer in time; the matrix's uncommitted-edit variants cover it.
 - Read errors before the guard keep their own messages (`diverged refs`, `changed on both`, `no task`).
 
 Out of scope: TASK-647, TASK-648, multi-ticket writes (TASK-397) and docs (TASK-387).
@@ -44,12 +46,20 @@ Examples with the full message, in the same file: in the main checkout, placemen
 
 Two more examples, because the fixture's copies differ only in title: from a kind 4 worktree after placement `a`, (1) replace only the `Fixture.` body line of the working-tree file with `Changed.` (title unchanged), and (2) move the working-tree file into `chitty/tasks/archive/` without changing its text; each edit is refused with a message starting `TASK-5 has a newer copy on main (` and leaves the file as it was. Both fail for an implementation that compares only titles or only paths.
 
+The tests use `tests/support.py`'s `CONFIG`, which has `autocommit = false`, so `_prepare_write` (TASK-648) commits nothing in these tests.
+
+Existing tests that assert the old guard, and what each becomes:
+
+- `tests/test_own_worktree_writes.py`: `test_cli_write_then_refuse_after_merge_and_main_change` and `test_guard_refuses_changed_main` stay refusals; assert `TASK-6 has a newer copy on main (` instead of the old text. `test_guard_allows_unchanged_main` calls `_require_writable`. `test_guard_refuses_other_source` and `test_guard_refuses_other_checkout` set up copies identical to `main`'s, which the new rule allows: rename them `test_guard_allows_identical_other_source` and `test_guard_allows_identical_other_checkout` and assert no error.
+- `tests/test_edit_human.py` `test_edit_without_human_still_refuses`: still refused (the `task-1` worktree holds a different copy); assert `TASK-1 has a newer copy on task-1 (`.
+- `tests/test_check_cross_branch_references.py` `test_edit_on_another_branch_is_refused` and `tests/test_provisional_ids.py` (the `move TASK-1 human` refusal near line 104): run them after the change. Where the copies are identical the command now succeeds: rename the test or step to say so and assert the success the owner rule gives (the file on the current branch gains the change). Where it is still refused, assert the new message. Record which applied in a note.
+
 ## Acceptance Criteria
 
 - [ ] In the placement matrix in `tests/test_ticket_placement_writes.py`, every edit the oracle calls writable succeeds and adds the note, and every expected read error is raised unchanged. Before the change it fails (placement `a` from a kind 4 worktree is refused today); record that run in a note
 - [ ] In the same matrix, every refused edit raises with `TASK-5 has a newer copy on <ref> (` for the stated `<ref>`, and changes no file under `chitty/` in that checkout and not `HEAD`
 - [ ] The six full-message examples and the two body-only and path-only examples in the same file pass
-- [ ] `git grep -n _require_current_version -- src tests` prints nothing; `make check` passes
+- [ ] `git grep -n _require_current_version -- src tests` prints nothing; the existing tests listed in the Description are updated as stated; `make check` passes
 
 ## Notes
 
@@ -103,3 +113,4 @@ Planner, 2026-11-23: replanned as part (2). The checkout kinds are the main chec
 - 2026-11-23T14:40:40Z youthful-quartz-zander: changed description, acceptance criteria, notes
 - 2026-11-23T14:40:53Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:42:40Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:42:49Z youthful-quartz-zander: changed description, acceptance criteria
