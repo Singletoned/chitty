@@ -27,6 +27,10 @@ Out of scope: changing `REVIEW_FAILURE_LIMIT`, the escalation note text, or the 
 - [ ] A test in `tests/test_review_merge.py`, set up like `test_failing_check_after_main_advances_preserves_main_and_worktree` but calling `self.branch_for_review(failures=2)`, runs `run --mode review` and asserts the ticket (`self.ticket()`) ends `blocked`, owner `human`, with a note starting `Escalated to human review: failed review 3 times` and the `Review failed (integration):` note. It fails on `main`, where the ticket ends `doing`.
 - [ ] An example test in `tests/test_check_edit.py`: a `done` task whose history (built with `with_history`) has `(doing, review)` by `fresh-reviewer` and no failures accepts `check_edit(task, Edit(status="doing", note="Review failed (integration): x", skip_verdicts=True, skip_current_version=True), "fresh-reviewer")` with status `doing`, because the landing edit is not a review transition. The worker shows it fails if `done` is added to `is_review_transition` (the reviewer-independence check raises `cannot review this task`): make that change uncommitted, run the test, discard the change, and record the failing output in a note on this ticket.
 
+## Plan
+
+Add property and integration regressions and independence example; demonstrate failures, update escalation counting, then run checks and hand off.
+
 ## Notes
 
 Planning: relies on TASK-609 (its landing-failure handler and test fixture). When TASK-609 is done, compare, cold-read, then move to `todo`.
@@ -51,3 +55,4 @@ Precedent for criterion 2: `test_automatic_and_reviewer_failures_count_together`
 - 2026-11-23T13:41:50Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T13:41:52Z youthful-quartz-zander planning → todo
 - 2026-11-23T13:42:54Z sunny-violet-heron todo → doing
+- 2026-11-23T13:46:21Z sunny-violet-heron: wrote the plan
