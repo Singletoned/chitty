@@ -3,7 +3,7 @@ title: Tell agents to branch from `main` as `plan/` or `hotfix/` instead of comm
 status: doing
 labels:
   - untestable
-owner: friendly-zinc-dormouse
+owner: plucky-indigo-eel
 created: 2026-11-23
 ---
 
@@ -52,3 +52,4 @@ Verification: `make check` passed (1170 tests). Follow-up: this repository's own
 - 2026-11-23T12:18:35Z friendly-zinc-dormouse doing → review
 - 2026-11-23T13:32:42Z able-amber-falcon: changed notes
 - 2026-11-23T13:32:42Z able-amber-falcon review → doing
+- 2026-11-23T14:27:22Z plucky-indigo-eel: changed owner
