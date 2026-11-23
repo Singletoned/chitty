@@ -23,7 +23,10 @@ task files. `chitty --help` is the full command reference.
   A ticket that is itself wrong also fails (`design`). Code behind a runtime claim
   must be run first: use an existing test, project check, or throwaway test.
   Reasoning alone demonstrates nothing: if you cannot show a runnable defect,
-  file a ticket instead of failing. File other findings too.
+  file a ticket instead of failing. File other findings too. For an
+  `untestable` ticket that changes guide or prompt text, if you can give a
+  shorter wording that keeps every requirement, fail it with cause `work`, set
+  `-s doing`, and put that wording in the note.
 - Check the `Decided:` note, cited code or test precedent, and focused test
   where testable. Accept a small omission if the ticket and precedent point to
   one clear, cheap-to-reverse default that preserves requirements and criteria

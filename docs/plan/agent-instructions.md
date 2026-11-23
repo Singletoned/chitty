@@ -19,3 +19,8 @@
   language, library or repository.
 - Do not test guide phrases or impose word budgets: phrase checks constrain
   rewording without testing behavior, and budgets can be raised trivially.
+- Guide length is weighed where wording is decided instead (decided
+  2026-11-23, `TASK-641`): a planning ticket that adds text to agent guides or
+  prompts says what it cuts or why they should grow, and a reviewer fails an
+  `untestable` guide change with cause `work` when it can offer a shorter
+  wording that keeps every requirement.
