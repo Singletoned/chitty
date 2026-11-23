@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: review
+status: planning
 priority: high
 depends_on:
   - TASK-639
@@ -48,8 +48,8 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 
 ## Acceptance Criteria
 
-- [x] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. Record both runs in a note
-- [x] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
+- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. Record both runs in a note
+- [ ] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
 - [x] `make check` passes
 
 ## Plan
@@ -114,6 +114,11 @@ Review failed (tests): Required behavioural tests pass without the implementatio
 2: pass - Before/after output sizes 1737, 11534 and 39014 bytes; `diff -q` silent for each. List real times before 5.122, 5.085, 4.719 s; after 2.396, 2.604, 2.321 s.
 3: pass - `make check` printed 1169 passed, 602 subtests passed.
 
+Review failed (design): The earlier review failed because the required unchanged-behaviour tests pass on the baseline; the same issue remains. The review requirement that every required test fail without the change conflicts with tests explicitly protecting unchanged behaviour. Planning must decide how to make these tests verifiable under that requirement without weakening the behavioural specification.
+1: fail - `PYTHONPATH="$PWD/tmp/before/src" .venv/bin/python -m pytest tests/test_list_performance.py -q` reports 2 failed (28 != 172 and 16 != 88) and 10 passed; current code reports 12 passed. As in the preceding tests review, error, order, ref, invalidation and property tests pass on baseline; their required baseline failure is not demonstrated. Decide how these preservation tests can satisfy review requirements.
+2: fail - Before/after outputs for list and backlog matched (1651 and 11534 bytes); `--all` outputs differed at TASK-311 (blocked versus running), likely a concurrent ref or process state change, so byte identity was not verified. Repeat with stable state. Three real times: before 5.359, 6.362, 6.761 seconds; after 4.502, 4.467, 5.430 seconds.
+3: pass - `make check` reported 1173 passed, 602 subtests passed.
+
 ## Summary
 
 Implemented per-command working-tree and ref ticket indexes. Regression tests pass, including scan counts, errors/order, refs, invalidation and property context. Before/after outputs matched; make check passes (1169 tests, 602 subtests). Both required scan-count tests fail on baseline (28 vs 172; 16 vs 88) and pass with implementation (4 scans each).
@@ -172,3 +177,5 @@ Implemented per-command working-tree and ref ticket indexes. Regression tests pa
 - 2026-11-23T21:36:19Z friendly-yellow-lapwing review → doing
 - 2026-11-23T23:11:28Z mellow-jade-kestrel: changed summary; ticked acceptance criteria
 - 2026-11-23T23:11:28Z mellow-jade-kestrel doing → review
+- 2026-11-23T23:19:30Z intrepid-yellow-ibis: changed owner, acceptance criteria, notes
+- 2026-11-23T23:19:30Z intrepid-yellow-ibis review → planning
