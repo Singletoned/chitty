@@ -42,14 +42,10 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 ## Acceptance Criteria
 
 - [ ] Edit rules: the `tests/test_status_dropped.py` cases for every allowed starting status and the refusal from `done` pass, each asserting its message, and fail before the change
-- [ ] The `- Statuses:` bullet in `docs/plan/task-file.md` lists `dropped` and says in one clause it is for tickets that will not be done, with a Summary saying why; `make check` passes
-- [ ] List, archive, revive and dependency: the `tests/test_status_dropped.py` cases for `chitty list`, `-s dropped` and `--all`, `chitty archive` leaving the dropped ticket, `-s todo` from `dropped`, the dependent `TASK-2` and the round-trip pass, and fail before the change (some only because `dropped` cannot be parsed yet). Record both runs in a note
+- [ ] Revive, dependency, summary and round-trip: the `tests/test_status_dropped.py` cases for `-s todo` from `dropped`, the dependent `TASK-2` with its positive control, `chitty summary` and the per-status round trip pass, and fail before the change (some only because `dropped` cannot be parsed yet); the `- Statuses:` bullet in `docs/plan/task-file.md` lists `dropped` and says in one clause it is for tickets that will not be done, with a Summary saying why; `make check` passes. Record both runs in a note
+- [ ] List and archive: the `tests/test_status_dropped.py` cases for `chitty list`, `-s dropped` and `--all`, `chitty archive` with no ID leaving the dropped ticket, and `chitty archive TASK-1` refused in both archive modes pass, and fail before the change. Record both runs in a note
 - [ ] Summary rules: the `tests/test_status_dropped.py` cases for the summary refusals (none, `""`, whitespace, a whitespace-only Summary in the file), `-s dropped` and `--summary ""` on a dropped ticket, `--note` on a dropped ticket with no Summary, and the `add -s dropped` refusal pass, each asserting its message, and fail before the change. Record both runs in a note
 - [ ] Random-ID contexts: the `tests/test_status_dropped.py` cases for `chitty add -c backlog -s dropped` and `-s dropped` on a `backlog`-context ticket pass, each asserting its message and that nothing is written, and fail before the change
-
-## Plan
-
-Add regression coverage for dropped status before implementing model, edit and archive validation; update the status documentation, run formatting and checks, then hand off for review.
 
 ## Notes
 
@@ -86,3 +82,4 @@ Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context r
 - 2026-11-23T18:37:29Z witty-yellow-vole planning → cold-read
 - 2026-11-23T18:39:54Z witty-yellow-vole: changed description
 - 2026-11-23T18:39:54Z witty-yellow-vole cold-read → planning
+- 2026-11-23T18:40:13Z witty-yellow-vole: changed acceptance criteria; wrote the plan
