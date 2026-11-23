@@ -12,14 +12,14 @@ Decisions, all in `src/chitty/git.py`:
 
 - New frozen dataclass `TrailerCommit`: `sha: str`, `subject: str`, `task_ids: tuple[TaskId, ...]`, `paths: tuple[PurePosixPath, ...]`.
 - New constant `TRAILER_LOG_FORMAT = "%x1e%H%x1f%s%x1f%(trailers:key=Task,valueonly,separator=%x2C)%x1f"`.
-- New pure `parse_trailer_log(text: str) -> list[TrailerCommit]` for the output of `git log --no-merges --no-renames --name-only -z --format=<TRAILER_LOG_FORMAT>`. That output is, per commit: `\x1e`, the 40-hex SHA, `\x1f`, the subject, `\x1f`, the comma-joined trailer values, `\x1f`, `\x00`; then, only when the commit changed paths, `\n` followed by each path and `\x00`. The last record has no trailing newline. Parse: split on `\x1e` (dropping the empty text before the first); in each record, a record with no `\x00` raises `ChittyError`; otherwise the header is the text up to the first `\x00`, and must split on `\x1f` into exactly four fields, the last empty; the rest, with one leading `\n` removed if present, is split on `\x00`, dropping only the final empty entry. Any record that does not fit (wrong field count, a SHA that is not 40 lowercase hex characters, an empty path) raises `ChittyError` naming the record's SHA or its first 40 characters: real history with `\x1e` or `\x1f` in a subject, trailer or path fails loudly rather than mis-parsing. Trailer values are split on `,` and stripped; a value for which `TaskId.parse` raises `IdError` is dropped (catch `IdError` only).
+- New pure `parse_trailer_log(text: str) -> list[TrailerCommit]` for the output of `git log --no-merges --no-renames --name-only -z --format=<TRAILER_LOG_FORMAT>`. That output is, per commit: `\x1e`, the 40-hex SHA, `\x1f`, the subject, `\x1f`, the comma-joined trailer values, `\x1f`, `\x00`; then, only when the commit changed paths, `\n` followed by each path and `\x00`. The last record has no trailing newline. Parse: split on `\x1e` (dropping the empty text before the first); in each record, a record with no `\x00` raises `ChittyError`; otherwise the header is the text up to the first `\x00`, and must split on `\x1f` into exactly four fields, the last empty; the rest, with one leading `\n` removed if present, is split on `\x00`, dropping only the final empty entry. Any record that does not fit (wrong field count, a SHA that is not 40 lowercase hex characters, an empty path, a path containing `\x1f`) raises `ChittyError` naming the record's SHA or its first 40 characters: real history with `\x1e` or `\x1f` in a subject, trailer or path fails loudly rather than mis-parsing. Trailer values are split on `,` and stripped; a value for which `TaskId.parse` raises `IdError` is dropped (catch `IdError` only).
 - New `trailer_commits(root: Path, ref: str) -> list[TrailerCommit]`: one `git log <ref>` call with those options (`--no-renames`, so a file moved from `src/` into `chitty/tasks/` lists both paths), parsed by `parse_trailer_log`; newest first, as Git prints.
 - Nothing calls `trailer_commits` yet.
 
 Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository's property tool).
 
 - Round trip: generate lists of zero to five `TrailerCommit` values: 40-hex SHAs; subjects of printable text without `\x1e`, `\x1f`, NUL or newline and without leading or trailing whitespace (Git strips it); task IDs `TaskId("TASK", n)` and `TaskId("HUMAN", n)` with `n` from `st.integers(1, 10_000)`; zero to three paths per commit, each one to three parts, each part at least one character of text without `/`, NUL, newline, `\x1e` or `\x1f`, including spaces, quotes and non-ASCII. Per commit, add zero to two junk trailer values from `st.sampled_from(["x", "TASK-", "TASK-1-2", "1"])` (none parses with `TaskId.parse`). Render each in exactly the byte layout above and assert `parse_trailer_log` returns the commits without the junk.
-- Malformed input: for a rendered valid commit, inserting a `\x1f` into its subject, or a `\x1e` into one of its paths, makes `parse_trailer_log` raise `ChittyError`. SHA-256 repositories (64-hex SHAs) are out of scope.
+- Malformed input: for a rendered valid commit, inserting a `\x1f` into its subject, a `\x1f` into one of its paths, or a `\x1e` into one of its paths, makes `parse_trailer_log` raise `ChittyError`. SHA-256 repositories (64-hex SHAs) are out of scope.
 - Real Git: a repository with three commits on `main` (one with two `Task:` trailers changing `src/a.py`, one whose only path is `chitty/tasks/TASK-1 ü "q".md`, one with subject `chitty: edit TASK-1` and no change, via `--allow-empty`). Assert the exact text `git log` prints with the options above (bytes compared with the expected layout) and that `trailer_commits(root, "main")` returns the expected three commits field by field. Mutant check: the test runs the same `git log` command without `-z` itself, feeds the output to `parse_trailer_log`, and asserts `parse_trailer_log` raises `ChittyError` (it does: without `-z` there is no `\x00` and the fourth header field is not empty).
 
 ## Acceptance Criteria
@@ -31,10 +31,6 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 ## Plan
 
 Implement the Git log parser and reader, add property and real-Git tests, and run the project checks.
-
-## Notes
-
-Planning blocker: the parsing procedure conflicts with its stated failure guarantee. For a valid record with a path `a\x1fb`, splitting the header on `\x1f` and the remaining paths on NUL accepts that path, but the ticket requires real history containing `\x1f` in a path to fail loudly. Decide whether such paths must be rejected and specify the validation; add a focused fixture, action and assertion for that case. The malformed-input tests currently cover `\x1f` in a subject and `\x1e` in a path, not `\x1f` in a path. I inspected `src/chitty/git.py`, `src/chitty/ids.py`, existing test inventory and actual Git log framing; the specified real-Git and round-trip tests cannot verify this missing case. No implementation was started; full checks and regression verification remain unfinished.
 
 ## History
 
@@ -58,3 +54,4 @@ Planning blocker: the parsing procedure conflicts with its stated failure guaran
 - 2026-11-22T14:44:31Z kind-indigo-dormouse: wrote the plan
 - 2026-11-22T14:44:41Z kind-indigo-dormouse: changed owner, notes
 - 2026-11-22T14:44:41Z kind-indigo-dormouse doing → planning
+- 2026-11-23T16:47:28Z witty-yellow-vole: replaced notes; changed owner, description
