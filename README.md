@@ -83,7 +83,9 @@ replaced. Existing unmarked blocks are migrated on the next init.
 `chitty guide setup` prints a repository-independent checklist for configuring
 `chitty run` from the main checkout; `chitty guide --help` lists every guide
 and shows example commands. `chitty guide work`, `review`, and `plan` print the
-focused instructions for those roles from the packaged role files. The short
+focused instructions for those roles from the packaged role files. Role guides
+need `workflow = "runner"`: under `workflow = "tickets"`, `chitty guide <role>`
+refuses and only plain `chitty guide` works. Under the runner workflow the short
 block in `AGENTS.md` points agents started by hand to their matching role guide.
 Work, review, cold-read and rebase take an optional ticket ID; setup and planning do not.
 Plain `chitty list` shows non-archived `planning`, `cold-read`, `todo`, `doing`,

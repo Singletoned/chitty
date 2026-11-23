@@ -11,6 +11,8 @@
   are the role files, printed by
   `chitty guide work|review|repair|plan|cold-read|rebase`.
   `chitty guide setup` is the checklist for configuring `chitty run`.
+  Role guides need `workflow = "runner"`: under `workflow = "tickets"`,
+  `chitty guide <role>` refuses and the block leaves out the role list.
 - `chitty guide` prints the block without markers; `chitty --help` points
   agents at it; MCP serves it as `chitty://guide`.
 - The guides reach every repository that uses Chitty, so they name no
