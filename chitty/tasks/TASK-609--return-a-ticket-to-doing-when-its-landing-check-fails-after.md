@@ -33,6 +33,8 @@ Suggestion origin: taidy
 
 Escalation split out to TASK-625: until it lands, a ticket whose landing check keeps failing cycles doing → review → done without escalating.
 
+Both changed integration regression tests failed before the fix: expected done to doing, observed done to error.
+
 ## History
 
 - 2026-11-23T10:24:01Z witty-russet-gannet → backlog
@@ -56,3 +58,4 @@ Escalation split out to TASK-625: until it lands, a ticket whose landing check k
 - 2026-11-23T10:44:06Z witty-russet-gannet planning → todo
 - 2026-11-23T10:55:41Z golden-dusky-puffin todo → doing
 - 2026-11-23T10:57:55Z golden-dusky-puffin: wrote the plan
+- 2026-11-23T10:58:45Z golden-dusky-puffin: changed notes
