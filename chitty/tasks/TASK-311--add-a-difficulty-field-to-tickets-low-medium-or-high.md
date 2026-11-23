@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: todo
+status: doing
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -77,3 +77,4 @@ Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before 
 - 2026-11-23T19:59:07Z friendly-khaki-vole doing → error
 - 2026-11-23T23:08:22Z friendly-coral-badger: changed notes
 - 2026-11-23T23:08:22Z friendly-coral-badger error → todo
+- 2026-11-23T23:18:41Z plucky-khaki-wren todo → doing
