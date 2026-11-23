@@ -86,7 +86,7 @@ def skip_reason(fact: TicketFacts, *, include_owner: bool = True) -> str | None:
     if fact.locked:
         return f"{RUNNING_GLYPH} running"
     if fact.context == "human" or fact.owner == "human":
-        return "👤 human"
+        return f"{HUMAN_GLYPH} human"
     if include_owner and fact.owner is not None:
         # Give planners' untestable tickets a distinct list marker.
         glyph = UNTESTABLE_GLYPH if fact.owner == UNTESTABLE_OWNER else HUMAN_GLYPH
