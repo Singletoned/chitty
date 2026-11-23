@@ -1,6 +1,6 @@
 ---
 title: Show the ticket ID and a repo-relative path in `chitty run` progress lines
-status: doing
+status: review
 created: 2026-11-23
 ---
 
@@ -36,6 +36,10 @@ Regression: pytest tests/test_run_progress.py -q fails all three tests before th
 
 Property regression: pytest tests/test_property_display_path.py -q fails with display_path replaced by str(path), and passes with the implementation. Integration regressions also failed before the fix.
 
+## Summary
+
+Implemented relative runner check and log paths with property and review integration coverage. make check passed (1144 tests); regression tests failed before the fix.
+
 ## History
 
 - 2026-11-23T10:24:04Z witty-russet-gannet → backlog
@@ -59,3 +63,5 @@ Property regression: pytest tests/test_property_display_path.py -q fails with di
 - 2026-11-23T11:07:24Z able-coral-marten: wrote the plan
 - 2026-11-23T11:07:48Z able-coral-marten: changed notes
 - 2026-11-23T11:10:31Z able-coral-marten: changed notes
+- 2026-11-23T11:12:45Z able-coral-marten: changed summary
+- 2026-11-23T11:12:45Z able-coral-marten doing → review
