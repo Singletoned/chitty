@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-639
@@ -48,9 +48,9 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 
 ## Acceptance Criteria
 
-- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. Record both runs in a note
-- [ ] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
-- [ ] `make check` passes
+- [x] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. Record both runs in a note
+- [x] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
+- [x] `make check` passes
 
 ## Plan
 
@@ -114,6 +114,10 @@ Review failed (tests): Required behavioural tests pass without the implementatio
 2: pass - Before/after output sizes 1737, 11534 and 39014 bytes; `diff -q` silent for each. List real times before 5.122, 5.085, 4.719 s; after 2.396, 2.604, 2.321 s.
 3: pass - `make check` printed 1169 passed, 602 subtests passed.
 
+## Summary
+
+Implemented per-command working-tree and ref ticket indexes. Regression tests pass, including scan counts, errors/order, refs, invalidation and property context. Before/after outputs matched; make check passes (1169 tests, 602 subtests). Both required scan-count tests fail on baseline (28 vs 172; 16 vs 88) and pass with implementation (4 scans each).
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -166,3 +170,5 @@ Review failed (tests): Required behavioural tests pass without the implementatio
 - 2026-11-23T21:28:11Z daring-zinc-heron doing → review
 - 2026-11-23T21:36:19Z friendly-yellow-lapwing: changed acceptance criteria, notes
 - 2026-11-23T21:36:19Z friendly-yellow-lapwing review → doing
+- 2026-11-23T23:11:28Z mellow-jade-kestrel: changed summary; ticked acceptance criteria
+- 2026-11-23T23:11:28Z mellow-jade-kestrel doing → review
