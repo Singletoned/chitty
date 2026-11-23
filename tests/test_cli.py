@@ -2073,60 +2073,6 @@ class TestIdentity(CliTestCase):
 
 
 class TestGuide(CliTestCase):
-    def test_plan_guide_describes_read_only_cold_reads(self):
-        planning_guide = " ".join(guide("plan", directory=Path.cwd(), workflow="runner").split())
-        for phrase in (
-            "for its cold read",
-            "cheap model",
-            "reports without changing the checkout",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, planning_guide)
-
-    def test_plan_guide_requires_decision_tests_and_expected_route(self):
-        planning_guide = " ".join(guide("plan", directory=Path.cwd(), workflow="runner").split())
-        for phrase in (
-            "which test must fail without the fix",
-            "expected route",
-            "return to planning",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, planning_guide)
-
-    def test_work_guide_requires_regression_test_failure_and_wrong_ticket_stop(self):
-        work_guide = " ".join(guide("work", directory=Path.cwd(), workflow="runner").split())
-        for phrase in (
-            "see it fail without the fix",
-            "change the test until it fails without the fix",
-            "Do not work around the problem or weaken the tests",
-            "set `-s planning`",
-            "For a cheap-to-reverse default, choose it",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, work_guide)
-
-    def test_branch_discoveries_use_provisional_ids_in_sequential_contexts(self):
-        for role in ("work", "review"):
-            with self.subTest(role=role):
-                output = " ".join(guide(role, directory=Path.cwd(), workflow="runner").split())
-                self.assertIn("plain `chitty add`", output)
-                self.assertIn("in the default context", output)
-                self.assertIn("sequential contexts use a provisional ID", output)
-                self.assertIn("`provisional: true`", output)
-
-    def test_worker_guides_start_with_show_without_pulling_inbox(self):
-        self.assertNotIn("chitty inbox --pull", managed_guide("runner"))
-        self.assertNotIn(
-            "chitty inbox --pull", guide("work", directory=Path.cwd(), workflow="runner")
-        )
-        self.assertIn("chitty show <ID>", guide("work", directory=Path.cwd(), workflow="runner"))
-
-    def test_guide_points_agents_at_ticket_planning_instructions(self):
-        planning_guide = guide("plan", directory=Path.cwd(), workflow="runner")
-        self.assertIn("nothing built", planning_guide)
-        self.assertIn("must not start one", planning_guide)
-        self.assertIn("`chitty edit -s todo` lists the tickets a ticket mentions", planning_guide)
-
     def test_prints_the_agent_guide_outside_any_repo(self):
         os.chdir(self.tmp)
         self.assertEqual(self.run_cli("guide").stdout, managed_guide("runner"))

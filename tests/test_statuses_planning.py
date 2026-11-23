@@ -6,7 +6,6 @@ from typing import Any
 from mcp_types import CallToolResult
 
 from chitty.mcp import create_server
-from chitty.store import guide
 from tests.test_cli import CliTestCase
 
 REPO = Path(__file__).resolve().parents[1]
@@ -80,11 +79,6 @@ class TestPlanningStatuses(CliTestCase):
         self.add_planning_and_cold_read()
         result = self.run_cli("next", exit_code=3)
         self.assertIn("no next ticket", result.stderr)
-
-    def test_plan_guide_names_both_statuses(self):
-        text = " ".join(guide("plan", directory=Path.cwd(), workflow="runner").split())
-        self.assertIn("-s planning", text)
-        self.assertIn("-s cold-read", text)
 
     def test_docs_list_both_statuses(self):
         for name in ("docs/plan/cli.md", "README.md"):

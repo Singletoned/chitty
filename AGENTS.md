@@ -20,9 +20,8 @@ rules, and parts are old: update it when a decision changes.
   draws new random examples (profile `thorough`) to find new edge cases and
   reports coverage, with HTML at `tmp/coverage/index.html`. A property test that
   fails is a real failure: fix it, do not rerun.
-- Put a ticket's new guide tests in their own file, `tests/test_guide_<topic>.py`,
-  not at the end of `TestGuide` in `tests/test_cli.py`, where every guide
-  ticket's tests collide.
+- Do not add tests that only check that a guide or prompt contains a phrase;
+  test the code that builds or serves guides instead.
 - The guides (`src/chitty/guide.md` and `src/chitty/roles/`) reach every
   repository that uses Chitty, in any language. Keep their advice general:
   nothing specific to this repository, Python or Hypothesis.

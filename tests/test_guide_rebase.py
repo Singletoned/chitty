@@ -35,12 +35,7 @@ class TestGuideRebase(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         return root
 
-    def test_role_and_cli_expose_rebase_instructions(self):
-        text = (Path(__file__).parents[1] / "src/chitty/roles/rebase.md").read_text()
-        self.assertIn("git rebase --continue", text)
-        self.assertIn("Never run `git rebase --abort` or `git rebase --skip`", text)
-        result = CliRunner().invoke(cli, ["guide", "rebase", "TASK-1"], catch_exceptions=False)
-        self.assertIn("git rebase --continue", result.output)
+    def test_help_names_the_rebase_guide(self):
         help_result = CliRunner().invoke(cli, ["guide", "--help"], catch_exceptions=False)
         self.assertIn("chitty guide rebase TASK-12", help_result.output)
         self.assertIn("rebase accept an optional ticket ID", help_result.output)

@@ -17,3 +17,5 @@
   agents at it; MCP serves it as `chitty://guide`.
 - The guides reach every repository that uses Chitty, so they name no
   language, library or repository.
+- Do not test guide phrases or impose word budgets: phrase checks constrain
+  rewording without testing behavior, and budgets can be raised trivially.
