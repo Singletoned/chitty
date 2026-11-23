@@ -1,6 +1,6 @@
 ---
 title: "Tighten the planning guide: state each point once"
-status: planning
+status: cold-read
 labels:
   - untestable
 owner: untestable
@@ -28,3 +28,4 @@ Rules for this tightening:
 ## History
 
 - 2026-11-23T12:35:06Z friendly-zinc-dormouse → planning
+- 2026-11-23T12:38:01Z friendly-zinc-dormouse planning → cold-read
