@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -10,12 +10,12 @@ created: 2026-11-23
 
 Change:
 
-- A session made progress when it committed a change outside the ticket directories. Record HEAD (`git.ref_commit(worktree, "HEAD")`) before and after each session, and pass the paths changed between them (`git.changed_paths(worktree, before, after)`) to the existing `has_work_beyond_tickets` (`run.py:109`) with the configured ticket directories. A session that only adds notes (each `chitty` write autocommits) or makes an empty commit is not progress, so an idle agent that keeps noting still reaches the cap. If HEAD is unborn or unchanged, the session made no progress.
+- A session made progress when it committed a change outside the ticket directories. Record HEAD (`git.ref_commit(worktree, "HEAD")`) before and after each session, and pass the paths changed between the two commits to the existing `has_work_beyond_tickets` (`run.py:109`). Use a two-dot comparison (a new helper in `git.py`, for example `paths_between(root, old, new)` running `git diff -z --no-renames --name-only old new`), not `git.changed_paths`, whose three-dot diff reports an amended commit's old work as new. Build the ticket directories as the repair path does (`run.py:674-677`): `PurePosixPath(context.directory.relative_to(main_root).as_posix())` for each of `main_repo.contexts()`. A session that only adds notes (each `chitty` write autocommits) or makes an empty commit is not progress, so an idle agent that keeps noting still reaches the cap. If either commit is `None` (unborn HEAD) or they are equal, the session made no progress and no diff runs.
 - Decide whether to continue in a pure function in `run.py`, `continuation_step(progress: Sequence[bool], cap: int) -> Literal["continue", "stop"]`, with one entry per session so far (never empty): stop only when the last `cap + 1` entries are all `False`. Progress resets the count. The status check stays as today: any status change ends the loop first. This is shared by work and review sessions (`_agent_sessions` runs for every mode).
 - Reword the stop error to `<ID> is still `<status>` after <N> continuations with no new work committed; only committed changes are visible to `chitty run``.
 - Keep the `_accepts_prompt` case (an agent that cannot be continued) stopping after its first session, with the new wording (`after 0 continuations`).
 
-Existing test: `test_unchanged_ticket_is_continued_five_times_then_fails` (`tests/test_run_continue.py:101`) uses a fake agent that commits with `--allow-empty` each session; that is not progress, so the test must keep passing unchanged apart from the message.
+Existing test: `test_unchanged_ticket_is_continued_five_times_then_fails` (`tests/test_run_continue.py:101`) uses a fake agent that commits with `--allow-empty` each session; that is not progress, so the test keeps its stdout and invocation assertions, and gains an assertion on the new note text (read with `self.json("show", ticket)["notes"]` or the file's own helper).
 
 Property tool: Hypothesis.
 
@@ -24,8 +24,9 @@ Out of scope: leaving the ticket in `doing` instead of `error` when the cap is h
 ## Acceptance Criteria
 
 - [ ] A Hypothesis property test of `continuation_step(progress, cap)` in a new file `tests/test_continuation_step.py` draws a non-empty list of booleans (one per session) and a cap from 0 to 6. It asserts the result is `stop` exactly when the list ends with more than `cap` consecutive `False` values, otherwise `continue`; appending `True` never gives `stop`.
-- [ ] A work-mode test in `tests/test_run_continue.py` (its fake-agent fixture, which logs invocations) uses an agent that, in each of its first 7 sessions, writes and `git add`s a new non-ticket file and commits it without changing the ticket, then sets `review` on the 8th. `chitty run --ticket` prints `doing → review` and the fixture saw 8 invocations. This fails on `main`, where the 6th unchanged session sets `error`.
+- [ ] A work-mode test in `tests/test_run_continue.py` (its fake-agent fixture, which logs invocations) uses an agent that, in each of its first 7 sessions, writes and `git add`s a new non-ticket file named from its invocation count (so each commit differs) and commits it without changing the ticket, then sets `review` on the 8th. `chitty run --ticket` prints `doing → review` and the fixture saw 8 invocations. This fails on `main`, where the 6th unchanged session sets `error`.
 - [ ] In `tests/test_run_continue.py`, an agent that only appends a note through `chitty note` each session (moving HEAD but changing only the ticket file) ends `doing → error` after 6 invocations, and the ticket's note reads `<ID> is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run``; `test_unchanged_ticket_is_continued_five_times_then_fails` asserts the same new wording.
+- [ ] In `tests/test_run_continue.py`, an agent that commits one non-ticket file in its first session and then runs `git commit --amend --no-edit --allow-empty` in every later session ends `doing → error` after 7 invocations (1 productive + 6 idle); a three-dot diff would never stop it.
 
 ## Notes
 
@@ -46,3 +47,5 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 - 2026-11-23T10:35:52Z witty-russet-gannet: changed description
 - 2026-11-23T10:35:52Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:35:54Z witty-russet-gannet: changed acceptance criteria
+- 2026-11-23T10:37:30Z witty-russet-gannet: changed description, acceptance criteria
+- 2026-11-23T10:37:30Z witty-russet-gannet cold-read → planning
