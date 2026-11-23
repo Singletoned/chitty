@@ -381,8 +381,23 @@ class Task:
         return _verify_section_edit(self, candidate, NOTES, text, append=True)
 
     def timed_transitions(self) -> list[tuple[datetime, str | None, str]]:
-        """History transitions with UTC timestamps, in file order."""
-        return []
+        """History transitions with UTC timestamps, in file order; date-only lines are skipped."""
+        return [(when, old, new) for when, _, old, new in self.attributed_transitions()]
+
+    def attributed_transitions(self) -> list[tuple[datetime, str, str | None, str]]:
+        """Timed History transitions as `(when, actor, old, new)`, in file order."""
+        history = self.section(HISTORY) or ""
+        matches = (HISTORY_LINE_RE.fullmatch(line) for line in history.splitlines())
+        return [
+            (
+                datetime.strptime(match["timestamp"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC),
+                match["actor"],
+                match["old"],
+                match["new"],
+            )
+            for match in matches
+            if match and match["timestamp"]
+        ]
 
     def transitions(self) -> list[tuple[str | None, str]]:
         """History entries as (old, new) status pairs, oldest first."""

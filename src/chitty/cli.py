@@ -5,7 +5,7 @@ import os
 import shutil
 import sys
 import unicodedata
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, Literal, TextIO, cast
 
@@ -48,6 +48,7 @@ from chitty.model import (
 from chitty.run import RunInterrupted, run_loop
 from chitty.run import run as run_next
 from chitty.store import (
+    summary_sections,
     BROKEN_DEPENDENCY_GLYPH,
     Change,
     Edit,
@@ -127,7 +128,20 @@ def cli() -> None:
 @cli.command()
 @click.option("--hours", type=click.IntRange(1, SUMMARY_MAX_HOURS), default=SUMMARY_HOURS)
 def summary(hours: int) -> None:
-    """Show recent ticket transitions."""
+    """Show which tickets changed status in the last N hours, by status."""
+    sections = summary_sections(_repo().all_tasks(), datetime.now(UTC), hours)
+    if not sections:
+        click.echo(f"nothing changed in the last {hours} hours")
+        return
+    blocks: list[str] = []
+    for status, lines in sections:
+        rows = [
+            f"  {line.id}  {line.title}{' (new)' if line.new else ''}  "
+            f"{line.when:%H:%M} {line.actor}"
+            for line in lines
+        ]
+        blocks.append("\n".join([f"{status} ({len(lines)})", *rows]))
+    click.echo("\n\n".join(blocks))
 
 
 def main() -> None:

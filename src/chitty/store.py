@@ -11,7 +11,7 @@ import tomllib
 from collections.abc import Generator, Iterable, Mapping, Sequence
 from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass, replace
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from importlib.resources import files
 from pathlib import Path
 from typing import Any, Literal
@@ -38,6 +38,7 @@ from chitty.ids import TaskId
 from chitty.markdown import escape_literal_asterisks
 from chitty.model import (
     DESCRIPTION,
+    STATUSES as TASK_STATUSES,
     HISTORY,
     HISTORY_ACTION_SEPARATOR,
     PLAN,
@@ -106,8 +107,29 @@ class SummaryLine:
 def summary_sections(
     tasks: Sequence["StoredTask"], now: datetime, hours: int
 ) -> list[tuple[str, list[SummaryLine]]]:
-    """Group recent task transitions by their latest status."""
-    return []
+    """Group tasks changed in the `hours` before `now` by their latest status.
+
+    Pure: reads only each task's timed History transitions.
+    """
+    start = now - timedelta(hours=hours)
+    sections: dict[str, list[SummaryLine]] = {}
+    for stored in tasks:
+        transitions = stored.task.attributed_transitions()
+        eligible = [t for t in transitions if start <= t[0] <= now]
+        if not eligible:
+            continue
+        # max/min keep the first of equal keys, so index breaks ties by line order.
+        _, (when, actor, _, new) = max(enumerate(eligible), key=lambda pair: (pair[1][0], pair[0]))
+        first_when, _, first_old, _ = min(transitions, key=lambda t: t[0])
+        created = first_old is None and start <= first_when <= now
+        title = stored.task.frontmatter.title
+        sections.setdefault(new, []).append(SummaryLine(stored.id, title, when, actor, created))
+    rank = {status: index for index, status in enumerate(reversed(TASK_STATUSES))}
+    order = sorted(sections, key=lambda status: (rank.get(status, len(rank)), status))
+    return [
+        (status, sorted(sections[status], key=lambda line: (-line.when.timestamp(), line.id)))
+        for status in order
+    ]
 
 
 @dataclass(frozen=True)

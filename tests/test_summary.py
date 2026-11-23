@@ -26,7 +26,10 @@ def stamp(when: datetime) -> str:
 
 def ticket_text(title: str, history: list[str]) -> str:
     lines = "\n".join(history)
-    return f"---\ntitle: {title}\nstatus: todo\npriority: medium\ncreated: 2026-11-01\n---\n\n## Description\n\nText.\n\n## History\n\n{lines}\n"
+    return (
+        f"---\ntitle: {title}\nstatus: todo\npriority: medium\ncreated: 2026-11-01\n---\n\n"
+        f"## Description\n\nText.\n\n## History\n\n{lines}\n"
+    )
 
 
 def line(when: datetime, old: str | None, new: str, actor: str = "tester") -> str:
