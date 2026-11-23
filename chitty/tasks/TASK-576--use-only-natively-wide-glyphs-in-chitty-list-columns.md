@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: doing
+status: review
 labels:
   - needs-minor
 created: 2026-11-22
@@ -104,7 +104,7 @@ Review failed (work): The human skip glyph remains inline despite the explicit r
 
 ## Summary
 
-Replaced the alignment-test oracle with the specified terminal width calculation in tests/test_list_glyphs.py. make check passes (1128 tests); focused glyph tests pass. Commit: c37bd797.
+Centralized the human skip glyph via HUMAN_GLYPH. `make check` passes (1167 tests, 620 subtests). Implementation committed as 4b009260.
 
 ## History
 
@@ -134,3 +134,5 @@ Replaced the alignment-test oracle with the specified terminal width calculation
 - 2026-11-23T23:35:36Z honest-indigo-toad doing → review
 - 2026-11-23T23:43:13Z vivid-coral-urchin: changed acceptance criteria, notes
 - 2026-11-23T23:43:13Z vivid-coral-urchin review → doing
+- 2026-11-23T23:50:39Z friendly-fawn-otter: changed summary
+- 2026-11-23T23:50:39Z friendly-fawn-otter doing → review
