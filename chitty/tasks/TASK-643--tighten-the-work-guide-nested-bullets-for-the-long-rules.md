@@ -1,6 +1,6 @@
 ---
 title: "Tighten the work guide: nested bullets for the long rules"
-status: review
+status: done
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -21,6 +21,10 @@ Rules for this tightening:
 - Keep the advice general: the guides reach every repository that uses Chitty, in any language.
 - Do not move rules to other files unless this ticket says to.
 - In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
+
+## Notes
+
+Reviewed: compared every removed sentence of `src/chitty/roles/work.md` with the new text. Each trigger, the stop rule, the note contents, "do not work around or weaken tests", keeping the branch and worktree, committing partial work, and the resume rule are all still there. The omission exception keeps its limits, the `Decided:` format and the route to `planning`. "(see the omission exception below)" now names the "Omission exception:" bullet. The `TASK-624` budget sentence is unchanged, and the temp-dir and other-branch clauses are merged. Nothing was lost. No acceptance criteria (`untestable`). `make check` passed (1156 tests) on the combined merge.
 
 ## Summary
 
@@ -52,3 +56,5 @@ Verification: `make check`, run by `chitty edit -s review`.
 - 2026-11-23T14:34:58Z plucky-indigo-eel todo → doing
 - 2026-11-23T14:41:01Z plucky-indigo-eel: changed summary
 - 2026-11-23T14:41:01Z plucky-indigo-eel doing → review
+- 2026-11-23T16:04:07Z kind-zinc-newt: changed notes
+- 2026-11-23T16:04:07Z kind-zinc-newt review → done
