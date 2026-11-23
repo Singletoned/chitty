@@ -1,6 +1,6 @@
 ---
 title: Rewrite the plan docs and `AGENTS.md` for one authoritative ticket copy
-status: todo
+status: backlog
 labels:
   - untestable
 owner: untestable
@@ -28,6 +28,10 @@ Change:
 
 Wording in docs; no test can show it is done.
 
+## Notes
+
+Parked, 2026-11-23: this ticket would document `TASK-385`'s write refusal ("writes refused when a newer copy is elsewhere"), which the person dropped this morning (recorded in `TASK-602`): Chitty writes the current checkout's copy and warns instead of refusing. Rewrite the docs part against `TASK-602`, `TASK-603` and `TASK-605` once they are planned.
+
 ## History
 
 - 2026-11-18T16:20:19Z lively-quartz-crane → backlog
@@ -35,3 +39,5 @@ Wording in docs; no test can show it is done.
 - 2026-11-18T16:36:25Z lively-quartz-crane: changed labels, owner, description
 - 2026-11-18T16:36:25Z lively-quartz-crane backlog → todo
 - 2026-11-18T17:53:42Z lively-quartz-crane: changed dependencies
+- 2026-11-23T16:07:48Z youthful-quartz-zander: changed notes
+- 2026-11-23T16:07:48Z youthful-quartz-zander todo → backlog
