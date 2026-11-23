@@ -20,9 +20,10 @@ Rules for this tightening:
 - Keep every instruction and its meaning. Remove repeats within the file, filler and roundabout phrasing. Turn a long bullet that bundles a list into a short lead line with nested bullets.
 - Keep the advice general: the guides reach every repository that uses Chitty, in any language.
 - Do not move rules to other files unless this ticket says to.
-- In `--summary`, list each sentence removed outright and where its point still lives, so the reviewer can check nothing was lost.
+- In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
 
 ## History
 
 - 2026-11-23T12:35:00Z friendly-zinc-dormouse → planning
 - 2026-11-23T12:37:53Z friendly-zinc-dormouse planning → cold-read
+- 2026-11-23T12:40:40Z friendly-zinc-dormouse: changed description
