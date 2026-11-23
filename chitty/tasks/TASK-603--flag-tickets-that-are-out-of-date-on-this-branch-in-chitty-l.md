@@ -1,6 +1,6 @@
 ---
 title: Flag tickets that are out of date on this branch in chitty list
-status: todo
+status: backlog
 depends_on:
   - TASK-602
 created: 2026-11-23
@@ -17,3 +17,4 @@ To be planned: after the listing, one stderr line per listed ticket with a confl
 ## History
 
 - 2026-11-23T08:22:18Z plucky-umber-wren → todo
+- 2026-11-23T08:22:38Z plucky-umber-wren todo → backlog
