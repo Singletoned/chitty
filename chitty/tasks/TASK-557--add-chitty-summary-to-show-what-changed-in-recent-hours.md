@@ -1,6 +1,6 @@
 ---
 title: Add `chitty summary` to show what changed in recent hours
-status: review
+status: done
 priority: high
 created: 2026-11-22
 ---
@@ -30,8 +30,8 @@ To show the tests fail first, commit a stub first (`timed_transitions` returning
 
 ## Acceptance Criteria
 
-- [ ] The `summary_sections` examples, the property and the CLI test in `tests/test_summary.py` pass; against the committed stub, the examples, the property and the CLI output assertions fail (the `--hours 0` and `--hours x` checks may pass there); record both runs in a note
-- [ ] `chitty --help` lists `summary`; `make check` passes
+- [x] The `summary_sections` examples, the property and the CLI test in `tests/test_summary.py` pass; against the committed stub, the examples, the property and the CLI output assertions fail (the `--hours 0` and `--hours x` checks may pass there); record both runs in a note
+- [x] `chitty --help` lists `summary`; `make check` passes
 
 ## Plan
 
@@ -63,6 +63,10 @@ Decided: actor for `SummaryLine` -> a public `Task.attributed_transitions()` ret
 
 Decided: section order uses `chitty.model.STATUSES` (imported in `store.py` as `TASK_STATUSES`), because `store.py` already imports `chitty.selection.STATUSES`, which holds only active statuses; `test_unknown_status_sorts_after_statuses` covers it.
 
+Reviewed: implementation and decisions fit the specified behavior; no earlier review failures.
+1: pass - `make check` passed the summary tests; independently ran `PYTHONPATH=src:. ../../.venv/bin/python -m pytest tests/test_summary.py -q` in a detached worktree at stub `5b4c93a3` with tests from `70f601eb`: 11 failed, 3 passed, including assertion failures for examples, property and CLI output. Worker recorded both runs.
+2: pass - `.venv/bin/chitty --help` lists `summary`; `make check` printed 1199 passed, 1 warning, 821 subtests passed.
+
 ## History
 
 - 2026-11-22T09:47:32Z friendly-jade-stoat → backlog
@@ -87,3 +91,5 @@ Decided: section order uses `chitty.model.STATUSES` (imported in `store.py` as `
 - 2026-11-23T12:17:43Z sunny-jade-quail doing → error
 - 2026-11-23T13:34:16Z youthful-quartz-zander error → review
 - 2026-11-23T13:34:56Z youthful-quartz-zander: changed notes
+- 2026-11-23T13:48:28Z sunny-umber-lapwing: changed notes; ticked acceptance criteria
+- 2026-11-23T13:48:28Z sunny-umber-lapwing review → done
