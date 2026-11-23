@@ -27,7 +27,7 @@ Tests, in a new `tests/test_due_date.py`:
 - Malformed: with `due: 01-12-2026`, `parse` raises `TaskError` whose message is `due: '01-12-2026' is not an ISO 8601 date (YYYY-MM-DD)`. With `due: 2026-13-01`, the message is `due: Input should be a valid date or datetime, month value is outside expected range of 1-12` (the text `chitty check` gives today for the same `created` value).
 - `chitty check`: in a `RepoTestCase` repository, write a ticket file with `due: 01-12-2026` into `chitty/tasks/`. Run `chitty check` through `click.testing.CliRunner` with `chitty.cli.cli`. It exits non-zero, and the output contains `<the file's absolute path>: due: '01-12-2026' is not an ISO 8601 date (YYYY-MM-DD)`.
 - JSON: `as_dict()["due"]` is `"2026-12-01"` for the first ticket and `None` for a ticket without `due`.
-- Property, with Hypothesis and `examples(50)` from `tests/__init__.py`: for any `st.dates()` value `d`, `with_field("due", d).render()` parses back with `frontmatter.due == d`, and rendering again gives the same text; for any `st.text()` value `s` without `\n` or `\r`, a ticket whose frontmatter has `due: ` followed by `s` rendered with `render_scalar` either parses or raises `TaskError` whose message starts with `due: `, and no other exception.
+- Property, with Hypothesis and `examples(50)` from `tests/__init__.py`: for any `st.dates()` value `d`, `with_field("due", d).render()` parses back with `frontmatter.due == d`, and rendering again gives the same text; for any `st.text(alphabet=string.printable[:95])` value `s` (printable ASCII, so YAML never fails on a control character), a ticket whose frontmatter has `due: ` followed by `s` rendered with `render_scalar` either parses or raises `TaskError` whose message starts with `due: `, and no other exception.
 - Formatters: in `tests/test_formatters.py`, add `"due": date(2026, 11, 30)` to `sample()`'s `fields`, so the prettier and mdformat no-op tests cover it.
 
 Out of scope: CLI options, MCP, `chitty list` display, filtering and sorting.
@@ -48,3 +48,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Tightened the tests: an 
 - 2026-11-23T12:27:20Z witty-russet-gannet backlog → cold-read
 - 2026-11-23T12:28:38Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:28:38Z witty-russet-gannet cold-read → todo
+- 2026-11-23T12:28:47Z witty-russet-gannet: changed description
