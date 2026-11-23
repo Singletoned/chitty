@@ -19,3 +19,4 @@ Duplicate of TASK-340 and TASK-497; diagnostics half folded into TASK-610.
 - 2026-11-23T10:24:21Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:22Z witty-russet-gannet: changed notes
 - 2026-11-23T10:27:53Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:55Z witty-russet-gannet backlog → archived
