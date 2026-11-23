@@ -49,6 +49,8 @@ Planner, 2026-11-23: the property now uses the same window as the Decisions, wit
 
 Planner, 2026-11-23: a cold read found nothing serious. Clarified the `TaskId` tie-break (with a `TASK-9`/`TASK-10` example), that `new` uses the earliest of all History transitions, the property's actor and input shuffle, and that the CLI fixture is not committed.
 
+Stub commit 5b4c93a3 adds the requested empty APIs and command; make check passed (1170 tests). Regression tests have not yet been written or run against the stub, and the feature is not implemented. Write the specified tests next, record their assertion failures against this commit, then implement and verify.
+
 ## History
 
 - 2026-11-22T09:47:32Z friendly-jade-stoat → backlog
@@ -68,3 +70,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Clarified the `TaskId` t
 - 2026-11-23T12:04:24Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:07:37Z sunny-jade-quail todo → doing
 - 2026-11-23T12:12:06Z sunny-jade-quail: wrote the plan
+- 2026-11-23T12:16:44Z sunny-jade-quail: changed notes
