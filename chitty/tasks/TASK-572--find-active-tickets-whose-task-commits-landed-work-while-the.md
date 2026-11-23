@@ -1,6 +1,6 @@
 ---
 title: Find active tickets whose `Task:` commits landed work while they are not done
-status: planning
+status: cold-read
 depends_on:
   - TASK-358
 created: 2026-11-22
@@ -36,3 +36,4 @@ Planner, 2026-11-22: cold-read once, nothing serious; two generator clarificatio
 - 2026-11-22T10:09:52Z friendly-jade-stoat planning → cold-read
 - 2026-11-22T10:11:21Z friendly-jade-stoat: changed description, notes
 - 2026-11-22T10:11:21Z friendly-jade-stoat cold-read → planning
+- 2026-11-23T19:28:34Z witty-yellow-vole planning → cold-read
