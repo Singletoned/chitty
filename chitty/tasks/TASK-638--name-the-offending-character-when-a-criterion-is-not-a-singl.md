@@ -12,7 +12,10 @@ On 2026-11-23, `chitty edit TASK-610 --set-ac 1 ...` was refused with only `Erro
 
 Suggestion origin: chitty
 
+Folded into TASK-451 (2026-11-23): once ticket files are split only at `\n`, the hidden-character case cannot happen, and a real newline is visible in the argument.
+
 ## History
 
 - 2026-11-23T11:57:37Z witty-russet-gannet → backlog
 - 2026-11-23T11:57:41Z witty-russet-gannet: changed notes
+- 2026-11-23T12:02:15Z witty-russet-gannet: changed notes
