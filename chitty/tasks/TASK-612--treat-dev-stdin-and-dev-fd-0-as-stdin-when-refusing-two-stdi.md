@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: planning
+status: cold-read
 created: 2026-11-23
 ---
 
@@ -10,7 +10,7 @@ created: 2026-11-23
 
 Change: an option reads stdin when its value is `-`, `/dev/stdin`, `/dev/fd/0` or `/proc/self/fd/0`. Decide this in a small pure function, `reads_stdin(name: str) -> bool`, in `cli.py`, called by `_check_stdin_files` with each file's `name`. The error message is unchanged: `only one file option can read stdin: <options>`.
 
-Callers today: `add` (`cli.py:319`), `note`/`add` paths at `cli.py:393`, and `edit` (`cli.py:776`). The guard runs before any read or write, so a refused command changes nothing.
+Callers today: `suggest` (`cli.py:319`), `add` (`cli.py:393`) and `edit` (`cli.py:776`). The guard runs before any read or write, so a refused command changes nothing.
 
 Property tool: Hypothesis, with the `examples()` profile helper as in the existing tests in `tests/test_property_text_files.py`.
 
@@ -31,3 +31,5 @@ Suggestion origin: chitty
 - 2026-11-23T10:24:07Z witty-russet-gannet: changed notes
 - 2026-11-23T10:28:51Z witty-russet-gannet: changed title, description, acceptance criteria
 - 2026-11-23T10:28:51Z witty-russet-gannet backlog → planning
+- 2026-11-23T10:29:05Z witty-russet-gannet: changed description
+- 2026-11-23T10:29:05Z witty-russet-gannet planning → cold-read
