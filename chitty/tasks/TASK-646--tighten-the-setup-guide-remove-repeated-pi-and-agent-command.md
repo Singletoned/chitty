@@ -1,6 +1,6 @@
 ---
 title: "Tighten the setup guide: remove repeated Pi and agent-command advice"
-status: review
+status: done
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -24,6 +24,10 @@ Rules for this tightening:
 - Keep the advice general: the guides reach every repository that uses Chitty, in any language.
 - Do not move rules to other files unless this ticket says to.
 - In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
+
+## Notes
+
+Reviewed: `src/chitty/roles/setup.md` step 3 now says once to configure a command and a way to pass role instructions. The doubled "install or install" is fixed. The Pi autoload cleanup points to step 1, which still says to inspect and remove the extension, then restart Pi. Step 4 keeps every point in bullets, including the throwaway-worktree check, exit code 3, `error` tickets and `error_reporter`, and keeps the placeholder-targets paragraph. The `chitty.toml` example, setting names and placeholders are unchanged. No acceptance criteria (`untestable`). `make check` passed (1156 tests) on the combined merge.
 
 ## Summary
 
@@ -50,3 +54,5 @@ Verification: `make check`, run by `chitty edit -s review`.
 - 2026-11-23T14:36:36Z plucky-indigo-eel todo → doing
 - 2026-11-23T14:47:52Z plucky-indigo-eel: changed summary
 - 2026-11-23T14:47:52Z plucky-indigo-eel doing → review
+- 2026-11-23T16:04:16Z kind-zinc-newt: changed notes
+- 2026-11-23T16:04:16Z kind-zinc-newt review → done
