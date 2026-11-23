@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: planning
+status: cold-read
 labels:
   - needs-minor
 priority: high
@@ -102,3 +102,4 @@ Inspected the status definitions, add and edit validation, selection and CLI lis
 - 2026-11-23T18:59:50Z intrepid-dusky-gannet: changed owner, notes
 - 2026-11-23T18:59:50Z intrepid-dusky-gannet doing → planning
 - 2026-11-23T19:27:28Z witty-yellow-vole: changed owner, description
+- 2026-11-23T19:28:09Z witty-yellow-vole planning → cold-read
