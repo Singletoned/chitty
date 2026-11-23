@@ -1,6 +1,6 @@
 ---
 title: "Tighten the planning guide: state each point once"
-status: cold-read
+status: planning
 labels:
   - untestable
 owner: untestable
@@ -19,7 +19,7 @@ created: 2026-11-23
 
 Change `src/chitty/roles/plan.md`, as it stands after `TASK-615` lands:
 - Keep "say which test must fail without the fix" in the "Ask of each criterion" bullet, with the reason "a nearby test may already pass", and delete the standalone bullet.
-- Keep the criteria-count split advice in "Write tickets that a fresh agent" and the third-read split in "After a fix that changes" (a different trigger); drop "Split rather than exceed about five criteria" from "Before moving to `todo`".
+- Keep every split rule in "Write tickets that a fresh agent" (one to three criteria per outcome, err on the side of splitting, the `chitty check` warning, about five checks per criterion) and the third-read split in "After a fix that changes" (a different trigger); drop "Split rather than exceed about five criteria" from "Before moving to `todo`".
 - Merge the wrong-versions bullet and the generator-recipe bullet into one bullet with nested points.
 - Tighten the sufficiency-read bullet. Other long bullets are the worker's judgement. Leave `<!-- property-signals -->` where it is; it is replaced by `src/chitty/roles/property-signals.md` when the guide is printed.
 
@@ -35,3 +35,5 @@ Rules for this tightening:
 - 2026-11-23T12:38:01Z friendly-zinc-dormouse planning → cold-read
 - 2026-11-23T12:40:49Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:41:12Z friendly-zinc-dormouse: changed description
+- 2026-11-23T12:44:32Z friendly-zinc-dormouse: changed description
+- 2026-11-23T12:44:32Z friendly-zinc-dormouse cold-read → planning
