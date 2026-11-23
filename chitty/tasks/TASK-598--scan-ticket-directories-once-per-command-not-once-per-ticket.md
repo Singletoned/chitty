@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: planning
+status: todo
 priority: high
 depends_on:
   - TASK-639
@@ -99,3 +99,4 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T14:38:11Z youthful-quartz-zander: changed description
 - 2026-11-23T14:38:17Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:38:19Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:38:22Z youthful-quartz-zander planning → todo
