@@ -118,6 +118,8 @@ class TestTextFiles(RepoTestCase):
             tasks = self.root / "chitty/tasks"
             before = set(tasks.glob("*"))
             with tempfile.TemporaryFile() as stream:
+                stream.write(b"description")
+                stream.seek(0)
                 saved = os.dup(0)
                 try:
                     os.dup2(stream.fileno(), 0)
