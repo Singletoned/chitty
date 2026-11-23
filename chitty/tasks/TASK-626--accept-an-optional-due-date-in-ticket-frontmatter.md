@@ -37,6 +37,10 @@ Out of scope: CLI options, MCP, `chitty list` display, filtering and sorting.
 - [ ] The parse, render, `with_field`, malformed, `chitty check`, JSON and property tests in `tests/test_due_date.py` pass, and all but the "without `due`" cases fail before the change. Record both runs in a note
 - [ ] The prettier and mdformat tests in `tests/test_formatters.py` pass with `due` in `sample()`; `make check` passes
 
+## Plan
+
+Add focused regression and property tests, confirm failures before implementation, then add the optional field and validator, check formatter coverage and run make check.
+
 ## Notes
 
 Planner, 2026-11-23: a cold read found nothing serious. Tightened the tests: an exact pydantic message, `due` inserted between `created` and `moved_from`, string input accepted, and a round-trip and no-crash property. Said that no whole-JSON test is expected to change.
@@ -50,3 +54,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Tightened the tests: an 
 - 2026-11-23T12:28:38Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:28:47Z witty-russet-gannet: changed description
 - 2026-11-23T12:49:40Z mellow-hazel-lapwing todo → doing
+- 2026-11-23T12:52:46Z mellow-hazel-lapwing: wrote the plan
