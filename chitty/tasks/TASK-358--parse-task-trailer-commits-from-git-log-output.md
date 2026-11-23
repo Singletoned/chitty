@@ -1,6 +1,6 @@
 ---
 title: Parse `Task:` trailer commits from `git log` output
-status: todo
+status: doing
 created: 2026-11-16
 ---
 
@@ -70,3 +70,4 @@ Implement the Git log parser and reader, add property and real-Git tests, and ru
 - 2026-11-23T18:42:00Z witty-yellow-vole planning → cold-read
 - 2026-11-23T18:43:18Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:43:21Z witty-yellow-vole planning → todo
+- 2026-11-23T18:44:34Z daring-teal-lapwing todo → doing
