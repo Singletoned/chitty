@@ -52,7 +52,7 @@ Out of scope: `as_dict` and the property test (TASK-649), `chitty show` (TASK-65
 
 ## Plan
 
-Add focused parser and renumbering regression tests, record their failures before implementation, implement Questions parsing, extend formatter coverage, then run formatting and checks.
+Add parser and renumbering regression tests first, record their baseline failures, implement Questions parsing, add formatter coverage, then format and run make check.
 
 ## Notes
 
@@ -128,3 +128,4 @@ Requeued 2026-11-23: the 20:00 run that stalled used `gpt-6.1-terra` from a loop
 - 2026-11-23T21:11:41Z friendly-coral-badger: changed notes
 - 2026-11-23T21:11:41Z friendly-coral-badger error → todo
 - 2026-11-23T21:29:50Z zesty-hazel-dormouse todo → doing
+- 2026-11-23T21:33:26Z zesty-hazel-dormouse: wrote the plan
