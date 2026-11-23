@@ -17,7 +17,7 @@ created: 2026-11-23
 - Step 3 describes configuring a command and a way to pass role instructions twice: once for Pi and once for other agents, in the same words.
 - Step 4 is one long paragraph covering the first real run, failures, error reporters and the throwaway-worktree check.
 
-Change `src/chitty/roles/setup.md`: say each point once, split step 4 into short bullets, and keep the steps' order. Keep the `chitty.toml` example and every setting name, command and placeholder (`{mode}`, `{id}`, `{prompt}`).
+Change `src/chitty/roles/setup.md`: say each point once, split step 4 into short bullets, and keep the steps' order. Keep step 4's second paragraph (placeholder targets in a new repository). Keep the `chitty.toml` example and every setting name, command and placeholder (`{mode}`, `{id}`, `{prompt}`).
 
 Rules for this tightening:
 - Keep every instruction and its meaning. Remove repeats within the file, filler and roundabout phrasing. Turn a long bullet that bundles a list into a short lead line with nested bullets.
@@ -30,3 +30,4 @@ Rules for this tightening:
 - 2026-11-23T12:35:10Z friendly-zinc-dormouse → planning
 - 2026-11-23T12:38:04Z friendly-zinc-dormouse planning → cold-read
 - 2026-11-23T12:40:53Z friendly-zinc-dormouse: changed description
+- 2026-11-23T12:41:16Z friendly-zinc-dormouse: changed description
