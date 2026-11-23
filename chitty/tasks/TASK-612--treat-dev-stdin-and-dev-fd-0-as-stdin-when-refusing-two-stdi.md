@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: doing
+status: review
 created: 2026-11-23
 ---
 
@@ -36,6 +36,10 @@ Suggestion origin: chitty
 
 Both regression tests failed before the fix: add created a ticket and edit accepted note stdin plus summary /dev/stdin.
 
+## Summary
+
+Implemented exact stdin alias detection and regression tests. Both command regressions failed before the fix; make check passed.
+
 ## History
 
 - 2026-11-23T10:24:06Z witty-russet-gannet → backlog
@@ -56,3 +60,5 @@ Both regression tests failed before the fix: add created a ticket and edit accep
 - 2026-11-23T11:14:38Z lively-navy-ibis todo → doing
 - 2026-11-23T11:17:10Z lively-navy-ibis: wrote the plan
 - 2026-11-23T11:17:36Z lively-navy-ibis: changed notes
+- 2026-11-23T11:24:50Z lively-navy-ibis: changed summary
+- 2026-11-23T11:24:50Z lively-navy-ibis doing → review
