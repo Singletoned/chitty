@@ -34,6 +34,12 @@ Add real Git wiring tests and verify mutations, then implement byte-preserving l
 
 Planner, 2026-11-23: `TASK-358` landed `TrailerCommit`, `TRAILER_LOG_OPTIONS` and `parse_trailer_log` as this ticket assumes; cold-read against what landed.
 
+Regression verification: before implementation pytest failed to import trailer_commits. With implementation, removing --root or --encoding=UTF-8 each failed test_config; replacing invalid UTF-8 failed test_invalid_utf8; changing to check=True failed test_unknown_ref. Restored code passes make check.
+
+## Summary
+
+Implemented byte-preserving Git log execution with real Git tests. make check passed; all four required mutations failed their corresponding tests.
+
 ## History
 
 - 2026-11-23T18:39:16Z witty-yellow-vole → planning
@@ -46,3 +52,4 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit`, `TRAILER_LOG_OPTIONS` an
 - 2026-11-23T19:39:52Z witty-yellow-vole planning → todo
 - 2026-11-23T20:10:51Z golden-zinc-falcon todo → doing
 - 2026-11-23T20:13:06Z golden-zinc-falcon: wrote the plan
+- 2026-11-23T20:16:10Z golden-zinc-falcon: changed notes, summary
