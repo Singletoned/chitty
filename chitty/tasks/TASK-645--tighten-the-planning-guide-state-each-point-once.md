@@ -1,9 +1,9 @@
 ---
 title: "Tighten the planning guide: state each point once"
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: plucky-indigo-eel
 depends_on:
   - TASK-640
   - TASK-615
@@ -38,3 +38,5 @@ Rules for this tightening:
 - 2026-11-23T12:44:32Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:32Z friendly-zinc-dormouse cold-read → planning
 - 2026-11-23T12:45:15Z friendly-zinc-dormouse planning → todo
+- 2026-11-23T14:36:10Z plucky-indigo-eel: changed owner
+- 2026-11-23T14:36:10Z plucky-indigo-eel todo → doing
