@@ -43,6 +43,10 @@ not, the check runs anyway. Record that both tests fail before the change.
 - [ ] Entering review with a configured check prints `running check <command> before review (output in .chitty/check.log)` and then `check finished in <N>s` with whole seconds, on stderr, for passing and failing checks; shown by the two new tests, which fail before the change.
 - [ ] `make check` passes.
 
+## Plan
+
+Add passing and failing review-check regression tests, verify they fail, then report start and elapsed time around the logged command. Run formatting and checks before handoff.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -73,3 +77,4 @@ Planner, 2026-11-23, after a cold read: the line is now exact text with no backt
 - 2026-11-23T12:26:19Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:26:19Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:40:28Z daring-indigo-toad todo → doing
+- 2026-11-23T12:43:34Z daring-indigo-toad: wrote the plan
