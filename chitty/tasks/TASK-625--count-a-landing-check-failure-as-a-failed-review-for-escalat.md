@@ -23,12 +23,15 @@ Out of scope: changing `REVIEW_FAILURE_LIMIT`, the escalation note text, or the 
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test in `tests/test_check_edit.py`, next to `test_failed_reviews_escalate_at_the_limit` and built the same way (`make_task(<status>, [], None, [])`, then `with_history` for each drawn transition), draws zero to eight transitions from `(review, doing)`, `(done, doing)`, `(doing, review)`, `(review, done)`, `(doing, blocked)` and `(blocked, doing)`, and a current status of `review` or `done`. Applying `fail_review_edit("Review failed: generated failure.")` through `check_edit(task, edit, "fresh-reviewer")` gives status `blocked` with owner `human` exactly when 1 + the number of `(review, doing)` and `(done, doing)` transitions after the last `(doing, blocked)` reaches `REVIEW_FAILURE_LIMIT`; otherwise status `doing`. Draws with current status `done` and two counted failures fail on `main`.
+- [ ] A Hypothesis property test in `tests/test_check_edit.py`, next to `test_failed_reviews_escalate_at_the_limit` and built the same way (`make_task(<status>, [], None, [])`, so the verdict check has no criteria to check, then `with_history` by `other-reviewer` for each drawn transition), draws zero to eight transitions from `(review, doing)`, `(done, doing)`, `(doing, review)`, `(review, done)`, `(doing, blocked)` and `(blocked, doing)`, and a current status of `review` or `done`. Applying `fail_review_edit("Review failed: generated failure.")` through `check_edit(task, edit, "fresh-reviewer")` gives status `blocked` with owner `human` exactly when 1 + the number of `(review, doing)` and `(done, doing)` transitions after the last `(doing, blocked)` reaches `REVIEW_FAILURE_LIMIT`; otherwise status `doing`. Draws with current status `done` and two `(review, doing)` transitions fail on `main`.
 - [ ] A test in `tests/test_review_merge.py`, set up like `test_failing_check_after_main_advances_preserves_main_and_worktree` but calling `self.branch_for_review(failures=2)`, runs `run --mode review` and asserts the ticket (`self.ticket()`) ends `blocked`, owner `human`, with a note starting `Escalated to human review` and the `Review failed (integration):` note. It fails on `main`, where the ticket ends `doing`.
+- [ ] An example test in `tests/test_check_edit.py`: a `done` task whose history has `(doing, review)` by `fresh-reviewer` and no failures accepts `check_edit(task, Edit(status="doing", note="Review failed (integration): x", skip_verdicts=True, skip_current_version=True), "fresh-reviewer")` with status `doing`, because the landing edit is not a review transition. It fails if `done` is added to `is_review_transition` (the reviewer-independence check raises `cannot review this task`); commit that wrong version briefly, record the failure in a note, then revert it.
 
 ## Notes
 
 Planning: relies on TASK-609 (its landing-failure handler and test fixture). When TASK-609 is done, compare, cold-read, then move to `todo`.
+
+Precedent for criterion 2: `test_automatic_and_reviewer_failures_count_together` in `tests/test_review_merge.py` covers the `review → doing` path.
 
 ## History
 
@@ -40,3 +43,4 @@ Planning: relies on TASK-609 (its landing-failure handler and test fixture). Whe
 - 2026-11-23T13:37:50Z youthful-quartz-zander: changed acceptance criteria
 - 2026-11-23T13:37:56Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T13:39:25Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T13:39:40Z youthful-quartz-zander: changed acceptance criteria, notes
