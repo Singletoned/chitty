@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: planning
+status: cold-read
 priority: high
 created: 2026-11-22
 ---
@@ -43,7 +43,7 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 ## Acceptance Criteria
 
 - [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case and the property pass; the scan-count tests fail before the change. Record both runs in a note
-- [ ] Before and after the change, in the main checkout at the same `main` commit with ticket branches unchanged between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output, where "before" is the main checkout's `.venv/bin/chitty` and "after" is the ticket worktree's `.venv/bin/chitty` (run `make install` in the worktree first) run with `cwd` at the main checkout. Record the `diff` result and three `time` runs of `chitty list` for each in a note
+- [ ] Before and after the change, run with `cwd` at the ticket worktree and with no ticket commits made between runs: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Record the `diff` result and three `time` runs of `chitty list` for each in a note
 - [ ] `make check` passes
 
 ## Notes
@@ -51,6 +51,8 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 Acceptance criterion 2 requires running both executables with cwd in the main checkout, reading its ticket files and refs and writing comparison evidence. The session instruction restricts all reads and changes to this ticket worktree, so that verification is not authorized. Please decide whether to authorize the main-checkout benchmark or revise the criterion to use an isolated fixture in this worktree. Until then the required byte-identical outputs and timing runs cannot be checked.
 
 Inspected the remaining requirements: the working-tree and ref scans, discovered-context cache, existing performance tests, and invalidation are present in the stated locations. The requested regression, error/order, ref and property tests and make check can be performed in the worktree, but implementation has not begun because criterion 2 is blocked. No other actionable ticket defects were found in this inspection.
+
+Planner, 2026-11-23: the blocker is resolved by rewriting criterion 2 so that it runs entirely inside the ticket worktree. That worktree shares the repository's refs and holds the full set of ticket files, and the "before" code is taken from the merge base with `git archive`. Nothing reads the main checkout.
 
 ## History
 
@@ -64,3 +66,5 @@ Inspected the remaining requirements: the working-tree and ref scans, discovered
 - 2026-11-22T21:36:27Z witty-khaki-falcon todo → doing
 - 2026-11-22T21:38:29Z witty-khaki-falcon: changed owner, notes
 - 2026-11-22T21:38:29Z witty-khaki-falcon doing → planning
+- 2026-11-23T12:03:08Z witty-russet-gannet: changed acceptance criteria, notes
+- 2026-11-23T12:03:08Z witty-russet-gannet planning → cold-read
