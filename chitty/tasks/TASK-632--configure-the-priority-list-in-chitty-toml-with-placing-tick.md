@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: cold-read
+status: planning
 labels:
   - needs-minor
 parent: TASK-607
@@ -53,7 +53,7 @@ Out of scope: `src/chitty/import_backlog.py` passes the source priority through 
 
 ## Acceptance Criteria
 
-- [ ] Config and model: the config cases (default, the five refusals) and the `priority: ""` model cases in `tests/test_priorities_config.py` pass, each asserting its message, and fail against `main`
+- [ ] Config and model: the config cases (default, the six refusals) and the `priority: ""` model cases in `tests/test_priorities_config.py` pass, each asserting its message, and fail against `main`
 - [ ] Writes, check and list: the `chitty add`/`chitty edit` write cases, the `chitty check` case and the `chitty list` display case pass and fail against `main`
 - [ ] Ordering: the CLI ordering examples and the Hypothesis property pass, and the examples fail against `main`; the existing tests named above are updated and listed in a note
 - [ ] MCP: the add tool accepts `priority="now"` and refuses `"high"` with the configured-name message; record the `main` failure in a note
@@ -83,3 +83,5 @@ Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priori
 - 2026-11-23T18:43:55Z witty-yellow-vole: changed description
 - 2026-11-23T18:43:55Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:44:00Z witty-yellow-vole planning → cold-read
+- 2026-11-23T18:44:21Z witty-yellow-vole: changed acceptance criteria
+- 2026-11-23T18:44:21Z witty-yellow-vole cold-read → planning
