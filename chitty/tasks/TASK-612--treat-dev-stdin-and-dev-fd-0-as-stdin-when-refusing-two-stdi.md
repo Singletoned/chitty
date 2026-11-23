@@ -1,6 +1,6 @@
 ---
 title: Treat `/dev/stdin` and `/dev/fd/0` as stdin when refusing two stdin file options
-status: review
+status: done
 created: 2026-11-23
 ---
 
@@ -44,6 +44,11 @@ Baseline tests ran with the branch test file in a temporary merge-base worktree,
 
 With valid description in fd 0, the add regression fails against the old stdin predicate with exit 0 and output confirming TASK-1 was added. With the fix, make check passes: 1148 tests.
 
+Reviewed: make check passed (1148 tests); previous add fixture failure is resolved. Baseline verification used the branch test file in a temporary merge-base worktree and an old-behaviour reads_stdin shim, then removed the worktree.
+1: pass - make check passed; baseline pytest test_edit_stdin_aliases failed 0 != 2 with [None, None, '-', '/dev/stdin'].
+2: pass - make check passed; baseline pytest test_add_stdin_alias failed 0 != 2 and printed added TASK-1, resolving the previous review finding.
+3: pass - make check passed; baseline pytest test_reads_stdin failed on /dev/stdin with the old-behaviour shim.
+
 ## Summary
 
 Corrected the add regression fixture and confirmed baseline ticket creation; make check passes.
@@ -75,3 +80,5 @@ Corrected the add regression fixture and confirmed baseline ticket creation; mak
 - 2026-11-23T11:38:14Z jolly-fawn-raven: wrote the plan
 - 2026-11-23T11:42:01Z jolly-fawn-raven: changed notes, summary
 - 2026-11-23T11:42:01Z jolly-fawn-raven doing → review
+- 2026-11-23T11:48:11Z upbeat-ochre-vole: changed notes
+- 2026-11-23T11:48:11Z upbeat-ochre-vole review → done
