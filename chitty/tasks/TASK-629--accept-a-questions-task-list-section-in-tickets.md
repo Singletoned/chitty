@@ -1,6 +1,6 @@
 ---
 title: Accept a `## Questions` task-list section in tickets
-status: todo
+status: doing
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -67,3 +67,4 @@ Planner, 2026-11-23, after the second cold read: nothing serious. Property text 
 - 2026-11-23T12:30:30Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:31:36Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:31:36Z witty-russet-gannet cold-read → todo
+- 2026-11-23T13:02:02Z friendly-yellow-ibis todo → doing
