@@ -55,12 +55,17 @@ from chitty.store import (
 
 # Each lost race removes a candidate, so a few attempts are plenty.
 RUN_LOCK_ATTEMPTS = 10
+LANDING_LOG_TAIL_LINES = 40
 LANDING_ATTEMPTS = 3
 QUICK_LANDING_ATTEMPTS = 10
 RUN_LOOP_PAUSE_SECONDS = 60
 # An agent that leaves its ticket unchanged is continued this many times at most.
 MAX_CONTINUATIONS = 5
 CONTINUE_ARGUMENT = "-c"  # Each agent CLI's flag for resuming its latest session.
+
+
+class LandingCheckFailed(ChittyError):
+    """The landing check ran and exited unsuccessfully."""
 
 
 # Used by the work runner when its rebase integration lands.
@@ -705,6 +710,13 @@ def _run_ticket_with_log(
         raise
     except (RepairError, AgentStartFailed):
         raise
+    except LandingCheckFailed as error:
+        old = branch_repo.find(action.id).task.frontmatter.status
+        tail = "\n".join((worktree / ".chitty/check.log").read_text().splitlines()[-LANDING_LOG_TAIL_LINES:])
+        note = (f"Review failed (integration): after rebasing onto `main`, the landing check failed: {error}"
+                f"\n\n{code_block(tail)}\n\nWorktree: `{worktree}`")
+        change = branch_repo.edit(action.id, Edit(status="doing", note=note, skip_verdicts=True, skip_current_version=True))
+        handoff = RunResult(action, old, change.task.task.frontmatter.status)
     except ChittyError as error:
         handoff = _record_ticket_error(branch_repo, action, context["phase"], error)
     finally:
@@ -1252,6 +1264,8 @@ def _land(main_repo: Repo, worktree: Path, action: NextAction, setup: str, check
     with locks.landing_lock(main_repo.root):
         try:
             return _land_locked(main_repo, worktree, action, setup, check)
+        except LandingCheckFailed:
+            raise
         except ChittyError as exc:
             raise ChittyError(
                 f"{exc}\nResolve the landing problem in {worktree} "
@@ -1398,7 +1412,7 @@ def _landing_check(command: str, worktree: Path, timeout: int) -> None:
     except KeyboardInterrupt:
         raise RunInterrupted("check") from None
     if returncode:
-        raise ChittyError(
+        raise LandingCheckFailed(
             f"landing check exited with status {returncode}; output in `.chitty/check.log`"
         )
 

@@ -375,11 +375,14 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertIn("done → error", result.stdout)
+        self.assertIn("done → doing", result.stdout)
         notes = self.ticket().section("Notes") or ""
         self.assertIn("landing check exited with status 7", notes)
         self.assertIn("landing check exited with status 7; output in `.chitty/check.log`", notes)
-        self.assertNotIn("LANDING_MARKER", notes)
+        self.assertIn("LANDING_MARKER", notes)
+        self.assertIn("Review failed (integration):", notes)
+        self.assertNotIn("Resolve the landing problem", notes)
+        self.git("merge-base", "--is-ancestor", "main", "task-1")
         log = (self.worktree / ".chitty/check.log").read_text()
         self.assertTrue(log.startswith("# chitty landing check: "))
         self.assertIn("LANDING_MARKER", log)
@@ -394,6 +397,23 @@ class TestReviewMerge(ReviewMergeTestCase):
         self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertTrue(self.worktree.exists())
         self.assertTrue(self.git("branch", "--list", "task-1").strip())
+
+    def test_missing_landing_command_records_error(self):
+        config = self.root / "chitty.toml"
+        config.write_text(
+            config.read_text().replace(
+                "autocommit = true",
+                f'autocommit = true\nlanding_check = "{self.tmp / "missing-command"}"',
+            )
+        )
+        self.git("add", "chitty.toml")
+        self.git("commit", "--quiet", "-m", "configure missing check")
+        self.branch_for_review()
+        result = self.run_cli("run", "--mode", "review")
+        self.assertIn("done → error", result.stdout)
+        ticket = self.git("show", "task-1:chitty/tasks/TASK-1--review-me.md")
+        self.assertIn("Runner error (landing)", ticket)
+        self.assertIn("command not found", ticket)
 
     def test_landing_check_timeout_records_error_without_advancing_main(self):
         slow = self.tmp / "slow-landing"
@@ -463,13 +483,17 @@ class TestReviewMerge(ReviewMergeTestCase):
 
         result = self.run_cli("run", "--mode", "review")
 
-        self.assertIn("done → error", result.stdout)
+        self.assertIn("done → doing", result.stdout)
         self.assertEqual(self.git("rev-parse", "main").strip(), main_head)
         ticket_path = "chitty/tasks/TASK-1--review-me.md"
         branch_ticket = self.git("show", f"task-1:{ticket_path}")
-        self.assertIn("status: error", branch_ticket)
-        self.assertIn("Runner error (landing)", branch_ticket)
-        self.assertIn("landing check exited with status 7", branch_ticket)
+        self.assertIn("status: doing", branch_ticket)
+        self.assertIn("Review failed (integration):", branch_ticket)
+        self.assertIn(
+            "landing check exited with status 7; output in `.chitty/check.log`", branch_ticket
+        )
+        self.assertIn(str(self.worktree), branch_ticket)
+        self.assertNotIn("Resolve the landing problem", branch_ticket)
         self.assertIn("status: done", self.git("show", f"task-1~1:{ticket_path}"))
         latest_paths = self.git(
             "diff-tree", "--no-commit-id", "--name-only", "-r", "task-1"

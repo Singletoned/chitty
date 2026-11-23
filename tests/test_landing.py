@@ -8,7 +8,7 @@ from unittest.mock import patch
 from chitty.errors import ChittyError
 from chitty.git import add_task_trailers
 from chitty.ids import TaskId
-from chitty.run import _land, _land_pending
+from chitty.run import LandingCheckFailed, _land, _land_pending
 from chitty.store import NextAction, Repo
 from tests.test_cli import CliTestCase
 
@@ -333,7 +333,7 @@ class TestLanding(LandingTestCase):
         self.finish_ticket()
         main_head = self.git("rev-parse", "HEAD")
         action = NextAction("review", self.main_repo.resolve(self.ticket))
-        with self.assertRaisesRegex(ChittyError, "landing check exited"):
+        with self.assertRaisesRegex(LandingCheckFailed, "landing check exited"):
             _land(self.main_repo, self.worktree, action, "true", "false")
         self.assertEqual(self.git("rev-parse", "HEAD"), main_head)
         self.assertTrue(self.worktree.exists())
