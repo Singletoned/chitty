@@ -1,6 +1,6 @@
 ---
 title: Tell workers that budget, time or context is never a reason to block
-status: review
+status: done
 labels:
   - untestable
 owner: friendly-zinc-dormouse
@@ -26,6 +26,8 @@ Suggestion origin: taidy
 
 Folded in from TASK-606 (follow-up) and TASK-613: under Chitty 0.7.0 the same TASK-24 ran in one session, but the model still invented a budget limit when it stalled, so the guide and prompt wording is still needed. The runner requeue half of TASK-613 is covered by TASK-617.
 
+Reviewed: the `-s blocked` bullet in `work.md` says there is no token, time or context budget and that none of these is a reason for `blocked`. The too-large route to `planning` gains "(propose a split)", kept inside the 620-word budget. The work-mode `continuation_prompt` in `run.py` adds the same point and names the `planning` route. `make check` passed (1170 tests), including `tests/test_guide_return_to_planning.py`. Nit, not blocking: `work.md` line 29 now runs past the 80-column wrap of the lines around it.
+
 ## Summary
 
 In `src/chitty/roles/work.md`, the `-s blocked` bullet now says the session has no token, time or context budget to manage, and that budget, capacity, time or context is never a reason for `blocked`. Rather than adding a separate bullet, which would exceed the 620-word budget for `work.md` (now 615), the existing too-large-ticket route to `planning` gains "(propose a split)".
@@ -46,3 +48,5 @@ Verification: `make check` passed (1170 tests), including `tests/test_guide_retu
 - 2026-11-23T12:01:34Z friendly-zinc-dormouse todo → doing
 - 2026-11-23T12:23:16Z friendly-zinc-dormouse: changed summary
 - 2026-11-23T12:23:16Z friendly-zinc-dormouse doing → review
+- 2026-11-23T13:32:49Z able-amber-falcon: changed notes
+- 2026-11-23T13:32:49Z able-amber-falcon review → done
