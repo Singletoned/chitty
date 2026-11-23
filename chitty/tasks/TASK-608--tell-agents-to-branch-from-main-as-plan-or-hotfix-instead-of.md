@@ -1,6 +1,6 @@
 ---
 title: Tell agents to branch from `main` as `plan/` or `hotfix/` instead of committing on it
-status: doing
+status: review
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -34,11 +34,13 @@ The ticket has no acceptance criteria (`untestable`). `make check` passed in the
 
 ## Summary
 
-Added one paragraph to `src/chitty/guide.md`, the managed block: never commit your changes on `main`; branch from it in a worktree as `task-<n>`, `plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward `main`. It is kept to 23 words because `tests/test_guide_word_budget.py` caps `guide.md` at 75 (now exactly 75). It says "your changes", so Chitty's own ticket writes on `main` are left to `TASK-340`.
+Added one paragraph to `src/chitty/guide.md`, the managed block: "Never commit your changes on `main`. Outside ticket work, branch from it in a worktree as `plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward `main`." It says "your changes", so Chitty's own ticket writes on `main` are left to `TASK-340`.
 
-Recorded the decision and the three prefixes under Concurrency in `docs/plan/pipeline-and-feedback.md`. Updated the pinned snapshot in `tests/fixtures/guide-runner-expected.md` and the end marker of the tickets-only block in `tests/test_guide_workflow_block.py`. The marker is renamed `TICKETS_TEXT_END` because the block is no longer one paragraph.
+Review fix: the earlier wording listed `task-<n>` among branches the author fast-forwards, contradicting "a worker never lands its own ticket" in the runner block. The fast-forward now applies only outside ticket work; `task-<n>` branches are unchanged and still land after review.
 
-Verification: `make check` passed (1170 tests). Follow-up: this repository's own `AGENTS.md` block updates when the main checkout's `chitty init` upgrades it after landing.
+Recorded the decision and the three prefixes under Concurrency in `docs/plan/pipeline-and-feedback.md`, stating that ticket branches still land only after review. Updated the pinned snapshot `tests/fixtures/guide-runner-expected.md` and the `TICKETS_TEXT_END` marker in `tests/test_guide_workflow_block.py`. Rebased onto `main` after `TASK-640` removed the word-budget test.
+
+Verification: `make check` passed (1156 tests). Follow-up: this repository's own `AGENTS.md` block updates when the main checkout's `chitty init` upgrades it after landing.
 
 ## History
 
@@ -53,3 +55,5 @@ Verification: `make check` passed (1170 tests). Follow-up: this repository's own
 - 2026-11-23T13:32:42Z able-amber-falcon: changed notes
 - 2026-11-23T13:32:42Z able-amber-falcon review → doing
 - 2026-11-23T14:27:22Z plucky-indigo-eel: changed owner
+- 2026-11-23T14:34:49Z plucky-indigo-eel: changed summary
+- 2026-11-23T14:34:49Z plucky-indigo-eel doing → review
