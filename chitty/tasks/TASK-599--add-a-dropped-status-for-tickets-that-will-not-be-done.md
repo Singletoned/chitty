@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: cold-read
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -35,7 +35,7 @@ Tests in a new `tests/test_status_dropped.py`, inheriting `CliTestCase` from `te
 - A `todo` ticket `TASK-2` with `depends_on: [TASK-1]`, where `TASK-1` is `dropped`, plus an independent `todo` ticket `TASK-3`: `chitty next --mode work` exits 0 and prints `work TASK-3` (guards the unchanged dependency rule). Positive control: the same fixture without `TASK-3` and with `TASK-1` `done` prints `work TASK-2`.
 - Random-ID context, in a repository whose `chitty.toml` adds the `BACKLOG` table from `tests/test_backlog_context.py` (`prefix = "BACKLOG"`, `random_ids = true`), with `chitty.store._random_number` patched as that file does: `chitty add Idea -c backlog -s dropped` exits non-zero, its output contains `create the ticket, then drop it with chitty edit -s dropped --summary`, and no file is created in `chitty/backlog/` (fails before the change: `dropped` is not yet a valid `-s` choice, so the message is missing; after it, a check placed after the coercion would create a `backlog` ticket). For a `backlog` ticket there, `chitty edit <id> -s dropped --summary "x"` exits non-zero, its output contains `chitty move <id> tasks`, and the file is byte-identical (fails before the change on the missing message; it guards against adding `dropped` as an exception to the random-ID rule).
 - `chitty summary`: a `dropped` ticket and a `done` ticket, both with History transitions in the window: in the output, `dropped (` comes before `done (` (the section headings `src/chitty/cli.py` prints).
-- The model round-trips: for each status in `chitty.model.STATUSES` (iterated, so a future status is covered), a ticket text with that status gives `chitty.model.parse(text).render() == text`. It fails before the change: `parse` validates the status through `Frontmatter.model_validate`, which rejects `dropped`.
+- The model round-trips: for each status in `chitty.model.STATUSES` (iterated, so a future status is covered), the text of a ticket written by `chitty add`, with its status line changed to that status, gives `chitty.model.parse(text).render() == text`. It fails before the change: `parse` validates the status through `Frontmatter.model_validate`, which rejects `dropped`.
 
 Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontmatter` table) and the `chitty --help` text for `-s`, if it lists statuses, name `dropped` and say what it is for. The role guides are a later ticket.
 
@@ -87,3 +87,5 @@ Planner, 2026-11-23: the random-ID blocker is resolved by keeping that context r
 - 2026-11-23T18:43:23Z witty-yellow-vole: changed description
 - 2026-11-23T18:43:23Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:43:28Z witty-yellow-vole planning → cold-read
+- 2026-11-23T18:44:08Z witty-yellow-vole: changed description
+- 2026-11-23T18:44:08Z witty-yellow-vole cold-read → planning
