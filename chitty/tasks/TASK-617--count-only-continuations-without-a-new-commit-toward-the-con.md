@@ -39,6 +39,8 @@ Suggestion origin: taidy
 
 Folded in from TASK-613: when a work run ends with the ticket still `doing`, prefer requeueing it over `error`, since nothing is broken.
 
+Regression tests for productive sessions, amendments, notes and stop wording fail against the original implementation (5 failures).
+
 ## History
 
 - 2026-11-23T10:24:13Z witty-russet-gannet → backlog
@@ -60,3 +62,4 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 - 2026-11-23T10:38:33Z witty-russet-gannet planning → todo
 - 2026-11-23T11:26:27Z friendly-teal-crane todo → doing
 - 2026-11-23T11:29:16Z friendly-teal-crane: wrote the plan
+- 2026-11-23T11:30:11Z friendly-teal-crane: changed notes
