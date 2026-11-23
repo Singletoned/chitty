@@ -1,6 +1,6 @@
 ---
 title: Have the reviewer check that new tests fail without the change
-status: doing
+status: review
 labels:
   - untestable
 owner: vivid-ginger-heron
@@ -32,6 +32,10 @@ Question for the owner (2026-11-22, planner). Two design decisions block plannin
 
 Is this the shape you want (whole-check failure at the merge base, one setting), or do you want per-test granularity (which needs per-language support)?
 
+## Summary
+
+src/chitty/roles/review.md now tells the reviewer to show, themselves, that each test a criterion needs fails without the change (merge base plus the branch's test files, in a temporary worktree of their own, removed afterwards), to record the command and failure in the criterion line, not to accept a worker's note, and to fail the criterion with cause tests when the test passes. The temporary worktree is named as the one exception to the stay-in-this-worktree rule. 839 of 900 words; make check passes (1142 tests). The 2026-11-22 owner question in Notes predates the rescoped description and no longer applies.
+
 ## History
 
 - 2026-11-16T09:50:19Z intrepid-coral-raven → backlog
@@ -45,3 +49,5 @@ Is this the shape you want (whole-check failure at the merge base, one setting),
 - 2026-11-23T08:28:05Z vivid-ginger-heron: changed owner
 - 2026-11-23T08:28:05Z vivid-ginger-heron todo → doing
 - 2026-11-23T08:28:22Z vivid-ginger-heron: wrote the plan
+- 2026-11-23T08:31:40Z vivid-ginger-heron: changed summary
+- 2026-11-23T08:31:40Z vivid-ginger-heron doing → review
