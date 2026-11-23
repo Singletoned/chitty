@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-639
@@ -158,3 +158,4 @@ Review failed (tests): the required property does not assert the returned contex
 - 2026-11-23T21:06:09Z friendly-coral-badger error → review
 - 2026-11-23T21:14:18Z zesty-indigo-badger: changed acceptance criteria, notes
 - 2026-11-23T21:14:18Z zesty-indigo-badger review → doing
+- 2026-11-23T21:28:11Z daring-zinc-heron doing → review
