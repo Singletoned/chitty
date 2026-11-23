@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: todo
+status: doing
 labels:
   - needs-minor
 priority: high
@@ -106,3 +106,4 @@ Inspected the status definitions, add and edit validation, selection and CLI lis
 - 2026-11-23T19:36:59Z witty-yellow-vole: changed acceptance criteria
 - 2026-11-23T19:36:59Z witty-yellow-vole cold-read → planning
 - 2026-11-23T19:37:01Z witty-yellow-vole planning → todo
+- 2026-11-23T19:38:33Z daring-hazel-eel todo → doing
