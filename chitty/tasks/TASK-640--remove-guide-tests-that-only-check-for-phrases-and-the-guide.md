@@ -1,6 +1,6 @@
 ---
 title: Remove guide tests that only check for phrases, and the guide word budgets
-status: planning
+status: todo
 depends_on:
   - TASK-615
 created: 2026-11-23
@@ -50,3 +50,4 @@ No property: this change only removes tests. What remains is covered by the kept
 - 2026-11-23T12:41:31Z friendly-zinc-dormouse: changed description, acceptance criteria
 - 2026-11-23T12:44:21Z friendly-zinc-dormouse: changed owner, description
 - 2026-11-23T12:44:21Z friendly-zinc-dormouse cold-read → planning
+- 2026-11-23T12:44:51Z friendly-zinc-dormouse planning → todo
