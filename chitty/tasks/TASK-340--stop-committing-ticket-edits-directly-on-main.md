@@ -28,6 +28,8 @@ Open questions:
 
 Planning branches partly exist already: `TASK-521` (done) lets `chitty show` and `chitty edit` work on a branch named `plan/...`, refusing an edit when another branch changed the ticket. Build on it; see the 2026-11-23 note on `TASK-602`.
 
+Branch prefixes decided (the person, 2026-11-23; TASK-608): `task-<n>`, `plan/<name>` and `hotfix/<name>`. A `chitty land` should tell the kind from these.
+
 ## History
 
 - 2026-11-16T09:50:22Z intrepid-coral-raven → backlog
@@ -36,3 +38,4 @@ Planning branches partly exist already: `TASK-521` (done) lets `chitty show` and
 - 2026-11-22T22:51:30Z plucky-umber-wren: changed dependencies
 - 2026-11-22T22:52:42Z plucky-umber-wren: changed description
 - 2026-11-23T08:24:39Z plucky-umber-wren: changed notes
+- 2026-11-23T10:54:21Z witty-russet-gannet: changed notes
