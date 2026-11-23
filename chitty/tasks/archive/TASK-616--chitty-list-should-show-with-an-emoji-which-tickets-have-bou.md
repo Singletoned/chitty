@@ -19,3 +19,4 @@ Duplicate of TASK-424 and TASK-487.
 - 2026-11-23T10:24:12Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:13Z witty-russet-gannet: changed notes
 - 2026-11-23T10:27:49Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:51Z witty-russet-gannet backlog → archived
