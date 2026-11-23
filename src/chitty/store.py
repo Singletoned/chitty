@@ -6,6 +6,7 @@ import secrets
 import shutil
 import subprocess
 import sys
+import time
 import tomllib
 from collections.abc import Generator, Iterable, Mapping, Sequence
 from contextlib import contextmanager, nullcontext
@@ -1003,6 +1004,8 @@ class Repo:
                 print(f"skipped check: HEAD is already on {self._main_branch()}", file=sys.stderr)
             if entering_review and self.config.check and not skip_check:
                 command = self.config.check
+                print(f"running check {command} before review (output in .chitty/check.log)", file=sys.stderr)
+                start = time.monotonic()
                 try:
                     status = commands.run_logged(
                         "check", command, self.root, self.config.command_timeout
@@ -1013,6 +1016,7 @@ class Repo:
                     raise ChittyError(
                         f"cannot move {task_id} to review; check command not found: {command}"
                     ) from error
+                print(f"check finished in {int(time.monotonic() - start)}s", file=sys.stderr)
                 if status:
                     raise ChittyError(
                         f"cannot move {task_id} to review; check failed with status {status}; "

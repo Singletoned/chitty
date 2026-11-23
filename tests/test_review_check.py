@@ -36,6 +36,8 @@ class TestReviewCheck(ReviewMergeTestCase):
         )
         self.assertFalse(marker.exists())
         self.assertIn("skipped check: HEAD is already on main", result.stderr)
+        self.assertNotIn("running check", result.stderr)
+        self.assertNotIn("check finished in", result.stderr)
 
     def test_merge_only_runs_check(self):
         self.configure_check(self.script("raise SystemExit(3)\n"))
@@ -69,6 +71,23 @@ class TestReviewCheck(ReviewMergeTestCase):
         self.assertIn(
             "status: doing", next((self.root / "chitty/tasks").glob("TASK-1--*.md")).read_text()
         )
+
+    def test_check_progress_passes(self):
+        command = self.script("")
+        self.prepare(command)
+        result = self.run_cli("edit", "1", "-s", "review")
+        start = result.stderr.index("running check")
+        command_pos = result.stderr.index(command, start)
+        self.assertGreater(result.stderr.index("check finished in", command_pos), command_pos)
+        self.assertIn(
+            f"running check {command} before review (output in .chitty/check.log)", result.stderr
+        )
+        self.assertRegex(result.stderr, r"check finished in \d+s\n")
+
+    def test_check_progress_fails(self):
+        self.prepare(self.script("raise SystemExit(3)\n"))
+        result = self.run_cli("edit", "1", "-s", "review", exit_code=1)
+        self.assertRegex(result.stderr, r"check finished in \d+s\n")
 
     def test_failure(self):
         self.prepare(self.script("print('boom')\nraise SystemExit(3)\n"))
