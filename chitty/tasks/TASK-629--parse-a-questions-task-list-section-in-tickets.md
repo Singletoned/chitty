@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: error
+status: todo
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -84,6 +84,8 @@ last session: exit 0 after 11s
 TASK-629 remains unfinished and `doing`. I have not found a substantiated reason to return it to `planning` or mark it `blocked`.
 ```
 
+Requeued 2026-11-23: the 20:00 run that stalled used `gpt-6.1-terra` from a loop started with an explicit `--model`, before `work_model = "openai-codex/gpt-6-luna"` landed in `chitty.toml`.
+
 ## History
 
 - 2026-11-23T10:40:13Z witty-russet-gannet → backlog
@@ -123,3 +125,5 @@ TASK-629 remains unfinished and `doing`. I have not found a substantiated reason
 - 2026-11-23T20:03:27Z honest-bronze-dormouse: wrote the plan
 - 2026-11-23T20:04:34Z honest-bronze-dormouse: changed notes
 - 2026-11-23T20:04:34Z honest-bronze-dormouse doing → error
+- 2026-11-23T21:11:41Z friendly-coral-badger: changed notes
+- 2026-11-23T21:11:41Z friendly-coral-badger error → todo
