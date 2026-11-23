@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: doing
+status: review
 created: 2026-11-23
 ---
 
@@ -68,3 +68,4 @@ Implemented two-commit progress detection and consecutive idle continuation limi
 - 2026-11-23T11:29:16Z friendly-teal-crane: wrote the plan
 - 2026-11-23T11:30:11Z friendly-teal-crane: changed notes
 - 2026-11-23T11:32:28Z friendly-teal-crane: changed summary
+- 2026-11-23T11:34:09Z friendly-teal-crane doing → review
