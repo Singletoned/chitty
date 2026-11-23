@@ -1,6 +1,6 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: planning
+status: cold-read
 created: 2026-11-22
 ---
 
@@ -30,9 +30,7 @@ src/chitty/store.py`).
 Tests, in `tests/test_review_check.py`, reusing `prepare()`:
 
 - Passing check (`self.script("")`): `chitty edit 1 -s review` through
-  `run_cli`; `result.stderr` contains the check command text, then
-  "running check", and "check finished in" appears after "running check"
-  (compare `str.index`).
+  `run_cli`; `result.stderr` contains "running check", then the check command text after it, and "check finished in" after the command text (compare `str.index`).
 - Failing check (`self.script("raise SystemExit(3)\n")`, `exit_code=1`):
   `result.stderr` still contains "check finished in".
 
@@ -41,7 +39,7 @@ not, the check runs anyway. Record that both tests fail before the change.
 
 ## Acceptance Criteria
 
-- [ ] Entering review with a configured check prints `running check` with the command before it and `check finished in <N>s` after it on stderr, for passing and failing checks; shown by the two new tests, which fail before the change.
+- [ ] Entering review with a configured check prints `running check` followed by the command before the check runs, and `check finished in <N>s` after it, on stderr, for passing and failing checks; shown by the two new tests, which fail before the change.
 - [ ] `make check` passes.
 
 ## Notes
@@ -54,6 +52,8 @@ The specified first line is `running check `<command>` before review ...`, but t
 
 `src/chitty/store.py` calls `commands.run_logged` inside the review transition and already uses `print(..., file=sys.stderr)`; `tests/test_review_check.py` provides `prepare()` and the requested passing and failing scripts. The existing check skips when HEAD is already on main, and `prepare()` makes an empty work commit. No implementation or regression tests were written or run because the output requirement is contradictory; timing and pass/fail behavior remain unverified.
 
+Planner, 2026-11-23: the order now matches the specified line: `running check`, then the command, then `check finished in`.
+
 ## History
 
 - 2026-11-22T13:16:27Z friendly-jade-stoat → backlog
@@ -65,3 +65,5 @@ The specified first line is `running check `<command>` before review ...`, but t
 - 2026-11-22T15:59:02Z sunny-amber-dormouse todo → doing
 - 2026-11-22T16:02:09Z sunny-amber-dormouse: changed owner, notes
 - 2026-11-22T16:02:09Z sunny-amber-dormouse doing → planning
+- 2026-11-23T12:25:13Z witty-russet-gannet: changed description, acceptance criteria, notes
+- 2026-11-23T12:25:13Z witty-russet-gannet planning → cold-read
