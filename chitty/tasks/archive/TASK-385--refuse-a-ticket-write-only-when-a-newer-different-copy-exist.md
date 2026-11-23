@@ -137,3 +137,4 @@ Superseded, 2026-11-23: the person decided this morning (recorded in `TASK-602`)
 - 2026-11-23T14:52:13Z plucky-russet-otter doing → planning
 - 2026-11-23T16:07:24Z youthful-quartz-zander: changed notes
 - 2026-11-23T16:07:24Z youthful-quartz-zander planning → backlog
+- 2026-11-23T16:41:24Z youthful-quartz-zander backlog → archived
