@@ -1,6 +1,6 @@
 ---
 title: "Planning and review guides: weigh guide length when wording changes"
-status: planning
+status: todo
 labels:
   - untestable
 owner: untestable
@@ -26,3 +26,4 @@ One or two sentences each. Keep the wording general: the guides reach every repo
 - 2026-11-23T12:41:20Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:24Z friendly-zinc-dormouse: changed description
 - 2026-11-23T12:44:24Z friendly-zinc-dormouse cold-read → planning
+- 2026-11-23T12:44:56Z friendly-zinc-dormouse planning → todo
