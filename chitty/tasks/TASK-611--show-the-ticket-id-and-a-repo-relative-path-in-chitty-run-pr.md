@@ -1,6 +1,6 @@
 ---
 title: Show the ticket ID and a repo-relative path in `chitty run` progress lines
-status: review
+status: done
 created: 2026-11-23
 ---
 
@@ -36,6 +36,11 @@ Regression: pytest tests/test_run_progress.py -q fails all three tests before th
 
 Property regression: pytest tests/test_property_display_path.py -q fails with display_path replaced by str(path), and passes with the implementation. Integration regressions also failed before the fix.
 
+Reviewed: Complete diff inspected; no prior review findings or Decided note. `make check` passed: 1145 tests, 791 subtests.
+1: pass - `make check` passed the property test; on the merge base, `PYTHONPATH=src ../../.venv/bin/python -m pytest tests/test_property_display_path.py -q` failed collection with `ImportError: cannot import name display_path`.
+2: pass - `make check` passed the exact review progress assertion; on the merge base `PYTHONPATH=src ../../.venv/bin/python -m pytest tests/test_run_progress.py -q` failed with `ValueError` for the missing exact line.
+3: pass - `make check` passed the relative log assertion; the same merge-base progress test failed with `AssertionError: False is not true` for the log prefix.
+
 ## Summary
 
 Implemented relative runner check and log paths with property and review integration coverage. make check passed (1144 tests); regression tests failed before the fix.
@@ -65,3 +70,5 @@ Implemented relative runner check and log paths with property and review integra
 - 2026-11-23T11:10:31Z able-coral-marten: changed notes
 - 2026-11-23T11:12:45Z able-coral-marten: changed summary
 - 2026-11-23T11:12:45Z able-coral-marten doing → review
+- 2026-11-23T11:21:47Z rosy-quartz-newt: changed notes
+- 2026-11-23T11:21:47Z rosy-quartz-newt review → done
