@@ -1,6 +1,6 @@
 ---
 title: Show the ticket ID and a repo-relative path in `chitty run` progress lines
-status: planning
+status: cold-read
 created: 2026-11-23
 ---
 
@@ -44,3 +44,4 @@ Suggestion origin: taidy
 - 2026-11-23T10:35:11Z witty-russet-gannet planning → cold-read
 - 2026-11-23T10:35:25Z witty-russet-gannet: changed acceptance criteria
 - 2026-11-23T10:35:25Z witty-russet-gannet cold-read → planning
+- 2026-11-23T10:35:27Z witty-russet-gannet planning → cold-read
