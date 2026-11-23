@@ -19,7 +19,8 @@ Profiled on 2026-11-22 and again on 2026-11-23 after TASK-639 (`cProfile` over `
 Change, all in `Repo` in `src/chitty/store.py`; caches are per `Repo` object and cleared in `Repo._invalidate`, like the existing `_ticket_ids` and `_task_locations`:
 
 - Build one working-tree index, `TaskId` to the list of paths, in a single pass over every context directory (active and archive), and use it in `_working_ticket_files` and `_collect_ticket_ids`. Keep today's order of paths and today's errors: an invalid entry anywhere still raises the same `ChittyError` from `_files`, whichever ticket was asked for.
-- Index each ref's ticket files by `TaskId` once, and use it in `_ref_ticket_files`.
+- Index each ref's ticket files by `TaskId` once, and use it in `_ref_ticket_files`. Reuse or replace the existing `_ticket_ref_files` cache; do not add a second cache for the same data.
+- The working-tree index walks every child directory of `chitty/`, as `_working_ticket_files` and `_collect_ticket_ids` do today, not only configured contexts; that is unchanged.
 - The `discovered_contexts()` cache is TASK-639, which lands first.
 
 Behaviour is unchanged; only the number of directory scans changes. One accepted difference: a file added by hand while one `Repo` object is alive is not seen until `_invalidate` runs. A `Repo` lives for one command or MCP call, and Chitty's own writes already call `_invalidate`. On refs, keep today's asymmetry: a ref file whose name does not parse is skipped (`_ref_ticket_files`), while a bad working-tree entry raises. Clear the new caches in `Repo._invalidate`.
@@ -43,7 +44,7 @@ Out of scope: other commands' speed, and Git calls (already constant in the tick
 
 The branch `task-598` was rebased onto `main` on 2026-11-23, so TASK-639's cache is in the baseline. Rebase again before starting if `main` has moved; criterion 2's "before" is the rebased branch's merge-base with `main`.
 
-Invalidation example, same file, in a non-Git directory with the config above (`archive = "move"`, the default) and `TASK-1` active with status `done`: on one `Repo` object, `lookup(TASK-1)` (fills the caches), then `repo.archive(TASK-1)`, then `lookup(TASK-1)` returns it with `archived` true; then `repo.add(...)` of a new ticket, then `lookup` of its id returns it. Without clearing the new caches in `_invalidate`, the second lookups return stale results.
+Invalidation example, same file, in a non-Git directory with the config above (`archive = "move"`, the default) and `TASK-1` active with status `done`: on one `Repo` object, `lookup(TASK-1)` (fills the caches), then `repo.archive(TASK-1)`, then `lookup(TASK-1)` returns it with `archived` true; then `change = repo.add(repo.context("tasks"), "New", None, [], {}, date(2026, 11, 23))` (the signature at `Repo.add` in `src/chitty/store.py`), then `lookup(change.task.id)` returns it. Without clearing the new caches in `_invalidate`, the second lookups return stale results. The property covers ids and paths only; the error examples cover invalid entries.
 
 ## Acceptance Criteria
 
@@ -95,3 +96,4 @@ Planner, 2026-11-23, after TASK-639 landed: `chitty list` takes 19.3 s real on t
 - 2026-11-23T14:36:27Z youthful-quartz-zander: changed description
 - 2026-11-23T14:36:30Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:38:08Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:38:11Z youthful-quartz-zander: changed description
