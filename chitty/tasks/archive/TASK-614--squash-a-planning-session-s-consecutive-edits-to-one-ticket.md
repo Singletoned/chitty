@@ -19,3 +19,4 @@ Dropped: TASK-340 moves ticket edits off main, and TASK-573 squashes bookkeeping
 - 2026-11-23T10:24:09Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:10Z witty-russet-gannet: changed notes
 - 2026-11-23T10:27:45Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:47Z witty-russet-gannet backlog → archived
