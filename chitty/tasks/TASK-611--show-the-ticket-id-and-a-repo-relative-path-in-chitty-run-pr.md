@@ -24,6 +24,10 @@ Out of scope: other runner messages.
 - [ ] `tests/test_run_progress.py` asserts the review-mode check line is exactly `TASK-1: running check in .worktrees/task-1...` (with `task-1` the worktree name the fixture creates); this assertion fails on `main` today.
 - [ ] In `tests/test_run_progress.py` on `ReviewMergeTestCase`, a test asserts that the `log:` line printed after a review run is relative and starts `.git/chitty/run/TASK-1-`; it fails on `main`.
 
+## Plan
+
+Add display_path and use it for check and log progress; add property and integration regression tests, update path consumers, and run checks.
+
 ## Notes
 
 Suggestion origin: taidy
@@ -48,3 +52,4 @@ Suggestion origin: taidy
 - 2026-11-23T10:36:56Z witty-russet-gannet cold-read → todo
 - 2026-11-23T10:37:12Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T11:04:24Z able-coral-marten todo → doing
+- 2026-11-23T11:07:24Z able-coral-marten: wrote the plan
