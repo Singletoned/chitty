@@ -55,6 +55,14 @@ Runner error (agent): TASK-557 is still `doing` after 5 continuations with no ne
 
 Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-557`
 
+Stub run (stub `5b4c93a3` plus test commit `70f601eb`): `pytest tests/test_summary.py` gave 11 failed, 3 passed. Every failure was an assertion failure: `[] != ...` for the examples and `timed_transitions`, a Hypothesis falsifying example for the property, and `'' != ...` for both CLI output tests. The three passing on the stub are the date-only example, the nothing-in-window example and `--hours 0`/`--hours x`, which an empty stub already satisfies.
+
+Implemented in `2ebdf09f`: `tests/test_summary.py` 14 passed; `make check` passed (1198 tests); `chitty --help` lists `summary`. Worked by hand after the runner error, not by `chitty run`.
+
+Decided: actor for `SummaryLine` -> a public `Task.attributed_transitions()` returning `(when, actor, old, new)`, with `timed_transitions()` built on it, because the specified `timed_transitions` tuple has no actor and `summary_sections` must stay pure (precedent: `transitions()` and `review_work()` already parse `HISTORY_LINE_RE` in `Task`).
+
+Decided: section order uses `chitty.model.STATUSES` (imported in `store.py` as `TASK_STATUSES`), because `store.py` already imports `chitty.selection.STATUSES`, which holds only active statuses; `test_unknown_status_sorts_after_statuses` covers it.
+
 ## History
 
 - 2026-11-22T09:47:32Z friendly-jade-stoat → backlog
@@ -78,3 +86,4 @@ Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-557`
 - 2026-11-23T12:17:43Z sunny-jade-quail: changed notes
 - 2026-11-23T12:17:43Z sunny-jade-quail doing → error
 - 2026-11-23T13:34:16Z youthful-quartz-zander error → review
+- 2026-11-23T13:34:56Z youthful-quartz-zander: changed notes
