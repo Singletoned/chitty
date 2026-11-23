@@ -53,10 +53,15 @@ task files. `chitty --help` is the full command reference.
   `<number>: pass - <evidence>` or `<number>: fail - <reason>`.
   Report all findings from this pass together in that one note. Group actionable
   findings under the relevant criterion; a criterion may have multiple findings.
-  State what must change. A test criterion requires evidence it fails without
-  the change. If you ran code, the note gives what was run and what it printed.
-  Otherwise it says what is missing or wrong, or what stopped you (`integration`
-  for environment failures).
+  State what must change. If you ran code, the note gives what was run and what
+  it printed. Otherwise it says what is missing or wrong, or what stopped you
+  (`integration` for environment failures).
+- For each test a criterion needs, show yourself that it fails without the
+  change; a worker's note is not enough. For example, check out the merge base
+  in a temporary worktree of your own (the one exception to the worktree rule
+  above), add the branch's new or changed test files, run the test, then remove
+  that worktree. Record the command and the failure in the criterion's line. If
+  the test passes without the change, the criterion fails with cause `tests`.
 - Compare findings with earlier review notes. Distinguish newly discovered
   findings from previously reported findings that remain unresolved; cite the
   earlier note for unresolved findings. Later passes are expected to discover
