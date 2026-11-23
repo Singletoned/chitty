@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: error
 labels:
   - needs-minor
 priority: high
@@ -67,6 +67,17 @@ Started investigation and recorded an approach. No implementation or regression 
 
 Investigation continued: checked edit application and existing status validation. No code or tests have been changed; implementation and all verification remain outstanding.
 
+Runner error (agent): TASK-599 is still `doing` after 5 continuations with no new work committed; only committed changes are visible to `chitty run`
+
+Worktree: `/Users/singletoned/src/singletoned/chitty/.worktrees/task-599`
+
+Error output:
+
+```text
+last session: exit 0 after 11s
+I have not completed TASK-599. It remains in `doing`; I cannot honestly classify it as ready for review, defective, or externally blocked.
+```
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -118,3 +129,5 @@ Investigation continued: checked edit application and existing status validation
 - 2026-11-23T19:41:06Z daring-hazel-eel: wrote the plan
 - 2026-11-23T19:41:18Z daring-hazel-eel: changed notes
 - 2026-11-23T19:42:04Z daring-hazel-eel: changed notes
+- 2026-11-23T19:43:01Z daring-hazel-eel: changed notes
+- 2026-11-23T19:43:01Z daring-hazel-eel doing → error
