@@ -41,3 +41,4 @@ Parked, 2026-11-23: this ticket would document `TASK-385`'s write refusal ("writ
 - 2026-11-18T17:53:42Z lively-quartz-crane: changed dependencies
 - 2026-11-23T16:07:48Z youthful-quartz-zander: changed notes
 - 2026-11-23T16:07:48Z youthful-quartz-zander todo → backlog
+- 2026-11-23T16:41:28Z youthful-quartz-zander backlog → archived
