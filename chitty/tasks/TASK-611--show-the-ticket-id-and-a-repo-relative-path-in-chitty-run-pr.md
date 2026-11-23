@@ -1,6 +1,6 @@
 ---
 title: Show the ticket ID and a repo-relative path in `chitty run` progress lines
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -20,7 +20,7 @@ Out of scope: other runner messages.
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test in a new file `tests/test_display_path.py` (importing `from chitty.run import display_path`) draws `main_root` as `/` joined with 1 to 3 drawn segments, and further segments (letters including non-ASCII, spaces; never `.` or `..`). Inside paths are `main_root` joined with 0 or more segments; outside paths include a sibling `main_root.with_name(main_root.name + "-x")` with segments, unrelated roots, and an unresolved alias of an inside path (`main_root / "seg" / ".." / "seg"`). It asserts an inside path gives a relative string with `main_root / result == path` (`.` for `main_root` itself); every other path gives `str(path)`. A string-prefix or resolving implementation fails.
+- [ ] A Hypothesis property test in a new file `tests/test_display_path.py` (importing `from chitty.run import display_path`) draws `main_root` as `/` joined with 1 to 3 drawn segments, and further segments (letters including non-ASCII, spaces; never `.` or `..`). Inside paths are `main_root` joined with 0 or more segments; outside paths include a sibling `main_root.with_name(main_root.name + "-x")` with segments, unrelated roots, and an unresolved alias that names a path inside `main_root` only after resolving `..` (`main_root.parent / "z" / ".." / main_root.name / "seg"`). It asserts an inside path gives a relative string with `main_root / result == path` (`.` for `main_root` itself); every other path gives `str(path)`. A string-prefix or resolving implementation fails.
 - [ ] `tests/test_run_progress.py` asserts the review-mode check line is exactly `TASK-1: running check in .worktrees/task-1...` (with `task-1` the worktree name the fixture creates); this assertion fails on `main` today.
 - [ ] In `tests/test_run_progress.py` on `ReviewMergeTestCase`, a test asserts that the `log:` line printed after a review run is relative and starts `.git/chitty/run/TASK-1-`; it fails on `main`.
 
@@ -42,3 +42,5 @@ Suggestion origin: taidy
 - 2026-11-23T10:35:09Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:35:09Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:35:11Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:35:25Z witty-russet-gannet: changed acceptance criteria
+- 2026-11-23T10:35:25Z witty-russet-gannet cold-read → planning
