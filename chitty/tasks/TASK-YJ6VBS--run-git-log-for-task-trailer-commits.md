@@ -1,6 +1,6 @@
 ---
 title: Run `git log` for `Task:` trailer commits
-status: planning
+status: todo
 depends_on:
   - TASK-358
 created: 2026-11-23
@@ -39,3 +39,4 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit`, `TRAILER_LOG_OPTIONS` an
 - 2026-11-23T19:38:47Z witty-yellow-vole: replaced notes
 - 2026-11-23T19:38:47Z witty-yellow-vole planning → cold-read
 - 2026-11-23T19:39:49Z witty-yellow-vole cold-read → planning
+- 2026-11-23T19:39:52Z witty-yellow-vole planning → todo
