@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -62,6 +62,10 @@ Planner, 2026-11-23: both blockers are resolved. (1) `chitty archive <id>` refus
 
 Planner, 2026-11-23: a cold read found nothing blocking. Added a case for a whitespace-only Summary in the file, said that `-s done` from `dropped` follows the review rule, and split the edit and Summary cases into separate criteria.
 
+Planning blocker: the unconditional rules for dropping from every status, refusing add -s dropped, and reviving dropped tickets conflict with the existing random-ID context policy. In src/chitty/store.py, Repo.add forces every random-ID context addition to backlog before checking status, and _edit_stored refuses every explicit non-backlog status there. tests/test_backlog_context.py::test_todo_add_is_backlog_and_edit_cannot_promote_it establishes that policy. A backlog ticket in that context therefore cannot be dropped as specified unless the policy changes, and an add -s dropped is currently coerced to backlog. Please decide whether dropped is an exception to the random-ID restriction (including which revive transitions are allowed), or whether the ticket's universal rules exclude that context, and specify fixtures, actions and assertions for the chosen add, drop and revive behavior. This is a user-visible policy choice, not a small omission; the specified tests use only the sequential tasks context and cannot settle it.
+
+Independent inspection: model validation and CLI choices need the new status; bulk archive selects done only, explicit archive uses separate move and delete paths, and the dependency check treats only done or archived as satisfied. The ticket describes tests for its sequential-context edit, summary, list, archive, dependency and round-trip cases. No implementation or regression tests were attempted; behavior and verification in random-ID contexts cannot be settled until the policy is decided. Runner execution was not checked beyond the stated selection policy.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -86,3 +90,5 @@ Planner, 2026-11-23: a cold read found nothing blocking. Added a case for a whit
 - 2026-11-23T12:06:14Z witty-russet-gannet planning → todo
 - 2026-11-23T12:19:34Z jolly-teal-quail todo → doing
 - 2026-11-23T12:22:57Z jolly-teal-quail: wrote the plan
+- 2026-11-23T12:23:32Z jolly-teal-quail: changed owner, notes
+- 2026-11-23T12:23:32Z jolly-teal-quail doing → planning
