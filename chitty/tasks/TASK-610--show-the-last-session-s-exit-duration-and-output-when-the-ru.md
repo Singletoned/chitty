@@ -30,6 +30,8 @@ Suggestion origin: taidy
 
 Folded in from TASK-622 and TASK-623: four worker runs and a reviewer run in circuitry (2026-11-14) ended `was unchanged` with no cause; in echonomicon (2026-11-22) the agent never started because `uv run` failed to parse a conflicted `pyproject.toml`, and the log began with `uv` output. Report "agent could not start" apart from "agent failed".
 
+Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When TASK-617 is done, compare this ticket with what landed, cold-read it again, then move it to `todo`.
+
 ## History
 
 - 2026-11-23T10:24:02Z witty-russet-gannet → backlog
@@ -38,3 +40,4 @@ Folded in from TASK-622 and TASK-623: four worker runs and a reviewer run in cir
 - 2026-11-23T10:36:30Z witty-russet-gannet: changed title, dependencies, description, acceptance criteria
 - 2026-11-23T10:36:30Z witty-russet-gannet backlog → planning
 - 2026-11-23T10:36:40Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:38:13Z witty-russet-gannet: changed notes
