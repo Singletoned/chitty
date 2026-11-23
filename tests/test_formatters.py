@@ -48,6 +48,7 @@ def sample() -> Task:
             "priority": "medium",
             "owner": "ed",
             "depends_on": ["TASK-7", "HUMAN-1"],
+            "due": date(2026, 11, 30),
             "moved_from": "HUMAN-3",
             "provisional": True,
         },

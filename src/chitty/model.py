@@ -76,6 +76,7 @@ FIELD_ORDER = (
     "depends_on",
     "parent",
     "created",
+    "due",
     "moved_from",
     "provisional",
 )
@@ -186,6 +187,7 @@ class Frontmatter(BaseModel):
     depends_on: list[str] = []
     parent: str | None = None
     created: date
+    due: date | None = None
     moved_from: str | None = None
     provisional: Literal[True] | None = None
 
@@ -222,7 +224,7 @@ class Frontmatter(BaseModel):
     def _moved_from(cls, value: str | None) -> str | None:
         return None if value is None else _check_id(value)
 
-    @field_validator("created", mode="before")
+    @field_validator("created", "due", mode="before")
     @classmethod
     def _created(cls, value: object) -> object:
         if isinstance(value, str) and not DATE_RE.fullmatch(value):
@@ -320,7 +322,10 @@ class Task:
                 fields[index] = replace(fields[index], lines=lines)
             else:
                 fields.insert(_insert_position(fields, key), _FieldSpan(key, (), lines))
-        return self._rebuild(fields=fields)
+        result = self._rebuild(fields=fields)
+        if key == "due" and isinstance(value, str):
+            return result.with_field(key, result.frontmatter.due)
+        return result
 
     def with_section(self, name: SectionName, text: str) -> "Task":
         """Replace a section body, or remove it if `text` is whitespace-only or empty.
