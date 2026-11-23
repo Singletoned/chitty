@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: todo
+status: doing
 labels:
   - needs-minor
 parent: TASK-607
@@ -86,3 +86,4 @@ Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priori
 - 2026-11-23T18:44:21Z witty-yellow-vole: changed acceptance criteria
 - 2026-11-23T18:44:21Z witty-yellow-vole cold-read → planning
 - 2026-11-23T18:44:23Z witty-yellow-vole planning → todo
+- 2026-11-23T19:07:57Z lively-pearl-eel todo → doing
