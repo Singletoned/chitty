@@ -1,6 +1,6 @@
 ---
 title: Parse a `## Questions` task-list section in tickets
-status: todo
+status: doing
 parent: TASK-621
 created: 2026-11-23
 ---
@@ -127,3 +127,4 @@ Requeued 2026-11-23: the 20:00 run that stalled used `gpt-6.1-terra` from a loop
 - 2026-11-23T20:04:34Z honest-bronze-dormouse doing → error
 - 2026-11-23T21:11:41Z friendly-coral-badger: changed notes
 - 2026-11-23T21:11:41Z friendly-coral-badger error → todo
+- 2026-11-23T21:29:50Z zesty-hazel-dormouse todo → doing
