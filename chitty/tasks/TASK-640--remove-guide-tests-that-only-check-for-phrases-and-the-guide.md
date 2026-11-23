@@ -1,6 +1,7 @@
 ---
 title: Remove guide tests that only check for phrases, and the guide word budgets
-status: planning
+status: cold-read
+owner: friendly-zinc-dormouse
 depends_on:
   - TASK-615
 created: 2026-11-23
@@ -44,3 +45,5 @@ No property: this change only removes tests. What remains is covered by the kept
 ## History
 
 - 2026-11-23T12:34:45Z friendly-zinc-dormouse → planning
+- 2026-11-23T12:37:37Z friendly-zinc-dormouse: changed owner
+- 2026-11-23T12:37:37Z friendly-zinc-dormouse planning → cold-read
