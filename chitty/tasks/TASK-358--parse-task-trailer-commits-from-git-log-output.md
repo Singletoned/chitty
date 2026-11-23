@@ -32,6 +32,14 @@ Tests in a new `tests/test_trailer_commits.py`, with Hypothesis (the repository'
 
 Add the pure trailer log parser and property tests, verify malformed-input mutations, then run the project checks.
 
+## Notes
+
+Mutation runs: removing the SHA, empty-path, final-entry, and field-count checks each made tests/test_trailer_commits.py fail; the field-count mutation raised ValueError, the others failed the expected exception assertion. Restored the checks and make check passed.
+
+## Summary
+
+Implemented the pure trailer log parser and property tests. make check passed; mutation checks confirmed malformed-input coverage.
+
 ## History
 
 - 2026-11-16T10:29:29Z intrepid-coral-raven → backlog
@@ -72,3 +80,4 @@ Add the pure trailer log parser and property tests, verify malformed-input mutat
 - 2026-11-23T18:43:21Z witty-yellow-vole planning → todo
 - 2026-11-23T18:44:34Z daring-teal-lapwing todo → doing
 - 2026-11-23T18:47:04Z daring-teal-lapwing: wrote the plan
+- 2026-11-23T18:52:25Z daring-teal-lapwing: changed notes, summary
