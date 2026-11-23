@@ -41,6 +41,10 @@ Folded in from TASK-613: when a work run ends with the ticket still `doing`, pre
 
 Regression tests for productive sessions, amendments, notes and stop wording fail against the original implementation (5 failures).
 
+## Summary
+
+Implemented two-commit progress detection and consecutive idle continuation limit. Regression tests failed before the fix; make check passes.
+
 ## History
 
 - 2026-11-23T10:24:13Z witty-russet-gannet → backlog
@@ -63,3 +67,4 @@ Regression tests for productive sessions, amendments, notes and stop wording fai
 - 2026-11-23T11:26:27Z friendly-teal-crane todo → doing
 - 2026-11-23T11:29:16Z friendly-teal-crane: wrote the plan
 - 2026-11-23T11:30:11Z friendly-teal-crane: changed notes
+- 2026-11-23T11:32:28Z friendly-teal-crane: changed summary
