@@ -26,6 +26,10 @@ Tests: add real-Git examples to `tests/test_trailer_commits.py` (which `TASK-358
 - [ ] `make check` passes
 - [ ] The config, non-UTF-8 and unknown-ref tests pass; each fails when the matching handling is removed (drop `--root` or `--encoding=UTF-8` from `TRAILER_LOG_OPTIONS`, decode with `errors="replace"`, use `check=True`). Record those four runs in a note
 
+## Plan
+
+Add real Git wiring tests and verify mutations, then implement byte-preserving log execution and run checks.
+
 ## Notes
 
 Planner, 2026-11-23: `TASK-358` landed `TrailerCommit`, `TRAILER_LOG_OPTIONS` and `parse_trailer_log` as this ticket assumes; cold-read against what landed.
@@ -41,3 +45,4 @@ Planner, 2026-11-23: `TASK-358` landed `TrailerCommit`, `TRAILER_LOG_OPTIONS` an
 - 2026-11-23T19:39:49Z witty-yellow-vole cold-read → planning
 - 2026-11-23T19:39:52Z witty-yellow-vole planning → todo
 - 2026-11-23T20:10:51Z golden-zinc-falcon todo → doing
+- 2026-11-23T20:13:06Z golden-zinc-falcon: wrote the plan
