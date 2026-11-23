@@ -25,6 +25,10 @@ Run them against `main` first and record the failure of the first test in a note
 - [ ] In the ticket worktree, with `cwd` at the worktree root for both runs and no ticket commits between them: `chitty list` prints byte-identical output before the change (code from `git archive "$(git merge-base main HEAD)" src`, extracted into `tmp/before` after `mkdir -p tmp/before`, and run as `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()" list`) and after it (`.venv/bin/chitty list`). Record the `diff` result and three `time` runs of each in a note
 - [ ] `make check` passes
 
+## Plan
+
+Add focused cache tests and verify the regression on the baseline; cache discovered contexts per Repo with invalidation, inspect directory mutations, and run output, timing and project checks.
+
 ## Notes
 
 Planner, 2026-11-23: a cold read found nothing serious. Clarified the test setups (when the wrapper is installed, two `Repo` objects for the invalidation case, and that the copy guard passes on `main`), the `cwd` for the comparison, and a check that directory-changing writes invalidate. `tmp/before` needs no ruff exclusion: `tmp/` is gitignored, and ruff skips gitignored files.
@@ -37,3 +41,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Clarified the test setup
 - 2026-11-23T12:10:21Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:10:21Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:25:07Z golden-ochre-yellowhammer todo → doing
+- 2026-11-23T12:27:22Z golden-ochre-yellowhammer: wrote the plan
