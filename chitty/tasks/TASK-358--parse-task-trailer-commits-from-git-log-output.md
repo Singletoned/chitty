@@ -1,6 +1,6 @@
 ---
 title: Parse `Task:` trailer commits from `git log` output
-status: doing
+status: review
 created: 2026-11-16
 ---
 
@@ -81,3 +81,4 @@ Implemented the pure trailer log parser and property tests. make check passed; m
 - 2026-11-23T18:44:34Z daring-teal-lapwing todo → doing
 - 2026-11-23T18:47:04Z daring-teal-lapwing: wrote the plan
 - 2026-11-23T18:52:25Z daring-teal-lapwing: changed notes, summary
+- 2026-11-23T18:54:33Z daring-teal-lapwing doing → review
