@@ -1,6 +1,6 @@
 ---
 title: Refuse a ticket write only when a newer, different copy exists elsewhere
-status: planning
+status: backlog
 depends_on:
   - TASK-378
   - TASK-382
@@ -86,6 +86,8 @@ Planner, 2026-11-23: replanned as part (2). The checkout kinds are the main chec
 
 Planning blocker: the specified comparison cannot meet the stated byte-for-byte rule as written. `Repo._working_ticket_files` uses `Path.read_text()` (`src/chitty/store.py:527`), which translates CRLF and CR to LF, whereas Git blob contents are decoded without newline translation (`src/chitty/git.py:618`). Therefore the prescribed comparison can allow a working-tree file differing only by line endings from an LF ref, or refuse identical CRLF bytes. The requested trailing-newline example does not test this. Decide whether to preserve raw newlines in the shared working-tree reader (and address effects on reads), or change the comparison contract; specify a line-ending regression fixture, action, and assertions for the byte-for-byte requirement. I inspected the placement read oracle and the listed existing test names; the remaining matrix and message requirements appear independently specified, but have not been run or implemented because of this blocker. No implementation changes were made; full verification remains outstanding.
 
+Superseded, 2026-11-23: the person decided this morning (recorded in `TASK-602`) that Chitty does not refuse ticket writes because another branch has a different or newer copy. Every write goes to the copy in the current checkout and Chitty warns, generously, instead. That replaces the 2026-11-22 decision (A) above, so this ticket's refusal rule, `write_refusal` wiring and the line-ending blocker in the last note are no longer wanted. `TASK-602` removes today's `_require_current_version` refusal. Parked in `backlog`; archive it once `TASK-602` is planned, unless the person wants something from it kept. The placement-matrix test idea (`tests/ticket_placements.py`, a mismatch collector) may still suit `TASK-602`'s tests.
+
 ## History
 
 - 2026-11-18T16:20:16Z lively-quartz-crane → backlog
@@ -133,3 +135,5 @@ Planning blocker: the specified comparison cannot meet the stated byte-for-byte 
 - 2026-11-23T14:48:50Z plucky-russet-otter todo → doing
 - 2026-11-23T14:52:13Z plucky-russet-otter: changed owner, notes
 - 2026-11-23T14:52:13Z plucky-russet-otter doing → planning
+- 2026-11-23T16:07:24Z youthful-quartz-zander: changed notes
+- 2026-11-23T16:07:24Z youthful-quartz-zander planning → backlog
