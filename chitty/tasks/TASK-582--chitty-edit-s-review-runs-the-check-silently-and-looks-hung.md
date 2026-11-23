@@ -61,6 +61,8 @@ Planner, 2026-11-23: the order now matches the specified line: `running check`, 
 
 Planner, 2026-11-23, after a cold read: the line is now exact text with no backticks; the tests check the whole-seconds format with a regex; the code location is corrected; and nothing is printed when the check is skipped. The criterion no longer claims timing that stderr cannot show.
 
+Both new progress tests fail before the fix: passing check lacks the start line and failing check lacks the elapsed line.
+
 ## History
 
 - 2026-11-22T13:16:27Z friendly-jade-stoat → backlog
@@ -78,3 +80,4 @@ Planner, 2026-11-23, after a cold read: the line is now exact text with no backt
 - 2026-11-23T12:26:19Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:40:28Z daring-indigo-toad todo → doing
 - 2026-11-23T12:43:34Z daring-indigo-toad: wrote the plan
+- 2026-11-23T12:43:51Z daring-indigo-toad: changed notes
