@@ -41,6 +41,50 @@ class TestHumanEdit(CliTestCase):
     def ticket_path(self, checkout: Path, task_id: str = "TASK-1") -> Path:
         return next((checkout / "chitty/tasks").glob(f"{task_id}--*.md"))
 
+    def test_error_to_done_matrix(self):
+        statuses = ("backlog", "planning", "cold-read", "todo", "doing", "blocked", "error")
+        number = 4
+        for status in statuses:
+            for human in (False, True):
+                for note in (None, "reason"):
+                    with self.subTest(status=status, human=human, note=note):
+                        task = f"TASK-{number}"
+                        number += 1
+                        self.run_cli("add", f"Ticket {task}", "-d", "Description.")
+                        self.run_cli("edit", task, "-s", "todo")
+                        args = ["edit", task, "-s", status]
+                        if status in ("blocked", "planning"):
+                            args += ["--note", "reason"]
+                        self.run_cli(*args)
+                        args = ["edit", task, "-s", "done"]
+                        if human:
+                            args.append("--human")
+                        if note:
+                            args += ["--note", note]
+                        success = status == "error" and human and bool(note)
+                        result = self.run_cli(*args, exit_code=0 if success else 1)
+                        if success:
+                            content = self.ticket_path(self.root, task).read_text()
+                            self.assertIn("status: done", content)
+                            self.assertIn("reason", content)
+                            self.assertIn("human error → done", content)
+                        elif status == "error" and human:
+                            self.assertIn(
+                                "moving error → done requires --note with the reason", result.output
+                            )
+                        else:
+                            self.assertIn(
+                                "setting status done requires -s review first", result.output
+                            )
+
+    def test_error_to_done_rejects_whitespace_note(self):
+        self.run_cli("add", "Ticket 4", "-d", "Description.")
+        self.run_cli("edit", "TASK-4", "-s", "error")
+        result = self.run_cli(
+            "edit", "TASK-4", "-s", "done", "--human", "--note", "   ", exit_code=1
+        )
+        self.assertIn("moving error → done requires --note with the reason", result.output)
+
     def test_human_edit_writes_in_the_worktree(self):
         main = self.git("rev-parse", "main").strip()
         result = self.run_cli("edit", "TASK-1", "-s", "done", "--note", "Reviewed: ok", "--human")

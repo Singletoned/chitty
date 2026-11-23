@@ -172,6 +172,7 @@ class Edit:
     set_notes: str | None = None  # "" removes
     summary: str | None = None  # "" removes
     override_review_independence: bool = False
+    human: bool = False
     # Internal, not exposed in the CLI or MCP: `chitty run` fails a review
     # before any criterion is reviewed, so there is nothing to give a verdict on.
     skip_verdicts: bool = False
@@ -964,7 +965,10 @@ class Repo:
             and self.review_required(self.context(stored.context))
             and previous_status != "review"
         ):
-            raise ChittyError("setting status done requires -s review first")
+            if previous_status != "error" or not edit.human:
+                raise ChittyError("setting status done requires -s review first")
+            if not any(note and note.strip() for note in (edit.note, *edit.notes)):
+                raise ChittyError("moving error → done requires --note with the reason")
         entering_review = edit.status == "review" and previous_status != "review"
         passing_review = previous_status == "review" and edit.status == "done"
         if (

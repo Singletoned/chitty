@@ -810,6 +810,7 @@ def edit(
         set_notes=_text(set_notes, set_notes_file, "set-notes"),
         summary=_text(summary, summary_file, "summary"),
         override_review_independence=override_review_independence,
+        human=human_edit,
     )
     previous_actor = os.environ.get("CHITTY_ACTOR")
     if human_edit:
