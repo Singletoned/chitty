@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to `doing` when its landing check fails after a clean rebase
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -10,24 +10,17 @@ When a ticket passes review, `chitty run` lands it (`_land_locked`, `src/chitty/
 
 Change: when the rebase succeeds but the landing check (`_landing_check`, `run.py:1392`) exits non-zero, move the ticket to `doing` instead of `error`:
 
-- Raise a distinct `LandingCheckFailed(ChittyError)` from `_landing_check` for a non-zero exit only. "Command not found" and timeouts stay plain `ChittyError` (runner or setup problems).
-- Where `chitty run` catches landing errors after a review (around `run.py:697-708`), handle `LandingCheckFailed` first: edit the ticket in the worktree with a note starting `Review failed (integration): after rebasing onto `main`, the landing check failed:`, followed by the exit status, the last `LANDING_LOG_TAIL_LINES` (a new module constant, 40) lines of `.chitty/check.log`, and the worktree path. Count it as a failed review, so a ticket that keeps failing escalates rather than looping: `_escalate_repeated_failure` (`src/chitty/store.py:1656`) counts only `review → doing` transitions today, and is only applied by `check_edit` for review transitions; extend both so a `done → doing` move with a `Review failed (integration):` note counts the same way, with the limit `REVIEW_FAILURE_LIMIT` (3, `store.py:72`).
+- Raise a distinct `LandingCheckFailed(ChittyError)` from `_landing_check` for a non-zero exit only. "Command not found" and timeouts stay plain `ChittyError`.
+- In `_run_ticket_with_log`, where landing errors are caught (around `run.py:696-708`), handle `LandingCheckFailed` before `ChittyError`: edit the ticket through the worktree's repo (`branch_repo`, where the reviewer set `done`) with `Edit(status="doing", note=..., skip_verdicts=True, skip_current_version=True)`, as `_record_ticket_error` does. The note starts `Review failed (integration): after rebasing onto `main`, the landing check failed:`, followed by the exit status, the last `LANDING_LOG_TAIL_LINES` (a new module constant, 40) lines of `.chitty/check.log`, and `Worktree: `<absolute path>`` as `_runner_error_note` writes it. `Repo.edit` accepts `done → doing` (no transition table; checked by the cold read).
 - Keep the rebased branch in the worktree: do not reset or abort it.
-- Everything else that fails while landing (rebase conflicts, setup failures, protected or config files, the fast-forward) stays `error`, as today.
+- Everything else that fails while landing (rebase conflicts, setup, protected or config files, the fast-forward) stays `error`, as today.
 
-The status before landing is `done` on the branch (the reviewer set it). Check that `Repo.edit` accepts `done → doing` with this note; if a guard refuses it, return the ticket to `planning` with the evidence rather than weakening the guard.
-
-The second caller of `_land` (`run.py:403`, landing tickets already `done` and pending) should behave the same; if it cannot share the handler cheaply, say so in a note and leave it unchanged.
-
-Related: TASK-489 (skip rerunning the landing check when `main` moved only by ticket files), HUMAN-13 (Linux check at landing).
-
-Out of scope: rerunning flaky checks automatically.
+Out of scope: the pending-landing caller (`_land_pending`, `run.py:403`), which has no handler today and stays unchanged; counting this failure toward escalation (TASK split from this one, see Notes); rerunning flaky checks automatically. Related: TASK-489, HUMAN-13.
 
 ## Acceptance Criteria
 
-- [ ] `test_failing_check_after_main_advances_preserves_main_and_worktree` in `tests/test_review_merge.py` (fixture `fail_landing_check`) is changed to expect `done → doing`: the ticket on the `task-1` branch is `doing`, its newest note starts `Review failed (integration):` and contains `landing check exited with status 7`, the last lines of `.chitty/check.log` (including `LANDING_MARKER`) and the worktree path relative to the main checkout; `main` is unchanged and the worktree keeps the rebased branch (`main` is an ancestor of `task-1`). The changed test fails on `main` today.
-- [ ] A test where the landing setup command fails (exit non-zero) still ends `done → error` with `Runner error (landing)` or `(setup)` as today, and the existing rebase-conflict and protected-file landing tests still pass unchanged.
-- [ ] A test where a ticket already has two `review → doing` failures since its last block shows that a landing check failure is the third failure: the ticket ends `blocked`, owner `human`, with the `Escalated to human review` note, exactly as a third failed review does.
+- [ ] `test_failing_check_after_main_advances_preserves_main_and_worktree` (`tests/test_review_merge.py`, about line 371) and `test_landing_failure_records_error_on_branch_without_advancing_main` (about line 429) are changed to expect `done → doing`: the ticket on the `task-1` branch is `doing`, its newest note starts `Review failed (integration):` and contains `landing check exited with status 7`, the last lines of `.chitty/check.log` (including `LANDING_MARKER`) and the absolute worktree path as today; `main` is unchanged, and `main` is an ancestor of `task-1` (the rebase was kept). Both changed tests fail on `main` today.
+- [ ] The existing landing tests for rebase conflicts and protected or config files still pass unchanged, still ending in `error`.
 
 ## Notes
 
@@ -41,3 +34,5 @@ Suggestion origin: taidy
 - 2026-11-23T10:34:30Z witty-russet-gannet backlog → planning
 - 2026-11-23T10:36:05Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:36:05Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:37:51Z witty-russet-gannet: changed description, acceptance criteria
+- 2026-11-23T10:37:51Z witty-russet-gannet cold-read → planning
