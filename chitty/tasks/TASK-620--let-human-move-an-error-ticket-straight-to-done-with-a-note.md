@@ -31,6 +31,8 @@ Add exhaustive CLI regression coverage, verify failure before the fix, then pass
 
 Suggestion origin: chitty
 
+Regression tests failed before the fix: the human error-to-done case was refused and the missing-note error was incorrect.
+
 ## History
 
 - 2026-11-23T10:24:18Z witty-russet-gannet → backlog
@@ -49,3 +51,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:37:00Z witty-russet-gannet planning → todo
 - 2026-11-23T11:52:50Z jolly-teal-stoat todo → doing
 - 2026-11-23T11:55:34Z jolly-teal-stoat: wrote the plan
+- 2026-11-23T11:56:13Z jolly-teal-stoat: changed notes
