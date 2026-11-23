@@ -25,6 +25,10 @@ Out of scope: detecting why an agent could not start, and warning in `chitty ini
 - [ ] In `tests/test_run_continue.py`, a new fake-agent `edit` snippet (passed to `write_fake`, like `NO_CHANGE`) prints `OLD_MARKER` to stdout when not continued and `STALL_MARKER` when continued (`continued` in `FAKE_AGENT`), and never changes the ticket. `run --ticket` ends with the ticket in `error`. Take the Notes text (`self.json("show", ticket)["notes"]`, one string) from its last `Runner error (agent): ` onwards: that line continues with the stop message from `_agent_sessions` (it contains `continuations with no new work committed`), and the text after it, under `Error output:`, contains `last session: exit 0` and `STALL_MARKER`, and not `OLD_MARKER`. This fails on `main`, whose note has no agent output.
 - [ ] `test_command_without_prompt_is_not_continued` (`tests/test_run_continue.py`) keeps its `after 0 continuations with no new work committed` assertion and also asserts that the Notes text from its last `Runner error (agent): ` onwards contains `last session: exit 0 after`.
 
+## Plan
+
+Add regression and property tests, capture session duration and output, and include the latest session in stalled runner errors; run checks and commit.
+
 ## Notes
 
 Suggestion origin: taidy
@@ -62,3 +66,4 @@ Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When
 - 2026-11-23T13:49:30Z youthful-quartz-zander cold-read → planning
 - 2026-11-23T13:49:35Z youthful-quartz-zander planning → todo
 - 2026-11-23T13:53:58Z kind-hazel-crane todo → doing
+- 2026-11-23T13:57:03Z kind-hazel-crane: wrote the plan
