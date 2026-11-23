@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: doing
+status: review
 labels:
   - needs-minor
 created: 2026-11-22
@@ -98,7 +98,7 @@ Review failed (design): The alignment regression uses the unchanged `_columns` c
 
 ## Summary
 
-Replaced list and skip glyphs with wide characters, centralized skip constants, and updated documentation and expectations. Glyph regression failed before the fix; make check passes (1125 tests), and the old-glyph grep is empty.
+Replaced the alignment-test oracle with the specified terminal width calculation in tests/test_list_glyphs.py. make check passes (1128 tests); focused glyph tests pass. Commit: c37bd797.
 
 ## History
 
@@ -124,3 +124,5 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-23T23:10:44Z mellow-amber-toad planning → todo
 - 2026-11-23T23:29:30Z honest-indigo-toad todo → doing
 - 2026-11-23T23:31:31Z honest-indigo-toad: wrote the plan
+- 2026-11-23T23:35:36Z honest-indigo-toad: changed summary
+- 2026-11-23T23:35:36Z honest-indigo-toad doing → review
