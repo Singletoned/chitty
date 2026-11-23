@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-639
@@ -79,6 +79,18 @@ last session: exit 0 after 23s
 TASK-598 remains unfinished in `doing`. I captured the two invalid-entry baseline errors in `tmp/before-errors.txt`; implementation and the required tests remain outstanding.
 ```
 
+Done by hand, 2026-11-23, after the runner stalled. Rebased onto `main` first (`d076e278`).
+
+Criterion 1. Tests in `tests/test_list_performance.py` (`TestScanCounts`, `TestWorkingTreeIndex`), committed alone in `8e64b5fe` and run before the change: `test_list_scans_are_constant_in_ticket_count` failed with `28 != 172` scans (2 vs 20 tickets), `test_lookup_scans_are_constant_in_ticket_count` failed with `16 != 88`; the error, order, ref, invalidation and property tests passed, as they guard unchanged behaviour. After `21c420f2`: all 12 pass; both scripts make 4 scans for 2 and for 20 tickets, `TASK-2` read as `Branch copy`.
+
+Decided: the invalidation example calls `repo.add(..., "New", "Description.", ...)` instead of `None`, because `Repo.add` refuses `None` with `description is required unless status is backlog` unless the status is `backlog`.
+
+Decided: the per-ref index is a new `_ref_index` derived from `_ref_files()` (the existing `_ticket_ref_files` cache), not a second fetch of the same data: `discovered_contexts` and `_collect_ticket_ids` still need the raw per-ref lists, including unparseable names on `main`, which the index skips. Both are cleared in `_invalidate`.
+
+Criterion 2, in this worktree, before = `git archive` of the merge base into `tmp/before`: `chitty list` (18 lines), `chitty list -s backlog` (137 lines) and `chitty list --all` (457 lines) are byte-identical (`diff -q` silent). `time` of `chitty list`: before 4.71, 4.42, 4.42 s real; after 2.34, 2.37, 2.54 s.
+
+Criterion 3: `make check` passed (1164 passed).
+
 ## History
 
 - 2026-11-22T21:26:10Z plucky-umber-wren → cold-read
@@ -120,3 +132,5 @@ TASK-598 remains unfinished in `doing`. I captured the two invalid-entry baselin
 - 2026-11-23T14:46:55Z jolly-white-urchin: changed notes
 - 2026-11-23T14:46:55Z jolly-white-urchin doing → error
 - 2026-11-23T16:47:41Z youthful-quartz-zander error → doing
+- 2026-11-23T16:50:23Z youthful-quartz-zander: changed notes
+- 2026-11-23T16:50:23Z youthful-quartz-zander doing → review
