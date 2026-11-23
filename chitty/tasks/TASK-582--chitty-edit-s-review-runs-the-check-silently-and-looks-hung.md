@@ -1,6 +1,6 @@
 ---
 title: "`chitty edit -s review` runs the check silently and looks hung"
-status: doing
+status: review
 created: 2026-11-22
 ---
 
@@ -86,3 +86,4 @@ Added stderr progress and elapsed time for review checks; both regression tests 
 - 2026-11-23T12:43:34Z daring-indigo-toad: wrote the plan
 - 2026-11-23T12:43:51Z daring-indigo-toad: changed notes
 - 2026-11-23T12:46:01Z daring-indigo-toad: changed summary
+- 2026-11-23T12:47:55Z daring-indigo-toad doing → review
