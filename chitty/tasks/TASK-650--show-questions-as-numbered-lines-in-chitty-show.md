@@ -1,6 +1,6 @@
 ---
 title: Show `## Questions` as numbered lines in `chitty show`
-status: planning
+status: cold-read
 depends_on:
   - TASK-649
   - TASK-629
@@ -34,3 +34,4 @@ Out of scope: CLI and MCP options (TASK-630) and list markers (TASK-631).
 - 2026-11-23T19:43:56Z friendly-coral-badger planning → cold-read
 - 2026-11-23T19:45:11Z friendly-coral-badger: changed dependencies, description, acceptance criteria
 - 2026-11-23T19:45:11Z friendly-coral-badger cold-read → planning
+- 2026-11-23T19:46:09Z friendly-coral-badger planning → cold-read
