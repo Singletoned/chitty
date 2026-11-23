@@ -19,7 +19,9 @@ from tests.test_cli import CliTestCase
 RUNNER_TEXT = (Path(__file__).parent / "fixtures/guide-runner-expected.md").read_text()
 
 RUNNER_ONLY_SENTENCE = "When starting an agent by hand, run the matching focused guide:"
-TICKETS_TEXT_END = "`plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward `main`.\n"
+TICKETS_TEXT_END = (
+    "worktree as `plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward\n`main`.\n"
+)
 TICKETS_TEXT = RUNNER_TEXT[: RUNNER_TEXT.index(TICKETS_TEXT_END) + len(TICKETS_TEXT_END)]
 SRC = Path(__file__).resolve().parent.parent / "src" / "chitty"
 

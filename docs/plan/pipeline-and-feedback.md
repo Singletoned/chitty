@@ -72,9 +72,10 @@
   straight to `main`). Each branch that starts from `main` and merges back is
   named by its kind: `task-<n>` for ticket work (made by the runner),
   `plan/<name>` for planning (recognised by `planning_branch`), and
-  `hotfix/<name>` for a fix outside any ticket. The work happens in its own
-  worktree, passes the configured checks, and then fast-forwards `main`. The
-  managed guide block says so. Nothing treats `hotfix/` specially yet;
+  `hotfix/<name>` for a fix outside any ticket. Outside ticket work, the
+  author does it in its own worktree, passes the configured checks, and then
+  fast-forwards `main`; ticket branches still land only after review, as
+  below. The managed guide block says so. Nothing treats `hotfix/` specially yet;
   Chitty's own ticket writes on `main` are `TASK-340`'s concern.
 
 ## Ready ticket
