@@ -47,3 +47,4 @@ Superseded, 2026-11-23: built on `TASK-385`'s write refusal, which the person dr
 - 2026-11-18T18:00:40Z lively-quartz-crane planning → todo
 - 2026-11-23T16:07:39Z youthful-quartz-zander: changed notes
 - 2026-11-23T16:07:39Z youthful-quartz-zander todo → backlog
+- 2026-11-23T16:41:26Z youthful-quartz-zander backlog → archived
