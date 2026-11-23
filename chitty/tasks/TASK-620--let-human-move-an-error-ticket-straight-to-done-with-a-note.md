@@ -1,6 +1,6 @@
 ---
 title: Let `--human` move an `error` ticket straight to `done`, with a note
-status: planning
+status: cold-read
 created: 2026-11-23
 ---
 
@@ -31,3 +31,4 @@ Suggestion origin: chitty
 - 2026-11-23T10:24:19Z witty-russet-gannet: changed notes
 - 2026-11-23T10:31:17Z witty-russet-gannet: changed title, description, acceptance criteria
 - 2026-11-23T10:31:17Z witty-russet-gannet backlog → planning
+- 2026-11-23T10:31:32Z witty-russet-gannet planning → cold-read
