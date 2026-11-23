@@ -852,7 +852,9 @@ def continuation_prompt(mode: Literal["work", "review"], ticket_id: str) -> str:
             "it to `review`, return it to `planning` for a defect in the ticket with a note "
             "explaining the problem and decision needed, or set it to `blocked` with a note "
             "giving the "
-            "external obstacle. Do not stop with it unfinished."
+            "external obstacle. There is no token, time or context budget, so none is an "
+            "obstacle; a ticket too large for one session goes to `planning` with a note "
+            "proposing a split. Do not stop with it unfinished."
         )
     return (
         f"Continue reviewing only Chitty ticket {ticket_id}. Either pass it (`done`) or "

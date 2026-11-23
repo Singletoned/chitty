@@ -26,7 +26,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
   wrong claim about the code, files or other tickets, a criterion that cannot be
   verified as written or would pass with nothing built, a test a criterion needs
   that the ticket does not describe (its fixture, action and assertions), or a
-  ticket too large to finish in one session, set `-s planning` (see omission
+  ticket too large to finish in one session (propose a split), set `-s planning` (see omission
   exception below). At the first blocker, stop implementation, not investigation.
   Before changing status, finish reading the ticket and inspect relevant code
   and tests for remaining requirements. Explain what could not be checked and
@@ -46,7 +46,9 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
   stated criteria. Contradictions, unclear or consequential choices, and other
   ticket defects go to `planning`.
 - For external obstacles requiring help, note the problem, who can resolve it,
-  and what is needed; then set `-s blocked`. Do not work blocked tickets. Leave
+  and what is needed; then set `-s blocked`. The session has no token, time or
+  context budget to manage: budget, capacity, time or context is never a reason
+  for `blocked`. Do not work blocked tickets. Leave
   `human` tickets in `todo`; never pick them up or block them.
 - For unrelated work, use plain `chitty add` in the default context. Off the
   configured main branch, sequential contexts use a provisional ID marked
