@@ -82,6 +82,8 @@ Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before 
 
 Planning blockers confirmed by the ticket text and CLI behavior. The Description explicitly resolves both previously reported issues: round-trip test must include `dropped` explicitly (`("dropped", *STATUSES)`), and sequential `chitty add` without `-d` retains today's usage error; add tests use `-d x`. These are no longer blockers. However, task requires before-change test evidence for a large matrix, implementation, docs, and make check; it is doable, so proceed rather than planning. This status change is not appropriate; restoring doing.
 
+Planning blocker: Acceptance criterion 1 requires the allowed-starting-status cases to “each assert[] their message,” but the Description specifies only their successful result (status, Summary, History), not any required success message. The `chitty edit` contract may return no success message, so this assertion is not verifiable as written. Please change the criterion to require the specified state assertions for successful cases and message assertions only for the refusal from `done`, or define the exact success message and evidence expected. I have not implemented code or tests.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -140,3 +142,4 @@ Planning blockers confirmed by the ticket text and CLI behavior. The Description
 - 2026-11-23T23:13:28Z friendly-khaki-lapwing todo → doing
 - 2026-11-23T23:16:56Z friendly-khaki-lapwing: changed owner, notes
 - 2026-11-23T23:16:56Z friendly-khaki-lapwing doing → planning
+- 2026-11-23T23:17:06Z friendly-khaki-lapwing: changed notes
