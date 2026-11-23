@@ -247,6 +247,7 @@ class Repo:
     def __init__(self, root: Path, config: RepoConfig) -> None:
         self.root = root
         self.config = config
+        self._discovered_contexts: list[Context] | None = None
         self._ticket_ids: set[TaskId] | None = None
         self._ticket_ref_files: dict[str, list[tuple[Path, str]]] | None = None
         self._source_refs: dict[TaskId, str] = {}
@@ -306,6 +307,8 @@ class Repo:
 
     def discovered_contexts(self) -> list[Context]:
         """Configured contexts plus on-disk directories containing ticket files."""
+        if self._discovered_contexts is not None:
+            return list(self._discovered_contexts)
         root = self.root / BACKLOG_DIR
         contexts = {context.name: context for context in self.contexts()}
         if root.is_dir():
@@ -331,7 +334,8 @@ class Repo:
                 names.add(parts[1])
         for name in sorted(names):
             contexts.setdefault(name, Context(name, "", root / name))
-        return list(contexts.values())
+        self._discovered_contexts = list(contexts.values())
+        return list(self._discovered_contexts)
 
     def resolve(self, text: str) -> TaskId:
         """`TASK-13`, or bare `13` for the default context."""
@@ -415,6 +419,7 @@ class Repo:
         return self._main_files[key]
 
     def _invalidate(self) -> None:
+        self._discovered_contexts = None
         self._ticket_ids = None
         self._ticket_ref_files = None
         self._source_refs.clear()
