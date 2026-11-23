@@ -1,6 +1,6 @@
 ---
 title: Check every ticket a multi-ticket write touches before writing any
-status: todo
+status: backlog
 depends_on:
   - TASK-385
 parent: TASK-376
@@ -32,6 +32,10 @@ Tests: tickets that must be deleted are first made `done` through `review`. Real
 - [ ] In delete mode, a `done` `TASK-1` on `main` referenced by `TASK-2` in flight on `task-2` is skipped by `chitty archive` with no ID, while another unreferenced `done` ticket is deleted, and no file is left changed and uncommitted; this fails before the change
 - [ ] `--json` and the MCP tool give the `archived`/`skipped` shape, the two rewritten tests pass, and `make check` passes
 
+## Notes
+
+Superseded, 2026-11-23: built on `TASK-385`'s write refusal, which the person dropped this morning (recorded in `TASK-602`): Chitty does not refuse ticket writes because another branch has a different or newer copy; it writes the current checkout's copy and warns. Parked in `backlog` until `TASK-602` is planned; then archive it or rewrite it against `TASK-602`.
+
 ## History
 
 - 2026-11-18T17:53:36Z lively-quartz-crane → backlog
@@ -41,3 +45,5 @@ Tests: tickets that must be deleted are first made `done` through `review`. Real
 - 2026-11-18T18:00:38Z lively-quartz-crane: changed description, acceptance criteria
 - 2026-11-18T18:00:38Z lively-quartz-crane cold-read → planning
 - 2026-11-18T18:00:40Z lively-quartz-crane planning → todo
+- 2026-11-23T16:07:39Z youthful-quartz-zander: changed notes
+- 2026-11-23T16:07:39Z youthful-quartz-zander todo → backlog
