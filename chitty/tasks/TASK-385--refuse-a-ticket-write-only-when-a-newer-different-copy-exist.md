@@ -50,9 +50,13 @@ The tests use `tests/support.py`'s `CONFIG`, which has `autocommit = false`, so 
 
 Existing tests that assert the old guard, and what each becomes:
 
-- `tests/test_own_worktree_writes.py`: `test_cli_write_then_refuse_after_merge_and_main_change` and `test_guard_refuses_changed_main` stay refusals; assert `TASK-6 has a newer copy on main (` instead of the old text. `test_guard_allows_unchanged_main` calls `_require_writable`. `test_guard_refuses_other_source` and `test_guard_refuses_other_checkout` set up copies identical to `main`'s, which the new rule allows: rename them `test_guard_allows_identical_other_source` and `test_guard_allows_identical_other_checkout` and assert no error.
-- `tests/test_edit_human.py` `test_edit_without_human_still_refuses`: still refused (the `task-1` worktree holds a different copy); assert `TASK-1 has a newer copy on task-1 (`.
-- `tests/test_check_cross_branch_references.py` `test_edit_on_another_branch_is_refused` and `tests/test_provisional_ids.py` (the `move TASK-1 human` refusal near line 104): run them after the change. Where the copies are identical the command now succeeds: rename the test or step to say so and assert the success the owner rule gives (the file on the current branch gains the change). Where it is still refused, assert the new message. Record which applied in a note.
+Checked 2026-11-23 by running each against a prototype of the rule (the equality check above, with a shortened message):
+
+- `tests/test_own_worktree_writes.py`: `test_cli_write_then_refuse_after_merge_and_main_change` and `test_guard_refuses_changed_main` stay refusals; assert `TASK-6 has a newer copy on main (` instead of the old text. `test_guard_refuses_other_source` stays a refusal (the `feature` copy differs from the worktree's); assert `TASK-6 has a newer copy on feature (`. `test_guard_allows_unchanged_main` calls `_require_writable`. `test_guard_refuses_other_checkout` sets up a copy identical to `main`'s, which the new rule allows: rename it `test_guard_allows_identical_other_checkout` and assert no error.
+- `tests/test_edit_human.py`: `test_edit_without_human_still_refuses` and `test_human_edit_without_a_worktree_keeps_the_refusal` stay refusals; assert `TASK-1 has a newer copy on task-1 (` and `TASK-3 has a newer copy on task-3 (` with `run git switch task-3 first` (no backticks, as `write_refusal` words it).
+- `tests/test_check_cross_branch_references.py` `test_edit_on_another_branch_is_refused`: the copies are identical, so the edit now succeeds. Rename it `test_edit_on_another_branch_with_identical_copy_is_written` and assert exit 0 and that `chitty/tasks/TASK-1--one.md` on branch `b` now names `TASK-2`.
+- `tests/test_provisional_ids.py` `test_move_provisional_off_main_then_promote_on_main`: the `move TASK-1 human` step from the worktree now succeeds for the same reason. Drop the refusal assertion and assert the move's exit 0 instead; keep the rest of the test.
+- `tests/test_cli.py` `TestCrossBranchWrites` assert substrings (`git switch task-1`, `git switch --track origin/task-1`, the worktree path) that `write_refusal`'s messages contain, so they should pass unchanged; fix any that do not to the new message.
 
 ## Acceptance Criteria
 
@@ -116,3 +120,4 @@ Planner, 2026-11-23: replanned as part (2). The checkout kinds are the main chec
 - 2026-11-23T14:42:49Z youthful-quartz-zander: changed description, acceptance criteria
 - 2026-11-23T14:43:04Z youthful-quartz-zander planning → cold-read
 - 2026-11-23T14:44:41Z youthful-quartz-zander cold-read → planning
+- 2026-11-23T14:44:45Z youthful-quartz-zander: changed description
