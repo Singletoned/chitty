@@ -352,6 +352,8 @@ class TestWorkingTreeIndex(RepoTestCase):
                 stored = repo.lookup(task_id)
                 assert stored is not None
                 self.assertEqual(stored.task.frontmatter.title, found[0].stem)
+                expected_context = str(found[0].parent.relative_to(root / "chitty").parts[0])
+                self.assertEqual(stored.context, expected_context)
             else:
                 with self.assertRaises(ChittyError) as raised:
                     repo.lookup(task_id)
