@@ -65,6 +65,8 @@ Inspected the status definitions, add and edit validation, selection and CLI lis
 
 Started investigation and recorded an approach. No implementation or regression tests written; before/after verification and make check remain outstanding.
 
+Investigation continued: checked edit application and existing status validation. No code or tests have been changed; implementation and all verification remain outstanding.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -115,3 +117,4 @@ Started investigation and recorded an approach. No implementation or regression 
 - 2026-11-23T19:38:33Z daring-hazel-eel todo → doing
 - 2026-11-23T19:41:06Z daring-hazel-eel: wrote the plan
 - 2026-11-23T19:41:18Z daring-hazel-eel: changed notes
+- 2026-11-23T19:42:04Z daring-hazel-eel: changed notes
