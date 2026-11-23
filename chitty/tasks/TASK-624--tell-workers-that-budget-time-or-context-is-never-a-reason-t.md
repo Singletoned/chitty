@@ -1,9 +1,9 @@
 ---
 title: Tell workers that budget, time or context is never a reason to block
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: friendly-zinc-dormouse
 created: 2026-11-23
 ---
 
@@ -34,3 +34,5 @@ Folded in from TASK-606 (follow-up) and TASK-613: under Chitty 0.7.0 the same TA
 - 2026-11-23T10:29:54Z witty-russet-gannet: changed title, labels, owner, description
 - 2026-11-23T10:29:54Z witty-russet-gannet backlog → todo
 - 2026-11-23T10:30:02Z witty-russet-gannet: changed description
+- 2026-11-23T12:01:34Z friendly-zinc-dormouse: changed owner
+- 2026-11-23T12:01:34Z friendly-zinc-dormouse todo → doing
