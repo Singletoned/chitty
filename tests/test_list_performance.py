@@ -1,12 +1,87 @@
 import os
+import string
 import subprocess
 import sys
+import tempfile
 import unittest
 from datetime import date
+from pathlib import Path
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from chitty.config import CHITTY_VERSION
-from chitty.store import Edit, Repo
+from chitty.ids import TaskId
+from chitty.store import ChittyError, Edit, Repo
+from tests import examples
 from tests.support import RepoTestCase
+
+SCAN_CONFIG = (
+    "format = 1\n"
+    'default_context = "tasks"\n'
+    f'chitty_version = "{CHITTY_VERSION}"\n'
+    "review = false\n"
+    "autocommit = false\n"
+    'check = "true"\n'
+    "[contexts.tasks]\n"
+    'prefix = "TASK"\n'
+    "[contexts.backlog]\n"
+    'prefix = "BACK"\n'
+)
+# One or two scans of each of the fixture's 4 context directories.
+MIN_SCANS = 4
+MAX_SCANS = 8
+COUNT_SCANS = (
+    "import chitty.store as store\n"
+    "calls = []\n"
+    "original = store.scan\n"
+    "def counting(*args, **kwargs):\n"
+    "    calls.append(1)\n"
+    "    return original(*args, **kwargs)\n"
+    "store.scan = counting\n"
+)
+LIST_SCRIPT = COUNT_SCANS + (
+    "from chitty.cli import cli\n"
+    "import io, contextlib\n"
+    "with contextlib.redirect_stdout(io.StringIO()):\n"
+    "    cli(['list'], standalone_mode=False)\n"
+    "print(len(calls))\n"
+)
+LOOKUP_SCRIPT = COUNT_SCANS + (
+    "from pathlib import Path\n"
+    "from chitty.ids import TaskId\n"
+    "repo = store.Repo.open(Path.cwd())\n"
+    "for task_id in repo.ticket_ids():\n"
+    "    repo.lookup(task_id)\n"
+    "found = repo.lookup(TaskId('TASK', 2))\n"
+    "print(len(calls))\n"
+    "print(found.task.frontmatter.title)\n"
+)
+DIRECTORIES = ("backlog", "backlog/archive", "tasks", "tasks/archive")
+PROPERTY_IDS = [TaskId("TASK", n) for n in range(1, 6)] + [TaskId("BACK", n) for n in range(1, 4)]
+
+
+def ticket_text(title: str, status: str = "todo") -> str:
+    return (
+        f"---\ntitle: {title}\nstatus: {status}\npriority: medium\ncreated: 2026-11-23\n---\n"
+        "\n## Description\n\nFixture.\n"
+    )
+
+
+def git(root: Path, *args: str) -> None:
+    subprocess.run(
+        ["git", "-c", "user.name=Test", "-c", "user.email=test@example.com", *args],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def write_ticket_dirs(root: Path) -> None:
+    (root / "chitty.toml").write_text(SCAN_CONFIG)
+    for name in ("tasks", "tasks/archive", "backlog"):
+        (root / "chitty" / name).mkdir(parents=True, exist_ok=True)
 
 
 class TestListPerformance(RepoTestCase):
@@ -120,6 +195,171 @@ class TestListPerformance(RepoTestCase):
             f"---\ntitle: {title}\nstatus: {status}\n{depends}created: 2026-11-08\n---\n"
             "\n## Description\n\nDescription.\n"
         )
+
+
+class TestScanCounts(RepoTestCase):
+    def test_list_scans_are_constant_in_ticket_count(self):
+        counts = [self._scans(n, LIST_SCRIPT)[0] for n in (2, 20)]
+        self.assertEqual(counts[0], counts[1])
+        self.assertTrue(MIN_SCANS <= counts[0] <= MAX_SCANS, counts)
+
+    def test_lookup_scans_are_constant_in_ticket_count(self):
+        results = [self._scans(n, LOOKUP_SCRIPT) for n in (2, 20)]
+        self.assertEqual(results[0][0], results[1][0])
+        self.assertTrue(MIN_SCANS <= results[0][0] <= MAX_SCANS, results)
+        self.assertEqual([title for _, title in results], ["Branch copy", "Branch copy"])
+
+    def test_ref_files_with_unparseable_names_are_skipped(self):
+        root, worktree = self._fixture(2)
+        (worktree / "chitty/tasks/not-a-ticket.md").write_text("Not a ticket.\n")
+        git(worktree, "add", ".")
+        git(worktree, "commit", "-m", "stray file")
+        repo = Repo.open(root)
+        first = repo.lookup(TaskId("TASK", 1))
+        second = repo.lookup(TaskId("TASK", 2))
+        assert first is not None and second is not None
+        self.assertEqual(first.task.frontmatter.title, "Ticket 1")
+        self.assertEqual(second.task.frontmatter.title, "Branch copy")
+
+    def _fixture(self, n: int) -> tuple[Path, Path]:
+        root = self.tmp / f"scans-{n}"
+        root.mkdir()
+        write_ticket_dirs(root)
+        for number in range(1, n + 1):
+            (root / f"chitty/tasks/TASK-{number}--ticket.md").write_text(
+                ticket_text(f"Ticket {number}")
+            )
+        (root / "chitty/tasks/archive/TASK-1000--old.md").write_text(ticket_text("Old", "done"))
+        (root / "chitty/backlog/BACK-1--idea.md").write_text(ticket_text("Idea"))
+        git(root, "init", "-b", "main")
+        git(root, "add", ".")
+        git(root, "commit", "-m", "setup")
+        worktree = self.tmp / f"wt-task-2-{n}"
+        git(root, "worktree", "add", "-b", "task-2", str(worktree), "main")
+        path = worktree / "chitty/tasks/TASK-2--ticket.md"
+        path.write_text(ticket_text("Branch copy"))
+        git(worktree, "add", ".")
+        git(worktree, "commit", "-m", "branch copy")
+        return root, worktree
+
+    def _scans(self, n: int, script: str) -> tuple[int, str | None]:
+        root, _ = self._fixture(n)
+        environment = os.environ.copy()
+        environment["CHITTY_ACTOR"] = "test-agent"
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=root,
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        lines = result.stdout.splitlines()
+        return int(lines[0]), (lines[1] if len(lines) > 1 else None)
+
+
+class TestWorkingTreeIndex(RepoTestCase):
+    def _root(self) -> Path:
+        root = self.tmp / "plain"
+        root.mkdir()
+        write_ticket_dirs(root)
+        (root / "chitty/tasks/TASK-1--one.md").write_text(ticket_text("One"))
+        return root
+
+    def test_invalid_active_entry_raises_for_any_lookup(self):
+        root = self._root()
+        (root / "chitty/tasks/not-a-ticket.md").write_text("x\n")
+        with self.assertRaises(ChittyError) as raised:
+            Repo.open(root).lookup(TaskId("TASK", 1))
+        self.assertEqual(
+            str(raised.exception),
+            f"{root / 'chitty/tasks/not-a-ticket.md'}: invalid task ID 'not-a-ticket': "
+            "expected PREFIX-N or PREFIX-SUFFIX, e.g. TASK-13",
+        )
+
+    def test_invalid_archived_entry_raises_for_any_lookup(self):
+        root = self._root()
+        (root / "chitty/backlog/archive").mkdir()
+        (root / "chitty/backlog/archive/not-a-ticket.md").write_text("x\n")
+        with self.assertRaises(ChittyError) as raised:
+            Repo.open(root).lookup(TaskId("TASK", 1))
+        self.assertEqual(
+            str(raised.exception),
+            f"{root / 'chitty/backlog/archive/not-a-ticket.md'}: invalid task ID "
+            "'not-a-ticket': expected PREFIX-N or PREFIX-SUFFIX, e.g. TASK-13",
+        )
+
+    def test_duplicate_lists_active_then_archived(self):
+        root = self._root()
+        (root / "chitty/tasks/TASK-3--a.md").write_text(ticket_text("A"))
+        (root / "chitty/tasks/archive/TASK-3--b.md").write_text(ticket_text("B"))
+        with self.assertRaises(ChittyError) as raised:
+            Repo.open(root).lookup(TaskId("TASK", 3))
+        self.assertEqual(
+            str(raised.exception),
+            f"TASK-3 is used by more than one file: {root / 'chitty/tasks/TASK-3--a.md'}, "
+            f"{root / 'chitty/tasks/archive/TASK-3--b.md'}",
+        )
+
+    def test_writes_clear_the_index(self):
+        os.environ["CHITTY_ACTOR"] = "test-agent"
+        root = self.tmp / "invalidate"
+        root.mkdir()
+        write_ticket_dirs(root)
+        (root / "chitty/tasks/TASK-1--one.md").write_text(ticket_text("One", "done"))
+        repo = Repo.open(root)
+        task_id = TaskId("TASK", 1)
+        self.assertIsNotNone(repo.lookup(task_id))
+        repo.archive(task_id)
+        archived = repo.lookup(task_id)
+        assert archived is not None
+        self.assertTrue(archived.archived)
+        change = repo.add(repo.context("tasks"), "New", "Description.", [], {}, date(2026, 11, 23))
+        self.assertIsNotNone(repo.lookup(change.task.id))
+
+    @settings(max_examples=examples(100))
+    @given(
+        st.sets(
+            st.tuples(
+                st.sampled_from(PROPERTY_IDS),
+                st.text(string.ascii_lowercase, min_size=1),
+                st.sampled_from(DIRECTORIES),
+            )
+        )
+    )
+    def test_lookup_matches_the_files_on_disk(self, drawn):
+        root = Path(tempfile.mkdtemp(dir=self.tmp))
+        write_ticket_dirs(root)
+        paths: dict[TaskId, set[Path]] = {}
+        for task_id, slug, directory in drawn:
+            name = f"{task_id}--{slug}"
+            path = root / "chitty" / directory / f"{name}.md"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(ticket_text(name))
+            paths.setdefault(task_id, set()).add(path)
+        repo = Repo.open(root)
+        for task_id in PROPERTY_IDS:
+            found = sorted(
+                paths.get(task_id, ()),
+                key=lambda path: (
+                    DIRECTORIES.index(str(path.parent.relative_to(root / "chitty"))),
+                    path.name,
+                ),
+            )
+            if not found:
+                self.assertIsNone(repo.lookup(task_id))
+            elif len(found) == 1:
+                stored = repo.lookup(task_id)
+                assert stored is not None
+                self.assertEqual(stored.task.frontmatter.title, found[0].stem)
+            else:
+                with self.assertRaises(ChittyError) as raised:
+                    repo.lookup(task_id)
+                self.assertEqual(
+                    str(raised.exception),
+                    f"{task_id} is used by more than one file: "
+                    + ", ".join(str(path) for path in found),
+                )
 
 
 class TestRepoCacheInvalidation(RepoTestCase):
