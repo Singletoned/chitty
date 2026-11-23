@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: planning
+status: cold-read
 labels:
   - needs-minor
 parent: TASK-607
@@ -40,7 +40,7 @@ Tests, in a new `tests/test_priorities_config.py`, using `RepoTestCase`. The cus
 
 - Config: the default is `["high", "medium", "", "low"]`. Each of these is refused with the message above: no `""`, two `""`, `["a", "a", ""]`, `[" a", ""]`, `["a\nb", ""]`.
 - Model: a ticket file written by hand with `priority: ""` makes `chitty.model.parse` raise with `priority must not be empty; remove the key instead`; `chitty check` exits non-zero and its output contains that message; `chitty edit TASK-1 --note x` exits non-zero and the file is byte-identical.
-- List display, with the custom config: tickets written with `priority: now` and `priority: high` (the second by hand, as `chitty check` would report it). `chitty list` exits 0 and prints both IDs, and neither line contains any of the `PRIORITY_GLYPHS` values `⬆️`, `⏺️`, `⬇️` (on `main` it crashes with `KeyError`, since `cli.py` indexes `PRIORITY_GLYPHS[fm.priority]`).
+- List display, with the custom config: tickets written with `priority: now` and `priority: high` (the second by hand, as `chitty check` would report it). `chitty list` exits 0 and prints both IDs, and neither line contains any of the `PRIORITY_GLYPHS` values `⬆️`, `⏺️`, `⬇️` (on `main` the `now` ticket fails to parse, since `priority` is a literal, and the `high` line shows `⬆️`; after the change, indexing `PRIORITY_GLYPHS[fm.priority]` in `cli.py` would raise `KeyError` for `now`).
 - Writes, with the custom config: `chitty add T -d x -p now` exits 0 and writes `priority: now`. `chitty add T -d x -p high` exits non-zero, its output contains `priority 'high' is not configured; choose from now, soon, later`, and no file is created. On an existing ticket, `chitty edit TASK-1 -p later` exits 0, `-p high` is refused with the same message and the file is byte-identical, and `-p ""` removes the key.
 - `chitty check`: with the custom config, a ticket file written with `priority: high` is reported with the message above.
 - Ordering examples: with the default list, `ordered` puts the tickets `high`, `medium`, no priority, `low` in that order whatever the input order. With the custom list, `now`, `soon`, no priority, `later`, and a ticket with `priority: high` last. `choose` picks the `now` ticket over an older `soon` one.
@@ -75,3 +75,5 @@ Planner, 2026-11-23: blocker resolved by adding tests for a hand-written `priori
 - 2026-11-23T13:11:32Z calm-teal-yellowhammer: changed owner, notes
 - 2026-11-23T13:11:32Z calm-teal-yellowhammer doing → planning
 - 2026-11-23T18:37:59Z witty-yellow-vole: replaced notes; changed owner, description, acceptance criteria
+- 2026-11-23T18:38:18Z witty-yellow-vole: changed description
+- 2026-11-23T18:38:18Z witty-yellow-vole planning → cold-read
