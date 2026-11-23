@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: doing
+status: planning
 labels:
   - bug
 priority: medium
@@ -61,6 +61,10 @@ Planner, 2026-11-23, after the first cold read: `\r` is still refused, because o
 
 Planner, 2026-11-23, after the second cold read: corrected what `parse` does today with an unindented break, added an example pinning the checkbox-text decision, and named the renumbering caller. Nothing serious was found.
 
+Planning blocker: criterion 1 requires all new tests except the newline and carriage-return refusals to fail against main, but the description explicitly requires `[x] a` to remain accepted as today. The current `_criterion_text` and parser already round-trip that text unticked; verified locally with `parse` and `with_criteria`, yielding `Criterion(checked=False, text='[x] a', ...)`. The required checkbox example therefore cannot both pass after the change and fail before it. Correct criterion 1 to exclude this existing-behaviour example from the baseline-failure requirement (and specify baseline expectations per example if tests are grouped).
+
+Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterion and renumbering property tests, and the CLI fixture. The remaining requested tests and `make check` were not run: the new test file does not exist and implementation is stopped pending correction. The newline/carriage-return validation and shared caller can be independently located, but the complete baseline and post-change verification cannot be established until the contradiction is resolved.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -87,3 +91,5 @@ Planner, 2026-11-23, after the second cold read: corrected what `parse` does tod
 - 2026-11-23T12:06:43Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:06:43Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:34:57Z plucky-jade-dormouse todo → doing
+- 2026-11-23T12:38:43Z plucky-jade-dormouse: changed owner, notes
+- 2026-11-23T12:38:43Z plucky-jade-dormouse doing → planning
