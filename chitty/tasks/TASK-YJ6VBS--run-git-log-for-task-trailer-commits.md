@@ -1,6 +1,6 @@
 ---
 title: Run `git log` for `Task:` trailer commits
-status: doing
+status: review
 depends_on:
   - TASK-358
 created: 2026-11-23
@@ -53,3 +53,4 @@ Implemented byte-preserving Git log execution with real Git tests. make check pa
 - 2026-11-23T20:10:51Z golden-zinc-falcon todo → doing
 - 2026-11-23T20:13:06Z golden-zinc-falcon: wrote the plan
 - 2026-11-23T20:16:10Z golden-zinc-falcon: changed notes, summary
+- 2026-11-23T20:18:10Z golden-zinc-falcon doing → review
