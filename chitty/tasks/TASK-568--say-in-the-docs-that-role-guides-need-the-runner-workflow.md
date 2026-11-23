@@ -1,9 +1,9 @@
 ---
 title: Say in the docs that role guides need the runner workflow
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: vivid-ginger-heron
 depends_on:
   - TASK-334
 created: 2026-11-22
@@ -16,3 +16,5 @@ After `TASK-334`, `chitty guide <role>` refuses under `workflow = "tickets"`. `R
 ## History
 
 - 2026-11-22T09:54:44Z friendly-jade-stoat → todo
+- 2026-11-23T08:23:48Z vivid-ginger-heron: changed owner
+- 2026-11-23T08:23:48Z vivid-ginger-heron todo → doing
