@@ -9,7 +9,7 @@ created: 2026-11-23
 
 ## Description
 
-Workers in taidy (`pi` with `gpt-6.1-terra` under `chitty run --mode work`, 2026-11-22) set TASK-12, TASK-24 and TASK-30 to `blocked` with notes such as "this worker has insufficient execution budget". The claims were false: each session had used 11-17 thousand tokens and made no edits, and nothing in the prompt mentions a budget. Under 0.7.0 the same tickets ran, but the model still invented a budget limit when it stalled. `blocked` means an external obstacle needing a person, so each false block stalls the loop.
+Workers in taidy (`pi` with `gpt-6.1-terra` under `chitty run --mode work`, 2026-11-22) set three taidy tickets (taidy numbers 12, 24 and 30, not this repository's) to `blocked` with notes such as "this worker has insufficient execution budget". The claims were false: each session had used 11-17 thousand tokens and made no edits, and nothing in the prompt mentions a budget. Under 0.7.0 the same tickets ran, but the model still invented a budget limit when it stalled. `blocked` means an external obstacle needing a person, so each false block stalls the loop.
 
 Change both places a worker reads:
 
@@ -33,3 +33,4 @@ Folded in from TASK-606 (follow-up) and TASK-613: under Chitty 0.7.0 the same TA
 - 2026-11-23T10:27:30Z witty-russet-gannet: changed notes
 - 2026-11-23T10:29:54Z witty-russet-gannet: changed title, labels, owner, description
 - 2026-11-23T10:29:54Z witty-russet-gannet backlog → todo
+- 2026-11-23T10:30:02Z witty-russet-gannet: changed description
