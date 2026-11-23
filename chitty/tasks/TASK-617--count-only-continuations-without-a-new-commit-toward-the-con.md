@@ -1,6 +1,6 @@
 ---
 title: Count only continuations without a new commit toward the continuation cap
-status: doing
+status: review
 created: 2026-11-23
 ---
 
@@ -83,3 +83,4 @@ Strengthened both error-note assertions after review. Both fail against the orig
 - 2026-11-23T11:40:19Z eager-violet-dormouse review → doing
 - 2026-11-23T11:46:19Z honest-ebony-gannet: wrote the plan
 - 2026-11-23T11:49:04Z honest-ebony-gannet: changed notes, summary
+- 2026-11-23T11:51:11Z honest-ebony-gannet doing → review
