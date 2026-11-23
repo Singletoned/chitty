@@ -16,8 +16,11 @@ Children: configurable priorities (two tickets, no design decision needed); a de
 
 Suggestion origin: /Users/singletoned/src/singletoned/todo
 
+Decided with the person, 2026-11-23: `priorities` is an ordered list, highest first, in which `""` marks where tickets with no priority rank (default `["high", "medium", "", "low"]`). Named sets, such as t-shirt sizes, may come later as shorthand for a list. The same approach (a list that defines the order) is a likely model for statuses in TASK-634.
+
 ## History
 
 - 2026-11-23T10:23:57Z witty-russet-gannet → backlog
 - 2026-11-23T10:23:59Z witty-russet-gannet: changed notes
 - 2026-11-23T10:40:37Z witty-russet-gannet: changed title, description
+- 2026-11-23T12:39:09Z witty-russet-gannet: changed notes
