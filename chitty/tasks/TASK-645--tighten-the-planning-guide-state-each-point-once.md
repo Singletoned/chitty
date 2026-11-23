@@ -1,6 +1,6 @@
 ---
 title: "Tighten the planning guide: state each point once"
-status: doing
+status: review
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -29,6 +29,22 @@ Rules for this tightening:
 - Do not move rules to other files unless this ticket says to.
 - In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
 
+## Summary
+
+Tightened `src/chitty/roles/plan.md` (1,325 to 1,309 words), as it stands after `TASK-615`:
+
+- "Ask of each criterion" now ends "say which test must fail without the fix, because a nearby test may already pass."
+- Merged the wrong-versions bullet and the generator-recipe bullet into one. Its lead line is "When the code a ticket tests already exists, a stub cannot show the tests fail without the change:", with nested points for wrong versions, example-based tests, property tests, and running the generator recipes before the cold read.
+- Tightened the sufficiency-read bullet's wording. Its steps are the same: each criterion and the whole ticket, a counterexample, a distinguishing test with its observable result, criterion wording, prefer a property, no speculative features, ask about odd behaviour.
+- `<!-- property-signals -->` has not moved. The split rules in "Write tickets that a fresh agent" and the third-read split are unchanged.
+
+Sentences removed outright, and where their point lives:
+- Standalone bullet "Say which test must fail without the fix, because a nearby test may already pass." -> the "Ask of each criterion" bullet, with its reason.
+- "Split rather than exceed about five criteria." (in "Before moving to `todo`") -> "`chitty check` warns above five criteria; split larger work." in "Write tickets that a fresh agent".
+- "When the code already exists, run each specified generator recipe..." -> reworded as the last nested point of the merged existing-code bullet.
+
+Verification: `make check`, run by `chitty edit -s review`.
+
 ## History
 
 - 2026-11-23T12:35:06Z friendly-zinc-dormouse → planning
@@ -40,3 +56,5 @@ Rules for this tightening:
 - 2026-11-23T12:45:15Z friendly-zinc-dormouse planning → todo
 - 2026-11-23T14:36:10Z plucky-indigo-eel: changed owner
 - 2026-11-23T14:36:10Z plucky-indigo-eel todo → doing
+- 2026-11-23T14:45:52Z plucky-indigo-eel: changed summary
+- 2026-11-23T14:45:52Z plucky-indigo-eel doing → review
