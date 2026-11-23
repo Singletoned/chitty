@@ -26,7 +26,10 @@ Related, already sent: "Requeue instead of blocking when a worker blocks on its 
 
 Suggestion origin: taidy
 
+Folded in from TASK-606 (follow-up) and TASK-613: under Chitty 0.7.0 the same TASK-24 ran in one session, but the model still invented a budget limit when it stalled, so the guide and prompt wording is still needed. The runner requeue half of TASK-613 is covered by TASK-617.
+
 ## History
 
 - 2026-11-23T10:24:24Z witty-russet-gannet → backlog
 - 2026-11-23T10:24:25Z witty-russet-gannet: changed notes
+- 2026-11-23T10:27:30Z witty-russet-gannet: changed notes
