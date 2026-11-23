@@ -177,6 +177,15 @@ def changed_paths(root: Path, base: str, branch: str) -> list[PurePosixPath]:
     return [PurePosixPath(path.decode()) for path in result.stdout.split(b"\0") if path]
 
 
+def paths_between(root: Path, old: str, new: str) -> list[PurePosixPath]:
+    """Return paths whose committed contents differ between two revisions."""
+    result = subprocess.run(
+        ["git", "diff", "-z", "--no-renames", "--name-only", old, new],
+        cwd=root, capture_output=True, check=True,
+    )
+    return [PurePosixPath(path.decode()) for path in result.stdout.split(b"\0") if path]
+
+
 def branch_commits(root: Path, main_branch: str) -> list[Commit]:
     """Return non-merge commits unique to HEAD, oldest first."""
     shas = _git(root, "rev-list", "--no-merges", "--reverse", f"{main_branch}..HEAD").splitlines()

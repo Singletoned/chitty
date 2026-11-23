@@ -743,6 +743,11 @@ def _run_ticket_with_log(
     return RunResult(action, old_status, new_status)
 
 
+def continuation_step(progress: Sequence[bool], cap: int) -> Literal["continue", "stop"]:
+    """Stop after more than cap consecutive idle sessions."""
+    return "stop" if len(progress) > cap and not any(progress[-(cap + 1):]) else "continue"
+
+
 def _agent_sessions(
     main_repo: Repo,
     action: NextAction,
@@ -756,9 +761,13 @@ def _agent_sessions(
 ) -> str:
     """Run the agent, continuing it while its ticket stays unchanged; return the new status."""
     continuations = 0
+    progress: list[bool] = []
+    ticket_directories = [PurePosixPath(context.directory.relative_to(main_repo.root).as_posix())
+                          for context in main_repo.contexts()]
     command = agent_command
     while True:
         continuing = continuations > 0
+        before = git.ref_commit(worktree, "HEAD")
         _run_session(
             main_repo,
             action,
@@ -776,9 +785,19 @@ def _agent_sessions(
             return new_status
         if status_outcome(old_status, new_status) != "unchanged":
             return new_status
-        if continuations == MAX_CONTINUATIONS or not _accepts_prompt(main_repo, agent):
+        after = git.ref_commit(worktree, "HEAD")
+        progress.append(bool(before and after and before != after and has_work_beyond_tickets(
+            git.paths_between(worktree, before, after), ticket_directories
+        )))
+        if continuation_step(progress, MAX_CONTINUATIONS) == "stop" or not _accepts_prompt(main_repo, agent):
+            idle = 0
+            for made_progress in reversed(progress[:-1]):
+                if made_progress:
+                    break
+                idle += 1
             raise ChittyError(
-                f"{action.id} was unchanged; only committed changes are visible to `chitty run`"
+                f"{action.id} is still `{new_status}` after {idle} continuations with no new work committed; "
+                "only committed changes are visible to `chitty run`"
             )
         continuations += 1
         command = _agent_command(

@@ -104,6 +104,49 @@ class TestRunContinue(CliTestCase):
         result = self.run_cli("run", "--ticket", ticket)
         self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 6)
+        self.assertIn(
+            "after 5 continuations with no new work committed",
+            str(self.json("show", ticket)["notes"]),
+        )
+
+    def test_productive_sessions_continue(self):
+        ticket = self.ticket()
+        self.write_fake(f"""
+count = len(Path({str(self.invocations)!r}).read_text().splitlines())
+if count <= 7:
+    name = f"work-{{count}}"
+    Path(name).write_text(name)
+    subprocess.run(["git", "add", name], check=True)
+else:
+    text = text.replace("status: doing", "status: review")
+""")
+        result = self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(result.stdout, f"{ticket}: doing → review\n")
+        self.assertEqual(len(self.invocations_seen()), 8)
+
+    def test_notes_are_not_progress(self):
+        ticket = self.ticket()
+        self.write_fake('subprocess.run(["chitty", "note", ticket, "idle"], check=True)')
+        result = self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
+        self.assertEqual(len(self.invocations_seen()), 6)
+        self.assertIn(
+            "after 5 continuations with no new work committed",
+            str(self.json("show", ticket)["notes"]),
+        )
+
+    def test_amended_commit_is_not_progress(self):
+        ticket = self.ticket()
+        self.write_fake("""
+if not continued:
+    Path("work").write_text("work")
+    subprocess.run(["git", "add", "work"], check=True)
+else:
+    subprocess.run(["git", "commit", "--amend", "--no-edit", "--allow-empty"], check=True)
+""")
+        result = self.run_cli("run", "--ticket", ticket)
+        self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
+        self.assertEqual(len(self.invocations_seen()), 7)
 
     def test_command_without_prompt_is_not_continued(self):
         config = self.root / "chitty.toml"
@@ -120,6 +163,10 @@ class TestRunContinue(CliTestCase):
         result = self.run_cli("run", "--ticket", ticket)
         self.assertEqual(result.stdout, f"{ticket}: doing → error\n")
         self.assertEqual(len(self.invocations_seen()), 1)
+        self.assertIn(
+            "after 0 continuations with no new work committed",
+            str(self.json("show", ticket)["notes"]),
+        )
 
     def test_ticket_blocked_when_continued_ends_run_blocked(self):
         ticket = self.ticket()
