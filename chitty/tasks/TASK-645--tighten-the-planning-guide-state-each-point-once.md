@@ -1,6 +1,6 @@
 ---
 title: "Tighten the planning guide: state each point once"
-status: review
+status: done
 labels:
   - untestable
 owner: plucky-indigo-eel
@@ -28,6 +28,10 @@ Rules for this tightening:
 - Keep the advice general: the guides reach every repository that uses Chitty, in any language.
 - Do not move rules to other files unless this ticket says to.
 - In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
+
+## Notes
+
+Reviewed: `src/chitty/roles/plan.md` has the standalone "Say which test must fail" bullet removed and its reason moved into "Ask of each criterion". "Split rather than exceed about five criteria" was dropped and is covered by the `chitty check` warning in "Write tickets that a fresh agent" (line 19 on the branch). The third-read split is unchanged. The wrong-versions and generator-recipe bullets are one bullet with nested points, the sufficiency read keeps every step, and `<!-- property-signals -->` has not moved. No acceptance criteria (`untestable`). `make check` passed (1156 tests) on the combined merge, which includes `TASK-641`'s change to the same file.
 
 ## Summary
 
@@ -58,3 +62,5 @@ Verification: `make check`, run by `chitty edit -s review`.
 - 2026-11-23T14:36:10Z plucky-indigo-eel todo → doing
 - 2026-11-23T14:45:52Z plucky-indigo-eel: changed summary
 - 2026-11-23T14:45:52Z plucky-indigo-eel doing → review
+- 2026-11-23T16:04:13Z kind-zinc-newt: changed notes
+- 2026-11-23T16:04:13Z kind-zinc-newt review → done
