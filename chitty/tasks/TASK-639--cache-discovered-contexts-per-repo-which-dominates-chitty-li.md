@@ -33,6 +33,10 @@ Add focused cache tests and verify the regression on the baseline; cache discove
 
 Planner, 2026-11-23: a cold read found nothing serious. Clarified the test setups (when the wrapper is installed, two `Repo` objects for the invalidation case, and that the copy guard passes on `main`), the `cwd` for the comparison, and a check that directory-changing writes invalidate. `tmp/before` needs no ruff exclusion: `tmp/` is gitignored, and ruff skips gitignored files.
 
+Baseline tests on unchanged main code: `pytest -q tests/test_discovered_contexts_cache.py` gave 2 failures (cache call count 1; stale instance observed extra) and 1 pass (copy guard). After fix: 3 passed. Checked directory mutations: `Repo._set_archived` invalidates after mkdir and rename; `Repo._write` invalidates after mkdir and write. Other mkdir/rmdir occurrences are module-level initialization or rollback, not Repo methods.
+
+Comparison: three baseline real times 9.086, 8.744, 8.868 seconds; three changed real times 4.793, 4.922, 4.964 seconds. Initial diff reflected concurrent TASK-626 status change; rerunning both commands without intervening ticket commits gave empty diff. `make check` passed (1175 tests, 819 subtests).
+
 ## History
 
 - 2026-11-23T12:07:54Z witty-russet-gannet → planning
@@ -42,3 +46,4 @@ Planner, 2026-11-23: a cold read found nothing serious. Clarified the test setup
 - 2026-11-23T12:10:21Z witty-russet-gannet cold-read → todo
 - 2026-11-23T12:25:07Z golden-ochre-yellowhammer todo → doing
 - 2026-11-23T12:27:22Z golden-ochre-yellowhammer: wrote the plan
+- 2026-11-23T12:31:17Z golden-ochre-yellowhammer: changed notes
