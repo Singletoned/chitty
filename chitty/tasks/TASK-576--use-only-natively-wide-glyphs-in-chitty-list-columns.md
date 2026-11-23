@@ -1,6 +1,6 @@
 ---
 title: Use only natively wide glyphs in chitty list columns
-status: cold-read
+status: planning
 labels:
   - needs-minor
 created: 2026-11-22
@@ -36,7 +36,9 @@ The JSON `skipped` strings change with them (`🙋 untestable`, `💔 <message>`
 `docs/plan/cli.md` and `docs/plan/next-action-and-runner.md` (find them with
 `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md`; known
 inline uses include `tests/test_property_next.py` lines 140, 152, 161 and
-166 and `tests/test_list_untestable.py` line 12). Leave `_columns` as it is.
+166 and `tests/test_list_untestable.py` line 12). Leave `_columns` as it is. (Line numbers are from `main` before this branch; find code by name.)
+
+Status on 2026-11-23: the branch already swaps the glyphs and updates docs and expectations. Two pieces remain: `skip_reason` in `src/chitty/selection.py` still returns the literal `"👤 human"` for human context or owner, which must use `HUMAN_GLYPH`; and the alignment test in `tests/test_list_glyphs.py` still measures with `_columns`, which must be replaced as described below.
 
 Every glyph in a skip string in `src/chitty/selection.py` must come from a
 module constant (no inline glyph literals), so the test below sees them all:
@@ -74,9 +76,9 @@ stay aligned.
 ## Acceptance Criteria
 
 - [ ] No glyph in the `chitty list` status, priority or skip columns is a narrow character or uses U+FE0F; shown by `tests/test_list_glyphs.py`, which fails before the change.
-- [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing.
+- [ ] README and `docs/plan/` show the new glyphs; `grep -rn "⬆️\|⏺️\|⬇️\|✍️\|⚠️\|▶" src tests docs README.md` prints nothing, and `grep -n "\"👤" src/chitty/selection.py` prints nothing.
 - [ ] `make check` passes.
-- [ ] A row with no priority and a row with `⏫` start their titles at the same column under the test's own terminal width function, not `_columns`; shown by the alignment test, which fails before the change
+- [ ] A row with no priority and a row with `⏫` start their titles at the same column, measured with the width rule in the Description (East Asian Width `W` or `F` counts 2, U+FE0F and combining characters 0, anything else 1), not `_columns`; shown by the alignment test, which fails before the change (titles at columns 21 and 22 on `main`).
 
 ## Plan
 
@@ -115,3 +117,5 @@ Replaced list and skip glyphs with wide characters, centralized skip constants, 
 - 2026-11-22T15:31:22Z upbeat-silver-marten review → planning
 - 2026-11-23T23:06:32Z mellow-amber-toad: changed description, acceptance criteria
 - 2026-11-23T23:06:32Z mellow-amber-toad planning → cold-read
+- 2026-11-23T23:09:13Z mellow-amber-toad: changed description, acceptance criteria
+- 2026-11-23T23:09:13Z mellow-amber-toad cold-read → planning
