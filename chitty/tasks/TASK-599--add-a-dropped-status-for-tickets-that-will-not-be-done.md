@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: error
+status: todo
 labels:
   - needs-minor
 priority: high
@@ -78,6 +78,8 @@ last session: exit 0 after 11s
 I have not completed TASK-599. It remains in `doing`; I cannot honestly classify it as ready for review, defective, or externally blocked.
 ```
 
+Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before `work_model = "openai-codex/gpt-6-luna"` landed in `chitty.toml` (`0ce50010`). The branch has no code yet.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -131,3 +133,5 @@ I have not completed TASK-599. It remains in `doing`; I cannot honestly classify
 - 2026-11-23T19:42:04Z daring-hazel-eel: changed notes
 - 2026-11-23T19:43:01Z daring-hazel-eel: changed notes
 - 2026-11-23T19:43:01Z daring-hazel-eel doing → error
+- 2026-11-23T23:08:17Z friendly-coral-badger: changed notes
+- 2026-11-23T23:08:17Z friendly-coral-badger error → todo
