@@ -1,9 +1,9 @@
 ---
 title: Tell agents to branch from `main` as `plan/` or `hotfix/` instead of committing on it
-status: todo
+status: doing
 labels:
   - untestable
-owner: untestable
+owner: friendly-zinc-dormouse
 created: 2026-11-23
 ---
 
@@ -35,3 +35,5 @@ Suggestion origin: chitty
 - 2026-11-23T10:24:00Z witty-russet-gannet: changed notes
 - 2026-11-23T10:54:18Z witty-russet-gannet: changed title, labels, owner, description
 - 2026-11-23T10:54:18Z witty-russet-gannet backlog → todo
+- 2026-11-23T12:01:28Z friendly-zinc-dormouse: changed owner
+- 2026-11-23T12:01:28Z friendly-zinc-dormouse todo → doing
