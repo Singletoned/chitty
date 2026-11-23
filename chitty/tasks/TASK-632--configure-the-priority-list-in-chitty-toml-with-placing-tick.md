@@ -1,6 +1,6 @@
 ---
 title: Configure the priority list in `chitty.toml`, with `""` placing tickets that have none
-status: planning
+status: cold-read
 labels:
   - needs-minor
 parent: TASK-607
@@ -95,3 +95,4 @@ Planning blocker: the list-display requirement contradicts its prescribed test. 
 - 2026-11-23T19:28:07Z witty-yellow-vole planning → cold-read
 - 2026-11-23T19:37:19Z witty-yellow-vole: changed description, acceptance criteria
 - 2026-11-23T19:37:19Z witty-yellow-vole cold-read → planning
+- 2026-11-23T19:37:29Z witty-yellow-vole planning → cold-read
