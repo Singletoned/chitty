@@ -40,6 +40,10 @@ Docs: the `- Statuses:` bullet in `docs/plan/task-file.md` (below the `## Frontm
 - [ ] List, archive, revive and dependency: the `tests/test_status_dropped.py` cases for `chitty list`, `-s dropped` and `--all`, `chitty archive` leaving the dropped ticket, `-s todo` from `dropped`, the dependent `TASK-2` and the round-trip pass, and fail before the change (some only because `dropped` cannot be parsed yet). Record both runs in a note
 - [ ] Summary rules: the `tests/test_status_dropped.py` cases for the summary refusals (none, `""`, whitespace, a whitespace-only Summary in the file), `-s dropped` and `--summary ""` on a dropped ticket, `--note` on a dropped ticket with no Summary, and the `add -s dropped` refusal pass, each asserting its message, and fail before the change. Record both runs in a note
 
+## Plan
+
+Add regression coverage for dropped status before implementing model, edit and archive validation; update the status documentation, run formatting and checks, then hand off for review.
+
 ## Notes
 
 Planning blocker: the archive requirements cover both archive commands without restricting the archive configuration, but the specified tests use only the default move mode. In `src/chitty/store.py`, `_archive` calls `_delete_done` for `archive = "delete"`, and `_delete_done` rejects every status other than `done` and removes dependency references on deletion. Please specify the intended dropped-ticket behavior in delete mode and the fixture, action and assertions for both explicit-ID and bulk archive, including dependent tickets. This matters because the ticket also says a dependency on a dropped ticket stays blocked and nothing else changes. The explicit-ID archive and `list --all` requirements also lack described test cases; please specify their fixture, action and assertions. The same-status dropped edit requirement has no described test for its behavior, including whether a missing or removed summary is allowed; please specify that test and resolve the interaction with the summary rule.
@@ -81,3 +85,4 @@ Planner, 2026-11-23: a cold read found nothing blocking. Added a case for a whit
 - 2026-11-23T12:06:14Z witty-russet-gannet: changed description, acceptance criteria, notes
 - 2026-11-23T12:06:14Z witty-russet-gannet planning → todo
 - 2026-11-23T12:19:34Z jolly-teal-quail todo → doing
+- 2026-11-23T12:22:57Z jolly-teal-quail: wrote the plan
