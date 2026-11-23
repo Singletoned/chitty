@@ -22,7 +22,7 @@ Out of scope: detecting why an agent could not start, and warning in `chitty ini
 ## Acceptance Criteria
 
 - [ ] A pure function `stalled_agent_message(first_line, seconds, returncode, output)` in `src/chitty/run.py` is tested with Hypothesis in a new file `tests/test_property_stalled_agent_message.py`: for any output text (including empty, whitespace-only, carriage-return, form-feed and Unicode line-separator characters, no trailing newline, and more than 40 lines) and any integer return code, the result starts with the line `first_line`, contains `last session: exit <returncode> after <seconds>s`, and ends with exactly the last `min(40, len(output.splitlines()))` lines of `output.splitlines()`; empty output gives `(no output)`.
-- [ ] In `tests/test_run_continue.py`, a new fake-agent `edit` snippet (passed to `write_fake`, like `NO_CHANGE`) prints `OLD_MARKER` to stdout when not continued and `STALL_MARKER` when continued (`continued` in `FAKE_AGENT`), and never changes the ticket. `run --ticket` ends with the ticket in `error`; its newest note has the stop message (`is still `doing` after`) in its `Runner error` heading and a fenced block containing `last session: exit 0` and `STALL_MARKER`, and not `OLD_MARKER`. This fails on `main`, whose note has no agent output.
+- [ ] In `tests/test_run_continue.py`, a new fake-agent `edit` snippet (passed to `write_fake`, like `NO_CHANGE`) prints `OLD_MARKER` to stdout when not continued and `STALL_MARKER` when continued (`continued` in `FAKE_AGENT`), and never changes the ticket. `run --ticket` ends with the ticket in `error`; its newest note's first line is `Runner error (agent): ` followed by the stop message from `_agent_sessions` (it contains `continuations with no new work committed`), and the note has a fenced block containing `last session: exit 0` and `STALL_MARKER`, and not `OLD_MARKER`. This fails on `main`, whose note has no agent output.
 - [ ] `test_command_without_prompt_is_not_continued` (`tests/test_run_continue.py`) also asserts the note contains `last session: exit 0 after`.
 
 ## Notes
@@ -46,3 +46,4 @@ Planning: relies on TASK-617 (its stop rule, 6-invocation cap and message). When
 - 2026-11-23T10:38:29Z witty-russet-gannet cold-read → planning
 - 2026-11-23T13:38:33Z youthful-quartz-zander: changed description
 - 2026-11-23T13:38:39Z youthful-quartz-zander: changed acceptance criteria
+- 2026-11-23T13:38:56Z youthful-quartz-zander: changed acceptance criteria
