@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to `doing` when its landing check fails after a clean rebase
-status: todo
+status: doing
 created: 2026-11-23
 ---
 
@@ -50,3 +50,4 @@ Escalation split out to TASK-625: until it lands, a ticket whose landing check k
 - 2026-11-23T10:44:04Z witty-russet-gannet: changed description, acceptance criteria
 - 2026-11-23T10:44:04Z witty-russet-gannet cold-read → planning
 - 2026-11-23T10:44:06Z witty-russet-gannet planning → todo
+- 2026-11-23T10:55:41Z golden-dusky-puffin todo → doing
