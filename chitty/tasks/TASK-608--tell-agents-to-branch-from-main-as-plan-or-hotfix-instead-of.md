@@ -1,6 +1,6 @@
 ---
 title: Tell agents to branch from `main` as `plan/` or `hotfix/` instead of committing on it
-status: doing
+status: review
 labels:
   - untestable
 owner: friendly-zinc-dormouse
@@ -29,6 +29,14 @@ Out of scope: code that treats `hotfix/` branches specially; a `chitty land` com
 
 Suggestion origin: chitty
 
+## Summary
+
+Added one paragraph to `src/chitty/guide.md`, the managed block: never commit your changes on `main`; branch from it in a worktree as `task-<n>`, `plan/<name>` or `hotfix/<name>`, run the checks, then fast-forward `main`. It is kept to 23 words because `tests/test_guide_word_budget.py` caps `guide.md` at 75 (now exactly 75). It says "your changes", so Chitty's own ticket writes on `main` are left to `TASK-340`.
+
+Recorded the decision and the three prefixes under Concurrency in `docs/plan/pipeline-and-feedback.md`. Updated the pinned snapshot in `tests/fixtures/guide-runner-expected.md` and the end marker of the tickets-only block in `tests/test_guide_workflow_block.py`. The marker is renamed `TICKETS_TEXT_END` because the block is no longer one paragraph.
+
+Verification: `make check` passed (1170 tests). Follow-up: this repository's own `AGENTS.md` block updates when the main checkout's `chitty init` upgrades it after landing.
+
 ## History
 
 - 2026-11-23T10:23:59Z witty-russet-gannet → backlog
@@ -37,3 +45,5 @@ Suggestion origin: chitty
 - 2026-11-23T10:54:18Z witty-russet-gannet backlog → todo
 - 2026-11-23T12:01:28Z friendly-zinc-dormouse: changed owner
 - 2026-11-23T12:01:28Z friendly-zinc-dormouse todo → doing
+- 2026-11-23T12:18:35Z friendly-zinc-dormouse: changed summary
+- 2026-11-23T12:18:35Z friendly-zinc-dormouse doing → review
