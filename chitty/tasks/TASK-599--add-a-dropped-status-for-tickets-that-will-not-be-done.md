@@ -1,6 +1,6 @@
 ---
 title: Add a `dropped` status for tickets that will not be done
-status: doing
+status: planning
 labels:
   - needs-minor
 priority: high
@@ -80,6 +80,8 @@ I have not completed TASK-599. It remains in `doing`; I cannot honestly classify
 
 Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before `work_model = "openai-codex/gpt-6-luna"` landed in `chitty.toml` (`0ce50010`). The branch has no code yet.
 
+Planning blockers confirmed by the ticket text and CLI behavior. The Description explicitly resolves both previously reported issues: round-trip test must include `dropped` explicitly (`("dropped", *STATUSES)`), and sequential `chitty add` without `-d` retains today's usage error; add tests use `-d x`. These are no longer blockers. However, task requires before-change test evidence for a large matrix, implementation, docs, and make check; it is doable, so proceed rather than planning. This status change is not appropriate; restoring doing.
+
 ## History
 
 - 2026-11-22T22:09:08Z plucky-umber-wren → cold-read
@@ -136,3 +138,5 @@ Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before 
 - 2026-11-23T23:08:17Z friendly-coral-badger: changed notes
 - 2026-11-23T23:08:17Z friendly-coral-badger error → todo
 - 2026-11-23T23:13:28Z friendly-khaki-lapwing todo → doing
+- 2026-11-23T23:16:56Z friendly-khaki-lapwing: changed owner, notes
+- 2026-11-23T23:16:56Z friendly-khaki-lapwing doing → planning
