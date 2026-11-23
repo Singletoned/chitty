@@ -1,6 +1,6 @@
 ---
 title: Show the ticket ID and a repo-relative path in `chitty run` progress lines
-status: cold-read
+status: planning
 created: 2026-11-23
 ---
 
@@ -10,19 +10,19 @@ created: 2026-11-23
 
 Change:
 
-- Add a pure function `display_path(path: Path, main_root: Path) -> str` to `run.py`: the path relative to `main_root` when it is inside it, otherwise `str(path)` unchanged. Compare the paths as given, without resolving symlinks; callers already pass resolved paths.
+- Add a pure function `display_path(path: Path, main_root: Path) -> str` to `run.py`: the path relative to `main_root` when it is inside it, otherwise `str(path)` unchanged. Compare the paths as given, without resolving symlinks or `..`; callers already pass resolved paths (`git.main_checkout`, `_worktree`, `git_common_dir` all resolve). `path == main_root` gives `.`. A log under a Git directory outside the main checkout (separate git dir) is printed absolute; that fallback is intended. For the check line, pass the main checkout of `branch_repo` (as `git.main_checkout` returns it), not `branch_repo.root.parent`, which is wrong for a worktree elsewhere.
 - The check line becomes `<ID>: running check in <display_path(worktree)>...`, for example `TASK-4: running check in .worktrees/task-4...`.
 - The log line becomes `log: <display_path(log path)>`. Logs live under the Git common directory (`log_path`, `run.py:446`), which is `.git` inside the main checkout in the usual layout.
 
-Worktrees are created under `<main checkout>/.worktrees/` (`run.py:493`, `run.py:1215`). Update the existing assertions in `tests/test_run_progress.py` that match the old wording.
+Worktrees are created under `<main checkout>/.worktrees/` (`run.py:493`, `run.py:1215`). Update every existing test that matches `Running check` or parses the `log:` line as an absolute path: `tests/test_run_progress.py` (lines 12 and 26), `tests/test_next.py:1335`, `tests/test_run_log.py` (`one_log`, about lines 73-80) and `tests/test_review_rebase_session.py` (about lines 96-102). Resolve the relative `log:` path against the main checkout in those helpers.
 
 Out of scope: other runner messages.
 
 ## Acceptance Criteria
 
-- [ ] A Hypothesis property test of `display_path(path, main_root)` draws path segments (including spaces and non-ASCII letters) and builds paths both inside and outside `main_root`; it asserts that a path inside gives a relative string with `main_root / result == path`, and a path outside gives `str(path)`.
+- [ ] A Hypothesis property test of `display_path(path, main_root)` in a new file `tests/test_display_path.py` draws path segments (letters including non-ASCII, spaces; never `.` or `..`). Inside paths are `main_root` joined with 0 or more segments; outside paths include a sibling sharing a name prefix (`main_root.name + "-x"`) and unrelated roots. It asserts an inside path gives a relative string with `main_root / result == path` (`.` for `main_root` itself), and an outside path gives `str(path)`. A string-prefix implementation fails on the sibling case.
 - [ ] `tests/test_run_progress.py` asserts the review-mode check line is exactly `TASK-1: running check in .worktrees/task-1...` (with `task-1` the worktree name the fixture creates); this assertion fails on `main` today.
-- [ ] A test asserts that the `log:` line `chitty run` prints after a run names a path relative to the main checkout, starting `.git/chitty/run/TASK-1-`.
+- [ ] In `tests/test_run_progress.py` on `ReviewMergeTestCase`, a test asserts that the `log:` line printed after a review run is relative and starts `.git/chitty/run/TASK-1-`; it fails on `main`.
 
 ## Notes
 
@@ -36,3 +36,5 @@ Suggestion origin: taidy
 - 2026-11-23T10:30:28Z witty-russet-gannet backlog → planning
 - 2026-11-23T10:30:36Z witty-russet-gannet: changed description
 - 2026-11-23T10:30:36Z witty-russet-gannet planning → cold-read
+- 2026-11-23T10:33:03Z witty-russet-gannet: changed description, acceptance criteria
+- 2026-11-23T10:33:03Z witty-russet-gannet cold-read → planning
