@@ -1,6 +1,6 @@
 ---
 title: "Add a `difficulty` field to tickets: `low`, `medium` or `high`"
-status: doing
+status: planning
 parent: TASK-308
 created: 2026-11-12
 ---
@@ -59,6 +59,8 @@ I verified and recorded one pre-fix failure: the ticket strategy cannot generate
 
 Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before `work_model = "openai-codex/gpt-6-luna"` landed in `chitty.toml` (`0ce50010`). The branch has no code yet.
 
+Implementation has not begun despite the existing scope. The requested end-to-end field spans model, store, CLI, MCP, property strategies, tests and documentation and is too large to complete reliably in one session. Decision needed: split TASK-311 into smaller tickets (core model/store/CLI and tests; MCP and strategy/docs), or explicitly retain it as one implementation ticket for a fresh session.
+
 ## History
 
 - 2026-11-12T21:44:03Z kind-yellow-vole → backlog
@@ -79,3 +81,5 @@ Requeued 2026-11-23: the stall ran on `gpt-6.1-terra` (Pi session logs), before 
 - 2026-11-23T23:08:22Z friendly-coral-badger error → todo
 - 2026-11-23T23:18:41Z plucky-khaki-wren todo → doing
 - 2026-11-23T23:21:06Z plucky-khaki-wren: wrote the plan
+- 2026-11-23T23:23:48Z plucky-khaki-wren: changed owner, notes
+- 2026-11-23T23:23:48Z plucky-khaki-wren doing → planning
