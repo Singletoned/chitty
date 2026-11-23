@@ -1,9 +1,9 @@
 """Cross-file validation: every file parses, IDs are unique, references resolve."""
 
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Literal
 
 from markdown_it import MarkdownIt
@@ -13,6 +13,20 @@ from chitty.errors import ChittyError
 from chitty.ids import TaskId
 from chitty.model import SectionName, Task, parse
 from chitty.store import Context, Repo, scan
+
+
+def unfinished_landed(
+    commits: Sequence[git.TrailerCommit], statuses: Mapping[TaskId, str],
+    ticket_directories: Sequence[PurePosixPath],
+) -> dict[TaskId, str]:
+    result: dict[TaskId, str] = {}
+    for commit in commits:
+        if commit.subject.startswith("chitty: ") or not git.has_work_beyond_tickets(commit.paths, ticket_directories):
+            continue
+        for task_id in commit.task_ids:
+            if task_id in statuses and statuses[task_id] != "done":
+                result.setdefault(task_id, commit.sha)
+    return result
 
 
 @dataclass(frozen=True)

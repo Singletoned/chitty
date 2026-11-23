@@ -4,7 +4,7 @@ from pathlib import PurePosixPath
 from hypothesis import given
 from hypothesis import strategies as st
 
-from chitty.run import has_work_beyond_tickets
+from chitty.git import has_work_beyond_tickets
 
 segments = st.text(alphabet="abcXYZ012_-é", min_size=1, max_size=8)
 paths = st.lists(segments, min_size=1, max_size=4).map(lambda parts: PurePosixPath(*parts))

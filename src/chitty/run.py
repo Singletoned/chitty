@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 import tomllib
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -40,6 +40,7 @@ from chitty.config import (
     version_key,
 )
 from chitty.errors import NO_NEXT_TICKET_EXIT, ChittyError, ManagedGuideError, NoNextTicket
+from chitty.git import has_work_beyond_tickets
 from chitty.ids import ID_RE, TaskId
 from chitty.store import (
     AGENTS_FILE,
@@ -110,17 +111,6 @@ def _only_ticket_paths(paths: Sequence[str], contexts: Sequence[str]) -> bool:
     """Whether paths are all beneath a configured context's ticket directory."""
     directories = tuple(f"chitty/{name}/" for name in contexts)
     return all(path.startswith(directories) for path in paths)
-
-
-def has_work_beyond_tickets(
-    changed_paths: Iterable[PurePosixPath], ticket_directories: Iterable[PurePosixPath]
-) -> bool:
-    """Whether a branch changes any path outside all ticket directories."""
-    directories = tuple(ticket_directories)
-    return any(
-        not any(path.is_relative_to(directory) for directory in directories)
-        for path in changed_paths
-    )
 
 
 def agent_exit(

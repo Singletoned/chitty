@@ -3,7 +3,7 @@
 import os
 import re
 import subprocess
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
@@ -89,6 +89,17 @@ class Commit:
 
     sha: str
     message: str
+
+
+def has_work_beyond_tickets(
+    changed_paths: Iterable[PurePosixPath], ticket_directories: Iterable[PurePosixPath]
+) -> bool:
+    """Whether a branch changes any path outside all ticket directories."""
+    directories = tuple(ticket_directories)
+    return any(
+        not any(path.is_relative_to(directory) for directory in directories)
+        for path in changed_paths
+    )
 
 
 def commits_missing_trailer(commits: Sequence[Commit], task_id: TaskId) -> list[Commit]:
