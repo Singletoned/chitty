@@ -1,6 +1,8 @@
 ---
 title: renumber and move both refuse to give a provisional ID a sequential number on main
 status: backlog
+labels:
+  - bug
 created: 2026-11-24
 ---
 
@@ -16,3 +18,4 @@ Suggestion origin: echonomicon
 
 - 2026-11-24T22:21:23Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:24Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:36Z zesty-coral-newt: changed labels
