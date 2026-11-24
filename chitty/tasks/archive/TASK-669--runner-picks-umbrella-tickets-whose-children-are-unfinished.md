@@ -22,3 +22,4 @@ Decided with the person, 2026-11-24: no change. `depends_on` already keeps a tic
 - 2026-11-24T22:21:33Z zesty-coral-newt: changed notes
 - 2026-11-24T23:10:58Z zesty-coral-newt: changed notes
 - 2026-11-24T23:20:35Z zesty-coral-newt: changed notes
+- 2026-11-24T23:20:38Z zesty-coral-newt backlog → archived
