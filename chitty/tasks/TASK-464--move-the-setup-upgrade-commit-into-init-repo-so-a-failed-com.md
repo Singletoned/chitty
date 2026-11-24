@@ -40,6 +40,10 @@ Probed while planning with this recipe: the extended property fails on `main` in
 - [ ] The new `TestInit` test passes, and fails against W2; a note records the run
 - [ ] `make check` passes
 
+## Plan
+
+Move setup commits into init_repo; extend restoration and init tests; verify regression cases and full checks.
+
 ## History
 
 - 2026-11-19T21:17:37Z sunny-white-dormouse → backlog
@@ -51,3 +55,4 @@ Probed while planning with this recipe: the extended property fails on `main` in
 - 2026-11-24T08:00:23Z kind-navy-toad: changed description
 - 2026-11-24T08:00:23Z kind-navy-toad cold-read → todo
 - 2026-11-24T08:41:30Z lively-hazel-kestrel todo → doing
+- 2026-11-24T08:44:57Z lively-hazel-kestrel: wrote the plan
