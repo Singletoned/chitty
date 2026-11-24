@@ -1,6 +1,8 @@
 ---
 title: Work model fakes an exhausted budget and the forced-status prompt sends tickets to planning
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ Evidence from echonomicon, 2026-11-24, pi session ~/.pi/agent/sessions/--Users-s
 
 Suggestion origin: echonomicon
 
+Duplicate: merged into TASK-686 (sound tickets returned to planning), TASK-676 (leftover uncommitted edits) and TASK-585 (stall detection); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:49Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:50Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:42Z zesty-coral-newt: changed labels, notes
