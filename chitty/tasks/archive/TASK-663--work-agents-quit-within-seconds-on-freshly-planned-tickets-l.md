@@ -21,3 +21,4 @@ Duplicate of TASK-562 (work agents stop early on larger tickets); the evidence i
 - 2026-11-24T22:21:26Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:27Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:49Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:31Z zesty-coral-newt backlog → archived
