@@ -14,8 +14,11 @@ Suggestion origin: shelfpath
 
 Triage 2026-11-24: needs a decision from the person before planning. Option A: `chitty next` and `chitty run` skip a ticket while any of its children is not `done`; this changes the selection rule for every repository (`needs-minor`), and a parent that has its own work to do first would then need its children re-parented. Option B: no code change; the plan guide says a parent that only verifies its children gets `depends_on` on each child, which selection already honours. The stale run locks in the description are covered by TASK-682.
 
+Decided with the person, 2026-11-24: no change. `depends_on` already keeps a ticket out of selection until its dependencies are `done`; `parent` only groups tickets. A parent that should wait for its children gets `depends_on` on each of them (shelfpath TASK-5 had only `parent`). The stale run locks mentioned here are covered by TASK-682. Archived.
+
 ## History
 
 - 2026-11-24T22:21:32Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:33Z zesty-coral-newt: changed notes
 - 2026-11-24T23:10:58Z zesty-coral-newt: changed notes
+- 2026-11-24T23:20:35Z zesty-coral-newt: changed notes
