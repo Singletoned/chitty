@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: doing
+status: planning
 labels:
   - bug
 priority: medium
@@ -77,6 +77,8 @@ Inspected `parse`, `with_criteria`, `with_criterion_text`, the existing criterio
 
 Planning blocker: Acceptance criterion 1 still says every new test except three specified cases fails against `main`. However, the required `[x] a` test is explicitly expected to pass on main and the ticket says that behavior remains unchanged. The test must pass after the fix but cannot satisfy the stated baseline-failure requirement. Please amend criterion 1 to explicitly exclude `[x] a` (and any other unchanged behavior) from the required baseline failures. No implementation or tests were started because this conflicts with the requested regression verification.
 
+The ticket remains blocked by the acceptance-criterion contradiction documented below: criterion 1 requires every new test except the newline/carriage-return refusals to fail against main, while the required `[x] a` example is explicitly unchanged and passes on main. Please amend criterion 1 to exclude `[x] a` (and other unchanged behavior) from baseline-failure requirements. No implementation or test changes were made; the worktree is clean. The implementation plan was recorded, but this contradiction prevents the required baseline verification from guiding completion.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -122,3 +124,5 @@ Planning blocker: Acceptance criterion 1 still says every new test except three 
 - 2026-11-24T07:44:08Z sunny-hazel-gannet: changed description
 - 2026-11-24T09:18:36Z kind-teal-urchin todo → doing
 - 2026-11-24T09:21:07Z kind-teal-urchin: wrote the plan
+- 2026-11-24T09:21:21Z kind-teal-urchin: changed owner, notes
+- 2026-11-24T09:21:21Z kind-teal-urchin doing → planning
