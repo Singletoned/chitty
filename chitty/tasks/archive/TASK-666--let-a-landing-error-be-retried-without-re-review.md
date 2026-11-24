@@ -23,3 +23,4 @@ Duplicate of TASK-679 (retry landing a passed review after the main checkout was
 - 2026-11-24T22:21:29Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:30Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:29Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:18Z zesty-coral-newt backlog → archived
