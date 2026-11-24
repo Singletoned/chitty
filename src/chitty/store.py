@@ -1020,6 +1020,20 @@ class Repo:
                 raise ChittyError("setting status done requires -s review first")
             if not any(note and note.strip() for note in (edit.note, *edit.notes)):
                 raise ChittyError("moving error → done requires --note with the reason")
+        leaving_doing = (
+            previous_status == "doing"
+            and edit.status is not None
+            and edit.status not in ("doing", "review")
+            and not edit.skip_current_version
+            and self._current_branch() == str(task_id).lower()
+        )
+        if leaving_doing and (uncommitted := git.uncommitted_paths(self.root)):
+            listed = ", ".join(f"`{path}`" for path in uncommitted)
+            raise ChittyError(
+                f"cannot move {task_id} to {edit.status}; the worktree has "
+                f"uncommitted changes: {listed}. Commit or resolve them "
+                "before changing status"
+            )
         entering_review = edit.status == "review" and previous_status != "review"
         passing_review = previous_status == "review" and edit.status == "done"
         if (
