@@ -1,6 +1,6 @@
 ---
 title: Warn in `chitty init` about agent commands without `{prompt}`
-status: cold-read
+status: todo
 created: 2026-11-24
 ---
 
@@ -10,7 +10,7 @@ created: 2026-11-24
 
 On 2026-11-23, five registered repositories (chladnify, circuitry, mullion, shelfpath, spend-model) still had `agent_command = "pi --no-extensions -e ~/.pi/agent/extensions/chitty.ts --chitty-{mode} {id}"`. The README says Chitty no longer manages that Pi extension and recommends `pi -p {prompt}`. `chitty init` upgraded their `chitty_version` from as old as 0.1.35 to 0.7.1 without mentioning the command. In circuitry, every `chitty run` agent from 2026-11-14 09:18 onwards (10 runs) exited in 1.5-3.6 seconds, wrote no Pi session, and was recorded only as "<ID> was unchanged".
 
-`chitty run` still accepts a command with `{mode}` and `{id}` but no `{prompt}` (`_agent_command` in `src/chitty/run.py`, around line 1005), so it gives no sign that anything is wrong.
+`chitty run` still accepts a command with `{mode}` and `{id}` but no `{prompt}` (`_agent_command` in `src/chitty/run.py`, around line 989), so it gives no sign that anything is wrong.
 
 ### Change
 
@@ -26,7 +26,7 @@ Decided: warn, never refuse, and never rewrite the command (`docs/plan/direction
 
 ### Tests
 
-Property, with Hypothesis (this repository's property-testing tool), in a new `tests/test_agent_command_warnings.py`: for any `agent_command` (drawn from `None`, blank strings, and text that does or does not contain `{prompt}`) and any `agent_commands` dict of up to four entries with names from `st.from_regex(r"[a-z]{1,8}", fullmatch=True)`, the result has exactly one line per non-blank command without `{prompt}`. Each line starts with that command's setting name followed by ` has no {prompt}`, `agent_command` comes first, and named entries follow in sorted order. Build the text with and without `{prompt}` by inserting `{prompt}` into a drawn string, so both kinds occur.
+Property, with Hypothesis (this repository's property-testing tool), in a new `tests/test_agent_command_warnings.py`: for any `agent_command` (drawn from `None`, blank strings, and text that does or does not contain `{prompt}`) and any `agent_commands` dict of up to four entries with names from `st.from_regex(r"[a-z]{1,8}", fullmatch=True)`, the result has exactly one line per non-blank command without `{prompt}`. Each line starts with that command's setting name followed by ` has no {prompt}`, `agent_command` comes first, and named entries follow in sorted order. Build the text with and without `{prompt}` by inserting `{prompt}` into a drawn string, so both kinds occur, but decide the expected result from `"{prompt}" in command`, not from how the text was built, since a drawn string can contain `{prompt}` already. Blank means `command.strip() == ""`. A stub that returns `[]` must fail the property.
 
 Example, in `TestInit` in `tests/test_cli.py`: the shared fixture `CONFIG` in `tests/support.py` already has `agent_command = "pi --chitty-{mode} {id}"`, so run `chitty init` and assert exit code 0 and that stderr contains `warning: agent_command has no {prompt}`. Then replace that line in `chitty.toml` with `agent_command = "pi -p {prompt}"`, run `chitty init` again, and assert stderr does not contain `has no {prompt}`. Because the fixture uses the old form, every test that runs `chitty init` will now see the warning on stderr; change `CONFIG` only if an existing test that checks `init`'s exact stderr fails, and then to `pi -p {{prompt}}`, noting each test changed.
 
@@ -36,8 +36,8 @@ Warnings in `chitty run` or `chitty check`; detecting other broken commands; the
 
 ## Acceptance Criteria
 
-- [ ] A new property test in `tests/test_agent_command_warnings.py`, as the Tests section describes, shows `agent_command_warnings` returns exactly one line per non-blank command without `{prompt}`, each starting with its setting name and ` has no {prompt}`, `agent_command` first and named entries in sorted order. It fails without the change (the function does not exist).
-- [ ] A new test in `TestInit` in `tests/test_cli.py` shows `chitty init` exits 0 with `warning: agent_command has no {prompt}` on stderr for the fixture's `pi --chitty-{mode} {id}`, and without `has no {prompt}` after the command is changed to `pi -p {prompt}`. `make check` passes.
+- [ ] A new property test in `tests/test_agent_command_warnings.py`, as the Tests section describes, shows `agent_command_warnings` returns exactly one line per non-blank command without `{prompt}`, each starting with its setting name and ` has no {prompt}`, `agent_command` first and named entries in sorted order. It fails against a stub that returns `[]`.
+- [ ] A new test in `TestInit` in `tests/test_cli.py` shows `chitty init` exits 0 with `warning: agent_command has no {prompt}` on stderr for the fixture's `pi --chitty-{mode} {id}` (this assertion fails today), and without `has no {prompt}` after the command is changed to `pi -p {prompt}`. `make check` passes.
 
 ## Notes
 
@@ -52,3 +52,5 @@ Triage 2026-11-24, merged from TASK-659 (circuitry): with the old command, 10 ci
 - 2026-11-24T22:39:23Z zesty-coral-newt: changed notes
 - 2026-11-24T23:06:21Z zesty-coral-newt: changed title, description, acceptance criteria
 - 2026-11-24T23:06:21Z zesty-coral-newt backlog → cold-read
+- 2026-11-24T23:07:59Z zesty-coral-newt: changed description, acceptance criteria
+- 2026-11-24T23:07:59Z zesty-coral-newt cold-read → todo
