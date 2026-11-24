@@ -1,6 +1,7 @@
 ---
 title: Workers return tickets to planning while noting the ticket has no defect
 status: backlog
+priority: high
 created: 2026-11-24
 ---
 
@@ -24,3 +25,4 @@ Triage 2026-11-24: merged the echonomicon reports of the same problem (gpt-6-lun
 - 2026-11-24T22:21:48Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:49Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:31Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:55Z zesty-coral-newt: changed priority
