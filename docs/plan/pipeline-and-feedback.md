@@ -117,9 +117,12 @@ asking the first.
   the read, and distractor values are built from the drawn value. Property
   tests are the exception (2026-11-23, from echonomicon, where 5 of 11 planned
   wrong versions passed naive generators): the planner runs the generators
-  against each wrong version while planning and fixes any that let one pass,
-  and the worker re-runs them once against each wrong version and records the
-  result in a note. Committed hand-written wrong versions add clutter and drift.
+  against each wrong version while planning and fixes any that let one pass, and
+  the worker re-runs them once against each wrong version and records the result
+  in a note. Committed hand-written wrong versions add clutter and drift. A
+  criterion may mark tests that pin kept behaviour as regression tests, which
+  must pass but need not fail without the change (2026-11-24, after `TASK-598`
+  failed review three times because such tests pass on the merge base).
 - These habits worked on their first use (2026-11-19, `TASK-370`, `TASK-373`,
   `TASK-377`, `TASK-403`, `TASK-404`): checking a claim at the source showed a
   revert was safe; the third-read split caught a claim written without
@@ -197,7 +200,8 @@ asking the first.
 - Then one line per criterion: `<number>: pass - <evidence>` or
   `<number>: fail - <reason>`.
 - A test criterion passes only with evidence that the test fails without the
-  change.
+  change, except a test the criterion marks as a regression test, which only has
+  to pass.
 - A later bug gets label `escape` and a note naming its source ticket.
 
 ## Feedback loops

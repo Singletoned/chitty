@@ -20,7 +20,7 @@ On a ticket branch, never edit `chitty.toml` or Chitty's block in `AGENTS.md`, o
 - Record surprises with `--note`. Format and commit your changes:
   `chitty edit -s review` runs the configured check and refuses if it fails or
   the worktree has uncommitted files. Use `--summary` for handoff, verification, and follow-ups.
-- For a requested regression test, see it fail without the fix and note the
+- For a requested test of a bug fix, see it fail without the fix and note the
   result. If it passes, change the test until it fails without the fix.
 - Set `-s planning` when the ticket cannot guide the work (but see the omission
   exception below):

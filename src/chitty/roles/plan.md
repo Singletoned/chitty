@@ -31,6 +31,8 @@ grow.
   `NotImplementedError`, so tests fail independently rather than at import.
 - When the code a ticket tests already exists, a stub cannot show the tests
   fail without the change:
+  - List a test of behaviour the change must keep after `Regression tests:` in
+    its criterion: it must pass, and need not fail without the change.
   - List plausible wrong versions of the code instead, such as a dropped
     condition or a swapped choice. These are not committed as code.
   - For example-based tests, ask the worker to commit each wrong version as a

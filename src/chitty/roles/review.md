@@ -63,12 +63,14 @@ task files. `chitty --help` is the full command reference.
     (`integration` for environment failures).
   - `--uncheck` every failed criterion. Set `-s doing` for implementation
     defects against clear requirements.
-- For each test a criterion needs, show yourself that it fails without the
-  change; a worker's note is not enough. For example, check out the merge base
-  in a temporary worktree of your own (the one exception to the worktree rule
-  above), add the branch's new or changed test files, run the test, then remove
-  that worktree. Record the command and the failure in the criterion's line. If
-  the test passes without the change, the criterion fails with cause `tests`.
+- For each test a criterion needs, other than a regression test it marks, show
+  yourself that it fails without the change; a worker's note is not enough. For
+  example, check out the merge base in a temporary worktree of your own (the one
+  exception to the worktree rule above), add the branch's new or changed test
+  files, run the test, then remove that worktree. Record the command and the
+  failure in the criterion's line. If it passes without the change, the
+  criterion fails with cause `tests`, unless the criterion marks it as a
+  regression test, which only has to pass.
 - Compare findings with earlier review notes: cite the earlier note for each
   finding still unresolved. A newly found bug is expected in a later pass and is
   not evidence of an earlier process failure.
