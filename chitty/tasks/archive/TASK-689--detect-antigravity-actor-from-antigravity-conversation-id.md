@@ -25,3 +25,4 @@ Duplicate of TASK-658 (same request, from circuitry); its one extra detail, that
 - 2026-11-24T22:21:51Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:52Z zesty-coral-newt: changed notes
 - 2026-11-24T22:38:42Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:13Z zesty-coral-newt backlog → archived
