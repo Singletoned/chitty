@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to doing when its work session sets review but leaves uncommitted changes
-status: review
+status: done
 labels:
   - bug
 created: 2026-11-11
@@ -34,6 +34,8 @@ In the two `doing` rows the run's last output line is `<id>: doing → doing` an
 
 Dropped 2026-11-24 with the person: not needed. Since `80ce143` (2026-11-09 21:08, released in 0.1.47) `chitty edit -s review` refuses while the worktree has uncommitted changes (`Repo.edit` in `src/chitty/store.py`, `require_clean`), so a worker cannot reach `review` with uncommitted files. Every occurrence of `Review failed (work): the worktree has uncommitted changes` in chitty, echonomicon, chladnify and mullion (12, including `TASK-167`) is from 2026-11-06 to 2026-11-09, the last at 20:43 on 2026-11-09, before that release; none since. The planned test only reproduced it because its fake agent writes the ticket file by hand instead of through `chitty edit`. Criteria removed because nothing will be built.
 
+Reviewed: closed without a code change (2026-11-24, at the person's request; there is no `dropped` status yet, `TASK-599`). Already prevented by the review-entry refusal; see the note above.
+
 ## History
 
 - 2026-11-11T15:57:40Z vivid-yellowhammer → backlog
@@ -51,3 +53,5 @@ Dropped 2026-11-24 with the person: not needed. Since `80ce143` (2026-11-09 21:0
 - 2026-11-24T08:49:32Z kind-navy-toad cold-read → todo
 - 2026-11-24T09:07:51Z kind-navy-toad: changed acceptance criteria, notes
 - 2026-11-24T09:07:53Z kind-navy-toad todo → review
+- 2026-11-24T09:07:55Z kind-navy-toad: changed notes; overrode review independence
+- 2026-11-24T09:07:55Z kind-navy-toad review → done
