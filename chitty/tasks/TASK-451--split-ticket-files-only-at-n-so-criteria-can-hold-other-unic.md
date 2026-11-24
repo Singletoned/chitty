@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: todo
+status: doing
 labels:
   - bug
 priority: medium
@@ -116,3 +116,4 @@ Planning blocker: Acceptance criterion 1 still says every new test except three 
 - 2026-11-24T07:43:37Z sunny-hazel-gannet cold-read → planning
 - 2026-11-24T07:43:39Z sunny-hazel-gannet planning → todo
 - 2026-11-24T07:44:08Z sunny-hazel-gannet: changed description
+- 2026-11-24T09:18:36Z kind-teal-urchin todo → doing
