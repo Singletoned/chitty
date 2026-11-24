@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: review
+status: done
 priority: high
 depends_on:
   - TASK-639
@@ -49,8 +49,8 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 
 ## Acceptance Criteria
 
-- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch) pass, and fail before the change. Regression tests: `test_writes_clear_the_index`, `test_duplicate_lists_active_then_archived`, both `test_invalid_*_entry_raises_for_any_lookup`, `test_lookup_matches_the_files_on_disk`, `test_ref_files_with_unparseable_names_are_skipped`
-- [ ] Before and after the change, run with `cwd` at the ticket worktree: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Other agents change tickets meanwhile, so for each command run before, after, before in quick succession; a triple counts only when the two "before" outputs are identical, and then "after" must equal both. Try at most three triples per command. If none has identical "before" outputs, record the three diffs and set the ticket to `blocked`, not `review`. Record the `diff` results and three `time` runs of `chitty list` for each in a note
+- [x] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch) pass, and fail before the change. Regression tests: `test_writes_clear_the_index`, `test_duplicate_lists_active_then_archived`, both `test_invalid_*_entry_raises_for_any_lookup`, `test_lookup_matches_the_files_on_disk`, `test_ref_files_with_unparseable_names_are_skipped`
+- [x] Before and after the change, run with `cwd` at the ticket worktree: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Other agents change tickets meanwhile, so for each command run before, after, before in quick succession; a triple counts only when the two "before" outputs are identical, and then "after" must equal both. Try at most three triples per command. If none has identical "before" outputs, record the three diffs and set the ticket to `blocked`, not `review`. Record the `diff` results and three `time` runs of `chitty list` for each in a note
 - [x] `make check` passes
 
 ## Plan
@@ -163,6 +163,11 @@ Planner, 2026-11-24: the last review failed only on the conflict between `roles/
 
 Planner, 2026-11-24: criterion 1 now marks the guard tests as regression tests (rule from `TASK-655`, decided with the person). The `Wrong versions, exact` note is no longer required evidence; the last review already ran W1-W5 and saw each fail its named test. When `TASK-655` is `done`, move this ticket to `review`.
 
+Reviewed: Prior test and design review findings are resolved by the context assertion and explicit regression-test designation; the earlier unstable comparison is resolved below.
+1: pass - pytest tests/test_list_performance.py -q: 12 passed; with merge-base source via PYTHONPATH, scan tests failed 28 != 172 and 16 != 88, 10 regression tests passed.
+2: pass - Before/after/before comparisons were stable and byte-identical for list, backlog and --all (2490, 12067, 40940 bytes). List real times before: 12.516, 7.222, 6.045 seconds; after: 3.698, 3.379, 3.694 seconds.
+3: pass - make check: 1179 passed, 623 subtests passed.
+
 ## Summary
 
 -
@@ -243,3 +248,5 @@ Planner, 2026-11-24: criterion 1 now marks the guard tests as regression tests (
 - 2026-11-24T23:29:30Z golden-quartz-falcon todo → doing
 - 2026-11-24T23:34:50Z golden-quartz-falcon: changed summary
 - 2026-11-24T23:34:50Z golden-quartz-falcon doing → review
+- 2026-11-24T23:44:34Z sunny-ochre-toad: changed notes; ticked acceptance criteria
+- 2026-11-24T23:44:34Z sunny-ochre-toad review → done
