@@ -1,6 +1,6 @@
 ---
 title: Move the setup upgrade commit into `init_repo` so a failed commit is restored
-status: todo
+status: doing
 labels:
   - bug
 priority: high
@@ -50,3 +50,4 @@ Probed while planning with this recipe: the extended property fails on `main` in
 - 2026-11-24T07:58:07Z kind-navy-toad: changed description, acceptance criteria
 - 2026-11-24T08:00:23Z kind-navy-toad: changed description
 - 2026-11-24T08:00:23Z kind-navy-toad cold-read → todo
+- 2026-11-24T08:41:30Z lively-hazel-kestrel todo → doing
