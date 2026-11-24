@@ -1,6 +1,8 @@
 ---
 title: Worker blocks its own ticket on its own run lock
 status: backlog
+labels:
+  - bug
 created: 2026-11-24
 ---
 
@@ -19,3 +21,4 @@ Triage 2026-11-24, from TASK-669 (shelfpath): run locks were again left behind a
 - 2026-11-24T22:21:45Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:45Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:58Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:51Z zesty-coral-newt: changed labels
