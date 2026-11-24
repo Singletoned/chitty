@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: cold-read
+status: planning
 labels:
   - bug
 created: 2026-11-24
@@ -14,31 +14,24 @@ When `chitty edit <ID> -s review --summary-file F` is refused because the config
 
 ### Change
 
-In `Repo.edit` in `src/chitty/store.py` (around lines 1020-1057), every refusal raised while entering `review` gets the sentence `Nothing from this edit was saved.` at the end, after `; ` or `. ` as fits its wording. That covers:
+In `Repo.edit` in `src/chitty/store.py`, the block guarded by `if (entering_review or passing_review) and (self.root / ".git").exists() and not edit.skip_current_version:` (around lines 1013-1059) can refuse in several ways: `_require_current_version` (before and after the check), `require_clean()` (before and after the check), check timed out, check command not found, and check failed. Every `ChittyError` raised from that block, for entering `review` and for `review` → `done` alike, gets the sentence `Nothing from this edit was saved.` appended after a space. Do it in one place: wrap the block's body in `try`/`except ChittyError as error:` and raise a new `ChittyError` with the extended message, `from error`. Messages keep their existing text, for example `check failed with status 3; output in `+"`"+`.chitty/check.log`+"`"+`.`
 
-- the check failing (`check failed with status N; output in .chitty/check.log`);
-- the check timing out (`commands.CommandTimedOut`);
-- the check command not being found;
-- `require_clean()` refusing, both before and after the check.
-
-When the check fails (non-zero status only) and `self.config.setup` is set, add a sentence after that: ``If this worktree was never set up, run `<setup>` first.``
+Only for a failed check (non-zero status), when `self.config.setup` is set, add one more sentence after that: ``If this worktree was never set up, run `<setup>` first.``
 
 Decided: the edit stays all-or-nothing. Saving the summary and notes while refusing only the status would make one command do half its work, and a later `-s review` would need them again anyway. The caller is told to keep the text instead.
 
-Keep the wording in one small pure helper in `store.py`, for example `_review_refusal(reason: str, setup: str | None, *, check_failed: bool) -> str`, so the four call sites cannot drift.
-
 ### Tests
 
-No property: the input is a small fixed set (four refusals, and setup set or not), each listed and tested. The tests extend `tests/test_review_check.py`, whose `prepare` makes branch `task-1` with the ticket in `doing`. Pass `--summary Done.` with `-s review`, and check that the output has the new sentence and the ticket file has no Summary. Today the summary is already dropped, so only the message assertion fails without the change. For the timeout case, set `command_timeout = 1` in `chitty.toml` (it is an integer number of seconds, `ge=0`, in `src/chitty/config.py`) and use a check script that sleeps 5 seconds.
+No property: the input is a small fixed set (the refusals listed in the criteria, and setup set or not), each listed and tested. The tests extend `TestReviewCheck` in `tests/test_review_check.py`, whose `prepare` configures the check and makes branch `task-1` with the ticket in `doing`. For the timeout case, insert `command_timeout = 1` into `chitty.toml` after the `autocommit = true` line that `ReviewMergeTestCase.setUp` (`tests/test_review_merge.py`) writes, and commit it on `main` before `prepare`. `command_timeout` is an integer number of seconds (`src/chitty/config.py`). Today the summary is already dropped, so only the message assertions fail without the change; still assert there is no `## Summary`, because `assert_doing` only checks the status.
 
 ### Out of scope
 
-Saving any part of a refused edit; running `setup` automatically.
+Saving any part of a refused edit; running `setup` automatically; refusals outside that block.
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_review_check.py`, `chitty edit 1 -s review --summary Done.` in the `test_failure`, `test_missing` and `test_dirty` setups each exits 1 with output containing `Nothing from this edit was saved.`, and the ticket file has no `## Summary` section afterwards. These fail without the change.
-- [ ] `ReviewMergeTestCase` already configures `setup` (`tests/test_review_merge.py`, around line 101), so the `test_failure` case output also contains ``If this worktree was never set up, run `<that setup command>` first.``. After the test deletes the `setup = ...` line from `chitty.toml` and commits, the output does not contain `never set up`. With `command_timeout = 1` and a check that sleeps 5 seconds, the timeout refusal also ends with `Nothing from this edit was saved.`. `make check` passes.
+- [ ] In `tests/test_review_check.py` (`TestReviewCheck`, using its `prepare`), `chitty edit 1 -s review --summary Done.` exits 1 with output containing `Nothing from this edit was saved.` in each of these cases: check fails (`test_failure` setup), check command not found (`test_missing` setup), check leaves the worktree dirty (`test_dirty` setup), and check times out (`command_timeout = 1`, check sleeps 5 seconds). After each, the ticket file contains `status: doing` and no `## Summary`. One more case: with the ticket in `review` and an untracked file in the worktree, `chitty edit 1 -s done --note Reviewed.` output also contains the sentence. These fail without the change.
+- [ ] In the check-fails case the output also contains ``If this worktree was never set up, run `<setup>` first.``, with `<setup>` the `setup` command `ReviewMergeTestCase.setUp` writes; in the not-found and timeout cases the output does not contain `never set up`; and after the test deletes the `setup = ...` line from `chitty.toml` and commits on `main` before `prepare`, the check-fails output does not contain `never set up`. `make check` passes.
 
 ## Notes
 
@@ -53,3 +46,5 @@ Suggestion origin: chitty
 - 2026-11-24T22:59:48Z zesty-coral-newt backlog → planning
 - 2026-11-24T23:00:06Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T23:00:13Z zesty-coral-newt planning → cold-read
+- 2026-11-24T23:02:00Z zesty-coral-newt: changed description, acceptance criteria
+- 2026-11-24T23:02:00Z zesty-coral-newt cold-read → planning
