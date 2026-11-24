@@ -1,6 +1,8 @@
 ---
 title: Add compact output options to `chitty show` to reduce agent context
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -14,7 +16,10 @@ Adding a compact option such as `--brief` / `--no-history` / `--latest-notes N` 
 
 Suggestion origin: circuitry
 
+Duplicate of BACKLOG-54277329 (compact output for inspection commands); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:36Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:37Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:11Z zesty-coral-newt: changed labels, notes
