@@ -52,7 +52,7 @@ Out of scope: `as_dict` and the property test (TASK-649), `chitty show` (TASK-65
 
 ## Plan
 
-Add parser and renumbering regression tests first, record their baseline failures, implement Questions parsing, add formatter coverage, then format and run make check.
+Add parser and renumbering regression tests first, record baseline failures, implement Questions parsing, add formatter coverage, then format and run make check.
 
 ## Notes
 
@@ -138,3 +138,4 @@ Planner, 2026-11-24: requeued. The last return was about session budget, not the
 - 2026-11-24T08:46:26Z sunny-hazel-gannet: changed owner, notes
 - 2026-11-24T08:46:26Z sunny-hazel-gannet planning → todo
 - 2026-11-24T09:22:57Z sunny-khaki-crane todo → doing
+- 2026-11-24T09:25:19Z sunny-khaki-crane: wrote the plan
