@@ -1,6 +1,6 @@
 ---
 title: Read each ref at the commit captured at the start of a command, so a deleted branch cannot crash ticket discovery
-status: doing
+status: planning
 labels:
   - bug
 priority: high
@@ -54,6 +54,8 @@ Implement captured-commit-ID reads in store.py, add the specified snapshot prope
 
 Suggestion origin: echonomicon. Distinct from completed `TASK-164`, which surfaced Git errors instead of discarding tickets; this ticket keeps that and only stops reading refs by name after capturing them.
 
+Implementation investigation found a conflict between the stated snapshot design and existing conflict detection: using captured commits in changed_since_split altered merge-base/change detection and caused 25 make check failures (including test_changed_both and provisional conflict tests). Existing relevant code is Repo._choose_source.changed_on_both; make check reproduces failures. Decision needed: specify the intended changed_since_split semantics with captured IDs while preserving current conflict behavior, or revise the required design/acceptance criteria. No test/property work completed; partial store.py change is uncommitted and should be preserved or reverted during planning.
+
 ## History
 
 - 2026-11-09T12:03:06Z eager-puffin → backlog
@@ -73,3 +75,5 @@ Suggestion origin: echonomicon. Distinct from completed `TASK-164`, which surfac
 - 2026-11-24T07:54:33Z kind-navy-toad cold-read → todo
 - 2026-11-24T08:33:54Z intrepid-umber-quail todo → doing
 - 2026-11-24T08:36:23Z intrepid-umber-quail: wrote the plan
+- 2026-11-24T08:39:47Z intrepid-umber-quail: changed owner, notes
+- 2026-11-24T08:39:47Z intrepid-umber-quail doing → planning
