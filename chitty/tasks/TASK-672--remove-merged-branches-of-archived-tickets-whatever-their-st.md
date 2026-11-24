@@ -37,6 +37,10 @@ The `dropped` status (TASK-599) and any change to `chitty archive` itself.
 - [ ] A new test in `tests/test_run_removes_merged_branches.py` adds one ticket in each status in `chitty.model.STATUSES` other than `done`, archives each with `chitty archive`, makes a branch for each at `main`, and runs `chitty run --errors`: every branch is deleted and stderr has `removed merged branch <branch>` for each. It fails without the change.
 - [ ] A second new test archives a `planning` ticket whose merged branch has a worktree with an untracked file: the branch is kept and stderr has `kept merged branch <branch>: worktree has uncommitted changes`. `test_keeps_non_done_statuses` (tickets not archived) still passes unchanged, and `make check` passes.
 
+## Plan
+
+Update merged-branch cleanup to ignore status for archived tickets while preserving existing keep checks. Add coverage for archived tickets across statuses and for an archived ticket with an uncommitted worktree. Run focused tests and make check, then commit implementation changes.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -51,3 +55,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:48:37Z zesty-coral-newt planning → cold-read
 - 2026-11-24T22:50:10Z zesty-coral-newt cold-read → todo
 - 2026-11-24T23:09:22Z daring-ginger-urchin todo → doing
+- 2026-11-24T23:13:11Z daring-ginger-urchin: wrote the plan
