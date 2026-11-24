@@ -23,3 +23,4 @@ Duplicate of BACKLOG-54277329 (compact output for inspection commands); the evid
 - 2026-11-24T22:21:36Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:37Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:11Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:40Z zesty-coral-newt backlog → archived
