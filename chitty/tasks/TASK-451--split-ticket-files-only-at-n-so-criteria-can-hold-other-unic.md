@@ -46,7 +46,7 @@ Put the `a\nb` and `a\rb` refusals and the `[x] a` example in a class `TestUncha
 
 ## Plan
 
-Implement the agreed ticket: first run the specified new regression cases against main and record baseline results; add focused tests, update parser line splitting and criterion validation, and preserve YAML round-tripping for NEL. Run targeted tests and make check, then commit implementation and tests and hand off to review.
+Run the specified regression tests against main and record baseline results. Add focused tests, update LF-only parsing and criterion validation/docstring, and preserve NEL YAML round-tripping. Run targeted tests and make check, then commit implementation and tests and hand off to review.
 
 ## Notes
 
@@ -104,3 +104,4 @@ Planner, 2026-11-24: current state. Every earlier planning blocker is resolved, 
 - 2026-11-24T09:27:09Z sunny-hazel-gannet: replaced notes; changed owner, description, acceptance criteria
 - 2026-11-24T09:27:12Z sunny-hazel-gannet planning → todo
 - 2026-11-24T09:35:19Z open-pearl-raven todo → doing
+- 2026-11-24T09:37:40Z open-pearl-raven: wrote the plan
