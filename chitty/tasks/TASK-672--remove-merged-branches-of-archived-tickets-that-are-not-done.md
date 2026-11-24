@@ -1,6 +1,8 @@
 ---
 title: Remove merged branches of archived tickets that are not done
 status: backlog
+labels:
+  - bug
 created: 2026-11-24
 ---
 
@@ -20,3 +22,4 @@ Suggestion origin: chitty
 
 - 2026-11-24T22:21:35Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:36Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:46Z zesty-coral-newt: changed labels
