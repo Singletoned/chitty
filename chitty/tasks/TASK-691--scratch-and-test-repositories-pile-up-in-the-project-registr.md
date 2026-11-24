@@ -1,6 +1,8 @@
 ---
 title: Scratch and test repositories pile up in the project registry
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ On 2026-11-23 the inbox registry (`inbox_path('_').parent`) held 41 projects, of
 
 Suggestion origin: chitty
 
+Duplicate of TASK-310 (tests registering projects) and TASK-50 (warn about registrations whose repository is gone); the evidence is recorded on TASK-310.
+
 ## History
 
 - 2026-11-24T22:21:53Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:54Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:06Z zesty-coral-newt: changed labels, notes
