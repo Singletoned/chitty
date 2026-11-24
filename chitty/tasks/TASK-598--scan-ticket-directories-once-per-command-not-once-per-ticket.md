@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: todo
+status: doing
 priority: high
 depends_on:
   - TASK-639
@@ -240,3 +240,4 @@ Implemented working-tree and ref indexes. Scan count and behavior tests pass; pr
 - 2026-11-24T09:27:41Z sunny-hazel-gannet planning → todo
 - 2026-11-24T22:32:05Z sunny-hazel-gannet: changed acceptance criteria, notes
 - 2026-11-24T22:33:21Z sunny-hazel-gannet: changed acceptance criteria
+- 2026-11-24T23:29:30Z golden-quartz-falcon todo → doing
