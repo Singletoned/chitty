@@ -14,8 +14,8 @@ On 2026-11-23, while planning TASK-358, TASK-599, TASK-629 and TASK-632 (all ret
 
 In `Repo._reject_planning_conflicts` in `src/chitty/store.py` (around line 943), the refusal stays `planning edit for <ID> conflicts with <ref>`. When `<ref>` equals `refs/heads/{str(task_id).lower()}` exactly (the ticket's own branch, for example `refs/heads/task-358` or `refs/heads/task-fer4eb`; compare with that, not with the planning `branch` argument), append a hint:
 
-- if `git.worktree_for_branch(self.root, branch)` returns a path: ``; edit it from its worktree `<path>` ``;
-- otherwise: ``; edit it on branch `<branch>` ``.
+- if `git.worktree_for_branch(self.root, str(task_id).lower())` returns a path: ``; edit it from its worktree `<path>` ``;
+- otherwise: ``; edit it on branch `<own>` ``, where `<own>` is `str(task_id).lower()`.
 
 Any other ref (`main`, another `plan/` branch, a remote) keeps today's message unchanged.
 
@@ -56,3 +56,4 @@ Suggestion origin: chitty
 - 2026-11-24T23:08:08Z zesty-coral-newt: changed title, description, acceptance criteria
 - 2026-11-24T23:08:08Z zesty-coral-newt backlog → cold-read
 - 2026-11-24T23:09:47Z zesty-coral-newt: changed description
+- 2026-11-24T23:10:24Z zesty-coral-newt: changed description
