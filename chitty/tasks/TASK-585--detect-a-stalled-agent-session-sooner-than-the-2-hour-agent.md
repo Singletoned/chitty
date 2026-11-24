@@ -12,7 +12,10 @@ Seen 2026-11-22: `chitty run` started a work session on TASK-334 at 10:04; the P
 
 Suggestion origin: chitty
 
+Triage 2026-11-24, from TASK-687 and TASK-657: other stall signs worth detecting. In echonomicon's TASK-203 session (gpt-6-luna), the worker ran `ls`, made two tool calls with an empty command string, then claimed "My available session budget is exhausted." TASK-657 proposes stopping after two consecutive sessions with no non-ticket commit instead of five continuations, and TASK-687 marking the ticket `error` with a pointer to the session logs after N stalled sessions, so it reads as a model problem, not a planning one.
+
 ## History
 
 - 2026-11-22T13:57:51Z friendly-jade-stoat → backlog
 - 2026-11-22T13:57:51Z friendly-jade-stoat: changed notes
+- 2026-11-24T22:39:36Z zesty-coral-newt: changed notes
