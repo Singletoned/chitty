@@ -46,6 +46,10 @@ Probed while planning with this exact recipe: it fails on `main`; it passes with
 - [ ] The property in `tests/test_ref_snapshot.py` (with its three `@example`s) passes, and fails on `main` and against wrong fixes A and C; a note records the four runs
 - [ ] `tests/test_ticket_ids.py` `test_ref_reads_once_and_cached` expects commit IDs and passes; `make check` passes
 
+## Plan
+
+Implement captured-commit-ID reads in store.py, add the specified snapshot property, and update the existing expectation. Establish regression failures on current code and wrong fixes A/C, verify corrected behavior, run make check, and record results.
+
 ## Notes
 
 Suggestion origin: echonomicon. Distinct from completed `TASK-164`, which surfaced Git errors instead of discarding tickets; this ticket keeps that and only stops reading refs by name after capturing them.
@@ -68,3 +72,4 @@ Suggestion origin: echonomicon. Distinct from completed `TASK-164`, which surfac
 - 2026-11-24T07:54:33Z kind-navy-toad: changed description
 - 2026-11-24T07:54:33Z kind-navy-toad cold-read → todo
 - 2026-11-24T08:33:54Z intrepid-umber-quail todo → doing
+- 2026-11-24T08:36:23Z intrepid-umber-quail: wrote the plan
