@@ -1,6 +1,8 @@
 ---
 title: Detect Antigravity actor from `ANTIGRAVITY_CONVERSATION_ID`
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -16,7 +18,10 @@ Antigravity sets `ANTIGRAVITY_CONVERSATION_ID` (as well as `ANTIGRAVITY_AGENT` a
 
 Suggestion origin: circuitry
 
+Duplicate of TASK-658 (same request, from circuitry); its one extra detail, that Antigravity also sets `ANTIGRAVITY_TRAJECTORY_ID`, is noted there.
+
 ## History
 
 - 2026-11-24T22:21:51Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:52Z zesty-coral-newt: changed notes
+- 2026-11-24T22:38:42Z zesty-coral-newt: changed labels, notes
