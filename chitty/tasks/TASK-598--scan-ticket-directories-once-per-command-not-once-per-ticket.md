@@ -49,7 +49,7 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 
 ## Acceptance Criteria
 
-- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. The other new tests guard unchanged behaviour, so each must instead fail against its wrong version from the note `Wrong versions, exact`, applied alone to `src/chitty/store.py` at the branch tip: `test_writes_clear_the_index` against W1, `test_duplicate_lists_active_then_archived` against W2, both `test_invalid_*_entry_raises_for_any_lookup` against W3, `test_lookup_matches_the_files_on_disk` against W4, `test_ref_files_with_unparseable_names_are_skipped` against W5. Record the `pytest` summary line of each run in a note
+- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch) pass, and fail before the change. The other new tests are regression tests, which must pass and need not fail without the change: `test_writes_clear_the_index`, `test_duplicate_lists_active_then_archived`, both `test_invalid_*_entry_raises_for_any_lookup`, `test_lookup_matches_the_files_on_disk` and `test_ref_files_with_unparseable_names_are_skipped`
 - [ ] Before and after the change, run with `cwd` at the ticket worktree: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Other agents change tickets meanwhile, so for each command run before, after, before in quick succession; a triple counts only when the two "before" outputs are identical, and then "after" must equal both. Try at most three triples per command. If none has identical "before" outputs, record the three diffs and set the ticket to `blocked`, not `review`. Record the `diff` results and three `time` runs of `chitty list` for each in a note
 - [x] `make check` passes
 
@@ -161,6 +161,8 @@ Review failed (design): Criterion 1 requires preservation tests to pass against 
 
 Planner, 2026-11-24: the last review failed only on the conflict between `roles/review.md` and `roles/plan.md` about guard tests; its runs showed W1–W5 each failing their named tests, and criteria 2 and 3 passed. `TASK-655` fixes the review rule. When it is `done`, this ticket needs no more work: move it to `review`.
 
+Planner, 2026-11-24: criterion 1 now marks the guard tests as regression tests (rule from `TASK-655`, decided with the person). The `Wrong versions, exact` note is no longer required evidence; the last review already ran W1-W5 and saw each fail its named test. When `TASK-655` is `done`, move this ticket to `review`.
+
 ## Summary
 
 Implemented working-tree and ref indexes. Scan count and behavior tests pass; prior notes record W1-W5 wrong-version test runs, output comparisons, timings and make check. Review check timed out in this session; full make check passed previously (1173 tests, 602 subtests).
@@ -236,3 +238,4 @@ Implemented working-tree and ref indexes. Scan count and behavior tests pass; pr
 - 2026-11-24T09:18:09Z golden-jade-marten review → planning
 - 2026-11-24T09:27:41Z sunny-hazel-gannet: changed owner, dependencies, notes
 - 2026-11-24T09:27:41Z sunny-hazel-gannet planning → todo
+- 2026-11-24T22:32:05Z sunny-hazel-gannet: changed acceptance criteria, notes
