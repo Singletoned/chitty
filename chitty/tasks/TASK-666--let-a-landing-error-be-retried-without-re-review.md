@@ -1,6 +1,8 @@
 ---
 title: Let a landing error be retried without re-review
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -14,7 +16,10 @@ Suggestion: when the latest review note is a pass and the error is a landing err
 
 Suggestion origin: echonomicon
 
+Duplicate of TASK-679 (retry landing a passed review after the main checkout was dirty); its extra detail is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:29Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:30Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:29Z zesty-coral-newt: changed labels, notes
