@@ -1,6 +1,6 @@
 ---
 title: Return a ticket to doing when its work session sets review but leaves uncommitted changes
-status: todo
+status: review
 labels:
   - bug
 created: 2026-11-11
@@ -50,3 +50,4 @@ Dropped 2026-11-24 with the person: not needed. Since `80ce143` (2026-11-09 21:0
 - 2026-11-24T08:49:32Z kind-navy-toad: changed description
 - 2026-11-24T08:49:32Z kind-navy-toad cold-read → todo
 - 2026-11-24T09:07:51Z kind-navy-toad: changed acceptance criteria, notes
+- 2026-11-24T09:07:53Z kind-navy-toad todo → review
