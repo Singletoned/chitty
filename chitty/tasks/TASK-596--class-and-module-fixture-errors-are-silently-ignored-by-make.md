@@ -1,6 +1,6 @@
 ---
 title: Class and module fixture errors are silently ignored by `make check` and `make test`
-status: backlog
+status: review
 labels:
   - bug
 depends_on:
@@ -28,3 +28,4 @@ Checked 2026-11-24: resolved by `TASK-597` (done), since `make check` and `make 
 - 2026-11-22T20:16:13Z plucky-umber-wren: changed dependencies
 - 2026-11-22T20:16:15Z plucky-umber-wren: changed notes
 - 2026-11-24T08:37:02Z kind-navy-toad: changed notes
+- 2026-11-24T09:04:27Z kind-navy-toad backlog → review
