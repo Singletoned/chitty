@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: doing
+status: planning
 labels:
   - bug
 priority: medium
@@ -54,6 +54,8 @@ Suggestion origin: chitty
 
 Planner, 2026-11-24: current state. Every earlier planning blocker is resolved, and the notes that raised them were removed to stop them being re-raised (they are in Git history). In particular, `[x] a` and the `\n`/`\r` refusals are expected to pass on `main`: they are in `TestUnchangedBehaviour`, and criterion 1 asks only `TestBreaksAccepted` to fail there. Two cold reads on 2026-11-24 found nothing serious, and a trial patch of the planned change, run against the whole suite, broke only `test_new_criterion_rejects_all_line_breaks`.
 
+The ticket appears actionable, but implementation was not started in this session. The requested baseline run against main and code/test changes remain outstanding, so no acceptance criterion has been verified. No ticket defect or external obstacle was identified. Decision needed: resume implementation from the current plan; do not split—the scope is a focused parser/criterion fix with specified tests.
+
 ## History
 
 - 2026-11-19T20:55:25Z sunny-white-dormouse → backlog
@@ -105,3 +107,5 @@ Planner, 2026-11-24: current state. Every earlier planning blocker is resolved, 
 - 2026-11-24T09:27:12Z sunny-hazel-gannet planning → todo
 - 2026-11-24T09:35:19Z open-pearl-raven todo → doing
 - 2026-11-24T09:37:40Z open-pearl-raven: wrote the plan
+- 2026-11-24T09:38:18Z open-pearl-raven: changed owner, notes
+- 2026-11-24T09:38:18Z open-pearl-raven doing → planning
