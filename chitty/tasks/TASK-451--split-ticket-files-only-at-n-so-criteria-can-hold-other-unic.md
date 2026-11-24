@@ -1,6 +1,6 @@
 ---
 title: Split ticket files only at \n, so criteria can hold other Unicode line separators
-status: planning
+status: cold-read
 labels:
   - bug
 priority: medium
@@ -30,11 +30,11 @@ Tests go in a new file, `tests/test_criteria_line_breaks.py`:
 - Parse example: a ticket file whose Acceptance Criteria section holds `- [ ] a\u2028b\n` parses to one criterion with text `a\u2028b`, and `render` returns the input byte for byte.
 - CLI test, in a class that inherits `CliTestCase` from `tests/test_cli.py`: `run_cli("add", "T", "--ac", "one")`, then `run_cli("edit", "TASK-1", "--set-ac", "1", "a\u2028b")` exits 0, and `show TASK-1 --json` gives criterion text `a\u2028b`.
 
-Run every test against `main` before the change and record the failures in a note. The property, the examples using inner characters, the parse example and the CLI test all fail there. The `\n` refusal passes on both.
+Write each kind of example as its own test method, using `subTest` for each character, so a run shows which kinds pass. Run every test against `main` before the change and record the results in a note. Expected on `main`: the property, the parse example, the CLI test and the `a{c}b`, `a{c}` and `a\n` examples fail; the `a\nb` and `a\rb` refusals and the `[x] a` example pass, because they pin behaviour this ticket keeps. After the change, all pass.
 
 ## Acceptance Criteria
 
-- [ ] The property, the break-character examples, the parse example and the CLI test in `tests/test_criteria_line_breaks.py` pass. Against `main`, each fails except three that already pass there: the `a\nb` and `a\rb` refusals and the `[x] a` example. Record both runs in a note
+- [ ] The property, the break-character examples, the parse example and the CLI test in `tests/test_criteria_line_breaks.py` pass. A note records a run against `main` matching the expected results in the description: every test fails there except the `a\nb` and `a\rb` refusals and the `[x] a` example, which pin unchanged behaviour
 - [ ] `tests/test_property_criterion_text.py` and the other existing tests still pass; `make check` passes
 - [ ] `with_criterion_text`, used by `src/chitty/renumbering.py`, follows the same rule; `tests/test_property_renumbering.py` passes
 
@@ -103,3 +103,5 @@ Planning blocker: Acceptance criterion 1 still says every new test except three 
 - 2026-11-23T23:25:25Z mellow-amber-urchin todo → doing
 - 2026-11-23T23:27:54Z mellow-amber-urchin: changed owner, notes
 - 2026-11-23T23:27:54Z mellow-amber-urchin doing → planning
+- 2026-11-24T07:33:08Z sunny-hazel-gannet: changed description, acceptance criteria
+- 2026-11-24T07:33:08Z sunny-hazel-gannet planning → cold-read
