@@ -1,6 +1,8 @@
 ---
 title: Runner starts a worker on a ticket a person is already working on by hand
 status: backlog
+labels:
+  - bug
 created: 2026-11-24
 ---
 
@@ -18,3 +20,4 @@ Suggestion origin: chitty
 
 - 2026-11-24T22:21:28Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:29Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:42Z zesty-coral-newt: changed labels
