@@ -21,3 +21,4 @@ Duplicate of TASK-489 (do not rerun the landing check when `main` moved only by 
 - 2026-11-24T22:21:52Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:53Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:02Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:35Z zesty-coral-newt backlog → archived
