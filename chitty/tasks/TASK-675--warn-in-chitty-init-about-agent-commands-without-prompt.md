@@ -39,6 +39,10 @@ Warnings in `chitty run` or `chitty check`; detecting other broken commands; the
 - [ ] A new property test in `tests/test_agent_command_warnings.py`, as the Tests section describes, shows `agent_command_warnings` returns exactly one line per non-blank command without `{prompt}`, each starting with its setting name and ` has no {prompt}`, `agent_command` first and named entries in sorted order. It fails against a stub that returns `[]`.
 - [ ] A new test in `TestInit` in `tests/test_cli.py` shows `chitty init` exits 0 with `warning: agent_command has no {prompt}` on stderr for the fixture's `pi --chitty-{mode} {id}` (this assertion fails today), and without `has no {prompt}` after the command is changed to `pi -p {prompt}`. `make check` passes.
 
+## Plan
+
+Add the pure config warning helper, emit its warnings from init after initialization, and cover helper behavior with a property test plus CLI regression test. Run make check and commit implementation changes.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -55,3 +59,4 @@ Triage 2026-11-24, merged from TASK-659 (circuitry): with the old command, 10 ci
 - 2026-11-24T23:07:59Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T23:07:59Z zesty-coral-newt cold-read → todo
 - 2026-11-24T23:36:36Z zesty-quartz-ibis todo → doing
+- 2026-11-24T23:40:10Z zesty-quartz-ibis: wrote the plan
