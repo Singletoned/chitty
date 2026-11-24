@@ -1,6 +1,8 @@
 ---
 title: Ticket guard refuses when branch and main copies are identical
 status: backlog
+labels:
+  - bug
 created: 2026-11-24
 ---
 
@@ -19,3 +21,4 @@ Triage 2026-11-24, from TASK-681 (echonomicon): the same failure hit TASK-164. A
 - 2026-11-24T22:21:30Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:31Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:53Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:44Z zesty-coral-newt: changed labels
