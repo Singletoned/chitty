@@ -1,6 +1,6 @@
 ---
 title: Remove merged branches of archived tickets whatever their status
-status: doing
+status: review
 labels:
   - bug
 created: 2026-11-24
@@ -45,6 +45,10 @@ Update merged-branch cleanup to ignore status for archived tickets while preserv
 
 Suggestion origin: chitty
 
+## Summary
+
+Implemented archived-ticket cleanup and regression coverage for statuses and dirty archived worktrees. Verified: focused test module (11 passed); make check (1170 passed, 620 subtests).
+
 ## History
 
 - 2026-11-24T22:21:35Z zesty-coral-newt → backlog
@@ -56,3 +60,5 @@ Suggestion origin: chitty
 - 2026-11-24T22:50:10Z zesty-coral-newt cold-read → todo
 - 2026-11-24T23:09:22Z daring-ginger-urchin todo → doing
 - 2026-11-24T23:13:11Z daring-ginger-urchin: wrote the plan
+- 2026-11-24T23:20:09Z daring-ginger-urchin: changed summary
+- 2026-11-24T23:20:09Z daring-ginger-urchin doing → review
