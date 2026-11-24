@@ -33,6 +33,10 @@ After this lands, `chitty init` in the main checkout refreshes the managed block
 - [ ] `src/chitty/roles/plan.md` has the new sub-bullet first under "When the code a ticket tests already exists", naming the `Regression tests:` form; `src/chitty/roles/work.md` says "For a requested test of a bug fix"; `pipeline-and-feedback.md` has the dated decision sentence
 - [ ] `make check` passes
 
+## Summary
+
+Done on branch `task-655` (commit `ebc571ab`): every change listed in the description, wrapped to 80 columns; `tests/fixtures/guide-runner-expected.md` regenerated from `managed_guide("runner")`. `make check` passes. After landing, `chitty init` in the main checkout refreshes the `AGENTS.md` managed block.
+
 ## History
 
 - 2026-11-24T09:27:29Z sunny-hazel-gannet → todo
@@ -41,3 +45,4 @@ After this lands, `chitty init` in the main checkout refreshes the managed block
 - 2026-11-24T22:33:04Z sunny-hazel-gannet: changed description, acceptance criteria
 - 2026-11-24T22:33:18Z sunny-hazel-gannet: changed description
 - 2026-11-24T22:34:08Z sunny-hazel-gannet planning → todo
+- 2026-11-24T22:56:01Z mellow-teal-jay: changed summary
