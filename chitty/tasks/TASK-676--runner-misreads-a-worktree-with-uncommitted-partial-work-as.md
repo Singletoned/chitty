@@ -1,6 +1,7 @@
 ---
 title: Runner misreads a worktree with uncommitted partial work as an empty branch
 status: backlog
+priority: high
 created: 2026-11-24
 ---
 
@@ -21,3 +22,4 @@ Triage 2026-11-24: merged the leftover-edits parts of TASK-670 and TASK-687, whi
 - 2026-11-24T22:21:39Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:39Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:33Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:57Z zesty-coral-newt: changed priority
