@@ -14,8 +14,11 @@ Suggestion origin: chitty
 
 Planner, 2026-11-21: duplicate of `TASK-468`, which landed and is `done`. Archive or delete this suggestion.
 
+Triage 2026-11-24, merged from TASK-690: a landing by hand hits the same race. TASK-624's hand landing failed twice on 2026-11-23: during the 2-2.5 minute `make check`, other agents committed `chitty:` ticket edits to `main`, so `--ff-only` was refused. Whatever this ticket builds should be usable by a reviewer landing by hand too (see TASK-340).
+
 ## History
 
 - 2026-11-21T07:57:51Z nimble-umber-gannet → backlog
 - 2026-11-21T07:57:52Z nimble-umber-gannet: changed notes
 - 2026-11-21T08:05:24Z nimble-umber-gannet: changed notes
+- 2026-11-24T22:40:00Z zesty-coral-newt: changed notes
