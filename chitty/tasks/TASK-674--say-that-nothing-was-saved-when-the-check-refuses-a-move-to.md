@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: planning
+status: cold-read
 labels:
   - bug
 created: 2026-11-24
@@ -52,3 +52,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:59:48Z zesty-coral-newt: changed title, labels, description, acceptance criteria
 - 2026-11-24T22:59:48Z zesty-coral-newt backlog → planning
 - 2026-11-24T23:00:06Z zesty-coral-newt: changed description, acceptance criteria
+- 2026-11-24T23:00:13Z zesty-coral-newt planning → cold-read
