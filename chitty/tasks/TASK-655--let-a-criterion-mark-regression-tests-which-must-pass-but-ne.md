@@ -20,7 +20,7 @@ Change:
 
 - `src/chitty/roles/review.md`: in that bullet, replace "For each test a criterion needs" with "For each test a criterion needs, other than a regression test it marks", and replace "If the test passes without the change, the criterion fails with cause `tests`." with "If it passes without the change, the criterion fails with cause `tests`, unless the criterion marks it as a regression test, which only has to pass."
 - `src/chitty/guide-runner.md`: replace "A test criterion passes only with evidence that the test fails without the change." with "A test criterion passes only with evidence that the test fails without the change, except a test the criterion marks as a regression test, which only has to pass."
-- `src/chitty/roles/plan.md`: as the first sub-bullet of the bullet starting "When the code a ticket tests already exists", add "Mark a test of behaviour the change must keep as a regression test in its criterion: it must pass, and need not fail without the change." Leave the wrong-version sub-bullets, which check that the other tests are strong enough.
+- `src/chitty/roles/plan.md`: as the first sub-bullet of the bullet starting "When the code a ticket tests already exists", add "List a test of behaviour the change must keep after `Regression tests:` in its criterion: it must pass, and need not fail without the change." Leave the wrong-version sub-bullets, which check that the other tests are strong enough.
 - `src/chitty/roles/work.md`: replace "For a requested regression test" with "For a requested test of a bug fix".
 - `docs/plan/pipeline-and-feedback.md`: replace the bullet "A test criterion passes only with evidence that the test fails without the change." (in the review-note list, about line 199) with the same text as the new `guide-runner.md` sentence; and after the sentence ending "Committed hand-written wrong versions add clutter and drift.", add "A criterion may mark tests that pin kept behaviour as regression tests, which must pass but need not fail without the change (2026-11-24, after `TASK-598` failed review three times because such tests pass on the merge base)."
 
@@ -39,3 +39,4 @@ After this lands, `chitty init` in the main checkout refreshes the managed block
 - 2026-11-24T22:31:46Z sunny-hazel-gannet: changed title, description
 - 2026-11-24T22:31:46Z sunny-hazel-gannet todo → planning
 - 2026-11-24T22:33:04Z sunny-hazel-gannet: changed description, acceptance criteria
+- 2026-11-24T22:33:18Z sunny-hazel-gannet: changed description
