@@ -21,3 +21,4 @@ Duplicate of TASK-310 (tests registering projects) and TASK-50 (warn about regis
 - 2026-11-24T22:21:53Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:54Z zesty-coral-newt: changed notes
 - 2026-11-24T22:40:06Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:38Z zesty-coral-newt backlog → archived
