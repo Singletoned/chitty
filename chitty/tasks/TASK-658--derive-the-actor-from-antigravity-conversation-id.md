@@ -1,6 +1,6 @@
 ---
 title: Derive the actor from `ANTIGRAVITY_CONVERSATION_ID`
-status: planning
+status: cold-read
 created: 2026-11-24
 ---
 
@@ -48,3 +48,4 @@ Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravi
 - 2026-11-24T22:46:02Z zesty-coral-newt planning → cold-read
 - 2026-11-24T22:47:04Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T22:47:04Z zesty-coral-newt cold-read → planning
+- 2026-11-24T22:47:08Z zesty-coral-newt planning → cold-read
