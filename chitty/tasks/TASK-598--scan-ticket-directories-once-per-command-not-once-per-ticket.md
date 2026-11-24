@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: cold-read
+status: planning
 priority: high
 depends_on:
   - TASK-639
@@ -48,8 +48,8 @@ Invalidation example, same file, in a non-Git directory with the config above (`
 
 ## Acceptance Criteria
 
-- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. The other tests guard unchanged behaviour, so instead of failing before the change each must fail against one of the wrong versions listed in the 2026-11-24 planner note, applied one at a time to the finished code. Record all runs in a note
-- [ ] Before and after the change, run with `cwd` at the ticket worktree: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Other agents change tickets while this runs, so run each command as before, after, before: the result counts only when the two "before" outputs are identical; otherwise repeat. Record the `diff` result and three `time` runs of `chitty list` for each in a note
+- [ ] The scan-count tests (`chitty list` and `lookup` of every ticket: equal for 2 and 20 tickets, between 4 and 8 scans, `TASK-2` read from its branch), the three error and order tests, the ref case, the invalidation example and the property pass; the scan-count tests fail before the change. Each of those other new tests guards unchanged behaviour, so instead it must fail against the wrong version mapped to it in the planner note headed `Wrong versions, exact`, applied alone to the finished `src/chitty/store.py`. Tests that existed before this ticket are not part of this criterion. Record the `pytest` summary line of each run in a note
+- [ ] Before and after the change, run with `cwd` at the ticket worktree: `chitty list`, `chitty list -s backlog` and `chitty list --all` each print non-empty, byte-identical output. "After" is the worktree's own `.venv/bin/chitty`. For "before", run `mkdir -p tmp/before && git archive "$(git merge-base main HEAD)" src | tar -x -C tmp/before`, then use `PYTHONPATH=tmp/before/src .venv/bin/python -c "from chitty.cli import main; main()"` with the same arguments. Other agents change tickets meanwhile, so for each command run before, after, before in quick succession; the triple counts only when the two "before" outputs match, and then "after" must match them. Try at most three triples per command. If none has matching "before" outputs, record the three diffs and set the ticket to `blocked`, not `review`. Record the `diff` results and three `time` runs of `chitty list` for each in a note
 - [x] `make check` passes
 
 ## Plan
@@ -129,6 +129,28 @@ Planner, 2026-11-24: the last review failed because the guard tests pass before 
 
 Each wrong version failed exactly the tests named, and no other wrong version was needed. Criterion 2 now repeats the "before" run, because the last `--all` comparison differed at `TASK-311` when another runner changed it mid-run.
 
+Wrong versions, exact (planner, 2026-11-24; supersedes the list in the previous planner note). Apply one at a time to `src/chitty/store.py` at `90385907` or later, run `tests/test_list_performance.py` (W6: `tests/test_source_copy.py`), then restore. "Must fail" names the guard test that the version must fail; other tests may fail too.
+
+- W1, invalidation example. In `_invalidate`, delete the line `self._working_index = None`. Must fail: `test_writes_clear_the_index`.
+- W2, order. In `_working_ticket_index`, change `for archived in (False, True):` to `for archived in (False,):`. Must fail: `test_duplicate_lists_active_then_archived`.
+- W3, the two error tests. In `_working_ticket_index`, replace the inner loop with:
+
+```python
+                        try:
+                            found = list(self._files(context, archived))
+                        except ChittyError:
+                            continue
+                        for path in found:
+                            index.setdefault(ids.parse_filename(path.name)[0], []).append(path)
+```
+
+  Must fail: `test_invalid_active_entry_raises_for_any_lookup` and `test_invalid_archived_entry_raises_for_any_lookup`.
+- W4, property. Change `self._working_index = index` to `self._working_index = {key: sorted(paths, key=lambda path: path.name) for key, paths in index.items()}`. Must fail: `test_lookup_matches_the_files_on_disk`.
+- W5, ref case. In `_ref_ticket_index`, change the `continue` under `except ids.IdError:` to `raise`. Must fail: `test_ref_files_with_unparseable_names_are_skipped`.
+- W6, ref-index invalidation, covered by an existing test. In `_invalidate`, delete `self._ref_index.clear()`. Must fail: `tests/test_source_copy.py::TestSourceCopy::test_invalidation`.
+
+Planner run, 2026-11-24, on copies of `src` at `90385907`: each version failed its "must fail" tests. W1: 1 failed, 11 passed. W2: 6 failed, 6 passed. W3 (catching `Exception`; the `ChittyError` form above is what `_files` raises): 2 failed, 10 passed. W4: 1 failed, 11 passed. W5: 1 failed, 11 passed. W6, full suite: 1 failed (`test_invalidation`), 1172 passed.
+
 ## Summary
 
 Implemented per-command working-tree and ref ticket indexes. Regression tests pass, including scan counts, errors/order, refs, invalidation and property context. Before/after outputs matched; make check passes (1169 tests, 602 subtests). Both required scan-count tests fail on baseline (28 vs 172; 16 vs 88) and pass with implementation (4 scans each).
@@ -191,3 +213,5 @@ Implemented per-command working-tree and ref ticket indexes. Regression tests pa
 - 2026-11-23T23:19:30Z intrepid-yellow-ibis review → planning
 - 2026-11-24T08:40:20Z sunny-hazel-gannet: changed acceptance criteria, notes
 - 2026-11-24T08:40:20Z sunny-hazel-gannet planning → cold-read
+- 2026-11-24T08:44:37Z sunny-hazel-gannet: changed acceptance criteria, notes
+- 2026-11-24T08:44:37Z sunny-hazel-gannet cold-read → planning
