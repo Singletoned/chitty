@@ -1,6 +1,6 @@
 ---
 title: Shorten the `AGENTS.md` runner block to what the role guides do not say
-status: review
+status: done
 labels:
   - untestable
 owner: untestable
@@ -31,6 +31,10 @@ Rules for this tightening:
 - Do not move rules to other files unless this ticket says to.
 - In the ticket's Summary (`chitty edit --summary-file`), list each sentence removed outright and where its point still lives. That list is how the reviewer checks nothing was lost: these tickets have no acceptance criteria, and after `TASK-640` no test checks guide wording. Length is judged, not measured.
 
+## Notes
+
+Reviewed: by the person; landed on main by fast-forward.
+
 ## Summary
 
 Done on branch `task-642` (commit `846d04d3`, on top of `task-655`, because both change `src/chitty/guide-runner.md`). `make check` passes, including `TestSplitGuide`; `tests/fixtures/guide-runner-expected.md` regenerated from `managed_guide("runner")`.
@@ -60,3 +64,5 @@ Tightened, nothing removed: the landing paragraph (worker never lands its own ti
 - 2026-11-24T22:56:05Z mellow-teal-jay: changed summary
 - 2026-11-24T23:17:35Z human todo → doing
 - 2026-11-24T23:17:57Z human doing → review
+- 2026-11-24T23:26:33Z mellow-teal-jay: changed notes
+- 2026-11-24T23:26:33Z mellow-teal-jay review → done
