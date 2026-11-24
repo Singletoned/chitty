@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: planning
+status: cold-read
 created: 2026-11-24
 ---
 
@@ -46,3 +46,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:21:51Z zesty-coral-newt: changed notes
 - 2026-11-24T22:50:14Z zesty-coral-newt: changed title, description, acceptance criteria
 - 2026-11-24T22:50:14Z zesty-coral-newt backlog → planning
+- 2026-11-24T22:50:18Z zesty-coral-newt planning → cold-read
