@@ -12,7 +12,10 @@ Seen 2026-11-21 with `chitty run --loop --mode work -- --model gpt-6.1-terra` (P
 
 Suggestion origin: chitty
 
+Triage 2026-11-24: two more reports of the same pattern, on 2026-11-23. TASK-663: TASK-629 and TASK-599 ended in `error` right after planning moved them to `todo`, with sessions of about 11 s and notes like "I cannot honestly classify it as ready for review, defective, or externally blocked"; both are large, so "too large" may be what the agent meant but did not say. TASK-683: TASK-557 and TASK-598 went to `error` after 5 continuations with no new commits (sessions of about 23 s); TASK-557 was then finished by hand in one session, so the worker was stopping by choice. Check what the continuation prompt and work guide tell the agent, and whether a continuation should say plainly to keep going or return the ticket to planning with a reason.
+
 ## History
 
 - 2026-11-22T09:47:34Z friendly-jade-stoat → backlog
 - 2026-11-22T09:47:34Z friendly-jade-stoat: changed notes
+- 2026-11-24T22:39:47Z zesty-coral-newt: changed notes
