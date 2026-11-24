@@ -1,6 +1,8 @@
 ---
 title: Tolerate a branch deleted while Chitty scans branches
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -17,7 +19,10 @@ Another session had deleted branch `task-yj6vbs` between Chitty listing branches
 
 Suggestion origin: chitty
 
+Duplicate of TASK-233 (a branch deleted during ticket discovery crashes the command); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:34Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:35Z zesty-coral-newt: changed notes
+- 2026-11-24T22:40:13Z zesty-coral-newt: changed labels, notes
