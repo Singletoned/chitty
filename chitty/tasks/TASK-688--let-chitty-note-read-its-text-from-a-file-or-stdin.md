@@ -38,6 +38,10 @@ Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording; TEXT tha
 - [ ] In `tests/test_property_text_files.py`, a new property test shows that for any text drawn from `TEXT`, `chitty note ID TEXT`, `chitty note ID --file <path>` and `chitty note ID --file -` (text on stdin), each on a fresh ticket, give equal Notes in `chitty show --json`, and those Notes split into the same words as the stored form of the text: `notes.split() == escape_literal_asterisks(text).split()` (`chitty.markdown`; Chitty escapes `*` and strips trailing whitespace, so exact equality does not hold). A fixed case shows `chitty note ID -` stores the note `-`. The property fails without the change.
 - [ ] A new test in `tests/test_cli.py` shows `chitty note 1 Text --file <path>` exits with status 2 and output containing `give TEXT or --file, not both`, and `chitty note 1` exits with status 2 and output containing `give TEXT or --file`; both leave the ticket file byte-for-byte unchanged. `test_note_appends_a_note` still passes, and `make check` passes.
 
+## Plan
+
+-
+
 ## Notes
 
 Suggestion origin: chitty
@@ -55,3 +59,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:55:40Z zesty-coral-newt: changed description
 - 2026-11-24T22:55:40Z zesty-coral-newt cold-read → todo
 - 2026-11-24T23:54:25Z eager-indigo-vole todo → doing
+- 2026-11-24T23:58:04Z eager-indigo-vole: wrote the plan
