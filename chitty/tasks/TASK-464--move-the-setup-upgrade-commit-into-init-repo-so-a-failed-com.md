@@ -1,6 +1,6 @@
 ---
 title: Move the setup upgrade commit into `init_repo` so a failed commit is restored
-status: doing
+status: review
 labels:
   - bug
 priority: high
@@ -50,6 +50,10 @@ Implementation is partially changed, but required regression tests and main/W1/W
 
 make check passed: 1168 tests and 620 subtests. Requested failure-on-main/W1/W2 evidence was not performed.
 
+## Summary
+
+Implemented atomic setup commits and regression coverage. make check passed: 1168 tests, 620 subtests. Differential main/W1/W2 runs remain unperformed.
+
 ## History
 
 - 2026-11-19T21:17:37Z sunny-white-dormouse → backlog
@@ -64,3 +68,5 @@ make check passed: 1168 tests and 620 subtests. Requested failure-on-main/W1/W2 
 - 2026-11-24T08:44:57Z lively-hazel-kestrel: wrote the plan
 - 2026-11-24T08:48:18Z lively-hazel-kestrel: changed notes
 - 2026-11-24T08:51:21Z lively-hazel-kestrel: changed notes
+- 2026-11-24T08:55:47Z lively-hazel-kestrel: changed summary
+- 2026-11-24T08:55:47Z lively-hazel-kestrel doing → review
