@@ -21,3 +21,4 @@ Triage 2026-11-24: obsolete. `tests/test_guide_word_budget.py` and its `BUDGETS`
 - 2026-11-24T22:21:31Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:32Z zesty-coral-newt: changed notes
 - 2026-11-24T22:47:42Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:55:52Z zesty-coral-newt backlog → archived
