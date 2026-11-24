@@ -1,6 +1,6 @@
 ---
 title: Add only the target workflow's settings when `chitty init` upgrades a config
-status: planning
+status: cold-read
 priority: high
 parent: TASK-331
 created: 2026-11-24
@@ -38,3 +38,4 @@ Tests, in `tests/test_init_workflow.py`, using Hypothesis (the repository's prop
 - 2026-11-24T07:42:34Z sunny-hazel-gannet planning → cold-read
 - 2026-11-24T07:44:30Z sunny-hazel-gannet: changed description
 - 2026-11-24T07:44:30Z sunny-hazel-gannet cold-read → planning
+- 2026-11-24T07:44:34Z sunny-hazel-gannet planning → cold-read
