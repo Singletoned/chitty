@@ -2,6 +2,7 @@ import shutil
 import subprocess
 
 from chitty import locks
+from chitty.model import STATUSES
 from tests.test_landing import LandingTestCase
 
 
@@ -34,6 +35,23 @@ class TestRunRemovesMergedBranches(LandingTestCase):
             self.assertIn(f"removed merged branch {branch}", result.stderr)
         self.assertFalse(self.worktree.exists())
 
+    def test_removes_archived_tickets_in_non_done_statuses(self):
+        branches = []
+        for status in STATUSES:
+            if status == "done":
+                continue
+            ticket = self.json("add", f"Archived {status}", "-d", "Description.", "-s", status)[
+                "id"
+            ]
+            self.run_cli("archive", ticket)
+            branch = ticket.lower()
+            self.git("branch", branch)
+            branches.append(branch)
+        result = self.run_cleanup()
+        for branch in branches:
+            self.assertFalse(self.exists(branch))
+            self.assertIn(f"removed merged branch {branch}", result.stderr)
+
     def test_keeps_non_done_statuses(self):
         tickets = {}
         for status in ("todo", "doing", "review", "error", "blocked"):
@@ -53,6 +71,21 @@ class TestRunRemovesMergedBranches(LandingTestCase):
             result = self.run_cleanup()
         self.assertTrue(self.exists("task-999"))
         self.assertIn("kept merged branch task-999: run lock is held", result.stderr)
+
+    def test_keeps_archived_ticket_with_untracked_worktree(self):
+        ticket = self.json("add", "Archived planning", "-d", "Description.", "-s", "planning")["id"]
+        self.run_cli("archive", ticket)
+        branch = ticket.lower()
+        self.git("branch", branch)
+        worktree = self.root / ".worktrees" / branch
+        self.git("worktree", "add", "--quiet", str(worktree), branch)
+        (worktree / "untracked.txt").write_text("untracked")
+        result = self.run_cleanup()
+        self.assertTrue(self.exists(branch))
+        self.assertIn(
+            f"kept merged branch {branch}: worktree has uncommitted changes",
+            result.stderr,
+        )
 
     def test_keeps_untracked_worktree(self):
         self.git("branch", "task-999")

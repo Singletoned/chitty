@@ -344,7 +344,7 @@ def _remove_merged_branches(main_repo: Repo) -> None:
         stored = main_repo.lookup(TaskId.parse(task_id))
         worktree = git.worktree_for_branch(root, branch)
         reason = None
-        if stored is not None and stored.task.frontmatter.status != "done":
+        if stored is not None and not stored.archived and stored.task.frontmatter.status != "done":
             reason = f"{task_id} is {stored.task.frontmatter.status}"
         elif locks.is_locked(root, task_id):
             reason = "run lock is held"
