@@ -1,6 +1,6 @@
 ---
 title: Refuse moving a ticket out of doing while its worktree has uncommitted changes
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-21
@@ -52,3 +52,4 @@ Suggestion origin: chitty
 - 2026-11-24T12:24:30Z kind-navy-toad planning → cold-read
 - 2026-11-24T12:25:59Z kind-navy-toad: changed description
 - 2026-11-24T12:25:59Z kind-navy-toad cold-read → todo
+- 2026-11-24T12:30:33Z nimble-zinc-vole todo → doing
