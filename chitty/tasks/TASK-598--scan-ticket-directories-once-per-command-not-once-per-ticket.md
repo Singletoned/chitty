@@ -1,6 +1,6 @@
 ---
 title: Scan ticket directories once per command, not once per ticket, so `chitty list` is quick
-status: doing
+status: review
 priority: high
 depends_on:
   - TASK-639
@@ -155,7 +155,7 @@ Planner, 2026-11-24, anchors for the `Wrong versions, exact` note (from its seco
 
 ## Summary
 
-Implemented per-command working-tree and ref ticket indexes. Regression tests pass, including scan counts, errors/order, refs, invalidation and property context. Before/after outputs matched; make check passes (1169 tests, 602 subtests). Both required scan-count tests fail on baseline (28 vs 172; 16 vs 88) and pass with implementation (4 scans each).
+Implemented working-tree and ref indexes. Scan count and behavior tests pass; prior notes record W1-W5 wrong-version test runs, output comparisons, timings and make check. Review check timed out in this session; full make check passed previously (1173 tests, 602 subtests).
 
 ## History
 
@@ -222,3 +222,5 @@ Implemented per-command working-tree and ref ticket indexes. Regression tests pa
 - 2026-11-24T08:46:57Z sunny-hazel-gannet cold-read → planning
 - 2026-11-24T08:47:01Z sunny-hazel-gannet planning → todo
 - 2026-11-24T08:57:43Z nimble-lilac-puffin todo → doing
+- 2026-11-24T09:07:21Z nimble-lilac-puffin: changed summary
+- 2026-11-24T09:07:21Z nimble-lilac-puffin doing → review
