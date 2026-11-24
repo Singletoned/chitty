@@ -32,6 +32,10 @@ No property: the input is a small fixed set of variables, each listed and tested
 - [ ] `test_missing_identity_fails_loudly` asserts the error names `ANTIGRAVITY_CONVERSATION_ID`, and `tests/support.py` and `tests/test_run_error_reporter.py` clear `ANTIGRAVITY_CONVERSATION_ID` wherever they clear `CODEX_SESSION_ID`.
 - [ ] `README.md` and `docs/plan/module-layout.md` list `ANTIGRAVITY_CONVERSATION_ID` with the other harness identities, and `make check` passes.
 
+## Plan
+
+-
+
 ## Notes
 
 Suggestion origin: shelfpath
@@ -52,3 +56,4 @@ Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravi
 - 2026-11-24T22:48:02Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T22:48:02Z zesty-coral-newt cold-read → todo
 - 2026-11-24T22:58:52Z kind-fawn-falcon todo → doing
+- 2026-11-24T23:01:16Z kind-fawn-falcon: wrote the plan
