@@ -48,6 +48,8 @@ Move setup commits into init_repo; extend restoration and init tests; verify reg
 
 Implementation is partially changed, but required regression tests and main/W1/W2 evidence remain outstanding. The ticket is clear and no external obstacle exists; status remains doing.
 
+make check passed: 1168 tests and 620 subtests. Requested failure-on-main/W1/W2 evidence was not performed.
+
 ## History
 
 - 2026-11-19T21:17:37Z sunny-white-dormouse → backlog
@@ -61,3 +63,4 @@ Implementation is partially changed, but required regression tests and main/W1/W
 - 2026-11-24T08:41:30Z lively-hazel-kestrel todo → doing
 - 2026-11-24T08:44:57Z lively-hazel-kestrel: wrote the plan
 - 2026-11-24T08:48:18Z lively-hazel-kestrel: changed notes
+- 2026-11-24T08:51:21Z lively-hazel-kestrel: changed notes
