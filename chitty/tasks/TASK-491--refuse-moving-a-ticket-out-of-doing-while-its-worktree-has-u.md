@@ -39,6 +39,10 @@ Probed while planning with this recipe: every case in 1 fails on `main` and pass
 - [ ] The cases in 1 pass and fail on `main`; each guard in 2 passes and fails against its wrong version; a note records the runs
 - [ ] `make check` passes
 
+## Plan
+
+Read the existing clean-worktree guard and CLI test fixtures. Add the specified regression cases, first verify they fail against current behavior and each guard fails against its stated wrong version, then implement the status/branch/runner-gated refusal. Run make check and commit implementation changes in small logical commits.
+
 ## Notes
 
 Suggestion origin: chitty
@@ -53,3 +57,4 @@ Suggestion origin: chitty
 - 2026-11-24T12:25:59Z kind-navy-toad: changed description
 - 2026-11-24T12:25:59Z kind-navy-toad cold-read → todo
 - 2026-11-24T12:30:33Z nimble-zinc-vole todo → doing
+- 2026-11-24T12:33:00Z nimble-zinc-vole: wrote the plan
