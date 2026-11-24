@@ -1,6 +1,6 @@
 ---
 title: Derive the actor from `ANTIGRAVITY_CONVERSATION_ID`
-status: review
+status: done
 created: 2026-11-24
 ---
 
@@ -28,9 +28,9 @@ No property: the input is a small fixed set of variables, each listed and tested
 
 ## Acceptance Criteria
 
-- [ ] In `tests/test_actor.py`, `test_harness_session_names_are_stable_and_readable` includes `ANTIGRAVITY_CONVERSATION_ID`, and a new test shows: with only `ANTIGRAVITY_CONVERSATION_ID` set, `actor()` returns a name that differs from the one `CODEX_SESSION_ID` gives for the same value; with both `CLAUDE_CODE_SESSION_ID` and `ANTIGRAVITY_CONVERSATION_ID` set, it returns the Claude Code name; with only `ANTIGRAVITY_AGENT`, or only a whitespace `ANTIGRAVITY_CONVERSATION_ID`, it raises `cannot determine actor`. The first of these cases fails without the change.
-- [ ] `test_missing_identity_fails_loudly` asserts the error names `ANTIGRAVITY_CONVERSATION_ID`, and `tests/support.py` and `tests/test_run_error_reporter.py` clear `ANTIGRAVITY_CONVERSATION_ID` wherever they clear `CODEX_SESSION_ID`.
-- [ ] `README.md` and `docs/plan/module-layout.md` list `ANTIGRAVITY_CONVERSATION_ID` with the other harness identities, and `make check` passes.
+- [x] In `tests/test_actor.py`, `test_harness_session_names_are_stable_and_readable` includes `ANTIGRAVITY_CONVERSATION_ID`, and a new test shows: with only `ANTIGRAVITY_CONVERSATION_ID` set, `actor()` returns a name that differs from the one `CODEX_SESSION_ID` gives for the same value; with both `CLAUDE_CODE_SESSION_ID` and `ANTIGRAVITY_CONVERSATION_ID` set, it returns the Claude Code name; with only `ANTIGRAVITY_AGENT`, or only a whitespace `ANTIGRAVITY_CONVERSATION_ID`, it raises `cannot determine actor`. The first of these cases fails without the change.
+- [x] `test_missing_identity_fails_loudly` asserts the error names `ANTIGRAVITY_CONVERSATION_ID`, and `tests/support.py` and `tests/test_run_error_reporter.py` clear `ANTIGRAVITY_CONVERSATION_ID` wherever they clear `CODEX_SESSION_ID`.
+- [x] `README.md` and `docs/plan/module-layout.md` list `ANTIGRAVITY_CONVERSATION_ID` with the other harness identities, and `make check` passes.
 
 ## Plan
 
@@ -41,6 +41,11 @@ No property: the input is a small fixed set of variables, each listed and tested
 Suggestion origin: shelfpath
 
 Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravity also sets `ANTIGRAVITY_AGENT` and `ANTIGRAVITY_TRAJECTORY_ID`. `ANTIGRAVITY_CONVERSATION_ID` is the stable one to use.
+
+Reviewed:
+1: pass - make check passed; baseline pytest tests/test_actor.py with branch tests failed with cannot determine actor for the new identity and stable-name case.
+2: pass - inspected both environment clearing sites; baseline pytest tests/test_actor.py failed the missing-identity error assertion; make check passed.
+3: pass - inspected README.md and docs/plan/module-layout.md; make check passed (1169 tests).
 
 ## Summary
 
@@ -63,3 +68,5 @@ Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravi
 - 2026-11-24T23:01:16Z kind-fawn-falcon: wrote the plan
 - 2026-11-24T23:07:41Z kind-fawn-falcon: changed summary
 - 2026-11-24T23:07:41Z kind-fawn-falcon doing → review
+- 2026-11-24T23:15:43Z upbeat-fawn-jay: changed notes; ticked acceptance criteria
+- 2026-11-24T23:15:43Z upbeat-fawn-jay review → done
