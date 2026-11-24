@@ -1,6 +1,6 @@
 ---
 title: Let a criterion mark regression tests, which must pass but need not fail without the change
-status: doing
+status: review
 labels:
   - untestable
 priority: high
@@ -47,3 +47,4 @@ Done on branch `task-655` (commit `ebc571ab`): every change listed in the descri
 - 2026-11-24T22:34:08Z sunny-hazel-gannet planning → todo
 - 2026-11-24T22:56:01Z mellow-teal-jay: changed summary
 - 2026-11-24T23:16:38Z human todo → doing
+- 2026-11-24T23:16:49Z human doing → review
