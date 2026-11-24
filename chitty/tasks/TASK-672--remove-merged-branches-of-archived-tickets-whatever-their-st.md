@@ -1,6 +1,6 @@
 ---
 title: Remove merged branches of archived tickets whatever their status
-status: todo
+status: doing
 labels:
   - bug
 created: 2026-11-24
@@ -50,3 +50,4 @@ Suggestion origin: chitty
 - 2026-11-24T22:48:31Z zesty-coral-newt backlog → planning
 - 2026-11-24T22:48:37Z zesty-coral-newt planning → cold-read
 - 2026-11-24T22:50:10Z zesty-coral-newt cold-read → todo
+- 2026-11-24T23:09:22Z daring-ginger-urchin todo → doing
