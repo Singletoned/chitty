@@ -1,6 +1,6 @@
 ---
 title: Let `chitty note` read its text from a file or stdin
-status: cold-read
+status: todo
 created: 2026-11-24
 ---
 
@@ -16,7 +16,7 @@ In `src/chitty/cli.py`, `note` (around line 883):
 
 - Make the `text` argument optional (`required=False`, default `None`).
 - Add `--file`, `type=click.File(encoding="utf-8")`, help `Read TEXT from a file ('-' for stdin).`, like `--note-file` on `edit`.
-- Exactly one of TEXT and `--file` must be given; otherwise raise `click.UsageError("give TEXT or --file, not both")` when both are given, or `click.UsageError("give TEXT or --file")` when neither is. Check this before opening the repository or writing anything.
+- Exactly one of TEXT and `--file` must be given; otherwise raise `click.UsageError("give TEXT or --file, not both")` when both are given, or `click.UsageError("give TEXT or --file")` when neither is. Check this before writing anything. An empty or whitespace-only file keeps today's `note must not be empty` error.
 - Then call `repo.edit(..., Edit(note=text))` as today, with the text read from the file when `--file` is given.
 
 Decided: do not reuse `_text` (`cli.py`, around line 252). Its message names `--<name>` and `--<name>-file`, which does not fit a positional TEXT; write the check inline in `note`.
@@ -27,11 +27,11 @@ The MCP `note` tool already takes its text as a value; it does not change. Behav
 
 ### Tests
 
-The property follows `compare_option` in `tests/test_property_text_files.py`, which already runs inline, file and stdin modes for `add` and `edit` with Hypothesis and the `TEXT` strategy. `compare_option` builds `option + "-file"`, which does not fit `note`, so write a separate helper or test for `note`. Hypothesis is this repository's property-testing tool. The usage-error test needs no property: it has two fixed cases, both listed. It must assert the exact messages. Click already prints `Usage: chitty note [OPTIONS] ID TEXT` and `No such option '--file'` today, so checking only for `TEXT` and `--file` would pass with nothing built.
+The property follows `compare_option` in `tests/test_property_text_files.py`, which already runs inline, file and stdin modes for `add` and `edit` with Hypothesis and the `TEXT` strategy. `compare_option` builds `option + "-file"`, which does not fit `note`, so write a separate helper or test for `note`: in each temporary repository create the ticket with `add T -d x --json`, then run `note` on that ID, and import `escape_literal_asterisks` from `chitty.markdown`. Put the usage-error test in `TestEdit` in `tests/test_cli.py`, whose `setUp` creates ticket 1. Hypothesis is this repository's property-testing tool. The usage-error test needs no property: it has two fixed cases, both listed. It must assert the exact messages. Click already prints `Usage: chitty note [OPTIONS] ID TEXT` and `No such option '--file'` today, so checking only for `TEXT` and `--file` would pass with nothing built.
 
 ### Out of scope
 
-Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording.
+Changing `edit --note-file`, the MCP tools, or the `AGENTS.md` wording; TEXT that starts with `-` (Click reads it as an option today, and still will).
 
 ## Acceptance Criteria
 
@@ -52,3 +52,5 @@ Suggestion origin: chitty
 - 2026-11-24T22:51:22Z zesty-coral-newt: changed description, acceptance criteria
 - 2026-11-24T22:51:51Z zesty-coral-newt: changed acceptance criteria
 - 2026-11-24T22:54:38Z zesty-coral-newt: changed acceptance criteria
+- 2026-11-24T22:55:40Z zesty-coral-newt: changed description
+- 2026-11-24T22:55:40Z zesty-coral-newt cold-read → todo
