@@ -21,3 +21,4 @@ Duplicate of TASK-675 (warn about an `agent_command` that still uses the retired
 - 2026-11-24T22:21:22Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:23Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:25Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:16Z zesty-coral-newt backlog → archived
