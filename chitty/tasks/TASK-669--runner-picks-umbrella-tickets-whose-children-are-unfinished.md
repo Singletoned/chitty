@@ -12,7 +12,10 @@ In shelfpath, TASK-5 is a parent of TASK-6 to TASK-9 and only does end-to-end ve
 
 Suggestion origin: shelfpath
 
+Triage 2026-11-24: needs a decision from the person before planning. Option A: `chitty next` and `chitty run` skip a ticket while any of its children is not `done`; this changes the selection rule for every repository (`needs-minor`), and a parent that has its own work to do first would then need its children re-parented. Option B: no code change; the plan guide says a parent that only verifies its children gets `depends_on` on each child, which selection already honours. The stale run locks in the description are covered by TASK-682.
+
 ## History
 
 - 2026-11-24T22:21:32Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:33Z zesty-coral-newt: changed notes
+- 2026-11-24T23:10:58Z zesty-coral-newt: changed notes
