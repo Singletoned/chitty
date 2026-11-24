@@ -44,6 +44,10 @@ Probed while planning with this recipe: the extended property fails on `main` in
 
 Move setup commits into init_repo; extend restoration and init tests; verify regression cases and full checks.
 
+## Notes
+
+Implementation is partially changed, but required regression tests and main/W1/W2 evidence remain outstanding. The ticket is clear and no external obstacle exists; status remains doing.
+
 ## History
 
 - 2026-11-19T21:17:37Z sunny-white-dormouse → backlog
@@ -56,3 +60,4 @@ Move setup commits into init_repo; extend restoration and init tests; verify reg
 - 2026-11-24T08:00:23Z kind-navy-toad cold-read → todo
 - 2026-11-24T08:41:30Z lively-hazel-kestrel todo → doing
 - 2026-11-24T08:44:57Z lively-hazel-kestrel: wrote the plan
+- 2026-11-24T08:48:18Z lively-hazel-kestrel: changed notes
