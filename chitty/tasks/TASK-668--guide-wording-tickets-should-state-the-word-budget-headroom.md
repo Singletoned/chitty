@@ -1,6 +1,8 @@
 ---
 title: Guide-wording tickets should state the word budget headroom
 status: backlog
+labels:
+  - obsolete
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ TASK-608, TASK-615 and TASK-624 (all labelled untestable, 2026-11-23) each asked
 
 Suggestion origin: chitty
 
+Triage 2026-11-24: obsolete. `tests/test_guide_word_budget.py` and its `BUDGETS` were deleted by TASK-640 (`ccc69be0`, 2026-11-23), and `docs/plan/agent-instructions.md:20` now says not to impose word budgets. Nothing to plan; archive.
+
 ## History
 
 - 2026-11-24T22:21:31Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:32Z zesty-coral-newt: changed notes
+- 2026-11-24T22:47:42Z zesty-coral-newt: changed labels, notes
