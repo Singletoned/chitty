@@ -22,8 +22,11 @@ Suggestion origin: echonomicon
 
 Duplicate: the closing path is covered by TASK-599 (`dropped` status) and TASK-662 (archive refused outside the main checkout); the identical-copies failure is TASK-667. Evidence recorded on TASK-599 and TASK-667.
 
+Triage 2026-11-24: not archived, because its target ticket has a branch with a held run lock; fold this into the target when planning it, then archive.
+
 ## History
 
 - 2026-11-24T22:21:44Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:45Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:56Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:00Z zesty-coral-newt: changed notes
