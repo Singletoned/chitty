@@ -1,6 +1,6 @@
 ---
 title: Let a criterion mark regression tests, which must pass but need not fail without the change
-status: planning
+status: todo
 labels:
   - untestable
 priority: high
@@ -40,3 +40,4 @@ After this lands, `chitty init` in the main checkout refreshes the managed block
 - 2026-11-24T22:31:46Z sunny-hazel-gannet todo → planning
 - 2026-11-24T22:33:04Z sunny-hazel-gannet: changed description, acceptance criteria
 - 2026-11-24T22:33:18Z sunny-hazel-gannet: changed description
+- 2026-11-24T22:34:08Z sunny-hazel-gannet planning → todo
