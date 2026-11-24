@@ -16,8 +16,11 @@ Suggestion origin: /Users/singletoned/src/efficio/margay-eye-south
 
 The existing leftover registrations (16 inboxes whose repo pointed into temp or scratchpad directories) were deleted by hand on 2026-11-17. Pruning future dead registrations is `TASK-50`.
 
+Triage 2026-11-24, merged from TASK-691: the registry held 41 projects on 2026-11-23, about 10 of them real. `tmps0tf3zag` is registered to `.worktrees/task-401/tmps0tf3zag` in this repository, so some test still registers without a temporary `XDG_DATA_HOME`. Others: `tmp-a3nxft7jox`, `tmp-mh4uvb1knb`, `tmp-vxeisezmeh` (under `/private/var/folders/.../T/tmp.*`), `probe*`, `rep`, `rep2`, `r568`, `t559repo`, `t559show`, `ac`, `ac-probe`, `p520`, `tk`, `duetry` (agent scratchpads). Warning about registrations whose path is gone is TASK-50.
+
 ## History
 
 - 2026-11-12T21:43:35Z kind-yellow-vole → backlog
 - 2026-11-12T21:43:37Z kind-yellow-vole: changed notes
 - 2026-11-17T17:55:08Z kind-umber-toad: changed notes
+- 2026-11-24T22:40:04Z zesty-coral-newt: changed notes
