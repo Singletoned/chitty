@@ -21,3 +21,4 @@ Duplicate: merged into TASK-686 (sound tickets returned to planning), TASK-676 (
 - 2026-11-24T22:21:49Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:50Z zesty-coral-newt: changed notes
 - 2026-11-24T22:39:42Z zesty-coral-newt: changed labels, notes
+- 2026-11-24T22:41:26Z zesty-coral-newt backlog → archived
