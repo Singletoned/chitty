@@ -1,6 +1,8 @@
 ---
 title: Workers end sessions early on large tickets without committing
 status: backlog
+labels:
+  - duplicate
 created: 2026-11-24
 ---
 
@@ -12,7 +14,10 @@ On 2026-11-23 two tickets went to `error` with `still doing after 5 continuation
 
 Suggestion origin: chitty
 
+Duplicate of TASK-562 (work agents stop early on larger tickets); the evidence is recorded there.
+
 ## History
 
 - 2026-11-24T22:21:45Z zesty-coral-newt → backlog
 - 2026-11-24T22:21:46Z zesty-coral-newt: changed notes
+- 2026-11-24T22:39:51Z zesty-coral-newt: changed labels, notes
