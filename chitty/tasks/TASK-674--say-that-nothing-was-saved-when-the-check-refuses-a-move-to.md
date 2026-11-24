@@ -1,6 +1,6 @@
 ---
 title: Say that nothing was saved when the check refuses a move to `review`
-status: doing
+status: planning
 labels:
   - bug
 created: 2026-11-24
@@ -41,6 +41,8 @@ Inspect the review-check implementation and fixtures, add regression cases for e
 
 Suggestion origin: chitty
 
+Implementation cannot proceed safely because the prior session overwrote `src/chitty/store.py` with an empty file. Restoring the committed version removes that accidental damage, but loses the unfinished implementation. No ticket defect is evident; decision needed: confirm the restored baseline and resume implementation in a fresh session, or provide recovery guidance if there were intended uncommitted changes. No tests were run.
+
 ## History
 
 - 2026-11-24T22:21:37Z zesty-coral-newt → backlog
@@ -59,3 +61,5 @@ Suggestion origin: chitty
 - 2026-11-24T23:05:38Z zesty-coral-newt cold-read → todo
 - 2026-11-24T23:22:19Z calm-white-raven todo → doing
 - 2026-11-24T23:25:25Z calm-white-raven: wrote the plan
+- 2026-11-24T23:25:59Z calm-white-raven: changed owner, notes
+- 2026-11-24T23:25:59Z calm-white-raven doing → planning
