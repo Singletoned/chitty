@@ -1,6 +1,6 @@
 ---
 title: Derive the actor from `ANTIGRAVITY_CONVERSATION_ID`
-status: doing
+status: review
 created: 2026-11-24
 ---
 
@@ -42,6 +42,10 @@ Suggestion origin: shelfpath
 
 Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravity also sets `ANTIGRAVITY_AGENT` and `ANTIGRAVITY_TRAJECTORY_ID`. `ANTIGRAVITY_CONVERSATION_ID` is the stable one to use.
 
+## Summary
+
+-
+
 ## History
 
 - 2026-11-24T22:21:22Z zesty-coral-newt → backlog
@@ -57,3 +61,5 @@ Triage 2026-11-24: TASK-689 (from circuitry) asked for the same thing; Antigravi
 - 2026-11-24T22:48:02Z zesty-coral-newt cold-read → todo
 - 2026-11-24T22:58:52Z kind-fawn-falcon todo → doing
 - 2026-11-24T23:01:16Z kind-fawn-falcon: wrote the plan
+- 2026-11-24T23:07:41Z kind-fawn-falcon: changed summary
+- 2026-11-24T23:07:41Z kind-fawn-falcon doing → review
